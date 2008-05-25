@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-21 16:55+0900\n"
-"PO-Revision-Date: 2008-05-10 11:06+0000\n"
+"POT-Creation-Date: 2008-05-25 10:28+0900\n"
+"PO-Revision-Date: 2008-05-21 18:10+0000\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-05-12 14:16+0000\n"
+"X-Launchpad-Export-Date: 2008-05-25 01:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:71
@@ -1866,6 +1866,10 @@ msgid ""
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
+" --summary-interval=SEC       Configure l'intervalle d'affichage du résumé "
+"régulier de la progression des téléchargements.\n"
+"                              Mettre 0 pour ne pas l'afficher dans la "
+"console."
 
 #: src/usage_text.h:345
 msgid " --log-level=LEVEL            Set log level to output."
@@ -1910,15 +1914,15 @@ msgstr ""
 "En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
 "d'informations."
 
-#: src/RequestGroupMan.cc:265
+#: src/RequestGroupMan.cc:294
 msgid "Download Results:"
 msgstr "Résultats du ou des téléchargements:"
 
-#: src/RequestGroupMan.cc:280
+#: src/RequestGroupMan.cc:309
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 
-#: src/Util.cc:696
+#: src/Util.cc:699
 msgid "Files:"
 msgstr "Fichiers:"
 
@@ -1932,9 +1936,9 @@ msgid "Report bugs to %s"
 msgstr "Faire part des bugs à %s"
 
 #: src/version_usage.cc:77
-#, fuzzy, c-format
+#, c-format
 msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
-msgstr "Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."
+msgstr "Usage: %s [OPTIONS] [URL | FICHIER_TORRENT |FICHIER_ METALINK]..."
 
 #: src/version_usage.cc:85
 msgid "Printing all options."

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2c 0.13.2rc\n"
+"Project-Id-Version: aria2c 0.13.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-21 16:55+0900\n"
+"POT-Creation-Date: 2008-05-25 10:28+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1512,15 +1512,15 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:265
+#: src/RequestGroupMan.cc:294
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:280
+#: src/RequestGroupMan.cc:309
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:696
+#: src/Util.cc:699
 msgid "Files:"
 msgstr ""
 
