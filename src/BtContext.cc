@@ -36,30 +36,30 @@
 
 namespace aria2 {
 
-const std::string BtContext::NAME("name");
+const std::string BtContext::C_NAME("name");
 
-const std::string BtContext::FILES("files");
+const std::string BtContext::C_FILES("files");
 
-const std::string BtContext::LENGTH("length");
+const std::string BtContext::C_LENGTH("length");
 
-const std::string BtContext::PATH("path");
+const std::string BtContext::C_PATH("path");
 
-const std::string BtContext::INFO("info");
+const std::string BtContext::C_INFO("info");
 
-const std::string BtContext::PIECES("pieces");
+const std::string BtContext::C_PIECES("pieces");
 
-const std::string BtContext::PIECE_LENGTH("piece length");
+const std::string BtContext::C_PIECE_LENGTH("piece length");
 
-const std::string BtContext::PRIVATE("private");
+const std::string BtContext::C_PRIVATE("private");
 
-const std::string BtContext::PRIVATE_ON("1");
+const std::string BtContext::C_PRIVATE_ON("1");
 
-const std::string BtContext::URL_LIST("url-list");
+const std::string BtContext::C_URL_LIST("url-list");
 
-const std::string BtContext::ANNOUNCE("announce");
+const std::string BtContext::C_ANNOUNCE("announce");
 
-const std::string BtContext::ANNOUNCE_LIST("announce-list");
+const std::string BtContext::C_ANNOUNCE_LIST("announce-list");
 
-const std::string BtContext::NODES("nodes");
+const std::string BtContext::C_NODES("nodes");
 
 } // namespace aria2

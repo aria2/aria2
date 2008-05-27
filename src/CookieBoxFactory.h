@@ -67,7 +67,7 @@ public:
   }
 
 private:
-  static const std::string TRUE;
+  static const std::string C_TRUE;
 };
 
 typedef SharedHandle<CookieBoxFactory> CookieBoxFactoryHandle;

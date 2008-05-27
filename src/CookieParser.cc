@@ -41,23 +41,23 @@
 
 namespace aria2 {
 
-const std::string CookieParser::SECURE("secure");
+const std::string CookieParser::C_SECURE("secure");
 
-const std::string CookieParser::DOMAIN("domain");
+const std::string CookieParser::C_DOMAIN("domain");
 
-const std::string CookieParser::PATH("path");
+const std::string CookieParser::C_PATH("path");
 
-const std::string CookieParser::EXPIRES("expires");
+const std::string CookieParser::C_EXPIRES("expires");
 
 void CookieParser::setField(Cookie& cookie, const std::string& name, const std::string& value) const
 {
-  if(name == SECURE) {
+  if(name == C_SECURE) {
     cookie.secure = true;
-  } else if(name == DOMAIN) {
+  } else if(name == C_DOMAIN) {
     cookie.domain = value;
-  } else if(name == PATH) {
+  } else if(name == C_PATH) {
     cookie.path = value;
-  } else if(name == EXPIRES) {
+  } else if(name == C_EXPIRES) {
     cookie.expires = Util::httpGMT(value);
     cookie.onetime = false;
   } else {

@@ -115,13 +115,13 @@ void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
 void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 					  const std::string& defaultName,
 					  const std::deque<std::string>& urlList) {
-  const Data* nameData = dynamic_cast<const Data*>(infoDic->get(BtContext::NAME));
+  const Data* nameData = dynamic_cast<const Data*>(infoDic->get(BtContext::C_NAME));
   if(nameData) {
     name = nameData->toString();
   } else {
     name = File(defaultName).getBasename()+".file";
   }
-  const List* files = dynamic_cast<const List*>(infoDic->get(BtContext::FILES));
+  const List* files = dynamic_cast<const List*>(infoDic->get(BtContext::C_FILES));
   if(files) {
     uint64_t length = 0;
     off_t offset = 0;
@@ -135,7 +135,7 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 	continue;
       }
       const Data* lengthData =
-	dynamic_cast<const Data*>(fileDic->get(BtContext::LENGTH));
+	dynamic_cast<const Data*>(fileDic->get(BtContext::C_LENGTH));
       if(lengthData) {
 	length += lengthData->toLLInt();
       } else {
@@ -143,7 +143,7 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file length").str());
       }
       const List* pathList =
-	dynamic_cast<const List*>(fileDic->get(BtContext::PATH));
+	dynamic_cast<const List*>(fileDic->get(BtContext::C_PATH));
       if(!pathList) {
 	throw DlAbortEx
 	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file path list").str());
@@ -182,7 +182,7 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
     // single-file mode;
     fileMode = BtContext::SINGLE;
     const Data* length =
-      dynamic_cast<const Data*>(infoDic->get(BtContext::LENGTH));
+      dynamic_cast<const Data*>(infoDic->get(BtContext::C_LENGTH));
     if(length) {
       totalLength = length->toLLInt();
     } else {
@@ -296,7 +296,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
 {
   clear();
   const Dictionary* infoDic =
-    dynamic_cast<const Dictionary*>(rootDic->get(BtContext::INFO));
+    dynamic_cast<const Dictionary*>(rootDic->get(BtContext::C_INFO));
   if(!infoDic) {
     throw DlAbortEx
       (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "info directory").str());
@@ -311,7 +311,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces
   const Data* pieceHashData =
-    dynamic_cast<const Data*>(infoDic->get(BtContext::PIECES));
+    dynamic_cast<const Data*>(infoDic->get(BtContext::C_PIECES));
   if(!pieceHashData) {
     throw DlAbortEx
       (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "pieces").str());
@@ -325,7 +325,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   }
   // retrieve piece length
   const Data* pieceLengthData =
-    dynamic_cast<const Data*>(infoDic->get(BtContext::PIECE_LENGTH));
+    dynamic_cast<const Data*>(infoDic->get(BtContext::C_PIECE_LENGTH));
   if(!pieceLengthData) {
     throw DlAbortEx
       (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "piece length").str());
@@ -335,9 +335,9 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   extractPieceHash(pieceHashData->getData(), pieceHashData->getLen(),
 		   PIECE_HASH_LENGTH);
   const Data* privateFlag =
-    dynamic_cast<const Data*>(infoDic->get(BtContext::PRIVATE));
+    dynamic_cast<const Data*>(infoDic->get(BtContext::C_PRIVATE));
   if(privateFlag) {
-    if(privateFlag->toString() == BtContext::PRIVATE_ON) {
+    if(privateFlag->toString() == BtContext::C_PRIVATE_ON) {
       _private = true;
     }
   }
@@ -345,7 +345,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::deque<std::string> urlList;
-  extractUrlList(urlList, rootDic->get(BtContext::URL_LIST));
+  extractUrlList(urlList, rootDic->get(BtContext::C_URL_LIST));
   // retrieve file entries
   extractFileEntries(infoDic, defaultName, urlList);
   if((totalLength+pieceLength-1)/pieceLength != numPieces) {
@@ -353,9 +353,9 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   }
   // retrieve announce
   const Data* announceData =
-    dynamic_cast<const Data*>(rootDic->get(BtContext::ANNOUNCE));
+    dynamic_cast<const Data*>(rootDic->get(BtContext::C_ANNOUNCE));
   const List* announceListData =
-    dynamic_cast<const List*>(rootDic->get(BtContext::ANNOUNCE_LIST));
+    dynamic_cast<const List*>(rootDic->get(BtContext::C_ANNOUNCE_LIST));
   if(announceListData) {
     extractAnnounceList(announceListData);
   } else if(announceData) {
@@ -363,7 +363,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   }
   // retrieve nodes
   const List* nodes =
-    dynamic_cast<const List*>(rootDic->get(BtContext::NODES));
+    dynamic_cast<const List*>(rootDic->get(BtContext::C_NODES));
   if(nodes) {
     extractNodes(nodes);
   }

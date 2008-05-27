@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-const std::string CookieBoxFactory::TRUE("TRUE");
+const std::string CookieBoxFactory::C_TRUE("TRUE");
 
 CookieBoxHandle CookieBoxFactory::createNewInstance()
 {
@@ -80,7 +80,7 @@ Cookie CookieBoxFactory::parseNsCookie(const std::string& nsCookieStr) const
   }
   c.domain = vs[0];
   c.path = vs[2];
-  c.secure = vs[3] == TRUE ? true : false;
+  c.secure = vs[3] == C_TRUE ? true : false;
   int64_t expireDate = Util::parseLLInt(vs[4]);
   // TODO assuming time_t is int32_t...
   if(expireDate > INT32_MAX) {

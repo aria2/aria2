@@ -58,13 +58,13 @@ public:
   Cookies parse(std::istream& s) const;
 
 private:
-  static const std::string SECURE;
+  static const std::string C_SECURE;
   
-  static const std::string DOMAIN;
+  static const std::string C_DOMAIN;
   
-  static const std::string PATH;
+  static const std::string C_PATH;
   
-  static const std::string EXPIRES;
+  static const std::string C_EXPIRES;
 };
 
 typedef SharedHandle<CookieParser> CookieParserHandle;
