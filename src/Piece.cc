@@ -82,6 +82,11 @@ bool Piece::operator==(const Piece& piece) const
   return index == piece.index;
 }
 
+bool Piece::operator<(const Piece& piece) const
+{
+  return index < piece.index;
+}
+
 void Piece::completeBlock(size_t blockIndex) {
   bitfield->setBit(blockIndex);
   bitfield->unsetUseBit(blockIndex);

@@ -143,29 +143,24 @@ PieceHandle DefaultPieceStorage::getPiece(size_t index)
 
 void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece)
 {
-  usedPieces.push_back(piece);
+  std::deque<SharedHandle<Piece> >::iterator i =
+    std::lower_bound(usedPieces.begin(), usedPieces.end(), piece);
+  usedPieces.insert(i, piece);
+  logger->debug("usedPieces.size()=%zu", usedPieces.size());
 }
-
-class FindPiece {
-private:
-  size_t index;
-public:
-  FindPiece(size_t index):index(index) {}
-
-  bool operator()(const PieceHandle& piece) {
-    return piece->getIndex() == index;
-  }
-};
 
 PieceHandle DefaultPieceStorage::findUsedPiece(size_t index) const
 {
-  Pieces::const_iterator itr = std::find_if(usedPieces.begin(),
-					    usedPieces.end(),
-					    FindPiece(index));
-  if(itr == usedPieces.end()) {
-    return SharedHandle<Piece>();
+  SharedHandle<Piece> p(new Piece());
+  p->setIndex(index);
+
+  std::deque<SharedHandle<Piece> >::const_iterator i =
+    std::lower_bound(usedPieces.begin(), usedPieces.end(), p);
+  if(i != usedPieces.end() && (*i) == p) {
+    return *i;
   } else {
-    return *itr;
+    p.reset(0);
+    return p;
   }
 }
 
@@ -237,50 +232,48 @@ void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece)
   if(piece.isNull()) {
     return;
   }
-  Pieces::iterator itr = std::find(usedPieces.begin(), usedPieces.end(), piece);
-  if(itr != usedPieces.end()) {
-    usedPieces.erase(itr);
+  std::deque<SharedHandle<Piece> >::iterator i = 
+    std::lower_bound(usedPieces.begin(), usedPieces.end(), piece);
+  if(i != usedPieces.end() && (*i) == piece) {
+    usedPieces.erase(i);
   }
 }
 
-void DefaultPieceStorage::reduceUsedPieces(size_t delMax)
-{
-  if(usedPieces.size() <= delMax) {
-    return;
-  }
-  size_t toDelete = usedPieces.size()-delMax;
-  int fillRate = 10;
-  while(fillRate < 50) {
-    size_t deleted = deleteUsedPiecesByFillRate(fillRate, toDelete);
-    if(deleted == 0) {
-      break;
-    }
-    toDelete -= deleted;
-    fillRate += 10;
-  }
-}
+// void DefaultPieceStorage::reduceUsedPieces(size_t upperBound)
+// {
+//   size_t usedPiecesSize = usedPieces.size();
+//   if(usedPiecesSize <= upperBound) {
+//     return;
+//   }
+//   size_t delNum = usedPiecesSize-upperBound;
+//   int fillRate = 10;
+//   while(delNum && fillRate <= 15) {
+//     delNum -= deleteUsedPiecesByFillRate(fillRate, delNum);
+//     fillRate += 5;
+//   }
+// }
 
-size_t DefaultPieceStorage::deleteUsedPiecesByFillRate(int fillRate,
-						       size_t toDelete)
-{
-  size_t deleted = 0;
-  for(Pieces::iterator itr = usedPieces.begin();
-      itr != usedPieces.end() && deleted < toDelete;) {
-    PieceHandle& piece = *itr;
-    if(!bitfieldMan->isUseBitSet(piece->getIndex()) &&
-       piece->countCompleteBlock() <= piece->countBlock()*(fillRate/100.0)) {
-      logger->debug(MSG_DELETING_USED_PIECE,
-		    piece->getIndex(),
-		    (piece->countCompleteBlock()*100)/piece->countBlock(),
-		    fillRate);
-      itr = usedPieces.erase(itr);
-      deleted++;
-    } else {
-      itr++;
-    }
-  }
-  return deleted;
-}
+// size_t DefaultPieceStorage::deleteUsedPiecesByFillRate(int fillRate,
+// 						       size_t delNum)
+// {
+//   size_t deleted = 0;
+//   for(Pieces::iterator itr = usedPieces.begin();
+//       itr != usedPieces.end() && deleted < delNum;) {
+//     PieceHandle& piece = *itr;
+//     if(!bitfieldMan->isUseBitSet(piece->getIndex()) &&
+//        piece->countCompleteBlock() <= piece->countBlock()*(fillRate/100.0)) {
+//       logger->info(MSG_DELETING_USED_PIECE,
+// 		    piece->getIndex(),
+// 		    (piece->countCompleteBlock()*100)/piece->countBlock(),
+// 		    fillRate);
+//       itr = usedPieces.erase(itr);
+//       ++deleted;
+//     } else {
+//       ++itr;
+//     }
+//   }
+//   return deleted;
+// }
 
 void DefaultPieceStorage::completePiece(const PieceHandle& piece)
 {
@@ -288,9 +281,9 @@ void DefaultPieceStorage::completePiece(const PieceHandle& piece)
     return;
   }
   deleteUsedPiece(piece);
-  if(!isEndGame()) {
-    reduceUsedPieces(100);
-  }
+//   if(!isEndGame()) {
+//     reduceUsedPieces(100);
+//   }
   if(allDownloadFinished()) {
     return;
   }
@@ -571,6 +564,7 @@ void DefaultPieceStorage::markPieceMissing(size_t index)
 void DefaultPieceStorage::addInFlightPiece(const Pieces& pieces)
 {
   usedPieces.insert(usedPieces.end(), pieces.begin(), pieces.end());
+  std::sort(usedPieces.begin(), usedPieces.end());
 }
 
 size_t DefaultPieceStorage::countInFlightPiece()

@@ -86,8 +86,8 @@ private:
   bool getMissingPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
   bool getMissingFastPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
   SharedHandle<Piece> checkOutPiece(size_t index);
-  size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
-  void reduceUsedPieces(size_t delMax);
+//   size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
+//   void reduceUsedPieces(size_t upperBound);
   void deleteUsedPiece(const SharedHandle<Piece>& piece);
   SharedHandle<Piece> findUsedPiece(size_t index) const;
 

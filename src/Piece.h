@@ -67,6 +67,8 @@ public:
   
   bool operator==(const Piece& piece) const;
 
+  bool operator<(const Piece& piece) const;
+
   bool getMissingUnusedBlockIndex(size_t& index) const;
   bool getMissingBlockIndex(size_t& index) const;
   bool getFirstMissingBlockIndexWithoutLock(size_t& index) const;
