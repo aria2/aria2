@@ -258,7 +258,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	std::deque<Command*> commands;
 	DHTSetup().setup(commands, e, _option);
 	e->addCommand(commands);
-	if(btContext->getNodes().size() && DHTSetup::initialized()) {
+	if(!btContext->getNodes().empty() && DHTSetup::initialized()) {
 	  DHTEntryPointNameResolveCommand* command =
 	    new DHTEntryPointNameResolveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, btContext->getNodes());
 	  command->setTaskQueue(DHTRegistry::_taskQueue);
