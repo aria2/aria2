@@ -114,7 +114,7 @@ std::string BtRequestMessage::toString() const {
 }
 
 void BtRequestMessage::onQueued() {
-  RequestSlot requestSlot(index, begin, length, blockIndex);
+  RequestSlot requestSlot(index, begin, length, blockIndex, pieceStorage->getPiece(index));
   dispatcher->addOutstandingRequest(requestSlot);
 }
 

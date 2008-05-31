@@ -1,5 +1,11 @@
 2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/BtRequestMessage.cc
+	(BtRequestMessage::onQueue): Given piece to RequestSlot. This is a fix
+	for segmentation fault caused by previous commit.
+
+2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Reduced the usage of gettimeofday().
 	* src/DefaultBtMessageDispatcher.cc
 	(DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing)
