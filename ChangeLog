@@ -1,5 +1,24 @@
 2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Reduced the usage of gettimeofday().
+	* src/DefaultBtMessageDispatcher.cc
+	(DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing)
+	(class FindStaleRequestSlot, class ProcessStaleRequestSlot)
+	* src/RequestSlot.cc
+	* src/RequestSlot.h
+	(RequestSlot::isTimeout)
+	
+	Made RequestSlot have a reference to Piece object to avoid find
+	Piece repeatedly.
+	* src/DefaultBtMessageDispatcher.cc
+	(class FindStaleRequestSlot, class ProcessStaleRequestSlot)
+	* src/RequestSlot.cc
+	* src/RequestSlot.h
+	(RequestSlot::getPiece)
+	* test/DefaultBtMessageDispatcherTest.cc
+
+2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/TimeA2.cc
 	* src/TimeA2.h
 	(Time::difference): New function.

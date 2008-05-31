@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "TimeA2.h"
+#include "Piece.h"
 #include <deque>
 
 namespace aria2 {
@@ -48,10 +49,22 @@ private:
   uint32_t begin;
   size_t length;
   size_t blockIndex;
+
+  // This is the piece whose index is index of this RequestSlot has.
+  // To detect duplicate RequestSlot, we have to find the piece using
+  // PieceStorage::getPiece() repeatedly. It turns out that this process
+  // takes time(about 1.7% of processing time). To reduce it, we put piece here
+  // at the construction of RequestSlot as a cache.
+  SharedHandle<Piece> _piece;
+
   void copy(const RequestSlot& requestSlot);
 public:
-  RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex);
+  RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex,
+	      const SharedHandle<Piece>& piece = SharedHandle<Piece>());
+
   RequestSlot(const RequestSlot& requestSlot);
+
+  RequestSlot();
 
   ~RequestSlot() {}
 
@@ -66,7 +79,7 @@ public:
   void setDispatchedTime();
   void setDispatchedTime(time_t secFromEpoch);
 
-  bool isTimeout(time_t timeoutSec) const;
+  bool isTimeout(const struct timeval& now, time_t timeoutSec) const;
   unsigned int getLatencyInMillis() const;
 
   size_t getIndex() const { return index; }
@@ -80,6 +93,8 @@ public:
 
   size_t getBlockIndex() const { return blockIndex; }
   void setBlockIndex(size_t blockIndex) { this->blockIndex = blockIndex; }
+
+  SharedHandle<Piece> getPiece() const;
 
   static RequestSlot nullSlot;
 

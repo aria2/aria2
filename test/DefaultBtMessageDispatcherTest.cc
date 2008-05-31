@@ -278,9 +278,9 @@ void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction() {
 int MY_PIECE_LENGTH = 16*1024;
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
-  
   SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
+  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
+  
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
@@ -305,11 +305,11 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
 }
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_timeout() {
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
+  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
+  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
   // make this slot timeout
   slot.setDispatchedTime(0);
 
-  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
@@ -338,11 +338,11 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
 }
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
-  
   SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   piece->completeBlock(0);
 
+  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
+  
   SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
   BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),

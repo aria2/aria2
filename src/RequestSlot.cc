@@ -37,14 +37,17 @@
 
 namespace aria2 {
 
-RequestSlot RequestSlot::nullSlot(0, 0, 0, 0);
+RequestSlot RequestSlot::nullSlot = RequestSlot();
 
-RequestSlot::RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex)
-  :index(index), begin(begin), length(length), blockIndex(blockIndex) {}
+RequestSlot::RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex, const SharedHandle<Piece>& piece)
+  :index(index), begin(begin), length(length), blockIndex(blockIndex),
+   _piece(piece) {}
 
 RequestSlot::RequestSlot(const RequestSlot& requestSlot) {
   copy(requestSlot);
 }
+
+RequestSlot::RequestSlot():index(0), begin(0), length(0), blockIndex(0) {}
 
 void RequestSlot::copy(const RequestSlot& requestSlot) {
   index = requestSlot.index;
@@ -52,6 +55,7 @@ void RequestSlot::copy(const RequestSlot& requestSlot) {
   length = requestSlot.length;
   blockIndex = requestSlot.blockIndex;
   dispatchedTime = requestSlot.dispatchedTime;
+  _piece = requestSlot._piece;
 }
 
 RequestSlot& RequestSlot::operator=(const RequestSlot& requestSlot)
@@ -89,8 +93,8 @@ void RequestSlot::setDispatchedTime(time_t secFromEpoch) {
   dispatchedTime.setTimeInSec(secFromEpoch);
 }
 
-bool RequestSlot::isTimeout(time_t timeoutSec) const {
-  return dispatchedTime.elapsed(timeoutSec);
+bool RequestSlot::isTimeout(const struct timeval& now, time_t timeoutSec) const {
+  return dispatchedTime.difference(now) >= timeoutSec;
 }
 
 unsigned int RequestSlot::getLatencyInMillis() const {
@@ -100,6 +104,11 @@ unsigned int RequestSlot::getLatencyInMillis() const {
 bool RequestSlot::isNull(const RequestSlot& requestSlot) {
   return requestSlot.index == 0 && requestSlot.begin == 0&&
     requestSlot.length == 0;
+}
+
+SharedHandle<Piece> RequestSlot::getPiece() const
+{
+  return _piece;
 }
 
 } // namespace aria2

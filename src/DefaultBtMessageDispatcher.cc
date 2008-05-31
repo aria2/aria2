@@ -246,6 +246,7 @@ private:
   SharedHandle<PieceStorage> _pieceStorage;
   BtMessageDispatcher* _messageDispatcher;
   WeakHandle<BtMessageFactory> _messageFactory;
+  const struct timeval& _now;
   time_t _requestTimeout;
   Logger* _logger;
 public:
@@ -253,26 +254,27 @@ public:
 			  const SharedHandle<PieceStorage>& pieceStorage,
 			  BtMessageDispatcher* dispatcher,
 			  const WeakHandle<BtMessageFactory>& factory,
+			  const struct timeval& now,
 			  time_t requestTimeout):
     _cuid(cuid),
     _peer(peer),
     _pieceStorage(pieceStorage),
     _messageDispatcher(dispatcher),
     _messageFactory(factory),
+    _now(now),
     _requestTimeout(requestTimeout),
     _logger(LogFactory::getInstance()) {}
 
   void operator()(const RequestSlot& slot)
   {
-    SharedHandle<Piece> piece = _pieceStorage->getPiece(slot.getIndex());
-    if(slot.isTimeout(_requestTimeout)) {
+    if(slot.isTimeout(_now, _requestTimeout)) {
       _logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
 		     _cuid,
 		     slot.getBlockIndex());
       _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
-      piece->cancelBlock(slot.getBlockIndex());
+      slot.getPiece()->cancelBlock(slot.getBlockIndex());
       _peer->snubbing(true);
-    } else if(piece->hasBlock(slot.getBlockIndex())) {
+    } else if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
       _logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
 		     _cuid,
 		     slot.getBlockIndex());
@@ -288,20 +290,22 @@ public:
 class FindStaleRequestSlot {
 private:
   SharedHandle<PieceStorage> _pieceStorage;
+  const struct timeval& _now;
   time_t _requestTimeout;
 public:
   FindStaleRequestSlot(const SharedHandle<PieceStorage>& pieceStorage,
+		       const struct timeval& now,
 		       time_t requestTimeout):
     _pieceStorage(pieceStorage),
+    _now(now),
     _requestTimeout(requestTimeout) {}
 
   bool operator()(const RequestSlot& slot)
   {
-    if(slot.isTimeout(_requestTimeout)) {
+    if(slot.isTimeout(_now, _requestTimeout)) {
       return true;
     } else {
-      SharedHandle<Piece> piece = _pieceStorage->getPiece(slot.getIndex());
-      if(piece->hasBlock(slot.getBlockIndex())) {
+      if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
 	return true;
       } else {
 	return false;
@@ -312,15 +316,20 @@ public:
 
 void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 {
+  struct timeval now;
+  gettimeofday(&now, 0);
+
   std::for_each(requestSlots.begin(), requestSlots.end(),
 		ProcessStaleRequestSlot(cuid,
 					peer,
 					pieceStorage,
 					this,
 					messageFactory,
+					now,
 					requestTimeout));
   requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
 				    FindStaleRequestSlot(pieceStorage,
+							 now,
 							 requestTimeout)),
 		     requestSlots.end());
 }
@@ -363,7 +372,7 @@ bool DefaultBtMessageDispatcher::isOutstandingRequest(size_t index, size_t block
 RequestSlot
 DefaultBtMessageDispatcher::getOutstandingRequest(size_t index, uint32_t begin, size_t length)
 {
-  RequestSlot ret(0, 0, 0, 0);
+  RequestSlot ret;
   RequestSlot rs(index, begin, length, 0);
   std::deque<RequestSlot>::iterator i =
     std::lower_bound(requestSlots.begin(), requestSlots.end(), rs);
