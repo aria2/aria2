@@ -65,6 +65,9 @@ public:
   bool elapsedInMillis(int32_t millis) const;
 
   int32_t difference() const;
+
+  int32_t difference(const struct timeval& now) const;
+
   int64_t differenceInMillis() const;
 
   int64_t differenceInMillis(const struct timeval& now) const;

@@ -71,7 +71,18 @@ struct timeval Time::getCurrentTime() const {
 }
 
 bool Time::elapsed(int32_t sec) const {
-  return Util::difftvsec(getCurrentTime(), tv) >= sec;
+  // Because of gettimeofday called from getCurrentTime() is slow, and most of
+  // the time this function is called before specified time passes, we first do
+  // simple test using time.
+  // Then only when the further test is required, call gettimeofday.
+  time_t now = time(0);
+  if(tv.tv_sec+sec < now) {
+    return true;
+  } else if(tv.tv_sec+sec == now) {
+    return Util::difftvsec(getCurrentTime(), tv) >= sec;
+  } else {
+    return false;
+  }
 }
 
 bool Time::elapsedInMillis(int32_t millis) const {
@@ -84,6 +95,11 @@ bool Time::isNewer(const Time& time) const {
 
 int32_t Time::difference() const {
   return Util::difftvsec(getCurrentTime(), tv);
+}
+
+int32_t Time::difference(const struct timeval& now) const
+{
+  return Util::difftvsec(now, tv);
 }
 
 int64_t Time::differenceInMillis() const {

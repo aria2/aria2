@@ -1,5 +1,12 @@
 2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/TimeA2.cc
+	* src/TimeA2.h
+	(Time::difference): New function.
+	(Time::elapsed): Done optimization.
+
+2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/HelpItemFactory.cc: Added missing `defined' keyword to #if
 	directive.
 
