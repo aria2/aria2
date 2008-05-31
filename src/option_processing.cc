@@ -230,7 +230,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_FTP_REUSE_CONNECTION.c_str(), optional_argument, &lopt, 217 },
       { PREF_SUMMARY_INTERVAL.c_str(), required_argument, &lopt, 218 },
       { PREF_LOG_LEVEL.c_str(), required_argument, &lopt, 219 },
-#if defined ENABLE_BITTORRENT || ENABLE_METALINK
+#if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
