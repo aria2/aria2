@@ -69,9 +69,9 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   SharedHandle<MetalinkEntry> entry(createTestEntry());
 
   entry->dropUnsupportedResource();
-#if defined ENABLE_SSL && ENABLE_BITTORRENT
+#if defined ENABLE_SSL && defined ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)4, entry->resources.size());
-#elif defined ENABLE_SSL || ENABLE_BITTORRENT
+#elif defined ENABLE_SSL || defined ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)3, entry->resources.size());
 #else
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
