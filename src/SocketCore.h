@@ -36,6 +36,7 @@
 #define _D_SOCKET_CORE_H_
 
 #include "common.h"
+#include "a2io.h"
 #include "a2netcompat.h"
 #include "a2time.h"
 #include <cstdlib>
@@ -50,6 +51,9 @@
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
+#ifdef HAVE_EPOLL
+# include <sys/epoll.h>
+#endif // HAVE_EPOLL
 
 namespace aria2 {
 
@@ -62,6 +66,16 @@ private:
   int _sockType;
   // socket endpoint descriptor
   int sockfd;
+
+#ifdef HAVE_EPOLL
+
+  // file descriptor used for epoll
+  int _epfd;
+
+  struct epoll_event _epEvent;
+
+#endif // HAVE_EPOLL
+
   bool blocking;
   bool secure;
 #ifdef HAVE_LIBSSL
@@ -83,6 +97,13 @@ private:
 #endif // HAVE_LIBGNUTLS
 
   void init();
+
+#ifdef HAVE_EPOLL
+
+  void initEPOLL();
+
+#endif // HAVE_EPOLL
+
   SocketCore(int sockfd, int sockType);
   static int error();
   static const char *errorMsg();
@@ -156,7 +177,7 @@ public:
    * @return true if the socket is available for writing,
    * otherwise returns false.
    */
-  bool isWritable(time_t timeout) const;
+  bool isWritable(time_t timeout);
 
   /**
    * Checks whether this socket is available for reading.
@@ -165,7 +186,7 @@ public:
    * @return true if the socket is available for reading,
    * otherwise returns false.
    */
-  bool isReadable(time_t timeout) const;
+  bool isReadable(time_t timeout);
 
   /**
    * Writes characters into this socket. data is a pointer pointing the first

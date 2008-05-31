@@ -43,7 +43,10 @@ int32_t Command::uuidGen = 0;
 Command::Command(int32_t cuid):uuid(uuidGen++),
 			       status(STATUS_INACTIVE),
 			       cuid(cuid),
-			       logger(LogFactory::getInstance()) {}
+			       logger(LogFactory::getInstance()),
+			       _readEvent(false),
+			       _writeEvent(false),
+			       _errorEvent(false) {}
 
 void Command::transitStatus()
 {
@@ -58,6 +61,28 @@ void Command::transitStatus()
 void Command::setStatus(STATUS status)
 {
   this->status = status;
+}
+
+void Command::readEventReceived()
+{
+  _readEvent = true;
+}
+
+void Command::writeEventReceived()
+{
+  _writeEvent = true;
+}
+
+void Command::errorEventRecieved()
+{
+  _errorEvent = true;
+}
+
+void Command::clearIOEvents()
+{
+  _readEvent = false;
+  _writeEvent = false;
+  _errorEvent = false;
 }
 
 } // namespace aria2

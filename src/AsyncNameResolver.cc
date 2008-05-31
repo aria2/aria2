@@ -115,6 +115,20 @@ void AsyncNameResolver::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
   ares_process(channel, rfdsPtr, wfdsPtr);
 }
 
+#ifdef HAVE_LIBCARES
+
+int AsyncNameResolver::getsock(int* sockets) const
+{
+  return ares_getsock(channel, sockets, ARES_GETSOCK_MAXNUM);
+}
+
+void AsyncNameResolver::process(ares_socket_t readfd, ares_socket_t writefd)
+{
+  ares_process_fd(channel, readfd, writefd);
+}
+
+#endif // HAVE_LIBCARES
+
 bool AsyncNameResolver::operator==(const AsyncNameResolver& resolver) const
 {
   return this == &resolver;

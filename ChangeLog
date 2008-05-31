@@ -1,5 +1,27 @@
 2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added epoll support. Use epoll if it is available. If not, use select.
+	When async dns is enabled in compile time, epoll support is enabled
+	only when aria2 is built with c-ares. This condition statement is
+	defined in a2io.h.
+	Currently aria2 supports both c-ares and ares, but ares is maintained
+	for quite a while and debian already has c-ares package, ares support
+	will be dropped in the future version.
+	* configure.ac
+	* src/AbstractCommand.cc
+	* src/AsyncNameResolver.cc
+	* src/AsyncNameResolver.h
+	* src/Command.cc
+	* src/Command.h
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/PeerAbstractCommand.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/a2io.h
+
+2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* test/MetalinkEntryTest.cc: Added missing `defined' keyword to #if
 	directive.
 	

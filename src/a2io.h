@@ -116,11 +116,16 @@
 # define a2mkdir(path, openMode) mkdir(path, openMode)
 #endif // __MINGW32__
 
-#if defined HAVE_POSIX_MEMALIGN && O_DIRECT
+#if defined HAVE_POSIX_MEMALIGN && defined O_DIRECT
 # define ENABLE_DIRECT_IO 1
 #endif // HAVE_POSIX_MEMALIGN && O_DIRECT
 
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
+
+#if defined HAVE_EPOLL_CREATE && \
+  (defined HAVE_LIBCARES || !defined ENABLE_ASYNC_DNS)
+# define HAVE_EPOLL 1
+#endif // HAVE_EPOLL_CREATE || (HAVE_LIBCARES || !ENABLE_ASYNC_DNS)
 
 #endif // _D_A2IO_H_

@@ -61,6 +61,10 @@ private:
 protected:
   int32_t cuid;
   Logger* logger;
+
+  bool _readEvent;
+  bool _writeEvent;
+  bool _errorEvent;
 public:
   Command(int32_t cuid);
 
@@ -86,6 +90,14 @@ public:
   }
 
   void transitStatus();
+
+  void readEventReceived();
+
+  void writeEventReceived();
+
+  void errorEventRecieved();
+
+  void clearIOEvents();
 };
 
 typedef std::deque<Command*> Commands;

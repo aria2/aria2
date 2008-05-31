@@ -89,6 +89,14 @@ public:
 
   void process(fd_set* rfdsPtr, fd_set* wfdsPtr);
 
+#ifdef HAVE_LIBCARES
+
+  int getsock(int* sockets) const;
+
+  void process(ares_socket_t readfd, ares_socket_t writefd);
+
+#endif // HAVE_LIBCARES
+
   bool operator==(const AsyncNameResolver& resolver) const;
 
   void setAddr(const std::string& addrString);

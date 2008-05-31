@@ -74,8 +74,8 @@ bool PeerAbstractCommand::execute() {
        uploadLimitCheck && (uploadLimit == 0 ||
 			    e->getUploadSpeed() <= uploadLimit*1024) ||
        */
-       (checkSocketIsReadable && readCheckTarget->isReadable(0)) ||
-       (checkSocketIsWritable && writeCheckTarget->isWritable(0))) {
+       (checkSocketIsReadable && _readEvent) ||
+       (checkSocketIsWritable && _writeEvent)) {
       checkPoint.reset();
     }
     if(checkPoint.elapsed(timeout)) {

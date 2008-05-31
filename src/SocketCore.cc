@@ -62,7 +62,7 @@
 
 namespace aria2 {
 
-SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1) {
+SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1)  {
   init();
 }
 
@@ -72,6 +72,13 @@ SocketCore::SocketCore(int sockfd, int sockType):_sockType(sockType), sockfd(soc
 
 void SocketCore::init()
 {
+
+#ifdef HAVE_EPOLL
+
+  _epfd = -1;
+
+#endif // HAVE_EPOLL
+
   blocking = true;
   secure = false;
 #ifdef HAVE_LIBSSL
@@ -90,6 +97,15 @@ void SocketCore::init()
 
 SocketCore::~SocketCore() {
   closeConnection();
+
+#ifdef HAVE_EPOLL
+
+  if(_epfd != -1) {
+    CLOSE(_epfd);
+  }
+
+#endif // HAVE_EPOLL
+
 #ifdef HAVE_LIBGNUTLS
   delete [] peekBuf;
 #endif // HAVE_LIBGNUTLS
@@ -304,8 +320,47 @@ void SocketCore::closeConnection()
 #endif // HAVE_LIBGNUTLS
 }
 
-bool SocketCore::isWritable(time_t timeout) const
+#ifdef HAVE_EPOLL
+
+void SocketCore::initEPOLL()
 {
+  if((_epfd = epoll_create(1)) == -1) {
+    throw new DlRetryEx(StringFormat("epoll_create failed:%s", errorMsg()).str());
+  }
+
+  memset(&_epEvent, 0, sizeof(struct epoll_event));
+  _epEvent.events = EPOLLIN|EPOLLOUT;
+  _epEvent.data.fd = sockfd;
+
+  if(epoll_ctl(_epfd, EPOLL_CTL_ADD, sockfd, &_epEvent) == -1) {
+    throw DlRetryEx(StringFormat("epoll_ctl failed:%s", errorMsg()).str());
+  }
+}
+
+#endif // HAVE_EPOLL
+
+bool SocketCore::isWritable(time_t timeout)
+{
+
+#ifdef HAVE_EPOLL
+
+  if(_epfd == -1) {
+    initEPOLL();
+  }
+  struct epoll_event epEvents[1];
+  int r;
+  while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
+
+  if(r > 0) {
+    return epEvents[0].events&(EPOLLOUT|EPOLLHUP|EPOLLERR);
+  } else if(r == 0) {
+    return false;
+  } else {
+    throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+  }
+
+#else // !HAVE_EPOLL
+
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd, &fds);
@@ -327,15 +382,38 @@ bool SocketCore::isWritable(time_t timeout) const
       throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
     }
   }
+
+#endif // !HAVE_EPOLL
+
 }
 
-bool SocketCore::isReadable(time_t timeout) const
+bool SocketCore::isReadable(time_t timeout)
 {
 #ifdef HAVE_LIBGNUTLS
   if(secure && peekBufLength > 0) {
     return true;
   }
 #endif // HAVE_LIBGNUTLS
+
+#ifdef HAVE_EPOLL
+
+  if(_epfd == -1) {
+    initEPOLL();
+  }
+  struct epoll_event epEvents[1];
+  int r;
+  while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
+
+  if(r > 0) {
+    return epEvents[0].events&(EPOLLIN|EPOLLHUP|EPOLLERR);
+  } else if(r == 0) {
+    return false;
+  } else {
+    throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+  }
+
+#else // !HAVE_EPOLL
+
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd, &fds);
@@ -357,6 +435,9 @@ bool SocketCore::isReadable(time_t timeout) const
       throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
     }
   }
+
+#endif // !HAVE_EPOLL
+
 }
 
 void SocketCore::writeData(const char* data, size_t len)
