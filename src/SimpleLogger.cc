@@ -55,23 +55,23 @@ namespace aria2 {
 # endif
 #endif
 
-#define WRITE_LOG(LEVEL, MSG) \
-if(LEVEL >= _logLevel){\
-va_list ap;\
-va_start(ap, MSG);\
-writeFile(LEVEL, MSG, ap);\
-flush();\
-va_end(ap);\
-}
+#define WRITE_LOG(LEVEL, MSG)						\
+  if(LEVEL >= _logLevel && (stdoutField&LEVEL || file.is_open())) {	\
+    va_list ap;								\
+    va_start(ap, MSG);							\
+    writeFile(LEVEL, MSG, ap);						\
+    flush();								\
+    va_end(ap);								\
+  }
 
-#define WRITE_LOG_EX(LEVEL, MSG, EX) \
-if(LEVEL >= _logLevel) {\
-va_list ap;\
-va_start(ap, EX);\
-writeFile(LEVEL, MSG, ap);\
-writeStackTrace(LEVEL, EX);\
-flush();\
-va_end(ap);\
+#define WRITE_LOG_EX(LEVEL, MSG, EX)					\
+  if(LEVEL >= _logLevel && (stdoutField&LEVEL || file.is_open())) {	\
+    va_list ap;								\
+    va_start(ap, EX);							\
+    writeFile(LEVEL, MSG, ap);						\
+    writeStackTrace(LEVEL, EX);						\
+    flush();								\
+    va_end(ap);								\
 }
 
 const std::string SimpleLogger::DEBUG("DEBUG");
@@ -153,12 +153,11 @@ void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
     writeHeader(o, datestr, levelStr);
   }
   {
-    char* res;
-    if(vasprintf(&res, std::string(Util::replace(msg, A2STR::CR_C, A2STR::NIL)+A2STR::LF_C).c_str(), apCopy) == -1) {
-      o << "SimpleLogger error, cannot allocate memory.\n";
+    char buf[1024];
+    if(vsnprintf(buf, sizeof(buf), std::string(Util::replace(msg, A2STR::CR_C, A2STR::NIL)+A2STR::LF_C).c_str(), apCopy) < 0) {
+      o << "SimpleLogger error, failed to format message.\n";
     } else {
-      o << res;
-      free(res);
+      o << buf;
     }
   }
   va_end(apCopy);

@@ -1,5 +1,14 @@
 2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Do not do write operation to /dev/null file.
+	* src/LogFactory.cc
+	* src/SimpleLogger.cc
+
+	Replaced vasprintf with vsnprintf
+	* src/SimpleLogger.cc (SimpleLogger::writeLog)
+
+2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/BtRequestMessage.cc
 	(BtRequestMessage::onQueue): Given piece to RequestSlot. This is a fix
 	for segmentation fault caused by previous commit.

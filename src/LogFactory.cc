@@ -48,7 +48,11 @@ Logger::LEVEL LogFactory::_logLevel = Logger::DEBUG;
 Logger* LogFactory::getInstance() {
   if(logger == NULL) {
     SimpleLogger* slogger = new SimpleLogger();
-    slogger->openFile(filename);
+    if(filename != DEV_NULL) {
+      // don't open file DEV_NULL for performance sake.
+      // This avoids costly unecessary message formatting and write.
+      slogger->openFile(filename);
+    }
     slogger->setLogLevel(_logLevel);
     if(_consoleOutput) {
       slogger->setStdout(Logger::NOTICE, true);
