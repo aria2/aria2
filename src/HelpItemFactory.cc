@@ -276,7 +276,7 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     item->addTag(TAG_HTTP);
     tc->addItem(item);
   }
-#if defined ENABLE_BITTORRENT || ENABLE_METALINK
+#if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
   {
     HelpItemHandle item(new HelpItem(PREF_SHOW_FILES, TEXT_SHOW_FILES));
     item->addTag(TAG_BASIC);
