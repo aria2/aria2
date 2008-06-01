@@ -1,3 +1,11 @@
+2008-06-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed compile error on debian etch.
+	The libc6 shipped with debian etch doesn't define ULLONG_MAX properly
+	even if _GNU_SOURCE is defined. So define ULLONG_MAX in case when
+	it is undefined.
+	* src/Util.cc (ULLONG_MAX)
+
 2008-05-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added epoll support. Use epoll if it is available. If not, use select.

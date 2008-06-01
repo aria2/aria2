@@ -61,6 +61,11 @@
 # endif // HAVE_WINSOCK_H
 #endif // HAVE_SLEEP
 
+// For libc6 which doesn't define ULLONG_MAX properly because of broken limits.h
+#ifndef ULLONG_MAX
+# define ULLONG_MAX 18446744073709551615ULL
+#endif // ULLONG_MAX
+
 namespace aria2 {
 
 const std::string Util::DEFAULT_TRIM_CHARSET("\r\n\t ");
