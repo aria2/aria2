@@ -133,47 +133,50 @@ std::string MultiDiskAdaptor::getTopDirPath() const
   return storeDir+"/"+topDir;
 }
 
-void MultiDiskAdaptor::mkdir() const
+void MultiDiskAdaptor::mkdir(const std::string& topDirPath) const
 {
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    (*itr)->setupDir(getTopDirPath());
+    (*itr)->setupDir(topDirPath);
   }
 }
 
 void MultiDiskAdaptor::openFile()
 {
-  mkdir();
+  const std::string topDirPath = getTopDirPath();
+  mkdir(topDirPath);
   resetDiskWriterEntries();
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end(); itr++) {
-    (*itr)->openFile(getTopDirPath());
+      itr != diskWriterEntries.end(); ++itr) {
+    (*itr)->openFile(topDirPath);
   }
 }
 
 void MultiDiskAdaptor::initAndOpenFile()
 {
-  mkdir();
+  const std::string topDirPath = getTopDirPath();
+  mkdir(topDirPath);
   resetDiskWriterEntries();
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end(); itr++) {
-    (*itr)->initAndOpenFile(getTopDirPath());
+      itr != diskWriterEntries.end(); ++itr) {
+    (*itr)->initAndOpenFile(topDirPath);
   }
 }
 
 void MultiDiskAdaptor::openExistingFile()
 {
+  const std::string topDirPath = getTopDirPath();
   resetDiskWriterEntries();
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end(); itr++) {
-    (*itr)->openExistingFile(getTopDirPath());
+      itr != diskWriterEntries.end(); ++itr) {
+    (*itr)->openExistingFile(topDirPath);
   }
 }
 
 void MultiDiskAdaptor::closeFile()
 {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end(); itr++) {
+      itr != diskWriterEntries.end(); ++itr) {
     (*itr)->closeFile();
   }
 }

@@ -90,7 +90,7 @@ private:
 
   void resetDiskWriterEntries();
 
-  void mkdir() const;
+  void mkdir(const std::string& topDirPath) const;
 
   std::string getTopDirPath() const;
 public:

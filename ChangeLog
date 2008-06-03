@@ -1,3 +1,11 @@
+2008-06-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Removed repeated call of getTopDirPath(). Instead, call it once and
+	cache the result.
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	(mkdir, openFile, initAndOpenFile, openExistingFile)
+
 2008-06-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed compile error on debian etch.
