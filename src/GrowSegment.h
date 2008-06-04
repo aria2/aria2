@@ -90,6 +90,23 @@ public:
 
   virtual void updateWrittenLength(size_t bytes);
 
+#ifdef ENABLE_MESSAGE_DIGEST
+
+  virtual bool updateHash(size_t begin,
+			  const unsigned char* data, size_t dataLength)
+  {
+    return false;
+  }
+
+  virtual bool isHashCalculated() const
+  {
+    return false;
+  }
+
+  virtual std::string getHashString();
+
+#endif // ENABLE_MESSAGE_DIGEST
+
   virtual void clear();
 
   virtual SharedHandle<Piece> getPiece() const;

@@ -36,12 +36,25 @@
 #include "Util.h"
 #include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
+#include "A2STR.h"
+#include "Util.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "messageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 
-Piece::Piece():index(0), length(0), _blockLength(BLOCK_LENGTH), bitfield(0) {}
+Piece::Piece():index(0), length(0), _blockLength(BLOCK_LENGTH), bitfield(0)
+#ifdef ENABLE_MESSAGE_DIGEST
+	      , _nextBegin(0)
+#endif // ENABLE_MESSAGE_DIGEST
+{}
 
-Piece::Piece(size_t index, size_t length, size_t blockLength):index(index), length(length), _blockLength(blockLength) {
+Piece::Piece(size_t index, size_t length, size_t blockLength):index(index), length(length), _blockLength(blockLength)
+#ifdef ENABLE_MESSAGE_DIGEST
+							     , _nextBegin(0)
+#endif // ENABLE_MESSAGE_DIGEST
+{
   bitfield =
     BitfieldManFactory::getFactoryInstance()->createBitfieldMan(_blockLength, length);
 }
@@ -55,6 +68,11 @@ Piece::Piece(const Piece& piece) {
   } else {
     bitfield = new BitfieldMan(*piece.bitfield);
   }
+#ifdef ENABLE_MESSAGE_DIGEST
+  _nextBegin = piece._nextBegin;
+  // TODO Is this OK?
+  _mdctx = piece._mdctx;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 Piece::~Piece()
@@ -199,5 +217,56 @@ size_t Piece::getCompletedLength()
 {
   return bitfield->getCompletedLength();
 }
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+void Piece::setHashAlgo(const std::string& algo)
+{
+  _hashAlgo = algo;
+}
+
+bool Piece::updateHash(size_t begin, const unsigned char* data, size_t dataLength)
+{
+  if(_hashAlgo.empty()) {
+    return false;
+  }
+  if(begin == _nextBegin && _nextBegin+dataLength <= length) {
+
+    if(_mdctx.isNull()) {
+      _mdctx.reset(new MessageDigestContext());      
+      _mdctx->trySetAlgo(_hashAlgo);
+      _mdctx->digestInit();
+    }
+
+    _mdctx->digestUpdate(data, dataLength);
+    _nextBegin += dataLength;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool Piece::isHashCalculated() const
+{
+  return !_mdctx.isNull() && _nextBegin == length;
+}
+
+// TODO should be getHashString()
+std::string Piece::getHashString()
+{
+  if(_mdctx.isNull()) {
+    return A2STR::NIL;
+  } else {
+    return Util::toHex(_mdctx->digestFinal());
+  }
+}
+
+void Piece::destroyHashContext()
+{
+  _mdctx.reset();
+  _nextBegin = 0;
+}
+
+#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

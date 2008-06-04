@@ -133,12 +133,12 @@ void ADNSEvent::processEvents(int events)
 {
   ares_socket_t readfd;
   ares_socket_t writefd;
-  if(events&EPOLLIN) {
+  if(events&(SocketEntry::EVENT_READ|SocketEntry::EVENT_ERROR|SocketEntry::EVENT_HUP)) {
     readfd = _socket;
   } else {
     readfd = ARES_SOCKET_BAD;
   }
-  if(events&EPOLLOUT) {
+  if(events&(SocketEntry::EVENT_WRITE|SocketEntry::EVENT_ERROR|SocketEntry::EVENT_HUP)) {
     writefd = _socket;
   } else {
     writefd = ARES_SOCKET_BAD;

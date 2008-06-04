@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "GrowSegment.h"
 #include "Piece.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -48,6 +49,15 @@ void GrowSegment::updateWrittenLength(size_t bytes)
   _piece->reconfigure(_writtenLength);
   _piece->setAllBlock();
 }
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+std::string GrowSegment::getHashString()
+{
+  return A2STR::NIL;
+}
+
+#endif // ENABLE_MESSAGE_DIGEST
 
 void GrowSegment::clear()
 {

@@ -68,14 +68,21 @@ DownloadCommand::DownloadCommand(int cuid,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
   AbstractCommand(cuid, req, requestGroup, e, s)
+#ifdef ENABLE_MESSAGE_DIGEST
+  , _pieceHashValidationEnabled(false)
+#endif // ENABLE_MESSAGE_DIGEST
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    std::string algo = _requestGroup->getDownloadContext()->getPieceHashAlgo();
-    if(MessageDigestContext::supports(algo)) {
-      _messageDigestContext.reset(new MessageDigestContext());
-      _messageDigestContext->trySetAlgo(algo);
-      _messageDigestContext->digestInit();
+    if(e->option->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
+      std::string algo = _requestGroup->getDownloadContext()->getPieceHashAlgo();
+      if(MessageDigestContext::supports(algo)) {
+	_messageDigestContext.reset(new MessageDigestContext());
+	_messageDigestContext->trySetAlgo(algo);
+	_messageDigestContext->digestInit();
+	
+	_pieceHashValidationEnabled = true;
+      }
     }
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -116,7 +123,17 @@ bool DownloadCommand::executeInternal() {
     _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData(buf, bufSize,
 								  segment->getPositionToWrite());
     //logger->debug("bufSize = %d, posToWrite = %lld", bufSize, segment->getPositionToWrite());
+#ifdef ENABLE_MESSAGE_DIGEST
+
+    if(_pieceHashValidationEnabled) {
+      segment->updateHash(segment->getWrittenLength(), buf, bufSize);
+    }
+
+#endif // ENABLE_MESSAGE_DIGEST
+
     segment->updateWrittenLength(bufSize);
+
+
     //logger->debug("overflow length = %d, next posToWrite = %lld", segment->getOverflowLength(), segment->getPositionToWrite());
     //logger->debug("%s", Util::toHex(segment->getPiece()->getBitfield(),
     //segment->getPiece()->getBitfieldLength()).c_str());
@@ -128,7 +145,17 @@ bool DownloadCommand::executeInternal() {
     transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
     _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData(infbuf, infbufSize,
 								  segment->getPositionToWrite());
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+    if(_pieceHashValidationEnabled) {
+      segment->updateHash(segment->getWrittenLength(), infbuf, infbufSize);
+    }
+
+#endif // ENABLE_MESSAGE_DIGEST
+
     segment->updateWrittenLength(infbufSize);
+
     //segment->writtenLength += infbufSize;
     peerStat->updateDownloadLength(infbufSize);
   }
@@ -140,7 +167,36 @@ bool DownloadCommand::executeInternal() {
      || bufSize == 0) {
     if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
-    validatePieceHash(segment);
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+    {
+      std::string expectedPieceHash =
+	_requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
+      if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
+	if(segment->isHashCalculated()) {
+	  logger->debug("Hash is available! index=%zu", segment->getIndex());
+	  validatePieceHash(segment, expectedPieceHash, segment->getHashString());
+	} else {
+	  _messageDigestContext->digestReset();
+	  validatePieceHash(segment, expectedPieceHash,
+			    MessageDigestHelper::digest
+			    (_messageDigestContext.get(),
+			     _requestGroup->getPieceStorage()->getDiskAdaptor(),
+			     segment->getPosition(),
+			     segment->getLength()));
+	}
+      } else {
+	_requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+      }
+    }
+
+#else // !ENABLE_MESSAGE_DIGEST
+
+    _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+
+#endif // !ENABLE_MESSAGE_DIGEST
+
     checkLowestDownloadSpeed();
     // this unit is going to download another segment.
     return prepareForNextSegment();
@@ -195,40 +251,29 @@ bool DownloadCommand::prepareForNextSegment() {
   }
 }
 
-void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
-{
 #ifdef ENABLE_MESSAGE_DIGEST
-  std::string expectedPieceHash =
-    _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
-  if(!_messageDigestContext.isNull() &&
-     e->option->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM) &&
-     !expectedPieceHash.empty()) {
-    _messageDigestContext->digestReset();
-    std::string actualPieceHash =
-      MessageDigestHelper::digest(_messageDigestContext.get(),
-				  _requestGroup->getPieceStorage()->getDiskAdaptor(),
-				  segment->getPosition(),
-				  segment->getLength());
-    if(actualPieceHash == expectedPieceHash) {
-      logger->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
-      _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
-    } else {
-      logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		   segment->getIndex(),
-		   Util::itos(segment->getPosition(), true).c_str(),
-		   expectedPieceHash.c_str(),
-		   actualPieceHash.c_str());
-      segment->clear();
-      _requestGroup->getSegmentMan()->cancelSegment(cuid);
-      throw DlRetryEx
-	(StringFormat("Invalid checksum index=%d", segment->getIndex()).str());
-    }
-  } else
-#endif // ENABLE_MESSAGE_DIGEST
-    {
-      _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
-    }
+
+void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
+					const std::string& expectedPieceHash,
+					const std::string& actualPieceHash)
+{
+  if(actualPieceHash == expectedPieceHash) {
+    logger->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
+    _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+  } else {
+    logger->info(EX_INVALID_CHUNK_CHECKSUM,
+		 segment->getIndex(),
+		 Util::itos(segment->getPosition(), true).c_str(),
+		 expectedPieceHash.c_str(),
+		 actualPieceHash.c_str());
+    segment->clear();
+    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+    throw DlRetryEx
+      (StringFormat("Invalid checksum index=%d", segment->getIndex()).str());
+  }
 }
+
+#endif // ENABLE_MESSAGE_DIGEST
 
 void DownloadCommand::setTransferDecoder(const TransferEncodingHandle& transferDecoder)
 {

@@ -82,6 +82,18 @@ public:
 
   virtual void updateWrittenLength(size_t bytes);
 
+#ifdef ENABLE_MESSAGE_DIGEST
+
+  // `begin' is a offset inside this segment.
+  virtual bool updateHash(size_t begin,
+			  const unsigned char* data, size_t dataLength);
+
+  virtual bool isHashCalculated() const;
+
+  virtual std::string getHashString();
+
+#endif // ENABLE_MESSAGE_DIGEST
+
   virtual void clear();
 
   virtual SharedHandle<Piece> getPiece() const;

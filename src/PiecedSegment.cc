@@ -90,11 +90,37 @@ void PiecedSegment::updateWrittenLength(size_t bytes)
   _writtenLength = newWrittenLength;
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
+
+bool PiecedSegment::updateHash(size_t begin,
+			       const unsigned char* data, size_t dataLength)
+{
+  return _piece->updateHash(begin, data, dataLength);
+}
+
+bool PiecedSegment::isHashCalculated() const
+{
+  return _piece->isHashCalculated();
+}
+
+std::string PiecedSegment::getHashString()
+{
+  return _piece->getHashString();
+}
+
+#endif // ENABLE_MESSAGE_DIGEST
+
 void PiecedSegment::clear()
 {
   _writtenLength = 0;
   _overflowLength = 0;
   _piece->clearAllBlock();
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+  _piece->destroyHashContext();
+
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 PieceHandle PiecedSegment::getPiece() const

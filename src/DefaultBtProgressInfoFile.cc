@@ -280,6 +280,13 @@ void DefaultBtProgressInfoFile::load()
 	savedBitfield = new unsigned char[bitfieldLength];
 	in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
 	piece->setBitfield(savedBitfield, bitfieldLength);
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+	piece->setHashAlgo(_dctx->getPieceHashAlgo());
+
+#endif // ENABLE_MESSAGE_DIGEST
+
 	delete [] savedBitfield;
 	savedBitfield = 0;
 	

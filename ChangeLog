@@ -1,5 +1,26 @@
 2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Calculate piece hash when data is arrived if the data is arrived in
+	order. This removes additional read operation for hash calculation.
+	If the data is arrived in out of order, the hash is calucated when the
+	piece is completed. This is the same behavior as the old implementation.
+	* src/BtPieceMessage.cc
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/DownloadEngine.cc
+	* src/GrowSegment.cc
+	* src/GrowSegment.h
+	* src/Piece.cc
+	* src/Piece.h
+	* src/PiecedSegment.cc
+	* src/PiecedSegment.h
+	* src/Segment.h
+	* test/PieceTest.cc
+	
+2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Try to keep the ordering of outgoing piece message.
 	* src/DefaultBtMessageDispatcher.cc
 	(DefaultBtMessageDispatcher::sendMessages)

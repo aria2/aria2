@@ -40,6 +40,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <deque>
+#include <string>
 
 namespace aria2 {
 
@@ -66,6 +67,18 @@ public:
   virtual size_t getOverflowLength() const = 0;
 
   virtual void updateWrittenLength(size_t bytes) = 0;
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+  // `begin' is a offset inside this segment.
+  virtual bool updateHash(size_t begin,
+			  const unsigned char* data, size_t dataLength) = 0;
+
+  virtual bool isHashCalculated() const = 0;
+
+  virtual std::string getHashString() = 0;
+
+#endif // ENABLE_MESSAGE_DIGEST
 
   virtual void clear() = 0;
 

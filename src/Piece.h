@@ -45,12 +45,29 @@ namespace aria2 {
 
 class BitfieldMan;
 
+#ifdef ENABLE_MESSAGE_DIGEST
+
+class MessageDigestContext;
+
+#endif // ENABLE_MESSAGE_DIGEST
+
 class Piece {
 private:
   size_t index;
   size_t length;
   size_t _blockLength;
   BitfieldMan* bitfield;
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+  size_t _nextBegin;
+
+  std::string _hashAlgo;
+
+  SharedHandle<MessageDigestContext> _mdctx;
+
+#endif // ENABLE_MESSAGE_DIGEST
+
 public:
 
   static const size_t BLOCK_LENGTH  = 16*1024;
@@ -115,6 +132,25 @@ public:
 
   // Calculates completed length
   size_t getCompletedLength();
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+  void setHashAlgo(const std::string& algo);
+
+  // Updates hash value. This function compares begin and private variable
+  // _nextBegin and only when they are equal, hash is updated eating data and
+  // returns true. Otherwise returns false.
+  bool updateHash(size_t begin, const unsigned char* data, size_t dataLength);
+
+  bool isHashCalculated() const;
+
+  // Returns hash value in ASCII hexadecimal form.
+  // WARN: This function must be called only once.
+  std::string getHashString();
+
+  void destroyHashContext();
+
+#endif // ENABLE_MESSAGE_DIGEST
 
   /**
    * Loses current bitfield state.

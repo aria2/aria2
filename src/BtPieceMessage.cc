@@ -97,6 +97,7 @@ void BtPieceMessage::doReceivedAction() {
     logger->debug(MSG_PIECE_BITFIELD, cuid,
 		  Util::toHex(piece->getBitfield(),
 			      piece->getBitfieldLength()).c_str());
+    piece->updateHash(begin, block, blockLength);
     dispatcher->removeOutstandingRequest(slot);
     if(piece->pieceComplete()) {
       if(checkPieceHash(piece)) {
@@ -202,10 +203,15 @@ std::string BtPieceMessage::toString() const {
 }
 
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
-  off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();
-  
-  return MessageDigestHelper::staticSHA1Digest(pieceStorage->getDiskAdaptor(), offset, piece->getLength())
-    == btContext->getPieceHash(piece->getIndex());
+  if(piece->isHashCalculated()) {
+    logger->debug("Hash is available!! index=%zu", piece->getIndex());
+    return piece->getHashString() == btContext->getPieceHash(piece->getIndex());
+  } else {
+    off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();
+    
+    return MessageDigestHelper::staticSHA1Digest(pieceStorage->getDiskAdaptor(), offset, piece->getLength())
+      == btContext->getPieceHash(piece->getIndex());
+  }
 }
 
 void BtPieceMessage::onNewPiece(const PieceHandle& piece) {
@@ -218,6 +224,7 @@ void BtPieceMessage::onWrongPiece(const PieceHandle& piece) {
   logger->info(MSG_GOT_WRONG_PIECE, cuid, piece->getIndex());
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
+  piece->destroyHashContext();
   requestFactory->removeTargetPiece(piece);
 }
 

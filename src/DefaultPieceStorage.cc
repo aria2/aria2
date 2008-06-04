@@ -115,6 +115,13 @@ PieceHandle DefaultPieceStorage::checkOutPiece(size_t index)
   PieceHandle piece = findUsedPiece(index);
   if(piece.isNull()) {
     piece.reset(new Piece(index, bitfieldMan->getBlockLength(index)));
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+    piece->setHashAlgo(downloadContext->getPieceHashAlgo());
+
+#endif // ENABLE_MESSAGE_DIGEST
+
     addUsedPiece(piece);
     return piece;
   } else {
@@ -548,9 +555,17 @@ void DefaultPieceStorage::markPiecesDone(uint64_t length)
     size_t r = (length%bitfieldMan->getBlockLength())/Piece::BLOCK_LENGTH;
     if(r > 0) {
       PieceHandle p(new Piece(numPiece, bitfieldMan->getBlockLength(numPiece)));
+      
       for(size_t i = 0; i < r; ++i) {
 	p->completeBlock(i);
       }
+
+#ifdef ENABLE_MESSAGE_DIGEST
+
+      p->setHashAlgo(downloadContext->getPieceHashAlgo());
+
+#endif // ENABLE_MESSAGE_DIGEST
+
       addUsedPiece(p);
     }
   }
