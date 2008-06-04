@@ -105,6 +105,7 @@ bool AbstractCommand::execute() {
     }
     if((checkSocketIsReadable && _readEvent) ||
        (checkSocketIsWritable && _writeEvent) ||
+       _errorEvent ||
 #ifdef ENABLE_ASYNC_DNS
        (nameResolverCheck && nameResolveFinished()) ||
 #endif // ENABLE_ASYNC_DNS
