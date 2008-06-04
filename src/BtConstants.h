@@ -51,6 +51,4 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define DEFAULT_LATENCY 1500
 
-#define SLOW_SPEED_THRESHOLD (50*1024)
-
 #endif // _D_BT_CONSTANTS_

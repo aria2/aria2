@@ -247,6 +247,8 @@ const std::string V_PLAIN("plain");
 const std::string V_ARC4("arc4");
 // values:: true | false
 const std::string PREF_BT_REQUIRE_CRYPTO("bt-require-crypto");
+// values: 1*digit
+const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT("bt-request-peer-speed-limit");
 
 /**
  * Metalink related preferences

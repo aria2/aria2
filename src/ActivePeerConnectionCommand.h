@@ -68,11 +68,6 @@ public:
 
   void connectToPeer(const SharedHandle<Peer>& peer);
 
-  void setThresholdSpeed(unsigned int speed)
-  {
-    _thresholdSpeed = speed;
-  }
-
   void setNumNewConnection(size_t numNewConnection)
   {
     _numNewConnection = numNewConnection;

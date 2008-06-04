@@ -274,6 +274,11 @@ _(" --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
   "                              establish connection with legacy BitTorrent\n"\
   "                              handshake. Thus aria2 always uses Obfuscation\n"\
   "                              handshake.")
+#define TEXT_BT_REQUEST_PEER_SPEED_LIMIT \
+_(" --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the download\n"\
+  "                              speed is lower than SPEED, aria2 initiates and\n"\
+  "                              accepts connections ignoring max peer cap.\n"\
+  "                              You can append K or M(1K = 1024, 1M = 1024K).")
 #define TEXT_METALINK_FILE \
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \

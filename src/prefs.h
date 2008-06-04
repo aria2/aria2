@@ -251,6 +251,8 @@ extern const std::string V_PLAIN;
 extern const std::string V_ARC4;
 // values:: true | false
 extern const std::string PREF_BT_REQUIRE_CRYPTO;
+// values: 1*digit
+extern const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT;
 
 /**
  * Metalink related preferences

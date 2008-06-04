@@ -63,7 +63,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(int32_t cuid,
 							 const SharedHandle<PeerConnection>& peerConnection):
   PeerAbstractCommand(cuid, peer, e, s),
   _peerConnection(peerConnection),
-  _thresholdSpeed(SLOW_SPEED_THRESHOLD)
+  _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT))
 {
   if(_peerConnection.isNull()) {
     _peerConnection.reset(new PeerConnection(cuid, socket, e->option));

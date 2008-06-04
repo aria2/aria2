@@ -374,6 +374,13 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
+  {
+    HelpItemHandle item(new HelpItem(PREF_BT_REQUEST_PEER_SPEED_LIMIT,
+				     TEXT_BT_REQUEST_PEER_SPEED_LIMIT,
+				     op->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT)));
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   {

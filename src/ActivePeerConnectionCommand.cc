@@ -60,7 +60,7 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
    RequestGroupAware(requestGroup),
    interval(interval),
    e(e),
-   _thresholdSpeed(SLOW_SPEED_THRESHOLD),
+   _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT)),
    _numNewConnection(5)
 {
   unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
