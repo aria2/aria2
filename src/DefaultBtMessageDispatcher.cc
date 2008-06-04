@@ -98,7 +98,17 @@ void DefaultBtMessageDispatcher::sendMessages() {
       break;
     }
   }
-  messageQueue.insert(messageQueue.end(), tempQueue.begin(), tempQueue.end());
+  if(!tempQueue.empty()) {
+    // Insert pending message to the front, so that message is likely sent in
+    // the same order as it is queued.
+    if(!messageQueue.empty() && messageQueue.front()->isSendingInProgress()) {
+      messageQueue.insert(messageQueue.begin()+1,
+			  tempQueue.begin(), tempQueue.end());
+    } else {
+      messageQueue.insert(messageQueue.begin(),
+			  tempQueue.begin(), tempQueue.end());
+    }
+  }
 }
 
 class HandleEvent {

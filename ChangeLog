@@ -1,5 +1,11 @@
 2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Try to keep the ordering of outgoing piece message.
+	* src/DefaultBtMessageDispatcher.cc
+	(DefaultBtMessageDispatcher::sendMessages)
+
+2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed busy loop when error/hup epoll events occur.
 	* src/AbstractCommand.cc
 	* src/PeerAbstractCommand.cc
