@@ -1,3 +1,8 @@
+2008-06-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Use interval as a minInterval when minInterval is not supplied.
+	* src/DefaultBtAnnounce.cc
+
 2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Made DEFAULT_ANNOUNCE_INTERVAL 120, so that if first tracker request

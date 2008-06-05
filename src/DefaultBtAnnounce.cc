@@ -238,8 +238,11 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
       minInterval = minIntervalData->toInt();
       logger->debug("Min interval:%d", minInterval);
     }
-  }
-  if(minInterval > interval) {
+    if(minInterval > interval) {
+      minInterval = interval;
+    }
+  } else {
+    // Use interval as a minInterval if minInterval is not supplied.
     minInterval = interval;
   }
   const Data* completeData =
