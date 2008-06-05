@@ -40,8 +40,6 @@
 
 namespace aria2 {
 
-#define MIN_PEERS 40
-
 class BtRuntime {
 private:
   uint64_t uploadLengthAtStartup;
@@ -49,6 +47,9 @@ private:
   bool halt;
   unsigned int connections;
   bool _ready;
+
+  static const unsigned int MIN_PEERS = 40;
+
 public:
   BtRuntime():
     uploadLengthAtStartup(0),
@@ -86,13 +87,17 @@ public:
 
   void decreaseConnections() { connections--; }
 
-  bool lessThanMinPeer() const { return connections < MIN_PEERS; }
+  bool lessThanMaxPeers() const { return connections < MAX_PEERS; }
 
-  bool lessThanEqMinPeer() const { return connections <= MIN_PEERS; }
+  bool lessThanMinPeers() const { return connections < MIN_PEERS; }
+
+  bool lessThanEqMinPeers() const { return connections <= MIN_PEERS; }
 
   bool ready() { return _ready; }
 
   void setReady(bool go) { _ready = go; }
+
+  static const unsigned int MAX_PEERS = 55;
 };
 
 typedef SharedHandle<BtRuntime> BtRuntimeHandle;

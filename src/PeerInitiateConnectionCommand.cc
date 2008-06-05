@@ -93,7 +93,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
-  if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
+  if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeers()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
     peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
     Command* command =

@@ -45,10 +45,6 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define INFO_HASH_LENGTH 20
 
-#define MAX_PEER_ERROR 5
-
-#define MAX_PEERS 55
-
 #define DEFAULT_LATENCY 1500
 
 #endif // _D_BT_CONSTANTS_

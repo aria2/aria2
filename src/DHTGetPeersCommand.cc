@@ -77,7 +77,7 @@ bool DHTGetPeersCommand::execute()
     _taskQueue->addPeriodicTask2(_task);
   } else if(!_task.isNull() && _task->finished()) {
     _lastGetPeerTime.reset();
-    if(_numRetry < MAX_RETRIES && btRuntime->lessThanEqMinPeer()) {
+    if(_numRetry < MAX_RETRIES && btRuntime->lessThanMinPeers()) {
       ++_numRetry;
     } else {
       _numRetry = 0;

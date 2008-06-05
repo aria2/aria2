@@ -79,7 +79,7 @@ bool ActivePeerConnectionCommand::execute() {
     checkPoint.reset();
     TransferStat tstat = peerStorage->calculateStat();
     if(tstat.getDownloadSpeed() < _thresholdSpeed ||
-       btRuntime->lessThanMinPeer()) {
+       btRuntime->lessThanMinPeers()) {
       for(size_t numAdd = _numNewConnection;
 	  numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = peerStorage->getUnusedPeer();

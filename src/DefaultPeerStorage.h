@@ -39,9 +39,6 @@
 
 namespace aria2 {
 
-#define MAX_PEER_LIST_SIZE 60
-#define MAX_PEER_ERROR 5
-
 class BtContext;
 class Option;
 class Logger;
@@ -54,9 +51,9 @@ private:
   SharedHandle<BtContext> btContext;
   const Option* option;
   std::deque<SharedHandle<Peer> > peers;
-  size_t maxPeerListSize;
   Logger* logger;
   SharedHandle<BtRuntime> btRuntime;
+  size_t maxPeerListSize;
   uint64_t removedPeerSessionDownloadLength;
   uint64_t removedPeerSessionUploadLength;
 

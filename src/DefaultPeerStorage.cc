@@ -52,15 +52,14 @@ DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
 				       const Option* option):
   btContext(btContext),
   option(option),
-  maxPeerListSize(MAX_PEER_LIST_SIZE),
+  logger(LogFactory::getInstance()),
   btRuntime(BT_RUNTIME(btContext)),
+  maxPeerListSize(btRuntime->MAX_PEERS+(btRuntime->MAX_PEERS >> 2)),
   removedPeerSessionDownloadLength(0),
   removedPeerSessionUploadLength(0),
   _seederStateChoke(new BtSeederStateChoke(btContext)),
   _leecherStateChoke(new BtLeecherStateChoke())
-{
-  logger = LogFactory::getInstance();
-}
+{}
 
 DefaultPeerStorage::~DefaultPeerStorage()
 {

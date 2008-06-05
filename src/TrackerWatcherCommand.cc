@@ -142,7 +142,7 @@ void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerRes
 {
   btAnnounce->processAnnounceResponse(reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
 				      trackerResponse.size());
-  while(!btRuntime->isHalt() && btRuntime->lessThanMinPeer()) {
+  while(!btRuntime->isHalt() && btRuntime->lessThanMinPeers()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
     if(peer.isNull()) {
       break;

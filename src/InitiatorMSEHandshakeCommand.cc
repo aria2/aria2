@@ -147,7 +147,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
   if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     logger->info("CUID#%d - Establishing connection using legacy BitTorrent handshake is disabled by preference.", cuid);
-    if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
+    if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeers()) {
       SharedHandle<Peer> peer = peerStorage->getUnusedPeer();
       peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
       Command* command =

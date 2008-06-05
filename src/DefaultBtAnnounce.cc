@@ -132,7 +132,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     return A2STR::NIL;
   }
   unsigned int numWant = 50;
-  if(!btRuntime->lessThanEqMinPeer() || btRuntime->isHalt()) {
+  if(!btRuntime->lessThanMinPeers() || btRuntime->isHalt()) {
     numWant = 0;
   }
   TransferStat stat = peerStorage->calculateStat();
@@ -257,7 +257,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   const MetaEntry* peersEntry = response->get(BtAnnounce::PEERS);
   if(peersEntry &&
      !btRuntime->isHalt() &&
-     btRuntime->lessThanMinPeer()) {
+     btRuntime->lessThanMinPeers()) {
     DelegatingPeerListProcessor proc;
     std::deque<SharedHandle<Peer> > peers;
     proc.extractPeer(peers, peersEntry);
