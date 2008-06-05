@@ -225,7 +225,7 @@ void Piece::setHashAlgo(const std::string& algo)
   _hashAlgo = algo;
 }
 
-bool Piece::updateHash(size_t begin, const unsigned char* data, size_t dataLength)
+bool Piece::updateHash(uint32_t begin, const unsigned char* data, size_t dataLength)
 {
   if(_hashAlgo.empty()) {
     return false;

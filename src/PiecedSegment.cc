@@ -92,7 +92,7 @@ void PiecedSegment::updateWrittenLength(size_t bytes)
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-bool PiecedSegment::updateHash(size_t begin,
+bool PiecedSegment::updateHash(uint32_t begin,
 			       const unsigned char* data, size_t dataLength)
 {
   return _piece->updateHash(begin, data, dataLength);

@@ -140,7 +140,7 @@ public:
   // Updates hash value. This function compares begin and private variable
   // _nextBegin and only when they are equal, hash is updated eating data and
   // returns true. Otherwise returns false.
-  bool updateHash(size_t begin, const unsigned char* data, size_t dataLength);
+  bool updateHash(uint32_t begin, const unsigned char* data, size_t dataLength);
 
   bool isHashCalculated() const;
 

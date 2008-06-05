@@ -71,7 +71,7 @@ public:
 #ifdef ENABLE_MESSAGE_DIGEST
 
   // `begin' is a offset inside this segment.
-  virtual bool updateHash(size_t begin,
+  virtual bool updateHash(uint32_t begin,
 			  const unsigned char* data, size_t dataLength) = 0;
 
   virtual bool isHashCalculated() const = 0;
