@@ -41,8 +41,6 @@
 
 namespace aria2 {
 
-#define DEFAULT_ANNOUNCE_INTERVAL 1800
-
 class BtContext;
 class Option;
 class Logger;
@@ -69,6 +67,9 @@ private:
   SharedHandle<BtRuntime> btRuntime;
   SharedHandle<PieceStorage> pieceStorage;
   SharedHandle<PeerStorage> peerStorage;
+
+  static const unsigned int DEFAULT_ANNOUNCE_INTERVAL = 120;
+
 public:
   DefaultBtAnnounce(const SharedHandle<BtContext>& btContext,
 		    const Option* option);

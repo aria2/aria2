@@ -1,5 +1,12 @@
 2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made DEFAULT_ANNOUNCE_INTERVAL 120, so that if first tracker request
+	attempt is failed, then 2nd attempt get kicked out more quickly.
+	And it is now static const member of DefaultBtAnnounce.
+	* src/DefaultBtAnnounce.h
+
+2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Renamed BtRuntime::lessThanMinPeers() and BtRuntime::lessThanEqMinPeers.
 	Made MAX_PEERS and MIN_PEERS static const members of BtRuntime.
 	* src/ActivePeerConnectionCommand.cc
