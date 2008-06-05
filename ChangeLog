@@ -1,5 +1,10 @@
 2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Always Connect to _numNewConnection 
+	* src/ActivePeerConnectionCommand.cc 
+
+2008-06-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made `begin' unsigned int.
 	* src/GrowSegment.h
 	* src/Piece.cc
