@@ -259,8 +259,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @HAVE_BASENAME_FALSE@am__append_7 = libgen.c libgen.h
 @HAVE_GETADDRINFO_FALSE@am__append_8 = getaddrinfo.c getaddrinfo.h
 @HAVE_GAI_STRERROR_FALSE@am__append_9 = gai_strerror.c gai_strerror.h
-@HAVE_GETTIMEOFDAY_FALSE@am__append_10 = gettimeofday.c gettimeofday.h \
-@HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.c gettimeofday.h
+@HAVE_GETTIMEOFDAY_FALSE@am__append_10 = gettimeofday.c gettimeofday.h
 @HAVE_INET_ATON_FALSE@am__append_11 = inet_aton.c inet_aton.h
 @HAVE_LOCALTIME_R_FALSE@am__append_12 = localtime_r.c localtime_r.h
 @HAVE_STRPTIME_FALSE@am__append_13 = strptime.c strptime.h
@@ -718,8 +717,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @HAVE_BASENAME_FALSE@am__objects_7 = libgen.$(OBJEXT)
 @HAVE_GETADDRINFO_FALSE@am__objects_8 = getaddrinfo.$(OBJEXT)
 @HAVE_GAI_STRERROR_FALSE@am__objects_9 = gai_strerror.$(OBJEXT)
-@HAVE_GETTIMEOFDAY_FALSE@am__objects_10 = gettimeofday.$(OBJEXT) \
-@HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.$(OBJEXT)
+@HAVE_GETTIMEOFDAY_FALSE@am__objects_10 = gettimeofday.$(OBJEXT)
 @HAVE_INET_ATON_FALSE@am__objects_11 = inet_aton.$(OBJEXT)
 @HAVE_LOCALTIME_R_FALSE@am__objects_12 = localtime_r.$(OBJEXT)
 @HAVE_STRPTIME_FALSE@am__objects_13 = strptime.$(OBJEXT)
