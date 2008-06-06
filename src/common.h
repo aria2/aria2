@@ -61,5 +61,7 @@
 
 // use C99 limit macros
 #define __STDC_LIMIT_MACROS
+// included here for compatibility issues with old compiler/libraries.
+#include <stdint.h>
 
 #endif // _D_COMMON_H_

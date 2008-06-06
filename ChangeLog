@@ -1,5 +1,10 @@
 2008-06-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Included stdint.h
+	* src/common.h
+
+2008-06-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed duplicate HAVE_GETTIMEOFDAY
 	* src/Makefile.am
 	* src/Makefile.in
