@@ -47,6 +47,8 @@ class DiskWriterEntry {
 private:
   SharedHandle<FileEntry> fileEntry;
   SharedHandle<DiskWriter> diskWriter;
+  bool _open;
+  bool _directIO;
 public:
   DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry);
 
@@ -62,6 +64,8 @@ public:
 
   void closeFile();
 
+  bool isOpen() const;
+
   bool fileExists(const std::string& topDir);
 
   uint64_t size() const;
@@ -73,6 +77,16 @@ public:
   SharedHandle<DiskWriter> getDiskWriter() const;
 
   bool operator<(const DiskWriterEntry& entry) const;
+
+  // Set _directIO to true.
+  // Additionally, if diskWriter is opened, diskWriter->enableDirectIO() is
+  // called.
+  void enableDirectIO();
+
+  // Set _directIO to false.
+  // Additionally, if diskWriter is opened, diskWriter->disableDirectIO() is
+  // called.
+  void disableDirectIO();
 };
 
 typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
@@ -86,6 +100,10 @@ private:
   size_t pieceLength;
   DiskWriterEntries diskWriterEntries;
 
+  std::string _cachedTopDirPath;
+
+  std::deque<SharedHandle<DiskWriterEntry> > _openedDiskWriterEntries;
+
   bool _directIOAllowed;
 
   void resetDiskWriterEntries();
@@ -93,6 +111,13 @@ private:
   void mkdir(const std::string& topDirPath) const;
 
   std::string getTopDirPath() const;
+
+  void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
+		 void (DiskWriterEntry::*f)(const std::string&),
+		 const std::string& topDirPath);
+ 
+  static const size_t OPEN_FILE_MAX = 100;
+
 public:
   MultiDiskAdaptor();
 

@@ -1,5 +1,13 @@
 2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Limited the number files opened in each BitTorrent download. The default
+	value is 100. The option to change this value will be added.
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/MultiFileAllocationIterator.cc
+
+2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that HTTP downloads don't start with old libraries.
 	* src/HttpHeaderProcessor.cc
 	
