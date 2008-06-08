@@ -64,6 +64,7 @@ void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
   if((size_t)strm.tellg()+incomingLength > _limit) {
     throw DlAbortEx("Too large http header");
   }
+  strm.clear();
 }
 
 bool HttpHeaderProcessor::eoh() const
@@ -107,6 +108,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
   httpHeader->setResponseStatus(line.substr(9, 3));
   httpHeader->setVersion(line.substr(0, 8));
   httpHeader->fill(strm);
+  strm.clear();
   return httpHeader;
 }
 
