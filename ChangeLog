@@ -1,5 +1,11 @@
 2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that aria2 aborts when a path to a directory is given
+	in command-line.
+	* src/ProtocolDetector.cc
+	
+2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Limited the number files opened in each BitTorrent download. The default
 	value is 100. The option to change this value will be added.
 	* src/MultiDiskAdaptor.cc

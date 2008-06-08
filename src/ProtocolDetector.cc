@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "ProtocolDetector.h"
 #include "Request.h"
+#include "File.h"
 #include <cstring>
 #include <fstream>
 #include <iomanip>
@@ -51,6 +52,9 @@ bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
 
 bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
 {
+  if(!File(uri).isFile()) {
+    return false;
+  }
   std::ifstream in(uri.c_str());
   if(in) {
     char head;
@@ -63,6 +67,9 @@ bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
 
 bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
 {
+  if(!File(uri).isFile()) {
+    return false;
+  }
   std::ifstream in(uri.c_str());
   if(in) {
     char head[6];
