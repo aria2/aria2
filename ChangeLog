@@ -1,5 +1,10 @@
 2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use empty() instead of size() > 0.
+	* src/HttpConnection.cc
+	
+2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Drop connection if the incoming peer ID is the same with localhost's
 	one. The previous implementation drops connection when incoming peer's
 	IP address is the same with localhost's one.

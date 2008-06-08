@@ -112,7 +112,7 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 
 HttpResponseHandle HttpConnection::receiveResponse()
 {
-  if(outstandingHttpRequests.size() == 0) {
+  if(outstandingHttpRequests.empty()) {
     throw DlAbortEx(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
   HttpRequestEntryHandle entry = outstandingHttpRequests.front();
