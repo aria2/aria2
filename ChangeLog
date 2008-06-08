@@ -1,5 +1,13 @@
 2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Drop connection if the incoming peer ID is the same with localhost's
+	one. The previous implementation drops connection when incoming peer's
+	IP address is the same with localhost's one.
+	* src/PeerListenCommand.cc
+	* src/DefaultBtInteractive.cc
+
+2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Returns cached data without checking whether socket is readable
 	if the cache is available.
 	* src/PeerConnection.cc (receiveHandshake)

@@ -65,6 +65,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "StringFormat.h"
+#include <cstring>
 
 namespace aria2 {
 
@@ -97,6 +98,10 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   if(message.isNull()) {
     return SharedHandle<BtMessage>();
   }
+  if(memcmp(message->getPeerId(), btContext->getPeerId(), PEER_ID_LENGTH) == 0) {
+    throw DlAbortEx(StringFormat("CUID#%d - Drop connection from the same Peer ID", cuid).str());
+  }
+
   peer->setPeerId(message->getPeerId());
     
   if(message->isFastExtensionSupported()) {

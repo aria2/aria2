@@ -96,12 +96,7 @@ bool PeerListenCommand::execute() {
       peerSocket.reset(socket->acceptConnection());
       std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
-      std::pair<std::string, uint16_t> localInfo;
-      peerSocket->getAddrInfo(localInfo);
 
-      if(peerInfo.first == localInfo.first) {
-	continue;
-      }
       // Since peerSocket may be in non-blocking mode, make it blocking mode
       // here.
       peerSocket->setBlockingMode();
