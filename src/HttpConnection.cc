@@ -48,6 +48,7 @@
 #include "Logger.h"
 #include "Socket.h"
 #include "Option.h"
+#include <sstream>
 
 namespace aria2 {
 

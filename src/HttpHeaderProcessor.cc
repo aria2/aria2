@@ -39,6 +39,7 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "A2STR.h"
+#include <sstream>
 
 namespace aria2 {
 
@@ -49,28 +50,26 @@ HttpHeaderProcessor::~HttpHeaderProcessor() {}
 void HttpHeaderProcessor::update(const unsigned char* data, size_t length)
 {
   checkHeaderLimit(length);
-  strm.write(reinterpret_cast<const char*>(data), length);
+  _buf += std::string(&data[0], &data[length]);
 }
 
 void HttpHeaderProcessor::update(const std::string& data)
 {
   checkHeaderLimit(data.size());
-  strm << data;
+  _buf += data;
 }
 
 void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
 {
-  strm.seekg(0, std::ios::end);
-  if((size_t)strm.tellg()+incomingLength > _limit) {
+  if(_buf.size()+incomingLength > _limit) {
     throw DlAbortEx("Too large http header");
   }
-  strm.clear();
 }
 
 bool HttpHeaderProcessor::eoh() const
 {
-  std::string str = strm.str();
-  if(str.find("\r\n\r\n") == std::string::npos && str.find("\n\n") == std::string::npos) {
+  if(_buf.find("\r\n\r\n") == std::string::npos &&
+     _buf.find("\n\n") == std::string::npos) {
     return false;
   } else {
     return true;
@@ -79,12 +78,11 @@ bool HttpHeaderProcessor::eoh() const
 
 size_t HttpHeaderProcessor::getPutBackDataLength() const
 {
-  const std::string& str = strm.str();
   std::string::size_type delimpos = std::string::npos;
-  if((delimpos = str.find("\r\n\r\n")) != std::string::npos) {
-    return str.size()-(delimpos+4);
-  } else if((delimpos = str.find("\n\n")) != std::string::npos) {
-    return str.size()-(delimpos+2);
+  if((delimpos = _buf.find("\r\n\r\n")) != std::string::npos) {
+    return _buf.size()-(delimpos+4);
+  } else if((delimpos = _buf.find("\n\n")) != std::string::npos) {
+    return _buf.size()-(delimpos+2);
   } else {
     return 0;
   }
@@ -92,35 +90,35 @@ size_t HttpHeaderProcessor::getPutBackDataLength() const
 
 void HttpHeaderProcessor::clear()
 {
-  strm.str(A2STR::NIL);
+  _buf.erase();
 }
 
 SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
 {
-  strm.seekg(0, std::ios::beg);
-  std::string line;
-  getline(strm, line);  
-  // check HTTP status value
-  if(line.size() <= 12) {
+  std::string::size_type delimpos = std::string::npos;
+  if(((delimpos = _buf.find("\r\n")) == std::string::npos &&
+      (delimpos = _buf.find("\n")) == std::string::npos) ||
+     delimpos < 12) {
     throw DlRetryEx(EX_NO_STATUS_HEADER);
   }
   HttpHeaderHandle httpHeader(new HttpHeader());
-  httpHeader->setResponseStatus(line.substr(9, 3));
-  httpHeader->setVersion(line.substr(0, 8));
+  httpHeader->setVersion(_buf.substr(0, 8));
+  httpHeader->setResponseStatus(_buf.substr(9, 3));
+  std::istringstream strm(_buf);
+  // TODO 1st line(HTTP/1.1 200...) is also send to HttpHeader, but it should
+  // not.
   httpHeader->fill(strm);
-  strm.clear();
   return httpHeader;
 }
 
 std::string HttpHeaderProcessor::getHeaderString() const
 {
-  std::string str = strm.str();
   std::string::size_type delimpos = std::string::npos;
-  if((delimpos = str.find("\r\n\r\n")) != std::string::npos ||
-     (delimpos = str.find("\n\n")) != std::string::npos) {
-    return str.substr(0, delimpos);
+  if((delimpos = _buf.find("\r\n\r\n")) == std::string::npos &&
+     (delimpos = _buf.find("\n\n")) == std::string::npos) {
+    return _buf;
   } else {
-    return str;
+    return _buf.substr(0, delimpos);
   }
 }
 

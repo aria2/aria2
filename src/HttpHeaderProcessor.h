@@ -38,7 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include <utility>
-#include <sstream>
+#include <string>
 
 namespace aria2 {
 
@@ -46,7 +46,7 @@ class HttpHeader;
 
 class HttpHeaderProcessor {
 private:
-  std::stringstream strm;
+  std::string _buf;
   size_t _limit;
 
   void checkHeaderLimit(size_t incomingLength);

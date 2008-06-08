@@ -1,5 +1,11 @@
 2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/HttpHeaderProcessor.cc: Rewritten using std::string as a buffer.
+	* src/HttpHeaderProcessor.h: Rewritten using std::string as a buffer.
+	* src/HttpConnection.cc: Included missing sstream.
+	
+2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added --bt-max-open-files option.
 	* src/DefaultPieceStorage.cc
 	* src/HelpItemFactory.cc
