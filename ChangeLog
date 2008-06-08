@@ -1,5 +1,18 @@
 2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --bt-max-open-files option.
+	* src/DefaultPieceStorage.cc
+	* src/HelpItemFactory.cc
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	
+2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that aria2 aborts when a path to a directory is given
 	in command-line.
 	* src/ProtocolDetector.cc

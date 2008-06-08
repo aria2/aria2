@@ -104,6 +104,8 @@ private:
 
   std::deque<SharedHandle<DiskWriterEntry> > _openedDiskWriterEntries;
 
+  size_t _maxOpenFiles;
+
   bool _directIOAllowed;
 
   void resetDiskWriterEntries();
@@ -116,7 +118,7 @@ private:
 		 void (DiskWriterEntry::*f)(const std::string&),
 		 const std::string& topDirPath);
  
-  static const size_t OPEN_FILE_MAX = 100;
+  static const size_t DEFAULT_MAX_OPEN_FILES = 100;
 
 public:
   MultiDiskAdaptor();
@@ -178,6 +180,8 @@ public:
   {
     _directIOAllowed = b;
   }
+
+  void setMaxOpenFiles(size_t maxOpenFiles);
 };
 
 typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;

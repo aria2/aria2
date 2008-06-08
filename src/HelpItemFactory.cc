@@ -381,6 +381,13 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
+  {
+    HelpItemHandle item(new HelpItem(PREF_BT_MAX_OPEN_FILES,
+				     TEXT_BT_MAX_OPEN_FILES,
+				     op->get(PREF_BT_MAX_OPEN_FILES)));
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   {

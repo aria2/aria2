@@ -444,6 +444,7 @@ void DefaultPieceStorage::initStorage()
       multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
       multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
       multiDiskAdaptor->setTopDir(downloadContext->getName());
+      multiDiskAdaptor->setMaxOpenFiles(option->getAsInt(PREF_BT_MAX_OPEN_FILES));
       this->diskAdaptor = multiDiskAdaptor;
     } else {
       logger->debug("Instantiating CopyDiskAdaptor");

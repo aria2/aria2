@@ -145,7 +145,7 @@ void DiskWriterEntry::disableDirectIO()
 }
 
 MultiDiskAdaptor::MultiDiskAdaptor():
-  pieceLength(0) {}
+  pieceLength(0), _maxOpenFiles(DEFAULT_MAX_OPEN_FILES) {}
 
 MultiDiskAdaptor::~MultiDiskAdaptor() {}
 
@@ -190,7 +190,7 @@ void MultiDiskAdaptor::openIfNot
  
     size_t numOpened = _openedDiskWriterEntries.size();
     (entry.get()->*open)(topDirPath);
-    if(numOpened >= OPEN_FILE_MAX) {
+    if(numOpened >= _maxOpenFiles) {
       // Cache is full. 
       // Choose one DiskWriterEntry randomly and close it.
       size_t index = SimpleRandomizer::getInstance()->getRandomNumber(numOpened);
@@ -384,6 +384,11 @@ void MultiDiskAdaptor::disableDirectIO()
       itr != diskWriterEntries.end(); ++itr) {
     (*itr)->disableDirectIO();
   }
+}
+
+void MultiDiskAdaptor::setMaxOpenFiles(size_t maxOpenFiles)
+{
+  _maxOpenFiles = maxOpenFiles;
 }
 
 } // namespace aria2

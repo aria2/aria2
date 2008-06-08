@@ -144,6 +144,7 @@ Option* createDefaultOption()
   op->put(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
   op->put(PREF_BT_REQUIRE_CRYPTO, V_FALSE);
   op->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT, "51200");
+  op->put(PREF_BT_MAX_OPEN_FILES, "100");
   op->put(PREF_QUIET, V_FALSE);
   op->put(PREF_STOP, "0");
 #ifdef ENABLE_ASYNC_DNS
@@ -254,6 +255,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_BT_MIN_CRYPTO_LEVEL.c_str(), required_argument, &lopt, 30 },
       { PREF_BT_REQUIRE_CRYPTO.c_str(), required_argument, &lopt, 31 },
       { PREF_BT_REQUEST_PEER_SPEED_LIMIT.c_str(), required_argument, &lopt, 32 },
+      { PREF_BT_MAX_OPEN_FILES.c_str(), required_argument, &lopt, 33},
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { PREF_METALINK_FILE.c_str(), required_argument, NULL, 'M' },
@@ -366,6 +368,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 32:
 	cmdstream << PREF_BT_REQUEST_PEER_SPEED_LIMIT << "=" << optarg << "\n";
+	break;
+      case 33:
+	cmdstream << PREF_BT_MAX_OPEN_FILES << "=" << optarg << "\n";
 	break;
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";

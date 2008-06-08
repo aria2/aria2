@@ -279,6 +279,9 @@ _(" --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the download
   "                              speed is lower than SPEED, aria2 initiates and\n"\
   "                              accepts connections ignoring max peer cap.\n"\
   "                              You can append K or M(1K = 1024, 1M = 1024K).")
+#define TEXT_BT_MAX_OPEN_FILES \
+_(" --bt-max-open-files=NUM      Specify maximum number of files to open in each\n"\
+  "                              BitTorrent download.")
 #define TEXT_METALINK_FILE \
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \

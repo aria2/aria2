@@ -253,6 +253,8 @@ extern const std::string V_ARC4;
 extern const std::string PREF_BT_REQUIRE_CRYPTO;
 // values: 1*digit
 extern const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT;
+// values: 1*digit
+extern const std::string PREF_BT_MAX_OPEN_FILES;
 
 /**
  * Metalink related preferences

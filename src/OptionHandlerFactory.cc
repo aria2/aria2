@@ -127,6 +127,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new ParameterOptionHandler(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN, V_ARC4)));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_REQUIRE_CRYPTO)));
   handlers.push_back(SH(new NumberOptionHandler(PREF_BT_REQUEST_PEER_SPEED_LIMIT, 0)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_BT_MAX_OPEN_FILES, 1)));
   handlers.push_back(SH(new CumulativeOptionHandler(PREF_HEADER, "\n")));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_QUIET)));
 #ifdef ENABLE_ASYNC_DNS
