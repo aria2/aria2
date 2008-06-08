@@ -130,24 +130,33 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
 
 bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
 				      bool peek) {
-  size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
-  if(remaining > 0 && !socket->isReadable(0)) {
-    dataLength = 0;
-    return false;
-  }
   bool retval = true;
-  if(remaining > 0) {
-    size_t temp = remaining;
-    readData(resbuf+resbufLength, remaining, _encryptionEnabled);
-    if(remaining == 0) {
-      // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%zu",
-		    cuid, temp);
-      throw DlAbortEx(EX_EOF_FROM_PEER);
+  if(!peek && resbufLength) {
+    // We have data in previous peek.
+    // There is a chance that socket is readable because of EOF, for example,
+    // official bttrack shutdowns socket after sending first 48 bytes of
+    // handshake in its NAT checking.
+    // So if there are data in resbuf, return it without checking socket
+    // status.
+  } else {
+    size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
+    if(remaining > 0 && !socket->isReadable(0)) {
+      dataLength = 0;
+      return false;
     }
-    resbufLength += remaining;
-    if(BtHandshakeMessage::MESSAGE_LENGTH > resbufLength) {
-      retval = false;
+    if(remaining > 0) {
+      size_t temp = remaining;
+      readData(resbuf+resbufLength, remaining, _encryptionEnabled);
+      if(remaining == 0) {
+	// we got EOF
+	logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%zu",
+		      cuid, temp);
+	throw DlAbortEx(EX_EOF_FROM_PEER);
+      }
+      resbufLength += remaining;
+      if(BtHandshakeMessage::MESSAGE_LENGTH > resbufLength) {
+	retval = false;
+      }
     }
   }
   size_t writeLength = std::min(resbufLength, dataLength);
