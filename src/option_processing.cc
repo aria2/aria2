@@ -76,7 +76,7 @@ Option* createDefaultOption()
   Option* op = new Option();
   op->put(PREF_STDOUT_LOG, V_FALSE);
   op->put(PREF_DIR, ".");
-  op->put(PREF_SPLIT, "1");
+  op->put(PREF_SPLIT, "5");
   op->put(PREF_DAEMON, V_FALSE);
   op->put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
   op->put(PREF_LISTEN_PORT, "6881-6999");

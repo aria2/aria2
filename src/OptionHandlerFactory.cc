@@ -86,7 +86,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new DefaultOptionHandler(PREF_DIR)));
   handlers.push_back(SH(new DefaultOptionHandler(PREF_OUT)));
   handlers.push_back(SH(new LogOptionHandler(PREF_LOG)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_SPLIT, 1, 5)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_SPLIT, 1, 16)));
   handlers.push_back(SH(new NumberOptionHandler(PREF_TIMEOUT, 1, 600)));
   handlers.push_back(SH(new NumberOptionHandler(PREF_MAX_TRIES, 0)));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_FTP_PASV)));

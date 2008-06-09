@@ -70,6 +70,7 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
 #endif // HAVE_DAEMON
   {
     HelpItemHandle item(new HelpItem(PREF_SPLIT, TEXT_SPLIT));
+    item->setAvailableValues("1-16");
     item->addTag(TAG_BASIC);
     item->addTag(TAG_HTTP);
     item->addTag(TAG_FTP);

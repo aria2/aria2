@@ -43,11 +43,12 @@ _(" -l, --log=LOG                The file name of the log file. If '-' is\n"\
 #define TEXT_DAEMON \
 _(" -D, --daemon                 Run as daemon.")
 #define TEXT_SPLIT \
-_(" -s, --split=N                Download a file using N connections. N must be\n"\
-  "                              between 1 and 5. This option affects all URLs.\n"\
-  "                              Thus, aria2 connects to each URL with\n"\
-  "                              N connections.\n"\
-  "                              Default: 1")
+_(" -s, --split=N                Download a file using N connections. If more\n"\
+  "                              than N URLs are given, first N URLs are used and\n"\
+  "                              remaining URLs are used for backup. If less than\n"\
+  "                              N URLs are given, some of the URLs are used more\n"\
+  "                              than once so that totaly N connections are made\n"\
+  "                              simultaneously.")
 #define TEXT_RETRY_WAIT \
 _(" --retry-wait=SEC             Set the seconds to wait to retry after an error\n"\
   "                              has occured. Specify a value between 0 and 60.\n"\
