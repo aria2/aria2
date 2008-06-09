@@ -68,6 +68,8 @@ private:
   SharedHandle<ARC4Encryptor> _encryptor;
   SharedHandle<ARC4Decryptor> _decryptor;
 
+  bool _prevPeek;
+
   void readData(unsigned char* data, size_t& length, bool encryption);
 
   void sendData(const unsigned char* data, size_t length, bool encryption);

@@ -59,7 +59,8 @@ PeerConnection::PeerConnection(int32_t cuid,
    resbufLength(0),
    currentPayloadLength(0),
    lenbufLength(0),
-   _encryptionEnabled(false)
+   _encryptionEnabled(false),
+   _prevPeek(false)
 {}
 
 PeerConnection::~PeerConnection() {}
@@ -130,15 +131,19 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
 
 bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
 				      bool peek) {
+  assert(BtHandshakeMessage::MESSAGE_LENGTH >= resbufLength);
   bool retval = true;
-  if(!peek && resbufLength) {
+  if(_prevPeek && !peek && resbufLength) {
     // We have data in previous peek.
     // There is a chance that socket is readable because of EOF, for example,
     // official bttrack shutdowns socket after sending first 48 bytes of
     // handshake in its NAT checking.
     // So if there are data in resbuf, return it without checking socket
     // status.
+    _prevPeek = false;
+    retval = BtHandshakeMessage::MESSAGE_LENGTH <= resbufLength;
   } else {
+    _prevPeek = peek;
     size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
     if(remaining > 0 && !socket->isReadable(0)) {
       dataLength = 0;
