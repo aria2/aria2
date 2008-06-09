@@ -1,3 +1,11 @@
+2008-06-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Included missing iosfwd or ostream header.
+	* src/RequestGroupMan.cc
+	* src/TaggedItem.cc
+	* src/TaggedItem.h
+	* src/Util.cc
+
 2008-06-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/HttpHeaderProcessor.cc: Rewritten using std::string as a buffer.

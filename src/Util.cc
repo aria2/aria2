@@ -53,6 +53,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <sstream>
+#include <ostream>
 #include <algorithm>
 #ifndef HAVE_SLEEP
 # ifdef HAVE_WINSOCK_H

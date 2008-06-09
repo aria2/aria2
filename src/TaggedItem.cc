@@ -36,6 +36,7 @@
 #include "a2functional.h"
 #include "A2STR.h"
 #include <algorithm>
+#include <ostream>
 
 namespace aria2 {
 

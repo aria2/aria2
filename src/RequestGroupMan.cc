@@ -44,6 +44,7 @@
 #include "DownloadResult.h"
 #include <iomanip>
 #include <sstream>
+#include <ostream>
 #include <numeric>
 #include <algorithm>
 

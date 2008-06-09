@@ -39,6 +39,7 @@
 #include "SharedHandle.h"
 #include <string>
 #include <deque>
+#include <iosfwd>
 
 namespace aria2 {
 
