@@ -168,23 +168,32 @@ createBtRequestGroup(const std::string& torrentFilePath,
   return rg;
 }
 
-int32_t downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
+int32_t downloadBitTorrent(Option* op, const std::deque<std::string>& uris)
 {
   std::deque<std::string> nargs;
   if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
-    nargs = unfoldURI(uri);
+    nargs = unfoldURI(uris);
   } else {
-    nargs = uri;
+    nargs = uris;
   }
-  std::deque<std::string> xargs;
-  ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
-	std::back_inserter(xargs));
-  
-  RequestGroupHandle rg = createBtRequestGroup(op->get(PREF_TORRENT_FILE),
-					       op, xargs);
-  
   RequestGroups groups;
-  groups.push_back(rg);
+  size_t numSplit = op->getAsInt(PREF_SPLIT);
+  if(nargs.size() >= numSplit) {
+    RequestGroupHandle rg = createBtRequestGroup(op->get(PREF_TORRENT_FILE),
+						 op, nargs);
+    rg->setNumConcurrentCommand(numSplit);
+    groups.push_back(rg);
+  } else {
+    std::deque<std::string> xargs;
+    if(!nargs.empty()) {
+      ncopy(nargs.begin(), nargs.end(), numSplit, std::back_inserter(xargs));
+      xargs.erase(xargs.begin()+numSplit, xargs.end());
+    }
+    RequestGroupHandle rg = createBtRequestGroup(op->get(PREF_TORRENT_FILE),
+						 op, xargs);
+    rg->setNumConcurrentCommand(numSplit);
+    groups.push_back(rg);
+  }
   return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
 #endif // ENABLE_BITTORRENT
@@ -263,12 +272,20 @@ int32_t downloadUriList(Option* op, std::istream& in)
 		    AccRequestGroup(groups, op));
     } else if(uris.size() == 1) {
       std::for_each(uris.begin(), uris.end(), AccRequestGroup(groups, op));
-    } else if(uris.size() > 0) {
-      std::deque<std::string> xuris;
-      ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
-	    std::back_inserter(xuris));
-      SharedHandle<RequestGroup> rg = createRequestGroup(op, xuris);
-      groups.push_back(rg);
+    } else if(!uris.empty()) {
+      size_t numSplit = op->getAsInt(PREF_SPLIT);
+      if(uris.size() >= numSplit) {
+	SharedHandle<RequestGroup> rg = createRequestGroup(op, uris);
+	rg->setNumConcurrentCommand(numSplit);
+	groups.push_back(rg);
+      } else {
+	std::deque<std::string> xuris;
+	ncopy(uris.begin(), uris.end(), numSplit, std::back_inserter(xuris));
+	xuris.erase(xuris.begin()+numSplit, xuris.end());
+	SharedHandle<RequestGroup> rg = createRequestGroup(op, xuris);
+	rg->setNumConcurrentCommand(numSplit);
+	groups.push_back(rg);
+      }
     }
   }
   return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
@@ -313,11 +330,19 @@ int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
     std::deque<std::string>::iterator strmProtoEnd =
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
     // let's process http/ftp protocols first.
-    std::deque<std::string> xargs;
-    ncopy(nargs.begin(), strmProtoEnd, op->getAsInt(PREF_SPLIT),
-	  std::back_inserter(xargs));
-    if(xargs.size()) {
+    size_t numSplit = op->getAsInt(PREF_SPLIT);
+    size_t numURIs = std::distance(nargs.begin(), strmProtoEnd);
+    if(numURIs >= numSplit) {
+      std::deque<std::string> xargs(nargs.begin(), strmProtoEnd);
       RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
+      rg->setNumConcurrentCommand(numSplit);
+      groups.push_back(rg);
+    } else if(numURIs > 0) {
+      std::deque<std::string> xargs;
+      ncopy(nargs.begin(), strmProtoEnd, numSplit, std::back_inserter(xargs));
+      xargs.erase(xargs.begin()+numSplit, xargs.end());
+      RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
+      rg->setNumConcurrentCommand(numSplit);
       groups.push_back(rg);
     }
     // process remaining URIs(local metalink, BitTorrent files)
