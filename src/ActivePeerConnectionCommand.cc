@@ -61,6 +61,7 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
    interval(interval),
    e(e),
    _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT)),
+   _maxUploadSpeedLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
    _numNewConnection(5)
 {
   unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
@@ -75,11 +76,15 @@ bool ActivePeerConnectionCommand::execute() {
   if(btRuntime->isHalt()) {
     return true;
   }
-  if(!pieceStorage->downloadFinished() && checkPoint.elapsed(interval)) {
+  if(checkPoint.elapsed(interval)) {
     checkPoint.reset();
     TransferStat tstat = peerStorage->calculateStat();
-    if(tstat.getDownloadSpeed() < _thresholdSpeed ||
-       btRuntime->lessThanMinPeers()) {
+    if(// for seeder state
+       (pieceStorage->downloadFinished() && btRuntime->lessThanMaxPeers() &&
+	(_maxUploadSpeedLimit == 0 || tstat.getUploadSpeed() < _maxUploadSpeedLimit)) ||
+       // for leecher state
+       (tstat.getDownloadSpeed() < _thresholdSpeed ||
+	btRuntime->lessThanMinPeers())) {
       for(size_t numAdd = _numNewConnection;
 	  numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = peerStorage->getUnusedPeer();
