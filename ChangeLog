@@ -1,5 +1,10 @@
 2008-06-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Bump up version number to 0.14.0b.
+	* src/configure.ac
+	
+2008-06-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Actively establish connection to peers in seeding, when peer cache
 	is not full and max upload speed limit is not reached.
 	* src/ActivePeerConnectionCommand.cc
