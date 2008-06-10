@@ -244,15 +244,9 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
     logger->debug("Cannot find peer %s:%u in PeerStorage.", peer->ipaddr.c_str(), peer->port);
   } else {
     onReturningPeer(peer);
-    if((*itr)->port == 0) {
-      onErasingPeer(*itr);
-      peers.erase(itr);
-    } else {
-      peer->startBadCondition();
-      peer->resetStatus();
-      peers.erase(itr);
-      peers.push_back(peer);
-    }
+
+    onErasingPeer(*itr);
+    peers.erase(itr);
   }
 }
 
