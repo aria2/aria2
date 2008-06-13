@@ -1,3 +1,8 @@
+2008-06-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Commented out -lprofiler
+	* src/Makefile.am
+
 2008-06-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Bump up version number to 0.14.0b.
