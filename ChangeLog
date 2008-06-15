@@ -1,3 +1,15 @@
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Create only requested files and files which shares a piece with
+	requested file in multi-torrent downloads. Directory structures are
+	also created in the same rule.
+	MultiDiskAdaptor::fileExists() now uses FileEntry instead of
+	DiskWriterEntry as in the previous implementation.
+	* src/MultiDiskWriter.cc
+	* src/MultiFileAllocationIterator.cc
+	* src/MultiFileAllocationIterator.h
+	* test/MultiFileAllocationIteratorTest.cc
+
 2008-06-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Commented out -lprofiler

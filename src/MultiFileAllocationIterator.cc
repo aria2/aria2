@@ -42,11 +42,9 @@ namespace aria2 {
 
 MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
   _diskAdaptor(diskAdaptor),
+  _entries(_diskAdaptor->diskWriterEntries),
   _offset(0)
-{
-  makeDiskWriterEntries(_entries, diskAdaptor->diskWriterEntries,
-			diskAdaptor->getPieceLength());
-}
+{}
 
 MultiFileAllocationIterator::~MultiFileAllocationIterator() {}
 
@@ -104,43 +102,6 @@ uint64_t MultiFileAllocationIterator::getTotalLength()
 const DiskWriterEntries& MultiFileAllocationIterator::getDiskWriterEntries() const
 {
   return _entries;
-}
-
-void MultiFileAllocationIterator::makeDiskWriterEntries
-(std::deque<SharedHandle<DiskWriterEntry> >& dwEntries,
- const DiskWriterEntries& srcEntries, size_t pieceLength) const
-{
-  if(pieceLength == 0) {
-    for(DiskWriterEntries::const_iterator itr = srcEntries.begin(); itr != srcEntries.end(); ++itr) {
-      if((*itr)->getFileEntry()->isRequested()) {
-	dwEntries.push_back(*itr);
-      }
-    }
-  } else {
-    DiskWriterEntries temp(srcEntries);
-    {
-      SharedHandle<FileEntry> f(new FileEntry());
-      SharedHandle<DiskWriterEntry> e(new DiskWriterEntry(f));
-      temp.push_front(e);
-    }
-    DiskWriterEntries::const_iterator done = temp.begin();
-    for(DiskWriterEntries::const_iterator itr = temp.begin()+1; itr != temp.end(); ++itr) {
-      const FileEntryHandle& fileEntry = (*itr)->getFileEntry();
-      if(!fileEntry->isRequested()) {
-	continue;
-      }
-      off_t pieceStartOffset = (fileEntry->getOffset()/pieceLength)*pieceLength;
-      for(DiskWriterEntries::const_iterator i = itr-1; i != done; --i) {
-	if((uint64_t)pieceStartOffset < (*i)->getFileEntry()->getOffset()+(*i)->getFileEntry()->getLength()) {
-	  dwEntries.push_back(*i);
-	} else {
-	  break;
-	}
-      }
-      dwEntries.push_back(*itr);
-      done = itr;
-    }
-  }
 }
 
 } // namespace aria2

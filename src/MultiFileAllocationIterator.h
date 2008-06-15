@@ -52,10 +52,6 @@ private:
   SharedHandle<SingleFileAllocationIterator> _fileAllocationIterator;
   off_t _offset;
 
-  void makeDiskWriterEntries
-  (std::deque<SharedHandle<DiskWriterEntry> >& dwEntries,
-   const std::deque<SharedHandle<DiskWriterEntry> >& srcEntries,
-   size_t pieceLength) const;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 

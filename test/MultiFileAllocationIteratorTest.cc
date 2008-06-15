@@ -3,6 +3,7 @@
 #include "MultiDiskAdaptor.h"
 #include "FileEntry.h"
 #include "Exception.h"
+#include "array_fun.h"
 #include <algorithm>
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
@@ -31,27 +32,28 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 {
   SharedHandle<FileEntry> fs[] = {
     SharedHandle<FileEntry>(new FileEntry("file1", 1536, 0)),
-    SharedHandle<FileEntry>(new FileEntry("file2", 2048, 1536)),
+    SharedHandle<FileEntry>(new FileEntry("file2", 2048, 1536)),// req no
     SharedHandle<FileEntry>(new FileEntry("file3", 1024, 3584)),
-    SharedHandle<FileEntry>(new FileEntry("file4", 1024, 4608)),
-    SharedHandle<FileEntry>(new FileEntry("file5", 1024, 5632)),
-    SharedHandle<FileEntry>(new FileEntry("file6", 1024, 6656)),
-    SharedHandle<FileEntry>(new FileEntry("file7",  256, 7680)),
-    SharedHandle<FileEntry>(new FileEntry("file8",  768, 7936)),
-    SharedHandle<FileEntry>(new FileEntry("file9",  256, 8704)),
-    SharedHandle<FileEntry>(new FileEntry("fileA",  256, 8960)),
+    SharedHandle<FileEntry>(new FileEntry("file4", 1024, 4608)),// req no
+    SharedHandle<FileEntry>(new FileEntry("file5", 1024, 5632)),// req no
+    SharedHandle<FileEntry>(new FileEntry("file6", 1024, 6656)),// req no
+    SharedHandle<FileEntry>(new FileEntry("file7",  256, 7680)),// req no
+    SharedHandle<FileEntry>(new FileEntry("file8",  255, 7936)),
+    SharedHandle<FileEntry>(new FileEntry("file9", 1025, 8191)),// req no
+    SharedHandle<FileEntry>(new FileEntry("fileA", 1024, 9216)),// req no
+    SharedHandle<FileEntry>(new FileEntry("fileB", 1024, 10240)),
   };
-  fs[1]->setRequested(false);
-  fs[3]->setRequested(false);
-  fs[4]->setRequested(false);
-  fs[5]->setRequested(false);
-  fs[6]->setRequested(false);
-  fs[8]->setRequested(false);
-  fs[9]->setRequested(false);
+  fs[1]->setRequested(false); // file2
+  fs[3]->setRequested(false); // file4
+  fs[4]->setRequested(false); // file5
+  fs[5]->setRequested(false); // file6
+  fs[6]->setRequested(false); // file7
+  fs[8]->setRequested(false); // file9
+  fs[9]->setRequested(false); // fileA
   
   std::string storeDir = "/tmp/aria2_MultiFileAllocationIteratorTest_testMakeDiskWriterEntries";
   SharedHandle<MultiDiskAdaptor> diskAdaptor(new MultiDiskAdaptor());
-  diskAdaptor->setFileEntries(std::deque<SharedHandle<FileEntry> >(&fs[0], &fs[10]));
+  diskAdaptor->setFileEntries(std::deque<SharedHandle<FileEntry> >(&fs[0], &fs[arrayLength(fs)]));
   diskAdaptor->setPieceLength(1024);
   diskAdaptor->setStoreDir(storeDir);
   diskAdaptor->openFile();
@@ -63,7 +65,7 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 
   std::sort(entries.begin(), entries.end());
 
-  CPPUNIT_ASSERT_EQUAL((size_t)6, entries.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)8, entries.size());
 
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file1"), entries[0]->getFilePath(storeDir));
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file2"), entries[1]->getFilePath(storeDir));
@@ -71,6 +73,8 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file6"), entries[3]->getFilePath(storeDir));
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file7"), entries[4]->getFilePath(storeDir));
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file8"), entries[5]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file9"), entries[6]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/fileB"), entries[7]->getFilePath(storeDir));
 }
 
 void MultiFileAllocationIteratorTest::testAllocate()
@@ -145,9 +149,10 @@ void MultiFileAllocationIteratorTest::testAllocate()
     CPPUNIT_ASSERT_EQUAL((uint64_t)length1, File(dir+"/"+topDir+"/"+fname1).size());
     CPPUNIT_ASSERT_EQUAL((uint64_t)length2, File(dir+"/"+topDir+"/"+fname2).size());
     CPPUNIT_ASSERT_EQUAL((uint64_t)length3, File(dir+"/"+topDir+"/"+fname3).size());
-    CPPUNIT_ASSERT_EQUAL(0ULL, File(dir+"/"+topDir+"/"+fname4).size());
+    CPPUNIT_ASSERT(!File(dir+"/"+topDir+"/"+fname4).isFile());
+
     CPPUNIT_ASSERT_EQUAL((uint64_t)length5, File(dir+"/"+topDir+"/"+fname5).size());
-    CPPUNIT_ASSERT_EQUAL(0ULL, File(dir+"/"+topDir+"/"+fname6).size());
+    CPPUNIT_ASSERT(!File(dir+"/"+topDir+"/"+fname6).isFile());
 
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());

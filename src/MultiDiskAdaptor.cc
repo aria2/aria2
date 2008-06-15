@@ -149,20 +149,77 @@ MultiDiskAdaptor::MultiDiskAdaptor():
 
 MultiDiskAdaptor::~MultiDiskAdaptor() {}
 
+static SharedHandle<DiskWriterEntry> createDiskWriterEntry
+(const SharedHandle<FileEntry>& fileEntry,
+ DiskWriterFactory& dwFactory,
+ bool directIOAllowed)
+{
+  SharedHandle<DiskWriterEntry> entry(new DiskWriterEntry(fileEntry));
+  entry->setDiskWriter(dwFactory.newDiskWriter());
+  entry->getDiskWriter()->setDirectIOAllowed(directIOAllowed);
+  
+  return entry;
+}
+ 
+
 void MultiDiskAdaptor::resetDiskWriterEntries()
 {
   diskWriterEntries.clear();
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    DiskWriterEntryHandle entry(new DiskWriterEntry(*itr));
-    if((*itr)->isRequested()) {
-      entry->setDiskWriter(DefaultDiskWriterFactory().newDiskWriter());
-    } else {
-      SharedHandle<DiskWriter> dw(new DefaultDiskWriter());
-      entry->setDiskWriter(dw);
+
+  if(fileEntries.empty()) {
+    return;
+  }
+
+  DefaultDiskWriterFactory dwFactory;
+  if(pieceLength == 0) {
+    for(std::deque<SharedHandle<FileEntry> >::const_iterator itr =
+	  fileEntries.begin(); itr != fileEntries.end(); ++itr) {
+      if((*itr)->isRequested()) {
+	diskWriterEntries.push_back
+	  (createDiskWriterEntry(*itr, dwFactory, _directIOAllowed));
+      }
     }
-    entry->getDiskWriter()->setDirectIOAllowed(_directIOAllowed);
-    diskWriterEntries.push_back(entry);
+  } else {
+    std::deque<SharedHandle<FileEntry> >::const_iterator done = fileEntries.begin();
+    for(std::deque<SharedHandle<FileEntry> >::const_iterator itr =
+	  fileEntries.begin(); itr != fileEntries.end();) {
+      if(!(*itr)->isRequested()) {
+	++itr;
+	continue;
+      }
+      off_t pieceStartOffset = ((*itr)->getOffset()/pieceLength)*pieceLength;
+      std::deque<SharedHandle<DiskWriterEntry> >::iterator insertionPoint =
+	diskWriterEntries.end();
+
+      if(itr != fileEntries.begin()) {
+	for(std::deque<SharedHandle<FileEntry> >::const_iterator i = itr-1;
+	    i != done; --i) {
+	  if((uint64_t)pieceStartOffset < (*i)->getOffset()+(*i)->getLength()) {
+	    insertionPoint = diskWriterEntries.insert
+	      (insertionPoint,
+	       createDiskWriterEntry(*i, dwFactory, _directIOAllowed));
+	  } else {
+	    break;
+	  }
+	}
+      }
+
+      diskWriterEntries.push_back
+	(createDiskWriterEntry(*itr, dwFactory, _directIOAllowed));
+
+      ++itr;
+
+      for(; itr != fileEntries.end(); ++itr) {
+	if((*itr)->getOffset() < pieceStartOffset+pieceLength) {
+	  diskWriterEntries.push_back
+	    (createDiskWriterEntry(*itr, dwFactory, _directIOAllowed));
+	} else {
+	  break;
+	}
+      }
+
+      done = itr-1;
+    }
   }
 }
 
@@ -173,9 +230,9 @@ std::string MultiDiskAdaptor::getTopDirPath() const
 
 void MultiDiskAdaptor::mkdir(const std::string& topDirPath) const
 {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setupDir(topDirPath);
+  for(std::deque<SharedHandle<DiskWriterEntry> >::const_iterator i =
+	diskWriterEntries.begin(); i != diskWriterEntries.end(); ++i) {
+    (*i)->getFileEntry()->setupDir(topDirPath);
   }
 }
 
@@ -211,16 +268,16 @@ void MultiDiskAdaptor::openIfNot
 void MultiDiskAdaptor::openFile()
 {
   _cachedTopDirPath = getTopDirPath();
-  mkdir(_cachedTopDirPath);
   resetDiskWriterEntries();
+  mkdir(_cachedTopDirPath);
   // TODO we should call openIfNot here?
 }
 
 void MultiDiskAdaptor::initAndOpenFile()
 {
   _cachedTopDirPath = getTopDirPath();
-  mkdir(_cachedTopDirPath);
   resetDiskWriterEntries();
+  mkdir(_cachedTopDirPath);
   // Call DiskWriterEntry::initAndOpenFile to make files truncated.
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); ++itr) {
@@ -339,17 +396,15 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset
 
 bool MultiDiskAdaptor::fileExists()
 {
-  if(diskWriterEntries.empty()) {
-    resetDiskWriterEntries();
-  }
   // Don't use _cachedTopDirPath because they are initialized after opening files.
   // This method could be called before opening files.
   std::string topDirPath = getTopDirPath();
-  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end(); ++itr) {
-    if((*itr)->fileExists(topDirPath)) {
+  for(std::deque<SharedHandle<FileEntry> >::iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i) {
+    
+    if(File(topDirPath+"/"+(*i)->getPath()).isFile()) {
       return true;
-    }				   
+    }
   }
   return false;
 }
