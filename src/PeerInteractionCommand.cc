@@ -222,6 +222,7 @@ bool PeerInteractionCommand::executeInternal() {
     break;
   }
   case WIRED:
+    disableWriteCheckSocket();
     btInteractive->doInteractionProcessing();
     if(btInteractive->countReceivedMessageInIteration() > 0) {
       updateKeepAlive();
@@ -241,6 +242,9 @@ bool PeerInteractionCommand::executeInternal() {
       }
     } else {
       disableReadCheckSocket();
+    }
+    if(btInteractive->isSendingMessageInProgress()) {
+      setWriteCheckSocket(socket);
     }
     break;
   }
