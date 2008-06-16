@@ -66,7 +66,7 @@ SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1)  {
   init();
 }
 
-SocketCore::SocketCore(int sockfd, int sockType):_sockType(sockType), sockfd(sockfd) {
+SocketCore::SocketCore(sock_t sockfd, int sockType):_sockType(sockType), sockfd(sockfd) {
   init();
 }
 
@@ -145,7 +145,7 @@ void SocketCore::bind(uint16_t port)
   }
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
-    int fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+    sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if(fd == -1) {
       continue;
     }
@@ -178,7 +178,7 @@ SocketCore* SocketCore::acceptConnection() const
 {
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
-  int fd;
+  sock_t fd;
   while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == -1 && errno == EINTR);
   if(fd == -1) {
     throw DlAbortEx(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
@@ -227,7 +227,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   }
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
-    int fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+    sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if(fd == -1) {
       continue;
     }

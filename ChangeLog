@@ -1,5 +1,21 @@
 2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Applied Ross's aria2-0.13.2+1-mingw-5.patch, which changes the type of
+	socket from int to sock_t as sockets are unsigned in Windows.
+	For AsyncNameResolver, DownloadEngine, I did additional modification
+	for the portion of the code changed according to epoll support.
+	I defined sock_t in a2netcompat.h to use sock_t without including
+	SocketCore.h.
+	* src/AsyncNameResolver.cc
+	* src/AsyncNameResolver.h
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/a2netcompat.h
+
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Applied Ross's aria2-0.13.2+1-mingw-4.patch. With this change, all
 	changes in the patch were applied.
 	* test/DHTConnectionImplTest.cc: Fixed unit test error in MinGW.

@@ -116,7 +116,7 @@ void CommandEvent::processEvents(int events)
 
 ADNSEvent::ADNSEvent(const SharedHandle<AsyncNameResolver>& resolver,
 		     Command* command,
-		     int socket, int events):
+		     sock_t socket, int events):
   _resolver(resolver), _command(command), _socket(socket), _events(events) {}
 
 bool ADNSEvent::operator==(const ADNSEvent& event) const
@@ -149,7 +149,7 @@ void ADNSEvent::processEvents(int events)
 
 #endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
 
-SocketEntry::SocketEntry(int socket):_socket(socket)
+SocketEntry::SocketEntry(sock_t socket):_socket(socket)
 {
 #ifdef HAVE_EPOLL
   memset(&_epEvent, 0, sizeof(struct epoll_event));
@@ -241,7 +241,7 @@ void SocketEntry::processEvents(int events)
 
 }
 
-int SocketEntry::getSocket() const
+sock_t SocketEntry::getSocket() const
 {
   return _socket;
 }
@@ -574,7 +574,7 @@ void DownloadEngine::updateFdSet() {
   FD_ZERO(&wfdset);
   for(std::deque<SharedHandle<SocketEntry> >::iterator i =
 	socketEntries.begin(); i != socketEntries.end(); ++i) {
-    int fd = (*i)->getSocket();
+    sock_t fd = (*i)->getSocket();
     int events = (*i)->getEvents();
     if(events&SocketEntry::EVENT_READ) {
       FD_SET(fd, &rfdset);
@@ -590,7 +590,7 @@ void DownloadEngine::updateFdSet() {
 
 #endif // !HAVE_EPOLL
 
-bool DownloadEngine::addSocketEvents(int socket, Command* command, int events
+bool DownloadEngine::addSocketEvents(sock_t socket, Command* command, int events
 #if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
 				     ,const SharedHandle<AsyncNameResolver>& rs
 #endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
@@ -676,7 +676,7 @@ bool DownloadEngine::addSocketEvents(int socket, Command* command, int events
   }
 }
 
-bool DownloadEngine::deleteSocketEvents(int socket, Command* command, int events
+bool DownloadEngine::deleteSocketEvents(sock_t socket, Command* command, int events
 #if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
 					,const SharedHandle<AsyncNameResolver>& rs
 #endif // HAVE_EPOLL && ENABLE_ASYNC_DNS

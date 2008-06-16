@@ -117,7 +117,7 @@ void AsyncNameResolver::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
 
 #ifdef HAVE_LIBCARES
 
-int AsyncNameResolver::getsock(int* sockets) const
+int AsyncNameResolver::getsock(sock_t* sockets) const
 {
   return ares_getsock(channel, sockets, ARES_GETSOCK_MAXNUM);
 }

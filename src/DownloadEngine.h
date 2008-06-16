@@ -89,11 +89,11 @@ class ADNSEvent {
 private:
   SharedHandle<AsyncNameResolver> _resolver;
   Command* _command;
-  int _socket;
+  sock_t _socket;
   int _events;
 public:
   ADNSEvent(const SharedHandle<AsyncNameResolver>& resolver, Command* command,
-	    int socket, int events);
+	    sock_t socket, int events);
 
   void processEvents(int events);
 
@@ -106,7 +106,7 @@ public:
 
 class SocketEntry {
 private:
-  int _socket;
+  sock_t _socket;
 
   std::deque<CommandEvent> _commandEvents;
 
@@ -144,7 +144,7 @@ public:
 
 #endif // !HAVE_EPOLL
 
-  SocketEntry(int socket);
+  SocketEntry(sock_t socket);
 
   bool operator==(const SocketEntry& entry) const;
 
@@ -174,7 +174,7 @@ public:
 
 #endif // !HAVE_EPOLL
 
-  int getSocket() const;
+  sock_t getSocket() const;
 
   bool eventEmpty() const;
 
@@ -197,7 +197,7 @@ private:
 
   size_t _socketsSize;
   
-  int _sockets[ARES_GETSOCK_MAXNUM];
+  sock_t _sockets[ARES_GETSOCK_MAXNUM];
 
 #endif // HAVE_EPOLL
 
@@ -321,14 +321,14 @@ public:
   bool deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
 				 Command* command);
 
-  bool addSocketEvents(int socket, Command* command, int events
+  bool addSocketEvents(sock_t socket, Command* command, int events
 #if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
 		       ,const SharedHandle<AsyncNameResolver>& rs =
 		       SharedHandle<AsyncNameResolver>()
 #endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
 		       );
 
-  bool deleteSocketEvents(int socket, Command* command, int events
+  bool deleteSocketEvents(sock_t socket, Command* command, int events
 #if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
 			  ,const SharedHandle<AsyncNameResolver>& rs =
 			  SharedHandle<AsyncNameResolver>()

@@ -91,7 +91,7 @@ public:
 
 #ifdef HAVE_LIBCARES
 
-  int getsock(int* sockets) const;
+  int getsock(sock_t* sockets) const;
 
   void process(ares_socket_t readfd, ares_socket_t writefd);
 

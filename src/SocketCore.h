@@ -65,7 +65,7 @@ private:
   // socket type defined in <sys/socket.h>
   int _sockType;
   // socket endpoint descriptor
-  int sockfd;
+  sock_t sockfd;
 
 #ifdef HAVE_EPOLL
 
@@ -104,7 +104,7 @@ private:
 
 #endif // HAVE_EPOLL
 
-  SocketCore(int sockfd, int sockType);
+  SocketCore(sock_t sockfd, int sockType);
   static int error();
   static const char *errorMsg();
   static const char *errorMsg(const int err);
@@ -112,7 +112,7 @@ public:
   SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();
 
-  int getSockfd() const { return sockfd; }
+  sock_t getSockfd() const { return sockfd; }
 
   bool isOpen() const { return sockfd != -1; }
 

@@ -91,4 +91,10 @@
 # include "gai_strerror.h"
 #endif // HAVE_GAI_STRERROR
 
+#ifdef HAVE_WINSOCK2_H
+# define sock_t SOCKET
+#else
+# define sock_t int
+#endif
+
 #endif // _D_A2NETCOMPAT_H_
