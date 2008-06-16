@@ -39,16 +39,21 @@
 
 namespace aria2 {
 
-#ifdef HAVE_WINSOCK2_H
-
 class Platform {
+private:
+  static bool _initialized;
+
 public:
   Platform();
 
   ~Platform();
-};
 
-#endif // HAVE_WINSOCK2_H
+  static bool setUp();
+
+  static bool tearDown();
+
+  static bool isInitialized();
+};
 
 } // namespace aria2
 

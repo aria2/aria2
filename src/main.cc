@@ -85,15 +85,6 @@ extern char* optarg;
 extern int optind, opterr, optopt;
 #include <getopt.h>
 
-#ifdef HAVE_LIBSSL
-// for SSL
-# include <openssl/err.h>
-# include <openssl/ssl.h>
-#endif // HAVE_LIBSSL
-#ifdef HAVE_LIBGNUTLS
-# include <gnutls/gnutls.h>
-#endif // HAVE_LIBGNUTLS
-
 namespace aria2 {
 
 // output stream to /dev/null
@@ -460,31 +451,9 @@ int main(int argc, char* argv[])
 } // namespace aria2
 
 int main(int argc, char* argv[]) {
-#ifdef HAVE_WINSOCK2_H
   aria2::Platform platform;
-#endif // HAVE_WINSOCK2_H
-
-#ifdef ENABLE_NLS
-  setlocale (LC_CTYPE, "");
-  setlocale (LC_MESSAGES, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
-#endif // ENABLE_NLS
-  
-#ifdef HAVE_LIBSSL
-  // for SSL initialization
-  SSL_load_error_strings();
-  SSL_library_init();
-#endif // HAVE_LIBSSL
-#ifdef HAVE_LIBGNUTLS
-  gnutls_global_init();
-#endif // HAVE_LIBGNUTLS
 
   int r = aria2::main(argc, argv);
-
-#ifdef HAVE_LIBGNUTLS
-  gnutls_global_deinit();
-#endif // HAVE_LIBGNUTLS
 
   return r;
 }

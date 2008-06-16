@@ -1,5 +1,17 @@
 2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Applied Ross's aria2-0.13.2+1-mingw-4.patch. In this commit, only the
+	follow sources are applied.
+	* src/Platform.h: I removed HAVE_WINSOCK2_H directive from Platform.h.
+	* src/Platform.cc: Moved common setup/teardown code to Platform class.
+	I moved #endif // HAVE_WINSOCK2_H to the front of #include "DlAbortEx.h"
+	I included locale.h from Platform.cc.
+	* src/main.cc: Moved common setup/teardown code to Platform class.
+	* test/AllTest.cc: Use Platform class.
+	Set locale to C in AllTest.cc to prevent the messages to be localized.
+	
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Applied Ross's aria2-0.13.2+1-mingw-3.patch.
 	* test/HttpHeaderTest.cc: Casted to off_t where it should.
 	* test/HttpRequestTest.cc: Casted to off_t where it should.

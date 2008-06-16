@@ -33,6 +33,15 @@
  */
 /* copyright --> */
 #include "Platform.h"
+
+#ifdef HAVE_LIBSSL
+# include <openssl/err.h>
+# include <openssl/ssl.h>
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/gnutls.h>
+#endif // HAVE_LIBGNUTLS
+
 #ifdef HAVE_WINSOCK2_H
 
 #ifndef _WIN32_WINNT
@@ -44,26 +53,87 @@
 # include <ws2tcpip.h>
 #endif // HAVE_WS2TCPIP_H
 
+#endif // HAVE_WINSOCK2_H
+
 #include "DlAbortEx.h"
 #include "message.h"
 #include <stdlib.h> /* _fmode */
 #include <fcntl.h> /*  _O_BINARY */
+#include <locale.h> // For setlocale, LC_*
 
 namespace aria2 {
 
-Platform::Platform() {
-  unsigned int _CRT_fmode = _O_BINARY;
+bool Platform::_initialized = false;
+
+Platform::Platform()
+{
+  setUp();
+}
+
+Platform::~Platform()
+{
+  tearDown();
+}
+
+bool Platform::setUp()
+{
+  if (_initialized) {
+    return false;
+  }
+  _initialized = true;
+
+#ifdef ENABLE_NLS
+  setlocale (LC_CTYPE, "");
+  setlocale (LC_MESSAGES, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+#endif // ENABLE_NLS
+
+#ifdef HAVE_LIBSSL
+  // for SSL initialization
+  SSL_load_error_strings();
+  SSL_library_init();
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  gnutls_global_init();
+#endif // HAVE_LIBGNUTLS
+  
+#ifdef HAVE_WINSOCK2_H
   WSADATA wsaData;
   memset((char*)&wsaData, 0, sizeof(wsaData));
   if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {
     throw DlAbortEx(MSG_WINSOCK_INIT_FAILD);
   }
+#endif // HAVE_WINSOCK2_H
+
+#ifdef __MINGW32__
+  unsigned int _CRT_fmode = _O_BINARY;
+#endif // __MINGW32__
+  
+  return true;
 }
 
-Platform::~Platform() {
+bool Platform::tearDown()
+{
+  if (!_initialized) {
+    return false;
+  }
+  _initialized = false;
+
+#ifdef HAVE_LIBGNUTLS
+  gnutls_global_deinit();
+#endif // HAVE_LIBGNUTLS
+
+#ifdef HAVE_WINSOCK2_H
   WSACleanup();
+#endif // HAVE_WINSOCK2_H
+  
+  return true;
+}
+
+bool Platform::isInitialized()
+{
+  return _initialized;
 }
 
 } // namespace aria2
-
-#endif // HAVE_WINSOCK2_H
