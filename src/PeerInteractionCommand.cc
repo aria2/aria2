@@ -230,6 +230,11 @@ bool PeerInteractionCommand::executeInternal() {
     }
     if((peer->amInterested() && !peer->peerChoking() && (peer->getLatency() < 1500)) ||
        (peer->peerInterested() && !peer->amChoking())) {
+
+      if(btInteractive->isSendingMessageInProgress()) {
+	setWriteCheckSocket(socket);
+      }
+
       if(maxDownloadSpeedLimit > 0) {
 	TransferStat stat = peerStorage->calculateStat();
 	if(maxDownloadSpeedLimit < stat.downloadSpeed) {
@@ -243,9 +248,6 @@ bool PeerInteractionCommand::executeInternal() {
       }
     } else {
       disableReadCheckSocket();
-    }
-    if(btInteractive->isSendingMessageInProgress()) {
-      setWriteCheckSocket(socket);
     }
     break;
   }
