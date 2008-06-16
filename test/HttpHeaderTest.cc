@@ -28,9 +28,9 @@ void HttpHeaderTest::testGetRange()
     
     SharedHandle<Range> range = httpHeader.getRange();
 
-    CPPUNIT_ASSERT_EQUAL(9223372036854775800LL, range->getStartByte());
-    CPPUNIT_ASSERT_EQUAL(9223372036854775801LL, range->getEndByte());
-    CPPUNIT_ASSERT_EQUAL(9223372036854775807ULL, range->getEntityLength());
+    CPPUNIT_ASSERT_EQUAL((off_t)9223372036854775800LL, range->getStartByte());
+    CPPUNIT_ASSERT_EQUAL((off_t)9223372036854775801LL, range->getEndByte());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, range->getEntityLength());
   }
   {
     HttpHeader httpHeader;
@@ -39,9 +39,9 @@ void HttpHeaderTest::testGetRange()
      
     SharedHandle<Range> range = httpHeader.getRange();
 
-    CPPUNIT_ASSERT_EQUAL(9223372036854775800LL, range->getStartByte());
-    CPPUNIT_ASSERT_EQUAL(9223372036854775801LL, range->getEndByte());
-    CPPUNIT_ASSERT_EQUAL(9223372036854775807ULL, range->getEntityLength());
+    CPPUNIT_ASSERT_EQUAL((off_t)9223372036854775800LL, range->getStartByte());
+    CPPUNIT_ASSERT_EQUAL((off_t)9223372036854775801LL, range->getEndByte());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, range->getEntityLength());
   }
 }
 

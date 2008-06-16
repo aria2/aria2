@@ -1,5 +1,11 @@
 2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Applied Ross's aria2-0.13.2+1-mingw-3.patch.
+	* test/HttpHeaderTest.cc: Casted to off_t where it should.
+	* test/HttpRequestTest.cc: Casted to off_t where it should.
+	
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Applied Ross's aria2-0.13.2+1-mingw.patch and
 	aria2-0.13.2+1-mingw-2.patch.
 	* src/ConsoleStatCalc.cc: Added HAVE_TERMIOUS_H directive for the
