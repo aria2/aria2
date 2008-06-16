@@ -124,8 +124,13 @@ void DefaultPieceStorageTest::testCompletePiece() {
   peer->setAllBitfield();
 
   SharedHandle<Piece> piece = pss.getMissingPiece(peer);
+#ifdef __MINGW32__
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
+		       piece->toString());
+#else // !__MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
 		       piece->toString());
+#endif // !__MINGW32__
 
   CPPUNIT_ASSERT_EQUAL(0ULL, pss.getCompletedLength());
 

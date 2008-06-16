@@ -42,7 +42,9 @@ void createNLengthMessage(char* msg, int msgLen, int payloadLen, int id) {
 void PeerMessageUtilTest::testCreateCompact()
 {
   unsigned char compact[6];
-  CPPUNIT_ASSERT(PeerMessageUtil::createcompact(compact, "::ffff:127.0.0.1", 6881));
+  // Note: PeerMessageUtil::createcompact() on linux can handle IPv4-mapped
+  // addresses like `ffff::127.0.0.1', but on cygwin, it doesn't.
+  CPPUNIT_ASSERT(PeerMessageUtil::createcompact(compact, "127.0.0.1", 6881));
 
   std::pair<std::string, uint16_t> p = PeerMessageUtil::unpackcompact(compact);
   CPPUNIT_ASSERT_EQUAL(std::string("127.0.0.1"), p.first);

@@ -1,5 +1,6 @@
 #include "DHTConnectionImpl.h"
 #include "Exception.h"
+#include "SocketCore.h"
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -40,6 +41,7 @@ void DHTConnectionImplTest::testWriteAndReadData()
     std::string remoteHost;
     uint16_t remotePort;
     {
+      while(!con2.getSocket()->isReadable(0));
       ssize_t rlength = con2.receiveMessage(readbuffer, sizeof(readbuffer), remoteHost, remotePort);
       CPPUNIT_ASSERT_EQUAL((ssize_t)message1.size(), rlength);
       CPPUNIT_ASSERT_EQUAL(message1,
