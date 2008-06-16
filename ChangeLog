@@ -1,6 +1,13 @@
 2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Applied Ross's aria2-0.13.2+1-mingw-4.patch. In this commit,
+	only a2netcompat.h is modified.
+	* src/a2netcompat.h: Removed unused getaddrinfo related #define
+	directives.
+	
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Applied Ross's aria2-0.13.2+1-mingw-4.patch. In this commit,
 	only gai_strerror.h is modified.
 	* src/gai_strerror.h: Fixed gai_strerror() function to report all
 	winsock errors in MinGW.
