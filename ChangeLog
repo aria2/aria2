@@ -1,5 +1,12 @@
 2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated po files.
+	* po/aria2c.pot
+	* po/*.po
+	* po/*.gmo
+
+2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Moved the call setWriteCheckSocket inside the previous clause to reduce
 	the number of socket to watch out.
 	* src/PeerInteractionCommand.cc
