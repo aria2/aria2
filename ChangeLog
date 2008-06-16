@@ -1,5 +1,13 @@
 2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Applied Ross's aria2-0.13.2+1-mingw-4.patch. In this change,
+	a2io.h and common.h were modified.
+	* src/a2io.h: Changed seek/stat/tell calls to use 64 bit versions in
+	MinGW.
+	* src/common.h: Changed off_t to 64 bit in MinGW.
+
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Applied Ross's aria2-0.13.2+1-mingw-4.patch. In this commit,
 	only a2netcompat.h is modified.
 	* src/a2netcompat.h: Removed unused getaddrinfo related #define

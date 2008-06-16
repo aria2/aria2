@@ -95,7 +95,7 @@
 # define	S_IRWXO		(S_IROTH | S_IWOTH | S_IXOTH)
 #endif /* S_IRWXO		*/
 
-// Use 'null' instead of /dev/null in win32.
+// Use 'nul' instead of /dev/null in win32.
 #ifdef HAVE_WINSOCK2_H
 # define DEV_NULL "nul"
 #else
@@ -110,7 +110,16 @@
 #endif // HAVE_WINSOCK2_H
 
 #ifdef __MINGW32__
-# define lseek(a, b, c) _lseeki64((a), (b), (c))
+# define lseek(fd, offset, origin) _lseeki64(fd, offset, origin)
+# define fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
+# define fstat(fd, buf) _fstati64(fd, buf)
+# define ftell(fd) _ftelli64(fd)
+# define wstat(path, buf) _wstati64(path, buf)
+# ifdef stat
+#  undef stat
+# endif // stat
+# define stat(path, buf)  _stati64(path, buf)
+# define tell(handle) _telli64(handle)
 # define a2mkdir(path, openMode) mkdir(path)
 #else
 # define a2mkdir(path, openMode) mkdir(path, openMode)
