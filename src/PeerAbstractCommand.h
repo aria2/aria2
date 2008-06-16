@@ -58,6 +58,9 @@ protected:
   void setTimeout(time_t timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort() {};
+  // This function is called when DownloadFailureException is caught right after
+  // the invocation of onAbort().
+  virtual void onFailure() {};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
   void setReadCheckSocket(const SharedHandle<SocketCore>& socket);

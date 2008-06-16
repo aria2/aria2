@@ -63,6 +63,7 @@
 #include "DHTSetup.h"
 #include "DHTRegistry.h"
 #include "PieceStorage.h"
+#include "RequestGroup.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -274,6 +275,11 @@ bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
 void PeerInteractionCommand::onAbort() {
   btInteractive->cancelAllPiece();
   peerStorage->returnPeer(peer);
+}
+
+void PeerInteractionCommand::onFailure()
+{
+  _requestGroup->setHaltRequested(true);
 }
 
 bool PeerInteractionCommand::exitBeforeExecute()

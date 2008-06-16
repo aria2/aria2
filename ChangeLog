@@ -1,5 +1,18 @@
 2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	When there is not enough space in disk when writing a chunk of data,
+	aria2 now prints the message to the console to warn user and aborts
+	its download. Not all downloads are canceled because some downloads
+	may use another disk or partition. BUG#1640332
+	* src/AbstractDiskWriter.cc
+	* src/PeerAbstractCommand.cc
+	* src/PeerAbstractCommand.h: Added onFailure() function for override.
+	* src/PeerInteractionCommand.cc: In onFailure(), call RequestGroup::
+	setHaltRequested(true) to cancel download.
+	* src/PeerInteractionCommand.h
+	
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Applied Ross's aria2-0.13.2+1-mingw-5.patch, which changes the type of
 	socket from int to sock_t as sockets are unsigned in Windows.
 	For AsyncNameResolver, DownloadEngine, I did additional modification

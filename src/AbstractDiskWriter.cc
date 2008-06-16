@@ -41,6 +41,7 @@
 #include "DlAbortEx.h"
 #include "a2io.h"
 #include "StringFormat.h"
+#include "DownloadFailureException.h"
 #include <cerrno>
 #include <cstring>
 #include <cassert>
@@ -133,6 +134,12 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
 {
   seek(offset);
   if(writeDataInternal(data, len) < 0) {
+    // If errno is ENOSPC(not enough space in device), throw
+    // DownloadFailureException and abort download instantly.
+    if(errno == ENOSPC) {
+      throw DownloadFailureException
+	(StringFormat(EX_FILE_WRITE, filename.c_str(), strerror(errno)).str());
+    }
     throw DlAbortEx(StringFormat(EX_FILE_WRITE, filename.c_str(), strerror(errno)).str());
   }
 }

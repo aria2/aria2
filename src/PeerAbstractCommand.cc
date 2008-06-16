@@ -41,6 +41,7 @@
 #include "Logger.h"
 #include "message.h"
 #include "prefs.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
@@ -83,6 +84,11 @@ bool PeerAbstractCommand::execute() {
       throw DlAbortEx(EX_TIME_OUT);
     }
     return executeInternal();
+  } catch(DownloadFailureException& err) {
+    logger->error(EX_DOWNLOAD_ABORTED, err);
+    onAbort();
+    onFailure();
+    return true;
   } catch(RecoverableException& err) {
     logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err, cuid);
     logger->debug(MSG_PEER_BANNED,
