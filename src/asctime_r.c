@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2008 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,36 +32,42 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "StringFormat.h"
-#include <ostream>
-#include <cstring>
-#include <cstdio>
-#include <cstdarg>
-#include <cstdlib>
 
-namespace aria2 {
+#include <time.h>
+#include <stdlib.h>
 
-StringFormat::StringFormat(const char* fmt, ...)
+#ifdef __MINGW32__
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif // __MINGW32__
+
+#include "asctime_r.h"
+
+#ifdef __MINGW32__
+
+static CRITICAL_SECTION asctime_r_cs;
+
+static void asctime_r_atexit()
 {
-  va_list ap;
-  va_start(ap, fmt);
-  char buf[1024];
-  int r;
-  if((r = vsnprintf(buf, sizeof(buf), fmt, ap)) > 0) {
-    _msg.assign(&buf[0], &buf[r]);
-  }
-  va_end(ap);
+	DeleteCriticalSection(&asctime_r_cs);
 }
 
-const std::string& StringFormat::str() const
+char * asctime_r (const struct tm*, char *buf);
 {
-  return _msg;
-}
+	static char *p;
+	static int initialized = 0;
 
-std::ostream& operator<<(std::ostream& o, const StringFormat& fmt)
-{
-  o << fmt.str();
-  return o;
-}
+	if (!initialized) {
+		++initialized;
+		InitializeCriticalSection(&asctime_r_cs);
+		atexit(asctime_r_atexit);
+	}
 
-} // namespace aria2
+	EnterCriticalSection(&asctime_r_cs);
+	p = asctime(tm);
+	memcpy(buf, p, 26);
+	LeaveCriticalSection(&asctime_r_cs);
+	return buf;
+};
+
+#endif // __MINGW32__

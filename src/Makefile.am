@@ -422,6 +422,10 @@ if ENABLE_LIBEXPAT
 SRCS += ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
 endif # ENABLE_LIBEXPAT
 
+if !HAVE_ASCTIME_R
+SRCS += asctime_r.c asctime_r.h
+endif # !HAVE_ASCTIME_R
+
 if !HAVE_BASENAME
 SRCS += libgen.c libgen.h
 endif # !HAVE_BASENAME

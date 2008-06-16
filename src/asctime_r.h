@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2008 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,36 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "StringFormat.h"
-#include <ostream>
-#include <cstring>
-#include <cstdio>
-#include <cstdarg>
-#include <cstdlib>
 
-namespace aria2 {
+#ifndef _D_ASCTIME_R_H
+#define _D_ASCTIME_R_H
 
-StringFormat::StringFormat(const char* fmt, ...)
-{
-  va_list ap;
-  va_start(ap, fmt);
-  char buf[1024];
-  int r;
-  if((r = vsnprintf(buf, sizeof(buf), fmt, ap)) > 0) {
-    _msg.assign(&buf[0], &buf[r]);
-  }
-  va_end(ap);
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+  
+#include <time.h>
+  
+char * asctime_r (const struct tm*, char*);
+
+#ifdef __cplusplus
 }
+#endif /* __cplusplus */
 
-const std::string& StringFormat::str() const
-{
-  return _msg;
-}
-
-std::ostream& operator<<(std::ostream& o, const StringFormat& fmt)
-{
-  o << fmt.str();
-  return o;
-}
-
-} // namespace aria2
+#endif /* not _D_ASCTIME_R_H */

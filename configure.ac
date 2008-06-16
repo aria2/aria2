@@ -185,6 +185,9 @@ AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify atexit daemon ftruncat
 
 AC_CHECK_FUNCS([epoll_create])
 
+AC_CHECK_FUNCS([asctime_r],
+	[AM_CONDITIONAL([HAVE_ASCTIME_R], true)],
+	[AM_CONDITIONAL([HAVE_ASCTIME_R], false)])
 AC_CHECK_FUNCS([basename],
 	[AM_CONDITIONAL([HAVE_BASENAME], true)],
 	[AM_CONDITIONAL([HAVE_BASENAME], false)])

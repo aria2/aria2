@@ -1,5 +1,22 @@
 2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Applied Ross's aria2-0.13.2+1-mingw.patch and
+	aria2-0.13.2+1-mingw-2.patch.
+	* src/ConsoleStatCalc.cc: Added HAVE_TERMIOUS_H directive for the
+	systems	which don't have termious.h. I moved the directive inside of
+	if(isTTY) { ... clause so that line is wiped out without termious.h.
+	I also removed HAVE_ASCTIME_R clause because asctime_r is provided
+	anyway.
+	* src/asctime_r.h
+	* src/asctime_r.c: Added for the systems don't have asctime_r function.
+	I added 2nd argument to the prototype declaration.
+	* src/StringFormat.cc: Get rid of vasprintf.
+	* src/getaddrinfo.h: Fixed constants.
+	* configure.ac: Added the check for asctime_r function.
+	* src/Makefile.am: Added conditional based on HAVE_ASCTIME_R
+	
+2008-06-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added writable test for Socket when the sending message is in progress.
 	Usually the sending message is piece message. Without wriable check,
 	upload latency is dropped to more than 1sec.

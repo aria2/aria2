@@ -43,8 +43,12 @@
 #ifdef ENABLE_BITTORRENT
 # include "BtContext.h"
 #endif // ENABLE_BITTORRENT
+#ifdef HAVE_TERMIOS_H
 #include <termios.h>
+#endif // HAVE_TERMIOS_H
+#ifdef HAVE_SYS_IOCTL_H
 #include <sys/ioctl.h>
+#endif // HAVE_SYS_IOCTL_H
 #include <unistd.h>
 #include <iomanip>
 #include <iostream>
@@ -169,10 +173,12 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
   bool isTTY = isatty(STDOUT_FILENO) == 1;
   unsigned short int cols = 80;
   if(isTTY) {
+#ifdef HAVE_TERMIOS_H
     struct winsize size;
     if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
       cols = size.ws_col;
     }
+#endif // HAVE_TERMIOS_H
     std::cout << '\r' << std::setfill(' ') << std::setw(cols) << ' ' << '\r';
   }
   std::ostringstream o;
