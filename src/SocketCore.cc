@@ -325,7 +325,7 @@ void SocketCore::closeConnection()
 void SocketCore::initEPOLL()
 {
   if((_epfd = epoll_create(1)) == -1) {
-    throw new DlRetryEx(StringFormat("epoll_create failed:%s", errorMsg()).str());
+    throw DlRetryEx(StringFormat("epoll_create failed:%s", errorMsg()).str());
   }
 
   memset(&_epEvent, 0, sizeof(struct epoll_event));
