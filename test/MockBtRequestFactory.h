@@ -17,6 +17,8 @@ public:
 
   virtual size_t countTargetPiece() { return 0; }
 
+  virtual size_t countMissingBlock() { return 0; }
+
   virtual void removeCompletedPiece() {}
 
   virtual void doChokedAction() {}

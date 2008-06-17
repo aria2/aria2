@@ -288,26 +288,32 @@ void DefaultBtInteractive::decideInterest() {
   }
 }
 
-void DefaultBtInteractive::fillPiece(size_t maxPieceNum) {
+void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
   if(pieceStorage->hasMissingPiece(peer)) {
+
+    size_t numMissingBlock = btRequestFactory->countMissingBlock();
+
     if(peer->peerChoking()) {
       if(peer->isFastExtensionEnabled()) {
-	while(btRequestFactory->countTargetPiece() < maxPieceNum) {
+
+	while(numMissingBlock < maxMissingBlock) {
 	  PieceHandle piece = pieceStorage->getMissingFastPiece(peer);
 	  if(piece.isNull()) {
 	    break;
 	  } else {
 	    btRequestFactory->addTargetPiece(piece);
+	    numMissingBlock += piece->countMissingBlock();
 	  }
 	}
       }
     } else {
-      while(btRequestFactory->countTargetPiece() < maxPieceNum) {
+      while(numMissingBlock < maxMissingBlock) {
 	PieceHandle piece = pieceStorage->getMissingPiece(peer);
 	if(piece.isNull()) {
 	  break;
 	} else {
 	  btRequestFactory->addTargetPiece(piece);
+	  numMissingBlock += piece->countMissingBlock();
 	}
       }
     }
@@ -323,14 +329,7 @@ void DefaultBtInteractive::addRequests() {
   } else {
     MAX_PENDING_REQUEST = 6;
   }
-  size_t pieceNum;
-  if(pieceStorage->isEndGame()) {
-    pieceNum = 1;
-  } else {
-    size_t blocks = DIV_FLOOR(btContext->getPieceLength(), Piece::BLOCK_LENGTH);
-    pieceNum = DIV_FLOOR(MAX_PENDING_REQUEST, blocks);
-  }
-  fillPiece(pieceNum);
+  fillPiece(MAX_PENDING_REQUEST);
 
   size_t reqNumToCreate =
     MAX_PENDING_REQUEST <= dispatcher->countOutstandingRequest() ?

@@ -122,7 +122,7 @@ private:
   void checkHave();
   void sendKeepAlive();
   void decideInterest();
-  void fillPiece(size_t maxPieceNum);
+  void fillPiece(size_t maxMissingBlock);
   void addRequests();
   void detectMessageFlooding();
   void checkActiveInteraction();

@@ -162,6 +162,11 @@ size_t Piece::countCompleteBlock() const
   return bitfield->countBlock()-bitfield->countMissingBlock();
 }
 
+size_t Piece::countMissingBlock() const
+{
+  return bitfield->countMissingBlock();
+}
+
 bool Piece::hasBlock(size_t blockIndex) const
 {
   return bitfield->isBitSet(blockIndex);

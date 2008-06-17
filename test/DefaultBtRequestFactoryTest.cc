@@ -123,9 +123,18 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtRequestFactoryTest);
 
 void DefaultBtRequestFactoryTest::testAddTargetPiece() {
-  SharedHandle<Piece> piece(new Piece(0, 16*1024));
-  btRequestFactory->addTargetPiece(piece);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, btRequestFactory->countTargetPiece());
+  {
+    SharedHandle<Piece> piece(new Piece(0, 16*1024*10));
+    btRequestFactory->addTargetPiece(piece);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, btRequestFactory->countTargetPiece());
+  }
+  {
+    SharedHandle<Piece> piece(new Piece(1, 16*1024*9));
+    piece->completeBlock(0);
+    btRequestFactory->addTargetPiece(piece);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, btRequestFactory->countTargetPiece());
+  }
+  CPPUNIT_ASSERT_EQUAL((size_t)18, btRequestFactory->countMissingBlock());
 }
 
 void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {

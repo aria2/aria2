@@ -186,6 +186,30 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
   }
 }
 
+class CountMissingBlock
+{
+private:
+  size_t _numMissingBlock;
+public:
+  CountMissingBlock():_numMissingBlock(0) {}
+
+  size_t getNumMissingBlock()
+  {
+    return _numMissingBlock;
+  }
+
+  void operator()(const SharedHandle<Piece>& piece)
+  {
+    _numMissingBlock += piece->countMissingBlock();
+  }
+};
+
+size_t DefaultBtRequestFactory::countMissingBlock()
+{
+  return std::for_each(pieces.begin(), pieces.end(),
+		       CountMissingBlock()).getNumMissingBlock();
+}
+
 std::deque<SharedHandle<Piece> >& DefaultBtRequestFactory::getTargetPieces()
 {
   return pieces;

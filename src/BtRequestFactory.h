@@ -56,6 +56,8 @@ public:
 
   virtual size_t countTargetPiece() = 0;
 
+  virtual size_t countMissingBlock() = 0;
+
   virtual void removeCompletedPiece() = 0;
 
   virtual void doChokedAction() = 0;

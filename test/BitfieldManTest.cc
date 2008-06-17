@@ -26,6 +26,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetMissingIndex_noarg);
   CPPUNIT_TEST(testGetMissingUnusedIndex_noarg);
   CPPUNIT_TEST(testCountFilteredBlock);
+  CPPUNIT_TEST(testCountMissingBlock);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Randomizer> fixedNumberRandomizer;
@@ -59,6 +60,7 @@ public:
   void testGetMissingUnusedLength();
   void testSetBitRange();
   void testCountFilteredBlock();
+  void testCountMissingBlock();
 };
 
 
@@ -739,6 +741,16 @@ void BitfieldManTest::testCountFilteredBlock()
   bt.disableFilter();
   CPPUNIT_ASSERT_EQUAL((size_t)256, bt.countBlock());
   CPPUNIT_ASSERT_EQUAL((size_t)0, bt.countFilteredBlock());
+}
+
+void BitfieldManTest::testCountMissingBlock()
+{
+  BitfieldMan bt(1024, 1024*10);
+  CPPUNIT_ASSERT_EQUAL((size_t)10, bt.countMissingBlock());
+  bt.setBit(1);
+  CPPUNIT_ASSERT_EQUAL((size_t)9, bt.countMissingBlock());
+  bt.setAllBit();
+  CPPUNIT_ASSERT_EQUAL((size_t)0, bt.countMissingBlock());
 }
 
 } // namespace aria2

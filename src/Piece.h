@@ -95,6 +95,8 @@ public:
 
   size_t countCompleteBlock() const;
 
+  size_t countMissingBlock() const;
+
   bool hasBlock(size_t blockIndex) const;
 
   /**

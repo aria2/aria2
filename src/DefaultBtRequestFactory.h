@@ -72,6 +72,8 @@ public:
     return pieces.size();
   }
 
+  virtual size_t countMissingBlock();
+
   virtual void removeCompletedPiece();
 
   virtual void doChokedAction();
