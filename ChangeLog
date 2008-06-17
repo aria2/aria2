@@ -1,5 +1,10 @@
 2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added missing default value '5' to the usage of --split option.
+	* src/HelpItemFactory.cc
+
+2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Filled up pieces based on the number of missing blocks, rather than
 	simplay the number of piece * block length.
 	* src/BtRequestFactory.h
