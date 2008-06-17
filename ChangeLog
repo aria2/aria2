@@ -1,5 +1,12 @@
 2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated man page.
+	* doc/aria2c.1.txt
+	* doc/aria2c.1
+	* doc/aria2c.1.html
+
+2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added missing default value '5' to the usage of --split option.
 	* src/HelpItemFactory.cc
 

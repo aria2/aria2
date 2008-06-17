@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.2.2" />
+<meta name="generator" content="AsciiDoc 8.2.5" />
 <style type="text/css">
 /* Debug borders */
 p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
@@ -44,12 +44,17 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.3;
 }
 
-h1 {
+h1, h2, h3 {
   border-bottom: 2px solid silver;
 }
 h2 {
-  border-bottom: 2px solid silver;
   padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
 }
 
 div.sectionbody {
@@ -206,7 +211,7 @@ dd > *:first-child {
 ul, ol {
     list-style-position: outside;
 }
-ol.olist2 {
+div.olist2 ol {
   list-style-type: lower-alpha;
 }
 
@@ -306,22 +311,22 @@ div#toc a:visited { color: blue; }
 <span id="author">Tatsuhiro Tsujikawa</span><br />
 <span id="email"><tt>&lt;<a href="mailto:t-tujikawa@users.sourceforge.net">t-tujikawa@users.sourceforge.net</a>&gt;</tt></span><br />
 </div>
-<h2>NAME</h2>
+<h2 id="_name">NAME</h2>
 <div class="sectionbody">
-<p>aria2c - The ultra fast download utility</p>
+<div class="para"><p>aria2c - The ultra fast download utility</p></div>
 </div>
-<h2>SYNOPSIS</h2>
+<h2 id="_synopsis">SYNOPSIS</h2>
 <div class="sectionbody">
-<p>aria2c [<em>OPTIONS</em>] [<em>URL</em> | <em>TORRENT_FILE</em> | <em>METALINK_FILE</em>]&#8230;</p>
+<div class="para"><p>aria2c [<em>OPTIONS</em>] [<em>URL</em> | <em>TORRENT_FILE</em> | <em>METALINK_FILE</em>]&#8230;</p></div>
 </div>
-<h2>DESCRIPTION</h2>
+<h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
-<p>aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.</p>
+<div class="para"><p>aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.</p></div>
 </div>
-<h2>OPTIONS</h2>
+<h2 id="_options">OPTIONS</h2>
 <div class="sectionbody">
-<h3>Basic Options</h3>
-<dl>
+<h3 id="_basic_options">Basic Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
 <dt>
 <strong>-d</strong>, <strong>&#8212;dir</strong>=DIR
 </dt>
@@ -396,9 +401,9 @@ div#toc a:visited { color: blue; }
   Default: <em>basic</em>
 </p>
 </dd>
-</dl>
-<h3>HTTP/FTP Options</h3>
-<dl>
+</dl></div>
+<h3 id="_http_ftp_options">HTTP/FTP Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;lowest-speed-limit</strong>=SPEED
 </dt>
@@ -429,7 +434,7 @@ div#toc a:visited { color: blue; }
   The file name of the downloaded file.
 </p>
 </dd>
-</dl>
+</dl></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -437,11 +442,11 @@ div#toc a:visited { color: blue; }
 </td>
 <td class="content">In Metalink, BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URLs fed to aria2
-is done by command line without <strong>-i</strong>, -Z option, like this:
+is done by command line without <strong>-i</strong>, <strong>-Z</strong> option, like this:
 aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </tr></table>
 </div>
-<dl>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;retry-wait</strong>=SEC
 </dt>
@@ -457,10 +462,13 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </dt>
 <dd>
 <p>
-  Download a file using N connections. N must be between <em>1</em> and <em>5</em>.
-  This option affects all URLs. Thus, aria2 connects to each URL with N
-  connections.
-  Default: <em>1</em>
+  Download a file using N connections.
+  If more than N URLs are given, first N URLs are used and remaining URLs are
+  used for backup.
+  If less than N URLs are given, some of the URLs are used more than once so
+  that totaly N connections are made simultaneously. N must be between <em>1</em> and
+  <em>16</em>.
+  Default: <em>5</em>
 </p>
 </dd>
 <dt>
@@ -472,9 +480,9 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
   Default: <em>60</em>
 </p>
 </dd>
-</dl>
-<h3>HTTP Specific Options</h3>
-<dl>
+</dl></div>
+<h3 id="_http_specific_options">HTTP Specific Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;http-auth-scheme</strong>=SCHEME
 </dt>
@@ -588,9 +596,9 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
   Set user agent for HTTP(S) downloads.
 </p>
 </dd>
-</dl>
-<h3>FTP Specific Options</h3>
-<dl>
+</dl></div>
+<h3 id="_ftp_specific_options">FTP Specific Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;ftp-user</strong>=USER
 </dt>
@@ -652,9 +660,9 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
   Disables netrc support. netrc support is enabled by default.
 </p>
 </dd>
-</dl>
-<h3>BitTorrent/Metalink Options</h3>
-<dl>
+</dl></div>
+<h3 id="_bittorrent_metalink_options">BitTorrent/Metalink Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;select-file</strong>=INDEX&#8230;
 </dt>
@@ -669,7 +677,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
   (see <strong>&#8212;metalink-</strong>* options).
 </p>
 </dd>
-</dl>
+</dl></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -681,7 +689,7 @@ A single piece may include several files or part of files, and aria2
 writes the piece to the appropriate files.</td>
 </tr></table>
 </div>
-<dl>
+<div class="vlist"><dl>
 <dt>
 <strong>-S</strong>, <strong>&#8212;show-files</strong>
 </dt>
@@ -692,9 +700,18 @@ writes the piece to the appropriate files.</td>
   (infohash, piece length, etc) is also printed.
 </p>
 </dd>
-</dl>
-<h3>BitTorrent Specific Options</h3>
-<dl>
+</dl></div>
+<h3 id="_bittorrent_specific_options">BitTorrent Specific Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
+<dt>
+<strong>&#8212;bt-max-open-files</strong>=NUM
+</dt>
+<dd>
+<p>
+  Specify maximum number of files to open in each BitTorrent download.
+  Default: <em>100</em>
+</p>
+</dd>
 <dt>
 <strong>&#8212;bt-min-crypto-level</strong>=<em>plain</em>|<em>arc4</em>
 </dt>
@@ -715,6 +732,17 @@ writes the piece to the appropriate files.</td>
   BitTorrent handshake(\19BitTorrent protocol).
   Thus aria2 always uses Obfuscation handshake.
   Default: <em>false</em>
+</p>
+</dd>
+<dt>
+<strong>&#8212;bt-request-peer-speed-limit</strong>=SPEED
+</dt>
+<dd>
+<p>
+  In BitTorrent downloads, if the download speed is lower than SPEED,
+  aria2 initiates and accepts connections ignoring max peer cap.
+  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+  Default: <em>51200</em>
 </p>
 </dd>
 <dt>
@@ -794,7 +822,7 @@ writes the piece to the appropriate files.</td>
   Default: <em>6881-6999</em>
 </p>
 </dd>
-</dl>
+</dl></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -803,7 +831,7 @@ writes the piece to the appropriate files.</td>
 <td class="content">Make sure that the specified ports are open for incoming TCP traffic.</td>
 </tr></table>
 </div>
-<dl>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;max-upload-limit</strong>=SPEED
 </dt>
@@ -857,9 +885,9 @@ writes the piece to the appropriate files.</td>
   You may not use this option because you can specify torrent file without -T.
 </p>
 </dd>
-</dl>
-<h3>Metalink Specific Options</h3>
-<dl>
+</dl></div>
+<h3 id="_metalink_specific_options">Metalink Specific Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;follow-metalink</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
@@ -950,9 +978,9 @@ writes the piece to the appropriate files.</td>
   Default: <em>true</em>
 </p>
 </dd>
-</dl>
-<h3>Advanced Options</h3>
-<dl>
+</dl></div>
+<h3 id="_advanced_options">Advanced Options</h3><div style="clear:left"></div>
+<div class="vlist"><dl>
 <dt>
 <strong>&#8212;allow-overwrite</strong>=<em>true</em>|<em>false</em>
 </dt>
@@ -1055,7 +1083,7 @@ writes the piece to the appropriate files.</td>
   Default: <em>60</em>
 </p>
 </dd>
-</dl>
+</dl></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -1065,7 +1093,7 @@ writes the piece to the appropriate files.</td>
 are also allocated if they share a same piece.</td>
 </tr></table>
 </div>
-<dl>
+<div class="vlist"><dl>
 <dt>
 <strong>-Z</strong>, <strong>&#8212;force-sequential</strong>[=<em>true</em>|<em>false</em>]
 </dt>
@@ -1158,17 +1186,17 @@ are also allocated if they share a same piece.</td>
   exit.
 </p>
 </dd>
-</dl>
-<h3>URL, TORRENT_FILE, METALINK_FILE</h3>
-<p>You can specify multiple URLs in command-line.
-Unless you specify -Z option, all URLs must point to the same file or downloading will fail.</p>
-<p>You can also specify arbitrary number of torrent files and metalink files
+</dl></div>
+<h3 id="_url_torrent_file_metalink_file">URL, TORRENT_FILE, METALINK_FILE</h3><div style="clear:left"></div>
+<div class="para"><p>You can specify multiple URLs in command-line.
+Unless you specify <strong>-Z</strong> option, all URLs must point to the same file or downloading will fail.</p></div>
+<div class="para"><p>You can also specify arbitrary number of torrent files and metalink files
 stored in a local drive. Please note that they are always treated as a
-separate download.</p>
-<p>You can specify both torrent file with -T option and URLs. By doing this,
+separate download.</p></div>
+<div class="para"><p>You can specify both torrent file with -T option and URLs. By doing this,
 download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
 while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
-only single file torrent can be integrated with HTTP(S)/FTP.</p>
+only single file torrent can be integrated with HTTP(S)/FTP.</p></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -1179,10 +1207,10 @@ contains "&amp;" or any characters that have special meaning in shell.</td>
 </tr></table>
 </div>
 </div>
-<h2>EXAMPLES</h2>
+<h2 id="_examples">EXAMPLES</h2>
 <div class="sectionbody">
-<h3>HTTP/FTP Segmented Download</h3>
-<h4>Download a file using 1 connection</h4>
+<h3 id="_http_ftp_segmented_download">HTTP/FTP Segmented Download</h3><div style="clear:left"></div>
+<h4 id="_download_a_file">Download a file</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c http://host/file.zip</tt></pre>
@@ -1192,25 +1220,42 @@ contains "&amp;" or any characters that have special meaning in shell.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
+<td class="content">aria2 uses 5 connections to download 1 file by default.</td>
+</tr></table>
+</div>
+<h4 id="_download_a_file_using_1_connection">Download a file using 1 connection</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c -s1 http://host/file.zip</tt></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">aria2 uses 5 connections to download 1 file by default.
+-s1 limtis the number of connections to just 1.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
 <td class="content">To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument at the same directory. You can change URLs as long as they are pointing to the same file.</td>
 </tr></table>
 </div>
-<h4>Download a file using 2 connections</h4>
-<div class="listingblock">
-<div class="content">
-<pre><tt>aria2c -s2 http://host/file.zip</tt></pre>
-</div></div>
-<h4>Download a file from 2 different HTTP servers</h4>
+<h4 id="_download_a_file_from_2_different_http_servers">Download a file from 2 different HTTP servers</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c http://host/file.zip http://mirror/file.zip</tt></pre>
 </div></div>
-<h4>Download a file from HTTP and FTP servers</h4>
+<h4 id="_download_a_file_from_http_and_ftp_servers">Download a file from HTTP and FTP servers</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c http://host1/file.zip ftp://host2/file.zip</tt></pre>
 </div></div>
-<h4>Download files listed in a file concurrently</h4>
+<h4 id="_download_files_listed_in_a_file_concurrently">Download files listed in a file concurrently</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -ifiles.txt -j2</tt></pre>
@@ -1223,13 +1268,13 @@ contains "&amp;" or any characters that have special meaning in shell.</td>
 <td class="content">-j option specifies the number of parallel downloads.</td>
 </tr></table>
 </div>
-<h3>Metalink Download</h3>
-<h4>Download files with remote Metalink</h4>
+<h3 id="_metalink_download">Metalink Download</h3><div style="clear:left"></div>
+<h4 id="_download_files_with_remote_metalink">Download files with remote Metalink</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --follow-metalink=mem http://host/file.metalink</tt></pre>
 </div></div>
-<h4>Download using a local metalink file</h4>
+<h4 id="_download_using_a_local_metalink_file">Download using a local metalink file</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -p --lowest-speed-limit=4000 file.metalink</tt></pre>
@@ -1244,12 +1289,12 @@ You can resume the transfer by running aria2c with the same argument at the same
 directory.</td>
 </tr></table>
 </div>
-<h4>Download several local metalink files</h4>
+<h4 id="_download_several_local_metalink_files">Download several local metalink files</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -j2 file1.metalink file2.metalink</tt></pre>
 </div></div>
-<h4>Download only selected files using index</h4>
+<h4 id="_download_only_selected_files_using_index">Download only selected files using index</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --select-file=1-4,8 file.metalink</tt></pre>
@@ -1262,18 +1307,18 @@ directory.</td>
 <td class="content">The index is printed to the console using -S option.</td>
 </tr></table>
 </div>
-<h4>Download a file using a local .metalink file with user preference</h4>
+<h4 id="_download_a_file_using_a_local_metalink_file_with_user_preference">Download a file using a local .metalink file with user preference</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US file.metalink</tt></pre>
 </div></div>
-<h3>BitTorrent Download</h3>
-<h4>Download files from remote BitTorrent file</h4>
+<h3 id="_bittorrent_download">BitTorrent Download</h3><div style="clear:left"></div>
+<h4 id="_download_files_from_remote_bittorrent_file">Download files from remote BitTorrent file</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --follow-bittorrent=mem http://host/file.torrent</tt></pre>
 </div></div>
-<h4>Download using a local torrent file</h4>
+<h4 id="_download_using_a_local_torrent_file">Download using a local torrent file</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --max-upload-limit=40K file.torrent</tt></pre>
@@ -1294,12 +1339,12 @@ directory.</td>
 <td class="content">To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument at the same directory.</td>
 </tr></table>
 </div>
-<h4>Download 2 torrents</h4>
+<h4 id="_download_2_torrents">Download 2 torrents</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -j2 file1.torrent file2.torrent</tt></pre>
 </div></div>
-<h4>Download a file using torrent and HTTP/FTP server</h4>
+<h4 id="_download_a_file_using_torrent_and_http_ftp_server">Download a file using torrent and HTTP/FTP server</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -Ttest.torrent http://host1/file ftp://host2/file</tt></pre>
@@ -1312,7 +1357,7 @@ directory.</td>
 <td class="content">Downloading multi file torrent with HTTP/FTP is not supported.</td>
 </tr></table>
 </div>
-<h4>Download only selected files using index(usually called "selectable download")</h4>
+<h4 id="_download_only_selected_files_using_index_usually_called_selectable_download">Download only selected files using index(usually called "selectable download")</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --select-file=1-4,8 file.torrent</tt></pre>
@@ -1325,7 +1370,7 @@ directory.</td>
 <td class="content">The index is printed to the console using -S option.</td>
 </tr></table>
 </div>
-<h4>Change the listening port for incoming peer</h4>
+<h4 id="_change_the_listening_port_for_incoming_peer">Change the listening port for incoming peer</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --listen-port=7000-7001,8000 file.torrent</tt></pre>
@@ -1339,7 +1384,7 @@ directory.</td>
 to you to do it manually.</td>
 </tr></table>
 </div>
-<h4>Specify the condition to stop program after torrent download finished</h4>
+<h4 id="_specify_the_condition_to_stop_program_after_torrent_download_finished">Specify the condition to stop program after torrent download finished</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --seed-time=120 --seed-ratio=1.0 file.torrent</tt></pre>
@@ -1352,12 +1397,12 @@ to you to do it manually.</td>
 <td class="content">In the above example, the program exists when the 120 minutes has elapsed since download completed or seed ratio reaches 1.0.</td>
 </tr></table>
 </div>
-<h4>Throttle upload speed</h4>
+<h4 id="_throttle_upload_speed">Throttle upload speed</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --max-upload-limit=100K file.torrent</tt></pre>
 </div></div>
-<h4>Enable DHT</h4>
+<h4 id="_enable_dht">Enable DHT</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --enable-dht --dht-listen-port=6881 file.torrent</tt></pre>
@@ -1371,8 +1416,8 @@ to you to do it manually.</td>
 forwarding, it's up to you to do it manually.</td>
 </tr></table>
 </div>
-<h3>More advanced HTTP features</h3>
-<h4>Load cookies</h4>
+<h3 id="_more_advanced_http_features">More advanced HTTP features</h3><div style="clear:left"></div>
+<h4 id="_load_cookies">Load cookies</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --load-cookies=cookies.txt http://host/file.zip</tt></pre>
@@ -1385,18 +1430,18 @@ forwarding, it's up to you to do it manually.</td>
 <td class="content">You can use Firefox/Mozilla's cookie file without modification.</td>
 </tr></table>
 </div>
-<h4>Resume download started by web browsers or another programs</h4>
+<h4 id="_resume_download_started_by_web_browsers_or_another_programs">Resume download started by web browsers or another programs</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -c -s2 http://host/partiallydownloadedfile.zip</tt></pre>
 </div></div>
-<h3>And more advanced features</h3>
-<h4>Throttle download speed</h4>
+<h3 id="_and_more_advanced_features">And more advanced features</h3><div style="clear:left"></div>
+<h4 id="_throttle_download_speed">Throttle download speed</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --max-download-limit=100K file.metalink</tt></pre>
 </div></div>
-<h4>Repair a damaged download using &#8212;check-integrity option</h4>
+<h4 id="_repair_a_damaged_download_using_8212_check_integrity_option">Repair a damaged download using &#8212;check-integrity option</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --check-integrity=true file.metalink</tt></pre>
@@ -1410,18 +1455,18 @@ forwarding, it's up to you to do it manually.</td>
 checksums.</td>
 </tr></table>
 </div>
-<h4>Drop connection if download speed is lower than specified value</h4>
+<h4 id="_drop_connection_if_download_speed_is_lower_than_specified_value">Drop connection if download speed is lower than specified value</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --lowest-speed-limit=10K file.metalink</tt></pre>
 </div></div>
-<h4>Parameterized URI support</h4>
-<p>You can specify set of parts:</p>
+<h4 id="_parameterized_uri_support">Parameterized URI support</h4>
+<div class="para"><p>You can specify set of parts:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -P http://{host1,host2,host3}/file.iso</tt></pre>
 </div></div>
-<p>You can specify numeric sequence:</p>
+<div class="para"><p>You can specify numeric sequence:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -Z -P http://host/image[000-100].png</tt></pre>
@@ -1434,33 +1479,33 @@ checksums.</td>
 <td class="content">-Z option is required if the all URIs don't point to the same file, such as the above example.</td>
 </tr></table>
 </div>
-<p>You can specify step counter:</p>
+<div class="para"><p>You can specify step counter:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -Z -P http://host/image[A-Z:2].png</tt></pre>
 </div></div>
-<h4>Parallel downloads of arbitrary number of URL,metalink,torrent</h4>
+<h4 id="_parallel_downloads_of_arbitrary_number_of_url_metalink_torrent">Parallel downloads of arbitrary number of URL,metalink,torrent</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c -j3 -Z http://host/file1 file2.torrent file3.metalink</tt></pre>
 </div></div>
-<h4>BitTorrent Encryption</h4>
-<p>Encrypt whole payload using ARC4:</p>
+<h4 id="_bittorrent_encryption">BitTorrent Encryption</h4>
+<div class="para"><p>Encrypt whole payload using ARC4:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --bt-min-crypto-level=arc4 --bt-require-crypto=true file.torrent</tt></pre>
 </div></div>
 </div>
-<h2>RESUME DOWNLOAD</h2>
+<h2 id="_resume_download">RESUME DOWNLOAD</h2>
 <div class="sectionbody">
-<p>Usually, you can resume transfer by just issuing same command(aria2c URL)
-if the previous transfer is made by aria2.</p>
-<p>If the previous transfer is made by a browser or wget like sequencial
-download manager, then use -c option to continue the transfer(aria2c -c URL).</p>
+<div class="para"><p>Usually, you can resume transfer by just issuing same command(aria2c URL)
+if the previous transfer is made by aria2.</p></div>
+<div class="para"><p>If the previous transfer is made by a browser or wget like sequencial
+download manager, then use -c option to continue the transfer(aria2c -c URL).</p></div>
 </div>
-<h2>CONTROL FILE</h2>
+<h2 id="_control_file">CONTROL FILE</h2>
 <div class="sectionbody">
-<p>aria2 uses a control file to keep track the progress of download.
+<div class="para"><p>aria2 uses a control file to keep track the progress of download.
 A control file is placed at the same directory of the dowloading file and
 its filename is the filename of downloading file with ".aria2" appended.
 For example, if you are downloading file.zip, then the control file should be
@@ -1468,32 +1513,32 @@ file.zip.aria2.
 (There is a exception for this naming convention.
 If you are downloading a multi torrent, its control file is the "top directory"
 name of the torrent with ".aria2" appended.
-The "top directory" name is a value of "name" key in "info" directory in a torrent file.)</p>
-<p>Usually a control file is deleted once download completed.
+The "top directory" name is a value of "name" key in "info" directory in a torrent file.)</p></div>
+<div class="para"><p>Usually a control file is deleted once download completed.
 If aria2 decides that download cannot be resumed(for example, when downloading
 a file from a HTTP server which doesn't support resume), a control file is
-not created.</p>
-<p>Normally if you lose a control file, you cannot resume download.
+not created.</p></div>
+<div class="para"><p>Normally if you lose a control file, you cannot resume download.
 But if you have a torrent or metalink with chunk checksums for the file,
 you can resume the download without a control file by giving
-&#8212;check-integrity=true option to aria2c in command-line.</p>
+&#8212;check-integrity=true option to aria2c in command-line.</p></div>
 </div>
-<h2>SEEDING DOWNLOADED FILE IN BITTORRENT</h2>
+<h2 id="_seeding_downloaded_file_in_bittorrent">SEEDING DOWNLOADED FILE IN BITTORRENT</h2>
 <div class="sectionbody">
-<p>You can seed downloaded file using &#8212;check-integrity=true option.</p>
+<div class="para"><p>You can seed downloaded file using &#8212;check-integrity=true option.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --check-integrity=true file.torrent</tt></pre>
 </div></div>
 </div>
-<h2>FILES</h2>
+<h2 id="_files">FILES</h2>
 <div class="sectionbody">
-<h3>aria2.conf</h3>
-<p>User configuration file.
+<h3 id="_aria2_conf">aria2.conf</h3><div style="clear:left"></div>
+<div class="para"><p>User configuration file.
 It must be placed under $HOME/.aria2 and must be named as aria2.conf.
 In each line, there is 1 parameter whose syntax is name=value pair,
 where name is the long command-line option name without <em>&#8212;</em> prefix.
-The lines beginning <em>#</em> are treated as comments.</p>
+The lines beginning <em>#</em> are treated as comments.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt># sample configuration file for aria2c
@@ -1503,37 +1548,37 @@ seed-ratio=1.0
 max-upload-limit=50K
 ftp-pasv=true</tt></pre>
 </div></div>
-<h3>dht.dat</h3>
-<p>The routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p>
+<h3 id="_dht_dat">dht.dat</h3><div style="clear:left"></div>
+<div class="para"><p>The routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p></div>
 </div>
-<h2>RESOURCES</h2>
+<h2 id="_resources">RESOURCES</h2>
 <div class="sectionbody">
-<p>Project web site: <a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a></p>
-<p>metalink: <a href="http://www.metalinker.org/">http://www.metalinker.org/</a></p>
+<div class="para"><p>Project web site: <a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a></p></div>
+<div class="para"><p>metalink: <a href="http://www.metalinker.org/">http://www.metalinker.org/</a></p></div>
 </div>
-<h2>REPORTING BUGS</h2>
+<h2 id="_reporting_bugs">REPORTING BUGS</h2>
 <div class="sectionbody">
-<p>Report bugs to Tatsuhiro Tsujikawa &lt;t-tujikawa@users.sourceforge.net&gt;</p>
+<div class="para"><p>Report bugs to Tatsuhiro Tsujikawa &lt;t-tujikawa@users.sourceforge.net&gt;</p></div>
 </div>
-<h2>AUTHOR</h2>
+<h2 id="_author">AUTHOR</h2>
 <div class="sectionbody">
-<p>Tatsuhiro Tsujikawa &lt;t-tujikawa@users.sourceforge.net&gt;</p>
+<div class="para"><p>Tatsuhiro Tsujikawa &lt;t-tujikawa@users.sourceforge.net&gt;</p></div>
 </div>
-<h2>COPYRIGHT</h2>
+<h2 id="_copyright">COPYRIGHT</h2>
 <div class="sectionbody">
-<p>Copyright &#169; 2006, 2008 Tatsuhiro Tsujikawa</p>
-<p>This program is free software; you can redistribute it and/or modify
+<div class="para"><p>Copyright &#169; 2006, 2008 Tatsuhiro Tsujikawa</p></div>
+<div class="para"><p>This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.</p>
-<p>This program is distributed in the hope that it will be useful,
+(at your option) any later version.</p></div>
+<div class="para"><p>This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
+GNU General Public License for more details.</p></div>
+<div class="para"><p>You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA</p>
-<p>In addition, as a special exception, the copyright holders give
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA</p></div>
+<div class="para"><p>In addition, as a special exception, the copyright holders give
 permission to link the code of portions of this program with the
 OpenSSL library under certain conditions as described in each
 individual source file, and distribute linked combinations
@@ -1544,11 +1589,11 @@ file(s) with this exception, you may extend this exception to your
 version of the file(s), but you are not obligated to do so.  If you
 do not wish to do so, delete this exception statement from your
 version.  If you delete this exception statement from all source
-files in the program, then also delete it here.</p>
+files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 21-May-2008 16:44:28 JST
+Last updated 2008-06-17 23:18:08 JST
 </div>
 </div>
 </body>

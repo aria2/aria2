@@ -78,7 +78,7 @@ HTTP/FTP Options
 [NOTE]
 In Metalink, BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URLs fed to aria2
-is done by command line without *-i*, -Z option, like this:
+is done by command line without *-i*, *-Z* option, like this:
 aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
 
 *--retry-wait*=SEC::
@@ -87,10 +87,13 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
   Default: '5'
 
 *-s*, *--split*=N::
-  Download a file using N connections. N must be between '1' and '5'.
-  This option affects all URLs. Thus, aria2 connects to each URL with N
-  connections.
-  Default: '1'
+  Download a file using N connections.
+  If more than N URLs are given, first N URLs are used and remaining URLs are
+  used for backup.
+  If less than N URLs are given, some of the URLs are used more than once so
+  that totaly N connections are made simultaneously. N must be between '1' and
+  '16'.
+  Default: '5'
 
 *-t*, *--timeout*=SEC::
   Set timeout in seconds.
@@ -198,6 +201,10 @@ writes the piece to the appropriate files.
 
 BitTorrent Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*--bt-max-open-files*=NUM::
+  Specify maximum number of files to open in each BitTorrent download.
+  Default: '100'
+
 *--bt-min-crypto-level*='plain'|'arc4'::
   Set minimum level of encryption method.
   If several encryption methods are provided by a peer, aria2 chooses a lowest
@@ -209,6 +216,12 @@ BitTorrent Specific Options
   BitTorrent handshake(\19BitTorrent protocol).
   Thus aria2 always uses Obfuscation handshake.
   Default: 'false' 
+
+*--bt-request-peer-speed-limit*=SPEED::
+  In BitTorrent downloads, if the download speed is lower than SPEED,
+  aria2 initiates and accepts connections ignoring max peer cap.
+  You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
+  Default: '51200'
 
 *--dht-entry-point*=HOST:PORT::
   Set host and port as an entry point to DHT network.
@@ -410,7 +423,7 @@ are also allocated if they share a same piece.
   Enable parameterized URI support.
   You can specify set of parts: 'http://{sv1,sv2,sv3}/foo.iso'.
   Also you can specify numeric sequences with step counter:
-  '\http://host/image[000-100:2].img'.
+  '\\http://host/image[000-100:2].img'.
   A step counter can be omitted.
   If all URIs do not point to the same file, such as the second example above,
   -Z option is required.
@@ -438,7 +451,7 @@ are also allocated if they share a same piece.
 URL, TORRENT_FILE, METALINK_FILE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can specify multiple URLs in command-line.
-Unless you specify -Z option, all URLs must point to the same file or downloading will fail.
+Unless you specify *-Z* option, all URLs must point to the same file or downloading will fail.
 
 You can also specify arbitrary number of torrent files and metalink files
 stored in a local drive. Please note that they are always treated as a
@@ -457,19 +470,25 @@ EXAMPLES
 --------
 HTTP/FTP Segmented Download
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Download a file
+^^^^^^^^^^^^^^^
+--------------------------------
+aria2c http://host/file.zip
+--------------------------------
+[NOTE]
+aria2 uses 5 connections to download 1 file by default.
+
 Download a file using 1 connection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------
-aria2c http://host/file.zip
+aria2c -s1 http://host/file.zip
 ----------------------------------
 [NOTE]
-To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument at the same directory. You can change URLs as long as they are pointing to the same file.
+aria2 uses 5 connections to download 1 file by default.
+-s1 limtis the number of connections to just 1.
 
-Download a file using 2 connections
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
---------------------------------
-aria2c -s2 http://host/file.zip
---------------------------------
+[NOTE]
+To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument at the same directory. You can change URLs as long as they are pointing to the same file.
 
 Download a file from 2 different HTTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
