@@ -237,6 +237,8 @@ private:
 
   int _epfd;
 
+  struct epoll_event* _epEvents;
+
   static const size_t EPOLL_EVENTS_MAX = 1024;
 
 #else // !HAVE_EPOLL

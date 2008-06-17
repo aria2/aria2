@@ -398,6 +398,8 @@ DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 
   _epfd = epoll_create(EPOLL_EVENTS_MAX);
 
+  _epEvents = new struct epoll_event[EPOLL_EVENTS_MAX];
+
 #else // !HAVE_EPOLL
 
   updateFdSet();
@@ -419,6 +421,7 @@ DownloadEngine::~DownloadEngine() {
     }
   }
 
+  delete [] _epEvents;
 
 #endif // HAVE_EPOLL
 }
@@ -496,12 +499,8 @@ void DownloadEngine::waitData()
   // timeout is millisec
   int timeout = _noWait ? 0 : 1000;
 
-  // TODO make member variable
-  const size_t _maxEpEvents = EPOLL_EVENTS_MAX;
-  struct epoll_event _epEvents[_maxEpEvents];
-
   int res;
-  while((res = epoll_wait(_epfd, _epEvents, _maxEpEvents, timeout)) == -1 &&
+  while((res = epoll_wait(_epfd, _epEvents, EPOLL_EVENTS_MAX, timeout)) == -1 &&
 	errno == EINTR);
 
   if(res > 0) {
