@@ -76,15 +76,4 @@ void BencodeVisitor::visit(const Dictionary* d)
   _bencodedData += "e";
 }
 
-void BencodeVisitor::visit(const MetaEntry* e)
-{
-  if(dynamic_cast<const Data*>(e) != 0) {
-    visit(reinterpret_cast<const Data*>(e));
-  } else if(dynamic_cast<const List*>(e) != 0) {
-    visit(reinterpret_cast<const List*>(e));
-  } else if(dynamic_cast<const Dictionary*>(e) != 0) {
-    visit(reinterpret_cast<const Dictionary*>(e));
-  }
-}
-
 } // namespace aria2

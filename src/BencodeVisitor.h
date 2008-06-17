@@ -52,11 +52,11 @@ public:
   BencodeVisitor();
   ~BencodeVisitor();
 
-  void visit(const Data* d);
-  void visit(const Dictionary* d);
-  void visit(const List* l);
+  virtual void visit(const Data* d);
 
-  virtual void visit(const MetaEntry* e);
+  virtual void visit(const Dictionary* d);
+
+  virtual void visit(const List* l);
 
   const std::string& getBencodedData() const
   {

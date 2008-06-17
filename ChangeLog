@@ -1,4 +1,13 @@
 2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
+	Removed visit(const MetaEntry*)
+	* src/MetaEntryVisitor.h:
+	Added visit(const Data*),visit(const Dictionary*),visit(const List*)
+	and made them virtual.
+	* src/BencodeVisitor.h
+	* src/BencodeVisitor.cc
+
+2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Updated po files.
 	* po/aria2c.pot

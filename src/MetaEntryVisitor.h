@@ -39,13 +39,19 @@
 
 namespace aria2 {
 
-class MetaEntry;
+class Data;
+class Dictionary;
+class List;
 
 class MetaEntryVisitor {
 public:
   virtual ~MetaEntryVisitor() {}
 
-  virtual void visit(const MetaEntry* e) = 0;
+  virtual void visit(const Data* d) = 0;
+
+  virtual void visit(const Dictionary* d) = 0;
+  
+  virtual void visit(const List* l) = 0;
 };
 
 } // namespace aria2
