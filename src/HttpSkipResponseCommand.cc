@@ -129,6 +129,11 @@ bool HttpSkipResponseCommand::executeInternal()
 bool HttpSkipResponseCommand::processResponse()
 {
   if(_httpResponse->isRedirect()) {
+    unsigned int rnum =
+      _httpResponse->getHttpRequest()->getRequest()->getRedirectCount();
+    if(rnum >= Request::MAX_REDIRECT) {
+      throw DlAbortEx(StringFormat("Too many redirects: count=%u", rnum).str());
+    }
     _httpResponse->processRedirect();
     logger->info(MSG_REDIRECT, cuid, _httpResponse->getRedirectURI().c_str());
     return prepareForRetry(0);

@@ -291,6 +291,8 @@ void RequestTest::testRedirectUrl() {
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
+  // See redirect count is incremented.
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, req.getRedirectCount());
 }
 
 void RequestTest::testRedirectUrl2() {

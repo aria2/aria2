@@ -56,6 +56,7 @@ const std::string Request::PROTO_FTP("ftp");
 
 Request::Request():
   port(0), tryCount(0),
+  _redirectCount(0),
   _supportsPersistentConnection(true),
   _keepAliveHint(false),
   _pipeliningHint(false),
@@ -78,6 +79,7 @@ bool Request::resetUrl() {
 bool Request::redirectUrl(const std::string& url) {
   previousUrl = A2STR::NIL;
   _supportsPersistentConnection = true;
+  ++_redirectCount;
   return parseUrl(url);
 }
 
@@ -196,6 +198,16 @@ void Request::urlencode(std::string& result, const std::string& src) const
     }
   }
   result.erase(result.size()-2);
+}
+
+void Request::resetRedirectCount()
+{
+  _redirectCount = 0;
+}
+  
+unsigned int Request::getRedirectCount() const
+{
+  return _redirectCount;
 }
 
 } // namespace aria2

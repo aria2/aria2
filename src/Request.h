@@ -73,6 +73,8 @@ private:
   std::string _query;
   unsigned int tryCount;
 
+  unsigned int _redirectCount;
+
   // whether or not the server supports persistent connection
   bool _supportsPersistentConnection;
   // enable keep-alive if possible.
@@ -110,6 +112,10 @@ public:
   void addTryCount() { tryCount++; }
   unsigned int getTryCount() const { return tryCount; }
   //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
+
+  void resetRedirectCount();
+  
+  unsigned int getRedirectCount() const;
 
   const std::string& getUrl() const { return url; }
   const std::string& getCurrentUrl() const { return currentUrl; }
@@ -179,6 +185,8 @@ public:
   static const std::string PROTO_HTTPS;
 
   static const std::string PROTO_FTP;
+
+  static const unsigned int MAX_REDIRECT = 20;
 
 };
 

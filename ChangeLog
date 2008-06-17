@@ -1,5 +1,14 @@
 2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Cancel download if http redirect is bounded more than 20 times.
+	* src/AbstractCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/Request.cc
+	* src/Request.h
+	* test/RequestTest.cc
+
+2008-06-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed unhandled exception(removed keyword `new').
 	* src/SocketCore.cc (initEPOLL)
 
