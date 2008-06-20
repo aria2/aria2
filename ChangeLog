@@ -1,5 +1,9 @@
 2008-06-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* Release 0.14.0
+
+2008-06-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added build test script
 	* build_test.sh
 	
