@@ -33,6 +33,7 @@ AC_ARG_WITH([libcares], [  --with-libcares            use c-ares library if inst
 
 AC_ARG_ENABLE([bittorrent], [ --enable-bittorrent        enable BitTorrent support. Default: yes], [enable_bittorrent=$enableval], [enable_bittorrent=yes])
 AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. Default: yes], [enable_metalink=$enableval], [enable_metalink=yes])
+AC_ARG_ENABLE([epoll], [ --enable-epoll             enable epoll support. Default: yes], [enable_epoll=$enableval], [enable_epoll=yes])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -183,7 +184,9 @@ AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify atexit daemon ftruncate getcwd gethostbyaddr gethostbyname getpagesize inet_ntoa memchr memmove mempcpy memset mkdir munmap nl_langinfo posix_memalign putenv rmdir select setlocale sleep socket stpcpy strcasecmp strchr strcspn strdup strerror strncasecmp strstr strtol strtoul strtoull tzset unsetenv usleep])
 
-AC_CHECK_FUNCS([epoll_create])
+if test "x$enable_epoll" = "xyes"; then
+   AC_CHECK_FUNCS([epoll_create])
+fi
 
 AC_CHECK_FUNCS([asctime_r],
 	[AM_CONDITIONAL([HAVE_ASCTIME_R], true)],

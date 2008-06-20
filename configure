@@ -1414,6 +1414,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
  --enable-bittorrent        enable BitTorrent support. Default: yes
  --enable-metalink          enable Metalink support. Default: yes
+ --enable-epoll             enable epoll support. Default: yes
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --disable-xmltest       Do not try to compile and run a test LIBXML program
@@ -2738,6 +2739,13 @@ if test "${enable_metalink+set}" = set; then
   enableval=$enable_metalink; enable_metalink=$enableval
 else
   enable_metalink=yes
+fi
+
+# Check whether --enable-epoll was given.
+if test "${enable_epoll+set}" = set; then
+  enableval=$enable_epoll; enable_epoll=$enableval
+else
+  enable_epoll=yes
 fi
 
 
@@ -20000,6 +20008,7 @@ fi
 done
 
 
+if test "x$enable_epoll" = "xyes"; then
 
 for ac_func in epoll_create
 do
@@ -20094,6 +20103,7 @@ _ACEOF
 fi
 done
 
+fi
 
 
 for ac_func in asctime_r
