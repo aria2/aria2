@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-06-17 01:17+0900\n"
-"PO-Revision-Date: 2008-05-21 18:10+0000\n"
+"POT-Creation-Date: 2008-06-20 21:18+0900\n"
+"PO-Revision-Date: 2008-06-13 20:44+0000\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-05-25 01:20+0000\n"
+"X-Launchpad-Export-Date: 2008-06-20 12:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:71
@@ -980,7 +980,6 @@ msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 Exécuter en tant que service."
 
 #: src/usage_text.h:46
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -993,14 +992,6 @@ msgid ""
 "made\n"
 "                              simultaneously."
 msgstr ""
-" -s, --split=N                Télécharger un fichier en utilisant N "
-"connexions. N doit être\n"
-"                              entre 1 et 5. Cette option affecte tous les "
-"URLs.\n"
-"                              Ainsi, aria2 se connecte à chaque URL en "
-"utilisant\n"
-"                              N connexions.\n"
-"                              Défaut: 1"
 
 #: src/usage_text.h:53
 msgid ""
@@ -1683,7 +1674,6 @@ msgstr ""
 "cryptées."
 
 #: src/usage_text.h:279
-#, fuzzy
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -1692,22 +1682,13 @@ msgid ""
 "                              accepts connections ignoring max peer cap.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --no-file-allocation-limit=SIZE Aucune allocation de fichier ne sera faite "
-"pour les fichiers dont\n"
-"                              la taille est plus petite que SIZE.\n"
-"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:284
-#, fuzzy
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
 "                              BitTorrent download."
 msgstr ""
-" -m, --max-tries=N            Définir le nombre d'essais. 0 veut dire "
-"illimité.\n"
-"                              Défaut: 5"
 
 #: src/usage_text.h:287
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
@@ -1903,21 +1884,24 @@ msgstr ""
 "console."
 
 #: src/usage_text.h:354
+#, fuzzy
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
+" --log-level=LEVEL            Configure le niveau de détail du fichier log "
+"en sortie."
 
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
 
-#: src/DownloadEngine.cc:794
+#: src/DownloadEngine.cc:793
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Séquence d'arrêt débutée... Pressez Ctrl-C une nouvelle fois pour un arrêt "
 "d'urgence."
 
-#: src/DownloadEngine.cc:798
+#: src/DownloadEngine.cc:797
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Séquence d'arrêt d'urgence débutée..."
 
@@ -2101,6 +2085,24 @@ msgstr "Merci de vous reférer au manuel pour plus d'information."
 
 #~ msgid "       %s [options] -M METALINK_FILE\n"
 #~ msgstr "       %s [options] -M FICHIER_METALINK\n"
+
+#~ msgid ""
+#~ " -s, --split=N                Download a file using N connections. N must "
+#~ "be\n"
+#~ "                              between 1 and 5. This option affects all "
+#~ "URLs.\n"
+#~ "                              Thus, aria2 connects to each URL with\n"
+#~ "                              N connections.\n"
+#~ "                              Default: 1"
+#~ msgstr ""
+#~ " -s, --split=N                Télécharger un fichier en utilisant N "
+#~ "connexions. N doit être\n"
+#~ "                              entre 1 et 5. Cette option affecte tous les "
+#~ "URLs.\n"
+#~ "                              Ainsi, aria2 se connecte à chaque URL en "
+#~ "utilisant\n"
+#~ "                              N connexions.\n"
+#~ "                              Défaut: 1"
 
 #~ msgid ""
 #~ " --check-integrity=true|false  Check file integrity by validating piece "

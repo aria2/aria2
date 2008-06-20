@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-06-17 01:17+0900\n"
+"POT-Creation-Date: 2008-06-20 21:18+0900\n"
 "PO-Revision-Date: 2008-05-16 01:07+0900\n"
 "Last-Translator: hm <colimit@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
@@ -1586,12 +1586,12 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
-#: src/DownloadEngine.cc:794
+#: src/DownloadEngine.cc:793
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:798
+#: src/DownloadEngine.cc:797
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 

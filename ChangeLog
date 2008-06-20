@@ -1,5 +1,12 @@
 2008-06-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated ja.po and fr.po. Great thanks for french translators and
+	Sebastien WILLEMIJNS.
+	* po/fr.po
+	* po/ja.po	
+
+2008-06-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added configure option to enable/disable epoll support.
 	* configure.ac
 
