@@ -54,6 +54,8 @@
 #include "ServerHost.h"
 #include "Socket.h"
 #include "StringFormat.h"
+#include "DiskAdaptor.h"
+#include "SegmentMan.h"
 #include <stdint.h>
 #include <cassert>
 #include <utility>
@@ -79,7 +81,12 @@ bool FtpNegotiationCommand::executeInternal() {
   while(processSequence(_segments.front()));
   if(sequence == SEQ_RETRY) {
     return prepareForRetry(0);
+  } else if(sequence == SEQ_EXIT) {
+    return true;
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
+
+    afterFileAllocation();
+
     FtpDownloadCommand* command =
       new FtpDownloadCommand(cuid, req, _requestGroup, ftp, e, dataSocket, socket);
     command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
@@ -97,6 +104,13 @@ bool FtpNegotiationCommand::executeInternal() {
       sequence = SEQ_SEND_PASV;
     } else {
       sequence = SEQ_SEND_PORT;
+    }
+    return false;
+  } else if(sequence == SEQ_FILE_PREPARATION_ON_RETR) {
+    if(e->option->getAsBool(PREF_FTP_PASV)) {
+      sequence = SEQ_NEGOTIATION_COMPLETED;
+    } else {
+      sequence = SEQ_WAIT_CONNECTION;
     }
     return false;
   } else {
@@ -206,32 +220,25 @@ bool FtpNegotiationCommand::sendSize() {
   return false;
 }
 
-bool FtpNegotiationCommand::recvSize() {
-  uint64_t size = 0;
-  unsigned int status = ftp->receiveSizeResponse(size);
-  if(status == 0) {
-    return false;
+bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
+{
+  SingleFileDownloadContextHandle dctx =
+    dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
+  dctx->setTotalLength(totalLength);
+  dctx->setFilename(Util::urldecode(req->getFile()));
+  _requestGroup->preDownloadProcessing();
+  if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
+    throw DownloadFailureException
+      (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+		    _requestGroup->getFilePath().c_str()).str());
   }
-  if(status != 213) {
-    poolConnection();
-    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
-  }
-  if(size > INT64_MAX) {
-    throw DlAbortEx
-      (StringFormat(EX_TOO_LARGE_FILE, Util::uitos(size, true).c_str()).str());
-  }
-  if(_requestGroup->getPieceStorage().isNull()) {
-    SingleFileDownloadContextHandle dctx =
-      dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
-    dctx->setTotalLength(size);
-    dctx->setFilename(Util::urldecode(req->getFile()));
-    _requestGroup->preDownloadProcessing();
-    if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
-      throw DownloadFailureException
-	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-		      _requestGroup->getFilePath().c_str()).str());
-    }
+  if(totalLength == 0) {
 
+    _requestGroup->initPieceStorage();
+    _requestGroup->shouldCancelDownloadForSafety();
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+
+  } else {
     _requestGroup->initPieceStorage();
 
     // TODO Is this really necessary?
@@ -239,28 +246,67 @@ bool FtpNegotiationCommand::recvSize() {
       sequence = SEQ_HEAD_OK;
       return false;
     }
-
+    
     BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-
+      
       poolConnection();
-
+      
       return false;
     }
     _requestGroup->loadAndOpenFile(infoFile);
 
-    prepareForNextAction(this);
-    
-    sequence = SEQ_FILE_PREPARATION;
+    if(sequence == SEQ_FILE_PREPARATION_ON_RETR) {
+      // See the transfer is starting from 0 byte.
+      SharedHandle<Segment> segment =
+	_requestGroup->getSegmentMan()->getSegment(cuid, 0);
+      if(!segment.isNull() && segment->getPositionToWrite() == 0) {
+	prepareForNextAction(this);
+      } else {
+	// If not, drop connection and connect the server and send REST
+	// with appropriate starting position.
+	logger->debug("Request range is not valid. Re-sending RETR is necessary.");
+	sequence = SEQ_EXIT;
+	prepareForNextAction(0);
+      }
+    } else {
+      // At the time of this writing, when this clause is executed,
+      // sequence should be SEQ_FILE_PREPARATION.
+      // At this point, REST is not sent yet, so checking the starting byte
+      // is not necessary.
+      prepareForNextAction(this);
+    }
     disableReadCheckSocket();
+  }
+  return false;
+}
 
-    //setWriteCheckSocket(dataSocket);
-
-    //e->noWait = true;
+bool FtpNegotiationCommand::recvSize() {
+  uint64_t size = 0;
+  unsigned int status = ftp->receiveSizeResponse(size);
+  if(status == 0) {
     return false;
+  }
+  if(status == 213) {
+
+    if(size > INT64_MAX) {
+      throw DlAbortEx
+	(StringFormat(EX_TOO_LARGE_FILE, Util::uitos(size, true).c_str()).str());
+    }
+    if(_requestGroup->getPieceStorage().isNull()) {
+
+      sequence = SEQ_FILE_PREPARATION;
+      return onFileSizeDetermined(size);
+
+    } else {
+      _requestGroup->validateTotalLength(size);
+    }
+
   } else {
-    _requestGroup->validateTotalLength(size);
+    
+    logger->info("CUID#%d - The remote FTP Server doesn't recognize SIZE command. Continue.", cuid);
+
   }
   if(e->option->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_SEND_PASV;
@@ -357,13 +403,24 @@ bool FtpNegotiationCommand::sendRetr() {
 }
 
 bool FtpNegotiationCommand::recvRetr() {
-  unsigned int status = ftp->receiveResponse();
+  uint64_t size = 0;
+  unsigned int status = ftp->receiveRetrResponse(size);
   if(status == 0) {
     return false;
   }
   if(status != 150 && status != 125) {
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
+
+  if(_requestGroup->getPieceStorage().isNull()) {
+
+    sequence = SEQ_FILE_PREPARATION_ON_RETR;
+    return onFileSizeDetermined(size);
+
+  } else {
+    _requestGroup->validateTotalLength(size);
+  }
+
   if(e->option->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_NEGOTIATION_COMPLETED;
     return false;
@@ -430,6 +487,8 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
     return recvRetr();
   case SEQ_WAIT_CONNECTION:
     return waitConnection();
+  case SEQ_NEGOTIATION_COMPLETED:
+    return false;
   default:
     abort();
   }

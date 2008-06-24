@@ -70,7 +70,9 @@ public:
     SEQ_RETRY,
     SEQ_HEAD_OK,
     SEQ_DOWNLOAD_ALREADY_COMPLETED,
-    SEQ_FILE_PREPARATION
+    SEQ_FILE_PREPARATION, // File allocation after SIZE command
+    SEQ_FILE_PREPARATION_ON_RETR, // File allocation after RETR command
+    SEQ_EXIT, // Make executeInternal() return true.
   };
 private:
   bool recvGreeting();
@@ -99,6 +101,8 @@ private:
   void afterFileAllocation();
 
   void poolConnection() const;
+
+  bool onFileSizeDetermined(uint64_t totalLength);
 
   SharedHandle<SocketCore> dataSocket;
   SharedHandle<SocketCore> serverSocket;

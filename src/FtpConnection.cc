@@ -133,7 +133,14 @@ SocketHandle FtpConnection::sendPort() const
 
 void FtpConnection::sendRest(const SegmentHandle& segment) const
 {
-  std::string request = "REST "+Util::itos(segment->getPositionToWrite())+"\r\n";
+  std::string request = "REST ";
+  if(segment.isNull()) {
+    request += "0";
+  } else {
+    request += Util::itos(segment->getPositionToWrite());
+  }
+  request += "\r\n";
+
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
@@ -268,6 +275,35 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
 	dest.second = 256*p1+p2;
       } else {
 	throw DlRetryEx(EX_INVALID_RESPONSE);
+      }
+    }
+    return response.first;
+  } else {
+    return 0;
+  }
+}
+
+unsigned int FtpConnection::receiveRetrResponse(uint64_t& size)
+{
+  std::pair<unsigned int, std::string> response;
+  if(bulkReceiveResponse(response)) {
+    if(response.first == 150 || response.first == 125) {
+      // Attempting to get file size from the response.
+      // We assume the response is like:
+      // 150 Opening BINARY mode data connection for aria2.tar.bz2 (12345 bytes)
+      // If the attempt is failed, size is unchanged.
+      std::string& res = response.second;
+      std::string::size_type start;
+      if((start = res.find_first_of("(")) != std::string::npos &&
+	 (start = res.find_first_not_of("( ", start)) != std::string::npos) {
+
+	// now start points to the first byte of the size string.
+	std::string::size_type end =
+	  res.find_first_not_of("0123456789", start);
+
+	if(end != std::string::npos) {
+	  size = Util::parseULLInt(res.substr(start, end-start));
+	}
       }
     }
     return response.first;

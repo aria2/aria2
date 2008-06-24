@@ -83,6 +83,7 @@ public:
   unsigned int receiveResponse();
   unsigned int receiveSizeResponse(uint64_t& size);
   unsigned int receivePasvResponse(std::pair<std::string, uint16_t>& dest);
+  unsigned int receiveRetrResponse(uint64_t& size);
 };
 
 } // namespace aria2
