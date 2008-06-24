@@ -1,6 +1,7 @@
 2008-06-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Fixed the code that refers static member variable using -> notation.
+	Fixed the code that refers static member variable from non-static
+	context.
 	* src/DefaultPeerStorage.cc
 
 2008-06-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
