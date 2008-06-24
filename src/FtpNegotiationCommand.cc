@@ -383,14 +383,17 @@ bool FtpNegotiationCommand::sendRest(const SegmentHandle& segment) {
   return false;
 }
 
-bool FtpNegotiationCommand::recvRest() {
+bool FtpNegotiationCommand::recvRest(const SharedHandle<Segment>& segment) {
   unsigned int status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
-  // TODO if we recieve negative response, then we set _requestGroup->getSegmentMan()->splittable = false, and continue.
+  // If we recieve negative response and requested file position is not 0,
+  // then throw exception here.
   if(status != 350) {
-    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
+    if(!segment.isNull() && segment->getPositionToWrite() != 0) {
+      throw DlAbortEx("FTP server doesn't support resuming.");
+    }
   }
   sequence = SEQ_SEND_RETR;
   return true;
@@ -480,7 +483,7 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
   case SEQ_SEND_REST:
     return sendRest(segment);
   case SEQ_RECV_REST:
-    return recvRest();
+    return recvRest(segment);
   case SEQ_SEND_RETR:
     return sendRetr();
   case SEQ_RECV_RETR:

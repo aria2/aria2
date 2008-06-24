@@ -1,5 +1,13 @@
 2008-06-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	If FTP server returns negative response with REST raw command and
+	requested range is not 0, throw exception. If requested range is 0,
+	continue download a file from 0 byte.
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+
+2008-06-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Supported FTP server which don't recognize SIZE raw command.
 	If SIZE raw command is failed, aria2 will try to get file size
 	from the response of RETR raw command. If both attempts are failed,

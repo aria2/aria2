@@ -92,7 +92,7 @@ private:
   bool recvPasv();
   bool sendRest(const SharedHandle<Segment>& segment);
   bool sendRestPasv(const SharedHandle<Segment>& segment);
-  bool recvRest();
+  bool recvRest(const SharedHandle<Segment>& segment);
   bool sendRetr();
   bool recvRetr();
   bool waitConnection();
