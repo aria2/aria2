@@ -46,8 +46,8 @@ _(" -D, --daemon                 Run as daemon.")
 _(" -s, --split=N                Download a file using N connections. If more\n"\
   "                              than N URLs are given, first N URLs are used and\n"\
   "                              remaining URLs are used for backup. If less than\n"\
-  "                              N URLs are given, some of the URLs are used more\n"\
-  "                              than once so that totaly N connections are made\n"\
+  "                              N URLs are given, those URLs are used more than\n"\
+  "                              once so that N connections total are made\n"\
   "                              simultaneously.")
 #define TEXT_RETRY_WAIT \
 _(" --retry-wait=SEC             Set the seconds to wait to retry after an error\n"\
