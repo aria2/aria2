@@ -1,5 +1,14 @@
 2008-06-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use digits to find first byte of file size, which makes the intention
+	of the code clearer.
+	* src/FtpConnection.cc
+
+	Don't call validateTotalLength() when size is 0.
+	* src/FtpNegotiationCommand.cc
+	
+2008-06-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated po files.
 	* po/aria2c.pot
 	* po/*.gmo

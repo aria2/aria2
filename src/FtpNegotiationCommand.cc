@@ -421,7 +421,11 @@ bool FtpNegotiationCommand::recvRetr() {
     return onFileSizeDetermined(size);
 
   } else {
-    _requestGroup->validateTotalLength(size);
+    // size == 0 means file size could not be retrieved from the response of
+    // RETR raw command.
+    if(size > 0) {
+      _requestGroup->validateTotalLength(size);
+    }
   }
 
   if(e->option->getAsBool(PREF_FTP_PASV)) {

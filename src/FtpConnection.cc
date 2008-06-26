@@ -285,6 +285,7 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
 
 unsigned int FtpConnection::receiveRetrResponse(uint64_t& size)
 {
+  static const char* DIGITS = "0123456789";
   std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 150 || response.first == 125) {
@@ -295,11 +296,11 @@ unsigned int FtpConnection::receiveRetrResponse(uint64_t& size)
       std::string& res = response.second;
       std::string::size_type start;
       if((start = res.find_first_of("(")) != std::string::npos &&
-	 (start = res.find_first_not_of("( ", start)) != std::string::npos) {
+	 (start = res.find_first_of(DIGITS, start)) != std::string::npos) {
 
-	// now start points to the first byte of the size string.
+	// now start points to the first digit of the size string.
 	std::string::size_type end =
-	  res.find_first_not_of("0123456789", start);
+	  res.find_first_not_of(DIGITS, start);
 
 	if(end != std::string::npos) {
 	  size = Util::parseULLInt(res.substr(start, end-start));
