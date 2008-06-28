@@ -1,3 +1,12 @@
+2008-06-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Disabled getting size from the response of RETR.
+	If SIZE command failed, then disable resuming and segmented downloading.
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+
 2008-06-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use digits to find first byte of file size, which makes the intention

@@ -283,34 +283,4 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
   }
 }
 
-unsigned int FtpConnection::receiveRetrResponse(uint64_t& size)
-{
-  static const char* DIGITS = "0123456789";
-  std::pair<unsigned int, std::string> response;
-  if(bulkReceiveResponse(response)) {
-    if(response.first == 150 || response.first == 125) {
-      // Attempting to get file size from the response.
-      // We assume the response is like:
-      // 150 Opening BINARY mode data connection for aria2.tar.bz2 (12345 bytes)
-      // If the attempt is failed, size is unchanged.
-      std::string& res = response.second;
-      std::string::size_type start;
-      if((start = res.find_first_of("(")) != std::string::npos &&
-	 (start = res.find_first_of(DIGITS, start)) != std::string::npos) {
-
-	// now start points to the first digit of the size string.
-	std::string::size_type end =
-	  res.find_first_not_of(DIGITS, start);
-
-	if(end != std::string::npos) {
-	  size = Util::parseULLInt(res.substr(start, end-start));
-	}
-      }
-    }
-    return response.first;
-  } else {
-    return 0;
-  }
-}
-
 } // namespace aria2

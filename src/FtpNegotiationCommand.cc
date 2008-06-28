@@ -81,12 +81,7 @@ bool FtpNegotiationCommand::executeInternal() {
   while(processSequence(_segments.front()));
   if(sequence == SEQ_RETRY) {
     return prepareForRetry(0);
-  } else if(sequence == SEQ_EXIT) {
-    return true;
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
-
-    afterFileAllocation();
-
     FtpDownloadCommand* command =
       new FtpDownloadCommand(cuid, req, _requestGroup, ftp, e, dataSocket, socket);
     command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
@@ -104,13 +99,6 @@ bool FtpNegotiationCommand::executeInternal() {
       sequence = SEQ_SEND_PASV;
     } else {
       sequence = SEQ_SEND_PORT;
-    }
-    return false;
-  } else if(sequence == SEQ_FILE_PREPARATION_ON_RETR) {
-    if(e->option->getAsBool(PREF_FTP_PASV)) {
-      sequence = SEQ_NEGOTIATION_COMPLETED;
-    } else {
-      sequence = SEQ_WAIT_CONNECTION;
     }
     return false;
   } else {
@@ -257,26 +245,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     }
     _requestGroup->loadAndOpenFile(infoFile);
 
-    if(sequence == SEQ_FILE_PREPARATION_ON_RETR) {
-      // See the transfer is starting from 0 byte.
-      SharedHandle<Segment> segment =
-	_requestGroup->getSegmentMan()->getSegment(cuid, 0);
-      if(!segment.isNull() && segment->getPositionToWrite() == 0) {
-	prepareForNextAction(this);
-      } else {
-	// If not, drop connection and connect the server and send REST
-	// with appropriate starting position.
-	logger->debug("Request range is not valid. Re-sending RETR is necessary.");
-	sequence = SEQ_EXIT;
-	prepareForNextAction(0);
-      }
-    } else {
-      // At the time of this writing, when this clause is executed,
-      // sequence should be SEQ_FILE_PREPARATION.
-      // At this point, REST is not sent yet, so checking the starting byte
-      // is not necessary.
-      prepareForNextAction(this);
-    }
+    prepareForNextAction(this);
+
     disableReadCheckSocket();
   }
   return false;
@@ -307,6 +277,17 @@ bool FtpNegotiationCommand::recvSize() {
     
     logger->info("CUID#%d - The remote FTP Server doesn't recognize SIZE command. Continue.", cuid);
 
+    // Even if one of the other servers waiting in the queue supports SIZE
+    // command, resuming and segmented downloading are disabled when the first
+    // contacted FTP server doesn't support it.
+    if(_requestGroup->getPieceStorage().isNull()) {
+
+      sequence = SEQ_FILE_PREPARATION;
+      return onFileSizeDetermined(0);
+
+    }
+    // TODO Skipping RequestGroup::validateTotalLength(0) here will allow
+    // wrong file to be downloaded if user-specified URL is wrong.
   }
   if(e->option->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_SEND_PASV;
@@ -406,28 +387,13 @@ bool FtpNegotiationCommand::sendRetr() {
 }
 
 bool FtpNegotiationCommand::recvRetr() {
-  uint64_t size = 0;
-  unsigned int status = ftp->receiveRetrResponse(size);
+  unsigned int status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
   if(status != 150 && status != 125) {
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
-
-  if(_requestGroup->getPieceStorage().isNull()) {
-
-    sequence = SEQ_FILE_PREPARATION_ON_RETR;
-    return onFileSizeDetermined(size);
-
-  } else {
-    // size == 0 means file size could not be retrieved from the response of
-    // RETR raw command.
-    if(size > 0) {
-      _requestGroup->validateTotalLength(size);
-    }
-  }
-
   if(e->option->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_NEGOTIATION_COMPLETED;
     return false;
@@ -494,8 +460,6 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
     return recvRetr();
   case SEQ_WAIT_CONNECTION:
     return waitConnection();
-  case SEQ_NEGOTIATION_COMPLETED:
-    return false;
   default:
     abort();
   }
