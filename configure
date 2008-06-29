@@ -2667,10 +2667,10 @@ ac_config_headers="$ac_config_headers config.h"
 
 
 case "$target" in
-	*mingw*|*cygwin*)
-		WINSOCK_LIBS="-lws2_32 -lpthread"
+  *mingw*|*cygwin*)
+    WINSOCK_LIBS="-lws2_32 -lpthread"
 
-		;;
+    ;;
 esac
 
 
@@ -5822,13 +5822,13 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
 
   rm -f conf.xmltest
 
-   if test "x$have_libxml2" = "xyes"; then
+  if test "x$have_libxml2" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBXML2 1
 _ACEOF
 
-   fi
+  fi
 fi
 
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
@@ -7006,6 +7006,7 @@ CPPFLAGS=$CPPFLAGS_save
   fi
 fi
 
+# Check availability of libz
 if test "x$with_libz" = "xyes"; then
 
 
@@ -7148,13 +7149,14 @@ fi
 
 fi
 
-if test "x$enable_bittorrent" = "xyes" && test "x$enable_message_digest" = "xyes"; then
+if test "x$enable_bittorrent" = "xyes" &&
+   test "x$enable_message_digest" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define ENABLE_BITTORRENT 1
 _ACEOF
 
-     if true; then
+   if true; then
   ENABLE_BITTORRENT_TRUE=
   ENABLE_BITTORRENT_FALSE='#'
 else
@@ -7163,8 +7165,8 @@ else
 fi
 
 else
-    enable_bittorrent=no
-     if false; then
+  enable_bittorrent=no
+   if false; then
   ENABLE_BITTORRENT_TRUE=
   ENABLE_BITTORRENT_FALSE='#'
 else
@@ -7174,13 +7176,14 @@ fi
 
 fi
 
-if (test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes") && test "x$enable_metalink" = "xyes"; then
+if (test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes") &&
+   test "x$enable_metalink" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define ENABLE_METALINK 1
 _ACEOF
 
-     if true; then
+   if true; then
   ENABLE_METALINK_TRUE=
   ENABLE_METALINK_FALSE='#'
 else
@@ -7189,8 +7192,8 @@ else
 fi
 
 else
-    enable_metalink=no
-     if false; then
+  enable_metalink=no
+   if false; then
   ENABLE_METALINK_TRUE=
   ENABLE_METALINK_FALSE='#'
 else
@@ -7223,7 +7226,7 @@ cat >>confdefs.h <<\_ACEOF
 #define ENABLE_ASYNC_DNS 1
 _ACEOF
 
-     if true; then
+   if true; then
   ENABLE_ASYNC_DNS_TRUE=
   ENABLE_ASYNC_DNS_FALSE='#'
 else
@@ -7232,7 +7235,7 @@ else
 fi
 
 else
-     if false; then
+   if false; then
   ENABLE_ASYNC_DNS_TRUE=
   ENABLE_ASYNC_DNS_FALSE='#'
 else
@@ -7242,6 +7245,7 @@ fi
 
 fi
 
+# Set conditional for libz
  if test "x$have_libz" = "xyes"; then
   HAVE_LIBZ_TRUE=
   HAVE_LIBZ_FALSE='#'
@@ -7813,7 +7817,34 @@ fi
 
 
 
-for ac_header in winsock2.h ws2tcpip.h argz.h arpa/inet.h fcntl.h float.h inttypes.h io.h langinfo.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h termios.h unistd.h wchar.h
+for ac_header in winsock2.h \
+                  ws2tcpip.h \
+                  argz.h \
+                  arpa/inet.h \
+                  fcntl.h \
+                  float.h \
+                  inttypes.h \
+                  io.h \
+                  langinfo.h \
+                  libintl.h \
+                  limits.h \
+                  locale.h \
+                  malloc.h \
+                  netdb.h \
+                  netinet/in.h \
+                  stddef.h \
+                  stdint.h \
+                  stdio_ext.h \
+                  stdlib.h \
+                  string.h \
+                  strings.h \
+                  sys/ioctl.h \
+                  sys/param.h \
+                  sys/socket.h \
+                  sys/time.h \
+                  termios.h \
+                  unistd.h \
+                  wchar.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
@@ -20054,7 +20085,45 @@ done
 
 
 
-for ac_func in __argz_count __argz_next __argz_stringify atexit daemon ftruncate getcwd gethostbyaddr gethostbyname getpagesize inet_ntoa memchr memmove mempcpy memset mkdir munmap nl_langinfo posix_memalign putenv rmdir select setlocale sleep socket stpcpy strcasecmp strchr strcspn strdup strerror strncasecmp strstr strtol strtoul strtoull tzset unsetenv usleep
+for ac_func in __argz_count \
+                __argz_next \
+                __argz_stringify \
+                atexit \
+                daemon \
+                ftruncate \
+                getcwd \
+                gethostbyaddr \
+                gethostbyname \
+                getpagesize \
+                inet_ntoa \
+                memchr \
+                memmove \
+                mempcpy \
+                memset \
+                mkdir \
+                munmap \
+                nl_langinfo \
+                posix_memalign \
+                putenv \
+                rmdir \
+                select \
+                setlocale \
+                sleep \
+                socket \
+                stpcpy \
+                strcasecmp \
+                strchr \
+                strcspn \
+                strdup \
+                strerror \
+                strncasecmp \
+                strstr \
+                strtol \
+                strtoul \
+                strtoull \
+                tzset \
+                unsetenv \
+                usleep
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -21237,8 +21306,8 @@ done
 
 
 case "$target" in
-	*mingw*)
-				 if true; then
+  *mingw*)
+         if true; then
   HAVE_GETADDRINFO_TRUE=
   HAVE_GETADDRINFO_FALSE='#'
 else
@@ -21246,7 +21315,7 @@ else
   HAVE_GETADDRINFO_FALSE=
 fi
 
-				 if false; then
+         if false; then
   HAVE_GAI_STRERROR_TRUE=
   HAVE_GAI_STRERROR_FALSE='#'
 else
@@ -21254,7 +21323,7 @@ else
   HAVE_GAI_STRERROR_FALSE=
 fi
 
-		;;
+    ;;
 esac
 
 ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile po/Makefile.in m4/Makefile intl/Makefile lib/Makefile doc/Makefile"

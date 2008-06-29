@@ -1,3 +1,8 @@
+2008-06-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Cleaned up configure.ac.
+	* configure.ac
+	
 2008-06-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use ARIA2_ARG_WITH and ARIA2_ARG_ENABLE instead of AC_ARG_WITH and

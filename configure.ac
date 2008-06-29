@@ -11,10 +11,10 @@ AC_CONFIG_SRCDIR([src/Socket.h])
 AC_CONFIG_HEADERS([config.h])
 
 case "$target" in
-	*mingw*|*cygwin*)
-		WINSOCK_LIBS="-lws2_32 -lpthread"
-		AC_SUBST(WINSOCK_LIBS)
-		;;
+  *mingw*|*cygwin*)
+    WINSOCK_LIBS="-lws2_32 -lpthread"
+    AC_SUBST(WINSOCK_LIBS)
+    ;;
 esac
 
 AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
@@ -55,10 +55,10 @@ AC_USE_SYSTEM_EXTENSIONS
 
 # Checks for libraries.
 if test "x$with_libxml2" = "xyes"; then
-   AM_PATH_XML2([2.6.24], [have_libxml2=yes])
-   if test "x$have_libxml2" = "xyes"; then
-      AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
-   fi
+  AM_PATH_XML2([2.6.24], [have_libxml2=yes])
+  if test "x$have_libxml2" = "xyes"; then
+    AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
+  fi
 fi
 
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
@@ -93,8 +93,9 @@ if test "x$have_libcares" = "x"; then
   fi
 fi
 
+# Check availability of libz
 if test "x$with_libz" = "xyes"; then
-   AM_PATH_LIBZ
+  AM_PATH_LIBZ
 fi
 
 # Define variables based on the result of the checks for libraries.
@@ -103,45 +104,81 @@ if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
 fi
 
 if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
-  AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1], [Define to 1 if message digest support is enabled.])
+  AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1],
+            [Define to 1 if message digest support is enabled.])
   AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], true)
   enable_message_digest=yes
 else
   AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], false)
 fi
 
-if test "x$enable_bittorrent" = "xyes" && test "x$enable_message_digest" = "xyes"; then
-    AC_DEFINE([ENABLE_BITTORRENT], [1], [Define to 1 if BitTorrent support is enabled.])
-    AM_CONDITIONAL([ENABLE_BITTORRENT], true)
+if test "x$enable_bittorrent" = "xyes" &&
+   test "x$enable_message_digest" = "xyes"; then
+  AC_DEFINE([ENABLE_BITTORRENT], [1],
+            [Define to 1 if BitTorrent support is enabled.])
+  AM_CONDITIONAL([ENABLE_BITTORRENT], true)
 else
-    enable_bittorrent=no
-    AM_CONDITIONAL([ENABLE_BITTORRENT], false)
+  enable_bittorrent=no
+  AM_CONDITIONAL([ENABLE_BITTORRENT], false)
 fi
 
-if (test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes") && test "x$enable_metalink" = "xyes"; then
-    AC_DEFINE([ENABLE_METALINK], [1], [Define to 1 if Metalink support is enabled.])
-    AM_CONDITIONAL([ENABLE_METALINK], true)
+if (test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes") &&
+   test "x$enable_metalink" = "xyes"; then
+  AC_DEFINE([ENABLE_METALINK], [1],
+            [Define to 1 if Metalink support is enabled.])
+  AM_CONDITIONAL([ENABLE_METALINK], true)
 else
-    enable_metalink=no
-    AM_CONDITIONAL([ENABLE_METALINK], false)
+  enable_metalink=no
+  AM_CONDITIONAL([ENABLE_METALINK], false)
 fi
 
-AM_CONDITIONAL([ENABLE_LIBXML2], [test "x$enable_metalink" = "xyes" && test "x$have_libxml2" = "xyes"])
-AM_CONDITIONAL([ENABLE_LIBEXPAT], [test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"])
+AM_CONDITIONAL([ENABLE_LIBXML2],
+          [test "x$enable_metalink" = "xyes" && test "x$have_libxml2" = "xyes"])
+AM_CONDITIONAL([ENABLE_LIBEXPAT],
+         [test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"])
 
 if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
-    AC_DEFINE([ENABLE_ASYNC_DNS], [1], [Define to 1 if asynchronous DNS support is enabled.])
-    AM_CONDITIONAL([ENABLE_ASYNC_DNS], true)
+  AC_DEFINE([ENABLE_ASYNC_DNS], [1],
+            [Define to 1 if asynchronous DNS support is enabled.])
+  AM_CONDITIONAL([ENABLE_ASYNC_DNS], true)
 else
-    AM_CONDITIONAL([ENABLE_ASYNC_DNS], false)
+  AM_CONDITIONAL([ENABLE_ASYNC_DNS], false)
 fi
 
+# Set conditional for libz
 AM_CONDITIONAL([HAVE_LIBZ], [test "x$have_libz" = "xyes"])
 
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
-AC_CHECK_HEADERS([winsock2.h ws2tcpip.h argz.h arpa/inet.h fcntl.h float.h inttypes.h io.h langinfo.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h termios.h unistd.h wchar.h])
+AC_CHECK_HEADERS([winsock2.h \
+                  ws2tcpip.h \
+                  argz.h \
+                  arpa/inet.h \
+                  fcntl.h \
+                  float.h \
+                  inttypes.h \
+                  io.h \
+                  langinfo.h \
+                  libintl.h \
+                  limits.h \
+                  locale.h \
+                  malloc.h \
+                  netdb.h \
+                  netinet/in.h \
+                  stddef.h \
+                  stdint.h \
+                  stdio_ext.h \
+                  stdlib.h \
+                  string.h \
+                  strings.h \
+                  sys/ioctl.h \
+                  sys/param.h \
+                  sys/socket.h \
+                  sys/time.h \
+                  termios.h \
+                  unistd.h \
+                  wchar.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -189,10 +226,48 @@ AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify atexit daemon ftruncate getcwd gethostbyaddr gethostbyname getpagesize inet_ntoa memchr memmove mempcpy memset mkdir munmap nl_langinfo posix_memalign putenv rmdir select setlocale sleep socket stpcpy strcasecmp strchr strcspn strdup strerror strncasecmp strstr strtol strtoul strtoull tzset unsetenv usleep])
+AC_CHECK_FUNCS([__argz_count \
+                __argz_next \
+                __argz_stringify \
+                atexit \
+                daemon \
+                ftruncate \
+                getcwd \
+                gethostbyaddr \
+                gethostbyname \
+                getpagesize \
+                inet_ntoa \
+                memchr \
+                memmove \
+                mempcpy \
+                memset \
+                mkdir \
+                munmap \
+                nl_langinfo \
+                posix_memalign \
+                putenv \
+                rmdir \
+                select \
+                setlocale \
+                sleep \
+                socket \
+                stpcpy \
+                strcasecmp \
+                strchr \
+                strcspn \
+                strdup \
+                strerror \
+                strncasecmp \
+                strstr \
+                strtol \
+                strtoul \
+                strtoull \
+                tzset \
+                unsetenv \
+                usleep])
 
 if test "x$enable_epoll" = "xyes"; then
-   AC_CHECK_FUNCS([epoll_create])
+  AC_CHECK_FUNCS([epoll_create])
 fi
 
 AC_CHECK_FUNCS([asctime_r],
@@ -224,12 +299,12 @@ AC_CHECK_FUNCS([timegm],
 	[AM_CONDITIONAL([HAVE_TIMEGM], false)])
 
 case "$target" in
-	*mingw*)
-		dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
-		AM_CONDITIONAL([HAVE_GETADDRINFO], true)
-		dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
-		AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
-		;;
+  *mingw*)
+    dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
+    AM_CONDITIONAL([HAVE_GETADDRINFO], true)
+    dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
+    AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
+    ;;
 esac
 
 AC_CONFIG_FILES([Makefile
