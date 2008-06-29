@@ -39,14 +39,15 @@ Dependency
 
 .External Library Dependency
 [frame="all", grid="all"]
-`---------`---------------------------
-features   dependency
---------------------------------------
-HTTPS      GnuTLS or OpenSSL
-BitTorrent GnuTLS+Libgcrypt or OpenSSL
-Metalink   libxml2 or Expat.
-Checksum   GnuTLS+Libgcrypt or OpenSSL
---------------------------------------
+`--------------------`---------------------------
+features              dependency
+-------------------------------------------------
+HTTPS                 GnuTLS or OpenSSL
+BitTorrent            GnuTLS+Libgcrypt or OpenSSL
+Metalink              libxml2 or Expat.
+Checksum              GnuTLS+Libgcrypt or OpenSSL
+gzip, deflate in HTTP zlib
+-------------------------------------------------
 
 Note;;
   GNU TLS has precedence over OpenSSL if both libraries are installed.
@@ -74,6 +75,7 @@ packages(package name may vary depending on the distribution you use):
 * libgcrypt-dev    (Required for BitTorrent, Checksum support)
 * libares-dev      (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
+* libz1g-dev       (Required for gzip, deflate decoding support in HTTP)
 
 You can use libssl-dev instead of libgnutls-dev,libgpg-error-dev,libgcrypt-dev:
 

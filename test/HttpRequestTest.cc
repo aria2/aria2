@@ -26,6 +26,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testUserAgent);
   CPPUNIT_TEST(testAddHeader);
   CPPUNIT_TEST(testAddAcceptType);
+  CPPUNIT_TEST(testEnableAcceptEncoding);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -43,6 +44,7 @@ public:
   void testUserAgent();
   void testAddHeader();
   void testAddAcceptType();
+  void testEnableAcceptEncoding();
 };
 
 
@@ -119,6 +121,7 @@ void HttpRequestTest::testCreateRequest()
   SharedHandle<Segment> segment(new PiecedSegment(1024, p));
 
   HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
@@ -344,6 +347,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment
     (new PiecedSegment(1024*1024, p));
+  httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
@@ -402,6 +406,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
   HttpRequest httpRequest;
 
+  httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
@@ -466,6 +471,7 @@ void HttpRequestTest::testCreateRequest_query()
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138");
   HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
 
   std::string expectedText =
@@ -596,6 +602,7 @@ void HttpRequestTest::testUserAgent()
   SharedHandle<Segment> segment(new PiecedSegment(1024, p));
 
   HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setUserAgent("aria2 (Linux)");
@@ -626,6 +633,7 @@ void HttpRequestTest::testAddHeader()
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.addHeader("X-ARIA2: v0.13\nX-ARIA2-DISTRIBUTE: enabled\n");
 
@@ -652,6 +660,7 @@ void HttpRequestTest::testAddAcceptType()
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.addAcceptType(&acceptTypes[0], &acceptTypes[arrayLength(acceptTypes)]);
 
@@ -659,6 +668,36 @@ void HttpRequestTest::testAddAcceptType()
     "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*,cream/custard,muffin/chocolate\r\n"
+    "Host: localhost\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+}
+
+void HttpRequestTest::testEnableAcceptEncoding()
+{
+  SharedHandle<Request> request(new Request());
+  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+
+  HttpRequest httpRequest;
+  httpRequest.setRequest(request);
+
+  std::string acceptEncodings;
+#ifdef HAVE_LIBZ
+  acceptEncodings += "deflate, gzip";
+#endif // HAVE_LIBZ
+  
+  std::string expectedText =
+    "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n";
+  if(!acceptEncodings.empty()) {
+    expectedText += "Accept-Encoding: "+acceptEncodings+"\r\n";
+  }
+  expectedText +=
     "Host: localhost\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"

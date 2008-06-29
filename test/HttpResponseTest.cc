@@ -7,6 +7,8 @@
 #include "HttpHeader.h"
 #include "HttpRequest.h"
 #include "Exception.h"
+#include "A2STR.h"
+#include "Decoder.h"
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -29,6 +31,9 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsTransferEncodingSpecified);
   CPPUNIT_TEST(testGetTransferEncoding);
   CPPUNIT_TEST(testGetTransferDecoder);
+  CPPUNIT_TEST(testIsContentEncodingSpecified);
+  CPPUNIT_TEST(testGetContentEncoding);
+  CPPUNIT_TEST(testGetContentEncodingDecoder);
   CPPUNIT_TEST(testValidateResponse);
   CPPUNIT_TEST(testValidateResponse_good_range);
   CPPUNIT_TEST(testValidateResponse_bad_range);
@@ -54,6 +59,9 @@ public:
   void testIsTransferEncodingSpecified();
   void testGetTransferEncoding();
   void testGetTransferDecoder();
+  void testIsContentEncodingSpecified();
+  void testGetContentEncoding();
+  void testGetContentEncodingDecoder();
   void testValidateResponse();
   void testValidateResponse_good_range();
   void testValidateResponse_bad_range();
@@ -238,6 +246,68 @@ void HttpResponseTest::testGetTransferDecoder()
   httpHeader->put("Transfer-Encoding", "chunked");
 
   CPPUNIT_ASSERT(!httpResponse.getTransferDecoder().isNull());
+}
+
+void HttpResponseTest::testIsContentEncodingSpecified()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  
+  httpResponse.setHttpHeader(httpHeader);
+
+  CPPUNIT_ASSERT(!httpResponse.isContentEncodingSpecified());
+
+  httpHeader->put("Content-Encoding", "gzip");
+
+  CPPUNIT_ASSERT(httpResponse.isContentEncodingSpecified());
+}
+
+void HttpResponseTest::testGetContentEncoding()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  
+  httpResponse.setHttpHeader(httpHeader);
+
+  CPPUNIT_ASSERT_EQUAL(A2STR::NIL, httpResponse.getContentEncoding());
+
+  httpHeader->put("Content-Encoding", "gzip");
+
+  CPPUNIT_ASSERT_EQUAL(std::string("gzip"), httpResponse.getContentEncoding());
+}
+
+void HttpResponseTest::testGetContentEncodingDecoder()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  
+  httpResponse.setHttpHeader(httpHeader);
+
+  CPPUNIT_ASSERT(httpResponse.getContentEncodingDecoder().isNull());
+
+#ifdef HAVE_LIBZ
+  httpHeader->put("Content-Encoding", "gzip");
+  {
+    SharedHandle<Decoder> decoder = httpResponse.getContentEncodingDecoder();
+    CPPUNIT_ASSERT(!decoder.isNull());
+    CPPUNIT_ASSERT_EQUAL(std::string("GZipDecoder"), decoder->getName());
+  }
+  httpHeader.reset(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+  httpHeader->put("Content-Encoding", "deflate");
+  {
+    SharedHandle<Decoder> decoder = httpResponse.getContentEncodingDecoder();
+    CPPUNIT_ASSERT(!decoder.isNull());
+    CPPUNIT_ASSERT_EQUAL(std::string("GZipDecoder"), decoder->getName());
+  }
+#endif // HAVE_LIBZ
+  httpHeader.reset(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+  httpHeader->put("Content-Encoding", "bzip2");
+  {
+    SharedHandle<Decoder> decoder = httpResponse.getContentEncodingDecoder();
+    CPPUNIT_ASSERT(decoder.isNull());
+  }
 }
 
 void HttpResponseTest::testValidateResponse()

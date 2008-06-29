@@ -62,6 +62,8 @@
 #include "StringFormat.h"
 #include "HttpSkipResponseCommand.h"
 #include "HttpHeader.h"
+#include "Decoder.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -194,10 +196,32 @@ static SharedHandle<TransferEncoding> getTransferEncoding
   return enc;
 }
 
+static SharedHandle<Decoder> getContentEncodingDecoder
+(const SharedHandle<HttpResponse>& httpResponse)
+{
+  SharedHandle<Decoder> decoder;
+  if(httpResponse->isContentEncodingSpecified()) {
+    decoder = httpResponse->getContentEncodingDecoder();
+    if(decoder.isNull()) {
+      LogFactory::getInstance()->info
+	("Content-Encoding %s is specified, but the current implementation"
+	 "doesn't support it. The decoding process is skipped and the"
+	 "downloaded content will be still encoded.",
+	 httpResponse->getContentEncoding().c_str());
+    } else {
+      decoder->init();
+    }
+  }
+  return decoder;
+}
+
 bool HttpResponseCommand::skipResponseBody
 (const SharedHandle<HttpResponse>& httpResponse)
 {
   SharedHandle<TransferEncoding> enc(getTransferEncoding(httpResponse));
+  // We don't use Content-Encoding here because this response body is just
+  // thrown away.
+
   HttpSkipResponseCommand* command = new HttpSkipResponseCommand
     (cuid, req, _requestGroup, httpConnection, httpResponse, e, socket);
   command->setTransferDecoder(enc);
@@ -216,13 +240,24 @@ bool HttpResponseCommand::skipResponseBody
 
 HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& httpResponse)
 {
-  TransferEncodingHandle enc(getTransferEncoding(httpResponse));
+  TransferEncodingHandle enc = getTransferEncoding(httpResponse);
+  SharedHandle<Decoder> contentEncodingDecoder =
+    getContentEncodingDecoder(httpResponse);
+
   HttpDownloadCommand* command =
     new HttpDownloadCommand(cuid, req, _requestGroup, httpConnection, e, socket);
   command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   command->setTransferDecoder(enc);
+
+  if(!contentEncodingDecoder.isNull()) {
+    command->setContentEncodingDecoder(contentEncodingDecoder);
+    // Since the compressed file's length are returned in the response header
+    // and the decompressed file size is unknown at this point, disable file
+    // allocation here.
+    _requestGroup->setFileAllocationEnabled(false);
+  }
 
   return command;
 }

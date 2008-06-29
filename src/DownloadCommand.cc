@@ -55,6 +55,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "StringFormat.h"
+#include "Decoder.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -119,46 +120,47 @@ bool DownloadCommand::executeInternal() {
   }
   socket->readData(buf, bufSize);
 
+  const SharedHandle<DiskAdaptor>& diskAdaptor =
+    _requestGroup->getPieceStorage()->getDiskAdaptor();
+
+  unsigned char* bufFinal;
+  size_t bufSizeFinal;
+
   if(transferDecoder.isNull()) {
-    _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData(buf, bufSize,
-								  segment->getPositionToWrite());
-    //logger->debug("bufSize = %d, posToWrite = %lld", bufSize, segment->getPositionToWrite());
-#ifdef ENABLE_MESSAGE_DIGEST
-
-    if(_pieceHashValidationEnabled) {
-      segment->updateHash(segment->getWrittenLength(), buf, bufSize);
-    }
-
-#endif // ENABLE_MESSAGE_DIGEST
-
-    segment->updateWrittenLength(bufSize);
-
-
-    //logger->debug("overflow length = %d, next posToWrite = %lld", segment->getOverflowLength(), segment->getPositionToWrite());
-    //logger->debug("%s", Util::toHex(segment->getPiece()->getBitfield(),
-    //segment->getPiece()->getBitfieldLength()).c_str());
-    //segment->writtenLength += bufSize;
-    peerStat->updateDownloadLength(bufSize);
+    bufFinal = buf;
+    bufSizeFinal = bufSize;
   } else {
     size_t infbufSize = 16*1024;
     unsigned char infbuf[infbufSize];
     transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
-    _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData(infbuf, infbufSize,
-								  segment->getPositionToWrite());
+
+    bufFinal = infbuf;
+    bufSizeFinal = infbufSize;
+  }
+
+  if(_contentEncodingDecoder.isNull()) {
+    diskAdaptor->writeData(bufFinal, bufSizeFinal,
+			   segment->getPositionToWrite());
+  } else {
+    std::string out = _contentEncodingDecoder->decode(bufFinal, bufSizeFinal);
+    diskAdaptor->writeData(reinterpret_cast<const unsigned char*>(out.data()),
+			   out.size(),
+			   segment->getPositionToWrite());
+    bufSizeFinal = out.size();
+  }
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-    if(_pieceHashValidationEnabled) {
-      segment->updateHash(segment->getWrittenLength(), infbuf, infbufSize);
-    }
+  if(_pieceHashValidationEnabled) {
+    segment->updateHash(segment->getWrittenLength(), bufFinal, bufSizeFinal);
+  }
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-    segment->updateWrittenLength(infbufSize);
+  segment->updateWrittenLength(bufSizeFinal);
+  
+  peerStat->updateDownloadLength(bufSize);
 
-    //segment->writtenLength += infbufSize;
-    peerStat->updateDownloadLength(infbufSize);
-  }
   if(_requestGroup->getTotalLength() != 0 && bufSize == 0) {
     throw DlRetryEx(EX_GOT_EOF);
   }
@@ -167,6 +169,13 @@ bool DownloadCommand::executeInternal() {
      || bufSize == 0) {
     if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
+
+    if(!_contentEncodingDecoder.isNull() &&
+       !_contentEncodingDecoder->finished()) {
+      logger->warn("CUID#%d - Transfer was completed, but inflate operation"
+		   " have not finished. Maybe the file is broken in the server"
+		   " side.", cuid);
+    }
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
@@ -278,6 +287,12 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
 void DownloadCommand::setTransferDecoder(const TransferEncodingHandle& transferDecoder)
 {
   this->transferDecoder = transferDecoder;
+}
+
+void DownloadCommand::setContentEncodingDecoder
+(const SharedHandle<Decoder>& decoder)
+{
+  _contentEncodingDecoder = decoder;
 }
 
 } // namespace aria2

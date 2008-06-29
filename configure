@@ -738,6 +738,8 @@ LIBCARES_LIBS
 LIBCARES_CPPFLAGS
 LIBARES_LIBS
 LIBARES_CPPFLAGS
+LIBZ_LIBS
+LIBZ_CPPFLAGS
 ENABLE_MESSAGE_DIGEST_TRUE
 ENABLE_MESSAGE_DIGEST_FALSE
 ENABLE_BITTORRENT_TRUE
@@ -750,6 +752,8 @@ ENABLE_LIBEXPAT_TRUE
 ENABLE_LIBEXPAT_FALSE
 ENABLE_ASYNC_DNS_TRUE
 ENABLE_ASYNC_DNS_FALSE
+HAVE_LIBZ_TRUE
+HAVE_LIBZ_FALSE
 ALLOCA
 USE_NLS
 GETTEXT_MACRO_VERSION
@@ -1436,6 +1440,7 @@ Optional Packages:
   --with-libexpat            use libexpat library if installed. Default: yes
   --with-libares             use ares library if installed. Default: yes
   --with-libcares            use c-ares library if installed. Default: yes
+  --with-libz             use libz if it is installed.
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
   --with-xml-exec-prefix=PFX Exec prefix where libxml is installed (optional)
   --with-libexpat-prefix=PREFIX  Prefix where libexpat installed (optional)
@@ -1445,6 +1450,7 @@ Optional Packages:
   --with-openssl-prefix=PREFIX  Prefix where OpenSSL installed (optional)
   --with-libcares-prefix=PREFIX  Prefix where libcares installed (optional)
   --with-libares-prefix=PREFIX  Prefix where libares installed (optional)
+  --with-libz-prefix=PREFIX  Prefix where libz installed (optional)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-libpth-prefix[=DIR]  search for libpth in DIR/include and DIR/lib
   --without-libpth-prefix     don't search for libpth in includedir and libdir
@@ -2725,6 +2731,15 @@ if test "${with_libcares+set}" = set; then
 else
   with_libcares=yes
 fi
+
+
+# Check whether --with-libz was given.
+if test "${with_libz+set}" = set; then
+  withval=$with_libz; with_libz=$withval
+else
+  with_libz=yes
+fi
+
 
 
 # Check whether --enable-bittorrent was given.
@@ -6982,6 +6997,113 @@ CPPFLAGS=$CPPFLAGS_save
   fi
 fi
 
+if test "x$with_libz" = "xyes"; then
+
+
+# Check whether --with-libz-prefix was given.
+if test "${with_libz_prefix+set}" = set; then
+  withval=$with_libz_prefix; libz_prefix=$withval
+else
+  libz_prefix=""
+fi
+
+
+if test "x$libz_prefix" = "x"; then
+  libz_prefix="/usr"
+fi
+
+libz_prefix_lib=$libz_prefix/lib
+libz_prefix_include=$libz_prefix/include
+
+LIBS_save=$LIBS
+CPPFLAGS_save=$CPPFLAGS
+
+LIBS="-L$libz_prefix_lib $LIBS"
+CPPFLAGS="-I$libz_prefix_include $CPPFLAGS"
+
+{ echo "$as_me:$LINENO: checking for zlibVersion in -lz" >&5
+echo $ECHO_N "checking for zlibVersion in -lz... $ECHO_C" >&6; }
+if test "${ac_cv_lib_z_zlibVersion+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lz  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char zlibVersion ();
+int
+main ()
+{
+return zlibVersion ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_z_zlibVersion=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_z_zlibVersion=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_z_zlibVersion" >&5
+echo "${ECHO_T}$ac_cv_lib_z_zlibVersion" >&6; }
+if test $ac_cv_lib_z_zlibVersion = yes; then
+  have_libz=yes
+fi
+
+if test "x$have_libz" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBZ 1
+_ACEOF
+
+    LIBZ_LIBS="-L$libz_prefix_lib -lz"
+    LIBZ_CPPFLAGS="-I$libz_prefix_include"
+
+
+fi
+
+LIBS=$LIBS_save
+CPPFLAGS=$CPPFLAGS_save
+
+
+fi
+
 # Define variables based on the result of the checks for libraries.
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
 
@@ -7110,6 +7232,15 @@ else
 fi
 
 fi
+
+ if test "x$have_libz" = "xyes"; then
+  HAVE_LIBZ_TRUE=
+  HAVE_LIBZ_FALSE='#'
+else
+  HAVE_LIBZ_TRUE='#'
+  HAVE_LIBZ_FALSE=
+fi
+
 
 # Checks for header files.
 # The Ultrix 4.2 mips builtin alloca declared by alloca.h only works
@@ -21306,6 +21437,13 @@ echo "$as_me: error: conditional \"ENABLE_ASYNC_DNS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${HAVE_LIBZ_TRUE}" && test -z "${HAVE_LIBZ_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_LIBZ\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_LIBZ\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${HAVE_ASCTIME_R_TRUE}" && test -z "${HAVE_ASCTIME_R_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_ASCTIME_R\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -22154,6 +22292,8 @@ LIBCARES_LIBS!$LIBCARES_LIBS$ac_delim
 LIBCARES_CPPFLAGS!$LIBCARES_CPPFLAGS$ac_delim
 LIBARES_LIBS!$LIBARES_LIBS$ac_delim
 LIBARES_CPPFLAGS!$LIBARES_CPPFLAGS$ac_delim
+LIBZ_LIBS!$LIBZ_LIBS$ac_delim
+LIBZ_CPPFLAGS!$LIBZ_CPPFLAGS$ac_delim
 ENABLE_MESSAGE_DIGEST_TRUE!$ENABLE_MESSAGE_DIGEST_TRUE$ac_delim
 ENABLE_MESSAGE_DIGEST_FALSE!$ENABLE_MESSAGE_DIGEST_FALSE$ac_delim
 ENABLE_BITTORRENT_TRUE!$ENABLE_BITTORRENT_TRUE$ac_delim
@@ -22166,6 +22306,8 @@ ENABLE_LIBEXPAT_TRUE!$ENABLE_LIBEXPAT_TRUE$ac_delim
 ENABLE_LIBEXPAT_FALSE!$ENABLE_LIBEXPAT_FALSE$ac_delim
 ENABLE_ASYNC_DNS_TRUE!$ENABLE_ASYNC_DNS_TRUE$ac_delim
 ENABLE_ASYNC_DNS_FALSE!$ENABLE_ASYNC_DNS_FALSE$ac_delim
+HAVE_LIBZ_TRUE!$HAVE_LIBZ_TRUE$ac_delim
+HAVE_LIBZ_FALSE!$HAVE_LIBZ_FALSE$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 USE_NLS!$USE_NLS$ac_delim
 GETTEXT_MACRO_VERSION!$GETTEXT_MACRO_VERSION$ac_delim
@@ -22224,10 +22366,6 @@ HAVE_GETADDRINFO_TRUE!$HAVE_GETADDRINFO_TRUE$ac_delim
 HAVE_GETADDRINFO_FALSE!$HAVE_GETADDRINFO_FALSE$ac_delim
 HAVE_GETTIMEOFDAY_TRUE!$HAVE_GETTIMEOFDAY_TRUE$ac_delim
 HAVE_GETTIMEOFDAY_FALSE!$HAVE_GETTIMEOFDAY_FALSE$ac_delim
-HAVE_INET_ATON_TRUE!$HAVE_INET_ATON_TRUE$ac_delim
-HAVE_INET_ATON_FALSE!$HAVE_INET_ATON_FALSE$ac_delim
-HAVE_LOCALTIME_R_TRUE!$HAVE_LOCALTIME_R_TRUE$ac_delim
-HAVE_LOCALTIME_R_FALSE!$HAVE_LOCALTIME_R_FALSE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -22269,6 +22407,10 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+HAVE_INET_ATON_TRUE!$HAVE_INET_ATON_TRUE$ac_delim
+HAVE_INET_ATON_FALSE!$HAVE_INET_ATON_FALSE$ac_delim
+HAVE_LOCALTIME_R_TRUE!$HAVE_LOCALTIME_R_TRUE$ac_delim
+HAVE_LOCALTIME_R_FALSE!$HAVE_LOCALTIME_R_FALSE$ac_delim
 HAVE_STRPTIME_TRUE!$HAVE_STRPTIME_TRUE$ac_delim
 HAVE_STRPTIME_FALSE!$HAVE_STRPTIME_FALSE$ac_delim
 HAVE_TIMEGM_TRUE!$HAVE_TIMEGM_TRUE$ac_delim
@@ -22276,7 +22418,7 @@ HAVE_TIMEGM_FALSE!$HAVE_TIMEGM_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 5; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 9; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -23003,5 +23145,6 @@ echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibAres:        $have_libares"
 echo "LibCares:       $have_libcares"
+echo "Libz:           $have_libz"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"

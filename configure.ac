@@ -30,6 +30,7 @@ AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if inst
 AC_ARG_WITH([libexpat], [  --with-libexpat            use libexpat library if installed. Default: yes], [with_libexpat=$withval], [with_libexpat=yes])
 AC_ARG_WITH([libares], [  --with-libares             use ares library if installed. Default: yes], [with_libares=$withval], [with_libares=yes])
 AC_ARG_WITH([libcares], [  --with-libcares            use c-ares library if installed. Default: yes], [with_libcares=$withval], [with_libcares=yes])
+ARIA2_ARG_WITH([libz])
 
 AC_ARG_ENABLE([bittorrent], [ --enable-bittorrent        enable BitTorrent support. Default: yes], [enable_bittorrent=$enableval], [enable_bittorrent=yes])
 AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. Default: yes], [enable_metalink=$enableval], [enable_metalink=yes])
@@ -92,6 +93,10 @@ if test "x$have_libcares" = "x"; then
   fi
 fi
 
+if test "x$with_libz" = "xyes"; then
+   AM_PATH_LIBZ
+fi
+
 # Define variables based on the result of the checks for libraries.
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
@@ -130,6 +135,8 @@ if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
 else
     AM_CONDITIONAL([ENABLE_ASYNC_DNS], false)
 fi
+
+AM_CONDITIONAL([HAVE_LIBZ], [test "x$have_libz" = "xyes"])
 
 # Checks for header files.
 AC_FUNC_ALLOCA
@@ -249,5 +256,6 @@ echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibAres:        $have_libares"
 echo "LibCares:       $have_libcares"
+echo "Libz:           $have_libz"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"

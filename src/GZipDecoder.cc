@@ -32,38 +32,88 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXCEPTION_H_
-#define _D_EXCEPTION_H_
-
-#include "common.h"
-#include "SharedHandle.h"
-#include <string>
+#include "GZipDecoder.h"
+#include "StringFormat.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
-class Exception:public std::exception {
-private:
-  std::string _msg;
+const std::string GZipDecoder::NAME("GZipDecoder");
 
-  SharedHandle<Exception> _cause;
+GZipDecoder::GZipDecoder():_strm(0), _finished(false) {}
 
-protected:
-  virtual SharedHandle<Exception> copy() const = 0;
+GZipDecoder::~GZipDecoder()
+{
+  release();
+}
 
-public:
-  explicit Exception(const std::string& msg);
+void GZipDecoder::init()
+{
+  _strm = new z_stream();
+  _strm->zalloc = Z_NULL;
+  _strm->zfree = Z_NULL;
+  _strm->opaque = Z_NULL;
+  _strm->avail_in = 0;
+  _strm->next_in = Z_NULL;
 
-  Exception(const std::string& msg, const Exception& cause);
+  // initalize z_stream with gzip/zlib format auto detection enabled.
+  if(Z_OK != inflateInit2(_strm, 47)) {
+    throw DlAbortEx("Initializing z_stream failed.");
+  }
+}
 
-  Exception(const Exception& e);
+void GZipDecoder::release()
+{
+  if(_strm) {
+    inflateEnd(_strm);
+    _strm = 0;
+  }
+}
 
-  virtual ~Exception() throw();
+std::string GZipDecoder::decode(const unsigned char* in, size_t length)
+{
+  std::string out;
 
-  virtual const char* what() const throw();
+  if(length == 0) {
+    return out;
+  }
 
-  std::string stackTrace() const throw();
-};
+  _strm->avail_in = length;
+  _strm->next_in = const_cast<unsigned char*>(in);
+
+  unsigned char outbuf[OUTBUF_LENGTH];
+  while(1) {
+    _strm->avail_out = OUTBUF_LENGTH;
+    _strm->next_out = outbuf;
+
+    int ret = ::inflate(_strm, Z_NO_FLUSH);
+
+    if(ret == Z_STREAM_END) {
+      _finished = true;
+    } else if(ret != Z_OK) {
+      throw DlAbortEx(StringFormat("libz::inflate() failed. cause:%s",
+				   _strm->msg).str());
+    }
+
+    size_t produced = OUTBUF_LENGTH-_strm->avail_out;
+
+    out.insert(out.end(), &outbuf[0], &outbuf[produced]);
+
+    if(_strm->avail_out > 0) {
+      break;
+    }
+  }
+  return out;
+}
+
+bool GZipDecoder::finished()
+{
+  return _finished;
+}
+
+const std::string& GZipDecoder::getName() const
+{
+  return NAME;
+}
 
 } // namespace aria2
-
-#endif // _D_EXCEPTION_H_

@@ -83,12 +83,18 @@ public:
 
   static const std::string TRANSFER_ENCODING;
   
+  static const std::string CONTENT_ENCODING;
+
   static const std::string CONTENT_DISPOSITION;
   
   static const std::string SET_COOKIE;
   
   static const std::string CHUNKED;
   
+  static const std::string GZIP;
+
+  static const std::string DEFLATE;
+
   static const std::string CONTENT_TYPE;
   
   static const std::string RETRY_AFTER;

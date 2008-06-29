@@ -47,6 +47,10 @@
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include "Decoder.h"
+#ifdef HAVE_LIBZ
+# include "GZipDecoder.h"
+#endif // HAVE_LIBZ
 #include <deque>
 
 namespace aria2 {
@@ -148,6 +152,27 @@ TransferEncodingHandle HttpResponse::getTransferDecoder() const
     }
   }
   return SharedHandle<TransferEncoding>();
+}
+
+bool HttpResponse::isContentEncodingSpecified() const
+{
+  return httpHeader->defined(HttpHeader::CONTENT_ENCODING);
+}
+
+const std::string& HttpResponse::getContentEncoding() const
+{
+  return httpHeader->getFirst(HttpHeader::CONTENT_ENCODING);
+}
+
+SharedHandle<Decoder> HttpResponse::getContentEncodingDecoder() const
+{
+#ifdef HAVE_LIBZ
+  if(getContentEncoding() == HttpHeader::GZIP ||
+     getContentEncoding() == HttpHeader::DEFLATE) {
+    return SharedHandle<Decoder>(new GZipDecoder());
+  }
+#endif // HAVE_LIBZ
+  return SharedHandle<Decoder>();
 }
 
 uint64_t HttpResponse::getContentLength() const

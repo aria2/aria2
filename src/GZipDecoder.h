@@ -32,38 +32,41 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXCEPTION_H_
-#define _D_EXCEPTION_H_
+#ifndef _D_GZIP_DECODER_H_
+#define _D_GZIP_DECODER_H_
 
-#include "common.h"
-#include "SharedHandle.h"
-#include <string>
+#include "Decoder.h"
+#include <zlib.h>
 
 namespace aria2 {
 
-class Exception:public std::exception {
+// GZipDecoder can decode both gzip and deflate format.
+class GZipDecoder : public Decoder {
 private:
-  std::string _msg;
+  z_stream* _strm;
 
-  SharedHandle<Exception> _cause;
+  bool _finished;
 
-protected:
-  virtual SharedHandle<Exception> copy() const = 0;
-
+  static const size_t OUTBUF_LENGTH = 16*1024;
+  
+  static const std::string NAME;
 public:
-  explicit Exception(const std::string& msg);
+  GZipDecoder();
 
-  Exception(const std::string& msg, const Exception& cause);
+  virtual ~GZipDecoder();
 
-  Exception(const Exception& e);
+  virtual void init();
 
-  virtual ~Exception() throw();
+  virtual std::string decode(const unsigned char* inbuf, size_t inlen);
 
-  virtual const char* what() const throw();
+  virtual bool finished();
 
-  std::string stackTrace() const throw();
+  virtual void release();
+
+  virtual const std::string& getName() const;
+
 };
 
 } // namespace aria2
 
-#endif // _D_EXCEPTION_H_
+#endif // _D_GZIP_DECODER_H_

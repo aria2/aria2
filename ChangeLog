@@ -1,5 +1,39 @@
 2008-06-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added gzip, deflate decoding support in HTTP using libz. If compiled
+	with this feature, aria2 sends "Accept-Encoding: deflate, gzip" header
+	to a HTTP server. If a server returns "Content-Encoding: gzip" or
+	"Content-Encoding: deflate" then, aria2 decodes the response body on the
+	fly and writes decoded data to a local disk.
+	* README
+	* README.html
+	* configure.ac
+	* m4/aria2_arg.m4: Added ARIA2_ARG_WITH and ARIA2_ARG_ENABLE, they are
+	wrapper function for AC_ARG_WITH and AC_ARG_ENABLE respectively.
+	* m4/libz.m4
+	* src/Decoder.h
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/Exception.h
+	* src/GZipDecoder.cc
+	* src/GZipDecoder.h
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* src/HttpResponseCommand.cc
+	* src/Makefile.am
+	* test/GZipDecoderTest.cc
+	* test/HttpRequestTest.cc
+	* test/HttpResponseTest.cc
+	* test/Makefile.am
+	* test/Makefile.in
+	* test/gzip_decode_test.gz
+
+2008-06-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Clarified usage of -j option.
 	* src/usage_text.h
 

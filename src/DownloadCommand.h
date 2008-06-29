@@ -40,6 +40,7 @@
 namespace aria2 {
 
 class TransferEncoding;
+class Decoder;
 class PeerStat;
 #ifdef ENABLE_MESSAGE_DIGEST
 class MessageDigestContext;
@@ -68,6 +69,8 @@ private:
 protected:
   SharedHandle<TransferEncoding> transferDecoder;
 
+  SharedHandle<Decoder> _contentEncodingDecoder;
+
   virtual bool executeInternal();
 
   virtual bool prepareForNextSegment();
@@ -81,6 +84,8 @@ public:
   virtual ~DownloadCommand();
 
   void setTransferDecoder(const SharedHandle<TransferEncoding>& transferDecoder);
+
+  void setContentEncodingDecoder(const SharedHandle<Decoder>& decoder);
 
   void setMaxDownloadSpeedLimit(unsigned int maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;

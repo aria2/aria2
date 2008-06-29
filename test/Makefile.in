@@ -34,11 +34,12 @@ host_triplet = @host@
 target_triplet = @target@
 TESTS = aria2c$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
-@ENABLE_MESSAGE_DIGEST_TRUE@am__append_1 = MessageDigestHelperTest.cc\
+@HAVE_LIBZ_TRUE@am__append_1 = GZipDecoderTest.cc
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_2 = MessageDigestHelperTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.cc
 
-@ENABLE_BITTORRENT_TRUE@am__append_2 = BtAllowedFastMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@am__append_3 = BtAllowedFastMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtChokeMessageTest.cc\
@@ -130,7 +131,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h\
 @ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.cc
 
-@ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
+@ENABLE_METALINK_TRUE@am__append_4 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.cc\
@@ -139,26 +140,26 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_METALINK_TRUE@	MetalinkProcessorTest.cc
 
 subdir = test
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in ChangeLog
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/codeset.m4 \
-	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/glibc2.m4 \
-	$(top_srcdir)/m4/glibc21.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/intdiv0.m4 $(top_srcdir)/m4/intl.m4 \
-	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/intmax.m4 \
-	$(top_srcdir)/m4/inttypes-pri.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/aria2_arg.m4 \
+	$(top_srcdir)/m4/codeset.m4 $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/glibc2.m4 $(top_srcdir)/m4/glibc21.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intdiv0.m4 \
+	$(top_srcdir)/m4/intl.m4 $(top_srcdir)/m4/intlmacosx.m4 \
+	$(top_srcdir)/m4/intmax.m4 $(top_srcdir)/m4/inttypes-pri.m4 \
 	$(top_srcdir)/m4/inttypes_h.m4 $(top_srcdir)/m4/lcmessage.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
 	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libares.m4 \
 	$(top_srcdir)/m4/libcares.m4 $(top_srcdir)/m4/libexpat.m4 \
-	$(top_srcdir)/m4/lock.m4 $(top_srcdir)/m4/longlong.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/openssl.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/printf-posix.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/size_max.m4 \
-	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
-	$(top_srcdir)/m4/visibility.m4 $(top_srcdir)/m4/wchar_t.m4 \
-	$(top_srcdir)/m4/wint_t.m4 $(top_srcdir)/m4/xsize.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libz.m4 $(top_srcdir)/m4/lock.m4 \
+	$(top_srcdir)/m4/longlong.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/printf-posix.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/size_max.m4 $(top_srcdir)/m4/stdint_h.m4 \
+	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/visibility.m4 \
+	$(top_srcdir)/m4/wchar_t.m4 $(top_srcdir)/m4/wint_t.m4 \
+	$(top_srcdir)/m4/xsize.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -186,7 +187,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
 	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
-	DownloadHandlerFactoryTest.cc MessageDigestHelperTest.cc \
+	DownloadHandlerFactoryTest.cc GZipDecoderTest.cc \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -235,11 +237,12 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
-@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
+@HAVE_LIBZ_TRUE@am__objects_1 = GZipDecoderTest.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_2 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_2 =  \
+@ENABLE_BITTORRENT_TRUE@am__objects_3 =  \
 @ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.$(OBJEXT) \
@@ -313,7 +316,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_4 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.$(OBJEXT) \
@@ -349,7 +352,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	MultiFileAllocationIteratorTest.$(OBJEXT) \
 	ProtocolDetectorTest.$(OBJEXT) StringFormatTest.$(OBJEXT) \
 	ExceptionTest.$(OBJEXT) DownloadHandlerFactoryTest.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3)
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -444,6 +448,8 @@ LIBPTH = @LIBPTH@
 LIBPTH_PREFIX = @LIBPTH_PREFIX@
 LIBS = @LIBS@
 LIBTHREAD = @LIBTHREAD@
+LIBZ_CPPFLAGS = @LIBZ_CPPFLAGS@
+LIBZ_LIBS = @LIBZ_LIBS@
 LTLIBC = @LTLIBC@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -562,14 +568,14 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
 	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
 	DownloadHandlerFactoryTest.cc $(am__append_1) $(am__append_2) \
-	$(am__append_3)
+	$(am__append_3) $(am__append_4)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 aria2c_LDADD = ../src/libaria2c.a\
     @LIBINTL@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@\
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
 	${CPPUNIT_LIBS}
 
 AM_CPPFLAGS = -Wall\
@@ -578,7 +584,7 @@ AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	-DLOCALEDIR=\"$(localedir)\" @DEFS@
+	@LIBZ_CPPFLAGS@	-DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
@@ -588,6 +594,7 @@ EXTRA_DIST = 4096chunk.txt\
 	file2r.txt\
 	file3r.txt\
 	filelist1.txt\
+	gzip_decode_test.gz\
 	load-nonBt.aria2\
 	load.aria2\
 	malformed.netrc\
@@ -723,6 +730,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpItemTest.Po@am__quote@

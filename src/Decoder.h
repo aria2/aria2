@@ -32,38 +32,29 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXCEPTION_H_
-#define _D_EXCEPTION_H_
+#ifndef _D_DECODER_H_
+#define _D_DECODER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
 #include <string>
 
 namespace aria2 {
 
-class Exception:public std::exception {
-private:
-  std::string _msg;
-
-  SharedHandle<Exception> _cause;
-
-protected:
-  virtual SharedHandle<Exception> copy() const = 0;
-
+class Decoder {
 public:
-  explicit Exception(const std::string& msg);
+  virtual ~Decoder() {}
 
-  Exception(const std::string& msg, const Exception& cause);
+  virtual void init() = 0;
 
-  Exception(const Exception& e);
+  virtual std::string decode(const unsigned char* inbuf, size_t inlen) = 0;
 
-  virtual ~Exception() throw();
+  virtual bool finished() = 0;
 
-  virtual const char* what() const throw();
+  virtual void release() = 0;
 
-  std::string stackTrace() const throw();
+  virtual const std::string& getName() const = 0;
 };
 
 } // namespace aria2
 
-#endif // _D_EXCEPTION_H_
+#endif // _D_DECODER_H_

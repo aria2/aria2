@@ -46,6 +46,7 @@ class HttpRequest;
 class HttpHeader;
 class TransferEncoding;
 class Logger;
+class Decoder;
 
 class HttpResponse {
 private:
@@ -84,6 +85,12 @@ public:
   std::string getTransferEncoding() const;
 
   SharedHandle<TransferEncoding> getTransferDecoder() const;
+
+  bool isContentEncodingSpecified() const;
+
+  const std::string& getContentEncoding() const;
+
+  SharedHandle<Decoder> getContentEncodingDecoder() const;
 
   uint64_t getContentLength() const;
 

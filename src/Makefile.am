@@ -188,7 +188,12 @@ SRCS =  Socket.h\
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h\
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h\
 	A2STR.cc A2STR.h\
-	RarestPieceSelector.cc RarestPieceSelector.h
+	RarestPieceSelector.cc RarestPieceSelector.h\
+	Decoder.h
+
+if HAVE_LIBZ
+SRCS += GZipDecoder.cc GZipDecoder.h
+endif # HAVE_LIBZ
 
 if ENABLE_ASYNC_DNS
 SRCS += AsyncNameResolver.cc AsyncNameResolver.h
@@ -462,10 +467,10 @@ noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ #-lprofiler
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@ #-lprofiler
 #aria2c_LDFLAGS =  -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg
+	@LIBZ_CPPFLAGS@	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg

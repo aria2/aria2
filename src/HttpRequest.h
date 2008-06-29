@@ -64,6 +64,8 @@ private:
 
   bool proxyAuthEnabled;
 
+  bool _contentEncodingEnabled;
+
   std::string userAgent;
 
   std::deque<std::string> _headers;
@@ -165,6 +167,10 @@ public:
   {
     this->authEnabled = authEnabled;
   }
+
+  void enableContentEncoding();
+
+  void disableContentEncoding();
 
   void setUserAgent(const std::string& userAgent)
   {

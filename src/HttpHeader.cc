@@ -44,11 +44,17 @@ const std::string HttpHeader::LOCATION("Location");
 
 const std::string HttpHeader::TRANSFER_ENCODING("Transfer-Encoding");
 
+const std::string HttpHeader::CONTENT_ENCODING("Content-Encoding");
+
 const std::string HttpHeader::CONTENT_DISPOSITION("Content-Disposition");
 
 const std::string HttpHeader::SET_COOKIE("Set-Cookie");
 
 const std::string HttpHeader::CHUNKED("chunked");
+
+const std::string HttpHeader::GZIP("gzip");
+
+const std::string HttpHeader::DEFLATE("deflate");
 
 const std::string HttpHeader::CONTENT_TYPE("Content-Type");
 

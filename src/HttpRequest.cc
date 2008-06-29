@@ -55,6 +55,7 @@ HttpRequest::HttpRequest():entityLength(0),
 			   authEnabled(false),
 			   proxyEnabled(false),
 			   proxyAuthEnabled(false),
+			   _contentEncodingEnabled(true),
 			   userAgent(USER_AGENT)
 {}
 
@@ -155,6 +156,16 @@ std::string HttpRequest::createRequest() const
   }
   requestLine += "\r\n";
 
+  if(_contentEncodingEnabled) {
+    std::string acceptableEncodings;
+#ifdef HAVE_LIBZ
+    acceptableEncodings += "deflate, gzip";
+#endif // HAVE_LIBZ
+    if(!acceptableEncodings.empty()) {
+      requestLine += "Accept-Encoding: "+acceptableEncodings+"\r\n";
+    }
+  }
+
   requestLine +=
     "Host: "+getHostText(getHost(), getPort())+"\r\n"+
     "Pragma: no-cache\r\n"+
@@ -233,6 +244,16 @@ std::string HttpRequest::createProxyRequest() const
 std::string HttpRequest::getProxyAuthString() const {
   return "Proxy-Authorization: Basic "+
     Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfigForHttpProxy(request)->getAuthText())+"\r\n";
+}
+
+void HttpRequest::enableContentEncoding()
+{
+  _contentEncodingEnabled = true;
+}
+
+void HttpRequest::disableContentEncoding()
+{
+  _contentEncodingEnabled = false;
 }
 
 void HttpRequest::addHeader(const std::string& headersString)

@@ -54,6 +54,10 @@ aria2c_SOURCES = AllTest.cc\
 	ExceptionTest.cc\
 	DownloadHandlerFactoryTest.cc
 
+if HAVE_LIBZ
+aria2c_SOURCES += GZipDecoderTest.cc
+endif # HAVE_LIBZ
+
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
 	IteratableChunkChecksumValidatorTest.cc\
@@ -170,7 +174,7 @@ endif # ENABLE_METALINK
 aria2c_LDADD = ../src/libaria2c.a\
     @LIBINTL@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@\
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
 	${CPPUNIT_LIBS}
 AM_CPPFLAGS =  -Wall\
 	${CPPUNIT_CFLAGS}\
@@ -178,7 +182,7 @@ AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	-DLOCALEDIR=\"$(localedir)\" @DEFS@
+	@LIBZ_CPPFLAGS@	-DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
@@ -188,6 +192,7 @@ EXTRA_DIST = 4096chunk.txt\
 	file2r.txt\
 	file3r.txt\
 	filelist1.txt\
+	gzip_decode_test.gz\
 	load-nonBt.aria2\
 	load.aria2\
 	malformed.netrc\
