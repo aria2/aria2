@@ -185,7 +185,7 @@ void Request::urlencode(std::string& result, const std::string& src) const
   result = src+"  ";
   size_t index = lastIndex;
   while(index-- > 0) {
-    const char c = result[index];
+    const unsigned char c = result[index];
     // '/' is not urlencoded because src is expected to be a path.
     if(Util::shouldUrlencode(c)) {
       if(c == '%') {
