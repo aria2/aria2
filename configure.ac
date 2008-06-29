@@ -24,17 +24,17 @@ localedir=${datadir}/locale
 AC_SUBST(localedir)
 
 # Checks for arguments.
-AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$withval], [with_gnutls=yes])
-AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$withval], [with_openssl=yes])
-AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$withval], [with_libxml2=yes])
-AC_ARG_WITH([libexpat], [  --with-libexpat            use libexpat library if installed. Default: yes], [with_libexpat=$withval], [with_libexpat=yes])
-AC_ARG_WITH([libares], [  --with-libares             use ares library if installed. Default: yes], [with_libares=$withval], [with_libares=yes])
-AC_ARG_WITH([libcares], [  --with-libcares            use c-ares library if installed. Default: yes], [with_libcares=$withval], [with_libcares=yes])
+ARIA2_ARG_WITH([gnutls])
+ARIA2_ARG_WITH([openssl])
+ARIA2_ARG_WITH([libxml2])
+ARIA2_ARG_WITH([libexpat])
+ARIA2_ARG_WITH([libares])
+ARIA2_ARG_WITH([libcares])
 ARIA2_ARG_WITH([libz])
 
-AC_ARG_ENABLE([bittorrent], [ --enable-bittorrent        enable BitTorrent support. Default: yes], [enable_bittorrent=$enableval], [enable_bittorrent=yes])
-AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. Default: yes], [enable_metalink=$enableval], [enable_metalink=yes])
-AC_ARG_ENABLE([epoll], [ --enable-epoll             enable epoll support. Default: yes], [enable_epoll=$enableval], [enable_epoll=yes])
+ARIA2_ARG_ENABLE([bittorrent])
+ARIA2_ARG_ENABLE([metalink])
+ARIA2_ARG_ENABLE([epoll])
 
 # Checks for programs.
 AC_PROG_CXX

@@ -1416,9 +1416,9 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
- --enable-bittorrent        enable BitTorrent support. Default: yes
- --enable-metalink          enable Metalink support. Default: yes
- --enable-epoll             enable epoll support. Default: yes
+  --enable-bittorrent     enable bittorrent support.
+  --enable-metalink       enable metalink support.
+  --enable-epoll          enable epoll support.
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --disable-xmltest       Do not try to compile and run a test LIBXML program
@@ -1434,12 +1434,12 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-cppunit-prefix=PFX   Prefix where CppUnit is installed (optional)
   --with-cppunit-exec-prefix=PFX  Exec prefix where CppUnit is installed (optional)
-  --with-gnutls              use gnutls library if installed. Default: yes
-  --with-openssl             use openssl library if installed. Default: yes
-  --with-libxml2             use libxml2 library if installed. Default: yes
-  --with-libexpat            use libexpat library if installed. Default: yes
-  --with-libares             use ares library if installed. Default: yes
-  --with-libcares            use c-ares library if installed. Default: yes
+  --with-gnutls           use gnutls if it is installed.
+  --with-openssl          use openssl if it is installed.
+  --with-libxml2          use libxml2 if it is installed.
+  --with-libexpat         use libexpat if it is installed.
+  --with-libares          use libares if it is installed.
+  --with-libcares         use libcares if it is installed.
   --with-libz             use libz if it is installed.
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
   --with-xml-exec-prefix=PFX Exec prefix where libxml is installed (optional)
@@ -2693,12 +2693,14 @@ else
 fi
 
 
+
 # Check whether --with-openssl was given.
 if test "${with_openssl+set}" = set; then
   withval=$with_openssl; with_openssl=$withval
 else
   with_openssl=yes
 fi
+
 
 
 # Check whether --with-libxml2 was given.
@@ -2709,12 +2711,14 @@ else
 fi
 
 
+
 # Check whether --with-libexpat was given.
 if test "${with_libexpat+set}" = set; then
   withval=$with_libexpat; with_libexpat=$withval
 else
   with_libexpat=yes
 fi
+
 
 
 # Check whether --with-libares was given.
@@ -2725,12 +2729,14 @@ else
 fi
 
 
+
 # Check whether --with-libcares was given.
 if test "${with_libcares+set}" = set; then
   withval=$with_libcares; with_libcares=$withval
 else
   with_libcares=yes
 fi
+
 
 
 # Check whether --with-libz was given.
@@ -2744,24 +2750,27 @@ fi
 
 # Check whether --enable-bittorrent was given.
 if test "${enable_bittorrent+set}" = set; then
-  enableval=$enable_bittorrent; enable_bittorrent=$enableval
+  enableval=$enable_bittorrent; enable_bittorrent=$withval
 else
   enable_bittorrent=yes
 fi
 
+
 # Check whether --enable-metalink was given.
 if test "${enable_metalink+set}" = set; then
-  enableval=$enable_metalink; enable_metalink=$enableval
+  enableval=$enable_metalink; enable_metalink=$withval
 else
   enable_metalink=yes
 fi
 
+
 # Check whether --enable-epoll was given.
 if test "${enable_epoll+set}" = set; then
-  enableval=$enable_epoll; enable_epoll=$enableval
+  enableval=$enable_epoll; enable_epoll=$withval
 else
   enable_epoll=yes
 fi
+
 
 
 # Checks for programs.

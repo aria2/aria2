@@ -1,5 +1,11 @@
 2008-06-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use ARIA2_ARG_WITH and ARIA2_ARG_ENABLE instead of AC_ARG_WITH and
+	AC_ARG_ENABLE.
+	* configure.ac
+	
+2008-06-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added gzip, deflate decoding support in HTTP using libz. If compiled
 	with this feature, aria2 sends "Accept-Encoding: deflate, gzip" header
 	to a HTTP server. If a server returns "Content-Encoding: gzip" or
