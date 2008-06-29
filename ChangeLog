@@ -1,3 +1,8 @@
+2008-06-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Clarified usage of -j option.
+	* src/usage_text.h
+
 2008-06-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Disabled getting size from the response of RETR.

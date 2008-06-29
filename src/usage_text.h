@@ -189,7 +189,8 @@ _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n
   "                              URIs on a single line using the TAB character.\n"\
   "                              Reads input from stdin when '-' is specified.")
 #define TEXT_MAX_CONCURRENT_DOWNLOADS \
-_(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads.")
+_(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n"\
+  "                              every static (HTTP/FTP) URL, torrent and metalink.")
 #define TEXT_LOAD_COOKIES \
 _(" --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"\
   "                              the same used by Netscape and Mozilla.")
