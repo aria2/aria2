@@ -48,7 +48,7 @@ _(" -s, --split=N                Download a file using N connections. If more\n"
   "                              remaining URLs are used for backup. If less than\n"\
   "                              N URLs are given, those URLs are used more than\n"\
   "                              once so that N connections total are made\n"\
-  "                              simultaneously.")
+  "                              simultaneously. Please see -j option too.")
 #define TEXT_RETRY_WAIT \
 _(" --retry-wait=SEC             Set the seconds to wait to retry after an error\n"\
   "                              has occured. Specify a value between 0 and 60.\n"\

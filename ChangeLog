@@ -1,5 +1,10 @@
 2008-06-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated usage text for -s option.
+	* src/usage_text.h
+	
+2008-06-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that UTF-8 encoded URL is not URL-encoded properly.
 	* src/Request.cc
 	
