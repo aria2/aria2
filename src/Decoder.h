@@ -40,16 +40,20 @@
 
 namespace aria2 {
 
+// Interface for basic decoding functionality.
 class Decoder {
 public:
   virtual ~Decoder() {}
 
+  // init() must be called before calling decode().
   virtual void init() = 0;
 
   virtual std::string decode(const unsigned char* inbuf, size_t inlen) = 0;
 
   virtual bool finished() = 0;
 
+  // The call of release() will free allocated resources.
+  // After calling release(), the object can be reused by calling init().
   virtual void release() = 0;
 
   virtual const std::string& getName() const = 0;
