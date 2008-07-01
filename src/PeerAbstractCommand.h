@@ -83,7 +83,8 @@ public:
   PeerAbstractCommand(int32_t cuid,
 		      const SharedHandle<Peer>& peer,
 		      DownloadEngine* e,
-		      const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>());
+		      const SharedHandle<SocketCore>& s =
+		      SharedHandle<SocketCore>());
 
   virtual ~PeerAbstractCommand();
 

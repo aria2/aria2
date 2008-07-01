@@ -1,5 +1,11 @@
 2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Code cleanup.
+	* src/PeerAbstractCommand.cc
+	* src/PeerAbstractCommand.h
+	
+2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed TransferEncoding.
 	* src/DownloadCommand.cc
 	* src/DownloadCommand.h

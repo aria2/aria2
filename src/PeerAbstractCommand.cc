@@ -48,10 +48,16 @@ namespace aria2 {
 PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
 					 const PeerHandle& peer,
 					 DownloadEngine* e,
-					 const SocketHandle& s)
-  :Command(cuid), e(e), socket(s), peer(peer),
-   checkSocketIsReadable(false), checkSocketIsWritable(false),
-   uploadLimitCheck(false), uploadLimit(0), noCheck(false)
+					 const SocketHandle& s):
+  Command(cuid),
+  e(e),
+  socket(s),
+  peer(peer),
+  checkSocketIsReadable(false),
+  checkSocketIsWritable(false),
+  uploadLimitCheck(false),
+  uploadLimit(0),
+  noCheck(false)
 {
   if(!socket.isNull() && socket->isOpen()) {
     setReadCheckSocket(socket);
@@ -59,22 +65,20 @@ PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
   timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
 }
 
-PeerAbstractCommand::~PeerAbstractCommand() {
+PeerAbstractCommand::~PeerAbstractCommand()
+{
   disableReadCheckSocket();
   disableWriteCheckSocket();
 }
 
-bool PeerAbstractCommand::execute() {
+bool PeerAbstractCommand::execute()
+{
   if(exitBeforeExecute()) {
     onAbort();
     return true;
   }
   try {
     if(noCheck ||
-       /*
-       uploadLimitCheck && (uploadLimit == 0 ||
-			    e->getUploadSpeed() <= uploadLimit*1024) ||
-       */
        (checkSocketIsReadable && _readEvent) ||
        (checkSocketIsWritable && _writeEvent) ||
        _errorEvent) {
@@ -99,11 +103,13 @@ bool PeerAbstractCommand::execute() {
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
-bool PeerAbstractCommand::prepareForNextPeer(time_t wait) {
+bool PeerAbstractCommand::prepareForNextPeer(time_t wait)
+{
   return true;
 }
 
-void PeerAbstractCommand::disableReadCheckSocket() {
+void PeerAbstractCommand::disableReadCheckSocket()
+{
   if(checkSocketIsReadable) {
     e->deleteSocketForReadCheck(readCheckTarget, this);
     checkSocketIsReadable = false;
@@ -111,7 +117,8 @@ void PeerAbstractCommand::disableReadCheckSocket() {
   }  
 }
 
-void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
+void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket)
+{
   if(!socket->isOpen()) {
     disableReadCheckSocket();
   } else {
@@ -129,7 +136,8 @@ void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
   }
 }
 
-void PeerAbstractCommand::disableWriteCheckSocket() {
+void PeerAbstractCommand::disableWriteCheckSocket()
+{
   if(checkSocketIsWritable) {
     e->deleteSocketForWriteCheck(writeCheckTarget, this);
     checkSocketIsWritable = false;
@@ -137,7 +145,8 @@ void PeerAbstractCommand::disableWriteCheckSocket() {
   }
 }
 
-void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
+void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket)
+{
   if(!socket->isOpen()) {
     disableWriteCheckSocket();
   } else {
@@ -155,15 +164,18 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
-void PeerAbstractCommand::setUploadLimit(unsigned int uploadLimit) {
+void PeerAbstractCommand::setUploadLimit(unsigned int uploadLimit)
+{
   this->uploadLimit = uploadLimit;
 }
 
-void PeerAbstractCommand::setUploadLimitCheck(bool check) {
+void PeerAbstractCommand::setUploadLimitCheck(bool check)
+{
   this->uploadLimitCheck = check;
 }
 
-void PeerAbstractCommand::setNoCheck(bool check) {
+void PeerAbstractCommand::setNoCheck(bool check)
+{
   this->noCheck = check;
 }
 
