@@ -1,5 +1,29 @@
 2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Rewritten ChunkedEncoding class as ChunkedDecoder class.
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/ChunkedDecoder.cc
+	* src/ChunkedDecoder.h
+	* src/ChunkedEncoding.cc: Removed
+	* src/ChunkedEncoding.h: Removed
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/HttpDownloadCommand.cc
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/HttpSkipResponseCommand.h
+	* src/Makefile.am
+	* src/TransferEncoding.h: Removed
+	* test/ChunkedDecoderTest.cc
+	* test/ChunkedEncodingTest.cc: Removed
+	* test/HttpResponseTest.cc
+	* test/Makefile.am
+
+2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use append instead of insert.
 	* src/GZipDecoder.cc
 

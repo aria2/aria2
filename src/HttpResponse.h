@@ -44,7 +44,6 @@ namespace aria2 {
 
 class HttpRequest;
 class HttpHeader;
-class TransferEncoding;
 class Logger;
 class Decoder;
 
@@ -84,7 +83,7 @@ public:
 
   std::string getTransferEncoding() const;
 
-  SharedHandle<TransferEncoding> getTransferDecoder() const;
+  SharedHandle<Decoder> getTransferEncodingDecoder() const;
 
   bool isContentEncodingSpecified() const;
 

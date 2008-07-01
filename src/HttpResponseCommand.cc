@@ -180,20 +180,20 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   return true;
 }
 
-static SharedHandle<TransferEncoding> getTransferEncoding
+static SharedHandle<Decoder> getTransferEncodingDecoder
 (const SharedHandle<HttpResponse>& httpResponse)
 {
-  TransferEncodingHandle enc;
+  SharedHandle<Decoder> decoder;
   if(httpResponse->isTransferEncodingSpecified()) {
-    enc = httpResponse->getTransferDecoder();
-    if(enc.isNull()) {
+    decoder = httpResponse->getTransferEncodingDecoder();
+    if(decoder.isNull()) {
       throw DlAbortEx
 	(StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
 		      httpResponse->getTransferEncoding().c_str()).str());
     }
-    enc->init();
+    decoder->init();
   }
-  return enc;
+  return decoder;
 }
 
 static SharedHandle<Decoder> getContentEncodingDecoder
@@ -218,13 +218,13 @@ static SharedHandle<Decoder> getContentEncodingDecoder
 bool HttpResponseCommand::skipResponseBody
 (const SharedHandle<HttpResponse>& httpResponse)
 {
-  SharedHandle<TransferEncoding> enc(getTransferEncoding(httpResponse));
+  SharedHandle<Decoder> decoder = getTransferEncodingDecoder(httpResponse);
   // We don't use Content-Encoding here because this response body is just
   // thrown away.
 
   HttpSkipResponseCommand* command = new HttpSkipResponseCommand
     (cuid, req, _requestGroup, httpConnection, httpResponse, e, socket);
-  command->setTransferDecoder(enc);
+  command->setTransferEncodingDecoder(decoder);
 
   // If the response body is zero-length, set command's status to real time
   // so that avoid read check blocking
@@ -238,18 +238,23 @@ bool HttpResponseCommand::skipResponseBody
   return true;
 }
 
-HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& httpResponse)
+HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
+(const HttpResponseHandle& httpResponse)
 {
-  TransferEncodingHandle enc = getTransferEncoding(httpResponse);
+  SharedHandle<Decoder> transferEncodingDecoder =
+    getTransferEncodingDecoder(httpResponse);
   SharedHandle<Decoder> contentEncodingDecoder =
     getContentEncodingDecoder(httpResponse);
 
   HttpDownloadCommand* command =
-    new HttpDownloadCommand(cuid, req, _requestGroup, httpConnection, e, socket);
-  command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+    new HttpDownloadCommand(cuid, req, _requestGroup, httpConnection, e,
+			    socket);
+  command->setMaxDownloadSpeedLimit
+    (e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
-  command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
-  command->setTransferDecoder(enc);
+  command->setLowestDownloadSpeedLimit
+    (e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+  command->setTransferEncodingDecoder(transferEncodingDecoder);
 
   if(!contentEncodingDecoder.isNull()) {
     command->setContentEncodingDecoder(contentEncodingDecoder);

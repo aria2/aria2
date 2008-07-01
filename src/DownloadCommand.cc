@@ -123,19 +123,18 @@ bool DownloadCommand::executeInternal() {
   const SharedHandle<DiskAdaptor>& diskAdaptor =
     _requestGroup->getPieceStorage()->getDiskAdaptor();
 
-  unsigned char* bufFinal;
+  const unsigned char* bufFinal;
   size_t bufSizeFinal;
 
-  if(transferDecoder.isNull()) {
+  std::string decoded;
+  if(_transferEncodingDecoder.isNull()) {
     bufFinal = buf;
     bufSizeFinal = bufSize;
   } else {
-    size_t infbufSize = 16*1024;
-    unsigned char infbuf[infbufSize];
-    transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
+    decoded = _transferEncodingDecoder->decode(buf, bufSize);
 
-    bufFinal = infbuf;
-    bufSizeFinal = infbufSize;
+    bufFinal = reinterpret_cast<const unsigned char*>(decoded.c_str());
+    bufSizeFinal = decoded.size();
   }
 
   if(_contentEncodingDecoder.isNull()) {
@@ -164,10 +163,10 @@ bool DownloadCommand::executeInternal() {
   if(_requestGroup->getTotalLength() != 0 && bufSize == 0) {
     throw DlRetryEx(EX_GOT_EOF);
   }
-  if((!transferDecoder.isNull() && transferDecoder->finished())
-     || (transferDecoder.isNull() && segment->complete())
+  if((!_transferEncodingDecoder.isNull() &&
+      _transferEncodingDecoder->finished())
+     || (_transferEncodingDecoder.isNull() && segment->complete())
      || bufSize == 0) {
-    if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
 
     if(!_contentEncodingDecoder.isNull() &&
@@ -284,9 +283,10 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-void DownloadCommand::setTransferDecoder(const TransferEncodingHandle& transferDecoder)
+void DownloadCommand::setTransferEncodingDecoder
+(const SharedHandle<Decoder>& decoder)
 {
-  this->transferDecoder = transferDecoder;
+  this->_transferEncodingDecoder = decoder;
 }
 
 void DownloadCommand::setContentEncodingDecoder

@@ -59,6 +59,8 @@ public:
 
   static const std::string COLON_C;
 
+  static const std::string SEMICOLON_C;
+
   static const std::string EQUAL_C;
 };
 } // namespace aria2

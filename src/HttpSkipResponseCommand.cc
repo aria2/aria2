@@ -37,7 +37,7 @@
 #include "HttpResponse.h"
 #include "message.h"
 #include "SocketCore.h"
-#include "TransferEncoding.h"
+#include "Decoder.h"
 #include "DlRetryEx.h"
 #include "Request.h"
 #include "DownloadEngine.h"
@@ -70,15 +70,15 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
 
 HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 
-void HttpSkipResponseCommand::setTransferDecoder
-(const SharedHandle<TransferEncoding>& transferDecoder)
+void HttpSkipResponseCommand::setTransferEncodingDecoder
+(const SharedHandle<Decoder>& decoder)
 {
-  _transferDecoder = transferDecoder;
+  _transferEncodingDecoder = decoder;
 }
 
 bool HttpSkipResponseCommand::executeInternal()
 {
-  if(_totalLength == 0 && _transferDecoder.isNull()) {
+  if(_totalLength == 0 && _transferEncodingDecoder.isNull()) {
     return processResponse();
   }
   const size_t BUFSIZE = 16*1024;
@@ -88,13 +88,12 @@ bool HttpSkipResponseCommand::executeInternal()
   try {
     socket->readData(buf, bufSize);
 
-    if(_transferDecoder.isNull()) {
+    if(_transferEncodingDecoder.isNull()) {
       _receivedBytes += bufSize;
     } else {
       // _receivedBytes is not updated if transferEncoding is set.
-      size_t infbufSize = 16*1024;
-      unsigned char infbuf[infbufSize];
-      _transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
+      // The return value is safely ignored here.
+      _transferEncodingDecoder->decode(buf, bufSize);
     }
     if(_totalLength != 0 && bufSize == 0) {
       throw DlRetryEx(EX_GOT_EOF);
@@ -109,10 +108,10 @@ bool HttpSkipResponseCommand::executeInternal()
     // readable, bufSize == 0 means server shutdown the connection.
     // So socket cannot be reused in this case.
     return prepareForRetry(0);
-  } else if((!_transferDecoder.isNull() && _transferDecoder->finished())
-	    || (_transferDecoder.isNull() && _totalLength == _receivedBytes)) {
-    if(!_transferDecoder.isNull()) _transferDecoder->end();
-
+  } else if((!_transferEncodingDecoder.isNull() &&
+	     _transferEncodingDecoder->finished())
+	    || (_transferEncodingDecoder.isNull() &&
+		_totalLength == _receivedBytes)) {
     if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
        req->supportsPersistentConnection()) {
       std::pair<std::string, uint16_t> peerInfo;

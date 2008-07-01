@@ -67,7 +67,7 @@ private:
 
   void checkLowestDownloadSpeed() const;
 protected:
-  SharedHandle<TransferEncoding> transferDecoder;
+  SharedHandle<Decoder> _transferEncodingDecoder;
 
   SharedHandle<Decoder> _contentEncodingDecoder;
 
@@ -83,7 +83,7 @@ public:
 		  const SharedHandle<SocketCore>& s);
   virtual ~DownloadCommand();
 
-  void setTransferDecoder(const SharedHandle<TransferEncoding>& transferDecoder);
+  void setTransferEncodingDecoder(const SharedHandle<Decoder>& decoder);
 
   void setContentEncodingDecoder(const SharedHandle<Decoder>& decoder);
 

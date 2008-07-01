@@ -2,7 +2,6 @@
 #include "prefs.h"
 #include "PiecedSegment.h"
 #include "Piece.h"
-#include "TransferEncoding.h"
 #include "Request.h"
 #include "HttpHeader.h"
 #include "HttpRequest.h"
@@ -30,7 +29,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsRedirect);
   CPPUNIT_TEST(testIsTransferEncodingSpecified);
   CPPUNIT_TEST(testGetTransferEncoding);
-  CPPUNIT_TEST(testGetTransferDecoder);
+  CPPUNIT_TEST(testGetTransferEncodingDecoder);
   CPPUNIT_TEST(testIsContentEncodingSpecified);
   CPPUNIT_TEST(testGetContentEncoding);
   CPPUNIT_TEST(testGetContentEncodingDecoder);
@@ -58,7 +57,7 @@ public:
   void testIsRedirect();
   void testIsTransferEncodingSpecified();
   void testGetTransferEncoding();
-  void testGetTransferDecoder();
+  void testGetTransferEncodingDecoder();
   void testIsContentEncodingSpecified();
   void testGetContentEncoding();
   void testGetContentEncodingDecoder();
@@ -134,7 +133,8 @@ void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
 		       httpResponse.determinFilename());
 }
 
-void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length()
+void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
+()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
@@ -155,7 +155,8 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->put("Content-Disposition", "attachment; filename=\"aria2-current.tar.bz2\"");
+  httpHeader->put("Content-Disposition",
+		  "attachment; filename=\"aria2-current.tar.bz2\"");
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -186,8 +187,9 @@ void HttpResponseTest::testGetRedirectURI_with_Location()
   httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/download/aria2-1.0.0.tar.bz2"),
-		       httpResponse.getRedirectURI());
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("http://localhost/download/aria2-1.0.0.tar.bz2"),
+     httpResponse.getRedirectURI());
 }
 
 void HttpResponseTest::testIsRedirect()
@@ -231,21 +233,22 @@ void HttpResponseTest::testGetTransferEncoding()
 
   httpHeader->put("Transfer-Encoding", "chunked");
 
-  CPPUNIT_ASSERT_EQUAL(std::string("chunked"), httpResponse.getTransferEncoding());
+  CPPUNIT_ASSERT_EQUAL(std::string("chunked"),
+		       httpResponse.getTransferEncoding());
 }
 
-void HttpResponseTest::testGetTransferDecoder()
+void HttpResponseTest::testGetTransferEncodingDecoder()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT(httpResponse.getTransferDecoder().isNull());  
+  CPPUNIT_ASSERT(httpResponse.getTransferEncodingDecoder().isNull());  
 
   httpHeader->put("Transfer-Encoding", "chunked");
 
-  CPPUNIT_ASSERT(!httpResponse.getTransferDecoder().isNull());
+  CPPUNIT_ASSERT(!httpResponse.getTransferEncodingDecoder().isNull());
 }
 
 void HttpResponseTest::testIsContentEncodingSpecified()

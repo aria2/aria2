@@ -41,7 +41,7 @@ namespace aria2 {
 
 class HttpConnection;
 class HttpResponse;
-class TransferEncoding;
+class Decoder;
 
 class HttpSkipResponseCommand : public AbstractCommand {
 private:
@@ -49,7 +49,7 @@ private:
 
   SharedHandle<HttpResponse> _httpResponse;
 
-  SharedHandle<TransferEncoding> _transferDecoder;
+  SharedHandle<Decoder> _transferEncodingDecoder;
 
   uint64_t _totalLength;
 
@@ -69,7 +69,7 @@ public:
 
   virtual ~HttpSkipResponseCommand();
 
-  void setTransferDecoder(const SharedHandle<TransferEncoding>& transferDecoder);
+  void setTransferEncodingDecoder(const SharedHandle<Decoder>& decoder);
 };
 
 } // namespace aria2

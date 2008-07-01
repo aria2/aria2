@@ -40,7 +40,6 @@ aria2c_SOURCES = AllTest.cc\
 	HttpHeaderTest.cc\
 	HttpResponseTest.cc\
 	SharedHandleTest.cc\
-	ChunkedEncodingTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
 	DefaultDiskWriterTest.cc\
@@ -52,7 +51,8 @@ aria2c_SOURCES = AllTest.cc\
 	ProtocolDetectorTest.cc\
 	StringFormatTest.cc\
 	ExceptionTest.cc\
-	DownloadHandlerFactoryTest.cc
+	DownloadHandlerFactoryTest.cc\
+	ChunkedDecoderTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

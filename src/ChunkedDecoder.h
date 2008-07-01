@@ -32,28 +32,47 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TRANSFER_ENCODING_H_
-#define _D_TRANSFER_ENCODING_H_
+#ifndef _D_CHUNKED_DECODER_H_
+#define _D_CHUNKED_DECODER_H_
 
-#include "common.h"
-#include "SharedHandle.h"
-#include <stdint.h>
+#include "Decoder.h"
 
 namespace aria2 {
 
-class TransferEncoding {
-public:
-  virtual ~TransferEncoding() {}
-  virtual void init() = 0;
-  virtual void inflate(unsigned char* outbuf, size_t& outlen,
-		       const unsigned char* inbuf, size_t inlen) = 0;
-  virtual bool finished() = 0;
-  virtual void end() = 0;
-};
+class ChunkedDecoder : public Decoder {
+private:
+  enum STATE {
+    READ_SIZE,
+    READ_DATA,
+    STREAM_END
+  };
 
-typedef SharedHandle<TransferEncoding> TransferEncodingHandle;
+  std::string _buf;
+
+  size_t _chunkSize;
+
+  STATE _state;
+  
+  static const size_t MAX_CHUNK_SIZE = 1024*1024;
+
+  static const std::string NAME;
+
+public:
+  ChunkedDecoder();
+
+  virtual ~ChunkedDecoder();
+
+  virtual void init();
+
+  virtual std::string decode(const unsigned char* inbuf, size_t inlen);
+
+  virtual bool finished();
+
+  virtual void release();
+
+  virtual const std::string& getName() const;
+};
 
 } // namespace aria2
 
-#endif // _D_TRANSFER_ENCODING_H_
-
+#endif // _D_DECODER_H_

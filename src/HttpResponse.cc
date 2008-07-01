@@ -41,13 +41,13 @@
 #include "Range.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "ChunkedEncoding.h"
 #include "Util.h"
 #include "message.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "Decoder.h"
+#include "ChunkedDecoder.h"
 #ifdef HAVE_LIBZ
 # include "GZipDecoder.h"
 #endif // HAVE_LIBZ
@@ -73,21 +73,19 @@ void HttpResponse::validateResponse() const
 	(StringFormat(EX_LOCATION_HEADER_REQUIRED,
 		      Util::parseUInt(status)).str());
     }
-  } else {
-    if(!httpHeader->defined(HttpHeader::TRANSFER_ENCODING)) {
-      // compare the received range against the requested range
-      RangeHandle responseRange = httpHeader->getRange();
-      if(!httpRequest->isRangeSatisfied(responseRange)) {
-	throw DlAbortEx
-	  (StringFormat(EX_INVALID_RANGE_HEADER,
-			Util::itos(httpRequest->getStartByte(), true).c_str(),
-			Util::itos(httpRequest->getEndByte(), true).c_str(),
-			Util::uitos(httpRequest->getEntityLength(), true).c_str(),
-			Util::itos(responseRange->getStartByte(), true).c_str(),
-			Util::itos(responseRange->getEndByte(), true).c_str(),
-			Util::uitos(responseRange->getEntityLength(), true).c_str()
-			).str());
-      }
+  } else if(!httpHeader->defined(HttpHeader::TRANSFER_ENCODING)) {
+    // compare the received range against the requested range
+    RangeHandle responseRange = httpHeader->getRange();
+    if(!httpRequest->isRangeSatisfied(responseRange)) {
+      throw DlAbortEx
+	(StringFormat
+	 (EX_INVALID_RANGE_HEADER,
+	  Util::itos(httpRequest->getStartByte(), true).c_str(),
+	  Util::itos(httpRequest->getEndByte(), true).c_str(),
+	  Util::uitos(httpRequest->getEntityLength(), true).c_str(),
+	  Util::itos(responseRange->getStartByte(), true).c_str(),
+	  Util::itos(responseRange->getEndByte(), true).c_str(),
+	  Util::uitos(responseRange->getEntityLength(), true).c_str()).str());
     }
   }
 }
@@ -109,10 +107,10 @@ std::string HttpResponse::determinFilename() const
 void HttpResponse::retrieveCookie()
 {
   std::deque<std::string> v = httpHeader->get(HttpHeader::SET_COOKIE);
-  for(std::deque<std::string>::const_iterator itr = v.begin(); itr != v.end(); itr++) {
-    std::string domain = httpRequest->getHost();
-    std::string path = httpRequest->getDir();
-    httpRequest->getRequest()->cookieBox->add(*itr, domain, path);
+  for(std::deque<std::string>::const_iterator itr = v.begin(); itr != v.end();
+      itr++) {
+    httpRequest->getRequest()->cookieBox->add(*itr, httpRequest->getHost(),
+					      httpRequest->getDir());
   }
 }
 
@@ -141,17 +139,20 @@ bool HttpResponse::isTransferEncodingSpecified() const
 
 std::string HttpResponse::getTransferEncoding() const
 {
+  // TODO See TODO in getTransferEncodingDecoder()
   return httpHeader->getFirst(HttpHeader::TRANSFER_ENCODING);
 }
 
-TransferEncodingHandle HttpResponse::getTransferDecoder() const
+SharedHandle<Decoder> HttpResponse::getTransferEncodingDecoder() const
 {
+  // TODO Transfer-Encoding header field can contains multiple tokens. We should
+  // parse the field and retrieve each token.
   if(isTransferEncodingSpecified()) {
     if(getTransferEncoding() == HttpHeader::CHUNKED) {
-      return SharedHandle<TransferEncoding>(new ChunkedEncoding());
+      return SharedHandle<Decoder>(new ChunkedDecoder());
     }
   }
-  return SharedHandle<TransferEncoding>();
+  return SharedHandle<Decoder>();
 }
 
 bool HttpResponse::isContentEncodingSpecified() const

@@ -41,8 +41,6 @@ SRCS =  Socket.h\
 	DownloadFailureException.h\
 	Logger.h\
 	SimpleLogger.cc SimpleLogger.h\
-	TransferEncoding.h\
-	ChunkedEncoding.cc ChunkedEncoding.h\
 	DiskWriter.h\
 	DiskWriterFactory.h\
 	AbstractDiskWriter.cc AbstractDiskWriter.h\
@@ -189,7 +187,8 @@ SRCS =  Socket.h\
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h\
 	A2STR.cc A2STR.h\
 	RarestPieceSelector.cc RarestPieceSelector.h\
-	Decoder.h
+	Decoder.h\
+	ChunkedDecoder.cc ChunkedDecoder.h
 
 if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h

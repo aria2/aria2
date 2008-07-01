@@ -182,13 +182,13 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
 	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
-	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
-	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
-	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
+	HttpResponseTest.cc SharedHandleTest.cc FileTest.cc \
+	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
+	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
 	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
-	DownloadHandlerFactoryTest.cc GZipDecoderTest.cc \
-	MessageDigestHelperTest.cc \
+	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
+	GZipDecoderTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -345,15 +345,15 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	SegmentManTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
 	NetrcTest.$(OBJEXT) SingletonHolderTest.$(OBJEXT) \
 	HttpHeaderTest.$(OBJEXT) HttpResponseTest.$(OBJEXT) \
-	SharedHandleTest.$(OBJEXT) ChunkedEncodingTest.$(OBJEXT) \
-	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) \
-	DefaultDiskWriterTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
-	SpeedCalcTest.$(OBJEXT) MultiDiskAdaptorTest.$(OBJEXT) \
+	SharedHandleTest.$(OBJEXT) FileTest.$(OBJEXT) \
+	OptionTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
+	FeatureConfigTest.$(OBJEXT) SpeedCalcTest.$(OBJEXT) \
+	MultiDiskAdaptorTest.$(OBJEXT) \
 	MultiFileAllocationIteratorTest.$(OBJEXT) \
 	ProtocolDetectorTest.$(OBJEXT) StringFormatTest.$(OBJEXT) \
 	ExceptionTest.$(OBJEXT) DownloadHandlerFactoryTest.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4)
+	ChunkedDecoderTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -562,13 +562,14 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
 	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
-	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
-	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
-	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
+	HttpResponseTest.cc SharedHandleTest.cc FileTest.cc \
+	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
+	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
 	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
-	DownloadHandlerFactoryTest.cc $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4)
+	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -683,7 +684,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriterTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncodingTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@

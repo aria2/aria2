@@ -66,8 +66,10 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED)) {
       if(req->isPipeliningEnabled() ||
 	 (req->isKeepAliveEnabled() &&
-	  ((!transferDecoder.isNull() && _requestGroup->downloadFinished()) ||
-	   (uint64_t)_segments.front()->getPositionToWrite() == _requestGroup->getTotalLength()))) {
+	  ((!_transferEncodingDecoder.isNull() &&
+	    _requestGroup->downloadFinished()) ||
+	   (uint64_t)_segments.front()->getPositionToWrite() ==
+	   _requestGroup->getTotalLength()))) {
 	std::pair<std::string, uint16_t> peerInfo;
 	socket->getPeerInfo(peerInfo);
 	e->poolSocket(peerInfo.first, peerInfo.second, socket);
