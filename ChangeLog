@@ -1,5 +1,10 @@
 2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use append instead of insert.
+	* src/GZipDecoder.cc
+
+2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated doc
 	* src/Decoder.h
 

@@ -97,7 +97,7 @@ std::string GZipDecoder::decode(const unsigned char* in, size_t length)
 
     size_t produced = OUTBUF_LENGTH-_strm->avail_out;
 
-    out.insert(out.end(), &outbuf[0], &outbuf[produced]);
+    out.append(&outbuf[0], &outbuf[produced]);
 
     if(_strm->avail_out > 0) {
       break;
