@@ -1,5 +1,12 @@
 2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated po files.
+	* po/aria2c.pot
+	* po/*.po
+	* po/*.gmo
+
+2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten ChunkedEncoding class as ChunkedDecoder class.
 	* src/A2STR.cc
 	* src/A2STR.h
