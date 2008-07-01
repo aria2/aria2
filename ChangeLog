@@ -1,5 +1,12 @@
 2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed TransferEncoding.
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/HttpResponseCommand.cc
+	
+2008-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated po files.
 	* po/aria2c.pot
 	* po/*.po

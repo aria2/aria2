@@ -39,7 +39,6 @@
 
 namespace aria2 {
 
-class TransferEncoding;
 class Decoder;
 class PeerStat;
 #ifdef ENABLE_MESSAGE_DIGEST

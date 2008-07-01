@@ -43,7 +43,6 @@
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "HttpConnection.h"
-#include "TransferEncoding.h"
 #include "SegmentMan.h"
 #include "Segment.h"
 #include "HttpDownloadCommand.h"

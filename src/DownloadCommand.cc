@@ -37,7 +37,6 @@
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "PeerStat.h"
-#include "TransferEncoding.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "SegmentMan.h"
