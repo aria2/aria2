@@ -39,6 +39,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <cerrno>
 
 #ifdef HAVE_IO_H
 # include <io.h>
