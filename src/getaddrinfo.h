@@ -161,7 +161,7 @@ extern "C" {
 #define getnameinfo my_getnameinfo
 #endif
 
-# <from linux's netdb.h>
+/* <from linux's netdb.h> */
 /* Possible values for `ai_flags' field in `addrinfo' structure.  */
 # define AI_PASSIVE     0x0001  /* Socket address is intended for `bind'.  */
 # define AI_CANONNAME   0x0002  /* Request for canonical name.  */
@@ -219,7 +219,7 @@ extern "C" {
 #  define NI_IDN_USE_STD3_ASCII_RULES 128 /* Validate strings according to
                                              STD3 rules.  */
 # endif
-# </from linux's netdb.h>
+/* </from linux's netdb.h> */
 
 #define AI_DEFAULT	(AI_V4MAPPED | AI_ADDRCONFIG)
 
@@ -233,7 +233,8 @@ extern "C" {
 #define PF_UNSPEC PF_INET
 #endif
 
-#ifndef __MINGW32__
+/* Nexenta OS(GNU/Solaris OS) defines `struct addrinfo' in netdb.h */
+#if !defined( __MINGW32__ ) && !defined( __sun )
 
 /*
  * struct addrinfo.
@@ -249,7 +250,7 @@ struct addrinfo {
     struct addrinfo *ai_next;
 };
 
-#endif // __MINGW32__
+#endif // !__MINGW32__ && !__sun
 
 /*
  * Functions.
