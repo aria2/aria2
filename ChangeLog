@@ -1,5 +1,16 @@
 2008-07-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Introduced a2_struct_stat. It is defined as `struct _stati64' if
+	__MINGW32__ is defined, because under MinGW32, _stati64 is used and its
+	second argument is of type `struct _stati64'. Otherwise it is defined as
+	`struct stat'.
+	* src/AbstractDiskWriter.cc
+	* src/File.cc
+	* src/File.h
+	* src/a2io.h
+	
+2008-07-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the compile error in hurd-i386
 	See the original bug report:
 	http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=488602

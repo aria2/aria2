@@ -119,10 +119,12 @@
 # ifdef stat
 #  undef stat
 # endif // stat
+# define a2_struct_stat struct _stati64
 # define stat(path, buf)  _stati64(path, buf)
 # define tell(handle) _telli64(handle)
 # define a2mkdir(path, openMode) mkdir(path)
 #else
+# define a2_struct_stat struct stat
 # define a2mkdir(path, openMode) mkdir(path, openMode)
 #endif // __MINGW32__
 

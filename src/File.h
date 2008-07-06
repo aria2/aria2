@@ -51,7 +51,7 @@ private:
   /**
    * Returns the return value of stat(...)
    */
-  int fillStat(struct stat& fstat);
+  int fillStat(a2_struct_stat& fstat);
 public:
   File(const std::string& name);
   ~File();

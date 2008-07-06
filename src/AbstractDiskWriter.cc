@@ -168,7 +168,7 @@ uint64_t AbstractDiskWriter::size() const
   if(fd == -1) {
     throw DlAbortEx("File not opened.");
   }
-  struct stat fileStat;
+  a2_struct_stat fileStat;
   if(fstat(fd, &fileStat) < 0) {
     return 0;
   }

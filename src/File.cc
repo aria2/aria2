@@ -50,17 +50,17 @@ File::File(const std::string& name):name(name) {}
 
 File::~File() {}
 
-int File::fillStat(struct stat& fstat) {
+int File::fillStat(a2_struct_stat& fstat) {
   return stat(name.c_str(), &fstat);
 }
 
 bool File::exists() {
-  struct stat fstat;
+  a2_struct_stat fstat;
   return fillStat(fstat) == 0;
 }
 
 bool File::isFile() {
-  struct stat fstat;
+  a2_struct_stat fstat;
   if(fillStat(fstat) < 0) {
     return false;
   }
@@ -68,7 +68,7 @@ bool File::isFile() {
 }
 
 bool File::isDir() {
-  struct stat fstat;
+  a2_struct_stat fstat;
   if(fillStat(fstat) < 0) {
     return false;
   }
@@ -86,7 +86,7 @@ bool File::remove() {
 }
 
 uint64_t File::size() {
-  struct stat fstat;
+  a2_struct_stat fstat;
   if(fillStat(fstat) < 0) {
     return 0;
   }
@@ -122,7 +122,7 @@ bool File::mkdirs() {
 
 mode_t File::mode()
 {
-  struct stat fstat;
+  a2_struct_stat fstat;
   if(fillStat(fstat) < 0) {
     return 0;
   }
