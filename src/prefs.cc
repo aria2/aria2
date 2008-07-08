@@ -251,6 +251,8 @@ const std::string PREF_BT_REQUIRE_CRYPTO("bt-require-crypto");
 const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT("bt-request-peer-speed-limit");
 // values: 1*digit
 const std::string PREF_BT_MAX_OPEN_FILES("bt-max-open-files");
+// values: true | false
+const std::string PREF_BT_SEED("bt-seed");
 
 /**
  * Metalink related preferences

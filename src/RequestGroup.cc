@@ -239,14 +239,18 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       } else {
 	if(_pieceStorage->getDiskAdaptor()->fileExists()) {
 	  if(!_option->getAsBool(PREF_CHECK_INTEGRITY) &&
-	     !_option->getAsBool(PREF_ALLOW_OVERWRITE)) {
+	     !_option->getAsBool(PREF_ALLOW_OVERWRITE) &&
+	     !_option->getAsBool(PREF_BT_SEED)) {
 	    // TODO we need this->haltRequested = true?
 	    throw DownloadFailureException
-	      (StringFormat(MSG_FILE_ALREADY_EXISTS,
-			    _pieceStorage->getDiskAdaptor()->getFilePath().c_str()
-			    ).str());
+	      (StringFormat
+	       (MSG_FILE_ALREADY_EXISTS,
+		_pieceStorage->getDiskAdaptor()->getFilePath().c_str()).str());
 	  } else {
 	    _pieceStorage->getDiskAdaptor()->openFile();
+	  }
+	  if(_option->getAsBool(PREF_BT_SEED)) {
+	    _pieceStorage->markAllPiecesDone();
 	  }
 	} else {
 	  _pieceStorage->getDiskAdaptor()->openFile();
@@ -269,8 +273,14 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	}
       }
       CheckIntegrityEntryHandle entry(new BtCheckIntegrityEntry(this));
-      
-      processCheckIntegrityEntry(commands, entry, e);
+      // --bt-seed=true is given and download has completed, skip validation for
+      // piece hashes.
+      if(_option->getAsBool(PREF_BT_SEED) &&
+	 _pieceStorage->downloadFinished()) {
+	entry->onDownloadFinished(commands, e);
+      } else {
+	processCheckIntegrityEntry(commands, entry, e);
+      }
       return;
     }
   }

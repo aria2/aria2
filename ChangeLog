@@ -1,5 +1,17 @@
 2008-07-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --bt-seed option. If --bt-seed=true is given at the command-line,
+	aria2 seeds previously downloaded files without validating piece hashs.
+	* src/HelpItemFactory.cc
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2008-07-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated DESCRIPTION of man page.
 	* doc/aria2c.1
 	* doc/aria2c.1.html

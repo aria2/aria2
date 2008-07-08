@@ -142,6 +142,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 			   std::deque<std::string>(&params[0],
 						   &params[arrayLength(params)]))));
   }
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_SEED)));
   return handlers;
 }
 
