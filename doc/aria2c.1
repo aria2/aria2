@@ -42,7 +42,7 @@ is specified, log is written to stdout\&.
 .PP
 \fB\-j\fR, \fB\-\-max\-concurrent\-downloads\fR=N
 .RS 4
-Set maximum number of parallel downloads\&. Default:
+Set maximum number of parallel downloads for every static (HTTP/FTP) URL, torrent and metalink\&. Default:
 \fI5\fR
 .RE
 .PP
@@ -114,10 +114,12 @@ and
 .PP
 \fB\-s\fR, \fB\-\-split\fR=N
 .RS 4
-Download a file using N connections\&. If more than N URLs are given, first N URLs are used and remaining URLs are used for backup\&. If less than N URLs are given, some of the URLs are used more than once so that totaly N connections are made simultaneously\&. N must be between
+Download a file using N connections\&. If more than N URLs are given, first N URLs are used and remaining URLs are used for backup\&. If less than N URLs are given, those URLs are used more than once so that N connections total are made simultaneously\&. N must be between
 \fI1\fR
 and
-\fI16\fR\&. Default:
+\fI16\fR\&. Please see
+\fB\-j\fR
+option too\&. Default:
 \fI5\fR
 .RE
 .PP
@@ -303,6 +305,12 @@ In BitTorrent downloads, if the download speed is lower than SPEED, aria2 initia
 or
 \fIM\fR(1K = 1024, 1M = 1024K)\&. Default:
 \fI51200\fR
+.RE
+.PP
+\fB\-\-bt\-seed\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Seed previously downloaded files without validating piece hashes\&. Default:
+\fIfalse\fR
 .RE
 .PP
 \fB\-\-dht\-entry\-point\fR=HOST:PORT

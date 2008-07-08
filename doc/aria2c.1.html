@@ -378,7 +378,8 @@ div.olist2 div.olist ol {
 </dt>
 <dd>
 <p>
-  Set maximum number of parallel downloads.
+  Set maximum number of parallel downloads for every static (HTTP/FTP) URL,
+  torrent and metalink.
   Default: <em>5</em>
 </p>
 </dd>
@@ -484,9 +485,9 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
   Download a file using N connections.
   If more than N URLs are given, first N URLs are used and remaining URLs are
   used for backup.
-  If less than N URLs are given, some of the URLs are used more than once so
-  that totaly N connections are made simultaneously. N must be between <em>1</em> and
-  <em>16</em>.
+  If less than N URLs are given, those URLs are used more than once so that N
+  connections total are made simultaneously.
+  N must be between <em>1</em> and <em>16</em>. Please see <strong>-j</strong> option too.
   Default: <em>5</em>
 </p>
 </dd>
@@ -762,6 +763,15 @@ writes the piece to the appropriate files.</td>
   aria2 initiates and accepts connections ignoring max peer cap.
   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
   Default: <em>51200</em>
+</p>
+</dd>
+<dt>
+<strong>&#8212;bt-seed</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Seed previously downloaded files without validating piece hashes.
+  Default: <em>false</em>
 </p>
 </dd>
 <dt>
@@ -1612,7 +1622,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-07-08 21:10:34 JST
+Last updated 2008-07-08 23:09:43 JST
 </div>
 </div>
 </body>

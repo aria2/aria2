@@ -1,5 +1,12 @@
 2008-07-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated the descriptions for -j, -s. Added --bt-seed.
+	* doc/aria2c.1
+	* doc/aria2c.1.html
+	* doc/aria2c.1.txt	
+	
+2008-07-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added --bt-seed option. If --bt-seed=true is given at the command-line,
 	aria2 seeds previously downloaded files without validating piece hashs.
 	* src/HelpItemFactory.cc
