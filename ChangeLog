@@ -1,3 +1,10 @@
+2008-07-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Updated DESCRIPTION of man page.
+	* doc/aria2c.1
+	* doc/aria2c.1.html
+	* doc/aria2c.1.txt
+
 2008-07-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the compile error on Nexenta OS(GNU/Solaris OS).
