@@ -32,67 +32,42 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINK_ENTRY_H_
-#define _D_METALINK_ENTRY_H_
+#ifndef _D_SIGNATURE_H_
+#define _D_SIGNATURE_H_
 
 #include "common.h"
 #include "SharedHandle.h"
 #include <string>
-#include <deque>
 
 namespace aria2 {
 
-class MetalinkResource;
-class FileEntry;
-#ifdef ENABLE_MESSAGE_DIGEST
-class Checksum;
-class ChunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
-class Signature;
-
-class MetalinkEntry {
-public:
-  SharedHandle<FileEntry> file;
-  std::string version;
-  std::string language;
-  std::string os;
-  std::deque<SharedHandle<MetalinkResource> > resources;
-  int maxConnections;
-#ifdef ENABLE_MESSAGE_DIGEST
-  SharedHandle<Checksum> checksum;
-  SharedHandle<ChunkChecksum> chunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
+class Signature {
 private:
-  SharedHandle<Signature> _signature;
+  std::string _type;
+
+  std::string _file;
+
+  std::string _body;
 public:
-  MetalinkEntry();
+  Signature();
 
-  ~MetalinkEntry();
+  ~Signature();
 
-  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry);
+  void setType(const std::string& type);
 
-  std::string getPath() const;
+  const std::string& getType() const;
 
-  uint64_t getLength() const;
+  void setFile(const std::string& file);
 
-  SharedHandle<FileEntry> getFile() const;
+  const std::string& getFile() const;
 
-  void dropUnsupportedResource();
+  void setBody(const std::string& body);
 
-  void reorderResourcesByPreference();
-  
-  void setLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd);
-  void setProtocolPreference(const std::string& protocol, int preferenceToAdd);
+  const std::string& getBody() const;
 
-  static void toFileEntry
-  (std::deque<SharedHandle<FileEntry> >& fileEntries,
-   const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);
-
-  void setSignature(const SharedHandle<Signature>& signature);
-
-  SharedHandle<Signature> getSignature() const;
+  bool save(const std::string& filepath) const;
 };
 
 } // namespace aria2
 
-#endif // _D_METALINK_ENTRY_H_
+#endif // _D_SIGNATURE_H_

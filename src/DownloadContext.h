@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "Signature.h"
 #include <string>
 #include <deque>
 
@@ -49,11 +50,13 @@ class DownloadContext
 protected:
   std::string _dir;
 
+private:
+  SharedHandle<Signature> _signature;
+
 public:
-  DownloadContext():_dir(".") {}
+  DownloadContext();
 
-  virtual ~DownloadContext() {}
-
+  virtual ~DownloadContext();
 
   enum FILE_MODE {
     SINGLE,
@@ -88,16 +91,13 @@ public:
    */
   virtual std::string getActualBasePath() const = 0;
 
-  const std::string& getDir() const
-  {
-    return _dir;
-  }
+  const std::string& getDir() const;
 
-  void setDir(const std::string& dir)
-  {
-    _dir = dir;
-  }
+  void setDir(const std::string& dir);
 
+  SharedHandle<Signature> getSignature() const;
+
+  void setSignature(const SharedHandle<Signature>& signature);
 };
 
 typedef SharedHandle<DownloadContext> DownloadContextHandle;

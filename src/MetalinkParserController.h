@@ -46,6 +46,7 @@ namespace aria2 {
 class Metalinker;
 class MetalinkEntry;
 class MetalinkResource;
+class Signature;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
@@ -69,6 +70,8 @@ private:
   
   std::pair<size_t, std::string> _tempHashPair;
 #endif // ENABLE_MESSAGE_DIGEST
+
+  SharedHandle<Signature> _tSignature;
 
   static const std::string SHA1;
 public:
@@ -139,6 +142,18 @@ public:
   void commitChunkChecksumTransaction();
 
   void cancelChunkChecksumTransaction();
+
+  void newSignatureTransaction();
+
+  void setTypeOfSignature(const std::string& type);
+
+  void setFileOfSignature(const std::string& file);
+
+  void setBodyOfSignature(const std::string& body);
+
+  void commitSignatureTransaction();
+
+  void cancelSignatureTransaction();
 };
 
 } // namespace aria2

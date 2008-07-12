@@ -7,6 +7,7 @@
 # include "Checksum.h"
 # include "ChunkChecksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include "Signature.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -20,6 +21,7 @@ class MetalinkParserControllerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testChecksumTransaction);
   CPPUNIT_TEST(testChunkChecksumTransaction);
 #endif // ENABLE_MESSAGE_DIGEST
+  CPPUNIT_TEST(testSignatureTransaction);
 
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -35,6 +37,7 @@ public:
   void testChecksumTransaction();
   void testChunkChecksumTransaction();
 #endif // ENABLE_MESSAGE_DIGEST
+  void testSignatureTransaction();
 };
 
 
@@ -149,5 +152,41 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
 }
 #endif // ENABLE_MESSAGE_DIGEST
+
+void MetalinkParserControllerTest::testSignatureTransaction()
+{
+  static std::string pgpSignature =
+    "-----BEGIN PGP SIGNATURE-----\n"
+    "Version: GnuPG v1.4.9 (GNU/Linux)\n"
+    "\n"
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n"
+    "ffffffffffffffffffffffff\n"
+    "fffff\n"
+    "-----END PGP SIGNATURE-----\n";
+
+  MetalinkParserController ctrl;
+  ctrl.newEntryTransaction();
+
+  ctrl.newSignatureTransaction();
+  ctrl.setTypeOfSignature("pgp");
+  ctrl.setFileOfSignature("aria2.sig");
+  ctrl.setBodyOfSignature(pgpSignature);
+  // commitEntryTransaction also commits signature transaction.
+  ctrl.commitEntryTransaction();
+
+  SharedHandle<Metalinker> m = ctrl.getResult();
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+  SharedHandle<Signature> sig = m->entries.front()->getSignature();
+  CPPUNIT_ASSERT_EQUAL(std::string("pgp"), sig->getType());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.sig"), sig->getFile());
+  CPPUNIT_ASSERT_EQUAL(pgpSignature, sig->getBody());
+
+  // See when signature transaction is canceled:
+  ctrl.newEntryTransaction();
+  ctrl.newSignatureTransaction();
+  ctrl.cancelSignatureTransaction();
+  ctrl.commitEntryTransaction();
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->getSignature().isNull());
+}
 
 } // namespace aria2

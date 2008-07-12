@@ -44,6 +44,7 @@
 # include "ChunkChecksum.h"
 # include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include "Signature.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -135,6 +136,7 @@ void MetalinkParserController::commitEntryTransaction()
   commitResourceTransaction();
   commitChecksumTransaction();
   commitChunkChecksumTransaction();
+  commitSignatureTransaction();
   _metalinker->entries.push_back(_tEntry);
   _tEntry.reset();
 }
@@ -144,6 +146,7 @@ void MetalinkParserController::cancelEntryTransaction()
   cancelResourceTransaction();
   cancelChecksumTransaction();
   cancelChunkChecksumTransaction();
+  cancelSignatureTransaction();
   _tEntry.reset();
 }
 
@@ -377,6 +380,52 @@ void MetalinkParserController::cancelChunkChecksumTransaction()
 #ifdef ENABLE_MESSAGE_DIGEST
   _tChunkChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
+}
+
+void MetalinkParserController::newSignatureTransaction()
+{
+  if(_tEntry.isNull()) {
+    return;
+  }
+  _tSignature.reset(new Signature());
+}
+
+void MetalinkParserController::setTypeOfSignature(const std::string& type)
+{
+  if(_tSignature.isNull()) {
+    return;
+  }
+  _tSignature->setType(type);
+}
+
+void MetalinkParserController::setFileOfSignature(const std::string& file)
+{
+  if(_tSignature.isNull()) {
+    return;
+  }
+  _tSignature->setFile(file);
+}
+
+void MetalinkParserController::setBodyOfSignature(const std::string& body)
+{
+  if(_tSignature.isNull()) {
+    return;
+  }
+  _tSignature->setBody(body);
+}
+
+void MetalinkParserController::commitSignatureTransaction()
+{
+  if(_tSignature.isNull()) {
+    return;
+  }
+  _tEntry->setSignature(_tSignature);
+  _tSignature.reset();
+}
+
+void MetalinkParserController::cancelSignatureTransaction()
+{
+  _tSignature.reset();
 }
 
 } // namespace aria2

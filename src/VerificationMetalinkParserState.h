@@ -49,6 +49,10 @@ private:
   static const std::string PIECES;
 
   static const std::string LENGTH;
+
+  static const std::string SIGNATURE;
+  
+  static const std::string FILE;
 public:
   void beginElement(MetalinkParserStateMachine* stm,
 		    const std::string& name, const std::map<std::string, std::string>& attrs);

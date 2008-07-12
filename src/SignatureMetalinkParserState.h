@@ -32,67 +32,29 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINK_ENTRY_H_
-#define _D_METALINK_ENTRY_H_
+#ifndef _D_SIGNATURE_METALINK_PARSER_STATE_H_
+#define _D_SIGNATURE_METALINK_PARSER_STATE_H_
 
-#include "common.h"
-#include "SharedHandle.h"
-#include <string>
-#include <deque>
+#include "MetalinkParserState.h"
 
 namespace aria2 {
 
-class MetalinkResource;
-class FileEntry;
-#ifdef ENABLE_MESSAGE_DIGEST
-class Checksum;
-class ChunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
-class Signature;
-
-class MetalinkEntry {
+class SignatureMetalinkParserState:public MetalinkParserState
+{
 public:
-  SharedHandle<FileEntry> file;
-  std::string version;
-  std::string language;
-  std::string os;
-  std::deque<SharedHandle<MetalinkResource> > resources;
-  int maxConnections;
-#ifdef ENABLE_MESSAGE_DIGEST
-  SharedHandle<Checksum> checksum;
-  SharedHandle<ChunkChecksum> chunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
-private:
-  SharedHandle<Signature> _signature;
-public:
-  MetalinkEntry();
+  void beginElement(MetalinkParserStateMachine* stm,
+		    const std::string& name, const std::map<std::string,
+		    std::string>& attrs);
 
-  ~MetalinkEntry();
+  void endElement(MetalinkParserStateMachine* stm,
+		  const std::string& name, const std::string& characters);
 
-  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry);
-
-  std::string getPath() const;
-
-  uint64_t getLength() const;
-
-  SharedHandle<FileEntry> getFile() const;
-
-  void dropUnsupportedResource();
-
-  void reorderResourcesByPreference();
-  
-  void setLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd);
-  void setProtocolPreference(const std::string& protocol, int preferenceToAdd);
-
-  static void toFileEntry
-  (std::deque<SharedHandle<FileEntry> >& fileEntries,
-   const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);
-
-  void setSignature(const SharedHandle<Signature>& signature);
-
-  SharedHandle<Signature> getSignature() const;
+  virtual bool needsCharactersBuffering() const
+  {
+    return true;
+  }
 };
 
 } // namespace aria2
 
-#endif // _D_METALINK_ENTRY_H_
+#endif // _D_SIGNATURE_METALINK_PARSER_STATE_H_

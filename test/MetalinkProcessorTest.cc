@@ -11,6 +11,7 @@
 # include "ChunkChecksum.h"
 # include "Checksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include "Signature.h"
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -82,6 +83,22 @@ void MetalinkProcessorTest::testParseFile()
 			 entry1->checksum->getMessageDigest());
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), entry1->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
+    CPPUNIT_ASSERT(!entry1->getSignature().isNull());
+    CPPUNIT_ASSERT_EQUAL(std::string("pgp"), entry1->getSignature()->getType());
+    CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2.sig"),
+			 entry1->getSignature()->getFile());
+    // Note that last '\n' character is trimmed.
+    CPPUNIT_ASSERT_EQUAL
+      (std::string
+       ("-----BEGIN PGP SIGNATURE-----\n"
+	"Version: GnuPG v1.4.9 (GNU/Linux)\n"
+	"\n"
+	"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n"
+	"ffffffffffffffffffffffff\n"
+	"fffff\n"
+	"-----END PGP SIGNATURE-----"),
+       entry1->getSignature()->getBody());
+
     std::deque<SharedHandle<MetalinkResource> >::iterator resourceItr1 = entry1->resources.begin();
     SharedHandle<MetalinkResource> resource1 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, resource1->type);
@@ -120,6 +137,8 @@ void MetalinkProcessorTest::testParseFile()
 			 entry2->chunkChecksum->getChecksum(1));
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), entry2->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
+    // See that signature is null
+    CPPUNIT_ASSERT(entry2->getSignature().isNull());
 
     entryItr++;
 

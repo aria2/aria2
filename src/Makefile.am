@@ -158,7 +158,7 @@ SRCS =  Socket.h\
 	TaggedItem.cc TaggedItem.h\
 	TagContainer.cc TagContainer.h\
 	HelpItemFactory.cc HelpItemFactory.h\
-	DownloadContext.h\
+	DownloadContext.cc DownloadContext.h\
 	SingleFileDownloadContext.cc SingleFileDownloadContext.h\
 	TimedHaltCommand.cc TimedHaltCommand.h\
 	CUIDCounter.h\
@@ -188,7 +188,8 @@ SRCS =  Socket.h\
 	A2STR.cc A2STR.h\
 	RarestPieceSelector.cc RarestPieceSelector.h\
 	Decoder.h\
-	ChunkedDecoder.cc ChunkedDecoder.h
+	ChunkedDecoder.cc ChunkedDecoder.h\
+	Signature.cc Signature.h
 
 if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h
@@ -409,6 +410,7 @@ SRCS += Metalinker.cc Metalinker.h\
 	HashMetalinkParserState.cc HashMetalinkParserState.h\
 	PiecesMetalinkParserState.cc PiecesMetalinkParserState.h\
 	PieceHashMetalinkParserState.cc PieceHashMetalinkParserState.h\
+	SignatureMetalinkParserState.cc SignatureMetalinkParserState.h\
 	ResourcesMetalinkParserState.cc ResourcesMetalinkParserState.h\
 	URLMetalinkParserState.cc URLMetalinkParserState.h\
 	FinMetalinkParserState.cc FinMetalinkParserState.h\

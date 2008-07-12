@@ -65,6 +65,7 @@ private:
   static MetalinkParserState* _hashState;
   static MetalinkParserState* _piecesState;
   static MetalinkParserState* _pieceHashState;
+  static MetalinkParserState* _signatureState;
   static MetalinkParserState* _resourcesState;
   static MetalinkParserState* _urlState;
   static MetalinkParserState* _finState;
@@ -97,6 +98,8 @@ public:
 
   void setPieceHashState();
 
+  void setSignatureState();
+
   void setResourcesState();
 
   void setURLState();
@@ -111,7 +114,8 @@ public:
 
   bool error() const;
 
-  void beginElement(const std::string& name, const std::map<std::string, std::string>& attrs);
+  void beginElement(const std::string& name, const std::map<std::string,
+		    std::string>& attrs);
   
   void endElement(const std::string& name, const std::string& characters);
 
@@ -172,6 +176,18 @@ public:
   void commitChunkChecksumTransaction();
 
   void cancelChunkChecksumTransaction();
+
+  void newSignatureTransaction();
+
+  void setTypeOfSignature(const std::string& type);
+
+  void setFileOfSignature(const std::string& file);
+
+  void setBodyOfSignature(const std::string& body);
+
+  void commitSignatureTransaction();
+
+  void cancelSignatureTransaction();
 
   bool needsCharactersBuffering() const;
 

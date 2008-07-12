@@ -32,67 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINK_ENTRY_H_
-#define _D_METALINK_ENTRY_H_
-
-#include "common.h"
-#include "SharedHandle.h"
-#include <string>
-#include <deque>
+#include "Signature.h"
 
 namespace aria2 {
 
-class MetalinkResource;
-class FileEntry;
-#ifdef ENABLE_MESSAGE_DIGEST
-class Checksum;
-class ChunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
-class Signature;
+Signature::Signature() {}
 
-class MetalinkEntry {
-public:
-  SharedHandle<FileEntry> file;
-  std::string version;
-  std::string language;
-  std::string os;
-  std::deque<SharedHandle<MetalinkResource> > resources;
-  int maxConnections;
-#ifdef ENABLE_MESSAGE_DIGEST
-  SharedHandle<Checksum> checksum;
-  SharedHandle<ChunkChecksum> chunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
-private:
-  SharedHandle<Signature> _signature;
-public:
-  MetalinkEntry();
+Signature::~Signature() {}
 
-  ~MetalinkEntry();
+void Signature::setType(const std::string& type)
+{
+  _type = type;
+}
 
-  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry);
+const std::string& Signature::getType() const
+{
+  return _type;
+}
 
-  std::string getPath() const;
+void Signature::setFile(const std::string& file)
+{
+  _file = file;
+}
 
-  uint64_t getLength() const;
+const std::string& Signature::getFile() const
+{
+  return _file;
+}
 
-  SharedHandle<FileEntry> getFile() const;
+void Signature::setBody(const std::string& body)
+{
+  _body = body;
+}
 
-  void dropUnsupportedResource();
+const std::string& Signature::getBody() const
+{
+  return _body;
+}
 
-  void reorderResourcesByPreference();
-  
-  void setLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd);
-  void setProtocolPreference(const std::string& protocol, int preferenceToAdd);
-
-  static void toFileEntry
-  (std::deque<SharedHandle<FileEntry> >& fileEntries,
-   const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);
-
-  void setSignature(const SharedHandle<Signature>& signature);
-
-  SharedHandle<Signature> getSignature() const;
-};
+bool Signature::save(const std::string& filepath) const
+{
+  // TODO not yet implemented
+  return false;
+}
 
 } // namespace aria2
-
-#endif // _D_METALINK_ENTRY_H_

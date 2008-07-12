@@ -41,6 +41,7 @@
 # include "Checksum.h"
 # include "ChunkChecksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include "Signature.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -83,6 +84,7 @@ MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
     this->checksum = metalinkEntry.checksum;
     this->chunkChecksum = metalinkEntry.chunkChecksum;
 #endif // ENABLE_MESSAGE_DIGEST
+    this->_signature = metalinkEntry._signature;
   }
   return *this;
 }
@@ -178,6 +180,16 @@ void MetalinkEntry::toFileEntry
 SharedHandle<FileEntry> MetalinkEntry::getFile() const
 {
   return file;
+}
+
+void MetalinkEntry::setSignature(const SharedHandle<Signature>& signature)
+{
+  _signature = signature;
+}
+
+SharedHandle<Signature> MetalinkEntry::getSignature() const
+{
+  return _signature;
 }
 
 } // namespace aria2

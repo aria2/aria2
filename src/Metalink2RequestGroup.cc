@@ -220,6 +220,7 @@ Metalink2RequestGroup::createRequestGroup
       dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
     }
 #endif // ENABLE_MESSAGE_DIGEST
+    dctx->setSignature(entry->getSignature());
     rg->setDownloadContext(dctx);
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :

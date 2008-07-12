@@ -46,6 +46,7 @@
 #include "HashMetalinkParserState.h"
 #include "PiecesMetalinkParserState.h"
 #include "PieceHashMetalinkParserState.h"
+#include "SignatureMetalinkParserState.h"
 #include "ResourcesMetalinkParserState.h"
 #include "URLMetalinkParserState.h"
 #include "FinMetalinkParserState.h"
@@ -67,6 +68,8 @@ MetalinkParserState* MetalinkParserStateMachine::_verificationState = new Verifi
 MetalinkParserState* MetalinkParserStateMachine::_hashState = new HashMetalinkParserState();
 MetalinkParserState* MetalinkParserStateMachine::_piecesState = new PiecesMetalinkParserState();
 MetalinkParserState* MetalinkParserStateMachine::_pieceHashState = new PieceHashMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_signatureState =
+  new SignatureMetalinkParserState();
 MetalinkParserState* MetalinkParserStateMachine::_resourcesState = new ResourcesMetalinkParserState();
 MetalinkParserState* MetalinkParserStateMachine::_urlState = new URLMetalinkParserState();
 MetalinkParserState* MetalinkParserStateMachine::_finState = new FinMetalinkParserState();
@@ -134,6 +137,11 @@ void MetalinkParserStateMachine::setPiecesState()
 void MetalinkParserStateMachine::setPieceHashState()
 {
   _state = _pieceHashState;
+}
+
+void MetalinkParserStateMachine::setSignatureState()
+{
+  _state = _signatureState;
 }
 
 void MetalinkParserStateMachine::setResourcesState()
@@ -311,6 +319,36 @@ void MetalinkParserStateMachine::commitChunkChecksumTransaction()
 void MetalinkParserStateMachine::cancelChunkChecksumTransaction()
 {
   _ctrl->cancelChunkChecksumTransaction();
+}
+
+void MetalinkParserStateMachine::newSignatureTransaction()
+{
+  _ctrl->newSignatureTransaction();
+}
+
+void MetalinkParserStateMachine::setTypeOfSignature(const std::string& type)
+{
+  _ctrl->setTypeOfSignature(type);
+}
+
+void MetalinkParserStateMachine::setFileOfSignature(const std::string& file)
+{
+  _ctrl->setFileOfSignature(file);
+}
+
+void MetalinkParserStateMachine::setBodyOfSignature(const std::string& body)
+{
+  _ctrl->setBodyOfSignature(body);
+}
+
+void MetalinkParserStateMachine::commitSignatureTransaction()
+{
+  _ctrl->commitSignatureTransaction();
+}
+
+void MetalinkParserStateMachine::cancelSignatureTransaction()
+{
+  _ctrl->cancelSignatureTransaction();
 }
 
 void MetalinkParserStateMachine::beginElement(const std::string& name,

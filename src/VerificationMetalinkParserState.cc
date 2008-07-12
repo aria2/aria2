@@ -47,9 +47,14 @@ const std::string VerificationMetalinkParserState::PIECES("pieces");
 
 const std::string VerificationMetalinkParserState::LENGTH("length");
 
-void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-						   const std::string& name,
-						   const std::map<std::string, std::string>& attrs)
+const std::string VerificationMetalinkParserState::SIGNATURE("signature");
+
+const std::string VerificationMetalinkParserState::FILE("file");
+
+void VerificationMetalinkParserState::beginElement
+(MetalinkParserStateMachine* stm,
+ const std::string& name,
+ const std::map<std::string, std::string>& attrs)
 {
   if(name == VerificationMetalinkParserState::HASH) {
     stm->setHashState();
@@ -91,14 +96,31 @@ void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* s
     } catch(RecoverableException& e) {
       stm->cancelChunkChecksumTransaction();
     }
+  } else if(name == VerificationMetalinkParserState::SIGNATURE) {
+    stm->setSignatureState();
+    std::map<std::string, std::string>::const_iterator itr =
+      attrs.find(VerificationMetalinkParserState::TYPE);
+    if(itr == attrs.end()) {
+      return;
+    } else {
+      stm->newSignatureTransaction();
+      stm->setTypeOfSignature((*itr).second);
+
+      std::map<std::string, std::string>::const_iterator itr =
+	attrs.find(VerificationMetalinkParserState::FILE);
+      if(itr != attrs.end()) {
+	stm->setFileOfSignature((*itr).second);
+      }
+    }
   } else {
     stm->setSkipTagState(this);
   }
 }
 
-void VerificationMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-						 const std::string& name,
-						 const std::string& characters)
+void VerificationMetalinkParserState::endElement
+(MetalinkParserStateMachine* stm,
+ const std::string& name,
+ const std::string& characters)
 {
   stm->setFileState();
 }

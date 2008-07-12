@@ -1,5 +1,32 @@
 2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added the ability to retrieve signature from Metalink file.
+	A retrieved signature is stored in Signature class and it is held by
+	DownloadContext class. Note that aria2 doesn't verify signature.
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkEntry.cc
+	* src/MetalinkEntry.h
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserController.h
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+	* src/Signature.cc
+	* src/Signature.h
+	* src/SignatureMetalinkParserState.cc
+	* src/SignatureMetalinkParserState.h
+	* src/VerificationMetalinkParserState.cc
+	* src/VerificationMetalinkParserState.h
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkParserControllerTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/test.xml
+	
+2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Close DiskAdaptor after renaming file.
 	* src/RequestGroup.cc
 

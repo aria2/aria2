@@ -243,6 +243,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	HashMetalinkParserState.cc HashMetalinkParserState.h\
 @ENABLE_METALINK_TRUE@	PiecesMetalinkParserState.cc PiecesMetalinkParserState.h\
 @ENABLE_METALINK_TRUE@	PieceHashMetalinkParserState.cc PieceHashMetalinkParserState.h\
+@ENABLE_METALINK_TRUE@	SignatureMetalinkParserState.cc SignatureMetalinkParserState.h\
 @ENABLE_METALINK_TRUE@	ResourcesMetalinkParserState.cc ResourcesMetalinkParserState.h\
 @ENABLE_METALINK_TRUE@	URLMetalinkParserState.cc URLMetalinkParserState.h\
 @ENABLE_METALINK_TRUE@	FinMetalinkParserState.cc FinMetalinkParserState.h\
@@ -393,11 +394,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
 	ServerHost.cc ServerHost.h HelpItem.cc HelpItem.h \
 	TaggedItem.cc TaggedItem.h TagContainer.cc TagContainer.h \
-	HelpItemFactory.cc HelpItemFactory.h DownloadContext.h \
-	SingleFileDownloadContext.cc SingleFileDownloadContext.h \
-	TimedHaltCommand.cc TimedHaltCommand.h CUIDCounter.h \
-	DNSCache.h DownloadResult.h Sequence.h IntSequence.h \
-	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
+	HelpItemFactory.cc HelpItemFactory.h DownloadContext.cc \
+	DownloadContext.h SingleFileDownloadContext.cc \
+	SingleFileDownloadContext.h TimedHaltCommand.cc \
+	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
+	Sequence.h IntSequence.h PostDownloadHandler.h \
+	PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
@@ -406,9 +408,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
 	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
-	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h GZipDecoder.cc \
-	GZipDecoder.h AsyncNameResolver.cc AsyncNameResolver.h \
-	IteratableChunkChecksumValidator.cc \
+	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h Signature.cc \
+	Signature.h GZipDecoder.cc GZipDecoder.h AsyncNameResolver.cc \
+	AsyncNameResolver.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
@@ -550,7 +552,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	VerificationMetalinkParserState.h HashMetalinkParserState.cc \
 	HashMetalinkParserState.h PiecesMetalinkParserState.cc \
 	PiecesMetalinkParserState.h PieceHashMetalinkParserState.cc \
-	PieceHashMetalinkParserState.h ResourcesMetalinkParserState.cc \
+	PieceHashMetalinkParserState.h SignatureMetalinkParserState.cc \
+	SignatureMetalinkParserState.h ResourcesMetalinkParserState.cc \
 	ResourcesMetalinkParserState.h URLMetalinkParserState.cc \
 	URLMetalinkParserState.h FinMetalinkParserState.cc \
 	FinMetalinkParserState.h SkipTagMetalinkParserState.cc \
@@ -703,6 +706,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@	HashMetalinkParserState.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	PiecesMetalinkParserState.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	PieceHashMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	SignatureMetalinkParserState.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	ResourcesMetalinkParserState.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	URLMetalinkParserState.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	FinMetalinkParserState.$(OBJEXT) \
@@ -787,19 +791,19 @@ am__objects_17 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	PeerConnection.$(OBJEXT) ByteArrayDiskWriter.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
 	HelpItem.$(OBJEXT) TaggedItem.$(OBJEXT) TagContainer.$(OBJEXT) \
-	HelpItemFactory.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
-	TimedHaltCommand.$(OBJEXT) prefs.$(OBJEXT) \
-	ProtocolDetector.$(OBJEXT) StringFormat.$(OBJEXT) \
-	HttpSkipResponseCommand.$(OBJEXT) \
+	HelpItemFactory.$(OBJEXT) DownloadContext.$(OBJEXT) \
+	SingleFileDownloadContext.$(OBJEXT) TimedHaltCommand.$(OBJEXT) \
+	prefs.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
+	StringFormat.$(OBJEXT) HttpSkipResponseCommand.$(OBJEXT) \
 	InitiateConnectionCommand.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) A2STR.$(OBJEXT) \
 	RarestPieceSelector.$(OBJEXT) ChunkedDecoder.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
-	$(am__objects_16)
+	Signature.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
+	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
+	$(am__objects_12) $(am__objects_13) $(am__objects_14) \
+	$(am__objects_15) $(am__objects_16)
 am_libaria2c_a_OBJECTS = $(am__objects_17)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1103,11 +1107,12 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
 	ServerHost.cc ServerHost.h HelpItem.cc HelpItem.h \
 	TaggedItem.cc TaggedItem.h TagContainer.cc TagContainer.h \
-	HelpItemFactory.cc HelpItemFactory.h DownloadContext.h \
-	SingleFileDownloadContext.cc SingleFileDownloadContext.h \
-	TimedHaltCommand.cc TimedHaltCommand.h CUIDCounter.h \
-	DNSCache.h DownloadResult.h Sequence.h IntSequence.h \
-	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
+	HelpItemFactory.cc HelpItemFactory.h DownloadContext.cc \
+	DownloadContext.h SingleFileDownloadContext.cc \
+	SingleFileDownloadContext.h TimedHaltCommand.cc \
+	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
+	Sequence.h IntSequence.h PostDownloadHandler.h \
+	PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
@@ -1116,12 +1121,13 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
 	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
-	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_15) $(am__append_16)
+	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h Signature.cc \
+	Signature.h $(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(am__append_14) $(am__append_15) \
+	$(am__append_16)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1344,6 +1350,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngineFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandler.Po@am__quote@
@@ -1454,6 +1461,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerHost.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Signature.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignatureMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
