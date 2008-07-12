@@ -91,8 +91,8 @@ void DefaultBtProgressInfoFile::save() {
   _logger->info(MSG_SAVING_SEGMENT_FILE, _filename.c_str());
   std::string filenameTemp = _filename+"__temp";
   std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
-  o.exceptions(std::ios::failbit);
   try {
+    o.exceptions(std::ios::failbit);
     bool torrentDownload = isTorrentDownload();
     // file version: 16 bits
     // value: '0'
@@ -175,10 +175,10 @@ void DefaultBtProgressInfoFile::load()
 {
   _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
   std::ifstream in(_filename.c_str(), std::ios::in|std::ios::binary);
-  in.exceptions(std::ios::failbit);
   unsigned char* savedInfoHash = 0;
   unsigned char* savedBitfield = 0;
   try {
+    in.exceptions(std::ios::failbit);
     unsigned char version[2];
     in.read((char*)version, sizeof(version));
     if(DefaultBtProgressInfoFile::V0000 != Util::toHex(version, sizeof(version))) {
