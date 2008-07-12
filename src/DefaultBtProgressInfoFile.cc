@@ -65,9 +65,10 @@ static std::string createFilename(const SharedHandle<DownloadContext>& dctx)
   return dctx->getActualBasePath()+".aria2";
 }
 
-DefaultBtProgressInfoFile::DefaultBtProgressInfoFile(const DownloadContextHandle& dctx,
-						     const PieceStorageHandle& pieceStorage,
-						     const Option* option):
+DefaultBtProgressInfoFile::DefaultBtProgressInfoFile
+(const DownloadContextHandle& dctx,
+ const PieceStorageHandle& pieceStorage,
+ const Option* option):
   _dctx(dctx),
   _pieceStorage(pieceStorage),
   _option(option),
@@ -112,7 +113,8 @@ void DefaultBtProgressInfoFile::save() {
       // length: 32 bits
       BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       uint32_t infoHashLength = btContext->getInfoHashLength();
-      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(infoHashLength));
+      o.write(reinterpret_cast<const char*>(&infoHashLength),
+	      sizeof(infoHashLength));
       // infoHash:
       o.write(reinterpret_cast<const char*>(btContext->getInfoHash()),
 	      btContext->getInfoHashLength());
@@ -120,7 +122,8 @@ void DefaultBtProgressInfoFile::save() {
       // infoHashLength:
       // length: 32 bits
       uint32_t infoHashLength = 0;
-      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(infoHashLength));
+      o.write(reinterpret_cast<const char*>(&infoHashLength),
+	      sizeof(infoHashLength));
     }
     // pieceLength: 32 bits
     uint32_t pieceLength = _dctx->getPieceLength();
@@ -138,13 +141,16 @@ void DefaultBtProgressInfoFile::save() {
     o.write(reinterpret_cast<const char*>(&uploadLength), sizeof(uploadLength));
     // bitfieldLength: 32 bits
     uint32_t bitfieldLength = _pieceStorage->getBitfieldLength();
-    o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(bitfieldLength));
+    o.write(reinterpret_cast<const char*>(&bitfieldLength),
+	    sizeof(bitfieldLength));
     // bitfield
-    o.write(reinterpret_cast<const char*>(_pieceStorage->getBitfield()), _pieceStorage->getBitfieldLength());
+    o.write(reinterpret_cast<const char*>(_pieceStorage->getBitfield()),
+	    _pieceStorage->getBitfieldLength());
     // the number of in-flight piece: 32 bits
     // TODO implement this
     uint32_t numInFlightPiece = _pieceStorage->countInFlightPiece();
-    o.write(reinterpret_cast<const char*>(&numInFlightPiece), sizeof(numInFlightPiece));
+    o.write(reinterpret_cast<const char*>(&numInFlightPiece),
+	    sizeof(numInFlightPiece));
     Pieces inFlightPieces;
     _pieceStorage->getInFlightPieces(inFlightPieces);
     for(Pieces::const_iterator itr = inFlightPieces.begin();
@@ -154,8 +160,10 @@ void DefaultBtProgressInfoFile::save() {
       uint32_t length = (*itr)->getLength();
       o.write(reinterpret_cast<const char*>(&length), sizeof(length));
       uint32_t bitfieldLength = (*itr)->getBitfieldLength();
-      o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(bitfieldLength));
-      o.write(reinterpret_cast<const char*>((*itr)->getBitfield()), bitfieldLength);
+      o.write(reinterpret_cast<const char*>(&bitfieldLength),
+	      sizeof(bitfieldLength));
+      o.write(reinterpret_cast<const char*>((*itr)->getBitfield()),
+	      bitfieldLength);
     }
 
     o.close();
@@ -181,7 +189,8 @@ void DefaultBtProgressInfoFile::load()
     in.exceptions(std::ios::failbit);
     unsigned char version[2];
     in.read((char*)version, sizeof(version));
-    if(DefaultBtProgressInfoFile::V0000 != Util::toHex(version, sizeof(version))) {
+    if(DefaultBtProgressInfoFile::V0000 !=
+       Util::toHex(version, sizeof(version))) {
       throw DlAbortEx
 	(StringFormat("Unsupported ctrl file version: %s",
 		      Util::toHex(version, sizeof(version)).c_str()).str());
@@ -197,7 +206,8 @@ void DefaultBtProgressInfoFile::load()
 
     uint32_t infoHashLength;
     in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
-    if((infoHashLength < 0) || ((infoHashLength == 0) && infoHashCheckEnabled)) {
+    if((infoHashLength < 0) ||
+       ((infoHashLength == 0) && infoHashCheckEnabled)) {
       throw DlAbortEx
 	(StringFormat("Invalid info hash length: %d", infoHashLength).str());
     }
@@ -206,11 +216,13 @@ void DefaultBtProgressInfoFile::load()
       in.read(reinterpret_cast<char*>(savedInfoHash), infoHashLength);
       BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       if(infoHashCheckEnabled &&
-	 Util::toHex(savedInfoHash, infoHashLength) != btContext->getInfoHashAsString()) {
+	 Util::toHex(savedInfoHash, infoHashLength) !=
+	 btContext->getInfoHashAsString()) {
 	throw DlAbortEx
 	  (StringFormat("info hash mismatch. expected: %s, actual: %s",
 			btContext->getInfoHashAsString().c_str(),
-			Util::toHex(savedInfoHash, infoHashLength).c_str()).str());
+			Util::toHex(savedInfoHash,
+				    infoHashLength).c_str()).str());
       }
       delete [] savedInfoHash;
       savedInfoHash = 0;
@@ -230,13 +242,15 @@ void DefaultBtProgressInfoFile::load()
     uint64_t uploadLength;
     in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
     if(isTorrentDownload()) {
-      BT_RUNTIME(dynamic_pointer_cast<BtContext>(_dctx))->setUploadLengthAtStartup(uploadLength);
+      BT_RUNTIME(dynamic_pointer_cast<BtContext>(_dctx))->
+	setUploadLengthAtStartup(uploadLength);
     }
 
     // TODO implement the conversion mechanism between different piece length.
     uint32_t bitfieldLength;
     in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
-    uint32_t expectedBitfieldLength = ((totalLength+pieceLength-1)/pieceLength+7)/8;
+    uint32_t expectedBitfieldLength =
+      ((totalLength+pieceLength-1)/pieceLength+7)/8;
     if(expectedBitfieldLength != bitfieldLength) {
       throw DlAbortEx
 	(StringFormat("bitfield length mismatch. expected: %d, actual: %d",
@@ -253,7 +267,8 @@ void DefaultBtProgressInfoFile::load()
       savedBitfield = 0;
 
       uint32_t numInFlightPiece;
-      in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
+      in.read(reinterpret_cast<char*>(&numInFlightPiece),
+	      sizeof(numInFlightPiece));
       
       Pieces inFlightPieces;
       while(numInFlightPiece--) {
@@ -271,10 +286,12 @@ void DefaultBtProgressInfoFile::load()
 	}
 	PieceHandle piece(new Piece(index, length));
 	uint32_t bitfieldLength;
-	in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
+	in.read(reinterpret_cast<char*>(&bitfieldLength),
+		sizeof(bitfieldLength));
 	if(piece->getBitfieldLength() != bitfieldLength) {
 	  throw DlAbortEx
-	    (StringFormat("piece bitfield length mismatch. expected: %u actual: %u",
+	    (StringFormat("piece bitfield length mismatch."
+			  " expected: %u actual: %u",
 			  piece->getBitfieldLength(), bitfieldLength).str());
 	}
 	savedBitfield = new unsigned char[bitfieldLength];
@@ -295,13 +312,16 @@ void DefaultBtProgressInfoFile::load()
       _pieceStorage->addInFlightPiece(inFlightPieces);
     } else {
       uint32_t numInFlightPiece;
-      in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
+      in.read(reinterpret_cast<char*>(&numInFlightPiece),
+	      sizeof(numInFlightPiece));
       BitfieldMan src(pieceLength, totalLength);
       src.setBitfield(savedBitfield, bitfieldLength);
       if((src.getCompletedLength() || numInFlightPiece) &&
 	 !_option->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
 	throw DownloadFailureException
-	  ("WARNING: Detected a change in piece length. You can proceed with --allow-piece-length-change=true, but you may lose some download progress.");
+	  ("WARNING: Detected a change in piece length. You can proceed with"
+	   " --allow-piece-length-change=true, but you may lose some download"
+	   " progress.");
       }
       BitfieldMan dest(_dctx->getPieceLength(), totalLength);
       Util::convertBitfield(&dest, &src);
@@ -319,14 +339,16 @@ void DefaultBtProgressInfoFile::load()
   } 
 }
 
-void DefaultBtProgressInfoFile::removeFile() {
+void DefaultBtProgressInfoFile::removeFile()
+{
   if(exists()) {
     File f(_filename);
     f.remove();
   }
 }
 
-bool DefaultBtProgressInfoFile::exists() {
+bool DefaultBtProgressInfoFile::exists()
+{
   File f(_filename);
   if(f.isFile()) {
     _logger->info(MSG_SEGMENT_FILE_EXISTS, _filename.c_str());

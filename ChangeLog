@@ -1,5 +1,10 @@
 2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Corrected indentation
+	* src/DefaultBtProgressInfoFile.cc
+	
+2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Moved the calls of std::ios::exceptions() inside of try-catch block
 	because if an error occurred in constructor of std::fstream, then
 	exception is thrown immediately when std::ios::exceptions() is called
