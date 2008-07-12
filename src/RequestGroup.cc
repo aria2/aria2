@@ -405,6 +405,9 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 	    // by tryAutoFileRenaming()
 	    progressInfoFile->updateFilename();
 	    if(progressInfoFile->exists()) {
+	      // Close DiskAdaptor here. Renmaed file will be opened in the
+	      // next loop .
+	      _pieceStorage->getDiskAdaptor()->closeFile();
 	      continue;
 	    }
 	    _pieceStorage->getDiskAdaptor()->initAndOpenFile();
