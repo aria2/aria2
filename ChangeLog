@@ -1,5 +1,10 @@
 2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added the test for the previous change in DefaultBtContext.cc
+	* test/DefaultBtContextTest.cc
+	
+2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that causes infinite loop when the number of pieces are
 	fewer than allowed fast set size which is 10 by default.
 	* src/DefaultBtContext.cc

@@ -4,6 +4,7 @@
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"
 #include "FileEntry.h"
+#include "array_fun.h"
 #include <cstring>
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
@@ -234,29 +235,35 @@ void DefaultBtContextTest::testComputeFastSet()
   memset(infoHash, 0, sizeof(infoHash));
   infoHash[0] = 0xff;
   
-  int pieces = 1000;
   int fastSetSize = 10;
 
   DefaultBtContext btContext;
   btContext.setInfoHash(infoHash);
-  btContext.setNumPieces(pieces);
+  btContext.setNumPieces(1000);
 
   {
     std::deque<size_t> fastSet;
     btContext.computeFastSet(fastSet, ipaddr, fastSetSize);
-    //for_each(fastSet.begin(), fastSet.end(), Printer());
-    //cerr << endl;
-    size_t ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
-    std::deque<size_t> ansSet1(&ans1[0], &ans1[10]);
-    CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
+    size_t ans[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
+    std::deque<size_t> ansSet(&ans[0], &ans[arrayLength(ans)]);
+    CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet.begin()));
   }
   ipaddr = "10.0.0.1";
   {
     std::deque<size_t> fastSet;
     btContext.computeFastSet(fastSet, ipaddr, fastSetSize);
-    size_t ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
-    std::deque<size_t> ansSet2(&ans2[0], &ans2[10]);
-    CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
+    size_t ans[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
+    std::deque<size_t> ansSet(&ans[0], &ans[arrayLength(ans)]);
+    CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet.begin()));
+  }
+  // See when pieces < fastSetSize
+  btContext.setNumPieces(9);
+  {
+    std::deque<size_t> fastSet;
+    btContext.computeFastSet(fastSet, ipaddr, fastSetSize);
+    size_t ans[] = { 8, 6, 7, 5, 1, 4, 0, 2, 3 };
+    std::deque<size_t> ansSet(&ans[0], &ans[arrayLength(ans)]);
+    CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet.begin()));
   }
 }
 
