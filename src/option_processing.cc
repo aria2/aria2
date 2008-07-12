@@ -145,7 +145,7 @@ Option* createDefaultOption()
   op->put(PREF_BT_REQUIRE_CRYPTO, V_FALSE);
   op->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT, "51200");
   op->put(PREF_BT_MAX_OPEN_FILES, "100");
-  op->put(PREF_BT_SEED, V_FALSE);
+  op->put(PREF_BT_SEED_UNVERIFIED, V_FALSE);
   op->put(PREF_QUIET, V_FALSE);
   op->put(PREF_STOP, "0");
 #ifdef ENABLE_ASYNC_DNS
@@ -257,7 +257,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_BT_REQUIRE_CRYPTO.c_str(), required_argument, &lopt, 31 },
       { PREF_BT_REQUEST_PEER_SPEED_LIMIT.c_str(), required_argument, &lopt, 32 },
       { PREF_BT_MAX_OPEN_FILES.c_str(), required_argument, &lopt, 33 },
-      { PREF_BT_SEED.c_str(), optional_argument, &lopt, 34 },
+      { PREF_BT_SEED_UNVERIFIED.c_str(), optional_argument, &lopt, 34 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { PREF_METALINK_FILE.c_str(), required_argument, NULL, 'M' },
@@ -375,7 +375,8 @@ Option* option_processing(int argc, char* const argv[])
 	cmdstream << PREF_BT_MAX_OPEN_FILES << "=" << optarg << "\n";
 	break;
       case 34:
-	cmdstream << PREF_BT_SEED << "=" << toBoolArg(optarg) << "\n";
+	cmdstream << PREF_BT_SEED_UNVERIFIED << "=" << toBoolArg(optarg)
+		  << "\n";
 	break;
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";

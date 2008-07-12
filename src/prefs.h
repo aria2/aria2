@@ -256,7 +256,7 @@ extern const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT;
 // values: 1*digit
 extern const std::string PREF_BT_MAX_OPEN_FILES;
 // values: true | false
-extern const std::string PREF_BT_SEED;
+extern const std::string PREF_BT_SEED_UNVERIFIED;
 
 /**
  * Metalink related preferences

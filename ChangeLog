@@ -1,5 +1,17 @@
 2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Renamed --bt-seed option as --bt-seed-unverified so that it makes clear
+	that this is not going to verify files using piece hashes.
+	* src/HelpItemFactory.cc
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the ability to retrieve signature from Metalink file.
 	A retrieved signature is stored in Signature class and it is held by
 	DownloadContext class. Note that aria2 doesn't verify signature.

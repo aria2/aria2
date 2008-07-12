@@ -284,9 +284,9 @@ _(" --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the download
 #define TEXT_BT_MAX_OPEN_FILES \
 _(" --bt-max-open-files=NUM      Specify maximum number of files to open in each\n"\
   "                              BitTorrent download.")
-#define TEXT_BT_SEED \
-_(" --bt-seed[=true|false]       Seed previously downloaded files without\n"\
-  "                              validating piece hashes.")
+#define TEXT_BT_SEED_UNVERIFIED \
+_(" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"\
+  "                              verifying piece hashes.")
 #define TEXT_METALINK_FILE \
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \

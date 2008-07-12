@@ -240,7 +240,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	if(_pieceStorage->getDiskAdaptor()->fileExists()) {
 	  if(!_option->getAsBool(PREF_CHECK_INTEGRITY) &&
 	     !_option->getAsBool(PREF_ALLOW_OVERWRITE) &&
-	     !_option->getAsBool(PREF_BT_SEED)) {
+	     !_option->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
 	    // TODO we need this->haltRequested = true?
 	    throw DownloadFailureException
 	      (StringFormat
@@ -249,7 +249,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	  } else {
 	    _pieceStorage->getDiskAdaptor()->openFile();
 	  }
-	  if(_option->getAsBool(PREF_BT_SEED)) {
+	  if(_option->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
 	    _pieceStorage->markAllPiecesDone();
 	  }
 	} else {
@@ -273,9 +273,9 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	}
       }
       CheckIntegrityEntryHandle entry(new BtCheckIntegrityEntry(this));
-      // --bt-seed=true is given and download has completed, skip validation for
-      // piece hashes.
-      if(_option->getAsBool(PREF_BT_SEED) &&
+      // --bt-seed-unverified=true is given and download has completed, skip
+      // validation for piece hashes.
+      if(_option->getAsBool(PREF_BT_SEED_UNVERIFIED) &&
 	 _pieceStorage->downloadFinished()) {
 	entry->onDownloadFinished(commands, e);
       } else {

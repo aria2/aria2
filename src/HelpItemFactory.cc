@@ -391,9 +391,9 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_BT_SEED,
-				     TEXT_BT_SEED,
-				     op->get(PREF_BT_SEED)));
+    HelpItemHandle item(new HelpItem(PREF_BT_SEED_UNVERIFIED,
+				     TEXT_BT_SEED_UNVERIFIED,
+				     op->get(PREF_BT_SEED_UNVERIFIED)));
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
