@@ -1,3 +1,13 @@
+2008-07-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added the ability to save signature when download is completed if
+	signature is available. The filename of signature file is the path to
+	download file followed by ".sig". If it already exists, then signature
+	will not be saved.
+	* src/RequestGroupMan.cc
+	* src/Signature.cc
+	* test/SignatureTest.cc
+
 2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Updated the descriptions for --bt-seed-unverified.

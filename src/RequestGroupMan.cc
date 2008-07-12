@@ -42,6 +42,7 @@
 #include "message.h"
 #include "a2functional.h"
 #include "DownloadResult.h"
+#include "DownloadContext.h"
 #include <iomanip>
 #include <sstream>
 #include <ostream>
@@ -111,6 +112,23 @@ private:
   std::deque<SharedHandle<RequestGroup> >& _reservedGroups;
   std::deque<SharedHandle<DownloadResult> >& _downloadResults;
   Logger* _logger;
+
+  void saveSignature(const SharedHandle<RequestGroup>& group)
+  {
+    SharedHandle<Signature> sig =
+      group->getDownloadContext()->getSignature();
+    if(!sig.isNull() && !sig->getBody().empty()) {
+      // filename of signature file is the path to download file followed by
+      // ".sig".
+      std::string signatureFile = group->getFilePath()+".sig";
+      if(sig->save(signatureFile)) {
+	_logger->notice("Saved signature as %s", signatureFile.c_str());
+      } else {
+	_logger->notice("Saving signature as %s failed. Maybe file"
+			" already exists.", signatureFile.c_str());
+      }
+    }
+  }
 public:
   ProcessStoppedRequestGroup
   (std::deque<SharedHandle<RequestGroup> >& reservedGroups,
@@ -128,6 +146,7 @@ public:
 	  group->reportDownloadFinished();
 	  if(group->allDownloadFinished()) {
 	    group->getProgressInfoFile()->removeFile();
+	    saveSignature(group);
 	  } else {
 	    group->getProgressInfoFile()->save();
 	  }
@@ -148,7 +167,6 @@ public:
       _downloadResults.push_back(group->createDownloadResult());
     }
   }
-
 };
 
 class FindStoppedRequestGroup {

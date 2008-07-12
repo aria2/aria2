@@ -33,6 +33,8 @@
  */
 /* copyright --> */
 #include "Signature.h"
+#include "File.h"
+#include <fstream>
 
 namespace aria2 {
 
@@ -72,8 +74,18 @@ const std::string& Signature::getBody() const
 
 bool Signature::save(const std::string& filepath) const
 {
-  // TODO not yet implemented
-  return false;
+  if(File(filepath).exists()) {
+    return false;
+  }
+  std::ofstream out(filepath.c_str());
+  try {
+    out.exceptions(std::ios::failbit);
+    out << _body;
+    out.close();
+    return true;
+  } catch(const std::ios::failure& exception) {
+    return false;
+  }
 }
 
 } // namespace aria2

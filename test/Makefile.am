@@ -52,7 +52,8 @@ aria2c_SOURCES = AllTest.cc\
 	StringFormatTest.cc\
 	ExceptionTest.cc\
 	DownloadHandlerFactoryTest.cc\
-	ChunkedDecoderTest.cc
+	ChunkedDecoderTest.cc\
+	SignatureTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc
