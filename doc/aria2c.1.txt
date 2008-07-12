@@ -224,8 +224,8 @@ BitTorrent Specific Options
   You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
   Default: '51200'
 
-*--bt-seed*[='true'|'false']::
-  Seed previously downloaded files without validating piece hashes.
+*--bt-seed-unverified*[='true'|'false']::
+  Seed previously downloaded files without verifying piece hashes.
   Default: 'false'
 
 *--dht-entry-point*=HOST:PORT::

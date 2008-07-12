@@ -1,5 +1,12 @@
 2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated the descriptions for --bt-seed-unverified.
+	* doc/aria2c.1
+	* doc/aria2c.1.html
+	* doc/aria2c.1.txt	
+
+2008-07-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Renamed --bt-seed option as --bt-seed-unverified so that it makes clear
 	that this is not going to verify files using piece hashes.
 	* src/HelpItemFactory.cc
