@@ -422,6 +422,9 @@ void DefaultBtContext::computeFastSet
   if(!PeerMessageUtil::createcompact(compact, ipaddr, 0)) {
     return;
   }
+  if(numPieces < fastSetSize) {
+    fastSetSize = numPieces;
+  }
   unsigned char tx[24];
   memcpy(tx, compact, 4);
   if((tx[0] & 0x80) == 0 || (tx[0] & 0x40) == 0) {
