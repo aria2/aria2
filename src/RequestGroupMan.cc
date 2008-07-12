@@ -122,7 +122,8 @@ private:
       // ".sig".
       std::string signatureFile = group->getFilePath()+".sig";
       if(sig->save(signatureFile)) {
-	_logger->notice("Saved signature as %s", signatureFile.c_str());
+	_logger->notice("Saved signature as %s. Please note that aria2 doesn't"
+			" verify signatures.", signatureFile.c_str());
       } else {
 	_logger->notice("Saving signature as %s failed. Maybe file"
 			" already exists.", signatureFile.c_str());
