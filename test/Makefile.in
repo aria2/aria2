@@ -140,7 +140,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_METALINK_TRUE@	MetalinkProcessorTest.cc
 
 subdir = test
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in ChangeLog
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/aria2_arg.m4 \
 	$(top_srcdir)/m4/codeset.m4 $(top_srcdir)/m4/gettext.m4 \
