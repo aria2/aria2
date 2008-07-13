@@ -1,5 +1,10 @@
 2008-07-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Included asctime_r.h from a2time.h.
+	* src/a2time.h
+
+2008-07-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added a message "aria2 doesn't verify signature" to log message when
 	signature file is saved.
 	* src/RequestGroupMan.cc

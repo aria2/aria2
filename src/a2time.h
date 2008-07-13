@@ -53,4 +53,8 @@
 # include "timegm.h"
 #endif // HAVE_TIMEGM
 
+#ifndef HAVE_ASCTIME_R
+# include "asctime_r.h"
+#endif // HAVE_ASCTIME_R
+
 #endif // _D_A2TIME_H_
