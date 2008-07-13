@@ -1,5 +1,10 @@
 2008-07-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Bump up version number to 0.15.0b
+	* configure.ac
+
+2008-07-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Externalize messages.
 	* src/RequestGroupMan.cc
 	* src/message.h: Added MSG_SIGNATURE_SAVED, MSG_SIGNATURE_NOT_SAVED.
