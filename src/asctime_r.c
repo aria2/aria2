@@ -52,7 +52,7 @@ static void asctime_r_atexit()
 	DeleteCriticalSection(&asctime_r_cs);
 }
 
-char * asctime_r (const struct tm*, char *buf);
+char * asctime_r (const struct tm *tyme, char *buf)
 {
 	static char *p;
 	static int initialized = 0;
@@ -64,7 +64,7 @@ char * asctime_r (const struct tm*, char *buf);
 	}
 
 	EnterCriticalSection(&asctime_r_cs);
-	p = asctime(tm);
+	p = asctime(tyme);
 	memcpy(buf, p, 26);
 	LeaveCriticalSection(&asctime_r_cs);
 	return buf;
