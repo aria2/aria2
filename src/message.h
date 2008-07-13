@@ -140,6 +140,10 @@
 #define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
 #define MSG_WINSOCK_INIT_FAILD _("Windows socket library initialization failed")
 #define MSG_TIME_HAS_PASSED _("%d second(s) has passed. Stopping application.")
+#define MSG_SIGNATURE_SAVED _("Saved signature as %s. Please note that aria2"\
+			      " doesn't verify signatures.")
+#define MSG_SIGNATURE_NOT_SAVED _("Saving signature as %s failed. Maybe file"\
+				  " already exists.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
