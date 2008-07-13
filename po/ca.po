@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-07-01 20:40+0900\n"
+"POT-Creation-Date: 2008-07-13 21:20+0900\n"
 "PO-Revision-Date: 2008-04-29 13:13+0000\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
@@ -591,44 +591,55 @@ msgstr "Ha fallat la inicialització de la biblioteca de sòcals de Windows"
 msgid "%d second(s) has passed. Stopping application."
 msgstr "Han passat %d segon(s). Aturant l'aplicació."
 
-#: src/message.h:144
+#: src/message.h:143
+#, c-format
+msgid ""
+"Saved signature as %s. Please note that aria2 doesn't verify signatures."
+msgstr ""
+
+#: src/message.h:145
+#, c-format
+msgid "Saving signature as %s failed. Maybe file already exists."
+msgstr ""
+
+#: src/message.h:148
 msgid "Timeout."
 msgstr "S'ha exhaurit el temps d'espera."
 
-#: src/message.h:145
+#: src/message.h:149
 msgid "Invalid chunk size."
 msgstr "Mida del tros incorrecte."
 
-#: src/message.h:146
+#: src/message.h:150
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Mida del tros massa llarga. mida=%d"
 
-#: src/message.h:147
+#: src/message.h:151
 msgid "Invalid header."
 msgstr "Capçalera incorrecte."
 
-#: src/message.h:148
+#: src/message.h:152
 msgid "Invalid response."
 msgstr "Resposta incorrecte."
 
-#: src/message.h:149
+#: src/message.h:153
 msgid "No header found."
 msgstr "No s'ha trobat la capçalera."
 
-#: src/message.h:150
+#: src/message.h:154
 msgid "No status header."
 msgstr "No hi ha capçalera d'estat."
 
-#: src/message.h:151
+#: src/message.h:155
 msgid "Proxy connection failed."
 msgstr "Ha fallat la connexió amb el proxy."
 
-#: src/message.h:152
+#: src/message.h:156
 msgid "Connection failed."
 msgstr "Ha fallat la connexió."
 
-#: src/message.h:153
+#: src/message.h:157
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -637,227 +648,227 @@ msgstr ""
 "El nom del fitxer demanat i l'anotat prèviament no son el mateix. Esperàvem:%"
 "s Actual:%s"
 
-#: src/message.h:154
+#: src/message.h:158
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "L'estat de la resposta no és satisfactori. estat=%d"
 
-#: src/message.h:155
+#: src/message.h:159
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Mida del fitxer massa llarga. mida=%s"
 
-#: src/message.h:156
+#: src/message.h:160
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "No està suportada la codificació %s de la transferència."
 
-#: src/message.h:157
+#: src/message.h:161
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Ha fallat la inicialització SSL: %s"
 
-#: src/message.h:158
+#: src/message.h:162
 msgid "SSL I/O error"
 msgstr "Error d'E/S SSL"
 
-#: src/message.h:159
+#: src/message.h:163
 msgid "SSL protocol error"
 msgstr "Error de protocol SSL"
 
-#: src/message.h:160
+#: src/message.h:164
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Error SSL desconegut  %d"
 
-#: src/message.h:161
+#: src/message.h:165
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Ha fallat la inicialització SSL: error de connexió OpenSSL %d"
 
-#: src/message.h:162
+#: src/message.h:166
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Mida incorrecta. Esperada:%s Actual:%s"
 
-#: src/message.h:163
+#: src/message.h:167
 msgid "Authorization failed."
 msgstr "Ha fallat l'autorització."
 
-#: src/message.h:164
+#: src/message.h:168
 msgid "Got EOF from the server."
 msgstr "Rebut EOF des del servidor."
 
-#: src/message.h:165
+#: src/message.h:169
 msgid "Got EOF from peer."
 msgstr "Rebut EOF des de l'igual."
 
-#: src/message.h:166
+#: src/message.h:170
 msgid "Malformed meta info."
 msgstr "meta info mal formada."
 
-#: src/message.h:168
+#: src/message.h:172
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Fallo al obrir el fitxer %s, causa: %s"
 
-#: src/message.h:169
+#: src/message.h:173
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Fallo al escriure en el fitxer %s, causa: %s"
 
-#: src/message.h:170
+#: src/message.h:174
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Fallo al llegir del fitxer %s, causa: %s"
 
-#: src/message.h:171
+#: src/message.h:175
 msgid "Failed to read data from disk."
 msgstr "Fallo al llegir dades del disc."
 
-#: src/message.h:172
+#: src/message.h:176
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "Fallo al calcular resum SHA1 de o d'una part del fitxer %s, causa: %s"
 
-#: src/message.h:173
+#: src/message.h:177
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Fallo al buscar en el fitxer %s, causa: %s"
 
-#: src/message.h:174
+#: src/message.h:178
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "La desviació és fora de límits, desviació=%s"
 
-#: src/message.h:175
+#: src/message.h:179
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s no és un directori."
 
-#: src/message.h:176
+#: src/message.h:180
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Fallo al crear el directori %s, causa: %s"
 
-#: src/message.h:177
+#: src/message.h:181
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Fallo al obrir el fitxer de segments %s, causa: %s"
 
-#: src/message.h:178
+#: src/message.h:182
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Fallo al escriure en el fitxer de segments %s, causa: %s"
 
-#: src/message.h:179
+#: src/message.h:183
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Fallo al llegir del fitxer de segments %s, causa: %s"
 
-#: src/message.h:181
+#: src/message.h:185
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Fallo al obrir un sòcol, causa: %s"
 
-#: src/message.h:182
+#: src/message.h:186
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Fallo al posar una opció del sòcol, causa: %s"
 
-#: src/message.h:183
+#: src/message.h:187
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Fallo al posar un sòcol com bloquejant, causa: %s"
 
-#: src/message.h:184
+#: src/message.h:188
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Fallo al posar un sòcol com no-bloquejant, causa: %s"
 
-#: src/message.h:185
+#: src/message.h:189
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Fallo al connectar un sòcol, causa: %s"
 
-#: src/message.h:186
+#: src/message.h:190
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Fallo escoltant un sòcol, causa: %s"
 
-#: src/message.h:187
+#: src/message.h:191
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Fallo al acceptar una connexió d'igual, causa: %s"
 
-#: src/message.h:188
+#: src/message.h:192
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Fallo al agafar el nom del sòcol, causa: %s"
 
-#: src/message.h:189
+#: src/message.h:193
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Fallo al agafar el nom d'un igual connectat, causa: %s"
 
-#: src/message.h:190
+#: src/message.h:194
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Fallo al resoldre el nom de host %s,causa: %s"
 
-#: src/message.h:191
+#: src/message.h:195
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Fallo al connectar al host %s, causa: %s"
 
-#: src/message.h:192
+#: src/message.h:196
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Fallo al comprovar si es pot escriure en un sòcol, causa: %s"
 
-#: src/message.h:193
+#: src/message.h:197
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Fallo al comprovar si es pot llegir un sòcol, causa: %s"
 
-#: src/message.h:194
+#: src/message.h:198
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Fallo al enviar dades, causa: %s"
 
-#: src/message.h:195
+#: src/message.h:199
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Fallo al rebre dades, causa: %s"
 
-#: src/message.h:196
+#: src/message.h:200
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Fallo al agafar dades, causa: %s"
 
-#: src/message.h:197
+#: src/message.h:201
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Error desconegut de sòcol %d (0x%x)"
 
-#: src/message.h:198
+#: src/message.h:202
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Fitxer %s existeix, però %s no existeix."
 
-#: src/message.h:199
+#: src/message.h:203
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 "La mida de càrrega útil (payload) és incorrecte per %s, mida=%d. Ha de ser %"
 "d."
 
-#: src/message.h:200
+#: src/message.h:204
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Incorrecte ID=%d per %s. Ha de ser %d."
 
-#: src/message.h:201
+#: src/message.h:205
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -866,29 +877,29 @@ msgstr ""
 "Ha fallat la validació de la suma de comprovació del tros. "
 "índexSumaComprovació=%d, desviació=%s, HashEsperat=%s, HashActual=%s"
 
-#: src/message.h:202
+#: src/message.h:206
 msgid "Download aborted."
 msgstr "Descàrrega cancel·lada."
 
-#: src/message.h:203
+#: src/message.h:207
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "El fitxer %s està sent descarregat per una altre ordre."
 
-#: src/message.h:204
+#: src/message.h:208
 msgid "Insufficient checksums."
 msgstr "No hi ha prou sumes de comprovació."
 
-#: src/message.h:205
+#: src/message.h:209
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "El Seguidor ha tornat fallida. Raó: %s"
 
-#: src/message.h:206
+#: src/message.h:210
 msgid "Flooding detected."
 msgstr "Detectat vessament."
 
-#: src/message.h:207
+#: src/message.h:211
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -897,50 +908,50 @@ msgstr ""
 "Lliberem la connexió degut a que no hem intercanviat missatges de peticions "
 "o peces en el període establert (%d segons)."
 
-#: src/message.h:208
+#: src/message.h:212
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr "L' infoHash en el fitxer torrent no concorda amb el del fitxer .aria2."
 
-#: src/message.h:209
+#: src/message.h:213
 #, c-format
 msgid "No such file entry %s"
 msgstr "No hi ha aquesta entrada a l'arxiu %s"
 
-#: src/message.h:210
+#: src/message.h:214
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Velocitat de descàrrega massa lenta: %d <= %d(B/s), host:%s"
 
-#: src/message.h:211
+#: src/message.h:215
 msgid "No HttpRequestEntry found."
 msgstr "No hem trobat HttpRequestEntry."
 
-#: src/message.h:212
+#: src/message.h:216
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Hem rebut estat %d, però no ens dona la capçalera d'ubicació."
 
-#: src/message.h:213
+#: src/message.h:217
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Capçalera de rang incorrecte. Petició: %s-%s/%s, Resposta: %s-%s/%s"
 
-#: src/message.h:214
+#: src/message.h:218
 msgid "No file matched with your preference."
 msgstr "No hi ha cap fitxer que concordi amb la vostre preferència."
 
-#: src/message.h:215
+#: src/message.h:219
 msgid "Exception caught"
 msgstr "Hem trobat una excepció."
 
-#: src/message.h:216
+#: src/message.h:220
 #, fuzzy, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "La longitud màxima de càrrega ha estat excedida o és incorrecte. longitud = %"
 "u"
 
-#: src/message.h:217
+#: src/message.h:221
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
@@ -1624,30 +1635,36 @@ msgstr ""
 "                              Defecte: 5"
 
 #: src/usage_text.h:288
+msgid ""
+" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
+"                              verifying piece hashes."
+msgstr ""
+
+#: src/usage_text.h:291
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE  El camí al fitxer .metalink."
 
-#: src/usage_text.h:290
+#: src/usage_text.h:293
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously."
 msgstr ""
 
-#: src/usage_text.h:293
+#: src/usage_text.h:296
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   La versió del fitxer a descarregar."
 
-#: src/usage_text.h:295
+#: src/usage_text.h:298
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE L'idioma del fitxer a descarregar."
 
-#: src/usage_text.h:297
+#: src/usage_text.h:300
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 " --metalink-os=OS            El Sistema Operatiu del fitxer a descarregar."
 
-#: src/usage_text.h:299
+#: src/usage_text.h:302
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-deliminated list of locations is\n"
@@ -1657,7 +1674,7 @@ msgstr ""
 "                              S'accepta una llista d'ubicacions delimitada "
 "per comes."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:306
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. The "
 "possible\n"
@@ -1665,7 +1682,7 @@ msgid ""
 "                              Specifiy none to disable this feature."
 msgstr ""
 
-#: src/usage_text.h:307
+#: src/usage_text.h:310
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type is\n"
@@ -1681,7 +1698,7 @@ msgid ""
 "                              is not taken."
 msgstr ""
 
-#: src/usage_text.h:317
+#: src/usage_text.h:320
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -1691,11 +1708,11 @@ msgid ""
 "                              specify the preference of protocol."
 msgstr ""
 
-#: src/usage_text.h:323
+#: src/usage_text.h:326
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Escriure el número de versió i sortir."
 
-#: src/usage_text.h:325
+#: src/usage_text.h:328
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -1710,16 +1727,16 @@ msgid ""
 "                              and print the result."
 msgstr ""
 
-#: src/usage_text.h:333
+#: src/usage_text.h:336
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf Desactiva la càrrega del fitxer de configuració aria2.conf."
 
-#: src/usage_text.h:335
+#: src/usage_text.h:338
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=PATH Canvia el camí al fitxer de configuració a PATH."
 
-#: src/usage_text.h:337
+#: src/usage_text.h:340
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1729,7 +1746,7 @@ msgstr ""
 "                                                                   Si el "
 "valor és 0, aquesta funcionalitat es desactiva."
 
-#: src/usage_text.h:340
+#: src/usage_text.h:343
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1741,26 +1758,26 @@ msgid ""
 "                              http://host/file"
 msgstr ""
 
-#: src/usage_text.h:346
+#: src/usage_text.h:349
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
 msgstr ""
 
-#: src/usage_text.h:348
+#: src/usage_text.h:351
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr ""
 
-#: src/usage_text.h:350
+#: src/usage_text.h:353
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
-#: src/usage_text.h:352
+#: src/usage_text.h:355
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
 
-#: src/usage_text.h:355
+#: src/usage_text.h:358
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 
@@ -1803,11 +1820,11 @@ msgstr ""
 "Si hi han errors, llavors miri el fitxer d'anotacions. Per més informació "
 "vegi l'opció '-l' en les pàgines help/man."
 
-#: src/RequestGroupMan.cc:295
+#: src/RequestGroupMan.cc:312
 msgid "Download Results:"
 msgstr "Resultats de la descàrrega:"
 
-#: src/RequestGroupMan.cc:310
+#: src/RequestGroupMan.cc:327
 msgid "Status Legend:"
 msgstr "llegenda d'estat:"
 
