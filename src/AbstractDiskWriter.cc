@@ -80,7 +80,7 @@ void AbstractDiskWriter::openExistingFile(const std::string& filename,
 {
   this->filename = filename;
   File f(filename);
-  if(!f.isFile()) {
+  if(!f.exists()) {
     throw DlAbortEx
       (StringFormat(EX_FILE_OPEN, filename.c_str(), MSG_FILE_NOT_FOUND).str());
   }

@@ -401,8 +401,7 @@ bool MultiDiskAdaptor::fileExists()
   std::string topDirPath = getTopDirPath();
   for(std::deque<SharedHandle<FileEntry> >::iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
-    
-    if(File(topDirPath+"/"+(*i)->getPath()).isFile()) {
+    if(File(topDirPath+"/"+(*i)->getPath()).exists()) {
       return true;
     }
   }
