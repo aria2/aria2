@@ -73,7 +73,7 @@ bool Request::setUrl(const std::string& url) {
 
 bool Request::resetUrl() {
   previousUrl = referer;
-  return setUrl(url);
+  return parseUrl(url);
 }
 
 bool Request::redirectUrl(const std::string& url) {
