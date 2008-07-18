@@ -9,11 +9,13 @@ class HttpHeaderTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(HttpHeaderTest);
   CPPUNIT_TEST(testGetRange);
   CPPUNIT_TEST(testGet);
+  CPPUNIT_TEST(testClearField);
   CPPUNIT_TEST_SUITE_END();
   
 public:
   void testGetRange();
   void testGet();
+  void testClearField();
 };
 
 
@@ -56,6 +58,22 @@ void HttpHeaderTest::testGet()
   CPPUNIT_ASSERT_EQUAL((size_t)2, r.size());
   CPPUNIT_ASSERT_EQUAL(std::string("100"), r[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("101"), r[1]);
+}
+
+void HttpHeaderTest::testClearField()
+{
+  HttpHeader h;
+  h.setResponseStatus(HttpHeader::S200);
+  h.setVersion(HttpHeader::HTTP_1_1);
+  h.put("Foo", "Bar");
+  
+  CPPUNIT_ASSERT_EQUAL(std::string("Bar"), h.getFirst("Foo"));
+
+  h.clearField();
+
+  CPPUNIT_ASSERT_EQUAL(std::string(""), h.getFirst("Foo"));
+  CPPUNIT_ASSERT_EQUAL(HttpHeader::S200, h.getResponseStatus());
+  CPPUNIT_ASSERT_EQUAL(HttpHeader::HTTP_1_1, h.getVersion());
 }
 
 } // namespace aria2

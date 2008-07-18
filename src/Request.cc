@@ -80,7 +80,19 @@ bool Request::redirectUrl(const std::string& url) {
   previousUrl = A2STR::NIL;
   _supportsPersistentConnection = true;
   ++_redirectCount;
-  return parseUrl(url);
+  if(url.find("://") == std::string::npos) {
+    // rfc2616 requires absolute URI should be provided by Location header
+    // field, but some servers don't obey this rule.
+    if(Util::startsWith(url, "/")) {
+      // abosulute path
+      return parseUrl(protocol+"://"+host+url);
+    } else {
+      // relative path
+      return parseUrl(protocol+"://"+host+dir+"/"+url);
+    }
+  } else {
+    return parseUrl(url);
+  }
 }
 
 bool Request::parseUrl(const std::string& url) {

@@ -8,6 +8,7 @@
 #include "Exception.h"
 #include "A2STR.h"
 #include "Decoder.h"
+#include "DlRetryEx.h"
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -38,6 +39,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testValidateResponse_bad_range);
   CPPUNIT_TEST(testValidateResponse_chunked);
   CPPUNIT_TEST(testHasRetryAfter);
+  CPPUNIT_TEST(testProcessRedirect);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -66,6 +68,7 @@ public:
   void testValidateResponse_bad_range();
   void testValidateResponse_chunked();
   void testHasRetryAfter();
+  void testProcessRedirect();
 };
 
 
@@ -420,6 +423,35 @@ void HttpResponseTest::testHasRetryAfter()
 
   CPPUNIT_ASSERT(httpResponse.hasRetryAfter());
   CPPUNIT_ASSERT_EQUAL((time_t)60, httpResponse.getRetryAfter());
+}
+
+void HttpResponseTest::testProcessRedirect()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Request> request(new Request());
+  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  httpRequest->setRequest(request);
+  httpResponse.setHttpRequest(httpRequest);
+  
+  httpHeader->put("Location", "http://mirror/aria2-1.0.0.tar.bz2");
+  httpResponse.processRedirect();
+
+  httpHeader->clearField();
+
+  // Give unsupported scheme
+  httpHeader->put("Location", "unsupported://mirror/aria2-1.0.0.tar.bz2");
+  try {
+    httpResponse.processRedirect();
+    CPPUNIT_FAIL("DlRetryEx exception must be thrown.");
+  } catch(DlRetryEx& e) {
+    // Success
+  } catch(...) {
+    CPPUNIT_FAIL("DlRetryEx exception must be thrown.");
+  }
 }
 
 } // namespace aria2

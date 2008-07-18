@@ -205,4 +205,9 @@ void HttpHeader::fill(std::istream& in)
   }
 }
 
+void HttpHeader::clearField()
+{
+  table.clear();
+}
+
 } // namespace aria2

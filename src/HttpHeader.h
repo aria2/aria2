@@ -79,6 +79,9 @@ public:
 
   void fill(std::istream& in);
 
+  // Clears table. _responseStatus and _version are unchanged.
+  void clearField();
+
   static const std::string LOCATION;
 
   static const std::string TRANSFER_ENCODING;

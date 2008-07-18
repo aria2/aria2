@@ -156,6 +156,8 @@ bool AbstractCommand::execute() {
     if(isAbort) {
       onAbort();
     }
+    // In case where Request::getCurrentUrl() is not a valid URI.
+    req->resetUrl();
     if(isAbort) {
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
       logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());

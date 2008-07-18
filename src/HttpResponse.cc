@@ -44,6 +44,7 @@
 #include "Util.h"
 #include "message.h"
 #include "DlAbortEx.h"
+#include "DlRetryEx.h"
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "Decoder.h"
@@ -123,8 +124,16 @@ bool HttpResponse::isRedirect() const
 
 void HttpResponse::processRedirect()
 {
-  httpRequest->getRequest()->redirectUrl(getRedirectURI());
-
+  
+  if(httpRequest->getRequest()->redirectUrl(getRedirectURI())) {
+    logger->info(MSG_REDIRECT, cuid,
+		 httpRequest->getRequest()->getCurrentUrl().c_str());
+  } else {
+    throw DlRetryEx
+      (StringFormat("CUID#%d - Redirect to %s failed. It may not be a valid"
+		    " URI.", cuid,
+		    httpRequest->getRequest()->getCurrentUrl().c_str()).str());
+  }
 }
 
 std::string HttpResponse::getRedirectURI() const

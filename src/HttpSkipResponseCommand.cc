@@ -134,7 +134,6 @@ bool HttpSkipResponseCommand::processResponse()
       throw DlAbortEx(StringFormat("Too many redirects: count=%u", rnum).str());
     }
     _httpResponse->processRedirect();
-    logger->info(MSG_REDIRECT, cuid, _httpResponse->getRedirectURI().c_str());
     return prepareForRetry(0);
   } else if(_httpResponse->hasRetryAfter()) {
     return prepareForRetry(_httpResponse->getRetryAfter());
