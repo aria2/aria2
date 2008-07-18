@@ -144,8 +144,7 @@ HTTP Specific Options
   aria2c *--header*="X-A: b78" *--header*="X-B: 9J1" http://host/file
 
 *--load-cookies*=FILE::
-  Load cookies from FILE.
-  The format of FILE is the same used by Netscape and Mozilla.
+  Load Cookies from FILE using the Mozilla/Firefox(1.x/2.x) and Netscape format.
 
 *-U*, *--user-agent*=USER_AGENT::
   Set user agent for HTTP(S) downloads.

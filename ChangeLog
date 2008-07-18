@@ -1,3 +1,9 @@
+2008-07-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed help text for --load-cookie option.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
 2008-07-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Regenerated test/Makefile.in to remove stale ChangeLog.
