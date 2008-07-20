@@ -71,7 +71,7 @@ public:
     return maxSpeed;
   }
 
-  unsigned int getAvgSpeed() const;
+  unsigned int calculateAvgSpeed() const;
 
   void update(size_t bytes);
 

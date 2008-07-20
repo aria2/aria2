@@ -54,9 +54,13 @@ private:
   SpeedCalc uploadSpeed;
   Time downloadStartTime;
   PeerStat::STATUS status;
+  unsigned int _avgDownloadSpeed;
+  unsigned int _avgUploadSpeed;
 public:
 
-  PeerStat(int32_t cuid = 0):cuid(cuid), status(PeerStat::IDLE) {}
+  PeerStat(int32_t cuid = 0):cuid(cuid), status(PeerStat::IDLE),
+			     _avgDownloadSpeed(0),
+			     _avgUploadSpeed(0) {}
 
   ~PeerStat() {}
 
@@ -71,12 +75,22 @@ public:
     return downloadSpeed.calculateSpeed(now);
   }
 
+  unsigned int calculateAvgDownloadSpeed() {
+    _avgDownloadSpeed = downloadSpeed.calculateAvgSpeed();
+    return _avgDownloadSpeed;
+  }
+
   unsigned int calculateUploadSpeed() {
     return uploadSpeed.calculateSpeed();
   }
 
   unsigned int calculateUploadSpeed(const struct timeval& now) {
     return uploadSpeed.calculateSpeed(now);
+  }
+
+  unsigned int calculateAvgUploadSpeed() {
+    _avgUploadSpeed = uploadSpeed.calculateAvgSpeed();
+    return _avgUploadSpeed;
   }
 
   void updateDownloadLength(size_t bytes) {
@@ -96,11 +110,11 @@ public:
   }
 
   unsigned int getAvgDownloadSpeed() const {
-    return downloadSpeed.getAvgSpeed();
+    return _avgDownloadSpeed;
   }
 
   unsigned int getAvgUploadSpeed() const {
-    return uploadSpeed.getAvgSpeed();
+    return _avgUploadSpeed;
   }
 
   void reset() {
@@ -116,6 +130,8 @@ public:
   }
 
   void downloadStop() {
+    calculateAvgDownloadSpeed();
+    calculateAvgUploadSpeed();
     status = PeerStat::IDLE;
   }
 

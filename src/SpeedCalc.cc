@@ -64,6 +64,9 @@ unsigned int SpeedCalc::calculateSpeed() {
     unsigned int speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
     maxSpeed = std::max(speed, maxSpeed);
+    if(isIntervalOver()) {
+      changeSw();
+    }
     return speed;
   } else {
     return prevSpeed;
@@ -76,6 +79,9 @@ unsigned int SpeedCalc::calculateSpeed(const struct timeval& now) {
     unsigned int speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
     maxSpeed = std::max(speed, maxSpeed);
+    if(isIntervalOver()) {
+      changeSw();
+    }
     return speed;
   } else {
     return prevSpeed;
@@ -102,7 +108,7 @@ void SpeedCalc::changeSw() {
   nextInterval = cpArray[sw].difference()+CHANGE_INTERVAL_SEC;
 }
 
-unsigned int SpeedCalc::getAvgSpeed() const {
+unsigned int SpeedCalc::calculateAvgSpeed() const {
   uint64_t milliElapsed = start.differenceInMillis();
   if(milliElapsed) {
     unsigned int speed = accumulatedLength*1000/milliElapsed;
