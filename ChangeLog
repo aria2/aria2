@@ -3,6 +3,7 @@
 	Cache last calculated average download/upload speed.
 	PeerStat::getAvgDownloadSpeed(), PeerStat::getAvgUploadSpeed() return
 	cached value.
+	Now SpeedCalc::changeSw() is called from SpeedCalc::calculateSpeed()
 	* src/PeerStat.h
 	* src/SpeedCalc.cc
 	* src/SpeedCalc.h
