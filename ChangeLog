@@ -1,5 +1,14 @@
 2008-07-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Now SegmentMan::findSlowerSegmentEntry() picks up the segment for which
+	the transfer has not yet started.
+	Rewritten SegmentMan::registerPeerStat() and SegmentMan::getPeerStat().
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* test/SegmentManTest.cc
+
+2008-07-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Cache last calculated average download/upload speed.
 	PeerStat::getAvgDownloadSpeed(), PeerStat::getAvgUploadSpeed() return
 	cached value.

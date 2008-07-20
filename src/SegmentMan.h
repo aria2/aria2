@@ -82,7 +82,8 @@ private:
   SharedHandle<Segment> checkoutSegment(int32_t cuid,
 					const SharedHandle<Piece>& piece);
 
-  SegmentEntryHandle findSlowerSegmentEntry(const SharedHandle<PeerStat>& peerStat) const;
+  SharedHandle<SegmentEntry> findSlowerSegmentEntry
+  (const SharedHandle<PeerStat>& peerStat);
 public:
   SegmentMan(const Option* option,
 	     const SharedHandle<DownloadContext>& downloadContext,
@@ -159,10 +160,10 @@ public:
   uint64_t getDownloadLength() const;
 
   /**
-   * Registers given peerStat if it has not been registerd.
-   * Otherwise does nothing.
+   * Registers given peerStat if it has not been registerd and returns true.
+   * Otherwise does nothing and returns false.
    */
-  void registerPeerStat(const SharedHandle<PeerStat>& peerStat);
+  bool registerPeerStat(const SharedHandle<PeerStat>& peerStat);
 
   /**
    * Returns peerStat whose cuid is given cuid. If it is not found, returns

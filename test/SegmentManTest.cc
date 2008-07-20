@@ -8,6 +8,8 @@
 #include "Segment.h"
 #include "Option.h"
 #include "FileEntry.h"
+#include "MockPieceStorage.h"
+#include "PeerStat.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -17,7 +19,7 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(SegmentManTest);
   CPPUNIT_TEST(testNullBitfield);
   CPPUNIT_TEST(testCompleteSegment);
-  CPPUNIT_TEST(testMarkPieceDone_usedSegment);
+  CPPUNIT_TEST(testGetPeerStat);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -27,7 +29,7 @@ public:
 
   void testNullBitfield();
   void testCompleteSegment();
-  void testMarkPieceDone_usedSegment();
+  void testGetPeerStat();
 };
 
 
@@ -82,30 +84,38 @@ void SegmentManTest::testCompleteSegment()
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments[1]->getIndex());
 }
 
-void SegmentManTest::testMarkPieceDone_usedSegment()
+void SegmentManTest::testGetPeerStat()
 {
-  // TODO implement this later
-  /*
-  SegmentMan segmentMan;
-  int32_t pieceLength = 1024*1024;
-  int64_t totalLength = 10*pieceLength;
-  segmentMan.initBitfield(pieceLength, totalLength);
-  segmentMan.markPieceDone(5*pieceLength+100);
+  Option op;
+  size_t pieceLength = 1;
+  uint64_t totalLength = 1;
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+  SharedHandle<PieceStorage> ps(new MockPieceStorage());
+  SegmentMan segmentMan(&op, dctx, ps);
 
-  for(int32_t i = 0; i < 5; ++i) {
-    CPPUNIT_ASSERT(segmentMan.hasSegment(i));
+  CPPUNIT_ASSERT(segmentMan.getPeerStat(1).isNull());
+  SharedHandle<PeerStat> ps1(new PeerStat(1));
+  CPPUNIT_ASSERT(segmentMan.registerPeerStat(ps1));
+  {
+    SharedHandle<PeerStat> ps = segmentMan.getPeerStat(1);
+    CPPUNIT_ASSERT(!ps.isNull());
+    CPPUNIT_ASSERT_EQUAL(1, ps->getCuid());
   }
-  for(int32_t i = 5; i < 10; ++i) {
-    CPPUNIT_ASSERT(!segmentMan.hasSegment(i));
+  // Duplicate registering is not allowed.
+  SharedHandle<PeerStat> ps1d(new PeerStat(1));
+  CPPUNIT_ASSERT(!segmentMan.registerPeerStat(ps1d));
+  
+  // See whether it can work on several entries.
+  SharedHandle<PeerStat> ps2(new PeerStat(2));
+  SharedHandle<PeerStat> ps3(new PeerStat(3));
+  CPPUNIT_ASSERT(segmentMan.registerPeerStat(ps3));
+  CPPUNIT_ASSERT(segmentMan.registerPeerStat(ps2));
+  {
+    SharedHandle<PeerStat> ps = segmentMan.getPeerStat(2);
+    CPPUNIT_ASSERT(!ps.isNull());
+    CPPUNIT_ASSERT_EQUAL(2, ps->getCuid());
   }
-
-  SharedHandle<Segment> segment = segmentMan.getSegment(0, 5);
-  CPPUNIT_ASSERT(!segment.isNull());
-  CPPUNIT_ASSERT_EQUAL((int32_t)5, segment->index);
-  CPPUNIT_ASSERT_EQUAL(pieceLength, (int32_t) segment->length);
-  CPPUNIT_ASSERT_EQUAL(pieceLength, (int32_t) segment->segmentLength);
-  CPPUNIT_ASSERT_EQUAL((int32_t)100, segment->writtenLength);
-  */
 }
 
 } // namespace aria2

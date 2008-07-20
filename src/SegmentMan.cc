@@ -123,25 +123,36 @@ SegmentHandle SegmentMan::checkoutSegment(int32_t cuid,
   return segment;
 }
 
-SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peerStat) const {
+SegmentEntryHandle SegmentMan::findSlowerSegmentEntry
+(const PeerStatHandle& peerStat)
+{
   unsigned int speed = peerStat->getAvgDownloadSpeed()*0.8;
   SegmentEntryHandle slowSegmentEntry;
-  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end(); ++itr) {
-    const SegmentEntryHandle& segmentEntry = *itr;
+  int startupIdleTime = _option->getAsInt(PREF_STARTUP_IDLE_TIME);
+  for(std::deque<SharedHandle<SegmentEntry> >::const_iterator itr =
+	usedSegmentEntries.begin(); itr != usedSegmentEntries.end(); ++itr) {
+    const SharedHandle<SegmentEntry>& segmentEntry = *itr;
     if(segmentEntry->cuid == 0) {
       continue;
     }
-    PeerStatHandle p = getPeerStat(segmentEntry->cuid);
-    if(!p.get() || p->getCuid() == peerStat->getCuid() ||
-       p->getStatus() != PeerStat::ACTIVE ||
-       !p->getDownloadStartTime().elapsed(_option->getAsInt(PREF_STARTUP_IDLE_TIME))) {
-      continue;
-    }
-    unsigned int pSpeed = p->calculateDownloadSpeed(); 
-    if(pSpeed < speed) {
-      speed = pSpeed;
+    SharedHandle<PeerStat> p = getPeerStat(segmentEntry->cuid);
+    if(p.isNull()) {
+      // "p is null" means that it hasn't used DownloadCommand yet, i.e. waiting
+      // response from HTTP server after sending HTTP request.
+      p.reset(new PeerStat(segmentEntry->cuid));
+      registerPeerStat(p);
       slowSegmentEntry = segmentEntry;
+    } else {
+      if(p->getCuid() == peerStat->getCuid() ||
+	 (p->getStatus() == PeerStat::ACTIVE &&
+	  !p->getDownloadStartTime().elapsed(startupIdleTime))) {
+	continue;
+      }
+      unsigned int pSpeed = p->calculateDownloadSpeed(); 
+      if(pSpeed < speed) {
+	speed = pSpeed;
+	slowSegmentEntry = segmentEntry;
+      }
     }
   }
   return slowSegmentEntry;
@@ -241,22 +252,36 @@ uint64_t SegmentMan::getDownloadLength() const {
   }
 }
 
-void SegmentMan::registerPeerStat(const PeerStatHandle& peerStat) {
-  PeerStatHandle temp = getPeerStat(peerStat->getCuid());
-  if(!temp.get()) {
-    peerStats.push_back(peerStat);
+class FindPeerStat {
+public:
+  bool operator()(const SharedHandle<PeerStat>& peerStat, int32_t cuid) const
+  {
+    return peerStat->getCuid() < cuid;
+  }
+};
+
+bool SegmentMan::registerPeerStat(const SharedHandle<PeerStat>& peerStat)
+{
+  std::deque<SharedHandle<PeerStat> >::iterator i =
+    std::lower_bound(peerStats.begin(), peerStats.end(),peerStat->getCuid(),
+		     FindPeerStat());
+  if(i == peerStats.end() || (*i)->getCuid() != peerStat->getCuid()) {
+    peerStats.insert(i, peerStat);
+    return true ;
+  } else {
+    return false;
   }
 }
 
 PeerStatHandle SegmentMan::getPeerStat(int32_t cuid) const
 {
-  for(std::deque<SharedHandle<PeerStat> >::const_iterator itr = peerStats.begin(); itr != peerStats.end(); ++itr) {
-    const PeerStatHandle& peerStat = *itr;
-    if(peerStat->getCuid() == cuid) {
-      return peerStat;
-    }
+  std::deque<SharedHandle<PeerStat> >::const_iterator i =
+    std::lower_bound(peerStats.begin(), peerStats.end(), cuid, FindPeerStat());
+  if(i != peerStats.end() && (*i)->getCuid() == cuid) {
+    return *i;
+  } else {
+    return SharedHandle<PeerStat>();
   }
-  return SharedHandle<PeerStat>();
 }
 
 unsigned int SegmentMan::calculateDownloadSpeed() const {
