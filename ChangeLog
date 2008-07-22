@@ -1,5 +1,10 @@
 2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added a test for libz. Quoted where it is necessary.
+	* build_test.sh
+	
+2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added GZip to `Enabled Features' list.
 	* src/FeatureConfig.cc
 	* src/FeatureConfig.h
