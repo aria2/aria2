@@ -58,6 +58,10 @@ void FeatureConfigTest::testFeatureSummary() {
     "BitTorrent",
 #endif // ENABLE_BITTORRENT
 
+#ifdef HAVE_LIBZ
+    "GZip",
+#endif // HAVE_LIBZ
+
 #ifdef ENABLE_SSL
     "HTTPS",
 #endif // ENABLE_SSL

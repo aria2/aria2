@@ -47,36 +47,43 @@ const std::string FeatureConfig::FEATURE_BITTORRENT("BitTorrent");
 const std::string FeatureConfig::FEATURE_METALINK("Metalink");
 const std::string FeatureConfig::FEATURE_MESSAGE_DIGEST("Message Digest");
 const std::string FeatureConfig::FEATURE_ASYNC_DNS("Async DNS");
+const std::string FeatureConfig::FEATURE_GZIP("GZip");
 
 #ifdef ENABLE_SSL
 # define HTTPS_ENABLED true
-#else
+#else // !ENABLE_SSL
 # define HTTPS_ENABLED false
-#endif // ENABLE_SSL
+#endif // !ENABLE_SSL
 
 #ifdef ENABLE_BITTORRENT
 # define BITTORRENT_ENABLED true
-#else
+#else // !ENABLE_BITTORRENT
 # define BITTORRENT_ENABLED false
-#endif // ENABLE_BITTORRENT
+#endif // !ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
 # define METALINK_ENABLED true
-#else
+#else // !ENABLE_METALINK
 # define METALINK_ENABLED false
-#endif // ENABLE_METALINK
+#endif // !ENABLE_METALINK
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # define MESSAGE_DIGEST_ENABLED true
-#else
+#else // !ENABLE_MESSAGE_DIGEST
 # define MESSAGE_DIGEST_ENABLED false
-#endif // ENABLE_MESSAGE_DIGEST
+#endif // !ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_ASYNC_DNS
 # define ASYNC_DNS_ENABLED true
-#else
+#else // !ENABLE_ASYNC_DNS
 # define ASYNC_DNS_ENABLED false
-#endif // ENABLE_ASYNC_DNS
+#endif // !ENABLE_ASYNC_DNS
+
+#ifdef HAVE_LIBZ
+# define GZIP_ENABLED true
+#else // !HAVE_LIBZ
+# define GZIP_ENABLED false
+#endif // !HAVE_LIBZ
 
 FeatureConfig::FeatureConfig() {
   _defaultPorts.insert(PortMap::value_type(Request::PROTO_HTTP, 80));
@@ -88,7 +95,8 @@ FeatureConfig::FeatureConfig() {
     FeatureMap::value_type(FEATURE_BITTORRENT, BITTORRENT_ENABLED),
     FeatureMap::value_type(FEATURE_METALINK, METALINK_ENABLED),
     FeatureMap::value_type(FEATURE_MESSAGE_DIGEST, MESSAGE_DIGEST_ENABLED),
-    FeatureMap::value_type(FEATURE_ASYNC_DNS, ASYNC_DNS_ENABLED)
+    FeatureMap::value_type(FEATURE_ASYNC_DNS, ASYNC_DNS_ENABLED),
+    FeatureMap::value_type(FEATURE_GZIP, GZIP_ENABLED),
   };
 
   _features.insert(&featureArray[0], &featureArray[arrayLength(featureArray)]);
