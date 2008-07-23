@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-07-17 00:06+0900\n"
+"POT-Creation-Date: 2008-07-23 22:12+0900\n"
 "PO-Revision-Date: 2008-07-20 08:29+0000\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -16,6 +16,49 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2008-07-23 12:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+
+#: src/DownloadEngine.cc:793
+msgid ""
+"Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
+msgstr ""
+"シャットダウン中です... 緊急時に即座にシャットダウンしたい場合は Ctrl-C をも"
+"う一度押してください."
+
+#: src/DownloadEngine.cc:797
+msgid "Emergency shutdown sequence commencing..."
+msgstr "緊急シャットダウン中です..."
+
+#: src/MultiUrlRequestInfo.cc:86
+msgid "aria2 will resume download if the transfer is restarted."
+msgstr "aria2 は次回, ダウンロードを再開します."
+
+#: src/MultiUrlRequestInfo.cc:88
+msgid ""
+"If there are any errors, then see the log file. See '-l' option in help/man "
+"page for details."
+msgstr ""
+"エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
+"の '-l' オプションの項を見てください."
+
+#: src/RequestGroupMan.cc:312
+msgid "Download Results:"
+msgstr "ダウンロード結果:"
+
+#: src/RequestGroupMan.cc:327
+msgid "Status Legend:"
+msgstr "凡例:"
+
+#: src/HelpItem.cc:39
+msgid "                              Default: "
+msgstr "                              既定値: "
+
+#: src/HelpItem.cc:40
+msgid "                              Tags: "
+msgstr "                              タグ: "
+
+#: src/HelpItem.cc:41
+msgid "                              Available Values: "
+msgstr "                              値域: "
 
 #: src/OptionHandlerImpl.h:71
 msgid "must be either 'true' or 'false'."
@@ -62,902 +105,6 @@ msgstr "は, 以下のいずれかを指定してください:"
 #: src/OptionHandlerImpl.h:294
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
-
-#: src/message.h:40
-#, c-format
-msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - 1 セグメントのダウンロードが完了."
-
-#: src/message.h:41
-#, c-format
-msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - 利用可能なセグメントはありません."
-
-#: src/message.h:42
-#, c-format
-msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - %s:%d に接続しています."
-
-#: src/message.h:43
-#, c-format
-msgid ""
-"CUID#%d - The segment changed. We send the request again with new Range "
-"header."
-msgstr ""
-"CUID#%d - セグメントが変更されています. 新たな Range ヘッダーで再リクエストを"
-"発行します."
-
-#: src/message.h:44
-#, c-format
-msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - %s にリダイレクトします."
-
-#: src/message.h:45
-#, c-format
-msgid ""
-"CUID#%d - Requesting:\n"
-"%s"
-msgstr ""
-"CUID#%d - リクエスト:\n"
-"%s"
-
-#: src/message.h:46
-#, c-format
-msgid ""
-"CUID#%d - Response received:\n"
-"%s"
-msgstr ""
-"CUID#%d - サーバーからのレスポンス:\n"
-"%s"
-
-#: src/message.h:47
-#, c-format
-msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - ダウンロードを中止します. URI=%s"
-
-#: src/message.h:48
-#, c-format
-msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - ダウンロードシーケンスを再開します. URI=%s"
-
-#: src/message.h:49
-#, c-format
-msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - ダウンロードを中止します."
-
-#: src/message.h:50
-#, c-format
-msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr ""
-"CUID#%d - %d 回ダウンロードを行いましたがすべて失敗しました. ダウンロードを中"
-"止します."
-
-#: src/message.h:51
-#, c-format
-msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - cuid をセグメントマネジャーから削除します."
-
-#: src/message.h:57
-#, c-format
-msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - 新しいピースを入手しました. index=%d"
-
-#: src/message.h:58
-#, c-format
-msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - ピースを入手しましたが, データに誤りがあります. index=%d"
-
-#: src/message.h:59
-#, c-format
-msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - ダウンロードは完了していません: %s"
-
-#: src/message.h:60
-#, c-format
-msgid "#%d - Download has already completed: %s"
-msgstr "#%d - ダウンロード済みです: %s"
-
-#: src/message.h:61
-#, c-format
-msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - チェックサムが合致しました: %s"
-
-#: src/message.h:62
-#, c-format
-msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - チェックサムが違います: %s"
-
-#: src/message.h:63
-#, c-format
-msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - ホスト名 %s を解決しています."
-
-#: src/message.h:64
-#, c-format
-msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - 名前解決が完了しました: %s -> %s"
-
-#: src/message.h:65
-#, c-format
-msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - ホスト名 %s の名前解決に失敗しました. 理由:%s"
-
-#: src/message.h:66
-#, c-format
-msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr "CUID#%d - DNS キャッシュヒット: %s -> %s"
-
-#: src/message.h:67
-#, c-format
-msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - リクエストを中止します."
-
-#: src/message.h:68
-#, c-format
-msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - %s に接続しています."
-
-#: src/message.h:69
-#, c-format
-msgid ""
-"CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-"blockIndex=%d"
-msgstr ""
-"CUID#%d - ピースを受けとりました. index=%d, begin=%d, length=%d, offset=%"
-"llu, blockIndex=%d"
-
-#: src/message.h:70
-#, c-format
-msgid "CUID#%d - Piece bitfield %s"
-msgstr "CUID#%d - ピースのビットフィールド:%s"
-
-#: src/message.h:71
-#, c-format
-msgid ""
-"CUID#%d - Reject piece message in queue because the peer has been choked. "
-"index=%d, begin=%d, length=%d"
-msgstr ""
-"CUID#%d - ピアをチョークしたため, キュー中の piece メッセージを却下します. "
-"index=%d, begin=%d, length=%d"
-
-#: src/message.h:72
-#, c-format
-msgid ""
-"CUID#%d - Reject piece message in queue because cancel message received. "
-"index=%d, begin=%d, length=%d"
-msgstr ""
-"CUID#%d - cancel メッセージが届いたため, キュー中の piece メッセージを却下し"
-"ます. index=%d, begin=%d, length=%d"
-
-#: src/message.h:73
-#, c-format
-msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr "CUID#%d - ファイルを検証している最中に例外が発生しました."
-
-#: src/message.h:74
-#, c-format
-msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - このピアは我々がもっていないピースをもっています."
-
-#: src/message.h:75
-#, c-format
-msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - 現時点ではこのピアには興味がありません."
-
-#: src/message.h:76
-#, c-format
-msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr "CUID#%d - request slot を削除します. index=%d, blockIndex=%d"
-
-#: src/message.h:77
-#, c-format
-msgid ""
-"CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
-"got choked."
-msgstr ""
-"CUID#%d - 我々がチョークされたため, request slot を削除します. index=%d, "
-"blockIndex=%d"
-
-#: src/message.h:78
-#, c-format
-msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr "CUID#%d - タイムアウトのため, request slot を削除します. blockIndex=%d"
-
-#: src/message.h:79
-#, c-format
-msgid ""
-"CUID#%d - Deleting request slot blockIndex=%d because the block has been "
-"acquired."
-msgstr ""
-"CUID#%d - 取得済みブロックのため, request slot を削除します. blockIndex=%d"
-
-#: src/message.h:80
-#, c-format
-msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - Fast extension が有効になりました."
-
-#: src/message.h:81
-#, c-format
-msgid "CUID#%d - Extended Messaging enabled."
-msgstr "CUID#%d - Extended Messaging が有効になりました."
-
-#: src/message.h:82
-#, c-format
-msgid "CUID#%d - Exception caught while allocating file space."
-msgstr "CUID#%d - ファイル領域を確保中に例外が発生しました."
-
-#: src/message.h:83
-#, c-format
-msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-msgstr ""
-"CUID#%d - Content-Disposition ヘッダーが見つかりました. %s をファイル名として"
-"使用します."
-
-#: src/message.h:84
-#, c-format
-msgid "CUID#%d - Peer %s:%d banned."
-msgstr "CUID#%d - 以後しばらくの間 ピア %s:%d を無視します."
-
-#: src/message.h:85
-#, c-format
-msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - ポート番号 %d を使って, コネクションを待ちます."
-
-#: src/message.h:86
-#, c-format
-msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr "CUID#%d - ポートをバインド中にエラーが発生しました. ポート番号=%d"
-
-#: src/message.h:87
-#, c-format
-msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-msgstr ""
-"CUID#%d - 新しいピアからの接続を確認, CUID#%d で新規コマンドを追加しました."
-
-#: src/message.h:88
-#, c-format
-msgid "CUID#%d - Error in accepting connection"
-msgstr "CUID#%d - 接続を受け入れる際にエラーが発生しました."
-
-#: src/message.h:89
-#, c-format
-msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr "CUID#%d - トラッカーからの応答を解析中にエラーが発生しました."
-
-#: src/message.h:90
-#, c-format
-msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - トラッカーへの要求の作成に失敗しました."
-
-#: src/message.h:91
-#, c-format
-msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr ""
-"CUID#%d - トラッカーへの要求を作成し, CUID#%d のコマンドにアサインしました."
-
-#: src/message.h:92
-#, c-format
-msgid "CUID#%d - The peer is DHT-enabled."
-msgstr "CUID#%d - このピアは DHT 機能も持っています."
-
-#: src/message.h:94
-#, c-format
-msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr ""
-"%s は, 理解できない URL フォーマット, または, サポートされないプロトコルです."
-
-#: src/message.h:95
-#, c-format
-msgid "Tracker returned warning message: %s"
-msgstr "トラッカーが警告メッセージを返しました: %s"
-
-#: src/message.h:96
-#, c-format
-msgid "The segment file %s exists."
-msgstr "セグメントファイル %s が存在します."
-
-#: src/message.h:97
-#, c-format
-msgid "The segment file %s does not exist."
-msgstr "セグメントファイル %s が存在しません."
-
-#: src/message.h:98
-#, c-format
-msgid "Saving the segment file %s"
-msgstr "セグメントファイル %s を保存しています."
-
-#: src/message.h:99
-msgid "The segment file was saved successfully."
-msgstr "セグメントファイルの保存が完了しました."
-
-#: src/message.h:100
-#, c-format
-msgid "Loading the segment file %s."
-msgstr "セグメントファイル %s をロードしています."
-
-#: src/message.h:101
-msgid "The segment file was loaded successfully."
-msgstr "セグメントファイルのロードが完了しました."
-
-#: src/message.h:102
-msgid "No URI to download. Download aborted."
-msgstr "ダウンロードする URI がありません. ダウンロードを中止します."
-
-#: src/message.h:103
-#, c-format
-msgid ""
-"File %s exists, but a control file(*.aria2) does not exist. Download was "
-"canceled in order to prevent your file from being truncated to 0. If you are "
-"sure to download the file all over again, then delete it or add --allow-"
-"overwrite=true option and restart aria2."
-msgstr ""
-"ファイル %s は存在しますが, コントロールファイル(*.aria2)が存在しません. 既存"
-"ファイル保護のためダウンロードはキャンセルされました. 本当にダウンロードを実"
-"行してよいと確信がもてるのなら, --allow-overwrite=true オプションを与えて "
-"aria2 を実行してください."
-
-#: src/message.h:104
-#, c-format
-msgid "Allocating file %s, %s bytes"
-msgstr "ファイル %s のファイル領域 (%s バイト) を確保しています."
-
-#: src/message.h:105
-msgid "File not found"
-msgstr "ファイルが見つかりません."
-
-#: src/message.h:106
-msgid "Not a directory"
-msgstr "%s はディレクトリではありません."
-
-#: src/message.h:107
-#, c-format
-msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr "チェックサムが不足しています. checksumLength=%d, numChecksum=%d"
-
-#: src/message.h:108
-#, c-format
-msgid "Writing file %s"
-msgstr "ファイル %s に書き込んでいます."
-
-#: src/message.h:109
-msgid "No peer list received."
-msgstr "ピアのリストは空でした."
-
-#: src/message.h:110
-#, c-format
-msgid "Adding peer %s:%d"
-msgstr "ピア %s:%d を追加しています."
-
-#: src/message.h:111
-#, c-format
-msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr "使用中ピースを削除しています. index=%d, fillRate(%%)=%d<=%d"
-
-#: src/message.h:112
-msgid "Download of selected files was complete."
-msgstr "ご指定のファイルのダウンロードが完了."
-
-#: src/message.h:113
-msgid "The download was complete."
-msgstr "ダウンロードが完了."
-
-#: src/message.h:114
-#, c-format
-msgid "Removed %d have entries."
-msgstr "%d 個の have エントリーを削除しました."
-
-#: src/message.h:115
-#, c-format
-msgid "Validating file %s"
-msgstr "ファイル %s を検証しています."
-
-#: src/message.h:116
-#, c-format
-msgid "%d seconds to allocate %s byte(s)"
-msgstr "%d 秒が %s バイトを確保するのに必要でした."
-
-#: src/message.h:117
-#, c-format
-msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr "FileAllocationCommand を CUID#%d で発行しました."
-
-#: src/message.h:118
-#, c-format
-msgid "Metalink: Queueing %s for download."
-msgstr "Metalink: %s をキューイングしています."
-
-#: src/message.h:119
-#, c-format
-msgid "Download complete: %s"
-msgstr "ダウンロード完了: %s"
-
-#: src/message.h:120
-msgid "Seeding is over."
-msgstr "シードの期間が終了しました."
-
-#: src/message.h:121
-#, c-format
-msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-msgstr ""
-"CUID#%d は index=%d のセグメントのダウンロードをキャンセルしました. 代わりに "
-"CUID#%d がそれをダウンロードします."
-
-#: src/message.h:122
-msgid "No chunk to verify."
-msgstr "検証するチャンクがありません."
-
-#: src/message.h:123
-#, c-format
-msgid "Good chunk checksum. hash=%s"
-msgstr "正しいチェックサムです. ハッシュ値=%s"
-
-#: src/message.h:124
-#, c-format
-msgid "Failed to load cookies from %s"
-msgstr "クッキーを %s からロードできませんでした."
-
-#: src/message.h:125
-#, c-format
-msgid ""
-".netrc file %s does not have correct permissions. It should be 600. netrc "
-"support disabled."
-msgstr ""
-".netrc ファイル %s のパーミッションが不正です. パーミッションが 600 以外だ"
-"と .netrc サポートは無効となります."
-
-#: src/message.h:126
-msgid "Logging started."
-msgstr "ロギングをスタートしました."
-
-#: src/message.h:127
-msgid "Specify at least one URL."
-msgstr "一個以上の URL を指定してください."
-
-#: src/message.h:128
-msgid "daemon failed."
-msgstr "デーモン起動に失敗"
-
-#: src/message.h:129
-#, c-format
-msgid "Verification finished successfully. file=%s"
-msgstr "検査が正常に終了. ファイル=%s"
-
-#: src/message.h:130
-#, c-format
-msgid "Checksum error detected. file=%s"
-msgstr "チェックサムのエラーを検出. ファイル=%s"
-
-#: src/message.h:131
-#, c-format
-msgid "Incomplete range specified. %s"
-msgstr "範囲指定が不十分です. %s"
-
-#: src/message.h:132
-#, c-format
-msgid "Failed to convert string into value: %s"
-msgstr "文字列を数値に変換できませんでした: %s"
-
-#: src/message.h:133
-msgid "Resource not found"
-msgstr "リソースが見つかりませんでした"
-
-#: src/message.h:134
-#, c-format
-msgid "File already exists. Renamed to %s."
-msgstr "ファイルが既に存在します. %s にリネームしました."
-
-#: src/message.h:135
-msgid "Cannot parse metalink XML file. XML may be malformed."
-msgstr "metalink XML ファイルが壊れているので読めません."
-
-#: src/message.h:136
-#, c-format
-msgid "Too small payload size for %s, size=%d."
-msgstr "%s のペイロード長にしては短すぎます. ペイロード長=%d"
-
-#: src/message.h:137
-#, c-format
-msgid ""
-"Removed the defunct control file %s because the download file %s doesn't "
-"exist."
-msgstr ""
-"無効なコントロールファイル %s を削除しました. 理由: 対象のダウンロードファイ"
-"ル %s が存在しないため."
-
-#: src/message.h:138
-#, c-format
-msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
-msgstr "シェアレシオは %.1f でした. uploaded/downloaded=%sB/%sB"
-
-#: src/message.h:139
-#, c-format
-msgid "Missing %s in torrent metainfo."
-msgstr "%s が torrent ファイルに存在しません."
-
-#: src/message.h:140
-msgid "Tracker returned null data."
-msgstr "トラッカーが null データを返しました."
-
-#: src/message.h:141
-msgid "Windows socket library initialization failed"
-msgstr "Windows ソケットライブラリの初期化に失敗しました."
-
-#: src/message.h:142
-#, c-format
-msgid "%d second(s) has passed. Stopping application."
-msgstr "%d 秒が経過したので, アプリケーションを停止します."
-
-#: src/message.h:143
-#, c-format
-msgid ""
-"Saved signature as %s. Please note that aria2 doesn't verify signatures."
-msgstr "署名を %s に保存しました. aria2 は署名を検証しません."
-
-#: src/message.h:145
-#, c-format
-msgid "Saving signature as %s failed. Maybe file already exists."
-msgstr ""
-"署名を %s に保存しようとしましたが失敗しました. おそらくすでに同名のファイル"
-"が存在しています."
-
-#: src/message.h:148
-msgid "Timeout."
-msgstr "タイムアウトしました."
-
-#: src/message.h:149
-msgid "Invalid chunk size."
-msgstr "chunk サイズが不正です."
-
-#: src/message.h:150
-#, c-format
-msgid "Too large chunk. size=%d"
-msgstr "chunk サイズ (%d) が大きすぎます."
-
-#: src/message.h:151
-msgid "Invalid header."
-msgstr "ヘッダーが不正です."
-
-#: src/message.h:152
-msgid "Invalid response."
-msgstr "サーバーから不正なレスポンスを受け取りました."
-
-#: src/message.h:153
-msgid "No header found."
-msgstr "ヘッダーが見つかりません."
-
-#: src/message.h:154
-msgid "No status header."
-msgstr "status ヘッダーが見つかりません."
-
-#: src/message.h:155
-msgid "Proxy connection failed."
-msgstr "Proxy 接続に失敗しました."
-
-#: src/message.h:156
-msgid "Connection failed."
-msgstr "接続に失敗しました."
-
-#: src/message.h:157
-#, c-format
-msgid ""
-"The requested filename and the previously registered one are not same. "
-"Expected:%s Actual:%s"
-msgstr ""
-"リクエストしたファイル名と登録済みファイル名が異なります. 期待するファイル"
-"名: %s 実際のファイル名: %s"
-
-#: src/message.h:158
-#, c-format
-msgid "The response status is not successful. status=%d"
-msgstr "レスポンスのステータス (%d) が異常です."
-
-#: src/message.h:159
-#, c-format
-msgid "Too large file size. size=%s"
-msgstr "ファイルサイズ (%s) が大きすぎます."
-
-#: src/message.h:160
-#, c-format
-msgid "Transfer encoding %s is not supported."
-msgstr "トランスファー・エンコーディング %s はサポートされていません."
-
-#: src/message.h:161
-#, c-format
-msgid "SSL initialization failed: %s"
-msgstr "SSL 初期化に失敗しました. 原因:%s"
-
-#: src/message.h:162
-msgid "SSL I/O error"
-msgstr "SSL 入出力エラー"
-
-#: src/message.h:163
-msgid "SSL protocol error"
-msgstr "SSL プロトコルエラー"
-
-#: src/message.h:164
-#, c-format
-msgid "SSL unknown error %d"
-msgstr "SSL 未定義のエラー %d"
-
-#: src/message.h:165
-#, c-format
-msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr "SSL 初期化に失敗しました. 原因: OpenSSL connect error %d"
-
-#: src/message.h:166
-#, c-format
-msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "サイズが合いません. 期待するサイズ:%s 実際のサイズ:%s"
-
-#: src/message.h:167
-msgid "Authorization failed."
-msgstr "認証に失敗しました."
-
-#: src/message.h:168
-msgid "Got EOF from the server."
-msgstr "サーバーから EOF を受けとりました."
-
-#: src/message.h:169
-msgid "Got EOF from peer."
-msgstr "ピアから EOF を受け取りました."
-
-#: src/message.h:170
-msgid "Malformed meta info."
-msgstr "メタ情報ファイルの記述が不正です."
-
-#: src/message.h:172
-#, c-format
-msgid "Failed to open the file %s, cause: %s"
-msgstr "ファイル %s をオープンできませんでした. 原因: %s"
-
-#: src/message.h:173
-#, c-format
-msgid "Failed to write into the file %s, cause: %s"
-msgstr "ファイル %s への書き込みに失敗しました. 原因: %s"
-
-#: src/message.h:174
-#, c-format
-msgid "Failed to read from the file %s, cause: %s"
-msgstr "ファイル %s からの読みとりに失敗しました. 原因: %s"
-
-#: src/message.h:175
-msgid "Failed to read data from disk."
-msgstr "データの読み込みに失敗しました."
-
-#: src/message.h:176
-#, c-format
-msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr ""
-"ファイル %s の (またはその一部の) SHA1 ダイジェストの計算に失敗しました. 原"
-"因: %s"
-
-#: src/message.h:177
-#, c-format
-msgid "Failed to seek the file %s, cause: %s"
-msgstr "ファイル %s のシークに失敗しました. 原因: %s"
-
-#: src/message.h:178
-#, c-format
-msgid "The offset is out of range, offset=%s"
-msgstr "オフセット (%s) が範囲外です."
-
-#: src/message.h:179
-#, c-format
-msgid "%s is not a directory."
-msgstr "%s はディレクトリではありません."
-
-#: src/message.h:180
-#, c-format
-msgid "Failed to make the directory %s, cause: %s"
-msgstr "ディレクトリ %s を作成できませんでした. 原因: %s"
-
-#: src/message.h:181
-#, c-format
-msgid "Failed to open the segment file %s, cause: %s"
-msgstr "コントロールファイル %s をオープンできませんでした. 原因: %s"
-
-#: src/message.h:182
-#, c-format
-msgid "Failed to write into the segment file %s, cause: %s"
-msgstr "コントロールファイル %s への書き込みに失敗しました. 原因: %s"
-
-#: src/message.h:183
-#, c-format
-msgid "Failed to read from the segment file %s, cause: %s"
-msgstr "コントロールファイル %s からの読み込みに失敗しました. 原因: %s"
-
-#: src/message.h:185
-#, c-format
-msgid "Failed to open a socket, cause: %s"
-msgstr "ソケットをオープンできませんでした. 原因: %s"
-
-#: src/message.h:186
-#, c-format
-msgid "Failed to set a socket option, cause: %s"
-msgstr "ソケットのオプションの設定に失敗しました. 原因: %s"
-
-#: src/message.h:187
-#, c-format
-msgid "Failed to set a socket as blocking, cause: %s"
-msgstr "ソケットをブロッキングモードにすることに失敗しました. 原因: %s"
-
-#: src/message.h:188
-#, c-format
-msgid "Failed to set a socket as non-blocking, cause: %s"
-msgstr "ソケットをノンブロッキングモードにすることに失敗しました. 原因: %s"
-
-#: src/message.h:189
-#, c-format
-msgid "Failed to bind a socket, cause: %s"
-msgstr "ソケットの bind に失敗しました. 原因: %s"
-
-#: src/message.h:190
-#, c-format
-msgid "Failed to listen to a socket, cause: %s"
-msgstr "ソケットの listen に失敗しました. 原因: %s"
-
-#: src/message.h:191
-#, c-format
-msgid "Failed to accept a peer connection, cause: %s"
-msgstr "ピアからの接続の受付に失敗しました. 原因: %s"
-
-#: src/message.h:192
-#, c-format
-msgid "Failed to get the name of socket, cause: %s"
-msgstr "ソケットの名前の取得に失敗しました. 原因: %s"
-
-#: src/message.h:193
-#, c-format
-msgid "Failed to get the name of connected peer, cause: %s"
-msgstr "接続ピアの名前の取得に失敗しました. 原因: %s"
-
-#: src/message.h:194
-#, c-format
-msgid "Failed to resolve the hostname %s, cause: %s"
-msgstr "ホスト名 %s のアドレス解決に失敗しました. 原因: %s"
-
-#: src/message.h:195
-#, c-format
-msgid "Failed to connect to the host %s, cause: %s"
-msgstr "ホスト %s への接続に失敗しました. 原因: %s"
-
-#: src/message.h:196
-#, c-format
-msgid "Failed to check whether the socket is writable, cause: %s"
-msgstr ""
-"ソケットへデータを書き込み可能かどうかのチェックに失敗しました. 原因: %s"
-
-#: src/message.h:197
-#, c-format
-msgid "Failed to check whether the socket is readable, cause: %s"
-msgstr ""
-"ソケットからデータを読みとり可能かどうかのチェックに失敗しました. 原因: %s"
-
-#: src/message.h:198
-#, c-format
-msgid "Failed to send data, cause: %s"
-msgstr "データの送信に失敗しました. 原因: %s"
-
-#: src/message.h:199
-#, c-format
-msgid "Failed to receive data, cause: %s"
-msgstr "データの受信に失敗しました. 原因: %s"
-
-#: src/message.h:200
-#, c-format
-msgid "Failed to peek data, cause: %s"
-msgstr "データの peek に失敗しました. 原因: %s"
-
-#: src/message.h:201
-#, c-format
-msgid "Unknown socket error %d (0x%x)"
-msgstr "未定義のソケットエラー %d (0x%x)"
-
-#: src/message.h:202
-#, c-format
-msgid "File %s exists, but %s does not exist."
-msgstr ""
-"ファイル %s が存在しますが, それに対応するセグメントファイル %s が存在しませ"
-"ん."
-
-#: src/message.h:203
-#, c-format
-msgid "Invalid payload size for %s, size=%d. It should be %d."
-msgstr ""
-"%s に対するペイロードサイズが不正です. 実際のサイズ:%d 期待するサイズ:%d"
-
-#: src/message.h:204
-#, c-format
-msgid "Invalid ID=%d for %s. It should be %d."
-msgstr "ID %d は %s に対して使用できません. 期待する ID:%d"
-
-#: src/message.h:205
-#, c-format
-msgid ""
-"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
-"s, actualHash=%s"
-msgstr ""
-"部分チェックサムの検証が失敗しました. チェックサムインデックス=%d, オフセット"
-"=%s, 期待するハッシュ値:%s, 実際のハッシュ値:%s"
-
-#: src/message.h:206
-msgid "Download aborted."
-msgstr "ダウンロードを中止します."
-
-#: src/message.h:207
-#, c-format
-msgid "File %s is being downloaded by other command."
-msgstr "ファイル %s は他のコマンドがダウンロード中です."
-
-#: src/message.h:208
-msgid "Insufficient checksums."
-msgstr "チェックサムが足りません."
-
-#: src/message.h:209
-#, c-format
-msgid "Tracker returned failure reason: %s"
-msgstr "トラッカーがエラーを返しました: %s"
-
-#: src/message.h:210
-msgid "Flooding detected."
-msgstr "フラッディング (いわゆる荒らし行為) を検出しました."
-
-#: src/message.h:211
-#, c-format
-msgid ""
-"Drop connection because no request/piece messages were exchanged in a "
-"certain period(%d seconds)."
-msgstr ""
-"一定期間 (%d 秒) request/piece メッセージの交換がなされていないので, 接続を閉"
-"じます."
-
-#: src/message.h:212
-msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
-"torrent ファイル中の infoHash と .aria2 ファイル中のそれが一致しません."
-
-#: src/message.h:213
-#, c-format
-msgid "No such file entry %s"
-msgstr "ファイルエントリー %s は存在しません."
-
-#: src/message.h:214
-#, c-format
-msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr "ダウンロード速度が遅すぎます: %d <= %d(B/s), host:%s"
-
-#: src/message.h:215
-msgid "No HttpRequestEntry found."
-msgstr "HttpRequestEntry が見つかりません."
-
-#: src/message.h:216
-#, c-format
-msgid "Got %d status, but no location header provided."
-msgstr "ステータス %d を受けとりましたが, location ヘッダーが見つかりません."
-
-#: src/message.h:217
-#, c-format
-msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
-msgstr "range ヘッダーの値が不正です. 要求: %s-%s/%s, 応答: %s-%s/%s"
-
-#: src/message.h:218
-msgid "No file matched with your preference."
-msgstr "検索条件に合致するファイルが見つかりません."
-
-#: src/message.h:219
-msgid "Exception caught"
-msgstr "例外発生"
-
-#: src/message.h:220
-#, c-format
-msgid "Max payload length exceeded or invalid. length = %u"
-msgstr "ペイロード長が許容最大値を越えているか, 不正です. ペイロード長 = %u"
-
-#: src/message.h:221
-#, c-format
-msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
-msgstr ""
-"ファイル長が不正です. %s のダウンロードを継続できません: local %s, remote %s"
 
 #: src/usage_text.h:37
 msgid ""
@@ -1963,57 +1110,6 @@ msgstr ""
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL            出力するログレベルを指定します."
 
-#: src/BtSetup.cc:123
-msgid "Errors occurred while binding port.\n"
-msgstr "ポートをバインド中にエラーが発生しました.\n"
-
-#: src/DownloadEngine.cc:793
-msgid ""
-"Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr ""
-"シャットダウン中です... 緊急時に即座にシャットダウンしたい場合は Ctrl-C をも"
-"う一度押してください."
-
-#: src/DownloadEngine.cc:797
-msgid "Emergency shutdown sequence commencing..."
-msgstr "緊急シャットダウン中です..."
-
-#: src/HelpItem.cc:39
-msgid "                              Default: "
-msgstr "                              既定値: "
-
-#: src/HelpItem.cc:40
-msgid "                              Tags: "
-msgstr "                              タグ: "
-
-#: src/HelpItem.cc:41
-msgid "                              Available Values: "
-msgstr "                              値域: "
-
-#: src/MultiUrlRequestInfo.cc:86
-msgid "aria2 will resume download if the transfer is restarted."
-msgstr "aria2 は次回, ダウンロードを再開します."
-
-#: src/MultiUrlRequestInfo.cc:88
-msgid ""
-"If there are any errors, then see the log file. See '-l' option in help/man "
-"page for details."
-msgstr ""
-"エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
-"の '-l' オプションの項を見てください."
-
-#: src/RequestGroupMan.cc:312
-msgid "Download Results:"
-msgstr "ダウンロード結果:"
-
-#: src/RequestGroupMan.cc:327
-msgid "Status Legend:"
-msgstr "凡例:"
-
-#: src/Util.cc:705
-msgid "Files:"
-msgstr "ファイル:"
-
 #: src/version_usage.cc:55
 msgid " version "
 msgstr " バージョン "
@@ -2105,6 +1201,910 @@ msgstr ""
 #: src/version_usage.cc:130
 msgid "Refer to man page for more information."
 msgstr "より詳しい情報は man ページを参照してください."
+
+#: src/message.h:40
+#, c-format
+msgid "CUID#%d - The download for one segment completed successfully."
+msgstr "CUID#%d - 1 セグメントのダウンロードが完了."
+
+#: src/message.h:41
+#, c-format
+msgid "CUID#%d - No segment available."
+msgstr "CUID#%d - 利用可能なセグメントはありません."
+
+#: src/message.h:42
+#, c-format
+msgid "CUID#%d - Connecting to %s:%d"
+msgstr "CUID#%d - %s:%d に接続しています."
+
+#: src/message.h:43
+#, c-format
+msgid ""
+"CUID#%d - The segment changed. We send the request again with new Range "
+"header."
+msgstr ""
+"CUID#%d - セグメントが変更されています. 新たな Range ヘッダーで再リクエストを"
+"発行します."
+
+#: src/message.h:44
+#, c-format
+msgid "CUID#%d - Redirecting to %s"
+msgstr "CUID#%d - %s にリダイレクトします."
+
+#: src/message.h:45
+#, c-format
+msgid ""
+"CUID#%d - Requesting:\n"
+"%s"
+msgstr ""
+"CUID#%d - リクエスト:\n"
+"%s"
+
+#: src/message.h:46
+#, c-format
+msgid ""
+"CUID#%d - Response received:\n"
+"%s"
+msgstr ""
+"CUID#%d - サーバーからのレスポンス:\n"
+"%s"
+
+#: src/message.h:47
+#, c-format
+msgid "CUID#%d - Download aborted. URI=%s"
+msgstr "CUID#%d - ダウンロードを中止します. URI=%s"
+
+#: src/message.h:48
+#, c-format
+msgid "CUID#%d - Restarting the download. URI=%s"
+msgstr "CUID#%d - ダウンロードシーケンスを再開します. URI=%s"
+
+#: src/message.h:49
+#, c-format
+msgid "CUID#%d - Download aborted."
+msgstr "CUID#%d - ダウンロードを中止します."
+
+#: src/message.h:50
+#, c-format
+msgid "CUID#%d - %d times attempted, but no success. Download aborted."
+msgstr ""
+"CUID#%d - %d 回ダウンロードを行いましたがすべて失敗しました. ダウンロードを中"
+"止します."
+
+#: src/message.h:51
+#, c-format
+msgid "CUID#%d - Unregistering cuid from segmentManager."
+msgstr "CUID#%d - cuid をセグメントマネジャーから削除します."
+
+#: src/message.h:57
+#, c-format
+msgid "CUID#%d - we got new piece. index=%d"
+msgstr "CUID#%d - 新しいピースを入手しました. index=%d"
+
+#: src/message.h:58
+#, c-format
+msgid "CUID#%d - we got wrong piece. index=%d"
+msgstr "CUID#%d - ピースを入手しましたが, データに誤りがあります. index=%d"
+
+#: src/message.h:59
+#, c-format
+msgid "CUID#%d - Download not complete: %s"
+msgstr "CUID#%d - ダウンロードは完了していません: %s"
+
+#: src/message.h:60
+#, c-format
+msgid "#%d - Download has already completed: %s"
+msgstr "#%d - ダウンロード済みです: %s"
+
+#: src/message.h:61
+#, c-format
+msgid "CUID#%d - Good checksum: %s"
+msgstr "CUID#%d - チェックサムが合致しました: %s"
+
+#: src/message.h:62
+#, c-format
+msgid "CUID#%d - Bad checksum: %s"
+msgstr "CUID#%d - チェックサムが違います: %s"
+
+#: src/message.h:63
+#, c-format
+msgid "CUID#%d - Resolving hostname %s"
+msgstr "CUID#%d - ホスト名 %s を解決しています."
+
+#: src/message.h:64
+#, c-format
+msgid "CUID#%d - Name resolution complete: %s -> %s"
+msgstr "CUID#%d - 名前解決が完了しました: %s -> %s"
+
+#: src/message.h:65
+#, c-format
+msgid "CUID#%d - Name resolution for %s failed:%s"
+msgstr "CUID#%d - ホスト名 %s の名前解決に失敗しました. 理由:%s"
+
+#: src/message.h:66
+#, c-format
+msgid "CUID#%d - DNS cache hit: %s -> %s"
+msgstr "CUID#%d - DNS キャッシュヒット: %s -> %s"
+
+#: src/message.h:67
+#, c-format
+msgid "CUID#%d - Abort requested."
+msgstr "CUID#%d - リクエストを中止します."
+
+#: src/message.h:68
+#, c-format
+msgid "CUID#%d - Connecting to the peer %s"
+msgstr "CUID#%d - %s に接続しています."
+
+#: src/message.h:69
+#, c-format
+msgid ""
+"CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
+"blockIndex=%d"
+msgstr ""
+"CUID#%d - ピースを受けとりました. index=%d, begin=%d, length=%d, offset=%"
+"llu, blockIndex=%d"
+
+#: src/message.h:70
+#, c-format
+msgid "CUID#%d - Piece bitfield %s"
+msgstr "CUID#%d - ピースのビットフィールド:%s"
+
+#: src/message.h:71
+#, c-format
+msgid ""
+"CUID#%d - Reject piece message in queue because the peer has been choked. "
+"index=%d, begin=%d, length=%d"
+msgstr ""
+"CUID#%d - ピアをチョークしたため, キュー中の piece メッセージを却下します. "
+"index=%d, begin=%d, length=%d"
+
+#: src/message.h:72
+#, c-format
+msgid ""
+"CUID#%d - Reject piece message in queue because cancel message received. "
+"index=%d, begin=%d, length=%d"
+msgstr ""
+"CUID#%d - cancel メッセージが届いたため, キュー中の piece メッセージを却下し"
+"ます. index=%d, begin=%d, length=%d"
+
+#: src/message.h:73
+#, c-format
+msgid "CUID#%d - Exception caught while validating file integrity."
+msgstr "CUID#%d - ファイルを検証している最中に例外が発生しました."
+
+#: src/message.h:74
+#, c-format
+msgid "CUID#%d - Interested in the peer"
+msgstr "CUID#%d - このピアは我々がもっていないピースをもっています."
+
+#: src/message.h:75
+#, c-format
+msgid "CUID#%d - Not interested in the peer"
+msgstr "CUID#%d - 現時点ではこのピアには興味がありません."
+
+#: src/message.h:76
+#, c-format
+msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
+msgstr "CUID#%d - request slot を削除します. index=%d, blockIndex=%d"
+
+#: src/message.h:77
+#, c-format
+msgid ""
+"CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
+"got choked."
+msgstr ""
+"CUID#%d - 我々がチョークされたため, request slot を削除します. index=%d, "
+"blockIndex=%d"
+
+#: src/message.h:78
+#, c-format
+msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
+msgstr "CUID#%d - タイムアウトのため, request slot を削除します. blockIndex=%d"
+
+#: src/message.h:79
+#, c-format
+msgid ""
+"CUID#%d - Deleting request slot blockIndex=%d because the block has been "
+"acquired."
+msgstr ""
+"CUID#%d - 取得済みブロックのため, request slot を削除します. blockIndex=%d"
+
+#: src/message.h:80
+#, c-format
+msgid "CUID#%d - Fast extension enabled."
+msgstr "CUID#%d - Fast extension が有効になりました."
+
+#: src/message.h:81
+#, c-format
+msgid "CUID#%d - Extended Messaging enabled."
+msgstr "CUID#%d - Extended Messaging が有効になりました."
+
+#: src/message.h:82
+#, c-format
+msgid "CUID#%d - Exception caught while allocating file space."
+msgstr "CUID#%d - ファイル領域を確保中に例外が発生しました."
+
+#: src/message.h:83
+#, c-format
+msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
+msgstr ""
+"CUID#%d - Content-Disposition ヘッダーが見つかりました. %s をファイル名として"
+"使用します."
+
+#: src/message.h:84
+#, c-format
+msgid "CUID#%d - Peer %s:%d banned."
+msgstr "CUID#%d - 以後しばらくの間 ピア %s:%d を無視します."
+
+#: src/message.h:85
+#, c-format
+msgid "CUID#%d - Using port %d for accepting new connections"
+msgstr "CUID#%d - ポート番号 %d を使って, コネクションを待ちます."
+
+#: src/message.h:86
+#, c-format
+msgid "CUID#%d - An error occurred while binding port=%d"
+msgstr "CUID#%d - ポートをバインド中にエラーが発生しました. ポート番号=%d"
+
+#: src/message.h:87
+#, c-format
+msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
+msgstr ""
+"CUID#%d - 新しいピアからの接続を確認, CUID#%d で新規コマンドを追加しました."
+
+#: src/message.h:88
+#, c-format
+msgid "CUID#%d - Error in accepting connection"
+msgstr "CUID#%d - 接続を受け入れる際にエラーが発生しました."
+
+#: src/message.h:89
+#, c-format
+msgid "CUID#%d - Error occurred while processing tracker response."
+msgstr "CUID#%d - トラッカーからの応答を解析中にエラーが発生しました."
+
+#: src/message.h:90
+#, c-format
+msgid "CUID#%d - Cannot create tracker request."
+msgstr "CUID#%d - トラッカーへの要求の作成に失敗しました."
+
+#: src/message.h:91
+#, c-format
+msgid "CUID#%d - Creating new tracker request command #%d"
+msgstr ""
+"CUID#%d - トラッカーへの要求を作成し, CUID#%d のコマンドにアサインしました."
+
+#: src/message.h:92
+#, c-format
+msgid "CUID#%d - The peer is DHT-enabled."
+msgstr "CUID#%d - このピアは DHT 機能も持っています."
+
+#: src/message.h:94
+#, c-format
+msgid "Unrecognized URI or unsupported protocol: %s"
+msgstr ""
+"%s は, 理解できない URL フォーマット, または, サポートされないプロトコルです."
+
+#: src/message.h:95
+#, c-format
+msgid "Tracker returned warning message: %s"
+msgstr "トラッカーが警告メッセージを返しました: %s"
+
+#: src/message.h:96
+#, c-format
+msgid "The segment file %s exists."
+msgstr "セグメントファイル %s が存在します."
+
+#: src/message.h:97
+#, c-format
+msgid "The segment file %s does not exist."
+msgstr "セグメントファイル %s が存在しません."
+
+#: src/message.h:98
+#, c-format
+msgid "Saving the segment file %s"
+msgstr "セグメントファイル %s を保存しています."
+
+#: src/message.h:99
+msgid "The segment file was saved successfully."
+msgstr "セグメントファイルの保存が完了しました."
+
+#: src/message.h:100
+#, c-format
+msgid "Loading the segment file %s."
+msgstr "セグメントファイル %s をロードしています."
+
+#: src/message.h:101
+msgid "The segment file was loaded successfully."
+msgstr "セグメントファイルのロードが完了しました."
+
+#: src/message.h:102
+msgid "No URI to download. Download aborted."
+msgstr "ダウンロードする URI がありません. ダウンロードを中止します."
+
+#: src/message.h:103
+#, c-format
+msgid ""
+"File %s exists, but a control file(*.aria2) does not exist. Download was "
+"canceled in order to prevent your file from being truncated to 0. If you are "
+"sure to download the file all over again, then delete it or add --allow-"
+"overwrite=true option and restart aria2."
+msgstr ""
+"ファイル %s は存在しますが, コントロールファイル(*.aria2)が存在しません. 既存"
+"ファイル保護のためダウンロードはキャンセルされました. 本当にダウンロードを実"
+"行してよいと確信がもてるのなら, --allow-overwrite=true オプションを与えて "
+"aria2 を実行してください."
+
+#: src/message.h:104
+#, c-format
+msgid "Allocating file %s, %s bytes"
+msgstr "ファイル %s のファイル領域 (%s バイト) を確保しています."
+
+#: src/message.h:105
+msgid "File not found"
+msgstr "ファイルが見つかりません."
+
+#: src/message.h:106
+msgid "Not a directory"
+msgstr "%s はディレクトリではありません."
+
+#: src/message.h:107
+#, c-format
+msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
+msgstr "チェックサムが不足しています. checksumLength=%d, numChecksum=%d"
+
+#: src/message.h:108
+#, c-format
+msgid "Writing file %s"
+msgstr "ファイル %s に書き込んでいます."
+
+#: src/message.h:109
+msgid "No peer list received."
+msgstr "ピアのリストは空でした."
+
+#: src/message.h:110
+#, c-format
+msgid "Adding peer %s:%d"
+msgstr "ピア %s:%d を追加しています."
+
+#: src/message.h:111
+#, c-format
+msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
+msgstr "使用中ピースを削除しています. index=%d, fillRate(%%)=%d<=%d"
+
+#: src/message.h:112
+msgid "Download of selected files was complete."
+msgstr "ご指定のファイルのダウンロードが完了."
+
+#: src/message.h:113
+msgid "The download was complete."
+msgstr "ダウンロードが完了."
+
+#: src/message.h:114
+#, c-format
+msgid "Removed %d have entries."
+msgstr "%d 個の have エントリーを削除しました."
+
+#: src/message.h:115
+#, c-format
+msgid "Validating file %s"
+msgstr "ファイル %s を検証しています."
+
+#: src/message.h:116
+#, c-format
+msgid "%d seconds to allocate %s byte(s)"
+msgstr "%d 秒が %s バイトを確保するのに必要でした."
+
+#: src/message.h:117
+#, c-format
+msgid "Dispatching FileAllocationCommand for CUID#%d."
+msgstr "FileAllocationCommand を CUID#%d で発行しました."
+
+#: src/message.h:118
+#, c-format
+msgid "Metalink: Queueing %s for download."
+msgstr "Metalink: %s をキューイングしています."
+
+#: src/message.h:119
+#, c-format
+msgid "Download complete: %s"
+msgstr "ダウンロード完了: %s"
+
+#: src/message.h:120
+msgid "Seeding is over."
+msgstr "シードの期間が終了しました."
+
+#: src/message.h:121
+#, c-format
+msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
+msgstr ""
+"CUID#%d は index=%d のセグメントのダウンロードをキャンセルしました. 代わりに "
+"CUID#%d がそれをダウンロードします."
+
+#: src/message.h:122
+msgid "No chunk to verify."
+msgstr "検証するチャンクがありません."
+
+#: src/message.h:123
+#, c-format
+msgid "Good chunk checksum. hash=%s"
+msgstr "正しいチェックサムです. ハッシュ値=%s"
+
+#: src/message.h:124
+#, c-format
+msgid "Failed to load cookies from %s"
+msgstr "クッキーを %s からロードできませんでした."
+
+#: src/message.h:125
+#, c-format
+msgid ""
+".netrc file %s does not have correct permissions. It should be 600. netrc "
+"support disabled."
+msgstr ""
+".netrc ファイル %s のパーミッションが不正です. パーミッションが 600 以外だ"
+"と .netrc サポートは無効となります."
+
+#: src/message.h:126
+msgid "Logging started."
+msgstr "ロギングをスタートしました."
+
+#: src/message.h:127
+msgid "Specify at least one URL."
+msgstr "一個以上の URL を指定してください."
+
+#: src/message.h:128
+msgid "daemon failed."
+msgstr "デーモン起動に失敗"
+
+#: src/message.h:129
+#, c-format
+msgid "Verification finished successfully. file=%s"
+msgstr "検査が正常に終了. ファイル=%s"
+
+#: src/message.h:130
+#, c-format
+msgid "Checksum error detected. file=%s"
+msgstr "チェックサムのエラーを検出. ファイル=%s"
+
+#: src/message.h:131
+#, c-format
+msgid "Incomplete range specified. %s"
+msgstr "範囲指定が不十分です. %s"
+
+#: src/message.h:132
+#, c-format
+msgid "Failed to convert string into value: %s"
+msgstr "文字列を数値に変換できませんでした: %s"
+
+#: src/message.h:133
+msgid "Resource not found"
+msgstr "リソースが見つかりませんでした"
+
+#: src/message.h:134
+#, c-format
+msgid "File already exists. Renamed to %s."
+msgstr "ファイルが既に存在します. %s にリネームしました."
+
+#: src/message.h:135
+msgid "Cannot parse metalink XML file. XML may be malformed."
+msgstr "metalink XML ファイルが壊れているので読めません."
+
+#: src/message.h:136
+#, c-format
+msgid "Too small payload size for %s, size=%d."
+msgstr "%s のペイロード長にしては短すぎます. ペイロード長=%d"
+
+#: src/message.h:137
+#, c-format
+msgid ""
+"Removed the defunct control file %s because the download file %s doesn't "
+"exist."
+msgstr ""
+"無効なコントロールファイル %s を削除しました. 理由: 対象のダウンロードファイ"
+"ル %s が存在しないため."
+
+#: src/message.h:138
+#, c-format
+msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
+msgstr "シェアレシオは %.1f でした. uploaded/downloaded=%sB/%sB"
+
+#: src/message.h:139
+#, c-format
+msgid "Missing %s in torrent metainfo."
+msgstr "%s が torrent ファイルに存在しません."
+
+#: src/message.h:140
+msgid "Tracker returned null data."
+msgstr "トラッカーが null データを返しました."
+
+#: src/message.h:141
+msgid "Windows socket library initialization failed"
+msgstr "Windows ソケットライブラリの初期化に失敗しました."
+
+#: src/message.h:142
+#, c-format
+msgid "%d second(s) has passed. Stopping application."
+msgstr "%d 秒が経過したので, アプリケーションを停止します."
+
+#: src/message.h:143
+#, c-format
+msgid ""
+"Saved signature as %s. Please note that aria2 doesn't verify signatures."
+msgstr "署名を %s に保存しました. aria2 は署名を検証しません."
+
+#: src/message.h:145
+#, c-format
+msgid "Saving signature as %s failed. Maybe file already exists."
+msgstr ""
+"署名を %s に保存しようとしましたが失敗しました. おそらくすでに同名のファイル"
+"が存在しています."
+
+#: src/message.h:148
+msgid "Timeout."
+msgstr "タイムアウトしました."
+
+#: src/message.h:149
+msgid "Invalid chunk size."
+msgstr "chunk サイズが不正です."
+
+#: src/message.h:150
+#, c-format
+msgid "Too large chunk. size=%d"
+msgstr "chunk サイズ (%d) が大きすぎます."
+
+#: src/message.h:151
+msgid "Invalid header."
+msgstr "ヘッダーが不正です."
+
+#: src/message.h:152
+msgid "Invalid response."
+msgstr "サーバーから不正なレスポンスを受け取りました."
+
+#: src/message.h:153
+msgid "No header found."
+msgstr "ヘッダーが見つかりません."
+
+#: src/message.h:154
+msgid "No status header."
+msgstr "status ヘッダーが見つかりません."
+
+#: src/message.h:155
+msgid "Proxy connection failed."
+msgstr "Proxy 接続に失敗しました."
+
+#: src/message.h:156
+msgid "Connection failed."
+msgstr "接続に失敗しました."
+
+#: src/message.h:157
+#, c-format
+msgid ""
+"The requested filename and the previously registered one are not same. "
+"Expected:%s Actual:%s"
+msgstr ""
+"リクエストしたファイル名と登録済みファイル名が異なります. 期待するファイル"
+"名: %s 実際のファイル名: %s"
+
+#: src/message.h:158
+#, c-format
+msgid "The response status is not successful. status=%d"
+msgstr "レスポンスのステータス (%d) が異常です."
+
+#: src/message.h:159
+#, c-format
+msgid "Too large file size. size=%s"
+msgstr "ファイルサイズ (%s) が大きすぎます."
+
+#: src/message.h:160
+#, c-format
+msgid "Transfer encoding %s is not supported."
+msgstr "トランスファー・エンコーディング %s はサポートされていません."
+
+#: src/message.h:161
+#, c-format
+msgid "SSL initialization failed: %s"
+msgstr "SSL 初期化に失敗しました. 原因:%s"
+
+#: src/message.h:162
+msgid "SSL I/O error"
+msgstr "SSL 入出力エラー"
+
+#: src/message.h:163
+msgid "SSL protocol error"
+msgstr "SSL プロトコルエラー"
+
+#: src/message.h:164
+#, c-format
+msgid "SSL unknown error %d"
+msgstr "SSL 未定義のエラー %d"
+
+#: src/message.h:165
+#, c-format
+msgid "SSL initialization failed: OpenSSL connect error %d"
+msgstr "SSL 初期化に失敗しました. 原因: OpenSSL connect error %d"
+
+#: src/message.h:166
+#, c-format
+msgid "Size mismatch Expected:%s Actual:%s"
+msgstr "サイズが合いません. 期待するサイズ:%s 実際のサイズ:%s"
+
+#: src/message.h:167
+msgid "Authorization failed."
+msgstr "認証に失敗しました."
+
+#: src/message.h:168
+msgid "Got EOF from the server."
+msgstr "サーバーから EOF を受けとりました."
+
+#: src/message.h:169
+msgid "Got EOF from peer."
+msgstr "ピアから EOF を受け取りました."
+
+#: src/message.h:170
+msgid "Malformed meta info."
+msgstr "メタ情報ファイルの記述が不正です."
+
+#: src/message.h:172
+#, c-format
+msgid "Failed to open the file %s, cause: %s"
+msgstr "ファイル %s をオープンできませんでした. 原因: %s"
+
+#: src/message.h:173
+#, c-format
+msgid "Failed to write into the file %s, cause: %s"
+msgstr "ファイル %s への書き込みに失敗しました. 原因: %s"
+
+#: src/message.h:174
+#, c-format
+msgid "Failed to read from the file %s, cause: %s"
+msgstr "ファイル %s からの読みとりに失敗しました. 原因: %s"
+
+#: src/message.h:175
+msgid "Failed to read data from disk."
+msgstr "データの読み込みに失敗しました."
+
+#: src/message.h:176
+#, c-format
+msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
+msgstr ""
+"ファイル %s の (またはその一部の) SHA1 ダイジェストの計算に失敗しました. 原"
+"因: %s"
+
+#: src/message.h:177
+#, c-format
+msgid "Failed to seek the file %s, cause: %s"
+msgstr "ファイル %s のシークに失敗しました. 原因: %s"
+
+#: src/message.h:178
+#, c-format
+msgid "The offset is out of range, offset=%s"
+msgstr "オフセット (%s) が範囲外です."
+
+#: src/message.h:179
+#, c-format
+msgid "%s is not a directory."
+msgstr "%s はディレクトリではありません."
+
+#: src/message.h:180
+#, c-format
+msgid "Failed to make the directory %s, cause: %s"
+msgstr "ディレクトリ %s を作成できませんでした. 原因: %s"
+
+#: src/message.h:181
+#, c-format
+msgid "Failed to open the segment file %s, cause: %s"
+msgstr "コントロールファイル %s をオープンできませんでした. 原因: %s"
+
+#: src/message.h:182
+#, c-format
+msgid "Failed to write into the segment file %s, cause: %s"
+msgstr "コントロールファイル %s への書き込みに失敗しました. 原因: %s"
+
+#: src/message.h:183
+#, c-format
+msgid "Failed to read from the segment file %s, cause: %s"
+msgstr "コントロールファイル %s からの読み込みに失敗しました. 原因: %s"
+
+#: src/message.h:185
+#, c-format
+msgid "Failed to open a socket, cause: %s"
+msgstr "ソケットをオープンできませんでした. 原因: %s"
+
+#: src/message.h:186
+#, c-format
+msgid "Failed to set a socket option, cause: %s"
+msgstr "ソケットのオプションの設定に失敗しました. 原因: %s"
+
+#: src/message.h:187
+#, c-format
+msgid "Failed to set a socket as blocking, cause: %s"
+msgstr "ソケットをブロッキングモードにすることに失敗しました. 原因: %s"
+
+#: src/message.h:188
+#, c-format
+msgid "Failed to set a socket as non-blocking, cause: %s"
+msgstr "ソケットをノンブロッキングモードにすることに失敗しました. 原因: %s"
+
+#: src/message.h:189
+#, c-format
+msgid "Failed to bind a socket, cause: %s"
+msgstr "ソケットの bind に失敗しました. 原因: %s"
+
+#: src/message.h:190
+#, c-format
+msgid "Failed to listen to a socket, cause: %s"
+msgstr "ソケットの listen に失敗しました. 原因: %s"
+
+#: src/message.h:191
+#, c-format
+msgid "Failed to accept a peer connection, cause: %s"
+msgstr "ピアからの接続の受付に失敗しました. 原因: %s"
+
+#: src/message.h:192
+#, c-format
+msgid "Failed to get the name of socket, cause: %s"
+msgstr "ソケットの名前の取得に失敗しました. 原因: %s"
+
+#: src/message.h:193
+#, c-format
+msgid "Failed to get the name of connected peer, cause: %s"
+msgstr "接続ピアの名前の取得に失敗しました. 原因: %s"
+
+#: src/message.h:194
+#, c-format
+msgid "Failed to resolve the hostname %s, cause: %s"
+msgstr "ホスト名 %s のアドレス解決に失敗しました. 原因: %s"
+
+#: src/message.h:195
+#, c-format
+msgid "Failed to connect to the host %s, cause: %s"
+msgstr "ホスト %s への接続に失敗しました. 原因: %s"
+
+#: src/message.h:196
+#, c-format
+msgid "Failed to check whether the socket is writable, cause: %s"
+msgstr ""
+"ソケットへデータを書き込み可能かどうかのチェックに失敗しました. 原因: %s"
+
+#: src/message.h:197
+#, c-format
+msgid "Failed to check whether the socket is readable, cause: %s"
+msgstr ""
+"ソケットからデータを読みとり可能かどうかのチェックに失敗しました. 原因: %s"
+
+#: src/message.h:198
+#, c-format
+msgid "Failed to send data, cause: %s"
+msgstr "データの送信に失敗しました. 原因: %s"
+
+#: src/message.h:199
+#, c-format
+msgid "Failed to receive data, cause: %s"
+msgstr "データの受信に失敗しました. 原因: %s"
+
+#: src/message.h:200
+#, c-format
+msgid "Failed to peek data, cause: %s"
+msgstr "データの peek に失敗しました. 原因: %s"
+
+#: src/message.h:201
+#, c-format
+msgid "Unknown socket error %d (0x%x)"
+msgstr "未定義のソケットエラー %d (0x%x)"
+
+#: src/message.h:202
+#, c-format
+msgid "File %s exists, but %s does not exist."
+msgstr ""
+"ファイル %s が存在しますが, それに対応するセグメントファイル %s が存在しませ"
+"ん."
+
+#: src/message.h:203
+#, c-format
+msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgstr ""
+"%s に対するペイロードサイズが不正です. 実際のサイズ:%d 期待するサイズ:%d"
+
+#: src/message.h:204
+#, c-format
+msgid "Invalid ID=%d for %s. It should be %d."
+msgstr "ID %d は %s に対して使用できません. 期待する ID:%d"
+
+#: src/message.h:205
+#, c-format
+msgid ""
+"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
+"s, actualHash=%s"
+msgstr ""
+"部分チェックサムの検証が失敗しました. チェックサムインデックス=%d, オフセット"
+"=%s, 期待するハッシュ値:%s, 実際のハッシュ値:%s"
+
+#: src/message.h:206
+msgid "Download aborted."
+msgstr "ダウンロードを中止します."
+
+#: src/message.h:207
+#, c-format
+msgid "File %s is being downloaded by other command."
+msgstr "ファイル %s は他のコマンドがダウンロード中です."
+
+#: src/message.h:208
+msgid "Insufficient checksums."
+msgstr "チェックサムが足りません."
+
+#: src/message.h:209
+#, c-format
+msgid "Tracker returned failure reason: %s"
+msgstr "トラッカーがエラーを返しました: %s"
+
+#: src/message.h:210
+msgid "Flooding detected."
+msgstr "フラッディング (いわゆる荒らし行為) を検出しました."
+
+#: src/message.h:211
+#, c-format
+msgid ""
+"Drop connection because no request/piece messages were exchanged in a "
+"certain period(%d seconds)."
+msgstr ""
+"一定期間 (%d 秒) request/piece メッセージの交換がなされていないので, 接続を閉"
+"じます."
+
+#: src/message.h:212
+msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
+msgstr ""
+"torrent ファイル中の infoHash と .aria2 ファイル中のそれが一致しません."
+
+#: src/message.h:213
+#, c-format
+msgid "No such file entry %s"
+msgstr "ファイルエントリー %s は存在しません."
+
+#: src/message.h:214
+#, c-format
+msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
+msgstr "ダウンロード速度が遅すぎます: %d <= %d(B/s), host:%s"
+
+#: src/message.h:215
+msgid "No HttpRequestEntry found."
+msgstr "HttpRequestEntry が見つかりません."
+
+#: src/message.h:216
+#, c-format
+msgid "Got %d status, but no location header provided."
+msgstr "ステータス %d を受けとりましたが, location ヘッダーが見つかりません."
+
+#: src/message.h:217
+#, c-format
+msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
+msgstr "range ヘッダーの値が不正です. 要求: %s-%s/%s, 応答: %s-%s/%s"
+
+#: src/message.h:218
+msgid "No file matched with your preference."
+msgstr "検索条件に合致するファイルが見つかりません."
+
+#: src/message.h:219
+msgid "Exception caught"
+msgstr "例外発生"
+
+#: src/message.h:220
+#, c-format
+msgid "Max payload length exceeded or invalid. length = %u"
+msgstr "ペイロード長が許容最大値を越えているか, 不正です. ペイロード長 = %u"
+
+#: src/message.h:221
+#, c-format
+msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
+msgstr ""
+"ファイル長が不正です. %s のダウンロードを継続できません: local %s, remote %s"
+
+#: src/BtSetup.cc:123
+msgid "Errors occurred while binding port.\n"
+msgstr "ポートをバインド中にエラーが発生しました.\n"
+
+#: src/Util.cc:705
+msgid "Files:"
+msgstr "ファイル:"
 
 #~ msgid ""
 #~ "\n"

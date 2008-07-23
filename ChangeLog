@@ -1,5 +1,10 @@
 2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Reordered src files in POTFILES.in so that usage text appears first.
+	* po/POTFILES.in
+	
+2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.15.0
 	* configure.ac
 

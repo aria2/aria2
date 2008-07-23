@@ -1,10 +1,10 @@
-src/OptionHandlerImpl.h
-src/message.h
-src/usage_text.h
-src/BtSetup.cc
 src/DownloadEngine.cc
-src/HelpItem.cc
 src/MultiUrlRequestInfo.cc
 src/RequestGroupMan.cc
-src/Util.cc
+src/HelpItem.cc
+src/OptionHandlerImpl.h
+src/usage_text.h
 src/version_usage.cc
+src/message.h
+src/BtSetup.cc
+src/Util.cc
