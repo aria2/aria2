@@ -337,9 +337,41 @@ You must use this program at your own risk.</p></div>
 </div>
 <h2 id="_introduction">2. Introduction</h2>
 <div class="sectionbody">
-<div class="para"><p>aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.</p></div>
+<div class="para"><p>aria2 is a utility for downloading files. The supported protocols are HTTP(S),
+FTP, BitTorrent, and Metalink.
+It can download a file from multiple sources/protocols and tries to utilize
+your maximum download bandwidth.
+It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time,
+while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm.
+Using Metalink's chunk checksums, aria2 automatically validates chunks of data
+while downloading a file like BitTorrent.</p></div>
 <div class="para"><p>Here is a list of features.</p></div>
 <div class="ilist"><ul>
+<li>
+<p>
+Command-line interface
+</p>
+</li>
+<li>
+<p>
+Download files through HTTP(S)/FTP/BitTorrent
+</p>
+</li>
+<li>
+<p>
+Segmented downloading
+</p>
+</li>
+<li>
+<p>
+Metalink version 3.0 support(HTTP/FTP/BitTorrent)
+</p>
+</li>
+<li>
+<p>
+HTTP/1.1 implementation
+</p>
+</li>
 <li>
 <p>
 HTTP Proxy support
@@ -357,78 +389,82 @@ HTTP Proxy authentication support
 </li>
 <li>
 <p>
-FTP support(active, passive mode)
+HTTP gzip, deflate content encoding support
 </p>
 </li>
 <li>
 <p>
-FTP through HTTP proxy(GET command or tunneling)
+Chunked transfer encoding support
 </p>
 </li>
 <li>
 <p>
-Multi-source/segmented downloading ability
+Load Cookies from file using the Mozilla/Firefox(1.x/2.x) and Netscape format
 </p>
 </li>
 <li>
 <p>
-Cookie support
+Custom HTTP Header support
 </p>
 </li>
 <li>
 <p>
-It can load cookies from file whose format is used by Netscape and Mozilla.
+Persistent Connections support
 </p>
 </li>
 <li>
 <p>
-It can run as a daemon process.
+FTP through HTTP Proxy
 </p>
 </li>
 <li>
 <p>
-BitTorrent protocol support with fast extension, DHT, encryption, PEX enabled.
+Download/Upload speed throttling
 </p>
 </li>
 <li>
 <p>
-Selective download in multi-file torrent/metalink.
+BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
 </p>
 </li>
 <li>
 <p>
-Metalink version 3.0 support(HTTP/FTP/BitTorrent).
+Run as a daemon process.
 </p>
 </li>
 <li>
 <p>
-Limits download/upload speed.
+Selective download in multi-file torrent/Metalink
 </p>
 </li>
 <li>
 <p>
-Chunk checksum validation in Metalink.
+Chunk checksum validation in Metalink
 </p>
 </li>
 <li>
 <p>
-netrc support.
+Can disable segmented downloading in Metalink
 </p>
 </li>
 <li>
 <p>
-Configuration file support.
+Netrc support
 </p>
 </li>
 <li>
 <p>
-Downloads URIs found in a text file or stdin.
+Configuration file support
 </p>
 </li>
 <li>
 <p>
-Integrates HTTP/FTP/BitTorrent downloads; downloading a file from several
-  different sources.
+Download URIs found in a text file or stdin
+</p>
+</li>
+<li>
+<p>
+Parameterized URI support
 </p>
 </li>
 </ul></div>
@@ -591,6 +627,11 @@ libexpat1-dev    (Required for Metalink support)
 $ make</tt></pre>
 </div></div>
 <div class="para"><p>The executable is aria2c in src directory.</p></div>
+<div class="para"><p>aria2 uses CppUnit for automated unit testing. To run run the unit test:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ make check</tt></pre>
+</div></div>
 </div>
 <h2 id="_bittorrrent">5. BitTorrrent</h2>
 <div class="sectionbody">
@@ -622,9 +663,9 @@ multi-file mode
 </dd>
 </dl></div>
 <div class="para"><p>In the default behavior, before download starts, complete directory structure
-is created if needed. Then aria2 opens all files mentioned in .torrent file,
-directly writes to and reads from these files.
-NOTE: Even in selective download, all files are opened.</p></div>
+is created if needed. By default, aria2 opens at most 100 files mentioned in
+.torrent file, directly writes to and reads from these files. The number of
+files to open can be controlled by "&#8212;bt-max-open-files" option.</p></div>
 <div class="para"><p>If "&#8212;direct-file-mapping" option set to be false, aria2 creates temporary
 file in the store directory. The length of this file is the sum of length of
 the files in .torrent file, so at least 2 times more disk space than the file
@@ -641,7 +682,8 @@ Note
 <div class="ilist"><ul>
 <li>
 <p>
--o option is used to change the filename of .torrent file itself, not a filename of a file in .torrent file.
+-o option is used to change the filename of .torrent file itself, not a
+  filename of a file in .torrent file.
 </p>
 </li>
 <li>
@@ -651,13 +693,14 @@ The port numbers that aria2 uses by default are 6881-6999 for TCP and UDP.
 </li>
 <li>
 <p>
-aria2 doesn't configure port-forwarding automatically. Please configure your router or firewall manually.
+aria2 doesn't configure port-forwarding automatically. Please configure your
+  router or firewall manually.
 </p>
 </li>
 <li>
 <p>
 The maximum number of peers is 55. This limit may be exceeded when download
-rate is low.
+  rate is low.
 </p>
 </li>
 <li>
@@ -682,6 +725,10 @@ os.</p></div>
 <div class="para"><p>If chunk checksums are provided in Metalink file, aria2 automatically validate
 a chunk of file while downloading it. This behavior can be turned off by
 a command-line option.</p></div>
+<div class="para"><p>If signature is included in a Metalink file, aria2 saves it as a file after the
+download completed.
+The filename is download filename + ".sig". If same file already exists, the
+signature file is not saved.</p></div>
 </div>
 <h2 id="_netrc">7. netrc</h2>
 <div class="sectionbody">
@@ -691,7 +738,8 @@ Your .netrc file should have correct permissions(600).</p></div>
 </div>
 <h2 id="_configuration_file">8. Configuration file</h2>
 <div class="sectionbody">
-<div class="para"><p>Configuration file must be placed under $HOME/.aria2 and must be named as aria2.conf.
+<div class="para"><p>Configuration file must be placed under $HOME/.aria2 and must be named as
+aria2.conf.
 In each line, there is 1 parameter whose syntax is name=value pair,
 where name is the long command-line option name without <em>&#8212;</em> prefix.
 The lines beginning <em>#</em> are treated as comments.</p></div>
@@ -708,7 +756,7 @@ ftp-pasv=true</tt></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-06-29 22:45:02 JST
+Last updated 2008-07-23 21:36:33 JST
 </div>
 </div>
 </body>

@@ -10,29 +10,41 @@ You must use this program at your own risk.
 
 Introduction
 ------------
-aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent. 
+aria2 is a utility for downloading files. The supported protocols are HTTP(S),
+FTP, BitTorrent, and Metalink.
+It can download a file from multiple sources/protocols and tries to utilize
+your maximum download bandwidth.
+It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time,
+while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm.
+Using Metalink's chunk checksums, aria2 automatically validates chunks of data
+while downloading a file like BitTorrent. 
 
 Here is a list of features.
 
+* Command-line interface
+* Download files through HTTP(S)/FTP/BitTorrent
+* Segmented downloading
+* Metalink version 3.0 support(HTTP/FTP/BitTorrent)
+* HTTP/1.1 implementation
 * HTTP Proxy support
 * HTTP BASIC authentication support
 * HTTP Proxy authentication support
-* FTP support(active, passive mode)
-* FTP through HTTP proxy(GET command or tunneling)
-* Multi-source/segmented downloading ability
-* Cookie support
-* It can load cookies from file whose format is used by Netscape and Mozilla.
-* It can run as a daemon process.
-* BitTorrent protocol support with fast extension, DHT, encryption, PEX enabled.
-* Selective download in multi-file torrent/metalink.
-* Metalink version 3.0 support(HTTP/FTP/BitTorrent).
-* Limits download/upload speed.
-* Chunk checksum validation in Metalink.
-* netrc support.
-* Configuration file support.
-* Downloads URIs found in a text file or stdin.
-* Integrates HTTP/FTP/BitTorrent downloads; downloading a file from several
-  different sources.
+* HTTP gzip, deflate content encoding support
+* Chunked transfer encoding support
+* Load Cookies from file using the Mozilla/Firefox(1.x/2.x) and Netscape format
+* Custom HTTP Header support
+* Persistent Connections support
+* FTP through HTTP Proxy
+* Download/Upload speed throttling
+* BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
+* Run as a daemon process.
+* Selective download in multi-file torrent/Metalink
+* Chunk checksum validation in Metalink
+* Can disable segmented downloading in Metalink
+* Netrc support
+* Configuration file support
+* Download URIs found in a text file or stdin
+* Parameterized URI support
 
 Dependency
 ----------
@@ -94,6 +106,12 @@ $ make
 
 The executable is aria2c in src directory.
 
+aria2 uses CppUnit for automated unit testing. To run run the unit test:
+
+------------
+$ make check
+------------
+
 BitTorrrent
 -----------
 About filename
@@ -114,9 +132,9 @@ multi-file mode::
     specified by -d option.
 
 In the default behavior, before download starts, complete directory structure
-is created if needed. Then aria2 opens all files mentioned in .torrent file,
-directly writes to and reads from these files.
-NOTE: Even in selective download, all files are opened.
+is created if needed. By default, aria2 opens at most 100 files mentioned in
+.torrent file, directly writes to and reads from these files. The number of
+files to open can be controlled by "--bt-max-open-files" option.
 
 If "--direct-file-mapping" option set to be false, aria2 creates temporary
 file in the store directory. The length of this file is the sum of length of
@@ -130,11 +148,13 @@ DHT
 As of release 0.13.0, aria2 supports DHT. The routing table is saved to $HOME/.aria2/dht.dat.
 
 Note;;
-*  -o option is used to change the filename of .torrent file itself, not a filename of a file in .torrent file.
+* -o option is used to change the filename of .torrent file itself, not a
+  filename of a file in .torrent file.
 * The port numbers that aria2 uses by default are 6881-6999 for TCP and UDP.
-* aria2 doesn't configure port-forwarding automatically. Please configure your router or firewall manually.
+* aria2 doesn't configure port-forwarding automatically. Please configure your
+  router or firewall manually.
 * The maximum number of peers is 55. This limit may be exceeded when download
-rate is low.
+  rate is low.
 * As of release 0.10.0, aria2 stops sending request message after selective
   download completes,
 
@@ -154,6 +174,11 @@ If chunk checksums are provided in Metalink file, aria2 automatically validate
 a chunk of file while downloading it. This behavior can be turned off by
 a command-line option.
 
+If signature is included in a Metalink file, aria2 saves it as a file after the
+download completed.
+The filename is download filename + ".sig". If same file already exists, the
+signature file is not saved.
+
 netrc
 -----
 netrc support is enabled by default in ftp.
@@ -162,7 +187,8 @@ Your .netrc file should have correct permissions(600).
 
 Configuration file
 ------------------
-Configuration file must be placed under $HOME/.aria2 and must be named as aria2.conf.
+Configuration file must be placed under $HOME/.aria2 and must be named as
+aria2.conf.
 In each line, there is 1 parameter whose syntax is name=value pair,
 where name is the long command-line option name without '--' prefix.
 The lines beginning '#' are treated as comments.

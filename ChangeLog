@@ -1,5 +1,11 @@
 2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated feature list. Added libz for dependency section.
+	Added a description about unit testing using CppUnit.
+	* README
+
+2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added a test for libz. Quoted where it is necessary.
 	* build_test.sh
 	
