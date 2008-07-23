@@ -1,5 +1,17 @@
 2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added Bulgarian translation.
+	Updated Catalan, Spanish, French and Japanese translations.
+	Thanks to all translators.
+	* po/LINGUAS
+	* po/bg.po
+	* po/ca.po
+	* po/es.po
+	* po/fr.po
+	* po/ja.po
+	
+2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated feature list. Added libz for dependency section.
 	Added a description about unit testing using CppUnit.
 	* README

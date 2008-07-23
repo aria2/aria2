@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-07-13 21:20+0900\n"
-"PO-Revision-Date: 2008-04-29 13:13+0000\n"
+"POT-Creation-Date: 2008-07-17 00:06+0900\n"
+"PO-Revision-Date: 2008-06-22 07:12+0000\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-05-12 14:16+0000\n"
+"X-Launchpad-Export-Date: 2008-07-23 12:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:71
@@ -983,7 +983,6 @@ msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 Executa com dimoni."
 
 #: src/usage_text.h:46
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -995,13 +994,6 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
-" -s, --split=N                Descarrega un fitxer fent servir N connexions. "
-"N ha de ser\n"
-"                              entre 1 i 5. Aquesta opció afecta a totes les "
-"URLs.\n"
-"                              Llavors, aria2 connecta a cada URL amb\n"
-"                              N connexions.\n"
-"                              Defecte: 1"
 
 #: src/usage_text.h:53
 msgid ""
@@ -1318,6 +1310,8 @@ msgstr ""
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
+" --enable-http-keep-alive[=true|false] Activa la connexió persistent "
+"HTTP/1.1."
 
 #: src/usage_text.h:161
 msgid ""
@@ -1415,25 +1409,19 @@ msgstr ""
 "s'especifica '-'."
 
 #: src/usage_text.h:192
-#, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
 "                              every static (HTTP/FTP) URL, torrent and "
 "metalink."
 msgstr ""
-" -m, --max-tries=N            Estableix el número d'intents. 0 significa "
-"ilimitat.\n"
-"                              Defecte: 5"
 
 #: src/usage_text.h:195
 msgid ""
-" --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
-"                              the same used by Netscape and Mozilla."
+" --load-cookies=FILE          Load Cookies from FILE using the Mozilla/"
+"Firefox\n"
+"                              (1.x/2.x) and Netscape format."
 msgstr ""
-" --load-cookies=FILE          Carrega cookies des del fitxer FILE. El format "
-"del fitxer FILE és\n"
-"                              el mateix que fan servir Netscape i Mozilla."
 
 #: src/usage_text.h:198
 msgid ""
@@ -1589,6 +1577,8 @@ msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
 msgstr ""
+" --dht-entry-point=HOST:PORT Estableix host i port com el punt d'entrada a \n"
+"                                           una xarxa DHT."
 
 #: src/usage_text.h:270
 msgid ""
@@ -1609,7 +1599,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:280
-#, fuzzy
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -1618,21 +1607,16 @@ msgid ""
 "                              accepts connections ignoring max peer cap.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --no-file-allocation-limit=SIZE No es reserva espai per fitxers amb\n"
-"                                        mida més petita que SIZE.\n"
-"                                        Vostè pot afegir K o M(1K = 1024, 1M "
-"= 1024K)."
 
 #: src/usage_text.h:285
-#, fuzzy
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
 "                              BitTorrent download."
 msgstr ""
-" -m, --max-tries=N            Estableix el número d'intents. 0 significa "
-"ilimitat.\n"
-"                              Defecte: 5"
+" --bt-max-open-files=NUM Especifica el nombre màxim de fitxers a obrir en "
+"cada\n"
+"                              descàrrega BitTorrent."
 
 #: src/usage_text.h:288
 msgid ""
@@ -1649,6 +1633,8 @@ msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously."
 msgstr ""
+" -C, --metalink-servers=NUM_SERVERS El nombre de servidors a connectar\n"
+"                                                       simultàniament."
 
 #: src/usage_text.h:296
 msgid " --metalink-version=VERSION   The version of the file to download."
@@ -1761,14 +1747,16 @@ msgstr ""
 #: src/usage_text.h:349
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
 msgstr ""
+" -q, --quiet[=true|false] aria2 ha de ser callat (no hi ha sortida a la "
+"consola)."
 
 #: src/usage_text.h:351
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
-msgstr ""
+msgstr " --async-dns[=true|false] Activa DNS asíncrona."
 
 #: src/usage_text.h:353
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
-msgstr ""
+msgstr " -ftp-reuse-connection[=true|false] Refusa connexió FTP."
 
 #: src/usage_text.h:355
 msgid ""
@@ -1776,10 +1764,13 @@ msgid ""
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
+" --summary-interval=SEC Estableix l'interval de resumir el progres de "
+"descàrrega.\n"
+"                                     Posant 0 no fa el resum."
 
 #: src/usage_text.h:358
 msgid " --log-level=LEVEL            Set log level to output."
-msgstr ""
+msgstr " --log-level=LEVEL Estableix el nivell d'anotació."
 
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
@@ -1844,7 +1835,7 @@ msgstr "Informar d'errors a %s"
 #: src/version_usage.cc:77
 #, c-format
 msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
-msgstr ""
+msgstr "Ús: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 
 #: src/version_usage.cc:85
 msgid "Printing all options."
@@ -1890,6 +1881,9 @@ msgid ""
 " stored in a local drive. Please note that they are always treated as a\n"
 " separate download."
 msgstr ""
+" Vostè també pot especificar varis fitxers torrent i fitxers metalink\n"
+" emmagatzemats en un disc local. Si us plau, tingui en compte que sempre\n"
+" son tractats com descàrregues separades."
 
 #: src/version_usage.cc:121
 msgid ""

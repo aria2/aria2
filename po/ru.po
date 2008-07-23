@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-07-13 21:20+0900\n"
+"POT-Creation-Date: 2008-07-17 00:06+0900\n"
 "PO-Revision-Date: 2008-05-16 01:07+0900\n"
 "Last-Translator: hm <colimit@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
@@ -1295,8 +1295,9 @@ msgstr ""
 
 #: src/usage_text.h:195
 msgid ""
-" --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
-"                              the same used by Netscape and Mozilla."
+" --load-cookies=FILE          Load Cookies from FILE using the Mozilla/"
+"Firefox\n"
+"                              (1.x/2.x) and Netscape format."
 msgstr ""
 
 #: src/usage_text.h:198
