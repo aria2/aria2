@@ -1,5 +1,10 @@
 2008-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Bump up version number to 0.15.1
+	* configure.ac
+
+2008-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Avoid repeated call of gettimeofday() when calculating speed.
 	* src/SpeedCalc.cc
 	* src/SpeedCalc.h
