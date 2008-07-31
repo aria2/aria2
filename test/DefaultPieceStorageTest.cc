@@ -72,7 +72,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPieceStorageTest);
 void DefaultPieceStorageTest::testGetTotalLength() {
   DefaultPieceStorage pss(btContext, option);
 
-  CPPUNIT_ASSERT_EQUAL(384ULL, pss.getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)384ULL, pss.getTotalLength());
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece() {
@@ -132,15 +132,15 @@ void DefaultPieceStorageTest::testCompletePiece() {
 		       piece->toString());
 #endif // !__MINGW32__
 
-  CPPUNIT_ASSERT_EQUAL(0ULL, pss.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, pss.getCompletedLength());
 
   pss.completePiece(piece);
 
-  CPPUNIT_ASSERT_EQUAL(128ULL, pss.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)128ULL, pss.getCompletedLength());
 
   SharedHandle<Piece> incompletePiece = pss.getMissingPiece(peer);
   incompletePiece->completeBlock(0);
-  CPPUNIT_ASSERT_EQUAL(256ULL, pss.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)256ULL, pss.getCompletedLength());
 }
 
 void DefaultPieceStorageTest::testGetPiece() {

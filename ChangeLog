@@ -1,3 +1,19 @@
+2008-07-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Applied tizianomueller's patch to fix compile error.
+	* test/BitfieldManTest.cc
+	* test/BtRequestMessageTest.cc
+	* test/DefaultBtContextTest.cc
+	* test/DefaultDiskWriterTest.cc
+	* test/DefaultPieceStorageTest.cc
+	* test/HttpHeaderProcessorTest.cc
+	* test/HttpResponseTest.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkParserControllerTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/PeerSessionResourceTest.cc
+	* test/UtilTest.cc
+
 2008-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Release 0.15.0

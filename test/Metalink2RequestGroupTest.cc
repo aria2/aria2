@@ -46,7 +46,7 @@ void Metalink2RequestGroupTest::testGenerate()
     SharedHandle<SingleFileDownloadContext> dctx
       (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
-    CPPUNIT_ASSERT_EQUAL(0ULL, dctx->getTotalLength());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, dctx->getTotalLength());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), dctx->getChecksumHashAlgo());
     CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),

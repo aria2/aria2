@@ -129,14 +129,14 @@ void DefaultBtContextTest::testGetTotalLength() {
   DefaultBtContext btContext;
   btContext.load("test.torrent");
 
-  CPPUNIT_ASSERT_EQUAL(384ULL, btContext.getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)384ULL, btContext.getTotalLength());
 }
 
 void DefaultBtContextTest::testGetTotalLengthSingle() {
   DefaultBtContext btContext;
   btContext.load("single.torrent");
 
-  CPPUNIT_ASSERT_EQUAL(384ULL, btContext.getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)384ULL, btContext.getTotalLength());
 }
 
 void DefaultBtContextTest::testGetFileModeMulti() {

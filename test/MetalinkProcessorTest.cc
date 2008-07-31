@@ -73,7 +73,7 @@ void MetalinkProcessorTest::testParseFile()
 
     SharedHandle<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
-    CPPUNIT_ASSERT_EQUAL(0ULL, entry1->getLength());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, entry1->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), entry1->version);
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entry1->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entry1->os);
@@ -121,7 +121,7 @@ void MetalinkProcessorTest::testParseFile()
 
     SharedHandle<MetalinkEntry> entry2 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry2->getPath());
-    CPPUNIT_ASSERT_EQUAL(345689ULL, entry2->getLength());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)345689ULL, entry2->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), entry2->version);
     CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entry2->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entry2->os);
@@ -236,7 +236,7 @@ void MetalinkProcessorTest::testBadSize()
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
-    CPPUNIT_ASSERT_EQUAL(0ULL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, e->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), e->version);
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), e->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), e->os);
@@ -267,7 +267,7 @@ void MetalinkProcessorTest::testBadMaxConn()
 
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
-    CPPUNIT_ASSERT_EQUAL(43743838ULL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)43743838ULL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -545,7 +545,7 @@ void MetalinkProcessorTest::testLargeFileSize()
   try {
     SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
-    CPPUNIT_ASSERT_EQUAL(9223372036854775807ULL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }

@@ -103,20 +103,20 @@ void PeerSessionResourceTest::testUpdateUploadLength()
 {
   PeerSessionResource res(1024, 1024*1024);
 
-  CPPUNIT_ASSERT_EQUAL(0ULL, res.uploadLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, res.uploadLength());
   res.updateUploadLength(100);
   res.updateUploadLength(200);
-  CPPUNIT_ASSERT_EQUAL(300ULL, res.uploadLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)300ULL, res.uploadLength());
 }
 
 void PeerSessionResourceTest::testUpdateDownloadLength()
 {
   PeerSessionResource res(1024, 1024*1024);
 
-  CPPUNIT_ASSERT_EQUAL(0ULL, res.downloadLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, res.downloadLength());
   res.updateDownloadLength(100);
   res.updateDownloadLength(200);
-  CPPUNIT_ASSERT_EQUAL(300ULL, res.downloadLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)300ULL, res.downloadLength());
 }
 
 void PeerSessionResourceTest::testUpdateLatency()

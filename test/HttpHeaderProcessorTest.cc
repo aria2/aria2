@@ -112,7 +112,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
 		       header->getFirst("Date"));
   CPPUNIT_ASSERT_EQUAL(std::string("Apache/2.2.3 (Debian)"),
 		       header->getFirst("Server"));
-  CPPUNIT_ASSERT_EQUAL(9187ULL, header->getFirstAsULLInt("Content-Length"));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)9187ULL, header->getFirstAsULLInt("Content-Length"));
   CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"),
 		       header->getFirst("Content-Type"));
 }

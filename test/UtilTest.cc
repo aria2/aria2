@@ -565,8 +565,8 @@ void UtilTest::testParseUInt()
 
 void UtilTest::testParseLLInt()
 {
-  CPPUNIT_ASSERT_EQUAL(-1LL, Util::parseLLInt(" -1 "));
-  CPPUNIT_ASSERT_EQUAL(9223372036854775807LL,
+  CPPUNIT_ASSERT_EQUAL((int64_t)-1LL, Util::parseLLInt(" -1 "));
+  CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
 		       Util::parseLLInt("9223372036854775807"));
   try {
     Util::parseLLInt("9223372036854775808");
@@ -596,7 +596,7 @@ void UtilTest::testParseLLInt()
 
 void UtilTest::testParseULLInt()
 {
-  CPPUNIT_ASSERT_EQUAL(18446744073709551615ULL,
+  CPPUNIT_ASSERT_EQUAL((uint64_t)18446744073709551615ULL,
 		       Util::parseULLInt("18446744073709551615"));
   try {
     Util::parseUInt("-1");

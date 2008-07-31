@@ -145,7 +145,7 @@ void BtRequestMessageTest::testCreate() {
   CPPUNIT_ASSERT_EQUAL((uint8_t)6, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL((uint32_t)256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL((size_t)1024, pm->getLength());
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pm->getLength());
 
   // case: payload size is wrong
   try {

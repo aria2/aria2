@@ -342,7 +342,7 @@ void BitfieldManTest::testFilter() {
   btman.setUseBit(index);
   CPPUNIT_ASSERT_EQUAL((size_t)7, index);
   CPPUNIT_ASSERT(!btman.getMissingUnusedIndex(index, peerBt, sizeof(peerBt)));
-  CPPUNIT_ASSERT_EQUAL(12ULL, btman.getFilteredTotalLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)12ULL, btman.getFilteredTotalLength());
 
   // test offset=5, length=2
   btman.clearAllBit();
@@ -359,13 +359,13 @@ void BitfieldManTest::testFilter() {
   btman.setBit(index);
   CPPUNIT_ASSERT_EQUAL((size_t)3, index);
   CPPUNIT_ASSERT(!btman.getMissingUnusedIndex(index, peerBt, sizeof(peerBt)));
-  CPPUNIT_ASSERT_EQUAL(4ULL, btman.getFilteredTotalLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)4ULL, btman.getFilteredTotalLength());
   CPPUNIT_ASSERT(btman.isFilteredAllBitSet());
 
   BitfieldMan btman2(2, 31);
   btman2.addFilter(0, 31);
   btman2.enableFilter();
-  CPPUNIT_ASSERT_EQUAL(31ULL, btman2.getFilteredTotalLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)31ULL, btman2.getFilteredTotalLength());
 
 }
 
@@ -551,27 +551,27 @@ void BitfieldManTest::testGetMissingUnusedLength()
   CPPUNIT_ASSERT_EQUAL(totalLength, bf.getMissingUnusedLength(0));
 
   // from index 10 and all blocks are unused and not acquired.
-  CPPUNIT_ASSERT_EQUAL(10ULL, bf.getMissingUnusedLength(10));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)10ULL, bf.getMissingUnusedLength(10));
 
   // from index -1
-  CPPUNIT_ASSERT_EQUAL(0ULL, bf.getMissingUnusedLength(-1));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, bf.getMissingUnusedLength(-1));
 
   // from index 11
-  CPPUNIT_ASSERT_EQUAL(0ULL, bf.getMissingUnusedLength(11));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, bf.getMissingUnusedLength(11));
 
   // from index 12
-  CPPUNIT_ASSERT_EQUAL(0ULL, bf.getMissingUnusedLength(12));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, bf.getMissingUnusedLength(12));
 
   // from index 0 and 5th block is used.
   bf.setUseBit(5);
-  CPPUNIT_ASSERT_EQUAL(5ULL*blockLength, bf.getMissingUnusedLength(0));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)5ULL*blockLength, bf.getMissingUnusedLength(0));
 
   // from index 0 and 4th block is acquired.
   bf.setBit(4);
-  CPPUNIT_ASSERT_EQUAL(4ULL*blockLength, bf.getMissingUnusedLength(0));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)4ULL*blockLength, bf.getMissingUnusedLength(0));
 
   // from index 1
-  CPPUNIT_ASSERT_EQUAL(3ULL*blockLength, bf.getMissingUnusedLength(1));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)3ULL*blockLength, bf.getMissingUnusedLength(1));
 }
 
 void BitfieldManTest::testSetBitRange()
@@ -589,7 +589,7 @@ void BitfieldManTest::testSetBitRange()
   for(size_t i = 5; i < 10; ++i) {
     CPPUNIT_ASSERT(!bf.isBitSet(i));
   }
-  CPPUNIT_ASSERT_EQUAL(5ULL*blockLength, bf.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)5ULL*blockLength, bf.getCompletedLength());
 }
 
 void BitfieldManTest::testGetAllMissingIndexes_noarg()
