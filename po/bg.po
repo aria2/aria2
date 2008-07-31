@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-07-23 22:12+0900\n"
-"PO-Revision-Date: 2008-07-01 20:19+0000\n"
+"POT-Creation-Date: 2008-08-01 00:32+0900\n"
+"PO-Revision-Date: 2008-07-29 11:50+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-07-23 12:44+0000\n"
+"X-Launchpad-Export-Date: 2008-07-31 14:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:793
@@ -569,6 +569,9 @@ msgid ""
 "Firefox\n"
 "                              (1.x/2.x) and Netscape format."
 msgstr ""
+" --load-cookies=FILE Зареждане на бисквитки от FILE използвайки Mozilla/"
+"Firefox\n"
+"                              (1.x/2.x) и Netscape формат."
 
 #: src/usage_text.h:198
 msgid ""
@@ -845,6 +848,9 @@ msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
+" --bt-seed-unverified[=true|false] Сийдване на предишно даунлоуднати файлове "
+"без\n"
+"                              проверяване на частта на хеша."
 
 #: src/usage_text.h:291
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
@@ -1659,11 +1665,13 @@ msgstr "%d секунда(и) минаха. Спиране на програма
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr ""
+"Съхранен е подпис като %s. Моля забележете, че aria2 не проверява подписи."
 
 #: src/message.h:145
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr ""
+"Съхраняването на подпис като %s е неуспешно. Може би файлът вече съществува."
 
 #: src/message.h:148
 msgid "Timeout."

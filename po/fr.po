@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-07-23 22:12+0900\n"
-"PO-Revision-Date: 2008-07-14 19:53+0000\n"
+"POT-Creation-Date: 2008-08-01 00:32+0900\n"
+"PO-Revision-Date: 2008-07-24 12:02+0000\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-07-23 12:44+0000\n"
+"X-Launchpad-Export-Date: 2008-07-31 14:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:793
@@ -590,6 +590,9 @@ msgid ""
 "Firefox\n"
 "                              (1.x/2.x) and Netscape format."
 msgstr ""
+" --load-cookies=FILE          Charge les cookies depuis FILE en utilisant le "
+"format utilisé par Mozilla/Firefox\n"
+"                              (1.x/2.x) et Netscape."
 
 #: src/usage_text.h:198
 msgid ""
@@ -857,6 +860,8 @@ msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
+" --bt-seed-unverified[=true|false] Partage (seed) les fichiers précédemment "
+"téléchargés sans vérifier les \"hash\" des fichiers."
 
 #: src/usage_text.h:291
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
@@ -1687,11 +1692,15 @@ msgstr "%d seconde(s) sont passée(s). Arrêt de l'applicatiion"
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr ""
+"Signature sauvegardée en tant que %s. Merci de noter que aria2 ne vérifie "
+"pas les signatures."
 
 #: src/message.h:145
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr ""
+"La sauvegarde de la signature en tant que %s a echouée. Peut-être que le "
+"fichier existe déjà ?"
 
 #: src/message.h:148
 msgid "Timeout."
