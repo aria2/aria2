@@ -1,5 +1,11 @@
 2008-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Avoid repeated call of gettimeofday() when calculating speed.
+	* src/SpeedCalc.cc
+	* src/SpeedCalc.h
+
+2008-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed writable check when socket's send buffer is full in BitTorrent
 	downloads to lower CPU usage.
 	* src/PeerInteractionCommand.cc

@@ -52,6 +52,9 @@ private:
   time_t nextInterval;
 
   bool isIntervalOver() const;
+
+  bool isIntervalOver(int64_t milliElapsed) const;
+
   void changeSw();
 public:
   SpeedCalc() {
