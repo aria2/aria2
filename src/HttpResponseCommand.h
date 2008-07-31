@@ -55,6 +55,10 @@ private:
   HttpDownloadCommand* createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse);
 protected:
   bool executeInternal();
+
+  bool shouldInflateContentEncoding
+  (const SharedHandle<HttpResponse>& httpResponse);
+
 public:
   HttpResponseCommand(int32_t cuid,
 		      const SharedHandle<Request>& req,

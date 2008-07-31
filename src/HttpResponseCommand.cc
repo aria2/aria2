@@ -110,7 +110,8 @@ bool HttpResponseCommand::executeInternal()
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
 		      _requestGroup->getFilePath().c_str()).str());
     }
-    if(totalLength == 0 || httpResponse->isTransferEncodingSpecified()) {
+    if(totalLength == 0 || httpResponse->isTransferEncodingSpecified() ||
+       shouldInflateContentEncoding(httpResponse)) {
       // we ignore content-length when transfer-encoding is set
       dctx->setTotalLength(0);
       return handleOtherEncoding(httpResponse);
@@ -123,6 +124,23 @@ bool HttpResponseCommand::executeInternal()
     e->commands.push_back(createHttpDownloadCommand(httpResponse));
     return true;
   }
+}
+
+bool HttpResponseCommand::shouldInflateContentEncoding
+(const SharedHandle<HttpResponse>& httpResponse)
+{
+  // Basically, on the fly inflation cannot be made with segment download,
+  // because in each segment we don't know where the date should be written.
+  // So turn off segmented downloading.
+  // Meanwhile, Some server returns content-encoding: gzip for .tgz files.
+  // Those files tend to be large enough to speed up using segmented
+  // downloading. Therefore, I choose threshold size to determine on the fly
+  // inflation should be done. I expect gzipped content such as metalink xml
+  // files tend to be smaller than the threshold size, those contents are
+  // inflated on the fly properly.
+  return httpResponse->isContentEncodingSpecified() &&
+    httpResponse->getEntityLength() <=
+    static_cast<uint64_t>(e->option->getAsInt(PREF_SEGMENT_SIZE));
 }
 
 bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpResponse)
@@ -255,7 +273,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
     (e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   command->setTransferEncodingDecoder(transferEncodingDecoder);
 
-  if(!contentEncodingDecoder.isNull()) {
+  if(shouldInflateContentEncoding(httpResponse)) {
     command->setContentEncodingDecoder(contentEncodingDecoder);
     // Since the compressed file's length are returned in the response header
     // and the decompressed file size is unknown at this point, disable file

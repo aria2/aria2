@@ -165,6 +165,8 @@ bool DownloadCommand::executeInternal() {
   if((!_transferEncodingDecoder.isNull() &&
       _transferEncodingDecoder->finished())
      || (_transferEncodingDecoder.isNull() && segment->complete())
+     || (!_contentEncodingDecoder.isNull() &&
+	 _contentEncodingDecoder->finished())
      || bufSize == 0) {
     logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
 

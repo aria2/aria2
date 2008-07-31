@@ -1,5 +1,19 @@
 2008-07-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed broken gzip inflation.
+	Turn off segmented downloading if gzip content is smaller than or equal
+	to 1MiB and inflate the data on the fly, because HTTP response header
+	doesn't contain the length of inflated file we can't determin where
+	the chunk of data should be written.
+	On the other hand, if gzip content is larger than 1MB, then turn off
+	on the fly inflation, because some servers returns "content-type: gzip"
+	for *.tgz, *.gz files.
+	* src/DownloadCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+
+2008-07-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Applied tizianomueller's patch to fix compile error.
 	* test/BitfieldManTest.cc
 	* test/BtRequestMessageTest.cc
