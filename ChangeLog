@@ -1,3 +1,10 @@
+2008-08-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that causes segmentaion fault when resuming download
+	using metalink without size tag. Reproducible only using HTTP URI.
+	* src/HttpResponseCommand.cc
+	* src/FtpNegotiationCommand.cc
+
 2008-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Release 0.15.1

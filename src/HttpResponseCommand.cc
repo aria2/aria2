@@ -95,7 +95,17 @@ bool HttpResponseCommand::executeInternal()
   }
 
   if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
-    _requestGroup->removeURIWhoseHostnameIs(_requestGroup->searchServerHost(cuid)->getHostname());
+    // Query by hostname. Searching by CUID may returns NULL.
+    // In case when resuming download, ServerHost is registered with CUID A.
+    // Then if requested range is not equal to saved one,
+    // StreamFileAllocationEntry is created with _nextCommand NULL and
+    // _currentRequest not NULL. This results creating new command CUID, say
+    // B and same URI. So searching ServerHost by CUID B fails.
+    SharedHandle<ServerHost> sv =
+      _requestGroup->searchServerHost(req->getHost());
+    if(!sv.isNull()) {
+      _requestGroup->removeURIWhoseHostnameIs(sv->getHostname());
+    }
   }
   if(_requestGroup->getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();

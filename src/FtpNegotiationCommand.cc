@@ -88,7 +88,11 @@ bool FtpNegotiationCommand::executeInternal() {
     command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
-      _requestGroup->removeURIWhoseHostnameIs(_requestGroup->searchServerHost(cuid)->getHostname());
+      SharedHandle<ServerHost> sv =
+	_requestGroup->searchServerHost(req->getHost());
+      if(!sv.isNull()) {
+	_requestGroup->removeURIWhoseHostnameIs(sv->getHostname());
+      }
     }
     e->commands.push_back(command);
     return true;
