@@ -1,5 +1,10 @@
 2008-08-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Bump up version number to 0.15.1+1
+	* configure.ac
+
+2008-08-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that causes segmentaion fault when resuming download
 	using metalink without size tag. Reproducible only using HTTP URI.
 	* src/HttpResponseCommand.cc
