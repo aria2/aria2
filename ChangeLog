@@ -1,5 +1,9 @@
 2008-08-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* Release 0.15.1+1
+	
+2008-08-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.15.1+1
 	* configure.ac
 
