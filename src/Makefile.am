@@ -189,7 +189,12 @@ SRCS =  Socket.h\
 	RarestPieceSelector.cc RarestPieceSelector.h\
 	Decoder.h\
 	ChunkedDecoder.cc ChunkedDecoder.h\
-	Signature.cc Signature.h
+	Signature.cc Signature.h\
+	ServerStat.cc ServerStat.h\
+	ServerStatMan.cc ServerStatMan.h\
+	URISelector.h\
+	InOrderURISelector.cc InOrderURISelector.h\
+	ServerStatURISelector.cc ServerStatURISelector.h
 
 if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h

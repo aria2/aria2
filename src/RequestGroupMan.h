@@ -49,6 +49,9 @@ class RequestGroup;
 class Command;
 class Logger;
 class DownloadResult;
+class ServerStatMan;
+class ServerStat;
+class Option;
 
 class RequestGroupMan {
 private:
@@ -59,13 +62,20 @@ private:
   unsigned int _maxSimultaneousDownloads;
   int32_t _gidCounter;
 
+  const Option* _option;
+
+  SharedHandle<ServerStatMan> _serverStatMan;
+
   std::string
   formatDownloadResult(const std::string& status,
 		       const SharedHandle<DownloadResult>& downloadResult) const;
 
+  void configureRequestGroup
+  (const SharedHandle<RequestGroup>& requestGroup) const;
 public:
   RequestGroupMan(const std::deque<SharedHandle<RequestGroup> >& requestGroups,
-		  unsigned int maxSimultaneousDownloads = 1);
+		  unsigned int maxSimultaneousDownloads,
+		  const Option* option);
 
   bool downloadFinished();
 
@@ -126,6 +136,13 @@ public:
   const std::deque<SharedHandle<DownloadResult> >&
   getDownloadResults() const;
 
+  SharedHandle<ServerStat> findServerStat(const std::string& hostname,
+					  const std::string& protocol) const;
+
+  bool addServerStat(const SharedHandle<ServerStat>& serverStat);
+
+
+  void updateServerStat();
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

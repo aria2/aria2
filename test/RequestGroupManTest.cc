@@ -6,6 +6,7 @@
 #include "Option.h"
 #include "DownloadResult.h"
 #include "FileEntry.h"
+#include "ServerStatMan.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -53,7 +54,7 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   rgs.push_back(rg1);
   rgs.push_back(rg2);
 
-  RequestGroupMan gm(rgs, 1);
+  RequestGroupMan gm(rgs, 1, &option);
   
   CPPUNIT_ASSERT(gm.isSameFileBeingDownloaded(rg1.get()));
 

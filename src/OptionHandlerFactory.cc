@@ -143,6 +143,13 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 						   &params[arrayLength(params)]))));
   }
   handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_SEED_UNVERIFIED)));
+  {
+    const std::string params[] = { V_INORDER, V_FEEDBACK };
+    handlers.push_back(SH(new ParameterOptionHandler
+			  (PREF_URI_SELECTOR,
+			   std::deque<std::string>
+			   (&params[0], &params[arrayLength(params)]))));
+  }
   return handlers;
 }
 

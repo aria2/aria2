@@ -88,7 +88,7 @@ DownloadCommand::DownloadCommand(int cuid,
 #endif // ENABLE_MESSAGE_DIGEST
   peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
   if(peerStat.isNull()) {
-    peerStat.reset(new PeerStat(cuid));
+    peerStat.reset(new PeerStat(cuid, req->getHost(), req->getProtocol()));
     _requestGroup->getSegmentMan()->registerPeerStat(peerStat);
   }
   peerStat->downloadStart();

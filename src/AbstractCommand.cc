@@ -55,6 +55,8 @@
 #include "message.h"
 #include "prefs.h"
 #include "StringFormat.h"
+#include "ServerStat.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -136,6 +138,16 @@ bool AbstractCommand::execute() {
       return executeInternal();
     } else {
       if(checkPoint.elapsed(timeout)) {
+	// timeout triggers ServerStat error state.
+	SharedHandle<ServerStat> ss =
+	  e->_requestGroupMan->findServerStat(req->getHost(),
+					      req->getProtocol());
+	if(ss.isNull()) {
+	  ss.reset(new ServerStat(req->getHost(), req->getProtocol()));
+	  e->_requestGroupMan->addServerStat(ss);
+	}
+	ss->setError();
+
 	throw DlRetryEx(EX_TIME_OUT);
       }
       e->commands.push_back(this);

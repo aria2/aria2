@@ -51,6 +51,7 @@
 #include "Util.h"
 #include "a2functional.h"
 #include "DlAbortEx.h"
+#include "ServerStatMan.h"
 #include <signal.h>
 #include <cstring>
 #include <algorithm>
@@ -783,6 +784,7 @@ void DownloadEngine::calculateStatistics()
 
 void DownloadEngine::onEndOfRun()
 {
+  _requestGroupMan->updateServerStat();
   _requestGroupMan->closeFile();
   _requestGroupMan->save();
 }

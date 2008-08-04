@@ -135,6 +135,10 @@ const std::string V_INFO("info");
 const std::string V_NOTICE("notice");
 const std::string V_WARN("warn");
 const std::string V_ERROR("error");
+// value: inorder | feedback
+const std::string PREF_URI_SELECTOR("uri-selector");
+const std::string V_INORDER("inorder");
+const std::string V_FEEDBACK("feedback");
 
 /**
  * FTP related preferences

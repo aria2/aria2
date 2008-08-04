@@ -51,6 +51,7 @@
 #include "HaveEraseCommand.h"
 #include "TimedHaltCommand.h"
 #include "DownloadResult.h"
+#include "ServerStatMan.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -80,7 +81,8 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   DownloadEngineHandle e(new DownloadEngine());
   e->option = op;
   RequestGroupManHandle
-    requestGroupMan(new RequestGroupMan(workingSet, MAX_CONCURRENT_DOWNLOADS));
+    requestGroupMan(new RequestGroupMan(workingSet, MAX_CONCURRENT_DOWNLOADS,
+					op));
   requestGroupMan->addReservedGroup(reservedSet);
   e->_requestGroupMan = requestGroupMan;
   e->_fileAllocationMan.reset(new FileAllocationMan());

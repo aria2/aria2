@@ -72,6 +72,8 @@
 #include "FileAllocationIterator.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include "URISelector.h"
+#include "InOrderURISelector.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -120,6 +122,7 @@ RequestGroup::RequestGroup(const Option* option,
   _haltRequested(false),
   _forceHaltRequested(false),
   _singleHostMultiConnectionEnabled(true),
+  _uriSelector(new InOrderURISelector()),
   _option(option),
   _logger(LogFactory::getInstance())
 {
@@ -498,8 +501,8 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 				     const std::string& method)
 {
   std::deque<std::string> pendingURIs;
-  for(;!_uris.empty() && numCommand--; _uris.pop_front()) {
-    std::string uri = _uris.front();
+  for(; !_uris.empty() && numCommand--; ) {    
+    std::string uri = _uriSelector->select(_uris);
     RequestHandle req(new Request());
     if(req->setUrl(uri)) {
       ServerHostHandle sv;
@@ -1005,6 +1008,11 @@ void RequestGroup::removeAcceptType(const std::string& type)
 {
   _acceptTypes.erase(std::remove(_acceptTypes.begin(), _acceptTypes.end(), type),
 		     _acceptTypes.end());
+}
+
+void RequestGroup::setURISelector(const SharedHandle<URISelector>& uriSelector)
+{
+  _uriSelector = uriSelector;
 }
 
 } // namespace aria2

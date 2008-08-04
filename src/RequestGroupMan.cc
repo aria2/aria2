@@ -43,6 +43,14 @@
 #include "a2functional.h"
 #include "DownloadResult.h"
 #include "DownloadContext.h"
+#include "ServerStatMan.h"
+#include "ServerStat.h"
+#include "PeerStat.h"
+#include "SegmentMan.h"
+#include "ServerStatURISelector.h"
+#include "InOrderURISelector.h"
+#include "Option.h"
+#include "prefs.h"
 #include <iomanip>
 #include <sstream>
 #include <ostream>
@@ -52,11 +60,14 @@
 namespace aria2 {
 
 RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
-				 unsigned int maxSimultaneousDownloads):
+				 unsigned int maxSimultaneousDownloads,
+				 const Option* option):
   _requestGroups(requestGroups),
   _logger(LogFactory::getInstance()),
   _maxSimultaneousDownloads(maxSimultaneousDownloads),
-  _gidCounter(0) {}
+  _gidCounter(0),
+  _option(option),
+  _serverStatMan(new ServerStatMan()) {}
 
 bool RequestGroupMan::downloadFinished()
 {
@@ -168,6 +179,41 @@ public:
   }
 };
 
+class CollectServerStat {
+private:
+  RequestGroupMan* _requestGroupMan;
+public:
+  CollectServerStat(RequestGroupMan* requestGroupMan):
+    _requestGroupMan(requestGroupMan) {}
+
+  void operator()(const SharedHandle<RequestGroup>& group)
+  {
+    if(group->getNumCommand() == 0) {
+      // Collect statistics during download in PeerStats and update/register
+      // ServerStatMan
+      if(!group->getSegmentMan().isNull()) {
+	const std::deque<SharedHandle<PeerStat> >& peerStats =
+	  group->getSegmentMan()->getPeerStats();
+	for(std::deque<SharedHandle<PeerStat> >::const_iterator i =
+	      peerStats.begin(); i != peerStats.end(); ++i) {
+	  if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
+	    continue;
+	  }
+	  SharedHandle<ServerStat> ss =
+	    _requestGroupMan->findServerStat((*i)->getHostname(),
+					     (*i)->getProtocol());
+	  if(ss.isNull()) {
+	    ss.reset(new ServerStat((*i)->getHostname(),
+				    (*i)->getProtocol()));
+	    _requestGroupMan->addServerStat(ss);
+	  }
+	  ss->updateDownloadSpeed((*i)->getAvgDownloadSpeed());
+	}
+      }
+    }    
+  }
+};
+
 class FindStoppedRequestGroup {
 public:
   bool operator()(const SharedHandle<RequestGroup>& group) {
@@ -175,9 +221,17 @@ public:
   }
 };
 
+void RequestGroupMan::updateServerStat()
+{
+  std::for_each(_requestGroups.begin(), _requestGroups.end(),
+		CollectServerStat(this));
+}
+
 void RequestGroupMan::removeStoppedGroup()
 {
   size_t numPrev = _requestGroups.size();
+
+  updateServerStat();
 
   std::for_each(_requestGroups.begin(), _requestGroups.end(),
 		ProcessStoppedRequestGroup(_reservedGroups, _downloadResults));
@@ -190,6 +244,19 @@ void RequestGroupMan::removeStoppedGroup()
   size_t numRemoved = numPrev-_requestGroups.size();
   if(numRemoved > 0) {
     _logger->debug("%zu RequestGroup(s) deleted.", numRemoved);
+  }
+}
+
+void RequestGroupMan::configureRequestGroup
+(const SharedHandle<RequestGroup>& requestGroup) const
+{
+  const std::string& uriSelectorValue = _option->get(PREF_URI_SELECTOR);
+  if(uriSelectorValue == V_FEEDBACK) {
+    requestGroup->setURISelector
+      (SharedHandle<URISelector>(new ServerStatURISelector(_serverStatMan)));
+  } else if(uriSelectorValue == V_INORDER) {
+    requestGroup->setURISelector
+      (SharedHandle<URISelector>(new InOrderURISelector()));
   }
 }
 
@@ -207,6 +274,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 	temp.push_back(groupToAdd);
 	continue;
       }
+      configureRequestGroup(groupToAdd);
       Commands commands;
       groupToAdd->createInitialCommand(commands, e);
       _requestGroups.push_back(groupToAdd);
@@ -231,6 +299,7 @@ void RequestGroupMan::getInitialCommands(std::deque<Command*>& commands,
 	itr != _requestGroups.end();) {
     try {
       if((*itr)->isDependencyResolved()) {
+	configureRequestGroup(*itr);
 	(*itr)->createInitialCommand(commands, e);
 	++itr;
       } else {
@@ -394,6 +463,18 @@ const std::deque<SharedHandle<DownloadResult> >&
 RequestGroupMan::getDownloadResults() const
 {
   return _downloadResults;
+}
+
+SharedHandle<ServerStat>
+RequestGroupMan::findServerStat(const std::string& hostname,
+				const std::string& protocol) const
+{
+  return _serverStatMan->find(hostname, protocol);
+}
+
+bool RequestGroupMan::addServerStat(const SharedHandle<ServerStat>& serverStat)
+{
+  return _serverStatMan->add(serverStat);
 }
 
 } // namespace aria2

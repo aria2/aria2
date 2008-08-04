@@ -139,6 +139,10 @@ extern const std::string V_INFO;
 extern const std::string V_NOTICE;
 extern const std::string V_WARN;
 extern const std::string V_ERROR;
+// value: inorder | feedback
+extern const std::string PREF_URI_SELECTOR;
+extern const std::string V_INORDER;
+extern const std::string V_FEEDBACK;
 
 /**
  * FTP related preferences

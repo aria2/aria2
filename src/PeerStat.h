@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SpeedCalc.h"
 #include "SharedHandle.h"
+#include <string>
 
 namespace aria2 {
 
@@ -50,6 +51,8 @@ public:
   };
 private:
   int32_t cuid;
+  std::string _hostname;
+  std::string _protocol;
   SpeedCalc downloadSpeed;
   SpeedCalc uploadSpeed;
   Time downloadStartTime;
@@ -57,6 +60,15 @@ private:
   unsigned int _avgDownloadSpeed;
   unsigned int _avgUploadSpeed;
 public:
+
+  PeerStat(int32_t cuid, const std::string& hostname,
+	   const::std::string& protocol):
+    cuid(cuid),
+    _hostname(hostname),
+    _protocol(protocol),
+    status(PeerStat::IDLE),
+    _avgDownloadSpeed(0),
+    _avgUploadSpeed(0) {}
 
   PeerStat(int32_t cuid = 0):cuid(cuid), status(PeerStat::IDLE),
 			     _avgDownloadSpeed(0),
@@ -149,6 +161,16 @@ public:
 
   int32_t getCuid() const {
     return cuid;
+  }
+
+  const std::string& getHostname() const
+  {
+    return _hostname;
+  }
+
+  const std::string& getProtocol() const
+  {
+    return _protocol;
   }
 };
 

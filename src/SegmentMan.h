@@ -171,6 +171,9 @@ public:
    */
   SharedHandle<PeerStat> getPeerStat(int32_t cuid) const;
 
+
+  const std::deque<SharedHandle<PeerStat> >& getPeerStats() const;
+
   /**
    * Returns current download speed in bytes per sec. 
    */

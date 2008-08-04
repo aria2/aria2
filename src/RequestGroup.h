@@ -60,6 +60,7 @@ class RequestGroup;
 class CheckIntegrityEntry;
 class DownloadResult;
 class ServerHost;
+class URISelector;
 
 class RequestGroup {
 private:
@@ -111,6 +112,8 @@ private:
   std::deque<std::string> _acceptFeatures;
 
   std::deque<std::string> _acceptTypes;
+
+  SharedHandle<URISelector> _uriSelector;
 
   const Option* _option;
 
@@ -354,6 +357,8 @@ public:
   void removeAcceptType(const std::string& type);
 
   static const std::string ACCEPT_METALINK;
+
+  void setURISelector(const SharedHandle<URISelector>& uriSelector);
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

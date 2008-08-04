@@ -1,5 +1,46 @@
 2008-08-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Implemented download speed based URI selection algorithm.
+	Introduced new option --uri-selector.
+	If --uri-selector=feedback is given, aria2 uses download speed observed
+	in the previous downloads and chooses fastest server in the URI list.
+	Currently at most 10 URIs are considered to introduce randomeness for
+	finding better servers. The speed is average download speed in the
+	downloads.
+	On the other hand, if --uri-selector=inorder is given, which is default,
+	URI is tried in order in URI list.
+	The usage text for the new option has not been written yet.
+	* src/AbstractCommand.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngineFactory.cc
+	* src/InOrderURISelector.cc
+	* src/InOrderURISelector.h
+	* src/OptionHandlerFactory.cc
+	* src/PeerStat.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* src/ServerStat.cc
+	* src/ServerStat.h
+	* src/ServerStatMan.cc
+	* src/ServerStatMan.h
+	* src/ServerStatURISelector.cc
+	* src/ServerStatURISelector.h
+	* src/URISelector.h
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* test/InOrderURISelectorTest.cc
+	* test/RequestGroupManTest.cc
+	* test/ServerStatManTest.cc
+	* test/ServerStatURISelectorTest.cc
+
+2008-08-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* Release 0.15.1+2
 
 2008-08-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
