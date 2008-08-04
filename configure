@@ -2750,7 +2750,7 @@ fi
 
 # Check whether --enable-bittorrent was given.
 if test "${enable_bittorrent+set}" = set; then
-  enableval=$enable_bittorrent; enable_bittorrent=$withval
+  enableval=$enable_bittorrent; enable_bittorrent=$enableval
 else
   enable_bittorrent=yes
 fi
@@ -2758,7 +2758,7 @@ fi
 
 # Check whether --enable-metalink was given.
 if test "${enable_metalink+set}" = set; then
-  enableval=$enable_metalink; enable_metalink=$withval
+  enableval=$enable_metalink; enable_metalink=$enableval
 else
   enable_metalink=yes
 fi
@@ -2766,7 +2766,7 @@ fi
 
 # Check whether --enable-epoll was given.
 if test "${enable_epoll+set}" = set; then
-  enableval=$enable_epoll; enable_epoll=$withval
+  enableval=$enable_epoll; enable_epoll=$enableval
 else
   enable_epoll=yes
 fi
