@@ -49,12 +49,10 @@ private:
 
   std::string _buf;
 
-  size_t _chunkSize;
+  uint64_t _chunkSize;
 
   STATE _state;
   
-  static const size_t MAX_CHUNK_SIZE = 1024*1024;
-
   static const std::string NAME;
 
 public:

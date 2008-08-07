@@ -49,7 +49,7 @@ ChunkedDecoder::~ChunkedDecoder() {}
 
 void ChunkedDecoder::init() {}
 
-static bool readChunkSize(size_t& chunkSize, std::string& in)
+static bool readChunkSize(uint64_t& chunkSize, std::string& in)
 {
   std::string::size_type crlfPos = in.find(A2STR::CRLF);
   if(crlfPos == std::string::npos) {
@@ -59,14 +59,14 @@ static bool readChunkSize(size_t& chunkSize, std::string& in)
   if(extPos == std::string::npos || crlfPos < extPos) {
     extPos = crlfPos;
   }
-  chunkSize = Util::parseUInt(in.substr(0, extPos), 16);
+  chunkSize = Util::parseULLInt(in.substr(0, extPos), 16);
   in.erase(0, crlfPos+2);
   return true;
 }
 
-static bool readData(std::string& out, size_t& chunkSize, std::string& in)
+static bool readData(std::string& out, uint64_t& chunkSize, std::string& in)
 {
-  size_t readlen = std::min(chunkSize, in.size());
+  uint64_t readlen = std::min(chunkSize, static_cast<uint64_t>(in.size()));
   out.append(in.begin(), in.begin()+readlen);
   in.erase(0, readlen);
   chunkSize -= readlen;
@@ -94,10 +94,6 @@ std::string ChunkedDecoder::decode(const unsigned char* inbuf, size_t inlen)
 	  _state = STREAM_END;
 	  break;
 	} else {
-	  if(_chunkSize > MAX_CHUNK_SIZE) {
-	    throw DlAbortEx
-	      (StringFormat(EX_TOO_LARGE_CHUNK, _chunkSize).str());
-	  }
 	  _state = READ_DATA;
 	}
       } else {
