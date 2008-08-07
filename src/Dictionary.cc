@@ -67,8 +67,12 @@ void Dictionary::put(const std::string& name, MetaEntry* entry) {
 
 void Dictionary::remove(const std::string& name)
 {
-  table.erase(name);
-  order.erase(std::remove(order.begin(), order.end(), name), order.end());
+  std::map<std::string, MetaEntry*>::iterator i = table.find(name);
+  if(i != table.end()) {
+    delete i->second;
+    table.erase(i);
+    order.erase(std::remove(order.begin(), order.end(), name), order.end());
+  }
 }
 
 void Dictionary::accept(MetaEntryVisitor* v) const {
