@@ -1,5 +1,10 @@
 2008-08-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added AC_C_BIGENDIAN
+	* src/configure.ac
+
+2008-08-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Limited numCommand less than or equal to the number of piece.
 	* src/RequestGroup.cc
 
