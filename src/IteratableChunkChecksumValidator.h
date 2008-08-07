@@ -50,7 +50,7 @@ class IteratableChunkChecksumValidator:public IteratableValidator
 private:
   SharedHandle<DownloadContext> _dctx;
   SharedHandle<PieceStorage> _pieceStorage;
-  BitfieldMan* _bitfield;
+  SharedHandle<BitfieldMan> _bitfield;
   size_t _currentIndex;
   Logger* _logger;
   SharedHandle<MessageDigestContext> _ctx;
