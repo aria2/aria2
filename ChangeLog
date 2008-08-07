@@ -1,5 +1,10 @@
 2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed wrong argument passing to BitfieldMan::isBitSet()
+	* src/DefaultPieceStorage.cc
+	
+2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Initialized _directIOAllowed
 	* src/MultiDiskAdaptor.cc
 
