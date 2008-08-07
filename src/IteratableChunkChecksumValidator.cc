@@ -66,7 +66,11 @@ IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
 
 IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
 {
+#ifdef HAVE_POSIX_MEMALIGN
+  free(_buffer);
+#else // !HAVE_POSIX_MEMALIGN
   delete [] _buffer;
+#endif // !HAVE_POSIX_MEMALIGN
 }
 
 
@@ -115,10 +119,12 @@ std::string IteratableChunkChecksumValidator::calculateActualChecksum()
 void IteratableChunkChecksumValidator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
+  free(_buffer);
   _buffer = (unsigned char*)Util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
-#else
+#else // !HAVE_POSIX_MEMALIGN
+  delete [] _buffer;
   _buffer = new unsigned char[BUFSIZE];
-#endif // HAVE_POSIX_MEMALIGN
+#endif // !HAVE_POSIX_MEMALIGN
   if(_dctx->getFileEntries().size() == 1) {
     _pieceStorage->getDiskAdaptor()->enableDirectIO();
   }

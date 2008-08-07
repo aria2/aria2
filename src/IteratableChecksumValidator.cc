@@ -59,7 +59,11 @@ IteratableChecksumValidator::IteratableChecksumValidator(const SingleFileDownloa
 
 IteratableChecksumValidator::~IteratableChecksumValidator()
 {
+#ifdef HAVE_POSIX_MEMALIGN
+  free(_buffer);
+#else // !HAVE_POSIX_MEMALIGN
   delete [] _buffer;
+#endif // !HAVE_POSIX_MEMALIGN
 }
 
 void IteratableChecksumValidator::validateChunk()
@@ -100,10 +104,12 @@ uint64_t IteratableChecksumValidator::getTotalLength() const
 void IteratableChecksumValidator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
+  free(_buffer);
   _buffer = (unsigned char*)Util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
-#else
+#else // !HAVE_POSIX_MEMALIGN
+  delete [] _buffer;
   _buffer = new unsigned char[BUFSIZE];
-#endif // HAVE_POSIX_MEMALIGN
+#endif // !HAVE_POSIX_MEMALIGN
   _pieceStorage->getDiskAdaptor()->enableDirectIO();
   _currentOffset = 0;
   _ctx.reset(new MessageDigestContext());

@@ -1,5 +1,11 @@
 2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed unmatched malloc/free.
+	* src/IteratableChunkChecksumValidator.cc
+	* src/IteratableChecksumValidator.cc
+
+2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed max chunk size check. This change fixes BUG#2040169
 	* src/ChunkedDecoder.cc
 	* src/ChunkedDecoder.h
