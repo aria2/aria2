@@ -95,7 +95,7 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
 }
 
 void DefaultPieceStorageTest::testGetMissingFastPiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(btContext, option, false);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -118,19 +118,14 @@ void DefaultPieceStorageTest::testHasMissingPiece() {
 }
 
 void DefaultPieceStorageTest::testCompletePiece() {
-  DefaultPieceStorage pss(btContext, option, true);
+  DefaultPieceStorage pss(btContext, option, false);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
 
   SharedHandle<Piece> piece = pss.getMissingPiece(peer);
-#ifdef __MINGW32__
-  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
-		       piece->toString());
-#else // !__MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
 		       piece->toString());
-#endif // !__MINGW32__
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, pss.getCompletedLength());
 

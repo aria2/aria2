@@ -1,5 +1,11 @@
 2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Eliminated randomness from the test case. Removed #ifdef __MINGW32
+	directive.
+	* test/DefaultPieceStorageTest.cc
+
+2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed memory leak in test code
 	* test/AnnounceListTest.cc
 	* test/DefaultPeerListProcessorTest.cc
