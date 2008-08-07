@@ -1,6 +1,11 @@
 2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed memory leak
+	* src/GZipDecoder.cc
+
+2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed memory leak
 	* src/MetalinkParserStateMachine.cc
 
 2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
