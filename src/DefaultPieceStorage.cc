@@ -189,7 +189,7 @@ bool DefaultPieceStorage::getMissingFastPieceIndex(size_t& index,
 			     bitfieldMan->getTotalLength());
     for(std::deque<size_t>::const_iterator itr = peer->getPeerAllowedIndexSet().begin();
 	itr != peer->getPeerAllowedIndexSet().end(); itr++) {
-      if(!bitfieldMan->isBitSet(index) && peer->hasPiece(*itr)) {
+      if(!bitfieldMan->isBitSet(*itr) && peer->hasPiece(*itr)) {
 	tempBitfield.setBit(*itr);
       }
     }

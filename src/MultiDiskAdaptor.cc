@@ -145,7 +145,9 @@ void DiskWriterEntry::disableDirectIO()
 }
 
 MultiDiskAdaptor::MultiDiskAdaptor():
-  pieceLength(0), _maxOpenFiles(DEFAULT_MAX_OPEN_FILES) {}
+  pieceLength(0),
+  _maxOpenFiles(DEFAULT_MAX_OPEN_FILES),
+  _directIOAllowed(false) {}
 
 MultiDiskAdaptor::~MultiDiskAdaptor() {}
 

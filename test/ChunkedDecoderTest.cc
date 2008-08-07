@@ -110,16 +110,24 @@ void ChunkedDecoderTest::testDecode()
 
 void ChunkedDecoderTest::testDecode_tooLargeChunkSize()
 {
-  // Feed chunkSize == ChunkedDecoder::MAX_CHUNK_SIZE + 1 == 0x100001.
-  std::basic_string<unsigned char> msg =
-    reinterpret_cast<const unsigned char*>("100001\r\n");
-
-  ChunkedDecoder decoder;
-  try {
+  // chunkSize should be under 2^64-1
+  {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("ffffffffffffffff\r\n");
+    ChunkedDecoder decoder;
     decoder.decode(msg.c_str(), msg.size());
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx& e) {
-    // success
+  }
+  // chunkSize 2^64 causes error
+  {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("10000000000000000\r\n");
+    ChunkedDecoder decoder;
+    try {
+      decoder.decode(msg.c_str(), msg.size());
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(DlAbortEx& e) {
+      // success
+    }
   }
 }
 

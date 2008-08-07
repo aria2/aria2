@@ -49,6 +49,8 @@ GZipDecoder::~GZipDecoder()
 
 void GZipDecoder::init()
 {
+  _finished = false;
+  release();
   _strm = new z_stream();
   _strm->zalloc = Z_NULL;
   _strm->zfree = Z_NULL;
@@ -66,6 +68,7 @@ void GZipDecoder::release()
 {
   if(_strm) {
     inflateEnd(_strm);
+    delete _strm;
     _strm = 0;
   }
 }

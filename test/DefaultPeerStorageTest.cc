@@ -35,6 +35,10 @@ public:
     btRuntime.reset(new BtRuntime());
   }
 
+  void tearDown() {
+    delete option;
+  }
+
   void testCountPeer();
   void testDeleteUnusedPeer();
   void testAddPeer();
