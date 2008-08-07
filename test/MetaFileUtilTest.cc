@@ -28,9 +28,9 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( MetaFileUtilTest );
 
 void MetaFileUtilTest::testParseMetaFile() {
-  MetaEntry* entry = MetaFileUtil::parseMetaFile("test.torrent");
-  Dictionary* d = dynamic_cast<Dictionary*>(entry);
-  CPPUNIT_ASSERT(d != NULL);
+  SharedHandle<MetaEntry> entry(MetaFileUtil::parseMetaFile("test.torrent"));
+  SharedHandle<Dictionary> d = dynamic_pointer_cast<Dictionary>(entry);
+  CPPUNIT_ASSERT(!d.isNull());
 }
 
 void MetaFileUtilTest::testBdecoding() {

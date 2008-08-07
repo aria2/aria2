@@ -1,5 +1,13 @@
 2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed memory leak in test code
+	* test/AnnounceListTest.cc
+	* test/DefaultPeerListProcessorTest.cc
+	* test/DefaultPeerStorageTest.cc
+	* test/MetaFileUtilTest.cc
+	
+2008-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed wrong argument passing to BitfieldMan::isBitSet()
 	* src/DefaultPieceStorage.cc
 	
