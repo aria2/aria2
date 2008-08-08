@@ -78,6 +78,7 @@ private:
 			size_t hashLength);
   void extractFileEntries(const Dictionary* infoDic,
 			  const std::string& defaultName,
+			  const std::string& overrideName,
 			  const std::deque<std::string>& urlList);
   void extractAnnounce(const Data* announceData);
   void extractAnnounceList(const List* announceListData);
@@ -86,7 +87,9 @@ private:
 
   void extractNodes(const List* nodes);
 
-  void processRootDictionary(const Dictionary* rootDic, const std::string& defaultName);
+  void processRootDictionary(const Dictionary* rootDic,
+			     const std::string& defaultName,
+			     const std::string& overrideName);
 
  public:
   DefaultBtContext();
@@ -115,15 +118,19 @@ private:
 
   virtual std::deque<SharedHandle<AnnounceTier> > getAnnounceTiers() const;
 
-  virtual void load(const std::string& torrentFile);
+  virtual void load(const std::string& torrentFile,
+		    const std::string& overrideName = "");
 
   void loadFromMemory(const unsigned char* content, size_t length,
-		      const std::string& defaultName);
+		      const std::string& defaultName,
+		      const std::string& overrideName = "");
 
-  void loadFromMemory(const std::string& context, const std::string& defaultName)
+  void loadFromMemory(const std::string& context,
+		      const std::string& defaultName,
+		      const std::string& overrideName = "")
   {
     loadFromMemory(reinterpret_cast<const unsigned char*>(context.c_str()),
-		   context.size(), defaultName);
+		   context.size(), defaultName, overrideName);
   }
 
   virtual const std::string& getName() const;

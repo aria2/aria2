@@ -114,12 +114,18 @@ void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
 
 void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 					  const std::string& defaultName,
+					  const std::string& overrideName,
 					  const std::deque<std::string>& urlList) {
-  const Data* nameData = dynamic_cast<const Data*>(infoDic->get(BtContext::C_NAME));
-  if(nameData) {
-    name = nameData->toString();
+  if(overrideName.empty()) {
+    const Data* nameData =
+      dynamic_cast<const Data*>(infoDic->get(BtContext::C_NAME));
+    if(nameData) {
+      name = nameData->toString();
+    } else {
+      name = File(defaultName).getBasename()+".file";
+    }
   } else {
-    name = File(defaultName).getBasename()+".file";
+    name = overrideName;
   }
   const List* files = dynamic_cast<const List*>(infoDic->get(BtContext::C_FILES));
   if(files) {
@@ -271,7 +277,8 @@ void DefaultBtContext::extractNodes(const List* nodes)
 
 void DefaultBtContext::loadFromMemory(const unsigned char* content,
 				      size_t length,
-				      const std::string& defaultName)
+				      const std::string& defaultName,
+				      const std::string& overrideName)
 {
   SharedHandle<MetaEntry> rootEntry(MetaFileUtil::bdecoding(content, length));
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
@@ -279,20 +286,23 @@ void DefaultBtContext::loadFromMemory(const unsigned char* content,
     throw DlAbortEx
       (StringFormat("torrent file does not contain a root dictionary .").str());
   }
-  processRootDictionary(rootDic, defaultName);
+  processRootDictionary(rootDic, defaultName, overrideName);
 }
 
-void DefaultBtContext::load(const std::string& torrentFile) {
+void DefaultBtContext::load(const std::string& torrentFile,
+			    const std::string& overrideName) {
   SharedHandle<MetaEntry> rootEntry(MetaFileUtil::parseMetaFile(torrentFile));
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
   if(!rootDic) {
     throw DlAbortEx
       (StringFormat("torrent file does not contain a root dictionary .").str());
   }
-  processRootDictionary(rootDic, torrentFile);
+  processRootDictionary(rootDic, torrentFile, overrideName);
 }
 
-void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const std::string& defaultName)
+void DefaultBtContext::processRootDictionary(const Dictionary* rootDic,
+					     const std::string& defaultName,
+					     const std::string& overrideName)
 {
   clear();
   const Dictionary* infoDic =
@@ -347,7 +357,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   std::deque<std::string> urlList;
   extractUrlList(urlList, rootDic->get(BtContext::C_URL_LIST));
   // retrieve file entries
-  extractFileEntries(infoDic, defaultName, urlList);
+  extractFileEntries(infoDic, defaultName, overrideName, urlList);
   if((totalLength+pieceLength-1)/pieceLength != numPieces) {
     throw DlAbortEx("Too few/many piece hash.");
   }

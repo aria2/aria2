@@ -25,7 +25,7 @@ class BtDependencyTest:public CppUnit::TestFixture {
   {
     SharedHandle<RequestGroup> dependant(new RequestGroup(option, std::deque<std::string>()));
     SharedHandle<SingleFileDownloadContext> dctx
-      (new SingleFileDownloadContext(0, 0, ""));
+      (new SingleFileDownloadContext(0, 0, "outfile.path"));
     dctx->setDir("/tmp");
     dependant->setDownloadContext(dctx);
     return dependant;
@@ -73,7 +73,8 @@ void BtDependencyTest::testResolve()
   SharedHandle<BtContext> btContext
     (dynamic_pointer_cast<BtContext>(dependant->getDownloadContext()));
   CPPUNIT_ASSERT(!btContext.isNull());
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-test"), btContext->getActualBasePath());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
+		       btContext->getActualBasePath());
 }
 
 void BtDependencyTest::testResolve_loadError()
@@ -88,9 +89,11 @@ void BtDependencyTest::testResolve_loadError()
     CPPUNIT_ASSERT(dep.resolve());
     
     SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>(dependant->getDownloadContext()));
+      (dynamic_pointer_cast<SingleFileDownloadContext>
+       (dependant->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/index.html"), dctx->getActualBasePath());
+    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
+			 dctx->getActualBasePath());
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
     CPPUNIT_FAIL("an exception was thrown.");
@@ -107,9 +110,11 @@ void BtDependencyTest::testResolve_dependeeFailure()
   CPPUNIT_ASSERT(dep.resolve());
   
   SharedHandle<SingleFileDownloadContext> dctx
-    (dynamic_pointer_cast<SingleFileDownloadContext>(dependant->getDownloadContext()));
+    (dynamic_pointer_cast<SingleFileDownloadContext>
+     (dependant->getDownloadContext()));
   CPPUNIT_ASSERT(!dctx.isNull());
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/index.html"), dctx->getActualBasePath());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
+		       dctx->getActualBasePath());
 }
 
 void BtDependencyTest::testResolve_dependeeInProgress()

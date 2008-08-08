@@ -24,6 +24,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFileModeSingle);
   CPPUNIT_TEST(testGetNameMulti);
   CPPUNIT_TEST(testGetNameSingle);
+  CPPUNIT_TEST(testOverrideName);
   CPPUNIT_TEST(testGetAnnounceTier);
   CPPUNIT_TEST(testGetAnnounceTierAnnounceList);
   CPPUNIT_TEST(testGetPieceLength);
@@ -34,6 +35,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFileEntries_singleFileUrlList);
   CPPUNIT_TEST(testLoadFromMemory);
   CPPUNIT_TEST(testLoadFromMemory_somethingMissing);
+  CPPUNIT_TEST(testLoadFromMemory_overrideName);
   CPPUNIT_TEST(testGetNodes);
   CPPUNIT_TEST_SUITE_END();
 public:
@@ -50,6 +52,7 @@ public:
   void testGetFileModeSingle();
   void testGetNameMulti();
   void testGetNameSingle();
+  void testOverrideName();
   void testGetAnnounceTier();
   void testGetAnnounceTierAnnounceList();
   void testGetPieceLength();
@@ -60,6 +63,7 @@ public:
   void testGetFileEntries_singleFileUrlList();
   void testLoadFromMemory();
   void testLoadFromMemory_somethingMissing();
+  void testLoadFromMemory_overrideName();
   void testGetNodes();
 };
 
@@ -165,6 +169,13 @@ void DefaultBtContextTest::testGetNameSingle() {
   btContext.load("single.torrent");
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"), btContext.getName());
+}
+
+void DefaultBtContextTest::testOverrideName()
+{
+  DefaultBtContext btContext;
+  btContext.load("test.torrent", "aria2-override.name");
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"), btContext.getName());
 }
 
 void DefaultBtContextTest::testGetAnnounceTier() {
@@ -340,6 +351,16 @@ void DefaultBtContextTest::testLoadFromMemory_somethingMissing()
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
+}
+
+void DefaultBtContextTest::testLoadFromMemory_overrideName()
+{
+  std::string memory = "d8:announce36:http://aria.rednoah.com/announce.php13:announce-listll16:http://tracker1 el15:http://tracker2el15:http://tracker3ee7:comment17:REDNOAH.COM RULES13:creation datei1123456789e4:infod5:filesld6:lengthi284e4:pathl5:aria23:src6:aria2ceed6:lengthi100e4:pathl19:aria2-0.2.2.tar.bz2eee4:name10:aria2-test12:piece lengthi128e6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCee";
+
+  DefaultBtContext btContext;
+  btContext.loadFromMemory(memory, "default", "aria2-override.name");
+
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"), btContext.getName());
 }
 
 void DefaultBtContextTest::testGetNodes()

@@ -95,10 +95,7 @@ public:
 
   virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;
 
-  virtual const std::string& getName() const
-  {
-    return _filename;
-  }
+  virtual const std::string& getName() const;
   
   virtual size_t getPieceLength() const
   {

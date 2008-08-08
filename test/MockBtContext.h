@@ -92,7 +92,8 @@ public:
     announceTiers.push_back(announceTier);
   }
 
-  virtual void load(const std::string& torrentFile) {}
+  virtual void load(const std::string& torrentFile,
+		    const std::string& overrideName = "") {}
 
   virtual const std::string& getName() const {
     return name;
