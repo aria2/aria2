@@ -58,8 +58,6 @@ public:
   void load(std::istream& in);
 
   void save(std::ostream& out) const;
-
-  void print(std::ostream& o) const;
 private:
   std::deque<SharedHandle<ServerStat> > _serverStats;
 };

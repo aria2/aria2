@@ -36,6 +36,7 @@
 #include "ServerStat.h"
 #include <algorithm>
 #include <ostream>
+#include <iterator>
 
 namespace aria2 {
 
@@ -70,14 +71,10 @@ bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
   } 
 }
 
-//bool save(const std::string& filepath) const;
-
-void ServerStatMan::print(std::ostream& o) const
+void ServerStatMan::save(std::ostream& out) const
 {
-  for(std::deque<SharedHandle<ServerStat> >::const_iterator i =
-	_serverStats.begin(); i != _serverStats.end(); ++i) {
-    o << *i;
-  }
+  std::copy(_serverStats.begin(), _serverStats.end(),
+	    std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
 }
 
 } // namespace aria2

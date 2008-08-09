@@ -48,9 +48,11 @@ namespace aria2 {
 class ServerStat {
 public:
   enum STATUS {
-    OK,
+    OK = 0,
     ERROR
   };
+  
+  static const std::string STATUS_STRING[];
 
   ServerStat(const std::string& hostname, const std::string& protocol);
 
@@ -60,7 +62,7 @@ public:
 
   const std::string& getProtocol() const;
 
-  Time getLastUpdated() const;
+  const Time& getLastUpdated() const;
 
   void setLastUpdated(const Time& time);
 

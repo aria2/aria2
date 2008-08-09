@@ -37,6 +37,11 @@
 
 namespace aria2 {
 
+const std::string ServerStat::STATUS_STRING[] = {
+  "OK",
+  "ERROR"
+};
+
 ServerStat::ServerStat(const std::string& hostname, const std::string& protocol)
   :
   _hostname(hostname),
@@ -56,14 +61,24 @@ const std::string& ServerStat::getProtocol() const
   return _protocol;
 }
 
-Time ServerStat::getLastUpdated() const
+const Time& ServerStat::getLastUpdated() const
 {
   return _lastUpdated;
+}
+
+void ServerStat::setLastUpdated(const Time& time)
+{
+  _lastUpdated = time;
 }
 
 unsigned int ServerStat::getDownloadSpeed() const
 {
   return _downloadSpeed;
+}
+
+void ServerStat::setDownloadSpeed(unsigned int downloadSpeed)
+{
+  _downloadSpeed = downloadSpeed;
 }
 
 void ServerStat::updateDownloadSpeed(unsigned int downloadSpeed)
@@ -126,7 +141,8 @@ std::ostream& operator<<(std::ostream& o, const ServerStat& serverStat)
   o << "host=" << serverStat.getHostname() << ", "
     << "protocol=" << serverStat.getProtocol() << ", "
     << "dl_speed=" << serverStat.getDownloadSpeed() << ", "
-    << "status=" << serverStat.getStatus() << "\n";
+    << "last_updated=" << serverStat.getLastUpdated().getTime() << ", "
+    << "status=" << ServerStat::STATUS_STRING[serverStat.getStatus()];
   return o;
 }
 
