@@ -51,7 +51,7 @@ public:
   // this object was created.
   Time();
   Time(const Time& time);
-  Time(int32_t sec);
+  Time(time_t sec);
 
   Time& operator=(const Time& time);
 
@@ -60,13 +60,13 @@ public:
   // Makes this object's time value up to date.
   void reset();
 
-  bool elapsed(int32_t sec) const;
+  bool elapsed(time_t sec) const;
 
-  bool elapsedInMillis(int32_t millis) const;
+  bool elapsedInMillis(int64_t millis) const;
 
-  int32_t difference() const;
+  time_t difference() const;
 
-  int32_t difference(const struct timeval& now) const;
+  time_t difference(const struct timeval& now) const;
 
   int64_t differenceInMillis() const;
 
@@ -80,9 +80,9 @@ public:
   int64_t getTimeInMillis() const;
 
   // Returns this object's time value in seconds.
-  int32_t getTime() const;
+  time_t getTime() const;
 
-  void setTimeInSec(int32_t sec);
+  void setTimeInSec(time_t sec);
 
   bool isNewer(const Time& time) const;
 };

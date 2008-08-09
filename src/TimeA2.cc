@@ -46,7 +46,7 @@ Time::Time(const Time& time) {
   tv = time.tv;
 }
 
-Time::Time(int32_t sec) {
+Time::Time(time_t sec) {
   setTimeInSec(sec);
 }
 
@@ -70,7 +70,7 @@ struct timeval Time::getCurrentTime() const {
   return now;
 }
 
-bool Time::elapsed(int32_t sec) const {
+bool Time::elapsed(time_t sec) const {
   // Because of gettimeofday called from getCurrentTime() is slow, and most of
   // the time this function is called before specified time passes, we first do
   // simple test using time.
@@ -85,7 +85,7 @@ bool Time::elapsed(int32_t sec) const {
   }
 }
 
-bool Time::elapsedInMillis(int32_t millis) const {
+bool Time::elapsedInMillis(int64_t millis) const {
   return Util::difftv(getCurrentTime(), tv)/1000 >= millis;
 }
 
@@ -93,11 +93,11 @@ bool Time::isNewer(const Time& time) const {
   return Util::difftv(this->tv, time.tv) > 0;
 }
 
-int32_t Time::difference() const {
+time_t Time::difference() const {
   return Util::difftvsec(getCurrentTime(), tv);
 }
 
-int32_t Time::difference(const struct timeval& now) const
+time_t Time::difference(const struct timeval& now) const
 {
   return Util::difftvsec(now, tv);
 }
@@ -126,12 +126,12 @@ int64_t Time::getTimeInMillis() const
   return (int64_t)tv.tv_sec*1000+tv.tv_usec/1000;
 }
 
-int32_t Time::getTime() const
+time_t Time::getTime() const
 {
   return tv.tv_sec;
 }
 
-void Time::setTimeInSec(int32_t sec) {
+void Time::setTimeInSec(time_t sec) {
   tv.tv_sec = sec;
   tv.tv_usec = 0;
 }
