@@ -13,6 +13,7 @@ class ServerStatManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(ServerStatManTest);
   CPPUNIT_TEST(testAddAndFind);
   CPPUNIT_TEST(testSave);
+  CPPUNIT_TEST(testLoad);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -20,8 +21,8 @@ public:
   void tearDown() {}
 
   void testAddAndFind();
-
   void testSave();
+  void testLoad();
 };
 
 
@@ -78,6 +79,33 @@ void ServerStatManTest::testSave()
       "host=localhost, protocol=http, dl_speed=25000, last_updated=1210000000, status=OK\n"
       "host=mirror, protocol=http, dl_speed=0, last_updated=1210000002, status=ERROR\n"),
      out);			   
+}
+
+void ServerStatManTest::testLoad()
+{
+  std::string in =
+    "host=localhost, protocol=ftp, dl_speed=30000, last_updated=1210000001, status=OK\n"
+    "host=localhost, protocol=http, dl_speed=25000, last_updated=1210000000, status=OK\n"
+    "host=mirror, protocol=http, dl_speed=0, last_updated=1210000002, status=ERROR\n";
+
+  std::stringstream ss(in);
+
+  ServerStatMan ssm;
+  ssm.load(ss);
+
+  SharedHandle<ServerStat> localhost_http = ssm.find("localhost", "http");
+  CPPUNIT_ASSERT(!localhost_http.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), localhost_http->getHostname());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), localhost_http->getProtocol());
+  CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(25000),
+		       localhost_http->getDownloadSpeed());
+  CPPUNIT_ASSERT_EQUAL(static_cast<time_t>(1210000000),
+		       localhost_http->getLastUpdated().getTime());
+  CPPUNIT_ASSERT_EQUAL(ServerStat::OK, localhost_http->getStatus());
+
+  SharedHandle<ServerStat> mirror = ssm.find("mirror", "http");
+  CPPUNIT_ASSERT(!mirror.isNull());
+  CPPUNIT_ASSERT_EQUAL(ServerStat::ERROR, mirror->getStatus());
 }
 
 } // namespace aria2

@@ -190,7 +190,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
-	GZipDecoderTest.cc MessageDigestHelperTest.cc \
+	ServerStatTest.cc GZipDecoderTest.cc \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -357,8 +358,9 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	ChunkedDecoderTest.$(OBJEXT) SignatureTest.$(OBJEXT) \
 	ServerStatManTest.$(OBJEXT) \
 	ServerStatURISelectorTest.$(OBJEXT) \
-	InOrderURISelectorTest.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4)
+	InOrderURISelectorTest.$(OBJEXT) ServerStatTest.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -575,8 +577,8 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4)
+	ServerStatTest.cc $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -781,6 +783,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SequenceTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatURISelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@

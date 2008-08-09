@@ -1,5 +1,14 @@
 2008-08-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Implemented ServerStatMan::load(...) function and its test case.
+	* src/ServerStat.cc
+	* src/ServerStat.h
+	* src/ServerStatMan.cc
+	* test/ServerStatManTest.cc
+	* test/ServerStatTest.cc
+
+2008-08-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use time_t instead of int32_t. Use int64_t where milli second is
 	expected.
 	* src/TimeA2.cc

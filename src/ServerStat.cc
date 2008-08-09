@@ -33,7 +33,9 @@
  */
 /* copyright --> */
 #include "ServerStat.h"
+#include "array_fun.h"
 #include <ostream>
+#include <algorithm>
 
 namespace aria2 {
 
@@ -93,6 +95,23 @@ void ServerStat::updateDownloadSpeed(unsigned int downloadSpeed)
 void ServerStat::setStatus(STATUS status)
 {
   _status = status;
+}
+
+void ServerStat::setStatus(const std::string& status)
+{
+  size_t len = arrayLength(STATUS_STRING);
+  const std::string* p = std::find(&STATUS_STRING[0],
+				   &STATUS_STRING[len],
+				   status);
+  if(p != &STATUS_STRING[len]) {
+    _status = static_cast<STATUS>(ServerStat::OK+
+				  std::distance(&STATUS_STRING[0], p));
+  }
+}
+
+void ServerStat::setStatusInternal(STATUS status)
+{
+  _status = status;
   _lastUpdated.reset();
 }
 
@@ -108,7 +127,7 @@ bool ServerStat::isOK() const
 
 void ServerStat::setOK()
 {
-  setStatus(OK);
+  setStatusInternal(OK);
 }
 
 bool ServerStat::isError() const
@@ -118,7 +137,7 @@ bool ServerStat::isError() const
 
 void ServerStat::setError()
 {
-  setStatus(ERROR);
+  setStatusInternal(ERROR);
 }
 
 bool ServerStat::operator<(const ServerStat& serverStat) const

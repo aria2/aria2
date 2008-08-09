@@ -34,9 +34,12 @@
 /* copyright --> */
 #include "ServerStatMan.h"
 #include "ServerStat.h"
+#include "Util.h"
+#include "RecoverableException.h"
 #include <algorithm>
 #include <ostream>
 #include <iterator>
+#include <map>
 
 namespace aria2 {
 
@@ -75,6 +78,45 @@ void ServerStatMan::save(std::ostream& out) const
 {
   std::copy(_serverStats.begin(), _serverStats.end(),
 	    std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
+}
+
+void ServerStatMan::load(std::istream& in)
+{
+  static const std::string S_HOST = "host";
+  static const std::string S_PROTOCOL = "protocol";
+  static const std::string S_DL_SPEED = "dl_speed";
+  static const std::string S_LAST_UPDATED = "last_updated";
+  static const std::string S_STATUS = "status";
+
+  std::string line;
+  while(getline(in, line)) {
+    Util::trimSelf(line);
+    if(line.empty()) {
+      continue;
+    }
+    std::deque<std::string> items;
+    Util::slice(items, line, ',');
+    std::map<std::string, std::string> m;
+    for(std::deque<std::string>::const_iterator i = items.begin();
+	i != items.end(); ++i) {
+      std::pair<std::string, std::string> p = Util::split(*i, "=");
+      Util::trimSelf(p.first);
+      Util::trimSelf(p.second);
+      m[p.first] = p.second;
+    }
+    if(m[S_HOST].empty() || m[S_PROTOCOL].empty()) {
+      continue;
+    }
+    SharedHandle<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
+    try {
+      sstat->setDownloadSpeed(Util::parseUInt(m[S_DL_SPEED]));
+      sstat->setLastUpdated(Time(Util::parseInt(m[S_LAST_UPDATED])));
+      sstat->setStatus(m[S_STATUS]);
+      add(sstat);
+    } catch(RecoverableException* e) {
+      continue;
+    }
+  }
 }
 
 } // namespace aria2

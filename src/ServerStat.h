@@ -64,6 +64,7 @@ public:
 
   const Time& getLastUpdated() const;
 
+  // This method doesn't update _lastUpdate.
   void setLastUpdated(const Time& time);
 
   unsigned int getDownloadSpeed() const;
@@ -74,7 +75,13 @@ public:
   // set download speed. This method doesn't update _lastUpdate.
   void setDownloadSpeed(unsigned int downloadSpeed);
 
+  // This method doesn't update _lastUpdate.
   void setStatus(STATUS status);
+
+  // status should be one of the followings: "OK", "ERROR".
+  // Giving other string will not change the status of this object.
+  // This method doesn't update _lastUpdate.
+  void setStatus(const std::string& status);
 
   STATUS getStatus() const;
 
@@ -101,6 +108,8 @@ private:
   STATUS _status;
 
   Time _lastUpdated;
+
+  void setStatusInternal(STATUS status);
 };
 
 std::ostream& operator<<(std::ostream& o, const ServerStat& serverStat);
