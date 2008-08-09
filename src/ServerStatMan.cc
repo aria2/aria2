@@ -119,4 +119,23 @@ void ServerStatMan::load(std::istream& in)
   }
 }
 
+class FindStaleServerStat {
+private:
+  time_t _timeout;
+public:
+  FindStaleServerStat(time_t timeout):_timeout(timeout) {}
+
+  bool operator()(const SharedHandle<ServerStat>& ss) const
+  {
+    return ss->getLastUpdated().elapsed(_timeout);
+  }
+};
+
+void ServerStatMan::removeStaleServerStat(time_t timeout)
+{
+  _serverStats.erase(std::remove_if(_serverStats.begin(), _serverStats.end(),
+				    FindStaleServerStat(timeout)),
+		     _serverStats.end());
+}
+
 } // namespace aria2

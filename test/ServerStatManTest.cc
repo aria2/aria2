@@ -14,6 +14,7 @@ class ServerStatManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddAndFind);
   CPPUNIT_TEST(testSave);
   CPPUNIT_TEST(testLoad);
+  CPPUNIT_TEST(testRemoveStaleServerStat);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -23,6 +24,7 @@ public:
   void testAddAndFind();
   void testSave();
   void testLoad();
+  void testRemoveStaleServerStat();
 };
 
 
@@ -62,7 +64,7 @@ void ServerStatManTest::testSave()
   localhost_ftp->setLastUpdated(Time(1210000001));
   SharedHandle<ServerStat> mirror(new ServerStat("mirror", "http"));
   mirror->setDownloadSpeed(0);
-  mirror->setError();
+  mirror->setStatus(ServerStat::ERROR);
   mirror->setLastUpdated(Time(1210000002));
 
   ServerStatMan ssm;
@@ -106,6 +108,32 @@ void ServerStatManTest::testLoad()
   SharedHandle<ServerStat> mirror = ssm.find("mirror", "http");
   CPPUNIT_ASSERT(!mirror.isNull());
   CPPUNIT_ASSERT_EQUAL(ServerStat::ERROR, mirror->getStatus());
+}
+
+void ServerStatManTest::testRemoveStaleServerStat()
+{
+  Time now;
+  SharedHandle<ServerStat> localhost_http(new ServerStat("localhost", "http"));
+  localhost_http->setDownloadSpeed(25000);
+  localhost_http->setLastUpdated(now);
+  SharedHandle<ServerStat> localhost_ftp(new ServerStat("localhost", "ftp"));
+  localhost_ftp->setDownloadSpeed(30000);
+  localhost_ftp->setLastUpdated(Time(1210000001));
+  SharedHandle<ServerStat> mirror(new ServerStat("mirror", "http"));
+  mirror->setDownloadSpeed(0);
+  mirror->setStatus(ServerStat::ERROR);
+  mirror->setLastUpdated(Time(1210000002));
+
+  ServerStatMan ssm;
+  CPPUNIT_ASSERT(ssm.add(localhost_http));
+  CPPUNIT_ASSERT(ssm.add(localhost_ftp));
+  CPPUNIT_ASSERT(ssm.add(mirror));
+
+  ssm.removeStaleServerStat(24*60*60);
+
+  CPPUNIT_ASSERT(!ssm.find("localhost", "http").isNull());
+  CPPUNIT_ASSERT(ssm.find("localhost", "ftp").isNull());
+  CPPUNIT_ASSERT(ssm.find("mirror", "http").isNull());
 }
 
 } // namespace aria2

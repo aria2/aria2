@@ -58,6 +58,8 @@ public:
   void load(std::istream& in);
 
   void save(std::ostream& out) const;
+
+  void removeStaleServerStat(time_t timeout);
 private:
   std::deque<SharedHandle<ServerStat> > _serverStats;
 };
