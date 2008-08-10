@@ -150,6 +150,11 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 			   std::deque<std::string>
 			   (&params[0], &params[arrayLength(params)]))));
   }
+  handlers.push_back(SH(new NumberOptionHandler(PREF_SERVER_STAT_TIMEOUT,
+						0, INT32_MAX)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_SERVER_STAT_IF)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_SERVER_STAT_OF)));
+
   return handlers;
 }
 

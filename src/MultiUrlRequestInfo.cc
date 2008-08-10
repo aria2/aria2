@@ -100,6 +100,12 @@ int MultiUrlRequestInfo::execute()
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
 
+    std::string serverStatIf = _option->get(PREF_SERVER_STAT_IF);
+    if(!serverStatIf.empty()) {
+      e->_requestGroupMan->loadServerStat(serverStatIf);
+      e->_requestGroupMan->removeStaleServerStat
+	(_option->getAsInt(PREF_SERVER_STAT_TIMEOUT));
+    }
     e->setStatCalc(_statCalc);
     e->fillCommand();
 
@@ -115,6 +121,10 @@ int MultiUrlRequestInfo::execute()
     
     e->run();
     
+    std::string serverStatOf = _option->get(PREF_SERVER_STAT_OF);
+    if(!serverStatOf.empty()) {
+      e->_requestGroupMan->saveServerStat(serverStatOf);
+    }
     e->_requestGroupMan->showDownloadResults(_summaryOut);
     _summaryOut << std::flush;
 

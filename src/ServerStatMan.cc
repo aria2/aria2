@@ -74,13 +74,14 @@ bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
   } 
 }
 
-void ServerStatMan::save(std::ostream& out) const
+bool ServerStatMan::save(std::ostream& out) const
 {
   std::copy(_serverStats.begin(), _serverStats.end(),
 	    std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
+  return !out.bad();
 }
 
-void ServerStatMan::load(std::istream& in)
+bool ServerStatMan::load(std::istream& in)
 {
   static const std::string S_HOST = "host";
   static const std::string S_PROTOCOL = "protocol";
@@ -117,6 +118,7 @@ void ServerStatMan::load(std::istream& in)
       continue;
     }
   }
+  return !in.bad();
 }
 
 class FindStaleServerStat {

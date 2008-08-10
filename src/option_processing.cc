@@ -157,6 +157,7 @@ Option* createDefaultOption()
   op->put(PREF_SUMMARY_INTERVAL, "60");
   op->put(PREF_LOG_LEVEL, V_DEBUG);
   op->put(PREF_URI_SELECTOR, V_INORDER);
+  op->put(PREF_SERVER_STAT_TIMEOUT, "86400");// 1day
   return op;
 }
 
@@ -235,6 +236,9 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_SUMMARY_INTERVAL.c_str(), required_argument, &lopt, 218 },
       { PREF_LOG_LEVEL.c_str(), required_argument, &lopt, 219 },
       { PREF_URI_SELECTOR.c_str(), required_argument, &lopt, 220 },
+      { PREF_SERVER_STAT_IF.c_str(), required_argument, &lopt, 221 },
+      { PREF_SERVER_STAT_OF.c_str(), required_argument, &lopt, 222 },
+      { PREF_SERVER_STAT_TIMEOUT.c_str(), required_argument, &lopt, 223 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -465,6 +469,15 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 220:
 	cmdstream << PREF_URI_SELECTOR << "=" << optarg << "\n";
+	break;
+      case 221:
+	cmdstream << PREF_SERVER_STAT_IF << "=" << optarg << "\n";
+	break;
+      case 222:
+	cmdstream << PREF_SERVER_STAT_OF << "=" << optarg << "\n";
+	break;
+      case 223:
+	cmdstream << PREF_SERVER_STAT_TIMEOUT << "=" << optarg << "\n";
 	break;
       }
       break;

@@ -73,7 +73,7 @@ void ServerStatManTest::testSave()
   CPPUNIT_ASSERT(ssm.add(mirror));
 
   std::stringstream ss;
-  ssm.save(ss);
+  CPPUNIT_ASSERT(ssm.save(ss));
   std::string out = ss.str();
   CPPUNIT_ASSERT_EQUAL
     (std::string
@@ -93,7 +93,7 @@ void ServerStatManTest::testLoad()
   std::stringstream ss(in);
 
   ServerStatMan ssm;
-  ssm.load(ss);
+  CPPUNIT_ASSERT(ssm.load(ss));
 
   SharedHandle<ServerStat> localhost_http = ssm.find("localhost", "http");
   CPPUNIT_ASSERT(!localhost_http.isNull());

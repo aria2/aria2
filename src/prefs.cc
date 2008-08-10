@@ -139,6 +139,12 @@ const std::string V_ERROR("error");
 const std::string PREF_URI_SELECTOR("uri-selector");
 const std::string V_INORDER("inorder");
 const std::string V_FEEDBACK("feedback");
+// value: 1*digit
+const std::string PREF_SERVER_STAT_TIMEOUT("server-stat-timeout");
+// value: string that your file system recognizes as a file name.
+const std::string PREF_SERVER_STAT_IF("server-stat-if");
+// value: string that your file system recognizes as a file name.
+const std::string PREF_SERVER_STAT_OF("server-stat-of");
 
 /**
  * FTP related preferences

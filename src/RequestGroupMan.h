@@ -143,6 +143,12 @@ public:
 
 
   void updateServerStat();
+
+  bool loadServerStat(const std::string& filename);
+
+  bool saveServerStat(const std::string& filename) const;
+
+  void removeStaleServerStat(time_t timeout);
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

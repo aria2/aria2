@@ -55,9 +55,9 @@ public:
 
   bool add(const SharedHandle<ServerStat>& serverStat);
 
-  void load(std::istream& in);
+  bool load(std::istream& in);
 
-  void save(std::ostream& out) const;
+  bool save(std::ostream& out) const;
 
   void removeStaleServerStat(time_t timeout);
 private:

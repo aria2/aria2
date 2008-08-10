@@ -54,6 +54,7 @@
 #include <iomanip>
 #include <sstream>
 #include <ostream>
+#include <fstream>
 #include <numeric>
 #include <algorithm>
 
@@ -475,6 +476,46 @@ RequestGroupMan::findServerStat(const std::string& hostname,
 bool RequestGroupMan::addServerStat(const SharedHandle<ServerStat>& serverStat)
 {
   return _serverStatMan->add(serverStat);
+}
+
+bool RequestGroupMan::loadServerStat(const std::string& filename)
+{
+  std::ifstream in(filename.c_str());
+  if(!in) {
+    _logger->error("Failed to open ServerStat file %s for read.",
+		   filename.c_str());
+    return false;
+  }
+  if(_serverStatMan->load(in)) {
+    _logger->notice("ServerStat file %s loaded successfully.",
+		    filename.c_str());
+    return true;
+  } else {
+    _logger->error("Failed to read ServerStat from %s.", filename.c_str());
+    return false;
+  }
+}
+
+bool RequestGroupMan::saveServerStat(const std::string& filename) const
+{
+  std::ofstream out(filename.c_str());
+  if(!out) {
+    _logger->error("Failed to open ServerStat file %s for write.",
+		   filename.c_str());
+    return false;
+  }
+  if(_serverStatMan->save(out)) {
+    _logger->notice("ServerStat file %s saved successfully.", filename.c_str());
+    return true;
+  } else {
+    _logger->error("Failed to write ServerStat to %s.", filename.c_str());
+    return false;
+  }
+}
+
+void RequestGroupMan::removeStaleServerStat(time_t timeout)
+{
+  _serverStatMan->removeStaleServerStat(timeout);
 }
 
 } // namespace aria2
