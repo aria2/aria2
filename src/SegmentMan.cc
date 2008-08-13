@@ -46,6 +46,7 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include <algorithm>
+#include <cassert>
 
 namespace aria2 {
 
@@ -186,7 +187,12 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid) {
       PeerStatHandle slowPeerStat = getPeerStat(slowSegmentEntry->cuid);
       slowPeerStat->requestIdle();
       cancelSegment(slowSegmentEntry->cuid);
-      return checkoutSegment(cuid, slowSegmentEntry->segment->getPiece());
+      
+      SharedHandle<Piece> piece =
+ 	_pieceStorage->getMissingPiece(slowSegmentEntry->segment->getIndex());
+      assert(!piece.isNull());
+
+      return checkoutSegment(cuid, piece);
     } else {
       return SharedHandle<Segment>();
     }
