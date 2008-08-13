@@ -1,5 +1,10 @@
 2008-08-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed: numCommand is less than the value specified in -C option.
+	* src/RequestGroup.cc
+
+2008-08-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed occasional assertion failure in PieceSegment.
 	Calling PieceStorage::getMissingPiece(size_t) was missing after
 	canceling segments in SegmentMan::getSegment(int32_t). This resulted in

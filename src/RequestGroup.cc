@@ -486,12 +486,13 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
     numCommand = 1+numAdj;
   } else {
     if(_numConcurrentCommand == 0) {
-      numCommand = std::min(_downloadContext->getNumPieces(), _uris.size());
+      numCommand = _uris.size();
     } else {
-      numCommand = std::min(_downloadContext->getNumPieces(),
-			    _numConcurrentCommand);
+      numCommand = _numConcurrentCommand;
     }
     numCommand += numAdj;
+    numCommand = std::min(static_cast<int>(_downloadContext->getNumPieces()),
+			  numCommand);
   }
   if(numCommand > 0) {
     createNextCommand(commands, e, numCommand);
