@@ -478,18 +478,21 @@ bool RequestGroup::tryAutoFileRenaming()
 void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
 					    DownloadEngine* e, int numAdj)
 {
-  unsigned int numCommand;
-  if(_numConcurrentCommand == 0) {
-    numCommand = _uris.size();
+  int numCommand;
+  if(getTotalLength() == 0) {
+    numCommand = 1+numAdj;
   } else {
-    int n = _numConcurrentCommand+numAdj;
-    if(n > 0) {
-      numCommand = n;
+    if(_numConcurrentCommand == 0) {
+      numCommand = std::min(_downloadContext->getNumPieces(), _uris.size());
     } else {
-      return;
+      numCommand = std::min(_downloadContext->getNumPieces(),
+			    _numConcurrentCommand);
     }
+    numCommand += numAdj;
   }
-  createNextCommand(commands, e, numCommand, Request::METHOD_GET);
+  if(numCommand > 0) {
+    createNextCommand(commands, e, numCommand);
+  }
 }
 
 void RequestGroup::createNextCommand(std::deque<Command*>& commands,
