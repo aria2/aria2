@@ -20,6 +20,7 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNullBitfield);
   CPPUNIT_TEST(testCompleteSegment);
   CPPUNIT_TEST(testGetPeerStat);
+  CPPUNIT_TEST(testGetSegment_segmentForward);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -30,6 +31,7 @@ public:
   void testNullBitfield();
   void testCompleteSegment();
   void testGetPeerStat();
+  void testGetSegment_segmentForward();
 };
 
 
@@ -116,6 +118,32 @@ void SegmentManTest::testGetPeerStat()
     CPPUNIT_ASSERT(!ps.isNull());
     CPPUNIT_ASSERT_EQUAL(2, ps->getCuid());
   }
+}
+
+void SegmentManTest::testGetSegment_segmentForward()
+{
+  Option op;
+  size_t pieceLength = 1;
+  uint64_t totalLength = 1;
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+  SharedHandle<PieceStorage> ps(new DefaultPieceStorage(dctx, &op));
+  SegmentMan segmentMan(&op, dctx, ps);
+
+  SharedHandle<Segment> segment = segmentMan.getSegment(1);
+  CPPUNIT_ASSERT(!segment.isNull());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getIndex());
+
+  SharedHandle<PeerStat> cuid2_ps(new PeerStat(2));
+  CPPUNIT_ASSERT(segmentMan.registerPeerStat(cuid2_ps));
+
+  SharedHandle<Segment> segment_forwarded = segmentMan.getSegment(2);
+  CPPUNIT_ASSERT(!segment_forwarded.isNull());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, segment_forwarded->getIndex());
+
+  // SegmentMan::getSegmetn(3) returns null because CUID#3's PeerStat is not
+  // registered and all segment(total 1 in this case) are used.
+  CPPUNIT_ASSERT(segmentMan.getSegment(3).isNull());
 }
 
 } // namespace aria2
