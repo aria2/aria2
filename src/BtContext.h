@@ -61,7 +61,8 @@ public:
   virtual std::deque<SharedHandle<AnnounceTier> >
   getAnnounceTiers() const = 0;
 
-  virtual void load(const std::string& torrentFile) = 0;
+  virtual void load(const std::string& torrentFile,
+		    const std::string& overrideName = "") = 0;
 
   /**
    * Returns the peer id of localhost, 20 byte length

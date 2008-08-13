@@ -96,4 +96,9 @@ void SingleFileDownloadContext::setTotalLength(uint64_t totalLength)
   _fileEntry->setLength(totalLength);
 }
 
+const std::string& SingleFileDownloadContext::getName() const
+{
+  return _fileEntry->getPath();
+}
+
 } // namespace aria2
