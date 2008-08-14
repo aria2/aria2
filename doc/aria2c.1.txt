@@ -557,7 +557,7 @@ BitTorrent Download
 Download files from remote BitTorrent file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------------
-aria2c --follow-bittorrent=mem http://host/file.torrent
+aria2c --follow-torrent=mem http://host/file.torrent
 -------------------------------------------------------
 
 Download using a local torrent file
