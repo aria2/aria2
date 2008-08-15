@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-08-01 00:32+0900\n"
+"POT-Creation-Date: 2008-08-15 23:59+0900\n"
 "PO-Revision-Date: 2008-07-24 12:02+0000\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
@@ -17,14 +17,14 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-07-31 14:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:793
+#: src/DownloadEngine.cc:795
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Séquence d'arrêt débutée... Pressez Ctrl-C une nouvelle fois pour un arrêt "
 "d'urgence."
 
-#: src/DownloadEngine.cc:797
+#: src/DownloadEngine.cc:799
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Séquence d'arrêt d'urgence débutée..."
 
@@ -40,11 +40,11 @@ msgstr ""
 "En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
 "d'informations."
 
-#: src/RequestGroupMan.cc:312
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
 msgstr "Résultats du ou des téléchargements:"
 
-#: src/RequestGroupMan.cc:327
+#: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 

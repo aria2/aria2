@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-08-01 00:32+0900\n"
+"POT-Creation-Date: 2008-08-15 23:59+0900\n"
 "PO-Revision-Date: 2008-07-29 11:50+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -17,14 +17,14 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-07-31 14:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:793
+#: src/DownloadEngine.cc:795
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Започване на поредица за изключване... Натиснете Ctrl-C отново за спешно "
 "изключване."
 
-#: src/DownloadEngine.cc:797
+#: src/DownloadEngine.cc:799
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Извънредно започване на поредица за изключване..."
 
@@ -40,11 +40,11 @@ msgstr ""
 "Ако има някакви грешки, тогава вижте лог файла. Вижте '-l' опцията в "
 "страницата на помощника/наръчника за подробности."
 
-#: src/RequestGroupMan.cc:312
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
 msgstr "Резултати от даунлоуда:"
 
-#: src/RequestGroupMan.cc:327
+#: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
 msgstr "Легенда за състоянието:"
 

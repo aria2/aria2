@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-08-01 00:32+0900\n"
+"POT-Creation-Date: 2008-08-15 23:59+0900\n"
 "PO-Revision-Date: 2007-12-01 14:25+0000\n"
 "Last-Translator: jareth-Br <fcarretoni@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:793
+#: src/DownloadEngine.cc:795
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:797
+#: src/DownloadEngine.cc:799
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
@@ -36,11 +36,11 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:312
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:327
+#: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
 msgstr ""
 
