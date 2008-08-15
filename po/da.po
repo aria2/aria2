@@ -1,124 +1,129 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Tatsuhiro Tsujikawa
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Danish translation for aria2
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the aria2 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2c 0.15.2\n"
+"Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-08-15 21:42+0900\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2008-08-09 20:45+0000\n"
+"Last-Translator: Jeppe Toustrup <launchpad@tenzer.dk>\n"
+"Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:793
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr ""
+msgstr "Afslutningsprocedure i gang... Tryk Ctrl-C igen for nød-afslutning."
 
 #: src/DownloadEngine.cc:797
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Nød-afslutningsprocedure i gang..."
 
 #: src/MultiUrlRequestInfo.cc:86
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
+msgstr "aria2 vil forsætte filhentningen hvis overførslen bliver genstartet."
 
 #: src/MultiUrlRequestInfo.cc:88
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
+"Hvis der er nogle fejl, så kig i logfilen. Se '-l' flaget i hjælp/man siden "
+"for mere information."
 
 #: src/RequestGroupMan.cc:312
 msgid "Download Results:"
-msgstr ""
+msgstr "Overførsels resultater:"
 
 #: src/RequestGroupMan.cc:327
 msgid "Status Legend:"
-msgstr ""
+msgstr "Status forklaring:"
 
 #: src/HelpItem.cc:39
 msgid "                              Default: "
-msgstr ""
+msgstr "                              Standard: "
 
 #: src/HelpItem.cc:40
 msgid "                              Tags: "
-msgstr ""
+msgstr "                              Mærker: "
 
 #: src/HelpItem.cc:41
 msgid "                              Available Values: "
-msgstr ""
+msgstr "                              Mulige værdier: "
 
 #: src/OptionHandlerImpl.h:71
 msgid "must be either 'true' or 'false'."
-msgstr ""
+msgstr "skal enten være 'true' (sand) eller 'false' (falsk)"
 
 #: src/OptionHandlerImpl.h:92 src/OptionHandlerImpl.h:127
 #, c-format
 msgid "must be between %s and %s."
-msgstr ""
+msgstr "skal være i mellem %s og %s."
 
 #: src/OptionHandlerImpl.h:124
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr ""
+msgstr "skal være mindre end eller lig med %s."
 
 #: src/OptionHandlerImpl.h:130
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr ""
+msgstr "skal være større end eller lig med %s."
 
 #: src/OptionHandlerImpl.h:133 src/OptionHandlerImpl.h:179
 msgid "must be a number."
-msgstr ""
+msgstr "skal være et tal."
 
 #: src/OptionHandlerImpl.h:170
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr ""
+msgstr "skal være mindre end eller lig med %.1f."
 
 #: src/OptionHandlerImpl.h:173
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr ""
+msgstr "skal være i mellem %.1f og %.1f."
 
 #: src/OptionHandlerImpl.h:176
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr ""
+msgstr "skal være større end eller lig med %.1f."
 
 #: src/OptionHandlerImpl.h:257
 msgid "must be one of the following:"
-msgstr ""
+msgstr "skal være en af de følgende:"
 
 #: src/OptionHandlerImpl.h:294
 msgid "unrecognized proxy format"
-msgstr ""
+msgstr "ukendt proxy format"
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr ""
+msgstr " -d, --dir=MAPPE              Mappen hvor den hentede fil skal gemmes."
 
 #: src/usage_text.h:39
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr ""
+msgstr " -o, --out=FIL                Filnavnet for den hentede fil."
 
 #: src/usage_text.h:41
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
+" -l, --log=LOG                Filnavn for logfilen. Hvis den er sat til '-'\n"
+"                              vil loggen blive skrevet til standarduddata."
 
 #: src/usage_text.h:44
 msgid " -D, --daemon                 Run as daemon."
-msgstr ""
+msgstr " -D, --daemon                 Kør som en dæmon."
 
 #: src/usage_text.h:46
 msgid ""
@@ -132,6 +137,16 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
+" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
+"                              der er angivet flere adresser end N, vil de N\n"
+"                              første adresser blive brugt, og resten vil "
+"blive\n"
+"                              brugt som reserve. Hvis færre end N adresser "
+"er\n"
+"                              angivet, vil adresserne blive brugt flere "
+"gange,\n"
+"                              så der totalt er N samtidige forbindelser.\n"
+"                              Se også -j flaget."
 
 #: src/usage_text.h:53
 msgid ""
@@ -141,39 +156,53 @@ msgid ""
 "60.\n"
 "                              Default: 5"
 msgstr ""
+" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
+"inden\n"
+"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
+"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:57
 msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
-msgstr ""
+msgstr " -t, --timeout=SEK            Sæt tidsudløb i sekunder. Standard: 60"
 
 #: src/usage_text.h:59
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
+" -m, --max-tries=N            Sæt antallet af forsøg. 0 betyder ubegrænset.\n"
+"                              Standard: 5"
 
 #: src/usage_text.h:62
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
+" --http-proxy=VÆRT:PORT       Brug HTTP proxy server. Dette rammer alle "
+"URL'er."
 
 #: src/usage_text.h:64
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
+" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
 
 #: src/usage_text.h:66
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
+" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
 
 #: src/usage_text.h:68
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
+" --http-proxy-user=BRUGER     Sæt HTTP proxy bruger. Dette rammer alle "
+"URL'er."
 
 #: src/usage_text.h:70
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
+" --http-proxy-passwd=KODE     Sæt HTTP proxy kodeord. Dette rammer alle "
+"URL'er."
 
 #: src/usage_text.h:72
 msgid ""
@@ -181,6 +210,10 @@ msgid ""
 "                              METHOD is either 'get' or 'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --http-proxy-method=METODE   Sæt metoden der skal bruges til proxy\n"
+"                              forespørgslen. METODE skal enten være 'get' "
+"or\n"
+"                              'tunnel'. Standard: tunnel"
 
 #: src/usage_text.h:76
 msgid ""
@@ -189,22 +222,31 @@ msgid ""
 "                              is the only supported scheme.\n"
 "                              Default: basic"
 msgstr ""
+" --http-auth-scheme=SKEMA     Sæt HTTP godkendelses skema. Lige nu er, "
+"basic\n"
+"                              det eneste understøttede skema.\n"
+"                              Standard: basic"
 
 #: src/usage_text.h:80
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
+" --referer=HENVISER           Sæt henviser. Dette vil ramme alle URL'er."
 
 #: src/usage_text.h:82
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
+" --ftp-user=BRUGER            Sæt FTP bruger. Dette rammer alle URL'er.\n"
+"                              Standard: anonymous"
 
 #: src/usage_text.h:85
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
+" --ftp-passwd=KODEORD         Sæt FTP kodeord. Dette rammer alle URL'er.\n"
+"                              Standard: ARIA2USER@"
 
 #: src/usage_text.h:88
 msgid ""
@@ -213,10 +255,14 @@ msgid ""
 "                              or 'ascii'.\n"
 "                              Default: binary"
 msgstr ""
+" --ftp-type=TYPE              Sæt FTP overførselstypen. TYPE er enten "
+"'binary'\n"
+"                              eller 'ascii'.\n"
+"                              Standard: binary"
 
 #: src/usage_text.h:92
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr ""
+msgstr " -p, --ftp-pasv               Brug passiv tilstand i FTP."
 
 #: src/usage_text.h:94
 msgid ""
@@ -225,6 +271,10 @@ msgid ""
 "                              'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --ftp-via-http-proxy=METODE  Brug HTTP proxy til FTP. METODE er enten "
+"'get'\n"
+"                              eller 'tunnel'.\n"
+"                              Standard: tunnel"
 
 #: src/usage_text.h:98
 msgid ""
@@ -238,6 +288,17 @@ msgid ""
 "downloads.\n"
 "                              Default: 0"
 msgstr ""
+" --lowest-speed-limit=FART    Luk forbindelsen hvis overførselshastigheden "
+"er\n"
+"                              lavere eller lig denne værdig (bytes per "
+"sekund).\n"
+"                              0 betyder aria2 ikke har en "
+"minimumshastighed.\n"
+"                              Du kan tilføje K eller M (1K = 1024, 1M = "
+"1024K).\n"
+"                              Dette flag vedrører ikke BitTorrent "
+"overførsler.\n"
+"                              Standard: 0"
 
 #: src/usage_text.h:105
 msgid ""
@@ -246,6 +307,11 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
+" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
+"                              sekund. 0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M (1K = 1024, 1M = "
+"1024K).\n"
+"                              Standard: 0"
 
 #: src/usage_text.h:110
 msgid ""
@@ -260,6 +326,15 @@ msgid ""
 "                              depending on the size of the file.\n"
 "                              Default: prealloc"
 msgstr ""
+" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
+"                              'none' eller 'prealloc'. 'none' allokerer "
+"ikke\n"
+"                              filpladsen. 'prealloc' forud allokerer "
+"pladsen\n"
+"                              før overførslen begynder. Dette kan tage "
+"noget\n"
+"                              tid, afhængig af størrelsen på filen.\n"
+"                              Standard: prealloc"
 
 #: src/usage_text.h:117
 msgid ""
@@ -267,6 +342,11 @@ msgid ""
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --no-file-allocation-limit=STR Ingen filallokering vil blive lavet for "
+"filer\n"
+"                              hvis størrelse er mindre end STR.\n"
+"                              Du kan tilføje K eller M (1K = 1024, 1M = "
+"1024K)."
 
 #: src/usage_text.h:121
 msgid ""

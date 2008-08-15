@@ -1,63 +1,70 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Tatsuhiro Tsujikawa
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Greek translation for aria2
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the aria2 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2c 0.15.2\n"
+"Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-08-15 21:42+0900\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2008-08-15 21:45+0900\n"
+"Last-Translator: jimmyz <Unknown>\n"
+"Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:793
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
+"Η διαδικασία απενεργοποίησης ξεκινα... Πατήστε Ctrl-C ξανά για άμεση "
+"απενεργοποίηση."
 
 #: src/DownloadEngine.cc:797
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Η διαδικασία άμεσης απενεργοποίησης ξεκινα..."
 
 #: src/MultiUrlRequestInfo.cc:86
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
+msgstr "Το aria2 θα συνεχίσει το κατέβασμα εάν η μεταφορά επανεκινηθεί."
 
 #: src/MultiUrlRequestInfo.cc:88
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
+"Αν υπάρχουν σφάλματα, δείτε το αρχείο καταγραφών (log). Δώστε την παράμετρο -"
+"l στη σελίδα help/man για περαιτέρω λεπτομέρειες."
 
 #: src/RequestGroupMan.cc:312
 msgid "Download Results:"
-msgstr ""
+msgstr "Αποτελέσματα μεταφορτώσεων:"
 
 #: src/RequestGroupMan.cc:327
+#, fuzzy
 msgid "Status Legend:"
-msgstr ""
+msgstr "Ιστορικό κατάστασης:"
 
 #: src/HelpItem.cc:39
 msgid "                              Default: "
-msgstr ""
+msgstr "                              Προκαθορισμένο: "
 
 #: src/HelpItem.cc:40
+#, fuzzy
 msgid "                              Tags: "
-msgstr ""
+msgstr "                              Tags: "
 
 #: src/HelpItem.cc:41
 msgid "                              Available Values: "
-msgstr ""
+msgstr "                              Διαθέσιμες τιμές: "
 
 #: src/OptionHandlerImpl.h:71
 msgid "must be either 'true' or 'false'."
-msgstr ""
+msgstr "πρέπει να είναι \"true\" ή \"false\""
 
 #: src/OptionHandlerImpl.h:92 src/OptionHandlerImpl.h:127
 #, c-format
@@ -67,60 +74,63 @@ msgstr ""
 #: src/OptionHandlerImpl.h:124
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr ""
+msgstr "πρέπει να είναι μικρότερο ή ίσο με το %s."
 
 #: src/OptionHandlerImpl.h:130
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr ""
+msgstr "πρέπει να είναι μεγαλύτερο ή ίσο με %s."
 
 #: src/OptionHandlerImpl.h:133 src/OptionHandlerImpl.h:179
 msgid "must be a number."
-msgstr ""
+msgstr "πρέπει να είναι αριθμός."
 
 #: src/OptionHandlerImpl.h:170
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr ""
+msgstr "πρέπει να είναι μικρότερο ή ίσο με %.1f."
 
 #: src/OptionHandlerImpl.h:173
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr ""
+msgstr "πρέπει να είναι μεταξύ %.1f και %.1f."
 
 #: src/OptionHandlerImpl.h:176
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr ""
+msgstr "πρέπει να είναι μεγαλύτερο ή ίσο με το %.1f."
 
 #: src/OptionHandlerImpl.h:257
 msgid "must be one of the following:"
-msgstr ""
+msgstr "πρέπει να είναι ένα από τα ακόλουθα:"
 
 #: src/OptionHandlerImpl.h:294
 msgid "unrecognized proxy format"
-msgstr ""
+msgstr "Μη αναγνωρίσιμο φορμά proxy."
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr ""
+msgstr " -d, --dir=DIR Το directory για αποθήκευση του κατεβασμένου αρχείου."
 
 #: src/usage_text.h:39
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr ""
+msgstr " -o, --out=FILE Το όνομα αποθήκευσης του αρχείου."
 
 #: src/usage_text.h:41
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
+" -l, --log=LOG Το όνομα του αρχείου καταγραφής. Εάν προσθέσατε '-',\n"
+"                              η καταγραφή γίνετε στο stdout."
 
 #: src/usage_text.h:44
 msgid " -D, --daemon                 Run as daemon."
-msgstr ""
+msgstr " -D, --daemon. Εκτέλεση σαν daemon."
 
 #: src/usage_text.h:46
+#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -132,6 +142,14 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
+" -s, --split=N. Μεταφόρτωση αρχείου χρησιμοποιώντας πλήθος N συνδέσεων. Αν "
+"δίδονται περισσότερα\n"
+"                              από  N URLs, τα πρώτα είναι σε χρήση και τα "
+"υπόλοιπα είναι εφεδρικά. Αν\n"
+"                              δίδονται λιγότερα, τότε χρησιμοποιούνται κατ' "
+"επανάληψη, μέχρι να γίνουν\n"
+"                              συνολικά Ν συνδέσεις. Παρακαλώ δείτε και την "
+"παραμετρο -j."
 
 #: src/usage_text.h:53
 msgid ""
@@ -141,39 +159,49 @@ msgid ""
 "60.\n"
 "                              Default: 5"
 msgstr ""
+" --retry-wait=SEC  Χρόνος αναμονής για επανάληψη μετά από σφάλμα.\n"
+"                              Τιμή από 0 εώς 60 δευτ..\n"
+"                              Προκαθορισμένο: 5"
 
 #: src/usage_text.h:57
 msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
 msgstr ""
+" -t, --timeout=SEC Ορίστε το χρονικό όριο λήξης.  Προκαθορισμένο: 60 δευτ."
 
 #: src/usage_text.h:59
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
+" -m, --max-tries=N Ορίστε το πλήθος των προσπαθειών. 0 σημαίνει άπειρες.\n"
+"                              Προκαθορισμένο: 5"
 
 #: src/usage_text.h:62
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
+" --http-proxy=HOST:PORT Χρήση HTTP διακομιστή proxy. Επιδρα σε όλα τα URLs."
 
 #: src/usage_text.h:64
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr ""
+msgstr " --http-user=USER Ορίστε χρήστη HTTP. Επιδρα σε όλα τα URLs."
 
 #: src/usage_text.h:66
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr ""
+msgstr " --http-passwd=PASSWD Ορίστε τον κωδικό HTTP. Επιδρα σε όλα τα URLs."
 
 #: src/usage_text.h:68
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
+" --http-proxy-user=USER Ορίστε όνομα χρήστη proxy HTTP. Επιδρα σε όλα τα "
+"URLs."
 
 #: src/usage_text.h:70
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
+" --http-proxy-passwd=PASSWD Ορίστε κωδικό proxy HTTP. Επιδρα σε όλα τα URLs."
 
 #: src/usage_text.h:72
 msgid ""
@@ -181,6 +209,9 @@ msgid ""
 "                              METHOD is either 'get' or 'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --http-proxy-method=METHOD Ορίστε μέθοδο για αιτήματα proxy.\n"
+"                              Το METHOD είναι είτε 'get', είτε tunnel'\n"
+"                              Προκαθορισμένο: tunnel"
 
 #: src/usage_text.h:76
 msgid ""
@@ -189,22 +220,28 @@ msgid ""
 "                              is the only supported scheme.\n"
 "                              Default: basic"
 msgstr ""
+" --http-auth-scheme=SCHEME Ορίστε σχήμα διαπίστευσης HTTP. Προς στιγμην, το "
+"basic\n"
+"                              είναι το μόνο υποστηριζόμενο.\n"
+"                              Προκαθορισμένο: basic"
 
 #: src/usage_text.h:80
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr ""
+msgstr " --referer=REFERER Ορίστε το Referer. Επιδρα σε όλα τα URLs."
 
 #: src/usage_text.h:82
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
 "                              Default: anonymous"
-msgstr ""
+msgstr " --ftp-user=USER Ορίστε χρήστη FTP. Επιδρα σε όλα τα URLs."
 
 #: src/usage_text.h:85
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
+" --ftp-passwd=PASSWD Ορίστε κωδικό FTP. Επιδρα σε όλα τα URLs.\n"
+"                              Προκαθορισμένο: ARIA2USER@"
 
 #: src/usage_text.h:88
 msgid ""
@@ -213,10 +250,13 @@ msgid ""
 "                              or 'ascii'.\n"
 "                              Default: binary"
 msgstr ""
+" --ftp-type=TYPE Ορίστε τύπο μεταφορών FTP. Το TYPE είναι 'binary'\n"
+"                              ή 'ascii'.\n"
+"                              Προκαθορισμένο: binary"
 
 #: src/usage_text.h:92
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr ""
+msgstr " -p, --ftp-pasv Χρησιμοποίησε παθητική λειτουργία FTP."
 
 #: src/usage_text.h:94
 msgid ""
@@ -225,6 +265,10 @@ msgid ""
 "                              'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --ftp-via-http-proxy=METHOD Χρησιμοποίησε τον HTTP proxy στο FTP. Το METHOD "
+"είναι 'get' ή\n"
+"                              'tunnel'.\n"
+"                              Προκαθορισμένο: tunnel"
 
 #: src/usage_text.h:98
 msgid ""
@@ -786,17 +830,17 @@ msgstr ""
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr ""
+msgstr "CUID#%d - Η μεταφόρτωση για ένα τμήμα ολοκληρώθηκε επιτυχώς."
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr ""
+msgstr "CUID#%d - Κανένα τμήμα δεν είναι διαθέσιμο."
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr ""
+msgstr "CUID#%d - Συνδέομαι στο %s:%d"
 
 #: src/message.h:43
 #, c-format
@@ -804,11 +848,12 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
+"CUID#%d - Το τμήμα άλλαξε. 'Εστειλα ξανά την αίτηση με νέα επικεφαλίδα."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr ""
+msgstr "CUID#%d - Ανακατεύθυνση στο %s"
 
 #: src/message.h:45
 #, c-format
@@ -816,6 +861,8 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
+"CUID#%d - Ζητώ:\n"
+"%s"
 
 #: src/message.h:46
 #, c-format
@@ -823,21 +870,24 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
+"Copy text   \t\n"
+"CUID#%d - Ελήφθη απόκριση:\n"
+"%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr ""
+msgstr "CUID#%d - Η μεταφόρτβση απορρίφθηκε. URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr ""
+msgstr "CUID#%d - Επανεκκινώ την μεταφόρτωση. URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr ""
+msgstr "CUID#%d - Η μεταφόρτωση απορρίφθηκε."
 
 #: src/message.h:50
 #, c-format

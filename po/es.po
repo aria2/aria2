@@ -7,24 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-08-01 00:32+0900\n"
-"PO-Revision-Date: 2008-07-23 21:59+0900\n"
-"Last-Translator: himerx <himerx@gmail.com>\n"
+"POT-Creation-Date: 2008-08-15 21:42+0900\n"
+"PO-Revision-Date: 2008-08-15 21:45+0900\n"
+"Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-07-23 12:44+0000\n"
+"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:793
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
+"Empezando secuencia de paro.., Pulse Ctrl-C otra vez para efectuar un paro "
+"de emergencia."
 
 #: src/DownloadEngine.cc:797
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Empezando secuencia de paro de emergencia..."
 
 #: src/MultiUrlRequestInfo.cc:86
 msgid "aria2 will resume download if the transfer is restarted."
