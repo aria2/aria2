@@ -51,6 +51,11 @@ void CookieParserTest::testParse()
   std::string str3 = "";
   c = CookieParser().parse(str3);
   CPPUNIT_ASSERT(!c.good());
+
+  std::string str4 = "UID=300; expires=Wed, 1890-01-01 0:0:0 GMT;";
+  c = CookieParser().parse(str4, "localhost", "/");
+  CPPUNIT_ASSERT(c.good());
+  CPPUNIT_ASSERT(c.onetime);
 }
 
 void CookieParserTest::testParse_file()

@@ -695,8 +695,16 @@ time_t Util::httpGMT(const std::string& httpStdTime)
 {
   struct tm tm;
   memset(&tm, 0, sizeof(tm));
-  strptime(httpStdTime.c_str(), "%a, %Y-%m-%d %H:%M:%S GMT", &tm);
+  char* r = strptime(httpStdTime.c_str(), "%a, %Y-%m-%d %H:%M:%S GMT", &tm);
+  if(r != httpStdTime.c_str()+httpStdTime.size()) {
+    return -1;
+  }
   time_t thetime = timegm(&tm);
+  if(thetime == -1) {
+    if(tm.tm_year >= 2038-1900) {
+      thetime = INT32_MAX;
+    }
+  }
   return thetime;
 }
 

@@ -1,5 +1,16 @@
 2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	If a cookie whose expire date is later than 2038-01-19 03:14:07 GMT is
+	sent from server, its expire date is assumed to 2038-01-19 03:14:07 GMT.
+	If Util::httpGMT is failed, then Cookie::onetime is set to true.
+	* src/Util.cc
+	* src/Util.h
+	* src/CookieParser.cc
+	* test/UtilTest.cc
+	* test/CookieParserTest.cc
+	
+2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Seprate the implementation to load old mozilla format of cookie to
 	NsCookieParser class.
 	* src/CookieBoxFactory.cc

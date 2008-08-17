@@ -58,8 +58,15 @@ void CookieParser::setField(Cookie& cookie, const std::string& name, const std::
   } else if(name == C_PATH) {
     cookie.path = value;
   } else if(name == C_EXPIRES) {
-    cookie.expires = Util::httpGMT(value);
-    cookie.onetime = false;
+    time_t expires = Util::httpGMT(value);
+    if(expires == -1) {
+      // If parsing expire date is failed, it is assumed as a session scope
+      // cookie.
+      cookie.onetime = true;
+    } else {
+      cookie.expires = expires;
+      cookie.onetime = false;
+    }
   } else {
     cookie.name = name;
     cookie.value = value;

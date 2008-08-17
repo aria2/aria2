@@ -209,6 +209,14 @@ public:
 
   static std::string abbrevSize(int64_t size);
 
+  /**
+   * Parses given httpTimeFormat and returns seconds ellapsed since epoc.
+   * The available format is "%a, %Y-%m-%d %H:%M:%S GMT".
+   * If specified date is later than "Tue, 2038-01-19 3:14:7 GMT",
+   * this function returns INT32_MAX.
+   * This function also cannot handle prior 1900-1-1 0:0:0 GMT.
+   * If parse operation is failed, then return -1.
+   */
   static time_t httpGMT(const std::string& httpTimeFormat);
 
   static void toStream(std::ostream& os,

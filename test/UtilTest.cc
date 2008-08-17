@@ -45,6 +45,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testToString_binaryStream);
   CPPUNIT_TEST(testItos);
   CPPUNIT_TEST(testUitos);
+  CPPUNIT_TEST(testHttpGMT);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -83,6 +84,7 @@ public:
   void testToString_binaryStream();
   void testItos();
   void testUitos();
+  void testHttpGMT();
 };
 
 
@@ -666,6 +668,17 @@ void UtilTest::testUitos()
     int16_t i = -12345;
     CPPUNIT_ASSERT_EQUAL(std::string("/.-,+"), Util::uitos(i));
   }
+}
+
+void UtilTest::testHttpGMT()
+{
+  CPPUNIT_ASSERT_EQUAL((time_t)0, Util::httpGMT("Thu, 1970-01-01 0:0:0 GMT"));
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647,
+		       Util::httpGMT("Tue, 2038-01-19 3:14:7 GMT"));
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647,
+		       Util::httpGMT("Tue, 2038-01-19 3:14:8 GMT"));
+  CPPUNIT_ASSERT_EQUAL((time_t)-1,
+		       Util::httpGMT("Tue, 2008/10/10 23:33:33 UTC"));
 }
 
 } // namespace aria2
