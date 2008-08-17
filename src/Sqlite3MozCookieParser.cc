@@ -82,7 +82,8 @@ static int cookieRowMapper(void* data, int rowIndex,
   return 0;
 }
 
-std::deque<Cookie> Sqlite3MozCookieParser::parse(const std::string& filename)
+std::deque<Cookie>
+Sqlite3MozCookieParser::parse(const std::string& filename) const
 {
   sqlite3* db = 0;
   

@@ -1,5 +1,11 @@
 2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made parse() const
+	* src/Sqlite3MozCookieParser.cc
+	* src/Sqlite3MozCookieParser.h
+	
+2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added firefox3 cookie support based on the patch submitted by
 	tizianomueller.
 	firefox3 cookie is SQLite3 database. libsqlite3 is required to enable

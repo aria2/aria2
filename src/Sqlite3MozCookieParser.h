@@ -48,7 +48,7 @@ public:
 
   ~Sqlite3MozCookieParser();
 
-  std::deque<Cookie> parse(const std::string& filename);
+  std::deque<Cookie> parse(const std::string& filename) const;
 };
 
 } // namespace aria2
