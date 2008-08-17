@@ -1,5 +1,11 @@
 2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed "(1.x/2.x)" from TEXT_LOAD_COOKIES since aria2 can load Firefox3
+	style cookie file.
+	* src/usage_text.h
+
+2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	If a cookie whose expire date is later than 2038-01-19 03:14:07 GMT is
 	sent from server, its expire date is assumed to 2038-01-19 03:14:07 GMT.
 	If Util::httpGMT is failed, then Cookie::onetime is set to true.
