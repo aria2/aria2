@@ -38,11 +38,21 @@
 #include "Util.h"
 #include "RecoverableException.h"
 #include "A2STR.h"
-#include <istream>
+#include "LogFactory.h"
+#include "Logger.h"
+#ifdef HAVE_SQLITE3
+# include "Sqlite3MozCookieParser.h"
+#endif // HAVE_SQLITE3
+#include <fstream>
+#include <iomanip>
 
 namespace aria2 {
 
 const std::string CookieBoxFactory::C_TRUE("TRUE");
+
+CookieBoxFactory::CookieBoxFactory():_logger(LogFactory::getInstance()) {}
+
+CookieBoxFactory::~CookieBoxFactory() {}
 
 CookieBoxHandle CookieBoxFactory::createNewInstance()
 {
@@ -51,21 +61,43 @@ CookieBoxHandle CookieBoxFactory::createNewInstance()
   return box;
 }
 
-void CookieBoxFactory::loadDefaultCookie(std::istream& s)
+void CookieBoxFactory::loadDefaultCookie(const std::string& filename)
 {
-  std::string line;
-  while(getline(s, line)) {
-    if(Util::startsWith(line, A2STR::SHARP_C)) {
-      continue;
-    }
+  std::ifstream s(filename.c_str());
+  char header[16]; // "SQLite format 3" plus \0
+  s.get(header, sizeof(header));
+  if(s.bad()) {
+    _logger->error("Failed to read header of cookie file %s", filename.c_str());
+    return;
+  }
+  if(std::string(header) == "SQLite format 3") {
+#ifdef HAVE_SQLITE3
     try {
-      Cookie c = parseNsCookie(line);
-      if(c.good()) {
-	defaultCookies.push_back(c);
-      }
+      defaultCookies = Sqlite3MozCookieParser().parse(filename);
     } catch(RecoverableException& e) {
-      // ignore malformed cookie entry
-      // TODO better to log it
+      _logger->error("Failed to load cookies from %s, cause: %s",
+		     filename.c_str(), e.what());
+    }
+#else // !HAVE_SQLITE3
+    _logger->notice("Cannot read SQLite3 database because SQLite3 support is"
+		    " disabled by configuration.");
+#endif // !HAVE_SQLITE3
+  } else {
+    s.seekg(0);
+    std::string line;
+    while(getline(s, line)) {
+      if(Util::startsWith(line, A2STR::SHARP_C)) {
+	continue;
+      }
+      try {
+	Cookie c = parseNsCookie(line);
+	if(c.good()) {
+	  defaultCookies.push_back(c);
+	}
+      } catch(RecoverableException& e) {
+	// ignore malformed cookie entry
+	// TODO better to log it
+      }
     }
   }
 }

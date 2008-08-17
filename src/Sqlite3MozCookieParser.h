@@ -32,49 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COOKIE_BOX_FACTORY_H_
-#define _D_COOKIE_BOX_FACTORY_H_
+#ifndef _D_SQLITE3_MOZ_COOKIE_PARSER_H_
+#define _D_SQLITE3_MOZ_COOKIE_PARSER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
 #include "Cookie.h"
-#include "SingletonHolder.h"
 #include <string>
-#include <iosfwd>
+#include <deque>
 
 namespace aria2 {
 
-class CookieBox;
-class Logger;
-
-class CookieBoxFactory {
-private:
-  Cookies defaultCookies;
-
-  Logger* _logger;
+class Sqlite3MozCookieParser {
 public:
-  CookieBoxFactory();
+  Sqlite3MozCookieParser();
 
-  ~CookieBoxFactory();
+  ~Sqlite3MozCookieParser();
 
-  SharedHandle<CookieBox> createNewInstance();
-
-  void loadDefaultCookie(const std::string& filename);
-
-  Cookie parseNsCookie(const std::string& nsCookieStr) const;
-
-  const Cookies& getDefaultCookies() const
-  {
-    return defaultCookies;
-  }
-
-private:
-  static const std::string C_TRUE;
+  std::deque<Cookie> parse(const std::string& filename);
 };
-
-typedef SharedHandle<CookieBoxFactory> CookieBoxFactoryHandle;
-typedef SingletonHolder<CookieBoxFactoryHandle> CookieBoxFactorySingletonHolder;
 
 } // namespace aria2
 
-#endif // _D_COOKIE_BOX_FACTORY_H_
+#endif // _D_SQLITE3_MOZ_COOKIE_PARSER_H_

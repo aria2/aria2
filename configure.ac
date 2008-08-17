@@ -26,6 +26,7 @@ AC_SUBST(localedir)
 # Checks for arguments.
 ARIA2_ARG_WITH([gnutls])
 ARIA2_ARG_WITH([openssl])
+ARIA2_ARG_WITH([sqlite3])
 ARIA2_ARG_WITH([libxml2])
 ARIA2_ARG_WITH([libexpat])
 ARIA2_ARG_WITH([libares])
@@ -63,6 +64,10 @@ fi
 
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
   AM_PATH_LIBEXPAT
+fi
+
+if test "x$with_sqlite3" = "xyes"; then
+  AM_PATH_SQLITE3
 fi
 
 if test "x$with_gnutls" = "xyes"; then
@@ -147,6 +152,9 @@ fi
 
 # Set conditional for libz
 AM_CONDITIONAL([HAVE_LIBZ], [test "x$have_libz" = "xyes"])
+
+# Set conditional for sqlite3
+AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 
 # Checks for header files.
 AC_FUNC_ALLOCA
@@ -325,6 +333,7 @@ echo "CFLAGS:         $CFLAGS"
 echo "CPPFLAGS:       $CPPFLAGS"
 echo "LDFLAGS:        $LDFLAGS"
 echo "LIBS:           $LIBS"
+echo "SQLite3:        $have_sqlite3"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "LibXML2:        $have_libxml2"

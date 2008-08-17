@@ -726,6 +726,8 @@ XML_CPPFLAGS
 XML_LIBS
 LIBEXPAT_LIBS
 LIBEXPAT_CPPFLAGS
+SQLITE3_LIBS
+SQLITE3_CPPFLAGS
 LIBGNUTLS_CONFIG
 LIBGNUTLS_CFLAGS
 LIBGNUTLS_LIBS
@@ -754,6 +756,8 @@ ENABLE_ASYNC_DNS_TRUE
 ENABLE_ASYNC_DNS_FALSE
 HAVE_LIBZ_TRUE
 HAVE_LIBZ_FALSE
+HAVE_SQLITE3_TRUE
+HAVE_SQLITE3_FALSE
 ALLOCA
 USE_NLS
 GETTEXT_MACRO_VERSION
@@ -1436,6 +1440,7 @@ Optional Packages:
   --with-cppunit-exec-prefix=PFX  Exec prefix where CppUnit is installed (optional)
   --with-gnutls           use gnutls if it is installed.
   --with-openssl          use openssl if it is installed.
+  --with-sqlite3          use sqlite3 if it is installed.
   --with-libxml2          use libxml2 if it is installed.
   --with-libexpat         use libexpat if it is installed.
   --with-libares          use libares if it is installed.
@@ -1444,6 +1449,7 @@ Optional Packages:
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
   --with-xml-exec-prefix=PFX Exec prefix where libxml is installed (optional)
   --with-libexpat-prefix=PREFIX  Prefix where libexpat installed (optional)
+  --with-sqlite3-prefix=PREFIX  Prefix where SQLite3 installed (optional)
   --with-libgnutls-prefix=PFX   Prefix where libgnutls is installed (optional)
   --with-libgcrypt-prefix=PFX
                           prefix where LIBGCRYPT is installed (optional)
@@ -2699,6 +2705,15 @@ if test "${with_openssl+set}" = set; then
   withval=$with_openssl; with_openssl=$withval
 else
   with_openssl=yes
+fi
+
+
+
+# Check whether --with-sqlite3 was given.
+if test "${with_sqlite3+set}" = set; then
+  withval=$with_sqlite3; with_sqlite3=$withval
+else
+  with_sqlite3=yes
 fi
 
 
@@ -5938,6 +5953,112 @@ CPPFLAGS=$CPPFLAGS_save
 
 fi
 
+if test "x$with_sqlite3" = "xyes"; then
+
+
+# Check whether --with-sqlite3-prefix was given.
+if test "${with_sqlite3_prefix+set}" = set; then
+  withval=$with_sqlite3_prefix; sqlite3_prefix=$withval
+else
+  sqlite3_prefix=""
+fi
+
+if test "x$sqlite3_prefix" = "x"; then
+  sqlite3_prefix="/usr"
+fi
+
+sqlite3_prefix_lib=$sqlite3_prefix/lib
+sqlite3_prefix_include=$sqlite3_prefix/include
+
+LIBS_save=$LIBS
+CPPFLAGS_save=$CPPFLAGS
+
+LIBS="-L$sqlite3_prefix_lib $LIBS"
+CPPFLAGS="-I$sqlite3_prefix_include $CPPFLAGS"
+
+{ echo "$as_me:$LINENO: checking for sqlite3_open in -lsqlite3" >&5
+echo $ECHO_N "checking for sqlite3_open in -lsqlite3... $ECHO_C" >&6; }
+if test "${ac_cv_lib_sqlite3_sqlite3_open+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsqlite3  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char sqlite3_open ();
+int
+main ()
+{
+return sqlite3_open ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_sqlite3_sqlite3_open=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_sqlite3_sqlite3_open=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_sqlite3_sqlite3_open" >&5
+echo "${ECHO_T}$ac_cv_lib_sqlite3_sqlite3_open" >&6; }
+if test $ac_cv_lib_sqlite3_sqlite3_open = yes; then
+  have_sqlite3=yes
+fi
+
+if test "x$have_sqlite3" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_SQLITE3 1
+_ACEOF
+
+    SQLITE3_LIBS="-L$sqlite3_prefix_lib -lsqlite3"
+    SQLITE3_CPPFLAGS="-I$sqlite3_prefix_include"
+
+
+fi
+
+LIBS=$LIBS_save
+CPPFLAGS=$CPPFLAGS_save
+
+
+fi
+
 if test "x$with_gnutls" = "xyes"; then
 
 # Check whether --with-libgnutls-prefix was given.
@@ -7252,6 +7373,16 @@ fi
 else
   HAVE_LIBZ_TRUE='#'
   HAVE_LIBZ_FALSE=
+fi
+
+
+# Set conditional for sqlite3
+ if test "x$have_sqlite3" = "xyes"; then
+  HAVE_SQLITE3_TRUE=
+  HAVE_SQLITE3_FALSE='#'
+else
+  HAVE_SQLITE3_TRUE='#'
+  HAVE_SQLITE3_FALSE=
 fi
 
 
@@ -21757,6 +21888,13 @@ echo "$as_me: error: conditional \"HAVE_LIBZ\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${HAVE_SQLITE3_TRUE}" && test -z "${HAVE_SQLITE3_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_SQLITE3\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_SQLITE3\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${HAVE_ASCTIME_R_TRUE}" && test -z "${HAVE_ASCTIME_R_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_ASCTIME_R\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -22593,6 +22731,8 @@ XML_CPPFLAGS!$XML_CPPFLAGS$ac_delim
 XML_LIBS!$XML_LIBS$ac_delim
 LIBEXPAT_LIBS!$LIBEXPAT_LIBS$ac_delim
 LIBEXPAT_CPPFLAGS!$LIBEXPAT_CPPFLAGS$ac_delim
+SQLITE3_LIBS!$SQLITE3_LIBS$ac_delim
+SQLITE3_CPPFLAGS!$SQLITE3_CPPFLAGS$ac_delim
 LIBGNUTLS_CONFIG!$LIBGNUTLS_CONFIG$ac_delim
 LIBGNUTLS_CFLAGS!$LIBGNUTLS_CFLAGS$ac_delim
 LIBGNUTLS_LIBS!$LIBGNUTLS_LIBS$ac_delim
@@ -22621,6 +22761,8 @@ ENABLE_ASYNC_DNS_TRUE!$ENABLE_ASYNC_DNS_TRUE$ac_delim
 ENABLE_ASYNC_DNS_FALSE!$ENABLE_ASYNC_DNS_FALSE$ac_delim
 HAVE_LIBZ_TRUE!$HAVE_LIBZ_TRUE$ac_delim
 HAVE_LIBZ_FALSE!$HAVE_LIBZ_FALSE$ac_delim
+HAVE_SQLITE3_TRUE!$HAVE_SQLITE3_TRUE$ac_delim
+HAVE_SQLITE3_FALSE!$HAVE_SQLITE3_FALSE$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 USE_NLS!$USE_NLS$ac_delim
 GETTEXT_MACRO_VERSION!$GETTEXT_MACRO_VERSION$ac_delim
@@ -22675,10 +22817,6 @@ HAVE_BASENAME_TRUE!$HAVE_BASENAME_TRUE$ac_delim
 HAVE_BASENAME_FALSE!$HAVE_BASENAME_FALSE$ac_delim
 HAVE_GAI_STRERROR_TRUE!$HAVE_GAI_STRERROR_TRUE$ac_delim
 HAVE_GAI_STRERROR_FALSE!$HAVE_GAI_STRERROR_FALSE$ac_delim
-HAVE_GETADDRINFO_TRUE!$HAVE_GETADDRINFO_TRUE$ac_delim
-HAVE_GETADDRINFO_FALSE!$HAVE_GETADDRINFO_FALSE$ac_delim
-HAVE_GETTIMEOFDAY_TRUE!$HAVE_GETTIMEOFDAY_TRUE$ac_delim
-HAVE_GETTIMEOFDAY_FALSE!$HAVE_GETTIMEOFDAY_FALSE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -22720,6 +22858,10 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+HAVE_GETADDRINFO_TRUE!$HAVE_GETADDRINFO_TRUE$ac_delim
+HAVE_GETADDRINFO_FALSE!$HAVE_GETADDRINFO_FALSE$ac_delim
+HAVE_GETTIMEOFDAY_TRUE!$HAVE_GETTIMEOFDAY_TRUE$ac_delim
+HAVE_GETTIMEOFDAY_FALSE!$HAVE_GETTIMEOFDAY_FALSE$ac_delim
 HAVE_INET_ATON_TRUE!$HAVE_INET_ATON_TRUE$ac_delim
 HAVE_INET_ATON_FALSE!$HAVE_INET_ATON_FALSE$ac_delim
 HAVE_LOCALTIME_R_TRUE!$HAVE_LOCALTIME_R_TRUE$ac_delim
@@ -22731,7 +22873,7 @@ HAVE_TIMEGM_FALSE!$HAVE_TIMEGM_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 9; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 13; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -23452,6 +23594,7 @@ echo "CFLAGS:         $CFLAGS"
 echo "CPPFLAGS:       $CPPFLAGS"
 echo "LDFLAGS:        $LDFLAGS"
 echo "LIBS:           $LIBS"
+echo "SQLite3:        $have_sqlite3"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "LibXML2:        $have_libxml2"

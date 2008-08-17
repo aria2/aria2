@@ -385,10 +385,11 @@ int main(int argc, char* argv[])
     if(op->defined(PREF_LOAD_COOKIES)) {
       File cookieFile(op->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile()) {
-	std::ifstream in(op->get(PREF_LOAD_COOKIES).c_str());
-	CookieBoxFactorySingletonHolder::instance()->loadDefaultCookie(in);
+	CookieBoxFactorySingletonHolder::instance()->loadDefaultCookie
+	  (op->get(PREF_LOAD_COOKIES));
       } else {
-	logger->error(MSG_LOADING_COOKIE_FAILED, op->get(PREF_LOAD_COOKIES).c_str());
+	logger->error(MSG_LOADING_COOKIE_FAILED,
+		      op->get(PREF_LOAD_COOKIES).c_str());
 	exit(EXIT_FAILURE);
       }
     }

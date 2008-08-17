@@ -63,6 +63,10 @@ if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc
 endif # HAVE_LIBZ
 
+if HAVE_SQLITE3
+aria2c_SOURCES += Sqlite3MozCookieParserTest.cc
+endif # HAVE_SQLITE3
+
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
 	IteratableChunkChecksumValidatorTest.cc\
@@ -180,6 +184,7 @@ aria2c_LDADD = ../src/libaria2c.a\
     @LIBINTL@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
+	@SQLITE3_LIBS@\
 	${CPPUNIT_LIBS}
 AM_CPPFLAGS =  -Wall\
 	${CPPUNIT_CFLAGS}\
@@ -187,7 +192,7 @@ AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	@LIBZ_CPPFLAGS@	-DLOCALEDIR=\"$(localedir)\" @DEFS@
+	@LIBZ_CPPFLAGS@	 @SQLITE3_CPPFLAGS@ -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\

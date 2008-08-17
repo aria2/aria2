@@ -200,6 +200,10 @@ if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h
 endif # HAVE_LIBZ
 
+if HAVE_SQLITE3
+SRCS += Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h
+endif # HAVE_SQLITE3
+
 if ENABLE_ASYNC_DNS
 SRCS += AsyncNameResolver.cc AsyncNameResolver.h
 endif # ENABLE_ASYNC_DNS
@@ -473,10 +477,12 @@ noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@ #-lprofiler
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
+	@SQLITE3_LIBS@ #-lprofiler
 #aria2c_LDFLAGS =  -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	@LIBZ_CPPFLAGS@	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg
+	@LIBZ_CPPFLAGS@	 @SQLITE3_CPPFLAGS@\
+	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg

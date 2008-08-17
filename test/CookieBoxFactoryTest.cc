@@ -1,6 +1,5 @@
 #include "CookieBoxFactory.h"
 #include "CookieBox.h"
-#include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -9,6 +8,7 @@ class CookieBoxFactoryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(CookieBoxFactoryTest);
   CPPUNIT_TEST(testLoadDefaultCookie);
+  CPPUNIT_TEST(testLoadDefaultCookie_sqlite3);
   CPPUNIT_TEST(testCreateNewInstance);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -18,6 +18,7 @@ public:
   }
 
   void testLoadDefaultCookie();
+  void testLoadDefaultCookie_sqlite3();
   void testCreateNewInstance();
 };
 
@@ -26,11 +27,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( CookieBoxFactoryTest );
 
 void CookieBoxFactoryTest::testLoadDefaultCookie()
 {
-  std::ifstream f("nscookietest.txt");
-
   CookieBoxFactory factory;
 
-  factory.loadDefaultCookie(f);
+  factory.loadDefaultCookie("nscookietest.txt");
 
   Cookies cookies = factory.getDefaultCookies();
 
@@ -65,11 +64,22 @@ void CookieBoxFactoryTest::testLoadDefaultCookie()
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
 }
 
+void CookieBoxFactoryTest::testLoadDefaultCookie_sqlite3()
+{
+  CookieBoxFactory factory;
+  factory.loadDefaultCookie("cookies.sqlite");
+  const std::deque<Cookie>& cookies = factory.getDefaultCookies();
+#ifdef HAVE_SQLITE3
+  CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
+#else // !HAVE_SQLITE3
+  CPPUNIT_ASSERT(cookies.empty());
+#endif // !HAVE_SQLITE3
+}
+
 void CookieBoxFactoryTest::testCreateNewInstance()
 {
-  std::ifstream f("nscookietest.txt");
   CookieBoxFactory factory;
-  factory.loadDefaultCookie(f);
+  factory.loadDefaultCookie("nscookietest.txt");
   SharedHandle<CookieBox> box = factory.createNewInstance();
   std::deque<Cookie> cookies = box->criteriaFind("localhost", "/", 0, true);
 

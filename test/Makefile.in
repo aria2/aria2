@@ -35,11 +35,12 @@ target_triplet = @target@
 TESTS = aria2c$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
 @HAVE_LIBZ_TRUE@am__append_1 = GZipDecoderTest.cc
-@ENABLE_MESSAGE_DIGEST_TRUE@am__append_2 = MessageDigestHelperTest.cc\
+@HAVE_SQLITE3_TRUE@am__append_2 = Sqlite3MozCookieParserTest.cc
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_3 = MessageDigestHelperTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.cc
 
-@ENABLE_BITTORRENT_TRUE@am__append_3 = BtAllowedFastMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@am__append_4 = BtAllowedFastMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtChokeMessageTest.cc\
@@ -131,7 +132,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h\
 @ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.cc
 
-@ENABLE_METALINK_TRUE@am__append_4 = MetalinkerTest.cc\
+@ENABLE_METALINK_TRUE@am__append_5 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.cc\
@@ -156,10 +157,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/aria2_arg.m4 \
 	$(top_srcdir)/m4/longlong.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
 	$(top_srcdir)/m4/printf-posix.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/size_max.m4 $(top_srcdir)/m4/stdint_h.m4 \
-	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/visibility.m4 \
-	$(top_srcdir)/m4/wchar_t.m4 $(top_srcdir)/m4/wint_t.m4 \
-	$(top_srcdir)/m4/xsize.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/size_max.m4 $(top_srcdir)/m4/sqlite3.m4 \
+	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
+	$(top_srcdir)/m4/visibility.m4 $(top_srcdir)/m4/wchar_t.m4 \
+	$(top_srcdir)/m4/wint_t.m4 $(top_srcdir)/m4/xsize.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -191,7 +193,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc GZipDecoderTest.cc \
-	MessageDigestHelperTest.cc \
+	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -241,11 +243,13 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @HAVE_LIBZ_TRUE@am__objects_1 = GZipDecoderTest.$(OBJEXT)
-@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_2 =  \
+@HAVE_SQLITE3_TRUE@am__objects_2 =  \
+@HAVE_SQLITE3_TRUE@	Sqlite3MozCookieParserTest.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_3 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_3 =  \
+@ENABLE_BITTORRENT_TRUE@am__objects_4 =  \
 @ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.$(OBJEXT) \
@@ -319,7 +323,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_4 = MetalinkerTest.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_5 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.$(OBJEXT) \
@@ -360,7 +364,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	ServerStatURISelectorTest.$(OBJEXT) \
 	InOrderURISelectorTest.$(OBJEXT) ServerStatTest.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4)
+	$(am__objects_4) $(am__objects_5)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -484,6 +488,8 @@ PRI_MACROS_BROKEN = @PRI_MACROS_BROKEN@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE3_CPPFLAGS = @SQLITE3_CPPFLAGS@
+SQLITE3_LIBS = @SQLITE3_LIBS@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
@@ -578,7 +584,7 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4)
+	$(am__append_3) $(am__append_4) $(am__append_5)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -586,6 +592,7 @@ aria2c_LDADD = ../src/libaria2c.a\
     @LIBINTL@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
+	@SQLITE3_LIBS@\
 	${CPPUNIT_LIBS}
 
 AM_CPPFLAGS = -Wall\
@@ -594,7 +601,7 @@ AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	@LIBZ_CPPFLAGS@	-DLOCALEDIR=\"$(localedir)\" @DEFS@
+	@LIBZ_CPPFLAGS@	 @SQLITE3_CPPFLAGS@ -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
@@ -793,6 +800,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3MozCookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormatTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TagContainerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaggedItemTest.Po@am__quote@

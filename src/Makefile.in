@@ -36,8 +36,9 @@ host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = aria2c$(EXEEXT)
 @HAVE_LIBZ_TRUE@am__append_1 = GZipDecoder.cc GZipDecoder.h
-@ENABLE_ASYNC_DNS_TRUE@am__append_2 = AsyncNameResolver.cc AsyncNameResolver.h
-@ENABLE_MESSAGE_DIGEST_TRUE@am__append_3 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+@HAVE_SQLITE3_TRUE@am__append_2 = Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h
+@ENABLE_ASYNC_DNS_TRUE@am__append_3 = AsyncNameResolver.cc AsyncNameResolver.h
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_4 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
@@ -46,7 +47,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@	Checksum.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksum.h
 
-@ENABLE_BITTORRENT_TRUE@am__append_4 = MetaEntry.h\
+@ENABLE_BITTORRENT_TRUE@am__append_5 = MetaEntry.h\
 @ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
 @ENABLE_BITTORRENT_TRUE@	Dictionary.cc Dictionary.h\
 @ENABLE_BITTORRENT_TRUE@	List.cc List.h\
@@ -223,7 +224,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.cc BtLeecherStateChoke.h\
 @ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.cc BtSeederStateChoke.h
 
-@ENABLE_METALINK_TRUE@am__append_5 = Metalinker.cc Metalinker.h\
+@ENABLE_METALINK_TRUE@am__append_6 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
@@ -252,17 +253,17 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 @ENABLE_METALINK_TRUE@	MetalinkHelper.cc MetalinkHelper.h
 
-@ENABLE_LIBXML2_TRUE@am__append_6 = XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
-@ENABLE_LIBEXPAT_TRUE@am__append_7 = ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
-@HAVE_ASCTIME_R_FALSE@am__append_8 = asctime_r.c asctime_r.h
-@HAVE_BASENAME_FALSE@am__append_9 = libgen.c libgen.h
-@HAVE_GETADDRINFO_FALSE@am__append_10 = getaddrinfo.c getaddrinfo.h
-@HAVE_GAI_STRERROR_FALSE@am__append_11 = gai_strerror.c gai_strerror.h
-@HAVE_GETTIMEOFDAY_FALSE@am__append_12 = gettimeofday.c gettimeofday.h
-@HAVE_INET_ATON_FALSE@am__append_13 = inet_aton.c inet_aton.h
-@HAVE_LOCALTIME_R_FALSE@am__append_14 = localtime_r.c localtime_r.h
-@HAVE_STRPTIME_FALSE@am__append_15 = strptime.c strptime.h
-@HAVE_TIMEGM_FALSE@am__append_16 = timegm.c timegm.h
+@ENABLE_LIBXML2_TRUE@am__append_7 = XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
+@ENABLE_LIBEXPAT_TRUE@am__append_8 = ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
+@HAVE_ASCTIME_R_FALSE@am__append_9 = asctime_r.c asctime_r.h
+@HAVE_BASENAME_FALSE@am__append_10 = libgen.c libgen.h
+@HAVE_GETADDRINFO_FALSE@am__append_11 = getaddrinfo.c getaddrinfo.h
+@HAVE_GAI_STRERROR_FALSE@am__append_12 = gai_strerror.c gai_strerror.h
+@HAVE_GETTIMEOFDAY_FALSE@am__append_13 = gettimeofday.c gettimeofday.h
+@HAVE_INET_ATON_FALSE@am__append_14 = inet_aton.c inet_aton.h
+@HAVE_LOCALTIME_R_FALSE@am__append_15 = localtime_r.c localtime_r.h
+@HAVE_STRPTIME_FALSE@am__append_16 = strptime.c strptime.h
+@HAVE_TIMEGM_FALSE@am__append_17 = timegm.c timegm.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -280,10 +281,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/aria2_arg.m4 \
 	$(top_srcdir)/m4/longlong.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
 	$(top_srcdir)/m4/printf-posix.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/size_max.m4 $(top_srcdir)/m4/stdint_h.m4 \
-	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/visibility.m4 \
-	$(top_srcdir)/m4/wchar_t.m4 $(top_srcdir)/m4/wint_t.m4 \
-	$(top_srcdir)/m4/xsize.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/size_max.m4 $(top_srcdir)/m4/sqlite3.m4 \
+	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
+	$(top_srcdir)/m4/visibility.m4 $(top_srcdir)/m4/wchar_t.m4 \
+	$(top_srcdir)/m4/wint_t.m4 $(top_srcdir)/m4/xsize.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -413,6 +415,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ServerStatMan.h URISelector.h InOrderURISelector.cc \
 	InOrderURISelector.h ServerStatURISelector.cc \
 	ServerStatURISelector.h GZipDecoder.cc GZipDecoder.h \
+	Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h \
 	AsyncNameResolver.cc AsyncNameResolver.h \
 	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
@@ -572,14 +575,15 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	inet_aton.h localtime_r.c localtime_r.h strptime.c strptime.h \
 	timegm.c timegm.h
 @HAVE_LIBZ_TRUE@am__objects_1 = GZipDecoder.$(OBJEXT)
-@ENABLE_ASYNC_DNS_TRUE@am__objects_2 = AsyncNameResolver.$(OBJEXT)
-@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_3 = IteratableChunkChecksumValidator.$(OBJEXT) \
+@HAVE_SQLITE3_TRUE@am__objects_2 = Sqlite3MozCookieParser.$(OBJEXT)
+@ENABLE_ASYNC_DNS_TRUE@am__objects_3 = AsyncNameResolver.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_4 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_4 = Data.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@am__objects_5 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BencodeVisitor.$(OBJEXT) \
@@ -692,7 +696,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshake.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_5 = Metalinker.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_6 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkProcessorFactory.$(OBJEXT) \
@@ -718,20 +722,20 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkHelper.$(OBJEXT)
-@ENABLE_LIBXML2_TRUE@am__objects_6 =  \
+@ENABLE_LIBXML2_TRUE@am__objects_7 =  \
 @ENABLE_LIBXML2_TRUE@	XML2SAXMetalinkProcessor.$(OBJEXT)
-@ENABLE_LIBEXPAT_TRUE@am__objects_7 =  \
+@ENABLE_LIBEXPAT_TRUE@am__objects_8 =  \
 @ENABLE_LIBEXPAT_TRUE@	ExpatMetalinkProcessor.$(OBJEXT)
-@HAVE_ASCTIME_R_FALSE@am__objects_8 = asctime_r.$(OBJEXT)
-@HAVE_BASENAME_FALSE@am__objects_9 = libgen.$(OBJEXT)
-@HAVE_GETADDRINFO_FALSE@am__objects_10 = getaddrinfo.$(OBJEXT)
-@HAVE_GAI_STRERROR_FALSE@am__objects_11 = gai_strerror.$(OBJEXT)
-@HAVE_GETTIMEOFDAY_FALSE@am__objects_12 = gettimeofday.$(OBJEXT)
-@HAVE_INET_ATON_FALSE@am__objects_13 = inet_aton.$(OBJEXT)
-@HAVE_LOCALTIME_R_FALSE@am__objects_14 = localtime_r.$(OBJEXT)
-@HAVE_STRPTIME_FALSE@am__objects_15 = strptime.$(OBJEXT)
-@HAVE_TIMEGM_FALSE@am__objects_16 = timegm.$(OBJEXT)
-am__objects_17 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+@HAVE_ASCTIME_R_FALSE@am__objects_9 = asctime_r.$(OBJEXT)
+@HAVE_BASENAME_FALSE@am__objects_10 = libgen.$(OBJEXT)
+@HAVE_GETADDRINFO_FALSE@am__objects_11 = getaddrinfo.$(OBJEXT)
+@HAVE_GAI_STRERROR_FALSE@am__objects_12 = gai_strerror.$(OBJEXT)
+@HAVE_GETTIMEOFDAY_FALSE@am__objects_13 = gettimeofday.$(OBJEXT)
+@HAVE_INET_ATON_FALSE@am__objects_14 = inet_aton.$(OBJEXT)
+@HAVE_LOCALTIME_R_FALSE@am__objects_15 = localtime_r.$(OBJEXT)
+@HAVE_STRPTIME_FALSE@am__objects_16 = strptime.$(OBJEXT)
+@HAVE_TIMEGM_FALSE@am__objects_17 = timegm.$(OBJEXT)
+am__objects_18 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -809,8 +813,9 @@ am__objects_17 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
-	$(am__objects_14) $(am__objects_15) $(am__objects_16)
-am_libaria2c_a_OBJECTS = $(am__objects_17)
+	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
+	$(am__objects_17)
+am_libaria2c_a_OBJECTS = $(am__objects_18)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -939,6 +944,8 @@ PRI_MACROS_BROKEN = @PRI_MACROS_BROKEN@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SQLITE3_CPPFLAGS = @SQLITE3_CPPFLAGS@
+SQLITE3_LIBS = @SQLITE3_LIBS@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
@@ -1136,19 +1143,21 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	$(am__append_6) $(am__append_7) $(am__append_8) \
 	$(am__append_9) $(am__append_10) $(am__append_11) \
 	$(am__append_12) $(am__append_13) $(am__append_14) \
-	$(am__append_15) $(am__append_16)
+	$(am__append_15) $(am__append_16) $(am__append_17)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@ #-lprofiler
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
+	@SQLITE3_LIBS@ #-lprofiler
 
 #aria2c_LDFLAGS =  -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	@LIBZ_CPPFLAGS@	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg
+	@LIBZ_CPPFLAGS@	 @SQLITE3_CPPFLAGS@\
+	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg
 
 all: all-am
 
@@ -1486,6 +1495,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3MozCookieParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamFileAllocationEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormat.Po@am__quote@
