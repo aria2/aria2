@@ -11,7 +11,7 @@
 	
 2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Seprate the implementation to load old mozilla format of cookie to
+	Separate the implementation to load old mozilla format of cookie to
 	NsCookieParser class.
 	* src/CookieBoxFactory.cc
 	* src/CookieBoxFactory.h
