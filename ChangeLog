@@ -1,5 +1,15 @@
 2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Seprate the implementation to load old mozilla format of cookie to
+	NsCookieParser class.
+	* src/CookieBoxFactory.cc
+	* src/CookieBoxFactory.h
+	* src/NsCookieParser.cc
+	* src/NsCookieParser.h
+	* test/NsCookieParserTest.cc
+	
+2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made parse() const
 	* src/Sqlite3MozCookieParser.cc
 	* src/Sqlite3MozCookieParser.h

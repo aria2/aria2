@@ -57,7 +57,8 @@ aria2c_SOURCES = AllTest.cc\
 	ServerStatManTest.cc\
 	ServerStatURISelectorTest.cc\
 	InOrderURISelectorTest.cc\
-	ServerStatTest.cc
+	ServerStatTest.cc\
+	NsCookieParserTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

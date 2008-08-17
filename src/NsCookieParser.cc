@@ -32,44 +32,69 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COOKIE_BOX_FACTORY_H_
-#define _D_COOKIE_BOX_FACTORY_H_
-
-#include "common.h"
-#include "SharedHandle.h"
-#include "Cookie.h"
-#include "SingletonHolder.h"
-#include <string>
-#include <iosfwd>
+#include "NsCookieParser.h"
+#include "Util.h"
+#include "A2STR.h"
+#include "RecoverableException.h"
+#include "StringFormat.h"
+#include <fstream>
 
 namespace aria2 {
 
-class CookieBox;
-class Logger;
+NsCookieParser::NsCookieParser() {}
 
-class CookieBoxFactory {
-private:
-  Cookies defaultCookies;
+NsCookieParser::~NsCookieParser() {}
 
-  Logger* _logger;
-public:
-  CookieBoxFactory();
+static const std::string C_TRUE("TRUE");
 
-  ~CookieBoxFactory();
-
-  SharedHandle<CookieBox> createNewInstance();
-
-  void loadDefaultCookie(const std::string& filename);
-
-  const Cookies& getDefaultCookies() const
-  {
-    return defaultCookies;
+static Cookie parseNsCookie(const std::string& nsCookieStr)
+{
+  std::deque<std::string> vs;
+  Util::slice(vs, nsCookieStr, '\t', true);
+  if(vs.size() < 6 ) {
+    return Cookie();
   }
-};
 
-typedef SharedHandle<CookieBoxFactory> CookieBoxFactoryHandle;
-typedef SingletonHolder<CookieBoxFactoryHandle> CookieBoxFactorySingletonHolder;
+  int64_t expireDate = Util::parseLLInt(vs[4]);
+  // TODO assuming time_t is int32_t...
+  if(expireDate > INT32_MAX) {
+    expireDate = INT32_MAX;
+  }
+
+  Cookie c(vs[5], // name
+	   vs.size() >= 7? vs[6]:A2STR::NIL, // value
+	   expireDate, // expires
+	   vs[2], // path
+	   vs[0], // domain
+	   vs[3] == C_TRUE ? true : false);
+
+  return c;
+}
+
+std::deque<Cookie> NsCookieParser::parse(const std::string& filename)
+{
+  std::ifstream s(filename.c_str());
+  if(!s) {
+    throw RecoverableException
+      (StringFormat("Failed to open file %s", filename.c_str()).str());
+  }
+  std::string line;
+  std::deque<Cookie> cookies;
+  while(getline(s, line)) {
+    if(Util::startsWith(line, A2STR::SHARP_C)) {
+      continue;
+    }
+    try {
+      Cookie c = parseNsCookie(line);
+      if(c.good()) {
+	cookies.push_back(c);
+      }
+    } catch(RecoverableException& e) {
+      // ignore malformed cookie entry
+      // TODO better to log it
+    }
+  }
+  return cookies;
+}
 
 } // namespace aria2
-
-#endif // _D_COOKIE_BOX_FACTORY_H_

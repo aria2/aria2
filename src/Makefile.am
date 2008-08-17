@@ -194,7 +194,8 @@ SRCS =  Socket.h\
 	ServerStatMan.cc ServerStatMan.h\
 	URISelector.h\
 	InOrderURISelector.cc InOrderURISelector.h\
-	ServerStatURISelector.cc ServerStatURISelector.h
+	ServerStatURISelector.cc ServerStatURISelector.h\
+	NsCookieParser.cc NsCookieParser.h
 
 if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h
