@@ -31,7 +31,8 @@ Here is a list of features.
 * HTTP Proxy authentication support
 * HTTP gzip, deflate content encoding support
 * Chunked transfer encoding support
-* Load Cookies from file using the Mozilla/Firefox(1.x/2.x) and Netscape format
+* Load Cookies from file using the Firefox3 format and the Mozilla/Firefox
+  (1.x/2.x)/Netscape format.
 * Custom HTTP Header support
 * Persistent Connections support
 * FTP through HTTP Proxy
@@ -59,6 +60,7 @@ BitTorrent            GnuTLS+Libgcrypt or OpenSSL
 Metalink              libxml2 or Expat.
 Checksum              GnuTLS+Libgcrypt or OpenSSL
 gzip, deflate in HTTP zlib
+Firefox3 cookie       libsqlite3
 -------------------------------------------------
 
 Note;;
@@ -88,6 +90,7 @@ packages(package name may vary depending on the distribution you use):
 * libares-dev      (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
 * libz1g-dev       (Required for gzip, deflate decoding support in HTTP)
+* libsqlite3-dev   (Required for Firefox3 cookie support)
 
 You can use libssl-dev instead of libgnutls-dev,libgpg-error-dev,libgcrypt-dev:
 
