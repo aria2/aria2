@@ -51,6 +51,7 @@
 #include "InOrderURISelector.h"
 #include "Option.h"
 #include "prefs.h"
+#include "File.h"
 #include <iomanip>
 #include <sstream>
 #include <ostream>
@@ -498,13 +499,14 @@ bool RequestGroupMan::loadServerStat(const std::string& filename)
 
 bool RequestGroupMan::saveServerStat(const std::string& filename) const
 {
-  std::ofstream out(filename.c_str());
+  std::string tempfile = filename+"__temp";
+  std::ofstream out(tempfile.c_str());
   if(!out) {
     _logger->error("Failed to open ServerStat file %s for write.",
-		   filename.c_str());
+		   tempfile.c_str());
     return false;
   }
-  if(_serverStatMan->save(out)) {
+  if(_serverStatMan->save(out) && File(tempfile).renameTo(filename)) {
     _logger->notice("ServerStat file %s saved successfully.", filename.c_str());
     return true;
   } else {

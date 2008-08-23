@@ -7,6 +7,9 @@
 #include "DownloadResult.h"
 #include "FileEntry.h"
 #include "ServerStatMan.h"
+#include "ServerStat.h"
+#include "File.h"
+#include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -16,6 +19,8 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(RequestGroupManTest);
   CPPUNIT_TEST(testIsSameFileBeingDownloaded);
   CPPUNIT_TEST(testGetInitialCommands);
+  CPPUNIT_TEST(testLoadServerStat);
+  CPPUNIT_TEST(testSaveServerStat);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -28,6 +33,8 @@ public:
 
   void testIsSameFileBeingDownloaded();
   void testGetInitialCommands();
+  void testLoadServerStat();
+  void testSaveServerStat();
 };
 
 
@@ -67,6 +74,41 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
 void RequestGroupManTest::testGetInitialCommands()
 {
   // TODO implement later
+}
+
+void RequestGroupManTest::testSaveServerStat()
+{
+  Option option;
+  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(), 0, &option);
+  SharedHandle<ServerStat> ss_localhost(new ServerStat("localhost", "http"));
+  rm.addServerStat(ss_localhost);
+  File f("/tmp/aria2_RequestGroupManTest_testSaveServerStat");
+  if(f.exists()) {
+    f.remove();
+  }
+  CPPUNIT_ASSERT(rm.saveServerStat(f.getPath()));
+  CPPUNIT_ASSERT(f.isFile());
+
+  f.remove();
+  CPPUNIT_ASSERT(f.mkdirs());
+  CPPUNIT_ASSERT(!rm.saveServerStat(f.getPath()));
+}
+
+void RequestGroupManTest::testLoadServerStat()
+{
+  File f("/tmp/aria2_RequestGroupManTest_testLoadServerStat");
+  std::ofstream o(f.getPath().c_str());
+  o << "host=localhost, protocol=http, dl_speed=0, last_updated=1219505257,"
+    << "status=OK";
+  o.close();
+
+  Option option;
+  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(), 0, &option);
+  CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
+  SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",
+							    "http");
+  CPPUNIT_ASSERT(!ss_localhost.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), ss_localhost->getHostname());
 }
 
 } // namespace aria2
