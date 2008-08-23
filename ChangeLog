@@ -1,5 +1,12 @@
 2008-08-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that the number of connected peer is exceeding the limit
+	(55 by default) in seeding mode.
+	Multiplied 0.8 to _maxUploadSpeedLimit.
+	* src/ActivePeerConnectionCommand.cc
+	
+2008-08-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Clear table item.
 	* src/Dictionary.cc
 	

@@ -81,11 +81,17 @@ bool ActivePeerConnectionCommand::execute() {
     TransferStat tstat = peerStorage->calculateStat();
     if(// for seeder state
        (pieceStorage->downloadFinished() && btRuntime->lessThanMaxPeers() &&
-	(_maxUploadSpeedLimit == 0 || tstat.getUploadSpeed() < _maxUploadSpeedLimit)) ||
+	(_maxUploadSpeedLimit == 0 ||
+	 tstat.getUploadSpeed() < _maxUploadSpeedLimit*0.8)) ||
        // for leecher state
-       (tstat.getDownloadSpeed() < _thresholdSpeed ||
-	btRuntime->lessThanMinPeers())) {
-      for(size_t numAdd = _numNewConnection;
+       (!pieceStorage->downloadFinished() &&
+	(tstat.getDownloadSpeed() < _thresholdSpeed ||
+	 btRuntime->lessThanMinPeers()))) {
+      size_t numConnection = pieceStorage->downloadFinished() ?
+	std::min(_numNewConnection,
+		 BtRuntime::MAX_PEERS-btRuntime->getConnections()) :
+	_numNewConnection;
+      for(size_t numAdd = numConnection;
 	  numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = peerStorage->getUnusedPeer();
 	connectToPeer(peer);
