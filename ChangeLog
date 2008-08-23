@@ -1,3 +1,8 @@
+2008-08-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed error handling of lseek.
+	* src/AbstractDiskWriter.cc
+
 2008-08-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Removed "(1.x/2.x)" from TEXT_LOAD_COOKIES since aria2 can load Firefox3

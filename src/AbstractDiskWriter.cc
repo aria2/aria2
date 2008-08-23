@@ -124,7 +124,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len)
 
 void AbstractDiskWriter::seek(off_t offset)
 {
-  if(offset != lseek(fd, offset, SEEK_SET)) {
+  if(lseek(fd, offset, SEEK_SET) == (off_t)-1) {
     throw DlAbortEx
       (StringFormat(EX_FILE_SEEK, filename.c_str(), strerror(errno)).str());
   }
