@@ -192,8 +192,8 @@ _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n
 _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n"\
   "                              every static (HTTP/FTP) URL, torrent and metalink.")
 #define TEXT_LOAD_COOKIES \
-_(" --load-cookies=FILE          Load Cookies from FILE using the Mozilla/Firefox\n"\
-  "                              and Netscape format.")
+_(" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 format\n"\
+  "                              and Mozilla/Firefox(1.x/2.x)/Netscape format.")
 #define TEXT_SHOW_FILES \
 _(" -S, --show-files             Print file listing of .torrent or .metalink file\n"\
   "                              and exit. More detailed information will be listed\n"\
