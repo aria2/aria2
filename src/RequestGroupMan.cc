@@ -483,16 +483,14 @@ bool RequestGroupMan::loadServerStat(const std::string& filename)
 {
   std::ifstream in(filename.c_str());
   if(!in) {
-    _logger->error("Failed to open ServerStat file %s for read.",
-		   filename.c_str());
+    _logger->error(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED, filename.c_str());
     return false;
   }
   if(_serverStatMan->load(in)) {
-    _logger->notice("ServerStat file %s loaded successfully.",
-		    filename.c_str());
+    _logger->notice(MSG_SERVER_STAT_LOADED, filename.c_str());
     return true;
   } else {
-    _logger->error("Failed to read ServerStat from %s.", filename.c_str());
+    _logger->error(MSG_READING_SERVER_STAT_FILE_FAILED, filename.c_str());
     return false;
   }
 }
@@ -502,15 +500,15 @@ bool RequestGroupMan::saveServerStat(const std::string& filename) const
   std::string tempfile = filename+"__temp";
   std::ofstream out(tempfile.c_str());
   if(!out) {
-    _logger->error("Failed to open ServerStat file %s for write.",
+    _logger->error(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
 		   tempfile.c_str());
     return false;
   }
   if(_serverStatMan->save(out) && File(tempfile).renameTo(filename)) {
-    _logger->notice("ServerStat file %s saved successfully.", filename.c_str());
+    _logger->notice(MSG_SERVER_STAT_SAVED, filename.c_str());
     return true;
   } else {
-    _logger->error("Failed to write ServerStat to %s.", filename.c_str());
+    _logger->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
     return false;
   }
 }

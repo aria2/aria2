@@ -144,6 +144,16 @@
 			      " doesn't verify signatures.")
 #define MSG_SIGNATURE_NOT_SAVED _("Saving signature as %s failed. Maybe file"\
 				  " already exists.")
+#define MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED \
+  _("Failed to open ServerStat file %s for read.")
+#define MSG_SERVER_STAT_LOADED _("ServerStat file %s loaded successfully.")
+#define MSG_READING_SERVER_STAT_FILE_FAILED _("Failed to read ServerStat from" \
+					      " %s.")
+#define MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED \
+  _("Failed to open ServerStat file %s for write.")
+#define MSG_SERVER_STAT_SAVED _("ServerStat file %s saved successfully.")
+#define MSG_WRITING_SERVER_STAT_FILE_FAILED _("Failed to write ServerStat to"\
+					      " %s.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
