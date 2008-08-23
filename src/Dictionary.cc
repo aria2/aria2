@@ -49,6 +49,7 @@ void Dictionary::clearTable() {
       itr != table.end(); itr++) {
     delete itr->second;
   }
+  table.clear();
 }
 
 const MetaEntry* Dictionary::get(const std::string& name) const {
