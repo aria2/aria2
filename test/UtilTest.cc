@@ -46,6 +46,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testItos);
   CPPUNIT_TEST(testUitos);
   CPPUNIT_TEST(testHttpGMT);
+  CPPUNIT_TEST(testNtoh64);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -85,6 +86,7 @@ public:
   void testItos();
   void testUitos();
   void testHttpGMT();
+  void testNtoh64();
 };
 
 
@@ -679,6 +681,19 @@ void UtilTest::testHttpGMT()
 		       Util::httpGMT("Tue, 2038-01-19 3:14:8 GMT"));
   CPPUNIT_ASSERT_EQUAL((time_t)-1,
 		       Util::httpGMT("Tue, 2008/10/10 23:33:33 UTC"));
+}
+
+void UtilTest::testNtoh64()
+{
+  uint64_t x = 0xff00ff00ee00ee00LL;
+#ifdef WORDS_BIGENDIAN
+  CPPUNIT_ASSERT_EQUAL(x, ntoh64(x));
+  CPPUNIT_ASSERT_EQUAL(x, hton64(x));
+#else // !WORDS_BIGENDIAN
+  uint64_t y = 0x00ee00ee00ff00ffLL;
+  CPPUNIT_ASSERT_EQUAL(y, ntoh64(x));
+  CPPUNIT_ASSERT_EQUAL(x, hton64(y));
+#endif // !WORDS_BIGENDIAN
 }
 
 } // namespace aria2
