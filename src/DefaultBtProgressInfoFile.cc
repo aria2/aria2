@@ -59,6 +59,7 @@
 namespace aria2 {
 
 const std::string DefaultBtProgressInfoFile::V0000("0000");
+const std::string DefaultBtProgressInfoFile::V0001("0001");
 
 static std::string createFilename(const SharedHandle<DownloadContext>& dctx)
 {
@@ -88,6 +89,7 @@ bool DefaultBtProgressInfoFile::isTorrentDownload()
   return !dynamic_pointer_cast<BtContext>(_dctx).isNull();
 }
 
+// Since version 0001, Integers are saved in binary form, network byte order.
 void DefaultBtProgressInfoFile::save() {
   _logger->info(MSG_SAVING_SEGMENT_FILE, _filename.c_str());
   std::string filenameTemp = _filename+"__temp";
@@ -96,9 +98,9 @@ void DefaultBtProgressInfoFile::save() {
     o.exceptions(std::ios::failbit);
     bool torrentDownload = isTorrentDownload();
     // file version: 16 bits
-    // value: '0'
-    uint16_t version = 0;
-    o.write(reinterpret_cast<const char*>(&version), sizeof(version));
+    // values: '1'
+    char version[] = { 0x00, 0x01 };
+    o.write(version, sizeof(version));
     // extension: 32 bits
     // If this is BitTorrent download, then 0x00000001
     // Otherwise, 0x00000000
@@ -112,9 +114,9 @@ void DefaultBtProgressInfoFile::save() {
       // infoHashLength:
       // length: 32 bits
       BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
-      uint32_t infoHashLength = btContext->getInfoHashLength();
-      o.write(reinterpret_cast<const char*>(&infoHashLength),
-	      sizeof(infoHashLength));
+      uint32_t infoHashLengthNL = htonl(btContext->getInfoHashLength());
+      o.write(reinterpret_cast<const char*>(&infoHashLengthNL),
+	      sizeof(infoHashLengthNL));
       // infoHash:
       o.write(reinterpret_cast<const char*>(btContext->getInfoHash()),
 	      btContext->getInfoHashLength());
@@ -126,44 +128,47 @@ void DefaultBtProgressInfoFile::save() {
 	      sizeof(infoHashLength));
     }
     // pieceLength: 32 bits
-    uint32_t pieceLength = _dctx->getPieceLength();
-    o.write(reinterpret_cast<const char*>(&pieceLength), sizeof(pieceLength));
+    uint32_t pieceLengthNL = htonl(_dctx->getPieceLength());
+    o.write(reinterpret_cast<const char*>(&pieceLengthNL),
+	    sizeof(pieceLengthNL));
     // totalLength: 64 bits
-    uint64_t totalLength = _dctx->getTotalLength();
-    o.write(reinterpret_cast<const char*>(&totalLength), sizeof(totalLength));
+    uint64_t totalLengthNL = hton64(_dctx->getTotalLength());
+    o.write(reinterpret_cast<const char*>(&totalLengthNL),
+	    sizeof(totalLengthNL));
     // uploadLength: 64 bits
-    uint64_t uploadLength = 0;
+    uint64_t uploadLengthNL = 0;
     if(torrentDownload) {
       BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       TransferStat stat = PEER_STORAGE(btContext)->calculateStat();
-      uploadLength = stat.getAllTimeUploadLength();
+      uploadLengthNL = hton64(stat.getAllTimeUploadLength());
     }
-    o.write(reinterpret_cast<const char*>(&uploadLength), sizeof(uploadLength));
+    o.write(reinterpret_cast<const char*>(&uploadLengthNL),
+	    sizeof(uploadLengthNL));
     // bitfieldLength: 32 bits
-    uint32_t bitfieldLength = _pieceStorage->getBitfieldLength();
-    o.write(reinterpret_cast<const char*>(&bitfieldLength),
-	    sizeof(bitfieldLength));
+    uint32_t bitfieldLengthNL = htonl(_pieceStorage->getBitfieldLength());
+    o.write(reinterpret_cast<const char*>(&bitfieldLengthNL),
+	    sizeof(bitfieldLengthNL));
     // bitfield
     o.write(reinterpret_cast<const char*>(_pieceStorage->getBitfield()),
 	    _pieceStorage->getBitfieldLength());
     // the number of in-flight piece: 32 bits
     // TODO implement this
-    uint32_t numInFlightPiece = _pieceStorage->countInFlightPiece();
-    o.write(reinterpret_cast<const char*>(&numInFlightPiece),
-	    sizeof(numInFlightPiece));
+    uint32_t numInFlightPieceNL = htonl(_pieceStorage->countInFlightPiece());
+    o.write(reinterpret_cast<const char*>(&numInFlightPieceNL),
+	    sizeof(numInFlightPieceNL));
     Pieces inFlightPieces;
     _pieceStorage->getInFlightPieces(inFlightPieces);
     for(Pieces::const_iterator itr = inFlightPieces.begin();
 	itr != inFlightPieces.end(); ++itr) {
-      uint32_t index = (*itr)->getIndex();
-      o.write(reinterpret_cast<const char*>(&index), sizeof(index));
-      uint32_t length = (*itr)->getLength();
-      o.write(reinterpret_cast<const char*>(&length), sizeof(length));
-      uint32_t bitfieldLength = (*itr)->getBitfieldLength();
-      o.write(reinterpret_cast<const char*>(&bitfieldLength),
-	      sizeof(bitfieldLength));
+      uint32_t indexNL = htonl((*itr)->getIndex());
+      o.write(reinterpret_cast<const char*>(&indexNL), sizeof(indexNL));
+      uint32_t lengthNL = htonl((*itr)->getLength());
+      o.write(reinterpret_cast<const char*>(&lengthNL), sizeof(lengthNL));
+      uint32_t bitfieldLengthNL = htonl((*itr)->getBitfieldLength());
+      o.write(reinterpret_cast<const char*>(&bitfieldLengthNL),
+	      sizeof(bitfieldLengthNL));
       o.write(reinterpret_cast<const char*>((*itr)->getBitfield()),
-	      bitfieldLength);
+	      (*itr)->getBitfieldLength());
     }
 
     o.close();
@@ -179,6 +184,9 @@ void DefaultBtProgressInfoFile::save() {
   }
 }
 
+// It is assumed that integers are saved as:
+// 1) host byte order if version == 0000
+// 2) network byte order if version == 0001
 void DefaultBtProgressInfoFile::load() 
 {
   _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
@@ -187,13 +195,18 @@ void DefaultBtProgressInfoFile::load()
   unsigned char* savedBitfield = 0;
   try {
     in.exceptions(std::ios::failbit);
-    unsigned char version[2];
-    in.read((char*)version, sizeof(version));
-    if(DefaultBtProgressInfoFile::V0000 !=
-       Util::toHex(version, sizeof(version))) {
+    unsigned char versionBuf[2];
+    in.read((char*)versionBuf, sizeof(versionBuf));
+    std::string versionHex = Util::toHex(versionBuf, sizeof(versionBuf));
+    int version;
+    if(DefaultBtProgressInfoFile::V0000 == versionHex) {
+      version = 0;
+    } else if(DefaultBtProgressInfoFile::V0001 == versionHex) {
+      version = 1;
+    } else {
       throw DlAbortEx
 	(StringFormat("Unsupported ctrl file version: %s",
-		      Util::toHex(version, sizeof(version)).c_str()).str());
+		      versionHex.c_str()).str());
     }
     unsigned char extension[4];
     in.read((char*)extension, sizeof(extension));
@@ -206,6 +219,9 @@ void DefaultBtProgressInfoFile::load()
 
     uint32_t infoHashLength;
     in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
+    if(version >= 1) {
+      infoHashLength = ntohl(infoHashLength);
+    }
     if((infoHashLength < 0) ||
        ((infoHashLength == 0) && infoHashCheckEnabled)) {
       throw DlAbortEx
@@ -230,9 +246,15 @@ void DefaultBtProgressInfoFile::load()
 
     uint32_t pieceLength;
     in.read(reinterpret_cast<char*>(&pieceLength), sizeof(pieceLength));
+    if(version >= 1) {
+      pieceLength = ntohl(pieceLength);
+    }
 
     uint64_t totalLength;
     in.read(reinterpret_cast<char*>(&totalLength), sizeof(totalLength));
+    if(version >= 1) {
+      totalLength = ntoh64(totalLength);
+    }
     if(totalLength != _dctx->getTotalLength()) {
       throw DlAbortEx
 	(StringFormat("total length mismatch. expected: %s, actual: %s",
@@ -241,6 +263,9 @@ void DefaultBtProgressInfoFile::load()
     }
     uint64_t uploadLength;
     in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
+    if(version >= 1) {
+      uploadLength = ntoh64(uploadLength);
+    }
     if(isTorrentDownload()) {
       BT_RUNTIME(dynamic_pointer_cast<BtContext>(_dctx))->
 	setUploadLengthAtStartup(uploadLength);
@@ -249,6 +274,9 @@ void DefaultBtProgressInfoFile::load()
     // TODO implement the conversion mechanism between different piece length.
     uint32_t bitfieldLength;
     in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
+    if(version >= 1) {
+      bitfieldLength = ntohl(bitfieldLength);
+    }
     uint32_t expectedBitfieldLength =
       ((totalLength+pieceLength-1)/pieceLength+7)/8;
     if(expectedBitfieldLength != bitfieldLength) {
@@ -269,17 +297,25 @@ void DefaultBtProgressInfoFile::load()
       uint32_t numInFlightPiece;
       in.read(reinterpret_cast<char*>(&numInFlightPiece),
 	      sizeof(numInFlightPiece));
-      
+      if(version >= 1) {
+	numInFlightPiece = ntohl(numInFlightPiece);
+      }
       Pieces inFlightPieces;
       while(numInFlightPiece--) {
 	uint32_t index;
 	in.read(reinterpret_cast<char*>(&index), sizeof(index));
+	if(version >= 1) {
+	  index = ntohl(index);
+	}
 	if(!(index < _dctx->getNumPieces())) {
 	  throw DlAbortEx
 	    (StringFormat("piece index out of range: %u", index).str());
 	}
 	uint32_t length;
 	in.read(reinterpret_cast<char*>(&length), sizeof(length));
+	if(version >= 1) {
+	  length = ntohl(length);
+	}
 	if(!(length <=_dctx->getPieceLength())) {
 	  throw DlAbortEx
 	    (StringFormat("piece length out of range: %u", length).str());
@@ -288,6 +324,9 @@ void DefaultBtProgressInfoFile::load()
 	uint32_t bitfieldLength;
 	in.read(reinterpret_cast<char*>(&bitfieldLength),
 		sizeof(bitfieldLength));
+	if(version >= 1) {
+	  bitfieldLength = ntohl(bitfieldLength);
+	}
 	if(piece->getBitfieldLength() != bitfieldLength) {
 	  throw DlAbortEx
 	    (StringFormat("piece bitfield length mismatch."
@@ -314,6 +353,9 @@ void DefaultBtProgressInfoFile::load()
       uint32_t numInFlightPiece;
       in.read(reinterpret_cast<char*>(&numInFlightPiece),
 	      sizeof(numInFlightPiece));
+      if(version >= 1) {
+	numInFlightPiece = ntohl(numInFlightPiece);
+      }
       BitfieldMan src(pieceLength, totalLength);
       src.setBitfield(savedBitfield, bitfieldLength);
       if((src.getCompletedLength() || numInFlightPiece) &&
