@@ -40,6 +40,7 @@
 #include "Logger.h"
 #include "a2netcompat.h"
 #include "StringFormat.h"
+#include "Util.h"
 #include <cerrno>
 #include <cstring>
 #include <istream>
@@ -73,24 +74,45 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     header[2] = 0x02;
     // version
     header[6] = 0;
-    header[7] = 0x02;
+    header[7] = 0x03;
+
+    char headerCompat[8];
+    memset(headerCompat, 0, sizeof(headerCompat));
+    // magic
+    headerCompat[0] = 0xa1;
+    headerCompat[1] = 0xa2;
+    // format ID
+    headerCompat[2] = 0x02;
+    // version
+    headerCompat[6] = 0;
+    headerCompat[7] = 0x02;
 
     char zero[8];
     memset(zero, 0, sizeof(zero));
 
+    int version;
     char buf[26];
     // header
     in.read(buf, 8);
-    if(memcmp(header, buf, 8) != 0) {
+    if(memcmp(header, buf, 8) == 0) {
+      version = 3;
+    } else if(memcmp(headerCompat, buf, 8) == 0) {
+      version = 2;
+    } else {
       throw DlAbortEx
 	(StringFormat("Failed to load DHT routing table. cause:%s",
 		      "bad header").str());
     }
     // time
-    in.read(buf, 4);
-    _serializedTime.setTimeInSec(ntohl(*reinterpret_cast<uint32_t*>(buf)));
-    // 4bytes reserved
-    in.read(buf, 4);
+    if(version == 2) {
+      in.read(buf, 4);
+      _serializedTime.setTimeInSec(ntohl(*reinterpret_cast<uint32_t*>(buf)));
+      // 4bytes reserved
+      in.read(buf, 4);
+    } else {
+      in.read(buf, 8);
+      _serializedTime.setTimeInSec(ntoh64(*reinterpret_cast<uint64_t*>(buf)));
+    }
   
     // localnode
     // 8bytes reserved

@@ -1,3 +1,19 @@
+2008-08-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Bump up version number of dht.dat file to 3. In version 3 format, time
+	is stored in 64bit, network byte order.
+	New build can load old format(version 2) but it saves the file in new
+	format. It means once you used new build, your dht.dat becomes
+	incompatible with older build.
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTRoutingTableSerializer.cc
+	* test/DHTRoutingTableSerializerTest.cc
+
+2008-08-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added load-v0001.aria2 and load-nonBt-v0001.aria2 to EXTRA_DIST.
+	* test/Makefile.am
+
 2008-08-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Bump up version number of .aria2 control file to 0001.

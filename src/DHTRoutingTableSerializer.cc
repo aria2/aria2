@@ -40,6 +40,7 @@
 #include "Logger.h"
 #include "a2netcompat.h"
 #include "StringFormat.h"
+#include "Util.h"
 #include <cerrno>
 #include <cstring>
 #include <ostream>
@@ -71,17 +72,15 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   header[2] = 0x02;
   // version
   header[6] = 0;
-  header[7] = 0x02;
+  header[7] = 0x03;
   
   char zero[16];
   memset(zero, 0, sizeof(zero));
   try {
     o.write(header, 8);
     // write save date
-    uint32_t ntime = htonl(Time().getTime());
-    o.write(reinterpret_cast<const char*>(&ntime), sizeof(uint32_t));
-    // 4bytes reserved
-    o.write(zero, 4);
+    uint64_t ntime = hton64(Time().getTime());
+    o.write(reinterpret_cast<const char*>(&ntime), sizeof(ntime));
 
     // localnode
     // 8bytes reserved

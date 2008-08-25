@@ -66,15 +66,12 @@ void DHTRoutingTableSerializerTest::testSerialize()
   CPPUNIT_ASSERT((char)0x00 == buf[5]);
   // version
   CPPUNIT_ASSERT((char)0x00 == buf[6]);
-  CPPUNIT_ASSERT((char)0x02 == buf[7]);
+  CPPUNIT_ASSERT((char)0x03 == buf[7]);
 
   // time
-  ss.read(buf, 4);
-  time_t time = ntohl(*reinterpret_cast<uint32_t*>(buf));
+  ss.read(buf, 8);
+  time_t time = ntoh64(*reinterpret_cast<uint64_t*>(buf));
   std::cerr << time << std::endl;
-  // 4bytes reserved
-  ss.read(buf, 4);
-  CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
 
   // localnode
   // 8bytes reserved
