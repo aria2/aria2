@@ -1,5 +1,10 @@
 2008-08-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed DirectDiskAdaptorTest.h
+	* test/Makefile.am
+	
+2008-08-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed chunk checksum validation cannot detect trailing garbage data.
 	BUG#2074141
 	* src/AbstractSingleDiskAdaptor.cc

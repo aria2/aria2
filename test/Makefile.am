@@ -60,7 +60,7 @@ aria2c_SOURCES = AllTest.cc\
 	InOrderURISelectorTest.cc\
 	ServerStatTest.cc\
 	NsCookieParserTest.cc\
-	DirectDiskAdaptorTest.cc DirectDiskAdaptorTest.h
+	DirectDiskAdaptorTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc
