@@ -96,6 +96,13 @@ public:
   virtual void enableDirectIO() {}
 
   virtual void disableDirectIO() {}
+
+  // Assumed each file length is stored in fileEntries or DiskAdaptor knows it.
+  // If each actual file's length is larger than that, truncate file to that
+  // length.
+  // Call one of openFile/openExistingFile/initAndOpenFile before calling this
+  // function.
+  virtual void cutTrailingGarbage() = 0;
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

@@ -442,6 +442,19 @@ void MultiDiskAdaptor::disableDirectIO()
   }
 }
 
+void MultiDiskAdaptor::cutTrailingGarbage()
+{
+  for(std::deque<SharedHandle<DiskWriterEntry> >::const_iterator i =
+	diskWriterEntries.begin(); i != diskWriterEntries.end(); ++i) {
+    uint64_t length = (*i)->getFileEntry()->getLength();
+    if(File((*i)->getFilePath(_cachedTopDirPath)).size() > length) {
+      // We need open file before calling DiskWriter::truncate(uint64_t)
+      openIfNot(*i, &DiskWriterEntry::openFile, _cachedTopDirPath);
+      (*i)->getDiskWriter()->truncate(length);
+    }
+  }
+}
+
 void MultiDiskAdaptor::setMaxOpenFiles(size_t maxOpenFiles)
 {
   _maxOpenFiles = maxOpenFiles;

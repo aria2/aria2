@@ -110,6 +110,13 @@ bool AbstractSingleDiskAdaptor::directIOAllowed() const
 {
   return diskWriter->directIOAllowed();
 }
+
+void AbstractSingleDiskAdaptor::cutTrailingGarbage()
+{
+  if(File(getFilePath()).size() > totalLength) {
+    diskWriter->truncate(totalLength);
+  }
+}
   
 void AbstractSingleDiskAdaptor::setDiskWriter(const DiskWriterHandle& diskWriter)
 {

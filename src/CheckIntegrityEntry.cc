@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "CheckIntegrityEntry.h"
 #include "IteratableValidator.h"
+#include "RequestGroup.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
 
 namespace aria2 {
 
@@ -70,6 +73,11 @@ off_t CheckIntegrityEntry::getCurrentLength()
 bool CheckIntegrityEntry::finished()
 {
   return _validator->finished();
+}
+
+void CheckIntegrityEntry::cutTrailingGarbage()
+{
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->cutTrailingGarbage();
 }
 
 } // namespace aria2

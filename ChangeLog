@@ -1,3 +1,20 @@
+2008-08-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed chunk checksum validation cannot detect trailing garbage data.
+	BUG#2074141
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/AbstractSingleDiskAdaptor.h
+	* src/CheckIntegrityEntry.cc
+	* src/CheckIntegrityEntry.h
+	* src/DiskAdaptor.h
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/RequestGroup.cc
+	* test/DirectDiskAdaptorTest.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/TestUtil.cc
+	* test/TestUtil.h
+
 2008-08-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Bump up version number of dht.dat file to 3. In version 3 format, time

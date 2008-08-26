@@ -181,6 +181,8 @@ public:
     _directIOAllowed = b;
   }
 
+  virtual void cutTrailingGarbage();
+
   void setMaxOpenFiles(size_t maxOpenFiles);
 };
 

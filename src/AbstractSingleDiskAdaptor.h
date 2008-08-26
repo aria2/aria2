@@ -78,6 +78,8 @@ public:
   
   virtual bool directIOAllowed() const;
   
+  virtual void cutTrailingGarbage();
+
   void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 
   SharedHandle<DiskWriter> getDiskWriter() const;
