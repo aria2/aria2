@@ -1,5 +1,11 @@
 2008-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated
+	* test/Cookies.sqlite
+	* test/nscookietest.txt
+
+2008-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added tests for CookieStorage::load()
 	* test/CookieStorageTest.cc
 
