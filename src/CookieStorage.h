@@ -32,62 +32,64 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COOKIE_H_
-#define _D_COOKIE_H_
+#ifndef _D_COOKIE_STORAGE_H_
+#define _D_COOKIE_STORAGE_H_
 
 #include "common.h"
 #include "a2time.h"
+#include "Cookie.h"
+#include "CookieParser.h"
 #include <string>
 #include <deque>
 
 namespace aria2 {
 
-class Cookie {
+class Logger;
+
+class CookieStorage {
+private:
+  std::deque<Cookie> _cookies;
+
+  CookieParser _parser;
+
+  Logger* _logger;
+
+  void storeCookies(const std::deque<Cookie>& cookies);
 public:
-  std::string name;
-  std::string value;
-  time_t expires;
-  std::string path;
-  std::string domain;
-  bool secure;
-  bool onetime; // if true, this cookie will expire when the user's session ends.
-public:
-  Cookie(const std::string& name,
-	 const std::string& value,
-	 time_t  expires,
-	 const std::string& path,
-	 const std::string& domain,
-	 bool secure);
+  CookieStorage();
 
-  Cookie(const std::string& name,
-	 const std::string& value,
-	 const std::string& path,
-	 const std::string& domain,
-	 bool secure);
+  ~CookieStorage();
 
-  Cookie();
+  // Returns true if cookie is stored or updated existing cookie.
+  // Returns false if cookie is expired.
+  bool store(const Cookie& cookie);
 
-  ~Cookie();
+  // Returns true if cookie is stored or updated existing cookie.
+  // Otherwise, returns false.
+  bool parseAndStore(const std::string& setCookieString,
+		     const std::string& requestHost,
+		     const std::string& requestPath);
 
-  std::string toString() const;
+  std::deque<Cookie> criteriaFind(const std::string& requestHost,
+				  const std::string& requestPath,
+				  time_t date, bool secure) const;
 
-  void clear();
+  void load(const std::string& filename);
 
-  bool good() const;
+  size_t size() const;
+  
+  std::deque<Cookie>::const_iterator begin() const
+  {
+    return _cookies.begin();
+  }
 
-  bool match(const std::string& requestHost, const std::string& requestPath,
-	     time_t date, bool secure) const;
+  std::deque<Cookie>::const_iterator end() const
+  {
+    return _cookies.end();
+  }
 
-  bool validate(const std::string& requestHost,
-		const std::string& requestPath) const;
-
-  bool operator==(const Cookie& cookie) const;
-
-  bool isExpired() const;
 };
-
-typedef std::deque<Cookie> Cookies;
 
 } // namespace aria2
 
-#endif // _D_COOKIE_H_
+#endif // _D_COOKIE_STORAGE_H_

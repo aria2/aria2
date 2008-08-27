@@ -35,6 +35,8 @@
 #include "Cookie.h"
 #include "Util.h"
 #include "A2STR.h"
+#include "TimeA2.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -48,7 +50,7 @@ Cookie::Cookie(const std::string& name,
   value(value),
   expires(expires),
   path(path),
-  domain(domain),
+  domain(Util::toLower(domain)),
   secure(secure),
   onetime(false) {}
 
@@ -60,7 +62,7 @@ Cookie::Cookie(const std::string& name,
   name(name),
   value(value),
   path(path),
-  domain(domain),
+  domain(Util::toLower(domain)),
   secure(secure),
   onetime(true) {}
 
@@ -85,16 +87,97 @@ bool Cookie::good() const
   return !name.empty();
 }
 
-bool Cookie::match(const std::string& host, const std::string& dir, time_t date, bool secure) const
+static bool pathInclude(const std::string& requestPath, const std::string& path)
 {
+  if(requestPath == path) {
+    return true;
+  }
+  if(Util::startsWith(requestPath, path)) {
+    if(*path.rbegin() != '/' && requestPath[path.size()] != '/') {
+      return false;
+    }
+  } else if(*path.rbegin() != '/' || *requestPath.rbegin() == '/' ||
+	    !Util::startsWith(requestPath+"/", path)) {
+    return false;
+  }
+  return true;
+}
+
+static bool domainMatch(const std::string& requestHost,
+			const std::string& domain)
+{
+  if(*domain.begin() == '.') {
+    return Util::endsWith("."+requestHost, domain);
+  } else {
+    return requestHost == domain;
+  }
+}
+
+bool Cookie::match(const std::string& requestHost,
+		   const std::string& requestPath,
+		   time_t date, bool secure) const
+{
+  std::string lowerRequestHost = Util::toLower(requestHost);
   if((secure || (!this->secure && !secure)) &&
-     Util::endsWith("."+host, this->domain) &&
-     Util::startsWith(dir, this->path) &&
+     domainMatch(lowerRequestHost, this->domain) &&
+     pathInclude(requestPath, path) &&
      (this->onetime || (date < this->expires))) {
     return true;
   } else {
     return false;
   }
+}
+
+bool Cookie::validate(const std::string& requestHost,
+		      const std::string& requestPath) const
+{
+  std::string lowerRequestHost = Util::toLower(requestHost);
+  if(lowerRequestHost != domain) {
+    // domain must start with '.'
+    if(*domain.begin() != '.') {
+      return false;
+    }
+    // domain must not end with '.'
+    if(*domain.rbegin() == '.') {
+      return false;
+    }
+    // domain must include at least one embeded '.'
+    if(domain.size() < 4 || domain.find(".", 1) == std::string::npos) {
+      return false;
+    }
+    if(!Util::endsWith(lowerRequestHost, domain)) {
+      return false;
+    }
+    // From RFC2109
+    // * The request-host is a FQDN (not IP address) and has the form HD,
+    //   where D is the value of the Domain attribute, and H is a string
+    //   that contains one or more dots.
+    if(std::count(lowerRequestHost.begin(),
+		  lowerRequestHost.begin()+
+		  (lowerRequestHost.size()-domain.size()), '.')
+       > 0) {
+      return false;
+    } 
+  }
+  if(requestPath != path) {
+    // From RFC2109
+    // * The value for the Path attribute is not a prefix of the request-
+    //   URI.
+    if(!pathInclude(requestPath, path)) {
+      return false;
+    }
+  }
+  return !name.empty();
+}
+
+bool Cookie::operator==(const Cookie& cookie) const
+{
+  return domain == cookie.domain && path == cookie.path && name == cookie.name;
+}
+
+bool Cookie::isExpired() const
+{
+  return !onetime && Time().getTime() >= expires;
 }
 
 } // namespace aria2

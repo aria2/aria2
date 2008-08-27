@@ -1,3 +1,14 @@
+2008-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added CookieStorage class which is based on RFC2109 and manages cookies
+	more strictly than CookieBox and CookieBoxFactory class.
+	* src/CookieStorage.cc
+	* src/CookieStorage.h
+	* src/Cookie.cc
+	* src/Cookie.h
+	* test/CookieStorageTest.cc
+	* test/CookieTest.cc
+
 2008-08-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that commands are created more than the number of	pieces.

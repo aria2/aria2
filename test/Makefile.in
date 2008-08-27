@@ -193,8 +193,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
-	DirectDiskAdaptorTest.cc GZipDecoderTest.cc \
-	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
+	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
+	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -365,6 +366,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	ServerStatURISelectorTest.$(OBJEXT) \
 	InOrderURISelectorTest.$(OBJEXT) ServerStatTest.$(OBJEXT) \
 	NsCookieParserTest.$(OBJEXT) DirectDiskAdaptorTest.$(OBJEXT) \
+	CookieTest.$(OBJEXT) CookieStorageTest.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
@@ -587,8 +589,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
-	DirectDiskAdaptorTest.cc $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5)
+	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -710,6 +713,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHKeyExchangeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerReplyMessageTest.Po@am__quote@
