@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "TimeA2.h"
 #include "CookieParser.h"
+#include "RecoverableException.h"
 #include <iostream>
 #include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
@@ -15,6 +16,9 @@ class CookieStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testStore);
   CPPUNIT_TEST(testParseAndStore);
   CPPUNIT_TEST(testCriteriaFind);
+  CPPUNIT_TEST(testLoad);
+  CPPUNIT_TEST(testLoad_sqlite3);
+  CPPUNIT_TEST(testLoad_fileNotfound);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -24,6 +28,9 @@ public:
   void testStore();
   void testParseAndStore();
   void testCriteriaFind();
+  void testLoad();
+  void testLoad_sqlite3();
+  void testLoad_fileNotfound();
 };
 
 
@@ -123,6 +130,90 @@ void CookieStorageTest::testCriteriaFind()
   std::deque<Cookie> dlAria2 = st.criteriaFind("dl.aria2.org", "/", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, dlAria2.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), dlAria2[0].name);
+}
+
+void CookieStorageTest::testLoad()
+{
+  CookieStorage st;
+
+  st.load("nscookietest.txt");
+
+  CPPUNIT_ASSERT_EQUAL((size_t)4, st.size());
+
+  Cookie c = *st.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.name);
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.value);
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
+  CPPUNIT_ASSERT(c.secure);
+
+  c = *(st.begin()+1);
+  CPPUNIT_ASSERT_EQUAL(std::string("passwd"), c.name);
+  CPPUNIT_ASSERT_EQUAL(std::string("secret"), c.value);
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
+  CPPUNIT_ASSERT_EQUAL(std::string("/cgi-bin"), c.path);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
+  CPPUNIT_ASSERT(!c.secure);
+
+  c = *(st.begin()+2);
+  CPPUNIT_ASSERT_EQUAL(std::string("TAX"), c.name);
+  CPPUNIT_ASSERT_EQUAL(std::string("1000"), c.value);
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
+  CPPUNIT_ASSERT_EQUAL(std::string("overflow"), c.domain);
+  CPPUNIT_ASSERT(!c.secure);
+
+  c = *(st.begin()+3);
+  CPPUNIT_ASSERT_EQUAL(std::string("novalue"), c.name);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), c.value);
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
+  CPPUNIT_ASSERT(!c.secure);
+}
+
+void CookieStorageTest::testLoad_sqlite3()
+{
+  CookieStorage st;
+#ifdef HAVE_SQLITE3
+  st.load("cookies.sqlite");
+  CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
+  Cookie c = *st.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.name);
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.value);
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
+  CPPUNIT_ASSERT(c.secure);
+
+  c = *(st.begin()+1);
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), c.name);
+  CPPUNIT_ASSERT_EQUAL(std::string("bar"), c.value);
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
+  CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c.path);
+  CPPUNIT_ASSERT_EQUAL(std::string("overflow_time_t"), c.domain);
+  CPPUNIT_ASSERT(!c.secure);
+    
+#else // !HAVE_SQLITE3
+  try {
+    st.load("cookies.sqlite");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
+#endif // !HAVE_SQLITE3
+}
+
+void CookieStorageTest::testLoad_fileNotfound()
+{
+  CookieStorage st;
+  try {
+    st.load("/tmp/aria2_CookieStorageTest_testLoad_fileNotfound");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
 }
 
 } // namespace aria2
