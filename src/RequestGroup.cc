@@ -491,9 +491,9 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
     } else {
       numCommand = _numConcurrentCommand;
     }
-    numCommand += numAdj;
     numCommand = std::min(static_cast<int>(_downloadContext->getNumPieces()),
 			  numCommand);
+    numCommand += numAdj;
   }
   if(numCommand > 0) {
     createNextCommand(commands, e, numCommand);
