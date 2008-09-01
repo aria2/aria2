@@ -1,6 +1,7 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	TestUtil.cc TestUtil.h\
 	SocketCoreTest.cc\
 	array_funTest.cc\
 	HelpItemTest.cc\
@@ -53,7 +54,8 @@ aria2c_SOURCES = AllTest.cc\
 	ExceptionTest.cc\
 	DownloadHandlerFactoryTest.cc\
 	ChunkedDecoderTest.cc\
-	SignatureTest.cc
+	SignatureTest.cc\
+	DirectDiskAdaptorTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

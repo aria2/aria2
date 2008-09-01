@@ -1,6 +1,9 @@
 #include "MultiDiskAdaptor.h"
 #include "FileEntry.h"
 #include "Exception.h"
+#include "a2io.h"
+#include "array_fun.h"
+#include "TestUtil.h"
 #include <string>
 #include <cerrno>
 #include <cstring>
@@ -13,6 +16,7 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MultiDiskAdaptorTest);
   CPPUNIT_TEST(testWriteData);
   CPPUNIT_TEST(testReadData);
+  CPPUNIT_TEST(testCutTrailingGarbage);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<MultiDiskAdaptor> adaptor;
@@ -26,6 +30,7 @@ public:
 
   void testWriteData();
   void testReadData();
+  void testCutTrailingGarbage();
 };
 
 
@@ -127,6 +132,39 @@ void MultiDiskAdaptorTest::testReadData() {
   adaptor->readData(buf, 25, 0);
   buf[25] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDEFGHIJKLMNO"), std::string((char*)buf));
+}
+
+void MultiDiskAdaptorTest::testCutTrailingGarbage()
+{
+  std::string dir = "/tmp";
+  std::string topDir = ".";
+  std::string topDirPath = dir+"/"+topDir;
+  std::string prefix = "aria2_MultiDiskAdaptorTest_testCutTrailingGarbage_";
+  SharedHandle<FileEntry> entries[] = {
+    SharedHandle<FileEntry>(new FileEntry(prefix+"1", 256, 0)),
+    SharedHandle<FileEntry>(new FileEntry(prefix+"2", 512, 256))
+  };
+  for(size_t i = 0; i < arrayLength(entries); ++i) {
+    createFile(topDirPath+"/"+entries[i]->getPath(),
+	       entries[i]->getLength()+100);
+  }
+  std::deque<SharedHandle<FileEntry> > fileEntries
+    (&entries[0], &entries[arrayLength(entries)]);
+  
+  MultiDiskAdaptor adaptor;
+  adaptor.setStoreDir(dir);
+  adaptor.setTopDir(topDir);
+  adaptor.setFileEntries(fileEntries);
+  adaptor.setMaxOpenFiles(1);
+  
+  adaptor.openFile();
+
+  adaptor.cutTrailingGarbage();
+
+  CPPUNIT_ASSERT_EQUAL((uint64_t)256,
+		       File(topDirPath+"/"+entries[0]->getPath()).size());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)512,
+		       File(topDirPath+"/"+entries[1]->getPath()).size());
 }
 
 } // namespace aria2

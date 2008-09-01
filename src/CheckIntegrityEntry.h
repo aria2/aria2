@@ -70,6 +70,8 @@ public:
 
   virtual void onDownloadIncomplete(std::deque<Command*>& commands,
 				    DownloadEngine* e) = 0;
+
+  void cutTrailingGarbage();
 };
 
 typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;

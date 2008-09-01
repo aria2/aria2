@@ -315,6 +315,7 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
   if(e->option->getAsBool(PREF_CHECK_INTEGRITY) &&
      entry->isValidationReady()) {
     entry->initValidator();
+    entry->cutTrailingGarbage();
     CheckIntegrityCommand* command =
       new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), this, e, entry);
     commands.push_back(command);
