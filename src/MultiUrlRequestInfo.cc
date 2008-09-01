@@ -46,6 +46,8 @@
 #include "Util.h"
 #include "Option.h"
 #include "StatCalc.h"
+#include "CookieStorage.h"
+#include "File.h"
 #include <signal.h>
 #include <ostream>
 
@@ -99,6 +101,20 @@ int MultiUrlRequestInfo::execute()
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
+
+    try {
+      if(_option->defined(PREF_LOAD_COOKIES)) {
+	File cookieFile(_option->get(PREF_LOAD_COOKIES));
+	if(cookieFile.isFile()) {
+	  e->getCookieStorage()->load(_option->get(PREF_LOAD_COOKIES));
+	} else {
+	  _logger->error(MSG_LOADING_COOKIE_FAILED,
+			 _option->get(PREF_LOAD_COOKIES).c_str());
+	}
+      }
+    } catch(RecoverableException& e) {
+      _logger->error(EX_EXCEPTION_CAUGHT, e);
+    }
 
     std::string serverStatIf = _option->get(PREF_SERVER_STAT_IF);
     if(!serverStatIf.empty()) {

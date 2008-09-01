@@ -5,9 +5,9 @@
 #include "Piece.h"
 #include "Range.h"
 #include "Request.h"
-#include "CookieBox.h"
 #include "Option.h"
 #include "array_fun.h"
+#include "CookieStorage.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -396,19 +396,21 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
   Cookie cookie1("name1", "value1", "/archives", "localhost", false);
   Cookie cookie2("name2", "value2", "/archives/download", "localhost", false);
-  Cookie cookie3("name3", "value3", "/archives/download", "tt.localhost", false);
-  Cookie cookie4("name4", "value4", "/archives/download", "tt.localhost", true);
+  Cookie cookie3("name3", "value3", "/archives/download", ".aria2.org", false);
+  Cookie cookie4("name4", "value4", "/archives/", ".aria2.org", true);
 
-  request->cookieBox->add(cookie1);
-  request->cookieBox->add(cookie2);
-  request->cookieBox->add(cookie3);
-  request->cookieBox->add(cookie4);
+  SharedHandle<CookieStorage> st(new CookieStorage());
+  CPPUNIT_ASSERT(st->store(cookie1));
+  CPPUNIT_ASSERT(st->store(cookie2));
+  CPPUNIT_ASSERT(st->store(cookie3));
+  CPPUNIT_ASSERT(st->store(cookie4));
 
   HttpRequest httpRequest;
 
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setCookieStorage(st);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -431,35 +433,36 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
-    "Cookie: name1=value1;name2=value2;\r\n"
+    "Cookie: name2=value2;name1=value1;\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setUrl("http://tt.localhost/archives/download/aria2-1.0.0.tar.bz2");
+  request->setUrl("http://www.aria2.org/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
-    "Host: tt.localhost\r\n"
+    "Host: www.aria2.org\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
-    "Cookie: name1=value1;name2=value2;name3=value3;\r\n"
+    "Cookie: name3=value3;\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setUrl("https://tt.localhost/archives/download/aria2-1.0.0.tar.bz2");
+  request->setUrl("https://www.aria2.org/archives/download/"
+		  "aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
-    "Host: tt.localhost\r\n"
+    "Host: www.aria2.org\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
-    "Cookie: name1=value1;name2=value2;name3=value3;name4=value4;\r\n"
+    "Cookie: name3=value3;name4=value4;\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());

@@ -50,6 +50,7 @@
 #include "HttpHeader.h"
 #include "prefs.h"
 #include "Option.h"
+#include "CookieStorage.h"
 
 namespace aria2 {
 

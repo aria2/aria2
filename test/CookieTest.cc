@@ -85,6 +85,11 @@ void CookieTest::testValidate()
     Cookie nameEmpty("", "v", "/", "localhost", false);
     CPPUNIT_ASSERT(!nameEmpty.validate("localhost", "/"));
   }
+  {
+    Cookie fromNumericHost("k", "v", "/", "192.168.1.1", false);
+    CPPUNIT_ASSERT(fromNumericHost.validate("192.168.1.1", "/"));
+    CPPUNIT_ASSERT(!fromNumericHost.validate("www.aria2.org", "/"));
+  }
 }
 
 void CookieTest::testOperatorEqual()
@@ -127,6 +132,10 @@ void CookieTest::testMatch()
   CPPUNIT_ASSERT(expireTest.match("www.aria2.org", "/", 999, false));
   CPPUNIT_ASSERT(!expireTest.match("www.aria2.org", "/", 1000, false));
   CPPUNIT_ASSERT(!expireTest.match("www.aria2.org", "/", 1001, false));
+  
+  Cookie fromNumericHost("k", "v", "/", "192.168.1.1", false);
+  CPPUNIT_ASSERT(fromNumericHost.match("192.168.1.1", "/", 0, false));
+  CPPUNIT_ASSERT(!fromNumericHost.match("www.aria2.org", "/", 0, false));
 }
 
 void CookieTest::testIsExpired()

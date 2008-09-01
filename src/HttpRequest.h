@@ -46,6 +46,7 @@ class Request;
 class Segment;
 class Range;
 class Option;
+class CookieStorage;
 
 class HttpRequest {
 private:
@@ -72,10 +73,11 @@ private:
 
   std::deque<std::string> _acceptTypes;
 
+  SharedHandle<CookieStorage> _cookieStorage;
+
   std::string getHostText(const std::string& host, uint16_t port) const;
 
   std::string getProxyAuthString() const;
-
 public:
   HttpRequest();
 
@@ -187,6 +189,10 @@ public:
   {
     _acceptTypes.insert(_acceptTypes.end(), first, last);
   }
+
+  void setCookieStorage(const SharedHandle<CookieStorage>& cookieStorage);
+
+  SharedHandle<CookieStorage> getCookieStorage() const;
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

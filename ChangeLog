@@ -1,3 +1,33 @@
+2008-09-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Use CookieStorage class instead of CookieBox class.
+	* src/AbstractProxyRequestCommand.cc
+	* src/CookieStorage.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/HttpConnection.cc
+	* src/HttpConnection.h
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpRequestCommand.cc
+	* src/HttpResponse.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/Makefile.am
+	* src/MultiUrlRequestInfo.cc
+	* src/Request.cc
+	* src/Request.h
+	* src/main.cc
+	* test/AllTest.cc
+	* test/CookieStorageTest.cc
+	* test/CookieTest.cc
+	* test/HttpRequestTest.cc
+	* test/HttpResponseTest.cc
+	* test/Makefile.am
+	* test/NsCookieParserTest.cc
+	* test/Sqlite3MozCookieParserTest.cc
+	* test/nscookietest.txt
+
 2008-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Updated

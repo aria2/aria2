@@ -39,7 +39,6 @@
 #include "Util.h"
 #include "BitfieldManFactory.h"
 #include "AuthConfigFactory.h"
-#include "CookieBoxFactory.h"
 #include "FeatureConfig.h"
 #include "MultiUrlRequestInfo.h"
 #include "SimpleRandomizer.h"
@@ -377,20 +376,6 @@ int main(int argc, char* argv[])
 	NetrcHandle netrc(new Netrc());
 	netrc->parse(op->get(PREF_NETRC_PATH));
 	authConfigFactory->setNetrc(netrc);
-      }
-    }
-
-    CookieBoxFactoryHandle cookieBoxFactory(new CookieBoxFactory());
-    CookieBoxFactorySingletonHolder::instance(cookieBoxFactory);
-    if(op->defined(PREF_LOAD_COOKIES)) {
-      File cookieFile(op->get(PREF_LOAD_COOKIES));
-      if(cookieFile.isFile()) {
-	CookieBoxFactorySingletonHolder::instance()->loadDefaultCookie
-	  (op->get(PREF_LOAD_COOKIES));
-      } else {
-	logger->error(MSG_LOADING_COOKIE_FAILED,
-		      op->get(PREF_LOAD_COOKIES).c_str());
-	exit(EXIT_FAILURE);
       }
     }
 

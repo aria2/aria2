@@ -50,8 +50,6 @@
 
 namespace aria2 {
 
-class CookieBox;
-
 class Request {
 private:
   std::string url;
@@ -93,9 +91,6 @@ private:
   bool isHexNumber(const char c) const;
 
   void urlencode(std::string& result, const std::string& src) const;
-
-public:
-  SharedHandle<CookieBox> cookieBox;
 public:
   Request();
   virtual ~Request();

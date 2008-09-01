@@ -46,6 +46,7 @@
 #include "prefs.h"
 #include "a2functional.h"
 #include "Util.h"
+#include "CookieStorage.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -71,7 +72,8 @@ createHttpRequest(const SharedHandle<Request>& req,
 		  const SharedHandle<Segment>& segment,
 		  uint64_t totalLength,
 		  const Option* option,
-		  const RequestGroup* rg)
+		  const RequestGroup* rg,
+		  const SharedHandle<CookieStorage>& cookieStorage)
 {
   HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
@@ -79,6 +81,7 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setSegment(segment);
   httpRequest->setEntityLength(totalLength);
   httpRequest->addHeader(option->get(PREF_HEADER));
+  httpRequest->setCookieStorage(cookieStorage);
   if(!rg->getAcceptFeatures().empty()) {
     const std::deque<std::string>& acceptFeatures = rg->getAcceptFeatures();
     std::string acceptFeaturesHeader = "Accept-Features: ";
@@ -103,7 +106,8 @@ bool HttpRequestCommand::executeInternal() {
     HttpRequestHandle httpRequest
       (createHttpRequest(req, SharedHandle<Segment>(),
 			 _requestGroup->getTotalLength(), e->option,
-			 _requestGroup));
+			 _requestGroup,
+			 e->getCookieStorage()));
     _httpConnection->sendRequest(httpRequest);
   } else {
     for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
@@ -112,7 +116,8 @@ bool HttpRequestCommand::executeInternal() {
 	HttpRequestHandle httpRequest
 	  (createHttpRequest(req, segment,
 			     _requestGroup->getTotalLength(), e->option,
-			     _requestGroup));
+			     _requestGroup,
+			     e->getCookieStorage()));
 	_httpConnection->sendRequest(httpRequest);
       }
     }

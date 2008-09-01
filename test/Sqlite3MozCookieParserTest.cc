@@ -37,7 +37,7 @@ void Sqlite3MozCookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL(std::string("/"), localhost.path);
   CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), localhost.name);
   CPPUNIT_ASSERT_EQUAL(std::string("123456789"), localhost.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)1200000000, localhost.expires);
+  CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, localhost.expires);
   CPPUNIT_ASSERT_EQUAL(true, localhost.secure);
 
   const Cookie& nullValue = cookies[1];

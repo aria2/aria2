@@ -36,8 +36,7 @@
 #include "Request.h"
 #include "Segment.h"
 #include "Range.h"
-#include "Cookie.h"
-#include "CookieBox.h"
+#include "CookieStorage.h"
 #include "Option.h"
 #include "Util.h"
 #include "Base64.h"
@@ -45,6 +44,7 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "a2functional.h"
+#include "TimeA2.h"
 #include <numeric>
 
 namespace aria2 {
@@ -200,17 +200,21 @@ std::string HttpRequest::createRequest() const
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";
   }
-  std::string cookiesValue;
-  Cookies cookies = request->cookieBox->criteriaFind(getHost(),
-						     getDir(),
-						     time(0),
-						     getProtocol() == Request::PROTO_HTTPS ?
-						     true : false);
-  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
-    cookiesValue += (*itr).toString()+";";
-  }
-  if(cookiesValue.size()) {
-    requestLine += std::string("Cookie: ")+cookiesValue+"\r\n";
+  if(!_cookieStorage.isNull()) {
+    std::string cookiesValue;
+    std::deque<Cookie> cookies =
+      _cookieStorage->criteriaFind(getHost(),
+				   getDir(),
+				   Time().getTime(),
+				   getProtocol() == Request::PROTO_HTTPS ?
+				   true : false);
+    for(std::deque<Cookie>::const_iterator itr = cookies.begin();
+	itr != cookies.end(); ++itr) {
+      cookiesValue += (*itr).toString()+";";
+    }
+    if(!cookiesValue.empty()) {
+      requestLine += std::string("Cookie: ")+cookiesValue+"\r\n";
+    }
   }
   // append additional headers given by user.
   for(std::deque<std::string>::const_iterator i = _headers.begin();
@@ -320,6 +324,17 @@ const std::string& HttpRequest::getFile() const
 const std::string& HttpRequest::getQuery() const
 {
   return request->getQuery();
+}
+
+void HttpRequest::setCookieStorage
+(const SharedHandle<CookieStorage>& cookieStorage)
+{
+  _cookieStorage = cookieStorage;
+}
+
+SharedHandle<CookieStorage> HttpRequest::getCookieStorage() const
+{
+  return _cookieStorage;
 }
 
 } // namespace aria2

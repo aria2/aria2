@@ -86,9 +86,6 @@ bool CookieStorage::parseAndStore(const std::string& setCookieString,
 				  const std::string& requestHost,
 				  const std::string& requestPath)
 {
-  if(Util::isNumbersAndDotsNotation(requestHost)) {
-    return false;
-  }
   Cookie cookie = _parser.parse(setCookieString, requestHost, requestPath);
   if(cookie.validate(requestHost, requestPath)) {
     return store(cookie);

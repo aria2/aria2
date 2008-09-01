@@ -24,11 +24,9 @@ aria2c_SOURCES = AllTest.cc\
 	AlphaNumberDecoratorTest.cc\
 	UriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
-	CookieBoxTest.cc\
 	RequestTest.cc\
 	CookieParserTest.cc\
 	HttpRequestTest.cc\
-	CookieBoxFactoryTest.cc\
 	RequestGroupManTest.cc\
 	AuthConfigFactoryTest.cc\
 	NetrcAuthResolverTest.cc\

@@ -35,7 +35,6 @@
 #include "HttpResponse.h"
 #include "Request.h"
 #include "Segment.h"
-#include "CookieBox.h"
 #include "HttpRequest.h"
 #include "HttpHeader.h"
 #include "Range.h"
@@ -52,6 +51,7 @@
 #ifdef HAVE_LIBZ
 # include "GZipDecoder.h"
 #endif // HAVE_LIBZ
+#include "CookieStorage.h"
 #include <deque>
 
 namespace aria2 {
@@ -109,9 +109,10 @@ void HttpResponse::retrieveCookie()
 {
   std::deque<std::string> v = httpHeader->get(HttpHeader::SET_COOKIE);
   for(std::deque<std::string>::const_iterator itr = v.begin(); itr != v.end();
-      itr++) {
-    httpRequest->getRequest()->cookieBox->add(*itr, httpRequest->getHost(),
-					      httpRequest->getDir());
+      ++itr) {
+    httpRequest->getCookieStorage()->parseAndStore(*itr,
+						   httpRequest->getHost(),
+						   httpRequest->getDir());
   }
 }
 

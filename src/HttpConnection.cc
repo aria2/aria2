@@ -48,6 +48,7 @@
 #include "Logger.h"
 #include "Socket.h"
 #include "Option.h"
+#include "CookieStorage.h"
 #include <sstream>
 
 namespace aria2 {
@@ -167,6 +168,15 @@ bool HttpConnection::isIssued(const SegmentHandle& segment) const
     }
   }
   return false;
+}
+
+SharedHandle<HttpRequest> HttpConnection::getFirstHttpRequest() const
+{
+  if(outstandingHttpRequests.empty()) {
+    return SharedHandle<HttpRequest>();
+  } else {
+    return outstandingHttpRequests.front()->getHttpRequest();
+  }
 }
 
 } // namespace aria2

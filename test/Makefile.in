@@ -178,17 +178,17 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
 	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
-	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
-	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
-	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
-	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
-	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
-	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
-	HttpResponseTest.cc SharedHandleTest.cc FileTest.cc \
-	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
-	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
-	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
+	HttpHeaderProcessorTest.cc RequestTest.cc CookieParserTest.cc \
+	HttpRequestTest.cc RequestGroupManTest.cc \
+	AuthConfigFactoryTest.cc NetrcAuthResolverTest.cc \
+	DefaultAuthResolverTest.cc OptionHandlerTest.cc \
+	SegmentManTest.cc BitfieldManTest.cc NetrcTest.cc \
+	SingletonHolderTest.cc HttpHeaderTest.cc HttpResponseTest.cc \
+	SharedHandleTest.cc FileTest.cc OptionTest.cc \
+	DefaultDiskWriterTest.cc FeatureConfigTest.cc SpeedCalcTest.cc \
+	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
+	FixedNumberRandomizer.h ProtocolDetectorTest.cc \
+	StringFormatTest.cc ExceptionTest.cc \
 	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
@@ -345,9 +345,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	RequestGroupTest.$(OBJEXT) PStringBuildVisitorTest.$(OBJEXT) \
 	ParameterizedStringParserTest.$(OBJEXT) UtilTest.$(OBJEXT) \
 	AlphaNumberDecoratorTest.$(OBJEXT) UriListParserTest.$(OBJEXT) \
-	HttpHeaderProcessorTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) \
-	RequestTest.$(OBJEXT) CookieParserTest.$(OBJEXT) \
-	HttpRequestTest.$(OBJEXT) CookieBoxFactoryTest.$(OBJEXT) \
+	HttpHeaderProcessorTest.$(OBJEXT) RequestTest.$(OBJEXT) \
+	CookieParserTest.$(OBJEXT) HttpRequestTest.$(OBJEXT) \
 	RequestGroupManTest.$(OBJEXT) AuthConfigFactoryTest.$(OBJEXT) \
 	NetrcAuthResolverTest.$(OBJEXT) \
 	DefaultAuthResolverTest.$(OBJEXT) OptionHandlerTest.$(OBJEXT) \
@@ -574,17 +573,17 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
 	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
-	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
-	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
-	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
-	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
-	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
-	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
-	HttpResponseTest.cc SharedHandleTest.cc FileTest.cc \
-	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
-	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
-	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
+	HttpHeaderProcessorTest.cc RequestTest.cc CookieParserTest.cc \
+	HttpRequestTest.cc RequestGroupManTest.cc \
+	AuthConfigFactoryTest.cc NetrcAuthResolverTest.cc \
+	DefaultAuthResolverTest.cc OptionHandlerTest.cc \
+	SegmentManTest.cc BitfieldManTest.cc NetrcTest.cc \
+	SingletonHolderTest.cc HttpHeaderTest.cc HttpResponseTest.cc \
+	SharedHandleTest.cc FileTest.cc OptionTest.cc \
+	DefaultDiskWriterTest.cc FeatureConfigTest.cc SpeedCalcTest.cc \
+	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
+	FixedNumberRandomizer.h ProtocolDetectorTest.cc \
+	StringFormatTest.cc ExceptionTest.cc \
 	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
@@ -710,8 +709,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoderTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactoryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieTest.Po@am__quote@

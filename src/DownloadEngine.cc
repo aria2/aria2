@@ -52,6 +52,7 @@
 #include "a2functional.h"
 #include "DlAbortEx.h"
 #include "ServerStatMan.h"
+#include "CookieStorage.h"
 #include <signal.h>
 #include <cstring>
 #include <algorithm>
@@ -393,7 +394,8 @@ void AsyncNameResolverEntry::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
 
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 _haltRequested(false),
-				 _noWait(false)
+				 _noWait(false),
+				 _cookieStorage(new CookieStorage())
 {
 #ifdef HAVE_EPOLL
 
@@ -879,6 +881,11 @@ void DownloadEngine::setNoWait(bool b)
 void DownloadEngine::addRoutineCommand(Command* command)
 {
   _routineCommands.push_back(command);
+}
+
+SharedHandle<CookieStorage> DownloadEngine::getCookieStorage() const
+{
+  return _cookieStorage;
 }
 
 void DownloadEngine::poolSocket(const std::string& ipaddr, uint16_t port,

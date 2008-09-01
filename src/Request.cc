@@ -35,8 +35,6 @@
 #include "Request.h"
 #include "Util.h"
 #include "FeatureConfig.h"
-#include "CookieBoxFactory.h"
-#include "CookieBox.h"
 #include "RecoverableException.h"
 #include "StringFormat.h"
 #include "A2STR.h"
@@ -60,8 +58,7 @@ Request::Request():
   _supportsPersistentConnection(true),
   _keepAliveHint(false),
   _pipeliningHint(false),
-  method(METHOD_GET),
-  cookieBox(CookieBoxFactorySingletonHolder::instance()->createNewInstance())
+  method(METHOD_GET)
 {}
 
 Request::~Request() {}

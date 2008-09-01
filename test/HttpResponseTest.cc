@@ -9,6 +9,7 @@
 #include "A2STR.h"
 #include "Decoder.h"
 #include "DlRetryEx.h"
+#include "CookieStorage.h"
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -40,6 +41,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testValidateResponse_chunked);
   CPPUNIT_TEST(testHasRetryAfter);
   CPPUNIT_TEST(testProcessRedirect);
+  CPPUNIT_TEST(testRetrieveCookie);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -69,6 +71,7 @@ public:
   void testValidateResponse_chunked();
   void testHasRetryAfter();
   void testProcessRedirect();
+  void testRetrieveCookie();
 };
 
 
@@ -452,6 +455,35 @@ void HttpResponseTest::testProcessRedirect()
   } catch(...) {
     CPPUNIT_FAIL("DlRetryEx exception must be thrown.");
   }
+}
+
+void HttpResponseTest::testRetrieveCookie()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Request> request(new Request());
+  request->setUrl("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
+  httpRequest->setRequest(request);
+  SharedHandle<CookieStorage> st(new CookieStorage());
+  httpRequest->setCookieStorage(st);
+  httpResponse.setHttpRequest(httpRequest);
+
+  httpHeader->put("Set-Cookie", "k1=v1; expires=Sun, 2007-06-10 11:00:00 GMT;"
+		  "path=/; domain=.aria2.org;");
+  httpHeader->put("Set-Cookie", "k2=v2; expires=Sun, 2038-01-01 00:00:00 GMT;"
+		  "path=/; domain=.aria2.org;");
+  httpHeader->put("Set-Cookie", "k3=v3;");
+
+  httpResponse.retrieveCookie();
+
+  CPPUNIT_ASSERT_EQUAL((size_t)2, st->size());
+
+  std::deque<Cookie>::const_iterator citer = st->begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("k2=v2"), (*(st->begin())).toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("k3=v3"), (*(st->begin()+1)).toString());
 }
 
 } // namespace aria2

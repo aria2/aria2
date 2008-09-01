@@ -65,6 +65,11 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT(!st.store(badCookie));
   CPPUNIT_ASSERT_EQUAL((size_t)1, st.size());
   CPPUNIT_ASSERT(std::find(st.begin(), st.end(), anotherCookie) != st.end());
+
+  Cookie fromNumericHost("k", "v", "/", "192.168.1.1", false);
+  CPPUNIT_ASSERT(st.store(fromNumericHost));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
+  CPPUNIT_ASSERT(std::find(st.begin(), st.end(), fromNumericHost) != st.end());
 }
 
 void CookieStorageTest::testParseAndStore()
@@ -81,6 +86,11 @@ void CookieStorageTest::testParseAndStore()
 
   CPPUNIT_ASSERT(!st.parseAndStore(localhostCookieStr,
 				   "127.0.0.1", "/downloads"));
+
+  std::string numericHostCookieStr = "k=v;"
+    " expires=Fri, 2038-01-01 00:00:00 GMT; path=/; domain=192.168.1.1;";
+  CPPUNIT_ASSERT(st.parseAndStore(numericHostCookieStr, "192.168.1.1", "/"));
+
 }
 
 void CookieStorageTest::testCriteriaFind()
@@ -94,12 +104,15 @@ void CookieStorageTest::testCriteriaFind()
   Cookie delta("delta", "DELTA", "/foo/bar", ".aria2.org", false);
   Cookie echo("echo", "ECHO", "/", "www.aria2.org", false);
   Cookie foxtrot("foxtrot", "FOXTROT", "/", ".sf.net", false);
+  Cookie golf("golf", "GOLF", "/", "192.168.1.1", false);
+
   CPPUNIT_ASSERT(st.store(alpha));
   CPPUNIT_ASSERT(st.store(bravo));
   CPPUNIT_ASSERT(st.store(charlie));
   CPPUNIT_ASSERT(st.store(delta));
   CPPUNIT_ASSERT(st.store(echo));
   CPPUNIT_ASSERT(st.store(foxtrot));
+  CPPUNIT_ASSERT(st.store(golf));
   
   std::deque<Cookie> aria2Slash = st.criteriaFind("www.aria2.org", "/",
 						  0, false);
@@ -130,6 +143,11 @@ void CookieStorageTest::testCriteriaFind()
   std::deque<Cookie> dlAria2 = st.criteriaFind("dl.aria2.org", "/", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, dlAria2.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), dlAria2[0].name);
+
+  std::deque<Cookie> numericHostCookies = st.criteriaFind("192.168.1.1", "/", 0,
+							  false);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, numericHostCookies.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("golf"), numericHostCookies[0].name);
 }
 
 void CookieStorageTest::testLoad()

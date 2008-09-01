@@ -59,6 +59,7 @@ class FileAllocationMan;
 class StatCalc;
 class CheckIntegrityMan;
 class SocketCore;
+class CookieStorage;
 
 class CommandEvent
 {
@@ -277,6 +278,12 @@ private:
   // key = IP address:port, value = SocketPoolEntry
   std::multimap<std::string, SocketPoolEntry> _socketPool;
  
+  bool _noWait;
+
+  std::deque<Command*> _routineCommands;
+
+  SharedHandle<CookieStorage> _cookieStorage;
+
   void shortSleep() const;
 
   /**
@@ -287,12 +294,6 @@ private:
   void onEndOfRun();
 
   void afterEachIteration();
-
-private:
-  bool _noWait;
-
-  std::deque<Command*> _routineCommands;
-
 public:
   std::deque<Command*> commands;
   SharedHandle<RequestGroupMan> _requestGroupMan;
@@ -371,6 +372,8 @@ public:
 
   SharedHandle<SocketCore>
   popPooledSocket(const std::deque<std::string>& ipaddrs, uint16_t port);
+
+  SharedHandle<CookieStorage> getCookieStorage() const;
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

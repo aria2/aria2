@@ -109,14 +109,7 @@ public:
    */
   SharedHandle<HttpResponse> receiveResponse();
 
-  SharedHandle<HttpRequest> getFirstHttpRequest() const
-  {
-    if(outstandingHttpRequests.size() > 0) {
-      return outstandingHttpRequests.front()->getHttpRequest();
-    } else {
-      return SharedHandle<HttpRequest>();
-    }
-  }
+  SharedHandle<HttpRequest> getFirstHttpRequest() const;
 
   bool isIssued(const SharedHandle<Segment>& segment) const;
 };
