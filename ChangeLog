@@ -1,5 +1,16 @@
 2008-09-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made files whose name ends with ".gz", ".tgz" not inflated by Content
+	Encoding Decoder. Removed size threshold for turning off on the fly
+	inflation because resulting file may or may not be inflated depending
+	on the file size and I think it is not expected by users.
+	This change fixes segmentation fault when Metalink file contains gzipped
+	file and its filesize is provided.
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	
+2008-09-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed chunk checksum validation cannot detect trailing garbage data.
 	BUG#2074141
 	* src/AbstractSingleDiskAdaptor.cc

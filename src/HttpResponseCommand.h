@@ -36,6 +36,7 @@
 #define _D_HTTP_RESPONSE_COMMAND_H_
 
 #include "AbstractCommand.h"
+#include "Decoder.h"
 
 namespace aria2 {
 
@@ -52,7 +53,12 @@ private:
   bool handleOtherEncoding(const SharedHandle<HttpResponse>& httpResponse);
   bool skipResponseBody(const SharedHandle<HttpResponse>& httpResponse);
 
-  HttpDownloadCommand* createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse);
+  HttpDownloadCommand*
+  createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse,
+			    const SharedHandle<Decoder>& transferEncodingDecoder
+			    = SharedHandle<Decoder>(),
+			    const SharedHandle<Decoder>& contentEncodingDecoder
+			    = SharedHandle<Decoder>());
 protected:
   bool executeInternal();
 
