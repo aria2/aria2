@@ -43,14 +43,16 @@
 namespace aria2 {
 
 class Cookie {
-public:
-  std::string name;
-  std::string value;
-  time_t expires;
-  std::string path;
-  std::string domain;
-  bool secure;
-  bool onetime; // if true, this cookie will expire when the user's session ends.
+private:
+  std::string _name;
+  std::string _value;
+  time_t _expiry;
+  std::string _path;
+  std::string _domain;
+  bool _secure;
+
+  // If true, this cookie will expire when aria2 exits.
+  bool _onetime;
 public:
   Cookie(const std::string& name,
 	 const std::string& value,
@@ -71,8 +73,6 @@ public:
 
   std::string toString() const;
 
-  void clear();
-
   bool good() const;
 
   bool match(const std::string& requestHost, const std::string& requestPath,
@@ -84,6 +84,20 @@ public:
   bool operator==(const Cookie& cookie) const;
 
   bool isExpired() const;
+
+  const std::string& getName() const;
+
+  const std::string& getValue() const;
+
+  const std::string& getPath() const;
+
+  const std::string& getDomain() const;
+
+  time_t getExpiry() const;
+
+  bool isSecureCookie() const;
+
+  bool isOnetimeCookie() const;
 };
 
 typedef std::deque<Cookie> Cookies;

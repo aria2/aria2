@@ -44,14 +44,13 @@
 namespace aria2 {
 
 class CookieParser {
-private:
-  void setField(Cookie& cookie, const std::string& name, const std::string& value) const;
 public:
   CookieParser() {}
 
   ~CookieParser() {}
 
-  Cookie parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const;
+  Cookie parse(const std::string& cookieStr, const std::string& defaultDomain,
+	       const std::string& defaultPath) const;
 
   Cookie parse(const std::string& cookieStr) const;
 

@@ -31,39 +31,39 @@ void NsCookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL((size_t)5, cookies.size());
 
   Cookie c = cookies[0];
-  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.name);
-  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
+  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
 
   c = cookies[1];
-  CPPUNIT_ASSERT_EQUAL(std::string("user"), c.name);
-  CPPUNIT_ASSERT_EQUAL(std::string("me"), c.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)1181473200, c.expires);
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("expired"), c.domain);
+  CPPUNIT_ASSERT_EQUAL(std::string("user"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("me"), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)1181473200, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("expired"), c.getDomain());
 
   c = cookies[2];
-  CPPUNIT_ASSERT_EQUAL(std::string("passwd"), c.name);
-  CPPUNIT_ASSERT_EQUAL(std::string("secret"), c.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
-  CPPUNIT_ASSERT_EQUAL(std::string("/cgi-bin"), c.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
+  CPPUNIT_ASSERT_EQUAL(std::string("passwd"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("secret"), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/cgi-bin"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
 
   c = cookies[3];
-  CPPUNIT_ASSERT_EQUAL(std::string("TAX"), c.name);
-  CPPUNIT_ASSERT_EQUAL(std::string("1000"), c.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("overflow"), c.domain);
+  CPPUNIT_ASSERT_EQUAL(std::string("TAX"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("1000"), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("overflow"), c.getDomain());
 
   c = cookies[4];
-  CPPUNIT_ASSERT_EQUAL(std::string("novalue"), c.name);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), c.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.expires);
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.domain);
+  CPPUNIT_ASSERT_EQUAL(std::string("novalue"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
 }
 
 void NsCookieParserTest::testParse_fileNotFound()

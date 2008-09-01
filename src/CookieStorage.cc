@@ -118,7 +118,7 @@ class OrderByPathDesc:public std::binary_function<Cookie, Cookie, bool> {
 public:
   bool operator()(const Cookie& lhs, const Cookie& rhs) const
   {
-    return lhs.path > rhs.path;
+    return lhs.getPath() > rhs.getPath();
   }
 };
 

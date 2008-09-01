@@ -33,30 +33,31 @@ void Sqlite3MozCookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
 
   const Cookie& localhost = cookies[0];
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), localhost.domain);
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), localhost.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), localhost.name);
-  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), localhost.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, localhost.expires);
-  CPPUNIT_ASSERT_EQUAL(true, localhost.secure);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), localhost.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), localhost.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), localhost.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), localhost.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, localhost.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(true, localhost.isSecureCookie());
 
   const Cookie& nullValue = cookies[1];
-  CPPUNIT_ASSERT_EQUAL(std::string("null_value"), nullValue.domain);
-  CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), nullValue.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("uid"), nullValue.name);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), nullValue.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)0, nullValue.expires);
-  CPPUNIT_ASSERT_EQUAL(false, nullValue.secure);
+  CPPUNIT_ASSERT_EQUAL(std::string("null_value"), nullValue.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), nullValue.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("uid"), nullValue.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), nullValue.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)0, nullValue.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(false, nullValue.isSecureCookie());
 
   // See row id=3 has no name, so it is skipped.
 
   const Cookie& overflowTime = cookies[2];
-  CPPUNIT_ASSERT_EQUAL(std::string("overflow_time_t"), overflowTime.domain);
-  CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), overflowTime.path);
-  CPPUNIT_ASSERT_EQUAL(std::string("foo"), overflowTime.name);
-  CPPUNIT_ASSERT_EQUAL(std::string("bar"), overflowTime.value);
-  CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, overflowTime.expires);
-  CPPUNIT_ASSERT_EQUAL(false, overflowTime.secure);
+  CPPUNIT_ASSERT_EQUAL(std::string("overflow_time_t"),
+		       overflowTime.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), overflowTime.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), overflowTime.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("bar"), overflowTime.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, overflowTime.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(false, overflowTime.isSecureCookie());
 }
 
 void Sqlite3MozCookieParserTest::testParse_fileNotFound()

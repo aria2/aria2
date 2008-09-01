@@ -38,6 +38,7 @@
 #include <strings.h>
 #include <utility>
 #include <istream>
+#include <map>
 
 namespace aria2 {
 
@@ -49,30 +50,6 @@ const std::string CookieParser::C_PATH("path");
 
 const std::string CookieParser::C_EXPIRES("expires");
 
-void CookieParser::setField(Cookie& cookie, const std::string& name, const std::string& value) const
-{
-  if(name == C_SECURE) {
-    cookie.secure = true;
-  } else if(name == C_DOMAIN) {
-    cookie.domain = value;
-  } else if(name == C_PATH) {
-    cookie.path = value;
-  } else if(name == C_EXPIRES) {
-    time_t expires = Util::httpGMT(value);
-    if(expires == -1) {
-      // If parsing expire date is failed, it is assumed as a session scope
-      // cookie.
-      cookie.onetime = true;
-    } else {
-      cookie.expires = expires;
-      cookie.onetime = false;
-    }
-  } else {
-    cookie.name = name;
-    cookie.value = value;
-  }
-}
-
 Cookie CookieParser::parse(const std::string& cookieStr) const
 {
   return parse(cookieStr, A2STR::NIL, A2STR::NIL);
@@ -80,17 +57,38 @@ Cookie CookieParser::parse(const std::string& cookieStr) const
 
 Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const
 {
-  Cookie cookie;
-  cookie.domain = defaultDomain;
-  cookie.path = defaultPath;
   std::deque<std::string> terms;
   Util::slice(terms, Util::trim(cookieStr), ';', true);
-  for(std::deque<std::string>::iterator itr = terms.begin(); itr != terms.end(); itr++) {
+  if(terms.empty()) {
+    return Cookie();
+  }
+  std::pair<std::string, std::string> nameValue;
+  Util::split(nameValue, terms.front(), '=');
+
+  std::map<std::string, std::string> values;
+  values[C_DOMAIN] = defaultDomain;
+  values[C_PATH] = defaultPath;
+  
+  for(std::deque<std::string>::iterator itr = terms.begin()+1;
+      itr != terms.end(); ++itr) {
     std::pair<std::string, std::string> nv;
     Util::split(nv, *itr, '=');
-    setField(cookie, nv.first, nv.second);
+    values[nv.first] = nv.second;
   }
-  return cookie;
+  time_t expiry = -1;
+  if(values.find(C_EXPIRES) != values.end()) {
+    expiry = Util::httpGMT(values[C_EXPIRES]);
+  }
+  if(expiry == -1) {
+    return Cookie(nameValue.first, nameValue.second,
+		  values[C_PATH], values[C_DOMAIN],
+		  values.find(C_SECURE) != values.end());
+  } else {
+    return Cookie(nameValue.first, nameValue.second,
+		  expiry,
+		  values[C_PATH], values[C_DOMAIN],
+		  values.find(C_SECURE) != values.end());
+  }
 }
 
 

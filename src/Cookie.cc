@@ -42,49 +42,43 @@ namespace aria2 {
 
 Cookie::Cookie(const std::string& name,
 	       const std::string& value,
-	       time_t  expires,
+	       time_t  expiry,
 	       const std::string& path,
 	       const std::string& domain,
 	       bool secure):
-  name(name),
-  value(value),
-  expires(expires),
-  path(path),
-  domain(Util::toLower(domain)),
-  secure(secure),
-  onetime(false) {}
+  _name(name),
+  _value(value),
+  _expiry(expiry),
+  _path(path),
+  _domain(Util::toLower(domain)),
+  _secure(secure),
+  _onetime(false) {}
 
 Cookie::Cookie(const std::string& name,
 	       const std::string& value,
 	       const std::string& path,
 	       const std::string& domain,
 	       bool secure):
-  name(name),
-  value(value),
-  path(path),
-  domain(Util::toLower(domain)),
-  secure(secure),
-  onetime(true) {}
+  _name(name),
+  _value(value),
+  _expiry(0),
+  _path(path),
+  _domain(Util::toLower(domain)),
+  _secure(secure),
+  _onetime(true) {}
 
-Cookie::Cookie():expires(0), secure(false), onetime(true) {}
+Cookie::Cookie():_expiry(0), _secure(false), _onetime(true) {}
 
 Cookie::~Cookie() {}
 
 std::string Cookie::toString() const
 {
-  return name+"="+value;
-}
-
-void Cookie::clear()
-{
-  name = value = path = domain = A2STR::NIL;
-  expires = 0;
-  secure = false;
+  return _name+"="+_value;
 }
 
 bool Cookie::good() const
 {
-  return !name.empty();
+  return !_name.empty();
 }
 
 static bool pathInclude(const std::string& requestPath, const std::string& path)
@@ -118,10 +112,10 @@ bool Cookie::match(const std::string& requestHost,
 		   time_t date, bool secure) const
 {
   std::string lowerRequestHost = Util::toLower(requestHost);
-  if((secure || (!this->secure && !secure)) &&
-     domainMatch(lowerRequestHost, this->domain) &&
-     pathInclude(requestPath, path) &&
-     (this->onetime || (date < this->expires))) {
+  if((secure || (!_secure && !secure)) &&
+     domainMatch(lowerRequestHost, _domain) &&
+     pathInclude(requestPath, _path) &&
+     (_onetime || (date < _expiry))) {
     return true;
   } else {
     return false;
@@ -132,20 +126,20 @@ bool Cookie::validate(const std::string& requestHost,
 		      const std::string& requestPath) const
 {
   std::string lowerRequestHost = Util::toLower(requestHost);
-  if(lowerRequestHost != domain) {
+  if(lowerRequestHost != _domain) {
     // domain must start with '.'
-    if(*domain.begin() != '.') {
+    if(*_domain.begin() != '.') {
       return false;
     }
     // domain must not end with '.'
-    if(*domain.rbegin() == '.') {
+    if(*_domain.rbegin() == '.') {
       return false;
     }
     // domain must include at least one embeded '.'
-    if(domain.size() < 4 || domain.find(".", 1) == std::string::npos) {
+    if(_domain.size() < 4 || _domain.find(".", 1) == std::string::npos) {
       return false;
     }
-    if(!Util::endsWith(lowerRequestHost, domain)) {
+    if(!Util::endsWith(lowerRequestHost, _domain)) {
       return false;
     }
     // From RFC2109
@@ -154,30 +148,66 @@ bool Cookie::validate(const std::string& requestHost,
     //   that contains one or more dots.
     if(std::count(lowerRequestHost.begin(),
 		  lowerRequestHost.begin()+
-		  (lowerRequestHost.size()-domain.size()), '.')
+		  (lowerRequestHost.size()-_domain.size()), '.')
        > 0) {
       return false;
     } 
   }
-  if(requestPath != path) {
+  if(requestPath != _path) {
     // From RFC2109
     // * The value for the Path attribute is not a prefix of the request-
     //   URI.
-    if(!pathInclude(requestPath, path)) {
+    if(!pathInclude(requestPath, _path)) {
       return false;
     }
   }
-  return !name.empty();
+  return good();
 }
 
 bool Cookie::operator==(const Cookie& cookie) const
 {
-  return domain == cookie.domain && path == cookie.path && name == cookie.name;
+  return _domain == cookie._domain && _path == cookie._path &&
+    _name == cookie._name;
 }
 
 bool Cookie::isExpired() const
 {
-  return !onetime && Time().getTime() >= expires;
+  return !_onetime && Time().getTime() >= _expiry;
+}
+
+const std::string& Cookie::getName() const
+{
+  return _name;
+}
+
+const std::string& Cookie::getValue() const
+{
+  return _value;
+}
+
+const std::string& Cookie::getPath() const
+{
+  return _path;
+}
+
+const std::string& Cookie::getDomain() const
+{
+  return _domain;
+}
+
+time_t Cookie::getExpiry() const
+{
+  return _expiry;
+}
+
+bool Cookie::isSecureCookie() const
+{
+  return _secure;
+}
+
+bool Cookie::isOnetimeCookie() const
+{
+  return _onetime;
 }
 
 } // namespace aria2
