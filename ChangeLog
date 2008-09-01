@@ -1,6 +1,7 @@
 2008-09-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use CookieStorage class instead of CookieBox class.
+	Now CookieStorage accepts cookies from numeric host such as 192.168.1.1.
 	* src/AbstractProxyRequestCommand.cc
 	* src/CookieStorage.cc
 	* src/DownloadEngine.cc
