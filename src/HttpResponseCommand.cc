@@ -61,7 +61,6 @@
 #include "StringFormat.h"
 #include "HttpSkipResponseCommand.h"
 #include "HttpHeader.h"
-#include "Decoder.h"
 #include "LogFactory.h"
 #include "CookieStorage.h"
 
@@ -137,6 +136,13 @@ bool HttpResponseCommand::executeInternal()
   }
 }
 
+static bool fileIsGzipped(const SharedHandle<HttpResponse>& httpResponse)
+{
+  std::string filename =
+    Util::toLower(httpResponse->getHttpRequest()->getRequest()->getFile());
+  return Util::endsWith(filename, ".gz") || Util::endsWith(filename, ".tgz");
+}
+
 bool HttpResponseCommand::shouldInflateContentEncoding
 (const SharedHandle<HttpResponse>& httpResponse)
 {
@@ -144,14 +150,11 @@ bool HttpResponseCommand::shouldInflateContentEncoding
   // because in each segment we don't know where the date should be written.
   // So turn off segmented downloading.
   // Meanwhile, Some server returns content-encoding: gzip for .tgz files.
-  // Those files tend to be large enough to speed up using segmented
-  // downloading. Therefore, I choose threshold size to determine on the fly
-  // inflation should be done. I expect gzipped content such as metalink xml
-  // files tend to be smaller than the threshold size, those contents are
-  // inflated on the fly properly.
+  // I think those files should not be inflated by clients, because it is the
+  // original format of those files. So I made filename ending ".gz" or ".tgz"
+  // (case-insensitive) not inflated.
   return httpResponse->isContentEncodingSpecified() &&
-    httpResponse->getEntityLength() <=
-    static_cast<uint64_t>(e->option->getAsInt(PREF_SEGMENT_SIZE));
+    !fileIsGzipped(httpResponse);
 }
 
 bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpResponse)
@@ -195,19 +198,6 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   return true;
 }
 
-bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
-  HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
-  // quick hack for method 'head',, is it necessary?
-  if(httpRequest->getMethod() == Request::METHOD_HEAD) {
-    return true;
-  }
-  _requestGroup->initPieceStorage();
-  _requestGroup->shouldCancelDownloadForSafety();
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
-  e->commands.push_back(createHttpDownloadCommand(httpResponse));
-  return true;
-}
-
 static SharedHandle<Decoder> getTransferEncodingDecoder
 (const SharedHandle<HttpResponse>& httpResponse)
 {
@@ -243,6 +233,22 @@ static SharedHandle<Decoder> getContentEncodingDecoder
   return decoder;
 }
 
+bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
+  HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
+  // quick hack for method 'head',, is it necessary?
+  if(httpRequest->getMethod() == Request::METHOD_HEAD) {
+    return true;
+  }
+  _requestGroup->initPieceStorage();
+  _requestGroup->shouldCancelDownloadForSafety();
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+  e->commands.push_back
+    (createHttpDownloadCommand(httpResponse,
+			       getTransferEncodingDecoder(httpResponse),
+			       getContentEncodingDecoder(httpResponse)));
+  return true;
+}
+
 bool HttpResponseCommand::skipResponseBody
 (const SharedHandle<HttpResponse>& httpResponse)
 {
@@ -267,12 +273,10 @@ bool HttpResponseCommand::skipResponseBody
 }
 
 HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
-(const HttpResponseHandle& httpResponse)
+(const HttpResponseHandle& httpResponse,
+ const SharedHandle<Decoder>& transferEncodingDecoder,
+ const SharedHandle<Decoder>& contentEncodingDecoder)
 {
-  SharedHandle<Decoder> transferEncodingDecoder =
-    getTransferEncodingDecoder(httpResponse);
-  SharedHandle<Decoder> contentEncodingDecoder =
-    getContentEncodingDecoder(httpResponse);
 
   HttpDownloadCommand* command =
     new HttpDownloadCommand(cuid, req, _requestGroup, httpConnection, e,
@@ -284,7 +288,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
     (e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   command->setTransferEncodingDecoder(transferEncodingDecoder);
 
-  if(shouldInflateContentEncoding(httpResponse)) {
+  if(!contentEncodingDecoder.isNull()) {
     command->setContentEncodingDecoder(contentEncodingDecoder);
     // Since the compressed file's length are returned in the response header
     // and the decompressed file size is unknown at this point, disable file
