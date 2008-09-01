@@ -324,15 +324,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
-	File.h Option.cc Option.h Base64.cc Base64.h CookieBox.cc \
-	CookieBox.h LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc \
-	TimeA2.h SharedHandle.h HandleRegistry.h FeatureConfig.cc \
-	FeatureConfig.h DownloadEngineFactory.cc \
-	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
-	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
-	HttpRequest.cc HttpRequest.h Range.h \
+	File.h Option.cc Option.h Base64.cc Base64.h LogFactory.cc \
+	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
+	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
+	DownloadEngineFactory.cc DownloadEngineFactory.h SpeedCalc.cc \
+	SpeedCalc.h PeerStat.h BitfieldMan.cc BitfieldMan.h \
+	BitfieldManFactory.cc BitfieldManFactory.h Randomizer.h \
+	SimpleRandomizer.cc SimpleRandomizer.h HttpResponse.cc \
+	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
 	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
@@ -356,8 +355,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
-	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
-	CookieBoxFactory.h HttpHeaderProcessor.cc \
+	CookieParser.cc CookieParser.h HttpHeaderProcessor.cc \
 	HttpHeaderProcessor.h FileEntry.cc FileEntry.h Platform.cc \
 	Platform.h PStringDatum.h PStringSegment.cc PStringSegment.h \
 	PStringNumLoop.h PStringSelect.h PStringVisitor.h \
@@ -755,8 +753,8 @@ am__objects_18 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	Request.$(OBJEXT) Exception.$(OBJEXT) SimpleLogger.$(OBJEXT) \
 	AbstractDiskWriter.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
 	DefaultDiskWriterFactory.$(OBJEXT) File.$(OBJEXT) \
-	Option.$(OBJEXT) Base64.$(OBJEXT) CookieBox.$(OBJEXT) \
-	LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) FeatureConfig.$(OBJEXT) \
+	Option.$(OBJEXT) Base64.$(OBJEXT) LogFactory.$(OBJEXT) \
+	TimeA2.$(OBJEXT) FeatureConfig.$(OBJEXT) \
 	DownloadEngineFactory.$(OBJEXT) SpeedCalc.$(OBJEXT) \
 	BitfieldMan.$(OBJEXT) BitfieldManFactory.$(OBJEXT) \
 	SimpleRandomizer.$(OBJEXT) HttpResponse.$(OBJEXT) \
@@ -776,10 +774,9 @@ am__objects_18 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	MultiUrlRequestInfo.$(OBJEXT) UriListParser.$(OBJEXT) \
 	DefaultSegmentManFactory.$(OBJEXT) RealtimeCommand.$(OBJEXT) \
 	RequestGroupEntry.$(OBJEXT) Cookie.$(OBJEXT) \
-	CookieParser.$(OBJEXT) CookieBoxFactory.$(OBJEXT) \
-	HttpHeaderProcessor.$(OBJEXT) FileEntry.$(OBJEXT) \
-	Platform.$(OBJEXT) PStringSegment.$(OBJEXT) \
-	PStringBuildVisitor.$(OBJEXT) \
+	CookieParser.$(OBJEXT) HttpHeaderProcessor.$(OBJEXT) \
+	FileEntry.$(OBJEXT) Platform.$(OBJEXT) \
+	PStringSegment.$(OBJEXT) PStringBuildVisitor.$(OBJEXT) \
 	ParameterizedStringParser.$(OBJEXT) TimeBasedCommand.$(OBJEXT) \
 	AutoSaveCommand.$(OBJEXT) DefaultPieceStorage.$(OBJEXT) \
 	UnknownLengthPieceStorage.$(OBJEXT) ConsoleStatCalc.$(OBJEXT) \
@@ -1049,15 +1046,14 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
-	File.h Option.cc Option.h Base64.cc Base64.h CookieBox.cc \
-	CookieBox.h LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc \
-	TimeA2.h SharedHandle.h HandleRegistry.h FeatureConfig.cc \
-	FeatureConfig.h DownloadEngineFactory.cc \
-	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
-	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
-	HttpRequest.cc HttpRequest.h Range.h \
+	File.h Option.cc Option.h Base64.cc Base64.h LogFactory.cc \
+	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
+	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
+	DownloadEngineFactory.cc DownloadEngineFactory.h SpeedCalc.cc \
+	SpeedCalc.h PeerStat.h BitfieldMan.cc BitfieldMan.h \
+	BitfieldManFactory.cc BitfieldManFactory.h Randomizer.h \
+	SimpleRandomizer.cc SimpleRandomizer.h HttpResponse.cc \
+	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
 	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
@@ -1081,8 +1077,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
-	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
-	CookieBoxFactory.h HttpHeaderProcessor.cc \
+	CookieParser.cc CookieParser.h HttpHeaderProcessor.cc \
 	HttpHeaderProcessor.h FileEntry.cc FileEntry.h Platform.cc \
 	Platform.h PStringDatum.h PStringSegment.cc PStringSegment.h \
 	PStringNumLoop.h PStringSelect.h PStringVisitor.h \
@@ -1296,8 +1291,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleStatCalc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ContentTypeRequestGroupCriteria.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Cookie.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@

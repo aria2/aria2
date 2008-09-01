@@ -1,5 +1,14 @@
 2008-09-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed CookieBox, CookieBoxFactory.
+	* src/CookieBox.cc
+	* src/CookieBox.h
+	* src/CookieBoxFactory.cc
+	* src/CookieBoxFactory.h
+	* src/Makefile.am
+
+2008-09-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use CookieStorage class instead of CookieBox class.
 	Now CookieStorage accepts cookies from numeric host such as 192.168.1.1.
 	* src/AbstractProxyRequestCommand.cc

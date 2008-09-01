@@ -49,7 +49,6 @@ SRCS =  Socket.h\
 	File.cc File.h\
 	Option.cc Option.h\
 	Base64.cc Base64.h\
-	CookieBox.cc CookieBox.h\
 	LogFactory.cc LogFactory.h\
 	NullLogger.h\
 	TimeA2.cc TimeA2.h\
@@ -100,7 +99,6 @@ SRCS =  Socket.h\
 	RequestGroupEntry.cc RequestGroupEntry.h\
 	Cookie.cc Cookie.h\
 	CookieParser.cc CookieParser.h\
-	CookieBoxFactory.cc CookieBoxFactory.h\
 	HttpHeaderProcessor.cc HttpHeaderProcessor.h\
 	FileEntry.cc FileEntry.h\
 	Platform.cc Platform.h\
