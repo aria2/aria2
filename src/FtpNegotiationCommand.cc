@@ -230,6 +230,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     _requestGroup->shouldCancelDownloadForSafety();
     _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
+    return true;
   } else {
     _requestGroup->initPieceStorage();
 
@@ -286,7 +287,11 @@ bool FtpNegotiationCommand::recvSize() {
     // contacted FTP server doesn't support it.
     if(_requestGroup->getPieceStorage().isNull()) {
 
-      sequence = SEQ_FILE_PREPARATION;
+      if(e->option->getAsBool(PREF_FTP_PASV)) {
+	sequence = SEQ_SEND_PASV;
+      } else {
+	sequence = SEQ_SEND_PORT;
+      }
       return onFileSizeDetermined(0);
 
     }
