@@ -1,5 +1,13 @@
 2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Moved implementation to SimpleRandomizer.cc from SimpleRandomizer.h.
+	Added return value of getpid() to argument of srand() to achieve more
+	randomized value.
+	* src/SimpleRandomizer.cc
+	* src/SimpleRandomizer.h
+
+2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Contact tracker frequently when the number of connections are 0	and
 	download is not finished yet.
 	* src/ActivePeerConnectionCommand.cc

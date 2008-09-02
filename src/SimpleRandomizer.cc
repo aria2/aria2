@@ -33,9 +33,45 @@
  */
 /* copyright --> */
 #include "SimpleRandomizer.h"
+#include "a2time.h"
+#include <cstdlib>
+#include <sys/types.h>
+#include <unistd.h>
 
 namespace aria2 {
 
-RandomizerHandle SimpleRandomizer::randomizer;
+SharedHandle<Randomizer> SimpleRandomizer::_randomizer;
+
+SharedHandle<Randomizer> SimpleRandomizer::getInstance()
+{
+  if(_randomizer.isNull()) {
+    _randomizer.reset(new SimpleRandomizer());
+  }
+  return _randomizer;
+}
+  
+void SimpleRandomizer::init()
+{
+  srand(time(0)^getpid());
+}
+
+SimpleRandomizer::SimpleRandomizer() {}
+
+SimpleRandomizer::~SimpleRandomizer() {}
+
+long int SimpleRandomizer::getRandomNumber()
+{
+  return rand();
+}
+
+long int SimpleRandomizer::getMaxRandomNumber()
+{
+  return RAND_MAX;
+}
+
+long int SimpleRandomizer::getRandomNumber(long int to)
+{
+  return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
+}
 
 } // namespace aria2

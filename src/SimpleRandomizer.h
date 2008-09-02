@@ -36,46 +36,30 @@
 #define _D_SIMPLE_RANDOMIZER_H_
 
 #include "Randomizer.h"
-#include "a2time.h"
-#include <stdlib.h>
 
 namespace aria2 {
 
 class SimpleRandomizer : public Randomizer {
 private:
-  static RandomizerHandle randomizer;
+  static SharedHandle<Randomizer> _randomizer;
 
-  SimpleRandomizer() {}
+  SimpleRandomizer();
 public:
-
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer.reset(new SimpleRandomizer());
-    }
-    return randomizer;
-  }
   
-  static void init() {
-    srand(time(0));
-  }
+  static SharedHandle<Randomizer> getInstance();
+  
+  static void init();
 
-  virtual ~SimpleRandomizer() {}
+  virtual ~SimpleRandomizer();
 
-  virtual long int getRandomNumber() {
-    return rand();
-  }
+  virtual long int getRandomNumber();
 
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
+  virtual long int getMaxRandomNumber();
 
   /**
    * Returns random number in [0, to).
    */
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
+  virtual long int getRandomNumber(long int to);
 };
 
 } // namespace aria2
