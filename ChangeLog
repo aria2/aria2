@@ -1,5 +1,10 @@
 2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed wrong comment.
+	* src/DefaultPeerStorage.cc
+
+2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Moved implementation to SimpleRandomizer.cc from SimpleRandomizer.h.
 	Added return value of getpid() to argument of srand() to achieve more
 	randomized value.

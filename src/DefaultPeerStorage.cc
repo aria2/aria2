@@ -217,7 +217,6 @@ void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
       itr != peers.rend(); ++itr) {
     const PeerHandle& p = *itr;
     if(p->unused() && delSize > 0) {
-      // Update removedPeerSession******Length
       onErasingPeer(p);
       delSize--;
     } else {
