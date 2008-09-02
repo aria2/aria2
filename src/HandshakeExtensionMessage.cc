@@ -102,6 +102,7 @@ void HandshakeExtensionMessage::doReceivedAction()
 {
   if(_tcpPort > 0) {
     _peer->port = _tcpPort;
+    _peer->setIncomingPeer(false);
   }
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {

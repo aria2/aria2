@@ -1,5 +1,16 @@
 2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added _incoming member to Peer class and made it true if the peer
+	initiated connection. Don't add those peer to UTPex message.
+	If extended handshake is received, assign _incoming to false.
+	* src/DefaultBtInteractive.cc
+	* src/HandshakeExtensionMessage.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerListenCommand.cc
+	
+2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made files whose name ends with ".gz", ".tgz" not inflated by Content
 	Encoding Decoder. Removed size threshold for turning off on the fly
 	inflation because resulting file may or may not be inflated depending

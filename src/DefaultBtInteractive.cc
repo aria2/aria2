@@ -402,7 +402,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
       for(Peers::const_iterator i = peers.begin();
 	  i != peers.end() && max; ++i) {
 	const PeerHandle& cpeer = *i;
-	if(peer->ipaddr != cpeer->ipaddr &&
+	if(peer->ipaddr != cpeer->ipaddr && !cpeer->isIncomingPeer() &&
 	   !cpeer->getFirstContactTime().elapsed(interval)) {
 	  m->addFreshPeer(cpeer);
 	  --max;
