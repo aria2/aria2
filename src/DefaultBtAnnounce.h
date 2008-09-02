@@ -67,9 +67,6 @@ private:
   SharedHandle<BtRuntime> btRuntime;
   SharedHandle<PieceStorage> pieceStorage;
   SharedHandle<PeerStorage> peerStorage;
-
-  static const unsigned int DEFAULT_ANNOUNCE_INTERVAL = 120;
-
 public:
   DefaultBtAnnounce(const SharedHandle<BtContext>& btContext,
 		    const Option* option);
@@ -114,6 +111,8 @@ public:
   virtual bool noMoreAnnounce();
 
   virtual void shuffleAnnounce();
+
+  virtual void overrideMinInterval(time_t interval);
 
   void generateKey();
 

@@ -316,4 +316,9 @@ PeerStorageHandle DefaultBtAnnounce::getPeerStorage() const
   return peerStorage;
 }
 
+void DefaultBtAnnounce::overrideMinInterval(time_t interval)
+{
+  minInterval = interval;
+}
+
 } // namespace aria2

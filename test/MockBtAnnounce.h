@@ -56,6 +56,8 @@ public:
     return peerId;
   }
 
+  virtual void overrideMinInterval(time_t interval) {}
+
   void setPeerId(const std::string& peerId) {
     this->peerId = peerId;
   }

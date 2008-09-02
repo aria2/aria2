@@ -1,5 +1,15 @@
 2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Contact tracker frequently when the number of connections are 0	and
+	download is not finished yet.
+	* src/ActivePeerConnectionCommand.cc
+	* src/BtAnnounce.h
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtAnnounce.h
+	* test/MockBtAnnounce.h
+	
+2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Moved threthold values to UTPexExtensionMessage.
 	* src/DefaultBtInteractive.cc
 	* src/Peer.cc

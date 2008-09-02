@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "a2time.h"
 #include <string>
 
 namespace aria2 {
@@ -104,6 +105,8 @@ public:
    */
   virtual void shuffleAnnounce() = 0;
 
+  virtual void overrideMinInterval(time_t interval) = 0;
+
   static const std::string FAILURE_REASON;
 
   static const std::string WARNING_MESSAGE;
@@ -119,6 +122,8 @@ public:
   static const std::string INCOMPLETE;
 
   static const std::string PEERS;
+
+  static const unsigned int DEFAULT_ANNOUNCE_INTERVAL = 120;
 };
 
 typedef SharedHandle<BtAnnounce> BtAnnounceHandle;
