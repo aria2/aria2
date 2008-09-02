@@ -53,7 +53,10 @@ namespace aria2 {
 const std::string UTPexExtensionMessage::EXTENSION_NAME = "ut_pex";
 
 UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
-  _extensionMessageID(extensionMessageID) {}
+  _extensionMessageID(extensionMessageID),
+  _interval(DEFAULT_INTERVAL),
+  _maxFreshPeer(DEFAULT_MAX_FRESH_PEER),
+  _maxDroppedPeer(DEFAULT_MAX_DROPPED_PEER) {}
 
 UTPexExtensionMessage::~UTPexExtensionMessage() {}
 
@@ -96,9 +99,15 @@ void UTPexExtensionMessage::doReceivedAction()
   PEER_STORAGE(_btContext)->addPeer(_freshPeers);
 }
 
-void UTPexExtensionMessage::addFreshPeer(const PeerHandle& peer)
+bool UTPexExtensionMessage::addFreshPeer(const PeerHandle& peer)
 {
-  _freshPeers.push_back(peer);
+  if(!peer->isIncomingPeer() &&
+     !peer->getFirstContactTime().elapsed(_interval)) {
+    _freshPeers.push_back(peer);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 const Peers& UTPexExtensionMessage::getFreshPeers() const
@@ -106,14 +115,50 @@ const Peers& UTPexExtensionMessage::getFreshPeers() const
   return _freshPeers;
 }
 
-void UTPexExtensionMessage::addDroppedPeer(const PeerHandle& peer)
+bool UTPexExtensionMessage::freshPeersAreFull() const
 {
-  _droppedPeers.push_back(peer);
+  return _freshPeers.size() >= _maxFreshPeer;
+}
+
+bool UTPexExtensionMessage::addDroppedPeer(const PeerHandle& peer)
+{
+  if(!peer->isIncomingPeer() &&
+     !peer->getBadConditionStartTime().elapsed(_interval)) {
+    _droppedPeers.push_back(peer);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 const Peers& UTPexExtensionMessage::getDroppedPeers() const
 {
   return _droppedPeers;
+}
+
+bool UTPexExtensionMessage::droppedPeersAreFull() const
+{
+  return _droppedPeers.size() >= _maxDroppedPeer;
+}
+
+void UTPexExtensionMessage::setMaxFreshPeer(size_t maxFreshPeer)
+{
+  _maxFreshPeer = maxFreshPeer;
+}
+
+size_t UTPexExtensionMessage::getMaxFreshPeer() const
+{
+  return _maxFreshPeer;
+}
+
+void UTPexExtensionMessage::setMaxDroppedPeer(size_t maxDroppedPeer)
+{
+  _maxDroppedPeer = maxDroppedPeer;
+}
+
+size_t UTPexExtensionMessage::getMaxDroppedPeer() const
+{
+  return _maxDroppedPeer;
 }
 
 void UTPexExtensionMessage::setBtContext(const BtContextHandle& btContext)

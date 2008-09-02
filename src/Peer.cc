@@ -471,4 +471,9 @@ void Peer::setIncomingPeer(bool incoming)
   _incoming = incoming;
 }
 
+void Peer::setFirstContactTime(const Time& time)
+{
+  _firstContactTime = time;
+}
+
 } // namespace aria2

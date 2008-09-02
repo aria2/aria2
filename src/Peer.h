@@ -114,6 +114,8 @@ public:
 
   const Time& getFirstContactTime() const;
 
+  void setFirstContactTime(const Time& time);
+
   const Time& getBadConditionStartTime() const;
 
   // Before calling following member functions,  make sure that

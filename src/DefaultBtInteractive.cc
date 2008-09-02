@@ -392,32 +392,24 @@ void DefaultBtInteractive::checkActiveInteraction()
 
 void DefaultBtInteractive::addPeerExchangeMessage()
 {
-  time_t interval = 60;
-  if(_pexCheckPoint.elapsed(interval)) {
+  if(_pexCheckPoint.elapsed(UTPexExtensionMessage::DEFAULT_INTERVAL)) {
     UTPexExtensionMessageHandle m
       (new UTPexExtensionMessage(peer->getExtensionMessageID("ut_pex")));
     const Peers& peers = peerStorage->getPeers();
     {
-      size_t max = 30;
-      for(Peers::const_iterator i = peers.begin();
-	  i != peers.end() && max; ++i) {
-	const PeerHandle& cpeer = *i;
-	if(peer->ipaddr != cpeer->ipaddr && !cpeer->isIncomingPeer() &&
-	   !cpeer->getFirstContactTime().elapsed(interval)) {
-	  m->addFreshPeer(cpeer);
-	  --max;
+      for(std::deque<SharedHandle<Peer> >::const_iterator i =
+	    peers.begin(); i != peers.end() && !m->freshPeersAreFull(); ++i) {
+	if(peer->ipaddr != (*i)->ipaddr) {
+	  m->addFreshPeer(*i);
 	}
       }
     }
     {
-      size_t max = 10;
-      for(Peers::const_reverse_iterator i = peers.rbegin();
-	  i != peers.rend() && max; ++i) {
-	const PeerHandle& cpeer = *i;
-	if(peer->ipaddr != cpeer->ipaddr &&
-	   !cpeer->getBadConditionStartTime().elapsed(interval)) {
-	  m->addDroppedPeer(cpeer);
-	  --max;
+      for(std::deque<SharedHandle<Peer> >::const_reverse_iterator i =
+	    peers.rbegin(); i != peers.rend() && !m->droppedPeersAreFull();
+	  ++i) {
+	if(peer->ipaddr != (*i)->ipaddr) {
+	  m->addDroppedPeer(*i);
 	}
       }
     }
