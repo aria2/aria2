@@ -342,6 +342,8 @@ public:
   
   void removeURIWhoseHostnameIs(const std::string& hostname);
 
+  void removeIdenticalURI(const std::string& uri);
+
   void reportDownloadFinished();
 
   const std::deque<std::string>& getAcceptFeatures() const;

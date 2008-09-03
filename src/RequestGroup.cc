@@ -960,6 +960,11 @@ void RequestGroup::removeURIWhoseHostnameIs(const std::string& hostname)
   _uris = newURIs;
 }
 
+void RequestGroup::removeIdenticalURI(const std::string& uri)
+{
+  _uris.erase(std::remove(_uris.begin(), _uris.end(), uri), _uris.end());
+}
+
 void RequestGroup::reportDownloadFinished()
 {
   _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
