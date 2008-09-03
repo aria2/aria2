@@ -6499,16 +6499,37 @@ if test "x$openssl_prefix" = "x"; then
   openssl_prefix="/usr/local"
 fi
 
-openssl_prefix_lib=$openssl_prefix/lib
-openssl_prefix_include=$openssl_prefix/include
-
 LIBS_save=$LIBS
 CPPFLAGS_save=$CPPFLAGS
 
-LIBS="-L$openssl_prefix_lib $LIBS"
-CPPFLAGS="-I$openssl_prefix_include $CPPFLAGS"
+PKG_CONFIG="$openssl_prefix/bin/pkg-config"
+if test -x $PKG_CONFIG; then
+  { echo "$as_me:$LINENO: checking checking availability of openssl using pkg-config" >&5
+echo $ECHO_N "checking checking availability of openssl using pkg-config... $ECHO_C" >&6; }
+  $PKG_CONFIG --exists openssl
+  if test "$?" = "0"; then
+    # Use pkg-config to detect LIBS and CFLAGS
+    OPENSSL_LIBS=`$PKG_CONFIG --libs openssl`
+    OPENSSL_CFLAGS=`$PKG_CONFIG --cflags openssl`
 
-{ echo "$as_me:$LINENO: checking for SSL_library_init in -lssl" >&5
+    LIBS="$OPENSSL_LIBS $LIBS"
+    CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
+    have_openssl=yes
+    { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+  else
+    { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+  fi
+fi
+if test "x$have_openssl" != "xyes"; then
+  openssl_prefix_lib=$openssl_prefix/lib
+  openssl_prefix_include=$openssl_prefix/include
+
+  LIBS="-L$openssl_prefix_lib $LIBS"
+  CPPFLAGS="-I$openssl_prefix_include $CPPFLAGS"
+
+  { echo "$as_me:$LINENO: checking for SSL_library_init in -lssl" >&5
 echo $ECHO_N "checking for SSL_library_init in -lssl... $ECHO_C" >&6; }
 if test "${ac_cv_lib_ssl_SSL_library_init+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -6570,13 +6591,12 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_ssl_SSL_library_init" >&5
 echo "${ECHO_T}$ac_cv_lib_ssl_SSL_library_init" >&6; }
 if test $ac_cv_lib_ssl_SSL_library_init = yes; then
-  have_openssl=yes; LIBS="-lssl $LIBS"
+  have_openssl=yes LIBS="-lssl $LIBS"
 fi
 
-
-if test "x$have_openssl" = "xyes"; then
-  have_openssl=no
-  { echo "$as_me:$LINENO: checking for main in -lcrypto" >&5
+  if test "x$have_openssl" = "xyes"; then
+    have_openssl=no
+    { echo "$as_me:$LINENO: checking for main in -lcrypto" >&5
 echo $ECHO_N "checking for main in -lcrypto... $ECHO_C" >&6; }
 if test "${ac_cv_lib_crypto_main+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -6635,12 +6655,20 @@ if test $ac_cv_lib_crypto_main = yes; then
   have_openssl=yes; LIBS="-lcrypto $LIBS"
 fi
 
-  if test "x$have_openssl" = "xyes"; then
+    if test "x$have_openssl" = "xyes"; then
+      OPENSSL_LIBS="-L$openssl_prefix_lib -lssl -lcrypto"
+      OPENSSL_CFLAGS="-I$openssl_prefix_include"
+    fi
+  fi
+fi
+
+if test "x$have_openssl" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBSSL 1
 _ACEOF
 
+  # check whether EVP_DigestInit_ex exists. Old openssl doesn't have it.
 
 for ac_func in EVP_DigestInit_ex
 do
@@ -6735,17 +6763,16 @@ _ACEOF
 fi
 done
 
-    if test "x$have_digestinit_ex" = "x"; then
+  if test "x$have_digestinit_ex" = "x"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_OLD_LIBSSL 1
 _ACEOF
 
-    fi
-    OPENSSL_LIBS="-L$openssl_prefix_lib -lssl -lcrypto"
-    OPENSSL_CFLAGS="-I$openssl_prefix_include"
+  fi
 
 
+  # search for sha256 support
 
 for ac_func in EVP_sha256
 do
@@ -6840,7 +6867,6 @@ _ACEOF
 fi
 done
 
-  fi
 fi
 
 LIBS=$LIBS_save
