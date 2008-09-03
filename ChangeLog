@@ -1,5 +1,14 @@
 2008-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added Turkish translation. Updated German and Russian translations.
+	Thanks to all translators.
+	* po/LINGUAS
+	* po/de.po
+	* po/ru.po
+	* po/tr.po
+
+2008-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.15.3.
 	* configure.ac
 

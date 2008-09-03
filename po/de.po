@@ -7,24 +7,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-08-15 21:42+0900\n"
-"PO-Revision-Date: 2008-04-23 16:35+0000\n"
-"Last-Translator: Christian Siegert <Unknown>\n"
+"POT-Creation-Date: 2008-09-03 23:34+0900\n"
+"PO-Revision-Date: 2008-09-03 23:31+0900\n"
+"Last-Translator: furryspider <Unknown>\n"
 "Language-Team: deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-05-12 14:16+0000\n"
+"X-Launchpad-Export-Date: 2008-09-03 12:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:793
+#, fuzzy
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
+"Abbruch wurde eingeleitet... Strg-C drücken für sofortige Unterbrechung."
 
 #: src/DownloadEngine.cc:797
+#, fuzzy
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Sofortiger Abbruch wurde eingeleitet..."
 
 #: src/MultiUrlRequestInfo.cc:86
 #, fuzzy
@@ -34,10 +37,13 @@ msgstr ""
 "wird."
 
 #: src/MultiUrlRequestInfo.cc:88
+#, fuzzy
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
+"Sollten Fehler aufgetreten sein, bitte die Mitschnitt-Datei beachten. Für "
+"Details hierzu siehe die Option \"-l\" in den Hilfe- und man-Seiten."
 
 #: src/RequestGroupMan.cc:312
 #, fuzzy
@@ -45,20 +51,24 @@ msgid "Download Results:"
 msgstr "Download Ergebnisse"
 
 #: src/RequestGroupMan.cc:327
+#, fuzzy
 msgid "Status Legend:"
-msgstr ""
+msgstr "Statuserläuterung:"
 
 #: src/HelpItem.cc:39
+#, fuzzy
 msgid "                              Default: "
-msgstr ""
+msgstr "                              Standard: "
 
 #: src/HelpItem.cc:40
+#, fuzzy
 msgid "                              Tags: "
-msgstr ""
+msgstr "                              Schlagwörter: "
 
 #: src/HelpItem.cc:41
+#, fuzzy
 msgid "                              Available Values: "
-msgstr ""
+msgstr "                              Mögliche Werte: "
 
 #: src/OptionHandlerImpl.h:71
 msgid "must be either 'true' or 'false'."
@@ -132,6 +142,7 @@ msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 Start als Daemon-Prozeß."
 
 #: src/usage_text.h:46
+#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -143,6 +154,14 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
+" -s, --split=N Aufbau von N Verbindungen für den Download. Falls mehr\n"
+"                              als N URLs angegeben wurden, werden die "
+"ersten\n"
+"                              N URLs benutzt und die restlichen als Ersatz\n"
+"                              herangezogen. Wurden weniger als N URLs\n"
+"                              angegeben, werden diese mehrfach benutzt, so\n"
+"                              daß insgesamt N Verbindungen gleichzeitig\n"
+"                              aufgebaut werden. Siehe auch Option \"-j\"."
 
 #: src/usage_text.h:53
 msgid ""
@@ -276,6 +295,7 @@ msgstr ""
 "                              Fehlwert: tunnel"
 
 #: src/usage_text.h:98
+#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -287,16 +307,34 @@ msgid ""
 "downloads.\n"
 "                              Default: 0"
 msgstr ""
+" --lowest-speed-limit=SPEED Verbindung schließen wenn die Download-\n"
+"                            Geschwindigkeit dem angegebenen Wert entspricht\n"
+"                            oder ihn unterschreitet (Byte pro Sekunde).\n"
+"                            Bei 0 wird keine untere Geschwindigkeitsgrenze\n"
+"                            für Aria2 gesetzt. Man kann K oder M an den\n"
+"                            Wert anhängen (1K = 1024, 1M = 1024K).\n"
+"                            Diese Option hat keine Auswirkung auf "
+"BitTorrent-\n"
+"                            Downloads.\n"
+"                            Standardeinstellung: 0"
 
 #: src/usage_text.h:105
+#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
+" --max-download-limit=SPEED Setzt die maximale Download-Geschwindigkeit\n"
+"                              in Bytes pro Sekunde. Ein Wert von 0\n"
+"                              bedeutet keine Begrenzung. Man kann K oder\n"
+"                              M an den Wert anhängen (1K = 1024, 1M = "
+"1024K).\n"
+"                              Standardeinstellung: 0"
 
 #: src/usage_text.h:110
+#, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method. METHOD is "
 "either\n"
@@ -309,23 +347,44 @@ msgid ""
 "                              depending on the size of the file.\n"
 "                              Default: prealloc"
 msgstr ""
+" --file-allocation=METHOD Festlegung der Datei-Anlegemethode. Dabei ist\n"
+"                              METHOD entweder \"none\" oder \"prealloc\".\n"
+"                              Bei \"prealloc\" wird der von der herunterzu-\n"
+"                              ladenden Datei benötigte Platz vorbelegt, "
+"bevor\n"
+"                              der Download beginnt. Je nach Größe der Datei\n"
+"                              kann dies einige Zeit in Anspruch nehmen.\n"
+"                              Standardeinstellung: prealloc"
 
 #: src/usage_text.h:117
+#, fuzzy
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --no-file-allocation-limit=SIZE Es wird keine Platzvorbelegung für Dateien\n"
+"                              vorgenommen, die kleiner als SIZE sind. Man\n"
+"                              kann K oder M an den Wert anhängen (1K = "
+"1024,\n"
+"                              1M = 1024K)."
 
 #: src/usage_text.h:121
+#, fuzzy
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
+" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
+"                              während der Vorbelegung von "
+"Dateispeicherplatz\n"
+"                              verringert. Abschaltbar, falls dabei Fehler\n"
+"                              auftreten."
 
 #: src/usage_text.h:125
+#, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
 "                              already exists but the corresponding .aria2 "
@@ -333,6 +392,12 @@ msgid ""
 "                              doesn't exist.\n"
 "                              Default: false"
 msgstr ""
+" --allow-overwrite=true|false Bei \"false\" wird Aria2 keine Dateien "
+"herunter-\n"
+"                              laden, die bereits lokal vorliegen, für die\n"
+"                              aber keine entsprechende .aria2-Datei "
+"existiert.\n"
+"                              Standardeinstellung: false"
 
 #: src/usage_text.h:130
 msgid ""
@@ -345,6 +410,7 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:135
+#, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -353,8 +419,16 @@ msgid ""
 "                              the usual command-line download utilities.\n"
 "                              Default: false"
 msgstr ""
+" -Z, --force-sequential[=true|false]  Lädt alle URIs, die auf der "
+"Befehlszeile\n"
+"                              mitgegeben wurden, nacheinander in jeweils "
+"einem\n"
+"                              eigenen Vorgang herunter, wie herkömmliche\n"
+"                              Download-Werkzeuge.\n"
+"                              Standardeinstellung: false"
 
 #: src/usage_text.h:140
+#, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -365,6 +439,14 @@ msgid ""
 "                              appended.\n"
 "                              Default: true"
 msgstr ""
+" --auto-file-renaming[=true|false]  Umbenennen der Datei, wenn bereits eine\n"
+"                              Datei desselben Namens vorhanden ist. Diese\n"
+"                              Option funktioniert nur bei HTTP(S)/FTP\n"
+"                              Downloads. Der neue Dateiname besteht aus dem\n"
+"                              alten, an den ein Punkt und eine Nummer (1-"
+"9999)\n"
+"                              angehängt wird.\n"
+"                              Standardeinstellung: true"
 
 #: src/usage_text.h:147
 msgid ""
@@ -384,9 +466,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:159
+#, fuzzy
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
+" --enable-http-keep-alive[=true|false]  Dauerhafte HTTP/1.1-Verbindung "
+"halten."
 
 #: src/usage_text.h:161
 msgid ""
@@ -395,6 +480,7 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:164
+#, fuzzy
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
@@ -406,8 +492,18 @@ msgid ""
 "                              of a file.\n"
 "                              Default: false"
 msgstr ""
+" --check-integrity=true|false  Dateiintegrität mittels Vergleich von\n"
+"                              Abschnittsprüfziffern prüfen. Diese Option "
+"wird\n"
+"                              nur für BitTorrent- und Metalink-Downloads "
+"ver-\n"
+"                              wendet. Sie kann genutzt werden, um "
+"beschädigte\n"
+"                              Dateiabschnitte neu herunterzuladen.\n"
+"                              Standardeinstellung: false"
 
 #: src/usage_text.h:171
+#, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -416,8 +512,15 @@ msgid ""
 "checksums.\n"
 "                              Default: true"
 msgstr ""
+" --realtime-chunk-checksum=true|false  Prüfsummen für Dateiabschnitte "
+"während\n"
+"                              des Downloads vergleichen. Diese Option wird "
+"nur\n"
+"                              im Metalink-Modus mit Abschnitts-Prüfsummen\n"
+"                              verwendet. Standardeinstellung: true"
 
 #: src/usage_text.h:176
+#, fuzzy
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -426,6 +529,19 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
+" -c, --continue   Den Download einer teilweise heruntergeladenen Datei "
+"fort-\n"
+"                              setzen. Unvollständige Downloads, die von\n"
+"                              Programmen begonnen wurden, die Dateien "
+"linear\n"
+"                              von Anfang nach Ende herunterladen (z. B. "
+"Web-\n"
+"                              Browser), können mit dieser Option "
+"fortgeführt\n"
+"                              werden.\n"
+"                              Im Moment ist diese Option nur für HTTP(S) "
+"und\n"
+"                              FTP verfügbar."
 
 #: src/usage_text.h:183
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
@@ -436,6 +552,7 @@ msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc               Deaktiviert netrc Unterstützung."
 
 #: src/usage_text.h:187
+#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -443,6 +560,14 @@ msgid ""
 "character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
+" -i, --input-file=FILE   Liest Download-Adressen aus der Datei FILE. Man "
+"kann\n"
+"                              zu jedem Download-Ziel mehrere URIs angeben:\n"
+"                              Dazu werden die zusammenpassenden URIs auf "
+"einer\n"
+"                              Zeile angeführt, getrennt durch Tabulator.\n"
+"                              Liest von stdin, wenn \"-\" als Wert gegeben "
+"wird."
 
 #: src/usage_text.h:192
 #, fuzzy
@@ -452,17 +577,23 @@ msgid ""
 "                              every static (HTTP/FTP) URL, torrent and "
 "metalink."
 msgstr ""
-" -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
-"                              Fehlwert: 5"
+" -j, --max-concurrent-downloads=N Bestimmt die Höchstanzahl paralleler\n"
+"                              Downloads für statische URLs (HTTP/FTP),\n"
+"                              Torrents und Metalinks."
 
 #: src/usage_text.h:195
+#, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Mozilla/"
 "Firefox\n"
 "                              (1.x/2.x) and Netscape format."
 msgstr ""
+" --load-cookies=FILE          Lädt Cookies im Mozilla/Firefox- (1.x/2.x) "
+"oder\n"
+"                              Netscape-Format aus der Datei FILE."
 
 #: src/usage_text.h:198
+#, fuzzy
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -470,6 +601,10 @@ msgid ""
 "listed\n"
 "                              in case of torrent file."
 msgstr ""
+" -S, --show-files             Listenanzeige aller Download-Positionen\n"
+"                              in einer .torrent- oder .metalink-Datei. Für\n"
+"                              .torrent werden genauere Informationen "
+"angezeigt."
 
 #: src/usage_text.h:202
 msgid ""
@@ -502,6 +637,7 @@ msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  Datenpfad zur torrent-Datei."
 
 #: src/usage_text.h:213
+#, fuzzy
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -516,6 +652,21 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
+"nach\n"
+"                              dem Download einer .torrent-Datei oder einer "
+"Da-\n"
+"                              tei, deren Inhaltstyp \"application/x-"
+"bittorrent\"\n"
+"                              ist, diese Datei als Torrent-Steuerdatei "
+"durch-\n"
+"                              sucht und alle gefundenen Download-Positionen\n"
+"                              heruntergeladen.\n"
+"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
+"                              der Festplatte gespeichert, sondern nur im \n"
+"                              Speicher gehalten.\n"
+"                              Bei \"false\" wird die .torrent-Datei nicht\n"
+"                              durchsucht."
 
 #: src/usage_text.h:223
 msgid ""
@@ -528,6 +679,7 @@ msgstr ""
 "                              Fehlwert: true"
 
 #: src/usage_text.h:227
+#, fuzzy
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -537,22 +689,46 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
+" --listen-port=PORT           Setzen des TCP-Ports für BitTorrent-"
+"Downloads.\n"
+"                              Mehrere Ports können mit Kommatrennung "
+"angegeben\n"
+"                              werden (Bsp: \"6881,6885\"). Mit \"-\" kann "
+"ein\n"
+"                              Port-Bereich angegeben werden (Bsp: \"6881-6999"
+"\").\n"
+"                              \",\" und \"-\" können gemeinsam benutzt "
+"werden."
 
 #: src/usage_text.h:233
+#, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
+" --max-upload-limit=SPEED     Setzen der maximalen Hochlade-Geschwindigkeit "
+"in\n"
+"                              Bytes pro Sekunde. Bei 0 wird keine Grenze "
+"vor-\n"
+"                              gegeben. Man kann K oder M an den Wert "
+"anhängen\n"
+"                              (1K = 1024, 1M = 1024K).\n"
+"                              Standardeinstellung: 0"
 
 #: src/usage_text.h:238
+#, fuzzy
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
+" --seed-time=MINUTES          Legt die Verteilzeit in Minuten fest. Siehe "
+"auch\n"
+"                              die Option \"--seed-ratio\"."
 
 #: src/usage_text.h:241
+#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO. 1.0 is\n"
@@ -563,6 +739,21 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
+" --seed-ratio=RATIO           Legt das Verteilungsverhältnis fest. "
+"Herunterge-\n"
+"                              ladene Torrents werden solange "
+"weiterverteilt,\n"
+"                              bis das Verhältnis RATIO erreicht ist. Ein "
+"Wert\n"
+"                              von 1.0 wird empfohlen. Bei Angabe von 0.0 "
+"wird\n"
+"                              unabhängig vom Verhältnis weiterverteilt.\n"
+"                              Wenn diese Option zusammen mit \"--seed-time"
+"\"\n"
+"                              verwendet wird, wird die Verteilung "
+"eingestellt,\n"
+"                              sobald die Vorgabe einer der Optionen\n"
+"                              erfüllt ist."
 
 #: src/usage_text.h:249
 msgid ""
@@ -581,10 +772,14 @@ msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 
 #: src/usage_text.h:259
+#, fuzzy
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr ""
+" --enable-dht[=true|false]    Nutzung von DHT (VHT, Verteilte Hash-Tabelle)\n"
+"                              einschalten."
 
 #: src/usage_text.h:261
+#, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -594,12 +789,25 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
+" --dht-listen-port=PORT   Bestimmt den UDP-Lauschport für DHT.\n"
+"                              Mehrere Ports können mit Kommatrennung "
+"angegeben\n"
+"                              werden (Bsp: \"6881,6885\"). Mit \"-\" kann "
+"ein\n"
+"                              Port-Bereich angegeben werden (Bsp: \"6881-6999"
+"\").\n"
+"                              \",\" und \"-\" können gemeinsam benutzt "
+"werden."
 
 #: src/usage_text.h:267
+#, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
 msgstr ""
+" --dht-entry-point=HOST:PORT  Festlegung von Wirt und Port, über den das "
+"DHT-\n"
+"                              Netzwerk betreten wird."
 
 #: src/usage_text.h:270
 msgid ""
@@ -630,14 +838,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:285
-#, fuzzy
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
 "                              BitTorrent download."
 msgstr ""
-" -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
-"                              Fehlwert: 5"
 
 #: src/usage_text.h:288
 msgid ""

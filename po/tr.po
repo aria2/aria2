@@ -1,125 +1,129 @@
-# Brazilian Portuguese translation for aria2
-# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# Turkish translation for aria2
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the aria2 package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-09-03 23:34+0900\n"
-"PO-Revision-Date: 2007-12-01 14:25+0000\n"
-"Last-Translator: jareth-Br <fcarretoni@gmail.com>\n"
-"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"PO-Revision-Date: 2008-09-03 22:38+0900\n"
+"Last-Translator: wyginwys <Unknown>\n"
+"Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
+"X-Launchpad-Export-Date: 2008-09-03 12:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:793
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr ""
+msgstr "Kapanma başlıyor...Acil kapanış için Ctrl-C ye tekrar basın."
 
 #: src/DownloadEngine.cc:797
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Acil kapanış başlıyor..."
 
 #: src/MultiUrlRequestInfo.cc:86
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
+msgstr "Transferi tekrar başlatırsanız, aria2 indirmeye devam edecek."
 
 #: src/MultiUrlRequestInfo.cc:88
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
+"Bir hatayla karşılaşırsanız log dosyasına bakın. Detay için yardım ve man "
+"sayfalarındaki -l opsiyonuna bakın."
 
 #: src/RequestGroupMan.cc:312
 msgid "Download Results:"
-msgstr ""
+msgstr "Download Sonuçları:"
 
 #: src/RequestGroupMan.cc:327
 msgid "Status Legend:"
-msgstr ""
+msgstr "Durum Haritası:"
 
 #: src/HelpItem.cc:39
 msgid "                              Default: "
-msgstr ""
+msgstr "                              Varsayılan: "
 
 #: src/HelpItem.cc:40
 msgid "                              Tags: "
-msgstr ""
+msgstr "                              Etiketler: "
 
 #: src/HelpItem.cc:41
 msgid "                              Available Values: "
-msgstr ""
+msgstr "                              Kullanılabilen Değerler: "
 
 #: src/OptionHandlerImpl.h:71
 msgid "must be either 'true' or 'false'."
-msgstr "deve ser 'true' ou 'false'"
+msgstr "ya 'doğru' ya da 'yanlış' olmalı"
 
 #: src/OptionHandlerImpl.h:92 src/OptionHandlerImpl.h:127
 #, c-format
 msgid "must be between %s and %s."
-msgstr "deve estar entre %s e %s"
+msgstr "%s ya da %s arasında olmalı"
 
 #: src/OptionHandlerImpl.h:124
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "deve ser menor que, ou igual a %s"
+msgstr "%s den küçük ya da ona eşit olmalı"
 
 #: src/OptionHandlerImpl.h:130
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "deve ser maior que, ou igual a %s"
+msgstr "%s den büyük ya da ona eşit olmalı"
 
 #: src/OptionHandlerImpl.h:133 src/OptionHandlerImpl.h:179
 msgid "must be a number."
-msgstr "deve ser um número."
+msgstr "bir sayı olmalı."
 
 #: src/OptionHandlerImpl.h:170
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "deve ser menor que, ou igual a %.1f."
+msgstr "%.1f den küçük ya da ona eşit olmalı."
 
 #: src/OptionHandlerImpl.h:173
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "deve estar entre %.1f e %.1f."
+msgstr "%.1f ya da %.1f arasında olmalı."
 
 #: src/OptionHandlerImpl.h:176
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "deve ser maior que, ou igual a %.1f."
+msgstr "%.1f den büyük ya da ona eşit olmalı"
 
 #: src/OptionHandlerImpl.h:257
 msgid "must be one of the following:"
-msgstr "deve ser um dos seguintes:"
+msgstr "şunlardan biri olmalı:"
 
 #: src/OptionHandlerImpl.h:294
 msgid "unrecognized proxy format"
-msgstr "formato proxy não reconhecido"
+msgstr "bilinmeyen proxy biçimi"
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr ""
+msgstr " -d, --dir=KLASÖR İndirilen dosyanın saklanacağı klasör."
 
 #: src/usage_text.h:39
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr ""
+msgstr " -o, --out=DOSYA İndirilen dosyanın adı."
 
 #: src/usage_text.h:41
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
+" -l, --log=LOG Log dosyasının adı. Eğer '-' kullanılırsa\n"
+"                              log stdout a yazılır."
 
 #: src/usage_text.h:44
 msgid " -D, --daemon                 Run as daemon."
-msgstr ""
+msgstr " -D, --daemon Daemon olarak çalıştır."
 
 #: src/usage_text.h:46
 msgid ""
@@ -133,6 +137,14 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
+" -s, --split=N N adet bağlantı kullanarak dosya indir.Eğer N den fazla URL "
+"verilirse,\n"
+"                              ilkönce N adet URL kullanılır ve\n"
+"                              kalanlar yedekleme için ayrılır.\n"
+"                              Eğer N den az URL verilirse,\n"
+"                              N adet bağlantı yapılacak şekilde\n"
+"                              verilen URLler birden fazla kullanılır.\n"
+"                              Lütfen -j opsiyonuna da bakın."
 
 #: src/usage_text.h:53
 msgid ""
@@ -142,39 +154,52 @@ msgid ""
 "60.\n"
 "                              Default: 5"
 msgstr ""
+" --retry-wait=SAN Bir hata olduğunda tekrar denemek\n"
+"                              için geçmesi geçen saniye. 0-60\n"
+"                              arasında bir değer veriniz.\n"
+"                              Varsayılan: 5"
 
 #: src/usage_text.h:57
 msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
-msgstr ""
+msgstr " -t, --timeout=SAN Saniye olarak zamanaşımı süresi.Varsayılan:60"
 
 #: src/usage_text.h:59
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
+" -m, --max-tries=N Deneme sayısı. 0 girilirse sınırsız olarak denenir.\n"
+"                              Varsayılan: 5"
 
 #: src/usage_text.h:62
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
+" --http-proxy=MAKİNE:PORT HTTP Proxy sunucusu kullan. Bu bütün URLleri "
+"etkiler."
 
 #: src/usage_text.h:64
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
+" --http-user=KULLANICI HTTP kullanıcısını belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:66
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr ""
+msgstr " --http-passwd=SIFRE HTTP şifresini belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:68
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
+" --http-proxy-user=KULLANICI HTTP proxy kullanıcısını belirle. Bu bütün "
+"URLleri etkiler."
 
 #: src/usage_text.h:70
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
+" --http-proxy-passwd=SIFRE HTTP proxy şifresini belirle.Bu bütün URLleri "
+"etkiler."
 
 #: src/usage_text.h:72
 msgid ""
@@ -182,6 +207,10 @@ msgid ""
 "                              METHOD is either 'get' or 'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --http-proxy-method=METOD Proxy isteği için metodu belirle.\n"
+"                              Metod 'get' ya da 'tunnel' den biri "
+"olmalıdır.\n"
+"                              Varsayılan: tunnel"
 
 #: src/usage_text.h:76
 msgid ""
@@ -190,22 +219,25 @@ msgid ""
 "                              is the only supported scheme.\n"
 "                              Default: basic"
 msgstr ""
+" --http-auth-scheme=ŞEMA HTTP kimlik onaylama şeması.Şu anda\n"
+"                              sadece 'basic' destekleniyor.Varsayılan: basic"
 
 #: src/usage_text.h:80
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr ""
+msgstr " --referer=REFERER Referer i belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:82
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
+" --ftp-user=KULLANICI FTP kullanıcısını belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:85
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
 "                              Default: ARIA2USER@"
-msgstr ""
+msgstr " --ftp-passwd=PASSWD FTP şifresini belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:88
 msgid ""
@@ -214,10 +246,13 @@ msgid ""
 "                              or 'ascii'.\n"
 "                              Default: binary"
 msgstr ""
+" --ftp-type=TİP FTP transfer tipini belirle. TİP 'binary' veya 'ascii' den "
+"biri olabilir.\n"
+"                              Varsayılan: binary"
 
 #: src/usage_text.h:92
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr ""
+msgstr " -p, --ftp-pasv Pasif mod FTP kullan."
 
 #: src/usage_text.h:94
 msgid ""
@@ -226,6 +261,9 @@ msgid ""
 "                              'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --ftp-via-http-proxy=METOD HTTP proxy üzerinden FTP kullan.Metod 'get' ya "
+"da \n"
+"                              'tunnel' den biri olabilir.Varsayılan:tunnel"
 
 #: src/usage_text.h:98
 msgid ""
@@ -239,6 +277,14 @@ msgid ""
 "downloads.\n"
 "                              Default: 0"
 msgstr ""
+" --lowest-speed-limit=HIZ Download hızı bu değerden düşük veya eşitse "
+"bağlantıyı\n"
+"                              kapat.Bu değer 0 olursa böyle bir limit "
+"olmaz.\n"
+"                              Değerin yanına K veya M (1K=1024, 1M=1024K) \n"
+"                              ekleyebilirsiniz.Bu değer BitTorrent "
+"downloadlarını\n"
+"                              etkilemez.Varsayılan:0"
 
 #: src/usage_text.h:105
 msgid ""
@@ -247,6 +293,11 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
+" --max-download-limit=HIZ Maksimum download hızı(Bytes/saniye).\n"
+"                              0 olursa sınırlama olmaz.Değerin yanına K veya "
+"M\n"
+"                              (1K=1024, 1M=1024K) ekleyebilirsiniz.\n"
+"                              Varsayılan:0"
 
 #: src/usage_text.h:110
 msgid ""
@@ -261,6 +312,14 @@ msgid ""
 "                              depending on the size of the file.\n"
 "                              Default: prealloc"
 msgstr ""
+" --file-allocation=METOD Dosya dağılım metodu. Metod 'none' veya\n"
+"                              'prealloc' değerlerini alabilir.'none' "
+"seçilirse bir dağılım\n"
+"                              yapılmaz.'prealloc' seçilirse download "
+"başlamadan önce\n"
+"                              yer tahsis edilir.Bu işlem dosyanın "
+"bütüklüğüne göre belli\n"
+"                              bir süre alabilir.Varsayılan: prealloc"
 
 #: src/usage_text.h:117
 msgid ""
@@ -268,6 +327,10 @@ msgid ""
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --no-file-allocation-limit=DEĞER Bu değerden küçük boyutlu dosyalar\n"
+"                              için yer ayrılmaz.Değerin yanına K veya M"
+"(1K=1024,\n"
+"                              1M=1024K) ekleyebilirsiniz."
 
 #: src/usage_text.h:121
 msgid ""
@@ -276,6 +339,9 @@ msgid ""
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
+" --enable-direct-io=true|false Direk G/Ç belirle.True yapılırsa\n"
+"                              dosya yer ayrımlarında düşük işlemci\n"
+"                              gücü kullanılır.Eğer bir hata olursa kapatın."
 
 #: src/usage_text.h:125
 msgid ""
@@ -285,6 +351,9 @@ msgid ""
 "                              doesn't exist.\n"
 "                              Default: false"
 msgstr ""
+" --allow-owerwrite=true|false False seçilirse aria2, .aria2 dosyası olmayan\n"
+"                              ama kendisi olan dosyayı indirmez.Varsayılan: "
+"false"
 
 #: src/usage_text.h:130
 msgid ""
@@ -295,6 +364,13 @@ msgid ""
 "proceed\n"
 "                              but some download progress will be lost."
 msgstr ""
+" --allow-piece-length-change=true|false False seçilirse, aria2 parça "
+"uzunluğunun\n"
+"                              kontrol dosyasındakinden farklı olduğu durumda "
+"indirmeyi\n"
+"                              bitirir.Eğer true seçilirse, devam "
+"edebilirsiniz ama indirmenizin\n"
+"                              bir kısmı kaybolur."
 
 #: src/usage_text.h:135
 msgid ""
@@ -305,6 +381,10 @@ msgid ""
 "                              the usual command-line download utilities.\n"
 "                              Default: false"
 msgstr ""
+" -Z, --force-sequential=true|false Komut satırındaki URIleri sırayla getir\n"
+"                              ve her URI yi ayrı bir oturumda indir (diğer "
+"komut satırı indirme\n"
+"                              programlarının yaptığı gibi).Varsayılan:false"
 
 #: src/usage_text.h:140
 msgid ""
@@ -317,6 +397,13 @@ msgid ""
 "                              appended.\n"
 "                              Default: true"
 msgstr ""
+" --auto-file-renaming=true|false Aynı isimli dosya varsa dosya ismini "
+"değiştir.\n"
+"                              Bu seçenek sadece http(s) ve ftp "
+"indirmelerinde geçerlidir.\n"
+"                              Yeni dosya adı . ve 1-9999 arasında bir sayı "
+"eklenerek oluşturulur.\n"
+"                              Varsayılan: true"
 
 #: src/usage_text.h:147
 msgid ""
@@ -334,17 +421,26 @@ msgid ""
 "                              required.\n"
 "                              Default: false"
 msgstr ""
+" -P, --parametrized-uri=true|false Parametreli URI desteğini aç.\n"
+"                              Bir küme tanımlayabilirsiniz: \n"
+"                              http://{sv1,sv2,sv3}/foo.iso\n"
+"                              Bir dizi ve artış tanımlayabilirsiniz:\n"
+"                              http://host/image[000-100:2].img\n"
+"                              Artış atlanabilir.Eğer URIlerin hepsi\n"
+"                              aynı dosyaya işaret etmiyorsa(2.örnekte olduğu "
+"gibi)\n"
+"                              o zaman -Z eklenmelidir.Varsayılan: false"
 
 #: src/usage_text.h:159
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
-msgstr ""
+msgstr " --enable-http-keep-alive=true|false HTTP/1.1devamlı bağlantıyı aç."
 
 #: src/usage_text.h:161
 msgid ""
 " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
 "                              Default: false"
-msgstr ""
+msgstr " --enable-http-pipelining=true|false HTTP/1.1 pipelining aç."
 
 #: src/usage_text.h:164
 msgid ""
@@ -358,6 +454,14 @@ msgid ""
 "                              of a file.\n"
 "                              Default: false"
 msgstr ""
+" --check-integrity=true|false Parça hashine bakarak dosya bütünlüğünü "
+"kontrol et.\n"
+"                              Bu seçenek sadece BitTorrent downloadlarında "
+"ve chunck checksum \n"
+"                              içeren Metalink downloadlarında geçerlidir. Bu "
+"seçenek kullanılarak\n"
+"                              bozuk parçalı bir dosya tekrar indirilebilir."
+"Varsayılan: false"
 
 #: src/usage_text.h:171
 msgid ""
@@ -368,6 +472,11 @@ msgid ""
 "checksums.\n"
 "                              Default: true"
 msgstr ""
+" --realtime-chunck-checksum=true|false Metalink modunda dosya indirirken \n"
+"                              chunkc checksumını doğrula.Bu seçenek sadece "
+"Metalink\n"
+"                              modunda ve chuck checksum olunca geçerlidir."
+"Varsayılan: true"
 
 #: src/usage_text.h:176
 msgid ""
@@ -378,14 +487,23 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
+" -c, --continue Daha önce bir kısmı indirilmiş dosyayı indirmeye devam et.\n"
+"                              Bu seçenek dosya baştan başlanarak "
+"indirildiği \n"
+"                              durumlarda (bir web tarayıcısı veya başka bir "
+"program)\n"
+"                              indirmeye devam etmek için kullanılır.Şimdilik "
+"sadece\n"
+"                              http(s) ve ftp için geçerlidir."
 
 #: src/usage_text.h:183
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
+" -U, --user-agent=TARAYICI_KİMLİĞİ HTTP(S) için tarayıcı kimliğini belirler."
 
 #: src/usage_text.h:185
 msgid " -n, --no-netrc               Disables netrc support."
-msgstr ""
+msgstr " -n, --no-netrc netrc desteğini kapatır."
 
 #: src/usage_text.h:187
 msgid ""
@@ -395,6 +513,12 @@ msgid ""
 "character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
+" -i, --input-file=DOSYA DOSYAda bulunan URIleri indirir.Bir dosya için "
+"değişik \n"
+"                              URIler tanımlamak istiyorsanız tek satıra TAB "
+"ile ayırarak\n"
+"                              yazın.Eğer '-' olarak belirtilirse stdin den "
+"okur."
 
 #: src/usage_text.h:192
 msgid ""
@@ -403,6 +527,9 @@ msgid ""
 "                              every static (HTTP/FTP) URL, torrent and "
 "metalink."
 msgstr ""
+" -i, --max-concurrent-downloads=N Her statik HTTP/FTP URL, torrent ve "
+"metalink için maksimum \n"
+"                              paralel indirme sayısını belirler."
 
 #: src/usage_text.h:195
 msgid ""
@@ -410,6 +537,8 @@ msgid ""
 "Firefox\n"
 "                              (1.x/2.x) and Netscape format."
 msgstr ""
+" --load-cookies=DOSYA Mozilla/Firefox (1.x/2.x) ve Netscape biçimlerini \n"
+"                              kullanarak DOSYAdaki çerezleri yükler."
 
 #: src/usage_text.h:198
 msgid ""
@@ -419,6 +548,9 @@ msgid ""
 "listed\n"
 "                              in case of torrent file."
 msgstr ""
+" -S\\ --show-files .torrent ve .metalink dosyasının listesini göster ve çık."
+"Torrent dosyalarında\n"
+"                              daha detaylı bilgi gösterilir."
 
 #: src/usage_text.h:202
 msgid ""
@@ -433,10 +565,23 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
+" --select-file=INDEKS... Indeksini belirlenen dosyayı indir.Dosyanın \n"
+"                              indeksini --show-files seçeneğini kullanarak "
+"bulabilirsiniz.\n"
+"                              ',' kullanarak birden fazla indeks "
+"belirtilebilir,örnek: \"3,6\".\n"
+"                              '-' kullanarak bir aralık belirtebilirsiniz: "
+"\"1-5\".\n"
+"                              '-' ve ',' bir arada kullanılabilir. -M "
+"seçeneğiyle birlikte\n"
+"                              kullanıldığında sorguya bağlı olarak indeks "
+"değişebilir\n"
+"                              (Daha fazla bilgi için --metalink* "
+"seçeneklerine bakın)."
 
 #: src/usage_text.h:211
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr ""
+msgstr " -T, --torrent-file=TORRENT_DOSYASI .torrent dosyasının bulunduğu yer."
 
 #: src/usage_text.h:213
 msgid ""
@@ -453,6 +598,16 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-torrent=true|false|mem  True veya mem seçilirse, .torrent uzantılı "
+"bir dosya ya da \n"
+"                              içerik tipi application/x-bittorrent olan bir "
+"dosya indirildiğinde, aria2\n"
+"                              onu bir torrent dosyası olarak okur ve "
+"içindeki dosyaları indirir.\n"
+"                              Eğer mem seçilirse, torrent dosyası diske "
+"yazılmaz sadece hafızada\n"
+"                              tutulur.Eğer false seçilirse, yukarıda "
+"anlatılan işler yapılmaz."
 
 #: src/usage_text.h:223
 msgid ""
@@ -460,6 +615,9 @@ msgid ""
 "                              mentioned in .torrent file.\n"
 "                              Default: true"
 msgstr ""
+" --direct-file-mapping=true|false Bahsedilen .torrent dosyasındaki "
+"dosyalardan\n"
+"                              direkt oku ve hepsine yaz.Varsayılan: true."
 
 #: src/usage_text.h:227
 msgid ""
@@ -471,6 +629,13 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
+" --listen-port=PORT BitTorrent için kullanılacak TCP Port numarası belirle.\n"
+"                              ',' kullanılarak birden çok port numarası "
+"belirtilebilir:\n"
+"                              örnek: '6881,6885'. '-' kullanılarak bir "
+"aralık da blirtebilirsiniz\n"
+"                              örnek: '6881-6999'. '-' ve ',' birlikte de "
+"kullanılabilir."
 
 #: src/usage_text.h:233
 msgid ""
@@ -479,12 +644,18 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
+" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
+"                              0 yapılırsa bir sınırlama olmaz.\n"
+"                              Değere K ve M (1K=1024, 1M=1024K)\n"
+"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:238
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
+" --speed-time=DAKİKA Tohumlama(seed) zamanını belirler. \n"
+"                              --seed-ratio seçeneğine de bakınız."
 
 #: src/usage_text.h:241
 msgid ""
@@ -497,6 +668,15 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
+" --seed-ratio=ORAN Paylaşma oranını  belirler. Paylaşma oranı ORAN olana "
+"kadar\n"
+"                              biten torrentleri tohumlar. 1.0 değeri tavsiye "
+"edilir. Paylaşma \n"
+"                              oranı ne olursa olsun tohumlama yapmak "
+"isterseniz bu değeri 0.0 \n"
+"                              yapın. --seed-time seçeneği de belirlenmişse, "
+"tohumlama işi bu iki\n"
+"                              şarttan biri sağlanınca biter."
 
 #: src/usage_text.h:249
 msgid ""
@@ -509,14 +689,23 @@ msgid ""
 "                              added to make it's length 20 bytes.\n"
 "                              Default: -aria2-"
 msgstr ""
+" --peer-id-prefix=PEER_ID_ÖNEK Peer ID ön ekini belirler.BitTorrent de peer "
+"ID 20byte\n"
+"                              uzunluğundadır.20Byte dan daha fazla bir değer "
+"verilirse, sadece\n"
+"                              ilk 20 byte kullanılır.20Byte dan daha az bir "
+"değer verilirse, uzunluk\n"
+"                              20Byte olacak şekilde rastgele alfabetik "
+"karakterler eklenir.\n"
+"                              Varsayılan: -aria2-"
 
 #: src/usage_text.h:257
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
-msgstr ""
+msgstr " --enable-peer-exchange=true|false Peer değişim eklentisini aç."
 
 #: src/usage_text.h:259
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
-msgstr ""
+msgstr " --enable-dht=true|false DHT özelliklerini aç."
 
 #: src/usage_text.h:261
 msgid ""
@@ -527,13 +716,15 @@ msgid ""
 "                              to specify a range: \"6881-6999\". ',' and '-' "
 "can\n"
 "                              be used together."
-msgstr ""
+msgstr " --dht-listen-port=PORT... DHT için UDP dinleme portunu aç."
 
 #: src/usage_text.h:267
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
 msgstr ""
+" --dht-entry-point=MAKİNE:PORT Makine ve portu DHT ağına giriş noktası "
+"olarak belirle."
 
 #: src/usage_text.h:270
 msgid ""
@@ -544,6 +735,11 @@ msgid ""
 "satisfies\n"
 "                              the given level."
 msgstr ""
+" --bt-min-crypto-level=plain|arc4 Minimum şifreleme düzeyini belirle.\n"
+"                              Birden fazla şifreleme metodu peer tarafından\n"
+"                              sağlanıyorsa, aria2 bu düzeyi sağlayan en "
+"küçük\n"
+"                              olanın seçer."
 
 #: src/usage_text.h:275
 msgid ""
@@ -552,6 +748,11 @@ msgid ""
 "                              handshake. Thus aria2 always uses Obfuscation\n"
 "                              handshake."
 msgstr ""
+" --bt-require-crypto=true|false True seçilirse aria2 BitTorrent tokalaşması "
+"ile\n"
+"                              bağlantıyı kabul etmez ve kurmaz.Dolayısıyla "
+"aria2\n"
+"                              her zaman obfuskasyon tokalaşmasını kullanır."
 
 #: src/usage_text.h:280
 msgid ""
@@ -562,6 +763,12 @@ msgid ""
 "                              accepts connections ignoring max peer cap.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --bt-request-peer-speed-limit=HIZ BitTorrent downloadlarında download hızı\n"
+"                              HIZ dan düşükse, aria2 maksimum peer "
+"kapasitesini\n"
+"                              gözönüne almadan bağlantıları başlatır.Değerin "
+"yanına\n"
+"                              K ve M (1K=1024, 1M=1024K) ekleyebilirsiniz."
 
 #: src/usage_text.h:285
 msgid ""
@@ -569,35 +776,41 @@ msgid ""
 "each\n"
 "                              BitTorrent download."
 msgstr ""
+" --bt-max-open-files=SAYI Bir BitTorrent downloadında açılacak maksimum \n"
+"                              dosya sayısını belirle."
 
 #: src/usage_text.h:288
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
+" --bt-seed-unverified=true|false Daha önce indirilmiş dosyaları \n"
+"                              parça hashlerini kontrol etmeden tohumla."
 
 #: src/usage_text.h:291
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr ""
+" -M, --metalink-file=METALINK_FILE .metalink dosyasının yolunu belirle."
 
 #: src/usage_text.h:293
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously."
 msgstr ""
+" -C, --metalink-servers=SUNUCU_SAYISI Aynı anda bağlanılacak sunucu sayısı."
 
 #: src/usage_text.h:296
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr ""
+msgstr " --metalink-version=SÜRÜM İndirilecek dosyanın sürümü."
 
 #: src/usage_text.h:298
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr ""
+msgstr " --metalink-language=DİL İndirilecek dosyanın dili."
 
 #: src/usage_text.h:300
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
-msgstr ""
+msgstr " --metalink-os=OS İndirilecek dosyanın işletim sistemi."
 
 #: src/usage_text.h:302
 msgid ""
@@ -605,6 +818,8 @@ msgid ""
 "                              A comma-deliminated list of locations is\n"
 "                              acceptable."
 msgstr ""
+" --metalink-location=YER[,...] Tercih edilen sunucunun yeri.\n"
+"                              Virgülle ayrılmış liste de yazabilirsiniz."
 
 #: src/usage_text.h:306
 msgid ""
@@ -612,7 +827,7 @@ msgid ""
 "possible\n"
 "                              values are 'http', 'https', 'ftp' and 'none'.\n"
 "                              Specifiy none to disable this feature."
-msgstr ""
+msgstr " --metalink-preferred-protocol=PROTO Tercih edilen prokolü belirle."
 
 #: src/usage_text.h:310
 msgid ""
@@ -629,6 +844,17 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-metalink=true|false|mem True veya mem seçilirse, sonu .metalink "
+"olan veya\n"
+"                              içerik tipi application/metalink+xml olan bir "
+"dosya indirildiğinde,\n"
+"                              aria2 onu bir metalink dosyası olarak süzer ve "
+"onda belirtilen \n"
+"                              dosyaları indirir.\n"
+"                              Mem seçilirse metalink dosyası diske yazılmaz "
+"sadece hafızada \n"
+"                              tutulur. False seçilirse yukarıda bahsedilen "
+"işlem yapılmaz."
 
 #: src/usage_text.h:320
 msgid ""
@@ -639,10 +865,17 @@ msgid ""
 "                              Use --metalink-preferred-protocol option to\n"
 "                              specify the preference of protocol."
 msgstr ""
+" --metalink-enable-unique-protocol=true|false True seçilir ve bir metalink "
+"dosyasındaki\n"
+"                              yansı için farklı protokoller mevcutsa, aria2 "
+"onlardan birini kullanır.\n"
+"                              Protokol tercihi için --metalink-preferred-"
+"protocol seçeneğini\n"
+"                              kullanın."
 
 #: src/usage_text.h:326
 msgid " -v, --version                Print the version number and exit."
-msgstr ""
+msgstr " -v, --version Sürüm numarasını göster ve çık."
 
 #: src/usage_text.h:328
 msgid ""
@@ -657,16 +890,16 @@ msgid ""
 "                              option name using a given word, in forward "
 "match\n"
 "                              and print the result."
-msgstr ""
+msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
 
 #: src/usage_text.h:336
 msgid " --no-conf                    Disable loading aria2.conf file."
-msgstr ""
+msgstr " --no-conf aria2.conf dosyasını yüklemeyi kapa."
 
 #: src/usage_text.h:338
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
-msgstr ""
+msgstr " --conf-path=YOL Konfigürasyon dosyasının yerini belirle."
 
 #: src/usage_text.h:340
 msgid ""
@@ -674,6 +907,8 @@ msgid ""
 "passed.\n"
 "                              If 0 is given, this feature is disabled."
 msgstr ""
+" --stop=SANİYE SANİYE geçtiğinde uygulamayı durdur. 0 girilirse\n"
+"                              bu özellik kapatılır."
 
 #: src/usage_text.h:343
 msgid ""
@@ -686,18 +921,25 @@ msgid ""
 "9J1\"\n"
 "                              http://host/file"
 msgstr ""
+" --header=BAŞLIK BAŞLIK başlığını HTTP istek başlığına ekle.Değişik \n"
+"                              başlıklar eklemek için bir kaç kere "
+"kullanabilirsiniz\n"
+"                              örnek: aria2c --header=\"X-A: b78\" --header="
+"\"X-B 9j1\" \n"
+"                              http://host/file"
 
 #: src/usage_text.h:349
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
 msgstr ""
+" -q, --quiet=true|false aria2 yi sessiz (konsola çıktı gönderilmez) yapar."
 
 #: src/usage_text.h:351
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
-msgstr ""
+msgstr " --async-dns=true|false Asenkronize DNSi açar."
 
 #: src/usage_text.h:353
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
-msgstr ""
+msgstr " --ftp-reuse-connection=true|false FTPde bağlantıyı tekrar kullanır."
 
 #: src/usage_text.h:355
 msgid ""
@@ -705,58 +947,65 @@ msgid ""
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
+" --summary-interval=SANİYE İndirme ilerleme durumunun gösterileceği\n"
+"                              zaman aralığını belirler. 0 seçilirse çıktı "
+"gönderilmez."
 
 #: src/usage_text.h:358
 msgid " --log-level=LEVEL            Set log level to output."
-msgstr ""
+msgstr " --log-level=SEVİYE Çıktı için log seviyesini belirler."
 
 #: src/version_usage.cc:55
 msgid " version "
-msgstr ""
+msgstr " sürüm "
 
 #: src/version_usage.cc:72
 #, c-format
 msgid "Report bugs to %s"
-msgstr ""
+msgstr "Hataları %s ye raporla"
 
 #: src/version_usage.cc:77
 #, c-format
 msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
+"Kullanım: %s [SEÇENEKLER ] [URL | TORRENT_DOSYASI | METALINK_DOSYASI]..."
 
 #: src/version_usage.cc:85
 msgid "Printing all options."
-msgstr ""
+msgstr "Tüm seçenekler gösteriliyor."
 
 #: src/version_usage.cc:87
 #, c-format
 msgid "Printing options tagged with '%s'."
-msgstr ""
+msgstr "%s ile etiketlenmiş seçenekler gösteriliyor."
 
 #: src/version_usage.cc:91
 #, c-format
 msgid "See -h option to know other command-line options(%s)."
 msgstr ""
+"Diğer komut satırı seçeneklerine(%s) bakmak için -h seçeneğini kullanınız."
 
 #: src/version_usage.cc:95 src/version_usage.cc:104
 msgid "Options:"
-msgstr ""
+msgstr "Seçenekler:"
 
 #: src/version_usage.cc:102
 #, c-format
 msgid "Printing options whose name starts with '%s'."
-msgstr ""
+msgstr "'%s' ile başlayan seçenekler gösteriliyor."
 
 #: src/version_usage.cc:107
 #, c-format
 msgid "No help category or option name matching with '%s'."
-msgstr ""
+msgstr "'%s' ile eşlenen bir seçenek ya da yardım kategorisi bulunamadı."
 
 #: src/version_usage.cc:114
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 msgstr ""
+" Birde fazla URL belirleyebilirsiniz. -Z seçeneğini kullanmadığınız sürece,\n"
+"tüm URLler aynı dosyayı göstermek zorundadır aksi halde download başlamaz."
 
 #: src/version_usage.cc:116
 msgid ""
@@ -764,6 +1013,9 @@ msgid ""
 " stored in a local drive. Please note that they are always treated as a\n"
 " separate download."
 msgstr ""
+" Bir diskte depolanmış istediğiniz sayıda torrent ya da metalink dosyası\n"
+"belirleyebilirsiniz.Bunların farklı downloadlar olarak değerlendirileceğini\n"
+"unutmayınız."
 
 #: src/version_usage.cc:121
 msgid ""
@@ -773,45 +1025,51 @@ msgid ""
 " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
 " only single file torrent can be integrated with http/ftp."
 msgstr ""
+" -T seçeneğiyle torrent dosyasını ve URLleri belirleyebilirsiniz.Bu şekilde\n"
+"bir dosyayı, http/ftp deki verinin torrent yığınına upload edildiği sırada,\n"
+"hem torrent yığınından hem de http/ftp sunuculardan aynı anda "
+"indirebilirsiniz.\n"
+"Sadece bir dosyanın http/ftp ile entegre edileceğini unutmayın."
 
 #: src/version_usage.cc:126
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
+" Yazdığınız URL içinde, kabukta özel anlama sahip karakterler veya \"&\" "
+"geçiyorsa\n"
+"URLyi (') veya (\") içinde yazınız."
 
 #: src/version_usage.cc:130
 msgid "Refer to man page for more information."
-msgstr ""
+msgstr "Detaylı bilgi için man sayfasına bakınız."
 
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - O download de um segmento terminou finalizou com sucesso."
+msgstr "CUID#%d - Bir parça başarıyla indirildi."
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - Nenhum segmento disponível."
+msgstr "CUID#%d - Kullanılabilir parça yok."
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - Conectando-se a %s:%d"
+msgstr "CUID#%d - %s:%d ye bağlanıyor."
 
 #: src/message.h:43
 #, c-format
 msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
-msgstr ""
-"CUID#%d - O segmento foi modificado. Enviaremos o requerimento novamente com "
-"uma nova ordem de cabeçalho."
+msgstr "CUID#%d - Parça değişti.Yeni aralık başlıklı isteği gönderdik."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - Redirecionando a %s"
+msgstr "CUID#%d - %s'a yönlendiriliyor"
 
 #: src/message.h:45
 #, c-format
@@ -819,7 +1077,7 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - Requisitando:\n"
+"CUID#%d - İsteniyor:\n"
 "%s"
 
 #: src/message.h:46
@@ -828,93 +1086,93 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - Resposta recebida:\n"
+"CUID#%d - Cevap alındı:\n"
 "%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - Download abortado. URI=%s"
+msgstr "CUID#%d - indirme iptal edildi. URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - Reiniciando o download. URI=%s"
+msgstr "CUID#%d - İndirmeye yeniden başlanıyor. URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - Download abortado."
+msgstr "CUID#%d - İndirme iptal edildi."
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr "CUID#%d - %d tentativas, nenhum sucesso. Download abortado."
+msgstr "CUID#%d - %d kere denendi, ama sonuç başarısız. İndirme iptal edildi."
 
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - Eliminando registro cuid do Gerenciador de segmentos."
+msgstr "CUID#%d - segmentManager daki cuid kaydı siliniyor."
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - obtivémos um novo pedaço. índice=%d"
+msgstr "CUID#%d - yeni parça aldık. indeks=%d"
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - obtivémos pedaço errado. índice=%d"
+msgstr "CUID#%d - yanlış parça aldık. indeks=%d"
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - Download incompleto: %s"
+msgstr "CUID#%d - İndirme tamamlanmadı: %s"
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr "#%d - Download completo: %s"
+msgstr "#%d - İndirme zaten bitmişti : %s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - Resultado da soma de verificação positivo: %s"
+msgstr "CUID#%d - Checksum doğru: %s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - Resultado da soma de verificação negativo: %s"
+msgstr "CUID#%d - Checksum yanlış: %s"
 
 #: src/message.h:63
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - Resolvendo o endereço do host %s"
+msgstr "CUID#%d - Makine adı çözülüyor %s"
 
 #: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - Resolução de endereço completa: %s -> %s"
+msgstr "CUID#%d - Makine adı çözüldü : %s -> %s"
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - Resolução do nome para %s falhou:%s"
+msgstr "CUID#%d - %s için makine adı çözülemedi. %s"
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr "CUID#%d - Cache DNS acertado: %s -> %s"
+msgstr "CUID%d - DNS kaşesi bulundu: %s -> %s"
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - Requerimento para abortar enviado."
+msgstr "CUID#%d - İşlem iptal edildi."
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - Conectando-se ao peer %s"
+msgstr "CUID#%d - %s peer ine bağlanıyor"
 
 #: src/message.h:69
 #, c-format
@@ -922,13 +1180,13 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
-"CUID#%d - Pedaço recebido. índice=%d, início=%d, comprimento=%d, desvio=%"
-"llu, índice-de-bloco=%d"
+"CUID#%d - Parça alındı. indeks=%d, başlangıç=%d, uzunluk=%d, artış=%llu, "
+"blokindeksi=%d"
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr "CUID#%d - Bitfield da peça %s"
+msgstr "CUID#%d - bitfield parçası %s"
 
 #: src/message.h:71
 #, c-format
@@ -936,8 +1194,8 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - Mensagem da peça na fila rejeitada devido engasgamento do peer. "
-"índice=%d, início=%d, comprimento=%d"
+"CUID#%d - peer tıkandığı için sıradaki mesaj parçasını kabul etme. indeks=%"
+"d, başlangıç=%d, uzunluk=%d"
 
 #: src/message.h:72
 #, c-format
@@ -945,29 +1203,28 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - Mensagem da peça na fila rejeitada devido recebimento de uma "
-"mensagem de cancelamento. índice=%d, início=%d, comprimento=%d"
+"CUID#%d - İptal mesajı alındığı için sıradaki mesaj parçasını kabul etme. "
+"indeks=%d, başlangıç=%d, uzunluk=%d"
 
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr "CUID#%d - Captada exceção durante validação da integridade."
+msgstr "CUID#%d - Dosya bütünlüğü doğrulanırken öngörülmeyen bir hata oluştu."
 
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - Interessado no peer"
+msgstr "CUID#%d - peer ile ilgileniyor"
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - Não interessado no peer"
+msgstr "CUID#%d - peer ile ilgilenmiyor"
 
 #: src/message.h:76
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr ""
-"CUID#%d - Deletando abertura de requerimento índice=%d, índice-de-bloco=%d"
+msgstr "CUID#%d - İstek yuvası siliniyor indeks=%d, blokindeksi=%d"
 
 #: src/message.h:77
 #, c-format
@@ -975,132 +1232,128 @@ msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
 "got choked."
 msgstr ""
-"CUID#%d - Deletando abertura de requerimento índice=%d, índice-de-bloco=%d "
-"devido afogamento do host local."
+"CUID#%d - Bu makine tıkandığı için istek yuvası siliniyor indeks=%d, "
+"blokindeksi=%d"
 
 #: src/message.h:78
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr ""
-"CUID#%d - Deletando abertura de requerimento índice-de-bloco=%d devido tempo "
-"excedido"
+msgstr "CUID#%d - Zamanaşımından dolayı istek yuvası siliniyor blokindeksi=%d"
 
 #: src/message.h:79
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
 "acquired."
-msgstr ""
-"CUID#%d - Deletando bertura de requerimento índice-de-bloco=%d pois o bloco "
-"foi adiquirido."
+msgstr "CUID#%d - Blok elde edildiği için blok yuvası siliniyor blokindeksi=%d"
 
 #: src/message.h:80
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - Extensão rápida habilitada."
+msgstr "CUID#%d - Hızlı eklenti açıldı."
 
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Extended Messaging enabled."
-msgstr ""
+msgstr "CUID#%d - İlave mesajlaşma açıldı."
 
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
-msgstr "CUID#%d - Captada exceção durante alocação do espaço do arquivo."
+msgstr "CUID#%d - Dosya alanı ayrılırken öngörülmeyen bir hata oluştu."
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr ""
-"CUID#%d - Deiposição-do-conteúdo detecteda. Usar %s como nome do arquivo."
+"CUID#%d - Content-Disposition algılandı. Dosya adı olarak %s kullanınız."
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr "CUID#%d - Peer %s:%d banido."
+msgstr "CUID#%d - Peer %s:%d yasaklandı."
 
 #: src/message.h:85
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - Usando porta %d para aceitar novas conexões"
+msgstr "CUID#%d - Yeni bağlantılar için %d portu kullanılıyor."
 
 #: src/message.h:86
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr ""
+msgstr "CUID#%d - %d portu bağlanırken bir hata oluştu."
 
 #: src/message.h:87
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-msgstr ""
+msgstr "CUID#%d - Yeni bağlantı geliyor,  CUID#%d komutu ekleniyor"
 
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr ""
+msgstr "CUID#%d - Bağlantı kabulünde hata"
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr ""
+msgstr "CUID#%d - İzleyenin cevabını işlerken bir hata oluştu."
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr ""
+msgstr "CUID#%d - İzleyici isteği oluşturulamıyor."
 
 #: src/message.h:91
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr ""
+msgstr "CUID#%d - #%d yeni izleyici istek komutu oluşturuluyor"
 
 #: src/message.h:92
 #, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
-msgstr ""
+msgstr "CUID#%d - Peer de DHT mevcut."
 
 #: src/message.h:94
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr ""
+msgstr "Anlaşılmayan URI ya da desteklenmeyen protokol: %s"
 
 #: src/message.h:95
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr ""
+msgstr "İzleyici %s uyarı mesajını gönderdi."
 
 #: src/message.h:96
 #, c-format
 msgid "The segment file %s exists."
-msgstr ""
+msgstr "%s dosya parçası var."
 
 #: src/message.h:97
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr ""
+msgstr "%s dosya parçası yok."
 
 #: src/message.h:98
 #, c-format
 msgid "Saving the segment file %s"
-msgstr ""
+msgstr "%s dosya parçası kaydediliyor."
 
 #: src/message.h:99
 msgid "The segment file was saved successfully."
-msgstr ""
+msgstr "Dosya parçası başarıyla kaydedildi."
 
 #: src/message.h:100
 #, c-format
 msgid "Loading the segment file %s."
-msgstr ""
+msgstr "%s dosya parçası yükleniyor."
 
 #: src/message.h:101
 msgid "The segment file was loaded successfully."
-msgstr ""
+msgstr "Dosya parçası başarıyla yüklendi."
 
 #: src/message.h:102
 msgid "No URI to download. Download aborted."
-msgstr ""
+msgstr "İndirilecek URI yok.İndirme iptal edildi."
 
 #: src/message.h:103
 #, c-format
@@ -1110,104 +1363,108 @@ msgid ""
 "sure to download the file all over again, then delete it or add --allow-"
 "overwrite=true option and restart aria2."
 msgstr ""
+"%s dosyası var ama (*.aria2) kontrol dosyası yok.İndirme dosyanızın boyutunu "
+"sıfırlamamak için iptal edildi.\n"
+"Tekrar indirmek istediğinizden emin iseniz ya silin ya da --allow-"
+"overwrıte=true seçeneğini ekleyip aria2yi tekrar başlatın."
 
 #: src/message.h:104
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr ""
+msgstr "%s dosyasına yer ayrılıyor, %s bytes"
 
 #: src/message.h:105
 msgid "File not found"
-msgstr ""
+msgstr "Dosya bulunamadı"
 
 #: src/message.h:106
 msgid "Not a directory"
-msgstr ""
+msgstr "Bir dizin değil"
 
 #: src/message.h:107
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr ""
+msgstr "Chekcksumlar yetersiz. checksumuzunluğu=%d checksumsayısı=%d"
 
 #: src/message.h:108
 #, c-format
 msgid "Writing file %s"
-msgstr ""
+msgstr "%s dosyası yazılıyor"
 
 #: src/message.h:109
 msgid "No peer list received."
-msgstr ""
+msgstr "Hiç peer listesi alınmadı"
 
 #: src/message.h:110
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr ""
+msgstr "%s:%d peer i ekleniyor"
 
 #: src/message.h:111
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr ""
+msgstr "Kullanılan parça siliniyor indeks=%d, fillRate(%%)=%d<=%d"
 
 #: src/message.h:112
 msgid "Download of selected files was complete."
-msgstr ""
+msgstr "Seçilen dosya indirildi."
 
 #: src/message.h:113
 msgid "The download was complete."
-msgstr ""
+msgstr "İndirme tamamnlandı."
 
 #: src/message.h:114
 #, c-format
 msgid "Removed %d have entries."
-msgstr ""
+msgstr "Girdili %d silindi."
 
 #: src/message.h:115
 #, c-format
 msgid "Validating file %s"
-msgstr ""
+msgstr "%s dosyası doğrulanıyor"
 
 #: src/message.h:116
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr ""
+msgstr "%d saniyede %s byte(s) için yer ayrılacak"
 
 #: src/message.h:117
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr ""
+msgstr "CUID#%d için FileAllocationCommand gönderiliyor"
 
 #: src/message.h:118
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr ""
+msgstr "Metalink: %s indirme sırasına alınıyor."
 
 #: src/message.h:119
 #, c-format
 msgid "Download complete: %s"
-msgstr ""
+msgstr "İndirme tamamnlandı: %s"
 
 #: src/message.h:120
 msgid "Seeding is over."
-msgstr ""
+msgstr "Tohumlama bitti."
 
 #: src/message.h:121
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-msgstr ""
+msgstr "CUID#%d indeks=%d segmenti iptal etti.CUID#%d onunla ilgileniyor."
 
 #: src/message.h:122
 msgid "No chunk to verify."
-msgstr ""
+msgstr "Doğrulanacak parça yok."
 
 #: src/message.h:123
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr ""
+msgstr "Parça checksumı doğru. hash=%s"
 
 #: src/message.h:124
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr ""
+msgstr "%s den çerezler yüklenemedi."
 
 #: src/message.h:125
 #, c-format
@@ -1215,134 +1472,137 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
+"%s .netrc dosyasında doğru izinler yok.İzinler 600 olmalıydı. netrc desteği "
+"kaptıldı."
 
 #: src/message.h:126
 msgid "Logging started."
-msgstr ""
+msgstr "Loglama başladı."
 
 #: src/message.h:127
 msgid "Specify at least one URL."
-msgstr ""
+msgstr "En az bir URl belirlemelisiniz."
 
 #: src/message.h:128
 msgid "daemon failed."
-msgstr ""
+msgstr "daemon başarısız."
 
 #: src/message.h:129
 #, c-format
 msgid "Verification finished successfully. file=%s"
-msgstr ""
+msgstr "Doğrulama başarıyla tamamlandı.Dosya=%s"
 
 #: src/message.h:130
 #, c-format
 msgid "Checksum error detected. file=%s"
-msgstr ""
+msgstr "Checksumda hata bulundu. Dosya=%s"
 
 #: src/message.h:131
 #, c-format
 msgid "Incomplete range specified. %s"
-msgstr ""
+msgstr "Eksik aralık belirtildi.%s"
 
 #: src/message.h:132
 #, c-format
 msgid "Failed to convert string into value: %s"
-msgstr ""
+msgstr "Dizi değeri sayıya çevrilemiyor: %s"
 
 #: src/message.h:133
 msgid "Resource not found"
-msgstr ""
+msgstr "Kaynak bulunamadı"
 
 #: src/message.h:134
 #, c-format
 msgid "File already exists. Renamed to %s."
-msgstr ""
+msgstr "Bu isimde zaten bir dosya var. Yeni isim %s verildi."
 
 #: src/message.h:135
 msgid "Cannot parse metalink XML file. XML may be malformed."
-msgstr ""
+msgstr "Metalink XML dosyası okunamıyor.Yanlış formatta olabilir."
 
 #: src/message.h:136
 #, c-format
 msgid "Too small payload size for %s, size=%d."
-msgstr ""
+msgstr "%s için payload büyüklüğü çok az, büyüklük=%d"
 
 #: src/message.h:137
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
-msgstr ""
+msgstr "Çalışmayan kontrol dosyası %s silindi, çünkü %s indirme dosyası yok."
 
 #: src/message.h:138
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
-msgstr ""
+msgstr "Paylaşma oranınız %.1f , upload/download=%sB/%sB"
 
 #: src/message.h:139
 #, c-format
 msgid "Missing %s in torrent metainfo."
-msgstr ""
+msgstr "Torrent meta bilgilerinde %s eksik."
 
 #: src/message.h:140
 msgid "Tracker returned null data."
-msgstr ""
+msgstr "İzleyici boş veri gönderdi."
 
 #: src/message.h:141
 msgid "Windows socket library initialization failed"
-msgstr ""
+msgstr "Windows soket kütüphanesi başlatılamadı."
 
 #: src/message.h:142
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
-msgstr ""
+msgstr "%d saniye geçti.Uygulama sonlandırılıyor."
 
 #: src/message.h:143
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr ""
+"İmza %s olarak kaydedildi.aria2 nin imzaları kontrol etmediğini unutmayınız."
 
 #: src/message.h:145
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
-msgstr ""
+msgstr "İmza %s olarak kayededilemiyor.Böyle bir dosya var olabilir."
 
 #: src/message.h:148
 msgid "Timeout."
-msgstr ""
+msgstr "Zamanaşımı."
 
 #: src/message.h:149
 msgid "Invalid chunk size."
-msgstr ""
+msgstr "Geçersiz parça büyüklüğü."
 
 #: src/message.h:150
 #, c-format
 msgid "Too large chunk. size=%d"
-msgstr ""
+msgstr "Çok büyük parça. büyüklük=%d"
 
 #: src/message.h:151
 msgid "Invalid header."
-msgstr ""
+msgstr "Geçersiz başlık."
 
 #: src/message.h:152
 msgid "Invalid response."
-msgstr ""
+msgstr "Geçersiz cevap."
 
 #: src/message.h:153
 msgid "No header found."
-msgstr ""
+msgstr "Hiç başlık bulunamadı."
 
 #: src/message.h:154
 msgid "No status header."
-msgstr ""
+msgstr "Durum başlığı yok."
 
 #: src/message.h:155
 msgid "Proxy connection failed."
-msgstr ""
+msgstr "Proxy bağlantısı oluşturulamadı."
 
 #: src/message.h:156
 msgid "Connection failed."
-msgstr ""
+msgstr "Bağlantı başarısız."
 
 #: src/message.h:157
 #, c-format
@@ -1350,224 +1610,227 @@ msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
+"İstenilen ve daha önce kaydedilen dosya isimleri aynı değil. Beklenen:%s "
+"Verilen:%s"
 
 #: src/message.h:158
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr ""
+msgstr "Cevap durumu başarılı değil. durum=%d"
 
 #: src/message.h:159
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr ""
+msgstr "Çok büyük dosya büyüklüğü. büyüklük=%s"
 
 #: src/message.h:160
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr ""
+msgstr "Transfer şifrelemesi %s desteklenmiyor."
 
 #: src/message.h:161
 #, c-format
 msgid "SSL initialization failed: %s"
-msgstr ""
+msgstr "SSl başlatılamadı: %s"
 
 #: src/message.h:162
 msgid "SSL I/O error"
-msgstr ""
+msgstr "SSL G/Ç hatası"
 
 #: src/message.h:163
 msgid "SSL protocol error"
-msgstr ""
+msgstr "SSL protokol hatası"
 
 #: src/message.h:164
 #, c-format
 msgid "SSL unknown error %d"
-msgstr ""
+msgstr "SSL bilinmeyen hata %d"
 
 #: src/message.h:165
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr ""
+msgstr "SSL başlatılamadı: OpenSSL bağlantı hatası %d"
 
 #: src/message.h:166
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
-msgstr ""
+msgstr "Büyüklük uyuşmuyor Beklenen:%s Gelen:%s"
 
 #: src/message.h:167
 msgid "Authorization failed."
-msgstr ""
+msgstr "Yetkilendirme başarısız."
 
 #: src/message.h:168
 msgid "Got EOF from the server."
-msgstr ""
+msgstr "Sunucudan EOF alındı."
 
 #: src/message.h:169
 msgid "Got EOF from peer."
-msgstr ""
+msgstr "Peerden EOF alındı."
 
 #: src/message.h:170
 msgid "Malformed meta info."
-msgstr ""
+msgstr "Yanlış formatlı meta bilgisi."
 
 #: src/message.h:172
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
-msgstr ""
+msgstr "%s dosyası %s sebebinden açılamadı"
 
 #: src/message.h:173
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
-msgstr ""
+msgstr "%s dosyasına %s sebebinden yazılamadı"
 
 #: src/message.h:174
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
-msgstr ""
+msgstr "%s dosyasından %s sebebiyle okunamadı"
 
 #: src/message.h:175
 msgid "Failed to read data from disk."
-msgstr ""
+msgstr "Diskten veri okunamadı."
 
 #: src/message.h:176
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
+"%s dosyasının bir parçası veya SHA1 özeti hesaplaması %s sebebiyle yapılamadı"
 
 #: src/message.h:177
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
-msgstr ""
+msgstr "%s dosyası %s sebebiyle aranamadı"
 
 #: src/message.h:178
 #, c-format
 msgid "The offset is out of range, offset=%s"
-msgstr ""
+msgstr "Artış aralık dışı, artış=%s"
 
 #: src/message.h:179
 #, c-format
 msgid "%s is not a directory."
-msgstr ""
+msgstr "%s bir dizin değil"
 
 #: src/message.h:180
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
-msgstr ""
+msgstr "%s dizini %s sebebiyle oluşturulamadı"
 
 #: src/message.h:181
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
-msgstr ""
+msgstr "%s parça dosyası %s sebebiyle açılamadı"
 
 #: src/message.h:182
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
-msgstr ""
+msgstr "%s parça dosyasına %s sebebiyle yazılamadı"
 
 #: src/message.h:183
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
-msgstr ""
+msgstr "%s parça dosyasından %s sebebiyle okunamadı"
 
 #: src/message.h:185
 #, c-format
 msgid "Failed to open a socket, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle soket açılamadı"
 
 #: src/message.h:186
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle soket yerleştirilemedi"
 
 #: src/message.h:187
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle soket bloke edilemedi"
 
 #: src/message.h:188
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle soket bloke olmayan olarak ayarlanamadı"
 
 #: src/message.h:189
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle soket tutulamadı"
 
 #: src/message.h:190
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle soket dinlenemedi"
 
 #: src/message.h:191
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle peer bağlantısı kabul edilmedi"
 
 #: src/message.h:192
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
-msgstr ""
+msgstr "%s sebeiyle soketin adı alınamadı"
 
 #: src/message.h:193
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle bağlanılan peer in adı alınamadı"
 
 #: src/message.h:194
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
-msgstr ""
+msgstr "%s makinesinin adı çözülemedi sebep: %s"
 
 #: src/message.h:195
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
-msgstr ""
+msgstr "%s makinesine %s sebebinden dolayı bağlanılamyor"
 
 #: src/message.h:196
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
-msgstr ""
+msgstr "%s sebebinden dolayı soketin yazılabilir olduğu anlaşılamıyor"
 
 #: src/message.h:197
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
-msgstr ""
+msgstr "%s sebebinden dolayı soketin okunabilir olduğu anlaşılamıyor"
 
 #: src/message.h:198
 #, c-format
 msgid "Failed to send data, cause: %s"
-msgstr ""
+msgstr "%s sebebiyle veri gönderilemiyor"
 
 #: src/message.h:199
 #, c-format
 msgid "Failed to receive data, cause: %s"
-msgstr ""
+msgstr "%s sebebinden dolayı veri alınamıyor"
 
 #: src/message.h:200
 #, c-format
 msgid "Failed to peek data, cause: %s"
-msgstr ""
+msgstr "%s sebebinden dolayı veri gözlenemiyor"
 
 #: src/message.h:201
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
-msgstr ""
+msgstr "Bilinmeyen soket hatası %d (0x%x)"
 
 #: src/message.h:202
 #, c-format
 msgid "File %s exists, but %s does not exist."
-msgstr ""
+msgstr "%s dosyası var ama %s dosyası yok."
 
 #: src/message.h:203
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
-msgstr ""
+msgstr "%s için geçersiz payload büyüklüğü,büyüklük=%d. %d olmalıydı."
 
 #: src/message.h:204
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
-msgstr ""
+msgstr "Geçersiz ID=%d %s için . %d olmalıydı."
 
 #: src/message.h:205
 #, c-format
@@ -1575,28 +1838,30 @@ msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
+"Parça checksum doğrulaması başarısız. checksumindeks=%d artış=%s, "
+"beklenenHash=%s, eldekıhash=%s"
 
 #: src/message.h:206
 msgid "Download aborted."
-msgstr ""
+msgstr "İndirme iptal edildi."
 
 #: src/message.h:207
 #, c-format
 msgid "File %s is being downloaded by other command."
-msgstr ""
+msgstr "%s dosyası başka bir komut tarafından indiriliyor."
 
 #: src/message.h:208
 msgid "Insufficient checksums."
-msgstr ""
+msgstr "Yetersiz checksumlar."
 
 #: src/message.h:209
 #, c-format
 msgid "Tracker returned failure reason: %s"
-msgstr ""
+msgstr "İzleyici başarısızlık sebebi olarak %s gönderdi."
 
 #: src/message.h:210
 msgid "Flooding detected."
-msgstr ""
+msgstr "Flooding algılandı."
 
 #: src/message.h:211
 #, c-format
@@ -1604,57 +1869,60 @@ msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
+"%d saniyede herhangi istek/parça mesajı alişverişi yapılmadığı için bağlantı "
+"kapatıldı."
 
 #: src/message.h:212
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
+msgstr "Torrent dosyasındaki infoHash .aria2 dosyasındaki ile tutmuyor."
 
 #: src/message.h:213
 #, c-format
 msgid "No such file entry %s"
-msgstr ""
+msgstr "%s dosya girdisi yok."
 
 #: src/message.h:214
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr ""
+msgstr "Download hızı çok yavaş: %d <= %d(B/s), makine:%s"
 
 #: src/message.h:215
 msgid "No HttpRequestEntry found."
-msgstr ""
+msgstr "HttpRequestEntry bulunamadı."
 
 #: src/message.h:216
 #, c-format
 msgid "Got %d status, but no location header provided."
-msgstr ""
+msgstr "%d durumu alındı ama yer başlığı gönderilmedi."
 
 #: src/message.h:217
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
-msgstr ""
+msgstr "Geçersiz başlık aralığı.İstek: %s-%s/%s, Cevap: %s-%s/%s"
 
 #: src/message.h:218
 msgid "No file matched with your preference."
-msgstr ""
+msgstr "Tercihlerinizle eşleşen dosya yok."
 
 #: src/message.h:219
 msgid "Exception caught"
-msgstr ""
+msgstr "Öngörülmeyen hata algılandı."
 
 #: src/message.h:220
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
-msgstr ""
+msgstr "Maksimum payload uzunluğu aşıldı ve geçersiz. uzunluk= %u"
 
 #: src/message.h:221
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
+"Geçersiz dosya uzunluğu. Download devam ettirilemiyor %s: yerel %s, uzak %s"
 
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
-msgstr ""
+msgstr "Port bağlanırken hata oldu.\n"
 
 #: src/Util.cc:705
 msgid "Files:"
-msgstr ""
+msgstr "Dosyalar:"
