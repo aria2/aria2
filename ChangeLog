@@ -1,5 +1,11 @@
 2008-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added -lrt to LIBCARES_LIBS if -lrt is needed to link program with
+	-lcares.
+	* m4/libcares.m4
+
+2008-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Merged from trunk -r684:691
 
 	Removed wrong comment.

@@ -6817,6 +6817,74 @@ if test $ac_cv_lib_cares_ares_init = yes; then
 fi
 
 
+if test "x$have_libcares" != "xyes"; then
+    { echo "$as_me:$LINENO: checking for ares_init in -lcares" >&5
+echo $ECHO_N "checking for ares_init in -lcares... $ECHO_C" >&6; }
+if test "${ac_cv_lib_cares_ares_init+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcares -lrt $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char ares_init ();
+int
+main ()
+{
+return ares_init ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_cares_ares_init=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_cares_ares_init=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_cares_ares_init" >&5
+echo "${ECHO_T}$ac_cv_lib_cares_ares_init" >&6; }
+if test $ac_cv_lib_cares_ares_init = yes; then
+  have_libcares=yes need_librt=yes
+fi
+
+fi
+
 if test "x$have_libcares" = "xyes"; then
 
     { echo "$as_me:$LINENO: checking whether ares_host_callback accepts timeouts(c-ares >= 1.5)" >&5
@@ -6886,6 +6954,9 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
     LIBCARES_LIBS="-L$libcares_prefix_lib -lcares"
+    if test "x$need_librt" = "xyes"; then
+      LIBCARES_LIBS="$LIBCARES_LIBS -lrt"
+    fi
     LIBCARES_CPPFLAGS="-I$libcares_prefix_include"
 
 
