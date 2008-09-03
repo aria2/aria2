@@ -36,6 +36,7 @@
 #define _D_UT_PEX_EXTENSION_MESSAGE_H_
 
 #include "ExtensionMessage.h"
+#include "a2time.h"
 #include <utility>
 #include <deque>
 
@@ -55,6 +56,12 @@ private:
   std::deque<SharedHandle<Peer> > _droppedPeers;
 
   SharedHandle<BtContext> _btContext;
+
+  time_t _interval;
+
+  size_t _maxFreshPeer;
+
+  size_t _maxDroppedPeer;
 
   std::pair<std::string, std::string>
   createCompactPeerListAndFlag(const std::deque<SharedHandle<Peer> >& peers);
@@ -82,18 +89,36 @@ public:
 
   virtual void doReceivedAction();
 
-  void addFreshPeer(const SharedHandle<Peer>& peer);
+  bool addFreshPeer(const SharedHandle<Peer>& peer);
 
   const std::deque<SharedHandle<Peer> >& getFreshPeers() const;
+  
+  bool freshPeersAreFull() const;
 
-  void addDroppedPeer(const SharedHandle<Peer>& peer);
+  bool addDroppedPeer(const SharedHandle<Peer>& peer);
 
   const std::deque<SharedHandle<Peer> >& getDroppedPeers() const;
+
+  bool droppedPeersAreFull() const;
 
   void setBtContext(const SharedHandle<BtContext>& btContext);
 
   static UTPexExtensionMessageHandle create(const SharedHandle<BtContext>& btContext,
 					    const unsigned char* data, size_t len);
+
+  void setMaxFreshPeer(size_t maxFreshPeer);
+
+  size_t getMaxFreshPeer() const;
+
+  void setMaxDroppedPeer(size_t maxDroppedPeer);
+
+  size_t getMaxDroppedPeer() const;
+
+  static const time_t DEFAULT_INTERVAL = 60;
+
+  static const size_t DEFAULT_MAX_FRESH_PEER = 30;
+
+  static const size_t DEFAULT_MAX_DROPPED_PEER = 10;
 };
 
 typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;

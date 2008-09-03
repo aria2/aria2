@@ -1,3 +1,41 @@
+2008-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Merged from trunk -r684:691
+
+	Removed wrong comment.
+	* src/DefaultPeerStorage.cc
+
+	Moved implementation to SimpleRandomizer.cc from SimpleRandomizer.h.
+	Added return value of getpid() to argument of srand() to achieve more
+	randomized value.
+	* src/SimpleRandomizer.cc
+	* src/SimpleRandomizer.h
+
+	Contact tracker frequently when the number of connections are 0	and
+	download is not finished yet.
+	* src/ActivePeerConnectionCommand.cc
+	* src/BtAnnounce.h
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtAnnounce.h
+	* test/MockBtAnnounce.h
+	
+	Moved threshold values to UTPexExtensionMessage.
+	* src/DefaultBtInteractive.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/UTPexExtensionMessage.cc
+	* src/UTPexExtensionMessage.h
+	* test/UTPexExtensionMessageTest.cc
+
+	Added _incoming member to Peer class and made it true if the peer
+	initiated connection. Don't add those peer to UTPex message.
+	If extended handshake is received, assign _incoming to false.
+	* src/DefaultBtInteractive.cc
+	* src/HandshakeExtensionMessage.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerListenCommand.cc
+	
 2008-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed infinite loop bug in FTP when SIZE command failed.

@@ -101,7 +101,7 @@ bool PeerListenCommand::execute() {
       // here.
       peerSocket->setBlockingMode();
 
-      PeerHandle peer(new Peer(peerInfo.first, 0));
+      PeerHandle peer(new Peer(peerInfo.first, peerInfo.second, true));
       int32_t cuid = CUIDCounterSingletonHolder::instance()->newID();
       Command* command =
 	new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);

@@ -45,12 +45,13 @@ namespace aria2 {
 
 #define BAD_CONDITION_INTERVAL 10
 
-Peer::Peer(std::string ipaddr, uint16_t port):
+Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   ipaddr(ipaddr),
   port(port),
   _badConditionStartTime(0),
   _seeder(false),
-  _res(0)
+  _res(0),
+  _incoming(incoming)
 {
   resetStatus();
   std::string idSeed = ipaddr+":"+Util::uitos(port);
@@ -458,6 +459,21 @@ uint64_t Peer::getCompletedLength() const
 {
   assert(_res);
   return _res->getCompletedLength();
+}
+
+bool Peer::isIncomingPeer() const
+{
+  return _incoming;
+}
+
+void Peer::setIncomingPeer(bool incoming)
+{
+  _incoming = incoming;
+}
+
+void Peer::setFirstContactTime(const Time& time)
+{
+  _firstContactTime = time;
 }
 
 } // namespace aria2

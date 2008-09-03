@@ -47,6 +47,7 @@
 #include "Option.h"
 #include "BtConstants.h"
 #include "SocketCore.h"
+#include "BtAnnounce.h"
 
 namespace aria2 {
 
@@ -89,6 +90,10 @@ bool ActivePeerConnectionCommand::execute() {
 	  numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = peerStorage->getUnusedPeer();
 	connectToPeer(peer);
+      }
+      if(btRuntime->getConnections() == 0 &&
+	 !pieceStorage->downloadFinished()) {
+	btAnnounce->overrideMinInterval(BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL);
       }
     }
   }

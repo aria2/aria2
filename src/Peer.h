@@ -69,12 +69,15 @@ private:
 
   PeerSessionResource* _res;
 
+  // If true, port is assumed not to be a listening port.
+  bool _incoming;
+
   // Before calling updateSeeder(),  make sure that
   // allocateSessionResource() is called and _res is created.
   // Otherwise assertion fails.
   void updateSeeder();
 public:
-  Peer(std::string ipaddr, uint16_t port);
+  Peer(std::string ipaddr, uint16_t port, bool incoming = false);
 
   ~Peer();
 
@@ -110,6 +113,8 @@ public:
   void releaseSessionResource();
 
   const Time& getFirstContactTime() const;
+
+  void setFirstContactTime(const Time& time);
 
   const Time& getBadConditionStartTime() const;
 
@@ -237,6 +242,10 @@ public:
   const Time& getLastAmUnchoking() const;
 
   uint64_t getCompletedLength() const;
+
+  bool isIncomingPeer() const;
+
+  void setIncomingPeer(bool incoming);
 };
 
 typedef SharedHandle<Peer> PeerHandle;
