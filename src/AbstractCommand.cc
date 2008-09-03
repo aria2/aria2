@@ -201,6 +201,7 @@ void AbstractCommand::onAbort() {
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
+  _requestGroup->removeIdenticalURI(req->getUrl());
 }
 
 void AbstractCommand::disableReadCheckSocket() {

@@ -123,7 +123,7 @@ public:
 
   static const std::string PEERS;
 
-  static const unsigned int DEFAULT_ANNOUNCE_INTERVAL = 120;
+  static const time_t DEFAULT_ANNOUNCE_INTERVAL = 120;
 };
 
 typedef SharedHandle<BtAnnounce> BtAnnounceHandle;
