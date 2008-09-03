@@ -1,5 +1,10 @@
 2008-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	DEFAULT_ANNOUNCE_INTERVAL: unsigned int -> time_t
+	* src/BtAnnounce.h
+
+2008-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	If an error occurred with a URI, remove identical URI from remaining
 	URI list because it is likely that same error occurred in the end and it
 	is waste of time.
