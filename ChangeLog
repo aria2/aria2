@@ -1,5 +1,12 @@
 2008-09-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added "Firefox3 Cookie" feature to FeatureConfig
+	* src/FeatureConfig.cc
+	* src/FeatureConfig.h
+	* test/FeatureConfigTest.cc
+
+2008-09-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.16.0b
 	* configure.ac
 

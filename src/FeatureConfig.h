@@ -68,6 +68,7 @@ public:
   static const std::string FEATURE_MESSAGE_DIGEST;
   static const std::string FEATURE_ASYNC_DNS;
   static const std::string FEATURE_GZIP;
+  static const std::string FEATURE_FIREFOX3_COOKIE;
 };
 
 } // namespace aria2

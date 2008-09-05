@@ -58,6 +58,10 @@ void FeatureConfigTest::testFeatureSummary() {
     "BitTorrent",
 #endif // ENABLE_BITTORRENT
 
+#ifdef HAVE_SQLITE3
+    "Firefox3 Cookie",
+#endif // HAVE_SQLITE3
+
 #ifdef HAVE_LIBZ
     "GZip",
 #endif // HAVE_LIBZ

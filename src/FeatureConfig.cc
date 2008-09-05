@@ -48,6 +48,7 @@ const std::string FeatureConfig::FEATURE_METALINK("Metalink");
 const std::string FeatureConfig::FEATURE_MESSAGE_DIGEST("Message Digest");
 const std::string FeatureConfig::FEATURE_ASYNC_DNS("Async DNS");
 const std::string FeatureConfig::FEATURE_GZIP("GZip");
+const std::string FeatureConfig::FEATURE_FIREFOX3_COOKIE("Firefox3 Cookie");
 
 #ifdef ENABLE_SSL
 # define HTTPS_ENABLED true
@@ -85,6 +86,12 @@ const std::string FeatureConfig::FEATURE_GZIP("GZip");
 # define GZIP_ENABLED false
 #endif // !HAVE_LIBZ
 
+#ifdef HAVE_SQLITE3
+# define FIREFOX3_COOKIE_ENABLED true
+#else // !HAVE_SQLITE3
+# define FIREFOX3_COOKIE_ENABLED false
+#endif // !HAVE_SQLITE3
+
 FeatureConfig::FeatureConfig() {
   _defaultPorts.insert(PortMap::value_type(Request::PROTO_HTTP, 80));
   _defaultPorts.insert(PortMap::value_type(Request::PROTO_HTTPS, 443));
@@ -97,6 +104,7 @@ FeatureConfig::FeatureConfig() {
     FeatureMap::value_type(FEATURE_MESSAGE_DIGEST, MESSAGE_DIGEST_ENABLED),
     FeatureMap::value_type(FEATURE_ASYNC_DNS, ASYNC_DNS_ENABLED),
     FeatureMap::value_type(FEATURE_GZIP, GZIP_ENABLED),
+    FeatureMap::value_type(FEATURE_FIREFOX3_COOKIE, FIREFOX3_COOKIE_ENABLED),
   };
 
   _features.insert(&featureArray[0], &featureArray[arrayLength(featureArray)]);
