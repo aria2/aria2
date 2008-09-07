@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "a2io.h"
+#include "TimeA2.h"
 #include <string>
 
 namespace aria2 {
@@ -102,6 +103,10 @@ public:
   static bool isDir(const std::string& filename);
 
   bool renameTo(const std::string& dest);
+
+  bool utime(const Time& actime, const Time& modtime) const;
+
+  Time getModifiedTime();
 };
 
 } // namespace aria2

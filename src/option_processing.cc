@@ -158,6 +158,7 @@ Option* createDefaultOption()
   op->put(PREF_LOG_LEVEL, V_DEBUG);
   op->put(PREF_URI_SELECTOR, V_INORDER);
   op->put(PREF_SERVER_STAT_TIMEOUT, "86400");// 1day
+  op->put(PREF_REMOTE_TIME, V_FALSE);
   return op;
 }
 
@@ -239,6 +240,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_SERVER_STAT_IF.c_str(), required_argument, &lopt, 221 },
       { PREF_SERVER_STAT_OF.c_str(), required_argument, &lopt, 222 },
       { PREF_SERVER_STAT_TIMEOUT.c_str(), required_argument, &lopt, 223 },
+      { PREF_REMOTE_TIME.c_str(), optional_argument, 0, 'R' },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -280,7 +282,9 @@ Option* option_processing(int argc, char* const argv[])
       { "help", optional_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::", longOpts, &optIndex);
+    c = getopt_long(argc, argv, 
+		    "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::R::",
+		    longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -546,6 +550,9 @@ Option* option_processing(int argc, char* const argv[])
       break;
     case 'q':
       cmdstream << PREF_QUIET << "=" << toBoolArg(optarg) << "\n";
+      break;
+    case 'R':
+      cmdstream << PREF_REMOTE_TIME << "=" << toBoolArg(optarg) << "\n";
       break;
     case 'v':
       showVersion();

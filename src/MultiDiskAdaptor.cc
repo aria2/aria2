@@ -480,4 +480,19 @@ void MultiDiskAdaptor::setMaxOpenFiles(size_t maxOpenFiles)
   _maxOpenFiles = maxOpenFiles;
 }
 
+size_t MultiDiskAdaptor::utime(const Time& actime, const Time& modtime)
+{
+  size_t numOK = 0;
+  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i) {
+    if((*i)->isRequested()) {
+      File f(getTopDirPath()+"/"+(*i)->getPath());
+      if(f.isFile() && f.utime(actime, modtime)) {
+	++numOK;
+      }
+    }
+  }
+  return numOK;
+}
+
 } // namespace aria2

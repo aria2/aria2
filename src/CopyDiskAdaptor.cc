@@ -37,6 +37,7 @@
 #include "Logger.h"
 #include "Util.h"
 #include "message.h"
+#include "File.h"
 
 namespace aria2 {
 
@@ -68,6 +69,22 @@ void CopyDiskAdaptor::fixFilename()
 std::string CopyDiskAdaptor::getFilePath()
 {
   return storeDir+"/"+tempFilename;
+}
+
+size_t CopyDiskAdaptor::utime(const Time& actime, const Time& modtime)
+{
+  size_t numOK = 0;
+  std::string topDirPath = storeDir+"/"+topDir;
+  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i) {
+    if((*i)->isExtracted() && (*i)->isRequested()) {
+      File f(topDirPath+"/"+(*i)->getPath());
+      if(f.isFile() && f.utime(actime, modtime)) {
+	++numOK;
+      }
+    }
+  }
+  return numOK;
 }
 
 } // namespace aria2

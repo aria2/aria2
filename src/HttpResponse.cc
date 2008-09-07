@@ -249,4 +249,9 @@ time_t HttpResponse::getRetryAfter() const
   return httpHeader->getFirstAsUInt(HttpHeader::RETRY_AFTER);
 }
 
+Time HttpResponse::getLastModifiedTime() const
+{
+  return Time::parseHTTPDate(httpHeader->getFirst(HttpHeader::LAST_MODIFIED));
+}
+
 } // namespace aria2

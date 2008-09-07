@@ -38,6 +38,8 @@
 #include <cstring>
 #include <stdlib.h>
 #include <deque>
+#include <sys/types.h>
+#include <utime.h>
 
 namespace aria2 {
 
@@ -176,6 +178,23 @@ bool File::renameTo(const std::string& dest)
   } else {
     return false;
   }
+}
+
+bool File::utime(const Time& actime, const Time& modtime) const
+{
+  struct utimbuf ub;
+  ub.actime = actime.getTime();
+  ub.modtime = modtime.getTime();
+  return ::utime(name.c_str(), &ub) == 0;
+}
+
+Time File::getModifiedTime()
+{
+  a2_struct_stat fstat;
+  if(fillStat(fstat) < 0) {
+    return 0;
+  }
+  return Time(fstat.st_mtime);
 }
 
 } // namespace aria2

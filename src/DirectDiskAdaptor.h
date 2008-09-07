@@ -47,6 +47,8 @@ public:
   virtual std::string getFilePath();
 
   virtual void onDownloadComplete();
+
+  virtual size_t utime(const Time& actime, const Time& modtime);
 };
 
 typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;

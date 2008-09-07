@@ -120,6 +120,9 @@ bool HttpResponseCommand::executeInternal()
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
 		      _requestGroup->getFilePath().c_str()).str());
     }
+    // update last modified time
+    updateLastModifiedTime(httpResponse->getLastModifiedTime());
+
     if(totalLength == 0 || httpResponse->isTransferEncodingSpecified() ||
        shouldInflateContentEncoding(httpResponse)) {
       // we ignore content-length when transfer-encoding is set
@@ -131,8 +134,18 @@ bool HttpResponseCommand::executeInternal()
   } else {
     // validate totalsize
     _requestGroup->validateTotalLength(httpResponse->getEntityLength());
+    // update last modified time
+    updateLastModifiedTime(httpResponse->getLastModifiedTime());
+
     e->commands.push_back(createHttpDownloadCommand(httpResponse));
     return true;
+  }
+}
+
+void HttpResponseCommand::updateLastModifiedTime(const Time& lastModified)
+{
+  if(e->option->getAsBool(PREF_REMOTE_TIME)) {
+    _requestGroup->updateLastModifiedTime(lastModified);
   }
 }
 

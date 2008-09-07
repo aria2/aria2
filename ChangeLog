@@ -1,5 +1,41 @@
 2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Implemented the ability to get timestamp from remote HTTP server and
+	apply it to local file. To enable this feature, --remote-time option
+	is added. No usage text has been written yet.
+	If several servers returns difference timestamp, then aria2 uses latest
+	one.
+	* src/CopyDiskAdaptor.cc
+	* src/CopyDiskAdaptor.h
+	* src/DirectDiskAdaptor.cc
+	* src/DirectDiskAdaptor.h
+	* src/DiskAdaptor.h
+	* src/File.cc
+	* src/File.h
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* test/CopyDiskAdaptorTest.cc
+	* test/FileTest.cc
+	* test/Makefile.am
+	* test/Makefile.in
+	* test/MultiDiskAdaptorTest.cc
+	* test/TestUtil.cc
+
+2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that DiskWriterEntry is not created when its
 	FileEntry.isRequested() is false and it doesn't share a piece with
 	other FileEntries that are requested. This bug causes segmentation fault

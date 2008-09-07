@@ -37,6 +37,7 @@
 
 #include "AbstractCommand.h"
 #include "Decoder.h"
+#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -59,6 +60,8 @@ private:
 			    = SharedHandle<Decoder>(),
 			    const SharedHandle<Decoder>& contentEncodingDecoder
 			    = SharedHandle<Decoder>());
+
+  void updateLastModifiedTime(const Time& lastModified);
 protected:
   bool executeInternal();
 

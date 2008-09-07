@@ -37,7 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
-#include "a2time.h"
+#include "TimeA2.h"
 #include <stdint.h>
 
 namespace aria2 {
@@ -115,6 +115,8 @@ public:
   bool hasRetryAfter() const;
 
   time_t getRetryAfter() const;
+
+  Time getLastModifiedTime() const;
 };
 
 typedef SharedHandle<HttpResponse> HttpResponseHandle;

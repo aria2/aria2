@@ -154,6 +154,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 						0, INT32_MAX)));
   handlers.push_back(SH(new DefaultOptionHandler(PREF_SERVER_STAT_IF)));
   handlers.push_back(SH(new DefaultOptionHandler(PREF_SERVER_STAT_OF)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_REMOTE_TIME)));
 
   return handlers;
 }

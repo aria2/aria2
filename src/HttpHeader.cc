@@ -68,6 +68,8 @@ const std::string HttpHeader::CONTENT_LENGTH("Content-Length");
 
 const std::string HttpHeader::CONTENT_RANGE("Content-Range");
 
+const std::string HttpHeader::LAST_MODIFIED("Last-Modified");
+
 const std::string HttpHeader::HTTP_1_1("HTTP/1.1");
 
 const std::string HttpHeader::S200("200");

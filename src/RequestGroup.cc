@@ -123,6 +123,7 @@ RequestGroup::RequestGroup(const Option* option,
   _forceHaltRequested(false),
   _singleHostMultiConnectionEnabled(true),
   _uriSelector(new InOrderURISelector()),
+  _lastModifiedTime(-1),
   _option(option),
   _logger(LogFactory::getInstance())
 {
@@ -1023,6 +1024,23 @@ void RequestGroup::removeAcceptType(const std::string& type)
 void RequestGroup::setURISelector(const SharedHandle<URISelector>& uriSelector)
 {
   _uriSelector = uriSelector;
+}
+
+void RequestGroup::applyLastModifiedTimeToLocalFiles()
+{
+  if(!_pieceStorage.isNull() && _lastModifiedTime.good()) {
+    time_t t = _lastModifiedTime.getTime();
+    _logger->info("Applying Last-Modified time: %s", ctime(&t));
+    size_t n =
+      _pieceStorage->getDiskAdaptor()->utime(Time(), _lastModifiedTime);
+    _logger->info("Last-Modified attrs of %zu files were updated.", n);
+  }
+}
+void RequestGroup::updateLastModifiedTime(const Time& time)
+{
+  if(time.good() && _lastModifiedTime < time) {
+    _lastModifiedTime = time;
+  }
 }
 
 } // namespace aria2

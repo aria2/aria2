@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "DirectDiskAdaptor.h"
 #include "FileEntry.h"
+#include "File.h"
 
 namespace aria2 {
 
@@ -47,5 +48,16 @@ void DirectDiskAdaptor::onDownloadComplete()
   closeFile();
   openFile();
 }
+
+size_t DirectDiskAdaptor::utime(const Time& actime, const Time& modtime)
+{
+  File f(getFilePath());
+  if(f.isFile() && f.utime(actime, modtime)) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 
 } // namespace aria2

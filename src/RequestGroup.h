@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "TransferStat.h"
+#include "TimeA2.h"
 #include <string>
 #include <deque>
 
@@ -114,6 +115,8 @@ private:
   std::deque<std::string> _acceptTypes;
 
   SharedHandle<URISelector> _uriSelector;
+
+  Time _lastModifiedTime;
 
   const Option* _option;
 
@@ -361,6 +364,10 @@ public:
   static const std::string ACCEPT_METALINK;
 
   void setURISelector(const SharedHandle<URISelector>& uriSelector);
+
+  void applyLastModifiedTimeToLocalFiles();
+
+  void updateLastModifiedTime(const Time& time);
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

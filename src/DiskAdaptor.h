@@ -36,6 +36,7 @@
 #define _D_DISK_ADAPTOR_H_
 
 #include "BinaryStream.h"
+#include "TimeA2.h"
 #include <string>
 #include <deque>
 
@@ -103,6 +104,10 @@ public:
   // Call one of openFile/openExistingFile/initAndOpenFile before calling this
   // function.
   virtual void cutTrailingGarbage() = 0;
+
+  // Returns the number of files, the actime and modtime of which are
+  // successfully changed.
+  virtual size_t utime(const Time& actime, const Time& modtime) = 0;
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

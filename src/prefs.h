@@ -149,6 +149,8 @@ extern const std::string PREF_SERVER_STAT_TIMEOUT;
 extern const std::string PREF_SERVER_STAT_IF;
 // value: string that your file system recognizes as a file name.
 extern const std::string PREF_SERVER_STAT_OF;
+// value: true | false
+extern const std::string PREF_REMOTE_TIME;
 
 /**
  * FTP related preferences

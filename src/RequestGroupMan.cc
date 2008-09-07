@@ -153,8 +153,9 @@ public:
   {
     if(group->getNumCommand() == 0) {
       try {
-	group->closeFile();      
+	group->closeFile();
 	if(group->downloadFinished()) {
+	  group->applyLastModifiedTimeToLocalFiles();
 	  group->reportDownloadFinished();
 	  if(group->allDownloadFinished()) {
 	    group->getProgressInfoFile()->removeFile();

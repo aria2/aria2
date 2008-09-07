@@ -1,4 +1,5 @@
 #include "File.h"
+#include "TestUtil.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -20,6 +21,7 @@ class FileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetDirname);
   CPPUNIT_TEST(testGetBasename);
   CPPUNIT_TEST(testRenameTo);
+  CPPUNIT_TEST(testUtime);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -36,6 +38,7 @@ public:
   void testGetDirname();
   void testGetBasename();
   void testRenameTo();
+  void testUtime();
 };
 
 
@@ -206,6 +209,22 @@ void FileTest::testRenameTo()
   of.close();
   
   CPPUNIT_ASSERT(f.renameTo(fname));
+}
+
+void FileTest::testUtime()
+{
+  File f("/tmp/FileTest_testUTime");
+  createFile(f.getPath(), 0);
+  CPPUNIT_ASSERT(f.utime(Time(1000), Time(2000)));
+  
+  struct stat buf;
+  CPPUNIT_ASSERT(0 == stat(f.getPath().c_str(), &buf));
+  CPPUNIT_ASSERT_EQUAL((time_t)1000, buf.st_atime);
+  CPPUNIT_ASSERT_EQUAL((time_t)2000, f.getModifiedTime().getTime());
+
+  File notFound("/tmp/FileTest_testUTime_notFound");
+  notFound.remove();
+  CPPUNIT_ASSERT(!notFound.utime(Time(1000), Time(2000)));
 }
 
 } // namespace aria2

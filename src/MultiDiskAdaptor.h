@@ -189,6 +189,8 @@ public:
   virtual void cutTrailingGarbage();
 
   void setMaxOpenFiles(size_t maxOpenFiles);
+
+  virtual size_t utime(const Time& actime, const Time& modtime);
 };
 
 typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;

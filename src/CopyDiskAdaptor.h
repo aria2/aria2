@@ -54,6 +54,8 @@ public:
 
   virtual void onDownloadComplete();
 
+  virtual size_t utime(const Time& actime, const Time& modtime);
+
   // tempFilename is relative to storeDir
   void setTempFilename(const std::string& tempFilename) {
     this->tempFilename = tempFilename;
