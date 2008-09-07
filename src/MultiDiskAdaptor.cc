@@ -411,11 +411,12 @@ bool MultiDiskAdaptor::fileExists()
 }
 
 // TODO call DiskWriter::openFile() before calling this function.
-uint64_t MultiDiskAdaptor::size() const
+uint64_t MultiDiskAdaptor::size()
 {
   uint64_t size = 0;
   for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); ++itr) {
+    openIfNot(*itr, &DiskWriterEntry::openFile, _cachedTopDirPath);
     size += (*itr)->size();
   }
   return size;

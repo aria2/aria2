@@ -66,7 +66,7 @@ public:
 
   virtual bool fileExists();
 
-  virtual uint64_t size() const;
+  virtual uint64_t size();
 
   virtual void truncate(uint64_t length);
   

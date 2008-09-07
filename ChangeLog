@@ -1,5 +1,16 @@
 2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that exception is thrown when MultiDiskAdaptor::size() is
+	called if the number of file entries are greater than max open files.
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/AbstractSingleDiskAdaptor.h
+	* src/DiskAdaptor.h
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* test/MultiDiskAdaptorTest.cc
+
+2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added a constuctor that receives struct timeval.
 	Added operator<.
 	* src/TimeA2.cc

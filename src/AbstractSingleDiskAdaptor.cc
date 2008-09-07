@@ -78,7 +78,7 @@ bool AbstractSingleDiskAdaptor::fileExists()
   return File(getFilePath()).exists();
 }
 
-uint64_t AbstractSingleDiskAdaptor::size() const
+uint64_t AbstractSingleDiskAdaptor::size()
 {
   return diskWriter->size();
 }

@@ -68,7 +68,7 @@ public:
 
   virtual std::string getFilePath() = 0;
 
-  virtual uint64_t size() const = 0;
+  virtual uint64_t size() = 0;
 
   // optional behavior
   virtual void truncate(uint64_t length) {}
