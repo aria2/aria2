@@ -1,5 +1,13 @@
 2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added a constuctor that receives struct timeval.
+	Added operator<.
+	* src/TimeA2.cc
+	* src/TimeA2.h
+	* test/TimeTest.cc
+
+2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Parse `expires' of Set-Cookie using Time::parseHTTPDate()
 	* src/CookieParser.cc
 	* test/CookieParserTest.cc

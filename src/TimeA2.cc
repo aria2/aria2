@@ -52,6 +52,10 @@ Time::Time(time_t sec) {
   setTimeInSec(sec);
 }
 
+Time::Time(const struct timeval& tv) {
+  this->tv = tv;
+}
+
 Time::~Time() {}
 
 Time& Time::operator=(const Time& time)
@@ -60,6 +64,11 @@ Time& Time::operator=(const Time& time)
     tv = time.tv;
   }
   return *this;
+}
+
+bool Time::operator<(const Time& time) const
+{
+  return Util::difftv(time.tv, tv) > 0;
 }
 
 void Time::reset() {
@@ -191,5 +200,5 @@ Time Time::parseHTTPDate(const std::string& datetime)
   }
   return Time(-1);
 }
-	
+
 } // namespace aria2

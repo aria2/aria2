@@ -53,10 +53,13 @@ public:
   Time();
   Time(const Time& time);
   Time(time_t sec);
+  Time(const struct timeval& tv);
+
+  ~Time();
 
   Time& operator=(const Time& time);
 
-  ~Time();
+  bool operator<(const Time& time) const;
 
   // Makes this object's time value up to date.
   void reset();
