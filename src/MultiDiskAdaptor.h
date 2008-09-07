@@ -49,6 +49,7 @@ private:
   SharedHandle<DiskWriter> diskWriter;
   bool _open;
   bool _directIO;
+  bool _needsFileAllocation;
 public:
   DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry);
 
@@ -87,6 +88,10 @@ public:
   // Additionally, if diskWriter is opened, diskWriter->disableDirectIO() is
   // called.
   void disableDirectIO();
+
+  bool needsFileAllocation() const;
+
+  void needsFileAllocation(bool f);
 };
 
 typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;

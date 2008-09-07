@@ -45,11 +45,13 @@
 #include "Logger.h"
 #include "SimpleRandomizer.h"
 #include <algorithm>
+#include <cassert>
 
 namespace aria2 {
 
 DiskWriterEntry::DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry):
-  fileEntry(fileEntry), _open(false), _directIO(false) {}
+  fileEntry(fileEntry), _open(false), _directIO(false),
+  _needsFileAllocation(false) {}
 
 DiskWriterEntry::~DiskWriterEntry() {}
 
@@ -60,29 +62,35 @@ std::string DiskWriterEntry::getFilePath(const std::string& topDir) const
 
 void DiskWriterEntry::initAndOpenFile(const std::string& topDir)
 {
-  diskWriter->initAndOpenFile(getFilePath(topDir), fileEntry->getLength());
-  if(_directIO) {
-    diskWriter->enableDirectIO();
+  if(!diskWriter.isNull()) {
+    diskWriter->initAndOpenFile(getFilePath(topDir), fileEntry->getLength());
+    if(_directIO) {
+      diskWriter->enableDirectIO();
+    }
+    _open = true;
   }
-  _open = true;
 }
 
 void DiskWriterEntry::openFile(const std::string& topDir)
 {
-  diskWriter->openFile(getFilePath(topDir), fileEntry->getLength());
-  if(_directIO) {
-    diskWriter->enableDirectIO();
+  if(!diskWriter.isNull()) {
+    diskWriter->openFile(getFilePath(topDir), fileEntry->getLength());
+    if(_directIO) {
+      diskWriter->enableDirectIO();
+    }
+    _open = true;
   }
-  _open = true;
 }
 
 void DiskWriterEntry::openExistingFile(const std::string& topDir)
 {
-  diskWriter->openExistingFile(getFilePath(topDir), fileEntry->getLength());
-  if(_directIO) {
-    diskWriter->enableDirectIO();
+  if(!diskWriter.isNull()) {
+    diskWriter->openExistingFile(getFilePath(topDir), fileEntry->getLength());
+    if(_directIO) {
+      diskWriter->enableDirectIO();
+    }
+    _open = true;
   }
-  _open = true;
 }
 
 bool DiskWriterEntry::isOpen() const
@@ -105,6 +113,7 @@ bool DiskWriterEntry::fileExists(const std::string& topDir)
 
 uint64_t DiskWriterEntry::size() const
 {
+  assert(!diskWriter.isNull());
   return diskWriter->size();
 }
 
@@ -144,6 +153,16 @@ void DiskWriterEntry::disableDirectIO()
   _directIO = false;
 }
 
+bool DiskWriterEntry::needsFileAllocation() const
+{
+  return _needsFileAllocation;
+}
+
+void DiskWriterEntry::needsFileAllocation(bool f)
+{
+  _needsFileAllocation = f;
+}
+
 MultiDiskAdaptor::MultiDiskAdaptor():
   pieceLength(0),
   _maxOpenFiles(DEFAULT_MAX_OPEN_FILES),
@@ -153,13 +172,10 @@ MultiDiskAdaptor::~MultiDiskAdaptor() {}
 
 static SharedHandle<DiskWriterEntry> createDiskWriterEntry
 (const SharedHandle<FileEntry>& fileEntry,
- DiskWriterFactory& dwFactory,
- bool directIOAllowed)
+ bool needsFileAllocation)
 {
   SharedHandle<DiskWriterEntry> entry(new DiskWriterEntry(fileEntry));
-  entry->setDiskWriter(dwFactory.newDiskWriter());
-  entry->getDiskWriter()->setDirectIOAllowed(directIOAllowed);
-  
+  entry->needsFileAllocation(needsFileAllocation);
   return entry;
 }
  
@@ -172,55 +188,58 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
     return;
   }
 
-  DefaultDiskWriterFactory dwFactory;
-  if(pieceLength == 0) {
-    for(std::deque<SharedHandle<FileEntry> >::const_iterator itr =
-	  fileEntries.begin(); itr != fileEntries.end(); ++itr) {
-      if((*itr)->isRequested()) {
-	diskWriterEntries.push_back
-	  (createDiskWriterEntry(*itr, dwFactory, _directIOAllowed));
-      }
-    }
-  } else {
-    std::deque<SharedHandle<FileEntry> >::const_iterator done = fileEntries.begin();
-    for(std::deque<SharedHandle<FileEntry> >::const_iterator itr =
-	  fileEntries.begin(); itr != fileEntries.end();) {
-      if(!(*itr)->isRequested()) {
+  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i) {
+    diskWriterEntries.push_back
+      (createDiskWriterEntry(*i, (*i)->isRequested()));
+  }
+
+  // TODO Currently, pieceLength == 0 is used for unit testing only.
+  if(pieceLength > 0) {
+    std::deque<SharedHandle<DiskWriterEntry> >::iterator done =
+      diskWriterEntries.begin();
+    for(std::deque<SharedHandle<DiskWriterEntry> >::iterator itr =
+	  diskWriterEntries.begin(); itr != diskWriterEntries.end();) {
+      if(!(*itr)->getFileEntry()->isRequested()) {
 	++itr;
 	continue;
       }
-      off_t pieceStartOffset = ((*itr)->getOffset()/pieceLength)*pieceLength;
-      std::deque<SharedHandle<DiskWriterEntry> >::iterator insertionPoint =
-	diskWriterEntries.end();
-
-      if(itr != fileEntries.begin()) {
-	for(std::deque<SharedHandle<FileEntry> >::const_iterator i = itr-1;
-	    i != done; --i) {
-	  if((uint64_t)pieceStartOffset < (*i)->getOffset()+(*i)->getLength()) {
-	    insertionPoint = diskWriterEntries.insert
-	      (insertionPoint,
-	       createDiskWriterEntry(*i, dwFactory, _directIOAllowed));
+      off_t pieceStartOffset =
+	((*itr)->getFileEntry()->getOffset()/pieceLength)*pieceLength;
+      if(itr != diskWriterEntries.begin()) {
+	for(std::deque<SharedHandle<DiskWriterEntry> >::iterator i =
+	      itr-1; i != done; --i) {
+	  const SharedHandle<FileEntry>& fileEntry = (*i)->getFileEntry();
+	  if((uint64_t)pieceStartOffset <
+	     fileEntry->getOffset()+fileEntry->getLength()) {
+	    (*i)->needsFileAllocation(true);
 	  } else {
 	    break;
 	  }
 	}
       }
 
-      diskWriterEntries.push_back
-	(createDiskWriterEntry(*itr, dwFactory, _directIOAllowed));
-
       ++itr;
 
-      for(; itr != fileEntries.end(); ++itr) {
-	if((*itr)->getOffset() < pieceStartOffset+pieceLength) {
-	  diskWriterEntries.push_back
-	    (createDiskWriterEntry(*itr, dwFactory, _directIOAllowed));
+      for(; itr != diskWriterEntries.end(); ++itr) {
+	if((*itr)->getFileEntry()->getOffset() < pieceStartOffset+pieceLength) {
+	  (*itr)->needsFileAllocation(true);
 	} else {
 	  break;
 	}
       }
 
       done = itr-1;
+    }
+  }
+  DefaultDiskWriterFactory dwFactory;
+  for(std::deque<SharedHandle<DiskWriterEntry> >::iterator i =
+	diskWriterEntries.begin(); i != diskWriterEntries.end(); ++i) {
+    if((*i)->needsFileAllocation() || (*i)->fileExists(getTopDirPath())) {
+      logger->debug("Creating DiskWriter for filename=%s",
+		    (*i)->getFilePath(getTopDirPath()).c_str());
+      (*i)->setDiskWriter(dwFactory.newDiskWriter());
+      (*i)->getDiskWriter()->setDirectIOAllowed(_directIOAllowed);
     }
   }
 }

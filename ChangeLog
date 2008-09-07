@@ -1,5 +1,17 @@
 2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that DiskWriterEntry is not created when its
+	FileEntry.isRequested() is false and it doesn't share a piece with
+	other FileEntries that are requested. This bug causes segmentation fault
+	in the end.
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/MultiFileAllocationIterator.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+
+2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that exception is thrown when MultiDiskAdaptor::size() is
 	called if the number of file entries are greater than max open files.
 	* src/AbstractSingleDiskAdaptor.cc

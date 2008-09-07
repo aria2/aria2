@@ -158,6 +158,7 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
   adaptor.setTopDir(topDir);
   adaptor.setFileEntries(fileEntries);
   adaptor.setMaxOpenFiles(1);
+  adaptor.setPieceLength(1);
   
   adaptor.openFile();
 
@@ -191,6 +192,7 @@ void MultiDiskAdaptorTest::testSize()
   adaptor.setTopDir(topDir);
   adaptor.setFileEntries(fileEntries);
   adaptor.setMaxOpenFiles(1);
+  adaptor.setPieceLength(1);
   
   adaptor.openFile();
 
