@@ -35,6 +35,7 @@
 #include "CookieParser.h"
 #include "Util.h"
 #include "A2STR.h"
+#include "TimeA2.h"
 #include <strings.h>
 #include <utility>
 #include <istream>
@@ -77,7 +78,7 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
   }
   time_t expiry = -1;
   if(values.find(C_EXPIRES) != values.end()) {
-    expiry = Util::httpGMT(values[C_EXPIRES]);
+    expiry = Time::parseHTTPDate(values[C_EXPIRES]).getTime();
   }
   if(expiry == -1) {
     return Cookie(nameValue.first, nameValue.second,

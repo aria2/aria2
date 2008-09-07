@@ -26,7 +26,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( CookieParserTest );
 
 void CookieParserTest::testParse()
 {
-  std::string str = "JSESSIONID=123456789; expires=Sun, 2007-06-10 11:00:00 GMT; path=/; domain=localhost; secure";
+  std::string str = "JSESSIONID=123456789; expires=Sun, 10-Jun-2007 11:00:00 GMT; path=/; domain=localhost; secure";
   Cookie c = CookieParser().parse(str);
   CPPUNIT_ASSERT(c.good());
   CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
@@ -52,10 +52,21 @@ void CookieParserTest::testParse()
   c = CookieParser().parse(str3);
   CPPUNIT_ASSERT(!c.good());
 
-  std::string str4 = "UID=300; expires=Wed, 1890-01-01 0:0:0 GMT;";
+  std::string str4 = "UID=300; expires=Wed, 01-Jan-1890 00:00:00 GMT;";
   c = CookieParser().parse(str4, "localhost", "/");
   CPPUNIT_ASSERT(c.good());
   CPPUNIT_ASSERT(c.isOnetimeCookie());
+
+  std::string str5 = "k=v; expires=Sun, 10-Jun-07 11:00:00 GMT";
+  c = CookieParser().parse(str5);
+  CPPUNIT_ASSERT(c.good());
+  CPPUNIT_ASSERT_EQUAL(std::string("k"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("v"), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)1181473200, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), c.getPath());
+  CPPUNIT_ASSERT(!c.isSecureCookie());
+  CPPUNIT_ASSERT(!c.isOnetimeCookie());
 }
 
 void CookieParserTest::testParse_file()
