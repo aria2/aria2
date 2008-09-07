@@ -60,7 +60,8 @@ aria2c_SOURCES = AllTest.cc\
 	NsCookieParserTest.cc\
 	DirectDiskAdaptorTest.cc\
 	CookieTest.cc\
-	CookieStorageTest.cc
+	CookieStorageTest.cc\
+	TimeTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

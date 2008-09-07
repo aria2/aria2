@@ -38,6 +38,7 @@
 #include "common.h"
 #include "a2time.h"
 #include <stdint.h>
+#include <string>
 
 namespace aria2 {
 
@@ -85,6 +86,25 @@ public:
   void setTimeInSec(time_t sec);
 
   bool isNewer(const Time& time) const;
+
+  bool good() const;
+
+  // Currently timezone is assumed as GMT.
+  static Time parse(const std::string& datetime, const std::string& format);
+
+  // Currently timezone is assumed to GMT.
+  static Time parseRFC1123(const std::string& datetime);
+
+  // Currently timezone is assumed to GMT.
+  static Time parseRFC850(const std::string& datetime);
+
+  // Currently timezone is assumed to GMT.
+  // Basically the format is RFC850, but year part is 4digit, eg 2008
+  static Time parseRFC850Ext(const std::string& datetime);
+
+  // Try parseRFC1123, parseRFC850Ex, parseRFC850 in that order and returns
+  // the first "good" Time object returned by these functions.
+  static Time parseHTTPDate(const std::string& datetime);
 };
 
 } // namespace aria2

@@ -35,6 +35,8 @@
 
 #include "TimeA2.h"
 #include "Util.h"
+#include "array_fun.h"
+#include <cstring>
 
 namespace aria2 {
 
@@ -136,4 +138,58 @@ void Time::setTimeInSec(time_t sec) {
   tv.tv_usec = 0;
 }
 
+bool Time::good() const
+{
+  return tv.tv_sec >= 0;
+}
+
+Time Time::parse(const std::string& datetime, const std::string& format)
+{
+  struct tm tm;
+  memset(&tm, 0, sizeof(tm));
+  char* r = strptime(datetime.c_str(), format.c_str(), &tm);
+  if(r != datetime.c_str()+datetime.size()) {
+    return Time(-1);
+  }
+  time_t thetime = timegm(&tm);
+  if(thetime == -1) {
+    if(tm.tm_year >= 2038-1900) {
+      thetime = INT32_MAX;
+    }
+  }
+  return Time(thetime);  
+}
+
+Time Time::parseRFC1123(const std::string& datetime)
+{
+  return parse(datetime, "%a, %d %b %Y %H:%M:%S GMT");
+}
+
+Time Time::parseRFC850(const std::string& datetime)
+{
+  return parse(datetime, "%a, %d-%b-%y %H:%M:%S GMT");
+}
+
+Time Time::parseRFC850Ext(const std::string& datetime)
+{
+  return parse(datetime, "%a, %d-%b-%Y %H:%M:%S GMT");
+}
+
+Time Time::parseHTTPDate(const std::string& datetime)
+{
+  Time (*funcs[])(const std::string&) = {
+    &parseRFC1123,
+    &parseRFC850Ext,
+    &parseRFC850,
+  };
+  for(Time (**funcsp)(const std::string&) = &funcs[0];
+      funcsp != &funcs[arrayLength(funcs)]; ++funcsp) {
+    Time t = (*funcsp)(datetime);
+    if(t.good()) {
+      return t;
+    }
+  }
+  return Time(-1);
+}
+	
 } // namespace aria2
