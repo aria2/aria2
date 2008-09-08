@@ -1,5 +1,11 @@
 2008-09-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added help message for -R option.
+	* src/HelpItemFactory.cc
+	* src/usage_text.h
+
+2008-09-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the message that the time is in local time zone.
 	* src/RequestGroup.cc
 

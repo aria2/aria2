@@ -356,3 +356,7 @@ _(" --summary-interval=SEC       Set interval to output download progress summar
   "                              Setting 0 suppresses the output.")
 #define TEXT_LOG_LEVEL \
 _(" --log-level=LEVEL            Set log level to output.")
+#define TEXT_REMOTE_TIME \
+_(" -R, --remote-time[=true|false] Retrieve timestamp of the remote file from the\n"\
+  "                              remote HTTP/FTP server and if it is available,\n"\
+  "                              apply it to the local file.")
