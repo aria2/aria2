@@ -194,8 +194,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
-	TimeTest.cc CopyDiskAdaptorTest.cc GZipDecoderTest.cc \
-	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
+	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
+	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -367,8 +368,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	NsCookieParserTest.$(OBJEXT) DirectDiskAdaptorTest.$(OBJEXT) \
 	CookieTest.$(OBJEXT) CookieStorageTest.$(OBJEXT) \
 	TimeTest.$(OBJEXT) CopyDiskAdaptorTest.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5)
+	FtpConnectionTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -590,9 +591,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
-	TimeTest.cc CopyDiskAdaptorTest.cc $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5)
+	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -759,6 +760,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnectionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@

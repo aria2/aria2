@@ -202,8 +202,47 @@ bool FtpNegotiationCommand::recvCwd() {
     poolConnection();
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
-  sequence = SEQ_SEND_SIZE;
+  if(e->option->getAsBool(PREF_REMOTE_TIME)) {
+    sequence = SEQ_SEND_MDTM;
+  } else {
+    sequence = SEQ_SEND_SIZE;
+  }
   return true;
+}
+
+bool FtpNegotiationCommand::sendMdtm()
+{
+  ftp->sendMdtm();
+  sequence = SEQ_RECV_MDTM;
+  return false;
+}
+
+bool FtpNegotiationCommand::recvMdtm()
+{
+  Time lastModifiedTime(-1);
+  unsigned int status = ftp->receiveMdtmResponse(lastModifiedTime);
+  if(status == 0) {
+    return false;
+  }
+  if(status == 213) {
+    if(lastModifiedTime.good()) {
+      _requestGroup->updateLastModifiedTime(lastModifiedTime);
+      time_t t = lastModifiedTime.getTime();
+      struct tm* tms = gmtime(&t); // returned struct is statically allocated.
+      if(tms) {
+	logger->debug("MDTM result was parsed as: %s GMT", asctime(tms));
+      } else {
+	logger->debug("gmtime() failed for MDTM result.");
+      }
+    } else {
+      logger->debug("MDTM response was returned, but it seems not to be a time"
+		    " value as in specified in RFC3659.");
+    }
+  } else {
+    logger->info("CUID#%d - MDTM command failed.", cuid);
+  }
+  sequence = SEQ_SEND_SIZE;
+  return true;  
 }
 
 bool FtpNegotiationCommand::sendSize() {
@@ -445,6 +484,10 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
     return sendCwd();
   case SEQ_RECV_CWD:
     return recvCwd();
+  case SEQ_SEND_MDTM:
+    return sendMdtm();
+  case SEQ_RECV_MDTM:
+    return recvMdtm();
   case SEQ_SEND_SIZE:
     return sendSize();
   case SEQ_RECV_SIZE:

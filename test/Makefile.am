@@ -62,7 +62,8 @@ aria2c_SOURCES = AllTest.cc\
 	CookieTest.cc\
 	CookieStorageTest.cc\
 	TimeTest.cc\
-	CopyDiskAdaptorTest.cc
+	CopyDiskAdaptorTest.cc\
+	FtpConnectionTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

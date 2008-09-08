@@ -1,3 +1,14 @@
+2008-09-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Implemented the ability to get timestamp from remote FTP server using
+	MDTM command described in RFC3659.
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* test/FtpConnectionTest.cc
+	* test/Makefile.am
+
 2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Implemented the ability to get timestamp from remote HTTP server and

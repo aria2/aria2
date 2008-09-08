@@ -47,6 +47,7 @@
 #include "DlAbortEx.h"
 #include "Socket.h"
 #include "A2STR.h"
+#include <cstring>
 
 namespace aria2 {
 
@@ -91,6 +92,13 @@ void FtpConnection::sendType() const
 void FtpConnection::sendCwd() const
 {
   std::string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+  socket->writeData(request);
+}
+
+void FtpConnection::sendMdtm() const
+{
+  std::string request = "MDTM "+Util::urlencode(req->getFile())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
@@ -250,6 +258,26 @@ unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
       sscanf(response.second.c_str(), "%*u " LONGLONG_SCANF, &size);
+    }
+    return response.first;
+  } else {
+    return 0;
+  }
+}
+
+unsigned int FtpConnection::receiveMdtmResponse(Time& time)
+{
+  // MDTM command, specified in RFC3659.
+  std::pair<unsigned int, std::string> response;
+  if(bulkReceiveResponse(response)) {
+    if(response.first == 213) {
+      char buf[15]; // YYYYMMDDhhmmss+\0, milli second part is dropped.
+      sscanf(response.second.c_str(), "%*u %14s", buf);
+      if(strlen(buf) == 14) {
+	time = Time::parse(buf, "%Y%m%d%H%M%S");
+      } else {
+	time.setTimeInSec(-1);
+      }
     }
     return response.first;
   } else {

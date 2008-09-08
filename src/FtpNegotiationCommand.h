@@ -54,6 +54,8 @@ public:
     SEQ_RECV_TYPE,
     SEQ_SEND_CWD,
     SEQ_RECV_CWD,
+    SEQ_SEND_MDTM,
+    SEQ_RECV_MDTM,
     SEQ_SEND_SIZE,
     SEQ_RECV_SIZE,
     SEQ_SEND_PORT,
@@ -82,6 +84,8 @@ private:
   bool recvType();
   bool sendCwd();
   bool recvCwd();
+  bool sendMdtm();
+  bool recvMdtm();
   bool sendSize();
   bool recvSize();
   bool sendPort();
