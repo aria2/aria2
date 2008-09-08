@@ -1030,7 +1030,8 @@ void RequestGroup::applyLastModifiedTimeToLocalFiles()
 {
   if(!_pieceStorage.isNull() && _lastModifiedTime.good()) {
     time_t t = _lastModifiedTime.getTime();
-    _logger->info("Applying Last-Modified time: %s", ctime(&t));
+    _logger->info("Applying Last-Modified time: %s in local time zone",
+		  ctime(&t));
     size_t n =
       _pieceStorage->getDiskAdaptor()->utime(Time(), _lastModifiedTime);
     _logger->info("Last-Modified attrs of %zu files were updated.", n);
