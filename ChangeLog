@@ -1,5 +1,13 @@
 2008-09-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Merged from stable-0.15
+	* m4/libcares.m4
+
+	Use pkg-config
+	* m4/sqlite3.m4
+	
+2008-09-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed unnecessary if statement.
 	* src/DefaultPieceStorage.cc (initPieceStorage)
 	

@@ -20,6 +20,11 @@ CPPFLAGS="-I$libcares_prefix_include -Wall $CPPFLAGS"
 
 AC_CHECK_LIB([cares], [ares_init], [have_libcares=yes])
 
+if test "x$have_libcares" != "xyes"; then
+    AC_CHECK_LIB([cares], [ares_init], [have_libcares=yes need_librt=yes], [],
+                 [-lrt])
+fi
+
 if test "x$have_libcares" = "xyes"; then
 
     AC_MSG_CHECKING([whether ares_host_callback accepts timeouts(c-ares >= 1.5)])
@@ -42,6 +47,9 @@ if test "x$have_libcares" = "xyes"; then
 
     AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
     LIBCARES_LIBS="-L$libcares_prefix_lib -lcares"
+    if test "x$need_librt" = "xyes"; then
+      LIBCARES_LIBS="$LIBCARES_LIBS -lrt"
+    fi
     LIBCARES_CPPFLAGS="-I$libcares_prefix_include"
     AC_SUBST(LIBCARES_LIBS)
     AC_SUBST(LIBCARES_CPPFLAGS)
