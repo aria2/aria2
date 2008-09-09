@@ -454,9 +454,7 @@ void DefaultPieceStorage::initStorage()
       copyDiskAdaptor->setDiskWriter(writer);
       copyDiskAdaptor->setTempFilename(downloadContext->getName()+".a2tmp");
       copyDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
-      if(downloadContext->getFileMode() == DownloadContext::MULTI) {
-	copyDiskAdaptor->setTopDir(downloadContext->getName());
-      }
+      copyDiskAdaptor->setTopDir(downloadContext->getName());
       this->diskAdaptor = copyDiskAdaptor;
     }
   }
