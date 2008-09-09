@@ -71,6 +71,9 @@ FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
   AbstractCommand(cuid, req, requestGroup, e, s), sequence(seq),
   ftp(new FtpConnection(cuid, socket, req, e->option))
 {
+  if(seq == SEQ_RECV_GREETING) {
+    setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
+  }
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
@@ -112,6 +115,7 @@ bool FtpNegotiationCommand::executeInternal() {
 }
 
 bool FtpNegotiationCommand::recvGreeting() {
+  setTimeout(e->option->getAsInt(PREF_TIMEOUT));
   socket->setBlockingMode();
   disableWriteCheckSocket();
   setReadCheckSocket(socket);

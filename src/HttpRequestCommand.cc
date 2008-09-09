@@ -61,6 +61,7 @@ HttpRequestCommand::HttpRequestCommand
   :AbstractCommand(cuid, req, requestGroup, e, s),
    _httpConnection(httpConnection)
 {
+  setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }

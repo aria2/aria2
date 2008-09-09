@@ -84,6 +84,13 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);
   }
   {
+    HelpItemHandle item(new HelpItem(PREF_CONNECT_TIMEOUT, TEXT_CONNECT_TIMEOUT,
+				     op->get(PREF_CONNECT_TIMEOUT)));
+    item->addTag(TAG_HTTP);
+    item->addTag(TAG_FTP);
+    tc->addItem(item);
+  }
+  {
     HelpItemHandle item(new HelpItem(PREF_TIMEOUT, TEXT_TIMEOUT));
     item->addTag(TAG_HTTP);
     item->addTag(TAG_FTP);

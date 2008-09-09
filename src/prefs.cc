@@ -54,6 +54,8 @@ const std::string PREF_TIMEOUT("timeout");
 // values: 1*digit
 const std::string PREF_DNS_TIMEOUT("dns-timeout");
 // values: 1*digit
+const std::string PREF_CONNECT_TIMEOUT("connect-timeout");
+// values: 1*digit
 const std::string PREF_MAX_TRIES("max-tries");
 // values: 1*digit
 const std::string PREF_MIN_SEGMENT_SIZE("min-segment-size");

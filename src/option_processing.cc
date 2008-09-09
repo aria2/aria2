@@ -98,6 +98,7 @@ Option* createDefaultOption()
   op->put(PREF_RETRY_WAIT, "5");
   op->put(PREF_TIMEOUT, "60");
   op->put(PREF_DNS_TIMEOUT, "30");
+  op->put(PREF_CONNECT_TIMEOUT, "60");
   op->put(PREF_PEER_CONNECTION_TIMEOUT, "20");
   op->put(PREF_BT_TIMEOUT, "180");
   op->put(PREF_BT_REQUEST_TIMEOUT, "60");
@@ -241,6 +242,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_SERVER_STAT_OF.c_str(), required_argument, &lopt, 222 },
       { PREF_SERVER_STAT_TIMEOUT.c_str(), required_argument, &lopt, 223 },
       { PREF_REMOTE_TIME.c_str(), optional_argument, 0, 'R' },
+      { PREF_CONNECT_TIMEOUT.c_str(), required_argument, &lopt, 224 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -482,6 +484,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 223:
 	cmdstream << PREF_SERVER_STAT_TIMEOUT << "=" << optarg << "\n";
+	break;
+      case 224:
+	cmdstream << PREF_CONNECT_TIMEOUT << "=" << optarg << "\n";
 	break;
       }
       break;

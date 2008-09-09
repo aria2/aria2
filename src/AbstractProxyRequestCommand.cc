@@ -51,7 +51,9 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
 							 RequestGroup* requestGroup,
 							 DownloadEngine* e,
 							 const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s) {
+  :AbstractCommand(cuid, req, requestGroup, e, s)
+{
+  setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }

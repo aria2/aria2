@@ -58,6 +58,8 @@ extern const std::string PREF_TIMEOUT;
 // values: 1*digit
 extern const std::string PREF_DNS_TIMEOUT;
 // values: 1*digit
+extern const std::string PREF_CONNECT_TIMEOUT;
+// values: 1*digit
 extern const std::string PREF_MAX_TRIES;
 // values: 1*digit
 extern const std::string PREF_MIN_SEGMENT_SIZE;

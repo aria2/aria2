@@ -360,3 +360,8 @@ _(" --log-level=LEVEL            Set log level to output.")
 _(" -R, --remote-time[=true|false] Retrieve timestamp of the remote file from the\n"\
   "                              remote HTTP/FTP server and if it is available,\n"\
   "                              apply it to the local file.")
+#define TEXT_CONNECT_TIMEOUT \
+_(" --connect-timeout=SEC        Set the connect timeout in seconds to establish\n"\
+  "                              connection to HTTP/FTP/proxy server. After the\n"\
+  "                              connection is established, this option makes no\n"\
+  "                              effect and --timeout option is used instead.")
