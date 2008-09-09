@@ -60,7 +60,8 @@ private:
   std::string strbuf;
 
   unsigned int getStatus(const std::string& response) const;
-  bool isEndOfResponse(unsigned int status, const std::string& response) const;
+  std::string::size_type findEndOfResponse(unsigned int status,
+					   const std::string& buf) const;
   bool bulkReceiveResponse(std::pair<unsigned int, std::string>& response);
 
   static const std::string A;

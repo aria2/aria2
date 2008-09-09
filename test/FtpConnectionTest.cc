@@ -12,6 +12,7 @@ namespace aria2 {
 class FtpConnectionTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FtpConnectionTest);
+  CPPUNIT_TEST(testReceiveResponse);
   CPPUNIT_TEST(testSendMdtm);
   CPPUNIT_TEST(testReceiveMdtmResponse);
   CPPUNIT_TEST_SUITE_END();
@@ -48,10 +49,44 @@ public:
 
   void testSendMdtm();
   void testReceiveMdtmResponse();
+  void testReceiveResponse();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FtpConnectionTest);
+
+void FtpConnectionTest::testReceiveResponse()
+{
+  _serverSocket->writeData("100");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+  _serverSocket->writeData(" single line response");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+  _serverSocket->writeData("\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)100, _ftp->receiveResponse());
+  // 2 responses in the buffer
+  _serverSocket->writeData("101 single1\r\n"
+			   "102 single2\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)101, _ftp->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)102, _ftp->receiveResponse());
+
+  _serverSocket->writeData("103-multi line response\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+  _serverSocket->writeData("103-line2\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+  _serverSocket->writeData("103");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+  _serverSocket->writeData(" ");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+  _serverSocket->writeData("last\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)103, _ftp->receiveResponse());
+
+  _serverSocket->writeData("104-multi\r\n"
+			   "104 \r\n"
+			   "105-multi\r\n"
+			   "105 \r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)104, _ftp->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)105, _ftp->receiveResponse());
+}
 
 void FtpConnectionTest::testSendMdtm()
 {

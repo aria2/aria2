@@ -176,24 +176,38 @@ unsigned int FtpConnection::getStatus(const std::string& response) const
   }
 }
 
-bool FtpConnection::isEndOfResponse(unsigned int status, const std::string& response) const
+// Returns the length of the reponse if the whole response has been received.
+// The length includes \r\n.
+// If the whole response has not been recieved, then returns std::string::npos.
+std::string::size_type
+FtpConnection::findEndOfResponse(unsigned int status,
+				 const std::string& buf) const
 {
-  if(response.size() <= 4) {
-    return false;
+  if(buf.size() <= 4) {
+    return std::string::npos;
   }
   // if 4th character of buf is '-', then multi line response is expected.
-  if(response.at(3) == '-') {
+  if(buf.at(3) == '-') {
     // multi line response
     std::string::size_type p;
-    p = response.find("\r\n"+Util::uitos(status)+" ");
+    p = buf.find(A2STR::CRLF+Util::uitos(status)+" ");
     if(p == std::string::npos) {
-      return false;
+      return std::string::npos;
     }
-  }
-  if(Util::endsWith(response, A2STR::CRLF)) {
-    return true;
+    p = buf.find(A2STR::CRLF, p+6);
+    if(p == std::string::npos) {
+      return std::string::npos;
+    } else {
+      return p+2;
+    }
   } else {
-    return false;
+    // single line response
+    std::string::size_type p = buf.find(A2STR::CRLF);    
+    if(p == std::string::npos) {
+      return std::string::npos;
+    } else {
+      return p+2;
+    }
   }
 }
 
@@ -218,11 +232,12 @@ bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& re
   } else {
     return false;
   }
-  if(isEndOfResponse(status, strbuf)) {
-    logger->info(MSG_RECEIVE_RESPONSE, cuid, strbuf.c_str());
+  std::string::size_type length;
+  if((length = findEndOfResponse(status, strbuf)) != std::string::npos) {
     response.first = status;
-    response.second = strbuf;
-    strbuf.erase();
+    response.second = strbuf.substr(0, length);
+    logger->info(MSG_RECEIVE_RESPONSE, cuid, response.second.c_str());
+    strbuf.erase(0, length);
     return true;
   } else {
     // didn't receive response fully.
