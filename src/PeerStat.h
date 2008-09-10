@@ -59,6 +59,8 @@ private:
   PeerStat::STATUS status;
   unsigned int _avgDownloadSpeed;
   unsigned int _avgUploadSpeed;
+  uint64_t _sessionDownloadLength;
+  uint64_t _sessionUploadLength;
 public:
 
   PeerStat(int32_t cuid, const std::string& hostname,
@@ -68,11 +70,15 @@ public:
     _protocol(protocol),
     status(PeerStat::IDLE),
     _avgDownloadSpeed(0),
-    _avgUploadSpeed(0) {}
+    _avgUploadSpeed(0),
+    _sessionDownloadLength(0),
+    _sessionUploadLength(0) {}
 
   PeerStat(int32_t cuid = 0):cuid(cuid), status(PeerStat::IDLE),
 			     _avgDownloadSpeed(0),
-			     _avgUploadSpeed(0) {}
+			     _avgUploadSpeed(0),
+			     _sessionDownloadLength(0),
+			     _sessionUploadLength(0) {}
 
   ~PeerStat() {}
 
@@ -107,10 +113,12 @@ public:
 
   void updateDownloadLength(size_t bytes) {
     downloadSpeed.update(bytes);
+    _sessionDownloadLength += bytes;
   }
 
   void updateUploadLength(size_t bytes) {
     uploadSpeed.update(bytes);
+    _sessionUploadLength += bytes;
   }
 
   unsigned int getMaxDownloadSpeed() const {
@@ -171,6 +179,16 @@ public:
   const std::string& getProtocol() const
   {
     return _protocol;
+  }
+
+  uint64_t getSessionDownloadLength() const
+  {
+    return _sessionDownloadLength;
+  }
+
+  uint64_t getSessionUploadLength() const
+  {
+    return _sessionUploadLength;
   }
 };
 

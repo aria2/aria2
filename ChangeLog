@@ -1,5 +1,28 @@
 2008-09-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --max-file-not-found=NUM option. If aria2 receives `file not
+	found' error from HTTP/FTP server NUM times without getting single
+	bytes of data, then force the download to fail.
+	Basically aria2 tris all URIs available. So if long list of URIs are
+	specified in Metalink, then aria2 will take a long time to fail
+	eventually if all URIs are outdated. This option eases this situation
+	to limit the number of servers to try.
+	* src/FtpNegotiationCommand.cc
+	* src/HelpItemFactory.cc
+	* src/HttpResponseCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/PeerStat.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2008-09-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that bulkReceiveResponse() reads all received data as a
 	response even if more than one response is in it.
 	* src/FtpConnection.cc

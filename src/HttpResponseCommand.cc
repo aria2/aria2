@@ -91,9 +91,11 @@ bool HttpResponseCommand::executeInternal()
   httpResponse->retrieveCookie();
 
   if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
+    if(httpResponse->getResponseStatus() == HttpHeader::S404) {
+      _requestGroup->increaseAndValidateFileNotFoundCount();
+    }
     return skipResponseBody(httpResponse);
   }
-
   if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
     // Query by hostname. Searching by CUID may returns NULL.
     // In case when resuming download, ServerHost is registered with CUID A.

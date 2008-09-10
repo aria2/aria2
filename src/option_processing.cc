@@ -160,6 +160,7 @@ Option* createDefaultOption()
   op->put(PREF_URI_SELECTOR, V_INORDER);
   op->put(PREF_SERVER_STAT_TIMEOUT, "86400");// 1day
   op->put(PREF_REMOTE_TIME, V_FALSE);
+  op->put(PREF_MAX_FILE_NOT_FOUND, "0");
   return op;
 }
 
@@ -243,6 +244,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_SERVER_STAT_TIMEOUT.c_str(), required_argument, &lopt, 223 },
       { PREF_REMOTE_TIME.c_str(), optional_argument, 0, 'R' },
       { PREF_CONNECT_TIMEOUT.c_str(), required_argument, &lopt, 224 },
+      { PREF_MAX_FILE_NOT_FOUND.c_str(), required_argument, &lopt, 225 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -487,6 +489,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 224:
 	cmdstream << PREF_CONNECT_TIMEOUT << "=" << optarg << "\n";
+	break;
+      case 225:
+	cmdstream << PREF_MAX_FILE_NOT_FOUND << "=" << optarg << "\n";
 	break;
       }
       break;

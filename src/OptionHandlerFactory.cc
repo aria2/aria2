@@ -156,6 +156,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new DefaultOptionHandler(PREF_SERVER_STAT_OF)));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_REMOTE_TIME)));
   handlers.push_back(SH(new NumberOptionHandler(PREF_CONNECT_TIMEOUT, 1, 600)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_MAX_FILE_NOT_FOUND, 0)));
 
   return handlers;
 }

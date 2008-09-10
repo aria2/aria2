@@ -46,6 +46,7 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include <algorithm>
+#include <numeric>
 #include <cassert>
 
 namespace aria2 {
@@ -304,6 +305,21 @@ unsigned int SegmentMan::calculateDownloadSpeed() const {
     }
   }
   return speed;
+}
+
+class PeerStatDownloadLengthOperator {
+public:
+  uint64_t operator()(uint64_t total, const SharedHandle<PeerStat>& ps)
+  {
+    return ps->getSessionDownloadLength()+total;
+  }
+};
+
+uint64_t SegmentMan::calculateSessionDownloadLength() const
+{
+  return std::accumulate(peerStats.begin(), peerStats.end(), 0LL,
+			 PeerStatDownloadLengthOperator());
+ 
 }
 
 size_t SegmentMan::countFreePieceFrom(size_t index) const

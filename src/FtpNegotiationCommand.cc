@@ -204,6 +204,7 @@ bool FtpNegotiationCommand::recvCwd() {
   }
   if(status != 250) {
     poolConnection();
+    _requestGroup->increaseAndValidateFileNotFoundCount();
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   if(e->option->getAsBool(PREF_REMOTE_TIME)) {
@@ -444,6 +445,7 @@ bool FtpNegotiationCommand::recvRetr() {
     return false;
   }
   if(status != 150 && status != 125) {
+    _requestGroup->increaseAndValidateFileNotFoundCount();
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   if(e->option->getAsBool(PREF_FTP_PASV)) {

@@ -179,6 +179,11 @@ public:
    */
   unsigned int calculateDownloadSpeed() const;
 
+  /**
+   * Returns the downloaded bytes in this session.
+   */
+  uint64_t calculateSessionDownloadLength() const;
+
   size_t countFreePieceFrom(size_t index) const;
 };
 

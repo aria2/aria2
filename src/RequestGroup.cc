@@ -124,6 +124,7 @@ RequestGroup::RequestGroup(const Option* option,
   _singleHostMultiConnectionEnabled(true),
   _uriSelector(new InOrderURISelector()),
   _lastModifiedTime(-1),
+  _fileNotFoundCount(0),
   _option(option),
   _logger(LogFactory::getInstance())
 {
@@ -1037,10 +1038,22 @@ void RequestGroup::applyLastModifiedTimeToLocalFiles()
     _logger->info("Last-Modified attrs of %zu files were updated.", n);
   }
 }
+
 void RequestGroup::updateLastModifiedTime(const Time& time)
 {
   if(time.good() && _lastModifiedTime < time) {
     _lastModifiedTime = time;
+  }
+}
+
+void RequestGroup::increaseAndValidateFileNotFoundCount()
+{
+  ++_fileNotFoundCount;
+  const unsigned int maxCount = _option->getAsInt(PREF_MAX_FILE_NOT_FOUND);
+  if(maxCount > 0 && _fileNotFoundCount >= maxCount &&
+     _segmentMan->calculateSessionDownloadLength() == 0) {
+    throw DownloadFailureException
+      (StringFormat("Reached max-file-not-found count=%u", maxCount).str());
   }
 }
 

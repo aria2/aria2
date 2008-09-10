@@ -365,3 +365,11 @@ _(" --connect-timeout=SEC        Set the connect timeout in seconds to establish
   "                              connection to HTTP/FTP/proxy server. After the\n"\
   "                              connection is established, this option makes no\n"\
   "                              effect and --timeout option is used instead.")
+#define TEXT_MAX_FILE_NOT_FOUND \
+_(" --max-file-not-found=NUM     If aria2 recieves `file not found' status from the\n"\
+  "                              remote HTTP/FTP servers NUM times without getting\n"\
+  "                              a single byte, then force the download to fail.\n"\
+  "                              Specify 0 to disable this option.\n"\
+  "                              This options is only effective only when using\n"\
+  "                              HTTP/FTP servers.")
+

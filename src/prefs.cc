@@ -149,6 +149,8 @@ const std::string PREF_SERVER_STAT_IF("server-stat-if");
 const std::string PREF_SERVER_STAT_OF("server-stat-of");
 // value: true | false
 const std::string PREF_REMOTE_TIME("remote-time");
+// value: 1*digit
+const std::string PREF_MAX_FILE_NOT_FOUND("max-file-not-found");
 
 /**
  * FTP related preferences

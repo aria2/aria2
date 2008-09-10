@@ -118,6 +118,8 @@ private:
 
   Time _lastModifiedTime;
 
+  unsigned int _fileNotFoundCount;
+
   const Option* _option;
 
   Logger* _logger;
@@ -368,6 +370,8 @@ public:
   void applyLastModifiedTimeToLocalFiles();
 
   void updateLastModifiedTime(const Time& time);
+
+  void increaseAndValidateFileNotFoundCount();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
