@@ -189,6 +189,7 @@ void AbstractCommand::tryReserved() {
   _requestGroup->removeServerHost(cuid);
   Commands commands;
   _requestGroup->createNextCommand(commands, e, 1);
+  e->setNoWait(true);
   e->addCommand(commands);
 }
 
