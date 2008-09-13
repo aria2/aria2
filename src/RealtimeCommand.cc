@@ -38,6 +38,15 @@
 
 namespace aria2 {
 
+RealtimeCommand::RealtimeCommand(int cuid, RequestGroup* requestGroup,
+				 DownloadEngine* e):
+  Command(cuid),
+  RequestGroupAware(requestGroup),
+  _e(e)
+{
+  setStatusRealtime();
+}
+
 bool RealtimeCommand::execute()
 {
   setStatusRealtime();

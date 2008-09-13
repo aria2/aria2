@@ -47,11 +47,7 @@ class RealtimeCommand : public Command, public RequestGroupAware {
 protected:
   DownloadEngine* _e;
 public:
-  RealtimeCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e):
-    Command(cuid),
-    RequestGroupAware(requestGroup),
-    _e(e)
-  {}
+  RealtimeCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e);
 
   virtual ~RealtimeCommand() {}
 
