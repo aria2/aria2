@@ -440,14 +440,16 @@ bool SocketCore::isReadable(time_t timeout)
 
 }
 
-void SocketCore::writeData(const char* data, size_t len)
+ssize_t SocketCore::writeData(const char* data, size_t len)
 {
   ssize_t ret = 0;
 
   if(!secure) {
     while((ret = send(sockfd, data, len, 0)) == -1 && errno == EINTR);
-    // TODO assuming Blocking mode.
-    if(ret == -1 || (size_t)ret != len) {
+    if(ret == -1 && errno == EAGAIN) {
+      ret = 0;
+    }
+    if(ret == -1) {
       throw DlRetryEx(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
     }
   } else {
@@ -455,17 +457,31 @@ void SocketCore::writeData(const char* data, size_t len)
      // for SSL
      // TODO handling len == 0 case required
     ret = SSL_write(ssl, data, len);
-    if(ret <= 0 || (size_t)ret != len) {
-      throw DlRetryEx(StringFormat(EX_SOCKET_SEND, ERR_error_string(ERR_get_error(), NULL)).str());
+    if(ret < 0) {
+      switch(SSL_get_error(ssl, ret)) {
+      case SSL_ERROR_WANT_READ:
+      case SSL_ERROR_WANT_WRITE:
+	ret = 0;
+      }
+    }
+    if(ret <= 0) {
+      throw DlRetryEx(StringFormat(EX_SOCKET_SEND,
+				   ERR_error_string(ERR_get_error(), 0)).str());
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-    ret = gnutls_record_send(sslSession, data, len);
-    if(ret < 0 || (size_t)ret != len) {
+    while((ret = gnutls_record_send(sslSession, data, len)) ==
+	  GNUTLS_E_INTERRUPTED);
+    if(ret == GNUTLS_E_AGAIN) {
+      ret = 0;
+    }
+    if(ret < 0) {
       throw DlRetryEx(StringFormat(EX_SOCKET_SEND, gnutls_strerror(ret)).str());
     }
 #endif // HAVE_LIBGNUTLS
   }
+
+  return ret;
 }
 
 void SocketCore::readData(char* data, size_t& len)

@@ -70,6 +70,7 @@ MSEHandshake::MSEHandshake(int32_t cuid,
   _option(op),
   _logger(LogFactory::getInstance()),
   _rbufLength(0),
+  _socketBuffer(socket),
   _negotiatedCryptoType(CRYPTO_NONE),
   _dh(0),
   _initiator(true),
@@ -120,15 +121,20 @@ void MSEHandshake::initEncryptionFacility(bool initiator)
   _initiator = initiator;
 }
 
-void MSEHandshake::sendPublicKey()
+bool MSEHandshake::sendPublicKey()
 {
-  _logger->debug("CUID#%d - Sending public key.", _cuid);
-  unsigned char buffer[KEY_LENGTH+MAX_PAD_LENGTH];
-  _dh->getPublicKey(buffer, KEY_LENGTH);
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    _logger->debug("CUID#%d - Sending public key.", _cuid);
+    unsigned char buffer[KEY_LENGTH+MAX_PAD_LENGTH];
+    _dh->getPublicKey(buffer, KEY_LENGTH);
 
-  size_t padLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-  _dh->generateNonce(buffer+KEY_LENGTH, padLength);
-  _socket->writeData(buffer, KEY_LENGTH+padLength);
+    size_t padLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+    _dh->generateNonce(buffer+KEY_LENGTH, padLength);
+    _socketBuffer.feedSendBuffer(std::string(&buffer[0],
+					     &buffer[KEY_LENGTH+padLength]));
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
 bool MSEHandshake::receivePublicKey()
@@ -193,7 +199,7 @@ void MSEHandshake::encryptAndSendData(const unsigned char* data, size_t length)
   while(r > 0) {
     s = std::min(r, sizeof(temp));
     _encryptor->encrypt(temp, s, dptr, s);
-    _socket->writeData(temp, s);
+    _socketBuffer.feedSendBuffer(std::string(&temp[0], &temp[s]));
     dptr += s;
     r -= s;
   }
@@ -238,47 +244,51 @@ uint16_t MSEHandshake::decodeLength16(const unsigned char* buffer)
   return ntohs(be);
 }
 
-void MSEHandshake::sendInitiatorStep2()
+bool MSEHandshake::sendInitiatorStep2()
 {
-  _logger->debug("CUID#%d - Sending negotiation step2.", _cuid);
-  unsigned char md[20];
-  createReq1Hash(md);
-  _socket->writeData(md, sizeof(md));
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    _logger->debug("CUID#%d - Sending negotiation step2.", _cuid);
+    unsigned char md[20];
+    createReq1Hash(md);
+    _socketBuffer.feedSendBuffer(std::string(&md[0], &md[sizeof(md)]));
 
-  createReq23Hash(md, _infoHash);
-  _socket->writeData(md, sizeof(md));
+    createReq23Hash(md, _infoHash);
+    _socketBuffer.feedSendBuffer(std::string(&md[0], &md[sizeof(md)]));
 
-  {
-    unsigned char buffer[8+4+2+MAX_PAD_LENGTH+2];
-
-    // VC
-    memcpy(buffer, VC, sizeof(VC));
-    // crypto_provide
-    unsigned char cryptoProvide[4];
-    memset(cryptoProvide, 0, sizeof(cryptoProvide));
-    if(_option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-      cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
-    }
-    cryptoProvide[3] |= CRYPTO_ARC4;
-    memcpy(buffer+8, cryptoProvide, sizeof(cryptoProvide));
-
-    // len(padC)
-    uint16_t padCLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
     {
-      uint16_t padCLengthBE = htons(padCLength);
-      memcpy(buffer+8+4, &padCLengthBE, sizeof(padCLengthBE));
+      unsigned char buffer[8+4+2+MAX_PAD_LENGTH+2];
+
+      // VC
+      memcpy(buffer, VC, sizeof(VC));
+      // crypto_provide
+      unsigned char cryptoProvide[4];
+      memset(cryptoProvide, 0, sizeof(cryptoProvide));
+      if(_option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
+	cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
+      }
+      cryptoProvide[3] |= CRYPTO_ARC4;
+      memcpy(buffer+8, cryptoProvide, sizeof(cryptoProvide));
+
+      // len(padC)
+      uint16_t padCLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+      {
+	uint16_t padCLengthBE = htons(padCLength);
+	memcpy(buffer+8+4, &padCLengthBE, sizeof(padCLengthBE));
+      }
+      // padC
+      memset(buffer+8+4+2, 0, padCLength);
+      // len(IA)
+      // currently, IA is zero-length.
+      uint16_t iaLength = 0;
+      {
+	uint16_t iaLengthBE = htons(iaLength);
+	memcpy(buffer+8+4+2+padCLength, &iaLengthBE, sizeof(iaLengthBE));
+      }
+      encryptAndSendData(buffer, 8+4+2+padCLength+2);
     }
-    // padC
-    memset(buffer+8+4+2, 0, padCLength);
-    // len(IA)
-    // currently, IA is zero-length.
-    uint16_t iaLength = 0;
-    {
-      uint16_t iaLengthBE = htons(iaLength);
-      memcpy(buffer+8+4+2+padCLength, &iaLengthBE, sizeof(iaLengthBE));
-    }
-    encryptAndSendData(buffer, 8+4+2+padCLength+2);
   }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
 // This function reads exactly until the end of VC marker is reached.
@@ -498,25 +508,29 @@ bool MSEHandshake::receiveReceiverIA()
   return true;
 }
 
-void MSEHandshake::sendReceiverStep2()
+bool MSEHandshake::sendReceiverStep2()
 {
-  unsigned char buffer[8+4+2+MAX_PAD_LENGTH];
-  // VC
-  memcpy(buffer, VC, sizeof(VC));
-  // crypto_select
-  unsigned char cryptoSelect[4];
-  memset(cryptoSelect, 0, sizeof(cryptoSelect));
-  cryptoSelect[3] = _negotiatedCryptoType;
-  memcpy(buffer+8, cryptoSelect, sizeof(cryptoSelect));
-  // len(padD)
-  uint16_t padDLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-  {
-    uint16_t padDLengthBE = htons(padDLength);
-    memcpy(buffer+8+4, &padDLengthBE, sizeof(padDLengthBE));
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    unsigned char buffer[8+4+2+MAX_PAD_LENGTH];
+    // VC
+    memcpy(buffer, VC, sizeof(VC));
+    // crypto_select
+    unsigned char cryptoSelect[4];
+    memset(cryptoSelect, 0, sizeof(cryptoSelect));
+    cryptoSelect[3] = _negotiatedCryptoType;
+    memcpy(buffer+8, cryptoSelect, sizeof(cryptoSelect));
+    // len(padD)
+    uint16_t padDLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+    {
+      uint16_t padDLengthBE = htons(padDLength);
+      memcpy(buffer+8+4, &padDLengthBE, sizeof(padDLengthBE));
+    }
+    // padD, all zeroed
+    memset(buffer+8+4+2, 0, padDLength);
+    encryptAndSendData(buffer, 8+4+2+padDLength);
   }
-  // padD, all zeroed
-  memset(buffer+8+4+2, 0, padDLength);
-  encryptAndSendData(buffer, 8+4+2+padDLength);
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
 uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const char* padName)

@@ -98,34 +98,45 @@ createHttpRequest(const SharedHandle<Request>& req,
 }
 
 bool HttpRequestCommand::executeInternal() {
-  socket->setBlockingMode();
-  if(req->getProtocol() == Request::PROTO_HTTPS) {
-    socket->initiateSecureConnection();
-  }
+  //socket->setBlockingMode();
+  if(_httpConnection->sendBufferIsEmpty()) {
+    if(req->getProtocol() == Request::PROTO_HTTPS) {
+      socket->initiateSecureConnection();
+    }
 
-  if(_segments.empty()) {
-    HttpRequestHandle httpRequest
-      (createHttpRequest(req, SharedHandle<Segment>(),
-			 _requestGroup->getTotalLength(), e->option,
-			 _requestGroup,
-			 e->getCookieStorage()));
-    _httpConnection->sendRequest(httpRequest);
-  } else {
-    for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
-      const SegmentHandle& segment = *itr;
-      if(!_httpConnection->isIssued(segment)) {
-	HttpRequestHandle httpRequest
-	  (createHttpRequest(req, segment,
-			     _requestGroup->getTotalLength(), e->option,
-			     _requestGroup,
-			     e->getCookieStorage()));
-	_httpConnection->sendRequest(httpRequest);
+    if(_segments.empty()) {
+      HttpRequestHandle httpRequest
+	(createHttpRequest(req, SharedHandle<Segment>(),
+			   _requestGroup->getTotalLength(), e->option,
+			   _requestGroup,
+			   e->getCookieStorage()));
+      _httpConnection->sendRequest(httpRequest);
+    } else {
+      for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
+	const SegmentHandle& segment = *itr;
+	if(!_httpConnection->isIssued(segment)) {
+	  HttpRequestHandle httpRequest
+	    (createHttpRequest(req, segment,
+			       _requestGroup->getTotalLength(), e->option,
+			       _requestGroup,
+			       e->getCookieStorage()));
+	  _httpConnection->sendRequest(httpRequest);
+	}
       }
     }
+  } else {
+    _httpConnection->sendPendingData();
   }
-  Command* command = new HttpResponseCommand(cuid, req, _requestGroup, _httpConnection, e, socket);
-  e->commands.push_back(command);
-  return true;
+  if(_httpConnection->sendBufferIsEmpty()) {
+    Command* command = new HttpResponseCommand(cuid, req, _requestGroup,
+					       _httpConnection, e, socket);
+    e->commands.push_back(command);
+    return true;
+  } else {
+    setWriteCheckSocket(socket);
+    e->commands.push_back(this);
+    return false;
+  }
 }
 
 } // namespace aria2

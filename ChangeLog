@@ -1,5 +1,33 @@
 2008-09-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use non-blocking socket for TCP communication to avoid possible
+	blocking due to buffer full.
+	* src/AbstractProxyRequestCommand.cc
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* src/HttpConnection.cc
+	* src/HttpConnection.h
+	* src/HttpRequestCommand.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/InitiatorMSEHandshakeCommand.h
+	* src/MSEHandshake.cc
+	* src/MSEHandshake.h
+	* src/Makefile.am
+	* src/PeerConnection.cc
+	* src/PeerConnection.h
+	* src/PeerInteractionCommand.cc
+	* src/PeerListenCommand.cc
+	* src/ReceiverMSEHandshakeCommand.cc
+	* src/ReceiverMSEHandshakeCommand.h
+	* src/SocketBuffer.cc
+	* src/SocketBuffer.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
+2008-09-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Call setStatusRealtime() in constructor.
 	* src/RealtimeCommand.cc
 	* src/RealtimeCommand.h

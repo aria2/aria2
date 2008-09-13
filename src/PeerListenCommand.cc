@@ -99,7 +99,7 @@ bool PeerListenCommand::execute() {
 
       // Since peerSocket may be in non-blocking mode, make it blocking mode
       // here.
-      peerSocket->setBlockingMode();
+      //peerSocket->setBlockingMode();
 
       PeerHandle peer(new Peer(peerInfo.first, peerInfo.second, true));
       int32_t cuid = CUIDCounterSingletonHolder::instance()->newID();

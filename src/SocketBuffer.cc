@@ -32,49 +32,43 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RECEIVER_MSE_HANDSHAKE_COMMAND_H_
-#define _D_RECEIVER_MSE_HANDSHAKE_COMMAND_H_
-
-#include "PeerAbstractCommand.h"
+#include "SocketBuffer.h"
+#include "SocketCore.h"
+#include <cassert>
 
 namespace aria2 {
 
-class MSEHandshake;
-class SocketCore;
-class Peer;
+SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
+  _socket(socket) {}
 
-class ReceiverMSEHandshakeCommand:public PeerAbstractCommand
+SocketBuffer::~SocketBuffer() {}
+
+void SocketBuffer::feedSendBuffer(const std::string& data)
 {
-public:
-  enum Seq {
-    RECEIVER_IDENTIFY_HANDSHAKE,
-    RECEIVER_WAIT_KEY,
-    RECEIVER_SEND_KEY_PENDING,
-    RECEIVER_FIND_HASH_MARKER,
-    RECEIVER_RECEIVE_PAD_C_LENGTH,
-    RECEIVER_RECEIVE_PAD_C,
-    RECEIVER_RECEIVE_IA_LENGTH,
-    RECEIVER_RECEIVE_IA,
-    RECEIVER_SEND_STEP2_PENDING,
-  };
-private:
-  Seq _sequence;
+  _sendbuf += data;
+}
 
-  MSEHandshake* _mseHandshake;
+ssize_t SocketBuffer::feedAndSend(const std::string& data)
+{
+  feedSendBuffer(data);
+  return send();
+}
 
-  void createCommand();
-protected:
-  virtual bool executeInternal();
-  virtual bool exitBeforeExecute();
-public:
-  ReceiverMSEHandshakeCommand(int32_t cuid,
-			      const SharedHandle<Peer>& peer,
-			      DownloadEngine* e,
-			      const SharedHandle<SocketCore>& s);
+ssize_t SocketBuffer::send()
+{
+  if(_sendbuf.empty()) {
+    return 0;
+  }
+  ssize_t len = _socket->writeData(_sendbuf.c_str(),
+				   _sendbuf.size());
+  assert(len <= _sendbuf.size());
+  _sendbuf.erase(0, len);
+  return len;
+}
 
-  virtual ~ReceiverMSEHandshakeCommand();
-};
+bool SocketBuffer::sendBufferIsEmpty() const
+{
+  return _sendbuf.empty();
+}
 
 } // namespace aria2
-
-#endif // _D_RECEIVER_MSE_HANDSHAKE_COMMAND_H_

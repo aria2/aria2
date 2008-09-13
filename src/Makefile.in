@@ -413,7 +413,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ServerStatMan.h URISelector.h InOrderURISelector.cc \
 	InOrderURISelector.h ServerStatURISelector.cc \
 	ServerStatURISelector.h NsCookieParser.cc NsCookieParser.h \
-	CookieStorage.cc CookieStorage.h GZipDecoder.cc GZipDecoder.h \
+	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
+	SocketBuffer.h GZipDecoder.cc GZipDecoder.h \
 	Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h \
 	AsyncNameResolver.cc AsyncNameResolver.h \
 	IteratableChunkChecksumValidator.cc \
@@ -807,12 +808,13 @@ am__objects_18 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	Signature.$(OBJEXT) ServerStat.$(OBJEXT) \
 	ServerStatMan.$(OBJEXT) InOrderURISelector.$(OBJEXT) \
 	ServerStatURISelector.$(OBJEXT) NsCookieParser.$(OBJEXT) \
-	CookieStorage.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
-	$(am__objects_12) $(am__objects_13) $(am__objects_14) \
-	$(am__objects_15) $(am__objects_16) $(am__objects_17)
+	CookieStorage.$(OBJEXT) SocketBuffer.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
+	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
+	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
+	$(am__objects_16) $(am__objects_17)
 am_libaria2c_a_OBJECTS = $(am__objects_18)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1135,13 +1137,13 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	ServerStatMan.h URISelector.h InOrderURISelector.cc \
 	InOrderURISelector.h ServerStatURISelector.cc \
 	ServerStatURISelector.h NsCookieParser.cc NsCookieParser.h \
-	CookieStorage.cc CookieStorage.h $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_15) $(am__append_16) \
-	$(am__append_17)
+	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
+	SocketBuffer.h $(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(am__append_14) $(am__append_15) \
+	$(am__append_16) $(am__append_17)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1491,6 +1493,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SizeMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SkipTagMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketBuffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3MozCookieParser.Po@am__quote@

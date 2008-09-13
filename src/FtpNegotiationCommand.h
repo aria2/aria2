@@ -58,6 +58,7 @@ public:
     SEQ_RECV_MDTM,
     SEQ_SEND_SIZE,
     SEQ_RECV_SIZE,
+    SEQ_PREPARE_SERVER_SOCKET,
     SEQ_SEND_PORT,
     SEQ_RECV_PORT,
     SEQ_SEND_PASV,
@@ -88,6 +89,7 @@ private:
   bool recvMdtm();
   bool sendSize();
   bool recvSize();
+  bool prepareServerSocket();
   bool sendPort();
   bool recvPort();
   bool sendPasv();

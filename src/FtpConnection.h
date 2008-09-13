@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "TimeA2.h"
+#include "SocketBuffer.h"
 #include <utility>
 #include <string>
 
@@ -59,6 +60,8 @@ private:
 
   std::string strbuf;
 
+  SocketBuffer _socketBuffer;
+
   unsigned int getStatus(const std::string& response) const;
   std::string::size_type findEndOfResponse(unsigned int status,
 					   const std::string& buf) const;
@@ -72,16 +75,17 @@ public:
   FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
 		const SharedHandle<Request>& req, const Option* op);
   ~FtpConnection();
-  void sendUser() const;
-  void sendPass() const;
-  void sendType() const;
-  void sendCwd() const;
-  void sendMdtm() const;
-  void sendSize() const;
-  void sendPasv() const;
-  SharedHandle<SocketCore> sendPort() const;
-  void sendRest(const SharedHandle<Segment>& segment) const;
-  void sendRetr() const;
+  bool sendUser();
+  bool sendPass();
+  bool sendType();
+  bool sendCwd();
+  bool sendMdtm();
+  bool sendSize();
+  bool sendPasv();
+  SharedHandle<SocketCore> createServerSocket();
+  bool sendPort(const SharedHandle<SocketCore>& serverSocket);
+  bool sendRest(const SharedHandle<Segment>& segment);
+  bool sendRetr();
 
   unsigned int receiveResponse();
   unsigned int receiveSizeResponse(uint64_t& size);

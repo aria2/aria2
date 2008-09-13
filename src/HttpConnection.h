@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "SocketBuffer.h"
 #include <string>
 #include <deque>
 
@@ -71,6 +72,7 @@ class HttpConnection {
 private:
   int32_t cuid;
   SharedHandle<SocketCore> socket;
+  SocketBuffer _socketBuffer;
   const Option* option;
   Logger* logger;
 
@@ -112,6 +114,10 @@ public:
   SharedHandle<HttpRequest> getFirstHttpRequest() const;
 
   bool isIssued(const SharedHandle<Segment>& segment) const;
+
+  bool sendBufferIsEmpty() const;
+
+  void sendPendingData();
 };
 
 typedef SharedHandle<HttpConnection> HttpConnectionHandle;

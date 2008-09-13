@@ -193,7 +193,7 @@ bool PeerInteractionCommand::executeInternal() {
     }
     disableWriteCheckSocket();
     setReadCheckSocket(socket);
-    socket->setBlockingMode();
+    //socket->setBlockingMode();
     setTimeout(e->option->getAsInt(PREF_BT_TIMEOUT));
     btInteractive->initiateHandshake();
     sequence = INITIATOR_WAIT_HANDSHAKE;

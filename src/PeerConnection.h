@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "SocketBuffer.h"
 #include <unistd.h>
 
 namespace aria2 {
@@ -64,6 +65,8 @@ private:
   unsigned char lenbuf[4];
   size_t lenbufLength;
 
+  SocketBuffer _socketBuffer;
+
   bool _encryptionEnabled;
   SharedHandle<ARC4Encryptor> _encryptor;
   SharedHandle<ARC4Decryptor> _decryptor;
@@ -72,7 +75,7 @@ private:
 
   void readData(unsigned char* data, size_t& length, bool encryption);
 
-  void sendData(const unsigned char* data, size_t length, bool encryption);
+  ssize_t sendData(const unsigned char* data, size_t length, bool encryption);
 
 public:
   PeerConnection(int32_t cuid, const SharedHandle<SocketCore>& socket, const Option* op);

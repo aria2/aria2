@@ -51,7 +51,8 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
 							 RequestGroup* requestGroup,
 							 DownloadEngine* e,
 							 const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s)
+  :AbstractCommand(cuid, req, requestGroup, e, s),
+   httpConnection(new HttpConnection(cuid, s, e->option))
 {
   setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
@@ -61,19 +62,25 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
 AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 
 bool AbstractProxyRequestCommand::executeInternal() {
-  socket->setBlockingMode();
-
-  HttpRequestHandle httpRequest(new HttpRequest());
-  httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
-  httpRequest->setRequest(req);
-  httpRequest->configure(e->option);
-
-  httpConnection.reset(new HttpConnection(cuid, socket, e->option));
-
-  httpConnection->sendProxyRequest(httpRequest);
-
-  e->commands.push_back(getNextCommand());
-  return true;
+  //socket->setBlockingMode();
+  if(httpConnection->sendBufferIsEmpty()) {
+    HttpRequestHandle httpRequest(new HttpRequest());
+    httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
+    httpRequest->setRequest(req);
+    httpRequest->configure(e->option);
+    
+    httpConnection->sendProxyRequest(httpRequest);
+  } else {
+    httpConnection->sendPendingData();
+  }
+  if(httpConnection->sendBufferIsEmpty()) {
+    e->commands.push_back(getNextCommand());
+    return true;
+  } else {
+    setWriteCheckSocket(socket);
+    e->commands.push_back(this);
+    return false;
+  }
 }
 
 } // namespace aria2

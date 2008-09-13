@@ -93,21 +93,41 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
     }
     disableWriteCheckSocket();
     setReadCheckSocket(socket);
-    socket->setBlockingMode();
+    //socket->setBlockingMode();
     setTimeout(e->option->getAsInt(PREF_BT_TIMEOUT));
     _mseHandshake->initEncryptionFacility(true);
-    _mseHandshake->sendPublicKey();
-    _sequence = INITIATOR_WAIT_KEY;    
-    break;
-  }
-  case INITIATOR_WAIT_KEY: {
-    if(_mseHandshake->receivePublicKey()) {
-      _mseHandshake->initCipher(btContext->getInfoHash());
-      _mseHandshake->sendInitiatorStep2();
-      _sequence = INITIATOR_FIND_VC_MARKER;
+    if(_mseHandshake->sendPublicKey()) {
+      _sequence = INITIATOR_WAIT_KEY;
+    } else {
+      setWriteCheckSocket(socket);
+      _sequence = INITIATOR_SEND_KEY_PENDING;
     }
     break;
   }
+  case INITIATOR_SEND_KEY_PENDING:
+    if(_mseHandshake->sendPublicKey()) {
+      disableWriteCheckSocket();
+      _sequence = INITIATOR_WAIT_KEY;
+    }
+    break;
+  case INITIATOR_WAIT_KEY: {
+    if(_mseHandshake->receivePublicKey()) {
+      _mseHandshake->initCipher(btContext->getInfoHash());
+      if(_mseHandshake->sendInitiatorStep2()) {
+	_sequence = INITIATOR_FIND_VC_MARKER;
+      } else {
+	setWriteCheckSocket(socket);
+	_sequence = INITIATOR_SEND_STEP2_PENDING;
+      }
+    }
+    break;
+  }
+  case INITIATOR_SEND_STEP2_PENDING:
+    if(_mseHandshake->sendInitiatorStep2()) {
+      disableWriteCheckSocket();
+      _sequence = INITIATOR_FIND_VC_MARKER;
+    }
+    break;
   case INITIATOR_FIND_VC_MARKER: {
     if(_mseHandshake->findInitiatorVCMarker()) {
       _sequence = INITIATOR_RECEIVE_PAD_D_LENGTH;

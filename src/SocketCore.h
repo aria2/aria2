@@ -196,14 +196,14 @@ public:
    * @param data data to write
    * @param len length of data
    */
-  void writeData(const char* data, size_t len);
-  void writeData(const std::string& msg)
+  ssize_t writeData(const char* data, size_t len);
+  ssize_t writeData(const std::string& msg)
   {
-    writeData(msg.c_str(), msg.size());
+    return writeData(msg.c_str(), msg.size());
   }
-  void writeData(const unsigned char* data, size_t len)
+  ssize_t writeData(const unsigned char* data, size_t len)
   {
-    writeData(reinterpret_cast<const char*>(data), len);
+    return writeData(reinterpret_cast<const char*>(data), len);
   }
 
   void writeData(const char* data, size_t len, const std::string& host, uint16_t port);

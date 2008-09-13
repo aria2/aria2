@@ -72,7 +72,9 @@ HttpHeaderProcessorHandle HttpRequestEntry::getHttpHeaderProcessor() const
 HttpConnection::HttpConnection(int32_t cuid,
 			       const SocketHandle& socket,
 			       const Option* op):
-  cuid(cuid), socket(socket), option(op), logger(LogFactory::getInstance())
+  cuid(cuid), socket(socket),
+  _socketBuffer(socket),
+  option(op), logger(LogFactory::getInstance())
 {}
 
 std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
@@ -98,7 +100,7 @@ void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
 {
   std::string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
-  socket->writeData(request.c_str(), request.size());
+  _socketBuffer.feedAndSend(request);
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests.push_back(entry);
 }
@@ -107,7 +109,7 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 {
   std::string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
-  socket->writeData(request.c_str(), request.size());
+  _socketBuffer.feedAndSend(request);
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests.push_back(entry);
 }
@@ -177,6 +179,16 @@ SharedHandle<HttpRequest> HttpConnection::getFirstHttpRequest() const
   } else {
     return outstandingHttpRequests.front()->getHttpRequest();
   }
+}
+
+bool HttpConnection::sendBufferIsEmpty() const
+{
+  return _socketBuffer.sendBufferIsEmpty();
+}
+
+void HttpConnection::sendPendingData()
+{
+  _socketBuffer.send();
 }
 
 } // namespace aria2

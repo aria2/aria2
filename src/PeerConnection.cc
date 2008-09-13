@@ -59,17 +59,18 @@ PeerConnection::PeerConnection(int32_t cuid,
    resbufLength(0),
    currentPayloadLength(0),
    lenbufLength(0),
+   _socketBuffer(socket),
    _encryptionEnabled(false),
    _prevPeek(false)
 {}
 
 PeerConnection::~PeerConnection() {}
 
-ssize_t PeerConnection::sendMessage(const unsigned char* data, size_t dataLength) {
+ssize_t PeerConnection::sendMessage(const unsigned char* data,
+				    size_t dataLength)
+{
   if(socket->isWritable(0)) {
-    // TODO fix this
-    sendData(data, dataLength, _encryptionEnabled);
-    return dataLength;
+    return sendData(data, dataLength, _encryptionEnabled);
   } else {
     return 0;
   }
@@ -185,7 +186,8 @@ void PeerConnection::readData(unsigned char* data, size_t& length, bool encrypti
   }
 }
 
-void PeerConnection::sendData(const unsigned char* data, size_t length, bool encryption)
+ssize_t PeerConnection::sendData(const unsigned char* data,
+				 size_t length, bool encryption)
 {
   if(encryption) {
     unsigned char temp[4096];
@@ -194,13 +196,14 @@ void PeerConnection::sendData(const unsigned char* data, size_t length, bool enc
     while(r > 0) {
       size_t s = std::min(r, sizeof(temp));
       _encryptor->encrypt(temp, s, dptr, s);
-      socket->writeData(temp, s);
+      _socketBuffer.feedSendBuffer(std::string(&temp[0], &temp[s]));
       dptr += s;
       r -= s;
     }
   } else {
-    socket->writeData(data, length);
+    _socketBuffer.feedSendBuffer(std::string(&data[0], &data[length]));
   }
+  return _socketBuffer.send();
 }
 
 void PeerConnection::enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,

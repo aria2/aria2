@@ -48,6 +48,7 @@
 #include "Socket.h"
 #include "A2STR.h"
 #include <cstring>
+#include <cassert>
 
 namespace aria2 {
 
@@ -58,106 +59,155 @@ const std::string FtpConnection::I("I");
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
 			     const RequestHandle& req, const Option* op):
   cuid(cuid), socket(socket), req(req), option(op),
-  logger(LogFactory::getInstance()) {}
+  logger(LogFactory::getInstance()),
+  _socketBuffer(socket) {}
 
 FtpConnection::~FtpConnection() {}
 
-void FtpConnection::sendUser() const
+bool FtpConnection::sendUser()
 {
-  std::string request = "USER "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getUser()+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, "USER ********");
-  socket->writeData(request);
-}
-
-void FtpConnection::sendPass() const
-{
-  std::string request = "PASS "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getPassword()+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
-  socket->writeData(request);
-}
-
-void FtpConnection::sendType() const
-{
-  std::string type;
-  if(option->get(PREF_FTP_TYPE) == V_ASCII) {
-    type = FtpConnection::A;
-  } else {
-    type = FtpConnection::I;
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "USER "+
+      AuthConfigFactorySingleton::instance()->createAuthConfig(req)->
+      getUser()+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, "USER ********");
+    _socketBuffer.feedSendBuffer(request);
   }
-  std::string request = "TYPE "+type+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
-void FtpConnection::sendCwd() const
+bool FtpConnection::sendPass()
 {
-  std::string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "PASS "+
+      AuthConfigFactorySingleton::instance()->createAuthConfig(req)->
+      getPassword()+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
-void FtpConnection::sendMdtm() const
+bool FtpConnection::sendType()
 {
-  std::string request = "MDTM "+Util::urlencode(req->getFile())+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string type;
+    if(option->get(PREF_FTP_TYPE) == V_ASCII) {
+      type = FtpConnection::A;
+    } else {
+      type = FtpConnection::I;
+    }
+    std::string request = "TYPE "+type+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
-void FtpConnection::sendSize() const
+bool FtpConnection::sendCwd()
 {
-  std::string request = "SIZE "+Util::urldecode(req->getFile())+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
-void FtpConnection::sendPasv() const
+bool FtpConnection::sendMdtm()
 {
-  static const std::string request("PASV\r\n");
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "MDTM "+Util::urlencode(req->getFile())+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
-SocketHandle FtpConnection::sendPort() const
+bool FtpConnection::sendSize()
 {
-  SocketHandle serverSocket(new SocketCore());
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "SIZE "+Util::urldecode(req->getFile())+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
+}
+
+bool FtpConnection::sendPasv()
+{
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    static const std::string request("PASV\r\n");
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
+}
+
+SharedHandle<SocketCore> FtpConnection::createServerSocket()
+{
+  SharedHandle<SocketCore> serverSocket(new SocketCore());
   serverSocket->bind(0);
   serverSocket->beginListen();
   serverSocket->setNonBlockingMode();
-
-  std::pair<std::string, uint16_t> addrinfo;
-  socket->getAddrInfo(addrinfo);
-  unsigned int ipaddr[4]; 
-  sscanf(addrinfo.first.c_str(), "%u.%u.%u.%u",
-	 &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
-  serverSocket->getAddrInfo(addrinfo);
-  std::string request = "PORT "+
-    Util::uitos(ipaddr[0])+","+Util::uitos(ipaddr[1])+","+
-    Util::uitos(ipaddr[2])+","+Util::uitos(ipaddr[3])+","+
-    Util::uitos(addrinfo.second/256)+","+Util::uitos(addrinfo.second%256)+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
   return serverSocket;
 }
 
-void FtpConnection::sendRest(const SegmentHandle& segment) const
+bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
 {
-  std::string request = "REST ";
-  if(segment.isNull()) {
-    request += "0";
-  } else {
-    request += Util::itos(segment->getPositionToWrite());
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::pair<std::string, uint16_t> addrinfo;
+    socket->getAddrInfo(addrinfo);
+    unsigned int ipaddr[4]; 
+    sscanf(addrinfo.first.c_str(), "%u.%u.%u.%u",
+	   &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
+    serverSocket->getAddrInfo(addrinfo);
+    std::string request = "PORT "+
+      Util::uitos(ipaddr[0])+","+Util::uitos(ipaddr[1])+","+
+      Util::uitos(ipaddr[2])+","+Util::uitos(ipaddr[3])+","+
+      Util::uitos(addrinfo.second/256)+","+
+      Util::uitos(addrinfo.second%256)+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
   }
-  request += "\r\n";
-
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
-void FtpConnection::sendRetr() const
+bool FtpConnection::sendRest(const SegmentHandle& segment)
 {
-  std::string request = "RETR "+Util::urldecode(req->getFile())+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-  socket->writeData(request);
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "REST ";
+    if(segment.isNull()) {
+      request += "0";
+    } else {
+      request += Util::itos(segment->getPositionToWrite());
+    }
+    request += "\r\n";
+    
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
+}
+
+bool FtpConnection::sendRetr()
+{
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "RETR "+Util::urldecode(req->getFile())+"\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
 }
 
 unsigned int FtpConnection::getStatus(const std::string& response) const

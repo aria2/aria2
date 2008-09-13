@@ -106,11 +106,21 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
   }
   case RECEIVER_WAIT_KEY: {
     if(_mseHandshake->receivePublicKey()) {
-      _mseHandshake->sendPublicKey();
-      _sequence = RECEIVER_FIND_HASH_MARKER;
+      if(_mseHandshake->sendPublicKey()) {
+	_sequence = RECEIVER_FIND_HASH_MARKER;
+      } else {
+	setWriteCheckSocket(socket);
+	_sequence = RECEIVER_SEND_KEY_PENDING;
+      }
     }
     break;
   }
+  case RECEIVER_SEND_KEY_PENDING:
+    if(_mseHandshake->sendPublicKey()) {
+      disableWriteCheckSocket();
+      _sequence = RECEIVER_FIND_HASH_MARKER;
+    }
+    break;
   case RECEIVER_FIND_HASH_MARKER: {
     if(_mseHandshake->findReceiverHashMarker()) {
       _sequence = RECEIVER_RECEIVE_PAD_C_LENGTH;
@@ -137,30 +147,46 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
   }
   case RECEIVER_RECEIVE_IA: {
     if(_mseHandshake->receiveReceiverIA()) {
-      _mseHandshake->sendReceiverStep2();
-      SharedHandle<PeerConnection> peerConnection
-	(new PeerConnection(cuid, socket, e->option));
-      if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
-	peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
-					 _mseHandshake->getDecryptor());
+      if(_mseHandshake->sendReceiverStep2()) {
+	createCommand();
+	return true;
+      } else {
+	setWriteCheckSocket(socket);
+	_sequence = RECEIVER_SEND_STEP2_PENDING;
       }
-      if(_mseHandshake->getIALength() > 0) {
-	peerConnection->presetBuffer(_mseHandshake->getIA(),
-				     _mseHandshake->getIALength());
-      }
-      // TODO add _mseHandshake->getInfoHash() to PeerReceiveHandshakeCommand
-      // as a hint. If this info hash and one in BitTorrent Handshake does not
-      // match, then drop connection.
-      Command* c =
-	new PeerReceiveHandshakeCommand(cuid, peer, e, socket, peerConnection);
-      e->commands.push_back(c);
+    }
+    break;
+  }
+  case RECEIVER_SEND_STEP2_PENDING:
+    if(_mseHandshake->sendReceiverStep2()) {
+      disableWriteCheckSocket();
+      createCommand();
       return true;
     }
     break;
   }
-  }
   e->commands.push_back(this);
   return false;
+}
+
+void ReceiverMSEHandshakeCommand::createCommand()
+{
+  SharedHandle<PeerConnection> peerConnection
+    (new PeerConnection(cuid, socket, e->option));
+  if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
+    peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
+				     _mseHandshake->getDecryptor());
+  }
+  if(_mseHandshake->getIALength() > 0) {
+    peerConnection->presetBuffer(_mseHandshake->getIA(),
+				 _mseHandshake->getIALength());
+  }
+  // TODO add _mseHandshake->getInfoHash() to PeerReceiveHandshakeCommand
+  // as a hint. If this info hash and one in BitTorrent Handshake does not
+  // match, then drop connection.
+  Command* c =
+    new PeerReceiveHandshakeCommand(cuid, peer, e, socket, peerConnection);
+  e->commands.push_back(c);
 }
 
 } // namespace aria2

@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "BtConstants.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -82,6 +83,8 @@ private:
 
   unsigned char _rbuf[MAX_BUFFER_LENGTH];
   size_t _rbufLength;
+
+  SocketBuffer _socketBuffer;
 
   CRYPTO_TYPE _negotiatedCryptoType;
   DHKeyExchange* _dh;
@@ -134,13 +137,13 @@ public:
 
   void initEncryptionFacility(bool initiator);
 
-  void sendPublicKey();
+  bool sendPublicKey();
 
   bool receivePublicKey();
 
   void initCipher(const unsigned char* infoHash);
 
-  void sendInitiatorStep2();
+  bool sendInitiatorStep2();
 
   bool findInitiatorVCMarker();
 
@@ -156,7 +159,7 @@ public:
 
   bool receiveReceiverIA();
 
-  void sendReceiverStep2();
+  bool sendReceiverStep2();
 
   // returns plain text IA
   const unsigned char* getIA() const;
