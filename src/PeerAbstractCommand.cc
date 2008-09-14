@@ -42,6 +42,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "DownloadFailureException.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -84,7 +85,9 @@ bool PeerAbstractCommand::execute()
        _hupEvent) {
       checkPoint.reset();
     } else if(_errorEvent) {
-      throw DlAbortEx("Network problem has occurred.");
+      throw DlAbortEx
+	(StringFormat(MSG_NETWORK_PROBLEM,
+		      socket->getSocketError().c_str()).str());
     }
     if(checkPoint.elapsed(timeout)) {
       throw DlAbortEx(EX_TIME_OUT);

@@ -115,6 +115,7 @@ bool FtpNegotiationCommand::executeInternal() {
 }
 
 bool FtpNegotiationCommand::recvGreeting() {
+  checkIfConnectionEstablished(socket);
   setTimeout(e->option->getAsInt(PREF_TIMEOUT));
   //socket->setBlockingMode();
   disableWriteCheckSocket();

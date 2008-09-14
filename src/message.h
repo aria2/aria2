@@ -154,6 +154,9 @@
 #define MSG_SERVER_STAT_SAVED _("ServerStat file %s saved successfully.")
 #define MSG_WRITING_SERVER_STAT_FILE_FAILED _("Failed to write ServerStat to"\
 					      " %s.")
+#define MSG_ESTABLISHING_CONNECTION_FAILED \
+  _("Failed to establish connection, cause: %s")
+#define MSG_NETWORK_PROBLEM _("Network problem has occurred. cause:%s")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

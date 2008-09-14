@@ -137,17 +137,15 @@ bool AbstractCommand::execute() {
       }
       return executeInternal();
     } else if(_errorEvent) {
-      throw DlRetryEx("Network problem has occurred.");
+      throw DlRetryEx
+	(StringFormat(MSG_NETWORK_PROBLEM,
+		      socket->getSocketError().c_str()).str());
     } else {
       if(checkPoint.elapsed(timeout)) {
 	// timeout triggers ServerStat error state.
 	SharedHandle<ServerStat> ss =
-	  e->_requestGroupMan->findServerStat(req->getHost(),
-					      req->getProtocol());
-	if(ss.isNull()) {
-	  ss.reset(new ServerStat(req->getHost(), req->getProtocol()));
-	  e->_requestGroupMan->addServerStat(ss);
-	}
+	  e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
+						     req->getProtocol());
 	ss->setError();
 
 	throw DlRetryEx(EX_TIME_OUT);
@@ -286,12 +284,29 @@ void AbstractCommand::initAsyncNameResolver(const std::string& hostname)
   setNameResolverCheck(_asyncNameResolver);
 }
 
+static bool isProxyGETRequest(const std::string& protocol, const Option* option)
+{
+  return
+    // For HTTP/HTTPS
+    ((protocol == Request::PROTO_HTTP || protocol == Request::PROTO_HTTPS) &&
+     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
+      option->get(PREF_HTTP_PROXY_METHOD) == V_GET)) ||
+    // For FTP
+    (protocol == Request::PROTO_FTP &&
+     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
+      option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET));
+}
+
 bool AbstractCommand::asyncResolveHostname()
 {
   switch(_asyncNameResolver->getStatus()) {
   case AsyncNameResolver::STATUS_SUCCESS:
     return true;
   case AsyncNameResolver::STATUS_ERROR:
+    if(!isProxyGETRequest(req->getProtocol(), e->option)) {
+      e->_requestGroupMan->getOrCreateServerStat
+	(req->getHost(), req->getProtocol())->setError();
+    }
     throw DlAbortEx(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
 				 _asyncNameResolver->getHostname().c_str(),
 				 _asyncNameResolver->getError().c_str()).str());
@@ -337,6 +352,23 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
 
   e->addCommand(commands);
   e->setNoWait(true);
+}
+
+void AbstractCommand::checkIfConnectionEstablished
+(const SharedHandle<SocketCore>& socket)
+{
+  if(socket->isReadable(0)) {
+    std::string error = socket->getSocketError();
+    if(!error.empty()) {
+      // Don't set error if proxy server is used and its method is GET.
+      if(!isProxyGETRequest(req->getProtocol(), e->option)) {
+	e->_requestGroupMan->getOrCreateServerStat
+	  (req->getHost(), req->getProtocol())->setError();
+      }
+      throw DlRetryEx
+	(StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
+    }
+  }
 }
 
 } // namespace aria2

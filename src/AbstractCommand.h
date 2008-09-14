@@ -88,6 +88,7 @@ protected:
 
   void prepareForNextAction(Command* nextCommand = 0);
 
+  void checkIfConnectionEstablished(const SharedHandle<SocketCore>& socket);
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
