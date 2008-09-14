@@ -65,6 +65,7 @@ protected:
   bool _readEvent;
   bool _writeEvent;
   bool _errorEvent;
+  bool _hupEvent;
 public:
   Command(int32_t cuid);
 
@@ -95,7 +96,9 @@ public:
 
   void writeEventReceived();
 
-  void errorEventRecieved();
+  void errorEventReceived();
+
+  void hupEventReceived();
 
   void clearIOEvents();
 };

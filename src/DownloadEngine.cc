@@ -109,8 +109,11 @@ void CommandEvent::processEvents(int events)
   if(SocketEntry::EVENT_WRITE&events) {
     _command->writeEventReceived();
   }
-  if((SocketEntry::EVENT_ERROR|SocketEntry::EVENT_HUP)&events) {
-    _command->errorEventRecieved();
+  if(SocketEntry::EVENT_ERROR&events) {
+    _command->errorEventReceived();
+  }
+  if(SocketEntry::EVENT_HUP&events) {
+    _command->hupEventReceived();
   }
 }
 

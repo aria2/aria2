@@ -81,8 +81,10 @@ bool PeerAbstractCommand::execute()
     if(noCheck ||
        (checkSocketIsReadable && _readEvent) ||
        (checkSocketIsWritable && _writeEvent) ||
-       _errorEvent) {
+       _hupEvent) {
       checkPoint.reset();
+    } else if(_errorEvent) {
+      throw DlAbortEx("Network problem has occurred.");
     }
     if(checkPoint.elapsed(timeout)) {
       throw DlAbortEx(EX_TIME_OUT);

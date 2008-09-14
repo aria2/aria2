@@ -107,7 +107,7 @@ bool AbstractCommand::execute() {
     }
     if((checkSocketIsReadable && _readEvent) ||
        (checkSocketIsWritable && _writeEvent) ||
-       _errorEvent ||
+       _hupEvent ||
 #ifdef ENABLE_ASYNC_DNS
        (nameResolverCheck && nameResolveFinished()) ||
 #endif // ENABLE_ASYNC_DNS
@@ -136,6 +136,8 @@ bool AbstractCommand::execute() {
 	}
       }
       return executeInternal();
+    } else if(_errorEvent) {
+      throw DlRetryEx("Network problem has occurred.");
     } else {
       if(checkPoint.elapsed(timeout)) {
 	// timeout triggers ServerStat error state.

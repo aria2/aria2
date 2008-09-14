@@ -46,7 +46,8 @@ Command::Command(int32_t cuid):uuid(uuidGen++),
 			       logger(LogFactory::getInstance()),
 			       _readEvent(false),
 			       _writeEvent(false),
-			       _errorEvent(false) {}
+			       _errorEvent(false),
+			       _hupEvent(false) {}
 
 void Command::transitStatus()
 {
@@ -73,9 +74,14 @@ void Command::writeEventReceived()
   _writeEvent = true;
 }
 
-void Command::errorEventRecieved()
+void Command::errorEventReceived()
 {
   _errorEvent = true;
+}
+
+void Command::hupEventReceived()
+{
+  _hupEvent = true;
 }
 
 void Command::clearIOEvents()
@@ -83,6 +89,7 @@ void Command::clearIOEvents()
   _readEvent = false;
   _writeEvent = false;
   _errorEvent = false;
+  _hupEvent = false;
 }
 
 } // namespace aria2
