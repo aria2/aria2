@@ -278,6 +278,8 @@ public:
   bool operator<(const SocketCore& s) {
     return sockfd < s.sockfd;
   }
+
+  std::string getSocketError() const;
 };
 
 } // namespace aria2

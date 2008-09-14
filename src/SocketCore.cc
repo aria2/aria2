@@ -768,4 +768,19 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   return r;
 }
 
+std::string SocketCore::getSocketError() const
+{
+  int error;
+  SOCKOPT_T optlen = sizeof(error);
+  if(getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &optlen) == -1) {
+    throw DlAbortEx(StringFormat("Failed to get socket error: %s",
+				 errorMsg()).str());
+  }
+  if(error != 0) {
+    return strerror(error);
+  } else {
+    return "";
+  }
+}
+
 } // namespace aria2
