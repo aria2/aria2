@@ -139,8 +139,10 @@ public:
   SharedHandle<ServerStat> findServerStat(const std::string& hostname,
 					  const std::string& protocol) const;
 
-  bool addServerStat(const SharedHandle<ServerStat>& serverStat);
+  SharedHandle<ServerStat> getOrCreateServerStat(const std::string& hostname,
+						 const std::string& protocol);
 
+  bool addServerStat(const SharedHandle<ServerStat>& serverStat);
 
   void updateServerStat();
 

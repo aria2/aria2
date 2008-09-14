@@ -203,13 +203,8 @@ public:
 	    continue;
 	  }
 	  SharedHandle<ServerStat> ss =
-	    _requestGroupMan->findServerStat((*i)->getHostname(),
-					     (*i)->getProtocol());
-	  if(ss.isNull()) {
-	    ss.reset(new ServerStat((*i)->getHostname(),
-				    (*i)->getProtocol()));
-	    _requestGroupMan->addServerStat(ss);
-	  }
+	    _requestGroupMan->getOrCreateServerStat((*i)->getHostname(),
+						    (*i)->getProtocol());
 	  ss->updateDownloadSpeed((*i)->getAvgDownloadSpeed());
 	}
       }
@@ -473,6 +468,18 @@ RequestGroupMan::findServerStat(const std::string& hostname,
 				const std::string& protocol) const
 {
   return _serverStatMan->find(hostname, protocol);
+}
+
+SharedHandle<ServerStat>
+RequestGroupMan::getOrCreateServerStat(const std::string& hostname,
+				       const std::string& protocol)
+{
+  SharedHandle<ServerStat> ss = findServerStat(hostname, protocol);
+  if(ss.isNull()) {
+    ss.reset(new ServerStat(hostname, protocol));
+    addServerStat(ss);
+  }
+  return ss;
 }
 
 bool RequestGroupMan::addServerStat(const SharedHandle<ServerStat>& serverStat)
