@@ -4,7 +4,9 @@
 #include "SocketCore.h"
 #include "Request.h"
 #include "Option.h"
+#include "DlRetryEx.h"
 #include <iostream>
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -13,6 +15,7 @@ class FtpConnectionTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FtpConnectionTest);
   CPPUNIT_TEST(testReceiveResponse);
+  CPPUNIT_TEST(testReceiveResponse_overflow);
   CPPUNIT_TEST(testSendMdtm);
   CPPUNIT_TEST(testReceiveMdtmResponse);
   CPPUNIT_TEST_SUITE_END();
@@ -50,6 +53,7 @@ public:
   void testSendMdtm();
   void testReceiveMdtmResponse();
   void testReceiveResponse();
+  void testReceiveResponse_overflow();
 };
 
 
@@ -134,6 +138,24 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     Time t;
     _serverSocket->writeData("550 File Not Found\r\n");
     CPPUNIT_ASSERT_EQUAL((unsigned int)550, _ftp->receiveMdtmResponse(t));
+  }
+}
+
+void FtpConnectionTest::testReceiveResponse_overflow()
+{
+  char data[1024];
+  memset(data, 0, sizeof(data));
+  memcpy(data, "213 ", 4);
+  for(int i = 0; i < 4; ++i) {
+    _serverSocket->writeData(data, sizeof(data));
+    CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+  }
+  _serverSocket->writeData(data, sizeof(data));
+  try {
+    _ftp->receiveResponse();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlRetryEx& e) {
+    // success
   }
 }
 

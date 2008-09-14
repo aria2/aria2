@@ -47,6 +47,7 @@
 #include "DlAbortEx.h"
 #include "Socket.h"
 #include "A2STR.h"
+#include "StringFormat.h"
 #include <cstring>
 #include <cassert>
 
@@ -265,13 +266,16 @@ bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& re
 {
   char buf[1024];  
   while(socket->isReadable(0)) {
-    size_t size = sizeof(buf)-1;
+    size_t size = sizeof(buf);
     socket->readData(buf, size);
     if(size == 0) {
       throw DlRetryEx(EX_GOT_EOF);
     }
-    buf[size] = '\0';
-    strbuf += buf;
+    if(strbuf.size()+size > MAX_RECV_BUFFER) {
+      throw DlRetryEx(StringFormat("Max FTP recv buffer reached. length=%zu",
+				   strbuf.size()+size).str());
+    }
+    strbuf.append(&buf[0], &buf[size]);
   }
   unsigned int status;
   if(strbuf.size() >= 4) {
