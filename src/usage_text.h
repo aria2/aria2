@@ -372,4 +372,28 @@ _(" --max-file-not-found=NUM     If aria2 recieves `file not found' status from 
   "                              Specify 0 to disable this option.\n"\
   "                              This options is only effective only when using\n"\
   "                              HTTP/FTP servers.")
-
+#define TEXT_URI_SELECTOR \
+_(" --uri-selector=SELECTOR      Specify URI selection algorithm. Possible values\n"\
+  "                              are 'inorder' and 'feedback'.\n"\
+  "                              If 'inorder' is given, URI is tried in the order\n"\
+  "                              appeared in the URI list.\n"\
+  "                              If 'feedback' is given, aria2 uses download speed\n"\
+  "                              observed in the previous downloads and choose\n"\
+  "                              fastest server in the URI list. This also\n"\
+  "                              effectively skips dead mirrors. The observed\n"\
+  "                              download speed is a part of performance profile\n"\
+  "                              of servers mentioned in --server-stat-of and\n"\
+  "                              --server-stat-if options.")
+#define TEXT_SERVER_STAT_OF \
+_(" --server-stat-of=FILE        Specify the filename to which performance profile\n"\
+  "                              of the servers is saved. You can load saved data\n"\
+  "                              using --server-stat-if option.")
+#define TEXT_SERVER_STAT_IF \
+_(" --server-stat-if=FILE        Specify the filename to load performance profile\n"\
+  "                              of the servers. The loaded data will be used in\n"\
+  "                              some URI selector such as 'feedback'.\n"\
+  "                              See also --uri-selector option")
+#define TEXT_SERVER_STAT_TIMEOUT \
+_(" --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"\
+  "                              performance profile of the servers since the last\n"\
+  "                              contact to them.")

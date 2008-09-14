@@ -1,5 +1,12 @@
 2008-09-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added usage message for --uri-selector, --server-stat-of,
+	--server-stat-in, --server-stat-timeout options.
+	* src/HelpItemFactory.cc
+	* src/usage_text.h
+
+2008-09-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added upper limit of FTP response buffer. The current implementation
 	uses 4096bytes as a limit.
 	* src/FtpConnection.cc

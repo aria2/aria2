@@ -535,6 +535,34 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);	     
   }
   {
+    HelpItemHandle item(new HelpItem(PREF_URI_SELECTOR, TEXT_URI_SELECTOR,
+				     op->get(PREF_URI_SELECTOR)));
+    item->addTag(TAG_HTTP);
+    item->addTag(TAG_FTP);
+    item->setAvailableValues(V_INORDER+","+V_FEEDBACK);
+    tc->addItem(item);
+  }
+  {
+    HelpItemHandle item(new HelpItem(PREF_SERVER_STAT_OF, TEXT_SERVER_STAT_OF));
+    item->addTag(TAG_HTTP);
+    item->addTag(TAG_FTP);
+    tc->addItem(item);
+  }
+  {
+    HelpItemHandle item(new HelpItem(PREF_SERVER_STAT_IF, TEXT_SERVER_STAT_IF));
+    item->addTag(TAG_HTTP);
+    item->addTag(TAG_FTP);
+    tc->addItem(item);
+  }
+  {
+    HelpItemHandle item(new HelpItem(PREF_SERVER_STAT_TIMEOUT,
+				     TEXT_SERVER_STAT_TIMEOUT,
+				     "86400 (24hours)"));
+    item->addTag(TAG_HTTP);
+    item->addTag(TAG_FTP);
+    tc->addItem(item);
+  }
+  {
     HelpItemHandle item(new HelpItem("help", TEXT_HELP, TAG_BASIC));
     item->setAvailableValues
       (StringFormat("%s,%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT,TAG_HELP).str());
