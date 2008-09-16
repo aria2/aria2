@@ -269,6 +269,19 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
+static bool isProxyGETRequest(const std::string& protocol, const Option* option)
+{
+  return
+    // For HTTP/HTTPS
+    ((protocol == Request::PROTO_HTTP || protocol == Request::PROTO_HTTPS) &&
+     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
+      option->get(PREF_HTTP_PROXY_METHOD) == V_GET)) ||
+    // For FTP
+    (protocol == Request::PROTO_FTP &&
+     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
+      option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET));
+}
+
 #ifdef ENABLE_ASYNC_DNS
 
 bool AbstractCommand::isAsyncNameResolverInitialized() const
@@ -282,19 +295,6 @@ void AbstractCommand::initAsyncNameResolver(const std::string& hostname)
   logger->info(MSG_RESOLVING_HOSTNAME, cuid, hostname.c_str());
   _asyncNameResolver->resolve(hostname);
   setNameResolverCheck(_asyncNameResolver);
-}
-
-static bool isProxyGETRequest(const std::string& protocol, const Option* option)
-{
-  return
-    // For HTTP/HTTPS
-    ((protocol == Request::PROTO_HTTP || protocol == Request::PROTO_HTTPS) &&
-     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-      option->get(PREF_HTTP_PROXY_METHOD) == V_GET)) ||
-    // For FTP
-    (protocol == Request::PROTO_FTP &&
-     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-      option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET));
 }
 
 bool AbstractCommand::asyncResolveHostname()
