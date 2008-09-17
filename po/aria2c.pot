@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2c 0.15.1+2\n"
+"Project-Id-Version: aria2c 0.16.0b\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-08-15 23:59+0900\n"
+"POT-Creation-Date: 2008-09-17 19:58+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,30 +16,30 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/DownloadEngine.cc:795
+#: src/DownloadEngine.cc:800
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:799
+#: src/DownloadEngine.cc:804
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:86
+#: src/MultiUrlRequestInfo.cc:88
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:88
+#: src/MultiUrlRequestInfo.cc:90
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:382
+#: src/RequestGroupMan.cc:379
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:397
+#: src/RequestGroupMan.cc:394
 msgid "Status Legend:"
 msgstr ""
 
@@ -405,9 +405,9 @@ msgstr ""
 
 #: src/usage_text.h:195
 msgid ""
-" --load-cookies=FILE          Load Cookies from FILE using the Mozilla/"
-"Firefox\n"
-"                              (1.x/2.x) and Netscape format."
+" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
+"format\n"
+"                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
 
 #: src/usage_text.h:198
@@ -707,6 +707,86 @@ msgstr ""
 
 #: src/usage_text.h:358
 msgid " --log-level=LEVEL            Set log level to output."
+msgstr ""
+
+#: src/usage_text.h:360
+msgid ""
+" -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
+"the\n"
+"                              remote HTTP/FTP server and if it is "
+"available,\n"
+"                              apply it to the local file."
+msgstr ""
+
+#: src/usage_text.h:364
+msgid ""
+" --connect-timeout=SEC        Set the connect timeout in seconds to "
+"establish\n"
+"                              connection to HTTP/FTP/proxy server. After "
+"the\n"
+"                              connection is established, this option makes "
+"no\n"
+"                              effect and --timeout option is used instead."
+msgstr ""
+
+#: src/usage_text.h:369
+msgid ""
+" --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
+"the\n"
+"                              remote HTTP/FTP servers NUM times without "
+"getting\n"
+"                              a single byte, then force the download to "
+"fail.\n"
+"                              Specify 0 to disable this option.\n"
+"                              This options is only effective only when "
+"using\n"
+"                              HTTP/FTP servers."
+msgstr ""
+
+#: src/usage_text.h:376
+msgid ""
+" --uri-selector=SELECTOR      Specify URI selection algorithm. Possible "
+"values\n"
+"                              are 'inorder' and 'feedback'.\n"
+"                              If 'inorder' is given, URI is tried in the "
+"order\n"
+"                              appeared in the URI list.\n"
+"                              If 'feedback' is given, aria2 uses download "
+"speed\n"
+"                              observed in the previous downloads and choose\n"
+"                              fastest server in the URI list. This also\n"
+"                              effectively skips dead mirrors. The observed\n"
+"                              download speed is a part of performance "
+"profile\n"
+"                              of servers mentioned in --server-stat-of and\n"
+"                              --server-stat-if options."
+msgstr ""
+
+#: src/usage_text.h:388
+msgid ""
+" --server-stat-of=FILE        Specify the filename to which performance "
+"profile\n"
+"                              of the servers is saved. You can load saved "
+"data\n"
+"                              using --server-stat-if option."
+msgstr ""
+
+#: src/usage_text.h:392
+msgid ""
+" --server-stat-if=FILE        Specify the filename to load performance "
+"profile\n"
+"                              of the servers. The loaded data will be used "
+"in\n"
+"                              some URI selector such as 'feedback'.\n"
+"                              See also --uri-selector option"
+msgstr ""
+
+#: src/usage_text.h:397
+msgid ""
+" --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
+"                              performance profile of the servers since the "
+"last\n"
+"                              contact to them."
 msgstr ""
 
 #: src/version_usage.cc:55
@@ -1287,345 +1367,385 @@ msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr ""
 
 #: src/message.h:148
-msgid "Timeout."
+#, c-format
+msgid "Failed to open ServerStat file %s for read."
 msgstr ""
 
 #: src/message.h:149
-msgid "Invalid chunk size."
+#, c-format
+msgid "ServerStat file %s loaded successfully."
 msgstr ""
 
 #: src/message.h:150
 #, c-format
-msgid "Too large chunk. size=%d"
-msgstr ""
-
-#: src/message.h:151
-msgid "Invalid header."
-msgstr ""
-
-#: src/message.h:152
-msgid "Invalid response."
+msgid "Failed to read ServerStat from %s."
 msgstr ""
 
 #: src/message.h:153
-msgid "No header found."
+#, c-format
+msgid "Failed to open ServerStat file %s for write."
 msgstr ""
 
 #: src/message.h:154
-msgid "No status header."
+#, c-format
+msgid "ServerStat file %s saved successfully."
 msgstr ""
 
 #: src/message.h:155
+#, c-format
+msgid "Failed to write ServerStat to %s."
+msgstr ""
+
+#: src/message.h:158
+#, c-format
+msgid "Failed to establish connection, cause: %s"
+msgstr ""
+
+#: src/message.h:159
+#, c-format
+msgid "Network problem has occurred. cause:%s"
+msgstr ""
+
+#: src/message.h:161
+msgid "Timeout."
+msgstr ""
+
+#: src/message.h:162
+msgid "Invalid chunk size."
+msgstr ""
+
+#: src/message.h:163
+#, c-format
+msgid "Too large chunk. size=%d"
+msgstr ""
+
+#: src/message.h:164
+msgid "Invalid header."
+msgstr ""
+
+#: src/message.h:165
+msgid "Invalid response."
+msgstr ""
+
+#: src/message.h:166
+msgid "No header found."
+msgstr ""
+
+#: src/message.h:167
+msgid "No status header."
+msgstr ""
+
+#: src/message.h:168
 msgid "Proxy connection failed."
 msgstr ""
 
-#: src/message.h:156
+#: src/message.h:169
 msgid "Connection failed."
 msgstr ""
 
-#: src/message.h:157
+#: src/message.h:170
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
 
-#: src/message.h:158
+#: src/message.h:171
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr ""
 
-#: src/message.h:159
+#: src/message.h:172
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr ""
 
-#: src/message.h:160
+#: src/message.h:173
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr ""
 
-#: src/message.h:161
+#: src/message.h:174
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr ""
 
-#: src/message.h:162
+#: src/message.h:175
 msgid "SSL I/O error"
 msgstr ""
 
-#: src/message.h:163
-msgid "SSL protocol error"
-msgstr ""
-
-#: src/message.h:164
-#, c-format
-msgid "SSL unknown error %d"
-msgstr ""
-
-#: src/message.h:165
-#, c-format
-msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr ""
-
-#: src/message.h:166
-#, c-format
-msgid "Size mismatch Expected:%s Actual:%s"
-msgstr ""
-
-#: src/message.h:167
-msgid "Authorization failed."
-msgstr ""
-
-#: src/message.h:168
-msgid "Got EOF from the server."
-msgstr ""
-
-#: src/message.h:169
-msgid "Got EOF from peer."
-msgstr ""
-
-#: src/message.h:170
-msgid "Malformed meta info."
-msgstr ""
-
-#: src/message.h:172
-#, c-format
-msgid "Failed to open the file %s, cause: %s"
-msgstr ""
-
-#: src/message.h:173
-#, c-format
-msgid "Failed to write into the file %s, cause: %s"
-msgstr ""
-
-#: src/message.h:174
-#, c-format
-msgid "Failed to read from the file %s, cause: %s"
-msgstr ""
-
-#: src/message.h:175
-msgid "Failed to read data from disk."
-msgstr ""
-
 #: src/message.h:176
-#, c-format
-msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
+msgid "SSL protocol error"
 msgstr ""
 
 #: src/message.h:177
 #, c-format
-msgid "Failed to seek the file %s, cause: %s"
+msgid "SSL unknown error %d"
 msgstr ""
 
 #: src/message.h:178
 #, c-format
-msgid "The offset is out of range, offset=%s"
+msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr ""
 
 #: src/message.h:179
 #, c-format
-msgid "%s is not a directory."
+msgid "Size mismatch Expected:%s Actual:%s"
 msgstr ""
 
 #: src/message.h:180
-#, c-format
-msgid "Failed to make the directory %s, cause: %s"
+msgid "Authorization failed."
 msgstr ""
 
 #: src/message.h:181
-#, c-format
-msgid "Failed to open the segment file %s, cause: %s"
+msgid "Got EOF from the server."
 msgstr ""
 
 #: src/message.h:182
-#, c-format
-msgid "Failed to write into the segment file %s, cause: %s"
+msgid "Got EOF from peer."
 msgstr ""
 
 #: src/message.h:183
-#, c-format
-msgid "Failed to read from the segment file %s, cause: %s"
+msgid "Malformed meta info."
 msgstr ""
 
 #: src/message.h:185
 #, c-format
-msgid "Failed to open a socket, cause: %s"
+msgid "Failed to open the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:186
 #, c-format
-msgid "Failed to set a socket option, cause: %s"
+msgid "Failed to write into the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:187
 #, c-format
-msgid "Failed to set a socket as blocking, cause: %s"
+msgid "Failed to read from the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:188
-#, c-format
-msgid "Failed to set a socket as non-blocking, cause: %s"
+msgid "Failed to read data from disk."
 msgstr ""
 
 #: src/message.h:189
 #, c-format
-msgid "Failed to bind a socket, cause: %s"
+msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:190
 #, c-format
-msgid "Failed to listen to a socket, cause: %s"
+msgid "Failed to seek the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:191
 #, c-format
-msgid "Failed to accept a peer connection, cause: %s"
+msgid "The offset is out of range, offset=%s"
 msgstr ""
 
 #: src/message.h:192
 #, c-format
-msgid "Failed to get the name of socket, cause: %s"
+msgid "%s is not a directory."
 msgstr ""
 
 #: src/message.h:193
 #, c-format
-msgid "Failed to get the name of connected peer, cause: %s"
+msgid "Failed to make the directory %s, cause: %s"
 msgstr ""
 
 #: src/message.h:194
 #, c-format
-msgid "Failed to resolve the hostname %s, cause: %s"
+msgid "Failed to open the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:195
 #, c-format
-msgid "Failed to connect to the host %s, cause: %s"
+msgid "Failed to write into the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:196
 #, c-format
-msgid "Failed to check whether the socket is writable, cause: %s"
-msgstr ""
-
-#: src/message.h:197
-#, c-format
-msgid "Failed to check whether the socket is readable, cause: %s"
+msgid "Failed to read from the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:198
 #, c-format
-msgid "Failed to send data, cause: %s"
+msgid "Failed to open a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:199
 #, c-format
-msgid "Failed to receive data, cause: %s"
+msgid "Failed to set a socket option, cause: %s"
 msgstr ""
 
 #: src/message.h:200
 #, c-format
-msgid "Failed to peek data, cause: %s"
+msgid "Failed to set a socket as blocking, cause: %s"
 msgstr ""
 
 #: src/message.h:201
 #, c-format
-msgid "Unknown socket error %d (0x%x)"
+msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr ""
 
 #: src/message.h:202
 #, c-format
-msgid "File %s exists, but %s does not exist."
+msgid "Failed to bind a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:203
 #, c-format
-msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgid "Failed to listen to a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:204
 #, c-format
-msgid "Invalid ID=%d for %s. It should be %d."
+msgid "Failed to accept a peer connection, cause: %s"
 msgstr ""
 
 #: src/message.h:205
+#, c-format
+msgid "Failed to get the name of socket, cause: %s"
+msgstr ""
+
+#: src/message.h:206
+#, c-format
+msgid "Failed to get the name of connected peer, cause: %s"
+msgstr ""
+
+#: src/message.h:207
+#, c-format
+msgid "Failed to resolve the hostname %s, cause: %s"
+msgstr ""
+
+#: src/message.h:208
+#, c-format
+msgid "Failed to connect to the host %s, cause: %s"
+msgstr ""
+
+#: src/message.h:209
+#, c-format
+msgid "Failed to check whether the socket is writable, cause: %s"
+msgstr ""
+
+#: src/message.h:210
+#, c-format
+msgid "Failed to check whether the socket is readable, cause: %s"
+msgstr ""
+
+#: src/message.h:211
+#, c-format
+msgid "Failed to send data, cause: %s"
+msgstr ""
+
+#: src/message.h:212
+#, c-format
+msgid "Failed to receive data, cause: %s"
+msgstr ""
+
+#: src/message.h:213
+#, c-format
+msgid "Failed to peek data, cause: %s"
+msgstr ""
+
+#: src/message.h:214
+#, c-format
+msgid "Unknown socket error %d (0x%x)"
+msgstr ""
+
+#: src/message.h:215
+#, c-format
+msgid "File %s exists, but %s does not exist."
+msgstr ""
+
+#: src/message.h:216
+#, c-format
+msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgstr ""
+
+#: src/message.h:217
+#, c-format
+msgid "Invalid ID=%d for %s. It should be %d."
+msgstr ""
+
+#: src/message.h:218
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
 
-#: src/message.h:206
+#: src/message.h:219
 msgid "Download aborted."
 msgstr ""
 
-#: src/message.h:207
+#: src/message.h:220
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr ""
 
-#: src/message.h:208
+#: src/message.h:221
 msgid "Insufficient checksums."
 msgstr ""
 
-#: src/message.h:209
+#: src/message.h:222
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr ""
 
-#: src/message.h:210
+#: src/message.h:223
 msgid "Flooding detected."
 msgstr ""
 
-#: src/message.h:211
+#: src/message.h:224
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
 
-#: src/message.h:212
+#: src/message.h:225
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 
-#: src/message.h:213
+#: src/message.h:226
 #, c-format
 msgid "No such file entry %s"
 msgstr ""
 
-#: src/message.h:214
+#: src/message.h:227
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr ""
 
-#: src/message.h:215
+#: src/message.h:228
 msgid "No HttpRequestEntry found."
 msgstr ""
 
-#: src/message.h:216
+#: src/message.h:229
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr ""
 
-#: src/message.h:217
+#: src/message.h:230
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr ""
 
-#: src/message.h:218
+#: src/message.h:231
 msgid "No file matched with your preference."
 msgstr ""
 
-#: src/message.h:219
+#: src/message.h:232
 msgid "Exception caught"
 msgstr ""
 
-#: src/message.h:220
+#: src/message.h:233
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 
-#: src/message.h:221
+#: src/message.h:234
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
@@ -1634,6 +1754,6 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/Util.cc:705
+#: src/Util.cc:713
 msgid "Files:"
 msgstr ""

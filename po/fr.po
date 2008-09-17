@@ -7,32 +7,32 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-08-15 23:59+0900\n"
-"PO-Revision-Date: 2008-07-24 12:02+0000\n"
-"Last-Translator: willemijns <Unknown>\n"
+"POT-Creation-Date: 2008-09-17 19:58+0900\n"
+"PO-Revision-Date: 2008-09-12 10:11+0000\n"
+"Last-Translator: Ludovic Michoux <ludo@slimbox.homeunix.org>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-07-31 14:08+0000\n"
+"X-Launchpad-Export-Date: 2008-09-17 10:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:795
+#: src/DownloadEngine.cc:800
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Séquence d'arrêt débutée... Pressez Ctrl-C une nouvelle fois pour un arrêt "
 "d'urgence."
 
-#: src/DownloadEngine.cc:799
+#: src/DownloadEngine.cc:804
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Séquence d'arrêt d'urgence débutée..."
 
-#: src/MultiUrlRequestInfo.cc:86
+#: src/MultiUrlRequestInfo.cc:88
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2c va recommencer ce téléchargement si le transfert est relancé."
 
-#: src/MultiUrlRequestInfo.cc:88
+#: src/MultiUrlRequestInfo.cc:90
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -40,11 +40,11 @@ msgstr ""
 "En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
 "d'informations."
 
-#: src/RequestGroupMan.cc:382
+#: src/RequestGroupMan.cc:379
 msgid "Download Results:"
 msgstr "Résultats du ou des téléchargements:"
 
-#: src/RequestGroupMan.cc:397
+#: src/RequestGroupMan.cc:394
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 
@@ -585,10 +585,11 @@ msgstr ""
 "en parralèle pour chaque URL \"statiques\" (HTTP/FTP), torrent et metalink."
 
 #: src/usage_text.h:195
+#, fuzzy
 msgid ""
-" --load-cookies=FILE          Load Cookies from FILE using the Mozilla/"
-"Firefox\n"
-"                              (1.x/2.x) and Netscape format."
+" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
+"format\n"
+"                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
 " --load-cookies=FILE          Charge les cookies depuis FILE en utilisant le "
 "format utilisé par Mozilla/Firefox\n"
@@ -844,6 +845,14 @@ msgid ""
 "                              accepts connections ignoring max peer cap.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --bt-request-peer-speed-limit=SPEED pour les téléchargements BitTorrent, si "
+"la vitesse de\n"
+"                              téléchargement est inférieure à SPEED, alors "
+"aria2 s'initialise et\n"
+"                              accepte les connexions en ignorant les "
+"capacitées max. du peer\n"
+"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
+"1024K)."
 
 #: src/usage_text.h:285
 msgid ""
@@ -1062,6 +1071,112 @@ msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 " --log-level=LEVEL            Configure le niveau de détail du fichier log "
 "en sortie."
+
+#: src/usage_text.h:360
+#, fuzzy
+msgid ""
+" -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
+"the\n"
+"                              remote HTTP/FTP server and if it is "
+"available,\n"
+"                              apply it to the local file."
+msgstr ""
+" --direct-file-mapping=true|false Lire directement à partir de et écrit sur "
+"chaque fichier\n"
+"                              mentioné dans le fichier .torrent.\n"
+"                              Défaut: true"
+
+#: src/usage_text.h:364
+msgid ""
+" --connect-timeout=SEC        Set the connect timeout in seconds to "
+"establish\n"
+"                              connection to HTTP/FTP/proxy server. After "
+"the\n"
+"                              connection is established, this option makes "
+"no\n"
+"                              effect and --timeout option is used instead."
+msgstr ""
+
+#: src/usage_text.h:369
+#, fuzzy
+msgid ""
+" --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
+"the\n"
+"                              remote HTTP/FTP servers NUM times without "
+"getting\n"
+"                              a single byte, then force the download to "
+"fail.\n"
+"                              Specify 0 to disable this option.\n"
+"                              This options is only effective only when "
+"using\n"
+"                              HTTP/FTP servers."
+msgstr ""
+" --file-allocation=METHOD     Spécifier la méthode d'allocation de fichier. "
+"METHOD est soit\n"
+"                              'none' ou 'prealloc'.\n"
+"                              'none' n'alloue pas d'espace disque au "
+"préalable pour le fichier. 'prealloc'\n"
+"                              alloue de l'espace disque au préalable pour le "
+"fichier.\n"
+"                              Ceci peut prendre du temps selon la taille du "
+"fichier\n"
+"                              Défaut: prealloc"
+
+#: src/usage_text.h:376
+msgid ""
+" --uri-selector=SELECTOR      Specify URI selection algorithm. Possible "
+"values\n"
+"                              are 'inorder' and 'feedback'.\n"
+"                              If 'inorder' is given, URI is tried in the "
+"order\n"
+"                              appeared in the URI list.\n"
+"                              If 'feedback' is given, aria2 uses download "
+"speed\n"
+"                              observed in the previous downloads and choose\n"
+"                              fastest server in the URI list. This also\n"
+"                              effectively skips dead mirrors. The observed\n"
+"                              download speed is a part of performance "
+"profile\n"
+"                              of servers mentioned in --server-stat-of and\n"
+"                              --server-stat-if options."
+msgstr ""
+
+#: src/usage_text.h:388
+#, fuzzy
+msgid ""
+" --server-stat-of=FILE        Specify the filename to which performance "
+"profile\n"
+"                              of the servers is saved. You can load saved "
+"data\n"
+"                              using --server-stat-if option."
+msgstr ""
+" --retry-wait=SEC             Définit le temps entre chaque requête\n"
+"                              pour les erreurs. Spécifiez une valeur entre 0 "
+"et 60.\n"
+"                              Défaut: 5"
+
+#: src/usage_text.h:392
+msgid ""
+" --server-stat-if=FILE        Specify the filename to load performance "
+"profile\n"
+"                              of the servers. The loaded data will be used "
+"in\n"
+"                              some URI selector such as 'feedback'.\n"
+"                              See also --uri-selector option"
+msgstr ""
+
+#: src/usage_text.h:397
+#, fuzzy
+msgid ""
+" --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
+"                              performance profile of the servers since the "
+"last\n"
+"                              contact to them."
+msgstr ""
+" --retry-wait=SEC             Définit le temps entre chaque requête\n"
+"                              pour les erreurs. Spécifiez une valeur entre 0 "
+"et 60.\n"
+"                              Défaut: 5"
 
 #: src/version_usage.cc:55
 msgid " version "
@@ -1703,43 +1818,83 @@ msgstr ""
 "fichier existe déjà ?"
 
 #: src/message.h:148
+#, fuzzy, c-format
+msgid "Failed to open ServerStat file %s for read."
+msgstr "Impossible d'ouvrir le fichier %s, cause: %s"
+
+#: src/message.h:149
+#, fuzzy, c-format
+msgid "ServerStat file %s loaded successfully."
+msgstr "Le segment a été chargé avec succès."
+
+#: src/message.h:150
+#, fuzzy, c-format
+msgid "Failed to read ServerStat from %s."
+msgstr "Impossible de lire les données depuis le disque."
+
+#: src/message.h:153
+#, fuzzy, c-format
+msgid "Failed to open ServerStat file %s for write."
+msgstr "Impossible d'ouvrir le fichier %s, cause: %s"
+
+#: src/message.h:154
+#, fuzzy, c-format
+msgid "ServerStat file %s saved successfully."
+msgstr "Le fichier segment a été sauvegardé avec succès."
+
+#: src/message.h:155
+#, fuzzy, c-format
+msgid "Failed to write ServerStat to %s."
+msgstr "Impossible de recevoir les données, cause: %s"
+
+#: src/message.h:158
+#, fuzzy, c-format
+msgid "Failed to establish connection, cause: %s"
+msgstr "Impossible d'accepter une connexion à un autre ordinateur, cause: %s"
+
+#: src/message.h:159
+#, c-format
+msgid "Network problem has occurred. cause:%s"
+msgstr ""
+
+#: src/message.h:161
 msgid "Timeout."
 msgstr "Temps d'attente dépassé (timeout)"
 
-#: src/message.h:149
+#: src/message.h:162
 msgid "Invalid chunk size."
 msgstr "Taille de block invalide"
 
-#: src/message.h:150
+#: src/message.h:163
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Bloc trop grand. taille=%d"
 
-#: src/message.h:151
+#: src/message.h:164
 msgid "Invalid header."
 msgstr "En-tête invalide"
 
-#: src/message.h:152
+#: src/message.h:165
 msgid "Invalid response."
 msgstr "Réponse invalide"
 
-#: src/message.h:153
+#: src/message.h:166
 msgid "No header found."
 msgstr "Aucun en-tête trouvé"
 
-#: src/message.h:154
+#: src/message.h:167
 msgid "No status header."
 msgstr "Aucun en-tête de status."
 
-#: src/message.h:155
+#: src/message.h:168
 msgid "Proxy connection failed."
 msgstr "La connexion proxy a échoué."
 
-#: src/message.h:156
+#: src/message.h:169
 msgid "Connection failed."
 msgstr "La connexion a échoué."
 
-#: src/message.h:157
+#: src/message.h:170
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -1748,228 +1903,228 @@ msgstr ""
 "Le fichié demandé et celui enregistré précédemment sont différents. Taille "
 "du fichier attendue: %s En réalité: %s"
 
-#: src/message.h:158
+#: src/message.h:171
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "La réponse a échoué. Status=%d"
 
-#: src/message.h:159
+#: src/message.h:172
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Fichier trop grand. Taille=%s"
 
-#: src/message.h:160
+#: src/message.h:173
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Le type de transfert %s n'est pas supporté."
 
-#: src/message.h:161
+#: src/message.h:174
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "L'initialisation SSL a échouée: %s"
 
-#: src/message.h:162
+#: src/message.h:175
 msgid "SSL I/O error"
 msgstr "Erreur E/S SSL"
 
-#: src/message.h:163
+#: src/message.h:176
 msgid "SSL protocol error"
 msgstr "erreur de protocole SSL"
 
-#: src/message.h:164
+#: src/message.h:177
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "érreur SSL inconnue %d"
 
-#: src/message.h:165
+#: src/message.h:178
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "L'initialisation SSL a échouée: érreur de connexion OpenSSL SSL %d"
 
-#: src/message.h:166
+#: src/message.h:179
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "La taille ne coïncide pas. Attendue: %s En réalité: %s"
 
-#: src/message.h:167
+#: src/message.h:180
 msgid "Authorization failed."
 msgstr "L'autorisation a échoué."
 
-#: src/message.h:168
+#: src/message.h:181
 msgid "Got EOF from the server."
 msgstr "Obtenir la fin du fichier (EOF) du serveur."
 
-#: src/message.h:169
+#: src/message.h:182
 msgid "Got EOF from peer."
 msgstr "Obtenir la fin du fichier (EOF) du partenaire."
 
-#: src/message.h:170
+#: src/message.h:183
 msgid "Malformed meta info."
 msgstr "Métainfos malformées."
 
-#: src/message.h:172
+#: src/message.h:185
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Impossible d'ouvrir le fichier %s, cause: %s"
 
-#: src/message.h:173
+#: src/message.h:186
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Impossible d'écrire le fichier %s, cause: %s"
 
-#: src/message.h:174
+#: src/message.h:187
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Impossible de lire le fichier %s, cause: %s"
 
-#: src/message.h:175
+#: src/message.h:188
 msgid "Failed to read data from disk."
 msgstr "Impossible de lire les données depuis le disque."
 
-#: src/message.h:176
+#: src/message.h:189
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Impossible de calculer la somme SHA1 du ou d'une partie du fichier %s, "
 "cause: %s"
 
-#: src/message.h:177
+#: src/message.h:190
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Impossible de chercher le fichier %s, cause: %s"
 
-#: src/message.h:178
+#: src/message.h:191
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Le décalage est trop grand, décalage=%s"
 
-#: src/message.h:179
+#: src/message.h:192
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s n'est pas un dossier"
 
-#: src/message.h:180
+#: src/message.h:193
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Impossible de créer le dossier %s, cause: %s"
 
-#: src/message.h:181
+#: src/message.h:194
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Impossible d'ouvrir le fichier de segment %s, cause: %s"
 
-#: src/message.h:182
+#: src/message.h:195
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Impossible d'écrire dans le fichier de segment %s, cause: %s"
 
-#: src/message.h:183
+#: src/message.h:196
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Impossible de lire à partir du fichier de segment %s, cause: %s"
 
-#: src/message.h:185
+#: src/message.h:198
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Impossible d'ouvrir une connexion socket, cause: %s"
 
-#: src/message.h:186
+#: src/message.h:199
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Impossible de définir une option de connexion socket, cause: %s"
 
-#: src/message.h:187
+#: src/message.h:200
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Failed to set a socket as blocking, cause: %s"
 
-#: src/message.h:188
+#: src/message.h:201
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Failed to set a socket as non-blocking, cause: %s"
 
-#: src/message.h:189
+#: src/message.h:202
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Impossible d'unir une connexion socket, cause: %s"
 
-#: src/message.h:190
+#: src/message.h:203
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Impossible d'écouter une connexion socket, cause: %s"
 
-#: src/message.h:191
+#: src/message.h:204
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Impossible d'accepter une connexion à un autre ordinateur, cause: %s"
 
-#: src/message.h:192
+#: src/message.h:205
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Impossible de récupérer le nom de la connexion socket, cause: %s"
 
-#: src/message.h:193
+#: src/message.h:206
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Impossible d'obtenir le nom de l'autre ordinateur, cause: %s"
 
-#: src/message.h:194
+#: src/message.h:207
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Impossible de récupérer le nom de l'hôte %s, cause: %s"
 
-#: src/message.h:195
+#: src/message.h:208
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Impossible de se connecter à l'hôte %s, cause: %s"
 
-#: src/message.h:196
+#: src/message.h:209
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr ""
 "Impossible de vérifier si la connexion socket est inscriptible, cause: %s"
 
-#: src/message.h:197
+#: src/message.h:210
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Impossible de vérifier si la connexion socket est lisible, cause: %s"
 
-#: src/message.h:198
+#: src/message.h:211
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Impossible d'envoyer les données, cause: %s"
 
-#: src/message.h:199
+#: src/message.h:212
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Impossible de recevoir les données, cause: %s"
 
-#: src/message.h:200
+#: src/message.h:213
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Impossible de lire les données, cause: %s"
 
-#: src/message.h:201
+#: src/message.h:214
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Erreur de socket inconnue %d (0x%x)"
 
-#: src/message.h:202
+#: src/message.h:215
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Le fichier %s existe, mais %s n'existe pas"
 
-#: src/message.h:203
+#: src/message.h:216
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "Taille du fichier %s invalide, taille=%d. Il devrait faire %d."
 
-#: src/message.h:204
+#: src/message.h:217
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "ID invalide=%d pour %s. Ça devrait être %d."
 
-#: src/message.h:205
+#: src/message.h:218
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -1978,31 +2133,31 @@ msgstr ""
 "La validation du bloc a échoué. Hash=%d, décalage=%s, Hash attendu=%s, Hash ="
 "%s"
 
-#: src/message.h:206
+#: src/message.h:219
 msgid "Download aborted."
 msgstr "Téléchargement interrompu."
 
-#: src/message.h:207
+#: src/message.h:220
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr ""
 "Le fichier %s est déjà en train d'être téléchargé par une autre commande."
 
-#: src/message.h:208
+#: src/message.h:221
 msgid "Insufficient checksums."
 msgstr "Somme de vérification insuffisante."
 
-#: src/message.h:209
+#: src/message.h:222
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Le Tracker a retourné le message d'alerte suivant: %s"
 
-#: src/message.h:210
+#: src/message.h:223
 msgid "Flooding detected."
 msgstr ""
 "Réception d'une quantité anormalement élevée de données (\"flood\") détectée."
 
-#: src/message.h:211
+#: src/message.h:224
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2011,52 +2166,52 @@ msgstr ""
 "Coupure de connexion demandée car aucune pièce ou message n'ont été "
 "échangées pendant un certain temps (%d secondes)."
 
-#: src/message.h:212
+#: src/message.h:225
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "Les informations du hash contenu dans le fichier torrent ne correspondent "
 "pas à celles du fichier .aria2 ."
 
-#: src/message.h:213
+#: src/message.h:226
 #, c-format
 msgid "No such file entry %s"
 msgstr "Aucune entrée de ce type %s"
 
-#: src/message.h:214
+#: src/message.h:227
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "La vitesse de téléchargement est trop lente: %d <= %d(B/s), hôte:%s"
 
-#: src/message.h:215
+#: src/message.h:228
 msgid "No HttpRequestEntry found."
 msgstr "Aucune en-tête trouvée."
 
-#: src/message.h:216
+#: src/message.h:229
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Obtention du status %d, mais aucune en-tête de location proposée."
 
-#: src/message.h:217
+#: src/message.h:230
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Champ de l'en-tête invalide. Requête: %s-%s/%s, Réponse: %s-%s/%s"
 
-#: src/message.h:218
+#: src/message.h:231
 msgid "No file matched with your preference."
 msgstr "Aucun fichier ne correspond à votre préférence"
 
-#: src/message.h:219
+#: src/message.h:232
 msgid "Exception caught"
 msgstr "Exception détectée"
 
-#: src/message.h:220
+#: src/message.h:233
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "La longueur maximale du \"payload\" est excédentaire ou invalide. Longueur = "
 "%u"
 
-#: src/message.h:221
+#: src/message.h:234
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
@@ -2067,7 +2222,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
 
-#: src/Util.cc:705
+#: src/Util.cc:713
 msgid "Files:"
 msgstr "Fichiers:"
 

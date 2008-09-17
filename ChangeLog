@@ -1,5 +1,16 @@
 2008-09-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added Turkish translation. Updated French, German, Russian and
+	Simplified Chinese translations. Thanks to all translators.
+	* po/LINGUAS
+	* po/de.po
+	* po/fr.po
+	* po/ru.po
+	* po/tr.po
+	* po/zh_CN.po
+	
+2008-09-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added deliminating text to the beginning of the log so that one can find
 	where the log starts easily.
 	* src/main.cc
