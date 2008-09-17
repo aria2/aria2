@@ -362,6 +362,9 @@ int main(int argc, char* argv[])
   int32_t exitStatus = EXIT_SUCCESS;
   try {
     Logger* logger = LogFactory::getInstance();
+    logger->info("<<--- --- --- ---");
+    logger->info("  --- --- --- ---");
+    logger->info("  --- --- --- --->>");
     logger->info("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET);
     logger->info(MSG_LOGGING_STARTED);
 
