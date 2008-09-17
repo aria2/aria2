@@ -614,6 +614,7 @@ AM_CPPFLAGS = -Wall\
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
+	cookies.sqlite\
 	cookietest.txt\
 	emptyfile\
 	file1r.txt\

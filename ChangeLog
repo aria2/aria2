@@ -1,5 +1,10 @@
 2008-09-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added cookies.sqlite to EXTRA_DIST
+	* test/Makefile.am
+
+2008-09-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added Turkish translation. Updated French, German, Russian and
 	Simplified Chinese translations. Thanks to all translators.
 	* po/LINGUAS
