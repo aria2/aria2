@@ -1,3 +1,11 @@
+2008-09-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that prefixLength of split bucket which doesn't include
+	local node ID is incremented.
+	* src/DHTBucket.cc
+	* src/DHTBucket.h
+	* test/DHTBucketTest.cc
+
 2008-09-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added cookies.sqlite to EXTRA_DIST

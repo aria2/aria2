@@ -81,22 +81,29 @@ void DHTBucket::getRandomNodeID(unsigned char* nodeID) const
 
 bool DHTBucket::isInRange(const SharedHandle<DHTNode>& node) const
 {
-  return isInRange(node->getID());
+  return isInRange(node->getID(), _max, _min);
 }
 
 bool DHTBucket::isInRange(const unsigned char* nodeID) const
 {
+  return isInRange(nodeID, _max, _min);
+}
+
+bool DHTBucket::isInRange(const unsigned char* nodeID,
+			  const unsigned char* max,
+			  const unsigned char* min) const
+{
   for(size_t i = 0; i < DHT_ID_LENGTH; ++i) {
-    if(nodeID[i] < _min[i]) {
+    if(nodeID[i] < min[i]) {
       return false;
-    } else if(_min[i] < nodeID[i]) {
+    } else if(min[i] < nodeID[i]) {
       break;
     }
   }
   for(size_t i = 0; i < DHT_ID_LENGTH; ++i) {
-    if(_max[i] < nodeID[i]) {
+    if(max[i] < nodeID[i]) {
       return false;
-    } else if(nodeID[i] < _max[i]) {
+    } else if(nodeID[i] < max[i]) {
       break;
     }
   }
@@ -176,14 +183,30 @@ bool DHTBucket::splitAllowed() const
 SharedHandle<DHTBucket> DHTBucket::split()
 {
   assert(splitAllowed());
-  size_t newPrefixLength = _prefixLength+1;
 
   unsigned char rMax[DHT_ID_LENGTH];
   memcpy(rMax, _max, DHT_ID_LENGTH);
   DHTUtil::flipBit(rMax, DHT_ID_LENGTH, _prefixLength);
+  unsigned char rMin[DHT_ID_LENGTH];
+  memcpy(rMin, _min, DHT_ID_LENGTH);
 
-  SharedHandle<DHTBucket> rBucket(new DHTBucket(newPrefixLength,
-						rMax, _min, _localNode));
+  DHTUtil::flipBit(_min, DHT_ID_LENGTH, _prefixLength);
+
+  size_t rPrefixLength;
+  size_t lPrefixLength;
+  if(isInRange(_localNode->getID(), rMax, rMin)) {
+    rPrefixLength = _prefixLength+1;
+    lPrefixLength = _prefixLength;
+  } else if(isInRange(_localNode->getID(), _max, _min)) {
+    rPrefixLength = _prefixLength;
+    lPrefixLength = _prefixLength+1;
+  } else {
+    rPrefixLength = _prefixLength;
+    lPrefixLength = _prefixLength;
+  }
+
+  SharedHandle<DHTBucket> rBucket(new DHTBucket(rPrefixLength,
+						rMax, rMin, _localNode));
   std::deque<SharedHandle<DHTNode> > tempNodes = _nodes;
   for(std::deque<SharedHandle<DHTNode> >::iterator i = tempNodes.begin();
       i != tempNodes.end();) {
@@ -194,8 +217,7 @@ SharedHandle<DHTBucket> DHTBucket::split()
       ++i;
     }
   }
-  DHTUtil::flipBit(_min, DHT_ID_LENGTH, _prefixLength);
-  _prefixLength = newPrefixLength;
+  _prefixLength = lPrefixLength;
   _nodes = tempNodes;
   // TODO create toString() and use it.
   _logger->debug("New bucket. Range:%s-%s",

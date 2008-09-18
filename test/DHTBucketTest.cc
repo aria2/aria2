@@ -193,10 +193,68 @@ void DHTBucketTest::testSplitAllowed()
 
 void DHTBucketTest::testSplit()
 {
-  unsigned char localNodeID[DHT_ID_LENGTH];
-  memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
   {
+    unsigned char localNodeID[DHT_ID_LENGTH];
+    memset(localNodeID, 0, DHT_ID_LENGTH);
+    SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+    {
+      DHTBucket bucket(localNode);
+      SharedHandle<DHTBucket> r = bucket.split();
+      {
+	unsigned char expectedRMax[] = { 0x7f, 0xff, 0xff, 0xff, 0xff,
+					 0xff, 0xff, 0xff, 0xff, 0xff,
+					 0xff, 0xff, 0xff, 0xff, 0xff,
+					 0xff, 0xff, 0xff, 0xff, 0xff };
+	unsigned char expectedRMin[DHT_ID_LENGTH];
+	memset(expectedRMin, 0, DHT_ID_LENGTH);
+	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMax, DHT_ID_LENGTH),
+			     Util::toHex(r->getMaxID(), DHT_ID_LENGTH));
+	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMin, DHT_ID_LENGTH),
+			     Util::toHex(r->getMinID(), DHT_ID_LENGTH));
+	CPPUNIT_ASSERT_EQUAL((size_t)1, r->getPrefixLength());
+      }
+      {
+	unsigned char expectedLMax[DHT_ID_LENGTH];
+	memset(expectedLMax, 0xff, DHT_ID_LENGTH);
+	unsigned char expectedLMin[] = { 0x80, 0x00, 0x00, 0x00, 0x00,
+					 0x00, 0x00, 0x00, 0x00, 0x00,
+					 0x00, 0x00, 0x00, 0x00, 0x00,
+					 0x00, 0x00, 0x00, 0x00, 0x00 };
+	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedLMax, DHT_ID_LENGTH),
+			     Util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
+	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedLMin, DHT_ID_LENGTH),
+			     Util::toHex(bucket.getMinID(), DHT_ID_LENGTH));
+	// prefixLength is not changed because bucket cannot include localNode
+	CPPUNIT_ASSERT_EQUAL((size_t)0, bucket.getPrefixLength());
+      }
+    }
+    {
+      SharedHandle<DHTBucket> bucket(new DHTBucket(localNode));
+      for(int i = 0; i < 159; ++i) {
+	CPPUNIT_ASSERT(bucket->splitAllowed());
+	SharedHandle<DHTBucket> t = bucket;
+	bucket = bucket->split();
+	CPPUNIT_ASSERT(!t->splitAllowed());
+      }
+      CPPUNIT_ASSERT(!bucket->splitAllowed());
+      unsigned char expectedMax[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
+				      0x00, 0x00, 0x00, 0x00, 0x00,
+				      0x00, 0x00, 0x00, 0x00, 0x00,
+				      0x00, 0x00, 0x00, 0x00, 0x01 };
+      unsigned char expectedMin[DHT_ID_LENGTH];
+      memset(expectedMin, 0, DHT_ID_LENGTH);
+      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedMax, DHT_ID_LENGTH),
+			   Util::toHex(bucket->getMaxID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedMin, DHT_ID_LENGTH),
+			   Util::toHex(bucket->getMinID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL((size_t)159, bucket->getPrefixLength());
+    }
+  }
+  {
+    unsigned char localNodeID[DHT_ID_LENGTH];
+    memset(localNodeID, 0, DHT_ID_LENGTH);
+    localNodeID[0] = 0x80;
+    SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
     DHTBucket bucket(localNode);
     SharedHandle<DHTBucket> r = bucket.split();
     {
@@ -210,7 +268,8 @@ void DHTBucketTest::testSplit()
 			   Util::toHex(r->getMaxID(), DHT_ID_LENGTH));
       CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMin, DHT_ID_LENGTH),
 			   Util::toHex(r->getMinID(), DHT_ID_LENGTH));
-      CPPUNIT_ASSERT_EQUAL((size_t)1, r->getPrefixLength());
+      // prefixLength is not changed because bucket cannot include localNode
+      CPPUNIT_ASSERT_EQUAL((size_t)0, r->getPrefixLength());
     }
     {
       unsigned char expectedLMax[DHT_ID_LENGTH];
@@ -226,27 +285,7 @@ void DHTBucketTest::testSplit()
       CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getPrefixLength());
     }
   }
-  {
-    SharedHandle<DHTBucket> bucket(new DHTBucket(localNode));
-    for(int i = 0; i < 159; ++i) {
-      CPPUNIT_ASSERT(bucket->splitAllowed());
-      SharedHandle<DHTBucket> t = bucket;
-      bucket = bucket->split();
-      CPPUNIT_ASSERT(!t->splitAllowed());
-    }
-    CPPUNIT_ASSERT(!bucket->splitAllowed());
-    unsigned char expectedMax[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-				    0x00, 0x00, 0x00, 0x00, 0x00,
-				    0x00, 0x00, 0x00, 0x00, 0x00,
-				    0x00, 0x00, 0x00, 0x00, 0x01 };
-    unsigned char expectedMin[DHT_ID_LENGTH];
-    memset(expectedMin, 0, DHT_ID_LENGTH);
-    CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedMax, DHT_ID_LENGTH),
-			 Util::toHex(bucket->getMaxID(), DHT_ID_LENGTH));
-    CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedMin, DHT_ID_LENGTH),
-			 Util::toHex(bucket->getMinID(), DHT_ID_LENGTH));
-    CPPUNIT_ASSERT_EQUAL((size_t)159, bucket->getPrefixLength());
-  }
+
 }
 
 static void createID(unsigned char* id, unsigned char firstChar, unsigned char lastChar)

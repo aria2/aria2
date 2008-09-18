@@ -68,6 +68,9 @@ private:
   Time _lastUpdated;
 
   Logger* _logger;
+
+  bool isInRange(const unsigned char* nodeID,
+		 const unsigned char* max, const unsigned char* min) const;
 public:
   DHTBucket(const SharedHandle<DHTNode>& localNode);
 
