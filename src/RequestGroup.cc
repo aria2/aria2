@@ -972,9 +972,9 @@ void RequestGroup::reportDownloadFinished()
   _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
 		  getFilePath().c_str());
 #ifdef ENABLE_BITTORRENT
-  TransferStat stat = calculateStat();
   SharedHandle<BtContext> ctx = dynamic_pointer_cast<BtContext>(_downloadContext);
   if(!ctx.isNull()) {
+    TransferStat stat = calculateStat();
     double shareRatio = ((stat.getAllTimeUploadLength()*10)/getCompletedLength())/10.0;
     _logger->notice(MSG_SHARE_RATIO_REPORT,
 		    shareRatio,

@@ -1,5 +1,10 @@
 2008-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Moved `TransferStat stat = ...' to inside the `if' clause.
+	* src/RequestGroup.cc (RequestGroup::reportDownloadFinished)
+
+2008-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that a block in a piece is requested when same block is
 	already requested to the same peer in end game mode.
 	* src/BtRequestFactory.h
