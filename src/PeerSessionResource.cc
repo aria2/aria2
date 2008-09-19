@@ -53,8 +53,6 @@ PeerSessionResource::PeerSessionResource(size_t pieceLength, uint64_t totalLengt
   _extendedMessagingEnabled(false),
   _dhtEnabled(false),
   _latency(DEFAULT_LATENCY),
-  _uploadLength(0),
-  _downloadLength(0),
   _lastDownloadUpdate(0),
   _lastAmUnchoking(0)
 {}
@@ -305,24 +303,22 @@ void PeerSessionResource::updateLatency(unsigned int latency)
 
 uint64_t PeerSessionResource::uploadLength() const
 {
-  return _uploadLength;
+  return _peerStat.getSessionUploadLength();
 }
 
 void PeerSessionResource::updateUploadLength(size_t bytes)
 {
   _peerStat.updateUploadLength(bytes);
-  _uploadLength += bytes;
 }
 
 uint64_t PeerSessionResource::downloadLength() const
 {
-  return _downloadLength;
+  return _peerStat.getSessionDownloadLength();
 }
 
 void PeerSessionResource::updateDownloadLength(size_t bytes)
 {
   _peerStat.updateDownloadLength(bytes);
-  _downloadLength += bytes;
 
   _lastDownloadUpdate.reset();
 }

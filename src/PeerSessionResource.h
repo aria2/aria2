@@ -74,8 +74,6 @@ private:
   bool _dhtEnabled;
   PeerStat _peerStat;
   unsigned int _latency;
-  uint64_t _uploadLength;
-  uint64_t _downloadLength;
 
   Time _lastDownloadUpdate;
 

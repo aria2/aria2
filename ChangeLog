@@ -1,3 +1,11 @@
+2008-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Removed _uploadLength and _downloadLength from PeerSessionResource
+	and use PeerStat::_sessionUploadLength and
+	PeerStat::_sessionDownloadLength.
+	* src/PeerSessionResource.cc
+	* src/PeerSessionResource.h
+
 2008-09-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that prefixLength of split bucket which doesn't include
