@@ -42,7 +42,19 @@ public:
     return SharedHandle<Piece>(new Piece());
   }
 
+  virtual SharedHandle<Piece> getMissingPiece
+  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+  {
+    return SharedHandle<Piece>(new Piece());
+  }
+
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer) {
+    return SharedHandle<Piece>(new Piece());
+  }
+
+  virtual SharedHandle<Piece> getMissingFastPiece
+  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+  {
     return SharedHandle<Piece>(new Piece());
   }
 

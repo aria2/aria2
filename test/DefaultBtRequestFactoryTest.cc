@@ -25,6 +25,7 @@ class DefaultBtRequestFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequestMessages);
   CPPUNIT_TEST(testCreateRequestMessages_onEndGame);
   CPPUNIT_TEST(testRemoveTargetPiece);
+  CPPUNIT_TEST(testGetTargetPieceIndexes);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DefaultBtRequestFactory> btRequestFactory;
@@ -35,6 +36,7 @@ public:
   void testCreateRequestMessages();
   void testCreateRequestMessages_onEndGame();
   void testRemoveTargetPiece();
+  void testGetTargetPieceIndexes();
 
   class MockBtRequestMessage : public MockBtMessage {
   public:
@@ -232,6 +234,24 @@ void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {
   CPPUNIT_ASSERT(std::find(btRequestFactory->getTargetPieces().begin(),
 			   btRequestFactory->getTargetPieces().end(),
 			   piece1) == btRequestFactory->getTargetPieces().end());
+}
+
+void DefaultBtRequestFactoryTest::testGetTargetPieceIndexes()
+{
+  SharedHandle<Piece> piece1(new Piece(1, btContext->getPieceLength()));
+  SharedHandle<Piece> piece3(new Piece(3, btContext->getPieceLength()));
+  SharedHandle<Piece> piece5(new Piece(5, btContext->getPieceLength()));
+
+  btRequestFactory->addTargetPiece(piece3);
+  btRequestFactory->addTargetPiece(piece1);
+  btRequestFactory->addTargetPiece(piece5);
+
+  std::deque<size_t> indexes;
+  btRequestFactory->getTargetPieceIndexes(indexes);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, indexes.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, indexes[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, indexes[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)5, indexes[2]);
 }
 
 } // namespace aria2

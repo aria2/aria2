@@ -18,7 +18,9 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(DefaultPieceStorageTest);
   CPPUNIT_TEST(testGetTotalLength);
   CPPUNIT_TEST(testGetMissingPiece);
+  CPPUNIT_TEST(testGetMissingPiece_excludedIndexes);
   CPPUNIT_TEST(testGetMissingFastPiece);
+  CPPUNIT_TEST(testGetMissingFastPiece_excludedIndexes);
   CPPUNIT_TEST(testHasMissingPiece);
   CPPUNIT_TEST(testCompletePiece);
   CPPUNIT_TEST(testGetPiece);
@@ -56,7 +58,9 @@ public:
 
   void testGetTotalLength();
   void testGetMissingPiece();
+  void testGetMissingPiece_excludedIndexes();
   void testGetMissingFastPiece();
+  void testGetMissingFastPiece_excludedIndexes();
   void testHasMissingPiece();
   void testCompletePiece();
   void testGetPiece();
@@ -94,6 +98,28 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
   CPPUNIT_ASSERT(piece.isNull());
 }
 
+void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
+{
+  DefaultPieceStorage pss(btContext, option, false);
+  pss.setEndGamePieceNum(0);
+
+  peer->setAllBitfield();
+
+  std::deque<size_t> excludedIndexes;
+  excludedIndexes.push_back(1);
+
+  SharedHandle<Piece> piece = pss.getMissingPiece(peer, excludedIndexes);
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
+		       piece->toString());
+
+  piece = pss.getMissingPiece(peer, excludedIndexes);
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
+		       piece->toString());
+
+  piece = pss.getMissingPiece(peer, excludedIndexes);
+  CPPUNIT_ASSERT(piece.isNull());
+}
+
 void DefaultPieceStorageTest::testGetMissingFastPiece() {
   DefaultPieceStorage pss(btContext, option, false);
   pss.setEndGamePieceNum(0);
@@ -105,6 +131,28 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
   SharedHandle<Piece> piece = pss.getMissingFastPiece(peer);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
 		       piece->toString());
+
+  CPPUNIT_ASSERT(pss.getMissingFastPiece(peer).isNull());
+}
+
+void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
+{
+  DefaultPieceStorage pss(btContext, option, false);
+  pss.setEndGamePieceNum(0);
+
+  peer->setAllBitfield();
+  peer->setFastExtensionEnabled(true);
+  peer->addPeerAllowedIndex(1);
+  peer->addPeerAllowedIndex(2);
+
+  std::deque<size_t> excludedIndexes;
+  excludedIndexes.push_back(2);
+
+  SharedHandle<Piece> piece = pss.getMissingFastPiece(peer, excludedIndexes);
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
+		       piece->toString());
+  
+  CPPUNIT_ASSERT(pss.getMissingFastPiece(peer, excludedIndexes).isNull());
 }
 
 void DefaultPieceStorageTest::testHasMissingPiece() {

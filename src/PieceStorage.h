@@ -68,6 +68,14 @@ public:
   getMissingPiece(const SharedHandle<Peer>& peer) = 0;
 
   /**
+   * Same as getMissingPiece(const SharedHandle<Peer>& peer), but the indexes in
+   * excludedIndexes are excluded.
+   */
+  virtual SharedHandle<Piece> getMissingPiece
+  (const SharedHandle<Peer>& peer,
+   const std::deque<size_t>& excludedIndexes) = 0;
+
+  /**
    * Returns a piece that the peer has but localhost doesn't.
    * Only pieces that declared as "fast" are returned.
    * The piece will be marked "used" status in order to prevent other command
@@ -76,6 +84,14 @@ public:
    */
   virtual SharedHandle<Piece>
   getMissingFastPiece(const SharedHandle<Peer>& peer) = 0;
+  
+  /**
+   * Same as getMissingFastPiece(const SharedHandle<Peer>& peer), but the
+   * indexes in excludedIndexes are excluded.
+   */
+  virtual SharedHandle<Piece> getMissingFastPiece
+  (const SharedHandle<Peer>& peer,
+   const std::deque<size_t>& excludedIndexes) = 0;
 
   /**
    * Returns a missing piece if available. Otherwise returns 0;

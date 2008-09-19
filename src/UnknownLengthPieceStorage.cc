@@ -79,7 +79,19 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(const SharedHandl
   abort();
 }
 
+SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
+(const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+{
+  abort();
+}
+
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece(const SharedHandle<Peer>& peer)
+{
+  abort();
+}
+
+SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece
+(const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
 {
   abort();
 }

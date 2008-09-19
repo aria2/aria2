@@ -79,6 +79,9 @@ public:
    */
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
+  virtual SharedHandle<Piece> getMissingPiece
+  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+
   /**
    * Returns a piece that the peer has but localhost doesn't.
    * Only pieces that declared as "fast" are returned.
@@ -87,6 +90,9 @@ public:
    * to several commands.
    */
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
+
+  virtual SharedHandle<Piece> getMissingFastPiece
+  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
 
   /**
    * Returns a missing piece if available. Otherwise returns 0;

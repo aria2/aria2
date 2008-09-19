@@ -28,6 +28,8 @@ public:
 
   virtual void createRequestMessagesOnEndGame
   (std::deque<SharedHandle<BtMessage> >& requests, size_t max) {}
+
+  virtual void getTargetPieceIndexes(std::deque<size_t>& indexes) const {}
 };
 
 } // namespace aria2

@@ -83,8 +83,17 @@ private:
 
   SharedHandle<RarestPieceSelector> _pieceSelector;
 
-  bool getMissingPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
-  bool getMissingFastPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
+  bool getMissingPieceIndex(size_t& index,
+			    const unsigned char* bitfield, size_t& length);
+
+  SharedHandle<Piece> getMissingPiece(const unsigned char* bitfield,
+				      size_t length);
+
+  SharedHandle<Piece> getMissingPiece(const BitfieldMan& bitfield);
+
+  void createFastIndexBitfield(BitfieldMan& bitfield,
+			       const SharedHandle<Peer>& peer);
+
   SharedHandle<Piece> checkOutPiece(size_t index);
 //   size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
 //   void reduceUsedPieces(size_t upperBound);
@@ -108,6 +117,12 @@ public:
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
+
+  virtual SharedHandle<Piece> getMissingPiece
+  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+
+  virtual SharedHandle<Piece> getMissingFastPiece
+  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
 
   virtual SharedHandle<Piece> getMissingPiece();
 

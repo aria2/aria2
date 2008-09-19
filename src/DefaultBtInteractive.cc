@@ -295,25 +295,32 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
 
     if(peer->peerChoking()) {
       if(peer->isFastExtensionEnabled()) {
-
+	std::deque<size_t> excludedIndexes;
+	btRequestFactory->getTargetPieceIndexes(excludedIndexes);
 	while(numMissingBlock < maxMissingBlock) {
-	  PieceHandle piece = pieceStorage->getMissingFastPiece(peer);
+	  SharedHandle<Piece> piece =
+	    pieceStorage->getMissingFastPiece(peer, excludedIndexes);
 	  if(piece.isNull()) {
 	    break;
 	  } else {
 	    btRequestFactory->addTargetPiece(piece);
 	    numMissingBlock += piece->countMissingBlock();
+	    excludedIndexes.push_back(piece->getIndex());
 	  }
 	}
       }
     } else {
+      std::deque<size_t> excludedIndexes;
+      btRequestFactory->getTargetPieceIndexes(excludedIndexes);
       while(numMissingBlock < maxMissingBlock) {
-	PieceHandle piece = pieceStorage->getMissingPiece(peer);
+	SharedHandle<Piece> piece =
+	  pieceStorage->getMissingPiece(peer, excludedIndexes);
 	if(piece.isNull()) {
 	  break;
 	} else {
 	  btRequestFactory->addTargetPiece(piece);
 	  numMissingBlock += piece->countMissingBlock();
+	  excludedIndexes.push_back(piece->getIndex());
 	}
       }
     }

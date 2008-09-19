@@ -210,6 +210,13 @@ size_t DefaultBtRequestFactory::countMissingBlock()
 		       CountMissingBlock()).getNumMissingBlock();
 }
 
+void DefaultBtRequestFactory::getTargetPieceIndexes
+(std::deque<size_t>& indexes) const
+{
+  std::transform(pieces.begin(), pieces.end(), std::back_inserter(indexes),
+		 mem_fun_sh(&Piece::getIndex));
+}
+
 std::deque<SharedHandle<Piece> >& DefaultBtRequestFactory::getTargetPieces()
 {
   return pieces;

@@ -84,6 +84,8 @@ public:
   virtual void createRequestMessagesOnEndGame
   (std::deque<SharedHandle<BtMessage> >& requests, size_t max);
 
+  virtual void getTargetPieceIndexes(std::deque<size_t>& indexes) const;
+
   std::deque<SharedHandle<Piece> >& getTargetPieces();
 
   void setCuid(int32_t cuid)
