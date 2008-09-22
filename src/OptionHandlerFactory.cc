@@ -36,128 +36,897 @@
 #include "prefs.h"
 #include "OptionHandlerImpl.h"
 #include "array_fun.h"
-
-#define SH(X) SharedHandle<OptionHandler>(X)
+#include "usage_text.h"
+#include "A2STR.h"
+#include "Util.h"
+#include "help_tags.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 OptionHandlers OptionHandlerFactory::createOptionHandlers()
 {
   OptionHandlers handlers;
-
-
-  handlers.push_back(SH(new HttpProxyOptionHandler(PREF_HTTP_PROXY,
-						   PREF_HTTP_PROXY_HOST,
-						   PREF_HTTP_PROXY_PORT)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_USER)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_PASSWD)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_PROXY_USER)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_PROXY_PASSWD)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_HTTP_AUTH_SCHEME, V_BASIC)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_REFERER)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_RETRY_WAIT, 0, 60)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_FTP_USER)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_FTP_PASSWD)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_FTP_TYPE, V_BINARY, V_ASCII)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_FTP_VIA_HTTP_PROXY,
-						V_GET, V_TUNNEL)));
-  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_MIN_SEGMENT_SIZE, 1024)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_HTTP_PROXY_METHOD,
-						V_GET, V_TUNNEL)));
-  handlers.push_back(SH(new IntegerRangeOptionHandler(PREF_LISTEN_PORT, 1024, UINT16_MAX)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_FOLLOW_TORRENT, V_TRUE, V_MEM, V_FALSE)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_NO_PREALLOCATION)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_DIRECT_FILE_MAPPING)));
-  handlers.push_back(SH(new IntegerRangeOptionHandler(PREF_SELECT_FILE, 1, INT32_MAX)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_SEED_TIME, 0)));
-  handlers.push_back(SH(new FloatNumberOptionHandler(PREF_SEED_RATIO, 0.0)));
-  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_MAX_UPLOAD_LIMIT, 0)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_VERSION)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_LANGUAGE)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_OS)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_FOLLOW_METALINK, V_TRUE, V_MEM, V_FALSE)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_LOCATION)));
-  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_LOWEST_SPEED_LIMIT, 0)));
-  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_MAX_DOWNLOAD_LIMIT, 0)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ALLOW_OVERWRITE)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_CHECK_INTEGRITY)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_REALTIME_CHUNK_CHECKSUM)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_DAEMON)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_DIR)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_OUT)));
-  handlers.push_back(SH(new LogOptionHandler(PREF_LOG)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_SPLIT, 1, 16)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_TIMEOUT, 1, 600)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_MAX_TRIES, 0)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_FTP_PASV)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_SHOW_FILES)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_TORRENT_FILE)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_FILE)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_METALINK_SERVERS, 1)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_FILE_ALLOCATION,
-						V_NONE, V_PREALLOC)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_CONTINUE)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_USER_AGENT)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_NO_NETRC)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_INPUT_FILE)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_MAX_CONCURRENT_DOWNLOADS, 1, 45)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_LOAD_COOKIES)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_PEER_ID_PREFIX)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_FORCE_SEQUENTIAL)));  
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_AUTO_FILE_RENAMING)));  
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_PARAMETERIZED_URI)));  
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_HTTP_KEEP_ALIVE)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_HTTP_PIPELINING)));
-  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_NO_FILE_ALLOCATION_LIMIT, 0)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_DIRECT_IO)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ALLOW_PIECE_LENGTH_CHANGE)));
+  // General Options
   {
-    const std::string params[] = { V_HTTP, V_HTTPS, V_FTP, V_NONE };
-    handlers.push_back(SH(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
-						     std::deque<std::string>(&params[0], &params[arrayLength(params)]))));
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ALLOW_OVERWRITE,
+				    TEXT_ALLOW_OVERWRITE,
+				    V_FALSE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
   }
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_DHT)));
-  handlers.push_back(SH(new IntegerRangeOptionHandler(PREF_DHT_LISTEN_PORT, 1024, UINT16_MAX)));
-  handlers.push_back(SH(new HostPortOptionHandler(PREF_DHT_ENTRY_POINT,
-					       PREF_DHT_ENTRY_POINT_HOST,
-					       PREF_DHT_ENTRY_POINT_PORT)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_STOP, 0, INT32_MAX)));
-  handlers.push_back(SH(new ParameterOptionHandler(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN, V_ARC4)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_REQUIRE_CRYPTO)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_BT_REQUEST_PEER_SPEED_LIMIT, 0)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_BT_MAX_OPEN_FILES, 1)));
-  handlers.push_back(SH(new CumulativeOptionHandler(PREF_HEADER, "\n")));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_QUIET)));
-#ifdef ENABLE_ASYNC_DNS
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_ASYNC_DNS)));
-#endif // ENABLE_ASYNC_DNS
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_FTP_REUSE_CONNECTION)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_SUMMARY_INTERVAL, 0, INT32_MAX)));
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ALLOW_PIECE_LENGTH_CHANGE,
+				    TEXT_ALLOW_PIECE_LENGTH_CHANGE,
+				    V_FALSE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  } 
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ASYNC_DNS,
+				    TEXT_ASYNC_DNS,
+				    V_TRUE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_AUTO_FILE_RENAMING,
+				    TEXT_AUTO_FILE_RENAMING,
+				    V_TRUE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_AUTO_SAVE_INTERVAL,
+				    NO_DESCRIPTION,
+				    "60",
+				    1, 600,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_CHECK_INTEGRITY,
+				    TEXT_CHECK_INTEGRITY,
+				    V_FALSE));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_CONF_PATH,
+				    TEXT_CONF_PATH,
+				    Util::getHomeDir()+"/.aria2/aria2.conf"));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_CONTINUE,
+				    TEXT_CONTINUE,
+				    V_FALSE)); // TODO ommit?
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_DAEMON,
+				    TEXT_DAEMON,
+				    V_FALSE)); // TODO ommit?
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_DIR,
+				    TEXT_DIR,
+				    "."));
+    op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_DNS_TIMEOUT,
+				    NO_DESCRIPTION,
+				    "30",
+				    1, 60,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ENABLE_DIRECT_IO,
+				    TEXT_ENABLE_DIRECT_IO,
+				    V_FALSE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_FILE_ALLOCATION,
+				    TEXT_FILE_ALLOCATION,
+				    V_PREALLOC,
+				    V_NONE, V_PREALLOC));
+    op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_FORCE_SEQUENTIAL,
+				    TEXT_FORCE_SEQUENTIAL,
+				    V_FALSE));
+    op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_INPUT_FILE,
+				    TEXT_INPUT_FILE,
+				    NO_DEFAULT_VALUE,
+				    "FILENAME,-"));
+    op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_LOG,
+				    TEXT_LOG,
+				    NO_DEFAULT_VALUE,
+				    "FILENAME,-"));
+    op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
   {
     const std::string params[] = { V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR };
-    handlers.push_back(SH(new ParameterOptionHandler
-			  (PREF_LOG_LEVEL,
-			   std::deque<std::string>(&params[0],
-						   &params[arrayLength(params)]))));
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_LOG_LEVEL,
+				    TEXT_LOG_LEVEL,
+				    V_DEBUG,
+				    std::deque<std::string>
+				    (&params[0],
+				     &params[arrayLength(params)])));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
   }
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_SEED_UNVERIFIED)));
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_MAX_CONCURRENT_DOWNLOADS,
+				    TEXT_MAX_CONCURRENT_DOWNLOADS,
+				    "5",
+				    1, 45));
+    op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_MAX_DOWNLOAD_LIMIT,
+				    TEXT_MAX_DOWNLOAD_LIMIT,
+				    "0",
+				    0));
+    op->addTag(TAG_BITTORRENT);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_NO_CONF,
+				    TEXT_NO_CONF,
+				    V_FALSE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_NO_FILE_ALLOCATION_LIMIT,
+				    TEXT_NO_FILE_ALLOCATION_LIMIT,
+				    "5M",
+				    0));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_PARAMETERIZED_URI,
+				    TEXT_PARAMETERIZED_URI,
+				    V_FALSE));  
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_QUIET,
+				    TEXT_QUIET,
+				    V_FALSE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_REALTIME_CHUNK_CHECKSUM,
+				    TEXT_REALTIME_CHUNK_CHECKSUM,
+				    V_TRUE));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_STOP,
+				    TEXT_STOP,
+				    "0",
+				    0, INT32_MAX));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_SUMMARY_INTERVAL,
+				    TEXT_SUMMARY_INTERVAL,
+				    "60",
+				    0, INT32_MAX));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  // HTTP/FTP options
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_CONNECT_TIMEOUT,
+				    TEXT_CONNECT_TIMEOUT,
+				    "60",
+				    1, 600));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_LOWEST_SPEED_LIMIT,
+				    TEXT_LOWEST_SPEED_LIMIT,
+				    "0",
+				    0));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_MAX_FILE_NOT_FOUND,
+				    TEXT_MAX_FILE_NOT_FOUND,
+				    "0",
+				    0));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_MAX_TRIES,
+				    TEXT_MAX_TRIES,
+				    "5",
+				    0));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_OUT,
+				    TEXT_OUT,
+				    NO_DEFAULT_VALUE,
+				    "FILENAME"));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_REMOTE_TIME,
+				    TEXT_REMOTE_TIME,
+				    V_FALSE));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_RETRY_WAIT,
+				    TEXT_RETRY_WAIT,
+				    "5",
+				    0, 60));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_SEGMENT_SIZE,
+				    NO_DESCRIPTION,
+				    "1M",
+				    1024, -1,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_SERVER_STAT_IF,
+				    TEXT_SERVER_STAT_IF,
+				    NO_DEFAULT_VALUE,
+				    "FILENAME"));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_SERVER_STAT_OF,
+				    TEXT_SERVER_STAT_OF,
+				    NO_DEFAULT_VALUE,
+				    "FILENAME"));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_SERVER_STAT_TIMEOUT,
+				    TEXT_SERVER_STAT_TIMEOUT,
+				    "86400",
+				    0, INT32_MAX));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_SPLIT,
+				    TEXT_SPLIT,
+				    "5",
+				    1, 16));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_STARTUP_IDLE_TIME,
+				    NO_DESCRIPTION,
+				    "10",
+				    1, 60,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_TIMEOUT,
+				    TEXT_TIMEOUT,
+				    "60",
+				    1, 600));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
   {
     const std::string params[] = { V_INORDER, V_FEEDBACK };
-    handlers.push_back(SH(new ParameterOptionHandler
-			  (PREF_URI_SELECTOR,
-			   std::deque<std::string>
-			   (&params[0], &params[arrayLength(params)]))));
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_URI_SELECTOR,
+				    TEXT_URI_SELECTOR,
+				    V_INORDER,
+				    std::deque<std::string>
+				    (&params[0], &params[arrayLength(params)])));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
   }
-  handlers.push_back(SH(new NumberOptionHandler(PREF_SERVER_STAT_TIMEOUT,
-						0, INT32_MAX)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_SERVER_STAT_IF)));
-  handlers.push_back(SH(new DefaultOptionHandler(PREF_SERVER_STAT_OF)));
-  handlers.push_back(SH(new BooleanOptionHandler(PREF_REMOTE_TIME)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_CONNECT_TIMEOUT, 1, 600)));
-  handlers.push_back(SH(new NumberOptionHandler(PREF_MAX_FILE_NOT_FOUND, 0)));
-
+  // HTTP Specific Options
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ENABLE_HTTP_KEEP_ALIVE,
+				    TEXT_ENABLE_HTTP_KEEP_ALIVE,
+				    V_TRUE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ENABLE_HTTP_PIPELINING,
+				    TEXT_ENABLE_HTTP_PIPELINING,
+				    V_FALSE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new CumulativeOptionHandler
+				   (PREF_HEADER,
+				    TEXT_HEADER,
+				    NO_DEFAULT_VALUE,
+				    "\n"));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_HTTP_AUTH_SCHEME,
+				    TEXT_HTTP_AUTH_SCHEME,
+				    V_BASIC,
+				    V_BASIC));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_HTTP_PASSWD,
+				    TEXT_HTTP_PASSWD));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
+				   (PREF_HTTP_PROXY,
+				    TEXT_HTTP_PROXY,
+				    NO_DEFAULT_VALUE,
+				    PREF_HTTP_PROXY_HOST,
+				    PREF_HTTP_PROXY_PORT));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_HTTP_PROXY_USER,
+				    TEXT_HTTP_PROXY_USER));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_HTTP_PROXY_PASSWD,
+				    TEXT_HTTP_PROXY_PASSWD));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_HTTP_PROXY_METHOD,
+				    TEXT_HTTP_PROXY_METHOD,
+				    V_TUNNEL,
+				    V_GET, V_TUNNEL));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_HTTP_USER,
+				    TEXT_HTTP_USER));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_LOAD_COOKIES,
+				    TEXT_LOAD_COOKIES,
+				    NO_DEFAULT_VALUE,
+				    "FILENAME"));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_MAX_HTTP_PIPELINING,
+				    NO_DESCRIPTION,
+				    "2",
+				    1, 8,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_REFERER,
+				    TEXT_REFERER));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_USER_AGENT,
+				    TEXT_USER_AGENT,
+				    "aria2"));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  // FTP Specific Options
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_FTP_PASSWD,
+				    TEXT_FTP_PASSWD,
+				    "ARIA2USER@"));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }    
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_FTP_PASV,
+				    TEXT_FTP_PASV,
+				    V_FALSE)); // TODO ommit?
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_FTP_REUSE_CONNECTION,
+				    TEXT_FTP_REUSE_CONNECTION,
+				    V_TRUE));
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_FTP_TYPE,
+				    TEXT_FTP_TYPE,
+				    V_BINARY,
+				    V_BINARY, V_ASCII));
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_FTP_USER,
+				    TEXT_FTP_USER,
+				    "anonymous"));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_FTP_VIA_HTTP_PROXY,
+				    TEXT_FTP_VIA_HTTP_PROXY,
+				    V_TUNNEL,
+				    V_GET, V_TUNNEL));
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_NETRC_PATH,
+				    NO_DESCRIPTION,
+				    Util::getHomeDir()+"/.netrc",
+				    "/PATH/TO/NETRC",
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_NO_NETRC,
+				    TEXT_NO_NETRC,
+				    V_FALSE)); // TODO ommit?
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  // BitTorrent/Metalink Options
+  {
+    SharedHandle<OptionHandler> op(new IntegerRangeOptionHandler
+				   (PREF_SELECT_FILE,
+				    TEXT_SELECT_FILE,
+				    NO_DEFAULT_VALUE,
+				    1, INT32_MAX));
+    op->addTag(TAG_BITTORRENT);
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_SHOW_FILES,
+				    TEXT_SHOW_FILES,
+				    V_FALSE)); // TODO ommit?
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  // BitTorrent Specific Options
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_BT_KEEP_ALIVE_INTERVAL,
+				    NO_DESCRIPTION,
+				    "120",
+				    1, 120,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_BT_MAX_OPEN_FILES,
+				    TEXT_BT_MAX_OPEN_FILES,
+				    "100",
+				    1));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_BT_MIN_CRYPTO_LEVEL,
+				    TEXT_BT_MIN_CRYPTO_LEVEL,
+				    V_PLAIN,
+				    V_PLAIN, V_ARC4));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_BT_REQUEST_PEER_SPEED_LIMIT,
+				    TEXT_BT_REQUEST_PEER_SPEED_LIMIT,
+				    "50K",
+				    0));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_BT_REQUIRE_CRYPTO,
+				    TEXT_BT_REQUIRE_CRYPTO,
+				    V_FALSE));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_BT_REQUEST_TIMEOUT,
+				    NO_DESCRIPTION,
+				    "60",
+				    1, 600,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_BT_SEED_UNVERIFIED,
+				    TEXT_BT_SEED_UNVERIFIED,
+				    V_FALSE));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_BT_TIMEOUT,
+				    NO_DESCRIPTION,
+				    "180",
+				    1, 600,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_DIRECT_FILE_MAPPING,
+				    TEXT_DIRECT_FILE_MAPPING,
+				    V_TRUE));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HostPortOptionHandler
+				   (PREF_DHT_ENTRY_POINT,
+				    TEXT_DHT_ENTRY_POINT,
+				    NO_DEFAULT_VALUE,
+				    PREF_DHT_ENTRY_POINT_HOST,
+				    PREF_DHT_ENTRY_POINT_PORT));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_DHT_FILE_PATH,
+				    NO_DESCRIPTION,
+				    Util::getHomeDir()+"/.aria2/dht.dat",
+				    "/PATH/TO/DHT_DAT",
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new IntegerRangeOptionHandler
+				   (PREF_DHT_LISTEN_PORT,
+				    TEXT_DHT_LISTEN_PORT,
+				    "6881-6999",
+				    1024, UINT16_MAX));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ENABLE_DHT,
+				    TEXT_ENABLE_DHT,
+				    V_FALSE));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ENABLE_PEER_EXCHANGE,
+				    TEXT_ENABLE_PEER_EXCHANGE,
+				    V_TRUE));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_FOLLOW_TORRENT,
+				    TEXT_FOLLOW_TORRENT,
+				    V_TRUE,
+				    V_TRUE, V_MEM, V_FALSE));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new IntegerRangeOptionHandler
+				   (PREF_LISTEN_PORT,
+				    TEXT_LISTEN_PORT,
+				    "6881-6999",
+				    1024, UINT16_MAX));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_MAX_UPLOAD_LIMIT,
+				    TEXT_MAX_UPLOAD_LIMIT,
+				    "0",
+				    0));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_PEER_CONNECTION_TIMEOUT,
+				    NO_DESCRIPTION,
+				    "20",
+				    1, 600,
+				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_PEER_ID_PREFIX,
+				    TEXT_PEER_ID_PREFIX,
+				    "-aria2-"));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_SEED_TIME,
+				    TEXT_SEED_TIME,
+				    NO_DEFAULT_VALUE,
+				    0));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new FloatNumberOptionHandler
+				   (PREF_SEED_RATIO,
+				    TEXT_SEED_RATIO,
+				    "1.0",
+				    0.0));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_TORRENT_FILE,
+				    TEXT_TORRENT_FILE));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  // Metalink Specific Options
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_FOLLOW_METALINK,
+				    TEXT_FOLLOW_METALINK,
+				    V_TRUE,
+				    V_TRUE, V_MEM, V_FALSE));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_METALINK_ENABLE_UNIQUE_PROTOCOL,
+				    TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL,
+				    V_TRUE));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_METALINK_FILE,
+				    TEXT_METALINK_FILE));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_METALINK_LANGUAGE,
+				    TEXT_METALINK_LANGUAGE));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_METALINK_LOCATION,
+				    TEXT_METALINK_LOCATION));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_METALINK_OS,
+				    TEXT_METALINK_OS));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    const std::string params[] = { V_HTTP, V_HTTPS, V_FTP, V_NONE };
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_METALINK_PREFERRED_PROTOCOL,
+				    TEXT_METALINK_PREFERRED_PROTOCOL,
+				    V_NONE,
+				    std::deque<std::string>
+				    (&params[0], &params[arrayLength(params)])));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_METALINK_SERVERS,
+				    TEXT_METALINK_SERVERS,
+				    "5",
+				    1));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_METALINK_VERSION,
+				    TEXT_METALINK_VERSION));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  // Help Option
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   ("help",
+				    TEXT_HELP,
+				    TAG_BASIC,
+				    StringFormat("%s,%s,%s,%s,%s,%s,%s,all",
+						 TAG_BASIC,
+						 TAG_ADVANCED,
+						 TAG_HTTP,
+						 TAG_FTP,
+						 TAG_METALINK,
+						 TAG_BITTORRENT,
+						 TAG_HELP).str()));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_HELP);
+    handlers.push_back(op);
+  }
+  
   return handlers;
 }
 

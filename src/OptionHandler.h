@@ -39,6 +39,7 @@
 #include "SharedHandle.h"
 #include <string>
 #include <deque>
+#include <iosfwd>
 
 namespace aria2 {
 
@@ -50,10 +51,28 @@ public:
   
   virtual bool canHandle(const std::string& optName) = 0;
   virtual void parse(Option* option, const std::string& arg) = 0;
+
+  virtual std::string createPossibleValuesString() const = 0;
+
+  virtual bool hasTag(const std::string& tag) const = 0;
+
+  virtual void addTag(const std::string& tag) = 0;
+
+  virtual std::string toTagString() const = 0;
+
+  virtual const std::string& getName() const = 0;
+
+  virtual const std::string& getDescription() const = 0;
+
+  virtual const std::string& getDefaultValue() const = 0;
+
+  virtual bool isHidden() const = 0;
 };
 
 typedef SharedHandle<OptionHandler> OptionHandlerHandle;
 typedef std::deque<OptionHandlerHandle> OptionHandlers;
+
+std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler);
 
 } // namespace aria2
 

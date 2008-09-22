@@ -169,8 +169,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
 am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
-	SocketCoreTest.cc array_funTest.cc HelpItemTest.cc \
-	TaggedItemTest.cc TagContainerTest.cc Base64Test.cc \
+	SocketCoreTest.cc array_funTest.cc Base64Test.cc \
 	SequenceTest.cc a2functionalTest.cc FileEntryTest.cc \
 	PieceTest.cc SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
@@ -195,8 +194,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
-	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
-	MessageDigestHelperTest.cc \
+	OptionParserTest.cc GZipDecoderTest.cc \
+	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -335,11 +334,10 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_METALINK_TRUE@	MetalinkProcessorTest.$(OBJEXT)
 am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	SocketCoreTest.$(OBJEXT) array_funTest.$(OBJEXT) \
-	HelpItemTest.$(OBJEXT) TaggedItemTest.$(OBJEXT) \
-	TagContainerTest.$(OBJEXT) Base64Test.$(OBJEXT) \
-	SequenceTest.$(OBJEXT) a2functionalTest.$(OBJEXT) \
-	FileEntryTest.$(OBJEXT) PieceTest.$(OBJEXT) \
-	SegmentTest.$(OBJEXT) GrowSegmentTest.$(OBJEXT) \
+	Base64Test.$(OBJEXT) SequenceTest.$(OBJEXT) \
+	a2functionalTest.$(OBJEXT) FileEntryTest.$(OBJEXT) \
+	PieceTest.$(OBJEXT) SegmentTest.$(OBJEXT) \
+	GrowSegmentTest.$(OBJEXT) \
 	SingleFileAllocationIteratorTest.$(OBJEXT) \
 	DefaultBtProgressInfoFileTest.$(OBJEXT) \
 	SingleFileDownloadContextTest.$(OBJEXT) \
@@ -368,8 +366,9 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	NsCookieParserTest.$(OBJEXT) DirectDiskAdaptorTest.$(OBJEXT) \
 	CookieTest.$(OBJEXT) CookieStorageTest.$(OBJEXT) \
 	TimeTest.$(OBJEXT) CopyDiskAdaptorTest.$(OBJEXT) \
-	FtpConnectionTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5)
+	FtpConnectionTest.$(OBJEXT) OptionParserTest.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -566,8 +565,7 @@ target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
-	array_funTest.cc HelpItemTest.cc TaggedItemTest.cc \
-	TagContainerTest.cc Base64Test.cc SequenceTest.cc \
+	array_funTest.cc Base64Test.cc SequenceTest.cc \
 	a2functionalTest.cc FileEntryTest.cc PieceTest.cc \
 	SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
@@ -592,8 +590,8 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5)
+	OptionParserTest.cc $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -765,7 +763,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpItemTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestTest.Po@am__quote@
@@ -790,6 +787,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NsCookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PStringBuildVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterizedStringParserTest.Po@am__quote@
@@ -818,8 +816,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3MozCookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormatTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TagContainerTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaggedItemTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeTest.Po@am__quote@

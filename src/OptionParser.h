@@ -49,14 +49,33 @@ class OptionHandler;
 class OptionParser {
 private:
   std::deque<SharedHandle<OptionHandler> > _optionHandlers;
+
+  SharedHandle<OptionHandler>
+  getOptionHandlerByName(const std::string& optName);
 public:
   ~OptionParser() {}
 
-  SharedHandle<OptionHandler> getOptionHandlerByName(const std::string& optName);
-
   void parse(Option* option, std::istream& ios);
 
-  void setOptionHandlers(const std::deque<SharedHandle<OptionHandler> >& optionHandlers);
+  void parseDefaultValues(Option* option) const;
+
+  void setOptionHandlers
+  (const std::deque<SharedHandle<OptionHandler> >& optionHandlers);
+
+  void addOptionHandler(const SharedHandle<OptionHandler>& optionHandler);
+
+  std::deque<SharedHandle<OptionHandler> >
+  findByTag(const std::string& tag) const;
+
+  std::deque<SharedHandle<OptionHandler> >
+  findByNameSubstring(const std::string& substring) const;
+
+  std::deque<SharedHandle<OptionHandler> > findAll() const;
+
+  SharedHandle<OptionHandler>
+  findByName(const std::string& name) const;
+
+  const std::deque<SharedHandle<OptionHandler> >& getOptionHandlers() const;
 };
 
 typedef SharedHandle<OptionParser> OptionParserHandle;

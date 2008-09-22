@@ -37,6 +37,7 @@
 #include "OptionHandlerImpl.h"
 #include "Option.h"
 #include "A2STR.h"
+#include "a2functional.h"
 #include <istream>
 #include <utility>
 
@@ -71,6 +72,110 @@ OptionHandlerHandle OptionParser::getOptionHandlerByName(const std::string& optN
 void OptionParser::setOptionHandlers(const std::deque<SharedHandle<OptionHandler> >& optionHandlers)
 {
   _optionHandlers = optionHandlers;
+}
+
+void OptionParser::addOptionHandler
+(const SharedHandle<OptionHandler>& optionHandler)
+{
+  _optionHandlers.push_back(optionHandler);
+}
+
+void OptionParser::parseDefaultValues(Option* option) const
+{
+  for(std::deque<SharedHandle<OptionHandler> >::const_iterator i =
+	_optionHandlers.begin(); i != _optionHandlers.end(); ++i) {
+    if(!(*i)->getDefaultValue().empty()) {
+      (*i)->parse(option, (*i)->getDefaultValue());
+    }
+  }
+}
+
+class FindByTag :
+  public std::unary_function<SharedHandle<OptionHandler>, bool> {
+private:
+  std::string _tag;
+public:
+  FindByTag(const std::string& tag):_tag(tag) {}
+
+  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
+  {
+    return !optionHandler->isHidden() && optionHandler->hasTag(_tag);
+  }
+};
+
+std::deque<SharedHandle<OptionHandler> >
+OptionParser::findByTag(const std::string& tag) const
+{
+  std::deque<SharedHandle<OptionHandler> > result;
+  std::remove_copy_if(_optionHandlers.begin(), _optionHandlers.end(),
+		      std::back_inserter(result),
+		      std::not1(FindByTag(tag)));
+  return result;
+}
+
+class FindByNameSubstring :
+  public std::unary_function<SharedHandle<OptionHandler> , bool> {
+private:
+  std::string _substring;
+public:
+  FindByNameSubstring(const std::string& substring):_substring(substring) {}
+
+  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
+  {
+    return !optionHandler->isHidden() &&
+      optionHandler->getName().find(_substring) != std::string::npos;
+  }
+};
+
+std::deque<SharedHandle<OptionHandler> >
+OptionParser::findByNameSubstring(const std::string& substring) const
+{
+  std::deque<SharedHandle<OptionHandler> > result;
+  std::remove_copy_if(_optionHandlers.begin(), _optionHandlers.end(),
+		      std::back_inserter(result),
+		      std::not1(FindByNameSubstring(substring)));
+  return result;  
+}
+
+class FindByName :
+  public std::unary_function<SharedHandle<OptionHandler> , bool> {
+private:
+  std::string _name;
+public:
+  FindByName(const std::string& name):_name(name) {}
+
+  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
+  {
+    return !optionHandler->isHidden() && optionHandler->getName() == _name;
+  }
+};
+
+std::deque<SharedHandle<OptionHandler> > OptionParser::findAll() const
+{
+  std::deque<SharedHandle<OptionHandler> > result;
+  std::remove_copy_if(_optionHandlers.begin(), _optionHandlers.end(),
+		      std::back_inserter(result),
+		      mem_fun_sh(&OptionHandler::isHidden));
+  return result;
+}
+
+SharedHandle<OptionHandler>
+OptionParser::findByName(const std::string& name) const
+{
+  std::deque<SharedHandle<OptionHandler> >::const_iterator i =
+    std::find_if(_optionHandlers.begin(), _optionHandlers.end(),
+		 FindByName(name));
+  if(i == _optionHandlers.end()) {
+    return SharedHandle<OptionHandler>();
+  } else {
+    return *i;
+  }
+}
+
+const std::deque<SharedHandle<OptionHandler> >&
+OptionParser::getOptionHandlers() const
+{
+  return _optionHandlers;
 }
 
 } // namespace aria2

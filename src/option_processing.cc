@@ -58,7 +58,7 @@ extern int optind, opterr, optopt;
 namespace aria2 {
 
 extern void showVersion();
-extern void showUsage(const std::string& category, const Option* option);
+extern void showUsage(const std::string& keyword, const OptionParser& oparser);
 
 static std::string toBoolArg(const char* optarg)
 {
@@ -71,109 +71,24 @@ static std::string toBoolArg(const char* optarg)
   return arg;
 }
 
-Option* createDefaultOption()
-{
-  Option* op = new Option();
-  op->put(PREF_STDOUT_LOG, V_FALSE);
-  op->put(PREF_DIR, ".");
-  op->put(PREF_SPLIT, "5");
-  op->put(PREF_DAEMON, V_FALSE);
-  op->put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
-  op->put(PREF_LISTEN_PORT, "6881-6999");
-  op->put(PREF_METALINK_SERVERS, "5");
-  op->put(PREF_FOLLOW_TORRENT,
-#ifdef ENABLE_BITTORRENT
-	  V_TRUE
-#else
-	  V_FALSE
-#endif // ENABLE_BITTORRENT
-	  );
-  op->put(PREF_FOLLOW_METALINK,
-#ifdef ENABLE_METALINK
-	  V_TRUE
-#else
-	  V_FALSE
-#endif // ENABLE_METALINK
-	  );
-  op->put(PREF_RETRY_WAIT, "5");
-  op->put(PREF_TIMEOUT, "60");
-  op->put(PREF_DNS_TIMEOUT, "30");
-  op->put(PREF_CONNECT_TIMEOUT, "60");
-  op->put(PREF_PEER_CONNECTION_TIMEOUT, "20");
-  op->put(PREF_BT_TIMEOUT, "180");
-  op->put(PREF_BT_REQUEST_TIMEOUT, "60");
-  op->put(PREF_BT_KEEP_ALIVE_INTERVAL, "120");
-  op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
-  op->put(PREF_MAX_TRIES, "5");
-  op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
-  op->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
-  op->put(PREF_FTP_TYPE, V_BINARY);
-  op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
-  op->put(PREF_AUTO_SAVE_INTERVAL, "60");
-  op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
-  op->put(PREF_LOWEST_SPEED_LIMIT, "0");
-  op->put(PREF_MAX_DOWNLOAD_LIMIT, "0");
-  op->put(PREF_MAX_UPLOAD_LIMIT, "0");
-  op->put(PREF_STARTUP_IDLE_TIME, "10");
-  op->put(PREF_TRACKER_MAX_TRIES, "10");
-  op->put(PREF_FILE_ALLOCATION, V_PREALLOC);
-  op->put(PREF_NO_FILE_ALLOCATION_LIMIT, "5242880"); // 5MiB
-  op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
-  op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
-  op->put(PREF_CHECK_INTEGRITY, V_FALSE);
-  op->put(PREF_NETRC_PATH, Util::getHomeDir()+"/.netrc");
-  op->put(PREF_CONTINUE, V_FALSE);
-  op->put(PREF_USER_AGENT, "aria2");
-  op->put(PREF_NO_NETRC, V_FALSE);
-  op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "5");
-  op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "300");
-  op->put(PREF_FORCE_SEQUENTIAL, V_FALSE);
-  op->put(PREF_AUTO_FILE_RENAMING, V_TRUE);
-  op->put(PREF_PARAMETERIZED_URI, V_FALSE);
-  op->put(PREF_ENABLE_HTTP_KEEP_ALIVE, V_TRUE);
-  op->put(PREF_ENABLE_HTTP_PIPELINING, V_FALSE);
-  op->put(PREF_MAX_HTTP_PIPELINING, "2");
-  op->put(PREF_SEED_RATIO, "1.0");
-  op->put(PREF_ENABLE_DIRECT_IO, V_FALSE);
-  op->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_FALSE);
-  op->put(PREF_METALINK_PREFERRED_PROTOCOL, V_NONE);
-  op->put(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL, V_TRUE);
-  op->put(PREF_ENABLE_PEER_EXCHANGE, V_TRUE);
-  op->put(PREF_ENABLE_DHT, V_FALSE);
-  op->put(PREF_DHT_LISTEN_PORT, "6881-6999");
-  op->put(PREF_DHT_FILE_PATH, Util::getHomeDir()+"/.aria2/dht.dat");
-  op->put(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
-  op->put(PREF_BT_REQUIRE_CRYPTO, V_FALSE);
-  op->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT, "51200");
-  op->put(PREF_BT_MAX_OPEN_FILES, "100");
-  op->put(PREF_BT_SEED_UNVERIFIED, V_FALSE);
-  op->put(PREF_QUIET, V_FALSE);
-  op->put(PREF_STOP, "0");
-#ifdef ENABLE_ASYNC_DNS
-  op->put(PREF_ASYNC_DNS, V_TRUE);
-#else
-  op->put(PREF_ASYNC_DNS, V_FALSE);
-#endif // ENABLE_ASYNC_DNS
-  op->put(PREF_FTP_REUSE_CONNECTION, V_TRUE);
-  op->put(PREF_SUMMARY_INTERVAL, "60");
-  op->put(PREF_LOG_LEVEL, V_DEBUG);
-  op->put(PREF_URI_SELECTOR, V_INORDER);
-  op->put(PREF_SERVER_STAT_TIMEOUT, "86400");// 1day
-  op->put(PREF_REMOTE_TIME, V_FALSE);
-  op->put(PREF_MAX_FILE_NOT_FOUND, "0");
-  return op;
-}
-
 Option* option_processing(int argc, char* const argv[])
 {
   std::stringstream cmdstream;
   int32_t c;
-  Option* op = createDefaultOption();
+  Option* op = new Option();
 
   // following options are not parsed by OptionHandler and not stored in Option.
   bool noConf = false;
-  std::string defaultCfname = Util::getHomeDir()+"/.aria2/aria2.conf";
   std::string ucfname;
+
+  OptionParser oparser;
+  oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
+  try {
+    oparser.parseDefaultValues(op);
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
+    exit(EXIT_FAILURE);
+  }
 
   while(1) {
     int optIndex = 0;
@@ -575,25 +490,23 @@ Option* option_processing(int argc, char* const argv[])
 	} else {
 	  category = optarg;
 	}
-	showUsage(category, createDefaultOption());
+	showUsage(category, oparser);
 	exit(EXIT_SUCCESS);
       }
     default:
-      showUsage(TAG_HELP, op);
+      showUsage(TAG_HELP, oparser);
       exit(EXIT_FAILURE);
     }
   }
 
   {
-    OptionParser oparser;
     oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
     if(!noConf) {
-      std::string cfname;
-      if(ucfname.size()) {
-	cfname = ucfname;
-      } else {
-	cfname = defaultCfname;
-      }
+      std::string cfname = 
+	ucfname.empty() ?
+	oparser.findByName(PREF_CONF_PATH)->getDefaultValue():
+	ucfname;
+
       if(File(cfname).isFile()) {
 	std::ifstream cfstream(cfname.c_str());
 	try {
@@ -603,16 +516,19 @@ Option* option_processing(int argc, char* const argv[])
 		    << e.stackTrace() << std::endl;
 	  exit(EXIT_FAILURE);
 	}
-      } else if(ucfname.size()) {
-	std::cout << StringFormat("Configuration file %s is not found.", cfname.c_str())
+      } else if(!ucfname.empty()) {
+	std::cerr << StringFormat("Configuration file %s is not found.",
+				  cfname.c_str())
 		  << "\n";
+	showUsage(TAG_HELP, oparser);
+	exit(EXIT_FAILURE);
       }
     }
     try {
       oparser.parse(op, cmdstream);
     } catch(Exception& e) {
       std::cerr << e.stackTrace() << std::endl;
-      showUsage(TAG_HELP, op);
+      showUsage(TAG_HELP, oparser);
       exit(EXIT_FAILURE);
     }
   }
@@ -632,7 +548,7 @@ Option* option_processing(int argc, char* const argv[])
      !op->defined(PREF_INPUT_FILE)) {
     if(optind == argc) {
       std::cerr << MSG_URI_REQUIRED << std::endl;
-      showUsage(TAG_HELP, op);
+      showUsage(TAG_HELP, oparser);
       exit(EXIT_FAILURE);
     }
   }

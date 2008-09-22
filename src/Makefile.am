@@ -76,7 +76,7 @@ SRCS =  Socket.h\
 	AuthConfigFactory.cc AuthConfigFactory.h\
 	OptionParser.cc OptionParser.h\
 	OptionHandlerFactory.cc OptionHandlerFactory.h\
-	OptionHandler.h\
+	OptionHandler.cc OptionHandler.h\
 	OptionHandlerImpl.h\
 	NameMatchOptionHandler.h\
 	NameResolver.cc NameResolver.h\
@@ -152,10 +152,6 @@ SRCS =  Socket.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h\
 	ServerHost.cc ServerHost.h\
-	HelpItem.cc HelpItem.h\
-	TaggedItem.cc TaggedItem.h\
-	TagContainer.cc TagContainer.h\
-	HelpItemFactory.cc HelpItemFactory.h\
 	DownloadContext.cc DownloadContext.h\
 	SingleFileDownloadContext.cc SingleFileDownloadContext.h\
 	TimedHaltCommand.cc TimedHaltCommand.h\

@@ -42,8 +42,12 @@
 #include "prefs.h"
 #include "Option.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #include <utility>
 #include <algorithm>
+#include <numeric>
+#include <sstream>
+#include <iterator>
 
 namespace aria2 {
 
@@ -54,11 +58,31 @@ public:
   virtual bool canHandle(const std::string& optName) { return true; }
 
   virtual void parse(Option* option, const std::string& arg) {}
+
+  virtual bool hasTag(const std::string& tag) const { return false; }
+
+  virtual void addTag(const std::string& tag) {}
+
+  virtual std::string toTagString() const { return A2STR::NIL; }
+
+  virtual const std::string& getName() const { return A2STR::NIL; }
+
+  virtual const std::string& getDescription() const { return A2STR::NIL; }
+
+  virtual const std::string& getDefaultValue() const { return A2STR::NIL; }
+
+  virtual std::string createPossibleValuesString() const { return A2STR::NIL; }
+
+  virtual bool isHidden() const { return true; }
 };
 
 class BooleanOptionHandler : public NameMatchOptionHandler {
 public:
-  BooleanOptionHandler(const std::string& optName):NameMatchOptionHandler(optName) {}
+  BooleanOptionHandler(const std::string& optName,
+		       const std::string& description = NO_DESCRIPTION,
+		       const std::string& defaultValue = NO_DEFAULT_VALUE):
+    NameMatchOptionHandler(optName, description, defaultValue) {}
+
   virtual ~BooleanOptionHandler() {}
 
   virtual void parseArg(Option* option, const std::string& optarg)
@@ -72,6 +96,11 @@ public:
       throw FatalException(msg);
     }
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return "true,false";
+  }
 };
 
 class IntegerRangeOptionHandler : public NameMatchOptionHandler {
@@ -79,7 +108,12 @@ private:
   int32_t _min;
   int32_t _max;
 public:
-  IntegerRangeOptionHandler(const std::string& optName, int32_t min, int32_t max):NameMatchOptionHandler(optName), _min(min), _max(max) {}
+  IntegerRangeOptionHandler(const std::string& optName,
+			    const std::string& description,
+			    const std::string& defaultValue,
+			    int32_t min, int32_t max):
+    NameMatchOptionHandler(optName, description, defaultValue),
+    _min(min), _max(max) {}
 
   virtual ~IntegerRangeOptionHandler() {}
 
@@ -97,6 +131,11 @@ public:
       option->put(_optName, optarg);
     }
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return Util::itos(_min)+"-"+Util::itos(_max);
+  }
 };
 
 class NumberOptionHandler : public NameMatchOptionHandler {
@@ -104,7 +143,14 @@ private:
   int64_t _min;
   int64_t _max;
 public:
-  NumberOptionHandler(const std::string& optName, int64_t min = -1, int64_t max = -1):NameMatchOptionHandler(optName), _min(min), _max(max) {}
+  NumberOptionHandler(const std::string& optName,
+		      const std::string& description = NO_DESCRIPTION,
+		      const std::string& defaultValue = NO_DEFAULT_VALUE,
+		      int64_t min = -1,
+		      int64_t max = -1,
+		      bool hidden = false):
+    NameMatchOptionHandler(optName, description, defaultValue, hidden),
+    _min(min), _max(max) {}
 
   virtual ~NumberOptionHandler() {}
 
@@ -135,11 +181,23 @@ public:
       throw FatalException(msg);
     }
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return (_min == -1 ? "*" : Util::itos(_min))+"-"+
+      (_max == -1 ? "*" : Util::itos(_max));
+  }
 };
 
 class UnitNumberOptionHandler : public NumberOptionHandler {
 public:
-  UnitNumberOptionHandler(const std::string& optName, int64_t min = -1, int64_t max = -1):NumberOptionHandler(optName, min, max) {}
+  UnitNumberOptionHandler(const std::string& optName,
+			  const std::string& description = NO_DESCRIPTION,
+			  const std::string& defaultValue = NO_DEFAULT_VALUE,
+			  int64_t min = -1,
+			  int64_t max = -1,
+			  bool hidden = false):
+    NumberOptionHandler(optName, description, defaultValue, min, max, hidden) {}
 
   virtual ~UnitNumberOptionHandler() {}
 
@@ -155,7 +213,12 @@ private:
   double _min;
   double _max;
 public:
-  FloatNumberOptionHandler(const std::string& optName, double min = -1, double max = -1):NameMatchOptionHandler(optName), _min(min), _max(max) {}
+  FloatNumberOptionHandler(const std::string& optName,
+			   const std::string& description = NO_DESCRIPTION,
+			   const std::string& defaultValue = NO_DEFAULT_VALUE,
+			   double min = -1, double max = -1):
+    NameMatchOptionHandler(optName, description, defaultValue),
+    _min(min), _max(max) {}
 
   virtual ~FloatNumberOptionHandler() {}
 
@@ -181,11 +244,40 @@ public:
       throw FatalException(msg);
     }
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    std::string valuesString;
+    if(_min < 0) {
+      valuesString += "*";
+    } else {
+      char buf[11];
+      snprintf(buf, sizeof(buf), "%.1f", _min);
+      valuesString += buf;
+    }
+    valuesString += "-";
+    if(_max < 0) {
+      valuesString += "*";
+    } else {
+      char buf[11];
+      snprintf(buf, sizeof(buf), "%.1f", _max);
+      valuesString += buf;
+    }
+    return valuesString;
+  }
 };
 
 class DefaultOptionHandler : public NameMatchOptionHandler {
+private:
+  std::string _possibleValuesString;
 public:
-  DefaultOptionHandler(const std::string& optName):NameMatchOptionHandler(optName) {}
+  DefaultOptionHandler(const std::string& optName,
+		       const std::string& description = NO_DESCRIPTION,
+		       const std::string& defaultValue = NO_DEFAULT_VALUE,
+		       const std::string& possibleValuesString = A2STR::NIL,
+		       bool hidden = false):
+    NameMatchOptionHandler(optName, description, defaultValue, hidden),
+    _possibleValuesString(possibleValuesString) {}
 
   virtual ~DefaultOptionHandler() {}
 
@@ -193,16 +285,27 @@ public:
   {
     option->put(_optName, optarg);
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return _possibleValuesString;
+  }
 };
 
 class CumulativeOptionHandler : public NameMatchOptionHandler {
 private:
   std::string _delim;
+
+  std::string _possibleValuesString;
 public:
   CumulativeOptionHandler(const std::string& optName,
-			  const std::string& delim):
-    NameMatchOptionHandler(optName),
-    _delim(delim) {}
+			  const std::string& description,
+			  const std::string& defaultValue,
+			  const std::string& delim,
+			  const std::string& possibleValuesString = A2STR::NIL):
+    NameMatchOptionHandler(optName, description, defaultValue),
+    _delim(delim),
+    _possibleValuesString(possibleValuesString) {}
 
   virtual ~CumulativeOptionHandler() {}
 
@@ -212,35 +315,51 @@ public:
     value += optarg+_delim;
     option->put(_optName, value);
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return _possibleValuesString;
+  }
 };
 
 class ParameterOptionHandler : public NameMatchOptionHandler {
 private:
   std::deque<std::string> _validParamValues;
 public:
-  ParameterOptionHandler(const std::string& optName, const std::deque<std::string>& validParamValues):
-    NameMatchOptionHandler(optName), _validParamValues(validParamValues) {}
+  ParameterOptionHandler(const std::string& optName,
+			 const std::string& description,
+			 const std::string& defaultValue,
+			 const std::deque<std::string>& validParamValues):
+    NameMatchOptionHandler(optName, description, defaultValue),
+    _validParamValues(validParamValues) {}
 
-  ParameterOptionHandler(const std::string& optName, const std::string& validParamValue):
-    NameMatchOptionHandler(optName)
+  ParameterOptionHandler(const std::string& optName,
+			 const std::string& description,
+			 const std::string& defaultValue,
+			 const std::string& validParamValue):
+    NameMatchOptionHandler(optName, description, defaultValue)
   {
     _validParamValues.push_back(validParamValue);
   }
 
   ParameterOptionHandler(const std::string& optName,
+			 const std::string& description,
+			 const std::string& defaultValue,
 			 const std::string& validParamValue1,
 			 const std::string& validParamValue2):
-    NameMatchOptionHandler(optName)
+    NameMatchOptionHandler(optName, description, defaultValue)
   {
     _validParamValues.push_back(validParamValue1);
     _validParamValues.push_back(validParamValue2);
   }
 
   ParameterOptionHandler(const std::string& optName,
+			 const std::string& description,
+			 const std::string& defaultValue,
 			 const std::string& validParamValue1,
 			 const std::string& validParamValue2,
 			 const std::string& validParamValue3):
-    NameMatchOptionHandler(optName)
+    NameMatchOptionHandler(optName, description, defaultValue)
   {
     _validParamValues.push_back(validParamValue1);
     _validParamValues.push_back(validParamValue2);
@@ -268,6 +387,14 @@ public:
       option->put(_optName, optarg);
     }
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    std::stringstream s;
+    std::copy(_validParamValues.begin(), _validParamValues.end(),
+	      std::ostream_iterator<std::string>(s, ","));
+    return Util::trim(s.str(), ", ");
+  }
 };
 
 class HostPortOptionHandler : public NameMatchOptionHandler {
@@ -277,9 +404,11 @@ private:
   std::string _portOptionName;
 public:
   HostPortOptionHandler(const std::string& optName,
+			const std::string& description,
+			const std::string& defaultValue,
 			const std::string& hostOptionName,
 			const std::string& portOptionName):
-    NameMatchOptionHandler(optName),
+    NameMatchOptionHandler(optName, description, defaultValue),
     _hostOptionName(hostOptionName),
     _portOptionName(portOptionName) {}
 
@@ -302,14 +431,23 @@ public:
     option->put(_hostOptionName, hostname);
     option->put(_portOptionName, Util::uitos(port));
   }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return "HOST:PORT";
+  }
 };
 
 class HttpProxyOptionHandler : public HostPortOptionHandler {
 public:
   HttpProxyOptionHandler(const std::string& optName,
+			 const std::string& description,
+			 const std::string& defaultValue,
 			 const std::string& hostOptionName,
 			 const std::string& portOptionName):
-    HostPortOptionHandler(optName, hostOptionName, portOptionName) {}
+    HostPortOptionHandler(optName, description, defaultValue,
+			  hostOptionName, portOptionName)
+  {}
 
   virtual ~HttpProxyOptionHandler() {}
 
@@ -317,22 +455,6 @@ public:
   {
     HostPortOptionHandler::parseArg(option, optarg);
     option->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
-  }
-};
-
-class LogOptionHandler : public NameMatchOptionHandler {
-public:
-  LogOptionHandler(const std::string& optName):NameMatchOptionHandler(optName) {}
-
-  virtual ~LogOptionHandler() {}
-
-  virtual void parseArg(Option* option, const std::string& optarg)
-  {
-    if("-" == optarg) {
-      option->put(PREF_STDOUT_LOG, V_TRUE);
-    } else {
-      option->put(PREF_LOG, optarg);
-    }
   }
 };
 

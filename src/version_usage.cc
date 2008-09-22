@@ -39,12 +39,11 @@
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include "TagContainer.h"
-#include "HelpItem.h"
-#include "HelpItemFactory.h"
 #include "help_tags.h"
 #include "prefs.h"
 #include "StringFormat.h"
+#include "OptionParser.h"
+#include "OptionHandler.h"
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -73,42 +72,50 @@ void showVersion() {
 	    << std::endl;
 }
 
-void showUsage(const std::string& category, const Option* option) {
-  std::cout << StringFormat(_("Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."), PACKAGE_NAME) << "\n"
+void showUsage(const std::string& keyword, const OptionParser& oparser) {
+  std::cout << StringFormat(_("Usage: %s [OPTIONS] [URL | TORRENT_FILE |"
+			      " METALINK_FILE]..."), PACKAGE_NAME) << "\n"
 	    << "\n";
 
-  SharedHandle<TagContainer> tc = HelpItemFactory::createHelpItems(option);
-  std::deque<SharedHandle<TaggedItem> > items =
-    category == V_ALL ? tc->getAllItems() : tc->search(category);
-  if(items.size() > 0) {
-    if(category == V_ALL) {
+  std::deque<SharedHandle<OptionHandler> > handlers =
+    keyword == V_ALL ? oparser.findAll():oparser.findByTag(keyword);
+  if(handlers.empty()) {
+    std::deque<SharedHandle<OptionHandler> > handlers =
+      oparser.findByNameSubstring(keyword);
+    if(!handlers.empty()) {
+      std::cout << StringFormat(_("Printing options whose name includes"
+				  " '%s'."), keyword.c_str())
+		<< "\n"
+		<< _("Options:") << "\n";
+      std::copy(handlers.begin(), handlers.end(),
+		std::ostream_iterator<SharedHandle<OptionHandler> >
+		(std::cout, "\n\n"));
+    } else {
+      std::cout << StringFormat(_("No help category or option name matching"
+				  " with '%s'."), keyword.c_str())
+		<< "\n" << oparser.findByName("help") << "\n";
+    }
+  } else {
+    if(keyword == V_ALL) {
       std::cout << _("Printing all options.");
     } else {
-      std::cout << StringFormat(_("Printing options tagged with '%s'."), category.c_str());
+      std::cout << StringFormat(_("Printing options tagged with '%s'."),
+				keyword.c_str());
       std::cout << "\n";
-      SharedHandle<HelpItem> helpItem
-	(dynamic_pointer_cast<HelpItem>(tc->nameMatch("help")));
-      std::cout << StringFormat(_("See -h option to know other command-line options(%s)."),
-				helpItem->getAvailableValues().c_str());
+      SharedHandle<OptionHandler> help = oparser.findByName("help");
+      std::cout << StringFormat(_("See -h option to know other command-line"
+				  " options(%s)."),
+				help->createPossibleValuesString().c_str());
     }
     std::cout << "\n"
 	      << _("Options:") << "\n";
 
-    std::copy(items.begin(), items.end(), std::ostream_iterator<SharedHandle<TaggedItem> >(std::cout, "\n"));
-
-  } else {
-    std::deque<SharedHandle<TaggedItem> > items = tc->nameMatchForward(category);
-    if(items.size() > 0) {
-      std::cout << StringFormat(_("Printing options whose name starts with '%s'."), category.c_str())
-		<< "\n"
-		<< _("Options:") << "\n";
-      std::copy(items.begin(), items.end(), std::ostream_iterator<SharedHandle<TaggedItem> >(std::cout, "\n"));
-    } else {
-      std::cout << StringFormat(_("No help category or option name matching with '%s'."), category.c_str())
-		<< "\n" << tc->nameMatch("help") << "\n";
-    }
+    std::copy(handlers.begin(), handlers.end(),
+	      std::ostream_iterator<SharedHandle<OptionHandler> >
+	      (std::cout, "\n\n"));
   }
-  if(category == TAG_BASIC) {
+
+  if(keyword == TAG_BASIC) {
     std::cout << "\n"
 	      << "URL, TORRENT_FILE, METALINK_FILE:" << "\n"
 	      << _(" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"

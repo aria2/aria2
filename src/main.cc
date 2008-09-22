@@ -348,9 +348,9 @@ int main(int argc, char* argv[])
 
   SimpleRandomizer::init();
   BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
-  if(op->getAsBool(PREF_STDOUT_LOG)) {
+  if(op->get(PREF_LOG) == "-") {
     LogFactory::setLogFile(DEV_STDOUT);
-  } else if(op->get(PREF_LOG).size()) {
+  } else if(!op->get(PREF_LOG).empty()) {
     LogFactory::setLogFile(op->get(PREF_LOG));
   } else {
     LogFactory::setLogFile(DEV_NULL);

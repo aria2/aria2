@@ -51,13 +51,11 @@ _(" -s, --split=N                Download a file using N connections. If more\n"
   "                              simultaneously. Please see -j option too.")
 #define TEXT_RETRY_WAIT \
 _(" --retry-wait=SEC             Set the seconds to wait to retry after an error\n"\
-  "                              has occured. Specify a value between 0 and 60.\n"\
-  "                              Default: 5")
+  "                              has occured.")
 #define TEXT_TIMEOUT \
-_(" -t, --timeout=SEC            Set timeout in seconds. Default: 60")
+_(" -t, --timeout=SEC            Set timeout in seconds.")
 #define TEXT_MAX_TRIES \
-_(" -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"\
-  "                              Default: 5")
+_(" -m, --max-tries=N            Set number of tries. 0 means unlimited.")
 #define TEXT_HTTP_PROXY \
 _(" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs.")
 #define TEXT_HTTP_USER \
@@ -69,50 +67,38 @@ _(" --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs.")
 #define TEXT_HTTP_PROXY_PASSWD \
 _(" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs.")
 #define TEXT_HTTP_PROXY_METHOD \
-_(" --http-proxy-method=METHOD   Set the method to use in proxy request.\n"\
-  "                              METHOD is either 'get' or 'tunnel'.\n"\
-  "                              Default: tunnel")
+_(" --http-proxy-method=METHOD   Set the method to use in proxy request.")
 #define TEXT_HTTP_AUTH_SCHEME \
 _(" --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic\n"\
-  "                              is the only supported scheme.\n"\
-  "                              Default: basic")
+  "                              is the only supported scheme.")
 #define TEXT_REFERER \
 _(" --referer=REFERER            Set Referer. This affects all URLs.")
 #define TEXT_FTP_USER \
-_(" --ftp-user=USER              Set FTP user. This affects all URLs.\n"\
-  "                              Default: anonymous")
+_(" --ftp-user=USER              Set FTP user. This affects all URLs.")
 #define TEXT_FTP_PASSWD \
-_(" --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"\
-  "                              Default: ARIA2USER@")
+_(" --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.")
 #define TEXT_FTP_TYPE \
-_(" --ftp-type=TYPE              Set FTP transfer type. TYPE is either 'binary'\n"\
-  "                              or 'ascii'.\n"\
-  "                              Default: binary")
+_(" --ftp-type=TYPE              Set FTP transfer type.")
 #define TEXT_FTP_PASV \
 _(" -p, --ftp-pasv               Use passive mode in FTP.")
 #define TEXT_FTP_VIA_HTTP_PROXY \
-_(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or\n"\
-  "                              'tunnel'.\n"\
-  "                              Default: tunnel")
+_(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP.")
 #define TEXT_LOWEST_SPEED_LIMIT \
 _(" --lowest-speed-limit=SPEED   Close connection if download speed is lower than\n"\
   "                              or equal to this value(bytes per sec).\n"\
   "                              0 means aria2 does not have a lowest speed limit.\n"\
   "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
-  "                              This option does not affect BitTorrent downloads.\n"\
-  "                              Default: 0")
+  "                              This option does not affect BitTorrent downloads.")
 #define TEXT_MAX_DOWNLOAD_LIMIT \
 _(" --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"\
   "                              0 means unrestricted.\n"\
-  "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
-  "                              Default: 0")
+  "                              You can append K or M(1K = 1024, 1M = 1024K).")
 #define TEXT_FILE_ALLOCATION \
-_(" --file-allocation=METHOD     Specify file allocation method. METHOD is either\n"\
-  "                              'none' or 'prealloc'. 'none' doesn't pre-allocate\n"\
-  "                              file space. 'prealloc' pre-allocates file space\n"\
-  "                              before download begins. This may take some time\n"\
-  "                              depending on the size of the file.\n"\
-  "                              Default: prealloc")
+_(" --file-allocation=METHOD     Specify file allocation method.\n"\
+  "                              'none' doesn't pre-allocate file space. 'prealloc'\n"\
+  "                              pre-allocates file space before download begins.\n"\
+  "                              This may take some time depending on the size of\n"\
+  "                              the file.")
 #define TEXT_NO_FILE_ALLOCATION_LIMIT \
 _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"\
   "                              size is smaller than SIZE.\n"\
@@ -124,8 +110,7 @@ _(" --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage whi
 #define TEXT_ALLOW_OVERWRITE \
 _(" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"\
   "                              already exists but the corresponding .aria2 file\n"\
-  "                              doesn't exist.\n"\
-  "                              Default: false")
+  "                              doesn't exist.")
 #define TEXT_ALLOW_PIECE_LENGTH_CHANGE \
 _(" --allow-piece-length-change=true|false If false is given, aria2 aborts download\n"\
   "                              when a piece length is different from one in\n"\
@@ -134,15 +119,13 @@ _(" --allow-piece-length-change=true|false If false is given, aria2 aborts downl
 #define TEXT_FORCE_SEQUENTIAL \
 _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially\n"\
   "                              and download each URI in a separate session, like\n"\
-  "                              the usual command-line download utilities.\n"\
-  "                              Default: false")
+  "                              the usual command-line download utilities.")
 #define TEXT_AUTO_FILE_RENAMING \
 _(" --auto-file-renaming[=true|false] Rename file name if the same file already\n"\
   "                              exists. This option works only in http(s)/ftp\n"\
   "                              download.\n"\
   "                              The new file name has a dot and a number(1..9999)\n"\
-  "                              appended.\n"\
-  "                              Default: true")
+  "                              appended.")
 #define TEXT_PARAMETERIZED_URI \
 _(" -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"\
   "                              You can specify set of parts:\n"\
@@ -153,25 +136,21 @@ _(" -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"\
   "                              A step counter can be omitted.\n"\
   "                              If all URIs do not point to the same file, such\n"\
   "                              as the second example above, -Z option is\n"\
-  "                              required.\n"\
-  "                              Default: false")
+  "                              required.")
 #define TEXT_ENABLE_HTTP_KEEP_ALIVE \
 _(" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection.")
 #define TEXT_ENABLE_HTTP_PIPELINING \
-_(" --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"\
-  "                              Default: false")
+_(" --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.")
 #define TEXT_CHECK_INTEGRITY \
 _(" --check-integrity=true|false  Check file integrity by validating piece hash.\n"\
   "                              This option only affects in BitTorrent downloads\n"\
   "                              and Metalink downloads with chunk checksums.\n"\
   "                              Use this option to re-download a damaged portion\n"\
-  "                              of a file.\n"\
-  "                              Default: false")
+  "                              of a file.")
 #define TEXT_REALTIME_CHUNK_CHECKSUM \
 _(" --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"\
   "                              downloading a file in Metalink mode. This option\n"\
-  "                              on affects Metalink mode with chunk checksums.\n"\
-  "                              Default: true")
+  "                              on affects Metalink mode with chunk checksums.")
 #define TEXT_CONTINUE \
 _(" -c, --continue               Continue downloading a partially downloaded\n"\
   "                              file. Use this option to resume a download\n"\
@@ -221,8 +200,7 @@ _(" --follow-torrent=true|false|mem If true or mem is specified, when a file\n"\
   "                              is not taken.")
 #define TEXT_DIRECT_FILE_MAPPING \
 _(" --direct-file-mapping=true|false Directly read from and write to each file\n"\
-  "                              mentioned in .torrent file.\n"\
-  "                              Default: true")
+  "                              mentioned in .torrent file.")
 #define TEXT_LISTEN_PORT \
 _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"\
   "                              Multiple ports can be specified by using ',',\n"\
@@ -232,8 +210,7 @@ _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n
 #define TEXT_MAX_UPLOAD_LIMIT \
 _(" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"\
   "                              0 means unrestricted.\n"\
-  "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
-  "                              Default: 0")
+  "                              You can append K or M(1K = 1024, 1M = 1024K).")
 #define TEXT_SEED_TIME \
 _(" --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"\
   "                              --seed-ratio option.")
@@ -251,8 +228,7 @@ _(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID 
   "                              bytes are specified, only first 20\n"\
   "                              bytes are used. If less than 20 bytes are\n"\
   "                              specified, the random alphabet characters are\n"\
-  "                              added to make it's length 20 bytes.\n"\
-  "                              Default: -aria2-")
+  "                              added to make it's length 20 bytes.")
 #define TEXT_ENABLE_PEER_EXCHANGE \
 _(" --enable-peer-exchange[=true|false] Enable Peer Exchange extension.")
 #define TEXT_ENABLE_DHT \
@@ -330,7 +306,7 @@ _(" -h, --help[=CATEGORY]        Print usage and exit.\n"\
   "                              categories. For example, type \"--help=http\" for\n"\
   "                              detailed explanation for the options related to\n"\
   "                              http. If no matching category is found, search\n"\
-  "                              option name using a given word, in forward match\n"\
+  "                              option name using a given word in middle match\n"\
   "                              and print the result.")
 #define TEXT_NO_CONF \
 _(" --no-conf                    Disable loading aria2.conf file.")
@@ -373,8 +349,7 @@ _(" --max-file-not-found=NUM     If aria2 recieves `file not found' status from 
   "                              This options is only effective only when using\n"\
   "                              HTTP/FTP servers.")
 #define TEXT_URI_SELECTOR \
-_(" --uri-selector=SELECTOR      Specify URI selection algorithm. Possible values\n"\
-  "                              are 'inorder' and 'feedback'.\n"\
+_(" --uri-selector=SELECTOR      Specify URI selection algorithm.\n"\
   "                              If 'inorder' is given, URI is tried in the order\n"\
   "                              appeared in the URI list.\n"\
   "                              If 'feedback' is given, aria2 uses download speed\n"\

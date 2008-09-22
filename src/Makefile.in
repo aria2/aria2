@@ -339,11 +339,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultAuthResolver.cc DefaultAuthResolver.h \
 	NetrcAuthResolver.cc NetrcAuthResolver.h AuthConfigFactory.cc \
 	AuthConfigFactory.h OptionParser.cc OptionParser.h \
-	OptionHandlerFactory.cc OptionHandlerFactory.h OptionHandler.h \
-	OptionHandlerImpl.h NameMatchOptionHandler.h NameResolver.cc \
-	NameResolver.h RequestGroup.cc RequestGroup.h \
-	RequestGroupAware.cc RequestGroupAware.h RequestGroupMan.cc \
-	RequestGroupMan.h FileAllocationMan.cc FileAllocationMan.h \
+	OptionHandlerFactory.cc OptionHandlerFactory.h \
+	OptionHandler.cc OptionHandler.h OptionHandlerImpl.h \
+	NameMatchOptionHandler.h NameResolver.cc NameResolver.h \
+	RequestGroup.cc RequestGroup.h RequestGroupAware.cc \
+	RequestGroupAware.h RequestGroupMan.cc RequestGroupMan.h \
+	FileAllocationMan.cc FileAllocationMan.h \
 	FileAllocationCommand.cc FileAllocationCommand.h \
 	FillRequestGroupCommand.cc FillRequestGroupCommand.h \
 	FileAllocationDispatcherCommand.cc \
@@ -392,9 +393,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MultiFileAllocationIterator.h PeerConnection.cc \
 	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
-	ServerHost.cc ServerHost.h HelpItem.cc HelpItem.h \
-	TaggedItem.cc TaggedItem.h TagContainer.cc TagContainer.h \
-	HelpItemFactory.cc HelpItemFactory.h DownloadContext.cc \
+	ServerHost.cc ServerHost.h DownloadContext.cc \
 	DownloadContext.h SingleFileDownloadContext.cc \
 	SingleFileDownloadContext.h TimedHaltCommand.cc \
 	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
@@ -764,10 +763,10 @@ am__objects_18 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) AbstractAuthResolver.$(OBJEXT) \
 	DefaultAuthResolver.$(OBJEXT) NetrcAuthResolver.$(OBJEXT) \
 	AuthConfigFactory.$(OBJEXT) OptionParser.$(OBJEXT) \
-	OptionHandlerFactory.$(OBJEXT) NameResolver.$(OBJEXT) \
-	RequestGroup.$(OBJEXT) RequestGroupAware.$(OBJEXT) \
-	RequestGroupMan.$(OBJEXT) FileAllocationMan.$(OBJEXT) \
-	FileAllocationCommand.$(OBJEXT) \
+	OptionHandlerFactory.$(OBJEXT) OptionHandler.$(OBJEXT) \
+	NameResolver.$(OBJEXT) RequestGroup.$(OBJEXT) \
+	RequestGroupAware.$(OBJEXT) RequestGroupMan.$(OBJEXT) \
+	FileAllocationMan.$(OBJEXT) FileAllocationCommand.$(OBJEXT) \
 	FillRequestGroupCommand.$(OBJEXT) \
 	FileAllocationDispatcherCommand.$(OBJEXT) \
 	FileAllocationEntry.$(OBJEXT) \
@@ -797,11 +796,10 @@ am__objects_18 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	BtRegistry.$(OBJEXT) MultiFileAllocationIterator.$(OBJEXT) \
 	PeerConnection.$(OBJEXT) ByteArrayDiskWriter.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
-	HelpItem.$(OBJEXT) TaggedItem.$(OBJEXT) TagContainer.$(OBJEXT) \
-	HelpItemFactory.$(OBJEXT) DownloadContext.$(OBJEXT) \
-	SingleFileDownloadContext.$(OBJEXT) TimedHaltCommand.$(OBJEXT) \
-	prefs.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
-	StringFormat.$(OBJEXT) HttpSkipResponseCommand.$(OBJEXT) \
+	DownloadContext.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
+	TimedHaltCommand.$(OBJEXT) prefs.$(OBJEXT) \
+	ProtocolDetector.$(OBJEXT) StringFormat.$(OBJEXT) \
+	HttpSkipResponseCommand.$(OBJEXT) \
 	InitiateConnectionCommand.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) A2STR.$(OBJEXT) \
 	RarestPieceSelector.$(OBJEXT) ChunkedDecoder.$(OBJEXT) \
@@ -1063,11 +1061,12 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	DefaultAuthResolver.cc DefaultAuthResolver.h \
 	NetrcAuthResolver.cc NetrcAuthResolver.h AuthConfigFactory.cc \
 	AuthConfigFactory.h OptionParser.cc OptionParser.h \
-	OptionHandlerFactory.cc OptionHandlerFactory.h OptionHandler.h \
-	OptionHandlerImpl.h NameMatchOptionHandler.h NameResolver.cc \
-	NameResolver.h RequestGroup.cc RequestGroup.h \
-	RequestGroupAware.cc RequestGroupAware.h RequestGroupMan.cc \
-	RequestGroupMan.h FileAllocationMan.cc FileAllocationMan.h \
+	OptionHandlerFactory.cc OptionHandlerFactory.h \
+	OptionHandler.cc OptionHandler.h OptionHandlerImpl.h \
+	NameMatchOptionHandler.h NameResolver.cc NameResolver.h \
+	RequestGroup.cc RequestGroup.h RequestGroupAware.cc \
+	RequestGroupAware.h RequestGroupMan.cc RequestGroupMan.h \
+	FileAllocationMan.cc FileAllocationMan.h \
 	FileAllocationCommand.cc FileAllocationCommand.h \
 	FillRequestGroupCommand.cc FillRequestGroupCommand.h \
 	FileAllocationDispatcherCommand.cc \
@@ -1116,9 +1115,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	MultiFileAllocationIterator.h PeerConnection.cc \
 	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
-	ServerHost.cc ServerHost.h HelpItem.cc HelpItem.h \
-	TaggedItem.cc TaggedItem.h TagContainer.cc TagContainer.h \
-	HelpItemFactory.cc HelpItemFactory.h DownloadContext.cc \
+	ServerHost.cc ServerHost.h DownloadContext.cc \
 	DownloadContext.h SingleFileDownloadContext.cc \
 	SingleFileDownloadContext.h TimedHaltCommand.cc \
 	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
@@ -1398,8 +1395,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HashMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveEraseCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpItem.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpItemFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeader.Po@am__quote@
@@ -1445,6 +1440,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NsCookieParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OSMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PStringBuildVisitor.Po@am__quote@
@@ -1500,8 +1496,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamFileAllocationEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormat.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TagContainer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaggedItem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeBasedCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimedHaltCommand.Po@am__quote@

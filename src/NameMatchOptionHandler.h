@@ -38,7 +38,15 @@
 #include "OptionHandler.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "A2STR.h"
+#include "Util.h"
 #include <strings.h>
+#include <algorithm>
+#include <sstream>
+#include <iterator>
+
+#define NO_DESCRIPTION A2STR::NIL
+#define NO_DEFAULT_VALUE A2STR::NIL
 
 namespace aria2 {
 
@@ -48,9 +56,24 @@ class NameMatchOptionHandler : public OptionHandler {
 protected:
   std::string _optName;
 
+  std::string _description;
+
+  std::string _defaultValue;
+
+  bool _hidden;
+
+  std::deque<std::string> _tags;
+
   virtual void parseArg(Option* option, const std::string& arg) = 0;
 public:
-  NameMatchOptionHandler(const std::string& optName):_optName(optName) {}
+  NameMatchOptionHandler(const std::string& optName,
+			 const std::string& description = NO_DESCRIPTION,
+			 const std::string& defaultValue = NO_DEFAULT_VALUE,
+			 bool hidden = false):
+    _optName(optName),
+    _description(description),
+    _defaultValue(defaultValue),
+    _hidden(hidden) {}
 
   virtual ~NameMatchOptionHandler() {}
   
@@ -69,6 +92,45 @@ public:
 		      _optName.c_str()).str(), e);
     }
   }
+
+  virtual bool hasTag(const std::string& tag) const
+  {
+    return std::find(_tags.begin(), _tags.end(), tag) != _tags.end();
+  }
+
+  virtual void addTag(const std::string& tag)
+  {
+    _tags.push_back(tag);
+  }
+
+  virtual std::string toTagString() const
+  {
+    std::stringstream s;
+    std::copy(_tags.begin(), _tags.end(),
+	      std::ostream_iterator<std::string>(s, ","));
+    return Util::trim(s.str(), ", ");
+  }
+
+  virtual const std::string& getName() const
+  {
+    return _optName;
+  }
+
+  virtual const std::string& getDescription() const
+  {
+    return _description;
+  }
+
+  virtual const std::string& getDefaultValue() const
+  {
+    return _defaultValue;
+  }
+
+  virtual bool isHidden() const
+  {
+    return _hidden;
+  }
+
 };
 
 typedef SharedHandle<NameMatchOptionHandler> NameMatchOptionHandlerHandle;

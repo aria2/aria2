@@ -4,9 +4,6 @@ aria2c_SOURCES = AllTest.cc\
 	TestUtil.cc TestUtil.h\
 	SocketCoreTest.cc\
 	array_funTest.cc\
-	HelpItemTest.cc\
-	TaggedItemTest.cc\
-	TagContainerTest.cc\
 	Base64Test.cc\
 	SequenceTest.cc\
 	a2functionalTest.cc\
@@ -63,7 +60,8 @@ aria2c_SOURCES = AllTest.cc\
 	CookieStorageTest.cc\
 	TimeTest.cc\
 	CopyDiskAdaptorTest.cc\
-	FtpConnectionTest.cc
+	FtpConnectionTest.cc\
+	OptionParserTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

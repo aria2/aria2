@@ -1,3 +1,35 @@
+2008-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Integrated HelpItem into OptionParser to ease the workload for adding
+	new options. Removed default value from usage text.
+	* src/HelpItem.cc: Removed.
+	* src/HelpItem.h: Removed.
+	* src/HelpItemFactory.cc: Removed.
+	* src/HelpItemFactory.h: Removed.
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/NameMatchOptionHandler.h
+	* src/OptionHandler.cc
+	* src/OptionHandler.h
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/OptionParser.cc
+	* src/OptionParser.h
+	* src/TagContainer.cc: Removed.
+	* src/TagContainer.h: Removed.
+	* src/TaggedItem.cc: Removed.
+	* src/TaggedItem.h: Removed.
+	* src/main.cc
+	* src/option_processing.cc
+	* src/usage_text.h
+	* src/version_usage.cc
+	* test/HelpItemTest.cc: Removed.
+	* test/Makefile.am
+	* test/Makefile.in
+	* test/OptionHandlerTest.cc
+	* test/OptionParserTest.cc
+	* test/TagContainerTest.cc: Removed.
+
 2008-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Moved `TransferStat stat = ...' to inside the `if' clause.

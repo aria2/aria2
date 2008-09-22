@@ -32,40 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TAG_CONTAINER_H_
-#define _D_TAG_CONTAINER_H_
+#include "OptionHandler.h"
+#include <ostream>
 
-#include "common.h"
-#include "SharedHandle.h"
-#include <deque>
+#define DEFAULT_MSG   _("                              Default: ")
+#define    TAGS_MSG   _("                              Tags: ")
+#define POSSIBLE_MSG _("                              Possible Values: ")
 
 namespace aria2 {
 
-class TaggedItem;
-
-class TagContainer {
-private:
-  std::deque<SharedHandle<TaggedItem> > _taggedItems;
-public:
-  TagContainer();
-
-  TagContainer(const std::deque<SharedHandle<TaggedItem> >& items);
-
-  ~TagContainer();
-  
-  void addItem(const SharedHandle<TaggedItem>& item);
-
-  std::deque<SharedHandle<TaggedItem> > search(const std::string& tag) const;
-
-  std::deque<SharedHandle<TaggedItem> > nameMatchForward(const std::string& name) const;
-
-  SharedHandle<TaggedItem> nameMatch(const std::string& name) const;
-
-  const std::deque<SharedHandle<TaggedItem> >& getAllItems() const;
-};
-
-typedef SharedHandle<TagContainer> TagContainerHandle;
+std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler)
+{
+  o << optionHandler.getDescription() << "\n\n";
+  std::string possibleValues = optionHandler.createPossibleValuesString();
+  if(!possibleValues.empty()) {
+    o << POSSIBLE_MSG << possibleValues << "\n";
+  }
+  if(!optionHandler.getDefaultValue().empty()) {
+    o << DEFAULT_MSG << optionHandler.getDefaultValue() << "\n";
+  }
+  o << TAGS_MSG << optionHandler.toTagString();
+  return o;
+}
 
 } // namespace aria2
-
-#endif // _D_TAG_CONTAINER_H_
