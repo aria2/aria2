@@ -116,7 +116,6 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_FTP_TYPE.c_str(), required_argument, &lopt, 11 },
       { PREF_FTP_PASV.c_str(), no_argument, NULL, 'p' },
       { PREF_FTP_VIA_HTTP_PROXY.c_str(), required_argument, &lopt, 12 },
-      //{ PREF_MIN_SEGMENT_SIZE.c_str(), required_argument, &lopt, 13 },
       { PREF_HTTP_PROXY_METHOD.c_str(), required_argument, &lopt, 14 },
       { PREF_LOWEST_SPEED_LIMIT.c_str(), required_argument, &lopt, 200 },
       { PREF_MAX_DOWNLOAD_LIMIT.c_str(), required_argument, &lopt, 201 },
@@ -168,7 +167,6 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_TORRENT_FILE.c_str(), required_argument, NULL, 'T' },
       { PREF_LISTEN_PORT.c_str(), required_argument, &lopt, 15 },
       { PREF_FOLLOW_TORRENT.c_str(), required_argument, &lopt, 16 },
-      { PREF_NO_PREALLOCATION.c_str(), no_argument, &lopt, 18 },
       { PREF_DIRECT_FILE_MAPPING.c_str(), required_argument, &lopt, 19 },
       // TODO remove upload-limit.
       //{ "upload-limit".c_str(), required_argument, &lopt, 20 },
@@ -246,9 +244,6 @@ Option* option_processing(int argc, char* const argv[])
       case 12:
 	cmdstream << PREF_FTP_VIA_HTTP_PROXY << "=" << optarg << "\n";
 	break;
-      case 13:
-	cmdstream << PREF_MIN_SEGMENT_SIZE << "=" << optarg << "\n";
-	break;
       case 14:
 	cmdstream << PREF_HTTP_PROXY_METHOD << "=" << optarg << "\n";
 	break;
@@ -257,9 +252,6 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 16:
 	cmdstream << PREF_FOLLOW_TORRENT << "=" << optarg << "\n";
-	break;
-      case 18:
-	cmdstream << PREF_NO_PREALLOCATION << "=" << V_TRUE << "\n";
 	break;
       case 19:
 	cmdstream << PREF_DIRECT_FILE_MAPPING << "=" << optarg << "\n";

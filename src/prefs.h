@@ -62,11 +62,7 @@ extern const std::string PREF_CONNECT_TIMEOUT;
 // values: 1*digit
 extern const std::string PREF_MAX_TRIES;
 // values: 1*digit
-extern const std::string PREF_MIN_SEGMENT_SIZE;
-// values: 1*digit
 extern const std::string PREF_AUTO_SAVE_INTERVAL;
-// values: true | false
-extern const std::string PREF_STDOUT_LOG;
 // values: a string that your file system recognizes as a file name.
 extern const std::string PREF_LOG;
 // values: a string that your file system recognizes as a directory.
@@ -110,8 +106,6 @@ extern const std::string PREF_MAX_DOWNLOADS;
 extern const std::string PREF_INPUT_FILE;
 // value: 1*digit
 extern const std::string PREF_MAX_CONCURRENT_DOWNLOADS;
-// value: 1*digit
-extern const std::string PREF_DIRECT_DOWNLOAD_TIMEOUT;
 // value: true | false
 extern const std::string PREF_FORCE_SEQUENTIAL;
 // value: true | false
@@ -224,8 +218,6 @@ extern const std::string PREF_BT_REQUEST_TIMEOUT;
 // values: true | false
 extern const std::string PREF_SHOW_FILES;
 // values: true | false
-extern const std::string PREF_NO_PREALLOCATION;
-// values: true | false
 extern const std::string PREF_DIRECT_FILE_MAPPING;
 // values: 1*digit
 extern const std::string PREF_MAX_UPLOAD_LIMIT;
@@ -241,8 +233,6 @@ extern const std::string PREF_SELECT_FILE;
 extern const std::string PREF_SEED_TIME;
 // values: 1*digit ['.' [ 1*digit ] ]
 extern const std::string PREF_SEED_RATIO;
-// values: 1*digit
-extern const std::string PREF_TRACKER_MAX_TRIES;
 // values: 1*digit
 extern const std::string PREF_BT_KEEP_ALIVE_INTERVAL;
 // values: a string, less than or equals to 20 bytes length

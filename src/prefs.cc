@@ -58,11 +58,7 @@ const std::string PREF_CONNECT_TIMEOUT("connect-timeout");
 // values: 1*digit
 const std::string PREF_MAX_TRIES("max-tries");
 // values: 1*digit
-const std::string PREF_MIN_SEGMENT_SIZE("min-segment-size");
-// values: 1*digit
 const std::string PREF_AUTO_SAVE_INTERVAL("auto-save-interval");
-// values: true | false
-const std::string PREF_STDOUT_LOG("stdout-log");
 // values: a string that your file system recognizes as a file name.
 const std::string PREF_LOG("log");
 // values: a string that your file system recognizes as a directory.
@@ -106,8 +102,6 @@ const std::string PREF_MAX_DOWNLOADS("max-downloads");
 const std::string PREF_INPUT_FILE("input-file");
 // value: 1*digit
 const std::string PREF_MAX_CONCURRENT_DOWNLOADS("max-concurrent-downloads");
-// value: 1*digit
-const std::string PREF_DIRECT_DOWNLOAD_TIMEOUT("direct-download-timeout");
 // value: true | false
 const std::string PREF_FORCE_SEQUENTIAL("force-sequential");
 // value: true | false
@@ -220,8 +214,6 @@ const std::string PREF_BT_REQUEST_TIMEOUT("bt-request-timeout");
 // values: true | false
 const std::string PREF_SHOW_FILES("show-files");
 // values: true | false
-const std::string PREF_NO_PREALLOCATION("no-preallocation");
-// values: true | false
 const std::string PREF_DIRECT_FILE_MAPPING("direct-file-mapping");
 // values: 1*digit
 const std::string PREF_MAX_UPLOAD_LIMIT("max-upload-limit");
@@ -237,8 +229,6 @@ const std::string PREF_SELECT_FILE("select-file");
 const std::string PREF_SEED_TIME("seed-time");
 // values: 1*digit ['.' [ 1*digit ] ]
 const std::string PREF_SEED_RATIO("seed-ratio");
-// values: 1*digit
-const std::string PREF_TRACKER_MAX_TRIES("tracker-max-tries");
 // values: 1*digit
 const std::string PREF_BT_KEEP_ALIVE_INTERVAL("bt-keep-alive-interval");
 // values: a string, less than or equals to 20 bytes length

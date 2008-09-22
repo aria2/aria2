@@ -1,5 +1,17 @@
 2008-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed unused preferences:
+	PREF_NO_PREALLOCATION
+	PREF_STDOUT_LOG
+	PREF_TRACKER_MAX_TRIES
+	PREF_DIRECT_DOWNLOAD_TIMEOUT
+	PREF_MIN_SEGMENT_SIZE
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+
+2008-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Integrated HelpItem into OptionParser to ease the workload for adding
 	new options. Removed default value from usage text.
 	* src/HelpItem.cc: Removed.
