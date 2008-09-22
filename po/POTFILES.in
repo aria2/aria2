@@ -1,7 +1,7 @@
 src/DownloadEngine.cc
 src/MultiUrlRequestInfo.cc
 src/RequestGroupMan.cc
-src/HelpItem.cc
+src/OptionHandler.cc
 src/OptionHandlerImpl.h
 src/usage_text.h
 src/version_usage.cc

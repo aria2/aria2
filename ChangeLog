@@ -1,5 +1,14 @@
 2008-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Replaced HelpItem.cc with OptionHandler.cc.
+	* po/POTFILES.in
+	
+	Updated po files with 'make update-po'
+	* po/aria2c.pot
+	* po/*.po
+
+2008-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed possible values from the text.
 	* src/usage_text.h (TEXT_METALINK_PREFERRED_PROTOCOL)
 
