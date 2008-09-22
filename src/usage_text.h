@@ -279,9 +279,8 @@ _(" --metalink-location=LOCATION[,...] The location of the preferred server.\n"\
   "                              A comma-deliminated list of locations is\n"\
   "                              acceptable.")
 #define TEXT_METALINK_PREFERRED_PROTOCOL \
-_(" --metalink-preferred-protocol=PROTO Specify preferred protocol. The possible\n"\
-  "                              values are 'http', 'https', 'ftp' and 'none'.\n"\
-  "                              Specifiy none to disable this feature.")
+_(" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy 'none'\n"\
+  "                              if you don't have any preferred protocol.")
 #define TEXT_FOLLOW_METALINK \
 _(" --follow-metalink=true|false|mem If true or mem is specified, when a file\n"\
   "                              whose suffix is .metaink or content type is\n"\

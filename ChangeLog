@@ -1,5 +1,10 @@
 2008-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed possible values from the text.
+	* src/usage_text.h (TEXT_METALINK_PREFERRED_PROTOCOL)
+
+2008-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed unused preferences:
 	PREF_NO_PREALLOCATION
 	PREF_STDOUT_LOG
