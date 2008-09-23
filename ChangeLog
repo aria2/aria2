@@ -1,5 +1,11 @@
 2008-09-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added debug log for socket event.
+	* src/AbstractCommand.cc
+	* src/PeerAbstractCommand.cc
+	
+2008-09-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Log microseconds.
 	* src/SimpleLogger.cc (SimpleLogger::writeLog)
 

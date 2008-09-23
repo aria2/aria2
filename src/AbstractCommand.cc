@@ -87,6 +87,8 @@ AbstractCommand::~AbstractCommand() {
 }
 
 bool AbstractCommand::execute() {
+  logger->debug("CUID#%d - socket: read:%d, write:%d, hup:%d, err:%d",
+		cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent);
   try {
     if(_requestGroup->downloadFinished() || _requestGroup->isHaltRequested()) {
       //logger->debug("CUID#%d - finished.", cuid);

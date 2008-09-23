@@ -74,6 +74,9 @@ PeerAbstractCommand::~PeerAbstractCommand()
 
 bool PeerAbstractCommand::execute()
 {
+  logger->debug("CUID#%d -"
+		" socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
+		cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent, noCheck);
   if(exitBeforeExecute()) {
     onAbort();
     return true;
