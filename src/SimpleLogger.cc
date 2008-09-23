@@ -44,6 +44,7 @@
 #include <cstring>
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 
 namespace aria2 {
 
@@ -142,11 +143,16 @@ void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
   default:
     levelStr = INFO;
   }
-  time_t now = time(NULL);
-  char datestr[20];
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  char datestr[27]; // 'YYYY-MM-DD hh:mm:ss.uuuuuu'+'\0' = 27 bytes
   struct tm tm;
-  localtime_r(&now, &tm);
-  strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
+  localtime_r(&tv.tv_sec, &tm);
+  size_t dateLength =
+    strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
+  assert(dateLength <= (size_t)20);
+  snprintf(datestr+dateLength, sizeof(datestr)-dateLength,
+	   ".%06ld", tv.tv_usec);
 
   // TODO a quick hack not to print header in console
   if(printHeader) {
