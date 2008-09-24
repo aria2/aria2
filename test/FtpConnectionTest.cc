@@ -5,6 +5,7 @@
 #include "Request.h"
 #include "Option.h"
 #include "DlRetryEx.h"
+#include "DlAbortEx.h"
 #include <iostream>
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
@@ -18,6 +19,12 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReceiveResponse_overflow);
   CPPUNIT_TEST(testSendMdtm);
   CPPUNIT_TEST(testReceiveMdtmResponse);
+  CPPUNIT_TEST(testSendPwd);
+  CPPUNIT_TEST(testReceivePwdResponse);
+  CPPUNIT_TEST(testReceivePwdResponse_unquotedResponse);
+  CPPUNIT_TEST(testReceivePwdResponse_badStatus);
+  CPPUNIT_TEST(testSendCwd);
+  CPPUNIT_TEST(testSendCwd_baseWorkingDir);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<SocketCore> _serverSocket;
@@ -54,6 +61,12 @@ public:
   void testReceiveMdtmResponse();
   void testReceiveResponse();
   void testReceiveResponse_overflow();
+  void testSendPwd();
+  void testReceivePwdResponse();
+  void testReceivePwdResponse_unquotedResponse();
+  void testReceivePwdResponse_badStatus();
+  void testSendCwd();
+  void testSendCwd_baseWorkingDir();
 };
 
 
@@ -157,6 +170,71 @@ void FtpConnectionTest::testReceiveResponse_overflow()
   } catch(DlRetryEx& e) {
     // success
   }
+}
+
+void FtpConnectionTest::testSendPwd()
+{
+  _ftp->sendPwd();
+  char data[32];
+  size_t len = sizeof(data);
+  _serverSocket->readData(data, len);
+  CPPUNIT_ASSERT_EQUAL((size_t)5, len);
+  data[len] = '\0';
+  CPPUNIT_ASSERT_EQUAL(std::string("PWD\r\n"), std::string(data));
+}
+
+void FtpConnectionTest::testReceivePwdResponse()
+{
+  std::string pwd;
+  _serverSocket->writeData("257 ");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receivePwdResponse(pwd));
+  CPPUNIT_ASSERT(pwd.empty());
+  _serverSocket->writeData("\"/dir/to\" is your directory.\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)257, _ftp->receivePwdResponse(pwd));
+  CPPUNIT_ASSERT_EQUAL(std::string("/dir/to"), pwd);
+}
+
+void FtpConnectionTest::testReceivePwdResponse_unquotedResponse()
+{
+  std::string pwd;
+  _serverSocket->writeData("257 /dir/to\r\n");
+  try {
+    _ftp->receivePwdResponse(pwd);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlAbortEx& e) {
+    // success
+  }
+}
+
+void FtpConnectionTest::testReceivePwdResponse_badStatus()
+{
+  std::string pwd;
+  _serverSocket->writeData("500 failed\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)500, _ftp->receivePwdResponse(pwd));
+  CPPUNIT_ASSERT(pwd.empty());
+}
+
+void FtpConnectionTest::testSendCwd()
+{
+  _ftp->sendCwd();
+  char data[32];
+  size_t len = sizeof(data);
+  _serverSocket->readData(data, len);
+  CPPUNIT_ASSERT_EQUAL((size_t)10, len);
+  data[len] = '\0';
+  CPPUNIT_ASSERT_EQUAL(std::string("CWD /dir\r\n"), std::string(data));
+}
+
+void FtpConnectionTest::testSendCwd_baseWorkingDir()
+{
+  _ftp->setBaseWorkingDir("/base");
+  _ftp->sendCwd();
+  char data[32];
+  size_t len = sizeof(data);
+  _serverSocket->readData(data, len);
+  CPPUNIT_ASSERT_EQUAL((size_t)15, len);
+  data[len] = '\0';
+  CPPUNIT_ASSERT_EQUAL(std::string("CWD /base/dir\r\n"), std::string(data));
 }
 
 } // namespace aria2

@@ -59,6 +59,7 @@
 #include <stdint.h>
 #include <cassert>
 #include <utility>
+#include <map>
 
 namespace aria2 {
 
@@ -67,10 +68,12 @@ FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     RequestGroup* requestGroup,
 					     DownloadEngine* e,
 					     const SocketHandle& s,
-					     Seq seq):
+					     Seq seq,
+					     const std::string& baseWorkingDir):
   AbstractCommand(cuid, req, requestGroup, e, s), sequence(seq),
   ftp(new FtpConnection(cuid, socket, req, e->option))
 {
+  ftp->setBaseWorkingDir(baseWorkingDir);
   if(seq == SEQ_RECV_GREETING) {
     setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
   }
@@ -200,6 +203,33 @@ bool FtpNegotiationCommand::recvType() {
   if(status != 200) {
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
+  sequence = SEQ_SEND_PWD;
+  return true;
+}
+
+bool FtpNegotiationCommand::sendPwd()
+{
+  if(ftp->sendPwd()) {
+    disableWriteCheckSocket();
+    sequence = SEQ_RECV_PWD;
+  } else {
+    setWriteCheckSocket(socket);
+  }
+  return false;
+}
+
+bool FtpNegotiationCommand::recvPwd()
+{
+  std::string pwd;
+  unsigned int status = ftp->receivePwdResponse(pwd);
+  if(status == 0) {
+    return false;
+  }
+  if(status != 257) {
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
+  }
+  ftp->setBaseWorkingDir(pwd);
+  logger->info("CUID#%d - base working directory is '%s'", cuid, pwd.c_str());
   sequence = SEQ_SEND_CWD;
   return true;
 }
@@ -536,6 +566,10 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
     return sendType();
   case SEQ_RECV_TYPE:
     return recvType();
+  case SEQ_SEND_PWD:
+    return sendPwd();
+  case SEQ_RECV_PWD:
+    return recvPwd();
   case SEQ_SEND_CWD:
     return sendCwd();
   case SEQ_RECV_CWD:
@@ -582,7 +616,9 @@ void FtpNegotiationCommand::poolConnection() const
      e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
     std::pair<std::string, uint16_t> peerInfo;
     socket->getPeerInfo(peerInfo);
-    e->poolSocket(peerInfo.first, peerInfo.second, socket);
+    std::map<std::string, std::string> options;
+    options["baseWorkingDir"] = ftp->getBaseWorkingDir();
+    e->poolSocket(peerInfo.first, peerInfo.second, socket, options);
   }
 }
 

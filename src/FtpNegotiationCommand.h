@@ -52,6 +52,8 @@ public:
     SEQ_RECV_PASS,
     SEQ_SEND_TYPE,
     SEQ_RECV_TYPE,
+    SEQ_SEND_PWD,
+    SEQ_RECV_PWD,
     SEQ_SEND_CWD,
     SEQ_RECV_CWD,
     SEQ_SEND_MDTM,
@@ -83,6 +85,8 @@ private:
   bool recvPass();
   bool sendType();
   bool recvType();
+  bool sendPwd();
+  bool recvPwd();
   bool sendCwd();
   bool recvCwd();
   bool sendMdtm();
@@ -120,7 +124,8 @@ public:
 			RequestGroup* requestGroup,
 			DownloadEngine* e,
 			const SharedHandle<SocketCore>& s,
-			Seq seq = SEQ_RECV_GREETING);
+			Seq seq = SEQ_RECV_GREETING,
+			const std::string& baseWorkingDir = "/");
   virtual ~FtpNegotiationCommand();
 };
 

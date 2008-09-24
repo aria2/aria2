@@ -62,6 +62,8 @@ private:
 
   SocketBuffer _socketBuffer;
 
+  std::string _baseWorkingDir;
+
   unsigned int getStatus(const std::string& response) const;
   std::string::size_type findEndOfResponse(unsigned int status,
 					   const std::string& buf) const;
@@ -79,6 +81,7 @@ public:
   bool sendUser();
   bool sendPass();
   bool sendType();
+  bool sendPwd();
   bool sendCwd();
   bool sendMdtm();
   bool sendSize();
@@ -98,6 +101,11 @@ public:
   // If reply is not received yet, returns 0.
   unsigned int receiveMdtmResponse(Time& time);
   unsigned int receivePasvResponse(std::pair<std::string, uint16_t>& dest);
+  unsigned int receivePwdResponse(std::string& pwd);
+
+  void setBaseWorkingDir(const std::string& baseWorkingDir);
+
+  const std::string& getBaseWorkingDir() const;
 };
 
 } // namespace aria2

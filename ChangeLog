@@ -1,5 +1,19 @@
 2008-09-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Issue PWD command first and get working directory and use it as a prefix
+	for CWD command.
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* test/FtpConnectionTest.cc
+
+2008-09-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed default user/pass for FTP user/pass, since it should not have
 	precedence over netrc configuration by default.
 	* src/OptionHandlerFactory.cc

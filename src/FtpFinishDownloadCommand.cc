@@ -44,6 +44,7 @@
 #include "SocketCore.h"
 #include "RequestGroup.h"
 #include "Logger.h"
+#include <map>
 
 namespace aria2 {
 
@@ -85,7 +86,9 @@ bool FtpFinishDownloadCommand::execute()
        e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::pair<std::string, uint16_t> peerInfo;
       socket->getPeerInfo(peerInfo);
-      e->poolSocket(peerInfo.first, peerInfo.second, socket);
+      std::map<std::string, std::string> options;
+      options["baseWorkingDir"] = _ftpConnection->getBaseWorkingDir();
+      e->poolSocket(peerInfo.first, peerInfo.second, socket, options);
     }
   } catch(RecoverableException& e) {
     logger->info(EX_EXCEPTION_CAUGHT, e);

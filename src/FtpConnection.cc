@@ -61,7 +61,8 @@ FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
 			     const RequestHandle& req, const Option* op):
   cuid(cuid), socket(socket), req(req), option(op),
   logger(LogFactory::getInstance()),
-  _socketBuffer(socket) {}
+  _socketBuffer(socket),
+  _baseWorkingDir("/") {}
 
 FtpConnection::~FtpConnection() {}
 
@@ -108,10 +109,25 @@ bool FtpConnection::sendType()
   return _socketBuffer.sendBufferIsEmpty();
 }
 
+bool FtpConnection::sendPwd()
+{
+  if(_socketBuffer.sendBufferIsEmpty()) {
+    std::string request = "PWD\r\n";
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+    _socketBuffer.feedSendBuffer(request);
+  }
+  _socketBuffer.send();
+  return _socketBuffer.sendBufferIsEmpty();
+}
+
 bool FtpConnection::sendCwd()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
+    logger->info("CUID#%d - Using base working directory '%s'",
+		 cuid, _baseWorkingDir.c_str());
+    std::string request = "CWD "+
+      (_baseWorkingDir == "/" ? "" : _baseWorkingDir)+
+      Util::urldecode(req->getDir())+"\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
   }
@@ -378,6 +394,37 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
   } else {
     return 0;
   }
+}
+
+unsigned int FtpConnection::receivePwdResponse(std::string& pwd)
+{
+  std::pair<unsigned int, std::string> response;
+  if(bulkReceiveResponse(response)) {
+    if(response.first == 257) {
+      std::string::size_type first;
+      std::string::size_type last;
+
+      if((first = response.second.find("\"")) != std::string::npos &&
+	 (last = response.second.find("\"", ++first)) != std::string::npos) {
+	pwd = response.second.substr(first, last-first);
+      } else {
+	throw DlAbortEx(EX_INVALID_RESPONSE);
+      }
+    }
+    return response.first;
+  } else {
+    return 0;
+  }
+}
+
+void FtpConnection::setBaseWorkingDir(const std::string& baseWorkingDir)
+{
+  _baseWorkingDir = baseWorkingDir;
+}
+
+const std::string& FtpConnection::getBaseWorkingDir() const
+{
+  return _baseWorkingDir;
 }
 
 } // namespace aria2

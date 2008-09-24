@@ -47,6 +47,7 @@
 #include "prefs.h"
 #include "HttpConnection.h"
 #include "Socket.h"
+#include <map>
 
 namespace aria2 {
 
@@ -81,17 +82,20 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       throw DlAbortEx("ERROR");
     }
   } else {
+    std::map<std::string, std::string> options;
     SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(resolvedAddresses, req->getPort());
+      e->popPooledSocket(options, resolvedAddresses, req->getPort());
     if(pooledSocket.isNull()) {
-
       logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		   req->getPort());
       socket.reset(new SocketCore());
       socket->establishConnection(resolvedAddresses.front(), req->getPort());
       command = new FtpNegotiationCommand(cuid, req, _requestGroup, e, socket);
     } else {
-      command = new FtpNegotiationCommand(cuid, req, _requestGroup, e, pooledSocket, FtpNegotiationCommand::SEQ_SEND_CWD);
+      command =
+	new FtpNegotiationCommand(cuid, req, _requestGroup, e, pooledSocket,
+				  FtpNegotiationCommand::SEQ_SEND_CWD,
+				  options["baseWorkingDir"]);
     }
   }
   return command;

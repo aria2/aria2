@@ -53,6 +53,7 @@
 #include "DlAbortEx.h"
 #include "ServerStatMan.h"
 #include "CookieStorage.h"
+#include "A2STR.h"
 #include <signal.h>
 #include <cstring>
 #include <algorithm>
@@ -891,33 +892,106 @@ SharedHandle<CookieStorage> DownloadEngine::getCookieStorage() const
   return _cookieStorage;
 }
 
-void DownloadEngine::poolSocket(const std::string& ipaddr, uint16_t port,
-				const SharedHandle<SocketCore>& sock,
-				time_t timeout)
+void DownloadEngine::poolSocket(const std::string& ipaddr,
+				uint16_t port,
+				const SocketPoolEntry& entry)
 {
   std::string addr = ipaddr+":"+Util::uitos(port);
   logger->info("Pool socket for %s", addr.c_str());
-
-  SocketPoolEntry e(sock, timeout);
-  std::multimap<std::string, SocketPoolEntry>::value_type p(addr, e);
+  std::multimap<std::string, SocketPoolEntry>::value_type p(addr, entry);
   _socketPool.insert(p);
+
+  if(_lastSocketPoolScan.elapsed(60)) {
+    std::multimap<std::string, SocketPoolEntry> newPool;
+    logger->debug("Scaning SocketPool and erasing timed out entry.");
+    _lastSocketPoolScan.reset();
+    for(std::multimap<std::string, SocketPoolEntry>::iterator i =
+	  _socketPool.begin(); i != _socketPool.end(); ++i) {
+      if(!(*i).second.isTimeout()) {
+	newPool.insert(*i);
+      }
+    }
+    logger->debug("%zu entries removed.", _socketPool.size()-newPool.size());
+    _socketPool = newPool;
+  }
+}
+
+void DownloadEngine::poolSocket
+(const std::string& ipaddr,
+ uint16_t port,
+ const SharedHandle<SocketCore>& sock,
+ const std::map<std::string, std::string>& options,
+ time_t timeout)
+{
+  SocketPoolEntry e(sock, options, timeout);
+  poolSocket(ipaddr, port, e);
+}
+
+void DownloadEngine::poolSocket
+(const std::string& ipaddr,
+ uint16_t port,
+ const SharedHandle<SocketCore>& sock,
+ time_t timeout)
+{
+  SocketPoolEntry e(sock, std::map<std::string, std::string>(), timeout);
+  poolSocket(ipaddr, port, e);
+}
+
+std::multimap<std::string, DownloadEngine::SocketPoolEntry>::iterator
+DownloadEngine::findSocketPoolEntry(const std::string& ipaddr, uint16_t port)
+{
+  std::string addr = ipaddr+":"+Util::uitos(port);
+  std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
+    std::multimap<std::string, SocketPoolEntry>::iterator> range =
+    _socketPool.equal_range(addr);
+  for(std::multimap<std::string, SocketPoolEntry>::iterator i = range.first;
+      i != range.second; ++i) {
+    const SocketPoolEntry& e = (*i).second;
+    if(!e.isTimeout()) {
+      logger->info("Found socket for %s", addr.c_str());
+      return i;
+    }
+  }
+  return _socketPool.end();
 }
 
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
 {
   SharedHandle<SocketCore> s;
-  std::string addr = ipaddr+":"+Util::uitos(port);
+  std::multimap<std::string, SocketPoolEntry>::iterator i =
+    findSocketPoolEntry(ipaddr, port);
+  if(i != _socketPool.end()) {
+    s = (*i).second.getSocket();
+    _socketPool.erase(i);
+  }
+  return s;
+}
 
-  std::multimap<std::string, SocketPoolEntry>::iterator first = _socketPool.find(addr);
-  
-  for(std::multimap<std::string, SocketPoolEntry>::iterator i = first;
-      i != _socketPool.end() && (*i).first == addr; ++i) {
-    const SocketPoolEntry& e = (*i).second;
-    if(!e.isTimeout()) {
-      logger->info("Reuse socket for %s", addr.c_str());
-      s = e.getSocket();
-      _socketPool.erase(first, ++i);
+SharedHandle<SocketCore>
+DownloadEngine::popPooledSocket(std::map<std::string, std::string>& options,
+				const std::string& ipaddr, uint16_t port)
+{
+  SharedHandle<SocketCore> s;
+  std::multimap<std::string, SocketPoolEntry>::iterator i =
+    findSocketPoolEntry(ipaddr, port);
+  if(i != _socketPool.end()) {
+    s = (*i).second.getSocket();
+    options = (*i).second.getOptions();
+    _socketPool.erase(i);
+  }
+  return s;  
+}
+
+SharedHandle<SocketCore>
+DownloadEngine::popPooledSocket
+(const std::deque<std::string>& ipaddrs, uint16_t port)
+{
+  SharedHandle<SocketCore> s;
+  for(std::deque<std::string>::const_iterator i = ipaddrs.begin();
+      i != ipaddrs.end(); ++i) {
+    s = popPooledSocket(*i, port);
+    if(!s.isNull()) {
       break;
     }
   }
@@ -926,22 +1000,26 @@ DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
 
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket
-(const std::deque<std::string>& ipaddrs, uint16_t port)
+(std::map<std::string, std::string>& options,
+ const std::deque<std::string>& ipaddrs, uint16_t port)
 {
+  SharedHandle<SocketCore> s;
   for(std::deque<std::string>::const_iterator i = ipaddrs.begin();
       i != ipaddrs.end(); ++i) {
-    SharedHandle<SocketCore> s = popPooledSocket(*i, port);
+    s = popPooledSocket(options, *i, port);
     if(!s.isNull()) {
-      return s;
+      break;
     }
   }
-  return SharedHandle<SocketCore>();
+  return s;
 }
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
 (const SharedHandle<SocketCore>& socket,
+ const std::map<std::string, std::string>& options,
  time_t timeout):
   _socket(socket),
+  _options(options),
   _timeout(timeout) {}
 
 DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
@@ -954,6 +1032,12 @@ bool DownloadEngine::SocketPoolEntry::isTimeout() const
 SharedHandle<SocketCore> DownloadEngine::SocketPoolEntry::getSocket() const
 {
   return _socket;
+}
+
+const std::map<std::string, std::string>&
+DownloadEngine::SocketPoolEntry::getOptions() const
+{
+  return _options;
 }
 
 } // namespace aria2
