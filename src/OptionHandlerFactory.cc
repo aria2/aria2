@@ -550,8 +550,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_FTP_PASSWD,
-				    TEXT_FTP_PASSWD,
-				    "ARIA2USER@"));
+				    TEXT_FTP_PASSWD));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     handlers.push_back(op);
@@ -584,8 +583,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_FTP_USER,
-				    TEXT_FTP_USER,
-				    "anonymous"));
+				    TEXT_FTP_USER));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     handlers.push_back(op);
