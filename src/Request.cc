@@ -136,10 +136,12 @@ bool Request::parseUrl(const std::string& url) {
   std::string::size_type atmarkp =  hostPart.find_last_of("@");
   if(atmarkp != std::string::npos) {
     std::string authPart = hostPart.substr(0, atmarkp);
-    std::pair<std::string, std::string> userPass =
-      Util::split(authPart, A2STR::COLON_C);
-    _username = Util::urldecode(userPass.first);
-    _password = Util::urldecode(userPass.second);
+    if(authPart.find(":") != std::string::npos) {
+      std::pair<std::string, std::string> userPass =
+	Util::split(authPart, A2STR::COLON_C);
+      _username = Util::urldecode(userPass.first);
+      _password = Util::urldecode(userPass.second);
+    }
     hostPart.erase(0, atmarkp+1);
   }
   std::pair<std::string, std::string> hostAndPort;
