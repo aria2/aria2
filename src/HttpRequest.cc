@@ -46,6 +46,7 @@
 #include "a2functional.h"
 #include "TimeA2.h"
 #include <numeric>
+#include <cassert>
 
 namespace aria2 {
 
@@ -133,9 +134,21 @@ std::string HttpRequest::getHostText(const std::string& host, uint16_t port) con
 
 std::string HttpRequest::createRequest() const
 {
+  SharedHandle<AuthConfig> authConfig = AuthConfigFactorySingleton::instance()
+    ->createAuthConfig(request);
+
   std::string requestLine = "GET ";
   if(getProtocol() == Request::PROTO_FTP || proxyEnabled) {
-    requestLine += getCurrentURI();
+    if(getProtocol() == Request::PROTO_FTP &&
+       request->getUsername().empty() && !authConfig->getUser().empty()) {
+      // Insert user into URI, like ftp://USER@host/
+      std::string uri = getCurrentURI();
+      assert(uri.size() >= 6);
+      uri.insert(6, Util::urlencode(authConfig->getUser())+"@");
+      requestLine += uri;
+    } else {
+      requestLine += getCurrentURI();
+    }
   } else {
     if(getDir() == A2STR::SLASH_C) {
       requestLine += getDir();
@@ -192,11 +205,9 @@ std::string HttpRequest::createRequest() const
   if(proxyEnabled && proxyAuthEnabled) {
     requestLine += getProxyAuthString();
   }
-  std::string authString = AuthConfigFactorySingleton::instance()
-    ->createAuthConfig(request)->getAuthText();
-  if(authString != ":") {
+  if(!authConfig->getUser().empty()) {
     requestLine += "Authorization: Basic "+
-      Base64::encode(authString)+"\r\n";
+      Base64::encode(authConfig->getAuthText())+"\r\n";
   }
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";

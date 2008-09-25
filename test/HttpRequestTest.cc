@@ -349,7 +349,9 @@ void HttpRequestTest::testCreateRequest_ftp()
 
   httpRequest.configure(_option.get());
 
-  std::string expectedText = "GET ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+  std::string expectedText =
+    "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
+    " HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
     "Host: localhost:8080\r\n"
@@ -368,7 +370,9 @@ void HttpRequestTest::testCreateRequest_ftp()
 
   httpRequest.configure(_option.get());
 
-  expectedText = "GET ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+  expectedText =
+    "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
+    " HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
     "Host: localhost:8080\r\n"

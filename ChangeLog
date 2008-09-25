@@ -1,3 +1,13 @@
+2008-09-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Reverted previous change.
+	Insert username+'@' to URI(after ftp://) when URI is FTP scheme and
+	username is not in URI.
+	* src/HttpRequest.cc
+	* src/Request.cc
+	* test/HttpRequestTest.cc
+	* test/RequestTest.cc
+
 2008-09-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Now colon is required for username and password in FTP URL, like:

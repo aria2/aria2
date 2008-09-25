@@ -402,8 +402,7 @@ void RequestTest::testSetUrl_username()
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());
-  // No ":" is foundin 'aria2user', so username and password is left blank.
-  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2user"), req.getUsername());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPassword());
 }
 
