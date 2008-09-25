@@ -176,8 +176,6 @@ extern const std::string PREF_HTTP_PASSWD;
 // values: basic
 extern const std::string PREF_HTTP_AUTH_SCHEME;
 extern const std::string V_BASIC;
-// values: true | false
-extern const std::string PREF_HTTP_AUTH_ENABLED;
 // values: string
 extern const std::string PREF_USER_AGENT;
 // value: string that your file system recognizes as a file name.

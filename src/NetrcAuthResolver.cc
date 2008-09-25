@@ -38,6 +38,8 @@
 
 namespace aria2 {
 
+NetrcAuthResolver::NetrcAuthResolver():_ignoreDefault(false) {}
+
 AuthConfigHandle NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
   if(_userDefinedAuthConfig.isNull()) {
@@ -56,7 +58,12 @@ AuthConfigHandle NetrcAuthResolver::findNetrcAuthenticator(const std::string& ho
     if(auth.isNull()) {
       return _defaultAuthConfig;
     } else {
-      return SharedHandle<AuthConfig>(new AuthConfig(auth->getLogin(), auth->getPassword()));
+      if(_ignoreDefault && auth->getMachine() == "") {
+	return _defaultAuthConfig;
+      } else {
+	return SharedHandle<AuthConfig>
+	  (new AuthConfig(auth->getLogin(), auth->getPassword()));
+      }
     }
   }
 }
@@ -69,6 +76,16 @@ void NetrcAuthResolver::setNetrc(const NetrcHandle& netrc)
 NetrcHandle NetrcAuthResolver::getNetrc() const
 {
   return _netrc;
+}
+
+void NetrcAuthResolver::ignoreDefault()
+{
+  _ignoreDefault = true;
+}
+
+void NetrcAuthResolver::useDefault()
+{
+  _ignoreDefault = false;
 }
 
 } // namespace aria2

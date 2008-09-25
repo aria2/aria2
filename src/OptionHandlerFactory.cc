@@ -612,6 +612,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_NO_NETRC,
 				    V_FALSE)); // TODO ommit?
     op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
   // BitTorrent/Metalink Options

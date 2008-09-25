@@ -172,8 +172,6 @@ const std::string PREF_HTTP_PASSWD("http-passwd");
 // values: basic
 const std::string PREF_HTTP_AUTH_SCHEME("http-auth-scheme");
 const std::string V_BASIC("basic");
-// values: true | false
-const std::string PREF_HTTP_AUTH_ENABLED("http-auth-enabled");
 // values: string
 const std::string PREF_USER_AGENT("user-agent");
 // value: string that your file system recognizes as a file name.

@@ -59,8 +59,6 @@ private:
 
   uint64_t entityLength;
 
-  bool authEnabled;
-
   bool proxyEnabled;
 
   bool proxyAuthEnabled;
@@ -147,10 +145,8 @@ public:
   /**
    * Configures this object with option.
    * Following values are evaluated:
-   * PREF_HTTP_AUTH_ENABLED, PREF_HTTP_PROXY_ENABLED,
+   * PREF_HTTP_PROXY_ENABLED,
    * PREF_HTTP_PROXY_METHOD, PREF_HTTP_PROXY_AUTH_ENABLED,
-   * PREF_HTTP_USER, PREF_HTTP_PASSWD,
-   * PREF_HTTP_PROXY_USER, PREF_HTTP_PROXY_PASSWD
    * The evaluation results are stored in instance variables.
    */
   void configure(const Option* option);
@@ -163,11 +159,6 @@ public:
   void setProxyAuthEnabled(bool proxyAuthEnabled)
   {
     this->proxyAuthEnabled = proxyAuthEnabled;
-  }
-
-  void setAuthEnabled(bool authEnabled)
-  {
-    this->authEnabled = authEnabled;
   }
 
   void enableContentEncoding();

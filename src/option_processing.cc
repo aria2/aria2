@@ -524,9 +524,6 @@ Option* option_processing(int argc, char* const argv[])
       exit(EXIT_FAILURE);
     }
   }
-  if(op->defined(PREF_HTTP_USER)) {
-    op->put(PREF_HTTP_AUTH_ENABLED, V_TRUE);
-  }
   if(op->defined(PREF_HTTP_PROXY_USER)) {
     op->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
   }

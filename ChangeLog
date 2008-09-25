@@ -1,5 +1,23 @@
 2008-09-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use netrc for HTTP.
+	Now FTP user/password is sent in Authorization header when
+	--ftp-via-http-proxy=get is given.
+	* src/AuthConfigFactory.cc
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/NetrcAuthResolver.cc
+	* src/NetrcAuthResolver.h
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* test/AuthConfigFactoryTest.cc
+	* test/HttpRequestTest.cc
+	* test/NetrcAuthResolverTest.cc
+
+2008-09-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Issue PWD command first and get working directory and use it as a prefix
 	for CWD command.
 	* src/DownloadEngine.cc

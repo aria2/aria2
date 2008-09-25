@@ -88,11 +88,12 @@ AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& 
 AuthResolverHandle AuthConfigFactory::createHttpAuthResolver() const
 {
   AbstractAuthResolverHandle resolver;
-  if(true || _option->getAsBool(PREF_NO_NETRC)) {
+  if(_option->getAsBool(PREF_NO_NETRC)) {
     resolver.reset(new DefaultAuthResolver());
   } else {
     NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
     authResolver->setNetrc(_netrc);
+    authResolver->ignoreDefault();
     resolver = authResolver;
   }
   resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_USER), _option->get(PREF_HTTP_PASSWD)));

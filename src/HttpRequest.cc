@@ -52,7 +52,6 @@ namespace aria2 {
 const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():entityLength(0),
-			   authEnabled(false),
 			   proxyEnabled(false),
 			   proxyAuthEnabled(false),
 			   _contentEncodingEnabled(true),
@@ -193,9 +192,11 @@ std::string HttpRequest::createRequest() const
   if(proxyEnabled && proxyAuthEnabled) {
     requestLine += getProxyAuthString();
   }
-  if(authEnabled) {
+  std::string authString = AuthConfigFactorySingleton::instance()
+    ->createAuthConfig(request)->getAuthText();
+  if(authString != ":") {
     requestLine += "Authorization: Basic "+
-      Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfig(request)->getAuthText())+"\r\n";
+      Base64::encode(authString)+"\r\n";
   }
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";
@@ -274,7 +275,6 @@ void HttpRequest::addAcceptType(const std::string& type)
 
 void HttpRequest::configure(const Option* option)
 {
-  authEnabled = option->getAsBool(PREF_HTTP_AUTH_ENABLED);
   proxyEnabled =
     option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
     option->get(PREF_HTTP_PROXY_METHOD) == V_GET;

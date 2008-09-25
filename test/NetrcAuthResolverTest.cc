@@ -11,6 +11,7 @@ class NetrcAuthResolverTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(NetrcAuthResolverTest);
   CPPUNIT_TEST(testResolveAuthConfig_without_userDefined);
   CPPUNIT_TEST(testResolveAuthConfig_with_userDefined);
+  CPPUNIT_TEST(testResolveAuthConfig_ignoreDefault);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Netrc> _netrc;
@@ -34,6 +35,7 @@ public:
 
   void testResolveAuthConfig_without_userDefined();
   void testResolveAuthConfig_with_userDefined();
+  void testResolveAuthConfig_ignoreDefault();
 };
 
 
@@ -66,6 +68,19 @@ void NetrcAuthResolverTest::testResolveAuthConfig_with_userDefined()
   _resolver->setNetrc(SharedHandle<Netrc>());
   authConfig = _resolver->resolveAuthConfig("mymachine");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
+}
+
+void NetrcAuthResolverTest::testResolveAuthConfig_ignoreDefault()
+{
+  _resolver->ignoreDefault();
+  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("mirror");
+  CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
+
+  _resolver->useDefault();
+  SharedHandle<AuthConfig> defAuthConfig =
+    _resolver->resolveAuthConfig("mirror");
+  CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpasswd"),
+		       defAuthConfig->getAuthText());  
 }
 
 } // namespace aria2

@@ -39,13 +39,25 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   CPPUNIT_ASSERT_EQUAL(std::string(":"),
 		       factory.createAuthConfig(req)->getAuthText());
 
-  // with Netrc: disabled by default
+  // with Netrc
   SharedHandle<Netrc> netrc(new Netrc());
+  netrc->addAuthenticator
+    (SharedHandle<Authenticator>(new Authenticator("localhost",
+						   "localhostuser",
+						   "localhostpass",
+						   "localhostacct")));
   netrc->addAuthenticator
     (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
   factory.setNetrc(netrc);
-  CPPUNIT_ASSERT_EQUAL(std::string(":"),
+
+  CPPUNIT_ASSERT_EQUAL(std::string("localhostuser:localhostpass"),
 		       factory.createAuthConfig(req)->getAuthText());
+
+  // See default token in netrc is ignored.
+  SharedHandle<Request> mirrorReq(new Request());
+  req->setUrl("http://mirror/");
+  CPPUNIT_ASSERT_EQUAL(std::string(":"),
+		       factory.createAuthConfig(mirrorReq)->getAuthText());
 
   // with Netrc + user defined
   option.put(PREF_HTTP_USER, "userDefinedUser");
@@ -56,10 +68,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   // username and password in URI: disabled by default.
   req->setUrl("http://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("userDefinedUser:userDefinedPassword"),
-		       factory.createAuthConfig(req)->getAuthText());
-
-//   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:aria2password"),
-// 		       factory.createAuthConfig(req)->getAuthText());
+		       factory.createAuthConfig(req)->getAuthText());  
 }
 
 void AuthConfigFactoryTest::testCreateAuthConfigForHttpProxy()
