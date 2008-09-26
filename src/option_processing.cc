@@ -45,6 +45,7 @@
 #include "help_tags.h"
 #include "File.h"
 #include "StringFormat.h"
+#include "OptionHandlerException.h"
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -518,6 +519,12 @@ Option* option_processing(int argc, char* const argv[])
     }
     try {
       oparser.parse(op, cmdstream);
+    } catch(OptionHandlerException& e) {
+      std::cerr << e.stackTrace() << "\n"
+		<< "Usage:\n"
+		<< oparser.findByName(e.getOptionName())->getDescription()
+		<< std::endl;
+      exit(EXIT_FAILURE);
     } catch(Exception& e) {
       std::cerr << e.stackTrace() << std::endl;
       showUsage(TAG_HELP, oparser);
