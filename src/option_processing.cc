@@ -504,6 +504,13 @@ Option* option_processing(int argc, char* const argv[])
 	std::ifstream cfstream(cfname.c_str());
 	try {
 	  oparser.parse(op, cfstream);
+	} catch(OptionHandlerException& e) {
+	  std::cerr << "Parse error in " << cfname << "\n"
+		    << e.stackTrace() << "\n"
+		    << "Usage:" << "\n"
+		    << oparser.findByName(e.getOptionName())->getDescription()
+		    << std::endl;
+	  exit(EXIT_FAILURE);
 	} catch(Exception& e) {
 	  std::cerr << "Parse error in " << cfname << "\n"
 		    << e.stackTrace() << std::endl;
@@ -521,7 +528,7 @@ Option* option_processing(int argc, char* const argv[])
       oparser.parse(op, cmdstream);
     } catch(OptionHandlerException& e) {
       std::cerr << e.stackTrace() << "\n"
-		<< "Usage:\n"
+		<< "Usage:" << "\n"
 		<< oparser.findByName(e.getOptionName())->getDescription()
 		<< std::endl;
       exit(EXIT_FAILURE);

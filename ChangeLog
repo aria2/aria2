@@ -1,5 +1,18 @@
 2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	When error occurred while aria2 was parsing an .aria2.conf file, print
+	the usage of the option that caused error.
+	* src/option_processing.cc
+	
+2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed compile error on OptionHandlerException
+	* src/Makefile.am
+	* src/OptionHandlerException.cc
+	* src/OptionHandlerException.h
+	
+2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Moved message of the error to OptionHandlerException.h
 	* src/NameMatchOptionHandler.h
 	* src/OptionHandlerException.h
