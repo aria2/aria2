@@ -96,7 +96,8 @@ bool HttpSkipResponseCommand::executeInternal()
       // The return value is safely ignored here.
       _transferEncodingDecoder->decode(buf, bufSize);
     }
-    if(_totalLength != 0 && bufSize == 0) {
+    if(_totalLength != 0 && bufSize == 0 &&
+       !socket->wantRead() && !socket->wantWrite()) {
       throw DlRetryEx(EX_GOT_EOF);
     }
   } catch(RecoverableException& e) {
@@ -104,15 +105,19 @@ bool HttpSkipResponseCommand::executeInternal()
     return processResponse();
   }
 
-  if(bufSize == 0) {
-    // Since this method is called by DownloadEngine only when the socket is
-    // readable, bufSize == 0 means server shutdown the connection.
-    // So socket cannot be reused in this case.
-    return prepareForRetry(0);
-  } else if((!_transferEncodingDecoder.isNull() &&
-	     _transferEncodingDecoder->finished())
-	    || (_transferEncodingDecoder.isNull() &&
-		_totalLength == _receivedBytes)) {
+  bool finished = false;
+  if(_transferEncodingDecoder.isNull()) {
+    if(bufSize == 0) {
+      if(!socket->wantRead() && !socket->wantWrite()) {
+	return processResponse();
+      }
+    } else {
+      finished = (_totalLength == _receivedBytes);
+    }
+  } else {
+    finished = _transferEncodingDecoder->finished();
+  }
+  if(finished) {
     if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
        req->supportsPersistentConnection()) {
       std::pair<std::string, uint16_t> peerInfo;
@@ -121,6 +126,7 @@ bool HttpSkipResponseCommand::executeInternal()
     }
     return processResponse();
   } else {
+    setWriteCheckSocketIf(socket, socket->wantWrite());
     e->commands.push_back(this);
     return false;
   }

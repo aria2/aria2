@@ -83,6 +83,9 @@ bool HttpResponseCommand::executeInternal()
   HttpResponseHandle httpResponse = httpConnection->receiveResponse();
   if(httpResponse.isNull()) {
     // The server has not responded to our request yet.
+    // For socket->wantRead() == true, setReadCheckSocket(socket) is already
+    // done in the constructor.
+    setWriteCheckSocketIf(socket, socket->wantWrite());
     e->commands.push_back(this);
     return false;
   }

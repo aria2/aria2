@@ -86,6 +86,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
     size_t temp = remaining;
     readData(lenbuf+lenbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
+      if(socket->wantRead() || socket->wantWrite()) {
+	return false;
+      }
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%zu",
 		    cuid, temp);
@@ -111,6 +114,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
   if(remaining > 0) {
     readData(resbuf+resbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
+      if(socket->wantRead() || socket->wantWrite()) {
+	return false;
+      }
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), payloadlen=%zu, remaining=%zu",
 		    cuid, currentPayloadLength, temp);
@@ -154,6 +160,9 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
       size_t temp = remaining;
       readData(resbuf+resbufLength, remaining, _encryptionEnabled);
       if(remaining == 0) {
+	if(socket->wantRead() || socket->wantWrite()) {
+	  return false;
+	}
 	// we got EOF
 	logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%zu",
 		      cuid, temp);

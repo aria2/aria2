@@ -126,7 +126,11 @@ HttpResponseHandle HttpConnection::receiveResponse()
   size_t size = sizeof(buf);
   socket->peekData(buf, size);
   if(size == 0) {
-    throw DlRetryEx(EX_INVALID_RESPONSE);
+    if(socket->wantRead() || socket->wantWrite()) {
+      return SharedHandle<HttpResponse>();
+    } else {
+      throw DlRetryEx(EX_INVALID_RESPONSE);
+    }
   }
   proc->update(buf, size);
   if(!proc->eoh()) {

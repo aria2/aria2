@@ -285,6 +285,9 @@ bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& re
     size_t size = sizeof(buf);
     socket->readData(buf, size);
     if(size == 0) {
+      if(socket->wantRead() || socket->wantWrite()) {
+	return false;
+      }
       throw DlRetryEx(EX_GOT_EOF);
     }
     if(strbuf.size()+size > MAX_RECV_BUFFER) {

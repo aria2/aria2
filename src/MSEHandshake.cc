@@ -93,7 +93,7 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
   }
   size_t r = 20-_rbufLength;
   _socket->readData(_rbuf+_rbufLength, r);
-  if(r == 0) {
+  if(r == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
     throw DlAbortEx(EX_EOF_FROM_PEER);
   }
   _rbufLength += r;
@@ -301,6 +301,9 @@ bool MSEHandshake::findInitiatorVCMarker()
   }
   _socket->peekData(_rbuf+_rbufLength, r);
   if(r == 0) {
+    if(_socket->wantRead() || _socket->wantWrite()) {
+      return false;
+    }
     throw DlAbortEx(EX_EOF_FROM_PEER);
   }
   // find vc
@@ -388,6 +391,9 @@ bool MSEHandshake::findReceiverHashMarker()
   }
   _socket->peekData(_rbuf+_rbufLength, r);
   if(r == 0) {
+    if(_socket->wantRead() || _socket->wantWrite()) {
+      return false;
+    }
     throw DlAbortEx(EX_EOF_FROM_PEER);
   }
   // find hash('req1', S), S is _secret.
@@ -575,7 +581,7 @@ size_t MSEHandshake::receiveNBytes(size_t bytes)
       return 0;
     }
     _socket->readData(_rbuf+_rbufLength, r);
-    if(r == 0) {
+    if(r == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
       throw DlAbortEx(EX_EOF_FROM_PEER);
     }
     _rbufLength += r;

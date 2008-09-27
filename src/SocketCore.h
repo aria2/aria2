@@ -77,11 +77,17 @@ private:
 #endif // HAVE_EPOLL
 
   bool blocking;
-  bool secure;
+  int secure;
+
+  bool _wantRead;
+  bool _wantWrite;
+
 #ifdef HAVE_LIBSSL
   // for SSL
   SSL_CTX* sslCtx;
   SSL* ssl;
+
+  int sslHandleEAGAIN(int ret);
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
   gnutls_session_t sslSession;
@@ -94,6 +100,8 @@ private:
   void addPeekData(char* data, size_t len);
   ssize_t gnutlsRecv(char* data, size_t len);
   ssize_t gnutlsPeek(char* data, size_t len);
+
+  void gnutlsRecordCheckDirection();
 #endif // HAVE_LIBGNUTLS
 
   void init();
@@ -105,6 +113,7 @@ private:
 #endif // HAVE_EPOLL
 
   SocketCore(sock_t sockfd, int sockType);
+
   static int error();
   static const char *errorMsg();
   static const char *errorMsg(const int err);
@@ -189,10 +198,14 @@ public:
   bool isReadable(time_t timeout);
 
   /**
-   * Writes characters into this socket. data is a pointer pointing the first
+   * Writes data into this socket. data is a pointer pointing the first
    * byte of the data and len is the length of data.
-   * This method internally calls isWritable(). The parmeter timeout is used
-   * for this method call.
+   * If the underlying socket is in blocking mode, this method may block until
+   * all data is sent.
+   * If the underlying socket is in non-blocking mode, this method may return
+   * even if all data is sent. The size of written data is returned. If
+   * underlying socket gets EAGAIN, _wantRead or _wantWrite is set accordingly.
+   * This method sets _wantRead and _wantWrite to false before do anything else.
    * @param data data to write
    * @param len length of data
    */
@@ -220,8 +233,12 @@ public:
    * byte of the data, which must be allocated before this method is called.
    * len is the size of the allocated memory. When this method returns
    * successfully, len is replaced by the size of the read data.
-   * This method internally calls isReadable(). The parameter timeout is used
-   * for this method call.
+   * If the underlying socket is in blocking mode, this method may block until
+   * at least 1byte is received.
+   * If the underlying socket is in non-blocking mode, this method may return
+   * even if no single byte is received. If the underlying socket gets EAGAIN,
+   * _wantRead or _wantWrite is set accordingly.
+   * This method sets _wantRead and _wantWrite to false before do anything else.
    * @param data holder to store data.
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
@@ -265,7 +282,9 @@ public:
    * If the system has not OpenSSL, then this method do nothing.
    * connection must be established  before calling this method.
    */
-  void initiateSecureConnection();
+  bool initiateSecureConnection();
+
+  void prepareSecureConnection();
 
   bool operator==(const SocketCore& s) {
     return sockfd == s.sockfd;
@@ -280,6 +299,19 @@ public:
   }
 
   std::string getSocketError() const;
+
+  /**
+   * Returns true if the underlying socket gets EAGAIN in the previous
+   * readData() or writeData() and the socket needs more incoming data to
+   * continue the operation.
+   */
+  bool wantRead() const;
+
+  /**
+   * Returns true if the underlying socket gets EAGAIN in the previous
+   * readData() or writeData() and the socket needs to write more data.
+   */
+  bool wantWrite() const;
 };
 
 } // namespace aria2

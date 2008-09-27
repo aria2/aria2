@@ -84,6 +84,17 @@ protected:
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
 
+  /**
+   * If pred == true, calls setReadCheckSocket(socket). Otherwise, calls
+   * disableReadCheckSocket().
+   */
+  void setReadCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
+  /**
+   * If pred == true, calls setWriteCheckSocket(socket). Otherwise, calls
+   * disableWriteCheckSocket().
+   */
+  void setWriteCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
+
   void setTimeout(time_t timeout) { this->timeout = timeout; }
 
   void prepareForNextAction(Command* nextCommand = 0);

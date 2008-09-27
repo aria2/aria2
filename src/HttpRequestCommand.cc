@@ -99,11 +99,17 @@ createHttpRequest(const SharedHandle<Request>& req,
 
 bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();
+  if(req->getProtocol() == Request::PROTO_HTTPS) {
+    socket->prepareSecureConnection();
+    if(!socket->initiateSecureConnection()) {
+      setReadCheckSocketIf(socket, socket->wantRead());
+      setWriteCheckSocketIf(socket, socket->wantWrite());
+      e->commands.push_back(this);
+      return false;
+    }
+  }
   if(_httpConnection->sendBufferIsEmpty()) {
     checkIfConnectionEstablished(socket);
-    if(req->getProtocol() == Request::PROTO_HTTPS) {
-      socket->initiateSecureConnection();
-    }
 
     if(_segments.empty()) {
       HttpRequestHandle httpRequest
@@ -134,7 +140,8 @@ bool HttpRequestCommand::executeInternal() {
     e->commands.push_back(command);
     return true;
   } else {
-    setWriteCheckSocket(socket);
+    setReadCheckSocketIf(socket, socket->wantRead());
+    setWriteCheckSocketIf(socket, socket->wantWrite());
     e->commands.push_back(this);
     return false;
   }

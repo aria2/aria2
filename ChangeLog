@@ -1,5 +1,27 @@
 2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that HTTPS download fails.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/DownloadCommand.cc
+	* src/FtpConnection.cc
+	* src/HttpConnection.cc
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/MSEHandshake.cc
+	* src/PeerConnection.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
+	Fixed the bug that aria2 doesn't download whole content body and cannot
+	reuse connection if chunked transfer encoding and gzip content encoding
+	are set.
+	* src/DownloadCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	
+2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated man page.
 	* doc/aria2c.1.txt
 

@@ -159,24 +159,38 @@ bool DownloadCommand::executeInternal() {
   
   peerStat->updateDownloadLength(bufSize);
 
-  if(_requestGroup->getTotalLength() != 0 && bufSize == 0) {
+  if(_requestGroup->getTotalLength() != 0 && bufSize == 0 &&
+     !socket->wantRead() && !socket->wantWrite()) {
     throw DlRetryEx(EX_GOT_EOF);
   }
-  if((!_transferEncodingDecoder.isNull() &&
-      _transferEncodingDecoder->finished())
-     || (_transferEncodingDecoder.isNull() && segment->complete())
-     || (!_contentEncodingDecoder.isNull() &&
-	 _contentEncodingDecoder->finished())
-     || bufSize == 0) {
-    logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
-
-    if(!_contentEncodingDecoder.isNull() &&
-       !_contentEncodingDecoder->finished()) {
-      logger->warn("CUID#%d - Transfer was completed, but inflate operation"
-		   " have not finished. Maybe the file is broken in the server"
-		   " side.", cuid);
+  bool segmentComplete = false;
+  if(_transferEncodingDecoder.isNull() && _contentEncodingDecoder.isNull()) {
+    if(segment->complete()) {
+      segmentComplete = true;
+    } else if(segment->getLength() == 0 && bufSize == 0 &&
+	      !socket->wantRead() && !socket->wantWrite()) {
+      segmentComplete = true;
     }
+  } else if(!_transferEncodingDecoder.isNull() &&
+	    !_contentEncodingDecoder.isNull()) {
+    if(_transferEncodingDecoder->finished() &&
+       _contentEncodingDecoder->finished()) {
+      segmentComplete = true;
+    }
+  } else if(!_transferEncodingDecoder.isNull() &&
+	    _contentEncodingDecoder.isNull()) {
+    if(_transferEncodingDecoder->finished()) {
+      segmentComplete = true;
+    }
+  } else if(_transferEncodingDecoder.isNull() &&
+	    !_contentEncodingDecoder.isNull()) {
+    if(_contentEncodingDecoder->finished()) {
+      segmentComplete = true;
+    }
+  }
 
+  if(segmentComplete) {
+    logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
 #ifdef ENABLE_MESSAGE_DIGEST
 
     {
@@ -211,6 +225,7 @@ bool DownloadCommand::executeInternal() {
     return prepareForNextSegment();
   } else {
     checkLowestDownloadSpeed();
+    setWriteCheckSocketIf(socket, socket->wantWrite());
     e->commands.push_back(this);
     return false;
   }

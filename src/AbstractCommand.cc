@@ -245,6 +245,16 @@ void AbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
   }
 }
 
+void AbstractCommand::setReadCheckSocketIf
+(const SharedHandle<SocketCore>& socket, bool pred)
+{
+  if(pred) {
+    setReadCheckSocket(socket);
+  } else {
+    disableReadCheckSocket();
+  }
+}
+
 void AbstractCommand::disableWriteCheckSocket() {
   if(checkSocketIsWritable) {
     e->deleteSocketForWriteCheck(writeCheckTarget, this);
@@ -268,6 +278,16 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
       checkSocketIsWritable = true;
       writeCheckTarget = socket;
     }
+  }
+}
+
+void AbstractCommand::setWriteCheckSocketIf
+(const SharedHandle<SocketCore>& socket, bool pred)
+{
+  if(pred) {
+    setWriteCheckSocket(socket);
+  } else {
+    disableWriteCheckSocket();
   }
 }
 
