@@ -192,7 +192,7 @@ SRCS =  Socket.h\
 	NsCookieParser.cc NsCookieParser.h\
 	CookieStorage.cc CookieStorage.h\
 	SocketBuffer.cc SocketBuffer.h\
-	OptionHandlerException.h
+	OptionHandlerException.cc OptionHandlerException.h
 
 if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h

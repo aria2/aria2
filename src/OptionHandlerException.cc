@@ -32,31 +32,38 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_OPTION_HANDLER_EXCEPTION_H_
-#define _D_OPTION_HANDLER_EXCEPTION_H_
-#include "FatalException.h"
+#include "OptionHandlerException.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
-class OptionHandlerException:public FatalException {
-private:
-  std::string _optName;
+const std::string OptionHandlerException::MESSAGE
+("Exception occurred while processing option %s:");
 
-  static const std::string MESSAGE;
-protected:
-  virtual SharedHandle<Exception> copy() const;
-public:
-  OptionHandlerException(const std::string& optName);
+OptionHandlerException::OptionHandlerException(const std::string& optName):
+  FatalException
+  (StringFormat(MESSAGE.c_str(), optName.c_str()).str()), _optName(optName) {}
 
-  OptionHandlerException(const std::string& optName, const Exception& cause);
+OptionHandlerException::OptionHandlerException(const std::string& optName,
+					       const Exception& cause):
+  FatalException
+  (StringFormat(MESSAGE.c_str(), optName.c_str()).str(), cause),
+  _optName(optName) {}
 
-  OptionHandlerException(const OptionHandlerException& e);
+OptionHandlerException::OptionHandlerException(const OptionHandlerException& e):
+  FatalException(e), _optName(e._optName) {}
 
-  virtual ~OptionHandlerException() throw();
+OptionHandlerException::~OptionHandlerException() throw() {}
 
-  const std::string& getOptionName() const throw();
-};
+const std::string& OptionHandlerException::getOptionName() const throw()
+{
+  return _optName;
+}
+
+SharedHandle<Exception> OptionHandlerException::copy() const
+{
+  SharedHandle<Exception> e(new OptionHandlerException(*this));
+  return e;
+}
 
 } // namespace aria2
-
-#endif // _D_OPTION_HANDLER_EXCEPTION_EX_H_
