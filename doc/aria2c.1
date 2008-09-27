@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 08/14/2008
+.\"      Date: 09/27/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "08/14/2008" "" ""
+.TH "ARIA2C" "1" "09/27/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -59,7 +59,7 @@ Continue downloading a partially downloaded file\&. Use this option to resume a 
 .PP
 \fB\-h\fR, \fB\-\-help\fR[=CATEGORY]
 .RS 4
-Print usage and exit\&. The help messages are classified in several categories\&. For example, type "\fB\-\-help\fR=http" for detailed explanation for the options related to HTTP\&. If no matching category is found, search option name using a given word in forward match and print the result\&. Available Values:
+Print usage and exit\&. The help messages are classified in several categories\&. For example, type "\fB\-\-help\fR=http" for detailed explanation for the options related to HTTP\&. If no matching category is found, search option name using a given word in middle match and print the result\&. Available Values:
 \fIbasic\fR,
 \fIadvanced\fR,
 \fIhttp\fR,
@@ -72,6 +72,14 @@ Default:
 .RE
 .SS "HTTP/FTP Options"
 .PP
+\fB\-\-connect\-timeout\fR=SEC
+.RS 4
+Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server\&. After the connection is established, this option makes no effect and
+\fB\-\-timeout\fR
+option is used instead\&. Default:
+\fI60\fR
+.RE
+.PP
 \fB\-\-lowest\-speed\-limit\fR=SPEED
 .RS 4
 Close connection if download speed is lower than or equal to this value(bytes per sec)\&.
@@ -80,6 +88,14 @@ means aria2 does not have a lowest speed limit\&. You can append
 \fIK\fR
 or
 \fIM\fR(1K = 1024, 1M = 1024K)\&. This option does not affect BitTorrent downloads\&. Default:
+\fI0\fR
+.RE
+.PP
+\fB\-\-max\-file\-not\-found\fR=NUM
+.RS 4
+If aria2 recieves `file not found\' status from the remote HTTP/FTP servers NUM times without getting a single byte, then force the download to fail\&. Specify
+\fI0\fR
+to disable this option\&. This options is only effective only when using HTTP/FTP servers\&. Default:
 \fI0\fR
 .RE
 .PP
@@ -103,6 +119,12 @@ The file name of the downloaded file\&.
 Note
 In Metalink, BitTorrent download you cannot specify file name\&. The file name specified here is only used when the URLs fed to aria2 is done by command line without \fB\-i\fR, \fB\-Z\fR option, like this: aria2c \-o myfile\&.zip http://mirror1/file\&.zip http://mirror2/file\&.zip
 .PP
+\fB\-R\fR, \fB\-\-remote\-time\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the local file\&. Default:
+\fIfalse\fR
+.RE
+.PP
 \fB\-\-retry\-wait\fR=SEC
 .RS 4
 Set the seconds to wait to retry after an error has occured\&. Specify a value between
@@ -110,6 +132,28 @@ Set the seconds to wait to retry after an error has occured\&. Specify a value b
 and
 \fI60\fR\&. Default:
 \fI5\fR
+.RE
+.PP
+\fB\-\-server\-stat\-of\fR=FILE
+.RS 4
+Specify the filename to which performance profile of the servers is saved\&. You can load saved data using
+\fB\-\-server\-stat\-if\fR
+option\&. See SERVER PERFORMANCE PROFILE section below for file format\&.
+.RE
+.PP
+\fB\-\-server\-stat\-if\fR=FILE
+.RS 4
+Specify the filename to load performance profile of the servers\&. The loaded data will be used in some URI selector such as
+\fIfeedback\fR\&. See also
+\fB\-\-uri\-selector\fR
+option\&. See SERVER PERFORMANCE PROFILE section below for file format\&.
+.RE
+.PP
+\fB\-\-server\-stat\-timeout\fR=SEC
+.RS 4
+Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to them\&. Default:
+\fI86400\fR
+(24hours)
 .RE
 .PP
 \fB\-s\fR, \fB\-\-split\fR=N
@@ -127,6 +171,23 @@ option too\&. Default:
 .RS 4
 Set timeout in seconds\&. Default:
 \fI60\fR
+.RE
+.PP
+\fB\-\-uri\-selector\fR=SELECTOR
+.RS 4
+Specify URI selection algorithm\&. Possible values are
+\fIinorder\fR
+and
+\fIfeedback\fR\&. If
+\fIinorder\fR
+is given, URI is tried in the order appeared in the URI list\&. If
+\fIfeedback\fR
+is given, aria2 uses download speed observed in the previous downloads and choose fastest server in the URI list\&. This also effectively skips dead mirrors\&. The observed download speed is a part of performance profile of servers mentioned in
+\fB\-\-server\-stat\-of\fR
+and
+\fB\-\-server\-stat\-if\fR
+options\&. Default:
+\fIinorder\fR
 .RE
 .SS "HTTP Specific Options"
 .PP
@@ -200,8 +261,15 @@ Append HEADER to HTTP request header\&. You can use this option repeatedly to sp
 .PP
 \fB\-\-load\-cookies\fR=FILE
 .RS 4
-Load Cookies from FILE using the Mozilla/Firefox(1\&.x/2\&.x) and Netscape format\&.
+Load Cookies from FILE using the Firefox3 format(SQLite3) and the Mozilla/Firefox(1\&.x/2\&.x)/Netscape format\&.
 .RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+If aria2 is build without libsqlite3, then it doesn\'t support Firefox3 cookie\&.
 .PP
 \fB\-U\fR, \fB\-\-user\-agent\fR=USER_AGENT
 .RS 4
@@ -1207,6 +1275,44 @@ You can seed downloaded file using \-\-check\-integrity=true option\&.
 .RS 4
 .nf
 aria2c \-\-check\-integrity=true file\&.torrent
+.fi
+.RE
+.SH "SERVER PERFORMANCE PROFILE"
+This section describes the format of server performance profile\&. The file is plain text and each line has several NAME=VALUE pair, delimited by comma\&. Currently following NAMEs are recognized:
+.PP
+host
+.RS 4
+Hostname of the server\&. Required\&.
+.RE
+.PP
+protocol
+.RS 4
+Protocol for this profile, such as ftp, http\&. Required\&.
+.RE
+.PP
+dl_speed
+.RS 4
+The average download speed observed in the previous download in bytes per sec\&. Required\&.
+.RE
+.PP
+last_updated
+.RS 4
+Last contact time in GMT with this server, specified in the seconds from the Epoch\&. Required\&.
+.RE
+.PP
+status
+.RS 4
+ERROR is set when server cannot be reached or out\-of\-service or timeout occurred\&. Otherwise, OK is set\&.
+.RE
+Those fields must exist in one line\&. The order of the fields is not significant\&.You can put pairs other than above; they are simply ignored\&.
+.sp
+An example is follow:
+.sp
+.sp
+.RS 4
+.nf
+host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
+host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
 .fi
 .RE
 .SH "FILES"

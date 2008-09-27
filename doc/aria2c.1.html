@@ -415,7 +415,7 @@ div.olist2 div.olist ol {
   The help messages are classified in several categories.
   For example, type "<strong>&#8212;help</strong>=http" for detailed explanation for the options
   related to HTTP. If no matching category is found, search option name using
-  a given word in forward match and print the result.
+  a given word in middle match and print the result.
   Available Values: <em>basic</em>, <em>advanced</em>, <em>http</em>, <em>ftp</em>, <em>metalink</em>,
   <em>bittorrent</em>, <em>all</em>
   Default: <em>basic</em>
@@ -424,6 +424,17 @@ div.olist2 div.olist ol {
 </dl></div>
 <h3 id="_http_ftp_options">HTTP/FTP Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
+<dt>
+<strong>&#8212;connect-timeout</strong>=SEC
+</dt>
+<dd>
+<p>
+  Set the connect timeout in seconds to establish connection to
+  HTTP/FTP/proxy server. After the connection is established, this
+  option makes no effect and <strong>&#8212;timeout</strong> option is used instead.
+  Default: <em>60</em>
+</p>
+</dd>
 <dt>
 <strong>&#8212;lowest-speed-limit</strong>=SPEED
 </dt>
@@ -434,6 +445,18 @@ div.olist2 div.olist ol {
   <em>0</em> means aria2 does not have a lowest speed limit.
   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
   This option does not affect BitTorrent downloads.
+  Default: <em>0</em>
+</p>
+</dd>
+<dt>
+<strong>&#8212;max-file-not-found</strong>=NUM
+</dt>
+<dd>
+<p>
+  If aria2 recieves `file not found' status from the remote HTTP/FTP
+  servers NUM times without getting a single byte, then force the
+  download to fail. Specify <em>0</em> to disable this option. This options is
+  only effective only when using HTTP/FTP servers.
   Default: <em>0</em>
 </p>
 </dd>
@@ -468,6 +491,16 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </div>
 <div class="vlist"><dl>
 <dt>
+<strong>-R</strong>, <strong>&#8212;remote-time</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Retrieve timestamp of the remote file from the remote HTTP/FTP
+  server and if it is available, apply it to the local file.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt>
 <strong>&#8212;retry-wait</strong>=SEC
 </dt>
 <dd>
@@ -475,6 +508,37 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
   Set the seconds to wait to retry after an error has occured.
   Specify a value between <em>0</em> and <em>60</em>.
   Default: <em>5</em>
+</p>
+</dd>
+<dt>
+<strong>&#8212;server-stat-of</strong>=FILE
+</dt>
+<dd>
+<p>
+  Specify the filename to which performance profile of the servers is
+  saved. You can load saved data using <strong>&#8212;server-stat-if</strong> option. See
+  SERVER PERFORMANCE PROFILE section below for file format.
+</p>
+</dd>
+<dt>
+<strong>&#8212;server-stat-if</strong>=FILE
+</dt>
+<dd>
+<p>
+  Specify the filename to load performance profile of the servers. The
+  loaded data will be used in some URI selector such as <em>feedback</em>.
+  See also <strong>&#8212;uri-selector</strong> option. See SERVER PERFORMANCE PROFILE
+  section below for file format.
+</p>
+</dd>
+<dt>
+<strong>&#8212;server-stat-timeout</strong>=SEC
+</dt>
+<dd>
+<p>
+  Specifies timeout in seconds to invalidate performance profile of
+  the servers since the last contact to them.
+  Default: <em>86400</em> (24hours)
 </p>
 </dd>
 <dt>
@@ -498,6 +562,22 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <p>
   Set timeout in seconds.
   Default: <em>60</em>
+</p>
+</dd>
+<dt>
+<strong>&#8212;uri-selector</strong>=SELECTOR
+</dt>
+<dd>
+<p>
+  Specify URI selection algorithm. Possible values are <em>inorder</em> and
+  <em>feedback</em>.  If <em>inorder</em> is given, URI is tried in the order
+  appeared in the URI list.  If <em>feedback</em> is given, aria2 uses
+  download speed observed in the previous downloads and choose fastest
+  server in the URI list. This also effectively skips dead
+  mirrors. The observed download speed is a part of performance
+  profile of servers mentioned in <strong>&#8212;server-stat-of</strong> and
+  <strong>&#8212;server-stat-if</strong> options.
+  Default: <em>inorder</em>
 </p>
 </dd>
 </dl></div>
@@ -604,9 +684,20 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </dt>
 <dd>
 <p>
-  Load Cookies from FILE using the Mozilla/Firefox(1.x/2.x) and Netscape format.
+  Load Cookies from FILE using the Firefox3 format(SQLite3) and the
+  Mozilla/Firefox(1.x/2.x)/Netscape format.
 </p>
 </dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">If aria2 is build without libsqlite3, then it doesn't support Firefox3 cookie.</td>
+</tr></table>
+</div>
+<div class="vlist"><dl>
 <dt>
 <strong>-U</strong>, <strong>&#8212;user-agent</strong>=USER_AGENT
 </dt>
@@ -1559,6 +1650,65 @@ you can resume the download without a control file by giving
 <pre><tt>aria2c --check-integrity=true file.torrent</tt></pre>
 </div></div>
 </div>
+<h2 id="_server_performance_profile">SERVER PERFORMANCE PROFILE</h2>
+<div class="sectionbody">
+<div class="para"><p>This section describes the format of server performance profile.
+The file is plain text and each line has several NAME=VALUE pair, delimited by
+comma.
+Currently following NAMEs are recognized:</p></div>
+<div class="vlist"><dl>
+<dt>
+host
+</dt>
+<dd>
+<p>
+  Hostname of the server. Required.
+</p>
+</dd>
+<dt>
+protocol
+</dt>
+<dd>
+<p>
+  Protocol for this profile, such as ftp, http. Required.
+</p>
+</dd>
+<dt>
+dl_speed
+</dt>
+<dd>
+<p>
+  The average download speed observed in the previous download in bytes per sec.
+  Required.
+</p>
+</dd>
+<dt>
+last_updated
+</dt>
+<dd>
+<p>
+  Last contact time in GMT with this server, specified in the seconds from the
+  Epoch. Required.
+</p>
+</dd>
+<dt>
+status
+</dt>
+<dd>
+<p>
+  ERROR is set when server cannot be reached or out-of-service or timeout
+  occurred. Otherwise, OK is set.
+</p>
+</dd>
+</dl></div>
+<div class="para"><p>Those fields must exist in one line. The order of the fields is not significant.You can put pairs other than above; they are simply ignored.</p></div>
+<div class="para"><p>An example is follow:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
+host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR</tt></pre>
+</div></div>
+</div>
 <h2 id="_files">FILES</h2>
 <div class="sectionbody">
 <h3 id="_aria2_conf">aria2.conf</h3><div style="clear:left"></div>
@@ -1621,7 +1771,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-08-14 01:31:21 JST
+Last updated 2008-09-27 14:30:38 JST
 </div>
 </div>
 </body>

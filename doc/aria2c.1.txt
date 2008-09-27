@@ -54,19 +54,32 @@ Basic Options
   The help messages are classified in several categories.
   For example, type "*--help*=http" for detailed explanation for the options
   related to HTTP. If no matching category is found, search option name using
-  a given word in forward match and print the result.
+  a given word in middle match and print the result.
   Available Values: 'basic', 'advanced', 'http', 'ftp', 'metalink',
   'bittorrent', 'all'
   Default: 'basic'
 
 HTTP/FTP Options
 ~~~~~~~~~~~~~~~~
+*--connect-timeout*=SEC::
+  Set the connect timeout in seconds to establish connection to
+  HTTP/FTP/proxy server. After the connection is established, this
+  option makes no effect and *--timeout* option is used instead.
+  Default: '60'
+
 *--lowest-speed-limit*=SPEED::
   Close connection if download speed is lower than or equal to this
   value(bytes per sec).
   '0' means aria2 does not have a lowest speed limit.
   You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
   This option does not affect BitTorrent downloads.
+  Default: '0'
+
+*--max-file-not-found*=NUM::
+  If aria2 recieves `file not found' status from the remote HTTP/FTP
+  servers NUM times without getting a single byte, then force the
+  download to fail. Specify '0' to disable this option. This options is
+  only effective only when using HTTP/FTP servers.
   Default: '0'
 
 *-m*, *--max-tries*=N::
@@ -82,10 +95,31 @@ The file name specified here is only used when the URLs fed to aria2
 is done by command line without *-i*, *-Z* option, like this:
 aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
 
+*-R*, *--remote-time*[='true'|'false']::
+  Retrieve timestamp of the remote file from the remote HTTP/FTP
+  server and if it is available, apply it to the local file.
+  Default: 'false'
+
 *--retry-wait*=SEC::
   Set the seconds to wait to retry after an error has occured.
   Specify a value between '0' and '60'.
   Default: '5'
+
+*--server-stat-of*=FILE::
+  Specify the filename to which performance profile of the servers is
+  saved. You can load saved data using *--server-stat-if* option. See
+  SERVER PERFORMANCE PROFILE section below for file format.
+
+*--server-stat-if*=FILE::
+  Specify the filename to load performance profile of the servers. The
+  loaded data will be used in some URI selector such as 'feedback'.
+  See also *--uri-selector* option. See SERVER PERFORMANCE PROFILE
+  section below for file format.
+
+*--server-stat-timeout*=SEC::
+  Specifies timeout in seconds to invalidate performance profile of
+  the servers since the last contact to them.
+  Default: '86400' (24hours)
 
 *-s*, *--split*=N::
   Download a file using N connections.
@@ -99,6 +133,17 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
 *-t*, *--timeout*=SEC::
   Set timeout in seconds.
   Default: '60'
+
+*--uri-selector*=SELECTOR::
+  Specify URI selection algorithm. Possible values are 'inorder' and
+  'feedback'.  If 'inorder' is given, URI is tried in the order
+  appeared in the URI list.  If 'feedback' is given, aria2 uses
+  download speed observed in the previous downloads and choose fastest
+  server in the URI list. This also effectively skips dead
+  mirrors. The observed download speed is a part of performance
+  profile of servers mentioned in *--server-stat-of* and
+  *--server-stat-if* options.
+  Default: 'inorder'
 
 HTTP Specific Options
 ~~~~~~~~~~~~~~~~~~~~~
@@ -144,7 +189,11 @@ HTTP Specific Options
   aria2c *--header*="X-A: b78" *--header*="X-B: 9J1" http://host/file
 
 *--load-cookies*=FILE::
-  Load Cookies from FILE using the Mozilla/Firefox(1.x/2.x) and Netscape format.
+  Load Cookies from FILE using the Firefox3 format(SQLite3) and the
+  Mozilla/Firefox(1.x/2.x)/Netscape format.
+
+[NOTE]
+If aria2 is build without libsqlite3, then it doesn't support Firefox3 cookie.
 
 *-U*, *--user-agent*=USER_AGENT::
   Set user agent for HTTP(S) downloads.
@@ -734,6 +783,39 @@ You can seed downloaded file using --check-integrity=true option.
 ---------------------------------------------
 aria2c --check-integrity=true file.torrent
 ---------------------------------------------
+
+SERVER PERFORMANCE PROFILE
+--------------------------
+This section describes the format of server performance profile.
+The file is plain text and each line has several NAME=VALUE pair, delimited by
+comma.
+Currently following NAMEs are recognized:
+
+host::
+  Hostname of the server. Required.
+
+protocol::
+  Protocol for this profile, such as ftp, http. Required.
+
+dl_speed::
+  The average download speed observed in the previous download in bytes per sec.
+  Required.
+
+last_updated::
+  Last contact time in GMT with this server, specified in the seconds from the
+  Epoch. Required.
+
+status::
+  ERROR is set when server cannot be reached or out-of-service or timeout
+  occurred. Otherwise, OK is set.
+
+Those fields must exist in one line. The order of the fields is not significant.You can put pairs other than above; they are simply ignored.
+
+An example is follow:
+--------------------------------------------------------------------------------
+host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
+host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
+--------------------------------------------------------------------------------
 
 FILES
 -----

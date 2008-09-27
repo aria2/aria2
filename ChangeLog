@@ -1,5 +1,10 @@
 2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated man page.
+	* doc/aria2c.1.txt
+
+2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	When error occurred while aria2 was parsing an .aria2.conf file, print
 	the usage of the option that caused error.
 	* src/option_processing.cc
