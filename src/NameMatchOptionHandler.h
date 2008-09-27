@@ -36,7 +36,6 @@
 #define _D_NAME_MATCH_OPTION_HANDLER_H_
 
 #include "OptionHandler.h"
-#include "StringFormat.h"
 #include "A2STR.h"
 #include "Util.h"
 #include "OptionHandlerException.h"
@@ -87,11 +86,8 @@ public:
     try {
       parseArg(option, arg);
     } catch(Exception& e) {
-      throw OptionHandlerException
-	(StringFormat("Exception occurred while processing option %s:",
-		      _optName.c_str()).str(),
-	 _optName, e);
-   }
+      throw OptionHandlerException(_optName, e);
+    }
   }
 
   virtual bool hasTag(const std::string& tag) const

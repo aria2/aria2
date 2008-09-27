@@ -35,12 +35,16 @@
 #ifndef _D_OPTION_HANDLER_EXCEPTION_H_
 #define _D_OPTION_HANDLER_EXCEPTION_H_
 #include "FatalException.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 class OptionHandlerException:public FatalException {
 private:
   std::string _optName;
+
+  static const std::string MESSAGE =
+    "Exception occurred while processing option %s:";
 protected:
   virtual SharedHandle<Exception> copy() const
   {
@@ -48,16 +52,17 @@ protected:
     return e;
   }
 public:
-  OptionHandlerException(const std::string& msg, const std::string& optName):
-    FatalException(msg), _optName(optName) {}
+  OptionHandlerException(const std::string& optName):
+    FatalException
+    (StringFormat(MESSAGE, optName.c_str()).str()), _optName(optName) {}
 
-  OptionHandlerException(const std::string& msg, const std::string& optName,
+  OptionHandlerException(const std::string& optName,
 			 const Exception& cause):
-    FatalException(msg, cause), _optName(optName) {}
+    FatalException
+    (StringFormat(MESSAGE, optName.c_str()).str(), cause), _optName(optName) {}
 
   OptionHandlerException(const OptionHandlerException& e):
-    FatalException(e),
-    _optName(e._optName) {}
+    FatalException(e), _optName(e._optName) {}
 
   virtual ~OptionHandlerException() throw() {}
 
