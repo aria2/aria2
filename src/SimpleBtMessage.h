@@ -40,8 +40,6 @@
 namespace aria2 {
 
 class SimpleBtMessage : public AbstractBtMessage {
-private:
-  size_t leftDataLength;
 public:
   SimpleBtMessage();
 

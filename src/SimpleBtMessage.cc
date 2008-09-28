@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-SimpleBtMessage::SimpleBtMessage():leftDataLength(0) {}
+SimpleBtMessage::SimpleBtMessage() {}//:leftDataLength(0) {}
 
 SimpleBtMessage::~SimpleBtMessage() {}
 
@@ -49,22 +49,22 @@ void SimpleBtMessage::send() {
   if(invalidate) {
     return;
   }
-  if(sendPredicate() || sendingInProgress) {
+  if(!sendPredicate() && !sendingInProgress) {
+    return;
+  }
+  if(!sendingInProgress) {
     const unsigned char* msg = getMessage();
     size_t msgLength = getMessageLength();
-    if(!sendingInProgress) {
-      logger->info(MSG_SEND_PEER_MESSAGE,
-		   cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
-      leftDataLength = getMessageLength();
-    }
-    sendingInProgress = false;
-    size_t writtenLength = peerConnection->sendMessage(msg+msgLength-leftDataLength, leftDataLength);
-    if(writtenLength == leftDataLength) {
-      onSendComplete();
-    } else {
-      leftDataLength -= writtenLength;
-      sendingInProgress = true;
-    }
+    logger->info(MSG_SEND_PEER_MESSAGE,
+		 cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
+    logger->debug("msglength = %zu bytes", msgLength);
+    peerConnection->sendMessage(msg, msgLength);
+  } else {
+    peerConnection->sendPendingData();
+  }
+  sendingInProgress = !peerConnection->sendBufferIsEmpty();
+  if(!sendingInProgress) {
+    onSendComplete();
   }
 }
 

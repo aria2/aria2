@@ -69,11 +69,9 @@ PeerConnection::~PeerConnection() {}
 ssize_t PeerConnection::sendMessage(const unsigned char* data,
 				    size_t dataLength)
 {
-  if(socket->isWritable(0)) {
-    return sendData(data, dataLength, _encryptionEnabled);
-  } else {
-    return 0;
-  }
+  ssize_t writtenLength = sendData(data, dataLength, _encryptionEnabled);
+  logger->debug("sent %d byte(s).", writtenLength);
+  return writtenLength;
 }
 
 bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
@@ -229,6 +227,18 @@ void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
   size_t nwrite = std::min((size_t)MAX_PAYLOAD_LEN, length);
   memcpy(resbuf, data, nwrite);
   resbufLength = length;
+}
+
+bool PeerConnection::sendBufferIsEmpty() const
+{
+  return _socketBuffer.sendBufferIsEmpty();
+}
+
+ssize_t PeerConnection::sendPendingData()
+{
+  ssize_t writtenLength = _socketBuffer.send();
+  logger->debug("sent %d byte(s).", writtenLength);
+  return writtenLength;
 }
 
 } // namespace aria2

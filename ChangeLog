@@ -1,5 +1,16 @@
 2008-09-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that aria2 may send duplicate data to BitTorrent peer if
+	whole message data is not sent in one send() call.
+	* src/BtPieceMessage.cc
+	* src/BtPieceMessage.h
+	* src/PeerConnection.cc
+	* src/PeerConnection.h
+	* src/SimpleBtMessage.cc
+	* src/SimpleBtMessage.h
+	
+2008-09-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that aria2 downloads faster than max-download-limit when
 	downloading file using both HTTP(or FTP) and BitTorrent, because aria2
 	evaluates speed separatly(HTTP and BiTorrent) against max-download-limit

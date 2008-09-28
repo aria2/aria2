@@ -52,8 +52,6 @@ private:
   uint32_t begin;
   uint32_t blockLength;
   unsigned char* block;
-  size_t leftDataLength;
-  bool headerSent;
   unsigned char* msgHeader;
 
   static size_t MESSAGE_HEADER_LENGTH;
@@ -99,8 +97,6 @@ public:
      begin(begin),
      blockLength(blockLength),
      block(0),
-     leftDataLength(0),
-     headerSent(false),
      msgHeader(0)
   {
     uploading = true;

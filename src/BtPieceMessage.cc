@@ -53,6 +53,7 @@
 #include "StringFormat.h"
 #include <cstring>
 #include <cstdlib>
+#include <cassert>
 
 namespace aria2 {
 
@@ -140,61 +141,34 @@ void BtPieceMessage::send() {
   if(invalidate) {
     return;
   }
-  if(!headerSent) {
-    if(!sendingInProgress) {
-      logger->info(MSG_SEND_PEER_MESSAGE,
-		   cuid, peer->ipaddr.c_str(), peer->port,
-		   toString().c_str());
-      getMessageHeader();
-      leftDataLength = getMessageHeaderLength();
-      sendingInProgress = true;
-    }
-    size_t writtenLength
-      = peerConnection->sendMessage(msgHeader+getMessageHeaderLength()-leftDataLength,
-				    leftDataLength);
-    if(writtenLength == leftDataLength) {
-      headerSent = true;
-      leftDataLength = blockLength;
-    } else {
-      leftDataLength -= writtenLength;
-    }
-  }
-  if(headerSent) {
-    sendingInProgress = false;
+  if(!sendingInProgress) {
+    logger->info(MSG_SEND_PEER_MESSAGE,
+		 cuid, peer->ipaddr.c_str(), peer->port,
+		 toString().c_str());
+    getMessageHeader();
+    peerConnection->sendMessage(msgHeader, getMessageHeaderLength());
     off_t pieceDataOffset =
-      (off_t)index*btContext->getPieceLength()+begin+blockLength-leftDataLength;
-    size_t writtenLength = sendPieceData(pieceDataOffset, leftDataLength);
+      (off_t)index*btContext->getPieceLength()+begin;
+    size_t writtenLength = sendPieceData(pieceDataOffset, blockLength);
+    logger->debug("msglength = %zu bytes",
+		  getMessageHeaderLength()+blockLength);
     peer->updateUploadLength(writtenLength);
-    if(writtenLength < leftDataLength) {
-      sendingInProgress = true;
-    }
-    leftDataLength -= writtenLength;
+  } else {
+    ssize_t writtenLength = peerConnection->sendPendingData();
+    peer->updateUploadLength(writtenLength);
   }
+  sendingInProgress = !peerConnection->sendBufferIsEmpty();
 }
 
 size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
-  size_t BUF_SIZE = 256;
-  unsigned char buf[BUF_SIZE];
-  div_t res = div(length, BUF_SIZE);
-  size_t writtenLength = 0;
-  for(int i = 0; i < res.quot; i++) {
-    if((size_t)pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
-      throw DlAbortEx(EX_DATA_READ);
-    }
-    size_t ws = peerConnection->sendMessage(buf, BUF_SIZE);
-    writtenLength += ws;
-    if(ws != BUF_SIZE) {
-      return writtenLength;
-    }
+  assert(length <= 16*1024);
+  unsigned char buf[16*1024];
+  if(pieceStorage->getDiskAdaptor()->readData(buf, length, offset) ==
+     static_cast<ssize_t>(length)) {
+    return peerConnection->sendMessage(buf, length);
+  } else {
+    throw DlAbortEx(EX_DATA_READ);
   }
-  if(res.rem > 0) {
-    if(pieceStorage->getDiskAdaptor()->readData(buf, res.rem, offset+res.quot*BUF_SIZE) < res.rem) {
-      throw DlAbortEx(EX_DATA_READ);
-    }
-    size_t ws = peerConnection->sendMessage(buf, res.rem);
-    writtenLength += ws;
-  }
-  return writtenLength;
 }
 
 std::string BtPieceMessage::toString() const {

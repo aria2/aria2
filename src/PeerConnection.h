@@ -99,6 +99,10 @@ public:
 			const SharedHandle<ARC4Decryptor>& decryptor);
 
   void presetBuffer(const unsigned char* data, size_t length);
+
+  bool sendBufferIsEmpty() const;
+  
+  ssize_t sendPendingData();
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;
