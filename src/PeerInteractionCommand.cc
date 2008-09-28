@@ -239,7 +239,7 @@ bool PeerInteractionCommand::executeInternal() {
       //       }
 
       if(maxDownloadSpeedLimit > 0) {
-	TransferStat stat = peerStorage->calculateStat();
+	TransferStat stat = _requestGroup->calculateStat();
 	if(maxDownloadSpeedLimit < stat.downloadSpeed) {
 	  disableReadCheckSocket();
 	  setNoCheck(true);

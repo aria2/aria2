@@ -48,6 +48,7 @@
 #include "BtConstants.h"
 #include "SocketCore.h"
 #include "BtAnnounce.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -79,7 +80,7 @@ bool ActivePeerConnectionCommand::execute() {
   }
   if(checkPoint.elapsed(interval)) {
     checkPoint.reset();
-    TransferStat tstat = peerStorage->calculateStat();
+    TransferStat tstat = _requestGroup->calculateStat();
     if(// for seeder state
        (pieceStorage->downloadFinished() && btRuntime->lessThanMaxPeers() &&
 	(_maxUploadSpeedLimit == 0 ||

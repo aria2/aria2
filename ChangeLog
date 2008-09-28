@@ -1,3 +1,15 @@
+2008-09-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that aria2 downloads faster than max-download-limit when
+	downloading file using both HTTP(or FTP) and BitTorrent, because aria2
+	evaluates speed separatly(HTTP and BiTorrent) against max-download-limit
+	, instead of sum of them.
+	* src/ActivePeerConnectionCommand.cc
+	* src/DefaultBtInteractive.cc
+	* src/DownloadCommand.cc
+	* src/PeerInteractionCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+
 2008-09-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that HTTPS download fails.

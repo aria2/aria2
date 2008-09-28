@@ -65,6 +65,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "StringFormat.h"
+#include "RequestGroup.h"
 #include <cstring>
 
 namespace aria2 {
@@ -234,7 +235,7 @@ size_t DefaultBtInteractive::receiveMessages() {
   size_t msgcount = 0;
   for(int i = 0; i < 50; i++) {
     if(maxDownloadSpeedLimit > 0) {
-      TransferStat stat = peerStorage->calculateStat();
+      TransferStat stat = btContext->getOwnerRequestGroup()->calculateStat();
       if(maxDownloadSpeedLimit < stat.downloadSpeed) {
 	break;
       }

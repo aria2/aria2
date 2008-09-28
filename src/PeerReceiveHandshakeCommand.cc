@@ -53,6 +53,7 @@
 #include "Option.h"
 #include "RequestGroupMan.h"
 #include "StringFormat.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -97,7 +98,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
       throw DlAbortEx
 	(StringFormat("Unknown info hash %s", infoHash.c_str()).str());
     }
-    TransferStat tstat = PEER_STORAGE(btContext)->calculateStat();
+    TransferStat tstat = btContext->getOwnerRequestGroup()->calculateStat();
     if((!PIECE_STORAGE(btContext)->downloadFinished() &&
        tstat.getDownloadSpeed() < _thresholdSpeed) ||
        BT_RUNTIME(btContext)->lessThanMaxPeers()) {

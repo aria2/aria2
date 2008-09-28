@@ -101,7 +101,8 @@ DownloadCommand::~DownloadCommand() {
 
 bool DownloadCommand::executeInternal() {
   if(maxDownloadSpeedLimit > 0 &&
-     maxDownloadSpeedLimit < _requestGroup->getSegmentMan()->calculateDownloadSpeed()) {
+     maxDownloadSpeedLimit <
+     _requestGroup->calculateStat().getDownloadSpeed()) {
     e->commands.push_back(this);
     disableReadCheckSocket();
     return false;
