@@ -93,6 +93,13 @@ bool HttpResponseCommand::executeInternal()
   httpResponse->validateResponse();
   httpResponse->retrieveCookie();
 
+  SharedHandle<HttpHeader> httpHeader = httpResponse->getHttpHeader();
+  // Disable persistent connection if:
+  //   Connection: close is received or the remote server is not HTTP/1.1.
+  // We don't care whether non-HTTP/1.1 server returns Connection: keep-alive.
+  req->supportsPersistentConnection
+    (httpResponse->supportsPersistentConnection());
+
   if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
     if(httpResponse->getResponseStatus() == HttpHeader::S404) {
       _requestGroup->increaseAndValidateFileNotFoundCount();

@@ -36,9 +36,11 @@
 #define _D_HTTP_RESPONSE_H_
 
 #include "common.h"
+
+#include <stdint.h>
+
 #include "SharedHandle.h"
 #include "TimeA2.h"
-#include <stdint.h>
 
 namespace aria2 {
 
@@ -117,6 +119,8 @@ public:
   time_t getRetryAfter() const;
 
   Time getLastModifiedTime() const;
+
+  bool supportsPersistentConnection() const;
 };
 
 typedef SharedHandle<HttpResponse> HttpResponseHandle;

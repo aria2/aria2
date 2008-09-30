@@ -1,3 +1,7 @@
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "HttpResponse.h"
 #include "prefs.h"
 #include "PiecedSegment.h"
@@ -10,8 +14,6 @@
 #include "Decoder.h"
 #include "DlRetryEx.h"
 #include "CookieStorage.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -42,6 +44,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testHasRetryAfter);
   CPPUNIT_TEST(testProcessRedirect);
   CPPUNIT_TEST(testRetrieveCookie);
+  CPPUNIT_TEST(testSupportsPersistentConnection);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -72,6 +75,7 @@ public:
   void testHasRetryAfter();
   void testProcessRedirect();
   void testRetrieveCookie();
+  void testSupportsPersistentConnection();
 };
 
 
@@ -484,6 +488,26 @@ void HttpResponseTest::testRetrieveCookie()
   std::deque<Cookie>::const_iterator citer = st->begin();
   CPPUNIT_ASSERT_EQUAL(std::string("k2=v2"), (*(st->begin())).toString());
   CPPUNIT_ASSERT_EQUAL(std::string("k3=v3"), (*(st->begin()+1)).toString());
+}
+
+void HttpResponseTest::testSupportsPersistentConnection()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+
+  httpHeader->setVersion("HTTP/1.1");
+  CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
+
+  httpHeader->setVersion("HTTP/1.0");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+
+  httpHeader->setVersion("HTTP/1.1");
+  httpHeader->put("Connection", "close");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Connection", "keep-alive");
+  CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
 }
 
 } // namespace aria2

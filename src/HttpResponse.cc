@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "HttpResponse.h"
+
+#include <deque>
+
 #include "Request.h"
 #include "Segment.h"
 #include "HttpRequest.h"
@@ -52,7 +55,6 @@
 # include "GZipDecoder.h"
 #endif // HAVE_LIBZ
 #include "CookieStorage.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -252,6 +254,13 @@ time_t HttpResponse::getRetryAfter() const
 Time HttpResponse::getLastModifiedTime() const
 {
   return Time::parseHTTPDate(httpHeader->getFirst(HttpHeader::LAST_MODIFIED));
+}
+
+bool HttpResponse::supportsPersistentConnection() const
+{
+  return Util::toLower(httpHeader->getFirst(HttpHeader::CONNECTION)).
+    find(HttpHeader::CLOSE) == std::string::npos
+    && httpHeader->getVersion() == HttpHeader::HTTP_1_1;
 }
 
 } // namespace aria2

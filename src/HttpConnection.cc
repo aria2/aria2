@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "HttpConnection.h"
+
+#include <sstream>
+
 #include "Util.h"
 #include "message.h"
 #include "prefs.h"
@@ -49,7 +52,6 @@
 #include "Socket.h"
 #include "Option.h"
 #include "CookieStorage.h"
-#include <sstream>
 
 namespace aria2 {
 
@@ -141,19 +143,8 @@ HttpResponseHandle HttpConnection::receiveResponse()
   size -= putbackDataLength;
   socket->readData(buf, size);
 
-  // OK, we got all headers.
   logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
-  // Disable persistent connection if:
-  //   Connection: close is received or the remote server is not HTTP/1.1.
-  // We don't care whether non-HTTP/1.1 server returns Connection: keep-alive.
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
-  if(Util::toLower(httpHeader->getFirst(HttpHeader::CONNECTION)).find(HttpHeader::CLOSE) != std::string::npos
-     || httpHeader->getVersion() != HttpHeader::HTTP_1_1) {
-    entry->getHttpRequest()->getRequest()->supportsPersistentConnection(false);
-  } else {
-    entry->getHttpRequest()->getRequest()->supportsPersistentConnection(true);
-  }
-
   HttpResponseHandle httpResponse(new HttpResponse());
   httpResponse->setCuid(cuid);
   httpResponse->setHttpHeader(httpHeader);

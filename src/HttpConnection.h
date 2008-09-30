@@ -36,10 +36,12 @@
 #define _D_HTTP_CONNECTION_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "SocketBuffer.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
