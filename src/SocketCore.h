@@ -36,11 +36,13 @@
 #define _D_SOCKET_CORE_H_
 
 #include "common.h"
-#include "a2io.h"
-#include "a2netcompat.h"
-#include "a2time.h"
-#include <cstdlib>
+
+#ifdef HAVE_EPOLL_CREATE
+# include <sys/epoll.h>
+#endif // HAVE_EPOLL_CREATE
+
 #include <string>
+#include <cstdlib>
 #include <utility>
 
 #ifdef HAVE_LIBSSL
@@ -51,9 +53,10 @@
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
-#ifdef HAVE_EPOLL
-# include <sys/epoll.h>
-#endif // HAVE_EPOLL
+
+#include "a2io.h"
+#include "a2netcompat.h"
+#include "a2time.h"
 
 namespace aria2 {
 

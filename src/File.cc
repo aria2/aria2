@@ -33,13 +33,16 @@
  */
 /* copyright --> */
 #include "File.h"
-#include "Util.h"
-#include "A2STR.h"
-#include <cstring>
+
 #include <stdlib.h>
-#include <deque>
 #include <sys/types.h>
 #include <utime.h>
+
+#include <deque>
+#include <cstring>
+
+#include "Util.h"
+#include "A2STR.h"
 
 namespace aria2 {
 

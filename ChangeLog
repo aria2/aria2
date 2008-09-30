@@ -1,3 +1,14 @@
+2008-09-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed compile error with debian mingw32 cross compiler(4.2.1).
+	The configuration is minimum: no torrent, no metalink, so there may be
+	other compile error on their code.
+	* src/a2netcompat.h
+	* src/File.cc
+	* src/File.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
 2008-09-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Made a socket of incoming peer non-blocking.

@@ -33,15 +33,20 @@
  */
 /* copyright --> */
 #include "SocketCore.h"
+
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstring>
+
 #include "message.h"
 #include "a2netcompat.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "Util.h"
-#include <unistd.h>
-#include <cerrno>
-#include <cstring>
+#include "LogFactory.h"
+
 #ifndef __MINGW32__
 # define SOCKET_ERRNO (errno)
 #else
@@ -59,7 +64,7 @@
 #else
 # define CLOSE(X) while(close(X) == -1 && errno == EINTR)
 #endif // __MINGW32__
-#include "LogFactory.h"
+
 namespace aria2 {
 
 SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1)  {
@@ -883,14 +888,14 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
 
 std::string SocketCore::getSocketError() const
 {
-  int error;
-  SOCKOPT_T optlen = sizeof(error);
+  SOCKOPT_T error;
+  socklen_t optlen = sizeof(error);
   if(getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &optlen) == -1) {
     throw DlAbortEx(StringFormat("Failed to get socket error: %s",
 				 errorMsg()).str());
   }
   if(error != 0) {
-    return strerror(error);
+    return errorMsg(error);
   } else {
     return "";
   }
