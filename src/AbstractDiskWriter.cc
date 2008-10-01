@@ -33,6 +33,17 @@
  */
 /* copyright --> */
 #include "AbstractDiskWriter.h"
+
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstring>
+#include <cassert>
+
+#ifdef __MINGW32__
+# include <windows.h>
+#endif // __MINGW32__
+
 #include "File.h"
 #include "Util.h"
 #include "message.h"
@@ -42,9 +53,6 @@
 #include "a2io.h"
 #include "StringFormat.h"
 #include "DownloadFailureException.h"
-#include <cerrno>
-#include <cstring>
-#include <cassert>
 
 namespace aria2 {
 
@@ -159,7 +167,21 @@ void AbstractDiskWriter::truncate(uint64_t length)
   if(fd == -1) {
     throw DlAbortEx("File not opened.");
   }
-  ftruncate(fd, length);
+#ifdef __MINGW32__
+  // Since mingw32's ftruncate cannot handle over 2GB files, we use SetEndOfFile
+  // instead.
+  HANDLE handle = LongToHandle(_get_osfhandle(fd));
+  seek(length);
+  if(SetEndOfFile(handle) == 0) {
+    throw DlAbortEx(StringFormat("SetEndOfFile failed. cause: %s",
+				 GetLastError()).str());
+  }
+#else
+  if(ftruncate(fd, length) == -1) {
+    throw DlAbortEx(StringFormat("ftruncate failed. cause: %s",
+				 strerror(errno)).str());
+  }
+#endif
 }
 
 // TODO the file descriptor fd must be opened before calling this function.
