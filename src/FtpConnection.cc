@@ -291,8 +291,9 @@ bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& re
       throw DlRetryEx(EX_GOT_EOF);
     }
     if(strbuf.size()+size > MAX_RECV_BUFFER) {
-      throw DlRetryEx(StringFormat("Max FTP recv buffer reached. length=%zu",
-				   strbuf.size()+size).str());
+      throw DlRetryEx
+	(StringFormat("Max FTP recv buffer reached. length=%lu",
+		      static_cast<unsigned long>(strbuf.size()+size)).str());
     }
     strbuf.append(&buf[0], &buf[size]);
   }

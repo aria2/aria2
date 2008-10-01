@@ -88,8 +88,8 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
 	return false;
       }
       // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%zu",
-		    cuid, temp);
+      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%lu",
+		    cuid, static_cast<unsigned long>(temp));
       throw DlAbortEx(EX_EOF_FROM_PEER);
     }
     lenbufLength += remaining;
@@ -116,8 +116,11 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
 	return false;
       }
       // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), payloadlen=%zu, remaining=%zu",
-		    cuid, currentPayloadLength, temp);
+      logger->debug("CUID#%d - In PeerConnection::receiveMessage(),"
+		    " payloadlen=%lu, remaining=%lu",
+		    cuid,
+		    static_cast<unsigned long>(currentPayloadLength),
+		    static_cast<unsigned long>(temp));
       throw DlAbortEx(EX_EOF_FROM_PEER);
     }
     resbufLength += remaining;
@@ -162,8 +165,9 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
 	  return false;
 	}
 	// we got EOF
-	logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%zu",
-		      cuid, temp);
+	logger->debug
+	  ("CUID#%d - In PeerConnection::receiveHandshake(), remain=%lu",
+	   cuid, static_cast<unsigned long>(temp));
 	throw DlAbortEx(EX_EOF_FROM_PEER);
       }
       resbufLength += remaining;

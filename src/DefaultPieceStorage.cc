@@ -151,7 +151,8 @@ void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece)
   std::deque<SharedHandle<Piece> >::iterator i =
     std::lower_bound(usedPieces.begin(), usedPieces.end(), piece);
   usedPieces.insert(i, piece);
-  logger->debug("usedPieces.size()=%zu", usedPieces.size());
+  logger->debug("usedPieces.size()=%lu",
+		static_cast<unsigned long>(usedPieces.size()));
 }
 
 PieceHandle DefaultPieceStorage::findUsedPiece(size_t index) const

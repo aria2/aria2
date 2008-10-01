@@ -147,14 +147,15 @@ public:
 
 void DHTPeerAnnounceStorage::handleTimeout()
 {
-  _logger->debug("Now purge peer announces(%zu entries) which are timed out.",
-		 _entries.size());
+  _logger->debug("Now purge peer announces(%lu entries) which are timed out.",
+		 static_cast<unsigned long>(_entries.size()));
 
   std::for_each(_entries.begin(), _entries.end(), RemoveStalePeerAddrEntry());
   _entries.erase(std::remove_if(_entries.begin(), _entries.end(),
 				mem_fun_sh(&DHTPeerAnnounceEntry::empty)),
 		 _entries.end());
-  _logger->debug("Currently %zu peer announce entries", _entries.size());
+  _logger->debug("Currently %lu peer announce entries",
+		 static_cast<unsigned long>(_entries.size()));
 }
 
 void DHTPeerAnnounceStorage::announcePeer()

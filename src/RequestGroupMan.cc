@@ -166,7 +166,9 @@ public:
 	  RequestGroups nextGroups;
 	  group->postDownloadProcessing(nextGroups);
 	  if(!nextGroups.empty()) {
-	    _logger->debug("Adding %zu RequestGroups as a result of PostDownloadHandler.", nextGroups.size());
+	    _logger->debug
+	      ("Adding %lu RequestGroups as a result of PostDownloadHandler.",
+	       static_cast<unsigned long>(nextGroups.size()));
 	    _reservedGroups.insert(_reservedGroups.begin(),
 				   nextGroups.begin(), nextGroups.end());
 	  }
@@ -241,7 +243,8 @@ void RequestGroupMan::removeStoppedGroup()
 
   size_t numRemoved = numPrev-_requestGroups.size();
   if(numRemoved > 0) {
-    _logger->debug("%zu RequestGroup(s) deleted.", numRemoved);
+    _logger->debug("%lu RequestGroup(s) deleted.",
+		   static_cast<unsigned long>(numRemoved));
   }
 }
 

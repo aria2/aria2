@@ -1,3 +1,18 @@
+2008-10-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Replaced '%zu' with '%lu' since mingw32 doesn't recognize '%zu'.
+	* src/BtPieceMessage.cc
+	* src/DHTPeerAnnounceStorage.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/FtpConnection.cc
+	* src/PeerConnection.cc
+	* src/PeerMessageUtil.cc
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/SimpleBtMessage.cc
+
 2008-10-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use seek() and SetEndOfFile() for mingw32 build instead of ftruncate(),

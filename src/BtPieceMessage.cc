@@ -150,8 +150,9 @@ void BtPieceMessage::send() {
     off_t pieceDataOffset =
       (off_t)index*btContext->getPieceLength()+begin;
     size_t writtenLength = sendPieceData(pieceDataOffset, blockLength);
-    logger->debug("msglength = %zu bytes",
-		  getMessageHeaderLength()+blockLength);
+    logger->debug("msglength = %lu bytes",
+		  static_cast<unsigned long>(getMessageHeaderLength()+
+					     blockLength));
     peer->updateUploadLength(writtenLength);
   } else {
     ssize_t writtenLength = peerConnection->sendPendingData();
@@ -178,7 +179,8 @@ std::string BtPieceMessage::toString() const {
 
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
   if(piece->isHashCalculated()) {
-    logger->debug("Hash is available!! index=%zu", piece->getIndex());
+    logger->debug("Hash is available!! index=%lu",
+		  static_cast<unsigned long>(piece->getIndex()));
     return piece->getHashString() == btContext->getPieceHash(piece->getIndex());
   } else {
     off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();

@@ -911,7 +911,9 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
 	newPool.insert(*i);
       }
     }
-    logger->debug("%zu entries removed.", _socketPool.size()-newPool.size());
+    logger->debug
+      ("%lu entries removed.",
+       static_cast<unsigned long>(_socketPool.size()-newPool.size()));
     _socketPool = newPool;
   }
 }

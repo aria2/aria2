@@ -1035,7 +1035,8 @@ void RequestGroup::applyLastModifiedTimeToLocalFiles()
 		  ctime(&t));
     size_t n =
       _pieceStorage->getDiskAdaptor()->utime(Time(), _lastModifiedTime);
-    _logger->info("Last-Modified attrs of %zu files were updated.", n);
+    _logger->info("Last-Modified attrs of %lu files were updated.",
+		  static_cast<unsigned long>(n));
   }
 }
 
