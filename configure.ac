@@ -159,9 +159,15 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
-AC_CHECK_HEADERS([winsock2.h \
-                  ws2tcpip.h \
-                  argz.h \
+
+case "$target" in
+	*mingw*)
+                AC_CHECK_HEADERS([winsock2.h \
+                                  ws2tcpip.h])
+		;;
+esac
+
+AC_CHECK_HEADERS([argz.h \
                   arpa/inet.h \
                   fcntl.h \
                   float.h \
