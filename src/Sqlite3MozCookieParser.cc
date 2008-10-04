@@ -33,12 +33,18 @@
  */
 /* copyright --> */
 #include "Sqlite3MozCookieParser.h"
+
+#include <cstring>
+
+#include <sqlite3.h>
+
 #include "RecoverableException.h"
 #include "Util.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include <cstring>
-#include <sqlite3.h>
+#ifndef HAVE_SQLITE3_OPEN_V2
+# include "File.h"
+#endif // !HAVE_SQLITE3_OPEN_V2
 
 namespace aria2 {
 
@@ -88,7 +94,16 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
   sqlite3* db = 0;
   
   int ret;
+#ifdef HAVE_SQLITE3_OPEN_V2
   ret = sqlite3_open_v2(filename.c_str(), &db, SQLITE_OPEN_READONLY, 0);
+#else // !HAVE_SQLITE3_OPEN_V2
+  if(!File(filename).isFile()) {
+    throw RecoverableException
+      (StringFormat("Failed to open SQLite3 database: %s",
+		    filename.c_str()).str());
+  }
+  ret = sqlite3_open(filename.c_str(), &db);
+#endif // !HAVE_SQLITE3_OPEN_V2
   if(SQLITE_OK != ret) {
     std::string errMsg = sqlite3_errmsg(db);
     sqlite3_close(db);

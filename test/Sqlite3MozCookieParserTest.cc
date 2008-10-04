@@ -1,8 +1,11 @@
 #include "Sqlite3MozCookieParser.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "RecoverableException.h"
 #include "Util.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -68,6 +71,8 @@ void Sqlite3MozCookieParserTest::testParse_fileNotFound()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // SUCCESS
+    CPPUNIT_ASSERT(Util::startsWith(e.what(),
+				    "Failed to open SQLite3 database:"));
   }
 }
 

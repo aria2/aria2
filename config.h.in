@@ -328,6 +328,9 @@
 /* Define to 1 if you have sqlite3. */
 #undef HAVE_SQLITE3
 
+/* Define to 1 if you have the `sqlite3_open_v2' function. */
+#undef HAVE_SQLITE3_OPEN_V2
+
 /* Define to 1 if `stat' has the bug that it succeeds when given the
    zero-length file name argument. */
 #undef HAVE_STAT_EMPTY_STRING_BUG

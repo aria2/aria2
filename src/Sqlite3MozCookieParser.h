@@ -36,9 +36,11 @@
 #define _D_SQLITE3_MOZ_COOKIE_PARSER_H_
 
 #include "common.h"
-#include "Cookie.h"
+
 #include <string>
 #include <deque>
+
+#include "Cookie.h"
 
 namespace aria2 {
 

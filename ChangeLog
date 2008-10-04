@@ -1,3 +1,11 @@
+2008-10-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Use sqlite3_open if sqlite3_open_v2 is not available.
+	* src/Sqlite3MozCookieParser.cc
+	* src/Sqlite3MozCookieParser.h
+	* m4/sqlite3.m4
+	* test/Sqlite3MozCookieParserTest.cc
+
 2008-10-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Replaced '%zu' with '%lu' since mingw32 doesn't recognize '%zu'.
