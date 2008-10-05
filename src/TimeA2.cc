@@ -34,9 +34,11 @@
 /* copyright --> */
 
 #include "TimeA2.h"
+
+#include <cstring>
+
 #include "Util.h"
 #include "array_fun.h"
-#include <cstring>
 
 namespace aria2 {
 
@@ -90,7 +92,8 @@ bool Time::elapsed(time_t sec) const {
   if(tv.tv_sec+sec < now) {
     return true;
   } else if(tv.tv_sec+sec == now) {
-    return Util::difftvsec(getCurrentTime(), tv) >= sec;
+    return
+      Util::difftv(getCurrentTime(), tv) >= static_cast<int64_t>(sec)*1000000;
   } else {
     return false;
   }

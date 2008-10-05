@@ -1,5 +1,12 @@
 2008-10-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug in Time::elapsed(): Util::difftvsec() is used where
+	Util::difftv() should be used instead.
+	* src/TimeA2.cc
+	* src/TimeA2.h
+
+2008-10-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made socket for dht connections non-blocking
 	* src/DHTAbstractMessage.cc
 	* src/DHTAbstractMessage.h

@@ -36,9 +36,12 @@
 #define _D_TIME_H_
 
 #include "common.h"
-#include "a2time.h"
+
 #include <stdint.h>
+
 #include <string>
+
+#include "a2time.h"
 
 namespace aria2 {
 
