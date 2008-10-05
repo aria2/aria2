@@ -1,8 +1,11 @@
 #include "TimeA2.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -14,6 +17,7 @@ class TimeTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseRFC850Ext);
   CPPUNIT_TEST(testParseHTTPDate);
   CPPUNIT_TEST(testOperatorLess);
+  CPPUNIT_TEST(testElapsed);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -25,6 +29,7 @@ public:
   void testParseRFC850Ext();
   void testParseHTTPDate();
   void testOperatorLess();
+  void testElapsed();
 };
 
 
@@ -80,6 +85,32 @@ void TimeTest::testOperatorLess()
 
   tv2.tv_sec = 0;
   CPPUNIT_ASSERT(Time(tv2) < Time(tv1));
+}
+
+void TimeTest::testElapsed()
+{
+  struct timeval now;
+  gettimeofday(&now, 0);
+  {
+    struct timeval tv = now;
+    CPPUNIT_ASSERT(!Time(tv).elapsed(1));
+  }
+  {
+    struct timeval tv;
+    suseconds_t usec = now.tv_usec+500000;
+    if(usec > 999999) {
+      tv.tv_sec = now.tv_sec+usec/1000000;
+      tv.tv_usec = usec%1000000;
+    } else {
+      tv.tv_sec = now.tv_sec;
+      tv.tv_usec = usec;
+    }
+    CPPUNIT_ASSERT(!Time(tv).elapsed(1));
+  }
+  {
+    struct timeval tv = { now.tv_sec-1, now.tv_usec };
+    CPPUNIT_ASSERT(Time(tv).elapsed(1));
+  }
 }
 
 } // namespace aria2
