@@ -47,7 +47,7 @@ namespace aria2 {
 
 PStringDatumHandle ParameterizedStringParser::parse(const std::string& src)
 {
-  int32_t offset = 0;
+  int offset = 0;
   return diggPString(src, offset);
 }
 
