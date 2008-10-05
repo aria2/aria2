@@ -57,7 +57,7 @@ public:
   virtual void doReceivedAction();
 
   // do nothing; we don't use this message as outgoing message.
-  virtual void send();
+  virtual bool send();
 
   // always return false
   virtual bool isReply() const;

@@ -2,9 +2,11 @@
 #define _D_MOCK_DHT_MESSAGE_H_
 
 #include "DHTMessage.h"
+
+#include <deque>
+
 #include "DHTNode.h"
 #include "Peer.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -30,7 +32,7 @@ public:
 
   virtual void doReceivedAction() {}
 
-  virtual void send() {}
+  virtual bool send() { return true; }
 
   virtual bool isReply() const { return _isReply; }
 

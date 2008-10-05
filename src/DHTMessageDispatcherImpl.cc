@@ -67,28 +67,38 @@ DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& mess
   addMessageToQueue(message, DHT_MESSAGE_TIMEOUT, callback);
 }
 
-void
+bool
 DHTMessageDispatcherImpl::sendMessage(const SharedHandle<DHTMessageEntry>& entry)
 {
   try {
-    entry->_message->send();
-    if(!entry->_message->isReply()) {
-      _tracker->addMessage(entry->_message, entry->_timeout, entry->_callback);
+    if(entry->_message->send()) {
+      if(!entry->_message->isReply()) {
+	_tracker->addMessage(entry->_message, entry->_timeout, entry->_callback);
+      }
+      _logger->info("Message sent: %s", entry->_message->toString().c_str());
+    } else {
+      return false;
     }
-    _logger->info("Message sent: %s", entry->_message->toString().c_str());
   } catch(RecoverableException& e) {
     _logger->error("Failed to send message: %s", e, entry->_message->toString().c_str());
   }
+  return true;
 }
 
 void DHTMessageDispatcherImpl::sendMessages()
 {
   // TODO I can't use bind1st and mem_fun here because bind1st cannot bind a
   // function which takes a reference as an argument..
-  for(std::deque<SharedHandle<DHTMessageEntry> >::iterator itr = _messageQueue.begin(); itr != _messageQueue.end(); ++itr) {
-    sendMessage(*itr);
+  std::deque<SharedHandle<DHTMessageEntry> >::iterator itr =
+    _messageQueue.begin();
+  for(; itr != _messageQueue.end(); ++itr) {
+    if(!sendMessage(*itr)) {
+      break;
+    }
   }
-  _messageQueue.clear();
+  _messageQueue.erase(_messageQueue.begin(), itr);
+  _logger->debug("%lu dht messages remaining in the queue.",
+		 static_cast<unsigned long>(_messageQueue.size()));
 }
 
 size_t DHTMessageDispatcherImpl::countMessageInQueue() const

@@ -52,7 +52,7 @@ private:
 
   Logger* _logger;
 
-  void sendMessage(const SharedHandle<DHTMessageEntry>& msg);
+  bool sendMessage(const SharedHandle<DHTMessageEntry>& msg);
 public:
   DHTMessageDispatcherImpl(const SharedHandle<DHTMessageTracker>& tracker);
 

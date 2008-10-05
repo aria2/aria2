@@ -33,9 +33,12 @@
  */
 /* copyright --> */
 #include "DHTUnknownMessage.h"
+
+#include <cstring>
+#include <cstdlib>
+
 #include "DHTNode.h"
 #include "Util.h"
-#include <cstring>
 
 namespace aria2 {
 
@@ -66,7 +69,7 @@ DHTUnknownMessage::~DHTUnknownMessage()
 
 void DHTUnknownMessage::doReceivedAction() {}
 
-void DHTUnknownMessage::send() {}
+bool DHTUnknownMessage::send() { return true; }
 
 bool DHTUnknownMessage::isReply() const
 {

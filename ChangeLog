@@ -1,5 +1,22 @@
 2008-10-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made socket for dht connections non-blocking
+	* src/DHTAbstractMessage.cc
+	* src/DHTAbstractMessage.h
+	* src/DHTConnection.h
+	* src/DHTConnectionImpl.cc
+	* src/DHTConnectionImpl.h
+	* src/DHTMessage.h
+	* src/DHTMessageDispatcherImpl.cc
+	* src/DHTMessageDispatcherImpl.h
+	* src/DHTUnknownMessage.cc
+	* src/DHTUnknownMessage.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* test/MockDHTMessage.h
+
+2008-10-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Changed the type of offset to int.
 	* src/ParameterizedStringParser.cc
 

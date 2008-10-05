@@ -222,12 +222,14 @@ public:
     return writeData(reinterpret_cast<const char*>(data), len);
   }
 
-  void writeData(const char* data, size_t len, const std::string& host, uint16_t port);
+  ssize_t writeData(const char* data, size_t len,
+		    const std::string& host, uint16_t port);
 
-  void writeData(const unsigned char* data, size_t len, const std::string& host,
-		 uint16_t port)
+  ssize_t writeData(const unsigned char* data, size_t len,
+		    const std::string& host,
+		    uint16_t port)
   {
-    writeData(reinterpret_cast<const char*>(data), len, host, port);
+    return writeData(reinterpret_cast<const char*>(data), len, host, port);
   }
 
   /**

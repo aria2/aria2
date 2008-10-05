@@ -839,8 +839,11 @@ bool SocketCore::initiateSecureConnection()
 #endif // __MINGW32__
 }
 
-void SocketCore::writeData(const char* data, size_t len, const std::string& host, uint16_t port)
+ssize_t SocketCore::writeData(const char* data, size_t len,
+			      const std::string& host, uint16_t port)
 {
+  _wantRead = false;
+  _wantWrite = false;
 
   struct addrinfo hints;
   struct addrinfo* res;
@@ -861,17 +864,25 @@ void SocketCore::writeData(const char* data, size_t len, const std::string& host
     if(r == static_cast<ssize_t>(len)) {
       break;
     }
+    if(r == -1 && errno == EAGAIN) {
+      _wantWrite = true;
+      r = 0;
+      break;
+    }
   }
   freeaddrinfo(res);
   if(r == -1) {
     throw DlAbortEx(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
   }
+  return r;
 }
 
 ssize_t SocketCore::readDataFrom(char* data, size_t len,
 				 std::pair<std::string /* numerichost */,
 				 uint16_t /* port */>& sender)
 {
+  _wantRead = false;
+  _wantWrite = false;
   struct sockaddr_storage sockaddr;
   socklen_t sockaddrlen = sizeof(struct sockaddr_storage);
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
@@ -879,9 +890,15 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   while((r = recvfrom(sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
 	EINTR == errno);
   if(r == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
+    if(errno == EAGAIN) {
+      _wantRead = true;
+      r = 0;
+    } else {
+      throw DlRetryEx(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
+    }
+  } else {
+    sender = Util::getNumericNameInfo(addrp, sockaddrlen);
   }
-  sender = Util::getNumericNameInfo(addrp, sockaddrlen);
 
   return r;
 }

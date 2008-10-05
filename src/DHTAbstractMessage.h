@@ -62,7 +62,7 @@ public:
 
   virtual ~DHTAbstractMessage();
 
-  virtual void send();
+  virtual bool send();
 
   virtual std::string getType() const = 0;
 

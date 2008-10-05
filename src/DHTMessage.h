@@ -36,9 +36,11 @@
 #define _D_DHT_MESSAGE_H_
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 #include "A2STR.h"
-#include <string>
 
 namespace aria2 {
 
@@ -71,7 +73,7 @@ public:
 
   virtual void doReceivedAction() = 0;
 
-  virtual void send() = 0;
+  virtual bool send() = 0;
 
   virtual bool isReply() const = 0;
 

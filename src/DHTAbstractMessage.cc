@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DHTAbstractMessage.h"
+
+#include <cassert>
+
 #include "DHTNode.h"
 #include "BencodeVisitor.h"
 #include "DHTConnection.h"
@@ -64,13 +67,16 @@ std::string DHTAbstractMessage::getBencodedMessage()
   return v.getBencodedData();
 }
 
-void DHTAbstractMessage::send()
+bool DHTAbstractMessage::send()
 {
   std::string message = getBencodedMessage();
-  _connection->sendMessage(reinterpret_cast<const unsigned char*>(message.c_str()),
-			   message.size(),
-			   _remoteNode->getIPAddress(),
-			   _remoteNode->getPort());
+  ssize_t r = _connection->sendMessage
+    (reinterpret_cast<const unsigned char*>(message.c_str()),
+     message.size(),
+     _remoteNode->getIPAddress(),
+     _remoteNode->getPort());
+  assert(r >= 0);
+  return r == static_cast<ssize_t>(message.size());
 }
 
 void DHTAbstractMessage::setConnection(const WeakHandle<DHTConnection>& connection)
