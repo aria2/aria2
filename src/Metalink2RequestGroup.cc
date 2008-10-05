@@ -126,14 +126,15 @@ Metalink2RequestGroup::createRequestGroup
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
-  std::deque<int32_t> selectIndexes = Util::parseIntRange(_option->get(PREF_SELECT_FILE)).flush();
+  std::deque<int32_t> selectIndexes =
+    Util::parseIntRange(_option->get(PREF_SELECT_FILE)).flush();
   bool useIndex;
   if(selectIndexes.size()) {
     useIndex = true;
   } else {
     useIndex = false;
   }
-  unsigned int count = 0;
+  int32_t count = 0;
   for(std::deque<SharedHandle<MetalinkEntry> >::iterator itr = entries.begin(); itr != entries.end();
       itr++, ++count) {
     SharedHandle<MetalinkEntry>& entry = *itr;
@@ -146,7 +147,8 @@ Metalink2RequestGroup::createRequestGroup
       entry->setProtocolPreference(_option->get(PREF_METALINK_PREFERRED_PROTOCOL), 100);
     }
     if(useIndex) {
-      if(std::find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {
+      if(std::find(selectIndexes.begin(), selectIndexes.end(), count+1) ==
+	 selectIndexes.end()) {
 	continue;
       }
     }
@@ -222,9 +224,11 @@ Metalink2RequestGroup::createRequestGroup
 #endif // ENABLE_MESSAGE_DIGEST
     dctx->setSignature(entry->getSignature());
     rg->setDownloadContext(dctx);
-    rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
-				_option->getAsInt(PREF_METALINK_SERVERS) :
-				std::min(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
+    rg->setNumConcurrentCommand
+      (entry->maxConnections < 0 ?
+       _option->getAsInt(PREF_METALINK_SERVERS) :
+       std::min(_option->getAsInt(PREF_METALINK_SERVERS),
+		static_cast<int32_t>(entry->maxConnections)));
     // In metalink, multi connection to a single host is not allowed by default.
     rg->setSingleHostMultiConnectionEnabled(!_option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
     // remove "metalink" from Accept Type list to avoid loop in tranparent

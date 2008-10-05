@@ -1,5 +1,12 @@
 2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Casted entry->maxConnections to int32_t for std::min<T> with T =
+	int32_t.
+	Changed the type of count to int32_t.
+	* src/Metalink2RequestGroup.cc
+
+2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added test for Time::elapsed(time_t).
 	* test/TimeTest.cc
 
