@@ -341,8 +341,9 @@ You must use this program at your own risk.</p></div>
 FTP, BitTorrent, and Metalink.
 It can download a file from multiple sources/protocols and tries to utilize
 your maximum download bandwidth.
-It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time,
-while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm.
+It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same
+time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent
+swarm.
 Using Metalink's chunk checksums, aria2 automatically validates chunks of data
 while downloading a file like BitTorrent.</p></div>
 <div class="para"><p>Here is a list of features.</p></div>
@@ -687,12 +688,9 @@ size itself is required. Writing and reading is done against this file.
 After download completes, aria2 creates complete directory structure if needed,
 and copies whole file or a part of it to the destination.</p></div>
 <h3 id="_dht">5.2. DHT</h3><div style="clear:left"></div>
-<div class="para"><p>As of release 0.13.0, aria2 supports DHT. The routing table is saved to $HOME/.aria2/dht.dat.</p></div>
-<div class="vlist"><dl>
-<dt>
-Note
-</dt>
-<dd>
+<div class="para"><p>As of release 0.13.0, aria2 supports DHT. The routing table is saved to
+$HOME/.aria2/dht.dat.</p></div>
+<h3 id="_other_things_should_be_noted">5.3. Other things should be noted</h3><div style="clear:left"></div>
 <div class="ilist"><ul>
 <li>
 <p>
@@ -724,8 +722,6 @@ As of release 0.10.0, aria2 stops sending request message after selective
 </p>
 </li>
 </ul></div>
-</dd>
-</dl></div>
 </div>
 <h2 id="_metalink">6. Metalink</h2>
 <div class="sectionbody">
@@ -746,11 +742,71 @@ signature file is not saved.</p></div>
 </div>
 <h2 id="_netrc">7. netrc</h2>
 <div class="sectionbody">
-<div class="para"><p>netrc support is enabled by default in ftp.
+<div class="para"><p>netrc support is enabled by default for HTTP(S)/FTP.
 To disable netrc support, specify -n command-line option.
 Your .netrc file should have correct permissions(600).</p></div>
 </div>
-<h2 id="_configuration_file">8. Configuration file</h2>
+<h2 id="_server_performance_profile">8. SERVER PERFORMANCE PROFILE</h2>
+<div class="sectionbody">
+<div class="para"><p>This section describes the format of server performance profile.
+The file is plain text and each line has several NAME=VALUE pair, delimited by
+comma.
+Currently following NAMEs are recognized:</p></div>
+<div class="vlist"><dl>
+<dt>
+host
+</dt>
+<dd>
+<p>
+  Hostname of the server. Required.
+</p>
+</dd>
+<dt>
+protocol
+</dt>
+<dd>
+<p>
+  Protocol for this profile, such as ftp, http. Required.
+</p>
+</dd>
+<dt>
+dl_speed
+</dt>
+<dd>
+<p>
+  The average download speed observed in the previous download in bytes per sec.
+  Required.
+</p>
+</dd>
+<dt>
+last_updated
+</dt>
+<dd>
+<p>
+  Last contact time in GMT with this server, specified in the seconds from the
+  Epoch. Required.
+</p>
+</dd>
+<dt>
+status
+</dt>
+<dd>
+<p>
+  ERROR is set when server cannot be reached or out-of-service or timeout
+  occurred. Otherwise, OK is set.
+</p>
+</dd>
+</dl></div>
+<div class="para"><p>Those fields must exist in one line. The order of the fields is not significant.
+You can put pairs other than above; they are simply ignored.</p></div>
+<div class="para"><p>An example is follow:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
+host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR</tt></pre>
+</div></div>
+</div>
+<h2 id="_configuration_file">9. Configuration file</h2>
 <div class="sectionbody">
 <div class="para"><p>Configuration file must be placed under $HOME/.aria2 and must be named as
 aria2.conf.
@@ -770,7 +826,7 @@ ftp-pasv=true</tt></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-08-24 01:12:45 JST
+Last updated 2008-10-06 17:34:28 JST
 </div>
 </div>
 </body>

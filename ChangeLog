@@ -1,5 +1,10 @@
 2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated doc
+	* README
+
+2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated French, Simplified Chinese, German, Bulgarian and Japanese
 	translations. Thanks to all translators.
 	* po/bg.po

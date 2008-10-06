@@ -14,8 +14,9 @@ aria2 is a utility for downloading files. The supported protocols are HTTP(S),
 FTP, BitTorrent, and Metalink.
 It can download a file from multiple sources/protocols and tries to utilize
 your maximum download bandwidth.
-It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time,
-while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm.
+It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same
+time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent
+swarm.
 Using Metalink's chunk checksums, aria2 automatically validates chunks of data
 while downloading a file like BitTorrent. 
 
@@ -148,9 +149,11 @@ and copies whole file or a part of it to the destination.
 
 DHT
 ~~~
-As of release 0.13.0, aria2 supports DHT. The routing table is saved to $HOME/.aria2/dht.dat.
+As of release 0.13.0, aria2 supports DHT. The routing table is saved to
+$HOME/.aria2/dht.dat.
 
-Note;;
+Other things should be noted
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * -o option is used to change the filename of .torrent file itself, not a
   filename of a file in .torrent file.
 * The port numbers that aria2 uses by default are 6881-6999 for TCP and UDP.
@@ -184,9 +187,43 @@ signature file is not saved.
 
 netrc
 -----
-netrc support is enabled by default in ftp.
+netrc support is enabled by default for HTTP(S)/FTP.
 To disable netrc support, specify -n command-line option.
 Your .netrc file should have correct permissions(600).
+
+SERVER PERFORMANCE PROFILE
+--------------------------
+This section describes the format of server performance profile.
+The file is plain text and each line has several NAME=VALUE pair, delimited by
+comma.
+Currently following NAMEs are recognized:
+
+host::
+  Hostname of the server. Required.
+
+protocol::
+  Protocol for this profile, such as ftp, http. Required.
+
+dl_speed::
+  The average download speed observed in the previous download in bytes per sec.
+  Required.
+
+last_updated::
+  Last contact time in GMT with this server, specified in the seconds from the
+  Epoch. Required.
+
+status::
+  ERROR is set when server cannot be reached or out-of-service or timeout
+  occurred. Otherwise, OK is set.
+
+Those fields must exist in one line. The order of the fields is not significant.
+You can put pairs other than above; they are simply ignored.
+
+An example is follow:
+--------------------------------------------------------------------------------
+host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
+host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
+--------------------------------------------------------------------------------
 
 Configuration file
 ------------------
