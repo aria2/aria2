@@ -1,5 +1,15 @@
 2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated French, Simplified Chinese, German, Bulgarian and Japanese
+	translations. Thanks to all translators.
+	* po/bg.po
+	* po/de.po
+	* po/fr.po
+	* po/ja.po
+	* po/zh_CN.po
+
+2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.16.0.
 	* configure.ac
 

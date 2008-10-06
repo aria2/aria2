@@ -7,24 +7,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-09-22 19:31+0900\n"
-"PO-Revision-Date: 2008-07-20 08:29+0000\n"
+"POT-Creation-Date: 2008-10-06 17:16+0900\n"
+"PO-Revision-Date: 2008-10-06 17:24+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-07-23 12:44+0000\n"
+"X-Launchpad-Export-Date: 2008-10-05 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:800
+#: src/DownloadEngine.cc:801
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "シャットダウン中です... 緊急時に即座にシャットダウンしたい場合は Ctrl-C をも"
 "う一度押してください."
 
-#: src/DownloadEngine.cc:804
+#: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急シャットダウン中です..."
 
@@ -40,11 +40,11 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/RequestGroupMan.cc:379
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:394
+#: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
 msgstr "凡例:"
 
@@ -57,9 +57,8 @@ msgid "                              Tags: "
 msgstr "                              タグ: "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
-msgstr "                              値域: "
+msgstr "                              設定可能な値: "
 
 #: src/OptionHandlerImpl.h:95
 msgid "must be either 'true' or 'false'."
@@ -154,7 +153,6 @@ msgstr ""
 "                              -j オプションも参照してください."
 
 #: src/usage_text.h:53
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
@@ -162,23 +160,18 @@ msgid ""
 msgstr ""
 " --retry-wait=SEC             エラーによる再試行時の待ち時間を秒単位で指定し"
 "ま\n"
-"                              す. 0 - 60 の値を指定してください.\n"
-"                              デフォルト値: 5"
+"                              す."
 
 #: src/usage_text.h:56
-#, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr ""
-" -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します.\n"
-"                              デフォルト値: 60"
+msgstr " -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します."
 
 #: src/usage_text.h:58
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
 " -m, --max-tries=N            試行回数を指定します. 0 を指定すると何度でも試"
 "行\n"
-"                              します. デフォルト値: 5"
+"                              します."
 
 #: src/usage_text.h:60
 msgid ""
@@ -224,9 +217,11 @@ msgstr ""
 #: src/usage_text.h:70
 msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
 msgstr ""
+" --http-proxy-method=METHOD   HTTP プロキシ・リクエストで使うメソッドを指定し"
+"ま\n"
+"                              す."
 
 #: src/usage_text.h:72
-#, fuzzy
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -234,8 +229,7 @@ msgid ""
 msgstr ""
 " --http-auth-scheme=SCHEME    HTTP での認証方法を指定します. 現在サポートされ"
 "て\n"
-"                              いるのは basic です. \n"
-"                              デフォルト値: basic"
+"                              いるのは basic です."
 
 #: src/usage_text.h:75
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
@@ -245,24 +239,22 @@ msgstr ""
 "                               URL に影響します."
 
 #: src/usage_text.h:77
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
-" --http-user=USER             HTTP での認証ユーザーを指定します. このオプショ"
+" --ftp-user=USER              FTP での認証ユーザーを指定します. このオプショ"
 "ン\n"
 "                              はすべての URL に影響します."
 
 #: src/usage_text.h:79
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=PASSWD         HTTP での認証パスワードを指定します. このオプ"
+" --ftp-passwd=PASSWD          FTP での認証パスワードを指定します. このオプ"
 "ショ\n"
 "                              ンはすべての URL に影響します."
 
 #: src/usage_text.h:81
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr ""
+msgstr " --ftp-type=TYPE              FTP 転送モードを指定します."
 
 #: src/usage_text.h:83
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
@@ -271,9 +263,11 @@ msgstr " -p, --ftp-pasv               FTP で passive モードを使用しま�
 #: src/usage_text.h:85
 msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP."
 msgstr ""
+" --ftp-via-http-proxy=METHOD  FTP で HTTP プロキシ・サーバーを使用する際の方"
+"法\n"
+"                              を指定します."
 
 #: src/usage_text.h:87
-#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -292,11 +286,9 @@ msgstr ""
 "1024,\n"
 "                              1M = 1024K). このオプションは, BitTorrent ダウ"
 "ンロ\n"
-"                              ードには影響しません.\n"
-"                              デフォルト値: 0"
+"                              ードには影響しません."
 
 #: src/usage_text.h:93
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -306,12 +298,9 @@ msgstr ""
 "す.\n"
 "                              0 を指定すると速度の制限をしません. K または M"
 "を\n"
-"                              付加することができます (1K = 1024, 1M = "
-"1024K).\n"
-"                              デフォルト値: 0"
+"                              付加することができます (1K = 1024, 1M = 1024K)."
 
 #: src/usage_text.h:97
-#, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -322,17 +311,14 @@ msgid ""
 "of\n"
 "                              the file."
 msgstr ""
-" --file-allocation=METHOD     ファイル領域を確保する方法を指定します. 'none' "
-"又\n"
-"                              は 'prealloc' が指定できます.\n"
+" --file-allocation=METHOD     ファイル領域を確保する方法を指定します. \n"
 "                              'none' を指定するとファイル領域を事前確保しませ"
 "ん.\n"
 "                              'prealloc' を指定するとファイル領域を事前確保し"
 "ま\n"
 "                              す. この処理は, ファイルサイズによって時間がか"
 "か\n"
-"                              る場合があります.\n"
-"                              デフォルト値: prealloc"
+"                              る場合があります."
 
 #: src/usage_text.h:103
 msgid ""
@@ -359,7 +345,6 @@ msgstr ""
 "                              エラーが発生する場合は, 無効にしてください."
 
 #: src/usage_text.h:111
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
 "                              already exists but the corresponding .aria2 "
@@ -372,8 +357,7 @@ msgstr ""
 "る\n"
 "                              *.aria2 ファイルが存在しない場合, ダウンロード"
 "を\n"
-"                              中止します.\n"
-"                              デフォルト値: false"
+"                              中止します."
 
 #: src/usage_text.h:115
 msgid ""
@@ -399,7 +383,6 @@ msgstr ""
 "                              しれません."
 
 #: src/usage_text.h:120
-#, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -419,11 +402,9 @@ msgstr ""
 "ティ\n"
 "                              は, このオプションで true を指定したように振る"
 "舞\n"
-"                              うはずである.\n"
-"                              デフォルト値: false"
+"                              うはずである."
 
 #: src/usage_text.h:124
-#, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -440,11 +421,9 @@ msgstr ""
 "                             http(s)/ftp のダウンロードのみで有効である.\n"
 "                             変更の仕方は, ファイル名末尾にドット (.) と番"
 "号\n"
-"                             (1..9999) を付加する.\n"
-"                             デフォルト値: true"
+"                             (1..9999) を付加する."
 
 #: src/usage_text.h:130
-#, fuzzy
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -473,8 +452,7 @@ msgstr ""
 "                              ステップカウントは省略可能である.\n"
 "                              展開結果のすべての URI が同じファイルを指して"
 "い\n"
-"                              ない場合は, -Z オプションが必要である.\n"
-"                              デフォルト値: false"
+"                              ない場合は, -Z オプションが必要である."
 
 #: src/usage_text.h:141
 msgid ""
@@ -483,13 +461,12 @@ msgstr ""
 " --enable-http-keep-alive[=true|false] HTTP/1.1 持続的接続を有効にします."
 
 #: src/usage_text.h:143
-#, fuzzy
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
-" --enable-http-keep-alive[=true|false] HTTP/1.1 持続的接続を有効にします."
+" --enable-http-pipelining[=true|false] HTTP/1.1 パイプライニングを有効にしま"
+"す."
 
 #: src/usage_text.h:145
-#, fuzzy
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
@@ -506,11 +483,9 @@ msgstr ""
 "                              時のみ有効です. 壊れている可能性があるファイ"
 "ル\n"
 "                              を検証し, 壊れた部分だけダウンロードすること\n"
-"                              ができます.\n"
-"                              デフォルト値: false"
+"                              ができます."
 
 #: src/usage_text.h:151
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -521,8 +496,7 @@ msgstr ""
 "ウン\n"
 "                              ロードしながら検証します. 部分チェックサム付き"
 "の\n"
-"                              Metalink でのみ使用できます.\n"
-"                              デフォルト値: true"
+"                              Metalink でのみ使用できます."
 
 #: src/usage_text.h:155
 msgid ""
@@ -580,15 +554,16 @@ msgid ""
 msgstr " -j, --max-concurrent-downloads=N 並行ダウンロード数を指定します."
 
 #: src/usage_text.h:174
-#, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
-" --load-cookies=FILE          Mozilla/Firefox(1.x/2.x) や Netscape で使われて"
-"い\n"
-"                              る形式のクッキーファイルを読み込みます."
+" --load-cookies=FILE          Cookie を FILE から読み込みます. 対応している "
+"FILE\n"
+"                              のフォーマットは, Firefox3 と Mozilla/Firefox"
+"(1.x/\n"
+"                              2.x)/Netscape です."
 
 #: src/usage_text.h:177
 msgid ""
@@ -672,15 +647,13 @@ msgstr ""
 "                              ん."
 
 #: src/usage_text.h:202
-#, fuzzy
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
 msgstr ""
 " --direct-file-mapping=true|false .torrent ファイル記載のファイルに直接読み書"
 "き\n"
-"                              します.\n"
-"                              デフォルト値: true"
+"                              します."
 
 #: src/usage_text.h:205
 msgid ""
@@ -703,7 +676,6 @@ msgstr ""
 "                              ことができます."
 
 #: src/usage_text.h:211
-#, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -713,9 +685,7 @@ msgstr ""
 "す.\n"
 "                              0 を指定すると速度の制限をしません. K または M"
 "を\n"
-"                              付加することができます (1K = 1024, 1M = "
-"1024K).\n"
-"                              デフォルト値: 0"
+"                              付加することができます (1K = 1024, 1M = 1024K)."
 
 #: src/usage_text.h:215
 msgid ""
@@ -750,7 +720,6 @@ msgstr ""
 "                              かの条件が成立した時点でシードは終了となります."
 
 #: src/usage_text.h:226
-#, fuzzy
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -768,8 +737,7 @@ msgstr ""
 "場\n"
 "                              合, ランダムなアルファベットキャラクターを付加"
 "し\n"
-"                              20 バイトにします.\n"
-"                              デフォルト値: -aria2-"
+"                              20 バイトにします."
 
 #: src/usage_text.h:233
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -914,7 +882,6 @@ msgstr ""
 "                              コンマ区切りの地域のリストが指定可能です."
 
 #: src/usage_text.h:282
-#, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
 "'none'\n"
@@ -922,10 +889,9 @@ msgid ""
 msgstr ""
 " --metalink-preferred-protocol=PROTO 優先的に使用するプロトコルを指定しま"
 "す.\n"
-"                              指定可能な値は, 'http', 'https', 'ftp', 'none' "
-"で\n"
-"                              す. 'none' を指定するとこの機能は無効になりま"
-"す."
+"                              得に優先するプロトコルがない場合は 'none' を指"
+"定す\n"
+"                              してください."
 
 #: src/usage_text.h:285
 msgid ""
@@ -986,7 +952,6 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
 #: src/usage_text.h:303
-#, fuzzy
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -1007,7 +972,7 @@ msgstr ""
 "                              詳細なオプションのヘルプが表示されます.\n"
 "                              マッチするカテゴリが存在しない場合, 指定された"
 "キ\n"
-"                              ーワードを使って, オプション名について前方一致"
+"                              ーワードを使って, オプション名について部分一致"
 "検\n"
 "                              索を行い, 該当するオプションのヘルプを表示しま"
 "す."
@@ -1081,7 +1046,6 @@ msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL            出力するログレベルを指定します."
 
 #: src/usage_text.h:335
-#, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1089,10 +1053,9 @@ msgid ""
 "available,\n"
 "                              apply it to the local file."
 msgstr ""
-" --direct-file-mapping=true|false .torrent ファイル記載のファイルに直接読み書"
-"き\n"
-"                              します.\n"
-"                              デフォルト値: true"
+" -R, --remote-time[=true|false] HTTP/FTP サーバーからファイルの更新日付を取得"
+"して\n"
+"                              保存したファイルの更新日付としてに使用します."
 
 #: src/usage_text.h:339
 msgid ""
@@ -1104,9 +1067,13 @@ msgid ""
 "no\n"
 "                              effect and --timeout option is used instead."
 msgstr ""
+" --connect-timeout=SEC        HTTP/FTP サーバーへの接続時のタイムアウトを秒単"
+"位で\n"
+"                              指定します. 接続完了後のタイムアウトは, --"
+"timeout\n"
+"                              で指定する値を使用します."
 
 #: src/usage_text.h:344
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -1119,20 +1086,18 @@ msgid ""
 "using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --file-allocation=METHOD     ファイル領域を確保する方法を指定します. 'none' "
-"又\n"
-"                              は 'prealloc' が指定できます.\n"
-"                              'none' を指定するとファイル領域を事前確保しませ"
-"ん.\n"
-"                              'prealloc' を指定するとファイル領域を事前確保し"
-"ま\n"
-"                              す. この処理は, ファイルサイズによって時間がか"
-"か\n"
-"                              る場合があります.\n"
-"                              デフォルト値: prealloc"
+" --max-file-not-found=NUM     aria2 が HTTP/FTP サーバーからリソースが存在し"
+"ない\n"
+"                              旨のレスポンスを, ファイルのデータ本体を 1 バイ"
+"トも\n"
+"                              受信しないで NUM 回受け取った時にダウンロードを"
+"強制\n"
+"                              的に失敗させます. 0 を指定すると, この機能を無"
+"効に\n"
+"                              します. この機能は HTTP/FTP サーバーにのみ有効"
+"です."
 
 #: src/usage_text.h:351
-#, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1148,26 +1113,28 @@ msgid ""
 "                              of servers mentioned in --server-stat-of and\n"
 "                              --server-stat-if options."
 msgstr ""
-" --follow-torrent=true|false|mem ダウンロードしたファイルの拡張子が ."
-"torrent\n"
-"                              か, Content-Type が application/x-bittorrent "
-"で\n"
-"                              あり, このオプションに true または mem が指定"
-"さ\n"
-"                              れている場合, aria2 はファイルを torrent ファ"
-"イ\n"
-"                              ルとして読み込み, その中に記述されているファイ"
-"ル\n"
-"                              のダウンロードを行います.\n"
-"                              mem を指定すると, torrent ファイルはディスク"
-"に\n"
-"                              保存されず, メモリ内で処理されます.\n"
-"                              false を指定すると, 上記のいずれの動作も行いま"
-"せ\n"
-"                              ん."
+" --uri-selector=SELECTOR      URI を選択するアルゴリズムを指定します.\n"
+"                              'inorder' を指定すると, URI リストに登録された"
+"順に\n"
+"                              URI を取り出して使います.これは従来通りの動作で"
+"す.\n"
+"                              'feedback' を指定すると, aria2 は以前のダウン"
+"ロー\n"
+"                              ドで得たダウンロード速度を基に, 最速のサーバー"
+"の\n"
+"                              URI を URI リストから探して選択します. またこれ"
+"は\n"
+"                              現在利用不可能だと分かっているサーバーをスキッ"
+"プす\n"
+"                              ることも行います. ここで使用するダウンロード速"
+"度は\n"
+"                              サーバーのパフォーマンスプロファイルの一部で"
+"す.\n"
+"                              --server-stat-of と --server-start-if オプショ"
+"ンも\n"
+"                              参照してください."
 
 #: src/usage_text.h:362
-#, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1175,10 +1142,12 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
-" --retry-wait=SEC             エラーによる再試行時の待ち時間を秒単位で指定し"
-"ま\n"
-"                              す. 0 - 60 の値を指定してください.\n"
-"                              デフォルト値: 5"
+" --server-stat-of=FILE        サーバーのパフォーマンスプロファイルを保存する"
+"ファ\n"
+"                              イル名を指定します. 保存したファイルは,\n"
+"                              --server-stat-of オプションにより読み込むことが"
+"で\n"
+"                              きます."
 
 #: src/usage_text.h:366
 msgid ""
@@ -1189,19 +1158,26 @@ msgid ""
 "                              some URI selector such as 'feedback'.\n"
 "                              See also --uri-selector option"
 msgstr ""
+" --server-stat-if=FILE        指定したファイルからサーバーのパフォーマンスプ"
+"ロフ\n"
+"                              ァイルを読み込みます. 読み込まれたデータは,\n"
+"                              'feedback' 等の URI セレクターで使用されます.\n"
+"                              --uri-selector オプションを参照してください."
 
 #: src/usage_text.h:371
-#, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
-" --retry-wait=SEC             エラーによる再試行時の待ち時間を秒単位で指定し"
+" --server-stat-timeout=SEC    サーバーのパフォーマンスプロファイルの有効期間"
+"を,\n"
+"                              秒数で指定します. 最後にそのサーバーを利用した"
+"時刻\n"
+"                              からの指定した秒数が経過したエントリは削除され"
 "ま\n"
-"                              す. 0 - 60 の値を指定してください.\n"
-"                              デフォルト値: 5"
+"                              す."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1218,9 +1194,9 @@ msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr "使い方: %s [オプション] [URL | TORRENT_FILE | METALINK_FILE]..."
 
 #: src/version_usage.cc:86
-#, fuzzy, c-format
+#, c-format
 msgid "Printing options whose name includes '%s'."
-msgstr "'%s' で始まるオプションを表示しています."
+msgstr "'%s' を含むオプションを表示しています."
 
 #: src/version_usage.cc:89 src/version_usage.cc:111
 msgid "Options:"
@@ -1229,7 +1205,7 @@ msgstr "オプション:"
 #: src/version_usage.cc:94
 #, c-format
 msgid "No help category or option name matching with '%s'."
-msgstr "'%s' のヘルプカテゴリや, それで始まるオプションはありません."
+msgstr "'%s' のヘルプカテゴリや, それを含むオプションはありません."
 
 #: src/version_usage.cc:100
 msgid "Printing all options."
@@ -1833,44 +1809,44 @@ msgstr ""
 "が存在しています."
 
 #: src/message.h:148
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for read."
-msgstr "ファイル %s をオープンできませんでした. 原因: %s"
+msgstr "ServerStat ファイル %s を読み取りモードでオープンできませんでした."
 
 #: src/message.h:149
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s loaded successfully."
-msgstr "セグメントファイルのロードが完了しました."
+msgstr "ServerStat ファイル %s を読み込みました."
 
 #: src/message.h:150
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read ServerStat from %s."
-msgstr "データの読み込みに失敗しました."
+msgstr "ServerStat ファイル %s の読み込みに失敗しました."
 
 #: src/message.h:153
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for write."
-msgstr "ファイル %s をオープンできませんでした. 原因: %s"
+msgstr "ServerStat ファイル %s を書き込みモードでオープンできませんでした."
 
 #: src/message.h:154
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s saved successfully."
-msgstr "セグメントファイルの保存が完了しました."
+msgstr "ServerStat ファイル %s を保存しました."
 
 #: src/message.h:155
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write ServerStat to %s."
-msgstr "データの受信に失敗しました. 原因: %s"
+msgstr "ServerStat ファイル %s の書き込みに失敗しました."
 
 #: src/message.h:158
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to establish connection, cause: %s"
-msgstr "ピアからの接続の受付に失敗しました. 原因: %s"
+msgstr "接続を確立できませんでした. 原因 : %s"
 
 #: src/message.h:159
 #, c-format
 msgid "Network problem has occurred. cause:%s"
-msgstr ""
+msgstr "ネットワークで問題が起こりました. 原因 : %s"
 
 #: src/message.h:161
 msgid "Timeout."
@@ -2240,66 +2216,6 @@ msgid "Files:"
 msgstr "ファイル:"
 
 #~ msgid ""
-#~ " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
-#~ "                              METHOD is either 'get' or 'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --http-proxy-method=METHOD   HTTP プロキシ・リクエストで使うメソッドを指"
-#~ "定しま\n"
-#~ "                              す. 'get' または 'tunnel' を指定してくださ"
-#~ "い.\n"
-#~ "                              デフォルト値: tunnel"
-
-#~ msgid ""
-#~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
-#~ "                              Default: anonymous"
-#~ msgstr ""
-#~ " --ftp-user=USER              FTP での認証ユーザーを指定します. このオプ"
-#~ "ション\n"
-#~ "                              はすべての URL に影響します.\n"
-#~ "                              デフォルト値: anonymous"
-
-#~ msgid ""
-#~ " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
-#~ "                              Default: ARIA2USER@"
-#~ msgstr ""
-#~ " --ftp-passwd=PASSWD          FTP での認証パスワードを指定します. このオプ"
-#~ "ショ\n"
-#~ "                              ンはすべての URL に影響します.\n"
-#~ "                              デフォルト値: ARIA2USER@"
-
-#~ msgid ""
-#~ " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
-#~ "'binary'\n"
-#~ "                              or 'ascii'.\n"
-#~ "                              Default: binary"
-#~ msgstr ""
-#~ " --ftp-type=TYPE              FTP 転送モードを指定します. 'binary' また"
-#~ "は\n"
-#~ "                              'ascii' を指定してください. デフォルト値: "
-#~ "binary"
-
-#~ msgid ""
-#~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
-#~ "'get' or\n"
-#~ "                              'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --ftp-via-http-proxy=METHOD  FTP で HTTP プロキシ・サーバーを使用する際の"
-#~ "方法\n"
-#~ "                              を指定します. 'get' または 'tunnel' を指定し"
-#~ "てく\n"
-#~ "                              ださい. デフォルト値: tunnel"
-
-#~ msgid ""
-#~ " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
-#~ "                              Default: false"
-#~ msgstr ""
-#~ " --enable-http-pipelining[=true|false] HTTP/1.1 パイプライニングを有効にし"
-#~ "ます.\n"
-#~ "                              デフォルト値: false"
-
-#~ msgid ""
 #~ "\n"
 #~ "The download was complete. <%s>\n"
 #~ msgstr ""
@@ -2390,6 +2306,226 @@ msgstr "ファイル:"
 #~ "                              デフォルト値: 1"
 
 #~ msgid ""
+#~ " --retry-wait=SEC             Set the seconds to wait to retry after an "
+#~ "error\n"
+#~ "                              has occured. Specify a value between 0 and "
+#~ "60.\n"
+#~ "                              Default: 5"
+#~ msgstr ""
+#~ " --retry-wait=SEC             エラーによる再試行時の待ち時間を秒単位で指定"
+#~ "しま\n"
+#~ "                              す. 0 - 60 の値を指定してください.\n"
+#~ "                              デフォルト値: 5"
+
+#~ msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
+#~ msgstr ""
+#~ " -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します.\n"
+#~ "                              デフォルト値: 60"
+
+#~ msgid ""
+#~ " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
+#~ "                              Default: 5"
+#~ msgstr ""
+#~ " -m, --max-tries=N            試行回数を指定します. 0 を指定すると何度でも"
+#~ "試行\n"
+#~ "                              します. デフォルト値: 5"
+
+#~ msgid ""
+#~ " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
+#~ "                              METHOD is either 'get' or 'tunnel'.\n"
+#~ "                              Default: tunnel"
+#~ msgstr ""
+#~ " --http-proxy-method=METHOD   HTTP プロキシ・リクエストで使うメソッドを指"
+#~ "定しま\n"
+#~ "                              す. 'get' または 'tunnel' を指定してくださ"
+#~ "い.\n"
+#~ "                              デフォルト値: tunnel"
+
+#~ msgid ""
+#~ " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
+#~ "basic\n"
+#~ "                              is the only supported scheme.\n"
+#~ "                              Default: basic"
+#~ msgstr ""
+#~ " --http-auth-scheme=SCHEME    HTTP での認証方法を指定します. 現在サポート"
+#~ "されて\n"
+#~ "                              いるのは basic です. \n"
+#~ "                              デフォルト値: basic"
+
+#~ msgid ""
+#~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
+#~ "                              Default: anonymous"
+#~ msgstr ""
+#~ " --ftp-user=USER              FTP での認証ユーザーを指定します. このオプ"
+#~ "ション\n"
+#~ "                              はすべての URL に影響します.\n"
+#~ "                              デフォルト値: anonymous"
+
+#~ msgid ""
+#~ " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
+#~ "                              Default: ARIA2USER@"
+#~ msgstr ""
+#~ " --ftp-passwd=PASSWD          FTP での認証パスワードを指定します. このオプ"
+#~ "ショ\n"
+#~ "                              ンはすべての URL に影響します.\n"
+#~ "                              デフォルト値: ARIA2USER@"
+
+#~ msgid ""
+#~ " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
+#~ "'binary'\n"
+#~ "                              or 'ascii'.\n"
+#~ "                              Default: binary"
+#~ msgstr ""
+#~ " --ftp-type=TYPE              FTP 転送モードを指定します. 'binary' また"
+#~ "は\n"
+#~ "                              'ascii' を指定してください. デフォルト値: "
+#~ "binary"
+
+#~ msgid ""
+#~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
+#~ "'get' or\n"
+#~ "                              'tunnel'.\n"
+#~ "                              Default: tunnel"
+#~ msgstr ""
+#~ " --ftp-via-http-proxy=METHOD  FTP で HTTP プロキシ・サーバーを使用する際の"
+#~ "方法\n"
+#~ "                              を指定します. 'get' または 'tunnel' を指定し"
+#~ "てく\n"
+#~ "                              ださい. デフォルト値: tunnel"
+
+#~ msgid ""
+#~ " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
+#~ "than\n"
+#~ "                              or equal to this value(bytes per sec).\n"
+#~ "                              0 means aria2 does not have a lowest speed "
+#~ "limit.\n"
+#~ "                              You can append K or M(1K = 1024, 1M = "
+#~ "1024K).\n"
+#~ "                              This option does not affect BitTorrent "
+#~ "downloads.\n"
+#~ "                              Default: 0"
+#~ msgstr ""
+#~ " --lowest-speed-limit=SPEED   ここで指定するダウンロード速度を下回った場"
+#~ "合, ダ\n"
+#~ "                              ウンロードを中止します. 速度はバイト/秒で"
+#~ "す.\n"
+#~ "                              0 を指定すると, 速度の判定を行いません.\n"
+#~ "                              K または M を付加することができます (1K = "
+#~ "1024,\n"
+#~ "                              1M = 1024K). このオプションは, BitTorrent ダ"
+#~ "ウンロ\n"
+#~ "                              ードには影響しません.\n"
+#~ "                              デフォルト値: 0"
+
+#~ msgid ""
+#~ " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
+#~ "                              0 means unrestricted.\n"
+#~ "                              You can append K or M(1K = 1024, 1M = "
+#~ "1024K).\n"
+#~ "                              Default: 0"
+#~ msgstr ""
+#~ " --max-download-limit=SPEED   ダウンロードの最大速度 (バイト/秒) を指定し"
+#~ "ます.\n"
+#~ "                              0 を指定すると速度の制限をしません. K また"
+#~ "は Mを\n"
+#~ "                              付加することができます (1K = 1024, 1M = "
+#~ "1024K).\n"
+#~ "                              デフォルト値: 0"
+
+#~ msgid ""
+#~ " --allow-overwrite=true|false If false, aria2 doesn't download a file "
+#~ "which\n"
+#~ "                              already exists but the corresponding .aria2 "
+#~ "file\n"
+#~ "                              doesn't exist.\n"
+#~ "                              Default: false"
+#~ msgstr ""
+#~ " --allow-overwrite=true|false  このオプションを false に設定すると, ローカ"
+#~ "ル\n"
+#~ "                              ディスク上にファイルが存在するが, それに対応"
+#~ "する\n"
+#~ "                              *.aria2 ファイルが存在しない場合, ダウンロー"
+#~ "ドを\n"
+#~ "                              中止します.\n"
+#~ "                              デフォルト値: false"
+
+#~ msgid ""
+#~ " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
+#~ "sequentially\n"
+#~ "                              and download each URI in a separate "
+#~ "session, like\n"
+#~ "                              the usual command-line download utilities.\n"
+#~ "                              Default: false"
+#~ msgstr ""
+#~ " -Z, --force-sequential[=true|false] コマンドラインで指定された URI をそれ"
+#~ "ぞれ\n"
+#~ "                              違うファイルであるとして扱う. aria2c のデ"
+#~ "フォル\n"
+#~ "                              ト動作 (false 指定) とは, 指定された URI が"
+#~ "すべ\n"
+#~ "                              て同じファイルをさしているとして扱う点が異な"
+#~ "る.\n"
+#~ "                              大抵のコマンドライン型ダウンロードユーティリ"
+#~ "ティ\n"
+#~ "                              は, このオプションで true を指定したように振"
+#~ "る舞\n"
+#~ "                              うはずである.\n"
+#~ "                              デフォルト値: false"
+
+#~ msgid ""
+#~ " --auto-file-renaming[=true|false] Rename file name if the same file "
+#~ "already\n"
+#~ "                              exists. This option works only in http(s)/"
+#~ "ftp\n"
+#~ "                              download.\n"
+#~ "                              The new file name has a dot and a number"
+#~ "(1..9999)\n"
+#~ "                              appended.\n"
+#~ "                              Default: true"
+#~ msgstr ""
+#~ " --auto-file-renaming[=true|false] 同じファイル名のファイルがすでにファイ"
+#~ "ルシ\n"
+#~ "                             ステムに存在する場合, ファイル名を自動で変更"
+#~ "する.\n"
+#~ "                             http(s)/ftp のダウンロードのみで有効である.\n"
+#~ "                             変更の仕方は, ファイル名末尾にドット (.) と番"
+#~ "号\n"
+#~ "                             (1..9999) を付加する.\n"
+#~ "                             デフォルト値: true"
+
+#~ msgid ""
+#~ " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
+#~ "                              You can specify set of parts:\n"
+#~ "                              http://{sv1,sv2,sv3}/foo.iso\n"
+#~ "                              Also you can specify numeric sequences with "
+#~ "step\n"
+#~ "                              counter:\n"
+#~ "                              http://host/image[000-100:2].img\n"
+#~ "                              A step counter can be omitted.\n"
+#~ "                              If all URIs do not point to the same file, "
+#~ "such\n"
+#~ "                              as the second example above, -Z option is\n"
+#~ "                              required.\n"
+#~ "                              Default: false"
+#~ msgstr ""
+#~ " -P, --parameterized-uri[=true|false] パラメータ化された URI の展開のサ"
+#~ "ポート\n"
+#~ "                              を有効にする.\n"
+#~ "                              パラメータ化された URI では, URI の部分パー"
+#~ "ツの\n"
+#~ "                              集合を指定できる:\n"
+#~ "                              http://{sv1,sv2,sv3}/foo.iso\n"
+#~ "                              また, 数値のシーケンスも指定できる (ステップ"
+#~ "カウ\n"
+#~ "                              ントを指定可能):\n"
+#~ "                              http://host/image[000-100:2].img\n"
+#~ "                              ステップカウントは省略可能である.\n"
+#~ "                              展開結果のすべての URI が同じファイルを指し"
+#~ "てい\n"
+#~ "                              ない場合は, -Z オプションが必要である.\n"
+#~ "                              デフォルト値: false"
+
+#~ msgid ""
 #~ " --check-integrity=true|false  Check file integrity by validating piece "
 #~ "hash.\n"
 #~ "                              This option only affects in BitTorrent "
@@ -2416,6 +2552,21 @@ msgstr "ファイル:"
 #~ "い\n"
 #~ "                              かもしれません.\n"
 #~ "                              デフォルト値: false"
+
+#~ msgid ""
+#~ " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
+#~ "                              downloading a file in Metalink mode. This "
+#~ "option\n"
+#~ "                              on affects Metalink mode with chunk "
+#~ "checksums.\n"
+#~ "                              Default: true"
+#~ msgstr ""
+#~ " --realtime-chunk-checksum=true|false  Metalink 使用時に部分チェックサムを"
+#~ "ダウン\n"
+#~ "                              ロードしながら検証します. 部分チェックサム付"
+#~ "きの\n"
+#~ "                              Metalink でのみ使用できます.\n"
+#~ "                              デフォルト値: true"
 
 #~ msgid ""
 #~ " -j, --max-concurrent-downloads=N Set maximum number of concurrent "
@@ -2462,6 +2613,17 @@ msgstr "ファイル:"
 #~ "                              デフォルト値: true"
 
 #~ msgid ""
+#~ " --direct-file-mapping=true|false Directly read from and write to each "
+#~ "file\n"
+#~ "                              mentioned in .torrent file.\n"
+#~ "                              Default: true"
+#~ msgstr ""
+#~ " --direct-file-mapping=true|false .torrent ファイル記載のファイルに直接読"
+#~ "み書き\n"
+#~ "                              します.\n"
+#~ "                              デフォルト値: true"
+
+#~ msgid ""
 #~ " --listen-port=PORT           Set TCP port number for BitTorrent "
 #~ "downloads.\n"
 #~ "                              Default: 6881-6999"
@@ -2469,6 +2631,21 @@ msgstr "ファイル:"
 #~ " --listen-port=PORT           ピアからの接続を受け付けるポート番号を指"
 #~ "定.\n"
 #~ "                              デフォルト値: 6881-6999"
+
+#~ msgid ""
+#~ " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
+#~ "                              0 means unrestricted.\n"
+#~ "                              You can append K or M(1K = 1024, 1M = "
+#~ "1024K).\n"
+#~ "                              Default: 0"
+#~ msgstr ""
+#~ " --max-upload-limit=SPEED     アップロードの最大速度 (バイト/秒) を指定し"
+#~ "ます.\n"
+#~ "                              0 を指定すると速度の制限をしません. K また"
+#~ "は Mを\n"
+#~ "                              付加することができます (1K = 1024, 1M = "
+#~ "1024K).\n"
+#~ "                              デフォルト値: 0"
 
 #~ msgid ""
 #~ " --seed-ratio=RATIO           Specify share ratio. Seed completed "
@@ -2600,6 +2777,30 @@ msgstr "ファイル:"
 
 #~ msgid "       %s [options] -T TORRENT_FILE URL ...\n"
 #~ msgstr "       %s [オプション] -T TORRENT_FILE URL ...\n"
+
+#~ msgid ""
+#~ " --file-allocation=METHOD     Specify file allocation method. METHOD is "
+#~ "either\n"
+#~ "                              'none' or 'prealloc'. 'none' doesn't pre-"
+#~ "allocate\n"
+#~ "                              file space. 'prealloc' pre-allocates file "
+#~ "space\n"
+#~ "                              before download begins. This may take some "
+#~ "time\n"
+#~ "                              depending on the size of the file.\n"
+#~ "                              Default: prealloc"
+#~ msgstr ""
+#~ " --file-allocation=METHOD     ファイル領域を確保する方法を指定します. "
+#~ "'none' 又\n"
+#~ "                              は 'prealloc' が指定できます.\n"
+#~ "                              'none' を指定するとファイル領域を事前確保し"
+#~ "ません.\n"
+#~ "                              'prealloc' を指定するとファイル領域を事前確"
+#~ "保しま\n"
+#~ "                              す. この処理は, ファイルサイズによって時間が"
+#~ "かか\n"
+#~ "                              る場合があります.\n"
+#~ "                              デフォルト値: prealloc"
 
 #~ msgid ""
 #~ " --no-file-allocation-limit=SIZE No file allocation is made for files "

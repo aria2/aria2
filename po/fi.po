@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-09-22 19:31+0900\n"
+"POT-Creation-Date: 2008-10-06 17:16+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:800
+#: src/DownloadEngine.cc:801
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "Sammutus alkaa... Paina Ctrl-C uudestaan hätäsammutukselle."
 
-#: src/DownloadEngine.cc:804
+#: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Hätäsammutus alkaa..."
 
@@ -38,11 +38,11 @@ msgstr ""
 "Jos virheitä tapahtuu, katso lokitiedostoa. Ks. '-l' parametri ohjeessa/man-"
 "sivulla."
 
-#: src/RequestGroupMan.cc:379
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
 msgstr "Lataustulokset:"
 
-#: src/RequestGroupMan.cc:394
+#: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
 msgstr "Tilalegenda:"
 

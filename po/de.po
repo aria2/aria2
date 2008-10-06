@@ -7,32 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-09-22 19:31+0900\n"
-"PO-Revision-Date: 2008-09-17 19:59+0900\n"
-"Last-Translator: furryspider <Unknown>\n"
+"POT-Creation-Date: 2008-10-06 17:16+0900\n"
+"PO-Revision-Date: 2008-10-06 17:17+0900\n"
+"Last-Translator: Yuri <Unknown>\n"
 "Language-Team: deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-09-17 10:24+0000\n"
+"X-Launchpad-Export-Date: 2008-10-05 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:800
+#: src/DownloadEngine.cc:801
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Abbruch wurde eingeleitet... Strg-C drücken für sofortige Unterbrechung."
 
-#: src/DownloadEngine.cc:804
+#: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Sofortiger Abbruch wurde eingeleitet..."
 
 #: src/MultiUrlRequestInfo.cc:88
-#, fuzzy
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
-"aria2 wird den download wiederaufnehmen wenn die Übertragung neugestartet "
-"wird."
 
 #: src/MultiUrlRequestInfo.cc:90
 msgid ""
@@ -42,27 +39,23 @@ msgstr ""
 "Sollten Fehler aufgetreten sein, bitte die Mitschnitt-Datei beachten. Für "
 "Details hierzu siehe die Option \"-l\" in den Hilfe- und man-Seiten."
 
-#: src/RequestGroupMan.cc:379
-#, fuzzy
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
-msgstr "Download Ergebnisse"
+msgstr ""
 
-#: src/RequestGroupMan.cc:394
+#: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
 msgstr "Statuserläuterung:"
 
 #: src/OptionHandler.cc:38
-#, fuzzy
 msgid "                              Default: "
-msgstr "                              Standard: "
+msgstr "                              Voreinstellung: "
 
 #: src/OptionHandler.cc:39
-#, fuzzy
 msgid "                              Tags: "
 msgstr "                              Schlagwörter: "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
 msgstr "                              Mögliche Werte: "
 
@@ -78,7 +71,7 @@ msgstr "muss zwischen %s und %s sein"
 #: src/OptionHandlerImpl.h:170
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "must be smaller than or equal to %s."
+msgstr "muss kleiner oder gleich %s sein"
 
 #: src/OptionHandlerImpl.h:176
 #, c-format
@@ -159,30 +152,24 @@ msgstr ""
 "                              aufgebaut werden. Siehe auch Option \"-j\"."
 
 #: src/usage_text.h:53
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
 msgstr ""
-" --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
-"fehlerhaften\n"
-"                              Anforderungen. Geben Sie einen Wert zwischen 0 "
-"und 60 an.\n"
-"                              Fehlwert: 5"
+" --retry-wait=SEC             Festlegen der Sekundenanzahl SEC, die im "
+"Fehler-\n"
+"                              fall vor einem erneuten Versuch gewartet wird."
 
 #: src/usage_text.h:56
-#, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
 msgstr ""
-" -t, --timeout=SEC            Setzt Wartezeit in Sekunden. Fehlwert: 60"
 
 #: src/usage_text.h:58
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
-" -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
-"                              Fehlwert: 5"
+" -m, --max-tries=N            Festlegen der maximalen Anzahl an Versuchen.\n"
+"                              Keine Begrenzung mit 0."
 
 #: src/usage_text.h:60
 msgid ""
@@ -221,37 +208,31 @@ msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
 msgstr ""
 
 #: src/usage_text.h:72
-#, fuzzy
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
 "                              is the only supported scheme."
 msgstr ""
-" --http-auth-scheme=SCHEME    HTTP-Authentifizierungs-Schema setzen. Derzeit "
-"ist basic\n"
-"                              das einzig zulässige Schema.\n"
-"                              Fehlwert: basic"
 
 #: src/usage_text.h:75
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr " --referer=REFERER            Referer setzen. Dies betrifft alle URLs."
 
 #: src/usage_text.h:77
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
-" --http-user=USER             HTTP-Anwendername angeben. Dies betrifft alle "
-"URLs."
+" --ftp-user=BENUTZER          Festlegen des FTP-Benutzernamens. Wird für\n"
+"                              alle URLs verwendet."
 
 #: src/usage_text.h:79
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=PASSWD         HTTP-Passwort setzen. Dies betrifft alle URLs."
+" --ftp-passwd=PASSWORT        Festlegen des FTP-Paßworts. Wird für\n"
+"                              alle URLs verwendet."
 
 #: src/usage_text.h:81
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr ""
+msgstr " --ftp-type=TYP               Festlegen des FTP-Übertragungstyps."
 
 #: src/usage_text.h:83
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
@@ -262,7 +243,6 @@ msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP."
 msgstr ""
 
 #: src/usage_text.h:87
-#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -273,33 +253,15 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=SPEED Verbindung schließen wenn die Download-\n"
-"                            Geschwindigkeit dem angegebenen Wert entspricht\n"
-"                            oder ihn unterschreitet (Byte pro Sekunde).\n"
-"                            Bei 0 wird keine untere Geschwindigkeitsgrenze\n"
-"                            für Aria2 gesetzt. Man kann K oder M an den\n"
-"                            Wert anhängen (1K = 1024, 1M = 1024K).\n"
-"                            Diese Option hat keine Auswirkung auf "
-"BitTorrent-\n"
-"                            Downloads.\n"
-"                            Standardeinstellung: 0"
 
 #: src/usage_text.h:93
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-download-limit=SPEED Setzt die maximale Download-Geschwindigkeit\n"
-"                              in Bytes pro Sekunde. Ein Wert von 0\n"
-"                              bedeutet keine Begrenzung. Man kann K oder\n"
-"                              M an den Wert anhängen (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standardeinstellung: 0"
 
 #: src/usage_text.h:97
-#, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -310,14 +272,6 @@ msgid ""
 "of\n"
 "                              the file."
 msgstr ""
-" --file-allocation=METHOD Festlegung der Datei-Anlegemethode. Dabei ist\n"
-"                              METHOD entweder \"none\" oder \"prealloc\".\n"
-"                              Bei \"prealloc\" wird der von der herunterzu-\n"
-"                              ladenden Datei benötigte Platz vorbelegt, "
-"bevor\n"
-"                              der Download beginnt. Je nach Größe der Datei\n"
-"                              kann dies einige Zeit in Anspruch nehmen.\n"
-"                              Standardeinstellung: prealloc"
 
 #: src/usage_text.h:103
 msgid ""
@@ -332,36 +286,22 @@ msgstr ""
 "                              1M = 1024K)."
 
 #: src/usage_text.h:107
-#, fuzzy
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
-" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
-"                              während der Vorbelegung von "
-"Dateispeicherplatz\n"
-"                              verringert. Abschaltbar, falls dabei Fehler\n"
-"                              auftreten."
 
 #: src/usage_text.h:111
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
 "                              already exists but the corresponding .aria2 "
 "file\n"
 "                              doesn't exist."
 msgstr ""
-" --allow-overwrite=true|false Bei \"false\" wird Aria2 keine Dateien "
-"herunter-\n"
-"                              laden, die bereits lokal vorliegen, für die\n"
-"                              aber keine entsprechende .aria2-Datei "
-"existiert.\n"
-"                              Standardeinstellung: false"
 
 #: src/usage_text.h:115
-#, fuzzy
 msgid ""
 " --allow-piece-length-change=true|false If false is given, aria2 aborts "
 "download\n"
@@ -370,17 +310,8 @@ msgid ""
 "proceed\n"
 "                              but some download progress will be lost."
 msgstr ""
-" --allow-piece-length-change=true|false  Wenn \"false\" angegeben wird, "
-"bricht\n"
-"                              Aria2 den Download ab, wenn eine "
-"Abschnittslänge\n"
-"                              des Downloads sich von der in der Steuerdatei\n"
-"                              unterscheidet. Bei \"true\" wird "
-"fortgefahren,\n"
-"                              mit Einbußen am bisherigen Downloadfortschritt."
 
 #: src/usage_text.h:120
-#, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -388,16 +319,8 @@ msgid ""
 "like\n"
 "                              the usual command-line download utilities."
 msgstr ""
-" -Z, --force-sequential[=true|false]  Lädt alle URIs, die auf der "
-"Befehlszeile\n"
-"                              mitgegeben wurden, nacheinander in jeweils "
-"einem\n"
-"                              eigenen Vorgang herunter, wie herkömmliche\n"
-"                              Download-Werkzeuge.\n"
-"                              Standardeinstellung: false"
 
 #: src/usage_text.h:124
-#, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -407,14 +330,6 @@ msgid ""
 "(1..9999)\n"
 "                              appended."
 msgstr ""
-" --auto-file-renaming[=true|false]  Umbenennen der Datei, wenn bereits eine\n"
-"                              Datei desselben Namens vorhanden ist. Diese\n"
-"                              Option funktioniert nur bei HTTP(S)/FTP\n"
-"                              Downloads. Der neue Dateiname besteht aus dem\n"
-"                              alten, an den ein Punkt und eine Nummer (1-"
-"9999)\n"
-"                              angehängt wird.\n"
-"                              Standardeinstellung: true"
 
 #: src/usage_text.h:130
 msgid ""
@@ -440,14 +355,10 @@ msgstr ""
 "halten."
 
 #: src/usage_text.h:143
-#, fuzzy
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
-" --enable-http-keep-alive[=true|false]  Dauerhafte HTTP/1.1-Verbindung "
-"halten."
 
 #: src/usage_text.h:145
-#, fuzzy
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
@@ -458,30 +369,14 @@ msgid ""
 "portion\n"
 "                              of a file."
 msgstr ""
-" --check-integrity=true|false  Dateiintegrität mittels Vergleich von\n"
-"                              Abschnittsprüfziffern prüfen. Diese Option "
-"wird\n"
-"                              nur für BitTorrent- und Metalink-Downloads "
-"ver-\n"
-"                              wendet. Sie kann genutzt werden, um "
-"beschädigte\n"
-"                              Dateiabschnitte neu herunterzuladen.\n"
-"                              Standardeinstellung: false"
 
 #: src/usage_text.h:151
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
 "option\n"
 "                              on affects Metalink mode with chunk checksums."
 msgstr ""
-" --realtime-chunk-checksum=true|false  Prüfsummen für Dateiabschnitte "
-"während\n"
-"                              des Downloads vergleichen. Diese Option wird "
-"nur\n"
-"                              im Metalink-Modus mit Abschnitts-Prüfsummen\n"
-"                              verwendet. Standardeinstellung: true"
 
 #: src/usage_text.h:155
 msgid ""
@@ -543,15 +438,11 @@ msgstr ""
 "                              Torrents und Metalinks."
 
 #: src/usage_text.h:174
-#, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
-" --load-cookies=FILE          Lädt Cookies im Mozilla/Firefox- (1.x/2.x) "
-"oder\n"
-"                              Netscape-Format aus der Datei FILE."
 
 #: src/usage_text.h:177
 msgid ""
@@ -628,14 +519,10 @@ msgstr ""
 "                              durchsucht."
 
 #: src/usage_text.h:202
-#, fuzzy
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
 msgstr ""
-" --direct-file-mapping=true|false Direktes Lesen/Schreiben jeder in der \n"
-"                              .torrent-Datei erwähnten Datei.\n"
-"                              Fehlwert: true"
 
 #: src/usage_text.h:205
 msgid ""
@@ -659,20 +546,11 @@ msgstr ""
 "werden."
 
 #: src/usage_text.h:211
-#, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-upload-limit=SPEED     Setzen der maximalen Hochlade-Geschwindigkeit "
-"in\n"
-"                              Bytes pro Sekunde. Bei 0 wird keine Grenze "
-"vor-\n"
-"                              gegeben. Man kann K oder M an den Wert "
-"anhängen\n"
-"                              (1K = 1024, 1M = 1024K).\n"
-"                              Standardeinstellung: 0"
 
 #: src/usage_text.h:215
 msgid ""
@@ -853,18 +731,11 @@ msgstr ""
 "                              möglich."
 
 #: src/usage_text.h:282
-#, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
 "'none'\n"
 "                              if you don't have any preferred protocol."
 msgstr ""
-" --metalink-preferred-protocol=PROTO  Festlegen des bevorzugten Metalink-\n"
-"                              Protokolls. Mögliche Werte sind \"http\", "
-"\"https\",\n"
-"                              \"ftp\" und \"none\". Bei letzterem wird "
-"diese\n"
-"                              Funktion ausgeschaltet."
 
 #: src/usage_text.h:285
 msgid ""
@@ -922,7 +793,6 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Versionsnummer ausgeben und beenden."
 
 #: src/usage_text.h:303
-#, fuzzy
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -936,18 +806,6 @@ msgid ""
 "match\n"
 "                              and print the result."
 msgstr ""
-" -h, --help[=KATEGORIE]       Gebrauchshilfe ausgeben und beenden.\n"
-"                              Die Hilfetexte sind in mehrere Kategorien "
-"unter-\n"
-"                              teilt. Beispielsweise gibt \"--help=http\" "
-"eine\n"
-"                              ausführliche Erläuterung zu den Optionen "
-"bzgl.\n"
-"                              HTTP aus. Wird keine passende Kategorie "
-"gefunden,\n"
-"                              werden die Optionsnamen nach dem gegebenen "
-"Wort\n"
-"                              durchsucht und die Treffer ausgegeben."
 
 #: src/usage_text.h:311
 msgid " --no-conf                    Disable loading aria2.conf file."
@@ -1015,7 +873,6 @@ msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL  Auszugebende Mitschnittfülle festlegen."
 
 #: src/usage_text.h:335
-#, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1023,9 +880,6 @@ msgid ""
 "available,\n"
 "                              apply it to the local file."
 msgstr ""
-" --direct-file-mapping=true|false Direktes Lesen/Schreiben jeder in der \n"
-"                              .torrent-Datei erwähnten Datei.\n"
-"                              Fehlwert: true"
 
 #: src/usage_text.h:339
 msgid ""
@@ -1039,7 +893,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:344
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -1052,17 +905,8 @@ msgid ""
 "using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --file-allocation=METHOD Festlegung der Datei-Anlegemethode. Dabei ist\n"
-"                              METHOD entweder \"none\" oder \"prealloc\".\n"
-"                              Bei \"prealloc\" wird der von der herunterzu-\n"
-"                              ladenden Datei benötigte Platz vorbelegt, "
-"bevor\n"
-"                              der Download beginnt. Je nach Größe der Datei\n"
-"                              kann dies einige Zeit in Anspruch nehmen.\n"
-"                              Standardeinstellung: prealloc"
 
 #: src/usage_text.h:351
-#, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1078,24 +922,8 @@ msgid ""
 "                              of servers mentioned in --server-stat-of and\n"
 "                              --server-stat-if options."
 msgstr ""
-" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
-"nach\n"
-"                              dem Download einer .torrent-Datei oder einer "
-"Da-\n"
-"                              tei, deren Inhaltstyp \"application/x-"
-"bittorrent\"\n"
-"                              ist, diese Datei als Torrent-Steuerdatei "
-"durch-\n"
-"                              sucht und alle gefundenen Download-Positionen\n"
-"                              heruntergeladen.\n"
-"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
-"                              der Festplatte gespeichert, sondern nur im \n"
-"                              Speicher gehalten.\n"
-"                              Bei \"false\" wird die .torrent-Datei nicht\n"
-"                              durchsucht."
 
 #: src/usage_text.h:362
-#, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1103,11 +931,6 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
-" --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
-"fehlerhaften\n"
-"                              Anforderungen. Geben Sie einen Wert zwischen 0 "
-"und 60 an.\n"
-"                              Fehlwert: 5"
 
 #: src/usage_text.h:366
 msgid ""
@@ -1120,18 +943,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:371
-#, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
-" --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
-"fehlerhaften\n"
-"                              Anforderungen. Geben Sie einen Wert zwischen 0 "
-"und 60 an.\n"
-"                              Fehlwert: 5"
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1148,9 +965,9 @@ msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr "Gebrauch: %s [OPTIONEN] [URL | TORRENT_DATEI | METALINK_DATEI]..."
 
 #: src/version_usage.cc:86
-#, fuzzy, c-format
+#, c-format
 msgid "Printing options whose name includes '%s'."
-msgstr "Druckoptionen dessen name mit %s anfängt."
+msgstr ""
 
 #: src/version_usage.cc:89 src/version_usage.cc:111
 msgid "Options:"
@@ -1390,9 +1207,9 @@ msgid "CUID#%d - Exception caught while validating file integrity."
 msgstr "CUID#%d - Ausnahmefehler beim Prüfen der Datei-Integrität."
 
 #: src/message.h:74
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - Interesse am Peer"
+msgstr ""
 
 #: src/message.h:75
 #, c-format
@@ -1400,9 +1217,9 @@ msgid "CUID#%d - Not interested in the peer"
 msgstr "CUID#%d - Kein Interesse am Peer"
 
 #: src/message.h:76
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr "CUID#%d - Entferne Anforderungs-Slot index=%d, blockIndex=%d"
+msgstr ""
 
 #: src/message.h:77
 #, c-format
@@ -1412,9 +1229,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:78
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr "CUID#%d - Entferne Anforderungs-Slot blockIndex=%d wegen Timeout."
+msgstr ""
 
 #: src/message.h:79
 #, c-format
@@ -1439,10 +1256,9 @@ msgid "CUID#%d - Exception caught while allocating file space."
 msgstr "CUID#%d - Ausnahmefehler beim Reservieren des Speicherplatzes"
 
 #: src/message.h:83
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr ""
-"CUID#%d - Content-Disposition-Header gefunden. Benutze %s als Dateiname"
 
 #: src/message.h:84
 #, c-format
@@ -1480,9 +1296,9 @@ msgid "CUID#%d - Cannot create tracker request."
 msgstr "CUID#%d - Konnte keinen Tracker-Request erstellen."
 
 #: src/message.h:91
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr "CUID#%d - Erstelle neuen Tracker-Request-Befehl #%d"
+msgstr ""
 
 #: src/message.h:92
 #, c-format
@@ -1699,9 +1515,9 @@ msgstr ""
 "Konnte Metalink-XML-Datei nicht verarbeiten. Syntax könnte falsch sein."
 
 #: src/message.h:136
-#, fuzzy, c-format
+#, c-format
 msgid "Too small payload size for %s, size=%d."
-msgstr "Zu geringe Nutzgröße für %s, Größe=%d."
+msgstr ""
 
 #: src/message.h:137
 #, c-format
@@ -1718,9 +1534,9 @@ msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr "Das Verteilverhältnis betrug %.1f, hoch-/heruntergeladen=%sB/%sB"
 
 #: src/message.h:139
-#, fuzzy, c-format
+#, c-format
 msgid "Missing %s in torrent metainfo."
-msgstr "Fehlendes %s in der Torrent-Metainfo."
+msgstr ""
 
 #: src/message.h:140
 msgid "Tracker returned null data."
@@ -1750,39 +1566,39 @@ msgstr ""
 "die Datei bereits."
 
 #: src/message.h:148
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for read."
-msgstr "Konnte Datei %s nicht öffnen, Ursache: %s"
+msgstr ""
 
 #: src/message.h:149
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s loaded successfully."
-msgstr "Die Segmentdatei wurde fehlerfrei geladen."
+msgstr ""
 
 #: src/message.h:150
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read ServerStat from %s."
-msgstr "Der Versuch Daten von der Festplatte zu lesen ist fehlgeschlagen."
+msgstr ""
 
 #: src/message.h:153
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for write."
-msgstr "Konnte Datei %s nicht öffnen, Ursache: %s"
+msgstr ""
 
 #: src/message.h:154
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s saved successfully."
-msgstr "Die Segmentdatei wurde fehlerfrei gespeichert."
+msgstr ""
 
 #: src/message.h:155
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write ServerStat to %s."
-msgstr "Konnte Daten nicht erhalten, Ursache: %s"
+msgstr ""
 
 #: src/message.h:158
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to establish connection, cause: %s"
-msgstr "Konnte Peer-Verbindung nicht akzeptieren, Ursache: %s"
+msgstr ""
 
 #: src/message.h:159
 #, c-format
@@ -1827,13 +1643,11 @@ msgid "Connection failed."
 msgstr "Verbindung fehlgeschlagen."
 
 #: src/message.h:170
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
-"Der angeforderte Dateiname und der vorher registrierte stimmen nicht "
-"überein. Erwartet:%s Tatsächlich:%s"
 
 #: src/message.h:171
 #, c-format
@@ -1965,9 +1779,9 @@ msgid "Failed to set a socket option, cause: %s"
 msgstr "Konnte eine Socket-Option nicht setzen, Ursache: %s"
 
 #: src/message.h:200
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
-msgstr "Einen Socket zum Blockieren zu benutzen schlug fehl. Ursache: %s"
+msgstr ""
 
 #: src/message.h:201
 #, c-format
@@ -2133,10 +1947,9 @@ msgid "Exception caught"
 msgstr "Ausnahme aufgetreten"
 
 #: src/message.h:233
-#, fuzzy, c-format
+#, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
-"Die maximal zulässig Nutzlänge ist überschritten oder ungültig. Länge = %u"
 
 #: src/message.h:234
 #, c-format
@@ -2152,6 +1965,58 @@ msgid "Files:"
 msgstr "Dateien:"
 
 #~ msgid ""
+#~ "\n"
+#~ "Some downloads were not complete because of errors. Check the log.\n"
+#~ "aria2 will resume download if the transfer is restarted."
+#~ msgstr ""
+#~ "\n"
+#~ "Abruf wegen Fehlern nicht vollständig. Überprüfen Sie die Log-Datei.\n"
+#~ "aria2 wird den Download wiederaufnehmen wenn der Transfer neu gestartet "
+#~ "wird."
+
+#~ msgid ""
+#~ "File %s exists, but %s does not exist. The download was canceled in order "
+#~ "to prevent your file from being truncated to 0. If you are sure to "
+#~ "download file all over again, then delete it or add --allow-"
+#~ "overwrite=true option and restart aria2."
+#~ msgstr ""
+#~ "Datei %s existiert, aber %s existiert nicht. Der Download wurde "
+#~ "abgebrochen damit die Datei nicht zu 0 geschrumpft wird. Wenn sie sicher "
+#~ "sind die Datei neu herunterzuaden, löschen sie die Datei oder fügen sie "
+#~ "die --allow-overwrite=true option hinzu und starten sie aria2 neu."
+
+#~ msgid "Max payload length exceeded or invalid. length = %d"
+#~ msgstr ""
+#~ "Maximale Payload Länge überschritten oder ungülitge Länge. length = %d"
+
+#~ msgid "Usage: %s [options] URL ...\n"
+#~ msgstr "Aufruf: %s [Optionen] URL ...\n"
+
+#~ msgid ""
+#~ " --retry-wait=SEC             Set the seconds to wait to retry after an "
+#~ "error\n"
+#~ "                              has occured. Specify a value between 0 and "
+#~ "60.\n"
+#~ "                              Default: 5"
+#~ msgstr ""
+#~ " --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
+#~ "fehlerhaften\n"
+#~ "                              Anforderungen. Geben Sie einen Wert "
+#~ "zwischen 0 und 60 an.\n"
+#~ "                              Fehlwert: 5"
+
+#~ msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
+#~ msgstr ""
+#~ " -t, --timeout=SEC            Setzt Wartezeit in Sekunden. Fehlwert: 60"
+
+#~ msgid ""
+#~ " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
+#~ "                              Default: 5"
+#~ msgstr ""
+#~ " -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
+#~ "                              Fehlwert: 5"
+
+#~ msgid ""
 #~ " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 #~ "                              METHOD is either 'get' or 'tunnel'.\n"
 #~ "                              Default: tunnel"
@@ -2160,6 +2025,17 @@ msgstr "Dateien:"
 #~ "setzen.\n"
 #~ "                              METHOD ist entweder 'get' oder 'tunnel'.\n"
 #~ "                              Fehlwert: tunnel"
+
+#~ msgid ""
+#~ " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
+#~ "basic\n"
+#~ "                              is the only supported scheme.\n"
+#~ "                              Default: basic"
+#~ msgstr ""
+#~ " --http-auth-scheme=SCHEME    HTTP-Authentifizierungs-Schema setzen. "
+#~ "Derzeit ist basic\n"
+#~ "                              das einzig zulässige Schema.\n"
+#~ "                              Fehlwert: basic"
 
 #~ msgid ""
 #~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
@@ -2200,34 +2076,6 @@ msgstr "Dateien:"
 #~ "                              Fehlwert: tunnel"
 
 #~ msgid ""
-#~ "\n"
-#~ "Some downloads were not complete because of errors. Check the log.\n"
-#~ "aria2 will resume download if the transfer is restarted."
-#~ msgstr ""
-#~ "\n"
-#~ "Abruf wegen Fehlern nicht vollständig. Überprüfen Sie die Log-Datei.\n"
-#~ "aria2 wird den Download wiederaufnehmen wenn der Transfer neu gestartet "
-#~ "wird."
-
-#~ msgid ""
-#~ "File %s exists, but %s does not exist. The download was canceled in order "
-#~ "to prevent your file from being truncated to 0. If you are sure to "
-#~ "download file all over again, then delete it or add --allow-"
-#~ "overwrite=true option and restart aria2."
-#~ msgstr ""
-#~ "Datei %s existiert, aber %s existiert nicht. Der Download wurde "
-#~ "abgebrochen damit die Datei nicht zu 0 geschrumpft wird. Wenn sie sicher "
-#~ "sind die Datei neu herunterzuaden, löschen sie die Datei oder fügen sie "
-#~ "die --allow-overwrite=true option hinzu und starten sie aria2 neu."
-
-#~ msgid "Max payload length exceeded or invalid. length = %d"
-#~ msgstr ""
-#~ "Maximale Payload Länge überschritten oder ungülitge Länge. length = %d"
-
-#~ msgid "Usage: %s [options] URL ...\n"
-#~ msgstr "Aufruf: %s [Optionen] URL ...\n"
-
-#~ msgid ""
 #~ " -S, --show-files             Print file listing of .torrent or .metalink "
 #~ "file\n"
 #~ "                              and exit."
@@ -2248,6 +2096,16 @@ msgstr "Dateien:"
 #~ "Dateiname \n"
 #~ "                              auf .torrent endet.\n"
 #~ "                              Standart: true"
+
+#~ msgid ""
+#~ " --direct-file-mapping=true|false Directly read from and write to each "
+#~ "file\n"
+#~ "                              mentioned in .torrent file.\n"
+#~ "                              Default: true"
+#~ msgstr ""
+#~ " --direct-file-mapping=true|false Direktes Lesen/Schreiben jeder in der \n"
+#~ "                              .torrent-Datei erwähnten Datei.\n"
+#~ "                              Fehlwert: true"
 
 #~ msgid ""
 #~ " --listen-port=PORT           Set TCP port number for BitTorrent "

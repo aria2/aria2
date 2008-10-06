@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-09-22 19:31+0900\n"
+"POT-Creation-Date: 2008-10-06 17:16+0900\n"
 "PO-Revision-Date: 2008-08-04 07:10+0000\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
@@ -17,14 +17,14 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:800
+#: src/DownloadEngine.cc:801
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Està començant la seqüència d'aturada... Premi Ctrl-C un altre cop per fer "
 "una aturada d'emergència."
 
-#: src/DownloadEngine.cc:804
+#: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Començant la seqüència d'aturada d'emergència."
 
@@ -40,11 +40,11 @@ msgstr ""
 "Si hi han errors, llavors miri el fitxer d'anotacions. Per més informació "
 "vegi l'opció '-l' en les pàgines help/man."
 
-#: src/RequestGroupMan.cc:379
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
 msgstr "Resultats de la descàrrega:"
 
-#: src/RequestGroupMan.cc:394
+#: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
 msgstr "llegenda d'estat:"
 

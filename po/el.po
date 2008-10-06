@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-09-22 19:31+0900\n"
+"POT-Creation-Date: 2008-10-06 17:16+0900\n"
 "PO-Revision-Date: 2008-08-16 00:00+0900\n"
 "Last-Translator: jimmyz <Unknown>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -17,14 +17,14 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:800
+#: src/DownloadEngine.cc:801
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Η διαδικασία απενεργοποίησης ξεκινα... Πατήστε Ctrl-C ξανά για άμεση "
 "απενεργοποίηση."
 
-#: src/DownloadEngine.cc:804
+#: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Η διαδικασία άμεσης απενεργοποίησης ξεκινα..."
 
@@ -40,11 +40,11 @@ msgstr ""
 "Αν υπάρχουν σφάλματα, δείτε το αρχείο καταγραφών (log). Δώστε την παράμετρο -"
 "l στη σελίδα help/man για περαιτέρω λεπτομέρειες."
 
-#: src/RequestGroupMan.cc:379
+#: src/RequestGroupMan.cc:382
 msgid "Download Results:"
 msgstr "Αποτελέσματα μεταφορτώσεων:"
 
-#: src/RequestGroupMan.cc:394
+#: src/RequestGroupMan.cc:397
 #, fuzzy
 msgid "Status Legend:"
 msgstr "Ιστορικό κατάστασης:"
