@@ -1,5 +1,11 @@
 2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed the type of _numNewConnection to unsigned int.
+	* src/ActivePeerConnectionCommand.cc
+	* src/ActivePeerConnectionCommand.h
+
+2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* Release 0.16.0
 
 2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>

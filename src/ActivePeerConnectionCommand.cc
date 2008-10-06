@@ -89,11 +89,11 @@ bool ActivePeerConnectionCommand::execute() {
        (!pieceStorage->downloadFinished() &&
 	(tstat.getDownloadSpeed() < _thresholdSpeed ||
 	 btRuntime->lessThanMinPeers()))) {
-      size_t numConnection = pieceStorage->downloadFinished() ?
+      unsigned int numConnection = pieceStorage->downloadFinished() ?
 	std::min(_numNewConnection,
 		 BtRuntime::MAX_PEERS-btRuntime->getConnections()) :
 	_numNewConnection;
-      for(size_t numAdd = numConnection;
+      for(unsigned int numAdd = numConnection;
 	  numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = peerStorage->getUnusedPeer();
 	connectToPeer(peer);
