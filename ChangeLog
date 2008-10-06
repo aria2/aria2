@@ -1,3 +1,8 @@
+2008-10-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Removed assert()
+	* src/SocketBuffer.cc (SocketBuffer::send)
+
 2008-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed the type of _numNewConnection to unsigned int.

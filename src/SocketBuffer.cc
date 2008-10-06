@@ -61,7 +61,6 @@ ssize_t SocketBuffer::send()
   }
   ssize_t len = _socket->writeData(_sendbuf.c_str(),
 				   _sendbuf.size());
-  assert(len <= _sendbuf.size());
   _sendbuf.erase(0, len);
   return len;
 }
