@@ -1,5 +1,13 @@
 2008-10-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed compile error with gcc-4.4(snapshot)
+	* src/File.cc
+	* src/FtpConnection.cc
+	* src/OptionHandlerImpl.h
+	* src/Util.cc
+	
+2008-10-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed assert()
 	* src/SocketBuffer.cc (SocketBuffer::send)
 

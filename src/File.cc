@@ -40,6 +40,7 @@
 
 #include <deque>
 #include <cstring>
+#include <cstdio>
 
 #include "Util.h"
 #include "A2STR.h"

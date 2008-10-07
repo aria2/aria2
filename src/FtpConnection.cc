@@ -49,6 +49,7 @@
 #include "A2STR.h"
 #include "StringFormat.h"
 #include <cstring>
+#include <cstdio>
 #include <cassert>
 
 namespace aria2 {

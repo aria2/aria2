@@ -43,6 +43,7 @@
 #include "Option.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include <cstdio>
 #include <utility>
 #include <algorithm>
 #include <numeric>

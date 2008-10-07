@@ -50,6 +50,7 @@
 #include <cerrno>
 #include <cassert>
 #include <cstring>
+#include <cstdio>
 #include <cstdlib>
 #include <iomanip>
 #include <sstream>
