@@ -33,12 +33,23 @@
  */
 /* copyright --> */
 #include "Request.h"
+
+#include <utility>
+
 #include "Util.h"
 #include "FeatureConfig.h"
 #include "RecoverableException.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include <utility>
+
+#define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
+"ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
+"0123456789"\
+":/?[]@"\
+"!$&'()*+,;="\
+"-._~"\
+"%"\
+"#"
 
 namespace aria2 {
 
@@ -63,14 +74,61 @@ Request::Request():
 
 Request::~Request() {}
 
+static std::string removeFragment(const std::string url)
+{
+  std::string::size_type sharpIndex = url.find("#");
+  if(sharpIndex == std::string::npos) {
+    return url;
+  } else {
+    return url.substr(0, sharpIndex);
+  }
+}
+
+static bool isHexNumber(const char c)
+{
+  return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F') ||
+    ('a' <= c && c <= 'f');
+}
+
+static std::string urlencode(const std::string& src)
+{
+  std::string result = src;
+  if(src.empty()) {
+    return result;
+  }
+  size_t lastIndex = src.size()-1;
+  result += "  ";
+  size_t index = lastIndex;
+  while(index-- > 0) {
+    const unsigned char c = result[index];
+    // '/' is not urlencoded because src is expected to be a path.
+    if(Util::shouldUrlencode(c)) {
+      if(c == '%') {
+	if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
+	  result.replace(index, 1, "%25");
+	}
+      } else {
+	result.replace(index, 1, StringFormat("%%%02x", c).str());
+      }
+    }
+  }
+  result.erase(result.size()-2);
+  return result;
+}
+
 bool Request::setUrl(const std::string& url) {
-  this->url = url;
-  return parseUrl(url);
+  this->url = urlencode(removeFragment(url));
+  return parseUrl(this->url);
 }
 
 bool Request::resetUrl() {
   previousUrl = referer;
   return parseUrl(url);
+}
+
+void Request::setReferer(const std::string& url)
+{
+  referer = previousUrl = urlencode(removeFragment(url));
 }
 
 bool Request::redirectUrl(const std::string& url) {
@@ -93,14 +151,8 @@ bool Request::redirectUrl(const std::string& url) {
 }
 
 bool Request::parseUrl(const std::string& url) {
-  std::string tempUrl;
-  std::string::size_type sharpIndex = url.find("#");
-  if(sharpIndex != std::string::npos) {
-    urlencode(tempUrl, url.substr(0, sharpIndex));
-  } else {
-    urlencode(tempUrl, url);
-  }
-  currentUrl = tempUrl;
+  currentUrl = url;
+  std::string tempUrl = url;
   std::string query;
   host = A2STR::NIL;
   port = 0;
@@ -177,36 +229,6 @@ bool Request::parseUrl(const std::string& url) {
   }
   _query = queryTemp;
   return true;
-}
-
-bool Request::isHexNumber(const char c) const
-{
-  return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f');
-}
-
-void Request::urlencode(std::string& result, const std::string& src) const
-{
-  if(src.empty()) {
-    result = A2STR::NIL;
-    return;
-  }
-  size_t lastIndex = src.size()-1;
-  result = src+"  ";
-  size_t index = lastIndex;
-  while(index-- > 0) {
-    const unsigned char c = result[index];
-    // '/' is not urlencoded because src is expected to be a path.
-    if(Util::shouldUrlencode(c)) {
-      if(c == '%') {
-	if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
-	  result.replace(index, 1, "%25");
-	}
-      } else {
-	result.replace(index, 1, StringFormat("%%%02x", c).str());
-      }
-    }
-  }
-  result.erase(result.size()-2);
 }
 
 void Request::resetRedirectCount()

@@ -1,8 +1,10 @@
 #include "Request.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Netrc.h"
 #include "DefaultAuthResolver.h"
 #include "NetrcAuthResolver.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -33,6 +35,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testResetUrl);
   CPPUNIT_TEST(testInnerLink);
+  CPPUNIT_TEST(testInnerLinkInReferer);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -60,6 +63,7 @@ public:
   void testRedirectUrl2();
   void testResetUrl();
   void testInnerLink();
+  void testInnerLinkInReferer();
 };
 
 
@@ -267,6 +271,10 @@ void RequestTest::testSetUrl17()
   CPPUNIT_ASSERT_EQUAL(std::string("/file%3cwith%252%20%20space"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param"), req.getFile());
   CPPUNIT_ASSERT_EQUAL(std::string("?a=/?"), req.getQuery());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file%3cwith%252%20%20space"
+				   "/file%20with%20space;param?a=/?"),
+		       req.getCurrentUrl());
+  CPPUNIT_ASSERT_EQUAL(req.getCurrentUrl(), req.getUrl());
 }
 
 void RequestTest::testRedirectUrl() {
@@ -357,8 +365,19 @@ void RequestTest::testInnerLink() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com/index.html#download");
   CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/index.html"),
+		       req.getUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/index.html"),
+		       req.getCurrentUrl());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
+}
+
+void RequestTest::testInnerLinkInReferer() {
+  Request req;
+  req.setReferer("http://aria.rednoah.com/home.html#top");
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/home.html"),
+		       req.getReferer());
 }
 
 void RequestTest::testSetUrl_zeroUsername()

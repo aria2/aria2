@@ -35,18 +35,11 @@
 #ifndef _D_REQUEST_H_
 #define _D_REQUEST_H_
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
 
-#define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
-"ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
-"0123456789"\
-":/?[]@"\
-"!$&'()*+,;="\
-"-._~"\
-"%"\
-"#"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -87,10 +80,6 @@ private:
   std::string _password;
 
   bool parseUrl(const std::string& url);
-
-  bool isHexNumber(const char c) const;
-
-  void urlencode(std::string& result, const std::string& src) const;
 public:
   Request();
   virtual ~Request();
@@ -116,7 +105,7 @@ public:
   const std::string& getCurrentUrl() const { return currentUrl; }
   const std::string& getPreviousUrl() const { return previousUrl; }
   const std::string& getReferer() const { return referer; }
-  void setReferer(const std::string& url) { referer = previousUrl = url; }
+  void setReferer(const std::string& url);
   const std::string& getProtocol() const { return protocol; }
   const std::string& getHost() const { return host; }
   uint16_t getPort() const { return port; }
