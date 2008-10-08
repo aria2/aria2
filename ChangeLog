@@ -1,3 +1,12 @@
+2008-10-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added missing m4 macros.
+	* m4/cppunit.m4
+	* m4/libgcrypt.m4
+	* m4/libgnutls-extra.m4
+	* m4/libgnutls.m4
+	* m4/libxml2.m4
+
 2008-10-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed compile error with gcc-4.4(snapshot)
