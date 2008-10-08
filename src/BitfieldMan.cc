@@ -174,7 +174,7 @@ size_t
 BitfieldMan::getNthBitIndex(const unsigned char bitfield, size_t nth) const
 {
   size_t index = 0;
-  for(size_t bs = 7; bs >= 0; bs--) {
+  for(int bs = 7; bs >= 0; --bs) {
     unsigned char mask = 1 << bs;
     if(bitfield & mask) {
       nth--;
