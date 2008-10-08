@@ -264,15 +264,15 @@ void RequestTest::testSetUrl16()
 void RequestTest::testSetUrl17()
 {
   Request req;
-  bool v = req.setUrl("http://host:80/file<with%2 %20space/file with space;param?a=/?");
+  bool v = req.setUrl("http://host:80/file<with%2 %20space/file with space;param%?a=/?");
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/file%3cwith%252%20%20space"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param%25"), req.getFile());
   CPPUNIT_ASSERT_EQUAL(std::string("?a=/?"), req.getQuery());
   CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file%3cwith%252%20%20space"
-				   "/file%20with%20space;param?a=/?"),
+				   "/file%20with%20space;param%25?a=/?"),
 		       req.getCurrentUrl());
   CPPUNIT_ASSERT_EQUAL(req.getCurrentUrl(), req.getUrl());
 }

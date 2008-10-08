@@ -96,10 +96,8 @@ static std::string urlencode(const std::string& src)
   if(src.empty()) {
     return result;
   }
-  size_t lastIndex = src.size()-1;
   result += "  ";
-  size_t index = lastIndex;
-  while(index-- > 0) {
+  for(int index = src.size()-1; index >= 0; --index) {
     const unsigned char c = result[index];
     // '/' is not urlencoded because src is expected to be a path.
     if(Util::shouldUrlencode(c)) {
