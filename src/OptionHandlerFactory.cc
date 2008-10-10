@@ -728,10 +728,10 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_DHT_FILE_PATH,
-				    NO_DESCRIPTION,
+				    TEXT_DHT_FILE_PATH,
 				    Util::getHomeDir()+"/.aria2/dht.dat",
-				    "/PATH/TO/DHT_DAT",
-				    true));
+				    "/PATH/TO/DHT_DAT"));
+    op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
   {

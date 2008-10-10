@@ -184,6 +184,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_BT_REQUEST_PEER_SPEED_LIMIT.c_str(), required_argument, &lopt, 32 },
       { PREF_BT_MAX_OPEN_FILES.c_str(), required_argument, &lopt, 33 },
       { PREF_BT_SEED_UNVERIFIED.c_str(), optional_argument, &lopt, 34 },
+      { PREF_DHT_FILE_PATH.c_str(), required_argument, &lopt, 35 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { PREF_METALINK_FILE.c_str(), required_argument, NULL, 'M' },
@@ -299,6 +300,9 @@ Option* option_processing(int argc, char* const argv[])
       case 34:
 	cmdstream << PREF_BT_SEED_UNVERIFIED << "=" << toBoolArg(optarg)
 		  << "\n";
+	break;
+      case 35:
+	cmdstream << PREF_DHT_FILE_PATH << "=" << optarg << "\n";
 	break;
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";

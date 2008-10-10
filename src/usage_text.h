@@ -242,6 +242,8 @@ _(" --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"\
 #define TEXT_DHT_ENTRY_POINT \
 _(" --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"\
   "                              network.")
+#define TEXT_DHT_FILE_PATH \
+_(" --dht-file-path=PATH         Change the DHT routing table file to PATH.")
 #define TEXT_BT_MIN_CRYPTO_LEVEL \
 _(" --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"\
   "                              If several encryption methods are provided by a\n"\
