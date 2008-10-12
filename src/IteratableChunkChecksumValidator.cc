@@ -155,7 +155,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
 		      strerror(errno)).str());
     }
     size_t wlength;
-    if(max < curoffset+r) {
+    if(max < static_cast<off_t>(curoffset+r)) {
       wlength = max-curoffset-woffset;
     } else {
       wlength = r-woffset;

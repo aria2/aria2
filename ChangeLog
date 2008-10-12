@@ -1,3 +1,13 @@
+2008-10-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed compile warning on linux-amd64
+	* src/FtpConnection.cc
+	* src/IteratableChunkChecksumValidator.cc
+	* src/MultiDiskAdaptor.cc
+
+	Fixed the bug that unit test fails on linux-amd64
+	* test/UtilTest.cc
+
 2008-10-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added --dht-file-path option to change the path to dht.dat, which is a

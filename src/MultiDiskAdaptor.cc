@@ -222,7 +222,8 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       ++itr;
 
       for(; itr != diskWriterEntries.end(); ++itr) {
-	if((*itr)->getFileEntry()->getOffset() < pieceStartOffset+pieceLength) {
+	if((*itr)->getFileEntry()->getOffset() <
+	   static_cast<off_t>(pieceStartOffset+pieceLength)) {
 	  (*itr)->needsFileAllocation(true);
 	} else {
 	  break;

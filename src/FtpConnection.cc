@@ -347,7 +347,8 @@ unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
   std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
-      sscanf(response.second.c_str(), "%*u " LONGLONG_SCANF, &size);
+      sscanf(response.second.c_str(), "%*u " ULONGLONG_SCANF,
+	     reinterpret_cast<long long unsigned int*>(&size));
     }
     return response.first;
   } else {
