@@ -91,7 +91,11 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 #endif // ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 1));
   e->addRoutineCommand(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get()));
-  e->addRoutineCommand(new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+  if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
+    e->addRoutineCommand
+      (new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(),
+			   e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+  }
   e->addRoutineCommand(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 10));
   {
     time_t stopSec = op->getAsInt(PREF_STOP);

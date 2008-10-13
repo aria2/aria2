@@ -1,5 +1,14 @@
 2008-10-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --auto-save-interval=SEC option. A control file(*.aria2) is saved
+	every SEC seconds.
+	* src/DownloadEngineFactory.cc
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/usage_text.h
+
+2008-10-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed compile warning on linux-amd64
 	* src/FtpConnection.cc
 	* src/IteratableChunkChecksumValidator.cc

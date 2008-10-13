@@ -160,6 +160,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_REMOTE_TIME.c_str(), optional_argument, 0, 'R' },
       { PREF_CONNECT_TIMEOUT.c_str(), required_argument, &lopt, 224 },
       { PREF_MAX_FILE_NOT_FOUND.c_str(), required_argument, &lopt, 225 },
+      { PREF_AUTO_SAVE_INTERVAL.c_str(), required_argument, &lopt, 226 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -404,6 +405,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 225:
 	cmdstream << PREF_MAX_FILE_NOT_FOUND << "=" << optarg << "\n";
+	break;
+      case 226:
+	cmdstream << PREF_AUTO_SAVE_INTERVAL << "=" << optarg << "\n";
 	break;
       }
       break;

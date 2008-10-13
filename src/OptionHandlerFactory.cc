@@ -83,10 +83,10 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
 				   (PREF_AUTO_SAVE_INTERVAL,
-				    NO_DESCRIPTION,
+				    TEXT_AUTO_SAVE_INTERVAL,
 				    "60",
-				    1, 600,
-				    true));
+				    0, 600));
+    op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
   {
