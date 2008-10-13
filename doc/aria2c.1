@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 09/27/2008
+.\"      Date: 10/13/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "09/27/2008" "" ""
+.TH "ARIA2C" "1" "10/13/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -256,7 +256,8 @@ Enable HTTP/1\&.1 pipelining\&. Default:
 .RS 4
 Append HEADER to HTTP request header\&. You can use this option repeatedly to specify more than one header: aria2c
 \fB\-\-header\fR="X\-A: b78"
-\fB\-\-header\fR="X\-B: 9J1" http://host/file
+\fB\-\-header\fR="X\-B: 9J1"
+http://host/file
 .RE
 .PP
 \fB\-\-load\-cookies\fR=FILE
@@ -384,6 +385,12 @@ Seed previously downloaded files without verifying piece hashes\&. Default:
 \fB\-\-dht\-entry\-point\fR=HOST:PORT
 .RS 4
 Set host and port as an entry point to DHT network\&.
+.RE
+.PP
+\fB\-\-dht\-file\-path\fR=PATH
+.RS 4
+Change the DHT routing table file to PATH\&. Default:
+\fI$HOME/\&.aria2/dht\&.dat\fR
 .RE
 .PP
 \fB\-\-dht\-listen\-port\fR=PORT\&...
@@ -586,6 +593,17 @@ Enable asynchronous DNS\&. Default:
 .RS 4
 Rename file name if the same file already exists\&. This option works only in HTTP(S)/FTP download\&. The new file name has a dot and a number(1\&.\&.9999) appended\&. Default:
 \fItrue\fR
+.RE
+.PP
+\fB\-\-auto\-save\-interval\fR=SEC
+.RS 4
+Save a control file(*\&.aria2) every SEC seconds\&. If
+\fI0\fR
+is given, a control file is not saved during download\&. aria2 saves a control file when it stops regardless of the value\&. The possible values are between
+\fI0\fR
+to
+\fI600\fR\&. Default:
+\fI60\fR
 .RE
 .PP
 \fB\-\-conf\-path\fR=PATH
@@ -1331,7 +1349,7 @@ ftp\-pasv=true
 .fi
 .RE
 .SS "dht\&.dat"
-The routing table of DHT is saved to the path $HOME/\&.aria2/dht\&.dat\&.
+By default, the routing table of DHT is saved to the path $HOME/\&.aria2/dht\&.dat\&.
 .sp
 .SH "RESOURCES"
 Project web site: http://aria2\&.sourceforge\&.net/
@@ -1355,3 +1373,9 @@ You should have received a copy of the GNU General Public License along with thi
 .sp
 In addition, as a special exception, the copyright holders give permission to link the code of portions of this program with the OpenSSL library under certain conditions as described in each individual source file, and distribute linked combinations including the two\&. You must obey the GNU General Public License in all respects for all of the code used other than OpenSSL\&. If you modify file(s) with this exception, you may extend this exception to your version of the file(s), but you are not obligated to do so\&. If you do not wish to do so, delete this exception statement from your version\&. If you delete this exception statement from all source files in the program, then also delete it here\&.
 .sp
+.SH "NOTES"
+.IP " 1." 4
+t-tujikawa@users.sourceforge.net
+.RS 4
+\%mailto:t-tujikawa@users.sourceforge.net
+.RE

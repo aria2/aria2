@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.2.6" />
+<meta name="generator" content="AsciiDoc 8.2.7" />
 <style type="text/css">
 /* Debug borders */
 p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
@@ -165,13 +165,25 @@ div.listingblock > div.content {
   padding: 0.5em;
 }
 
-div.quoteblock > div.content {
+div.quoteblock {
   padding-left: 2.0em;
 }
-
-div.attribution {
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
   text-align: right;
 }
+
+div.verseblock {
+  padding-left: 2.0em;
+}
+div.verseblock > div.content {
+  white-space: pre;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
 div.verseblock + div.attribution {
   text-align: left;
 }
@@ -192,10 +204,6 @@ div.admonitionblock td.content {
 div.exampleblock > div.content {
   border-left: 2px solid silver;
   padding: 0.5em;
-}
-
-div.verseblock div.content {
-  white-space: pre;
 }
 
 div.imageblock div.content { padding-left: 0; }
@@ -281,6 +289,24 @@ div.toclevel4 {
   margin-left: 6em;
   font-size: 0.9em;
 }
+/* Overrides for manpage documents */
+h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+h2 {
+  border-style: none;
+}
+div.sectionbody {
+  margin-left: 5%;
+}
+
+@media print {
+  div#toc { display: none; }
+}
+
 /* Workarounds for IE6's broken and incomplete CSS2. */
 
 div.sidebar-content {
@@ -302,8 +328,17 @@ div.listingblock div.content {
   padding: 0.5em;
 }
 
-div.quoteblock-content {
-  padding-left: 2.0em;
+div.quoteblock-attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock-content {
+  white-space: pre;
+}
+div.verseblock-attribution {
+  padding-top: 0.75em;
+  text-align: left;
 }
 
 div.exampleblock-content {
@@ -326,15 +361,17 @@ div.olist2 div.olist ol {
 </head>
 <body>
 <div id="header">
-<h1>ARIA2C(1)</h1>
-<span id="author">Tatsuhiro Tsujikawa</span><br />
-<span id="email"><tt>&lt;<a href="mailto:t-tujikawa@users.sourceforge.net">t-tujikawa@users.sourceforge.net</a>&gt;</tt></span><br />
-</div>
-<h2 id="_name">NAME</h2>
+<h1>
+ARIA2C(1) Manual Page
+</h1>
+<h2>NAME</h2>
 <div class="sectionbody">
-<div class="para"><p>aria2c - The ultra fast download utility</p></div>
+<p>aria2c -
+   The ultra fast download utility
+</p>
 </div>
-<h2 id="_synopsis">SYNOPSIS</h2>
+</div>
+<h2>SYNOPSIS</h2>
 <div class="sectionbody">
 <div class="para"><p>aria2c [<em>OPTIONS</em>] [<em>URL</em> | <em>TORRENT_FILE</em> | <em>METALINK_FILE</em>]&#8230;</p></div>
 </div>
@@ -347,7 +384,7 @@ div.olist2 div.olist ol {
 <h3 id="_basic_options">Basic Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>-d</strong>, <strong>&#8212;dir</strong>=DIR
+<strong>-d</strong>, <strong>--dir</strong>=DIR
 </dt>
 <dd>
 <p>
@@ -355,7 +392,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>-i</strong>, <strong>&#8212;input-file</strong>=FILE
+<strong>-i</strong>, <strong>--input-file</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -365,7 +402,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>-l</strong>, <strong>&#8212;log</strong>=LOG
+<strong>-l</strong>, <strong>--log</strong>=LOG
 </dt>
 <dd>
 <p>
@@ -374,7 +411,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>-j</strong>, <strong>&#8212;max-concurrent-downloads</strong>=N
+<strong>-j</strong>, <strong>--max-concurrent-downloads</strong>=N
 </dt>
 <dd>
 <p>
@@ -384,7 +421,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>&#8212;check-integrity</strong>=<em>true</em>|<em>false</em>
+<strong>--check-integrity</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -396,7 +433,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>-c</strong>, <strong>&#8212;continue</strong>
+<strong>-c</strong>, <strong>--continue</strong>
 </dt>
 <dd>
 <p>
@@ -407,13 +444,13 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>-h</strong>, <strong>&#8212;help</strong>[=CATEGORY]
+<strong>-h</strong>, <strong>--help</strong>[=CATEGORY]
 </dt>
 <dd>
 <p>
   Print usage and exit.
   The help messages are classified in several categories.
-  For example, type "<strong>&#8212;help</strong>=http" for detailed explanation for the options
+  For example, type "<strong>--help</strong>=http" for detailed explanation for the options
   related to HTTP. If no matching category is found, search option name using
   a given word in middle match and print the result.
   Available Values: <em>basic</em>, <em>advanced</em>, <em>http</em>, <em>ftp</em>, <em>metalink</em>,
@@ -425,18 +462,18 @@ div.olist2 div.olist ol {
 <h3 id="_http_ftp_options">HTTP/FTP Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;connect-timeout</strong>=SEC
+<strong>--connect-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
   Set the connect timeout in seconds to establish connection to
   HTTP/FTP/proxy server. After the connection is established, this
-  option makes no effect and <strong>&#8212;timeout</strong> option is used instead.
+  option makes no effect and <strong>--timeout</strong> option is used instead.
   Default: <em>60</em>
 </p>
 </dd>
 <dt>
-<strong>&#8212;lowest-speed-limit</strong>=SPEED
+<strong>--lowest-speed-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -449,7 +486,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>&#8212;max-file-not-found</strong>=NUM
+<strong>--max-file-not-found</strong>=NUM
 </dt>
 <dd>
 <p>
@@ -461,7 +498,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>-m</strong>, <strong>&#8212;max-tries</strong>=N
+<strong>-m</strong>, <strong>--max-tries</strong>=N
 </dt>
 <dd>
 <p>
@@ -470,7 +507,7 @@ div.olist2 div.olist ol {
 </p>
 </dd>
 <dt>
-<strong>-o</strong>, <strong>&#8212;out</strong>=FILE
+<strong>-o</strong>, <strong>--out</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -486,12 +523,12 @@ div.olist2 div.olist ol {
 <td class="content">In Metalink, BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URLs fed to aria2
 is done by command line without <strong>-i</strong>, <strong>-Z</strong> option, like this:
-aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
+aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</a> <a href="http://mirror2/file.zip">http://mirror2/file.zip</a></td>
 </tr></table>
 </div>
 <div class="vlist"><dl>
 <dt>
-<strong>-R</strong>, <strong>&#8212;remote-time</strong>[=<em>true</em>|<em>false</em>]
+<strong>-R</strong>, <strong>--remote-time</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -501,7 +538,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;retry-wait</strong>=SEC
+<strong>--retry-wait</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -511,28 +548,28 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;server-stat-of</strong>=FILE
+<strong>--server-stat-of</strong>=FILE
 </dt>
 <dd>
 <p>
   Specify the filename to which performance profile of the servers is
-  saved. You can load saved data using <strong>&#8212;server-stat-if</strong> option. See
+  saved. You can load saved data using <strong>--server-stat-if</strong> option. See
   SERVER PERFORMANCE PROFILE section below for file format.
 </p>
 </dd>
 <dt>
-<strong>&#8212;server-stat-if</strong>=FILE
+<strong>--server-stat-if</strong>=FILE
 </dt>
 <dd>
 <p>
   Specify the filename to load performance profile of the servers. The
   loaded data will be used in some URI selector such as <em>feedback</em>.
-  See also <strong>&#8212;uri-selector</strong> option. See SERVER PERFORMANCE PROFILE
+  See also <strong>--uri-selector</strong> option. See SERVER PERFORMANCE PROFILE
   section below for file format.
 </p>
 </dd>
 <dt>
-<strong>&#8212;server-stat-timeout</strong>=SEC
+<strong>--server-stat-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -542,7 +579,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>-s</strong>, <strong>&#8212;split</strong>=N
+<strong>-s</strong>, <strong>--split</strong>=N
 </dt>
 <dd>
 <p>
@@ -556,7 +593,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>-t</strong>, <strong>&#8212;timeout</strong>=SEC
+<strong>-t</strong>, <strong>--timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -565,7 +602,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;uri-selector</strong>=SELECTOR
+<strong>--uri-selector</strong>=SELECTOR
 </dt>
 <dd>
 <p>
@@ -575,8 +612,8 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
   download speed observed in the previous downloads and choose fastest
   server in the URI list. This also effectively skips dead
   mirrors. The observed download speed is a part of performance
-  profile of servers mentioned in <strong>&#8212;server-stat-of</strong> and
-  <strong>&#8212;server-stat-if</strong> options.
+  profile of servers mentioned in <strong>--server-stat-of</strong> and
+  <strong>--server-stat-if</strong> options.
   Default: <em>inorder</em>
 </p>
 </dd>
@@ -584,7 +621,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <h3 id="_http_specific_options">HTTP Specific Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;http-auth-scheme</strong>=SCHEME
+<strong>--http-auth-scheme</strong>=SCHEME
 </dt>
 <dd>
 <p>
@@ -594,7 +631,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;http-user</strong>=USER
+<strong>--http-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -602,7 +639,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;http-passwd</strong>=PASSWD
+<strong>--http-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -610,7 +647,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;http-proxy</strong>=HOST:PORT
+<strong>--http-proxy</strong>=HOST:PORT
 </dt>
 <dd>
 <p>
@@ -618,7 +655,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;http-proxy-user</strong>=USER
+<strong>--http-proxy-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -626,7 +663,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;http-proxy-passwd</strong>=PASSWD
+<strong>--http-proxy-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -634,7 +671,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;http-proxy-method</strong>=METHOD
+<strong>--http-proxy-method</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -644,7 +681,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;referer</strong>=REFERER
+<strong>--referer</strong>=REFERER
 </dt>
 <dd>
 <p>
@@ -652,7 +689,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;enable-http-keep-alive</strong>[=<em>true</em>|<em>false</em>]
+<strong>--enable-http-keep-alive</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -661,7 +698,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;enable-http-pipelining</strong>[=<em>true</em>|<em>false</em>]
+<strong>--enable-http-pipelining</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -670,17 +707,17 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;header</strong>=HEADER
+<strong>--header</strong>=HEADER
 </dt>
 <dd>
 <p>
   Append HEADER to HTTP request header.
   You can use this option repeatedly to specify more than one header:
-  aria2c <strong>&#8212;header</strong>="X-A: b78" <strong>&#8212;header</strong>="X-B: 9J1" http://host/file
+  aria2c <strong>--header</strong>="X-A: b78" <strong>--header</strong>="X-B: 9J1" <a href="http://host/file">http://host/file</a>
 </p>
 </dd>
 <dt>
-<strong>&#8212;load-cookies</strong>=FILE
+<strong>--load-cookies</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -699,7 +736,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </div>
 <div class="vlist"><dl>
 <dt>
-<strong>-U</strong>, <strong>&#8212;user-agent</strong>=USER_AGENT
+<strong>-U</strong>, <strong>--user-agent</strong>=USER_AGENT
 </dt>
 <dd>
 <p>
@@ -710,7 +747,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <h3 id="_ftp_specific_options">FTP Specific Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;ftp-user</strong>=USER
+<strong>--ftp-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -719,7 +756,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;ftp-passwd</strong>=PASSWD
+<strong>--ftp-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -728,7 +765,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>-p</strong>, <strong>&#8212;ftp-pasv</strong>
+<strong>-p</strong>, <strong>--ftp-pasv</strong>
 </dt>
 <dd>
 <p>
@@ -736,7 +773,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;ftp-type</strong>=TYPE
+<strong>--ftp-type</strong>=TYPE
 </dt>
 <dd>
 <p>
@@ -745,7 +782,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;ftp-reuse-connection</strong>[=<em>true</em>|<em>false</em>]
+<strong>--ftp-reuse-connection</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -754,7 +791,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;ftp-via-http-proxy</strong>=METHOD
+<strong>--ftp-via-http-proxy</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -763,7 +800,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-<strong>-n</strong>, <strong>&#8212;no-netrc</strong>
+<strong>-n</strong>, <strong>--no-netrc</strong>
 </dt>
 <dd>
 <p>
@@ -774,17 +811,17 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <h3 id="_bittorrent_metalink_options">BitTorrent/Metalink Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;select-file</strong>=INDEX&#8230;
+<strong>--select-file</strong>=INDEX&#8230;
 </dt>
 <dd>
 <p>
   Set file to download by specifing its index.
-  You can find the file index using the <strong>&#8212;show-files</strong> option.
+  You can find the file index using the <strong>--show-files</strong> option.
   Multiple indexes can be specified by using ",", for example: <em>3,6</em>.
   You can also use "-" to specify a range: <em>1-5</em>.
   "," and "-" can be used together: <em>1-5,8,9</em>.
   When used with the -M option, index may vary depending on the query
-  (see <strong>&#8212;metalink-</strong>* options).
+  (see <strong>--metalink-</strong>* options).
 </p>
 </dd>
 </dl></div>
@@ -801,7 +838,7 @@ writes the piece to the appropriate files.</td>
 </div>
 <div class="vlist"><dl>
 <dt>
-<strong>-S</strong>, <strong>&#8212;show-files</strong>
+<strong>-S</strong>, <strong>--show-files</strong>
 </dt>
 <dd>
 <p>
@@ -814,7 +851,7 @@ writes the piece to the appropriate files.</td>
 <h3 id="_bittorrent_specific_options">BitTorrent Specific Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;bt-max-open-files</strong>=NUM
+<strong>--bt-max-open-files</strong>=NUM
 </dt>
 <dd>
 <p>
@@ -823,7 +860,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;bt-min-crypto-level</strong>=<em>plain</em>|<em>arc4</em>
+<strong>--bt-min-crypto-level</strong>=<em>plain</em>|<em>arc4</em>
 </dt>
 <dd>
 <p>
@@ -834,7 +871,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;bt-require-crypto</strong>=<em>true</em>|<em>false</em>
+<strong>--bt-require-crypto</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -845,7 +882,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;bt-request-peer-speed-limit</strong>=SPEED
+<strong>--bt-request-peer-speed-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -856,7 +893,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;bt-seed-unverified</strong>[=<em>true</em>|<em>false</em>]
+<strong>--bt-seed-unverified</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -865,7 +902,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;dht-entry-point</strong>=HOST:PORT
+<strong>--dht-entry-point</strong>=HOST:PORT
 </dt>
 <dd>
 <p>
@@ -873,7 +910,16 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;dht-listen-port</strong>=PORT&#8230;
+<strong>--dht-file-path</strong>=PATH
+</dt>
+<dd>
+<p>
+  Change the DHT routing table file to PATH.
+  Default: <em>$HOME/.aria2/dht.dat</em>
+</p>
+</dd>
+<dt>
+<strong>--dht-listen-port</strong>=PORT&#8230;
 </dt>
 <dd>
 <p>
@@ -885,7 +931,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;direct-file-mapping</strong>=<em>true</em>|<em>false</em>
+<strong>--direct-file-mapping</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -896,7 +942,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;enable-dht</strong>[=<em>true</em>|<em>false</em>]
+<strong>--enable-dht</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -906,7 +952,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;enable-peer-exchange</strong>[=<em>true</em>|<em>false</em>]
+<strong>--enable-peer-exchange</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -916,7 +962,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;follow-torrent</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
+<strong>--follow-torrent</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
 <dd>
 <p>
@@ -930,7 +976,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;listen-port</strong>=PORT&#8230;
+<strong>--listen-port</strong>=PORT&#8230;
 </dt>
 <dd>
 <p>
@@ -952,7 +998,7 @@ writes the piece to the appropriate files.</td>
 </div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;max-upload-limit</strong>=SPEED
+<strong>--max-upload-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -962,7 +1008,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;peer-id-prefix</strong>=PEERI_ID_PREFIX
+<strong>--peer-id-prefix</strong>=PEERI_ID_PREFIX
 </dt>
 <dd>
 <p>
@@ -974,7 +1020,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;seed-ratio</strong>=RATIO
+<strong>--seed-ratio</strong>=RATIO
 </dt>
 <dd>
 <p>
@@ -982,21 +1028,21 @@ writes the piece to the appropriate files.</td>
   RATIO.
   I strongly encourages you to specify equals or more than <em>1.0</em> here.
   Specify <em>0.0</em> if you intend to do seeding regardless of share ratio.
-  If <strong>&#8212;seed-time</strong> option is specified along with this option, seeding ends when
+  If <strong>--seed-time</strong> option is specified along with this option, seeding ends when
   at least one of the conditions is satisfied.
   Default: <em>1.0</em>
 </p>
 </dd>
 <dt>
-<strong>&#8212;seed-time</strong>=MINUTES
+<strong>--seed-time</strong>=MINUTES
 </dt>
 <dd>
 <p>
-  Specify seeding time in minutes. Also see the <strong>&#8212;seed-ratio</strong> option.
+  Specify seeding time in minutes. Also see the <strong>--seed-ratio</strong> option.
 </p>
 </dd>
 <dt>
-<strong>-T</strong>, <strong>&#8212;torrent-file</strong>=TORRENT_FILE
+<strong>-T</strong>, <strong>--torrent-file</strong>=TORRENT_FILE
 </dt>
 <dd>
 <p>
@@ -1008,7 +1054,7 @@ writes the piece to the appropriate files.</td>
 <h3 id="_metalink_specific_options">Metalink Specific Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;follow-metalink</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
+<strong>--follow-metalink</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
 <dd>
 <p>
@@ -1022,7 +1068,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>-M</strong>, <strong>&#8212;metalink-file</strong>=METALINK_FILE
+<strong>-M</strong>, <strong>--metalink-file</strong>=METALINK_FILE
 </dt>
 <dd>
 <p>
@@ -1031,7 +1077,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>-C</strong>, <strong>&#8212;metalink-servers</strong>=NUM_SERVERS
+<strong>-C</strong>, <strong>--metalink-servers</strong>=NUM_SERVERS
 </dt>
 <dd>
 <p>
@@ -1042,7 +1088,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;metalink-language</strong>=LANGUAGE
+<strong>--metalink-language</strong>=LANGUAGE
 </dt>
 <dd>
 <p>
@@ -1050,7 +1096,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;metalink-location</strong>=LOCATION[,&#8230;]
+<strong>--metalink-location</strong>=LOCATION[,&#8230;]
 </dt>
 <dd>
 <p>
@@ -1059,7 +1105,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;metalink-os</strong>=OS
+<strong>--metalink-os</strong>=OS
 </dt>
 <dd>
 <p>
@@ -1067,7 +1113,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;metalink-version</strong>=VERSION
+<strong>--metalink-version</strong>=VERSION
 </dt>
 <dd>
 <p>
@@ -1075,7 +1121,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;metalink-preferred-protocol</strong>=PROTO
+<strong>--metalink-preferred-protocol</strong>=PROTO
 </dt>
 <dd>
 <p>
@@ -1086,13 +1132,13 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;metalink-enable-unique-protocol</strong>=<em>true</em>|<em>false</em>
+<strong>--metalink-enable-unique-protocol</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
   If <em>true</em> is given and several protocols are available for a mirror in a
   metalink file, aria2 uses one of them.
-  Use <strong>&#8212;metalink-preferred-protocol</strong> option to specify the preference of
+  Use <strong>--metalink-preferred-protocol</strong> option to specify the preference of
   protocol.
   Default: <em>true</em>
 </p>
@@ -1101,19 +1147,19 @@ writes the piece to the appropriate files.</td>
 <h3 id="_advanced_options">Advanced Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
-<strong>&#8212;allow-overwrite</strong>=<em>true</em>|<em>false</em>
+<strong>--allow-overwrite</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
   If <em>false</em> is given, aria2 doesn't download a file which already exists but
   the corresponding .aria2 file doesn't exist.
-  In HTTP(S)/FTP download, if <strong>&#8212;auto-file-renaming</strong>=<em>true</em> then,
-  file name will be renamed. See <strong>&#8212;auto-file-renaming</strong> for details.
+  In HTTP(S)/FTP download, if <strong>--auto-file-renaming</strong>=<em>true</em> then,
+  file name will be renamed. See <strong>--auto-file-renaming</strong> for details.
   Default: <em>false</em>
 </p>
 </dd>
 <dt>
-<strong>&#8212;allow-piece-length-change</strong>=<em>true</em>|<em>false</em>
+<strong>--allow-piece-length-change</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -1124,7 +1170,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;async-dns</strong>[=<em>true</em>|<em>false</em>]
+<strong>--async-dns</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1133,7 +1179,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;auto-file-renaming</strong>[=<em>true</em>|<em>false</em>]
+<strong>--auto-file-renaming</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1144,7 +1190,19 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;conf-path</strong>=PATH
+<strong>--auto-save-interval</strong>=SEC
+</dt>
+<dd>
+<p>
+  Save a control file(*.aria2) every SEC seconds.
+  If <em>0</em> is given, a control file is not saved during download. aria2 saves a
+  control file when it stops regardless of the value.
+  The possible values are between <em>0</em> to <em>600</em>.
+  Default: <em>60</em>
+</p>
+</dd>
+<dt>
+<strong>--conf-path</strong>=PATH
 </dt>
 <dd>
 <p>
@@ -1153,7 +1211,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>-D</strong>, <strong>&#8212;daemon</strong>
+<strong>-D</strong>, <strong>--daemon</strong>
 </dt>
 <dd>
 <p>
@@ -1161,7 +1219,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;enable-direct-io</strong>[=<em>true</em>|<em>false</em>]
+<strong>--enable-direct-io</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1171,7 +1229,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;file-allocation</strong>=METHOD
+<strong>--file-allocation</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -1183,7 +1241,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;log-level</strong>=LEVEL
+<strong>--log-level</strong>=LEVEL
 </dt>
 <dd>
 <p>
@@ -1193,7 +1251,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;summary-interval</strong>=SEC
+<strong>--summary-interval</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1214,7 +1272,7 @@ are also allocated if they share a same piece.</td>
 </div>
 <div class="vlist"><dl>
 <dt>
-<strong>-Z</strong>, <strong>&#8212;force-sequential</strong>[=<em>true</em>|<em>false</em>]
+<strong>-Z</strong>, <strong>--force-sequential</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1224,7 +1282,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;max-download-limit</strong>=SPEED
+<strong>--max-download-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -1234,7 +1292,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;no-conf</strong>
+<strong>--no-conf</strong>
 </dt>
 <dd>
 <p>
@@ -1242,7 +1300,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;no-file-allocation-limit</strong>=SIZE
+<strong>--no-file-allocation-limit</strong>=SIZE
 </dt>
 <dd>
 <p>
@@ -1252,7 +1310,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>-P</strong>, <strong>&#8212;parameterized-uri</strong>[=<em>true</em>|<em>false</em>]
+<strong>-P</strong>, <strong>--parameterized-uri</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1267,7 +1325,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>-q</strong>, <strong>&#8212;quiet</strong>[=<em>true</em>|<em>false</em>]
+<strong>-q</strong>, <strong>--quiet</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1276,7 +1334,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;realtime-chunk-checksum</strong>=<em>true</em>|<em>false</em>
+<strong>--realtime-chunk-checksum</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -1287,7 +1345,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>&#8212;stop</strong>=SEC
+<strong>--stop</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1297,7 +1355,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-<strong>-v</strong>, <strong>&#8212;version</strong>
+<strong>-v</strong>, <strong>--version</strong>
 </dt>
 <dd>
 <p>
@@ -1447,7 +1505,7 @@ directory.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">&#8212;max-upload-limit specifies the max of upload rate.</td>
+<td class="content">--max-upload-limit specifies the max of upload rate.</td>
 </tr></table>
 </div>
 <div class="admonitionblock">
@@ -1560,7 +1618,7 @@ forwarding, it's up to you to do it manually.</td>
 <div class="content">
 <pre><tt>aria2c --max-download-limit=100K file.metalink</tt></pre>
 </div></div>
-<h4 id="_repair_a_damaged_download_using_8212_check_integrity_option">Repair a damaged download using &#8212;check-integrity option</h4>
+<h4 id="_repair_a_damaged_download_using_check_integrity_option">Repair a damaged download using --check-integrity option</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --check-integrity=true file.metalink</tt></pre>
@@ -1640,11 +1698,11 @@ not created.</p></div>
 <div class="para"><p>Normally if you lose a control file, you cannot resume download.
 But if you have a torrent or metalink with chunk checksums for the file,
 you can resume the download without a control file by giving
-&#8212;check-integrity=true option to aria2c in command-line.</p></div>
+--check-integrity=true option to aria2c in command-line.</p></div>
 </div>
 <h2 id="_seeding_downloaded_file_in_bittorrent">SEEDING DOWNLOADED FILE IN BITTORRENT</h2>
 <div class="sectionbody">
-<div class="para"><p>You can seed downloaded file using &#8212;check-integrity=true option.</p></div>
+<div class="para"><p>You can seed downloaded file using --check-integrity=true option.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --check-integrity=true file.torrent</tt></pre>
@@ -1715,7 +1773,7 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 <div class="para"><p>User configuration file.
 It must be placed under $HOME/.aria2 and must be named as aria2.conf.
 In each line, there is 1 parameter whose syntax is name=value pair,
-where name is the long command-line option name without <em>&#8212;</em> prefix.
+where name is the long command-line option name without <em>--</em> prefix.
 The lines beginning <em>#</em> are treated as comments.</p></div>
 <div class="listingblock">
 <div class="content">
@@ -1727,7 +1785,7 @@ max-upload-limit=50K
 ftp-pasv=true</tt></pre>
 </div></div>
 <h3 id="_dht_dat">dht.dat</h3><div style="clear:left"></div>
-<div class="para"><p>The routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p></div>
+<div class="para"><p>By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p></div>
 </div>
 <h2 id="_resources">RESOURCES</h2>
 <div class="sectionbody">
@@ -1736,11 +1794,11 @@ ftp-pasv=true</tt></pre>
 </div>
 <h2 id="_reporting_bugs">REPORTING BUGS</h2>
 <div class="sectionbody">
-<div class="para"><p>Report bugs to Tatsuhiro Tsujikawa &lt;t-tujikawa@users.sourceforge.net&gt;</p></div>
+<div class="para"><p>Report bugs to Tatsuhiro Tsujikawa &lt;<a href="mailto:t-tujikawa@users.sourceforge.net">t-tujikawa@users.sourceforge.net</a>&gt;</p></div>
 </div>
 <h2 id="_author">AUTHOR</h2>
 <div class="sectionbody">
-<div class="para"><p>Tatsuhiro Tsujikawa &lt;t-tujikawa@users.sourceforge.net&gt;</p></div>
+<div class="para"><p>Tatsuhiro Tsujikawa &lt;<a href="mailto:t-tujikawa@users.sourceforge.net">t-tujikawa@users.sourceforge.net</a>&gt;</p></div>
 </div>
 <h2 id="_copyright">COPYRIGHT</h2>
 <div class="sectionbody">
@@ -1771,7 +1829,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-09-27 14:30:38 JST
+Last updated 2008-10-13 22:55:23 JST
 </div>
 </div>
 </body>

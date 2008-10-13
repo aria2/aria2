@@ -279,6 +279,10 @@ BitTorrent Specific Options
 *--dht-entry-point*=HOST:PORT::
   Set host and port as an entry point to DHT network.
 
+*--dht-file-path*=PATH::
+  Change the DHT routing table file to PATH.
+  Default: '$HOME/.aria2/dht.dat'
+
 *--dht-listen-port*=PORT...::
   Set UDP listening port for DHT.
   Multiple ports can be specified by using ",", for example: '6881,6885'.
@@ -420,6 +424,13 @@ Advanced Options
   This option works only in HTTP(S)/FTP download.
   The new file name has a dot and a number(1..9999) appended.
   Default: 'true'
+
+*--auto-save-interval*=SEC::
+  Save a control file(*.aria2) every SEC seconds.
+  If '0' is given, a control file is not saved during download. aria2 saves a
+  control file when it stops regardless of the value.
+  The possible values are between '0' to '600'.
+  Default: '60'
 
 *--conf-path*=PATH::
   Change the configuration file path to PATH.
@@ -838,7 +849,7 @@ ftp-pasv=true
 
 dht.dat
 ~~~~~~~~
-The routing table of DHT is saved to the path $HOME/.aria2/dht.dat.
+By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.
 
 RESOURCES
 ---------

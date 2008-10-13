@@ -1,5 +1,12 @@
 2008-10-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated man page. Changed doctype of aria2c.1.html to manpage in order
+	not to replace '--' with em dash character.
+	* doc/aria2c.1.txt
+	* doc/makeman
+	
+2008-10-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added --auto-save-interval=SEC option. A control file(*.aria2) is saved
 	every SEC seconds.
 	* src/DownloadEngineFactory.cc
