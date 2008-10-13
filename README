@@ -149,8 +149,8 @@ and copies whole file or a part of it to the destination.
 
 DHT
 ~~~
-As of release 0.13.0, aria2 supports DHT. The routing table is saved to
-$HOME/.aria2/dht.dat.
+As of release 0.13.0, aria2 supports DHT. By default, the routing table is saved
+to $HOME/.aria2/dht.dat.
 
 Other things should be noted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

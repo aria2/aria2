@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.2.6" />
+<meta name="generator" content="AsciiDoc 8.2.7" />
 <style type="text/css">
 /* Debug borders */
 p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
@@ -165,13 +165,25 @@ div.listingblock > div.content {
   padding: 0.5em;
 }
 
-div.quoteblock > div.content {
+div.quoteblock {
   padding-left: 2.0em;
 }
-
-div.attribution {
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
   text-align: right;
 }
+
+div.verseblock {
+  padding-left: 2.0em;
+}
+div.verseblock > div.content {
+  white-space: pre;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
 div.verseblock + div.attribution {
   text-align: left;
 }
@@ -192,10 +204,6 @@ div.admonitionblock td.content {
 div.exampleblock > div.content {
   border-left: 2px solid silver;
   padding: 0.5em;
-}
-
-div.verseblock div.content {
-  white-space: pre;
 }
 
 div.imageblock div.content { padding-left: 0; }
@@ -302,8 +310,17 @@ div.listingblock div.content {
   padding: 0.5em;
 }
 
-div.quoteblock-content {
-  padding-left: 2.0em;
+div.quoteblock-attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock-content {
+  white-space: pre;
+}
+div.verseblock-attribution {
+  padding-top: 0.75em;
+  text-align: left;
 }
 
 div.exampleblock-content {
@@ -568,12 +585,12 @@ Note
 <div class="ilist"><ul>
 <li>
 <p>
-c-ares: http://daniel.haxx.se/projects/c-ares/
+c-ares: <a href="http://daniel.haxx.se/projects/c-ares/">http://daniel.haxx.se/projects/c-ares/</a>
 </p>
 </li>
 <li>
 <p>
-ares: ftp://athena-dist.mit.edu/pub/ATHENA/ares
+ares: <a href="ftp://athena-dist.mit.edu/pub/ATHENA/ares">ftp://athena-dist.mit.edu/pub/ATHENA/ares</a>
 </p>
 </li>
 </ul></div>
@@ -688,8 +705,8 @@ size itself is required. Writing and reading is done against this file.
 After download completes, aria2 creates complete directory structure if needed,
 and copies whole file or a part of it to the destination.</p></div>
 <h3 id="_dht">5.2. DHT</h3><div style="clear:left"></div>
-<div class="para"><p>As of release 0.13.0, aria2 supports DHT. The routing table is saved to
-$HOME/.aria2/dht.dat.</p></div>
+<div class="para"><p>As of release 0.13.0, aria2 supports DHT. By default, the routing table is saved
+to $HOME/.aria2/dht.dat.</p></div>
 <h3 id="_other_things_should_be_noted">5.3. Other things should be noted</h3><div style="clear:left"></div>
 <div class="ilist"><ul>
 <li>
@@ -826,7 +843,7 @@ ftp-pasv=true</tt></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-10-06 17:34:28 JST
+Last updated 2008-10-13 23:00:33 JST
 </div>
 </div>
 </body>
