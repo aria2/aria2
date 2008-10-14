@@ -1,5 +1,10 @@
 2008-10-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Replaced '@' with 'at' in AUTHOR and REPORT BUG.
+	* doc/aria2c.1.txt
+
+2008-10-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added Ukrainian, Vietnamese, Traditional Chinese translations.
 	Updated French, Simplified Chinese and Japanese translations.
 	Thanks to all translators.

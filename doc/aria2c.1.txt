@@ -859,11 +859,11 @@ metalink: http://www.metalinker.org/[]
 
 REPORTING BUGS
 --------------
-Report bugs to Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
+Report bugs to Tatsuhiro Tsujikawa <t-tujikawa at users.sourceforge.net>
 
 AUTHOR
 ------
-Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
+Tatsuhiro Tsujikawa <t-tujikawa at users.sourceforge.net>
 
 COPYRIGHT
 ---------
