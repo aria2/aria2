@@ -1,4 +1,4 @@
-# Danish translation for aria2
+# Traditional Chinese translation for aria2
 # Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the aria2 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
@@ -8,123 +8,119 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-10-14 21:33+0900\n"
-"PO-Revision-Date: 2008-08-09 20:45+0000\n"
-"Last-Translator: Jeppe Toustrup <launchpad@tenzer.dk>\n"
-"Language-Team: Danish <da@li.org>\n"
+"PO-Revision-Date: 2008-10-08 08:24+0000\n"
+"Last-Translator: snufkinto <Unknown>\n"
+"Language-Team: Traditional Chinese <zh_TW@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
+"X-Launchpad-Export-Date: 2008-10-14 11:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:801
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr "Afslutningsprocedure i gang... Tryk Ctrl-C igen for nød-afslutning."
+msgstr "關閉序列開始...如要緊急關閉，請再次按Ctrl-C。"
 
 #: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
-msgstr "Nød-afslutningsprocedure i gang..."
+msgstr "緊急關閉序列開始..."
 
 #: src/MultiUrlRequestInfo.cc:88
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr "aria2 vil forsætte filhentningen hvis overførslen bliver genstartet."
+msgstr "aria2將於傳輸重新開始後恢復下載。"
 
 #: src/MultiUrlRequestInfo.cc:90
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
-"Hvis der er nogle fejl, så kig i logfilen. Se '-l' flaget i hjælp/man siden "
-"for mere information."
+"如有錯誤，請查看日誌記錄檔案。詳細資訊請參考幫助/man page內的 '-l' 選項。"
 
 #: src/RequestGroupMan.cc:382
 msgid "Download Results:"
-msgstr "Overførsels resultater:"
+msgstr "下載結果："
 
 #: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
-msgstr "Status forklaring:"
+msgstr "狀態說明："
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
-msgstr "                              Standard: "
+msgstr "                              預設值： "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
-msgstr "                              Mærker: "
+msgstr "                              標籤： "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
-msgstr "                              Mulige værdier: "
+msgstr "                              有效值： "
 
 #: src/OptionHandlerImpl.h:96
 msgid "must be either 'true' or 'false'."
-msgstr "skal enten være 'true' (sand) eller 'false' (falsk)"
+msgstr "必須為'true'或'false'。"
 
 #: src/OptionHandlerImpl.h:127 src/OptionHandlerImpl.h:174
 #, c-format
 msgid "must be between %s and %s."
-msgstr "skal være i mellem %s og %s."
+msgstr "必須在%s和%s之間。"
 
 #: src/OptionHandlerImpl.h:171
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "skal være mindre end eller lig med %s."
+msgstr "必須小於或等於%s。"
 
 #: src/OptionHandlerImpl.h:177
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "skal være større end eller lig med %s."
+msgstr "必須大於或等於%s。"
 
 #: src/OptionHandlerImpl.h:180 src/OptionHandlerImpl.h:243
 msgid "must be a number."
-msgstr "skal være et tal."
+msgstr "必須是一個數字。"
 
 #: src/OptionHandlerImpl.h:234
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "skal være mindre end eller lig med %.1f."
+msgstr "必須小於或等於%.1f。"
 
 #: src/OptionHandlerImpl.h:237
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "skal være i mellem %.1f og %.1f."
+msgstr "必須在%.1f和%.1f之間。"
 
 #: src/OptionHandlerImpl.h:240
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "skal være større end eller lig med %.1f."
+msgstr "必須大於或等於%.1f。"
 
 #: src/OptionHandlerImpl.h:377
 msgid "must be one of the following:"
-msgstr "skal være en af de følgende:"
+msgstr "必須為以下其中之一："
 
 #: src/OptionHandlerImpl.h:424
 msgid "unrecognized proxy format"
-msgstr "ukendt proxy format"
+msgstr "無法識別的代理伺服器格式"
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=MAPPE              Mappen hvor den hentede fil skal gemmes."
+msgstr " -d, --dir=DIR 指定儲存下載檔案的目錄。"
 
 #: src/usage_text.h:39
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr " -o, --out=FIL                Filnavnet for den hentede fil."
+msgstr " -o, --out=FILE 指定儲存下載檔案的名稱。"
 
 #: src/usage_text.h:41
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG                Filnavn for logfilen. Hvis den er sat til '-'\n"
-"                              vil loggen blive skrevet til standarduddata."
 
 #: src/usage_text.h:44
 msgid " -D, --daemon                 Run as daemon."
-msgstr " -D, --daemon                 Kør som en dæmon."
+msgstr " -D, --daemon 背景運行。"
 
 #: src/usage_text.h:46
 msgid ""
@@ -138,119 +134,81 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
-" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
-"                              der er angivet flere adresser end N, vil de N\n"
-"                              første adresser blive brugt, og resten vil "
-"blive\n"
-"                              brugt som reserve. Hvis færre end N adresser "
-"er\n"
-"                              angivet, vil adresserne blive brugt flere "
-"gange,\n"
-"                              så der totalt er N samtidige forbindelser.\n"
-"                              Se også -j flaget."
 
 #: src/usage_text.h:53
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:56
-#, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr " -t, --timeout=SEK            Sæt tidsudløb i sekunder. Standard: 60"
+msgstr " -t, --timeout=SEC 設定超時（秒）。"
 
 #: src/usage_text.h:58
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
-msgstr ""
-" -m, --max-tries=N            Sæt antallet af forsøg. 0 betyder ubegrænset.\n"
-"                              Standard: 5"
+msgstr " -m, --max-tries=N 設定重試次數，0表示不限次數。"
 
 #: src/usage_text.h:60
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
-msgstr ""
-" --http-proxy=VÆRT:PORT       Brug HTTP proxy server. Dette rammer alle "
-"URL'er."
+msgstr " --http-proxy=HOST:PORT 使用HTTP代理伺服器（對所有URL有效）。"
 
 #: src/usage_text.h:62
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr ""
-" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
+msgstr " --http-user=USER 設定HTTP用戶（對所有URL有效）。"
 
 #: src/usage_text.h:64
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr ""
-" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
+msgstr " --http-passwd=PASSWD 設定HTTP密碼（對所有URL有效）。"
 
 #: src/usage_text.h:66
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
-msgstr ""
-" --http-proxy-user=BRUGER     Sæt HTTP proxy bruger. Dette rammer alle "
-"URL'er."
+msgstr " --http-proxy-user=USER 設定HTTP代理伺服器用戶（對所有URL有效）。"
 
 #: src/usage_text.h:68
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
-msgstr ""
-" --http-proxy-passwd=KODE     Sæt HTTP proxy kodeord. Dette rammer alle "
-"URL'er."
+msgstr " --http-proxy-passwd=PASSWD 設定HTTP代理伺服器密碼（對所有URL有效）。"
 
 #: src/usage_text.h:70
 msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
-msgstr ""
+msgstr " --http-proxy-method=METHOD 設定代理請求所使用的方法。"
 
 #: src/usage_text.h:72
-#, fuzzy
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
 "                              is the only supported scheme."
 msgstr ""
-" --http-auth-scheme=SKEMA     Sæt HTTP godkendelses skema. Lige nu er, "
-"basic\n"
-"                              det eneste understøttede skema.\n"
-"                              Standard: basic"
 
 #: src/usage_text.h:75
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr ""
-" --referer=HENVISER           Sæt henviser. Dette vil ramme alle URL'er."
+msgstr " --referer=REFERER 設定Referer（對所有URL有效）。"
 
 #: src/usage_text.h:77
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
-msgstr ""
-" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
+msgstr " --ftp-user=USER 設定FTP用戶（對所有URL有效）。"
 
 #: src/usage_text.h:79
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
-msgstr ""
-" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
+msgstr " --ftp-passwd=PASSWD 設定FTP密碼（對所有URL有效）。"
 
 #: src/usage_text.h:81
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr ""
+msgstr " --ftp-type=TYPE 設定FTP傳輸類型。"
 
 #: src/usage_text.h:83
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv               Brug passiv tilstand i FTP."
+msgstr " -p, --ftp-pasv 使用FTP passive模式。"
 
 #: src/usage_text.h:85
 msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP."
-msgstr ""
+msgstr " --ftp-via-http-proxy=METHOD 在FTP中使用HTTP代理伺服器。"
 
 #: src/usage_text.h:87
-#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -261,33 +219,15 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=FART    Luk forbindelsen hvis overførselshastigheden "
-"er\n"
-"                              lavere eller lig denne værdig (bytes per "
-"sekund).\n"
-"                              0 betyder aria2 ikke har en "
-"minimumshastighed.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Dette flag vedrører ikke BitTorrent "
-"overførsler.\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:93
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:97
-#, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -298,15 +238,6 @@ msgid ""
 "of\n"
 "                              the file."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:103
 msgid ""
@@ -314,11 +245,6 @@ msgid ""
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --no-file-allocation-limit=STR Ingen filallokering vil blive lavet for "
-"filer\n"
-"                              hvis størrelse er mindre end STR.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:107
 msgid ""
@@ -386,10 +312,11 @@ msgstr ""
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
+" --enable-http-keep-alive[=true|false] 使用HTTP/1.1 persistent connection。"
 
 #: src/usage_text.h:143
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
-msgstr ""
+msgstr " --enable-http-pipelining[=true|false] 使用HTTP/1.1 pipelining。"
 
 #: src/usage_text.h:145
 msgid ""
@@ -423,11 +350,11 @@ msgstr ""
 
 #: src/usage_text.h:162
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
-msgstr ""
+msgstr " -U, --user-agent=USER_AGENT 為http(s)下載設定使用者識別字串。"
 
 #: src/usage_text.h:164
 msgid " -n, --no-netrc               Disables netrc support."
-msgstr ""
+msgstr " -n, --no-netrc 停用netrc支援。"
 
 #: src/usage_text.h:166
 msgid ""
@@ -478,7 +405,7 @@ msgstr ""
 
 #: src/usage_text.h:190
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr ""
+msgstr " -T, --torrent-file=TORRENT_FILE .torrent檔案路徑。"
 
 #: src/usage_text.h:192
 msgid ""
@@ -514,17 +441,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:211
-#, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:215
 msgid ""
@@ -557,11 +478,11 @@ msgstr ""
 
 #: src/usage_text.h:233
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
-msgstr ""
+msgstr " --enable-peer-exchange[=true|false] 使用Peer Exchange擴充套件。"
 
 #: src/usage_text.h:235
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
-msgstr ""
+msgstr " --enable-dht[=true|false] 使用DHT功能。"
 
 #: src/usage_text.h:237
 msgid ""
@@ -628,7 +549,7 @@ msgstr ""
 
 #: src/usage_text.h:269
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
-msgstr ""
+msgstr " -M, --metalink-file=METALINK_FILE .metalink檔案路徑。"
 
 #: src/usage_text.h:271
 msgid ""
@@ -638,16 +559,16 @@ msgstr ""
 
 #: src/usage_text.h:274
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr ""
+msgstr " --metalink-version=VERSION 指定要下載的檔案版本。"
 
 #: src/usage_text.h:276
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr ""
+msgstr " --metalink-language=LANGUAGE 指定要下載的檔案語言。"
 
 #: src/usage_text.h:278
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
-msgstr ""
+msgstr " --metalink-os=OS 指定要下載的檔案作業系統。"
 
 #: src/usage_text.h:280
 msgid ""
@@ -691,7 +612,7 @@ msgstr ""
 
 #: src/usage_text.h:303
 msgid " -v, --version                Print the version number and exit."
-msgstr ""
+msgstr " -v, --version 列印版本號後退出。"
 
 #: src/usage_text.h:305
 msgid ""
@@ -710,12 +631,12 @@ msgstr ""
 
 #: src/usage_text.h:313
 msgid " --no-conf                    Disable loading aria2.conf file."
-msgstr ""
+msgstr " --no-conf 停止載入aria2.conf設定檔。"
 
 #: src/usage_text.h:315
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
-msgstr ""
+msgstr " --conf-path=PATH 更改設定檔案路徑至PATH。"
 
 #: src/usage_text.h:317
 msgid ""
@@ -738,26 +659,26 @@ msgstr ""
 
 #: src/usage_text.h:326
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
-msgstr ""
+msgstr " -q, --quiet[=true|false] 使用aria2安靜模式（無終端輸出）。"
 
 #: src/usage_text.h:328
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
-msgstr ""
+msgstr " --async-dns[=true|false] 使用非同步DNS。"
 
 #: src/usage_text.h:330
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
-msgstr ""
+msgstr " --ftp-reuse-connection[=true|false] 重用FTP的連接。"
 
 #: src/usage_text.h:332
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
 "                              Setting 0 suppresses the output."
-msgstr ""
+msgstr " --summary-interval=SEC 設定輸出下載進度摘要的間隔。"
 
 #: src/usage_text.h:335
 msgid " --log-level=LEVEL            Set log level to output."
-msgstr ""
+msgstr " --log-level=LEVEL 設定輸出記錄日誌級別。"
 
 #: src/usage_text.h:337
 msgid ""
@@ -780,7 +701,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:346
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -793,15 +713,6 @@ msgid ""
 "using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:353
 msgid ""
@@ -821,7 +732,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:364
-#, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -829,10 +739,6 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:368
 msgid ""
@@ -845,17 +751,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:373
-#, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:377
 msgid ""
@@ -870,51 +771,53 @@ msgstr ""
 
 #: src/version_usage.cc:54
 msgid " version "
-msgstr ""
+msgstr " 版本 "
 
 #: src/version_usage.cc:71
 #, c-format
 msgid "Report bugs to %s"
-msgstr ""
+msgstr "向%s回報bugs"
 
 #: src/version_usage.cc:76
 #, c-format
 msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
-msgstr ""
+msgstr "用法: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 
 #: src/version_usage.cc:86
 #, c-format
 msgid "Printing options whose name includes '%s'."
-msgstr ""
+msgstr "列出包含'%s'的選項。"
 
 #: src/version_usage.cc:89 src/version_usage.cc:111
 msgid "Options:"
-msgstr ""
+msgstr "選項："
 
 #: src/version_usage.cc:94
 #, c-format
 msgid "No help category or option name matching with '%s'."
-msgstr ""
+msgstr "沒有幫助分類或選項名稱符合'%s'。"
 
 #: src/version_usage.cc:100
 msgid "Printing all options."
-msgstr ""
+msgstr "列出所有選項。"
 
 #: src/version_usage.cc:102
 #, c-format
 msgid "Printing options tagged with '%s'."
-msgstr ""
+msgstr "列出附有標籤'%s'的選項。"
 
 #: src/version_usage.cc:106
 #, c-format
 msgid "See -h option to know other command-line options(%s)."
-msgstr ""
+msgstr "參考 -h 選項以了解其他指令行選項（%s）。"
 
 #: src/version_usage.cc:121
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 msgstr ""
+" 你可指定多個URL。除非使用了 -Z 選項，所有URL所指向的須為同一檔案，\n"
+" 否則將下載失敗。"
 
 #: src/version_usage.cc:123
 msgid ""
@@ -940,34 +843,34 @@ msgstr ""
 
 #: src/version_usage.cc:137
 msgid "Refer to man page for more information."
-msgstr ""
+msgstr "參考man page以獲取更多資訊。"
 
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr ""
+msgstr "CUID#%d - 一個分塊已成功下載完畢。"
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr ""
+msgstr "CUID#%d - 已經沒有多餘的分塊。"
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr ""
+msgstr "CUID#%d - 連接到 %s:%d"
 
 #: src/message.h:43
 #, c-format
 msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
-msgstr ""
+msgstr "CUID#%d - 分塊發生變化。將以新的Range header再次發送請求。"
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr ""
+msgstr "CUID#%d - 重新定向到 %s"
 
 #: src/message.h:45
 #, c-format
@@ -975,6 +878,8 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
+"CUID#%d - 正在請求：\n"
+"%s"
 
 #: src/message.h:46
 #, c-format
@@ -982,91 +887,93 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
+"CUID#%d - 收到回應：\n"
+"%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr ""
+msgstr "CUID#%d - 下載中斷。 URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr ""
+msgstr "CUID#%d - 重新開始下載。 URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr ""
+msgstr "CUID#%d - 下載中斷。"
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr ""
+msgstr "CUID#%d - %d 次嘗試均失敗，下載中斷。"
 
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr ""
+msgstr "CUID#%d - 正在從segmentManager中鉒銷cuid。"
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr ""
+msgstr "CUID#%d - 獲得新的分片，index=%d"
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr ""
+msgstr "CUID#%d - 獲得錯誤的分片，index=%d"
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr ""
+msgstr "CUID#%d - 下載未完成：%s"
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr ""
+msgstr "#%d - 下載已完成：%s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr ""
+msgstr "CUID#%d - 正確的checksum：%s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr ""
+msgstr "CUID#%d - 錯誤的checksum：%s"
 
 #: src/message.h:63
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr ""
+msgstr "CUID#%d - 正在解析主機名稱 %s"
 
 #: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr ""
+msgstr "CUID#%d - 解析名稱完成：%s -> %s"
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr ""
+msgstr "CUID#%d - %s的名稱解析失敗，原因：%s"
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr ""
+msgstr "CUID#%d - DNS快取命中： %s -> %s"
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr ""
+msgstr "CUID#%d - 已請求中斷。"
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr ""
+msgstr "CUID#%d - 連接到peer %s"
 
 #: src/message.h:69
 #, c-format
@@ -1074,11 +981,13 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
+"CUID#%d - 已收到分片。 index=%d, begin=%d, length=%d, offset=%llu, "
+"blockIndex=%d"
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr ""
+msgstr "CUID#%d - 分片 bitfield %s"
 
 #: src/message.h:71
 #, c-format
@@ -1097,7 +1006,7 @@ msgstr ""
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr ""
+msgstr "CUID#%d - 驗證檔案完整性時出現錯誤。"
 
 #: src/message.h:74
 #, c-format
@@ -1136,37 +1045,37 @@ msgstr ""
 #: src/message.h:80
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr ""
+msgstr "CUID#%d - 已啟用Fast extension。"
 
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Extended Messaging enabled."
-msgstr ""
+msgstr "CUID#%d - 已啟用Extended Messaging。"
 
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
-msgstr ""
+msgstr "CUID#%d - 分配檔案空間時出現錯誤。"
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-msgstr ""
+msgstr "CUID#%d - 偵測到Content-Disposition。使用 %s 作為檔案名稱"
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr ""
+msgstr "CUID#%d - Peer %s:%d 已被禁止。"
 
 #: src/message.h:85
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr ""
+msgstr "CUID#%d - 新連接將使用連接埠 %d"
 
 #: src/message.h:86
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr ""
+msgstr "CUID#%d - 嘗試使用連接埠 %d 時發生錯誤"
 
 #: src/message.h:87
 #, c-format
@@ -1176,22 +1085,22 @@ msgstr ""
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr ""
+msgstr "CUID#%d - 接受連接時發生錯誤"
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr ""
+msgstr "CUID#%d - 處理tracker回應時發生錯誤。"
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr ""
+msgstr "CUID#%d - 無法建立tracker請求。"
 
 #: src/message.h:91
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr ""
+msgstr "CUID#%d - 建立新tracker請求命令 #%d"
 
 #: src/message.h:92
 #, c-format
@@ -1201,44 +1110,44 @@ msgstr ""
 #: src/message.h:94
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr ""
+msgstr "未知的URI或不支援的通訊協定：%s"
 
 #: src/message.h:95
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr ""
+msgstr "Tracker返回警告訊息：%s"
 
 #: src/message.h:96
 #, c-format
 msgid "The segment file %s exists."
-msgstr ""
+msgstr "存在檔案分塊 %s 。"
 
 #: src/message.h:97
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr ""
+msgstr "不存在檔案分塊 %s 。"
 
 #: src/message.h:98
 #, c-format
 msgid "Saving the segment file %s"
-msgstr ""
+msgstr "正在儲存檔案分塊 %s"
 
 #: src/message.h:99
 msgid "The segment file was saved successfully."
-msgstr ""
+msgstr "已成功儲存檔案分塊 。"
 
 #: src/message.h:100
 #, c-format
 msgid "Loading the segment file %s."
-msgstr ""
+msgstr "正在載入檔案分塊 %s 。"
 
 #: src/message.h:101
 msgid "The segment file was loaded successfully."
-msgstr ""
+msgstr "已成功載入檔案分塊 。"
 
 #: src/message.h:102
 msgid "No URI to download. Download aborted."
-msgstr ""
+msgstr "沒有 URI 下載，下載中止。"
 
 #: src/message.h:103
 #, c-format
@@ -1248,19 +1157,22 @@ msgid ""
 "sure to download the file all over again, then delete it or add --allow-"
 "overwrite=true option and restart aria2."
 msgstr ""
+"檔案 %s 已存在，但已遺失控制檔案(*.aria2)。已取消下載以避免刪除檔案資料。如確"
+"定重新下載檔案，請先刪除該檔案，或加入選項 --allow-overwrite=true，再執行"
+"aria2。"
 
 #: src/message.h:104
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr ""
+msgstr "正在分配檔案 %s， %s bytes"
 
 #: src/message.h:105
 msgid "File not found"
-msgstr ""
+msgstr "找不到檔案"
 
 #: src/message.h:106
 msgid "Not a directory"
-msgstr ""
+msgstr "並不是一個目錄"
 
 #: src/message.h:107
 #, c-format
@@ -1270,29 +1182,29 @@ msgstr ""
 #: src/message.h:108
 #, c-format
 msgid "Writing file %s"
-msgstr ""
+msgstr "正寫入檔案 %s"
 
 #: src/message.h:109
 msgid "No peer list received."
-msgstr ""
+msgstr "找不到使用者列表。"
 
 #: src/message.h:110
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr ""
+msgstr "加入使用者 %s:%d"
 
 #: src/message.h:111
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr ""
+msgstr "刪除已用分片 index=%d, fillRate(%%)=%d<=%d"
 
 #: src/message.h:112
 msgid "Download of selected files was complete."
-msgstr ""
+msgstr "所選檔案已下載完畢。"
 
 #: src/message.h:113
 msgid "The download was complete."
-msgstr ""
+msgstr "下載完畢。"
 
 #: src/message.h:114
 #, c-format
@@ -1302,7 +1214,7 @@ msgstr ""
 #: src/message.h:115
 #, c-format
 msgid "Validating file %s"
-msgstr ""
+msgstr "正驗證檔案 %s"
 
 #: src/message.h:116
 #, c-format
@@ -1322,11 +1234,11 @@ msgstr ""
 #: src/message.h:119
 #, c-format
 msgid "Download complete: %s"
-msgstr ""
+msgstr "下載完畢：%s"
 
 #: src/message.h:120
 msgid "Seeding is over."
-msgstr ""
+msgstr "作種完畢。"
 
 #: src/message.h:121
 #, c-format
@@ -1335,69 +1247,69 @@ msgstr ""
 
 #: src/message.h:122
 msgid "No chunk to verify."
-msgstr ""
+msgstr "沒有區塊要驗證。"
 
 #: src/message.h:123
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr ""
+msgstr "正確的區塊checksum。 hash=%s"
 
 #: src/message.h:124
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr ""
+msgstr "從%s載入cookies失敗"
 
 #: src/message.h:125
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
-msgstr ""
+msgstr ".netrc 檔案 %s 權限設置不正確，.netrc支援已停止。正確的權限應為600。"
 
 #: src/message.h:126
 msgid "Logging started."
-msgstr ""
+msgstr "已開始日誌記錄。"
 
 #: src/message.h:127
 msgid "Specify at least one URL."
-msgstr ""
+msgstr "須指定最少一個URL。"
 
 #: src/message.h:128
 msgid "daemon failed."
-msgstr ""
+msgstr "背景運行失敗。"
 
 #: src/message.h:129
 #, c-format
 msgid "Verification finished successfully. file=%s"
-msgstr ""
+msgstr "驗證已成功完成。 file=%s"
 
 #: src/message.h:130
 #, c-format
 msgid "Checksum error detected. file=%s"
-msgstr ""
+msgstr "發現錯誤Checksum。 file=%s"
 
 #: src/message.h:131
 #, c-format
 msgid "Incomplete range specified. %s"
-msgstr ""
+msgstr "所指定的範圍不完整。 %s"
 
 #: src/message.h:132
 #, c-format
 msgid "Failed to convert string into value: %s"
-msgstr ""
+msgstr "數值轉換失敗： %s"
 
 #: src/message.h:133
 msgid "Resource not found"
-msgstr ""
+msgstr "找不到資源"
 
 #: src/message.h:134
 #, c-format
 msgid "File already exists. Renamed to %s."
-msgstr ""
+msgstr "檔案已存在。更名為 %s 。"
 
 #: src/message.h:135
 msgid "Cannot parse metalink XML file. XML may be malformed."
-msgstr ""
+msgstr "解析metalink XML檔案失敗，XML格式可能有錯誤。"
 
 #: src/message.h:136
 #, c-format
@@ -1414,7 +1326,7 @@ msgstr ""
 #: src/message.h:138
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
-msgstr ""
+msgstr "分享率 %.1f, 已上載/已下載=%sB/%sB"
 
 #: src/message.h:139
 #, c-format
@@ -1427,195 +1339,195 @@ msgstr ""
 
 #: src/message.h:141
 msgid "Windows socket library initialization failed"
-msgstr ""
+msgstr "Windows socket library初始化失敗"
 
 #: src/message.h:142
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
-msgstr ""
+msgstr "已過%d 秒，正在終止程式。"
 
 #: src/message.h:143
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
-msgstr ""
+msgstr "已儲存簽名 %s。請注意aria2不驗證簽加。"
 
 #: src/message.h:145
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
-msgstr ""
+msgstr "儲存簽名 %s 失敗，檔案可能已存在。"
 
 #: src/message.h:148
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
-msgstr ""
+msgstr "開啟ServerStat檔案 %s 失敗。"
 
 #: src/message.h:149
 #, c-format
 msgid "ServerStat file %s loaded successfully."
-msgstr ""
+msgstr "已成功載入ServerStat檔案 %s 。"
 
 #: src/message.h:150
 #, c-format
 msgid "Failed to read ServerStat from %s."
-msgstr ""
+msgstr "從%s載入ServerStat失敗。"
 
 #: src/message.h:153
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
-msgstr ""
+msgstr "寫入ServerStat檔案 %s 失敗。"
 
 #: src/message.h:154
 #, c-format
 msgid "ServerStat file %s saved successfully."
-msgstr ""
+msgstr "ServerStat檔案 %s 儲存成功。"
 
 #: src/message.h:155
 #, c-format
 msgid "Failed to write ServerStat to %s."
-msgstr ""
+msgstr "寫入ServerStat至 %s 失敗。"
 
 #: src/message.h:158
 #, c-format
 msgid "Failed to establish connection, cause: %s"
-msgstr ""
+msgstr "建立連接失敗，原因： %s"
 
 #: src/message.h:159
 #, c-format
 msgid "Network problem has occurred. cause:%s"
-msgstr ""
+msgstr "發生網絡問題，原因： %s"
 
 #: src/message.h:161
 msgid "Timeout."
-msgstr ""
+msgstr "連線逾時。"
 
 #: src/message.h:162
 msgid "Invalid chunk size."
-msgstr ""
+msgstr "無效的區塊大小。"
 
 #: src/message.h:163
 #, c-format
 msgid "Too large chunk. size=%d"
-msgstr ""
+msgstr "區塊大小太大。 size=%d"
 
 #: src/message.h:164
 msgid "Invalid header."
-msgstr ""
+msgstr "無效的header。"
 
 #: src/message.h:165
 msgid "Invalid response."
-msgstr ""
+msgstr "無效的回應。"
 
 #: src/message.h:166
 msgid "No header found."
-msgstr ""
+msgstr "找不到header。"
 
 #: src/message.h:167
 msgid "No status header."
-msgstr ""
+msgstr "找不到狀態header。"
 
 #: src/message.h:168
 msgid "Proxy connection failed."
-msgstr ""
+msgstr "代理伺服器連接失敗。"
 
 #: src/message.h:169
 msgid "Connection failed."
-msgstr ""
+msgstr "連線失敗。"
 
 #: src/message.h:170
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
-msgstr ""
+msgstr "所請求的檔案名稱與已登記的名稱不相符。 期望：%s  真實：%s"
 
 #: src/message.h:171
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr ""
+msgstr "回覆狀態不成功。 狀態=%d"
 
 #: src/message.h:172
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr ""
+msgstr "檔案大小太大。size=%s"
 
 #: src/message.h:173
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr ""
+msgstr "不支援傳輸編碼 %s 。"
 
 #: src/message.h:174
 #, c-format
 msgid "SSL initialization failed: %s"
-msgstr ""
+msgstr "SSL初始化失敗：%s"
 
 #: src/message.h:175
 msgid "SSL I/O error"
-msgstr ""
+msgstr "SSL I/O錯誤"
 
 #: src/message.h:176
 msgid "SSL protocol error"
-msgstr ""
+msgstr "SSL協議錯誤"
 
 #: src/message.h:177
 #, c-format
 msgid "SSL unknown error %d"
-msgstr ""
+msgstr "SSL不明錯誤 %d"
 
 #: src/message.h:178
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr ""
+msgstr "SSL初始化失敗：OpenSSL連接錯誤 %d"
 
 #: src/message.h:179
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
-msgstr ""
+msgstr "大小不相符 期望：%s 真實：%s"
 
 #: src/message.h:180
 msgid "Authorization failed."
-msgstr ""
+msgstr "認證失敗"
 
 #: src/message.h:181
 msgid "Got EOF from the server."
-msgstr ""
+msgstr "伺服器傳回EOF"
 
 #: src/message.h:182
 msgid "Got EOF from peer."
-msgstr ""
+msgstr "使用者傳回EOF"
 
 #: src/message.h:183
 msgid "Malformed meta info."
-msgstr ""
+msgstr "meta訊息格式錯誤。"
 
 #: src/message.h:185
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
-msgstr ""
+msgstr "開啟檔案 %s 失敗，原因：%s"
 
 #: src/message.h:186
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
-msgstr ""
+msgstr "寫入檔案 %s 失敗，原因：%s"
 
 #: src/message.h:187
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
-msgstr ""
+msgstr "讀取檔案 %s 失敗，原因：%s"
 
 #: src/message.h:188
 msgid "Failed to read data from disk."
-msgstr ""
+msgstr "從磁碟讀取資料失敗。"
 
 #: src/message.h:189
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr ""
+msgstr "計算檔案 %s 的SHA1值失敗，原因：%s"
 
 #: src/message.h:190
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
-msgstr ""
+msgstr "找尋檔案 %s 失敗，原因：%s"
 
 #: src/message.h:191
 #, c-format
@@ -1625,37 +1537,37 @@ msgstr ""
 #: src/message.h:192
 #, c-format
 msgid "%s is not a directory."
-msgstr ""
+msgstr "%s 不是一個目錄。"
 
 #: src/message.h:193
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
-msgstr ""
+msgstr "建立目錄 %s 失敗，原因：%s"
 
 #: src/message.h:194
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
-msgstr ""
+msgstr "開啟分塊檔案 %s 失敗，原因：%s"
 
 #: src/message.h:195
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
-msgstr ""
+msgstr "寫入分塊檔案 %s 失敗，原因：%s"
 
 #: src/message.h:196
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
-msgstr ""
+msgstr "讀取分塊檔案 %s 失敗，原因：%s"
 
 #: src/message.h:198
 #, c-format
 msgid "Failed to open a socket, cause: %s"
-msgstr ""
+msgstr "開啟通訊連接失敗，原因：%s"
 
 #: src/message.h:199
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
-msgstr ""
+msgstr "設定通訊連接選項失敗，原因：%s"
 
 #: src/message.h:200
 #, c-format
@@ -1680,47 +1592,47 @@ msgstr ""
 #: src/message.h:204
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
-msgstr ""
+msgstr "接受使用者連接失敗，原因：%s"
 
 #: src/message.h:205
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
-msgstr ""
+msgstr "取得通訊連接名稱失敗，原因：%s"
 
 #: src/message.h:206
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
-msgstr ""
+msgstr "取得已連接使用者名稱失敗，原因：%s"
 
 #: src/message.h:207
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
-msgstr ""
+msgstr "解析主機名稱 %s 失敗，原因：%s"
 
 #: src/message.h:208
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
-msgstr ""
+msgstr "連接主機 %s 失敗，原因：%s"
 
 #: src/message.h:209
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
-msgstr ""
+msgstr "檢查通訊連接是否可寫時失敗，原因：%s"
 
 #: src/message.h:210
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
-msgstr ""
+msgstr "檢查通訊連接是否可讀時失敗，原因：%s"
 
 #: src/message.h:211
 #, c-format
 msgid "Failed to send data, cause: %s"
-msgstr ""
+msgstr "傳送資料失敗，原因：%s"
 
 #: src/message.h:212
 #, c-format
 msgid "Failed to receive data, cause: %s"
-msgstr ""
+msgstr "接受資料失敗，原因：%s"
 
 #: src/message.h:213
 #, c-format
@@ -1730,12 +1642,12 @@ msgstr ""
 #: src/message.h:214
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
-msgstr ""
+msgstr "未知的通訊連接錯誤 %d (0x%x)"
 
 #: src/message.h:215
 #, c-format
 msgid "File %s exists, but %s does not exist."
-msgstr ""
+msgstr "找到檔案 %s ，但找不到 %s 。"
 
 #: src/message.h:216
 #, c-format
@@ -1753,15 +1665,17 @@ msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
+"區塊checksum驗證失敗。checksumIndex=%d, offset=%s, expectedHash=%s, "
+"actualHash=%s"
 
 #: src/message.h:219
 msgid "Download aborted."
-msgstr ""
+msgstr "下載已中斷。"
 
 #: src/message.h:220
 #, c-format
 msgid "File %s is being downloaded by other command."
-msgstr ""
+msgstr "檔案 %s 正被其他命令下載中。"
 
 #: src/message.h:221
 msgid "Insufficient checksums."
@@ -1770,7 +1684,7 @@ msgstr ""
 #: src/message.h:222
 #, c-format
 msgid "Tracker returned failure reason: %s"
-msgstr ""
+msgstr "Tracker返回錯誤原因：%s"
 
 #: src/message.h:223
 msgid "Flooding detected."
@@ -1785,21 +1699,21 @@ msgstr ""
 
 #: src/message.h:225
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
+msgstr "torrent檔案中的infoHash與.aria2檔案內的不相符。"
 
 #: src/message.h:226
 #, c-format
 msgid "No such file entry %s"
-msgstr ""
+msgstr "無相關檔案項目 %s"
 
 #: src/message.h:227
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr ""
+msgstr "下載速度太慢：%d <= %d(B/s), host:%s"
 
 #: src/message.h:228
 msgid "No HttpRequestEntry found."
-msgstr ""
+msgstr "找不到HttpRequestEntry。"
 
 #: src/message.h:229
 #, c-format
@@ -1813,7 +1727,7 @@ msgstr ""
 
 #: src/message.h:231
 msgid "No file matched with your preference."
-msgstr ""
+msgstr "沒有符合的檔案。"
 
 #: src/message.h:232
 msgid "Exception caught"
@@ -1827,7 +1741,7 @@ msgstr ""
 #: src/message.h:234
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
-msgstr ""
+msgstr "無效的檔案長度，無法繼續下載 %s: local %s, remote %s"
 
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
@@ -1835,50 +1749,4 @@ msgstr ""
 
 #: src/Util.cc:714
 msgid "Files:"
-msgstr ""
-
-#~ msgid ""
-#~ " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
-#~ "                              METHOD is either 'get' or 'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --http-proxy-method=METODE   Sæt metoden der skal bruges til proxy\n"
-#~ "                              forespørgslen. METODE skal enten være 'get' "
-#~ "or\n"
-#~ "                              'tunnel'. Standard: tunnel"
-
-#~ msgid ""
-#~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
-#~ "                              Default: anonymous"
-#~ msgstr ""
-#~ " --ftp-user=BRUGER            Sæt FTP bruger. Dette rammer alle URL'er.\n"
-#~ "                              Standard: anonymous"
-
-#~ msgid ""
-#~ " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
-#~ "                              Default: ARIA2USER@"
-#~ msgstr ""
-#~ " --ftp-passwd=KODEORD         Sæt FTP kodeord. Dette rammer alle URL'er.\n"
-#~ "                              Standard: ARIA2USER@"
-
-#~ msgid ""
-#~ " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
-#~ "'binary'\n"
-#~ "                              or 'ascii'.\n"
-#~ "                              Default: binary"
-#~ msgstr ""
-#~ " --ftp-type=TYPE              Sæt FTP overførselstypen. TYPE er enten "
-#~ "'binary'\n"
-#~ "                              eller 'ascii'.\n"
-#~ "                              Standard: binary"
-
-#~ msgid ""
-#~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
-#~ "'get' or\n"
-#~ "                              'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --ftp-via-http-proxy=METODE  Brug HTTP proxy til FTP. METODE er enten "
-#~ "'get'\n"
-#~ "                              eller 'tunnel'.\n"
-#~ "                              Standard: tunnel"
+msgstr "檔案："

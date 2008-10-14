@@ -1,0 +1,12 @@
+/^msgid /{
+x
+s/m/m/
+ta
+r en@quot.header
+g
+N
+bb
+:a
+x
+:b
+}

@@ -1,3 +1,17 @@
+2008-10-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added Ukrainian, Vietnamese, Traditional Chinese translations.
+	Updated French, Simplified Chinese and Japanese translations.
+	Thanks to all translators.
+	en@quot and en@boldquot are also added.
+	* po/LINGUAS
+	* po/fr.po
+	* po/ja.po
+	* po/uk.po
+	* po/vi.po
+	* po/zh_CN.po
+	* po/zh_TW.po
+
 2008-10-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Bump up version number to 0.16.1.

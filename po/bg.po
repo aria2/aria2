@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-10-06 17:16+0900\n"
+"POT-Creation-Date: 2008-10-14 21:33+0900\n"
 "PO-Revision-Date: 2008-09-30 19:04+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -60,49 +60,49 @@ msgstr "                              Маркери: "
 msgid "                              Possible Values: "
 msgstr "                              Възможни величини: "
 
-#: src/OptionHandlerImpl.h:95
+#: src/OptionHandlerImpl.h:96
 msgid "must be either 'true' or 'false'."
 msgstr "трябва да бъде или \"верен\" или \"неверен\"."
 
-#: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:173
+#: src/OptionHandlerImpl.h:127 src/OptionHandlerImpl.h:174
 #, c-format
 msgid "must be between %s and %s."
 msgstr "трябва да е между %s и %s."
 
-#: src/OptionHandlerImpl.h:170
+#: src/OptionHandlerImpl.h:171
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "трябва да бъде по-малък или равен на %s."
 
-#: src/OptionHandlerImpl.h:176
+#: src/OptionHandlerImpl.h:177
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "трябва да бъде по-голям или равен на %s."
 
-#: src/OptionHandlerImpl.h:179 src/OptionHandlerImpl.h:242
+#: src/OptionHandlerImpl.h:180 src/OptionHandlerImpl.h:243
 msgid "must be a number."
 msgstr "трябва да бъде число."
 
-#: src/OptionHandlerImpl.h:233
+#: src/OptionHandlerImpl.h:234
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "трябва да бъде по-малък или равен на %.1f."
 
-#: src/OptionHandlerImpl.h:236
+#: src/OptionHandlerImpl.h:237
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "трябва да е между %.1f и %.1f."
 
-#: src/OptionHandlerImpl.h:239
+#: src/OptionHandlerImpl.h:240
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "трябва да бъде по-голям или равен на %.1f."
 
-#: src/OptionHandlerImpl.h:376
+#: src/OptionHandlerImpl.h:377
 msgid "must be one of the following:"
 msgstr "трябва да бъде един от следните:"
 
-#: src/OptionHandlerImpl.h:423
+#: src/OptionHandlerImpl.h:424
 msgid "unrecognized proxy format"
 msgstr "непознат прокси формат"
 
@@ -719,6 +719,12 @@ msgstr ""
 "                              мрежата."
 
 #: src/usage_text.h:246
+#, fuzzy
+msgid ""
+" --dht-file-path=PATH         Change the DHT routing table file to PATH."
+msgstr " --conf-path=PATH Промяна на пътя до конфигурационния файл към PATH."
+
+#: src/usage_text.h:248
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -735,7 +741,7 @@ msgstr ""
 "задоволява\n"
 "                              даденото равнище."
 
-#: src/usage_text.h:251
+#: src/usage_text.h:253
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -749,7 +755,7 @@ msgstr ""
 "използва Obfuscation\n"
 "                              ръкостискане."
 
-#: src/usage_text.h:256
+#: src/usage_text.h:258
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -767,7 +773,7 @@ msgstr ""
 "                              Можете да приложите K или M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:261
+#: src/usage_text.h:263
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -777,7 +783,7 @@ msgstr ""
 "във всеки\n"
 "                              BitTorrent даунлоуд."
 
-#: src/usage_text.h:264
+#: src/usage_text.h:266
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
@@ -786,11 +792,11 @@ msgstr ""
 "без\n"
 "                              проверяване на частта на хеша."
 
-#: src/usage_text.h:267
+#: src/usage_text.h:269
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Пътят към .metalink файла."
 
-#: src/usage_text.h:269
+#: src/usage_text.h:271
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously."
@@ -799,20 +805,20 @@ msgstr ""
 "направи връзка\n"
 "                              едновременно."
 
-#: src/usage_text.h:272
+#: src/usage_text.h:274
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION Версията на файла за даунлоуд."
 
-#: src/usage_text.h:274
+#: src/usage_text.h:276
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE Езикът на файла за даунлоуд."
 
-#: src/usage_text.h:276
+#: src/usage_text.h:278
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS Операционнта система на файла за даунлоуд."
 
-#: src/usage_text.h:278
+#: src/usage_text.h:280
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-deliminated list of locations is\n"
@@ -824,7 +830,7 @@ msgstr ""
 "местоположенията е\n"
 "                              приемлив."
 
-#: src/usage_text.h:282
+#: src/usage_text.h:284
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
 "'none'\n"
@@ -834,7 +840,7 @@ msgstr ""
 "Уточнете 'none'\n"
 "                              ако нямате никакъв предпочитан протокол."
 
-#: src/usage_text.h:285
+#: src/usage_text.h:287
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type is\n"
@@ -862,7 +868,7 @@ msgstr ""
 "отгоре\n"
 "                              не се извършва."
 
-#: src/usage_text.h:295
+#: src/usage_text.h:297
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -879,11 +885,11 @@ msgstr ""
 "protocol за да\n"
 "                              уточните предпочитанието си на протокол."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:303
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Отпечатва номера на версията и излиза."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:305
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -908,16 +914,16 @@ msgstr ""
 "общо съответствие\n"
 "                              и резултатът се отпечатва."
 
-#: src/usage_text.h:311
+#: src/usage_text.h:313
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf Изключва зареждането на файла aria2.conf."
 
-#: src/usage_text.h:313
+#: src/usage_text.h:315
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=PATH Промяна на пътя до конфигурационния файл към PATH."
 
-#: src/usage_text.h:315
+#: src/usage_text.h:317
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -927,7 +933,7 @@ msgstr ""
 "                              Ако 0 е дадено, тази характеристика ще бъде "
 "изключена."
 
-#: src/usage_text.h:318
+#: src/usage_text.h:320
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -947,22 +953,22 @@ msgstr ""
 "9J1\"\n"
 "                              http://хост/файл"
 
-#: src/usage_text.h:324
+#: src/usage_text.h:326
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
 msgstr ""
 " -q, --quiet[=true|false] Прави aria2 тиха (без конзолно извеждане на данни)."
 
-#: src/usage_text.h:326
+#: src/usage_text.h:328
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false] Включва несинхронизиран DNS."
 
-#: src/usage_text.h:328
+#: src/usage_text.h:330
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 " --ftp-reuse-connection[=true|false] Многократно използване на връзката в "
 "FTP."
 
-#: src/usage_text.h:330
+#: src/usage_text.h:332
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -971,11 +977,11 @@ msgstr ""
 " --summary-interval=SEC Определя интервал за извеждане на разюмето за "
 "прогреса на даунлоуда."
 
-#: src/usage_text.h:333
+#: src/usage_text.h:335
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL Определя нивото на лога към извеждането на данни."
 
-#: src/usage_text.h:335
+#: src/usage_text.h:337
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -988,7 +994,7 @@ msgstr ""
 "                              отдалечения HTTP/FTP сървър и ако е наличен,\n"
 "                              се прилага съм локалния файл."
 
-#: src/usage_text.h:339
+#: src/usage_text.h:341
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1005,7 +1011,7 @@ msgstr ""
 "                              ефект и --timeout опцията се използва вместо "
 "това."
 
-#: src/usage_text.h:344
+#: src/usage_text.h:346
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -1028,7 +1034,7 @@ msgstr ""
 "използват\n"
 "                              HTTP/FTP сървъри."
 
-#: src/usage_text.h:351
+#: src/usage_text.h:353
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1059,7 +1065,7 @@ msgstr ""
 "                              от сървъри споменати в --server-stat-of и\n"
 "                              --server-stat-if опциите."
 
-#: src/usage_text.h:362
+#: src/usage_text.h:364
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1073,7 +1079,7 @@ msgstr ""
 "записана информация\n"
 "                              използвайки --server-stat-if опцията."
 
-#: src/usage_text.h:366
+#: src/usage_text.h:368
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1089,7 +1095,7 @@ msgstr ""
 "                              някои URI селектори като 'feedback'.\n"
 "                              Вижте също --uri-selector опцията"
 
-#: src/usage_text.h:371
+#: src/usage_text.h:373
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1100,6 +1106,25 @@ msgstr ""
 "                              изпълнителен профил от сървърите откакто е "
 "направен последният\n"
 "                              контакт с тях."
+
+#: src/usage_text.h:377
+#, fuzzy
+msgid ""
+" --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
+"seconds.\n"
+"                              If 0 is given, a control file is not saved "
+"during\n"
+"                              download. aria2 saves a control file when it "
+"stops\n"
+"                              regardless of the value."
+msgstr ""
+" --bt-min-crypto-level=plain|arc4 Определя минималнато ниво на метода на "
+"шифроване.\n"
+"                              Ако няколко метода на шифроване са осигурени "
+"от\n"
+"                              пера, aria2 избира най-ниския който "
+"задоволява\n"
+"                              даденото равнище."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -2131,6 +2156,6 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Намерени са грешки докато протича приързване към порта.\n"
 
-#: src/Util.cc:713
+#: src/Util.cc:714
 msgid "Files:"
 msgstr "Файлове:"

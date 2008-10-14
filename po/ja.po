@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-10-06 17:16+0900\n"
-"PO-Revision-Date: 2008-10-06 17:24+0900\n"
+"POT-Creation-Date: 2008-10-14 21:33+0900\n"
+"PO-Revision-Date: 2008-10-14 21:43+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-10-05 14:24+0000\n"
+"X-Launchpad-Export-Date: 2008-10-14 11:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:801
@@ -60,49 +60,49 @@ msgstr "                              タグ: "
 msgid "                              Possible Values: "
 msgstr "                              設定可能な値: "
 
-#: src/OptionHandlerImpl.h:95
+#: src/OptionHandlerImpl.h:96
 msgid "must be either 'true' or 'false'."
 msgstr "は, 'true' または 'false' のどちらかで指定してください."
 
-#: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:173
+#: src/OptionHandlerImpl.h:127 src/OptionHandlerImpl.h:174
 #, c-format
 msgid "must be between %s and %s."
 msgstr "は, %s と %s の間で指定してください."
 
-#: src/OptionHandlerImpl.h:170
+#: src/OptionHandlerImpl.h:171
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "は, %s 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:176
+#: src/OptionHandlerImpl.h:177
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "は, %s 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:179 src/OptionHandlerImpl.h:242
+#: src/OptionHandlerImpl.h:180 src/OptionHandlerImpl.h:243
 msgid "must be a number."
 msgstr "は, 数字でなければなりません."
 
-#: src/OptionHandlerImpl.h:233
+#: src/OptionHandlerImpl.h:234
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "は, %.1f 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:236
+#: src/OptionHandlerImpl.h:237
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "は, %1.f と %.1f の間で指定してください."
 
-#: src/OptionHandlerImpl.h:239
+#: src/OptionHandlerImpl.h:240
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "は, %.1f 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:376
+#: src/OptionHandlerImpl.h:377
 msgid "must be one of the following:"
 msgstr "は, 以下のいずれかを指定してください:"
 
-#: src/OptionHandlerImpl.h:423
+#: src/OptionHandlerImpl.h:424
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
 
@@ -776,6 +776,11 @@ msgstr ""
 
 #: src/usage_text.h:246
 msgid ""
+" --dht-file-path=PATH         Change the DHT routing table file to PATH."
+msgstr " --dht-file-path=PATH DHT ルーティングテーブルを PATH に保存します."
+
+#: src/usage_text.h:248
+msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
 "a\n"
@@ -791,7 +796,7 @@ msgstr ""
 "ベ\n"
 "                              ルを選択します."
 
-#: src/usage_text.h:251
+#: src/usage_text.h:253
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -806,7 +811,7 @@ msgstr ""
 "い\n"
 "                              ます."
 
-#: src/usage_text.h:256
+#: src/usage_text.h:258
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -824,7 +829,7 @@ msgstr ""
 "1024,\n"
 "                              1M = 1024K)."
 
-#: src/usage_text.h:261
+#: src/usage_text.h:263
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -834,7 +839,7 @@ msgstr ""
 "時に\n"
 "                              オープンするファイルの最大値を指定します."
 
-#: src/usage_text.h:264
+#: src/usage_text.h:266
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
@@ -843,11 +848,11 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/usage_text.h:267
+#: src/usage_text.h:269
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE .metalink ファイルのパスを指定."
 
-#: src/usage_text.h:269
+#: src/usage_text.h:271
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously."
@@ -856,15 +861,15 @@ msgstr ""
 "す\n"
 "                              るサーバー数を設定します."
 
-#: src/usage_text.h:272
+#: src/usage_text.h:274
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   ダウンロードするファイルのバージョン."
 
-#: src/usage_text.h:274
+#: src/usage_text.h:276
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE ダウンロードするファイルの言語."
 
-#: src/usage_text.h:276
+#: src/usage_text.h:278
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
@@ -872,7 +877,7 @@ msgstr ""
 "レー\n"
 "                              ティング・システム."
 
-#: src/usage_text.h:278
+#: src/usage_text.h:280
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-deliminated list of locations is\n"
@@ -881,7 +886,7 @@ msgstr ""
 " --metalink-location=LOCATION[,...] お好みのサーバーの地域を指定します.\n"
 "                              コンマ区切りの地域のリストが指定可能です."
 
-#: src/usage_text.h:282
+#: src/usage_text.h:284
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
 "'none'\n"
@@ -893,7 +898,7 @@ msgstr ""
 "定す\n"
 "                              してください."
 
-#: src/usage_text.h:285
+#: src/usage_text.h:287
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type is\n"
@@ -926,7 +931,7 @@ msgstr ""
 "せ\n"
 "                              ん."
 
-#: src/usage_text.h:295
+#: src/usage_text.h:297
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -947,11 +952,11 @@ msgstr ""
 "protocol\n"
 "                              オプションを使ってください."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:303
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:305
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -977,18 +982,18 @@ msgstr ""
 "                              索を行い, 該当するオプションのヘルプを表示しま"
 "す."
 
-#: src/usage_text.h:311
+#: src/usage_text.h:313
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
 " --no-conf                    aria2.conf ファイルの読み込みを抑制します."
 
-#: src/usage_text.h:313
+#: src/usage_text.h:315
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 " --conf-path=PATH             読み込む設定ファイルのパスを PATH に変更します."
 
-#: src/usage_text.h:315
+#: src/usage_text.h:317
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -998,7 +1003,7 @@ msgstr ""
 "す.\n"
 "                              0 を指定すると, この機能は無効になります."
 
-#: src/usage_text.h:318
+#: src/usage_text.h:320
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1017,19 +1022,19 @@ msgstr ""
 "9J1\"\n"
 "                              http://host/file"
 
-#: src/usage_text.h:324
+#: src/usage_text.h:326
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
 msgstr " -q, --quiet[=true|false]     コンソールへ何も出力しないようにします."
 
-#: src/usage_text.h:326
+#: src/usage_text.h:328
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false]     非同期 DNS を有効にします."
 
-#: src/usage_text.h:328
+#: src/usage_text.h:330
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr " --ftp-reuse-connection[=true|false] FTP で接続を再利用します."
 
-#: src/usage_text.h:330
+#: src/usage_text.h:332
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1041,11 +1046,11 @@ msgstr ""
 "0\n"
 "                              を指定します."
 
-#: src/usage_text.h:333
+#: src/usage_text.h:335
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL            出力するログレベルを指定します."
 
-#: src/usage_text.h:335
+#: src/usage_text.h:337
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1057,7 +1062,7 @@ msgstr ""
 "して\n"
 "                              保存したファイルの更新日付としてに使用します."
 
-#: src/usage_text.h:339
+#: src/usage_text.h:341
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1073,7 +1078,7 @@ msgstr ""
 "timeout\n"
 "                              で指定する値を使用します."
 
-#: src/usage_text.h:344
+#: src/usage_text.h:346
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -1097,7 +1102,7 @@ msgstr ""
 "                              します. この機能は HTTP/FTP サーバーにのみ有効"
 "です."
 
-#: src/usage_text.h:351
+#: src/usage_text.h:353
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1134,7 +1139,7 @@ msgstr ""
 "ンも\n"
 "                              参照してください."
 
-#: src/usage_text.h:362
+#: src/usage_text.h:364
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1149,7 +1154,7 @@ msgstr ""
 "で\n"
 "                              きます."
 
-#: src/usage_text.h:366
+#: src/usage_text.h:368
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1164,7 +1169,7 @@ msgstr ""
 "                              'feedback' 等の URI セレクターで使用されます.\n"
 "                              --uri-selector オプションを参照してください."
 
-#: src/usage_text.h:371
+#: src/usage_text.h:373
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1178,6 +1183,25 @@ msgstr ""
 "                              からの指定した秒数が経過したエントリは削除され"
 "ま\n"
 "                              す."
+
+#: src/usage_text.h:377
+msgid ""
+" --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
+"seconds.\n"
+"                              If 0 is given, a control file is not saved "
+"during\n"
+"                              download. aria2 saves a control file when it "
+"stops\n"
+"                              regardless of the value."
+msgstr ""
+" --auto-save-interval=SEC     コントロールファイル (*.aria2) を SEC 秒毎に保"
+"存\n"
+"                              します. 0 を指定すると, ダウンロード中はコント"
+"ロ\n"
+"                              ールファイルを保存しません. 指定した値に関わら"
+"ず,\n"
+"                              aria2 は終了時にコントロールファイルを保存しま"
+"す."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -2211,7 +2235,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
-#: src/Util.cc:713
+#: src/Util.cc:714
 msgid "Files:"
 msgstr "ファイル:"
 

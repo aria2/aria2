@@ -1,4 +1,4 @@
-# Danish translation for aria2
+# Vietnamese translation for aria2
 # Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the aria2 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
@@ -8,123 +8,121 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-10-14 21:33+0900\n"
-"PO-Revision-Date: 2008-08-09 20:45+0000\n"
-"Last-Translator: Jeppe Toustrup <launchpad@tenzer.dk>\n"
-"Language-Team: Danish <da@li.org>\n"
+"PO-Revision-Date: 2008-10-10 13:17+0000\n"
+"Last-Translator: Thuat <hoctro0104@gmail.com>\n"
+"Language-Team: Vietnamese <vi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
+"X-Launchpad-Export-Date: 2008-10-14 11:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:801
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr "Afslutningsprocedure i gang... Tryk Ctrl-C igen for nød-afslutning."
+msgstr ""
+"Quá trình đóng chương trình bắt đầu... Nhấn \"Ctrl-C\" lần nữa để đóng "
+"chương trình cấp tốc"
 
 #: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
-msgstr "Nød-afslutningsprocedure i gang..."
+msgstr "Quá trình đóng chương trình bắt đầu..."
 
 #: src/MultiUrlRequestInfo.cc:88
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr "aria2 vil forsætte filhentningen hvis overførslen bliver genstartet."
+msgstr "aria2 sẽ tiếp tục tải về nếu quá trình chuyển dữ liệu bắt đầu lại"
 
 #: src/MultiUrlRequestInfo.cc:90
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
-"Hvis der er nogle fejl, så kig i logfilen. Se '-l' flaget i hjælp/man siden "
-"for mere information."
+"Nếu gặp lỗi, vui lòng xem tập tin log. Nhấn tuỳ chọn \"-l\" ở phần help/man"
 
 #: src/RequestGroupMan.cc:382
 msgid "Download Results:"
-msgstr "Overførsels resultater:"
+msgstr "Kết quả tải tập tin"
 
 #: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
-msgstr "Status forklaring:"
+msgstr "Tình trạng"
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
-msgstr "                              Standard: "
+msgstr "                              Giá trị mặc địn "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
-msgstr "                              Mærker: "
+msgstr "                              Ghi chú "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
-msgstr "                              Mulige værdier: "
+msgstr "                              Giá trị có thể "
 
 #: src/OptionHandlerImpl.h:96
 msgid "must be either 'true' or 'false'."
-msgstr "skal enten være 'true' (sand) eller 'false' (falsk)"
+msgstr "Giá trị phải là \"true\" (đúng) hoặc \"falsa\" (sai)"
 
 #: src/OptionHandlerImpl.h:127 src/OptionHandlerImpl.h:174
 #, c-format
 msgid "must be between %s and %s."
-msgstr "skal være i mellem %s og %s."
+msgstr "phải ở giữa %s và %s"
 
 #: src/OptionHandlerImpl.h:171
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "skal være mindre end eller lig med %s."
+msgstr ""
 
 #: src/OptionHandlerImpl.h:177
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "skal være større end eller lig med %s."
+msgstr ""
 
 #: src/OptionHandlerImpl.h:180 src/OptionHandlerImpl.h:243
 msgid "must be a number."
-msgstr "skal være et tal."
+msgstr ""
 
 #: src/OptionHandlerImpl.h:234
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "skal være mindre end eller lig med %.1f."
+msgstr ""
 
 #: src/OptionHandlerImpl.h:237
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "skal være i mellem %.1f og %.1f."
+msgstr ""
 
 #: src/OptionHandlerImpl.h:240
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "skal være større end eller lig med %.1f."
+msgstr ""
 
 #: src/OptionHandlerImpl.h:377
 msgid "must be one of the following:"
-msgstr "skal være en af de følgende:"
+msgstr ""
 
 #: src/OptionHandlerImpl.h:424
 msgid "unrecognized proxy format"
-msgstr "ukendt proxy format"
+msgstr ""
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=MAPPE              Mappen hvor den hentede fil skal gemmes."
+msgstr ""
 
 #: src/usage_text.h:39
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr " -o, --out=FIL                Filnavnet for den hentede fil."
+msgstr ""
 
 #: src/usage_text.h:41
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG                Filnavn for logfilen. Hvis den er sat til '-'\n"
-"                              vil loggen blive skrevet til standarduddata."
 
 #: src/usage_text.h:44
 msgid " -D, --daemon                 Run as daemon."
-msgstr " -D, --daemon                 Kør som en dæmon."
+msgstr ""
 
 #: src/usage_text.h:46
 msgid ""
@@ -138,104 +136,67 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
-" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
-"                              der er angivet flere adresser end N, vil de N\n"
-"                              første adresser blive brugt, og resten vil "
-"blive\n"
-"                              brugt som reserve. Hvis færre end N adresser "
-"er\n"
-"                              angivet, vil adresserne blive brugt flere "
-"gange,\n"
-"                              så der totalt er N samtidige forbindelser.\n"
-"                              Se også -j flaget."
 
 #: src/usage_text.h:53
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:56
-#, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr " -t, --timeout=SEK            Sæt tidsudløb i sekunder. Standard: 60"
+msgstr ""
 
 #: src/usage_text.h:58
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
-" -m, --max-tries=N            Sæt antallet af forsøg. 0 betyder ubegrænset.\n"
-"                              Standard: 5"
 
 #: src/usage_text.h:60
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
-" --http-proxy=VÆRT:PORT       Brug HTTP proxy server. Dette rammer alle "
-"URL'er."
 
 #: src/usage_text.h:62
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
-" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
 
 #: src/usage_text.h:64
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
 
 #: src/usage_text.h:66
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
-" --http-proxy-user=BRUGER     Sæt HTTP proxy bruger. Dette rammer alle "
-"URL'er."
 
 #: src/usage_text.h:68
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
-" --http-proxy-passwd=KODE     Sæt HTTP proxy kodeord. Dette rammer alle "
-"URL'er."
 
 #: src/usage_text.h:70
 msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
 msgstr ""
 
 #: src/usage_text.h:72
-#, fuzzy
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
 "                              is the only supported scheme."
 msgstr ""
-" --http-auth-scheme=SKEMA     Sæt HTTP godkendelses skema. Lige nu er, "
-"basic\n"
-"                              det eneste understøttede skema.\n"
-"                              Standard: basic"
 
 #: src/usage_text.h:75
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
-" --referer=HENVISER           Sæt henviser. Dette vil ramme alle URL'er."
 
 #: src/usage_text.h:77
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
-" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
 
 #: src/usage_text.h:79
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
 
 #: src/usage_text.h:81
 msgid " --ftp-type=TYPE              Set FTP transfer type."
@@ -243,14 +204,13 @@ msgstr ""
 
 #: src/usage_text.h:83
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv               Brug passiv tilstand i FTP."
+msgstr ""
 
 #: src/usage_text.h:85
 msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP."
 msgstr ""
 
 #: src/usage_text.h:87
-#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -261,33 +221,15 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=FART    Luk forbindelsen hvis overførselshastigheden "
-"er\n"
-"                              lavere eller lig denne værdig (bytes per "
-"sekund).\n"
-"                              0 betyder aria2 ikke har en "
-"minimumshastighed.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Dette flag vedrører ikke BitTorrent "
-"overførsler.\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:93
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:97
-#, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -298,15 +240,6 @@ msgid ""
 "of\n"
 "                              the file."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:103
 msgid ""
@@ -314,11 +247,6 @@ msgid ""
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --no-file-allocation-limit=STR Ingen filallokering vil blive lavet for "
-"filer\n"
-"                              hvis størrelse er mindre end STR.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:107
 msgid ""
@@ -514,17 +442,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:211
-#, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:215
 msgid ""
@@ -780,7 +702,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:346
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -793,15 +714,6 @@ msgid ""
 "using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:353
 msgid ""
@@ -821,7 +733,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:364
-#, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -829,10 +740,6 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:368
 msgid ""
@@ -845,17 +752,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:373
-#, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:377
 msgid ""
@@ -1836,49 +1738,3 @@ msgstr ""
 #: src/Util.cc:714
 msgid "Files:"
 msgstr ""
-
-#~ msgid ""
-#~ " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
-#~ "                              METHOD is either 'get' or 'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --http-proxy-method=METODE   Sæt metoden der skal bruges til proxy\n"
-#~ "                              forespørgslen. METODE skal enten være 'get' "
-#~ "or\n"
-#~ "                              'tunnel'. Standard: tunnel"
-
-#~ msgid ""
-#~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
-#~ "                              Default: anonymous"
-#~ msgstr ""
-#~ " --ftp-user=BRUGER            Sæt FTP bruger. Dette rammer alle URL'er.\n"
-#~ "                              Standard: anonymous"
-
-#~ msgid ""
-#~ " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
-#~ "                              Default: ARIA2USER@"
-#~ msgstr ""
-#~ " --ftp-passwd=KODEORD         Sæt FTP kodeord. Dette rammer alle URL'er.\n"
-#~ "                              Standard: ARIA2USER@"
-
-#~ msgid ""
-#~ " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
-#~ "'binary'\n"
-#~ "                              or 'ascii'.\n"
-#~ "                              Default: binary"
-#~ msgstr ""
-#~ " --ftp-type=TYPE              Sæt FTP overførselstypen. TYPE er enten "
-#~ "'binary'\n"
-#~ "                              eller 'ascii'.\n"
-#~ "                              Standard: binary"
-
-#~ msgid ""
-#~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
-#~ "'get' or\n"
-#~ "                              'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --ftp-via-http-proxy=METODE  Brug HTTP proxy til FTP. METODE er enten "
-#~ "'get'\n"
-#~ "                              eller 'tunnel'.\n"
-#~ "                              Standard: tunnel"
