@@ -68,7 +68,8 @@ RequestSlot& RequestSlot::operator=(const RequestSlot& requestSlot)
 
 bool RequestSlot::operator==(const RequestSlot& requestSlot) const
 {
-  return index == requestSlot.index && begin == requestSlot.begin;
+  return index == requestSlot.index && begin == requestSlot.begin
+    && length == requestSlot.length;
 }
 
 bool RequestSlot::operator!=(const RequestSlot& requestSlot) const

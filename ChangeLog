@@ -1,5 +1,12 @@
 2008-10-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added length equality test to operator== to drop a piece message
+	whose length does not match to the requested one.
+	* src/RequestSlot.cc
+	* test/DefaultBtMessageDispatcherTest.cc
+	
+2008-10-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that aria2 aborts when a request larger than 16KiB is
 	recieved.
 	In this fix, if a request larger than 16KiB length is received, aria2
