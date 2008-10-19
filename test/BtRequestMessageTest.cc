@@ -1,4 +1,9 @@
 #include "BtRequestMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "MockBtContext.h"
 #include "MockBtMessage.h"
@@ -16,8 +21,7 @@
 #include "ExtensionMessageFactory.h"
 #include "FileEntry.h"
 #include "BtHandshakeMessage.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
+#include "BtRequestMessageValidator.h"
 
 namespace aria2 {
 
@@ -36,6 +40,8 @@ class BtRequestMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHandleAbortRequestEvent_alreadyInvalidated);
   CPPUNIT_TEST(testHandleAbortRequestEvent_sendingInProgress);
   CPPUNIT_TEST(testToString);
+  CPPUNIT_TEST(testValidate);
+  CPPUNIT_TEST(testValidate_lengthTooLong);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -52,6 +58,8 @@ public:
   void testHandleAbortRequestEvent_alreadyInvalidated();
   void testHandleAbortRequestEvent_sendingInProgress();
   void testToString();
+  void testValidate();
+  void testValidate_lengthTooLong();
 
   class MockPieceStorage2 : public MockPieceStorage {
   public:
@@ -281,6 +289,31 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_sendingInProgress() {
 void BtRequestMessageTest::testToString() {
   CPPUNIT_ASSERT_EQUAL(std::string("request index=1, begin=16, length=32"),
 		       msg->toString());
+}
+
+void BtRequestMessageTest::testValidate() {
+  BtRequestMessage msg(0, 0, 16*1024);
+  msg.setBtMessageValidator
+    (SharedHandle<BtMessageValidator>
+     (new BtRequestMessageValidator(&msg, 1024, 256*1024)));
+  std::deque<std::string> errors;
+
+  msg.validate(errors);
+}
+
+void BtRequestMessageTest::testValidate_lengthTooLong() {
+  BtRequestMessage msg(0, 0, 16*1024+1);
+  msg.setBtMessageValidator
+    (SharedHandle<BtMessageValidator>
+     (new BtRequestMessageValidator(&msg, 1024, 256*1024)));
+  std::deque<std::string> errors;
+  try {
+    msg.validate(errors);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlAbortEx& e) {
+    CPPUNIT_ASSERT_EQUAL(std::string("Length too long: 16385 > 16KB"),
+			 std::string(e.what()));
+  }
 }
 
 } // namespace aria2

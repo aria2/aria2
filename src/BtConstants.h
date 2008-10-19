@@ -47,4 +47,6 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define DEFAULT_LATENCY 1500
 
+#define MAX_BLOCK_LENGTH (16*1024)
+
 #endif // _D_BT_CONSTANTS_

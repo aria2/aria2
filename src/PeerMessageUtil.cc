@@ -33,11 +33,14 @@
  */
 /* copyright --> */
 #include "PeerMessageUtil.h"
+
+#include <cassert>
+#include <cstring>
+
 #include "DlAbortEx.h"
 #include "a2netcompat.h"
 #include "StringFormat.h"
-#include <cassert>
-#include <cstring>
+#include "BtConstants.h"
 
 namespace aria2 {
 
