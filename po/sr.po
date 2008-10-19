@@ -1,20 +1,20 @@
-# Thai translation for aria2
-# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# Serbian translation for aria2
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the aria2 package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-10-20 00:07+0900\n"
-"PO-Revision-Date: 2007-12-29 20:22+0000\n"
-"Last-Translator: pruet <Unknown>\n"
-"Language-Team: Thai <th@li.org>\n"
+"PO-Revision-Date: 2008-10-15 12:33+0000\n"
+"Last-Translator: Marko <Unknown>\n"
+"Language-Team: Serbian <sr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
+"X-Launchpad-Export-Date: 2008-10-19 15:01+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:801
@@ -24,103 +24,106 @@ msgstr ""
 
 #: src/DownloadEngine.cc:805
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Започиње след хитног искључивања..."
 
 #: src/MultiUrlRequestInfo.cc:88
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
+msgstr "aria2 ће наставити преузимање уколико пренос буде рестартован."
 
 #: src/MultiUrlRequestInfo.cc:90
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
+"Уколико постоје било какве грешке, онда погледај log фајл.  Погледај '-l'  "
+"опцију у помоћним man страницама за детаље."
 
 #: src/RequestGroupMan.cc:382
 msgid "Download Results:"
-msgstr ""
+msgstr "Резултати преузимања"
 
 #: src/RequestGroupMan.cc:397
 msgid "Status Legend:"
-msgstr ""
+msgstr "Статусна легенда"
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
-msgstr ""
+msgstr "                              Подразумевано: "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
-msgstr ""
+msgstr "                              Ознаке: "
 
 #: src/OptionHandler.cc:40
 msgid "                              Possible Values: "
-msgstr ""
+msgstr "                              Могуће вредности: "
 
 #: src/OptionHandlerImpl.h:96
-#, fuzzy
 msgid "must be either 'true' or 'false'."
-msgstr "ต้องเป็น 'true' หรือ 'false'"
+msgstr "мора бити или \"тачно\" или \"нетачно\"."
 
 #: src/OptionHandlerImpl.h:127 src/OptionHandlerImpl.h:174
 #, c-format
 msgid "must be between %s and %s."
-msgstr "ต้องอยู่ระหว่าง %s และ  %s"
+msgstr "мора бити између %s и %s."
 
 #: src/OptionHandlerImpl.h:171
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "ต้องน้อยกว่าหรือเท่ากับ %s"
+msgstr "мора бити мање или једнако са %s."
 
 #: src/OptionHandlerImpl.h:177
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "ต้องมากกว่าหรือเท่ากับ %s"
+msgstr "мора бити веће или једнако са %s."
 
 #: src/OptionHandlerImpl.h:180 src/OptionHandlerImpl.h:243
 msgid "must be a number."
-msgstr "ต้องเป็นตัวเลข"
+msgstr "мора бити број."
 
 #: src/OptionHandlerImpl.h:234
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "ต้องน้อยกว่าหรือเท่ากับ %.1f"
+msgstr "мора бити мање или једнако са %.1f."
 
 #: src/OptionHandlerImpl.h:237
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "ต้องอยู่ระหว่าง %.1f และ %.1f"
+msgstr "мора бити између %.1f и %.1f."
 
 #: src/OptionHandlerImpl.h:240
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "ต้องมากกว่าหรือเท่ากับ %.1f"
+msgstr "мора бити веће или једнако са %.1f."
 
 #: src/OptionHandlerImpl.h:377
 msgid "must be one of the following:"
-msgstr "ต้องเลือกหนึ่งตัวเลือกจากรายการต่อไปนี้"
+msgstr "мора бити једно од следећег:"
 
 #: src/OptionHandlerImpl.h:424
 msgid "unrecognized proxy format"
-msgstr "รูปแบบพร๊อกซีไม่ถูกต้อง"
+msgstr "Не препознатљив proxy формат."
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr ""
+msgstr " -d, --dir=DIR Директоријум за смештај преузетих фајлова."
 
 #: src/usage_text.h:39
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr ""
+msgstr " -o, --out=FILE Име преузетог фајла."
 
 #: src/usage_text.h:41
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
+" -l, --log=LOG Назив log фајла. Уколико '-' је\n"
+"                              прецизиран, log је уписан у stdout."
 
 #: src/usage_text.h:44
 msgid " -D, --daemon                 Run as daemon."
-msgstr ""
+msgstr " -D, --daemon Покрени као самостартујући програм."
 
 #: src/usage_text.h:46
 msgid ""
@@ -134,6 +137,16 @@ msgid ""
 "                              once so that N connections total are made\n"
 "                              simultaneously. Please see -j option too."
 msgstr ""
+" -s, --split=N Преузми фајл користећи N конекција. Уколико више\n"
+"                              онда N URL-ова је дато, прво N URL-ова је "
+"коришћено и\n"
+"                              остаје URL-ова је коришћено за бекап. Уколико "
+"је мање\n"
+"                              N URL-ова је дато, ови URL-уови су коришћени "
+"више од\n"
+"                              једном тако да је N конекција укупно начињено\n"
+"                              истовремено.  Молим вас погледајте и -j опцију "
+"такође."
 
 #: src/usage_text.h:53
 msgid ""
@@ -141,41 +154,50 @@ msgid ""
 "error\n"
 "                              has occured."
 msgstr ""
+" --retry-wait=SEC Подесите број секунди који треба сачекати након неке "
+"грешке\n"
+"                              је прошло."
 
 #: src/usage_text.h:56
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr ""
+msgstr " -t, --timeout=SEC Подеси време прекида у секундама."
 
 #: src/usage_text.h:58
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
-msgstr ""
+msgstr " -m, --max-tries=N Подеси број покушаја. 0 значи неограничено."
 
 #: src/usage_text.h:60
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
+" --http-proxy=HOST:PORT Користи HTTP proxy сервер. Ово утиче на све URL-ове."
 
 #: src/usage_text.h:62
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr ""
+msgstr " --http-user=USER Подеси HTTP корисника.  Ово утиче на све URL-ове."
 
 #: src/usage_text.h:64
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr ""
+msgstr " --http-passwd=PASSWD Подеси HTTP лозинку. Ово утиче на све URL-ове."
 
 #: src/usage_text.h:66
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
+" --http-proxy-user=USER Подеси HTTP proxy корисника. Ово утиче на све URL-"
+"ове."
 
 #: src/usage_text.h:68
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
+" --http-proxy-passwd=PASSWD Подеси HTTP proxy лозинку. Ово утиче на све URL-"
+"ове."
 
 #: src/usage_text.h:70
 msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
 msgstr ""
+" --http-proxy-method=METHOD Подеси метод за коришћење током proxy захтева."
 
 #: src/usage_text.h:72
 msgid ""
@@ -183,30 +205,33 @@ msgid ""
 "basic\n"
 "                              is the only supported scheme."
 msgstr ""
+" --http-auth-scheme=SCHEME Подеси HTTP аутентификациону шему. Тренутно, "
+"основни\n"
+"                              је једина подржана шема."
 
 #: src/usage_text.h:75
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr ""
+msgstr " --referer=REFERER Подеси referator. Ово утиче на све URL-ове."
 
 #: src/usage_text.h:77
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
-msgstr ""
+msgstr " --ftp-user=USER Подеси FTP корисника. Ово утиче на све URL-ове."
 
 #: src/usage_text.h:79
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
-msgstr ""
+msgstr " --ftp-passwd=PASSWD Подеси FTP лозинку. Ово утиче на све URL-ове."
 
 #: src/usage_text.h:81
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr ""
+msgstr " --ftp-type=TYPE Подеси FTP тип преноса."
 
 #: src/usage_text.h:83
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr ""
+msgstr " -p, --ftp-pasv Користи пасивни мод у FTP-у."
 
 #: src/usage_text.h:85
 msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP."
-msgstr ""
+msgstr " --ftp-via-http-proxy=METHOD Користи HTTP proxy у FTP-у."
 
 #: src/usage_text.h:87
 msgid ""
@@ -845,17 +870,17 @@ msgstr ""
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - การดาวน์โหลดหนึ่งเซ็กเมนท์เสร็จสิ้นสมบูรณ์"
+msgstr ""
 
 #: src/message.h:41
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - No segment available."
-msgstr "CUID@%d - ไม่มีเซ็กเมนท์ว่างอยู่"
+msgstr ""
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - เชื่อมต่อไปยัง %s:%d"
+msgstr ""
 
 #: src/message.h:43
 #, c-format
@@ -863,12 +888,11 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - เซ็กเมนท์นี้ถูกเปลี่ยนแปลง เราได้ส่งคำร้องขออีกครั้งพร้อมกับค่า Range header ใหม่"
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - เปลี่ยนทางไปยัง %s"
+msgstr ""
 
 #: src/message.h:45
 #, c-format
@@ -876,8 +900,6 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - กำลังร้องขอ:\n"
-"%s"
 
 #: src/message.h:46
 #, c-format
@@ -885,105 +907,103 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - ได้รับการตอบรับ:\n"
-"%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - การดาวน์โหลดถูกยกเลิก URI=%s"
+msgstr ""
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - เริ่มต้นการดาวน์โหลดใหม่ URI=%s"
+msgstr ""
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - การดาวน์โหลดถูกยกเลิก"
+msgstr ""
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr "CUID#%d - ได้พยายามแล้ว %d  ครั้งแต่ไม่ประสบความสำเร็จ การดาวน์โหลดถูกยกเลิก"
+msgstr ""
 
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - cuid ที่ไม่ได้ถูกจดทะเบียนจาก segmentManager"
+msgstr ""
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - เราได้รับชิ้นข้อมูลใหม่ ดัชนี=%d"
+msgstr ""
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - เราได้รับชิ้นข้อมูลที่ไม่ถูกต้อง ดัชนี=%d"
+msgstr ""
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d  - การดาวน์โหลดไม่สิ้นสุด: %s"
+msgstr ""
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr "%d - การดาวน์โหลดสมบูรณ์แล้ว: %s"
+msgstr ""
 
 #: src/message.h:61
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d  - เช็คซัมถูกต้อง: %s"
+msgstr ""
 
 #: src/message.h:62
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d  - เช็คซัมไม่ถูกต้อง: %s"
+msgstr ""
 
 #: src/message.h:63
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d  - กำลังค้นหาชื่อเครื่อง %s"
+msgstr ""
 
 #: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d  - การค้นหาชื่อสมบูรณ์: %s -> %s"
+msgstr ""
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d  -  การค้นหาชื่อสำหรับ %s ล้มเหลว: %s"
+msgstr ""
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr "CUID#%d  -  ค้นหาเจอใน DNS แคช: %s -> %s"
+msgstr ""
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d  - ยกเลิกการร้องขอ"
+msgstr ""
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d  - เชื่อมต่อไปยังเพียร์ %s"
+msgstr ""
 
 #: src/message.h:69
 #, c-format
 msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
-msgstr "CUID#%d - ได้รับชิ้นข้อมูล ดัชนี=%d เริ่มต้น=%d ความยาว=%d ออฟเซ็ต=%llu ดัชนีบล๊อค=%d"
+msgstr ""
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr "CUID#%d  -  บิทฟิล์ดของช้ินข้อมูล %s"
+msgstr ""
 
 #: src/message.h:71
 #, c-format
@@ -991,8 +1011,6 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d  - ปฏิเสธชิ้นข้อมูลในคิวเพราะว่าเพียร์ไม่สามารถส่งข้อมูลมาได้ ดัชนี=%d เริ่มต้น=%d "
-"ความยาว=%d"
 
 #: src/message.h:72
 #, c-format
@@ -1000,27 +1018,26 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d  - ปฏิเสธชิ้นข้อมูลในคิวเพราะว่าได้รับคำขอยกเลิก ดัชนี=%d เริ่มต้น=%d ความยาว=%d"
 
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr "CUID#%d  - เกิดข้อผิดพลาดระหว่างการตรวจสอบความถูกต้องของไฟล์"
+msgstr ""
 
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d  - แสดงความสนใจในเพียร์"
+msgstr ""
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - ไม่สนใจในเพียร์"
+msgstr ""
 
 #: src/message.h:76
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr "CUID#%d - ทำการลบสล๊อตการร้องขอ ดัชนี=%d ดัชนีบล๊อค=%d"
+msgstr ""
 
 #: src/message.h:77
 #, c-format
@@ -1028,13 +1045,11 @@ msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
 "got choked."
 msgstr ""
-"CUID#%d - ทำการลบสล๊อตการร้องขอ ดัชนี=%d ดัชนีบล๊อค=%d "
-"เพราะว่าโฮสท์ท้องถิ่นไม่สามารถจัดการข้อมูลได้"
 
 #: src/message.h:78
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr "CUID#%d - ทำการลบสล๊อตการร้องขอ ดัชนี=%d เพราะว่าหมดเวลา"
+msgstr ""
 
 #: src/message.h:79
 #, c-format
@@ -1044,9 +1059,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:80
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - ส่วนขยายให้ทำงานเร็วขึ้นได้ถูกเรียกใช้"
+msgstr ""
 
 #: src/message.h:81
 #, c-format
@@ -1056,52 +1071,52 @@ msgstr ""
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
-msgstr "CUID#%d - พบความผิดพลาดระหว่างการจัดสรรพื้นที่เก็บไฟล์"
+msgstr ""
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-msgstr "CUID#%d - ตรวจพบ Content-Disposition ใช้ %s สำหรับชื่อไฟล์"
+msgstr ""
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr "CUID#%d - เพียร์ %s:%d ถูกแบน"
+msgstr ""
 
 #: src/message.h:85
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - ใช้พอร์ต %d สำหรับรับการเชื่อมต่อใหม่"
+msgstr ""
 
 #: src/message.h:86
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr "CUID#%d - เกิดความผิดพลาดระหว่างการจองพอร์ต=%d"
+msgstr ""
 
 #: src/message.h:87
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-msgstr "CUID#%d - มีการเชื่อมต่อเข้ามา เพิ่มคำสั่งใหม่ CUID#%d"
+msgstr ""
 
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr "CUID#%d - เกิดความผิดพลาดในการรับการเชื่อมต่อ"
+msgstr ""
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr "CUID#%d - เกิดความผิดพลาดระหว่างการประมวลผลการตอบรับจากแทรกเกอร์"
+msgstr ""
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - ไม่สามารถสร้างคำร้องขอแทรกเกอร์"
+msgstr ""
 
 #: src/message.h:91
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr "CUID#%d - สร้างคำสั่งร้องขอแทรกเกอร์ %d"
+msgstr ""
 
 #: src/message.h:92
 #, c-format
@@ -1111,22 +1126,22 @@ msgstr ""
 #: src/message.h:94
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr "รูปแบบ URI ไม่ถูกต้องหรือเป็นโปรโตคอลที่ไม่สนับสนุน: %s"
+msgstr ""
 
 #: src/message.h:95
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr "แทรกเกอร์ส่งคำเตือนกลับมา: %s"
+msgstr ""
 
 #: src/message.h:96
 #, c-format
 msgid "The segment file %s exists."
-msgstr "พบไฟล์เซ็คเมนท์ %s"
+msgstr ""
 
 #: src/message.h:97
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr "ไม่พบไฟล์เซ็คเมนท์ %s"
+msgstr ""
 
 #: src/message.h:98
 #, c-format

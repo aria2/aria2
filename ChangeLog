@@ -1,5 +1,13 @@
 2008-10-20 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added Serbian translation. Updated Ukrainian translation.
+	Thanks to all translators.
+	* po/sr.po
+	* po/uk.po
+	* po/LINGUAS
+
+2008-10-20 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.16.2
 	* configure.ac
 
