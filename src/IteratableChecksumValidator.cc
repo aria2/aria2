@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "IteratableChecksumValidator.h"
+
+#include <cstdlib>
+
 #include "Util.h"
 #include "message.h"
 #include "SingleFileDownloadContext.h"

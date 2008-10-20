@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "IteratableChunkChecksumValidator.h"
+
+#include <cerrno>
+#include <cstring>
+#include <cstdlib>
+
 #include "Util.h"
 #include "message.h"
 #include "MessageDigestHelper.h"
@@ -46,8 +51,6 @@
 #include "Logger.h"
 #include "messageDigest.h"
 #include "StringFormat.h"
-#include <cerrno>
-#include <cstring>
 
 namespace aria2 {
 

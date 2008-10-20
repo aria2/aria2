@@ -1,5 +1,11 @@
 2008-10-20 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Included cstdlib. This fixed the compile error with g++-4.3.2.
+	* src/IteratableChecksumValidator.cc
+	* src/IteratableChunkChecksumValidator.cc
+
+2008-10-20 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* Release 0.16.2
 
 2008-10-20 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
