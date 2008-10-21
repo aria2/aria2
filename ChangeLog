@@ -1,5 +1,12 @@
 2008-10-22 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Now each status legends is shown only when it appears in Download
+	Result. If Download Result has no item, then status legend will not
+	be printed.
+	* src/RequestGroupMan.cc
+	
+2008-10-22 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed duplicate creation of OptionHandlers.
 	* src/option_processing.cc
 	

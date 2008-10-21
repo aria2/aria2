@@ -382,20 +382,51 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
     <<_("Download Results:") << "\n"
     << "gid|stat|path/URI" << "\n"
     << "===+====+======================================================================" << "\n";
+
+  int ok = 0;
+  int err = 0;
+  int inpr = 0;
+
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
       itr != _downloadResults.end(); ++itr) {
-    o << formatDownloadResult((*itr)->result == DownloadResult::FINISHED ?
-			      MARK_OK : MARK_ERR, *itr) << "\n";
+    std::string status;
+    if((*itr)->result == DownloadResult::FINISHED) {
+      status = MARK_OK;
+      ++ok;
+    } else {
+      status = MARK_ERR;
+      ++err;
+    }
+    o << formatDownloadResult(status, *itr) << "\n";
   }
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
-    o << formatDownloadResult(result->result == DownloadResult::FINISHED ?
-			      MARK_OK : MARK_INPR, result) << "\n";
+    std::string status;
+    if(result->result == DownloadResult::FINISHED) {
+      status = MARK_OK;
+      ++ok;
+    } else {
+      status = MARK_INPR;
+      ++inpr;
+    }
+    o << formatDownloadResult(status, result) << "\n";
   }
-  o << "\n"
-    << _("Status Legend:") << "\n"
-    << " (OK):download completed.(ERR):error occurred.(INPR):download in-progress." << "\n";
+  if(ok > 0 || err > 0 || inpr > 0) {
+    o << "\n"
+      << _("Status Legend:") << "\n";
+
+    if(ok > 0) {
+      o << " (OK):download completed.";
+    }
+    if(err > 0) {
+      o << "(ERR):error occurred.";
+    }
+    if(inpr > 0) {
+      o << "(INPR):download in-progress.";
+    }
+    o << "\n";
+  }
 }
 
 std::string RequestGroupMan::formatDownloadResult(const std::string& status, const DownloadResultHandle& downloadResult) const
