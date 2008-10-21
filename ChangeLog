@@ -1,5 +1,10 @@
 2008-10-22 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed duplicate creation of OptionHandlers.
+	* src/option_processing.cc
+	
+2008-10-22 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that causes segmentation fault when accessing files which
 	don't exist or are not included in --select-file option while
 	validating chunk checksum.

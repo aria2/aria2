@@ -501,7 +501,6 @@ Option* option_processing(int argc, char* const argv[])
   }
 
   {
-    oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
     if(!noConf) {
       std::string cfname = 
 	ucfname.empty() ?
