@@ -372,6 +372,16 @@ findFirstDiskWriterEntry(const DiskWriterEntries& diskWriterEntries, off_t offse
   return first;
 }
 
+static void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
+				       off_t offset,
+				       const std::string& topDirPath)
+{
+  throw DlAbortEx
+    (StringFormat("DiskWriter for offset=%s, filename=%s is not opened.",
+		  Util::itos(offset).c_str(),
+		  e->getFilePath(topDirPath).c_str()).str());  
+}
+
 void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
 				 off_t offset)
 {
@@ -383,6 +393,10 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
     size_t writeLength = calculateLength(*i, fileOffset, rem);
 
     openIfNot(*i, &DiskWriterEntry::openFile, _cachedTopDirPath);
+
+    if(!(*i)->isOpen()) {
+      throwOnDiskWriterNotOpened(*i, offset+(len-rem), _cachedTopDirPath);
+    }
 
     (*i)->getDiskWriter()->writeData(data+(len-rem), writeLength, fileOffset);
     rem -= writeLength;
@@ -404,6 +418,10 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset
     size_t readLength = calculateLength(*i, fileOffset, rem);
 
     openIfNot(*i, &DiskWriterEntry::openFile, _cachedTopDirPath);
+
+    if(!(*i)->isOpen()) {
+      throwOnDiskWriterNotOpened(*i, offset+(len-rem), _cachedTopDirPath);
+    }
 
     totalReadLength +=
       (*i)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
