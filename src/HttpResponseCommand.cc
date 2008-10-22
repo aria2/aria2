@@ -290,6 +290,8 @@ bool HttpResponseCommand::skipResponseBody
   if(httpResponse->getEntityLength() == 0 &&
      !httpResponse->isTransferEncodingSpecified()) {
     command->setStatusRealtime();
+    // If entity length == 0, then socket read/write check must be disabled.
+    command->disableSocketCheck();
     e->setNoWait(true);
   }
 

@@ -157,4 +157,10 @@ bool HttpSkipResponseCommand::processResponse()
   }
 }
 
+void HttpSkipResponseCommand::disableSocketCheck()
+{
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
+}
+
 } // namespace aria2

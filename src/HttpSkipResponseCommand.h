@@ -70,6 +70,8 @@ public:
   virtual ~HttpSkipResponseCommand();
 
   void setTransferEncodingDecoder(const SharedHandle<Decoder>& decoder);
+
+  void disableSocketCheck();
 };
 
 } // namespace aria2
