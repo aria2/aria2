@@ -1,3 +1,9 @@
+2008-10-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Pool connection when redirection occurs with Content-Length = 0.
+	* src/HttpSkipResponseCommand.cc
+	* src/HttpSkipResponseCommand.h
+
 2008-10-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that causes time out when redirection occurs with

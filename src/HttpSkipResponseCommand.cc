@@ -80,6 +80,13 @@ void HttpSkipResponseCommand::setTransferEncodingDecoder
 bool HttpSkipResponseCommand::executeInternal()
 {
   if(_totalLength == 0 && _transferEncodingDecoder.isNull()) {
+    // If content-length header is present and it's value is 0, then
+    // pool socket for reuse.
+    // If content-length header is not present, then EOF is expected in the end.
+    // In this case, the content is thrown away and socket cannot be pooled. 
+    if(_httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH)) {
+      poolConnection();
+    }
     return processResponse();
   }
   const size_t BUFSIZE = 16*1024;
@@ -118,17 +125,22 @@ bool HttpSkipResponseCommand::executeInternal()
     finished = _transferEncodingDecoder->finished();
   }
   if(finished) {
-    if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-       req->supportsPersistentConnection()) {
-      std::pair<std::string, uint16_t> peerInfo;
-      socket->getPeerInfo(peerInfo);
-      e->poolSocket(peerInfo.first, peerInfo.second, socket);
-    }
+    poolConnection();
     return processResponse();
   } else {
     setWriteCheckSocketIf(socket, socket->wantWrite());
     e->commands.push_back(this);
     return false;
+  }
+}
+
+void HttpSkipResponseCommand::poolConnection() const
+{
+  if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
+     req->supportsPersistentConnection()) {
+    std::pair<std::string, uint16_t> peerInfo;
+    socket->getPeerInfo(peerInfo);
+    e->poolSocket(peerInfo.first, peerInfo.second, socket);
   }
 }
 

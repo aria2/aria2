@@ -56,6 +56,8 @@ private:
   uint64_t _receivedBytes;
 
   bool processResponse();
+
+  void poolConnection() const;
 protected:
   virtual bool executeInternal();
 public:
