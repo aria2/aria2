@@ -1,5 +1,16 @@
 2008-10-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Treat Cookie object as session cookie if expiry = 0 is given.
+	With this change, you can specify session scoped cookies in an external
+	file setting expiry value to 0.
+	* src/Cookie.cc
+	* src/Cookie.h
+	* test/CookieParserTest.cc
+	* test/CookieStorageTest.cc
+	* test/CookieTest.cc
+	
+2008-10-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Changed signature of DHTMessageFactory::createResponseMessage().
 	Removed unused validateIDMatch.
 	* src/DHTMessageFactory.h

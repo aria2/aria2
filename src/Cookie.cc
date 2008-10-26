@@ -33,10 +33,12 @@
  */
 /* copyright --> */
 #include "Cookie.h"
+
+#include <algorithm>
+
 #include "Util.h"
 #include "A2STR.h"
 #include "TimeA2.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -51,8 +53,7 @@ Cookie::Cookie(const std::string& name,
   _expiry(expiry),
   _path(path),
   _domain(Util::toLower(domain)),
-  _secure(secure),
-  _onetime(false) {}
+  _secure(secure) {}
 
 Cookie::Cookie(const std::string& name,
 	       const std::string& value,
@@ -64,10 +65,9 @@ Cookie::Cookie(const std::string& name,
   _expiry(0),
   _path(path),
   _domain(Util::toLower(domain)),
-  _secure(secure),
-  _onetime(true) {}
+  _secure(secure) {}
 
-Cookie::Cookie():_expiry(0), _secure(false), _onetime(true) {}
+Cookie::Cookie():_expiry(0), _secure(false) {}
 
 Cookie::~Cookie() {}
 
@@ -115,7 +115,7 @@ bool Cookie::match(const std::string& requestHost,
   if((secure || (!_secure && !secure)) &&
      domainMatch(lowerRequestHost, _domain) &&
      pathInclude(requestPath, _path) &&
-     (_onetime || (date < _expiry))) {
+     (isSessionCookie() || (date < _expiry))) {
     return true;
   } else {
     return false;
@@ -172,7 +172,7 @@ bool Cookie::operator==(const Cookie& cookie) const
 
 bool Cookie::isExpired() const
 {
-  return !_onetime && Time().getTime() >= _expiry;
+  return !_expiry == 0 && Time().getTime() >= _expiry;
 }
 
 const std::string& Cookie::getName() const
@@ -205,9 +205,9 @@ bool Cookie::isSecureCookie() const
   return _secure;
 }
 
-bool Cookie::isOnetimeCookie() const
+bool Cookie::isSessionCookie() const
 {
-  return _onetime;
+  return _expiry == 0;
 }
 
 } // namespace aria2

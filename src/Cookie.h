@@ -36,9 +36,11 @@
 #define _D_COOKIE_H_
 
 #include "common.h"
-#include "a2time.h"
+
 #include <string>
 #include <deque>
+
+#include "a2time.h"
 
 namespace aria2 {
 
@@ -50,10 +52,10 @@ private:
   std::string _path;
   std::string _domain;
   bool _secure;
-
-  // If true, this cookie will expire when aria2 exits.
-  bool _onetime;
 public:
+  /*
+   * If expires = 0 is given, then the cookie becomes session cookie.
+   */
   Cookie(const std::string& name,
 	 const std::string& value,
 	 time_t  expires,
@@ -61,6 +63,10 @@ public:
 	 const std::string& domain,
 	 bool secure);
 
+  /*
+   * Creates session cookie. This is equivalent to
+   * Cookie(name, value, 0, path, domain, secure);
+   */
   Cookie(const std::string& name,
 	 const std::string& value,
 	 const std::string& path,
@@ -97,7 +103,7 @@ public:
 
   bool isSecureCookie() const;
 
-  bool isOnetimeCookie() const;
+  bool isSessionCookie() const;
 };
 
 typedef std::deque<Cookie> Cookies;

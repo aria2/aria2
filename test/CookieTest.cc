@@ -146,6 +146,8 @@ void CookieTest::testIsExpired()
   CPPUNIT_ASSERT(!validCookie.isExpired());
   Cookie sessionCookie("k", "v", "/", "localhost", false);
   CPPUNIT_ASSERT(!sessionCookie.isExpired());
+  Cookie sessionCookie2("k", "v", 0, "/", "localhost", false);
+  CPPUNIT_ASSERT(!sessionCookie2.isExpired());  
 }
 
 } // namespace aria2

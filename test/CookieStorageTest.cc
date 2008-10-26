@@ -56,7 +56,7 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT(std::find(st.begin(), st.end(), updateGoodCookie) != st.end());
   CPPUNIT_ASSERT(std::find(st.begin(), st.end(), anotherCookie) != st.end());  
 
-  Cookie expireGoodCookie("k", "v3", 0, "/", "localhost", false);
+  Cookie expireGoodCookie("k", "v3", 1, "/", "localhost", false);
   CPPUNIT_ASSERT(!st.store(expireGoodCookie));
   CPPUNIT_ASSERT_EQUAL((size_t)1, st.size());
   CPPUNIT_ASSERT(std::find(st.begin(), st.end(), anotherCookie) != st.end());
@@ -70,6 +70,18 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT(st.store(fromNumericHost));
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   CPPUNIT_ASSERT(std::find(st.begin(), st.end(), fromNumericHost) != st.end());
+
+  Cookie sessionScopedGoodCookie("k", "v3", 0, "/", "localhost", false);
+  CPPUNIT_ASSERT(st.store(sessionScopedGoodCookie));
+  CPPUNIT_ASSERT_EQUAL((size_t)3, st.size());
+  CPPUNIT_ASSERT(std::find(st.begin(), st.end(),
+			   sessionScopedGoodCookie) != st.end());
+
+  Cookie sessionScopedGoodCookie2("k2", "v3", "/", "localhost", false);
+  CPPUNIT_ASSERT(st.store(sessionScopedGoodCookie2));
+  CPPUNIT_ASSERT_EQUAL((size_t)4, st.size());
+  CPPUNIT_ASSERT(std::find(st.begin(), st.end(),
+			   sessionScopedGoodCookie2) != st.end());
 }
 
 void CookieStorageTest::testParseAndStore()
@@ -196,22 +208,34 @@ void CookieStorageTest::testLoad_sqlite3()
   CookieStorage st;
 #ifdef HAVE_SQLITE3
   st.load("cookies.sqlite");
-  CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
-  Cookie c = *st.begin();
+  CPPUNIT_ASSERT_EQUAL((size_t)3, st.size());
+  std::deque<Cookie>::const_iterator i = st.begin();
+  Cookie c = *i++;
   CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
   CPPUNIT_ASSERT(c.isSecureCookie());
+  CPPUNIT_ASSERT(!c.isSessionCookie());
 
-  c = *(st.begin()+1);
+  c = *i++;
+  CPPUNIT_ASSERT_EQUAL(std::string("uid"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)0, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("null_value"), c.getDomain());
+  CPPUNIT_ASSERT(!c.isSecureCookie());
+  CPPUNIT_ASSERT(c.isSessionCookie());
+
+  c = *i++;
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("bar"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c.getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("overflow_time_t"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
+  CPPUNIT_ASSERT(!c.isSessionCookie());
     
 #else // !HAVE_SQLITE3
   try {
