@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DHTMessageTracker.h"
+
+#include <utility>
+
 #include "DHTMessage.h"
 #include "DHTMessageCallback.h"
 #include "DHTMessageTrackerEntry.h"
@@ -47,7 +50,6 @@
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "StringFormat.h"
-#include <utility>
 
 namespace aria2 {
 
@@ -86,11 +88,14 @@ DHTMessageTracker::messageArrived(const Dictionary* d,
       _logger->debug("Tracker entry found.");
       SharedHandle<DHTNode> targetNode = entry->getTargetNode();
 
-      SharedHandle<DHTMessage> message = _factory->createResponseMessage(entry->getMessageType(),
-								 d, targetNode);
+      SharedHandle<DHTMessage> message =
+	_factory->createResponseMessage(entry->getMessageType(), d,
+					targetNode->getIPAddress(),
+					targetNode->getPort());
+
       int64_t rtt = entry->getElapsedMillis();
       _logger->debug("RTT is %s", Util::itos(rtt).c_str());
-      targetNode->updateRTT(rtt);
+      message->getRemoteNode()->updateRTT(rtt);
       SharedHandle<DHTMessageCallback> callback = entry->getCallback();
       return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >(message, callback);
     }

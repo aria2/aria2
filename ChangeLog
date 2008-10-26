@@ -1,3 +1,22 @@
+2008-10-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed signature of DHTMessageFactory::createResponseMessage().
+	Removed unused validateIDMatch.
+	* src/DHTMessageFactory.h
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTMessageFactoryImpl.h
+	* src/DHTMessageTracker.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/MockDHTMessageFactory.h
+
+	Dropped DHT message coming from same ID of localhost.
+	* src/DHTMessageReceiver.cc
+
+	Rejected adding node whose ID is the same as localhost's.
+	* src/DHTRoutingTable.cc
+	* test/BtPortMessageTest.cc
+	* test/DHTRoutingTableTest.cc
+	
 2008-10-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Pool connection when redirection occurs with Content-Length = 0.

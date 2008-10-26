@@ -1,4 +1,8 @@
 #include "DHTRoutingTable.h"
+
+#include <cstring>
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "DHTNode.h"
@@ -6,8 +10,6 @@
 #include "MockDHTTaskQueue.h"
 #include "MockDHTTaskFactory.h"
 #include "DHTTask.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -15,6 +17,7 @@ class DHTRoutingTableTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTRoutingTableTest);
   CPPUNIT_TEST(testAddNode);
+  CPPUNIT_TEST(testAddNode_localNode);
   CPPUNIT_TEST(testGetClosestKNodes);
   CPPUNIT_TEST_SUITE_END();
 public:
@@ -23,6 +26,7 @@ public:
   void tearDown() {}
 
   void testAddNode();
+  void testAddNode_localNode();
   void testGetClosestKNodes();
 };
 
@@ -45,6 +49,19 @@ void DHTRoutingTableTest::testAddNode()
     }
   }
   table.showBuckets();
+}
+
+void DHTRoutingTableTest::testAddNode_localNode()
+{
+  SharedHandle<DHTNode> localNode(new DHTNode());
+  DHTRoutingTable table(localNode);
+  SharedHandle<MockDHTTaskFactory> taskFactory(new MockDHTTaskFactory());
+  table.setTaskFactory(taskFactory);
+  SharedHandle<MockDHTTaskQueue> taskQueue(new MockDHTTaskQueue());
+  table.setTaskQueue(taskQueue);
+
+  SharedHandle<DHTNode> newNode(new DHTNode(localNode->getID()));
+  CPPUNIT_ASSERT(!table.addNode(newNode));
 }
 
 static void createID(unsigned char* id, unsigned char firstChar, unsigned char lastChar)

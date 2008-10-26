@@ -104,7 +104,7 @@ void BtPortMessageTest::testDoReceivedAction()
   SharedHandle<DHTNode> nodes[9];
   for(size_t i = 0; i < arrayLength(nodes); ++i) {
     memset(nodeID, 0, DHT_ID_LENGTH);
-    nodeID[DHT_ID_LENGTH-1] = i;
+    nodeID[DHT_ID_LENGTH-1] = i+1;
     nodes[i].reset(new DHTNode(nodeID));
   }
 

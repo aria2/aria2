@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "DHTMessageFactoryImpl.h"
+
+#include <cstring>
+#include <utility>
+
 #include "LogFactory.h"
 #include "DlAbortEx.h"
 #include "Data.h"
@@ -60,8 +64,6 @@
 #include "Peer.h"
 #include "Logger.h"
 #include "StringFormat.h"
-#include <cstring>
-#include <utility>
 
 namespace aria2 {
 
@@ -135,13 +137,6 @@ void DHTMessageFactoryImpl::validateID(const Data* id) const
   }
 }
 
-void DHTMessageFactoryImpl::validateIDMatch(const unsigned char* expected, const unsigned char* actual) const
-{
-  if(memcmp(expected, actual, DHT_ID_LENGTH) != 0) {
-    //throw DlAbortEx("Different ID received.");
-  }
-}
-
 void DHTMessageFactoryImpl::validatePort(const Data* i) const
 {
   if(!i->isNumber()) {
@@ -202,7 +197,8 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createQueryMessage(const Diction
 SharedHandle<DHTMessage>
 DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
 					     const Dictionary* d,
-					     const SharedHandle<DHTNode>& remoteNode)
+					     const std::string& ipaddr,
+					     uint16_t port)
 {
   const Data* t = getData(d, DHTMessage::T);
   const Data* y = getData(d, DHTMessage::Y);
@@ -225,7 +221,8 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
   const Dictionary* r = getDictionary(d, DHTResponseMessage::R);
   const Data* id = getData(r, DHTMessage::ID);
   validateID(id);
-  validateIDMatch(remoteNode->getID(), id->getData());
+  SharedHandle<DHTNode> remoteNode = getRemoteNode(id->getData(), ipaddr, port);
+
   std::string transactionID = t->toString();
   if(messageType == DHTPingReplyMessage::PING) {
     return createPingReplyMessage(remoteNode,

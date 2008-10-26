@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "DHTMessageReceiver.h"
+
+#include <cstring>
+#include <utility>
+
 #include "DHTMessageTracker.h"
 #include "DHTConnection.h"
 #include "DHTMessage.h"
@@ -49,7 +53,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Util.h"
-#include <utility>
 
 namespace aria2 {
 
@@ -102,6 +105,11 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       }
     } else {
       message = _factory->createQueryMessage(d, remoteAddr, remotePort);
+      if(message->getLocalNode() == message->getRemoteNode()) {
+	// drop message from localnode
+	_logger->info("Recieved DHT message from localnode.");
+	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+      }
     }
     _logger->info("Message received: %s", message->toString().c_str());
     message->validate();

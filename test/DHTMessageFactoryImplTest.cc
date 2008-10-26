@@ -1,4 +1,10 @@
 #include "DHTMessageFactoryImpl.h"
+
+#include <cstring>
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "RecoverableException.h"
 #include "Util.h"
 #include "DHTNode.h"
@@ -17,9 +23,6 @@
 #include "DHTGetPeersReplyMessage.h"
 #include "DHTAnnouncePeerMessage.h"
 #include "DHTAnnouncePeerReplyMessage.h"
-#include <cstring>
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -112,7 +115,10 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
   remoteNode->setPort(6881);
   
   SharedHandle<DHTPingReplyMessage> m
-    (dynamic_pointer_cast<DHTPingReplyMessage>(factory->createResponseMessage("ping", d.get(), remoteNode)));
+    (dynamic_pointer_cast<DHTPingReplyMessage>
+     (factory->createResponseMessage("ping", d.get(),
+				     remoteNode->getIPAddress(),
+				     remoteNode->getPort())));
 
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -176,7 +182,10 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     remoteNode->setPort(6881);
   
     SharedHandle<DHTFindNodeReplyMessage> m
-      (dynamic_pointer_cast<DHTFindNodeReplyMessage>(factory->createResponseMessage("find_node", d.get(), remoteNode)));
+      (dynamic_pointer_cast<DHTFindNodeReplyMessage>
+       (factory->createResponseMessage("find_node", d.get(),
+				       remoteNode->getIPAddress(),
+				       remoteNode->getPort())));
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -247,7 +256,10 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
     remoteNode->setPort(6881);
   
     SharedHandle<DHTGetPeersReplyMessage> m
-      (dynamic_pointer_cast<DHTGetPeersReplyMessage>(factory->createResponseMessage("get_peers", d.get(), remoteNode)));
+      (dynamic_pointer_cast<DHTGetPeersReplyMessage>
+       (factory->createResponseMessage("get_peers", d.get(),
+				       remoteNode->getIPAddress(),
+				       remoteNode->getPort())));
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -290,7 +302,10 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
     remoteNode->setPort(6881);
   
     SharedHandle<DHTGetPeersReplyMessage> m
-      (dynamic_pointer_cast<DHTGetPeersReplyMessage>(factory->createResponseMessage("get_peers", d.get(), remoteNode)));
+      (dynamic_pointer_cast<DHTGetPeersReplyMessage>
+       (factory->createResponseMessage("get_peers", d.get(),
+				       remoteNode->getIPAddress(),
+				       remoteNode->getPort())));
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -356,7 +371,10 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   remoteNode->setPort(6881);
   
   SharedHandle<DHTAnnouncePeerReplyMessage> m
-    (dynamic_pointer_cast<DHTAnnouncePeerReplyMessage>(factory->createResponseMessage("announce_peer", d.get(), remoteNode)));
+    (dynamic_pointer_cast<DHTAnnouncePeerReplyMessage>
+     (factory->createResponseMessage("announce_peer", d.get(),
+				     remoteNode->getIPAddress(),
+				     remoteNode->getPort())));
 
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -379,7 +397,9 @@ void DHTMessageFactoryImplTest::testReceivedErrorMessage()
   remoteNode->setPort(6881);
 
   try {
-    factory->createResponseMessage("announce_peer", d.get(), remoteNode);
+    factory->createResponseMessage("announce_peer", d.get(),
+				   remoteNode->getIPAddress(),
+				   remoteNode->getPort());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     std::cerr << e.stackTrace() << std::endl;

@@ -36,10 +36,12 @@
 #define _D_DHT_MESSAGE_FACTORY_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "A2STR.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -59,7 +61,7 @@ public:
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
 			const Dictionary* d,
-			const SharedHandle<DHTNode>& remoteNode) = 0;
+			const std::string& ipaddr, uint16_t port) = 0;
 
   virtual SharedHandle<DHTMessage>
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,

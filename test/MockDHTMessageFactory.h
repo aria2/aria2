@@ -27,8 +27,12 @@ public:
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
 			const Dictionary* d,
-			const SharedHandle<DHTNode>& remoteNode)
+			const std::string& ipaddr, uint16_t port)
   {
+    SharedHandle<DHTNode> remoteNode(new DHTNode());
+    // TODO At this point, removeNode's ID is random.
+    remoteNode->setIPAddress(ipaddr);
+    remoteNode->setPort(port);
     SharedHandle<MockDHTMessage> m
       (new MockDHTMessage(_localNode, remoteNode,
 			  reinterpret_cast<const Data*>(d->get("t"))->toString()));

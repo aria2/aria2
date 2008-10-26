@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DHTRoutingTable.h"
+
+#include <cstring>
+
 #include "DHTNode.h"
 #include "DHTBucket.h"
 #include "BNode.h"
@@ -72,6 +75,11 @@ bool DHTRoutingTable::addGoodNode(const SharedHandle<DHTNode>& node)
 bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
 {
   _logger->debug("Trying to add node:%s", node->toString().c_str());
+  if(_localNode == node) {
+    _logger->debug("Adding node with the same ID with localnode is not"
+		   " allowed.");
+    return false;
+  }
   BNode* bnode = BNode::findBNodeFor(_root, node->getID());
   SharedHandle<DHTBucket> bucket = bnode->getBucket();
   while(1) {

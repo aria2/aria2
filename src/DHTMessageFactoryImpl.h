@@ -71,8 +71,6 @@ private:
 
   void validateID(const Data* id) const;
 
-  void validateIDMatch(const unsigned char* expected, const unsigned char* actual) const;
-
   void validatePort(const Data* i) const;
 
   std::deque<SharedHandle<DHTNode> > extractNodes(const unsigned char* src, size_t length);
@@ -91,7 +89,7 @@ public:
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
 			const Dictionary* d,
-			const SharedHandle<DHTNode>& remoteNode);
+			const std::string& ipaddr, uint16_t port);
 
   virtual SharedHandle<DHTMessage>
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,
