@@ -681,7 +681,7 @@ void UtilTest::testHttpGMT()
     CPPUNIT_ASSERT_EQUAL((time_t)2147483647,
 			 Util::httpGMT("Tue, 2038-01-19 3:14:8 GMT"));
   } else if(sizeof(time_t) == 8) {
-    CPPUNIT_ASSERT_EQUAL((int64_t)2147483648,
+    CPPUNIT_ASSERT_EQUAL((int64_t)2147483648LL,
 			 (int64_t)Util::httpGMT("Tue, 2038-01-19 3:14:8 GMT"));
   }
   CPPUNIT_ASSERT_EQUAL((time_t)-1,
