@@ -63,6 +63,8 @@
 #include "CookieStorage.h"
 #include "A2STR.h"
 #include "DNSCache.h"
+#include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 #include "BtRegistry.h"
 #include "BtContext.h"
@@ -1076,6 +1078,17 @@ void DownloadEngine::cacheIPAddress
 (const std::string& hostname, const std::string& ipaddr)
 {
   _dnsCache->put(hostname, ipaddr);
+}
+
+void DownloadEngine::setAuthConfigFactory
+(const SharedHandle<AuthConfigFactory>& factory)
+{
+  _authConfigFactory = factory;
+}
+
+SharedHandle<AuthConfigFactory> DownloadEngine::getAuthConfigFactory() const
+{
+  return _authConfigFactory;
 }
 
 } // namespace aria2

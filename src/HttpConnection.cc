@@ -52,6 +52,7 @@
 #include "Socket.h"
 #include "Option.h"
 #include "CookieStorage.h"
+#include "AuthConfigFactory.h"
 
 namespace aria2 {
 

@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "HttpRequest.h"
+
+#include <cassert>
+#include <numeric>
+
 #include "Request.h"
 #include "Segment.h"
 #include "Range.h"
@@ -45,8 +49,6 @@
 #include "AuthConfig.h"
 #include "a2functional.h"
 #include "TimeA2.h"
-#include <numeric>
-#include <cassert>
 
 namespace aria2 {
 
@@ -134,9 +136,8 @@ std::string HttpRequest::getHostText(const std::string& host, uint16_t port) con
 
 std::string HttpRequest::createRequest() const
 {
-  SharedHandle<AuthConfig> authConfig = AuthConfigFactorySingleton::instance()
-    ->createAuthConfig(request);
-
+  SharedHandle<AuthConfig> authConfig =
+    _authConfigFactory->createAuthConfig(request);
   std::string requestLine = "GET ";
   if(getProtocol() == Request::PROTO_FTP || proxyEnabled) {
     if(getProtocol() == Request::PROTO_FTP &&
@@ -257,9 +258,11 @@ std::string HttpRequest::createProxyRequest() const
   return requestLine;
 }
 
-std::string HttpRequest::getProxyAuthString() const {
+std::string HttpRequest::getProxyAuthString() const
+{
   return "Proxy-Authorization: Basic "+
-    Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfigForHttpProxy(request)->getAuthText())+"\r\n";
+    Base64::encode(_authConfigFactory->createAuthConfigForHttpProxy(request)->
+		   getAuthText())+"\r\n";
 }
 
 void HttpRequest::enableContentEncoding()
@@ -346,6 +349,12 @@ void HttpRequest::setCookieStorage
 SharedHandle<CookieStorage> HttpRequest::getCookieStorage() const
 {
   return _cookieStorage;
+}
+
+void HttpRequest::setAuthConfigFactory
+(const SharedHandle<AuthConfigFactory>& factory)
+{
+  _authConfigFactory = factory;
 }
 
 } // namespace aria2

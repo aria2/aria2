@@ -33,6 +33,12 @@
  */
 /* copyright --> */
 #include "FtpNegotiationCommand.h"
+
+#include <stdint.h>
+#include <cassert>
+#include <utility>
+#include <map>
+
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "FtpConnection.h"
@@ -56,10 +62,8 @@
 #include "StringFormat.h"
 #include "DiskAdaptor.h"
 #include "SegmentMan.h"
-#include <stdint.h>
-#include <cassert>
-#include <utility>
-#include <map>
+#include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -71,7 +75,9 @@ FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     Seq seq,
 					     const std::string& baseWorkingDir):
   AbstractCommand(cuid, req, requestGroup, e, s), sequence(seq),
-  ftp(new FtpConnection(cuid, socket, req, e->option))
+  ftp(new FtpConnection(cuid, socket, req,
+			e->getAuthConfigFactory()->createAuthConfig(req),
+			e->option))
 {
   ftp->setBaseWorkingDir(baseWorkingDir);
   if(seq == SEQ_RECV_GREETING) {

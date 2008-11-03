@@ -48,11 +48,9 @@
 #include "Logger.h"
 #include "Util.h"
 #include "BitfieldManFactory.h"
-#include "AuthConfigFactory.h"
 #include "FeatureConfig.h"
 #include "MultiUrlRequestInfo.h"
 #include "SimpleRandomizer.h"
-#include "Netrc.h"
 #include "FatalException.h"
 #include "File.h"
 #include "UriListParser.h"
@@ -371,21 +369,6 @@ int main(int argc, char* argv[])
     logger->info("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET);
     logger->info(MSG_LOGGING_STARTED);
 
-    AuthConfigFactoryHandle authConfigFactory(new AuthConfigFactory(op));
-    File netrccf(op->get(PREF_NETRC_PATH));
-    if(!op->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
-      mode_t mode = netrccf.mode();
-      if(mode&(S_IRWXG|S_IRWXO)) {
-	logger->notice(MSG_INCORRECT_NETRC_PERMISSION,
-		       op->get(PREF_NETRC_PATH).c_str());
-      } else {
-	NetrcHandle netrc(new Netrc());
-	netrc->parse(op->get(PREF_NETRC_PATH));
-	authConfigFactory->setNetrc(netrc);
-      }
-    }
-
-    AuthConfigFactorySingleton::instance(authConfigFactory);
 #ifdef ENABLE_MESSAGE_DIGEST
     MessageDigestHelper::staticSHA1DigestInit();
 #endif // ENABLE_MESSAGE_DIGEST

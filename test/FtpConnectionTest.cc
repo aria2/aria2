@@ -1,4 +1,10 @@
 #include "FtpConnection.h"
+
+#include <iostream>
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "SocketCore.h"
@@ -6,9 +12,8 @@
 #include "Option.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
-#include <iostream>
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
+#include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -30,10 +35,14 @@ private:
   SharedHandle<SocketCore> _serverSocket;
   uint16_t _listenPort;
   SharedHandle<FtpConnection> _ftp;
-  Option _option;
+  SharedHandle<Option> _option;
+  SharedHandle<AuthConfigFactory> _authConfigFactory;
 public:
   void setUp()
   {
+    _option.reset(new Option());
+    _authConfigFactory.reset(new AuthConfigFactory(_option.get()));
+
     //_ftpServerSocket.reset(new SocketCore());
     SharedHandle<SocketCore> listenSocket(new SocketCore());
     listenSocket->bind(0);
@@ -52,7 +61,9 @@ public:
     clientSocket->setBlockingMode();
 
     _serverSocket.reset(listenSocket->acceptConnection());
-    _ftp.reset(new FtpConnection(1, clientSocket, req, &_option));
+    _ftp.reset(new FtpConnection(1, clientSocket, req,
+				 _authConfigFactory->createAuthConfig(req),
+				 _option.get()));
   }
 
   void tearDown() {}

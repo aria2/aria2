@@ -36,9 +36,11 @@
 #define _D_AUTH_CONFIG_FACTORY_H_
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 #include "SingletonHolder.h"
-#include <string>
 
 namespace aria2 {
 
@@ -54,7 +56,8 @@ private:
 
   SharedHandle<Netrc> _netrc;
   
-  SharedHandle<AuthConfig> createAuthConfig(const std::string& user, const std::string& password) const;
+  SharedHandle<AuthConfig> createAuthConfig(const std::string& user,
+					    const std::string& password) const;
 
   SharedHandle<AuthResolver> createHttpAuthResolver() const;
   
@@ -68,9 +71,11 @@ public:
 
   ~AuthConfigFactory();
 
-  SharedHandle<AuthConfig> createAuthConfig(const SharedHandle<Request>& request) const;
+  SharedHandle<AuthConfig> createAuthConfig
+  (const SharedHandle<Request>& request) const;
 
-  SharedHandle<AuthConfig> createAuthConfigForHttpProxy(const SharedHandle<Request>& request) const;
+  SharedHandle<AuthConfig> createAuthConfigForHttpProxy
+  (const SharedHandle<Request>& request) const;
 
   void setNetrc(const SharedHandle<Netrc>& netrc);
 
@@ -80,7 +85,6 @@ public:
 };
 
 typedef SharedHandle<AuthConfigFactory> AuthConfigFactoryHandle;
-typedef SingletonHolder<AuthConfigFactoryHandle> AuthConfigFactorySingleton;
 
 } // namespace aria2
 

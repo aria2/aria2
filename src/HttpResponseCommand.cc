@@ -63,6 +63,7 @@
 #include "HttpHeader.h"
 #include "LogFactory.h"
 #include "CookieStorage.h"
+#include "AuthConfigFactory.h"
 
 namespace aria2 {
 

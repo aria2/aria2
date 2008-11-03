@@ -67,6 +67,8 @@ class SocketCore;
 class CookieStorage;
 class BtRegistry;
 class DNSCache;
+class AuthConfigFactory;
+class Request;
 
 class CommandEvent
 {
@@ -304,6 +306,8 @@ private:
 
   SharedHandle<DNSCache> _dnsCache;
 
+  SharedHandle<AuthConfigFactory> _authConfigFactory;
+
   void shortSleep() const;
 
   /**
@@ -425,6 +429,10 @@ public:
   const std::string& findCachedIPAddress(const std::string& hostname) const;
 
   void cacheIPAddress(const std::string& hostname, const std::string& ipaddr);
+
+  void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
+
+  SharedHandle<AuthConfigFactory> getAuthConfigFactory() const;
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

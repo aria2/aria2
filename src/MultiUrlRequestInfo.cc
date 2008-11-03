@@ -52,6 +52,8 @@
 #include "StatCalc.h"
 #include "CookieStorage.h"
 #include "File.h"
+#include "Netrc.h"
+#include "AuthConfigFactory.h"
 
 namespace aria2 {
 
@@ -95,7 +97,7 @@ void MultiUrlRequestInfo::printMessageForContinue()
 
 int MultiUrlRequestInfo::execute()
 {
-  int returnValue = 0;
+  int returnValue = 1;
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
@@ -114,6 +116,22 @@ int MultiUrlRequestInfo::execute()
       _logger->error(EX_EXCEPTION_CAUGHT, e);
     }
 
+    SharedHandle<AuthConfigFactory> authConfigFactory
+      (new AuthConfigFactory(_option));
+    File netrccf(_option->get(PREF_NETRC_PATH));
+    if(!_option->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
+      mode_t mode = netrccf.mode();
+      if(mode&(S_IRWXG|S_IRWXO)) {
+	_logger->notice(MSG_INCORRECT_NETRC_PERMISSION,
+			_option->get(PREF_NETRC_PATH).c_str());
+      } else {
+	SharedHandle<Netrc> netrc(new Netrc());
+	netrc->parse(_option->get(PREF_NETRC_PATH));
+	authConfigFactory->setNetrc(netrc);
+      }
+    }
+    e->setAuthConfigFactory(authConfigFactory);
+
     std::string serverStatIf = _option->get(PREF_SERVER_STAT_IF);
     if(!serverStatIf.empty()) {
       e->_requestGroupMan->loadServerStat(serverStatIf);
@@ -123,7 +141,8 @@ int MultiUrlRequestInfo::execute()
     e->setStatCalc(_statCalc);
     e->fillCommand();
 
-    // The number of simultaneous download is specified by PREF_MAX_CONCURRENT_DOWNLOADS.
+    // The number of simultaneous download is specified by
+    // PREF_MAX_CONCURRENT_DOWNLOADS.
     // The remaining urls are queued into FillRequestGroupCommand.
     // It observes the number of simultaneous downloads and if it is under
     // the limit, it adds RequestGroup object from its queue to DownloadEngine.
@@ -143,13 +162,13 @@ int MultiUrlRequestInfo::execute()
     _summaryOut << std::flush;
 
     RequestGroupMan::DownloadStat s = e->_requestGroupMan->getDownloadStat();
-    if(!s.allCompleted()) {
+    if(s.allCompleted()) {
+      returnValue = 0;
+    } else {
       printMessageForContinue();
-      returnValue = 1;
     }
-  } catch(RecoverableException *ex) {
-    _logger->error(EX_EXCEPTION_CAUGHT, ex);
-    delete ex;
+  } catch(RecoverableException& e) {
+    _logger->error(EX_EXCEPTION_CAUGHT, e);
   }
   Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
   Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);

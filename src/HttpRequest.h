@@ -36,9 +36,11 @@
 #define _D_HTTP_REQUEST_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -47,6 +49,7 @@ class Segment;
 class Range;
 class Option;
 class CookieStorage;
+class AuthConfigFactory;
 
 class HttpRequest {
 private:
@@ -72,6 +75,8 @@ private:
   std::deque<std::string> _acceptTypes;
 
   SharedHandle<CookieStorage> _cookieStorage;
+
+  SharedHandle<AuthConfigFactory> _authConfigFactory;
 
   std::string getHostText(const std::string& host, uint16_t port) const;
 
@@ -184,6 +189,8 @@ public:
   void setCookieStorage(const SharedHandle<CookieStorage>& cookieStorage);
 
   SharedHandle<CookieStorage> getCookieStorage() const;
+
+  void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

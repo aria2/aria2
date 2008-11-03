@@ -55,6 +55,7 @@
 # include "GZipDecoder.h"
 #endif // HAVE_LIBZ
 #include "CookieStorage.h"
+#include "AuthConfigFactory.h"
 
 namespace aria2 {
 

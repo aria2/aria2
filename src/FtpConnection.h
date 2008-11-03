@@ -36,11 +36,13 @@
 #define _D_FTP_CONNECTION_H_
 
 #include "common.h"
+
+#include <utility>
+#include <string>
+
 #include "SharedHandle.h"
 #include "TimeA2.h"
 #include "SocketBuffer.h"
-#include <utility>
-#include <string>
 
 namespace aria2 {
 
@@ -49,12 +51,16 @@ class Logger;
 class Segment;
 class Request;
 class SocketCore;
+class AuthConfig;
 
 class FtpConnection {
 private:
   int32_t cuid;
   SharedHandle<SocketCore> socket;
   SharedHandle<Request> req;
+
+  SharedHandle<AuthConfig> _authConfig;
+
   const Option* option;
   Logger* logger;
 
@@ -76,7 +82,9 @@ private:
   static const size_t MAX_RECV_BUFFER = 4096;
 public:
   FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
-		const SharedHandle<Request>& req, const Option* op);
+		const SharedHandle<Request>& req,
+		const SharedHandle<AuthConfig>& authConfig,
+		const Option* op);
   ~FtpConnection();
   bool sendUser();
   bool sendPass();

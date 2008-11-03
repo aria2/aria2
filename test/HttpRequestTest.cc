@@ -1,4 +1,7 @@
 #include "HttpRequest.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "prefs.h"
 #include "AuthConfigFactory.h"
 #include "PiecedSegment.h"
@@ -8,7 +11,6 @@
 #include "Option.h"
 #include "array_fun.h"
 #include "CookieStorage.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -30,15 +32,12 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Option> _option;
+  SharedHandle<AuthConfigFactory> _authConfigFactory;
 public:
   void setUp()
   {
-    _option.reset(new Option());
-    
-    SharedHandle<AuthConfigFactory> authConfigFactory
-      (new AuthConfigFactory(_option.get()));
-    SingletonHolder<SharedHandle<AuthConfigFactory> >::instance
-      (authConfigFactory);
+    _option.reset(new Option());    
+    _authConfigFactory.reset(new AuthConfigFactory(_option.get()));
   }
 
   void testGetStartByte();
@@ -125,6 +124,7 @@ void HttpRequestTest::testCreateRequest()
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
 
   // remove "Connection: close" and add end byte range
   request->setPipeliningHint(true);  
@@ -346,6 +346,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
 
   httpRequest.configure(_option.get());
 
@@ -413,6 +414,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setCookieStorage(st);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -478,6 +480,7 @@ void HttpRequestTest::testCreateRequest_query()
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
 
   std::string expectedText =
     "GET /wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138 HTTP/1.1\r\n"
@@ -605,6 +608,7 @@ void HttpRequestTest::testUserAgent()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setUserAgent("aria2 (Linux)");
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2 (Linux)\r\n"
@@ -634,6 +638,7 @@ void HttpRequestTest::testAddHeader()
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
   httpRequest.addHeader("X-ARIA2: v0.13\nX-ARIA2-DISTRIBUTE: enabled\n");
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -661,7 +666,9 @@ void HttpRequestTest::testAddAcceptType()
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
-  httpRequest.addAcceptType(&acceptTypes[0], &acceptTypes[arrayLength(acceptTypes)]);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.addAcceptType(&acceptTypes[0],
+			    &acceptTypes[arrayLength(acceptTypes)]);
 
   std::string expectedText =
     "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -683,6 +690,7 @@ void HttpRequestTest::testEnableAcceptEncoding()
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
 
   std::string acceptEncodings;
 #ifdef HAVE_LIBZ

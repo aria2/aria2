@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "HttpRequestCommand.h"
+
+#include <algorithm>
+
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
@@ -47,7 +50,8 @@
 #include "a2functional.h"
 #include "Util.h"
 #include "CookieStorage.h"
-#include <algorithm>
+#include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -74,7 +78,8 @@ createHttpRequest(const SharedHandle<Request>& req,
 		  uint64_t totalLength,
 		  const Option* option,
 		  const RequestGroup* rg,
-		  const SharedHandle<CookieStorage>& cookieStorage)
+		  const SharedHandle<CookieStorage>& cookieStorage,
+		  const SharedHandle<AuthConfigFactory>& authConfigFactory)
 {
   HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
@@ -83,6 +88,7 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setEntityLength(totalLength);
   httpRequest->addHeader(option->get(PREF_HEADER));
   httpRequest->setCookieStorage(cookieStorage);
+  httpRequest->setAuthConfigFactory(authConfigFactory);
   if(!rg->getAcceptFeatures().empty()) {
     const std::deque<std::string>& acceptFeatures = rg->getAcceptFeatures();
     std::string acceptFeaturesHeader = "Accept-Features: ";
@@ -116,7 +122,8 @@ bool HttpRequestCommand::executeInternal() {
 	(createHttpRequest(req, SharedHandle<Segment>(),
 			   _requestGroup->getTotalLength(), e->option,
 			   _requestGroup,
-			   e->getCookieStorage()));
+			   e->getCookieStorage(),
+			   e->getAuthConfigFactory()));
       _httpConnection->sendRequest(httpRequest);
     } else {
       for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
@@ -126,7 +133,8 @@ bool HttpRequestCommand::executeInternal() {
 	    (createHttpRequest(req, segment,
 			       _requestGroup->getTotalLength(), e->option,
 			       _requestGroup,
-			       e->getCookieStorage()));
+			       e->getCookieStorage(),
+			       e->getAuthConfigFactory()));
 	  _httpConnection->sendRequest(httpRequest);
 	}
       }

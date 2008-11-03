@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "FtpConnection.h"
+
+#include <cstring>
+#include <cstdio>
+#include <cassert>
+
 #include "Request.h"
 #include "Segment.h"
 #include "Option.h"
@@ -48,9 +53,7 @@
 #include "Socket.h"
 #include "A2STR.h"
 #include "StringFormat.h"
-#include <cstring>
-#include <cstdio>
-#include <cassert>
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -59,8 +62,11 @@ const std::string FtpConnection::A("A");
 const std::string FtpConnection::I("I");
 
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
-			     const RequestHandle& req, const Option* op):
-  cuid(cuid), socket(socket), req(req), option(op),
+			     const RequestHandle& req,
+			     const SharedHandle<AuthConfig>& authConfig,
+			     const Option* op):
+  cuid(cuid), socket(socket), req(req),
+  _authConfig(authConfig), option(op),
   logger(LogFactory::getInstance()),
   _socketBuffer(socket),
   _baseWorkingDir("/") {}
@@ -70,9 +76,7 @@ FtpConnection::~FtpConnection() {}
 bool FtpConnection::sendUser()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "USER "+
-      AuthConfigFactorySingleton::instance()->createAuthConfig(req)->
-      getUser()+"\r\n";
+    std::string request = "USER "+_authConfig->getUser()+"\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, "USER ********");
     _socketBuffer.feedSendBuffer(request);
   }
@@ -83,9 +87,7 @@ bool FtpConnection::sendUser()
 bool FtpConnection::sendPass()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "PASS "+
-      AuthConfigFactorySingleton::instance()->createAuthConfig(req)->
-      getPassword()+"\r\n";
+    std::string request = "PASS "+_authConfig->getPassword()+"\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
     _socketBuffer.feedSendBuffer(request);
   }
