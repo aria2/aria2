@@ -6,6 +6,7 @@
 
 #include "PeerMessageUtil.h"
 #include "Peer.h"
+#include "MockPeerStorage.h"
 
 namespace aria2 {
 
@@ -18,12 +19,7 @@ class BtInterestedMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
-private:
-
 public:
-  void setUp() {
-  }
-
   void testCreate();
   void testGetMessage();
   void testDoReceivedAction();
@@ -71,9 +67,18 @@ void BtInterestedMessageTest::testDoReceivedAction() {
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
 
+  SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
+
+  msg.setPeerStorage(peerStorage);
+
   CPPUNIT_ASSERT(!peer->peerInterested());
   msg.doReceivedAction();
   CPPUNIT_ASSERT(peer->peerInterested());
+  CPPUNIT_ASSERT_EQUAL(0, peerStorage->getNumChokeExecuted());
+
+  peer->amChoking(false);
+  msg.doReceivedAction();
+  CPPUNIT_ASSERT_EQUAL(1, peerStorage->getNumChokeExecuted());
 }
 
 void BtInterestedMessageTest::testOnSendComplete() {

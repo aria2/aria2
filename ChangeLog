@@ -1,5 +1,15 @@
 2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Execute choking algorithm when BtInterestedMessage arrives from
+	unchoked peer.
+	* src/BtInterestedMessage.cc
+	* src/BtInterestedMessage.h
+	* src/DefaultBtMessageFactory.cc
+	* test/BtInterestedMessageTest.cc
+	* test/MockPeerStorage.h
+	
+2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	AuthConfigFactory is now part of DownloadEngine.
 	* src/AbstractProxyRequestCommand.cc
 	* src/AuthConfigFactory.h

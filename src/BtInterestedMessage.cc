@@ -39,6 +39,7 @@
 #include "Peer.h"
 #include "BtContext.h"
 #include "StringFormat.h"
+#include "PeerStorage.h"
 
 namespace aria2 {
 
@@ -58,6 +59,9 @@ BtInterestedMessageHandle BtInterestedMessage::create(const unsigned char* data,
 
 void BtInterestedMessage::doReceivedAction() {
   peer->peerInterested(true);
+  if(!peer->amChoking()) {
+    _peerStorage->executeChoke();
+  }
 }
 
 bool BtInterestedMessage::sendPredicate() const {
@@ -90,6 +94,12 @@ void BtInterestedMessage::onSendComplete() {
 std::string BtInterestedMessage::toString() const {
   static const std::string INTERESTED("interested");
   return INTERESTED;
+}
+
+void BtInterestedMessage::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 } // namespace aria2

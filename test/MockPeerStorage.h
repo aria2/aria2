@@ -2,8 +2,10 @@
 #define _D_MOCK_PEER_STORAGE_H_
 
 #include "PeerStorage.h"
-#include "Peer.h"
+
 #include <algorithm>
+
+#include "Peer.h"
 
 namespace aria2 {
 
@@ -12,8 +14,9 @@ private:
   TransferStat stat;
   std::deque<SharedHandle<Peer> > peers;
   std::deque<SharedHandle<Peer> > activePeers;
+  int _numChokeExecuted;
 public:
-  MockPeerStorage() {}
+  MockPeerStorage():_numChokeExecuted(0) {}
   virtual ~MockPeerStorage() {}
 
   virtual bool addPeer(const SharedHandle<Peer>& peer) {
@@ -63,7 +66,15 @@ public:
     return false;
   }
 
-  virtual void executeChoke() {}
+  virtual void executeChoke()
+  {
+    ++_numChokeExecuted;
+  }
+
+  int getNumChokeExecuted() const
+  {
+    return _numChokeExecuted;
+  }
 };
 
 #endif // _D_MOCK_PEER_STORAGE_H_

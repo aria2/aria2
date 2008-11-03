@@ -96,7 +96,12 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       msg = BtUnchokeMessage::create(data, dataLength);
       break;
     case BtInterestedMessage::ID:
-      msg = BtInterestedMessage::create(data, dataLength);
+      {
+	SharedHandle<BtInterestedMessage> m =
+	  BtInterestedMessage::create(data, dataLength);
+	m->setPeerStorage(_peerStorage);
+	msg = m;
+      }
       break;
     case BtNotInterestedMessage::ID:
       {
