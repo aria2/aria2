@@ -39,7 +39,6 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
-#include "CUIDCounter.h"
 #include "Socket.h"
 #include "Logger.h"
 #include "Peer.h"
@@ -171,7 +170,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     logger->info("CUID#%d - Establishing connection using legacy BitTorrent handshake is disabled by preference.", cuid);
     if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
       SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
-      peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
+      peer->usedBy(e->newCUID());
       PeerInitiateConnectionCommand* command =
 	new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer,
 					  e, _btContext, _btRuntime);

@@ -33,16 +33,17 @@
  */
 /* copyright --> */
 #include "PeerListenCommand.h"
+
+#include <utility>
+
 #include "DownloadEngine.h"
 #include "Peer.h"
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
-#include "CUIDCounter.h"
 #include "message.h"
 #include "ReceiverMSEHandshakeCommand.h"
 #include "Logger.h"
 #include "Socket.h"
-#include <utility>
 
 namespace aria2 {
 
@@ -100,7 +101,7 @@ bool PeerListenCommand::execute() {
       peerSocket->setNonBlockingMode();
 
       PeerHandle peer(new Peer(peerInfo.first, peerInfo.second, true));
-      int32_t cuid = CUIDCounterSingletonHolder::instance()->newID();
+      int32_t cuid = e->newCUID();
       Command* command =
 	new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
       e->commands.push_back(command);
@@ -119,7 +120,7 @@ bool PeerListenCommand::execute() {
 PeerListenCommand* PeerListenCommand::getInstance(DownloadEngine* e)
 {
   if(__numInstance == 0) {
-    __instance = new PeerListenCommand(CUIDCounterSingletonHolder::instance()->newID(), e);
+    __instance = new PeerListenCommand(e->newCUID(), e);
   }
   return __instance;
 }

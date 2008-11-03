@@ -33,6 +33,16 @@
  */
 /* copyright --> */
 #include "common.h"
+
+#include <signal.h>
+#include <unistd.h>
+#include <getopt.h>
+
+#include <deque>
+#include <fstream>
+#include <iostream>
+#include <numeric>
+
 #include "SharedHandle.h"
 #include "LogFactory.h"
 #include "Logger.h"
@@ -45,7 +55,6 @@
 #include "Netrc.h"
 #include "FatalException.h"
 #include "File.h"
-#include "CUIDCounter.h"
 #include "UriListParser.h"
 #include "message.h"
 #include "prefs.h"
@@ -74,15 +83,9 @@
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <deque>
-#include <signal.h>
-#include <unistd.h>
-#include <fstream>
-#include <iostream>
-#include <numeric>
+
 extern char* optarg;
 extern int optind, opterr, optopt;
-#include <getopt.h>
 
 namespace aria2 {
 
@@ -383,8 +386,6 @@ int main(int argc, char* argv[])
     }
 
     AuthConfigFactorySingleton::instance(authConfigFactory);
-    CUIDCounterHandle cuidCounter(new CUIDCounter());
-    CUIDCounterSingletonHolder::instance(cuidCounter);
 #ifdef ENABLE_MESSAGE_DIGEST
     MessageDigestHelper::staticSHA1DigestInit();
 #endif // ENABLE_MESSAGE_DIGEST

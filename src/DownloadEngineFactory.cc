@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DownloadEngineFactory.h"
+
+#include <algorithm>
+
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Option.h"
@@ -44,7 +47,6 @@
 # include "CheckIntegrityMan.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "prefs.h"
-#include "CUIDCounter.h"
 #include "FillRequestGroupCommand.h"
 #include "FileAllocationDispatcherCommand.h"
 #include "AutoSaveCommand.h"
@@ -52,7 +54,6 @@
 #include "TimedHaltCommand.h"
 #include "DownloadResult.h"
 #include "ServerStatMan.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -89,18 +90,20 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 #ifdef ENABLE_MESSAGE_DIGEST
   e->_checkIntegrityMan.reset(new CheckIntegrityMan());
 #endif // ENABLE_MESSAGE_DIGEST
-  e->addRoutineCommand(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 1));
-  e->addRoutineCommand(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get()));
+  e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get(), 1));
+  e->addRoutineCommand(new FileAllocationDispatcherCommand(e->newCUID(),
+							   e.get()));
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand
-      (new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(),
-			   e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+      (new AutoSaveCommand(e->newCUID(), e.get(),
+			   op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
   }
-  e->addRoutineCommand(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 10));
+  e->addRoutineCommand(new HaveEraseCommand(e->newCUID(), e.get(), 10));
   {
     time_t stopSec = op->getAsInt(PREF_STOP);
     if(stopSec > 0) {
-      e->addRoutineCommand(new TimedHaltCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), stopSec));
+      e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e.get(),
+						stopSec));
     }
   }
   return e;

@@ -63,13 +63,13 @@
 #include "DHTRegistry.h"
 #include "DHTBucketRefreshTask.h"
 #include "DHTMessageCallback.h"
-#include "CUIDCounter.h"
 #include "prefs.h"
 #include "Option.h"
 #include "SocketCore.h"
 #include "DlAbortEx.h"
 #include "RecoverableException.h"
 #include "a2functional.h"
+#include "DownloadEngine.h"
 
 namespace aria2 {
 
@@ -195,7 +195,8 @@ void DHTSetup::setup(std::deque<Command*>& commands,
 					      option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
 	std::deque<std::pair<std::string, uint16_t> > entryPoints;
 	entryPoints.push_back(addr);
-	DHTEntryPointNameResolveCommand* command = new DHTEntryPointNameResolveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, entryPoints);
+	DHTEntryPointNameResolveCommand* command =
+	  new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
 	command->setBootstrapEnabled(true);
 	command->setTaskQueue(taskQueue);
 	command->setTaskFactory(taskFactory);
@@ -207,7 +208,8 @@ void DHTSetup::setup(std::deque<Command*>& commands,
       _logger->info("No DHT entry point specified.");
     }
     {
-      DHTInteractionCommand* command = new DHTInteractionCommand(CUIDCounterSingletonHolder::instance()->newID(), e);
+      DHTInteractionCommand* command =
+	new DHTInteractionCommand(e->newCUID(), e);
       command->setMessageDispatcher(dispatcher);
       command->setMessageReceiver(receiver);
       command->setTaskQueue(taskQueue);
@@ -215,24 +217,30 @@ void DHTSetup::setup(std::deque<Command*>& commands,
       tempCommands.push_back(command);
     }
     {
-      DHTTokenUpdateCommand* command = new DHTTokenUpdateCommand(CUIDCounterSingletonHolder::instance()->newID(), e, DHT_TOKEN_UPDATE_INTERVAL);
+      DHTTokenUpdateCommand* command =
+	new DHTTokenUpdateCommand(e->newCUID(), e, DHT_TOKEN_UPDATE_INTERVAL);
       command->setTokenTracker(tokenTracker);
       tempCommands.push_back(command);
     }
     {
-      DHTBucketRefreshCommand* command = new DHTBucketRefreshCommand(CUIDCounterSingletonHolder::instance()->newID(), e, DHT_BUCKET_REFRESH_CHECK_INTERVAL);
+      DHTBucketRefreshCommand* command =
+	new DHTBucketRefreshCommand(e->newCUID(), e,
+				    DHT_BUCKET_REFRESH_CHECK_INTERVAL);
       command->setTaskQueue(taskQueue);
       command->setRoutingTable(routingTable);
       command->setTaskFactory(taskFactory);
       tempCommands.push_back(command);
     }
     {
-      DHTPeerAnnounceCommand* command = new DHTPeerAnnounceCommand(CUIDCounterSingletonHolder::instance()->newID(), e, DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
+      DHTPeerAnnounceCommand* command =
+	new DHTPeerAnnounceCommand(e->newCUID(), e,
+				   DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
       command->setPeerAnnounceStorage(peerAnnounceStorage);
       tempCommands.push_back(command);
     }
     {
-      DHTAutoSaveCommand* command = new DHTAutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, 30*60);
+      DHTAutoSaveCommand* command =
+	new DHTAutoSaveCommand(e->newCUID(), e, 30*60);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable);
       tempCommands.push_back(command);

@@ -48,7 +48,6 @@
 #include "SingleFileDownloadContext.h"
 #include "ByteArrayDiskWriterFactory.h"
 #include "RecoverableException.h"
-#include "CUIDCounter.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
@@ -153,7 +152,7 @@ void TrackerWatcherCommand::processTrackerResponse
     if(peer.isNull()) {
       break;
     }
-    peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
+    peer->usedBy(e->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->usedBy(),
 					_requestGroup,

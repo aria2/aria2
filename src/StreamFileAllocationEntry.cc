@@ -33,14 +33,15 @@
  */
 /* copyright --> */
 #include "StreamFileAllocationEntry.h"
-#include "CUIDCounter.h"
+
+#include <algorithm>
+
 #include "DownloadEngine.h"
 #include "Option.h"
 #include "Request.h"
 #include "prefs.h"
 #include "RequestGroup.h"
 #include "InitiateConnectionCommandFactory.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -68,8 +69,7 @@ void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& comma
     } else {
       Command* command =
 	InitiateConnectionCommandFactory::createInitiateConnectionCommand
-	(CUIDCounterSingletonHolder::instance()->newID(),
-	 _currentRequest, _requestGroup, e);
+	(e->newCUID(), _currentRequest, _requestGroup, e);
 
       commands.push_back(command);
 

@@ -53,6 +53,7 @@
 #ifdef ENABLE_ASYNC_DNS
 # include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
+#include "CUIDCounter.h"
 
 namespace aria2 {
 
@@ -298,6 +299,8 @@ private:
 
   SharedHandle<BtRegistry> _btRegistry;
 
+  CUIDCounter _cuidCounter;
+
   void shortSleep() const;
 
   /**
@@ -413,6 +416,8 @@ public:
   SharedHandle<CookieStorage> getCookieStorage() const;
 
   SharedHandle<BtRegistry> getBtRegistry() const;
+
+  CUID newCUID();
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

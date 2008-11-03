@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DownloadCommand.h"
+
+#include <cassert>
+
 #include "Request.h"
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
@@ -46,7 +49,6 @@
 #include "PieceStorage.h"
 #include "CheckIntegrityCommand.h"
 #include "DiskAdaptor.h"
-#include "CUIDCounter.h"
 #include "DownloadContext.h"
 #include "Option.h"
 #include "Util.h"
@@ -58,7 +60,6 @@
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <cassert>
 
 namespace aria2 {
 
@@ -254,7 +255,7 @@ bool DownloadCommand::prepareForNextSegment() {
     if(entry->isValidationReady()) {
       entry->initValidator();
       CheckIntegrityCommand* command =
-	new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), _requestGroup, e, entry);
+	new CheckIntegrityCommand(e->newCUID(), _requestGroup, e, entry);
       e->commands.push_back(command);
     }
 #endif // ENABLE_MESSAGE_DIGEST

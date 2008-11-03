@@ -46,7 +46,6 @@
 #include "UnionSeedCriteria.h"
 #include "TimeSeedCriteria.h"
 #include "ShareRatioSeedCriteria.h"
-#include "CUIDCounter.h"
 #include "prefs.h"
 #include "LogFactory.h"
 #include "Logger.h"
@@ -85,10 +84,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   // commands
   {
     TrackerWatcherCommand* c =
-      new TrackerWatcherCommand(CUIDCounterSingletonHolder::instance()->newID(),
-				requestGroup,
-				e,
-				btContext);
+      new TrackerWatcherCommand(e->newCUID(), requestGroup, e, btContext);
     c->setPeerStorage(peerStorage);
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
@@ -98,9 +94,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
   {
     PeerChokeCommand* c =
-      new PeerChokeCommand(CUIDCounterSingletonHolder::instance()->newID(),
-			   e,
-			   btContext);
+      new PeerChokeCommand(e->newCUID(), e, btContext);
     c->setPeerStorage(peerStorage);
     c->setBtRuntime(btRuntime);
 
@@ -108,8 +102,8 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
   {
     ActivePeerConnectionCommand* c =
-      new ActivePeerConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
-				      requestGroup, e, btContext, 10);
+      new ActivePeerConnectionCommand(e->newCUID(), requestGroup, e, btContext,
+				      10);
     c->setBtRuntime(btRuntime);
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);
@@ -122,10 +116,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
     DHTRegistry::_peerAnnounceStorage->addPeerAnnounce(btContext->getInfoHash(),
 						       peerStorage);
     DHTGetPeersCommand* command =
-      new DHTGetPeersCommand(CUIDCounterSingletonHolder::instance()->newID(),
-			     requestGroup,
-			     e,
-			     btContext);
+      new DHTGetPeersCommand(e->newCUID(), requestGroup, e, btContext);
     command->setTaskQueue(DHTRegistry::_taskQueue);
     command->setTaskFactory(DHTRegistry::_taskFactory);
     command->setBtRuntime(btRuntime);
@@ -152,11 +143,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
   if(unionCri->getSeedCriterion().size() > 0) {
     SeedCheckCommand* c =
-      new SeedCheckCommand(CUIDCounterSingletonHolder::instance()->newID(),
-			   requestGroup,
-			   e,
-			   btContext,
-			   unionCri);
+      new SeedCheckCommand(e->newCUID(), requestGroup, e, btContext, unionCri);
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
     commands.push_back(c);

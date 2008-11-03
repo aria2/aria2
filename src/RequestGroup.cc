@@ -45,7 +45,6 @@
 #include "Dependency.h"
 #include "prefs.h"
 #include "InitiateConnectionCommandFactory.h"
-#include "CUIDCounter.h"
 #include "File.h"
 #include "message.h"
 #include "Util.h"
@@ -281,7 +280,8 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	e->addCommand(commands);
 	if(!btContext->getNodes().empty() && DHTSetup::initialized()) {
 	  DHTEntryPointNameResolveCommand* command =
-	    new DHTEntryPointNameResolveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, btContext->getNodes());
+	    new DHTEntryPointNameResolveCommand(e->newCUID(), e,
+						btContext->getNodes());
 	  command->setTaskQueue(DHTRegistry::_taskQueue);
 	  command->setTaskFactory(DHTRegistry::_taskFactory);
 	  command->setRoutingTable(DHTRegistry::_routingTable);
@@ -334,7 +334,7 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
     entry->initValidator();
     entry->cutTrailingGarbage();
     CheckIntegrityCommand* command =
-      new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), this, e, entry);
+      new CheckIntegrityCommand(e->newCUID(), this, e, entry);
     commands.push_back(command);
   } else
 #endif // ENABLE_MESSAGE_DIGEST
@@ -533,7 +533,9 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 	req->setReferer(_option->get(PREF_REFERER));
 	req->setMethod(method);
 
-	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e);
+	Command* command =
+	  InitiateConnectionCommandFactory::createInitiateConnectionCommand
+	  (e->newCUID(), req, this, e);
 	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
 	registerServerHost(sv);
 	// give a chance to be executed in the next loop in DownloadEngine

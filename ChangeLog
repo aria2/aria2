@@ -1,5 +1,28 @@
 2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed SingletonHolder of CUIDCounter. CUIDCounter is now part of
+	DownloadEngine.
+	* src/ActivePeerConnectionCommand.cc
+	* src/BtSetup.cc
+	* src/CUIDCounter.h
+	* src/DHTSetup.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/DownloadEngineFactory.cc
+	* src/FileAllocationDispatcherCommand.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/PeerInitiateConnectionCommand.cc
+	* src/PeerInteractionCommand.cc
+	* src/PeerListenCommand.cc
+	* src/RequestGroup.cc
+	* src/StreamFileAllocationEntry.cc
+	* src/TrackerWatcherCommand.cc
+	* src/main.cc
+	* test/RequestGroupManTest.cc
+	
+2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Implemented commented code in BtSeederStateChoke
 	* src/BtSeederStateChoke.cc
 	* src/Peer.cc

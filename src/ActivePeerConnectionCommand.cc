@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "ActivePeerConnectionCommand.h"
 #include "PeerInitiateConnectionCommand.h"
-#include "CUIDCounter.h"
 #include "message.h"
 #include "DownloadEngine.h"
 #include "BtContext.h"
@@ -115,7 +114,7 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   if(peer.isNull()) {
     return;
   }
-  peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
+  peer->usedBy(e->newCUID());
   PeerInitiateConnectionCommand* command =
     new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
 				      _btContext, _btRuntime);

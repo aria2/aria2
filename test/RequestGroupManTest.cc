@@ -1,5 +1,4 @@
 #include "RequestGroupMan.h"
-#include "CUIDCounter.h"
 #include "prefs.h"
 #include "SingleFileDownloadContext.h"
 #include "RequestGroup.h"
@@ -25,12 +24,6 @@ class RequestGroupManTest : public CppUnit::TestFixture {
 private:
 
 public:
-  void setUp()
-  {
-    SharedHandle<CUIDCounter> counter(new CUIDCounter());
-    SingletonHolder<SharedHandle<CUIDCounter> >::instance(counter);
-  }
-
   void testIsSameFileBeingDownloaded();
   void testGetInitialCommands();
   void testLoadServerStat();

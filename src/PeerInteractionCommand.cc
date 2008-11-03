@@ -57,7 +57,6 @@
 #include "DefaultBtInteractive.h"
 #include "PeerConnection.h"
 #include "ExtensionMessageFactory.h"
-#include "CUIDCounter.h"
 #include "DHTRoutingTable.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
@@ -292,7 +291,7 @@ bool PeerInteractionCommand::executeInternal() {
 bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
   if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
     PeerHandle peer = _peerStorage->getUnusedPeer();
-    peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
+    peer->usedBy(e->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->usedBy(),
 					_requestGroup,

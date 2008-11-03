@@ -1059,4 +1059,9 @@ DownloadEngine::SocketPoolEntry::getOptions() const
   return _options;
 }
 
+CUID DownloadEngine::newCUID()
+{
+  return _cuidCounter.newID();
+}
+
 } // namespace aria2

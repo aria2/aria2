@@ -39,7 +39,6 @@
 #include "FileAllocationEntry.h"
 #include "FileAllocationCommand.h"
 #include "message.h"
-#include "CUIDCounter.h"
 #include "Logger.h"
 
 namespace aria2 {
@@ -60,7 +59,7 @@ bool FileAllocationDispatcherCommand::execute()
   if(_e->_fileAllocationMan->nextFileAllocationEntryExists() &&
      !_e->_fileAllocationMan->isFileAllocationBeingExecuted()) {
     FileAllocationEntryHandle entry = _e->_fileAllocationMan->popNextFileAllocationEntry();
-    int32_t newCUID = CUIDCounterSingletonHolder::instance()->newID();
+    int32_t newCUID = _e->newCUID();
     logger->info(MSG_FILE_ALLOCATION_DISPATCH, newCUID);
     FileAllocationCommand* command =
       new FileAllocationCommand(newCUID,
