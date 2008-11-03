@@ -114,7 +114,7 @@ bool ServerStatMan::load(std::istream& in)
       sstat->setLastUpdated(Time(Util::parseInt(m[S_LAST_UPDATED])));
       sstat->setStatus(m[S_STATUS]);
       add(sstat);
-    } catch(RecoverableException* e) {
+    } catch(RecoverableException& e) {
       continue;
     }
   }
