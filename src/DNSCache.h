@@ -36,11 +36,11 @@
 #define _D_DNS_CACHE_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "SingletonHolder.h"
-#include "A2STR.h"
+
 #include <string>
 #include <map>
+
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -48,13 +48,10 @@ class DNSCache {
 public:
   virtual ~DNSCache() {}
 
-  virtual std::string find(const std::string& hostname) = 0;
+  virtual const std::string& find(const std::string& hostname) const = 0;
 
   virtual void put(const std::string& hostname, const std::string& ipaddr) = 0;
 };
-
-typedef SharedHandle<DNSCache> DNSCacheHandle;
-typedef SingletonHolder<DNSCacheHandle> DNSCacheSingletonHolder;
 
 class SimpleDNSCache : public DNSCache {
 private:
@@ -64,9 +61,15 @@ public:
 
   virtual ~SimpleDNSCache() {}
 
-  virtual std::string find(const std::string& hostname)
+  virtual const std::string& find(const std::string& hostname) const
   {
-    return _table[hostname];
+    std::map<std::string, std::string>::const_iterator i =
+      _table.find(hostname);
+    if(i == _table.end()) {
+      return A2STR::NIL;
+    } else {
+      return (*i).second;
+    }
   }
 
   virtual void put(const std::string& hostname, const std::string& ipaddr)
@@ -80,7 +83,10 @@ class NullDNSCache : public DNSCache {
 public:
   virtual ~NullDNSCache() {}
 
-  virtual std::string find(const std::string& hostname) { return A2STR::NIL; }
+  virtual const std::string& find(const std::string& hostname)
+  {
+    return A2STR::NIL;
+  }
 
   virtual void put(const std::string& hostname, const std::string& ipaddr) {}
 };

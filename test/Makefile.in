@@ -196,7 +196,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
-	OptionParserTest.cc GZipDecoderTest.cc \
+	OptionParserTest.cc SimpleDNSCacheTest.cc GZipDecoderTest.cc \
 	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
@@ -369,8 +369,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	CookieTest.$(OBJEXT) CookieStorageTest.$(OBJEXT) \
 	TimeTest.$(OBJEXT) CopyDiskAdaptorTest.$(OBJEXT) \
 	FtpConnectionTest.$(OBJEXT) OptionParserTest.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5)
+	SimpleDNSCacheTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -592,8 +592,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
-	OptionParserTest.cc $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5)
+	OptionParserTest.cc SimpleDNSCacheTest.cc $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -811,6 +812,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignatureTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleDNSCacheTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIteratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileDownloadContextTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@

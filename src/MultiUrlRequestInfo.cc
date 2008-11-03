@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "MultiUrlRequestInfo.h"
+
+#include <signal.h>
+
+#include <ostream>
+
 #include "RequestGroupMan.h"
 #include "DownloadEngine.h"
 #include "LogFactory.h"
@@ -42,14 +47,11 @@
 #include "DownloadEngineFactory.h"
 #include "RecoverableException.h"
 #include "message.h"
-#include "DNSCache.h"
 #include "Util.h"
 #include "Option.h"
 #include "StatCalc.h"
 #include "CookieStorage.h"
 #include "File.h"
-#include <signal.h>
-#include <ostream>
 
 namespace aria2 {
 
@@ -93,10 +95,6 @@ void MultiUrlRequestInfo::printMessageForContinue()
 
 int MultiUrlRequestInfo::execute()
 {
-  {
-    DNSCacheHandle dnsCache(new SimpleDNSCache());
-    DNSCacheSingletonHolder::instance(dnsCache);
-  }
   int returnValue = 0;
   try {
     DownloadEngineHandle e =

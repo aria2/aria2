@@ -62,6 +62,7 @@
 #include "ServerStatMan.h"
 #include "CookieStorage.h"
 #include "A2STR.h"
+#include "DNSCache.h"
 
 #include "BtRegistry.h"
 #include "BtContext.h"
@@ -411,7 +412,8 @@ DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 _haltRequested(false),
 				 _noWait(false),
 				 _cookieStorage(new CookieStorage()),
-				 _btRegistry(new BtRegistry())
+				 _btRegistry(new BtRegistry()),
+				 _dnsCache(new SimpleDNSCache())
 {
 #ifdef HAVE_EPOLL
 
@@ -1062,6 +1064,18 @@ DownloadEngine::SocketPoolEntry::getOptions() const
 CUID DownloadEngine::newCUID()
 {
   return _cuidCounter.newID();
+}
+
+const std::string& DownloadEngine::findCachedIPAddress
+(const std::string& hostname) const
+{
+  return _dnsCache->find(hostname);
+}
+
+void DownloadEngine::cacheIPAddress
+(const std::string& hostname, const std::string& ipaddr)
+{
+  _dnsCache->put(hostname, ipaddr);
 }
 
 } // namespace aria2

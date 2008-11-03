@@ -66,6 +66,7 @@ class CheckIntegrityMan;
 class SocketCore;
 class CookieStorage;
 class BtRegistry;
+class DNSCache;
 
 class CommandEvent
 {
@@ -301,6 +302,8 @@ private:
 
   CUIDCounter _cuidCounter;
 
+  SharedHandle<DNSCache> _dnsCache;
+
   void shortSleep() const;
 
   /**
@@ -418,6 +421,10 @@ public:
   SharedHandle<BtRegistry> getBtRegistry() const;
 
   CUID newCUID();
+
+  const std::string& findCachedIPAddress(const std::string& hostname) const;
+
+  void cacheIPAddress(const std::string& hostname, const std::string& ipaddr);
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

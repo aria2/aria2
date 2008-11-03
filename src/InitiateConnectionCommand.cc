@@ -68,7 +68,7 @@ bool InitiateConnectionCommand::executeInternal() {
     hostname = req->getHost();
   }
   std::deque<std::string> addrs;
-  std::string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
+  std::string ipaddr = e->findCachedIPAddress(hostname);
   if(ipaddr.empty()) {
 #ifdef ENABLE_ASYNC_DNS
     if(e->option->getAsBool(PREF_ASYNC_DNS)) {
@@ -91,7 +91,7 @@ bool InitiateConnectionCommand::executeInternal() {
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
 		 hostname.c_str(),
 		 addrs.front().c_str());
-    DNSCacheSingletonHolder::instance()->put(hostname, addrs.front());
+    e->cacheIPAddress(hostname, addrs.front());
   } else {
     logger->info(MSG_DNS_CACHE_HIT, cuid, hostname.c_str(), ipaddr.c_str());
     addrs.push_back(ipaddr);
