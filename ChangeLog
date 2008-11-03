@@ -1,5 +1,17 @@
 2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Implemented commented code in BtSeederStateChoke
+	* src/BtSeederStateChoke.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerInteractionCommand.cc
+	* src/PeerSessionResource.cc
+	* src/PeerSessionResource.h
+	* test/MockBtMessageDispatcher.h
+	* test/PeerSessionResourceTest.cc
+
+2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made BtRegistry non-static object. Now DownloadEngine has a reference to
 	its object.
 	* src/AbstractBtMessage.cc

@@ -45,6 +45,7 @@
 namespace aria2 {
 
 class BitfieldMan;
+class BtMessageDispatcher;
 
 class PeerSessionResource {
 private:
@@ -78,6 +79,8 @@ private:
   Time _lastDownloadUpdate;
 
   Time _lastAmUnchoking;
+
+  WeakHandle<BtMessageDispatcher> _dispatcher;
 public:
   PeerSessionResource(size_t pieceLength, uint64_t totalLength);
 
@@ -185,6 +188,10 @@ public:
   const Time& getLastAmUnchoking() const;
 
   uint64_t getCompletedLength() const;
+
+  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt);
+
+  size_t countOutstandingUpload() const;
 };
 
 } // namespace aria2

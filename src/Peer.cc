@@ -33,13 +33,16 @@
  */
 /* copyright --> */
 #include "Peer.h"
+
+#include <cstring>
+#include <cassert>
+
 #include "Util.h"
 #include "PeerSessionResource.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <cstring>
-#include <cassert>
+#include "BtMessageDispatcher.h"
 
 namespace aria2 {
 
@@ -474,6 +477,18 @@ void Peer::setIncomingPeer(bool incoming)
 void Peer::setFirstContactTime(const Time& time)
 {
   _firstContactTime = time;
+}
+
+void Peer::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt)
+{
+  assert(_res);
+  _res->setBtMessageDispatcher(dpt);
+}
+
+size_t Peer::countOutstandingUpload() const
+{
+  assert(_res);
+  return _res->countOutstandingUpload();
 }
 
 } // namespace aria2

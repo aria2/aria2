@@ -46,6 +46,7 @@
 namespace aria2 {
 
 class PeerSessionResource;
+class BtMessageDispatcher;
 
 class Peer {
 public:
@@ -246,6 +247,10 @@ public:
   bool isIncomingPeer() const;
 
   void setIncomingPeer(bool incoming);
+
+  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt);
+
+  size_t countOutstandingUpload() const;
 };
 
 typedef SharedHandle<Peer> PeerHandle;

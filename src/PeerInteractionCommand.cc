@@ -190,6 +190,7 @@ PeerInteractionCommand::PeerInteractionCommand
   setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   peer->allocateSessionResource(_btContext->getPieceLength(),
 				_btContext->getTotalLength());
+  peer->setBtMessageDispatcher(dispatcher);
 
   maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
 

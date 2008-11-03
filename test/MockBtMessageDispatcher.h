@@ -2,7 +2,11 @@
 #define _D_MOCK_BT_MESSAGE_DISPATCHER_H_
 
 #include "BtMessageDispatcher.h"
+
 #include <algorithm>
+
+#include "BtMessage.h"
+#include "Piece.h"
 
 namespace aria2 {
 

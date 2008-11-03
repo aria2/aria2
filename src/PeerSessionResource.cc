@@ -33,10 +33,14 @@
  */
 /* copyright --> */
 #include "PeerSessionResource.h"
+
+#include <cassert>
+#include <algorithm>
+
 #include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
 #include "A2STR.h"
-#include <algorithm>
+#include "BtMessageDispatcher.h"
 
 namespace aria2 {
 
@@ -336,6 +340,18 @@ const Time& PeerSessionResource::getLastAmUnchoking() const
 uint64_t PeerSessionResource::getCompletedLength() const
 {
   return _bitfieldMan->getCompletedLength();
+}
+
+void PeerSessionResource::setBtMessageDispatcher
+(const WeakHandle<BtMessageDispatcher>& dpt)
+{
+  _dispatcher = dpt;
+}
+
+size_t PeerSessionResource::countOutstandingUpload() const
+{
+  assert(!_dispatcher.isNull());
+  return _dispatcher->countOutstandingUpload();
 }
 
 } // namespace aria2

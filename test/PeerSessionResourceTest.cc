@@ -1,7 +1,10 @@
 #include "PeerSessionResource.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "MockBtMessageDispatcher.h"
 #include "Exception.h"
 #include "Util.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -26,6 +29,7 @@ class PeerSessionResourceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testChokingRequired);
   CPPUNIT_TEST(testOptUnchoking);
   CPPUNIT_TEST(testShouldBeChoking);
+  CPPUNIT_TEST(testCountOutstandingRequest);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -50,6 +54,7 @@ public:
   void testChokingRequired();
   void testOptUnchoking();
   void testShouldBeChoking();
+  void testCountOutstandingRequest();
 };
 
 
@@ -249,6 +254,16 @@ void PeerSessionResourceTest::testShouldBeChoking()
   res.chokingRequired(true);
   res.optUnchoking(true);
   CPPUNIT_ASSERT(!res.shouldBeChoking());
+}
+
+void PeerSessionResourceTest::testCountOutstandingRequest()
+{
+  PeerSessionResource res(1024, 1024*1024);
+  SharedHandle<MockBtMessageDispatcher> dispatcher
+    (new MockBtMessageDispatcher());
+  res.setBtMessageDispatcher(dispatcher);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)0, res.countOutstandingUpload());
 }
 
 } // namespace aria2
