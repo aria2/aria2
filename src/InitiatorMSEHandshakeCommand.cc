@@ -46,10 +46,8 @@
 #include "PeerConnection.h"
 #include "BtContext.h"
 #include "BtRuntime.h"
-#include "PieceStorage.h"
 #include "PeerStorage.h"
-#include "BtAnnounce.h"
-#include "BtProgressInfoFile.h"
+#include "PieceStorage.h"
 #include "Option.h"
 #include "MSEHandshake.h"
 #include "ARC4Encryptor.h"
@@ -63,11 +61,13 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
  const SharedHandle<Peer>& p,
  DownloadEngine* e,
  const SharedHandle<BtContext>& btContext,
+ const SharedHandle<BtRuntime>& btRuntime,
  const SharedHandle<SocketCore>& s):
 
   PeerAbstractCommand(cuid, p, e, s),
-  BtContextAwareCommand(btContext),
   RequestGroupAware(requestGroup),
+  _btContext(btContext),
+  _btRuntime(btRuntime),
   _sequence(INITIATOR_SEND_KEY),
   _mseHandshake(new MSEHandshake(cuid, socket, e->option))
 {
@@ -75,12 +75,12 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
   setWriteCheckSocket(socket);
   setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
 
-  btRuntime->increaseConnections();
+  _btRuntime->increaseConnections();
 }
 
 InitiatorMSEHandshakeCommand::~InitiatorMSEHandshakeCommand()
 {
-  btRuntime->decreaseConnections();
+  _btRuntime->decreaseConnections();
   
   delete _mseHandshake;
 }
@@ -112,7 +112,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
     break;
   case INITIATOR_WAIT_KEY: {
     if(_mseHandshake->receivePublicKey()) {
-      _mseHandshake->initCipher(btContext->getInfoHash());
+      _mseHandshake->initCipher(_btContext->getInfoHash());
       if(_mseHandshake->sendInitiatorStep2()) {
 	_sequence = INITIATOR_FIND_VC_MARKER;
       } else {
@@ -148,11 +148,13 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
 	peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
 					 _mseHandshake->getDecryptor());
       }
-      Command* c =
-	  new PeerInteractionCommand(cuid, _requestGroup, peer, e, btContext,
+      PeerInteractionCommand* c =
+	  new PeerInteractionCommand(cuid, _requestGroup, peer, e, _btContext,
+				     _btRuntime, _pieceStorage,
 				     socket,
 				     PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
 				     peerConnection);
+      c->setPeerStorage(_peerStorage);
       e->commands.push_back(c);
       return true;
     }
@@ -167,21 +169,25 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
   if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     logger->info("CUID#%d - Establishing connection using legacy BitTorrent handshake is disabled by preference.", cuid);
-    if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeers()) {
-      SharedHandle<Peer> peer = peerStorage->getUnusedPeer();
+    if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
+      SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
       peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
-      Command* command =
-	new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
-					  btContext);
+      PeerInitiateConnectionCommand* command =
+	new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer,
+					  e, _btContext, _btRuntime);
+      command->setPeerStorage(_peerStorage);
+      command->setPieceStorage(_pieceStorage);
       e->commands.push_back(command);
     }
     return true;
   } else {
     // try legacy BitTorrent handshake
     logger->info("CUID#%d - Retry using legacy BitTorrent handshake.", cuid);
-    Command* command =
-      new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e, btContext,
-					false);
+    PeerInitiateConnectionCommand* command =
+      new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e,
+					_btContext, _btRuntime, false);
+    command->setPeerStorage(_peerStorage);
+    command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);
     return true;
   }
@@ -190,13 +196,25 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 void InitiatorMSEHandshakeCommand::onAbort()
 {
   if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    peerStorage->returnPeer(peer);
+    _peerStorage->returnPeer(peer);
   }
 }
 
 bool InitiatorMSEHandshakeCommand::exitBeforeExecute()
 {
-  return btRuntime->isHalt();
+  return _btRuntime->isHalt();
+}
+
+void InitiatorMSEHandshakeCommand::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
+}
+
+void InitiatorMSEHandshakeCommand::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
 }
 
 } // namespace aria2

@@ -39,6 +39,7 @@
 
 namespace aria2 {
 
+class PeerStorage;
 class BtNotInterestedMessage;
 
 typedef SharedHandle<BtNotInterestedMessage> BtNotInterestedMessageHandle;
@@ -47,6 +48,8 @@ class BtNotInterestedMessage : public SimpleBtMessage {
 private:
   unsigned char* msg;
   
+  SharedHandle<PeerStorage> _peerStorage;
+
   static size_t MESSAGE_LENGTH;
 public:
   BtNotInterestedMessage():msg(0) {}
@@ -72,6 +75,8 @@ public:
   virtual bool sendPredicate() const;
 
   virtual void onSendComplete();
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 };
 
 } // namespace aria2

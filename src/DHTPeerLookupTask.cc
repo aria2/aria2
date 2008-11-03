@@ -41,7 +41,6 @@
 #include "DHTNodeLookupEntry.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
-#include "BtRegistry.h"
 #include "PeerStorage.h"
 #include "BtRuntime.h"
 #include "BtContext.h"
@@ -52,9 +51,7 @@ namespace aria2 {
 
 DHTPeerLookupTask::DHTPeerLookupTask(const SharedHandle<BtContext>& btContext):
   DHTAbstractNodeLookupTask(btContext->getInfoHash()),
-  _ctx(btContext),
-  _peerStorage(PEER_STORAGE(btContext)),
-  _btRuntime(BT_RUNTIME(btContext)) {}
+  _ctx(btContext) {}
 
 void
 DHTPeerLookupTask::getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
@@ -108,6 +105,16 @@ void DHTPeerLookupTask::onFinish()
 const std::deque<SharedHandle<Peer> >& DHTPeerLookupTask::getPeers() const
 {
   return _peers;
+}
+
+void DHTPeerLookupTask::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
+}
+
+void DHTPeerLookupTask::setPeerStorage(const SharedHandle<PeerStorage>& ps)
+{
+  _peerStorage = ps;
 }
 
 } // namespace aria2

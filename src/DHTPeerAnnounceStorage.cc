@@ -33,9 +33,13 @@
  */
 /* copyright --> */
 #include "DHTPeerAnnounceStorage.h"
+
+#include <cstring>
+#include <algorithm>
+
 #include "DHTPeerAnnounceEntry.h"
 #include "Peer.h"
-#include "BtContext.h"
+#include "PeerStorage.h"
 #include "DHTConstants.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
@@ -44,8 +48,6 @@
 #include "Logger.h"
 #include "Util.h"
 #include "a2functional.h"
-#include <cstring>
-#include <algorithm>
 
 namespace aria2 {
 
@@ -91,24 +93,27 @@ DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
 }
 
 // add peer announce as localhost downloading the content
-void DHTPeerAnnounceStorage::addPeerAnnounce(const BtContextHandle& ctx)
+void DHTPeerAnnounceStorage::addPeerAnnounce
+(const unsigned char* infoHash, const SharedHandle<PeerStorage>& peerStorage)
 {
   _logger->debug("Adding localhost to peer announce list: infoHash=%s",
-		 ctx->getInfoHashAsString().c_str());
-  getPeerAnnounceEntry(ctx->getInfoHash())->setBtContext(ctx);
+		 Util::toHex(infoHash, DHT_ID_LENGTH).c_str());
+  SharedHandle<DHTPeerAnnounceEntry> entry =
+    getPeerAnnounceEntry(infoHash);
+  entry->setPeerStorage(peerStorage);
 }
 
-void DHTPeerAnnounceStorage::removePeerAnnounce(const BtContextHandle& ctx)
+void DHTPeerAnnounceStorage::removeLocalPeerAnnounce
+(const unsigned char* infoHash)
 {
-  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(
-					   ctx->getInfoHash()));
+  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
     std::lower_bound(_entries.begin(), _entries.end(), entry, InfoHashLess());
 
   if(i != _entries.end() &&
-     memcmp(ctx->getInfoHash(), (*i)->getInfoHash(), DHT_ID_LENGTH) == 0) {
-    (*i)->setBtContext(SharedHandle<BtContext>());
+     memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0) {
+    (*i)->clearLocal();
     if((*i)->empty()) {
       _entries.erase(i);
     }

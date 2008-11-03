@@ -34,13 +34,11 @@
 /* copyright --> */
 #include "UTPexExtensionMessage.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "Dictionary.h"
 #include "Data.h"
 #include "BencodeVisitor.h"
 #include "Util.h"
 #include "PeerMessageUtil.h"
-#include "BtRegistry.h"
 #include "PeerStorage.h"
 #include "CompactPeerListProcessor.h"
 #include "MetaFileUtil.h"
@@ -96,7 +94,7 @@ std::string UTPexExtensionMessage::toString() const
 
 void UTPexExtensionMessage::doReceivedAction()
 {
-  PEER_STORAGE(_btContext)->addPeer(_freshPeers);
+  _peerStorage->addPeer(_freshPeers);
 }
 
 bool UTPexExtensionMessage::addFreshPeer(const PeerHandle& peer)
@@ -161,14 +159,14 @@ size_t UTPexExtensionMessage::getMaxDroppedPeer() const
   return _maxDroppedPeer;
 }
 
-void UTPexExtensionMessage::setBtContext(const BtContextHandle& btContext)
+void UTPexExtensionMessage::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
 {
-  _btContext = btContext;
+  _peerStorage = peerStorage;
 }
 
 UTPexExtensionMessageHandle
-UTPexExtensionMessage::create(const BtContextHandle& btContext,
-			      const unsigned char* data, size_t len)
+UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
     throw DlAbortEx(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,

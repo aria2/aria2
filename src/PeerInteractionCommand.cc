@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "PeerInteractionCommand.h"
+
+#include <algorithm>
+
 #include "DownloadEngine.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "DefaultBtInteractive.h"
@@ -43,7 +46,6 @@
 #include "Option.h"
 #include "BtContext.h"
 #include "BtRegistry.h"
-#include "PeerObject.h"
 #include "Peer.h"
 #include "BtMessage.h"
 #include "BtRuntime.h"
@@ -64,21 +66,28 @@
 #include "DHTRegistry.h"
 #include "PieceStorage.h"
 #include "RequestGroup.h"
-#include <algorithm>
+#include "BtAnnounce.h"
+#include "BtProgressInfoFile.h"
+#include "DefaultExtensionMessageFactory.h"
 
 namespace aria2 {
 
-PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
-					       RequestGroup* requestGroup,
-					       const PeerHandle& p,
-					       DownloadEngine* e,
-					       const BtContextHandle& btContext,
-					       const SocketHandle& s,
-					       Seq sequence,
-					       const PeerConnectionHandle& passedPeerConnection)
+PeerInteractionCommand::PeerInteractionCommand
+(int32_t cuid,
+ RequestGroup* requestGroup,
+ const PeerHandle& p,
+ DownloadEngine* e,
+ const SharedHandle<BtContext>& btContext,
+ const SharedHandle<BtRuntime>& btRuntime,
+ const SharedHandle<PieceStorage>& pieceStorage,
+ const SocketHandle& s,
+ Seq sequence,
+ const PeerConnectionHandle& passedPeerConnection)
   :PeerAbstractCommand(cuid, p, e, s),
-   BtContextAwareCommand(btContext),
    RequestGroupAware(requestGroup),
+   _btContext(btContext),
+   _btRuntime(btRuntime),
+   _pieceStorage(pieceStorage),
    sequence(sequence),
    maxDownloadSpeedLimit(0)
 {
@@ -88,9 +97,21 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
-  DefaultBtMessageFactoryHandle factory(new DefaultBtMessageFactory());
+
+  SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
+  SharedHandle<PeerStorage> peerStorage =
+    btRegistry->getPeerStorage(_btContext->getInfoHashAsString());
+
+  SharedHandle<DefaultExtensionMessageFactory> extensionMessageFactory
+    (new DefaultExtensionMessageFactory(_btContext, peer));
+  extensionMessageFactory->setPeerStorage(peerStorage);
+
+  SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());
   factory->setCuid(cuid);
-  factory->setBtContext(btContext);
+  factory->setBtContext(_btContext);
+  factory->setPieceStorage(pieceStorage);
+  factory->setPeerStorage(peerStorage);
+  factory->setExtensionMessageFactory(extensionMessageFactory);
   factory->setPeer(peer);
   factory->setLocalNode(DHTRegistry::_localNode);
   factory->setRoutingTable(DHTRegistry::_routingTable);
@@ -104,39 +125,52 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
     peerConnection = passedPeerConnection;
   }
 
-  DefaultBtMessageDispatcherHandle dispatcher(new DefaultBtMessageDispatcher());
+  SharedHandle<DefaultBtMessageDispatcher> dispatcher
+    (new DefaultBtMessageDispatcher());
   dispatcher->setCuid(cuid);
   dispatcher->setPeer(peer);
-  dispatcher->setBtContext(btContext);
-  dispatcher->setMaxUploadSpeedLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+  dispatcher->setBtContext(_btContext);
+  dispatcher->setPieceStorage(pieceStorage);
+  dispatcher->setPeerStorage(peerStorage);
+  dispatcher->setMaxUploadSpeedLimit
+    (e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   dispatcher->setRequestTimeout(e->option->getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcher->setBtMessageFactory(factory);
 
   DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
   receiver->setCuid(cuid);
   receiver->setPeer(peer);
-  receiver->setBtContext(btContext);
+  receiver->setBtContext(_btContext);
   receiver->setPeerConnection(peerConnection);
   receiver->setDispatcher(dispatcher);
   receiver->setBtMessageFactory(factory);
 
-  DefaultBtRequestFactoryHandle reqFactory(new DefaultBtRequestFactory());
+  SharedHandle<DefaultBtRequestFactory> reqFactory
+    (new DefaultBtRequestFactory());
   reqFactory->setCuid(cuid);
   reqFactory->setPeer(peer);
-  reqFactory->setBtContext(btContext);
+  reqFactory->setBtContext(_btContext);
+  reqFactory->setPieceStorage(pieceStorage);
   reqFactory->setBtMessageDispatcher(dispatcher);
   reqFactory->setBtMessageFactory(factory);
 
-  DefaultBtInteractiveHandle btInteractive(new DefaultBtInteractive(btContext, peer));
+  DefaultBtInteractiveHandle btInteractive
+    (new DefaultBtInteractive(_btContext, peer));
+  btInteractive->setBtRuntime(_btRuntime);
+  btInteractive->setPieceStorage(_pieceStorage);
+  btInteractive->setPeerStorage(peerStorage); // Note: Not a member variable.
   btInteractive->setCuid(cuid);
   btInteractive->setBtMessageReceiver(receiver);
   btInteractive->setDispatcher(dispatcher);
   btInteractive->setBtRequestFactory(reqFactory);
   btInteractive->setPeerConnection(peerConnection);
-  btInteractive->setKeepAliveInterval(e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
-  btInteractive->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+  btInteractive->setExtensionMessageFactory(extensionMessageFactory);
+  btInteractive->setKeepAliveInterval
+    (e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
+  btInteractive->setMaxDownloadSpeedLimit
+    (e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   btInteractive->setBtMessageFactory(factory);
-  if(!btContext->isPrivate()) {
+  if(!_btContext->isPrivate()) {
     if(e->option->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
       btInteractive->setUTPexEnabled(true);
     }
@@ -153,32 +187,23 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   factory->setBtRequestFactory(reqFactory);
   factory->setPeerConnection(peerConnection);
 
-  PeerObjectHandle peerObject(new PeerObject());
-  peerObject->btMessageDispatcher = dispatcher;
-  peerObject->btMessageReceiver = receiver;
-  peerObject->btMessageFactory = factory;
-  peerObject->btRequestFactory = reqFactory;
-  peerObject->peerConnection = peerConnection;
-  
-  PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), peerObject);
-
   setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
-  peer->allocateSessionResource(btContext->getPieceLength(), btContext->getTotalLength());
+  peer->allocateSessionResource(_btContext->getPieceLength(),
+				_btContext->getTotalLength());
 
   maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
 
-  btRuntime->increaseConnections();
+  _btRuntime->increaseConnections();
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
   if(peer->getCompletedLength() > 0) {
-    pieceStorage->subtractPieceStats(peer->getBitfield(),
-				     peer->getBitfieldLength());
+    _pieceStorage->subtractPieceStats(peer->getBitfield(),
+				      peer->getBitfieldLength());
   }
   peer->releaseSessionResource();
-  PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getID());
 					
-  btRuntime->decreaseConnections();
+  _btRuntime->decreaseConnections();
   //logger->debug("CUID#%d - unregistered message factory using ID:%s",
   //cuid, peer->getId().c_str());
 }
@@ -229,7 +254,8 @@ bool PeerInteractionCommand::executeInternal() {
     if(btInteractive->countReceivedMessageInIteration() > 0) {
       updateKeepAlive();
     }
-    if((peer->amInterested() && !peer->peerChoking() && (peer->getLatency() < 1500)) ||
+    if((peer->amInterested() && !peer->peerChoking() &&
+	(peer->getLatency() < 1500)) ||
        (peer->peerInterested() && !peer->amChoking())) {
 
       // Writable check causes CPU usage high because socket becomes writable
@@ -263,15 +289,18 @@ bool PeerInteractionCommand::executeInternal() {
 
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
-  if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeers()) {
-    PeerHandle peer = peerStorage->getUnusedPeer();
+  if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
+    PeerHandle peer = _peerStorage->getUnusedPeer();
     peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->usedBy(),
 					_requestGroup,
 					peer,
 					e,
-					btContext);
+					_btContext,
+					_btRuntime);
+    command->setPeerStorage(_peerStorage);
+    command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);
   }
   return true;
@@ -279,7 +308,7 @@ bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
 
 void PeerInteractionCommand::onAbort() {
   btInteractive->cancelAllPiece();
-  peerStorage->returnPeer(peer);
+  _peerStorage->returnPeer(peer);
 }
 
 void PeerInteractionCommand::onFailure()
@@ -289,7 +318,13 @@ void PeerInteractionCommand::onFailure()
 
 bool PeerInteractionCommand::exitBeforeExecute()
 {
-  return btRuntime->isHalt();
+  return _btRuntime->isHalt();
+}
+
+void PeerInteractionCommand::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 } // namespace aria2

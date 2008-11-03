@@ -40,7 +40,6 @@
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtRuntime.h"
-#include "BtRegistry.h"
 
 namespace aria2 {
 
@@ -48,16 +47,13 @@ class ShareRatioSeedCriteria : public SeedCriteria {
 private:
   double ratio;
   SharedHandle<BtContext> btContext;
-  SharedHandle<PeerStorage> peerStorage;
-  SharedHandle<PieceStorage> pieceStorage;
-  SharedHandle<BtRuntime> btRuntime;
+  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<BtRuntime> _btRuntime;
 public:
   ShareRatioSeedCriteria(double ratio, const SharedHandle<BtContext>& btContext)
     :ratio(ratio),
-     btContext(btContext),
-     peerStorage(PEER_STORAGE(btContext)),
-     pieceStorage(PIECE_STORAGE(btContext)),
-     btRuntime(BT_RUNTIME(btContext)) {}
+     btContext(btContext) {}
 
   virtual ~ShareRatioSeedCriteria() {}
 
@@ -67,11 +63,11 @@ public:
     if(btContext->getTotalLength() == 0) {
       return false;
     }
-    TransferStat stat = peerStorage->calculateStat();
+    TransferStat stat = _peerStorage->calculateStat();
     uint64_t allTimeUploadLength =
-      btRuntime->getUploadLengthAtStartup()+stat.getSessionUploadLength();
+      _btRuntime->getUploadLengthAtStartup()+stat.getSessionUploadLength();
     return ratio <=
-      ((double)allTimeUploadLength)/pieceStorage->getCompletedLength();
+      ((double)allTimeUploadLength)/_pieceStorage->getCompletedLength();
   }
 
   void setRatio(double ratio) {
@@ -80,6 +76,21 @@ public:
 
   double getRatio() const {
     return ratio;
+  }
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage)
+  {
+    _peerStorage = peerStorage;
+  }
+
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
+  {
+    _pieceStorage = pieceStorage;
+  }
+
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+  {
+    _btRuntime = btRuntime;
   }
 };
 

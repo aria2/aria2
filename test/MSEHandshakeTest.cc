@@ -1,13 +1,14 @@
 #include "MSEHandshake.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "prefs.h"
 #include "Socket.h"
 #include "Option.h"
-#include "BtRegistry.h"
 #include "MockBtContext.h"
 #include "FileEntry.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -29,14 +30,6 @@ public:
     unsigned char infoHash[20];
     memset(infoHash, 0, sizeof(infoHash));
     _btctx->setInfoHash(infoHash);
-
-    BtRegistry::unregisterAll();
-    BtRegistry::registerBtContext(_btctx->getInfoHashAsString(), _btctx);
-  }
-
-  void tearDown()
-  {
-    BtRegistry::unregisterAll();
   }
 
   void testHandshake();
@@ -78,7 +71,9 @@ void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, 
   initiator->sendInitiatorStep2();
 
   while(!receiver->findReceiverHashMarker());
-  while(!receiver->receiveReceiverHashAndPadCLength());
+  std::deque<SharedHandle<BtContext> > btContexts;
+  btContexts.push_back(_btctx);
+  while(!receiver->receiveReceiverHashAndPadCLength(btContexts));
   while(!receiver->receivePad());
   while(!receiver->receiveReceiverIALength());
   while(!receiver->receiveReceiverIA());

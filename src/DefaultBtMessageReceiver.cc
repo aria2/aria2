@@ -33,17 +33,18 @@
  */
 /* copyright --> */
 #include "DefaultBtMessageReceiver.h"
+
+#include <cstring>
+
 #include "BtHandshakeMessage.h"
 #include "message.h"
 #include "BtContext.h"
-#include "BtRegistry.h"
 #include "Peer.h"
 #include "PeerConnection.h"
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include <cstring>
 
 namespace aria2 {
 

@@ -36,18 +36,24 @@
 #define _D_PEER_CHOKE_COMMAND_H_
 
 #include "Command.h"
-#include "BtContextAwareCommand.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
 class DownloadEngine;
+class BtContext;
+class BtRuntime;
+class PeerStorage;
 
-class PeerChokeCommand : public Command,
-			 public BtContextAwareCommand
-{
+class PeerChokeCommand : public Command {
 private:
   DownloadEngine* e;
 
+  SharedHandle<BtContext> _btContext;
+
+  SharedHandle<PeerStorage> _peerStorage;
+
+  SharedHandle<BtRuntime> _btRuntime;
 public:
   PeerChokeCommand(int32_t cuid,
 		   DownloadEngine* e,
@@ -56,6 +62,10 @@ public:
   virtual ~PeerChokeCommand();
 
   virtual bool execute();
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 };
 
 } // namespace aria2

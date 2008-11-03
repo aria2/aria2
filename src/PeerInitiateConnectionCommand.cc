@@ -43,33 +43,35 @@
 #include "Socket.h"
 #include "Logger.h"
 #include "Peer.h"
-#include "PeerConnection.h"
 #include "BtContext.h"
 #include "BtRuntime.h"
-#include "PieceStorage.h"
 #include "PeerStorage.h"
-#include "BtAnnounce.h"
-#include "BtProgressInfoFile.h"
+#include "PieceStorage.h"
+#include "PeerConnection.h"
 
 namespace aria2 {
 
-PeerInitiateConnectionCommand::PeerInitiateConnectionCommand(int cuid,
-							     RequestGroup* requestGroup,
-							     const PeerHandle& peer,
-							     DownloadEngine* e,
-							     const BtContextHandle& btContext,
-							     bool mseHandshakeEnabled)
-  :PeerAbstractCommand(cuid, peer, e),
-   BtContextAwareCommand(btContext),
-   RequestGroupAware(requestGroup),
-   _mseHandshakeEnabled(mseHandshakeEnabled)
+PeerInitiateConnectionCommand::PeerInitiateConnectionCommand
+(int cuid,
+ RequestGroup* requestGroup,
+ const PeerHandle& peer,
+ DownloadEngine* e,
+ const SharedHandle<BtContext>& btContext,
+ const SharedHandle<BtRuntime>& btRuntime,
+ bool mseHandshakeEnabled)
+  :
+  PeerAbstractCommand(cuid, peer, e),
+  RequestGroupAware(requestGroup),
+  _btContext(btContext),
+  _btRuntime(btRuntime),
+  _mseHandshakeEnabled(mseHandshakeEnabled)
 {
-  btRuntime->increaseConnections();
+  _btRuntime->increaseConnections();
 }
 
 PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 {
-  btRuntime->decreaseConnections();
+  _btRuntime->decreaseConnections();
 }
 
 bool PeerInitiateConnectionCommand::executeInternal() {
@@ -77,40 +79,58 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 	       peer->port);
   socket.reset(new SocketCore());
   socket->establishConnection(peer->ipaddr, peer->port);
-  Command* command;
   if(_mseHandshakeEnabled) {
-    command =
-      new InitiatorMSEHandshakeCommand(cuid, _requestGroup, peer, e, btContext,
-				       socket);
+    InitiatorMSEHandshakeCommand* c =
+      new InitiatorMSEHandshakeCommand(cuid, _requestGroup, peer, e, _btContext,
+				       _btRuntime, socket);
+    c->setPeerStorage(_peerStorage);
+    c->setPieceStorage(_pieceStorage);
+    e->commands.push_back(c);
   } else {
-    command =
-      new PeerInteractionCommand(cuid, _requestGroup, peer, e, btContext, socket,
-				 PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
+    PeerInteractionCommand* command =
+      new PeerInteractionCommand
+      (cuid, _requestGroup, peer, e, _btContext, _btRuntime, _pieceStorage,
+       socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
+    command->setPeerStorage(_peerStorage);
+    e->commands.push_back(command);
   }
-  e->commands.push_back(command);
   return true;
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
-  if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeers()) {
-    PeerHandle peer = peerStorage->getUnusedPeer();
+  if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
+    PeerHandle peer = _peerStorage->getUnusedPeer();
     peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
-    Command* command =
+    PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
-					btContext);
+					_btContext, _btRuntime);
+    command->setPeerStorage(_peerStorage);
+    command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);
   }
   return true;
 }
 
 void PeerInitiateConnectionCommand::onAbort() {
-  peerStorage->returnPeer(peer);
+  _peerStorage->returnPeer(peer);
 }
 
 bool PeerInitiateConnectionCommand::exitBeforeExecute()
 {
-  return btRuntime->isHalt();
+  return _btRuntime->isHalt();
+}
+
+void PeerInitiateConnectionCommand::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
+}
+
+void PeerInitiateConnectionCommand::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
 }
 
 } // namespace aria2

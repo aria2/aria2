@@ -40,8 +40,8 @@
 #include "UTPexExtensionMessage.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "BtRegistry.h"
 #include "StringFormat.h"
+#include "PeerStorage.h"
 
 namespace aria2 {
 
@@ -76,8 +76,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     if(extensionName == "ut_pex") {
       // uTorrent compatible Peer-Exchange
       UTPexExtensionMessageHandle m =
-	UTPexExtensionMessage::create(_btContext, data, length);
-      m->setBtContext(_btContext);
+	UTPexExtensionMessage::create(data, length);
+      m->setPeerStorage(_peerStorage);
       return m;
     } else {
       throw DlAbortEx
@@ -90,6 +90,12 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 void DefaultExtensionMessageFactory::setBtContext(const BtContextHandle& btContext)
 {
   _btContext = btContext;
+}
+
+void DefaultExtensionMessageFactory::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 void DefaultExtensionMessageFactory::setPeer(const PeerHandle& peer)

@@ -52,19 +52,21 @@
 
 namespace aria2 {
 
-ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
-							 RequestGroup* requestGroup,
-							 DownloadEngine* e,
-							 const BtContextHandle& btContext,
-							 time_t interval)
-  :Command(cuid),
-   BtContextAwareCommand(btContext),
-   RequestGroupAware(requestGroup),
-   interval(interval),
-   e(e),
-   _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT)),
-   _maxUploadSpeedLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
-   _numNewConnection(5)
+ActivePeerConnectionCommand::ActivePeerConnectionCommand
+(int cuid,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const BtContextHandle& btContext,
+ time_t interval)
+  :
+  Command(cuid),
+  RequestGroupAware(requestGroup),
+  _btContext(btContext),
+  interval(interval),
+  e(e),
+  _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT)),
+  _maxUploadSpeedLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
+  _numNewConnection(5)
 {
   unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
   if(maxDownloadSpeed > 0) {
@@ -75,32 +77,32 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
 ActivePeerConnectionCommand::~ActivePeerConnectionCommand() {}
 
 bool ActivePeerConnectionCommand::execute() {
-  if(btRuntime->isHalt()) {
+  if(_btRuntime->isHalt()) {
     return true;
   }
   if(checkPoint.elapsed(interval)) {
     checkPoint.reset();
     TransferStat tstat = _requestGroup->calculateStat();
     if(// for seeder state
-       (pieceStorage->downloadFinished() && btRuntime->lessThanMaxPeers() &&
+       (_pieceStorage->downloadFinished() && _btRuntime->lessThanMaxPeers() &&
 	(_maxUploadSpeedLimit == 0 ||
 	 tstat.getUploadSpeed() < _maxUploadSpeedLimit*0.8)) ||
        // for leecher state
-       (!pieceStorage->downloadFinished() &&
+       (!_pieceStorage->downloadFinished() &&
 	(tstat.getDownloadSpeed() < _thresholdSpeed ||
-	 btRuntime->lessThanMinPeers()))) {
-      unsigned int numConnection = pieceStorage->downloadFinished() ?
+	 _btRuntime->lessThanMinPeers()))) {
+      unsigned int numConnection = _pieceStorage->downloadFinished() ?
 	std::min(_numNewConnection,
-		 BtRuntime::MAX_PEERS-btRuntime->getConnections()) :
+		 BtRuntime::MAX_PEERS-_btRuntime->getConnections()) :
 	_numNewConnection;
       for(unsigned int numAdd = numConnection;
-	  numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
-	PeerHandle peer = peerStorage->getUnusedPeer();
+	  numAdd > 0 && _peerStorage->isPeerAvailable(); --numAdd) {
+	PeerHandle peer = _peerStorage->getUnusedPeer();
 	connectToPeer(peer);
       }
-      if(btRuntime->getConnections() == 0 &&
-	 !pieceStorage->downloadFinished()) {
-	btAnnounce->overrideMinInterval(BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL);
+      if(_btRuntime->getConnections() == 0 &&
+	 !_pieceStorage->downloadFinished()) {
+	_btAnnounce->overrideMinInterval(BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL);
       }
     }
   }
@@ -115,10 +117,37 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   }
   peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
   PeerInitiateConnectionCommand* command =
-    new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e, btContext);
+    new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
+				      _btContext, _btRuntime);
+  command->setPeerStorage(_peerStorage);
+  command->setPieceStorage(_pieceStorage);
   e->commands.push_back(command);
   logger->info(MSG_CONNECTING_TO_PEER,
 	       cuid, peer->ipaddr.c_str());
+}
+
+void ActivePeerConnectionCommand::setBtRuntime
+(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
+}
+
+void ActivePeerConnectionCommand::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
+}
+
+void ActivePeerConnectionCommand::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
+}
+
+void ActivePeerConnectionCommand::setBtAnnounce
+(const SharedHandle<BtAnnounce>& btAnnounce)
+{
+  _btAnnounce = btAnnounce;
 }
 
 } // namespace aria2

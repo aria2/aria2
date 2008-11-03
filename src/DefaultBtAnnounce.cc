@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "DefaultBtAnnounce.h"
-#include "BtRegistry.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "MetaFileUtil.h"
@@ -68,10 +67,7 @@ DefaultBtAnnounce::DefaultBtAnnounce(const BtContextHandle& btContext,
   announceList(btContext->getAnnounceTiers()),
   option(option),
   logger(LogFactory::getInstance()),
-  _randomizer(SimpleRandomizer::getInstance()),
-  btRuntime(BT_RUNTIME(btContext)),
-  pieceStorage(PIECE_STORAGE(btContext)),
-  peerStorage(PEER_STORAGE(btContext))
+  _randomizer(SimpleRandomizer::getInstance())
 {
   prevAnnounceTime.setTimeInSec(0);
   generateKey();

@@ -1,8 +1,12 @@
 #include "BtNotInterestedMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Peer.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
+#include "PeerStorage.h"
 
 namespace aria2 {
 
@@ -19,6 +23,7 @@ private:
 
 public:
   void setUp() {
+    // TODO add peer storage here
   }
 
   void testCreate();

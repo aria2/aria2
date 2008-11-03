@@ -33,6 +33,14 @@
  */
 /* copyright --> */
 #include "DownloadEngine.h"
+
+#include <signal.h>
+
+#include <cstring>
+#include <cerrno>
+#include <algorithm>
+#include <numeric>
+
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -54,11 +62,14 @@
 #include "ServerStatMan.h"
 #include "CookieStorage.h"
 #include "A2STR.h"
-#include <signal.h>
-#include <cstring>
-#include <algorithm>
-#include <numeric>
-#include <cerrno>
+
+#include "BtRegistry.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtAnnounce.h"
+#include "BtRuntime.h"
+#include "BtProgressInfoFile.h"
 
 namespace aria2 {
 
@@ -399,7 +410,8 @@ void AsyncNameResolverEntry::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 _haltRequested(false),
 				 _noWait(false),
-				 _cookieStorage(new CookieStorage())
+				 _cookieStorage(new CookieStorage()),
+				 _btRegistry(new BtRegistry())
 {
 #ifdef HAVE_EPOLL
 
@@ -1014,6 +1026,11 @@ DownloadEngine::popPooledSocket
     }
   }
   return s;
+}
+
+SharedHandle<BtRegistry> DownloadEngine::getBtRegistry() const
+{
+  return _btRegistry;
 }
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry

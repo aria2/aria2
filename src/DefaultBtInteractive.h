@@ -36,12 +36,17 @@
 #define _D_DEFAULT_BT_INTERACTIVE_H_
 
 #include "BtInteractive.h"
-#include "BtContextAwareCommand.h"
-#include "TimeA2.h"
+
 #include  <limits.h>
+
+#include "TimeA2.h"
 
 namespace aria2 {
 
+class BtContext;
+class BtRuntime;
+class PieceStorage;
+class PeerStorage;
 class Peer;
 class BtMessage;
 class BtMessageReceiver;
@@ -49,6 +54,7 @@ class BtMessageDispatcher;
 class BtMessageFactory;
 class BtRequestFactory;
 class PeerConnection;
+class ExtensionMessageFactory;
 class DHTNode;
 class Logger;
 
@@ -85,16 +91,26 @@ public:
   }
 };
 
-class DefaultBtInteractive : public BtInteractive, public BtContextAwareCommand {
+class DefaultBtInteractive : public BtInteractive {
 private:
   int32_t cuid;
+
+  SharedHandle<BtContext> _btContext;
+
+  SharedHandle<BtRuntime> _btRuntime;
+
+  SharedHandle<PieceStorage> _pieceStorage;
+
+  SharedHandle<PeerStorage> _peerStorage;
+
   SharedHandle<Peer> peer;
 
-  WeakHandle<BtMessageReceiver> btMessageReceiver;
-  WeakHandle<BtMessageDispatcher> dispatcher;
-  WeakHandle<BtRequestFactory> btRequestFactory;
-  WeakHandle<PeerConnection> peerConnection;
-  WeakHandle<BtMessageFactory> messageFactory;
+  SharedHandle<BtMessageReceiver> btMessageReceiver;
+  SharedHandle<BtMessageDispatcher> dispatcher;
+  SharedHandle<BtRequestFactory> btRequestFactory;
+  SharedHandle<PeerConnection> peerConnection;
+  SharedHandle<BtMessageFactory> messageFactory;
+  SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
 
   WeakHandle<DHTNode> _localNode;
 
@@ -163,17 +179,26 @@ public:
     this->cuid = cuid;
   }
 
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
   void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtMessageReceiver(const WeakHandle<BtMessageReceiver>& receiver);
+  void setBtMessageReceiver(const SharedHandle<BtMessageReceiver>& receiver);
 
-  void setDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
+  void setDispatcher(const SharedHandle<BtMessageDispatcher>& dispatcher);
 
-  void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
+  void setBtRequestFactory(const SharedHandle<BtRequestFactory>& factory);
 
-  void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
+  void setPeerConnection(const SharedHandle<PeerConnection>& peerConnection);
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
+  void setBtMessageFactory(const SharedHandle<BtMessageFactory>& factory);
+
+  void setExtensionMessageFactory
+  (const SharedHandle<ExtensionMessageFactory>& factory);
 
   void setKeepAliveInterval(time_t keepAliveInterval) {
     this->keepAliveInterval = keepAliveInterval;

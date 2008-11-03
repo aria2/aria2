@@ -1,8 +1,11 @@
 #include "BtInterestedMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Peer.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -67,6 +70,7 @@ void BtInterestedMessageTest::testDoReceivedAction() {
   SharedHandle<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
+
   CPPUNIT_ASSERT(!peer->peerInterested());
   msg.doReceivedAction();
   CPPUNIT_ASSERT(peer->peerInterested());

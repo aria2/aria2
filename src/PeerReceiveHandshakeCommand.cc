@@ -45,6 +45,8 @@
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtRuntime.h"
+#include "BtAnnounce.h"
+#include "BtProgressInfoFile.h"
 #include "BtConstants.h"
 #include "message.h"
 #include "Socket.h"
@@ -57,11 +59,13 @@
 
 namespace aria2 {
 
-PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(int32_t cuid,
-							 const PeerHandle& peer,
-							 DownloadEngine* e,
-							 const SocketHandle& s,
-							 const SharedHandle<PeerConnection>& peerConnection):
+PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
+(int32_t cuid,
+ const PeerHandle& peer,
+ DownloadEngine* e,
+ const SocketHandle& s,
+ const SharedHandle<PeerConnection>& peerConnection)
+  :
   PeerAbstractCommand(cuid, peer, e, s),
   _peerConnection(peerConnection),
   _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT))
@@ -93,28 +97,40 @@ bool PeerReceiveHandshakeCommand::executeInternal()
   if(dataLength >= 48) {
     // check info_hash
     std::string infoHash = Util::toHex(&data[28], INFO_HASH_LENGTH);
-    BtContextHandle btContext = BtRegistry::getBtContext(infoHash);
-    if(btContext.isNull() || !BT_RUNTIME(btContext)->ready()) {
+
+    SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
+    SharedHandle<BtContext> btContext = btRegistry->getBtContext(infoHash);
+    SharedHandle<BtRuntime> btRuntime = btRegistry->getBtRuntime(infoHash);
+    SharedHandle<PieceStorage> pieceStorage =
+      btRegistry->getPieceStorage(infoHash);
+    SharedHandle<PeerStorage> peerStorage =
+      btRegistry->getPeerStorage(infoHash);
+
+    if(btContext.isNull() || !btRuntime->ready()) {
       throw DlAbortEx
 	(StringFormat("Unknown info hash %s", infoHash.c_str()).str());
     }
     TransferStat tstat = btContext->getOwnerRequestGroup()->calculateStat();
-    if((!PIECE_STORAGE(btContext)->downloadFinished() &&
+    if((!pieceStorage->downloadFinished() &&
        tstat.getDownloadSpeed() < _thresholdSpeed) ||
-       BT_RUNTIME(btContext)->lessThanMaxPeers()) {
-      if(PEER_STORAGE(btContext)->addPeer(peer)) {
+       btRuntime->lessThanMaxPeers()) {
+      if(peerStorage->addPeer(peer)) {
 
 	peer->usedBy(cuid);
 	
 	PeerInteractionCommand* command =
-	  new PeerInteractionCommand(cuid,
-				     btContext->getOwnerRequestGroup(),
-				     peer,
-				     e,
-				     btContext,
-				     socket,
-				     PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-				     _peerConnection);
+	  new PeerInteractionCommand
+	  (cuid,
+	   btContext->getOwnerRequestGroup(),
+	   peer,
+	   e,
+	   btContext,
+	   btRuntime,
+	   pieceStorage,
+	   socket,
+	   PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
+	   _peerConnection);
+	command->setPeerStorage(peerStorage);
 	e->commands.push_back(command);
 	logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
       }

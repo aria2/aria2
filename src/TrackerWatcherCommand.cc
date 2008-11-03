@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "TrackerWatcherCommand.h"
+
+#include <sstream>
+
 #include "DownloadEngine.h"
 #include "BtContext.h"
 #include "BtAnnounce.h"
@@ -55,7 +58,6 @@
 #include "Logger.h"
 #include "A2STR.h"
 #include "SocketCore.h"
-#include <sstream>
 
 namespace aria2 {
 
@@ -64,9 +66,9 @@ TrackerWatcherCommand::TrackerWatcherCommand(int32_t cuid,
 					     DownloadEngine* e,
 					     const BtContextHandle& btContext):
   Command(cuid),
-  BtContextAwareCommand(btContext),
   RequestGroupAware(requestGroup),
-  e(e) {}
+  e(e),
+  _btContext(btContext) {}
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
@@ -83,7 +85,7 @@ bool TrackerWatcherCommand::execute() {
       return false;
     }
   }
-  if(btAnnounce->noMoreAnnounce()) {
+  if(_btAnnounce->noMoreAnnounce()) {
     logger->debug("no more announce");
     return true;
   }
@@ -100,35 +102,37 @@ bool TrackerWatcherCommand::execute() {
       std::string trackerResponse = getTrackerResponse(_trackerRequestGroup);
 
       processTrackerResponse(trackerResponse);
-      btAnnounce->announceSuccess();
-      btAnnounce->resetAnnounce();
+      _btAnnounce->announceSuccess();
+      _btAnnounce->resetAnnounce();
     } catch(RecoverableException& ex) {
       logger->error(EX_EXCEPTION_CAUGHT, ex);      
-      btAnnounce->announceFailure();
-      if(btAnnounce->isAllAnnounceFailed()) {
-	btAnnounce->resetAnnounce();
+      _btAnnounce->announceFailure();
+      if(_btAnnounce->isAllAnnounceFailed()) {
+	_btAnnounce->resetAnnounce();
       }
     }
     _trackerRequestGroup.reset();
   } else if(_trackerRequestGroup->getNumCommand() == 0){
     // handle errors here
-    btAnnounce->announceFailure(); // inside it, trackers = 0.
+    _btAnnounce->announceFailure(); // inside it, trackers = 0.
     _trackerRequestGroup.reset();
-    if(btAnnounce->isAllAnnounceFailed()) {
-      btAnnounce->resetAnnounce();
+    if(_btAnnounce->isAllAnnounceFailed()) {
+      _btAnnounce->resetAnnounce();
     }
   }
   e->commands.push_back(this);
   return false;
 }
 
-std::string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& requestGroup)
+std::string TrackerWatcherCommand::getTrackerResponse
+(const RequestGroupHandle& requestGroup)
 {
   std::stringstream strm;
   unsigned char data[2048];
   requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
   while(1) {
-    ssize_t dataLength = requestGroup->getPieceStorage()->getDiskAdaptor()->readData(data, sizeof(data), strm.tellp());
+    ssize_t dataLength = requestGroup->getPieceStorage()->
+      getDiskAdaptor()->readData(data, sizeof(data), strm.tellp());
     if(dataLength == 0) {
       break;
     }
@@ -138,12 +142,14 @@ std::string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& 
 }
 
 // TODO we have to deal with the exception thrown By BtAnnounce
-void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerResponse)
+void TrackerWatcherCommand::processTrackerResponse
+(const std::string& trackerResponse)
 {
-  btAnnounce->processAnnounceResponse(reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
+  _btAnnounce->processAnnounceResponse
+    (reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
 				      trackerResponse.size());
-  while(!btRuntime->isHalt() && btRuntime->lessThanMinPeers()) {
-    PeerHandle peer = peerStorage->getUnusedPeer();
+  while(!_btRuntime->isHalt() && _btRuntime->lessThanMinPeers()) {
+    PeerHandle peer = _peerStorage->getUnusedPeer();
     if(peer.isNull()) {
       break;
     }
@@ -153,7 +159,10 @@ void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerRes
 					_requestGroup,
 					peer,
 					e,
-					btContext);
+					_btContext,
+					_btRuntime);
+    command->setPeerStorage(_peerStorage);
+    command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);
     logger->debug("CUID#%d - Adding new command CUID#%d", cuid, peer->usedBy());
   }
@@ -161,9 +170,9 @@ void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerRes
 
 RequestGroupHandle TrackerWatcherCommand::createAnnounce() {
   RequestGroupHandle rg;
-  if(btAnnounce->isAnnounceReady()) {
-    rg = createRequestGroup(btAnnounce->getAnnounceUrl());
-    btAnnounce->announceStart(); // inside it, trackers++.
+  if(_btAnnounce->isAnnounceReady()) {
+    rg = createRequestGroup(_btAnnounce->getAnnounceUrl());
+    _btAnnounce->announceStart(); // inside it, trackers++.
   }
   return rg;
 }
@@ -189,6 +198,30 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setPreLocalFileCheckEnabled(false);
   logger->info("Creating tracker request group GID#%d", rg->getGID());
   return rg;
+}
+
+void TrackerWatcherCommand::setBtRuntime
+(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
+}
+
+void TrackerWatcherCommand::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
+}
+
+void TrackerWatcherCommand::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
+}
+
+void TrackerWatcherCommand::setBtAnnounce
+(const SharedHandle<BtAnnounce>& btAnnounce)
+{
+  _btAnnounce = btAnnounce;
 }
 
 } // namespace aria2

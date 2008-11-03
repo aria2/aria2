@@ -54,15 +54,15 @@ protected:
   virtual bool executeInternal();
   virtual bool exitBeforeExecute();
 public:
-  PeerReceiveHandshakeCommand(int32_t cuid,
-			      const SharedHandle<Peer>& peer,
-			      DownloadEngine* e,
-			      const SharedHandle<SocketCore>& s,
-			      const SharedHandle<PeerConnection>& peerConnection = SharedHandle<PeerConnection>());
-
+  PeerReceiveHandshakeCommand
+  (int32_t cuid,
+   const SharedHandle<Peer>& peer,
+   DownloadEngine* e,
+   const SharedHandle<SocketCore>& s,
+   const SharedHandle<PeerConnection>& peerConnection =
+   SharedHandle<PeerConnection>());
+  
   virtual ~PeerReceiveHandshakeCommand();
-
-
 };
 
 } // namespace aria2

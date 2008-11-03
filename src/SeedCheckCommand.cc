@@ -46,17 +46,17 @@ namespace aria2 {
 SeedCheckCommand::SeedCheckCommand(int cuid,
 				   RequestGroup* requestGroup,
 				   DownloadEngine* e,
-				   const BtContextHandle& btContext,
+				   const SharedHandle<BtContext>& btContext,
 				   const SeedCriteriaHandle& seedCriteria)
   :Command(cuid),
-   BtContextAwareCommand(btContext),
    RequestGroupAware(requestGroup),
    e(e),
+   _btContext(btContext),
    seedCriteria(seedCriteria),
    checkStarted(false) {}
 
 bool SeedCheckCommand::execute() {
-  if(btRuntime->isHalt()) {
+  if(_btRuntime->isHalt()) {
     return true;
   }
   if(!seedCriteria.get()) {
@@ -64,7 +64,7 @@ bool SeedCheckCommand::execute() {
   }
   if(checkPoint.elapsed(1)) {
     if(!checkStarted) {
-      if(pieceStorage->downloadFinished()) {
+      if(_pieceStorage->downloadFinished()) {
 	checkStarted = true;
 	seedCriteria->reset();
       }
@@ -72,7 +72,7 @@ bool SeedCheckCommand::execute() {
     if(checkStarted) {
       if(seedCriteria->evaluate()) {
 	logger->notice(MSG_SEEDING_END);
-	btRuntime->setHalt(true);
+	_btRuntime->setHalt(true);
       }
     }
   }
@@ -80,9 +80,22 @@ bool SeedCheckCommand::execute() {
   return false;
 }
 
-void SeedCheckCommand::setSeedCriteria(const SharedHandle<SeedCriteria>& seedCriteria)
+void SeedCheckCommand::setSeedCriteria
+(const SharedHandle<SeedCriteria>& seedCriteria)
 {
   this->seedCriteria = seedCriteria;
 }
+
+void SeedCheckCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
+}
+
+void SeedCheckCommand::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
+}
+
 
 } // namespace aria2

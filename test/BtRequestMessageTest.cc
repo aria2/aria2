@@ -10,15 +10,8 @@
 #include "MockPieceStorage.h"
 #include "MockBtMessageFactory.h"
 #include "MockBtMessageDispatcher.h"
-#include "DefaultBtContext.h"
 #include "BtAbortOutstandingRequestEvent.h"
 #include "Peer.h"
-#include "BtRegistry.h"
-#include "PeerObject.h"
-#include "BtMessageReceiver.h"
-#include "BtRequestFactory.h"
-#include "PeerConnection.h"
-#include "ExtensionMessageFactory.h"
 #include "FileEntry.h"
 #include "BtHandshakeMessage.h"
 #include "BtRequestMessageValidator.h"
@@ -75,7 +68,10 @@ public:
     uint32_t begin;
     size_t length;
   public:
-    MockBtMessage2(std::string type, size_t index, uint32_t begin, size_t length):type(type), index(index), begin(begin), length(length) {}
+    MockBtMessage2(std::string type, size_t index, uint32_t begin,
+		   size_t length)
+      :
+      type(type), index(index), begin(begin), length(length) {}
   };
 
   typedef SharedHandle<MockBtMessage2> MockBtMessage2Handle;
@@ -84,59 +80,54 @@ public:
   public:
     virtual SharedHandle<BtMessage>
     createPieceMessage(size_t index, uint32_t begin, size_t length) {
-      SharedHandle<MockBtMessage2> btMsg(new MockBtMessage2("piece", index, begin, length));
+      SharedHandle<MockBtMessage2> btMsg
+	(new MockBtMessage2("piece", index, begin, length));
       return btMsg;
     }
 
     virtual SharedHandle<BtMessage>
     createRejectMessage(size_t index, uint32_t begin, size_t length) {
-      SharedHandle<MockBtMessage2> btMsg(new MockBtMessage2("reject", index, begin, length));
+      SharedHandle<MockBtMessage2> btMsg
+	(new MockBtMessage2("reject", index, begin, length));
       return btMsg;
     }
   };
 
   typedef SharedHandle<MockBtMessageFactory2> MockBtMessageFactory2Handle;
 
-  SharedHandle<Peer> peer;
-  SharedHandle<MockBtMessageDispatcher> dispatcher;
+  SharedHandle<MockBtContext> _btContext;
+  SharedHandle<MockPieceStorage> _pieceStorage;
+  SharedHandle<Peer> _peer;
+  SharedHandle<MockBtMessageDispatcher> _dispatcher;
+  SharedHandle<MockBtMessageFactory> _messageFactory;
   SharedHandle<BtRequestMessage> msg;
 
   void setUp() {
-    BtRegistry::unregisterAll();
+    _btContext.reset(new MockBtContext());
+    _btContext->setInfoHash((const unsigned char*)"12345678901234567890");
+    _btContext->setPieceLength(16*1024);
+    _btContext->setTotalLength(256*1024);
 
-    SharedHandle<MockBtContext> btContext(new MockBtContext());
-    btContext->setInfoHash((const unsigned char*)"12345678901234567890");
-    btContext->setPieceLength(16*1024);
-    btContext->setTotalLength(256*1024);
+    _pieceStorage.reset(new MockPieceStorage2());
 
-    SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage2());
+    _peer.reset(new Peer("host", 6969));
+    _peer->allocateSessionResource(_btContext->getPieceLength(),
+				  _btContext->getTotalLength());
 
-    BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-				     pieceStorage);
+    _dispatcher.reset(new MockBtMessageDispatcher());
 
-    peer.reset(new Peer("host", 6969));
-    peer->allocateSessionResource(btContext->getPieceLength(),
-				  btContext->getTotalLength());
-    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
-    BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  cluster);
-    SharedHandle<PeerObject> po(new PeerObject());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
-
-    dispatcher.reset(new MockBtMessageDispatcher());
-
-    PEER_OBJECT(btContext, peer)->btMessageDispatcher = dispatcher;
-    PEER_OBJECT(btContext, peer)->btMessageFactory.reset(new MockBtMessageFactory2());
+    _messageFactory.reset(new MockBtMessageFactory2());
 
     msg.reset(new BtRequestMessage());
-    msg->setBtContext(btContext);
-    msg->setPeer(peer);
+    msg->setBtContext(_btContext);
+    msg->setPeer(_peer);
     msg->setIndex(1);
     msg->setBegin(16);
     msg->setLength(32);
     msg->setBlockIndex(2);
-    msg->setBtMessageDispatcher(dispatcher);
-    msg->setBtMessageFactory(BT_MESSAGE_FACTORY(btContext, peer));
+    msg->setBtMessageDispatcher(_dispatcher);
+    msg->setBtMessageFactory(_messageFactory);
+    msg->setPieceStorage(_pieceStorage);
   }
 };
 
@@ -187,11 +178,12 @@ void BtRequestMessageTest::testGetMessage() {
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
-  peer->amChoking(false);
+  _peer->amChoking(false);
   msg->doReceivedAction();
   
-  CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher->messageQueue.size());
-  MockBtMessage2* pieceMsg = (MockBtMessage2*)dispatcher->messageQueue.front().get();
+  CPPUNIT_ASSERT_EQUAL((size_t)1, _dispatcher->messageQueue.size());
+  MockBtMessage2* pieceMsg =
+    (MockBtMessage2*)_dispatcher->messageQueue.front().get();
   CPPUNIT_ASSERT_EQUAL(std::string("piece"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((size_t)1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
@@ -199,12 +191,13 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionEnabled() {
-  peer->amChoking(true);
-  peer->setFastExtensionEnabled(true);
+  _peer->amChoking(true);
+  _peer->setFastExtensionEnabled(true);
   msg->doReceivedAction();
   
-  CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher->messageQueue.size());
-  MockBtMessage2* pieceMsg = (MockBtMessage2*)dispatcher->messageQueue.front().get();
+  CPPUNIT_ASSERT_EQUAL((size_t)1, _dispatcher->messageQueue.size());
+  MockBtMessage2* pieceMsg =
+    (MockBtMessage2*)_dispatcher->messageQueue.front().get();
   CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((size_t)1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
@@ -212,20 +205,21 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExten
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionDisabled() {
-  peer->amChoking(true);
+  _peer->amChoking(true);
   msg->doReceivedAction();
   
-  CPPUNIT_ASSERT_EQUAL((size_t)0, dispatcher->messageQueue.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, _dispatcher->messageQueue.size());
 }
 
 void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionEnabled() {
   msg->setIndex(2);
-  peer->amChoking(false);
-  peer->setFastExtensionEnabled(true);
+  _peer->amChoking(false);
+  _peer->setFastExtensionEnabled(true);
   msg->doReceivedAction();
   
-  CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher->messageQueue.size());
-  MockBtMessage2* pieceMsg = (MockBtMessage2*)dispatcher->messageQueue.front().get();
+  CPPUNIT_ASSERT_EQUAL((size_t)1, _dispatcher->messageQueue.size());
+  MockBtMessage2* pieceMsg =
+    (MockBtMessage2*)_dispatcher->messageQueue.front().get();
   CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
@@ -234,10 +228,10 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionE
 
 void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionDisabled() {
   msg->setIndex(2);
-  peer->amChoking(false);
+  _peer->amChoking(false);
   msg->doReceivedAction();
   
-  CPPUNIT_ASSERT_EQUAL((size_t)0, dispatcher->messageQueue.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, _dispatcher->messageQueue.size());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent() {

@@ -51,7 +51,7 @@ class DefaultBtRequestFactory : public BtRequestFactory {
 private:
   int32_t cuid;
   SharedHandle<BtContext> btContext;
-  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<Peer> peer;
   WeakHandle<BtMessageDispatcher> dispatcher;
   WeakHandle<BtMessageFactory> messageFactory;
@@ -94,6 +94,8 @@ public:
   }
 
   void setBtContext(const SharedHandle<BtContext>& btContext);
+
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
   void setPeer(const SharedHandle<Peer>& peer);
 

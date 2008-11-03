@@ -1,4 +1,9 @@
 #include "BtPortMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "array_fun.h"
@@ -8,8 +13,6 @@
 #include "MockDHTTask.h"
 #include "MockDHTTaskFactory.h"
 #include "MockDHTTaskQueue.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 

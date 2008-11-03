@@ -54,8 +54,8 @@ DHTGetPeersCommand::DHTGetPeersCommand(int32_t cuid,
 				       DownloadEngine* e,
 				       const BtContextHandle& ctx):
   Command(cuid),
-  BtContextAwareCommand(ctx),
   RequestGroupAware(requestGroup),
+  _btContext(ctx),
   _e(e),
   _numRetry(0),
   _lastGetPeerTime(0)
@@ -65,19 +65,21 @@ DHTGetPeersCommand::~DHTGetPeersCommand() {}
 
 bool DHTGetPeersCommand::execute()
 {
-  if(btRuntime->isHalt()) {
+  if(_btRuntime->isHalt()) {
     return true;
   }
   if(_task.isNull() &&
      ((_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL)) ||
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
     logger->debug("Issuing PeerLookup for infoHash=%s",
-		  btContext->getInfoHashAsString().c_str());
-    _task = dynamic_pointer_cast<DHTPeerLookupTask>(_taskFactory->createPeerLookupTask(btContext));
+		  _btContext->getInfoHashAsString().c_str());
+    _task = dynamic_pointer_cast<DHTPeerLookupTask>
+      (_taskFactory->createPeerLookupTask(_btContext, _btRuntime,
+					  _peerStorage));
     _taskQueue->addPeriodicTask2(_task);
   } else if(!_task.isNull() && _task->finished()) {
     _lastGetPeerTime.reset();
-    if(_numRetry < MAX_RETRIES && btRuntime->lessThanMinPeers()) {
+    if(_numRetry < MAX_RETRIES && _btRuntime->lessThanMinPeers()) {
       ++_numRetry;
     } else {
       _numRetry = 0;
@@ -97,6 +99,16 @@ void DHTGetPeersCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueu
 void DHTGetPeersCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
+}
+
+void DHTGetPeersCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
+}
+
+void DHTGetPeersCommand::setPeerStorage(const SharedHandle<PeerStorage>& ps)
+{
+  _peerStorage = ps;
 }
 
 } // namespace aria2

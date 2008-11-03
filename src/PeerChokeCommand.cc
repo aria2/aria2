@@ -42,23 +42,34 @@ namespace aria2 {
 
 PeerChokeCommand::PeerChokeCommand(int32_t cuid,
 				   DownloadEngine* e,
-				   const BtContextHandle& btContext):
+				   const SharedHandle<BtContext>& btContext):
   Command(cuid),
-  BtContextAwareCommand(btContext),
-  e(e)
-{}
+  e(e),
+  _btContext(btContext) {}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 
 bool PeerChokeCommand::execute() {
-  if(btRuntime->isHalt()) {
+  if(_btRuntime->isHalt()) {
     return true;
   }
-  if(peerStorage->chokeRoundIntervalElapsed()) {
-    peerStorage->executeChoke();
+  if(_peerStorage->chokeRoundIntervalElapsed()) {
+    _peerStorage->executeChoke();
   }
   e->commands.push_back(this);
   return false;
+}
+
+void PeerChokeCommand::setBtRuntime
+(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
+}
+
+void PeerChokeCommand::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 } // namespace aria2

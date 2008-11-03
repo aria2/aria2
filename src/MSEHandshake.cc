@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "MSEHandshake.h"
+
+#include <cstring>
+#include <cassert>
+
 #include "message.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
@@ -46,13 +50,10 @@
 #include "MessageDigestHelper.h"
 #include "SimpleRandomizer.h"
 #include "Util.h"
-#include "BtRegistry.h"
 #include "BtContext.h"
 #include "prefs.h"
 #include "Option.h"
 #include "StringFormat.h"
-#include <cstring>
-#include <cassert>
 
 namespace aria2 {
 
@@ -424,14 +425,14 @@ bool MSEHandshake::findReceiverHashMarker()
   return true;
 }
 
-bool MSEHandshake::receiveReceiverHashAndPadCLength()
+bool MSEHandshake::receiveReceiverHashAndPadCLength
+(const std::deque<SharedHandle<BtContext> >& btContexts)
 {
   size_t r = 20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/-_rbufLength;
   if(r > receiveNBytes(r)) {
     return false;
   }
   // resolve info hash
-  std::deque<SharedHandle<BtContext> > btContexts = BtRegistry::getAllBtContext();
   // pointing to the position of HASH('req2', SKEY) xor HASH('req3', S)
   unsigned char* rbufptr = _rbuf;
   SharedHandle<BtContext> btContext;

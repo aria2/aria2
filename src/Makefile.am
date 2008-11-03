@@ -252,7 +252,6 @@ SRCS += MetaEntry.h\
 	BtAnnounce.cc BtAnnounce.h\
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
 	BtRuntime.h\
-	BtContextAwareCommand.cc BtContextAwareCommand.h\
 	BtMessage.h\
 	AbstractBtMessage.cc AbstractBtMessage.h\
 	SimpleBtMessage.cc SimpleBtMessage.h\

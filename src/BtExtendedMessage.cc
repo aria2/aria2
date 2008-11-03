@@ -33,13 +33,6 @@
  */
 /* copyright --> */
 #include "BtExtendedMessage.h"
-#include "BtRegistry.h"
-#include "PeerObject.h"
-#include "BtMessageFactory.h"
-#include "BtMessageReceiver.h"
-#include "BtMessageDispatcher.h"
-#include "BtRequestFactory.h"
-#include "PeerConnection.h"
 #include "ExtensionMessage.h"
 #include "ExtensionMessageFactory.h"
 #include "PeerMessageUtil.h"
@@ -96,7 +89,7 @@ std::string BtExtendedMessage::toString() const {
 }
 
 BtExtendedMessageHandle
-BtExtendedMessage::create(const BtContextHandle& btContext,
+BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
 			  const PeerHandle& peer,
 			  const unsigned char* data, size_t dataLength)
 {
@@ -109,8 +102,6 @@ BtExtendedMessage::create(const BtContextHandle& btContext,
     throw DlAbortEx
       (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "extended", ID).str());
   }
-  ExtensionMessageFactoryHandle factory = EXTENSION_MESSAGE_FACTORY(btContext,
-								    peer);
   assert(!factory.isNull());
   ExtensionMessageHandle extmsg = factory->createMessage(data+1,
 							 dataLength-1);

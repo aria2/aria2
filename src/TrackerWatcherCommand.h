@@ -36,20 +36,34 @@
 #define _D_TRACKER_WATCHER_COMMAND_H_
 
 #include "Command.h"
-#include "BtContextAwareCommand.h"
+#include "SharedHandle.h"
 #include "RequestGroupAware.h"
 
 namespace aria2 {
 
 class DownloadEngine;
 class RequestGroup;
+class BtContext;
+class PeerStorage;
+class PieceStorage;
+class BtRuntime;
+class BtAnnounce;
 
 class TrackerWatcherCommand : public Command,
-			      public BtContextAwareCommand,
 			      public RequestGroupAware
 {
 private:
   DownloadEngine* e;
+
+  SharedHandle<BtContext> _btContext;
+
+  SharedHandle<PeerStorage> _peerStorage;
+
+  SharedHandle<PieceStorage> _pieceStorage;
+
+  SharedHandle<BtRuntime> _btRuntime;
+
+  SharedHandle<BtAnnounce> _btAnnounce;
 
   SharedHandle<RequestGroup> _trackerRequestGroup;
   /**
@@ -73,6 +87,14 @@ public:
   SharedHandle<RequestGroup> createAnnounce();
 
   virtual bool execute();
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+
+  void setBtAnnounce(const SharedHandle<BtAnnounce>& btAnnounce);
 };
 
 } // namespace aria2

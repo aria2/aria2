@@ -41,6 +41,8 @@
 namespace aria2 {
 
 class BtContext;
+class BtRuntime;
+class PeerStorage;
 class DHTTask;
 class DHTNode;
 class DHTBucket;
@@ -59,7 +61,9 @@ public:
   virtual SharedHandle<DHTTask> createBucketRefreshTask() = 0;
 
   virtual SharedHandle<DHTTask>
-  createPeerLookupTask(const SharedHandle<BtContext>& ctx) = 0;
+  createPeerLookupTask(const SharedHandle<BtContext>& ctx,
+		       const SharedHandle<BtRuntime>& btRuntime,
+		       const SharedHandle<PeerStorage>& peerStorage) = 0;
   
   virtual SharedHandle<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash) = 0;

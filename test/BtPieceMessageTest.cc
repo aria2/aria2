@@ -1,4 +1,9 @@
 #include "BtPieceMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "MockBtContext.h"
 #include "MockBtMessage.h"
@@ -9,15 +14,7 @@
 #include "FileEntry.h"
 #include "Peer.h"
 #include "Piece.h"
-#include "BtRegistry.h"
-#include "PeerObject.h"
-#include "BtMessageReceiver.h"
-#include "BtRequestFactory.h"
-#include "PeerConnection.h"
-#include "ExtensionMessageFactory.h"
 #include "BtHandshakeMessage.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -75,37 +72,33 @@ public:
     }
   };
 
+  SharedHandle<MockBtContext> _btContext;
   SharedHandle<MockBtMessageDispatcher> btMessageDispatcher;
+  SharedHandle<MockBtMessageFactory> _btMessageFactory;
   SharedHandle<Peer> peer;
   SharedHandle<BtPieceMessage> msg;
 
   void setUp() {
-    BtRegistry::unregisterAll();
-    SharedHandle<MockBtContext> btContext(new MockBtContext());
-    btContext->setInfoHash((const unsigned char*)"12345678901234567890");
-    btContext->setPieceLength(16*1024);
-    btContext->setTotalLength(256*1024);
+    _btContext.reset(new MockBtContext());
+    _btContext->setInfoHash((const unsigned char*)"12345678901234567890");
+    _btContext->setPieceLength(16*1024);
+    _btContext->setTotalLength(256*1024);
 
     peer.reset(new Peer("host", 6969));
-    peer->allocateSessionResource(btContext->getPieceLength(),
-				  btContext->getTotalLength());
-    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
-    BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  cluster);
-    SharedHandle<PeerObject> po(new PeerObject());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
+    peer->allocateSessionResource(_btContext->getPieceLength(),
+				  _btContext->getTotalLength());
+
     btMessageDispatcher.reset(new MockBtMessageDispatcher());
-    PEER_OBJECT(btContext, peer)->btMessageDispatcher = btMessageDispatcher;
-    PEER_OBJECT(btContext, peer)->btMessageFactory.reset(new MockBtMessageFactory2());
+    _btMessageFactory.reset(new MockBtMessageFactory2());
 
     msg.reset(new BtPieceMessage());
     msg->setIndex(1);
     msg->setBegin(1024);
     msg->setBlockLength(16*1024);
-    msg->setBtContext(btContext);
+    msg->setBtContext(_btContext);
     msg->setPeer(peer);
     msg->setBtMessageDispatcher(btMessageDispatcher);
-    msg->setBtMessageFactory(BT_MESSAGE_FACTORY(btContext, peer));
+    msg->setBtMessageFactory(_btMessageFactory);
   }
 };
 
@@ -181,7 +174,8 @@ void BtPieceMessageTest::testChokingEvent_allowedFastEnabled() {
 
   CPPUNIT_ASSERT(msg->isInvalidate());  
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
-  MockBtMessage2* rej = (MockBtMessage2*)btMessageDispatcher->messageQueue.front().get();
+  MockBtMessage2* rej =
+    (MockBtMessage2*)btMessageDispatcher->messageQueue.front().get();
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)1024, rej->begin);
   CPPUNIT_ASSERT_EQUAL((size_t)16*1024, rej->length);
@@ -271,7 +265,8 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_allowedFastEnabled() {
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
-  MockBtMessage2* rej = (MockBtMessage2*)btMessageDispatcher->messageQueue.front().get();
+  MockBtMessage2* rej = (MockBtMessage2*)btMessageDispatcher->
+    messageQueue.front().get();
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)1024, rej->begin);
   CPPUNIT_ASSERT_EQUAL((size_t)16*1024, rej->length);

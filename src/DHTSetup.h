@@ -46,7 +46,7 @@ class Command;
 
 class DHTSetup {
 private:
-  static size_t _initialized;
+  static bool _initialized;
 
   Logger* _logger;
 

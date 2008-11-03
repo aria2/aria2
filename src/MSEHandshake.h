@@ -36,6 +36,9 @@
 #define _D_MSE_HANDSHAKE_H_
 
 #include "common.h"
+
+#include <deque>
+
 #include "SharedHandle.h"
 #include "BtConstants.h"
 #include "SocketBuffer.h"
@@ -48,6 +51,7 @@ class SocketCore;
 class DHKeyExchange;
 class ARC4Encryptor;
 class ARC4Decryptor;
+class BtContext;
 
 class MSEHandshake {
 public:
@@ -153,7 +157,8 @@ public:
 
   bool findReceiverHashMarker();
 
-  bool receiveReceiverHashAndPadCLength();
+  bool receiveReceiverHashAndPadCLength
+  (const std::deque<SharedHandle<BtContext> >& btContexts);
 
   bool receiveReceiverIALength();
 

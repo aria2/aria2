@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "RequestGroup.h"
+
+#include <cassert>
+#include <algorithm>
+
 #include "PostDownloadHandler.h"
 #include "DownloadEngine.h"
 #include "DefaultSegmentManFactory.h"
@@ -87,7 +91,6 @@
 # include "BtPostDownloadHandler.h"
 # include "DHTSetup.h"
 # include "DHTRegistry.h"
-# include "PeerObject.h"
 # include "BtMessageFactory.h"
 # include "BtRequestFactory.h"
 # include "BtMessageDispatcher.h"
@@ -100,8 +103,6 @@
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
 #endif // ENABLE_METALINK
-#include <cassert>
-#include <algorithm>
 
 namespace aria2 {
 
@@ -200,35 +201,46 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	_pieceStorage->setFileFilter(Util::parseIntRange(_option->get(PREF_SELECT_FILE)));
       }
       
-      BtProgressInfoFileHandle
+      SharedHandle<DefaultBtProgressInfoFile>
 	progressInfoFile(new DefaultBtProgressInfoFile(_downloadContext,
 						       _pieceStorage,
 						       _option));
       
-      BtRegistry::registerBtContext(btContext->getInfoHashAsString(), btContext);
-      BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
+      SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
+
+      btRegistry->registerBtContext(btContext->getInfoHashAsString(),
+				    btContext);
+      btRegistry->registerPieceStorage(btContext->getInfoHashAsString(),
 				       _pieceStorage);
-      BtRegistry::registerBtProgressInfoFile(btContext->getInfoHashAsString(),
+      btRegistry->registerBtProgressInfoFile(btContext->getInfoHashAsString(),
 					     progressInfoFile);
 
   
       BtRuntimeHandle btRuntime(new BtRuntime());
       btRuntime->setListenPort(_option->getAsInt(PREF_LISTEN_PORT));
-      BtRegistry::registerBtRuntime(btContext->getInfoHashAsString(), btRuntime);
+      btRegistry->registerBtRuntime(btContext->getInfoHashAsString(),
+				    btRuntime);
+      _btRuntime = btRuntime;
+      progressInfoFile->setBtRuntime(btRuntime);
 
-      PeerStorageHandle peerStorage(new DefaultPeerStorage(btContext, _option));
-      BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(), peerStorage);
+      SharedHandle<DefaultPeerStorage> peerStorage
+	(new DefaultPeerStorage(btContext, _option));
+      peerStorage->setBtRuntime(btRuntime);
+      peerStorage->setPieceStorage(_pieceStorage);
+      btRegistry->registerPeerStorage(btContext->getInfoHashAsString(),
+				      peerStorage);
+      _peerStorage = peerStorage;
+      progressInfoFile->setPeerStorage(peerStorage);
 
-      BtAnnounceHandle btAnnounce(new DefaultBtAnnounce(btContext, _option));
-      BtRegistry::registerBtAnnounce(btContext->getInfoHashAsString(), btAnnounce);
+      SharedHandle<DefaultBtAnnounce> btAnnounce
+	(new DefaultBtAnnounce(btContext, _option));
+      btAnnounce->setBtRuntime(btRuntime);
+      btAnnounce->setPieceStorage(_pieceStorage);
+      btAnnounce->setPeerStorage(peerStorage);
+      btRegistry->registerBtAnnounce(btContext->getInfoHashAsString(),
+				     btAnnounce);
       btAnnounce->shuffleAnnounce();
       
-      {
-	SharedHandle<PeerObjectCluster> po(new PeerObjectCluster());
-	BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					      po);
-      }
-
       // Remove the control file if download file doesn't exist
       if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
 	progressInfoFile->removeFile();
@@ -624,14 +636,8 @@ unsigned int RequestGroup::getNumConnection() const
 {
   unsigned int numConnection = _numStreamConnection;
 #ifdef ENABLE_BITTORRENT
-  {
-    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
-    if(!btContext.isNull()) {
-      BtRuntimeHandle btRuntime = BT_RUNTIME(btContext);
-      if(!btRuntime.isNull()) {
-	numConnection += btRuntime->getConnections();
-      }
-    }
+  if(!_btRuntime.isNull()) {
+    numConnection += _btRuntime->getConnections();
   }
 #endif // ENABLE_BITTORRENT
   return numConnection;
@@ -652,14 +658,8 @@ TransferStat RequestGroup::calculateStat()
 {
   TransferStat stat;
 #ifdef ENABLE_BITTORRENT
-  {
-    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
-    if(!btContext.isNull()) {
-      PeerStorageHandle peerStorage = PEER_STORAGE(btContext);
-      if(!peerStorage.isNull()) {
-	stat = peerStorage->calculateStat();
-      }
-    }
+  if(!_peerStorage.isNull()) {
+    stat = _peerStorage->calculateStat();
   }
 #endif // ENABLE_BITTORRENT
   if(!_segmentMan.isNull()) {
@@ -672,14 +672,8 @@ void RequestGroup::setHaltRequested(bool f)
 {
   _haltRequested = f;
 #ifdef ENABLE_BITTORRENT
-  {
-    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
-    if(!btContext.isNull()) {
-      BtRuntimeHandle btRuntime = BT_RUNTIME(btContext);
-      if(!btRuntime.isNull()) {
-	btRuntime->setHalt(f);
-      }
-    }
+  if(!_btRuntime.isNull()) {
+    _btRuntime->setHalt(f);
   }
 #endif // ENABLE_BITTORRENT
 }
@@ -690,18 +684,21 @@ void RequestGroup::setForceHaltRequested(bool f)
   _forceHaltRequested = f;
 }
 
-void RequestGroup::releaseRuntimeResource()
+void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
   if(!btContext.isNull()) {
-    BtContextHandle btContextInReg = BtRegistry::getBtContext(btContext->getInfoHashAsString());
+    SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
+    BtContextHandle btContextInReg =
+      btRegistry->getBtContext(btContext->getInfoHashAsString());
     if(!btContextInReg.isNull() &&
        btContextInReg->getOwnerRequestGroup()->getGID() ==
 	btContext->getOwnerRequestGroup()->getGID()) {
-      BtRegistry::unregister(btContext->getInfoHashAsString());
+      btRegistry->unregister(btContext->getInfoHashAsString());
       if(!DHTRegistry::_peerAnnounceStorage.isNull()) {
-	DHTRegistry::_peerAnnounceStorage->removePeerAnnounce(btContext);
+	DHTRegistry::_peerAnnounceStorage->
+	  removeLocalPeerAnnounce(btContext->getInfoHash());
       }
     }
   }

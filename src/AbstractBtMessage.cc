@@ -36,7 +36,6 @@
 #include "Peer.h"
 #include "BtContext.h"
 #include "PieceStorage.h"
-#include "BtRegistry.h"
 #include "BtEventListener.h"
 #include "BtMessageValidator.h"
 #include "LogFactory.h"
@@ -99,7 +98,6 @@ SharedHandle<BtMessageValidator> AbstractBtMessage::getBtMessageValidator() cons
 void AbstractBtMessage::setBtContext(const SharedHandle<BtContext>& btContext)
 {
   this->btContext = btContext;
-  this->pieceStorage = PIECE_STORAGE(btContext);
 }
 
 SharedHandle<BtContext> AbstractBtMessage::getBtContext() const

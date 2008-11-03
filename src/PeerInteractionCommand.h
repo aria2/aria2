@@ -37,15 +37,17 @@
 
 #include "PeerAbstractCommand.h"
 #include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
 
 namespace aria2 {
 
+class BtContext;
 class BtInteractive;
 class PeerConnection;
+class BtRuntime;
+class PeerStorage;
+class PieceStorage;
 
 class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
 			       public RequestGroupAware
 {
 public:
@@ -55,6 +57,14 @@ public:
     RECEIVER_WAIT_HANDSHAKE,
     WIRED};
 private:
+  SharedHandle<BtContext> _btContext;
+
+  SharedHandle<BtRuntime> _btRuntime;
+
+  SharedHandle<PieceStorage> _pieceStorage;
+
+  SharedHandle<PeerStorage> _peerStorage;
+
   Seq sequence;
   SharedHandle<BtInteractive> btInteractive;
   unsigned int maxDownloadSpeedLimit;
@@ -70,12 +80,16 @@ public:
 			 const SharedHandle<Peer>& peer,
 			 DownloadEngine* e,
 			 const SharedHandle<BtContext>& btContext,
+			 const SharedHandle<BtRuntime>& btRuntime,
+			 const SharedHandle<PieceStorage>& pieceStorage,
 			 const SharedHandle<SocketCore>& s,
 			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = SharedHandle<PeerConnection>());
+			 const SharedHandle<PeerConnection>& peerConnection =
+			 SharedHandle<PeerConnection>());
 
   virtual ~PeerInteractionCommand();
 
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 };
 
 } // namespace aria2

@@ -48,6 +48,7 @@ private:
   unsigned char* msg;
 
   static size_t MESSAGE_LENGTH;
+
 public:
   BtInterestedMessage():msg(0) {}
 

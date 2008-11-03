@@ -40,12 +40,14 @@
 namespace aria2 {
 
 class BtContext;
+class PieceStorage;
+class PeerStorage;
 class Peer;
 class AbstractBtMessage;
 class BtMessageDispatcher;
 class BtRequestFactory;
 class PeerConnection;
-class PieceStorage;
+class ExtensionMessageFactory;
 class DHTNode;
 class DHTRoutingTable;
 class DHTTaskQueue;
@@ -55,7 +57,8 @@ class DefaultBtMessageFactory : public BtMessageFactory {
 private:
   int32_t cuid;
   SharedHandle<BtContext> btContext;
-  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PeerStorage> _peerStorage;
   SharedHandle<Peer> peer;
 
   bool _dhtEnabled;
@@ -65,6 +68,8 @@ private:
   WeakHandle<BtRequestFactory> requestFactory;
 
   WeakHandle<PeerConnection> peerConnection;
+
+  SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
 
   WeakHandle<DHTNode> _localNode;
 
@@ -131,6 +136,10 @@ public:
 
   void setBtContext(const SharedHandle<BtContext>& btContext);
 
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
   }
@@ -144,6 +153,9 @@ public:
   void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
 
   void setPeerConnection(const WeakHandle<PeerConnection>& connection);
+
+  void setExtensionMessageFactory
+  (const SharedHandle<ExtensionMessageFactory>& factory);
 
   void setLocalNode(const WeakHandle<DHTNode>& localNode);
 

@@ -56,6 +56,8 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTSetup.h"
 #include "DHTRegistry.h"
+#include "BtProgressInfoFile.h"
+#include "BtAnnounce.h"
 
 namespace aria2 {
 
@@ -70,26 +72,64 @@ void BtSetup::setup(std::deque<Command*>& commands,
   if(btContext.isNull()) {
     return;
   }
-  // commands
-  commands.push_back(new TrackerWatcherCommand(CUIDCounterSingletonHolder::instance()->newID(),
-					       requestGroup,
-					       e,
-					       btContext));
-  commands.push_back(new PeerChokeCommand(CUIDCounterSingletonHolder::instance()->newID(),
-					  e,
-					  btContext));
+  SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
+  SharedHandle<PieceStorage> pieceStorage =
+    btRegistry->getPieceStorage(btContext->getInfoHashAsString());
+  SharedHandle<PeerStorage> peerStorage =
+    btRegistry->getPeerStorage(btContext->getInfoHashAsString());
+  SharedHandle<BtRuntime> btRuntime =
+    btRegistry->getBtRuntime(btContext->getInfoHashAsString());
+  SharedHandle<BtAnnounce> btAnnounce =
+    btRegistry->getBtAnnounce(btContext->getInfoHashAsString());
 
-  commands.push_back(new ActivePeerConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
-						     requestGroup, e, btContext, 10));
+  // commands
+  {
+    TrackerWatcherCommand* c =
+      new TrackerWatcherCommand(CUIDCounterSingletonHolder::instance()->newID(),
+				requestGroup,
+				e,
+				btContext);
+    c->setPeerStorage(peerStorage);
+    c->setPieceStorage(pieceStorage);
+    c->setBtRuntime(btRuntime);
+    c->setBtAnnounce(btAnnounce);
+    
+    commands.push_back(c);
+  }
+  {
+    PeerChokeCommand* c =
+      new PeerChokeCommand(CUIDCounterSingletonHolder::instance()->newID(),
+			   e,
+			   btContext);
+    c->setPeerStorage(peerStorage);
+    c->setBtRuntime(btRuntime);
+
+    commands.push_back(c);
+  }
+  {
+    ActivePeerConnectionCommand* c =
+      new ActivePeerConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
+				      requestGroup, e, btContext, 10);
+    c->setBtRuntime(btRuntime);
+    c->setPieceStorage(pieceStorage);
+    c->setPeerStorage(peerStorage);
+    c->setBtAnnounce(btAnnounce);
+	    
+    commands.push_back(c);
+  }
 
   if(!btContext->isPrivate() && DHTSetup::initialized()) {
-    DHTRegistry::_peerAnnounceStorage->addPeerAnnounce(btContext);
-    DHTGetPeersCommand* command = new DHTGetPeersCommand(CUIDCounterSingletonHolder::instance()->newID(),
-							 requestGroup,
-							 e,
-							 btContext);
+    DHTRegistry::_peerAnnounceStorage->addPeerAnnounce(btContext->getInfoHash(),
+						       peerStorage);
+    DHTGetPeersCommand* command =
+      new DHTGetPeersCommand(CUIDCounterSingletonHolder::instance()->newID(),
+			     requestGroup,
+			     e,
+			     btContext);
     command->setTaskQueue(DHTRegistry::_taskQueue);
     command->setTaskFactory(DHTRegistry::_taskFactory);
+    command->setBtRuntime(btRuntime);
+    command->setPeerStorage(peerStorage);
     commands.push_back(command);
   }
   SharedHandle<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
@@ -100,16 +140,26 @@ void BtSetup::setup(std::deque<Command*>& commands,
   {
     double ratio = option->getAsDouble(PREF_SEED_RATIO);
     if(ratio > 0.0) {
-      SharedHandle<SeedCriteria> cri(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO), btContext));
+      SharedHandle<ShareRatioSeedCriteria> cri
+	(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
+				    btContext));
+      cri->setPieceStorage(pieceStorage);
+      cri->setPeerStorage(peerStorage);
+      cri->setBtRuntime(btRuntime);
+
       unionCri->addSeedCriteria(cri);
     }
   }
   if(unionCri->getSeedCriterion().size() > 0) {
-    commands.push_back(new SeedCheckCommand(CUIDCounterSingletonHolder::instance()->newID(),
-					    requestGroup,
-					    e,
-					    btContext,
-					    unionCri));
+    SeedCheckCommand* c =
+      new SeedCheckCommand(CUIDCounterSingletonHolder::instance()->newID(),
+			   requestGroup,
+			   e,
+			   btContext,
+			   unionCri);
+    c->setPieceStorage(pieceStorage);
+    c->setBtRuntime(btRuntime);
+    commands.push_back(c);
   }
 
   if(PeerListenCommand::getNumInstance() == 0) {
@@ -117,7 +167,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
     IntSequence seq = Util::parseIntRange(option->get(PREF_LISTEN_PORT));
     uint16_t port;
     if(listenCommand->bindPort(port, seq)) {
-      BT_RUNTIME(btContext)->setListenPort(port);
+      btRuntime->setListenPort(port);
       commands.push_back(listenCommand);
     } else {
       _logger->error(_("Errors occurred while binding port.\n"));
@@ -125,7 +175,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
     }
   }
 
-  BT_RUNTIME(btContext)->setReady(true);
+  btRuntime->setReady(true);
 }
 
 } // namespace aria2

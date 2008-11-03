@@ -33,12 +33,12 @@
  */
 /* copyright --> */
 #include "DHTPeerAnnounceEntry.h"
-#include "BtContext.h"
-#include "Peer.h"
-#include "BtRegistry.h"
-#include "PeerStorage.h"
+
 #include <cstring>
 #include <algorithm>
+
+#include "Peer.h"
+#include "PeerStorage.h"
 
 namespace aria2 {
 
@@ -60,9 +60,15 @@ void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
   notifyUpdate();
 }
 
-void DHTPeerAnnounceEntry::setBtContext(const SharedHandle<BtContext>& btCtx)
+void DHTPeerAnnounceEntry::clearLocal()
 {
-  _btCtx = btCtx;
+  _peerStorage.reset();
+}
+
+void DHTPeerAnnounceEntry::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
@@ -99,7 +105,7 @@ void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
 
 bool DHTPeerAnnounceEntry::empty() const
 {
-  return _peerAddrEntries.empty() && _btCtx.isNull();
+  return _peerAddrEntries.empty() && _peerStorage.isNull();
 }
 
 void DHTPeerAnnounceEntry::getPeers(std::deque<SharedHandle<Peer> >& peers) const
@@ -109,11 +115,8 @@ void DHTPeerAnnounceEntry::getPeers(std::deque<SharedHandle<Peer> >& peers) cons
     SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
     peers.push_back(peer);
   }
-  if(!_btCtx.isNull()) {
-    SharedHandle<PeerStorage> peerStorage = PEER_STORAGE(_btCtx);
-    if(!peerStorage.isNull()) {
-      peerStorage->getActivePeers(peers);
-    }
+  if(!_peerStorage.isNull()) {
+    _peerStorage->getActivePeers(peers);
   }
 }
 

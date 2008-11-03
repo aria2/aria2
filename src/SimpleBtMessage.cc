@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "SimpleBtMessage.h"
 #include "message.h"
-#include "BtRegistry.h"
 #include "Peer.h"
 #include "PeerConnection.h"
 #include "Logger.h"

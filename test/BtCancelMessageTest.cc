@@ -1,19 +1,15 @@
 #include "BtCancelMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "MockBtMessageDispatcher.h"
 #include "MockBtContext.h"
 #include "Peer.h"
 #include "FileEntry.h"
-#include "PeerObject.h"
 #include "Piece.h"
-#include "BtRegistry.h"
-#include "BtMessageFactory.h"
-#include "BtRequestFactory.h"
-#include "BtMessageReceiver.h"
-#include "PeerConnection.h"
-#include "ExtensionMessageFactory.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -29,19 +25,9 @@ private:
   SharedHandle<MockBtContext> btContext;
 public:
   void setUp() {
-    BtRegistry::unregisterAll();    
     peer.reset(new Peer("host", 6969));
     btContext.reset(new MockBtContext());
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
-    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
-    BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  cluster);
-    SharedHandle<PeerObject> po(new PeerObject());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
-  }
-
-  void tearDown() {
-    BtRegistry::unregisterAll();
   }
 
   void testCreate();
@@ -119,7 +105,8 @@ void BtCancelMessageTest::testDoReceivedAction() {
   msg.setLength(16*1024);
   msg.setBtContext(btContext);
   msg.setPeer(peer);
-  SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
+  SharedHandle<MockBtMessageDispatcher2> dispatcher
+    (new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher);
 
   msg.doReceivedAction();

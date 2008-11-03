@@ -41,6 +41,8 @@ namespace aria2 {
 
 class DownloadContext;
 class PieceStorage;
+class PeerStorage;
+class BtRuntime;
 class Logger;
 class Option;
 
@@ -48,6 +50,9 @@ class DefaultBtProgressInfoFile : public BtProgressInfoFile {
 private:
   SharedHandle<DownloadContext> _dctx;
   SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<BtRuntime> _btRuntime;
+  
   const Option* _option;
   Logger* _logger;
   std::string _filename;
@@ -76,6 +81,10 @@ public:
   // re-set filename using current _dctx.
   virtual void updateFilename();
 
+  // for torrents
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 };
 
 } // namespace aria2

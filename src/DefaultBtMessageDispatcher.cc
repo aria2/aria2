@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DefaultBtMessageDispatcher.h"
+
+#include <algorithm>
+
 #include "prefs.h"
 #include "BtAbortOutstandingRequestEvent.h"
 #include "BtCancelSendingPieceEvent.h"
@@ -44,13 +47,11 @@
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtMessage.h"
-#include "BtRegistry.h"
 #include "Peer.h"
 #include "Piece.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "a2functional.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -86,7 +87,7 @@ void DefaultBtMessageDispatcher::sendMessages() {
     messageQueue.pop_front();
     if(maxUploadSpeedLimit > 0 &&
        msg->isUploading() && !msg->isSendingInProgress()) {
-      TransferStat stat = peerStorage->calculateStat();
+      TransferStat stat = _peerStorage->calculateStat();
       if(maxUploadSpeedLimit < stat.getUploadSpeed()) {
 	tempQueue.push_back(msg);
 	continue;
@@ -228,7 +229,7 @@ public:
 void DefaultBtMessageDispatcher::doChokedAction()
 {
   std::for_each(requestSlots.begin(), requestSlots.end(),
-		ProcessChokedRequestSlot(cuid, peer, pieceStorage));
+		ProcessChokedRequestSlot(cuid, peer, _pieceStorage));
 
   requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
 				    FindChokedRequestSlot(peer)),
@@ -332,13 +333,13 @@ void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
   std::for_each(requestSlots.begin(), requestSlots.end(),
 		ProcessStaleRequestSlot(cuid,
 					peer,
-					pieceStorage,
+					_pieceStorage,
 					this,
 					messageFactory,
 					now,
 					requestTimeout));
   requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
-				    FindStaleRequestSlot(pieceStorage,
+				    FindStaleRequestSlot(_pieceStorage,
 							 now,
 							 requestTimeout)),
 		     requestSlots.end());
@@ -437,8 +438,18 @@ void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)
 void DefaultBtMessageDispatcher::setBtContext(const BtContextHandle& btContext)
 {
   this->btContext = btContext;
-  this->pieceStorage = PIECE_STORAGE(btContext);
-  this->peerStorage = PEER_STORAGE(btContext);
+}
+
+void DefaultBtMessageDispatcher::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
+}
+
+void DefaultBtMessageDispatcher::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 void DefaultBtMessageDispatcher::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)

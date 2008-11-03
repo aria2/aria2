@@ -48,6 +48,13 @@
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
 #include "RequestGroupMan.h"
+#include "BtRegistry.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtAnnounce.h"
+#include "BtRuntime.h"
+#include "BtProgressInfoFile.h"
 
 namespace aria2 {
 
@@ -128,7 +135,8 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     break;
   }
   case RECEIVER_RECEIVE_PAD_C_LENGTH: {
-    if(_mseHandshake->receiveReceiverHashAndPadCLength()) {
+    if(_mseHandshake->receiveReceiverHashAndPadCLength
+       (e->getBtRegistry()->getAllBtContext())) {
       _sequence = RECEIVER_RECEIVE_PAD_C;
     }
     break;

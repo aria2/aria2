@@ -37,7 +37,6 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Peer.h"
-#include "BtRegistry.h"
 #include "BtContext.h"
 #include "PeerStorage.h"
 #include "StringFormat.h"
@@ -61,7 +60,7 @@ BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char*
 void BtNotInterestedMessage::doReceivedAction() {
   peer->peerInterested(false);
   if(!peer->amChoking()) {
-    PEER_STORAGE(btContext)->executeChoke();
+    _peerStorage->executeChoke();
   }
 }
 
@@ -95,6 +94,12 @@ void BtNotInterestedMessage::onSendComplete() {
 std::string BtNotInterestedMessage::toString() const {
   static const std::string NOT_INTERESTED("not interested");
   return NOT_INTERESTED;
+}
+
+void BtNotInterestedMessage::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 } // namespace aria2

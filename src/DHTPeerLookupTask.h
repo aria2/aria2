@@ -69,6 +69,10 @@ public:
   virtual void onFinish();
   
   const std::deque<SharedHandle<Peer> >& getPeers() const;
+
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 };
 
 } // namespace aria2

@@ -1,11 +1,13 @@
 #include "DHTPeerAnnounceEntry.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
-#include "MockBtContext.h"
 #include "MockPeerStorage.h"
-#include "BtRegistry.h"
 #include "FileEntry.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -18,16 +20,6 @@ class DHTPeerAnnounceEntryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetPeers);
   CPPUNIT_TEST_SUITE_END();
 public:
-  void setUp()
-  {
-    BtRegistry::unregisterAll();
-  }
-
-  void tearDown()
-  {
-    BtRegistry::unregisterAll();
-  }
-
   void testRemoveStalePeerAddrEntry();
   void testEmpty();
   void testAddPeerAddrEntry();
@@ -69,7 +61,7 @@ void DHTPeerAnnounceEntryTest::testEmpty()
   }
   {
     DHTPeerAnnounceEntry entry(infohash);
-    entry.setBtContext(SharedHandle<BtContext>(new MockBtContext()));
+    entry.setPeerStorage(SharedHandle<PeerStorage>(new MockPeerStorage()));
     CPPUNIT_ASSERT(!entry.empty());
   }
   {
@@ -100,8 +92,6 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
   unsigned char infohash[DHT_ID_LENGTH];
   memset(infohash, 0xff, DHT_ID_LENGTH);
 
-  SharedHandle<MockBtContext> ctx(new MockBtContext());
-  ctx->setInfoHash(infohash);
   SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
   {
     SharedHandle<Peer> activePeers[2];
@@ -111,7 +101,6 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
     peerStorage->setActivePeers(std::deque<SharedHandle<Peer> >(&activePeers[0],
 								&activePeers[2]));
   }
-  BtRegistry::registerPeerStorage(ctx->getInfoHashAsString(), peerStorage);
 
   DHTPeerAnnounceEntry entry(infohash);
   {
@@ -132,7 +121,7 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peers[1]->ipaddr); 
     CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->port);
   }
-  entry.setBtContext(ctx);
+  entry.setPeerStorage(peerStorage);
   {
     std::deque<SharedHandle<Peer> > peers;
     entry.getPeers(peers);

@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "DefaultBtProgressInfoFile.h"
+
+#include <cerrno>
+#include <cstring>
+#include <fstream>
+
 #include "BtContext.h"
 #include "PieceStorage.h"
 #include "Piece.h"
@@ -41,7 +46,6 @@
 #include "BitfieldMan.h"
 #include "Option.h"
 #include "TransferStat.h"
-#include "BtRegistry.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "prefs.h"
@@ -52,9 +56,6 @@
 #include "a2io.h"
 #include "DownloadFailureException.h"
 #include "StringFormat.h"
-#include <fstream>
-#include <cerrno>
-#include <cstring>
 
 namespace aria2 {
 
@@ -86,7 +87,7 @@ void DefaultBtProgressInfoFile::updateFilename()
 
 bool DefaultBtProgressInfoFile::isTorrentDownload()
 {
-  return !dynamic_pointer_cast<BtContext>(_dctx).isNull();
+  return !_btRuntime.isNull();
 }
 
 // Since version 0001, Integers are saved in binary form, network byte order.
@@ -138,8 +139,7 @@ void DefaultBtProgressInfoFile::save() {
     // uploadLength: 64 bits
     uint64_t uploadLengthNL = 0;
     if(torrentDownload) {
-      BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
-      TransferStat stat = PEER_STORAGE(btContext)->calculateStat();
+      TransferStat stat = _peerStorage->calculateStat();
       uploadLengthNL = hton64(stat.getAllTimeUploadLength());
     }
     o.write(reinterpret_cast<const char*>(&uploadLengthNL),
@@ -267,8 +267,7 @@ void DefaultBtProgressInfoFile::load()
       uploadLength = ntoh64(uploadLength);
     }
     if(isTorrentDownload()) {
-      BT_RUNTIME(dynamic_pointer_cast<BtContext>(_dctx))->
-	setUploadLengthAtStartup(uploadLength);
+      _btRuntime->setUploadLengthAtStartup(uploadLength);
     }
 
     // TODO implement the conversion mechanism between different piece length.
@@ -399,6 +398,18 @@ bool DefaultBtProgressInfoFile::exists()
     _logger->info(MSG_SEGMENT_FILE_DOES_NOT_EXIST, _filename.c_str());
     return false;
   }
+}
+
+void DefaultBtProgressInfoFile::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
+}
+
+void DefaultBtProgressInfoFile::setBtRuntime
+(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
 }
 
 } // namespace aria2

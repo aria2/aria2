@@ -1,11 +1,14 @@
 #include "DHTPeerAnnounceStorage.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "MockBtContext.h"
+#include "MockPeerStorage.h"
 #include "DHTConstants.h"
 #include "Peer.h"
 #include "FileEntry.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -16,10 +19,6 @@ class DHTPeerAnnounceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemovePeerAnnounce);
   CPPUNIT_TEST_SUITE_END();
 public:
-  void setUp() {}
-
-  void tearDown() {}
-
   void testAddAnnounce();
   void testRemovePeerAnnounce();
 };
@@ -59,17 +58,21 @@ void DHTPeerAnnounceStorageTest::testRemovePeerAnnounce()
   SharedHandle<MockBtContext> ctx1(new MockBtContext());
   ctx1->setInfoHash(infohash1);
 
+  SharedHandle<MockPeerStorage> peerStorage1(new MockPeerStorage());
+
   SharedHandle<MockBtContext> ctx2(new MockBtContext());
   ctx2->setInfoHash(infohash2);
 
-  storage.addPeerAnnounce(infohash1, "192.168.0.1", 6881);
-  storage.addPeerAnnounce(ctx1);
-  storage.addPeerAnnounce(ctx2);
+  SharedHandle<MockPeerStorage> peerStorage2(new MockPeerStorage());
 
-  storage.removePeerAnnounce(ctx2);
+  storage.addPeerAnnounce(infohash1, "192.168.0.1", 6881);
+  storage.addPeerAnnounce(ctx1->getInfoHash(), peerStorage1);
+  storage.addPeerAnnounce(ctx2->getInfoHash(), peerStorage2);
+
+  storage.removeLocalPeerAnnounce(ctx2->getInfoHash());
   CPPUNIT_ASSERT(!storage.contains(infohash2));
 
-  storage.removePeerAnnounce(ctx1);
+  storage.removeLocalPeerAnnounce(ctx1->getInfoHash());
   CPPUNIT_ASSERT(storage.contains(infohash1));
 }
 

@@ -81,7 +81,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.cc BtAnnounce.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
 @ENABLE_BITTORRENT_TRUE@	BtRuntime.h\
-@ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.cc BtContextAwareCommand.h\
 @ENABLE_BITTORRENT_TRUE@	BtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	AbstractBtMessage.cc AbstractBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	SimpleBtMessage.cc SimpleBtMessage.h\
@@ -446,9 +445,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultBtContext.h PeerStorage.h DefaultPeerStorage.cc \
 	DefaultPeerStorage.h BtAnnounce.cc BtAnnounce.h \
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h BtRuntime.h \
-	BtContextAwareCommand.cc BtContextAwareCommand.h BtMessage.h \
-	AbstractBtMessage.cc AbstractBtMessage.h SimpleBtMessage.cc \
-	SimpleBtMessage.h BtAllowedFastMessage.cc \
+	BtMessage.h AbstractBtMessage.cc AbstractBtMessage.h \
+	SimpleBtMessage.cc SimpleBtMessage.h BtAllowedFastMessage.cc \
 	BtAllowedFastMessage.h BtBitfieldMessage.cc \
 	BtBitfieldMessage.h BtCancelMessage.cc BtCancelMessage.h \
 	BtChokeMessage.cc BtChokeMessage.h BtHaveAllMessage.cc \
@@ -608,7 +606,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AbstractBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SimpleBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessage.$(OBJEXT) \
@@ -1261,7 +1258,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtChokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtContext.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtContextAwareCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtDependency.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtExtendedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtFileAllocationEntry.Po@am__quote@

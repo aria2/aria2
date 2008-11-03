@@ -39,6 +39,7 @@
 namespace aria2 {
 
 class ExtensionMessage;
+class ExtensionMessageFactory;
 
 class BtExtendedMessage;
 typedef SharedHandle<BtExtendedMessage> BtExtendedMessageHandle;
@@ -59,10 +60,11 @@ public:
 
   static const uint8_t ID = 20;
 
-  static BtExtendedMessageHandle create(const SharedHandle<BtContext>& btContext,
-					const SharedHandle<Peer>& peer,
-					const unsigned char* data,
-					size_t dataLength);
+  static BtExtendedMessageHandle create
+    (const SharedHandle<ExtensionMessageFactory>& factory,
+     const SharedHandle<Peer>& peer,
+     const unsigned char* data,
+     size_t dataLength);
 
   virtual uint8_t getId() { return ID; }
 

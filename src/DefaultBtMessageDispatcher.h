@@ -55,8 +55,8 @@ private:
   std::deque<SharedHandle<BtMessage> > messageQueue;
   std::deque<RequestSlot> requestSlots;
   SharedHandle<BtContext> btContext;
-  SharedHandle<PeerStorage> peerStorage;
-  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
   WeakHandle<BtMessageFactory> messageFactory;
   SharedHandle<Peer> peer;
   unsigned int maxUploadSpeedLimit;
@@ -110,6 +110,10 @@ public:
   void setPeer(const SharedHandle<Peer>& peer);
 
   void setBtContext(const SharedHandle<BtContext>& btContext);
+
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 

@@ -77,7 +77,9 @@ public:
   virtual SharedHandle<DHTTask> createBucketRefreshTask();
 
   virtual SharedHandle<DHTTask>
-  createPeerLookupTask(const SharedHandle<BtContext>& ctx);
+  createPeerLookupTask(const SharedHandle<BtContext>& ctx,
+		       const SharedHandle<BtRuntime>& btRuntime,
+		       const SharedHandle<PeerStorage>& peerStorage);
 
   virtual SharedHandle<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash);

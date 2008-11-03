@@ -65,10 +65,11 @@
 #include "ExtensionMessage.h"
 #include "Peer.h"
 #include "Piece.h"
-#include "BtRegistry.h"
 #include "BtContext.h"
 #include "PieceStorage.h"
+#include "PeerStorage.h"
 #include "StringFormat.h"
+#include "ExtensionMessageFactory.h"
 
 namespace aria2 {
 
@@ -98,7 +99,12 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       msg = BtInterestedMessage::create(data, dataLength);
       break;
     case BtNotInterestedMessage::ID:
-      msg = BtNotInterestedMessage::create(data, dataLength);
+      {
+	SharedHandle<BtNotInterestedMessage> m =
+	  BtNotInterestedMessage::create(data, dataLength);
+	m->setPeerStorage(_peerStorage);
+	msg = m;
+      }
       break;
     case BtHaveMessage::ID:
       msg = BtHaveMessage::create(data, dataLength);
@@ -123,7 +129,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       BtMessageValidatorHandle validator
 	(new BtRequestMessageValidator(temp.get(),
 				      btContext->getNumPieces(),
-				       pieceStorage->getPieceLength(temp->getIndex())));
+				       _pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
@@ -133,7 +139,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       BtMessageValidatorHandle validator
 	(new BtCancelMessageValidator(temp.get(),
 				     btContext->getNumPieces(),
-				      pieceStorage->getPieceLength(temp->getIndex())));
+				      _pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
@@ -143,7 +149,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       BtMessageValidatorHandle validator
 	(new BtPieceMessageValidator(temp.get(),
 				     btContext->getNumPieces(),
-				     pieceStorage->getPieceLength(temp->getIndex())));
+				     _pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
@@ -159,7 +165,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       BtMessageValidatorHandle validator
 	(new BtRejectMessageValidator(temp.get(),
 				      btContext->getNumPieces(),
-				      pieceStorage->getPieceLength(temp->getIndex())));
+				      _pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
@@ -193,7 +199,8 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     }
     case BtExtendedMessage::ID: {
       if(peer->isExtendedMessagingEnabled()) {
-	msg = BtExtendedMessage::create(btContext, peer, data, dataLength);
+	msg = BtExtendedMessage::create(_extensionMessageFactory,
+					peer, data, dataLength);
       } else {
 	throw DlAbortEx("Received extended message from peer during a session with extended messaging disabled.");
       }
@@ -211,6 +218,7 @@ void DefaultBtMessageFactory::setCommonProperty(const AbstractBtMessageHandle& m
   msg->setCuid(cuid);
   msg->setPeer(peer);
   msg->setBtContext(btContext);
+  msg->setPieceStorage(_pieceStorage);
   msg->setBtMessageDispatcher(dispatcher);
   msg->setBtRequestFactory(requestFactory);
   msg->setBtMessageFactory(WeakHandle<BtMessageFactory>(this));
@@ -254,7 +262,7 @@ DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, size_t b
   BtMessageValidatorHandle validator
     (new BtRequestMessageValidator(msg.get(),
 				   btContext->getNumPieces(),
-				   pieceStorage->getPieceLength(msg->getIndex())));
+				   _pieceStorage->getPieceLength(msg->getIndex())));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -267,7 +275,7 @@ DefaultBtMessageFactory::createCancelMessage(size_t index, uint32_t begin, size_
   BtMessageValidatorHandle validator
     (new BtCancelMessageValidator(msg.get(),
 				  btContext->getNumPieces(),
-				  pieceStorage->getPieceLength(index)));
+				  _pieceStorage->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -280,7 +288,7 @@ DefaultBtMessageFactory::createPieceMessage(size_t index, uint32_t begin, size_t
   BtMessageValidatorHandle validator
     (new BtPieceMessageValidator(msg.get(),
 				btContext->getNumPieces(),
-				pieceStorage->getPieceLength(index)));
+				_pieceStorage->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -334,8 +342,8 @@ BtMessageHandle
 DefaultBtMessageFactory::createBitfieldMessage()
 {
   BtBitfieldMessageHandle msg
-    (new BtBitfieldMessage(pieceStorage->getBitfield(),
-			   pieceStorage->getBitfieldLength()));
+    (new BtBitfieldMessage(_pieceStorage->getBitfield(),
+			   _pieceStorage->getBitfieldLength()));
   SharedHandle<BtMessageValidator> v
     (new BtBitfieldMessageValidator(msg.get(),
 				    btContext->getNumPieces()));
@@ -375,7 +383,7 @@ DefaultBtMessageFactory::createRejectMessage(size_t index, uint32_t begin, size_
   BtMessageValidatorHandle validator
     (new BtRejectMessageValidator(msg.get(),
 				  btContext->getNumPieces(),
-				  pieceStorage->getPieceLength(index)));
+				  _pieceStorage->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -427,12 +435,29 @@ void DefaultBtMessageFactory::setPeer(const SharedHandle<Peer>& peer)
 void DefaultBtMessageFactory::setBtContext(const SharedHandle<BtContext>& btContext)
 {
   this->btContext = btContext;
-  this->pieceStorage = PIECE_STORAGE(btContext);
+}
+
+void DefaultBtMessageFactory::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
+}
+
+void DefaultBtMessageFactory::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  _peerStorage = peerStorage;
 }
 
 void DefaultBtMessageFactory::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
 {
   this->dispatcher = dispatcher;
+}
+
+void DefaultBtMessageFactory::setExtensionMessageFactory
+(const SharedHandle<ExtensionMessageFactory>& factory)
+{
+  _extensionMessageFactory = factory;
 }
 
 void DefaultBtMessageFactory::setLocalNode(const WeakHandle<DHTNode>& localNode)

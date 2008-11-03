@@ -1,4 +1,9 @@
 #include "DefaultBtProgressInfoFile.h"
+
+#include <fstream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Option.h"
 #include "Util.h"
 #include "Exception.h"
@@ -8,13 +13,10 @@
 #include "MockPeerStorage.h"
 #include "MockPieceStorage.h"
 #include "BtRuntime.h"
-#include "BtRegistry.h"
 #include "prefs.h"
 #include "SingleFileDownloadContext.h"
 #include "Piece.h"
 #include "FileEntry.h"
-#include <fstream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -36,16 +38,16 @@ private:
 
 #ifdef ENABLE_BITTORRENT
   SharedHandle<MockBtContext> _btContext;
+
+  SharedHandle<MockPeerStorage> _peerStorage;
+
+  SharedHandle<BtRuntime> _btRuntime;
 #endif // ENABLE_BITTORRENT
 
   SharedHandle<MockPieceStorage> _pieceStorage;
   SharedHandle<Option> _option;
   SharedHandle<BitfieldMan> _bitfield;
-public:
-  void setUp() {
-    BtRegistry::unregisterAll();
-  }
-   
+public:   
   void initializeMembers(int32_t pieceLength, int64_t totalLength)
   {
     _option.reset(new Option());
@@ -64,25 +66,9 @@ public:
   
     _btContext.reset(new MockBtContext());
     _btContext->setInfoHash(infoHash);
-
-    SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
-
-    SharedHandle<BtRuntime> btRuntime(new BtRuntime());
-
-    BtRegistry::registerBtContext(_btContext->getInfoHashAsString(),
-				  _btContext);
-    BtRegistry::registerPieceStorage(_btContext->getInfoHashAsString(),
-				     _pieceStorage);
-    BtRegistry::registerPeerStorage(_btContext->getInfoHashAsString(),
-				    peerStorage);
-    BtRegistry::registerBtRuntime(_btContext->getInfoHashAsString(),
-				  btRuntime);
+    _peerStorage.reset(new MockPeerStorage());
+    _btRuntime.reset(new BtRuntime());
 #endif // ENABLE_BITTORRENT
-  }
-
-  void tearDown()
-  {
-    BtRegistry::unregisterAll();
   }
 
   void testSave();
@@ -112,6 +98,9 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
   _btContext->setNumPieces(80);
 
   DefaultBtProgressInfoFile infoFile(_btContext, _pieceStorage, _option.get());
+  infoFile.setBtRuntime(_btRuntime);
+  infoFile.setPeerStorage(_peerStorage);
+
   CPPUNIT_ASSERT_EQUAL(std::string("./load.aria2"), infoFile.getFilename());
 
   infoFile.load();
@@ -122,11 +111,12 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
   CPPUNIT_ASSERT_EQUAL((uint64_t)81920, _btContext->getTotalLength());
 
   // upload length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, BT_RUNTIME(_btContext)->getUploadLengthAtStartup());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, _btRuntime->getUploadLengthAtStartup());
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
-		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
+		       Util::toHex(_bitfield->getBitfield(),
+				   _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
   CPPUNIT_ASSERT_EQUAL((size_t)2,
@@ -161,6 +151,8 @@ void DefaultBtProgressInfoFileTest::testLoad()
   DefaultBtProgressInfoFile infoFile(_btContext, _pieceStorage, _option.get());
   CPPUNIT_ASSERT_EQUAL(std::string("./load-v0001.aria2"),
 		       infoFile.getFilename());
+  infoFile.setBtRuntime(_btRuntime);
+  infoFile.setPeerStorage(_peerStorage);
 
   infoFile.load();
 
@@ -170,11 +162,12 @@ void DefaultBtProgressInfoFileTest::testLoad()
   CPPUNIT_ASSERT_EQUAL((uint64_t)81920, _btContext->getTotalLength());
 
   // upload length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, BT_RUNTIME(_btContext)->getUploadLengthAtStartup());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, _btRuntime->getUploadLengthAtStartup());
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
-		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
+		       Util::toHex(_bitfield->getBitfield(),
+				   _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
   CPPUNIT_ASSERT_EQUAL((size_t)2,
@@ -209,7 +202,7 @@ void DefaultBtProgressInfoFileTest::testSave()
   _pieceStorage->setCompletedLength(80896);
   TransferStat stat;
   stat.setAllTimeUploadLength(1024);
-  dynamic_pointer_cast<MockPeerStorage>(PEER_STORAGE(_btContext))->setStat(stat);
+  _peerStorage->setStat(stat);
 
   SharedHandle<Piece> p1(new Piece(1, 1024));
   SharedHandle<Piece> p2(new Piece(2, 512));
@@ -219,7 +212,11 @@ void DefaultBtProgressInfoFileTest::testSave()
   _pieceStorage->addInFlightPiece(inFlightPieces);
   
   DefaultBtProgressInfoFile infoFile(_btContext, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(std::string("./save-temp.aria2"), infoFile.getFilename());
+  infoFile.setBtRuntime(_btRuntime);
+  infoFile.setPeerStorage(_peerStorage);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("./save-temp.aria2"),
+		       infoFile.getFilename());
 
   infoFile.save();
 
@@ -235,7 +232,8 @@ void DefaultBtProgressInfoFileTest::testSave()
 
   unsigned char extension[4];
   in.read((char*)extension, sizeof(extension));
-  CPPUNIT_ASSERT_EQUAL(std::string("00000001"), Util::toHex(extension, sizeof(extension)));
+  CPPUNIT_ASSERT_EQUAL(std::string("00000001"),
+		       Util::toHex(extension, sizeof(extension)));
 
   uint32_t infoHashLength;
   in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
@@ -320,7 +318,11 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
     (new SingleFileDownloadContext(1024, 81920, "load-nonBt"));
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt.aria2"), infoFile.getFilename());
+  infoFile.setBtRuntime(_btRuntime);
+  infoFile.setPeerStorage(_peerStorage);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt.aria2"),
+		       infoFile.getFilename());
   infoFile.load();
 
   // check the contents of objects
@@ -330,7 +332,8 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
-		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
+		       Util::toHex(_bitfield->getBitfield(),
+				   _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
   CPPUNIT_ASSERT_EQUAL((size_t)2,
@@ -361,6 +364,8 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
     (new SingleFileDownloadContext(1024, 81920, "load-nonBt-v0001"));
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
+  infoFile.setBtRuntime(_btRuntime);
+  infoFile.setPeerStorage(_peerStorage);
   CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt-v0001.aria2"),
 		       infoFile.getFilename());
   infoFile.load();
@@ -372,7 +377,8 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
-		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
+		       Util::toHex(_bitfield->getBitfield(),
+				   _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
   CPPUNIT_ASSERT_EQUAL((size_t)2,
@@ -404,6 +410,9 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
     (new SingleFileDownloadContext(512, 81920, "load-nonBt-v0001"));
 
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
+  infoFile.setBtRuntime(_btRuntime);
+  infoFile.setPeerStorage(_peerStorage);
+
   CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt-v0001.aria2"),
 		       infoFile.getFilename());
   infoFile.load();
@@ -412,7 +421,8 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffffffffffffffffffffffc"),
-		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
+		       Util::toHex(_bitfield->getBitfield(),
+				   _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
   CPPUNIT_ASSERT_EQUAL((size_t)0,
@@ -438,7 +448,10 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
   _pieceStorage->addInFlightPiece(inFlightPieces);
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(std::string("./save-temp.aria2"), infoFile.getFilename());
+  infoFile.setPeerStorage(_peerStorage);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("./save-temp.aria2"),
+		       infoFile.getFilename());
 
   infoFile.save();
   
@@ -454,7 +467,8 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 
   unsigned char extension[4];
   in.read((char*)extension, sizeof(extension));
-  CPPUNIT_ASSERT_EQUAL(std::string("00000000"), Util::toHex(extension, sizeof(extension)));
+  CPPUNIT_ASSERT_EQUAL(std::string("00000000"),
+		       Util::toHex(extension, sizeof(extension)));
 
   uint32_t infoHashLength;
   in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
@@ -531,6 +545,9 @@ void DefaultBtProgressInfoFileTest::testUpdateFilename()
     (new SingleFileDownloadContext(1024, 81920, "file1"));
 
   DefaultBtProgressInfoFile infoFile(dctx, SharedHandle<MockPieceStorage>(), 0);
+  infoFile.setBtRuntime(_btRuntime);
+  infoFile.setPeerStorage(_peerStorage);
+
   CPPUNIT_ASSERT_EQUAL(std::string("./file1.aria2"), infoFile.getFilename());
 
   dctx->setUFilename("file1.1");

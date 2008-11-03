@@ -45,14 +45,16 @@ class Logger;
 class BtRuntime;
 class BtSeederStateChoke;
 class BtLeecherStateChoke;
+class PieceStorage;
 
 class DefaultPeerStorage : public PeerStorage {
 private:
   SharedHandle<BtContext> btContext;
+  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<PieceStorage> _pieceStorage;
   const Option* option;
   std::deque<SharedHandle<Peer> > peers;
   Logger* logger;
-  SharedHandle<BtRuntime> btRuntime;
   size_t maxPeerListSize;
   uint64_t removedPeerSessionDownloadLength;
   uint64_t removedPeerSessionUploadLength;
@@ -66,12 +68,6 @@ public:
 		     const Option* option);
 
   virtual ~DefaultPeerStorage();
-
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime) {
-    this->btRuntime = btRuntime;
-  }
-
-  SharedHandle<BtRuntime> getBtRuntime() const { return btRuntime; }
 
   virtual bool addPeer(const SharedHandle<Peer>& peer);
 
@@ -107,6 +103,9 @@ public:
 
   void onReturningPeer(const SharedHandle<Peer>& peer);
 
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 };
 
 } // namespace aria2

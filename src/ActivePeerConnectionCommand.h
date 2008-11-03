@@ -36,7 +36,7 @@
 #define _D_ACTIVE_PEER_CONNECTION_COMMAND_H_
 
 #include "Command.h"
-#include "BtContextAwareCommand.h"
+#include "SharedHandle.h"
 #include "RequestGroupAware.h"
 #include "TimeA2.h"
 
@@ -44,12 +44,22 @@ namespace aria2 {
 
 class DownloadEngine;
 class Peer;
+class BtContext;
+class BtRuntime;
+class PieceStorage;
+class PeerStorage;
+class BtAnnounce;
 
 class ActivePeerConnectionCommand : public Command,
-				    public BtContextAwareCommand,
 				    public RequestGroupAware
 {
 private:
+  SharedHandle<BtContext> _btContext;
+  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<BtAnnounce> _btAnnounce;
+
   time_t interval; // UNIT: sec
   DownloadEngine* e;
   Time checkPoint;
@@ -73,6 +83,14 @@ public:
   {
     _numNewConnection = numNewConnection;
   }
+
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
+  void setBtAnnounce(const SharedHandle<BtAnnounce>& btAnnounce);
 };
 
 } // namespace aria2

@@ -36,16 +36,18 @@
 #define _D_DHT_PEER_ANNOUNCE_ENTRY_H_
 
 #include "common.h"
+
+#include <deque>
+
 #include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "PeerAddrEntry.h"
 #include "TimeA2.h"
-#include <deque>
 
 namespace aria2 {
 
 class Peer;
-class BtContext;
+class PeerStorage;
 
 class DHTPeerAnnounceEntry {
 private:
@@ -53,7 +55,7 @@ private:
 
   std::deque<PeerAddrEntry> _peerAddrEntries;
 
-  SharedHandle<BtContext> _btCtx;
+  SharedHandle<PeerStorage> _peerStorage;
 
   Time _lastUpdated;
 public:
@@ -65,7 +67,9 @@ public:
   // if it already exists, update "Last Updated" property.
   void addPeerAddrEntry(const PeerAddrEntry& entry);
 
-  void setBtContext(const SharedHandle<BtContext>& btCtx);
+  void clearLocal();
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
   size_t countPeerAddrEntry() const;
 

@@ -36,11 +36,13 @@
 #define _D_REQUEST_GROUP_H_
 
 #include "common.h"
+
+#include <string>
+#include <deque>
+
 #include "SharedHandle.h"
 #include "TransferStat.h"
 #include "TimeA2.h"
-#include <string>
-#include <deque>
 
 namespace aria2 {
 
@@ -62,6 +64,10 @@ class CheckIntegrityEntry;
 class DownloadResult;
 class ServerHost;
 class URISelector;
+#ifdef ENABLE_BITTORRENT
+class BtRuntime;
+class PeerStorage;
+#endif // ENABLE_BITTORRENT
 
 class RequestGroup {
 private:
@@ -119,6 +125,10 @@ private:
   Time _lastModifiedTime;
 
   unsigned int _fileNotFoundCount;
+
+  WeakHandle<BtRuntime> _btRuntime;
+
+  WeakHandle<PeerStorage> _peerStorage;
 
   const Option* _option;
 
@@ -287,7 +297,7 @@ public:
 
   bool isDependencyResolved();
 
-  void releaseRuntimeResource();
+  void releaseRuntimeResource(DownloadEngine* e);
 
   void postDownloadProcessing(std::deque<SharedHandle<RequestGroup> >& groups);
 

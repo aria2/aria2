@@ -1,22 +1,19 @@
 #include "DefaultBtMessageDispatcher.h"
+
+#include <cassert>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Util.h"
 #include "Exception.h"
 #include "MockPieceStorage.h"
 #include "MockPeerStorage.h"
-#include "BtRegistry.h"
 #include "DefaultBtContext.h"
 #include "MockBtMessage.h"
 #include "MockBtMessageFactory.h"
 #include "prefs.h"
 #include "BtCancelSendingPieceEvent.h"
-#include "PeerObject.h"
-#include "BtRequestFactory.h"
-#include "BtMessageReceiver.h"
-#include "ExtensionMessageFactory.h"
-#include "PeerConnection.h"
 #include "BtHandshakeMessage.h"
-#include <cppunit/extensions/HelperMacros.h>
-#include <cassert>
 
 namespace aria2 {
 
@@ -44,6 +41,7 @@ private:
   SharedHandle<DefaultBtMessageDispatcher> btMessageDispatcher;
   SharedHandle<MockPeerStorage> peerStorage;
   SharedHandle<MockPieceStorage> pieceStorage;
+  SharedHandle<MockBtMessageFactory> _messageFactory;
 public:
   void tearDown() {}
 
@@ -137,26 +135,17 @@ public:
 				  btContext->getTotalLength());
     peerStorage.reset(new MockPeerStorage());
     pieceStorage.reset(new MockPieceStorage());
-    BtRegistry::unregisterAll();
-    BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(),
-				    peerStorage);
-    BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-				     pieceStorage);
-    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
-    BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  cluster);
 
-    SharedHandle<PeerObject> peerObject(new PeerObject());
-    peerObject->btMessageFactory.reset(new MockBtMessageFactory2());
-
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), peerObject);
+    _messageFactory.reset(new MockBtMessageFactory2());
 
     btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
-    btMessageDispatcher->setCuid(1);
-    btMessageDispatcher->setBtContext(btContext);
     btMessageDispatcher->setPeer(peer);
+    btMessageDispatcher->setBtContext(btContext);
+    btMessageDispatcher->setPieceStorage(pieceStorage);
+    btMessageDispatcher->setPeerStorage(peerStorage);
+    btMessageDispatcher->setBtMessageFactory(_messageFactory);
+    btMessageDispatcher->setCuid(1);
     btMessageDispatcher->setMaxUploadSpeedLimit(0);
-    btMessageDispatcher->setBtMessageFactory(peerObject->btMessageFactory);
   }
 };
 
@@ -235,7 +224,8 @@ void DefaultBtMessageDispatcherTest::testSendMessages_overUploadLimit() {
   CPPUNIT_ASSERT(!msg2->isSendCalled());
   CPPUNIT_ASSERT(msg3->isSendCalled());
 
-  CPPUNIT_ASSERT_EQUAL((size_t)2, btMessageDispatcher->getMessageQueue().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2,
+		       btMessageDispatcher->getMessageQueue().size());
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages_sendingInProgress() {
@@ -259,7 +249,8 @@ void DefaultBtMessageDispatcherTest::testSendMessages_sendingInProgress() {
   CPPUNIT_ASSERT(msg2->isSendCalled());
   CPPUNIT_ASSERT(!msg3->isSendCalled());
 
-  CPPUNIT_ASSERT_EQUAL((size_t)2, btMessageDispatcher->getMessageQueue().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2,
+		       btMessageDispatcher->getMessageQueue().size());
 }
 
 void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction() {
@@ -287,21 +278,17 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
 
   SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
-  BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-				   pieceStorage);
-
-  btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
-  btMessageDispatcher->setCuid(1);
-  btMessageDispatcher->setBtContext(btContext);
-  btMessageDispatcher->setPeer(peer);
-  btMessageDispatcher->setRequestTimeout(60);
   
+  btMessageDispatcher->setRequestTimeout(60);
+  btMessageDispatcher->setPieceStorage(pieceStorage);
   btMessageDispatcher->addOutstandingRequest(slot);
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->getMessageQueue().size());
-  CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->getRequestSlots().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0,
+		       btMessageDispatcher->getMessageQueue().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1,
+		       btMessageDispatcher->getRequestSlots().size());
 }
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_timeout() {
@@ -316,23 +303,17 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
 
   SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
-  BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-				   pieceStorage);
 
-  btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
-  btMessageDispatcher->setCuid(1);
-  btMessageDispatcher->setBtContext(btContext);
-  btMessageDispatcher->setPeer(peer);
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setBtMessageFactory(BT_MESSAGE_FACTORY(btContext,
-							      peer));
-
+  btMessageDispatcher->setPieceStorage(pieceStorage);
   btMessageDispatcher->addOutstandingRequest(slot);
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->getMessageQueue().size());
-  CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->getRequestSlots().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0,
+		       btMessageDispatcher->getMessageQueue().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0,
+		       btMessageDispatcher->getRequestSlots().size());
   CPPUNIT_ASSERT_EQUAL(false, piece->isBlockUsed(0));
   CPPUNIT_ASSERT_EQUAL(true, peer->snubbing());
 }
@@ -345,24 +326,17 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
   
   SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
-  BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-				   pieceStorage);
 
-
-  btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
-  btMessageDispatcher->setCuid(1);
-  btMessageDispatcher->setBtContext(btContext);
-  btMessageDispatcher->setPeer(peer);
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setBtMessageFactory(BT_MESSAGE_FACTORY(btContext,
-							      peer));
-
+  btMessageDispatcher->setPieceStorage(pieceStorage);
   btMessageDispatcher->addOutstandingRequest(slot);
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->getMessageQueue().size());
-  CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->getRequestSlots().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1,
+		       btMessageDispatcher->getMessageQueue().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0,
+		       btMessageDispatcher->getRequestSlots().size());
 }
 
 void DefaultBtMessageDispatcherTest::testIsSendingInProgress() {
@@ -378,7 +352,8 @@ void DefaultBtMessageDispatcherTest::testIsSendingInProgress() {
 void DefaultBtMessageDispatcherTest::testCountOutstandingRequest() {
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
   btMessageDispatcher->addOutstandingRequest(slot);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->countOutstandingRequest());
+  CPPUNIT_ASSERT_EQUAL((size_t)1,
+		       btMessageDispatcher->countOutstandingRequest());
 }
 
 void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {
@@ -401,7 +376,8 @@ void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
   RequestSlot s3 = btMessageDispatcher->getOutstandingRequest(1, 1024, 17*1024);
   CPPUNIT_ASSERT(RequestSlot::isNull(s3));
 
-  RequestSlot s4 = btMessageDispatcher->getOutstandingRequest(1, 2*1024, 16*1024);
+  RequestSlot s4 =
+    btMessageDispatcher->getOutstandingRequest(1, 2*1024, 16*1024);
   CPPUNIT_ASSERT(RequestSlot::isNull(s4));
 
   RequestSlot s5 = btMessageDispatcher->getOutstandingRequest(2, 1024, 16*1024);

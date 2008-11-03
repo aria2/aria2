@@ -122,6 +122,7 @@ RequestGroupMan::getRequestGroups() const
 
 class ProcessStoppedRequestGroup {
 private:
+  DownloadEngine* _e;
   std::deque<SharedHandle<RequestGroup> >& _reservedGroups;
   std::deque<SharedHandle<DownloadResult> >& _downloadResults;
   Logger* _logger;
@@ -143,8 +144,10 @@ private:
   }
 public:
   ProcessStoppedRequestGroup
-  (std::deque<SharedHandle<RequestGroup> >& reservedGroups,
+  (DownloadEngine* e,
+   std::deque<SharedHandle<RequestGroup> >& reservedGroups,
    std::deque<SharedHandle<DownloadResult> >& downloadResults):
+    _e(e),
     _reservedGroups(reservedGroups),
     _downloadResults(downloadResults),
     _logger(LogFactory::getInstance()) {}
@@ -178,7 +181,7 @@ public:
       } catch(RecoverableException& ex) {
 	_logger->error(EX_EXCEPTION_CAUGHT, ex);
       }
-      group->releaseRuntimeResource();
+      group->releaseRuntimeResource(_e);
       _downloadResults.push_back(group->createDownloadResult());
     }
   }
@@ -227,14 +230,15 @@ void RequestGroupMan::updateServerStat()
 		CollectServerStat(this));
 }
 
-void RequestGroupMan::removeStoppedGroup()
+void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 {
   size_t numPrev = _requestGroups.size();
 
   updateServerStat();
 
   std::for_each(_requestGroups.begin(), _requestGroups.end(),
-		ProcessStoppedRequestGroup(_reservedGroups, _downloadResults));
+		ProcessStoppedRequestGroup(e, _reservedGroups,
+					   _downloadResults));
 
   _requestGroups.erase(std::remove_if(_requestGroups.begin(),
 				      _requestGroups.end(),
@@ -264,7 +268,7 @@ void RequestGroupMan::configureRequestGroup
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
   RequestGroups temp;
-  removeStoppedGroup();
+  removeStoppedGroup(e);
   unsigned int count = 0;
   for(int num = _maxSimultaneousDownloads-_requestGroups.size();
       num > 0 && _reservedGroups.size() > 0; --num) {

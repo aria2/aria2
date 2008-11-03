@@ -33,9 +33,11 @@
  */
 /* copyright --> */
 #include "DefaultPeerStorage.h"
+
+#include <algorithm>
+
 #include "LogFactory.h"
 #include "Logger.h"
-#include "BtRegistry.h"
 #include "message.h"
 #include "a2time.h"
 #include "Peer.h"
@@ -44,7 +46,6 @@
 #include "BtSeederStateChoke.h"
 #include "BtLeecherStateChoke.h"
 #include "PieceStorage.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -53,7 +54,6 @@ DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
   btContext(btContext),
   option(option),
   logger(LogFactory::getInstance()),
-  btRuntime(BT_RUNTIME(btContext)),
   maxPeerListSize(BtRuntime::MAX_PEERS+(BtRuntime::MAX_PEERS >> 2)),
   removedPeerSessionDownloadLength(0),
   removedPeerSessionUploadLength(0),
@@ -206,7 +206,7 @@ TransferStat DefaultPeerStorage::calculateStat() {
   TransferStat stat = std::for_each(peers.begin(), peers.end(), CalculateStat()).getTransferStat();
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
-  stat.setAllTimeUploadLength(btRuntime->getUploadLengthAtStartup()+
+  stat.setAllTimeUploadLength(_btRuntime->getUploadLengthAtStartup()+
 			      stat.getSessionUploadLength());
   return stat;
 }
@@ -252,7 +252,7 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
 bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
   const time_t CHOKE_ROUND_INTERVAL = 10;
-  if(PIECE_STORAGE(btContext)->downloadFinished()) {
+  if(_pieceStorage->downloadFinished()) {
     return _seederStateChoke->getLastRound().elapsed(CHOKE_ROUND_INTERVAL);
   } else {
     return _leecherStateChoke->getLastRound().elapsed(CHOKE_ROUND_INTERVAL);
@@ -263,11 +263,21 @@ void DefaultPeerStorage::executeChoke()
 {
   std::deque<SharedHandle<Peer> > activePeers;
   getActivePeers(activePeers);
-  if(PIECE_STORAGE(btContext)->downloadFinished()) {
+  if(_pieceStorage->downloadFinished()) {
     return _seederStateChoke->executeChoke(activePeers);
   } else {
     return _leecherStateChoke->executeChoke(activePeers);
   }
+}
+
+void DefaultPeerStorage::setPieceStorage(const SharedHandle<PieceStorage>& ps)
+{
+  _pieceStorage = ps;
+}
+
+void DefaultPeerStorage::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+{
+  _btRuntime = btRuntime;
 }
 
 } // namespace aria2

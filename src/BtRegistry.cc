@@ -40,23 +40,10 @@
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
 #include "BtProgressInfoFile.h"
-#include "PeerObject.h"
-#include "BtMessageFactory.h"
-#include "BtRequestFactory.h"
-#include "BtMessageDispatcher.h"
-#include "BtMessageReceiver.h"
-#include "PeerConnection.h"
-#include "ExtensionMessageFactory.h"
 
 namespace aria2 {
 
-BtContextMap BtRegistry::btContextMap;
-PeerStorageMap BtRegistry::peerStorageMap;
-PieceStorageMap BtRegistry::pieceStorageMap;
-BtAnnounceMap BtRegistry::btAnnounceMap;
-BtRuntimeMap BtRegistry::btRuntimeMap;
-BtProgressInfoFileMap BtRegistry::btProgressInfoFileMap;
-PeerObjectClusterRegistry BtRegistry::peerObjectClusterRegistry;
+BtRegistry::BtRegistry() {}
 
 PeerStorageHandle BtRegistry::getPeerStorage(const std::string& key)
 {
@@ -136,25 +123,6 @@ std::deque<SharedHandle<BtContext> > BtRegistry::getAllBtContext()
   return btContextMap.getAll();
 }
 
-PeerObjectClusterHandle
-BtRegistry::getPeerObjectCluster(const std::string& key)
-{
-  return peerObjectClusterRegistry.getHandle(key);
-}
-
-void
-BtRegistry::registerPeerObjectCluster(const std::string& key,
-				      const PeerObjectClusterHandle& cluster)
-{
-  peerObjectClusterRegistry.registerHandle(key, cluster);
-}
-
-void
-BtRegistry::unregisterPeerObjectCluster(const std::string& key)
-{
-  peerObjectClusterRegistry.unregisterHandle(key);
-}
-
 void BtRegistry::unregisterAll() {
   btContextMap.clear();
   peerStorageMap.clear();
@@ -162,7 +130,6 @@ void BtRegistry::unregisterAll() {
   btAnnounceMap.clear();
   btRuntimeMap.clear();
   btProgressInfoFileMap.clear();
-  peerObjectClusterRegistry.clear();
 }
 
 void BtRegistry::unregister(const std::string& key)
@@ -173,7 +140,6 @@ void BtRegistry::unregister(const std::string& key)
   btAnnounceMap.unregisterHandle(key);
   btRuntimeMap.unregisterHandle(key);
   btProgressInfoFileMap.unregisterHandle(key);
-  peerObjectClusterRegistry.unregisterHandle(key);
 }
 
 } // namespace aria2

@@ -36,13 +36,15 @@
 #define _D_UT_PEX_EXTENSION_MESSAGE_H_
 
 #include "ExtensionMessage.h"
-#include "a2time.h"
+
 #include <utility>
 #include <deque>
 
+#include "a2time.h"
+
 namespace aria2 {
 
-class BtContext;
+class PeerStorage;
 class Peer;
 class UTPexExtensionMessage;
 typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
@@ -55,7 +57,7 @@ private:
 
   std::deque<SharedHandle<Peer> > _droppedPeers;
 
-  SharedHandle<BtContext> _btContext;
+  SharedHandle<PeerStorage> _peerStorage;
 
   time_t _interval;
 
@@ -101,10 +103,10 @@ public:
 
   bool droppedPeersAreFull() const;
 
-  void setBtContext(const SharedHandle<BtContext>& btContext);
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
-  static UTPexExtensionMessageHandle create(const SharedHandle<BtContext>& btContext,
-					    const unsigned char* data, size_t len);
+  static UTPexExtensionMessageHandle
+  create(const unsigned char* data, size_t len);
 
   void setMaxFreshPeer(size_t maxFreshPeer);
 

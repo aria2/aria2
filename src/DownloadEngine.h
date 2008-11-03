@@ -36,6 +36,15 @@
 #define _D_DOWNLOAD_ENGINE_H_
 
 #include "common.h"
+
+#ifdef HAVE_EPOLL_CREATE
+# include <sys/epoll.h>
+#endif // HAVE_EPOLL_CREATE
+
+#include <string>
+#include <deque>
+#include <map>
+
 #include "SharedHandle.h"
 #include "Command.h"
 #include "a2netcompat.h"
@@ -44,12 +53,6 @@
 #ifdef ENABLE_ASYNC_DNS
 # include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
-#include <string>
-#include <deque>
-#include <map>
-#ifdef HAVE_EPOLL
-# include <sys/epoll.h>
-#endif // HAVE_EPOLL
 
 namespace aria2 {
 
@@ -61,6 +64,7 @@ class StatCalc;
 class CheckIntegrityMan;
 class SocketCore;
 class CookieStorage;
+class BtRegistry;
 
 class CommandEvent
 {
@@ -292,6 +296,8 @@ private:
 
   SharedHandle<CookieStorage> _cookieStorage;
 
+  SharedHandle<BtRegistry> _btRegistry;
+
   void shortSleep() const;
 
   /**
@@ -405,6 +411,8 @@ public:
    uint16_t port);
 
   SharedHandle<CookieStorage> getCookieStorage() const;
+
+  SharedHandle<BtRegistry> getBtRegistry() const;
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

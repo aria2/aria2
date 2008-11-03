@@ -1,18 +1,14 @@
 #include "BtRejectMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Peer.h"
 #include "FileEntry.h"
-#include "BtRegistry.h"
-#include "PeerObject.h"
-#include "BtMessageFactory.h"
-#include "BtRequestFactory.h"
-#include "BtMessageReceiver.h"
-#include "ExtensionMessageFactory.h"
-#include "PeerConnection.h"
 #include "MockBtMessageDispatcher.h"
 #include "MockBtContext.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -67,36 +63,27 @@ public:
 
   typedef SharedHandle<MockBtMessageDispatcher2> MockBtMessageDispatcher2Handle;
 
+  SharedHandle<MockBtContext> _btContext;
   SharedHandle<Peer> peer;
   SharedHandle<MockBtMessageDispatcher2> dispatcher;
   SharedHandle<BtRejectMessage> msg;
 
   void setUp() {
-    BtRegistry::unregisterAll();
     peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(1024, 1024*1024);
 
-    SharedHandle<MockBtContext> btContext(new MockBtContext());
-    btContext->setInfoHash((const unsigned char*)"12345678901234567890");
-    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
-    BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  cluster);
-    SharedHandle<PeerObject> po(new PeerObject());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
+    _btContext.reset(new MockBtContext());
+    _btContext->setInfoHash((const unsigned char*)"12345678901234567890");
+
     dispatcher.reset(new MockBtMessageDispatcher2());
-    PEER_OBJECT(btContext, peer)->btMessageDispatcher = dispatcher;
 
     msg.reset(new BtRejectMessage());
     msg->setPeer(peer);
-    msg->setBtContext(btContext);
+    msg->setBtContext(_btContext);
     msg->setIndex(1);
     msg->setBegin(16);
     msg->setLength(32);
     msg->setBtMessageDispatcher(dispatcher);
-  }
-
-  void tearDown() {
-    BtRegistry::unregisterAll();
   }
 };
 
@@ -151,11 +138,13 @@ void BtRejectMessageTest::testDoReceivedAction() {
   RequestSlot slot(1, 16, 32, 2);
   dispatcher->setRequestSlot(slot);
   
-  CPPUNIT_ASSERT(!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
+  CPPUNIT_ASSERT
+    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
 
   msg->doReceivedAction();
 
-  CPPUNIT_ASSERT(RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
+  CPPUNIT_ASSERT
+    (RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
 }
 
 void BtRejectMessageTest::testDoReceivedActionNoMatch() {
@@ -163,11 +152,13 @@ void BtRejectMessageTest::testDoReceivedActionNoMatch() {
   RequestSlot slot(2, 16, 32, 2);
   dispatcher->setRequestSlot(slot);
   
-  CPPUNIT_ASSERT(!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));
+  CPPUNIT_ASSERT
+    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));
 
   msg->doReceivedAction();
 
-  CPPUNIT_ASSERT(!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));  
+  CPPUNIT_ASSERT
+    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));  
 
 }
 
@@ -175,7 +166,8 @@ void BtRejectMessageTest::testDoReceivedActionFastExtensionDisabled() {
   RequestSlot slot(1, 16, 32, 2);
   dispatcher->setRequestSlot(slot);
   
-  CPPUNIT_ASSERT(!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
+  CPPUNIT_ASSERT
+    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
   try {
     msg->doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");

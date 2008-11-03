@@ -33,10 +33,11 @@
  */
 /* copyright --> */
 #include "BtSeederStateChoke.h"
+
+#include <algorithm>
+
 #include "BtContext.h"
 #include "Peer.h"
-#include "BtRegistry.h"
-#include "PeerObject.h"
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
 #include "BtRequestFactory.h"
@@ -46,7 +47,6 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "a2time.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -70,19 +70,19 @@ public:
 
   bool operator()(Peer* left, Peer* right) const
   {
-    size_t leftUpload = BT_MESSAGE_DISPATCHER(_btContext, left)->countOutstandingRequest();
-    size_t rightUpload = BT_MESSAGE_DISPATCHER(_btContext, right)->countOutstandingRequest();
-    if(leftUpload && !rightUpload) {
-      return true;
-    } else if(!leftUpload && rightUpload) {
-      return false;
-    }
+    // TODO Should peer have the reference to message dispatcher?
+//     size_t leftUpload = BT_MESSAGE_DISPATCHER(_btContext, left)->countOutstandingUpload();
+//     size_t rightUpload = BT_MESSAGE_DISPATCHER(_btContext, right)->countOutstandingUpload();
+//     if(leftUpload && !rightUpload) {
+//       return true;
+//     } else if(!leftUpload && rightUpload) {
+//       return false;
+//     }
     const int TIME_FRAME = 20;
     if(!left->getLastAmUnchoking().elapsed(TIME_FRAME) &&
        left->getLastAmUnchoking().isNewer(right->getLastAmUnchoking())) {
       return true;
-    } else if(!right->getLastAmUnchoking().elapsed(TIME_FRAME) &&
-	      right->getLastAmUnchoking().isNewer(left->getLastAmUnchoking())) {
+    } else if(!right->getLastAmUnchoking().elapsed(TIME_FRAME)) {
       return false;
     } else {
       return left->calculateUploadSpeed(_now) > right->calculateUploadSpeed(_now);

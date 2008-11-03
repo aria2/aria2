@@ -84,9 +84,15 @@ DHTTaskFactoryImpl::createBucketRefreshTask()
 }
 
 SharedHandle<DHTTask>
-DHTTaskFactoryImpl::createPeerLookupTask(const SharedHandle<BtContext>& ctx)
+DHTTaskFactoryImpl::createPeerLookupTask
+(const SharedHandle<BtContext>& ctx,
+ const SharedHandle<BtRuntime>& btRuntime,
+ const SharedHandle<PeerStorage>& peerStorage)
 {
   SharedHandle<DHTPeerLookupTask> task(new DHTPeerLookupTask(ctx));
+  // TODO these may be not freed by RequestGroup::releaseRuntimeResource()
+  task->setBtRuntime(btRuntime);
+  task->setPeerStorage(peerStorage);
   setCommonProperty(task);
   return task;
 }

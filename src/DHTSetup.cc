@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "DHTSetup.h"
+
+#include <fstream>
+#include <algorithm>
+
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Util.h"
@@ -66,12 +70,11 @@
 #include "DlAbortEx.h"
 #include "RecoverableException.h"
 #include "a2functional.h"
-#include <fstream>
-#include <algorithm>
 
 namespace aria2 {
 
-size_t DHTSetup::_initialized = 0;
+// TODO DownloadEngine should hold this flag.
+bool DHTSetup::_initialized = false;
 
 DHTSetup::DHTSetup():_logger(LogFactory::getInstance()) {}
 

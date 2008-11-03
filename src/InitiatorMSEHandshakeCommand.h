@@ -37,14 +37,16 @@
 
 #include "PeerAbstractCommand.h"
 #include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
 
 namespace aria2 {
 
+class BtContext;
+class PeerStorage;
+class PieceStorage;
+class BtRuntime;
 class MSEHandshake;
 
 class InitiatorMSEHandshakeCommand : public PeerAbstractCommand,
-				     public BtContextAwareCommand,
 				     public RequestGroupAware
 {
 public:
@@ -58,6 +60,14 @@ public:
     INITIATOR_RECEIVE_PAD_D,
   };
 private:
+  SharedHandle<BtContext> _btContext;
+
+  SharedHandle<PeerStorage> _peerStorage;
+
+  SharedHandle<PieceStorage> _pieceStorage;
+
+  SharedHandle<BtRuntime> _btRuntime;
+
   Seq _sequence;
   MSEHandshake* _mseHandshake;
 protected:
@@ -71,10 +81,14 @@ public:
 			       const SharedHandle<Peer>& peer,
 			       DownloadEngine* e,
 			       const SharedHandle<BtContext>& btContext,
+			       const SharedHandle<BtRuntime>& btRuntime,
 			       const SharedHandle<SocketCore>& s);
 
   virtual ~InitiatorMSEHandshakeCommand();
 
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 };
 
 } // namespace aria2

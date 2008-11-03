@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DefaultBtRequestFactory.h"
+
+#include <algorithm>
+
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Piece.h"
@@ -42,9 +45,7 @@
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
 #include "BtMessage.h"
-#include "BtRegistry.h"
 #include "a2functional.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -93,7 +94,7 @@ void DefaultBtRequestFactory::removeTargetPiece(const PieceHandle& piece) {
   pieces.erase(std::remove(pieces.begin(), pieces.end(), piece),
 	       pieces.end());
   dispatcher->doAbortOutstandingRequestAction(piece);
-  pieceStorage->cancelPiece(piece);
+  _pieceStorage->cancelPiece(piece);
 }
 
 class ProcessChokedPiece {
@@ -129,7 +130,7 @@ public:
 void DefaultBtRequestFactory::doChokedAction()
 {
   std::for_each(pieces.begin(), pieces.end(),
-		ProcessChokedPiece(peer, pieceStorage));
+		ProcessChokedPiece(peer, _pieceStorage));
   pieces.erase(std::remove_if(pieces.begin(), pieces.end(),
 			      FindChokedPiece(peer)),
 	       pieces.end());
@@ -138,7 +139,7 @@ void DefaultBtRequestFactory::doChokedAction()
 void DefaultBtRequestFactory::removeAllTargetPiece() {
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); ++itr) {
     dispatcher->doAbortOutstandingRequestAction(*itr);
-    pieceStorage->cancelPiece(*itr);
+    _pieceStorage->cancelPiece(*itr);
   }
   pieces.clear();
 }
@@ -225,7 +226,12 @@ std::deque<SharedHandle<Piece> >& DefaultBtRequestFactory::getTargetPieces()
 void DefaultBtRequestFactory::setBtContext(const SharedHandle<BtContext>& btContext)
 {
   this->btContext = btContext;
-  this->pieceStorage = PIECE_STORAGE(btContext);
+}
+
+void DefaultBtRequestFactory::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  _pieceStorage = pieceStorage;
 }
 
 void DefaultBtRequestFactory::setPeer(const SharedHandle<Peer>& peer)

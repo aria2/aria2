@@ -89,7 +89,7 @@ public:
 
   void getInitialCommands(std::deque<Command*>& commands, DownloadEngine* e);
 
-  void removeStoppedGroup();
+  void removeStoppedGroup(DownloadEngine* e);
 
   void fillRequestGroupFromReserver(DownloadEngine* e);
 

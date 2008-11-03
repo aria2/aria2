@@ -9,19 +9,22 @@ class MockDHTTaskFactory:public DHTTaskFactory {
 public:
   virtual ~MockDHTTaskFactory() {}
 
-  virtual SharedHandle<DHTTask> createPingTask(const SharedHandle<DHTNode>& remoteNode,
-				       size_t numRetry = 0)
+  virtual SharedHandle<DHTTask>
+  createPingTask(const SharedHandle<DHTNode>& remoteNode,
+		 size_t numRetry = 0)
   {
     return SharedHandle<DHTTask>();
   }
 
-  virtual SharedHandle<DHTTask> createGetIDTask(const SharedHandle<DHTNode>& remoteNode,
-					size_t numRetry = 0)
+  virtual SharedHandle<DHTTask>
+  createGetIDTask(const SharedHandle<DHTNode>& remoteNode,
+		  size_t numRetry = 0)
   {
     return SharedHandle<DHTTask>();
   }
 
-  virtual SharedHandle<DHTTask> createNodeLookupTask(const unsigned char* targetID)
+  virtual SharedHandle<DHTTask>
+  createNodeLookupTask(const unsigned char* targetID)
   {
     return SharedHandle<DHTTask>();
   }
@@ -31,18 +34,23 @@ public:
     return SharedHandle<DHTTask>();
   }
 
-  virtual SharedHandle<DHTTask> createPeerLookupTask(const SharedHandle<BtContext>& ctx)
+  virtual SharedHandle<DHTTask>
+  createPeerLookupTask(const SharedHandle<BtContext>& ctx,
+		       const SharedHandle<BtRuntime>& btRuntime,
+		       const SharedHandle<PeerStorage>& peerStorage)
   {
     return SharedHandle<DHTTask>();
   }
   
-  virtual SharedHandle<DHTTask> createPeerAnnounceTask(const unsigned char* infoHash)
+  virtual SharedHandle<DHTTask>
+  createPeerAnnounceTask(const unsigned char* infoHash)
   {
     return SharedHandle<DHTTask>();
   }
 
-  virtual SharedHandle<DHTTask> createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-						      const SharedHandle<DHTNode>& newNode)
+  virtual SharedHandle<DHTTask>
+  createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
+			const SharedHandle<DHTNode>& newNode)
   {
     return SharedHandle<DHTTask>();
   }
