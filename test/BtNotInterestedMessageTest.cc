@@ -6,7 +6,7 @@
 
 #include "PeerMessageUtil.h"
 #include "Peer.h"
-#include "PeerStorage.h"
+#include "MockPeerStorage.h"
 
 namespace aria2 {
 
@@ -19,13 +19,7 @@ class BtNotInterestedMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
-private:
-
 public:
-  void setUp() {
-    // TODO add peer storage here
-  }
-
   void testCreate();
   void testGetMessage();
   void testDoReceivedAction();
@@ -71,11 +65,21 @@ void BtNotInterestedMessageTest::testDoReceivedAction() {
   SharedHandle<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->peerInterested(true);
+
+  SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
+
   BtNotInterestedMessage msg;
   msg.setPeer(peer);
+  msg.setPeerStorage(peerStorage);
+
   CPPUNIT_ASSERT(peer->peerInterested());
   msg.doReceivedAction();
   CPPUNIT_ASSERT(!peer->peerInterested());
+  CPPUNIT_ASSERT_EQUAL(0, peerStorage->getNumChokeExecuted());
+
+  peer->amChoking(false);
+  msg.doReceivedAction();
+  CPPUNIT_ASSERT_EQUAL(1, peerStorage->getNumChokeExecuted());
 }
 
 void BtNotInterestedMessageTest::testOnSendComplete() {
