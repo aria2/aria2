@@ -233,6 +233,11 @@ void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
   if(peer->isActive()) {
     removedPeerSessionDownloadLength += peer->getSessionDownloadLength();
     removedPeerSessionUploadLength += peer->getSessionUploadLength();
+    // Execute choking algorithm if unchoked and interested peer is
+    // disconnected.
+    if(!peer->amChoking() && peer->peerInterested()) {
+      executeChoke();
+    }
   }
 }
 
