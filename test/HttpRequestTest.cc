@@ -106,12 +106,6 @@ void HttpRequestTest::testCreateRequest()
 {
   SharedHandle<Piece> p;
 
-  _option->put(PREF_HTTP_PROXY_ENABLED, V_FALSE);
-  _option->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
-  _option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
-  _option->put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
-  _option->put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
-
   SharedHandle<Request> request(new Request());
   request->supportsPersistentConnection(true);
 
@@ -225,8 +219,6 @@ void HttpRequestTest::testCreateRequest()
   _option->put(PREF_HTTP_USER, "aria2user");
   _option->put(PREF_HTTP_PASSWD, "aria2passwd");
 
-  httpRequest.configure(_option.get());
-
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
@@ -240,41 +232,10 @@ void HttpRequestTest::testCreateRequest()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   // enable http proxy auth
-  _option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
-
-  httpRequest.configure(_option.get());
-
-  expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
-    "User-Agent: aria2\r\n"
-    "Accept: */*\r\n"
-    "Host: localhost:8080\r\n"
-    "Pragma: no-cache\r\n"
-    "Cache-Control: no-cache\r\n"
-    "Connection: close\r\n"
-    "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
-    "\r\n";
-
-  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
-
-  _option->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
-
-  httpRequest.configure(_option.get());
-
-  expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
-    "User-Agent: aria2\r\n"
-    "Accept: */*\r\n"
-    "Host: localhost:8080\r\n"
-    "Pragma: no-cache\r\n"
-    "Cache-Control: no-cache\r\n"
-    "Connection: close\r\n"
-    "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
-    "\r\n";
-
-  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
-
-  _option->put(PREF_HTTP_PROXY_METHOD, V_GET);
-
-  httpRequest.configure(_option.get());
+  SharedHandle<Request> proxyRequest(new Request());
+  CPPUNIT_ASSERT(proxyRequest->setUrl
+		 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
+  httpRequest.setProxyRequest(proxyRequest);
 
   expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -308,9 +269,8 @@ void HttpRequestTest::testCreateRequest()
 
   request->setPipeliningHint(false);
 
-  _option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
-
-  httpRequest.configure(_option.get());
+  // turn off proxy auth
+  CPPUNIT_ASSERT(proxyRequest->setUrl("http://localhost:9000"));
 
   expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -328,16 +288,15 @@ void HttpRequestTest::testCreateRequest()
 
 void HttpRequestTest::testCreateRequest_ftp()
 {
-  _option->put(PREF_HTTP_PROXY_ENABLED, V_FALSE);
-  _option->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
-  _option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
-  _option->put(PREF_FTP_USER, "aria2user");
-  _option->put(PREF_FTP_PASSWD, "aria2passwd");
-  _option->put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
-  _option->put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
+   _option->put(PREF_FTP_USER, "aria2user");
+   _option->put(PREF_FTP_PASSWD, "aria2passwd");
 
   SharedHandle<Request> request(new Request());
   request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+
+  SharedHandle<Request> proxyRequest(new Request());
+  CPPUNIT_ASSERT(proxyRequest->setUrl
+		 ("http://localhost:9000"));
 
   HttpRequest httpRequest;
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
@@ -347,8 +306,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setAuthConfigFactory(_authConfigFactory);
-
-  httpRequest.configure(_option.get());
+  httpRequest.setProxyRequest(proxyRequest);
 
   std::string expectedText =
     "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
@@ -359,17 +317,15 @@ void HttpRequestTest::testCreateRequest_ftp()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
+    "Proxy-Connection: close\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  // How to enable HTTP proxy authorization in FTP download via HTTP proxy
-  _option->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
-  _option->put(PREF_HTTP_PROXY_METHOD, V_GET);
-  _option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
-
-  httpRequest.configure(_option.get());
+  // test proxy authorization
+  CPPUNIT_ASSERT(proxyRequest->setUrl
+		 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
 
   expectedText =
     "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
@@ -386,7 +342,6 @@ void HttpRequestTest::testCreateRequest_ftp()
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
-  
 }
 
 void HttpRequestTest::testCreateRequest_with_cookie()
@@ -502,10 +457,14 @@ void HttpRequestTest::testCreateProxyRequest()
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
 
+  SharedHandle<Request> proxyRequest(new Request());
+  CPPUNIT_ASSERT(proxyRequest->setUrl("http://localhost:9000"));
+
   HttpRequest httpRequest;
 
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setProxyRequest(proxyRequest);
 
   request->supportsPersistentConnection(true);
 
@@ -538,7 +497,20 @@ void HttpRequestTest::testCreateProxyRequest()
     "Proxy-Connection: Keep-Alive\r\n"
     "\r\n";
 
-  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());  
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
+
+  // test proxy authorization
+  CPPUNIT_ASSERT(proxyRequest->setUrl
+		 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
+
+  expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Host: localhost:80\r\n"
+    "Proxy-Connection: Keep-Alive\r\n"
+    "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
 }
 
 void HttpRequestTest::testIsRangeSatisfied()
@@ -620,6 +592,11 @@ void HttpRequestTest::testUserAgent()
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+
+  SharedHandle<Request> proxyRequest(new Request());
+  CPPUNIT_ASSERT(proxyRequest->setUrl("http://localhost:9000"));
+  
+  httpRequest.setProxyRequest(proxyRequest);
 
   std::string expectedTextForProxy = "CONNECT localhost:8080 HTTP/1.1\r\n"
     "User-Agent: aria2 (Linux)\r\n"

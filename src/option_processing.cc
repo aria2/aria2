@@ -107,8 +107,8 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_HTTP_PROXY.c_str(), required_argument, &lopt, 1 },
       { PREF_HTTP_USER.c_str(), required_argument, &lopt, 2 },
       { PREF_HTTP_PASSWD.c_str(), required_argument, &lopt, 3 },
-      { PREF_HTTP_PROXY_USER.c_str(), required_argument, &lopt, 4 },
-      { PREF_HTTP_PROXY_PASSWD.c_str(), required_argument, &lopt, 5 },
+      { "http-proxy-user", required_argument, &lopt, 4 },
+      { "http-proxy-passwd", required_argument, &lopt, 5 },
       { PREF_HTTP_AUTH_SCHEME.c_str(), required_argument, &lopt, 6 },
       { PREF_REFERER.c_str(), required_argument, &lopt, 7 },
       { PREF_RETRY_WAIT.c_str(), required_argument, &lopt, 8 },
@@ -116,7 +116,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_FTP_PASSWD.c_str(), required_argument, &lopt, 10 },
       { PREF_FTP_TYPE.c_str(), required_argument, &lopt, 11 },
       { PREF_FTP_PASV.c_str(), no_argument, NULL, 'p' },
-      { PREF_FTP_VIA_HTTP_PROXY.c_str(), required_argument, &lopt, 12 },
+      { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { PREF_HTTP_PROXY_METHOD.c_str(), required_argument, &lopt, 14 },
       { PREF_LOWEST_SPEED_LIMIT.c_str(), required_argument, &lopt, 200 },
       { PREF_MAX_DOWNLOAD_LIMIT.c_str(), required_argument, &lopt, 201 },
@@ -161,6 +161,9 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_CONNECT_TIMEOUT.c_str(), required_argument, &lopt, 224 },
       { PREF_MAX_FILE_NOT_FOUND.c_str(), required_argument, &lopt, 225 },
       { PREF_AUTO_SAVE_INTERVAL.c_str(), required_argument, &lopt, 226 },
+      { PREF_HTTPS_PROXY.c_str(), required_argument, &lopt, 227 },
+      { PREF_FTP_PROXY.c_str(), required_argument, &lopt, 228 },
+      { PREF_ALL_PROXY.c_str(), required_argument, &lopt, 229 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -221,11 +224,15 @@ Option* option_processing(int argc, char* const argv[])
 	cmdstream << PREF_HTTP_PASSWD << "=" << optarg << "\n";
 	break;
       case 4:
-	cmdstream << PREF_HTTP_PROXY_USER << "=" << optarg << "\n";
-	break;
+	std::cout << "--http-proxy-user was deprecated. See --http-proxy,"
+		  << " --https-proxy, --ftp-proxy, --all-proxy options."
+		  << std::endl;
+	exit(EXIT_FAILURE);
       case 5: 
-	cmdstream << PREF_HTTP_PROXY_PASSWD << "=" << optarg << "\n";
-	break;
+	std::cout << "--http-proxy-passwd was deprecated. See --http-proxy,"
+		  << " --https-proxy, --ftp-proxy, --all-proxy options."
+		  << std::endl;
+	exit(EXIT_FAILURE);
       case 6:
 	cmdstream << PREF_HTTP_AUTH_SCHEME << "=" << optarg << "\n";
 	break;
@@ -245,8 +252,10 @@ Option* option_processing(int argc, char* const argv[])
 	cmdstream << PREF_FTP_TYPE << "=" << optarg << "\n";
 	break;
       case 12:
-	cmdstream << PREF_FTP_VIA_HTTP_PROXY << "=" << optarg << "\n";
-	break;
+	std::cout << "--ftp-via-http-proxy was deprecated."
+		  << " Use --http-proxy-method option instead."
+		  << std::endl;
+	exit(EXIT_FAILURE);
       case 14:
 	cmdstream << PREF_HTTP_PROXY_METHOD << "=" << optarg << "\n";
 	break;
@@ -409,6 +418,15 @@ Option* option_processing(int argc, char* const argv[])
       case 226:
 	cmdstream << PREF_AUTO_SAVE_INTERVAL << "=" << optarg << "\n";
 	break;
+      case 227:
+	cmdstream << PREF_HTTPS_PROXY << "=" << optarg << "\n";
+	break;
+      case 228:
+	cmdstream << PREF_FTP_PROXY << "=" << optarg << "\n";
+	break;
+      case 229:
+	cmdstream << PREF_ALL_PROXY << "=" << optarg << "\n";
+	break;
       }
       break;
     }
@@ -544,9 +562,6 @@ Option* option_processing(int argc, char* const argv[])
       showUsage(TAG_HELP, oparser);
       exit(EXIT_FAILURE);
     }
-  }
-  if(op->defined(PREF_HTTP_PROXY_USER)) {
-    op->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
   }
   if(
 #ifdef ENABLE_BITTORRENT

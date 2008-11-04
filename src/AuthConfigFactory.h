@@ -61,8 +61,6 @@ private:
 
   SharedHandle<AuthResolver> createHttpAuthResolver() const;
   
-  SharedHandle<AuthResolver> createHttpProxyAuthResolver() const;
-  
   SharedHandle<AuthResolver> createFtpAuthResolver() const;
 
 public:
@@ -72,9 +70,6 @@ public:
   ~AuthConfigFactory();
 
   SharedHandle<AuthConfig> createAuthConfig
-  (const SharedHandle<Request>& request) const;
-
-  SharedHandle<AuthConfig> createAuthConfigForHttpProxy
   (const SharedHandle<Request>& request) const;
 
   void setNetrc(const SharedHandle<Netrc>& netrc);

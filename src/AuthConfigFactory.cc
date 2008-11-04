@@ -70,12 +70,6 @@ AuthConfigFactory::createAuthConfig(const RequestHandle& request) const
 }
 
 AuthConfigHandle
-AuthConfigFactory::createAuthConfigForHttpProxy(const RequestHandle& request) const
-{
-  return createHttpProxyAuthResolver()->resolveAuthConfig(request->getHost());
-}
-
-AuthConfigHandle
 AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& password) const
 {
   SharedHandle<AuthConfig> ac;
@@ -115,20 +109,6 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver() const
     (new AuthConfig(AuthConfigFactory::ANONYMOUS,
 		    AuthConfigFactory::ARIA2USER_AT));
   resolver->setDefaultAuthConfig(defaultAuthConfig);
-  return resolver;
-}
-
-AuthResolverHandle AuthConfigFactory::createHttpProxyAuthResolver() const
-{
-  AbstractAuthResolverHandle resolver;
-  if(true || _option->getAsBool(PREF_NO_NETRC)) {
-    resolver.reset(new DefaultAuthResolver());
-  } else {
-    NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
-    authResolver->setNetrc(_netrc);
-    resolver = authResolver;
-  }
-  resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_PROXY_USER), _option->get(PREF_HTTP_PROXY_PASSWD)));
   return resolver;
 }
 

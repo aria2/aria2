@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "FtpFinishDownloadCommand.h"
+
+#include <map>
+
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "prefs.h"
@@ -44,7 +47,6 @@
 #include "SocketCore.h"
 #include "RequestGroup.h"
 #include "Logger.h"
-#include <map>
 
 namespace aria2 {
 
@@ -82,8 +84,7 @@ bool FtpFinishDownloadCommand::execute()
     if(status != 226) {
       throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
     }
-    if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-       e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+    if(!isProxyDefined() && e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::pair<std::string, uint16_t> peerInfo;
       socket->getPeerInfo(peerInfo);
       std::map<std::string, std::string> options;

@@ -1,3 +1,47 @@
+2008-11-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Deprecated --http-proxy-user and --http-proxy-passwd options.
+	Added --https-proxy, --ftp-proxy and --all-proxy options.
+	Above 3 options and --http-proxy option can handle proxy in URL format
+	like: http://user:passwd@host:port.
+	If a proxy requires user/password, they must be specified in a URL.
+	Deprecated --ftp-via-http-proxy option. Use --http-proxy-method option
+	instead.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/AbstractProxyRequestCommand.cc
+	* src/AbstractProxyRequestCommand.h
+	* src/AuthConfigFactory.cc
+	* src/AuthConfigFactory.h
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpInitiateConnectionCommand.h
+	* src/FtpNegotiationCommand.cc
+	* src/FtpTunnelRequestCommand.cc
+	* src/FtpTunnelRequestCommand.h
+	* src/HttpDownloadCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpInitiateConnectionCommand.h
+	* src/HttpProxyRequestCommand.cc
+	* src/HttpProxyRequestCommand.h
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpRequestCommand.cc
+	* src/HttpRequestCommand.h
+	* src/HttpSkipResponseCommand.cc
+	* src/InitiateConnectionCommand.cc
+	* src/InitiateConnectionCommand.h
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/Request.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/AuthConfigFactoryTest.cc
+	* test/HttpRequestTest.cc
+	* test/OptionHandlerTest.cc
+
 2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Execute choking algorithm when unchoked and interested peer is

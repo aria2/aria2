@@ -40,12 +40,10 @@
 namespace aria2 {
 
 class FtpInitiateConnectionCommand : public InitiateConnectionCommand {
-private:
-  bool useHTTPProxyGet() const;
-  bool useHTTPProxyConnect() const;
 protected:
   virtual Command* createNextCommand
-  (const std::deque<std::string>& resolvedAddresses);
+  (const std::deque<std::string>& resolvedAddresses,
+   const SharedHandle<Request>& proxyRequest);
 public:
   FtpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
 			       RequestGroup* requestGroup, DownloadEngine* e);

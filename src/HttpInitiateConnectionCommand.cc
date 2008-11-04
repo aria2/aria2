@@ -46,6 +46,7 @@
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -59,22 +60,25 @@ HttpInitiateConnectionCommand::HttpInitiateConnectionCommand
 HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
 
 Command* HttpInitiateConnectionCommand::createNextCommand
-(const std::deque<std::string>& resolvedAddresses)
+(const std::deque<std::string>& resolvedAddresses,
+ const SharedHandle<Request>& proxyRequest)
 {
   Command* command;
-  if(useHTTPProxy()) {
+  if(!proxyRequest.isNull()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
-		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+		 proxyRequest->getHost().c_str(), proxyRequest->getPort());
     socket.reset(new SocketCore());
     socket->establishConnection(resolvedAddresses.front(),
-				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+				proxyRequest->getPort());
     if(useProxyTunnel()) {
-      command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e, socket);
+      command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e,
+					    proxyRequest, socket);
     } else if(useProxyGet()) {
       SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, e->option));
-      command = new HttpRequestCommand(cuid, req, _requestGroup,
-				       httpConnection, e, socket);
+      HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
+						     httpConnection, e, socket);
+      c->setProxyRequest(proxyRequest);
+      command = c;
     } else {
       // TODO
       throw DlAbortEx("ERROR");

@@ -63,7 +63,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     e->commands.push_back(command);
     return true;
   } else {
-    if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED)) {
+    if(!isProxyDefined()) {
       if(req->isPipeliningEnabled() ||
 	 (req->isKeepAliveEnabled() &&
 	  ((!_transferEncodingDecoder.isNull() &&

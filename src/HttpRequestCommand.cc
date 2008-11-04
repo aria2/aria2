@@ -79,7 +79,8 @@ createHttpRequest(const SharedHandle<Request>& req,
 		  const Option* option,
 		  const RequestGroup* rg,
 		  const SharedHandle<CookieStorage>& cookieStorage,
-		  const SharedHandle<AuthConfigFactory>& authConfigFactory)
+		  const SharedHandle<AuthConfigFactory>& authConfigFactory,
+		  const SharedHandle<Request>& proxyRequest)
 {
   HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
@@ -89,6 +90,7 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->addHeader(option->get(PREF_HEADER));
   httpRequest->setCookieStorage(cookieStorage);
   httpRequest->setAuthConfigFactory(authConfigFactory);
+  httpRequest->setProxyRequest(proxyRequest);
   if(!rg->getAcceptFeatures().empty()) {
     const std::deque<std::string>& acceptFeatures = rg->getAcceptFeatures();
     std::string acceptFeaturesHeader = "Accept-Features: ";
@@ -98,7 +100,6 @@ createHttpRequest(const SharedHandle<Request>& req,
   }
   httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
 			     rg->getAcceptTypes().end());
-  httpRequest->configure(option);
 
   return httpRequest;
 }
@@ -123,7 +124,8 @@ bool HttpRequestCommand::executeInternal() {
 			   _requestGroup->getTotalLength(), e->option,
 			   _requestGroup,
 			   e->getCookieStorage(),
-			   e->getAuthConfigFactory()));
+			   e->getAuthConfigFactory(),
+			   _proxyRequest));
       _httpConnection->sendRequest(httpRequest);
     } else {
       for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
@@ -134,7 +136,8 @@ bool HttpRequestCommand::executeInternal() {
 			       _requestGroup->getTotalLength(), e->option,
 			       _requestGroup,
 			       e->getCookieStorage(),
-			       e->getAuthConfigFactory()));
+			       e->getAuthConfigFactory(),
+			       _proxyRequest));
 	  _httpConnection->sendRequest(httpRequest);
 	}
       }
@@ -153,6 +156,12 @@ bool HttpRequestCommand::executeInternal() {
     e->commands.push_back(this);
     return false;
   }
+}
+
+void HttpRequestCommand::setProxyRequest
+(const SharedHandle<Request>& proxyRequest)
+{
+  _proxyRequest = proxyRequest;
 }
 
 } // namespace aria2

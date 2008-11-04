@@ -39,12 +39,15 @@
 
 namespace aria2 {
 
-HttpProxyRequestCommand::HttpProxyRequestCommand(int cuid,
-						 const RequestHandle& req,
-						 RequestGroup* requestGroup,
-						 DownloadEngine* e,
-						 const SocketHandle& s)
-  :AbstractProxyRequestCommand(cuid, req, requestGroup, e, s) {}
+HttpProxyRequestCommand::HttpProxyRequestCommand
+(int cuid,
+ const RequestHandle& req,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const SharedHandle<Request>& proxyRequest,
+ const SocketHandle& s)
+  :
+  AbstractProxyRequestCommand(cuid, req, requestGroup, e, proxyRequest, s) {}
 
 HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 

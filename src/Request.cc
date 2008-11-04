@@ -197,7 +197,11 @@ bool Request::parseUrl(const std::string& url) {
   host = hostAndPort.first;
   if(hostAndPort.second != A2STR::NIL) {
     try {
-      port = Util::parseInt(hostAndPort.second);
+      unsigned int tempPort = Util::parseUInt(hostAndPort.second);
+      if(65535 < tempPort) {
+	return false;
+      }
+      port = tempPort;
     } catch(RecoverableException& e) {
       return false;
     }

@@ -47,13 +47,17 @@
 
 namespace aria2 {
 
-AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
-							 const RequestHandle& req,
-							 RequestGroup* requestGroup,
-							 DownloadEngine* e,
-							 const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s),
-   httpConnection(new HttpConnection(cuid, s, e->option))
+AbstractProxyRequestCommand::AbstractProxyRequestCommand
+(int cuid,
+ const RequestHandle& req,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const SharedHandle<Request>& proxyRequest,
+ const SocketHandle& s)
+  :
+  AbstractCommand(cuid, req, requestGroup, e, s),
+  _proxyRequest(proxyRequest),
+  httpConnection(new HttpConnection(cuid, s, e->option))
 {
   setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
@@ -69,8 +73,7 @@ bool AbstractProxyRequestCommand::executeInternal() {
     httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
     httpRequest->setRequest(req);
     httpRequest->setAuthConfigFactory(e->getAuthConfigFactory());
-
-    httpRequest->configure(e->option);
+    httpRequest->setProxyRequest(_proxyRequest);
 
     httpConnection->sendProxyRequest(httpRequest);
   } else {

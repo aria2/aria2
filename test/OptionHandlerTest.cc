@@ -328,51 +328,29 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
 
 void OptionHandlerTest::testHttpProxyOptionHandler()
 {
-  HttpProxyOptionHandler handler(PREF_HTTP_PROXY,
-				 "",
-				 "",
-				 PREF_HTTP_PROXY_HOST,
-				 PREF_HTTP_PROXY_PORT);
+  HttpProxyOptionHandler handler(PREF_HTTP_PROXY, "", "");
   CPPUNIT_ASSERT(handler.canHandle(PREF_HTTP_PROXY));
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
-  handler.parse(&option, "bar:80");
-  CPPUNIT_ASSERT_EQUAL(std::string("bar:80"), option.get(PREF_HTTP_PROXY));
-  CPPUNIT_ASSERT_EQUAL(std::string("bar"), option.get(PREF_HTTP_PROXY_HOST));
-  CPPUNIT_ASSERT_EQUAL(std::string("80"), option.get(PREF_HTTP_PROXY_PORT));
-  CPPUNIT_ASSERT_EQUAL(std::string(V_TRUE), option.get(PREF_HTTP_PROXY_ENABLED));
+  handler.parse(&option, "proxy:65535");
+  CPPUNIT_ASSERT_EQUAL(std::string("http://proxy:65535"),
+		       option.get(PREF_HTTP_PROXY));
+
+  handler.parse(&option, "http://proxy:8080");
+  CPPUNIT_ASSERT_EQUAL(std::string("http://proxy:8080"),
+		       option.get(PREF_HTTP_PROXY));
+
+  handler.parse(&option, "ftp://proxy:8080");
+  CPPUNIT_ASSERT_EQUAL(std::string("http://ftp://proxy:8080"),
+		       option.get(PREF_HTTP_PROXY));
 
   try {
-    handler.parse(&option, "bar");
+    handler.parse(&option, "http://bar:65536");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
-  try {
-    handler.parse(&option, "bar:");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace() << std::endl;
-  }
-  try {
-    handler.parse(&option, ":");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace() << std::endl;
-  }
-  try {
-    handler.parse(&option, ":80");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace() << std::endl;
-  }
-  try {
-    handler.parse(&option, "foo:bar");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace() << std::endl;
-  }
-  CPPUNIT_ASSERT_EQUAL(std::string("HOST:PORT"),
+  CPPUNIT_ASSERT_EQUAL(std::string("[http://][USER:PASSWORD@]HOST[:PORT]"),
 		       handler.createPossibleValuesString());
 }
 

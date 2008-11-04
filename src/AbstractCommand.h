@@ -100,6 +100,18 @@ protected:
   void prepareForNextAction(Command* nextCommand = 0);
 
   void checkIfConnectionEstablished(const SharedHandle<SocketCore>& socket);
+
+  /*
+   * Returns true if proxy for the procol indicated by Request::getProtocol()
+   * is defined. Otherwise, returns false.
+   */
+  bool isProxyDefined() const;
+
+  /*
+   * Creates Request object for proxy URI and returns it.
+   * If no valid proxy is defined, then returns SharedHandle<Request>().
+   */
+  SharedHandle<Request> createProxyRequest() const;
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;

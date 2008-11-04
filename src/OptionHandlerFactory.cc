@@ -472,30 +472,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
-				   (PREF_HTTP_PROXY,
-				    TEXT_HTTP_PROXY,
-				    NO_DEFAULT_VALUE,
-				    PREF_HTTP_PROXY_HOST,
-				    PREF_HTTP_PROXY_PORT));
-    op->addTag(TAG_HTTP);
-    handlers.push_back(op);
-  }
-  {
-    SharedHandle<OptionHandler> op(new DefaultOptionHandler
-				   (PREF_HTTP_PROXY_USER,
-				    TEXT_HTTP_PROXY_USER));
-    op->addTag(TAG_HTTP);
-    handlers.push_back(op);
-  }
-  {
-    SharedHandle<OptionHandler> op(new DefaultOptionHandler
-				   (PREF_HTTP_PROXY_PASSWD,
-				    TEXT_HTTP_PROXY_PASSWD));
-    op->addTag(TAG_HTTP);
-    handlers.push_back(op);
-  }
-  {
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_HTTP_PROXY_METHOD,
 				    TEXT_HTTP_PROXY_METHOD,
@@ -589,15 +565,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new ParameterOptionHandler
-				   (PREF_FTP_VIA_HTTP_PROXY,
-				    TEXT_FTP_VIA_HTTP_PROXY,
-				    V_TUNNEL,
-				    V_GET, V_TUNNEL));
-    op->addTag(TAG_FTP);
-    handlers.push_back(op);
-  }
-  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_NETRC_PATH,
 				    NO_DESCRIPTION,
@@ -613,6 +580,40 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    V_FALSE)); // TODO ommit?
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  // Proxy options
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
+				   (PREF_HTTP_PROXY,
+				    TEXT_HTTP_PROXY,
+				    NO_DEFAULT_VALUE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
+				   (PREF_HTTPS_PROXY,
+				    TEXT_HTTPS_PROXY,
+				    NO_DEFAULT_VALUE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
+				   (PREF_FTP_PROXY,
+				    TEXT_FTP_PROXY,
+				    NO_DEFAULT_VALUE));
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
+				   (PREF_ALL_PROXY,
+				    TEXT_ALL_PROXY,
+				    NO_DEFAULT_VALUE));
+    op->addTag(TAG_HTTP);
+    op->addTag(TAG_FTP);
     handlers.push_back(op);
   }
   // BitTorrent/Metalink Options

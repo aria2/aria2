@@ -155,10 +155,6 @@ const std::string PREF_FTP_PASSWD("ftp-passwd");
 const std::string PREF_FTP_TYPE("ftp-type");
 const std::string V_BINARY("binary");
 const std::string V_ASCII("ascii");
-// values: get | tunnel
-const std::string PREF_FTP_VIA_HTTP_PROXY("ftp-via-http-proxy");
-const std::string V_GET("get");
-const std::string V_TUNNEL("tunnel");
 // values: true | false
 const std::string PREF_FTP_PASV("ftp-pasv");
 // values: true | false
@@ -186,19 +182,16 @@ const std::string PREF_MAX_HTTP_PIPELINING("max-http-pipelining");
 const std::string PREF_HEADER("header");
 
 /** 
- * HTTP proxy related preferences
+ * Proxy related preferences
  */
 const std::string PREF_HTTP_PROXY("http-proxy");
-const std::string PREF_HTTP_PROXY_USER("http-proxy-user");
-const std::string PREF_HTTP_PROXY_PASSWD("http-proxy-passwd");
-const std::string PREF_HTTP_PROXY_HOST("http-proxy-host");
-const std::string PREF_HTTP_PROXY_PORT("http-proxy-port");
+const std::string PREF_HTTPS_PROXY("https-proxy");
+const std::string PREF_FTP_PROXY("ftp-proxy");
+const std::string PREF_ALL_PROXY("all-proxy");
 // values: get | tunnel
 const std::string PREF_HTTP_PROXY_METHOD("http-proxy-method");
-// values: true | false
-const std::string PREF_HTTP_PROXY_ENABLED("http-proxy-enabled");
-// values: true | false
-const std::string PREF_HTTP_PROXY_AUTH_ENABLED("http-proxy-auth-enabled");
+const std::string V_GET("get");
+const std::string V_TUNNEL("tunnel");
 
 /**
  * BitTorrent related preferences

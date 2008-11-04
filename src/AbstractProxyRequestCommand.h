@@ -44,6 +44,8 @@ class SocketCore;
 
 class AbstractProxyRequestCommand : public AbstractCommand {
 protected:
+  SharedHandle<Request> _proxyRequest;
+
   SharedHandle<HttpConnection> httpConnection;
 
   virtual bool executeInternal();
@@ -52,7 +54,9 @@ public:
 			      const SharedHandle<Request>& req,
 			      RequestGroup* requestGroup,
 			      DownloadEngine* e,
+			      const SharedHandle<Request>& proxyRequest,
 			      const SharedHandle<SocketCore>& s);
+
   virtual ~AbstractProxyRequestCommand();
 
   virtual Command* getNextCommand() = 0;

@@ -47,6 +47,7 @@ public:
 			  const SharedHandle<Request>& req,
 			  RequestGroup* requestGroup,
 			  DownloadEngine* e,
+			  const SharedHandle<Request>& proxyRequest,
 			  const SharedHandle<SocketCore>& s);
   virtual ~HttpProxyRequestCommand();
 

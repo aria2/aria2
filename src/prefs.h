@@ -159,10 +159,6 @@ extern const std::string PREF_FTP_PASSWD;
 extern const std::string PREF_FTP_TYPE;
 extern const std::string V_BINARY;
 extern const std::string V_ASCII;
-// values: get | tunnel
-extern const std::string PREF_FTP_VIA_HTTP_PROXY;
-extern const std::string V_GET;
-extern const std::string V_TUNNEL;
 // values: true | false
 extern const std::string PREF_FTP_PASV;
 // values: true | false
@@ -190,19 +186,16 @@ extern const std::string PREF_MAX_HTTP_PIPELINING;
 extern const std::string PREF_HEADER;
 
 /**;
- * HTTP proxy related preferences
+ * Proxy related preferences
  */
 extern const std::string PREF_HTTP_PROXY;
-extern const std::string PREF_HTTP_PROXY_USER;
-extern const std::string PREF_HTTP_PROXY_PASSWD;
-extern const std::string PREF_HTTP_PROXY_HOST;
-extern const std::string PREF_HTTP_PROXY_PORT;
+extern const std::string PREF_HTTPS_PROXY;
+extern const std::string PREF_FTP_PROXY;
+extern const std::string PREF_ALL_PROXY;
 // values: get | tunnel
 extern const std::string PREF_HTTP_PROXY_METHOD;
-// values: true | false
-extern const std::string PREF_HTTP_PROXY_ENABLED;
-// values: true | false
-extern const std::string PREF_HTTP_PROXY_AUTH_ENABLED;
+extern const std::string V_GET;
+extern const std::string V_TUNNEL;
 
 /**
  * BitTorrent related preferences

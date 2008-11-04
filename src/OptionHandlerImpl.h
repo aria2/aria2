@@ -36,6 +36,14 @@
 #define _D_OPTION_HANDLER_IMPL_H_
 
 #include "OptionHandler.h"
+
+#include <cstdio>
+#include <utility>
+#include <algorithm>
+#include <numeric>
+#include <sstream>
+#include <iterator>
+
 #include "NameMatchOptionHandler.h"
 #include "Util.h"
 #include "FatalException.h"
@@ -43,12 +51,7 @@
 #include "Option.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include <cstdio>
-#include <utility>
-#include <algorithm>
-#include <numeric>
-#include <sstream>
-#include <iterator>
+#include "Request.h"
 
 namespace aria2 {
 
@@ -439,23 +442,36 @@ public:
   }
 };
 
-class HttpProxyOptionHandler : public HostPortOptionHandler {
+class HttpProxyOptionHandler : public NameMatchOptionHandler {
 public:
   HttpProxyOptionHandler(const std::string& optName,
 			 const std::string& description,
-			 const std::string& defaultValue,
-			 const std::string& hostOptionName,
-			 const std::string& portOptionName):
-    HostPortOptionHandler(optName, description, defaultValue,
-			  hostOptionName, portOptionName)
+			 const std::string& defaultValue)
+    :
+    NameMatchOptionHandler(optName, description, defaultValue)
   {}
 
   virtual ~HttpProxyOptionHandler() {}
 
   virtual void parseArg(Option* option, const std::string& optarg)
   {
-    HostPortOptionHandler::parseArg(option, optarg);
-    option->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
+    Request req;
+    std::string url;
+    if(Util::startsWith(optarg, "http://")) {
+      url = optarg;
+    } else {
+      url = "http://"+optarg;
+    }
+    if(req.setUrl(url)) {
+      option->put(_optName, url);
+    } else {
+      throw FatalException(_("unrecognized proxy format"));
+    }
+  }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return "[http://][USER:PASSWORD@]HOST[:PORT]";
   }
 };
 

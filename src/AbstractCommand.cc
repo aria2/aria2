@@ -57,6 +57,7 @@
 #include "StringFormat.h"
 #include "ServerStat.h"
 #include "RequestGroupMan.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -291,17 +292,76 @@ void AbstractCommand::setWriteCheckSocketIf
   }
 }
 
-static bool isProxyGETRequest(const std::string& protocol, const Option* option)
+static const std::string& getProxyStringFor(const std::string& proxyPref,
+					    const Option* option)
+{
+  if(option->defined(proxyPref)) {
+    return option->get(proxyPref);
+  } else {
+    return option->get(PREF_ALL_PROXY);
+  }
+}
+
+static bool isProxyUsed(const std::string& proxyPref,
+			const Option* option)
+{
+  std::string proxy = getProxyStringFor(proxyPref, option);
+  if(proxy.empty()) {
+    return false;
+  } else {
+    return Request().setUrl(proxy);
+  }
+}
+
+static bool isProxyRequest(const std::string& protocol, const Option* option)
 {
   return
-    // For HTTP/HTTPS
-    ((protocol == Request::PROTO_HTTP || protocol == Request::PROTO_HTTPS) &&
-     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-      option->get(PREF_HTTP_PROXY_METHOD) == V_GET)) ||
-    // For FTP
-    (protocol == Request::PROTO_FTP &&
-     (option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-      option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET));
+    (protocol == Request::PROTO_HTTP && isProxyUsed(PREF_HTTP_PROXY, option)) ||
+    (protocol == Request::PROTO_HTTPS && isProxyUsed(PREF_HTTPS_PROXY,option))||
+    (protocol == Request::PROTO_FTP && isProxyUsed(PREF_FTP_PROXY, option));
+}
+
+static bool isProxyGETRequest(const std::string& protocol, const Option* option)
+{
+  if(option->get(PREF_HTTP_PROXY_METHOD) != V_GET) {
+    return false;
+  }
+  return isProxyRequest(protocol, option);
+}
+
+bool AbstractCommand::isProxyDefined() const
+{
+  return isProxyRequest(req->getProtocol(), e->option);
+}
+
+static const std::string& getProxyString(const SharedHandle<Request>& req,
+					 const Option* option)
+{
+  if(req->getProtocol() == Request::PROTO_HTTP) {
+    return getProxyStringFor(PREF_HTTP_PROXY, option);
+  } else if(req->getProtocol() == Request::PROTO_HTTPS) {
+    return getProxyStringFor(PREF_HTTPS_PROXY, option);
+  } else if(req->getProtocol() == Request::PROTO_FTP) {
+    return getProxyStringFor(PREF_FTP_PROXY, option);
+  } else {
+    return A2STR::NIL;
+  }
+}
+
+SharedHandle<Request> AbstractCommand::createProxyRequest() const
+{
+  SharedHandle<Request> proxyRequest;
+  std::string proxy = getProxyString(req, e->option);
+  if(!proxy.empty()) {
+    proxyRequest.reset(new Request());
+    if(proxyRequest->setUrl(proxy)) {
+      logger->debug("CUID#%d - Using proxy", cuid);      
+    } else {
+      logger->debug("CUID#%d - Failed to parse proxy string", cuid);
+      proxyRequest.reset();
+    }
+  }
+  return proxyRequest;
 }
 
 #ifdef ENABLE_ASYNC_DNS
@@ -325,7 +385,7 @@ bool AbstractCommand::asyncResolveHostname()
   case AsyncNameResolver::STATUS_SUCCESS:
     return true;
   case AsyncNameResolver::STATUS_ERROR:
-    if(!isProxyGETRequest(req->getProtocol(), e->option)) {
+    if(!isProxyRequest(req->getProtocol(), e->option)) {
       e->_requestGroupMan->getOrCreateServerStat
 	(req->getHost(), req->getProtocol())->setError();
     }

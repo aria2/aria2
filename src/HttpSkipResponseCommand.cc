@@ -137,8 +137,7 @@ bool HttpSkipResponseCommand::executeInternal()
 
 void HttpSkipResponseCommand::poolConnection() const
 {
-  if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-     req->supportsPersistentConnection()) {
+  if(!isProxyDefined() && req->supportsPersistentConnection()) {
     std::pair<std::string, uint16_t> peerInfo;
     socket->getPeerInfo(peerInfo);
     e->poolSocket(peerInfo.first, peerInfo.second, socket);

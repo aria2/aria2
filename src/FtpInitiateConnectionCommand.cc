@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "FtpInitiateConnectionCommand.h"
+
+#include <map>
+
 #include "DownloadEngine.h"
 #include "Option.h"
 #include "Request.h"
@@ -47,7 +50,6 @@
 #include "prefs.h"
 #include "HttpConnection.h"
 #include "Socket.h"
-#include <map>
 
 namespace aria2 {
 
@@ -61,22 +63,28 @@ FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
 FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
 
 Command* FtpInitiateConnectionCommand::createNextCommand
-(const std::deque<std::string>& resolvedAddresses)
+(const std::deque<std::string>& resolvedAddresses,
+ const SharedHandle<Request>& proxyRequest)
 {
   Command* command;
-  if(useHTTPProxy()) {
+  if(!proxyRequest.isNull()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
-		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+		 proxyRequest->getHost().c_str(), proxyRequest->getPort());
     socket.reset(new SocketCore());
     socket->establishConnection(resolvedAddresses.front(),
-				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+				proxyRequest->getPort());
     
-    if(useHTTPProxyGet()) {
-      SharedHandle<HttpConnection> hc(new HttpConnection(cuid, socket, e->option));
-      command = new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
-    } else if(useHTTPProxyConnect()) {
-      command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e, socket);
+    if(e->option->get(PREF_HTTP_PROXY_METHOD) == V_GET) {
+      SharedHandle<HttpConnection> hc
+	(new HttpConnection(cuid, socket, e->option));
+
+      HttpRequestCommand* c =
+	new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
+      c->setProxyRequest(proxyRequest);
+      command = c;
+    } else if(e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL) {
+      command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e,
+					    proxyRequest, socket);
     } else {
       // TODO
       throw DlAbortEx("ERROR");
@@ -99,14 +107,6 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     }
   }
   return command;
-}
-
-bool FtpInitiateConnectionCommand::useHTTPProxyGet() const {
-  return useHTTPProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET;
-}
-
-bool FtpInitiateConnectionCommand::useHTTPProxyConnect() const {
-  return useHTTPProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_TUNNEL;
 }
 
 } // namespace aria2

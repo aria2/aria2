@@ -57,15 +57,28 @@ _(" -t, --timeout=SEC            Set timeout in seconds.")
 #define TEXT_MAX_TRIES \
 _(" -m, --max-tries=N            Set number of tries. 0 means unlimited.")
 #define TEXT_HTTP_PROXY \
-_(" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs.")
+_(" --http-proxy=PROXY           Use this proxy server for HTTP.\n"\
+  "                              See also  --all-proxy option.\n"\
+  "                              This affects all URLs.")
+#define TEXT_HTTPS_PROXY \
+_(" --https-proxy=PROXY          Use this proxy server for HTTPS.\n"\
+  "                              See also  --all-proxy option.\n"\
+  "                              This affects all URLs.")
+#define TEXT_FTP_PROXY \
+_(" --ftp-proxy=PROXY            Use this proxy server for FTP.\n"\
+  "                              See also  --all-proxy option.\n"\
+  "                              This affects all URLs.")
+#define TEXT_ALL_PROXY \
+_(" --all-proxy=PROXY            Use this proxy server in the all protocols.\n"\
+  "                              You can override this setting and specify a\n"\
+  "                              proxy server for particular proctol using\n"\
+  "                              --http-proxy, --https-proxy and --ftp-proxy\n"\
+  "                              options.\n"\
+  "                              This affects all URLs.")
 #define TEXT_HTTP_USER \
 _(" --http-user=USER             Set HTTP user. This affects all URLs.")
 #define TEXT_HTTP_PASSWD \
 _(" --http-passwd=PASSWD         Set HTTP password. This affects all URLs.")
-#define TEXT_HTTP_PROXY_USER \
-_(" --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs.")
-#define TEXT_HTTP_PROXY_PASSWD \
-_(" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs.")
 #define TEXT_HTTP_PROXY_METHOD \
 _(" --http-proxy-method=METHOD   Set the method to use in proxy request.")
 #define TEXT_HTTP_AUTH_SCHEME \
@@ -81,8 +94,6 @@ _(" --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.")
 _(" --ftp-type=TYPE              Set FTP transfer type.")
 #define TEXT_FTP_PASV \
 _(" -p, --ftp-pasv               Use passive mode in FTP.")
-#define TEXT_FTP_VIA_HTTP_PROXY \
-_(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP.")
 #define TEXT_LOWEST_SPEED_LIMIT \
 _(" --lowest-speed-limit=SPEED   Close connection if download speed is lower than\n"\
   "                              or equal to this value(bytes per sec).\n"\

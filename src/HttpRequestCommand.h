@@ -44,6 +44,8 @@ class SocketCore;
 
 class HttpRequestCommand:public AbstractCommand {
 private:
+  SharedHandle<Request> _proxyRequest;
+
   SharedHandle<HttpConnection> _httpConnection;
 protected:
   virtual bool executeInternal();
@@ -55,6 +57,8 @@ public:
 		     DownloadEngine* e,
 		     const SharedHandle<SocketCore>& s);
   virtual ~HttpRequestCommand();
+
+  void setProxyRequest(const SharedHandle<Request>& proxyRequest);
 };
 
 } // namespace aria2

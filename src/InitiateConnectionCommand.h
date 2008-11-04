@@ -41,8 +41,6 @@ namespace aria2 {
 
 class InitiateConnectionCommand : public AbstractCommand {
 protected:
-  bool useHTTPProxy() const;
-
   /**
    * Connect to the server.
    * This method just send connection request to the server.
@@ -52,7 +50,8 @@ protected:
   virtual bool executeInternal();
 
   virtual Command* createNextCommand
-  (const std::deque<std::string>& resolvedAddresses) = 0;
+  (const std::deque<std::string>& resolvedAddresses,
+   const SharedHandle<Request>& proxyRequest) = 0;
 public:
   InitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
 			    RequestGroup* requestGroup,

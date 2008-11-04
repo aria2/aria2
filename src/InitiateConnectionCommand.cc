@@ -62,10 +62,11 @@ InitiateConnectionCommand::~InitiateConnectionCommand() {}
 
 bool InitiateConnectionCommand::executeInternal() {
   std::string hostname;
-  if(useHTTPProxy()) {
-    hostname = e->option->get(PREF_HTTP_PROXY_HOST);
-  } else {
+  SharedHandle<Request> proxyRequest = createProxyRequest();
+  if(proxyRequest.isNull()) {
     hostname = req->getHost();
+  } else {
+    hostname = proxyRequest->getHost();
   }
   std::deque<std::string> addrs;
   std::string ipaddr = e->findCachedIPAddress(hostname);
@@ -97,14 +98,9 @@ bool InitiateConnectionCommand::executeInternal() {
     addrs.push_back(ipaddr);
   }
 
-  Command* command = createNextCommand(addrs);
+  Command* command = createNextCommand(addrs, proxyRequest);
   e->commands.push_back(command);
   return true;
-}
-
-bool InitiateConnectionCommand::useHTTPProxy() const
-{
-  return e->option->getAsBool(PREF_HTTP_PROXY_ENABLED);
 }
 
 } // namespace aria2

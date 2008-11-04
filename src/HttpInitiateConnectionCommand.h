@@ -45,7 +45,8 @@ private:
   bool useProxyTunnel() const;
 protected:
   virtual Command* createNextCommand
-  (const std::deque<std::string>& resolvedAddresses);
+  (const std::deque<std::string>& resolvedAddresses,
+   const SharedHandle<Request>& proxyRequest);
 public:
   HttpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
 				RequestGroup* requestGroup,

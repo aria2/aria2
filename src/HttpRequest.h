@@ -62,10 +62,6 @@ private:
 
   uint64_t entityLength;
 
-  bool proxyEnabled;
-
-  bool proxyAuthEnabled;
-
   bool _contentEncodingEnabled;
 
   std::string userAgent;
@@ -77,6 +73,8 @@ private:
   SharedHandle<CookieStorage> _cookieStorage;
 
   SharedHandle<AuthConfigFactory> _authConfigFactory;
+
+  SharedHandle<Request> _proxyRequest;
 
   std::string getHostText(const std::string& host, uint16_t port) const;
 
@@ -147,25 +145,6 @@ public:
    */
   std::string createProxyRequest() const;
 
-  /**
-   * Configures this object with option.
-   * Following values are evaluated:
-   * PREF_HTTP_PROXY_ENABLED,
-   * PREF_HTTP_PROXY_METHOD, PREF_HTTP_PROXY_AUTH_ENABLED,
-   * The evaluation results are stored in instance variables.
-   */
-  void configure(const Option* option);
-
-  void setProxyEnabled(bool proxyEnabled)
-  {
-    this->proxyEnabled = proxyEnabled;
-  }
-
-  void setProxyAuthEnabled(bool proxyAuthEnabled)
-  {
-    this->proxyAuthEnabled = proxyAuthEnabled;
-  }
-
   void enableContentEncoding();
 
   void disableContentEncoding();
@@ -191,6 +170,12 @@ public:
   SharedHandle<CookieStorage> getCookieStorage() const;
 
   void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
+
+  /*
+   * To use proxy, pass proxy string to Request::setUrl() and set it this
+   * object.
+   */
+  void setProxyRequest(const SharedHandle<Request>& proxyRequest);
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

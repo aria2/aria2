@@ -55,8 +55,6 @@ namespace aria2 {
 const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():entityLength(0),
-			   proxyEnabled(false),
-			   proxyAuthEnabled(false),
 			   _contentEncodingEnabled(true),
 			   userAgent(USER_AGENT)
 {}
@@ -139,7 +137,7 @@ std::string HttpRequest::createRequest() const
   SharedHandle<AuthConfig> authConfig =
     _authConfigFactory->createAuthConfig(request);
   std::string requestLine = "GET ";
-  if(getProtocol() == Request::PROTO_FTP || proxyEnabled) {
+  if(!_proxyRequest.isNull()) {
     if(getProtocol() == Request::PROTO_FTP &&
        request->getUsername().empty() && !authConfig->getUser().empty()) {
       // Insert user into URI, like ftp://USER@host/
@@ -196,14 +194,14 @@ std::string HttpRequest::createRequest() const
     }
     requestLine += "\r\n";
   }
-  if(proxyEnabled) {
+  if(!_proxyRequest.isNull()) {
     if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
       requestLine += "Proxy-Connection: Keep-Alive\r\n";
     } else {
       requestLine += "Proxy-Connection: close\r\n";
     }
   }
-  if(proxyEnabled && proxyAuthEnabled) {
+  if(!_proxyRequest.isNull() && !_proxyRequest->getUsername().empty()) {
     requestLine += getProxyAuthString();
   }
   if(!authConfig->getUser().empty()) {
@@ -241,6 +239,7 @@ std::string HttpRequest::createRequest() const
 
 std::string HttpRequest::createProxyRequest() const
 {
+  assert(!_proxyRequest.isNull());
   std::string requestLine =
     std::string("CONNECT ")+getHost()+":"+Util::uitos(getPort())+
     std::string(" HTTP/1.1\r\n")+
@@ -251,7 +250,7 @@ std::string HttpRequest::createProxyRequest() const
   }else {
     requestLine += "Proxy-Connection: close\r\n";
   }
-  if(proxyAuthEnabled) {
+  if(!_proxyRequest->getUsername().empty()) {
     requestLine += getProxyAuthString();
   }
   requestLine += "\r\n";
@@ -261,8 +260,9 @@ std::string HttpRequest::createProxyRequest() const
 std::string HttpRequest::getProxyAuthString() const
 {
   return "Proxy-Authorization: Basic "+
-    Base64::encode(_authConfigFactory->createAuthConfigForHttpProxy(request)->
-		   getAuthText())+"\r\n";
+    Base64::encode(_proxyRequest->getUsername()+":"+
+		   _proxyRequest->getPassword())
+    +"\r\n";
 }
 
 void HttpRequest::enableContentEncoding()
@@ -285,14 +285,6 @@ void HttpRequest::addHeader(const std::string& headersString)
 void HttpRequest::addAcceptType(const std::string& type)
 {
   _acceptTypes.push_back(type);
-}
-
-void HttpRequest::configure(const Option* option)
-{
-  proxyEnabled =
-    option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
-    option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
-  proxyAuthEnabled = option->getAsBool(PREF_HTTP_PROXY_AUTH_ENABLED);
 }
 
 const std::string& HttpRequest::getPreviousURI() const
@@ -355,6 +347,11 @@ void HttpRequest::setAuthConfigFactory
 (const SharedHandle<AuthConfigFactory>& factory)
 {
   _authConfigFactory = factory;
+}
+
+void HttpRequest::setProxyRequest(const SharedHandle<Request>& proxyRequest)
+{
+  _proxyRequest = proxyRequest;
 }
 
 } // namespace aria2
