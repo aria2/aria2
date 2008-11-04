@@ -323,7 +323,7 @@ static bool isProxyRequest(const std::string& protocol, const Option* option)
 
 static bool isProxyGETRequest(const std::string& protocol, const Option* option)
 {
-  if(option->get(PREF_HTTP_PROXY_METHOD) != V_GET) {
+  if(option->get(PREF_PROXY_METHOD) != V_GET) {
     return false;
   }
   return isProxyRequest(protocol, option);

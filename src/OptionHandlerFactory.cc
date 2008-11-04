@@ -472,15 +472,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new ParameterOptionHandler
-				   (PREF_HTTP_PROXY_METHOD,
-				    TEXT_HTTP_PROXY_METHOD,
-				    V_TUNNEL,
-				    V_GET, V_TUNNEL));
-    op->addTag(TAG_HTTP);
-    handlers.push_back(op);
-  }
-  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_HTTP_USER,
 				    TEXT_HTTP_USER));
@@ -612,8 +603,18 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_ALL_PROXY,
 				    TEXT_ALL_PROXY,
 				    NO_DEFAULT_VALUE));
-    op->addTag(TAG_HTTP);
     op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_PROXY_METHOD,
+				    TEXT_PROXY_METHOD,
+				    V_TUNNEL,
+				    V_GET, V_TUNNEL));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
   // BitTorrent/Metalink Options

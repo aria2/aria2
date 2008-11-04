@@ -1,5 +1,17 @@
 2008-11-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Renamed --http-proxy-method as --proxy-method.
+	* src/AbstractCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	
+2008-11-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Deprecated --http-proxy-user and --http-proxy-passwd options.
 	Added --https-proxy, --ftp-proxy and --all-proxy options.
 	Above 3 options and --http-proxy option can handle proxy in URL format

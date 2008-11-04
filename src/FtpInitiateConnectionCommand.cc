@@ -74,7 +74,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     socket->establishConnection(resolvedAddresses.front(),
 				proxyRequest->getPort());
     
-    if(e->option->get(PREF_HTTP_PROXY_METHOD) == V_GET) {
+    if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
       SharedHandle<HttpConnection> hc
 	(new HttpConnection(cuid, socket, e->option));
 
@@ -82,7 +82,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
       c->setProxyRequest(proxyRequest);
       command = c;
-    } else if(e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL) {
+    } else if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL) {
       command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e,
 					    proxyRequest, socket);
     } else {

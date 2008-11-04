@@ -103,12 +103,12 @@ Command* HttpInitiateConnectionCommand::createNextCommand
 
 bool HttpInitiateConnectionCommand::useProxyGet() const
 {
-  return e->option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
+  return e->option->get(PREF_PROXY_METHOD) == V_GET;
 }
 
 bool HttpInitiateConnectionCommand::useProxyTunnel() const
 {
-  return e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL;
+  return e->option->get(PREF_PROXY_METHOD) == V_TUNNEL;
 }
 
 } // namespace aria2

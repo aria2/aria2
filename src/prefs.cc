@@ -189,7 +189,7 @@ const std::string PREF_HTTPS_PROXY("https-proxy");
 const std::string PREF_FTP_PROXY("ftp-proxy");
 const std::string PREF_ALL_PROXY("all-proxy");
 // values: get | tunnel
-const std::string PREF_HTTP_PROXY_METHOD("http-proxy-method");
+const std::string PREF_PROXY_METHOD("proxy-method");
 const std::string V_GET("get");
 const std::string V_TUNNEL("tunnel");
 

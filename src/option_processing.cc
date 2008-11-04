@@ -117,7 +117,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_FTP_TYPE.c_str(), required_argument, &lopt, 11 },
       { PREF_FTP_PASV.c_str(), no_argument, NULL, 'p' },
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
-      { PREF_HTTP_PROXY_METHOD.c_str(), required_argument, &lopt, 14 },
+      { "http-proxy-method", required_argument, &lopt, 14 },
       { PREF_LOWEST_SPEED_LIMIT.c_str(), required_argument, &lopt, 200 },
       { PREF_MAX_DOWNLOAD_LIMIT.c_str(), required_argument, &lopt, 201 },
       { PREF_FILE_ALLOCATION.c_str(), required_argument, 0, 'a' },
@@ -164,6 +164,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_HTTPS_PROXY.c_str(), required_argument, &lopt, 227 },
       { PREF_FTP_PROXY.c_str(), required_argument, &lopt, 228 },
       { PREF_ALL_PROXY.c_str(), required_argument, &lopt, 229 },
+      { PREF_PROXY_METHOD.c_str(), required_argument, &lopt, 230 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -257,8 +258,10 @@ Option* option_processing(int argc, char* const argv[])
 		  << std::endl;
 	exit(EXIT_FAILURE);
       case 14:
-	cmdstream << PREF_HTTP_PROXY_METHOD << "=" << optarg << "\n";
-	break;
+	std::cout << "--http-proxy-method was deprecated."
+		  << " Use --proxy-method option instead."
+		  << std::endl;
+	exit(EXIT_FAILURE);
       case 15:
 	cmdstream << PREF_LISTEN_PORT << "=" << optarg << "\n";
 	break;
@@ -426,6 +429,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 229:
 	cmdstream << PREF_ALL_PROXY << "=" << optarg << "\n";
+	break;
+      case 230:
+	cmdstream << PREF_PROXY_METHOD << "=" << optarg << "\n";
 	break;
       }
       break;

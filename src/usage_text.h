@@ -79,8 +79,8 @@ _(" --all-proxy=PROXY            Use this proxy server in the all protocols.\n"\
 _(" --http-user=USER             Set HTTP user. This affects all URLs.")
 #define TEXT_HTTP_PASSWD \
 _(" --http-passwd=PASSWD         Set HTTP password. This affects all URLs.")
-#define TEXT_HTTP_PROXY_METHOD \
-_(" --http-proxy-method=METHOD   Set the method to use in proxy request.")
+#define TEXT_PROXY_METHOD \
+_(" --proxy-method=METHOD        Set the method to use in proxy request.")
 #define TEXT_HTTP_AUTH_SCHEME \
 _(" --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic\n"\
   "                              is the only supported scheme.")
