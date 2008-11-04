@@ -1,5 +1,15 @@
 2008-11-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added support for following envrionment variables: http_proxy,
+	https_proxy, ftp_proxy and all_proxy.
+	Each variable is equivalent to the aria2 option whose name is the
+	variable name with '_' replaced with '-'.
+	They overrides options specified in aria2.conf file.
+	The envrionment variables can be overrode using command-line option.
+	* src/option_processing.cc
+	
+2008-11-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Renamed --http-proxy-method as --proxy-method.
 	* src/AbstractCommand.cc
 	* src/FtpInitiateConnectionCommand.cc

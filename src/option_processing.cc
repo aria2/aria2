@@ -72,6 +72,23 @@ static std::string toBoolArg(const char* optarg)
   return arg;
 }
 
+static void overrideWithEnv(Option* op, const OptionParser& optionParser,
+			    const std::string& pref,
+			    const std::string& envName)
+{
+  char* value = getenv(envName.c_str());
+  if(value) {
+    try {
+      optionParser.findByName(pref)->parse(op, value);
+    } catch(Exception& e) {
+      std::cerr << "Caught Error while parsing environment variable"
+		<< " '" << envName << "'"
+		<< "\n"
+		<< e.stackTrace();
+    }
+  }
+}
+
 Option* option_processing(int argc, char* const argv[])
 {
   std::stringstream cmdstream;
@@ -555,6 +572,12 @@ Option* option_processing(int argc, char* const argv[])
 	exit(EXIT_FAILURE);
       }
     }
+    // Override configuration with environment variables.
+    overrideWithEnv(op, oparser, PREF_HTTP_PROXY, "http_proxy");
+    overrideWithEnv(op, oparser, PREF_HTTPS_PROXY, "https_proxy");
+    overrideWithEnv(op, oparser, PREF_FTP_PROXY, "ftp_proxy");
+    overrideWithEnv(op, oparser, PREF_ALL_PROXY, "all_proxy");
+
     try {
       oparser.parse(op, cmdstream);
     } catch(OptionHandlerException& e) {
