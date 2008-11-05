@@ -176,6 +176,12 @@ public:
    * object.
    */
   void setProxyRequest(const SharedHandle<Request>& proxyRequest);
+  
+  /*
+   * Returns true if non-Null proxy request is set by setProxyRequest().
+   * Otherwise, returns false.
+   */
+  bool isProxyRequestSet() const;
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

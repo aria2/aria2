@@ -68,26 +68,49 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 {
   Command* command;
   if(!proxyRequest.isNull()) {
-    logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		 proxyRequest->getHost().c_str(), proxyRequest->getPort());
-    socket.reset(new SocketCore());
-    socket->establishConnection(resolvedAddresses.front(),
-				proxyRequest->getPort());
-    
-    if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
-      SharedHandle<HttpConnection> hc
-	(new HttpConnection(cuid, socket, e->option));
-
-      HttpRequestCommand* c =
-	new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
-      c->setProxyRequest(proxyRequest);
-      command = c;
-    } else if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL) {
-      command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e,
-					    proxyRequest, socket);
+    std::map<std::string, std::string> options;
+    SharedHandle<SocketCore> pooledSocket =
+      e->popPooledSocket(options, req->getHost(), req->getPort());
+    if(pooledSocket.isNull()) {
+      logger->info(MSG_CONNECTING_TO_SERVER, cuid,
+		   proxyRequest->getHost().c_str(), proxyRequest->getPort());
+      socket.reset(new SocketCore());
+      socket->establishConnection(resolvedAddresses.front(),
+				  proxyRequest->getPort());
+      
+      if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
+	SharedHandle<HttpConnection> hc
+	  (new HttpConnection(cuid, socket, e->option));
+	
+	HttpRequestCommand* c =
+	  new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
+	c->setProxyRequest(proxyRequest);
+	command = c;
+      } else if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL) {
+	command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e,
+					      proxyRequest, socket);
+      } else {
+	// TODO
+	throw DlAbortEx("ERROR");
+      }
     } else {
-      // TODO
-      throw DlAbortEx("ERROR");
+      if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL) {
+	command =
+	  new FtpNegotiationCommand(cuid, req, _requestGroup, e, pooledSocket,
+				    FtpNegotiationCommand::SEQ_SEND_CWD,
+				    options["baseWorkingDir"]);
+      } else if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
+	SharedHandle<HttpConnection> hc
+	  (new HttpConnection(cuid, pooledSocket, e->option));
+	
+	HttpRequestCommand* c =
+	  new HttpRequestCommand(cuid, req, _requestGroup, hc, e, pooledSocket);
+	c->setProxyRequest(proxyRequest);
+	command = c;
+      } else {
+	// TODO
+	throw DlAbortEx("ERROR");
+      }
     }
   } else {
     std::map<std::string, std::string> options;

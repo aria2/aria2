@@ -403,6 +403,17 @@ public:
 		  const SharedHandle<SocketCore>& sock,
 		  time_t timeout = 15);
   
+  void poolSocket(const SharedHandle<Request>& request,
+		  bool proxyDefined,
+		  const SharedHandle<SocketCore>& socket,
+		  const std::map<std::string, std::string>& options,
+		  time_t timeout = 15);
+    
+  void poolSocket(const SharedHandle<Request>& request,
+		  bool proxyDefined,
+		  const SharedHandle<SocketCore>& socket,
+		  time_t timeout = 15);
+
   SharedHandle<SocketCore> popPooledSocket(const std::string& ipaddr,
 					   uint16_t port);
 

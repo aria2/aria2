@@ -63,17 +63,13 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     e->commands.push_back(command);
     return true;
   } else {
-    if(!isProxyDefined()) {
-      if(req->isPipeliningEnabled() ||
-	 (req->isKeepAliveEnabled() &&
-	  ((!_transferEncodingDecoder.isNull() &&
-	    _requestGroup->downloadFinished()) ||
-	   (uint64_t)_segments.front()->getPositionToWrite() ==
-	   _requestGroup->getTotalLength()))) {
-	std::pair<std::string, uint16_t> peerInfo;
-	socket->getPeerInfo(peerInfo);
-	e->poolSocket(peerInfo.first, peerInfo.second, socket);
-      }
+    if(req->isPipeliningEnabled() ||
+       (req->isKeepAliveEnabled() &&
+	((!_transferEncodingDecoder.isNull() &&
+	  _requestGroup->downloadFinished()) ||
+	 (uint64_t)_segments.front()->getPositionToWrite() ==
+	 _requestGroup->getTotalLength()))) {
+      e->poolSocket(req, isProxyDefined(), socket);
     }
 
     return DownloadCommand::prepareForNextSegment();

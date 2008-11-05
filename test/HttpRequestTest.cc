@@ -471,7 +471,7 @@ void HttpRequestTest::testCreateProxyRequest()
   std::string expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Host: localhost:80\r\n"
-    "Proxy-Connection: close\r\n"
+    //"Proxy-Connection: close\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
@@ -482,7 +482,7 @@ void HttpRequestTest::testCreateProxyRequest()
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Host: localhost:80\r\n"
-    "Proxy-Connection: Keep-Alive\r\n"
+    //"Proxy-Connection: Keep-Alive\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
@@ -494,7 +494,7 @@ void HttpRequestTest::testCreateProxyRequest()
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Host: localhost:80\r\n"
-    "Proxy-Connection: Keep-Alive\r\n"
+    //"Proxy-Connection: Keep-Alive\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
@@ -506,7 +506,7 @@ void HttpRequestTest::testCreateProxyRequest()
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Host: localhost:80\r\n"
-    "Proxy-Connection: Keep-Alive\r\n"
+    //"Proxy-Connection: Keep-Alive\r\n"
     "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
     "\r\n";
 
@@ -601,7 +601,7 @@ void HttpRequestTest::testUserAgent()
   std::string expectedTextForProxy = "CONNECT localhost:8080 HTTP/1.1\r\n"
     "User-Agent: aria2 (Linux)\r\n"
     "Host: localhost:8080\r\n"
-    "Proxy-Connection: close\r\n"
+    //"Proxy-Connection: close\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedTextForProxy, httpRequest.createProxyRequest());

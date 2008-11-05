@@ -65,23 +65,40 @@ Command* HttpInitiateConnectionCommand::createNextCommand
 {
   Command* command;
   if(!proxyRequest.isNull()) {
-    logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		 proxyRequest->getHost().c_str(), proxyRequest->getPort());
-    socket.reset(new SocketCore());
-    socket->establishConnection(resolvedAddresses.front(),
-				proxyRequest->getPort());
-    if(useProxyTunnel()) {
-      command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e,
-					    proxyRequest, socket);
-    } else if(useProxyGet()) {
-      SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, e->option));
-      HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
-						     httpConnection, e, socket);
-      c->setProxyRequest(proxyRequest);
-      command = c;
+    SharedHandle<SocketCore> pooledSocket =
+      e->popPooledSocket(req->getHost(), req->getPort());
+    if(pooledSocket.isNull()) {
+      logger->info(MSG_CONNECTING_TO_SERVER, cuid,
+		   proxyRequest->getHost().c_str(), proxyRequest->getPort());
+      socket.reset(new SocketCore());
+      socket->establishConnection(resolvedAddresses.front(),
+				  proxyRequest->getPort());
+
+      if(useProxyTunnel()) {
+	command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e,
+					      proxyRequest, socket);
+      } else if(useProxyGet()) {
+	SharedHandle<HttpConnection> httpConnection
+	  (new HttpConnection(cuid, socket, e->option));
+	HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
+						       httpConnection, e,
+						       socket);
+	c->setProxyRequest(proxyRequest);
+	command = c;
+      } else {
+	// TODO
+	throw DlAbortEx("ERROR");
+      }
     } else {
-      // TODO
-      throw DlAbortEx("ERROR");
+      SharedHandle<HttpConnection> httpConnection
+	(new HttpConnection(cuid, pooledSocket, e->option));
+      HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
+						     httpConnection, e,
+						     pooledSocket);
+      if(useProxyGet()) {
+	c->setProxyRequest(proxyRequest);
+      }
+      command = c;
     }
   } else {
     SharedHandle<SocketCore> pooledSocket =

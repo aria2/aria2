@@ -84,12 +84,10 @@ bool FtpFinishDownloadCommand::execute()
     if(status != 226) {
       throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
     }
-    if(!isProxyDefined() && e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
-      std::pair<std::string, uint16_t> peerInfo;
-      socket->getPeerInfo(peerInfo);
+    if(e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::map<std::string, std::string> options;
       options["baseWorkingDir"] = _ftpConnection->getBaseWorkingDir();
-      e->poolSocket(peerInfo.first, peerInfo.second, socket, options);
+      e->poolSocket(req, isProxyDefined(), socket, options);
     }
   } catch(RecoverableException& e) {
     logger->info(EX_EXCEPTION_CAUGHT, e);

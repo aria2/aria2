@@ -259,9 +259,17 @@ Time HttpResponse::getLastModifiedTime() const
 
 bool HttpResponse::supportsPersistentConnection() const
 {
-  return Util::toLower(httpHeader->getFirst(HttpHeader::CONNECTION)).
-    find(HttpHeader::CLOSE) == std::string::npos
-    && httpHeader->getVersion() == HttpHeader::HTTP_1_1;
+  std::string connection =
+    Util::toLower(httpHeader->getFirst(HttpHeader::CONNECTION));
+  std::string version = httpHeader->getVersion();
+
+  return
+    connection.find(HttpHeader::CLOSE) == std::string::npos &&
+    (version == HttpHeader::HTTP_1_1 ||
+     connection.find("keep-alive") != std::string::npos) &&
+    (!httpRequest->isProxyRequestSet() ||
+     Util::toLower(httpHeader->getFirst("Proxy-Connection")).find("keep-alive")
+     != std::string::npos);
 }
 
 } // namespace aria2

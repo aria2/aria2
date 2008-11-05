@@ -618,12 +618,10 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
 
 void FtpNegotiationCommand::poolConnection() const
 {
-  if(!isProxyDefined() && e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
-    std::pair<std::string, uint16_t> peerInfo;
-    socket->getPeerInfo(peerInfo);
+  if(e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
     std::map<std::string, std::string> options;
     options["baseWorkingDir"] = ftp->getBaseWorkingDir();
-    e->poolSocket(peerInfo.first, peerInfo.second, socket, options);
+    e->poolSocket(req, isProxyDefined(),  socket, options);
   }
 }
 

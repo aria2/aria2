@@ -496,19 +496,64 @@ void HttpResponseTest::testSupportsPersistentConnection()
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  httpResponse.setHttpRequest(httpRequest);
 
   httpHeader->setVersion("HTTP/1.1");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
-
-  httpHeader->setVersion("HTTP/1.0");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-
-  httpHeader->setVersion("HTTP/1.1");
   httpHeader->put("Connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
   httpHeader->put("Connection", "keep-alive");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+
+  httpHeader->setVersion("HTTP/1.0");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->put("Connection", "close");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Connection", "keep-alive");
+  CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+
+  // test proxy connection
+  SharedHandle<Request> proxyRequest(new Request());
+  httpRequest->setProxyRequest(proxyRequest);
+  
+  httpHeader->setVersion("HTTP/1.1");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->put("Connection", "close");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Connection", "keep-alive");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Proxy-Connection", "keep-alive");
+  CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
+  httpHeader->put("Connection", "close");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Proxy-Connection", "close");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+
+  httpHeader->setVersion("HTTP/1.0");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->put("Connection", "close");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Connection", "keep-alive");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->put("Proxy-Connection", "keep-alive");
+  CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Proxy-Connection", "keep-alive");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
+  httpHeader->put("Proxy-Connection", "close");
+  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->clearField();
 }
 
 } // namespace aria2

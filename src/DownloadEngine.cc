@@ -65,6 +65,7 @@
 #include "DNSCache.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "Request.h"
 
 #include "BtRegistry.h"
 #include "BtContext.h"
@@ -953,6 +954,38 @@ void DownloadEngine::poolSocket
 {
   SocketPoolEntry e(sock, std::map<std::string, std::string>(), timeout);
   poolSocket(ipaddr, port, e);
+}
+
+void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
+				bool proxyDefined,
+				const SharedHandle<SocketCore>& socket,
+				time_t timeout)
+{
+  if(proxyDefined) {
+    // If proxy is defined, then pool socket with its hostname.
+    poolSocket(request->getHost(), request->getPort(), socket);
+  } else {
+    std::pair<std::string, uint16_t> peerInfo;
+    socket->getPeerInfo(peerInfo);
+    poolSocket(peerInfo.first, peerInfo.second, socket);
+  }
+}
+
+void DownloadEngine::poolSocket
+(const SharedHandle<Request>& request,
+ bool proxyDefined,
+ const SharedHandle<SocketCore>& socket,
+ const std::map<std::string, std::string>& options,				
+ time_t timeout)
+{
+  if(proxyDefined) {
+    // If proxy is defined, then pool socket with its hostname.
+    poolSocket(request->getHost(), request->getPort(), socket, options);
+  } else {
+    std::pair<std::string, uint16_t> peerInfo;
+    socket->getPeerInfo(peerInfo);
+    poolSocket(peerInfo.first, peerInfo.second, socket, options);
+  }
 }
 
 std::multimap<std::string, DownloadEngine::SocketPoolEntry>::iterator

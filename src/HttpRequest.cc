@@ -245,11 +245,12 @@ std::string HttpRequest::createProxyRequest() const
     std::string(" HTTP/1.1\r\n")+
     "User-Agent: "+userAgent+"\r\n"+
     "Host: "+getHost()+":"+Util::uitos(getPort())+"\r\n";
-  if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
-    requestLine += "Proxy-Connection: Keep-Alive\r\n";
-  }else {
-    requestLine += "Proxy-Connection: close\r\n";
-  }
+  // TODO Is "Proxy-Connection" needed here?
+//   if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
+//     requestLine += "Proxy-Connection: Keep-Alive\r\n";
+//   }else {
+//     requestLine += "Proxy-Connection: close\r\n";
+//   }
   if(!_proxyRequest->getUsername().empty()) {
     requestLine += getProxyAuthString();
   }
@@ -352,6 +353,11 @@ void HttpRequest::setAuthConfigFactory
 void HttpRequest::setProxyRequest(const SharedHandle<Request>& proxyRequest)
 {
   _proxyRequest = proxyRequest;
+}
+
+bool HttpRequest::isProxyRequestSet() const
+{
+  return !_proxyRequest.isNull();
 }
 
 } // namespace aria2

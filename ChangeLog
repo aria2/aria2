@@ -1,5 +1,24 @@
 2008-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added the ability to pool proxy connection.
+	The conneciton in FTP with proxy-method=GET is not pooled.
+	Proxy-Connection header will not be sent when sending CONNECT method.
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpResponse.cc
+	* src/HttpSkipResponseCommand.cc
+	* test/HttpRequestTest.cc
+	* test/HttpResponseTest.cc
+	
+2008-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Handle date before epoch.
 	To create *bad* Time object, call Time::null().
 	* src/CookieParser.cc
