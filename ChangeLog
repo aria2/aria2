@@ -1,3 +1,18 @@
+2008-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Handle date before epoch.
+	To create *bad* Time object, call Time::null().
+	* src/CookieParser.cc
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+	* src/FtpNegotiationCommand.cc
+	* src/RequestGroup.cc
+	* src/TimeA2.cc
+	* src/TimeA2.h
+	* test/CookieParserTest.cc
+	* test/FtpConnectionTest.cc
+	* test/TimeTest.cc
+
 2008-11-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added support for following envrionment variables: http_proxy,

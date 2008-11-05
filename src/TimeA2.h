@@ -49,6 +49,8 @@ class Time {
 private:
   struct timeval tv;
 
+  bool _good;
+
   struct timeval getCurrentTime() const;
 public:
   // The time value is initialized so that it represents the time at which
@@ -95,6 +97,9 @@ public:
 
   bool good() const;
 
+  // Returns !good()
+  bool bad() const;
+
   // Currently timezone is assumed as GMT.
   static Time parse(const std::string& datetime, const std::string& format);
 
@@ -111,6 +116,8 @@ public:
   // Try parseRFC1123, parseRFC850Ex, parseRFC850 in that order and returns
   // the first "good" Time object returned by these functions.
   static Time parseHTTPDate(const std::string& datetime);
+
+  static Time null();
 };
 
 } // namespace aria2

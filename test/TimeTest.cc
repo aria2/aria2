@@ -64,9 +64,8 @@ void TimeTest::testParseHTTPDate()
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
 		       Time::parseHTTPDate
 		       ("Sat, 06-Sep-08 15:26:33 GMT").getTime());
-  CPPUNIT_ASSERT_EQUAL((time_t)-1,
-		       Time::parseHTTPDate
-		       ("Sat, 2008-09-06 15:26:33 GMT").getTime());
+  CPPUNIT_ASSERT(Time::parseHTTPDate
+		 ("Sat, 2008-09-06 15:26:33 GMT").bad());
 }
 
 void TimeTest::testOperatorLess()

@@ -123,7 +123,7 @@ RequestGroup::RequestGroup(const Option* option,
   _forceHaltRequested(false),
   _singleHostMultiConnectionEnabled(true),
   _uriSelector(new InOrderURISelector()),
-  _lastModifiedTime(-1),
+  _lastModifiedTime(Time::null()),
   _fileNotFoundCount(0),
   _option(option),
   _logger(LogFactory::getInstance())

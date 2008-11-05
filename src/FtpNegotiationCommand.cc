@@ -283,7 +283,7 @@ bool FtpNegotiationCommand::sendMdtm()
 
 bool FtpNegotiationCommand::recvMdtm()
 {
-  Time lastModifiedTime(-1);
+  Time lastModifiedTime = Time::null();
   unsigned int status = ftp->receiveMdtmResponse(lastModifiedTime);
   if(status == 0) {
     return false;

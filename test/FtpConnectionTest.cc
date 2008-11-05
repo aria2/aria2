@@ -149,14 +149,14 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     Time t;
     _serverSocket->writeData("213 20080908\r\n");
     CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveMdtmResponse(t));
-    CPPUNIT_ASSERT_EQUAL((time_t)-1, t.getTime());
+    CPPUNIT_ASSERT(t.bad());
   }
   {
     // invalid month: 19
     Time t;
     _serverSocket->writeData("213 20081908124312\r\n");
     CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveMdtmResponse(t));
-    CPPUNIT_ASSERT_EQUAL((time_t)-1, t.getTime());
+    CPPUNIT_ASSERT(t.bad());
   }
   {
     Time t;

@@ -105,7 +105,7 @@ public:
   // time-val and store it in time.
   // If a code other than 213 is returned, time is not touched.
   // Expect MDTM reply is YYYYMMDDhhmmss in GMT. If status is 213 but returned
-  // date cannot be parsed, then executes time.setTimeInSec(-1).
+  // date cannot be parsed, then assign Time::null() to given time.
   // If reply is not received yet, returns 0.
   unsigned int receiveMdtmResponse(Time& time);
   unsigned int receivePasvResponse(std::pair<std::string, uint16_t>& dest);

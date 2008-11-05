@@ -369,7 +369,7 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
       if(strlen(buf) == 14) {
 	time = Time::parse(buf, "%Y%m%d%H%M%S");
       } else {
-	time.setTimeInSec(-1);
+	time = Time::null();
       }
     }
     return response.first;

@@ -42,19 +42,24 @@
 
 namespace aria2 {
 
-Time::Time() {
+Time::Time():_good(true)
+{
   reset();
 }
 
-Time::Time(const Time& time) {
+Time::Time(const Time& time)
+{
   tv = time.tv;
+  _good = time._good;
 }
 
-Time::Time(time_t sec) {
+Time::Time(time_t sec):_good(true)
+{
   setTimeInSec(sec);
 }
 
-Time::Time(const struct timeval& tv) {
+Time::Time(const struct timeval& tv):_good(true)
+{
   this->tv = tv;
 }
 
@@ -64,6 +69,7 @@ Time& Time::operator=(const Time& time)
 {
   if(this != &time) {
     tv = time.tv;
+    _good = time._good;
   }
   return *this;
 }
@@ -152,7 +158,12 @@ void Time::setTimeInSec(time_t sec) {
 
 bool Time::good() const
 {
-  return tv.tv_sec >= 0;
+  return _good;
+}
+
+bool Time::bad() const
+{
+  return !_good;
 }
 
 Time Time::parse(const std::string& datetime, const std::string& format)
@@ -161,7 +172,7 @@ Time Time::parse(const std::string& datetime, const std::string& format)
   memset(&tm, 0, sizeof(tm));
   char* r = strptime(datetime.c_str(), format.c_str(), &tm);
   if(r != datetime.c_str()+datetime.size()) {
-    return Time(-1);
+    return Time::null();
   }
   time_t thetime = timegm(&tm);
   if(thetime == -1) {
@@ -190,9 +201,9 @@ Time Time::parseRFC850Ext(const std::string& datetime)
 Time Time::parseHTTPDate(const std::string& datetime)
 {
   Time (*funcs[])(const std::string&) = {
+    &parseRFC850,
     &parseRFC1123,
     &parseRFC850Ext,
-    &parseRFC850,
   };
   for(Time (**funcsp)(const std::string&) = &funcs[0];
       funcsp != &funcs[arrayLength(funcs)]; ++funcsp) {
@@ -201,7 +212,14 @@ Time Time::parseHTTPDate(const std::string& datetime)
       return t;
     }
   }
-  return Time(-1);
+  return Time::null();
+}
+
+Time Time::null()
+{
+  Time t(0);
+  t._good = false;
+  return t;
 }
 
 } // namespace aria2

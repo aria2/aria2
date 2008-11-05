@@ -33,13 +33,16 @@
  */
 /* copyright --> */
 #include "CookieParser.h"
-#include "Util.h"
-#include "A2STR.h"
-#include "TimeA2.h"
+
 #include <strings.h>
+
 #include <utility>
 #include <istream>
 #include <map>
+
+#include "Util.h"
+#include "A2STR.h"
+#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -76,20 +79,17 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
     Util::split(nv, *itr, '=');
     values[nv.first] = nv.second;
   }
-  time_t expiry = -1;
+  time_t expiry = 0;
   if(values.find(C_EXPIRES) != values.end()) {
-    expiry = Time::parseHTTPDate(values[C_EXPIRES]).getTime();
+    Time expiryTime = Time::parseHTTPDate(values[C_EXPIRES]);
+    if(expiryTime.good()) {
+      expiry = expiryTime.getTime();
+    }
   }
-  if(expiry == -1) {
-    return Cookie(nameValue.first, nameValue.second,
-		  values[C_PATH], values[C_DOMAIN],
-		  values.find(C_SECURE) != values.end());
-  } else {
-    return Cookie(nameValue.first, nameValue.second,
-		  expiry,
-		  values[C_PATH], values[C_DOMAIN],
-		  values.find(C_SECURE) != values.end());
-  }
+  return Cookie(nameValue.first, nameValue.second,
+		expiry,
+		values[C_PATH], values[C_DOMAIN],
+		values.find(C_SECURE) != values.end());
 }
 
 
