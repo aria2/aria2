@@ -46,6 +46,9 @@
 #include "StringFormat.h"
 #include "Util.h"
 #include "LogFactory.h"
+#ifdef ENABLE_SSL
+# include "TLSContext.h"
+#endif // ENABLE_SSL
 
 #ifndef __MINGW32__
 # define SOCKET_ERRNO (errno)
@@ -66,6 +69,8 @@
 #endif // __MINGW32__
 
 namespace aria2 {
+
+SharedHandle<TLSContext> SocketCore::_tlsContext;
 
 SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1)  {
   init();
@@ -92,12 +97,10 @@ void SocketCore::init()
 
 #ifdef HAVE_LIBSSL
   // for SSL
-  sslCtx = NULL;
   ssl = NULL;
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
   sslSession = NULL;
-  sslXcred = NULL;
   peekBufMax = 4096;
   peekBuf = 0;
   peekBufLength = 0;
@@ -318,13 +321,11 @@ void SocketCore::closeConnection()
   // for SSL
   if(secure) {
     SSL_free(ssl);
-    SSL_CTX_free(sslCtx);
   }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
   if(secure) {
     gnutls_deinit(sslSession);
-    gnutls_certificate_free_credentials(sslXcred);
   }
 #endif // HAVE_LIBGNUTLS
 }
@@ -710,16 +711,9 @@ void SocketCore::prepareSecureConnection()
 {
   if(!secure) {
 #ifdef HAVE_LIBSSL
-  // for SSL
-    sslCtx = SSL_CTX_new(SSLv23_client_method());
-    if(sslCtx == NULL) {
-      throw DlAbortEx
-	(StringFormat(EX_SSL_INIT_FAILURE,
-		      ERR_error_string(ERR_get_error(), 0)).str());
-    }
-    SSL_CTX_set_mode(sslCtx, SSL_MODE_AUTO_RETRY);
-    ssl = SSL_new(sslCtx);
-    if(ssl == NULL) {
+    // for SSL
+    ssl = SSL_new(_tlsContext->getSSLCtx());
+    if(!ssl) {
       throw DlAbortEx
 	(StringFormat(EX_SSL_INIT_FAILURE,
 		      ERR_error_string(ERR_get_error(), 0)).str());
@@ -736,12 +730,12 @@ void SocketCore::prepareSecureConnection()
     };
     // while we do not support X509 certificate, most web servers require
     // X509 stuff.
-    gnutls_certificate_allocate_credentials (&sslXcred);
     gnutls_init(&sslSession, GNUTLS_CLIENT);
     gnutls_set_default_priority(sslSession);
     gnutls_kx_set_priority(sslSession, cert_type_priority);
     // put the x509 credentials to the current session
-    gnutls_credentials_set(sslSession, GNUTLS_CRD_CERTIFICATE, sslXcred);
+    gnutls_credentials_set(sslSession, GNUTLS_CRD_CERTIFICATE,
+			   _tlsContext->getCertCred());
     gnutls_transport_set_ptr(sslSession, (gnutls_transport_ptr_t)sockfd);
 #endif // HAVE_LIBGNUTLS
     secure = 1;
@@ -926,6 +920,11 @@ bool SocketCore::wantRead() const
 bool SocketCore::wantWrite() const
 {
   return _wantWrite;
+}
+
+void SocketCore::setTLSContext(const SharedHandle<TLSContext>& tlsContext)
+{
+  _tlsContext = tlsContext;
 }
 
 } // namespace aria2

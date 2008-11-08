@@ -194,6 +194,18 @@ SRCS =  Socket.h\
 	SocketBuffer.cc SocketBuffer.h\
 	OptionHandlerException.cc OptionHandlerException.h
 
+if ENABLE_SSL
+SRCS += TLSContext.h
+endif # ENABLE_SSL
+
+if HAVE_LIBGNUTLS
+SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
+endif # HAVE_LIBGNUTLS
+
+if HAVE_LIBSSL
+SRCS += LibsslTLSContext.cc LibsslTLSContext.h
+endif # HAVE_LIBSSL
+
 if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h
 endif # HAVE_LIBZ

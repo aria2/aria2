@@ -54,6 +54,10 @@
 #include "TimedHaltCommand.h"
 #include "DownloadResult.h"
 #include "ServerStatMan.h"
+#ifdef ENABLE_SSL
+# include "SocketCore.h"
+# include "TLSContext.h"
+#endif // ENABLE_SSL
 
 namespace aria2 {
 
@@ -81,6 +85,12 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 
   DownloadEngineHandle e(new DownloadEngine());
   e->option = op;
+
+#ifdef ENABLE_SSL
+  SharedHandle<TLSContext> tlsContext(new TLSContext());
+  SocketCore::setTLSContext(tlsContext);
+#endif
+
   RequestGroupManHandle
     requestGroupMan(new RequestGroupMan(workingSet, MAX_CONCURRENT_DOWNLOADS,
 					op));

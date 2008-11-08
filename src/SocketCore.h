@@ -54,11 +54,14 @@
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
 
+#include "SharedHandle.h"
 #include "a2io.h"
 #include "a2netcompat.h"
 #include "a2time.h"
 
 namespace aria2 {
+
+class TLSContext;
 
 class SocketCore {
   friend bool operator==(const SocketCore& s1, const SocketCore& s2);
@@ -85,16 +88,18 @@ private:
   bool _wantRead;
   bool _wantWrite;
 
+#if ENABLE_SSL
+  static SharedHandle<TLSContext> _tlsContext;
+#endif
+
 #ifdef HAVE_LIBSSL
   // for SSL
-  SSL_CTX* sslCtx;
   SSL* ssl;
 
   int sslHandleEAGAIN(int ret);
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
   gnutls_session_t sslSession;
-  gnutls_certificate_credentials_t sslXcred;
   char* peekBuf;
   size_t peekBufLength;
   size_t peekBufMax;
@@ -317,6 +322,8 @@ public:
    * readData() or writeData() and the socket needs to write more data.
    */
   bool wantWrite() const;
+
+  static void setTLSContext(const SharedHandle<TLSContext>& tlsContext);
 };
 
 } // namespace aria2
