@@ -86,7 +86,7 @@ extern const std::string PREF_STARTUP_IDLE_TIME;
 // value: prealloc | none
 extern const std::string PREF_FILE_ALLOCATION;
 extern const std::string V_PREALLOC;
-#// value: 1*digit
+// value: 1*digit
 extern const std::string PREF_NO_FILE_ALLOCATION_LIMIT;
 // value: true | false
 extern const std::string PREF_ALLOW_OVERWRITE;
@@ -184,6 +184,10 @@ extern const std::string PREF_ENABLE_HTTP_PIPELINING;
 extern const std::string PREF_MAX_HTTP_PIPELINING;
 // value: string
 extern const std::string PREF_HEADER;
+// value: string that your file system recognizes as a file name.
+extern const std::string PREF_CERTIFICATE;
+// value: string that your file system recognizes as a file name.
+extern const std::string PREF_PRIVATE_KEY;
 
 /**;
  * Proxy related preferences

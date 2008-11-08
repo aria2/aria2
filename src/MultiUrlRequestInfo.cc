@@ -54,6 +54,10 @@
 #include "File.h"
 #include "Netrc.h"
 #include "AuthConfigFactory.h"
+#ifdef ENABLE_SSL
+# include "SocketCore.h"
+# include "TLSContext.h"
+#endif // ENABLE_SSL
 
 namespace aria2 {
 
@@ -131,6 +135,16 @@ int MultiUrlRequestInfo::execute()
       }
     }
     e->setAuthConfigFactory(authConfigFactory);
+
+#ifdef ENABLE_SSL
+    SharedHandle<TLSContext> tlsContext(new TLSContext());
+    if(_option->defined(PREF_CERTIFICATE) &&
+       _option->defined(PREF_PRIVATE_KEY)) {
+      tlsContext->addClientKeyFile(_option->get(PREF_CERTIFICATE),
+				   _option->get(PREF_PRIVATE_KEY));
+    }
+    SocketCore::setTLSContext(tlsContext);
+#endif
 
     std::string serverStatIf = _option->get(PREF_SERVER_STAT_IF);
     if(!serverStatIf.empty()) {

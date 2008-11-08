@@ -1,5 +1,23 @@
 2008-11-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added client certificate authentication for SSL/TLS.
+	Currently a private key must be decrypted for use with aria2.
+	If a user accidentally gives encrypted file to aria2 then following
+	thing happens:
+	If encrypted private key is given to aria2, it behaves differently
+	depending on the ssl library it uses. If aria2 built with openssl then
+	openssl prompts the user for password. If aria2 build with gnutls then
+	aria2 exists with error at start up.
+	* src/DownloadEngineFactory.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	
+2008-11-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Introduced TLSContext that holds TLS related data that can be shared
 	with multiple SSL connections.
 	* src/DownloadEngineFactory.cc

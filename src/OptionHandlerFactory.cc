@@ -430,6 +430,13 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   // HTTP Specific Options
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_CERTIFICATE,
+				    TEXT_CERTIFICATE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_ENABLE_HTTP_KEEP_ALIVE,
 				    TEXT_ENABLE_HTTP_KEEP_ALIVE,
@@ -496,6 +503,13 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    "2",
 				    1, 8,
 				    true));
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_PRIVATE_KEY,
+				    TEXT_PRIVATE_KEY));
+    op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
   {

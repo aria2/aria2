@@ -389,3 +389,12 @@ _(" --auto-save-interval=SEC     Save a control file(*.aria2) every SEC seconds.
   "                              If 0 is given, a control file is not saved during\n"\
   "                              download. aria2 saves a control file when it stops\n"\
   "                              regardless of the value.")
+#define TEXT_CERTIFICATE \
+_(" --certificate=FILE           Use the client certificate in FILE.\n"\
+  "                              The certificate must be in PEM format.\n"\
+  "                              You may use --private-key option to specify the\n"\
+  "                              private key.")
+#define TEXT_PRIVATE_KEY \
+_(" --private-key=FILE           Use the private key in FILE.\n"\
+  "                              The private key must be decrypted and in PEM\n"\
+  "                              format. See also --certificate option.")

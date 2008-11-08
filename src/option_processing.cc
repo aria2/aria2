@@ -182,6 +182,8 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_FTP_PROXY.c_str(), required_argument, &lopt, 228 },
       { PREF_ALL_PROXY.c_str(), required_argument, &lopt, 229 },
       { PREF_PROXY_METHOD.c_str(), required_argument, &lopt, 230 },
+      { PREF_CERTIFICATE.c_str(), required_argument, &lopt, 231 },
+      { PREF_PRIVATE_KEY.c_str(), required_argument, &lopt, 232 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -449,6 +451,12 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 230:
 	cmdstream << PREF_PROXY_METHOD << "=" << optarg << "\n";
+	break;
+      case 231:
+	cmdstream << PREF_CERTIFICATE << "=" << optarg << "\n";
+	break;
+      case 232:
+	cmdstream << PREF_PRIVATE_KEY << "=" << optarg << "\n";
 	break;
       }
       break;

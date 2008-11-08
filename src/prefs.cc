@@ -180,6 +180,10 @@ const std::string PREF_ENABLE_HTTP_PIPELINING("enable-http-pipelining");
 const std::string PREF_MAX_HTTP_PIPELINING("max-http-pipelining");
 // value: string
 const std::string PREF_HEADER("header");
+// value: string that your file system recognizes as a file name.
+const std::string PREF_CERTIFICATE("certificate");
+// value: string that your file system recognizes as a file name.
+const std::string PREF_PRIVATE_KEY("private-key");
 
 /** 
  * Proxy related preferences
