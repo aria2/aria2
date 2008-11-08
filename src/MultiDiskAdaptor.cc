@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "MultiDiskAdaptor.h"
+
+#include <algorithm>
+#include <cassert>
+
 #include "DefaultDiskWriter.h"
 #include "message.h"
 #include "Util.h"
@@ -44,8 +48,6 @@
 #include "StringFormat.h"
 #include "Logger.h"
 #include "SimpleRandomizer.h"
-#include <algorithm>
-#include <cassert>
 
 namespace aria2 {
 
@@ -208,12 +210,16 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 	((*itr)->getFileEntry()->getOffset()/pieceLength)*pieceLength;
       if(itr != diskWriterEntries.begin()) {
 	for(std::deque<SharedHandle<DiskWriterEntry> >::iterator i =
-	      itr-1; i != done; --i) {
+	      itr-1; true; --i) {
 	  const SharedHandle<FileEntry>& fileEntry = (*i)->getFileEntry();
-	  if((uint64_t)pieceStartOffset <
+	  if(pieceStartOffset <= fileEntry->getOffset() ||
+	     (uint64_t)pieceStartOffset <
 	     fileEntry->getOffset()+fileEntry->getLength()) {
 	    (*i)->needsFileAllocation(true);
 	  } else {
+	    break;
+	  }
+	  if(i == done) {
 	    break;
 	  }
 	}
@@ -292,7 +298,12 @@ void MultiDiskAdaptor::openFile()
   _cachedTopDirPath = getTopDirPath();
   resetDiskWriterEntries();
   mkdir(_cachedTopDirPath);
-  // TODO we should call openIfNot here?
+  // Call DiskWriterEntry::openFile to make sure that zero-length files are
+  // created.
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); ++itr) {
+    openIfNot(*itr, &DiskWriterEntry::openFile, _cachedTopDirPath);
+  }
 }
 
 void MultiDiskAdaptor::initAndOpenFile()
@@ -512,6 +523,12 @@ size_t MultiDiskAdaptor::utime(const Time& actime, const Time& modtime)
     }
   }
   return numOK;
+}
+
+const std::deque<SharedHandle<DiskWriterEntry> >&
+MultiDiskAdaptor::getDiskWriterEntries() const
+{
+  return diskWriterEntries;
 }
 
 } // namespace aria2

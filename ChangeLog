@@ -1,3 +1,15 @@
+2008-11-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that the DiskWriter of the first FileEntry whose
+	`needsFileAllocation' property is false is not created
+	even if it shares a piece with next FileEntry which `requested' property
+	is true.
+	Fixed the bug that zero-length file is not created if pre file
+	allocation is not done.
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* test/MultiDiskAdaptorTest.cc
+
 2008-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added the ability to pool proxy connection.

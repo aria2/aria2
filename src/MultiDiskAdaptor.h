@@ -191,6 +191,9 @@ public:
   void setMaxOpenFiles(size_t maxOpenFiles);
 
   virtual size_t utime(const Time& actime, const Time& modtime);
+
+  const std::deque<SharedHandle<DiskWriterEntry> >&
+  getDiskWriterEntries() const;
 };
 
 typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;
