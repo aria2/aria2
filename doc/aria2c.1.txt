@@ -201,6 +201,7 @@ HTTP Specific Options
 *--private-key*=FILE::
   Use the private key in FILE.
   The private key must be decrypted and in PEM format.
+  The behavior when encrypted one is given is undefined.
   See also *--certificate* option.
 
 *--referer*=REFERER::
@@ -733,6 +734,21 @@ Resume download started by web browsers or another programs
 ---------------------------------------------------
 aria2c -c -s2 http://host/partiallydownloadedfile.zip 
 ---------------------------------------------------
+
+Client certificate authorization for SSL/TLS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------------------------------------------------
+aria2c --certificate=/path/to/mycert.pem --private-key=/path/to/mykey.pem https://host/file
+------------------------------------------------------------------------------------------
+[NOTE]
+The file specified in *--private-key* must be decrypted. The behavior when
+encrypted one is given is undefined.
+
+Verify peer in SSL/TLS using given CA certificates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------------------------------------------------
+aria2c --ca-certificate=/path/to/ca-certificates.crt --check-certificate https://host/file
+------------------------------------------------------------------------------------------
 
 And more advanced features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

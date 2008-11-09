@@ -272,7 +272,7 @@ option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWOR
 .PP
 \fB\-\-private\-key\fR=FILE
 .RS 4
-Use the private key in FILE\&. The private key must be decrypted and in PEM format\&. See also
+Use the private key in FILE\&. The private key must be decrypted and in PEM format\&. The behavior when encrypted one is given is undefined\&. See also
 \fB\-\-certificate\fR
 option\&.
 .RE
@@ -1189,6 +1189,42 @@ Resume download started by web browsers or another programs
 .RS 4
 .nf
 aria2c \-c \-s2 http://host/partiallydownloadedfile\&.zip
+.fi
+.RE
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Client certificate authorization for SSL/TLS
+.RS
+.sp
+.RS 4
+.nf
+aria2c \-\-certificate=/path/to/mycert\&.pem \-\-private\-key=/path/to/mykey\&.pem https://host/file
+.fi
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+The file specified in \fB\-\-private\-key\fR must be decrypted\&. The behavior when encrypted one is given is undefined\&.
+.sp
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Verify peer in SSL/TLS using given CA certificates
+.RS
+.sp
+.RS 4
+.nf
+aria2c \-\-ca\-certificate=/path/to/ca\-certificates\&.crt \-\-check\-certificate https://host/file
 .fi
 .RE
 .RE

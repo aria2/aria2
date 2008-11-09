@@ -1,5 +1,11 @@
 2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added usage for --ca-certificate, --certificate, --private-key and
+	--check-certificate options.
+	* doc/aria2c.1.txt
+
+2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated man page
 	* doc/aria2c.1.txt
 

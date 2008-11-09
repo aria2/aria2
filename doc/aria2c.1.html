@@ -733,6 +733,7 @@ aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</
 <p>
   Use the private key in FILE.
   The private key must be decrypted and in PEM format.
+  The behavior when encrypted one is given is undefined.
   See also <strong>--certificate</strong> option.
 </p>
 </dd>
@@ -1669,6 +1670,25 @@ forwarding, it's up to you to do it manually.</td>
 <div class="content">
 <pre><tt>aria2c -c -s2 http://host/partiallydownloadedfile.zip</tt></pre>
 </div></div>
+<h4 id="_client_certificate_authorization_for_ssl_tls">Client certificate authorization for SSL/TLS</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --certificate=/path/to/mycert.pem --private-key=/path/to/mykey.pem https://host/file</tt></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">The file specified in <strong>--private-key</strong> must be decrypted. The behavior when
+encrypted one is given is undefined.</td>
+</tr></table>
+</div>
+<h4 id="_verify_peer_in_ssl_tls_using_given_ca_certificates">Verify peer in SSL/TLS using given CA certificates</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --ca-certificate=/path/to/ca-certificates.crt --check-certificate https://host/file</tt></pre>
+</div></div>
 <h3 id="_and_more_advanced_features">And more advanced features</h3><div style="clear:left"></div>
 <h4 id="_throttle_download_speed">Throttle download speed</h4>
 <div class="listingblock">
@@ -1942,7 +1962,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-11-09 17:57:01 JST
+Last updated 2008-11-09 18:05:02 JST
 </div>
 </div>
 </body>
