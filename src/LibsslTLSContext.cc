@@ -43,7 +43,9 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext():_sslCtx(0), _logger(LogFactory::getInstance())
+TLSContext::TLSContext():_sslCtx(0),
+			 _peerVerificationEnabled(false),
+			 _logger(LogFactory::getInstance())
 {
   _sslCtx = SSL_CTX_new(SSLv23_client_method());
   if(_sslCtx) {
@@ -104,6 +106,21 @@ void TLSContext::addTrustedCACertFile(const std::string& certfile)
 SSL_CTX* TLSContext::getSSLCtx() const
 {
   return _sslCtx;
+}
+
+void TLSContext::enablePeerVerification()
+{
+  _peerVerificationEnabled = true;
+}
+
+void TLSContext::disablePeerVerification()
+{
+  _peerVerificationEnabled = false;
+}
+
+bool TLSContext::peerVerificationEnabled() const
+{
+  return _peerVerificationEnabled;
 }
 
 } // namespace aria2

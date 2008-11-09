@@ -53,6 +53,8 @@ private:
 
   bool _good;
 
+  bool _peerVerificationEnabled;
+
   Logger* _logger;
 public:
   TLSContext();
@@ -71,6 +73,12 @@ public:
   bool bad() const;
 
   SSL_CTX* getSSLCtx() const;
+  
+  void enablePeerVerification();
+
+  void disablePeerVerification();
+
+  bool peerVerificationEnabled() const;
 };
 
 } // namespace aria2

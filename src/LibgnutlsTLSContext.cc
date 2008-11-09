@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "LibgnutlsTLSContext.h"
+
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/x509.h>
+#endif // HAVE_LIBGNUTLS
+
 #include "LogFactory.h"
 #include "Logger.h"
 #include "StringFormat.h"
@@ -40,11 +45,15 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext():_certCred(0), _logger(LogFactory::getInstance())
+TLSContext::TLSContext():_certCred(0),
+			 _peerVerificationEnabled(false),
+			 _logger(LogFactory::getInstance())
 {
   int r = gnutls_certificate_allocate_credentials(&_certCred);
   if(r == GNUTLS_E_SUCCESS) {
     _good = true;
+    gnutls_certificate_set_verify_flags(_certCred,
+					GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
   } else {
     _good =false;
     _logger->error("gnutls_certificate_allocate_credentials() failed."
@@ -104,6 +113,21 @@ void TLSContext::addTrustedCACertFile(const std::string& certfile)
 gnutls_certificate_credentials_t TLSContext::getCertCred() const
 {
   return _certCred;
+}
+
+void TLSContext::enablePeerVerification()
+{
+  _peerVerificationEnabled = true;
+}
+
+void TLSContext::disablePeerVerification()
+{
+  _peerVerificationEnabled = false;
+}
+
+bool TLSContext::peerVerificationEnabled() const
+{
+  return _peerVerificationEnabled;
 }
 
 } // namespace aria2

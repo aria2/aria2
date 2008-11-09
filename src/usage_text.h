@@ -398,3 +398,12 @@ _(" --certificate=FILE           Use the client certificate in FILE.\n"\
 _(" --private-key=FILE           Use the private key in FILE.\n"\
   "                              The private key must be decrypted and in PEM\n"\
   "                              format. See also --certificate option.")
+#define TEXT_CA_CERTIFICATE \
+_(" --ca-certificate=FILE        Use the certificate authorities in FILE to verify\n"\
+  "                              the peers. The certificate file must be in PEM\n"\
+  "                              format and can contain multiple CA certificates.\n"\
+  "                              Use --check-certificate option to enable\n"\
+  "                              verification.")
+#define TEXT_CHECK_CERTIFICATE \
+_(" --check-certificate[=true|false] Verify the peer using certificates specified\n"\
+  "                              in --ca-certificate option.")

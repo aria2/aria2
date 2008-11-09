@@ -291,8 +291,10 @@ public:
    * Makes this socket secure.
    * If the system has not OpenSSL, then this method do nothing.
    * connection must be established  before calling this method.
+   *
+   * If you are going to verify peer's certificate, hostname must be supplied.
    */
-  bool initiateSecureConnection();
+  bool initiateSecureConnection(const std::string& hostname="");
 
   void prepareSecureConnection();
 

@@ -159,6 +159,10 @@
 #define MSG_NETWORK_PROBLEM _("Network problem has occurred. cause:%s")
 #define MSG_LOADING_TRUSTED_CA_CERT_FAILED \
   _("Failed to load trusted CA certificates from %s. Cause: %s")
+#define MSG_CERT_VERIFICATION_FAILED \
+  _("Certificate verification failed. Cause: %s")
+#define MSG_NO_CERT_FOUND _("No certificate found.")
+#define MSG_HOSTNAME_NOT_MATCH _("Hostname not match.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

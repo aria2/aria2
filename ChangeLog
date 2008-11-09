@@ -1,3 +1,25 @@
+2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added the ability to verify peer in SSL/TLS using given CA certificates.
+	The CA certificates are specified in --ca-certificate option.
+	By default, the verification is disabled. Use --check-certificate
+	option to enable it.
+	* src/HttpRequestCommand.cc
+	* src/LibgnutlsTLSContext.cc
+	* src/LibgnutlsTLSContext.h
+	* src/LibsslTLSContext.cc
+	* src/LibsslTLSContext.h
+	* src/MultiUrlRequestInfo.cc
+	* src/OptionHandlerFactory.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/a2functional.h
+	* src/message.h
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2008-11-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added client certificate authentication for SSL/TLS.

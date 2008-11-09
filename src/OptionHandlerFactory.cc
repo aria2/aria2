@@ -431,8 +431,23 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   // HTTP Specific Options
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_CA_CERTIFICATE,
+				    TEXT_CA_CERTIFICATE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_CERTIFICATE,
 				    TEXT_CERTIFICATE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_CHECK_CERTIFICATE,
+				    TEXT_CHECK_CERTIFICATE,
+				    V_FALSE));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }

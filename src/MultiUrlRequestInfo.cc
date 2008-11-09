@@ -143,6 +143,12 @@ int MultiUrlRequestInfo::execute()
       tlsContext->addClientKeyFile(_option->get(PREF_CERTIFICATE),
 				   _option->get(PREF_PRIVATE_KEY));
     }
+    if(_option->defined(PREF_CA_CERTIFICATE)) {
+      tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE));
+    }
+    if(_option->getAsBool(PREF_CHECK_CERTIFICATE)) {
+      tlsContext->enablePeerVerification();
+    }
     SocketCore::setTLSContext(tlsContext);
 #endif
 

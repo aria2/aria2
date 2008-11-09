@@ -188,6 +188,10 @@ extern const std::string PREF_HEADER;
 extern const std::string PREF_CERTIFICATE;
 // value: string that your file system recognizes as a file name.
 extern const std::string PREF_PRIVATE_KEY;
+// value: string that your file system recognizes as a file name.
+extern const std::string PREF_CA_CERTIFICATE;
+// value: true | false
+extern const std::string PREF_CHECK_CERTIFICATE;
 
 /**;
  * Proxy related preferences

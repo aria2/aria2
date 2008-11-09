@@ -39,6 +39,10 @@
 #include <cerrno>
 #include <cstring>
 
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/x509.h>
+#endif // HAVE_LIBGNUTLS
+
 #include "message.h"
 #include "a2netcompat.h"
 #include "DlRetryEx.h"
@@ -46,6 +50,8 @@
 #include "StringFormat.h"
 #include "Util.h"
 #include "LogFactory.h"
+#include "TimeA2.h"
+#include "a2functional.h"
 #ifdef ENABLE_SSL
 # include "TLSContext.h"
 #endif // ENABLE_SSL
@@ -742,7 +748,7 @@ void SocketCore::prepareSecureConnection()
   }
 }
 
-bool SocketCore::initiateSecureConnection()
+bool SocketCore::initiateSecureConnection(const std::string& hostname)
 {
   if(secure == 1) {
     _wantRead = false;
@@ -781,6 +787,49 @@ bool SocketCore::initiateSecureConnection()
 	    (StringFormat(EX_SSL_UNKNOWN_ERROR, ssl_error).str());
       }
     }
+    if(_tlsContext->peerVerificationEnabled()) {
+      // verify peer
+      X509* peerCert = SSL_get_peer_certificate(ssl);
+      if(!peerCert) {
+	throw DlAbortEx(MSG_NO_CERT_FOUND);
+      }
+      auto_delete<X509*> certDeleter(peerCert, X509_free);
+
+      long verifyResult = SSL_get_verify_result(ssl);
+      if(verifyResult != X509_V_OK) {
+	throw DlAbortEx
+	  (StringFormat(MSG_CERT_VERIFICATION_FAILED,
+			X509_verify_cert_error_string(verifyResult)).str());
+      }
+      X509_NAME* name = X509_get_subject_name(peerCert);
+      if(!name) {
+	throw DlAbortEx("Could not get X509 name object from the certificate.");
+      }
+
+      bool hostnameOK = false;
+      int lastpos = -1;
+      while(true) {
+	lastpos = X509_NAME_get_index_by_NID(name, NID_commonName, lastpos);
+	if(lastpos == -1) {
+	  break;
+	}
+	X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, lastpos);
+	unsigned char* out;
+	int outlen = ASN1_STRING_to_UTF8(&out, X509_NAME_ENTRY_get_data(entry));
+	if(outlen < 0) {
+	  continue;
+	}
+	std::string commonName(&out[0], &out[outlen]);
+	OPENSSL_free(out);
+	if(commonName == hostname) {
+	  hostnameOK = true;
+	  break;
+	}
+      }
+      if(!hostnameOK) {
+	throw DlAbortEx(MSG_HOSTNAME_NOT_MATCH);
+      }
+    }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
     int ret = gnutls_handshake(sslSession);
@@ -790,9 +839,83 @@ bool SocketCore::initiateSecureConnection()
     } else if(ret < 0) {
       throw DlAbortEx
 	(StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(ret)).str());
-    } else {
-      peekBuf = new char[peekBufMax];
     }
+
+    if(_tlsContext->peerVerificationEnabled()) {
+      // verify peer
+      unsigned int status;
+      ret = gnutls_certificate_verify_peers2(sslSession, &status);
+      if(ret < 0) {
+	throw DlAbortEx
+	  (StringFormat("gnutls_certificate_verify_peer2() failed. Cause: %s",
+			gnutls_strerror(ret)).str());
+      }
+      if(status) {
+	std::string errors;
+	if(status & GNUTLS_CERT_INVALID) {
+	  errors += " `not signed by known authorities or invalid'";
+	}
+	if(status & GNUTLS_CERT_REVOKED) {
+	  errors += " `revoked by its CA'";
+	}
+	if(status & GNUTLS_CERT_SIGNER_NOT_FOUND) {
+	  errors += " `issuer is not known'";
+	}
+	if(!errors.empty()) {
+	  throw DlAbortEx
+	    (StringFormat(MSG_CERT_VERIFICATION_FAILED, errors.c_str()).str());
+	}
+      }
+      // certificate type: only X509 is allowed.
+      if(gnutls_certificate_type_get(sslSession) != GNUTLS_CRT_X509) {
+	throw DlAbortEx("Certificate type is not X509.");
+      }
+
+      unsigned int peerCertsLength;
+      const gnutls_datum_t* peerCerts = gnutls_certificate_get_peers
+	(sslSession, &peerCertsLength);
+      if(!peerCerts) {
+	throw DlAbortEx(MSG_NO_CERT_FOUND);
+      }
+      Time now;
+      for(unsigned int i = 0; i < peerCertsLength; ++i) {
+	gnutls_x509_crt_t cert;
+	ret = gnutls_x509_crt_init(&cert);
+	if(ret < 0) {
+	  throw DlAbortEx
+	    (StringFormat("gnutls_x509_crt_init() failed. Cause: %s",
+			  gnutls_strerror(ret)).str());
+	}
+	auto_delete<gnutls_x509_crt_t> certDeleter
+	  (cert, gnutls_x509_crt_deinit);
+	ret = gnutls_x509_crt_import(cert, &peerCerts[i], GNUTLS_X509_FMT_DER);
+	if(ret < 0) {
+	  throw DlAbortEx
+	    (StringFormat("gnutls_x509_crt_import() failed. Cause: %s",
+			  gnutls_strerror(ret)).str());
+	}
+	if(i == 0) {
+	  if(!gnutls_x509_crt_check_hostname(cert, hostname.c_str())) {
+	    throw DlAbortEx(MSG_HOSTNAME_NOT_MATCH);
+	  }
+	}
+	time_t activationTime = gnutls_x509_crt_get_activation_time(cert);
+	if(activationTime == -1) {
+	  throw DlAbortEx("Could not get activation time from certificate.");
+	}
+	if(now.getTime() < activationTime) {
+	  throw DlAbortEx("Certificate is not activated yet.");
+	}
+	time_t expirationTime = gnutls_x509_crt_get_expiration_time(cert);
+	if(expirationTime == -1) {
+	  throw DlAbortEx("Could not get expiration time from certificate.");
+	}
+	if(expirationTime < now.getTime()) {
+	  throw DlAbortEx("Certificate has expired.");
+	}
+      }
+    }
+    peekBuf = new char[peekBufMax];
 #endif // HAVE_LIBGNUTLS
     secure = 2;
     return true;

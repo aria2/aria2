@@ -177,6 +177,20 @@ public:
 
 typedef Append<std::string> StringAppend;
 
+template<typename T>
+class auto_delete {
+private:
+  T _obj;
+  void (*_deleter)(T);
+public:
+  auto_delete(T obj, void (*deleter)(T)):_obj(obj), _deleter(deleter) {}
+
+  ~auto_delete()
+  {
+    _deleter(_obj);
+  }
+};
+
 } // namespace aria2
 
 #endif // _D_A2_FUNCTIONAL_H_

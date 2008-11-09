@@ -108,7 +108,7 @@ bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(req->getProtocol() == Request::PROTO_HTTPS) {
     socket->prepareSecureConnection();
-    if(!socket->initiateSecureConnection()) {
+    if(!socket->initiateSecureConnection(req->getHost())) {
       setReadCheckSocketIf(socket, socket->wantRead());
       setWriteCheckSocketIf(socket, socket->wantWrite());
       e->commands.push_back(this);

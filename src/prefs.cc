@@ -184,6 +184,10 @@ const std::string PREF_HEADER("header");
 const std::string PREF_CERTIFICATE("certificate");
 // value: string that your file system recognizes as a file name.
 const std::string PREF_PRIVATE_KEY("private-key");
+// value: string that your file system recognizes as a file name.
+const std::string PREF_CA_CERTIFICATE("ca-certificate");
+// value: true | false
+const std::string PREF_CHECK_CERTIFICATE("check-certificate");
 
 /** 
  * Proxy related preferences
