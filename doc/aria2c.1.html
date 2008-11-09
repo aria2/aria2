@@ -1503,6 +1503,32 @@ contains "&amp;" or any characters that have special meaning in shell.</td>
 <td class="content">-j option specifies the number of parallel downloads.</td>
 </tr></table>
 </div>
+<h4 id="_using_proxy">Using proxy</h4>
+<div class="para"><p>For HTTP:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --http-proxy=http://proxy:8080 http://host/file</tt></pre>
+</div></div>
+<div class="para"><p>For FTP:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --ftp-proxy=http://proxy:8080 ftp://host/file</tt></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">See <strong>--http-proxy</strong>, <strong>--https-proxy</strong>, <strong>--ftp-proxy</strong> and <strong>--all-proxy</strong> for
+details.
+You can specify proxy in the environment variables. See ENVIRONMENT section.</td>
+</tr></table>
+</div>
+<h4 id="_proxy_with_authorization">Proxy with authorization</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --http-proxy=http://username:password@proxy:8080 http://host/file</tt></pre>
+</div></div>
 <h3 id="_metalink_download">Metalink Download</h3><div style="clear:left"></div>
 <h4 id="_download_files_with_remote_metalink">Download files with remote Metalink</h4>
 <div class="listingblock">
@@ -1962,7 +1988,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-11-09 18:05:02 JST
+Last updated 2008-11-09 18:12:32 JST
 </div>
 </div>
 </body>

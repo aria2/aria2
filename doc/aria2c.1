@@ -885,6 +885,52 @@ Note
 \-j option specifies the number of parallel downloads\&.
 .sp
 .RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Using proxy
+.RS
+For HTTP:
+.sp
+.sp
+.RS 4
+.nf
+aria2c \-\-http\-proxy=http://proxy:8080 http://host/file
+.fi
+.RE
+For FTP:
+.sp
+.sp
+.RS 4
+.nf
+aria2c \-\-ftp\-proxy=http://proxy:8080 ftp://host/file
+.fi
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+See \fB\-\-http\-proxy\fR, \fB\-\-https\-proxy\fR, \fB\-\-ftp\-proxy\fR and \fB\-\-all\-proxy\fR for details\&. You can specify proxy in the environment variables\&. See ENVIRONMENT section\&.
+.sp
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Proxy with authorization
+.RS
+.sp
+.RS 4
+.nf
+aria2c \-\-http\-proxy=http://username:password@proxy:8080 http://host/file
+.fi
+.RE
+.RE
 .SS "Metalink Download"
 .sp
 .it 1 an-trap

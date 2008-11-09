@@ -607,6 +607,28 @@ aria2c -ifiles.txt -j2
 [NOTE]
 -j option specifies the number of parallel downloads.
 
+Using proxy
+^^^^^^^^^^^
+For HTTP:
+------------------------------------------------------
+aria2c --http-proxy=http://proxy:8080 http://host/file
+------------------------------------------------------
+For FTP:
+------------------------------------------------------
+aria2c --ftp-proxy=http://proxy:8080 ftp://host/file
+------------------------------------------------------
+
+[NOTE]
+See *--http-proxy*, *--https-proxy*, *--ftp-proxy* and *--all-proxy* for
+details.
+You can specify proxy in the environment variables. See ENVIRONMENT section.
+
+Proxy with authorization
+^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------------
+aria2c --http-proxy=http://username:password@proxy:8080 http://host/file
+------------------------------------------------------
+
 Metalink Download
 ~~~~~~~~~~~~~~~~~
 Download files with remote Metalink
