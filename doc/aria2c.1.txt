@@ -61,6 +61,13 @@ Basic Options
 
 HTTP/FTP Options
 ~~~~~~~~~~~~~~~~
+*--all-proxy*=PROXY::
+  Use this proxy server in the all protocols.
+  You can override this setting and specify a proxy server for particular
+  proctol using *--http-proxy*, *--https-proxy* and *--ftp-proxy* options.
+  This affects all URLs.
+  The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
+
 *--connect-timeout*=SEC::
   Set the connect timeout in seconds to establish connection to
   HTTP/FTP/proxy server. After the connection is established, this
@@ -86,8 +93,17 @@ HTTP/FTP Options
   Set number of tries. '0' means unlimited.
   Default: '5'
 
+*--no-proxy*=DOMAINS::
+  Specify comma separated hostnames or domains to which proxy should not be
+  used.
+
 *-o*, *--out*=FILE::
   The file name of the downloaded file.
+
+*--proxy-method*=METHOD::
+  Set the method to use in proxy request.
+  'METHOD' is either 'get' or 'tunnel'.
+  Default: 'tunnel'
 
 [NOTE]
 In Metalink, BitTorrent download you cannot specify file name.
@@ -147,6 +163,20 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
 
 HTTP Specific Options
 ~~~~~~~~~~~~~~~~~~~~~
+*--ca-certificate*=FILE::
+  Use the certificate authorities in FILE to verify the peers.
+  The certificate file must be in PEM format and can contain multiple CA
+  certificates.
+  Use *--check-certificate* option to enable verification.
+
+*--certificate*=FILE::
+  Use the client certificate in FILE.
+  The certificate must be in PEM format.
+  You may use *--private-key* option to specify the private key.
+
+*--check-certificate*[='true'|'false']::
+  Verify the peer using certificates specified in *--ca-certificate* option.
+
 *--http-auth-scheme*=SCHEME::
   Set HTTP authentication scheme.
   Currently, 'basic' is the only supported scheme.
@@ -158,19 +188,20 @@ HTTP Specific Options
 *--http-passwd*=PASSWD::
   Set HTTP password. This affects all URLs.
 
-*--http-proxy*=HOST:PORT::
-  Use HTTP proxy server. This affects all URLs.
+*--http-proxy*=PROXY::
+  Use this proxy server for HTTP. See also *--all-proxy* option.
+  This affects all URLs.
+  The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
 
-*--http-proxy-user*=USER::
-  Set HTTP proxy user. This affects all URLs.
+*--https-proxy*=PROXY::
+  Use this proxy server for HTTPS. See also *--all-proxy* option.
+  This affects all URLs.
+  The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
 
-*--http-proxy-passwd*=PASSWD::
-  Set HTTP proxy password. This affects all URLs.
-
-*--http-proxy-method*=METHOD::
-  Set the method to use in proxy request.
-  'METHOD' is either 'get' or 'tunnel'.
-  Default: 'tunnel'
+*--private-key*=FILE::
+  Use the private key in FILE.
+  The private key must be decrypted and in PEM format.
+  See also *--certificate* option.
 
 *--referer*=REFERER::
   Set Referer. This affects all URLs.
@@ -211,6 +242,11 @@ FTP Specific Options
 *-p*, *--ftp-pasv*::
   Use passive mode in FTP.
 
+*--ftp-proxy*=PROXY::
+  Use this proxy server for FTP. See also *--all-proxy* option.
+  This affects all URLs.
+  The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
+
 *--ftp-type*=TYPE::
   Set FTP transfer type. TYPE is either 'binary' or 'ascii'.
   Default: 'binary'
@@ -218,10 +254,6 @@ FTP Specific Options
 *--ftp-reuse-connection*[='true'|'false']::
   Reuse connection in FTP.
   Default: 'true'
-
-*--ftp-via-http-proxy*=METHOD::
-  Use HTTP proxy in FTP. METHOD is either 'get' or 'tunnel'.
-  Default: 'tunnel'
 
 *-n*, *--no-netrc*::
   Disables netrc support. netrc support is enabled by default.
@@ -850,6 +882,35 @@ ftp-pasv=true
 dht.dat
 ~~~~~~~~
 By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.
+
+ENVIRONMENT
+-----------
+aria2 recognizes the following environment variables.
+
+http_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
+  Specify proxy server for use in HTTP.
+  Overrides http-proxy value in configuration file.
+  The command-line option *--http-proxy* overrides this value.
+
+https_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
+  Specify proxy server for use in HTTPS.
+  Overrides https-proxy value in configuration file.
+  The command-line option *--https-proxy* overrides this value.
+
+ftp_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
+  Specify proxy server for use in FTP.
+  Overrides ftp-proxy value in configuration file.
+  The command-line option *--ftp-proxy* overrides this value.
+
+all_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
+  Specify proxy server for use if no protocol-specific proxy is specified.
+  Overrides all-proxy value in configuration file.
+  The command-line option *--all-proxy* overrides this value.
+
+no_proxy [DOMAIN,...]::
+  Specify comma-separated hostname or domains to which proxy should not be used.
+  Overrides no-proxy value in configuration file.
+  The command-line option *--no-proxy* overrides this value.
 
 RESOURCES
 ---------

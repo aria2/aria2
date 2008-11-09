@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 10/14/2008
+.\"      Date: 11/09/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "10/14/2008" "" ""
+.TH "ARIA2C" "1" "11/09/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -72,6 +72,16 @@ Default:
 .RE
 .SS "HTTP/FTP Options"
 .PP
+\fB\-\-all\-proxy\fR=PROXY
+.RS 4
+Use this proxy server in the all protocols\&. You can override this setting and specify a proxy server for particular proctol using
+\fB\-\-http\-proxy\fR,
+\fB\-\-https\-proxy\fR
+and
+\fB\-\-ftp\-proxy\fR
+options\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+.RE
+.PP
 \fB\-\-connect\-timeout\fR=SEC
 .RS 4
 Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server\&. After the connection is established, this option makes no effect and
@@ -107,9 +117,25 @@ means unlimited\&. Default:
 \fI5\fR
 .RE
 .PP
+\fB\-\-no\-proxy\fR=DOMAINS
+.RS 4
+Specify comma separated hostnames or domains to which proxy should not be used\&.
+.RE
+.PP
 \fB\-o\fR, \fB\-\-out\fR=FILE
 .RS 4
 The file name of the downloaded file\&.
+.RE
+.PP
+\fB\-\-proxy\-method\fR=METHOD
+.RS 4
+Set the method to use in proxy request\&.
+\fIMETHOD\fR
+is either
+\fIget\fR
+or
+\fItunnel\fR\&. Default:
+\fItunnel\fR
 .RE
 .sp
 .it 1 an-trap
@@ -191,6 +217,27 @@ options\&. Default:
 .RE
 .SS "HTTP Specific Options"
 .PP
+\fB\-\-ca\-certificate\fR=FILE
+.RS 4
+Use the certificate authorities in FILE to verify the peers\&. The certificate file must be in PEM format and can contain multiple CA certificates\&. Use
+\fB\-\-check\-certificate\fR
+option to enable verification\&.
+.RE
+.PP
+\fB\-\-certificate\fR=FILE
+.RS 4
+Use the client certificate in FILE\&. The certificate must be in PEM format\&. You may use
+\fB\-\-private\-key\fR
+option to specify the private key\&.
+.RE
+.PP
+\fB\-\-check\-certificate\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Verify the peer using certificates specified in
+\fB\-\-ca\-certificate\fR
+option\&.
+.RE
+.PP
 \fB\-\-http\-auth\-scheme\fR=SCHEME
 .RS 4
 Set HTTP authentication scheme\&. Currently,
@@ -209,30 +256,25 @@ Set HTTP user\&. This affects all URLs\&.
 Set HTTP password\&. This affects all URLs\&.
 .RE
 .PP
-\fB\-\-http\-proxy\fR=HOST:PORT
+\fB\-\-http\-proxy\fR=PROXY
 .RS 4
-Use HTTP proxy server\&. This affects all URLs\&.
+Use this proxy server for HTTP\&. See also
+\fB\-\-all\-proxy\fR
+option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
-\fB\-\-http\-proxy\-user\fR=USER
+\fB\-\-https\-proxy\fR=PROXY
 .RS 4
-Set HTTP proxy user\&. This affects all URLs\&.
+Use this proxy server for HTTPS\&. See also
+\fB\-\-all\-proxy\fR
+option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
-\fB\-\-http\-proxy\-passwd\fR=PASSWD
+\fB\-\-private\-key\fR=FILE
 .RS 4
-Set HTTP proxy password\&. This affects all URLs\&.
-.RE
-.PP
-\fB\-\-http\-proxy\-method\fR=METHOD
-.RS 4
-Set the method to use in proxy request\&.
-\fIMETHOD\fR
-is either
-\fIget\fR
-or
-\fItunnel\fR\&. Default:
-\fItunnel\fR
+Use the private key in FILE\&. The private key must be decrypted and in PEM format\&. See also
+\fB\-\-certificate\fR
+option\&.
 .RE
 .PP
 \fB\-\-referer\fR=REFERER
@@ -295,6 +337,13 @@ Set FTP password\&. This affects all URLs\&. Default:
 Use passive mode in FTP\&.
 .RE
 .PP
+\fB\-\-ftp\-proxy\fR=PROXY
+.RS 4
+Use this proxy server for FTP\&. See also
+\fB\-\-all\-proxy\fR
+option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+.RE
+.PP
 \fB\-\-ftp\-type\fR=TYPE
 .RS 4
 Set FTP transfer type\&. TYPE is either
@@ -308,15 +357,6 @@ or
 .RS 4
 Reuse connection in FTP\&. Default:
 \fItrue\fR
-.RE
-.PP
-\fB\-\-ftp\-via\-http\-proxy\fR=METHOD
-.RS 4
-Use HTTP proxy in FTP\&. METHOD is either
-\fIget\fR
-or
-\fItunnel\fR\&. Default:
-\fItunnel\fR
 .RE
 .PP
 \fB\-n\fR, \fB\-\-no\-netrc\fR
@@ -1351,6 +1391,43 @@ ftp\-pasv=true
 .SS "dht\&.dat"
 By default, the routing table of DHT is saved to the path $HOME/\&.aria2/dht\&.dat\&.
 .sp
+.SH "ENVIRONMENT"
+aria2 recognizes the following environment variables\&.
+.PP
+http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use in HTTP\&. Overrides http\-proxy value in configuration file\&. The command\-line option
+\fB\-\-http\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use in HTTPS\&. Overrides https\-proxy value in configuration file\&. The command\-line option
+\fB\-\-https\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use in FTP\&. Overrides ftp\-proxy value in configuration file\&. The command\-line option
+\fB\-\-ftp\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use if no protocol\-specific proxy is specified\&. Overrides all\-proxy value in configuration file\&. The command\-line option
+\fB\-\-all\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+no_proxy [DOMAIN,\&...]
+.RS 4
+Specify comma\-separated hostname or domains to which proxy should not be used\&. Overrides no\-proxy value in configuration file\&. The command\-line option
+\fB\-\-no\-proxy\fR
+overrides this value\&.
+.RE
 .SH "RESOURCES"
 Project web site: http://aria2\&.sourceforge\&.net/
 .sp

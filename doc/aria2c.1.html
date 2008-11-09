@@ -462,6 +462,18 @@ ARIA2C(1) Manual Page
 <h3 id="_http_ftp_options">HTTP/FTP Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
+<strong>--all-proxy</strong>=PROXY
+</dt>
+<dd>
+<p>
+  Use this proxy server in the all protocols.
+  You can override this setting and specify a proxy server for particular
+  proctol using <strong>--http-proxy</strong>, <strong>--https-proxy</strong> and <strong>--ftp-proxy</strong> options.
+  This affects all URLs.
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+</p>
+</dd>
+<dt>
 <strong>--connect-timeout</strong>=SEC
 </dt>
 <dd>
@@ -507,11 +519,30 @@ ARIA2C(1) Manual Page
 </p>
 </dd>
 <dt>
+<strong>--no-proxy</strong>=DOMAINS
+</dt>
+<dd>
+<p>
+  Specify comma separated hostnames or domains to which proxy should not be
+  used.
+</p>
+</dd>
+<dt>
 <strong>-o</strong>, <strong>--out</strong>=FILE
 </dt>
 <dd>
 <p>
   The file name of the downloaded file.
+</p>
+</dd>
+<dt>
+<strong>--proxy-method</strong>=METHOD
+</dt>
+<dd>
+<p>
+  Set the method to use in proxy request.
+  <em>METHOD</em> is either <em>get</em> or <em>tunnel</em>.
+  Default: <em>tunnel</em>
 </p>
 </dd>
 </dl></div>
@@ -621,6 +652,35 @@ aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</
 <h3 id="_http_specific_options">HTTP Specific Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
+<strong>--ca-certificate</strong>=FILE
+</dt>
+<dd>
+<p>
+  Use the certificate authorities in FILE to verify the peers.
+  The certificate file must be in PEM format and can contain multiple CA
+  certificates.
+  Use <strong>--check-certificate</strong> option to enable verification.
+</p>
+</dd>
+<dt>
+<strong>--certificate</strong>=FILE
+</dt>
+<dd>
+<p>
+  Use the client certificate in FILE.
+  The certificate must be in PEM format.
+  You may use <strong>--private-key</strong> option to specify the private key.
+</p>
+</dd>
+<dt>
+<strong>--check-certificate</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Verify the peer using certificates specified in <strong>--ca-certificate</strong> option.
+</p>
+</dd>
+<dt>
 <strong>--http-auth-scheme</strong>=SCHEME
 </dt>
 <dd>
@@ -647,37 +707,33 @@ aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</
 </p>
 </dd>
 <dt>
-<strong>--http-proxy</strong>=HOST:PORT
+<strong>--http-proxy</strong>=PROXY
 </dt>
 <dd>
 <p>
-  Use HTTP proxy server. This affects all URLs.
+  Use this proxy server for HTTP. See also <strong>--all-proxy</strong> option.
+  This affects all URLs.
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt>
-<strong>--http-proxy-user</strong>=USER
+<strong>--https-proxy</strong>=PROXY
 </dt>
 <dd>
 <p>
-  Set HTTP proxy user. This affects all URLs.
+  Use this proxy server for HTTPS. See also <strong>--all-proxy</strong> option.
+  This affects all URLs.
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt>
-<strong>--http-proxy-passwd</strong>=PASSWD
+<strong>--private-key</strong>=FILE
 </dt>
 <dd>
 <p>
-  Set HTTP proxy password. This affects all URLs.
-</p>
-</dd>
-<dt>
-<strong>--http-proxy-method</strong>=METHOD
-</dt>
-<dd>
-<p>
-  Set the method to use in proxy request.
-  <em>METHOD</em> is either <em>get</em> or <em>tunnel</em>.
-  Default: <em>tunnel</em>
+  Use the private key in FILE.
+  The private key must be decrypted and in PEM format.
+  See also <strong>--certificate</strong> option.
 </p>
 </dd>
 <dt>
@@ -773,6 +829,16 @@ aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</
 </p>
 </dd>
 <dt>
+<strong>--ftp-proxy</strong>=PROXY
+</dt>
+<dd>
+<p>
+  Use this proxy server for FTP. See also <strong>--all-proxy</strong> option.
+  This affects all URLs.
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+</p>
+</dd>
+<dt>
 <strong>--ftp-type</strong>=TYPE
 </dt>
 <dd>
@@ -788,15 +854,6 @@ aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</
 <p>
   Reuse connection in FTP.
   Default: <em>true</em>
-</p>
-</dd>
-<dt>
-<strong>--ftp-via-http-proxy</strong>=METHOD
-</dt>
-<dd>
-<p>
-  Use HTTP proxy in FTP. METHOD is either <em>get</em> or <em>tunnel</em>.
-  Default: <em>tunnel</em>
 </p>
 </dd>
 <dt>
@@ -1787,6 +1844,62 @@ ftp-pasv=true</tt></pre>
 <h3 id="_dht_dat">dht.dat</h3><div style="clear:left"></div>
 <div class="para"><p>By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p></div>
 </div>
+<h2 id="_environment">ENVIRONMENT</h2>
+<div class="sectionbody">
+<div class="para"><p>aria2 recognizes the following environment variables.</p></div>
+<div class="vlist"><dl>
+<dt>
+http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use in HTTP.
+  Overrides http-proxy value in configuration file.
+  The command-line option <strong>--http-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use in HTTPS.
+  Overrides https-proxy value in configuration file.
+  The command-line option <strong>--https-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use in FTP.
+  Overrides ftp-proxy value in configuration file.
+  The command-line option <strong>--ftp-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use if no protocol-specific proxy is specified.
+  Overrides all-proxy value in configuration file.
+  The command-line option <strong>--all-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+no_proxy [DOMAIN,&#8230;]
+</dt>
+<dd>
+<p>
+  Specify comma-separated hostname or domains to which proxy should not be used.
+  Overrides no-proxy value in configuration file.
+  The command-line option <strong>--no-proxy</strong> overrides this value.
+</p>
+</dd>
+</dl></div>
+</div>
 <h2 id="_resources">RESOURCES</h2>
 <div class="sectionbody">
 <div class="para"><p>Project web site: <a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a></p></div>
@@ -1829,7 +1942,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-10-14 22:14:48 JST
+Last updated 2008-11-09 17:57:01 JST
 </div>
 </div>
 </body>

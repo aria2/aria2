@@ -1,5 +1,10 @@
 2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page
+	* doc/aria2c.1.txt
+
+2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --no-proxy option. It receives comman separated hostname or
 	domains to which proxy should not be used.
 	aria2 honors the environment variable no_proxy to override no-proxy
