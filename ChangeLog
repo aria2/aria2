@@ -1,5 +1,10 @@
 2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.0.0a.
+	* configure.ac
+
+2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated configure.ac
 	* configure.ac
 
