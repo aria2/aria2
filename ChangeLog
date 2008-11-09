@@ -1,5 +1,10 @@
 2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated configure.ac
+	* configure.ac
+
+2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added usege for proxy.
 	* doc/aria2c.1.txt
 

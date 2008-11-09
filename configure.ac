@@ -106,7 +106,11 @@ fi
 # Define variables based on the result of the checks for libraries.
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
+  AM_CONDITIONAL([ENABLE_SSL], true)
 fi
+
+AM_CONDITIONAL([HAVE_LIBGNUTLS], [ test "x$have_libgnutls" = "xyes" ])
+AM_CONDITIONAL([HAVE_LIBSSL], [ test "x$have_openssl" = "xyes" ])
 
 if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1],

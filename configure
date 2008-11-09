@@ -742,6 +742,12 @@ LIBARES_LIBS
 LIBARES_CPPFLAGS
 LIBZ_LIBS
 LIBZ_CPPFLAGS
+ENABLE_SSL_TRUE
+ENABLE_SSL_FALSE
+HAVE_LIBGNUTLS_TRUE
+HAVE_LIBGNUTLS_FALSE
+HAVE_LIBSSL_TRUE
+HAVE_LIBSSL_FALSE
 ENABLE_MESSAGE_DIGEST_TRUE
 ENABLE_MESSAGE_DIGEST_FALSE
 ENABLE_BITTORRENT_TRUE
@@ -7457,7 +7463,32 @@ cat >>confdefs.h <<\_ACEOF
 #define ENABLE_SSL 1
 _ACEOF
 
+   if true; then
+  ENABLE_SSL_TRUE=
+  ENABLE_SSL_FALSE='#'
+else
+  ENABLE_SSL_TRUE='#'
+  ENABLE_SSL_FALSE=
 fi
+
+fi
+
+ if  test "x$have_libgnutls" = "xyes" ; then
+  HAVE_LIBGNUTLS_TRUE=
+  HAVE_LIBGNUTLS_FALSE='#'
+else
+  HAVE_LIBGNUTLS_TRUE='#'
+  HAVE_LIBGNUTLS_FALSE=
+fi
+
+ if  test "x$have_openssl" = "xyes" ; then
+  HAVE_LIBSSL_TRUE=
+  HAVE_LIBSSL_FALSE='#'
+else
+  HAVE_LIBSSL_TRUE='#'
+  HAVE_LIBSSL_FALSE=
+fi
+
 
 if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
 
@@ -22175,6 +22206,27 @@ echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${ENABLE_SSL_TRUE}" && test -z "${ENABLE_SSL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_SSL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLE_SSL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_LIBGNUTLS_TRUE}" && test -z "${HAVE_LIBGNUTLS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_LIBGNUTLS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_LIBGNUTLS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_LIBSSL_TRUE}" && test -z "${HAVE_LIBSSL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_LIBSSL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_LIBSSL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${ENABLE_MESSAGE_DIGEST_TRUE}" && test -z "${ENABLE_MESSAGE_DIGEST_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"ENABLE_MESSAGE_DIGEST\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -23111,6 +23163,12 @@ LIBARES_LIBS!$LIBARES_LIBS$ac_delim
 LIBARES_CPPFLAGS!$LIBARES_CPPFLAGS$ac_delim
 LIBZ_LIBS!$LIBZ_LIBS$ac_delim
 LIBZ_CPPFLAGS!$LIBZ_CPPFLAGS$ac_delim
+ENABLE_SSL_TRUE!$ENABLE_SSL_TRUE$ac_delim
+ENABLE_SSL_FALSE!$ENABLE_SSL_FALSE$ac_delim
+HAVE_LIBGNUTLS_TRUE!$HAVE_LIBGNUTLS_TRUE$ac_delim
+HAVE_LIBGNUTLS_FALSE!$HAVE_LIBGNUTLS_FALSE$ac_delim
+HAVE_LIBSSL_TRUE!$HAVE_LIBSSL_TRUE$ac_delim
+HAVE_LIBSSL_FALSE!$HAVE_LIBSSL_FALSE$ac_delim
 ENABLE_MESSAGE_DIGEST_TRUE!$ENABLE_MESSAGE_DIGEST_TRUE$ac_delim
 ENABLE_MESSAGE_DIGEST_FALSE!$ENABLE_MESSAGE_DIGEST_FALSE$ac_delim
 ENABLE_BITTORRENT_TRUE!$ENABLE_BITTORRENT_TRUE$ac_delim
@@ -23175,12 +23233,6 @@ LIBINTL!$LIBINTL$ac_delim
 LTLIBINTL!$LTLIBINTL$ac_delim
 POSUB!$POSUB$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
-HAVE_ASCTIME_R_TRUE!$HAVE_ASCTIME_R_TRUE$ac_delim
-HAVE_ASCTIME_R_FALSE!$HAVE_ASCTIME_R_FALSE$ac_delim
-HAVE_BASENAME_TRUE!$HAVE_BASENAME_TRUE$ac_delim
-HAVE_BASENAME_FALSE!$HAVE_BASENAME_FALSE$ac_delim
-HAVE_GAI_STRERROR_TRUE!$HAVE_GAI_STRERROR_TRUE$ac_delim
-HAVE_GAI_STRERROR_FALSE!$HAVE_GAI_STRERROR_FALSE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -23222,6 +23274,12 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+HAVE_ASCTIME_R_TRUE!$HAVE_ASCTIME_R_TRUE$ac_delim
+HAVE_ASCTIME_R_FALSE!$HAVE_ASCTIME_R_FALSE$ac_delim
+HAVE_BASENAME_TRUE!$HAVE_BASENAME_TRUE$ac_delim
+HAVE_BASENAME_FALSE!$HAVE_BASENAME_FALSE$ac_delim
+HAVE_GAI_STRERROR_TRUE!$HAVE_GAI_STRERROR_TRUE$ac_delim
+HAVE_GAI_STRERROR_FALSE!$HAVE_GAI_STRERROR_FALSE$ac_delim
 HAVE_GETADDRINFO_TRUE!$HAVE_GETADDRINFO_TRUE$ac_delim
 HAVE_GETADDRINFO_FALSE!$HAVE_GETADDRINFO_FALSE$ac_delim
 HAVE_GETTIMEOFDAY_TRUE!$HAVE_GETTIMEOFDAY_TRUE$ac_delim
@@ -23237,7 +23295,7 @@ HAVE_TIMEGM_FALSE!$HAVE_TIMEGM_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 13; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 19; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
