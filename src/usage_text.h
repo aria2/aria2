@@ -407,3 +407,6 @@ _(" --ca-certificate=FILE        Use the certificate authorities in FILE to veri
 #define TEXT_CHECK_CERTIFICATE \
 _(" --check-certificate[=true|false] Verify the peer using certificates specified\n"\
   "                              in --ca-certificate option.")
+#define TEXT_NO_PROXY \
+_(" --no-proxy=DOMAINS           Specify comma separated hostnames or domains to\n"\
+  "                              which proxy should not be used.")

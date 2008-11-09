@@ -186,6 +186,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_PRIVATE_KEY.c_str(), required_argument, &lopt, 232 },
       { PREF_CA_CERTIFICATE.c_str(), optional_argument, &lopt, 233 },
       { PREF_CHECK_CERTIFICATE.c_str(), optional_argument, &lopt, 234 },
+      { PREF_NO_PROXY.c_str(), required_argument, &lopt, 235 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -466,6 +467,9 @@ Option* option_processing(int argc, char* const argv[])
       case 234:
 	cmdstream << PREF_CHECK_CERTIFICATE << "=" << toBoolArg(optarg) << "\n";
 	break;
+      case 235:
+	cmdstream << PREF_NO_PROXY << "=" << optarg << "\n";
+	break;
       }
       break;
     }
@@ -593,6 +597,7 @@ Option* option_processing(int argc, char* const argv[])
     overrideWithEnv(op, oparser, PREF_HTTPS_PROXY, "https_proxy");
     overrideWithEnv(op, oparser, PREF_FTP_PROXY, "ftp_proxy");
     overrideWithEnv(op, oparser, PREF_ALL_PROXY, "all_proxy");
+    overrideWithEnv(op, oparser, PREF_NO_PROXY, "no_proxy");
 
     try {
       oparser.parse(op, cmdstream);

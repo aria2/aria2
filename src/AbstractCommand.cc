@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "AbstractCommand.h"
+
+#include <algorithm>
+
 #include "RequestGroup.h"
 #include "Request.h"
 #include "DownloadEngine.h"
@@ -58,6 +61,7 @@
 #include "ServerStat.h"
 #include "RequestGroupMan.h"
 #include "A2STR.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -329,9 +333,39 @@ static bool isProxyGETRequest(const std::string& protocol, const Option* option)
   return isProxyRequest(protocol, option);
 }
 
+class DomainMatch {
+private:
+  std::string _hostname;
+public:
+  DomainMatch(const std::string& hostname):_hostname(hostname) {}
+
+  bool operator()(const std::string& domain) const
+  {
+    if(Util::startsWith(domain, ".")) {
+      return Util::endsWith(_hostname, domain);
+    } else {
+      return Util::endsWith(_hostname, "."+domain);
+    }
+  }
+};
+
+static bool inNoProxy(const SharedHandle<Request>& req,
+		      const std::string& noProxy)
+{
+  std::deque<std::string> entries;
+  Util::slice(entries, noProxy, ',', true);
+  if(entries.empty()) {
+    return false;
+  }
+  return
+    std::find_if(entries.begin(), entries.end(),
+		 DomainMatch("."+req->getHost())) != entries.end();
+}
+
 bool AbstractCommand::isProxyDefined() const
 {
-  return isProxyRequest(req->getProtocol(), e->option);
+  return isProxyRequest(req->getProtocol(), e->option) &&
+    !inNoProxy(req, e->option->get(PREF_NO_PROXY));
 }
 
 static const std::string& getProxyString(const SharedHandle<Request>& req,
@@ -351,6 +385,9 @@ static const std::string& getProxyString(const SharedHandle<Request>& req,
 SharedHandle<Request> AbstractCommand::createProxyRequest() const
 {
   SharedHandle<Request> proxyRequest;
+  if(inNoProxy(req, e->option->get(PREF_NO_PROXY))) {
+    return proxyRequest;
+  }
   std::string proxy = getProxyString(req, e->option);
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());

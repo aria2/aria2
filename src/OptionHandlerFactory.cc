@@ -637,6 +637,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_NO_PROXY,
+				    TEXT_NO_PROXY));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_PROXY_METHOD,
 				    TEXT_PROXY_METHOD,

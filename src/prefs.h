@@ -200,6 +200,8 @@ extern const std::string PREF_HTTP_PROXY;
 extern const std::string PREF_HTTPS_PROXY;
 extern const std::string PREF_FTP_PROXY;
 extern const std::string PREF_ALL_PROXY;
+// values: comma separeted hostname or domain
+extern const std::string PREF_NO_PROXY;
 // values: get | tunnel
 extern const std::string PREF_PROXY_METHOD;
 extern const std::string V_GET;
