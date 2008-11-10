@@ -132,10 +132,8 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     numWant = 0;
   }
   TransferStat stat = peerStorage->calculateStat();
-  uint64_t left = pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
-  if(left < 0) {
-    left = 0;
-  }
+  uint64_t left =
+    pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
   std::string url = announceList.getAnnounce()+
     "?info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
 					btContext->getInfoHashLength())+

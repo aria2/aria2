@@ -1,5 +1,10 @@
 2008-11-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused code.
+	* src/DefaultBtAnnounce.cc
+
+2008-11-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that DefaultPieceStorage::getCompletedLength() returns
 	the value larger than DefaultPieceStorage::getTotalLength() when
 	in flight pieces are involved.
