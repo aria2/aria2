@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "DefaultPieceStorage.h"
+
+#include <numeric>
+#include <algorithm>
+
 #include "DownloadContext.h"
 #include "Piece.h"
 #include "Peer.h"
@@ -54,8 +58,6 @@
 #include "Option.h"
 #include "StringFormat.h"
 #include "RarestPieceSelector.h"
-#include <numeric>
-#include <algorithm>
 
 namespace aria2 {
 
@@ -392,7 +394,13 @@ uint64_t DefaultPieceStorage::getFilteredTotalLength()
 
 uint64_t DefaultPieceStorage::getCompletedLength()
 {
-  return bitfieldMan->getCompletedLength()+getInFlightPieceCompletedLength();
+  uint64_t completedLength =
+    bitfieldMan->getCompletedLength()+getInFlightPieceCompletedLength();
+  uint64_t totalLength = getTotalLength();
+  if(completedLength > totalLength) {
+    completedLength = totalLength;
+  }
+  return completedLength;
 }
 
 uint64_t DefaultPieceStorage::getFilteredCompletedLength()

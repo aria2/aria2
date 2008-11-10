@@ -1,4 +1,7 @@
 #include "DefaultPieceStorage.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "DefaultBtContext.h"
 #include "Util.h"
 #include "Exception.h"
@@ -9,7 +12,6 @@
 #include "Option.h"
 #include "FileEntry.h"
 #include "MockBtContext.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -28,6 +30,7 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetPieceCompletedPiece);
   CPPUNIT_TEST(testCancelPiece);
   CPPUNIT_TEST(testMarkPiecesDone);
+  CPPUNIT_TEST(testGetCompletedLength);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<BtContext> btContext;
@@ -68,6 +71,7 @@ public:
   void testGetPieceCompletedPiece();
   void testCancelPiece();
   void testMarkPiecesDone();
+  void testGetCompletedLength();
 };
 
 
@@ -266,6 +270,37 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
   for(size_t i = 0; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
     CPPUNIT_ASSERT(ps.hasPiece(i));
   }
+}
+
+void DefaultPieceStorageTest::testGetCompletedLength()
+{
+  SharedHandle<MockBtContext> dctx(new MockBtContext());
+  dctx->setPieceLength(1024*1024);
+  dctx->setTotalLength(256*1024*1024);
+  
+  DefaultPieceStorage ps(dctx, option);
+  
+  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getCompletedLength());
+
+  ps.markPiecesDone(250*1024*1024);
+  CPPUNIT_ASSERT_EQUAL((size_t)250*1024*1024, ps.getCompletedLength());
+
+  std::deque<SharedHandle<Piece> > inFlightPieces;
+  for(int i = 0; i < 2; ++i) {
+    SharedHandle<Piece> p(new Piece(250+i, 1024*1024));
+    for(int j = 0; j < 32; ++j) {
+      p->completeBlock(j);
+    }
+    inFlightPieces.push_back(p);
+    CPPUNIT_ASSERT_EQUAL((size_t)512*1024, p->getCompletedLength());
+  }
+  ps.addInFlightPiece(inFlightPieces);
+  
+  CPPUNIT_ASSERT_EQUAL((size_t)251*1024*1024, ps.getCompletedLength());
+
+  ps.markPiecesDone(256*1024*1024);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)256*1024*1024, ps.getCompletedLength());
 }
 
 } // namespace aria2
