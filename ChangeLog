@@ -1,3 +1,11 @@
+2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that metalink file is not processed if Content-Type
+	field has a paramter.
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* test/HttpResponseTest.cc
+
 2008-11-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused code.

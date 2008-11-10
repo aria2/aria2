@@ -122,9 +122,10 @@ void HttpResponseTest::testGetContentType()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->put("content-type", "application/octet-stream");
+  httpHeader->put("content-type", "application/metalink+xml; charset=UTF-8");
   httpResponse.setHttpHeader(httpHeader);
-  CPPUNIT_ASSERT_EQUAL(std::string("application/octet-stream"),
+  // See paramter is ignored.
+  CPPUNIT_ASSERT_EQUAL(std::string("application/metalink+xml"),
 		       httpResponse.getContentType());
 }
 

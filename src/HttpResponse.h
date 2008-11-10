@@ -97,6 +97,7 @@ public:
 
   uint64_t getEntityLength() const;
 
+  // Returns type "/" subtype. The parameter is removed.
   std::string getContentType() const;
 
   void setHttpHeader(const SharedHandle<HttpHeader>& httpHeader);

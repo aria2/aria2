@@ -212,7 +212,8 @@ std::string HttpResponse::getContentType() const
   if(httpHeader.isNull()) {
     return A2STR::NIL;
   } else {
-    return httpHeader->getFirst(HttpHeader::CONTENT_TYPE);
+    return
+      Util::split(httpHeader->getFirst(HttpHeader::CONTENT_TYPE), ";").first;
   }
 }
 
