@@ -52,11 +52,11 @@ void CookieParserTest::testParse()
   c = CookieParser().parse(str3);
   CPPUNIT_ASSERT(!c.good());
 
-  std::string str4 = "UID=300; expires=Wed, 01-Jan-1890 00:00:00 GMT";
+  std::string str4 = "UID=300; expires=Wed, 01-Jan-1960 00:00:00 GMT";
   c = CookieParser().parse(str4, "localhost", "/");
   CPPUNIT_ASSERT(c.good());
   CPPUNIT_ASSERT(!c.isSessionCookie());
-  CPPUNIT_ASSERT_EQUAL((time_t)-2524521600, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL((time_t)-315619200, c.getExpiry());
 
   std::string str5 = "k=v; expires=Sun, 10-Jun-07 11:00:00 GMT";
   c = CookieParser().parse(str5);

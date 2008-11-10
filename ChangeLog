@@ -1,5 +1,10 @@
 2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed unit test fails on 32bit platforms.
+	* test/CookieParserTest.cc
+
+2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Show an average download speed in Download results.
 	* src/BtFileAllocationEntry.cc
 	* src/DefaultPieceStorage.cc
