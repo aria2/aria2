@@ -33,11 +33,14 @@
  */
 /* copyright --> */
 #include "BtFileAllocationEntry.h"
+
+#include <algorithm>
+
 #include "BtSetup.h"
 #include "RequestGroup.h"
 #include "Command.h"
 #include "DownloadEngine.h"
-#include <algorithm>
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -51,6 +54,7 @@ void BtFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
 {
   BtSetup().setup(commands, _requestGroup, e, e->option);
   if(!_requestGroup->downloadFinished()) {
+    _requestGroup->getDownloadContext()->resetDownloadStartTime();
     _requestGroup->createNextCommandWithAdj(commands, e, 0);
   }
 }

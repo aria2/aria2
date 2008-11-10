@@ -335,6 +335,7 @@ void DefaultPieceStorage::completePiece(const PieceHandle& piece)
   bitfieldMan->unsetUseBit(piece->getIndex());
   addPieceStats(piece->getIndex());
   if(downloadFinished()) {
+    downloadContext->resetDownloadStopTime();
     diskAdaptor->onDownloadComplete();
     if(isSelectiveDownloadingMode()) {
       logger->notice(MSG_SELECTIVE_DOWNLOAD_COMPLETED);

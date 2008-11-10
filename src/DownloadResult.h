@@ -60,6 +60,10 @@ public:
 
   size_t numUri;
 
+  uint64_t sessionDownloadLength;
+
+  int64_t sessionTime;
+
   RESULT result;
 
   DownloadResult(int32_t gid,
@@ -67,12 +71,16 @@ public:
 		 uint64_t totalLength,
 		 const std::string& uri,
 		 size_t numUri,
+		 uint64_t sessionDownloadLength,
+		 int64_t sessionTime,
 		 RESULT result):
     gid(gid),
     filePath(filePath),
     totalLength(totalLength),
     uri(uri),
     numUri(numUri),
+    sessionDownloadLength(sessionDownloadLength),
+    sessionTime(sessionTime),
     result(result) {}
 };
 

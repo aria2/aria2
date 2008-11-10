@@ -36,7 +36,10 @@
 
 namespace aria2 {
 
-DownloadContext::DownloadContext():_dir(".") {}
+DownloadContext::DownloadContext():
+  _dir("."),
+  _downloadStartTime(0),
+  _downloadStopTime(_downloadStartTime) {}
 
 DownloadContext::~DownloadContext() {}
 
@@ -58,6 +61,26 @@ SharedHandle<Signature> DownloadContext::getSignature() const
 void DownloadContext::setSignature(const SharedHandle<Signature>& signature)
 {
   _signature = signature;
+}
+
+void DownloadContext::resetDownloadStartTime()
+{
+  _downloadStartTime.reset();
+}
+
+void DownloadContext::resetDownloadStopTime()
+{
+  _downloadStopTime.reset();
+}
+
+int64_t DownloadContext::calculateSessionTime() const
+{
+  if(_downloadStopTime.isNewer(_downloadStartTime)) {
+    return
+      _downloadStopTime.getTimeInMillis()-_downloadStartTime.getTimeInMillis();
+  } else {
+    return 0;
+  }
 }
 
 } // namespace aria2

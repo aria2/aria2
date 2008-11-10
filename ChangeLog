@@ -1,5 +1,17 @@
 2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Show an average download speed in Download results.
+	* src/BtFileAllocationEntry.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/DownloadResult.h
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/StreamFileAllocationEntry.cc
+	
+2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that metalink file is not processed if Content-Type
 	field has a paramter.
 	* src/HttpResponse.cc

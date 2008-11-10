@@ -877,15 +877,32 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 {
   std::deque<std::string> uris;
   getURIs(uris);
+
+  uint64_t sessionDownloadLength = 0;
+
+#ifdef ENABLE_BITTORRENT
+  if(!_peerStorage.isNull()) {
+    sessionDownloadLength =
+      _peerStorage->calculateStat().getSessionDownloadLength();
+  } else
+#endif // ENABLE_BITTORRENT
+    if(!_segmentMan.isNull()) {
+      sessionDownloadLength =
+	_segmentMan->calculateSessionDownloadLength();
+    }
+
   return
-    SharedHandle<DownloadResult>(new DownloadResult(_gid,
-						    getFilePath(),
-						    getTotalLength(),
-						    uris.empty() ? A2STR::NIL:uris.front(),
-						    uris.size(),
-						    downloadFinished()?
-						    DownloadResult::FINISHED :
-						    DownloadResult::NOT_YET));
+    SharedHandle<DownloadResult>
+    (new DownloadResult(_gid,
+			getFilePath(),
+			getTotalLength(),
+			uris.empty() ? A2STR::NIL:uris.front(),
+			uris.size(),
+			sessionDownloadLength,
+			_downloadContext->calculateSessionTime(),
+			downloadFinished()?
+			DownloadResult::FINISHED :
+			DownloadResult::NOT_YET));
 }
 
 void RequestGroup::registerServerHost(const ServerHostHandle& serverHost)

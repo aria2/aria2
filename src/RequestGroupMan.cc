@@ -33,6 +33,14 @@
  */
 /* copyright --> */
 #include "RequestGroupMan.h"
+
+#include <iomanip>
+#include <sstream>
+#include <ostream>
+#include <fstream>
+#include <numeric>
+#include <algorithm>
+
 #include "BtProgressInfoFile.h"
 #include "RecoverableException.h"
 #include "RequestGroup.h"
@@ -52,12 +60,7 @@
 #include "Option.h"
 #include "prefs.h"
 #include "File.h"
-#include <iomanip>
-#include <sstream>
-#include <ostream>
-#include <fstream>
-#include <numeric>
-#include <algorithm>
+#include "Util.h"
 
 namespace aria2 {
 
@@ -384,8 +387,8 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   // ===+====+=======================================================================
   o << "\n"
     <<_("Download Results:") << "\n"
-    << "gid|stat|path/URI" << "\n"
-    << "===+====+======================================================================" << "\n";
+    << "gid|stat|avg speed  |path/URI" << "\n"
+    << "===+====+===========+==========================================================" << "\n";
 
   int ok = 0;
   int err = 0;
@@ -411,6 +414,12 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
       status = MARK_OK;
       ++ok;
     } else {
+      // Since this RequestGroup is not processed by ProcessStoppedRequestGroup,
+      // its download stop time is not reseted.
+      // Reset download stop time and assign sessionTime here.
+      (*itr)->getDownloadContext()->resetDownloadStopTime();
+      result->sessionTime =
+	(*itr)->getDownloadContext()->calculateSessionTime();
       status = MARK_INPR;
       ++inpr;
     }
@@ -437,7 +446,16 @@ std::string RequestGroupMan::formatDownloadResult(const std::string& status, con
 {
   std::stringstream o;
   o << std::setw(3) << downloadResult->gid << "|"
-    << std::setw(4) << status << "|";
+    << std::setw(4) << status << "|"
+    << std::setw(11);
+  if(downloadResult->sessionTime > 0) {
+    o << Util::abbrevSize
+      (downloadResult->sessionDownloadLength*1000/downloadResult->sessionTime)+
+      "B/s";
+  } else {
+    o << "n/a";
+  }
+  o << "|";
   if(downloadResult->result == DownloadResult::FINISHED) {
     o << downloadResult->filePath;
   } else {

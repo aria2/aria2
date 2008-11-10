@@ -42,6 +42,7 @@
 #include "prefs.h"
 #include "RequestGroup.h"
 #include "InitiateConnectionCommandFactory.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -57,6 +58,7 @@ StreamFileAllocationEntry::~StreamFileAllocationEntry() {}
 void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
 						     DownloadEngine* e)
 {
+  _requestGroup->getDownloadContext()->resetDownloadStartTime();
   if(_nextCommand) {
     // give _nextCommand a chance to execute in the next execution loop.
     _nextCommand->setStatus(Command::STATUS_ONESHOT_REALTIME);

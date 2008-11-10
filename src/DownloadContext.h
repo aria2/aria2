@@ -36,10 +36,13 @@
 #define _D_DOWNLOAD_CONTEXT_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "Signature.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
+#include "Signature.h"
+#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -51,8 +54,11 @@ protected:
   std::string _dir;
 
 private:
-  SharedHandle<Signature> _signature;
+  Time _downloadStartTime;
 
+  Time _downloadStopTime;
+
+  SharedHandle<Signature> _signature;
 public:
   DownloadContext();
 
@@ -98,6 +104,12 @@ public:
   SharedHandle<Signature> getSignature() const;
 
   void setSignature(const SharedHandle<Signature>& signature);
+
+  void resetDownloadStartTime();
+
+  void resetDownloadStopTime();
+
+  int64_t calculateSessionTime() const;
 };
 
 typedef SharedHandle<DownloadContext> DownloadContextHandle;
