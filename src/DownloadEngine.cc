@@ -414,6 +414,7 @@ void AsyncNameResolverEntry::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 _haltRequested(false),
 				 _noWait(false),
+				 _refreshInterval(DEFAULT_REFRESH_INTERVAL),
 				 _cookieStorage(new CookieStorage()),
 				 _btRegistry(new BtRegistry()),
 				 _dnsCache(new SimpleDNSCache())
@@ -490,7 +491,8 @@ void DownloadEngine::run() {
   Time cp;
   cp.setTimeInSec(0);
   while(!commands.empty() || !_routineCommands.empty()) {
-    if(cp.elapsed(1)) {
+    if(cp.elapsed(_refreshInterval)) {
+      _refreshInterval = DEFAULT_REFRESH_INTERVAL;
       cp.reset();
       executeCommand(commands, Command::STATUS_ALL);
     } else {
@@ -1122,6 +1124,11 @@ void DownloadEngine::setAuthConfigFactory
 SharedHandle<AuthConfigFactory> DownloadEngine::getAuthConfigFactory() const
 {
   return _authConfigFactory;
+}
+
+void DownloadEngine::setRefreshInterval(time_t interval)
+{
+  _refreshInterval = interval;
 }
 
 } // namespace aria2

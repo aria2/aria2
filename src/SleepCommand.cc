@@ -39,8 +39,11 @@
 
 namespace aria2 {
 
-SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, time_t wait):
-  Command(cuid), engine(e), nextCommand(nextCommand), wait(wait) {}
+SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e,
+			   RequestGroup* requestGroup,
+			   Command* nextCommand, time_t wait):
+  Command(cuid), engine(e), _requestGroup(requestGroup),
+  nextCommand(nextCommand), wait(wait) {}
 
 SleepCommand::~SleepCommand() {
   if(nextCommand) {
@@ -49,7 +52,9 @@ SleepCommand::~SleepCommand() {
 }
 
 bool SleepCommand::execute() {
-  if(checkPoint.elapsed(wait) || isHaltRequested()) {
+  if(_requestGroup->downloadFinished() || _requestGroup->isHaltRequested()) {
+    return true;
+  } else if(checkPoint.elapsed(wait)) {
     engine->commands.push_back(nextCommand);
     nextCommand = 0;
     return true;
@@ -57,20 +62,6 @@ bool SleepCommand::execute() {
     engine->commands.push_back(this);
     return false;
   }
-}
-
-bool SleepCommand::isHaltRequested() const
-{
-  if(engine->isHaltRequested()) {
-    return true;
-  }
-  RequestGroupAware* requestGroupAware = dynamic_cast<RequestGroupAware*>(nextCommand);
-  if(requestGroupAware) {
-    if(requestGroupAware->getRequestGroup()->isHaltRequested()) {
-      return true;
-    }
-  }
-  return false;
 }
 
 } // namespace aria2

@@ -41,18 +41,18 @@
 namespace aria2 {
 
 class DownloadEngine;
+class RequestGroup;
 
 class SleepCommand:public Command {
 private:
   DownloadEngine* engine;
+  RequestGroup* _requestGroup;
   Command* nextCommand;
   time_t wait;
   Time checkPoint;
-
-  bool isHaltRequested() const;
-
 public:
-  SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, time_t wait);
+  SleepCommand(int32_t cuid, DownloadEngine* e, RequestGroup* requestGroup,
+	       Command* nextCommand, time_t wait);
   virtual ~SleepCommand();
   bool execute();
 };

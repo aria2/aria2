@@ -209,7 +209,8 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
     e->setNoWait(true);
     e->commands.push_back(command);
   } else {
-    SleepCommand* scom = new SleepCommand(cuid, e, command, wait);
+    SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup,
+					  command, wait);
     e->commands.push_back(scom);
   }
   return true;

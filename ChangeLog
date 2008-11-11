@@ -1,3 +1,13 @@
+2008-11-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Quickly terminate idle commands when download finished.
+	* src/AbstractCommand.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/SleepCommand.cc
+	* src/SleepCommand.h
+
 2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added the ability to specify output filename and directory in input

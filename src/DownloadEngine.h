@@ -296,6 +296,10 @@ private:
 
   bool _noWait;
 
+  static const time_t DEFAULT_REFRESH_INTERVAL = 1;
+
+  time_t _refreshInterval;
+
   std::deque<Command*> _routineCommands;
 
   SharedHandle<CookieStorage> _cookieStorage;
@@ -444,6 +448,8 @@ public:
   void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
 
   SharedHandle<AuthConfigFactory> getAuthConfigFactory() const;
+
+  void setRefreshInterval(time_t interval);
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

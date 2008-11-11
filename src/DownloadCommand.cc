@@ -258,6 +258,8 @@ bool DownloadCommand::prepareForNextSegment() {
 	new CheckIntegrityCommand(e->newCUID(), _requestGroup, e, entry);
       e->commands.push_back(command);
     }
+    e->setNoWait(true);
+    e->setRefreshInterval(0);
 #endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
