@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 11/09/2008
+.\"      Date: 11/11/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "11/09/2008" "" ""
+.TH "ARIA2C" "1" "11/11/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -42,7 +42,11 @@ is specified, log is written to stdout\&.
 .PP
 \fB\-j\fR, \fB\-\-max\-concurrent\-downloads\fR=N
 .RS 4
-Set maximum number of parallel downloads for every static (HTTP/FTP) URL, torrent and metalink\&. Default:
+Set maximum number of parallel downloads for every static (HTTP/FTP) URL, torrent and metalink\&. See also
+\fB\-s\fR
+and
+\fB\-C\fR
+option\&. Default:
 \fI5\fR
 .RE
 .PP
@@ -189,7 +193,9 @@ Download a file using N connections\&. If more than N URLs are given, first N UR
 and
 \fI16\fR\&. Please see
 \fB\-j\fR
-option too\&. Default:
+option too\&. Please note that in Metalink download, this option has no effect and use
+\fB\-C\fR
+option instead\&. Default:
 \fI5\fR
 .RE
 .PP
@@ -556,7 +562,11 @@ The file path to \&.metalink file\&. You may not use this option because you can
 .PP
 \fB\-C\fR, \fB\-\-metalink\-servers\fR=NUM_SERVERS
 .RS 4
-The number of servers to connect to simultaneously\&. Some metalinks regulates the number of servers to connect\&. aria2 respects them\&. Default:
+The number of servers to connect to simultaneously\&. Some Metalinks regulates the number of servers to connect\&. aria2 strictly respects them\&. This means that if Metalink defines the maxconnections attribute lower than NUM_SERVERS, then aria2 uses the value of maxconnections attribute instead of NUM_SERVERS\&. See also
+\fB\-s\fR
+and
+\fB\-j\fR
+options\&. Default:
 \fI5\fR
 .RE
 .PP

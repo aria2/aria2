@@ -416,7 +416,7 @@ ARIA2C(1) Manual Page
 <dd>
 <p>
   Set maximum number of parallel downloads for every static (HTTP/FTP) URL,
-  torrent and metalink.
+  torrent and metalink. See also <strong>-s</strong> and <strong>-C</strong> option.
   Default: <em>5</em>
 </p>
 </dd>
@@ -620,6 +620,8 @@ aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</
   If less than N URLs are given, those URLs are used more than once so that N
   connections total are made simultaneously.
   N must be between <em>1</em> and <em>16</em>. Please see <strong>-j</strong> option too.
+  Please note that in Metalink download, this option has no effect and use
+  <strong>-C</strong> option instead.
   Default: <em>5</em>
 </p>
 </dd>
@@ -1140,8 +1142,12 @@ writes the piece to the appropriate files.</td>
 <dd>
 <p>
   The number of servers to connect to simultaneously.
-  Some metalinks regulates the number of servers to connect.
-  aria2 respects them.
+  Some Metalinks regulates the number of servers to connect.
+  aria2 strictly respects them.
+  This means that if Metalink defines the maxconnections attribute lower
+  than NUM_SERVERS, then aria2 uses the value of maxconnections attribute
+  instead of NUM_SERVERS.
+  See also <strong>-s</strong> and <strong>-j</strong> options.
   Default: <em>5</em>
 </p>
 </dd>
@@ -1988,7 +1994,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-11-09 18:12:32 JST
+Last updated 2008-11-11 20:52:35 JST
 </div>
 </div>
 </body>

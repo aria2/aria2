@@ -33,7 +33,7 @@ Basic Options
 
 *-j*, *--max-concurrent-downloads*=N::
   Set maximum number of parallel downloads for every static (HTTP/FTP) URL,
-  torrent and metalink.
+  torrent and metalink. See also *-s* and *-C* option.
   Default: '5'
 
 *--check-integrity*='true'|'false'::
@@ -144,6 +144,8 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
   If less than N URLs are given, those URLs are used more than once so that N
   connections total are made simultaneously.
   N must be between '1' and '16'. Please see *-j* option too.
+  Please note that in Metalink download, this option has no effect and use
+  *-C* option instead.
   Default: '5'
 
 *-t*, *--timeout*=SEC::
@@ -403,8 +405,12 @@ Metalink Specific Options
 
 *-C*, *--metalink-servers*=NUM_SERVERS::
   The number of servers to connect to simultaneously.
-  Some metalinks regulates the number of servers to connect.
-  aria2 respects them.
+  Some Metalinks regulates the number of servers to connect.
+  aria2 strictly respects them.
+  This means that if Metalink defines the maxconnections attribute lower
+  than NUM_SERVERS, then aria2 uses the value of maxconnections attribute
+  instead of NUM_SERVERS.
+  See also *-s* and *-j* options.
   Default: '5'
 
 *--metalink-language*=LANGUAGE::

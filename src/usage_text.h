@@ -48,7 +48,9 @@ _(" -s, --split=N                Download a file using N connections. If more\n"
   "                              remaining URLs are used for backup. If less than\n"\
   "                              N URLs are given, those URLs are used more than\n"\
   "                              once so that N connections total are made\n"\
-  "                              simultaneously. Please see -j option too.")
+  "                              simultaneously. Please see -j option too.\n"\
+  "                              Please note that in Metalink download, this\n"\
+  "                              option has no effect and use -C option instead.")
 #define TEXT_RETRY_WAIT \
 _(" --retry-wait=SEC             Set the seconds to wait to retry after an error\n"\
   "                              has occured.")
@@ -180,7 +182,8 @@ _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n
   "                              Reads input from stdin when '-' is specified.")
 #define TEXT_MAX_CONCURRENT_DOWNLOADS \
 _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n"\
-  "                              every static (HTTP/FTP) URL, torrent and metalink.")
+  "                              every static (HTTP/FTP) URL, torrent and metalink.\n"\
+  "                              See also -s and -C options.")
 #define TEXT_LOAD_COOKIES \
 _(" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 format\n"\
   "                              and Mozilla/Firefox(1.x/2.x)/Netscape format.")
@@ -280,7 +283,13 @@ _(" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \
 _(" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"\
-  "                              simultaneously.")
+  "                              simultaneously. Some Metalinks regulates the\n"\
+  "                              number of servers to connect. aria2 strictly\n"\
+  "                              respects them. This means that if Metalink defines\n"\
+  "                              the maxconnections attribute lower than\n"\
+  "                              NUM_SERVERS, then aria2 uses the value of\n"\
+  "                              maxconnections attribute instead of NUM_SERVERS.\n"\
+  "                              See also -s and -j options.")
 #define TEXT_METALINK_VERSION \
 _(" --metalink-version=VERSION   The version of the file to download.")
 #define TEXT_METALINK_LANGUAGE \
