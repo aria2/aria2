@@ -1,3 +1,5 @@
 http://localhost/index.html	http://localhost2/index.html
 
 ftp://localhost/aria2.tar.bz2
+  dir=/tmp
+  out=chunky_chocolate

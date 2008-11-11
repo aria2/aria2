@@ -56,17 +56,20 @@ private:
 
   void
   createRequestGroup(std::deque<SharedHandle<RequestGroup> >& groups,
-		     std::deque<SharedHandle<MetalinkEntry> > entries);
+		     std::deque<SharedHandle<MetalinkEntry> > entries,
+		     const Option& requestOption);
 public:
   Metalink2RequestGroup(const Option* option);
 
   ~Metalink2RequestGroup();
 
   void generate(std::deque<SharedHandle<RequestGroup> >& groups,
-		const std::string& metalinkFile);
+		const std::string& metalinkFile,
+		const Option& requestOption);
 
   void generate(std::deque<SharedHandle<RequestGroup> >& groups,
-		const SharedHandle<BinaryStream>& binaryStream);
+		const SharedHandle<BinaryStream>& binaryStream,
+		const Option& requestOption);
 };
 
 } // namespace aria2

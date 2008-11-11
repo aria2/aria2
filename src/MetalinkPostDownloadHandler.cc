@@ -41,6 +41,9 @@
 #include "DownloadHandlerConstants.h"
 #include "ContentTypeRequestGroupCriteria.h"
 #include "Exception.h"
+#include "prefs.h"
+#include "Option.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -64,7 +67,10 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
   SharedHandle<DiskAdaptor> diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();
-    Metalink2RequestGroup(op).generate(groups, diskAdaptor);
+    Option requestOption;
+    requestOption.put(PREF_DIR, requestGroup->getDownloadContext()->getDir());
+    
+    Metalink2RequestGroup(op).generate(groups, diskAdaptor, requestOption);
     diskAdaptor->closeFile();
   } catch(Exception& e) {
     diskAdaptor->closeFile();

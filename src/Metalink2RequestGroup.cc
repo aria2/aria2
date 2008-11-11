@@ -101,26 +101,29 @@ public:
 
 void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
-				const std::string& metalinkFile)
+				const std::string& metalinkFile,
+				const Option& requestOption)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, metalinkFile, _option);
-  createRequestGroup(groups, entries);
+  createRequestGroup(groups, entries, requestOption);
 }
 
 void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
-				const SharedHandle<BinaryStream>& binaryStream)
+				const SharedHandle<BinaryStream>& binaryStream,
+				const Option& requestOption)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, binaryStream, _option);
-  createRequestGroup(groups, entries);
+  createRequestGroup(groups, entries, requestOption);
 }
 
 void
 Metalink2RequestGroup::createRequestGroup
 (std::deque<SharedHandle<RequestGroup> >& groups,
- std::deque<SharedHandle<MetalinkEntry> > entries)
+ std::deque<SharedHandle<MetalinkEntry> > entries,
+ const Option& requestOption)
 {
   if(entries.size() == 0) {
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
@@ -210,7 +213,7 @@ Metalink2RequestGroup::createRequestGroup
 				     entry->getLength(),
 				     A2STR::NIL,
 				     entry->file->getPath()));
-    dctx->setDir(_option->get(PREF_DIR));
+    dctx->setDir(requestOption.get(PREF_DIR));
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       if(!entry->checksum.isNull()) {

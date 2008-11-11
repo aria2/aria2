@@ -1,5 +1,38 @@
 2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added the ability to specify output filename and directory in input
+	file.
+	Additional parameters are added in the following line of URIs
+	with proceeding white space(s), 1 parameter in 1 line.
+	The parameter names are the same with the command-line option name
+	without proceeding "--". Not all the options are available here:
+	at the moment, 'dir' and 'out' options are avialable.
+	Please note that out option has no effect against Metalink or BitTorrent
+	downloads.
+	Example input file:
+	
+	http://host/foo-1.1.tar.bz2
+	  out=foo.tar.bz2
+	  dir=/tmp/downloads
+	http://host/thundermonkey-2.0.tar.bz2
+
+	And then invoke 'aria2c -i url.txt --dir ~/mydownloads'.
+	foo-1.1.tar.bz2 is saved as /tmp/downloads/foo.tar.bz2, whereas
+	thundermonkey-2.0.tar.bz2 is saved as
+	~/mydownloads/thundermonkey-2.0.tar.bz2.
+	* src/BtPostDownloadHandler.cc
+	* src/Metalink2RequestGroup.cc
+	* src/Metalink2RequestGroup.h
+	* src/MetalinkPostDownloadHandler.cc
+	* src/UriListParser.cc
+	* src/UriListParser.h
+	* src/main.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/UriListParserTest.cc
+	* test/filelist1.txt
+	
+2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed error when SSL library is not found.
 	* configure.ac
 

@@ -33,26 +33,50 @@
  */
 /* copyright --> */
 #include "UriListParser.h"
-#include "Util.h"
+
 #include <istream>
+
+#include "Util.h"
+#include "Option.h"
 
 namespace aria2 {
 
-UriListParser::UriListParser() {}
+UriListParser::UriListParser(std::istream& in):_in(in) {}
 
 UriListParser::~UriListParser() {}
 
-std::deque<std::string> UriListParser::parseNext(std::istream& in)
+static void getOptions(Option& op, std::string& line, std::istream& in)
 {
-  std::deque<std::string> uris;
-  std::string line;
   while(getline(in, line)) {
-    if(!Util::trim(line).empty()) {
-      Util::slice(uris, line, '\t', true);
-      return uris;
+    if(Util::startsWith(line, " ")) {
+      std::pair<std::string, std::string> p = Util::split(line, "=");
+      op.put(p.first, p.second);
+    } else {
+      break;
     }
   }
-  return uris;
+}
+
+void UriListParser::parseNext(std::deque<std::string>& uris, Option& op)
+{
+  if(_line.empty()) {
+    getline(_in, _line);
+  }
+  if(!_in) {
+    return;
+  }
+  do {
+    if(!Util::trim(_line).empty()) {
+      Util::slice(uris, _line, '\t', true);
+      getOptions(op, _line, _in);
+      return;
+    }
+  } while(getline(_in, _line));
+}
+
+bool UriListParser::hasNext() const
+{
+  return _in;
 }
 
 } // namespace aria2

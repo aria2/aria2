@@ -81,7 +81,7 @@ void BtPostDownloadHandler::getNextRequestGroups
   if(op->defined(PREF_PEER_ID_PREFIX)) {
     btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
   }
-  btContext->setDir(op->get(PREF_DIR));
+  btContext->setDir(requestGroup->getDownloadContext()->getDir());
   rg->setDownloadContext(btContext);
   btContext->setOwnerRequestGroup(rg.get());
   

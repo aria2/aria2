@@ -33,7 +33,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Metalink2RequestGroupTest );
 void Metalink2RequestGroupTest::testGenerate()
 {
   std::deque<SharedHandle<RequestGroup> > groups;
-  Metalink2RequestGroup(_option.get()).generate(groups, "test.xml");
+  Option requestOption;
+  requestOption.put(PREF_DIR, "/tmp");
+  Metalink2RequestGroup(_option.get()).generate(groups, "test.xml",
+						requestOption);
   // first file
   {
     SharedHandle<RequestGroup> rg = groups[0];
@@ -41,15 +44,22 @@ void Metalink2RequestGroupTest::testGenerate()
     rg->getURIs(uris);
     std::sort(uris.begin(), uris.end());
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"), uris[0]);
-    CPPUNIT_ASSERT_EQUAL(std::string("http://httphost/aria2-0.5.2.tar.bz2"), uris[1]);
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"), uris[0]);
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("http://httphost/aria2-0.5.2.tar.bz2"), uris[1]);
+
     SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
+      (dynamic_pointer_cast<SingleFileDownloadContext>
+       (rg->getDownloadContext()));
+
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, dctx->getTotalLength());
+    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), dctx->getChecksumHashAlgo());
-    CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
 			 dctx->getChecksum());
 #endif // ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(!dctx->getSignature().isNull());
@@ -61,9 +71,13 @@ void Metalink2RequestGroupTest::testGenerate()
     std::deque<std::string> uris;
     rg->getURIs(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
+
     SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
+      (dynamic_pointer_cast<SingleFileDownloadContext>
+       (rg->getDownloadContext()));
+
     CPPUNIT_ASSERT(!dctx.isNull());
+    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), dctx->getPieceHashAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)2, dctx->getPieceHashes().size());
@@ -81,11 +95,15 @@ void Metalink2RequestGroupTest::testGenerate()
     std::deque<std::string> uris;
     rg->getURIs(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("http://host/torrent-http.integrated.torrent"),
-			 uris[0]);
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("http://host/torrent-http.integrated.torrent"), uris[0]);
     SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
+      (dynamic_pointer_cast<SingleFileDownloadContext>
+       (rg->getDownloadContext()));
+
     CPPUNIT_ASSERT(!dctx.isNull());
+    // PREF_DIR has no effect for internal torrent file download
+    CPPUNIT_ASSERT_EQUAL(std::string("."), dctx->getDir());
   }
 #endif // ENABLE_BITTORRENT
 
@@ -99,10 +117,15 @@ void Metalink2RequestGroupTest::testGenerate()
     std::deque<std::string> uris;
     rg->getURIs(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("http://host/torrent-http.integrated"), uris[0]);
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("http://host/torrent-http.integrated"), uris[0]);
+
     SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
+      (dynamic_pointer_cast<SingleFileDownloadContext>
+       (rg->getDownloadContext()));
+
     CPPUNIT_ASSERT(!dctx.isNull());
+    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
   }
 }
 

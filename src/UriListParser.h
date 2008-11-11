@@ -36,19 +36,28 @@
 #define _D_URI_LIST_PARSER_H_
 
 #include "common.h"
+
 #include <string>
 #include <deque>
 #include <iosfwd>
 
+#include "Option.h"
+
 namespace aria2 {
 
 class UriListParser {
+private:
+  std::istream& _in;
+
+  std::string _line;
 public:
-  UriListParser();
+  UriListParser(std::istream& in);
 
   ~UriListParser();
 
-  std::deque<std::string> parseNext(std::istream& in);
+  void parseNext(std::deque<std::string>& uris, Option& op);
+
+  bool hasNext() const;
 };
 
 } // namespace aria2
