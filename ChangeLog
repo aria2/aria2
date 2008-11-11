@@ -1,5 +1,10 @@
 2008-11-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Quickly terminate commands when ctrl-c is pressed.
+	* src/DownloadEngine.cc
+
+2008-11-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Quickly terminate idle commands when download finished.
 	* src/AbstractCommand.cc
 	* src/DownloadCommand.cc

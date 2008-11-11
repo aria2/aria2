@@ -820,10 +820,14 @@ void DownloadEngine::afterEachIteration()
     logger->notice(_("Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."));
     requestHalt();
     globalHaltRequested = 2;
+    setNoWait(true);
+    setRefreshInterval(0);
   } else if(globalHaltRequested == 3) {
     logger->notice(_("Emergency shutdown sequence commencing..."));
     _requestGroupMan->forceHalt();
     globalHaltRequested = 4;
+    setNoWait(true);
+    setRefreshInterval(0);
   }
 }
 
