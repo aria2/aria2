@@ -280,10 +280,10 @@ void DefaultPieceStorageTest::testGetCompletedLength()
   
   DefaultPieceStorage ps(dctx, option);
   
-  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, ps.getCompletedLength());
 
   ps.markPiecesDone(250*1024*1024);
-  CPPUNIT_ASSERT_EQUAL((size_t)250*1024*1024, ps.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)250*1024*1024, ps.getCompletedLength());
 
   std::deque<SharedHandle<Piece> > inFlightPieces;
   for(int i = 0; i < 2; ++i) {
@@ -296,11 +296,11 @@ void DefaultPieceStorageTest::testGetCompletedLength()
   }
   ps.addInFlightPiece(inFlightPieces);
   
-  CPPUNIT_ASSERT_EQUAL((size_t)251*1024*1024, ps.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)251*1024*1024, ps.getCompletedLength());
 
   ps.markPiecesDone(256*1024*1024);
 
-  CPPUNIT_ASSERT_EQUAL((size_t)256*1024*1024, ps.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)256*1024*1024, ps.getCompletedLength());
 }
 
 } // namespace aria2

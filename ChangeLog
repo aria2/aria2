@@ -1,5 +1,11 @@
 2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed bad cast in 32bit platforms.
+	* test/DefaultPieceStorageTest.cc
+	(DefaultPieceStorageTest::testGetCompletedLength)
+
+2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed unit test fails on 32bit platforms.
 	* test/CookieParserTest.cc
 
