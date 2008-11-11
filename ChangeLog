@@ -1,5 +1,10 @@
 2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed error when SSL library is not found.
+	* configure.ac
+
+2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Cross referenced among -s, -C and -j options.
 	Updated usage of -C and -s options.
 	* src/usage_text.h

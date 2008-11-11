@@ -107,6 +107,8 @@ fi
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
+else
+  AM_CONDITIONAL([ENABLE_SSL], false)
 fi
 
 AM_CONDITIONAL([HAVE_LIBGNUTLS], [ test "x$have_libgnutls" = "xyes" ])

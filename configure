@@ -7471,6 +7471,15 @@ else
   ENABLE_SSL_FALSE=
 fi
 
+else
+   if false; then
+  ENABLE_SSL_TRUE=
+  ENABLE_SSL_FALSE='#'
+else
+  ENABLE_SSL_TRUE='#'
+  ENABLE_SSL_FALSE=
+fi
+
 fi
 
  if  test "x$have_libgnutls" = "xyes" ; then
@@ -22203,6 +22212,13 @@ if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${ENABLE_SSL_TRUE}" && test -z "${ENABLE_SSL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_SSL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLE_SSL\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
