@@ -1,5 +1,10 @@
 2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added input_uris.txt to EXTRA_DIST
+	* test/Makefile.am
+
+2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed PeerObject.h from Makefile.am
 	* src/Makefile.am
 

@@ -221,4 +221,5 @@ EXTRA_DIST = 4096chunk.txt\
 	test.torrent\
 	test.xml\
 	url-list-multiFile.torrent\
-	url-list-singleFile.torrent
+	url-list-singleFile.torrent\
+	input_uris.txt
