@@ -249,7 +249,8 @@ bool PeerInteractionCommand::executeInternal() {
   }
   case WIRED:
     // See the comment for writable check below.
-    //    disableWriteCheckSocket();
+    disableWriteCheckSocket();
+
     btInteractive->doInteractionProcessing();
     if(btInteractive->countReceivedMessageInIteration() > 0) {
       updateKeepAlive();
@@ -258,11 +259,10 @@ bool PeerInteractionCommand::executeInternal() {
 	(peer->getLatency() < 1500)) ||
        (peer->peerInterested() && !peer->amChoking())) {
 
-      // Writable check causes CPU usage high because socket becomes writable
-      // instantly. So don't do it.
-      //       if(btInteractive->isSendingMessageInProgress()) {
-      // 	setWriteCheckSocket(socket);
-      //       }
+      // Writable check to avoid slow seeding
+      if(btInteractive->isSendingMessageInProgress()) {
+       	setWriteCheckSocket(socket);
+      }
 
       if(maxDownloadSpeedLimit > 0) {
 	TransferStat stat = _requestGroup->calculateStat();
