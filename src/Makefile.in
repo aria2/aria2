@@ -131,7 +131,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtChokingEvent.h\
 @ENABLE_BITTORRENT_TRUE@	BtInteractive.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.cc DefaultBtInteractive.h\
-@ENABLE_BITTORRENT_TRUE@	PeerObject.h\
 @ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h\
 @ENABLE_BITTORRENT_TRUE@	BtDependency.cc BtDependency.h\
 @ENABLE_BITTORRENT_TRUE@	PeerReceiveHandshakeCommand.cc PeerReceiveHandshakeCommand.h\
@@ -479,14 +478,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	AbstractBtEventListener.h BtCancelSendingPieceEvent.h \
 	BtAbortOutstandingRequestEvent.h BtChokedEvent.h \
 	BtChokingEvent.h BtInteractive.h DefaultBtInteractive.cc \
-	DefaultBtInteractive.h PeerObject.h \
-	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h \
-	BtDependency.cc BtDependency.h PeerReceiveHandshakeCommand.cc \
-	PeerReceiveHandshakeCommand.h BtSetup.cc BtSetup.h \
-	BtFileAllocationEntry.cc BtFileAllocationEntry.h \
-	BtPostDownloadHandler.cc BtPostDownloadHandler.h \
-	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h \
-	BtExtendedMessage.cc BtExtendedMessage.h ExtensionMessage.h \
+	DefaultBtInteractive.h ActivePeerConnectionCommand.cc \
+	ActivePeerConnectionCommand.h BtDependency.cc BtDependency.h \
+	PeerReceiveHandshakeCommand.cc PeerReceiveHandshakeCommand.h \
+	BtSetup.cc BtSetup.h BtFileAllocationEntry.cc \
+	BtFileAllocationEntry.h BtPostDownloadHandler.cc \
+	BtPostDownloadHandler.h BtCheckIntegrityEntry.cc \
+	BtCheckIntegrityEntry.h BtExtendedMessage.cc \
+	BtExtendedMessage.h ExtensionMessage.h \
 	ExtensionMessageFactory.h DefaultExtensionMessageFactory.cc \
 	DefaultExtensionMessageFactory.h HandshakeExtensionMessage.cc \
 	HandshakeExtensionMessage.h UTPexExtensionMessage.cc \

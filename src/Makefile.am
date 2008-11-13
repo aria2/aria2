@@ -312,7 +312,6 @@ SRCS += MetaEntry.h\
 	BtChokingEvent.h\
 	BtInteractive.h\
 	DefaultBtInteractive.cc DefaultBtInteractive.h\
-	PeerObject.h\
 	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h\
 	BtDependency.cc BtDependency.h\
 	PeerReceiveHandshakeCommand.cc PeerReceiveHandshakeCommand.h\
