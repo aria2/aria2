@@ -9,10 +9,10 @@
 #include "Exception.h"
 #ifdef ENABLE_BITTORRENT
 #include "MockBtContext.h"
-#endif // ENABLE_BITTORRENT
 #include "MockPeerStorage.h"
-#include "MockPieceStorage.h"
 #include "BtRuntime.h"
+#endif // ENABLE_BITTORRENT
+#include "MockPieceStorage.h"
 #include "prefs.h"
 #include "SingleFileDownloadContext.h"
 #include "Piece.h"
@@ -71,9 +71,11 @@ public:
 #endif // ENABLE_BITTORRENT
   }
 
+#ifdef ENABLE_BITTORRENT
   void testSave();
   void testLoad();
   void testLoad_compat();
+#endif // ENABLE_BITTORRENT
   void testSave_nonBt();
   void testLoad_nonBt();
   void testLoad_nonBt_compat();
@@ -318,8 +320,6 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
     (new SingleFileDownloadContext(1024, 81920, "load-nonBt"));
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  infoFile.setBtRuntime(_btRuntime);
-  infoFile.setPeerStorage(_peerStorage);
 
   CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt.aria2"),
 		       infoFile.getFilename());
@@ -364,8 +364,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
     (new SingleFileDownloadContext(1024, 81920, "load-nonBt-v0001"));
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  infoFile.setBtRuntime(_btRuntime);
-  infoFile.setPeerStorage(_peerStorage);
+
   CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt-v0001.aria2"),
 		       infoFile.getFilename());
   infoFile.load();
@@ -410,8 +409,6 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
     (new SingleFileDownloadContext(512, 81920, "load-nonBt-v0001"));
 
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  infoFile.setBtRuntime(_btRuntime);
-  infoFile.setPeerStorage(_peerStorage);
 
   CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt-v0001.aria2"),
 		       infoFile.getFilename());
@@ -448,7 +445,6 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
   _pieceStorage->addInFlightPiece(inFlightPieces);
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  infoFile.setPeerStorage(_peerStorage);
 
   CPPUNIT_ASSERT_EQUAL(std::string("./save-temp.aria2"),
 		       infoFile.getFilename());
@@ -545,8 +541,10 @@ void DefaultBtProgressInfoFileTest::testUpdateFilename()
     (new SingleFileDownloadContext(1024, 81920, "file1"));
 
   DefaultBtProgressInfoFile infoFile(dctx, SharedHandle<MockPieceStorage>(), 0);
+#ifdef ENABLE_BITTORRENT
   infoFile.setBtRuntime(_btRuntime);
   infoFile.setPeerStorage(_peerStorage);
+#endif // ENABLE_BITTORRENT
 
   CPPUNIT_ASSERT_EQUAL(std::string("./file1.aria2"), infoFile.getFilename());
 

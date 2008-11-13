@@ -22,11 +22,18 @@ class DownloadHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(DownloadHelperTest);
   CPPUNIT_TEST(testCreateRequestGroupForUri);
   CPPUNIT_TEST(testCreateRequestGroupForUri_parameterized);
-  CPPUNIT_TEST(testCreateRequestGroupForUri_BitTorrent);
-  CPPUNIT_TEST(testCreateRequestGroupForUri_Metalink);
   CPPUNIT_TEST(testCreateRequestGroupForUriList);
+
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_TEST(testCreateRequestGroupForUri_BitTorrent);
   CPPUNIT_TEST(testCreateRequestGroupForBitTorrent);
+#endif // ENABLE_BITTORRENT
+
+#ifdef ENABLE_METALINK
+  CPPUNIT_TEST(testCreateRequestGroupForUri_Metalink);
   CPPUNIT_TEST(testCreateRequestGroupForMetalink);
+#endif // ENABLE_METALINK
+
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -35,11 +42,17 @@ public:
 
   void testCreateRequestGroupForUri();
   void testCreateRequestGroupForUri_parameterized();
-  void testCreateRequestGroupForUri_BitTorrent();
-  void testCreateRequestGroupForUri_Metalink();
   void testCreateRequestGroupForUriList();
+
+#ifdef ENABLE_BITTORRENT
+  void testCreateRequestGroupForUri_BitTorrent();
   void testCreateRequestGroupForBitTorrent();
+#endif // ENABLE_BITTORRENT
+
+#ifdef ENABLE_METALINK
+  void testCreateRequestGroupForUri_Metalink();
   void testCreateRequestGroupForMetalink();
+#endif // ENABLE_METALINK
 };
 
 
@@ -174,6 +187,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
   }
 }
 
+#ifdef ENABLE_BITTORRENT
 void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
 {
   std::string array[] = {
@@ -220,7 +234,9 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
 			 btctx->getActualBasePath());    
   }
 }
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
 {
   std::string array[] = {
@@ -242,7 +258,12 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     
     // group1: http://alpha/file, ...
     // group2-7: 6 file entry in Metalink and 1 torrent file download
+#ifdef ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)7, result.size());
+#else // !ENABLE_BITTORRENT
+    CPPUNIT_ASSERT_EQUAL((size_t)6, result.size());
+#endif // !ENABLE_BITTORRENT
+
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
     group->getURIs(uris);
@@ -270,6 +291,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
 			 aria2051Group->getNumConcurrentCommand());
   }
 }
+#endif // ENABLE_METALINK
 
 void DownloadHelperTest::testCreateRequestGroupForUriList()
 {
@@ -304,6 +326,7 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
 		       fileISOCtx->getActualBasePath());
 }
 
+#ifdef ENABLE_BITTORRENT
 void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
 {
   std::string array[] = {
@@ -347,7 +370,9 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
   }
 }
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 void DownloadHelperTest::testCreateRequestGroupForMetalink()
 {
   Option op;
@@ -361,8 +386,11 @@ void DownloadHelperTest::testCreateRequestGroupForMetalink()
   
     createRequestGroupForMetalink(result, &op);
 
+#ifdef ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)6, result.size());
-
+#else // !ENABLE_BITTORRENT
+    CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
+#endif // !ENABLE_BITTORRENT
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
     group->getURIs(uris);
@@ -376,5 +404,6 @@ void DownloadHelperTest::testCreateRequestGroupForMetalink()
     CPPUNIT_ASSERT_EQUAL((unsigned int)1, group->getNumConcurrentCommand());
   }
 }
+#endif // ENABLE_METALINK
 
 } // namespace aria2

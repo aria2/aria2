@@ -41,8 +41,10 @@
 #include "BtContext.h"
 #include "PieceStorage.h"
 #include "Piece.h"
+#ifdef ENABLE_BITTORRENT
 #include "PeerStorage.h"
 #include "BtRuntime.h"
+#endif // ENABLE_BITTORRENT
 #include "BitfieldMan.h"
 #include "Option.h"
 #include "TransferStat.h"
@@ -87,7 +89,11 @@ void DefaultBtProgressInfoFile::updateFilename()
 
 bool DefaultBtProgressInfoFile::isTorrentDownload()
 {
+#ifdef ENABLE_BITTORRENT
   return !_btRuntime.isNull();
+#else // !ENABLE_BITTORRENT
+  return false;
+#endif // !ENABLE_BITTORRENT
 }
 
 // Since version 0001, Integers are saved in binary form, network byte order.
@@ -138,10 +144,12 @@ void DefaultBtProgressInfoFile::save() {
 	    sizeof(totalLengthNL));
     // uploadLength: 64 bits
     uint64_t uploadLengthNL = 0;
+#ifdef ENABLE_BITTORRENT
     if(torrentDownload) {
       TransferStat stat = _peerStorage->calculateStat();
       uploadLengthNL = hton64(stat.getAllTimeUploadLength());
     }
+#endif // ENABLE_BITTORRENT
     o.write(reinterpret_cast<const char*>(&uploadLengthNL),
 	    sizeof(uploadLengthNL));
     // bitfieldLength: 32 bits
@@ -266,10 +274,11 @@ void DefaultBtProgressInfoFile::load()
     if(version >= 1) {
       uploadLength = ntoh64(uploadLength);
     }
+#ifdef ENABLE_BITTORRENT
     if(isTorrentDownload()) {
       _btRuntime->setUploadLengthAtStartup(uploadLength);
     }
-
+#endif // ENABLE_BITTORRENT
     // TODO implement the conversion mechanism between different piece length.
     uint32_t bitfieldLength;
     in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
@@ -400,6 +409,7 @@ bool DefaultBtProgressInfoFile::exists()
   }
 }
 
+#ifdef ENABLE_BITTORRENT
 void DefaultBtProgressInfoFile::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
@@ -411,5 +421,6 @@ void DefaultBtProgressInfoFile::setBtRuntime
 {
   _btRuntime = btRuntime;
 }
+#endif // ENABLE_BITTORRENT
 
 } // namespace aria2

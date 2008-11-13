@@ -61,7 +61,9 @@
 
 namespace aria2 {
 
+#ifdef ENABLE_SSL
 class TLSContext;
+#endif // ENABLE_SSL
 
 class SocketCore {
   friend bool operator==(const SocketCore& s1, const SocketCore& s2);
@@ -90,7 +92,7 @@ private:
 
 #if ENABLE_SSL
   static SharedHandle<TLSContext> _tlsContext;
-#endif
+#endif // ENABLE_SSL
 
 #ifdef HAVE_LIBSSL
   // for SSL
@@ -325,7 +327,9 @@ public:
    */
   bool wantWrite() const;
 
+#ifdef ENABLE_SSL
   static void setTLSContext(const SharedHandle<TLSContext>& tlsContext);
+#endif // ENABLE_SSL
 };
 
 } // namespace aria2

@@ -126,9 +126,11 @@ private:
 
   unsigned int _fileNotFoundCount;
 
+#ifdef ENABLE_BITTORRENT
   WeakHandle<BtRuntime> _btRuntime;
 
   WeakHandle<PeerStorage> _peerStorage;
+#endif // ENABLE_BITTORRENT
 
   const Option* _option;
 

@@ -65,10 +65,8 @@ void FileMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
     stm->setLanguageState();
   } else if(name == FileMetalinkParserState::OS) {
     stm->setOSState();
-#ifdef ENABLE_MESSAGE_DIGEST
   } else if(name == FileMetalinkParserState::VERIFICATION) {
     stm->setVerificationState();
-#endif // ENABLE_MESSAGE_DIGEST
   } else if(name == FileMetalinkParserState::RESOURCES) {
     stm->setResourcesState();
     int maxConnections;

@@ -1,3 +1,18 @@
+2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error without SSL/XML library.
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultBtProgressInfoFile.h
+	* src/FileMetalinkParserState.cc
+	* src/RequestGroup.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/VerificationMetalinkParserState.cc
+	* src/download_helper.h
+	* src/main.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/DownloadHelperTest.cc
+
 2008-11-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten URI handling functions. They are now provided as a testable

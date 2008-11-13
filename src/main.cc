@@ -65,6 +65,7 @@
 #include "ConsoleStatCalc.h"
 #include "NullStatCalc.h"
 #include "download_helper.h"
+#include "Exception.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "MetalinkEntry.h"

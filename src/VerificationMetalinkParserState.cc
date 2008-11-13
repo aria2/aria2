@@ -56,6 +56,7 @@ void VerificationMetalinkParserState::beginElement
  const std::string& name,
  const std::map<std::string, std::string>& attrs)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(name == VerificationMetalinkParserState::HASH) {
     stm->setHashState();
     std::map<std::string, std::string>::const_iterator itr =
@@ -96,7 +97,9 @@ void VerificationMetalinkParserState::beginElement
     } catch(RecoverableException& e) {
       stm->cancelChunkChecksumTransaction();
     }
-  } else if(name == VerificationMetalinkParserState::SIGNATURE) {
+  } else
+#endif // ENABLE_MESSAGE_DIGEST
+  if(name == VerificationMetalinkParserState::SIGNATURE) {
     stm->setSignatureState();
     std::map<std::string, std::string>::const_iterator itr =
       attrs.find(VerificationMetalinkParserState::TYPE);

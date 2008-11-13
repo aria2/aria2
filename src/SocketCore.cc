@@ -76,7 +76,14 @@
 
 namespace aria2 {
 
+#ifdef ENABLE_SSL
 SharedHandle<TLSContext> SocketCore::_tlsContext;
+
+void SocketCore::setTLSContext(const SharedHandle<TLSContext>& tlsContext)
+{
+  _tlsContext = tlsContext;
+}
+#endif // ENABLE_SSL
 
 SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1)  {
   init();
@@ -1043,11 +1050,6 @@ bool SocketCore::wantRead() const
 bool SocketCore::wantWrite() const
 {
   return _wantWrite;
-}
-
-void SocketCore::setTLSContext(const SharedHandle<TLSContext>& tlsContext)
-{
-  _tlsContext = tlsContext;
 }
 
 } // namespace aria2

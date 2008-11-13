@@ -47,16 +47,20 @@ namespace aria2 {
 class RequestGroup;
 class Option;
 
+#ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by torrent-file 
 // option. In this function, force-sequential is ignored.
 void createRequestGroupForBitTorrent
 (std::deque<SharedHandle<RequestGroup> >& result, Option* op,
  const std::deque<std::string>& uris);
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 // Create RequestGroup objects using Metalink file specified by metalink-file
 // option.
 void createRequestGroupForMetalink
 (std::deque<SharedHandle<RequestGroup> >& result, Option* op);
+#endif // ENABLE_METALINK
 
 // Create RequestGroup objects from reading file specified by input-file option.
 // If the value of input-file option is "-", stdin is used as a input source.
