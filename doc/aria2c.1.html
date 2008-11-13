@@ -535,6 +535,19 @@ ARIA2C(1) Manual Page
   The file name of the downloaded file.
 </p>
 </dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">In Metalink, BitTorrent download you cannot specify file name.
+The file name specified here is only used when the URLs fed to aria2
+is done by command line without <strong>-i</strong>, <strong>-Z</strong> option. For example:
+aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</a> <a href="http://mirror2/file.zip">http://mirror2/file.zip</a></td>
+</tr></table>
+</div>
+<div class="vlist"><dl>
 <dt>
 <strong>--proxy-method</strong>=METHOD
 </dt>
@@ -545,19 +558,6 @@ ARIA2C(1) Manual Page
   Default: <em>tunnel</em>
 </p>
 </dd>
-</dl></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">In Metalink, BitTorrent download you cannot specify file name.
-The file name specified here is only used when the URLs fed to aria2
-is done by command line without <strong>-i</strong>, <strong>-Z</strong> option, like this:
-aria2c -o myfile.zip <a href="http://mirror1/file.zip">http://mirror1/file.zip</a> <a href="http://mirror2/file.zip">http://mirror2/file.zip</a></td>
-</tr></table>
-</div>
-<div class="vlist"><dl>
 <dt>
 <strong>-R</strong>, <strong>--remote-time</strong>[=<em>true</em>|<em>false</em>]
 </dt>
@@ -1994,7 +1994,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-11-11 20:52:35 JST
+Last updated 2008-11-14 00:10:16 JST
 </div>
 </div>
 </body>

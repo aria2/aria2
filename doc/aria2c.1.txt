@@ -100,16 +100,16 @@ HTTP/FTP Options
 *-o*, *--out*=FILE::
   The file name of the downloaded file.
 
+[NOTE]
+In Metalink, BitTorrent download you cannot specify file name.
+The file name specified here is only used when the URLs fed to aria2
+is done by command line without *-i*, *-Z* option. For example:
+aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
+
 *--proxy-method*=METHOD::
   Set the method to use in proxy request.
   'METHOD' is either 'get' or 'tunnel'.
   Default: 'tunnel'
-
-[NOTE]
-In Metalink, BitTorrent download you cannot specify file name.
-The file name specified here is only used when the URLs fed to aria2
-is done by command line without *-i*, *-Z* option, like this:
-aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
 
 *-R*, *--remote-time*[='true'|'false']::
   Retrieve timestamp of the remote file from the remote HTTP/FTP

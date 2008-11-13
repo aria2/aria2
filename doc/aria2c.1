@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 11/11/2008
+.\"      Date: 11/14/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "11/11/2008" "" ""
+.TH "ARIA2C" "1" "11/14/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -130,6 +130,13 @@ Specify comma separated hostnames or domains to which proxy should not be used\&
 .RS 4
 The file name of the downloaded file\&.
 .RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+In Metalink, BitTorrent download you cannot specify file name\&. The file name specified here is only used when the URLs fed to aria2 is done by command line without \fB\-i\fR, \fB\-Z\fR option\&. For example: aria2c \-o myfile\&.zip http://mirror1/file\&.zip http://mirror2/file\&.zip
 .PP
 \fB\-\-proxy\-method\fR=METHOD
 .RS 4
@@ -141,13 +148,6 @@ or
 \fItunnel\fR\&. Default:
 \fItunnel\fR
 .RE
-.sp
-.it 1 an-trap
-.nr an-no-space-flag 1
-.nr an-break-flag 1
-.br
-Note
-In Metalink, BitTorrent download you cannot specify file name\&. The file name specified here is only used when the URLs fed to aria2 is done by command line without \fB\-i\fR, \fB\-Z\fR option, like this: aria2c \-o myfile\&.zip http://mirror1/file\&.zip http://mirror2/file\&.zip
 .PP
 \fB\-R\fR, \fB\-\-remote\-time\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
