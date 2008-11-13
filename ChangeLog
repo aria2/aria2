@@ -1,5 +1,10 @@
 2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.0.0b
+	* configure.ac
+
+2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added input_uris.txt to EXTRA_DIST
 	* test/Makefile.am
 
