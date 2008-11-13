@@ -1,5 +1,11 @@
 2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added INPUT FILE section to man page.
+	Escaped fake URLs.
+	* doc/aria2c.1.txt
+
+2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed wrong note position for -o option.
 	* doc/aria2c.1.txt
 	

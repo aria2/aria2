@@ -30,7 +30,11 @@ The directory to store the downloaded file\&.
 .RS 4
 Downloads URIs found in FILE\&. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\&. Reads input from stdin when
 \fI\-\fR
-is specified\&.
+is specified\&. The additional
+\fBout\fR
+and
+\fBdir\fR
+options can be specified after each line of URIs\&. This optional line must start with white space(s)\&. See INPUT FILE section for details\&.
 .RE
 .PP
 \fB\-l\fR, \fB\-\-log\fR=LOG
@@ -304,8 +308,7 @@ Enable HTTP/1\&.1 pipelining\&. Default:
 .RS 4
 Append HEADER to HTTP request header\&. You can use this option repeatedly to specify more than one header: aria2c
 \fB\-\-header\fR="X\-A: b78"
-\fB\-\-header\fR="X\-B: 9J1"
-http://host/file
+\fB\-\-header\fR="X\-B: 9J1" http://host/file
 .RE
 .PP
 \fB\-\-load\-cookies\fR=FILE
@@ -1427,6 +1430,24 @@ You can seed downloaded file using \-\-check\-integrity=true option\&.
 aria2c \-\-check\-integrity=true file\&.torrent
 .fi
 .RE
+.SH "INPUT FILE"
+The input file can contain list of URIs to feed them into aria2\&. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\&.
+.sp
+Each line is treated as if it is provided in command\-line argument\&. Therefore they are affected by \fB\-Z\fR and \fB\-P\fR options\&. The additional \fBout\fR and \fBdir\fR options can be specified after each line of URIs\&. This optional line must start with white space(s)\&.
+.sp
+For example, the content of uri\&.txt is:
+.sp
+.sp
+.RS 4
+.nf
+http://server/file\&.iso http://mirror/file\&.iso
+  dir=/iso_images
+  out=file\&.img
+http://foo/bar
+.fi
+.RE
+and if aria2 is executed with \-i uri\&.txt \-d /tmp options, then file\&.iso is saved as /iso_images/file\&.img and it is downloaded from http://server/file\&.iso and http://mirror/file\&.iso\&. The file bar is downloaded from http://foo/bar and saved as /tmp/bar\&.
+.sp
 .SH "SERVER PERFORMANCE PROFILE"
 This section describes the format of server performance profile\&. The file is plain text and each line has several NAME=VALUE pair, delimited by comma\&. Currently following NAMEs are recognized:
 .PP
