@@ -62,7 +62,8 @@ aria2c_SOURCES = AllTest.cc\
 	CopyDiskAdaptorTest.cc\
 	FtpConnectionTest.cc\
 	OptionParserTest.cc\
-	SimpleDNSCacheTest.cc
+	SimpleDNSCacheTest.cc\
+	DownloadHelperTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc
@@ -185,7 +186,7 @@ endif # ENABLE_METALINK
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 
-aria2c_LDADD = ../src/libaria2c.a\
+aria2c_LDADD = ../src/libaria2c.a ../src/download_helper.o\
     @LIBINTL@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\

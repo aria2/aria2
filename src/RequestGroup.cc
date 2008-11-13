@@ -113,7 +113,7 @@ RequestGroup::RequestGroup(const Option* option,
 			   const std::deque<std::string>& uris):
   _gid(++_gidCounter),
   _uris(uris),
-  _numConcurrentCommand(0),
+  _numConcurrentCommand(option->getAsInt(PREF_SPLIT)),
   _numStreamConnection(0),
   _numCommand(0),
   _segmentManFactory(new DefaultSegmentManFactory(option)),
@@ -501,6 +501,7 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
     numCommand = 1+numAdj;
   } else {
     if(_numConcurrentCommand == 0) {
+      // TODO remove _uris.size() support
       numCommand = _uris.size();
     } else {
       numCommand = _numConcurrentCommand;
@@ -1072,6 +1073,11 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
     throw DownloadFailureException
       (StringFormat("Reached max-file-not-found count=%u", maxCount).str());
   }
+}
+
+unsigned int RequestGroup::getNumConcurrentCommand() const
+{
+  return _numConcurrentCommand;
 }
 
 } // namespace aria2

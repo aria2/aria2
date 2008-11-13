@@ -213,6 +213,8 @@ public:
     _numConcurrentCommand = num;
   }
 
+  unsigned int getNumConcurrentCommand() const;
+
   int32_t getGID() const
   {
     return _gid;

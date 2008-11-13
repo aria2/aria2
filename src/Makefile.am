@@ -1,7 +1,8 @@
 bin_PROGRAMS = aria2c
 aria2c_SOURCES = main.cc\
 	option_processing.cc\
-	version_usage.cc
+	version_usage.cc\
+	download_helper.cc download_helper.h
 SRCS =  Socket.h\
 	SocketCore.cc SocketCore.h\
 	BinaryStream.h\

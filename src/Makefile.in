@@ -828,7 +828,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_aria2c_OBJECTS = main.$(OBJEXT) option_processing.$(OBJEXT) \
-	version_usage.$(OBJEXT)
+	version_usage.$(OBJEXT) download_helper.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 aria2c_DEPENDENCIES = libaria2c.a @ALLOCA@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -1025,7 +1025,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 aria2c_SOURCES = main.cc\
 	option_processing.cc\
-	version_usage.cc
+	version_usage.cc\
+	download_helper.cc download_helper.h
 
 SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	Command.h AbstractCommand.cc AbstractCommand.h \
@@ -1523,6 +1524,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VersionMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XML2SAXMetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asctime_r.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/download_helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gai_strerror.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getaddrinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gettimeofday.Po@am__quote@

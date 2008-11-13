@@ -1,3 +1,17 @@
+2008-11-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten URI handling functions. They are now provided as a testable
+	functions.
+	* src/Makefile.am
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/download_helper.cc
+	* src/download_helper.h
+	* src/main.cc
+	* test/DownloadHelperTest.cc
+	* test/Makefile.am
+	* test/input_uris.txt
+
 2008-11-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Quickly terminate commands when ctrl-c is pressed.

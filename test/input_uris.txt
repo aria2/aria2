@@ -1,0 +1,5 @@
+http://alpha/file	http://bravo/file	http://charlie/file
+  out=myfile.out
+  dir=/mydownloads
+http://delta/file.iso
+
