@@ -50,8 +50,9 @@ void MemoryBufferPreDownloadHandler::execute(RequestGroup* requestGroup)
   requestGroup->setFileAllocationEnabled(false);
   requestGroup->setPreLocalFileCheckEnabled(false);
 
-  static const std::string DIR_MEMORY("[MEMORY]");
-  requestGroup->getDownloadContext()->setDir(DIR_MEMORY);
+  // TODO to propage direction to save, comment out following 2 lines.
+  //static const std::string DIR_MEMORY("[MEMORY]");
+  //requestGroup->getDownloadContext()->setDir(DIR_MEMORY);
 }
 
 } // namespace aria2
