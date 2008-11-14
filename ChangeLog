@@ -1,5 +1,13 @@
 2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Print "[MEMORY]" and filename if a file is not saved in disk and just
+	processed in memory. This is the fix for previous comment out.
+	* src/MemoryBufferPreDownloadHandler.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+
+2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Commented out the code which sets virtual directory path "[MEMORY]"
 	propagate directory to store to following RequestGroup.
 	* src/MemoryBufferPreDownloadHandler.cc

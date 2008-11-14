@@ -49,10 +49,7 @@ void MemoryBufferPreDownloadHandler::execute(RequestGroup* requestGroup)
   requestGroup->setDiskWriterFactory(dwf);
   requestGroup->setFileAllocationEnabled(false);
   requestGroup->setPreLocalFileCheckEnabled(false);
-
-  // TODO to propage direction to save, comment out following 2 lines.
-  //static const std::string DIR_MEMORY("[MEMORY]");
-  //requestGroup->getDownloadContext()->setDir(DIR_MEMORY);
+  requestGroup->markInMemoryDownload();
 }
 
 } // namespace aria2

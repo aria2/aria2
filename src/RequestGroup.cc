@@ -125,6 +125,7 @@ RequestGroup::RequestGroup(const Option* option,
   _uriSelector(new InOrderURISelector()),
   _lastModifiedTime(Time::null()),
   _fileNotFoundCount(0),
+  _inMemoryDownload(false),
   _option(option),
   _logger(LogFactory::getInstance())
 {
@@ -892,10 +893,18 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 	_segmentMan->calculateSessionDownloadLength();
     }
 
+  std::string path;
+  if(inMemoryDownload()) {
+    static const std::string DIR_MEMORY("[MEMORY]");
+    path = DIR_MEMORY+File(getFilePath()).getBasename();
+  } else {
+    path = getFilePath();
+  }
+
   return
     SharedHandle<DownloadResult>
     (new DownloadResult(_gid,
-			getFilePath(),
+			path,
 			getTotalLength(),
 			uris.empty() ? A2STR::NIL:uris.front(),
 			uris.size(),
@@ -1078,6 +1087,16 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
 unsigned int RequestGroup::getNumConcurrentCommand() const
 {
   return _numConcurrentCommand;
+}
+
+void RequestGroup::markInMemoryDownload()
+{
+  _inMemoryDownload = true;
+}
+
+bool RequestGroup::inMemoryDownload() const
+{
+  return _inMemoryDownload;
 }
 
 } // namespace aria2

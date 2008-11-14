@@ -132,6 +132,10 @@ private:
   WeakHandle<PeerStorage> _peerStorage;
 #endif // ENABLE_BITTORRENT
 
+  // This flag just indicates that the downloaded file is not saved disk but
+  // just sits in memory.
+  bool _inMemoryDownload;
+
   const Option* _option;
 
   Logger* _logger;
@@ -386,6 +390,12 @@ public:
   void updateLastModifiedTime(const Time& time);
 
   void increaseAndValidateFileNotFoundCount();
+
+  // Just set inMemoryDownload flag true.
+  void markInMemoryDownload();
+
+  // Returns inMemoryDownload flag.
+  bool inMemoryDownload() const;
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
