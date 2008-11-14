@@ -556,8 +556,9 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 std::string RequestGroup::getFilePath() const
 {
   assert(!_downloadContext.isNull());
-  if(_downloadContext.isNull()) {
-    return A2STR::NIL;
+  if(inMemoryDownload()) {
+    static const std::string DIR_MEMORY("[MEMORY]");
+    return DIR_MEMORY+File(_downloadContext->getActualBasePath()).getBasename();
   } else {
     return _downloadContext->getActualBasePath();
   }
@@ -893,18 +894,10 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 	_segmentMan->calculateSessionDownloadLength();
     }
 
-  std::string path;
-  if(inMemoryDownload()) {
-    static const std::string DIR_MEMORY("[MEMORY]");
-    path = DIR_MEMORY+File(getFilePath()).getBasename();
-  } else {
-    path = getFilePath();
-  }
-
   return
     SharedHandle<DownloadResult>
     (new DownloadResult(_gid,
-			path,
+			getFilePath(),
 			getTotalLength(),
 			uris.empty() ? A2STR::NIL:uris.front(),
 			uris.size(),

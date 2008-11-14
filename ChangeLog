@@ -1,5 +1,12 @@
 2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Instead of creating special filename in createDownloadResult() if
+	inMemoryDownload() is true, now it is done in getFilePath().
+	* src/RequestGroup.cc
+	* test/RequestGroupTest.cc
+
+2008-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Print "[MEMORY]" and filename if a file is not saved in disk and just
 	processed in memory. This is the fix for previous comment out.
 	* src/MemoryBufferPreDownloadHandler.cc

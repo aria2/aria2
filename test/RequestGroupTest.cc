@@ -1,7 +1,11 @@
 #include "RequestGroup.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "ServerHost.h"
 #include "Option.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "SingleFileDownloadContext.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -10,6 +14,7 @@ class RequestGroupTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(RequestGroupTest);
   CPPUNIT_TEST(testRegisterSearchRemove);
   CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
+  CPPUNIT_TEST(testGetFilePath);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -18,6 +23,7 @@ public:
 
   void testRegisterSearchRemove();
   void testRemoveURIWhoseHostnameIs();
+  void testGetFilePath();
 };
 
 
@@ -67,6 +73,24 @@ void RequestGroupTest::testRemoveURIWhoseHostnameIs()
   CPPUNIT_ASSERT_EQUAL((size_t)1, rg.getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
 		       rg.getRemainingUris()[0]);
+}
+
+void RequestGroupTest::testGetFilePath()
+{
+  SharedHandle<SingleFileDownloadContext> ctx
+    (new SingleFileDownloadContext(1024, 1024, "myfile"));
+  ctx->setDir("/tmp");
+  Option op;
+  std::deque<std::string> uris;
+
+  RequestGroup group(&op, uris);
+  group.setDownloadContext(ctx);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFilePath());
+
+  group.markInMemoryDownload();
+
+  CPPUNIT_ASSERT_EQUAL(std::string("[MEMORY]myfile"), group.getFilePath());
 }
 
 } // namespace aria2
