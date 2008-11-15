@@ -247,10 +247,10 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
   if(itr == peers.end()) {
     logger->debug("Cannot find peer %s:%u in PeerStorage.", peer->ipaddr.c_str(), peer->port);
   } else {
-    onReturningPeer(peer);
-
-    onErasingPeer(*itr);
     peers.erase(itr);
+
+    onReturningPeer(peer);
+    onErasingPeer(peer);
   }
 }
 
