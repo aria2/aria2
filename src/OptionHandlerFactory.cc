@@ -146,7 +146,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_ENABLE_DIRECT_IO,
 				    TEXT_ENABLE_DIRECT_IO,
-				    V_FALSE));
+				    V_TRUE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }

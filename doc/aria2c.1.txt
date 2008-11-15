@@ -484,7 +484,7 @@ Advanced Options
 *--enable-direct-io*[='true'|'false']::
   Enable directI/O, which lowers cpu usage while allocating/checking files.
   Turn off if you encounter any error.
-  Default: 'false'
+  Default: 'true'
 
 *--file-allocation*=METHOD::
   Specify file allocation method. METHOD is either 'none' or 'prealloc'.
