@@ -156,8 +156,8 @@ _(" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection.
 #define TEXT_ENABLE_HTTP_PIPELINING \
 _(" --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.")
 #define TEXT_CHECK_INTEGRITY \
-_(" --check-integrity=true|false  Check file integrity by validating piece hash.\n"\
-  "                              This option only affects in BitTorrent downloads\n"\
+_(" -V, --check-integrity[=true|false] Check file integrity by validating piece\n"\
+  "                              hashes. This option has effect only in BitTorrent\n"\
   "                              and Metalink downloads with chunk checksums.\n"\
   "                              Use this option to re-download a damaged portion\n"\
   "                              of a file.")

@@ -39,9 +39,9 @@ Basic Options
   torrent and metalink. See also *-s* and *-C* option.
   Default: '5'
 
-*--check-integrity*='true'|'false'::
-  Check file integrity by validating piece hash.
-  This option only affects in BitTorrent downloads and Metalink downloads with
+*-V*, *--check-integrity*[='true'|'false']::
+  Check file integrity by validating piece hashes.
+  This option has effect only in BitTorrent and Metalink downloads with
   chunk checksums.
   Use this option to re-download a damaged portion of a file.
   Default: 'false'
@@ -791,11 +791,11 @@ Throttle download speed
 aria2c --max-download-limit=100K file.metalink
 -------------------------------------------------
 
-Repair a damaged download using --check-integrity option
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-----------------------------------------------
-aria2c --check-integrity=true file.metalink
-----------------------------------------------
+Repair a damaged download using -V option
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
+aria2c -V file.metalink
+-----------------------
 [NOTE]
 This option is only available used with BitTorrent or metalink with chunk
 checksums.
@@ -867,14 +867,14 @@ not created.
 Normally if you lose a control file, you cannot resume download.
 But if you have a torrent or metalink with chunk checksums for the file,
 you can resume the download without a control file by giving
---check-integrity=true option to aria2c in command-line.
+-V option to aria2c in command-line.
 
 SEEDING DOWNLOADED FILE IN BITTORRENT
 -------------------------------------
-You can seed downloaded file using --check-integrity=true option.
----------------------------------------------
-aria2c --check-integrity=true file.torrent
----------------------------------------------
+You can seed downloaded file using -V option.
+----------------------
+aria2c -V file.torrent
+----------------------
 
 INPUT FILE
 ----------

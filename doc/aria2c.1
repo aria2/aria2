@@ -54,9 +54,9 @@ option\&. Default:
 \fI5\fR
 .RE
 .PP
-\fB\-\-check\-integrity\fR=\fItrue\fR|\fIfalse\fR
+\fB\-V\fR, \fB\-\-check\-integrity\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
-Check file integrity by validating piece hash\&. This option only affects in BitTorrent downloads and Metalink downloads with chunk checksums\&. Use this option to re\-download a damaged portion of a file\&. Default:
+Check file integrity by validating piece hashes\&. This option has effect only in BitTorrent and Metalink downloads with chunk checksums\&. Use this option to re\-download a damaged portion of a file\&. Default:
 \fIfalse\fR
 .RE
 .PP
@@ -1310,12 +1310,12 @@ aria2c \-\-max\-download\-limit=100K file\&.metalink
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-Repair a damaged download using --check-integrity option
+Repair a damaged download using -V option
 .RS
 .sp
 .RS 4
 .nf
-aria2c \-\-check\-integrity=true file\&.metalink
+aria2c \-V file\&.metalink
 .fi
 .RE
 .sp
@@ -1422,15 +1422,15 @@ aria2 uses a control file to keep track the progress of download\&. A control fi
 .sp
 Usually a control file is deleted once download completed\&. If aria2 decides that download cannot be resumed(for example, when downloading a file from a HTTP server which doesn\'t support resume), a control file is not created\&.
 .sp
-Normally if you lose a control file, you cannot resume download\&. But if you have a torrent or metalink with chunk checksums for the file, you can resume the download without a control file by giving \-\-check\-integrity=true option to aria2c in command\-line\&.
+Normally if you lose a control file, you cannot resume download\&. But if you have a torrent or metalink with chunk checksums for the file, you can resume the download without a control file by giving \-V option to aria2c in command\-line\&.
 .sp
 .SH "SEEDING DOWNLOADED FILE IN BITTORRENT"
-You can seed downloaded file using \-\-check\-integrity=true option\&.
+You can seed downloaded file using \-V option\&.
 .sp
 .sp
 .RS 4
 .nf
-aria2c \-\-check\-integrity=true file\&.torrent
+aria2c \-V file\&.torrent
 .fi
 .RE
 .SH "INPUT FILE"

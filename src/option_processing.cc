@@ -140,7 +140,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_FILE_ALLOCATION.c_str(), required_argument, 0, 'a' },
       { PREF_ALLOW_OVERWRITE.c_str(), required_argument, &lopt, 202 },
 #ifdef ENABLE_MESSAGE_DIGEST
-      { PREF_CHECK_INTEGRITY.c_str(), required_argument, &lopt, 203 },
+      { PREF_CHECK_INTEGRITY.c_str(), optional_argument, 0, 'V' },
       { PREF_REALTIME_CHUNK_CHECKSUM.c_str(), required_argument, &lopt, 204 },
 #endif // ENABLE_MESSAGE_DIGEST
       { PREF_CONTINUE.c_str(), no_argument, 0, 'c' },
@@ -229,7 +229,7 @@ Option* option_processing(int argc, char* const argv[])
       { 0, 0, 0, 0 }
     };
     c = getopt_long(argc, argv, 
-		    "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::R::",
+		    "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::R::V::",
 		    longOpts, &optIndex);
     if(c == -1) {
       break;
@@ -368,9 +368,6 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 202:
 	cmdstream << PREF_ALLOW_OVERWRITE << "=" << optarg << "\n";
-	break;
-      case 203:
-	cmdstream << PREF_CHECK_INTEGRITY << "=" << optarg << "\n";
 	break;
       case 204:
 	cmdstream << PREF_REALTIME_CHUNK_CHECKSUM << "=" << optarg << "\n";
@@ -540,6 +537,9 @@ Option* option_processing(int argc, char* const argv[])
       break;
     case 'R':
       cmdstream << PREF_REMOTE_TIME << "=" << toBoolArg(optarg) << "\n";
+      break;
+    case 'V':
+      cmdstream << PREF_CHECK_INTEGRITY << "=" << toBoolArg(optarg) << "\n";
       break;
     case 'v':
       showVersion();

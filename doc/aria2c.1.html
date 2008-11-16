@@ -424,12 +424,12 @@ ARIA2C(1) Manual Page
 </p>
 </dd>
 <dt>
-<strong>--check-integrity</strong>=<em>true</em>|<em>false</em>
+<strong>-V</strong>, <strong>--check-integrity</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
-  Check file integrity by validating piece hash.
-  This option only affects in BitTorrent downloads and Metalink downloads with
+  Check file integrity by validating piece hashes.
+  This option has effect only in BitTorrent and Metalink downloads with
   chunk checksums.
   Use this option to re-download a damaged portion of a file.
   Default: <em>false</em>
@@ -1732,10 +1732,10 @@ encrypted one is given is undefined.</td>
 <div class="content">
 <pre><tt>aria2c --max-download-limit=100K file.metalink</tt></pre>
 </div></div>
-<h4 id="_repair_a_damaged_download_using_check_integrity_option">Repair a damaged download using --check-integrity option</h4>
+<h4 id="_repair_a_damaged_download_using_v_option">Repair a damaged download using -V option</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --check-integrity=true file.metalink</tt></pre>
+<pre><tt>aria2c -V file.metalink</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1812,14 +1812,14 @@ not created.</p></div>
 <div class="para"><p>Normally if you lose a control file, you cannot resume download.
 But if you have a torrent or metalink with chunk checksums for the file,
 you can resume the download without a control file by giving
---check-integrity=true option to aria2c in command-line.</p></div>
+-V option to aria2c in command-line.</p></div>
 </div>
 <h2 id="_seeding_downloaded_file_in_bittorrent">SEEDING DOWNLOADED FILE IN BITTORRENT</h2>
 <div class="sectionbody">
-<div class="para"><p>You can seed downloaded file using --check-integrity=true option.</p></div>
+<div class="para"><p>You can seed downloaded file using -V option.</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --check-integrity=true file.torrent</tt></pre>
+<pre><tt>aria2c -V file.torrent</tt></pre>
 </div></div>
 </div>
 <h2 id="_input_file">INPUT FILE</h2>
@@ -2021,7 +2021,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-11-16 13:40:15 JST
+Last updated 2008-11-16 13:49:20 JST
 </div>
 </div>
 </body>
