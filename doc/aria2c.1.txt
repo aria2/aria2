@@ -245,8 +245,10 @@ FTP Specific Options
   Set FTP password. This affects all URLs.
   Default: 'ARIA2USER@'
 
-*-p*, *--ftp-pasv*::
-  Use passive mode in FTP.
+*-p*, *--ftp-pasv*[='true'|'false']::
+  Use the passive mode in FTP.
+  If 'false' is given, the active mode will be used.
+  Default: 'true'
 
 *--ftp-proxy*=PROXY::
   Use this proxy server for FTP. See also *--all-proxy* option.

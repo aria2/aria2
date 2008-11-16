@@ -1,3 +1,12 @@
+2008-11-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made the default value of --ftp-pasv option set to true and it can take
+	true/false values.
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/usage_text.h
+	* doc/aria2c.1.txt
+
 2008-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Given custom random number generator to std::random_shuffle.

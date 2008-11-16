@@ -95,7 +95,8 @@ _(" --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.")
 #define TEXT_FTP_TYPE \
 _(" --ftp-type=TYPE              Set FTP transfer type.")
 #define TEXT_FTP_PASV \
-_(" -p, --ftp-pasv               Use passive mode in FTP.")
+_(" -p, --ftp-pasv[=true|false]  Use the passive mode in FTP. If false is given,\n"\
+  "                              the active mode will be used.")
 #define TEXT_LOWEST_SPEED_LIMIT \
 _(" --lowest-speed-limit=SPEED   Close connection if download speed is lower than\n"\
   "                              or equal to this value(bytes per sec).\n"\

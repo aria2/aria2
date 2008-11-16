@@ -555,7 +555,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_FTP_PASV,
 				    TEXT_FTP_PASV,
-				    V_FALSE)); // TODO ommit?
+				    V_TRUE));
     op->addTag(TAG_FTP);
     handlers.push_back(op);
   }

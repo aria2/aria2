@@ -132,7 +132,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_FTP_USER.c_str(), required_argument, &lopt, 9 },
       { PREF_FTP_PASSWD.c_str(), required_argument, &lopt, 10 },
       { PREF_FTP_TYPE.c_str(), required_argument, &lopt, 11 },
-      { PREF_FTP_PASV.c_str(), no_argument, NULL, 'p' },
+      { PREF_FTP_PASV.c_str(), optional_argument, 0, 'p' },
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { "http-proxy-method", required_argument, &lopt, 14 },
       { PREF_LOWEST_SPEED_LIMIT.c_str(), required_argument, &lopt, 200 },
@@ -497,7 +497,7 @@ Option* option_processing(int argc, char* const argv[])
       cmdstream << PREF_MAX_TRIES << "=" << optarg << "\n";
       break;
     case 'p':
-      cmdstream << PREF_FTP_PASV << "=" << V_TRUE << "\n";
+      cmdstream << PREF_FTP_PASV << "=" << toBoolArg(optarg) << "\n";
       break;
     case 'S':
       cmdstream << PREF_SHOW_FILES << "=" << V_TRUE << "\n";

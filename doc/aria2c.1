@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 11/15/2008
+.\"      Date: 11/16/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "11/15/2008" "" ""
+.TH "ARIA2C" "1" "11/16/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -341,9 +341,12 @@ Set FTP password\&. This affects all URLs\&. Default:
 \fIARIA2USER@\fR
 .RE
 .PP
-\fB\-p\fR, \fB\-\-ftp\-pasv\fR
+\fB\-p\fR, \fB\-\-ftp\-pasv\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
-Use passive mode in FTP\&.
+Use the passive mode in FTP\&. If
+\fIfalse\fR
+is given, the active mode will be used\&. Default:
+\fItrue\fR
 .RE
 .PP
 \fB\-\-ftp\-proxy\fR=PROXY
