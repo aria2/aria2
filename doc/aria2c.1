@@ -782,6 +782,9 @@ is given, this feature is disabled\&. Default:
 .RS 4
 Print the version number, copyright and the configuration information and exit\&.
 .RE
+.SS "OPTIONS THAT TAKES OPTIONAL ARGUMENTS"
+The options that has its arguments surrounded by square brackets([]) are optional\&. Usually ommiting the argument is evaluated to \fItrue\fR\&. If you use short form of these option(such as \fI\-V\fR) of these options and give arugment, then the option name and its argument should be concatenated like \fI\-Vfalse\fR)\&. If any spaces are inserted between the option name and argument, the argument treated as URI and usually this is not what you expect\&.
+.sp
 .SS "URL, TORRENT_FILE, METALINK_FILE"
 You can specify multiple URLs in command\-line\&. Unless you specify \fB\-Z\fR option, all URLs must point to the same file or downloading will fail\&.
 .sp
