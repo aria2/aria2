@@ -1,5 +1,17 @@
 2008-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Given custom random number generator to std::random_shuffle.
+	* src/AnnounceList.cc
+	* src/BtLeecherStateChoke.cc
+	* src/BtSeederStateChoke.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/MetalinkEntry.cc
+	* src/RarestPieceSelector.cc
+	* src/SimpleRandomizer.cc
+	* src/SimpleRandomizer.h
+
+2008-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Now the default value of --enable-direct-io is true.
 	* src/OptionHandlerFactory.cc
 	* doc/aria2c.1.txt

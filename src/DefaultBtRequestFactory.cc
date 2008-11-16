@@ -46,6 +46,7 @@
 #include "BtMessageFactory.h"
 #include "BtMessage.h"
 #include "a2functional.h"
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -171,7 +172,8 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
     PieceHandle& piece = *itr;
     std::deque<size_t> missingBlockIndexes;
     piece->getAllMissingBlockIndexes(missingBlockIndexes);
-    std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
+    std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
+			*(SimpleRandomizer::getInstance().get()));
     for(std::deque<size_t>::const_iterator bitr = missingBlockIndexes.begin();
 	bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
       size_t blockIndex = *bitr;

@@ -33,11 +33,14 @@
  */
 /* copyright --> */
 #include "BtLeecherStateChoke.h"
+
+#include <algorithm>
+
 #include "Peer.h"
 #include "Logger.h"
 #include "LogFactory.h"
 #include "a2time.h"
-#include <algorithm>
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -101,7 +104,8 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke(std::deque<Peer*>& peers)
   
   std::deque<Peer*>::iterator i = std::partition(peers.begin(), peers.end(), PeerFilter(true, true));
   if(i != peers.begin()) {
-    std::random_shuffle(peers.begin(), i);
+    std::random_shuffle(peers.begin(), i,
+			*(SimpleRandomizer::getInstance().get()));
     (*peers.begin())->optUnchoking(true);
     _logger->info("POU: %s", (*peers.begin())->ipaddr.c_str());
   }
@@ -130,7 +134,8 @@ void BtLeecherStateChoke::regularUnchoke(std::deque<Peer*>& peers)
     }
   }
   if(fastOptUnchoker) {
-    std::random_shuffle(peerIter, peers.end());
+    std::random_shuffle(peerIter, peers.end(),
+			*(SimpleRandomizer::getInstance().get()));
     for(std::deque<Peer*>::iterator i = peerIter; i != peers.end(); ++i) {
       if((*i)->peerInterested()) {
 	(*i)->optUnchoking(true);

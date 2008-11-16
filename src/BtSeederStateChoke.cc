@@ -47,6 +47,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "a2time.h"
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -113,7 +114,9 @@ void BtSeederStateChoke::unchoke(std::deque<Peer*>& peers)
 		  (*r)->calculateUploadSpeed(now));
   }
   if(_round == 2 && r != peers.end()) {
-    std::random_shuffle(r, peers.end());
+    std::random_shuffle(r, peers.end(),
+			*(SimpleRandomizer::getInstance().get()));
+    // TODO Is r invalidated here?
     (*r)->optUnchoking(true);
     _logger->info("POU: %s", (*r)->ipaddr.c_str());
   }

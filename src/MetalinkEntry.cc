@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "MetalinkEntry.h"
+
+#include <algorithm>
+
 #include "MetalinkResource.h"
 #include "FileEntry.h"
 #include "Util.h"
@@ -42,7 +45,7 @@
 # include "ChunkChecksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
-#include <algorithm>
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -138,7 +141,8 @@ public:
 };
 
 void MetalinkEntry::reorderResourcesByPreference() {
-  std::random_shuffle(resources.begin(), resources.end());
+  std::random_shuffle(resources.begin(), resources.end(),
+		      *(SimpleRandomizer::getInstance().get()));
   std::sort(resources.begin(), resources.end(), PrefOrder());
 }
 

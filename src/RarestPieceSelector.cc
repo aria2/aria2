@@ -33,7 +33,10 @@
  */
 /* copyright --> */
 #include "RarestPieceSelector.h"
+
 #include <algorithm>
+
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -101,7 +104,8 @@ RarestPieceSelector::RarestPieceSelector(size_t pieceNum, bool randomShuffle):
   _sortedPieceStats = _pieceStats;
   // we need some randomness in ordering.
   if(randomShuffle) {
-    std::random_shuffle(_sortedPieceStats.begin(), _sortedPieceStats.end());
+    std::random_shuffle(_sortedPieceStats.begin(), _sortedPieceStats.end(),
+			*(SimpleRandomizer::getInstance().get()));
   }
   {
     size_t order = 0;

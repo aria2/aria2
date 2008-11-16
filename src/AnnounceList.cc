@@ -33,10 +33,13 @@
  */
 /* copyright --> */
 #include "AnnounceList.h"
+
+#include <algorithm>
+
 #include "List.h"
 #include "Data.h"
 #include "A2STR.h"
-#include <algorithm>
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -238,7 +241,8 @@ void AnnounceList::shuffle() {
   for(AnnounceTiers::iterator itr = tiers.begin();
       itr != tiers.end(); itr++) {
     std::deque<std::string>& urls = (*itr)->urls;
-    random_shuffle(urls.begin(), urls.end());
+    std::random_shuffle(urls.begin(), urls.end(),
+			*(SimpleRandomizer::getInstance().get()));
   }
 }
 

@@ -40,9 +40,9 @@
 
 namespace aria2 {
 
-SharedHandle<Randomizer> SimpleRandomizer::_randomizer;
+SharedHandle<SimpleRandomizer> SimpleRandomizer::_randomizer;
 
-SharedHandle<Randomizer> SimpleRandomizer::getInstance()
+SharedHandle<SimpleRandomizer> SimpleRandomizer::getInstance()
 {
   if(_randomizer.isNull()) {
     _randomizer.reset(new SimpleRandomizer());
@@ -72,6 +72,11 @@ long int SimpleRandomizer::getMaxRandomNumber()
 long int SimpleRandomizer::getRandomNumber(long int to)
 {
   return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
+}
+
+long int SimpleRandomizer::operator()(long int to)
+{
+  return getRandomNumber(to);
 }
 
 } // namespace aria2

@@ -41,12 +41,12 @@ namespace aria2 {
 
 class SimpleRandomizer : public Randomizer {
 private:
-  static SharedHandle<Randomizer> _randomizer;
+  static SharedHandle<SimpleRandomizer> _randomizer;
 
   SimpleRandomizer();
 public:
   
-  static SharedHandle<Randomizer> getInstance();
+  static SharedHandle<SimpleRandomizer> getInstance();
   
   static void init();
 
@@ -60,6 +60,8 @@ public:
    * Returns random number in [0, to).
    */
   virtual long int getRandomNumber(long int to);
+
+  long int operator()(long int to);
 };
 
 } // namespace aria2
