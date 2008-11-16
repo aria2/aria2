@@ -1,5 +1,12 @@
 2008-11-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added -u for the short form of --max-upload-limit option.
+	* doc/aria2c.1.txt
+	* src/option_processing.cc
+	* src/usage_text.h
+
+2008-11-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added -V for the short form of --check-integrity option.
 	Now the argument of --check-integrity option is optional:
 	if it is omitted, it is evaluated as true.

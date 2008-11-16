@@ -200,7 +200,7 @@ Option* option_processing(int argc, char* const argv[])
       //{ "upload-limit".c_str(), required_argument, &lopt, 20 },
       { PREF_SEED_TIME.c_str(), required_argument, &lopt, 22 },
       { PREF_SEED_RATIO.c_str(), required_argument, &lopt, 23 },
-      { PREF_MAX_UPLOAD_LIMIT.c_str(), required_argument, &lopt, 24 },
+      { PREF_MAX_UPLOAD_LIMIT.c_str(), required_argument, 0, 'u' },
       { PREF_PEER_ID_PREFIX.c_str(), required_argument, &lopt, 25 },
       { PREF_ENABLE_PEER_EXCHANGE.c_str(), optional_argument, &lopt, 26 },
       { PREF_ENABLE_DHT.c_str(), optional_argument, &lopt, 27 },
@@ -229,7 +229,7 @@ Option* option_processing(int argc, char* const argv[])
       { 0, 0, 0, 0 }
     };
     c = getopt_long(argc, argv, 
-		    "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::R::V::",
+		    "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::R::V::u:",
 		    longOpts, &optIndex);
     if(c == -1) {
       break;
@@ -301,9 +301,6 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 23:
 	cmdstream << PREF_SEED_RATIO << "=" << optarg << "\n";
-	break;
-      case 24:
-	cmdstream << PREF_MAX_UPLOAD_LIMIT << "=" << optarg << "\n";
 	break;
       case 25:
 	cmdstream << PREF_PEER_ID_PREFIX << "=" << optarg << "\n";
@@ -540,6 +537,9 @@ Option* option_processing(int argc, char* const argv[])
       break;
     case 'V':
       cmdstream << PREF_CHECK_INTEGRITY << "=" << toBoolArg(optarg) << "\n";
+      break;
+    case 'u':
+      cmdstream << PREF_MAX_UPLOAD_LIMIT << "=" << optarg << "\n";
       break;
     case 'v':
       showVersion();

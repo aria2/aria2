@@ -227,7 +227,7 @@ _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n
   "                              to specify a range: \"6881-6999\". ',' and '-' can\n"\
   "                              be used together.")
 #define TEXT_MAX_UPLOAD_LIMIT \
-_(" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"\
+_(" -u, --max-upload-limit=SPEED Set max upload speed in bytes per sec.\n"\
   "                              0 means unrestricted.\n"\
   "                              You can append K or M(1K = 1024, 1M = 1024K).")
 #define TEXT_SEED_TIME \
