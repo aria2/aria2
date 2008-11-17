@@ -185,7 +185,7 @@ void AbstractDiskWriter::truncate(uint64_t length)
 }
 
 // TODO the file descriptor fd must be opened before calling this function.
-uint64_t AbstractDiskWriter::size() const
+uint64_t AbstractDiskWriter::size()
 {
   if(fd == -1) {
     throw DlAbortEx("File not opened.");

@@ -66,9 +66,10 @@ void ByteArrayDiskWriter::openExistingFile(const std::string& filename,
 
 void ByteArrayDiskWriter::writeData(const unsigned char* data, size_t dataLength, off_t position)
 {
-  if(size() < (uint64_t)position) {
-    buf.seekp(size(), std::ios::beg);
-    for(uint64_t i = size(); i < (uint64_t)position; ++i) {
+  uint64_t length = size();
+  if(length < (uint64_t)position) {
+    buf.seekp(length, std::ios::beg);
+    for(uint64_t i = length; i < (uint64_t)position; ++i) {
       buf.put('\0');
     }
   } else {
@@ -83,6 +84,13 @@ ssize_t ByteArrayDiskWriter::readData(unsigned char* data, size_t len, off_t pos
   buf.read(reinterpret_cast<char*>(data), len);
   buf.clear();
   return buf.gcount();
+}
+
+uint64_t ByteArrayDiskWriter::size()
+{
+  buf.seekg(0, std::ios::end);
+  buf.clear();
+  return buf.tellg();
 }
 
 } // namespace aria2

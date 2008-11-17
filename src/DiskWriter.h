@@ -77,7 +77,7 @@ public:
   virtual void truncate(uint64_t length) = 0;
 
   // Returns file length
-  virtual uint64_t size() const = 0;
+  virtual uint64_t size() = 0;
 
   virtual void enableDirectIO() = 0;
 

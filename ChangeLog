@@ -1,5 +1,16 @@
 2008-11-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten ByteArrayDiskWriter::size() using seekg() and tellg().
+	Removed const qualifier from DiskWriter::size().
+	* src/AbstractDiskWriter.cc
+	* src/AbstractDiskWriter.h
+	* src/ByteArrayDiskWriter.cc
+	* src/ByteArrayDiskWriter.h
+	* src/DiskWriter.h
+	* test/ByteArrayDiskWriterTest.cc
+	
+2008-11-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that causes segmentation fault/bus error during executing
 	choking algorithm while seeding. This is caused by improper
 	implementation of compare function which returns inconsistent results

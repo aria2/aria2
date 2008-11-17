@@ -63,10 +63,7 @@ public:
   // Not implemented yet
   virtual void truncate(uint64_t length) {}
 
-  virtual uint64_t size() const
-  {
-    return buf.str().size();
-  }
+  virtual uint64_t size();
 
   virtual void enableDirectIO() {}
 
