@@ -36,91 +36,108 @@
 
 #include <algorithm>
 
-#include "BtContext.h"
 #include "Peer.h"
-#include "BtMessageDispatcher.h"
-#include "BtMessageFactory.h"
-#include "BtRequestFactory.h"
-#include "BtMessageReceiver.h"
-#include "PeerConnection.h"
-#include "ExtensionMessageFactory.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include "a2time.h"
 #include "SimpleRandomizer.h"
 
 namespace aria2 {
 
-BtSeederStateChoke::BtSeederStateChoke(const SharedHandle<BtContext>& btContext):
-  _btContext(btContext),
+BtSeederStateChoke::BtSeederStateChoke():
   _round(0),
   _lastRound(0),
   _logger(LogFactory::getInstance()) {}
 
 BtSeederStateChoke::~BtSeederStateChoke() {}
 
-class RecentUnchoke {
-private:
-  SharedHandle<BtContext> _btContext;
+BtSeederStateChoke::PeerEntry::PeerEntry
+(const SharedHandle<Peer>& peer, const struct timeval& now):
+  _peer(peer),
+  _outstandingUpload(peer->countOutstandingUpload()),
+  _lastAmUnchoking(peer->getLastAmUnchoking()),
+  _recentUnchoking(!_lastAmUnchoking.elapsed(TIME_FRAME)),
+  _uploadSpeed(peer->calculateUploadSpeed(now))
+  {}
 
-  const struct timeval _now;
+bool
+BtSeederStateChoke::PeerEntry::operator<(const PeerEntry& rhs) const
+{
+  if(this->_outstandingUpload && !rhs._outstandingUpload) {
+    return true;
+  } else if(!this->_outstandingUpload && rhs._outstandingUpload) {
+    return false;
+  }
+  if(this->_recentUnchoking &&
+     this->_lastAmUnchoking.isNewer(rhs._lastAmUnchoking)) {
+    return true;
+  } else if(rhs._recentUnchoking) {
+    return false;
+  } else {
+    return this->_uploadSpeed > rhs._uploadSpeed;
+  }
+}
+
+SharedHandle<Peer> BtSeederStateChoke::PeerEntry::getPeer() const
+{
+  return _peer;
+}
+
+unsigned int BtSeederStateChoke::PeerEntry::getUploadSpeed() const
+{
+  return _uploadSpeed;
+}
+
+void BtSeederStateChoke::unchoke
+(std::deque<BtSeederStateChoke::PeerEntry>& peers)
+{
+  int count = (_round == 2) ? 4 : 3;
+
+  std::sort(peers.begin(), peers.end());
+
+  std::deque<PeerEntry>::iterator r = peers.begin();
+  for(; r != peers.end() && count; ++r, --count) {
+    (*r).getPeer()->chokingRequired(false);
+    _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->ipaddr.c_str(),
+		  (*r).getUploadSpeed());
+  }
+  if(_round == 2 && r != peers.end()) {
+    std::random_shuffle(r, peers.end(),
+			*(SimpleRandomizer::getInstance().get()));
+    (*r).getPeer()->optUnchoking(true);
+    _logger->info("POU: %s", (*r).getPeer()->ipaddr.c_str());
+  }
+}
+
+class ChokingRequired {
 public:
-  RecentUnchoke(const SharedHandle<BtContext>& btContext,
-		const struct timeval& now):
-    _btContext(btContext), _now(now) {}
-
-  bool operator()(Peer* left, Peer* right) const
+  void operator()(const SharedHandle<Peer>& peer) const
   {
-    size_t leftUpload = left->countOutstandingUpload();
-    size_t rightUpload = right->countOutstandingUpload();
-    if(leftUpload && !rightUpload) {
-      return true;
-    } else if(!leftUpload && rightUpload) {
-      return false;
-    }
-    const int TIME_FRAME = 20;
-    if(!left->getLastAmUnchoking().elapsed(TIME_FRAME) &&
-       left->getLastAmUnchoking().isNewer(right->getLastAmUnchoking())) {
-      return true;
-    } else if(!right->getLastAmUnchoking().elapsed(TIME_FRAME)) {
-      return false;
-    } else {
-      return left->calculateUploadSpeed(_now) > right->calculateUploadSpeed(_now);
-    }
+    peer->chokingRequired(true);
+  }
+};
+
+class GenPeerEntry {
+private:
+  struct timeval _now;
+public:
+  GenPeerEntry()
+  {
+    gettimeofday(&_now, 0);
+  }
+
+  BtSeederStateChoke::PeerEntry operator()(const SharedHandle<Peer>& peer) const
+  {
+    return BtSeederStateChoke::PeerEntry(peer, _now);
   }
 };
 
 class NotInterestedPeer {
 public:
-  bool operator()(const Peer* peer) const
+  bool operator()(const BtSeederStateChoke::PeerEntry& peerEntry) const
   {
-    return !peer->peerInterested();
+    return !peerEntry.getPeer()->peerInterested();
   }
 };
-
-void BtSeederStateChoke::unchoke(std::deque<Peer*>& peers)
-{
-  int count = (_round == 2) ? 4 : 3;
-
-  struct timeval now;
-  gettimeofday(&now, 0);
-
-  std::sort(peers.begin(), peers.end(), RecentUnchoke(_btContext, now));
-
-  std::deque<Peer*>::iterator r = peers.begin();
-  for(; r != peers.end() && count; ++r, --count) {
-    (*r)->chokingRequired(false);
-    _logger->info("RU: %s, ulspd=%u", (*r)->ipaddr.c_str(),
-		  (*r)->calculateUploadSpeed(now));
-  }
-  if(_round == 2 && r != peers.end()) {
-    std::random_shuffle(r, peers.end(),
-			*(SimpleRandomizer::getInstance().get()));
-    // TODO Is r invalidated here?
-    (*r)->optUnchoking(true);
-    _logger->info("POU: %s", (*r)->ipaddr.c_str());
-  }
-}
 
 void
 BtSeederStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet)
@@ -128,17 +145,18 @@ BtSeederStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet)
   _logger->info("Seeder state, %d choke round started", _round);
   _lastRound.reset();
 
-  std::deque<Peer*> peers;
-  std::transform(peerSet.begin(), peerSet.end(), std::back_inserter(peers),
-		 std::mem_fun_ref(&SharedHandle<Peer>::get));
+  std::deque<PeerEntry> peerEntries;
+
+  std::for_each(peerSet.begin(), peerSet.end(), ChokingRequired());
+
+  std::transform(peerSet.begin(), peerSet.end(),
+		 std::back_inserter(peerEntries), GenPeerEntry());
 	      
-  std::for_each(peers.begin(), peers.end(),
-		std::bind2nd(std::mem_fun((void (Peer::*)(bool))&Peer::chokingRequired), true));
+  peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
+				   NotInterestedPeer()),
+		    peerEntries.end());
 
-  peers.erase(std::remove_if(peers.begin(), peers.end(), NotInterestedPeer()),
-	      peers.end());
-
-  unchoke(peers);
+  unchoke(peerEntries);
   
   if(++_round == 3) {
     _round = 0;

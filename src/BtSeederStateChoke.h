@@ -36,29 +36,50 @@
 #define _D_BT_SEEDER_STATE_CHOKE_H_
 
 #include "common.h"
+
+#include <deque>
+
 #include "SharedHandle.h"
 #include "TimeA2.h"
-#include <deque>
 
 namespace aria2 {
 
-class BtContext;
 class Peer;
 class Logger;
 
 class BtSeederStateChoke {
 private:
-  SharedHandle<BtContext> _btContext;
-
   int _round;
 
   Time _lastRound;
 
   Logger* _logger;
 
-  void unchoke(std::deque<Peer*>& peers);
+  class PeerEntry {
+  private:
+    SharedHandle<Peer> _peer;
+    size_t _outstandingUpload;
+    Time _lastAmUnchoking;
+    bool _recentUnchoking;
+    unsigned int _uploadSpeed;
+    
+    const static time_t TIME_FRAME = 20;
+  public:
+    PeerEntry(const SharedHandle<Peer>& peer, const struct timeval& now);
+
+    bool operator<(const PeerEntry& rhs) const;
+
+    SharedHandle<Peer> getPeer() const;
+
+    unsigned int getUploadSpeed() const;
+  };
+
+  void unchoke(std::deque<PeerEntry>& peers);
+
+  friend class GenPeerEntry;
+  friend class NotInterestedPeer;
 public:
-  BtSeederStateChoke(const SharedHandle<BtContext>& btContext);
+  BtSeederStateChoke();
 
   ~BtSeederStateChoke();
 

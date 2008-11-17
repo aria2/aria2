@@ -57,7 +57,7 @@ DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
   maxPeerListSize(BtRuntime::MAX_PEERS+(BtRuntime::MAX_PEERS >> 2)),
   removedPeerSessionDownloadLength(0),
   removedPeerSessionUploadLength(0),
-  _seederStateChoke(new BtSeederStateChoke(btContext)),
+  _seederStateChoke(new BtSeederStateChoke()),
   _leecherStateChoke(new BtLeecherStateChoke())
 {}
 

@@ -1,3 +1,13 @@
+2008-11-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that causes segmentation fault/bus error during executing
+	choking algorithm while seeding. This is caused by improper
+	implementation of compare function which returns inconsistent results
+	depending on the timing of last unchoke.
+	* src/BtSeederStateChoke.cc
+	* src/BtSeederStateChoke.h
+	* src/DefaultPeerStorage.cc
+
 2008-11-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed TODO
