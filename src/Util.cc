@@ -220,7 +220,8 @@ bool Util::shouldUrlencode(const char c)
 	   ')' == c || ',' == c ||
 	   // reserved
 	   ';' == c || '/' == c || '?' == c  || ':' == c ||
-	   '@' == c || '&' == c || '=' == c || '+' == c);	   
+	   '@' == c || '&' == c || '=' == c || '+' == c ||
+	   '~' == c);	   
 }
 
 std::string Util::urlencode(const unsigned char* target, size_t len) {

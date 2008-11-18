@@ -1,5 +1,10 @@
 2008-11-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added '~' to reserved characters.
+	* src/Util.cc
+
+2008-11-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Do not urlencode Request::url in setUrl() because we want unmodified
 	URL using Request::getUrl()
 	* src/Request.cc
