@@ -7,32 +7,32 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-10-20 00:07+0900\n"
-"PO-Revision-Date: 2008-10-14 21:43+0900\n"
+"POT-Creation-Date: 2008-11-18 21:22+0900\n"
+"PO-Revision-Date: 2008-11-18 21:23+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-10-14 11:24+0000\n"
+"X-Launchpad-Export-Date: 2008-11-18 11:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:801
+#: src/DownloadEngine.cc:820
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "シャットダウン中です... 緊急時に即座にシャットダウンしたい場合は Ctrl-C をも"
 "う一度押してください."
 
-#: src/DownloadEngine.cc:805
+#: src/DownloadEngine.cc:826
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急シャットダウン中です..."
 
-#: src/MultiUrlRequestInfo.cc:88
+#: src/MultiUrlRequestInfo.cc:96
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 は次回, ダウンロードを再開します."
 
-#: src/MultiUrlRequestInfo.cc:90
+#: src/MultiUrlRequestInfo.cc:98
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -40,11 +40,11 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/RequestGroupMan.cc:382
+#: src/RequestGroupMan.cc:389
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:397
+#: src/RequestGroupMan.cc:430
 msgid "Status Legend:"
 msgstr "凡例:"
 
@@ -60,49 +60,49 @@ msgstr "                              タグ: "
 msgid "                              Possible Values: "
 msgstr "                              設定可能な値: "
 
-#: src/OptionHandlerImpl.h:96
+#: src/OptionHandlerImpl.h:99
 msgid "must be either 'true' or 'false'."
 msgstr "は, 'true' または 'false' のどちらかで指定してください."
 
-#: src/OptionHandlerImpl.h:127 src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
 #, c-format
 msgid "must be between %s and %s."
 msgstr "は, %s と %s の間で指定してください."
 
-#: src/OptionHandlerImpl.h:171
+#: src/OptionHandlerImpl.h:174
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "は, %s 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:180
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "は, %s 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:180 src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
 msgid "must be a number."
 msgstr "は, 数字でなければなりません."
 
-#: src/OptionHandlerImpl.h:234
+#: src/OptionHandlerImpl.h:237
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "は, %.1f 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:240
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "は, %1.f と %.1f の間で指定してください."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:243
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "は, %.1f 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:377
+#: src/OptionHandlerImpl.h:380
 msgid "must be one of the following:"
 msgstr "は, 以下のいずれかを指定してください:"
 
-#: src/OptionHandlerImpl.h:424
+#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
 
@@ -140,7 +140,9 @@ msgid ""
 "                              N URLs are given, those URLs are used more "
 "than\n"
 "                              once so that N connections total are made\n"
-"                              simultaneously. Please see -j option too."
+"                              simultaneously. Please see -j option too.\n"
+"                              Please note that in Metalink download, this\n"
+"                              option has no effect and use -C option instead."
 msgstr ""
 " -s, --split=N                N 個の接続を使ってファイルをダウンロードしま"
 "す. N\n"
@@ -150,9 +152,12 @@ msgstr ""
 "                              N 個未満の URL が指定された場合, URL を数回使っ"
 "て,\n"
 "                              合計で N 個の 接続になるように調整します.\n"
-"                              -j オプションも参照してください."
+"                              -j オプションも参照してください.\n"
+"                              Metalink のダウンロードでは, このオプションでは"
+"な\n"
+"                              く, -C オプションを使ってください."
 
-#: src/usage_text.h:53
+#: src/usage_text.h:55
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
@@ -162,66 +167,87 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/usage_text.h:56
+#: src/usage_text.h:58
 msgid " -t, --timeout=SEC            Set timeout in seconds."
 msgstr " -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します."
 
-#: src/usage_text.h:58
+#: src/usage_text.h:60
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
 " -m, --max-tries=N            試行回数を指定します. 0 を指定すると何度でも試"
 "行\n"
 "                              します."
 
-#: src/usage_text.h:60
-msgid ""
-" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
-msgstr ""
-" --http-proxy=HOST:PORT       HTTP プロキシ・サーバーを使用します.\n"
-"                              このオプションはすべての URL に影響します."
-
 #: src/usage_text.h:62
+msgid ""
+" --http-proxy=PROXY           Use this proxy server for HTTP.\n"
+"                              See also  --all-proxy option.\n"
+"                              This affects all URLs."
+msgstr ""
+" --http-proxy=PROXY           HTTP ダウンロードで使うプロキシサーバーを指定し"
+"ま\n"
+"                              す. --all-proxy オプションも参照してください.\n"
+"                              このオプションはすべての URL に適用されます."
+
+#: src/usage_text.h:66
+msgid ""
+" --https-proxy=PROXY          Use this proxy server for HTTPS.\n"
+"                              See also  --all-proxy option.\n"
+"                              This affects all URLs."
+msgstr ""
+" --https-proxy=PROXY          HTTPS ダウンロードで使うプロキシサーバーを指定"
+"しま\n"
+"                              す. --all-proxy オプションも参照してください.\n"
+"                              このオプションはすべての URL に適用されます."
+
+#: src/usage_text.h:70
+msgid ""
+" --ftp-proxy=PROXY            Use this proxy server for FTP.\n"
+"                              See also  --all-proxy option.\n"
+"                              This affects all URLs."
+msgstr ""
+" --ftp-proxy=PROXY            FTP ダウンロードで使うプロキシサーバーを指定し"
+"ま\n"
+"                              す. --all-proxy オプションも参照してください.\n"
+"                              このオプションはすべての URL に適用されます."
+
+#: src/usage_text.h:74
+msgid ""
+" --all-proxy=PROXY            Use this proxy server in the all protocols.\n"
+"                              You can override this setting and specify a\n"
+"                              proxy server for particular proctol using\n"
+"                              --http-proxy, --https-proxy and --ftp-proxy\n"
+"                              options.\n"
+"                              This affects all URLs."
+msgstr ""
+" --all-proxy=PROXY            すべてのプロトコル共通のプロキシサーバーを指定"
+"しま\n"
+"                              す. 特定のプロトコルで使用するプロキシサーバー"
+"を指\n"
+"                              定するには, --http-proxy, --https-proxy,\n"
+"                              --ftp-proxy を使います.\n"
+"                              このオプションはすべての URL に適用されます."
+
+#: src/usage_text.h:81
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
 " --http-user=USER             HTTP での認証ユーザーを指定します. このオプショ"
 "ン\n"
 "                              はすべての URL に影響します."
 
-#: src/usage_text.h:64
+#: src/usage_text.h:83
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
 " --http-passwd=PASSWD         HTTP での認証パスワードを指定します. このオプ"
 "ショ\n"
 "                              ンはすべての URL に影響します."
 
-#: src/usage_text.h:66
-msgid ""
-" --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
+#: src/usage_text.h:85
+msgid " --proxy-method=METHOD        Set the method to use in proxy request."
 msgstr ""
-" --http-proxy-user=USER       HTTP プロキシ・サーバーでの認証で使うユーザーを"
-"指\n"
-"                              定します. このオプションはすべての URL に影響し"
-"ま\n"
-"                              す."
+" --proxy-method=METHOD        プロキシサーバーへのリクエスト方法を指定します."
 
-#: src/usage_text.h:68
-msgid ""
-" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
-msgstr ""
-" --http-proxy-passwd=PASSWD   HTTP プロキシ・サーバーでの認証で使うパスワード"
-"を\n"
-"                              指定します. このオプションはすべての URL に影響"
-"し\n"
-"                              ます."
-
-#: src/usage_text.h:70
-msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
-msgstr ""
-" --http-proxy-method=METHOD   HTTP プロキシ・リクエストで使うメソッドを指定し"
-"ま\n"
-"                              す."
-
-#: src/usage_text.h:72
+#: src/usage_text.h:87
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -231,43 +257,42 @@ msgstr ""
 "て\n"
 "                              いるのは basic です."
 
-#: src/usage_text.h:75
+#: src/usage_text.h:90
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
 " --referer=REFERER            リファラーを指定します. このオプションはすべて"
 "の\n"
 "                               URL に影響します."
 
-#: src/usage_text.h:77
+#: src/usage_text.h:92
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
 " --ftp-user=USER              FTP での認証ユーザーを指定します. このオプショ"
 "ン\n"
 "                              はすべての URL に影響します."
 
-#: src/usage_text.h:79
+#: src/usage_text.h:94
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
 " --ftp-passwd=PASSWD          FTP での認証パスワードを指定します. このオプ"
 "ショ\n"
 "                              ンはすべての URL に影響します."
 
-#: src/usage_text.h:81
+#: src/usage_text.h:96
 msgid " --ftp-type=TYPE              Set FTP transfer type."
 msgstr " --ftp-type=TYPE              FTP 転送モードを指定します."
 
-#: src/usage_text.h:83
-msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv               FTP で passive モードを使用します."
-
-#: src/usage_text.h:85
-msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP."
+#: src/usage_text.h:98
+msgid ""
+" -p, --ftp-pasv[=true|false]  Use the passive mode in FTP. If false is "
+"given,\n"
+"                              the active mode will be used."
 msgstr ""
-" --ftp-via-http-proxy=METHOD  FTP で HTTP プロキシ・サーバーを使用する際の方"
-"法\n"
-"                              を指定します."
+" -p, --ftp-pasv[=true|false]  FTP ダウンロードでパッシブモードを使います. "
+"false\n"
+"                              を指定すると, アクティブモードを使います."
 
-#: src/usage_text.h:87
+#: src/usage_text.h:101
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -288,7 +313,7 @@ msgstr ""
 "ンロ\n"
 "                              ードには影響しません."
 
-#: src/usage_text.h:93
+#: src/usage_text.h:107
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -300,7 +325,7 @@ msgstr ""
 "を\n"
 "                              付加することができます (1K = 1024, 1M = 1024K)."
 
-#: src/usage_text.h:97
+#: src/usage_text.h:111
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -320,7 +345,7 @@ msgstr ""
 "か\n"
 "                              る場合があります."
 
-#: src/usage_text.h:103
+#: src/usage_text.h:117
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
@@ -332,7 +357,7 @@ msgstr ""
 "1024,\n"
 "                              1M = 1024K)."
 
-#: src/usage_text.h:107
+#: src/usage_text.h:121
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
@@ -344,7 +369,7 @@ msgstr ""
 "                              ファイル領域確保中の CPU 利用率が下がります.\n"
 "                              エラーが発生する場合は, 無効にしてください."
 
-#: src/usage_text.h:111
+#: src/usage_text.h:125
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
 "                              already exists but the corresponding .aria2 "
@@ -359,7 +384,7 @@ msgstr ""
 "を\n"
 "                              中止します."
 
-#: src/usage_text.h:115
+#: src/usage_text.h:129
 msgid ""
 " --allow-piece-length-change=true|false If false is given, aria2 aborts "
 "download\n"
@@ -382,7 +407,7 @@ msgstr ""
 "も\n"
 "                              しれません."
 
-#: src/usage_text.h:120
+#: src/usage_text.h:134
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -404,7 +429,7 @@ msgstr ""
 "舞\n"
 "                              うはずである."
 
-#: src/usage_text.h:124
+#: src/usage_text.h:138
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -423,7 +448,7 @@ msgstr ""
 "号\n"
 "                             (1..9999) を付加する."
 
-#: src/usage_text.h:130
+#: src/usage_text.h:144
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -454,38 +479,40 @@ msgstr ""
 "い\n"
 "                              ない場合は, -Z オプションが必要である."
 
-#: src/usage_text.h:141
+#: src/usage_text.h:155
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
 " --enable-http-keep-alive[=true|false] HTTP/1.1 持続的接続を有効にします."
 
-#: src/usage_text.h:143
+#: src/usage_text.h:157
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
 " --enable-http-pipelining[=true|false] HTTP/1.1 パイプライニングを有効にしま"
 "す."
 
-#: src/usage_text.h:145
+#: src/usage_text.h:159
 msgid ""
-" --check-integrity=true|false  Check file integrity by validating piece "
-"hash.\n"
-"                              This option only affects in BitTorrent "
-"downloads\n"
+" -V, --check-integrity[=true|false] Check file integrity by validating "
+"piece\n"
+"                              hashes. This option has effect only in "
+"BitTorrent\n"
 "                              and Metalink downloads with chunk checksums.\n"
 "                              Use this option to re-download a damaged "
 "portion\n"
 "                              of a file."
 msgstr ""
-" --check-integrity=true|false  部分ハッシュを計算してファイルの完全性を部分\n"
-"                              毎に検証します. このオプションは, BitTorrent\n"
-"                              又は, 部分(chunk)ハッシュ付きの Metalink 使用\n"
-"                              時のみ有効です. 壊れている可能性があるファイ"
-"ル\n"
-"                              を検証し, 壊れた部分だけダウンロードすること\n"
-"                              ができます."
+" -V, --check-integrity[=true|false] 部分ハッシュを計算してファイルの完全性を"
+"部分\n"
+"                              毎に検証します. このオプションは, BitTorrent 又"
+"は,\n"
+"                              部分(chunk)ハッシュ付きの Metalink 使用時のみ有"
+"効\n"
+"                              です. 壊れている可能性があるファイルを検証し, "
+"壊れ\n"
+"                              た部分だけダウンロードすることができます."
 
-#: src/usage_text.h:151
+#: src/usage_text.h:165
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -498,7 +525,7 @@ msgstr ""
 "の\n"
 "                              Metalink でのみ使用できます."
 
-#: src/usage_text.h:155
+#: src/usage_text.h:169
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -517,21 +544,27 @@ msgstr ""
 "用\n"
 "                              できます."
 
-#: src/usage_text.h:162
+#: src/usage_text.h:176
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr " -U, --user-agent=USER_AGENT  ユーザーエージェントを設定します."
 
-#: src/usage_text.h:164
+#: src/usage_text.h:178
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc               netrc サポートを止めます."
 
-#: src/usage_text.h:166
+#: src/usage_text.h:180
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
 "                              URIs on a single line using the TAB "
 "character.\n"
-"                              Reads input from stdin when '-' is specified."
+"                              Reads input from stdin when '-' is specified.\n"
+"                              The additional out and dir options can be\n"
+"                              specified after each line of URIs. This "
+"optional\n"
+"                              line must start with white space(s). See "
+"INPUT\n"
+"                              FILE section of man page for details."
 msgstr ""
 " -i, --input-file=FILE        ファイルに記述された URI のリストを読み込み, そ"
 "れ\n"
@@ -543,17 +576,28 @@ msgstr ""
 "す.\n"
 "                              FILE に '-' を指定すると, 標準入力から読み込み"
 "ま\n"
-"                              す."
+"                              す. 出力先ディレクトリやファイル名をエントリ毎"
+"に指\n"
+"                              定することができます. この追加オプションを指定"
+"する\n"
+"                              行は, 空白で開始されていなくてはなりません. 詳"
+"しく\n"
+"                              は man ページの INPUT FILE セクションを参照して"
+"く\n"
+"                              ださい."
 
-#: src/usage_text.h:171
+#: src/usage_text.h:189
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
 "                              every static (HTTP/FTP) URL, torrent and "
-"metalink."
-msgstr " -j, --max-concurrent-downloads=N 並行ダウンロード数を指定します."
+"metalink.\n"
+"                              See also -s and -C options."
+msgstr ""
+" -j, --max-concurrent-downloads=N 同時並行ダウンロード数を指定します.\n"
+"                              -s および -C オプションも参照してください."
 
-#: src/usage_text.h:174
+#: src/usage_text.h:193
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
@@ -565,7 +609,7 @@ msgstr ""
 "(1.x/\n"
 "                              2.x)/Netscape です."
 
-#: src/usage_text.h:177
+#: src/usage_text.h:196
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -581,7 +625,7 @@ msgstr ""
 "さ\n"
 "                              らに詳しい内容も表示されます."
 
-#: src/usage_text.h:181
+#: src/usage_text.h:200
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can find the file index using the\n"
@@ -609,11 +653,11 @@ msgstr ""
 "よっ\n"
 "                              てインデックスは変化する場合があります."
 
-#: src/usage_text.h:190
+#: src/usage_text.h:209
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  .torrent ファイルのパスを指定."
 
-#: src/usage_text.h:192
+#: src/usage_text.h:211
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -646,7 +690,7 @@ msgstr ""
 "せ\n"
 "                              ん."
 
-#: src/usage_text.h:202
+#: src/usage_text.h:221
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
@@ -655,7 +699,7 @@ msgstr ""
 "き\n"
 "                              します."
 
-#: src/usage_text.h:205
+#: src/usage_text.h:224
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -675,19 +719,19 @@ msgstr ""
 "う\n"
 "                              ことができます."
 
-#: src/usage_text.h:211
+#: src/usage_text.h:230
 msgid ""
-" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
+" -u, --max-upload-limit=SPEED Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-upload-limit=SPEED     アップロードの最大速度 (バイト/秒) を指定しま"
+" -u, --max-upload-limit=SPEED アップロードの最大速度 (バイト/秒) を指定しま"
 "す.\n"
-"                              0 を指定すると速度の制限をしません. K または M"
+"                              0 を指定すると速度の制限をしません. K または M "
 "を\n"
 "                              付加することができます (1K = 1024, 1M = 1024K)."
 
-#: src/usage_text.h:215
+#: src/usage_text.h:234
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -695,7 +739,7 @@ msgstr ""
 " --seed-time=MINUTES          シードを行う時間を分単位で指定します. \n"
 "                              --seed-ratio オプションも参照してください."
 
-#: src/usage_text.h:218
+#: src/usage_text.h:237
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO. 1.0 is\n"
@@ -719,7 +763,7 @@ msgstr ""
 "ら\n"
 "                              かの条件が成立した時点でシードは終了となります."
 
-#: src/usage_text.h:226
+#: src/usage_text.h:245
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -739,15 +783,15 @@ msgstr ""
 "し\n"
 "                              20 バイトにします."
 
-#: src/usage_text.h:233
+#: src/usage_text.h:252
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr " --enable-peer-exchange[=true|false] Peer Exchange を有効にします."
 
-#: src/usage_text.h:235
+#: src/usage_text.h:254
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr " --enable-dht[=true|false]    DHT を有効にします."
 
-#: src/usage_text.h:237
+#: src/usage_text.h:256
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -765,7 +809,7 @@ msgstr ""
 "う\n"
 "                              ことができます."
 
-#: src/usage_text.h:243
+#: src/usage_text.h:262
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
@@ -774,12 +818,12 @@ msgstr ""
 "用\n"
 "                              するホストとポート番号を指定します."
 
-#: src/usage_text.h:246
+#: src/usage_text.h:265
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
 msgstr " --dht-file-path=PATH DHT ルーティングテーブルを PATH に保存します."
 
-#: src/usage_text.h:248
+#: src/usage_text.h:267
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -796,7 +840,7 @@ msgstr ""
 "ベ\n"
 "                              ルを選択します."
 
-#: src/usage_text.h:253
+#: src/usage_text.h:272
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -811,7 +855,7 @@ msgstr ""
 "い\n"
 "                              ます."
 
-#: src/usage_text.h:258
+#: src/usage_text.h:277
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -829,7 +873,7 @@ msgstr ""
 "1024,\n"
 "                              1M = 1024K)."
 
-#: src/usage_text.h:263
+#: src/usage_text.h:282
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -839,7 +883,7 @@ msgstr ""
 "時に\n"
 "                              オープンするファイルの最大値を指定します."
 
-#: src/usage_text.h:266
+#: src/usage_text.h:285
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
@@ -848,28 +892,45 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/usage_text.h:269
+#: src/usage_text.h:288
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE .metalink ファイルのパスを指定."
 
-#: src/usage_text.h:271
+#: src/usage_text.h:290
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-"                              simultaneously."
+"                              simultaneously. Some Metalinks regulates the\n"
+"                              number of servers to connect. aria2 strictly\n"
+"                              respects them. This means that if Metalink "
+"defines\n"
+"                              the maxconnections attribute lower than\n"
+"                              NUM_SERVERS, then aria2 uses the value of\n"
+"                              maxconnections attribute instead of "
+"NUM_SERVERS.\n"
+"                              See also -s and -j options."
 msgstr ""
-" -C, --metalink-servers=NUM_SERVERS Metalink ダウンロードにおいて, 並行に接続"
-"す\n"
-"                              るサーバー数を設定します."
+" -C, --metalink-servers=NUM_SERVERS Metalink ダウンロードでの同時接続サーバー"
+"数\n"
+"                              を指定します. Metalink によっては, 接続数が制限"
+"さ\n"
+"                              れています. この場合, aria2 はこの制限を遵守し"
+"ま\n"
+"                              す. 例えば, Metalink ファイル中で, "
+"maxconnections\n"
+"                              属性の値が NUM_SERVERS よりも小さい場合, aria2 "
+"は\n"
+"                              maxconnections の値を使います.\n"
+"                              -s と -j オプションも参照してください."
 
-#: src/usage_text.h:274
+#: src/usage_text.h:299
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   ダウンロードするファイルのバージョン."
 
-#: src/usage_text.h:276
+#: src/usage_text.h:301
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE ダウンロードするファイルの言語."
 
-#: src/usage_text.h:278
+#: src/usage_text.h:303
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
@@ -877,7 +938,7 @@ msgstr ""
 "レー\n"
 "                              ティング・システム."
 
-#: src/usage_text.h:280
+#: src/usage_text.h:305
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-deliminated list of locations is\n"
@@ -886,7 +947,7 @@ msgstr ""
 " --metalink-location=LOCATION[,...] お好みのサーバーの地域を指定します.\n"
 "                              コンマ区切りの地域のリストが指定可能です."
 
-#: src/usage_text.h:284
+#: src/usage_text.h:309
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
 "'none'\n"
@@ -898,7 +959,7 @@ msgstr ""
 "定す\n"
 "                              してください."
 
-#: src/usage_text.h:287
+#: src/usage_text.h:312
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type is\n"
@@ -931,7 +992,7 @@ msgstr ""
 "せ\n"
 "                              ん."
 
-#: src/usage_text.h:297
+#: src/usage_text.h:322
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -952,11 +1013,11 @@ msgstr ""
 "protocol\n"
 "                              オプションを使ってください."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:328
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
-#: src/usage_text.h:305
+#: src/usage_text.h:330
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -982,18 +1043,18 @@ msgstr ""
 "                              索を行い, 該当するオプションのヘルプを表示しま"
 "す."
 
-#: src/usage_text.h:313
+#: src/usage_text.h:338
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
 " --no-conf                    aria2.conf ファイルの読み込みを抑制します."
 
-#: src/usage_text.h:315
+#: src/usage_text.h:340
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 " --conf-path=PATH             読み込む設定ファイルのパスを PATH に変更します."
 
-#: src/usage_text.h:317
+#: src/usage_text.h:342
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1003,7 +1064,7 @@ msgstr ""
 "す.\n"
 "                              0 を指定すると, この機能は無効になります."
 
-#: src/usage_text.h:320
+#: src/usage_text.h:345
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1022,19 +1083,19 @@ msgstr ""
 "9J1\"\n"
 "                              http://host/file"
 
-#: src/usage_text.h:326
+#: src/usage_text.h:351
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
 msgstr " -q, --quiet[=true|false]     コンソールへ何も出力しないようにします."
 
-#: src/usage_text.h:328
+#: src/usage_text.h:353
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false]     非同期 DNS を有効にします."
 
-#: src/usage_text.h:330
+#: src/usage_text.h:355
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr " --ftp-reuse-connection[=true|false] FTP で接続を再利用します."
 
-#: src/usage_text.h:332
+#: src/usage_text.h:357
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1046,11 +1107,11 @@ msgstr ""
 "0\n"
 "                              を指定します."
 
-#: src/usage_text.h:335
+#: src/usage_text.h:360
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL            出力するログレベルを指定します."
 
-#: src/usage_text.h:337
+#: src/usage_text.h:362
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1062,7 +1123,7 @@ msgstr ""
 "して\n"
 "                              保存したファイルの更新日付としてに使用します."
 
-#: src/usage_text.h:341
+#: src/usage_text.h:366
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1078,7 +1139,7 @@ msgstr ""
 "timeout\n"
 "                              で指定する値を使用します."
 
-#: src/usage_text.h:346
+#: src/usage_text.h:371
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -1102,7 +1163,7 @@ msgstr ""
 "                              します. この機能は HTTP/FTP サーバーにのみ有効"
 "です."
 
-#: src/usage_text.h:353
+#: src/usage_text.h:378
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1139,7 +1200,7 @@ msgstr ""
 "ンも\n"
 "                              参照してください."
 
-#: src/usage_text.h:364
+#: src/usage_text.h:389
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1154,7 +1215,7 @@ msgstr ""
 "で\n"
 "                              きます."
 
-#: src/usage_text.h:368
+#: src/usage_text.h:393
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1169,7 +1230,7 @@ msgstr ""
 "                              'feedback' 等の URI セレクターで使用されます.\n"
 "                              --uri-selector オプションを参照してください."
 
-#: src/usage_text.h:373
+#: src/usage_text.h:398
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1184,7 +1245,7 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/usage_text.h:377
+#: src/usage_text.h:402
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1202,6 +1263,75 @@ msgstr ""
 "ず,\n"
 "                              aria2 は終了時にコントロールファイルを保存しま"
 "す."
+
+#: src/usage_text.h:407
+msgid ""
+" --certificate=FILE           Use the client certificate in FILE.\n"
+"                              The certificate must be in PEM format.\n"
+"                              You may use --private-key option to specify "
+"the\n"
+"                              private key."
+msgstr ""
+" --certificate=FILE           FILE にあるクライアント証明書を使用します. 証明"
+"書\n"
+"                              は PEM 形式でなくてはなりません.\n"
+"                              プライベートキーは --private-key オプションで指"
+"定\n"
+"                              します."
+
+#: src/usage_text.h:412
+msgid ""
+" --private-key=FILE           Use the private key in FILE.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. See also --certificate option."
+msgstr ""
+" --private-key=FILE           FILE にあるプライベートキーを使用します. プライ"
+"ベ\n"
+"                              ートキーは暗号化されておらず, また, PEM 形式で"
+"なく\n"
+"                              てはなりません. --certificate オプションも参照"
+"して\n"
+"                              ください."
+
+#: src/usage_text.h:416
+msgid ""
+" --ca-certificate=FILE        Use the certificate authorities in FILE to "
+"verify\n"
+"                              the peers. The certificate file must be in "
+"PEM\n"
+"                              format and can contain multiple CA "
+"certificates.\n"
+"                              Use --check-certificate option to enable\n"
+"                              verification."
+msgstr ""
+" --ca-certificate=FILE        FILE にある認証局 (CA) の証明書を使って, ピアを"
+"検\n"
+"                              証します. FILE は PEM 形式でなくてはなりませ"
+"ん. ま\n"
+"                              た, 複数の CA の証明書を含むことができます.\n"
+"                              --check-certificate オプションでピアの検証を有"
+"効に\n"
+"                              します."
+
+#: src/usage_text.h:422
+msgid ""
+" --check-certificate[=true|false] Verify the peer using certificates "
+"specified\n"
+"                              in --ca-certificate option."
+msgstr ""
+" --check-certificate[=true|false] --ca-certificate オプションで指定した証明書"
+"を\n"
+"                              使ってピアを検証します."
+
+#: src/usage_text.h:425
+msgid ""
+" --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
+"to\n"
+"                              which proxy should not be used."
+msgstr ""
+" --no-proxy=DOMAINS           プロキシサーバーを使わないホスト名やドメイン名"
+"をコ\n"
+"                              ンマで区切って指定します."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1873,43 +2003,61 @@ msgid "Network problem has occurred. cause:%s"
 msgstr "ネットワークで問題が起こりました. 原因 : %s"
 
 #: src/message.h:161
+#, c-format
+msgid "Failed to load trusted CA certificates from %s. Cause: %s"
+msgstr "信頼する CA 証明書を %s から読み込めませんでした. 原因: %s"
+
+#: src/message.h:163
+#, c-format
+msgid "Certificate verification failed. Cause: %s"
+msgstr "証明書の検証が失敗しました. 原因: %s"
+
+#: src/message.h:164
+msgid "No certificate found."
+msgstr "証明書が見つかりませんでした."
+
+#: src/message.h:165
+msgid "Hostname not match."
+msgstr "ホスト名が合いません."
+
+#: src/message.h:167
 msgid "Timeout."
 msgstr "タイムアウトしました."
 
-#: src/message.h:162
+#: src/message.h:168
 msgid "Invalid chunk size."
 msgstr "chunk サイズが不正です."
 
-#: src/message.h:163
+#: src/message.h:169
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "chunk サイズ (%d) が大きすぎます."
 
-#: src/message.h:164
+#: src/message.h:170
 msgid "Invalid header."
 msgstr "ヘッダーが不正です."
 
-#: src/message.h:165
+#: src/message.h:171
 msgid "Invalid response."
 msgstr "サーバーから不正なレスポンスを受け取りました."
 
-#: src/message.h:166
+#: src/message.h:172
 msgid "No header found."
 msgstr "ヘッダーが見つかりません."
 
-#: src/message.h:167
+#: src/message.h:173
 msgid "No status header."
 msgstr "status ヘッダーが見つかりません."
 
-#: src/message.h:168
+#: src/message.h:174
 msgid "Proxy connection failed."
 msgstr "Proxy 接続に失敗しました."
 
-#: src/message.h:169
+#: src/message.h:175
 msgid "Connection failed."
 msgstr "接続に失敗しました."
 
-#: src/message.h:170
+#: src/message.h:176
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -1918,232 +2066,232 @@ msgstr ""
 "リクエストしたファイル名と登録済みファイル名が異なります. 期待するファイル"
 "名: %s 実際のファイル名: %s"
 
-#: src/message.h:171
+#: src/message.h:177
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "レスポンスのステータス (%d) が異常です."
 
-#: src/message.h:172
+#: src/message.h:178
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "ファイルサイズ (%s) が大きすぎます."
 
-#: src/message.h:173
+#: src/message.h:179
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "トランスファー・エンコーディング %s はサポートされていません."
 
-#: src/message.h:174
+#: src/message.h:180
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "SSL 初期化に失敗しました. 原因:%s"
 
-#: src/message.h:175
+#: src/message.h:181
 msgid "SSL I/O error"
 msgstr "SSL 入出力エラー"
 
-#: src/message.h:176
+#: src/message.h:182
 msgid "SSL protocol error"
 msgstr "SSL プロトコルエラー"
 
-#: src/message.h:177
+#: src/message.h:183
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "SSL 未定義のエラー %d"
 
-#: src/message.h:178
+#: src/message.h:184
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "SSL 初期化に失敗しました. 原因: OpenSSL connect error %d"
 
-#: src/message.h:179
+#: src/message.h:185
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "サイズが合いません. 期待するサイズ:%s 実際のサイズ:%s"
 
-#: src/message.h:180
+#: src/message.h:186
 msgid "Authorization failed."
 msgstr "認証に失敗しました."
 
-#: src/message.h:181
+#: src/message.h:187
 msgid "Got EOF from the server."
 msgstr "サーバーから EOF を受けとりました."
 
-#: src/message.h:182
+#: src/message.h:188
 msgid "Got EOF from peer."
 msgstr "ピアから EOF を受け取りました."
 
-#: src/message.h:183
+#: src/message.h:189
 msgid "Malformed meta info."
 msgstr "メタ情報ファイルの記述が不正です."
 
-#: src/message.h:185
+#: src/message.h:191
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "ファイル %s をオープンできませんでした. 原因: %s"
 
-#: src/message.h:186
+#: src/message.h:192
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "ファイル %s への書き込みに失敗しました. 原因: %s"
 
-#: src/message.h:187
+#: src/message.h:193
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "ファイル %s からの読みとりに失敗しました. 原因: %s"
 
-#: src/message.h:188
+#: src/message.h:194
 msgid "Failed to read data from disk."
 msgstr "データの読み込みに失敗しました."
 
-#: src/message.h:189
+#: src/message.h:195
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "ファイル %s の (またはその一部の) SHA1 ダイジェストの計算に失敗しました. 原"
 "因: %s"
 
-#: src/message.h:190
+#: src/message.h:196
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "ファイル %s のシークに失敗しました. 原因: %s"
 
-#: src/message.h:191
+#: src/message.h:197
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "オフセット (%s) が範囲外です."
 
-#: src/message.h:192
+#: src/message.h:198
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s はディレクトリではありません."
 
-#: src/message.h:193
+#: src/message.h:199
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "ディレクトリ %s を作成できませんでした. 原因: %s"
 
-#: src/message.h:194
+#: src/message.h:200
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "コントロールファイル %s をオープンできませんでした. 原因: %s"
 
-#: src/message.h:195
+#: src/message.h:201
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "コントロールファイル %s への書き込みに失敗しました. 原因: %s"
 
-#: src/message.h:196
+#: src/message.h:202
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "コントロールファイル %s からの読み込みに失敗しました. 原因: %s"
 
-#: src/message.h:198
+#: src/message.h:204
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "ソケットをオープンできませんでした. 原因: %s"
 
-#: src/message.h:199
+#: src/message.h:205
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "ソケットのオプションの設定に失敗しました. 原因: %s"
 
-#: src/message.h:200
+#: src/message.h:206
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "ソケットをブロッキングモードにすることに失敗しました. 原因: %s"
 
-#: src/message.h:201
+#: src/message.h:207
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "ソケットをノンブロッキングモードにすることに失敗しました. 原因: %s"
 
-#: src/message.h:202
+#: src/message.h:208
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "ソケットの bind に失敗しました. 原因: %s"
 
-#: src/message.h:203
+#: src/message.h:209
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "ソケットの listen に失敗しました. 原因: %s"
 
-#: src/message.h:204
+#: src/message.h:210
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "ピアからの接続の受付に失敗しました. 原因: %s"
 
-#: src/message.h:205
+#: src/message.h:211
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "ソケットの名前の取得に失敗しました. 原因: %s"
 
-#: src/message.h:206
+#: src/message.h:212
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "接続ピアの名前の取得に失敗しました. 原因: %s"
 
-#: src/message.h:207
+#: src/message.h:213
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "ホスト名 %s のアドレス解決に失敗しました. 原因: %s"
 
-#: src/message.h:208
+#: src/message.h:214
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "ホスト %s への接続に失敗しました. 原因: %s"
 
-#: src/message.h:209
+#: src/message.h:215
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr ""
 "ソケットへデータを書き込み可能かどうかのチェックに失敗しました. 原因: %s"
 
-#: src/message.h:210
+#: src/message.h:216
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr ""
 "ソケットからデータを読みとり可能かどうかのチェックに失敗しました. 原因: %s"
 
-#: src/message.h:211
+#: src/message.h:217
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "データの送信に失敗しました. 原因: %s"
 
-#: src/message.h:212
+#: src/message.h:218
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "データの受信に失敗しました. 原因: %s"
 
-#: src/message.h:213
+#: src/message.h:219
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "データの peek に失敗しました. 原因: %s"
 
-#: src/message.h:214
+#: src/message.h:220
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "未定義のソケットエラー %d (0x%x)"
 
-#: src/message.h:215
+#: src/message.h:221
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr ""
 "ファイル %s が存在しますが, それに対応するセグメントファイル %s が存在しませ"
 "ん."
 
-#: src/message.h:216
+#: src/message.h:222
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 "%s に対するペイロードサイズが不正です. 実際のサイズ:%d 期待するサイズ:%d"
 
-#: src/message.h:217
+#: src/message.h:223
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "ID %d は %s に対して使用できません. 期待する ID:%d"
 
-#: src/message.h:218
+#: src/message.h:224
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2152,29 +2300,29 @@ msgstr ""
 "部分チェックサムの検証が失敗しました. チェックサムインデックス=%d, オフセット"
 "=%s, 期待するハッシュ値:%s, 実際のハッシュ値:%s"
 
-#: src/message.h:219
+#: src/message.h:225
 msgid "Download aborted."
 msgstr "ダウンロードを中止します."
 
-#: src/message.h:220
+#: src/message.h:226
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "ファイル %s は他のコマンドがダウンロード中です."
 
-#: src/message.h:221
+#: src/message.h:227
 msgid "Insufficient checksums."
 msgstr "チェックサムが足りません."
 
-#: src/message.h:222
+#: src/message.h:228
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "トラッカーがエラーを返しました: %s"
 
-#: src/message.h:223
+#: src/message.h:229
 msgid "Flooding detected."
 msgstr "フラッディング (いわゆる荒らし行為) を検出しました."
 
-#: src/message.h:224
+#: src/message.h:230
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2183,55 +2331,55 @@ msgstr ""
 "一定期間 (%d 秒) request/piece メッセージの交換がなされていないので, 接続を閉"
 "じます."
 
-#: src/message.h:225
+#: src/message.h:231
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "torrent ファイル中の infoHash と .aria2 ファイル中のそれが一致しません."
 
-#: src/message.h:226
+#: src/message.h:232
 #, c-format
 msgid "No such file entry %s"
 msgstr "ファイルエントリー %s は存在しません."
 
-#: src/message.h:227
+#: src/message.h:233
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "ダウンロード速度が遅すぎます: %d <= %d(B/s), host:%s"
 
-#: src/message.h:228
+#: src/message.h:234
 msgid "No HttpRequestEntry found."
 msgstr "HttpRequestEntry が見つかりません."
 
-#: src/message.h:229
+#: src/message.h:235
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "ステータス %d を受けとりましたが, location ヘッダーが見つかりません."
 
-#: src/message.h:230
+#: src/message.h:236
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "range ヘッダーの値が不正です. 要求: %s-%s/%s, 応答: %s-%s/%s"
 
-#: src/message.h:231
+#: src/message.h:237
 msgid "No file matched with your preference."
 msgstr "検索条件に合致するファイルが見つかりません."
 
-#: src/message.h:232
+#: src/message.h:238
 msgid "Exception caught"
 msgstr "例外発生"
 
-#: src/message.h:233
+#: src/message.h:239
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "ペイロード長が許容最大値を越えているか, 不正です. ペイロード長 = %u"
 
-#: src/message.h:234
+#: src/message.h:240
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 "ファイル長が不正です. %s のダウンロードを継続できません: local %s, remote %s"
 
-#: src/BtSetup.cc:123
+#: src/BtSetup.cc:160
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
@@ -2355,6 +2503,32 @@ msgstr "ファイル:"
 #~ "                              します. デフォルト値: 5"
 
 #~ msgid ""
+#~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all "
+#~ "URLs."
+#~ msgstr ""
+#~ " --http-proxy=HOST:PORT       HTTP プロキシ・サーバーを使用します.\n"
+#~ "                              このオプションはすべての URL に影響します."
+
+#~ msgid ""
+#~ " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
+#~ msgstr ""
+#~ " --http-proxy-user=USER       HTTP プロキシ・サーバーでの認証で使うユー"
+#~ "ザーを指\n"
+#~ "                              定します. このオプションはすべての URL に影"
+#~ "響しま\n"
+#~ "                              す."
+
+#~ msgid ""
+#~ " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all "
+#~ "URLs."
+#~ msgstr ""
+#~ " --http-proxy-passwd=PASSWD   HTTP プロキシ・サーバーでの認証で使うパス"
+#~ "ワードを\n"
+#~ "                              指定します. このオプションはすべての URL に"
+#~ "影響し\n"
+#~ "                              ます."
+
+#~ msgid ""
 #~ " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 #~ "                              METHOD is either 'get' or 'tunnel'.\n"
 #~ "                              Default: tunnel"
@@ -2404,6 +2578,9 @@ msgstr "ファイル:"
 #~ "は\n"
 #~ "                              'ascii' を指定してください. デフォルト値: "
 #~ "binary"
+
+#~ msgid " -p, --ftp-pasv               Use passive mode in FTP."
+#~ msgstr " -p, --ftp-pasv               FTP で passive モードを使用します."
 
 #~ msgid ""
 #~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
@@ -2591,6 +2768,28 @@ msgstr "ファイル:"
 #~ "きの\n"
 #~ "                              Metalink でのみ使用できます.\n"
 #~ "                              デフォルト値: true"
+
+#~ msgid ""
+#~ " -i, --input-file=FILE        Downloads URIs found in FILE. You can "
+#~ "specify\n"
+#~ "                              multiple URIs for a single entity: "
+#~ "separate\n"
+#~ "                              URIs on a single line using the TAB "
+#~ "character.\n"
+#~ "                              Reads input from stdin when '-' is "
+#~ "specified."
+#~ msgstr ""
+#~ " -i, --input-file=FILE        ファイルに記述された URI のリストを読み込"
+#~ "み, それ\n"
+#~ "                              らをダウンロードします. 複数 URI の同時ダウ"
+#~ "ンロー\n"
+#~ "                              ドが可能です. 1 エントリに対して複数の URI "
+#~ "を指定\n"
+#~ "                              するにはタブで区切って一行に URI を複数記述"
+#~ "します.\n"
+#~ "                              FILE に '-' を指定すると, 標準入力から読み込"
+#~ "みま\n"
+#~ "                              す."
 
 #~ msgid ""
 #~ " -j, --max-concurrent-downloads=N Set maximum number of concurrent "

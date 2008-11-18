@@ -1,5 +1,15 @@
 2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Ukrainian, Japanese, Bulgarian, Russian and French translations.
+	Thanks to all translators.
+	* po/bg.po
+	* po/fr.po
+	* po/ja.po
+	* po/ru.po
+	* po/uk.po
+	
+2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.0.0
 	* configure.ac
 

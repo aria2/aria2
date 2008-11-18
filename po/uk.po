@@ -7,32 +7,32 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-10-20 00:07+0900\n"
-"PO-Revision-Date: 2008-10-17 12:53+0000\n"
+"POT-Creation-Date: 2008-11-18 21:22+0900\n"
+"PO-Revision-Date: 2008-11-18 08:26+0000\n"
 "Last-Translator: alexander10 <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-10-19 15:01+0000\n"
+"X-Launchpad-Export-Date: 2008-11-18 11:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:801
+#: src/DownloadEngine.cc:820
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Розпочинається послідовність операцій термінового вимкнення... Натисніть "
 "знов Ctrl-C для невідкладного вимкнення."
 
-#: src/DownloadEngine.cc:805
+#: src/DownloadEngine.cc:826
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Розпочинається послідовність операцій термінового вимкнення..."
 
-#: src/MultiUrlRequestInfo.cc:88
+#: src/MultiUrlRequestInfo.cc:96
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 відновить завантаження, якщо трансфер буде перезапущено."
 
-#: src/MultiUrlRequestInfo.cc:90
+#: src/MultiUrlRequestInfo.cc:98
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -40,11 +40,11 @@ msgstr ""
 "При наявності помилок дивіться log файл. Дивіться параметр '-l' в допомозі "
 "(help/man-сторінки) для детальнішої інформації."
 
-#: src/RequestGroupMan.cc:382
+#: src/RequestGroupMan.cc:389
 msgid "Download Results:"
 msgstr "Результати завантаження:"
 
-#: src/RequestGroupMan.cc:397
+#: src/RequestGroupMan.cc:430
 msgid "Status Legend:"
 msgstr "Роз'яснення позначень:"
 
@@ -60,49 +60,49 @@ msgstr "                              Ознаки: "
 msgid "                              Possible Values: "
 msgstr "                              Можливі значення: "
 
-#: src/OptionHandlerImpl.h:96
+#: src/OptionHandlerImpl.h:99
 msgid "must be either 'true' or 'false'."
-msgstr "має бути true' або 'false' (так чи ні)."
+msgstr "має бути 'true' або 'false' (так чи ні)."
 
-#: src/OptionHandlerImpl.h:127 src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
 #, c-format
 msgid "must be between %s and %s."
 msgstr "має бути між %s та %s."
 
-#: src/OptionHandlerImpl.h:171
+#: src/OptionHandlerImpl.h:174
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "має бути менше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:180
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "має бути більше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:180 src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
 msgid "must be a number."
 msgstr "має бути числом."
 
-#: src/OptionHandlerImpl.h:234
+#: src/OptionHandlerImpl.h:237
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "має бути менше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:240
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "має бути між %.1f та %.1f."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:243
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "має бути більше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:377
+#: src/OptionHandlerImpl.h:380
 msgid "must be one of the following:"
-msgstr "має бути одним із наступних."
+msgstr "має бути одним із наступних:"
 
-#: src/OptionHandlerImpl.h:424
+#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
 msgid "unrecognized proxy format"
 msgstr "невідомий формат проксі"
 
@@ -138,21 +138,12 @@ msgid ""
 "                              N URLs are given, those URLs are used more "
 "than\n"
 "                              once so that N connections total are made\n"
-"                              simultaneously. Please see -j option too."
+"                              simultaneously. Please see -j option too.\n"
+"                              Please note that in Metalink download, this\n"
+"                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N Завантажити файл із використанням N підключень. Якщо надано "
-"більше\n"
-"                              ніж N URL, то перші N URL буде використовано, "
-"а\n"
-"                              інші URL будуть залишені для використання у "
-"якості резервної копії. Якщо надано менше ніж\n"
-"                              N URL, то ті URL буде використано більш ніж "
-"один раз,\n"
-"                              отже N підключень буде утворено\n"
-"                              одночасно. Будь ласка подивіться також "
-"параметр -j."
 
-#: src/usage_text.h:53
+#: src/usage_text.h:55
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
@@ -161,49 +152,75 @@ msgstr ""
 " --retry-wait=SEC Задає секунди очікування для повторної спроби після\n"
 "                              виникнення помилки."
 
-#: src/usage_text.h:56
+#: src/usage_text.h:58
 msgid " -t, --timeout=SEC            Set timeout in seconds."
 msgstr " -t, --timeout=SEC Задає перерву в секундах."
 
-#: src/usage_text.h:58
-msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
-msgstr " -m, --max-tries=N Задає кількість спроб. 0 має на увазі необмежено."
-
 #: src/usage_text.h:60
-msgid ""
-" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
-msgstr ""
-" --http-proxy=HOST:PORT Використовувати HTTP проксі сервер. Це впливає на "
-"всі URL."
+msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
+msgstr " -m, --max-tries=N Задає кількість спроб. 0 має на увазі необмежена."
 
 #: src/usage_text.h:62
-msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr " --http-user=USER Задає HTTP користувача. Це впливає на всі URL."
-
-#: src/usage_text.h:64
-msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr " --http-passwd=PASSWD Задає HTTP пароль. Це впливає на всі URL."
+msgid ""
+" --http-proxy=PROXY           Use this proxy server for HTTP.\n"
+"                              See also  --all-proxy option.\n"
+"                              This affects all URLs."
+msgstr ""
+" --http-proxy=PROXY Використовувати цей проксі-сервер для HTTP.\n"
+"                              Дивіться також параметр --all-proxy.\n"
+"                              Це застосовується для усі URL."
 
 #: src/usage_text.h:66
 msgid ""
-" --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
+" --https-proxy=PROXY          Use this proxy server for HTTPS.\n"
+"                              See also  --all-proxy option.\n"
+"                              This affects all URLs."
 msgstr ""
-" --http-proxy-user=USER Задає HTTP проксі користувача.  Це впливає на всі "
-"URL."
-
-#: src/usage_text.h:68
-msgid ""
-" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
-msgstr ""
-" --http-proxy-passwd=PASSWD Задає HTTP проксі пароль.  Це впливає на всі URL."
+" --https-proxy=PROXY Використовувати цей проксі-сервер для HTTPS.\n"
+"                              Дивіться також параметр --all-proxy.\n"
+"                              Це застосовується для усі URL."
 
 #: src/usage_text.h:70
-msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
+msgid ""
+" --ftp-proxy=PROXY            Use this proxy server for FTP.\n"
+"                              See also  --all-proxy option.\n"
+"                              This affects all URLs."
 msgstr ""
-" --http-proxy-method=METHOD Задає метод, який використовується у проксі "
-"запитах."
+" --ftp-proxy=PROXY Використовувати цей проксі-сервер для FTP.\n"
+"                              Дивіться також параметр --all-proxy.\n"
+"                              Це застосовується для усі URL."
 
-#: src/usage_text.h:72
+#: src/usage_text.h:74
+msgid ""
+" --all-proxy=PROXY            Use this proxy server in the all protocols.\n"
+"                              You can override this setting and specify a\n"
+"                              proxy server for particular proctol using\n"
+"                              --http-proxy, --https-proxy and --ftp-proxy\n"
+"                              options.\n"
+"                              This affects all URLs."
+msgstr ""
+" --all-proxy=PROXY Використовувати цей проксі-сервер для усіх протоколів.\n"
+"                              Ви можете відкинути цей параметр та вказати\n"
+"                              проксі-сервер для окремих протоколів, "
+"використовуючи\n"
+"                              --http-proxy, --https-proxy та --ftp-proxy\n"
+"                              параметри.\n"
+"                              Це застосовується для усі URL."
+
+#: src/usage_text.h:81
+msgid " --http-user=USER             Set HTTP user. This affects all URLs."
+msgstr " --http-user=USER Задає HTTP користувача. Це впливає на всі URL."
+
+#: src/usage_text.h:83
+msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
+msgstr " --http-passwd=PASSWD Задає HTTP пароль. Це впливає на всі URL."
+
+#: src/usage_text.h:85
+msgid " --proxy-method=METHOD        Set the method to use in proxy request."
+msgstr ""
+" --proxy-method=METHOD Вказати метод для використання у проксі-запитах."
+
+#: src/usage_text.h:87
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -213,33 +230,32 @@ msgstr ""
 "(основна) -\n"
 "                              єдина схема, яку підтримується."
 
-#: src/usage_text.h:75
+#: src/usage_text.h:90
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
 " --referer=REFERER Задати реферер (посилання на те, що привело сюди). Це діє "
 "на усі URL."
 
-#: src/usage_text.h:77
+#: src/usage_text.h:92
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr " --ftp-user=USER Задати FTP користувача. Це діє на усі URL."
 
-#: src/usage_text.h:79
+#: src/usage_text.h:94
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr " --ftp-passwd=PASSWD Задати FTP пароль. Це діє на усі URL."
 
-#: src/usage_text.h:81
+#: src/usage_text.h:96
 msgid " --ftp-type=TYPE              Set FTP transfer type."
 msgstr " --ftp-type=TYPE Задати тип FTP трансферу."
 
-#: src/usage_text.h:83
-msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv Використовувати пасивний режим у FTP."
+#: src/usage_text.h:98
+msgid ""
+" -p, --ftp-pasv[=true|false]  Use the passive mode in FTP. If false is "
+"given,\n"
+"                              the active mode will be used."
+msgstr ""
 
-#: src/usage_text.h:85
-msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP."
-msgstr " --ftp-via-http-proxy=METHOD Використовувати HTTP проксі у FTP."
-
-#: src/usage_text.h:87
+#: src/usage_text.h:101
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -250,30 +266,30 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=SPEED Зачиняє підключення, якщо швидкість зкачування "
+" --lowest-speed-limit=SPEED Зачиняє підключення, якщо швидкість завантаження "
 "менша\n"
 "                              або дорівнює цьому значенню (байт за "
 "секунду).\n"
 "                              0 означає, що aria2 не має нижнього обмеження "
 "швидкості.\n"
-"                              Ви взмозі додати K або M(1K = 1024, 1M = "
+"                              Ви можете додати K або M(1K = 1024, 1M = "
 "1024K).\n"
 "                              Цей параметр не впливає на завантаження "
 "BitTorrent."
 
-#: src/usage_text.h:93
+#: src/usage_text.h:107
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --max-download-limit=SPEED Задає максимальну швидкість зкачування у байтах "
-"за секунду.\n"
+" --max-download-limit=SPEED Задає максимальну швидкість завантаження у "
+"байтах за секунду.\n"
 "                              0 має на увазі необмежено.\n"
-"                              Ви взмозі додати K або M(1K = 1024, 1M = "
+"                              Ви можете додати K або M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:97
+#: src/usage_text.h:111
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -284,27 +300,27 @@ msgid ""
 "of\n"
 "                              the file."
 msgstr ""
-" --file-allocation=METHOD Обумовлює метод резервування розміщення файлів.\n"
-"                              'none' нема попереднього резервування "
-"розміщення файлу. 'prealloc'\n"
-"                              попереднє резервування розміщення файлу перш "
-"ніж почнеться  зкачування.\n"
+" --file-allocation=METHOD Обумовлює метод резервування місця для файлу.\n"
+"                              'none' нема попереднього резервування місця "
+"файлу. 'prealloc'\n"
+"                              попереднє резервування місця файлу перш ніж "
+"почнеться завантаження.\n"
 "                              Це може тривати деякий час в залежності від "
 "розміру файлу."
 
-#: src/usage_text.h:103
+#: src/usage_text.h:117
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --no-file-allocation-limit=SIZE Не виконується попереднє резервування "
-"розміщення файлу для файлів,\n"
+" --no-file-allocation-limit=SIZE Не виконується попереднє резервування місця "
+"файлу для файлів,\n"
 "                              розмір яких  менший ніж SIZE.\n"
-"                              Ви взмозі додати K або M(1K = 1024, 1M = "
+"                              Ви можете додати K або M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:107
+#: src/usage_text.h:121
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
@@ -317,7 +333,7 @@ msgstr ""
 "                              Вимкніть (оберіть false), якщо Вам трапиться "
 "якась помилка"
 
-#: src/usage_text.h:111
+#: src/usage_text.h:125
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
 "                              already exists but the corresponding .aria2 "
@@ -329,7 +345,7 @@ msgstr ""
 "                              вже існує, а відповідний .aria2 файл, який \n"
 "                              не існує."
 
-#: src/usage_text.h:115
+#: src/usage_text.h:129
 msgid ""
 " --allow-piece-length-change=true|false If false is given, aria2 aborts "
 "download\n"
@@ -347,7 +363,7 @@ msgstr ""
 "                              проте деякий прогрес завантаження буде "
 "втрачено."
 
-#: src/usage_text.h:120
+#: src/usage_text.h:134
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -361,7 +377,7 @@ msgstr ""
 "                              звичайних утилітах завантаження командної "
 "строки."
 
-#: src/usage_text.h:124
+#: src/usage_text.h:138
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -377,7 +393,7 @@ msgstr ""
 "                              Нове ім'я файлу отримає на додаток крапку та "
 "число (1..9999)."
 
-#: src/usage_text.h:130
+#: src/usage_text.h:144
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -392,32 +408,46 @@ msgid ""
 "                              as the second example above, -Z option is\n"
 "                              required."
 msgstr ""
+" -P, --parameterized-uri[=true|false] Дозволити підтримку параметризованих "
+"URI.\n"
+"                              Ви можете вказати You can specify групу "
+"частин:\n"
+"                              http://{sv1,sv2,sv3}/foo.iso\n"
+"                              Також ви можете вказати числову послідовність "
+"із кроком\n"
+"                              лічильника:\n"
+"                              http://host/image[000-100:2].img\n"
+"                              Кроком лічильника можна знехтувати.\n"
+"                              Якщо усі URI не не вказують на на такий самий "
+"файл,\n"
+"                              як у другому наведеному вище прикладі, тоді "
+"необхідним є\n"
+"                              параметр -Z."
 
-#: src/usage_text.h:141
+#: src/usage_text.h:155
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
-" --enable-http-keep-alive[=true|false] Дозволити HTTP/1.1 persistent "
-"connection."
+" --enable-http-keep-alive[=true|false] Дозволити HTTP/1.1 надійне з'єднання."
 
-#: src/usage_text.h:143
+#: src/usage_text.h:157
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
 " --enable-http-pipelining[=true|false] Дозволити конвеєрну обробку HTTP/1.1."
 
-#: src/usage_text.h:145
+#: src/usage_text.h:159
 msgid ""
-" --check-integrity=true|false  Check file integrity by validating piece "
-"hash.\n"
-"                              This option only affects in BitTorrent "
-"downloads\n"
+" -V, --check-integrity[=true|false] Check file integrity by validating "
+"piece\n"
+"                              hashes. This option has effect only in "
+"BitTorrent\n"
 "                              and Metalink downloads with chunk checksums.\n"
 "                              Use this option to re-download a damaged "
 "portion\n"
 "                              of a file."
 msgstr ""
 
-#: src/usage_text.h:151
+#: src/usage_text.h:165
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -431,7 +461,7 @@ msgstr ""
 "                              дійсний в режимі Metalink із контрольними "
 "сумами частин."
 
-#: src/usage_text.h:155
+#: src/usage_text.h:169
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -440,56 +470,59 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
+" -c, --continue Продовжити завантаження частково завантаженого\n"
+"                              файлу. Використовуйте цей параметр, щоб "
+"відновити завантаження,\n"
+"                              розпочате у веб-браузері або іншою програмою,\n"
+"                              яка завантажує файли послідовно з\n"
+"                              початку. Зараз цей параметр можна\n"
+"                              вживати тільки для http(s)/ftp завантажень."
 
-#: src/usage_text.h:162
+#: src/usage_text.h:176
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 " -U, --user-agent=USER_AGENT Вказати агент користувача для http(s) "
 "завантажень."
 
-#: src/usage_text.h:164
+#: src/usage_text.h:178
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc Вимкнути підтримку netrc."
 
-#: src/usage_text.h:166
+#: src/usage_text.h:180
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
 "                              URIs on a single line using the TAB "
 "character.\n"
-"                              Reads input from stdin when '-' is specified."
+"                              Reads input from stdin when '-' is specified.\n"
+"                              The additional out and dir options can be\n"
+"                              specified after each line of URIs. This "
+"optional\n"
+"                              line must start with white space(s). See "
+"INPUT\n"
+"                              FILE section of man page for details."
 msgstr ""
-" -i, --input-file=FILE Завантажуються URI, які знайдено в FILE. Ви в змозі\n"
-"                              вказати декілько URI для єдиного об'єкту: "
-"відокремлюйте\n"
-"                              URI у одній строчці використовуючи символ "
-"TAB.\n"
-"                              Прочитати введення із stdin (стандартного "
-"потоку введення) коли '-' вказано."
 
-#: src/usage_text.h:171
+#: src/usage_text.h:189
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
 "                              every static (HTTP/FTP) URL, torrent and "
-"metalink."
+"metalink.\n"
+"                              See also -s and -C options."
 msgstr ""
-" -j, --max-concurrent-downloads=N Встановити максимальну кількість "
-"паралельних завантажень\n"
-"                              every static (HTTP/FTP) URL, torrent and "
-"metalink."
 
-#: src/usage_text.h:174
+#: src/usage_text.h:193
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
-" --load-cookies=FILE Завантажувати кукі-файли з FILE, використовуючи формати "
+" --load-cookies=FILE Завантажувати кукі-файли з FILE, використовуючи формат "
 "Firefox3\n"
 "                              та Mozilla/Firefox(1.x/2.x)/Netscape."
 
-#: src/usage_text.h:177
+#: src/usage_text.h:196
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -498,10 +531,11 @@ msgid ""
 "                              in case of torrent file."
 msgstr ""
 " -S, --show-files Вивести перелік із файлу .torrent або з файлу .metalink\n"
-" та вийти. Більш детальна інформація буде перелічена\n"
-"для торент файлу."
+"                              та вийти. Більш детальна інформація буде "
+"перелічена\n"
+"                              для торент файлу."
 
-#: src/usage_text.h:181
+#: src/usage_text.h:200
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can find the file index using the\n"
@@ -514,12 +548,25 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
+" --select-file=INDEX... Вказати файл для завантаження за допомогою обрання "
+"його індексу.\n"
+"                              Ви можете знайти індекс файлу за допомогою "
+"параметру\n"
+"                              --show-files. Декілька індексів можна\n"
+"                              вказати за допомогою ',', наприклад: \"3,6\".\n"
+"                              Ви також можете використовувати '-', щоб "
+"вказати діапазон: \"1-5\".\n"
+"                              ',' та '-' можна використовувати разом.\n"
+"                              Коли використовується параметр -M, індекс може "
+"дуже\n"
+"                              залежати від запиту (дивіться параметри --"
+"metalink-*)."
 
-#: src/usage_text.h:190
+#: src/usage_text.h:209
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE Шлях до .torrent-файлу."
 
-#: src/usage_text.h:192
+#: src/usage_text.h:211
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -534,8 +581,18 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-torrent=true|false|mem Якщо вказано true або mem, тоді "
+"завантажений файл,\n"
+"                              чий суфікс - .torrent або тип -\n"
+"                              application/x-bittorrent, aria2\n"
+"                              аналізує як torrent файл та завантажує файли\n"
+"                              згадані у ньому.\n"
+"                              Якщо вказано mem, тоді torrent файл не\n"
+"                              записується на диск, а тримається у пам'яті.\n"
+"                              Якщо вказано false, дії, згадані вище,\n"
+"                              не відбуваються."
 
-#: src/usage_text.h:202
+#: src/usage_text.h:221
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
@@ -543,7 +600,7 @@ msgstr ""
 " --direct-file-mapping=true|false Пряме читання з та запис до кожного файлу\n"
 "                              згаданого в .torrent файлі."
 
-#: src/usage_text.h:205
+#: src/usage_text.h:224
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -553,15 +610,29 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
+" --listen-port=PORT... Призначити номер порту TCP для BitTorrent "
+"завантажень.\n"
+"                              Декілька портів можна вказати із використанням "
+"',',\n"
+"                              наприклад: \"6881,6885\". Ви також можете "
+"використати '-',\n"
+"                              щоб вказати діапазон: \"6881-6999\". ',' та "
+"'-' можуть\n"
+"                              бути використані разом."
 
-#: src/usage_text.h:211
+#: src/usage_text.h:230
 msgid ""
-" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
+" -u, --max-upload-limit=SPEED Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" -u, --max-upload-limit=SPEED Встановити максимальну швидкість відвантаження "
+"у байтах за секунду.\n"
+"                              0 означає необмежено.\n"
+"                              Ви можете додати K або M(1K = 1024, 1M = "
+"1024K)."
 
-#: src/usage_text.h:215
+#: src/usage_text.h:234
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -570,7 +641,7 @@ msgstr ""
 "також\n"
 "                              параметр --seed-ratio."
 
-#: src/usage_text.h:218
+#: src/usage_text.h:237
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO. 1.0 is\n"
@@ -581,8 +652,19 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
+" --seed-ratio=RATIO Вказати рейтинг роздавання. Сідує (роздає) завершені "
+"торенти\n"
+"                              доти, доки рейтинг роздавання перебільшить "
+"RATIO. 1.0 є\n"
+"                              бажаним. Вкажіть 0.0 якщо ви збираєтесь\n"
+"                              сідувати не зважаючи на рейтинг роздавання.\n"
+"                              Якщо разом із цим параметром вказано параметр "
+"--seed-time,\n"
+"                              тоді сідування закінчиться, коли хоча б одну "
+"із\n"
+"                              умов буде виконано."
 
-#: src/usage_text.h:226
+#: src/usage_text.h:245
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -592,17 +674,26 @@ msgid ""
 "                              specified, the random alphabet characters are\n"
 "                              added to make it's length 20 bytes."
 msgstr ""
+" --peer-id-prefix=PEERI_ID_PREFIX Вказати префікс для ID вузлу. ID вузлу в\n"
+"                              BitTorrent довжиною 20 байтів. Якщо вказано "
+"більше 20\n"
+"                              байтів, то лише перші 20\n"
+"                              байтів будуть використовуватись. Якщо менше за "
+"20 байтів\n"
+"                              вказано, то випадкові символи алфавіту буде\n"
+"                              додано, щоб зробити його довжину рівною 20 "
+"байтам."
 
-#: src/usage_text.h:233
+#: src/usage_text.h:252
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 " --enable-peer-exchange[=true|false] Дозволити розширення прямого обміну."
 
-#: src/usage_text.h:235
+#: src/usage_text.h:254
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr " --enable-dht[=true|false] Ввімкнути підтримку DHT."
 
-#: src/usage_text.h:237
+#: src/usage_text.h:256
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -612,8 +703,16 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
+" --dht-listen-port=PORT... Вказати порт прослуховування UDP для DHT.\n"
+"                              Декілька потів можна вказати із використанням "
+"',',\n"
+"                              наприклад: \"6881,6885\". Ви також можете "
+"використати '-',\n"
+"                              щоб вказати діапазон: \"6881-6999\". ',' та "
+"'-' можуть\n"
+"                              бути використані разом."
 
-#: src/usage_text.h:243
+#: src/usage_text.h:262
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
@@ -622,12 +721,12 @@ msgstr ""
 "DHT\n"
 "                              мережі."
 
-#: src/usage_text.h:246
+#: src/usage_text.h:265
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
-msgstr ""
+msgstr " --dht-file-path=PATH Змінити файл таблиці роутінгу DHT на PATH."
 
-#: src/usage_text.h:248
+#: src/usage_text.h:267
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -636,16 +735,27 @@ msgid ""
 "satisfies\n"
 "                              the given level."
 msgstr ""
+" --bt-min-crypto-level=plain|arc4 Встановити мінімальний рівень методу "
+"шифрування.\n"
+"                              Якщо вузол підтримує декілька методів\n"
+"                              шифрування, aria2 обирає найменший, який "
+"задовольняє\n"
+"                              умови заданого рівню."
 
-#: src/usage_text.h:253
+#: src/usage_text.h:272
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
 "                              handshake. Thus aria2 always uses Obfuscation\n"
 "                              handshake."
 msgstr ""
+" --bt-require-crypto=true|false Якщо вказано true, aria2 не приймає та не\n"
+"                              встановлює з'єднання з успадкуванням "
+"початкового обміну BitTorrent.\n"
+"                              Бо aria2 завжди використовує обфускацію\n"
+"                              початкового обміну."
 
-#: src/usage_text.h:258
+#: src/usage_text.h:277
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -654,46 +764,64 @@ msgid ""
 "                              accepts connections ignoring max peer cap.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --bt-request-peer-speed-limit=SPEED В BitTorrent завантаженнях, якщо "
+"швидкість завантаження\n"
+"                              нижча за SPEED, aria2 ініціалізує та\n"
+"                              приймає з'єднання зневажаючи max peer cap "
+"(максимальну кількість на кожне завантаження).\n"
+"                              Ви можете додати K або M(1K = 1024, 1M = "
+"1024K)."
 
-#: src/usage_text.h:263
+#: src/usage_text.h:282
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
 "                              BitTorrent download."
 msgstr ""
+" --bt-max-open-files=NUM Вказує максимальну кількість файлів для відкриття в "
+"кожному\n"
+"                              BitTorrent завантаженні."
 
-#: src/usage_text.h:266
+#: src/usage_text.h:285
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
+" --bt-seed-unverified[=true|false] Сідер по-перше завантажує файли\n"
+"                              без перевірки хешу блоку."
 
-#: src/usage_text.h:269
+#: src/usage_text.h:288
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Шлях до .metalink-файлу."
 
-#: src/usage_text.h:271
+#: src/usage_text.h:290
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-"                              simultaneously."
+"                              simultaneously. Some Metalinks regulates the\n"
+"                              number of servers to connect. aria2 strictly\n"
+"                              respects them. This means that if Metalink "
+"defines\n"
+"                              the maxconnections attribute lower than\n"
+"                              NUM_SERVERS, then aria2 uses the value of\n"
+"                              maxconnections attribute instead of "
+"NUM_SERVERS.\n"
+"                              See also -s and -j options."
 msgstr ""
-" -C, --metalink-servers=NUM_SERVERS Кількість серверів для одночасного\n"
-"                              підключення."
 
-#: src/usage_text.h:274
+#: src/usage_text.h:299
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   Версія файлу для завантаження."
 
-#: src/usage_text.h:276
+#: src/usage_text.h:301
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE Мова файлу для завантаження."
 
-#: src/usage_text.h:278
+#: src/usage_text.h:303
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS Операційна система файлу, який завантажуватиметься."
 
-#: src/usage_text.h:280
+#: src/usage_text.h:305
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-deliminated list of locations is\n"
@@ -703,7 +831,7 @@ msgstr ""
 "                              Перелік із розмежуванням комою є\n"
 "                              прийнятним."
 
-#: src/usage_text.h:284
+#: src/usage_text.h:309
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
 "'none'\n"
@@ -713,7 +841,7 @@ msgstr ""
 "'none'\n"
 "                              якщо Ви не маєте жодного бажаного протоколу."
 
-#: src/usage_text.h:287
+#: src/usage_text.h:312
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type is\n"
@@ -728,8 +856,19 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-metalink=true|false|mem Якщо вказано true або mem, тоді коли файл\n"
+"                              із суфіксом .metaink або із типом змісту\n"
+"                              application/metalink+xml завантажено, aria2\n"
+"                              парсить його як metalink файл та завантажує "
+"файли,\n"
+"                              згадані у ньому.\n"
+"                              Якщо вказано mem, файл metalink не\n"
+"                              записується на диск, а лише тримається у "
+"пам'яті.\n"
+"                              Якщо вказано false, то дія, згаданя вище,\n"
+"                              не відбувається."
 
-#: src/usage_text.h:297
+#: src/usage_text.h:322
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -738,12 +877,19 @@ msgid ""
 "                              Use --metalink-preferred-protocol option to\n"
 "                              specify the preference of protocol."
 msgstr ""
+" --metalink-enable-unique-protocol=true|false Якщо надано true та декілька\n"
+"                              протоколів доступні для дзеркал у файлі "
+"metalink,\n"
+"                              aria2 використовує один із них.\n"
+"                              Використовуйте параметр --metalink-preferred-"
+"protocol, щоб\n"
+"                              вказати бажаний протокол."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:328
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Надрукувати номер версії та вийти."
 
-#: src/usage_text.h:305
+#: src/usage_text.h:330
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -757,17 +903,28 @@ msgid ""
 "match\n"
 "                              and print the result."
 msgstr ""
+" -h, --help[=CATEGORY] Друкує довідник користувача та виходить.\n"
+"                              Допоміжні повідомлення класифіковані у "
+"декількох\n"
+"                              категоріях. Наприклад, введіть \"--help=http\" "
+"для\n"
+"                              докладніших роз'яснень параметрів, які "
+"пов'язані з\n"
+"                              http. Якщо не знайдено відповідних категорій,\n"
+"                              надане ім'я параметру використовується для "
+"пошуку схожого слова\n"
+"                              та друку результату."
 
-#: src/usage_text.h:313
+#: src/usage_text.h:338
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf Скасувати завантаження файлу aria2.conf."
 
-#: src/usage_text.h:315
+#: src/usage_text.h:340
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=PATH Змінити шлях до файлу конфігурації на PATH."
 
-#: src/usage_text.h:317
+#: src/usage_text.h:342
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -776,7 +933,7 @@ msgstr ""
 " --stop=SEC Зупинити програму після того, як мине SEC секунд.\n"
 "                              Якщо вказано 0, ця можливість буде усунена."
 
-#: src/usage_text.h:320
+#: src/usage_text.h:345
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -787,23 +944,31 @@ msgid ""
 "9J1\"\n"
 "                              http://host/file"
 msgstr ""
+" --header=HEADER Додає HEADER до заголовку HTTP запиту. Ви можете "
+"використовувати\n"
+"                              цей параметр повторно, щоб вказати більше ніж "
+"один\n"
+"                              заголовок:\n"
+"                              aria2c --header=\"X-A: b78\" --header=\"X-B: "
+"9J1\"\n"
+"                              http://host/file"
 
-#: src/usage_text.h:326
+#: src/usage_text.h:351
 msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
 msgstr ""
 " -q, --quiet[=true|false] Зробити aria2 мовчазним (без консольного виведення "
 "інформації)."
 
-#: src/usage_text.h:328
+#: src/usage_text.h:353
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false] Дозволити асинхронний DNS."
 
-#: src/usage_text.h:330
+#: src/usage_text.h:355
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 " --ftp-reuse-connection[=true|false] Повторно використовувати FTP з'єднання."
 
-#: src/usage_text.h:332
+#: src/usage_text.h:357
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -813,11 +978,11 @@ msgstr ""
 "прогресування завантаження.\n"
 "                              Використання 0 забороняє виведення."
 
-#: src/usage_text.h:335
+#: src/usage_text.h:360
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL Вказати рівень виведення логу."
 
-#: src/usage_text.h:337
+#: src/usage_text.h:362
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -825,8 +990,12 @@ msgid ""
 "available,\n"
 "                              apply it to the local file."
 msgstr ""
+" -R, --remote-time[=true|false] Шукає хронометраж віддаленого файлу з\n"
+"                              віддаленого HTTP/FTP серверу та, якщо це "
+"доступно,\n"
+"                              застосовує його на локальному файлі."
 
-#: src/usage_text.h:341
+#: src/usage_text.h:366
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -836,8 +1005,14 @@ msgid ""
 "no\n"
 "                              effect and --timeout option is used instead."
 msgstr ""
+" --connect-timeout=SEC Вказати перерву у з'єднанні для встановлення\n"
+"                              підключення до HTTP/FTP/проксі серверу. Після\n"
+"                              встановлення підключення, цей параметр не має "
+"значення\n"
+"                              та замість нього використовується параметр --"
+"timeout."
 
-#: src/usage_text.h:346
+#: src/usage_text.h:371
 msgid ""
 " --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
 "the\n"
@@ -850,8 +1025,18 @@ msgid ""
 "using\n"
 "                              HTTP/FTP servers."
 msgstr ""
+" --max-file-not-found=NUM Якщо aria2 отримує статус `file not found' (файл "
+"не знайдено) від\n"
+"                              віддаленого HTTP/FTP серверу NUM разів без "
+"отримання\n"
+"                              жодного байту, тоді примусово розпочнеться "
+"відмовлення від завантаження.\n"
+"                              Вкажіть 0, щоб вимкнути цей параметр.\n"
+"                              Цей параметр є дійсним тільки під час "
+"використання \n"
+"                              HTTP/FTP серверів."
 
-#: src/usage_text.h:353
+#: src/usage_text.h:378
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -867,8 +1052,23 @@ msgid ""
 "                              of servers mentioned in --server-stat-of and\n"
 "                              --server-stat-if options."
 msgstr ""
+" --uri-selector=SELECTOR Задає алгоритм вибору URI.\n"
+"                              Якщо надано 'inorder', спроба завантаження URI "
+"виконується у порядку,\n"
+"                              виявленому в переліку URI.\n"
+"                              Якщо надано  'feedback', aria2 використовує "
+"швидкість завантаження,\n"
+"                              яка спостерігалась під час попереднього "
+"завантаження, та обирає\n"
+"                              найшвидший сервер у переліку URI. Це також\n"
+"                              ефективно пропускає неживі дзеркала. "
+"Спостережена\n"
+"                              швидкість завантаження є частиною профілю "
+"налаштувань сереверів,\n"
+"                              згаданих у параметрах --server-stat-of та\n"
+"                              --server-stat-if."
 
-#: src/usage_text.h:364
+#: src/usage_text.h:389
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -876,8 +1076,12 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
+" --server-stat-of=FILE Вказує ім'я файлу в який зберігати профіль\n"
+"                              налаштувань серверу. Ви можете завантажити "
+"завантажені дані\n"
+"                              використовуючи параметр --server-stat-if."
 
-#: src/usage_text.h:368
+#: src/usage_text.h:393
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -886,16 +1090,27 @@ msgid ""
 "                              some URI selector such as 'feedback'.\n"
 "                              See also --uri-selector option"
 msgstr ""
+" --server-stat-if=FILE Вказати ім'я файлу для завантаження профілю "
+"налаштувань\n"
+"                              серверу. Завантажені дані будуть використані "
+"у\n"
+"                              деяких URI селекторах, таких як 'feedback'.\n"
+"                              Дивіться також параметр --uri-selector"
 
-#: src/usage_text.h:373
+#: src/usage_text.h:398
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
+" --server-stat-timeout=SEC Вказує тайм-аут у секундах для того, щоб зробити "
+"недійсним\n"
+"                              профіль властивостей серверу з тих пір, як "
+"відбувся останній\n"
+"                              контакт з ним."
 
-#: src/usage_text.h:377
+#: src/usage_text.h:402
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -905,6 +1120,60 @@ msgid ""
 "stops\n"
 "                              regardless of the value."
 msgstr ""
+" --auto-save-interval=SEC Зберігати контрольний файл (*.aria2) кожні SEC "
+"секунд.\n"
+"                              Якщо вказано 0, тоді контрольний файл не "
+"зберігається протягом\n"
+"                              завантаження. aria2 зберігає контрольний файл "
+"тоді, коли зупиняється,\n"
+"                              не зважаючи на значення."
+
+#: src/usage_text.h:407
+msgid ""
+" --certificate=FILE           Use the client certificate in FILE.\n"
+"                              The certificate must be in PEM format.\n"
+"                              You may use --private-key option to specify "
+"the\n"
+"                              private key."
+msgstr ""
+
+#: src/usage_text.h:412
+msgid ""
+" --private-key=FILE           Use the private key in FILE.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. See also --certificate option."
+msgstr ""
+
+#: src/usage_text.h:416
+msgid ""
+" --ca-certificate=FILE        Use the certificate authorities in FILE to "
+"verify\n"
+"                              the peers. The certificate file must be in "
+"PEM\n"
+"                              format and can contain multiple CA "
+"certificates.\n"
+"                              Use --check-certificate option to enable\n"
+"                              verification."
+msgstr ""
+
+#: src/usage_text.h:422
+msgid ""
+" --check-certificate[=true|false] Verify the peer using certificates "
+"specified\n"
+"                              in --ca-certificate option."
+msgstr ""
+" --check-certificate[=true|false] Перевірити кожен з використовуваних "
+"сертифікатів, які вказані\n"
+"                              у параметрі --ca-certificate."
+
+#: src/usage_text.h:425
+msgid ""
+" --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
+"to\n"
+"                              which proxy should not be used."
+msgstr ""
+" --no-proxy=DOMAINS Вказати розділені комами ім'я хостів або доменів до\n"
+"                              яких не треба використовувати проксі."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -955,9 +1224,9 @@ msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 msgstr ""
-" Ви маєте можливість вказати декілька URL. Якщо тільки в не обрали параметр -"
-"Z, усі URL мають\n"
-" посилатись на той самий файл бо інакше завантаження буде припинено."
+" Ви маєте можливість вказати декілька URL. Якщо тільки Ви не обрали параметр "
+"-Z, усі URL мають\n"
+" посилатись на той самий файл, бо інакше завантаження буде припинено."
 
 #: src/version_usage.cc:123
 msgid ""
@@ -965,6 +1234,9 @@ msgid ""
 " stored in a local drive. Please note that they are always treated as a\n"
 " separate download."
 msgstr ""
+" Ви також можете вказати будь-яку кількість  torrent- та metalink- файлів,\n"
+" збережених на локальному диску. Проте вони завжди будуть оброблятись\n"
+" як окремі завантаження."
 
 #: src/version_usage.cc:128
 msgid ""
@@ -1145,6 +1417,8 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - Відкинути блок повідомлення в черзі через те, що вузол було "
+"\"придушено\". Індекс=%d, початок=%d, довжина=%d"
 
 #: src/message.h:72
 #, c-format
@@ -1163,7 +1437,7 @@ msgstr "CUID#%d - Під час перевірки цілісності було
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - Спроба пірінгу"
+msgstr "CUID#%d - Цікавиться вузол"
 
 #: src/message.h:75
 #, c-format
@@ -1251,17 +1525,17 @@ msgstr "CUID#%d - Помилка при обробці відповіді з т�
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - Неможливо створити запит."
+msgstr "CUID#%d - Неможливо створити запит трекера."
 
 #: src/message.h:91
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr "CUID#%d - Создание нового запроса #%d"
+msgstr "CUID#%d - Створення нового запиту трекера #%d"
 
 #: src/message.h:92
 #, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
-msgstr "CUID#%d - Вузлу DHT-дозволено."
+msgstr "CUID#%d - Вузол DHT-досяжний."
 
 #: src/message.h:94
 #, c-format
@@ -1315,8 +1589,8 @@ msgid ""
 msgstr ""
 "Файл %s існує, проте контрольний файл(*.aria2) не існує. Завантаження було "
 "відмінено, щоб завадити перетворенню цього файлу на 0. Якщо Ви впевнені у "
-"необхідності знов завантажити файл, тоді видаліть цей файл або "
-"використовуйте переметр add --allow-overwrite=true та перезапустіть aria2."
+"необхідності знов завантажити цей файл, тоді видаліть цей файл або "
+"використовуйте переметр --allow-overwrite=true та перезапустіть aria2."
 
 #: src/message.h:104
 #, c-format
@@ -1343,7 +1617,7 @@ msgstr "Запис файлу %s"
 
 #: src/message.h:109
 msgid "No peer list received."
-msgstr "Перелік вузлів відсутьний."
+msgstr "Перелік вузлів відсутній."
 
 #: src/message.h:110
 #, c-format
@@ -1357,11 +1631,11 @@ msgstr "Видаляється використана частина index=%d, f
 
 #: src/message.h:112
 msgid "Download of selected files was complete."
-msgstr "Завантаження обраних файлів було закінчено."
+msgstr "Завантаження обраних файлів було повністю закінчено."
 
 #: src/message.h:113
 msgid "The download was complete."
-msgstr "Завантаження було закінчено."
+msgstr "Завантаження було повністю закінчено."
 
 #: src/message.h:114
 #, c-format
@@ -1391,11 +1665,11 @@ msgstr "Metalink: Постановка до черги %s."
 #: src/message.h:119
 #, c-format
 msgid "Download complete: %s"
-msgstr "Завантаження закінчено: %s"
+msgstr "Завантаження повністю закінчено: %s"
 
 #: src/message.h:120
 msgid "Seeding is over."
-msgstr "Роздавання закінчено."
+msgstr "Роздавання скінчилось."
 
 #: src/message.h:121
 #, c-format
@@ -1481,7 +1755,8 @@ msgstr "Занадто малий корисний розмір для %s, ро�
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
-msgstr "Безкорисний контрольний файл %s видалено бо %s не не існує."
+msgstr ""
+"Марний контрольний файл %s видалено бо файл завантаження %s не не існує."
 
 #: src/message.h:138
 #, c-format
@@ -1504,7 +1779,7 @@ msgstr "Невдала ініціалізація сокет бібліотек�
 #: src/message.h:142
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
-msgstr "Минуло %d секунд(и). Виконання програми припиняється."
+msgstr "Минуло %d секунд(и). Програма зупиняється."
 
 #: src/message.h:143
 #, c-format
@@ -1560,43 +1835,61 @@ msgid "Network problem has occurred. cause:%s"
 msgstr "Виникла помилка із сіткою з причини: %s"
 
 #: src/message.h:161
+#, c-format
+msgid "Failed to load trusted CA certificates from %s. Cause: %s"
+msgstr "Помилка під час завантаження CA сертифікату %s. Причина: %s"
+
+#: src/message.h:163
+#, c-format
+msgid "Certificate verification failed. Cause: %s"
+msgstr "Невдала перевірка сертифікату. Причина: %s"
+
+#: src/message.h:164
+msgid "No certificate found."
+msgstr "Не знайдено сертифікат."
+
+#: src/message.h:165
+msgid "Hostname not match."
+msgstr "Ім'я хоту не таке, як треба."
+
+#: src/message.h:167
 msgid "Timeout."
 msgstr "Тайм-аут."
 
-#: src/message.h:162
+#: src/message.h:168
 msgid "Invalid chunk size."
 msgstr "Невірний розмір блоку."
 
-#: src/message.h:163
+#: src/message.h:169
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Блок занадто великий. Розмір=%d"
 
-#: src/message.h:164
+#: src/message.h:170
 msgid "Invalid header."
 msgstr "Невірний заголовок."
 
-#: src/message.h:165
+#: src/message.h:171
 msgid "Invalid response."
 msgstr "Невірна відповідь."
 
-#: src/message.h:166
+#: src/message.h:172
 msgid "No header found."
 msgstr "Не знайдено заголовок."
 
-#: src/message.h:167
+#: src/message.h:173
 msgid "No status header."
 msgstr "Немає заголовку статусу."
 
-#: src/message.h:168
+#: src/message.h:174
 msgid "Proxy connection failed."
-msgstr "Помилка підключення до проксі-сервера."
+msgstr "Помилка підключення проксі."
 
-#: src/message.h:169
+#: src/message.h:175
 msgid "Connection failed."
-msgstr "Не вдається встановити з'єднання"
+msgstr "Помилка під час з'єднання."
 
-#: src/message.h:170
+#: src/message.h:176
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -1605,256 +1898,256 @@ msgstr ""
 "Ім'я файлу із запиту та те, що зареєстровано раніше не однакові. Очікуване:%"
 "s, фактичне:%s"
 
-#: src/message.h:171
+#: src/message.h:177
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Помилковий статус відповіді. Статус=%d"
 
-#: src/message.h:172
+#: src/message.h:178
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Занадто великий розмір файлу. Розмір=%s"
 
-#: src/message.h:173
+#: src/message.h:179
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Кодування трансферу (обміну) %s не підтримується."
 
-#: src/message.h:174
+#: src/message.h:180
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Помилка ініціалізації SSL: %s"
 
-#: src/message.h:175
+#: src/message.h:181
 msgid "SSL I/O error"
 msgstr "Помилка I/O (вводу/виводу) SSL"
 
-#: src/message.h:176
+#: src/message.h:182
 msgid "SSL protocol error"
 msgstr "Помилка протоколу SSL"
 
-#: src/message.h:177
+#: src/message.h:183
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Невідома SSL помилка %d"
 
-#: src/message.h:178
+#: src/message.h:184
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Не вдалося ініціалізувати SSL: Помилка OpenSSL з'єднання %d"
 
-#: src/message.h:179
+#: src/message.h:185
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "Розміри не рівні. Очікуваний:%s, фактичний:%s"
+msgstr "Розміри відрізняються. Очікуваний:%s, фактичний:%s"
 
-#: src/message.h:180
+#: src/message.h:186
 msgid "Authorization failed."
 msgstr "Помилка авторизації."
 
-#: src/message.h:181
+#: src/message.h:187
 msgid "Got EOF from the server."
 msgstr "З сервера отримано EOF (кінець файлу)."
 
-#: src/message.h:182
+#: src/message.h:188
 msgid "Got EOF from peer."
 msgstr "Від вузла отримано EOF (кінець файлу)."
 
-#: src/message.h:183
+#: src/message.h:189
 msgid "Malformed meta info."
 msgstr "Невірні метадані."
 
-#: src/message.h:185
+#: src/message.h:191
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Помилка відкриття файлу %s: %s"
 
-#: src/message.h:186
+#: src/message.h:192
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Помилка під час запису до файлу %s: %s"
 
-#: src/message.h:187
+#: src/message.h:193
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Помилка читання з файлу %s: %s"
 
-#: src/message.h:188
+#: src/message.h:194
 msgid "Failed to read data from disk."
 msgstr "Помилка читання з диску."
 
-#: src/message.h:189
+#: src/message.h:195
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr "Помилка обрахунку SHA1 скми файлу %s, з причини: %s"
+msgstr "Помилка обрахунку SHA1 суми файлу %s, з причини: %s"
 
-#: src/message.h:190
+#: src/message.h:196
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Помилка позиціонування файлу %s: %s"
 
-#: src/message.h:191
+#: src/message.h:197
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Зсув за межі діапазону, зміщення=%s"
 
-#: src/message.h:192
+#: src/message.h:198
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s не є каталогом."
 
-#: src/message.h:193
+#: src/message.h:199
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Помилка утворення каталогу %s, обумовлена: %s"
 
-#: src/message.h:194
+#: src/message.h:200
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Помилка відкриття сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:195
+#: src/message.h:201
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Помилка запису до сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:196
+#: src/message.h:202
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Помилка читання із сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:198
+#: src/message.h:204
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Помилка відкриття сокету, обумовлена: %s"
 
-#: src/message.h:199
+#: src/message.h:205
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Помилка встановлення налаштувань сокету, обумовлена: %s"
 
-#: src/message.h:200
+#: src/message.h:206
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Помилка встановлення блокувального сокету, обумовлена: %s"
 
-#: src/message.h:201
+#: src/message.h:207
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Помилка встановлення не-блокувального сокету, обумовлена: %s"
 
-#: src/message.h:202
+#: src/message.h:208
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Помилка прив'язки до сокету, обумовлена: %s"
 
-#: src/message.h:203
+#: src/message.h:209
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Помилка прослуховування сокету, обумовлена:%s"
 
-#: src/message.h:204
+#: src/message.h:210
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Помилка прийняття підключення від вузла:%s"
 
-#: src/message.h:205
+#: src/message.h:211
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Помилка під час отримання ім'я сокету, обумовлена:%s"
 
-#: src/message.h:206
+#: src/message.h:212
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Помилка під час отримання ім'я підключеної точки, обумовлена:%s"
 
-#: src/message.h:207
+#: src/message.h:213
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Помилка перетворення імені вузла %s, обумовлена:%s"
 
-#: src/message.h:208
+#: src/message.h:214
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Помилка підключення до вузла %s, обумовлена: %s"
 
-#: src/message.h:209
+#: src/message.h:215
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Помилка перевірки сокету на можливість запису, обумовлена: %s"
 
-#: src/message.h:210
+#: src/message.h:216
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Помилка перевірки сокету на можливість читання, обумовлена: %s"
 
-#: src/message.h:211
+#: src/message.h:217
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Помилка пересилання даних, обумовлена: %s"
 
-#: src/message.h:212
+#: src/message.h:218
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Помилка отримання даних, обумовлена: %s"
 
-#: src/message.h:213
+#: src/message.h:219
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Помилка запиту даних, обумовлена: %s"
 
-#: src/message.h:214
+#: src/message.h:220
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Невідома помилка сокету %d (0x%x)"
 
-#: src/message.h:215
+#: src/message.h:221
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Файл %s існує, проте %s не існує."
 
-#: src/message.h:216
+#: src/message.h:222
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "Не дійсний розмір завантаження для %s,  розмір=%d. Має бути %d."
 
-#: src/message.h:217
+#: src/message.h:223
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Не дійсний ID=%d для %s. Має бути %d."
 
-#: src/message.h:218
+#: src/message.h:224
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
-"Шмат контрольної суми не пройшов підтвердження. checksumIndex=%d, offset=%s, "
+"Контрольна сума блоку не пройшла підтвердження. checksumIndex=%d, offset=%s, "
 "expectedHash=%s, actualHash=%s"
 
-#: src/message.h:219
+#: src/message.h:225
 msgid "Download aborted."
 msgstr "Завантаження скасовано."
 
-#: src/message.h:220
+#: src/message.h:226
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Файл %s було завантажено із використанням іншої команди."
 
-#: src/message.h:221
+#: src/message.h:227
 msgid "Insufficient checksums."
 msgstr "Недостатня контрольна сума."
 
-#: src/message.h:222
+#: src/message.h:228
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Трекер повернув інформацію про збій з причини: %s"
 
-#: src/message.h:223
+#: src/message.h:229
 msgid "Flooding detected."
 msgstr "Виявлено флудінг (лавинну адресацію)."
 
-#: src/message.h:224
+#: src/message.h:230
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -1863,59 +2156,58 @@ msgstr ""
 "Втрачено з'єднання через відсутність запитів/частин повідомлень, якими "
 "обмінювались би за визначений період (%d секунд)."
 
-#: src/message.h:225
+#: src/message.h:231
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
-"infoHash в файлі торенту doesn't не ідентичний тому, що знаходиться в файлі ."
-"aria2."
+"infoHash в файлі торенту не тотожній до того, що знаходиться в файлі .aria2."
 
-#: src/message.h:226
+#: src/message.h:232
 #, c-format
 msgid "No such file entry %s"
 msgstr "Нема такого файлу %s"
 
-#: src/message.h:227
+#: src/message.h:233
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Занадто мала швидкість завантаження: %d <= %d(Б/с), хост:%s"
 
-#: src/message.h:228
+#: src/message.h:234
 msgid "No HttpRequestEntry found."
 msgstr "Не знайдено HttpRequestEntry (входження Http запиту)"
 
-#: src/message.h:229
+#: src/message.h:235
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Отримано %d статус, проте не забезпечено місцезнаходження заголовку."
 
-#: src/message.h:230
+#: src/message.h:236
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Невірний діапазон в назві. Запит: %s-%s/%s, Відповідь: %s-%s/%s"
 
-#: src/message.h:231
+#: src/message.h:237
 msgid "No file matched with your preference."
 msgstr "Нема файлу відповідного до Ваших налаштувань."
 
-#: src/message.h:232
+#: src/message.h:238
 msgid "Exception caught"
 msgstr "Виявлено виняток"
 
-#: src/message.h:233
+#: src/message.h:239
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "Максимальна довжина корисного завантаження завищена або не вірна. довжина = %"
 "u"
 
-#: src/message.h:234
+#: src/message.h:240
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
-"Не дійсна довжина. Не можна продовжувати зкачування %s: локальний %s, "
-"віддалений %s"
+"Не дійсна довжина файлу. Не можна продовжувати завантаження %s: локальний %"
+"s, віддалений %s"
 
-#: src/BtSetup.cc:123
+#: src/BtSetup.cc:160
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"
 
