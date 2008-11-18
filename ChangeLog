@@ -1,5 +1,11 @@
 2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added nosqlite3 build to build_test.sh.
+	Renamed noxml as expat.
+	* build_test.sh
+	
+2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated INPUT FILE section.
 	* doc/aria2c.1.txt
 

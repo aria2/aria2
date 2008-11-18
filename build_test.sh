@@ -46,9 +46,10 @@ case "$1" in
 	build "--without-gnutls" "openssl"
 	build "--without-gnutls --without-openssl" "nossl"
 	build "--without-libcares" "nocares"
-	build "--without-libxml2" "nolibxml2"
+	build "--without-libxml2" "expat"
 	build "--without-libxml2 --without-libexpat" "noxml"
 	build "--without-libz" "nozlib"
+	build "--without-sqlite3" "nosqlite3"
 	# Feature combinations
 	build "--disable-bittorrent" "nobt"
 	build "--disable-metalink" "noml"
