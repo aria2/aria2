@@ -90,6 +90,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtProgressInfoFileTest);
 
 #ifdef ENABLE_BITTORRENT
 
+// Because load.aria2 is made for little endian systems, exclude
+// testLoad_compat() for big endian systems.
+#ifndef WORDS_BIGENDIAN
 void DefaultBtProgressInfoFileTest::testLoad_compat()
 {
   initializeMembers(1024, 81920);
@@ -140,6 +143,7 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
   CPPUNIT_ASSERT_EQUAL((size_t)2, piece2->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)512, piece2->getLength());
 }
+#endif // !WORDS_BIGENDIAN
 
 void DefaultBtProgressInfoFileTest::testLoad()
 {
@@ -312,6 +316,9 @@ void DefaultBtProgressInfoFileTest::testSave()
 
 #endif // ENABLE_BITTORRENT
 
+// Because load-nonBt.aria2 is made for little endian systems, exclude
+// testLoad_nonBt_compat() for big endian systems.
+#ifndef WORDS_BIGENDIAN
 void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
 {
   initializeMembers(1024, 81920);
@@ -355,6 +362,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
   CPPUNIT_ASSERT_EQUAL((size_t)2, piece2->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)512, piece2->getLength());
 }
+#endif // !WORDS_BIGENDIAN
 
 void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 {
