@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 11/16/2008
+.\"      Date: 11/18/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "11/16/2008" "" ""
+.TH "ARIA2C" "1" "11/18/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -1441,7 +1441,7 @@ The input file can contain list of URIs to feed them into aria2\&. You can speci
 .sp
 Each line is treated as if it is provided in command\-line argument\&. Therefore they are affected by \fB\-Z\fR and \fB\-P\fR options\&. The additional \fBout\fR and \fBdir\fR options can be specified after each line of URIs\&. This optional line must start with white space(s)\&.
 .sp
-For example, the content of uri\&.txt is:
+For example, let the content of uri\&.txt be
 .sp
 .sp
 .RS 4
@@ -1452,7 +1452,9 @@ http://server/file\&.iso http://mirror/file\&.iso
 http://foo/bar
 .fi
 .RE
-and if aria2 is executed with \-i uri\&.txt \-d /tmp options, then file\&.iso is saved as /iso_images/file\&.img and it is downloaded from http://server/file\&.iso and http://mirror/file\&.iso\&. The file bar is downloaded from http://foo/bar and saved as /tmp/bar\&.
+If aria2 is executed with \fB\-i\fR uri\&.txt \fB\-d\fR /tmp options, then \fIfile\&.iso\fR is saved as \fI/iso_images/file\&.img\fR and it is downloaded from http://server/file\&.iso and http://mirror/file\&.iso\&. The file \fIbar\fR is downloaded from http://foo/bar and saved as \fI/tmp/bar\fR\&.
+.sp
+In some cases, \fBout\fR parameter has no effect\&. See note of \fB\-\-out\fR option for the restrictions\&.
 .sp
 .SH "SERVER PERFORMANCE PROFILE"
 This section describes the format of server performance profile\&. The file is plain text and each line has several NAME=VALUE pair, delimited by comma\&. Currently following NAMEs are recognized:

@@ -896,18 +896,22 @@ Therefore they are affected by *-Z* and *-P* options.
 The additional *out* and *dir* options can be specified after each line of
 URIs. This optional line must start with white space(s).
 
-For example, the content of uri.txt is:
----------------------------------------------
+For example, let the content of uri.txt be
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 http://server/file.iso http://mirror/file.iso
   dir=/iso_images
   out=file.img
 http://foo/bar
----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-and if aria2 is executed with -i uri.txt -d /tmp options,
-then file.iso is saved as /iso_images/file.img and it is downloaded from
+If aria2 is executed with *-i* uri.txt *-d* /tmp options,
+then 'file.iso' is saved as '/iso_images/file.img' and it is downloaded from
 \http://server/file.iso and \http://mirror/file.iso.
-The file bar is downloaded from \http://foo/bar and saved as /tmp/bar.
+The file 'bar' is downloaded from \http://foo/bar and saved as '/tmp/bar'.
+
+In some cases, *out* parameter has no effect.
+See note of *--out* option for the restrictions.
 
 SERVER PERFORMANCE PROFILE
 --------------------------

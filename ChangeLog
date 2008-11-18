@@ -1,5 +1,10 @@
 2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated INPUT FILE section.
+	* doc/aria2c.1.txt
+
+2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Excluded testLoad_compat() and testLoad_nonBt_compat() when compiled
 	on big endian systems because test .aria2 files are made for little
 	endian systems.

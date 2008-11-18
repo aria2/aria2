@@ -1838,7 +1838,7 @@ separate URIs on a single line using the TAB character.</p></div>
 Therefore they are affected by <strong>-Z</strong> and <strong>-P</strong> options.
 The additional <strong>out</strong> and <strong>dir</strong> options can be specified after each line of
 URIs. This optional line must start with white space(s).</p></div>
-<div class="para"><p>For example, the content of uri.txt is:</p></div>
+<div class="para"><p>For example, let the content of uri.txt be</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>http://server/file.iso http://mirror/file.iso
@@ -1846,10 +1846,12 @@ URIs. This optional line must start with white space(s).</p></div>
   out=file.img
 http://foo/bar</tt></pre>
 </div></div>
-<div class="para"><p>and if aria2 is executed with -i uri.txt -d /tmp options,
-then file.iso is saved as /iso_images/file.img and it is downloaded from
+<div class="para"><p>If aria2 is executed with <strong>-i</strong> uri.txt <strong>-d</strong> /tmp options,
+then <em>file.iso</em> is saved as <em>/iso_images/file.img</em> and it is downloaded from
 http://server/file.iso and http://mirror/file.iso.
-The file bar is downloaded from http://foo/bar and saved as /tmp/bar.</p></div>
+The file <em>bar</em> is downloaded from http://foo/bar and saved as <em>/tmp/bar</em>.</p></div>
+<div class="para"><p>In some cases, <strong>out</strong> parameter has no effect.
+See note of <strong>--out</strong> option for the restrictions.</p></div>
 </div>
 <h2 id="_server_performance_profile">SERVER PERFORMANCE PROFILE</h2>
 <div class="sectionbody">
@@ -2028,7 +2030,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-11-16 17:34:48 JST
+Last updated 2008-11-18 20:35:15 JST
 </div>
 </div>
 </body>
