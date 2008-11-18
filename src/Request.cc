@@ -115,13 +115,13 @@ static std::string urlencode(const std::string& src)
 }
 
 bool Request::setUrl(const std::string& url) {
-  this->url = urlencode(removeFragment(url));
-  return parseUrl(this->url);
+  this->url = url;
+  return parseUrl(urlencode(removeFragment(url)));
 }
 
 bool Request::resetUrl() {
   previousUrl = referer;
-  return parseUrl(url);
+  return parseUrl(urlencode(removeFragment(url)));
 }
 
 void Request::setReferer(const std::string& url)

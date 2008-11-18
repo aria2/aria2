@@ -1,6 +1,10 @@
-2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+2008-11-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	* Release 1.0.0
+	Do not urlencode Request::url in setUrl() because we want unmodified
+	URL using Request::getUrl()
+	* src/Request.cc
+	* src/Request.h
+	* test/RequestTest.cc
 
 2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 

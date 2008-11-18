@@ -274,7 +274,9 @@ void RequestTest::testSetUrl17()
   CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file%3cwith%252%20%20space"
 				   "/file%20with%20space;param%25?a=/?"),
 		       req.getCurrentUrl());
-  CPPUNIT_ASSERT_EQUAL(req.getCurrentUrl(), req.getUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file<with%2 %20space"
+				   "/file with space;param%?a=/?"),
+		       req.getUrl());
 }
 
 void RequestTest::testRedirectUrl() {
@@ -365,7 +367,8 @@ void RequestTest::testInnerLink() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com/index.html#download");
   CPPUNIT_ASSERT(v);
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/index.html"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/index.html"
+				   "#download"),
 		       req.getUrl());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/index.html"),
 		       req.getCurrentUrl());

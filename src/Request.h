@@ -101,6 +101,7 @@ public:
   
   unsigned int getRedirectCount() const;
 
+  // Returns URI passed by setUrl()
   const std::string& getUrl() const { return url; }
   const std::string& getCurrentUrl() const { return currentUrl; }
   const std::string& getPreviousUrl() const { return previousUrl; }
