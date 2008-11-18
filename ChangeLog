@@ -1,3 +1,13 @@
+2008-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Dropped ares support.
+	* README
+	* configure.ac
+	* m4/libares.m4: Removed.
+	* src/AsyncNameResolver.cc
+	* src/Makefile.am
+	* test/Makefile.am
+
 2008-11-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten ByteArrayDiskWriter::size() using seekg() and tellg().

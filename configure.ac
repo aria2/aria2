@@ -29,7 +29,6 @@ ARIA2_ARG_WITH([openssl])
 ARIA2_ARG_WITH([sqlite3])
 ARIA2_ARG_WITH([libxml2])
 ARIA2_ARG_WITH([libexpat])
-ARIA2_ARG_WITH([libares])
 ARIA2_ARG_WITH([libcares])
 ARIA2_ARG_WITH([libz])
 
@@ -92,12 +91,6 @@ if test "x$with_libcares" = "xyes"; then
   AM_PATH_LIBCARES
 fi
 
-if test "x$have_libcares" = "x"; then
-  if test "x$with_libares" = "xyes"; then
-    AM_PATH_LIBARES
-  fi
-fi
-
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
   AM_PATH_LIBZ
@@ -148,7 +141,7 @@ AM_CONDITIONAL([ENABLE_LIBXML2],
 AM_CONDITIONAL([ENABLE_LIBEXPAT],
          [test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"])
 
-if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
+if test "x$have_libcares" = "xyes"; then
   AC_DEFINE([ENABLE_ASYNC_DNS], [1],
             [Define to 1 if asynchronous DNS support is enabled.])
   AM_CONDITIONAL([ENABLE_ASYNC_DNS], true)
@@ -350,7 +343,6 @@ echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
-echo "LibAres:        $have_libares"
 echo "LibCares:       $have_libcares"
 echo "Libz:           $have_libz"
 echo "Bittorrent:     $enable_bittorrent"

@@ -61,6 +61,7 @@ BitTorrent            GnuTLS+Libgcrypt or OpenSSL
 Metalink              libxml2 or Expat.
 Checksum              GnuTLS+Libgcrypt or OpenSSL
 gzip, deflate in HTTP zlib
+Async DNS             C-Ares
 Firefox3 cookie       libsqlite3
 -------------------------------------------------
 
@@ -75,10 +76,9 @@ Note;;
 You can disable BitTorrent, Metalink support by providing --disable-bittorrent,
 --disable-metalink respectively to configure script.
 
-In order to enable async DNS support, you need c-ares or ares.
+In order to enable async DNS support, you need c-ares
 
 * c-ares: http://daniel.haxx.se/projects/c-ares/
-* ares: ftp://athena-dist.mit.edu/pub/ATHENA/ares
 
 How to build
 ------------
@@ -88,7 +88,7 @@ packages(package name may vary depending on the distribution you use):
 * libgnutls-dev    (Required for HTTPS, BitTorrent, Checksum support)
 * libgpg-error-dev (Required for BitTorrent, Checksum support)
 * libgcrypt-dev    (Required for BitTorrent, Checksum support)
-* libares-dev      (Required for async DNS support)
+* libc-ares-dev    (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
 * libz1g-dev       (Required for gzip, deflate decoding support in HTTP)
 * libsqlite3-dev   (Required for Firefox3 cookie support)

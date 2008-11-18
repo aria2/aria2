@@ -738,8 +738,6 @@ OPENSSL_LIBS
 OPENSSL_CFLAGS
 LIBCARES_LIBS
 LIBCARES_CPPFLAGS
-LIBARES_LIBS
-LIBARES_CPPFLAGS
 LIBZ_LIBS
 LIBZ_CPPFLAGS
 ENABLE_SSL_TRUE
@@ -1449,7 +1447,6 @@ Optional Packages:
   --with-sqlite3          use sqlite3 if it is installed.
   --with-libxml2          use libxml2 if it is installed.
   --with-libexpat         use libexpat if it is installed.
-  --with-libares          use libares if it is installed.
   --with-libcares         use libcares if it is installed.
   --with-libz             use libz if it is installed.
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
@@ -1461,7 +1458,6 @@ Optional Packages:
                           prefix where LIBGCRYPT is installed (optional)
   --with-openssl-prefix=PREFIX  Prefix where OpenSSL installed (optional)
   --with-libcares-prefix=PREFIX  Prefix where libcares installed (optional)
-  --with-libares-prefix=PREFIX  Prefix where libares installed (optional)
   --with-libz-prefix=PREFIX  Prefix where libz installed (optional)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-libpth-prefix[=DIR]  search for libpth in DIR/include and DIR/lib
@@ -2738,15 +2734,6 @@ if test "${with_libexpat+set}" = set; then
   withval=$with_libexpat; with_libexpat=$withval
 else
   with_libexpat=yes
-fi
-
-
-
-# Check whether --with-libares was given.
-if test "${with_libares+set}" = set; then
-  withval=$with_libares; with_libares=$withval
-else
-  with_libares=yes
 fi
 
 
@@ -7239,115 +7226,6 @@ CPPFLAGS=$CPPFLAGS_save
 
 fi
 
-if test "x$have_libcares" = "x"; then
-  if test "x$with_libares" = "xyes"; then
-
-
-# Check whether --with-libares-prefix was given.
-if test "${with_libares_prefix+set}" = set; then
-  withval=$with_libares_prefix; libares_prefix=$withval
-else
-  libares_prefix=""
-fi
-
-
-if test "x$libares_prefix" = "x"; then
-  libares_prefix="/usr"
-fi
-
-libares_prefix_lib=$libares_prefix/lib
-libares_prefix_include=$libares_prefix/include
-
-LIBS_save=$LIBS
-CPPFLAGS_save=$CPPFLAGS
-
-LIBS="-L$libares_prefix_lib $LIBS"
-CPPFLAGS="-I$libares_prefix_include $CPPFLAGS"
-
-{ echo "$as_me:$LINENO: checking for ares_init in -lares" >&5
-echo $ECHO_N "checking for ares_init in -lares... $ECHO_C" >&6; }
-if test "${ac_cv_lib_ares_ares_init+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lares  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char ares_init ();
-int
-main ()
-{
-return ares_init ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_ares_ares_init=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_ares_ares_init=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_ares_ares_init" >&5
-echo "${ECHO_T}$ac_cv_lib_ares_ares_init" >&6; }
-if test $ac_cv_lib_ares_ares_init = yes; then
-  have_libares=yes
-fi
-
-if test "x$have_libares" = "xyes"; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_LIBARES 1
-_ACEOF
-
-    LIBARES_LIBS="-L$libares_prefix_lib -lares"
-    LIBARES_CPPFLAGS="-I$libares_prefix_include"
-
-
-fi
-
-LIBS=$LIBS_save
-CPPFLAGS=$CPPFLAGS_save
-
-
-  fi
-fi
-
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
 
@@ -7596,7 +7474,7 @@ else
 fi
 
 
-if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
+if test "x$have_libcares" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define ENABLE_ASYNC_DNS 1
@@ -23175,8 +23053,6 @@ OPENSSL_LIBS!$OPENSSL_LIBS$ac_delim
 OPENSSL_CFLAGS!$OPENSSL_CFLAGS$ac_delim
 LIBCARES_LIBS!$LIBCARES_LIBS$ac_delim
 LIBCARES_CPPFLAGS!$LIBCARES_CPPFLAGS$ac_delim
-LIBARES_LIBS!$LIBARES_LIBS$ac_delim
-LIBARES_CPPFLAGS!$LIBARES_CPPFLAGS$ac_delim
 LIBZ_LIBS!$LIBZ_LIBS$ac_delim
 LIBZ_CPPFLAGS!$LIBZ_CPPFLAGS$ac_delim
 ENABLE_SSL_TRUE!$ENABLE_SSL_TRUE$ac_delim
@@ -23249,6 +23125,8 @@ LIBINTL!$LIBINTL$ac_delim
 LTLIBINTL!$LTLIBINTL$ac_delim
 POSUB!$POSUB$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
+HAVE_ASCTIME_R_TRUE!$HAVE_ASCTIME_R_TRUE$ac_delim
+HAVE_ASCTIME_R_FALSE!$HAVE_ASCTIME_R_FALSE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -23290,8 +23168,6 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
-HAVE_ASCTIME_R_TRUE!$HAVE_ASCTIME_R_TRUE$ac_delim
-HAVE_ASCTIME_R_FALSE!$HAVE_ASCTIME_R_FALSE$ac_delim
 HAVE_BASENAME_TRUE!$HAVE_BASENAME_TRUE$ac_delim
 HAVE_BASENAME_FALSE!$HAVE_BASENAME_FALSE$ac_delim
 HAVE_GAI_STRERROR_TRUE!$HAVE_GAI_STRERROR_TRUE$ac_delim
@@ -23311,7 +23187,7 @@ HAVE_TIMEGM_FALSE!$HAVE_TIMEGM_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 19; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 17; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -24037,7 +23913,6 @@ echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
-echo "LibAres:        $have_libares"
 echo "LibCares:       $have_libcares"
 echo "Libz:           $have_libz"
 echo "Bittorrent:     $enable_bittorrent"

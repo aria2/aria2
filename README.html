@@ -550,6 +550,14 @@ cellspacing="0" cellpadding="4">
   </tr>
   <tr>
     <td align="left">
+    Async DNS
+    </td>
+    <td align="left">
+    C-Ares
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
     Firefox3 cookie
     </td>
     <td align="left">
@@ -581,16 +589,11 @@ Note
 </dl></div>
 <div class="para"><p>You can disable BitTorrent, Metalink support by providing &#8212;disable-bittorrent,
 &#8212;disable-metalink respectively to configure script.</p></div>
-<div class="para"><p>In order to enable async DNS support, you need c-ares or ares.</p></div>
+<div class="para"><p>In order to enable async DNS support, you need c-ares</p></div>
 <div class="ilist"><ul>
 <li>
 <p>
 c-ares: <a href="http://daniel.haxx.se/projects/c-ares/">http://daniel.haxx.se/projects/c-ares/</a>
-</p>
-</li>
-<li>
-<p>
-ares: <a href="ftp://athena-dist.mit.edu/pub/ATHENA/ares">ftp://athena-dist.mit.edu/pub/ATHENA/ares</a>
 </p>
 </li>
 </ul></div>
@@ -617,7 +620,7 @@ libgcrypt-dev    (Required for BitTorrent, Checksum support)
 </li>
 <li>
 <p>
-libares-dev      (Required for async DNS support)
+libc-ares-dev    (Required for async DNS support)
 </p>
 </li>
 <li>
@@ -843,7 +846,7 @@ ftp-pasv=true</tt></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-10-13 23:00:33 JST
+Last updated 2008-11-18 20:19:18 JST
 </div>
 </div>
 </body>

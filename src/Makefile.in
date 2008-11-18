@@ -277,18 +277,18 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/aria2_arg.m4 \
 	$(top_srcdir)/m4/inttypes-pri.m4 \
 	$(top_srcdir)/m4/inttypes_h.m4 $(top_srcdir)/m4/lcmessage.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libares.m4 \
-	$(top_srcdir)/m4/libcares.m4 $(top_srcdir)/m4/libexpat.m4 \
-	$(top_srcdir)/m4/libgcrypt.m4 $(top_srcdir)/m4/libgnutls.m4 \
-	$(top_srcdir)/m4/libxml2.m4 $(top_srcdir)/m4/libz.m4 \
-	$(top_srcdir)/m4/lock.m4 $(top_srcdir)/m4/longlong.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/openssl.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/printf-posix.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/size_max.m4 \
-	$(top_srcdir)/m4/sqlite3.m4 $(top_srcdir)/m4/stdint_h.m4 \
-	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/visibility.m4 \
-	$(top_srcdir)/m4/wchar_t.m4 $(top_srcdir)/m4/wint_t.m4 \
-	$(top_srcdir)/m4/xsize.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libcares.m4 \
+	$(top_srcdir)/m4/libexpat.m4 $(top_srcdir)/m4/libgcrypt.m4 \
+	$(top_srcdir)/m4/libgnutls.m4 $(top_srcdir)/m4/libxml2.m4 \
+	$(top_srcdir)/m4/libz.m4 $(top_srcdir)/m4/lock.m4 \
+	$(top_srcdir)/m4/longlong.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/printf-posix.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/size_max.m4 $(top_srcdir)/m4/sqlite3.m4 \
+	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
+	$(top_srcdir)/m4/visibility.m4 $(top_srcdir)/m4/wchar_t.m4 \
+	$(top_srcdir)/m4/wint_t.m4 $(top_srcdir)/m4/xsize.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -901,8 +901,6 @@ INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
-LIBARES_CPPFLAGS = @LIBARES_CPPFLAGS@
-LIBARES_LIBS = @LIBARES_LIBS@
 LIBCARES_CPPFLAGS = @LIBCARES_CPPFLAGS@
 LIBCARES_LIBS = @LIBCARES_LIBS@
 LIBEXPAT_CPPFLAGS = @LIBEXPAT_CPPFLAGS@
@@ -1155,7 +1153,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
 	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
 	@SQLITE3_LIBS@ #-lprofiler
 
@@ -1163,7 +1161,7 @@ aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
+	@LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
 	@LIBZ_CPPFLAGS@	 @SQLITE3_CPPFLAGS@\
 	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg
 

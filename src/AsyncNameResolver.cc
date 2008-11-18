@@ -46,15 +46,6 @@ void callback(void* arg, int status, struct hostent* host)
 #endif // HAVE_LIBCARES1_5
 {
   AsyncNameResolver* resolverPtr = reinterpret_cast<AsyncNameResolver*>(arg);
-#ifdef HAVE_LIBARES
-  // This block is required since the assertion in ares_strerror fails
-  // if status = ARES_EDESTRUCTION is passed to ares_strerror as 1st argument.
-  // This does not happen in c-ares.
-  if(status == ARES_EDESTRUCTION) {
-    // we simply return in this case.
-    return;
-  }
-#endif
   if(status != ARES_SUCCESS) {
 #ifdef HAVE_LIBCARES
     resolverPtr->error = ares_strerror(status);
