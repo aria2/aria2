@@ -556,14 +556,14 @@ are also allocated if they share a same piece.
   Print the version number, copyright and the configuration information and
   exit.
 
-OPTIONS THAT TAKES OPTIONAL ARGUMENTS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The options that has its arguments surrounded by square brackets([])
-are optional. Usually ommiting the argument is evaluated to 'true'.
-If you use short form of these option(such as '-V') of these options and give
-arugment, then the option name and its argument should be concatenated like
-'-Vfalse'). If any spaces are inserted between the option name and argument, the
-argument treated as URI and usually this is not what you expect.
+OPTIONS THAT TAKE AN OPTIONAL ARGUMENT
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The options that have its argument surrounded by square brackets([])
+take an optional argument. Usually ommiting the argument is evaluated to 'true'.
+If you use short form of these options(such as '-V') and give
+an arugment, then the option name and its argument should be concatenated(e.g.
+'-Vfalse'). If any spaces are inserted between the option name and the argument,
+the argument will be treated as URI and usually this is not what you expect.
 
 URL, TORRENT_FILE, METALINK_FILE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
