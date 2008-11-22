@@ -215,16 +215,20 @@ void FileTest::testUtime()
 {
   File f("/tmp/FileTest_testUTime");
   createFile(f.getPath(), 0);
-  CPPUNIT_ASSERT(f.utime(Time(1000), Time(2000)));
   
-  struct stat buf;
+  time_t atime = (time_t) 100000;
+  time_t mtime = (time_t) 200000;
+  
+  CPPUNIT_ASSERT(f.utime(Time(atime), Time(mtime)));
+  
+  a2_struct_stat buf;
   CPPUNIT_ASSERT(0 == stat(f.getPath().c_str(), &buf));
-  CPPUNIT_ASSERT_EQUAL((time_t)1000, buf.st_atime);
-  CPPUNIT_ASSERT_EQUAL((time_t)2000, f.getModifiedTime().getTime());
+  CPPUNIT_ASSERT_EQUAL((time_t)atime, buf.st_atime);
+  CPPUNIT_ASSERT_EQUAL((time_t)mtime, f.getModifiedTime().getTime());
 
   File notFound("/tmp/FileTest_testUTime_notFound");
   notFound.remove();
-  CPPUNIT_ASSERT(!notFound.utime(Time(1000), Time(2000)));
+  CPPUNIT_ASSERT(!notFound.utime(Time(atime), Time(mtime)));
 }
 
 } // namespace aria2

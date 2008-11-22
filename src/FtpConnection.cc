@@ -367,7 +367,24 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
       char buf[15]; // YYYYMMDDhhmmss+\0, milli second part is dropped.
       sscanf(response.second.c_str(), "%*u %14s", buf);
       if(strlen(buf) == 14) {
+#ifdef HAVE_STRPTIME
 	time = Time::parse(buf, "%Y%m%d%H%M%S");
+#else // !HAVE_STRPTIME
+	struct tm tm;
+	memset(&tm, 0, sizeof(tm));
+	tm.tm_sec = Util::parseInt(&buf[12]);
+	buf[12] = '\0';
+	tm.tm_min = Util::parseInt(&buf[10]);
+	buf[10] = '\0';
+	tm.tm_hour = Util::parseInt(&buf[8]);
+	buf[8] = '\0';
+	tm.tm_mday = Util::parseInt(&buf[6]);
+	buf[6] = '\0';
+	tm.tm_mon = Util::parseInt(&buf[4])-1;
+	buf[4] = '\0';
+	tm.tm_year = Util::parseInt(&buf[0])-1900;
+	time = Time(timegm(&tm));
+#endif // !HAVE_STRPTIME
       } else {
 	time = Time::null();
       }

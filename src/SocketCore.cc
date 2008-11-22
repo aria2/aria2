@@ -69,7 +69,7 @@
 #endif // __MINGW32__
 
 #ifdef __MINGW32__
-# define CLOSE(X) ::closesocket(sockfd)
+# define CLOSE(X) ::closesocket(X)
 #else
 # define CLOSE(X) while(close(X) == -1 && errno == EINTR)
 #endif // __MINGW32__
@@ -399,7 +399,7 @@ bool SocketCore::isWritable(time_t timeout)
     // time out
     return false;
   } else {
-    if(SOCKET_ERRNO == EINPROGRESS || SOCKET_ERRNO == EINTR) {
+    if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
       return false;
     } else {
       throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
@@ -452,7 +452,7 @@ bool SocketCore::isReadable(time_t timeout)
     // time out
     return false;
   } else {
-    if(SOCKET_ERRNO == EINPROGRESS || SOCKET_ERRNO == EINTR) {
+    if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
       return false;
     } else {
       throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());

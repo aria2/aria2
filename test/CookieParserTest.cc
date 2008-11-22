@@ -52,11 +52,17 @@ void CookieParserTest::testParse()
   c = CookieParser().parse(str3);
   CPPUNIT_ASSERT(!c.good());
 
+#ifndef __MINGW32__
   std::string str4 = "UID=300; expires=Wed, 01-Jan-1960 00:00:00 GMT";
+  time_t expire_time = (time_t) -315619200;
+#else
+  std::string str4 = "UID=300; expires=Wed, 01-Jan-1970 00:00:01 GMT";
+  time_t expire_time = (time_t) 1;
+#endif
   c = CookieParser().parse(str4, "localhost", "/");
   CPPUNIT_ASSERT(c.good());
   CPPUNIT_ASSERT(!c.isSessionCookie());
-  CPPUNIT_ASSERT_EQUAL((time_t)-315619200, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(expire_time, c.getExpiry());
 
   std::string str5 = "k=v; expires=Sun, 10-Jun-07 11:00:00 GMT";
   c = CookieParser().parse(str5);

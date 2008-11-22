@@ -1,3 +1,30 @@
+2008-11-22  Ross Smith II  <aria2spam at smithii dot com>
+
+	Applied aria2-1.0.0-mingw-r5.patch to fix numerous compile/unit test 
+	errors in MinGW:
+	Closed file after saving server stats (RequestGroupMan.cc)
+	Fixed time parsing if internal strptime() is missing (FtpConnection.cc)
+	Ignored case & handled 2-digit years (strptime.c)
+	Added missing suseconds_t definition (a2time.h)
+	Fixed socket CLOSE() define (SocketCore.cc)
+	Changed EINPROGRESS to A2_EINPROGRESS (SocketCore.cc)
+	Changed utime() test values from x000 to x00000 as MinGW failed on
+	values less than timezone offset from Unix epoch
+	Changed 'struct stat' to 'a2_struct_stat' (FileTest.cc)
+	Added waitRead() call prior to reading socket (FtpConnectionTest.cc)
+	Changed date from 01-Jan-1960 to 01-Jan-1970 00:00:01 as MinGW can't 
+	handle negative dates (CookieParserTest.cc)
+	* src/a2time.h
+	* src/FtpConnection.cc
+	* src/RequestGroupMan.cc
+	* src/SocketCore.cc
+	* src/strptime.c
+	* test/CookieParserTest.cc
+	* test/CopyDiskAdaptorTest.cc
+	* test/FileTest.cc
+	* test/FtpConnectionTest.cc
+	* test/MultiDiskAdaptorTest.cc
+
 2008-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed typo in "OPTIONS THAT TAKE AN OPTIONAL ARGUMENT" section.

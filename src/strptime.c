@@ -236,25 +236,19 @@ _strptime (const char *buf, const char *format, struct tm *timeptr, int *gmt)
 		c = *++format;
 	    switch (c) {
 	    case 'A' :
+	    case 'a' :
 		ret = match_string (&buf, full_weekdays);
 		if (ret < 0)
-		    return NULL;
-		timeptr->tm_wday = ret;
-		break;
-	    case 'a' :
 		ret = match_string (&buf, abb_weekdays);
 		if (ret < 0)
 		    return NULL;
 		timeptr->tm_wday = ret;
 		break;
 	    case 'B' :
-		ret = match_string (&buf, full_month);
-		if (ret < 0)
-		    return NULL;
-		timeptr->tm_mon = ret;
-		break;
 	    case 'b' :
 	    case 'h' :
+	        ret = match_string (&buf, full_month);
+		if (ret < 0)
 		ret = match_string (&buf, abb_month);
 		if (ret < 0)
 		    return NULL;
@@ -420,7 +414,18 @@ _strptime (const char *buf, const char *format, struct tm *timeptr, int *gmt)
 		ret = strtol (buf, &s, 10);
 		if (s == buf)
 		    return NULL;
-		if (ret < 70)
+		/*
+		 * y represents stricty 2 digits, raise error if more than 3
+		 * digits are parsed.
+		 */
+		if (ret > 99) {
+		    return NULL;
+		}
+		/*
+		 * The value in the range 69-99 refer to years in 20th century.
+		 * The value in the range 00-68 refer to years in 21st century.
+		 */
+		if (ret < 69)
 		    timeptr->tm_year = 100 + ret;
 		else
 		    timeptr->tm_year = ret;
@@ -492,10 +497,5 @@ strptime (const char *buf, const char *format, struct tm *timeptr)
 
 	gmt = 0;
 	ret = _strptime(buf, format, timeptr, &gmt);
-	if (ret && gmt) {
-		time_t t = timegm(timeptr);
-		localtime_r(&t, timeptr);
-	}
-
 	return (ret);
 }

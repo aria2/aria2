@@ -364,17 +364,20 @@ void MultiDiskAdaptorTest::testUtime()
   adaptor.setTopDir(topDir);
   adaptor.setFileEntries(fileEntries);
 
-  CPPUNIT_ASSERT_EQUAL((size_t)2, adaptor.utime(Time(1000), Time(2000)));
+  time_t atime = (time_t) 100000;
+  time_t mtime = (time_t) 200000;
   
-  CPPUNIT_ASSERT_EQUAL((time_t)2000,
+  CPPUNIT_ASSERT_EQUAL((size_t)2, adaptor.utime(Time(atime), Time(mtime)));
+  
+  CPPUNIT_ASSERT_EQUAL((time_t)mtime,
 		       File(prefix+"/"+entries[0]->getPath())
 		       .getModifiedTime().getTime());
 
-  CPPUNIT_ASSERT_EQUAL((time_t)2000,
+  CPPUNIT_ASSERT_EQUAL((time_t)mtime,
 		       File(prefix+"/"+entries[3]->getPath())
 		       .getModifiedTime().getTime());
 
-  CPPUNIT_ASSERT((time_t)2000 != File(prefix+"/"+entries[2]->getPath())
+  CPPUNIT_ASSERT((time_t)mtime != File(prefix+"/"+entries[2]->getPath())
 		 .getModifiedTime().getTime());
 }
 

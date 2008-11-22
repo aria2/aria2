@@ -568,13 +568,15 @@ bool RequestGroupMan::saveServerStat(const std::string& filename) const
 		   tempfile.c_str());
     return false;
   }
-  if(_serverStatMan->save(out) && File(tempfile).renameTo(filename)) {
-    _logger->notice(MSG_SERVER_STAT_SAVED, filename.c_str());
-    return true;
-  } else {
-    _logger->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
-    return false;
+  if (_serverStatMan->save(out)) {
+    out.close();
+    if (File(tempfile).renameTo(filename)) {
+      _logger->notice(MSG_SERVER_STAT_SAVED, filename.c_str());
+      return true;
+    }
   }
+  _logger->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
+  return false;
 }
 
 void RequestGroupMan::removeStaleServerStat(time_t timeout)
