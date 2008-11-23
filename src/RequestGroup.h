@@ -43,6 +43,7 @@
 #include "SharedHandle.h"
 #include "TransferStat.h"
 #include "TimeA2.h"
+#include "Request.h"
 
 namespace aria2 {
 
@@ -164,15 +165,23 @@ public:
 
   SharedHandle<SegmentMan> getSegmentMan() const;
 
+  // Returns first bootstrap commands to initiate a download.
+  // If this is HTTP/FTP download and file size is unknown, only 1 command
+  // (usually, HttpInitiateConnection or FtpInitiateConnection) will be created
+  // with its Request object having Requet::METHOD_HEAD in its method.
+  // This behavior can be changed by providing 3rd argument.
+  // The method has effect only for using HTTP request including FTP via HTTP
+  // proxy.
   void createInitialCommand(std::deque<Command*>& commands,
-			    DownloadEngine* e);
+			    DownloadEngine* e,
+			    const std::string& method = Request::METHOD_HEAD);
 
   void createNextCommandWithAdj(std::deque<Command*>& commands,
 				DownloadEngine* e, int numAdj);
 
   void createNextCommand(std::deque<Command*>& commands,
 			 DownloadEngine* e, unsigned int numCommand,
-			 const std::string& method = "GET");
+			 const std::string& method = Request::METHOD_GET);
   
   void addURI(const std::string& uri)
   {

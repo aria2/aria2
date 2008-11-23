@@ -1,5 +1,21 @@
 2008-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use HEAD method to get file size from HTTP server for segmented
+	downloading.
+	The request to the BitTorrent Tracker always uses GET method because
+	the response of the tracker is small and it doesn't need segmented
+	download.
+	* src/FtpNegotiationCommand.cc
+	* src/HttpRequest.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/TrackerWatcherCommand.cc
+	* test/HttpRequestTest.cc
+
+2008-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that causes floating exception when -T option is used and
 	no URIs are given.
 	* src/download_helper.cc

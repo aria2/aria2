@@ -136,7 +136,7 @@ std::string HttpRequest::createRequest() const
 {
   SharedHandle<AuthConfig> authConfig =
     _authConfigFactory->createAuthConfig(request);
-  std::string requestLine = "GET ";
+  std::string requestLine = request->getMethod()+" ";
   if(!_proxyRequest.isNull()) {
     if(getProtocol() == Request::PROTO_FTP &&
        request->getUsername().empty() && !authConfig->getUser().empty()) {

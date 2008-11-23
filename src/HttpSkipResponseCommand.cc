@@ -80,12 +80,14 @@ void HttpSkipResponseCommand::setTransferEncodingDecoder
 
 bool HttpSkipResponseCommand::executeInternal()
 {
-  if(_totalLength == 0 && _transferEncodingDecoder.isNull()) {
-    // If content-length header is present and it's value is 0, then
-    // pool socket for reuse.
+  if(req->getMethod() == Request::METHOD_HEAD ||
+     (_totalLength == 0 && _transferEncodingDecoder.isNull())) {
+    // If request method is HEAD or content-length header is present and
+    // it's value is 0, then pool socket for reuse.
     // If content-length header is not present, then EOF is expected in the end.
     // In this case, the content is thrown away and socket cannot be pooled. 
-    if(_httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH)) {
+    if(req->getMethod() == Request::METHOD_HEAD ||
+       _httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH)) {
       poolConnection();
     }
     return processResponse();

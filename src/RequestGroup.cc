@@ -179,7 +179,8 @@ void RequestGroup::closeFile()
 }
 
 void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
-					DownloadEngine* e)
+					DownloadEngine* e,
+					const std::string& method)
 {
 #ifdef ENABLE_BITTORRENT
   {
@@ -306,7 +307,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
   // TODO I assume here when totallength is set to DownloadContext and it is
   // not 0, then filepath is also set DownloadContext correctly....
   if(_downloadContext->getTotalLength() == 0) {
-    createNextCommand(commands, e, 1);
+    createNextCommand(commands, e, 1, method);
   }else {
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
       throw DownloadFailureException

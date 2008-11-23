@@ -1,5 +1,7 @@
 #include "HttpRequest.h"
 
+#include <sstream>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "prefs.h"
@@ -11,6 +13,7 @@
 #include "Option.h"
 #include "array_fun.h"
 #include "CookieStorage.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -23,6 +26,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequest_ftp);
   CPPUNIT_TEST(testCreateRequest_with_cookie);
   CPPUNIT_TEST(testCreateRequest_query);
+  CPPUNIT_TEST(testCreateRequest_head);
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
   CPPUNIT_TEST(testUserAgent);
@@ -46,6 +50,7 @@ public:
   void testCreateRequest_ftp();
   void testCreateRequest_with_cookie();
   void testCreateRequest_query();
+  void testCreateRequest_head();
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
   void testUserAgent();
@@ -448,6 +453,23 @@ void HttpRequestTest::testCreateRequest_query()
     "\r\n";
   
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+}
+
+void HttpRequestTest::testCreateRequest_head()
+{
+  SharedHandle<Request> request(new Request());
+  request->setMethod(Request::METHOD_HEAD);
+  request->setUrl("http://localhost/aria2-1.0.0.tar.bz2");
+
+  HttpRequest httpRequest;
+  httpRequest.setRequest(request);
+  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  
+  std::stringstream result(httpRequest.createRequest());
+  std::string line;
+  CPPUNIT_ASSERT(getline(result, line));
+  Util::trimSelf(line);
+  CPPUNIT_ASSERT_EQUAL(std::string("HEAD /aria2-1.0.0.tar.bz2 HTTP/1.1"), line);
 }
 
 void HttpRequestTest::testCreateProxyRequest()

@@ -57,6 +57,7 @@
 #include "Logger.h"
 #include "A2STR.h"
 #include "SocketCore.h"
+#include "Request.h"
 
 namespace aria2 {
 
@@ -92,7 +93,8 @@ bool TrackerWatcherCommand::execute() {
     _trackerRequestGroup = createAnnounce();
     if(!_trackerRequestGroup.isNull()) {
       std::deque<Command*> commands;
-      _trackerRequestGroup->createInitialCommand(commands, e);
+      _trackerRequestGroup->createInitialCommand(commands, e,
+						 Request::METHOD_GET);
       e->addCommand(commands);
       logger->debug("added tracker request command");
     }

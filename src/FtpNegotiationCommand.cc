@@ -341,12 +341,6 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   } else {
     _requestGroup->initPieceStorage();
 
-    // TODO Is this really necessary?
-    if(req->getMethod() == Request::METHOD_HEAD) {
-      sequence = SEQ_HEAD_OK;
-      return false;
-    }
-    
     BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;

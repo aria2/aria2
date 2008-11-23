@@ -188,12 +188,6 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
   _requestGroup->initPieceStorage();
 
-  // quick hack for method 'head',, is it necessary?
-  if(httpRequest->getMethod() == Request::METHOD_HEAD) {
-    // TODO because we don't want segment file to be saved.
-    return true;
-  }
-
   BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
   if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
     return true;
@@ -210,13 +204,20 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     // we can't continue to use this socket because server sends all entity
     // body instead of a segment.
     // Therefore, we shutdown the socket here if pipelining is enabled.
-    if(!segment.isNull() && segment->getPositionToWrite() == 0 &&
+    if(req->getMethod() == Request::METHOD_GET &&
+       !segment.isNull() && segment->getPositionToWrite() == 0 &&
        !req->isPipeliningEnabled()) {
       command = createHttpDownloadCommand(httpResponse);
     } else {
       _requestGroup->getSegmentMan()->cancelSegment(cuid);
     }
     prepareForNextAction(command);
+    if(req->getMethod() == Request::METHOD_HEAD) {
+      if(req->supportsPersistentConnection()) {
+	e->poolSocket(req, isProxyDefined(), socket);
+      }
+      req->setMethod(Request::METHOD_GET);
+    }
   } catch(Exception& e) {
     delete command;
     throw;
@@ -261,9 +262,12 @@ static SharedHandle<Decoder> getContentEncodingDecoder
 
 bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
-  // quick hack for method 'head',, is it necessary?
-  if(httpRequest->getMethod() == Request::METHOD_HEAD) {
-    return true;
+  if(req->getMethod() == Request::METHOD_HEAD) {
+    if(req->supportsPersistentConnection()) {
+      e->poolSocket(req, isProxyDefined(), socket);
+    }
+    req->setMethod(Request::METHOD_GET);
+    return prepareForRetry(0);
   }
   _requestGroup->initPieceStorage();
   _requestGroup->shouldCancelDownloadForSafety();
@@ -286,10 +290,11 @@ bool HttpResponseCommand::skipResponseBody
     (cuid, req, _requestGroup, httpConnection, httpResponse, e, socket);
   command->setTransferEncodingDecoder(decoder);
 
-  // If the response body is zero-length, set command's status to real time
-  // so that avoid read check blocking
-  if(httpResponse->getEntityLength() == 0 &&
-     !httpResponse->isTransferEncodingSpecified()) {
+  // If request method is HEAD or the response body is zero-length,
+  // set command's status to real time so that avoid read check blocking
+  if(req->getMethod() == Request::METHOD_HEAD ||
+     (httpResponse->getEntityLength() == 0 &&
+      !httpResponse->isTransferEncodingSpecified())) {
     command->setStatusRealtime();
     // If entity length == 0, then socket read/write check must be disabled.
     command->disableSocketCheck();
