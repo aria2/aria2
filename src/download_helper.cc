@@ -79,7 +79,7 @@ static void splitURI(std::deque<std::string>& result,
   size_t numURIs = std::distance(begin, end);
   if(numURIs >= numSplit) {
     result.insert(result.end(), begin, end);
-  } else {
+  } else if(numURIs > 0) {
     for(size_t i = 0; i < numSplit/numURIs; ++i) {
       result.insert(result.end(), begin, end);
     }

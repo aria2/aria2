@@ -360,6 +360,18 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)5, group->getNumConcurrentCommand());
   }
+  {
+    // no URIs are given
+    std::deque<SharedHandle<RequestGroup> > result;
+    std::deque<std::string> emptyURIs;
+    createRequestGroupForBitTorrent(result, &op, emptyURIs);
+
+    CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
+    SharedHandle<RequestGroup> group = result[0];
+    std::deque<std::string> uris;
+    group->getURIs(uris);
+    CPPUNIT_ASSERT_EQUAL((size_t)0, uris.size());
+  }
   op.put(PREF_FORCE_SEQUENTIAL, V_TRUE);
   {
     std::deque<SharedHandle<RequestGroup> > result;

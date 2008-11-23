@@ -1,3 +1,10 @@
+2008-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that causes floating exception when -T option is used and
+	no URIs are given.
+	* src/download_helper.cc
+	* test/DownloadHelperTest.cc
+
 2008-11-22  Ross Smith II  <aria2spam at smithii dot com>
 
 	Applied aria2-1.0.0-mingw-r5.patch to fix numerous compile/unit test 
