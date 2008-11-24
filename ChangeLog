@@ -1,5 +1,10 @@
 2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.0.1
+	* configure.ac
+
+2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Closed files after the test cases in MultiDiskWriterTest::
 	testResetDiskWriterEntries(). This will fix the unit test error
 	in mingw32 build.
