@@ -1,5 +1,12 @@
 2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Ukrainian and Norwegian Nynorsk translations.
+	Thanks to all translators.
+	* po/nn.po
+	* po/uk.po
+
+2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't show download result when -S option is used.
 	* src/main.cc
 

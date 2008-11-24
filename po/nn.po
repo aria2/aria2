@@ -7,26 +7,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-11-18 21:22+0900\n"
-"PO-Revision-Date: 2008-08-13 22:28+0000\n"
-"Last-Translator: Tor Christian Tovslid <tctovsli@gmail.com>\n"
+"POT-Creation-Date: 2008-11-24 23:16+0900\n"
+"PO-Revision-Date: 2008-11-23 14:10+0000\n"
+"Last-Translator: Leif Arne Storset <leifarne@storset.net>\n"
 "Language-Team: Norwegian Nynorsk <nn@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
+"X-Launchpad-Export-Date: 2008-11-24 13:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:820
-#, fuzzy
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr "Avsluttingssekvens undervegs... Trykk Ctrl-C att for nødavslutning."
+msgstr ""
 
 #: src/DownloadEngine.cc:826
-#, fuzzy
 msgid "Emergency shutdown sequence commencing..."
-msgstr "Nødavslutning undervegs..."
+msgstr ""
 
 #: src/MultiUrlRequestInfo.cc:96
 msgid "aria2 will resume download if the transfer is restarted."
@@ -57,9 +55,8 @@ msgid "                              Tags: "
 msgstr "                              Taggar: "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
-msgstr "                              Tilgjengelege verdiar: "
+msgstr ""
 
 #: src/OptionHandlerImpl.h:99
 msgid "must be either 'true' or 'false'."
@@ -941,13 +938,13 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - Segmentet var endra. Vi sendar forespørselen igjeng med ny "
-"Rekkevidde-hovud."
+"CUID#%d - Segmentet vart endra. Vi sender førespurnaden på ny med nytt "
+"meldingshovud om \"Range\"."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - Vidaresendar til %s"
+msgstr "CUID#%d - Vidaresender til %s"
 
 #: src/message.h:45
 #, c-format
@@ -1835,6 +1832,6 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/Util.cc:714
+#: src/Util.cc:715
 msgid "Files:"
 msgstr ""

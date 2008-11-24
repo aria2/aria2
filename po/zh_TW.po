@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-11-18 21:22+0900\n"
+"POT-Creation-Date: 2008-11-24 23:16+0900\n"
 "PO-Revision-Date: 2008-10-08 08:24+0000\n"
 "Last-Translator: snufkinto <Unknown>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -1841,7 +1841,7 @@ msgstr "無效的檔案長度，無法繼續下載 %s: local %s, remote %s"
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/Util.cc:714
+#: src/Util.cc:715
 msgid "Files:"
 msgstr "檔案："
 

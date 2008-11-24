@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-11-18 21:22+0900\n"
+"POT-Creation-Date: 2008-11-24 23:16+0900\n"
 "PO-Revision-Date: 2008-02-13 11:01+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -1840,6 +1840,6 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/Util.cc:714
+#: src/Util.cc:715
 msgid "Files:"
 msgstr ""
