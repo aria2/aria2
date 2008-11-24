@@ -80,6 +80,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
   }
   {
     std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
@@ -97,6 +99,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
   }
   {
     std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
@@ -115,6 +119,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
   }
   {
     std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
@@ -132,6 +138,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
   }
   {
     std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
@@ -149,6 +157,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     // Because entries[3] spans entries[4]
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
   }
   {
     std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
@@ -166,6 +176,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(entries[3]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
   }
   {
     std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
@@ -182,6 +194,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
   }
 }
 

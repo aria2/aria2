@@ -1,3 +1,10 @@
+2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Closed files after the test cases in MultiDiskWriterTest::
+	testResetDiskWriterEntries(). This will fix the unit test error
+	in mingw32 build.
+	* test/MultiDiskWriterTest.cc
+
 2008-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use HEAD method to get file size from HTTP server for segmented
