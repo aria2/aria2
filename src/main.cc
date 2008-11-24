@@ -173,8 +173,10 @@ int main(int argc, char* argv[])
 	  createRequestGroupForUri(requestGroups, op, args);
 	}
 
-    returnValue = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
-				      getSummaryOut(op)).execute();
+    if(!requestGroups.empty()) {
+      returnValue = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
+					getSummaryOut(op)).execute();
+    }
     if(returnValue == 1) {
       exitStatus = EXIT_FAILURE;
     }

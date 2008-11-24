@@ -1,5 +1,10 @@
 2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't show download result when -S option is used.
+	* src/main.cc
+
+2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.0.1
 	* configure.ac
 
