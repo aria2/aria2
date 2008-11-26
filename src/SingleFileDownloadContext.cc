@@ -46,7 +46,8 @@ SingleFileDownloadContext::SingleFileDownloadContext(size_t pieceLength,
   _pieceLength(pieceLength),
   _fileEntry(new FileEntry(filename, totalLength, 0)),
   _filename(filename),
-  _ufilename(ufilename)
+  _ufilename(ufilename),
+  _knowsTotalLength(true)
 {
   updateFileEntry();
 }
@@ -73,6 +74,11 @@ uint64_t SingleFileDownloadContext::getTotalLength() const
   return _fileEntry->getLength();
 }
 
+bool SingleFileDownloadContext::knowsTotalLength() const
+{
+  return _knowsTotalLength;
+}
+
 FileEntries
 SingleFileDownloadContext::getFileEntries() const
 {
@@ -94,6 +100,11 @@ std::string SingleFileDownloadContext::getActualBasePath() const
 void SingleFileDownloadContext::setTotalLength(uint64_t totalLength)
 {
   _fileEntry->setLength(totalLength);
+}
+
+void SingleFileDownloadContext::markTotalLengthIsUnknown()
+{
+  _knowsTotalLength = false;
 }
 
 const std::string& SingleFileDownloadContext::getName() const

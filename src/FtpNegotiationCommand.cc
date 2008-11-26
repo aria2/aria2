@@ -333,9 +333,28 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   }
   if(totalLength == 0) {
 
+    if(e->option->getAsBool(PREF_FTP_PASV)) {
+      sequence = SEQ_SEND_PASV;
+    } else {
+      sequence = SEQ_PREPARE_SERVER_SOCKET;
+    }
     _requestGroup->initPieceStorage();
+    if(dctx->knowsTotalLength() &&
+       _requestGroup->downloadFinishedByFileLength()) {
+      sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+
+      poolConnection();
+
+      return false;
+    }
     _requestGroup->shouldCancelDownloadForSafety();
     _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+
+    if(dctx->knowsTotalLength()) {
+      sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+      poolConnection();
+      return false;
+    }
 
     return true;
   } else {
@@ -387,12 +406,10 @@ bool FtpNegotiationCommand::recvSize() {
     // command, resuming and segmented downloading are disabled when the first
     // contacted FTP server doesn't support it.
     if(_requestGroup->getPieceStorage().isNull()) {
-
-      if(e->option->getAsBool(PREF_FTP_PASV)) {
-	sequence = SEQ_SEND_PASV;
-      } else {
-	sequence = SEQ_PREPARE_SERVER_SOCKET;
-      }
+      SingleFileDownloadContextHandle dctx =
+	dynamic_pointer_cast<SingleFileDownloadContext>
+	(_requestGroup->getDownloadContext());
+      dctx->markTotalLengthIsUnknown();
       return onFileSizeDetermined(0);
 
     }

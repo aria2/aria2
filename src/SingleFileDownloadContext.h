@@ -66,6 +66,8 @@ private:
   std::string _checksum;
   std::string _checksumHashAlgo;
 
+  bool _knowsTotalLength;
+
   void updateFileEntry();
 public:
   SingleFileDownloadContext(size_t pieceLength,
@@ -87,6 +89,9 @@ public:
   virtual const std::deque<std::string>& getPieceHashes() const;
 
   virtual uint64_t getTotalLength() const;
+
+  virtual bool knowsTotalLength() const;
+
 
   virtual FILE_MODE getFileMode() const
   {
@@ -149,6 +154,8 @@ public:
   }
 
   void setTotalLength(uint64_t totalLength);
+
+  void markTotalLengthIsUnknown();
 
   void setPieceHashAlgo(const std::string& algo)
   {

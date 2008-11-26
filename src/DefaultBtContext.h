@@ -110,6 +110,8 @@ private:
 
   virtual uint64_t getTotalLength() const;
 
+  virtual bool knowsTotalLength() const;
+
   virtual FILE_MODE getFileMode() const;
 
   virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;

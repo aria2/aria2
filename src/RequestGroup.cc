@@ -347,14 +347,16 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
 
 void RequestGroup::initPieceStorage()
 {
-  if(_downloadContext->getTotalLength() == 0) {
-    UnknownLengthPieceStorageHandle ps(new UnknownLengthPieceStorage(_downloadContext, _option));
+  if(_downloadContext->knowsTotalLength()) {
+    DefaultPieceStorageHandle ps
+      (new DefaultPieceStorage(_downloadContext, _option));
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }
     _pieceStorage = ps;
   } else {
-    DefaultPieceStorageHandle ps(new DefaultPieceStorage(_downloadContext, _option));
+    UnknownLengthPieceStorageHandle ps
+      (new UnknownLengthPieceStorage(_downloadContext, _option));
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }

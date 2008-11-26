@@ -64,6 +64,11 @@ public:
     return totalLength;
   }
 
+  virtual bool knowsTotalLength() const
+  {
+    return true;
+  }
+
   void setTotalLength(uint64_t length) {
     this->totalLength = length;
   }

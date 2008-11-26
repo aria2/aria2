@@ -64,7 +64,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   Option op;
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(0, 0, "test.xml"));
+    (new SingleFileDownloadContext(1024, 0, "test.xml"));
   RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();

@@ -391,6 +391,11 @@ uint64_t DefaultBtContext::getTotalLength() const {
   return totalLength;
 }
 
+bool DefaultBtContext::knowsTotalLength() const
+{
+  return true;
+}
+
 BtContext::FILE_MODE DefaultBtContext::getFileMode() const {
   return fileMode;
 }

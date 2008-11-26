@@ -62,6 +62,8 @@ private:
 			    = SharedHandle<Decoder>());
 
   void updateLastModifiedTime(const Time& lastModified);
+
+  void poolConnection();
 protected:
   bool executeInternal();
 

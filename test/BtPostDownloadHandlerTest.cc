@@ -65,7 +65,7 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   Option op;
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(0, 0, "test.torrent"));
+    (new SingleFileDownloadContext(1024, 0, "test.torrent"));
   RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();

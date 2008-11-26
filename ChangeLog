@@ -1,3 +1,20 @@
+2008-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that prevents aria2 from downloading 0-length files
+	via HTTP/FTP.
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/DownloadContext.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	* src/RequestGroup.cc
+	* src/SingleFileDownloadContext.cc
+	* src/SingleFileDownloadContext.h
+	* test/BtPostDownloadHandlerTest.cc
+	* test/MetalinkPostDownloadHandlerTest.cc
+	* test/MockBtContext.h
+
 2008-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that -pfalse and -ptrue are not recognized properly.

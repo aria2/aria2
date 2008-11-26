@@ -75,6 +75,8 @@ public:
 
   virtual uint64_t getTotalLength() const = 0;
 
+  virtual bool knowsTotalLength() const = 0;
+
   virtual FILE_MODE getFileMode() const = 0;
 
   virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const = 0;

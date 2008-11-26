@@ -140,6 +140,11 @@ bool HttpResponseCommand::executeInternal()
        shouldInflateContentEncoding(httpResponse)) {
       // we ignore content-length when transfer-encoding is set
       dctx->setTotalLength(0);
+      if(req->getMethod() == Request::METHOD_GET &&
+	 (totalLength != 0 ||
+	  !httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH))){
+	dctx->markTotalLengthIsUnknown();
+      }
       return handleOtherEncoding(httpResponse);
     } else {
       return handleDefaultEncoding(httpResponse);
@@ -213,9 +218,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     }
     prepareForNextAction(command);
     if(req->getMethod() == Request::METHOD_HEAD) {
-      if(req->supportsPersistentConnection()) {
-	e->poolSocket(req, isProxyDefined(), socket);
-      }
+      poolConnection();
       req->setMethod(Request::METHOD_GET);
     }
   } catch(Exception& e) {
@@ -261,17 +264,30 @@ static SharedHandle<Decoder> getContentEncodingDecoder
 }
 
 bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
+  // We assume that RequestGroup::getTotalLength() == 0 here
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
   if(req->getMethod() == Request::METHOD_HEAD) {
-    if(req->supportsPersistentConnection()) {
-      e->poolSocket(req, isProxyDefined(), socket);
-    }
+    poolConnection();
     req->setMethod(Request::METHOD_GET);
     return prepareForRetry(0);
   }
   _requestGroup->initPieceStorage();
+
+  // For zero-length file, check existing file comparing its size
+  if(_requestGroup->getDownloadContext()->knowsTotalLength() &&
+     _requestGroup->downloadFinishedByFileLength()) {
+    poolConnection();
+    return true;
+  }
+
   _requestGroup->shouldCancelDownloadForSafety();
   _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+
+  if(_requestGroup->getDownloadContext()->knowsTotalLength()) {
+    poolConnection();
+    return true;
+  }
+
   e->commands.push_back
     (createHttpDownloadCommand(httpResponse,
 			       getTransferEncodingDecoder(httpResponse),
@@ -330,6 +346,13 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
   }
 
   return command;
+}
+
+void HttpResponseCommand::poolConnection()
+{
+  if(req->supportsPersistentConnection()) {
+    e->poolSocket(req, isProxyDefined(), socket);
+  }
 }
 
 } // namespace aria2
