@@ -1,3 +1,13 @@
+2008-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Applied aria2-1.0.1-mingw.patch.
+	Use SOCKET_ERRNO instead of errno if the code is used both linux and
+	mingw.
+	Collected 4th and 5th argument types for getsockopt and setsockopt.
+	* src/SocketCore.cc
+	* src/a2netcompat.h
+	* test/SocketCoreTest.cc
+
 2008-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	* Release 1.0.1

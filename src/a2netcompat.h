@@ -50,12 +50,12 @@
 #endif // !__CYGWIN__
 
 #ifdef __MINGW32__
-# define SOCKOPT_T char
+# define a2_sockopt_t char *
 # define HAVE_GETADDRINFO
 # undef HAVE_GAI_STRERROR
 # undef gai_strerror
 #else
-# define SOCKOPT_T int
+# define a2_sockopt_t int *
 #endif // __MINGW32__
 
 #ifdef HAVE_NETDB_H

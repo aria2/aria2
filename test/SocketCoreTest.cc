@@ -9,6 +9,7 @@ class SocketCoreTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SocketCoreTest);
   CPPUNIT_TEST(testWriteAndReadDatagram);
+  CPPUNIT_TEST(testGetSocketError);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -16,6 +17,7 @@ public:
   void tearDown() {}
 
   void testWriteAndReadDatagram();
+  void testGetSocketError();
 };
 
 
@@ -57,6 +59,14 @@ void SocketCoreTest::testWriteAndReadDatagram()
     std::cerr << e.stackTrace() << std::endl;
     CPPUNIT_FAIL("exception thrown");
   }
+}
+
+void SocketCoreTest::testGetSocketError()
+{
+  SocketCore s;
+  s.bind(0);
+  // See there is no error at this point
+  CPPUNIT_ASSERT_EQUAL(std::string(""), s.getSocketError());
 }
 
 } // namespace aria2

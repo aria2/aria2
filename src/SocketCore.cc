@@ -174,8 +174,8 @@ void SocketCore::bind(uint16_t port)
     if(fd == -1) {
       continue;
     }
-    SOCKOPT_T sockopt = 1;
-    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
+    int sockopt = 1;
+    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt, sizeof(sockopt)) < 0) {
       CLOSE(fd);
       continue;
     }
@@ -204,7 +204,7 @@ SocketCore* SocketCore::acceptConnection() const
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
   sock_t fd;
-  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == -1 && errno == EINTR);
+  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == -1 && SOCKET_ERRNO == EINTR);
   if(fd == -1) {
     throw DlAbortEx(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
   }
@@ -256,8 +256,8 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     if(fd == -1) {
       continue;
     }
-    SOCKOPT_T sockopt = 1;
-    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
+    int sockopt = 1;
+    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt, sizeof(sockopt)) < 0) {
       CLOSE(fd);
       continue;
     }
@@ -498,9 +498,9 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
   _wantWrite = false;
 
   if(!secure) {
-    while((ret = send(sockfd, data, len, 0)) == -1 && errno == EINTR);
+    while((ret = send(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == EINTR);
     if(ret == -1) {
-      if(errno == EAGAIN) {
+      if(SOCKET_ERRNO == EAGAIN) {
 	_wantWrite = true;
 	ret = 0;
       } else {
@@ -546,10 +546,10 @@ void SocketCore::readData(char* data, size_t& len)
   _wantWrite = false;
 
   if(!secure) {    
-    while((ret = recv(sockfd, data, len, 0)) == -1 && errno == EINTR);
+    while((ret = recv(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == EINTR);
     
     if(ret == -1) {
-      if(errno == EAGAIN) {
+      if(SOCKET_ERRNO == EAGAIN) {
 	_wantRead = true;
 	ret = 0;
       } else {
@@ -597,9 +597,9 @@ void SocketCore::peekData(char* data, size_t& len)
   _wantWrite = false;
 
   if(!secure) {
-    while((ret = recv(sockfd, data, len, MSG_PEEK)) == -1 && errno == EINTR);
+    while((ret = recv(sockfd, data, len, MSG_PEEK)) == -1 && SOCKET_ERRNO == EINTR);
     if(ret == -1) {
-      if(errno == EAGAIN) {
+      if(SOCKET_ERRNO == EAGAIN) {
 	_wantRead = true;
 	ret = 0;
       } else {
@@ -984,11 +984,11 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   struct addrinfo* rp;
   ssize_t r = -1;
   for(rp = res; rp; rp = rp->ai_next) {
-    while((r = sendto(sockfd, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1 && EINTR == errno);
+    while((r = sendto(sockfd, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1 && EINTR == SOCKET_ERRNO);
     if(r == static_cast<ssize_t>(len)) {
       break;
     }
-    if(r == -1 && errno == EAGAIN) {
+    if(r == -1 && SOCKET_ERRNO == EAGAIN) {
       _wantWrite = true;
       r = 0;
       break;
@@ -1012,9 +1012,9 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   ssize_t r;
   while((r = recvfrom(sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
-	EINTR == errno);
+	EINTR == SOCKET_ERRNO);
   if(r == -1) {
-    if(errno == EAGAIN) {
+    if(SOCKET_ERRNO == EAGAIN) {
       _wantRead = true;
       r = 0;
     } else {
@@ -1029,9 +1029,10 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
 
 std::string SocketCore::getSocketError() const
 {
-  SOCKOPT_T error;
+  int error;
   socklen_t optlen = sizeof(error);
-  if(getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &optlen) == -1) {
+
+  if(getsockopt(sockfd, SOL_SOCKET, SO_ERROR, (a2_sockopt_t) &error, &optlen) == -1) {
     throw DlAbortEx(StringFormat("Failed to get socket error: %s",
 				 errorMsg()).str());
   }
