@@ -229,7 +229,7 @@ Option* option_processing(int argc, char* const argv[])
       { 0, 0, 0, 0 }
     };
     c = getopt_long(argc, argv, 
-		    "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::R::V::u:",
+		    "Dd:o:l:s:p::t:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::R::V::u:",
 		    longOpts, &optIndex);
     if(c == -1) {
       break;

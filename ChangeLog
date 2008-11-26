@@ -1,5 +1,10 @@
 2008-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that -pfalse and -ptrue are not recognized properly.
+	* src/option_processing.cc
+	
+2008-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Applied aria2-1.0.1-mingw.patch.
 	Use SOCKET_ERRNO instead of errno if the code is used both linux and
 	mingw.
