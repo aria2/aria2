@@ -12,7 +12,7 @@ aria2c ['OPTIONS'] ['URL' | 'TORRENT_FILE' | 'METALINK_FILE']...
 
 DESCRIPTION
 -----------
-aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It can download a file from multiple sources/protocols and tries to utilize your maximum download bandwidth. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.
+aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. aria2 can download a file from multiple sources/protocols and tries to utilize your maximum download bandwidth. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.
 
 OPTIONS
 -------
@@ -65,8 +65,8 @@ Basic Options
 HTTP/FTP Options
 ~~~~~~~~~~~~~~~~
 *--all-proxy*=PROXY::
-  Use this proxy server in the all protocols.
-  You can override this setting and specify a proxy server for particular
+  Use this proxy server for all protocols.
+  You can override this setting and specify a proxy server for a particular
   proctol using *--http-proxy*, *--https-proxy* and *--ftp-proxy* options.
   This affects all URLs.
   The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
@@ -89,7 +89,7 @@ HTTP/FTP Options
   If aria2 recieves `file not found' status from the remote HTTP/FTP
   servers NUM times without getting a single byte, then force the
   download to fail. Specify '0' to disable this option. This options is
-  only effective only when using HTTP/FTP servers.
+  effective only when using HTTP/FTP servers.
   Default: '0'
 
 *-m*, *--max-tries*=N::
@@ -97,16 +97,16 @@ HTTP/FTP Options
   Default: '5'
 
 *--no-proxy*=DOMAINS::
-  Specify comma separated hostnames or domains to which proxy should not be
+  Specify comma separated hostnames or domains where proxy should not be
   used.
 
 *-o*, *--out*=FILE::
   The file name of the downloaded file.
 
 [NOTE]
-In Metalink, BitTorrent download you cannot specify file name.
+In Metalink or BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URLs fed to aria2
-is done by command line without *-i*, *-Z* option. For example:
+are done by command line without *-i*, *-Z* option. For example:
 aria2c -o myfile.zip \http://mirror1/file.zip \http://mirror2/file.zip
 
 *--proxy-method*=METHOD::
@@ -226,11 +226,11 @@ HTTP Specific Options
   aria2c *--header*="X-A: b78" *--header*="X-B: 9J1" \http://host/file
 
 *--load-cookies*=FILE::
-  Load Cookies from FILE using the Firefox3 format(SQLite3) and the
+  Load Cookies from FILE using the Firefox3 format (SQLite3) and the
   Mozilla/Firefox(1.x/2.x)/Netscape format.
 
 [NOTE]
-If aria2 is build without libsqlite3, then it doesn't support Firefox3 cookie.
+If aria2 is built without libsqlite3, then it doesn't support Firefox3 cookie format.
 
 *-U*, *--user-agent*=USER_AGENT::
   Set user agent for HTTP(S) downloads.
@@ -269,7 +269,7 @@ FTP Specific Options
 BitTorrent/Metalink Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *--select-file*=INDEX...::
-  Set file to download by specifing its index.
+  Set file to download by specifying its index.
   You can find the file index using the *--show-files* option.
   Multiple indexes can be specified by using ",", for example: '3,6'.
   You can also use "-" to specify a range: '1-5'.
@@ -296,7 +296,7 @@ BitTorrent Specific Options
 
 *--bt-min-crypto-level*='plain'|'arc4'::
   Set minimum level of encryption method.
-  If several encryption methods are provided by a peer, aria2 chooses a lowest
+  If several encryption methods are provided by a peer, aria2 chooses the lowest
   one which satisfies the given level.
   Default: 'plain'
 
@@ -380,7 +380,7 @@ Make sure that the specified ports are open for incoming TCP traffic.
 *--seed-ratio*=RATIO::
   Specify share ratio. Seed completed torrents until share ratio reaches]
   RATIO.
-  I strongly encourages you to specify equals or more than '1.0' here.
+  You are strongly encouraged to specify equals or more than '1.0' here.
   Specify '0.0' if you intend to do seeding regardless of share ratio.
   If *--seed-time* option is specified along with this option, seeding ends when
   at least one of the conditions is satisfied.
@@ -391,13 +391,13 @@ Make sure that the specified ports are open for incoming TCP traffic.
 
 *-T*, *--torrent-file*=TORRENT_FILE::
   The path to the .torrent file.
-  You may not use this option because you can specify torrent file without -T.
+  You are not required touse this option because you can specify a torrent file without -T.
 
 Metalink Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 *--follow-metalink*='true'|'false'|'mem'::
   If 'true' or 'mem' is specified, when a file whose suffix is ".metaink" or content
-  type is "application/metalink+xml" is downloaded, aria2 parses it as a metalink
+  type of "application/metalink+xml" is downloaded, aria2 parses it as a metalink
   file and downloads files mentioned in it.
   If 'mem' is specified, a metalink file is not written to the disk, but is just
   kept in memory.
@@ -405,12 +405,12 @@ Metalink Specific Options
   Default: 'true'
 
 *-M*, *--metalink-file*=METALINK_FILE::
-  The file path to .metalink file. You may not use this option because you can
-  specify metalink file without -M.
+  The file path to .metalink file. You are not required to use this option because you can
+  specify a metalink file without -M.
 
 *-C*, *--metalink-servers*=NUM_SERVERS::
   The number of servers to connect to simultaneously.
-  Some Metalinks regulates the number of servers to connect.
+  Some Metalinks regulate the number of servers to connect.
   aria2 strictly respects them.
   This means that if Metalink defines the maxconnections attribute lower
   than NUM_SERVERS, then aria2 uses the value of maxconnections attribute
@@ -423,7 +423,7 @@ Metalink Specific Options
 
 *--metalink-location*=LOCATION[,...]::
   The location of the preferred server.
-  A comma-deliminated list of locations is acceptable, for example, 'JP,US'.
+  A comma-delimited list of locations is acceptable, for example, 'JP,US'.
 
 *--metalink-os*=OS::
   The operating system of the file to download.
@@ -506,8 +506,8 @@ Advanced Options
   Default: '60'
 
 [NOTE]
-In multi file torrent, the files adjacent forward to the specified files
-are also allocated if they share a same piece.
+In multi file torrent downloads, the files adjacent forward to the specified files
+are also allocated if they share the same piece.
 
 *-Z*, *--force-sequential*[='true'|'false']::
   Fetch URIs in the command-line sequentially and download each URI in a
@@ -538,12 +538,12 @@ are also allocated if they share a same piece.
   Default: 'false'
 
 *-q*, *--quiet*[='true'|'false']::
-  Make aria2 quite (no console output).
+  Make aria2 quiet (no console output).
   Default: 'false'
 
 *--realtime-chunk-checksum*='true'|'false'::
-   Validate chunk of data by calculating checkusm while download a file if
-   chunk checksums are provided. Currently Metalink is the only way to to
+   Validate chunk of data by calculating checksum while downloading a file if
+   chunk checksums are provided. Currently Metalink is the only way to
    provide chunk checksums.
    Default: 'true'
 
@@ -561,7 +561,7 @@ OPTIONS THAT TAKE AN OPTIONAL ARGUMENT
 The options that have its argument surrounded by square brackets([])
 take an optional argument. Usually ommiting the argument is evaluated to 'true'.
 If you use short form of these options(such as '-V') and give
-an arugment, then the option name and its argument should be concatenated(e.g.
+an argument, then the option name and its argument should be concatenated(e.g.
 '-Vfalse'). If any spaces are inserted between the option name and the argument,
 the argument will be treated as URI and usually this is not what you expect.
 
@@ -571,11 +571,11 @@ You can specify multiple URLs in command-line.
 Unless you specify *-Z* option, all URLs must point to the same file or downloading will fail.
 
 You can also specify arbitrary number of torrent files and metalink files
-stored in a local drive. Please note that they are always treated as a
+stored on a local drive. Please note that they are always treated as a
 separate download.
 
 You can specify both torrent file with -T option and URLs. By doing this,
-download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
+you can download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
 while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
 only single file torrent can be integrated with HTTP(S)/FTP.
 
@@ -605,7 +605,7 @@ aria2 uses 5 connections to download 1 file by default.
 -s1 limtis the number of connections to just 1.
 
 [NOTE]
-To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument at the same directory. You can change URLs as long as they are pointing to the same file.
+To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URLs as long as they are pointing to the same file.
 
 Download a file from 2 different HTTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -619,7 +619,7 @@ Download a file from HTTP and FTP servers
 aria2c http://host1/file.zip ftp://host2/file.zip
 -------------------------------------------------
 
-Download files listed in a file concurrently
+Download files listed in a text file concurrently
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------
 aria2c -ifiles.txt -j2
@@ -664,7 +664,7 @@ aria2c -p --lowest-speed-limit=4000 file.metalink
 ----------------------------------------------------------
 [NOTE]
 To pause a download, press Ctrl-C.
-You can resume the transfer by running aria2c with the same argument at the same
+You can resume the transfer by running aria2c with the same argument in the same
 directory.
 
 Download several local metalink files
@@ -704,7 +704,7 @@ aria2c --max-upload-limit=40K file.torrent
 --max-upload-limit specifies the max of upload rate.
 
 [NOTE]
-To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument at the same directory.
+To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument in the same directory.
 
 Download 2 torrents
 ^^^^^^^^^^^^^^^^^^^
@@ -744,7 +744,7 @@ aria2c --seed-time=120 --seed-ratio=1.0 file.torrent
 -------------------------------------------------------
 
 [NOTE]
-In the above example, the program exists when the 120 minutes has elapsed since download completed or seed ratio reaches 1.0.
+In the above example, the program exits when the 120 minutes has elapsed since download completed or seed ratio reaches 1.0.
 
 Throttle upload speed
 ^^^^^^^^^^^^^^^^^^^^^
@@ -853,13 +853,13 @@ RESUME DOWNLOAD
 Usually, you can resume transfer by just issuing same command(aria2c URL)
 if the previous transfer is made by aria2.
 
-If the previous transfer is made by a browser or wget like sequencial
+If the previous transfer is made by a browser or wget like sequential
 download manager, then use -c option to continue the transfer(aria2c -c URL).
 
 CONTROL FILE
 ------------
-aria2 uses a control file to keep track the progress of download.
-A control file is placed at the same directory of the dowloading file and
+aria2 uses a control file to track the progress of a download.
+A control file is placed in the same directory as the dowloading file and
 its filename is the filename of downloading file with ".aria2" appended.
 For example, if you are downloading file.zip, then the control file should be
 file.zip.aria2.
@@ -887,7 +887,7 @@ aria2c -V file.torrent
 
 INPUT FILE
 ----------
-The input file can contain list of URIs to feed them into aria2.
+The input file can contain a list of URIs for aria2 to download.
 You can specify multiple URIs for a single entity:
 separate URIs on a single line using the TAB character.
 
@@ -896,7 +896,7 @@ Therefore they are affected by *-Z* and *-P* options.
 The additional *out* and *dir* options can be specified after each line of
 URIs. This optional line must start with white space(s).
 
-For example, let the content of uri.txt be
+For example, the content of uri.txt is
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 http://server/file.iso http://mirror/file.iso
@@ -940,7 +940,7 @@ status::
 
 Those fields must exist in one line. The order of the fields is not significant.You can put pairs other than above; they are simply ignored.
 
-An example is follow:
+An example follows:
 --------------------------------------------------------------------------------
 host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
 host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
@@ -951,7 +951,7 @@ FILES
 aria2.conf
 ~~~~~~~~~~
 User configuration file.
-It must be placed under $HOME/.aria2 and must be named as aria2.conf.
+It must be placed under $HOME/.aria2 and must be named aria2.conf.
 In each line, there is 1 parameter whose syntax is name=value pair,
 where name is the long command-line option name without '--' prefix.
 The lines beginning '#' are treated as comments.
