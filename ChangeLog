@@ -1,3 +1,17 @@
+2008-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	RFC3986 complied Percent-Encoding(urlencode).
+	Use uppercase hexadecimal digits for encoded text instead of lowercase
+	ones.
+	* src/Request.cc
+	* src/Util.cc
+	* src/Util.h
+	* test/BtHandshakeMessageTest.cc
+	* test/DefaultBtAnnounceTest.cc
+	* test/DefaultBtContextTest.cc
+	* test/RequestTest.cc
+	* test/UtilTest.cc
+
 2008-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that prevents aria2 from downloading 0-length files

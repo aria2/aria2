@@ -1,13 +1,16 @@
 #include "DefaultBtContext.h"
+
+#include <cstring>
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Util.h"
 #include "RecoverableException.h"
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"
 #include "FileEntry.h"
 #include "array_fun.h"
-#include <cstring>
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -236,7 +239,7 @@ void DefaultBtContextTest::testGetInfoHashAsString() {
 void DefaultBtContextTest::testGetPeerId() {
   DefaultBtContext btContext;
   btContext.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
-  CPPUNIT_ASSERT_EQUAL(std::string("%2daria2%2dAAAAAAAAAAAAA"), Util::torrentUrlencode(btContext.getPeerId(), 20));
+  CPPUNIT_ASSERT_EQUAL(std::string("%2Daria2%2DAAAAAAAAAAAAA"), Util::torrentUrlencode(btContext.getPeerId(), 20));
 }
 
 void DefaultBtContextTest::testComputeFastSet()

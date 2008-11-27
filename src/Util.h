@@ -36,15 +36,18 @@
 #define _D_UTIL_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "IntSequence.h"
-#include "a2time.h"
-#include "a2netcompat.h"
+
 #include <sys/time.h>
+
 #include <string>
 #include <utility>
 #include <deque>
 #include <iosfwd>
+
+#include "SharedHandle.h"
+#include "IntSequence.h"
+#include "a2time.h"
+#include "a2netcompat.h"
 
 namespace aria2 {
 
@@ -153,7 +156,9 @@ public:
     return urlencode((const unsigned char*)target.c_str(), target.size());
   }
 
-  static bool shouldUrlencode(const char c);
+  static bool inRFC3986ReservedChars(const char c);
+
+  static bool inRFC3986UnreservedChars(const char c);
 
   static std::string urldecode(const std::string& target);
 

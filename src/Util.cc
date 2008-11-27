@@ -33,20 +33,11 @@
  */
 /* copyright --> */
 #include "Util.h"
-#include "File.h"
-#include "message.h"
-#include "Randomizer.h"
-#include "a2netcompat.h"
-#include "DlAbortEx.h"
-#include "BitfieldMan.h"
-#include "DefaultDiskWriter.h"
-#include "FatalException.h"
-#include "FileEntry.h"
-#include "StringFormat.h"
-#include "A2STR.h"
+
 #include <signal.h>
 #include <limits.h>
 #include <stdint.h>
+
 #include <cerrno>
 #include <cassert>
 #include <cstring>
@@ -62,6 +53,19 @@
 #  include <windows.h>
 # endif // HAVE_WINSOCK_H
 #endif // HAVE_SLEEP
+
+#include "File.h"
+#include "message.h"
+#include "Randomizer.h"
+#include "a2netcompat.h"
+#include "DlAbortEx.h"
+#include "BitfieldMan.h"
+#include "DefaultDiskWriter.h"
+#include "FatalException.h"
+#include "FileEntry.h"
+#include "StringFormat.h"
+#include "A2STR.h"
+#include "array_fun.h"
 
 // For libc6 which doesn't define ULLONG_MAX properly because of broken limits.h
 #ifndef ULLONG_MAX
@@ -207,28 +211,33 @@ std::string Util::replace(const std::string& target, const std::string& oldstr, 
   return result;
 }
 
-bool Util::shouldUrlencode(const char c)
+bool Util::inRFC3986ReservedChars(const char c)
 {
-  return !(// ALPHA
-	   ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') ||
-	   // DIGIT
-	   ('0' <= c && c <= '9') ||
-	   // safe
-	   '$' == c || '-' == c || '_' == c || '.' == c ||
-	   // extra
-	   '!' == c || '*' == c || '\'' == c ||'(' == c ||
-	   ')' == c || ',' == c ||
-	   // reserved
-	   ';' == c || '/' == c || '?' == c  || ':' == c ||
-	   '@' == c || '&' == c || '=' == c || '+' == c ||
-	   '~' == c);	   
+  static const char reserved[] = {
+    ':' , '/' , '?' , '#' , '[' , ']' , '@',
+    '!' , '$' , '&' , '\'' , '(' , ')',
+    '*' , '+' , ',' , ';' , '=' };
+  return std::find(&reserved[0], &reserved[arrayLength(reserved)], c) !=
+    &reserved[arrayLength(reserved)];
+}
+
+bool Util::inRFC3986UnreservedChars(const char c)
+{
+  static const char unreserved[] = { '-', '.', '_', '~' };
+  return
+    // ALPHA
+    ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') ||
+    // DIGIT
+    ('0' <= c && c <= '9') ||
+    std::find(&unreserved[0], &unreserved[arrayLength(unreserved)], c) !=
+    &unreserved[arrayLength(unreserved)];
 }
 
 std::string Util::urlencode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; i++) {
-    if(shouldUrlencode(target[i])) {
-      dest.append(StringFormat("%%%02x", target[i]).str());
+    if(!inRFC3986UnreservedChars(target[i])) {
+      dest.append(StringFormat("%%%02X", target[i]).str());
     } else {
       dest += target[i];
     }
@@ -244,7 +253,7 @@ std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
        ('a' <= target[i] && target[i] <= 'z')) {
       dest += target[i];
     } else {
-      dest.append(StringFormat("%%%02x", target[i]).str());
+      dest.append(StringFormat("%%%02X", target[i]).str());
     }
   }
   return dest;

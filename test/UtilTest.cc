@@ -1,13 +1,16 @@
 #include "Util.h"
+
+#include <string>
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "FixedNumberRandomizer.h"
 #include "DlAbortEx.h"
 #include "BitfieldMan.h"
 #include "ByteArrayDiskWriter.h"
 #include "FileEntry.h"
 #include "File.h"
-#include <string>
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -47,6 +50,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testUitos);
   CPPUNIT_TEST(testHttpGMT);
   CPPUNIT_TEST(testNtoh64);
+  CPPUNIT_TEST(testUrlencode);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -87,6 +91,7 @@ public:
   void testUitos();
   void testHttpGMT();
   void testNtoh64();
+  void testUrlencode();
 };
 
 
@@ -699,6 +704,22 @@ void UtilTest::testNtoh64()
   CPPUNIT_ASSERT_EQUAL(y, ntoh64(x));
   CPPUNIT_ASSERT_EQUAL(x, hton64(y));
 #endif // !WORDS_BIGENDIAN
+}
+
+void UtilTest::testUrlencode()
+{
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("%3A%2F%3F%23%5B%5D%40%21%25%26%27%28%29%2A%2B%2C%3B%3D"),
+     Util::urlencode(":/?#[]@!%&'()*+,;="));
+
+  std::string unreserved =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz"
+    "0123456789"
+    "-._~";
+  CPPUNIT_ASSERT_EQUAL(unreserved, Util::urlencode(unreserved));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("1%5EA%20"), Util::urlencode("1^A "));
 }
 
 } // namespace aria2

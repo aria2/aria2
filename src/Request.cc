@@ -100,13 +100,13 @@ static std::string urlencode(const std::string& src)
   for(int index = src.size()-1; index >= 0; --index) {
     const unsigned char c = result[index];
     // '/' is not urlencoded because src is expected to be a path.
-    if(Util::shouldUrlencode(c)) {
+    if(!Util::inRFC3986ReservedChars(c) && !Util::inRFC3986UnreservedChars(c)) {
       if(c == '%') {
 	if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
 	  result.replace(index, 1, "%25");
 	}
       } else {
-	result.replace(index, 1, StringFormat("%%%02x", c).str());
+	result.replace(index, 1, StringFormat("%%%02X", c).str());
       }
     }
   }

@@ -1,9 +1,12 @@
 #include "BtHandshakeMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "BtConstants.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -102,7 +105,7 @@ void BtHandshakeMessageTest::testToString() {
   msg.setInfoHash(infoHash);
   msg.setPeerId(peerId);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("handshake peerId=%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0, reserved=0000000000100004"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("handshake peerId=%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0%F0, reserved=0000000000100004"), msg.toString());
 }
 
 void BtHandshakeMessageTest::testSetDHTEnabled()
