@@ -391,7 +391,7 @@ Make sure that the specified ports are open for incoming TCP traffic.
 
 *-T*, *--torrent-file*=TORRENT_FILE::
   The path to the .torrent file.
-  You are not required touse this option because you can specify a torrent file without -T.
+  You are not required to use this option because you can specify a torrent file without -T.
 
 Metalink Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -620,7 +620,7 @@ aria2c http://host1/file.zip ftp://host2/file.zip
 -------------------------------------------------
 
 Download files listed in a text file concurrently
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------
 aria2c -ifiles.txt -j2
 ------------------------
