@@ -153,7 +153,7 @@ void createRequestGroupForMetalink
 {
   Metalink2RequestGroup(op).generate(result, op->get(PREF_METALINK_FILE), *op);
   if(result.empty()) {
-    throw FatalException("No files to download.");
+    throw FatalException(MSG_NO_FILES_TO_DOWNLOAD);
   }
 }
 #endif // ENABLE_METALINK

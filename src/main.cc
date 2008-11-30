@@ -146,6 +146,7 @@ int main(int argc, char* argv[])
 	DefaultBtContextHandle btContext(new DefaultBtContext());
 	btContext->load(op->get(PREF_TORRENT_FILE));
 	std::cout << btContext << std::endl;
+	return EXIT_SUCCESS;
       } else {
 	createRequestGroupForBitTorrent(requestGroups, op, args);
       }
@@ -161,6 +162,7 @@ int main(int argc, char* argv[])
 	  std::deque<SharedHandle<FileEntry> > fileEntries;
 	  MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
 	  Util::toStream(std::cout, fileEntries);
+	  return EXIT_SUCCESS;
 	} else {
 	  createRequestGroupForMetalink(requestGroups, op);
 	}
@@ -173,7 +175,9 @@ int main(int argc, char* argv[])
 	  createRequestGroupForUri(requestGroups, op, args);
 	}
 
-    if(!requestGroups.empty()) {
+    if(requestGroups.empty()) {
+      std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
+    } else {
       returnValue = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
 					getSummaryOut(op)).execute();
     }

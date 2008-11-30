@@ -1,3 +1,10 @@
+2008-11-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Print a message when no files to download.
+	* src/download_helper.cc
+	* src/main.cc
+	* src/message.h
+
 2008-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	RFC3986 complied Percent-Encoding(urlencode).

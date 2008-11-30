@@ -163,6 +163,7 @@
   _("Certificate verification failed. Cause: %s")
 #define MSG_NO_CERT_FOUND _("No certificate found.")
 #define MSG_HOSTNAME_NOT_MATCH _("Hostname not match.")
+#define MSG_NO_FILES_TO_DOWNLOAD _("No files to download.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
