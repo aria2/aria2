@@ -354,15 +354,14 @@ You must use this program at your own risk.</p></div>
 </div>
 <h2 id="_introduction">2. Introduction</h2>
 <div class="sectionbody">
-<div class="para"><p>aria2 is a utility for downloading files. The supported protocols are HTTP(S),
-FTP, BitTorrent, and Metalink.
-It can download a file from multiple sources/protocols and tries to utilize
-your maximum download bandwidth.
-It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same
-time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent
-swarm.
-Using Metalink's chunk checksums, aria2 automatically validates chunks of data
-while downloading a file like BitTorrent.</p></div>
+<div class="para"><p>aria2 is a utility for downloading files. The supported protocols are
+HTTP(S), FTP, BitTorrent, and Metalink. aria2 can download a file from
+multiple sources/protocols and tries to utilize your maximum download
+bandwidth. It supports downloading a file from HTTP(S)/FTP and
+BitTorrent at the same time, while the data downloaded from
+HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's
+chunk checksums, aria2 automatically validates chunks of data while
+downloading a file like BitTorrent.</p></div>
 <div class="para"><p>Here is a list of features.</p></div>
 <div class="ilist"><ul>
 <li>
@@ -407,7 +406,23 @@ HTTP Proxy authentication support
 </li>
 <li>
 <p>
+Well-known environment variables for proxy: http_proxy, https_proxy,
+  ftp_proxy, all_proxy and no_proxy
+</p>
+</li>
+<li>
+<p>
 HTTP gzip, deflate content encoding support
+</p>
+</li>
+<li>
+<p>
+Verify peer using given trusted CA certificate in HTTPS
+</p>
+</li>
+<li>
+<p>
+Client certificate authentication in HTTPS
 </p>
 </li>
 <li>
@@ -448,7 +463,7 @@ BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
 </li>
 <li>
 <p>
-Run as a daemon process.
+Run as a daemon process
 </p>
 </li>
 <li>
@@ -478,7 +493,8 @@ Configuration file support
 </li>
 <li>
 <p>
-Download URIs found in a text file or stdin
+Download URIs found in a text file or stdin and the destination directory and
+  output filename can be specified optionally
 </p>
 </li>
 <li>
@@ -587,9 +603,10 @@ Note
 </p>
 </dd>
 </dl></div>
-<div class="para"><p>You can disable BitTorrent, Metalink support by providing &#8212;disable-bittorrent,
-&#8212;disable-metalink respectively to configure script.</p></div>
-<div class="para"><p>In order to enable async DNS support, you need c-ares</p></div>
+<div class="para"><p>You can disable BitTorrent, Metalink support by providing
+&#8212;disable-bittorrent, &#8212;disable-metalink respectively to configure
+script.</p></div>
+<div class="para"><p>In order to enable async DNS support, you need c-ares.</p></div>
 <div class="ilist"><ul>
 <li>
 <p>
@@ -600,8 +617,9 @@ c-ares: <a href="http://daniel.haxx.se/projects/c-ares/">http://daniel.haxx.se/p
 </div>
 <h2 id="_how_to_build">4. How to build</h2>
 <div class="sectionbody">
-<div class="para"><p>In order to build aria2 from the source package, you need following development
-packages(package name may vary depending on the distribution you use):</p></div>
+<div class="para"><p>In order to build aria2 from the source package, you need following
+development packages(package name may vary depending on the
+distribution you use):</p></div>
 <div class="ilist"><ul>
 <li>
 <p>
@@ -639,7 +657,8 @@ libsqlite3-dev   (Required for Firefox3 cookie support)
 </p>
 </li>
 </ul></div>
-<div class="para"><p>You can use libssl-dev instead of libgnutls-dev,libgpg-error-dev,libgcrypt-dev:</p></div>
+<div class="para"><p>You can use libssl-dev instead of
+libgnutls-dev,libgpg-error-dev,libgcrypt-dev:</p></div>
 <div class="ilist"><ul>
 <li>
 <p>
@@ -678,11 +697,12 @@ single-file mode
 </dt>
 <dd>
 <p>
-    If "name" key is present in .torrent file, filename is the value of "name"
-    key. Otherwise, filename is the basename of .torrent file appended by
-    ".file". For example, .torrent file is "test.torrrent", then filename is
-    "test.torrent.file".
-    The directory to store the downloaded file can be specified by -d option.
+    If "name" key is present in .torrent file, filename is the value
+    of "name" key. Otherwise, filename is the basename of .torrent
+    file appended by ".file". For example, .torrent file is
+    "test.torrrent", then filename is "test.torrent.file".  The
+    directory to store the downloaded file can be specified by -d
+    option.
 </p>
 </dd>
 <dt>
@@ -690,88 +710,91 @@ multi-file mode
 </dt>
 <dd>
 <p>
-    The complete directory/file structure mentioned in .torrent file is
-    created.
-    The directory to store the top directory of downloaded files can be
-    specified by -d option.
+    The complete directory/file structure mentioned in .torrent file
+    is created.  The directory to store the top directory of
+    downloaded files can be specified by -d option.
 </p>
 </dd>
 </dl></div>
-<div class="para"><p>In the default behavior, before download starts, complete directory structure
-is created if needed. By default, aria2 opens at most 100 files mentioned in
-.torrent file, directly writes to and reads from these files. The number of
-files to open can be controlled by "&#8212;bt-max-open-files" option.</p></div>
-<div class="para"><p>If "&#8212;direct-file-mapping" option set to be false, aria2 creates temporary
-file in the store directory. The length of this file is the sum of length of
-the files in .torrent file, so at least 2 times more disk space than the file
-size itself is required. Writing and reading is done against this file.
-After download completes, aria2 creates complete directory structure if needed,
-and copies whole file or a part of it to the destination.</p></div>
+<div class="para"><p>In the default behavior, before download starts, a complete directory
+structure is created if needed. By default, aria2 opens at most 100
+files mentioned in .torrent file, directly writes to and reads from
+these files. The number of files to open simultaneously can be
+controlled by "&#8212;bt-max-open-files" option.</p></div>
+<div class="para"><p>If "&#8212;direct-file-mapping" option set to be false, aria2 creates
+temporary file in the store directory. The length of this file is the
+sum of length of the files in .torrent file, so at least 2 times more
+disk space than the file size itself is required. Writing and reading
+are done against this file.  After download completes, aria2 creates
+complete directory structure if needed, and copies whole file or a
+part of it to the destination.</p></div>
 <h3 id="_dht">5.2. DHT</h3><div style="clear:left"></div>
-<div class="para"><p>As of release 0.13.0, aria2 supports DHT. By default, the routing table is saved
-to $HOME/.aria2/dht.dat.</p></div>
+<div class="para"><p>As of release 0.13.0, aria2 supports DHT. By default, the routing
+table is saved to $HOME/.aria2/dht.dat.</p></div>
 <h3 id="_other_things_should_be_noted">5.3. Other things should be noted</h3><div style="clear:left"></div>
 <div class="ilist"><ul>
 <li>
 <p>
--o option is used to change the filename of .torrent file itself, not a
-  filename of a file in .torrent file.
+-o option is used to change the filename of .torrent file itself,
+  not a filename of a file in .torrent file.
 </p>
 </li>
 <li>
 <p>
-The port numbers that aria2 uses by default are 6881-6999 for TCP and UDP.
+The port numbers that aria2 uses by default are 6881-6999 for TCP
+  and UDP.
 </p>
 </li>
 <li>
 <p>
-aria2 doesn't configure port-forwarding automatically. Please configure your
-  router or firewall manually.
+aria2 doesn't configure port-forwarding automatically. Please
+  configure your router or firewall manually.
 </p>
 </li>
 <li>
 <p>
-The maximum number of peers is 55. This limit may be exceeded when download
-  rate is low.
+The maximum number of peers is 55. This limit may be exceeded when
+  download rate is low. This download rate can be adjusted using
+  &#8212;bt-request-peer-speed-limit option.
 </p>
 </li>
 <li>
 <p>
-As of release 0.10.0, aria2 stops sending request message after selective
-  download completes,
+As of release 0.10.0, aria2 stops sending request message after
+  selective download completes.
 </p>
 </li>
 </ul></div>
 </div>
 <h2 id="_metalink">6. Metalink</h2>
 <div class="sectionbody">
-<div class="para"><p>The current implementation supports HTTP/FTP/BitTorrent.
-The other P2P protocols are ignored.</p></div>
-<div class="para"><p>For checksum checking, MD5, SHA1, SHA256 are supported. If multiple hash
-algorithms are provided, aria2 uses SHA1. If checksum checking is failed, aria2
-doesn't retry the download and just exits with non-zero return code.</p></div>
-<div class="para"><p>The supported user preferences are version, language, location, protocol and
-os.</p></div>
-<div class="para"><p>If chunk checksums are provided in Metalink file, aria2 automatically validate
-a chunk of file while downloading it. This behavior can be turned off by
-a command-line option.</p></div>
-<div class="para"><p>If signature is included in a Metalink file, aria2 saves it as a file after the
-download completed.
-The filename is download filename + ".sig". If same file already exists, the
-signature file is not saved.</p></div>
+<div class="para"><p>The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
+P2P protocols are ignored.</p></div>
+<div class="para"><p>For checksum checking, MD5, SHA1, SHA256 are supported. If multiple
+hash algorithms are provided, aria2 uses SHA1. If checksum checking is
+failed, aria2 doesn't retry the download and just exits with non-zero
+return code.</p></div>
+<div class="para"><p>The supported user preferences are version, language, location,
+protocol and os.</p></div>
+<div class="para"><p>If chunk checksums are provided in Metalink file, aria2 automatically
+validates chunks of data during download. This behavior can be turned
+off by a command-line option.</p></div>
+<div class="para"><p>If signature is included in a Metalink file, aria2 saves it as a file
+after the completion of the download.  The filename is download
+filename + ".sig". If same file already exists, the signature file is
+not saved.</p></div>
 </div>
 <h2 id="_netrc">7. netrc</h2>
 <div class="sectionbody">
-<div class="para"><p>netrc support is enabled by default for HTTP(S)/FTP.
-To disable netrc support, specify -n command-line option.
-Your .netrc file should have correct permissions(600).</p></div>
+<div class="para"><p>netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
+support, specify -n command-line option.  Your .netrc file should have
+correct permissions(600).</p></div>
 </div>
 <h2 id="_server_performance_profile">8. SERVER PERFORMANCE PROFILE</h2>
 <div class="sectionbody">
-<div class="para"><p>This section describes the format of server performance profile.
-The file is plain text and each line has several NAME=VALUE pair, delimited by
-comma.
-Currently following NAMEs are recognized:</p></div>
+<div class="para"><p>This section describes the format of server performance profile.  The
+file is plain text and each line has several NAME=VALUE pair,
+delimited by comma.  Currently following NAMEs are recognized:</p></div>
 <div class="vlist"><dl>
 <dt>
 host
@@ -794,8 +817,8 @@ dl_speed
 </dt>
 <dd>
 <p>
-  The average download speed observed in the previous download in bytes per sec.
-  Required.
+  The average download speed observed in the previous download in
+  bytes per sec.  Required.
 </p>
 </dd>
 <dt>
@@ -803,8 +826,8 @@ last_updated
 </dt>
 <dd>
 <p>
-  Last contact time in GMT with this server, specified in the seconds from the
-  Epoch. Required.
+  Last contact time in GMT with this server, specified in the seconds
+  from the Epoch. Required.
 </p>
 </dd>
 <dt>
@@ -812,13 +835,14 @@ status
 </dt>
 <dd>
 <p>
-  ERROR is set when server cannot be reached or out-of-service or timeout
-  occurred. Otherwise, OK is set.
+  ERROR is set when server cannot be reached or out-of-service or
+  timeout occurred. Otherwise, OK is set.
 </p>
 </dd>
 </dl></div>
-<div class="para"><p>Those fields must exist in one line. The order of the fields is not significant.
-You can put pairs other than above; they are simply ignored.</p></div>
+<div class="para"><p>Those fields must exist in one line. The order of the fields is not
+significant.  You can put pairs other than above but they are simply
+ignored.</p></div>
 <div class="para"><p>An example is follow:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -828,25 +852,22 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 </div>
 <h2 id="_configuration_file">9. Configuration file</h2>
 <div class="sectionbody">
-<div class="para"><p>Configuration file must be placed under $HOME/.aria2 and must be named as
-aria2.conf.
-In each line, there is 1 parameter whose syntax is name=value pair,
-where name is the long command-line option name without <em>&#8212;</em> prefix.
-The lines beginning <em>#</em> are treated as comments.</p></div>
+<div class="para"><p>Configuration file must be placed under $HOME/.aria2 and must be named
+as aria2.conf.  In each line, there is 1 parameter whose syntax is
+name=value pair, where name is the long command-line option name
+without <em>&#8212;</em> prefix.  The lines beginning <em>#</em> are treated as comments.</p></div>
 <div class="para"><p>Example:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt># sample configuration file for aria2c
-file-allocation=prealloc
 listen-port=60000
 seed-ratio=1.0
-max-upload-limit=40K
-ftp-pasv=true</tt></pre>
+max-upload-limit=40K</tt></pre>
 </div></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-11-18 20:19:18 JST
+Last updated 2008-12-02 01:48:13 JST
 </div>
 </div>
 </body>
