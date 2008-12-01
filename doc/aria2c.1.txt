@@ -86,7 +86,7 @@ HTTP/FTP Options
   Default: '0'
 
 *--max-file-not-found*=NUM::
-  If aria2 recieves `file not found' status from the remote HTTP/FTP
+  If aria2 receives `file not found' status from the remote HTTP/FTP
   servers NUM times without getting a single byte, then force the
   download to fail. Specify '0' to disable this option. This options is
   effective only when using HTTP/FTP servers.
@@ -378,7 +378,7 @@ Make sure that the specified ports are open for incoming TCP traffic.
   Default: '-aria2-'
 
 *--seed-ratio*=RATIO::
-  Specify share ratio. Seed completed torrents until share ratio reaches]
+  Specify share ratio. Seed completed torrents until share ratio reaches
   RATIO.
   You are strongly encouraged to specify equals or more than '1.0' here.
   Specify '0.0' if you intend to do seeding regardless of share ratio.
