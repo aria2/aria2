@@ -1,3 +1,8 @@
+2008-12-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed typos
+	* src/usage_text.h
+
 2008-11-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Print a message when no files to download.

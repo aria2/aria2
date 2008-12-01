@@ -71,9 +71,9 @@ _(" --ftp-proxy=PROXY            Use this proxy server for FTP.\n"\
   "                              See also  --all-proxy option.\n"\
   "                              This affects all URLs.")
 #define TEXT_ALL_PROXY \
-_(" --all-proxy=PROXY            Use this proxy server in the all protocols.\n"\
+_(" --all-proxy=PROXY            Use this proxy server for all protocols.\n"\
   "                              You can override this setting and specify a\n"\
-  "                              proxy server for particular proctol using\n"\
+  "                              proxy server for a particular proctol using\n"\
   "                              --http-proxy, --https-proxy and --ftp-proxy\n"\
   "                              options.\n"\
   "                              This affects all URLs.")
@@ -162,9 +162,10 @@ _(" -V, --check-integrity[=true|false] Check file integrity by validating piece\
   "                              Use this option to re-download a damaged portion\n"\
   "                              of a file.")
 #define TEXT_REALTIME_CHUNK_CHECKSUM \
-_(" --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"\
-  "                              downloading a file in Metalink mode. This option\n"\
-  "                              on affects Metalink mode with chunk checksums.")
+_(" --realtime-chunk-checksum=true|false  Validate chunk of data by calculating\n"\
+  "                              checksum while downloading a file if chunk\n"\
+  "                              checksums are provided. Currently Metalink is the\n"\
+  "                              only way to provide chunk checksums.")
 #define TEXT_CONTINUE \
 _(" -c, --continue               Continue downloading a partially downloaded\n"\
   "                              file. Use this option to resume a download\n"\
@@ -197,7 +198,7 @@ _(" -S, --show-files             Print file listing of .torrent or .metalink fil
   "                              and exit. More detailed information will be listed\n"\
   "                              in case of torrent file.")
 #define TEXT_SELECT_FILE \
-_(" --select-file=INDEX...       Set file to download by specifing its index.\n"\
+_(" --select-file=INDEX...       Set file to download by specifying its index.\n"\
   "                              You can find the file index using the\n"\
   "                              --show-files option. Multiple indexes can be\n"\
   "                              specified by using ',', for example: \"3,6\".\n"\
@@ -235,9 +236,10 @@ _(" --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n
   "                              --seed-ratio option.")
 #define TEXT_SEED_RATIO \
 _(" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"\
-  "                              until share ratio reaches RATIO. 1.0 is\n"\
-  "                              encouraged. Specify 0.0 if you intend to do\n"\
-  "                              seeding regardless of share ratio.\n"\
+  "                              until share ratio reaches RATIO.\n"\
+  "                              You are strongly encouraged to specify equals or\n"\
+  "                              more than 1.0 here. Specify 0.0 if you intend to\n"\
+  "                              do seeding regardless of share ratio.\n" \
   "                              If --seed-time option is specified along with\n"\
   "                              this option, seeding ends when at least one of\n"\
   "                              the conditions is satisfied.")
@@ -266,7 +268,7 @@ _(" --dht-file-path=PATH         Change the DHT routing table file to PATH.")
 #define TEXT_BT_MIN_CRYPTO_LEVEL \
 _(" --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"\
   "                              If several encryption methods are provided by a\n"\
-  "                              peer, aria2 chooses a lowest one which satisfies\n"\
+  "                              peer, aria2 chooses the lowest one which satisfies\n"\
   "                              the given level.")
 #define TEXT_BT_REQUIRE_CRYPTO \
 _(" --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"\
@@ -288,7 +290,7 @@ _(" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \
 _(" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"\
-  "                              simultaneously. Some Metalinks regulates the\n"\
+  "                              simultaneously. Some Metalinks regulate the\n"\
   "                              number of servers to connect. aria2 strictly\n"\
   "                              respects them. This means that if Metalink defines\n"\
   "                              the maxconnections attribute lower than\n"\
@@ -303,14 +305,14 @@ _(" --metalink-language=LANGUAGE The language of the file to download.")
 _(" --metalink-os=OS             The operating system of the file to download.")
 #define TEXT_METALINK_LOCATION \
 _(" --metalink-location=LOCATION[,...] The location of the preferred server.\n"\
-  "                              A comma-deliminated list of locations is\n"\
+  "                              A comma-delimited list of locations is\n"\
   "                              acceptable.")
 #define TEXT_METALINK_PREFERRED_PROTOCOL \
 _(" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy 'none'\n"\
   "                              if you don't have any preferred protocol.")
 #define TEXT_FOLLOW_METALINK \
 _(" --follow-metalink=true|false|mem If true or mem is specified, when a file\n"\
-  "                              whose suffix is .metaink or content type is\n"\
+  "                              whose suffix is .metaink or content type of\n"\
   "                              application/metalink+xml is downloaded, aria2\n"\
   "                              parses it as a metalink file and downloads files\n"\
   "                              mentioned in it.\n"\
@@ -348,7 +350,7 @@ _(" --header=HEADER              Append HEADER to HTTP request header. You can u
   "                              aria2c --header=\"X-A: b78\" --header=\"X-B: 9J1\"\n"\
   "                              http://host/file")
 #define TEXT_QUIET \
-_(" -q, --quiet[=true|false]     Make aria2 quite (no console output).")
+_(" -q, --quiet[=true|false]     Make aria2 quiet(no console output).")
 #define TEXT_ASYNC_DNS \
 _(" --async-dns[=true|false]     Enable asynchronous DNS.")
 #define TEXT_FTP_REUSE_CONNECTION \
@@ -368,11 +370,11 @@ _(" --connect-timeout=SEC        Set the connect timeout in seconds to establish
   "                              connection is established, this option makes no\n"\
   "                              effect and --timeout option is used instead.")
 #define TEXT_MAX_FILE_NOT_FOUND \
-_(" --max-file-not-found=NUM     If aria2 recieves `file not found' status from the\n"\
+_(" --max-file-not-found=NUM     If aria2 receives `file not found' status from the\n"\
   "                              remote HTTP/FTP servers NUM times without getting\n"\
   "                              a single byte, then force the download to fail.\n"\
   "                              Specify 0 to disable this option.\n"\
-  "                              This options is only effective only when using\n"\
+  "                              This options is effective only when using\n"\
   "                              HTTP/FTP servers.")
 #define TEXT_URI_SELECTOR \
 _(" --uri-selector=SELECTOR      Specify URI selection algorithm.\n"\
@@ -422,5 +424,5 @@ _(" --ca-certificate=FILE        Use the certificate authorities in FILE to veri
 _(" --check-certificate[=true|false] Verify the peer using certificates specified\n"\
   "                              in --ca-certificate option.")
 #define TEXT_NO_PROXY \
-_(" --no-proxy=DOMAINS           Specify comma separated hostnames or domains to\n"\
-  "                              which proxy should not be used.")
+_(" --no-proxy=DOMAINS           Specify comma separated hostnames or domains where\n"\
+  "                              proxy should not be used.")
