@@ -1,5 +1,10 @@
 2008-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Mentioned https tag in help option.
+	* doc/aria2c.1.txt
+
+2008-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added `https' tag to help option category.  Added https tag to
 	--ca-certificate, --certificate, --check-certificate and
 	--private-key option.

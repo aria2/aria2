@@ -58,7 +58,7 @@ Basic Options
   For example, type "*--help*=http" for detailed explanation for the options
   related to HTTP. If no matching category is found, search option name using
   a given word in middle match and print the result.
-  Available Values: 'basic', 'advanced', 'http', 'ftp', 'metalink',
+  Available Values: 'basic', 'advanced', 'http', 'https', 'ftp', 'metalink',
   'bittorrent', 'all'
   Default: 'basic'
 
