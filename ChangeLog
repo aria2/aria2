@@ -1,5 +1,10 @@
 2008-12-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typos
+	* src/usage_text.h
+
+2008-12-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typos and updated doc.
 	* README
 

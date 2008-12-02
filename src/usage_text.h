@@ -73,7 +73,7 @@ _(" --ftp-proxy=PROXY            Use this proxy server for FTP.\n"\
 #define TEXT_ALL_PROXY \
 _(" --all-proxy=PROXY            Use this proxy server for all protocols.\n"\
   "                              You can override this setting and specify a\n"\
-  "                              proxy server for a particular proctol using\n"\
+  "                              proxy server for a particular protocol using\n"\
   "                              --http-proxy, --https-proxy and --ftp-proxy\n"\
   "                              options.\n"\
   "                              This affects all URLs.")
@@ -308,7 +308,7 @@ _(" --metalink-location=LOCATION[,...] The location of the preferred server.\n"\
   "                              A comma-delimited list of locations is\n"\
   "                              acceptable.")
 #define TEXT_METALINK_PREFERRED_PROTOCOL \
-_(" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy 'none'\n"\
+_(" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify 'none'\n"\
   "                              if you don't have any preferred protocol.")
 #define TEXT_FOLLOW_METALINK \
 _(" --follow-metalink=true|false|mem If true or mem is specified, when a file\n"\
