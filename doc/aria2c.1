@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 12/02/2008
+.\"      Date: 11/29/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "12/02/2008" "" ""
+.TH "ARIA2C" "1" "11/29/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -82,7 +82,7 @@ Default:
 .PP
 \fB\-\-all\-proxy\fR=PROXY
 .RS 4
-Use this proxy server for all protocols\&. You can override this setting and specify a proxy server for a particular proctol using
+Use this proxy server for all protocols\&. You can override this setting and specify a proxy server for a particular protocol using
 \fB\-\-http\-proxy\fR,
 \fB\-\-https\-proxy\fR
 and
@@ -604,7 +604,7 @@ Specify preferred protocol\&. The possible values are
 \fIhttps\fR,
 \fIftp\fR
 and
-\fInone\fR\&. Specifiy
+\fInone\fR\&. Specify
 \fInone\fR
 to disable this feature\&. Default:
 \fInone\fR
@@ -783,7 +783,7 @@ is given, this feature is disabled\&. Default:
 Print the version number, copyright and the configuration information and exit\&.
 .RE
 .SS "OPTIONS THAT TAKE AN OPTIONAL ARGUMENT"
-The options that have its argument surrounded by square brackets([]) take an optional argument\&. Usually ommiting the argument is evaluated to \fItrue\fR\&. If you use short form of these options(such as \fI\-V\fR) and give an argument, then the option name and its argument should be concatenated(e\&.g\&. \fI\-Vfalse\fR)\&. If any spaces are inserted between the option name and the argument, the argument will be treated as URI and usually this is not what you expect\&.
+The options that have its argument surrounded by square brackets([]) take an optional argument\&. Usually omiting the argument is evaluated to \fItrue\fR\&. If you use short form of these options(such as \fI\-V\fR) and give an argument, then the option name and its argument should be concatenated(e\&.g\&. \fI\-Vfalse\fR)\&. If any spaces are inserted between the option name and the argument, the argument will be treated as URI and usually this is not what you expect\&.
 .sp
 .SS "URL, TORRENT_FILE, METALINK_FILE"
 You can specify multiple URLs in command\-line\&. Unless you specify \fB\-Z\fR option, all URLs must point to the same file or downloading will fail\&.
@@ -843,7 +843,7 @@ aria2c \-s1 http://host/file\&.zip
 .nr an-break-flag 1
 .br
 Note
-aria2 uses 5 connections to download 1 file by default\&. \-s1 limtis the number of connections to just 1\&.
+aria2 uses 5 connections to download 1 file by default\&. \-s1 limits the number of connections to just 1\&.
 .sp
 .sp
 .it 1 an-trap
@@ -1421,7 +1421,7 @@ Usually, you can resume transfer by just issuing same command(aria2c URL) if the
 If the previous transfer is made by a browser or wget like sequential download manager, then use \-c option to continue the transfer(aria2c \-c URL)\&.
 .sp
 .SH "CONTROL FILE"
-aria2 uses a control file to track the progress of a download\&. A control file is placed in the same directory as the dowloading file and its filename is the filename of downloading file with "\&.aria2" appended\&. For example, if you are downloading file\&.zip, then the control file should be file\&.zip\&.aria2\&. (There is a exception for this naming convention\&. If you are downloading a multi torrent, its control file is the "top directory" name of the torrent with "\&.aria2" appended\&. The "top directory" name is a value of "name" key in "info" directory in a torrent file\&.)
+aria2 uses a control file to track the progress of a download\&. A control file is placed in the same directory as the downloading file and its filename is the filename of downloading file with "\&.aria2" appended\&. For example, if you are downloading file\&.zip, then the control file should be file\&.zip\&.aria2\&. (There is a exception for this naming convention\&. If you are downloading a multi torrent, its control file is the "top directory" name of the torrent with "\&.aria2" appended\&. The "top directory" name is a value of "name" key in "info" directory in a torrent file\&.)
 .sp
 Usually a control file is deleted once download completed\&. If aria2 decides that download cannot be resumed(for example, when downloading a file from a HTTP server which doesn\'t support resume), a control file is not created\&.
 .sp
@@ -1483,7 +1483,7 @@ status
 .RS 4
 ERROR is set when server cannot be reached or out\-of\-service or timeout occurred\&. Otherwise, OK is set\&.
 .RE
-Those fields must exist in one line\&. The order of the fields is not significant\&.You can put pairs other than above; they are simply ignored\&.
+Those fields must exist in one line\&. The order of the fields is not significant\&. You can put pairs other than the above; they are simply ignored\&.
 .sp
 An example follows:
 .sp

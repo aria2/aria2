@@ -67,7 +67,7 @@ HTTP/FTP Options
 *--all-proxy*=PROXY::
   Use this proxy server for all protocols.
   You can override this setting and specify a proxy server for a particular
-  proctol using *--http-proxy*, *--https-proxy* and *--ftp-proxy* options.
+  protocol using *--http-proxy*, *--https-proxy* and *--ftp-proxy* options.
   This affects all URLs.
   The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
 
@@ -434,7 +434,7 @@ Metalink Specific Options
 *--metalink-preferred-protocol*=PROTO::
   Specify preferred protocol.
   The possible values are 'http', 'https', 'ftp' and 'none'.
-  Specifiy 'none' to disable this feature.
+  Specify 'none' to disable this feature.
   Default: 'none'
  
 *--metalink-enable-unique-protocol*='true'|'false'::
@@ -559,7 +559,7 @@ are also allocated if they share the same piece.
 OPTIONS THAT TAKE AN OPTIONAL ARGUMENT
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The options that have its argument surrounded by square brackets([])
-take an optional argument. Usually ommiting the argument is evaluated to 'true'.
+take an optional argument. Usually omiting the argument is evaluated to 'true'.
 If you use short form of these options(such as '-V') and give
 an argument, then the option name and its argument should be concatenated(e.g.
 '-Vfalse'). If any spaces are inserted between the option name and the argument,
@@ -602,7 +602,7 @@ aria2c -s1 http://host/file.zip
 ----------------------------------
 [NOTE]
 aria2 uses 5 connections to download 1 file by default.
--s1 limtis the number of connections to just 1.
+-s1 limits the number of connections to just 1.
 
 [NOTE]
 To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URLs as long as they are pointing to the same file.
@@ -859,7 +859,7 @@ download manager, then use -c option to continue the transfer(aria2c -c URL).
 CONTROL FILE
 ------------
 aria2 uses a control file to track the progress of a download.
-A control file is placed in the same directory as the dowloading file and
+A control file is placed in the same directory as the downloading file and
 its filename is the filename of downloading file with ".aria2" appended.
 For example, if you are downloading file.zip, then the control file should be
 file.zip.aria2.
@@ -938,7 +938,7 @@ status::
   ERROR is set when server cannot be reached or out-of-service or timeout
   occurred. Otherwise, OK is set.
 
-Those fields must exist in one line. The order of the fields is not significant.You can put pairs other than above; they are simply ignored.
+Those fields must exist in one line. The order of the fields is not significant. You can put pairs other than the above; they are simply ignored.
 
 An example follows:
 --------------------------------------------------------------------------------

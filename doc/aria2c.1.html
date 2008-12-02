@@ -471,7 +471,7 @@ ARIA2C(1) Manual Page
 <p>
   Use this proxy server for all protocols.
   You can override this setting and specify a proxy server for a particular
-  proctol using <strong>--http-proxy</strong>, <strong>--https-proxy</strong> and <strong>--ftp-proxy</strong> options.
+  protocol using <strong>--http-proxy</strong>, <strong>--https-proxy</strong> and <strong>--ftp-proxy</strong> options.
   This affects all URLs.
   The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
@@ -1196,7 +1196,7 @@ writes the piece to the appropriate files.</td>
 <p>
   Specify preferred protocol.
   The possible values are <em>http</em>, <em>https</em>, <em>ftp</em> and <em>none</em>.
-  Specifiy <em>none</em> to disable this feature.
+  Specify <em>none</em> to disable this feature.
   Default: <em>none</em>
 </p>
 </dd>
@@ -1435,7 +1435,7 @@ are also allocated if they share the same piece.</td>
 </dl></div>
 <h3 id="_options_that_take_an_optional_argument">OPTIONS THAT TAKE AN OPTIONAL ARGUMENT</h3><div style="clear:left"></div>
 <div class="para"><p>The options that have its argument surrounded by square brackets([])
-take an optional argument. Usually ommiting the argument is evaluated to <em>true</em>.
+take an optional argument. Usually omiting the argument is evaluated to <em>true</em>.
 If you use short form of these options(such as <em>-V</em>) and give
 an argument, then the option name and its argument should be concatenated(e.g.
 <em>-Vfalse</em>). If any spaces are inserted between the option name and the argument,
@@ -1487,7 +1487,7 @@ contains "&amp;" or any characters that have special meaning in shell.</td>
 <div class="title">Note</div>
 </td>
 <td class="content">aria2 uses 5 connections to download 1 file by default.
--s1 limtis the number of connections to just 1.</td>
+-s1 limits the number of connections to just 1.</td>
 </tr></table>
 </div>
 <div class="admonitionblock">
@@ -1804,7 +1804,7 @@ download manager, then use -c option to continue the transfer(aria2c -c URL).</p
 <h2 id="_control_file">CONTROL FILE</h2>
 <div class="sectionbody">
 <div class="para"><p>aria2 uses a control file to track the progress of a download.
-A control file is placed in the same directory as the dowloading file and
+A control file is placed in the same directory as the downloading file and
 its filename is the filename of downloading file with ".aria2" appended.
 For example, if you are downloading file.zip, then the control file should be
 file.zip.aria2.
@@ -1904,7 +1904,7 @@ status
 </p>
 </dd>
 </dl></div>
-<div class="para"><p>Those fields must exist in one line. The order of the fields is not significant.You can put pairs other than above; they are simply ignored.</p></div>
+<div class="para"><p>Those fields must exist in one line. The order of the fields is not significant. You can put pairs other than the above; they are simply ignored.</p></div>
 <div class="para"><p>An example follows:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -2030,7 +2030,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-12-02 01:46:23 JST
+Last updated 2008-11-29 20:11:51 EDT
 </div>
 </div>
 </body>
