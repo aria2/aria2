@@ -1,5 +1,12 @@
 2008-12-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed the package name from `aria2c' to `aria2' in order to fix
+	the packaging issue in Debian and Fedora.  The name of the
+	executable is not changed.
+	* configure.ac
+
+2008-12-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typos
 	* src/usage_text.h
 
