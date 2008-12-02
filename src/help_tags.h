@@ -38,6 +38,7 @@
 #define TAG_BASIC "basic"
 #define TAG_ADVANCED "advanced"
 #define TAG_HTTP "http"
+#define TAG_HTTPS "https"
 #define TAG_FTP "ftp"
 #define TAG_METALINK "metalink"
 #define TAG_BITTORRENT "bittorrent"

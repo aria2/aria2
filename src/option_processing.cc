@@ -33,6 +33,13 @@
  */
 /* copyright --> */
 #include "common.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
 #include "Option.h"
 #include "prefs.h"
 #include "OptionParser.h"
@@ -46,11 +53,6 @@
 #include "File.h"
 #include "StringFormat.h"
 #include "OptionHandlerException.h"
-#include <cstdlib>
-#include <cstring>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
 extern char* optarg;
 extern int optind, opterr, optopt;

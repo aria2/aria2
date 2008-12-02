@@ -434,6 +434,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_CA_CERTIFICATE,
 				    TEXT_CA_CERTIFICATE));
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
     handlers.push_back(op);
   }
   {
@@ -441,6 +442,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_CERTIFICATE,
 				    TEXT_CERTIFICATE));
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
     handlers.push_back(op);
   }
   {
@@ -449,6 +451,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_CHECK_CERTIFICATE,
 				    V_FALSE));
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
     handlers.push_back(op);
   }
   {
@@ -525,6 +528,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_PRIVATE_KEY,
 				    TEXT_PRIVATE_KEY));
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
     handlers.push_back(op);
   }
   {
@@ -952,10 +956,11 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   ("help",
 				    TEXT_HELP,
 				    TAG_BASIC,
-				    StringFormat("%s,%s,%s,%s,%s,%s,%s,all",
+				    StringFormat("%s,%s,%s,%s,%s,%s,%s,%s,all",
 						 TAG_BASIC,
 						 TAG_ADVANCED,
 						 TAG_HTTP,
+						 TAG_HTTPS,
 						 TAG_FTP,
 						 TAG_METALINK,
 						 TAG_BITTORRENT,

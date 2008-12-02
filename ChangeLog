@@ -1,3 +1,12 @@
+2008-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added `https' tag to help option category.  Added https tag to
+	--ca-certificate, --certificate, --check-certificate and
+	--private-key option.
+	* src/OptionHandlerFactory.cc
+	* src/help_tags.h
+	* src/option_processing.cc
+
 2008-12-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Changed the package name from `aria2c' to `aria2' in order to fix
