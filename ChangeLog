@@ -1,5 +1,11 @@
 2008-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented the default value of --check-certificate option in man
+	page.
+	* doc/aria2c.1.txt
+
+2008-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Enabled --check-certificate by default.  Added compile
 	time(configure) option --with-ca-bundle to specify CA bundle.
 	Warn if --check-certificate=true and --ca-certificate is not

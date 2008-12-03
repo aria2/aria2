@@ -181,6 +181,7 @@ HTTP Specific Options
 
 *--check-certificate*[='true'|'false']::
   Verify the peer using certificates specified in *--ca-certificate* option.
+  Default: 'true'
 
 *--http-auth-scheme*=SCHEME::
   Set HTTP authentication scheme.
