@@ -36,6 +36,10 @@ ARIA2_ARG_ENABLE([bittorrent])
 ARIA2_ARG_ENABLE([metalink])
 ARIA2_ARG_ENABLE([epoll])
 
+AC_ARG_WITH([ca-bundle],
+  AC_HELP_STRING([--with-ca-bundle=FILE], [Use FILE as default CA bundle.]),
+  [ca_bundle=$withval], [ca_bundle=""])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -100,6 +104,7 @@ fi
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
+  AC_SUBST([ca_bundle])
 else
   AM_CONDITIONAL([ENABLE_SSL], false)
 fi
@@ -341,6 +346,7 @@ echo "LIBS:           $LIBS"
 echo "SQLite3:        $have_sqlite3"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
+echo "CA Bundle:      $ca_bundle"
 echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibCares:       $have_libcares"

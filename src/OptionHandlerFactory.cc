@@ -432,7 +432,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_CA_CERTIFICATE,
-				    TEXT_CA_CERTIFICATE));
+				    TEXT_CA_CERTIFICATE,
+				    CA_BUNDLE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);
@@ -449,7 +450,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_CHECK_CERTIFICATE,
 				    TEXT_CHECK_CERTIFICATE,
-				    V_FALSE));
+				    V_TRUE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);

@@ -201,6 +201,7 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 builddir = @builddir@
+ca_bundle = @ca_bundle@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@

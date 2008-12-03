@@ -984,6 +984,7 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 builddir = @builddir@
+ca_bundle = @ca_bundle@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
@@ -1163,7 +1164,7 @@ AM_CPPFLAGS = -Wall\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
 	@LIBZ_CPPFLAGS@	 @SQLITE3_CPPFLAGS@\
-	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg
+	-DLOCALEDIR=\"$(localedir)\" -DCA_BUNDLE=\"$(ca_bundle)\" @DEFS@ #-pg
 
 all: all-am
 

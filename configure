@@ -742,6 +742,7 @@ LIBZ_LIBS
 LIBZ_CPPFLAGS
 ENABLE_SSL_TRUE
 ENABLE_SSL_FALSE
+ca_bundle
 HAVE_LIBGNUTLS_TRUE
 HAVE_LIBGNUTLS_FALSE
 HAVE_LIBSSL_TRUE
@@ -1449,6 +1450,7 @@ Optional Packages:
   --with-libexpat         use libexpat if it is installed.
   --with-libcares         use libcares if it is installed.
   --with-libz             use libz if it is installed.
+  --with-ca-bundle=FILE   Use FILE as default CA bundle.
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
   --with-xml-exec-prefix=PFX Exec prefix where libxml is installed (optional)
   --with-libexpat-prefix=PREFIX  Prefix where libexpat installed (optional)
@@ -2779,6 +2781,15 @@ else
   enable_epoll=yes
 fi
 
+
+
+
+# Check whether --with-ca-bundle was given.
+if test "${with_ca_bundle+set}" = set; then
+  withval=$with_ca_bundle; ca_bundle=$withval
+else
+  ca_bundle=""
+fi
 
 
 # Checks for programs.
@@ -7348,6 +7359,7 @@ else
   ENABLE_SSL_TRUE='#'
   ENABLE_SSL_FALSE=
 fi
+
 
 else
    if false; then
@@ -23057,6 +23069,7 @@ LIBZ_LIBS!$LIBZ_LIBS$ac_delim
 LIBZ_CPPFLAGS!$LIBZ_CPPFLAGS$ac_delim
 ENABLE_SSL_TRUE!$ENABLE_SSL_TRUE$ac_delim
 ENABLE_SSL_FALSE!$ENABLE_SSL_FALSE$ac_delim
+ca_bundle!$ca_bundle$ac_delim
 HAVE_LIBGNUTLS_TRUE!$HAVE_LIBGNUTLS_TRUE$ac_delim
 HAVE_LIBGNUTLS_FALSE!$HAVE_LIBGNUTLS_FALSE$ac_delim
 HAVE_LIBSSL_TRUE!$HAVE_LIBSSL_TRUE$ac_delim
@@ -23126,7 +23139,6 @@ LTLIBINTL!$LTLIBINTL$ac_delim
 POSUB!$POSUB$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 HAVE_ASCTIME_R_TRUE!$HAVE_ASCTIME_R_TRUE$ac_delim
-HAVE_ASCTIME_R_FALSE!$HAVE_ASCTIME_R_FALSE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -23168,6 +23180,7 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+HAVE_ASCTIME_R_FALSE!$HAVE_ASCTIME_R_FALSE$ac_delim
 HAVE_BASENAME_TRUE!$HAVE_BASENAME_TRUE$ac_delim
 HAVE_BASENAME_FALSE!$HAVE_BASENAME_FALSE$ac_delim
 HAVE_GAI_STRERROR_TRUE!$HAVE_GAI_STRERROR_TRUE$ac_delim
@@ -23187,7 +23200,7 @@ HAVE_TIMEGM_FALSE!$HAVE_TIMEGM_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 17; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 18; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -23911,6 +23924,7 @@ echo "LIBS:           $LIBS"
 echo "SQLite3:        $have_sqlite3"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
+echo "CA Bundle:      $ca_bundle"
 echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibCares:       $have_libcares"

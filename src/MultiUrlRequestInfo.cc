@@ -144,8 +144,16 @@ int MultiUrlRequestInfo::execute()
 				   _option->get(PREF_PRIVATE_KEY));
     }
     if(_option->defined(PREF_CA_CERTIFICATE)) {
-      tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE));
+      try {
+	tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE));
+      } catch(RecoverableException& e) {
+	_logger->error(EX_EXCEPTION_CAUGHT, e);
+	_logger->warn(MSG_WARN_NO_CA_CERT);
+      }
+    } else if(_option->getAsBool(PREF_CHECK_CERTIFICATE)) {
+      _logger->warn(MSG_WARN_NO_CA_CERT);
     }
+
     if(_option->getAsBool(PREF_CHECK_CERTIFICATE)) {
       tlsContext->enablePeerVerification();
     }

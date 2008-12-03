@@ -1,3 +1,14 @@
+2008-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Enabled --check-certificate by default.  Added compile
+	time(configure) option --with-ca-bundle to specify CA bundle.
+	Warn if --check-certificate=true and --ca-certificate is not
+	specified or loading CA certificate is failed.
+	* configure.ac
+	* src/MultiUrlRequestInfo.cc
+	* src/OptionHandlerFactory.cc
+	* src/message.h
+
 2008-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Mentioned https tag in help option.
