@@ -49,7 +49,12 @@ public:
   ~Option();
 
   void put(const std::string& name, const std::string& value);
+  // Returns true if name is defined. Otherwise returns false.
+  // Note that even if the value is a empty string, this method returns true.
   bool defined(const std::string& name) const;
+  // Returns true if name is not defined or the value is a empty string.
+  // Otherwise returns false.
+  bool blank(const std::string& name) const;
   const std::string& get(const std::string& name) const;
   int32_t getAsInt(const std::string& name) const;
   int64_t getAsLLInt(const std::string& name) const;

@@ -617,12 +617,12 @@ Option* option_processing(int argc, char* const argv[])
   }
   if(
 #ifdef ENABLE_BITTORRENT
-     !op->defined(PREF_TORRENT_FILE) &&
+     op->blank(PREF_TORRENT_FILE) &&
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-     !op->defined(PREF_METALINK_FILE) &&
+     op->blank(PREF_METALINK_FILE) &&
 #endif // ENABLE_METALINK
-     !op->defined(PREF_INPUT_FILE)) {
+     op->blank(PREF_INPUT_FILE)) {
     if(optind == argc) {
       std::cerr << MSG_URI_REQUIRED << std::endl;
       showUsage(TAG_HELP, oparser);

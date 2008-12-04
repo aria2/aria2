@@ -10,6 +10,8 @@ class OptionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testPutAndGet);
   CPPUNIT_TEST(testPutAndGetAsInt);
   CPPUNIT_TEST(testPutAndGetAsDouble);
+  CPPUNIT_TEST(testDefined);
+  CPPUNIT_TEST(testBlank);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -20,6 +22,8 @@ public:
   void testPutAndGet();
   void testPutAndGetAsInt();
   void testPutAndGetAsDouble();
+  void testDefined();
+  void testBlank();
 };
 
 
@@ -46,6 +50,26 @@ void OptionTest::testPutAndGetAsDouble() {
   op.put("key", "10.0");
   
   CPPUNIT_ASSERT_EQUAL(10.0, op.getAsDouble("key"));
+}
+
+void OptionTest::testDefined()
+{
+  Option op;
+  op.put("k", "v");
+  op.put("k1", "");
+  CPPUNIT_ASSERT(op.defined("k"));
+  CPPUNIT_ASSERT(op.defined("k1"));
+  CPPUNIT_ASSERT(!op.defined("undefined"));
+}
+
+void OptionTest::testBlank()
+{
+  Option op;
+  op.put("k", "v");
+  op.put("k1", "");
+  CPPUNIT_ASSERT(!op.blank("k"));
+  CPPUNIT_ASSERT(op.blank("k1"));
+  CPPUNIT_ASSERT(op.blank("undefined"));
 }
 
 } // namespace aria2

@@ -48,8 +48,15 @@ void Option::put(const std::string& name, const std::string& value) {
   table[name] = value;
 }
 
-bool Option::defined(const std::string& name) const {
+bool Option::defined(const std::string& name) const
+{
   return table.count(name) == 1;
+}
+
+bool Option::blank(const std::string& name) const
+{
+  std::map<std::string, std::string>::const_iterator i = table.find(name);
+  return i == table.end() || (*i).second.empty();
 }
 
 const std::string& Option::get(const std::string& name) const {

@@ -1,5 +1,17 @@
 2008-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added Option::blank().
+	Use !Option::blank(name) instead of Option::defined(name) for
+	the options that take filename.
+	* src/MultiUrlRequestInfo.cc
+	* src/Option.cc
+	* src/Option.h
+	* src/main.cc
+	* src/option_processing.cc
+	* test/OptionTest.cc
+
+2008-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented the default value of --check-certificate option in man
 	page.
 	* doc/aria2c.1.txt

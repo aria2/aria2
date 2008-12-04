@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
     int32_t returnValue = 0;
     std::deque<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT
-    if(op->defined(PREF_TORRENT_FILE)) {
+    if(!op->blank(PREF_TORRENT_FILE)) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	DefaultBtContextHandle btContext(new DefaultBtContext());
 	btContext->load(op->get(PREF_TORRENT_FILE));
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-      if(op->defined(PREF_METALINK_FILE)) {
+      if(!op->blank(PREF_METALINK_FILE)) {
 	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	  std::deque<SharedHandle<MetalinkEntry> > metalinkEntries;
 	  MetalinkHelper::parseAndQuery(metalinkEntries,
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
       }
       else
 #endif // ENABLE_METALINK
-	if(op->defined(PREF_INPUT_FILE)) {
+	if(!op->blank(PREF_INPUT_FILE)) {
 	  createRequestGroupForUriList(requestGroups, op);
 	} else {
 	  createRequestGroupForUri(requestGroups, op, args);

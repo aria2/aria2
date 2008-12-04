@@ -107,7 +107,7 @@ int MultiUrlRequestInfo::execute()
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
 
     try {
-      if(_option->defined(PREF_LOAD_COOKIES)) {
+      if(!_option->blank(PREF_LOAD_COOKIES)) {
 	File cookieFile(_option->get(PREF_LOAD_COOKIES));
 	if(cookieFile.isFile()) {
 	  e->getCookieStorage()->load(_option->get(PREF_LOAD_COOKIES));
@@ -138,12 +138,12 @@ int MultiUrlRequestInfo::execute()
 
 #ifdef ENABLE_SSL
     SharedHandle<TLSContext> tlsContext(new TLSContext());
-    if(_option->defined(PREF_CERTIFICATE) &&
-       _option->defined(PREF_PRIVATE_KEY)) {
+    if(!_option->blank(PREF_CERTIFICATE) &&
+       !_option->blank(PREF_PRIVATE_KEY)) {
       tlsContext->addClientKeyFile(_option->get(PREF_CERTIFICATE),
 				   _option->get(PREF_PRIVATE_KEY));
     }
-    if(_option->defined(PREF_CA_CERTIFICATE)) {
+    if(!_option->blank(PREF_CA_CERTIFICATE)) {
       try {
 	tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE));
       } catch(RecoverableException& e) {
