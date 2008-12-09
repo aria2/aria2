@@ -1,3 +1,10 @@
+2008-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that bad URI is sent to the tracker when the announe
+	URI in torrent file includes query.
+	* src/DefaultBtAnnounce.cc
+	* test/DefaultBtAnnounceTest.cc
+
 2008-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added Option::blank().

@@ -53,6 +53,7 @@
 #include "Option.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include "Request.h"
 
 namespace aria2 {
 
@@ -105,6 +106,13 @@ bool DefaultBtAnnounce::isAnnounceReady() {
     isDefaultAnnounceReady();
 }
 
+static bool uriHasQuery(const std::string& uri)
+{
+  Request req;
+  req.setUrl(uri);
+  return !req.getQuery().empty();
+}
+
 std::string DefaultBtAnnounce::getAnnounceUrl() {
   if(isStoppedAnnounceReady()) {
     if(!announceList.currentTierAcceptsStoppedEvent()) {
@@ -134,8 +142,10 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   TransferStat stat = peerStorage->calculateStat();
   uint64_t left =
     pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
-  std::string url = announceList.getAnnounce()+
-    "?info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
+  std::string url = announceList.getAnnounce();
+  url += uriHasQuery(url) ? "&" : "?";
+  url += 
+    "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
 					btContext->getInfoHashLength())+
     "&peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+
     "&uploaded="+Util::uitos(stat.getSessionUploadLength())+
