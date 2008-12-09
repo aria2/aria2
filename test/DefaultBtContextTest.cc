@@ -372,7 +372,7 @@ void DefaultBtContextTest::testGetNodes()
     std::string memory =
       "d5:nodesl"
       "l11:192.168.0.1i6881ee"
-      "l11:192.168.0.24:6882e"
+      "l11:192.168.0.2i6882ee"
       "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
       "12:piece lengthi262144e"
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
@@ -393,7 +393,7 @@ void DefaultBtContextTest::testGetNodes()
     std::string memory =
       "d5:nodesl"
       "l1: i6881ee"
-      "l11:192.168.0.24:6882e"
+      "l11:192.168.0.2i6882ee"
       "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
       "12:piece lengthi262144e"
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
@@ -412,7 +412,7 @@ void DefaultBtContextTest::testGetNodes()
     std::string memory =
       "d5:nodesl"
       "l11:192.168.0.11:xe"
-      "l11:192.168.0.24:6882e"
+      "l11:192.168.0.2i6882ee"
       "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
       "12:piece lengthi262144e"
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
@@ -431,7 +431,7 @@ void DefaultBtContextTest::testGetNodes()
     std::string memory =
       "d5:nodesl"
       "l11:192.168.0.1e"
-      "l11:192.168.0.24:6882e"
+      "l11:192.168.0.2i6882ee"
       "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
       "12:piece lengthi262144e"
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
@@ -466,7 +466,7 @@ void DefaultBtContextTest::testGetNodes()
     std::string memory =
       "d5:nodesl"
       "ll11:192.168.0.1i6881eee"
-      "l11:192.168.0.24:6882e"
+      "l11:192.168.0.2i6882ee"
       "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
       "12:piece lengthi262144e"
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"

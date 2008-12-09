@@ -36,17 +36,17 @@
 #define _D_DEFAULT_BT_CONTEXT_H_
 
 #include "BtContext.h"
-#include "A2STR.h"
+
 #include <iosfwd>
 
 namespace aria2 {
 
 class Randomizer;
 class Logger;
-class MetaEntry;
-class Dictionary;
-class List;
-class Data;
+
+namespace bencode {
+class BDE;
+}
 
 #define INFO_HASH_LENGTH 20
 #define PIECE_HASH_LENGTH 20
@@ -73,21 +73,20 @@ private:
   Logger* _logger;
 
   void clear();
-  void extractPieceHash(const unsigned char* hashData,
-			size_t hashDataLength,
-			size_t hashLength);
-  void extractFileEntries(const Dictionary* infoDic,
+  void extractPieceHash(const std::string& hashData, size_t hashLength);
+  void extractFileEntries(const bencode::BDE& infoDic,
 			  const std::string& defaultName,
 			  const std::string& overrideName,
 			  const std::deque<std::string>& urlList);
-  void extractAnnounce(const Data* announceData);
-  void extractAnnounceList(const List* announceListData);
+  void extractAnnounceURI(const bencode::BDE& announceData);
+  void extractAnnounceList(const bencode::BDE& announceListData);
+  void extractAnnounce(const bencode::BDE& rootDict);
 
-  void extractUrlList(std::deque<std::string>& uris, const MetaEntry* obj);
+  void extractUrlList(std::deque<std::string>& uris, const bencode::BDE& obj);
 
-  void extractNodes(const List* nodes);
+  void extractNodes(const bencode::BDE& nodes);
 
-  void processRootDictionary(const Dictionary* rootDic,
+  void processRootDictionary(const bencode::BDE& rootDic,
 			     const std::string& defaultName,
 			     const std::string& overrideName);
 

@@ -47,9 +47,9 @@ public:
   virtual ~DelegatingPeerListProcessor();
 
   virtual void extractPeer
-  (std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry);
+  (std::deque<SharedHandle<Peer> >& peers, const bencode::BDE& peerData);
 
-  virtual bool canHandle(const MetaEntry* peersEntry) const;
+  virtual bool canHandle(const bencode::BDE& peerData) const;
 };
 
 } // namespace aria2

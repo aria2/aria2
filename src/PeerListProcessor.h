@@ -36,22 +36,26 @@
 #define _D_PEER_LIST_PROCESSOR_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-class MetaEntry;
 class Peer;
+namespace bencode {
+class BDE;
+}
 
 class PeerListProcessor {
 public:
   virtual ~PeerListProcessor() {}
 
   virtual void extractPeer
-  (std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry) = 0;
+  (std::deque<SharedHandle<Peer> >& peers, const bencode::BDE& peerData) = 0;
 
-  virtual bool canHandle(const MetaEntry* peersEntry) const = 0;
+  virtual bool canHandle(const bencode::BDE& peerData) const = 0;
 };
 
 typedef SharedHandle<PeerListProcessor> PeerListProcessorHandle;

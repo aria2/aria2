@@ -34,17 +34,14 @@
 /* copyright --> */
 #include "UTPexExtensionMessage.h"
 #include "Peer.h"
-#include "Dictionary.h"
-#include "Data.h"
-#include "BencodeVisitor.h"
 #include "Util.h"
 #include "PeerMessageUtil.h"
 #include "PeerStorage.h"
 #include "CompactPeerListProcessor.h"
-#include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -60,19 +57,20 @@ UTPexExtensionMessage::~UTPexExtensionMessage() {}
 
 std::string UTPexExtensionMessage::getBencodedData()
 {
-  SharedHandle<Dictionary> d(new Dictionary());
-  std::pair<std::string, std::string> freshPeerPair = createCompactPeerListAndFlag(_freshPeers);
-  std::pair<std::string, std::string> droppedPeerPair = createCompactPeerListAndFlag(_droppedPeers);
-  d->put("added", new Data(freshPeerPair.first));
-  d->put("added.f", new Data(freshPeerPair.second));
-  d->put("dropped", new Data(droppedPeerPair.first));
+  std::pair<std::string, std::string> freshPeerPair =
+    createCompactPeerListAndFlag(_freshPeers);
+  std::pair<std::string, std::string> droppedPeerPair =
+    createCompactPeerListAndFlag(_droppedPeers);
 
-  BencodeVisitor v;
-  d->accept(&v);
-  return v.getBencodedData();
+  bencode::BDE dict = bencode::BDE::dict();
+  dict["added"] = freshPeerPair.first;
+  dict["added.f"] = freshPeerPair.second;
+  dict["dropped"] = droppedPeerPair.first;
+  return bencode::encode(dict);
 }
 
-std::pair<std::string, std::string> UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
+std::pair<std::string, std::string>
+UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
 {
   std::string addrstring;
   std::string flagstring;
@@ -173,19 +171,16 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 				 EXTENSION_NAME.c_str(), len).str());
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
-  SharedHandle<MetaEntry> root(MetaFileUtil::bdecoding(data+1, len-1));
-  if(root.isNull()) {
-    return msg;
-  }
-  const Dictionary* d = dynamic_cast<const Dictionary*>(root.get());
-  if(d) {
+
+  const bencode::BDE dict = bencode::decode(data+1, len-1);
+  if(dict.isDict()) {
     CompactPeerListProcessor proc;
-    const Data* added = dynamic_cast<const Data*>(d->get("added"));
-    if(added) {
+    const bencode::BDE& added = dict["added"];
+    if(added.isString()) {
       proc.extractPeer(msg->_freshPeers, added);
     }
-    const Data* dropped = dynamic_cast<const Data*>(d->get("dropped"));
-    if(dropped) {
+    const bencode::BDE& dropped = dict["dropped"];
+    if(dropped.isString()) {
       proc.extractPeer(msg->_droppedPeers, dropped);
     }
   }

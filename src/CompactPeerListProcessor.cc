@@ -32,9 +32,9 @@
  */
 /* copyright --> */
 #include "CompactPeerListProcessor.h"
-#include "Peer.h"
-#include "Data.h"
 #include "a2netcompat.h"
+#include "bencode.h"
+#include "Peer.h"
 
 namespace aria2 {
 
@@ -42,23 +42,24 @@ CompactPeerListProcessor::CompactPeerListProcessor() {}
 
 CompactPeerListProcessor::~CompactPeerListProcessor() {}
 
-bool CompactPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
-  return dynamic_cast<const Data*>(peersEntry) != 0;
+bool CompactPeerListProcessor::canHandle(const bencode::BDE& peerData) const
+{
+  return peerData.isString();
 }
 
 void CompactPeerListProcessor::extractPeer
-(std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry)
+(std::deque<SharedHandle<Peer> >& peers, const bencode::BDE& peerData)
 {
-  const Data* peersData = dynamic_cast<const Data*>(peersEntry);
-  if(!peersData) {
+  if(!canHandle(peerData)) {
     return;
   }
-  if(peersData->getLen()%6 == 0) {
-    for(size_t i = 0; i < peersData->getLen(); i += 6) {
+  size_t length = peerData.s().size();
+  if(length%6 == 0) {
+    for(size_t i = 0; i < length; i += 6) {
       struct in_addr in;
-      in.s_addr = *(uint32_t*)(peersData->getData()+i);
+      in.s_addr = *(uint32_t*)(peerData.s().c_str()+i);
       std::string ipaddr = inet_ntoa(in);
-      uint16_t port = ntohs(*(uint16_t*)(peersData->getData()+i+4));
+      uint16_t port = ntohs(*(uint16_t*)(peerData.s().c_str()+i+4));
       PeerHandle peer(new Peer(ipaddr, port));
       peers.push_back(peer);
     }

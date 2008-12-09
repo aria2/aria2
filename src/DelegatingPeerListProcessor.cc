@@ -32,10 +32,13 @@
  */
 /* copyright --> */
 #include "DelegatingPeerListProcessor.h"
+
+#include <algorithm>
+
 #include "DefaultPeerListProcessor.h"
 #include "CompactPeerListProcessor.h"
 #include "Peer.h"
-#include <algorithm>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -54,22 +57,23 @@ DelegatingPeerListProcessor::DelegatingPeerListProcessor()
 DelegatingPeerListProcessor::~DelegatingPeerListProcessor() {}
 
 void DelegatingPeerListProcessor::extractPeer
-(std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry)
+(std::deque<SharedHandle<Peer> >& peers, const bencode::BDE& peerData)
 {
-  for(std::deque<SharedHandle<PeerListProcessor> >::iterator itr = processors.begin();
-      itr != processors.end(); itr++) {
+  for(std::deque<SharedHandle<PeerListProcessor> >::iterator itr =
+	processors.begin(); itr != processors.end(); ++itr) {
     PeerListProcessorHandle processor = *itr;
-    if(processor->canHandle(peersEntry)) {
-      processor->extractPeer(peers, peersEntry);
+    if(processor->canHandle(peerData)) {
+      processor->extractPeer(peers, peerData);
       break;
     }
   }
 }
 
-bool DelegatingPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
-  for(std::deque<SharedHandle<PeerListProcessor> >::const_iterator itr = processors.begin();
-      itr != processors.end(); itr++) {
-    if((*itr)->canHandle(peersEntry)) {
+bool DelegatingPeerListProcessor::canHandle(const bencode::BDE& peerData) const
+{
+  for(std::deque<SharedHandle<PeerListProcessor> >::const_iterator itr =
+	processors.begin(); itr != processors.end(); ++itr) {
+    if((*itr)->canHandle(peerData)) {
       return true;
     }
   }

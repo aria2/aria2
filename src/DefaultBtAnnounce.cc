@@ -35,10 +35,6 @@
 #include "DefaultBtAnnounce.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "MetaFileUtil.h"
-#include "Dictionary.h"
-#include "List.h"
-#include "Data.h"
 #include "DelegatingPeerListProcessor.h"
 #include "Util.h"
 #include "prefs.h"
@@ -54,6 +50,7 @@
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "Request.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -200,48 +197,35 @@ void
 DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
 					   size_t trackerResponseLength)
 {
-  SharedHandle<MetaEntry> entry(MetaFileUtil::bdecoding(trackerResponse,
-							trackerResponseLength));
-  const Dictionary* response = dynamic_cast<const Dictionary*>(entry.get());
-  if(!response) {
+  logger->debug("Now processing tracker response.");
+  const bencode::BDE dict =
+    bencode::decode(trackerResponse, trackerResponseLength);
+  if(!dict.isDict()) {
     throw DlAbortEx(MSG_NULL_TRACKER_RESPONSE);
   }
-  const Data* failureReasonData =
-    dynamic_cast<const Data*>(response->get(BtAnnounce::FAILURE_REASON));
-  if(failureReasonData) {
+  const bencode::BDE& failure = dict[BtAnnounce::FAILURE_REASON];
+  if(failure.isString()) {
     throw DlAbortEx
-      (StringFormat(EX_TRACKER_FAILURE,
-		    failureReasonData->toString().c_str()).str());
+      (StringFormat(EX_TRACKER_FAILURE, failure.s().c_str()).str());
   }
-  const Data* warningMessageData =
-    dynamic_cast<const Data*>(response->get(BtAnnounce::WARNING_MESSAGE));
-  if(warningMessageData) {
-    logger->warn(MSG_TRACKER_WARNING_MESSAGE,
-		 warningMessageData->toString().c_str());
+  const bencode::BDE& warn = dict[BtAnnounce::WARNING_MESSAGE];
+  if(warn.isString()) {
+    logger->warn(MSG_TRACKER_WARNING_MESSAGE, warn.s().c_str());
   }
-  const Data* trackerIdData =
-    dynamic_cast<const Data*>(response->get(BtAnnounce::TRACKER_ID));
-  if(trackerIdData) {
-    trackerId = trackerIdData->toString();
+  const bencode::BDE& tid = dict[BtAnnounce::TRACKER_ID];
+  if(tid.isString()) {
+    trackerId = tid.s();
     logger->debug("Tracker ID:%s", trackerId.c_str());
   }
-  const Data* intervalData =
-    dynamic_cast<const Data*>(response->get(BtAnnounce::INTERVAL));
-  if(intervalData) {
-    time_t t = intervalData->toInt();
-    if(t > 0) {
-      interval = intervalData->toInt();
-      logger->debug("Interval:%d", interval);
-    }
+  const bencode::BDE& ival = dict[BtAnnounce::INTERVAL];
+  if(ival.isInteger() && ival.i() > 0) {
+    interval = ival.i();
+    logger->debug("Interval:%d", interval);
   }
-  const Data* minIntervalData =
-    dynamic_cast<const Data*>(response->get(BtAnnounce::MIN_INTERVAL));
-  if(minIntervalData) {
-    time_t t = minIntervalData->toInt();
-    if(t > 0) {
-      minInterval = minIntervalData->toInt();
-      logger->debug("Min interval:%d", minInterval);
-    }
+  const bencode::BDE& mival = dict[BtAnnounce::MIN_INTERVAL];
+  if(mival.isInteger() && mival.i() > 0) {
+    minInterval = mival.i();
+    logger->debug("Min interval:%d", minInterval);
     if(minInterval > interval) {
       minInterval = interval;
     }
@@ -249,28 +233,25 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     // Use interval as a minInterval if minInterval is not supplied.
     minInterval = interval;
   }
-  const Data* completeData =
-    dynamic_cast<const Data*>(response->get(BtAnnounce::COMPLETE));
-  if(completeData) {
-    complete = completeData->toInt();
+  const bencode::BDE& comp = dict[BtAnnounce::COMPLETE];
+  if(comp.isInteger()) {
+    complete = comp.i();
     logger->debug("Complete:%d", complete);
   }
-  const Data* incompleteData =
-    dynamic_cast<const Data*>(response->get(BtAnnounce::INCOMPLETE));
-  if(incompleteData) {
-    incomplete = incompleteData->toInt();
+  const bencode::BDE& incomp = dict[BtAnnounce::INCOMPLETE];
+  if(incomp.isInteger()) {
+    incomplete = incomp.i();
     logger->debug("Incomplete:%d", incomplete);
   }
-  const MetaEntry* peersEntry = response->get(BtAnnounce::PEERS);
-  if(peersEntry &&
-     !btRuntime->isHalt() &&
-     btRuntime->lessThanMinPeers()) {
-    DelegatingPeerListProcessor proc;
-    std::deque<SharedHandle<Peer> > peers;
-    proc.extractPeer(peers, peersEntry);
-    peerStorage->addPeer(peers);
-  }
-  if(!peersEntry) {
+  const bencode::BDE& peerData = dict[BtAnnounce::PEERS];
+  if(!peerData.isNone()) {
+    if(!btRuntime->isHalt() && btRuntime->lessThanMinPeers()) {
+      DelegatingPeerListProcessor proc;
+      std::deque<SharedHandle<Peer> > peers;
+      proc.extractPeer(peers, peerData);
+      peerStorage->addPeer(peers);
+    }
+  } else {
     logger->info(MSG_NO_PEER_LIST_RECEIVED);
   }
 }

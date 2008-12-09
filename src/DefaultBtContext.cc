@@ -33,12 +33,13 @@
  */
 /* copyright --> */
 #include "DefaultBtContext.h"
-#include "MetaFileUtil.h"
-#include "Dictionary.h"
-#include "List.h"
-#include "Data.h"
+
+#include <cstring>
+#include <ostream>
+#include <functional>
+#include <algorithm>
+
 #include "DlAbortEx.h"
-#include "BencodeVisitor.h"
 #include "Util.h"
 #include "MessageDigestHelper.h"
 #include "a2netcompat.h"
@@ -51,10 +52,7 @@
 #include "PeerMessageUtil.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include <cstring>
-#include <ostream>
-#include <functional>
-#include <algorithm>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -102,84 +100,67 @@ void DefaultBtContext::clear() {
   _private = false;
 }
 
-void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
-					size_t hashDataLength,
-					size_t hashLength) {
-  size_t numPieces = hashDataLength/hashLength;
+void DefaultBtContext::extractPieceHash(const std::string& hashData,
+					size_t hashLength)
+{
+  size_t numPieces = hashData.size()/hashLength;
   for(size_t i = 0; i < numPieces; i++) {
-    pieceHashes.push_back(Util::toHex(&hashData[i*hashLength],
+    pieceHashes.push_back(Util::toHex(hashData.data()+i*hashLength,
 				      hashLength));
   }
 }
 
-void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
+void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
 					  const std::string& defaultName,
 					  const std::string& overrideName,
-					  const std::deque<std::string>& urlList) {
+					  const std::deque<std::string>& urlList)
+{
   if(overrideName.empty()) {
-    const Data* nameData =
-      dynamic_cast<const Data*>(infoDic->get(BtContext::C_NAME));
-    if(nameData) {
-      name = nameData->toString();
+    const bencode::BDE& nameData = infoDict[BtContext::C_NAME];
+    if(nameData.isString()) {
+      name = nameData.s();
     } else {
       name = File(defaultName).getBasename()+".file";
     }
   } else {
     name = overrideName;
   }
-  const List* files = dynamic_cast<const List*>(infoDic->get(BtContext::C_FILES));
-  if(files) {
+  const bencode::BDE& filesList = infoDict[BtContext::C_FILES];
+  if(filesList.isList()) {
     uint64_t length = 0;
     off_t offset = 0;
     // multi-file mode
     fileMode = BtContext::MULTI;
-    const std::deque<MetaEntry*>& metaList = files->getList();
-    for(std::deque<MetaEntry*>::const_iterator itr = metaList.begin();
-	itr != metaList.end(); itr++) {
-      const Dictionary* fileDic = dynamic_cast<const Dictionary*>((*itr));
-      if(!fileDic) {
+    for(bencode::BDE::List::const_iterator itr = filesList.listBegin();
+	itr != filesList.listEnd(); ++itr) {
+      const bencode::BDE& fileDict = *itr;
+      if(!fileDict.isDict()) {
 	continue;
       }
-      const Data* lengthData =
-	dynamic_cast<const Data*>(fileDic->get(BtContext::C_LENGTH));
-      if(lengthData) {
-	length += lengthData->toLLInt();
-      } else {
-	throw DlAbortEx
-	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file length").str());
+
+      const bencode::BDE& fileLengthData = fileDict[BtContext::C_LENGTH];
+      if(!fileLengthData.isInteger()) {
+	throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+				     BtContext::C_LENGTH.c_str()).str());
       }
-      const List* pathList =
-	dynamic_cast<const List*>(fileDic->get(BtContext::C_PATH));
-      if(!pathList) {
-	throw DlAbortEx
-	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file path list").str());
+      length += fileLengthData.i();
+
+      const bencode::BDE& pathList = fileDict[BtContext::C_PATH];
+      if(!pathList.isList() || pathList.empty()) {
+	throw DlAbortEx("Path is empty.");
       }
-      const std::deque<MetaEntry*>& paths = pathList->getList();
       std::string path;
-      for(size_t i = 0; i < paths.size()-1; i++) {
-	const Data* subpath = dynamic_cast<const Data*>(paths[i]);
-	if(subpath) {
-	  path += subpath->toString()+"/";
-	} else {
-	  throw DlAbortEx
-	    (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element").str());
-	}
+      for(size_t i = 0; i < pathList.size()-1; ++i) {
+	path += pathList[i].s()+"/";
+
       }
-      const Data* lastPath = dynamic_cast<const Data*>(paths.back());
-      if(lastPath) {
-	path += lastPath->toString();
-      } else {
-	throw DlAbortEx
-	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element").str());
-      }
+      path += pathList[pathList.size()-1].s();
 
       std::deque<std::string> uris;
       std::transform(urlList.begin(), urlList.end(), std::back_inserter(uris),
 		     std::bind2nd(std::plus<std::string>(), "/"+name+"/"+path));
-      FileEntryHandle fileEntry(new FileEntry(path,
-					      lengthData->toLLInt(),
-					      offset,
-					      uris));
+      FileEntryHandle fileEntry(new FileEntry(path, fileLengthData.i(),
+					      offset, uris));
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
@@ -187,91 +168,100 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
   } else {
     // single-file mode;
     fileMode = BtContext::SINGLE;
-    const Data* length =
-      dynamic_cast<const Data*>(infoDic->get(BtContext::C_LENGTH));
-    if(length) {
-      totalLength = length->toLLInt();
-    } else {
-      throw DlAbortEx
-	(StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file length").str());
+    const bencode::BDE& lengthData = infoDict[BtContext::C_LENGTH];
+    if(!lengthData.isInteger()) {
+	throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+				     BtContext::C_LENGTH.c_str()).str());      
     }
+    totalLength = lengthData.i();
     FileEntryHandle fileEntry(new FileEntry(name, totalLength, 0, urlList));
     fileEntries.push_back(fileEntry);
   }
 }
 
-void DefaultBtContext::extractAnnounce(const Data* announceData) {
+void DefaultBtContext::extractAnnounceURI(const bencode::BDE& announceData)
+{
+  // Assumed announceData is string
   std::deque<std::string> urls;
-  urls.push_back(Util::trim(announceData->toString()));
+  urls.push_back(Util::trim(announceData.s()));
   announceTiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
 }
 
-void DefaultBtContext::extractAnnounceList(const List* announceListData) {
-  for(std::deque<MetaEntry*>::const_iterator itr = announceListData->getList().begin();
-      itr != announceListData->getList().end(); itr++) {
-    const List* elem = dynamic_cast<const List*>(*itr);
-    if(!elem) {
+void DefaultBtContext::extractAnnounceList(const bencode::BDE& announceList)
+{
+  // Assumed announceList is string
+  for(bencode::BDE::List::const_iterator itr = announceList.listBegin();
+      itr != announceList.listEnd(); ++itr) {
+    const bencode::BDE& elemList = *itr;
+    if(!elemList.isList()) {
       continue;
     }
     std::deque<std::string> urls;
-    for(std::deque<MetaEntry*>::const_iterator elemItr = elem->getList().begin();
-	elemItr != elem->getList().end(); elemItr++) {
-      const Data* data = dynamic_cast<const Data*>(*elemItr);
-      if(data) {
-	urls.push_back(Util::trim(data->toString()));
+    for(bencode::BDE::List::const_iterator elemItr = elemList.listBegin();
+	elemItr != elemList.listEnd(); ++elemItr) {
+      const bencode::BDE& url = (*elemItr);
+      if(url.isString()) {
+	urls.push_back(Util::trim(url.s()));
       }
     }
-    if(urls.size()) {
+    if(!urls.empty()) {
       AnnounceTierHandle tier(new AnnounceTier(urls));
       announceTiers.push_back(tier);
     }
   }
 }
 
-void DefaultBtContext::extractUrlList(std::deque<std::string>& uris,
-				      const MetaEntry* obj)
+void DefaultBtContext::extractAnnounce(const bencode::BDE& rootDict)
 {
-  if(dynamic_cast<const List*>(obj)) {
-    const List* urlList = reinterpret_cast<const List*>(obj);
-    for(std::deque<MetaEntry*>::const_iterator itr = urlList->getList().begin();
-	itr != urlList->getList().end(); ++itr) {
-      const Data* data = dynamic_cast<const Data*>(*itr);
-      if(data) {
-	uris.push_back(data->toString());
-      }
+  const bencode::BDE& announceList = rootDict[BtContext::C_ANNOUNCE_LIST];
+  if(announceList.isList()) {
+    extractAnnounceList(announceList);
+  } else {
+    const bencode::BDE& announce = rootDict[BtContext::C_ANNOUNCE];
+    if(announce.isString()) {
+      extractAnnounceURI(announce);
     }
-  } else if(dynamic_cast<const Data*>(obj)) {
-    const Data* urlData = reinterpret_cast<const Data*>(obj);
-    uris.push_back(urlData->toString());
   }
 }
 
-void DefaultBtContext::extractNodes(const List* nodes)
+void DefaultBtContext::extractUrlList(std::deque<std::string>& uris,
+				      const bencode::BDE& bde)
 {
-  
-  for(std::deque<MetaEntry*>::const_iterator i = nodes->getList().begin();
-      i != nodes->getList().end(); ++i) {
-    const List* addrPair = dynamic_cast<const List*>(*i);
-    if(!addrPair || addrPair->getList().size() != 2) {
+  if(bde.isList()) {
+    for(bencode::BDE::List::const_iterator itr = bde.listBegin();
+	itr != bde.listEnd(); ++itr) {
+      if((*itr).isString()) {
+	uris.push_back((*itr).s());
+      }
+    }
+  } else if(bde.isString()) {
+    uris.push_back(bde.s());
+  }
+}
+
+void DefaultBtContext::extractNodes(const bencode::BDE& nodesList)
+{
+  if(!nodesList.isList()) {
+    return;
+  }
+  for(bencode::BDE::List::const_iterator i = nodesList.listBegin();
+      i != nodesList.listEnd(); ++i) {
+    const bencode::BDE& addrPairList = (*i);
+    if(!addrPairList.isList() || addrPairList.size() != 2) {
       continue;
     }
-    const Data* hostname = dynamic_cast<const Data*>(addrPair->getList()[0]);
-    if(!hostname) {
+    const bencode::BDE& hostname = addrPairList[0];
+    if(!hostname.isString()) {
       continue;
     }
-    std::string h = hostname->toString();
-    if(Util::trim(h).empty()) {
+    if(Util::trim(hostname.s()).empty()) {
       continue;
     }
-    const Data* port = dynamic_cast<const Data*>(addrPair->getList()[1]);
-    if(!port) {
+    const bencode::BDE& port = addrPairList[1];
+    if(!port.isInteger() || !(0 < port.i() && port.i() < 65536)) {
       continue;
     }
-    uint16_t p = port->toInt();
-    if(p == 0) {
-      continue;
-    }
-    _nodes.push_back(std::pair<std::string, uint16_t>(h, p));
+    _nodes.push_back(std::pair<std::string, uint16_t>(hostname.s(), port.i()));
   }
 }
 
@@ -280,103 +270,78 @@ void DefaultBtContext::loadFromMemory(const unsigned char* content,
 				      const std::string& defaultName,
 				      const std::string& overrideName)
 {
-  SharedHandle<MetaEntry> rootEntry(MetaFileUtil::bdecoding(content, length));
-  const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
-  if(!rootDic) {
-    throw DlAbortEx
-      (StringFormat("torrent file does not contain a root dictionary .").str());
-  }
-  processRootDictionary(rootDic, defaultName, overrideName);
+  processRootDictionary(bencode::decode(content, length), defaultName,
+			overrideName);
 }
 
 void DefaultBtContext::load(const std::string& torrentFile,
 			    const std::string& overrideName) {
-  SharedHandle<MetaEntry> rootEntry(MetaFileUtil::parseMetaFile(torrentFile));
-  const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
-  if(!rootDic) {
-    throw DlAbortEx
-      (StringFormat("torrent file does not contain a root dictionary .").str());
-  }
-  processRootDictionary(rootDic, torrentFile, overrideName);
+  processRootDictionary(bencode::decodeFromFile(torrentFile), torrentFile,
+			overrideName);
 }
 
-void DefaultBtContext::processRootDictionary(const Dictionary* rootDic,
+void DefaultBtContext::processRootDictionary(const bencode::BDE& rootDict,
 					     const std::string& defaultName,
 					     const std::string& overrideName)
 {
   clear();
-  const Dictionary* infoDic =
-    dynamic_cast<const Dictionary*>(rootDic->get(BtContext::C_INFO));
-  if(!infoDic) {
-    throw DlAbortEx
-      (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "info directory").str());
+  if(!rootDict.isDict()) {
+    throw DlAbortEx("torrent file does not contain a root dictionary.");
+  }
+  const bencode::BDE& infoDict = rootDict[BtContext::C_INFO];
+  if(!infoDict.isDict()) {
+    throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+				 BtContext::C_INFO.c_str()).str());
   }
   // retrieve infoHash
-  BencodeVisitor v;
-  infoDic->accept(&v);
+  std::string encodedInfoDict = bencode::encode(infoDict);
   MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
 			      MessageDigestContext::SHA1,
-			      v.getBencodedData().c_str(),
-			      v.getBencodedData().size());
+			      encodedInfoDict.data(),
+			      encodedInfoDict.size());
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces
-  const Data* pieceHashData =
-    dynamic_cast<const Data*>(infoDic->get(BtContext::C_PIECES));
-  if(!pieceHashData) {
-    throw DlAbortEx
-      (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "pieces").str());
+  const bencode::BDE& piecesData = infoDict[BtContext::C_PIECES];
+  if(!piecesData.isString()) {
+    throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+				 BtContext::C_PIECES.c_str()).str());
   }
-  if(pieceHashData->getLen() == 0) {
+  if(piecesData.s().empty()) {
     throw DlAbortEx("The length of piece hash is 0.");
   }
-  numPieces = pieceHashData->getLen()/PIECE_HASH_LENGTH;
+  numPieces = piecesData.s().size()/PIECE_HASH_LENGTH;
   if(numPieces == 0) {
     throw DlAbortEx("The number of pieces is 0.");
   }
   // retrieve piece length
-  const Data* pieceLengthData =
-    dynamic_cast<const Data*>(infoDic->get(BtContext::C_PIECE_LENGTH));
-  if(!pieceLengthData) {
-    throw DlAbortEx
-      (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "piece length").str());
+  const bencode::BDE& pieceLengthData = infoDict[BtContext::C_PIECE_LENGTH];
+  if(!pieceLengthData.isInteger()) {
+    throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+				 BtContext::C_PIECE_LENGTH.c_str()).str());
   }
-  pieceLength = pieceLengthData->toInt();
+  pieceLength = pieceLengthData.i();
   // retrieve piece hashes
-  extractPieceHash(pieceHashData->getData(), pieceHashData->getLen(),
-		   PIECE_HASH_LENGTH);
-  const Data* privateFlag =
-    dynamic_cast<const Data*>(infoDic->get(BtContext::C_PRIVATE));
-  if(privateFlag) {
-    if(privateFlag->toString() == BtContext::C_PRIVATE_ON) {
-      _private = true;
-    }
+  extractPieceHash(piecesData.s(), PIECE_HASH_LENGTH);
+  // private flag
+  const bencode::BDE& privateData = infoDict[BtContext::C_PRIVATE];
+  if(privateData.isInteger()) {
+    _private = (privateData.i() == 1);
   }
   // retrieve uri-list.
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::deque<std::string> urlList;
-  extractUrlList(urlList, rootDic->get(BtContext::C_URL_LIST));
+  extractUrlList(urlList, rootDict[BtContext::C_URL_LIST]);
+
   // retrieve file entries
-  extractFileEntries(infoDic, defaultName, overrideName, urlList);
+  extractFileEntries(infoDict, defaultName, overrideName, urlList);
   if((totalLength+pieceLength-1)/pieceLength != numPieces) {
     throw DlAbortEx("Too few/many piece hash.");
   }
   // retrieve announce
-  const Data* announceData =
-    dynamic_cast<const Data*>(rootDic->get(BtContext::C_ANNOUNCE));
-  const List* announceListData =
-    dynamic_cast<const List*>(rootDic->get(BtContext::C_ANNOUNCE_LIST));
-  if(announceListData) {
-    extractAnnounceList(announceListData);
-  } else if(announceData) {
-    extractAnnounce(announceData);
-  }
+  extractAnnounce(rootDict);
   // retrieve nodes
-  const List* nodes =
-    dynamic_cast<const List*>(rootDic->get(BtContext::C_NODES));
-  if(nodes) {
-    extractNodes(nodes);
-  }
+  extractNodes(rootDict[BtContext::C_NODES]);
 }
 
 const std::string& DefaultBtContext::getPieceHash(size_t index) const {

@@ -34,9 +34,7 @@
 /* copyright --> */
 #include "DefaultPeerListProcessor.h"
 #include "Peer.h"
-#include "List.h"
-#include "Dictionary.h"
-#include "Data.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -48,31 +46,30 @@ DefaultPeerListProcessor::DefaultPeerListProcessor() {}
 
 DefaultPeerListProcessor::~DefaultPeerListProcessor() {}
 
-bool DefaultPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
-  const List* peersList = dynamic_cast<const List*>(peersEntry);
-  return peersList != 0;
+bool DefaultPeerListProcessor::canHandle(const bencode::BDE& peerData) const
+{
+  return peerData.isList();
 }
 
 void DefaultPeerListProcessor::extractPeer
-(std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry)
+(std::deque<SharedHandle<Peer> >& peers, const bencode::BDE& peerData)
 {
-  const List* peersList = dynamic_cast<const List*>(peersEntry);
-  if(!peersList) {
+  if(!canHandle(peerData)) {
     return;
   }
-  const std::deque<MetaEntry*>& metaList = peersList->getList();
-  for(std::deque<MetaEntry*>::const_iterator itr = metaList.begin();
-      itr != metaList.end(); itr++) {
-    const Dictionary* peerDic = dynamic_cast<const Dictionary*>(*itr);
-    if(!peerDic) {
-      break;
-    }
-    const Data* ip = dynamic_cast<const Data*>(peerDic->get(IP));
-    const Data* port = dynamic_cast<const Data*>(peerDic->get(PORT));
-    if(!ip || !port || !port->isNumber()) {
+  for(bencode::BDE::List::const_iterator itr = peerData.listBegin();
+      itr != peerData.listEnd(); ++itr) {
+    const bencode::BDE& peerDict = *itr;
+    if(!peerDict.isDict()) {
       continue;
     }
-    PeerHandle peer(new Peer(ip->toString(), port->toInt()));
+    const bencode::BDE& ip = peerDict[IP];
+    const bencode::BDE& port = peerDict[PORT];
+    if(!ip.isString() || !port.isInteger() ||
+       !(0 < port.i() && port.i() < 65536)) {
+      continue;
+    }
+    PeerHandle peer(new Peer(ip.s(), port.i()));
     peers.push_back(peer);
   }
 }

@@ -1,9 +1,10 @@
 #include "DefaultPeerListProcessor.h"
-#include "MetaFileUtil.h"
-#include "Exception.h"
-#include "Dictionary.h"
-#include "Peer.h"
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Exception.h"
+#include "Peer.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -30,13 +31,12 @@ void DefaultPeerListProcessorTest::testExtractPeer() {
   DefaultPeerListProcessor proc;
   std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
 
-  SharedHandle<Dictionary> dic
-    (dynamic_cast<Dictionary*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE dict = bencode::decode(peersString);
   
-  CPPUNIT_ASSERT(proc.canHandle(dic->get("peers")));
+  CPPUNIT_ASSERT(proc.canHandle(dict["peers"]));
 
   std::deque<SharedHandle<Peer> > peers;
-  proc.extractPeer(peers, dic->get("peers"));
+  proc.extractPeer(peers, dict["peers"]);
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->ipaddr);
@@ -45,17 +45,16 @@ void DefaultPeerListProcessorTest::testExtractPeer() {
 
 void DefaultPeerListProcessorTest::testExtract2Peers() {
   DefaultPeerListProcessor proc;
-  std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
+  std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
 
-  SharedHandle<Dictionary> dic
-    (dynamic_cast<Dictionary*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE dict = bencode::decode(peersString);
 
   std::deque<SharedHandle<Peer> > peers;
-  proc.extractPeer(peers, dic->get("peers"));
+  proc.extractPeer(peers, dict["peers"]);
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->port);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)65535, peer->port);
 
   peer = *(peers.begin()+1);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peer->ipaddr);

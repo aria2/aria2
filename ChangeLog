@@ -1,5 +1,24 @@
 2008-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use BDE instead of Dictionary/List/Data classes.
+	* src/CompactPeerListProcessor.cc
+	* src/CompactPeerListProcessor.h
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/DefaultPeerListProcessor.cc
+	* src/DefaultPeerListProcessor.h
+	* src/DelegatingPeerListProcessor.cc
+	* src/DelegatingPeerListProcessor.h
+	* src/PeerListProcessor.h
+	* src/UTPexExtensionMessage.cc
+	* src/Util.h
+	* src/message.h
+	* test/DefaultBtContextTest.cc
+	* test/DefaultPeerListProcessorTest.cc
+
+2008-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added bencode helper functions and BDE class.
 	They will replace MetaFileUtil and Dictionary/List/Data classes.
 	* src/Makefile.am

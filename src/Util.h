@@ -172,6 +172,11 @@ public:
 
   static std::string toHex(const unsigned char* src, size_t len);
 
+  static std::string toHex(const char* src, size_t len)
+  {
+    return toHex(reinterpret_cast<const unsigned char*>(src), len);
+  }
+
   static std::string toHex(const std::string& src)
   {
     return toHex(reinterpret_cast<const unsigned char*>(src.c_str()), src.size());
