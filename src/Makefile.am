@@ -193,7 +193,8 @@ SRCS =  Socket.h\
 	NsCookieParser.cc NsCookieParser.h\
 	CookieStorage.cc CookieStorage.h\
 	SocketBuffer.cc SocketBuffer.h\
-	OptionHandlerException.cc OptionHandlerException.h
+	OptionHandlerException.cc OptionHandlerException.h\
+	bencode.cc bencode.h
 
 if ENABLE_SSL
 SRCS += TLSContext.h

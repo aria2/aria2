@@ -63,7 +63,8 @@ aria2c_SOURCES = AllTest.cc\
 	FtpConnectionTest.cc\
 	OptionParserTest.cc\
 	SimpleDNSCacheTest.cc\
-	DownloadHelperTest.cc
+	DownloadHelperTest.cc\
+	BencodeTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

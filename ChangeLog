@@ -1,5 +1,15 @@
 2008-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added bencode helper functions and BDE class.
+	They will replace MetaFileUtil and Dictionary/List/Data classes.
+	* src/Makefile.am
+	* src/bencode.cc
+	* src/bencode.h
+	* test/BencodeTest.cc
+	* test/Makefile.am
+
+2008-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that bad URI is sent to the tracker when the announe
 	URI in torrent file includes query.
 	* src/DefaultBtAnnounce.cc
