@@ -1,5 +1,12 @@
 2008-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use BDE instead of Dictionary/List/Data.
+	* src/HandshakeExtensionMessage.cc
+	* src/HandshakeExtensionMessage.h
+	* test/HandshakeExtensionMessageTest.cc
+	
+2008-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --max-overall-upload-limit option. This option limits the
 	overall upload speed.  Stated in help message that the existing
 	--max-upload-limit option limits the upload speed per each

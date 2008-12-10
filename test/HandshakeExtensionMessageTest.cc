@@ -1,10 +1,13 @@
 #include "HandshakeExtensionMessage.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Peer.h"
 #include "MockBtContext.h"
 #include "Exception.h"
 #include "FileEntry.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -57,7 +60,11 @@ void HandshakeExtensionMessageTest::testGetBencodedData()
   msg.setTCPPort(6889);
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
-  CPPUNIT_ASSERT_EQUAL(std::string("d1:v5:aria21:pi6889e1:md6:a2_dhti2e6:ut_pexi1eee"), msg.getBencodedData());
+  CPPUNIT_ASSERT_EQUAL(std::string("d"
+				   "1:md6:a2_dhti2e6:ut_pexi1ee"
+				   "1:pi6889e"
+				   "1:v5:aria2"
+				   "e"), msg.getBencodedData());
 }
 
 void HandshakeExtensionMessageTest::testToString()
@@ -132,11 +139,14 @@ void HandshakeExtensionMessageTest::testCreate_stringnum()
 {
   std::string in = "0d1:p4:68811:v5:aria21:md6:ut_pex1:1ee";
   SharedHandle<HandshakeExtensionMessage> m =
-    HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
+    HandshakeExtensionMessage::create
+    (reinterpret_cast<const unsigned char*>(in.c_str()),
 				      in.size());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getTCPPort());
-  CPPUNIT_ASSERT_EQUAL((uint8_t)1, m->getExtensionMessageID("ut_pex"));
+  // port number in string is not allowed
+  CPPUNIT_ASSERT_EQUAL((uint16_t)0, m->getTCPPort());
+  // extension ID in string is not allowed
+  CPPUNIT_ASSERT_EQUAL((uint8_t)0, m->getExtensionMessageID("ut_pex"));
 }
 
 } // namespace aria2

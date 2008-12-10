@@ -36,8 +36,10 @@
 #define _D_HANDSHAKE_EXTENSION_MESSAGE_H_
 
 #include "ExtensionMessage.h"
-#include "BtConstants.h"
+
 #include <map>
+
+#include "BtConstants.h"
 
 namespace aria2 {
 

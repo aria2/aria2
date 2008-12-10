@@ -35,16 +35,13 @@
 #include "HandshakeExtensionMessage.h"
 #include "Peer.h"
 #include "BtContext.h"
-#include "Dictionary.h"
-#include "Data.h"
 #include "Util.h"
-#include "BencodeVisitor.h"
-#include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "message.h"
 #include "StringFormat.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -58,27 +55,21 @@ HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
 std::string HandshakeExtensionMessage::getBencodedData()
 {
-  SharedHandle<Dictionary> dic(new Dictionary());
+  bencode::BDE dict = bencode::BDE::dict();
   if(!_clientVersion.empty()) {
-    Data* v = new Data(_clientVersion);
-    dic->put("v", v);
+    dict["v"] = _clientVersion;
   }
   if(_tcpPort > 0) {
-    std::string portStr = Util::uitos(_tcpPort);
-    Data* p = new Data(portStr, true);
-    dic->put("p", p);
+    dict["p"] = _tcpPort;
   }
-  Dictionary* exts = new Dictionary();
-  dic->put("m", exts);
+  bencode::BDE extDict = bencode::BDE::dict();
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    std::string idStr = Util::uitos(vt.second);
-    exts->put(vt.first, new Data(idStr, true));
+    extDict[vt.first] = vt.second;
   }
-  BencodeVisitor v;
-  dic->accept(&v);
-  return v.getBencodedData();
+  dict["m"] = extDict;
+  return bencode::encode(dict);
 }
 
 std::string HandshakeExtensionMessage::toString() const
@@ -142,26 +133,24 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
 		      Util::urlencode(data, length).c_str());
-  SharedHandle<MetaEntry> root(MetaFileUtil::bdecoding(data+1, length-1));
-  Dictionary* d = dynamic_cast<Dictionary*>(root.get());
-  if(d == 0) {
+  const bencode::BDE dict = bencode::decode(data+1, length-1);
+  if(!dict.isDict()) {
     throw DlAbortEx("Unexpected payload format for extended message handshake");
   }
-  const Data* p = dynamic_cast<const Data*>(d->get("p"));
-  if(p) {
-    msg->_tcpPort = p->toInt();
+  const bencode::BDE& port = dict["p"];
+  if(port.isInteger() && 0 < port.i() && port.i() < 65536) {
+    msg->_tcpPort = port.i();
   }
-  const Data* v = dynamic_cast<const Data*>(d->get("v"));
-  if(v) {
-    msg->_clientVersion = v->toString();
+  const bencode::BDE& version = dict["v"];
+  if(version.isString()) {
+    msg->_clientVersion = version.s();
   }
-  const Dictionary* m = dynamic_cast<const Dictionary*>(d->get("m"));
-  if(m) {
-    const std::deque<std::string>& order = m->getOrder();
-    for(std::deque<std::string>::const_iterator i = order.begin(); i != order.end(); ++i) {
-      const Data* e = dynamic_cast<const Data*>(m->get(*i));
-      if(e) {
-	msg->_extensions[*i] = e->toInt();
+  const bencode::BDE& extDict = dict["m"];
+  if(extDict.isDict()) {
+    for(bencode::BDE::Dict::const_iterator i = extDict.dictBegin();
+	i != extDict.dictEnd(); ++i) {
+      if((*i).second.isInteger()) {
+	msg->_extensions[(*i).first] = (*i).second.i();
       }
     }
   }
