@@ -48,6 +48,7 @@ class BtMessageFactory;
 class Peer;
 class Piece;
 class Logger;
+class RequestGroupMan;
 
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
@@ -59,7 +60,9 @@ private:
   SharedHandle<PieceStorage> _pieceStorage;
   WeakHandle<BtMessageFactory> messageFactory;
   SharedHandle<Peer> peer;
-  unsigned int maxUploadSpeedLimit;
+  WeakHandle<RequestGroupMan> _requestGroupMan;
+  unsigned int _maxOverallSpeedLimit;
+  unsigned int _maxUploadSpeedLimit;
   time_t requestTimeout;
   Logger* logger;
 public:
@@ -117,13 +120,15 @@ public:
 
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 
+  void setRequestGroupMan(const WeakHandle<RequestGroupMan>& rgman);
+
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
   }
 
-  void setMaxUploadSpeedLimit(unsigned int maxUploadSpeedLimit) {
-    this->maxUploadSpeedLimit = maxUploadSpeedLimit;
-  }
+  void setMaxUploadSpeedLimit(unsigned int maxUploadSpeedLimit);
+
+  void setMaxOverallSpeedLimit(unsigned int maxOverallSpeedLimit);
 
   void setRequestTimeout(time_t requestTimeout) {
     this->requestTimeout = requestTimeout;

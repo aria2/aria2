@@ -221,6 +221,8 @@ extern const std::string PREF_SHOW_FILES;
 // values: true | false
 extern const std::string PREF_DIRECT_FILE_MAPPING;
 // values: 1*digit
+extern const std::string PREF_MAX_OVERALL_UPLOAD_LIMIT;
+// values: 1*digit
 extern const std::string PREF_MAX_UPLOAD_LIMIT;
 // values: a string that your file system recognizes as a file name.
 extern const std::string PREF_TORRENT_FILE;

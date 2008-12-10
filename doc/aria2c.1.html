@@ -1064,12 +1064,27 @@ writes the piece to the appropriate files.</td>
 </div>
 <div class="vlist"><dl>
 <dt>
+<strong>--max-overall-upload-limit</strong>=SPEED
+</dt>
+<dd>
+<p>
+  Set max overall upload speed in bytes/sec.
+  <em>0</em> means unrestricted.
+  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+  To limit the upload speed per torrent, use <strong>--max-upload-limit</strong> option.
+  If non-zero value is specified, <strong>--max-upload-limit</strong> option is ignored.
+  Default: <em>0</em>
+</p>
+</dd>
+<dt>
 <strong>-u</strong>, <strong>--max-upload-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
-  Set max upload speed in bytes per sec. <em>0</em> means unrestricted.
+  Set max upload speed per each torrent in bytes/sec.
+  <em>0</em> means unrestricted.
   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+  To limit the overall upload speed, use <strong>--max-overall-upload-limit</strong> option.
   Default: <em>0</em>
 </p>
 </dd>
@@ -2031,7 +2046,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-12-04 01:08:46 JST
+Last updated 2008-12-10 23:03:25 JST
 </div>
 </div>
 </body>

@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 12/04/2008
+.\"      Date: 12/10/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "12/04/2008" "" ""
+.TH "ARIA2C" "1" "12/10/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -507,14 +507,31 @@ Set TCP port number for BitTorrent downloads\&. Multiple ports can be specified 
 Note
 Make sure that the specified ports are open for incoming TCP traffic\&.
 .PP
-\fB\-u\fR, \fB\-\-max\-upload\-limit\fR=SPEED
+\fB\-\-max\-overall\-upload\-limit\fR=SPEED
 .RS 4
-Set max upload speed in bytes per sec\&.
+Set max overall upload speed in bytes/sec\&.
 \fI0\fR
 means unrestricted\&. You can append
 \fIK\fR
 or
-\fIM\fR(1K = 1024, 1M = 1024K)\&. Default:
+\fIM\fR(1K = 1024, 1M = 1024K)\&. To limit the upload speed per torrent, use
+\fB\-\-max\-upload\-limit\fR
+option\&. If non\-zero value is specified,
+\fB\-\-max\-upload\-limit\fR
+option is ignored\&. Default:
+\fI0\fR
+.RE
+.PP
+\fB\-u\fR, \fB\-\-max\-upload\-limit\fR=SPEED
+.RS 4
+Set max upload speed per each torrent in bytes/sec\&.
+\fI0\fR
+means unrestricted\&. You can append
+\fIK\fR
+or
+\fIM\fR(1K = 1024, 1M = 1024K)\&. To limit the overall upload speed, use
+\fB\-\-max\-overall\-upload\-limit\fR
+option\&. Default:
 \fI0\fR
 .RE
 .PP

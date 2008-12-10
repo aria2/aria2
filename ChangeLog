@@ -1,3 +1,19 @@
+2008-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --max-overall-upload-limit option. This option limits the
+	overall upload speed.  Stated in help message that the existing
+	--max-upload-limit option limits the upload speed per each
+	torrent.  Man page is also updated.
+	* doc/aria2c.1.txt
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtMessageDispatcher.h
+	* src/OptionHandlerFactory.cc
+	* src/PeerInteractionCommand.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2008-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use BDE instead of Dictionary/List/Data classes.

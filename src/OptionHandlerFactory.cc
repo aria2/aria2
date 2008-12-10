@@ -826,6 +826,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_MAX_OVERALL_UPLOAD_LIMIT,
+				    TEXT_MAX_OVERALL_UPLOAD_LIMIT,
+				    "0",
+				    0));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
 				   (PREF_MAX_UPLOAD_LIMIT,
 				    TEXT_MAX_UPLOAD_LIMIT,
 				    "0",

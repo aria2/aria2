@@ -68,6 +68,7 @@
 #include "BtAnnounce.h"
 #include "BtProgressInfoFile.h"
 #include "DefaultExtensionMessageFactory.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -133,8 +134,11 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setPeerStorage(peerStorage);
   dispatcher->setMaxUploadSpeedLimit
     (e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+  dispatcher->setMaxOverallSpeedLimit
+    (e->option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
   dispatcher->setRequestTimeout(e->option->getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcher->setBtMessageFactory(factory);
+  dispatcher->setRequestGroupMan(e->_requestGroupMan);
 
   DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
   receiver->setCuid(cuid);

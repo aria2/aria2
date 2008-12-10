@@ -227,10 +227,19 @@ _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n
   "                              for example: \"6881,6885\". You can also use '-'\n"\
   "                              to specify a range: \"6881-6999\". ',' and '-' can\n"\
   "                              be used together.")
-#define TEXT_MAX_UPLOAD_LIMIT \
-_(" -u, --max-upload-limit=SPEED Set max upload speed in bytes per sec.\n"\
+#define TEXT_MAX_OVERALL_UPLOAD_LIMIT \
+_(" --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/sec.\n"\
   "                              0 means unrestricted.\n"\
-  "                              You can append K or M(1K = 1024, 1M = 1024K).")
+  "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
+  "                              To limit the upload speed per torrent, use\n"\
+  "                              --max-upload-limit option. If non-zero value is\n"\
+  "                              specified, --max-upload-limit option is ignored.")
+#define TEXT_MAX_UPLOAD_LIMIT \
+_(" -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"\
+  "                              bytes/sec. 0 means unrestricted.\n"\
+  "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
+  "                              To limit the overall upload speed, use\n"\
+  "                              --max-overall-upload-limit option.")
 #define TEXT_SEED_TIME \
 _(" --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"\
   "                              --seed-ratio option.")

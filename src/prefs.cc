@@ -217,6 +217,8 @@ const std::string PREF_SHOW_FILES("show-files");
 // values: true | false
 const std::string PREF_DIRECT_FILE_MAPPING("direct-file-mapping");
 // values: 1*digit
+const std::string PREF_MAX_OVERALL_UPLOAD_LIMIT("max-overall-upload-limit");
+// values: 1*digit
 const std::string PREF_MAX_UPLOAD_LIMIT("max-upload-limit");
 // values: a string that your file system recognizes as a file name.
 const std::string PREF_TORRENT_FILE("torrent-file");

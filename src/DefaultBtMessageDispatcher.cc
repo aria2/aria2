@@ -52,12 +52,14 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "a2functional.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
   cuid(0),
-  maxUploadSpeedLimit(0),
+  _maxOverallSpeedLimit(0),
+  _maxUploadSpeedLimit(0),
   requestTimeout(0),
   logger(LogFactory::getInstance()) {}
 
@@ -79,16 +81,22 @@ void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessages& btMessages)
   }
 }
 
-
 void DefaultBtMessageDispatcher::sendMessages() {
   BtMessages tempQueue;
   while(!messageQueue.empty()) {
     BtMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
-    if(maxUploadSpeedLimit > 0 &&
-       msg->isUploading() && !msg->isSendingInProgress()) {
-      TransferStat stat = _peerStorage->calculateStat();
-      if(maxUploadSpeedLimit < stat.getUploadSpeed()) {
+    if(msg->isUploading() && !msg->isSendingInProgress()) {
+      if(// See whether upload speed is exceeding overall limit.
+	 (_maxOverallSpeedLimit > 0 &&
+	  _maxOverallSpeedLimit <
+	  _requestGroupMan->calculateStat().getUploadSpeed()) ||
+	 // See whether uplaod speed is exceeding upload limit for each torrent.
+	 // _maxUploadLimit is ignored when _maxOverallSpeedLimit is specified.
+	 (_maxOverallSpeedLimit == 0 &&
+	  _maxUploadSpeedLimit > 0 &&
+	  _maxUploadSpeedLimit <
+	  _peerStorage->calculateStat().getUploadSpeed())) {
 	tempQueue.push_back(msg);
 	continue;
       }
@@ -456,5 +464,24 @@ void DefaultBtMessageDispatcher::setBtMessageFactory(const WeakHandle<BtMessageF
 {
   this->messageFactory = factory;
 }
+
+void DefaultBtMessageDispatcher::setRequestGroupMan
+(const WeakHandle<RequestGroupMan>& rgman)
+{
+  _requestGroupMan = rgman;
+}
+
+void DefaultBtMessageDispatcher::setMaxUploadSpeedLimit
+(unsigned int maxUploadSpeedLimit)
+{
+  _maxUploadSpeedLimit = maxUploadSpeedLimit;
+}
+
+void DefaultBtMessageDispatcher::setMaxOverallSpeedLimit
+(unsigned int maxOverallSpeedLimit)
+{
+  _maxOverallSpeedLimit = maxOverallSpeedLimit;
+}
+
 
 } // namespace aria2
