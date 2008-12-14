@@ -1,12 +1,14 @@
 #include "DHTMessageTrackerEntry.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "MockDHTMessage.h"
 #include "DHTNode.h"
-#include "MetaEntry.h"
 #include "DHTMessageCallback.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 

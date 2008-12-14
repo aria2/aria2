@@ -1,5 +1,10 @@
 2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed include of MetaEntry.h
+	* test/DHTMessageTrackerEntryTest.cc
+
+2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use BDE instead of Dictionary/List/Data.
 	* src/AnnounceList.cc
 	* src/AnnounceList.h
