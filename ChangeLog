@@ -1,5 +1,10 @@
 2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added tests the case where length < 0 is specified.
+	* test/BencodeTest.cc
+
+2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed memory leak in decoderawstring()
 	* src/bencode.cc
 	

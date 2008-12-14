@@ -244,7 +244,19 @@ void BencodeTest::testDecode()
       bencode::decode("x:abc");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
-      CPPUNIT_ASSERT_EQUAL(std::string("Integer expected but none found."),
+      CPPUNIT_ASSERT_EQUAL(std::string("A positive integer expected"
+				       " but none found."),
+			   std::string(e.what()));
+    }
+  }
+  {
+    // string with minus length
+    try {
+      bencode::decode("-1:a");
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      CPPUNIT_ASSERT_EQUAL(std::string("A positive integer expected"
+				       " but none found."),
 			   std::string(e.what()));
     }
   }
