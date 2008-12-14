@@ -335,19 +335,19 @@ static std::string decoderawstring(std::istream& ss)
   size_t length;
   ss >> length;
   if(!ss) {
-    throw RecoverableException("Integer expected but none found.");
+    throw RecoverableException("A positive integer expected but none found.");
   }
   // TODO check length, it must be less than or equal to INT_MAX
   checkdelim(ss);
   char* buf = new char[length];
   ss.read(buf, length);
+  std::string str(&buf[0], &buf[length]);
+  delete [] buf;
   if(ss.gcount() != static_cast<int>(length)) {
     throw RecoverableException
       (StringFormat("Expected %lu bytes of data, but only %d read.",
 		    static_cast<unsigned long>(length), ss.gcount()).str());
   }
-  std::string str(&buf[0], &buf[length]);
-  delete [] buf;
   return str;
 }
 

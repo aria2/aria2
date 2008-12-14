@@ -1,5 +1,10 @@
 2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed memory leak in decoderawstring()
+	* src/bencode.cc
+	
+2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added missing #ifdef guard.  Added uc() function for String and
 	removeKey() for Dict.
 	* src/bencode.cc
