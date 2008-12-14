@@ -110,10 +110,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	AnnounceListTest.cc\
 	DefaultPeerStorageTest.cc\
 	MockPeerStorage.h\
-	DataTest.cc\
-	DictionaryTest.cc\
-	ListTest.cc\
-	MetaFileUtilTest.cc\
 	ByteArrayDiskWriterTest.cc\
 	PeerTest.cc\
 	PeerSessionResourceTest.cc\
@@ -123,7 +119,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtDependencyTest.cc\
 	BtPostDownloadHandlerTest.cc\
 	TimeSeedCriteriaTest.cc\
-	BencodeVisitorTest.cc\
 	BtExtendedMessageTest.cc\
 	HandshakeExtensionMessageTest.cc\
 	UTPexExtensionMessageTest.cc\

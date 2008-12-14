@@ -51,12 +51,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksum.h
 
 @ENABLE_BITTORRENT_TRUE@am__append_8 = MetaEntry.h\
-@ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
-@ENABLE_BITTORRENT_TRUE@	Dictionary.cc Dictionary.h\
-@ENABLE_BITTORRENT_TRUE@	List.cc List.h\
-@ENABLE_BITTORRENT_TRUE@	MetaFileUtil.cc MetaFileUtil.h\
-@ENABLE_BITTORRENT_TRUE@	MetaEntryVisitor.h\
-@ENABLE_BITTORRENT_TRUE@	BencodeVisitor.cc BencodeVisitor.h\
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.cc PeerMessageUtil.h\
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.cc PeerAbstractCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
@@ -429,11 +423,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h \
 	messageDigest.cc messageDigest.h MessageDigestHelper.cc \
 	MessageDigestHelper.h Checksum.h ChunkChecksum.h MetaEntry.h \
-	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
-	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
-	BencodeVisitor.cc BencodeVisitor.h PeerMessageUtil.cc \
-	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
-	PeerInitiateConnectionCommand.cc \
+	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
+	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.h PeerListenCommand.cc \
 	PeerListenCommand.h RequestSlot.cc RequestSlot.h \
@@ -590,11 +581,7 @@ am__objects_1 =
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_8 = Data.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BencodeVisitor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@am__objects_8 = PeerMessageUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.$(OBJEXT) \
@@ -1258,7 +1245,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoSaveCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessage.Po@am__quote@
@@ -1353,7 +1339,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUnknownMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounce.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtContext.Po@am__quote@
@@ -1371,7 +1356,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultSegmentManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DelegatingPeerListProcessor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dictionary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@
@@ -1428,12 +1412,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibgnutlsTLSContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibsslTLSContext.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshake.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MemoryBufferPreDownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelper.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkHelper.Po@am__quote@

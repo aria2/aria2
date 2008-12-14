@@ -1,5 +1,28 @@
 2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed Dictionary/List/Data and its related classes.
+	* src/BencodeVisitor.cc: Removed.
+	* src/BencodeVisitor.h: Removed.
+	* src/Data.cc: Removed.
+	* src/Data.h: Removed.
+	* src/Dictionary.cc: Removed.
+	* src/Dictionary.h: Removed.
+	* src/List.cc: Removed.
+	* src/List.h: Removed.
+	* src/Makefile.am
+	* src/MetaEntry.h: Removed.
+	* src/MetaEntryVisitor.h: Removed.
+	* src/MetaFileUtil.cc: Removed.
+	* src/MetaFileUtil.h: Removed.
+	* test/BencodeVisitorTest.cc: Removed.
+	* test/DataTest.cc: Removed.
+	* test/DictionaryTest.cc: Removed.
+	* test/ListTest.cc: Removed.
+	* test/Makefile.am
+	* test/MetaFileUtilTest.cc: Removed.
+
+2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed include of MetaEntry.h
 	* test/DHTMessageTrackerEntryTest.cc
 

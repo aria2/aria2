@@ -233,12 +233,6 @@ endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT
 SRCS += MetaEntry.h\
-	Data.cc Data.h\
-	Dictionary.cc Dictionary.h\
-	List.cc List.h\
-	MetaFileUtil.cc MetaFileUtil.h\
-	MetaEntryVisitor.h\
-	BencodeVisitor.cc BencodeVisitor.h\
 	PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerAbstractCommand.cc PeerAbstractCommand.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
