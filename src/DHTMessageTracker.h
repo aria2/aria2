@@ -36,10 +36,12 @@
 #define _D_DHT_MESSAGE_TRACKER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "a2time.h"
+
 #include <utility>
 #include <deque>
+
+#include "SharedHandle.h"
+#include "a2time.h"
 
 namespace aria2 {
 
@@ -49,7 +51,9 @@ class DHTRoutingTable;
 class DHTMessageFactory;
 class DHTMessageTrackerEntry;
 class Logger;
-class Dictionary;
+namespace bencode {
+class BDE;
+} // namespace bencode
 
 class DHTMessageTracker {
 private:
@@ -75,7 +79,8 @@ public:
 		  SharedHandle<DHTMessageCallback>());
 
   std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
-  messageArrived(const Dictionary* d, const std::string& ipaddr, uint16_t port);
+  messageArrived(const bencode::BDE& dict,
+		 const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
 

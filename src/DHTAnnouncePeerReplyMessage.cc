@@ -34,8 +34,7 @@
 /* copyright --> */
 #include "DHTAnnouncePeerReplyMessage.h"
 #include "DHTNode.h"
-#include "Dictionary.h"
-#include "Data.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -50,11 +49,11 @@ DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
 
 void DHTAnnouncePeerReplyMessage::doReceivedAction() {}
 
-Dictionary* DHTAnnouncePeerReplyMessage::getResponse()
+bencode::BDE DHTAnnouncePeerReplyMessage::getResponse()
 {
-  Dictionary* r = new Dictionary();
-  r->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
-  return r;
+  bencode::BDE rDict = bencode::BDE::dict();
+  rDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  return rDict;
 }
 
 std::string DHTAnnouncePeerReplyMessage::getMessageType() const

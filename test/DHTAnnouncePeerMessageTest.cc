@@ -1,16 +1,16 @@
 #include "DHTAnnouncePeerMessage.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "DHTNode.h"
 #include "DHTUtil.h"
-#include "BencodeVisitor.h"
-#include "Dictionary.h"
-#include "Data.h"
 #include "Exception.h"
 #include "Util.h"
 #include "MockDHTMessageFactory.h"
 #include "MockDHTMessageDispatcher.h"
 #include "MockDHTMessage.h"
 #include "DHTPeerAnnounceStorage.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -60,21 +60,18 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  SharedHandle<Dictionary> cm(new Dictionary());
-  cm->put("t", new Data(transactionID));
-  cm->put("y", new Data("q"));
-  cm->put("q", new Data("announce_peer"));
-  Dictionary* a = new Dictionary();
-  cm->put("a", a);
-  a->put("id", new Data(localNode->getID(), DHT_ID_LENGTH));
-  a->put("info_hash", new Data(infoHash, DHT_ID_LENGTH));
-  a->put("port", new Data(Util::uitos(port), true));
-  a->put("token", new Data(token));
+  bencode::BDE dict = bencode::BDE::dict();
+  dict["t"] = transactionID;
+  dict["y"] = bencode::BDE("q");
+  dict["q"] = bencode::BDE("announce_peer");
+  bencode::BDE aDict = bencode::BDE::dict();
+  aDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
+  aDict["info_hash"] = bencode::BDE(infoHash, DHT_ID_LENGTH);
+  aDict["port"] = port;
+  aDict["token"] = token;
+  dict["a"] = aDict;
 
-  BencodeVisitor v;
-  cm->accept(&v);
-
-  CPPUNIT_ASSERT_EQUAL(Util::urlencode(v.getBencodedData()),
+  CPPUNIT_ASSERT_EQUAL(Util::urlencode(bencode::encode(dict)),
 		       Util::urlencode(msgbody));
 }
 

@@ -46,13 +46,11 @@
 #include "DHTRoutingTable.h"
 #include "DHTNode.h"
 #include "DHTMessageCallback.h"
-#include "Dictionary.h"
-#include "Data.h"
-#include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Util.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -76,27 +74,28 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
   }
   try {
     bool isReply = false;
-    MetaEntryHandle msgroot(MetaFileUtil::bdecoding(data, length));
-    const Dictionary* d = dynamic_cast<const Dictionary*>(msgroot.get());
-    if(d) {
-      const Data* y = dynamic_cast<const Data*>(d->get(DHTMessage::Y));
-      if(y) {
-	if(y->toString() == DHTResponseMessage::R ||
-	   y->toString() == DHTUnknownMessage::E) {
+    const bencode::BDE dict = bencode::decode(data, length);
+    if(dict.isDict()) {
+      const bencode::BDE& y = dict[DHTMessage::Y];
+      if(y.isString()) {
+	if(y.s() == DHTResponseMessage::R || y.s() == DHTUnknownMessage::E) {
 	  isReply = true;
 	}
       } else {
-	_logger->info("Malformed DHT message. Missing 'y' key. From:%s:%u", remoteAddr.c_str(), remotePort);
+	_logger->info("Malformed DHT message. Missing 'y' key. From:%s:%u",
+		      remoteAddr.c_str(), remotePort);
 	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     } else {
-      _logger->info("Malformed DHT message. This is not a bencoded directory. From:%s:%u", remoteAddr.c_str(), remotePort);
+      _logger->info("Malformed DHT message. This is not a bencoded directory."
+		    " From:%s:%u", remoteAddr.c_str(), remotePort);
       return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
     SharedHandle<DHTMessage> message;
     SharedHandle<DHTMessageCallback> callback;
     if(isReply) {
-      std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p = _tracker->messageArrived(d, remoteAddr, remotePort);
+      std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
+	_tracker->messageArrived(dict, remoteAddr, remotePort);
       message = p.first;
       callback = p.second;
       if(message.isNull()) {
@@ -104,7 +103,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
 	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     } else {
-      message = _factory->createQueryMessage(d, remoteAddr, remotePort);
+      message = _factory->createQueryMessage(dict, remoteAddr, remotePort);
       if(message->getLocalNode() == message->getRemoteNode()) {
 	// drop message from localnode
 	_logger->info("Recieved DHT message from localnode.");

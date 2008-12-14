@@ -37,14 +37,12 @@
 #include <cassert>
 
 #include "DHTNode.h"
-#include "BencodeVisitor.h"
 #include "DHTConnection.h"
-#include "Dictionary.h"
-#include "Data.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageCallback.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -57,14 +55,11 @@ DHTAbstractMessage::~DHTAbstractMessage() {}
 
 std::string DHTAbstractMessage::getBencodedMessage()
 {
-  SharedHandle<Dictionary> msg(new Dictionary());
-  msg->put(DHTMessage::T, new Data(_transactionID));
-  msg->put(DHTMessage::Y, new Data(getType()));
-  fillMessage(msg.get());
-  
-  BencodeVisitor v;
-  msg->accept(&v);
-  return v.getBencodedData();
+  bencode::BDE msgDict = bencode::BDE::dict();
+  msgDict[T] = _transactionID;
+  msgDict[Y] = getType();
+  fillMessage(msgDict);
+  return bencode::encode(msgDict);
 }
 
 bool DHTAbstractMessage::send()

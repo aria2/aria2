@@ -33,11 +33,11 @@
  */
 /* copyright --> */
 #include "DHTGetPeersReplyMessage.h"
+
+#include <cstring>
+
 #include "DHTNode.h"
 #include "DHTBucket.h"
-#include "Data.h"
-#include "Dictionary.h"
-#include "List.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
@@ -46,7 +46,7 @@
 #include "Peer.h"
 #include "DHTUtil.h"
 #include "Util.h"
-#include <cstring>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -72,34 +72,37 @@ void DHTGetPeersReplyMessage::doReceivedAction()
   // Returned peers and nodes are handled in DHTPeerLookupTask.
 }
 
-Dictionary* DHTGetPeersReplyMessage::getResponse()
+bencode::BDE DHTGetPeersReplyMessage::getResponse()
 {
-  Dictionary* r = new Dictionary();
-  r->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
-  r->put(TOKEN, new Data(_token));
-  if(_values.size()) {
-    List* valuesList = new List();
-    r->put(VALUES, valuesList);
-    for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin(); i != _values.end(); ++i) {
-      const SharedHandle<Peer>& peer = *i;
-      unsigned char buffer[6];
-      if(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port)) {
-	valuesList->add(new Data(buffer, sizeof(buffer)));
-      }
-    }
-  } else {
+  bencode::BDE rDict = bencode::BDE::dict();
+  rDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  rDict[TOKEN] = _token;
+  if(_values.empty()) {
     size_t offset = 0;
     unsigned char buffer[DHTBucket::K*26];
-    for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
+    for(std::deque<SharedHandle<DHTNode> >::const_iterator i =
+	  _closestKNodes.begin();
+	i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
       if(PeerMessageUtil::createcompact(buffer+20+offset, node->getIPAddress(), node->getPort())) {
 	offset += 26;
       }
     }
-    r->put(NODES, new Data(buffer, offset));
+    rDict[NODES] = bencode::BDE(buffer, offset);
+  } else {
+    bencode::BDE valuesList = bencode::BDE::list();
+    for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin();
+	i != _values.end(); ++i) {
+      const SharedHandle<Peer>& peer = *i;
+      unsigned char buffer[6];
+      if(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port)) {
+	valuesList << bencode::BDE(buffer, sizeof(buffer));
+      }
+    }
+    rDict[VALUES] = valuesList;
   }
-  return r;
+  return rDict;  
 }
 
 std::string DHTGetPeersReplyMessage::getMessageType() const

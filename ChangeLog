@@ -1,5 +1,48 @@
 2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use BDE instead of Dictionary/List/Data.
+	* src/DHTAbstractMessage.cc
+	* src/DHTAbstractMessage.h
+	* src/DHTAnnouncePeerMessage.cc
+	* src/DHTAnnouncePeerMessage.h
+	* src/DHTAnnouncePeerReplyMessage.cc
+	* src/DHTAnnouncePeerReplyMessage.h
+	* src/DHTFindNodeMessage.cc
+	* src/DHTFindNodeMessage.h
+	* src/DHTFindNodeReplyMessage.cc
+	* src/DHTFindNodeReplyMessage.h
+	* src/DHTGetPeersMessage.cc
+	* src/DHTGetPeersMessage.h
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTGetPeersReplyMessage.h
+	* src/DHTMessageFactory.h
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTMessageFactoryImpl.h
+	* src/DHTMessageReceiver.cc
+	* src/DHTMessageTracker.cc
+	* src/DHTMessageTracker.h
+	* src/DHTPingMessage.cc
+	* src/DHTPingMessage.h
+	* src/DHTPingReplyMessage.cc
+	* src/DHTPingReplyMessage.h
+	* src/DHTQueryMessage.cc
+	* src/DHTQueryMessage.h
+	* src/DHTResponseMessage.cc
+	* src/DHTResponseMessage.h
+	* test/DHTAnnouncePeerMessageTest.cc
+	* test/DHTAnnouncePeerReplyMessageTest.cc
+	* test/DHTFindNodeMessageTest.cc
+	* test/DHTFindNodeReplyMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/DHTGetPeersReplyMessageTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTMessageTrackerTest.cc
+	* test/DHTPingMessageTest.cc
+	* test/DHTPingReplyMessageTest.cc
+	* test/MockDHTMessageFactory.h
+
+2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added tests the case where length < 0 is specified.
 	* test/BencodeTest.cc
 

@@ -35,8 +35,7 @@
 #include "DHTQueryMessage.h"
 #include "DHTNode.h"
 #include "Util.h"
-#include "Dictionary.h"
-#include "Data.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -56,10 +55,10 @@ std::string DHTQueryMessage::getType() const
   return Q;
 }
 
-void DHTQueryMessage::fillMessage(Dictionary* message)
+void DHTQueryMessage::fillMessage(bencode::BDE& msgDict)
 {
-  message->put(Q, new Data(getMessageType()));
-  message->put(A, getArgument());
+  msgDict[Q] = getMessageType();
+  msgDict[A] = getArgument();
 }
 
 bool DHTQueryMessage::isReply() const

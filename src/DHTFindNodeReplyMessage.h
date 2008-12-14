@@ -54,7 +54,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual Dictionary* getResponse();
+  virtual bencode::BDE getResponse();
   
   virtual std::string getMessageType() const;
 

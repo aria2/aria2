@@ -1,16 +1,16 @@
 #include "DHTMessageTracker.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "MockDHTMessage.h"
 #include "MockDHTMessageCallback.h"
 #include "DHTNode.h"
-#include "MetaEntry.h"
 #include "DHTMessageTrackerEntry.h"
 #include "DHTRoutingTable.h"
 #include "MockDHTMessageFactory.h"
-#include "Dictionary.h"
-#include "Data.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -76,11 +76,12 @@ void DHTMessageTrackerTest::testMessageArrived()
   tracker.addMessage(m3);
 
   {
-    SharedHandle<Dictionary> res(new Dictionary());
-    res->put("t", new Data(m2->getTransactionID()));
+    bencode::BDE resDict = bencode::BDE::dict();
+    resDict["t"] = m2->getTransactionID();
     
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
-      tracker.messageArrived(res.get(), m2->getRemoteNode()->getIPAddress(), m2->getRemoteNode()->getPort());
+      tracker.messageArrived(resDict, m2->getRemoteNode()->getIPAddress(),
+			     m2->getRemoteNode()->getPort());
     SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(!reply.isNull());
@@ -89,10 +90,12 @@ void DHTMessageTrackerTest::testMessageArrived()
     CPPUNIT_ASSERT_EQUAL((size_t)2, tracker.countEntry());
   }
   {
-    SharedHandle<Dictionary> res(new Dictionary());
-    res->put("t", new Data(m3->getTransactionID()));
+    bencode::BDE resDict = bencode::BDE::dict();
+    resDict["t"] = m3->getTransactionID();
 
-    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p = tracker.messageArrived(res.get(), m3->getRemoteNode()->getIPAddress(), m3->getRemoteNode()->getPort());
+    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
+      tracker.messageArrived(resDict, m3->getRemoteNode()->getIPAddress(),
+			     m3->getRemoteNode()->getPort());
     SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(!reply.isNull());
@@ -100,10 +103,11 @@ void DHTMessageTrackerTest::testMessageArrived()
     CPPUNIT_ASSERT_EQUAL((size_t)1, tracker.countEntry());
   }
   {
-    SharedHandle<Dictionary> res(new Dictionary());
-    res->put("t", new Data(m1->getTransactionID()));
+    bencode::BDE resDict = bencode::BDE::dict();
+    resDict["t"] = m1->getTransactionID();
 
-    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p = tracker.messageArrived(res.get(), "192.168.1.100", 6889);
+    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
+      tracker.messageArrived(resDict, "192.168.1.100", 6889);
     SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(reply.isNull());

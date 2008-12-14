@@ -1,14 +1,14 @@
 #include "DHTFindNodeReplyMessage.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "DHTNode.h"
 #include "DHTUtil.h"
-#include "BencodeVisitor.h"
-#include "Dictionary.h"
-#include "Data.h"
 #include "Exception.h"
 #include "Util.h"
 #include "DHTBucket.h"
 #include "PeerMessageUtil.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -56,18 +56,15 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  SharedHandle<Dictionary> cm(new Dictionary());
-  cm->put("t", new Data(transactionID));
-  cm->put("y", new Data("r"));
-  Dictionary* r = new Dictionary();
-  cm->put("r", r);
-  r->put("id", new Data(localNode->getID(), DHT_ID_LENGTH));
-  r->put("nodes", new Data(compactNodeInfo));
+  bencode::BDE dict = bencode::BDE::dict();
+  dict["t"] = transactionID;
+  dict["y"] = bencode::BDE("r");
+  bencode::BDE rDict = bencode::BDE::dict();
+  rDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
+  rDict["nodes"] = compactNodeInfo;
+  dict["r"] = rDict;
 
-  BencodeVisitor v;
-  cm->accept(&v);
-
-  CPPUNIT_ASSERT_EQUAL(v.getBencodedData(), msgbody);
+  CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);
 }
 
 } // namespace aria2

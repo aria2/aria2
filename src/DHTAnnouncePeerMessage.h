@@ -69,7 +69,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual Dictionary* getArgument();
+  virtual bencode::BDE getArgument();
   
   virtual std::string getMessageType() const;
 

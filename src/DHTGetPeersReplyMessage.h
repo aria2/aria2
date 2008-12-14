@@ -36,8 +36,10 @@
 #define _D_DHT_GET_PEERS_REPLY_MESSAGE_H_
 
 #include "DHTResponseMessage.h"
-#include "DHTConstants.h"
+
 #include <deque>
+
+#include "DHTConstants.h"
 
 namespace aria2 {
 
@@ -62,7 +64,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual Dictionary* getResponse();
+  virtual bencode::BDE getResponse();
 
   virtual std::string getMessageType() const;
 

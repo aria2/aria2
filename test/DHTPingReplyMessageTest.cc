@@ -1,12 +1,12 @@
 #include "DHTPingReplyMessage.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "DHTNode.h"
 #include "DHTUtil.h"
-#include "BencodeVisitor.h"
-#include "Dictionary.h"
-#include "Data.h"
 #include "Exception.h"
 #include "Util.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -42,17 +42,14 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  SharedHandle<Dictionary> cm(new Dictionary());
-  cm->put("t", new Data(transactionID));
-  cm->put("y", new Data("r"));
-  Dictionary* r = new Dictionary();
-  cm->put("r", r);
-  r->put("id", new Data(id, DHT_ID_LENGTH));
+  bencode::BDE dict = bencode::BDE::dict();
+  dict["t"] = transactionID;
+  dict["y"] = bencode::BDE("r");
+  bencode::BDE rDict = bencode::BDE::dict();
+  rDict["id"] = bencode::BDE(id, DHT_ID_LENGTH);
+  dict["r"] = rDict;
 
-  BencodeVisitor v;
-  cm->accept(&v);
-
-  CPPUNIT_ASSERT_EQUAL(v.getBencodedData(), msgbody);
+  CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);
 }
 
 } // namespace aria2

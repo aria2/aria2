@@ -33,17 +33,18 @@
  */
 /* copyright --> */
 #include "DHTFindNodeReplyMessage.h"
+
+#include <cstring>
+
 #include "DHTNode.h"
 #include "DHTBucket.h"
-#include "Data.h"
-#include "Dictionary.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
-#include <cstring>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -67,22 +68,25 @@ void DHTFindNodeReplyMessage::doReceivedAction()
   }
 }
 
-Dictionary* DHTFindNodeReplyMessage::getResponse()
+bencode::BDE DHTFindNodeReplyMessage::getResponse()
 {
-  Dictionary* a = new Dictionary();
-  a->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
+  bencode::BDE aDict = bencode::BDE::dict();
+  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
   size_t offset = 0;
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
-  for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
+  for(std::deque<SharedHandle<DHTNode> >::const_iterator i =
+	_closestKNodes.begin();
+      i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
     SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
-    if(PeerMessageUtil::createcompact(buffer+20+offset, node->getIPAddress(), node->getPort())) {
+    if(PeerMessageUtil::createcompact(buffer+20+offset, node->getIPAddress(),
+				      node->getPort())) {
       offset += 26;
     }
   }
-  a->put(NODES, new Data(buffer, offset));
-  return a;
+  aDict[NODES] = bencode::BDE(buffer, offset);
+  return aDict;
 }
 
 std::string DHTFindNodeReplyMessage::getMessageType() const

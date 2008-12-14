@@ -33,15 +33,16 @@
  */
 /* copyright --> */
 #include "DHTFindNodeMessage.h"
+
+#include <cstring>
+
 #include "DHTNode.h"
-#include "Data.h"
-#include "Dictionary.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
 #include "Util.h"
-#include <cstring>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -69,14 +70,12 @@ void DHTFindNodeMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-Dictionary* DHTFindNodeMessage::getArgument()
+bencode::BDE DHTFindNodeMessage::getArgument()
 {
-  Dictionary* a = new Dictionary();
-  a->put(DHTMessage::ID, new Data(reinterpret_cast<const char*>(_localNode->getID()),
-			DHT_ID_LENGTH));
-  a->put(TARGET_NODE, new Data(reinterpret_cast<const char*>(_targetNodeID),
-			    DHT_ID_LENGTH));
-  return a;
+  bencode::BDE aDict = bencode::BDE::dict();
+  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[TARGET_NODE] = bencode::BDE(_targetNodeID, DHT_ID_LENGTH);
+  return aDict;
 }
 
 std::string DHTFindNodeMessage::getMessageType() const

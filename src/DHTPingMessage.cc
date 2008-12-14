@@ -34,12 +34,11 @@
 /* copyright --> */
 #include "DHTPingMessage.h"
 #include "DHTNode.h"
-#include "Dictionary.h"
-#include "Data.h"
 #include "DHTConstants.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageCallback.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -59,12 +58,11 @@ void DHTPingMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-Dictionary* DHTPingMessage::getArgument()
+bencode::BDE DHTPingMessage::getArgument()
 {
-  Dictionary* a = new Dictionary();
-  a->put(DHTMessage::ID, new Data(reinterpret_cast<const char*>(_localNode->getID()),
-			DHT_ID_LENGTH));
-  return a;
+  bencode::BDE aDict = bencode::BDE::dict();
+  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  return aDict;
 }
 
 std::string DHTPingMessage::getMessageType() const

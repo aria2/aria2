@@ -45,11 +45,10 @@
 #include "Util.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Dictionary.h"
-#include "Data.h"
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "StringFormat.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -70,26 +69,26 @@ void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, cons
 }
 
 std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
-DHTMessageTracker::messageArrived(const Dictionary* d,
+DHTMessageTracker::messageArrived(const bencode::BDE& dict,
 				  const std::string& ipaddr, uint16_t port)
 {
-  const Data* tid = dynamic_cast<const Data*>(d->get(DHTMessage::T));
-  if(!tid) {
+  const bencode::BDE& tid = dict[DHTMessage::T];
+  if(!tid.isString()) {
     throw DlAbortEx(StringFormat("Malformed DHT message. From:%s:%u",
 				 ipaddr.c_str(), port).str());
   }
   _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
-		 Util::toHex(tid->toString()).c_str(), ipaddr.c_str(), port);
-  for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i = _entries.begin();
-      i != _entries.end(); ++i) {
-    if((*i)->match(tid->toString(), ipaddr, port)) {
+		 Util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
+  for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
+	_entries.begin(); i != _entries.end(); ++i) {
+    if((*i)->match(tid.s(), ipaddr, port)) {
       SharedHandle<DHTMessageTrackerEntry> entry = *i;
       _entries.erase(i);
       _logger->debug("Tracker entry found.");
       SharedHandle<DHTNode> targetNode = entry->getTargetNode();
 
       SharedHandle<DHTMessage> message =
-	_factory->createResponseMessage(entry->getMessageType(), d,
+	_factory->createResponseMessage(entry->getMessageType(), dict,
 					targetNode->getIPAddress(),
 					targetNode->getPort());
 

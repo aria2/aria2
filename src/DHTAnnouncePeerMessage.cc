@@ -33,9 +33,10 @@
  */
 /* copyright --> */
 #include "DHTAnnouncePeerMessage.h"
+
+#include <cstring>
+
 #include "DHTNode.h"
-#include "Data.h"
-#include "Dictionary.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
@@ -46,7 +47,7 @@
 #include "DlAbortEx.h"
 #include "BtConstants.h"
 #include "StringFormat.h"
-#include <cstring>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -83,17 +84,14 @@ void DHTAnnouncePeerMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-Dictionary* DHTAnnouncePeerMessage::getArgument()
+bencode::BDE DHTAnnouncePeerMessage::getArgument()
 {
-  Dictionary* a = new Dictionary();
-  a->put(DHTMessage::ID, new Data(reinterpret_cast<const char*>(_localNode->getID()),
-			DHT_ID_LENGTH));
-  a->put(INFO_HASH, new Data(reinterpret_cast<const char*>(_infoHash),
-			       DHT_ID_LENGTH));
-  a->put(PORT, new Data(Util::uitos(_tcpPort), true));
-  a->put(TOKEN, new Data(_token));
-  
-  return a;
+  bencode::BDE aDict = bencode::BDE::dict();
+  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[INFO_HASH] = bencode::BDE(_infoHash, DHT_ID_LENGTH);
+  aDict[PORT] = _tcpPort;
+  aDict[TOKEN] = _token;
+  return aDict;
 }
 
 std::string DHTAnnouncePeerMessage::getMessageType() const

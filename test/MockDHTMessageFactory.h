@@ -4,8 +4,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTNode.h"
 #include "MockDHTMessage.h"
-#include "Dictionary.h"
-#include "Data.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -18,7 +17,7 @@ public:
   virtual ~MockDHTMessageFactory() {}
 
   virtual SharedHandle<DHTMessage>
-  createQueryMessage(const Dictionary* d,
+  createQueryMessage(const bencode::BDE& dict,
 		     const std::string& ipaddr, uint16_t port)
   {
     return SharedHandle<DHTMessage>();
@@ -26,7 +25,7 @@ public:
 
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
-			const Dictionary* d,
+			const bencode::BDE& dict,
 			const std::string& ipaddr, uint16_t port)
   {
     SharedHandle<DHTNode> remoteNode(new DHTNode());
@@ -34,8 +33,7 @@ public:
     remoteNode->setIPAddress(ipaddr);
     remoteNode->setPort(port);
     SharedHandle<MockDHTMessage> m
-      (new MockDHTMessage(_localNode, remoteNode,
-			  reinterpret_cast<const Data*>(d->get("t"))->toString()));
+      (new MockDHTMessage(_localNode, remoteNode, dict["t"].s()));
     m->setReply(true);
     return m;
   }

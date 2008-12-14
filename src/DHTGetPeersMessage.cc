@@ -33,9 +33,10 @@
  */
 /* copyright --> */
 #include "DHTGetPeersMessage.h"
+
+#include <cstring>
+
 #include "DHTNode.h"
-#include "Data.h"
-#include "Dictionary.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
@@ -45,7 +46,7 @@
 #include "Peer.h"
 #include "DHTTokenTracker.h"
 #include "Util.h"
-#include <cstring>
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -87,12 +88,12 @@ void DHTGetPeersMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-Dictionary* DHTGetPeersMessage::getArgument()
+bencode::BDE DHTGetPeersMessage::getArgument()
 {
-  Dictionary* a = new Dictionary();
-  a->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
-  a->put(INFO_HASH, new Data(_infoHash, DHT_ID_LENGTH));
-  return a;
+  bencode::BDE aDict = bencode::BDE::dict();
+  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[INFO_HASH] = bencode::BDE(_infoHash, DHT_ID_LENGTH);
+  return aDict;
 }
 
 std::string DHTGetPeersMessage::getMessageType() const

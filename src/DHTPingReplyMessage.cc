@@ -33,10 +33,11 @@
  */
 /* copyright --> */
 #include "DHTPingReplyMessage.h"
-#include "DHTNode.h"
-#include "Dictionary.h"
-#include "Data.h"
+
 #include <cstring>
+
+#include "DHTNode.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -55,11 +56,11 @@ DHTPingReplyMessage::~DHTPingReplyMessage() {}
 
 void DHTPingReplyMessage::doReceivedAction() {}
 
-Dictionary* DHTPingReplyMessage::getResponse()
+bencode::BDE DHTPingReplyMessage::getResponse()
 {
-  Dictionary* r = new Dictionary();
-  r->put(DHTMessage::ID, new Data(_id, DHT_ID_LENGTH));
-  return r;
+  bencode::BDE rDict = bencode::BDE::dict();
+  rDict[DHTMessage::ID] = bencode::BDE(_id, DHT_ID_LENGTH);
+  return rDict;
 }
 
 std::string DHTPingReplyMessage::getMessageType() const
