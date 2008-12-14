@@ -1,6 +1,13 @@
 2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use BDE instead of Dictionary/List/Data.
+	* src/AnnounceList.cc
+	* src/AnnounceList.h
+	* test/AnnounceListTest.cc
+
+2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use BDE instead of Dictionary/List/Data.
 	* src/DHTAbstractMessage.cc
 	* src/DHTAbstractMessage.h
 	* src/DHTAnnouncePeerMessage.cc

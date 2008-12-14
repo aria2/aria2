@@ -1,8 +1,9 @@
 #include "AnnounceList.h"
-#include "MetaFileUtil.h"
-#include "Exception.h"
-#include "List.h"
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Exception.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -43,12 +44,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AnnounceListTest );
 
 void AnnounceListTest::testSingleElementList() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
   
   CPPUNIT_ASSERT(!announceList.allTiersFailed());
   std::string url =  announceList.getAnnounce();
@@ -90,12 +90,11 @@ void AnnounceListTest::testSingleElementList() {
 
 void AnnounceListTest::testMultiElementList() {
   std::string peersString = "ll8:tracker18:tracker28:tracker3ee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2, tracker3 ] ]
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
   
   CPPUNIT_ASSERT(!announceList.allTiersFailed());
   std::string url = announceList.getAnnounce();
@@ -124,12 +123,11 @@ void AnnounceListTest::testMultiElementList() {
 
 void AnnounceListTest::testSingleAndMulti() {
   std::string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
 
   std::string url = announceList.getAnnounce();
   CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
@@ -151,22 +149,20 @@ void AnnounceListTest::testSingleAndMulti() {
 
 void AnnounceListTest::testNoGroup() {
   std::string peersString = "llee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
 
   CPPUNIT_ASSERT(announceList.countTier() == 0);
 }
 
 void AnnounceListTest::testNextEventIfAfterStarted() {
   std::string peersString = "ll8:tracker1ee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ] ]
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
   announceList.setEvent(AnnounceTier::STOPPED);
   announceList.announceFailure();
   announceList.resetTier();
@@ -182,12 +178,11 @@ void AnnounceListTest::testNextEventIfAfterStarted() {
 
 void AnnounceListTest::testEvent() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
 
   announceList.setEvent(AnnounceTier::STOPPED);
   announceList.announceSuccess();
@@ -207,12 +202,11 @@ void AnnounceListTest::testEvent() {
 
 void AnnounceListTest::testCountStoppedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED);
@@ -235,12 +229,11 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
 
 void AnnounceListTest::testCountCompletedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<List> announces
-    (dynamic_cast<List*>(MetaFileUtil::bdecoding(peersString)));
+  const bencode::BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announces.get());
+  AnnounceList announceList(announcesList);
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED);

@@ -36,10 +36,9 @@
 
 #include <algorithm>
 
-#include "List.h"
-#include "Data.h"
 #include "A2STR.h"
 #include "SimpleRandomizer.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -49,9 +48,9 @@ const std::string AnnounceList::STOPPED("stopped");
 
 const std::string AnnounceList::COMPLETED("completed");
 
-AnnounceList::AnnounceList(const MetaEntry* announceListEntry):
+AnnounceList::AnnounceList(const bencode::BDE& announceList):
   currentTrackerInitialized(false) {
-  reconfigure(announceListEntry);
+  reconfigure(announceList);
 }
 
 AnnounceList::AnnounceList(const AnnounceTiers& announceTiers):
@@ -59,24 +58,24 @@ AnnounceList::AnnounceList(const AnnounceTiers& announceTiers):
   resetIterator();
 }
 
-void AnnounceList::reconfigure(const MetaEntry* announceListEntry) {
-  const List* l = dynamic_cast<const List*>(announceListEntry);
-  if(l) {
-    for(std::deque<MetaEntry*>::const_iterator itr = l->getList().begin();
-	itr != l->getList().end(); itr++) {
-      const List* elem = dynamic_cast<const List*>(*itr);
-      if(!elem) {
+void AnnounceList::reconfigure(const bencode::BDE& announceList)
+{
+  if(announceList.isList()) {
+    for(bencode::BDE::List::const_iterator itr = announceList.listBegin();
+	itr != announceList.listEnd(); ++itr) {
+      const bencode::BDE& elemList = *itr;
+      if(!elemList.isList()) {
 	continue;
       }
       std::deque<std::string> urls;
-      for(std::deque<MetaEntry*>::const_iterator elemItr = elem->getList().begin();
-	  elemItr != elem->getList().end(); elemItr++) {
-	const Data* data = dynamic_cast<const Data*>(*elemItr);
-	if(data) {
-	  urls.push_back(data->toString());
+      for(bencode::BDE::List::const_iterator elemItr = elemList.listBegin();
+	  elemItr != elemList.listEnd(); ++elemItr) {
+	const bencode::BDE& data = *elemItr;
+	if(data.isString()) {
+	  urls.push_back(data.s());
 	}
       }
-      if(urls.size()) {
+      if(!urls.empty()) {
 	AnnounceTierHandle tier(new AnnounceTier(urls));
 	tiers.push_back(tier);
       }

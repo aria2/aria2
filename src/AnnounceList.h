@@ -41,7 +41,9 @@
 
 namespace aria2 {
 
-class MetaEntry;
+namespace bencode {
+class BDE;
+} // namespace bencode
 
 class AnnounceList {
 public:
@@ -55,10 +57,10 @@ private:
   void setCurrentTier(const std::deque<SharedHandle<AnnounceTier> >::iterator& itr);
 public:
   AnnounceList():currentTrackerInitialized(false) {}
-  AnnounceList(const MetaEntry* announceListEntry);
+  AnnounceList(const bencode::BDE& announceList);
   AnnounceList(const std::deque<SharedHandle<AnnounceTier> >& tiers);
 
-  void reconfigure(const MetaEntry* announceListEntry);
+  void reconfigure(const bencode::BDE& announceList);
   void reconfigure(const std::string& url);
 
   size_t countTier() const {
