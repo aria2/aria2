@@ -5,6 +5,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "Util.h"
+
 namespace aria2 {
 
 class BencodeTest:public CppUnit::TestFixture {
@@ -47,6 +49,11 @@ void BencodeTest::testString()
 
   bencode::BDE zero("");
   CPPUNIT_ASSERT_EQUAL(std::string(""), zero.s());
+
+  const unsigned char uc[] = { 0x08, 0x19, 0x2a, 0x3b };
+  bencode::BDE data(uc, sizeof(uc));
+  CPPUNIT_ASSERT_EQUAL(Util::toHex(uc, sizeof(uc)),
+		       Util::toHex(data.uc(), data.s().size()));
 }
 
 void BencodeTest::testInteger()
@@ -77,6 +84,10 @@ void BencodeTest::testDict()
   ref["kn2"]; // This doesn't add kn2 key.
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), ref.size());
   CPPUNIT_ASSERT(!ref.containsKey("kn2"));
+
+  dict.removeKey("kn");
+  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
+  CPPUNIT_ASSERT(!dict.containsKey("kn"));
 }
 
 void BencodeTest::testDictIter()

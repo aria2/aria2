@@ -1,3 +1,11 @@
+2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added missing #ifdef guard.  Added uc() function for String and
+	removeKey() for Dict.
+	* src/bencode.cc
+	* src/bencode.h
+	* test/BencodeTest.cc
+
 2008-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use BDE instead of Dictionary/List/Data.

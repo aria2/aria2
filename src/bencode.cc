@@ -120,6 +120,15 @@ const std::string& BDE::s() const throw(RecoverableException)
   }
 }
 
+const unsigned char* BDE::uc() const throw(RecoverableException)
+{
+  if(isString()) {
+    return reinterpret_cast<const unsigned char*>(_string->data());
+  } else {
+    throw RecoverableException("Not String");
+  }
+}
+
 // Dictionary Interface
 
 bool BDE::isDict() const throw()
@@ -160,6 +169,14 @@ bool BDE::containsKey(const std::string& key) const throw(RecoverableException)
   }
 }
 
+void BDE::removeKey(const std::string& key) const throw(RecoverableException)
+{
+  if(isDict()) {
+    _dict->erase(key);
+  } else {
+    throw RecoverableException("Not Dict");
+  }
+}
 
 BDE::Dict::iterator BDE::dictBegin() throw(RecoverableException)
 {

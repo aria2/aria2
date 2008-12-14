@@ -32,6 +32,9 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+#ifndef _D_BENCODE_H_
+#define _D_BENCODE_H_
+
 #include "common.h"
 
 #include <string>
@@ -110,6 +113,10 @@ public:
   // Returns std::string. Requires this object to be String
   const std::string& s() const throw(RecoverableException);
 
+  // Returns std::string.data() casted to unsigned char*.
+  // Use s().size() to get length.
+  const unsigned char* uc() const throw(RecoverableException);
+
   //////////////////////////////////////////////////////////////////////////////
   // Dictionary Interface
 
@@ -132,6 +139,10 @@ public:
   // Returns true if the given key is found in dict.
   // Requires this object to be Dict.
   bool containsKey(const std::string& key) const throw(RecoverableException);
+
+  // Removes specified key from dict.
+  // Requires this object to be Dict.
+  void removeKey(const std::string& key) const throw(RecoverableException);
 
   // Returns a read/write iterator that points to the first pair in the dict.
   // Requires this object to be Dict.
@@ -212,3 +223,5 @@ std::string encode(const BDE& bde) throw();
 } // namespace bencode
 
 } // namespace aria2
+
+#endif // _D_BENCODE_H_
