@@ -180,7 +180,7 @@ bool Cookie::validate(const std::string& requestHost,
     size_t dotCount = std::count(normReqHost.begin(),
                                  normReqHost.begin()+
                                  (normReqHost.size()-_domain.size()), '.');
-    if(dotCount > 1 || dotCount == 1 && normReqHost[0] != '.') {
+    if(dotCount > 1 || (dotCount == 1 && normReqHost[0] != '.')) {
       return false;
     } 
   }

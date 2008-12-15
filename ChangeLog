@@ -1,5 +1,10 @@
 2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compiler warning
+	* src/Cookie.cc
+
+2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the cookie implementation based on RFC2965. 
 	Now if a value in domain field is not started with dot, then
 	prepend dot. That means a cookie with domain=sf.net is sent to
