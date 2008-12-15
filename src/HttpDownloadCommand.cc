@@ -43,23 +43,37 @@
 #include "Socket.h"
 #include "prefs.h"
 #include "Option.h"
+#include "HttpResponse.h"
+#include "HttpHeader.h"
+#include "Range.h"
 
 namespace aria2 {
 
-HttpDownloadCommand::HttpDownloadCommand(int cuid,
-					 const RequestHandle& req,
-					 RequestGroup* requestGroup,
-					 const HttpConnectionHandle& httpConnection,
-					 DownloadEngine* e,
-					 const SocketHandle& socket)
+HttpDownloadCommand::HttpDownloadCommand
+(int cuid,
+ const RequestHandle& req,
+ RequestGroup* requestGroup,
+ const SharedHandle<HttpResponse>& httpResponse,
+ const HttpConnectionHandle& httpConnection,
+ DownloadEngine* e,
+ const SocketHandle& socket)
   :DownloadCommand(cuid, req, requestGroup, e, socket),
+   _httpResponse(httpResponse),
    _httpConnection(httpConnection) {}
 
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
 bool HttpDownloadCommand::prepareForNextSegment() {
-  if(req->isPipeliningEnabled() && !_requestGroup->downloadFinished()) {
-    Command* command = new HttpRequestCommand(cuid, req, _requestGroup, _httpConnection, e, socket);
+  bool downloadFinished = _requestGroup->downloadFinished();
+  if(req->isPipeliningEnabled() && !downloadFinished) {
+    HttpRequestCommand* command =
+      new HttpRequestCommand(cuid, req, _requestGroup, _httpConnection, e,
+			     socket);
+    // Set proxy request here. aria2 sends the HTTP request specialized for
+    // proxy.
+    if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
+      command->setProxyRequest(createProxyRequest());
+    }
     e->commands.push_back(command);
     return true;
   } else {
@@ -71,7 +85,20 @@ bool HttpDownloadCommand::prepareForNextSegment() {
 	 _requestGroup->getTotalLength()))) {
       e->poolSocket(req, isProxyDefined(), socket);
     }
-
+    // The request was sent assuming that server supported pipelining, but
+    // it turned out that server didn't support it.
+    // We detect this situation by comparing the end byte in range header
+    // of the response with the end byte of segment.
+    // If it is the same, HTTP negotiation is necessary for the next request.
+    if(!req->isPipeliningEnabled() && req->isPipeliningHint() &&
+       !_segments.empty() && !downloadFinished) {
+      const SharedHandle<Segment>& segment = _segments.front();
+      if(segment->getPosition()+segment->getLength() ==
+	 static_cast<uint64_t>(_httpResponse->getHttpHeader()->
+			       getRange()->getEndByte()+1)) {
+	return prepareForRetry(0);
+      }
+    }
     return DownloadCommand::prepareForNextSegment();
   }
 }

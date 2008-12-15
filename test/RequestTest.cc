@@ -31,9 +31,12 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl_username);
   CPPUNIT_TEST(testSetUrl_usernamePassword);
   CPPUNIT_TEST(testSetUrl_zeroUsername);
+  CPPUNIT_TEST(testSetUrl_supportsPersistentConnection);
   CPPUNIT_TEST(testRedirectUrl);
   CPPUNIT_TEST(testRedirectUrl2);
+  CPPUNIT_TEST(testRedirectUrl_supportsPersistentConnection);
   CPPUNIT_TEST(testResetUrl);
+  CPPUNIT_TEST(testResetUrl_supportsPersistentConnection);
   CPPUNIT_TEST(testInnerLink);
   CPPUNIT_TEST(testInnerLinkInReferer);
   CPPUNIT_TEST_SUITE_END();
@@ -59,9 +62,12 @@ public:
   void testSetUrl_username();
   void testSetUrl_usernamePassword();
   void testSetUrl_zeroUsername();
+  void testSetUrl_supportsPersistentConnection();
   void testRedirectUrl();
   void testRedirectUrl2();
+  void testRedirectUrl_supportsPersistentConnection();
   void testResetUrl();
+  void testResetUrl_supportsPersistentConnection();
   void testInnerLink();
   void testInnerLinkInReferer();
 };
@@ -445,6 +451,36 @@ void RequestTest::testSetUrl_usernamePassword()
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getUsername());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPassword());
 
+}
+
+void RequestTest::testSetUrl_supportsPersistentConnection()
+{
+  Request req;
+  CPPUNIT_ASSERT(req.setUrl("http://host/file"));
+  req.supportsPersistentConnection(false);
+  CPPUNIT_ASSERT(!req.supportsPersistentConnection());
+  req.setUrl("http://host/file");
+  CPPUNIT_ASSERT(req.supportsPersistentConnection());
+}
+
+void RequestTest::testResetUrl_supportsPersistentConnection()
+{
+  Request req;
+  CPPUNIT_ASSERT(req.setUrl("http://host/file"));
+  req.supportsPersistentConnection(false);
+  CPPUNIT_ASSERT(!req.supportsPersistentConnection());
+  req.resetUrl();
+  CPPUNIT_ASSERT(req.supportsPersistentConnection());
+}
+
+void RequestTest::testRedirectUrl_supportsPersistentConnection()
+{
+  Request req;
+  CPPUNIT_ASSERT(req.setUrl("http://host/file"));
+  req.supportsPersistentConnection(false);
+  CPPUNIT_ASSERT(!req.supportsPersistentConnection());
+  req.redirectUrl("http://host/file");
+  CPPUNIT_ASSERT(req.supportsPersistentConnection());
 }
 
 } // namespace aria2

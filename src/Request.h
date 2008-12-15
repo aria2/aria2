@@ -72,6 +72,8 @@ private:
   bool _keepAliveHint;
   // enable pipelining if possible.
   bool _pipeliningHint;
+  // maximum number of pipelined requests
+  unsigned int _maxPipelinedRequest;
 
   std::string method;
 
@@ -143,6 +145,12 @@ public:
   {
     _pipeliningHint = pipeliningHint;
   }
+
+  bool isPipeliningHint() const;
+
+  void setMaxPipelinedRequest(unsigned int num);
+
+  unsigned int getMaxPipelinedRequest() const;
 
   void setMethod(const std::string& method) {
     this->method = method;

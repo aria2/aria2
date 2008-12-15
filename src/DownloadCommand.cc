@@ -263,7 +263,9 @@ bool DownloadCommand::prepareForNextSegment() {
 #endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
-    if(_segments.size()) {
+    // The number of segments should be 1 in order to pass through the next
+    // segment.
+    if(_segments.size() == 1) {
       SegmentHandle tempSegment = _segments.front();
       SegmentHandle nextSegment =
 	_requestGroup->getSegmentMan()->getSegment(cuid,

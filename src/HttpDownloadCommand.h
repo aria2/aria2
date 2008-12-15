@@ -39,10 +39,12 @@
 
 namespace aria2 {
 
+class HttpResponse;
 class HttpConnection;
 
 class HttpDownloadCommand : public DownloadCommand {
 private:
+  SharedHandle<HttpResponse> _httpResponse;
   SharedHandle<HttpConnection> _httpConnection;
 protected:
   virtual bool prepareForNextSegment();
@@ -50,6 +52,7 @@ public:
   HttpDownloadCommand(int cuid,
 		      const SharedHandle<Request>& req,
 		      RequestGroup* requestGroup,
+		      const SharedHandle<HttpResponse>& httpResponse,
 		      const SharedHandle<HttpConnection>& httpConnection,
 		      DownloadEngine* e,
 		      const SharedHandle<SocketCore>& s);

@@ -100,6 +100,9 @@ bool HttpResponseCommand::executeInternal()
   // We don't care whether non-HTTP/1.1 server returns Connection: keep-alive.
   req->supportsPersistentConnection
     (httpResponse->supportsPersistentConnection());
+  if(req->isPipeliningEnabled()) {
+    req->setMaxPipelinedRequest(e->option->getAsInt(PREF_MAX_HTTP_PIPELINING));
+  }
 
   if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
     if(httpResponse->getResponseStatus() == HttpHeader::S404) {
@@ -328,8 +331,8 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 {
 
   HttpDownloadCommand* command =
-    new HttpDownloadCommand(cuid, req, _requestGroup, httpConnection, e,
-			    socket);
+    new HttpDownloadCommand(cuid, req, _requestGroup,
+			    httpResponse, httpConnection, e, socket);
   command->setMaxDownloadSpeedLimit
     (e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));

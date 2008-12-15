@@ -69,6 +69,7 @@ Request::Request():
   _supportsPersistentConnection(true),
   _keepAliveHint(false),
   _pipeliningHint(false),
+  _maxPipelinedRequest(1),
   method(METHOD_GET)
 {}
 
@@ -115,12 +116,14 @@ static std::string urlencode(const std::string& src)
 }
 
 bool Request::setUrl(const std::string& url) {
+  _supportsPersistentConnection = true;
   this->url = url;
   return parseUrl(urlencode(removeFragment(url)));
 }
 
 bool Request::resetUrl() {
   previousUrl = referer;
+  _supportsPersistentConnection = true;
   return parseUrl(urlencode(removeFragment(url)));
 }
 
@@ -241,6 +244,21 @@ void Request::resetRedirectCount()
 unsigned int Request::getRedirectCount() const
 {
   return _redirectCount;
+}
+
+bool Request::isPipeliningHint() const
+{
+  return _pipeliningHint;
+}
+
+void Request::setMaxPipelinedRequest(unsigned int num)
+{
+  _maxPipelinedRequest = num;
+}
+
+unsigned int Request::getMaxPipelinedRequest() const
+{
+  return _maxPipelinedRequest;
 }
 
 } // namespace aria2

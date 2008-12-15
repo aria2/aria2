@@ -1,3 +1,16 @@
+2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that causes corrupted downloads if HTTP pipelining
+	is enabled and the server doesn't support keep-alive.
+	* src/AbstractCommand.cc
+	* src/DownloadCommand.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpDownloadCommand.h
+	* src/HttpResponseCommand.cc
+	* src/Request.cc
+	* src/Request.h
+	* test/RequestTest.cc
+
 2008-12-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed Dictionary/List/Data and its related classes.
