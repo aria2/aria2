@@ -1,12 +1,15 @@
 #include "CookieStorage.h"
+
+#include <iostream>
+#include <algorithm>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "TimeA2.h"
 #include "CookieParser.h"
 #include "RecoverableException.h"
-#include <iostream>
-#include <algorithm>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -175,7 +178,7 @@ void CookieStorageTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
   CPPUNIT_ASSERT(c.isSecureCookie());
 
   c = *(st.begin()+1);
@@ -183,7 +186,7 @@ void CookieStorageTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(std::string("secret"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/cgi-bin"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
 
   c = *(st.begin()+2);
@@ -191,7 +194,7 @@ void CookieStorageTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(std::string("1000"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("overflow"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".overflow.local"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
 
   c = *(st.begin()+3);
@@ -199,7 +202,7 @@ void CookieStorageTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(std::string(""), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
 }
 
@@ -215,7 +218,7 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
   CPPUNIT_ASSERT(c.isSecureCookie());
   CPPUNIT_ASSERT(!c.isSessionCookie());
 
@@ -224,7 +227,7 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT_EQUAL(std::string(""), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)0, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("null_value"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".null_value.local"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
   CPPUNIT_ASSERT(c.isSessionCookie());
 
@@ -233,7 +236,7 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT_EQUAL(std::string("bar"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("overflow_time_t"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".overflow_time_t.local"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
   CPPUNIT_ASSERT(!c.isSessionCookie());
     

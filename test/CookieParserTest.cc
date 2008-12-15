@@ -33,7 +33,7 @@ void CookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)1181473200, c.getExpiry());  
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
   CPPUNIT_ASSERT_EQUAL(true, c.isSecureCookie());
   CPPUNIT_ASSERT_EQUAL(false, c.isSessionCookie());
 
@@ -43,7 +43,7 @@ void CookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)0, c.getExpiry());
-  CPPUNIT_ASSERT_EQUAL(std::string("default.domain"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".default.domain"), c.getDomain());
   CPPUNIT_ASSERT_EQUAL(std::string("/default/path"), c.getPath());
   CPPUNIT_ASSERT_EQUAL(false, c.isSecureCookie());
   CPPUNIT_ASSERT_EQUAL(true, c.isSessionCookie());

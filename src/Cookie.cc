@@ -42,6 +42,30 @@
 
 namespace aria2 {
 
+static std::string prependDotIfNotExists(const std::string& domain)
+{
+  // From RFC2965:
+  // * Domain=value
+  //   OPTIONAL.  The value of the Domain attribute specifies the domain
+  //   for which the cookie is valid.  If an explicitly specified value
+  //   does not start with a dot, the user agent supplies a leading dot.
+  return (!domain.empty() && domain[0] != '.') ? "."+domain : domain;
+}
+
+static std::string normalizeDomain(const std::string& domain)
+{
+  if(domain.empty() || Util::isNumbersAndDotsNotation(domain)) {
+    return domain;
+  }
+  std::string md = prependDotIfNotExists(domain);
+  // TODO use Util::split to strict verification
+  std::string::size_type p = md.find_last_of(".");
+  if(p == 0 || p == std::string::npos) {
+    md += ".local";
+  }
+  return Util::toLower(prependDotIfNotExists(md));
+}
+
 Cookie::Cookie(const std::string& name,
 	       const std::string& value,
 	       time_t  expiry,
@@ -52,7 +76,7 @@ Cookie::Cookie(const std::string& name,
   _value(value),
   _expiry(expiry),
   _path(path),
-  _domain(Util::toLower(domain)),
+  _domain(normalizeDomain(domain)),
   _secure(secure) {}
 
 Cookie::Cookie(const std::string& name,
@@ -64,7 +88,7 @@ Cookie::Cookie(const std::string& name,
   _value(value),
   _expiry(0),
   _path(path),
-  _domain(Util::toLower(domain)),
+  _domain(normalizeDomain(domain)),
   _secure(secure) {}
 
 Cookie::Cookie():_expiry(0), _secure(false) {}
@@ -97,23 +121,28 @@ static bool pathInclude(const std::string& requestPath, const std::string& path)
   return true;
 }
 
-static bool domainMatch(const std::string& requestHost,
+static bool domainMatch(const std::string& normReqHost,
 			const std::string& domain)
 {
-  if(*domain.begin() == '.') {
-    return Util::endsWith("."+requestHost, domain);
-  } else {
-    return requestHost == domain;
-  }
+  // RFC2965 stated that:
+  //
+  // A Set-Cookie2 with Domain=ajax.com will be accepted, and the
+  // value for Domain will be taken to be .ajax.com, because a dot
+  // gets prepended to the value.
+  //
+  // Also original Netscape implementation behaves exactly the same.
+
+  // _domain always starts ".". See Cookie::Cookie().
+  return Util::endsWith(normReqHost, domain);
 }
 
 bool Cookie::match(const std::string& requestHost,
 		   const std::string& requestPath,
 		   time_t date, bool secure) const
 {
-  std::string lowerRequestHost = Util::toLower(requestHost);
+  std::string normReqHost = normalizeDomain(requestHost);
   if((secure || (!_secure && !secure)) &&
-     domainMatch(lowerRequestHost, _domain) &&
+     domainMatch(normReqHost, _domain) &&
      pathInclude(requestPath, _path) &&
      (isSessionCookie() || (date < _expiry))) {
     return true;
@@ -123,10 +152,12 @@ bool Cookie::match(const std::string& requestHost,
 }
 
 bool Cookie::validate(const std::string& requestHost,
-		      const std::string& requestPath) const
+                      const std::string& requestPath) const
 {
-  std::string lowerRequestHost = Util::toLower(requestHost);
-  if(lowerRequestHost != _domain) {
+  std::string normReqHost = normalizeDomain(requestHost);
+  // If _domain is IP address, then it should be matched to requestHost.
+  // In other words, _domain == normReqHost
+  if(normReqHost != _domain) {
     // domain must start with '.'
     if(*_domain.begin() != '.') {
       return false;
@@ -139,24 +170,23 @@ bool Cookie::validate(const std::string& requestHost,
     if(_domain.size() < 4 || _domain.find(".", 1) == std::string::npos) {
       return false;
     }
-    if(!Util::endsWith(lowerRequestHost, _domain)) {
+    if(!Util::endsWith(normReqHost, _domain)) {
       return false;
     }
-    // From RFC2109
-    // * The request-host is a FQDN (not IP address) and has the form HD,
+    // From RFC2965 3.3.2 Rejecting Cookies
+    // * The request-host is a HDN (not IP address) and has the form HD,
     //   where D is the value of the Domain attribute, and H is a string
     //   that contains one or more dots.
-    if(std::count(lowerRequestHost.begin(),
-		  lowerRequestHost.begin()+
-		  (lowerRequestHost.size()-_domain.size()), '.')
-       > 0) {
+    size_t dotCount = std::count(normReqHost.begin(),
+                                 normReqHost.begin()+
+                                 (normReqHost.size()-_domain.size()), '.');
+    if(dotCount > 1 || dotCount == 1 && normReqHost[0] != '.') {
       return false;
     } 
   }
   if(requestPath != _path) {
-    // From RFC2109
-    // * The value for the Path attribute is not a prefix of the request-
-    //   URI.
+    // From RFC2965 3.3.2 Rejecting Cookies
+    // * The value for the Path attribute is not a prefix of the request-URI.
     if(!pathInclude(requestPath, _path)) {
       return false;
     }

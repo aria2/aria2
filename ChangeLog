@@ -1,5 +1,18 @@
 2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the cookie implementation based on RFC2965. 
+	Now if a value in domain field is not started with dot, then
+	prepend dot. That means a cookie with domain=sf.net is sent to
+	wiki.sf.net.
+	* src/Cookie.cc
+	* test/CookieParserTest.cc
+	* test/CookieStorageTest.cc
+	* test/CookieTest.cc
+	* test/NsCookieParserTest.cc
+	* test/Sqlite3MozCookieParserTest.cc
+
+2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that causes corrupted downloads if HTTP pipelining
 	is enabled and the server doesn't support keep-alive.
 	* src/AbstractCommand.cc
