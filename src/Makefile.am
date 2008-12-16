@@ -232,8 +232,7 @@ SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT
-SRCS += MetaEntry.h\
-	PeerMessageUtil.cc PeerMessageUtil.h\
+SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerAbstractCommand.cc PeerAbstractCommand.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 	PeerInteractionCommand.cc PeerInteractionCommand.h\

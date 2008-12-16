@@ -50,8 +50,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@	Checksum.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksum.h
 
-@ENABLE_BITTORRENT_TRUE@am__append_8 = MetaEntry.h\
-@ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.cc PeerMessageUtil.h\
+@ENABLE_BITTORRENT_TRUE@am__append_8 = PeerMessageUtil.cc PeerMessageUtil.h\
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.cc PeerAbstractCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.cc PeerInteractionCommand.h\
@@ -422,7 +421,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h \
 	messageDigest.cc messageDigest.h MessageDigestHelper.cc \
-	MessageDigestHelper.h Checksum.h ChunkChecksum.h MetaEntry.h \
+	MessageDigestHelper.h Checksum.h ChunkChecksum.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
 	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \

@@ -1,5 +1,10 @@
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed MetaEntry.h
+	* src/Makefile.am
+
+2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rename file by appending digits if a local file exists and its
 	file size is larger than that of remote file with --continue
 	option. The old implementation just throws exception in such case.
