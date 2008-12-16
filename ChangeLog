@@ -1,5 +1,11 @@
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed aria2c.pot to aria2.pot
+	* po/aria2.pot
+	* po/aria2c.pot: Removed.
+
+2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed MetaEntry.h
 	* src/Makefile.am
 
