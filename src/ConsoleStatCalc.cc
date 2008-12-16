@@ -33,6 +33,22 @@
  */
 /* copyright --> */
 #include "ConsoleStatCalc.h"
+
+#ifdef HAVE_TERMIOS_H
+#include <termios.h>
+#endif // HAVE_TERMIOS_H
+#ifdef HAVE_SYS_IOCTL_H
+#include <sys/ioctl.h>
+#endif // HAVE_SYS_IOCTL_H
+#include <unistd.h>
+
+#include <iomanip>
+#include <iostream>
+#include <algorithm>
+#include <cstring>
+#include <sstream>
+#include <iterator>
+
 #include "RequestGroupMan.h"
 #include "RequestGroup.h"
 #include "FileAllocationMan.h"
@@ -43,19 +59,6 @@
 #ifdef ENABLE_BITTORRENT
 # include "BtContext.h"
 #endif // ENABLE_BITTORRENT
-#ifdef HAVE_TERMIOS_H
-#include <termios.h>
-#endif // HAVE_TERMIOS_H
-#ifdef HAVE_SYS_IOCTL_H
-#include <sys/ioctl.h>
-#endif // HAVE_SYS_IOCTL_H
-#include <unistd.h>
-#include <iomanip>
-#include <iostream>
-#include <algorithm>
-#include <cstring>
-#include <sstream>
-#include <iterator>
 
 namespace aria2 {
 
@@ -155,8 +158,7 @@ static void printProgressSummary(const std::deque<SharedHandle<RequestGroup> >& 
 }
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval):
-  _summaryInterval(summaryInterval),
-  _summaryIntervalCount(0)
+  _summaryInterval(summaryInterval)
 {}
 
 void
@@ -168,7 +170,6 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
     return;
   }
   _cp.reset();
-  ++_summaryIntervalCount;
 
   bool isTTY = isatty(STDOUT_FILENO) == 1;
   unsigned short int cols = 80;
@@ -183,9 +184,9 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
   }
   std::ostringstream o;
   if(requestGroupMan->countRequestGroup() > 0) {
-    if(_summaryInterval > 0 && _summaryIntervalCount%_summaryInterval == 0) {
+    if(_lastSummaryNotified.elapsed(_summaryInterval)) {
+      _lastSummaryNotified.reset();
       printProgressSummary(requestGroupMan->getRequestGroups(), cols);
-      _summaryIntervalCount = 0;
       std::cout << "\n";
     }
 

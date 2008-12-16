@@ -1,5 +1,12 @@
 2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that download progress summary is not printed in the
+	interval specified by the option.
+	* src/ConsoleStatCalc.cc
+	* src/ConsoleStatCalc.h
+	
+2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compiler warning
 	* src/Cookie.cc
 

@@ -45,9 +45,9 @@ class ConsoleStatCalc:public StatCalc
 private:
   Time _cp;
 
-  time_t _summaryInterval;
+  Time _lastSummaryNotified;
 
-  time_t _summaryIntervalCount;
+  time_t _summaryInterval;
 public:
   ConsoleStatCalc(time_t summaryInterval);
 
