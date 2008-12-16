@@ -164,8 +164,7 @@ _(" -V, --check-integrity[=true|false] Check file integrity by validating piece\
 #define TEXT_REALTIME_CHUNK_CHECKSUM \
 _(" --realtime-chunk-checksum=true|false  Validate chunk of data by calculating\n"\
   "                              checksum while downloading a file if chunk\n"\
-  "                              checksums are provided. Currently Metalink is the\n"\
-  "                              only way to provide chunk checksums.")
+  "                              checksums are provided.")
 #define TEXT_CONTINUE \
 _(" -c, --continue               Continue downloading a partially downloaded\n"\
   "                              file. Use this option to resume a download\n"\
