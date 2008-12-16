@@ -1,3 +1,10 @@
+2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rename file by appending digits if a local file exists and its
+	file size is larger than that of remote file with --continue
+	option. The old implementation just throws exception in such case.
+	* src/RequestGroup.cc
+
 2008-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that download progress summary is not printed in the

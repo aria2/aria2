@@ -406,14 +406,8 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 	_pieceStorage->getDiskAdaptor()->openExistingFile();
       } else {
 	File outfile(getFilePath());    
-	if(outfile.exists() && _option->getAsBool(PREF_CONTINUE)) {
-	  if(getTotalLength() < outfile.size()) {
-	    throw DlAbortEx
-	      (StringFormat(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
-			    getFilePath().c_str(),
-			    Util::itos(outfile.size()).c_str(),
-			    Util::itos(getTotalLength()).c_str()).str());
-	  }
+	if(outfile.exists() && _option->getAsBool(PREF_CONTINUE) &&
+	   outfile.size() <= getTotalLength()) {
 	  _pieceStorage->getDiskAdaptor()->openExistingFile();
 	  _pieceStorage->markPiecesDone(outfile.size());
 	} else {
