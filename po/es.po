@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-11-24 23:16+0900\n"
+"POT-Creation-Date: 2008-12-16 00:59+0900\n"
 "PO-Revision-Date: 2008-08-16 00:03+0900\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -226,9 +226,9 @@ msgstr ""
 #: src/usage_text.h:74
 #, fuzzy
 msgid ""
-" --all-proxy=PROXY            Use this proxy server in the all protocols.\n"
+" --all-proxy=PROXY            Use this proxy server for all protocols.\n"
 "                              You can override this setting and specify a\n"
-"                              proxy server for particular proctol using\n"
+"                              proxy server for a particular protocol using\n"
 "                              --http-proxy, --https-proxy and --ftp-proxy\n"
 "                              options.\n"
 "                              This affects all URLs."
@@ -514,10 +514,12 @@ msgstr ""
 #: src/usage_text.h:165
 #, fuzzy
 msgid ""
-" --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
-"                              downloading a file in Metalink mode. This "
-"option\n"
-"                              on affects Metalink mode with chunk checksums."
+" --realtime-chunk-checksum=true|false  Validate chunk of data by "
+"calculating\n"
+"                              checksum while downloading a file if chunk\n"
+"                              checksums are provided. Currently Metalink is "
+"the\n"
+"                              only way to provide chunk checksums."
 msgstr ""
 " --realtime-chunk-checksum=true|false Validar las sumas de comprobación de "
 "los trozos\n"
@@ -527,7 +529,7 @@ msgstr ""
 "sumas de comprobación de trozos.\n"
 "                              Defecto: true"
 
-#: src/usage_text.h:169
+#: src/usage_text.h:170
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -546,17 +548,17 @@ msgstr ""
 "                              principio. esta opción solamente es\n"
 "                              aplicable a descargas http(s)/ftp."
 
-#: src/usage_text.h:176
+#: src/usage_text.h:177
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 " -U, --user-agent=USER_AGENT   Establece el agente de usuario para descargas "
 "http."
 
-#: src/usage_text.h:178
+#: src/usage_text.h:179
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc             Desactiva el soporte netrc."
 
-#: src/usage_text.h:180
+#: src/usage_text.h:181
 #, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
@@ -580,7 +582,7 @@ msgstr ""
 "                              Lee la entrada desde stdin cuando se "
 "especifica '-'."
 
-#: src/usage_text.h:189
+#: src/usage_text.h:190
 #, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
@@ -592,14 +594,14 @@ msgstr ""
 " -j, --max-concurrent-downloads=N Establece el numero  maximo de descargas "
 "paralelas para cada URL estatico (HTTP/FTP) , torrent y metalink."
 
-#: src/usage_text.h:193
+#: src/usage_text.h:194
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
 
-#: src/usage_text.h:196
+#: src/usage_text.h:197
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -612,9 +614,10 @@ msgstr ""
 "                              y sale. Se listará información más detallada\n"
 "                              en el caso de un fichero torrent."
 
-#: src/usage_text.h:200
+#: src/usage_text.h:201
+#, fuzzy
 msgid ""
-" --select-file=INDEX...       Set file to download by specifing its index.\n"
+" --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
 "                              --show-files option. Multiple indexes can be\n"
 "                              specified by using ',', for example: \"3,6\".\n"
@@ -639,11 +642,11 @@ msgstr ""
 "                              dependiendo de la consulta(ver las opciones --"
 "metalink-*)."
 
-#: src/usage_text.h:209
+#: src/usage_text.h:210
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  El camino al fichero .torrent."
 
-#: src/usage_text.h:211
+#: src/usage_text.h:212
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -659,7 +662,7 @@ msgid ""
 "                              is not taken."
 msgstr ""
 
-#: src/usage_text.h:221
+#: src/usage_text.h:222
 #, fuzzy
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
@@ -670,7 +673,7 @@ msgstr ""
 "                              especificado en el fichero .torrent.\n"
 "                              Defecto: true"
 
-#: src/usage_text.h:224
+#: src/usage_text.h:225
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -686,12 +689,27 @@ msgstr ""
 "para especificar un rango de puertos: \"6881-6999\" ',' y '-'  pueden \n"
 "ser usados juntos."
 
-#: src/usage_text.h:230
+#: src/usage_text.h:231
+msgid ""
+" --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
+"sec.\n"
+"                              0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the upload speed per torrent, use\n"
+"                              --max-upload-limit option. If non-zero value "
+"is\n"
+"                              specified, --max-upload-limit option is "
+"ignored."
+msgstr ""
+
+#: src/usage_text.h:238
 #, fuzzy
 msgid ""
-" -u, --max-upload-limit=SPEED Set max upload speed in bytes per sec.\n"
-"                              0 means unrestricted.\n"
-"                              You can append K or M(1K = 1024, 1M = 1024K)."
+" -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
+"                              bytes/sec. 0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the overall upload speed, use\n"
+"                              --max-overall-upload-limit option."
 msgstr ""
 " --max-upload-limit=SPEED     Establece la velocidad máxima de subida en "
 "bytes por seg.\n"
@@ -699,7 +717,7 @@ msgstr ""
 "                              Se puede añadir K o M(1K = 1024, 1M = 1024K).\n"
 "                              Defecto: 0"
 
-#: src/usage_text.h:234
+#: src/usage_text.h:244
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -708,19 +726,36 @@ msgstr ""
 "Mirar también\n"
 "                              la opción --seed-ratio."
 
-#: src/usage_text.h:237
+#: src/usage_text.h:247
+#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
-"                              until share ratio reaches RATIO. 1.0 is\n"
-"                              encouraged. Specify 0.0 if you intend to do\n"
-"                              seeding regardless of share ratio.\n"
+"                              until share ratio reaches RATIO.\n"
+"                              You are strongly encouraged to specify equals "
+"or\n"
+"                              more than 1.0 here. Specify 0.0 if you intend "
+"to\n"
+"                              do seeding regardless of share ratio.\n"
 "                              If --seed-time option is specified along with\n"
 "                              this option, seeding ends when at least one "
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
+" --select-file=INDEX...       Establece el fichero a descargar especificando "
+"su índice.\n"
+"                              Se puede encontrar el fichero índice usando la "
+"opción\n"
+"                              --show-files. Se pueden especificar varios\n"
+"                              índices usando ',', por ejemplo: \"3,6\".\n"
+"                              Se puede usar también '-' para especificar un "
+"rango: \"1-5\".\n"
+"                              ',' y '-' se pueden usar juntos.\n"
+"                              Cuando se usa con la opción -M, el ìndice "
+"puede variar\n"
+"                              dependiendo de la consulta(ver las opciones --"
+"metalink-*)."
 
-#: src/usage_text.h:245
+#: src/usage_text.h:256
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -731,15 +766,15 @@ msgid ""
 "                              added to make it's length 20 bytes."
 msgstr ""
 
-#: src/usage_text.h:252
+#: src/usage_text.h:263
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 
-#: src/usage_text.h:254
+#: src/usage_text.h:265
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr " --enable-dht[=true|false]    Habilitar funcionanlidad DHT."
 
-#: src/usage_text.h:256
+#: src/usage_text.h:267
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -750,28 +785,28 @@ msgid ""
 "                              be used together."
 msgstr ""
 
-#: src/usage_text.h:262
+#: src/usage_text.h:273
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
 msgstr ""
 
-#: src/usage_text.h:265
+#: src/usage_text.h:276
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
 msgstr ""
 
-#: src/usage_text.h:267
+#: src/usage_text.h:278
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
 "a\n"
-"                              peer, aria2 chooses a lowest one which "
+"                              peer, aria2 chooses the lowest one which "
 "satisfies\n"
 "                              the given level."
 msgstr ""
 
-#: src/usage_text.h:272
+#: src/usage_text.h:283
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -779,7 +814,7 @@ msgid ""
 "                              handshake."
 msgstr ""
 
-#: src/usage_text.h:277
+#: src/usage_text.h:288
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -789,7 +824,7 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
 
-#: src/usage_text.h:282
+#: src/usage_text.h:293
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -799,20 +834,21 @@ msgstr ""
 "abrir en cada \n"
 "descarga Bittorrent."
 
-#: src/usage_text.h:285
+#: src/usage_text.h:296
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
 
-#: src/usage_text.h:288
+#: src/usage_text.h:299
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE El camino al fichero .metalink."
 
-#: src/usage_text.h:290
+#: src/usage_text.h:301
+#, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-"                              simultaneously. Some Metalinks regulates the\n"
+"                              simultaneously. Some Metalinks regulate the\n"
 "                              number of servers to connect. aria2 strictly\n"
 "                              respects them. This means that if Metalink "
 "defines\n"
@@ -822,42 +858,51 @@ msgid ""
 "NUM_SERVERS.\n"
 "                              See also -s and -j options."
 msgstr ""
+" -i , --input-file=FILE       Descarga las URIs que encuentra en el fichero "
+"FILE. Se pueden especificar\n"
+"                              varias URIs para una única entidad: separen "
+"las\n"
+"                              URIs en una sola línea usando el carácter "
+"TAB.\n"
+"                              Lee la entrada desde stdin cuando se "
+"especifica '-'."
 
-#: src/usage_text.h:299
+#: src/usage_text.h:310
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   La versión del fichero a descargar."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:312
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE El idioma del fichero a descargar."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:314
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 " --metalink-os=OS            El Sistema Operativo del fichero a descargar."
 
-#: src/usage_text.h:305
+#: src/usage_text.h:316
+#, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
-"                              A comma-deliminated list of locations is\n"
+"                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
 " --metalink-location=LOCATION[,...] La ubicación del servidor preferido.\n"
 "                              se acepta una lista de ubicaciones delimitada "
 "por comas."
 
-#: src/usage_text.h:309
+#: src/usage_text.h:320
 msgid ""
-" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
+" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
 "                              if you don't have any preferred protocol."
 msgstr ""
 
-#: src/usage_text.h:312
+#: src/usage_text.h:323
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type is\n"
+"                              whose suffix is .metaink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -870,7 +915,7 @@ msgid ""
 "                              is not taken."
 msgstr ""
 
-#: src/usage_text.h:322
+#: src/usage_text.h:333
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -880,11 +925,11 @@ msgid ""
 "                              specify the preference of protocol."
 msgstr ""
 
-#: src/usage_text.h:328
+#: src/usage_text.h:339
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Escribir el número de versión y salir."
 
-#: src/usage_text.h:330
+#: src/usage_text.h:341
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -899,23 +944,23 @@ msgid ""
 "                              and print the result."
 msgstr ""
 
-#: src/usage_text.h:338
+#: src/usage_text.h:349
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
 
-#: src/usage_text.h:340
+#: src/usage_text.h:351
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 
-#: src/usage_text.h:342
+#: src/usage_text.h:353
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:345
+#: src/usage_text.h:356
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -927,30 +972,30 @@ msgid ""
 "                              http://host/file"
 msgstr ""
 
-#: src/usage_text.h:351
-msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
+#: src/usage_text.h:362
+msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 
-#: src/usage_text.h:353
+#: src/usage_text.h:364
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr ""
 
-#: src/usage_text.h:355
+#: src/usage_text.h:366
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
-#: src/usage_text.h:357
+#: src/usage_text.h:368
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
 
-#: src/usage_text.h:360
+#: src/usage_text.h:371
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 
-#: src/usage_text.h:362
+#: src/usage_text.h:373
 #, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
@@ -964,7 +1009,7 @@ msgstr ""
 "                              especificado en el fichero .torrent.\n"
 "                              Defecto: true"
 
-#: src/usage_text.h:366
+#: src/usage_text.h:377
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -975,18 +1020,17 @@ msgid ""
 "                              effect and --timeout option is used instead."
 msgstr ""
 
-#: src/usage_text.h:371
+#: src/usage_text.h:382
 #, fuzzy
 msgid ""
-" --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
+" --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
 "                              remote HTTP/FTP servers NUM times without "
 "getting\n"
 "                              a single byte, then force the download to "
 "fail.\n"
 "                              Specify 0 to disable this option.\n"
-"                              This options is only effective only when "
-"using\n"
+"                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
 " --file-allocation=METHOD    Es el método de reserva de ficheros. METHOD "
@@ -999,7 +1043,7 @@ msgstr ""
 "                              dependiendo de la medida del fichero.\n"
 "                              Defecto: prealloc"
 
-#: src/usage_text.h:378
+#: src/usage_text.h:389
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1016,7 +1060,7 @@ msgid ""
 "                              --server-stat-if options."
 msgstr ""
 
-#: src/usage_text.h:389
+#: src/usage_text.h:400
 #, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
@@ -1031,7 +1075,7 @@ msgstr ""
 "60.\n"
 "                              Defecto: 5"
 
-#: src/usage_text.h:393
+#: src/usage_text.h:404
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1041,7 +1085,7 @@ msgid ""
 "                              See also --uri-selector option"
 msgstr ""
 
-#: src/usage_text.h:398
+#: src/usage_text.h:409
 #, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
@@ -1055,7 +1099,7 @@ msgstr ""
 "60.\n"
 "                              Defecto: 5"
 
-#: src/usage_text.h:402
+#: src/usage_text.h:413
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1066,7 +1110,7 @@ msgid ""
 "                              regardless of the value."
 msgstr ""
 
-#: src/usage_text.h:407
+#: src/usage_text.h:418
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1075,7 +1119,7 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:412
+#: src/usage_text.h:423
 #, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
@@ -1088,7 +1132,7 @@ msgstr ""
 "60.\n"
 "                              Defecto: 5"
 
-#: src/usage_text.h:416
+#: src/usage_text.h:427
 #, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
@@ -1110,19 +1154,19 @@ msgstr ""
 "                              dependiendo de la medida del fichero.\n"
 "                              Defecto: prealloc"
 
-#: src/usage_text.h:422
+#: src/usage_text.h:433
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:425
+#: src/usage_text.h:436
 #, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
-"to\n"
-"                              which proxy should not be used."
+"where\n"
+"                              proxy should not be used."
 msgstr ""
 " --seed-time=MINUTES          Especifica el tiempo de sembrar en minuts. "
 "Mirar también\n"
@@ -1809,44 +1853,54 @@ msgstr "No se ha encontrado la cabecera."
 msgid "Hostname not match."
 msgstr ""
 
-#: src/message.h:167
+#: src/message.h:166
+msgid "No files to download."
+msgstr ""
+
+#: src/message.h:168
+msgid ""
+"You may encounter the certificate verification error with HTTPS server. See "
+"--ca-certificate and --check-certificate option."
+msgstr ""
+
+#: src/message.h:171
 msgid "Timeout."
 msgstr "Ha expirado el tiempo de espera."
 
-#: src/message.h:168
+#: src/message.h:172
 msgid "Invalid chunk size."
 msgstr "Tamaño del trozo invalido"
 
-#: src/message.h:169
+#: src/message.h:173
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Medida del trozo demasiado larga. Medida=%d"
 
-#: src/message.h:170
+#: src/message.h:174
 msgid "Invalid header."
 msgstr "Cabecera incorrecta."
 
-#: src/message.h:171
+#: src/message.h:175
 msgid "Invalid response."
 msgstr "Respuesta incorrecta."
 
-#: src/message.h:172
+#: src/message.h:176
 msgid "No header found."
 msgstr "No se ha encontrado la cabecera."
 
-#: src/message.h:173
+#: src/message.h:177
 msgid "No status header."
 msgstr "No hay cabecera de estado."
 
-#: src/message.h:174
+#: src/message.h:178
 msgid "Proxy connection failed."
 msgstr "Ha fallado la conexión con el proxy."
 
-#: src/message.h:175
+#: src/message.h:179
 msgid "Connection failed."
 msgstr "Ha fallado la conexión."
 
-#: src/message.h:176
+#: src/message.h:180
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -1855,228 +1909,228 @@ msgstr ""
 "El nombre del fichero pedido y el anotado previamente no son el mismo. "
 "Esperábamos:%s Actual:%s"
 
-#: src/message.h:177
+#: src/message.h:181
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "El estado de la respuesta no es satisfactorio. estado=%d"
 
-#: src/message.h:178
+#: src/message.h:182
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Medida del fichero demasiado larga. medida=%s"
 
-#: src/message.h:179
+#: src/message.h:183
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "No està soportada la codificación %s de la transferencia."
 
-#: src/message.h:180
+#: src/message.h:184
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Ha fallado la inicialización SSL: %s"
 
-#: src/message.h:181
+#: src/message.h:185
 msgid "SSL I/O error"
 msgstr "Error de E/S SSL"
 
-#: src/message.h:182
+#: src/message.h:186
 msgid "SSL protocol error"
 msgstr "Error de protocolo SSL"
 
-#: src/message.h:183
+#: src/message.h:187
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Error SSL desconocido %d"
 
-#: src/message.h:184
+#: src/message.h:188
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Ha fallado la inicialización SSL: error de conexión OpenSSL %d"
 
-#: src/message.h:185
+#: src/message.h:189
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Medida incorrecta, Esperada:%s Actual:%s"
 
-#: src/message.h:186
+#: src/message.h:190
 msgid "Authorization failed."
 msgstr "Ha fallado la autorización."
 
-#: src/message.h:187
+#: src/message.h:191
 msgid "Got EOF from the server."
 msgstr "Recibido EOF desde el servidor."
 
-#: src/message.h:188
+#: src/message.h:192
 msgid "Got EOF from peer."
 msgstr "Recibido EOF desde el igual."
 
-#: src/message.h:189
+#: src/message.h:193
 msgid "Malformed meta info."
 msgstr "meta info mal formada."
 
-#: src/message.h:191
+#: src/message.h:195
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Fallo al abrir el fichero %s, causa: %s"
 
-#: src/message.h:192
+#: src/message.h:196
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Fallo al escribir en el fichero %s, causa: %s"
 
-#: src/message.h:193
+#: src/message.h:197
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Fallo al leer del fichero %s, causa: %s"
 
-#: src/message.h:194
+#: src/message.h:198
 msgid "Failed to read data from disk."
 msgstr "Fallo al leer datos del disco."
 
-#: src/message.h:195
+#: src/message.h:199
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Fallo al calcular resumen SHA1 de o de una parte del fichero %s, causa: %s"
 
-#: src/message.h:196
+#: src/message.h:200
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Fallo al buscar en el fichero %s, causa: %s"
 
-#: src/message.h:197
+#: src/message.h:201
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "La desviación está fuera de límites, desviación=%s"
 
-#: src/message.h:198
+#: src/message.h:202
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s no es un directorio."
 
-#: src/message.h:199
+#: src/message.h:203
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Fallo al crear el directorio %s, causa: %s"
 
-#: src/message.h:200
+#: src/message.h:204
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Fallo al abrir el fichero de segmentos %s, causa: %s"
 
-#: src/message.h:201
+#: src/message.h:205
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Fallo al escribir en el fichero de segmentos %s, causa: %s"
 
-#: src/message.h:202
+#: src/message.h:206
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Fallo al leer del fichero de segmentos %s, causa: %s"
 
-#: src/message.h:204
+#: src/message.h:208
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Fallo al abrir un zócalo, causa: %s"
 
-#: src/message.h:205
+#: src/message.h:209
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Fallo al poner una opción del zócalo, causa: %s"
 
-#: src/message.h:206
+#: src/message.h:210
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Fallo al poner un zócalo como bloqueante, causa: %s"
 
-#: src/message.h:207
+#: src/message.h:211
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Fallo al poner un zócalo como no-bloqueante, causa: %s"
 
-#: src/message.h:208
+#: src/message.h:212
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Fallo al conectar un zócalo, causa: %s"
 
-#: src/message.h:209
+#: src/message.h:213
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Fallo escuchando un zócalo, causa: %s"
 
-#: src/message.h:210
+#: src/message.h:214
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Fallo al aceptar una conexión de igual, causa: %s"
 
-#: src/message.h:211
+#: src/message.h:215
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Fallo al coger el nombre del zócalo, causa: %s"
 
-#: src/message.h:212
+#: src/message.h:216
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Fallo al coger el nombre de un igual conectado, causa: %s"
 
-#: src/message.h:213
+#: src/message.h:217
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Fallo al resolver el nombre de host %s,causa: %s"
 
-#: src/message.h:214
+#: src/message.h:218
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Fallo al conectar al host %s, causa: %s"
 
-#: src/message.h:215
+#: src/message.h:219
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Fallo al comprobar si se puede escribir en un zócalo, causa: %s"
 
-#: src/message.h:216
+#: src/message.h:220
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Fallo al comprovar si se puede leer un zócalo, causa: %s"
 
-#: src/message.h:217
+#: src/message.h:221
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Fallo al enviar datos, causa: %s"
 
-#: src/message.h:218
+#: src/message.h:222
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Fallo al recibir datos, causa: %s"
 
-#: src/message.h:219
+#: src/message.h:223
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Fallo al revisar datos, causa: %s"
 
-#: src/message.h:220
+#: src/message.h:224
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Error desconocido de zócalo %d (0x%x)"
 
-#: src/message.h:221
+#: src/message.h:225
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "fichero %s existe, pero %s no existe."
 
-#: src/message.h:222
+#: src/message.h:226
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 "La Medida de carga útil (payload) es incorrecta para %s, medida=%d. Ha de "
 "ser %d."
 
-#: src/message.h:223
+#: src/message.h:227
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Incorrecto ID=%d para %s. Ha de ser %d."
 
-#: src/message.h:224
+#: src/message.h:228
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2085,29 +2139,29 @@ msgstr ""
 "Ha fallado la validación de la suma de comprobación del trozo. "
 "índiceSumacomprobación=%d, desviación=%s, HashEsperado=%s, HashActual=%s"
 
-#: src/message.h:225
+#: src/message.h:229
 msgid "Download aborted."
 msgstr "Descarga abortada."
 
-#: src/message.h:226
+#: src/message.h:230
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "El fichero %s està siendo descargado por otra orden."
 
-#: src/message.h:227
+#: src/message.h:231
 msgid "Insufficient checksums."
 msgstr "No hay bastantes sumas de comprobación."
 
-#: src/message.h:228
+#: src/message.h:232
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "El Seguidor ha devuelto fallo. razón: %s"
 
-#: src/message.h:229
+#: src/message.h:233
 msgid "Flooding detected."
 msgstr "Detectado sobrepasamiento."
 
-#: src/message.h:230
+#: src/message.h:234
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2116,49 +2170,49 @@ msgstr ""
 "Liberamos la conexión debido a que no hemos intercambiado mensajes de "
 "peticiones o piezas en el periodo establecido (%d seg.)."
 
-#: src/message.h:231
+#: src/message.h:235
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "El infoHash en el fichero torrent no concuerda con el del fichero .aria2."
 
-#: src/message.h:232
+#: src/message.h:236
 #, c-format
 msgid "No such file entry %s"
 msgstr "No hay esta entrada en el fichero %s"
 
-#: src/message.h:233
+#: src/message.h:237
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Velocidad de descarga demasiado lenta: %d <= %d(B/s), host:%s"
 
-#: src/message.h:234
+#: src/message.h:238
 msgid "No HttpRequestEntry found."
 msgstr "No hemos encontrado HttpRequestEntry."
 
-#: src/message.h:235
+#: src/message.h:239
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Hemos recibido estado %d, pero no nos da la cabecera de ubicación."
 
-#: src/message.h:236
+#: src/message.h:240
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Cabecera de rango incorrecta. Petición: %s-%s/%s, Respuesta: %s-%s/%s"
 
-#: src/message.h:237
+#: src/message.h:241
 msgid "No file matched with your preference."
 msgstr "No hay ningún fichero que concuerde con vuestra preferencia."
 
-#: src/message.h:238
+#: src/message.h:242
 msgid "Exception caught"
 msgstr "Excepcion capturada"
 
-#: src/message.h:239
+#: src/message.h:243
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "Longitud de carga ulti excedida o es invalida,  longitud   = %u"
 
-#: src/message.h:240
+#: src/message.h:244
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
@@ -2169,7 +2223,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Han ocurrido errores mientras cogíamos el puerto.\n"
 
-#: src/Util.cc:715
+#: src/Util.cc:724
 msgid "Files:"
 msgstr "Ficheros:"
 

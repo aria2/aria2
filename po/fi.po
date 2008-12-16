@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-11-24 23:16+0900\n"
+"POT-Creation-Date: 2008-12-16 00:59+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -207,9 +207,9 @@ msgstr ""
 #: src/usage_text.h:74
 #, fuzzy
 msgid ""
-" --all-proxy=PROXY            Use this proxy server in the all protocols.\n"
+" --all-proxy=PROXY            Use this proxy server for all protocols.\n"
 "                              You can override this setting and specify a\n"
-"                              proxy server for particular proctol using\n"
+"                              proxy server for a particular protocol using\n"
 "                              --http-proxy, --https-proxy and --ftp-proxy\n"
 "                              options.\n"
 "                              This affects all URLs."
@@ -482,10 +482,12 @@ msgstr ""
 #: src/usage_text.h:165
 #, fuzzy
 msgid ""
-" --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
-"                              downloading a file in Metalink mode. This "
-"option\n"
-"                              on affects Metalink mode with chunk checksums."
+" --realtime-chunk-checksum=true|false  Validate chunk of data by "
+"calculating\n"
+"                              checksum while downloading a file if chunk\n"
+"                              checksums are provided. Currently Metalink is "
+"the\n"
+"                              only way to provide chunk checksums."
 msgstr ""
 " --realtime-chunk-checksum=true|false Tarkista palojen tarkistussummat\n"
 "                              ladatessasi tiedostoa Metalink-moodissa. Tämä\n"
@@ -494,7 +496,7 @@ msgstr ""
 "                              tarkistussumma.\n"
 "                              Oletus: true"
 
-#: src/usage_text.h:169
+#: src/usage_text.h:170
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -510,15 +512,15 @@ msgstr ""
 "                              Tällä hetkellä tämä vaikuttaa vain \n"
 "                              http(s)/ftp-latauksiin."
 
-#: src/usage_text.h:176
+#: src/usage_text.h:177
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr " -U, --user-agent=USER_AGENT Aseta selaimen nimi http(s)-latauksiin."
 
-#: src/usage_text.h:178
+#: src/usage_text.h:179
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc Asettaa netrc-tuen pois päältä."
 
-#: src/usage_text.h:180
+#: src/usage_text.h:181
 #, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
@@ -538,7 +540,7 @@ msgstr ""
 "                              URI:t yhdellä rivillä käyttäen TAB-nappia.\n"
 "                              Lukee stdin:stä jos käytät '-' FILE:nä."
 
-#: src/usage_text.h:189
+#: src/usage_text.h:190
 #, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
@@ -551,7 +553,7 @@ msgstr ""
 "                             Tätä pitäisi käyttää -i valinnan kanssa.\n"
 "                             Oletus: 5"
 
-#: src/usage_text.h:193
+#: src/usage_text.h:194
 #, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
@@ -561,7 +563,7 @@ msgstr ""
 " --load-cookies=FILE Lataa cookiet tiedostosta. Tiedoston formaatti on\n"
 "                              sama kuin Netscapella ja Mozillalla."
 
-#: src/usage_text.h:196
+#: src/usage_text.h:197
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -573,9 +575,10 @@ msgstr ""
 "lopeta.\n"
 "                              Torrent-tiedostot sisältävät enemmän tietoa."
 
-#: src/usage_text.h:200
+#: src/usage_text.h:201
+#, fuzzy
 msgid ""
-" --select-file=INDEX...       Set file to download by specifing its index.\n"
+" --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
 "                              --show-files option. Multiple indexes can be\n"
 "                              specified by using ',', for example: \"3,6\".\n"
@@ -599,11 +602,11 @@ msgstr ""
 "voivat vaihdella\n"
 "                              riippuen asetuksista (ks. --metalink-*)"
 
-#: src/usage_text.h:209
+#: src/usage_text.h:210
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT käytä ladattua .torrent-tiedostoa"
 
-#: src/usage_text.h:211
+#: src/usage_text.h:212
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -628,7 +631,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:221
+#: src/usage_text.h:222
 #, fuzzy
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
@@ -639,7 +642,7 @@ msgstr ""
 "                             joka mainitaan .torrent-tiedostossa\n"
 "                             Oletus: true"
 
-#: src/usage_text.h:224
+#: src/usage_text.h:225
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -656,12 +659,27 @@ msgstr ""
 "'6881-6999'\n"
 "                            Molempia voi käyttää yhtäaikaa."
 
-#: src/usage_text.h:230
+#: src/usage_text.h:231
+msgid ""
+" --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
+"sec.\n"
+"                              0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the upload speed per torrent, use\n"
+"                              --max-upload-limit option. If non-zero value "
+"is\n"
+"                              specified, --max-upload-limit option is "
+"ignored."
+msgstr ""
+
+#: src/usage_text.h:238
 #, fuzzy
 msgid ""
-" -u, --max-upload-limit=SPEED Set max upload speed in bytes per sec.\n"
-"                              0 means unrestricted.\n"
-"                              You can append K or M(1K = 1024, 1M = 1024K)."
+" -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
+"                              bytes/sec. 0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the overall upload speed, use\n"
+"                              --max-overall-upload-limit option."
 msgstr ""
 " --max-upload-limit=NOPEUS Aseta maksimi-uploadnopeus (tavua/sek)\n"
 "                             0 on ei rajaa.\n"
@@ -669,7 +687,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:234
+#: src/usage_text.h:244
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -677,12 +695,16 @@ msgstr ""
 " --seed-time=MIN Aseta jakamisaika (seeding) minuuteissa. Ks. myös\n"
 "                             --seed-ratio valinta."
 
-#: src/usage_text.h:237
+#: src/usage_text.h:247
+#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
-"                              until share ratio reaches RATIO. 1.0 is\n"
-"                              encouraged. Specify 0.0 if you intend to do\n"
-"                              seeding regardless of share ratio.\n"
+"                              until share ratio reaches RATIO.\n"
+"                              You are strongly encouraged to specify equals "
+"or\n"
+"                              more than 1.0 here. Specify 0.0 if you intend "
+"to\n"
+"                              do seeding regardless of share ratio.\n"
 "                              If --seed-time option is specified along with\n"
 "                              this option, seeding ends when at least one "
 "of\n"
@@ -696,7 +718,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:245
+#: src/usage_text.h:256
 #, fuzzy
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
@@ -714,15 +736,15 @@ msgstr ""
 "lisätään.\n"
 "                              Oletus: -aria2-"
 
-#: src/usage_text.h:252
+#: src/usage_text.h:263
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 
-#: src/usage_text.h:254
+#: src/usage_text.h:265
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr ""
 
-#: src/usage_text.h:256
+#: src/usage_text.h:267
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -733,29 +755,29 @@ msgid ""
 "                              be used together."
 msgstr ""
 
-#: src/usage_text.h:262
+#: src/usage_text.h:273
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
 msgstr ""
 
-#: src/usage_text.h:265
+#: src/usage_text.h:276
 #, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
 msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
 
-#: src/usage_text.h:267
+#: src/usage_text.h:278
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
 "a\n"
-"                              peer, aria2 chooses a lowest one which "
+"                              peer, aria2 chooses the lowest one which "
 "satisfies\n"
 "                              the given level."
 msgstr ""
 
-#: src/usage_text.h:272
+#: src/usage_text.h:283
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -763,7 +785,7 @@ msgid ""
 "                              handshake."
 msgstr ""
 
-#: src/usage_text.h:277
+#: src/usage_text.h:288
 #, fuzzy
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
@@ -778,7 +800,7 @@ msgstr ""
 "                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
 "= 1024K)"
 
-#: src/usage_text.h:282
+#: src/usage_text.h:293
 #, fuzzy
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
@@ -788,21 +810,21 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:285
+#: src/usage_text.h:296
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
 
-#: src/usage_text.h:288
+#: src/usage_text.h:299
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK Käytä ladattua .metalink-tiedostoa."
 
-#: src/usage_text.h:290
+#: src/usage_text.h:301
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-"                              simultaneously. Some Metalinks regulates the\n"
+"                              simultaneously. Some Metalinks regulate the\n"
 "                              number of servers to connect. aria2 strictly\n"
 "                              respects them. This means that if Metalink "
 "defines\n"
@@ -821,33 +843,34 @@ msgstr ""
 "                           Jos mem, metalink-tiedostoa ei ladata levylle, "
 "vaan pidetään muistissa."
 
-#: src/usage_text.h:299
+#: src/usage_text.h:310
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSIO Aseta minkä version tiedostosta haluat."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:312
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr ""
 " --metalink-language=KIELI Aseta minkä kielisen version tiedostosta haluat."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:314
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS Mille käyttöjärjestelmälle lataat tiedostoa."
 
-#: src/usage_text.h:305
+#: src/usage_text.h:316
+#, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
-"                              A comma-deliminated list of locations is\n"
+"                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
 " --metalink-location=SIJAINTI[,...] Suosittavan palvelimen sijainti.\n"
 "                              Pilkuilla erotettu lista on hyväksyttävä."
 
-#: src/usage_text.h:309
+#: src/usage_text.h:320
 #, fuzzy
 msgid ""
-" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specifiy "
+" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
 "                              if you don't have any preferred protocol."
 msgstr ""
@@ -857,10 +880,11 @@ msgstr ""
 "'none'. Käytä 'none' poistaaksesi\n"
 "                              tämä ominaisuus käytöstä."
 
-#: src/usage_text.h:312
+#: src/usage_text.h:323
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type is\n"
+"                              whose suffix is .metaink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -881,7 +905,7 @@ msgstr ""
 "                           Jos mem, metalink-tiedostoa ei ladata levylle, "
 "vaan pidetään muistissa."
 
-#: src/usage_text.h:322
+#: src/usage_text.h:333
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -898,11 +922,11 @@ msgstr ""
 "vaihtoehtoa\n"
 "                              valitaksesi mitä protokollaa käytetään."
 
-#: src/usage_text.h:328
+#: src/usage_text.h:339
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Tulosta versionumero ja lopeta."
 
-#: src/usage_text.h:330
+#: src/usage_text.h:341
 #, fuzzy
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
@@ -925,23 +949,23 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:338
+#: src/usage_text.h:349
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf Estä aria2.conf -asetustiedoston käyttö."
 
-#: src/usage_text.h:340
+#: src/usage_text.h:351
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
 
-#: src/usage_text.h:342
+#: src/usage_text.h:353
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:345
+#: src/usage_text.h:356
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -953,30 +977,30 @@ msgid ""
 "                              http://host/file"
 msgstr ""
 
-#: src/usage_text.h:351
-msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
+#: src/usage_text.h:362
+msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 
-#: src/usage_text.h:353
+#: src/usage_text.h:364
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr ""
 
-#: src/usage_text.h:355
+#: src/usage_text.h:366
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
-#: src/usage_text.h:357
+#: src/usage_text.h:368
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
 
-#: src/usage_text.h:360
+#: src/usage_text.h:371
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 
-#: src/usage_text.h:362
+#: src/usage_text.h:373
 #, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
@@ -990,7 +1014,7 @@ msgstr ""
 "                             joka mainitaan .torrent-tiedostossa\n"
 "                             Oletus: true"
 
-#: src/usage_text.h:366
+#: src/usage_text.h:377
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1001,18 +1025,17 @@ msgid ""
 "                              effect and --timeout option is used instead."
 msgstr ""
 
-#: src/usage_text.h:371
+#: src/usage_text.h:382
 #, fuzzy
 msgid ""
-" --max-file-not-found=NUM     If aria2 recieves `file not found' status from "
+" --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
 "                              remote HTTP/FTP servers NUM times without "
 "getting\n"
 "                              a single byte, then force the download to "
 "fail.\n"
 "                              Specify 0 to disable this option.\n"
-"                              This options is only effective only when "
-"using\n"
+"                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
 " --file-allocation=METODI Aseta tiedostojen varausmetodi. METODI on joko\n"
@@ -1024,7 +1047,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:378
+#: src/usage_text.h:389
 #, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
@@ -1051,7 +1074,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:389
+#: src/usage_text.h:400
 #, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
@@ -1064,7 +1087,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:393
+#: src/usage_text.h:404
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1074,7 +1097,7 @@ msgid ""
 "                              See also --uri-selector option"
 msgstr ""
 
-#: src/usage_text.h:398
+#: src/usage_text.h:409
 #, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
@@ -1086,7 +1109,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:402
+#: src/usage_text.h:413
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1097,7 +1120,7 @@ msgid ""
 "                              regardless of the value."
 msgstr ""
 
-#: src/usage_text.h:407
+#: src/usage_text.h:418
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1106,7 +1129,7 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:412
+#: src/usage_text.h:423
 #, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
@@ -1117,7 +1140,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:416
+#: src/usage_text.h:427
 #, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
@@ -1138,19 +1161,19 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:422
+#: src/usage_text.h:433
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:425
+#: src/usage_text.h:436
 #, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
-"to\n"
-"                              which proxy should not be used."
+"where\n"
+"                              proxy should not be used."
 msgstr ""
 " --seed-time=MIN Aseta jakamisaika (seeding) minuuteissa. Ks. myös\n"
 "                             --seed-ratio valinta."
@@ -1823,44 +1846,54 @@ msgstr "Ei löydetty otsaketta."
 msgid "Hostname not match."
 msgstr ""
 
-#: src/message.h:167
+#: src/message.h:166
+msgid "No files to download."
+msgstr ""
+
+#: src/message.h:168
+msgid ""
+"You may encounter the certificate verification error with HTTPS server. See "
+"--ca-certificate and --check-certificate option."
+msgstr ""
+
+#: src/message.h:171
 msgid "Timeout."
 msgstr "Aikakatkaisu."
 
-#: src/message.h:168
+#: src/message.h:172
 msgid "Invalid chunk size."
 msgstr "Väärä palan koko."
 
-#: src/message.h:169
+#: src/message.h:173
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Liian suuri pala. Koko %d"
 
-#: src/message.h:170
+#: src/message.h:174
 msgid "Invalid header."
 msgstr "Väärä otsake."
 
-#: src/message.h:171
+#: src/message.h:175
 msgid "Invalid response."
 msgstr "Epäkelpo vastaus."
 
-#: src/message.h:172
+#: src/message.h:176
 msgid "No header found."
 msgstr "Ei löydetty otsaketta."
 
-#: src/message.h:173
+#: src/message.h:177
 msgid "No status header."
 msgstr "Ei tila-otsikkoa."
 
-#: src/message.h:174
+#: src/message.h:178
 msgid "Proxy connection failed."
 msgstr "Välityspalvelinyhteys epäonnistui."
 
-#: src/message.h:175
+#: src/message.h:179
 msgid "Connection failed."
 msgstr "Yhteys epäonnistui."
 
-#: src/message.h:176
+#: src/message.h:180
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -1869,225 +1902,225 @@ msgstr ""
 "Pyydetty tiedostonimi ja aiemmin rekisteröity eivät täsmää. Odotettu: %s  "
 "Oikea: %s"
 
-#: src/message.h:177
+#: src/message.h:181
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Vastauksen tila ei ole onnistunut. Tila=%d"
 
-#: src/message.h:178
+#: src/message.h:182
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Tiedostokoko liian suuri. Koko=%s"
 
-#: src/message.h:179
+#: src/message.h:183
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Siirron koodausta %s ei tueta."
 
-#: src/message.h:180
+#: src/message.h:184
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "SSL-aloitus epäonnistui: %s"
 
-#: src/message.h:181
+#: src/message.h:185
 msgid "SSL I/O error"
 msgstr "SSL I/O-virhe"
 
-#: src/message.h:182
+#: src/message.h:186
 msgid "SSL protocol error"
 msgstr "SSL protokollavirhe"
 
-#: src/message.h:183
+#: src/message.h:187
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "SSL: tuntematon virhe %d"
 
-#: src/message.h:184
+#: src/message.h:188
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "SSL valmistelu epäonnistui: OpenSSL yhdistysvirhe %d"
 
-#: src/message.h:185
+#: src/message.h:189
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Koko ei täsmää. Odotettu:%s  Oikea:%s"
 
-#: src/message.h:186
+#: src/message.h:190
 msgid "Authorization failed."
 msgstr "Kirjautuminen epäonnistui."
 
-#: src/message.h:187
+#: src/message.h:191
 msgid "Got EOF from the server."
 msgstr "Saatiin tiedoston lopetus palvelimelta."
 
-#: src/message.h:188
+#: src/message.h:192
 msgid "Got EOF from peer."
 msgstr "Saatiin tiedoston lopetus käyttäjältä."
 
-#: src/message.h:189
+#: src/message.h:193
 msgid "Malformed meta info."
 msgstr "Vioittunut metatieto."
 
-#: src/message.h:191
+#: src/message.h:195
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Tiedoston %s avaaminen epäonnistui, syy: %s"
 
-#: src/message.h:192
+#: src/message.h:196
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Tiedostoon %s ei voi kirjoittaa, syy: %s"
 
-#: src/message.h:193
+#: src/message.h:197
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Tiedostosta %s ei voi lukea, syy: %s"
 
-#: src/message.h:194
+#: src/message.h:198
 msgid "Failed to read data from disk."
 msgstr "Lukeminen levyltä epäonnistui."
 
-#: src/message.h:195
+#: src/message.h:199
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "SHA1-summaa ei voitu laskea tiedostosta tai sen osasta %s, syy: %s"
 
-#: src/message.h:196
+#: src/message.h:200
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Tiedostoa %s ei löydy, syy: %s"
 
-#: src/message.h:197
+#: src/message.h:201
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Offset on rajojen ulkopuolella, offset=%s"
 
-#: src/message.h:198
+#: src/message.h:202
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s ei ole hakemisto."
 
-#: src/message.h:199
+#: src/message.h:203
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Hakemistoa %s ei voi luoda, syy: %s"
 
-#: src/message.h:200
+#: src/message.h:204
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Osatiedostoa %s ei voi avata, syy: %s"
 
-#: src/message.h:201
+#: src/message.h:205
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Osatiedostoon %s ei voi kirjoittaa, syy: %s"
 
-#: src/message.h:202
+#: src/message.h:206
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Osatiedostosta %s ei voi lukea, syy: %s"
 
-#: src/message.h:204
+#: src/message.h:208
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Sockettia ei voi avata, syy: %s"
 
-#: src/message.h:205
+#: src/message.h:209
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Socket-asetuksen asetus epäonnistui, syy: %s"
 
-#: src/message.h:206
+#: src/message.h:210
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Socketin asetus estäväksi epäonnistui, syy: %s"
 
-#: src/message.h:207
+#: src/message.h:211
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Socketin asetus ei-estäväksi epäonnistui, syy: %s"
 
-#: src/message.h:208
+#: src/message.h:212
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Socketin sitominen epäonnistui, syy: %s"
 
-#: src/message.h:209
+#: src/message.h:213
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Socketin kuuntelu epäonnistui, syy: %s"
 
-#: src/message.h:210
+#: src/message.h:214
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Käyttäjäyhteyttä ei voitu hyväksyä, syy: %s"
 
-#: src/message.h:211
+#: src/message.h:215
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Socketin nimen saaminen epäonnistui, syy: %s"
 
-#: src/message.h:212
+#: src/message.h:216
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Yhdistyneen käyttäjän nimeä ei saatu, syy: %s"
 
-#: src/message.h:213
+#: src/message.h:217
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Koneen %s osoitetta ei pystytty selvittämään, syy: %s"
 
-#: src/message.h:214
+#: src/message.h:218
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Yhteyttä koneeseen %s ei saatu, syy: %s"
 
-#: src/message.h:215
+#: src/message.h:219
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Socketin kirjoitettavuutta ei voitu tarkistaa, syy: %s"
 
-#: src/message.h:216
+#: src/message.h:220
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Socketin luettavuutta ei voitu tarkistaa, syy: %s"
 
-#: src/message.h:217
+#: src/message.h:221
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Dataa ei voitu lähettää, syy: %s"
 
-#: src/message.h:218
+#: src/message.h:222
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Dataa ei voitu vastaanottaa, syy: %s"
 
-#: src/message.h:219
+#: src/message.h:223
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Dataa ei voitu katsoa, syy: %s"
 
-#: src/message.h:220
+#: src/message.h:224
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Tuntematon socket-virhe %d (0x%x)"
 
-#: src/message.h:221
+#: src/message.h:225
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Tiedosto %s on olemassa, mutta %s ei."
 
-#: src/message.h:222
+#: src/message.h:226
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "Väärä payload-koko %s:lla (%d), pitäisi olla %d."
 
-#: src/message.h:223
+#: src/message.h:227
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Epäkelpo ID=%d %s:lla. Pitäisi olla %d."
 
-#: src/message.h:224
+#: src/message.h:228
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2096,29 +2129,29 @@ msgstr ""
 "Palan tarkistussumma ei täsmää. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 
-#: src/message.h:225
+#: src/message.h:229
 msgid "Download aborted."
 msgstr "Lataus keskeytettiin."
 
-#: src/message.h:226
+#: src/message.h:230
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Tiedostoa %s lataa joku toinen komento."
 
-#: src/message.h:227
+#: src/message.h:231
 msgid "Insufficient checksums."
 msgstr "Riittämättömät tarkistussummat."
 
-#: src/message.h:228
+#: src/message.h:232
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Tracker palautti epäonnistumisen syyn: %s"
 
-#: src/message.h:229
+#: src/message.h:233
 msgid "Flooding detected."
 msgstr "Tulva huomattu."
 
-#: src/message.h:230
+#: src/message.h:234
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2127,48 +2160,48 @@ msgstr ""
 "Sulje yhteys koska yhtään pyyntöä/palaa ei vaihdettu tietyssä ajassa (%d "
 "sekunnissa)."
 
-#: src/message.h:231
+#: src/message.h:235
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr "InfoHash torrent-tiedostossa ei täsmää .aria2-tiedostossa olevaan."
 
-#: src/message.h:232
+#: src/message.h:236
 #, c-format
 msgid "No such file entry %s"
 msgstr "Tiedostokohtaa %s ei ole."
 
-#: src/message.h:233
+#: src/message.h:237
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Liian hidas latausnopeus: %d <= %d(B/s), kone:%s"
 
-#: src/message.h:234
+#: src/message.h:238
 msgid "No HttpRequestEntry found."
 msgstr "HttpRequestEntry:ä ei löydy."
 
-#: src/message.h:235
+#: src/message.h:239
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Saatiin %d-tila, mutta ei osoiteotsaketta."
 
-#: src/message.h:236
+#: src/message.h:240
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Epäkelpo rajaotsake. Pyyntö: %s-%s/%s, Vastaus %s-%s/%s"
 
-#: src/message.h:237
+#: src/message.h:241
 msgid "No file matched with your preference."
 msgstr "Yksikään tiedosto ei vastaa asetuksiasi."
 
-#: src/message.h:238
+#: src/message.h:242
 msgid "Exception caught"
 msgstr "Poikkeus löytyi"
 
-#: src/message.h:239
+#: src/message.h:243
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "Suurin payload-koko ylitetty tai väärä. Pituus = %u"
 
-#: src/message.h:240
+#: src/message.h:244
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
@@ -2178,7 +2211,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Virheitä tapahtui sitoessa porttia.\n"
 
-#: src/Util.cc:715
+#: src/Util.cc:724
 msgid "Files:"
 msgstr "Tiedostot:"
 

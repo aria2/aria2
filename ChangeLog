@@ -1,5 +1,14 @@
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated French, Japanese, Russian and Ukrainian translations.
+	Thanks to all translators.
+	* po/fr.po
+	* po/ja.po
+	* po/ru.po
+	* po/uk.po
+
+2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed aria2c.pot to aria2.pot
 	* po/aria2.pot
 	* po/aria2c.pot: Removed.
