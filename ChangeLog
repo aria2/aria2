@@ -1,6 +1,11 @@
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Update doc for --realtime-chunk-checksum option.
+	* doc/aria2c.1.txt
+
+2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Update doc for --realtime-chunk-checksum option.
 	* src/usage_text.h
 
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>

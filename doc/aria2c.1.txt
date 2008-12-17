@@ -554,8 +554,7 @@ are also allocated if they share the same piece.
 
 *--realtime-chunk-checksum*='true'|'false'::
    Validate chunk of data by calculating checksum while downloading a file if
-   chunk checksums are provided. Currently Metalink is the only way to
-   provide chunk checksums.
+   chunk checksums are provided.
    Default: 'true'
 
 *--stop*=SEC::
