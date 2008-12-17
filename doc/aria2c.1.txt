@@ -331,6 +331,9 @@ BitTorrent Specific Options
   together.
   Default: '6881-6999'
 
+[NOTE]
+Make sure that the specified ports are open for incoming UDP traffic.
+
 *--direct-file-mapping*='true'|'false'::
   Directly read from and write to each file mentioned in .torrent file.
   Use this option if lots of files are listed in .torrent file and aria2
