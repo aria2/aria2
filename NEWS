@@ -1,0 +1,71 @@
+aria2 1.1.0
+===========
+
+Release Note
+------------
+This release fixes the many bugs such as buggy HTTP pipelining
+implementation that leads to corrupted downloads, bad cookie handling
+and sending bad formed URI to the tracker. --max-overall-upload-limit
+option was added to controll overall(not per torrent) upload speed.
+
+From this release, aria2 validates the server certificate of HTTPS
+servers by default. --with-ca-bundle compile time option is added to
+specify the default path to the CA bundle.
+
+The most big changes in this release is that the package name is
+changed from "aria2c" to "aria2". This changes the install directory
+of documents and translation files(*.mo). This change is done in order
+to fix the inconsistency of the package name and the install directory
+since in many distributions the binary package name is "aria2", but
+the old releases tried to install to "aria2c" directory such as
+"/usr/local/share/doc/aria2c".
+
+Changes
+-------
+
+* Updated French, Japanese, Russian and Ukrainian translations.
+  Thanks to all translators.
+
+* Rename file by appending digits if a local file exists and its file
+  size is larger than that of remote file with --continue option. The
+  old implementation just throws exception in such case.
+
+* Fixed the bug that download progress summary is not printed in the
+  interval specified by the option.
+
+* Fixed the cookie implementation based on RFC2965.  Now if a value in
+  domain field is not started with dot, then prepend dot. That means a
+  cookie with domain=sf.net is sent to wiki.sf.net.
+
+* Fixed the bug that causes corrupted downloads if HTTP pipelining is
+  enabled and the server doesn't support keep-alive.
+
+* Added --max-overall-upload-limit option. This option limits the
+  overall upload speed.  Stated in help message that the existing
+  --max-upload-limit option limits the upload speed per each torrent.
+  Man page is also updated.
+
+* Fixed the bug that bad URI is sent to the tracker when the announe
+  URI in torrent file includes query.
+
+* Enabled --check-certificate by default.  Added compile
+  time(configure) option --with-ca-bundle to specify CA bundle.  Warn
+  if --check-certificate=true and --ca-certificate is not specified or
+  loading CA certificate is failed.
+
+* Added "https" tag to help option category.  Added https tag to
+  --ca-certificate, --certificate, --check-certificate and --private-key
+  option.
+
+* Changed the package name from "aria2c" to "aria2".  The name of the
+  executable is not changed.
+
+* Fixed typos in man page.
+
+* RFC3986 complied Percent-Encoding(urlencode).  Use uppercase
+  hexadecimal digits for encoded text instead of lowercase ones.
+
+* Fixed the bug that -pfalse and -ptrue are not recognized properly.
+
+* Fixed the bug that prevents aria2 from downloading 0-length files
+  via HTTP/FTP.
