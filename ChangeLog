@@ -1,5 +1,10 @@
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.1.0.
+	* configure.ac
+
+2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added a note for --dht-listen-port option.
 	* doc/aria2c.1.txt
 
