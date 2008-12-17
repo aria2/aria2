@@ -108,14 +108,36 @@ You can use libexpat1-dev instead of libxml2-dev:
 
 * libexpat1-dev    (Required for Metalink support)
 
-The build process is fairly standard way for *nix programs:
+The quickest way to build aria2 is just type following commands:
 
 -------------
 $ ./configure
 $ make
 -------------
 
-The executable is aria2c in src directory.
+The configure script checks available libraries and enables the features
+as much as possible because all the features are enabled by default.
+
+Since 1.1.0, aria2 checks the certificate of HTTPS servers by default.
+If you build with HTTPS support, I recommend to supply the path to the
+CA bundle file. For example, in Debian the path to CA bundle file is
+'/etc/ssl/certs/ca-certificates.crt' (in ca-certificates package). This
+may varies depending on the distributions. You can give it to
+configure script using \--with-ca-bundle option:
+
+-------------------------------------------------------------------
+$ ./configure --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
+$ make
+-------------------------------------------------------------------
+
+Without \--with-ca-bundle option, you will encounter the error when
+accessing HTTPS servers because the certificate cannot be verified
+without CA bundle. In such case, you can specify the CA bundle file
+using aria2's \--ca-certificate option.  If you don't have CA bundle
+file installed, then the last resort is disable the certificate
+validation using \--check-certificate=false.
+
+The executable is 'aria2c' in src directory.
 
 aria2 uses CppUnit for automated unit testing. To run run the unit test:
 
