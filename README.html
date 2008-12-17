@@ -590,7 +590,7 @@ Note
 <dd>
 <p>
   GNU TLS has precedence over OpenSSL if both libraries are installed.
-  If you prefer OpenSSL, run configure with "&#8212;without-gnutls".
+  If you prefer OpenSSL, run configure with --without-gnutls.
 </p>
 </dd>
 <dt>
@@ -599,12 +599,12 @@ Note
 <dd>
 <p>
   libxml2 has precedence over Expat if both libraries are installed.
-  If you prefer Expat, run configure with "&#8212;without-libxml2".
+  If you prefer Expat, run configure with --without-libxml2.
 </p>
 </dd>
 </dl></div>
 <div class="para"><p>You can disable BitTorrent, Metalink support by providing
-&#8212;disable-bittorrent, &#8212;disable-metalink respectively to configure
+--disable-bittorrent, --disable-metalink respectively to configure
 script.</p></div>
 <div class="para"><p>In order to enable async DNS support, you need c-ares.</p></div>
 <div class="ilist"><ul>
@@ -739,8 +739,8 @@ multi-file mode
 structure is created if needed. By default, aria2 opens at most 100
 files mentioned in .torrent file, directly writes to and reads from
 these files. The number of files to open simultaneously can be
-controlled by "&#8212;bt-max-open-files" option.</p></div>
-<div class="para"><p>If "&#8212;direct-file-mapping" option set to be false, aria2 creates
+controlled by --bt-max-open-files option.</p></div>
+<div class="para"><p>If --direct-file-mapping option set to be false, aria2 creates
 temporary file in the store directory. The length of this file is the
 sum of length of the files in .torrent file, so at least 2 times more
 disk space than the file size itself is required. Writing and reading
@@ -774,7 +774,7 @@ aria2 doesn't configure port-forwarding automatically. Please
 <p>
 The maximum number of peers is 55. This limit may be exceeded when
   download rate is low. This download rate can be adjusted using
-  &#8212;bt-request-peer-speed-limit option.
+  --bt-request-peer-speed-limit option.
 </p>
 </li>
 <li>
@@ -874,7 +874,7 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 <div class="para"><p>Configuration file must be placed under $HOME/.aria2 and must be named
 as aria2.conf.  In each line, there is 1 parameter whose syntax is
 name=value pair, where name is the long command-line option name
-without <em>&#8212;</em> prefix.  The lines beginning <em>#</em> are treated as comments.</p></div>
+without -- prefix.  The lines beginning <em>#</em> are treated as comments.</p></div>
 <div class="para"><p>Example:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -886,7 +886,7 @@ max-upload-limit=40K</tt></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2008-12-17 21:33:30 JST
+Last updated 2008-12-17 21:37:38 JST
 </div>
 </div>
 </body>

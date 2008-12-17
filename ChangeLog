@@ -1,5 +1,10 @@
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Escaped '--' with '\--'
+	* README
+	
+2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated "How to build" section in README. Mentioned about
 	--with-ca-bundle compile option.
 	* README

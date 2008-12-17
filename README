@@ -71,14 +71,14 @@ Firefox3 cookie       libsqlite3
 
 Note;;
   GNU TLS has precedence over OpenSSL if both libraries are installed.
-  If you prefer OpenSSL, run configure with "--without-gnutls".
+  If you prefer OpenSSL, run configure with \--without-gnutls.
 
 Note;;
   libxml2 has precedence over Expat if both libraries are installed.
-  If you prefer Expat, run configure with "--without-libxml2".
+  If you prefer Expat, run configure with \--without-libxml2.
 
 You can disable BitTorrent, Metalink support by providing
---disable-bittorrent, --disable-metalink respectively to configure
+\--disable-bittorrent, \--disable-metalink respectively to configure
 script.
 
 In order to enable async DNS support, you need c-ares.
@@ -168,9 +168,9 @@ In the default behavior, before download starts, a complete directory
 structure is created if needed. By default, aria2 opens at most 100
 files mentioned in .torrent file, directly writes to and reads from
 these files. The number of files to open simultaneously can be
-controlled by "--bt-max-open-files" option.
+controlled by \--bt-max-open-files option.
 
-If "--direct-file-mapping" option set to be false, aria2 creates
+If \--direct-file-mapping option set to be false, aria2 creates
 temporary file in the store directory. The length of this file is the
 sum of length of the files in .torrent file, so at least 2 times more
 disk space than the file size itself is required. Writing and reading
@@ -193,7 +193,7 @@ Other things should be noted
   configure your router or firewall manually.
 * The maximum number of peers is 55. This limit may be exceeded when
   download rate is low. This download rate can be adjusted using
-  --bt-request-peer-speed-limit option.
+  \--bt-request-peer-speed-limit option.
 * As of release 0.10.0, aria2 stops sending request message after
   selective download completes.
 
@@ -264,7 +264,7 @@ Configuration file
 Configuration file must be placed under $HOME/.aria2 and must be named
 as aria2.conf.  In each line, there is 1 parameter whose syntax is
 name=value pair, where name is the long command-line option name
-without '--' prefix.  The lines beginning '#' are treated as comments.
+without \-- prefix.  The lines beginning '#' are treated as comments.
 
 Example:
 --------------------------------------
