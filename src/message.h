@@ -167,6 +167,9 @@
 #define MSG_WARN_NO_CA_CERT \
   _("You may encounter the certificate verification error with HTTPS server."\
     " See --ca-certificate and --check-certificate option.")
+#define MSG_SHOW_FILES _("Printing the contents of file '%s'...")
+#define MSG_NOT_TORRENT_METALINK _("This file is neither Torrent nor Metalink"\
+				   " file. Skipping.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

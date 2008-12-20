@@ -125,14 +125,14 @@ static void showFiles(const std::deque<std::string>& uris, const Option* op)
   ProtocolDetector dt;
   for(std::deque<std::string>::const_iterator i = uris.begin();
       i != uris.end(); ++i) {
-    printf("Printing the contents of file '%s'...", (*i).c_str());
+    printf(MSG_SHOW_FILES, (*i).c_str());
     printf("\n");
     if(dt.guessTorrentFile(*i)) {
       showTorrentFile(*i);
     } else if(dt.guessMetalinkFile(*i)) {
       showMetalinkFile(*i, op);
     } else {
-      printf("This file is not Torrent/Metalink file. Skipping.");
+      printf(MSG_NOT_TORRENT_METALINK);
       printf("\n\n");
     }
   }
