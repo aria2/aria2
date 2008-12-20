@@ -23,6 +23,9 @@ the old releases tried to install to "aria2c" directory such as
 Changes
 -------
 
+* Print the contents of Torrent/Metalink files are printed without
+  -T/-M options.
+
 * Updated French, Japanese, Russian and Ukrainian translations.
   Thanks to all translators.
 
