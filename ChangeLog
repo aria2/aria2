@@ -1,3 +1,9 @@
+2008-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Print the contents of Torrent/Metalink files are printed without
+	-T/-M options.
+	* src/main.cc
+
 2008-12-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Escaped '--' with '\--'

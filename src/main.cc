@@ -66,6 +66,7 @@
 #include "NullStatCalc.h"
 #include "download_helper.h"
 #include "Exception.h"
+#include "ProtocolDetector.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "MetalinkEntry.h"
@@ -99,6 +100,41 @@ std::ostream& getSummaryOut(const Option* op)
     return nullout;
   } else {
     return std::cout;
+  }
+}
+
+static void showTorrentFile(const std::string& uri)
+{
+  SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
+  btContext->load(uri);
+  std::cout << btContext << std::endl;
+}
+
+static void showMetalinkFile(const std::string& uri, const Option* op)
+{
+  std::deque<SharedHandle<MetalinkEntry> > metalinkEntries;
+  MetalinkHelper::parseAndQuery(metalinkEntries, uri, op);
+  std::deque<SharedHandle<FileEntry> > fileEntries;
+  MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
+  Util::toStream(std::cout, fileEntries);
+  std::cout << std::endl;
+}
+
+static void showFiles(const std::deque<std::string>& uris, const Option* op)
+{
+  ProtocolDetector dt;
+  for(std::deque<std::string>::const_iterator i = uris.begin();
+      i != uris.end(); ++i) {
+    printf("Printing the contents of file '%s'...", (*i).c_str());
+    printf("\n");
+    if(dt.guessTorrentFile(*i)) {
+      showTorrentFile(*i);
+    } else if(dt.guessMetalinkFile(*i)) {
+      showMetalinkFile(*i, op);
+    } else {
+      printf("This file is not Torrent/Metalink file. Skipping.");
+      printf("\n\n");
+    }
   }
 }
 
@@ -143,9 +179,7 @@ int main(int argc, char* argv[])
 #ifdef ENABLE_BITTORRENT
     if(!op->blank(PREF_TORRENT_FILE)) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	DefaultBtContextHandle btContext(new DefaultBtContext());
-	btContext->load(op->get(PREF_TORRENT_FILE));
-	std::cout << btContext << std::endl;
+	showTorrentFile(op->get(PREF_TORRENT_FILE));
 	return EXIT_SUCCESS;
       } else {
 	createRequestGroupForBitTorrent(requestGroups, op, args);
@@ -156,12 +190,7 @@ int main(int argc, char* argv[])
 #ifdef ENABLE_METALINK
       if(!op->blank(PREF_METALINK_FILE)) {
 	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	  std::deque<SharedHandle<MetalinkEntry> > metalinkEntries;
-	  MetalinkHelper::parseAndQuery(metalinkEntries,
-					op->get(PREF_METALINK_FILE), op);
-	  std::deque<SharedHandle<FileEntry> > fileEntries;
-	  MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
-	  Util::toStream(std::cout, fileEntries);
+	  showMetalinkFile(op->get(PREF_METALINK_FILE), op);
 	  return EXIT_SUCCESS;
 	} else {
 	  createRequestGroupForMetalink(requestGroups, op);
@@ -171,6 +200,8 @@ int main(int argc, char* argv[])
 #endif // ENABLE_METALINK
 	if(!op->blank(PREF_INPUT_FILE)) {
 	  createRequestGroupForUriList(requestGroups, op);
+	} else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+	  showFiles(args, op);
 	} else {
 	  createRequestGroupForUri(requestGroups, op, args);
 	}
