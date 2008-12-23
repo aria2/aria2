@@ -127,13 +127,17 @@ static void showFiles(const std::deque<std::string>& uris, const Option* op)
       i != uris.end(); ++i) {
     printf(MSG_SHOW_FILES, (*i).c_str());
     printf("\n");
-    if(dt.guessTorrentFile(*i)) {
-      showTorrentFile(*i);
-    } else if(dt.guessMetalinkFile(*i)) {
-      showMetalinkFile(*i, op);
-    } else {
-      printf(MSG_NOT_TORRENT_METALINK);
-      printf("\n\n");
+    try {
+      if(dt.guessTorrentFile(*i)) {
+	showTorrentFile(*i);
+      } else if(dt.guessMetalinkFile(*i)) {
+	showMetalinkFile(*i, op);
+      } else {
+	printf(MSG_NOT_TORRENT_METALINK);
+	printf("\n\n");
+      }
+    } catch(RecoverableException& e) {
+      std::cout << e.stackTrace() << std::endl;
     }
   }
 }
