@@ -1,5 +1,11 @@
 2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added the preceding ">>> " before the message "Printing the
+	contents of file..." to make the output more readable.
+	* src/main.cc
+
+2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added try-catch block in the loop in showFiles() to continue the
 	operation even if the exception occurred in one file.
 	* src/main.cc (showFiles)

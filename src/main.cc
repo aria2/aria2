@@ -125,6 +125,7 @@ static void showFiles(const std::deque<std::string>& uris, const Option* op)
   ProtocolDetector dt;
   for(std::deque<std::string>::const_iterator i = uris.begin();
       i != uris.end(); ++i) {
+    printf(">>> ");
     printf(MSG_SHOW_FILES, (*i).c_str());
     printf("\n");
     try {
