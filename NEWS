@@ -14,7 +14,7 @@ specify the default path to the CA bundle. For example, Debian
 provides /etc/ssl/certs/ca-certificates.crt, therefore run configure
 with --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
 
-The most big changes in this release is that the package name is
+The most big change in this release is that the package name is
 changed from "aria2c" to "aria2". This changes the installation
 directory of the documents and the translation files(*.mo). Now the
 documents are installed in $prefix/share/doc/aria2 and the each
