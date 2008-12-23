@@ -103,13 +103,16 @@ std::ostream& getSummaryOut(const Option* op)
   }
 }
 
+#ifdef ENABLE_BITTORRENT
 static void showTorrentFile(const std::string& uri)
 {
   SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
   btContext->load(uri);
   std::cout << btContext << std::endl;
 }
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 static void showMetalinkFile(const std::string& uri, const Option* op)
 {
   std::deque<SharedHandle<MetalinkEntry> > metalinkEntries;
@@ -119,7 +122,9 @@ static void showMetalinkFile(const std::string& uri, const Option* op)
   Util::toStream(std::cout, fileEntries);
   std::cout << std::endl;
 }
+#endif // ENABLE_METALINK
 
+#if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
 static void showFiles(const std::deque<std::string>& uris, const Option* op)
 {
   ProtocolDetector dt;
@@ -129,19 +134,26 @@ static void showFiles(const std::deque<std::string>& uris, const Option* op)
     printf(MSG_SHOW_FILES, (*i).c_str());
     printf("\n");
     try {
+#ifdef ENABLE_BITTORRENT
       if(dt.guessTorrentFile(*i)) {
 	showTorrentFile(*i);
-      } else if(dt.guessMetalinkFile(*i)) {
-	showMetalinkFile(*i, op);
-      } else {
-	printf(MSG_NOT_TORRENT_METALINK);
-	printf("\n\n");
-      }
+      } else
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+	if(dt.guessMetalinkFile(*i)) {
+	  showMetalinkFile(*i, op);
+	} else
+#endif // ENABLE_METALINK
+	  {
+	    printf(MSG_NOT_TORRENT_METALINK);
+	    printf("\n\n");
+	  }
     } catch(RecoverableException& e) {
       std::cout << e.stackTrace() << std::endl;
     }
   }
 }
+#endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
 extern Option* option_processing(int argc, char* const argv[]);
 
@@ -205,8 +217,10 @@ int main(int argc, char* argv[])
 #endif // ENABLE_METALINK
 	if(!op->blank(PREF_INPUT_FILE)) {
 	  createRequestGroupForUriList(requestGroups, op);
+#if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
 	} else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	  showFiles(args, op);
+#endif // ENABLE_METALINK || ENABLE_METALINK
 	} else {
 	  createRequestGroupForUri(requestGroups, op, args);
 	}

@@ -1,5 +1,10 @@
 2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added ifdef clause for conditional compilation.
+	* src/main.cc
+
+2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated Russian, Simplified Chinese, Ukrainian and Japanese
 	translations. Thanks to all translators.
 	* po/ja.po
