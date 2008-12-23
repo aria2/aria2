@@ -12,7 +12,7 @@ From this release, aria2 validates the server certificate of HTTPS
 servers by default. --with-ca-bundle compile time option is added to
 specify the default path to the CA bundle. For example, Debian
 provides /etc/ssl/certs/ca-certificates.crt, therefore run configure
-with --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
+with --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
 
 The most big changes in this release is that the package name is
 changed from "aria2c" to "aria2". This changes the installation
