@@ -1,5 +1,9 @@
 2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	* Release 1.1.0
+
+2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added ifdef clause for conditional compilation.
 	* src/main.cc
 
