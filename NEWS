@@ -23,8 +23,7 @@ translation file is named as aria2.mo
 Changes
 -------
 
-* Print the contents of Torrent/Metalink files are printed without
-  -T/-M options.
+* Print the contents of torrent/metalink files without -T/-M options.
 
 * Updated French, Japanese, Russian and Ukrainian translations.
   Thanks to all translators.
