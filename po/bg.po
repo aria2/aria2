@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-12-16 00:59+0900\n"
+"POT-Creation-Date: 2008-12-20 20:08+0900\n"
 "PO-Revision-Date: 2008-11-15 20:56+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -443,9 +443,7 @@ msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
-"                              checksums are provided. Currently Metalink is "
-"the\n"
-"                              only way to provide chunk checksums."
+"                              checksums are provided."
 msgstr ""
 " --realtime-chunk-checksum=true|false Потвърждаване на парчета с контролните "
 "суми докато\n"
@@ -454,7 +452,7 @@ msgstr ""
 "                              само влияе в режим Metalink с парчета на "
 "контролните суми."
 
-#: src/usage_text.h:170
+#: src/usage_text.h:169
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -471,17 +469,17 @@ msgstr ""
 "                              началото. Понастоящем тази опция е само\n"
 "                              приложима към http(и)/ftp даунлоуди."
 
-#: src/usage_text.h:177
+#: src/usage_text.h:176
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 " -U, --user-agent=USER_AGENT Определя потребителския агент за http(и) "
 "даунлоуди."
 
-#: src/usage_text.h:179
+#: src/usage_text.h:178
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc Изключва поддръжката на netrc."
 
-#: src/usage_text.h:181
+#: src/usage_text.h:180
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -496,7 +494,7 @@ msgid ""
 "                              FILE section of man page for details."
 msgstr ""
 
-#: src/usage_text.h:190
+#: src/usage_text.h:189
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
@@ -505,7 +503,7 @@ msgid ""
 "                              See also -s and -C options."
 msgstr ""
 
-#: src/usage_text.h:194
+#: src/usage_text.h:193
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
@@ -515,7 +513,7 @@ msgstr ""
 "формат\n"
 "                              и Mozilla/Firefox(1.x/2.x)/Netscape формат."
 
-#: src/usage_text.h:197
+#: src/usage_text.h:196
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -529,7 +527,7 @@ msgstr ""
 "изписана\n"
 "                              в случай на торент файл."
 
-#: src/usage_text.h:201
+#: src/usage_text.h:200
 #, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
@@ -559,11 +557,11 @@ msgstr ""
 "                              в зависимост от въпроса(вижте --metalink-* "
 "options)."
 
-#: src/usage_text.h:210
+#: src/usage_text.h:209
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE Пътят към .torrent файла."
 
-#: src/usage_text.h:212
+#: src/usage_text.h:211
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -591,7 +589,7 @@ msgstr ""
 "отгоре\n"
 "                              не се извършва."
 
-#: src/usage_text.h:222
+#: src/usage_text.h:221
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
@@ -600,7 +598,7 @@ msgstr ""
 "файл\n"
 "                              споменат в .torrent файла."
 
-#: src/usage_text.h:225
+#: src/usage_text.h:224
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -620,7 +618,7 @@ msgstr ""
 "'-' могат\n"
 "                              да се използват заедно."
 
-#: src/usage_text.h:231
+#: src/usage_text.h:230
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
@@ -633,7 +631,7 @@ msgid ""
 "ignored."
 msgstr ""
 
-#: src/usage_text.h:238
+#: src/usage_text.h:237
 #, fuzzy
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
@@ -648,7 +646,7 @@ msgstr ""
 "                              Можете да приложите K или M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:244
+#: src/usage_text.h:243
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -656,7 +654,7 @@ msgstr ""
 " --seed-time=MINUTES Уточнява време за сийдване в минути. Вижте също\n"
 "                              опцията --seed-ratio."
 
-#: src/usage_text.h:247
+#: src/usage_text.h:246
 #, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
@@ -683,7 +681,7 @@ msgstr ""
 "едно от\n"
 "                              условията е изпълнено."
 
-#: src/usage_text.h:256
+#: src/usage_text.h:255
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -703,16 +701,16 @@ msgstr ""
 "                              уточнени, произволни букви от азбуката се\n"
 "                              добавят за да се направи дължината 20 байта."
 
-#: src/usage_text.h:263
+#: src/usage_text.h:262
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 " --enable-peer-exchange[=true|false] Включва разширението Peer Exchange."
 
-#: src/usage_text.h:265
+#: src/usage_text.h:264
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr " --enable-dht[=true|false] Включва DHT функционалността."
 
-#: src/usage_text.h:267
+#: src/usage_text.h:266
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -731,7 +729,7 @@ msgstr ""
 "'-' могат\n"
 "                              да бъдат използвани заедно."
 
-#: src/usage_text.h:273
+#: src/usage_text.h:272
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
@@ -740,12 +738,12 @@ msgstr ""
 "DHT\n"
 "                              мрежата."
 
-#: src/usage_text.h:276
+#: src/usage_text.h:275
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
 msgstr " --dht-file-path=PATH Сменя DHT файловата таблица за марширути с PATH."
 
-#: src/usage_text.h:278
+#: src/usage_text.h:277
 #, fuzzy
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
@@ -763,7 +761,7 @@ msgstr ""
 "задоволява\n"
 "                              даденото равнище."
 
-#: src/usage_text.h:283
+#: src/usage_text.h:282
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -777,7 +775,7 @@ msgstr ""
 "използва Obfuscation\n"
 "                              ръкостискане."
 
-#: src/usage_text.h:288
+#: src/usage_text.h:287
 msgid ""
 " --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the "
 "download\n"
@@ -795,7 +793,7 @@ msgstr ""
 "                              Можете да приложите K или M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:293
+#: src/usage_text.h:292
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -805,7 +803,7 @@ msgstr ""
 "във всеки\n"
 "                              BitTorrent даунлоуд."
 
-#: src/usage_text.h:296
+#: src/usage_text.h:295
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
@@ -814,11 +812,11 @@ msgstr ""
 "без\n"
 "                              проверяване на частта на хеша."
 
-#: src/usage_text.h:299
+#: src/usage_text.h:298
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Пътят към .metalink файла."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:300
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
@@ -845,20 +843,20 @@ msgstr ""
 "отгоре\n"
 "                              не се извършва."
 
-#: src/usage_text.h:310
+#: src/usage_text.h:309
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION Версията на файла за даунлоуд."
 
-#: src/usage_text.h:312
+#: src/usage_text.h:311
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE Езикът на файла за даунлоуд."
 
-#: src/usage_text.h:314
+#: src/usage_text.h:313
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS Операционнта система на файла за даунлоуд."
 
-#: src/usage_text.h:316
+#: src/usage_text.h:315
 #, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
@@ -871,7 +869,7 @@ msgstr ""
 "местоположенията е\n"
 "                              приемлив."
 
-#: src/usage_text.h:320
+#: src/usage_text.h:319
 #, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
@@ -882,7 +880,7 @@ msgstr ""
 "Уточнете 'none'\n"
 "                              ако нямате никакъв предпочитан протокол."
 
-#: src/usage_text.h:323
+#: src/usage_text.h:322
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
@@ -911,7 +909,7 @@ msgstr ""
 "отгоре\n"
 "                              не се извършва."
 
-#: src/usage_text.h:333
+#: src/usage_text.h:332
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -928,11 +926,11 @@ msgstr ""
 "protocol за да\n"
 "                              уточните предпочитанието си на протокол."
 
-#: src/usage_text.h:339
+#: src/usage_text.h:338
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Отпечатва номера на версията и излиза."
 
-#: src/usage_text.h:341
+#: src/usage_text.h:340
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -957,16 +955,16 @@ msgstr ""
 "общо съответствие\n"
 "                              и резултатът се отпечатва."
 
-#: src/usage_text.h:349
+#: src/usage_text.h:348
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf Изключва зареждането на файла aria2.conf."
 
-#: src/usage_text.h:351
+#: src/usage_text.h:350
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=PATH Промяна на пътя до конфигурационния файл към PATH."
 
-#: src/usage_text.h:353
+#: src/usage_text.h:352
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -976,7 +974,7 @@ msgstr ""
 "                              Ако 0 е дадено, тази характеристика ще бъде "
 "изключена."
 
-#: src/usage_text.h:356
+#: src/usage_text.h:355
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -996,23 +994,23 @@ msgstr ""
 "9J1\"\n"
 "                              http://хост/файл"
 
-#: src/usage_text.h:362
+#: src/usage_text.h:361
 #, fuzzy
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 " -q, --quiet[=true|false] Прави aria2 тиха (без конзолно извеждане на данни)."
 
-#: src/usage_text.h:364
+#: src/usage_text.h:363
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false] Включва несинхронизиран DNS."
 
-#: src/usage_text.h:366
+#: src/usage_text.h:365
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 " --ftp-reuse-connection[=true|false] Многократно използване на връзката в "
 "FTP."
 
-#: src/usage_text.h:368
+#: src/usage_text.h:367
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1021,11 +1019,11 @@ msgstr ""
 " --summary-interval=SEC Определя интервал за извеждане на разюмето за "
 "прогреса на даунлоуда."
 
-#: src/usage_text.h:371
+#: src/usage_text.h:370
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL Определя нивото на лога към извеждането на данни."
 
-#: src/usage_text.h:373
+#: src/usage_text.h:372
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1038,7 +1036,7 @@ msgstr ""
 "                              отдалечения HTTP/FTP сървър и ако е наличен,\n"
 "                              се прилага съм локалния файл."
 
-#: src/usage_text.h:377
+#: src/usage_text.h:376
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1055,7 +1053,7 @@ msgstr ""
 "                              ефект и --timeout опцията се използва вместо "
 "това."
 
-#: src/usage_text.h:382
+#: src/usage_text.h:381
 #, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
@@ -1078,7 +1076,7 @@ msgstr ""
 "използват\n"
 "                              HTTP/FTP сървъри."
 
-#: src/usage_text.h:389
+#: src/usage_text.h:388
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1109,7 +1107,7 @@ msgstr ""
 "                              от сървъри споменати в --server-stat-of и\n"
 "                              --server-stat-if опциите."
 
-#: src/usage_text.h:400
+#: src/usage_text.h:399
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1123,7 +1121,7 @@ msgstr ""
 "записана информация\n"
 "                              използвайки --server-stat-if опцията."
 
-#: src/usage_text.h:404
+#: src/usage_text.h:403
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1139,7 +1137,7 @@ msgstr ""
 "                              някои URI селектори като 'feedback'.\n"
 "                              Вижте също --uri-selector опцията"
 
-#: src/usage_text.h:409
+#: src/usage_text.h:408
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1151,7 +1149,7 @@ msgstr ""
 "направен последният\n"
 "                              контакт с тях."
 
-#: src/usage_text.h:413
+#: src/usage_text.h:412
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1169,7 +1167,7 @@ msgstr ""
 "спре\n"
 "                              независимо от стойността."
 
-#: src/usage_text.h:418
+#: src/usage_text.h:417
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1178,14 +1176,14 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:423
+#: src/usage_text.h:422
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
 
-#: src/usage_text.h:427
+#: src/usage_text.h:426
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1197,14 +1195,14 @@ msgid ""
 "                              verification."
 msgstr ""
 
-#: src/usage_text.h:433
+#: src/usage_text.h:432
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:436
+#: src/usage_text.h:435
 #, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
@@ -1909,44 +1907,53 @@ msgid ""
 "--ca-certificate and --check-certificate option."
 msgstr ""
 
+#: src/message.h:170
+#, fuzzy, c-format
+msgid "Printing the contents of file '%s'..."
+msgstr "Отпечатване на опциите чието име включва '%s'."
+
 #: src/message.h:171
+msgid "This file is neither Torrent nor Metalink file. Skipping."
+msgstr ""
+
+#: src/message.h:174
 msgid "Timeout."
 msgstr "Таймаут."
 
-#: src/message.h:172
+#: src/message.h:175
 msgid "Invalid chunk size."
 msgstr "Невалиден размер на парчето."
 
-#: src/message.h:173
+#: src/message.h:176
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Твърде голям размер на парчето. размер=%d"
 
-#: src/message.h:174
+#: src/message.h:177
 msgid "Invalid header."
 msgstr "Невалидна заглавна част."
 
-#: src/message.h:175
+#: src/message.h:178
 msgid "Invalid response."
 msgstr "Невалиден отговор."
 
-#: src/message.h:176
+#: src/message.h:179
 msgid "No header found."
 msgstr "Не е намерена заглавна част."
 
-#: src/message.h:177
+#: src/message.h:180
 msgid "No status header."
 msgstr "Няма състоятелна заглавна част."
 
-#: src/message.h:178
+#: src/message.h:181
 msgid "Proxy connection failed."
 msgstr "Неуспешен опит за връзка през прокси."
 
-#: src/message.h:179
+#: src/message.h:182
 msgid "Connection failed."
 msgstr "Неуспешен опит за връзка."
 
-#: src/message.h:180
+#: src/message.h:183
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -1955,228 +1962,228 @@ msgstr ""
 "Заявеното име на файла и предишното регистрирано не са едни и същи. Очакван:%"
 "s Настоящ:%s"
 
-#: src/message.h:181
+#: src/message.h:184
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Състоянието на отговора е неуспешно. състояние=%d"
 
-#: src/message.h:182
+#: src/message.h:185
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Твърде голям размер на файла. размер=%s"
 
-#: src/message.h:183
+#: src/message.h:186
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Трансферната кодировка %s не се поддържа."
 
-#: src/message.h:184
+#: src/message.h:187
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Инициализацията на SSL е неуспешна: %s"
 
-#: src/message.h:185
+#: src/message.h:188
 msgid "SSL I/O error"
 msgstr "SSL Входно/Изходна грешка"
 
-#: src/message.h:186
+#: src/message.h:189
 msgid "SSL protocol error"
 msgstr "Грешка в SSL протокола"
 
-#: src/message.h:187
+#: src/message.h:190
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Неизвестна SSL грешка %d"
 
-#: src/message.h:188
+#: src/message.h:191
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Инициализацията на SSL е неуспешна: Грешка в свързването на OpenSSL %d"
 
-#: src/message.h:189
+#: src/message.h:192
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Несъответствие в размера Очакван:%s Настоящ:%s"
 
-#: src/message.h:190
+#: src/message.h:193
 msgid "Authorization failed."
 msgstr "Упълномощаването е неуспешно."
 
-#: src/message.h:191
+#: src/message.h:194
 msgid "Got EOF from the server."
 msgstr "Получен край на файла от сървъра."
 
-#: src/message.h:192
+#: src/message.h:195
 msgid "Got EOF from peer."
 msgstr "Получен край на файла от пера."
 
-#: src/message.h:193
+#: src/message.h:196
 msgid "Malformed meta info."
 msgstr "Деформирана мета информация."
 
-#: src/message.h:195
+#: src/message.h:198
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Неуспех при отварянето на файла %s, причина: %s"
 
-#: src/message.h:196
+#: src/message.h:199
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Неуспех при записването на файла %s, причина: %s"
 
-#: src/message.h:197
+#: src/message.h:200
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Неуспех при четенето на файла %s, причина: %s"
 
-#: src/message.h:198
+#: src/message.h:201
 msgid "Failed to read data from disk."
 msgstr "Неуспех при четенето на данни от диска."
 
-#: src/message.h:199
+#: src/message.h:202
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Неуспех при изчисляването на SHA1 класификация или част от файла %s, "
 "причина: %s"
 
-#: src/message.h:200
+#: src/message.h:203
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Неуспех при търсенето на файл %s, причина: %s"
 
-#: src/message.h:201
+#: src/message.h:204
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Офсетът е извън обхват, офсет=%s"
 
-#: src/message.h:202
+#: src/message.h:205
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s не е директория."
 
-#: src/message.h:203
+#: src/message.h:206
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Неуспех при създаването на директория %s, причина: %s"
 
-#: src/message.h:204
+#: src/message.h:207
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Неуспех при отварянето на сегментния файл %s, причина: %s"
 
-#: src/message.h:205
+#: src/message.h:208
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Неуспех при записването в сегментния файл %s, причина: %s"
 
-#: src/message.h:206
+#: src/message.h:209
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Неуспех при четенето от сегментния файл %s, причина: %s"
 
-#: src/message.h:208
+#: src/message.h:211
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Неуспех при отварянето на сокет, причина: %s"
 
-#: src/message.h:209
+#: src/message.h:212
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Неуспех при задаването на опция на сокета, причина: %s"
 
-#: src/message.h:210
+#: src/message.h:213
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Неуспех при задаването на сокет като блокиращ, причина: %s"
 
-#: src/message.h:211
+#: src/message.h:214
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Неуспех при задаването на сокет като неблокиращ, причина: %s"
 
-#: src/message.h:212
+#: src/message.h:215
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Неуспех при свързването със сокета, причина: %s"
 
-#: src/message.h:213
+#: src/message.h:216
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Неуспех при вслушването в сокета, причина: %s"
 
-#: src/message.h:214
+#: src/message.h:217
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Неуспех при приемането на връзка от пера, причина: %s"
 
-#: src/message.h:215
+#: src/message.h:218
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Неуспех при получаването на името на сокета, причина: %s"
 
-#: src/message.h:216
+#: src/message.h:219
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Неуспех при получаването на името на свързаният пер, причина: %s"
 
-#: src/message.h:217
+#: src/message.h:220
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Неуспех при анализирането на името на хоста %s, причина: %s"
 
-#: src/message.h:218
+#: src/message.h:221
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Неуспех при свързването към хост %s, причина: %s"
 
-#: src/message.h:219
+#: src/message.h:222
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Неуспех при проверката дали в сокета може да се записва, причина: %s"
 
-#: src/message.h:220
+#: src/message.h:223
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Неуспех при проверката дали сокета е четлив, причина: %s"
 
-#: src/message.h:221
+#: src/message.h:224
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Неуспех при изпращането на данни, причина: %s"
 
-#: src/message.h:222
+#: src/message.h:225
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Неуспех при приемането на данни, причина: %s"
 
-#: src/message.h:223
+#: src/message.h:226
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Неуспех при надничането в данните, причина: %s"
 
-#: src/message.h:224
+#: src/message.h:227
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Неизвестна грешка в сокета %d (0x%x)"
 
-#: src/message.h:225
+#: src/message.h:228
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Файлът %s съществува, но %s не съществува."
 
-#: src/message.h:226
+#: src/message.h:229
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 "Невалиден размер на полезния товар за %s, размер=%d. Трябва да бъде %d."
 
-#: src/message.h:227
+#: src/message.h:230
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Невалдно ID=%d за %s. Трябва да бъде %d."
 
-#: src/message.h:228
+#: src/message.h:231
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2185,29 +2192,29 @@ msgstr ""
 "Потвърждението на контролната сума на парчето е неуспешно. Индекс на "
 "контролната сума=%d, офсет%s, очакван хеш=%s, настоящ хеш=%s"
 
-#: src/message.h:229
+#: src/message.h:232
 msgid "Download aborted."
 msgstr "Даунлоудът е преустановен."
 
-#: src/message.h:230
+#: src/message.h:233
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Файлът %s е даунлоудван от друга команда."
 
-#: src/message.h:231
+#: src/message.h:234
 msgid "Insufficient checksums."
 msgstr "Недостатъчни контролни суми."
 
-#: src/message.h:232
+#: src/message.h:235
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Тракерът върна неуспех причина: %s"
 
-#: src/message.h:233
+#: src/message.h:236
 msgid "Flooding detected."
 msgstr "Засечено е наводнение."
 
-#: src/message.h:234
+#: src/message.h:237
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2216,52 +2223,52 @@ msgstr ""
 "Отпадане на връзката защото никакви заявени/частни съобщениея не бяха "
 "разменени в определен период(%d секунди)."
 
-#: src/message.h:235
+#: src/message.h:238
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "Информационният хеш в торент файла не съответства на този в .aria2 файла."
 
-#: src/message.h:236
+#: src/message.h:239
 #, c-format
 msgid "No such file entry %s"
 msgstr "Няма такъв файлов запис %s"
 
-#: src/message.h:237
+#: src/message.h:240
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Твърде ниска Скорост на даунлоуда: %d <= %d(B/s), хост:%s"
 
-#: src/message.h:238
+#: src/message.h:241
 msgid "No HttpRequestEntry found."
 msgstr "Не е намерен Http запис за заявка."
 
-#: src/message.h:239
+#: src/message.h:242
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Получено %d състояние, но никаква местна заглавна част не е доставена."
 
-#: src/message.h:240
+#: src/message.h:243
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr ""
 "Невалиден обхват на заглавната част. Заявка: %s-%s/%s, Отговор: %s-%s/%s"
 
-#: src/message.h:241
+#: src/message.h:244
 msgid "No file matched with your preference."
 msgstr "Никакъв файл не съответства с Вашето предпочитание."
 
-#: src/message.h:242
+#: src/message.h:245
 msgid "Exception caught"
 msgstr "Прихванато е изключение"
 
-#: src/message.h:243
+#: src/message.h:246
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "Максималната дължина на полезния товар е превишена или невалидна. дължина = %"
 "u"
 
-#: src/message.h:244
+#: src/message.h:247
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""

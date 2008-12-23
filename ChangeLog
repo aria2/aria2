@@ -1,5 +1,14 @@
 2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Russian, Simplified Chinese, Ukrainian and Japanese
+	translations. Thanks to all translators.
+	* po/ja.po
+	* po/ru.po
+	* po/uk.po
+	* po/zh_CN.po
+
+2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added the preceding ">>> " before the message "Printing the
 	contents of file..." to make the output more readable.
 	* src/main.cc
