@@ -13,12 +13,10 @@ servers by default. --with-ca-bundle compile time option is added to
 specify the default path to the CA bundle.
 
 The most big changes in this release is that the package name is
-changed from "aria2c" to "aria2". This changes the install directory
-of documents and translation files(*.mo). This change is done in order
-to fix the inconsistency of the package name and the install directory
-since in many distributions the binary package name is "aria2", but
-the old releases tried to install to "aria2c" directory such as
-"/usr/local/share/doc/aria2c".
+changed from "aria2c" to "aria2". This changes the installation
+directory of the documents and the translation files(*.mo). Now the
+documents are installed in $prefix/share/doc/aria2 and the each
+translation file is named as aria2.mo
 
 Changes
 -------
@@ -61,7 +59,11 @@ Changes
   option.
 
 * Changed the package name from "aria2c" to "aria2".  The name of the
-  executable is not changed.
+  executable is not changed. This change was done in order to fix the
+  inconsistency of the package name and the install directory since in
+  many distributions the binary package name is "aria2", but the old
+  releases tried to install to "aria2c" directory such as
+  "/usr/local/share/doc/aria2c".
 
 * Fixed typos in man page.
 
