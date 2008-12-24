@@ -184,7 +184,8 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
   }
   std::ostringstream o;
   if(requestGroupMan->countRequestGroup() > 0) {
-    if(_lastSummaryNotified.elapsed(_summaryInterval)) {
+    if((_summaryInterval > 0) &&
+       _lastSummaryNotified.elapsed(_summaryInterval)) {
       _lastSummaryNotified.reset();
       printProgressSummary(requestGroupMan->getRequestGroups(), cols);
       std::cout << "\n";

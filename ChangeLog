@@ -1,3 +1,9 @@
+2008-12-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that --summary-interval=0 doesn't work. The summary
+	is printed repeatedly.
+	* src/ConsoleStatCalc.cc
+	
 2008-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	* Release 1.1.0
