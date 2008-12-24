@@ -1,3 +1,17 @@
+aria2 1.1.1
+===========
+
+Release Note
+------------
+This release fixes the bug that --summary-interval=0 doesn't work.
+
+Changes
+-------
+* Fixed the bug that --summary-interval=0 doesn't work. The summary is
+  printed repeatedly. It should not be printed if 0 is specified.
+
+
+
 aria2 1.1.0
 ===========
 
