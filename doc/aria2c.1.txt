@@ -233,6 +233,11 @@ HTTP Specific Options
 [NOTE]
 If aria2 is built without libsqlite3, then it doesn't support Firefox3 cookie format.
 
+*--use-head*[='true'|'false']::
+  Use HEAD method for the first request to the HTTP server.
+  Default: 'true'
+
+
 *-U*, *--user-agent*=USER_AGENT::
   Set user agent for HTTP(S) downloads.
 

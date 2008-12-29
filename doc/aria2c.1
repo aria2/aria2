@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 12/17/2008
+.\"      Date: 12/29/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "12/17/2008" "" ""
+.TH "ARIA2C" "1" "12/29/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -324,6 +324,12 @@ Load Cookies from FILE using the Firefox3 format (SQLite3) and the Mozilla/Firef
 .br
 Note
 If aria2 is built without libsqlite3, then it doesn\'t support Firefox3 cookie format\&.
+.PP
+\fB\-\-use\-head\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Use HEAD method for the first request to the HTTP server\&. Default:
+\fItrue\fR
+.RE
 .PP
 \fB\-U\fR, \fB\-\-user\-agent\fR=USER_AGENT
 .RS 4
