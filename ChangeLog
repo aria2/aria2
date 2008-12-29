@@ -1,5 +1,19 @@
 2008-12-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --use-head option to toggle whether HEAD method should be
+	used in the first HTTP request. By default aria2 uses HEAD method
+	as the first request. When the server doesn't recognize HEAD, then
+	give aria2 --use-head=false to force aria2 to use GET method
+	instead.
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroupMan.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2008-12-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that BitTorrent download doesn't finish when REJECT
 	message is received before CHOKE message.  The old implementation
 	doen't clear the use-bit of the piece when recieved REJECT

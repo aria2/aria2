@@ -188,6 +188,8 @@ const std::string PREF_PRIVATE_KEY("private-key");
 const std::string PREF_CA_CERTIFICATE("ca-certificate");
 // value: true | false
 const std::string PREF_CHECK_CERTIFICATE("check-certificate");
+// value: true | false
+const std::string PREF_USE_HEAD("use-head");
 
 /** 
  * Proxy related preferences

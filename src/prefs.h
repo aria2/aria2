@@ -192,6 +192,8 @@ extern const std::string PREF_PRIVATE_KEY;
 extern const std::string PREF_CA_CERTIFICATE;
 // value: true | false
 extern const std::string PREF_CHECK_CERTIFICATE;
+// value: true | false
+extern const std::string PREF_USE_HEAD;
 
 /**;
  * Proxy related preferences

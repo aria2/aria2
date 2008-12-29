@@ -268,6 +268,17 @@ void RequestGroupMan::configureRequestGroup
   }
 }
 
+static void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
+				 std::deque<Command*>& commands,
+				 DownloadEngine* e,
+				 bool useHead)
+{
+  requestGroup->createInitialCommand(commands, e,
+				     useHead ?
+				     Request::METHOD_HEAD :
+				     Request::METHOD_GET);
+}
+
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
   RequestGroups temp;
@@ -284,7 +295,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       }
       configureRequestGroup(groupToAdd);
       Commands commands;
-      groupToAdd->createInitialCommand(commands, e);
+      createInitialCommand(groupToAdd, commands, e,
+			   _option->getAsBool(PREF_USE_HEAD));
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
@@ -308,7 +320,8 @@ void RequestGroupMan::getInitialCommands(std::deque<Command*>& commands,
     try {
       if((*itr)->isDependencyResolved()) {
 	configureRequestGroup(*itr);
-	(*itr)->createInitialCommand(commands, e);
+	createInitialCommand(*itr, commands, e,
+			     _option->getAsBool(PREF_USE_HEAD));
 	++itr;
       } else {
 	_reservedGroups.push_front((*itr));

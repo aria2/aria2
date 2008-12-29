@@ -541,6 +541,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_USE_HEAD,
+				    TEXT_USE_HEAD,
+				    V_TRUE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_USER_AGENT,
 				    TEXT_USER_AGENT,
 				    "aria2"));

@@ -434,3 +434,6 @@ _(" --check-certificate[=true|false] Verify the peer using certificates specifie
 #define TEXT_NO_PROXY \
 _(" --no-proxy=DOMAINS           Specify comma separated hostnames or domains where\n"\
   "                              proxy should not be used.")
+#define TEXT_USE_HEAD \
+_(" --use-head[=true|false]      Use HEAD method for the first request to the HTTP\n"\
+  "                              server.")
