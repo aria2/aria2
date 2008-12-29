@@ -1,3 +1,12 @@
+2008-12-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that BitTorrent download doesn't finish when REJECT
+	message is received before CHOKE message.  The old implementation
+	doen't clear the use-bit of the piece when recieved REJECT
+	message.
+	* src/DefaultBtMessageDispatcher.cc
+	* test/DefaultBtMessageDispatcherTest.cc
+
 2008-12-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	* Release 1.1.1

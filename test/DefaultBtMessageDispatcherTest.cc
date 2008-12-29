@@ -385,16 +385,25 @@ void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
 }
 
 void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest() {
-  RequestSlot slot(1, 1024, 16*1024, 10);
+  SharedHandle<Piece> piece(new Piece(1, 1024*1024));
+  size_t blockIndex = 0;
+  CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(blockIndex));
+  uint32_t begin = blockIndex*piece->getBlockLength();
+  size_t length = piece->getBlockLength(blockIndex);
+  RequestSlot slot(piece->getIndex(), begin, length, blockIndex, piece);
   btMessageDispatcher->addOutstandingRequest(slot);
 
-  RequestSlot s2 = btMessageDispatcher->getOutstandingRequest(1, 1024, 16*1024);
+  RequestSlot s2 = btMessageDispatcher->getOutstandingRequest
+    (piece->getIndex(), begin, length);
   CPPUNIT_ASSERT(!RequestSlot::isNull(s2));
+  CPPUNIT_ASSERT(piece->isBlockUsed(blockIndex));
 
   btMessageDispatcher->removeOutstandingRequest(s2);
 
-  RequestSlot s3 = btMessageDispatcher->getOutstandingRequest(1, 1024, 16*1024);
+  RequestSlot s3 = btMessageDispatcher->getOutstandingRequest
+    (piece->getIndex(), begin, length);
   CPPUNIT_ASSERT(RequestSlot::isNull(s3));  
+  CPPUNIT_ASSERT(!piece->isBlockUsed(blockIndex));
 }
 
 } // namespace aria2

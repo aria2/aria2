@@ -408,6 +408,7 @@ void DefaultBtMessageDispatcher::removeOutstandingRequest(const RequestSlot& slo
   std::deque<RequestSlot>::iterator i =
     std::lower_bound(requestSlots.begin(), requestSlots.end(), slot);
   if(i != requestSlots.end() && (*i) == slot) {
+    AbortOutstandingRequest(slot.getPiece(), cuid)(*i);
     requestSlots.erase(i);
   }
 }
