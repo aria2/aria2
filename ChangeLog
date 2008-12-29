@@ -1,5 +1,10 @@
 2008-12-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.1.2
+	* configure.ac
+
+2008-12-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --use-head option to toggle whether HEAD method should be
 	used in the first HTTP request. By default aria2 uses HEAD method
 	as the first request. When the server doesn't recognize HEAD, then
