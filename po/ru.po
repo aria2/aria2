@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-12-20 20:08+0900\n"
-"PO-Revision-Date: 2008-12-22 08:11+0000\n"
+"POT-Creation-Date: 2008-12-29 23:12+0900\n"
+"PO-Revision-Date: 2008-12-28 10:37+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-12-23 11:01+0000\n"
+"X-Launchpad-Export-Date: 2008-12-29 14:17+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:820
@@ -42,11 +42,11 @@ msgstr ""
 "Если возникли какие-либо ошибки, проверьте log-файл. Для более подробной "
 "информации смотрите описание опции '-l'."
 
-#: src/RequestGroupMan.cc:389
+#: src/RequestGroupMan.cc:402
 msgid "Download Results:"
 msgstr "Результат загрузки:"
 
-#: src/RequestGroupMan.cc:430
+#: src/RequestGroupMan.cc:443
 msgid "Status Legend:"
 msgstr "Использованные обозначения:"
 
@@ -611,7 +611,7 @@ msgstr ""
 
 #: src/usage_text.h:209
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr " -T, --torrent-file=TORRENT_FILE  Путь до .torrent-файла."
+msgstr " -T, --torrent-file=TORRENT_FILE  Путь к .torrent-файлу."
 
 #: src/usage_text.h:211
 msgid ""
@@ -1014,7 +1014,7 @@ msgstr " --no-conf Отменить загрузку файла aria2.conf."
 #: src/usage_text.h:350
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
-msgstr " --conf-path=PATH Сменить путь до файла конфигурации на PATH."
+msgstr " --conf-path=PATH Сменить путь к файлу конфигурации на PATH."
 
 #: src/usage_text.h:352
 msgid ""
@@ -1283,6 +1283,13 @@ msgstr ""
 "где\n"
 "                              прокси не следует использовать."
 
+#: src/usage_text.h:438
+msgid ""
+" --use-head[=true|false]      Use HEAD method for the first request to the "
+"HTTP\n"
+"                              server."
+msgstr ""
+
 #: src/version_usage.cc:54
 msgid " version "
 msgstr " версия "
@@ -1354,10 +1361,10 @@ msgid ""
 msgstr ""
 " Вы можете указать одновременно торент-файл с параметром -T и URL. В этом "
 "случае,\n"
-" происходит загрузка відбувається завантажений файл з маси торенту та http/"
-"ftp сереверу одночасно,\n"
-" поки дані з http/ftp відвантажуються до маси торенту. Зуважте, що\n"
-" тільки єдиний файл торенту може бути інтегровано до http/ftp."
+" происходит загрузка  файл из массы торента и http/ftp серевера "
+"одновременно,\n"
+" пока данные с http/ftp отдаются в массу торента. Обратите внимание, что\n"
+" только один файл торента может быть интегрирован в http/ft."
 
 #: src/version_usage.cc:133
 msgid ""

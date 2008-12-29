@@ -1,5 +1,10 @@
 2008-12-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Russian translation. Thanks to the translators.
+	* po/ru.po
+
+2008-12-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added the description of --use-head option to man page.
 	* doc/aria2c.1.txt
 

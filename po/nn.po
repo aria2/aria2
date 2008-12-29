@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-12-20 20:08+0900\n"
+"POT-Creation-Date: 2008-12-29 23:12+0900\n"
 "PO-Revision-Date: 2008-11-23 14:10+0000\n"
 "Last-Translator: Leif Arne Storset <leifarne@storset.net>\n"
 "Language-Team: Norwegian Nynorsk <nn@li.org>\n"
@@ -38,11 +38,11 @@ msgstr ""
 "Dersom det er nokon feil, sjå loggfila. Sjå '-l' val i hjelp/manual for "
 "detaljar."
 
-#: src/RequestGroupMan.cc:389
+#: src/RequestGroupMan.cc:402
 msgid "Download Results:"
 msgstr "Nedlastingsresultat:"
 
-#: src/RequestGroupMan.cc:430
+#: src/RequestGroupMan.cc:443
 msgid "Status Legend:"
 msgstr "Statusforklaring:"
 
@@ -858,6 +858,13 @@ msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
 "                              proxy should not be used."
+msgstr ""
+
+#: src/usage_text.h:438
+msgid ""
+" --use-head[=true|false]      Use HEAD method for the first request to the "
+"HTTP\n"
+"                              server."
 msgstr ""
 
 #: src/version_usage.cc:54

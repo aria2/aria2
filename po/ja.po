@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-12-20 20:08+0900\n"
+"POT-Creation-Date: 2008-12-29 23:12+0900\n"
 "PO-Revision-Date: 2008-12-23 20:15+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/RequestGroupMan.cc:389
+#: src/RequestGroupMan.cc:402
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:430
+#: src/RequestGroupMan.cc:443
 msgid "Status Legend:"
 msgstr "凡例:"
 
@@ -1367,6 +1367,13 @@ msgstr ""
 " --no-proxy=DOMAINS           プロキシサーバーを使わないホスト名やドメイン名"
 "をコ\n"
 "                              ンマで区切って指定します."
+
+#: src/usage_text.h:438
+msgid ""
+" --use-head[=true|false]      Use HEAD method for the first request to the "
+"HTTP\n"
+"                              server."
+msgstr ""
 
 #: src/version_usage.cc:54
 msgid " version "

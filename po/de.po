@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-12-20 20:08+0900\n"
+"POT-Creation-Date: 2008-12-29 23:12+0900\n"
 "PO-Revision-Date: 2008-10-06 17:17+0900\n"
 "Last-Translator: Yuri <Unknown>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -39,11 +39,11 @@ msgstr ""
 "Sollten Fehler aufgetreten sein, bitte die Mitschnitt-Datei beachten. Für "
 "Details hierzu siehe die Option \"-l\" in den Hilfe- und man-Seiten."
 
-#: src/RequestGroupMan.cc:389
+#: src/RequestGroupMan.cc:402
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:430
+#: src/RequestGroupMan.cc:443
 msgid "Status Legend:"
 msgstr "Statuserläuterung:"
 
@@ -1165,6 +1165,13 @@ msgstr ""
 " --seed-time=MINUTES          Legt die Verteilzeit in Minuten fest. Siehe "
 "auch\n"
 "                              die Option \"--seed-ratio\"."
+
+#: src/usage_text.h:438
+msgid ""
+" --use-head[=true|false]      Use HEAD method for the first request to the "
+"HTTP\n"
+"                              server."
+msgstr ""
 
 #: src/version_usage.cc:54
 msgid " version "
