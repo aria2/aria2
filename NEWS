@@ -1,3 +1,29 @@
+aria2 1.1.2
+===========
+
+Release Note
+------------
+This release fixes the bug that BitTorrent download doesn't finish
+when REJECT message is received before CHOKE message.  --use-head
+option was added to toggle whether HEAD method should be used in the
+first HTTP request. To use GET method as the first request, give
+--use-head=false to aria2c.
+
+Changes
+-------
+* Updated Russian translation. Thanks to the translators.
+
+* Added --use-head option to toggle whether HEAD method should be used
+  in the first HTTP request. By default aria2 uses HEAD method as the
+  first request. If the server doesn't recognize HEAD, then give aria2
+  --use-head=false to force aria2 to use GET method instead.
+
+* Fixed the bug that BitTorrent download doesn't finish when REJECT
+  message is received before CHOKE message.  The old implementation
+  doesn't clear the use-bit of the piece when recieved REJECT message.
+
+
+
 aria2 1.1.1
 ===========
 
