@@ -1,3 +1,8 @@
+2009-01-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed unit test error.
+	* test/HttpResponseTest.cc (HttpResponseTest::testRetrieveCookie)
+
 2008-12-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	* Release 1.1.2

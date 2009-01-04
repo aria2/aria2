@@ -479,7 +479,7 @@ void HttpResponseTest::testRetrieveCookie()
 
   httpHeader->put("Set-Cookie", "k1=v1; expires=Sun, 10-Jun-2007 11:00:00 GMT;"
 		  "path=/; domain=.aria2.org;");
-  httpHeader->put("Set-Cookie", "k2=v2; expires=Sun, 01-Jan-09 00:00:00 GMT;"
+  httpHeader->put("Set-Cookie", "k2=v2; expires=Sun, 01-Jan-38 00:00:00 GMT;"
 		  "path=/; domain=.aria2.org;");
   httpHeader->put("Set-Cookie", "k3=v3;");
 
