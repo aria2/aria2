@@ -57,6 +57,7 @@
 #include "SegmentMan.h"
 #include "ServerStatURISelector.h"
 #include "InOrderURISelector.h"
+#include "AdaptiveURISelector.h"
 #include "Option.h"
 #include "prefs.h"
 #include "File.h"
@@ -205,15 +206,26 @@ public:
       if(!group->getSegmentMan().isNull()) {
 	const std::deque<SharedHandle<PeerStat> >& peerStats =
 	  group->getSegmentMan()->getPeerStats();
+
 	for(std::deque<SharedHandle<PeerStat> >::const_iterator i =
 	      peerStats.begin(); i != peerStats.end(); ++i) {
 	  if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
 	    continue;
 	  }
+	  int speed = (*i)->getAvgDownloadSpeed();
+	  if (speed == 0) continue;
+
 	  SharedHandle<ServerStat> ss =
 	    _requestGroupMan->getOrCreateServerStat((*i)->getHostname(),
 						    (*i)->getProtocol());
-	  ss->updateDownloadSpeed((*i)->getAvgDownloadSpeed());
+          ss->increaseCounter();
+	  ss->updateDownloadSpeed(speed);
+          if(peerStats.size() == 1) {
+            ss->updateSingleConnectionAvgSpeed(speed);
+          }
+          else {
+            ss->updateMultiConnectionAvgSpeed(speed);
+          }
 	}
       }
     }    
@@ -265,6 +277,10 @@ void RequestGroupMan::configureRequestGroup
   } else if(uriSelectorValue == V_INORDER) {
     requestGroup->setURISelector
       (SharedHandle<URISelector>(new InOrderURISelector()));
+  } else if(uriSelectorValue == V_ADAPTIVE) {
+    requestGroup->setURISelector
+      (SharedHandle<URISelector>(new AdaptiveURISelector(_serverStatMan,
+							 requestGroup)));
   }
 }
 

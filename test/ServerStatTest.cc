@@ -1,9 +1,12 @@
 #include "ServerStat.h"
-#include "Exception.h"
-#include "Util.h"
+
 #include <iostream>
 #include <sstream>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Exception.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -46,6 +49,9 @@ void ServerStatTest::testOperatorOstream()
   ServerStat localhost_http("localhost", "http");
   localhost_http.setDownloadSpeed(90000);
   localhost_http.setLastUpdated(Time(1000));
+  localhost_http.setSingleConnectionAvgSpeed(101);
+  localhost_http.setMultiConnectionAvgSpeed(102);
+  localhost_http.setCounter(5);
 
   std::stringstream ss;
   
@@ -53,7 +59,9 @@ void ServerStatTest::testOperatorOstream()
 
   CPPUNIT_ASSERT_EQUAL
     (std::string
-     ("host=localhost, protocol=http, dl_speed=90000, last_updated=1000, status=OK"),
+     ("host=localhost, protocol=http, dl_speed=90000,"
+      " sc_avg_speed=101, mc_avg_speed=102,"
+      " last_updated=1000, counter=5, status=OK"),
      ss.str());
 
   ss.str("");
@@ -67,7 +75,9 @@ void ServerStatTest::testOperatorOstream()
 
   CPPUNIT_ASSERT_EQUAL
     (std::string
-     ("host=localhost, protocol=ftp, dl_speed=10000, last_updated=1210000000, status=ERROR"),
+     ("host=localhost, protocol=ftp, dl_speed=10000,"
+      " sc_avg_speed=0, mc_avg_speed=0,"
+      " last_updated=1210000000, counter=0, status=ERROR"),
      ss.str());
 
 }

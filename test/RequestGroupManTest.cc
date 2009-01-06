@@ -1,4 +1,9 @@
 #include "RequestGroupMan.h"
+
+#include <fstream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "prefs.h"
 #include "SingleFileDownloadContext.h"
 #include "RequestGroup.h"
@@ -8,8 +13,6 @@
 #include "ServerStatMan.h"
 #include "ServerStat.h"
 #include "File.h"
-#include <fstream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -97,6 +100,7 @@ void RequestGroupManTest::testLoadServerStat()
 
   Option option;
   RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(), 0, &option);
+  std::cerr << "testLoadServerStat" << std::endl;
   CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
   SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",
 							    "http");

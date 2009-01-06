@@ -51,6 +51,7 @@ class DownloadEngine;
 class SegmentMan;
 class SegmentManFactory;
 class Command;
+class DownloadCommand;
 class DownloadContext;
 class PieceStorage;
 class BtProgressInfoFile;
@@ -405,6 +406,8 @@ public:
 
   // Returns inMemoryDownload flag.
   bool inMemoryDownload() const;
+
+  void tuneDownloadCommand(DownloadCommand* command);
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

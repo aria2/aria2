@@ -106,6 +106,7 @@ bool FtpNegotiationCommand::executeInternal() {
 	_requestGroup->removeURIWhoseHostnameIs(sv->getHostname());
       }
     }
+    _requestGroup->tuneDownloadCommand(command);
     e->commands.push_back(command);
     return true;
   } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {

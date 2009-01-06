@@ -131,10 +131,11 @@ const std::string V_INFO("info");
 const std::string V_NOTICE("notice");
 const std::string V_WARN("warn");
 const std::string V_ERROR("error");
-// value: inorder | feedback
+// value: inorder | feedback | adaptive
 const std::string PREF_URI_SELECTOR("uri-selector");
 const std::string V_INORDER("inorder");
 const std::string V_FEEDBACK("feedback");
+const std::string V_ADAPTIVE("adaptive");
 // value: 1*digit
 const std::string PREF_SERVER_STAT_TIMEOUT("server-stat-timeout");
 // value: string that your file system recognizes as a file name.

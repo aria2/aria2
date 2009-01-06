@@ -115,7 +115,9 @@ void SpeedCalc::changeSw() {
 
 unsigned int SpeedCalc::calculateAvgSpeed() const {
   uint64_t milliElapsed = start.differenceInMillis();
-  if(milliElapsed) {
+
+  // if milliElapsed is too small, the average speed is rubish, better return 0
+  if(milliElapsed > 4) {
     unsigned int speed = accumulatedLength*1000/milliElapsed;
     return speed;
   } else {

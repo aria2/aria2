@@ -405,7 +405,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
 	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h Signature.cc \
 	Signature.h ServerStat.cc ServerStat.h ServerStatMan.cc \
-	ServerStatMan.h URISelector.h InOrderURISelector.cc \
+	ServerStatMan.h URISelector.h AdaptiveURISelector.cc \
+	AdaptiveURISelector.h InOrderURISelector.cc \
 	InOrderURISelector.h ServerStatURISelector.cc \
 	ServerStatURISelector.h NsCookieParser.cc NsCookieParser.h \
 	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
@@ -797,17 +798,17 @@ am__objects_21 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) A2STR.$(OBJEXT) \
 	RarestPieceSelector.$(OBJEXT) ChunkedDecoder.$(OBJEXT) \
 	Signature.$(OBJEXT) ServerStat.$(OBJEXT) \
-	ServerStatMan.$(OBJEXT) InOrderURISelector.$(OBJEXT) \
-	ServerStatURISelector.$(OBJEXT) NsCookieParser.$(OBJEXT) \
-	CookieStorage.$(OBJEXT) SocketBuffer.$(OBJEXT) \
-	OptionHandlerException.$(OBJEXT) bencode.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
-	$(am__objects_16) $(am__objects_17) $(am__objects_18) \
-	$(am__objects_19) $(am__objects_20)
+	ServerStatMan.$(OBJEXT) AdaptiveURISelector.$(OBJEXT) \
+	InOrderURISelector.$(OBJEXT) ServerStatURISelector.$(OBJEXT) \
+	NsCookieParser.$(OBJEXT) CookieStorage.$(OBJEXT) \
+	SocketBuffer.$(OBJEXT) OptionHandlerException.$(OBJEXT) \
+	bencode.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
+	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
+	$(am__objects_12) $(am__objects_13) $(am__objects_14) \
+	$(am__objects_15) $(am__objects_16) $(am__objects_17) \
+	$(am__objects_18) $(am__objects_19) $(am__objects_20)
 am_libaria2c_a_OBJECTS = $(am__objects_21)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1126,7 +1127,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
 	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h Signature.cc \
 	Signature.h ServerStat.cc ServerStat.h ServerStatMan.cc \
-	ServerStatMan.h URISelector.h InOrderURISelector.cc \
+	ServerStatMan.h URISelector.h AdaptiveURISelector.cc \
+	AdaptiveURISelector.h InOrderURISelector.cc \
 	InOrderURISelector.h ServerStatURISelector.cc \
 	ServerStatURISelector.h NsCookieParser.cc NsCookieParser.h \
 	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
@@ -1237,6 +1239,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractProxyResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractSingleDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActivePeerConnectionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AdaptiveURISelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AsyncNameResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfig.Po@am__quote@

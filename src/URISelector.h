@@ -40,11 +40,18 @@
 
 namespace aria2 {
 
+class DownloadCommand;
+
 class URISelector {
 public:
   virtual ~URISelector() {}
 
   virtual std::string select(std::deque<std::string>& uris) = 0;
+
+  virtual void tuneDownloadCommand(std::deque<std::string>& uris,
+				   DownloadCommand* command) {};
+
+  virtual void resetCounters() { return; };
 };
 
 } // namespace aria2

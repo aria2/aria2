@@ -86,7 +86,10 @@ bool ServerStatMan::load(std::istream& in)
   static const std::string S_HOST = "host";
   static const std::string S_PROTOCOL = "protocol";
   static const std::string S_DL_SPEED = "dl_speed";
+  static const std::string S_SC_AVG_SPEED = "sc_avg_speed";
+  static const std::string S_MC_AVG_SPEED = "mc_avg_speed";
   static const std::string S_LAST_UPDATED = "last_updated";
+  static const std::string S_COUNTER = "counter";
   static const std::string S_STATUS = "status";
 
   std::string line;
@@ -111,6 +114,18 @@ bool ServerStatMan::load(std::istream& in)
     SharedHandle<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
     try {
       sstat->setDownloadSpeed(Util::parseUInt(m[S_DL_SPEED]));
+      // Old serverstat file doesn't contains SC_AVG_SPEED
+      if(m.find(S_SC_AVG_SPEED) != m.end()) {
+	sstat->setSingleConnectionAvgSpeed(Util::parseUInt(m[S_SC_AVG_SPEED]));
+      }
+      // Old serverstat file doesn't contains MC_AVG_SPEED
+      if(m.find(S_MC_AVG_SPEED) != m.end()) {
+	sstat->setMultiConnectionAvgSpeed(Util::parseUInt(m[S_MC_AVG_SPEED]));
+      }
+      // Old serverstat file doesn't contains COUNTER_SPEED
+      if(m.find(S_COUNTER) != m.end()) {
+	sstat->setCounter(Util::parseUInt(m[S_COUNTER]));
+      }
       sstat->setLastUpdated(Time(Util::parseInt(m[S_LAST_UPDATED])));
       sstat->setStatus(m[S_STATUS]);
       add(sstat);

@@ -135,10 +135,11 @@ extern const std::string V_INFO;
 extern const std::string V_NOTICE;
 extern const std::string V_WARN;
 extern const std::string V_ERROR;
-// value: inorder | feedback
+// value: inorder | feedback | adaptive
 extern const std::string PREF_URI_SELECTOR;
 extern const std::string V_INORDER;
 extern const std::string V_FEEDBACK;
+extern const std::string V_ADAPTIVE;
 // value: 1*digit
 extern const std::string PREF_SERVER_STAT_TIMEOUT;
 // value: string that your file system recognizes as a file name.

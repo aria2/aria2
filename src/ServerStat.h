@@ -35,11 +35,15 @@
 #ifndef _D_SERVER_STAT_H_
 #define _D_SERVER_STAT_H_
 #include "common.h"
-#include "TimeA2.h"
+
 #include <string>
 #include <iosfwd>
 
+#include "TimeA2.h"
+
 namespace aria2 {
+
+class Logger;
 
 // ServerStatMan: has many ServerStat
 // URISelector: interface
@@ -75,6 +79,18 @@ public:
   // set download speed. This method doesn't update _lastUpdate.
   void setDownloadSpeed(unsigned int downloadSpeed);
 
+  unsigned int getSingleConnectionAvgSpeed() const;
+  void updateSingleConnectionAvgSpeed(unsigned int downloadSpeed);
+  void setSingleConnectionAvgSpeed(unsigned int singleConnectionAvgSpeed);
+
+  unsigned int getMultiConnectionAvgSpeed() const;
+  void updateMultiConnectionAvgSpeed(unsigned int downloadSpeed);
+  void setMultiConnectionAvgSpeed(unsigned int singleConnectionAvgSpeed);
+
+  unsigned int getCounter() const;
+  void increaseCounter();
+  void setCounter(unsigned int value);
+
   // This method doesn't update _lastUpdate.
   void setStatus(STATUS status);
 
@@ -104,6 +120,14 @@ private:
   std::string _protocol;
 
   unsigned int _downloadSpeed;
+  
+  unsigned int _singleConnectionAvgSpeed;
+  
+  unsigned int _multiConnectionAvgSpeed;
+
+  unsigned int _counter;
+
+  Logger* _logger;
 
   STATUS _status;
 

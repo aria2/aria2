@@ -417,7 +417,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    const std::string params[] = { V_INORDER, V_FEEDBACK };
+    const std::string params[] = { V_INORDER, V_FEEDBACK, V_ADAPTIVE };
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_URI_SELECTOR,
 				    TEXT_URI_SELECTOR,

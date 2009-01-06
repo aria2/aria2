@@ -348,6 +348,8 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
     _requestGroup->setFileAllocationEnabled(false);
   }
 
+  _requestGroup->tuneDownloadCommand(command);
+
   return command;
 }
 

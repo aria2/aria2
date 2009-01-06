@@ -521,6 +521,8 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
   std::deque<std::string> pendingURIs;
   for(; !_uris.empty() && numCommand--; ) {    
     std::string uri = _uriSelector->select(_uris);
+    if(uri.empty())
+      continue;
     RequestHandle req(new Request());
     if(req->setUrl(uri)) {
       ServerHostHandle sv;
@@ -987,6 +989,7 @@ void RequestGroup::reportDownloadFinished()
 {
   _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
 		  getFilePath().c_str());
+  _uriSelector->resetCounters();
 #ifdef ENABLE_BITTORRENT
   SharedHandle<BtContext> ctx = dynamic_pointer_cast<BtContext>(_downloadContext);
   if(!ctx.isNull()) {
@@ -1087,6 +1090,11 @@ void RequestGroup::markInMemoryDownload()
 bool RequestGroup::inMemoryDownload() const
 {
   return _inMemoryDownload;
+}
+
+void RequestGroup::tuneDownloadCommand(DownloadCommand* command)
+{
+  _uriSelector->tuneDownloadCommand(_uris, command);
 }
 
 } // namespace aria2

@@ -1,3 +1,32 @@
+2009-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Applied AdaptiveURISelector patch from Aurelien Lefebvre.  This
+	patch adds AdaptiveURISelector, which selects one of the bests
+	mirrors for first and reserved connections. For supplementary
+	ones, it returns mirrors which has not been tested yet, and if
+	each of them already tested, returns mirrors which has to be
+	tested again. Otherwise, it doesn't return anymore mirrors.
+	* src/AdaptiveURISelector.cc
+	* src/AdaptiveURISelector.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/ServerStat.cc
+	* src/ServerStat.h
+	* src/ServerStatMan.cc
+	* src/SpeedCalc.cc
+	* src/URISelector.h
+	* src/prefs.cc
+	* src/prefs.h
+	* test/RequestGroupManTest.cc
+	* test/ServerStatManTest.cc
+	* test/ServerStatTest.cc
+
 2009-01-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed unit test error.
