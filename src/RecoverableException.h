@@ -35,10 +35,14 @@
 #ifndef _D_RECOVERABLE_EXCEPTION_H_
 #define _D_RECOVERABLE_EXCEPTION_H_
 #include "Exception.h"
+#include "DownloadResult.h"
 
 namespace aria2 {
 
 class RecoverableException:public Exception {
+private:
+  DownloadResult::RESULT _code;
+
 protected:
   virtual SharedHandle<Exception> copy() const
   {
@@ -46,10 +50,22 @@ protected:
     return e;
   }
 public:
-  RecoverableException(const std::string& msg):Exception(msg) {}
-  RecoverableException(const std::string& msg,
-		       const Exception& cause):Exception(msg, cause) {}
-  RecoverableException(const RecoverableException& e):Exception(e) {}
+  RecoverableException(const std::string& msg):
+    Exception(msg),
+    _code(DownloadResult::UNKNOWN_ERROR) {}
+
+  RecoverableException(const std::string& msg, const Exception& cause):
+    Exception(msg, cause),
+    _code(DownloadResult::UNKNOWN_ERROR) {}
+
+  RecoverableException(const RecoverableException& e):
+    Exception(e),
+    _code(DownloadResult::UNKNOWN_ERROR) {}
+  
+  RecoverableException(const std::string& msg, DownloadResult::RESULT result):
+    Exception(msg), _code(result) {}
+
+  DownloadResult::RESULT getCode() const { return _code; }
 };
 
 } // namespace aria2

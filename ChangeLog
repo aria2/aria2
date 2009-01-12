@@ -1,3 +1,35 @@
+2009-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Applied exit-status patch from Pascal Rigaux at Mandriva.  aria2
+	now returns last error encountered in the HTTP/FTP downloads as a
+	exit status value.  If all downloads finished successfully, aria2
+	returns 0.  The error code is defined in src/DownloadResult.h.
+	The error occurred in the download currently in progress is not
+	reported as a last error.  If no error has encountered but there
+	are in progress or waiting downloads, aria2 returns 7.
+	
+	* src/AbstractCommand.cc
+	* src/DlAbortEx.h
+	* src/DlRetryEx.h
+	* src/DownloadCommand.cc
+	* src/DownloadFailureException.h
+	* src/DownloadResult.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/Makefile.am
+	* src/MultiUrlRequestInfo.cc
+	* src/MultiUrlRequestInfo.h
+	* src/RecoverableException.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/URIResult.cc
+	* src/URIResult.h
+	* src/main.cc
+	* src/option_processing.cc
+	* test/RequestGroupTest.cc
+
 2009-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Applied AdaptiveURISelector patch from Aurelien Lefebvre.  This

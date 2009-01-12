@@ -50,6 +50,8 @@ public:
   DlRetryEx(const std::string& msg,
 	    const Exception& cause):RecoverableException(msg, cause) {}
   DlRetryEx(const DlRetryEx& e):RecoverableException(e) {}
+  DlRetryEx(const std::string& msg, DownloadResult::RESULT code):
+    RecoverableException(msg, code) {}
 };
 
 } // namespace aria2

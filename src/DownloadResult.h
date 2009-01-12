@@ -36,18 +36,28 @@
 #define _D_DOWNLOAD_RESULT_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <stdint.h>
+
 #include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
 class DownloadResult
 {
 public:
+  // RESULT is used as an exit status code.
   enum RESULT {
-    FINISHED,
-    NOT_YET,
+    FINISHED = 0,
+    UNKNOWN_ERROR = 1,
+    TIME_OUT = 2,
+    RESOURCE_NOT_FOUND = 3,
+    MAX_FILE_NOT_FOUND = 4,
+    TOO_SLOW_DOWNLOAD_SPEED = 5,
+    NETWORK_PROBLEM = 6,
+    IN_PROGRESS = 7,
   };
 
   int32_t gid;

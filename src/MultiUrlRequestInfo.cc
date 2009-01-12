@@ -99,9 +99,9 @@ void MultiUrlRequestInfo::printMessageForContinue()
 	      << "\n";
 }
 
-int MultiUrlRequestInfo::execute()
+DownloadResult::RESULT MultiUrlRequestInfo::execute()
 {
-  int returnValue = 1;
+  DownloadResult::RESULT returnValue = DownloadResult::FINISHED;
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
@@ -190,10 +190,14 @@ int MultiUrlRequestInfo::execute()
     _summaryOut << std::flush;
 
     RequestGroupMan::DownloadStat s = e->_requestGroupMan->getDownloadStat();
-    if(s.allCompleted()) {
-      returnValue = 0;
-    } else {
+    if(!s.allCompleted()) {
       printMessageForContinue();
+      if(s.getLastErrorResult() == DownloadResult::FINISHED &&
+	 s.getInProgress() > 0) {
+	returnValue = DownloadResult::IN_PROGRESS;
+      } else {
+	returnValue = s.getLastErrorResult();
+      }
     }
   } catch(RecoverableException& e) {
     _logger->error(EX_EXCEPTION_CAUGHT, e);

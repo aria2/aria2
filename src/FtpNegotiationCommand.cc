@@ -261,7 +261,10 @@ bool FtpNegotiationCommand::recvCwd() {
   if(status != 250) {
     poolConnection();
     _requestGroup->increaseAndValidateFileNotFoundCount();
-    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
+    if (status == 550)
+      throw DlAbortEx(MSG_RESOURCE_NOT_FOUND, DownloadResult::RESOURCE_NOT_FOUND);
+    else
+      throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   if(e->option->getAsBool(PREF_REMOTE_TIME)) {
     sequence = SEQ_SEND_MDTM;
@@ -544,7 +547,10 @@ bool FtpNegotiationCommand::recvRetr() {
   }
   if(status != 150 && status != 125) {
     _requestGroup->increaseAndValidateFileNotFoundCount();
-    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
+    if (status == 550)
+      throw DlAbortEx(MSG_RESOURCE_NOT_FOUND, DownloadResult::RESOURCE_NOT_FOUND);
+    else
+      throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   if(e->option->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_NEGOTIATION_COMPLETED;

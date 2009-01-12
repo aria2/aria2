@@ -32,56 +32,21 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MULTI_URL_REQUEST_INFO_H_
-#define _D_MULTI_URL_REQUEST_INFO_H_
-
-#include "common.h"
-
-#include <deque>
-#include <iosfwd>
-
-#include "SharedHandle.h"
-#include "DownloadResult.h"
+#include "URIResult.h"
 
 namespace aria2 {
 
-class RequestGroup;
-class Option;
-class Logger;
-class StatCalc;
+URIResult::URIResult(const std::string& uri, DownloadResult::RESULT result):
+  _uri(uri), _result(result) {}
 
-class MultiUrlRequestInfo {
-private:
-  std::deque<SharedHandle<RequestGroup> > _requestGroups;
+const std::string& URIResult::getURI() const
+{
+  return _uri;
+}
 
-  Option* _option;
-
-  SharedHandle<StatCalc> _statCalc;
-
-  std::ostream& _summaryOut;
-
-  Logger* _logger;
-
-  void printMessageForContinue();
-
-public:
-  MultiUrlRequestInfo
-  (const std::deque<SharedHandle<RequestGroup> >& requestGroups,
-   Option* op,
-   const SharedHandle<StatCalc>& statCalc,
-   std::ostream& summaryOut);
-  
-  virtual ~MultiUrlRequestInfo();
-
-  /**
-   * Returns FINISHED if all downloads have completed, otherwise returns the
-   * last download result.
-   */
-  DownloadResult::RESULT execute();
-};
-
-typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;
+DownloadResult::RESULT URIResult::getResult() const
+{
+  return _result;
+}
 
 } // namespace aria2
-
-#endif // _D_MULTI_URL_REQUEST_INFO_H_

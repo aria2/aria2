@@ -50,6 +50,8 @@ public:
   DlAbortEx(const std::string& msg,
 	    const Exception& cause):RecoverableException(msg, cause) {}
   DlAbortEx(const RecoverableException& e):RecoverableException(e) {}
+  DlAbortEx(const std::string& msg, DownloadResult::RESULT code):
+    RecoverableException(msg, code) {}
 };
 
 } // namespace aria2

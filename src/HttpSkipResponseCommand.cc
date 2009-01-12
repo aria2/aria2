@@ -160,7 +160,8 @@ bool HttpSkipResponseCommand::processResponse()
     if(_httpResponse->getResponseStatus() == HttpHeader::S401) {
       throw DlAbortEx(EX_AUTH_FAILED);
     }else if(_httpResponse->getResponseStatus() == HttpHeader::S404) {
-      throw DlAbortEx(MSG_RESOURCE_NOT_FOUND);
+      throw DlAbortEx(MSG_RESOURCE_NOT_FOUND,
+		      DownloadResult::RESOURCE_NOT_FOUND);
     } else {
       throw DlAbortEx(StringFormat(EX_BAD_STATUS, Util::parseUInt(_httpResponse->getResponseStatus())).str());
     }

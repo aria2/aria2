@@ -6,6 +6,7 @@
 #include "Option.h"
 #include "SingleFileDownloadContext.h"
 #include "FileEntry.h"
+#include "PieceStorage.h"
 
 namespace aria2 {
 
@@ -15,6 +16,7 @@ class RequestGroupTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testRegisterSearchRemove);
   CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
   CPPUNIT_TEST(testGetFilePath);
+  CPPUNIT_TEST(testCreateDownloadResult);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -24,6 +26,7 @@ public:
   void testRegisterSearchRemove();
   void testRemoveURIWhoseHostnameIs();
   void testGetFilePath();
+  void testCreateDownloadResult();
 };
 
 
@@ -91,6 +94,49 @@ void RequestGroupTest::testGetFilePath()
   group.markInMemoryDownload();
 
   CPPUNIT_ASSERT_EQUAL(std::string("[MEMORY]myfile"), group.getFilePath());
+}
+
+void RequestGroupTest::testCreateDownloadResult()
+{
+  SharedHandle<SingleFileDownloadContext> ctx
+    (new SingleFileDownloadContext(1024, 1024*1024, "myfile"));
+  ctx->setDir("/tmp");
+  Option op;
+  std::deque<std::string> uris;
+  uris.push_back("http://first/file");
+  uris.push_back("http://second/file");
+
+  RequestGroup group(&op, uris);
+  group.setDownloadContext(ctx);
+  group.initPieceStorage();
+  {
+    SharedHandle<DownloadResult> result = group.createDownloadResult();
+  
+    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), result->filePath);
+    CPPUNIT_ASSERT_EQUAL((uint64_t)1024*1024, result->totalLength);
+    CPPUNIT_ASSERT_EQUAL(std::string("http://first/file"), result->uri);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, result->numUri);
+    CPPUNIT_ASSERT_EQUAL((uint64_t)0, result->sessionDownloadLength);
+    CPPUNIT_ASSERT_EQUAL((time_t)0, result->sessionTime);
+    // result is UNKNOWN_ERROR if download has not completed and no specific
+    // error has been reported
+    CPPUNIT_ASSERT_EQUAL(DownloadResult::UNKNOWN_ERROR, result->result);
+  }
+  {
+    group.addURIResult("http://first/file", DownloadResult::TIME_OUT);
+    group.addURIResult("http://second/file",DownloadResult::RESOURCE_NOT_FOUND);
+  
+    SharedHandle<DownloadResult> result = group.createDownloadResult();
+
+    CPPUNIT_ASSERT_EQUAL(DownloadResult::RESOURCE_NOT_FOUND, result->result);
+  }
+  {
+    group.getPieceStorage()->markAllPiecesDone();
+
+    SharedHandle<DownloadResult> result = group.createDownloadResult();
+
+    CPPUNIT_ASSERT_EQUAL(DownloadResult::FINISHED, result->result);
+  }
 }
 
 } // namespace aria2

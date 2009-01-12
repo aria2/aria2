@@ -64,7 +64,6 @@
 #include "RequestGroupMan.h"
 #include "DefaultBtProgressInfoFile.h"
 #include "DefaultPieceStorage.h"
-#include "DownloadResult.h"
 #include "DownloadHandlerFactory.h"
 #include "MemoryBufferPreDownloadHandler.h"
 #include "DownloadHandlerConstants.h"
@@ -169,6 +168,19 @@ bool RequestGroup::allDownloadFinished() const
   } else {
     return _pieceStorage->allDownloadFinished();
   }
+}
+
+DownloadResult::RESULT RequestGroup::downloadResult() const
+{
+  if (downloadFinished())
+    return DownloadResult::FINISHED;
+  else {
+    if (_uriResults.empty()) {
+      return DownloadResult::UNKNOWN_ERROR;
+    } else {
+      return _uriResults.back().getResult();
+    }
+  }    
 }
 
 void RequestGroup::closeFile()
@@ -902,9 +914,7 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 			uris.size(),
 			sessionDownloadLength,
 			_downloadContext->calculateSessionTime(),
-			downloadFinished()?
-			DownloadResult::FINISHED :
-			DownloadResult::NOT_YET));
+			downloadResult()));
 }
 
 void RequestGroup::registerServerHost(const ServerHostHandle& serverHost)
@@ -1073,7 +1083,8 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
   if(maxCount > 0 && _fileNotFoundCount >= maxCount &&
      _segmentMan->calculateSessionDownloadLength() == 0) {
     throw DownloadFailureException
-      (StringFormat("Reached max-file-not-found count=%u", maxCount).str());
+      (StringFormat("Reached max-file-not-found count=%u", maxCount).str(),
+       DownloadResult::MAX_FILE_NOT_FOUND);
   }
 }
 
@@ -1095,6 +1106,16 @@ bool RequestGroup::inMemoryDownload() const
 void RequestGroup::tuneDownloadCommand(DownloadCommand* command)
 {
   _uriSelector->tuneDownloadCommand(_uris, command);
+}
+
+void RequestGroup::addURIResult(std::string uri, DownloadResult::RESULT result)
+{
+  _uriResults.push_back(URIResult(uri, result));
+}
+
+const std::deque<URIResult>& RequestGroup::getURIResults() const
+{
+  return _uriResults;
 }
 
 } // namespace aria2

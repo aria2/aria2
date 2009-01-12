@@ -53,6 +53,7 @@
 #include "File.h"
 #include "StringFormat.h"
 #include "OptionHandlerException.h"
+#include "DownloadResult.h"
 
 extern char* optarg;
 extern int optind, opterr, optopt;
@@ -107,7 +108,7 @@ Option* option_processing(int argc, char* const argv[])
     oparser.parseDefaultValues(op);
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
-    exit(EXIT_FAILURE);
+    exit(DownloadResult::UNKNOWN_ERROR);
   }
 
   while(1) {
@@ -254,12 +255,12 @@ Option* option_processing(int argc, char* const argv[])
 	std::cout << "--http-proxy-user was deprecated. See --http-proxy,"
 		  << " --https-proxy, --ftp-proxy, --all-proxy options."
 		  << std::endl;
-	exit(EXIT_FAILURE);
+	exit(DownloadResult::UNKNOWN_ERROR);
       case 5: 
 	std::cout << "--http-proxy-passwd was deprecated. See --http-proxy,"
 		  << " --https-proxy, --ftp-proxy, --all-proxy options."
 		  << std::endl;
-	exit(EXIT_FAILURE);
+	exit(DownloadResult::UNKNOWN_ERROR);
       case 6:
 	cmdstream << PREF_HTTP_AUTH_SCHEME << "=" << optarg << "\n";
 	break;
@@ -282,12 +283,12 @@ Option* option_processing(int argc, char* const argv[])
 	std::cout << "--ftp-via-http-proxy was deprecated."
 		  << " Use --http-proxy-method option instead."
 		  << std::endl;
-	exit(EXIT_FAILURE);
+	exit(DownloadResult::UNKNOWN_ERROR);
       case 14:
 	std::cout << "--http-proxy-method was deprecated."
 		  << " Use --proxy-method option instead."
 		  << std::endl;
-	exit(EXIT_FAILURE);
+	exit(DownloadResult::UNKNOWN_ERROR);
       case 15:
 	cmdstream << PREF_LISTEN_PORT << "=" << optarg << "\n";
 	break;
@@ -553,7 +554,7 @@ Option* option_processing(int argc, char* const argv[])
       break;
     case 'v':
       showVersion();
-      exit(EXIT_SUCCESS);
+      exit(DownloadResult::FINISHED);
     case 'h':
       {
 	std::string category;
@@ -563,11 +564,11 @@ Option* option_processing(int argc, char* const argv[])
 	  category = optarg;
 	}
 	showUsage(category, oparser);
-	exit(EXIT_SUCCESS);
+	exit(DownloadResult::FINISHED);
       }
     default:
       showUsage(TAG_HELP, oparser);
-      exit(EXIT_FAILURE);
+      exit(DownloadResult::UNKNOWN_ERROR);
     }
   }
 
@@ -588,18 +589,18 @@ Option* option_processing(int argc, char* const argv[])
 		    << "Usage:" << "\n"
 		    << oparser.findByName(e.getOptionName())->getDescription()
 		    << std::endl;
-	  exit(EXIT_FAILURE);
+	  exit(DownloadResult::UNKNOWN_ERROR);
 	} catch(Exception& e) {
 	  std::cerr << "Parse error in " << cfname << "\n"
 		    << e.stackTrace() << std::endl;
-	  exit(EXIT_FAILURE);
+	  exit(DownloadResult::UNKNOWN_ERROR);
 	}
       } else if(!ucfname.empty()) {
 	std::cerr << StringFormat("Configuration file %s is not found.",
 				  cfname.c_str())
 		  << "\n";
 	showUsage(TAG_HELP, oparser);
-	exit(EXIT_FAILURE);
+	exit(DownloadResult::UNKNOWN_ERROR);
       }
     }
     // Override configuration with environment variables.
@@ -616,11 +617,11 @@ Option* option_processing(int argc, char* const argv[])
 		<< "Usage:" << "\n"
 		<< oparser.findByName(e.getOptionName())->getDescription()
 		<< std::endl;
-      exit(EXIT_FAILURE);
+      exit(DownloadResult::UNKNOWN_ERROR);
     } catch(Exception& e) {
       std::cerr << e.stackTrace() << std::endl;
       showUsage(TAG_HELP, oparser);
-      exit(EXIT_FAILURE);
+      exit(DownloadResult::UNKNOWN_ERROR);
     }
   }
   if(
@@ -634,14 +635,14 @@ Option* option_processing(int argc, char* const argv[])
     if(optind == argc) {
       std::cerr << MSG_URI_REQUIRED << std::endl;
       showUsage(TAG_HELP, oparser);
-      exit(EXIT_FAILURE);
+      exit(DownloadResult::UNKNOWN_ERROR);
     }
   }
 #ifdef HAVE_DAEMON
   if(op->getAsBool(PREF_DAEMON)) {
     if(daemon(1, 1) < 0) {
       perror(MSG_DAEMON_FAILED);
-      exit(EXIT_FAILURE);
+      exit(DownloadResult::UNKNOWN_ERROR);
     }
   }
 #endif // HAVE_DAEMON

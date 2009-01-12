@@ -377,16 +377,17 @@ void RequestGroupMan::closeFile()
 
 RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
 {
-  DownloadStat stat;
   size_t finished = 0;
   size_t error = 0;
   size_t inprogress = 0;
+  DownloadResult::RESULT lastError = DownloadResult::FINISHED;
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
       itr != _downloadResults.end(); ++itr) {
     if((*itr)->result == DownloadResult::FINISHED) {
       ++finished;
     } else {
       ++error;
+      lastError = (*itr)->result;
     }
   }
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
@@ -398,11 +399,8 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
       ++inprogress;
     }
   }
-  stat.setCompleted(finished);
-  stat.setError(error);
-  stat.setInProgress(inprogress);
-  stat.setWaiting(_reservedGroups.size());
-  return stat;
+  return DownloadStat(finished, error, inprogress, _reservedGroups.size(),
+		      lastError);
 }
 
 void RequestGroupMan::showDownloadResults(std::ostream& o) const

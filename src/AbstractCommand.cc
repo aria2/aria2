@@ -149,13 +149,14 @@ bool AbstractCommand::execute() {
 						     req->getProtocol());
 	ss->setError();
 
-	throw DlRetryEx(EX_TIME_OUT);
+	throw DlRetryEx(EX_TIME_OUT, DownloadResult::TIME_OUT);
       }
       e->commands.push_back(this);
       return false;
     }
   } catch(DlAbortEx& err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
+    _requestGroup->addURIResult(req->getUrl(), err.getCode());
     onAbort();
     req->resetUrl();
     tryReserved();
@@ -174,6 +175,7 @@ bool AbstractCommand::execute() {
     if(isAbort) {
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
       logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
+      _requestGroup->addURIResult(req->getUrl(), err.getCode());
       tryReserved();
       return true;
     } else {
@@ -181,6 +183,7 @@ bool AbstractCommand::execute() {
     }
   } catch(DownloadFailureException& err) {
     logger->error(EX_EXCEPTION_CAUGHT, err);
+    _requestGroup->addURIResult(req->getUrl(), err.getCode());
     _requestGroup->setHaltRequested(true);
     return true;
   }

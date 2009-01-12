@@ -52,8 +52,12 @@ protected:
 public:
   DownloadFailureException(const std::string& msg):RecoverableException(msg) {}
   DownloadFailureException(const std::string& msg,
-			   const Exception& cause):RecoverableException(msg, cause) {}
-  DownloadFailureException(const DownloadFailureException& e):RecoverableException(e) {}
+			   const Exception& cause):
+    RecoverableException(msg, cause) {}
+  DownloadFailureException(const DownloadFailureException& e):
+    RecoverableException(e) {}
+  DownloadFailureException(const std::string& msg, DownloadResult::RESULT code):
+    RecoverableException(msg, code) {}
 };
 
 } // namespace aria2

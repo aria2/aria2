@@ -157,7 +157,7 @@ static void showFiles(const std::deque<std::string>& uris, const Option* op)
 
 extern Option* option_processing(int argc, char* const argv[]);
 
-int main(int argc, char* argv[])
+DownloadResult::RESULT main(int argc, char* argv[])
 {
   Option* op = option_processing(argc, argv);
   std::deque<std::string> args(argv+optind, argv+argc);
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }
-  int32_t exitStatus = EXIT_SUCCESS;
+  DownloadResult::RESULT exitStatus = DownloadResult::FINISHED;
   try {
     Logger* logger = LogFactory::getInstance();
     logger->info("<<--- --- --- ---");
@@ -191,13 +191,12 @@ int main(int argc, char* argv[])
 #ifdef SIGPIPE
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
-    int32_t returnValue = 0;
     std::deque<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT
     if(!op->blank(PREF_TORRENT_FILE)) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	showTorrentFile(op->get(PREF_TORRENT_FILE));
-	return EXIT_SUCCESS;
+	return exitStatus;
       } else {
 	createRequestGroupForBitTorrent(requestGroups, op, args);
       }
@@ -208,7 +207,7 @@ int main(int argc, char* argv[])
       if(!op->blank(PREF_METALINK_FILE)) {
 	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	  showMetalinkFile(op->get(PREF_METALINK_FILE), op);
-	  return EXIT_SUCCESS;
+	  return exitStatus;
 	} else {
 	  createRequestGroupForMetalink(requestGroups, op);
 	}
@@ -228,15 +227,12 @@ int main(int argc, char* argv[])
     if(requestGroups.empty()) {
       std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
     } else {
-      returnValue = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
-					getSummaryOut(op)).execute();
-    }
-    if(returnValue == 1) {
-      exitStatus = EXIT_FAILURE;
+      exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
+				       getSummaryOut(op)).execute();
     }
   } catch(Exception& ex) {
     std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
-    exitStatus = EXIT_FAILURE;
+    exitStatus = DownloadResult::UNKNOWN_ERROR;
   }
   delete op;
   LogFactory::release();
@@ -248,7 +244,7 @@ int main(int argc, char* argv[])
 int main(int argc, char* argv[]) {
   aria2::Platform platform;
 
-  int r = aria2::main(argc, argv);
+  aria2::DownloadResult::RESULT r = aria2::main(argc, argv);
 
   return r;
 }

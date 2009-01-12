@@ -243,7 +243,7 @@ void DownloadCommand::checkLowestDownloadSpeed() const
       throw DlAbortEx(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,
 				   nowSpeed,
 				   lowestDownloadSpeedLimit,
-				   req->getHost().c_str()).str());
+				   req->getHost().c_str()).str(), DownloadResult::TOO_SLOW_DOWNLOAD_SPEED);
     }
   }
 }

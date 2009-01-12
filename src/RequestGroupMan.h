@@ -36,11 +36,14 @@
 #define _D_REQUEST_GROUP_MAN_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "TransferStat.h"
+
 #include <string>
 #include <deque>
 #include <iosfwd>
+
+#include "SharedHandle.h"
+#include "DownloadResult.h"
+#include "TransferStat.h"
 
 namespace aria2 {
 
@@ -117,17 +120,33 @@ public:
     size_t _error;
     size_t _inProgress;
     size_t _waiting;
+    DownloadResult::RESULT _lastErrorResult;
   public:
-    DownloadStat():_completed(0), _error(0), _inProgress(0), _waiting(0) {}
+    DownloadStat(size_t completed,
+		 size_t error,
+		 size_t inProgress,
+		 size_t waiting,
+		 DownloadResult::RESULT lastErrorResult =
+		 DownloadResult::FINISHED):
+      _completed(completed),
+      _error(error),
+      _inProgress(inProgress),
+      _waiting(waiting),
+      _lastErrorResult(lastErrorResult) {}
 
-    void setCompleted(size_t c) { _completed = c; }
-    void setError(size_t c) { _error = c; }
-    void setInProgress(size_t c) { _inProgress = c; }
-    void setWaiting(size_t c) { _waiting = c; }
+    DownloadResult::RESULT getLastErrorResult() const
+    {
+      return _lastErrorResult;
+    }
 
     bool allCompleted() const
     {
       return _error == 0 && _inProgress == 0 && _waiting == 0;
+    }
+
+    size_t getInProgress() const
+    {
+      return _inProgress;
     }
   };
 

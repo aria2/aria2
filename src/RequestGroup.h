@@ -44,6 +44,8 @@
 #include "TransferStat.h"
 #include "TimeA2.h"
 #include "Request.h"
+#include "DownloadResult.h"
+#include "URIResult.h"
 
 namespace aria2 {
 
@@ -112,6 +114,10 @@ private:
 
   bool _forceHaltRequested;
 
+  // URIResult is stored in the ascending order of the time when its result is
+  // available.
+  std::deque<URIResult> _uriResults;
+
   bool _singleHostMultiConnectionEnabled;
 
   std::deque<SharedHandle<PreDownloadHandler> > _preDownloadHandlers;
@@ -154,6 +160,12 @@ private:
 
   bool tryAutoFileRenaming();
 
+  // Returns the result code of this RequestGroup.
+  // If the download finished, then returns DownloadResult::FINISHED.
+  // If the download didn't finish and error result is available in _uriResults,
+  // then last result code is returned.
+  // Otherwise returns DownloadResult::UNKNOWN_ERROR.
+  DownloadResult::RESULT downloadResult() const;
 public:
   RequestGroup(const Option* option, const std::deque<std::string>& uris);
 
@@ -310,6 +322,10 @@ public:
   {
     return _forceHaltRequested;
   }
+
+  void addURIResult(std::string uri, DownloadResult::RESULT result);
+
+  const std::deque<URIResult>& getURIResults() const;
 
   void dependsOn(const SharedHandle<Dependency>& dep);
 
