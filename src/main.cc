@@ -67,6 +67,7 @@
 #include "download_helper.h"
 #include "Exception.h"
 #include "ProtocolDetector.h"
+#include "RecoverableException.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "MetalinkEntry.h"

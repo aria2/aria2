@@ -1,5 +1,10 @@
 2009-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Included RecoverableException.h from main.cc
+	* src/main.cc
+
+2009-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Applied exit-status patch from Pascal Rigaux at Mandriva.  aria2
 	now returns last error encountered in the HTTP/FTP downloads as a
 	exit status value.  If all downloads finished successfully, aria2
