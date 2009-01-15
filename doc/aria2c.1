@@ -426,11 +426,11 @@ If true is given, aria2 doesn\'t accept and establish connection with legacy Bit
 .PP
 \fB\-\-bt\-request\-peer\-speed\-limit\fR=SPEED
 .RS 4
-In BitTorrent downloads, if the download speed is lower than SPEED, aria2 initiates and accepts connections ignoring max peer cap\&. You can append
+If the whole download speed of every torrent is lower than SPEED, aria2 temporarily increases the number of peers to try for more download speed\&. Configuring this option with your preferred download speed can increase your download speed in some cases\&. You can append
 \fIK\fR
 or
 \fIM\fR(1K = 1024, 1M = 1024K)\&. Default:
-\fI51200\fR
+\fI50K\fR
 .RE
 .PP
 \fB\-\-bt\-seed\-unverified\fR[=\fItrue\fR|\fIfalse\fR]

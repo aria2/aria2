@@ -313,10 +313,12 @@ BitTorrent Specific Options
   Default: 'false' 
 
 *--bt-request-peer-speed-limit*=SPEED::
-  In BitTorrent downloads, if the download speed is lower than SPEED,
-  aria2 initiates and accepts connections ignoring max peer cap.
+  If the whole download speed of every torrent is lower than SPEED,
+  aria2 temporarily increases the number of peers to try for more
+  download speed. Configuring this option with your preferred download
+  speed can increase your download speed in some cases.
   You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
-  Default: '51200'
+  Default: '50K'
 
 *--bt-seed-unverified*[='true'|'false']::
   Seed previously downloaded files without verifying piece hashes.

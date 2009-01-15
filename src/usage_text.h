@@ -284,9 +284,12 @@ _(" --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
   "                              handshake. Thus aria2 always uses Obfuscation\n"\
   "                              handshake.")
 #define TEXT_BT_REQUEST_PEER_SPEED_LIMIT \
-_(" --bt-request-peer-speed-limit=SPEED In BitTorrent downloads, if the download\n"\
-  "                              speed is lower than SPEED, aria2 initiates and\n"\
-  "                              accepts connections ignoring max peer cap.\n"\
+_(" --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"\
+  "                              torrent is lower than SPEED, aria2 temporarily\n"\
+  "                              increases the number of peers to try for more\n"\
+  "                              download speed. Configuring this option with your\n"\
+  "                              preferred download speed can increase your\n"\
+  "                              download speed in some cases.\n"\
   "                              You can append K or M(1K = 1024, 1M = 1024K).")
 #define TEXT_BT_MAX_OPEN_FILES \
 _(" --bt-max-open-files=NUM      Specify maximum number of files to open in each\n"\
