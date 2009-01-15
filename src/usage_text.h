@@ -437,3 +437,5 @@ _(" --no-proxy=DOMAINS           Specify comma separated hostnames or domains wh
 #define TEXT_USE_HEAD \
 _(" --use-head[=true|false]      Use HEAD method for the first request to the HTTP\n"\
   "                              server.")
+#define TEXT_EVENT_POLL \
+_(" --event-poll=POLL            Specify the method for polling events.")

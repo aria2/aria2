@@ -285,7 +285,11 @@ AC_CHECK_FUNCS([__argz_count \
                 usleep])
 
 if test "x$enable_epoll" = "xyes"; then
-  AC_CHECK_FUNCS([epoll_create])
+  AC_CHECK_FUNCS([epoll_create], [have_epoll=yes])
+  if test "x$have_epoll" = "xyes"; then
+    AC_DEFINE([HAVE_EPOLL], [1], [Define to 1 if epoll is available.])
+  fi
+  AM_CONDITIONAL([HAVE_EPOLL], [test "x$have_epoll" = "xyes"])
 fi
 
 AC_CHECK_FUNCS([asctime_r],
@@ -351,5 +355,6 @@ echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibCares:       $have_libcares"
 echo "Libz:           $have_libz"
+echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"

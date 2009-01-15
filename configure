@@ -811,6 +811,8 @@ LIBINTL
 LTLIBINTL
 POSUB
 LIBOBJS
+HAVE_EPOLL_TRUE
+HAVE_EPOLL_FALSE
 HAVE_ASCTIME_R_TRUE
 HAVE_ASCTIME_R_FALSE
 HAVE_BASENAME_TRUE
@@ -20968,9 +20970,24 @@ if test `eval echo '${'$as_ac_var'}'` = yes; then
   cat >>confdefs.h <<_ACEOF
 #define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
 _ACEOF
-
+ have_epoll=yes
 fi
 done
+
+  if test "x$have_epoll" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_EPOLL 1
+_ACEOF
+
+  fi
+   if test "x$have_epoll" = "xyes"; then
+  HAVE_EPOLL_TRUE=
+  HAVE_EPOLL_FALSE='#'
+else
+  HAVE_EPOLL_TRUE='#'
+  HAVE_EPOLL_FALSE=
+fi
 
 fi
 
@@ -22217,6 +22234,13 @@ echo "$as_me: error: conditional \"HAVE_SQLITE3\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${HAVE_EPOLL_TRUE}" && test -z "${HAVE_EPOLL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_EPOLL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_EPOLL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${HAVE_ASCTIME_R_TRUE}" && test -z "${HAVE_ASCTIME_R_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_ASCTIME_R\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -23138,7 +23162,7 @@ LIBINTL!$LIBINTL$ac_delim
 LTLIBINTL!$LTLIBINTL$ac_delim
 POSUB!$POSUB$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
-HAVE_ASCTIME_R_TRUE!$HAVE_ASCTIME_R_TRUE$ac_delim
+HAVE_EPOLL_TRUE!$HAVE_EPOLL_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -23180,6 +23204,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+HAVE_EPOLL_FALSE!$HAVE_EPOLL_FALSE$ac_delim
+HAVE_ASCTIME_R_TRUE!$HAVE_ASCTIME_R_TRUE$ac_delim
 HAVE_ASCTIME_R_FALSE!$HAVE_ASCTIME_R_FALSE$ac_delim
 HAVE_BASENAME_TRUE!$HAVE_BASENAME_TRUE$ac_delim
 HAVE_BASENAME_FALSE!$HAVE_BASENAME_FALSE$ac_delim
@@ -23200,7 +23226,7 @@ HAVE_TIMEGM_FALSE!$HAVE_TIMEGM_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 18; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 20; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -23929,5 +23955,6 @@ echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibCares:       $have_libcares"
 echo "Libz:           $have_libz"
+echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"

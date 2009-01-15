@@ -1,3 +1,32 @@
+2009-01-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --event-poll option to select the method for polling events.
+	The available methods are "select" and "epoll". "epoll" is
+	available on Linux only. The earlier release has the compile
+	option to choose from these methods.
+	* configure.ac
+	* src/RequestGroupMan.cc
+	* src/OptionHandlerFactory.cc
+	* src/EpollEventPoll.h
+	* src/StreamFileAllocationEntry.cc
+	* src/a2io.h
+	* src/SelectEventPoll.h
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/EpollEventPoll.cc
+	* src/EventPoll.h
+	* src/SocketCore.h
+	* src/Makefile.am
+	* src/main.cc
+	* src/DownloadEngine.h
+	* src/SelectEventPoll.cc
+	* src/DownloadEngine.cc
+	* src/SocketCore.cc
+	* src/DownloadEngineFactory.cc
+	* src/Makefile.in
+	* src/prefs.cc
+	* src/usage_text.h
+
 2009-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Included RecoverableException.h from main.cc

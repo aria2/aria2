@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "StreamFileAllocationEntry.h"
+#ifndef _D_EVENT_POLL_H_
+#define _D_EVENT_POLL_H_
 
-#include <algorithm>
-
-#include "DownloadEngine.h"
-#include "Option.h"
-#include "Request.h"
-#include "prefs.h"
-#include "RequestGroup.h"
-#include "InitiateConnectionCommandFactory.h"
-#include "DownloadContext.h"
-#include "Command.h"
+#include "common.h"
+#include "SharedHandle.h"
+#include "TimeA2.h"
+#include "a2netcompat.h"
 
 namespace aria2 {
 
-StreamFileAllocationEntry::StreamFileAllocationEntry(const RequestHandle& currentRequest,
-						     RequestGroup* requestGroup,
-						     Command* nextCommand):
-  FileAllocationEntry(requestGroup, nextCommand),
-  _currentRequest(currentRequest)
-{}
+class SocketCore;
+class Command;
+class AsyncNameResolver;
 
-StreamFileAllocationEntry::~StreamFileAllocationEntry() {}
+class EventPoll {
 
-void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
-						     DownloadEngine* e)
-{
-  _requestGroup->getDownloadContext()->resetDownloadStartTime();
-  if(_nextCommand) {
-    // give _nextCommand a chance to execute in the next execution loop.
-    _nextCommand->setStatus(Command::STATUS_ONESHOT_REALTIME);
-    commands.push_back(popNextCommand());
-    // try remaining uris
-    _requestGroup->createNextCommandWithAdj(commands, e, -1);
-  } else {
-    if(_currentRequest.isNull()) {
-      _requestGroup->createNextCommandWithAdj(commands, e, 0);
-    } else {
-      Command* command =
-	InitiateConnectionCommandFactory::createInitiateConnectionCommand
-	(e->newCUID(), _currentRequest, _requestGroup, e);
+public:
+  enum EventType {
+    EVENT_READ = 1,
+    EVENT_WRITE = 1 << 1,
+    EVENT_ERROR = 1 << 2,
+    EVENT_HUP = 1 << 3,
+  };
 
-      commands.push_back(command);
+  virtual ~EventPoll() {}
 
-      _requestGroup->createNextCommandWithAdj(commands, e, -1);
-    }
-  }
-}
+  virtual void poll(const struct timeval& tv) = 0;
+
+  virtual bool addEvents(sock_t socket, Command* command, EventType events) = 0;
+
+  virtual bool deleteEvents(sock_t socket, Command* command,
+			    EventType events) = 0;
+#ifdef ENABLE_ASYNC_DNS
+
+  virtual bool addNameResolver(const SharedHandle<AsyncNameResolver>& resolver,
+		       Command* command) = 0;
+  virtual bool deleteNameResolver
+  (const SharedHandle<AsyncNameResolver>& resolver, Command* command) = 0;
+#endif // ENABLE_ASYNC_DNS
+
+};
 
 } // namespace aria2
+
+#endif // _D_EVENT_POLL_H_

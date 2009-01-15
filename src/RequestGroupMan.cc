@@ -62,6 +62,7 @@
 #include "prefs.h"
 #include "File.h"
 #include "Util.h"
+#include "Command.h"
 
 namespace aria2 {
 

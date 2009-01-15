@@ -76,6 +76,12 @@
 
 namespace aria2 {
 
+#ifdef HAVE_EPOLL
+SocketCore::PollMethod SocketCore::_pollMethod = SocketCore::POLL_METHOD_EPOLL;
+#else // !HAVE_EPOLL
+SocketCore::PollMethod SocketCore::_pollMethod = SocketCore::POLL_METHOD_SELECT;
+#endif // !HAVE_EPOLL
+
 #ifdef ENABLE_SSL
 SharedHandle<TLSContext> SocketCore::_tlsContext;
 
@@ -364,50 +370,48 @@ void SocketCore::initEPOLL()
 
 bool SocketCore::isWritable(time_t timeout)
 {
-
 #ifdef HAVE_EPOLL
-
-  if(_epfd == -1) {
-    initEPOLL();
-  }
-  struct epoll_event epEvents[1];
-  int r;
-  while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
-
-  if(r > 0) {
-    return epEvents[0].events&(EPOLLOUT|EPOLLHUP|EPOLLERR);
-  } else if(r == 0) {
-    return false;
-  } else {
-    throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
-  }
-
-#else // !HAVE_EPOLL
-
-  fd_set fds;
-  FD_ZERO(&fds);
-  FD_SET(sockfd, &fds);
-
-  struct timeval tv;
-  tv.tv_sec = timeout;
-  tv.tv_usec = 0;
-
-  int r = select(sockfd+1, NULL, &fds, NULL, &tv);
-  if(r == 1) {
-    return true;
-  } else if(r == 0) {
-    // time out
-    return false;
-  } else {
-    if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+  if(_pollMethod == SocketCore::POLL_METHOD_EPOLL) {
+    if(_epfd == -1) {
+      initEPOLL();
+    }
+    struct epoll_event epEvents[1];
+    int r;
+    while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
+    if(r > 0) {
+      return epEvents[0].events&(EPOLLOUT|EPOLLHUP|EPOLLERR);
+    } else if(r == 0) {
       return false;
     } else {
       throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
     }
-  }
+  } else
+#endif // HAVE_EPOLL
+    if(_pollMethod == SocketCore::POLL_METHOD_SELECT) {
+      fd_set fds;
+      FD_ZERO(&fds);
+      FD_SET(sockfd, &fds);
 
-#endif // !HAVE_EPOLL
+      struct timeval tv;
+      tv.tv_sec = timeout;
+      tv.tv_usec = 0;
 
+      int r = select(sockfd+1, NULL, &fds, NULL, &tv);
+      if(r == 1) {
+	return true;
+      } else if(r == 0) {
+	// time out
+	return false;
+      } else {
+	if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+	  return false;
+	} else {
+	  throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+	}
+      }
+    } else {
+      abort();
+    }
 }
 
 bool SocketCore::isReadable(time_t timeout)
@@ -419,48 +423,48 @@ bool SocketCore::isReadable(time_t timeout)
 #endif // HAVE_LIBGNUTLS
 
 #ifdef HAVE_EPOLL
+  if(_pollMethod == SocketCore::POLL_METHOD_EPOLL) {
+    if(_epfd == -1) {
+      initEPOLL();
+    }
+    struct epoll_event epEvents[1];
+    int r;
+    while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
 
-  if(_epfd == -1) {
-    initEPOLL();
-  }
-  struct epoll_event epEvents[1];
-  int r;
-  while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
-
-  if(r > 0) {
-    return epEvents[0].events&(EPOLLIN|EPOLLHUP|EPOLLERR);
-  } else if(r == 0) {
-    return false;
-  } else {
-    throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
-  }
-
-#else // !HAVE_EPOLL
-
-  fd_set fds;
-  FD_ZERO(&fds);
-  FD_SET(sockfd, &fds);
-
-  struct timeval tv;
-  tv.tv_sec = timeout;
-  tv.tv_usec = 0;
-
-  int r = select(sockfd+1, &fds, NULL, NULL, &tv);
-  if(r == 1) {
-    return true;
-  } else if(r == 0) {
-    // time out
-    return false;
-  } else {
-    if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+    if(r > 0) {
+      return epEvents[0].events&(EPOLLIN|EPOLLHUP|EPOLLERR);
+    } else if(r == 0) {
       return false;
     } else {
       throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
     }
-  }
+  } else
+#endif // HAVE_EPOLL
+    if(_pollMethod == SocketCore::POLL_METHOD_SELECT) {
+      fd_set fds;
+      FD_ZERO(&fds);
+      FD_SET(sockfd, &fds);
 
-#endif // !HAVE_EPOLL
+      struct timeval tv;
+      tv.tv_sec = timeout;
+      tv.tv_usec = 0;
 
+      int r = select(sockfd+1, &fds, NULL, NULL, &tv);
+      if(r == 1) {
+	return true;
+      } else if(r == 0) {
+	// time out
+	return false;
+      } else {
+	if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+	  return false;
+	} else {
+	  throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+	}
+      }
+    } else {
+      abort();
+    }
 }
 
 #ifdef HAVE_LIBSSL
@@ -1052,5 +1056,17 @@ bool SocketCore::wantWrite() const
 {
   return _wantWrite;
 }
+
+#ifdef HAVE_EPOLL
+void SocketCore::useEpoll()
+{
+  _pollMethod = SocketCore::POLL_METHOD_EPOLL;
+}
+
+void SocketCore::useSelect()
+{
+  _pollMethod = SocketCore::POLL_METHOD_SELECT;
+}
+#endif // HAVE_EPOLL
 
 } // namespace aria2

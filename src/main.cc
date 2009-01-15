@@ -68,6 +68,7 @@
 #include "Exception.h"
 #include "ProtocolDetector.h"
 #include "RecoverableException.h"
+#include "SocketCore.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "MetalinkEntry.h"
@@ -176,6 +177,14 @@ DownloadResult::RESULT main(int argc, char* argv[])
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }
+#ifdef HAVE_EPOLL
+  if(op->get(PREF_EVENT_POLL) == V_EPOLL) {
+    SocketCore::useEpoll();
+  } else
+#endif // HAVE_EPOLL
+    if(op->get(PREF_EVENT_POLL) == V_SELECT) {
+      SocketCore::useSelect();
+    }
   DownloadResult::RESULT exitStatus = DownloadResult::FINISHED;
   try {
     Logger* logger = LogFactory::getInstance();

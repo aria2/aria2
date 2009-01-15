@@ -151,6 +151,26 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    std::string params[] = {
+#ifdef HAVE_EPOLL
+      V_EPOLL,
+#endif // HAVE_EPOLL
+      V_SELECT
+    };
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+				   (PREF_EVENT_POLL,
+				    TEXT_EVENT_POLL,
+#ifdef HAVE_EPOLL
+				    V_EPOLL,
+#else // !HAVE_EPOLL
+				    V_SELECT,
+#endif // !HAVE_EPOLL
+				    std::deque<std::string>
+				    (&params[0],&params[arrayLength(params)])));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_FILE_ALLOCATION,
 				    TEXT_FILE_ALLOCATION,

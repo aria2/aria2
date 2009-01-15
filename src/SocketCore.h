@@ -37,9 +37,9 @@
 
 #include "common.h"
 
-#ifdef HAVE_EPOLL_CREATE
+#ifdef HAVE_EPOLL
 # include <sys/epoll.h>
-#endif // HAVE_EPOLL_CREATE
+#endif // HAVE_EPOLL
 
 #include <string>
 #include <cstdlib>
@@ -82,7 +82,14 @@ private:
 
   struct epoll_event _epEvent;
 
+  enum PollMethod {
+    POLL_METHOD_EPOLL, POLL_METHOD_SELECT
+  };
+
+  static PollMethod _pollMethod;
+
 #endif // HAVE_EPOLL
+
 
   bool blocking;
   int secure;
@@ -326,6 +333,11 @@ public:
    * readData() or writeData() and the socket needs to write more data.
    */
   bool wantWrite() const;
+
+#ifdef HAVE_EPOLL
+  static void useEpoll();
+#endif // HAVE_EPOLL
+  static void useSelect();
 
 #ifdef ENABLE_SSL
   static void setTLSContext(const SharedHandle<TLSContext>& tlsContext);

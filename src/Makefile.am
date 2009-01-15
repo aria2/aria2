@@ -196,7 +196,13 @@ SRCS =  Socket.h\
 	SocketBuffer.cc SocketBuffer.h\
 	OptionHandlerException.cc OptionHandlerException.h\
 	bencode.cc bencode.h\
-	URIResult.cc URIResult.h
+	URIResult.cc URIResult.h\
+	EventPoll.h\
+	SelectEventPoll.cc SelectEventPoll.h
+
+if HAVE_EPOLL
+SRCS += EpollEventPoll.cc EpollEventPoll.h
+endif # HAVE_EPOLL
 
 if ENABLE_SSL
 SRCS += TLSContext.h

@@ -37,16 +37,11 @@
 
 #include "common.h"
 
-#ifdef HAVE_EPOLL_CREATE
-# include <sys/epoll.h>
-#endif // HAVE_EPOLL_CREATE
-
 #include <string>
 #include <deque>
 #include <map>
 
 #include "SharedHandle.h"
-#include "Command.h"
 #include "a2netcompat.h"
 #include "TimeA2.h"
 #include "a2io.h"
@@ -69,196 +64,14 @@ class BtRegistry;
 class DNSCache;
 class AuthConfigFactory;
 class Request;
-
-class CommandEvent
-{
-private:
-  Command* _command;
-  int _events;
-public:
-  CommandEvent(Command* command, int events);
-
-  Command* getCommand() const;
-
-  int getEvents() const;
-
-  void addEvents(int events);
-
-  void removeEvents(int events);
-
-  bool eventsEmpty() const;
-
-  void processEvents(int events);
-
-  bool operator==(const CommandEvent& event) const;
-};
-
-#if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
-
-class ADNSEvent {
-private:
-  SharedHandle<AsyncNameResolver> _resolver;
-  Command* _command;
-  sock_t _socket;
-  int _events;
-public:
-  ADNSEvent(const SharedHandle<AsyncNameResolver>& resolver, Command* command,
-	    sock_t socket, int events);
-
-  void processEvents(int events);
-
-  bool operator==(const ADNSEvent& event) const;
-
-  int getEvents() const;
-};
-
-#endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
-
-class SocketEntry {
-private:
-  sock_t _socket;
-
-  std::deque<CommandEvent> _commandEvents;
-
-#if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
-
-  std::deque<ADNSEvent> _adnsEvents;
-
-#endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
-
-#ifdef HAVE_EPOLL
-
-  struct epoll_event _epEvent;
-
-#endif // HAVE_EPOLL
-
-public:
-
-#ifdef HAVE_EPOLL
-
-  enum EventType {
-    EVENT_READ = EPOLLIN,
-    EVENT_WRITE = EPOLLOUT,
-    EVENT_ERROR = EPOLLERR,
-    EVENT_HUP = EPOLLHUP,
-  };
-
-#else // !HAVE_EPOLL
-
-  enum EventType {
-    EVENT_READ = 1,
-    EVENT_WRITE = 1 << 1,
-    EVENT_ERROR = 1 << 2,
-    EVENT_HUP = 1 << 3,
-  };
-
-#endif // !HAVE_EPOLL
-
-  SocketEntry(sock_t socket);
-
-  bool operator==(const SocketEntry& entry) const;
-
-  bool operator<(const SocketEntry& entry) const;
-
-  void addCommandEvent(Command* command, int events);
-
-  void removeCommandEvent(Command* command, int events);
-
-#if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
-
-  void addADNSEvent(const SharedHandle<AsyncNameResolver>& resolver,
-		    Command* command, int events);
-
-  void removeADNSEvent(const SharedHandle<AsyncNameResolver>& resolver,
-		       Command* command);
-
-#endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
-
-#ifdef HAVE_EPOLL
-
-  struct epoll_event& getEpEvent();
-
-#else // !HAVE_EPOLL
-
-  int getEvents();
-
-#endif // !HAVE_EPOLL
-
-  sock_t getSocket() const;
-
-  bool eventEmpty() const;
-
-  void processEvents(int events);
-
-};
-
-#ifdef ENABLE_ASYNC_DNS
-
-class DownloadEngine;
-
-class AsyncNameResolverEntry {
-private:
-  SharedHandle<AsyncNameResolver> _nameResolver;
-
-  Command* _command;
-
-#ifdef HAVE_EPOLL
-  // HAVE_EPOLL assumes c-ares
-
-  size_t _socketsSize;
-  
-  sock_t _sockets[ARES_GETSOCK_MAXNUM];
-
-#endif // HAVE_EPOLL
-
-public:
-  AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
-			 Command* command);
-
-  bool operator==(const AsyncNameResolverEntry& entry);
-
-#ifdef HAVE_EPOLL
-
-  void addSocketEvents(DownloadEngine* e);
-  
-  void removeSocketEvents(DownloadEngine* e);
-
-#else // !HAVE_EPOLL
-
-  int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr);
-
-  void process(fd_set* rfdsPtr, fd_set* wfdsPtr);
-
-#endif // !HAVE_EPOLL
-
-};
-
-#endif // ENABLE_ASYNC_DNS
+class EventPoll;
+class Command;
 
 class DownloadEngine {
 private:
   void waitData();
-  std::deque<SharedHandle<SocketEntry> > socketEntries;
-#ifdef ENABLE_ASYNC_DNS
-  std::deque<SharedHandle<AsyncNameResolverEntry> > nameResolverEntries;
-#endif // ENABLE_ASYNC_DNS
 
-#ifdef HAVE_EPOLL
-
-  int _epfd;
-
-  struct epoll_event* _epEvents;
-
-  static const size_t EPOLL_EVENTS_MAX = 1024;
-
-#else // !HAVE_EPOLL
-  // If epoll is not available, then use select system call.
-
-  fd_set rfdset;
-  fd_set wfdset;
-  int fdmax;
-
-#endif // !HAVE_EPOLL
+  SharedHandle<EventPoll> _eventPoll;
 
   Logger* logger;
   
@@ -312,8 +125,6 @@ private:
 
   SharedHandle<AuthConfigFactory> _authConfigFactory;
 
-  void shortSleep() const;
-
   /**
    * Delegates to StatCalc
    */
@@ -336,19 +147,13 @@ public:
   SharedHandle<CheckIntegrityMan> _checkIntegrityMan;
   const Option* option;
   
-  DownloadEngine();
+  DownloadEngine(const SharedHandle<EventPoll>& eventPoll);
 
   virtual ~DownloadEngine();
 
   void run();
 
   void cleanQueue();
-
-#ifndef HAVE_EPOLL
-
-  void updateFdSet();
-
-#endif // !HAVE_EPOLL
 
   bool addSocketForReadCheck(const SharedHandle<SocketCore>& socket,
 			     Command* command);
@@ -359,20 +164,6 @@ public:
   bool deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
 				 Command* command);
 
-  bool addSocketEvents(sock_t socket, Command* command, int events
-#if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
-		       ,const SharedHandle<AsyncNameResolver>& rs =
-		       SharedHandle<AsyncNameResolver>()
-#endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
-		       );
-
-  bool deleteSocketEvents(sock_t socket, Command* command, int events
-#if defined HAVE_EPOLL && defined ENABLE_ASYNC_DNS
-			  ,const SharedHandle<AsyncNameResolver>& rs =
-			  SharedHandle<AsyncNameResolver>()
-#endif // HAVE_EPOLL && ENABLE_ASYNC_DNS
-			  );
-
 #ifdef ENABLE_ASYNC_DNS
 
   bool addNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver,
@@ -381,7 +172,7 @@ public:
 			       Command* command);
 #endif // ENABLE_ASYNC_DNS
 
-  void addCommand(const Commands& commands);
+  void addCommand(const std::deque<Command*>& commands);
 
   void fillCommand();
 

@@ -54,6 +54,12 @@
 #include "TimedHaltCommand.h"
 #include "DownloadResult.h"
 #include "ServerStatMan.h"
+#include "a2io.h"
+#ifdef HAVE_EPOLL
+# include "EpollEventPoll.h"
+#endif // HAVE_EPOLL
+#include "SelectEventPoll.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -79,7 +85,24 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
     workingSet = requestGroups;
   }
 
-  DownloadEngineHandle e(new DownloadEngine());
+  SharedHandle<EventPoll> eventPoll;
+#ifdef HAVE_EPOLL
+  if(op->get(PREF_EVENT_POLL) == V_EPOLL) {
+    SharedHandle<EpollEventPoll> ep(new EpollEventPoll());
+    if(ep->good()) {
+      eventPoll = ep;
+    } else {
+      throw DlAbortEx("Initializing EpollEventPoll failed."
+		      " Try --event-poll=select");
+    }
+  } else
+#endif // HAVE_EPLL
+    if(op->get(PREF_EVENT_POLL) == V_SELECT) {
+      eventPoll.reset(new SelectEventPoll());
+    } else {
+      abort();
+    }
+  DownloadEngineHandle e(new DownloadEngine(eventPoll));
   e->option = op;
 
   RequestGroupManHandle
