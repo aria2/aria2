@@ -93,7 +93,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     if(!req->isPipeliningEnabled() && req->isPipeliningHint() &&
        !_segments.empty() && !downloadFinished) {
       const SharedHandle<Segment>& segment = _segments.front();
-      if(segment->getPosition()+segment->getLength() ==
+      if(static_cast<uint64_t>(segment->getPosition())+segment->getLength() ==
 	 static_cast<uint64_t>(_httpResponse->getHttpHeader()->
 			       getRange()->getEndByte()+1)) {
 	return prepareForRetry(0);

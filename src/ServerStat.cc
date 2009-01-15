@@ -55,8 +55,8 @@ ServerStat::ServerStat(const std::string& hostname, const std::string& protocol)
   _singleConnectionAvgSpeed(0),
   _multiConnectionAvgSpeed(0),
   _counter(0),
-  _status(OK),
-  _logger(LogFactory::getInstance())
+  _logger(LogFactory::getInstance()),
+  _status(OK)
 {}
 
 ServerStat::~ServerStat() {}

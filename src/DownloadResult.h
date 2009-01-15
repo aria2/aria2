@@ -72,6 +72,7 @@ public:
 
   uint64_t sessionDownloadLength;
 
+  // milliseconds
   int64_t sessionTime;
 
   RESULT result;

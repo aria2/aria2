@@ -1,5 +1,13 @@
 2009-01-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile warning/error.
+	* src/DownloadResult.h
+	* src/HttpDownloadCommand.cc
+	* src/ServerStat.cc
+	* test/RequestGroupTest.cc
+	
+2009-01-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --event-poll option to select the method for polling events.
 	The available methods are "select" and "epoll". "epoll" is
 	available on Linux only. The earlier release has the compile

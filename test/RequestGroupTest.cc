@@ -117,7 +117,7 @@ void RequestGroupTest::testCreateDownloadResult()
     CPPUNIT_ASSERT_EQUAL(std::string("http://first/file"), result->uri);
     CPPUNIT_ASSERT_EQUAL((size_t)2, result->numUri);
     CPPUNIT_ASSERT_EQUAL((uint64_t)0, result->sessionDownloadLength);
-    CPPUNIT_ASSERT_EQUAL((time_t)0, result->sessionTime);
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime);
     // result is UNKNOWN_ERROR if download has not completed and no specific
     // error has been reported
     CPPUNIT_ASSERT_EQUAL(DownloadResult::UNKNOWN_ERROR, result->result);
