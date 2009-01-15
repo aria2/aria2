@@ -1,5 +1,11 @@
 2009-01-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made the max value of split option unlimited.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+
+2009-01-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile warning/error.
 	* src/DownloadResult.h
 	* src/HttpDownloadCommand.cc

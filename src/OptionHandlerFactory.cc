@@ -411,7 +411,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_SPLIT,
 				    TEXT_SPLIT,
 				    "5",
-				    1, 16));
+				    1));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
