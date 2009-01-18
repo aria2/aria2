@@ -49,12 +49,13 @@
 
 namespace aria2 {
 
+static const int MAX_PEER_LIST_SIZE = 1024;
+
 DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
 				       const Option* option):
   btContext(btContext),
   option(option),
   logger(LogFactory::getInstance()),
-  maxPeerListSize(BtRuntime::MAX_PEERS+(BtRuntime::MAX_PEERS >> 2)),
   removedPeerSessionDownloadLength(0),
   removedPeerSessionUploadLength(0),
   _seederStateChoke(new BtSeederStateChoke()),
@@ -84,11 +85,22 @@ bool DefaultPeerStorage::isPeerAlreadyAdded(const PeerHandle& peer)
   return std::find_if(peers.begin(), peers.end(), FindIdenticalPeer(peer)) != peers.end();
 }
 
+static size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
+{
+  if(btRuntime.isNull()) {
+    return MAX_PEER_LIST_SIZE;
+  }
+  return btRuntime->getMaxPeers() == 0 ?
+    MAX_PEER_LIST_SIZE :
+    btRuntime->getMaxPeers()+(btRuntime->getMaxPeers() >> 2);
+}
+
 bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
   if(isPeerAlreadyAdded(peer)) {
     logger->debug("Adding %s:%u is rejected because it has been already added.", peer->ipaddr.c_str(), peer->port);
     return false;
   }
+  size_t maxPeerListSize = calculateMaxPeerListSize(_btRuntime);
   if(peers.size() >= maxPeerListSize) {
     deleteUnusedPeer(peers.size()-maxPeerListSize+1);
   }

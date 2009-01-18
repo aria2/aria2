@@ -305,6 +305,10 @@ _(" --bt-max-open-files=NUM      Specify maximum number of files to open in each
 #define TEXT_BT_SEED_UNVERIFIED \
 _(" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"\
   "                              verifying piece hashes.")
+#define TEXT_BT_MAX_PEERS \
+_(" --bt-max-peers=NUM           Specify the maximum number of peers per torrent.\n"\
+  "                              0 means unlimited.\n"\
+  "                              See also --bt-request-peer-speed-limit option.")
 #define TEXT_METALINK_FILE \
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \

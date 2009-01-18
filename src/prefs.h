@@ -275,6 +275,8 @@ extern const std::string PREF_BT_MAX_OPEN_FILES;
 extern const std::string PREF_BT_SEED_UNVERIFIED;
 // values: true | false
 extern const std::string PREF_BT_HASH_CHECK_SEED;
+// values: 1*digit
+extern const std::string PREF_BT_MAX_PEERS;
 
 /**
  * Metalink related preferences

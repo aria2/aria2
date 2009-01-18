@@ -219,6 +219,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_DHT_FILE_PATH.c_str(), required_argument, &lopt, 35 },
       { PREF_MAX_OVERALL_UPLOAD_LIMIT.c_str(), required_argument, &lopt, 36 },
       { PREF_BT_HASH_CHECK_SEED.c_str(), optional_argument, &lopt, 37 },
+      { PREF_BT_MAX_PEERS.c_str(), required_argument, &lopt, 38 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { PREF_METALINK_FILE.c_str(), required_argument, NULL, 'M' },
@@ -348,6 +349,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 37:
 	cmdstream << PREF_BT_HASH_CHECK_SEED << "=" << optarg << "\n";
+	break;
+      case 38:
+	cmdstream << PREF_BT_MAX_PEERS << "=" << optarg << "\n";
 	break;
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";

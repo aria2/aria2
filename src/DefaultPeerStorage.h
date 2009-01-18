@@ -55,7 +55,6 @@ private:
   const Option* option;
   std::deque<SharedHandle<Peer> > peers;
   Logger* logger;
-  size_t maxPeerListSize;
   uint64_t removedPeerSessionDownloadLength;
   uint64_t removedPeerSessionUploadLength;
 
@@ -92,10 +91,6 @@ public:
   virtual bool chokeRoundIntervalElapsed();
 
   virtual void executeChoke();
-
-  void setMaxPeerListSize(size_t size) { this->maxPeerListSize = size; }
- 
-  size_t getMaxPeerListSize() const { return maxPeerListSize; }
 
   void deleteUnusedPeer(size_t delSize);
   

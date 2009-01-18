@@ -736,6 +736,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_BT_MAX_PEERS,
+				    TEXT_BT_MAX_PEERS,
+				    "55",
+				    0));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+				   
+  }
+  {
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_BT_MIN_CRYPTO_LEVEL,
 				    TEXT_BT_MIN_CRYPTO_LEVEL,

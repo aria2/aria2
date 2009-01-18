@@ -47,8 +47,14 @@ private:
   bool halt;
   unsigned int connections;
   bool _ready;
+  // Maximum number of peers to hold connections at the same time.
+  // 0 means unlimited.
+  unsigned int _maxPeers;
+  // Minimum number of peers. This value is used for getting more peers from
+  // tracker. 0 means always the number of peers is under minimum.
+  unsigned int _minPeers;
 
-  static const unsigned int MIN_PEERS = 40;
+  static const unsigned int DEFAULT_MIN_PEERS = 40;
 
 public:
   BtRuntime():
@@ -56,7 +62,9 @@ public:
     port(0),
     halt(false),
     connections(0),
-    _ready(false)
+    _ready(false),
+    _maxPeers(DEFAULT_MAX_PEERS),
+    _minPeers(DEFAULT_MIN_PEERS)
   {}
 
   ~BtRuntime() {}
@@ -87,17 +95,40 @@ public:
 
   void decreaseConnections() { connections--; }
 
-  bool lessThanMaxPeers() const { return connections < MAX_PEERS; }
+  bool lessThanMaxPeers() const
+  {
+    return _maxPeers == 0 || connections < _maxPeers;
+  }
 
-  bool lessThanMinPeers() const { return connections < MIN_PEERS; }
+  bool lessThanMinPeers() const
+  {
+    return _minPeers == 0 || connections < _minPeers;
+  }
 
-  bool lessThanEqMinPeers() const { return connections <= MIN_PEERS; }
+  bool lessThanEqMinPeers() const
+  {
+    return _minPeers == 0 || connections <= _minPeers;
+  }
 
   bool ready() { return _ready; }
 
   void setReady(bool go) { _ready = go; }
 
-  static const unsigned int MAX_PEERS = 55;
+  void setMaxPeers(unsigned int maxPeers)
+  {
+    _maxPeers = maxPeers;
+    _minPeers = maxPeers*0.8;
+    if(_minPeers == 0 && maxPeers != 0) {
+      _minPeers = maxPeers;
+    }
+  }
+
+  unsigned int getMaxPeers() const
+  {
+    return _maxPeers;
+  }
+
+  static const unsigned int DEFAULT_MAX_PEERS = 55;
 };
 
 typedef SharedHandle<BtRuntime> BtRuntimeHandle;

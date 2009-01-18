@@ -97,6 +97,9 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 
 void DefaultPeerStorageTest::testAddPeer() {
   DefaultPeerStorage ps(btContext, option);
+  SharedHandle<BtRuntime> btRuntime(new BtRuntime());
+  btRuntime->setMaxPeers(3);
+  ps.setBtRuntime(btRuntime);
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
   SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
@@ -112,8 +115,6 @@ void DefaultPeerStorageTest::testAddPeer() {
   CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer1));
   // the number of peers doesn't change.
   CPPUNIT_ASSERT_EQUAL((size_t)3, ps.countPeer());
-
-  ps.setMaxPeerListSize(3);
 
   SharedHandle<Peer> peer4(new Peer("192.168.0.4", 6889));
 

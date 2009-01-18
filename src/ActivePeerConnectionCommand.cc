@@ -90,10 +90,18 @@ bool ActivePeerConnectionCommand::execute() {
        (!_pieceStorage->downloadFinished() &&
 	(tstat.getDownloadSpeed() < _thresholdSpeed ||
 	 _btRuntime->lessThanMinPeers()))) {
-      unsigned int numConnection = _pieceStorage->downloadFinished() ?
-	std::min(_numNewConnection,
-		 BtRuntime::MAX_PEERS-_btRuntime->getConnections()) :
-	_numNewConnection;
+
+      unsigned int numConnection = 0;
+      if(_pieceStorage->downloadFinished()) {
+	if(_btRuntime->getMaxPeers() > _btRuntime->getConnections()) {
+	  numConnection =
+	    std::min(_numNewConnection,
+		     _btRuntime->getMaxPeers()-_btRuntime->getConnections());
+	}
+      } else {
+	numConnection = _numNewConnection;
+      }
+
       for(unsigned int numAdd = numConnection;
 	  numAdd > 0 && _peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = _peerStorage->getUnusedPeer();

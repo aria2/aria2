@@ -1,5 +1,21 @@
 2009-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-max-peers option to specify the maximum number of peers
+	per torrent. 0 means unlimited number of peers.
+	* src/ActivePeerConnectionCommand.cc
+	* src/BtRuntime.h
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DefaultPeerStorageTest.cc
+
+2009-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-hash-check-seed option.  If true is given to this
 	option, after hash check using --check-integrity option and file
 	is complete, continue to seed file. If you want to check file and
