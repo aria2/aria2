@@ -1,3 +1,8 @@
+2009-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated copyright year.
+	* src/version_usage.cc
+
 2009-01-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten the usage text for --bt-request-peer-speed-limit option.
