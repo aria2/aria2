@@ -719,6 +719,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_BT_HASH_CHECK_SEED,
+				    TEXT_BT_HASH_CHECK_SEED,
+				    V_TRUE));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
 				   (PREF_BT_MAX_OPEN_FILES,
 				    TEXT_BT_MAX_OPEN_FILES,

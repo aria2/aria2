@@ -160,7 +160,15 @@ _(" -V, --check-integrity[=true|false] Check file integrity by validating piece\
   "                              hashes. This option has effect only in BitTorrent\n"\
   "                              and Metalink downloads with chunk checksums.\n"\
   "                              Use this option to re-download a damaged portion\n"\
-  "                              of a file.")
+  "                              of a file. See also --bt-hash-check-seed option.")
+#define TEXT_BT_HASH_CHECK_SEED \
+_(" --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"\
+  "                              --check-integrity option and file is complete,\n"\
+  "                              continue to seed file. If you want to check file\n"\
+  "                              and download it only when it is damaged or\n"\
+  "                              incomplete, set this option to false.\n"\
+  "                              This option has effect only on BitTorrent\n"\
+  "                              download.")
 #define TEXT_REALTIME_CHUNK_CHECKSUM \
 _(" --realtime-chunk-checksum=true|false  Validate chunk of data by calculating\n"\
   "                              checksum while downloading a file if chunk\n"\

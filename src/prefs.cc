@@ -269,6 +269,8 @@ const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT("bt-request-peer-speed-limit"
 const std::string PREF_BT_MAX_OPEN_FILES("bt-max-open-files");
 // values: true | false
 const std::string PREF_BT_SEED_UNVERIFIED("bt-seed-unverified");
+// values: true | false
+const std::string PREF_BT_HASH_CHECK_SEED("bt-hash-check-seed");
 
 /**
  * Metalink related preferences

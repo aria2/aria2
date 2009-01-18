@@ -1,5 +1,21 @@
 2009-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-hash-check-seed option.  If true is given to this
+	option, after hash check using --check-integrity option and file
+	is complete, continue to seed file. If you want to check file and
+	download it only when it is damaged or incomplete, set this option
+	to false.  This option has effect only on BitTorrent download.
+	The default value is true(This is the same behavior with the
+	previous release).
+	* src/BtCheckIntegrityEntry.cc
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2009-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated copyright year.
 	* src/version_usage.cc
 

@@ -39,6 +39,8 @@
 #include "DownloadEngine.h"
 #include "FileAllocationMan.h"
 #include "DiskAdaptor.h"
+#include "prefs.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -66,7 +68,9 @@ void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
   // are valid, then aira2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
-  onDownloadIncomplete(commands, e);
+  if(e->option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
+    onDownloadIncomplete(commands, e);
+  }
 }
 
 } // namespace aria2
