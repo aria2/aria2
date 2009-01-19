@@ -156,14 +156,19 @@ aria2c -o myfile.zip \http://mirror1/file.zip \http://mirror2/file.zip
   Default: '60'
 
 *--uri-selector*=SELECTOR::
-  Specify URI selection algorithm. Possible values are 'inorder' and
-  'feedback'.  If 'inorder' is given, URI is tried in the order
-  appeared in the URI list.  If 'feedback' is given, aria2 uses
-  download speed observed in the previous downloads and choose fastest
-  server in the URI list. This also effectively skips dead
+  Specify URI selection algorithm. Possible values are 'inorder',
+  'feedback' and 'adaptive'.  If 'inorder' is given, URI is tried in
+  the order appeared in the URI list.  If 'feedback' is given, aria2
+  uses download speed observed in the previous downloads and choose
+  fastest server in the URI list. This also effectively skips dead
   mirrors. The observed download speed is a part of performance
   profile of servers mentioned in *--server-stat-of* and
-  *--server-stat-if* options.
+  *--server-stat-if* options.  If 'adaptive' is given, selects one of
+  the best mirrors for the first and reserved connections.  For
+  supplementary ones, it returns mirrors which has not been tested
+  yet, and if each of them has already been tested, returns mirrors
+  which has to be tested again. Otherwise, it doesn't select anymore
+  mirrors. Like 'feedback', it uses a performance profile of servers.
   Default: 'inorder'
 
 HTTP Specific Options

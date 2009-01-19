@@ -210,9 +210,10 @@ Set timeout in seconds\&. Default:
 \fB\-\-uri\-selector\fR=SELECTOR
 .RS 4
 Specify URI selection algorithm\&. Possible values are
-\fIinorder\fR
+\fIinorder\fR,
+\fIfeedback\fR
 and
-\fIfeedback\fR\&. If
+\fIadaptive\fR\&. If
 \fIinorder\fR
 is given, URI is tried in the order appeared in the URI list\&. If
 \fIfeedback\fR
@@ -220,7 +221,10 @@ is given, aria2 uses download speed observed in the previous downloads and choos
 \fB\-\-server\-stat\-of\fR
 and
 \fB\-\-server\-stat\-if\fR
-options\&. Default:
+options\&. If
+\fIadaptive\fR
+is given, selects one of the best mirrors for the first and reserved connections\&. For supplementary ones, it returns mirrors which has not been tested yet, and if each of them has already been tested, returns mirrors which has to be tested again\&. Otherwise, it doesn\'t select anymore mirrors\&. Like
+\fIfeedback\fR, it uses a performance profile of servers\&. Default:
 \fIinorder\fR
 .RE
 .SS "HTTP Specific Options"

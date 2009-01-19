@@ -1,6 +1,11 @@
 2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added doc for adaptive URI selector.
+	* doc/aria2c.1.txt
+
+2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added doc for adaptive URI selector.
 	* src/usage_text.h
 
 2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
