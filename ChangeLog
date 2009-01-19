@@ -1,5 +1,10 @@
 2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added doc for adaptive URI selector.
+	* src/usage_text.h
+
+2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added doc for --bt-max-peers option.
 	* doc/aria2c.1.txt
 

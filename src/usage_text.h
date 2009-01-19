@@ -409,7 +409,15 @@ _(" --uri-selector=SELECTOR      Specify URI selection algorithm.\n"\
   "                              effectively skips dead mirrors. The observed\n"\
   "                              download speed is a part of performance profile\n"\
   "                              of servers mentioned in --server-stat-of and\n"\
-  "                              --server-stat-if options.")
+  "                              --server-stat-if options.\n"\
+  "                              If 'adaptive' is given, selects one of the best\n"\
+  "                              mirrors for the first and reserved connections.\n"\
+  "                              For supplementary ones, it returns mirrors which\n" \
+  "                              has not been tested yet, and if each of them has\n"\
+  "                              already been tested, returns mirrors which has to\n"\
+  "                              be tested again. Otherwise, it doesn't select\n"\
+  "                              anymore mirrors. Like 'feedback', it uses a\n"\
+  "                              performance profile of servers.")
 #define TEXT_SERVER_STAT_OF \
 _(" --server-stat-of=FILE        Specify the filename to which performance profile\n"\
   "                              of the servers is saved. You can load saved data\n"\
