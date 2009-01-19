@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 01/16/2009
+.\"      Date: 01/19/2009
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "01/16/2009" "" ""
+.TH "ARIA2C" "1" "01/19/2009" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -1578,6 +1578,60 @@ Specify comma\-separated hostname or domains to which proxy should not be used\&
 \fB\-\-no\-proxy\fR
 overrides this value\&.
 .RE
+.SH "EXIT CODES"
+Because aria2 can handle multiple downloads at once, it encounters lots of errors in a session\&. aria2 returns the following exit codes based on the last error encountered\&.
+.PP
+0
+.RS 4
+If all downloads are successful\&.
+.RE
+.PP
+1
+.RS 4
+If an unknown error occurs\&.
+.RE
+.PP
+2
+.RS 4
+If time out occurs\&.
+.RE
+.PP
+3
+.RS 4
+If a resource is not found\&.
+.RE
+.PP
+4
+.RS 4
+If aria2 sees the specfied number of "resource not found" error\&. See
+\fB\-\-max\-file\-not\-found\fR
+option)\&.
+.RE
+.PP
+5
+.RS 4
+If a download aborts because download speed is too slow\&. See
+\fB\-\-lowest\-speed\-limit\fR
+option)
+.RE
+.PP
+6
+.RS 4
+If network problem occurs\&.
+.RE
+.PP
+7
+.RS 4
+If there are unfinished downloads\&. This error is only reported if all finished downloads are successful and there are unfinished downloads in a queue when aria2 exits by pressing Ctrl\-C by an user or sending TERM or INT signal\&.
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+An error occurred in a finished download will not be reported as exit status\&.
+.sp
 .SH "RESOURCES"
 Project web site: http://aria2\&.sourceforge\&.net/
 .sp

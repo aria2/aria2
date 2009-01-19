@@ -1018,6 +1018,47 @@ no_proxy [DOMAIN,...]::
   Overrides no-proxy value in configuration file.
   The command-line option *--no-proxy* overrides this value.
 
+EXIT CODES
+----------
+
+Because aria2 can handle multiple downloads at once, it encounters
+lots of errors in a session.  aria2 returns the following exit codes
+based on the last error encountered.
+
+0::
+  If all downloads are successful.
+
+1::
+  If an unknown error occurs.
+
+2::
+  If time out occurs.
+
+3::
+  If a resource is not found.
+
+4::
+  If aria2 sees the specfied number of "resource not found" error.
+  See *--max-file-not-found* option).
+
+5::
+  If a download aborts because download speed is too slow.
+  See *--lowest-speed-limit* option)
+
+6::
+  If network problem occurs.
+
+7::
+  If there are unfinished downloads. This error is only reported if
+  all finished downloads are successful and there are unfinished
+  downloads in a queue when aria2 exits by pressing Ctrl-C by an user
+  or sending TERM or INT signal.
+
+[NOTE]
+An error occurred in a finished download will not be reported
+as exit status.
+
+
 RESOURCES
 ---------
 Project web site: http://aria2.sourceforge.net/[]

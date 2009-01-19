@@ -1,3 +1,8 @@
+2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Documented exit codes.
+	* doc/aria2c.1.txt
+
 2009-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --bt-max-peers option to specify the maximum number of peers

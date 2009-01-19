@@ -2024,6 +2024,92 @@ no_proxy [DOMAIN,&#8230;]
 </dd>
 </dl></div>
 </div>
+<h2 id="_exit_codes">EXIT CODES</h2>
+<div class="sectionbody">
+<div class="para"><p>Because aria2 can handle multiple downloads at once, it encounters
+lots of errors in a session.  aria2 returns the following exit codes
+based on the last error encountered.</p></div>
+<div class="vlist"><dl>
+<dt>
+0
+</dt>
+<dd>
+<p>
+  If all downloads are successful.
+</p>
+</dd>
+<dt>
+1
+</dt>
+<dd>
+<p>
+  If an unknown error occurs.
+</p>
+</dd>
+<dt>
+2
+</dt>
+<dd>
+<p>
+  If time out occurs.
+</p>
+</dd>
+<dt>
+3
+</dt>
+<dd>
+<p>
+  If a resource is not found.
+</p>
+</dd>
+<dt>
+4
+</dt>
+<dd>
+<p>
+  If aria2 sees the specfied number of "resource not found" error.
+  See <strong>--max-file-not-found</strong> option).
+</p>
+</dd>
+<dt>
+5
+</dt>
+<dd>
+<p>
+  If a download aborts because download speed is too slow.
+  See <strong>--lowest-speed-limit</strong> option)
+</p>
+</dd>
+<dt>
+6
+</dt>
+<dd>
+<p>
+  If network problem occurs.
+</p>
+</dd>
+<dt>
+7
+</dt>
+<dd>
+<p>
+  If there are unfinished downloads. This error is only reported if
+  all finished downloads are successful and there are unfinished
+  downloads in a queue when aria2 exits by pressing Ctrl-C by an user
+  or sending TERM or INT signal.
+</p>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">An error occurred in a finished download will not be reported
+as exit status.</td>
+</tr></table>
+</div>
+</div>
 <h2 id="_resources">RESOURCES</h2>
 <div class="sectionbody">
 <div class="para"><p>Project web site: <a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a></p></div>
@@ -2066,7 +2152,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-01-16 00:56:38 JST
+Last updated 2009-01-19 22:45:44 JST
 </div>
 </div>
 </body>
