@@ -307,6 +307,11 @@ BitTorrent Specific Options
   Specify maximum number of files to open in each BitTorrent download.
   Default: '100'
 
+*--bt-max-peers*=NUM::
+  Specify the maximum number of peers per torrent.  '0' means
+  unlimited.  See also *--bt-request-peer-speed-limit* option.
+  Default: '55'
+
 *--bt-min-crypto-level*='plain'|'arc4'::
   Set minimum level of encryption method.
   If several encryption methods are provided by a peer, aria2 chooses the lowest

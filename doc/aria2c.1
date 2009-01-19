@@ -423,6 +423,16 @@ Specify maximum number of files to open in each BitTorrent download\&. Default:
 \fI100\fR
 .RE
 .PP
+\fB\-\-bt\-max\-peers\fR=NUM
+.RS 4
+Specify the maximum number of peers per torrent\&.
+\fI0\fR
+means unlimited\&. See also
+\fB\-\-bt\-request\-peer\-speed\-limit\fR
+option\&. Default:
+\fI55\fR
+.RE
+.PP
 \fB\-\-bt\-min\-crypto\-level\fR=\fIplain\fR|\fIarc4\fR
 .RS 4
 Set minimum level of encryption method\&. If several encryption methods are provided by a peer, aria2 chooses the lowest one which satisfies the given level\&. Default:
