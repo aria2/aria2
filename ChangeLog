@@ -1,5 +1,10 @@
 2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added doc for --bt-hash-check-seed option.
+	* doc/aria2c.1.txt
+	
+2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented exit codes.
 	* doc/aria2c.1.txt
 

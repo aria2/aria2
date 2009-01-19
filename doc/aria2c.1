@@ -406,6 +406,17 @@ Print file listing of \&.torrent or \&.metalink file and exit\&. In case of \&.t
 .RE
 .SS "BitTorrent Specific Options"
 .PP
+\fB\-\-bt\-hash\-check\-seed\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+If
+\fItrue\fR
+is given, after hash check using
+\fB\-\-check\-integrity\fR
+option and file is complete, continue to seed file\&. If you want to check file and download it only when it is damaged or incomplete, set this option to
+\fIfalse\fR\&. This option has effect only on BitTorrent download\&. Default:
+\fItrue\fR
+.RE
+.PP
 \fB\-\-bt\-max\-open\-files\fR=NUM
 .RS 4
 Specify maximum number of files to open in each BitTorrent download\&. Default:

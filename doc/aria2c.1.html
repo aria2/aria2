@@ -926,6 +926,18 @@ writes the piece to the appropriate files.</td>
 <h3 id="_bittorrent_specific_options">BitTorrent Specific Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
 <dt>
+<strong>--bt-hash-check-seed</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+ If <em>true</em> is given, after hash check using <strong>--check-integrity</strong> option and
+ file is complete, continue to seed file. If you want to check file
+ and download it only when it is damaged or incomplete, set this
+ option to <em>false</em>.  This option has effect only on BitTorrent download.
+ Default: <em>true</em>
+</p>
+</dd>
+<dt>
 <strong>--bt-max-open-files</strong>=NUM
 </dt>
 <dd>
@@ -2152,7 +2164,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-01-19 22:45:44 JST
+Last updated 2009-01-19 22:55:07 JST
 </div>
 </div>
 </body>

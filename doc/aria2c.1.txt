@@ -296,6 +296,13 @@ writes the piece to the appropriate files.
 
 BitTorrent Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*--bt-hash-check-seed*[='true'|'false']::
+ If 'true' is given, after hash check using *--check-integrity* option and
+ file is complete, continue to seed file. If you want to check file
+ and download it only when it is damaged or incomplete, set this
+ option to 'false'.  This option has effect only on BitTorrent download.
+ Default: 'true'
+
 *--bt-max-open-files*=NUM::
   Specify maximum number of files to open in each BitTorrent download.
   Default: '100'
