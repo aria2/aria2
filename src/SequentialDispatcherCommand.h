@@ -55,7 +55,10 @@ public:
   SequentialDispatcherCommand(int32_t cuid,
 			      const SharedHandle<SequentialPicker<T> >& picker,
 			      DownloadEngine* e):
-    Command(cuid), _picker(picker), _e(e) {}
+    Command(cuid), _picker(picker), _e(e)
+  {
+    setStatusRealtime();
+  }
   
   virtual bool execute()
   {

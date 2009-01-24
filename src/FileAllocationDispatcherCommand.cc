@@ -44,10 +44,7 @@ FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
 (int32_t cuid,
  const SharedHandle<FileAllocationMan>& fileAllocMan,
  DownloadEngine* e):SequentialDispatcherCommand<FileAllocationEntry>
-		    (cuid, fileAllocMan, e)
-{
-  setStatusRealtime();
-}
+		    (cuid, fileAllocMan, e) {}
 
 Command* FileAllocationDispatcherCommand::createCommand
 (const SharedHandle<FileAllocationEntry>& entry)

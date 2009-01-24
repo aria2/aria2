@@ -1,5 +1,12 @@
 2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved setStatusRealtime() from FileAllocationDispatcherCommand to
+	SequentialDispatcherCommand.
+	* src/FileAllocationDispatcherCommand.cc
+	* src/SequentialDispatcherCommand.h
+	
+2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten FileAllocationDispatcherCommand using brand new
 	SequentialDispatcherCommand.
 	* src/DownloadEngineFactory.cc
