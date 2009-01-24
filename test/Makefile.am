@@ -64,7 +64,8 @@ aria2c_SOURCES = AllTest.cc\
 	OptionParserTest.cc\
 	SimpleDNSCacheTest.cc\
 	DownloadHelperTest.cc\
-	BencodeTest.cc
+	BencodeTest.cc\
+	SequentialPickerTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

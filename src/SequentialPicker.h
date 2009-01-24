@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,30 +32,65 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_STAT_CALC_H_
-#define _D_STAT_CALC_H_
+#ifndef _D_SEQUENTIAL_PICKER_H_
+#define _D_SEQUENTIAL_PICKER_H_
 
 #include "common.h"
+
+#include <deque>
+
 #include "SharedHandle.h"
-#include "FileAllocationMan.h"
 
 namespace aria2 {
 
-class RequestGroupMan;
-class CheckIntegrityMan;
-
-class StatCalc {
+template<typename T>
+class SequentialPicker {
+private:
+  std::deque<SharedHandle<T> > _entries;
+  SharedHandle<T> _pickedEntry;
 public:
-  virtual ~StatCalc() {}
+  bool isPicked() const
+  {
+    return !_pickedEntry.isNull();
+  }
 
-  virtual void 
-  calculateStat(const SharedHandle<RequestGroupMan>& requestGroupMan,
-		const SharedHandle<FileAllocationMan>& fileAllocationMan,
-		const SharedHandle<CheckIntegrityMan>& checkIntegrityMan) = 0;
+  SharedHandle<T> getPickedEntry() const
+  {
+    return _pickedEntry;
+  }
+
+  void dropPickedEntry()
+  {
+    _pickedEntry.reset();
+  }
+
+  bool hasNext() const
+  {
+    return !_entries.empty();
+  }
+
+  SharedHandle<T> pickNext()
+  {
+    SharedHandle<T> r;
+    if(hasNext()) {
+      r = _entries.front();
+      _entries.pop_front();
+      _pickedEntry = r;
+    }
+    return r;
+  }
+
+  void pushEntry(const SharedHandle<T>& entry)
+  {
+    _entries.push_back(entry);
+  }
+
+  size_t countEntryInQueue() const
+  {
+    return _entries.size();
+  }
 };
-
-typedef SharedHandle<StatCalc> StatCalcHandle;
 
 } // namespace aria2
 
-#endif // _D_STAT_CALC_H_
+#endif // _D_SEQUENTIAL_PICKER_H_

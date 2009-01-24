@@ -84,7 +84,7 @@ SRCS =  Socket.h\
 	RequestGroup.cc RequestGroup.h\
 	RequestGroupAware.cc RequestGroupAware.h\
 	RequestGroupMan.cc RequestGroupMan.h\
-	FileAllocationMan.cc FileAllocationMan.h\
+	FileAllocationMan.h\
 	FileAllocationCommand.cc FileAllocationCommand.h\
 	FillRequestGroupCommand.cc FillRequestGroupCommand.h\
 	FileAllocationDispatcherCommand.cc FileAllocationDispatcherCommand.h\
@@ -198,7 +198,8 @@ SRCS =  Socket.h\
 	bencode.cc bencode.h\
 	URIResult.cc URIResult.h\
 	EventPoll.h\
-	SelectEventPoll.cc SelectEventPoll.h
+	SelectEventPoll.cc SelectEventPoll.h\
+	SequentialPicker.h
 
 if HAVE_EPOLL
 SRCS += EpollEventPoll.cc EpollEventPoll.h

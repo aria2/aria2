@@ -1,3 +1,22 @@
+2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Replaced FileAllocationMan with
+	SequentialPicker<FileAllocationEntry>.
+	* src/BtCheckIntegrityEntry.cc
+	* src/ConsoleStatCalc.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/DownloadEngineFactory.cc
+	* src/FileAllocationCommand.cc
+	* src/FileAllocationDispatcherCommand.cc
+	* src/FileAllocationMan.h
+	* src/Makefile.am
+	* src/SequentialPicker.h
+	* src/StatCalc.h
+	* src/StreamCheckIntegrityEntry.cc
+	* test/Makefile.am
+	* test/SequentialPickerTest.cc
+
 2009-01-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added doc for adaptive URI selector.

@@ -60,6 +60,7 @@
 #endif // HAVE_EPOLL
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
+#include "FileAllocationEntry.h"
 
 namespace aria2 {
 

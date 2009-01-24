@@ -192,8 +192,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
 	OptionParserTest.cc SimpleDNSCacheTest.cc \
-	DownloadHelperTest.cc BencodeTest.cc GZipDecoderTest.cc \
-	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
+	DownloadHelperTest.cc BencodeTest.cc SequentialPickerTest.cc \
+	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -360,8 +361,9 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	TimeTest.$(OBJEXT) CopyDiskAdaptorTest.$(OBJEXT) \
 	FtpConnectionTest.$(OBJEXT) OptionParserTest.$(OBJEXT) \
 	SimpleDNSCacheTest.$(OBJEXT) DownloadHelperTest.$(OBJEXT) \
-	BencodeTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5)
+	BencodeTest.$(OBJEXT) SequentialPickerTest.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a ../src/download_helper.o \
@@ -584,9 +586,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
 	OptionParserTest.cc SimpleDNSCacheTest.cc \
-	DownloadHelperTest.cc BencodeTest.cc $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5)
+	DownloadHelperTest.cc BencodeTest.cc SequentialPickerTest.cc \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -796,6 +798,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SequenceTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SequentialPickerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatURISelectorTest.Po@am__quote@

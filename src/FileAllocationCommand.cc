@@ -60,7 +60,7 @@ bool FileAllocationCommand::executeInternal()
     logger->debug(MSG_ALLOCATION_COMPLETED,
 		  _timer.difference(),
 		  Util::itos(_requestGroup->getTotalLength(), true).c_str());
-    _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
+    _e->_fileAllocationMan->dropPickedEntry();
     
     std::deque<Command*> commands;
     _fileAllocationEntry->prepareForNextAction(commands, _e);
@@ -75,7 +75,7 @@ bool FileAllocationCommand::executeInternal()
 
 bool FileAllocationCommand::handleException(Exception& e)
 {
-  _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
+  _e->_fileAllocationMan->dropPickedEntry();
   logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   return true;

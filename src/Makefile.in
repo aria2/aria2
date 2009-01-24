@@ -341,10 +341,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	NameMatchOptionHandler.h NameResolver.cc NameResolver.h \
 	RequestGroup.cc RequestGroup.h RequestGroupAware.cc \
 	RequestGroupAware.h RequestGroupMan.cc RequestGroupMan.h \
-	FileAllocationMan.cc FileAllocationMan.h \
-	FileAllocationCommand.cc FileAllocationCommand.h \
-	FillRequestGroupCommand.cc FillRequestGroupCommand.h \
-	FileAllocationDispatcherCommand.cc \
+	FileAllocationMan.h FileAllocationCommand.cc \
+	FileAllocationCommand.h FillRequestGroupCommand.cc \
+	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
 	FileAllocationEntry.h StreamFileAllocationEntry.cc \
 	StreamFileAllocationEntry.h MultiUrlRequestInfo.cc \
@@ -414,8 +413,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
 	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
-	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
-	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
+	SequentialPicker.h EpollEventPoll.cc EpollEventPoll.h \
+	TLSContext.h LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
 	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
 	GZipDecoder.h Sqlite3MozCookieParser.cc \
 	Sqlite3MozCookieParser.h AsyncNameResolver.cc \
@@ -764,7 +763,7 @@ am__objects_22 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	OptionHandlerFactory.$(OBJEXT) OptionHandler.$(OBJEXT) \
 	NameResolver.$(OBJEXT) RequestGroup.$(OBJEXT) \
 	RequestGroupAware.$(OBJEXT) RequestGroupMan.$(OBJEXT) \
-	FileAllocationMan.$(OBJEXT) FileAllocationCommand.$(OBJEXT) \
+	FileAllocationCommand.$(OBJEXT) \
 	FillRequestGroupCommand.$(OBJEXT) \
 	FileAllocationDispatcherCommand.$(OBJEXT) \
 	FileAllocationEntry.$(OBJEXT) \
@@ -1068,10 +1067,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	NameMatchOptionHandler.h NameResolver.cc NameResolver.h \
 	RequestGroup.cc RequestGroup.h RequestGroupAware.cc \
 	RequestGroupAware.h RequestGroupMan.cc RequestGroupMan.h \
-	FileAllocationMan.cc FileAllocationMan.h \
-	FileAllocationCommand.cc FileAllocationCommand.h \
-	FillRequestGroupCommand.cc FillRequestGroupCommand.h \
-	FileAllocationDispatcherCommand.cc \
+	FileAllocationMan.h FileAllocationCommand.cc \
+	FileAllocationCommand.h FillRequestGroupCommand.cc \
+	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
 	FileAllocationEntry.h StreamFileAllocationEntry.cc \
 	StreamFileAllocationEntry.h MultiUrlRequestInfo.cc \
@@ -1141,13 +1139,14 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
 	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_17) $(am__append_18) \
-	$(am__append_19) $(am__append_20) $(am__append_21)
+	SequentialPicker.h $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5) \
+	$(am__append_6) $(am__append_7) $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(am__append_11) \
+	$(am__append_12) $(am__append_13) $(am__append_14) \
+	$(am__append_15) $(am__append_16) $(am__append_17) \
+	$(am__append_18) $(am__append_19) $(am__append_20) \
+	$(am__append_21)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1382,7 +1381,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationDispatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationEntry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FilesMetalinkParserState.Po@am__quote@

@@ -49,13 +49,13 @@
 # include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
 #include "CUIDCounter.h"
+#include "FileAllocationMan.h"
 
 namespace aria2 {
 
 class Logger;
 class Option;
 class RequestGroupMan;
-class FileAllocationMan;
 class StatCalc;
 class CheckIntegrityMan;
 class SocketCore;

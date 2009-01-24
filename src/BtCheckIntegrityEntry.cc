@@ -54,7 +54,7 @@ void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
 {
   FileAllocationEntryHandle entry(new BtFileAllocationEntry(_requestGroup));
   if(_requestGroup->needsFileAllocation()) {
-    e->_fileAllocationMan->pushFileAllocationEntry(entry);
+    e->_fileAllocationMan->pushEntry(entry);
   } else {
     entry->prepareForNextAction(commands, e);
   }

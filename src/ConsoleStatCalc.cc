@@ -162,9 +162,10 @@ ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval):
 {}
 
 void
-ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
-			       const FileAllocationManHandle& fileAllocationMan,
-			       const CheckIntegrityManHandle& checkIntegrityMan)
+ConsoleStatCalc::calculateStat
+(const RequestGroupManHandle& requestGroupMan,
+ const SharedHandle<FileAllocationMan>& fileAllocationMan,
+ const CheckIntegrityManHandle& checkIntegrityMan)
 {
   if(!_cp.elapsed(1)) {
     return;
@@ -211,7 +212,7 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
   }
 
   {
-    FileAllocationEntryHandle entry = fileAllocationMan->getCurrentFileAllocationEntry();
+    SharedHandle<FileAllocationEntry> entry=fileAllocationMan->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
 	<< "[FileAlloc:"
@@ -229,9 +230,9 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
       }
       o << "%)"
 	<< "]";
-      if(fileAllocationMan->countFileAllocationEntryInQueue() > 0) {
+      if(fileAllocationMan->hasNext()) {
 	o << "("
-	  << fileAllocationMan->countFileAllocationEntryInQueue()
+	  << fileAllocationMan->countEntryInQueue()
 	  << "waiting...)";
       }
     }

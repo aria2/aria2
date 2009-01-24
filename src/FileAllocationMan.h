@@ -36,38 +36,13 @@
 #define _D_FILE_ALLOCATION_MAN_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include <deque>
+#include "SequentialPicker.h"
 
 namespace aria2 {
 
 class FileAllocationEntry;
 
-class FileAllocationMan {
-private:
-  std::deque<SharedHandle<FileAllocationEntry> > _fileAllocationEntries;
-  SharedHandle<FileAllocationEntry> _currentFileAllocationEntry;
-public:
-  FileAllocationMan();
-
-  ~FileAllocationMan();
-
-  bool isFileAllocationBeingExecuted() const;
-
-  SharedHandle<FileAllocationEntry> getCurrentFileAllocationEntry();
-
-  void markCurrentFileAllocationEntryDone();
-
-  bool nextFileAllocationEntryExists() const;
-
-  SharedHandle<FileAllocationEntry> popNextFileAllocationEntry();
-
-  void pushFileAllocationEntry(const SharedHandle<FileAllocationEntry>& entry);
-
-  size_t countFileAllocationEntryInQueue() const;
-};
-
-typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
+typedef SequentialPicker<FileAllocationEntry> FileAllocationMan;
 
 } // namespace aria2
 

@@ -57,7 +57,7 @@ void StreamCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& comma
     (new StreamFileAllocationEntry(_currentRequest, _requestGroup,
 				   popNextCommand()));
   if(_requestGroup->needsFileAllocation()) {
-    e->_fileAllocationMan->pushFileAllocationEntry(entry);
+    e->_fileAllocationMan->pushEntry(entry);
   } else {
     entry->prepareForNextAction(commands, e);
   }

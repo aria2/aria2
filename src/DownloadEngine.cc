@@ -44,7 +44,6 @@
 #include "StatCalc.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
-#include "FileAllocationMan.h"
 #include "CheckIntegrityMan.h"
 #include "DownloadResult.h"
 #include "StatCalc.h"
@@ -65,6 +64,7 @@
 #include "Request.h"
 #include "EventPoll.h"
 #include "Command.h"
+#include "FileAllocationEntry.h"
 
 #include "BtRegistry.h"
 #include "BtContext.h"
