@@ -1,5 +1,11 @@
 2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed.
+	* src/CheckIntegrityMan.cc
+	* src/FileAllocationMan.cc
+	
+2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made (piece) hash check sequential for each RequestGroup because
 	simultaneous hash check is slower than sequential execution.	
 	* src/CheckIntegrityCommand.cc
