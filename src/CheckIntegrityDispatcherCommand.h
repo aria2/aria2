@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,62 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "CheckIntegrityCommand.h"
-#include "CheckIntegrityEntry.h"
-#include "DownloadEngine.h"
-#include "RequestGroup.h"
-#include "Logger.h"
-#include "message.h"
-#include "prefs.h"
+#ifndef _D_CHECK_INTEGRITY_DISPATCHER_COMMAND_H_
+#define _D_CHECK_INTEGRITY_DISPATCHER_COMMAND_H_
+
+#include "SequentialDispatcherCommand.h"
+#include "CheckIntegrityMan.h"
 
 namespace aria2 {
 
-CheckIntegrityCommand::CheckIntegrityCommand
-(int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- const CheckIntegrityEntryHandle& entry):
-  RealtimeCommand(cuid, requestGroup, e),
-  _entry(entry)
-{}
+class CheckIntegrityEntry;
 
-CheckIntegrityCommand::~CheckIntegrityCommand() {}
-
-bool CheckIntegrityCommand::executeInternal()
-{
-  if(_requestGroup->isHaltRequested()) {
-    return true;
-  }
-  _entry->validateChunk();
-  if(_entry->finished()) {
-    _e->_checkIntegrityMan->dropPickedEntry();
-
-    if(_requestGroup->downloadFinished()) {
-      logger->notice(MSG_VERIFICATION_SUCCESSFUL,
-		     _requestGroup->getFilePath().c_str());
-      std::deque<Command*> commands;
-      _entry->onDownloadFinished(commands, _e);
-      _e->addCommand(commands);
-    } else {
-      logger->error(MSG_VERIFICATION_FAILED,
-		    _requestGroup->getFilePath().c_str());
-      std::deque<Command*> commands;
-      _entry->onDownloadIncomplete(commands,_e);
-      _e->addCommand(commands);
-    }
-    _e->setNoWait(true);
-    return true;
-  } else {
-    _e->commands.push_back(this);
-    return false;
-  }
-}
-
-bool CheckIntegrityCommand::handleException(Exception& e)
-{
-  _e->_checkIntegrityMan->dropPickedEntry();
-  logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
-  logger->error(MSG_DOWNLOAD_NOT_COMPLETE,
-		cuid, _requestGroup->getFilePath().c_str());
-  return true;
-}
+class CheckIntegrityDispatcherCommand :
+    public SequentialDispatcherCommand<CheckIntegrityEntry> {
+public:
+  CheckIntegrityDispatcherCommand
+  (int32_t cuid,
+   const SharedHandle<CheckIntegrityMan>& checkMan,
+   DownloadEngine* e);
+protected:
+  virtual Command* createCommand
+  (const SharedHandle<CheckIntegrityEntry>& entry);
+};
 
 } // namespace aria2
+
+#endif // _D_CHECK_INTEGRITY_DISPATCHER_COMMAND_H_

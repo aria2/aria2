@@ -347,10 +347,8 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
   if(e->option->getAsBool(PREF_CHECK_INTEGRITY) &&
      entry->isValidationReady()) {
     entry->initValidator();
-    entry->cutTrailingGarbage();
-    CheckIntegrityCommand* command =
-      new CheckIntegrityCommand(e->newCUID(), this, e, entry);
-    commands.push_back(command);
+    entry->cutTrailingGarbage();    
+    e->_checkIntegrityMan->pushEntry(entry);
   } else
 #endif // ENABLE_MESSAGE_DIGEST
     {

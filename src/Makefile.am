@@ -135,7 +135,7 @@ SRCS =  Socket.h\
 	MemoryBufferPreDownloadHandler.cc MemoryBufferPreDownloadHandler.h\
 	HaveEraseCommand.cc HaveEraseCommand.h\
 	Piece.cc Piece.h\
-	CheckIntegrityMan.cc CheckIntegrityMan.h\
+	CheckIntegrityMan.h\
 	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
 	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h\
 	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
@@ -233,6 +233,7 @@ endif # ENABLE_ASYNC_DNS
 if ENABLE_MESSAGE_DIGEST
 SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
+	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
 	messageDigest.cc messageDigest.h\

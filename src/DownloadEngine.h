@@ -50,6 +50,7 @@
 #endif // ENABLE_ASYNC_DNS
 #include "CUIDCounter.h"
 #include "FileAllocationMan.h"
+#include "CheckIntegrityMan.h"
 
 namespace aria2 {
 
@@ -57,7 +58,6 @@ class Logger;
 class Option;
 class RequestGroupMan;
 class StatCalc;
-class CheckIntegrityMan;
 class SocketCore;
 class CookieStorage;
 class BtRegistry;

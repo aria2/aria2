@@ -254,9 +254,8 @@ bool DownloadCommand::prepareForNextSegment() {
     CheckIntegrityEntryHandle entry(new ChecksumCheckIntegrityEntry(_requestGroup));
     if(entry->isValidationReady()) {
       entry->initValidator();
-      CheckIntegrityCommand* command =
-	new CheckIntegrityCommand(e->newCUID(), _requestGroup, e, entry);
-      e->commands.push_back(command);
+      // TODO do we need cuttrailinggarbage here?
+      e->_checkIntegrityMan->pushEntry(entry);
     }
     e->setNoWait(true);
     e->setRefreshInterval(0);

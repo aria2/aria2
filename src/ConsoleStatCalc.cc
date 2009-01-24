@@ -165,7 +165,7 @@ void
 ConsoleStatCalc::calculateStat
 (const RequestGroupManHandle& requestGroupMan,
  const SharedHandle<FileAllocationMan>& fileAllocationMan,
- const CheckIntegrityManHandle& checkIntegrityMan)
+ const SharedHandle<CheckIntegrityMan>& checkIntegrityMan)
 {
   if(!_cp.elapsed(1)) {
     return;
@@ -239,7 +239,7 @@ ConsoleStatCalc::calculateStat
   }
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    CheckIntegrityEntryHandle entry = checkIntegrityMan->getFirstCheckIntegrityEntry();
+    CheckIntegrityEntryHandle entry = checkIntegrityMan->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
 	<< "[Checksum:"
@@ -253,10 +253,10 @@ ConsoleStatCalc::calculateStat
 	<< 100*entry->getCurrentLength()/entry->getTotalLength()
 	<< "%)"
 	<< "]";
-      if(checkIntegrityMan->countCheckIntegrityEntry() > 1) {
+      if(checkIntegrityMan->hasNext()) {
 	o << "("
-	  << checkIntegrityMan->countCheckIntegrityEntry()-1
-	  << "more...)";
+	  << checkIntegrityMan->countEntryInQueue()
+	  << "waiting...)";
       }
     }
   }

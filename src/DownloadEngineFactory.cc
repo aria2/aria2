@@ -45,6 +45,8 @@
 #include "FileAllocationMan.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityMan.h"
+# include "CheckIntegrityEntry.h"
+# include "CheckIntegrityDispatcherCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "prefs.h"
 #include "FillRequestGroupCommand.h"
@@ -118,6 +120,11 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get(), 1));
   e->addRoutineCommand(new FileAllocationDispatcherCommand
 		       (e->newCUID(), e->_fileAllocationMan, e.get()));
+#ifdef ENABLE_MESSAGE_DIGEST
+  e->addRoutineCommand(new CheckIntegrityDispatcherCommand
+		       (e->newCUID(), e->_checkIntegrityMan, e.get()));
+#endif // ENABLE_MESSAGE_DIGEST
+
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand
       (new AutoSaveCommand(e->newCUID(), e.get(),

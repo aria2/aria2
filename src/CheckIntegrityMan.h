@@ -36,31 +36,13 @@
 #define _D_CHECK_INTEGRITY_MAN_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include <deque>
+#include "SequentialPicker.h"
 
 namespace aria2 {
 
 class CheckIntegrityEntry;
 
-class CheckIntegrityMan {
-private:
-  std::deque<SharedHandle<CheckIntegrityEntry> > _checkIntegrityEntries;
-public:
-  CheckIntegrityMan();
-
-  ~CheckIntegrityMan();
-
-  void addCheckIntegrityEntry(const SharedHandle<CheckIntegrityEntry>& entry);
-
-  bool removeCheckIntegrityEntry(const SharedHandle<CheckIntegrityEntry>& entry);
-
-  SharedHandle<CheckIntegrityEntry> getFirstCheckIntegrityEntry() const;
-
-  size_t countCheckIntegrityEntry() const;
-};
-
-typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
+typedef SequentialPicker<CheckIntegrityEntry> CheckIntegrityMan;
 
 } // namespace aria2
 

@@ -38,11 +38,11 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "FileAllocationMan.h"
+#include "CheckIntegrityMan.h"
 
 namespace aria2 {
 
 class RequestGroupMan;
-class CheckIntegrityMan;
 
 class StatCalc {
 public:

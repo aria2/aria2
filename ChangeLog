@@ -1,5 +1,23 @@
 2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made (piece) hash check sequential for each RequestGroup because
+	simultaneous hash check is slower than sequential execution.	
+	* src/CheckIntegrityCommand.cc
+	* src/CheckIntegrityDispatcherCommand.cc
+	* src/CheckIntegrityDispatcherCommand.h
+	* src/CheckIntegrityMan.h
+	* src/ConsoleStatCalc.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/DownloadEngineFactory.cc
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/RequestGroup.cc
+	* src/StatCalc.h
+	
+2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Moved setStatusRealtime() from FileAllocationDispatcherCommand to
 	SequentialDispatcherCommand.
 	* src/FileAllocationDispatcherCommand.cc

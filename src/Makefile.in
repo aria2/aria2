@@ -44,6 +44,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_ASYNC_DNS_TRUE@am__append_7 = AsyncNameResolver.cc AsyncNameResolver.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_8 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.cc messageDigest.h\
@@ -375,17 +376,16 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DownloadHandlerConstants.h DownloadHandlerFactory.cc \
 	DownloadHandlerFactory.h MemoryBufferPreDownloadHandler.cc \
 	MemoryBufferPreDownloadHandler.h HaveEraseCommand.cc \
-	HaveEraseCommand.h Piece.cc Piece.h CheckIntegrityMan.cc \
-	CheckIntegrityMan.h CheckIntegrityEntry.cc \
-	CheckIntegrityEntry.h PieceHashCheckIntegrityEntry.cc \
-	PieceHashCheckIntegrityEntry.h StreamCheckIntegrityEntry.cc \
-	StreamCheckIntegrityEntry.h IteratableValidator.h \
-	DiskAdaptor.cc DiskAdaptor.h AbstractSingleDiskAdaptor.cc \
-	AbstractSingleDiskAdaptor.h CopyDiskAdaptor.cc \
-	CopyDiskAdaptor.h DirectDiskAdaptor.cc DirectDiskAdaptor.h \
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc \
-	PeerSessionResource.cc PeerSessionResource.h BtRegistry.cc \
-	BtRegistry.h MultiFileAllocationIterator.cc \
+	HaveEraseCommand.h Piece.cc Piece.h CheckIntegrityMan.h \
+	CheckIntegrityEntry.cc CheckIntegrityEntry.h \
+	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h \
+	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h \
+	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
+	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
+	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
+	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
+	Peer.cc PeerSessionResource.cc PeerSessionResource.h \
+	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
 	MultiFileAllocationIterator.h PeerConnection.cc \
 	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
@@ -422,12 +422,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	AsyncNameResolver.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
-	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
-	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h \
-	messageDigest.cc messageDigest.h MessageDigestHelper.cc \
-	MessageDigestHelper.h Checksum.h ChunkChecksum.h \
-	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
-	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
+	CheckIntegrityDispatcherCommand.cc \
+	CheckIntegrityDispatcherCommand.h CheckIntegrityCommand.cc \
+	CheckIntegrityCommand.h ChecksumCheckIntegrityEntry.cc \
+	ChecksumCheckIntegrityEntry.h messageDigest.cc messageDigest.h \
+	MessageDigestHelper.cc MessageDigestHelper.h Checksum.h \
+	ChunkChecksum.h PeerMessageUtil.cc PeerMessageUtil.h \
+	PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.h PeerListenCommand.cc \
 	PeerListenCommand.h RequestSlot.cc RequestSlot.h \
@@ -581,6 +583,7 @@ am__objects_2 =
 @ENABLE_ASYNC_DNS_TRUE@am__objects_7 = AsyncNameResolver.$(OBJEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_8 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityDispatcherCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
@@ -785,7 +788,7 @@ am__objects_22 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	DownloadHandlerFactory.$(OBJEXT) \
 	MemoryBufferPreDownloadHandler.$(OBJEXT) \
 	HaveEraseCommand.$(OBJEXT) Piece.$(OBJEXT) \
-	CheckIntegrityMan.$(OBJEXT) CheckIntegrityEntry.$(OBJEXT) \
+	CheckIntegrityEntry.$(OBJEXT) \
 	PieceHashCheckIntegrityEntry.$(OBJEXT) \
 	StreamCheckIntegrityEntry.$(OBJEXT) DiskAdaptor.$(OBJEXT) \
 	AbstractSingleDiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
@@ -1102,17 +1105,16 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	DownloadHandlerConstants.h DownloadHandlerFactory.cc \
 	DownloadHandlerFactory.h MemoryBufferPreDownloadHandler.cc \
 	MemoryBufferPreDownloadHandler.h HaveEraseCommand.cc \
-	HaveEraseCommand.h Piece.cc Piece.h CheckIntegrityMan.cc \
-	CheckIntegrityMan.h CheckIntegrityEntry.cc \
-	CheckIntegrityEntry.h PieceHashCheckIntegrityEntry.cc \
-	PieceHashCheckIntegrityEntry.h StreamCheckIntegrityEntry.cc \
-	StreamCheckIntegrityEntry.h IteratableValidator.h \
-	DiskAdaptor.cc DiskAdaptor.h AbstractSingleDiskAdaptor.cc \
-	AbstractSingleDiskAdaptor.h CopyDiskAdaptor.cc \
-	CopyDiskAdaptor.h DirectDiskAdaptor.cc DirectDiskAdaptor.h \
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc \
-	PeerSessionResource.cc PeerSessionResource.h BtRegistry.cc \
-	BtRegistry.h MultiFileAllocationIterator.cc \
+	HaveEraseCommand.h Piece.cc Piece.h CheckIntegrityMan.h \
+	CheckIntegrityEntry.cc CheckIntegrityEntry.h \
+	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h \
+	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h \
+	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
+	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
+	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
+	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
+	Peer.cc PeerSessionResource.cc PeerSessionResource.h \
+	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
 	MultiFileAllocationIterator.h PeerConnection.cc \
 	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
@@ -1287,8 +1289,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriterFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityDispatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityEntry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
