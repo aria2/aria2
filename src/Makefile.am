@@ -199,7 +199,8 @@ SRCS =  Socket.h\
 	URIResult.cc URIResult.h\
 	EventPoll.h\
 	SelectEventPoll.cc SelectEventPoll.h\
-	SequentialPicker.h
+	SequentialPicker.h\
+	SequentialDispatcherCommand.h
 
 if HAVE_EPOLL
 SRCS += EpollEventPoll.cc EpollEventPoll.h

@@ -116,8 +116,8 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   e->_checkIntegrityMan.reset(new CheckIntegrityMan());
 #endif // ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get(), 1));
-  e->addRoutineCommand(new FileAllocationDispatcherCommand(e->newCUID(),
-							   e.get()));
+  e->addRoutineCommand(new FileAllocationDispatcherCommand
+		       (e->newCUID(), e->_fileAllocationMan, e.get()));
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand
       (new AutoSaveCommand(e->newCUID(), e.get(),

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,31 +32,50 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FileAllocationDispatcherCommand.h"
-#include "FileAllocationEntry.h"
-#include "FileAllocationCommand.h"
-#include "message.h"
-#include "Logger.h"
+#ifndef _D_SEQUENTIAL_DISPATCHER_COMMAND_H_
+#define _D_SEQUENTIAL_DISPATCHER_COMMAND_H_
+
+#include "Command.h"
+#include "SharedHandle.h"
+#include "SequentialPicker.h"
+#include "DownloadEngine.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
-FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
-(int32_t cuid,
- const SharedHandle<FileAllocationMan>& fileAllocMan,
- DownloadEngine* e):SequentialDispatcherCommand<FileAllocationEntry>
-		    (cuid, fileAllocMan, e)
-{
-  setStatusRealtime();
-}
+class DownloadEngine;
 
-Command* FileAllocationDispatcherCommand::createCommand
-(const SharedHandle<FileAllocationEntry>& entry)
-{
-  int32_t newCUID = _e->newCUID();
-  logger->info(MSG_FILE_ALLOCATION_DISPATCH, newCUID);
-  FileAllocationCommand* command =
-    new FileAllocationCommand(newCUID, entry->getRequestGroup(), _e, entry);
-  return command;
-}
+template<typename T>
+class SequentialDispatcherCommand : public Command {
+protected:
+  SharedHandle<SequentialPicker<T> > _picker;
+
+  DownloadEngine* _e;
+public:
+  SequentialDispatcherCommand(int32_t cuid,
+			      const SharedHandle<SequentialPicker<T> >& picker,
+			      DownloadEngine* e):
+    Command(cuid), _picker(picker), _e(e) {}
+  
+  virtual bool execute()
+  {
+    if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+      return true;
+    }
+    if(_picker->hasNext() && !_picker->isPicked()) {
+      _e->commands.push_back(createCommand(_picker->pickNext()));
+
+      _e->setNoWait(true);
+    }
+
+    _e->addRoutineCommand(this);
+    return false;
+  }
+
+protected:
+  virtual Command* createCommand(const SharedHandle<T>& entry) = 0;
+};
 
 } // namespace aria2
+
+#endif // _D_SEQUENTIAL_DISPATCHER_COMMAND_H_

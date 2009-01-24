@@ -35,21 +35,23 @@
 #ifndef _D_FILE_ALLOCATION_DISPATCHER_COMMAND_H_
 #define _D_FILE_ALLOCATION_DISPATCHER_COMMAND_H_
 
-#include "Command.h"
+#include "SequentialDispatcherCommand.h"
+#include "FileAllocationMan.h"
 
 namespace aria2 {
 
-class DownloadEngine;
+class FileAllocationEntry;
 
-class FileAllocationDispatcherCommand : public Command {
-private:
-  DownloadEngine* _e;
+class FileAllocationDispatcherCommand :
+    public SequentialDispatcherCommand<FileAllocationEntry> {
 public:
-  FileAllocationDispatcherCommand(int32_t cuid, DownloadEngine* e);
-  
-  virtual ~FileAllocationDispatcherCommand();
-
-  virtual bool execute();
+  FileAllocationDispatcherCommand
+  (int32_t cuid,
+   const SharedHandle<FileAllocationMan>& fileAllocMan,
+   DownloadEngine* e);
+protected:
+  virtual Command* createCommand
+  (const SharedHandle<FileAllocationEntry>& entry);
 };
 
 } // namespace aria2

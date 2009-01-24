@@ -1,5 +1,16 @@
 2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten FileAllocationDispatcherCommand using brand new
+	SequentialDispatcherCommand.
+	* src/DownloadEngineFactory.cc
+	* src/FileAllocationCommand.cc
+	* src/FileAllocationDispatcherCommand.cc
+	* src/FileAllocationDispatcherCommand.h
+	* src/Makefile.am
+	* src/SequentialDispatcherCommand.h
+	
+2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced FileAllocationMan with
 	SequentialPicker<FileAllocationEntry>.
 	* src/BtCheckIntegrityEntry.cc

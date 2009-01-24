@@ -413,8 +413,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
 	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
-	SequentialPicker.h EpollEventPoll.cc EpollEventPoll.h \
-	TLSContext.h LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
+	SequentialPicker.h SequentialDispatcherCommand.h \
+	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
+	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
 	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
 	GZipDecoder.h Sqlite3MozCookieParser.cc \
 	Sqlite3MozCookieParser.h AsyncNameResolver.cc \
@@ -1139,14 +1140,14 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
 	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
-	SequentialPicker.h $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_12) $(am__append_13) $(am__append_14) \
-	$(am__append_15) $(am__append_16) $(am__append_17) \
-	$(am__append_18) $(am__append_19) $(am__append_20) \
-	$(am__append_21)
+	SequentialPicker.h SequentialDispatcherCommand.h \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(am__append_14) $(am__append_15) \
+	$(am__append_16) $(am__append_17) $(am__append_18) \
+	$(am__append_19) $(am__append_20) $(am__append_21)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
