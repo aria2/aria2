@@ -36,34 +36,32 @@
 #define _D_P_STRING_BUILD_VISITOR_H_
 
 #include "PStringVisitor.h"
-#include "PStringSegment.h"
+
+#include <deque>
+#include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-class PStringBuildVisitor : public PStringVisitor, public PStringSegmentVisitor
+class PStringBuildVisitor : public PStringVisitor
 {
 private:
 
   std::deque<std::string> _buildQueue;
 
   std::deque<std::string> _uris;
-
 public:
   
-  virtual void hello(PStringSegment* segment);
+  virtual void visit(PStringSegment& s);
 
-  virtual void goodbye(PStringSegment* segment);
+  virtual void visit(PStringNumLoop& s);
 
-  const std::deque<std::string>& getURIs() const
-  {
-    return _uris;
-  }
+  virtual void visit(PStringSelect& s);
 
-  void reset()
-  {
-    _buildQueue.clear();
-    _uris.clear();
-  }
+  const std::deque<std::string>& getURIs() const;
+
+  void reset();
 };
 
 typedef SharedHandle<PStringBuildVisitor> PStringBuildVisitorHandle;

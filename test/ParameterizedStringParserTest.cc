@@ -1,10 +1,14 @@
 #include "ParameterizedStringParser.h"
+
+#include <iostream>
+#include <deque>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PStringSelect.h"
 #include "PStringSegment.h"
 #include "PStringNumLoop.h"
 #include "FatalException.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 

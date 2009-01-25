@@ -40,8 +40,6 @@
 
 namespace aria2 {
 
-class PStringSegmentVisitor;
-
 class PStringSegment : public PStringDatum
 {
 private:
@@ -58,7 +56,7 @@ public:
 
   virtual ~PStringSegment();
 
-  virtual void accept(PStringVisitor* visitor);
+  virtual void accept(PStringVisitor& visitor);
 
   const std::string& getValue() const;
 
@@ -68,17 +66,6 @@ public:
 };
 
 typedef SharedHandle<PStringSegment> PStringSegmentHandle;
-
-class PStringSegmentVisitor {
-public:
-  virtual ~PStringSegmentVisitor() {}
-
-  virtual void hello(PStringSegment* s) = 0;
-  
-  virtual void goodbye(PStringSegment* s) = 0;
-};
-
-typedef SharedHandle<PStringSegmentVisitor> PStringSegmentVisitorHandle;
 
 } // namespace aria2
 

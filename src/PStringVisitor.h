@@ -36,16 +36,23 @@
 #define _D_P_STRING_VISITOR_H_
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
+
+class PStringSegment;
+class PStringNumLoop;
+class PStringSelect;
 
 class PStringVisitor {
 public:
   virtual ~PStringVisitor() {}
-};
 
-typedef SharedHandle<PStringVisitor> PStringVisitorHandle;
+  virtual void visit(PStringSegment& s) = 0;
+
+  virtual void visit(PStringNumLoop& s) = 0;
+
+  virtual void visit(PStringSelect& s) = 0;
+};
 
 } // namespace aria2
 

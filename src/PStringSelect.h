@@ -37,10 +37,9 @@
 
 #include "PStringDatum.h"
 #include "PStringSegment.h"
+#include "PStringVisitor.h"
 
 namespace aria2 {
-
-class PStringVisitor;
 
 class PStringSelect : public PStringDatum
 {
@@ -61,11 +60,9 @@ public:
 
   virtual ~PStringSelect() {}
 
-  virtual void accept(PStringVisitor* visitor)
+  virtual void accept(PStringVisitor& visitor)
   {
-    for(std::deque<std::string>::iterator itr = _values.begin(); itr != _values.end(); ++itr) {
-      PStringSegment(*itr, _next).accept(visitor);
-    }
+    visitor.visit(*this);
   }
 
   const std::deque<std::string>& getValues() const

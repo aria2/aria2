@@ -33,26 +33,61 @@
  */
 /* copyright --> */
 #include "PStringBuildVisitor.h"
+#include "PStringSegment.h"
+#include "PStringNumLoop.h"
+#include "PStringSelect.h"
 
 namespace aria2 {
 
-void PStringBuildVisitor::hello(PStringSegment* segment)
+void PStringBuildVisitor::visit(PStringSegment& segment)
 {
   std::string uri;
   if(_buildQueue.empty()) {
-    uri += segment->getValue();
+    uri += segment.getValue();
   } else {
-    uri = _buildQueue.front()+segment->getValue();
+    uri = _buildQueue.front()+segment.getValue();
   }
   _buildQueue.push_front(uri);
-  if(!segment->hasNext()) {
+  if(!segment.hasNext()) {
     _uris.push_back(uri);
+  }
+
+  if(!segment.getNext().isNull()) {
+    segment.getNext()->accept(*this);
+  }
+
+  _buildQueue.pop_front();
+}
+
+void PStringBuildVisitor::visit(PStringNumLoop& s)
+{
+  unsigned int start = s.getStartValue();
+  unsigned int end = s.getEndValue();
+  unsigned int step = s.getStep();
+  for(unsigned int i = start; i <= end; i += step) {
+    PStringSegment(s.getNumberDecorator()->decorate(i),
+		   s.getNext()).accept(*this);
   }
 }
 
-void PStringBuildVisitor::goodbye(PStringSegment* segment)
+void PStringBuildVisitor::visit(PStringSelect& s)
 {
-  _buildQueue.pop_front();
+  const std::deque<std::string>& values = s.getValues();
+  for(std::deque<std::string>::const_iterator i = values.begin();
+      i != values.end(); ++i) {
+    PStringSegment(*i, s.getNext()).accept(*this);
+  }
+}
+
+const std::deque<std::string>& PStringBuildVisitor::getURIs() const
+{
+  return _uris;
+}
+
+void PStringBuildVisitor::reset()
+{
+  _buildQueue.clear();
+  _uris.clear();
 }
 
 } // namespace aria2

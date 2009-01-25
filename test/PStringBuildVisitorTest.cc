@@ -1,9 +1,11 @@
 #include "PStringBuildVisitor.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PStringSegment.h"
 #include "PStringNumLoop.h"
 #include "PStringSelect.h"
 #include "FixedWidthNumberDecorator.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -39,7 +41,7 @@ void PStringBuildVisitorTest::testVisit_select()
 
   PStringBuildVisitor v;
 
-  select1->accept(&v);
+  select1->accept(v);
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, v.getURIs().size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha/tango"), v.getURIs()[0]);
@@ -57,7 +59,7 @@ void PStringBuildVisitorTest::testVisit_numLoop()
 
   PStringBuildVisitor v;
 
-  loop1->accept(&v);
+  loop1->accept(v);
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, v.getURIs().size());
   CPPUNIT_ASSERT_EQUAL(std::string("00/tango"), v.getURIs()[0]);
@@ -80,7 +82,7 @@ void PStringBuildVisitorTest::testVisit_select_numLoop()
 
   PStringBuildVisitor v;
 
-  loop1->accept(&v);
+  loop1->accept(v);
 
   CPPUNIT_ASSERT_EQUAL((size_t)9, v.getURIs().size());
   CPPUNIT_ASSERT_EQUAL(std::string("00alpha/tango"), v.getURIs()[0]);

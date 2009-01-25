@@ -38,6 +38,7 @@
 #include "PStringDatum.h"
 #include "PStringSegment.h"
 #include "NumberDecorator.h"
+#include "PStringVisitor.h"
 
 namespace aria2 {
 
@@ -76,11 +77,14 @@ public:
 
   virtual ~PStringNumLoop() {}
 
-  virtual void accept(PStringVisitor* visitor)
+  virtual void accept(PStringVisitor& visitor)
   {
-    for(unsigned int i = _startValue; i <= _endValue; i += _step) {
-      PStringSegment(_numberDecorator->decorate(i), _next).accept(visitor);
-    }
+    visitor.visit(*this);
+  }
+
+  const NumberDecoratorHandle& getNumberDecorator() const
+  {
+    return _numberDecorator;
   }
 
   PStringDatumHandle getNext() const

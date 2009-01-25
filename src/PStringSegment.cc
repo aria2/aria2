@@ -47,17 +47,9 @@ PStringSegment::PStringSegment(const std::string& value):
 
 PStringSegment::~PStringSegment() {}
 
-void PStringSegment::accept(PStringVisitor* visitor)
+void PStringSegment::accept(PStringVisitor& visitor)
 {
-  PStringSegmentVisitor* v = dynamic_cast<PStringSegmentVisitor*>(visitor);
-  if(!v) {
-    throw FatalException("Class cast exception");
-  }
-  v->hello(this);
-  if(!_next.isNull()) {
-    _next->accept(visitor);
-  }
-  v->goodbye(this);
+  visitor.visit(*this);
 }
 
 const std::string& PStringSegment::getValue() const

@@ -37,7 +37,6 @@
 
 #include "common.h"
 #include "SharedHandle.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -47,11 +46,10 @@ class PStringDatum {
 public:
   virtual ~PStringDatum() {}
 
-  virtual void accept(PStringVisitor* visitor) = 0;
+  virtual void accept(PStringVisitor& visitor) = 0;
 };
 
 typedef SharedHandle<PStringDatum> PStringDatumHandle;
-typedef std::deque<PStringDatumHandle> PStringData;
 
 } // namespace aria2
 

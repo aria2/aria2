@@ -1,5 +1,20 @@
 2009-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten PStringVisitor and its implementation.
+	* src/PStringBuildVisitor.cc
+	* src/PStringBuildVisitor.h
+	* src/PStringDatum.h
+	* src/PStringNumLoop.h
+	* src/PStringSegment.cc
+	* src/PStringSegment.h
+	* src/PStringSelect.h
+	* src/PStringVisitor.h
+	* src/download_helper.cc
+	* test/PStringBuildVisitorTest.cc
+	* test/ParameterizedStringParserTest.cc
+
+2009-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Persist connection between the built-in HTTP server and a client
 	if a client supports keep-alive. Fixed the bug that aria2 exits
 	when the HTTP server receives EOF from a client.	

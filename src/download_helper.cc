@@ -66,7 +66,7 @@ static void unfoldURI
   for(std::deque<std::string>::const_iterator itr = args.begin();
       itr != args.end(); ++itr) {
     v.reset();
-    p.parse(*itr)->accept(&v);
+    p.parse(*itr)->accept(v);
     result.insert(result.end(), v.getURIs().begin(), v.getURIs().end()); 
   }
 }
