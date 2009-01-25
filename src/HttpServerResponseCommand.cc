@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,49 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HELP_TAGS_H_
-#define _D_HELP_TAGS_H_
+#include "HttpServerResponseCommand.h"
+#include "SocketCore.h"
+#include "DownloadEngine.h"
+#include "HttpServer.h"
+#include "Logger.h"
 
-#define TAG_BASIC "basic"
-#define TAG_ADVANCED "advanced"
-#define TAG_HTTP "http"
-#define TAG_HTTPS "https"
-#define TAG_FTP "ftp"
-#define TAG_METALINK "metalink"
-#define TAG_BITTORRENT "bittorrent"
-#define TAG_EXPERIMENTAL "experimental"
-#define TAG_HELP "help"
+namespace aria2 {
 
-#endif // _D_HELP_TAGS_H_
+HttpServerResponseCommand::HttpServerResponseCommand
+(int32_t cuid,
+ const SharedHandle<HttpServer>& httpServer,
+ DownloadEngine* e,
+ const SharedHandle<SocketCore>& socket):
+  Command(cuid),
+  _e(e),
+  _socket(socket),
+ _httpServer(httpServer)
+{
+ 
+  _e->addSocketForWriteCheck(_socket, this);
+}
+
+HttpServerResponseCommand::~HttpServerResponseCommand()
+{
+  _e->deleteSocketForWriteCheck(_socket, this);
+}
+
+bool HttpServerResponseCommand::execute()
+{
+  _httpServer->sendResponse();
+  if(_httpServer->sendBufferIsEmpty()) {
+    logger->info("CUID#%d - HttpServer: all response transmitted.", cuid);
+    return true;
+  } else {
+    if(_timeout.elapsed(10)) {
+      logger->info("CUID#%d - HttpServer: Timeout while trasmitting response.",
+		   cuid);
+      return true;
+    } else {
+      _e->commands.push_back(this);
+      return true;
+    }
+  }
+}
+
+} // namespace aria2

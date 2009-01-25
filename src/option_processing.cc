@@ -192,6 +192,8 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_NO_PROXY.c_str(), required_argument, &lopt, 235 },
       { PREF_USE_HEAD.c_str(), optional_argument, &lopt, 236 },
       { PREF_EVENT_POLL.c_str(), required_argument, &lopt, 237 },
+      { PREF_HTTP_SERVER_LISTEN_PORT.c_str(), required_argument, &lopt, 238 },
+      { PREF_ENABLE_HTTP_SERVER.c_str(), optional_argument, &lopt, 239 },
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       { PREF_SHOW_FILES.c_str(), no_argument, NULL, 'S' },
       { PREF_SELECT_FILE.c_str(), required_argument, &lopt, 21 },
@@ -486,6 +488,13 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 237:
 	cmdstream << PREF_EVENT_POLL << "=" << optarg << "\n";
+	break;
+      case 238:
+	cmdstream << PREF_HTTP_SERVER_LISTEN_PORT << "=" << optarg << "\n";
+	break;
+      case 239:
+	cmdstream << PREF_ENABLE_HTTP_SERVER << "=" << toBoolArg(optarg)
+		  << "\n";
 	break;
       }
       break;

@@ -277,6 +277,8 @@ public:
 
   static std::pair<std::string, uint16_t>
   getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len);
+
+  static std::string htmlEscape(const std::string& src);
 };
 
 } // namespace aria2

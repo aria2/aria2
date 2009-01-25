@@ -150,6 +150,10 @@ const std::string PREF_MAX_FILE_NOT_FOUND("max-file-not-found");
 const std::string PREF_EVENT_POLL("event-poll");
 const std::string V_EPOLL("epoll");
 const std::string V_SELECT("select");
+// value: 1*digit
+const std::string PREF_HTTP_SERVER_LISTEN_PORT("http-server-listen-port");
+// value: true | false
+const std::string PREF_ENABLE_HTTP_SERVER("enable-http-server");
 
 /**
  * FTP related preferences

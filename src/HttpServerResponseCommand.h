@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,36 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HELP_TAGS_H_
-#define _D_HELP_TAGS_H_
+#ifndef _D_HTTP_SERVER_RESPONSE_COMMAND_H_
+#define _D_HTTP_SERVER_RESPONSE_COMMAND_H_
 
-#define TAG_BASIC "basic"
-#define TAG_ADVANCED "advanced"
-#define TAG_HTTP "http"
-#define TAG_HTTPS "https"
-#define TAG_FTP "ftp"
-#define TAG_METALINK "metalink"
-#define TAG_BITTORRENT "bittorrent"
-#define TAG_EXPERIMENTAL "experimental"
-#define TAG_HELP "help"
+#include "Command.h"
+#include "SharedHandle.h"
+#include "TimeA2.h"
 
-#endif // _D_HELP_TAGS_H_
+namespace aria2 {
+
+class DownloadEngine;
+class SocketCore;
+class HttpServer;
+
+class HttpServerResponseCommand : public Command {
+private:
+  DownloadEngine* _e;
+  SharedHandle<SocketCore> _socket;
+  SharedHandle<HttpServer> _httpServer;
+  Time _timeout;
+public:
+  HttpServerResponseCommand(int32_t cuid,
+			    const SharedHandle<HttpServer>& httpServer,
+			    DownloadEngine* e,
+			    const SharedHandle<SocketCore>& socket);
+
+  virtual ~HttpServerResponseCommand();
+  
+  virtual bool execute();
+};
+
+} // namespace aria2 
+
+#endif // _D_HTTP_SERVER_RESPONSE_COMMAND_H_

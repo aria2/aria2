@@ -462,3 +462,15 @@ _(" --use-head[=true|false]      Use HEAD method for the first request to the HT
   "                              server.")
 #define TEXT_EVENT_POLL \
 _(" --event-poll=POLL            Specify the method for polling events.")
+#define TEXT_HTTP_SERVER_LISTEN_PORT \
+_(" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"\
+  "                              Server to listen to.")
+// Excluded from translation candidiates because it is subject to change.
+#define TEXT_ENABLE_HTTP_SERVER \
+  " --enable-http-server[=true|false] Enable the built-in HTTP server. Currently,\n"\
+  "                              this is the experimental feature and it just\n"\
+  "                              provides the current download progress. Use your\n"\
+  "                              web browser(recommend to use console-based one,\n"\
+  "                              such as elinks, w3m) to connect the server and see\n"\
+  "                              what's what."
+

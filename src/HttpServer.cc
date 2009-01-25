@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,65 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HELP_TAGS_H_
-#define _D_HELP_TAGS_H_
+#include "HttpServer.h"
+#include "HttpHeader.h"
+#include "SocketCore.h"
+#include "HttpHeaderProcessor.h"
+#include "DlAbortEx.h"
+#include "message.h"
+#include "Util.h"
 
-#define TAG_BASIC "basic"
-#define TAG_ADVANCED "advanced"
-#define TAG_HTTP "http"
-#define TAG_HTTPS "https"
-#define TAG_FTP "ftp"
-#define TAG_METALINK "metalink"
-#define TAG_BITTORRENT "bittorrent"
-#define TAG_EXPERIMENTAL "experimental"
-#define TAG_HELP "help"
+namespace aria2 {
 
-#endif // _D_HELP_TAGS_H_
+HttpServer::HttpServer(const SharedHandle<SocketCore>& socket,
+		       DownloadEngine* e):
+  _socket(socket),
+  _socketBuffer(socket),
+  _e(e),
+  _headerProcessor(new HttpHeaderProcessor())
+{}
+
+HttpServer::~HttpServer() {}
+
+SharedHandle<HttpHeader> HttpServer::receiveRequest()
+{
+  size_t size = 512;
+  unsigned char buf[size];
+  _socket->peekData(buf, size);
+  if(size == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
+    throw DlAbortEx(EX_EOF_FROM_PEER);
+  }
+  _headerProcessor->update(buf, size);
+  if(!_headerProcessor->eoh()) {
+    _socket->readData(buf, size);
+    return SharedHandle<HttpHeader>();
+  }
+  size_t putbackDataLength = _headerProcessor->getPutBackDataLength();
+  size -= putbackDataLength;
+  _socket->readData(buf, size);
+
+  return _headerProcessor->getHttpRequestHeader();
+}
+
+void HttpServer::feedResponse(const std::string& text)
+{
+  std::string header = "HTTP/1.0 200 OK\r\n"
+    "Content-Type: text/html\r\n"
+    "Content-Length: "+Util::uitos(text.size())+"\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+  _socketBuffer.feedSendBuffer(header);
+  _socketBuffer.feedSendBuffer(text);
+}
+
+ssize_t HttpServer::sendResponse()
+{
+  return _socketBuffer.send();
+}
+
+bool HttpServer::sendBufferIsEmpty() const
+{
+  return _socketBuffer.sendBufferIsEmpty();
+}
+
+} // namespace aria2

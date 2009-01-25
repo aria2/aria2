@@ -151,6 +151,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_ENABLE_HTTP_SERVER,
+				    TEXT_ENABLE_HTTP_SERVER,
+				    V_FALSE));
+    op->addTag(TAG_EXPERIMENTAL);
+    handlers.push_back(op);
+  }
+  {
     std::string params[] = {
 #ifdef HAVE_EPOLL
       V_EPOLL,
@@ -185,6 +193,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_FORCE_SEQUENTIAL,
 				    V_FALSE));
     op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_HTTP_SERVER_LISTEN_PORT,
+				    TEXT_HTTP_SERVER_LISTEN_PORT,
+				    "6800",
+				    1024, UINT16_MAX));
+    op->addTag(TAG_EXPERIMENTAL);
     handlers.push_back(op);
   }
   {
@@ -1013,7 +1030,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   ("help",
 				    TEXT_HELP,
 				    TAG_BASIC,
-				    StringFormat("%s,%s,%s,%s,%s,%s,%s,%s,all",
+				    StringFormat("%s,%s,%s,%s,%s,%s,%s,%s,%s,all",
 						 TAG_BASIC,
 						 TAG_ADVANCED,
 						 TAG_HTTP,
@@ -1021,6 +1038,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 						 TAG_FTP,
 						 TAG_METALINK,
 						 TAG_BITTORRENT,
+						 TAG_EXPERIMENTAL,
 						 TAG_HELP).str()));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HELP);

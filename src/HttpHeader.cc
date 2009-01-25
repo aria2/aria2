@@ -193,6 +193,26 @@ void HttpHeader::setVersion(const std::string& version)
   _version = version;
 }
 
+const std::string& HttpHeader::getMethod() const
+{
+  return _method;
+}
+
+void HttpHeader::setMethod(const std::string& method)
+{
+  _method = method;
+}
+
+const std::string& HttpHeader::getRequestPath() const
+{
+  return _requestPath;
+}
+
+void HttpHeader::setRequestPath(const std::string& requestPath)
+{
+  _requestPath = requestPath;
+}
+
 void HttpHeader::fill(std::istream& in)
 {
   std::string line;

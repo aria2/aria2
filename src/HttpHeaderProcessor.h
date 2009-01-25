@@ -74,7 +74,9 @@ public:
    * Processes the recieved header as a http response header and returns
    * HttpHeader object.
    */
-   SharedHandle<HttpHeader> getHttpResponseHeader();
+  SharedHandle<HttpHeader> getHttpResponseHeader();
+
+  SharedHandle<HttpHeader> getHttpRequestHeader();
 
   std::string getHeaderString() const;
 

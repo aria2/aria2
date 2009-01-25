@@ -111,6 +111,31 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
   return httpHeader;
 }
 
+SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
+{
+  // The minimum case of the first line is:
+  // GET / HTTP/1.x
+  // At least 14bytes before \r\n or \n.
+  std::string::size_type delimpos = std::string::npos;
+  if(((delimpos = _buf.find("\r\n")) == std::string::npos &&
+      (delimpos = _buf.find("\n")) == std::string::npos) ||
+     delimpos < 14) {
+    throw DlRetryEx(EX_NO_STATUS_HEADER);
+  }
+  std::deque<std::string> firstLine;
+  Util::slice(firstLine, _buf.substr(0, delimpos), ' ', true);
+  if(firstLine.size() != 3) {
+    throw DlAbortEx("Malformed HTTP request header.");    
+  }
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpHeader->setMethod(firstLine[0]);
+  httpHeader->setRequestPath(firstLine[1]);
+  httpHeader->setVersion(firstLine[2]);
+  std::istringstream strm(_buf.substr(14));
+  httpHeader->fill(strm);
+  return httpHeader;
+}
+
 std::string HttpHeaderProcessor::getHeaderString() const
 {
   std::string::size_type delimpos = std::string::npos;

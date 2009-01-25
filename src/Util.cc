@@ -912,4 +912,26 @@ Util::getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
   return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
 }
 
+std::string Util::htmlEscape(const std::string& src)
+{
+  std::string dest;
+  for(std::string::const_iterator i = src.begin(); i != src.end(); ++i) {
+    char ch = *i;
+    if(ch == '<') {
+      dest += "&lt;";
+    } else if(ch == '>') {
+      dest += "&gt;";
+    } else if(ch == '&') {
+      dest += "&amp;";
+    } else if(ch == '\'') {
+      dest += "&#39;";
+    } else if(ch == '"') {
+      dest += "&quot;";
+    } else {
+      dest += ch;
+    }
+  }
+  return dest;
+}
+
 } // namespace aria2

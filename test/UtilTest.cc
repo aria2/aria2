@@ -51,6 +51,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHttpGMT);
   CPPUNIT_TEST(testNtoh64);
   CPPUNIT_TEST(testUrlencode);
+  CPPUNIT_TEST(testHtmlEscape);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -92,6 +93,7 @@ public:
   void testHttpGMT();
   void testNtoh64();
   void testUrlencode();
+  void testHtmlEscape();
 };
 
 
@@ -720,6 +722,12 @@ void UtilTest::testUrlencode()
   CPPUNIT_ASSERT_EQUAL(unreserved, Util::urlencode(unreserved));
 
   CPPUNIT_ASSERT_EQUAL(std::string("1%5EA%20"), Util::urlencode("1^A "));
+}
+
+void UtilTest::testHtmlEscape()
+{
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2&lt;&gt;&quot;&#39;util"),
+		       Util::htmlEscape("aria2<>\"'util"));
 }
 
 } // namespace aria2

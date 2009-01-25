@@ -20,6 +20,7 @@ class HttpHeaderProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetHttpResponseHeader_insufficientStatusLength);
   CPPUNIT_TEST(testBeyondLimit);
   CPPUNIT_TEST(testGetHeaderString);
+  CPPUNIT_TEST(testGetHttpRequestHeader);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -199,6 +200,24 @@ void HttpHeaderProcessorTest::testGetHeaderString()
 			      "Connection: close\r\n"
 			      "Content-Type: text/html; charset=UTF-8"),
 		       proc.getHeaderString());
+}
+
+void HttpHeaderProcessorTest::testGetHttpRequestHeader()
+{
+  HttpHeaderProcessor proc;
+  std::string request = "GET /index.html HTTP/1.1\r\n"
+    "Host: host\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+
+  proc.update(request);
+
+  SharedHandle<HttpHeader> httpHeader = proc.getHttpRequestHeader();
+  CPPUNIT_ASSERT(!httpHeader.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("GET"), httpHeader->getMethod());
+  CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());
+  CPPUNIT_ASSERT_EQUAL(std::string("close"),httpHeader->getFirst("Connection"));
 }
 
 } // namespace aria2

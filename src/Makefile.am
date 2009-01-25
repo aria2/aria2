@@ -200,7 +200,11 @@ SRCS =  Socket.h\
 	EventPoll.h\
 	SelectEventPoll.cc SelectEventPoll.h\
 	SequentialPicker.h\
-	SequentialDispatcherCommand.h
+	SequentialDispatcherCommand.h\
+	HttpListenCommand.cc HttpListenCommand.h\
+	HttpServerCommand.cc HttpServerCommand.h\
+	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
+	HttpServer.cc HttpServer.h
 
 if HAVE_EPOLL
 SRCS += EpollEventPoll.cc EpollEventPoll.h

@@ -1,3 +1,41 @@
+2009-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added experimental built-in HTTP server. Currently, when a client
+	accesses to the server, it responds with the current download
+	progress. By default, it is disabled. To enable the server, give
+	--enable-http-server option.  To change the default port number
+	for the server to listen to, use --http-server-listen-port option.
+	The response HTML is very simple and refreshes it self each 1
+	second.  Because of this refresh, you see flicker in normal web
+	browser such as Firefox.  I recommend to use console-based browser
+	such as elinks, w3m.  To connect to the server, run 'elinks
+	http://localhost:6800/' while running aria2. Please replace port
+	number '6800'(which is default) with your preference.	
+	* src/DownloadEngineFactory.cc
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpHeaderProcessor.cc
+	* src/HttpHeaderProcessor.h
+	* src/HttpListenCommand.cc
+	* src/HttpListenCommand.h
+	* src/HttpServer.cc
+	* src/HttpServer.h
+	* src/HttpServerCommand.cc
+	* src/HttpServerCommand.h
+	* src/HttpServerResponseCommand.cc
+	* src/HttpServerResponseCommand.h
+	* src/Makefile.am
+	* src/OptionHandlerFactory.cc
+	* src/Util.cc
+	* src/Util.h
+	* src/help_tags.h
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/HttpHeaderProcessorTest.cc
+	* test/UtilTest.cc
+
 2009-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed.

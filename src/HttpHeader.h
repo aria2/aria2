@@ -36,11 +36,13 @@
 #define _D_HTTP_HEADER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <map>
 #include <deque>
 #include <string>
 #include <iosfwd>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -56,6 +58,12 @@ private:
 
   // HTTP version, e.g. HTTP/1.1
   std::string _version;
+
+  // HTTP Method, e.g. GET, POST, etc
+  std::string _method;
+
+  // Request Path
+  std::string _requestPath;
 public:
   HttpHeader() {}
   ~HttpHeader() {}
@@ -76,6 +84,14 @@ public:
   const std::string& getVersion() const;
 
   void setVersion(const std::string& version);
+
+  const std::string& getMethod() const;
+
+  void setMethod(const std::string& method);
+
+  const std::string& getRequestPath() const;
+
+  void setRequestPath(const std::string& requestPath);
 
   void fill(std::istream& in);
 

@@ -63,6 +63,7 @@
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
 #include "FileAllocationEntry.h"
+#include "HttpListenCommand.h"
 
 namespace aria2 {
 
@@ -136,6 +137,15 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
     if(stopSec > 0) {
       e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e.get(),
 						stopSec));
+    }
+  }
+  if(op->getAsBool(PREF_ENABLE_HTTP_SERVER)) {
+    HttpListenCommand* httpListenCommand =
+      new HttpListenCommand(e->newCUID(), e.get());
+    if(httpListenCommand->bindPort(op->getAsInt(PREF_HTTP_SERVER_LISTEN_PORT))){
+      e->addRoutineCommand(httpListenCommand);
+    } else {
+      delete httpListenCommand;
     }
   }
   return e;

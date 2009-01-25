@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,43 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HELP_TAGS_H_
-#define _D_HELP_TAGS_H_
+#ifndef _D_HTTP_SERVER_H_
+#define _D_HTTP_SERVER_H_
 
-#define TAG_BASIC "basic"
-#define TAG_ADVANCED "advanced"
-#define TAG_HTTP "http"
-#define TAG_HTTPS "https"
-#define TAG_FTP "ftp"
-#define TAG_METALINK "metalink"
-#define TAG_BITTORRENT "bittorrent"
-#define TAG_EXPERIMENTAL "experimental"
-#define TAG_HELP "help"
+#include "common.h"
 
-#endif // _D_HELP_TAGS_H_
+#include <string>
+
+#include "SharedHandle.h"
+#include "SocketBuffer.h"
+
+namespace aria2 {
+
+class SocketCore;
+class HttpHeader;
+class HttpHeaderProcessor;
+class DownloadEngine;
+
+class HttpServer {
+private:
+  SharedHandle<SocketCore> _socket;
+  SocketBuffer _socketBuffer;
+  DownloadEngine* _e;
+  SharedHandle<HttpHeaderProcessor> _headerProcessor;
+public:
+  HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
+
+  ~HttpServer();
+
+  SharedHandle<HttpHeader> receiveRequest();
+
+  void feedResponse(const std::string& text);
+
+  ssize_t sendResponse();
+
+  bool sendBufferIsEmpty() const;
+};
+
+} // namespace aria2
+
+#endif // _D_HTTP_SERVER_H_
