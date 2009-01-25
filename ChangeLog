@@ -1,5 +1,16 @@
 2009-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Persist connection between the built-in HTTP server and a client
+	if a client supports keep-alive. Fixed the bug that aria2 exits
+	when the HTTP server receives EOF from a client.	
+	* src/HttpServer.cc
+	* src/HttpServer.h
+	* src/HttpServerCommand.cc
+	* src/HttpServerCommand.h
+	* src/HttpServerResponseCommand.cc
+	
+2009-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added experimental built-in HTTP server. Currently, when a client
 	accesses to the server, it responds with the current download
 	progress. By default, it is disabled. To enable the server, give

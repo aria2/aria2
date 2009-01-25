@@ -55,6 +55,11 @@ public:
   HttpServerCommand(int32_t cuid, DownloadEngine* e,
 		    const SharedHandle<SocketCore>& socket);
 
+  HttpServerCommand(int32_t cuid,
+		    const SharedHandle<HttpServer>& httpServer,
+		    DownloadEngine* e,
+		    const SharedHandle<SocketCore>& socket);
+
   virtual ~HttpServerCommand();
   
   virtual bool execute();

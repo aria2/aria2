@@ -39,6 +39,8 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"
+#include "LogFactory.h"
+#include "Logger.h"
 
 namespace aria2 {
 
@@ -47,7 +49,8 @@ HttpServer::HttpServer(const SharedHandle<SocketCore>& socket,
   _socket(socket),
   _socketBuffer(socket),
   _e(e),
-  _headerProcessor(new HttpHeaderProcessor())
+  _headerProcessor(new HttpHeaderProcessor()),
+  _logger(LogFactory::getInstance())
 {}
 
 HttpServer::~HttpServer() {}
@@ -69,16 +72,40 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
   size -= putbackDataLength;
   _socket->readData(buf, size);
 
-  return _headerProcessor->getHttpRequestHeader();
+  SharedHandle<HttpHeader> header = _headerProcessor->getHttpRequestHeader();
+  if(!header.isNull()) {
+    _logger->info("HTTP Server received request\n%s",
+		  _headerProcessor->getHeaderString().c_str());
+    _lastRequestHeader = header;
+    _headerProcessor->clear();
+  }
+
+  return header;
+}
+
+bool HttpServer::supportsPersistentConnection() const
+{
+  std::string connection =
+    Util::toLower(_lastRequestHeader->getFirst(HttpHeader::CONNECTION));
+
+  return connection.find(HttpHeader::CLOSE) == std::string::npos &&
+    (_lastRequestHeader->getVersion() == HttpHeader::HTTP_1_1 ||
+     connection.find("keep-alive") != std::string::npos);
 }
 
 void HttpServer::feedResponse(const std::string& text)
 {
-  std::string header = "HTTP/1.0 200 OK\r\n"
+  std::string header = "HTTP/1.1 200 OK\r\n"
     "Content-Type: text/html\r\n"
-    "Content-Length: "+Util::uitos(text.size())+"\r\n"
-    "Connection: close\r\n"
-    "\r\n";
+    "Content-Length: "+Util::uitos(text.size())+"\r\n";
+
+  if(!supportsPersistentConnection()) {
+    header += "Connection: close\r\n";
+  }
+  header += "\r\n";
+
+  _logger->debug("HTTP Server sends response:\n%s", header.c_str());
+		 
   _socketBuffer.feedSendBuffer(header);
   _socketBuffer.feedSendBuffer(text);
 }

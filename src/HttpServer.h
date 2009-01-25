@@ -48,6 +48,7 @@ class SocketCore;
 class HttpHeader;
 class HttpHeaderProcessor;
 class DownloadEngine;
+class Logger;
 
 class HttpServer {
 private:
@@ -55,6 +56,8 @@ private:
   SocketBuffer _socketBuffer;
   DownloadEngine* _e;
   SharedHandle<HttpHeaderProcessor> _headerProcessor;
+  Logger* _logger;
+  SharedHandle<HttpHeader> _lastRequestHeader;
 public:
   HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
 
@@ -67,6 +70,8 @@ public:
   ssize_t sendResponse();
 
   bool sendBufferIsEmpty() const;
+
+  bool supportsPersistentConnection() const;
 };
 
 } // namespace aria2

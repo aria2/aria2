@@ -37,6 +37,8 @@
 #include "DownloadEngine.h"
 #include "HttpServer.h"
 #include "Logger.h"
+#include "HttpServerCommand.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -61,9 +63,17 @@ HttpServerResponseCommand::~HttpServerResponseCommand()
 
 bool HttpServerResponseCommand::execute()
 {
+  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+    return true;
+  }
   _httpServer->sendResponse();
   if(_httpServer->sendBufferIsEmpty()) {
     logger->info("CUID#%d - HttpServer: all response transmitted.", cuid);
+    if(_httpServer->supportsPersistentConnection()) {
+      logger->info("CUID#%d - Persist connection.", cuid);
+      _e->commands.push_back
+	(new HttpServerCommand(cuid, _httpServer, _e, _socket));
+    }
     return true;
   } else {
     if(_timeout.elapsed(10)) {

@@ -51,6 +51,7 @@
 #include "HttpServerResponseCommand.h"
 #include "CheckIntegrityEntry.h"
 #include "FileAllocationEntry.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -60,6 +61,18 @@ HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
   _e(e),
   _socket(socket),
   _httpServer(new HttpServer(socket, e))
+{
+  _e->addSocketForReadCheck(_socket, this);
+}
+
+HttpServerCommand::HttpServerCommand(int32_t cuid,
+				     const SharedHandle<HttpServer>& httpServer,
+				     DownloadEngine* e,
+				     const SharedHandle<SocketCore>& socket):
+  Command(cuid),
+  _e(e),
+  _socket(socket),
+  _httpServer(httpServer)
 {
   _e->addSocketForReadCheck(_socket, this);
 }
@@ -218,9 +231,19 @@ static std::string createResponse(DownloadEngine* e)
 
 bool HttpServerCommand::execute()
 {
+  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+    return true;
+  }
   if(_socket->isReadable(0)) {
     _timeout.reset();
-    SharedHandle<HttpHeader> header = _httpServer->receiveRequest();
+    SharedHandle<HttpHeader> header;
+    try {
+      header = _httpServer->receiveRequest();
+    } catch(RecoverableException& e) {
+      logger->info("CUID#%d - Error occurred while reading HTTP request",
+		   e, cuid);
+      return true;
+    }
     if(header.isNull()) {
       _e->commands.push_back(this);
       return false;
