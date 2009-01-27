@@ -1,3 +1,10 @@
+2009-01-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Remove leading "--" from help keyword and a substring after "="
+	from help keyword, so that one can query options by '-h--max-' or
+	'-hmax-peers=10'.	
+	* src/option_processing.cc
+
 2009-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten PStringVisitor and its implementation.

@@ -578,13 +578,20 @@ Option* option_processing(int argc, char* const argv[])
       exit(DownloadResult::FINISHED);
     case 'h':
       {
-	std::string category;
+	std::string keyword;
 	if(optarg == 0 || strlen(optarg) == 0) {
-	  category = TAG_BASIC;
+	  keyword = TAG_BASIC;
 	} else {
-	  category = optarg;
+	  keyword = optarg;
+	  if(Util::startsWith(keyword, "--")) {
+	    keyword = keyword.substr(2);
+	  }
+	  std::string::size_type eqpos = keyword.find("=");
+	  if(eqpos != std::string::npos) {
+	    keyword = keyword.substr(0, eqpos);
+	  }
 	}
-	showUsage(category, oparser);
+	showUsage(keyword, oparser);
 	exit(DownloadResult::FINISHED);
       }
     default:
