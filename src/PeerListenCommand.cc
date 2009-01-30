@@ -35,6 +35,8 @@
 #include "PeerListenCommand.h"
 
 #include <utility>
+#include <deque>
+#include <algorithm>
 
 #include "DownloadEngine.h"
 #include "Peer.h"
@@ -44,6 +46,7 @@
 #include "ReceiverMSEHandshakeCommand.h"
 #include "Logger.h"
 #include "Socket.h"
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -67,12 +70,17 @@ PeerListenCommand::~PeerListenCommand()
 bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
   socket.reset(new SocketCore());
-  while(seq.hasNext()) {
-    int sport = seq.next();
-    if(!(0 < sport && sport <= UINT16_MAX)) {
+
+  std::deque<int32_t> randPorts = seq.flush();
+  std::random_shuffle(randPorts.begin(), randPorts.end(),
+		      *SimpleRandomizer::getInstance().get());
+  
+  for(std::deque<int32_t>::const_iterator portItr = randPorts.begin();
+      portItr != randPorts.end(); ++portItr) {
+    if(!(0 < (*portItr) && (*portItr) <= UINT16_MAX)) {
       continue;
     }
-    port = sport;
+    port = (*portItr);
     try {
       socket->bind(port);
       socket->beginListen();

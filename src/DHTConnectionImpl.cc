@@ -35,12 +35,15 @@
 #include "DHTConnectionImpl.h"
 
 #include <utility>
+#include <deque>
+#include <algorithm>
 
 #include "LogFactory.h"
 #include "Logger.h"
 #include "RecoverableException.h"
 #include "Util.h"
 #include "Socket.h"
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -51,12 +54,16 @@ DHTConnectionImpl::~DHTConnectionImpl() {}
 
 bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
 {
-  while(ports.hasNext()) {
-    int sport = ports.next();
-    if(!(0 < sport && 0 <= UINT16_MAX)) {
+  std::deque<int32_t> randPorts = ports.flush();
+  std::random_shuffle(randPorts.begin(), randPorts.end(),
+		      *SimpleRandomizer::getInstance().get());
+  
+  for(std::deque<int32_t>::const_iterator portItr = randPorts.begin();
+      portItr != randPorts.end(); ++portItr) {
+    if(!(0 < (*portItr) && (*portItr) <= UINT16_MAX)) {
       continue;
     }
-    port = sport;
+    port = (*portItr);
     if(bind(port)) {
       return true;
     }

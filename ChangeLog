@@ -1,5 +1,11 @@
 2009-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Choose port for BitTorrent/DHT randomly from the specified range.
+	* src/DHTConnectionImpl.cc
+	* src/PeerListenCommand.cc
+
+2009-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Send HTTP Authorization header only if it is requested by the
 	server(response 401). There are some exceptions. The authorization
 	header for proxy is always sent if it is available without request
