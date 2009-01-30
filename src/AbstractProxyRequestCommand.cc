@@ -44,6 +44,7 @@
 #include "Socket.h"
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -72,7 +73,6 @@ bool AbstractProxyRequestCommand::executeInternal() {
     HttpRequestHandle httpRequest(new HttpRequest());
     httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
     httpRequest->setRequest(req);
-    httpRequest->setAuthConfigFactory(e->getAuthConfigFactory());
     httpRequest->setProxyRequest(_proxyRequest);
 
     httpConnection->sendProxyRequest(httpRequest);

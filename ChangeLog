@@ -1,3 +1,29 @@
+2009-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Send HTTP Authorization header only if it is requested by the
+	server(response 401). There are some exceptions. The authorization
+	header for proxy is always sent if it is available without request
+	by the server.  If username/password is specified in the URI, it
+	is immediately sent to the server without request by the server.
+	
+	AbstractAuthResolver::_defaultAuthConfig is now initialized as
+	SharedHandle<AuthConfig>().
+	NetrcAuthResolver::resolveAuthConfig() returns
+	SharedHandle<AuthConfig>() if no AuthConfig is available.
+	* src/AbstractAuthResolver.cc
+	* src/AbstractProxyRequestCommand.cc
+	* src/AuthConfigFactory.cc
+	* src/AuthConfigFactory.h
+	* src/HttpConnection.cc
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpResponse.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* test/AuthConfigFactoryTest.cc
+	* test/HttpRequestTest.cc
+	* test/HttpResponseTest.cc
+
 2009-01-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Remove leading "--" from help keyword and a substring after "="

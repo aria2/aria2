@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <string>
+#include <deque>
 
 #include "SharedHandle.h"
 #include "SingletonHolder.h"
@@ -62,7 +63,29 @@ private:
   SharedHandle<AuthResolver> createHttpAuthResolver() const;
   
   SharedHandle<AuthResolver> createFtpAuthResolver() const;
+public:
+  class BasicCred {
+  public:
+    std::string _user;
+    std::string _password;
+    std::string _host;
+    std::string _path;
+    bool _activated;
 
+    BasicCred(const std::string& user, const std::string& password,
+	      const std::string& host, const std::string& path,
+	      bool activated = false);
+
+    void activate();
+
+    bool isActivated() const;
+
+    bool operator==(const BasicCred& cred) const;
+
+    bool operator<(const BasicCred& cred) const;
+  };
+private:
+  std::deque<BasicCred> _basicCreds;
 public:
   
   AuthConfigFactory(const Option* option);
@@ -70,9 +93,24 @@ public:
   ~AuthConfigFactory();
 
   SharedHandle<AuthConfig> createAuthConfig
-  (const SharedHandle<Request>& request) const;
+  (const SharedHandle<Request>& request);
 
   void setNetrc(const SharedHandle<Netrc>& netrc);
+
+  // Find a BasicCred using findBasicCred() and activate it then
+  // return true.  If matching BasicCred is not found, then return
+  // false.
+  bool activateBasicCred(const std::string& host, const std::string& path);
+
+  // Find a BasicCred using host and path and return the iterator
+  // pointing to it. If not found, then return _basicCreds.end().
+  std::deque<AuthConfigFactory::BasicCred>::iterator
+  findBasicCred(const std::string& host, const std::string& path);
+
+  // If the same BasicCred is already added, then it is replaced with
+  // given basicCred. Otherwise, insert given basicCred to
+  // _basicCreds.
+  void updateBasicCred(const BasicCred& basicCred);
 
   static const std::string ANONYMOUS;
 

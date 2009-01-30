@@ -50,6 +50,7 @@ class Range;
 class Option;
 class CookieStorage;
 class AuthConfigFactory;
+class AuthConfig;
 
 class HttpRequest {
 private:
@@ -73,6 +74,8 @@ private:
   SharedHandle<CookieStorage> _cookieStorage;
 
   SharedHandle<AuthConfigFactory> _authConfigFactory;
+
+  SharedHandle<AuthConfig> _authConfig;
 
   SharedHandle<Request> _proxyRequest;
 
@@ -134,10 +137,13 @@ public:
   off_t getEndByte() const;
 
   /**
-   * Returns string representation of http request.
-   * It usually starts with "GET ..." and ends with "\r\n".
+   * Returns string representation of http request.  It usually starts
+   * with "GET ..." and ends with "\r\n".  The AuthConfig for this
+   * request is resolved using _authConfigFactory and stored in
+   * _authConfig.  getAuthConfig() returns AuthConfig used in the last
+   * invocation of createRequest().
    */
-  std::string createRequest() const;
+  std::string createRequest();
 
   /**
    * Returns string representation of http tunnel request.
@@ -182,6 +188,14 @@ public:
    * Otherwise, returns false.
    */
   bool isProxyRequestSet() const;
+
+  // Returns true if authentication was used in the last
+  // createRequest().
+  bool authenticationUsed() const;
+
+  // Returns AuthConfig used in the last invocation of
+  // createRequest().
+  const SharedHandle<AuthConfig>& getAuthConfig() const;
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

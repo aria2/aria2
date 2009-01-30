@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "AuthConfigFactory.h"
+
+#include <algorithm>
+
 #include "Option.h"
 #include "AuthConfig.h"
 #include "Netrc.h"
@@ -40,6 +43,7 @@
 #include "NetrcAuthResolver.h"
 #include "prefs.h"
 #include "Request.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -53,10 +57,25 @@ AuthConfigFactory::AuthConfigFactory(const Option* option):
 AuthConfigFactory::~AuthConfigFactory() {}
 
 AuthConfigHandle
-AuthConfigFactory::createAuthConfig(const RequestHandle& request) const
+AuthConfigFactory::createAuthConfig(const RequestHandle& request)
 {
   if(request->getProtocol() == Request::PROTO_HTTP ||
      request->getProtocol() == Request::PROTO_HTTPS) {
+
+    if(!request->getUsername().empty()) {
+      // TODO setting "/" as path. Should we use request->getDir() instead?
+      updateBasicCred(BasicCred(request->getUsername(), request->getPassword(),
+				request->getHost(), "/", true));
+      return createAuthConfig(request->getUsername(), request->getPassword());
+    }
+    std::deque<BasicCred>::const_iterator i =
+      findBasicCred(request->getHost(), request->getDir());
+    if(i == _basicCreds.end()) {
+      return SharedHandle<AuthConfig>();
+    } else {
+      return createAuthConfig((*i)._user, (*i)._password);
+    }
+
     return createHttpAuthResolver()->resolveAuthConfig(request->getHost());
   } else if(request->getProtocol() == Request::PROTO_FTP) {
     if(!request->getUsername().empty()) {
@@ -65,7 +84,7 @@ AuthConfigFactory::createAuthConfig(const RequestHandle& request) const
       return createFtpAuthResolver()->resolveAuthConfig(request->getHost());
     }
   } else {
-    return SharedHandle<AuthConfig>(new AuthConfig());
+    return SharedHandle<AuthConfig>();
   }
 }
 
@@ -73,7 +92,7 @@ AuthConfigHandle
 AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& password) const
 {
   SharedHandle<AuthConfig> ac;
-  if(user.length() > 0) {
+  if(!user.empty()) {
     ac.reset(new AuthConfig(user, password));
   }
   return ac;
@@ -115,6 +134,96 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver() const
 void AuthConfigFactory::setNetrc(const NetrcHandle& netrc)
 {
   _netrc = netrc;
+}
+
+void AuthConfigFactory::updateBasicCred(const BasicCred& basicCred)
+{
+  std::deque<BasicCred>::iterator i =
+    std::lower_bound(_basicCreds.begin(), _basicCreds.end(), basicCred);
+
+  if(i != _basicCreds.end() && (*i) == basicCred) {
+    (*i) = basicCred;
+  } else {
+    _basicCreds.insert(i, basicCred);
+  }
+}
+
+bool AuthConfigFactory::activateBasicCred
+(const std::string& host, const std::string& path)
+{
+
+  std::deque<BasicCred>::iterator i =
+    findBasicCred(host, path);
+  if(i == _basicCreds.end()) {
+    SharedHandle<AuthConfig> authConfig =
+      createHttpAuthResolver()->resolveAuthConfig(host);
+    if(authConfig.isNull()) {
+      return false;
+    } else {
+      BasicCred bc("", "", host, path);
+      i = std::lower_bound(_basicCreds.begin(), _basicCreds.end(), bc);
+      // TODO setting "/" as path. Should we use path instead?
+      _basicCreds.insert
+	(i, BasicCred(authConfig->getUser(), authConfig->getPassword(),
+		      host, "/", true));
+      return true;
+    }
+  } else {
+    (*i).activate();
+    return true;
+  }
+}
+
+AuthConfigFactory::BasicCred::BasicCred
+(const std::string& user, const std::string& password,
+ const std::string& host, const std::string& path,
+ bool activated):
+  _user(user), _password(password),
+  _host(host), _path(path), _activated(activated)
+{
+  if(!Util::endsWith(_path, "/")) {
+    _path += "/";
+  }
+}
+
+void AuthConfigFactory::BasicCred::activate()
+{
+  _activated = true;
+}
+
+bool AuthConfigFactory::BasicCred::isActivated() const
+{
+  return _activated;
+}
+
+bool AuthConfigFactory::BasicCred::operator==(const BasicCred& cred) const
+{
+  return _host == cred._host && _path == cred._path;
+}
+
+bool AuthConfigFactory::BasicCred::operator<(const BasicCred& cred) const
+{
+  int c = _host.compare(cred._host);
+  if(c == 0) {
+    return _path > cred._path;
+  } else {
+    return c < 0;
+  }
+}
+
+std::deque<AuthConfigFactory::BasicCred>::iterator
+AuthConfigFactory::findBasicCred(const std::string& host,
+				 const std::string& path)
+{
+  BasicCred bc("", "", host, path);
+  std::deque<BasicCred>::iterator i =
+    std::lower_bound(_basicCreds.begin(), _basicCreds.end(), bc);
+  for(; i != _basicCreds.end() && (*i)._host == host; ++i) {
+    if(Util::startsWith(bc._path, (*i)._path)) {
+      return i;
+    }
+  }
+  return _basicCreds.end();
 }
 
 } // namespace aria2

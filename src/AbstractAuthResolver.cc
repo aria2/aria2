@@ -37,8 +37,7 @@
 
 namespace aria2 {
 
-AbstractAuthResolver::AbstractAuthResolver():
-  _defaultAuthConfig(new AuthConfig()) {}
+AbstractAuthResolver::AbstractAuthResolver() {}
 
 AbstractAuthResolver::~AbstractAuthResolver() {}
 

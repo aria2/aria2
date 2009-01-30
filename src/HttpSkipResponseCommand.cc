@@ -52,6 +52,7 @@
 #include "Option.h"
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -158,7 +159,13 @@ bool HttpSkipResponseCommand::processResponse()
     return prepareForRetry(_httpResponse->getRetryAfter());
   } else if(_httpResponse->getResponseStatus() >= HttpHeader::S400) {
     if(_httpResponse->getResponseStatus() == HttpHeader::S401) {
-      throw DlAbortEx(EX_AUTH_FAILED);
+      if(!_httpResponse->getHttpRequest()->authenticationUsed() &&
+	 e->getAuthConfigFactory()->activateBasicCred
+	 (req->getHost(), req->getDir())) {
+	return prepareForRetry(0);
+      } else {
+	throw DlAbortEx(EX_AUTH_FAILED);
+      }
     }else if(_httpResponse->getResponseStatus() == HttpHeader::S404) {
       throw DlAbortEx(MSG_RESOURCE_NOT_FOUND,
 		      DownloadResult::RESOURCE_NOT_FOUND);

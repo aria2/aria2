@@ -64,6 +64,7 @@
 #include "LogFactory.h"
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 

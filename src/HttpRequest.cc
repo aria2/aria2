@@ -132,18 +132,17 @@ std::string HttpRequest::getHostText(const std::string& host, uint16_t port) con
   return  host+(port == 80 || port == 443 ? "" : ":"+Util::uitos(port));
 }
 
-std::string HttpRequest::createRequest() const
+std::string HttpRequest::createRequest()
 {
-  SharedHandle<AuthConfig> authConfig =
-    _authConfigFactory->createAuthConfig(request);
+  _authConfig = _authConfigFactory->createAuthConfig(request);
   std::string requestLine = request->getMethod()+" ";
   if(!_proxyRequest.isNull()) {
     if(getProtocol() == Request::PROTO_FTP &&
-       request->getUsername().empty() && !authConfig->getUser().empty()) {
+       request->getUsername().empty() && !_authConfig.isNull()) {
       // Insert user into URI, like ftp://USER@host/
       std::string uri = getCurrentURI();
       assert(uri.size() >= 6);
-      uri.insert(6, Util::urlencode(authConfig->getUser())+"@");
+      uri.insert(6, Util::urlencode(_authConfig->getUser())+"@");
       requestLine += uri;
     } else {
       requestLine += getCurrentURI();
@@ -204,9 +203,9 @@ std::string HttpRequest::createRequest() const
   if(!_proxyRequest.isNull() && !_proxyRequest->getUsername().empty()) {
     requestLine += getProxyAuthString();
   }
-  if(!authConfig->getUser().empty()) {
+  if(!_authConfig.isNull()) {
     requestLine += "Authorization: Basic "+
-      Base64::encode(authConfig->getAuthText())+"\r\n";
+      Base64::encode(_authConfig->getAuthText())+"\r\n";
   }
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";
@@ -358,6 +357,16 @@ void HttpRequest::setProxyRequest(const SharedHandle<Request>& proxyRequest)
 bool HttpRequest::isProxyRequestSet() const
 {
   return !_proxyRequest.isNull();
+}
+
+bool HttpRequest::authenticationUsed() const
+{
+  return !_authConfig.isNull();
+}
+
+const SharedHandle<AuthConfig>& HttpRequest::getAuthConfig() const
+{
+  return _authConfig;
 }
 
 } // namespace aria2

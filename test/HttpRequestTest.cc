@@ -14,6 +14,7 @@
 #include "array_fun.h"
 #include "CookieStorage.h"
 #include "Util.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -223,6 +224,8 @@ void HttpRequestTest::testCreateRequest()
   // enable http auth
   _option->put(PREF_HTTP_USER, "aria2user");
   _option->put(PREF_HTTP_PASSWD, "aria2passwd");
+
+  CPPUNIT_ASSERT(_authConfigFactory->activateBasicCred("localhost", "/"));
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"

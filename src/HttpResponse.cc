@@ -56,6 +56,7 @@
 #endif // HAVE_LIBZ
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
