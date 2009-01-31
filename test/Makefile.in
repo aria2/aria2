@@ -124,8 +124,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockDHTTaskQueue.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
-@ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h\
-@ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.cc
+@ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h
 
 @ENABLE_METALINK_TRUE@am__append_5 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -193,6 +192,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
 	OptionParserTest.cc SimpleDNSCacheTest.cc \
 	DownloadHelperTest.cc BencodeTest.cc SequentialPickerTest.cc \
+	RarestPieceSelectorTest.cc LongestSequencePieceSelectorTest.cc \
 	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
 	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
@@ -238,8 +238,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
 	MockDHTTaskQueue.h MockExtensionMessage.h \
 	MockExtensionMessageFactory.h MockPieceStorage.h \
-	RarestPieceSelectorTest.cc MetalinkerTest.cc \
-	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
+	MetalinkerTest.cc MetalinkEntryTest.cc \
+	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @HAVE_LIBZ_TRUE@am__objects_1 = GZipDecoderTest.$(OBJEXT)
@@ -316,8 +316,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_5 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -362,8 +361,10 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	FtpConnectionTest.$(OBJEXT) OptionParserTest.$(OBJEXT) \
 	SimpleDNSCacheTest.$(OBJEXT) DownloadHelperTest.$(OBJEXT) \
 	BencodeTest.$(OBJEXT) SequentialPickerTest.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5)
+	RarestPieceSelectorTest.$(OBJEXT) \
+	LongestSequencePieceSelectorTest.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a ../src/download_helper.o \
@@ -587,6 +588,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	TimeTest.cc CopyDiskAdaptorTest.cc FtpConnectionTest.cc \
 	OptionParserTest.cc SimpleDNSCacheTest.cc \
 	DownloadHelperTest.cc BencodeTest.cc SequentialPickerTest.cc \
+	RarestPieceSelectorTest.cc LongestSequencePieceSelectorTest.cc \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5)
 
@@ -767,6 +769,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InOrderURISelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChecksumValidatorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidatorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LongestSequencePieceSelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshakeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroupTest.Po@am__quote@

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,59 +32,52 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RAREST_PIECE_SELECTOR_H_
-#define _D_RAREST_PIECE_SELECTOR_H_
-
-#include "PieceSelector.h"
+#include "LongestSequencePieceSelector.h"
 
 namespace aria2 {
 
-class PieceStat {
-private:
-  size_t _order;
-  size_t _index;
-  size_t _count;
-public:
-  PieceStat(size_t index);
+bool LongestSequencePieceSelector::select
+(size_t& index,
+ const std::deque<size_t>& candidateIndexes) const
+{
+  size_t maxlen = 0;
+  size_t maxfirst = 0;
+  size_t i = 0;
+  size_t lenA = candidateIndexes.size();
 
-  bool operator<(const PieceStat& pieceStat) const;
+  while(i < lenA) {
+    size_t first = i;
+    size_t len = 1;
+    size_t prev = first;
+    ++i;
+    while(i < lenA && candidateIndexes[prev]+1 == candidateIndexes[i]) {
+      ++len;
+      prev = i;
+      ++i;
+    }
+    if(maxlen < len) {
+      maxlen = len;
+      maxfirst = first;
+    }
+  } 
+  if(maxlen == 0) {
+    return false;
+  } else {
+    index = candidateIndexes[maxfirst+maxlen-1];
+    return true;
+  }
+}
 
-  void addCount();
-  void subCount();
+void LongestSequencePieceSelector::addPieceStats
+(const unsigned char* bitfield, size_t bitfieldLength) {}
 
-  size_t getOrder() const;
-  void setOrder(size_t order);
-  size_t getIndex() const;
-  size_t getCount() const;
-};
+void LongestSequencePieceSelector::subtractPieceStats
+(const unsigned char* bitfield, size_t bitfieldLength) {}
 
-class RarestPieceSelector:public PieceSelector {
-private:
-  std::deque<SharedHandle<PieceStat> > _pieceStats;
+void LongestSequencePieceSelector::updatePieceStats
+(const unsigned char* newBitfield, size_t newBitfieldLength,
+ const unsigned char* oldBitfield) {}
 
-  std::deque<SharedHandle<PieceStat> > _sortedPieceStats;
-public:
-  RarestPieceSelector(size_t pieceNum, bool randomShuffle);
-
-  virtual bool select
-  (size_t& index, const std::deque<size_t>& candidateIndexes) const;
-
-  virtual void addPieceStats(size_t index);
-
-  virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength);
-  
-  virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength);
-
-  virtual void updatePieceStats(const unsigned char* newBitfield,
-				size_t newBitfieldLength,
-				const unsigned char* oldBitfield);
-
-  const std::deque<SharedHandle<PieceStat> >& getSortedPieceStats() const;
-};
+void LongestSequencePieceSelector::addPieceStats(size_t index) {}
 
 } // namespace aria2
-
-#endif // _D_RAREST_PIECE_SELECTOR_H_
-

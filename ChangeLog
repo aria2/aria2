@@ -1,5 +1,28 @@
 2009-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use LongestSequencePieceSelector for HTTP/FTP/BitTorrent
+	integrated downloads. This PieceSelector subclass finds the
+	longest continuous sequence in the available missing pieces and
+	selects the last index of such sequence. This makes HTTP/FTP
+	connections less interrupted by the pieces obtained by BitTorrent
+	peers.
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/LongestSequencePieceSelector.cc
+	* src/LongestSequencePieceSelector.h
+	* src/Makefile.am
+	* src/PieceSelector.h
+	* src/RarestPieceSelector.h
+	* src/RequestGroup.cc
+	* test/BtDependencyTest.cc
+	* test/DefaultPieceStorageTest.cc
+	* test/IteratableChecksumValidatorTest.cc
+	* test/LongestSequencePieceSelectorTest.cc
+	* test/Makefile.am
+	* test/SegmentManTest.cc
+
+2009-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that the average speed is wrong in
 	http/ftp/BitTorrent integrated download. Only the download bytes
 	in BitTorrent were considered.

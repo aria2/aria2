@@ -204,7 +204,9 @@ SRCS =  Socket.h\
 	HttpListenCommand.cc HttpListenCommand.h\
 	HttpServerCommand.cc HttpServerCommand.h\
 	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
-	HttpServer.cc HttpServer.h
+	HttpServer.cc HttpServer.h\
+	PieceSelector.h\
+	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h
 
 if HAVE_EPOLL
 SRCS += EpollEventPoll.cc EpollEventPoll.h

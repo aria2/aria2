@@ -1,4 +1,9 @@
 #include "BtDependency.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "SingleFileDownloadContext.h"
 #include "DefaultPieceStorage.h"
 #include "BtContext.h"
@@ -7,8 +12,7 @@
 #include "Exception.h"
 #include "SegmentMan.h"
 #include "FileEntry.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
+#include "PieceSelector.h"
 
 namespace aria2 {
 

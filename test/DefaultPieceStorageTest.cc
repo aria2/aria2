@@ -12,6 +12,7 @@
 #include "Option.h"
 #include "FileEntry.h"
 #include "MockBtContext.h"
+#include "RarestPieceSelector.h"
 
 namespace aria2 {
 
@@ -36,6 +37,7 @@ private:
   SharedHandle<BtContext> btContext;
   SharedHandle<Peer> peer;
   Option* option;
+  SharedHandle<RarestPieceSelector> _selector;
 public:
   DefaultPieceStorageTest() {
     SharedHandle<FixedNumberRandomizer> randomizer
@@ -51,6 +53,7 @@ public:
     peer->allocateSessionResource(btContext->getPieceLength(),
 				  btContext->getTotalLength());
     option = new Option();
+    _selector.reset(new RarestPieceSelector(btContext->getNumPieces(), false));
   }
 
   void tearDown()
@@ -84,7 +87,7 @@ void DefaultPieceStorageTest::testGetTotalLength() {
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece() {
-  DefaultPieceStorage pss(btContext, option, false);
+  DefaultPieceStorage pss(btContext, option, _selector);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -104,7 +107,7 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
 
 void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 {
-  DefaultPieceStorage pss(btContext, option, false);
+  DefaultPieceStorage pss(btContext, option, _selector);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -125,7 +128,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 }
 
 void DefaultPieceStorageTest::testGetMissingFastPiece() {
-  DefaultPieceStorage pss(btContext, option, false);
+  DefaultPieceStorage pss(btContext, option, _selector);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -141,7 +144,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
 
 void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
 {
-  DefaultPieceStorage pss(btContext, option, false);
+  DefaultPieceStorage pss(btContext, option, _selector);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -170,7 +173,7 @@ void DefaultPieceStorageTest::testHasMissingPiece() {
 }
 
 void DefaultPieceStorageTest::testCompletePiece() {
-  DefaultPieceStorage pss(btContext, option, false);
+  DefaultPieceStorage pss(btContext, option, _selector);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();

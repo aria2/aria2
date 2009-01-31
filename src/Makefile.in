@@ -417,10 +417,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	HttpListenCommand.cc HttpListenCommand.h HttpServerCommand.cc \
 	HttpServerCommand.h HttpServerResponseCommand.cc \
 	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
-	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
-	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
-	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
-	GZipDecoder.h Sqlite3MozCookieParser.cc \
+	PieceSelector.h LongestSequencePieceSelector.cc \
+	LongestSequencePieceSelector.h EpollEventPoll.cc \
+	EpollEventPoll.h TLSContext.h LibgnutlsTLSContext.cc \
+	LibgnutlsTLSContext.h LibsslTLSContext.cc LibsslTLSContext.h \
+	GZipDecoder.cc GZipDecoder.h Sqlite3MozCookieParser.cc \
 	Sqlite3MozCookieParser.h AsyncNameResolver.cc \
 	AsyncNameResolver.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
@@ -816,13 +817,14 @@ am__objects_22 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	SelectEventPoll.$(OBJEXT) HttpListenCommand.$(OBJEXT) \
 	HttpServerCommand.$(OBJEXT) \
 	HttpServerResponseCommand.$(OBJEXT) HttpServer.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
-	$(am__objects_16) $(am__objects_17) $(am__objects_18) \
-	$(am__objects_19) $(am__objects_20) $(am__objects_21)
+	LongestSequencePieceSelector.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
+	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
+	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
+	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
+	$(am__objects_20) $(am__objects_21)
 am_libaria2c_a_OBJECTS = $(am__objects_22)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1151,13 +1153,15 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	HttpListenCommand.cc HttpListenCommand.h HttpServerCommand.cc \
 	HttpServerCommand.h HttpServerResponseCommand.cc \
 	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_17) $(am__append_18) \
-	$(am__append_19) $(am__append_20) $(am__append_21)
+	PieceSelector.h LongestSequencePieceSelector.cc \
+	LongestSequencePieceSelector.h $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5) \
+	$(am__append_6) $(am__append_7) $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(am__append_11) \
+	$(am__append_12) $(am__append_13) $(am__append_14) \
+	$(am__append_15) $(am__append_16) $(am__append_17) \
+	$(am__append_18) $(am__append_19) $(am__append_20) \
+	$(am__append_21)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1436,6 +1440,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibgnutlsTLSContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibsslTLSContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LongestSequencePieceSelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshake.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MemoryBufferPreDownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelper.Po@am__quote@

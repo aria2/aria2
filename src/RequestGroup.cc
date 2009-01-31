@@ -76,6 +76,7 @@
 #include "A2STR.h"
 #include "URISelector.h"
 #include "InOrderURISelector.h"
+#include "PieceSelector.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -97,6 +98,7 @@
 # include "ExtensionMessageFactory.h"
 # include "DHTPeerAnnounceStorage.h"
 # include "DHTEntryPointNameResolveCommand.h"
+# include "LongestSequencePieceSelector.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
@@ -359,8 +361,22 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
 void RequestGroup::initPieceStorage()
 {
   if(_downloadContext->knowsTotalLength()) {
-    DefaultPieceStorageHandle ps
+#ifdef ENABLE_BITTORRENT
+    SharedHandle<DefaultPieceStorage> ps;
+    SharedHandle<PieceSelector> selector;
+    // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent integrated
+    // downloads. Currently multi-file integrated download is not supported.
+    if(!_uris.empty() &&
+       _downloadContext->getFileEntries().size() == 1 &&
+       !dynamic_pointer_cast<BtContext>(_downloadContext).isNull()) {
+      _logger->debug("Using LongestSequencePieceSelector");
+      selector.reset(new LongestSequencePieceSelector());
+    }
+    ps.reset(new DefaultPieceStorage(_downloadContext, _option, selector));
+#else // !ENABLE_BITTORRENT
+    SharedHandle<DefaultPieceStorage> ps
       (new DefaultPieceStorage(_downloadContext, _option));
+#endif // !ENABLE_BITTORRENT
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }

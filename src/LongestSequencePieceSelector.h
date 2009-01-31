@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,40 +32,19 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RAREST_PIECE_SELECTOR_H_
-#define _D_RAREST_PIECE_SELECTOR_H_
+#ifndef _D_LONGEST_SEQUENCE_PIECE_SELECTOR_H_
+#define _D_LONGEST_SEQUENCE_PIECE_SELECTOR_H_
 
 #include "PieceSelector.h"
 
 namespace aria2 {
 
-class PieceStat {
-private:
-  size_t _order;
-  size_t _index;
-  size_t _count;
+class LongestSequencePieceSelector:public PieceSelector {
 public:
-  PieceStat(size_t index);
-
-  bool operator<(const PieceStat& pieceStat) const;
-
-  void addCount();
-  void subCount();
-
-  size_t getOrder() const;
-  void setOrder(size_t order);
-  size_t getIndex() const;
-  size_t getCount() const;
-};
-
-class RarestPieceSelector:public PieceSelector {
-private:
-  std::deque<SharedHandle<PieceStat> > _pieceStats;
-
-  std::deque<SharedHandle<PieceStat> > _sortedPieceStats;
-public:
-  RarestPieceSelector(size_t pieceNum, bool randomShuffle);
-
+  // Returns the last index of longest continuous sequence in candidateIndexes.
+  // For example, if candidateIndexes is
+  // { 1,2,3,4,7,10,11,12,13,14,15,100,112,113,114 }, then
+  // returns 15 because { 10, 11, 12, 13, 14, 15 } is the longest sequence.
   virtual bool select
   (size_t& index, const std::deque<size_t>& candidateIndexes) const;
 
@@ -80,11 +59,8 @@ public:
   virtual void updatePieceStats(const unsigned char* newBitfield,
 				size_t newBitfieldLength,
 				const unsigned char* oldBitfield);
-
-  const std::deque<SharedHandle<PieceStat> >& getSortedPieceStats() const;
 };
 
 } // namespace aria2
 
-#endif // _D_RAREST_PIECE_SELECTOR_H_
-
+#endif // _D_LONGEST_SEQUENCE_PIECE_SELECTOR_H_

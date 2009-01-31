@@ -45,7 +45,7 @@ class Logger;
 class Option;
 class DiskWriterFactory;
 class FileEntry;
-class RarestPieceSelector;
+class PieceSelector;
 
 #define END_GAME_PIECE_NUM 20
 
@@ -81,7 +81,7 @@ private:
   const Option* option;
   Haves haves;
 
-  SharedHandle<RarestPieceSelector> _pieceSelector;
+  SharedHandle<PieceSelector> _pieceSelector;
 
   bool getMissingPieceIndex(size_t& index,
 			    const unsigned char* bitfield, size_t& length);
@@ -109,7 +109,9 @@ public:
   // priority.
   DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
 		      const Option* option,
-		      bool randomPieceStatsOrdering = true);
+		      const SharedHandle<PieceSelector>& pieceSelector
+		      = SharedHandle<PieceSelector>());
+		      
   virtual ~DefaultPieceStorage();
 
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);

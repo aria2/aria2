@@ -1,4 +1,7 @@
 #include "SegmentMan.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "File.h"
 #include "prefs.h"
 #include "Util.h"
@@ -10,7 +13,7 @@
 #include "FileEntry.h"
 #include "MockPieceStorage.h"
 #include "PeerStat.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "PieceSelector.h"
 
 namespace aria2 {
 

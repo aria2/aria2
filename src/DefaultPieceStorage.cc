@@ -61,7 +61,10 @@
 
 namespace aria2 {
 
-DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option, bool randomPieceStatsOrdering):
+DefaultPieceStorage::DefaultPieceStorage
+(const DownloadContextHandle& downloadContext,
+ const Option* option,
+ const SharedHandle<PieceSelector>& pieceSelector):
   downloadContext(downloadContext),
   bitfieldMan(BitfieldManFactory::getFactoryInstance()->
 	      createBitfieldMan(downloadContext->getPieceLength(),
@@ -70,9 +73,13 @@ DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadCo
   endGamePieceNum(END_GAME_PIECE_NUM),
   logger(LogFactory::getInstance()),
   option(option),
-  _pieceSelector(new RarestPieceSelector(downloadContext->getNumPieces(),
-					 randomPieceStatsOrdering))
-{}
+  _pieceSelector(pieceSelector)
+{
+  if(_pieceSelector.isNull()) {
+    _pieceSelector.reset
+      (new RarestPieceSelector(downloadContext->getNumPieces(), true));
+  }
+}
 
 DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan;

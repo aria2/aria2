@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,59 +32,37 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RAREST_PIECE_SELECTOR_H_
-#define _D_RAREST_PIECE_SELECTOR_H_
+#ifndef _D_PIECE_SELECTOR_H_
+#define _D_PIECE_SELECTOR_H_
 
-#include "PieceSelector.h"
+#include "common.h"
+
+#include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-class PieceStat {
-private:
-  size_t _order;
-  size_t _index;
-  size_t _count;
+class PieceSelector {
 public:
-  PieceStat(size_t index);
-
-  bool operator<(const PieceStat& pieceStat) const;
-
-  void addCount();
-  void subCount();
-
-  size_t getOrder() const;
-  void setOrder(size_t order);
-  size_t getIndex() const;
-  size_t getCount() const;
-};
-
-class RarestPieceSelector:public PieceSelector {
-private:
-  std::deque<SharedHandle<PieceStat> > _pieceStats;
-
-  std::deque<SharedHandle<PieceStat> > _sortedPieceStats;
-public:
-  RarestPieceSelector(size_t pieceNum, bool randomShuffle);
+  virtual ~PieceSelector() {}
 
   virtual bool select
-  (size_t& index, const std::deque<size_t>& candidateIndexes) const;
+  (size_t& index, const std::deque<size_t>& candidateIndexes) const = 0;
 
-  virtual void addPieceStats(size_t index);
+  virtual void addPieceStats(size_t index) = 0;
 
   virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength);
+			     size_t bitfieldLength) = 0;
   
   virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength);
+				  size_t bitfieldLength) = 0;
 
   virtual void updatePieceStats(const unsigned char* newBitfield,
 				size_t newBitfieldLength,
-				const unsigned char* oldBitfield);
-
-  const std::deque<SharedHandle<PieceStat> >& getSortedPieceStats() const;
+				const unsigned char* oldBitfield) = 0;
 };
 
 } // namespace aria2
 
-#endif // _D_RAREST_PIECE_SELECTOR_H_
-
+#endif // _D_PIECE_SELECTOR_H_
