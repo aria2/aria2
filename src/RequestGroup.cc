@@ -895,14 +895,14 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 
 #ifdef ENABLE_BITTORRENT
   if(!_peerStorage.isNull()) {
-    sessionDownloadLength =
+    sessionDownloadLength +=
       _peerStorage->calculateStat().getSessionDownloadLength();
-  } else
+  }
 #endif // ENABLE_BITTORRENT
-    if(!_segmentMan.isNull()) {
-      sessionDownloadLength =
-	_segmentMan->calculateSessionDownloadLength();
-    }
+  if(!_segmentMan.isNull()) {
+    sessionDownloadLength +=
+      _segmentMan->calculateSessionDownloadLength();
+  }
 
   return
     SharedHandle<DownloadResult>

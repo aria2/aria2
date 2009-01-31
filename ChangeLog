@@ -1,5 +1,12 @@
 2009-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that the average speed is wrong in
+	http/ftp/BitTorrent integrated download. Only the download bytes
+	in BitTorrent were considered.
+	* src/RequestGroup.cc
+	
+2009-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Choose port for BitTorrent/DHT randomly from the specified range.
 	* src/DHTConnectionImpl.cc
 	* src/PeerListenCommand.cc
