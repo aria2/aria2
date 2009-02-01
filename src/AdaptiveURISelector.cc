@@ -76,12 +76,41 @@ AdaptiveURISelector::~AdaptiveURISelector() {}
 
 std::string AdaptiveURISelector::select(std::deque<std::string>& uris)
 {
+  _logger->debug("AdaptiveURISelector: called %d",
+		 _requestGroup->getNumConnection());
+  if (uris.empty() && _requestGroup->getNumConnection() <= 1) {
+    // here we know the download will fail, trying to find previously
+    // failed uris that may succeed with more permissive values
+    mayRetryWithIncreasedTimeout(uris);
+  }
+ 
   std::string selected = selectOne(uris);
 
   if(selected != A2STR::NIL)
     uris.erase(std::find(uris.begin(), uris.end(), selected));
 
   return selected;
+}
+
+void AdaptiveURISelector::mayRetryWithIncreasedTimeout
+(std::deque<std::string>& uris)
+{
+  if (_requestGroup->getTimeout()*2 >= MAX_TIMEOUT) return;
+  _requestGroup->setTimeout(_requestGroup->getTimeout()*2);
+
+  // looking for retries
+  const std::deque<URIResult>& uriResults = _requestGroup->getURIResults();
+  for (std::deque<URIResult>::const_iterator i = uriResults.begin();
+       i != uriResults.end(); ++i) {
+    if ((*i).getResult() == DownloadResult::TIME_OUT) {
+      _logger->debug("AdaptiveURISelector: will retry server with increased"
+		     " timeout (%d s): %s",
+		     _requestGroup->getTimeout(), (*i).getURI().c_str());
+      uris.push_back((*i).getURI());
+    }
+  }
+  std::sort(uris.begin(), uris.end());
+  uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
 }
 
 std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)

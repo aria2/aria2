@@ -1,5 +1,18 @@
 2009-02-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Applied AdaptiveURISelector-timeout patch from Pascal Rigaux at
+	Mandriva. I modified the patch: make RequestGroup have the
+	timeout value and AdaptiveURISelector directly modifies that
+	value.
+	* src/AbstractCommand.cc
+	* src/AdaptiveURISelector.cc
+	* src/AdaptiveURISelector.h
+	* src/FtpNegotiationCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+
+2009-02-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compiler warning
 	* test/IteratableChecksumValidatorTest.cc
 

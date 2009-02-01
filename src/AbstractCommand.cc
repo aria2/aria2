@@ -78,7 +78,7 @@ AbstractCommand::AbstractCommand(int32_t cuid,
   if(!socket.isNull() && socket->isOpen()) {
     setReadCheckSocket(socket);
   }
-  timeout = this->e->option->getAsInt(PREF_TIMEOUT);
+  timeout = _requestGroup->getTimeout();
   _requestGroup->increaseStreamConnection();
 }
 

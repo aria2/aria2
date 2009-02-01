@@ -134,6 +134,9 @@ private:
 
   unsigned int _fileNotFoundCount;
 
+  // Timeout used for HTTP/FTP downloads.
+  time_t _timeout;
+
 #ifdef ENABLE_BITTORRENT
   WeakHandle<BtRuntime> _btRuntime;
 
@@ -424,6 +427,10 @@ public:
   bool inMemoryDownload() const;
 
   void tuneDownloadCommand(DownloadCommand* command);
+
+  void setTimeout(time_t timeout);
+
+  time_t getTimeout() const;
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

@@ -52,7 +52,11 @@ private:
   unsigned int _nbServerToEvaluate;
   unsigned int _nbConnections;
 
+  static const unsigned int MAX_TIMEOUT = 60;
+
   Logger* _logger;
+
+  void mayRetryWithIncreasedTimeout(std::deque<std::string>& uris);
 
   std::string selectOne(const std::deque<std::string>& uris);
   void adjustLowestSpeedLimit(const std::deque<std::string>& uris,

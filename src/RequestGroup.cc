@@ -126,6 +126,7 @@ RequestGroup::RequestGroup(const Option* option,
   _uriSelector(new InOrderURISelector()),
   _lastModifiedTime(Time::null()),
   _fileNotFoundCount(0),
+  _timeout(option->getAsInt(PREF_TIMEOUT)),
   _inMemoryDownload(false),
   _option(option),
   _logger(LogFactory::getInstance())
@@ -546,7 +547,7 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 				     const std::string& method)
 {
   std::deque<std::string> pendingURIs;
-  for(; !_uris.empty() && numCommand--; ) {    
+  for(; numCommand--; ) {    
     std::string uri = _uriSelector->select(_uris);
     if(uri.empty())
       continue;
@@ -1131,6 +1132,16 @@ void RequestGroup::addURIResult(std::string uri, DownloadResult::RESULT result)
 const std::deque<URIResult>& RequestGroup::getURIResults() const
 {
   return _uriResults;
+}
+
+void RequestGroup::setTimeout(time_t timeout)
+{
+  _timeout = timeout;
+}
+
+time_t RequestGroup::getTimeout() const
+{
+  return _timeout;
 }
 
 } // namespace aria2
