@@ -58,6 +58,7 @@
 #include "A2STR.h"
 #include "SocketCore.h"
 #include "Request.h"
+#include "AnnounceTier.h"
 
 namespace aria2 {
 
@@ -178,12 +179,37 @@ RequestGroupHandle TrackerWatcherCommand::createAnnounce() {
   return rg;
 }
 
+static bool backupTrackerIsAvailable
+(const std::deque<SharedHandle<AnnounceTier> >& announceTiers)
+{
+  if(announceTiers.size() >= 2) {
+    return true;
+  }
+  if(announceTiers.empty()) {
+    return false;
+  }
+  if(announceTiers[0]->urls.size() >= 2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 RequestGroupHandle
 TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 {
   std::deque<std::string> uris;
   uris.push_back(uri);
   RequestGroupHandle rg(new RequestGroup(e->option, uris));
+  // If backup tracker is available, only try 2 times for each tracker
+  // and if they all fails, then try next one.
+  if(backupTrackerIsAvailable(_btContext->getAnnounceTiers())) {
+    logger->debug("This is multi-tracker announce.");
+    rg->setMaxTries(2);
+  } else {
+    logger->debug("This is single-tracker announce.");
+    rg->setMaxTries(5);
+  }
 
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SingleFileDownloadContextHandle dctx
