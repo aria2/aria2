@@ -1,5 +1,15 @@
 2009-02-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added _maxTries property to RequestGroup and assign the option
+	value of PREF_MAX_TRIES to it. AbstractCommand now looks up
+	RequestGroup::getMaxTries() instead of
+	Option::getAsInt(PREF_MAX_TRIES).
+	* src/AbstractCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	
+2009-02-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Applied AdaptiveURISelector-timeout patch from Pascal Rigaux at
 	Mandriva. I modified the patch: make RequestGroup have the
 	timeout value and AdaptiveURISelector directly modifies that

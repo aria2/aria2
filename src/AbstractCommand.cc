@@ -165,8 +165,8 @@ bool AbstractCommand::execute() {
     logger->info(MSG_RESTARTING_DOWNLOAD, err, cuid, req->getUrl().c_str());
     req->addTryCount();
     req->resetRedirectCount();
-    bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
-      req->getTryCount() >= (unsigned int)e->option->getAsInt(PREF_MAX_TRIES);
+    bool isAbort = _requestGroup->getMaxTries() != 0 &&
+      req->getTryCount() >= _requestGroup->getMaxTries();
     if(isAbort) {
       onAbort();
     }

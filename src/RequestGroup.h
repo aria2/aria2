@@ -137,6 +137,9 @@ private:
   // Timeout used for HTTP/FTP downloads.
   time_t _timeout;
 
+  // How many times HTTP/FTP download should retry.
+  unsigned int _maxTries;
+
 #ifdef ENABLE_BITTORRENT
   WeakHandle<BtRuntime> _btRuntime;
 
@@ -431,6 +434,10 @@ public:
   void setTimeout(time_t timeout);
 
   time_t getTimeout() const;
+
+  void setMaxTries(unsigned int maxTries);
+
+  unsigned int getMaxTries() const;
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

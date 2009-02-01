@@ -127,6 +127,7 @@ RequestGroup::RequestGroup(const Option* option,
   _lastModifiedTime(Time::null()),
   _fileNotFoundCount(0),
   _timeout(option->getAsInt(PREF_TIMEOUT)),
+  _maxTries(option->getAsInt(PREF_MAX_TRIES)),
   _inMemoryDownload(false),
   _option(option),
   _logger(LogFactory::getInstance())
@@ -1142,6 +1143,16 @@ void RequestGroup::setTimeout(time_t timeout)
 time_t RequestGroup::getTimeout() const
 {
   return _timeout;
+}
+
+void RequestGroup::setMaxTries(unsigned int maxTries)
+{
+  _maxTries = maxTries;
+}
+
+unsigned int RequestGroup::getMaxTries() const
+{
+  return _maxTries;
 }
 
 } // namespace aria2
