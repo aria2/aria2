@@ -89,7 +89,9 @@ public:
     fileEntries.push_back(fileEntry);
   }
 
-  virtual std::deque<SharedHandle<AnnounceTier> > getAnnounceTiers() const {
+  virtual const std::deque<SharedHandle<AnnounceTier> >&
+  getAnnounceTiers() const
+  {
     return announceTiers;
   }
 

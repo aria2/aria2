@@ -58,7 +58,7 @@ public:
 
   virtual const std::string& getInfoHashAsString() const = 0;
 
-  virtual std::deque<SharedHandle<AnnounceTier> >
+  virtual const std::deque<SharedHandle<AnnounceTier> >&
   getAnnounceTiers() const = 0;
 
   virtual void load(const std::string& torrentFile,

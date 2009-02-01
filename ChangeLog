@@ -1,5 +1,13 @@
 2009-02-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	BtContext::getAnnounceTiers() now returns const reference.
+	* src/BtContext.h
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* test/MockBtContext.h
+
+2009-02-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Change the number of retries for tracker request based on the
 	number of available tracker in a torrent file.
 	* src/TrackerWatcherCommand.cc

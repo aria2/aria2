@@ -117,7 +117,8 @@ private:
 
   virtual const std::string& getPieceHashAlgo() const;
 
-  virtual std::deque<SharedHandle<AnnounceTier> > getAnnounceTiers() const;
+  virtual const std::deque<SharedHandle<AnnounceTier> >&
+  getAnnounceTiers() const;
 
   virtual void load(const std::string& torrentFile,
 		    const std::string& overrideName = "");

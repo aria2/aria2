@@ -374,7 +374,9 @@ const std::string& DefaultBtContext::getPieceHashAlgo() const
   return MessageDigestContext::SHA1;
 }
 
-AnnounceTiers DefaultBtContext::getAnnounceTiers() const {
+const std::deque<SharedHandle<AnnounceTier> >&
+DefaultBtContext::getAnnounceTiers() const
+{
   return announceTiers;
 }
 
