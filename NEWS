@@ -1,117 +1,98 @@
-aria2 1.1.2
+aria2 1.2.0
 ===========
 
 Release Note
 ------------
-This release fixes the bug that BitTorrent download doesn't finish
-when REJECT message is received before CHOKE message.  --use-head
-option was added to toggle whether HEAD method should be used in the
-first HTTP request. To use GET method as the first request, give
---use-head=false to aria2c.
 
-Changes
--------
-* Updated Russian translation. Thanks to the translators.
-
-* Added --use-head option to toggle whether HEAD method should be used
-  in the first HTTP request. By default aria2 uses HEAD method as the
-  first request. If the server doesn't recognize HEAD, then give aria2
-  --use-head=false to force aria2 to use GET method instead.
-
-* Fixed the bug that BitTorrent download doesn't finish when REJECT
-  message is received before CHOKE message.  The old implementation
-  doesn't clear the use-bit of the piece when recieved REJECT message.
-
-
-
-aria2 1.1.1
-===========
-
-Release Note
-------------
-This release fixes the bug that --summary-interval=0 doesn't work.
-
-Changes
--------
-* Fixed the bug that --summary-interval=0 doesn't work. The summary is
-  printed repeatedly. It should not be printed if 0 is specified.
-
-
-
-aria2 1.1.0
-===========
-
-Release Note
-------------
-This release fixes the many bugs such as buggy HTTP pipelining
-implementation that leads to corrupted downloads, bad cookie handling
-and sending bad formed URI to the tracker. --max-overall-upload-limit
-option was added to controll overall(not per torrent) upload speed.
-
-From this release, aria2 validates the server certificate of HTTPS
-servers by default. --with-ca-bundle compile time option is added to
-specify the default path to the CA bundle. For example, Debian
-provides /etc/ssl/certs/ca-certificates.crt, therefore run configure
-with --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
-
-The most big change in this release is that the package name is
-changed from "aria2c" to "aria2". This changes the installation
-directory of the documents and the translation files(*.mo). Now the
-documents are installed in $prefix/share/doc/aria2 and the each
-translation file is named as aria2.mo
+This release includes the AdaptiveURISelector patch from Mandriva
+developers.  The several BitTorrent options were added: limiting the
+number of peers and choosing port randomly from specified range and a
+toggle to seed after successful hash check. Hash checking is now done
+sequentially rather than simultaneously.  HTTP Authorization was also
+refined so that now authorization header is sent to the server only
+when it is requested(there are some exceptions, see Changes
+below). This release also adds experimental built-in HTTP server which
+provides the current download progress in plain html.
 
 Changes
 -------
 
-* Print the contents of torrent/metalink files without -T/-M options.
+* Applied AdaptiveURISelector-timeout patch from Pascal Rigaux at
+  Mandriva. I modified the patch: make RequestGroup have the timeout
+  value and AdaptiveURISelector directly modifies that value.
 
-* Updated French, Japanese, Russian and Ukrainian translations.
-  Thanks to all translators.
+* Use LongestSequencePieceSelector for HTTP/FTP/BitTorrent integrated
+  downloads. This PieceSelector subclass finds the longest continuous
+  sequence in the available missing pieces and selects the last index
+  of such sequence. This makes HTTP/FTP connections less interrupted
+  by the pieces obtained by BitTorrent peers.
 
-* Rename file by appending digits if a local file exists and its file
-  size is larger than that of remote file with --continue option. The
-  old implementation just throws exception in such case.
+* Fixed the bug that the average speed is wrong in http/ftp/BitTorrent
+  integrated download. Only the download bytes in BitTorrent were
+  considered.
 
-* Fixed the bug that download progress summary is not printed in the
-  interval specified by the option.
+* Choose port for BitTorrent/DHT randomly from the specified range.
+  REQUEST#2543518
 
-* Fixed the cookie implementation based on RFC2965.  Now if a value in
-  domain field is not started with dot, then prepend dot. That means a
-  cookie with domain=sf.net is sent to wiki.sf.net.
+* Send HTTP Authorization header only if it is requested by the
+  server(response 401). There are some exceptions. The authorization
+  header for proxy is always sent if it is available without request
+  by the server.  If username/password is specified in the URI, it is
+  immediately sent to the server without request by the server.
+  Implements REQUEST#2540844.
 
-* Fixed the bug that causes corrupted downloads if HTTP pipelining is
-  enabled and the server doesn't support keep-alive.
+* Remove leading "--" from help keyword and a substring after "=" from
+  help keyword, so that one can query options by '-h--max-' or
+  '-hmax-peers=10'.
 
-* Added --max-overall-upload-limit option. This option limits the
-  overall upload speed.  Stated in help message that the existing
-  --max-upload-limit option limits the upload speed per each torrent.
-  Man page is also updated.
+* Added experimental built-in HTTP server. Currently, when a client
+  accesses to the server, it responds with the current download
+  progress. By default, it is disabled. To enable the server, give
+  --enable-http-server option.  To change the default port number for
+  the server to listen to, use --http-server-listen-port option.  The
+  response HTML is very simple and refreshes it self each 1 second.
+  Because of this refresh, you see flicker in normal web browser such
+  as Firefox.  I recommend to use console-based browser such as
+  elinks, w3m.  To connect to the server, run 'elinks
+  http://localhost:6800/' while running aria2. Please replace port
+  number '6800'(which is default) with your preference.
 
-* Fixed the bug that bad URI is sent to the tracker when the announe
-  URI in torrent file includes query.
+* Made (piece) hash check sequential for each RequestGroup because
+  simultaneous hash check is slower than sequential execution.
 
-* Enabled --check-certificate by default.  Added compile
-  time(configure) option --with-ca-bundle to specify CA bundle.  Warn
-  if --check-certificate=true and --ca-certificate is not specified or
-  loading CA certificate is failed.
+* Added --bt-max-peers option to specify the maximum number of peers
+  per torrent. 0 means unlimited number of peers. REQUEST#2451382
 
-* Added "https" tag to help option category.  Added https tag to
-  --ca-certificate, --certificate, --check-certificate and --private-key
-  option.
+* Added --bt-hash-check-seed option.  If true is given to this option,
+  after hash check using --check-integrity option and file is
+  complete, continue to seed file. If you want to check file and
+  download it only when it is damaged or incomplete, set this option
+  to false.  This option has effect only on BitTorrent download.  The
+  default value is true(This is the same behavior with the previous
+  release).
 
-* Changed the package name from "aria2c" to "aria2".  The name of the
-  executable is not changed. This change was done in order to fix the
-  inconsistency of the package name and the install directory since in
-  many distributions the binary package name is "aria2", but the old
-  releases tried to install to "aria2c" directory such as
-  "/usr/local/share/doc/aria2c".
+* Made the max value of split option unlimited. REQUEST#2496748
 
-* Fixed typos in man page.
+* Added --event-poll option to select the method for polling events.
+  The available methods are "select" and "epoll". "epoll" is
+  available on Linux only. The earlier release has the compile
+  option to choose from these methods.
 
-* RFC3986 complied Percent-Encoding(urlencode).  Use uppercase
-  hexadecimal digits for encoded text instead of lowercase ones.
+* Included RecoverableException.h from main.cc. BUG#2498160
 
-* Fixed the bug that -pfalse and -ptrue are not recognized properly.
+* Applied exit-status patch from Pascal Rigaux at Mandriva.  aria2 now
+  returns last error encountered in the HTTP/FTP downloads as a exit
+  status value.  If all downloads finished successfully, aria2 returns
+  0.  The error code is defined in src/DownloadResult.h.  The error
+  occurred in the download currently in progress is not reported as a
+  last error.  If no error has encountered but there are in progress
+  or waiting downloads, aria2 returns 7.
 
-* Fixed the bug that prevents aria2 from downloading 0-length files
-  via HTTP/FTP.
+* Applied AdaptiveURISelector patch from Aurelien Lefebvre.  This
+  patch adds AdaptiveURISelector, which selects one of the bests
+  mirrors for first and reserved connections. For supplementary
+  ones, it returns mirrors which has not been tested yet, and if
+  each of them already tested, returns mirrors which has to be
+  tested again. Otherwise, it doesn't return anymore mirrors.
+
+* Fixed unit test error in HTTPResponseTest. PATCH#2485509
