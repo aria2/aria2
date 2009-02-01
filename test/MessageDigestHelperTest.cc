@@ -1,7 +1,9 @@
 #include "MessageDigestHelper.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Util.h"
 #include "DefaultDiskWriter.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 

@@ -1,10 +1,13 @@
 #include "IteratableChunkChecksumValidator.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "SingleFileDownloadContext.h"
 #include "DefaultPieceStorage.h"
 #include "Option.h"
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "PieceSelector.h"
 
 namespace aria2 {
 
