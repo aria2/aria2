@@ -4,15 +4,17 @@ aria2 1.2.0
 Release Note
 ------------
 
-This release includes the AdaptiveURISelector patch from Mandriva
-developers.  The several BitTorrent options were added: limiting the
+This release adds the AdaptiveURISelector from Mandriva
+developers. The several BitTorrent options were added: limiting the
 number of peers and choosing port randomly from specified range and a
 toggle to seed after successful hash check. Hash checking is now done
 sequentially rather than simultaneously.  HTTP Authorization was also
 refined so that now authorization header is sent to the server only
 when it is requested(there are some exceptions, see Changes
-below). This release also adds experimental built-in HTTP server which
-provides the current download progress in plain html.
+below). aria2 now returns exit code depending on the last error. All
+exit codes are documented in man page.  This release also adds
+experimental built-in HTTP server which provides the current download
+progress in plain html.
 
 Changes
 -------
