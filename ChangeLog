@@ -1,3 +1,8 @@
+2009-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed TEXT_HTTP_SERVER_LISTEN_PORT from translation texts.
+	* src/usage_text.h
+
 2009-02-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated doc for --uri-selector, --http-server-listen-port and

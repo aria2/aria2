@@ -463,8 +463,8 @@ _(" --use-head[=true|false]      Use HEAD method for the first request to the HT
 #define TEXT_EVENT_POLL \
 _(" --event-poll=POLL            Specify the method for polling events.")
 #define TEXT_HTTP_SERVER_LISTEN_PORT \
-_(" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"\
-  "                              Server to listen to.")
+  " --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"\
+  "                              Server to listen to."
 // Excluded from translation candidiates because it is subject to change.
 #define TEXT_ENABLE_HTTP_SERVER \
   " --enable-http-server[=true|false] Enable the built-in HTTP server. Currently,\n"\
