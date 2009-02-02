@@ -209,7 +209,7 @@ Set timeout in seconds\&. Default:
 .PP
 \fB\-\-uri\-selector\fR=SELECTOR
 .RS 4
-Specify URI selection algorithm\&. Possible values are
+Specify URI selection algorithm\&. The possible values are
 \fIinorder\fR,
 \fIfeedback\fR
 and
@@ -735,8 +735,20 @@ Enable directI/O, which lowers cpu usage while allocating/checking files\&. Turn
 .PP
 \fB\-\-enable\-http\-server\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
-Enable the built\-in HTTP server\&. Currently, this is the experimental feature and it just provides the current download progress\&. Use your web browser(console\-based ones, such as elinks, w3m, are recommended) to connect the server and see what\'s what\&. Default:
+Enable the built\-in HTTP server\&. Currently, this is the experimental feature and it just provides the current download progress\&. Use your web browser(console\-based ones, such as elinks, w3m, are recommended) to connect the server and see what\'s what\&. See also
+\fB\-\-http\-server\-listen\-port\fR
+option\&. Default:
 \fIfalse\fR
+.RE
+.PP
+\fB\-\-event\-poll\fR=POLL
+.RS 4
+Specify the method for polling events\&. The possible Values are
+\fIepoll\fR
+and
+\fIselect\fR\&. If you use recent Linux that has epoll, then the default value is
+\fIepoll\fR\&. Otherwise, the default value is
+\fIselect\fR\&.
 .RE
 .PP
 \fB\-\-file\-allocation\fR=METHOD
@@ -787,9 +799,10 @@ Fetch URIs in the command\-line sequentially and download each URI in a separate
 .PP
 \fB\-\-http\-server\-listen\-port\fR=PORT
 .RS 4
-Specify a port number for the built\-in HTTP Server to listen to\&. Possible Values:
-\fI1024\fR\-\fI65535\fR
-Default:
+Specify a port number for the built\-in HTTP Server to listen to\&. See also
+\fB\-\-enable\-http\-server\fR
+option\&. The possible Values are
+\fI1024\fR\-\fI65535\fR\&. Default:
 \fI6800\fR
 .RE
 .PP

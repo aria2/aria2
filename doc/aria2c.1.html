@@ -642,7 +642,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </dt>
 <dd>
 <p>
-  Specify URI selection algorithm. Possible values are <em>inorder</em>,
+  Specify URI selection algorithm. The possible values are <em>inorder</em>,
   <em>feedback</em> and <em>adaptive</em>.  If <em>inorder</em> is given, URI is tried in
   the order appeared in the URI list.  If <em>feedback</em> is given, aria2
   uses download speed observed in the previous downloads and choose
@@ -1368,8 +1368,20 @@ writes the piece to the appropriate files.</td>
 <p>
   Enable the built-in HTTP server. Currently, this is the experimental
   feature and it just provides the current download progress. Use your
-  web browser(console-based ones, such as elinks, w3m, are recommended)
-  to connect the server and see what's what.  Default: <em>false</em>
+  web browser(console-based ones, such as elinks, w3m, are
+  recommended) to connect the server and see what's what.  See also
+  <strong>--http-server-listen-port</strong> option.  Default: <em>false</em>
+</p>
+</dd>
+<dt>
+<strong>--event-poll</strong>=POLL
+</dt>
+<dd>
+<p>
+  Specify the method for polling events.  The possible Values are
+  <em>epoll</em> and <em>select</em>. If you use recent Linux that has epoll, then
+  the default value is <em>epoll</em>.  Otherwise, the default value is
+  <em>select</em>.
 </p>
 </dd>
 <dt>
@@ -1431,7 +1443,8 @@ are also allocated if they share the same piece.</td>
 <dd>
 <p>
   Specify a port number for the built-in HTTP Server to listen to.
-  Possible Values: <em>1024</em>-<em>65535</em> Default: <em>6800</em>
+  See also <strong>--enable-http-server</strong> option.  The possible Values are
+  <em>1024</em>-<em>65535</em>. Default: <em>6800</em>
 </p>
 </dd>
 <dt>
@@ -2199,7 +2212,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-02 23:15:57 JST
+Last updated 2009-02-02 23:28:51 JST
 </div>
 </div>
 </body>

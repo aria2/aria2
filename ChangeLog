@@ -1,5 +1,11 @@
 2009-02-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc for --uri-selector, --http-server-listen-port and
+	--enable-http-server option. Documented --event-poll option.	
+	* doc/aria2c.1.txt
+	
+2009-02-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc for --enable-http-server.
 	* src/usage_text.h
 

@@ -156,7 +156,7 @@ aria2c -o myfile.zip \http://mirror1/file.zip \http://mirror2/file.zip
   Default: '60'
 
 *--uri-selector*=SELECTOR::
-  Specify URI selection algorithm. Possible values are 'inorder',
+  Specify URI selection algorithm. The possible values are 'inorder',
   'feedback' and 'adaptive'.  If 'inorder' is given, URI is tried in
   the order appeared in the URI list.  If 'feedback' is given, aria2
   uses download speed observed in the previous downloads and choose
@@ -530,8 +530,15 @@ Advanced Options
 *--enable-http-server*[='true'|'false']::
   Enable the built-in HTTP server. Currently, this is the experimental
   feature and it just provides the current download progress. Use your
-  web browser(console-based ones, such as elinks, w3m, are recommended)
-  to connect the server and see what's what.  Default: 'false'
+  web browser(console-based ones, such as elinks, w3m, are
+  recommended) to connect the server and see what's what.  See also
+  *--http-server-listen-port* option.  Default: 'false'
+
+*--event-poll*=POLL::
+  Specify the method for polling events.  The possible Values are
+  'epoll' and 'select'. If you use recent Linux that has epoll, then
+  the default value is 'epoll'.  Otherwise, the default value is
+  'select'.
 
 *--file-allocation*=METHOD::
   Specify file allocation method. METHOD is either 'none' or 'prealloc'.
@@ -561,7 +568,8 @@ are also allocated if they share the same piece.
 
 *--http-server-listen-port*=PORT::
   Specify a port number for the built-in HTTP Server to listen to.
-  Possible Values: '1024'-'65535' Default: '6800'
+  See also *--enable-http-server* option.  The possible Values are
+  '1024'-'65535'. Default: '6800'
 
 *--max-download-limit*=SPEED::
    Set max download speed in bytes per sec. '0' means unrestricted.
