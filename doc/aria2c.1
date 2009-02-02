@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 01/19/2009
+.\"      Date: 02/02/2009
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "01/19/2009" "" ""
+.TH "ARIA2C" "1" "02/02/2009" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -733,6 +733,12 @@ Enable directI/O, which lowers cpu usage while allocating/checking files\&. Turn
 \fItrue\fR
 .RE
 .PP
+\fB\-\-enable\-http\-server\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable the built\-in HTTP server\&. Currently, this is the experimental feature and it just provides the current download progress\&. Use your web browser(console\-based ones, such as elinks, w3m, are recommended) to connect the server and see what\'s what\&. Default:
+\fIfalse\fR
+.RE
+.PP
 \fB\-\-file\-allocation\fR=METHOD
 .RS 4
 Specify file allocation method\&. METHOD is either
@@ -777,6 +783,14 @@ In multi file torrent downloads, the files adjacent forward to the specified fil
 .RS 4
 Fetch URIs in the command\-line sequentially and download each URI in a separate session, like the usual command\-line download utilities\&. Default:
 \fIfalse\fR
+.RE
+.PP
+\fB\-\-http\-server\-listen\-port\fR=PORT
+.RS 4
+Specify a port number for the built\-in HTTP Server to listen to\&. Possible Values:
+\fI1024\fR\-\fI65535\fR
+Default:
+\fI6800\fR
 .RE
 .PP
 \fB\-\-max\-download\-limit\fR=SPEED

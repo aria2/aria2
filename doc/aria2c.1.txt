@@ -526,6 +526,13 @@ Advanced Options
   Turn off if you encounter any error.
   Default: 'true'
 
+
+*--enable-http-server*[='true'|'false']::
+  Enable the built-in HTTP server. Currently, this is the experimental
+  feature and it just provides the current download progress. Use your
+  web browser(console-based ones, such as elinks, w3m, are recommended)
+  to connect the server and see what's what.  Default: 'false'
+
 *--file-allocation*=METHOD::
   Specify file allocation method. METHOD is either 'none' or 'prealloc'.
   'none' doesn't pre-allocate file space. 'prealloc' pre-allocates file space
@@ -551,6 +558,10 @@ are also allocated if they share the same piece.
   Fetch URIs in the command-line sequentially and download each URI in a
   separate session, like the usual command-line download utilities.
   Default: 'false'
+
+*--http-server-listen-port*=PORT::
+  Specify a port number for the built-in HTTP Server to listen to.
+  Possible Values: '1024'-'65535' Default: '6800'
 
 *--max-download-limit*=SPEED::
    Set max download speed in bytes per sec. '0' means unrestricted.
