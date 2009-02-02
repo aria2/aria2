@@ -470,7 +470,7 @@ _(" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n
   " --enable-http-server[=true|false] Enable the built-in HTTP server. Currently,\n"\
   "                              this is the experimental feature and it just\n"\
   "                              provides the current download progress. Use your\n"\
-  "                              web browser(recommend to use console-based one,\n"\
-  "                              such as elinks, w3m) to connect the server and see\n"\
-  "                              what's what."
+  "                              web browser(console-based ones, such as elinks,\n"\
+  "                              w3m, are recommended) to connect the server and\n"\
+  "                              see what's what."
 
