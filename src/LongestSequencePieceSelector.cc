@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "LongestSequencePieceSelector.h"
+#include "a2algo.h"
 
 namespace aria2 {
 
@@ -40,30 +41,12 @@ bool LongestSequencePieceSelector::select
 (size_t& index,
  const std::deque<size_t>& candidateIndexes) const
 {
-  size_t maxlen = 0;
-  size_t maxfirst = 0;
-  size_t i = 0;
-  size_t lenA = candidateIndexes.size();
-
-  while(i < lenA) {
-    size_t first = i;
-    size_t len = 1;
-    size_t prev = first;
-    ++i;
-    while(i < lenA && candidateIndexes[prev]+1 == candidateIndexes[i]) {
-      ++len;
-      prev = i;
-      ++i;
-    }
-    if(maxlen < len) {
-      maxlen = len;
-      maxfirst = first;
-    }
-  } 
-  if(maxlen == 0) {
+  std::pair<std::deque<size_t>::const_iterator, size_t> p = 
+    max_sequence(candidateIndexes.begin(), candidateIndexes.end());
+  if(p.second == 0) {
     return false;
   } else {
-    index = candidateIndexes[maxfirst+maxlen-1];
+    index = *(p.first)+p.second-1;
     return true;
   }
 }

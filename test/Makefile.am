@@ -67,7 +67,8 @@ aria2c_SOURCES = AllTest.cc\
 	BencodeTest.cc\
 	SequentialPickerTest.cc\
 	RarestPieceSelectorTest.cc\
-	LongestSequencePieceSelectorTest.cc
+	LongestSequencePieceSelectorTest.cc\
+	a2algoTest.cc
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc

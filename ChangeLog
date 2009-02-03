@@ -1,5 +1,14 @@
 2009-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Extracted the algorithm to find the longest incremental sequence
+	as max_sequence template.
+	* src/LongestSequencePieceSelector.cc
+	* src/a2algo.h
+	* test/Makefile.am
+	* test/a2algoTest.cc
+
+2009-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed TEXT_HTTP_SERVER_LISTEN_PORT from translation texts.
 	* src/usage_text.h
 

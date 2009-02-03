@@ -50,6 +50,40 @@ OutputIterator ncopy(InputIterator first, InputIterator last,
   return x;
 }
 
+// Find the longest incremental sequence(such as 5,6,7,8,9) in the
+// range [first, last) and returns the pair of the iterator points the
+// first element of the sequence and the length of the sequence.  The
+// incremental sequence is such that value[i]+1 == value[j] for i,j
+// that satisfy i+1=j in a range.
+//
+// For example, the longest incremental sequence in {
+// 1,2,3,4,7,10,11,12,13,14,15,100,112,113,114} is
+// {10,11,12,13,14,15}.  Therefore, returns the iterator points to 10
+// and the length 6.
+template<typename InputIterator>
+std::pair<InputIterator, size_t> max_sequence(InputIterator first,
+					      InputIterator last)
+{
+  InputIterator maxfirst = last;
+  size_t maxlen = 0;
+  while(first != last) {
+    InputIterator seqfirst = first;
+    size_t len = 1;
+    InputIterator prev = seqfirst;
+    ++first;
+    while(first != last && *prev+1 == *first) {
+      ++len;
+      prev = first;
+      ++first;
+    }
+    if(maxlen < len) {
+      maxlen = len;
+      maxfirst = seqfirst;
+    }
+  }
+  return std::pair<InputIterator, size_t>(maxfirst, maxlen);
+}
+
 } // namespace aria2
 
 #endif // _D_A2_ALGO_H_
