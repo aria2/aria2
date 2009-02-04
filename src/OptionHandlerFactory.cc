@@ -727,6 +727,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   // BitTorrent Specific Options
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_BT_EXTERNAL_IP,
+				    TEXT_BT_EXTERNAL_IP,
+				    NO_DEFAULT_VALUE,
+				    "a numeric IP address"));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
 				   (PREF_BT_KEEP_ALIVE_INTERVAL,
 				    NO_DESCRIPTION,

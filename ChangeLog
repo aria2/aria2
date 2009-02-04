@@ -1,3 +1,16 @@
+2009-02-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --bt-external-ip option. You can specify the external IP
+	address to report to a BitTorrent tracker. Although this function
+	is named 'external', it can accept any kind of IP addresses.
+	* src/DefaultBtAnnounce.cc
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DefaultBtAnnounceTest.cc
+
 2009-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Extracted the algorithm to find the longest incremental sequence

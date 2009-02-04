@@ -277,6 +277,8 @@ const std::string PREF_BT_SEED_UNVERIFIED("bt-seed-unverified");
 const std::string PREF_BT_HASH_CHECK_SEED("bt-hash-check-seed");
 // values: 1*digit
 const std::string PREF_BT_MAX_PEERS("bt-max-peers");
+// values: a string (IP address)
+const std::string PREF_BT_EXTERNAL_IP("bt-external-ip");
 
 /**
  * Metalink related preferences

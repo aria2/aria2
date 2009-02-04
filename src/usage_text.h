@@ -473,4 +473,8 @@ _(" --event-poll=POLL            Specify the method for polling events.")
   "                              web browser(console-based ones, such as elinks,\n"\
   "                              w3m, are recommended) to connect the server and\n"\
   "                              see what's what."
-
+#define TEXT_BT_EXTERNAL_IP \
+_(" --bt-external-ip=IPADDRESS   Specify the external IP address to report to a\n"\
+  "                              BitTorrent tracker. Although this function is\n"\
+  "                              named 'external', it can accept any kind of IP\n"\
+  "                              addresses.")

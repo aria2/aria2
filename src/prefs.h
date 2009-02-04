@@ -281,6 +281,8 @@ extern const std::string PREF_BT_SEED_UNVERIFIED;
 extern const std::string PREF_BT_HASH_CHECK_SEED;
 // values: 1*digit
 extern const std::string PREF_BT_MAX_PEERS;
+// values: a string (IP address)
+extern const std::string PREF_BT_EXTERNAL_IP;
 
 /**
  * Metalink related preferences

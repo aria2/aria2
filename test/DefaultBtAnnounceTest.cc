@@ -15,6 +15,7 @@
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"
 #include "FileEntry.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -23,6 +24,7 @@ class DefaultBtAnnounceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(DefaultBtAnnounceTest);
   CPPUNIT_TEST(testGetAnnounceUrl);
   CPPUNIT_TEST(testGetAnnounceUrl_withQuery);
+  CPPUNIT_TEST(testGetAnnounceUrl_externalIP);
   CPPUNIT_TEST(testNoMoreAnnounce);
   CPPUNIT_TEST(testIsAllAnnounceFailed);
   CPPUNIT_TEST(testURLOrderInStoppedEvent);
@@ -79,6 +81,7 @@ public:
 
   void testGetAnnounceUrl();
   void testGetAnnounceUrl_withQuery();
+  void testGetAnnounceUrl_externalIP();
   void testNoMoreAnnounce();
   void testIsAllAnnounceFailed();
   void testURLOrderInStoppedEvent();
@@ -207,6 +210,33 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
 		 "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
 		 "key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started&"
 		 "supportcrypto=1"),
+     btAnnounce.getAnnounceUrl());
+}
+
+void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
+{
+  std::string trackerURI = "http://localhost/announce";
+  std::deque<std::string> uris;
+  uris.push_back(trackerURI);
+  SharedHandle<AnnounceTier> announceTier(new AnnounceTier(uris));
+
+  _btContext->addAnnounceTier(announceTier);
+
+  _option->put(PREF_BT_EXTERNAL_IP, "192.168.1.1");
+  DefaultBtAnnounce btAnnounce(_btContext, _option);
+  btAnnounce.setPieceStorage(_pieceStorage);
+  btAnnounce.setPeerStorage(_peerStorage);
+  btAnnounce.setBtRuntime(_btRuntime);
+  btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.generateKey();
+
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("http://localhost/announce?"
+		 "info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&"
+		 "peer_id=%2Daria2%2Dultrafastdltl&"
+		 "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
+		 "key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started&"
+		 "supportcrypto=1&ip=192.168.1.1"),
      btAnnounce.getAnnounceUrl());
 }
 
