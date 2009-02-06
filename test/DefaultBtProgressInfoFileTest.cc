@@ -26,11 +26,15 @@ class DefaultBtProgressInfoFileTest:public CppUnit::TestFixture {
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testSave);
   CPPUNIT_TEST(testLoad);
+#ifndef WORDS_BIGENDIAN
   CPPUNIT_TEST(testLoad_compat);
+#endif // !WORDS_BIGENDIAN
 #endif // ENABLE_BITTORRENT
   CPPUNIT_TEST(testSave_nonBt);
   CPPUNIT_TEST(testLoad_nonBt);
+#ifndef WORDS_BIGENDIAN
   CPPUNIT_TEST(testLoad_nonBt_compat);
+#endif // !WORDS_BIGENDIAN
   CPPUNIT_TEST(testLoad_nonBt_pieceLengthShorter);
   CPPUNIT_TEST(testUpdateFilename);
   CPPUNIT_TEST_SUITE_END();
@@ -74,11 +78,15 @@ public:
 #ifdef ENABLE_BITTORRENT
   void testSave();
   void testLoad();
+#ifndef WORDS_BIGENDIAN
   void testLoad_compat();
+#endif // !WORDS_BIGENDIAN
 #endif // ENABLE_BITTORRENT
   void testSave_nonBt();
   void testLoad_nonBt();
+#ifndef WORDS_BIGENDIAN
   void testLoad_nonBt_compat();
+#endif // !WORDS_BIGENDIAN
   void testLoad_nonBt_pieceLengthShorter();
   void testUpdateFilename();
 };

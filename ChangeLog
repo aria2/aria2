@@ -1,3 +1,11 @@
+2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error when HAVE_EPOLL is not defined.
+	Fixed linker error on bigendian systems.
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* test/DefaultBtProgressInfoFileTest.cc
+
 2009-02-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --bt-external-ip option. You can specify the external IP

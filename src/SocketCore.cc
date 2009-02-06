@@ -1062,11 +1062,11 @@ void SocketCore::useEpoll()
 {
   _pollMethod = SocketCore::POLL_METHOD_EPOLL;
 }
+#endif // HAVE_EPOLL
 
 void SocketCore::useSelect()
 {
   _pollMethod = SocketCore::POLL_METHOD_SELECT;
 }
-#endif // HAVE_EPOLL
 
 } // namespace aria2

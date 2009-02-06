@@ -82,14 +82,13 @@ private:
 
   struct epoll_event _epEvent;
 
+#endif // HAVE_EPOLL
+
   enum PollMethod {
     POLL_METHOD_EPOLL, POLL_METHOD_SELECT
   };
 
   static PollMethod _pollMethod;
-
-#endif // HAVE_EPOLL
-
 
   bool blocking;
   int secure;
