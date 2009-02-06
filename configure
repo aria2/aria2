@@ -20981,7 +20981,8 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
   fi
-   if test "x$have_epoll" = "xyes"; then
+fi
+ if test "x$have_epoll" = "xyes"; then
   HAVE_EPOLL_TRUE=
   HAVE_EPOLL_FALSE='#'
 else
@@ -20989,7 +20990,6 @@ else
   HAVE_EPOLL_FALSE=
 fi
 
-fi
 
 
 for ac_func in asctime_r

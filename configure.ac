@@ -289,8 +289,8 @@ if test "x$enable_epoll" = "xyes"; then
   if test "x$have_epoll" = "xyes"; then
     AC_DEFINE([HAVE_EPOLL], [1], [Define to 1 if epoll is available.])
   fi
-  AM_CONDITIONAL([HAVE_EPOLL], [test "x$have_epoll" = "xyes"])
 fi
+AM_CONDITIONAL([HAVE_EPOLL], [test "x$have_epoll" = "xyes"])
 
 AC_CHECK_FUNCS([asctime_r],
 	[AM_CONDITIONAL([HAVE_ASCTIME_R], true)],
