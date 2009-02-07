@@ -202,7 +202,7 @@ void SelectEventPoll::AsyncNameResolverEntry::process
 
 #endif // ENABLE_ASYNC_DNS
 
-SelectEventPoll::SelectEventPoll()
+SelectEventPoll::SelectEventPoll():_logger(LogFactory::getInstance())
 {
   updateFdSet();
 }
