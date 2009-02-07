@@ -80,6 +80,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 				  proxyRequest->getPort());
       
       if(proxyMethod == V_GET) {
+	// Use GET for FTP via HTTP proxy.
+	req->setMethod(Request::METHOD_GET);
 	SharedHandle<HttpConnection> hc
 	  (new HttpConnection(cuid, socket, e->option));
 	
@@ -101,6 +103,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 				    FtpNegotiationCommand::SEQ_SEND_CWD,
 				    options["baseWorkingDir"]);
       } else if(proxyMethod == V_GET) {
+	// Use GET for FTP via HTTP proxy.
+	req->setMethod(Request::METHOD_GET);
 	SharedHandle<HttpConnection> hc
 	  (new HttpConnection(cuid, pooledSocket, e->option));
 	
