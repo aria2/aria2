@@ -116,8 +116,7 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
   }
 
   if(keyword == TAG_BASIC) {
-    std::cout << "\n"
-	      << "URL, TORRENT_FILE, METALINK_FILE:" << "\n"
+    std::cout << "URL, TORRENT_FILE, METALINK_FILE:" << "\n"
 	      << _(" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 		   " point to the same file or downloading will fail.") << "\n"
 	      << _(" You can also specify arbitrary number of torrent files and metalink files\n"
@@ -131,10 +130,10 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
 		   " only single file torrent can be integrated with http/ftp.") << "\n"
 	      << "\n"
 	      << _(" Make sure that URL is quoted with single(\') or double(\") quotation if it\n"
-		   " contains \"&\" or any characters that have special meaning in shell.") << "\n";
+		   " contains \"&\" or any characters that have special meaning in shell.") << "\n"
+	      << "\n";
   }
-  std::cout << "\n"
-	    << _("Refer to man page for more information.") << std::endl;
+  std::cout << _("Refer to man page for more information.") << std::endl;
 }
 
 } // namespace aria2
