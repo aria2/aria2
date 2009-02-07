@@ -167,7 +167,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   } else {
     url += "&supportcrypto=1";
   }
-  if(option->defined(PREF_BT_EXTERNAL_IP)) {
+  if(!option->blank(PREF_BT_EXTERNAL_IP)) {
     url += "&ip="+option->get(PREF_BT_EXTERNAL_IP);
   }
   return url;
