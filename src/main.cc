@@ -157,32 +157,34 @@ static void showFiles(const std::deque<std::string>& uris, const Option* op)
 }
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
-extern Option* option_processing(int argc, char* const argv[]);
+extern void option_processing(Option& option, std::deque<std::string>& uris,
+			      int argc, char* const argv[]);
 
 DownloadResult::RESULT main(int argc, char* argv[])
 {
-  Option* op = option_processing(argc, argv);
-  std::deque<std::string> args(argv+optind, argv+argc);
+  std::deque<std::string> args;
+  Option op;
+  option_processing(op, args, argc, argv);
 
   SimpleRandomizer::init();
   BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
-  if(op->get(PREF_LOG) == "-") {
+  if(op.get(PREF_LOG) == "-") {
     LogFactory::setLogFile(DEV_STDOUT);
-  } else if(!op->get(PREF_LOG).empty()) {
-    LogFactory::setLogFile(op->get(PREF_LOG));
+  } else if(!op.get(PREF_LOG).empty()) {
+    LogFactory::setLogFile(op.get(PREF_LOG));
   } else {
     LogFactory::setLogFile(DEV_NULL);
   }
-  LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
-  if(op->getAsBool(PREF_QUIET)) {
+  LogFactory::setLogLevel(op.get(PREF_LOG_LEVEL));
+  if(op.getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }
 #ifdef HAVE_EPOLL
-  if(op->get(PREF_EVENT_POLL) == V_EPOLL) {
+  if(op.get(PREF_EVENT_POLL) == V_EPOLL) {
     SocketCore::useEpoll();
   } else
 #endif // HAVE_EPOLL
-    if(op->get(PREF_EVENT_POLL) == V_SELECT) {
+    if(op.get(PREF_EVENT_POLL) == V_SELECT) {
       SocketCore::useSelect();
     }
   DownloadResult::RESULT exitStatus = DownloadResult::FINISHED;
@@ -203,48 +205,47 @@ DownloadResult::RESULT main(int argc, char* argv[])
 #endif
     std::deque<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT
-    if(!op->blank(PREF_TORRENT_FILE)) {
-      if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	showTorrentFile(op->get(PREF_TORRENT_FILE));
+    if(!op.blank(PREF_TORRENT_FILE)) {
+      if(op.get(PREF_SHOW_FILES) == V_TRUE) {
+	showTorrentFile(op.get(PREF_TORRENT_FILE));
 	return exitStatus;
       } else {
-	createRequestGroupForBitTorrent(requestGroups, op, args);
+	createRequestGroupForBitTorrent(requestGroups, &op, args);
       }
     }
     else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-      if(!op->blank(PREF_METALINK_FILE)) {
-	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	  showMetalinkFile(op->get(PREF_METALINK_FILE), op);
+      if(!op.blank(PREF_METALINK_FILE)) {
+	if(op.get(PREF_SHOW_FILES) == V_TRUE) {
+	  showMetalinkFile(op.get(PREF_METALINK_FILE), &op);
 	  return exitStatus;
 	} else {
-	  createRequestGroupForMetalink(requestGroups, op);
+	  createRequestGroupForMetalink(requestGroups, &op);
 	}
       }
       else
 #endif // ENABLE_METALINK
-	if(!op->blank(PREF_INPUT_FILE)) {
-	  createRequestGroupForUriList(requestGroups, op);
+	if(!op.blank(PREF_INPUT_FILE)) {
+	  createRequestGroupForUriList(requestGroups, &op);
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
-	} else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	  showFiles(args, op);
+	} else if(op.get(PREF_SHOW_FILES) == V_TRUE) {
+	  showFiles(args, &op);
 #endif // ENABLE_METALINK || ENABLE_METALINK
 	} else {
-	  createRequestGroupForUri(requestGroups, op, args);
+	  createRequestGroupForUri(requestGroups, &op, args);
 	}
 
     if(requestGroups.empty()) {
       std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
     } else {
-      exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
-				       getSummaryOut(op)).execute();
+      exitStatus = MultiUrlRequestInfo(requestGroups, &op, getStatCalc(&op),
+				       getSummaryOut(&op)).execute();
     }
   } catch(Exception& ex) {
     std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
     exitStatus = DownloadResult::UNKNOWN_ERROR;
   }
-  delete op;
   LogFactory::release();
   return exitStatus;
 }

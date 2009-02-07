@@ -215,6 +215,43 @@ size_t arrayLength(T (&a)[0u])
   return 0;
 }
 
+template<typename T>
+class array_ptr {
+private:
+  T* _array;
+
+  // Copies are not allowed. Let's make them private.
+  array_ptr(const array_ptr& s);
+
+  template<typename S>
+  array_ptr(const array_ptr<S>& s);
+
+  array_ptr& operator=(const array_ptr& s);
+
+  template<typename S>
+  array_ptr& operator=(const array_ptr<S>& s);
+
+public:
+  array_ptr():_array(0) {}
+
+  explicit array_ptr(T* array):_array(array) {}
+
+  ~array_ptr()
+  {
+    delete [] _array;
+  }
+
+  T& operator[](size_t index)
+  {
+    return _array[index];
+  }
+
+  const T& operator[](size_t index) const
+  {
+    return _array[index];
+  }
+};
+
 } // namespace aria2
 
 #endif // _D_ARRAY_FUN_H_

@@ -36,10 +36,12 @@
 #define _D_OPTION_HANDLER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
 #include <iosfwd>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -50,7 +52,7 @@ public:
   virtual ~OptionHandler() {}
   
   virtual bool canHandle(const std::string& optName) = 0;
-  virtual void parse(Option* option, const std::string& arg) = 0;
+  virtual void parse(Option& option, const std::string& arg) = 0;
 
   virtual std::string createPossibleValuesString() const = 0;
 
@@ -67,6 +69,20 @@ public:
   virtual const std::string& getDefaultValue() const = 0;
 
   virtual bool isHidden() const = 0;
+
+  enum ARG_TYPE {
+    REQ_ARG,
+    OPT_ARG,
+    NO_ARG
+  };
+
+  virtual ARG_TYPE getArgType() const = 0;
+
+  virtual char getShortName() const = 0;
+
+  virtual int getOptionID() const = 0;
+
+  virtual void setOptionID(int id) = 0;
 };
 
 typedef SharedHandle<OptionHandler> OptionHandlerHandle;

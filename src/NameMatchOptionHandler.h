@@ -36,13 +36,16 @@
 #define _D_NAME_MATCH_OPTION_HANDLER_H_
 
 #include "OptionHandler.h"
-#include "A2STR.h"
-#include "Util.h"
-#include "OptionHandlerException.h"
+
 #include <strings.h>
+
 #include <algorithm>
 #include <sstream>
 #include <iterator>
+
+#include "A2STR.h"
+#include "Util.h"
+#include "OptionHandlerException.h"
 
 #define NO_DESCRIPTION A2STR::NIL
 #define NO_DEFAULT_VALUE A2STR::NIL
@@ -59,20 +62,30 @@ protected:
 
   std::string _defaultValue;
 
-  bool _hidden;
-
   std::deque<std::string> _tags;
 
-  virtual void parseArg(Option* option, const std::string& arg) = 0;
+  int _id;
+
+  OptionHandler::ARG_TYPE _argType;
+
+  char _shortName;
+
+  bool _hidden;
+
+  virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
   NameMatchOptionHandler(const std::string& optName,
 			 const std::string& description = NO_DESCRIPTION,
 			 const std::string& defaultValue = NO_DEFAULT_VALUE,
-			 bool hidden = false):
+			 ARG_TYPE argType = REQ_ARG,
+			 char shortName = 0):
     _optName(optName),
     _description(description),
     _defaultValue(defaultValue),
-    _hidden(hidden) {}
+    _id(0),
+    _argType(argType),
+    _shortName(shortName),
+    _hidden(false) {}
 
   virtual ~NameMatchOptionHandler() {}
   
@@ -81,7 +94,7 @@ public:
     return strcasecmp(_optName.c_str(), optName.c_str()) == 0;
   }
 
-  virtual void parse(Option* option, const std::string& arg)
+  virtual void parse(Option& option, const std::string& arg)
   {
     try {
       parseArg(option, arg);
@@ -128,6 +141,30 @@ public:
     return _hidden;
   }
 
+  void hide()
+  {
+    _hidden = true;
+  }
+
+  virtual char getShortName() const
+  {
+    return _shortName;
+  }
+
+  virtual int getOptionID() const
+  {
+    return _id;
+  }
+
+  virtual void setOptionID(int id)
+  {
+    _id = id;
+  }
+
+  virtual OptionHandler::ARG_TYPE getArgType() const
+  {
+    return _argType;
+  }
 };
 
 typedef SharedHandle<NameMatchOptionHandler> NameMatchOptionHandlerHandle;

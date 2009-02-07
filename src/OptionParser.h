@@ -36,10 +36,12 @@
 #define _D_OPTION_PARSER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
 #include <iosfwd>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -48,16 +50,26 @@ class OptionHandler;
 
 class OptionParser {
 private:
+  int _idCounter;
+
   std::deque<SharedHandle<OptionHandler> > _optionHandlers;
 
   SharedHandle<OptionHandler>
   getOptionHandlerByName(const std::string& optName);
 public:
+  OptionParser();
+
   ~OptionParser() {}
 
-  void parse(Option* option, std::istream& ios);
+  // Parses options in argv and writes option name and value to out in
+  // NAME=VALUE format. Non-option strings are stored in nonopts.
+  // Throws FatalException when an unrecognized option is found.
+  void parseArg(std::ostream& out, std::deque<std::string>& nonopts,
+		int argc, char* const argv[]);
 
-  void parseDefaultValues(Option* option) const;
+  void parse(Option& option, std::istream& ios);
+
+  void parseDefaultValues(Option& option) const;
 
   void setOptionHandlers
   (const std::deque<SharedHandle<OptionHandler> >& optionHandlers);
@@ -74,6 +86,10 @@ public:
 
   SharedHandle<OptionHandler>
   findByName(const std::string& name) const;
+
+  SharedHandle<OptionHandler> findByID(int id) const;
+
+  SharedHandle<OptionHandler> findByShortName(char shortName) const;
 
   const std::deque<SharedHandle<OptionHandler> >& getOptionHandlers() const;
 };

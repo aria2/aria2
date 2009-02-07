@@ -1,5 +1,23 @@
 2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added OptionParser::parseArg() which internally uses getopt_long
+	to parse command-line options. All command-line options are now
+	configured by OptionHandler. No manual editing of struct option*
+	is required any more.
+	* src/NameMatchOptionHandler.h
+	* src/OptionHandler.h
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/OptionParser.cc
+	* src/OptionParser.h
+	* src/array_fun.h
+	* src/main.cc
+	* src/option_processing.cc
+	* test/OptionHandlerTest.cc
+	* test/OptionParserTest.cc
+	
+2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed configure error with --disable-epoll
 	* configure.ac
 	
