@@ -1,5 +1,10 @@
 2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Print tags, possible values when OptionHandlerException is caught.
+	* src/option_processing.cc
+	
+2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed the message for FatalException.
 	* src/OptionParser.cc
 	

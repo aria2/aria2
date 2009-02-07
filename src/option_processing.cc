@@ -164,7 +164,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
   } catch(OptionHandlerException& e) {
     std::cerr << e.stackTrace() << "\n"
 	      << "Usage:" << "\n"
-	      << oparser.findByName(e.getOptionName())->getDescription()
+	      << oparser.findByName(e.getOptionName())
 	      << std::endl;
     exit(DownloadResult::UNKNOWN_ERROR);
   } catch(Exception& e) {
