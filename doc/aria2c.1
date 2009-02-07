@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 02/02/2009
+.\"      Date: 02/07/2009
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "02/02/2009" "" ""
+.TH "ARIA2C" "1" "02/07/2009" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -150,8 +150,10 @@ Set the method to use in proxy request\&.
 is either
 \fIget\fR
 or
-\fItunnel\fR\&. Default:
+\fItunnel\fR\&. HTTPS downloads always use
 \fItunnel\fR
+regardless of this option\&. Default:
+\fIget\fR
 .RE
 .PP
 \fB\-R\fR, \fB\-\-remote\-time\fR[=\fItrue\fR|\fIfalse\fR]
@@ -409,6 +411,11 @@ In multi file torrent, the adjacent files specified by this option may also be d
 Print file listing of \&.torrent or \&.metalink file and exit\&. In case of \&.torrent file, additional information (infohash, piece length, etc) is also printed\&.
 .RE
 .SS "BitTorrent Specific Options"
+.PP
+\fB\-\-bt\-external\-ip\fR=IPADDRESS
+.RS 4
+Specify the external IP address to report to a BitTorrent tracker\&. Although this function is named "external", it can accept any kind of IP addresses\&. IPADDRESS must be a numeric IP address\&.
+.RE
 .PP
 \fB\-\-bt\-hash\-check\-seed\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4

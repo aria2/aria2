@@ -1,5 +1,11 @@
 2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --bt-external-ip option in man page.  Updated man pages
+	for --proxy-method option.
+	* doc/aria2c.1.txt
+
+2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use GET method for FTP via HTTP proxy.
 	* src/FtpInitiateConnectionCommand.cc
 	

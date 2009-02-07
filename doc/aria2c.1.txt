@@ -110,9 +110,10 @@ are done by command line without *-i*, *-Z* option. For example:
 aria2c -o myfile.zip \http://mirror1/file.zip \http://mirror2/file.zip
 
 *--proxy-method*=METHOD::
-  Set the method to use in proxy request.
-  'METHOD' is either 'get' or 'tunnel'.
-  Default: 'tunnel'
+  Set the method to use in proxy request.  'METHOD' is either 'get' or
+  'tunnel'. HTTPS downloads always use 'tunnel' regardless of this
+  option.
+  Default: 'get'
 
 *-R*, *--remote-time*[='true'|'false']::
   Retrieve timestamp of the remote file from the remote HTTP/FTP
@@ -301,6 +302,11 @@ writes the piece to the appropriate files.
 
 BitTorrent Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*--bt-external-ip*=IPADDRESS::
+  Specify the external IP address to report to a BitTorrent
+  tracker. Although this function is named "external", it can accept
+  any kind of IP addresses. IPADDRESS must be a numeric IP address.
+
 *--bt-hash-check-seed*[='true'|'false']::
  If 'true' is given, after hash check using *--check-integrity* option and
  file is complete, continue to seed file. If you want to check file

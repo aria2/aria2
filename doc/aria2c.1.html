@@ -556,9 +556,10 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </dt>
 <dd>
 <p>
-  Set the method to use in proxy request.
-  <em>METHOD</em> is either <em>get</em> or <em>tunnel</em>.
-  Default: <em>tunnel</em>
+  Set the method to use in proxy request.  <em>METHOD</em> is either <em>get</em> or
+  <em>tunnel</em>. HTTPS downloads always use <em>tunnel</em> regardless of this
+  option.
+  Default: <em>get</em>
 </p>
 </dd>
 <dt>
@@ -930,6 +931,16 @@ writes the piece to the appropriate files.</td>
 </dl></div>
 <h3 id="_bittorrent_specific_options">BitTorrent Specific Options</h3><div style="clear:left"></div>
 <div class="vlist"><dl>
+<dt>
+<strong>--bt-external-ip</strong>=IPADDRESS
+</dt>
+<dd>
+<p>
+  Specify the external IP address to report to a BitTorrent
+  tracker. Although this function is named "external", it can accept
+  any kind of IP addresses. IPADDRESS must be a numeric IP address.
+</p>
+</dd>
 <dt>
 <strong>--bt-hash-check-seed</strong>[=<em>true</em>|<em>false</em>]
 </dt>
@@ -2212,7 +2223,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-02 23:28:51 JST
+Last updated 2009-02-07 23:00:30 JST
 </div>
 </div>
 </body>
