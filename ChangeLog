@@ -1,5 +1,10 @@
 2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Defined a copy constructor for the same type.
+	* src/SharedHandle.h
+
+2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added OptionParser::parseArg() which internally uses getopt_long
 	to parse command-line options. All command-line options are now
 	configured by OptionHandler. No manual editing of struct option*

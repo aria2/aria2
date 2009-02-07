@@ -202,6 +202,8 @@ public:
 
   explicit SharedHandle(T* obj):obj(obj), ucount() {}
 
+  SharedHandle(const SharedHandle& t):obj(t.obj), ucount(t.ucount) {}
+
   template<typename S>
   SharedHandle(const SharedHandle<S>& t):obj(t.obj), ucount(t.ucount) {}
 
@@ -315,6 +317,8 @@ public:
   WeakHandle():obj(0), ucount(WeakRef()) {}
 
   explicit WeakHandle(T* obj):obj(obj), ucount(StrongRef()) {}
+
+  WeakHandle(const WeakHandle& t):obj(t.obj), ucount(t.ucount) {}
 
   template<typename S>
   WeakHandle(const SharedHandle<S>& t):obj(t.obj), ucount(t.ucount) {}
