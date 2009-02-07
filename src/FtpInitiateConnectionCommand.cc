@@ -71,6 +71,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     std::map<std::string, std::string> options;
     SharedHandle<SocketCore> pooledSocket =
       e->popPooledSocket(options, req->getHost(), req->getPort());
+    std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(pooledSocket.isNull()) {
       logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 		   proxyRequest->getHost().c_str(), proxyRequest->getPort());
@@ -78,7 +79,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       socket->establishConnection(resolvedAddresses.front(),
 				  proxyRequest->getPort());
       
-      if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
+      if(proxyMethod == V_GET) {
 	SharedHandle<HttpConnection> hc
 	  (new HttpConnection(cuid, socket, e->option));
 	
@@ -86,7 +87,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	  new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
 	c->setProxyRequest(proxyRequest);
 	command = c;
-      } else if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL) {
+      } else if(proxyMethod == V_TUNNEL) {
 	command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e,
 					      proxyRequest, socket);
       } else {
@@ -94,12 +95,12 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	throw DlAbortEx("ERROR");
       }
     } else {
-      if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL) {
+      if(proxyMethod == V_TUNNEL) {
 	command =
 	  new FtpNegotiationCommand(cuid, req, _requestGroup, e, pooledSocket,
 				    FtpNegotiationCommand::SEQ_SEND_CWD,
 				    options["baseWorkingDir"]);
-      } else if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
+      } else if(proxyMethod == V_GET) {
 	SharedHandle<HttpConnection> hc
 	  (new HttpConnection(cuid, pooledSocket, e->option));
 	

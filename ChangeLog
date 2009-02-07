@@ -1,5 +1,18 @@
 2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed the default value of --proxy-method option from 'tunnel'
+	to 'get'. Use 'tunnel' for HTTPS regardless of --proxy-method
+	option.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/FtpInitiateConnectionCommand.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpInitiateConnectionCommand.h
+	* src/OptionHandlerFactory.cc
+
+2009-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Initialized _logger
 	* src/SelectEventPoll.cc
 	

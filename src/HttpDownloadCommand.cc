@@ -71,7 +71,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
 			     socket);
     // Set proxy request here. aria2 sends the HTTP request specialized for
     // proxy.
-    if(e->option->get(PREF_PROXY_METHOD) == V_GET) {
+    if(resolveProxyMethod(req->getProtocol()) == V_GET) {
       command->setProxyRequest(createProxyRequest());
     }
     e->commands.push_back(command);

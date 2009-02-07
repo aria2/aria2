@@ -323,14 +323,6 @@ static bool isProxyRequest(const std::string& protocol, const Option* option)
     (protocol == Request::PROTO_FTP && isProxyUsed(PREF_FTP_PROXY, option));
 }
 
-static bool isProxyGETRequest(const std::string& protocol, const Option* option)
-{
-  if(option->get(PREF_PROXY_METHOD) != V_GET) {
-    return false;
-  }
-  return isProxyRequest(protocol, option);
-}
-
 class DomainMatch {
 private:
   std::string _hostname;
@@ -478,13 +470,25 @@ void AbstractCommand::checkIfConnectionEstablished
     std::string error = socket->getSocketError();
     if(!error.empty()) {
       // Don't set error if proxy server is used and its method is GET.
-      if(!isProxyGETRequest(req->getProtocol(), e->option)) {
+      if(resolveProxyMethod(req->getProtocol()) != V_GET ||
+	 !isProxyRequest(req->getProtocol(), e->option)) {
 	e->_requestGroupMan->getOrCreateServerStat
 	  (req->getHost(), req->getProtocol())->setError();
       }
       throw DlRetryEx
 	(StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
     }
+  }
+}
+
+const std::string& AbstractCommand::resolveProxyMethod
+(const std::string& protocol) const
+{
+  if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL ||
+     Request::PROTO_HTTPS == protocol) {
+    return V_TUNNEL;
+  } else {
+    return V_GET;
   }
 }
 

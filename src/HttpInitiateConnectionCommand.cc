@@ -67,6 +67,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
   if(!proxyRequest.isNull()) {
     SharedHandle<SocketCore> pooledSocket =
       e->popPooledSocket(req->getHost(), req->getPort());
+    std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(pooledSocket.isNull()) {
       logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 		   proxyRequest->getHost().c_str(), proxyRequest->getPort());
@@ -74,10 +75,10 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       socket->establishConnection(resolvedAddresses.front(),
 				  proxyRequest->getPort());
 
-      if(useProxyTunnel()) {
+      if(proxyMethod == V_TUNNEL) {
 	command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e,
 					      proxyRequest, socket);
-      } else if(useProxyGet()) {
+      } else if(proxyMethod == V_GET) {
 	SharedHandle<HttpConnection> httpConnection
 	  (new HttpConnection(cuid, socket, e->option));
 	HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
@@ -95,7 +96,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
 						     httpConnection, e,
 						     pooledSocket);
-      if(useProxyGet()) {
+      if(proxyMethod == V_GET) {
 	c->setProxyRequest(proxyRequest);
       }
       command = c;
@@ -116,16 +117,6 @@ Command* HttpInitiateConnectionCommand::createNextCommand
 				     e, socket);
   }
   return command;
-}
-
-bool HttpInitiateConnectionCommand::useProxyGet() const
-{
-  return e->option->get(PREF_PROXY_METHOD) == V_GET;
-}
-
-bool HttpInitiateConnectionCommand::useProxyTunnel() const
-{
-  return e->option->get(PREF_PROXY_METHOD) == V_TUNNEL;
 }
 
 } // namespace aria2

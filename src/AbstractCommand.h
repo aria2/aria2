@@ -112,6 +112,11 @@ protected:
    * If no valid proxy is defined, then returns SharedHandle<Request>().
    */
   SharedHandle<Request> createProxyRequest() const;
+
+
+  // Returns proxy method for given protocol. Either V_GET or V_TUNNEL
+  // is returned.  For HTTPS, always returns V_TUNNEL.
+  const std::string& resolveProxyMethod(const std::string& protocol) const;
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;

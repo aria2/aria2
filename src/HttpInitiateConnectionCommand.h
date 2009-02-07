@@ -40,9 +40,6 @@
 namespace aria2 {
 
 class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
-private:
-  bool useProxyGet() const;
-  bool useProxyTunnel() const;
 protected:
   virtual Command* createNextCommand
   (const std::deque<std::string>& resolvedAddresses,

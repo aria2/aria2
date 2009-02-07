@@ -751,7 +751,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_PROXY_METHOD,
 				    TEXT_PROXY_METHOD,
-				    V_TUNNEL,
+				    V_GET,
 				    V_GET, V_TUNNEL));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
