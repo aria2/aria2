@@ -11,13 +11,21 @@ class array_funTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testArray_negate);
   CPPUNIT_TEST(testArray_and);
   CPPUNIT_TEST(testArrayLength);
+  CPPUNIT_TEST(testArrayPtr);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testBit_negate();
   void testBit_and();
   void testArray_negate();
   void testArray_and();
   void testArrayLength();
+  void testArrayPtr();
+
+  struct X{
+    int m;
+  };
+
 };
 
 
@@ -75,6 +83,23 @@ void array_funTest::testArrayLength()
 
   CPPUNIT_ASSERT_EQUAL((size_t)5, arrayLength(ia));
   CPPUNIT_ASSERT_EQUAL((size_t)0, arrayLength(zeroLengthArray));
+}
+
+// Check operator[] in const context.
+static void arrayPtrConst(const array_ptr<struct array_funTest::X>& ax)
+{
+  CPPUNIT_ASSERT_EQUAL(100, ax[3].m);
+  CPPUNIT_ASSERT_EQUAL(99, ax[2].m);
+}
+
+void array_funTest::testArrayPtr()
+{
+  array_ptr<struct X> ax(new struct X[10]);
+  ax[3].m = 100;
+  ax[2].m = 99;
+  CPPUNIT_ASSERT_EQUAL(100, ax[3].m);
+  CPPUNIT_ASSERT_EQUAL(99, ax[2].m);
+  arrayPtrConst(ax);
 }
 
 } // namespace aria2
