@@ -333,6 +333,10 @@ public:
 
   const std::deque<URIResult>& getURIResults() const;
 
+  // Extracts URIResult whose _result is r and stores them into res.
+  // The extracted URIResults are removed from _uriResults.
+  void extractURIResult(std::deque<URIResult>& res, DownloadResult::RESULT r);
+
   void dependsOn(const SharedHandle<Dependency>& dep);
 
   bool isDependencyResolved();

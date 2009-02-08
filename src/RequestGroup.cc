@@ -1135,6 +1135,28 @@ const std::deque<URIResult>& RequestGroup::getURIResults() const
   return _uriResults;
 }
 
+class FindURIResultByResult {
+private:
+  DownloadResult::RESULT _r;
+public:
+  FindURIResultByResult(DownloadResult::RESULT r):_r(r) {}
+
+  bool operator()(const URIResult& uriResult) const
+  {
+    return uriResult.getResult() == _r;
+  }
+};
+
+void RequestGroup::extractURIResult
+(std::deque<URIResult>& res, DownloadResult::RESULT r)
+{
+  std::deque<URIResult>::iterator i =
+    std::stable_partition(_uriResults.begin(), _uriResults.end(),
+			  FindURIResultByResult(r));
+  std::copy(_uriResults.begin(), i, std::back_inserter(res));
+  _uriResults.erase(_uriResults.begin(), i);
+}
+
 void RequestGroup::setTimeout(time_t timeout)
 {
   _timeout = timeout;

@@ -1,5 +1,14 @@
 2009-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten AdaptiveURISelector::mayRetryWithIncreasedTimeout()
+	using RequestGroup::extractURIResult().
+	* src/AdaptiveURISelector.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* test/RequestGroupTest.cc
+
+2009-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added tests for array_ptr.
 	* test/array_funTest.cc
 	

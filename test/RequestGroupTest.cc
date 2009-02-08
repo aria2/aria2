@@ -1,5 +1,6 @@
 #include "RequestGroup.h"
 
+#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "ServerHost.h"
@@ -17,6 +18,7 @@ class RequestGroupTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
   CPPUNIT_TEST(testGetFilePath);
   CPPUNIT_TEST(testCreateDownloadResult);
+  CPPUNIT_TEST(testExtractURIResult);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -27,6 +29,7 @@ public:
   void testRemoveURIWhoseHostnameIs();
   void testGetFilePath();
   void testCreateDownloadResult();
+  void testExtractURIResult();
 };
 
 
@@ -138,5 +141,34 @@ void RequestGroupTest::testCreateDownloadResult()
     CPPUNIT_ASSERT_EQUAL(DownloadResult::FINISHED, result->result);
   }
 }
+
+void RequestGroupTest::testExtractURIResult()
+{
+  Option op;
+  RequestGroup group(&op, std::deque<std::string>());
+  group.addURIResult("http://timeout/file", DownloadResult::TIME_OUT);
+  group.addURIResult("http://finished/file", DownloadResult::FINISHED);
+  group.addURIResult("http://timeout/file2", DownloadResult::TIME_OUT);
+  group.addURIResult("http://unknownerror/file", DownloadResult::UNKNOWN_ERROR);
+
+  std::deque<URIResult> res;
+  group.extractURIResult(res, DownloadResult::TIME_OUT);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://timeout/file"), res[0].getURI());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://timeout/file2"), res[1].getURI());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)2, group.getURIResults().size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://finished/file"),
+		       group.getURIResults()[0].getURI());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://unknownerror/file"),
+		       group.getURIResults()[1].getURI());
+
+  res.clear();
+
+  group.extractURIResult(res, DownloadResult::TIME_OUT);
+  CPPUNIT_ASSERT(res.empty());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, group.getURIResults().size());
+}
+
 
 } // namespace aria2

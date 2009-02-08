@@ -99,18 +99,17 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout
   _requestGroup->setTimeout(_requestGroup->getTimeout()*2);
 
   // looking for retries
-  const std::deque<URIResult>& uriResults = _requestGroup->getURIResults();
-  for (std::deque<URIResult>::const_iterator i = uriResults.begin();
-       i != uriResults.end(); ++i) {
-    if ((*i).getResult() == DownloadResult::TIME_OUT) {
-      _logger->debug("AdaptiveURISelector: will retry server with increased"
-		     " timeout (%d s): %s",
-		     _requestGroup->getTimeout(), (*i).getURI().c_str());
-      uris.push_back((*i).getURI());
-    }
+  std::deque<URIResult> timeouts;
+  _requestGroup->extractURIResult(timeouts, DownloadResult::TIME_OUT);
+  std::transform(timeouts.begin(), timeouts.end(), std::back_inserter(uris),
+		 std::mem_fun_ref(&URIResult::getURI));
+
+  for(std::deque<std::string>::const_iterator i = uris.begin(); i != uris.end();
+      ++i) {
+    _logger->debug("AdaptiveURISelector: will retry server with increased"
+		   " timeout (%d s): %s",
+		   _requestGroup->getTimeout(), (*i).c_str());
   }
-  std::sort(uris.begin(), uris.end());
-  uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
 }
 
 std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
