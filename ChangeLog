@@ -1,5 +1,10 @@
 2009-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed #include <algorithm>
+	* test/RequestGroupTest.cc
+
+2009-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten AdaptiveURISelector::mayRetryWithIncreasedTimeout()
 	using RequestGroup::extractURIResult().
 	* src/AdaptiveURISelector.cc

@@ -1,6 +1,5 @@
 #include "RequestGroup.h"
 
-#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "ServerHost.h"
