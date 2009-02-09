@@ -1,3 +1,8 @@
+2009-02-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Included fstream instead of iostream.
+	* test/SignatureTest.cc
+
 2009-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed #include <algorithm>

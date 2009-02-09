@@ -1,8 +1,11 @@
 #include "Signature.h"
+
+#include <fstream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "File.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
