@@ -553,9 +553,6 @@ void BitfieldManTest::testGetMissingUnusedLength()
   // from index 10 and all blocks are unused and not acquired.
   CPPUNIT_ASSERT_EQUAL((uint64_t)10ULL, bf.getMissingUnusedLength(10));
 
-  // from index -1
-  CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, bf.getMissingUnusedLength(-1));
-
   // from index 11
   CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, bf.getMissingUnusedLength(11));
 

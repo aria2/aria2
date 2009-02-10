@@ -1,5 +1,12 @@
 2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed tests giving -1 for unsigned argument.
+	* test/AlphaNumberDecoratorTest
+	* test/BitfieldManTest.cc
+	* test/DefaultBtContextTest.cc
+	
+2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error without libcares when epoll is available.
 	* src/EpollEventPoll.cc
 

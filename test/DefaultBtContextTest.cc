@@ -95,8 +95,6 @@ void DefaultBtContextTest::testGetPieceHash() {
   CPPUNIT_ASSERT_EQUAL(Util::toHex((const unsigned char*)"CCCCCCCCCCCCCCCCCCCC", 20),
 		       btContext.getPieceHash(2));
   CPPUNIT_ASSERT_EQUAL(std::string(""),
-		       btContext.getPieceHash(-1));
-  CPPUNIT_ASSERT_EQUAL(std::string(""),
 		       btContext.getPieceHash(3));
 }
 
