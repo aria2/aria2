@@ -367,9 +367,8 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
       char buf[15]; // YYYYMMDDhhmmss+\0, milli second part is dropped.
       sscanf(response.second.c_str(), "%*u %14s", buf);
       if(strlen(buf) == 14) {
-#ifdef HAVE_STRPTIME
-	time = Time::parse(buf, "%Y%m%d%H%M%S");
-#else // !HAVE_STRPTIME
+	// We don't use Time::parse(buf,"%Y%m%d%H%M%S") here because Mac OS X
+	// and included strptime doesn't parse data for this format.
 	struct tm tm;
 	memset(&tm, 0, sizeof(tm));
 	tm.tm_sec = Util::parseInt(&buf[12]);
@@ -384,7 +383,6 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
 	buf[4] = '\0';
 	tm.tm_year = Util::parseInt(&buf[0])-1900;
 	time = Time(timegm(&tm));
-#endif // !HAVE_STRPTIME
       } else {
 	time = Time::null();
       }

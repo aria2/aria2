@@ -172,14 +172,13 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     CPPUNIT_ASSERT(t.bad());
   }
   {
-#ifdef HAVE_STRPTIME
-    // invalid month: 19
+    // invalid month: 19, we don't care about invalid month..
     Time t;
     _serverSocket->writeData("213 20081908124312\r\n");
     waitRead(_clientSocket);
     CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveMdtmResponse(t));
-    CPPUNIT_ASSERT(t.bad());
-#endif
+    // Wed Jul 8 12:43:12 2009
+    CPPUNIT_ASSERT_EQUAL((time_t)1247056992, t.getTime());
   }
   {
     Time t;

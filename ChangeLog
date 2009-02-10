@@ -1,5 +1,12 @@
 2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't use Time::parse(buf, "%Y%m%d%H%M%S") because Mac OS X and
+	included strptime doesn't parse data for this format.
+	* src/FtpConnection.cc
+	* test/FtpConnectionTest.cc
+	
+2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed tests giving -1 for unsigned argument.
 	* test/SingleFileDownloadContextTest.cc
 
