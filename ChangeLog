@@ -1,5 +1,10 @@
 2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Defined virtual destructor.
+	* src/MetalinkParserState.h
+
+2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Give NULL for second argument of getaddrinfo instead of "0".
 	* src/NameResolver.cc
 

@@ -46,6 +46,8 @@ class MetalinkParserStateMachine;
 class MetalinkParserState
 {
 public:
+  virtual ~MetalinkParserState() {}
+
   virtual void beginElement(MetalinkParserStateMachine* stm,
 			    const std::string& name, const std::map<std::string, std::string>& attrs) = 0;
   
