@@ -1,3 +1,8 @@
+2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error without libcares when epoll is available.
+	* src/EpollEventPoll.cc
+
 2009-02-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Included fstream instead of iostream.

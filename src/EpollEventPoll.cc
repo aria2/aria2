@@ -454,11 +454,13 @@ bool EpollEventPoll::addEvents(sock_t socket, Command* command,
   return addEvents(socket, CommandEvent(command, epEvents));
 }
 
+#ifdef ENABLE_ASYNC_DNS
 bool EpollEventPoll::addEvents(sock_t socket, Command* command, int events,
 			       const SharedHandle<AsyncNameResolver>& rs)
 {
   return addEvents(socket, ADNSEvent(rs, command, socket, events));
 }
+#endif // ENABLE_ASYNC_DNS
 
 bool EpollEventPoll::deleteEvents(sock_t socket,
 				  const EpollEventPoll::Event& event)
@@ -496,11 +498,13 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
   }
 }
 
+#ifdef ENABLE_ASYNC_DNS
 bool EpollEventPoll::deleteEvents(sock_t socket, Command* command,
 				  const SharedHandle<AsyncNameResolver>& rs)
 {
   return deleteEvents(socket, ADNSEvent(rs, command, socket, 0));
 }
+#endif // ENABLE_ASYNC_DNS
 
 bool EpollEventPoll::deleteEvents(sock_t socket, Command* command,
 				  EventPoll::EventType events)
