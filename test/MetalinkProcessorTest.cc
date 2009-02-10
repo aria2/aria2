@@ -1,4 +1,9 @@
 #include "MetalinkProcessorFactory.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "MetalinkParserStateMachine.h"
 #include "Exception.h"
 #include "DefaultDiskWriter.h"
@@ -12,8 +17,6 @@
 # include "Checksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -26,7 +29,7 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMalformedXML2);
   CPPUNIT_TEST(testBadSize);
   CPPUNIT_TEST(testBadMaxConn);
-  CPPUNIT_TEST(testNoName);
+  CPPUNIT_TEST(testNoName);  
   CPPUNIT_TEST(testBadURLPrefs);
   CPPUNIT_TEST(testBadURLMaxConn);
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -411,11 +414,9 @@ void MetalinkProcessorTest::testMultiplePieces()
 		"<files>"
 		"<file name=\"aria2.tar.bz2\">"
 		"  <verification>"
-		"    <pieces length=\"512\" type=\"md5\">"
-		"    </pieces>"
 		"    <pieces length=\"1024\" type=\"sha1\">"
 		"    </pieces>"
-		"    <pieces length=\"2048\" type=\"sha256\">"
+		"    <pieces length=\"512\" type=\"md5\">"
 		"    </pieces>"
 		"  </verification>"
 		"</file>"
@@ -447,7 +448,7 @@ void MetalinkProcessorTest::testBadPieceNo()
 		"      <hash piece=\"0\">abc</hash>"
 		"      <hash piece=\"xyz\">xyz</hash>"
 		"    </pieces>"
-		"    <pieces length=\"512\" type=\"sha256\">"
+		"    <pieces length=\"1024\" type=\"sha1\">"
 		"      <hash piece=\"0\">abc</hash>"
 		"    </pieces>"
 		"  </verification>"
@@ -459,8 +460,10 @@ void MetalinkProcessorTest::testBadPieceNo()
     SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
- 
-    CPPUNIT_ASSERT_EQUAL(std::string("sha256"), c->getAlgo());
+
+    CPPUNIT_ASSERT(!c.isNull());
+    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha1"), c->getAlgo());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -477,7 +480,7 @@ void MetalinkProcessorTest::testBadPieceLength()
 		"    <pieces length=\"xyz\" type=\"sha1\">"
 		"      <hash piece=\"0\">abc</hash>"
 		"    </pieces>"
-		"    <pieces length=\"1024\" type=\"sha256\">"
+		"    <pieces length=\"1024\" type=\"sha1\">"
 		"      <hash piece=\"0\">abc</hash>"
 		"    </pieces>"
 		"  </verification>"
@@ -487,10 +490,12 @@ void MetalinkProcessorTest::testBadPieceLength()
 
   try {
     SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
-    SharedHandle<MetalinkEntry> e = m->entries[0];
-    SharedHandle<ChunkChecksum> c = e->chunkChecksum;
- 
-    CPPUNIT_ASSERT_EQUAL(std::string("sha256"), c->getAlgo());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+     SharedHandle<MetalinkEntry> e = m->entries[0];
+     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
+     CPPUNIT_ASSERT(!c.isNull());
+     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
+     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), c->getAlgo());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -507,7 +512,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
 		"    <pieces length=\"512\" type=\"ARIA2\">"
 		"      <hash piece=\"0\">abc</hash>"
 		"    </pieces>"
-		"    <pieces length=\"1024\" type=\"sha256\">"
+		"    <pieces length=\"1024\" type=\"sha1\">"
 		"      <hash piece=\"0\">abc</hash>"
 		"    </pieces>"
 		"  </verification>"
@@ -520,7 +525,9 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
-    CPPUNIT_ASSERT_EQUAL(std::string("sha256"), c->getAlgo());
+    CPPUNIT_ASSERT(!c.isNull());
+    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha1"), c->getAlgo());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }

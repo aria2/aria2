@@ -1,5 +1,11 @@
 2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't use sha256 in tests because it might not be supported by the
+	SSL library.
+	* test/MetalinkProcessorTest.cc
+	
+2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed tests giving -1 for unsigned argument.
 	* test/AlphaNumberDecoratorTest
 	* test/BitfieldManTest.cc
