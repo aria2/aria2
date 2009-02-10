@@ -52,7 +52,7 @@ private:
   unsigned int _nbServerToEvaluate;
   unsigned int _nbConnections;
 
-  static const unsigned int MAX_TIMEOUT = 60;
+  static const time_t MAX_TIMEOUT = 60;
 
   Logger* _logger;
 
