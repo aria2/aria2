@@ -32,7 +32,6 @@ void SingleFileDownloadContextTest::testGetPieceHash()
   pieceHashes.push_back("0001");
   pieceHashes.push_back("0002");
   ctx.setPieceHashes(pieceHashes);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), ctx.getPieceHash(-1));
   CPPUNIT_ASSERT_EQUAL(std::string("0000"), ctx.getPieceHash(0));
   CPPUNIT_ASSERT_EQUAL(std::string(""), ctx.getPieceHash(3));
 }
