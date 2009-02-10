@@ -1,5 +1,10 @@
 2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Wait 2 seconds. 1 second is sometimes not enough.
+	* test/TimeSeedCriteriaTest.cc
+	
+2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use localhost instead of 127.0.0.1.
 	* test/DHTConnectionImplTest.cc
 	
