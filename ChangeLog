@@ -1,5 +1,10 @@
 2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use localhost instead of 127.0.0.1.
+	* test/DHTConnectionImplTest.cc
+	
+2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Suppressed compiler warning.
 	* src/AdaptiveURISelector.cc
 	* src/DefaultPieceStorage.cc
