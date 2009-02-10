@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #ifndef _D_EPOLL_EVENT_POLL_H_
-#define _D_EPLLL_EVENT_POLL_H_
+#define _D_EPOLL_EVENT_POLL_H_
 
 #include "EventPoll.h"
 
@@ -242,4 +242,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_EVENT_POLL_H_
+#endif // _D_EPOLL_EVENT_POLL_H_

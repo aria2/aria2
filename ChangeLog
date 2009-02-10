@@ -1,3 +1,8 @@
+2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed #define guard for EpollEventPoll
+	* src/EpollEventPoll.h
+
 2009-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Wait 2 seconds. 1 second is sometimes not enough.
