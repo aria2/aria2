@@ -30,6 +30,7 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReceivePwdResponse_badStatus);
   CPPUNIT_TEST(testSendCwd);
   CPPUNIT_TEST(testSendCwd_baseWorkingDir);
+  CPPUNIT_TEST(testReceiveSizeResponse);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<SocketCore> _serverSocket;
@@ -79,6 +80,7 @@ public:
   void testReceivePwdResponse_badStatus();
   void testSendCwd();
   void testSendCwd_baseWorkingDir();
+  void testReceiveSizeResponse();
 };
 
 
@@ -275,6 +277,15 @@ void FtpConnectionTest::testSendCwd_baseWorkingDir()
   CPPUNIT_ASSERT_EQUAL((size_t)15, len);
   data[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("CWD /base/dir\r\n"), std::string(data));
+}
+
+void FtpConnectionTest::testReceiveSizeResponse()
+{
+  _serverSocket->writeData("213 4294967296\r\n");
+  waitRead(_clientSocket);
+  uint64_t size;
+  CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveSizeResponse(size));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)4294967296, size);
 }
 
 } // namespace aria2
