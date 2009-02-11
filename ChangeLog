@@ -1,5 +1,10 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added a check to see struct sockaddr_in has sin_len member.
+	* configure.ac
+	
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed buffer overrun.
 	* src/DHTRoutingTableDeserializer.cc
 	

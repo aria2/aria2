@@ -22003,6 +22003,110 @@ fi
     ;;
 esac
 
+{ echo "$as_me:$LINENO: checking for struct sockaddr_in.sin_len" >&5
+echo $ECHO_N "checking for struct sockaddr_in.sin_len... $ECHO_C" >&6; }
+if test "${ac_cv_member_struct_sockaddr_in_sin_len+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <netinet/in.h>
+
+int
+main ()
+{
+static struct sockaddr_in ac_aggr;
+if (ac_aggr.sin_len)
+return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_cv_member_struct_sockaddr_in_sin_len=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <netinet/in.h>
+
+int
+main ()
+{
+static struct sockaddr_in ac_aggr;
+if (sizeof ac_aggr.sin_len)
+return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_cv_member_struct_sockaddr_in_sin_len=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_member_struct_sockaddr_in_sin_len=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_member_struct_sockaddr_in_sin_len" >&5
+echo "${ECHO_T}$ac_cv_member_struct_sockaddr_in_sin_len" >&6; }
+if test $ac_cv_member_struct_sockaddr_in_sin_len = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_SOCKADDR_SIN_LEN 1
+_ACEOF
+
+fi
+
+
 ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile po/Makefile.in m4/Makefile intl/Makefile lib/Makefile doc/Makefile"
 
 cat >confcache <<\_ACEOF

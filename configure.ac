@@ -329,6 +329,12 @@ case "$target" in
     ;;
 esac
 
+AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
+                [AC_DEFINE([HAVE_SOCKADDR_SIN_LEN],[1],
+                  [Define to 1 if struct sockaddr has sin_len member.])],
+                [],
+                [[#include <netinet/in.h>]])
+
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		test/Makefile
