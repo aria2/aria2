@@ -285,7 +285,7 @@ void FtpConnectionTest::testReceiveSizeResponse()
   waitRead(_clientSocket);
   uint64_t size;
   CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveSizeResponse(size));
-  CPPUNIT_ASSERT_EQUAL((uint64_t)4294967296, size);
+  CPPUNIT_ASSERT_EQUAL((uint64_t)4294967296LL, size);
 }
 
 } // namespace aria2

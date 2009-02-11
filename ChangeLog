@@ -1,5 +1,10 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added LL for long long int constant.
+	* test/FtpConnectionTest.cc
+	
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Casted to unsigned int to suppress compiler warning on netbsd.
 	* src/BtRuntime.h
 	
