@@ -117,7 +117,7 @@ public:
   void setMaxPeers(unsigned int maxPeers)
   {
     _maxPeers = maxPeers;
-    _minPeers = maxPeers*0.8;
+    _minPeers = static_cast<unsigned int>(maxPeers*0.8);
     if(_minPeers == 0 && maxPeers != 0) {
       _minPeers = maxPeers;
     }
