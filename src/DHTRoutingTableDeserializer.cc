@@ -91,7 +91,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     memset(zero, 0, sizeof(zero));
 
     int version;
-    char buf[26];
+    char buf[55];
     // header
     in.read(buf, 8);
     if(memcmp(header, buf, 8) == 0) {

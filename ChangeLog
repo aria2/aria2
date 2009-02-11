@@ -1,5 +1,10 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed buffer overrun.
+	* src/DHTRoutingTableDeserializer.cc
+	
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added LL for long long int constant.
 	* test/FtpConnectionTest.cc
 	
