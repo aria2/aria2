@@ -117,7 +117,9 @@ public:
   virtual void parseArg(Option& option, const std::string& optarg)
   {
     if(optarg == "true" ||
-       (_argType == OptionHandler::OPT_ARG && optarg.empty())) {
+       ((_argType == OptionHandler::OPT_ARG ||
+	 _argType == OptionHandler::NO_ARG)
+	&& optarg.empty())) {
       option.put(_optName, V_TRUE);
     } else if(optarg == "false") {
       option.put(_optName, V_FALSE);

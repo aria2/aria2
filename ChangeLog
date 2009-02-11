@@ -1,5 +1,11 @@
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that the boolean options that don't take arguments
+	don't work.
+	* src/OptionHandlerImpl.h
+	
+2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed broken selected file BitTorrent download.
 	* src/MultiDiskAdaptor.cc
 	* test/MultiDiskAdaptorTest.cc
