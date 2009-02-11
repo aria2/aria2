@@ -1,3 +1,10 @@
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Assign the value of tv.tv_sec to time_t timesec instead of giving
+	tv.tv_sec to localtime_r directly because tv.tv_sec may not be of
+	type time_t.
+	* src/SimpleLogger.cc
+	
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added test for FtpConnection::receiveSizeResponse().

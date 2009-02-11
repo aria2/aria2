@@ -147,7 +147,9 @@ void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
   gettimeofday(&tv, 0);
   char datestr[27]; // 'YYYY-MM-DD hh:mm:ss.uuuuuu'+'\0' = 27 bytes
   struct tm tm;
-  localtime_r(&tv.tv_sec, &tm);
+  //tv.tv_sec may not be of type time_t.
+  time_t timesec = tv.tv_sec;
+  localtime_r(&timesec, &tm);
   size_t dateLength =
     strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)20);
