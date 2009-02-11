@@ -1,8 +1,8 @@
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed broken selected file BitTorrent download.
-	* src/MultiDiskWriter.cc
-	* test/MultiDiskWriterTest.cc
+	* src/MultiDiskAdaptor.cc
+	* test/MultiDiskAdaptorTest.cc
 	* test/MultiFileAllocationIteratorTest.cc
 
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
