@@ -341,6 +341,7 @@ unsigned int FtpConnection::receiveResponse()
 # define LONGLONG_PRINTF "%lld"
 # define ULONGLONG_PRINTF "%llu"
 # define LONGLONG_SCANF "%Ld"
+// Mac OSX uses "%llu" for 64bits integer.
 # define ULONGLONG_SCANF "%Lu"
 #endif // __MINGW32__
 
@@ -349,8 +350,8 @@ unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
   std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
-      sscanf(response.second.c_str(), "%*u " ULONGLONG_SCANF,
-	     reinterpret_cast<long long unsigned int*>(&size));
+      std::pair<std::string, std::string> rp = Util::split(response.second," ");
+      size = Util::parseULLInt(rp.second);
     }
     return response.first;
   } else {

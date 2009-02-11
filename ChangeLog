@@ -1,5 +1,11 @@
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use Util::parseLLInt instead of sscanf for portability. The
+	conversion "%Lu" fails in Mac OSX which requires "%llu" instead.	
+	* src/FtpConnection.cc
+
+2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that adding 0 length filter to BitfieldMan filters 1
 	block. It should not filter anything.
 	* src/BitfieldMan.cc
