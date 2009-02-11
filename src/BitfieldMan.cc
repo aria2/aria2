@@ -33,10 +33,12 @@
  */
 /* copyright --> */
 #include "BitfieldMan.h"
+
+#include <cstring>
+
 #include "Randomizer.h"
 #include "Util.h"
 #include "array_fun.h"
-#include <cstring>
 
 namespace aria2 {
 
@@ -609,10 +611,12 @@ void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
     filterBitfield = new unsigned char[bitfieldLength];
     memset(filterBitfield, 0, bitfieldLength);
   }
-  size_t startBlock = offset/blockLength;
-  size_t endBlock = (offset+length-1)/blockLength;
-  for(size_t i = startBlock; i <= endBlock && i < blocks; i++) {
-    setFilterBit(i);
+  if(length > 0) {
+    size_t startBlock = offset/blockLength;
+    size_t endBlock = (offset+length-1)/blockLength;
+    for(size_t i = startBlock; i <= endBlock && i < blocks; i++) {
+      setFilterBit(i);
+    }
   }
   updateCache();
 }

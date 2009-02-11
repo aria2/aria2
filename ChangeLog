@@ -1,5 +1,13 @@
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that adding 0 length filter to BitfieldMan filters 1
+	block. It should not filter anything.
+	* src/BitfieldMan.cc
+	* src/ConsoleStatCalc.cc
+	* test/BitfieldManTest.cc
+
+2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that the boolean options that don't take arguments
 	don't work.
 	* src/OptionHandlerImpl.h

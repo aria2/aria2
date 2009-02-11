@@ -75,10 +75,14 @@ static void printProgress(std::ostream& o, const SharedHandle<RequestGroup>& rg)
 #ifdef ENABLE_BITTORRENT
   if(rg->downloadFinished() &&
      !dynamic_pointer_cast<BtContext>(rg->getDownloadContext()).isNull()) {
-    o << "SEEDING" << "(" << "ratio:"
-      << std::fixed << std::setprecision(1)
-      << ((stat.getAllTimeUploadLength()*10)/rg->getCompletedLength())/10.0
-      << ")";
+    o << "SEEDING" << "(" << "ratio:";
+    if(rg->getCompletedLength() > 0) {
+      o << std::fixed << std::setprecision(1)
+	<< ((stat.getAllTimeUploadLength()*10)/rg->getCompletedLength())/10.0;
+    } else {
+      o << "--";
+    }
+    o << ")";
   } else
 #endif // ENABLE_BITTORRENT
     {

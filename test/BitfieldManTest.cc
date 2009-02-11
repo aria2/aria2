@@ -1,7 +1,10 @@
 #include "BitfieldMan.h"
-#include "FixedNumberRandomizer.h"
+
 #include <cstring>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "FixedNumberRandomizer.h"
 
 namespace aria2 {
 
@@ -13,6 +16,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFirstMissingIndex);
   CPPUNIT_TEST(testIsAllBitSet);
   CPPUNIT_TEST(testFilter);
+  CPPUNIT_TEST(testAddFilter_zeroLength);
   CPPUNIT_TEST(testGetMissingIndex);
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex_setBit);
@@ -54,6 +58,7 @@ public:
   
   void testIsAllBitSet();
   void testFilter();
+  void testAddFilter_zeroLength();
   void testGetSparceMissingUnusedIndex();
   void testGetSparceMissingUnusedIndex_setBit();
   void testIsBitSetOffsetRange();
@@ -367,6 +372,15 @@ void BitfieldManTest::testFilter() {
   btman2.enableFilter();
   CPPUNIT_ASSERT_EQUAL((uint64_t)31ULL, btman2.getFilteredTotalLength());
 
+}
+
+void BitfieldManTest::testAddFilter_zeroLength()
+{
+  BitfieldMan bits(1024, 1024*1024);
+  bits.addFilter(2048, 0);
+  bits.enableFilter();
+  CPPUNIT_ASSERT_EQUAL((size_t)0, bits.countMissingBlock());
+  CPPUNIT_ASSERT(bits.isFilteredAllBitSet());
 }
 
 void BitfieldManTest::testGetMissingIndex() {
