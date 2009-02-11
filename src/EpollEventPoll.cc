@@ -474,7 +474,10 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
 
     int r = 0;
     if((*i)->eventEmpty()) {
-      r = epoll_ctl(_epfd, EPOLL_CTL_DEL, (*i)->getSocket(), 0);
+      // In kernel before 2.6.9, epoll_ctl with EPOLL_CTL_DEL requires non-null
+      // pointer of epoll_event.
+      struct epoll_event ev = {0,{0}};
+      r = epoll_ctl(_epfd, EPOLL_CTL_DEL, (*i)->getSocket(), &ev);
       _socketEntries.erase(i);
     } else {
       // If socket is closed, then it seems it is automatically removed from

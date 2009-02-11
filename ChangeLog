@@ -1,5 +1,10 @@
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fix epoll error on the old kernel 2.6.8 or ealier.
+	* src/EpollEventPoll.cc
+	
+2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use Util::parseLLInt instead of sscanf for portability. The
 	conversion "%Lu" fails in Mac OSX which requires "%llu" instead.	
 	* src/FtpConnection.cc
