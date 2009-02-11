@@ -120,7 +120,7 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   // file9
   CPPUNIT_ASSERT_EQUAL(prefix+std::string("/file9"),
 		       entries[8]->getFilePath(prefix));
-  CPPUNIT_ASSERT(entries[8]->needsFileAllocation());
+  CPPUNIT_ASSERT(!entries[8]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[8]->getDiskWriter().isNull());
   // fileA
   CPPUNIT_ASSERT_EQUAL(prefix+std::string("/fileA"),

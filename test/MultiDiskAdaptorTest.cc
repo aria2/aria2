@@ -48,13 +48,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MultiDiskAdaptorTest );
 
 std::deque<SharedHandle<FileEntry> > createEntries() {
   SharedHandle<FileEntry> array[] = {
-    SharedHandle<FileEntry>(new FileEntry("file1.txt", 0, 0)),
-    SharedHandle<FileEntry>(new FileEntry("file2.txt", 15, 0)),
-    SharedHandle<FileEntry>(new FileEntry("file3.txt", 7, 15)),
-    SharedHandle<FileEntry>(new FileEntry("file4.txt", 0, 22)),
-    SharedHandle<FileEntry>(new FileEntry("file5.txt", 2, 22)),
-    SharedHandle<FileEntry>(new FileEntry("file6.txt", 0, 24)),
+    SharedHandle<FileEntry>(new FileEntry("file0.txt", 0, 0)),
+    SharedHandle<FileEntry>(new FileEntry("file1.txt", 15, 0)),
+    SharedHandle<FileEntry>(new FileEntry("file2.txt", 7, 15)),
+    SharedHandle<FileEntry>(new FileEntry("file3.txt", 0, 22)),
+    SharedHandle<FileEntry>(new FileEntry("file4.txt", 2, 22)),
+    SharedHandle<FileEntry>(new FileEntry("file5.txt", 0, 24)),
   };
+  //           1    1    2    2
+  // 0....5....0....5....0....5
+  // ++--++--++--++--++--++--++
+  // | file0
+  // *************** file1
+  //                ******* file2
+  //                       | file3
+  //                       ** flie4
+  //                         | file5
   std::deque<SharedHandle<FileEntry> > entries(&array[0],
 					       &array[arrayLength(array)]);
   for(std::deque<SharedHandle<FileEntry> >::const_iterator i = entries.begin();
@@ -115,6 +124,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(entries[0]->getDiskWriter().isNull());
     // Because entries[2] spans entries[1]
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[1]->needsFileAllocation());
     CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
@@ -136,6 +146,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
     // Because entries[4] spans entries[3]
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[3]->needsFileAllocation());
     CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
 
@@ -154,8 +165,8 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
-    // Because entries[3] spans entries[4]
-    CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
+    // entries[3] is 0 length. No overrap with entries[4]
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
 
     adaptor->closeFile();
@@ -197,6 +208,44 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
 
     adaptor->closeFile();
   }
+  {
+    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    for(size_t i = 1; i < 6; ++i) {
+      fileEntries[i]->setRequested(false);
+    }
+    adaptor->setFileEntries(fileEntries);
+    adaptor->openFile();
+    std::deque<SharedHandle<DiskWriterEntry> > entries =
+      adaptor->getDiskWriterEntries();
+    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
+  }
+  {
+    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    for(size_t i = 2; i < 6; ++i) {
+      fileEntries[i]->setRequested(false);
+    }
+    adaptor->setFileEntries(fileEntries);
+    adaptor->openFile();
+    std::deque<SharedHandle<DiskWriterEntry> > entries =
+      adaptor->getDiskWriterEntries();
+    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
+    // entries[1] spans entries[2]
+    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(!entries[2]->needsFileAllocation());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter().isNull());
+
+    adaptor->closeFile();
+  }
 }
 
 void readFile(const std::string& filename, char* buf, int bufLength) {
@@ -220,9 +269,9 @@ void MultiDiskAdaptorTest::testWriteData() {
   adaptor->writeData((const unsigned char*)msg.c_str(), msg.size(), 0);
   adaptor->closeFile();
 
-  CPPUNIT_ASSERT(File("file1.txt").isFile());
+  CPPUNIT_ASSERT(File("file0.txt").isFile());
   char buf[128];
-  readFile("file2.txt", buf, 5);
+  readFile("file1.txt", buf, 5);
   buf[5] = '\0';
   CPPUNIT_ASSERT_EQUAL(msg, std::string(buf));
 
@@ -231,10 +280,10 @@ void MultiDiskAdaptorTest::testWriteData() {
   adaptor->writeData((const unsigned char*)msg2.c_str(), msg2.size(), 5);
   adaptor->closeFile();
 
-  readFile("file2.txt", buf, 15);
+  readFile("file1.txt", buf, 15);
   buf[15] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDE"), std::string(buf));
-  readFile("file3.txt", buf, 1);
+  readFile("file2.txt", buf, 1);
   buf[1] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("F"), std::string(buf));
 
@@ -243,20 +292,20 @@ void MultiDiskAdaptorTest::testWriteData() {
   adaptor->writeData((const unsigned char*)msg3.c_str(), msg3.size(), 10);
   adaptor->closeFile();
 
-  readFile("file2.txt", buf, 15);
+  readFile("file1.txt", buf, 15);
   buf[15] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("123456789012345"), std::string(buf));
-  readFile("file3.txt", buf, 7);
+  readFile("file2.txt", buf, 7);
   buf[7] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("1234567"), std::string(buf));
 
-  CPPUNIT_ASSERT(File("file4.txt").isFile());
+  CPPUNIT_ASSERT(File("file3.txt").isFile());
 
-  readFile("file5.txt", buf, 2);
+  readFile("file4.txt", buf, 2);
   buf[2] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("12"), std::string(buf));
 
-  CPPUNIT_ASSERT(File("file6.txt").isFile());
+  CPPUNIT_ASSERT(File("file5.txt").isFile());
 
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());

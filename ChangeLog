@@ -1,5 +1,12 @@
 2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed broken selected file BitTorrent download.
+	* src/MultiDiskWriter.cc
+	* test/MultiDiskWriterTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+
+2009-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed #define guard for EpollEventPoll
 	* src/EpollEventPoll.h
 
