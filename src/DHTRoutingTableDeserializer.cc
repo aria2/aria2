@@ -33,6 +33,12 @@
  */
 /* copyright --> */
 #include "DHTRoutingTableDeserializer.h"
+
+#include <cerrno>
+#include <cstring>
+#include <istream>
+#include <utility>
+
 #include "DHTNode.h"
 #include "DHTConstants.h"
 #include "PeerMessageUtil.h"
@@ -41,10 +47,7 @@
 #include "a2netcompat.h"
 #include "StringFormat.h"
 #include "Util.h"
-#include <cerrno>
-#include <cstring>
-#include <istream>
-#include <utility>
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -91,7 +94,12 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     memset(zero, 0, sizeof(zero));
 
     int version;
-    char buf[55];
+
+    // If you change the code to read more than the size of buf, then
+    // expand the buf size here.
+    char* buf = new char[255];
+    array_ptr<char> holder(buf);
+
     // header
     in.read(buf, 8);
     if(memcmp(header, buf, 8) == 0) {
