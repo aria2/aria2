@@ -1,5 +1,11 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Set struct sockaddr_in.sin_len if HAVE_SOCKADDR_IN_SIN_LEN is
+	defined.
+	* src/PeerMessageUtil.cc
+	
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed HAVE_SOCKADDR_SIN_LEN as HAVE_SOCKADDR_IN_SIN_LEN
 	* configure.ac
 	

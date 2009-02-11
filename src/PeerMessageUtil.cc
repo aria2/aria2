@@ -161,6 +161,10 @@ PeerMessageUtil::unpackcompact(const unsigned char* compact)
 {
   struct sockaddr_in in;
   memset(&in, 0, sizeof(in));
+#ifdef HAVE_SOCKADDR_IN_SIN_LEN
+  // For netbsd
+  in.sin_len = sizeof(in);
+#endif // HAVE_SOCKADDR_IN_SIN_LEN
   in.sin_family = AF_INET;
   in.sin_addr.s_addr = *reinterpret_cast<const uint32_t*>(compact);
   in.sin_port = 0;
