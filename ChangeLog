@@ -1,5 +1,10 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed HAVE_SOCKADDR_SIN_LEN as HAVE_SOCKADDR_IN_SIN_LEN
+	* configure.ac
+	
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added a check to see struct sockaddr_in has sin_len member.
 	* configure.ac
 	

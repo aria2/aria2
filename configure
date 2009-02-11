@@ -22101,7 +22101,7 @@ echo "${ECHO_T}$ac_cv_member_struct_sockaddr_in_sin_len" >&6; }
 if test $ac_cv_member_struct_sockaddr_in_sin_len = yes; then
 
 cat >>confdefs.h <<\_ACEOF
-#define HAVE_SOCKADDR_SIN_LEN 1
+#define HAVE_SOCKADDR_IN_SIN_LEN 1
 _ACEOF
 
 fi
