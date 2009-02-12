@@ -223,9 +223,6 @@ private:
   // Copies are not allowed. Let's make them private.
   array_ptr(const array_ptr& s);
 
-  template<typename S>
-  array_ptr(const array_ptr<S>& s);
-
   array_ptr& operator=(const array_ptr& s);
 
   template<typename S>

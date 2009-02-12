@@ -1,5 +1,10 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed template<typename S> array_ptr(const array_ptr<S>& s)
+	* src/array_fun.h
+
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added array_wrapper template.
 	* src/array_fun.h
 	* test/array_funTest.cc
