@@ -126,7 +126,7 @@ void OptionParser::parseArg
 					     _optionHandlers.end());
   int lopt;
   array_ptr<struct option> longOpts(new struct option[numPublicOption+1]);
-  putOptions(&longOpts[0], &lopt,_optionHandlers.begin(),_optionHandlers.end());
+  putOptions(longOpts, &lopt,_optionHandlers.begin(),_optionHandlers.end());
   std::string optstring = createOptstring(_optionHandlers.begin(),
 					  _optionHandlers.end());
   while(1) {
