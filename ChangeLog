@@ -1,5 +1,11 @@
 2009-02-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed operator[] because it is ambiguous with built-in []
+	operator.
+	* src/array_fun.h
+	
+2009-02-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error
 	* src/OptionParser.cc
 	

@@ -238,16 +238,6 @@ public:
     delete [] _array;
   }
 
-  T& operator[](size_t index)
-  {
-    return _array[index];
-  }
-
-  const T& operator[](size_t index) const
-  {
-    return _array[index];
-  }
-
   operator T*()
   {
     return _array;
@@ -265,16 +255,6 @@ private:
   T _array[N];
 public:
   array_wrapper() {}
-
-  T& operator[](size_t index)
-  {
-    return _array[index];
-  }
-
-  const T& operator[](size_t index) const
-  {
-    return _array[index];
-  }
 
   operator T*()
   {
