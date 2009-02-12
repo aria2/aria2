@@ -12,6 +12,7 @@ class array_funTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testArray_and);
   CPPUNIT_TEST(testArrayLength);
   CPPUNIT_TEST(testArrayPtr);
+  CPPUNIT_TEST(testArrayWrapper);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -21,6 +22,7 @@ public:
   void testArray_and();
   void testArrayLength();
   void testArrayPtr();
+  void testArrayWrapper();
 
   struct X{
     int m;
@@ -107,6 +109,27 @@ void array_funTest::testArrayPtr()
 
   arrayPtrCast(ax);
   arrayPtrConstCast(ax);
+}
+
+static void arrayWrapperConst(const array_wrapper<int, 10>& array)
+{
+  CPPUNIT_ASSERT_EQUAL(9, array[9]);
+}
+
+void array_funTest::testArrayWrapper()
+{
+  array_wrapper<int, 10> a1;
+  CPPUNIT_ASSERT_EQUAL((size_t)10, a1.size());
+  for(size_t i = 0; i < a1.size(); ++i) {
+    a1[i] = i;
+  }
+  CPPUNIT_ASSERT_EQUAL(9, a1[9]);
+  array_wrapper<int, 10> a2 = a1;
+  CPPUNIT_ASSERT_EQUAL(9, a2[9]);
+
+  array_wrapper<struct X, 10> x1;
+  arrayPtrCast(x1);
+  arrayPtrConstCast(x1);
 }
 
 } // namespace aria2

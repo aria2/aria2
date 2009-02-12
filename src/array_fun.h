@@ -262,6 +262,39 @@ public:
   }
 };
 
+template<typename T, size_t N>
+class array_wrapper {
+private:
+  T _array[N];
+public:
+  array_wrapper() {}
+
+  T& operator[](size_t index)
+  {
+    return _array[index];
+  }
+
+  const T& operator[](size_t index) const
+  {
+    return _array[index];
+  }
+
+  operator T*()
+  {
+    return _array;
+  }
+
+  operator const T*() const
+  {
+    return _array;
+  }
+
+  size_t size() const
+  {
+    return N;
+  }
+};
+
 } // namespace aria2
 
 #endif // _D_ARRAY_FUN_H_

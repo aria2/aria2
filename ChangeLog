@@ -1,5 +1,11 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added array_wrapper template.
+	* src/array_fun.h
+	* test/array_funTest.cc
+	
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use operator T* of array_ptr.
 	* src/OptionParser.cc
 	
