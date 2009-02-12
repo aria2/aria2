@@ -92,6 +92,10 @@ static void arrayPtrConst(const array_ptr<struct array_funTest::X>& ax)
   CPPUNIT_ASSERT_EQUAL(99, ax[2].m);
 }
 
+static void arrayPtrCast(struct array_funTest::X* x) {}
+
+static void arrayPtrConstCast(const struct array_funTest::X* x) {}
+
 void array_funTest::testArrayPtr()
 {
   array_ptr<struct X> ax(new struct X[10]);
@@ -100,6 +104,9 @@ void array_funTest::testArrayPtr()
   CPPUNIT_ASSERT_EQUAL(100, ax[3].m);
   CPPUNIT_ASSERT_EQUAL(99, ax[2].m);
   arrayPtrConst(ax);
+
+  arrayPtrCast(ax);
+  arrayPtrConstCast(ax);
 }
 
 } // namespace aria2

@@ -250,6 +250,16 @@ public:
   {
     return _array[index];
   }
+
+  operator T*()
+  {
+    return _array;
+  }
+
+  operator const T*() const
+  {
+    return _array;
+  }
 };
 
 } // namespace aria2

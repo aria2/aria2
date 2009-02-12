@@ -1,5 +1,11 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added operator T*
+	* src/array_fun.h
+	* test/array_funTest.cc
+
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use dynamically allocated char array to detect memory access
 	violation.
 	* src/DHTRoutingTableDeserializer.cc
