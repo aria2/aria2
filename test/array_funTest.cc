@@ -127,6 +127,8 @@ void array_funTest::testArrayWrapper()
   array_wrapper<int, 10> a2 = a1;
   CPPUNIT_ASSERT_EQUAL(9, a2[9]);
 
+  arrayWrapperConst(a2);
+
   array_wrapper<struct X, 10> x1;
   arrayPtrCast(x1);
   arrayPtrConstCast(x1);
