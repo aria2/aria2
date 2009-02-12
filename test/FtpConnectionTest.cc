@@ -57,7 +57,7 @@ public:
     req->setUrl("ftp://localhost/dir/file.img");
 
     _clientSocket.reset(new SocketCore());
-    _clientSocket->establishConnection("127.0.0.1", _listenPort);
+    _clientSocket->establishConnection("localhost", _listenPort);
 
     while(!_clientSocket->isWritable(0));
     _clientSocket->setBlockingMode();

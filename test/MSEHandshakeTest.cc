@@ -49,7 +49,7 @@ static std::pair<SharedHandle<SocketCore>,
 
   std::pair<std::string, uint16_t> receiverAddrInfo;
   receiverServerSock.getAddrInfo(receiverAddrInfo);
-  initiatorSock->establishConnection("127.0.0.1", receiverAddrInfo.second);
+  initiatorSock->establishConnection("localhost", receiverAddrInfo.second);
   initiatorSock->setBlockingMode();
 
   SharedHandle<SocketCore> receiverSock(receiverServerSock.acceptConnection());
