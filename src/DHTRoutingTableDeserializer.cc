@@ -36,6 +36,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <cassert>
 #include <istream>
 #include <utility>
 
@@ -63,6 +64,13 @@ SharedHandle<DHTNode> DHTRoutingTableDeserializer::getLocalNode() const
 const std::deque<SharedHandle<DHTNode> >& DHTRoutingTableDeserializer::getNodes() const
 {
   return _nodes;
+}
+
+static std::istream& readBytes(unsigned char* buf, size_t buflen,
+			       std::istream& in, size_t readlen)
+{
+  assert(readlen <= buflen);
+  return in.read(reinterpret_cast<char*>(buf), readlen);
 }
 
 void DHTRoutingTableDeserializer::deserialize(std::istream& in)
@@ -97,11 +105,10 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 
     // If you change the code to read more than the size of buf, then
     // expand the buf size here.
-    char* buf = new char[255];
-    array_ptr<char> holder(buf);
+    array_wrapper<unsigned char, 255> buf;
 
     // header
-    in.read(buf, 8);
+    readBytes(buf, buf.size(), in, 8);
     if(memcmp(header, buf, 8) == 0) {
       version = 3;
     } else if(memcmp(headerCompat, buf, 8) == 0) {
@@ -111,31 +118,34 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 	(StringFormat("Failed to load DHT routing table. cause:%s",
 		      "bad header").str());
     }
+
+    uint32_t temp32;
+    uint64_t temp64;
     // time
     if(version == 2) {
-      in.read(buf, 4);
-      _serializedTime.setTimeInSec(ntohl(*reinterpret_cast<uint32_t*>(buf)));
+      in.read(reinterpret_cast<char*>(&temp32), sizeof(temp32));
+      _serializedTime.setTimeInSec(ntohl(temp32));
       // 4bytes reserved
-      in.read(buf, 4);
+      readBytes(buf, buf.size(), in, 4);
     } else {
-      in.read(buf, 8);
-      _serializedTime.setTimeInSec(ntoh64(*reinterpret_cast<uint64_t*>(buf)));
+      in.read(reinterpret_cast<char*>(&temp64), sizeof(temp64));
+      _serializedTime.setTimeInSec(ntoh64(temp64));
     }
   
     // localnode
     // 8bytes reserved
-    in.read(buf, 8);
+    readBytes(buf, buf.size(), in, 8);
     // localnode ID
-    in.read(buf, DHT_ID_LENGTH);
-    SharedHandle<DHTNode> localNode(new DHTNode(reinterpret_cast<const unsigned char*>(buf)));
+    readBytes(buf, buf.size(), in, DHT_ID_LENGTH);
+    SharedHandle<DHTNode> localNode(new DHTNode(buf));
     // 4bytes reserved
-    in.read(buf, 4);
+    readBytes(buf, buf.size(), in, 4);
 
     // number of nodes
-    in.read(buf, 4);
-    uint32_t numNodes = ntohl(*reinterpret_cast<uint32_t*>(buf));
+    in.read(reinterpret_cast<char*>(&temp32), sizeof(temp32));
+    uint32_t numNodes = ntohl(temp32);
     // 4bytes reserved
-    in.read(buf, 4);
+    readBytes(buf, buf.size(), in, 4);
 
     // nodes
     for(size_t i = 0; i < numNodes; ++i) {
@@ -145,37 +155,37 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
       in >> peerInfoLen;
       if(peerInfoLen != 6) {
 	// skip this entry
-	in.read(buf, 42+7+6);
+	readBytes(buf, buf.size(), in, 42+7+6);
 	continue;
       }
       // 7bytes reserved
-      in.read(buf, 7);
+      readBytes(buf, buf.size(), in, 7);
       // 6bytes compact peer info
-      in.read(buf, 6);
+      readBytes(buf, buf.size(), in, 6);
       if(memcmp(zero, buf, 6) == 0) {
 	// skip this entry
-	in.read(buf, 42);
+	readBytes(buf, buf.size(), in, 42);
 	continue;
       }
       std::pair<std::string, uint16_t> peer =
-	PeerMessageUtil::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
+	PeerMessageUtil::unpackcompact(buf);
       if(peer.first.empty()) {
 	// skip this entry
-	in.read(buf, 42);
+	readBytes(buf, buf.size(), in, 42);
 	continue;
       }
       // 2bytes reserved
-      in.read(buf, 2);
+      readBytes(buf, buf.size(), in, 2);
       // 16byte reserved
-      in.read(buf, 16);
+      readBytes(buf, buf.size(), in, 16);
       // localnode ID
-      in.read(buf, DHT_ID_LENGTH);
+      readBytes(buf, buf.size(), in, DHT_ID_LENGTH);
 
-      SharedHandle<DHTNode> node(new DHTNode(reinterpret_cast<const unsigned char*>(buf)));
+      SharedHandle<DHTNode> node(new DHTNode(buf));
       node->setIPAddress(peer.first);
       node->setPort(peer.second);
       // 4bytes reserved
-      in.read(buf, 4);
+      readBytes(buf, buf.size(), in, 4);
 
       _nodes.push_back(node);
     }
