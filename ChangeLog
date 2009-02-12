@@ -1,5 +1,10 @@
 2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use operator T* of array_ptr.
+	* src/OptionParser.cc
+	
+2009-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use localhost instead of 127.0.0.1
 	* test/FtpConnectionTest.cc
 	* test/MSEHandshakeTest.cc

@@ -130,7 +130,7 @@ void OptionParser::parseArg
   std::string optstring = createOptstring(_optionHandlers.begin(),
 					  _optionHandlers.end());
   while(1) {
-    int c = getopt_long(argc, argv, optstring.c_str(), &longOpts[0], 0);
+    int c = getopt_long(argc, argv, optstring.c_str(), longOpts, 0);
     if(c == -1) {
       break;
     }
