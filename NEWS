@@ -21,6 +21,24 @@ html.
 Changes
 -------
 
+* Fixed the segmentation fault during execution of choking algorithm
+  in leecher state because of broken compare operator implementation.
+
+* Open file in binary mode. This fixes the bug that local torrent file
+  doesn't work on win32.
+
+* Added a check to see struct sockaddr_in has sin_len member.  Set
+  struct sockaddr_in.sin_len if HAVE_SOCKADDR_IN_SIN_LEN is defined.
+
+* Fixed possible buffer overrun when writing dht.dat.
+
+* Fix epoll error on the old kernel 2.6.8 or ealier.
+
+* Fixed the bug that adding 0 length filter to BitfieldMan filters 1
+  block. It should not filter anything.
+
+* Fixed broken selected file BitTorrent download.
+
 * Changed the default value of --proxy-method option from 'tunnel' to
   'get'. Use 'tunnel' for HTTPS regardless of --proxy-method option.
 
