@@ -573,7 +573,7 @@ bool RequestGroupMan::addServerStat(const SharedHandle<ServerStat>& serverStat)
 
 bool RequestGroupMan::loadServerStat(const std::string& filename)
 {
-  std::ifstream in(filename.c_str());
+  std::ifstream in(filename.c_str(), std::ios::binary);
   if(!in) {
     _logger->error(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED, filename.c_str());
     return false;
@@ -590,7 +590,7 @@ bool RequestGroupMan::loadServerStat(const std::string& filename)
 bool RequestGroupMan::saveServerStat(const std::string& filename) const
 {
   std::string tempfile = filename+"__temp";
-  std::ofstream out(tempfile.c_str());
+  std::ofstream out(tempfile.c_str(), std::ios::binary);
   if(!out) {
     _logger->error(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
 		   tempfile.c_str());

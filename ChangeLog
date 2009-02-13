@@ -1,5 +1,28 @@
 2009-02-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Open file in binary mode.
+	* src/CookieStorage.cc
+	* src/DHTSetup.cc
+	* src/DHTUtil.cc
+	* src/Netrc.cc
+	* src/NsCookieParser.cc
+	* src/ProtocolDetector.cc
+	* src/RequestGroupMan.cc
+	* src/Signature.cc
+	* src/bencode.cc
+	* src/download_helper.cc
+	* src/option_processing.cc
+	* test/CookieParserTest.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/FileTest.cc
+	* test/GZipDecoderTest.cc
+	* test/RequestGroupManTest.cc
+	* test/SignatureTest.cc
+	* test/SingleFileAllocationIteratorTest.cc
+	* test/UriListParserTest.cc
+
+2009-02-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed operator[] because it is ambiguous with built-in []
 	operator.
 	* src/array_fun.h

@@ -439,7 +439,7 @@ BDE decode(const unsigned char* data, size_t length) throw(RecoverableException)
 
 BDE decodeFromFile(const std::string& filename) throw(RecoverableException)
 {
-  std::ifstream f(filename.c_str());
+  std::ifstream f(filename.c_str(), std::ios::binary);
   if(f) {
     return decode(f);
   } else {

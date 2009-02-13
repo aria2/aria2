@@ -93,7 +93,7 @@ void RequestGroupManTest::testSaveServerStat()
 void RequestGroupManTest::testLoadServerStat()
 {
   File f("/tmp/aria2_RequestGroupManTest_testLoadServerStat");
-  std::ofstream o(f.getPath().c_str());
+  std::ofstream o(f.getPath().c_str(), std::ios::binary);
   o << "host=localhost, protocol=http, dl_speed=0, last_updated=1219505257,"
     << "status=OK";
   o.close();

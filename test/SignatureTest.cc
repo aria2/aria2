@@ -36,7 +36,7 @@ void SignatureTest::testSave()
   } 
   CPPUNIT_ASSERT(sig.save(filepath));
   {
-    std::ifstream in(filepath.c_str());
+    std::ifstream in(filepath.c_str(), std::ios::binary);
     std::string fileContent;
     in >> fileContent;
     CPPUNIT_ASSERT_EQUAL(sig.getBody(), fileContent);

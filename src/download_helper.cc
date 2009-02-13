@@ -300,7 +300,7 @@ void createRequestGroupForUriList
 	(StringFormat(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(),
 		      "No such file").str());
     }
-    std::ifstream f(op->get(PREF_INPUT_FILE).c_str());
+    std::ifstream f(op->get(PREF_INPUT_FILE).c_str(), std::ios::binary);
     createRequestGroupForUriList(result, op, f);
   }
 }

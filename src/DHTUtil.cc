@@ -64,7 +64,7 @@ void DHTUtil::generateRandomData(unsigned char* data, size_t length)
     }
   }
 #else
-  std::ifstream i("/dev/urandom");
+  std::ifstream i("/dev/urandom", std::ios::binary);
   i.read(data, length);
 #endif // HAVE_LIBSSL
 }

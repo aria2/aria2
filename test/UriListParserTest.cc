@@ -40,7 +40,7 @@ std::string UriListParserTest::list2String(const std::deque<std::string>& src)
 
 void UriListParserTest::testHasNext()
 {
-  std::ifstream in("filelist1.txt");
+  std::ifstream in("filelist1.txt", std::ios::binary);
 
   UriListParser flp(in);
 

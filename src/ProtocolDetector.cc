@@ -55,7 +55,7 @@ bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
   if(!File(uri).isFile()) {
     return false;
   }
-  std::ifstream in(uri.c_str());
+  std::ifstream in(uri.c_str(), std::ios::binary);
   if(in) {
     char head;
     in >> head;
@@ -70,7 +70,7 @@ bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
   if(!File(uri).isFile()) {
     return false;
   }
-  std::ifstream in(uri.c_str());
+  std::ifstream in(uri.c_str(), std::ios::binary);
   if(in) {
     char head[6];
     in >> std::setw(6) >> head;

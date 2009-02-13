@@ -96,7 +96,7 @@ void DHTSetup::setup(std::deque<Command*>& commands,
     std::string dhtFile = option->get(PREF_DHT_FILE_PATH);
     if(File(dhtFile).isFile()) {
       try {
-	std::ifstream in(dhtFile.c_str());
+	std::ifstream in(dhtFile.c_str(), std::ios::binary);
 	in.exceptions(std::ios::failbit);
 	deserializer.deserialize(in);
 	localNode = deserializer.getLocalNode();

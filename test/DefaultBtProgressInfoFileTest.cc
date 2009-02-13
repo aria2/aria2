@@ -235,7 +235,7 @@ void DefaultBtProgressInfoFileTest::testSave()
   infoFile.save();
 
   // read and validate
-  std::ifstream in(infoFile.getFilename().c_str());
+  std::ifstream in(infoFile.getFilename().c_str(), std::ios::binary);
 
   //in.exceptions(ios::failbit);
 
@@ -468,7 +468,7 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
   infoFile.save();
   
   // read and validate
-  std::ifstream in(infoFile.getFilename().c_str());
+  std::ifstream in(infoFile.getFilename().c_str(), std::ios::binary);
 
   //in.exceptions(ios::failbit);
 

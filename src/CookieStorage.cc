@@ -142,7 +142,7 @@ void CookieStorage::load(const std::string& filename)
 {
   char header[16]; // "SQLite format 3" plus \0
   {
-    std::ifstream s(filename.c_str());
+    std::ifstream s(filename.c_str(), std::ios::binary);
     s.get(header, sizeof(header));
     if(s.bad()) {
       throw RecoverableException

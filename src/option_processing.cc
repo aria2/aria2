@@ -126,7 +126,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
 	ucfname;
 
       if(File(cfname).isFile()) {
-	std::ifstream cfstream(cfname.c_str());
+	std::ifstream cfstream(cfname.c_str(), std::ios::binary);
 	try {
 	  oparser.parse(op, cfstream);
 	} catch(OptionHandlerException& e) {

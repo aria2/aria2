@@ -194,7 +194,7 @@ void FileTest::testGetBasename()
 void FileTest::testRenameTo()
 {
   std::string fname = "FileTest_testRenameTo.txt";
-  std::ofstream of(fname.c_str());
+  std::ofstream of(fname.c_str(), std::ios::binary);
   of.close();
 
   File f(fname);

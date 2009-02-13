@@ -78,7 +78,7 @@ void CookieParserTest::testParse()
 
 void CookieParserTest::testParse_file()
 {
-  std::ifstream f("cookietest.txt");
+  std::ifstream f("cookietest.txt", std::ios::binary);
 
   Cookies cookies = CookieParser().parse(f);
 

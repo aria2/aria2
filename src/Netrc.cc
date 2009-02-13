@@ -78,7 +78,7 @@ void Netrc::skipMacdef(std::ifstream& f) const
 void Netrc::parse(const std::string& path)
 {
   authenticators.clear();
-  std::ifstream f(path.c_str());
+  std::ifstream f(path.c_str(), std::ios::binary);
   
   if(!f) {
     throw RecoverableException

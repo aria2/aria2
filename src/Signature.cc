@@ -77,7 +77,7 @@ bool Signature::save(const std::string& filepath) const
   if(File(filepath).exists()) {
     return false;
   }
-  std::ofstream out(filepath.c_str());
+  std::ofstream out(filepath.c_str(), std::ios::binary);
   try {
     out.exceptions(std::ios::failbit);
     out << _body;
