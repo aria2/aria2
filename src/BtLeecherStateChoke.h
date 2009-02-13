@@ -36,9 +36,11 @@
 #define _D_BT_LEECHER_STATE_CHOKE_H_
 
 #include "common.h"
+
+#include <deque>
+
 #include "SharedHandle.h"
 #include "TimeA2.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -53,10 +55,39 @@ private:
 
   Logger* _logger;
 
-  void plannedOptimisticUnchoke(std::deque<Peer*>& peers);
+  class PeerEntry {
+  private:
+    SharedHandle<Peer> _peer;
+    unsigned int _downloadSpeed;
+    bool _regularUnchoker;
+  public:
+    PeerEntry(const SharedHandle<Peer>& peer, const struct timeval& now);
 
-  void regularUnchoke(std::deque<Peer*>& peers);
+    bool operator<(const PeerEntry& rhs) const;
 
+    const SharedHandle<Peer>& getPeer() const;
+
+    unsigned int getDownloadSpeed() const;
+
+    bool isRegularUnchoker() const;
+
+    bool isSnubbing() const;
+
+    void enableChokingRequired();
+
+    void disableChokingRequired();
+
+    void enableOptUnchoking();
+
+    void disableOptUnchoking();
+  };
+
+  void plannedOptimisticUnchoke(std::deque<PeerEntry>& peerEntries);
+
+  void regularUnchoke(std::deque<PeerEntry>& peerEntries);
+
+  friend class PeerFilter;
+  friend class BtLeecherStateChokeGenPeerEntry;
 public:
   BtLeecherStateChoke();
 

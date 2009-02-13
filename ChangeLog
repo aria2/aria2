@@ -1,5 +1,13 @@
 2009-02-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the segmentation fault during execution of choking algorithm
+	in leecher state because of broken compare operator
+	implementation.
+	* src/BtLeecherStateChoke.cc
+	* src/BtLeecherStateChoke.h
+
+2009-02-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Open file in binary mode.
 	* src/CookieStorage.cc
 	* src/DHTSetup.cc

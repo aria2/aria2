@@ -51,6 +51,58 @@ BtLeecherStateChoke::BtLeecherStateChoke():
 
 BtLeecherStateChoke::~BtLeecherStateChoke() {}
 
+BtLeecherStateChoke::PeerEntry::PeerEntry
+(const SharedHandle<Peer>& peer, const struct timeval& now):
+  _peer(peer), _downloadSpeed(peer->calculateDownloadSpeed(now)),
+  // peer must be interested to us and sent block in the last 30 seconds
+  _regularUnchoker(peer->peerInterested() &&
+		   !peer->getLastDownloadUpdate().elapsed(30)) {}
+
+const SharedHandle<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
+{
+  return _peer;
+}
+
+unsigned int BtLeecherStateChoke::PeerEntry::getDownloadSpeed() const
+{
+  return _downloadSpeed;
+}
+
+bool BtLeecherStateChoke::PeerEntry::isRegularUnchoker() const
+{
+  return _regularUnchoker;
+}
+
+void BtLeecherStateChoke::PeerEntry::enableChokingRequired()
+{
+  _peer->chokingRequired(true);
+}
+
+void BtLeecherStateChoke::PeerEntry::disableChokingRequired()
+{
+  _peer->chokingRequired(false);
+}
+
+void BtLeecherStateChoke::PeerEntry::enableOptUnchoking()
+{
+  _peer->optUnchoking(true);
+}
+
+void BtLeecherStateChoke::PeerEntry::disableOptUnchoking()
+{
+  _peer->optUnchoking(false);
+}
+
+bool BtLeecherStateChoke::PeerEntry::isSnubbing() const
+{
+  return _peer->snubbing();
+}
+
+bool BtLeecherStateChoke::PeerEntry::operator<(const PeerEntry& peerEntry) const
+{
+  return _downloadSpeed > peerEntry._downloadSpeed;
+}
+
 class PeerFilter {
 private:
   bool _amChoking;
@@ -60,94 +112,88 @@ public:
     _amChoking(amChoking),
     _peerInterested(peerInterested) {}
 
-  bool operator()(const Peer* peer) const
+  bool operator()(const BtLeecherStateChoke::PeerEntry& peerEntry) const
   {
-    return peer->amChoking() == _amChoking &&
-      peer->peerInterested() == _peerInterested;
+    return peerEntry.getPeer()->amChoking() == _amChoking &&
+      peerEntry.getPeer()->peerInterested() == _peerInterested;
   }
 };
 
-class RegularUnchoker {
-public:
-  bool operator()(const Peer* peer) const
-  {
-    // peer must be interested to us and sent block in the last 30 seconds
-    return peer->peerInterested() && !peer->getLastDownloadUpdate().elapsed(30);
-  }
-};
-
-class DownloadFaster {
-private:
-  const struct timeval _now;
-public:
-
-  DownloadFaster(const struct timeval& now):_now(now) {}
-
-  bool operator() (Peer* left, Peer* right) const
-  {
-    return left->calculateDownloadSpeed(_now) > right->calculateDownloadSpeed(_now);
-  }
-};
-
-class SnubbedPeer {
-public:
-  bool operator() (const Peer* peer) const
-  {
-    return peer->snubbing();
-  }
-};
-
-void BtLeecherStateChoke::plannedOptimisticUnchoke(std::deque<Peer*>& peers)
+void BtLeecherStateChoke::plannedOptimisticUnchoke
+(std::deque<PeerEntry>& peerEntries)
 {
-  std::for_each(peers.begin(), peers.end(),
-		std::bind2nd(std::mem_fun((void (Peer::*)(bool))&Peer::optUnchoking), false));
+  std::for_each(peerEntries.begin(), peerEntries.end(),
+		std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
   
-  std::deque<Peer*>::iterator i = std::partition(peers.begin(), peers.end(), PeerFilter(true, true));
-  if(i != peers.begin()) {
-    std::random_shuffle(peers.begin(), i,
+  std::deque<PeerEntry>::iterator i =
+    std::partition(peerEntries.begin(), peerEntries.end(),
+		   PeerFilter(true, true));
+  if(i != peerEntries.begin()) {
+    std::random_shuffle(peerEntries.begin(), i,
 			*(SimpleRandomizer::getInstance().get()));
-    (*peers.begin())->optUnchoking(true);
-    _logger->info("POU: %s", (*peers.begin())->ipaddr.c_str());
+    (*peerEntries.begin()).enableOptUnchoking();
+    _logger->info("POU: %s", (*peerEntries.begin()).getPeer()->ipaddr.c_str());
   }
 }
 
-void BtLeecherStateChoke::regularUnchoke(std::deque<Peer*>& peers)
+void BtLeecherStateChoke::regularUnchoke(std::deque<PeerEntry>& peerEntries)
 {
-  std::deque<Peer*>::iterator rest = std::partition(peers.begin(), peers.end(), RegularUnchoker());
+  std::deque<PeerEntry>::iterator rest =
+    std::partition(peerEntries.begin(), peerEntries.end(),
+		   std::mem_fun_ref(&PeerEntry::isRegularUnchoker));
   
   struct timeval now;
   gettimeofday(&now, 0);
 
-  std::sort(peers.begin(), rest, DownloadFaster(now));
+  std::sort(peerEntries.begin(), rest);
 
   // the number of regular unchokers
   int count = 3;
 
   bool fastOptUnchoker = false;
-  std::deque<Peer*>::iterator peerIter = peers.begin();
+  std::deque<PeerEntry>::iterator peerIter = peerEntries.begin();
   for(;peerIter != rest && count; ++peerIter, --count) {
-    (*peerIter)->chokingRequired(false);
-    _logger->info("RU: %s, dlspd=%u", (*peerIter)->ipaddr.c_str(), (*peerIter)->calculateDownloadSpeed(now));
-    if((*peerIter)->optUnchoking()) {
+    (*peerIter).disableChokingRequired();
+    _logger->info("RU: %s, dlspd=%u",
+		  (*peerIter).getPeer()->ipaddr.c_str(),
+		  (*peerIter).getDownloadSpeed());
+    if((*peerIter).getPeer()->optUnchoking()) {
       fastOptUnchoker = true;
-      (*peerIter)->optUnchoking(false);
+      (*peerIter).disableOptUnchoking();
     }
   }
   if(fastOptUnchoker) {
-    std::random_shuffle(peerIter, peers.end(),
+    std::random_shuffle(peerIter, peerEntries.end(),
 			*(SimpleRandomizer::getInstance().get()));
-    for(std::deque<Peer*>::iterator i = peerIter; i != peers.end(); ++i) {
-      if((*i)->peerInterested()) {
-	(*i)->optUnchoking(true);
-	_logger->info("OU: %s", (*i)->ipaddr.c_str());
+    for(std::deque<PeerEntry>::iterator i = peerIter; i != peerEntries.end();
+	++i) {
+      if((*i).getPeer()->peerInterested()) {
+	(*i).enableOptUnchoking();
+	_logger->info("OU: %s", (*i).getPeer()->ipaddr.c_str());
 	break;
       } else {
-	(*i)->chokingRequired(false);
-	_logger->info("OU: %s", (*i)->ipaddr.c_str());
+	(*i).disableChokingRequired();
+	_logger->info("OU: %s", (*i).getPeer()->ipaddr.c_str());
       }
     }
   }
 }
+
+class BtLeecherStateChokeGenPeerEntry {
+private:
+  struct timeval _now;
+public:
+  BtLeecherStateChokeGenPeerEntry()
+  {
+    gettimeofday(&_now, 0);
+  }
+
+  BtLeecherStateChoke::PeerEntry operator()
+  (const SharedHandle<Peer>& peer) const
+  {
+    return BtLeecherStateChoke::PeerEntry(peer, _now);
+  }
+};
 
 void
 BtLeecherStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet)
@@ -155,21 +201,23 @@ BtLeecherStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet
   _logger->info("Leecher state, %d choke round started", _round);
   _lastRound.reset();
 
-  std::deque<Peer*> peers;
-  std::transform(peerSet.begin(), peerSet.end(), std::back_inserter(peers),
-		 std::mem_fun_ref(&SharedHandle<Peer>::get));
+  std::deque<PeerEntry> peerEntries;
+  std::transform(peerSet.begin(), peerSet.end(),
+		 std::back_inserter(peerEntries),
+		 BtLeecherStateChokeGenPeerEntry());
 
-  peers.erase(std::remove_if(peers.begin(), peers.end(), SnubbedPeer()),
-	      peers.end());
+  peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
+				   std::mem_fun_ref(&PeerEntry::isSnubbing)),
+		    peerEntries.end());
 	      
-  std::for_each(peers.begin(), peers.end(),
-		std::bind2nd(std::mem_fun((void (Peer::*)(bool))&Peer::chokingRequired), true));
+  std::for_each(peerEntries.begin(), peerEntries.end(),
+		std::mem_fun_ref(&PeerEntry::enableChokingRequired));
 
   // planned optimistic unchoke
   if(_round == 0) {
-    plannedOptimisticUnchoke(peers);
+    plannedOptimisticUnchoke(peerEntries);
   }
-  regularUnchoke(peers);
+  regularUnchoke(peerEntries);
 
   if(++_round == 3) {
     _round = 0;
