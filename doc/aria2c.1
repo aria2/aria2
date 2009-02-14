@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 02/07/2009
+.\"      Date: 02/14/2009
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "02/07/2009" "" ""
+.TH "ARIA2C" "1" "02/14/2009" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -1584,7 +1584,9 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
 .RE
 .SH "FILES"
 .SS "aria2\&.conf"
-User configuration file\&. It must be placed under $HOME/\&.aria2 and must be named aria2\&.conf\&. In each line, there is 1 parameter whose syntax is name=value pair, where name is the long command\-line option name without \fI\-\-\fR prefix\&. The lines beginning \fI#\fR are treated as comments\&.
+By default, aria2 parses \fI$HOME/\&.aria2/aria2\&.conf\fR as a configuraiton file\&. You can specify the path to configuration file using \fB\-\-conf\-path\fR option\&. If you don\'t want to use the configuraitonf file, use \fB\-\-no\-conf\fR option\&.
+.sp
+The configuration file is a text file and has 1 option per each line\&. In each line, you can specify name\-value pair in the format: NAME=VALUE, where name is the long command\-line option name without "\-\-" prefix\&. You can use same syntax for the command\-line option\&. The lines beginning "#" are treated as comments\&.
 .sp
 .sp
 .RS 4

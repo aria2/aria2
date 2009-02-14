@@ -2022,11 +2022,15 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 <h2 id="_files">FILES</h2>
 <div class="sectionbody">
 <h3 id="_aria2_conf">aria2.conf</h3><div style="clear:left"></div>
-<div class="para"><p>User configuration file.
-It must be placed under $HOME/.aria2 and must be named aria2.conf.
-In each line, there is 1 parameter whose syntax is name=value pair,
-where name is the long command-line option name without <em>--</em> prefix.
-The lines beginning <em>#</em> are treated as comments.</p></div>
+<div class="para"><p>By default, aria2 parses <em>$HOME/.aria2/aria2.conf</em> as a configuraiton
+file. You can specify the path to configuration file using
+<strong>--conf-path</strong> option.  If you don't want to use the configuraitonf
+file, use <strong>--no-conf</strong> option.</p></div>
+<div class="para"><p>The configuration file is a text file and has 1 option per each
+line. In each line, you can specify name-value pair in the format:
+NAME=VALUE, where name is the long command-line option name without
+"--" prefix. You can use same syntax for the command-line option. The
+lines beginning "#" are treated as comments.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt># sample configuration file for aria2c
@@ -2223,7 +2227,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-07 23:00:30 JST
+Last updated 2009-02-14 18:27:19 JST
 </div>
 </div>
 </body>
