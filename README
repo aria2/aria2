@@ -225,58 +225,8 @@ netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
 support, specify -n command-line option.  Your .netrc file should have
 correct permissions(600).
 
-SERVER PERFORMANCE PROFILE
---------------------------
-This section describes the format of server performance profile.  The
-file is plain text and each line has several NAME=VALUE pair,
-delimited by comma.  Currently following NAMEs are recognized:
-
-host::
-  Hostname of the server. Required.
-
-protocol::
-  Protocol for this profile, such as ftp, http. Required.
-
-dl_speed::
-  The average download speed observed in the previous download in
-  bytes per sec.  Required.
-
-last_updated::
-  Last contact time in GMT with this server, specified in the seconds
-  from the Epoch. Required.
-
-status::
-  ERROR is set when server cannot be reached or out-of-service or
-  timeout occurred. Otherwise, OK is set.
-
-Those fields must exist in one line. The order of the fields is not
-significant.  You can put pairs other than above but they are simply
-ignored.
-
-An example is follow:
---------------------------------------------------------------------------------
-host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
-host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
---------------------------------------------------------------------------------
-
-Configuration file
-------------------
-
-By default, aria2 parses "$HOME/.aria2/aria2.conf" as a configuraiton
-file. You can specify the path to configuration file using
-\--conf-path option.  If you don't want to use the configuraitonf
-file, use \--no-conf option.
-
-The configuration file is a text file and has 1 option per each
-line. In each line, you can specify name-value pair in the format:
-NAME=VALUE, where name is the long command-line option name without
-"\--" prefix. You can use same syntax for the command-line option. The
-lines beginning "#" are treated as comments.
-
-Example:
---------------------------------------
-# sample configuration file for aria2c
-listen-port=60000
-seed-ratio=1.0
-max-upload-limit=40K
----------------------------------------
+References
+----------
+ * man aria2c
+ * http://aria2.sourceforge.net/
+ * https://apps.sourceforge.net/trac/aria2/wiki

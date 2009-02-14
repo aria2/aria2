@@ -809,89 +809,29 @@ not saved.</p></div>
 support, specify -n command-line option.  Your .netrc file should have
 correct permissions(600).</p></div>
 </div>
-<h2 id="_server_performance_profile">8. SERVER PERFORMANCE PROFILE</h2>
+<h2 id="_references">8. References</h2>
 <div class="sectionbody">
-<div class="para"><p>This section describes the format of server performance profile.  The
-file is plain text and each line has several NAME=VALUE pair,
-delimited by comma.  Currently following NAMEs are recognized:</p></div>
-<div class="vlist"><dl>
-<dt>
-host
-</dt>
-<dd>
+<div class="ilist"><ul>
+<li>
 <p>
-  Hostname of the server. Required.
+man aria2c
 </p>
-</dd>
-<dt>
-protocol
-</dt>
-<dd>
+</li>
+<li>
 <p>
-  Protocol for this profile, such as ftp, http. Required.
+<a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a>
 </p>
-</dd>
-<dt>
-dl_speed
-</dt>
-<dd>
+</li>
+<li>
 <p>
-  The average download speed observed in the previous download in
-  bytes per sec.  Required.
+<a href="https://apps.sourceforge.net/trac/aria2/wiki">https://apps.sourceforge.net/trac/aria2/wiki</a>
 </p>
-</dd>
-<dt>
-last_updated
-</dt>
-<dd>
-<p>
-  Last contact time in GMT with this server, specified in the seconds
-  from the Epoch. Required.
-</p>
-</dd>
-<dt>
-status
-</dt>
-<dd>
-<p>
-  ERROR is set when server cannot be reached or out-of-service or
-  timeout occurred. Otherwise, OK is set.
-</p>
-</dd>
-</dl></div>
-<div class="para"><p>Those fields must exist in one line. The order of the fields is not
-significant.  You can put pairs other than above but they are simply
-ignored.</p></div>
-<div class="para"><p>An example is follow:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt>host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
-host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR</tt></pre>
-</div></div>
-</div>
-<h2 id="_configuration_file">9. Configuration file</h2>
-<div class="sectionbody">
-<div class="para"><p>By default, aria2 parses "$HOME/.aria2/aria2.conf" as a configuraiton
-file. You can specify the path to configuration file using
---conf-path option.  If you don't want to use the configuraitonf
-file, use --no-conf option.</p></div>
-<div class="para"><p>The configuration file is a text file and has 1 option per each
-line. In each line, you can specify name-value pair in the format:
-NAME=VALUE, where name is the long command-line option name without
-"--" prefix. You can use same syntax for the command-line option. The
-lines beginning "#" are treated as comments.</p></div>
-<div class="para"><p>Example:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt># sample configuration file for aria2c
-listen-port=60000
-seed-ratio=1.0
-max-upload-limit=40K</tt></pre>
-</div></div>
+</li>
+</ul></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-14 18:26:21 JST
+Last updated 2009-02-14 18:47:11 JST
 </div>
 </div>
 </body>
