@@ -1,5 +1,10 @@
 2009-02-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Reorganized man page based on man man-pages.
+	* doc/aria2c.1.txt
+
+2009-02-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed SERVER PERFORMANCE PROFILE and Configuration file section
 	because same documents are available in man page.  Added
 	References section.

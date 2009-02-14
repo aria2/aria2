@@ -377,7 +377,14 @@ ARIA2C(1) Manual Page
 </div>
 <h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
-<div class="para"><p>aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. aria2 can download a file from multiple sources/protocols and tries to utilize your maximum download bandwidth. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.</p></div>
+<div class="para"><p>aria2 is a utility for downloading files. The supported protocols are
+HTTP(S), FTP, BitTorrent, and Metalink. aria2 can download a file from
+multiple sources/protocols and tries to utilize your maximum download
+bandwidth. It supports downloading a file from HTTP(S)/FTP and
+BitTorrent at the same time, while the data downloaded from
+HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's
+chunk checksums, aria2 automatically validates chunks of data while
+downloading a file like BitTorrent.</p></div>
 </div>
 <h2 id="_options">OPTIONS</h2>
 <div class="sectionbody">
@@ -401,7 +408,7 @@ ARIA2C(1) Manual Page
   Reads input from stdin when <em>-</em> is specified.
   The additional <strong>out</strong> and <strong>dir</strong> options can be specified after each line of
   URIs. This optional line must start with white space(s).
-  See INPUT FILE section for details.
+  See <strong>Input File</strong> subsection for details.
 </p>
 </dd>
 <dt>
@@ -589,7 +596,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <p>
   Specify the filename to which performance profile of the servers is
   saved. You can load saved data using <strong>--server-stat-if</strong> option. See
-  SERVER PERFORMANCE PROFILE section below for file format.
+  <strong>Server Performance Profile</strong> subsection below for file format.
 </p>
 </dd>
 <dt>
@@ -599,8 +606,8 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <p>
   Specify the filename to load performance profile of the servers. The
   loaded data will be used in some URI selector such as <em>feedback</em>.
-  See also <strong>--uri-selector</strong> option. See SERVER PERFORMANCE PROFILE
-  section below for file format.
+  See also <strong>--uri-selector</strong> option. See <strong>Server Performance Profile</strong>
+  subsection below for file format.
 </p>
 </dd>
 <dt>
@@ -1540,7 +1547,7 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 </dl></div>
-<h3 id="_options_that_take_an_optional_argument">OPTIONS THAT TAKE AN OPTIONAL ARGUMENT</h3><div style="clear:left"></div>
+<h3 id="_options_that_take_an_optional_argument">Options That Take An Optional Argument</h3><div style="clear:left"></div>
 <div class="para"><p>The options that have its argument surrounded by square brackets([])
 take an optional argument. Usually omiting the argument is evaluated to <em>true</em>.
 If you use short form of these options(such as <em>-V</em>) and give
@@ -1566,8 +1573,309 @@ only single file torrent can be integrated with HTTP(S)/FTP.</p></div>
 contains "&amp;" or any characters that have special meaning in shell.</td>
 </tr></table>
 </div>
+<h3 id="_resuming_download">Resuming Download</h3><div style="clear:left"></div>
+<div class="para"><p>Usually, you can resume transfer by just issuing same command(aria2c
+URL) if the previous transfer is made by aria2.</p></div>
+<div class="para"><p>If the previous transfer is made by a browser or wget like sequential
+download manager, then use -c option to continue the transfer(aria2c
+<strong>-c</strong> URL).</p></div>
 </div>
-<h2 id="_examples">EXAMPLES</h2>
+<h2 id="_exit_status">EXIT STATUS</h2>
+<div class="sectionbody">
+<div class="para"><p>Because aria2 can handle multiple downloads at once, it encounters
+lots of errors in a session.  aria2 returns the following exit status
+based on the last error encountered.</p></div>
+<div class="vlist"><dl>
+<dt>
+<strong>0</strong>
+</dt>
+<dd>
+<p>
+  If all downloads are successful.
+</p>
+</dd>
+<dt>
+<strong>1</strong>
+</dt>
+<dd>
+<p>
+  If an unknown error occurs.
+</p>
+</dd>
+<dt>
+<strong>2</strong>
+</dt>
+<dd>
+<p>
+  If time out occurs.
+</p>
+</dd>
+<dt>
+<strong>3</strong>
+</dt>
+<dd>
+<p>
+  If a resource is not found.
+</p>
+</dd>
+<dt>
+<strong>4</strong>
+</dt>
+<dd>
+<p>
+  If aria2 sees the specfied number of "resource not found" error.
+  See <strong>--max-file-not-found</strong> option).
+</p>
+</dd>
+<dt>
+<strong>5</strong>
+</dt>
+<dd>
+<p>
+  If a download aborts because download speed is too slow.
+  See <strong>--lowest-speed-limit</strong> option)
+</p>
+</dd>
+<dt>
+<strong>6</strong>
+</dt>
+<dd>
+<p>
+  If network problem occurs.
+</p>
+</dd>
+<dt>
+<strong>7</strong>
+</dt>
+<dd>
+<p>
+  If there are unfinished downloads. This error is only reported if
+  all finished downloads are successful and there are unfinished
+  downloads in a queue when aria2 exits by pressing Ctrl-C by an user
+  or sending TERM or INT signal.
+</p>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">An error occurred in a finished download will not be reported
+as exit status.</td>
+</tr></table>
+</div>
+</div>
+<h2 id="_environment">ENVIRONMENT</h2>
+<div class="sectionbody">
+<div class="para"><p>aria2 recognizes the following environment variables.</p></div>
+<div class="vlist"><dl>
+<dt>
+http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use in HTTP.
+  Overrides http-proxy value in configuration file.
+  The command-line option <strong>--http-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use in HTTPS.
+  Overrides https-proxy value in configuration file.
+  The command-line option <strong>--https-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use in FTP.
+  Overrides ftp-proxy value in configuration file.
+  The command-line option <strong>--ftp-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+</dt>
+<dd>
+<p>
+  Specify proxy server for use if no protocol-specific proxy is specified.
+  Overrides all-proxy value in configuration file.
+  The command-line option <strong>--all-proxy</strong> overrides this value.
+</p>
+</dd>
+<dt>
+no_proxy [DOMAIN,&#8230;]
+</dt>
+<dd>
+<p>
+  Specify comma-separated hostname or domains to which proxy should not be used.
+  Overrides no-proxy value in configuration file.
+  The command-line option <strong>--no-proxy</strong> overrides this value.
+</p>
+</dd>
+</dl></div>
+</div>
+<h2 id="_files">FILES</h2>
+<div class="sectionbody">
+<h3 id="_aria2_conf">aria2.conf</h3><div style="clear:left"></div>
+<div class="para"><p>By default, aria2 parses <em>$HOME/.aria2/aria2.conf</em> as a configuraiton
+file. You can specify the path to configuration file using
+<strong>--conf-path</strong> option.  If you don't want to use the configuraitonf
+file, use <strong>--no-conf</strong> option.</p></div>
+<div class="para"><p>The configuration file is a text file and has 1 option per each
+line. In each line, you can specify name-value pair in the format:
+NAME=VALUE, where name is the long command-line option name without
+"--" prefix. You can use same syntax for the command-line option. The
+lines beginning "#" are treated as comments.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt># sample configuration file for aria2c
+listen-port=60000
+dht-listen-port=60000
+seed-ratio=1.0
+max-upload-limit=50K
+ftp-pasv=true</tt></pre>
+</div></div>
+<h3 id="_dht_dat">dht.dat</h3><div style="clear:left"></div>
+<div class="para"><p>By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p></div>
+<h3 id="_control_file">Control File</h3><div style="clear:left"></div>
+<div class="para"><p>aria2 uses a control file to track the progress of a download.  A
+control file is placed in the same directory as the downloading file
+and its filename is the filename of downloading file with ".aria2"
+appended.  For example, if you are downloading file.zip, then the
+control file should be file.zip.aria2.  (There is a exception for this
+naming convention.  If you are downloading a multi torrent, its
+control file is the "top directory" name of the torrent with ".aria2"
+appended.  The "top directory" name is a value of "name" key in "info"
+directory in a torrent file.)</p></div>
+<div class="para"><p>Usually a control file is deleted once download completed.  If aria2
+decides that download cannot be resumed(for example, when downloading
+a file from a HTTP server which doesn't support resume), a control
+file is not created.</p></div>
+<div class="para"><p>Normally if you lose a control file, you cannot resume download.  But
+if you have a torrent or metalink with chunk checksums for the file,
+you can resume the download without a control file by giving -V option
+to aria2c in command-line.</p></div>
+<h3 id="_input_file">Input File</h3><div style="clear:left"></div>
+<div class="para"><p>The input file can contain a list of URIs for aria2 to download.  You
+can specify multiple URIs for a single entity: separate URIs on a
+single line using the TAB character.</p></div>
+<div class="para"><p>Each line is treated as if it is provided in command-line argument.
+Therefore they are affected by <strong>-Z</strong> and <strong>-P</strong> options.  The additional
+<strong>out</strong> and <strong>dir</strong> options can be specified after each line of URIs. This
+optional line must start with white space(s).</p></div>
+<div class="para"><p>For example, the content of uri.txt is</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>http://server/file.iso http://mirror/file.iso
+  dir=/iso_images
+  out=file.img
+http://foo/bar</tt></pre>
+</div></div>
+<div class="para"><p>If aria2 is executed with <strong>-i</strong> uri.txt <strong>-d</strong> /tmp options, then
+<em>file.iso</em> is saved as <em>/iso_images/file.img</em> and it is downloaded
+from http://server/file.iso and http://mirror/file.iso.  The file
+<em>bar</em> is downloaded from http://foo/bar and saved as <em>/tmp/bar</em>.</p></div>
+<div class="para"><p>In some cases, <strong>out</strong> parameter has no effect.  See note of <strong>--out</strong>
+option for the restrictions.</p></div>
+<h3 id="_server_performance_profile">Server Performance Profile</h3><div style="clear:left"></div>
+<div class="para"><p>This section describes the format of server performance profile.  The
+file is plain text and each line has several NAME=VALUE pair,
+delimited by comma.  Currently following NAMEs are recognized:</p></div>
+<div class="vlist"><dl>
+<dt>
+host
+</dt>
+<dd>
+<p>
+  Hostname of the server. Required.
+</p>
+</dd>
+<dt>
+protocol
+</dt>
+<dd>
+<p>
+  Protocol for this profile, such as ftp, http. Required.
+</p>
+</dd>
+<dt>
+dl_speed
+</dt>
+<dd>
+<p>
+  The average download speed observed in the previous download in
+  bytes per sec.  Required.
+</p>
+</dd>
+<dt>
+sc_avg_speed
+</dt>
+<dd>
+<p>
+  The average download speed observed in the previous download in
+  bytes per sec. This value is only updated if the download is done in
+  single connection environment and only used by
+  AdaptiveURISelector. Optional.
+</p>
+</dd>
+<dt>
+mc_avg_speed
+</dt>
+<dd>
+<p>
+  The average download speed observed in the previous download in
+  bytes per sec. This value is only updated if the download is done in
+  multi connection environment and only used by
+  AdaptiveURISelector. Optional.
+</p>
+</dd>
+<dt>
+counter
+</dt>
+<dd>
+<p>
+  How many times the server is used. Currently this value is only used
+  by AdaptiveURISelector.  Optional.
+</p>
+</dd>
+<dt>
+last_updated
+</dt>
+<dd>
+<p>
+  Last contact time in GMT with this server, specified in the seconds
+  from the Epoch. Required.
+</p>
+</dd>
+<dt>
+status
+</dt>
+<dd>
+<p>
+  ERROR is set when server cannot be reached or out-of-service or
+  timeout occurred. Otherwise, OK is set.
+</p>
+</dd>
+</dl></div>
+<div class="para"><p>Those fields must exist in one line. The order of the fields is not
+significant. You can put pairs other than the above; they are simply
+ignored.</p></div>
+<div class="para"><p>An example follows:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
+host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR</tt></pre>
+</div></div>
+</div>
+<h2 id="_example">EXAMPLE</h2>
 <div class="sectionbody">
 <h3 id="_http_ftp_segmented_download">HTTP/FTP Segmented Download</h3><div style="clear:left"></div>
 <h4 id="_download_a_file">Download a file</h4>
@@ -1646,7 +1954,7 @@ contains "&amp;" or any characters that have special meaning in shell.</td>
 </td>
 <td class="content">See <strong>--http-proxy</strong>, <strong>--https-proxy</strong>, <strong>--ftp-proxy</strong> and <strong>--all-proxy</strong> for
 details.
-You can specify proxy in the environment variables. See ENVIRONMENT section.</td>
+You can specify proxy in the environment variables. See <strong>ENVIRONMENT</strong> section.</td>
 </tr></table>
 </div>
 <h4 id="_proxy_with_authorization">Proxy with authorization</h4>
@@ -1901,337 +2209,15 @@ checksums.</td>
 <pre><tt>aria2c --bt-min-crypto-level=arc4 --bt-require-crypto=true file.torrent</tt></pre>
 </div></div>
 </div>
-<h2 id="_resume_download">RESUME DOWNLOAD</h2>
-<div class="sectionbody">
-<div class="para"><p>Usually, you can resume transfer by just issuing same command(aria2c URL)
-if the previous transfer is made by aria2.</p></div>
-<div class="para"><p>If the previous transfer is made by a browser or wget like sequential
-download manager, then use -c option to continue the transfer(aria2c -c URL).</p></div>
-</div>
-<h2 id="_control_file">CONTROL FILE</h2>
-<div class="sectionbody">
-<div class="para"><p>aria2 uses a control file to track the progress of a download.
-A control file is placed in the same directory as the downloading file and
-its filename is the filename of downloading file with ".aria2" appended.
-For example, if you are downloading file.zip, then the control file should be
-file.zip.aria2.
-(There is a exception for this naming convention.
-If you are downloading a multi torrent, its control file is the "top directory"
-name of the torrent with ".aria2" appended.
-The "top directory" name is a value of "name" key in "info" directory in a torrent file.)</p></div>
-<div class="para"><p>Usually a control file is deleted once download completed.
-If aria2 decides that download cannot be resumed(for example, when downloading
-a file from a HTTP server which doesn't support resume), a control file is
-not created.</p></div>
-<div class="para"><p>Normally if you lose a control file, you cannot resume download.
-But if you have a torrent or metalink with chunk checksums for the file,
-you can resume the download without a control file by giving
--V option to aria2c in command-line.</p></div>
-</div>
-<h2 id="_seeding_downloaded_file_in_bittorrent">SEEDING DOWNLOADED FILE IN BITTORRENT</h2>
-<div class="sectionbody">
-<div class="para"><p>You can seed downloaded file using -V option.</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt>aria2c -V file.torrent</tt></pre>
-</div></div>
-</div>
-<h2 id="_input_file">INPUT FILE</h2>
-<div class="sectionbody">
-<div class="para"><p>The input file can contain a list of URIs for aria2 to download.
-You can specify multiple URIs for a single entity:
-separate URIs on a single line using the TAB character.</p></div>
-<div class="para"><p>Each line is treated as if it is provided in command-line argument.
-Therefore they are affected by <strong>-Z</strong> and <strong>-P</strong> options.
-The additional <strong>out</strong> and <strong>dir</strong> options can be specified after each line of
-URIs. This optional line must start with white space(s).</p></div>
-<div class="para"><p>For example, the content of uri.txt is</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt>http://server/file.iso http://mirror/file.iso
-  dir=/iso_images
-  out=file.img
-http://foo/bar</tt></pre>
-</div></div>
-<div class="para"><p>If aria2 is executed with <strong>-i</strong> uri.txt <strong>-d</strong> /tmp options,
-then <em>file.iso</em> is saved as <em>/iso_images/file.img</em> and it is downloaded from
-http://server/file.iso and http://mirror/file.iso.
-The file <em>bar</em> is downloaded from http://foo/bar and saved as <em>/tmp/bar</em>.</p></div>
-<div class="para"><p>In some cases, <strong>out</strong> parameter has no effect.
-See note of <strong>--out</strong> option for the restrictions.</p></div>
-</div>
-<h2 id="_server_performance_profile">SERVER PERFORMANCE PROFILE</h2>
-<div class="sectionbody">
-<div class="para"><p>This section describes the format of server performance profile.
-The file is plain text and each line has several NAME=VALUE pair, delimited by
-comma.
-Currently following NAMEs are recognized:</p></div>
-<div class="vlist"><dl>
-<dt>
-host
-</dt>
-<dd>
-<p>
-  Hostname of the server. Required.
-</p>
-</dd>
-<dt>
-protocol
-</dt>
-<dd>
-<p>
-  Protocol for this profile, such as ftp, http. Required.
-</p>
-</dd>
-<dt>
-dl_speed
-</dt>
-<dd>
-<p>
-  The average download speed observed in the previous download in bytes per sec.
-  Required.
-</p>
-</dd>
-<dt>
-sc_avg_speed
-</dt>
-<dd>
-<p>
-  The average download speed observed in the previous download in
-  bytes per sec. This value is only updated if the download is done in
-  single connection environment and only used by
-  AdaptiveURISelector. Optional.
-</p>
-</dd>
-<dt>
-mc_avg_speed
-</dt>
-<dd>
-<p>
-  The average download speed observed in the previous download in
-  bytes per sec. This value is only updated if the download is done in
-  multi connection environment and only used by
-  AdaptiveURISelector. Optional.
-</p>
-</dd>
-<dt>
-counter
-</dt>
-<dd>
-<p>
-  How many times the server is used. Currently this value is only used
-  by AdaptiveURISelector.  Optional.
-</p>
-</dd>
-<dt>
-last_updated
-</dt>
-<dd>
-<p>
-  Last contact time in GMT with this server, specified in the seconds from the
-  Epoch. Required.
-</p>
-</dd>
-<dt>
-status
-</dt>
-<dd>
-<p>
-  ERROR is set when server cannot be reached or out-of-service or timeout
-  occurred. Otherwise, OK is set.
-</p>
-</dd>
-</dl></div>
-<div class="para"><p>Those fields must exist in one line. The order of the fields is not significant. You can put pairs other than the above; they are simply ignored.</p></div>
-<div class="para"><p>An example follows:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt>host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
-host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR</tt></pre>
-</div></div>
-</div>
-<h2 id="_files">FILES</h2>
-<div class="sectionbody">
-<h3 id="_aria2_conf">aria2.conf</h3><div style="clear:left"></div>
-<div class="para"><p>By default, aria2 parses <em>$HOME/.aria2/aria2.conf</em> as a configuraiton
-file. You can specify the path to configuration file using
-<strong>--conf-path</strong> option.  If you don't want to use the configuraitonf
-file, use <strong>--no-conf</strong> option.</p></div>
-<div class="para"><p>The configuration file is a text file and has 1 option per each
-line. In each line, you can specify name-value pair in the format:
-NAME=VALUE, where name is the long command-line option name without
-"--" prefix. You can use same syntax for the command-line option. The
-lines beginning "#" are treated as comments.</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><tt># sample configuration file for aria2c
-listen-port=60000
-dht-listen-port=60000
-seed-ratio=1.0
-max-upload-limit=50K
-ftp-pasv=true</tt></pre>
-</div></div>
-<h3 id="_dht_dat">dht.dat</h3><div style="clear:left"></div>
-<div class="para"><p>By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p></div>
-</div>
-<h2 id="_environment">ENVIRONMENT</h2>
-<div class="sectionbody">
-<div class="para"><p>aria2 recognizes the following environment variables.</p></div>
-<div class="vlist"><dl>
-<dt>
-http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-</dt>
-<dd>
-<p>
-  Specify proxy server for use in HTTP.
-  Overrides http-proxy value in configuration file.
-  The command-line option <strong>--http-proxy</strong> overrides this value.
-</p>
-</dd>
-<dt>
-https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-</dt>
-<dd>
-<p>
-  Specify proxy server for use in HTTPS.
-  Overrides https-proxy value in configuration file.
-  The command-line option <strong>--https-proxy</strong> overrides this value.
-</p>
-</dd>
-<dt>
-ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-</dt>
-<dd>
-<p>
-  Specify proxy server for use in FTP.
-  Overrides ftp-proxy value in configuration file.
-  The command-line option <strong>--ftp-proxy</strong> overrides this value.
-</p>
-</dd>
-<dt>
-all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-</dt>
-<dd>
-<p>
-  Specify proxy server for use if no protocol-specific proxy is specified.
-  Overrides all-proxy value in configuration file.
-  The command-line option <strong>--all-proxy</strong> overrides this value.
-</p>
-</dd>
-<dt>
-no_proxy [DOMAIN,&#8230;]
-</dt>
-<dd>
-<p>
-  Specify comma-separated hostname or domains to which proxy should not be used.
-  Overrides no-proxy value in configuration file.
-  The command-line option <strong>--no-proxy</strong> overrides this value.
-</p>
-</dd>
-</dl></div>
-</div>
-<h2 id="_exit_codes">EXIT CODES</h2>
-<div class="sectionbody">
-<div class="para"><p>Because aria2 can handle multiple downloads at once, it encounters
-lots of errors in a session.  aria2 returns the following exit codes
-based on the last error encountered.</p></div>
-<div class="vlist"><dl>
-<dt>
-0
-</dt>
-<dd>
-<p>
-  If all downloads are successful.
-</p>
-</dd>
-<dt>
-1
-</dt>
-<dd>
-<p>
-  If an unknown error occurs.
-</p>
-</dd>
-<dt>
-2
-</dt>
-<dd>
-<p>
-  If time out occurs.
-</p>
-</dd>
-<dt>
-3
-</dt>
-<dd>
-<p>
-  If a resource is not found.
-</p>
-</dd>
-<dt>
-4
-</dt>
-<dd>
-<p>
-  If aria2 sees the specfied number of "resource not found" error.
-  See <strong>--max-file-not-found</strong> option).
-</p>
-</dd>
-<dt>
-5
-</dt>
-<dd>
-<p>
-  If a download aborts because download speed is too slow.
-  See <strong>--lowest-speed-limit</strong> option)
-</p>
-</dd>
-<dt>
-6
-</dt>
-<dd>
-<p>
-  If network problem occurs.
-</p>
-</dd>
-<dt>
-7
-</dt>
-<dd>
-<p>
-  If there are unfinished downloads. This error is only reported if
-  all finished downloads are successful and there are unfinished
-  downloads in a queue when aria2 exits by pressing Ctrl-C by an user
-  or sending TERM or INT signal.
-</p>
-</dd>
-</dl></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">An error occurred in a finished download will not be reported
-as exit status.</td>
-</tr></table>
-</div>
-</div>
-<h2 id="_resources">RESOURCES</h2>
+<h2 id="_see_also">SEE ALSO</h2>
 <div class="sectionbody">
 <div class="para"><p>Project web site: <a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a></p></div>
+<div class="para"><p>aria2 wiki: <a href="https://apps.sourceforge.net/trac/aria2/wiki">https://apps.sourceforge.net/trac/aria2/wiki</a></p></div>
 <div class="para"><p>metalink: <a href="http://www.metalinker.org/">http://www.metalinker.org/</a></p></div>
-</div>
-<h2 id="_reporting_bugs">REPORTING BUGS</h2>
-<div class="sectionbody">
-<div class="para"><p>Report bugs to Tatsuhiro Tsujikawa &lt;t-tujikawa at users.sourceforge.net&gt;</p></div>
-</div>
-<h2 id="_author">AUTHOR</h2>
-<div class="sectionbody">
-<div class="para"><p>Tatsuhiro Tsujikawa &lt;t-tujikawa at users.sourceforge.net&gt;</p></div>
 </div>
 <h2 id="_copyright">COPYRIGHT</h2>
 <div class="sectionbody">
-<div class="para"><p>Copyright &#169; 2006, 2008 Tatsuhiro Tsujikawa</p></div>
+<div class="para"><p>Copyright &#169; 2006, 2009 Tatsuhiro Tsujikawa</p></div>
 <div class="para"><p>This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -2258,7 +2244,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-14 18:43:10 JST
+Last updated 2009-02-14 19:17:32 JST
 </div>
 </div>
 </body>

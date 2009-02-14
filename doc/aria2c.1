@@ -34,7 +34,9 @@ is specified\&. The additional
 \fBout\fR
 and
 \fBdir\fR
-options can be specified after each line of URIs\&. This optional line must start with white space(s)\&. See INPUT FILE section for details\&.
+options can be specified after each line of URIs\&. This optional line must start with white space(s)\&. See
+\fBInput File\fR
+subsection for details\&.
 .RE
 .PP
 \fB\-l\fR, \fB\-\-log\fR=LOG
@@ -175,7 +177,9 @@ and
 .RS 4
 Specify the filename to which performance profile of the servers is saved\&. You can load saved data using
 \fB\-\-server\-stat\-if\fR
-option\&. See SERVER PERFORMANCE PROFILE section below for file format\&.
+option\&. See
+\fBServer Performance Profile\fR
+subsection below for file format\&.
 .RE
 .PP
 \fB\-\-server\-stat\-if\fR=FILE
@@ -183,7 +187,9 @@ option\&. See SERVER PERFORMANCE PROFILE section below for file format\&.
 Specify the filename to load performance profile of the servers\&. The loaded data will be used in some URI selector such as
 \fIfeedback\fR\&. See also
 \fB\-\-uri\-selector\fR
-option\&. See SERVER PERFORMANCE PROFILE section below for file format\&.
+option\&. See
+\fBServer Performance Profile\fR
+subsection below for file format\&.
 .RE
 .PP
 \fB\-\-server\-stat\-timeout\fR=SEC
@@ -870,7 +876,7 @@ is given, this feature is disabled\&. Default:
 .RS 4
 Print the version number, copyright and the configuration information and exit\&.
 .RE
-.SS "OPTIONS THAT TAKE AN OPTIONAL ARGUMENT"
+.SS "Options That Take An Optional Argument"
 The options that have its argument surrounded by square brackets([]) take an optional argument\&. Usually omiting the argument is evaluated to \fItrue\fR\&. If you use short form of these options(such as \fI\-V\fR) and give an argument, then the option name and its argument should be concatenated(e\&.g\&. \fI\-Vfalse\fR)\&. If any spaces are inserted between the option name and the argument, the argument will be treated as URI and usually this is not what you expect\&.
 .sp
 .SS "URL, TORRENT_FILE, METALINK_FILE"
@@ -888,7 +894,203 @@ You can specify both torrent file with \-T option and URLs\&. By doing this, you
 Note
 Make sure that URL is quoted with single(\') or double(") quotation if it contains "&" or any characters that have special meaning in shell\&.
 .sp
-.SH "EXAMPLES"
+.SS "Resuming Download"
+Usually, you can resume transfer by just issuing same command(aria2c URL) if the previous transfer is made by aria2\&.
+.sp
+If the previous transfer is made by a browser or wget like sequential download manager, then use \-c option to continue the transfer(aria2c \fB\-c\fR URL)\&.
+.sp
+.SH "EXIT STATUS"
+Because aria2 can handle multiple downloads at once, it encounters lots of errors in a session\&. aria2 returns the following exit status based on the last error encountered\&.
+.PP
+\fB0\fR
+.RS 4
+If all downloads are successful\&.
+.RE
+.PP
+\fB1\fR
+.RS 4
+If an unknown error occurs\&.
+.RE
+.PP
+\fB2\fR
+.RS 4
+If time out occurs\&.
+.RE
+.PP
+\fB3\fR
+.RS 4
+If a resource is not found\&.
+.RE
+.PP
+\fB4\fR
+.RS 4
+If aria2 sees the specfied number of "resource not found" error\&. See
+\fB\-\-max\-file\-not\-found\fR
+option)\&.
+.RE
+.PP
+\fB5\fR
+.RS 4
+If a download aborts because download speed is too slow\&. See
+\fB\-\-lowest\-speed\-limit\fR
+option)
+.RE
+.PP
+\fB6\fR
+.RS 4
+If network problem occurs\&.
+.RE
+.PP
+\fB7\fR
+.RS 4
+If there are unfinished downloads\&. This error is only reported if all finished downloads are successful and there are unfinished downloads in a queue when aria2 exits by pressing Ctrl\-C by an user or sending TERM or INT signal\&.
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+An error occurred in a finished download will not be reported as exit status\&.
+.sp
+.SH "ENVIRONMENT"
+aria2 recognizes the following environment variables\&.
+.PP
+http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use in HTTP\&. Overrides http\-proxy value in configuration file\&. The command\-line option
+\fB\-\-http\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use in HTTPS\&. Overrides https\-proxy value in configuration file\&. The command\-line option
+\fB\-\-https\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use in FTP\&. Overrides ftp\-proxy value in configuration file\&. The command\-line option
+\fB\-\-ftp\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
+.RS 4
+Specify proxy server for use if no protocol\-specific proxy is specified\&. Overrides all\-proxy value in configuration file\&. The command\-line option
+\fB\-\-all\-proxy\fR
+overrides this value\&.
+.RE
+.PP
+no_proxy [DOMAIN,\&...]
+.RS 4
+Specify comma\-separated hostname or domains to which proxy should not be used\&. Overrides no\-proxy value in configuration file\&. The command\-line option
+\fB\-\-no\-proxy\fR
+overrides this value\&.
+.RE
+.SH "FILES"
+.SS "aria2\&.conf"
+By default, aria2 parses \fI$HOME/\&.aria2/aria2\&.conf\fR as a configuraiton file\&. You can specify the path to configuration file using \fB\-\-conf\-path\fR option\&. If you don\'t want to use the configuraitonf file, use \fB\-\-no\-conf\fR option\&.
+.sp
+The configuration file is a text file and has 1 option per each line\&. In each line, you can specify name\-value pair in the format: NAME=VALUE, where name is the long command\-line option name without "\-\-" prefix\&. You can use same syntax for the command\-line option\&. The lines beginning "#" are treated as comments\&.
+.sp
+.sp
+.RS 4
+.nf
+# sample configuration file for aria2c
+listen\-port=60000
+dht\-listen\-port=60000
+seed\-ratio=1\&.0
+max\-upload\-limit=50K
+ftp\-pasv=true
+.fi
+.RE
+.SS "dht\&.dat"
+By default, the routing table of DHT is saved to the path $HOME/\&.aria2/dht\&.dat\&.
+.sp
+.SS "Control File"
+aria2 uses a control file to track the progress of a download\&. A control file is placed in the same directory as the downloading file and its filename is the filename of downloading file with "\&.aria2" appended\&. For example, if you are downloading file\&.zip, then the control file should be file\&.zip\&.aria2\&. (There is a exception for this naming convention\&. If you are downloading a multi torrent, its control file is the "top directory" name of the torrent with "\&.aria2" appended\&. The "top directory" name is a value of "name" key in "info" directory in a torrent file\&.)
+.sp
+Usually a control file is deleted once download completed\&. If aria2 decides that download cannot be resumed(for example, when downloading a file from a HTTP server which doesn\'t support resume), a control file is not created\&.
+.sp
+Normally if you lose a control file, you cannot resume download\&. But if you have a torrent or metalink with chunk checksums for the file, you can resume the download without a control file by giving \-V option to aria2c in command\-line\&.
+.sp
+.SS "Input File"
+The input file can contain a list of URIs for aria2 to download\&. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\&.
+.sp
+Each line is treated as if it is provided in command\-line argument\&. Therefore they are affected by \fB\-Z\fR and \fB\-P\fR options\&. The additional \fBout\fR and \fBdir\fR options can be specified after each line of URIs\&. This optional line must start with white space(s)\&.
+.sp
+For example, the content of uri\&.txt is
+.sp
+.sp
+.RS 4
+.nf
+http://server/file\&.iso http://mirror/file\&.iso
+  dir=/iso_images
+  out=file\&.img
+http://foo/bar
+.fi
+.RE
+If aria2 is executed with \fB\-i\fR uri\&.txt \fB\-d\fR /tmp options, then \fIfile\&.iso\fR is saved as \fI/iso_images/file\&.img\fR and it is downloaded from http://server/file\&.iso and http://mirror/file\&.iso\&. The file \fIbar\fR is downloaded from http://foo/bar and saved as \fI/tmp/bar\fR\&.
+.sp
+In some cases, \fBout\fR parameter has no effect\&. See note of \fB\-\-out\fR option for the restrictions\&.
+.sp
+.SS "Server Performance Profile"
+This section describes the format of server performance profile\&. The file is plain text and each line has several NAME=VALUE pair, delimited by comma\&. Currently following NAMEs are recognized:
+.PP
+host
+.RS 4
+Hostname of the server\&. Required\&.
+.RE
+.PP
+protocol
+.RS 4
+Protocol for this profile, such as ftp, http\&. Required\&.
+.RE
+.PP
+dl_speed
+.RS 4
+The average download speed observed in the previous download in bytes per sec\&. Required\&.
+.RE
+.PP
+sc_avg_speed
+.RS 4
+The average download speed observed in the previous download in bytes per sec\&. This value is only updated if the download is done in single connection environment and only used by AdaptiveURISelector\&. Optional\&.
+.RE
+.PP
+mc_avg_speed
+.RS 4
+The average download speed observed in the previous download in bytes per sec\&. This value is only updated if the download is done in multi connection environment and only used by AdaptiveURISelector\&. Optional\&.
+.RE
+.PP
+counter
+.RS 4
+How many times the server is used\&. Currently this value is only used by AdaptiveURISelector\&. Optional\&.
+.RE
+.PP
+last_updated
+.RS 4
+Last contact time in GMT with this server, specified in the seconds from the Epoch\&. Required\&.
+.RE
+.PP
+status
+.RS 4
+ERROR is set when server cannot be reached or out\-of\-service or timeout occurred\&. Otherwise, OK is set\&.
+.RE
+Those fields must exist in one line\&. The order of the fields is not significant\&. You can put pairs other than the above; they are simply ignored\&.
+.sp
+An example follows:
+.sp
+.sp
+.RS 4
+.nf
+host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
+host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
+.fi
+.RE
+.SH "EXAMPLE"
 .SS "HTTP/FTP Segmented Download"
 .sp
 .it 1 an-trap
@@ -1021,7 +1223,7 @@ aria2c \-\-ftp\-proxy=http://proxy:8080 ftp://host/file
 .nr an-break-flag 1
 .br
 Note
-See \fB\-\-http\-proxy\fR, \fB\-\-https\-proxy\fR, \fB\-\-ftp\-proxy\fR and \fB\-\-all\-proxy\fR for details\&. You can specify proxy in the environment variables\&. See ENVIRONMENT section\&.
+See \fB\-\-http\-proxy\fR, \fB\-\-https\-proxy\fR, \fB\-\-ftp\-proxy\fR and \fB\-\-all\-proxy\fR for details\&. You can specify proxy in the environment variables\&. See \fBENVIRONMENT\fR section\&.
 .sp
 .RE
 .sp
@@ -1503,224 +1705,15 @@ aria2c \-\-bt\-min\-crypto\-level=arc4 \-\-bt\-require\-crypto=true file\&.torre
 .fi
 .RE
 .RE
-.SH "RESUME DOWNLOAD"
-Usually, you can resume transfer by just issuing same command(aria2c URL) if the previous transfer is made by aria2\&.
-.sp
-If the previous transfer is made by a browser or wget like sequential download manager, then use \-c option to continue the transfer(aria2c \-c URL)\&.
-.sp
-.SH "CONTROL FILE"
-aria2 uses a control file to track the progress of a download\&. A control file is placed in the same directory as the downloading file and its filename is the filename of downloading file with "\&.aria2" appended\&. For example, if you are downloading file\&.zip, then the control file should be file\&.zip\&.aria2\&. (There is a exception for this naming convention\&. If you are downloading a multi torrent, its control file is the "top directory" name of the torrent with "\&.aria2" appended\&. The "top directory" name is a value of "name" key in "info" directory in a torrent file\&.)
-.sp
-Usually a control file is deleted once download completed\&. If aria2 decides that download cannot be resumed(for example, when downloading a file from a HTTP server which doesn\'t support resume), a control file is not created\&.
-.sp
-Normally if you lose a control file, you cannot resume download\&. But if you have a torrent or metalink with chunk checksums for the file, you can resume the download without a control file by giving \-V option to aria2c in command\-line\&.
-.sp
-.SH "SEEDING DOWNLOADED FILE IN BITTORRENT"
-You can seed downloaded file using \-V option\&.
-.sp
-.sp
-.RS 4
-.nf
-aria2c \-V file\&.torrent
-.fi
-.RE
-.SH "INPUT FILE"
-The input file can contain a list of URIs for aria2 to download\&. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\&.
-.sp
-Each line is treated as if it is provided in command\-line argument\&. Therefore they are affected by \fB\-Z\fR and \fB\-P\fR options\&. The additional \fBout\fR and \fBdir\fR options can be specified after each line of URIs\&. This optional line must start with white space(s)\&.
-.sp
-For example, the content of uri\&.txt is
-.sp
-.sp
-.RS 4
-.nf
-http://server/file\&.iso http://mirror/file\&.iso
-  dir=/iso_images
-  out=file\&.img
-http://foo/bar
-.fi
-.RE
-If aria2 is executed with \fB\-i\fR uri\&.txt \fB\-d\fR /tmp options, then \fIfile\&.iso\fR is saved as \fI/iso_images/file\&.img\fR and it is downloaded from http://server/file\&.iso and http://mirror/file\&.iso\&. The file \fIbar\fR is downloaded from http://foo/bar and saved as \fI/tmp/bar\fR\&.
-.sp
-In some cases, \fBout\fR parameter has no effect\&. See note of \fB\-\-out\fR option for the restrictions\&.
-.sp
-.SH "SERVER PERFORMANCE PROFILE"
-This section describes the format of server performance profile\&. The file is plain text and each line has several NAME=VALUE pair, delimited by comma\&. Currently following NAMEs are recognized:
-.PP
-host
-.RS 4
-Hostname of the server\&. Required\&.
-.RE
-.PP
-protocol
-.RS 4
-Protocol for this profile, such as ftp, http\&. Required\&.
-.RE
-.PP
-dl_speed
-.RS 4
-The average download speed observed in the previous download in bytes per sec\&. Required\&.
-.RE
-.PP
-sc_avg_speed
-.RS 4
-The average download speed observed in the previous download in bytes per sec\&. This value is only updated if the download is done in single connection environment and only used by AdaptiveURISelector\&. Optional\&.
-.RE
-.PP
-mc_avg_speed
-.RS 4
-The average download speed observed in the previous download in bytes per sec\&. This value is only updated if the download is done in multi connection environment and only used by AdaptiveURISelector\&. Optional\&.
-.RE
-.PP
-counter
-.RS 4
-How many times the server is used\&. Currently this value is only used by AdaptiveURISelector\&. Optional\&.
-.RE
-.PP
-last_updated
-.RS 4
-Last contact time in GMT with this server, specified in the seconds from the Epoch\&. Required\&.
-.RE
-.PP
-status
-.RS 4
-ERROR is set when server cannot be reached or out\-of\-service or timeout occurred\&. Otherwise, OK is set\&.
-.RE
-Those fields must exist in one line\&. The order of the fields is not significant\&. You can put pairs other than the above; they are simply ignored\&.
-.sp
-An example follows:
-.sp
-.sp
-.RS 4
-.nf
-host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
-host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
-.fi
-.RE
-.SH "FILES"
-.SS "aria2\&.conf"
-By default, aria2 parses \fI$HOME/\&.aria2/aria2\&.conf\fR as a configuraiton file\&. You can specify the path to configuration file using \fB\-\-conf\-path\fR option\&. If you don\'t want to use the configuraitonf file, use \fB\-\-no\-conf\fR option\&.
-.sp
-The configuration file is a text file and has 1 option per each line\&. In each line, you can specify name\-value pair in the format: NAME=VALUE, where name is the long command\-line option name without "\-\-" prefix\&. You can use same syntax for the command\-line option\&. The lines beginning "#" are treated as comments\&.
-.sp
-.sp
-.RS 4
-.nf
-# sample configuration file for aria2c
-listen\-port=60000
-dht\-listen\-port=60000
-seed\-ratio=1\&.0
-max\-upload\-limit=50K
-ftp\-pasv=true
-.fi
-.RE
-.SS "dht\&.dat"
-By default, the routing table of DHT is saved to the path $HOME/\&.aria2/dht\&.dat\&.
-.sp
-.SH "ENVIRONMENT"
-aria2 recognizes the following environment variables\&.
-.PP
-http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-.RS 4
-Specify proxy server for use in HTTP\&. Overrides http\-proxy value in configuration file\&. The command\-line option
-\fB\-\-http\-proxy\fR
-overrides this value\&.
-.RE
-.PP
-https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-.RS 4
-Specify proxy server for use in HTTPS\&. Overrides https\-proxy value in configuration file\&. The command\-line option
-\fB\-\-https\-proxy\fR
-overrides this value\&.
-.RE
-.PP
-ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-.RS 4
-Specify proxy server for use in FTP\&. Overrides ftp\-proxy value in configuration file\&. The command\-line option
-\fB\-\-ftp\-proxy\fR
-overrides this value\&.
-.RE
-.PP
-all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
-.RS 4
-Specify proxy server for use if no protocol\-specific proxy is specified\&. Overrides all\-proxy value in configuration file\&. The command\-line option
-\fB\-\-all\-proxy\fR
-overrides this value\&.
-.RE
-.PP
-no_proxy [DOMAIN,\&...]
-.RS 4
-Specify comma\-separated hostname or domains to which proxy should not be used\&. Overrides no\-proxy value in configuration file\&. The command\-line option
-\fB\-\-no\-proxy\fR
-overrides this value\&.
-.RE
-.SH "EXIT CODES"
-Because aria2 can handle multiple downloads at once, it encounters lots of errors in a session\&. aria2 returns the following exit codes based on the last error encountered\&.
-.PP
-0
-.RS 4
-If all downloads are successful\&.
-.RE
-.PP
-1
-.RS 4
-If an unknown error occurs\&.
-.RE
-.PP
-2
-.RS 4
-If time out occurs\&.
-.RE
-.PP
-3
-.RS 4
-If a resource is not found\&.
-.RE
-.PP
-4
-.RS 4
-If aria2 sees the specfied number of "resource not found" error\&. See
-\fB\-\-max\-file\-not\-found\fR
-option)\&.
-.RE
-.PP
-5
-.RS 4
-If a download aborts because download speed is too slow\&. See
-\fB\-\-lowest\-speed\-limit\fR
-option)
-.RE
-.PP
-6
-.RS 4
-If network problem occurs\&.
-.RE
-.PP
-7
-.RS 4
-If there are unfinished downloads\&. This error is only reported if all finished downloads are successful and there are unfinished downloads in a queue when aria2 exits by pressing Ctrl\-C by an user or sending TERM or INT signal\&.
-.RE
-.sp
-.it 1 an-trap
-.nr an-no-space-flag 1
-.nr an-break-flag 1
-.br
-Note
-An error occurred in a finished download will not be reported as exit status\&.
-.sp
-.SH "RESOURCES"
+.SH "SEE ALSO"
 Project web site: http://aria2\&.sourceforge\&.net/
+.sp
+aria2 wiki: https://apps\&.sourceforge\&.net/trac/aria2/wiki
 .sp
 metalink: http://www\&.metalinker\&.org/
 .sp
-.SH "REPORTING BUGS"
-Report bugs to Tatsuhiro Tsujikawa <t\-tujikawa at users\&.sourceforge\&.net>
-.sp
-.SH "AUTHOR"
-Tatsuhiro Tsujikawa <t\-tujikawa at users\&.sourceforge\&.net>
-.sp
 .SH "COPYRIGHT"
-Copyright \(co 2006, 2008 Tatsuhiro Tsujikawa
+Copyright \(co 2006, 2009 Tatsuhiro Tsujikawa
 .sp
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version\&.
 .sp
