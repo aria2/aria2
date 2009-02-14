@@ -1562,6 +1562,21 @@ dl_speed
 The average download speed observed in the previous download in bytes per sec\&. Required\&.
 .RE
 .PP
+sc_avg_speed
+.RS 4
+The average download speed observed in the previous download in bytes per sec\&. This value is only updated if the download is done in single connection environment and only used by AdaptiveURISelector\&. Optional\&.
+.RE
+.PP
+mc_avg_speed
+.RS 4
+The average download speed observed in the previous download in bytes per sec\&. This value is only updated if the download is done in multi connection environment and only used by AdaptiveURISelector\&. Optional\&.
+.RE
+.PP
+counter
+.RS 4
+How many times the server is used\&. Currently this value is only used by AdaptiveURISelector\&. Optional\&.
+.RE
+.PP
 last_updated
 .RS 4
 Last contact time in GMT with this server, specified in the seconds from the Epoch\&. Required\&.

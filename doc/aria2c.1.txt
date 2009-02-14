@@ -992,6 +992,22 @@ dl_speed::
   The average download speed observed in the previous download in bytes per sec.
   Required.
 
+sc_avg_speed::
+  The average download speed observed in the previous download in
+  bytes per sec. This value is only updated if the download is done in
+  single connection environment and only used by
+  AdaptiveURISelector. Optional.
+
+mc_avg_speed::
+  The average download speed observed in the previous download in
+  bytes per sec. This value is only updated if the download is done in
+  multi connection environment and only used by
+  AdaptiveURISelector. Optional.
+
+counter::
+  How many times the server is used. Currently this value is only used
+  by AdaptiveURISelector.  Optional.
+
 last_updated::
   Last contact time in GMT with this server, specified in the seconds from the
   Epoch. Required.

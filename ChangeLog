@@ -1,5 +1,11 @@
 2009-02-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented sc_avg_speed, mc_avg_speed and counter in SERVER
+	PERFORMANCE PROFILE section.
+	* doc/aria2c.1.txt
+	
+2009-02-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten the section for configuration file.
 	* README
 	* doc/aria2c.1.txt
