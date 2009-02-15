@@ -1,5 +1,10 @@
 2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Enclosed all URLs in double quotes in command-line examples.
+	* doc/aria2c.1.txt
+	
+2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated reference/see also section.
 	* README
 	* doc/aria2c.1.txt

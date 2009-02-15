@@ -143,7 +143,7 @@ The file name of the downloaded file\&.
 .nr an-break-flag 1
 .br
 Note
-In Metalink or BitTorrent download you cannot specify file name\&. The file name specified here is only used when the URLs fed to aria2 are done by command line without \fB\-i\fR, \fB\-Z\fR option\&. For example: aria2c \-o myfile\&.zip http://mirror1/file\&.zip http://mirror2/file\&.zip
+In Metalink or BitTorrent download you cannot specify file name\&. The file name specified here is only used when the URLs fed to aria2 are done by command line without \fB\-i\fR, \fB\-Z\fR option\&. For example: aria2c \-o myfile\&.zip "http://mirror1/file\&.zip" "http://mirror2/file\&.zip"
 .PP
 \fB\-\-proxy\-method\fR=METHOD
 .RS 4
@@ -319,7 +319,7 @@ Enable HTTP/1\&.1 pipelining\&. Default:
 .RS 4
 Append HEADER to HTTP request header\&. You can use this option repeatedly to specify more than one header: aria2c
 \fB\-\-header\fR="X\-A: b78"
-\fB\-\-header\fR="X\-B: 9J1" http://host/file
+\fB\-\-header\fR="X\-B: 9J1" "http://host/file"
 .RE
 .PP
 \fB\-\-load\-cookies\fR=FILE
@@ -1102,7 +1102,7 @@ Download a file
 .sp
 .RS 4
 .nf
-aria2c http://host/file\&.zip
+aria2c "http://host/file\&.zip"
 .fi
 .RE
 .sp
@@ -1124,7 +1124,7 @@ Download a file using 1 connection
 .sp
 .RS 4
 .nf
-aria2c \-s1 http://host/file\&.zip
+aria2c \-s1 "http://host/file\&.zip"
 .fi
 .RE
 .sp
@@ -1154,7 +1154,7 @@ Download a file from 2 different HTTP servers
 .sp
 .RS 4
 .nf
-aria2c http://host/file\&.zip http://mirror/file\&.zip
+aria2c "http://host/file\&.zip" "http://mirror/file\&.zip"
 .fi
 .RE
 .RE
@@ -1168,7 +1168,7 @@ Download a file from HTTP and FTP servers
 .sp
 .RS 4
 .nf
-aria2c http://host1/file\&.zip ftp://host2/file\&.zip
+aria2c "http://host1/file\&.zip" "ftp://host2/file\&.zip"
 .fi
 .RE
 .RE
@@ -1206,7 +1206,7 @@ For HTTP:
 .sp
 .RS 4
 .nf
-aria2c \-\-http\-proxy=http://proxy:8080 http://host/file
+aria2c \-\-http\-proxy="http://proxy:8080" "http://host/file"
 .fi
 .RE
 For FTP:
@@ -1214,7 +1214,7 @@ For FTP:
 .sp
 .RS 4
 .nf
-aria2c \-\-ftp\-proxy=http://proxy:8080 ftp://host/file
+aria2c \-\-ftp\-proxy="http://proxy:8080" "ftp://host/file"
 .fi
 .RE
 .sp
@@ -1236,7 +1236,7 @@ Proxy with authorization
 .sp
 .RS 4
 .nf
-aria2c \-\-http\-proxy=http://username:password@proxy:8080 http://host/file
+aria2c \-\-http\-proxy="http://username:password@proxy:8080" "http://host/file"
 .fi
 .RE
 .RE
@@ -1251,7 +1251,7 @@ Download files with remote Metalink
 .sp
 .RS 4
 .nf
-aria2c \-\-follow\-metalink=mem http://host/file\&.metalink
+aria2c \-\-follow\-metalink=mem "http://host/file\&.metalink"
 .fi
 .RE
 .RE
@@ -1338,7 +1338,7 @@ Download files from remote BitTorrent file
 .sp
 .RS 4
 .nf
-aria2c \-\-follow\-torrent=mem http://host/file\&.torrent
+aria2c \-\-follow\-torrent=mem "http://host/file\&.torrent"
 .fi
 .RE
 .RE
@@ -1396,7 +1396,7 @@ Download a file using torrent and HTTP/FTP server
 .sp
 .RS 4
 .nf
-aria2c \-Ttest\&.torrent http://host1/file ftp://host2/file
+aria2c \-Ttest\&.torrent "http://host1/file" "ftp://host2/file"
 .fi
 .RE
 .sp
@@ -1521,7 +1521,7 @@ Load cookies
 .sp
 .RS 4
 .nf
-aria2c \-\-load\-cookies=cookies\&.txt http://host/file\&.zip
+aria2c \-\-load\-cookies=cookies\&.txt "http://host/file\&.zip"
 .fi
 .RE
 .sp
@@ -1543,7 +1543,7 @@ Resume download started by web browsers or another programs
 .sp
 .RS 4
 .nf
-aria2c \-c \-s2 http://host/partiallydownloadedfile\&.zip
+aria2c \-c \-s2 "http://host/partiallydownloadedfile\&.zip"
 .fi
 .RE
 .RE
@@ -1646,7 +1646,7 @@ You can specify set of parts:
 .sp
 .RS 4
 .nf
-aria2c \-P http://{host1,host2,host3}/file\&.iso
+aria2c \-P "http://{host1,host2,host3}/file\&.iso"
 .fi
 .RE
 You can specify numeric sequence:
@@ -1654,7 +1654,7 @@ You can specify numeric sequence:
 .sp
 .RS 4
 .nf
-aria2c \-Z \-P http://host/image[000\-100]\&.png
+aria2c \-Z \-P "http://host/image[000\-100]\&.png"
 .fi
 .RE
 .sp
@@ -1671,7 +1671,7 @@ You can specify step counter:
 .sp
 .RS 4
 .nf
-aria2c \-Z \-P http://host/image[A\-Z:2]\&.png
+aria2c \-Z \-P "http://host/image[A\-Z:2]\&.png"
 .fi
 .RE
 .RE
@@ -1685,7 +1685,7 @@ Parallel downloads of arbitrary number of URL,metalink,torrent
 .sp
 .RS 4
 .nf
-aria2c \-j3 \-Z http://host/file1 file2\&.torrent file3\&.metalink
+aria2c \-j3 \-Z "http://host/file1" file2\&.torrent file3\&.metalink
 .fi
 .RE
 .RE

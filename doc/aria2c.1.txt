@@ -115,7 +115,7 @@ HTTP/FTP Options
 In Metalink or BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URLs fed to aria2
 are done by command line without *-i*, *-Z* option. For example:
-aria2c -o myfile.zip \http://mirror1/file.zip \http://mirror2/file.zip
+aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
 
 *--proxy-method*=METHOD::
   Set the method to use in proxy request.  'METHOD' is either 'get' or
@@ -238,7 +238,7 @@ HTTP Specific Options
 *--header*=HEADER::
   Append HEADER to HTTP request header.
   You can use this option repeatedly to specify more than one header:
-  aria2c *--header*="X-A: b78" *--header*="X-B: 9J1" \http://host/file
+  aria2c *--header*="X-A: b78" *--header*="X-B: 9J1" "http://host/file"
 
 *--load-cookies*=FILE::
   Load Cookies from FILE using the Firefox3 format (SQLite3) and the
@@ -874,7 +874,7 @@ HTTP/FTP Segmented Download
 Download a file
 ^^^^^^^^^^^^^^^
 --------------------------------
-aria2c http://host/file.zip
+aria2c "http://host/file.zip"
 --------------------------------
 [NOTE]
 aria2 uses 5 connections to download 1 file by default.
@@ -882,7 +882,7 @@ aria2 uses 5 connections to download 1 file by default.
 Download a file using 1 connection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------
-aria2c -s1 http://host/file.zip
+aria2c -s1 "http://host/file.zip"
 ----------------------------------
 [NOTE]
 aria2 uses 5 connections to download 1 file by default.
@@ -893,15 +893,15 @@ To pause a download, press Ctrl-C. You can resume the transfer by running aria2c
 
 Download a file from 2 different HTTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
---------------------------------------------------
-aria2c http://host/file.zip http://mirror/file.zip
---------------------------------------------------
+------------------------------------------------------
+aria2c "http://host/file.zip" "http://mirror/file.zip"
+------------------------------------------------------
 
 Download a file from HTTP and FTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
--------------------------------------------------
-aria2c http://host1/file.zip ftp://host2/file.zip
--------------------------------------------------
+-----------------------------------------------------
+aria2c "http://host1/file.zip" "ftp://host2/file.zip"
+-----------------------------------------------------
 
 Download files listed in a text file concurrently
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -914,13 +914,13 @@ aria2c -ifiles.txt -j2
 Using proxy
 ^^^^^^^^^^^
 For HTTP:
-------------------------------------------------------
-aria2c --http-proxy=http://proxy:8080 http://host/file
-------------------------------------------------------
+----------------------------------------------------------
+aria2c --http-proxy="http://proxy:8080" "http://host/file"
+----------------------------------------------------------
 For FTP:
-------------------------------------------------------
-aria2c --ftp-proxy=http://proxy:8080 ftp://host/file
-------------------------------------------------------
+--------------------------------------------------------
+aria2c --ftp-proxy="http://proxy:8080" "ftp://host/file"
+--------------------------------------------------------
 
 [NOTE]
 See *--http-proxy*, *--https-proxy*, *--ftp-proxy* and *--all-proxy* for
@@ -929,17 +929,17 @@ You can specify proxy in the environment variables. See *ENVIRONMENT* section.
 
 Proxy with authorization
 ^^^^^^^^^^^^^^^^^^^^^^^^
-------------------------------------------------------
-aria2c --http-proxy=http://username:password@proxy:8080 http://host/file
-------------------------------------------------------
+----------------------------------------------------------------------------
+aria2c --http-proxy="http://username:password@proxy:8080" "http://host/file"
+----------------------------------------------------------------------------
 
 Metalink Download
 ~~~~~~~~~~~~~~~~~
 Download files with remote Metalink
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-------------------------------------------------------
-aria2c --follow-metalink=mem http://host/file.metalink
-------------------------------------------------------
+--------------------------------------------------------
+aria2c --follow-metalink=mem "http://host/file.metalink"
+--------------------------------------------------------
 
 Download using a local metalink file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -975,9 +975,9 @@ BitTorrent Download
 ~~~~~~~~~~~~~~~~~~~
 Download files from remote BitTorrent file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
--------------------------------------------------------
-aria2c --follow-torrent=mem http://host/file.torrent
--------------------------------------------------------
+------------------------------------------------------
+aria2c --follow-torrent=mem "http://host/file.torrent"
+------------------------------------------------------
 
 Download using a local torrent file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -998,9 +998,9 @@ aria2c -j2 file1.torrent file2.torrent
 
 Download a file using torrent and HTTP/FTP server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
------------------------------------------------------------
-aria2c -Ttest.torrent http://host1/file ftp://host2/file
------------------------------------------------------------
+------------------------------------------------------------
+aria2c -Ttest.torrent "http://host1/file" "ftp://host2/file"
+------------------------------------------------------------
 [NOTE]
 Downloading multi file torrent with HTTP/FTP is not supported.
 
@@ -1049,17 +1049,17 @@ More advanced HTTP features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Load cookies
 ^^^^^^^^^^^^
-------------------------------------------------------
-aria2c --load-cookies=cookies.txt http://host/file.zip
-------------------------------------------------------
+--------------------------------------------------------
+aria2c --load-cookies=cookies.txt "http://host/file.zip"
+--------------------------------------------------------
 [NOTE]
 You can use Firefox/Mozilla's cookie file without modification.
 
 Resume download started by web browsers or another programs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
----------------------------------------------------
-aria2c -c -s2 http://host/partiallydownloadedfile.zip 
----------------------------------------------------
+-------------------------------------------------------
+aria2c -c -s2 "http://host/partiallydownloadedfile.zip"
+-------------------------------------------------------
 
 Client certificate authorization for SSL/TLS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1102,28 +1102,28 @@ aria2c --lowest-speed-limit=10K file.metalink
 Parameterized URI support
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 You can specify set of parts:
----------------------------------------------
-aria2c -P http://{host1,host2,host3}/file.iso
----------------------------------------------
+-----------------------------------------------
+aria2c -P "http://{host1,host2,host3}/file.iso"
+-----------------------------------------------
 
 You can specify numeric sequence:
--------------------------------------------
-aria2c -Z -P http://host/image[000-100].png
--------------------------------------------
+---------------------------------------------
+aria2c -Z -P "http://host/image[000-100].png"
+---------------------------------------------
 
 [NOTE]
 -Z option is required if the all URIs don't point to the same file, such as the above example.
 
 You can specify step counter:
------------------------------------------
-aria2c -Z -P http://host/image[A-Z:2].png 
------------------------------------------
+-------------------------------------------
+aria2c -Z -P "http://host/image[A-Z:2].png"
+-------------------------------------------
 
 Parallel downloads of arbitrary number of URL,metalink,torrent
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-------------------------------------------------------------
-aria2c -j3 -Z http://host/file1 file2.torrent file3.metalink
-------------------------------------------------------------
+--------------------------------------------------------------
+aria2c -j3 -Z "http://host/file1" file2.torrent file3.metalink
+--------------------------------------------------------------
 
 BitTorrent Encryption
 ^^^^^^^^^^^^^^^^^^^^^

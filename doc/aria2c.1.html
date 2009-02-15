@@ -554,7 +554,7 @@ downloading a file like BitTorrent.</p></div>
 <td class="content">In Metalink or BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URLs fed to aria2
 are done by command line without <strong>-i</strong>, <strong>-Z</strong> option. For example:
-aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
+aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </tr></table>
 </div>
 <div class="vlist"><dl>
@@ -789,7 +789,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <p>
   Append HEADER to HTTP request header.
   You can use this option repeatedly to specify more than one header:
-  aria2c <strong>--header</strong>="X-A: b78" <strong>--header</strong>="X-B: 9J1" http://host/file
+  aria2c <strong>--header</strong>="X-A: b78" <strong>--header</strong>="X-B: 9J1" "http://host/file"
 </p>
 </dd>
 <dt>
@@ -1881,7 +1881,7 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 <h4 id="_download_a_file">Download a file</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c http://host/file.zip</tt></pre>
+<pre><tt>aria2c "http://host/file.zip"</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1894,7 +1894,7 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 <h4 id="_download_a_file_using_1_connection">Download a file using 1 connection</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -s1 http://host/file.zip</tt></pre>
+<pre><tt>aria2c -s1 "http://host/file.zip"</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1916,12 +1916,12 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 <h4 id="_download_a_file_from_2_different_http_servers">Download a file from 2 different HTTP servers</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c http://host/file.zip http://mirror/file.zip</tt></pre>
+<pre><tt>aria2c "http://host/file.zip" "http://mirror/file.zip"</tt></pre>
 </div></div>
 <h4 id="_download_a_file_from_http_and_ftp_servers">Download a file from HTTP and FTP servers</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c http://host1/file.zip ftp://host2/file.zip</tt></pre>
+<pre><tt>aria2c "http://host1/file.zip" "ftp://host2/file.zip"</tt></pre>
 </div></div>
 <h4 id="_download_files_listed_in_a_text_file_concurrently">Download files listed in a text file concurrently</h4>
 <div class="listingblock">
@@ -1940,12 +1940,12 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR<
 <div class="para"><p>For HTTP:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --http-proxy=http://proxy:8080 http://host/file</tt></pre>
+<pre><tt>aria2c --http-proxy="http://proxy:8080" "http://host/file"</tt></pre>
 </div></div>
 <div class="para"><p>For FTP:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --ftp-proxy=http://proxy:8080 ftp://host/file</tt></pre>
+<pre><tt>aria2c --ftp-proxy="http://proxy:8080" "ftp://host/file"</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1960,13 +1960,13 @@ You can specify proxy in the environment variables. See <strong>ENVIRONMENT</str
 <h4 id="_proxy_with_authorization">Proxy with authorization</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --http-proxy=http://username:password@proxy:8080 http://host/file</tt></pre>
+<pre><tt>aria2c --http-proxy="http://username:password@proxy:8080" "http://host/file"</tt></pre>
 </div></div>
 <h3 id="_metalink_download">Metalink Download</h3><div style="clear:left"></div>
 <h4 id="_download_files_with_remote_metalink">Download files with remote Metalink</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --follow-metalink=mem http://host/file.metalink</tt></pre>
+<pre><tt>aria2c --follow-metalink=mem "http://host/file.metalink"</tt></pre>
 </div></div>
 <h4 id="_download_using_a_local_metalink_file">Download using a local metalink file</h4>
 <div class="listingblock">
@@ -2010,7 +2010,7 @@ directory.</td>
 <h4 id="_download_files_from_remote_bittorrent_file">Download files from remote BitTorrent file</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --follow-torrent=mem http://host/file.torrent</tt></pre>
+<pre><tt>aria2c --follow-torrent=mem "http://host/file.torrent"</tt></pre>
 </div></div>
 <h4 id="_download_using_a_local_torrent_file">Download using a local torrent file</h4>
 <div class="listingblock">
@@ -2041,7 +2041,7 @@ directory.</td>
 <h4 id="_download_a_file_using_torrent_and_http_ftp_server">Download a file using torrent and HTTP/FTP server</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Ttest.torrent http://host1/file ftp://host2/file</tt></pre>
+<pre><tt>aria2c -Ttest.torrent "http://host1/file" "ftp://host2/file"</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -2114,7 +2114,7 @@ forwarding, it's up to you to do it manually.</td>
 <h4 id="_load_cookies">Load cookies</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --load-cookies=cookies.txt http://host/file.zip</tt></pre>
+<pre><tt>aria2c --load-cookies=cookies.txt "http://host/file.zip"</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -2127,7 +2127,7 @@ forwarding, it's up to you to do it manually.</td>
 <h4 id="_resume_download_started_by_web_browsers_or_another_programs">Resume download started by web browsers or another programs</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -c -s2 http://host/partiallydownloadedfile.zip</tt></pre>
+<pre><tt>aria2c -c -s2 "http://host/partiallydownloadedfile.zip"</tt></pre>
 </div></div>
 <h4 id="_client_certificate_authorization_for_ssl_tls">Client certificate authorization for SSL/TLS</h4>
 <div class="listingblock">
@@ -2177,12 +2177,12 @@ checksums.</td>
 <div class="para"><p>You can specify set of parts:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -P http://{host1,host2,host3}/file.iso</tt></pre>
+<pre><tt>aria2c -P "http://{host1,host2,host3}/file.iso"</tt></pre>
 </div></div>
 <div class="para"><p>You can specify numeric sequence:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Z -P http://host/image[000-100].png</tt></pre>
+<pre><tt>aria2c -Z -P "http://host/image[000-100].png"</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -2195,12 +2195,12 @@ checksums.</td>
 <div class="para"><p>You can specify step counter:</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Z -P http://host/image[A-Z:2].png</tt></pre>
+<pre><tt>aria2c -Z -P "http://host/image[A-Z:2].png"</tt></pre>
 </div></div>
 <h4 id="_parallel_downloads_of_arbitrary_number_of_url_metalink_torrent">Parallel downloads of arbitrary number of URL,metalink,torrent</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -j3 -Z http://host/file1 file2.torrent file3.metalink</tt></pre>
+<pre><tt>aria2c -j3 -Z "http://host/file1" file2.torrent file3.metalink</tt></pre>
 </div></div>
 <h4 id="_bittorrent_encryption">BitTorrent Encryption</h4>
 <div class="para"><p>Encrypt whole payload using ARC4:</p></div>
@@ -2244,7 +2244,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-15 12:20:50 JST
+Last updated 2009-02-15 12:35:52 JST
 </div>
 </div>
 </body>
