@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-01 13:03+0900\n"
-"PO-Revision-Date: 2009-01-12 08:18+0000\n"
+"POT-Creation-Date: 2009-02-15 23:45+0900\n"
+"PO-Revision-Date: 2009-02-12 08:28+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-02-01 03:40+0000\n"
+"X-Launchpad-Export-Date: 2009-02-15 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:208
@@ -62,49 +62,49 @@ msgstr "                              Метки: "
 msgid "                              Possible Values: "
 msgstr "                              Возможные значения: "
 
-#: src/OptionHandlerImpl.h:99
+#: src/OptionHandlerImpl.h:127
 msgid "must be either 'true' or 'false'."
 msgstr "должно быть 'true' или 'false'."
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
 #, c-format
 msgid "must be between %s and %s."
 msgstr "должно быть между %s и %s."
 
-#: src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:205
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "должно быть меньше или равно %s."
 
-#: src/OptionHandlerImpl.h:180
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "должно быть больше или равно %s."
 
-#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
+#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
 msgid "must be a number."
 msgstr "должно быть числом."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:271
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "должно быть меньше или равно %.1f."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:274
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "должно быть между %.1f и %.1f."
 
-#: src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:277
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "должно быть больше или равно %.1f."
 
-#: src/OptionHandlerImpl.h:380
+#: src/OptionHandlerImpl.h:428
 msgid "must be one of the following:"
 msgstr "должно быть одним из следующих:"
 
-#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
+#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
 msgid "unrecognized proxy format"
 msgstr "неизвестный формат прокси"
 
@@ -875,6 +875,10 @@ msgid ""
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
+" --bt-max-peers=NUM Указать максимальное количество узлов каждого торента.\n"
+"                              0 означает неограниченно.\n"
+"                              Смотрите также параметр --bt-request-peer-"
+"speed-limit."
 
 #: src/usage_text.h:313
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
@@ -1301,16 +1305,17 @@ msgstr ""
 
 #: src/usage_text.h:464
 msgid " --event-poll=POLL            Specify the method for polling events."
-msgstr ""
+msgstr " --event-poll=POLL Указать метод опроса событий."
 
-#: src/usage_text.h:466
-#, fuzzy
+#: src/usage_text.h:477
 msgid ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 msgstr ""
-" --dht-entry-point=HOST:PORT Установить хост и порт, как точку входа к DHT\n"
-"                              сети."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1354,7 +1359,7 @@ msgstr "Вывод опций с меткой '%s'."
 msgid "See -h option to know other command-line options(%s)."
 msgstr "Для других опций командной строки(%s) посмотрите опцию '-h'."
 
-#: src/version_usage.cc:121
+#: src/version_usage.cc:120
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1363,7 +1368,7 @@ msgstr ""
 "должны\n"
 " указывать на идентичные файлы, иначе загрузка не получится."
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:122
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1373,7 +1378,7 @@ msgstr ""
 " сохранённых на локальном диске. Однако они всегда будут обрабатываться\n"
 " как отдельные загрузки."
 
-#: src/version_usage.cc:128
+#: src/version_usage.cc:127
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1388,7 +1393,7 @@ msgstr ""
 " пока данные с http/ftp отдаются в массу торента. Обратите внимание, что\n"
 " только один файл торента может быть интегрирован в http/ft."
 
-#: src/version_usage.cc:133
+#: src/version_usage.cc:132
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1397,7 +1402,7 @@ msgstr ""
 " если он содержит \"&\" или любой другой символ имеющий специальное\n"
 " значение в shell."
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:136
 msgid "Refer to man page for more information."
 msgstr "Обратитесь к странице man для более подробной информации"
 

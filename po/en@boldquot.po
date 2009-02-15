@@ -30,10 +30,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2 1.1.2\n"
+"Project-Id-Version: aria2 1.2.0\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-01 13:03+0900\n"
-"PO-Revision-Date: 2009-02-01 13:03+0900\n"
+"POT-Creation-Date: 2009-02-15 23:45+0900\n"
+"PO-Revision-Date: 2009-02-15 23:45+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -83,49 +83,49 @@ msgstr "                              Tags: "
 msgid "                              Possible Values: "
 msgstr "                              Possible Values: "
 
-#: src/OptionHandlerImpl.h:99
+#: src/OptionHandlerImpl.h:127
 msgid "must be either 'true' or 'false'."
 msgstr "must be either ‘[1mtrue[0m’ or 'false'."
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
 #, c-format
 msgid "must be between %s and %s."
 msgstr "must be between %s and %s."
 
-#: src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:205
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "must be smaller than or equal to %s."
 
-#: src/OptionHandlerImpl.h:180
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "must be greater than or equal to %s."
 
-#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
+#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
 msgid "must be a number."
 msgstr "must be a number."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:271
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "must be smaller than or equal to %.1f."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:274
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "must be between %.1f and %.1f."
 
-#: src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:277
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "must be greater than or equal to %.1f."
 
-#: src/OptionHandlerImpl.h:380
+#: src/OptionHandlerImpl.h:428
 msgid "must be one of the following:"
 msgstr "must be one of the following:"
 
-#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
+#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
 msgid "unrecognized proxy format"
 msgstr "unrecognized proxy format"
 
@@ -1348,13 +1348,21 @@ msgstr ""
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr " --event-poll=POLL            Specify the method for polling events."
 
-#: src/usage_text.h:466
+#: src/usage_text.h:477
 msgid ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 msgstr ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1398,7 +1406,7 @@ msgstr "Printing options tagged with '%s'."
 msgid "See -h option to know other command-line options(%s)."
 msgstr "See -h option to know other command-line options(%s)."
 
-#: src/version_usage.cc:121
+#: src/version_usage.cc:120
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1406,7 +1414,7 @@ msgstr ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:122
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1416,7 +1424,7 @@ msgstr ""
 " stored in a local drive. Please note that they are always treated as a\n"
 " separate download."
 
-#: src/version_usage.cc:128
+#: src/version_usage.cc:127
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1430,7 +1438,7 @@ msgstr ""
 " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
 " only single file torrent can be integrated with http/ftp."
 
-#: src/version_usage.cc:133
+#: src/version_usage.cc:132
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1438,7 +1446,7 @@ msgstr ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains “[1m&[0m” or any characters that have special meaning in shell."
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:136
 msgid "Refer to man page for more information."
 msgstr "Refer to man page for more information."
 

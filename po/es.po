@@ -7,39 +7,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-01 13:03+0900\n"
-"PO-Revision-Date: 2009-02-01 13:04+0900\n"
+"POT-Creation-Date: 2009-02-15 23:45+0900\n"
+"PO-Revision-Date: 2009-02-15 23:46+0900\n"
 "Last-Translator: Javier García Díaz <Unknown>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-02-01 03:40+0000\n"
+"X-Launchpad-Export-Date: 2009-02-15 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:208
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
-"Iniciado secuencia de parada.., Pulse Ctrl-C otra vez para efectuar una "
-"parada de emergencia."
+"Iniciando secuencia de parada... Pulse Ctrl-C otra vez para efectuar una "
+"parada de urgencia."
 
 #: src/DownloadEngine.cc:214
 msgid "Emergency shutdown sequence commencing..."
-msgstr "Empezando secuencia de parada de urgencia..."
+msgstr "Iniciando secuencia de parada de urgencia..."
 
 #: src/MultiUrlRequestInfo.cc:96
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
-"Al reiniciar la transferencia, aria2 continuará la descarga donde se quedó."
+msgstr "Si reinicia la transferencia, aria2 continuará con la descarga."
 
 #: src/MultiUrlRequestInfo.cc:98
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
-"Si hay errores, entonces mire archivo de registro. Para más información vea "
-"la opción '-l' en las páginas help/man."
+"Compruebe el archivo de registro si se producen errores. Para más "
+"información vea la opción '-l' en las páginas help/man."
 
 #: src/RequestGroupMan.cc:417
 msgid "Download Results:"
@@ -61,49 +60,49 @@ msgstr "                              Etiquetas: "
 msgid "                              Possible Values: "
 msgstr "                              Valores válidos: "
 
-#: src/OptionHandlerImpl.h:99
+#: src/OptionHandlerImpl.h:127
 msgid "must be either 'true' or 'false'."
-msgstr "ha de ser \"true\" (verdadero) o \"false\" (falso)"
+msgstr "ha de ser «true» (verdadero) o «false» (falso)"
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
 #, c-format
 msgid "must be between %s and %s."
 msgstr "ha de estar entre %s y %s."
 
-#: src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:205
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "ha de ser menor o igual que %s."
 
-#: src/OptionHandlerImpl.h:180
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "ha de ser mayor o igual que %s."
 
-#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
+#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
 msgid "must be a number."
 msgstr "ha de ser un número."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:271
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "ha de ser menor o igual que %.1f."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:274
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "ha de estar entre %.1f y %.1f."
 
-#: src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:277
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "ha de ser mayor o igual que %.1f."
 
-#: src/OptionHandlerImpl.h:380
+#: src/OptionHandlerImpl.h:428
 msgid "must be one of the following:"
 msgstr "ha de ser uno de los siguientes:"
 
-#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
+#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
 msgid "unrecognized proxy format"
 msgstr "formato proxy no reconocido"
 
@@ -995,10 +994,14 @@ msgstr ""
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:466
+#: src/usage_text.h:477
 msgid ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 msgstr ""
 
 #: src/version_usage.cc:54
@@ -1043,7 +1046,7 @@ msgstr ""
 msgid "See -h option to know other command-line options(%s)."
 msgstr ""
 
-#: src/version_usage.cc:121
+#: src/version_usage.cc:120
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1052,14 +1055,14 @@ msgstr ""
 "las URLs han\n"
 " de apuntar al mismo fichero o la descarga fallará."
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:122
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
 " separate download."
 msgstr ""
 
-#: src/version_usage.cc:128
+#: src/version_usage.cc:127
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1074,13 +1077,13 @@ msgstr ""
 "Observen que\n"
 " solamente se puede integrar un único fichero con http/ftp."
 
-#: src/version_usage.cc:133
+#: src/version_usage.cc:132
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:136
 msgid "Refer to man page for more information."
 msgstr "Para más información consulte la página man."
 
@@ -1683,7 +1686,7 @@ msgstr ""
 
 #: src/message.h:166
 msgid "No files to download."
-msgstr ""
+msgstr "Ningún archivo que descargar."
 
 #: src/message.h:168
 msgid ""
@@ -1694,11 +1697,11 @@ msgstr ""
 #: src/message.h:170
 #, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr ""
+msgstr "Imprimiendo los conteidos del archivo «%s»..."
 
 #: src/message.h:171
 msgid "This file is neither Torrent nor Metalink file. Skipping."
-msgstr ""
+msgstr "Este archivo no es de tipo Torrent ni Metalink. Saltando."
 
 #: src/message.h:174
 msgid "Timeout."

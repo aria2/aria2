@@ -1,5 +1,14 @@
 2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Spanish, Ukrainian, Russian and Japanese translations.
+	Thanks to all translators.
+	* po/es.po
+	* po/ja.po
+	* po/ru.po
+	* po/uk.po
+	
+2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call deleteSocketForReadCheck() before socket is closed.
 	* src/HttpListenCommand.cc 
 

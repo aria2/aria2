@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-01 13:03+0900\n"
-"PO-Revision-Date: 2008-12-23 20:15+0900\n"
+"POT-Creation-Date: 2009-02-15 23:45+0900\n"
+"PO-Revision-Date: 2009-02-15 23:46+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-12-23 11:01+0000\n"
+"X-Launchpad-Export-Date: 2009-02-15 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:208
@@ -60,49 +60,49 @@ msgstr "                              タグ: "
 msgid "                              Possible Values: "
 msgstr "                              設定可能な値: "
 
-#: src/OptionHandlerImpl.h:99
+#: src/OptionHandlerImpl.h:127
 msgid "must be either 'true' or 'false'."
 msgstr "は, 'true' または 'false' のどちらかで指定してください."
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
 #, c-format
 msgid "must be between %s and %s."
 msgstr "は, %s と %s の間で指定してください."
 
-#: src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:205
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "は, %s 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:180
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "は, %s 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
+#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
 msgid "must be a number."
 msgstr "は, 数字でなければなりません."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:271
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "は, %.1f 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:274
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "は, %1.f と %.1f の間で指定してください."
 
-#: src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:277
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "は, %.1f 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:380
+#: src/OptionHandlerImpl.h:428
 msgid "must be one of the following:"
 msgstr "は, 以下のいずれかを指定してください:"
 
-#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
+#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
 
@@ -492,7 +492,6 @@ msgstr ""
 "す."
 
 #: src/usage_text.h:159
-#, fuzzy
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -512,10 +511,11 @@ msgstr ""
 "効\n"
 "                              です. 壊れている可能性があるファイルを検証し, "
 "壊れ\n"
-"                              た部分だけダウンロードすることができます."
+"                              た部分だけダウンロードすることができます.\n"
+"                              --bt-hash-check-seed オプションも参照してくださ"
+"い."
 
 #: src/usage_text.h:165
-#, fuzzy
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -527,17 +527,17 @@ msgid ""
 "                              This option has effect only on BitTorrent\n"
 "                              download."
 msgstr ""
-" --check-integrity=true|false  ファイルを部分チェックサムにより, 正常にダウン"
-"ロ\n"
-"                              ードされているか検証します.\n"
-"                              BitTorrent と 部分チェックサム付きの Metalink "
+" --bt-hash-check-seed[=true|false] true が指定された場合, --check-integrity "
+"オプ\n"
+"                              ションによるハッシュ チェック後にファイルが完全"
 "で\n"
-"                              使用できます.\n"
-"                              誤りのある部分だけをダウンロードしなおせばよい"
-"の\n"
-"                              で便利です. -c オプションと組み合わせるとよい\n"
-"                              かもしれません.\n"
-"                              デフォルト値: false"
+"                              ある場合, 引き続きシードを行います. ダウンロー"
+"ドが\n"
+"                              未完の場合のみダウンロードをしたい場合は, "
+"false を\n"
+"                              指定します. このオプションは BitTorrent ダウン"
+"ロー\n"
+"                              ドでのみ有効です."
 
 #: src/usage_text.h:173
 msgid ""
@@ -919,7 +919,6 @@ msgstr ""
 "                              ます."
 
 #: src/usage_text.h:295
-#, fuzzy
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
 "                              torrent is lower than SPEED, aria2 "
@@ -931,11 +930,13 @@ msgid ""
 "                              download speed in some cases.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --bt-request-peer-speed-limit=SPEED BitTorrent ダウンロードにおいて, ダウン"
-"ロー\n"
-"                              ド速度が SPEED よりも遅い場合, ピアの最大数を無"
-"視\n"
-"                              して接続を開始したり, 受け入れたりします.\n"
+" --bt-request-peer-speed-limit=SPEED torrent のダウンロード速度が SPEED を下"
+"回る\n"
+"                              場合, 一時的にピアの最大数を増やして速度の向上"
+"をは\n"
+"                              かります. SPEED の値を希望のダウンロード速度に"
+"して\n"
+"                              おくとよいでしょう.\n"
 "                              K または M を付加することができます (1K = "
 "1024,\n"
 "                              1M = 1024K)."
@@ -960,19 +961,17 @@ msgstr ""
 "                              す."
 
 #: src/usage_text.h:309
-#, fuzzy
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
-" --server-stat-of=FILE        サーバーのパフォーマンスプロファイルを保存する"
-"ファ\n"
-"                              イル名を指定します. 保存したファイルは,\n"
-"                              --server-stat-of オプションにより読み込むことが"
-"で\n"
-"                              きます."
+" --bt-max-peers=NUM           torrent 毎のピアの最大数を指定します. 0 は無制"
+"限を\n"
+"                              意味します. --bt-request-peer-speed-limit オプ"
+"ショ\n"
+"                              ンも参照してください."
 
 #: src/usage_text.h:313
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
@@ -1245,7 +1244,6 @@ msgstr ""
 "                              です."
 
 #: src/usage_text.h:403
-#, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1289,11 +1287,26 @@ msgstr ""
 "プす\n"
 "                              ることも行います. ここで使用するダウンロード速"
 "度は\n"
-"                              サーバーのパフォーマンスプロファイルの一部で"
+"                              サーバーのパフォーマンス プロファイルの一部で"
 "す.\n"
 "                              --server-stat-of と --server-start-if オプショ"
 "ンも\n"
-"                              参照してください."
+"                              参照してください.\n"
+"                              'adaptive' を指定すると, 初回の選択と, フェイ"
+"ル オ\n"
+"                              ーバー時には最速のサーバーを選択します. その他"
+"のタ\n"
+"                              イミングでの選択では, まだテストしていないミ"
+"ラーを\n"
+"                              選択します. すべてテストされている場合は, 再テ"
+"スト\n"
+"                              が必要なミラーを選択します. このようなミラーが"
+"存在\n"
+"                              しない場合は, 何も選択しません. 'feedback' を指"
+"定\n"
+"                              したときと同様, サーバーのパフォーマンス プロ"
+"ファ\n"
+"                              イルを使用します."
 
 #: src/usage_text.h:422
 msgid ""
@@ -1434,19 +1447,29 @@ msgid ""
 "HTTP\n"
 "                              server."
 msgstr ""
+" --use-head[=true|false]      HTTP サーバーへの最初のリクエストに HEAD を使い"
+"ます."
 
 #: src/usage_text.h:464
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
+" --event-poll=POLL            イベントを検出する方法 (システム コール) を指定"
+"します."
 
-#: src/usage_text.h:466
-#, fuzzy
+#: src/usage_text.h:477
 msgid ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 msgstr ""
-" --listen-port=PORT           ピアからの接続を受け付けるポート番号を指定.\n"
-"                              デフォルト値: 6881-6999"
+" --bt-external-ip=IPADDRESS   BitTorrent トラッカーに報告する外部 IP アドレス"
+"を\n"
+"                              指定します. '外部' という名前がついていますが, "
+"ど\n"
+"                              のような IP アドレスでも受け付けます."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1492,7 +1515,7 @@ msgstr ""
 "他のコマンドラインオプション(%s)について知るには, -h オプションを参照してくだ"
 "さい."
 
-#: src/version_usage.cc:121
+#: src/version_usage.cc:120
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1501,7 +1524,7 @@ msgstr ""
 " URL が同じファイルをさしている必要があります. そうでない場合, ダウ\n"
 " ンロードは失敗します."
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:122
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1513,7 +1536,7 @@ msgstr ""
 "ま\n"
 " す."
 
-#: src/version_usage.cc:128
+#: src/version_usage.cc:127
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1527,7 +1550,7 @@ msgstr ""
 " アップロードされます. http/ftp と共にダウンロードできるのは, シン\n"
 " グルファイル torrent だけです."
 
-#: src/version_usage.cc:133
+#: src/version_usage.cc:132
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1536,7 +1559,7 @@ msgstr ""
 "たは\n"
 " \" で囲って(クォートして)ください."
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:136
 msgid "Refer to man page for more information."
 msgstr "より詳しい情報は man ページを参照してください."
 
@@ -2864,6 +2887,34 @@ msgstr "ファイル:"
 #~ "                              デフォルト値: false"
 
 #~ msgid ""
+#~ " --check-integrity=true|false  Check file integrity by validating piece "
+#~ "hash.\n"
+#~ "                              This option only affects in BitTorrent "
+#~ "downloads\n"
+#~ "                              and Metalink downloads with chunk "
+#~ "checksums.\n"
+#~ "                              Use this option to re-download a damaged "
+#~ "portion\n"
+#~ "                              of a file.\n"
+#~ "                              You may need to specify --allow-"
+#~ "overwrite=true\n"
+#~ "                              if the .aria2 file doesn't exist.\n"
+#~ "                              Default: false"
+#~ msgstr ""
+#~ " --check-integrity=true|false  ファイルを部分チェックサムにより, 正常にダ"
+#~ "ウンロ\n"
+#~ "                              ードされているか検証します.\n"
+#~ "                              BitTorrent と 部分チェックサム付きの "
+#~ "Metalink で\n"
+#~ "                              使用できます.\n"
+#~ "                              誤りのある部分だけをダウンロードしなおせばよ"
+#~ "いの\n"
+#~ "                              で便利です. -c オプションと組み合わせるとよ"
+#~ "い\n"
+#~ "                              かもしれません.\n"
+#~ "                              デフォルト値: false"
+
+#~ msgid ""
 #~ " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 #~ "                              downloading a file in Metalink mode. This "
 #~ "option\n"
@@ -2987,6 +3038,15 @@ msgstr "ファイル:"
 #~ "み書き\n"
 #~ "                              します.\n"
 #~ "                              デフォルト値: true"
+
+#~ msgid ""
+#~ " --listen-port=PORT           Set TCP port number for BitTorrent "
+#~ "downloads.\n"
+#~ "                              Default: 6881-6999"
+#~ msgstr ""
+#~ " --listen-port=PORT           ピアからの接続を受け付けるポート番号を指"
+#~ "定.\n"
+#~ "                              デフォルト値: 6881-6999"
 
 #~ msgid ""
 #~ " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"

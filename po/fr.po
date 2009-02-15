@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-01 13:03+0900\n"
+"POT-Creation-Date: 2009-02-15 23:45+0900\n"
 "PO-Revision-Date: 2008-12-17 00:40+0900\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
@@ -60,49 +60,49 @@ msgstr "                              Signets: "
 msgid "                              Possible Values: "
 msgstr "                              Valeurs possibles: "
 
-#: src/OptionHandlerImpl.h:99
+#: src/OptionHandlerImpl.h:127
 msgid "must be either 'true' or 'false'."
 msgstr "doit contenir comme valeur soit \"true\" ou \"false\""
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
 #, c-format
 msgid "must be between %s and %s."
 msgstr "doit être compris entre %s et %s"
 
-#: src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:205
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "doit être plus petit ou égal à %s"
 
-#: src/OptionHandlerImpl.h:180
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "doit être plus grand ou égal à %s"
 
-#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
+#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
 msgid "must be a number."
 msgstr "doit être un nombre"
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:271
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "doit être plus petit ou égal à %.1f."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:274
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "doit être compris entre %.1f et %.1f."
 
-#: src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:277
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "doit être plus grand ou égal à %.1f."
 
-#: src/OptionHandlerImpl.h:380
+#: src/OptionHandlerImpl.h:428
 msgid "must be one of the following:"
 msgstr "doit être l'une de ces valeurs suivantes:"
 
-#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
+#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
 msgid "unrecognized proxy format"
 msgstr "format de proxy non reconnu"
 
@@ -1116,15 +1116,23 @@ msgstr ""
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:466
+#: src/usage_text.h:477
 #, fuzzy
 msgid ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 msgstr ""
-" --listen-port=PORT           Définir le numéro de port pour écouter dans le "
-"cas d'une connexion P2P.\n"
-"                              Default: 6881-6999"
+" --follow-metalink=true|false  Définir cette option comme false empêche à "
+"aria2\n"
+"                              d'entrer en mode Metalink même si le nom de "
+"fichier\n"
+"                              du fichier téléchargé se termine en ."
+"metalink.\n"
+"                              Défaut: true"
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1170,7 +1178,7 @@ msgstr ""
 "Regardez l'option -h pour connaître les autres options en ligne de commande(%"
 "s)."
 
-#: src/version_usage.cc:121
+#: src/version_usage.cc:120
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1179,7 +1187,7 @@ msgstr ""
 "l'option -Z, toutes les URLs doivent\n"
 " faire référence au même fichier ou sinon le téléchargement échouera."
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:122
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1189,7 +1197,7 @@ msgstr ""
 "Notez bien qu'ils seront toujours traités comme des téléchargements \n"
 "séparés."
 
-#: src/version_usage.cc:128
+#: src/version_usage.cc:127
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1205,7 +1213,7 @@ msgstr ""
 "torrent. Notez que\n"
 " seulement un seul fichier torrent peut être intégré avec http/ftp."
 
-#: src/version_usage.cc:133
+#: src/version_usage.cc:132
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1214,7 +1222,7 @@ msgstr ""
 "surtout si elle\n"
 " contient \"&\" ou tout autre caractère ayant un sens dans le shell."
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:136
 msgid "Refer to man page for more information."
 msgstr "Merci de vous reférer au manuel pour plus d'information."
 
@@ -2211,6 +2219,16 @@ msgstr "La jonction du port a engendré des erreurs.\n"
 msgid "Files:"
 msgstr "Fichiers:"
 
+#, fuzzy
+#~ msgid ""
+#~ " --http-server-listen-port=PORT Specify a port number for the built-in "
+#~ "HTTP\n"
+#~ "                              Server to listen to."
+#~ msgstr ""
+#~ " --listen-port=PORT           Définir le numéro de port pour écouter dans "
+#~ "le cas d'une connexion P2P.\n"
+#~ "                              Default: 6881-6999"
+
 #~ msgid ""
 #~ "File %s exists, but %s does not exist. The download was canceled in order "
 #~ "to prevent your file from being truncated to 0. If you are sure to "
@@ -2581,21 +2599,6 @@ msgstr "Fichiers:"
 #~ "                              le partage s'arrête dès qu'une des deux "
 #~ "conditions\n"
 #~ "                              est satisfaite."
-
-#~ msgid ""
-#~ " --follow-metalink=true|false Set to false to prevent aria2 from\n"
-#~ "                              entering Metalink mode even if the filename "
-#~ "of\n"
-#~ "                              the downloaded file ends with .metalink.\n"
-#~ "                              Default: true"
-#~ msgstr ""
-#~ " --follow-metalink=true|false  Définir cette option comme false empêche à "
-#~ "aria2\n"
-#~ "                              d'entrer en mode Metalink même si le nom de "
-#~ "fichier\n"
-#~ "                              du fichier téléchargé se termine en ."
-#~ "metalink.\n"
-#~ "                              Défaut: true"
 
 #~ msgid " -h, --help                   Print this message and exit."
 #~ msgstr " -h, --help                   Imprime ce message et quitte."

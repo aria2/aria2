@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-01 13:03+0900\n"
+"POT-Creation-Date: 2009-02-15 23:45+0900\n"
 "PO-Revision-Date: 2008-08-04 07:10+0000\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
@@ -61,49 +61,49 @@ msgstr "                              Etiquetes: "
 msgid "                              Possible Values: "
 msgstr "                              Valors Disponibles: "
 
-#: src/OptionHandlerImpl.h:99
+#: src/OptionHandlerImpl.h:127
 msgid "must be either 'true' or 'false'."
 msgstr "ha de ser \"true\" o \"false\""
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
 #, c-format
 msgid "must be between %s and %s."
 msgstr "ha de estar entre %s i %s"
 
-#: src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:205
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "ha de ser més petit o igual que %s"
 
-#: src/OptionHandlerImpl.h:180
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "ha de ser més gran o igual que %s"
 
-#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
+#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
 msgid "must be a number."
 msgstr "ha de ser un número."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:271
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "ha de ser més petit o igual a %.1f."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:274
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "ha de estar entre %.1f i %.1f."
 
-#: src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:277
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "ha de ser més gran o igual que %.1f."
 
-#: src/OptionHandlerImpl.h:380
+#: src/OptionHandlerImpl.h:428
 msgid "must be one of the following:"
 msgstr "ha de ser un dels següents:"
 
-#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
+#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
 msgid "unrecognized proxy format"
 msgstr "format proxy no reconegut"
 
@@ -1249,14 +1249,15 @@ msgstr ""
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:466
-#, fuzzy
+#: src/usage_text.h:477
 msgid ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 msgstr ""
-" --dht-entry-point=HOST:PORT Estableix host i port com el punt d'entrada a \n"
-"                                           una xarxa DHT."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1301,7 +1302,7 @@ msgid "See -h option to know other command-line options(%s)."
 msgstr ""
 "Consulti la opció -h per trobar altres opcions (%s) de la línia d'ordres."
 
-#: src/version_usage.cc:121
+#: src/version_usage.cc:120
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1310,7 +1311,7 @@ msgstr ""
 "les URLs han\n"
 " d'apuntar al mateix fitxer o la descàrrega fallarà."
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:122
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1320,7 +1321,7 @@ msgstr ""
 " emmagatzemats en un disc local. Si us plau, tingui en compte que sempre\n"
 " son tractats com descàrregues separades."
 
-#: src/version_usage.cc:128
+#: src/version_usage.cc:127
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1335,7 +1336,7 @@ msgstr ""
 "Observeu que\n"
 " només es pot integrar un únic fitxer amb http/ftp."
 
-#: src/version_usage.cc:133
+#: src/version_usage.cc:132
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1343,7 +1344,7 @@ msgstr ""
 " Asseguri's de que la URL és entre simples (') o dobles(\") cometes Si\n"
 "conté \"&\" o altres caràcters que tenen un significat especial en el shell."
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:136
 msgid "Refer to man page for more information."
 msgstr "Per més informació consulti la pàgina man."
 
@@ -2329,6 +2330,16 @@ msgstr "Han ocorregut errors mentre agafàvem el port.\n"
 #: src/Util.cc:724
 msgid "Files:"
 msgstr "Fitxers:"
+
+#, fuzzy
+#~ msgid ""
+#~ " --http-server-listen-port=PORT Specify a port number for the built-in "
+#~ "HTTP\n"
+#~ "                              Server to listen to."
+#~ msgstr ""
+#~ " --dht-entry-point=HOST:PORT Estableix host i port com el punt d'entrada "
+#~ "a \n"
+#~ "                                           una xarxa DHT."
 
 #~ msgid ""
 #~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all "

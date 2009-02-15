@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-01 13:03+0900\n"
-"PO-Revision-Date: 2009-01-28 08:43+0000\n"
+"POT-Creation-Date: 2009-02-15 23:45+0900\n"
+"PO-Revision-Date: 2009-02-10 12:43+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-02-01 03:40+0000\n"
+"X-Launchpad-Export-Date: 2009-02-15 14:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:208
@@ -60,49 +60,49 @@ msgstr "                              Ознаки: "
 msgid "                              Possible Values: "
 msgstr "                              Можливі значення: "
 
-#: src/OptionHandlerImpl.h:99
+#: src/OptionHandlerImpl.h:127
 msgid "must be either 'true' or 'false'."
 msgstr "має бути 'true' або 'false' (так чи ні)."
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:177
+#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
 #, c-format
 msgid "must be between %s and %s."
 msgstr "має бути між %s та %s."
 
-#: src/OptionHandlerImpl.h:174
+#: src/OptionHandlerImpl.h:205
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "має бути менше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:180
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "має бути більше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:183 src/OptionHandlerImpl.h:246
+#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
 msgid "must be a number."
 msgstr "має бути числом."
 
-#: src/OptionHandlerImpl.h:237
+#: src/OptionHandlerImpl.h:271
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "має бути менше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:240
+#: src/OptionHandlerImpl.h:274
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "має бути між %.1f та %.1f."
 
-#: src/OptionHandlerImpl.h:243
+#: src/OptionHandlerImpl.h:277
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "має бути більше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:380
+#: src/OptionHandlerImpl.h:428
 msgid "must be one of the following:"
 msgstr "має бути одним із наступних:"
 
-#: src/OptionHandlerImpl.h:427 src/OptionHandlerImpl.h:468
+#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
 msgid "unrecognized proxy format"
 msgstr "невідомий формат проксі"
 
@@ -1197,6 +1197,34 @@ msgid ""
 "                              anymore mirrors. Like 'feedback', it uses a\n"
 "                              performance profile of servers."
 msgstr ""
+" --uri-selector=SELECTOR Вказати алгоритм обирання  URI.\n"
+"                              Якщо задано 'inorder', то URI перевіряються в "
+"порядку\n"
+"                              представлення у переліку URI.\n"
+"                              Якщо задано 'feedback', aria2 використовує "
+"швидкість завантаження,\n"
+"                              що спостерігалась у попередніх завантаженнях, "
+"та обирає\n"
+"                              швидший сервер у переліку URI. Це також\n"
+"                              ефективно обминає мертві дзеркала. Швидкість "
+"завантаження\n"
+"                              яка спостерігалась, є частиною налаштувань "
+"профілю\n"
+"                              серверу, згаданих у параметрах --server-stat-"
+"of \n"
+"                              та --server-stat-if.\n"
+"                              Якщо задано 'adaptive', обирається одне із "
+"кращих\n"
+"                              дзеркал для першого та резервного з'єднань.\n"
+"                              Додатково, повертаються дзеркала котрі\n"
+"                              поки що не були перевірені, та якщо кожне з "
+"них \n"
+"                              вже перевірено, повертаються дзеркала, що "
+"мають\n"
+"                              бути перевірені знов. Інакше, дзеркала більше\n"
+"                              не обираються. Подібно до 'feedback', "
+"використовуються\n"
+"                              налаштування профілю сервара."
 
 #: src/usage_text.h:422
 msgid ""
@@ -1335,15 +1363,21 @@ msgstr ""
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr " --event-poll=POLL Вказати метод для опитування подій."
 
-#: src/usage_text.h:466
-#, fuzzy
+#: src/usage_text.h:477
 msgid ""
-" --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"
-"                              Server to listen to."
+" --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
+"a\n"
+"                              BitTorrent tracker. Although this function is\n"
+"                              named 'external', it can accept any kind of "
+"IP\n"
+"                              addresses."
 msgstr ""
-" --dht-entry-point=HOST:PORT Вказати хост та порт, як точку входження до "
-"DHT\n"
-"                              мережі."
+" --bt-external-ip=IPADDRESS Вказати зовнішню IP для звіту для\n"
+"                              BitTorrent трекера. Не зважаючи на те, що ця "
+"функція\n"
+"                              зветься 'external' ('зовнішньою'), вона може "
+"приймати будь-яку IP\n"
+"                              адресу."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1389,7 +1423,7 @@ msgid "See -h option to know other command-line options(%s)."
 msgstr ""
 "Дивіться -h параметр аби дізнатися інші параметри командного рядку(%s)."
 
-#: src/version_usage.cc:121
+#: src/version_usage.cc:120
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1398,7 +1432,7 @@ msgstr ""
 "-Z, усі URL мають\n"
 " посилатись на той самий файл, бо інакше завантаження буде припинено."
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:122
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1408,7 +1442,7 @@ msgstr ""
 " збережених на локальному диску. Проте вони завжди будуть оброблятись\n"
 " як окремі завантаження."
 
-#: src/version_usage.cc:128
+#: src/version_usage.cc:127
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1422,7 +1456,7 @@ msgstr ""
 " поки дані з http/ftp відвантажуються до маси торенту. Зуважте, що\n"
 " тільки єдиний файл торенту може бути інтегровано до http/ftp."
 
-#: src/version_usage.cc:133
+#: src/version_usage.cc:132
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1431,7 +1465,7 @@ msgstr ""
 "якщо воно\n"
 " вміщує \"&\" або якийсь інший символ, що має особливе значення в shell."
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:136
 msgid "Refer to man page for more information."
 msgstr "Зверніться до сторінок man задля отримання ширшої інформації."
 
