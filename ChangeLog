@@ -1,5 +1,12 @@
 2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed function throw list.
+	* src/bencode.cc
+	* src/bencode.h
+	* test/BencodeTest.cc
+	
+2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Enclosed all URLs in double quotes in command-line examples.
 	* doc/aria2c.1.txt
 	

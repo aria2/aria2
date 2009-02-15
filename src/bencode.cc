@@ -39,6 +39,7 @@
 
 #include "StringFormat.h"
 #include "Util.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -46,27 +47,27 @@ namespace bencode {
 
 const BDE BDE::none;
 
-BDE::BDE() throw():_type(TYPE_NONE) {}
+BDE::BDE():_type(TYPE_NONE) {}
 
-BDE::BDE(Integer integer) throw():_type(TYPE_INTEGER),
+BDE::BDE(Integer integer):_type(TYPE_INTEGER),
 				  _integer(new Integer(integer)) {}
 
 
-BDE::BDE(const std::string& string) throw():_type(TYPE_STRING),
-					    _string(new std::string(string)) {}
+BDE::BDE(const std::string& string):_type(TYPE_STRING),
+				    _string(new std::string(string)) {}
 
-BDE::BDE(const char* cstring) throw():_type(TYPE_STRING),
-				      _string(new std::string(cstring)) {}
+BDE::BDE(const char* cstring):_type(TYPE_STRING),
+			      _string(new std::string(cstring)) {}
 
-BDE::BDE(const char* data, size_t length) throw():
+BDE::BDE(const char* data, size_t length):
   _type(TYPE_STRING),
   _string(new std::string(&data[0], &data[length])) {}
 
-BDE::BDE(const unsigned char* data, size_t length) throw():
+BDE::BDE(const unsigned char* data, size_t length):
   _type(TYPE_STRING),
   _string(new std::string(&data[0], &data[length])) {}
 
-BDE BDE::dict() throw()
+BDE BDE::dict()
 {
   BDE bde;
   bde._type = TYPE_DICT;
@@ -74,7 +75,7 @@ BDE BDE::dict() throw()
   return bde;
 }
 
-BDE BDE::list() throw()
+BDE BDE::list()
 {
   BDE bde;
   bde._type = TYPE_LIST;
@@ -83,19 +84,19 @@ BDE BDE::list() throw()
 }
 
 // Test for Null data
-bool BDE::isNone() const throw()
+bool BDE::isNone() const
 {
   return _type == TYPE_NONE;
 }
 
 // Integer Interface
 
-bool BDE::isInteger() const throw()
+bool BDE::isInteger() const
 {
   return _type == TYPE_INTEGER;
 }
 
-BDE::Integer BDE::i() const throw(RecoverableException)
+BDE::Integer BDE::i() const
 {
   if(isInteger()) {
     return *_integer.get();
@@ -106,12 +107,12 @@ BDE::Integer BDE::i() const throw(RecoverableException)
 
 // String Interface
 
-bool BDE::isString() const throw()
+bool BDE::isString() const
 {
   return _type == TYPE_STRING;
 }
 
-const std::string& BDE::s() const throw(RecoverableException)
+const std::string& BDE::s() const
 {
   if(isString()) {
     return *_string.get();
@@ -120,7 +121,7 @@ const std::string& BDE::s() const throw(RecoverableException)
   }
 }
 
-const unsigned char* BDE::uc() const throw(RecoverableException)
+const unsigned char* BDE::uc() const
 {
   if(isString()) {
     return reinterpret_cast<const unsigned char*>(_string->data());
@@ -131,12 +132,12 @@ const unsigned char* BDE::uc() const throw(RecoverableException)
 
 // Dictionary Interface
 
-bool BDE::isDict() const throw()
+bool BDE::isDict() const
 {
   return _type == TYPE_DICT;
 }
 
-BDE& BDE::operator[](const std::string& key) throw(RecoverableException)
+BDE& BDE::operator[](const std::string& key)
 {
   if(isDict()) {
     return (*_dict.get())[key];
@@ -146,7 +147,6 @@ BDE& BDE::operator[](const std::string& key) throw(RecoverableException)
 }
 
 const BDE& BDE::operator[](const std::string& key) const
-  throw(RecoverableException)
 {
   if(isDict()) {
     BDE::Dict::const_iterator i = _dict->find(key);
@@ -160,7 +160,7 @@ const BDE& BDE::operator[](const std::string& key) const
   }
 }
 
-bool BDE::containsKey(const std::string& key) const throw(RecoverableException)
+bool BDE::containsKey(const std::string& key) const
 {
   if(isDict()) {
     return _dict->find(key) != _dict->end();
@@ -169,7 +169,7 @@ bool BDE::containsKey(const std::string& key) const throw(RecoverableException)
   }
 }
 
-void BDE::removeKey(const std::string& key) const throw(RecoverableException)
+void BDE::removeKey(const std::string& key) const
 {
   if(isDict()) {
     _dict->erase(key);
@@ -178,7 +178,7 @@ void BDE::removeKey(const std::string& key) const throw(RecoverableException)
   }
 }
 
-BDE::Dict::iterator BDE::dictBegin() throw(RecoverableException)
+BDE::Dict::iterator BDE::dictBegin()
 {
   if(isDict()) {
     return _dict->begin();
@@ -187,7 +187,7 @@ BDE::Dict::iterator BDE::dictBegin() throw(RecoverableException)
   }
 }
 
-BDE::Dict::const_iterator BDE::dictBegin() const throw(RecoverableException)
+BDE::Dict::const_iterator BDE::dictBegin() const
 {
   if(isDict()) {
     return _dict->begin();
@@ -196,7 +196,7 @@ BDE::Dict::const_iterator BDE::dictBegin() const throw(RecoverableException)
   }
 }
 
-BDE::Dict::iterator BDE::dictEnd() throw(RecoverableException)
+BDE::Dict::iterator BDE::dictEnd()
 {
   if(isDict()) {
     return _dict->end();
@@ -205,7 +205,7 @@ BDE::Dict::iterator BDE::dictEnd() throw(RecoverableException)
   }
 }
 
-BDE::Dict::const_iterator BDE::dictEnd() const throw(RecoverableException)
+BDE::Dict::const_iterator BDE::dictEnd() const
 {
   if(isDict()) {
     return _dict->end();
@@ -216,12 +216,12 @@ BDE::Dict::const_iterator BDE::dictEnd() const throw(RecoverableException)
 
 // List Interface
 
-bool BDE::isList() const throw()
+bool BDE::isList() const
 {
   return _type == TYPE_LIST;
 }
 
-void BDE::append(const BDE& bde) throw(RecoverableException)
+void BDE::append(const BDE& bde)
 {
   if(isList()) {
     _list->push_back(bde);
@@ -230,7 +230,7 @@ void BDE::append(const BDE& bde) throw(RecoverableException)
   }
 }
 
-void BDE::operator<<(const BDE& bde) throw(RecoverableException)
+void BDE::operator<<(const BDE& bde)
 {
   if(isList()) {
     _list->push_back(bde);
@@ -239,7 +239,7 @@ void BDE::operator<<(const BDE& bde) throw(RecoverableException)
   }
 }
 
-BDE& BDE::operator[](size_t index) throw(RecoverableException)
+BDE& BDE::operator[](size_t index)
 {
   if(isList()) {
     return (*_list.get())[index];
@@ -248,7 +248,7 @@ BDE& BDE::operator[](size_t index) throw(RecoverableException)
   }
 }
 
-const BDE& BDE::operator[](size_t index) const throw(RecoverableException)
+const BDE& BDE::operator[](size_t index) const
 {
   if(isList()) {
     return (*_list.get())[index];
@@ -257,7 +257,7 @@ const BDE& BDE::operator[](size_t index) const throw(RecoverableException)
   }
 }
 
-BDE::List::iterator BDE::listBegin() throw(RecoverableException)
+BDE::List::iterator BDE::listBegin()
 {
   if(isList()) {
     return _list->begin();
@@ -266,7 +266,7 @@ BDE::List::iterator BDE::listBegin() throw(RecoverableException)
   }
 }
 
-BDE::List::const_iterator BDE::listBegin() const throw(RecoverableException)
+BDE::List::const_iterator BDE::listBegin() const
 {
   if(isList()) {
     return _list->begin();
@@ -275,7 +275,7 @@ BDE::List::const_iterator BDE::listBegin() const throw(RecoverableException)
   }
 }
 
-BDE::List::iterator BDE::listEnd() throw(RecoverableException)
+BDE::List::iterator BDE::listEnd()
 {
   if(isList()) {
     return _list->end();
@@ -284,7 +284,7 @@ BDE::List::iterator BDE::listEnd() throw(RecoverableException)
   }
 }
 
-BDE::List::const_iterator BDE::listEnd() const throw(RecoverableException)
+BDE::List::const_iterator BDE::listEnd() const
 {
   if(isList()) {
     return _list->end();
@@ -294,7 +294,7 @@ BDE::List::const_iterator BDE::listEnd() const throw(RecoverableException)
 }
 
 // Callable from List and Dict
-size_t BDE::size() const throw(RecoverableException)
+size_t BDE::size() const
 {
   if(isDict()) {
     return _dict->size();
@@ -306,7 +306,7 @@ size_t BDE::size() const throw(RecoverableException)
 }
 
 // Callable from List and Dict
-bool BDE::empty() const throw(RecoverableException)
+bool BDE::empty() const
 {
   if(isDict()) {
     return _dict->empty();
@@ -317,10 +317,9 @@ bool BDE::empty() const throw(RecoverableException)
   }
 }
 
-static BDE decodeiter(std::istream& ss) throw(RecoverableException);
+static BDE decodeiter(std::istream& ss);
 
 static void checkdelim(std::istream& ss, const char delim = ':')
-  throw(RecoverableException)
 {
   char d;
   if(!(ss.get(d) && d == delim)) {
@@ -330,7 +329,6 @@ static void checkdelim(std::istream& ss, const char delim = ':')
 }
 
 static std::string decoderawstring(std::istream& ss)
-  throw(RecoverableException)
 {
   size_t length;
   ss >> length;
@@ -351,12 +349,12 @@ static std::string decoderawstring(std::istream& ss)
   return str;
 }
 
-static BDE decodestring(std::istream& ss) throw(RecoverableException)
+static BDE decodestring(std::istream& ss)
 {
   return BDE(decoderawstring(ss));
 }
 
-static BDE decodeinteger(std::istream& ss) throw(RecoverableException)
+static BDE decodeinteger(std::istream& ss)
 {
   BDE::Integer integer;
   ss >> integer;
@@ -367,7 +365,7 @@ static BDE decodeinteger(std::istream& ss) throw(RecoverableException)
   return BDE(integer);
 }
 
-static BDE decodedict(std::istream& ss) throw(RecoverableException)
+static BDE decodedict(std::istream& ss)
 {
   BDE dict = BDE::dict();
   char c;
@@ -383,7 +381,7 @@ static BDE decodedict(std::istream& ss) throw(RecoverableException)
   throw RecoverableException("Unexpected EOF in dict context. 'e' expected.");
 }
 
-static BDE decodelist(std::istream& ss) throw(RecoverableException)
+static BDE decodelist(std::istream& ss)
 {
   BDE list = BDE::list();
   char c;
@@ -398,7 +396,7 @@ static BDE decodelist(std::istream& ss) throw(RecoverableException)
   throw RecoverableException("Unexpected EOF in list context. 'e' expected.");
 }
 
-static BDE decodeiter(std::istream& ss) throw(RecoverableException)
+static BDE decodeiter(std::istream& ss)
 {
   char c;
   if(!ss.get(c)) {
@@ -417,12 +415,12 @@ static BDE decodeiter(std::istream& ss) throw(RecoverableException)
   }
 }
 
-BDE decode(std::istream& in) throw(RecoverableException)
+BDE decode(std::istream& in)
 {
   return decodeiter(in);
 }
 
-BDE decode(const std::string& s) throw(RecoverableException)
+BDE decode(const std::string& s)
 {
   if(s.empty()) {
     return BDE::none;
@@ -432,12 +430,12 @@ BDE decode(const std::string& s) throw(RecoverableException)
   return decodeiter(ss);
 }
 
-BDE decode(const unsigned char* data, size_t length) throw(RecoverableException)
+BDE decode(const unsigned char* data, size_t length)
 {
   return decode(std::string(&data[0], &data[length]));
 }
 
-BDE decodeFromFile(const std::string& filename) throw(RecoverableException)
+BDE decodeFromFile(const std::string& filename)
 {
   std::ifstream f(filename.c_str(), std::ios::binary);
   if(f) {
@@ -448,7 +446,7 @@ BDE decodeFromFile(const std::string& filename) throw(RecoverableException)
   }
 }
 
-static void encodeIter(std::ostream& o, const BDE& bde) throw()
+static void encodeIter(std::ostream& o, const BDE& bde)
 {
   if(bde.isInteger()) {
     o << "i" << bde.i() << "e";
@@ -474,7 +472,7 @@ static void encodeIter(std::ostream& o, const BDE& bde) throw()
   }
 }
 
-std::string encode(const BDE& bde) throw()
+std::string encode(const BDE& bde)
 {
   std::ostringstream ss;
   encodeIter(ss, bde);

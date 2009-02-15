@@ -6,6 +6,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Util.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 

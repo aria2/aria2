@@ -43,7 +43,6 @@
 #include <iosfwd>
 
 #include "SharedHandle.h"
-#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -72,153 +71,151 @@ private:
   SharedHandle<Integer> _integer;
 
 public:
-  BDE() throw();
+  BDE();
 
-  static BDE dict() throw();
+  static BDE dict();
 
-  static BDE list() throw();
+  static BDE list();
 
   static const BDE none;
 
   // Test for Null data
   // Return true if the type of this object is None.
-  bool isNone() const throw();
+  bool isNone() const;
 
   //////////////////////////////////////////////////////////////////////////////
   // Integer Interface
 
-  BDE(Integer integer) throw();
+  BDE(Integer integer);
 
   // Returns true if the type of this object is Integer.
-  bool isInteger() const throw();
+  bool isInteger() const;
 
   // Returns Integer. Requires this object to be Integer.
-  Integer i() const throw(RecoverableException);
+  Integer i() const;
 
   //////////////////////////////////////////////////////////////////////////////
   // String Interface
 
-  BDE(const std::string& string) throw();
+  BDE(const std::string& string);
 
   // Made explicit to avoid ambiguity with BDE(Integer).
-  explicit BDE(const char* cstring) throw();
+  explicit BDE(const char* cstring);
 
-  BDE(const char* data, size_t length) throw();
+  BDE(const char* data, size_t length);
 
-  BDE(const unsigned char* data, size_t length) throw();
+  BDE(const unsigned char* data, size_t length);
 
   // Returns true if the type of this object is String.
-  bool isString() const throw();
+  bool isString() const;
 
   // Returns std::string. Requires this object to be String
-  const std::string& s() const throw(RecoverableException);
+  const std::string& s() const;
 
   // Returns std::string.data() casted to unsigned char*.
   // Use s().size() to get length.
-  const unsigned char* uc() const throw(RecoverableException);
+  const unsigned char* uc() const;
 
   //////////////////////////////////////////////////////////////////////////////
   // Dictionary Interface
 
   // Returns true if the type of this object is Dict.
-  bool isDict() const throw();
+  bool isDict() const;
 
   // Returns the reference to BDE object associated with given key.
   // If the key is not found, new pair with that key is created using default
   // values, which is then returned. In other words, this is the same behavior
   // of std::map's operator[].
   // Requires this object to be Dict.
-  BDE& operator[](const std::string& key) throw(RecoverableException);
+  BDE& operator[](const std::string& key);
 
   // Returns the const reference to BDE ojbect associated with given key.
   // If the key is not found, BDE::none is returned.
   // Requires this object to be Dict.
-  const BDE& operator[](const std::string& key) const
-    throw(RecoverableException);
+  const BDE& operator[](const std::string& key) const;
 
   // Returns true if the given key is found in dict.
   // Requires this object to be Dict.
-  bool containsKey(const std::string& key) const throw(RecoverableException);
+  bool containsKey(const std::string& key) const;
 
   // Removes specified key from dict.
   // Requires this object to be Dict.
-  void removeKey(const std::string& key) const throw(RecoverableException);
+  void removeKey(const std::string& key) const;
 
   // Returns a read/write iterator that points to the first pair in the dict.
   // Requires this object to be Dict.
-  Dict::iterator dictBegin() throw(RecoverableException);
+  Dict::iterator dictBegin();
 
   // Returns a read/write read-only iterator that points to the first pair in
   // the dict.
   // Requires this object to be Dict.
-  Dict::const_iterator dictBegin() const throw(RecoverableException);
+  Dict::const_iterator dictBegin() const;
 
   // Returns a read/write read-only iterator that points to one past the last
   // pair in the dict.
   // Requires this object to be Dict.
-  Dict::iterator dictEnd() throw(RecoverableException);
+  Dict::iterator dictEnd();
 
   // Returns a read/write read-only iterator that points to one past the last
   // pair in the dict.
   // Requires this object to be Dict.
-  Dict::const_iterator dictEnd() const throw(RecoverableException);
+  Dict::const_iterator dictEnd() const;
 
   //////////////////////////////////////////////////////////////////////////////
   // List Interface
 
   // Returns true if the type of this object is List.
-  bool isList() const throw();
+  bool isList() const;
 
   // Appends given bde to list. Required the type of this object to be List.
-  void append(const BDE& bde) throw(RecoverableException);
+  void append(const BDE& bde);
 
   // Alias for append()
-  void operator<<(const BDE& bde) throw(RecoverableException);
+  void operator<<(const BDE& bde);
 
   // Returns the reference of the object at the given index. Required this
   // object to be List.
-  BDE& operator[](size_t index) throw(RecoverableException);
+  BDE& operator[](size_t index);
 
   // Returns the const reference of the object at the given index.
   // Required this object to be List.
-  const BDE& operator[](size_t index) const throw(RecoverableException);
+  const BDE& operator[](size_t index) const;
 
   // Returns a read/write iterator that points to the first object in list.
   // Required this object to be List.
-  List::iterator listBegin() throw(RecoverableException);
+  List::iterator listBegin();
 
   // Returns a read/write read-only iterator that points to the first object
   // in list. Required this object to be List.
-  List::const_iterator listBegin() const throw(RecoverableException);
+  List::const_iterator listBegin() const;
 
   // Returns a read/write iterator that points to the one past the last object
   // in list. Required this object to be List.
-  List::iterator listEnd() throw(RecoverableException);
+  List::iterator listEnd();
 
   // Returns a read/write read-only iterator that points to the one past the
   // last object in list. Required this object to be List.
-  List::const_iterator listEnd() const throw(RecoverableException);
+  List::const_iterator listEnd() const;
 
   // For List type: Returns size of list.
   // For Dict type: Returns size of dict.
-  size_t size() const throw(RecoverableException);
+  size_t size() const;
 
   // For List type: Returns true if size of list is 0.
   // For Dict type: Returns true if size of dict is 0.
-  bool empty() const throw(RecoverableException);
+  bool empty() const;
 };
 
-BDE decode(std::istream& in) throw(RecoverableException);
+BDE decode(std::istream& in);
 
 // Decode the data in s.
-BDE decode(const std::string& s) throw(RecoverableException);
+BDE decode(const std::string& s);
 
-BDE decode(const unsigned char* data, size_t length)
-  throw(RecoverableException);
+BDE decode(const unsigned char* data, size_t length);
 
-BDE decodeFromFile(const std::string& filename) throw(RecoverableException);
+BDE decodeFromFile(const std::string& filename);
 
-std::string encode(const BDE& bde) throw();
+std::string encode(const BDE& bde);
 
 } // namespace bencode
 
