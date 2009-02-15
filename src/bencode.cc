@@ -39,7 +39,6 @@
 
 #include "StringFormat.h"
 #include "Util.h"
-#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -50,28 +49,28 @@ const BDE BDE::none;
 BDE::BDE():_type(TYPE_NONE) {}
 
 BDE::BDE(Integer integer):_type(TYPE_INTEGER),
-				  _integer(new Integer(integer)) {}
+			  _bobject(new BInteger(integer)) {}
 
 
 BDE::BDE(const std::string& string):_type(TYPE_STRING),
-				    _string(new std::string(string)) {}
+				    _bobject(new BString(std::string(string))) {}
 
 BDE::BDE(const char* cstring):_type(TYPE_STRING),
-			      _string(new std::string(cstring)) {}
+			      _bobject(new BString(std::string(cstring))) {}
 
 BDE::BDE(const char* data, size_t length):
   _type(TYPE_STRING),
-  _string(new std::string(&data[0], &data[length])) {}
+  _bobject(new BString(std::string(&data[0], &data[length]))) {}
 
 BDE::BDE(const unsigned char* data, size_t length):
   _type(TYPE_STRING),
-  _string(new std::string(&data[0], &data[length])) {}
+  _bobject(new BString(std::string(&data[0], &data[length]))) {}
 
 BDE BDE::dict()
 {
   BDE bde;
   bde._type = TYPE_DICT;
-  bde._dict.reset(new Dict());
+  bde._bobject.reset(new BDict());
   return bde;
 }
 
@@ -79,7 +78,7 @@ BDE BDE::list()
 {
   BDE bde;
   bde._type = TYPE_LIST;
-  bde._list.reset(new List());
+  bde._bobject.reset(new BList());
   return bde;
 }
 
@@ -98,11 +97,7 @@ bool BDE::isInteger() const
 
 BDE::Integer BDE::i() const
 {
-  if(isInteger()) {
-    return *_integer.get();
-  } else {
-    throw RecoverableException("Not Integer");
-  }
+  return _bobject->i();
 }
 
 // String Interface
@@ -114,20 +109,12 @@ bool BDE::isString() const
 
 const std::string& BDE::s() const
 {
-  if(isString()) {
-    return *_string.get();
-  } else {
-    throw RecoverableException("Not String");
-  }
+  return _bobject->s();
 }
 
 const unsigned char* BDE::uc() const
 {
-  if(isString()) {
-    return reinterpret_cast<const unsigned char*>(_string->data());
-  } else {
-    throw RecoverableException("Not String");
-  }
+  return _bobject->uc();
 }
 
 // Dictionary Interface
@@ -139,79 +126,46 @@ bool BDE::isDict() const
 
 BDE& BDE::operator[](const std::string& key)
 {
-  if(isDict()) {
-    return (*_dict.get())[key];
-  } else {
-    throw RecoverableException("Not Dict");
-  }
+  return _bobject->operator[](key);
 }
 
 const BDE& BDE::operator[](const std::string& key) const
 {
-  if(isDict()) {
-    BDE::Dict::const_iterator i = _dict->find(key);
-    if(i == _dict->end()) {
-      return none;
-    } else {
-      return (*i).second;
-    }
+  if(_bobject->containsKey(key)) {
+    return _bobject->operator[](key);
   } else {
-    throw RecoverableException("Not Dict");
+    return none;
   }
 }
 
 bool BDE::containsKey(const std::string& key) const
 {
-  if(isDict()) {
-    return _dict->find(key) != _dict->end();
-  } else {
-    throw RecoverableException("Not Dict");
-  }
+  return _bobject->containsKey(key);
 }
 
-void BDE::removeKey(const std::string& key) const
+void BDE::removeKey(const std::string& key)
 {
-  if(isDict()) {
-    _dict->erase(key);
-  } else {
-    throw RecoverableException("Not Dict");
-  }
+  _bobject->removeKey(key);
 }
 
 BDE::Dict::iterator BDE::dictBegin()
 {
-  if(isDict()) {
-    return _dict->begin();
-  } else {
-    throw RecoverableException("Not Dict");
-  }
+  return _bobject->dictBegin();
 }
 
 BDE::Dict::const_iterator BDE::dictBegin() const
 {
-  if(isDict()) {
-    return _dict->begin();
-  } else {
-    throw RecoverableException("Not Dict");
-  }
+  return _bobject->dictBegin();
 }
 
 BDE::Dict::iterator BDE::dictEnd()
 {
-  if(isDict()) {
-    return _dict->end();
-  } else {
-    throw RecoverableException("Not Dict");
-  }
+  return _bobject->dictEnd();
 }
 
 BDE::Dict::const_iterator BDE::dictEnd() const
 {
-  if(isDict()) {
-    return _dict->end();
-  } else {
-    throw RecoverableException("Not Dict");
-  }
+  return _bobject->dictEnd();
 }
 
 // List Interface
@@ -223,98 +177,54 @@ bool BDE::isList() const
 
 void BDE::append(const BDE& bde)
 {
-  if(isList()) {
-    _list->push_back(bde);
-  } else {
-    throw RecoverableException("Not List");
-  }
+  _bobject->append(bde);
 }
 
 void BDE::operator<<(const BDE& bde)
 {
-  if(isList()) {
-    _list->push_back(bde);
-  } else {
-    throw RecoverableException("Not List");
-  }
+  _bobject->operator<<(bde);
 }
 
 BDE& BDE::operator[](size_t index)
 {
-  if(isList()) {
-    return (*_list.get())[index];
-  } else {
-    throw RecoverableException("Not List");
-  }
+  return _bobject->operator[](index);
 }
 
 const BDE& BDE::operator[](size_t index) const
 {
-  if(isList()) {
-    return (*_list.get())[index];
-  } else {
-    throw RecoverableException("Not List");
-  }
+  return _bobject->operator[](index);
 }
 
 BDE::List::iterator BDE::listBegin()
 {
-  if(isList()) {
-    return _list->begin();
-  } else {
-    throw RecoverableException("Not List");
-  }
+  return _bobject->listBegin();
 }
 
 BDE::List::const_iterator BDE::listBegin() const
 {
-  if(isList()) {
-    return _list->begin();
-  } else {
-    throw RecoverableException("Not List");
-  }
+  return _bobject->listBegin();
 }
 
 BDE::List::iterator BDE::listEnd()
 {
-  if(isList()) {
-    return _list->end();
-  } else {
-    throw RecoverableException("Not List");
-  }
+  return _bobject->listEnd();
 }
 
 BDE::List::const_iterator BDE::listEnd() const
 {
-  if(isList()) {
-    return _list->end();
-  } else {
-    throw RecoverableException("Not List");
-  }
+  return _bobject->listEnd();
 }
 
 // Callable from List and Dict
 size_t BDE::size() const
 {
-  if(isDict()) {
-    return _dict->size();
-  } else if(isList()) {
-    return _list->size();
-  } else {
-    throw RecoverableException("Not Dict nor List");
-  }
+  return _bobject->size();
 }
 
 // Callable from List and Dict
 bool BDE::empty() const
 {
-  if(isDict()) {
-    return _dict->empty();
-  } else if(isList()) {
-    return _list->empty();
-  } else {
-    throw RecoverableException("Not Dict nor List");
-  }
+  return _bobject->empty();
 }
 
 static BDE decodeiter(std::istream& ss);

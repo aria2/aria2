@@ -1,5 +1,11 @@
 2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten BDE to make it efficient.
+	* src/bencode.cc
+	* src/bencode.h
+	
+2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed function throw list.
 	* src/bencode.cc
 	* src/bencode.h
