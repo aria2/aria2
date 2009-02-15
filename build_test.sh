@@ -1,13 +1,12 @@
 #!/bin/sh
 
-exec 2>&1
+#exec 2>&1
 
-BUILD_TEST_DIR=/tmp/aria2_build_test
+BUILDDIR=/tmp/aria2buildtest
 
-if [ ! -d "$BUILD_TEST_DIR" ]; then
-    mkdir "$BUILD_TEST_DIR" \
-	|| echo "Failed to create directory $BUILD_TEST_DIR" \
-	&& exit -1
+if [ ! -d "$BUILDDIR" ]; then
+    mkdir "$BUILDDIR" \
+	|| { echo "Failed to create directory $BUILDDIR" && exit -1; }
 fi
 
 echo -n "Starting build test "
@@ -20,20 +19,20 @@ build()
     echo `date`
     echo "*** configure opts=$1"
     BIN_NAME="aria2c_$2"
-    if [ -f "$BUILD_TEST_DIR/$BIN_NAME" ]; then
+    if [ -f "$BUILDDIR/$BIN_NAME" ]; then
 	echo "$BIN_NAME exists, skipping"
 	return
     fi
-    ./configure $1 \
-	&& cp config.log "$BUILD_TEST_DIR/config.log_$2" \
-	&& LANG=C make -j2 check > "$BUILD_TEST_DIR/aria2c_$2.log" \
-	&& cp src/aria2c "$BUILD_TEST_DIR/aria2c_$2"
+    ./configure $1 2>&1 | tee "$BUILDDIR/configure_$2.log"\
+	&& cp config.log "$BUILDDIR/config.log_$2" \
+	&& LANG=C make -j2 check 2>&1 |tee "$BUILDDIR/aria2c_$2.log" \
+	&& cp src/aria2c "$BUILDDIR/aria2c_$2"
 }
 
 clear()
 {
-    for file in `ls $BUILD_TEST_DIR`; do
-	rm -f "$BUILD_TEST_DIR/$file";
+    for file in `ls $BUILDDIR`; do
+	rm -f "$BUILDDIR/$file";
     done
 }
 
