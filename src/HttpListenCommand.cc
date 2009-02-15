@@ -47,7 +47,12 @@ namespace aria2 {
 HttpListenCommand::HttpListenCommand(int32_t cuid, DownloadEngine* e):
   Command(cuid),_e(e) {}
 
-HttpListenCommand::~HttpListenCommand() {}
+HttpListenCommand::~HttpListenCommand()
+{
+  if(!_serverSocket.isNull()) {
+    _e->deleteSocketForReadCheck(_serverSocket, this);
+  }
+}
 
 bool HttpListenCommand::execute()
 {
@@ -86,6 +91,9 @@ bool HttpListenCommand::bindPort(uint16_t port)
     return true;
   } catch(RecoverableException& e) {
     logger->error(MSG_BIND_FAILURE, e, cuid, port);
+    if(!_serverSocket.isNull()) {
+      _e->deleteSocketForReadCheck(_serverSocket, this);
+    }
     _serverSocket->closeConnection();
   }
   return false;

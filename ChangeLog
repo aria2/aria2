@@ -1,5 +1,10 @@
 2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Call deleteSocketForReadCheck() before socket is closed.
+	* src/HttpListenCommand.cc 
+
+2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Defined virtual destructor for BObject.
 	* src/bencode.h
 
