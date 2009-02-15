@@ -1134,11 +1134,11 @@ aria2c --bt-min-crypto-level=arc4 --bt-require-crypto=true file.torrent
 
 SEE ALSO
 --------
-Project web site: http://aria2.sourceforge.net/[]
+Project Web Site: http://aria2.sourceforge.net/
 
-aria2 wiki: https://apps.sourceforge.net/trac/aria2/wiki[]
+aria2 Wiki: http://apps.sourceforge.net/trac/aria2/wiki
 
-metalink: http://www.metalinker.org/[]
+Metalink Homepage: http://www.metalinker.org/
 
 COPYRIGHT
 ---------
