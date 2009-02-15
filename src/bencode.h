@@ -68,6 +68,8 @@ private:
 
   class BObject {
   public:
+    virtual ~BObject() {}
+
     ////////////////////////////////////////////////////////////////////////////
     // Integer Interface
 

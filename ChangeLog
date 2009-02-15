@@ -1,5 +1,10 @@
 2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Defined virtual destructor for BObject.
+	* src/bencode.h
+
+2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten BDE to make it efficient.
 	* src/bencode.cc
 	* src/bencode.h
