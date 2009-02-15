@@ -16,10 +16,14 @@ requested(there are some exceptions, see Changes below). aria2 now
 returns exit code depending on the last error. All exit codes are
 documented in man page.  This release also adds experimental built-in
 HTTP server which provides the current download progress in plain
-html.
+html. Indonesian, Italian, Japanese, Russian, Spanish and Ukrainian
+translations were updated.
 
 Changes
 -------
+
+* Updated Indonesian, Italian, Japanese, Russian, Spanish and
+  Ukrainian translations.  Thanks to all translators.
 
 * Fixed the segmentation fault during execution of choking algorithm
   in leecher state because of broken compare operator implementation.
