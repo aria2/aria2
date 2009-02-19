@@ -62,21 +62,27 @@ AuthConfigFactory::createAuthConfig(const RequestHandle& request)
   if(request->getProtocol() == Request::PROTO_HTTP ||
      request->getProtocol() == Request::PROTO_HTTPS) {
 
-    if(!request->getUsername().empty()) {
-      // TODO setting "/" as path. Should we use request->getDir() instead?
-      updateBasicCred(BasicCred(request->getUsername(), request->getPassword(),
-				request->getHost(), "/", true));
-      return createAuthConfig(request->getUsername(), request->getPassword());
-    }
-    std::deque<BasicCred>::const_iterator i =
-      findBasicCred(request->getHost(), request->getDir());
-    if(i == _basicCreds.end()) {
-      return SharedHandle<AuthConfig>();
+    if(_option->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
+      if(!request->getUsername().empty()) {
+	// TODO setting "/" as path. Should we use request->getDir() instead?
+	updateBasicCred(BasicCred(request->getUsername(), request->getPassword(),
+				  request->getHost(), "/", true));
+	return createAuthConfig(request->getUsername(), request->getPassword());
+      }
+      std::deque<BasicCred>::const_iterator i =
+	findBasicCred(request->getHost(), request->getDir());
+      if(i == _basicCreds.end()) {
+	return SharedHandle<AuthConfig>();
+      } else {
+	return createAuthConfig((*i)._user, (*i)._password);
+      }
     } else {
-      return createAuthConfig((*i)._user, (*i)._password);
+      if(!request->getUsername().empty()) {
+	return createAuthConfig(request->getUsername(), request->getPassword());
+      } else {
+	return createHttpAuthResolver()->resolveAuthConfig(request->getHost());
+      }
     }
-
-    return createHttpAuthResolver()->resolveAuthConfig(request->getHost());
   } else if(request->getProtocol() == Request::PROTO_FTP) {
     if(!request->getUsername().empty()) {
       return createAuthConfig(request->getUsername(), request->getPassword());

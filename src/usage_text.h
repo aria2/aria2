@@ -478,3 +478,11 @@ _(" --bt-external-ip=IPADDRESS   Specify the external IP address to report to a\
   "                              BitTorrent tracker. Although this function is\n"\
   "                              named 'external', it can accept any kind of IP\n"\
   "                              addresses.")
+#define TEXT_HTTP_AUTH_CHALLENGE \
+_(" --http-auth-challenge[=true|false] Send HTTP authorization header only when it\n"\
+  "                              is requested by the server. If false is set, then\n"\
+  "                              authorization header is always sent to the server.\n"\
+  "                              There is an exception: if username and password\n"\
+  "                              are embedded in URI, authorization header is\n"\
+  "                              always sent to the server regardless of this\n"\
+  "                              option.")

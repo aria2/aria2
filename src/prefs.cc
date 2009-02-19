@@ -199,6 +199,8 @@ const std::string PREF_CA_CERTIFICATE("ca-certificate");
 const std::string PREF_CHECK_CERTIFICATE("check-certificate");
 // value: true | false
 const std::string PREF_USE_HEAD("use-head");
+// value: true | false
+const std::string PREF_HTTP_AUTH_CHALLENGE("http-auth-challenge");
 
 /** 
  * Proxy related preferences

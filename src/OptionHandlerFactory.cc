@@ -562,6 +562,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_HTTP_AUTH_CHALLENGE,
+				    TEXT_HTTP_AUTH_CHALLENGE,
+				    V_TRUE,
+				    OptionHandler::OPT_ARG));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_HTTP_AUTH_SCHEME,
 				    TEXT_HTTP_AUTH_SCHEME,

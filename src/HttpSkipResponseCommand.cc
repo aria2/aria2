@@ -159,7 +159,8 @@ bool HttpSkipResponseCommand::processResponse()
     return prepareForRetry(_httpResponse->getRetryAfter());
   } else if(_httpResponse->getResponseStatus() >= HttpHeader::S400) {
     if(_httpResponse->getResponseStatus() == HttpHeader::S401) {
-      if(!_httpResponse->getHttpRequest()->authenticationUsed() &&
+      if(e->option->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
+	 !_httpResponse->getHttpRequest()->authenticationUsed() &&
 	 e->getAuthConfigFactory()->activateBasicCred
 	 (req->getHost(), req->getDir())) {
 	return prepareForRetry(0);

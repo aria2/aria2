@@ -1,3 +1,22 @@
+2009-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --http-auth-challenge option.  If it is set to true(by
+	default), aria2 sends HTTP authorization header only when it is
+	requested by the server. If false is set, then authorization
+	header is always sent to the server. This is useful for servers
+	that don't respond 401 code when authentication is required.
+	There is an exception: if username and password are embedded in
+	URI, authorization header is always sent to the server regardless
+	of this option.
+	* src/AuthConfigFactory.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/AuthConfigFactoryTest.cc
+	* test/HttpRequestTest.cc
+
 2009-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	* Release 1.2.0
