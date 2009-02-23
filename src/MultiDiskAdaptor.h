@@ -113,6 +113,8 @@ private:
 
   bool _directIOAllowed;
 
+  bool _readOnly;
+
   void resetDiskWriterEntries();
 
   void mkdir(const std::string& topDirPath) const;
@@ -159,6 +161,10 @@ public:
   virtual void enableDirectIO();
 
   virtual void disableDirectIO();
+
+  virtual void enableReadOnly();
+
+  virtual void disableReadOnly();
 
   void setTopDir(const std::string& topDir) {
     this->topDir = topDir;

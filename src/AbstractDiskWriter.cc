@@ -58,6 +58,7 @@ namespace aria2 {
 
 AbstractDiskWriter::AbstractDiskWriter():
   fd(-1),
+  _readOnly(false),
   logger(LogFactory::getInstance()) {}
 
 AbstractDiskWriter::~AbstractDiskWriter()
@@ -93,7 +94,14 @@ void AbstractDiskWriter::openExistingFile(const std::string& filename,
       (StringFormat(EX_FILE_OPEN, filename.c_str(), MSG_FILE_NOT_FOUND).str());
   }
 
-  if((fd = open(filename.c_str(), O_RDWR|O_BINARY, OPEN_MODE)) < 0) {
+  int flags = O_BINARY;
+  if(_readOnly) {
+    flags |= O_RDONLY;
+  } else {
+    flags |= O_RDWR;
+  }
+
+  if((fd = open(filename.c_str(), flags, OPEN_MODE)) < 0) {
     throw DlAbortEx
       (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
   }
@@ -215,6 +223,16 @@ void AbstractDiskWriter::disableDirectIO()
   while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
   while(fcntl(fd, F_SETFL, flg&(~O_DIRECT)) == -1 && errno == EINTR);
 #endif // ENABLE_DIRECT_IO
+}
+
+void AbstractDiskWriter::enableReadOnly()
+{
+  _readOnly = true;
+}
+
+void AbstractDiskWriter::disableReadOnly()
+{
+  _readOnly = false;
 }
 
 } // namespace aria2

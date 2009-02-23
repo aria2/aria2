@@ -46,6 +46,9 @@ class AbstractDiskWriter : public DiskWriter {
 protected:
   std::string filename;
   int fd;
+
+  bool _readOnly;
+
   Logger* logger;
 
   void createFile(const std::string& filename, int addFlags = 0);
@@ -55,7 +58,6 @@ private:
   ssize_t readDataInternal(unsigned char* data, size_t len);
 
   void seek(off_t offset);
-
 public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
@@ -77,6 +79,10 @@ public:
   virtual void enableDirectIO();
 
   virtual void disableDirectIO();
+
+  virtual void enableReadOnly();
+
+  virtual void disableReadOnly();
 };
 
 } // namespace aria2

@@ -98,6 +98,10 @@ public:
 
   virtual void disableDirectIO() {}
 
+  virtual void enableReadOnly() {}
+
+  virtual void disableReadOnly() {}
+
   // Assumed each file length is stored in fileEntries or DiskAdaptor knows it.
   // If each actual file's length is larger than that, truncate file to that
   // length.

@@ -266,6 +266,9 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 			progressInfoFile->getFilename().c_str(),
 			_pieceStorage->getDiskAdaptor()->getFilePath().c_str());
       }
+      // First, make DiskAdaptor read-only mode.
+      _pieceStorage->getDiskAdaptor()->enableReadOnly();
+
       // Call Load, Save and file allocation command here
       if(progressInfoFile->exists()) {
 	// load .aria2 file if it exists.

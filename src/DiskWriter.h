@@ -92,6 +92,16 @@ public:
   {
     _directIOAllowed = f;
   }
+
+  // Enables read-only mode. After this call, openExistingFile() opens
+  // file in read-only mode. This is an optional functionality. The
+  // default implementation is do nothing.
+  virtual void enableReadOnly() {}
+
+  // Disables read-only mode. After this call, openExistingFile()
+  // opens file in read/write mode. This is an optional
+  // functionality. The default implementation is do noting.
+  virtual void disableReadOnly() {}
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;

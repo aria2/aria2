@@ -49,15 +49,26 @@ BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
 
 BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 
-void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
-						 DownloadEngine* e)
+static void proceedFileAllocation
+(std::deque<Command*>& commands, DownloadEngine* e, RequestGroup* requestGroup)
 {
-  FileAllocationEntryHandle entry(new BtFileAllocationEntry(_requestGroup));
-  if(_requestGroup->needsFileAllocation()) {
+  FileAllocationEntryHandle entry(new BtFileAllocationEntry(requestGroup));
+  if(requestGroup->needsFileAllocation()) {
     e->_fileAllocationMan->pushEntry(entry);
   } else {
     entry->prepareForNextAction(commands, e);
   }
+}
+
+void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
+						 DownloadEngine* e)
+{
+  // Now reopen DiskAdaptor with read only disabled.
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableReadOnly();
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
+
+  proceedFileAllocation(commands, e, _requestGroup);
 }
 
 void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
@@ -69,8 +80,9 @@ void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
   if(e->option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
-    onDownloadIncomplete(commands, e);
+    proceedFileAllocation(commands, e, _requestGroup);
   }
 }
+
 
 } // namespace aria2

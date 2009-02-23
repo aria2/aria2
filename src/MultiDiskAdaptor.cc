@@ -169,7 +169,8 @@ void DiskWriterEntry::needsFileAllocation(bool f)
 MultiDiskAdaptor::MultiDiskAdaptor():
   pieceLength(0),
   _maxOpenFiles(DEFAULT_MAX_OPEN_FILES),
-  _directIOAllowed(false) {}
+  _directIOAllowed(false),
+  _readOnly(false) {}
 
 MultiDiskAdaptor::~MultiDiskAdaptor() {}
 
@@ -273,6 +274,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 		    (*i)->getFilePath(getTopDirPath()).c_str());
       (*i)->setDiskWriter(dwFactory.newDiskWriter());
       (*i)->getDiskWriter()->setDirectIOAllowed(_directIOAllowed);
+      if(_readOnly) {
+	(*i)->getDiskWriter()->enableReadOnly();
+      }
     }
   }
 }
@@ -516,6 +520,16 @@ void MultiDiskAdaptor::disableDirectIO()
       itr != diskWriterEntries.end(); ++itr) {
     (*itr)->disableDirectIO();
   }
+}
+
+void MultiDiskAdaptor::enableReadOnly()
+{
+  _readOnly = true;
+}
+
+void MultiDiskAdaptor::disableReadOnly()
+{
+  _readOnly = false;
 }
 
 void MultiDiskAdaptor::cutTrailingGarbage()

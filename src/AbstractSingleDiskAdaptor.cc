@@ -111,6 +111,16 @@ bool AbstractSingleDiskAdaptor::directIOAllowed() const
   return diskWriter->directIOAllowed();
 }
 
+void AbstractSingleDiskAdaptor::enableReadOnly()
+{
+  diskWriter->enableReadOnly();
+}
+
+void AbstractSingleDiskAdaptor::disableReadOnly()
+{
+  diskWriter->disableReadOnly();
+}
+
 void AbstractSingleDiskAdaptor::cutTrailingGarbage()
 {
   if(File(getFilePath()).size() > totalLength) {

@@ -77,7 +77,13 @@ public:
   virtual void disableDirectIO();
   
   virtual bool directIOAllowed() const;
-  
+
+  // Make sure that DiskWriter is set before calling this function.
+  virtual void enableReadOnly();
+
+  // Make sure that DiskWriter is set before calling this function.
+  virtual void disableReadOnly();
+    
   virtual void cutTrailingGarbage();
 
   void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
