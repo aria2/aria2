@@ -243,7 +243,8 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 	// adjacent backward files are not needed to be allocated. They
 	// just requre DiskWriter
 	for(; itr != diskWriterEntries.end() &&
-	      !(*itr)->getFileEntry()->isRequested(); ++itr) {
+ 	      (!(*itr)->getFileEntry()->isRequested() ||
+ 	       (*itr)->getFileEntry()->getLength() == 0); ++itr) {
 	  logger->debug("file=%s, offset=%lld",
 			(*itr)->getFileEntry()->getPath().c_str(),
 			(*itr)->getFileEntry()->getOffset());

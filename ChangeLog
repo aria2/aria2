@@ -1,3 +1,11 @@
+2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that disk writer is not created even if it shares
+	same piece with the preceding file if the length of previous file
+	is 0.
+	* src/MultiDiskAdaptor.cc
+	* test/MultiDiskAdaptorTest.cc
+
 2009-02-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	In BitTorrent, Open files in read-only mode for hash check.  After
