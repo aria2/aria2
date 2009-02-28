@@ -39,6 +39,8 @@
 #include <utility>
 #include <deque>
 
+#include "IntSequence.h"
+
 namespace aria2 {
 
 class AnnounceTier;
@@ -47,6 +49,8 @@ class RequestGroup;
 class BtContext:public DownloadContext {
 protected:
   bool _private;
+
+  IntSequence _fileFilter;
 public:
   BtContext():_private(false) {}
   
@@ -80,6 +84,10 @@ public:
   virtual RequestGroup* getOwnerRequestGroup() = 0;
 
   virtual std::deque<std::pair<std::string, uint16_t> >& getNodes() = 0;
+
+  void setFileFilter(const IntSequence& seq);
+
+  IntSequence getFileFilter() const;
 
   static const std::string C_NAME;
 

@@ -215,7 +215,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	_logger->debug("Clearing http/ftp URIs because the current implementation does not allow integrating multi-file torrent and http/ftp.");
 	_uris.clear();
 
-	_pieceStorage->setFileFilter(Util::parseIntRange(_option->get(PREF_SELECT_FILE)));
+	_pieceStorage->setFileFilter(btContext->getFileFilter());
       }
       
       SharedHandle<DefaultBtProgressInfoFile>

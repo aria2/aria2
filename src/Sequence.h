@@ -69,6 +69,8 @@ public:
   Sequence(const Values& values):
     _values(values) {}
 
+  Sequence() {}
+
   T next()
   {
     if(_values.empty()) {

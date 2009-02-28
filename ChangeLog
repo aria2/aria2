@@ -1,5 +1,14 @@
 2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Now select-file can be specified in the uri list(-i list).
+	* src/BtContext.cc
+	* src/BtContext.h
+	* src/RequestGroup.cc
+	* src/Sequence.h
+	* src/download_helper.cc
+
+2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made the upper value of --max-concurrent-downloads options unlimited.
 	* src/OptionHandlerFactory.cc
 

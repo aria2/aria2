@@ -55,6 +55,8 @@
 #include "FileEntry.h"
 #include "LogFactory.h"
 #include "File.h"
+#include "Util.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -120,6 +122,8 @@ createBtRequestGroup(const std::string& torrentFilePath,
     btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
   }
   btContext->setDir(requestOption.get(PREF_DIR));
+  btContext->setFileFilter
+    (Util::parseIntRange(requestOption.get(PREF_SELECT_FILE)));
   rg->setDownloadContext(btContext);
   btContext->setOwnerRequestGroup(rg.get());
   return rg;
@@ -271,6 +275,15 @@ void createRequestGroupForUri
   createRequestGroupForUri(result, op, uris, *op);
 }
 
+template<typename InputIterator>
+static void foreachCopyIfndef(InputIterator first, InputIterator last,
+			      Option& dest, const Option& src)
+{
+  for(; first != last; ++first) {
+    copyIfndef(dest, src, *first);
+  }
+}
+
 static void createRequestGroupForUriList
 (std::deque<SharedHandle<RequestGroup> >& result, Option* op, std::istream& in)
 {
@@ -282,8 +295,15 @@ static void createRequestGroupForUriList
     if(uris.empty()) {
       continue;
     }
-    copyIfndef(requestOption, *op, PREF_DIR);
-    copyIfndef(requestOption, *op, PREF_OUT);
+    // These options can be specified in input list(-i list).
+    static const std::string REQUEST_OPTIONS[] = {
+      PREF_DIR,
+      PREF_OUT,
+      PREF_SELECT_FILE
+    };
+    foreachCopyIfndef(&REQUEST_OPTIONS[0],
+		      &REQUEST_OPTIONS[arrayLength(REQUEST_OPTIONS)],
+		      requestOption, *op);
 
     createRequestGroupForUri(result, op, uris, requestOption);
   }

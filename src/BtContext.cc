@@ -62,4 +62,14 @@ const std::string BtContext::C_ANNOUNCE_LIST("announce-list");
 
 const std::string BtContext::C_NODES("nodes");
 
+void BtContext::setFileFilter(const IntSequence& seq)
+{
+  _fileFilter = seq;
+}
+
+IntSequence BtContext::getFileFilter() const
+{
+  return _fileFilter;
+}
+
 } // namespace aria2
