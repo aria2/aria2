@@ -150,6 +150,10 @@ private:
   // just sits in memory.
   bool _inMemoryDownload;
 
+  unsigned int _maxDownloadSpeedLimit;
+
+  unsigned int _maxUploadSpeedLimit;
+
   const Option* _option;
 
   Logger* _logger;
@@ -442,6 +446,16 @@ public:
   void setMaxTries(unsigned int maxTries);
 
   unsigned int getMaxTries() const;
+
+  // Returns true if current download speed exceeds
+  // _maxDownloadSpeedLimit.  Always returns false if
+  // _maxDownloadSpeedLimit == 0.  Otherwise returns false.
+  bool doesDownloadSpeedExceed();
+
+  // Returns true if current upload speed exceeds
+  // _maxUploadSpeedLimit. Always returns false if
+  // _maxUploadSpeedLimit == 0. Otherwise returns false.
+  bool doesUploadSpeedExceed();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

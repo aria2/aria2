@@ -129,6 +129,8 @@ RequestGroup::RequestGroup(const Option* option,
   _timeout(option->getAsInt(PREF_TIMEOUT)),
   _maxTries(option->getAsInt(PREF_MAX_TRIES)),
   _inMemoryDownload(false),
+  _maxDownloadSpeedLimit(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT)),
+  _maxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
   _option(option),
   _logger(LogFactory::getInstance())
 {
@@ -1178,6 +1180,18 @@ void RequestGroup::setMaxTries(unsigned int maxTries)
 unsigned int RequestGroup::getMaxTries() const
 {
   return _maxTries;
+}
+
+bool RequestGroup::doesDownloadSpeedExceed()
+{
+  return _maxDownloadSpeedLimit > 0 &&
+    _maxDownloadSpeedLimit < calculateStat().getDownloadSpeed();
+}
+
+bool RequestGroup::doesUploadSpeedExceed()
+{
+  return _maxUploadSpeedLimit > 0 &&
+    _maxUploadSpeedLimit < calculateStat().getUploadSpeed();
 }
 
 } // namespace aria2

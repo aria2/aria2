@@ -61,8 +61,6 @@ private:
   WeakHandle<BtMessageFactory> messageFactory;
   SharedHandle<Peer> peer;
   WeakHandle<RequestGroupMan> _requestGroupMan;
-  unsigned int _maxOverallSpeedLimit;
-  unsigned int _maxUploadSpeedLimit;
   time_t requestTimeout;
   Logger* logger;
 public:
@@ -126,14 +124,9 @@ public:
     this->cuid = cuid;
   }
 
-  void setMaxUploadSpeedLimit(unsigned int maxUploadSpeedLimit);
-
-  void setMaxOverallSpeedLimit(unsigned int maxOverallSpeedLimit);
-
   void setRequestTimeout(time_t requestTimeout) {
     this->requestTimeout = requestTimeout;
   }
-
 };
 
 typedef SharedHandle<DefaultBtMessageDispatcher> DefaultBtMessageDispatcherHandle;

@@ -96,7 +96,6 @@ bool FtpNegotiationCommand::executeInternal() {
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
     FtpDownloadCommand* command =
       new FtpDownloadCommand(cuid, req, _requestGroup, ftp, e, dataSocket, socket);
-    command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
     command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {

@@ -57,6 +57,7 @@
 #include "prefs.h"
 #include "StringFormat.h"
 #include "Decoder.h"
+#include "RequestGroupMan.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -101,9 +102,8 @@ DownloadCommand::~DownloadCommand() {
 }
 
 bool DownloadCommand::executeInternal() {
-  if(maxDownloadSpeedLimit > 0 &&
-     maxDownloadSpeedLimit <
-     _requestGroup->calculateStat().getDownloadSpeed()) {
+  if(e->_requestGroupMan->doesOverallDownloadSpeedExceed() ||
+     _requestGroup->doesDownloadSpeedExceed()) {
     e->commands.push_back(this);
     disableReadCheckSocket();
     return false;

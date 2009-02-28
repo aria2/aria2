@@ -53,13 +53,12 @@
 #include "Logger.h"
 #include "a2functional.h"
 #include "RequestGroupMan.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
   cuid(0),
-  _maxOverallSpeedLimit(0),
-  _maxUploadSpeedLimit(0),
   requestTimeout(0),
   logger(LogFactory::getInstance()) {}
 
@@ -87,16 +86,8 @@ void DefaultBtMessageDispatcher::sendMessages() {
     BtMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
     if(msg->isUploading() && !msg->isSendingInProgress()) {
-      if(// See whether upload speed is exceeding overall limit.
-	 (_maxOverallSpeedLimit > 0 &&
-	  _maxOverallSpeedLimit <
-	  _requestGroupMan->calculateStat().getUploadSpeed()) ||
-	 // See whether uplaod speed is exceeding upload limit for each torrent.
-	 // _maxUploadLimit is ignored when _maxOverallSpeedLimit is specified.
-	 (_maxOverallSpeedLimit == 0 &&
-	  _maxUploadSpeedLimit > 0 &&
-	  _maxUploadSpeedLimit <
-	  _peerStorage->calculateStat().getUploadSpeed())) {
+      if(_requestGroupMan->doesOverallUploadSpeedExceed() ||
+	 btContext->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
 	tempQueue.push_back(msg);
 	continue;
       }
@@ -471,18 +462,5 @@ void DefaultBtMessageDispatcher::setRequestGroupMan
 {
   _requestGroupMan = rgman;
 }
-
-void DefaultBtMessageDispatcher::setMaxUploadSpeedLimit
-(unsigned int maxUploadSpeedLimit)
-{
-  _maxUploadSpeedLimit = maxUploadSpeedLimit;
-}
-
-void DefaultBtMessageDispatcher::setMaxOverallSpeedLimit
-(unsigned int maxOverallSpeedLimit)
-{
-  _maxOverallSpeedLimit = maxOverallSpeedLimit;
-}
-
 
 } // namespace aria2

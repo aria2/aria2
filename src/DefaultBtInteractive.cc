@@ -66,6 +66,7 @@
 #include "LogFactory.h"
 #include "StringFormat.h"
 #include "RequestGroup.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -77,7 +78,6 @@ DefaultBtInteractive::DefaultBtInteractive
   logger(LogFactory::getInstance()),
   allowedFastSetSize(10),
   keepAliveInterval(120),
-  maxDownloadSpeedLimit(0),
   _utPexEnabled(false),
   _dhtEnabled(false),
   _numReceivedMessage(0)
@@ -237,11 +237,9 @@ void DefaultBtInteractive::sendKeepAlive() {
 size_t DefaultBtInteractive::receiveMessages() {
   size_t msgcount = 0;
   for(int i = 0; i < 50; i++) {
-    if(maxDownloadSpeedLimit > 0) {
-      TransferStat stat = _btContext->getOwnerRequestGroup()->calculateStat();
-      if(maxDownloadSpeedLimit < stat.downloadSpeed) {
-	break;
-      }
+    if(_requestGroupMan->doesOverallDownloadSpeedExceed() ||
+       _btContext->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
+      break;
     }
     BtMessageHandle message = btMessageReceiver->receiveMessage();
     if(message.isNull()) {
@@ -542,6 +540,12 @@ void DefaultBtInteractive::setBtMessageFactory
 (const SharedHandle<BtMessageFactory>& factory)
 {
   this->messageFactory = factory;
+}
+
+void DefaultBtInteractive::setRequestGroupMan
+(const WeakHandle<RequestGroupMan>& rgman)
+{
+  _requestGroupMan = rgman;
 }
 
 } // namespace aria2

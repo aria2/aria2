@@ -74,7 +74,11 @@ RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
   _maxSimultaneousDownloads(maxSimultaneousDownloads),
   _gidCounter(0),
   _option(option),
-  _serverStatMan(new ServerStatMan()) {}
+  _serverStatMan(new ServerStatMan()),
+  _maxOverallDownloadSpeedLimit
+  (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
+  _maxOverallUploadSpeedLimit(option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT))
+{}
 
 bool RequestGroupMan::downloadFinished()
 {
@@ -610,6 +614,18 @@ bool RequestGroupMan::saveServerStat(const std::string& filename) const
 void RequestGroupMan::removeStaleServerStat(time_t timeout)
 {
   _serverStatMan->removeStaleServerStat(timeout);
+}
+
+bool RequestGroupMan::doesOverallDownloadSpeedExceed()
+{
+  return _maxOverallDownloadSpeedLimit > 0 &&
+    _maxOverallDownloadSpeedLimit < calculateStat().getDownloadSpeed();
+}
+
+bool RequestGroupMan::doesOverallUploadSpeedExceed()
+{
+  return _maxOverallUploadSpeedLimit > 0 &&
+    _maxOverallUploadSpeedLimit < calculateStat().getUploadSpeed();
 }
 
 } // namespace aria2

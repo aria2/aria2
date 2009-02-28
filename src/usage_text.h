@@ -103,10 +103,18 @@ _(" --lowest-speed-limit=SPEED   Close connection if download speed is lower tha
   "                              0 means aria2 does not have a lowest speed limit.\n"\
   "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
   "                              This option does not affect BitTorrent downloads.")
-#define TEXT_MAX_DOWNLOAD_LIMIT \
-_(" --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"\
+#define TEXT_MAX_OVERALL_DOWNLOAD_LIMIT \
+_(" --max-overall-download-limit=SPEED Set max overall download speed in bytes/sec.\n"\
   "                              0 means unrestricted.\n"\
-  "                              You can append K or M(1K = 1024, 1M = 1024K).")
+  "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
+  "                              To limit the download speed per download, use\n"\
+  "                              --max-download-limit option.")
+#define TEXT_MAX_DOWNLOAD_LIMIT \
+_(" --max-download-limit=SPEED   Set max download speed per each download in\n"\
+  "                              bytes/sec. 0 means unrestricted.\n"\
+  "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
+  "                              To limit the overall download speed, use\n"\
+  "                              --max-overall-download-limit option.")
 #define TEXT_FILE_ALLOCATION \
 _(" --file-allocation=METHOD     Specify file allocation method.\n"\
   "                              'none' doesn't pre-allocate file space. 'prealloc'\n"\
@@ -239,8 +247,7 @@ _(" --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/sec.\
   "                              0 means unrestricted.\n"\
   "                              You can append K or M(1K = 1024, 1M = 1024K).\n"\
   "                              To limit the upload speed per torrent, use\n"\
-  "                              --max-upload-limit option. If non-zero value is\n"\
-  "                              specified, --max-upload-limit option is ignored.")
+  "                              --max-upload-limit option.")
 #define TEXT_MAX_UPLOAD_LIMIT \
 _(" -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"\
   "                              bytes/sec. 0 means unrestricted.\n"\

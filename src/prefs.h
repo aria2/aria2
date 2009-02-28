@@ -101,6 +101,8 @@ extern const std::string PREF_CONTINUE;
 // value:
 extern const std::string PREF_NO_NETRC;
 // value: 1*digit
+extern const std::string PREF_MAX_OVERALL_DOWNLOAD_LIMIT;
+// value: 1*digit
 extern const std::string PREF_MAX_DOWNLOADS;
 // value: string that your file system recognizes as a file name.
 extern const std::string PREF_INPUT_FILE;

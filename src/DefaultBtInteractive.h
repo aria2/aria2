@@ -57,6 +57,7 @@ class PeerConnection;
 class ExtensionMessageFactory;
 class DHTNode;
 class Logger;
+class RequestGroupMan;
 
 class FloodingStat {
 private:
@@ -123,11 +124,12 @@ private:
   Time inactiveCheckPoint;
   Time _pexCheckPoint;
   time_t keepAliveInterval;
-  unsigned int maxDownloadSpeedLimit;
   bool _utPexEnabled;
   bool _dhtEnabled;
 
   size_t _numReceivedMessage;
+
+  WeakHandle<RequestGroupMan> _requestGroupMan;
 
   static const time_t FLOODING_CHECK_INTERVAL = 5;
 
@@ -204,10 +206,6 @@ public:
     this->keepAliveInterval = keepAliveInterval;
   }
 
-  void setMaxDownloadSpeedLimit(unsigned int maxDownloadSpeedLimit) {
-    this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
-  }
-
   void setUTPexEnabled(bool f)
   {
     _utPexEnabled = f;
@@ -219,6 +217,8 @@ public:
   {
     _dhtEnabled = f;
   }
+
+  void setRequestGroupMan(const WeakHandle<RequestGroupMan>& rgman);
 };
 
 typedef SharedHandle<DefaultBtInteractive> DefaultBtInteractiveHandle;

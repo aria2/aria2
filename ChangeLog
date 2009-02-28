@@ -1,5 +1,34 @@
 2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --max-overall-download-limit option.  Now --max-upload-limit
+	option is not ignored when --max-overall-upload-limit option has
+	non-zero value. aria2 checks download(upload) speed in the order:
+	first checks overall speed limit and if it is not exceeded, then
+	checks speed limit per download.  Thus you can specify both
+	value. For example, set --max-overall-download-limit=1M and
+	--max-download-limit=500K to prevent from one download from eating
+	all overall speed limit.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtInteractive.h
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtMessageDispatcher.h
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/PeerInteractionCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DefaultBtMessageDispatcherTest.cc
+
+2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented select-file option in Input File section.
 	Documented --http-auth-challenge option.
 	* doc/aria2c.1.txt

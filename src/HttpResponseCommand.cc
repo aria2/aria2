@@ -334,8 +334,6 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
   HttpDownloadCommand* command =
     new HttpDownloadCommand(cuid, req, _requestGroup,
 			    httpResponse, httpConnection, e, socket);
-  command->setMaxDownloadSpeedLimit
-    (e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit
     (e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));

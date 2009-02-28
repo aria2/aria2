@@ -69,6 +69,10 @@ private:
 
   SharedHandle<ServerStatMan> _serverStatMan;
 
+  unsigned int _maxOverallDownloadSpeedLimit;
+
+  unsigned int _maxOverallUploadSpeedLimit;
+
   std::string
   formatDownloadResult(const std::string& status,
 		       const SharedHandle<DownloadResult>& downloadResult) const;
@@ -170,6 +174,16 @@ public:
   bool saveServerStat(const std::string& filename) const;
 
   void removeStaleServerStat(time_t timeout);
+
+  // Returns true if current download speed exceeds
+  // _maxOverallDownloadSpeedLimit.  Always returns false if
+  // _maxOverallDownloadSpeedLimit == 0.  Otherwise returns false.
+  bool doesOverallDownloadSpeedExceed();
+
+  // Returns true if current upload speed exceeds
+  // _maxOverallUploadSpeedLimit. Always returns false if
+  // _maxOverallUploadSpeedLimit == 0. Otherwise returns false.
+  bool doesOverallUploadSpeedExceed();
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

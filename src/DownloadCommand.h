@@ -47,7 +47,6 @@ class MessageDigestContext;
 
 class DownloadCommand : public AbstractCommand {
 private:
-  unsigned int maxDownloadSpeedLimit;
   time_t startupIdleTime;
   unsigned int lowestDownloadSpeedLimit;
   SharedHandle<PeerStat> peerStat;
@@ -85,10 +84,6 @@ public:
   void setTransferEncodingDecoder(const SharedHandle<Decoder>& decoder);
 
   void setContentEncodingDecoder(const SharedHandle<Decoder>& decoder);
-
-  void setMaxDownloadSpeedLimit(unsigned int maxDownloadSpeedLimit) {
-    this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
-  }
 
   void setStartupIdleTime(time_t startupIdleTime) {
     this->startupIdleTime = startupIdleTime;

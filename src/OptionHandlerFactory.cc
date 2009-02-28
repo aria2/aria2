@@ -282,6 +282,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
+				    TEXT_MAX_OVERALL_DOWNLOAD_LIMIT,
+				    "0",
+				    0));
+    op->addTag(TAG_BITTORRENT);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_NO_CONF,
 				    TEXT_NO_CONF,

@@ -132,10 +132,6 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setBtContext(_btContext);
   dispatcher->setPieceStorage(pieceStorage);
   dispatcher->setPeerStorage(peerStorage);
-  dispatcher->setMaxUploadSpeedLimit
-    (e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
-  dispatcher->setMaxOverallSpeedLimit
-    (e->option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
   dispatcher->setRequestTimeout(e->option->getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcher->setBtMessageFactory(factory);
   dispatcher->setRequestGroupMan(e->_requestGroupMan);
@@ -170,8 +166,7 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractive->setExtensionMessageFactory(extensionMessageFactory);
   btInteractive->setKeepAliveInterval
     (e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
-  btInteractive->setMaxDownloadSpeedLimit
-    (e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+  btInteractive->setRequestGroupMan(e->_requestGroupMan);
   btInteractive->setBtMessageFactory(factory);
   if(!_btContext->isPrivate()) {
     if(e->option->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
@@ -268,14 +263,10 @@ bool PeerInteractionCommand::executeInternal() {
        	setWriteCheckSocket(socket);
       }
 
-      if(maxDownloadSpeedLimit > 0) {
-	TransferStat stat = _requestGroup->calculateStat();
-	if(maxDownloadSpeedLimit < stat.downloadSpeed) {
-	  disableReadCheckSocket();
-	  setNoCheck(true);
-	} else {
-	  setReadCheckSocket(socket);
-	}
+      if(e->_requestGroupMan->doesOverallDownloadSpeedExceed() ||
+	 _requestGroup->doesDownloadSpeedExceed()) {
+	disableReadCheckSocket();
+	setNoCheck(true);
       } else {
 	setReadCheckSocket(socket);
       }
