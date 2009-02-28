@@ -1,5 +1,11 @@
 2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented select-file option in Input File section.
+	Documented --http-auth-challenge option.
+	* doc/aria2c.1.txt
+	
+2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Now select-file can be specified in the uri list(-i list).
 	* src/BtContext.cc
 	* src/BtContext.h

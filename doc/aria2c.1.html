@@ -700,6 +700,18 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt>
+<strong>--http-auth-challenge</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Send HTTP authorization header only when it is requested by the
+  server. If <em>false</em> is set, then authorization header is always sent
+  to the server.  There is an exception: if username and password are
+  embedded in URI, authorization header is always sent to the server
+  regardless of this option.  Default: <em>true</em>
+</p>
+</dd>
+<dt>
 <strong>--http-auth-scheme</strong>=SCHEME
 </dt>
 <dd>
@@ -1768,9 +1780,28 @@ to aria2c in command-line.</p></div>
 can specify multiple URIs for a single entity: separate URIs on a
 single line using the TAB character.</p></div>
 <div class="para"><p>Each line is treated as if it is provided in command-line argument.
-Therefore they are affected by <strong>-Z</strong> and <strong>-P</strong> options.  The additional
-<strong>out</strong> and <strong>dir</strong> options can be specified after each line of URIs. This
-optional line must start with white space(s).</p></div>
+Therefore they are affected by <strong>-Z</strong> and <strong>-P</strong> options.</p></div>
+<div class="para"><p>Additionally, the following options can be specified after each line
+of URIs. These optional lines must start with white space(s).</p></div>
+<div class="ilist"><ul>
+<li>
+<p>
+out
+</p>
+</li>
+<li>
+<p>
+dir
+</p>
+</li>
+<li>
+<p>
+select-file
+</p>
+</li>
+</ul></div>
+<div class="para"><p>These options have exactly same meaning of the ones in the
+command-line options, but it just applies to the URIs it belongs to.</p></div>
 <div class="para"><p>For example, the content of uri.txt is</p></div>
 <div class="listingblock">
 <div class="content">
@@ -2244,7 +2275,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-15 12:35:52 JST
+Last updated 2009-02-28 18:50:29 JST
 </div>
 </div>
 </body>

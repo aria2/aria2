@@ -197,6 +197,13 @@ HTTP Specific Options
   Verify the peer using certificates specified in *--ca-certificate* option.
   Default: 'true'
 
+*--http-auth-challenge*[='true'|'false']::
+  Send HTTP authorization header only when it is requested by the
+  server. If 'false' is set, then authorization header is always sent
+  to the server.  There is an exception: if username and password are
+  embedded in URI, authorization header is always sent to the server
+  regardless of this option.  Default: 'true'
+
 *--http-auth-scheme*=SCHEME::
   Set HTTP authentication scheme.
   Currently, 'basic' is the only supported scheme.
@@ -793,9 +800,17 @@ can specify multiple URIs for a single entity: separate URIs on a
 single line using the TAB character.
 
 Each line is treated as if it is provided in command-line argument.
-Therefore they are affected by *-Z* and *-P* options.  The additional
-*out* and *dir* options can be specified after each line of URIs. This
-optional line must start with white space(s).
+Therefore they are affected by *-Z* and *-P* options.
+
+Additionally, the following options can be specified after each line
+of URIs. These optional lines must start with white space(s).
+
+* out
+* dir
+* select-file
+
+These options have exactly same meaning of the ones in the
+command-line options, but it just applies to the URIs it belongs to.
 
 For example, the content of uri.txt is
 

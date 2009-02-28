@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 02/15/2009
+.\"      Date: 02/28/2009
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "02/15/2009" "" ""
+.TH "ARIA2C" "1" "02/28/2009" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -256,6 +256,14 @@ option to specify the private key\&.
 Verify the peer using certificates specified in
 \fB\-\-ca\-certificate\fR
 option\&. Default:
+\fItrue\fR
+.RE
+.PP
+\fB\-\-http\-auth\-challenge\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Send HTTP authorization header only when it is requested by the server\&. If
+\fIfalse\fR
+is set, then authorization header is always sent to the server\&. There is an exception: if username and password are embedded in URI, authorization header is always sent to the server regardless of this option\&. Default:
 \fItrue\fR
 .RE
 .PP
@@ -1020,7 +1028,23 @@ Normally if you lose a control file, you cannot resume download\&. But if you ha
 .SS "Input File"
 The input file can contain a list of URIs for aria2 to download\&. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\&.
 .sp
-Each line is treated as if it is provided in command\-line argument\&. Therefore they are affected by \fB\-Z\fR and \fB\-P\fR options\&. The additional \fBout\fR and \fBdir\fR options can be specified after each line of URIs\&. This optional line must start with white space(s)\&.
+Each line is treated as if it is provided in command\-line argument\&. Therefore they are affected by \fB\-Z\fR and \fB\-P\fR options\&.
+.sp
+Additionally, the following options can be specified after each line of URIs\&. These optional lines must start with white space(s)\&.
+.sp
+.sp
+.RS 4
+\h'-04'\(bu\h'+03'out
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+03'dir
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+03'select\-file
+.RE
+These options have exactly same meaning of the ones in the command\-line options, but it just applies to the URIs it belongs to\&.
 .sp
 For example, the content of uri\&.txt is
 .sp
