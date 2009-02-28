@@ -572,9 +572,7 @@ means unrestricted\&. You can append
 or
 \fIM\fR(1K = 1024, 1M = 1024K)\&. To limit the upload speed per torrent, use
 \fB\-\-max\-upload\-limit\fR
-option\&. If non\-zero value is specified,
-\fB\-\-max\-upload\-limit\fR
-option is ignored\&. Default:
+option\&. Default:
 \fI0\fR
 .RE
 .PP
@@ -827,14 +825,29 @@ option\&. The possible Values are
 \fI6800\fR
 .RE
 .PP
-\fB\-\-max\-download\-limit\fR=SPEED
+\fB\-\-max\-overall\-download\-limit\fR=SPEED
 .RS 4
-Set max download speed in bytes per sec\&.
+Set max overall download speed in bytes/sec\&.
 \fI0\fR
 means unrestricted\&. You can append
 \fIK\fR
 or
-\fIM\fR(1K = 1024, 1M = 1024K)\&. Default:
+\fIM\fR(1K = 1024, 1M = 1024K)\&. To limit the download speed per download, use
+\fB\-\-max\-download\-limit\fR
+option\&. Default:
+\fI0\fR
+.RE
+.PP
+\fB\-\-max\-download\-limit\fR=SPEED
+.RS 4
+Set max download speed per each download in bytes/sec\&.
+\fI0\fR
+means unrestricted\&. You can append
+\fIK\fR
+or
+\fIM\fR(1K = 1024, 1M = 1024K)\&. To limit the overall download speed, use
+\fB\-\-max\-overall\-download\-limit\fR
+option\&. Default:
 \fI0\fR
 .RE
 .PP

@@ -419,7 +419,6 @@ Make sure that the specified ports are open for incoming TCP traffic.
   '0' means unrestricted.
   You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
   To limit the upload speed per torrent, use *--max-upload-limit* option.
-  If non-zero value is specified, *--max-upload-limit* option is ignored.
   Default: '0'
 
 *-u*, *--max-upload-limit*=SPEED::
@@ -592,10 +591,17 @@ are also allocated if they share the same piece.
   See also *--enable-http-server* option.  The possible Values are
   '1024'-'65535'. Default: '6800'
 
+*--max-overall-download-limit*=SPEED::
+  Set max overall download speed in bytes/sec.  '0' means
+  unrestricted.  You can append 'K' or 'M'(1K = 1024, 1M = 1024K).  To
+  limit the download speed per download, use *--max-download-limit*
+  option.  Default: '0'
+
 *--max-download-limit*=SPEED::
-   Set max download speed in bytes per sec. '0' means unrestricted.
-   You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
-   Default: '0'
+  Set max download speed per each download in bytes/sec. '0' means
+  unrestricted.  You can append 'K' or 'M'(1K = 1024, 1M = 1024K).  To
+  limit the overall download speed, use *--max-overall-download-limit*
+  option.  Default: '0'
 
 *--no-conf*::
   Disable loading aria2.conf file.

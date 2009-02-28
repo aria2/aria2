@@ -1150,7 +1150,6 @@ writes the piece to the appropriate files.</td>
   <em>0</em> means unrestricted.
   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
   To limit the upload speed per torrent, use <strong>--max-upload-limit</strong> option.
-  If non-zero value is specified, <strong>--max-upload-limit</strong> option is ignored.
   Default: <em>0</em>
 </p>
 </dd>
@@ -1478,13 +1477,25 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 <dt>
+<strong>--max-overall-download-limit</strong>=SPEED
+</dt>
+<dd>
+<p>
+  Set max overall download speed in bytes/sec.  <em>0</em> means
+  unrestricted.  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).  To
+  limit the download speed per download, use <strong>--max-download-limit</strong>
+  option.  Default: <em>0</em>
+</p>
+</dd>
+<dt>
 <strong>--max-download-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
-   Set max download speed in bytes per sec. <em>0</em> means unrestricted.
-   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-   Default: <em>0</em>
+  Set max download speed per each download in bytes/sec. <em>0</em> means
+  unrestricted.  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).  To
+  limit the overall download speed, use <strong>--max-overall-download-limit</strong>
+  option.  Default: <em>0</em>
 </p>
 </dd>
 <dt>
@@ -2275,7 +2286,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-28 18:50:29 JST
+Last updated 2009-02-28 20:50:20 JST
 </div>
 </div>
 </body>

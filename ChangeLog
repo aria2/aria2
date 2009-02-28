@@ -1,5 +1,11 @@
 2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --max-overall-download-limit in man page.
+	Updated --max-overall-upload-limit, --max-download-limit option's doc.
+	* doc/aria2c.1.txt
+
+2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --max-overall-download-limit option.  Now --max-upload-limit
 	option is not ignored when --max-overall-upload-limit option has
 	non-zero value. aria2 checks download(upload) speed in the order:
