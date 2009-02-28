@@ -1,5 +1,10 @@
 2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made the upper value of --max-concurrent-downloads options unlimited.
+	* src/OptionHandlerFactory.cc
+
+2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that disk writer is not created even if it shares
 	same piece with the preceding file if the length of previous file
 	is 0.

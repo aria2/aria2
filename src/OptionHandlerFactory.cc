@@ -265,7 +265,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_MAX_CONCURRENT_DOWNLOADS,
 				    TEXT_MAX_CONCURRENT_DOWNLOADS,
 				    "5",
-				    1, 45,
+				    1, -1,
 				    'j'));
     op->addTag(TAG_BASIC);
     handlers.push_back(op);
