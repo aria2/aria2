@@ -269,6 +269,17 @@ void UtilTest::testGetContentDispositionFilename() {
   std::string h11 = "attachment; filename=;";
   CPPUNIT_ASSERT_EQUAL(std::string(""), Util::getContentDispositionFilename(h11));
 
+  std::string filenameWithDir = "attachment; filename=dir/file";
+  CPPUNIT_ASSERT_EQUAL(std::string("file"),
+		       Util::getContentDispositionFilename(filenameWithDir));
+
+  std::string parentDir = "attachment; filename=..";
+  CPPUNIT_ASSERT_EQUAL(std::string(),
+		       Util::getContentDispositionFilename(parentDir));
+
+  std::string currentDir = "attachment; filename=.";
+  CPPUNIT_ASSERT_EQUAL(std::string(),
+		       Util::getContentDispositionFilename(currentDir));
 }
 
 class Printer {

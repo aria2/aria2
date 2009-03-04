@@ -564,7 +564,14 @@ std::string Util::getContentDispositionFilename(const std::string& header) {
     filenameep = header.size();
   }
   static const std::string TRIMMED("\r\n '\"");
-  return trim(header.substr(filenamesp, filenameep-filenamesp), TRIMMED);
+  std::string fn =
+    File(trim(header.substr
+	      (filenamesp, filenameep-filenamesp), TRIMMED)).getBasename();
+  if(fn == ".." || fn == ".") {
+    return A2STR::NIL;
+  } else {
+    return fn;
+  }
 }
 
 static int nbits[] = {
