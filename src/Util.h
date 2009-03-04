@@ -43,11 +43,13 @@
 #include <utility>
 #include <deque>
 #include <iosfwd>
+#include <numeric>
 
 #include "SharedHandle.h"
 #include "IntSequence.h"
 #include "a2time.h"
 #include "a2netcompat.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -279,6 +281,31 @@ public:
   getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len);
 
   static std::string htmlEscape(const std::string& src);
+
+  // Joins path element specified in [first, last).  If ".." is found,
+  // it eats the previous element if it exists.  If "." is found, it
+  // is just ignored and it is not appeared in the result.
+  template<typename InputIterator>
+  static std::string joinPath(InputIterator first, InputIterator last)
+  {
+    std::deque<std::string> elements;
+    for(;first != last; ++first) {
+      if(*first == "..") {
+	if(!elements.empty()) {
+	  elements.pop_back();
+	}
+      } else if(*first == ".") {
+	// do nothing
+      } else {
+	elements.push_back(*first);
+      }
+    }
+    if(elements.empty()) {
+      return "";
+    }
+    return std::accumulate(elements.begin()+1, elements.end(), elements[0],
+			   Concat("/"));
+  }
 };
 
 } // namespace aria2

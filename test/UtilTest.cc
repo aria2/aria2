@@ -11,6 +11,7 @@
 #include "ByteArrayDiskWriter.h"
 #include "FileEntry.h"
 #include "File.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -52,6 +53,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNtoh64);
   CPPUNIT_TEST(testUrlencode);
   CPPUNIT_TEST(testHtmlEscape);
+  CPPUNIT_TEST(testJoinPath);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -94,6 +96,7 @@ public:
   void testNtoh64();
   void testUrlencode();
   void testHtmlEscape();
+  void testJoinPath();
 };
 
 
@@ -739,6 +742,40 @@ void UtilTest::testHtmlEscape()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("aria2&lt;&gt;&quot;&#39;util"),
 		       Util::htmlEscape("aria2<>\"'util"));
+}
+
+void UtilTest::testJoinPath()
+{
+  const std::string dir1dir2file[] = { "dir1", "dir2", "file" };
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("dir1/dir2/file"),
+     Util::joinPath(&dir1dir2file[0],
+		    &dir1dir2file[arrayLength(dir1dir2file)]));
+
+  const std::string dirparentfile[] = { "dir", "..", "file" };
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("file"),
+     Util::joinPath(&dirparentfile[0],
+		    &dirparentfile[arrayLength(dirparentfile)]));
+
+  const std::string dirparentparentfile[] = { "dir", "..", "..", "file" };
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("file"),
+     Util::joinPath(&dirparentparentfile[0],
+		    &dirparentparentfile[arrayLength(dirparentparentfile)]));
+
+  const std::string dirdotfile[] = { "dir", ".", "file" };
+  CPPUNIT_ASSERT_EQUAL(std::string("dir/file"),
+		       Util::joinPath(&dirdotfile[0],
+				      &dirdotfile[arrayLength(dirdotfile)]));
+
+  const std::string empty[] = {};
+  CPPUNIT_ASSERT_EQUAL(std::string(""), Util::joinPath(&empty[0], &empty[0]));
+
+  const std::string parentdot[] = { "..", "." };
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+		       Util::joinPath(&parentdot[0],
+				      &parentdot[arrayLength(parentdot)]));
 }
 
 } // namespace aria2

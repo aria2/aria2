@@ -1,3 +1,9 @@
+2009-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added Util::pathJoin()
+	* src/Util.h
+	* test/UtilTest.cc
+
 2009-03-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Applied basename function to remove directory element in
