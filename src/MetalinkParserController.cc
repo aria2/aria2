@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "MetalinkParserController.h"
+
+#include <algorithm>
+
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
@@ -45,7 +48,7 @@
 # include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
-#include <algorithm>
+#include "Util.h"
 
 namespace aria2 {
 
@@ -77,10 +80,14 @@ void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
   if(_tEntry.isNull()) {
     return;
   }
+  std::deque<std::string> elements;
+  Util::slice(elements, filename, '/');
+  std::string path = Util::joinPath(elements.begin(), elements.end());
+
   if(_tEntry->file.isNull()) {
-    _tEntry->file.reset(new FileEntry(filename, 0, 0));
+    _tEntry->file.reset(new FileEntry(path, 0, 0));
   } else {
-    _tEntry->file->setPath(filename);
+    _tEntry->file->setPath(path);
   }
 }
 
