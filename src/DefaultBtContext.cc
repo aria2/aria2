@@ -38,6 +38,7 @@
 #include <ostream>
 #include <functional>
 #include <algorithm>
+#include <vector>
 
 #include "DlAbortEx.h"
 #include "Util.h"
@@ -149,12 +150,11 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
       if(!pathList.isList() || pathList.empty()) {
 	throw DlAbortEx("Path is empty.");
       }
-      std::string path;
-      for(size_t i = 0; i < pathList.size()-1; ++i) {
-	path += pathList[i].s()+"/";
-
-      }
-      path += pathList[pathList.size()-1].s();
+      
+      std::vector<std::string> elements(pathList.size());
+      std::transform(pathList.listBegin(), pathList.listEnd(), elements.begin(),
+		     std::mem_fun_ref(&bencode::BDE::s));
+      std::string path = Util::joinPath(elements.begin(), elements.end());
 
       std::deque<std::string> uris;
       std::transform(urlList.begin(), urlList.end(), std::back_inserter(uris),

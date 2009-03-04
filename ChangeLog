@@ -1,5 +1,10 @@
 2009-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use Util::pathJoin()
+	* src/DefaultBtContext.cc
+	
+2009-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added Util::pathJoin()
 	* src/Util.h
 	* test/UtilTest.cc
