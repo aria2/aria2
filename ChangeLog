@@ -1,5 +1,11 @@
 2009-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Call ServerStat::setError() in AbstractCommand::onAbort() to
+	effectively exclude failed server.
+	* src/AbstractCommand.cc
+	
+2009-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --index-out option to specify each file path for torrent.
 	Here index shown in --show-files option is used to specify which
 	file path should be altered. For example, to change the file path

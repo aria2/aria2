@@ -214,6 +214,10 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
 }
 
 void AbstractCommand::onAbort() {
+  // TODO This might be a problem if the failure is caused by proxy.
+  e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
+					     req->getProtocol())->setError();
+
   logger->debug(MSG_UNREGISTER_CUID, cuid);
   //_segmentMan->unregisterId(cuid);
   if(!_requestGroup->getPieceStorage().isNull()) {
