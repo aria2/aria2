@@ -941,4 +941,26 @@ std::string Util::htmlEscape(const std::string& src)
   return dest;
 }
 
+std::map<size_t, std::string>::value_type
+Util::parseIndexPath(const std::string& line)
+{
+  std::pair<std::string, std::string> p = Util::split(line, "=");
+  size_t index = parseUInt(p.first);
+  if(p.second.empty()) {
+    throw DlAbortEx(StringFormat("Path with index=%u is empty.",
+				 static_cast<unsigned int>(index)).str());
+  }
+  return std::map<size_t, std::string>::value_type(index, p.second);
+}
+
+std::map<size_t, std::string> Util::createIndexPathMap(std::istream& i)
+{
+  std::map<size_t, std::string> indexPathMap;
+  std::string line;
+  while(getline(i, line)) {
+    indexPathMap.insert(indexPathMap.begin(), parseIndexPath(line));
+  }
+  return indexPathMap;
+}
+
 } // namespace aria2

@@ -44,6 +44,7 @@
 #include <deque>
 #include <iosfwd>
 #include <numeric>
+#include <map>
 
 #include "SharedHandle.h"
 #include "IntSequence.h"
@@ -306,6 +307,13 @@ public:
     return std::accumulate(elements.begin()+1, elements.end(), elements[0],
 			   Concat("/"));
   }
+
+  // Parses INDEX=PATH format string. INDEX must be an unsigned
+  // integer.
+  static std::map<size_t, std::string>::value_type
+  parseIndexPath(const std::string& line);
+
+  static std::map<size_t, std::string> createIndexPathMap(std::istream& i);
 };
 
 } // namespace aria2

@@ -54,6 +54,8 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testUrlencode);
   CPPUNIT_TEST(testHtmlEscape);
   CPPUNIT_TEST(testJoinPath);
+  CPPUNIT_TEST(testParseIndexPath);
+  CPPUNIT_TEST(testCreateIndexPathMap);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -97,6 +99,8 @@ public:
   void testUrlencode();
   void testHtmlEscape();
   void testJoinPath();
+  void testParseIndexPath();
+  void testCreateIndexPathMap();
 };
 
 
@@ -776,6 +780,38 @@ void UtilTest::testJoinPath()
   CPPUNIT_ASSERT_EQUAL(std::string(""),
 		       Util::joinPath(&parentdot[0],
 				      &parentdot[arrayLength(parentdot)]));
+}
+
+void UtilTest::testParseIndexPath()
+{
+  std::map<size_t, std::string>::value_type p = Util::parseIndexPath("1=foo");
+  CPPUNIT_ASSERT_EQUAL((size_t)1, p.first);
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), p.second);
+  try {
+    Util::parseIndexPath("1X=foo");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+    // success
+  }
+  try {
+    Util::parseIndexPath("1=");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+    // success
+  }
+}
+
+void UtilTest::testCreateIndexPathMap()
+{
+  std::stringstream in
+    ("1=/tmp/myfile\n"
+     "100=/myhome/mypicture.png\n");
+  std::map<size_t, std::string> m = Util::createIndexPathMap(in);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, m.size());
+  CPPUNIT_ASSERT(m.find(1) != m.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), m[1]);
+  CPPUNIT_ASSERT(m.find(100) != m.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("/myhome/mypicture.png"), m[100]);
 }
 
 } // namespace aria2

@@ -287,6 +287,8 @@ extern const std::string PREF_BT_HASH_CHECK_SEED;
 extern const std::string PREF_BT_MAX_PEERS;
 // values: a string (IP address)
 extern const std::string PREF_BT_EXTERNAL_IP;
+// values: 1*digit '=' a string that your file system recognizes as a file name.
+extern const std::string PREF_INDEX_OUT;
 
 /**
  * Metalink related preferences

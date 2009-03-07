@@ -151,14 +151,20 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
 	throw DlAbortEx("Path is empty.");
       }
       
-      std::vector<std::string> elements(pathList.size());
-      std::transform(pathList.listBegin(), pathList.listEnd(), elements.begin(),
+      std::vector<std::string> pathelem(pathList.size());
+      std::transform(pathList.listBegin(), pathList.listEnd(), pathelem.begin(),
 		     std::mem_fun_ref(&bencode::BDE::s));
-      std::string path = Util::joinPath(elements.begin(), elements.end());
+      std::string path = Util::joinPath(pathelem.begin(), pathelem.end());
+      // Split path with '/' again because each pathList element can
+      // contain "/" inside.
+      std::deque<std::string> elements;
+      Util::slice(elements, path, '/');
+      elements.push_front(name);
+      path = Util::joinPath(elements.begin(), elements.end());
 
       std::deque<std::string> uris;
       std::transform(urlList.begin(), urlList.end(), std::back_inserter(uris),
-		     std::bind2nd(std::plus<std::string>(), "/"+name+"/"+path));
+		     std::bind2nd(std::plus<std::string>(), "/"+path));
       FileEntryHandle fileEntry(new FileEntry(path, fileLengthData.i(),
 					      offset, uris));
       fileEntries.push_back(fileEntry);
@@ -473,6 +479,17 @@ DefaultBtContext::getNodes()
 void DefaultBtContext::setInfoHash(const unsigned char* infoHash)
 {
   memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
+}
+
+void DefaultBtContext::setFilePathWithIndex
+(size_t index, const std::string& path)
+{
+  if(0 < index && index <= fileEntries.size()) {
+    fileEntries[index-1]->setPath(path);
+  } else {
+    throw DlAbortEx(StringFormat("No such file with index=%u",
+				 static_cast<unsigned int>(index)).str());
+  }
 }
 
 } // namespace aria2

@@ -1,3 +1,30 @@
+2009-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --index-out option to specify each file path for torrent.
+	Here index shown in --show-files option is used to specify which
+	file path should be altered. For example, to change the file path
+	with index=2, use --index-out=2=aria2.tar.bz2. You can use this
+	option multiple times: --index-out=1=aria2.tar.bz2
+	--index-out=2=aria2-opt.tar.bz2. The short hand form -O is also
+	available. This option can be specified in -i list.	
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/MultiFileAllocationIterator.cc
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/Util.cc
+	* src/Util.h
+	* src/download_helper.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DefaultBtContextTest.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+	* test/UtilTest.cc
+
 2009-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use Util::pathJoin()

@@ -366,6 +366,32 @@ public:
   }
 };
 
+class IndexOutOptionHandler : public NameMatchOptionHandler {
+private:
+public:
+  IndexOutOptionHandler(const std::string& optName,
+			const std::string& description,
+			char shortName = 0):
+    NameMatchOptionHandler(optName, description, NO_DEFAULT_VALUE,
+			   OptionHandler::REQ_ARG, shortName) {}
+
+  virtual ~IndexOutOptionHandler() {}
+
+  virtual void parseArg(Option& option, const std::string& optarg)
+  {
+    // See optarg is in the fomrat of "INDEX=PATH"
+    Util::parseIndexPath(optarg);
+    std::string value = option.get(_optName);
+    value += optarg+"\n";
+    option.put(_optName, value);
+  }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return "INDEX=PATH";
+  }
+};
+
 class ParameterOptionHandler : public NameMatchOptionHandler {
 private:
   std::deque<std::string> _validParamValues;

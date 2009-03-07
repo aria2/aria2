@@ -493,3 +493,9 @@ _(" --http-auth-challenge[=true|false] Send HTTP authorization header only when 
   "                              are embedded in URI, authorization header is\n"\
   "                              always sent to the server regardless of this\n"\
   "                              option.")
+#define TEXT_INDEX_OUT \
+_(" -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You can\n"\
+  "                              find the file index using the --show-files option.\n"\
+  "                              PATH is a relative path to the path specified in\n"\
+  "                              --dir option. You can use this option multiple\n"\
+  "                              times.")

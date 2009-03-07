@@ -59,7 +59,7 @@ void MultiFileAllocationIterator::allocateChunk()
     FileEntryHandle fileEntry = entry->getFileEntry();
     // Open file before calling DiskWriterEntry::size()
     _diskAdaptor->openIfNot(entry, &DiskWriterEntry::openFile,
-			    _diskAdaptor->getTopDirPath());
+			    _diskAdaptor->getStoreDir());
     entry->enableDirectIO();
     if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {
       // Calling private function of MultiDiskAdaptor.

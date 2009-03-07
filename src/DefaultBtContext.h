@@ -182,6 +182,12 @@ private:
 
   void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
+  // Sets file path for spcified index. index starts from 1. The index
+  // is the same used in BtContext::setFileFilter().  Please note that
+  // path is not the actual file path. The actual file path is
+  // getDir()+"/"+path.
+  void setFilePathWithIndex(size_t index, const std::string& path);
+
   friend std::ostream& operator<<(std::ostream& o, const DefaultBtContext& ctx);
 
   static const std::string DEFAULT_PEER_ID_PREFIX;

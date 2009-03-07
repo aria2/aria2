@@ -108,11 +108,11 @@ void DefaultBtContextTest::testGetFileEntries() {
   std::deque<SharedHandle<FileEntry> >::iterator itr = fileEntries.begin();
 
   SharedHandle<FileEntry> fileEntry1 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2/src/aria2c"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2/src/aria2c"),
 		       fileEntry1->getPath());
   itr++;
   SharedHandle<FileEntry> fileEntry2 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.2.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2-0.2.2.tar.bz2"),
 		       fileEntry2->getPath());
 }
 
@@ -289,7 +289,7 @@ void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {
   std::deque<SharedHandle<FileEntry> >::iterator itr = fileEntries.begin();
 
   SharedHandle<FileEntry> fileEntry1 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2/src/aria2c"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2/src/aria2c"),
 		       fileEntry1->getPath());
   std::deque<std::string> uris1 = fileEntry1->getAssociatedUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris1.size());
@@ -300,7 +300,7 @@ void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {
 
   itr++;
   SharedHandle<FileEntry> fileEntry2 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.2.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2-0.2.2.tar.bz2"),
 		       fileEntry2->getPath());
   std::deque<std::string> uris2 = fileEntry2->getAssociatedUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris2.size());

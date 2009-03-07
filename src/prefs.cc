@@ -283,6 +283,8 @@ const std::string PREF_BT_HASH_CHECK_SEED("bt-hash-check-seed");
 const std::string PREF_BT_MAX_PEERS("bt-max-peers");
 // values: a string (IP address)
 const std::string PREF_BT_EXTERNAL_IP("bt-external-ip");
+// values: 1*digit '=' a string that your file system recognizes as a file name.
+const std::string PREF_INDEX_OUT("index-out");
 
 /**
  * Metalink related preferences

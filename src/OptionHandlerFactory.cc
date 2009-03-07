@@ -969,6 +969,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new IndexOutOptionHandler
+				   (PREF_INDEX_OUT,
+				    TEXT_INDEX_OUT,
+				    'O'));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new IntegerRangeOptionHandler
 				   (PREF_LISTEN_PORT,
 				    TEXT_LISTEN_PORT,

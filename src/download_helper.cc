@@ -37,6 +37,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <sstream>
 
 #include "RequestGroup.h"
 #include "Option.h"
@@ -124,6 +125,13 @@ createBtRequestGroup(const std::string& torrentFilePath,
   btContext->setDir(requestOption.get(PREF_DIR));
   btContext->setFileFilter
     (Util::parseIntRange(requestOption.get(PREF_SELECT_FILE)));
+  std::istringstream indexOutIn(requestOption.get(PREF_INDEX_OUT));
+  std::map<size_t, std::string> indexPathMap =
+    Util::createIndexPathMap(indexOutIn);
+  for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
+      i != indexPathMap.end(); ++i) {
+    btContext->setFilePathWithIndex((*i).first, (*i).second);
+  }
   rg->setDownloadContext(btContext);
   btContext->setOwnerRequestGroup(rg.get());
   return rg;
@@ -295,11 +303,13 @@ static void createRequestGroupForUriList
     if(uris.empty()) {
       continue;
     }
+    // TODO use OptionParser to validate the value in the options.
     // These options can be specified in input list(-i list).
     static const std::string REQUEST_OPTIONS[] = {
       PREF_DIR,
       PREF_OUT,
-      PREF_SELECT_FILE
+      PREF_SELECT_FILE,
+      PREF_INDEX_OUT
     };
     foreachCopyIfndef(&REQUEST_OPTIONS[0],
 		      &REQUEST_OPTIONS[arrayLength(REQUEST_OPTIONS)],
