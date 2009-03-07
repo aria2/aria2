@@ -207,6 +207,9 @@ void ServerStat::setStatus(const std::string& status)
 
 void ServerStat::setStatusInternal(STATUS status)
 {
+  _logger->debug("ServerStat: set status %s for %s (%s)",
+		 STATUS_STRING[status].c_str(),
+		 _hostname.c_str(), _protocol.c_str());
   _status = status;
   _lastUpdated.reset();
 }

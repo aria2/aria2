@@ -1,5 +1,10 @@
 2009-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added log message in setStatusInternal()
+	* src/ServerStat.cc
+
+2009-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call ServerStat::setError() in AbstractCommand::onAbort() to
 	effectively exclude failed server.
 	* src/AbstractCommand.cc
