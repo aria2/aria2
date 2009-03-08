@@ -144,9 +144,10 @@ RequestGroup::RequestGroup(const Option* option,
   // and add this list.
   // ACCEPT_METALINK is used for `transparent metalink'.
   addAcceptType(ACCEPT_METALINK);
-
-  initializePreDownloadHandler();
-  initializePostDownloadHandler();
+  if(!_option->getAsBool(PREF_DRY_RUN)) {
+    initializePreDownloadHandler();
+    initializePostDownloadHandler();
+  }
 }
 
 RequestGroup::~RequestGroup() {}
@@ -204,6 +205,11 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
   {
     BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
     if(!btContext.isNull()) {
+      if(_option->getAsBool(PREF_DRY_RUN)) {
+	throw DownloadFailureException
+	  ("Cancel BitTorrent download in dry-run context.");
+      }
+
       if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
 	throw DownloadFailureException
 	  (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
@@ -328,7 +334,8 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 #endif // ENABLE_BITTORRENT
   // TODO I assume here when totallength is set to DownloadContext and it is
   // not 0, then filepath is also set DownloadContext correctly....
-  if(_downloadContext->getTotalLength() == 0) {
+  if(_option->getAsBool(PREF_DRY_RUN) ||
+     _downloadContext->getTotalLength() == 0) {
     createNextCommand(commands, e, 1, method);
   }else {
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {

@@ -499,3 +499,9 @@ _(" -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You ca
   "                              PATH is a relative path to the path specified in\n"\
   "                              --dir option. You can use this option multiple\n"\
   "                              times.")
+#define TEXT_DRY_RUN \
+_(" --dry-run[=true|false]       If true is given, aria2 just checks whether the\n"\
+  "                              remote file is available and doesn't download\n"\
+  "                              data. This option has effect on HTTP/FTP downloads\n"\
+  "                              and BitTorrent downloads are canceled if true is\n"\
+  "                              specified.")

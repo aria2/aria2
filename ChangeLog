@@ -1,5 +1,21 @@
 2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --dry-run option.  In this mode, aria2 just checks whether
+	the remote file is available and doesn't download data. This
+	option has effect on HTTP/FTP downloads and BitTorrent downloads
+	are canceled in this mode.
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	
+2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compiler waring
 	* test/UriListParserTest.cc
 

@@ -64,6 +64,8 @@ private:
   void updateLastModifiedTime(const Time& lastModified);
 
   void poolConnection();
+
+  void onDryRunFileFound();
 protected:
   bool executeInternal();
 

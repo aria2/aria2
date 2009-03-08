@@ -363,6 +363,13 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   } else {
     _requestGroup->initPieceStorage();
 
+    if(e->option->getAsBool(PREF_DRY_RUN)) {
+      _requestGroup->getPieceStorage()->markAllPiecesDone();
+      poolConnection();
+      sequence = SEQ_HEAD_OK;
+      return false;
+    }
+
     BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;

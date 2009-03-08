@@ -317,7 +317,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       configureRequestGroup(groupToAdd);
       Commands commands;
       createInitialCommand(groupToAdd, commands, e,
-			   _option->getAsBool(PREF_USE_HEAD));
+			   _option->getAsBool(PREF_USE_HEAD)||
+			   _option->getAsBool(PREF_DRY_RUN));
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);

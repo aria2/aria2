@@ -197,6 +197,11 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
   _requestGroup->initPieceStorage();
 
+  if(e->option->getAsBool(PREF_DRY_RUN)) {
+    onDryRunFileFound();
+    return true;
+  }
+
   BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
   if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
     return true;
@@ -270,6 +275,13 @@ static SharedHandle<Decoder> getContentEncodingDecoder
 bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
   // We assume that RequestGroup::getTotalLength() == 0 here
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
+
+  if(e->option->getAsBool(PREF_DRY_RUN)) {
+    _requestGroup->initPieceStorage();
+    onDryRunFileFound();
+    return true;
+  }
+
   if(req->getMethod() == Request::METHOD_HEAD) {
     poolConnection();
     req->setMethod(Request::METHOD_GET);
@@ -357,6 +369,12 @@ void HttpResponseCommand::poolConnection()
   if(req->supportsPersistentConnection()) {
     e->poolSocket(req, isProxyDefined(), socket);
   }
+}
+
+void HttpResponseCommand::onDryRunFileFound()
+{
+  _requestGroup->getPieceStorage()->markAllPiecesDone();
+  poolConnection();
 }
 
 } // namespace aria2

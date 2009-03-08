@@ -370,6 +370,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_DRY_RUN,
+				    TEXT_DRY_RUN,
+				    V_FALSE,
+				    OptionHandler::OPT_ARG));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
 				   (PREF_LOWEST_SPEED_LIMIT,
 				    TEXT_LOWEST_SPEED_LIMIT,
