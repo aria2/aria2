@@ -51,9 +51,9 @@ class BtMessageDispatcher;
 class Peer {
 public:
   std::string ipaddr;
-  // TCP port which this peer is listening for incoming connections.
-  // If it is unknown, for example, localhost accepted the incoming connection
-  // from this peer, set port to 0.
+  // TCP port of the other end of communication.  If _incoming is
+  // true, then this port is not a port the peer is listening to and
+  // we cannot connect to it.
   uint16_t port;
 private:
   std::string id;
