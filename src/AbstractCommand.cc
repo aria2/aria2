@@ -169,9 +169,12 @@ bool AbstractCommand::execute() {
       req->getTryCount() >= _requestGroup->getMaxTries();
     if(isAbort) {
       onAbort();
+      req->resetUrl();
+    } else {
+      if(e->option->getAsBool(PREF_RESET_URI)) {
+	req->resetUrl();
+      }
     }
-    // In case where Request::getCurrentUrl() is not a valid URI.
-    req->resetUrl();
     if(isAbort) {
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
       logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());

@@ -160,6 +160,8 @@ extern const std::string V_SELECT;
 extern const std::string PREF_HTTP_SERVER_LISTEN_PORT;
 // value: true | false
 extern const std::string PREF_ENABLE_HTTP_SERVER;
+// value: true | false
+extern const std::string PREF_RESET_URI;
 
 /**
  * FTP related preferences

@@ -156,6 +156,8 @@ const std::string V_SELECT("select");
 const std::string PREF_HTTP_SERVER_LISTEN_PORT("http-server-listen-port");
 // value: true | false
 const std::string PREF_ENABLE_HTTP_SERVER("enable-http-server");
+// value: true | false
+const std::string PREF_RESET_URI("reset-uri");
 
 /**
  * FTP related preferences
