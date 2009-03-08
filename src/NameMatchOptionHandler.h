@@ -141,7 +141,7 @@ public:
     return _hidden;
   }
 
-  void hide()
+  virtual void hide()
   {
     _hidden = true;
   }

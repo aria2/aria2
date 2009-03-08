@@ -81,6 +81,8 @@ public:
 
   virtual bool isHidden() const { return true; }
 
+  virtual void hide() {}
+
   virtual OptionHandler::ARG_TYPE getArgType() const
   {
     return OptionHandler::NO_ARG;

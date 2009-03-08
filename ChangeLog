@@ -1,5 +1,12 @@
 2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Declared hide() in OptionHandler.
+	* src/NameMatchOptionHandler.h
+	* src/OptionHandler.h
+	* src/OptionHandlerImpl.h
+	
+2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc
 	* src/Peer.h
 

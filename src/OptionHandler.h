@@ -70,6 +70,8 @@ public:
 
   virtual bool isHidden() const = 0;
 
+  virtual void hide() = 0;
+
   enum ARG_TYPE {
     REQ_ARG,
     OPT_ARG,
