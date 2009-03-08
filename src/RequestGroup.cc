@@ -209,6 +209,12 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	throw DownloadFailureException
 	  ("Cancel BitTorrent download in dry-run context.");
       }
+      SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
+      if(!btRegistry->getBtContext(btContext->getInfoHashAsString()).isNull()) {
+	throw DownloadFailureException
+	  (StringFormat("InfoHash %s is already registered.",
+			btContext->getInfoHashAsString().c_str()).str());
+      }
 
       if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
 	throw DownloadFailureException
@@ -231,8 +237,6 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 						       _pieceStorage,
 						       _option));
       
-      SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-
       btRegistry->registerBtContext(btContext->getInfoHashAsString(),
 				    btContext);
       btRegistry->registerPieceStorage(btContext->getInfoHashAsString(),

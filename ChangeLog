@@ -1,5 +1,10 @@
 2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Throw exception if same infohash torrent is now downloading.
+	* src/RequestGroup.cc
+	
+2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --dry-run option.  In this mode, aria2 just checks whether
 	the remote file is available and doesn't download data. This
 	option has effect on HTTP/FTP downloads and BitTorrent downloads
