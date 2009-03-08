@@ -35,26 +35,33 @@
 #include "UriListParser.h"
 
 #include <istream>
+#include <sstream>
 
 #include "Util.h"
 #include "Option.h"
+#include "OptionHandlerFactory.h"
+#include "OptionHandler.h"
 
 namespace aria2 {
 
-UriListParser::UriListParser(std::istream& in):_in(in) {}
+UriListParser::UriListParser(std::istream& in):_in(in)
+{
+  _optparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
+}
 
 UriListParser::~UriListParser() {}
 
-static void getOptions(Option& op, std::string& line, std::istream& in)
+void UriListParser::getOptions(Option& op)
 {
-  while(getline(in, line)) {
-    if(Util::startsWith(line, " ")) {
-      std::pair<std::string, std::string> p = Util::split(line, "=");
-      op.put(p.first, p.second);
+  std::stringstream ss;
+  while(getline(_in, _line)) {
+    if(Util::startsWith(_line, " ")) {
+      ss << _line << "\n";
     } else {
       break;
     }
   }
+  _optparser.parse(op, ss);
 }
 
 void UriListParser::parseNext(std::deque<std::string>& uris, Option& op)
@@ -68,7 +75,7 @@ void UriListParser::parseNext(std::deque<std::string>& uris, Option& op)
   do {
     if(!Util::trim(_line).empty()) {
       Util::slice(uris, _line, '\t', true);
-      getOptions(op, _line, _in);
+      getOptions(op);
       return;
     }
   } while(getline(_in, _line));

@@ -42,6 +42,7 @@
 #include <iosfwd>
 
 #include "Option.h"
+#include "OptionParser.h"
 
 namespace aria2 {
 
@@ -49,7 +50,11 @@ class UriListParser {
 private:
   std::istream& _in;
 
+  OptionParser _optparser;
+
   std::string _line;
+
+  void getOptions(Option& op);
 public:
   UriListParser(std::istream& in);
 

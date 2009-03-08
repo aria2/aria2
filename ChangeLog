@@ -1,5 +1,11 @@
 2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Parse options in -i list using OptionParser.
+	* src/UriListParser.cc
+	* src/UriListParser.h
+	
+2009-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't reset URI in retry to avoid additional round trips because
 	of redirects.	
 	* src/AbstractCommand.cc
