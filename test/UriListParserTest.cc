@@ -11,6 +11,7 @@
 #include "Exception.h"
 #include "Util.h"
 #include "prefs.h"
+#include "OptionHandler.h"
 
 namespace aria2 {
 
