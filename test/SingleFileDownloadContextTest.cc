@@ -45,13 +45,14 @@ void SingleFileDownloadContextTest::testGetNumPieces()
 void SingleFileDownloadContextTest::testGetActualBasePath()
 {
   SingleFileDownloadContext ctx(0, 0, "");
-  CPPUNIT_ASSERT_EQUAL(std::string("./index.html"), ctx.getActualBasePath());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), ctx.getActualBasePath());
   ctx.setFilename("aria2.tar.bz2");
-  CPPUNIT_ASSERT_EQUAL(std::string("./aria2.tar.bz2"), ctx.getActualBasePath());
-  ctx.setUFilename("aria.tar.bz2");
-  CPPUNIT_ASSERT_EQUAL(std::string("./aria.tar.bz2"), ctx.getActualBasePath());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), ctx.getActualBasePath());
+  ctx.setUFilename("/t/aria.tar.bz2");
+  CPPUNIT_ASSERT_EQUAL(std::string("/t/aria.tar.bz2"), ctx.getActualBasePath());
   ctx.setDir("/tmp");
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria.tar.bz2"), ctx.getActualBasePath());
+  // See dir doesn't effect getActualBasePath().
+  CPPUNIT_ASSERT_EQUAL(std::string("/t/aria.tar.bz2"), ctx.getActualBasePath());
 }
 
 } // namespace aria2

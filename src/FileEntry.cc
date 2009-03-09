@@ -47,9 +47,9 @@ FileEntry::FileEntry(const std::string& path,
 
 FileEntry::~FileEntry() {}
 
-void FileEntry::setupDir(const std::string& parentDir)
+void FileEntry::setupDir()
 {
-  Util::mkdirs(File(parentDir+"/"+path).getDirname());
+  Util::mkdirs(File(path).getDirname());
 }
 
 FileEntry& FileEntry::operator=(const FileEntry& entry)

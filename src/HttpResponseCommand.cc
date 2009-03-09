@@ -129,7 +129,7 @@ bool HttpResponseCommand::executeInternal()
     SingleFileDownloadContextHandle dctx =
       dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
     dctx->setTotalLength(totalLength);
-    dctx->setFilename(httpResponse->determinFilename());
+    dctx->setFilename(dctx->getDir()+"/"+httpResponse->determinFilename());
     dctx->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {

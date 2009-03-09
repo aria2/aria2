@@ -83,8 +83,7 @@ void RequestGroupTest::testRemoveURIWhoseHostnameIs()
 void RequestGroupTest::testGetFilePath()
 {
   SharedHandle<SingleFileDownloadContext> ctx
-    (new SingleFileDownloadContext(1024, 1024, "myfile"));
-  ctx->setDir("/tmp");
+    (new SingleFileDownloadContext(1024, 1024, "/tmp/myfile"));
   Option op;
   std::deque<std::string> uris;
 
@@ -101,8 +100,8 @@ void RequestGroupTest::testGetFilePath()
 void RequestGroupTest::testCreateDownloadResult()
 {
   SharedHandle<SingleFileDownloadContext> ctx
-    (new SingleFileDownloadContext(1024, 1024*1024, "myfile"));
-  ctx->setDir("/tmp");
+    (new SingleFileDownloadContext(1024, 1024*1024, "/tmp/myfile"));
+  //ctx->setDir("/tmp");
   Option op;
   std::deque<std::string> uris;
   uris.push_back("http://first/file");

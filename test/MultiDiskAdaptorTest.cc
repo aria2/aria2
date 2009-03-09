@@ -373,23 +373,19 @@ void MultiDiskAdaptorTest::testReadData() {
 void MultiDiskAdaptorTest::testCutTrailingGarbage()
 {
   std::string dir = "/tmp";
-  std::string topDir = ".";
-  std::string topDirPath = dir+"/"+topDir;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testCutTrailingGarbage_";
   SharedHandle<FileEntry> entries[] = {
-    SharedHandle<FileEntry>(new FileEntry(prefix+"1", 256, 0)),
-    SharedHandle<FileEntry>(new FileEntry(prefix+"2", 512, 256))
+    SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 256, 0)),
+    SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"2", 512, 256))
   };
   for(size_t i = 0; i < arrayLength(entries); ++i) {
-    createFile(topDirPath+"/"+entries[i]->getPath(),
-	       entries[i]->getLength()+100);
+    createFile(entries[i]->getPath(), entries[i]->getLength()+100);
   }
   std::deque<SharedHandle<FileEntry> > fileEntries
     (&entries[0], &entries[arrayLength(entries)]);
   
   MultiDiskAdaptor adaptor;
   adaptor.setStoreDir(dir);
-  adaptor.setTopDir(topDir);
   adaptor.setFileEntries(fileEntries);
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
@@ -399,30 +395,27 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
   adaptor.cutTrailingGarbage();
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)256,
-		       File(topDirPath+"/"+entries[0]->getPath()).size());
+		       File(entries[0]->getPath()).size());
   CPPUNIT_ASSERT_EQUAL((uint64_t)512,
-		       File(topDirPath+"/"+entries[1]->getPath()).size());
+		       File(entries[1]->getPath()).size());
 }
 
 void MultiDiskAdaptorTest::testSize()
 {
   std::string dir = "/tmp";
-  std::string topDir = ".";
-  std::string topDirPath = dir+"/"+topDir;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testSize_";
   SharedHandle<FileEntry> entries[] = {
-    SharedHandle<FileEntry>(new FileEntry(prefix+"1", 1, 0)),
-    SharedHandle<FileEntry>(new FileEntry(prefix+"2", 1, 1))
+    SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 1, 0)),
+    SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"2", 1, 1))
   };
   for(size_t i = 0; i < arrayLength(entries); ++i) {
-    createFile(topDirPath+"/"+entries[i]->getPath(), entries[i]->getLength());
+    createFile(entries[i]->getPath(), entries[i]->getLength());
   }
   std::deque<SharedHandle<FileEntry> > fileEntries
     (&entries[0], &entries[arrayLength(entries)]);
   
   MultiDiskAdaptor adaptor;
   adaptor.setStoreDir(dir);
-  adaptor.setTopDir(topDir);
   adaptor.setFileEntries(fileEntries);
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
@@ -436,16 +429,16 @@ void MultiDiskAdaptorTest::testUtime()
 {
   std::string storeDir = "/tmp/aria2_MultiDiskAdaptorTest_testUtime";
   SharedHandle<FileEntry> entries[] = {
-    SharedHandle<FileEntry>(new FileEntry("requested", 0, 0)),
-    SharedHandle<FileEntry>(new FileEntry("notFound", 0, 0)),
-    SharedHandle<FileEntry>(new FileEntry("notRequested", 0, 0)),
-    SharedHandle<FileEntry>(new FileEntry("anotherRequested", 0, 0)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/requested", 0, 0)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/notFound", 0, 0)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/notRequested", 0, 0)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/anotherRequested", 0, 0)),
   };
 
-  createFile(storeDir+"/"+entries[0]->getPath(), entries[0]->getLength());
-  File(storeDir+"/"+entries[1]->getPath()).remove();
-  createFile(storeDir+"/"+entries[2]->getPath(), entries[2]->getLength());
-  createFile(storeDir+"/"+entries[3]->getPath(), entries[3]->getLength());
+  createFile(entries[0]->getPath(), entries[0]->getLength());
+  File(entries[1]->getPath()).remove();
+  createFile(entries[2]->getPath(), entries[2]->getLength());
+  createFile(entries[3]->getPath(), entries[3]->getLength());
 
   entries[2]->setRequested(false);
 
@@ -461,15 +454,13 @@ void MultiDiskAdaptorTest::testUtime()
   CPPUNIT_ASSERT_EQUAL((size_t)2, adaptor.utime(Time(atime), Time(mtime)));
   
   CPPUNIT_ASSERT_EQUAL((time_t)mtime,
-		       File(storeDir+"/"+entries[0]->getPath())
-		       .getModifiedTime().getTime());
+		       File(entries[0]->getPath()).getModifiedTime().getTime());
 
   CPPUNIT_ASSERT_EQUAL((time_t)mtime,
-		       File(storeDir+"/"+entries[3]->getPath())
-		       .getModifiedTime().getTime());
+		       File(entries[3]->getPath()).getModifiedTime().getTime());
 
-  CPPUNIT_ASSERT((time_t)mtime != File(storeDir+"/"+entries[2]->getPath())
-		 .getModifiedTime().getTime());
+  CPPUNIT_ASSERT((time_t)mtime !=
+		 File(entries[2]->getPath()).getModifiedTime().getTime());
 }
 
 } // namespace aria2

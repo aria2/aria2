@@ -55,19 +55,19 @@ public:
 
   ~DiskWriterEntry();
 
-  std::string getFilePath(const std::string& storeDir) const;
+  const std::string& getFilePath() const;
 
-  void initAndOpenFile(const std::string& storeDir);
+  void initAndOpenFile();
 
-  void openFile(const std::string& storeDir);
+  void openFile();
 
-  void openExistingFile(const std::string& storeDir);
+  void openExistingFile();
 
   void closeFile();
 
   bool isOpen() const;
 
-  bool fileExists(const std::string& storeDir);
+  bool fileExists();
 
   uint64_t size() const;
 
@@ -115,13 +115,12 @@ private:
 
   void resetDiskWriterEntries();
 
-  void mkdir(const std::string& storeDir) const;
+  void mkdir() const;
 
   std::string getTopDirPath() const;
 
   void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
-		 void (DiskWriterEntry::*f)(const std::string&),
-		 const std::string& storeDir);
+		 void (DiskWriterEntry::*f)());
  
   static const size_t DEFAULT_MAX_OPEN_FILES = 100;
 
@@ -198,8 +197,6 @@ public:
 
   const std::deque<SharedHandle<DiskWriterEntry> >&
   getDiskWriterEntries() const;
-
-  const std::string& getStoreDir() const;
 };
 
 typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;

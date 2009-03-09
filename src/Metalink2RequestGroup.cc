@@ -212,6 +212,7 @@ Metalink2RequestGroup::createRequestGroup
       (new SingleFileDownloadContext(pieceLength,
 				     entry->getLength(),
 				     A2STR::NIL,
+				     requestOption.get(PREF_DIR)+"/"+
 				     entry->file->getPath()));
     dctx->setDir(requestOption.get(PREF_DIR));
 #ifdef ENABLE_MESSAGE_DIGEST

@@ -101,7 +101,12 @@ std::string HttpResponse::determinFilename() const
     Util::getContentDispositionFilename
     (httpHeader->getFirst(HttpHeader::CONTENT_DISPOSITION));
   if(contentDisposition.empty()) {
-    return Util::urldecode(httpRequest->getFile());
+    std::string file = Util::urldecode(httpRequest->getFile());
+    if(file.empty()) {
+      return "index.html";
+    } else {
+      return file;
+    }
   } else {
     logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
 		 cuid, contentDisposition.c_str());

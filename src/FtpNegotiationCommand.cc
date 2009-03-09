@@ -327,7 +327,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   SingleFileDownloadContextHandle dctx =
     dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
   dctx->setTotalLength(totalLength);
-  dctx->setFilename(Util::urldecode(req->getFile()));
+  dctx->setFilename(dctx->getDir()+"/"+Util::urldecode(req->getFile()));
   _requestGroup->preDownloadProcessing();
   if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
     throw DownloadFailureException

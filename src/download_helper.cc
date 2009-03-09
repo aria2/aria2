@@ -101,8 +101,9 @@ static SharedHandle<RequestGroup> createRequestGroup
     (new SingleFileDownloadContext(op->getAsInt(PREF_SEGMENT_SIZE),
 				   0,
 				   A2STR::NIL,
-				   useOutOption?
-				   requestOption.get(PREF_OUT):A2STR::NIL));
+				   useOutOption&&!requestOption.blank(PREF_OUT)?
+				   requestOption.get(PREF_DIR)+"/"+requestOption.get(PREF_OUT):A2STR::NIL));
+
   dctx->setDir(requestOption.get(PREF_DIR));
   rg->setDownloadContext(dctx);
   return rg;
@@ -119,11 +120,11 @@ createBtRequestGroup(const std::string& torrentFilePath,
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(op, auxUris));
   SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
+  btContext->setDir(requestOption.get(PREF_DIR));
   btContext->load(torrentFilePath);// may throw exception
   if(op->defined(PREF_PEER_ID_PREFIX)) {
     btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
   }
-  btContext->setDir(requestOption.get(PREF_DIR));
   btContext->setFileFilter
     (Util::parseIntRange(requestOption.get(PREF_SELECT_FILE)));
   std::istringstream indexOutIn(requestOption.get(PREF_INDEX_OUT));

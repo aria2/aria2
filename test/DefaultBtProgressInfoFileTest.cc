@@ -70,6 +70,7 @@ public:
   
     _btContext.reset(new MockBtContext());
     _btContext->setInfoHash(infoHash);
+    _btContext->setDir(_option->get(PREF_DIR));
     _peerStorage.reset(new MockPeerStorage());
     _btRuntime.reset(new BtRuntime());
 #endif // ENABLE_BITTORRENT
@@ -332,7 +333,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
   initializeMembers(1024, 81920);
 
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(1024, 81920, "load-nonBt"));
+    (new SingleFileDownloadContext(1024, 81920, "./load-nonBt"));
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
 
@@ -377,7 +378,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
   initializeMembers(1024, 81920);
 
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(1024, 81920, "load-nonBt-v0001"));
+    (new SingleFileDownloadContext(1024, 81920, "./load-nonBt-v0001"));
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
 
@@ -422,7 +423,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
   _option->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_TRUE);
 
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(512, 81920, "load-nonBt-v0001"));
+    (new SingleFileDownloadContext(512, 81920, "./load-nonBt-v0001"));
 
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
 
@@ -447,7 +448,7 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
   initializeMembers(1024, 81920);
 
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(1024, 81920, "save-temp"));
+    (new SingleFileDownloadContext(1024, 81920, "./save-temp"));
 
   _bitfield->setAllBit();
   _bitfield->unsetBit(79);
@@ -554,7 +555,7 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 void DefaultBtProgressInfoFileTest::testUpdateFilename()
 {
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(1024, 81920, "file1"));
+    (new SingleFileDownloadContext(1024, 81920, "./file1"));
 
   DefaultBtProgressInfoFile infoFile(dctx, SharedHandle<MockPieceStorage>(), 0);
 #ifdef ENABLE_BITTORRENT
@@ -564,7 +565,7 @@ void DefaultBtProgressInfoFileTest::testUpdateFilename()
 
   CPPUNIT_ASSERT_EQUAL(std::string("./file1.aria2"), infoFile.getFilename());
 
-  dctx->setUFilename("file1.1");
+  dctx->setUFilename("./file1.1");
 
   CPPUNIT_ASSERT_EQUAL(std::string("./file1.aria2"), infoFile.getFilename());
 

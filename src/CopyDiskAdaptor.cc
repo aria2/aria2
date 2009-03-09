@@ -54,9 +54,8 @@ void CopyDiskAdaptor::fixFilename()
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     if(!(*itr)->isExtracted() && (*itr)->isRequested()) {
-      std::string topDirPath = storeDir+"/"+topDir;
-      (*itr)->setupDir(topDirPath);
-      std::string destFilePath = topDirPath+"/"+(*itr)->getPath();
+      (*itr)->setupDir();
+      std::string destFilePath = (*itr)->getPath();
       logger->info(MSG_WRITING_FILE, destFilePath.c_str());
       Util::rangedFileCopy(destFilePath, getFilePath(),
 			   offset, (*itr)->getLength());
@@ -74,11 +73,10 @@ std::string CopyDiskAdaptor::getFilePath()
 size_t CopyDiskAdaptor::utime(const Time& actime, const Time& modtime)
 {
   size_t numOK = 0;
-  std::string topDirPath = storeDir+"/"+topDir;
   for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
     if((*i)->isExtracted() && (*i)->isRequested()) {
-      File f(topDirPath+"/"+(*i)->getPath());
+      File f((*i)->getPath());
       if(f.isFile() && f.utime(actime, modtime)) {
 	++numOK;
       }

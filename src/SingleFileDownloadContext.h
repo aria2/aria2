@@ -46,14 +46,11 @@ class SingleFileDownloadContext:public DownloadContext
 {
 private:
   size_t _pieceLength;
-  /**
-   * Actual file path is _dir + _filename.
-   * If _ufilename is not zero-length string, then _dir + _ufilename.
-   */
   SharedHandle<FileEntry> _fileEntry;
   /**
-   * _filename and _ufilename may contains directory path name.
-   * So usr/local/aria2c is acceptable here.
+   * _filename and _ufilename may contains directory path name.  So
+   * /usr/local/aria2c is acceptable here.  These should be complete
+   * file path.
    */
   std::string _filename;
   std::string _ufilename;

@@ -59,7 +59,7 @@ void SingleFileDownloadContext::updateFileEntry()
   } else if(!_filename.empty()) {
     _fileEntry->setPath(_filename);
   } else {
-    _fileEntry->setPath(DEFAULT_FILENAME);
+    _fileEntry->setPath("");
   }
 }
 
@@ -94,7 +94,7 @@ size_t SingleFileDownloadContext::getNumPieces() const
 
 std::string SingleFileDownloadContext::getActualBasePath() const
 {
-  return _dir+"/"+_fileEntry->getPath();
+  return _fileEntry->getPath();
 }
 
 void SingleFileDownloadContext::setTotalLength(uint64_t totalLength)

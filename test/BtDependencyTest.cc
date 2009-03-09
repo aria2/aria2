@@ -29,7 +29,7 @@ class BtDependencyTest:public CppUnit::TestFixture {
   {
     SharedHandle<RequestGroup> dependant(new RequestGroup(option, std::deque<std::string>()));
     SharedHandle<SingleFileDownloadContext> dctx
-      (new SingleFileDownloadContext(0, 0, "outfile.path"));
+      (new SingleFileDownloadContext(0, 0, "/tmp/outfile.path"));
     dctx->setDir("/tmp");
     dependant->setDownloadContext(dctx);
     return dependant;

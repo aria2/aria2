@@ -19,17 +19,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FileEntryTest );
 
 void FileEntryTest::testSetupDir()
 {
-  std::string topDir = "/tmp";
-  std::string dir = "aria2-FileEntryTest-testSetupDir";
+  std::string dir = "/tmp/aria2-FileEntryTest-testSetupDir";
   std::string filename = "filename";
-  std::string path = topDir+"/"+dir+"/"+filename;
-  File d(topDir+"/"+dir);
+  std::string path = dir+"/"+filename;
+  File d(dir);
   if(d.exists()) {
     CPPUNIT_ASSERT(d.remove());
   }
   CPPUNIT_ASSERT(!d.exists());
-  FileEntry fileEntry(dir+"/"+filename, 0, 0);
-  fileEntry.setupDir(topDir);
+  FileEntry fileEntry(path, 0, 0);
+  fileEntry.setupDir();
   CPPUNIT_ASSERT(d.isDir());
   File f(path);
   CPPUNIT_ASSERT(!f.exists());

@@ -1,3 +1,39 @@
+2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	FileEntry::getPath() contains store(top level) directory to
+	simplify path handling operation.  In the previous implementation,
+	store directory is concatenated to FileEntry::getPath() in
+	DownloadContext.
+	* src/BtDependency.cc
+	* src/BtPostDownloadHandler.cc
+	* src/CopyDiskAdaptor.cc
+	* src/DefaultBtContext.cc
+	* src/DirectDiskAdaptor.cc
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponse.cc
+	* src/HttpResponseCommand.cc
+	* src/Metalink2RequestGroup.cc
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/MultiFileAllocationIterator.cc
+	* src/RequestGroup.cc
+	* src/SingleFileDownloadContext.cc
+	* src/SingleFileDownloadContext.h
+	* src/download_helper.cc
+	* test/BtDependencyTest.cc
+	* test/CopyDiskAdaptorTest.cc
+	* test/DefaultBtContextTest.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/DirectDiskAdaptorTest.cc
+	* test/DownloadHelperTest.cc
+	* test/FileEntryTest.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+	* test/RequestGroupTest.cc
+	* test/SingleFileDownloadContextTest.cc
+	
 2009-03-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compiler warning

@@ -35,18 +35,21 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MultiFileAllocationIteratorTest );
 
 void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 {
+  std::string storeDir = "/tmp/aria2_MultiFileAllocationIteratorTest"
+    "_testMakeDiskWriterEntries";
+
   SharedHandle<FileEntry> fs[] = {
-    SharedHandle<FileEntry>(new FileEntry("file1", 1536, 0)),
-    SharedHandle<FileEntry>(new FileEntry("file2", 2048, 1536)),// req no
-    SharedHandle<FileEntry>(new FileEntry("file3", 1024, 3584)),
-    SharedHandle<FileEntry>(new FileEntry("file4", 1024, 4608)),// req no
-    SharedHandle<FileEntry>(new FileEntry("file5", 1024, 5632)),// req no
-    SharedHandle<FileEntry>(new FileEntry("file6", 1024, 6656)),// req no
-    SharedHandle<FileEntry>(new FileEntry("file7",  256, 7680)),// req no
-    SharedHandle<FileEntry>(new FileEntry("file8",  255, 7936)),
-    SharedHandle<FileEntry>(new FileEntry("file9", 1025, 8191)),// req no
-    SharedHandle<FileEntry>(new FileEntry("fileA", 1024, 9216)),// req no
-    SharedHandle<FileEntry>(new FileEntry("fileB", 1024, 10240)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file1", 1536, 0)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file2", 2048, 1536)),// req no
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file3", 1024, 3584)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file4", 1024, 4608)),// req no
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file5", 1024, 5632)),// req no
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file6", 1024, 6656)),// req no
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file7",  256, 7680)),// req no
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file8",  255, 7936)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file9", 1025, 8191)),// req no
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/fileA", 1024, 9216)),// req no
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/fileB", 1024, 10240)),
   };
   fs[1]->setRequested(false); // file2
   fs[3]->setRequested(false); // file4
@@ -56,8 +59,6 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   fs[8]->setRequested(false); // file9
   fs[9]->setRequested(false); // fileA
 
-  std::string storeDir = "/tmp/aria2_MultiFileAllocationIteratorTest"
-    "_testMakeDiskWriterEntries";
 
   // create empty file4
   createFile(storeDir+std::string("/file4"), 0);
@@ -79,57 +80,57 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 
   // file1
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file1"),
-		       entries[0]->getFilePath(storeDir));
+		       entries[0]->getFilePath());
   CPPUNIT_ASSERT(entries[0]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
   // file2
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file2"),
-		       entries[1]->getFilePath(storeDir));
+		       entries[1]->getFilePath());
   CPPUNIT_ASSERT(entries[1]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
   // file3
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file3"),
-		       entries[2]->getFilePath(storeDir));
+		       entries[2]->getFilePath());
   CPPUNIT_ASSERT(entries[2]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
   // file4, diskWriter is not null, because file exists.
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file4"),
-		       entries[3]->getFilePath(storeDir));
+		       entries[3]->getFilePath());
   CPPUNIT_ASSERT(!entries[3]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
   // file5
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file5"),
-		       entries[4]->getFilePath(storeDir));
+		       entries[4]->getFilePath());
   CPPUNIT_ASSERT(!entries[4]->needsFileAllocation());
   CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
   // file6
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file6"),
-		       entries[5]->getFilePath(storeDir));
+		       entries[5]->getFilePath());
   CPPUNIT_ASSERT(entries[5]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
   // file7
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file7"),
-		       entries[6]->getFilePath(storeDir));
+		       entries[6]->getFilePath());
   CPPUNIT_ASSERT(entries[6]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[6]->getDiskWriter().isNull());
   // file8
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file8"),
-		       entries[7]->getFilePath(storeDir));
+		       entries[7]->getFilePath());
   CPPUNIT_ASSERT(entries[7]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[7]->getDiskWriter().isNull());
   // file9
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file9"),
-		       entries[8]->getFilePath(storeDir));
+		       entries[8]->getFilePath());
   CPPUNIT_ASSERT(!entries[8]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[8]->getDiskWriter().isNull());
   // fileA
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/fileA"),
-		       entries[9]->getFilePath(storeDir));
+		       entries[9]->getFilePath());
   CPPUNIT_ASSERT(!entries[9]->needsFileAllocation());
   CPPUNIT_ASSERT(entries[9]->getDiskWriter().isNull());
   // fileB
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/fileB"),
-		       entries[10]->getFilePath(storeDir));
+		       entries[10]->getFilePath());
   CPPUNIT_ASSERT(entries[10]->needsFileAllocation());
   CPPUNIT_ASSERT(!entries[10]->getDiskWriter().isNull());
 }
@@ -158,32 +159,32 @@ void MultiFileAllocationIteratorTest::testAllocate()
     diskAdaptor->setPieceLength(1);
 
     int64_t offset = 0;
-    SharedHandle<FileEntry> fileEntry1(new FileEntry(fname1,
+    SharedHandle<FileEntry> fileEntry1(new FileEntry(storeDir+"/"+fname1,
 						     length1,
 						     offset));
     offset += length1;
-    SharedHandle<FileEntry> fileEntry2(new FileEntry(fname2,
+    SharedHandle<FileEntry> fileEntry2(new FileEntry(storeDir+"/"+fname2,
 						     length2,
 						     offset));
 
     offset += length2;
-    SharedHandle<FileEntry> fileEntry3(new FileEntry(fname3,
+    SharedHandle<FileEntry> fileEntry3(new FileEntry(storeDir+"/"+fname3,
 						     length3,
 						     offset));
 
     offset += length3;
-    SharedHandle<FileEntry> fileEntry4(new FileEntry(fname4,
+    SharedHandle<FileEntry> fileEntry4(new FileEntry(storeDir+"/"+fname4,
 						     length4,
 						     offset));
     fileEntry4->setRequested(false);
 
     offset += length4;
-    SharedHandle<FileEntry> fileEntry5(new FileEntry(fname5,
+    SharedHandle<FileEntry> fileEntry5(new FileEntry(storeDir+"/"+fname5,
 						     length5,
 						     offset));
 
     offset += length5;
-    SharedHandle<FileEntry> fileEntry6(new FileEntry(fname6,
+    SharedHandle<FileEntry> fileEntry6(new FileEntry(storeDir+"/"+fname6,
 						     length6,
 						     offset));
     fileEntry6->setRequested(false);
@@ -197,13 +198,10 @@ void MultiFileAllocationIteratorTest::testAllocate()
     fs.push_back(fileEntry6);
     diskAdaptor->setFileEntries(fs);
 
-    
-    File(storeDir+"/"+fname1).remove();
-    File(storeDir+"/"+fname2).remove();
-    File(storeDir+"/"+fname3).remove();
-    File(storeDir+"/"+fname4).remove();
-    File(storeDir+"/"+fname5).remove();
-    File(storeDir+"/"+fname6).remove();
+    for(std::deque<SharedHandle<FileEntry> >::const_iterator i = fs.begin();
+	i != fs.end(); ++i) {
+      File((*i)->getPath()).remove();
+    }
 
     // we have to open file first.
     diskAdaptor->initAndOpenFile();
@@ -213,14 +211,12 @@ void MultiFileAllocationIteratorTest::testAllocate()
     while(!itr->finished()) {
       itr->allocateChunk();
     }
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length1, File(storeDir+"/"+fname1).size());
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length2, File(storeDir+"/"+fname2).size());
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length3, File(storeDir+"/"+fname3).size());
-    CPPUNIT_ASSERT(!File(storeDir+"/"+fname4).isFile());
-
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length5, File(storeDir+"/"+fname5).size());
-    CPPUNIT_ASSERT(!File(storeDir+"/"+fname6).isFile());
-
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length1, File(fileEntry1->getPath()).size());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length2, File(fileEntry2->getPath()).size());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length3, File(fileEntry3->getPath()).size());
+    CPPUNIT_ASSERT(!File(fileEntry4->getPath()).isFile());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length5, File(fileEntry5->getPath()).size());
+    CPPUNIT_ASSERT(!File(fileEntry6->getPath()).isFile());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }

@@ -91,7 +91,7 @@ public:
 
   void setRequested(bool flag) { this->requested = flag; }
 
-  void setupDir(const std::string& parentDir);
+  void setupDir();
 
   const std::deque<std::string>& getAssociatedUris() const
   {

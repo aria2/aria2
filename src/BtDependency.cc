@@ -65,17 +65,28 @@ bool BtDependency::resolve()
     // cut reference here
     _dependee.reset();
     DefaultBtContextHandle btContext(new DefaultBtContext());
+    btContext->setDir(_dependant->getDownloadContext()->getDir());
     try {
       DiskAdaptorHandle diskAdaptor = dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = Util::toString(diskAdaptor);
+
+      std::string overrideName;
+      if(Util::startsWith(_dependant->getDownloadContext()->getActualBasePath(),
+			  _dependant->getDownloadContext()->getDir())) {
+	overrideName =
+	  _dependant->getDownloadContext()->getActualBasePath().substr
+	  (_dependant->getDownloadContext()->getDir().size());
+	if(Util::startsWith(overrideName, "/")) {
+	  overrideName = overrideName.substr(1);
+	}
+      }
       btContext->loadFromMemory(content,
 				File(dependee->getFilePath()).getBasename(),
-				_dependant->getDownloadContext()->getName());
+				overrideName);
       if(_option->defined(PREF_PEER_ID_PREFIX)) {
 	btContext->setPeerIdPrefix(_option->get(PREF_PEER_ID_PREFIX));
       }
-      btContext->setDir(_dependant->getDownloadContext()->getDir());
     } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);
       _logger->debug("BtDependency for GID#%d failed. Go without Bt.",

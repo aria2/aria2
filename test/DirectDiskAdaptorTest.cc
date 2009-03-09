@@ -29,9 +29,9 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
 {
   std::string dir = "/tmp";
   SharedHandle<FileEntry> entry
-    (new FileEntry("aria2_DirectDiskAdaptorTest_testCutTrailingGarbage",
+    (new FileEntry(dir+"/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage",
 		   256, 0));
-  createFile(dir+"/"+entry->getPath(), entry->getLength()+100);
+  createFile(entry->getPath(), entry->getLength()+100);
 
   std::deque<SharedHandle<FileEntry> > fileEntries;
   fileEntries.push_back(entry);
@@ -46,7 +46,7 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
   adaptor.cutTrailingGarbage();
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)entry->getLength(),
-		       File(dir+"/"+entry->getPath()).size());
+		       File(entry->getPath()).size());
 }
 
 } // namespace aria2

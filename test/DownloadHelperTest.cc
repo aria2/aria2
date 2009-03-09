@@ -144,11 +144,8 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
 			 alphaGroup->getNumConcurrentCommand());
     SharedHandle<DownloadContext> alphaCtx = alphaGroup->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), alphaCtx->getDir());
-    // See the value of PREF_OUT is not used as a file name.
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/index.html"),
-			 alphaCtx->getActualBasePath());
-
-
+    // See filename is not assigned yet
+    CPPUNIT_ASSERT_EQUAL(std::string(""), alphaCtx->getActualBasePath());
   }
 }
 

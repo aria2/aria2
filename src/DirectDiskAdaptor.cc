@@ -40,7 +40,7 @@ namespace aria2 {
 
 std::string DirectDiskAdaptor::getFilePath()
 {
-  return storeDir+"/"+fileEntries.front()->getPath();
+  return fileEntries.front()->getPath();
 }
 
 void DirectDiskAdaptor::onDownloadComplete()

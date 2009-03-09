@@ -525,11 +525,10 @@ bool RequestGroup::tryAutoFileRenaming()
 
   for(unsigned int i = 1; i < 10000; ++i) {
     File newfile(filepath+"."+Util::uitos(i));
-    std::string newFilename = newfile.getBasename();
-    tempCtx->setUFilename(newFilename);
+    tempCtx->setUFilename(newfile.getPath());
     tempInfoFile.updateFilename();
     if(!newfile.exists() || (newfile.exists() && tempInfoFile.exists())) {
-      ctx->setUFilename(newFilename);
+      ctx->setUFilename(newfile.getPath());
       return true;
     }
   }
