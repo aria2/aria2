@@ -58,6 +58,7 @@
 #include "File.h"
 #include "Util.h"
 #include "array_fun.h"
+#include "OptionHandler.h"
 
 namespace aria2 {
 
