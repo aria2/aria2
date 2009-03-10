@@ -282,11 +282,6 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
   }
 }
 
-std::string MultiDiskAdaptor::getTopDirPath() const
-{
-  return storeDir+"/"+topDir;
-}
-
 void MultiDiskAdaptor::mkdir() const
 {
   for(std::deque<SharedHandle<DiskWriterEntry> >::const_iterator i =
@@ -473,9 +468,6 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset
 bool MultiDiskAdaptor::fileExists()
 {
   // TODO Use FileEntry::fileExists() here.
-
-  // Don't use _cachedTopDirPath because they are initialized after opening files.
-  // This method could be called before opening files.
   for(std::deque<SharedHandle<FileEntry> >::iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
     if(File((*i)->getPath()).exists()) {

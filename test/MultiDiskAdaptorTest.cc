@@ -32,7 +32,6 @@ public:
     adaptor.reset(new MultiDiskAdaptor());
     adaptor->setPieceLength(2);
     adaptor->setStoreDir(".");
-    adaptor->setTopDir(".");
   }
 
   void testWriteData();

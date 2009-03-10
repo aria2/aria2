@@ -107,9 +107,4 @@ void SingleFileDownloadContext::markTotalLengthIsUnknown()
   _knowsTotalLength = false;
 }
 
-const std::string& SingleFileDownloadContext::getName() const
-{
-  return _fileEntry->getPath();
-}
-
 } // namespace aria2

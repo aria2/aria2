@@ -495,7 +495,6 @@ void DefaultPieceStorage::initStorage()
       MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
       multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
       multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
-      multiDiskAdaptor->setTopDir(downloadContext->getName());
       multiDiskAdaptor->setMaxOpenFiles(option->getAsInt(PREF_BT_MAX_OPEN_FILES));
       this->diskAdaptor = multiDiskAdaptor;
     } else {
@@ -504,9 +503,8 @@ void DefaultPieceStorage::initStorage()
       writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
       CopyDiskAdaptorHandle copyDiskAdaptor(new CopyDiskAdaptor());
       copyDiskAdaptor->setDiskWriter(writer);
-      copyDiskAdaptor->setTempFilename(downloadContext->getName()+".a2tmp");
+      //copyDiskAdaptor->setTempFilename(downloadContext->getName()+".a2tmp");
       copyDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
-      copyDiskAdaptor->setTopDir(downloadContext->getName());
       this->diskAdaptor = copyDiskAdaptor;
     }
   }

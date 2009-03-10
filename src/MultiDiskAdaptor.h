@@ -101,7 +101,6 @@ typedef std::deque<DiskWriterEntryHandle> DiskWriterEntries;
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
 private:
-  std::string topDir;
   size_t pieceLength;
   DiskWriterEntries diskWriterEntries;
 
@@ -116,8 +115,6 @@ private:
   void resetDiskWriterEntries();
 
   void mkdir() const;
-
-  std::string getTopDirPath() const;
 
   void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
 		 void (DiskWriterEntry::*f)());
@@ -146,11 +143,6 @@ public:
 
   virtual bool fileExists();
 
-  virtual std::string getFilePath()
-  {
-    return getTopDirPath();
-  }
-
   virtual uint64_t size();
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
@@ -162,14 +154,6 @@ public:
   virtual void enableReadOnly();
 
   virtual void disableReadOnly();
-
-  void setTopDir(const std::string& topDir) {
-    this->topDir = topDir;
-  }
-
-  const std::string& getTopDir() const {
-    return topDir;
-  }
 
   void setPieceLength(size_t pieceLength) {
     this->pieceLength = pieceLength;

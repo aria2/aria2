@@ -81,8 +81,6 @@ public:
 
   virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const = 0;
 
-  virtual const std::string& getName() const = 0;
-  
   virtual size_t getPieceLength() const = 0;
 
   virtual size_t getNumPieces() const = 0;

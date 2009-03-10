@@ -1,5 +1,28 @@
 2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed getName() from DownloadContext. getName() is declared in
+	BtContext.
+	* src/BtContext.h
+	* src/DownloadContext.h
+	* src/SingleFileDownloadContext.cc
+	* src/SingleFileDownloadContext.h
+		
+	Removed getFilePath() from DiskAdaptor. getFilePath() is declared
+	in AbstractSingleDiskAdaptor.
+	* src/AbstractSingleDiskAdaptor.h
+	* src/DiskAdaptor.h
+	* src/MultiDiskAdaptor.h
+	* src/RequestGroup.cc
+	
+	Removed setTopDir() and getTopDir() and getTopDirPath() from
+	MultiDiskAdaptor.
+	* src/DefaultPieceStorage.cc
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* test/MultiDiskAdaptorTest.cc
+	
+2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	FileEntry::getPath() contains store(top level) directory to
 	simplify path handling operation.  In the previous implementation,
 	store directory is concatenated to FileEntry::getPath() in

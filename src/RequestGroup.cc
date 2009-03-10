@@ -276,7 +276,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	progressInfoFile->removeFile();
 	_logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
 			progressInfoFile->getFilename().c_str(),
-			_pieceStorage->getDiskAdaptor()->getFilePath().c_str());
+			getFilePath().c_str());
       }
       // First, make DiskAdaptor read-only mode.
       _pieceStorage->getDiskAdaptor()->enableReadOnly();
@@ -295,7 +295,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	    throw DownloadFailureException
 	      (StringFormat
 	       (MSG_FILE_ALREADY_EXISTS,
-		_pieceStorage->getDiskAdaptor()->getFilePath().c_str()).str());
+		getFilePath().c_str()).str());
 	  } else {
 	    _pieceStorage->getDiskAdaptor()->openFile();
 	  }
@@ -443,7 +443,7 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
       progressInfoFile->removeFile();
       _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
 		      progressInfoFile->getFilename().c_str(),
-		      _pieceStorage->getDiskAdaptor()->getFilePath().c_str());
+		      getFilePath().c_str());
     }
     while(1) {
       if(progressInfoFile->exists()) {

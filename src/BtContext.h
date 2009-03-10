@@ -85,6 +85,8 @@ public:
 
   virtual std::deque<std::pair<std::string, uint16_t> >& getNodes() = 0;
 
+  virtual const std::string& getName() const = 0;
+
   void setFileFilter(const IntSequence& seq);
 
   IntSequence getFileFilter() const;
