@@ -132,7 +132,8 @@ createBtRequestGroup(const std::string& torrentFilePath,
     Util::createIndexPathMap(indexOutIn);
   for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
       i != indexPathMap.end(); ++i) {
-    btContext->setFilePathWithIndex((*i).first, (*i).second);
+    btContext->setFilePathWithIndex((*i).first,
+				    btContext->getDir()+"/"+(*i).second);
   }
   rg->setDownloadContext(btContext);
   btContext->setOwnerRequestGroup(rg.get());

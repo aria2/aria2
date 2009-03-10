@@ -1,5 +1,10 @@
 2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added missing prefix dir.
+	* src/download_helper.cc
+	
+2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed --direct-file-mapping option and CopyDiskAdaptor.
 	* src/CopyDiskAdaptor.cc: Removed
 	* src/CopyDiskAdaptor.h: Removed
