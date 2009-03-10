@@ -1,5 +1,19 @@
 2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed --direct-file-mapping option and CopyDiskAdaptor.
+	* src/CopyDiskAdaptor.cc: Removed
+	* src/CopyDiskAdaptor.h: Removed
+	* src/DefaultPieceStorage.cc
+	* src/Makefile.am
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/CopyDiskAdaptorTest.cc: Removed
+	* test/Makefile.am
+
+2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten isSameFileBeingDownloaded()
 	* src/RequestGroupMan.cc
 

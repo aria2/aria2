@@ -923,14 +923,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new BooleanOptionHandler
-				   (PREF_DIRECT_FILE_MAPPING,
-				    TEXT_DIRECT_FILE_MAPPING,
-				    V_TRUE));
-    op->addTag(TAG_BITTORRENT);
-    handlers.push_back(op);
-  }
-  {
     SharedHandle<OptionHandler> op(new HostPortOptionHandler
 				   (PREF_DHT_ENTRY_POINT,
 				    TEXT_DHT_ENTRY_POINT,

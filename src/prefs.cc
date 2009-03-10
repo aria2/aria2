@@ -233,8 +233,6 @@ const std::string PREF_BT_TIMEOUT("bt-timeout");
 const std::string PREF_BT_REQUEST_TIMEOUT("bt-request-timeout");
 // values: true | false
 const std::string PREF_SHOW_FILES("show-files");
-// values: true | false
-const std::string PREF_DIRECT_FILE_MAPPING("direct-file-mapping");
 // values: 1*digit
 const std::string PREF_MAX_OVERALL_UPLOAD_LIMIT("max-overall-upload-limit");
 // values: 1*digit

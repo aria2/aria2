@@ -142,7 +142,6 @@ SRCS =  Socket.h\
 	IteratableValidator.h\
 	DiskAdaptor.cc DiskAdaptor.h\
 	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
-	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 	Peer.cc\

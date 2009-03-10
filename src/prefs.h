@@ -237,8 +237,6 @@ extern const std::string PREF_BT_TIMEOUT;
 extern const std::string PREF_BT_REQUEST_TIMEOUT;
 // values: true | false
 extern const std::string PREF_SHOW_FILES;
-// values: true | false
-extern const std::string PREF_DIRECT_FILE_MAPPING;
 // values: 1*digit
 extern const std::string PREF_MAX_OVERALL_UPLOAD_LIMIT;
 // values: 1*digit

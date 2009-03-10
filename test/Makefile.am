@@ -59,7 +59,6 @@ aria2c_SOURCES = AllTest.cc\
 	CookieTest.cc\
 	CookieStorageTest.cc\
 	TimeTest.cc\
-	CopyDiskAdaptorTest.cc\
 	FtpConnectionTest.cc\
 	OptionParserTest.cc\
 	SimpleDNSCacheTest.cc\

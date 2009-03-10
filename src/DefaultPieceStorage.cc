@@ -45,7 +45,6 @@
 #include "prefs.h"
 #include "DirectDiskAdaptor.h"
 #include "MultiDiskAdaptor.h"
-#include "CopyDiskAdaptor.h"
 #include "DiskWriter.h"
 #include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
@@ -490,23 +489,12 @@ void DefaultPieceStorage::initStorage()
     this->diskAdaptor = directDiskAdaptor;
   } else {
     // file mode == DownloadContext::MULTI
-    if(option->getAsBool(PREF_DIRECT_FILE_MAPPING)) {
-      logger->debug("Instantiating MultiDiskAdaptor");
-      MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
-      multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
-      multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
-      multiDiskAdaptor->setMaxOpenFiles(option->getAsInt(PREF_BT_MAX_OPEN_FILES));
-      this->diskAdaptor = multiDiskAdaptor;
-    } else {
-      logger->debug("Instantiating CopyDiskAdaptor");
-      DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
-      writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
-      CopyDiskAdaptorHandle copyDiskAdaptor(new CopyDiskAdaptor());
-      copyDiskAdaptor->setDiskWriter(writer);
-      //copyDiskAdaptor->setTempFilename(downloadContext->getName()+".a2tmp");
-      copyDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
-      this->diskAdaptor = copyDiskAdaptor;
-    }
+    logger->debug("Instantiating MultiDiskAdaptor");
+    MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
+    multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
+    multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
+    multiDiskAdaptor->setMaxOpenFiles(option->getAsInt(PREF_BT_MAX_OPEN_FILES));
+    this->diskAdaptor = multiDiskAdaptor;
   }
   diskAdaptor->setStoreDir(downloadContext->getDir());
   diskAdaptor->setFileEntries(downloadContext->getFileEntries());

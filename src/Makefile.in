@@ -382,19 +382,18 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h \
 	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
 	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
-	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
-	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
-	Peer.cc PeerSessionResource.cc PeerSessionResource.h \
-	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
-	MultiFileAllocationIterator.h PeerConnection.cc \
-	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
-	ServerHost.cc ServerHost.h DownloadContext.cc \
-	DownloadContext.h SingleFileDownloadContext.cc \
-	SingleFileDownloadContext.h TimedHaltCommand.cc \
-	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
-	Sequence.h IntSequence.h PostDownloadHandler.h \
-	PreDownloadHandler.h SingletonHolder.h \
+	DirectDiskAdaptor.cc DirectDiskAdaptor.h MultiDiskAdaptor.cc \
+	MultiDiskAdaptor.h Peer.cc PeerSessionResource.cc \
+	PeerSessionResource.h BtRegistry.cc BtRegistry.h \
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
+	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
+	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
+	ByteArrayDiskWriterFactory.h ServerHost.cc ServerHost.h \
+	DownloadContext.cc DownloadContext.h \
+	SingleFileDownloadContext.cc SingleFileDownloadContext.h \
+	TimedHaltCommand.cc TimedHaltCommand.h CUIDCounter.h \
+	DNSCache.h DownloadResult.h Sequence.h IntSequence.h \
+	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
@@ -795,7 +794,7 @@ am__objects_22 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	CheckIntegrityEntry.$(OBJEXT) \
 	PieceHashCheckIntegrityEntry.$(OBJEXT) \
 	StreamCheckIntegrityEntry.$(OBJEXT) DiskAdaptor.$(OBJEXT) \
-	AbstractSingleDiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
+	AbstractSingleDiskAdaptor.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
 	Peer.$(OBJEXT) PeerSessionResource.$(OBJEXT) \
 	BtRegistry.$(OBJEXT) MultiFileAllocationIterator.$(OBJEXT) \
@@ -1118,19 +1117,18 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h \
 	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
 	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
-	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
-	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
-	Peer.cc PeerSessionResource.cc PeerSessionResource.h \
-	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
-	MultiFileAllocationIterator.h PeerConnection.cc \
-	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h \
-	ServerHost.cc ServerHost.h DownloadContext.cc \
-	DownloadContext.h SingleFileDownloadContext.cc \
-	SingleFileDownloadContext.h TimedHaltCommand.cc \
-	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
-	Sequence.h IntSequence.h PostDownloadHandler.h \
-	PreDownloadHandler.h SingletonHolder.h \
+	DirectDiskAdaptor.cc DirectDiskAdaptor.h MultiDiskAdaptor.cc \
+	MultiDiskAdaptor.h Peer.cc PeerSessionResource.cc \
+	PeerSessionResource.h BtRegistry.cc BtRegistry.h \
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
+	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
+	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
+	ByteArrayDiskWriterFactory.h ServerHost.cc ServerHost.h \
+	DownloadContext.cc DownloadContext.h \
+	SingleFileDownloadContext.cc SingleFileDownloadContext.h \
+	TimedHaltCommand.cc TimedHaltCommand.h CUIDCounter.h \
+	DNSCache.h DownloadResult.h Sequence.h IntSequence.h \
+	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
@@ -1312,7 +1310,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Cookie.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractNodeLookupTask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractTask.Po@am__quote@
