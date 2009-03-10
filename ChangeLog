@@ -1,5 +1,10 @@
 2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten isSameFileBeingDownloaded()
+	* src/RequestGroupMan.cc
+
+2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed getName() from DownloadContext. getName() is declared in
 	BtContext.
 	* src/BtContext.h

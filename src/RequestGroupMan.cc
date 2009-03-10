@@ -63,6 +63,7 @@
 #include "File.h"
 #include "Util.h"
 #include "Command.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -508,20 +509,43 @@ std::string RequestGroupMan::formatDownloadResult(const std::string& status, con
   return o.str();
 }
 
-bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) const
+template<typename StringInputIterator, typename FileEntryInputIterator>
+static bool sameFilePathExists(StringInputIterator sfirst,
+			       StringInputIterator slast,
+			       FileEntryInputIterator ffirst,
+			       FileEntryInputIterator flast)
 {
-  // TODO it may be good to use dedicated method rather than use isPreLocalFileCheckEnabled
-  if(!requestGroup->isPreLocalFileCheckEnabled()) {
-    return false;
-  }
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
-    if((*itr).get() != requestGroup &&
-       (*itr)->getFilePath() == requestGroup->getFilePath()) {
+  for(; ffirst != flast; ++ffirst) {
+    if(std::binary_search(sfirst, slast, (*ffirst)->getPath())) {
       return true;
     }
   }
   return false;
+}
+
+bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) const
+{
+  // TODO it may be good to use dedicated method rather than use
+  // isPreLocalFileCheckEnabled
+  if(!requestGroup->isPreLocalFileCheckEnabled()) {
+    return false;
+  }
+  std::deque<std::string> files;
+  for(RequestGroups::const_iterator itr = _requestGroups.begin();
+      itr != _requestGroups.end(); ++itr) {
+    if((*itr).get() != requestGroup) {
+      std::deque<SharedHandle<FileEntry> > entries =
+	(*itr)->getDownloadContext()->getFileEntries();
+      std::transform(entries.begin(), entries.end(),
+		     std::back_inserter(files),
+		     mem_fun_sh(&FileEntry::getPath));
+    }
+  }
+  std::sort(files.begin(), files.end());
+  std::deque<SharedHandle<FileEntry> > entries =
+    requestGroup->getDownloadContext()->getFileEntries();
+  return sameFilePathExists(files.begin(), files.end(),
+			    entries.begin(), entries.end());
 }
 
 void RequestGroupMan::halt()
