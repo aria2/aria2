@@ -99,6 +99,8 @@ public:
   }
 
   bool operator<(const FileEntry& fileEntry) const;
+
+  bool exists() const;
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

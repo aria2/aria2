@@ -1,3 +1,9 @@
+2009-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added exists()
+	* src/FileEntry.cc
+	* src/FileEntry.h
+
 2009-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing prefix dir.

@@ -69,4 +69,9 @@ bool FileEntry::operator<(const FileEntry& fileEntry) const
   return offset < fileEntry.offset;
 }
 
+bool FileEntry::exists() const
+{
+  return File(getPath()).exists();
+}
+
 } // namespace aria2
