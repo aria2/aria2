@@ -48,10 +48,10 @@ private:
   size_t index;
   unsigned char* msg;
 
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 9;
 public:
   BtAllowedFastMessage(size_t index = 0)
-    :SimpleBtMessage(),
+    :SimpleBtMessage(ID),
      index(index),
      msg(0) {}
 
@@ -67,8 +67,6 @@ public:
   size_t getIndex() const { return index; }
 
   static BtAllowedFastMessageHandle create(const unsigned char* data, size_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

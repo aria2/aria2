@@ -63,8 +63,6 @@ void BtHaveMessage::doReceivedAction() {
   pieceStorage->addPieceStats(index);
 }
 
-size_t BtHaveMessage::MESSAGE_LENGTH = 9;
-
 const unsigned char* BtHaveMessage::getMessage() {
   if(!msg) {
     /**

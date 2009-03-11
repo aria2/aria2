@@ -67,8 +67,6 @@ void BtHaveAllMessage::doReceivedAction() {
   pieceStorage->addPieceStats(peer->getBitfield(), peer->getBitfieldLength());
 }
 
-size_t BtHaveAllMessage::MESSAGE_LENGTH = 5;
-
 const unsigned char* BtHaveAllMessage::getMessage() {
   if(!msg) {
     /**

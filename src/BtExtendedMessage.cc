@@ -47,7 +47,12 @@
 
 namespace aria2 {
 
-BtExtendedMessage::BtExtendedMessage(const ExtensionMessageHandle& extensionMessage):_extensionMessage(extensionMessage), _msg(0), _msgLength(0)
+BtExtendedMessage::BtExtendedMessage
+(const ExtensionMessageHandle& extensionMessage):
+  SimpleBtMessage(ID),
+  _extensionMessage(extensionMessage),
+  _msg(0),
+  _msgLength(0)
 {}
 
 BtExtendedMessage::~BtExtendedMessage()

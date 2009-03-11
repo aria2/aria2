@@ -47,17 +47,15 @@ class BtChokeMessage : public SimpleBtMessage {
 private:
   unsigned char* msg;
 
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 5;
 public:
-  BtChokeMessage():SimpleBtMessage(), msg(0) {}
+  BtChokeMessage():SimpleBtMessage(ID), msg(0) {}
 
   virtual ~BtChokeMessage() {
     delete [] msg;
   }
 
   static const uint8_t ID = 0;
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

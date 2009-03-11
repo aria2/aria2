@@ -67,8 +67,6 @@ bool BtChokeMessage::sendPredicate() const {
   return !peer->amChoking();
 }
 
-size_t BtChokeMessage::MESSAGE_LENGTH = 5;
-
 const unsigned char* BtChokeMessage::getMessage() {
   if(!msg) {
     /**

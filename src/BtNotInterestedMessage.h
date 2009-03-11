@@ -50,9 +50,9 @@ private:
   
   SharedHandle<PeerStorage> _peerStorage;
 
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 5;
 public:
-  BtNotInterestedMessage():msg(0) {}
+  BtNotInterestedMessage():SimpleBtMessage(ID), msg(0) {}
 
   virtual ~BtNotInterestedMessage() {
     delete [] msg;
@@ -61,8 +61,6 @@ public:
   static const uint8_t ID = 3;
 
   static BtNotInterestedMessageHandle create(const unsigned char* data, size_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

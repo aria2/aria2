@@ -43,11 +43,13 @@
 
 namespace aria2 {
 
-AbstractBtMessage::AbstractBtMessage():sendingInProgress(false),
-				       invalidate(false),
-				       uploading(false),
-				       cuid(0),
-				       logger(LogFactory::getInstance())
+AbstractBtMessage::AbstractBtMessage(uint8_t id):
+  BtMessage(id),
+  sendingInProgress(false),
+  invalidate(false),
+  uploading(false),
+  cuid(0),
+  logger(LogFactory::getInstance())
 {}
 
 AbstractBtMessage::~AbstractBtMessage() {}

@@ -37,8 +37,6 @@
 
 namespace aria2 {
 
-size_t BtKeepAliveMessage::MESSAGE_LENGTH = 4;
-
 const unsigned char* BtKeepAliveMessage::getMessage() {
   if(!msg) {
     /**

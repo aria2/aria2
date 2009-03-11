@@ -47,17 +47,15 @@ class BtKeepAliveMessage : public SimpleBtMessage {
 private:
   unsigned char* msg;
 
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 4;
 public:
-  BtKeepAliveMessage():msg(0) {}
+  BtKeepAliveMessage():SimpleBtMessage(ID), msg(0) {}
 
   virtual ~BtKeepAliveMessage() {
     delete [] msg;
   }
 
   static const uint8_t ID = 99;
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction() {}
 

@@ -44,9 +44,10 @@ private:
   bool sendingInProgress;
   bool invalidate;
   bool uploading;
-  uint8_t id;
 public:
-  MockBtMessage() {}
+  MockBtMessage():BtMessage(0) {}
+
+  MockBtMessage(uint8_t id):BtMessage(id) {}
 
   virtual ~MockBtMessage() {}
 
@@ -74,14 +75,6 @@ public:
     this->uploading = flag;
   }
   
-  virtual uint8_t getId() {
-    return id;
-  }
-
-  void setId(uint8_t id) {
-    this->id = id;
-  }
-
   virtual void doReceivedAction() {
   }
 

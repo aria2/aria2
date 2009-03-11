@@ -63,8 +63,6 @@ void BtHaveNoneMessage::doReceivedAction() {
   }
 }
 
-size_t BtHaveNoneMessage::MESSAGE_LENGTH = 5;
-
 const unsigned char* BtHaveNoneMessage::getMessage() {
   if(!msg) {
     /**

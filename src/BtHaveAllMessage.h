@@ -47,9 +47,9 @@ class BtHaveAllMessage : public SimpleBtMessage {
 private:
   unsigned char* msg;
 
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 5;
 public:
-  BtHaveAllMessage():msg(0) {}
+  BtHaveAllMessage():SimpleBtMessage(ID), msg(0) {}
 
   virtual ~BtHaveAllMessage() {
     delete [] msg;
@@ -58,8 +58,6 @@ public:
   static const uint8_t ID = 14;
 
   static BtHaveAllMessageHandle create(const unsigned char* data, size_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

@@ -41,7 +41,7 @@ namespace aria2 {
 
 class SimpleBtMessage : public AbstractBtMessage {
 public:
-  SimpleBtMessage();
+  SimpleBtMessage(uint8_t id);
 
   virtual ~SimpleBtMessage();
 

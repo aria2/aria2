@@ -68,8 +68,6 @@ bool BtInterestedMessage::sendPredicate() const {
   return !peer->amInterested();
 }
 
-size_t BtInterestedMessage::MESSAGE_LENGTH = 5;
-
 const unsigned char* BtInterestedMessage::getMessage() {
   if(!msg) {
     /**

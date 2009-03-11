@@ -63,8 +63,6 @@ void BtCancelMessage::doReceivedAction() {
   dispatcher->doCancelSendingPieceAction(index, begin, length);
 }
 
-size_t BtCancelMessage::MESSAGE_LENGTH = 17;
-
 const unsigned char* BtCancelMessage::getMessage() {
   if(!msg) {
     /**

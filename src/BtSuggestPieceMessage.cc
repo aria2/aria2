@@ -56,8 +56,6 @@ BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* d
   return message;
 }
 
-size_t BtSuggestPieceMessage::MESSAGE_LENGTH = 9;
-
 const unsigned char* BtSuggestPieceMessage::getMessage() {
   if(!msg) {
     /**

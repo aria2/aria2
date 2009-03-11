@@ -1,5 +1,51 @@
 2009-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	BtMessage now holds _id attribute.  MESSAGE_LENGTH that is
+	declared as non-const previously is now const and defined in class
+	definition.
+	* src/AbstractBtMessage.cc
+	* src/AbstractBtMessage.h
+	* src/BtAllowedFastMessage.cc
+	* src/BtAllowedFastMessage.h
+	* src/BtBitfieldMessage.h
+	* src/BtCancelMessage.cc
+	* src/BtCancelMessage.h
+	* src/BtChokeMessage.cc
+	* src/BtChokeMessage.h
+	* src/BtExtendedMessage.cc
+	* src/BtExtendedMessage.h
+	* src/BtHandshakeMessage.cc
+	* src/BtHandshakeMessage.h
+	* src/BtHaveAllMessage.cc
+	* src/BtHaveAllMessage.h
+	* src/BtHaveMessage.cc
+	* src/BtHaveMessage.h
+	* src/BtHaveNoneMessage.cc
+	* src/BtHaveNoneMessage.h
+	* src/BtInterestedMessage.cc
+	* src/BtInterestedMessage.h
+	* src/BtKeepAliveMessage.cc
+	* src/BtKeepAliveMessage.h
+	* src/BtMessage.h
+	* src/BtNotInterestedMessage.cc
+	* src/BtNotInterestedMessage.h
+	* src/BtPieceMessage.h
+	* src/BtPortMessage.cc
+	* src/BtPortMessage.h
+	* src/BtRejectMessage.cc
+	* src/BtRejectMessage.h
+	* src/BtRequestMessage.cc
+	* src/BtRequestMessage.h
+	* src/BtSuggestPieceMessage.cc
+	* src/BtSuggestPieceMessage.h
+	* src/BtUnchokeMessage.cc
+	* src/BtUnchokeMessage.h
+	* src/SimpleBtMessage.cc
+	* src/SimpleBtMessage.h
+	* test/MockBtMessage.h
+	
+2009-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use FileEntry::exists()
 	* src/MultiDiskAdaptor.cc
 

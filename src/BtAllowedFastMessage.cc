@@ -66,8 +66,6 @@ void BtAllowedFastMessage::doReceivedAction() {
   peer->addPeerAllowedIndex(index);
 }
 
-size_t BtAllowedFastMessage::MESSAGE_LENGTH = 9;
-
 const unsigned char* BtAllowedFastMessage::getMessage() {
   if(!msg) {
     /**

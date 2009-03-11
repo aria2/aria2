@@ -74,8 +74,6 @@ public:
 
   static const uint8_t ID = INT8_MAX;
 
-  virtual uint8_t getId() { return ID; }
-
   virtual void doReceivedAction() {};
 
   virtual const unsigned char* getMessage();

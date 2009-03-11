@@ -57,13 +57,13 @@ private:
     msgLength = 0;
   }
 public:
-  BtBitfieldMessage():SimpleBtMessage()
+  BtBitfieldMessage():SimpleBtMessage(ID)
   {
     init();
   }
 
   BtBitfieldMessage(const unsigned char* bitfield,
-		    size_t bitfieldLength):SimpleBtMessage()
+		    size_t bitfieldLength):SimpleBtMessage(ID)
   {
     init();
     setBitfield(bitfield, bitfieldLength);
@@ -83,8 +83,6 @@ public:
   size_t getBitfieldLength() const { return bitfieldLength; }
 
   static BtBitfieldMessageHandle create(const unsigned char* data, size_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

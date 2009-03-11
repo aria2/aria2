@@ -45,7 +45,11 @@ namespace aria2 {
 class BtEvent;
 
 class BtMessage {
+private:
+  uint8_t _id;
 public:
+  BtMessage(uint8_t id):_id(id) {}
+
   virtual ~BtMessage() {}
 
   virtual bool isSendingInProgress() = 0;
@@ -54,7 +58,7 @@ public:
 
   virtual bool isUploading() = 0;
 
-  virtual uint8_t getId() = 0;
+  uint8_t getId() { return _id; }
 
   virtual void doReceivedAction() = 0;
 

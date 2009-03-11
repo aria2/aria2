@@ -83,8 +83,6 @@ void BtRequestMessage::doReceivedAction() {
   }
 }
 
-size_t BtRequestMessage::MESSAGE_LENGTH = 17;
-
 const unsigned char* BtRequestMessage::getMessage() {
   if(!msg) {
     /**

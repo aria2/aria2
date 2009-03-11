@@ -42,12 +42,14 @@ namespace aria2 {
 
 const unsigned char* BtHandshakeMessage::BT_PSTR = (const unsigned char*)"BitTorrent protocol";
 
-BtHandshakeMessage::BtHandshakeMessage() {
+BtHandshakeMessage::BtHandshakeMessage():SimpleBtMessage(ID)
+{
   init();
 }
 
 BtHandshakeMessage::BtHandshakeMessage(const unsigned char* infoHash,
-				       const unsigned char* peerId)
+				       const unsigned char* peerId):
+  SimpleBtMessage(ID)
 {
   init();
   memcpy(this->infoHash, infoHash, INFO_HASH_LENGTH);

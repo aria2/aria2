@@ -49,10 +49,11 @@ private:
   uint32_t begin;
   size_t length;
   unsigned char* msg;
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 17;
 public:
   BtRejectMessage(size_t index = 0, uint32_t begin = 0, size_t length = 0)
-    :index(index),
+    :SimpleBtMessage(ID),
+     index(index),
      begin(begin),
      length(length),
      msg(0) {}
@@ -73,8 +74,6 @@ public:
   void setLength(size_t length) { this->length = length; }
 
   static BtRejectMessageHandle create(const unsigned char* data, size_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

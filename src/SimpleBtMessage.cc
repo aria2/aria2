@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-SimpleBtMessage::SimpleBtMessage() {}//:leftDataLength(0) {}
+SimpleBtMessage::SimpleBtMessage(uint8_t id):AbstractBtMessage(id) {}
 
 SimpleBtMessage::~SimpleBtMessage() {}
 

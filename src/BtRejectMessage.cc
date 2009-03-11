@@ -78,8 +78,6 @@ void BtRejectMessage::doReceivedAction() {
 
 }
 
-size_t BtRejectMessage::MESSAGE_LENGTH = 17;
-
 const unsigned char* BtRejectMessage::getMessage() {
   if(!msg) {
     /**

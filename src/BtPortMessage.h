@@ -68,8 +68,6 @@ public:
 
   static SharedHandle<BtPortMessage> create(const unsigned char* data, size_t dataLength);
 
-  virtual uint8_t getId() { return ID; }
-
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();

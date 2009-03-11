@@ -52,7 +52,7 @@ private:
   size_t blockIndex;
   unsigned char* msg;
 
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 17;
 
   class BtAbortOutstandingRequestEventListener : public AbstractBtEventListener {
   private:
@@ -71,7 +71,8 @@ public:
 		   uint32_t begin = 0,
 		   uint32_t length = 0,
 		   size_t blockIndex = 0)
-    :index(index),
+    :SimpleBtMessage(ID),
+     index(index),
      begin(begin),
      length(length),
      blockIndex(blockIndex),
@@ -100,8 +101,6 @@ public:
   void setBlockIndex(size_t blockIndex) { this->blockIndex = blockIndex; }
 
   static BtRequestMessageHandle create(const unsigned char* data, size_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

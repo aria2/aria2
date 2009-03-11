@@ -47,9 +47,9 @@ class BtSuggestPieceMessage : public SimpleBtMessage {
 private:
   size_t index;
   unsigned char* msg;
-  static size_t MESSAGE_LENGTH;
+  static const size_t MESSAGE_LENGTH = 9;
 public:
-  BtSuggestPieceMessage():index(0), msg(0) {}
+  BtSuggestPieceMessage():SimpleBtMessage(ID), index(0), msg(0) {}
 
   virtual ~BtSuggestPieceMessage() {
     delete [] msg;
@@ -64,8 +64,6 @@ public:
   size_t getIndex() const { return index; }
 
   static BtSuggestPieceMessageHandle create(const unsigned char* data, size_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction() {
     // TODO Current implementation ignores this message.

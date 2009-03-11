@@ -48,7 +48,8 @@
 
 namespace aria2 {
 
-BtPortMessage::BtPortMessage(uint16_t port): _port(port), _msg(0) {}
+BtPortMessage::BtPortMessage(uint16_t port):
+  SimpleBtMessage(ID), _port(port), _msg(0) {}
 
 BtPortMessage::~BtPortMessage()
 {

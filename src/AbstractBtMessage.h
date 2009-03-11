@@ -78,7 +78,7 @@ protected:
 
   Logger* logger;
 public:
-  AbstractBtMessage();
+  AbstractBtMessage(uint8_t id);
 
   virtual ~AbstractBtMessage();
 
