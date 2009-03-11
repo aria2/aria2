@@ -1,5 +1,11 @@
 2009-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Reverted usage_text.h to r1093 to avoid to lose translated
+	messages.
+	* src/usage_text.h
+
+2009-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	BtMessage now holds _id attribute.  MESSAGE_LENGTH that is
 	declared as non-const previously is now const and defined in class
 	definition.

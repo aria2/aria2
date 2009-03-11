@@ -233,6 +233,9 @@ _(" --follow-torrent=true|false|mem If true or mem is specified, when a file\n"\
   "                              written to the disk, but is just kept in memory.\n"\
   "                              If false is specified, the action mentioned above\n"\
   "                              is not taken.")
+#define TEXT_DIRECT_FILE_MAPPING \
+_(" --direct-file-mapping=true|false Directly read from and write to each file\n"\
+  "                              mentioned in .torrent file.")
 #define TEXT_LISTEN_PORT \
 _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"\
   "                              Multiple ports can be specified by using ',',\n"\
