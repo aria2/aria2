@@ -111,7 +111,7 @@ void DiskWriterEntry::closeFile()
 
 bool DiskWriterEntry::fileExists()
 {
-  return File(getFilePath()).exists();
+  return fileEntry->exists();
 }
 
 uint64_t DiskWriterEntry::size() const
@@ -467,10 +467,9 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset
 
 bool MultiDiskAdaptor::fileExists()
 {
-  // TODO Use FileEntry::fileExists() here.
   for(std::deque<SharedHandle<FileEntry> >::iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
-    if(File((*i)->getPath()).exists()) {
+    if((*i)->exists()) {
       return true;
     }
   }
