@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,42 +32,52 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_REJECT_MESSAGE_VALIDATOR_H_
-#define _D_BT_REJECT_MESSAGE_VALIDATOR_H_
+#ifndef _D_INDEX_BT_MESSAGE_H_
+#define _D_INDEX_BT_MESSAGE_H_
 
-#include "BtMessageValidator.h"
-#include "BtRejectMessage.h"
+#include "SimpleBtMessage.h"
 #include "PeerMessageUtil.h"
 
 namespace aria2 {
 
-class BtRejectMessageValidator : public BtMessageValidator {
+class IndexBtMessage : public SimpleBtMessage {
 private:
-  const BtRejectMessage* message;
-  size_t numPiece;
-  size_t pieceLength;
-public:
-  BtRejectMessageValidator(const BtRejectMessage* message,
-			   size_t numPiece,
-			   size_t pieceLength):
-    message(message),
-    numPiece(numPiece),
-    pieceLength(pieceLength) {}
+  size_t _index;
+  unsigned char* _msg;
 
-  virtual bool validate(Errors& error) {
-    // TODO
-    PeerMessageUtil::checkIndex(message->getIndex(), numPiece);
-    PeerMessageUtil::checkBegin(message->getBegin(), pieceLength);
-    PeerMessageUtil::checkLength(message->getLength());
-    PeerMessageUtil::checkRange(message->getBegin(),
-				message->getLength(),
-				pieceLength);
-    return true;
+  static const size_t MESSAGE_LENGTH = 9;
+protected:
+  template<typename T>
+  static SharedHandle<T> create(const unsigned char* data, size_t dataLength)
+  {
+    PeerMessageUtil::assertPayloadLengthEqual(5, dataLength, T::NAME);
+    PeerMessageUtil::assertID(T::ID, data, T::NAME);
+    SharedHandle<T> message(new T());
+    message->setIndex(PeerMessageUtil::getIntParam(data, 1));
+    return message;
   }
-};
+public:
+  IndexBtMessage(uint8_t id, const std::string& name, size_t index)
+    :SimpleBtMessage(id, name),
+     _index(index),
+     _msg(0) {}
 
-typedef SharedHandle<BtRejectMessageValidator> BtRejectMessageValidatorHandle;
+  virtual ~IndexBtMessage()
+  {
+    delete [] _msg;
+  }
+
+  void setIndex(size_t index) { _index = index; }
+
+  size_t getIndex() const { return _index; }
+
+  virtual const unsigned char* getMessage();
+
+  virtual size_t getMessageLength();
+
+  virtual std::string toString() const;
+};
 
 } // namespace aria2
 
-#endif // _D_BT_REJECT_MESSAGE_VALIDATOR_H_
+#endif // _D_INDEX_BT_MESSAGE_H_

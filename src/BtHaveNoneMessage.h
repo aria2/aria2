@@ -35,7 +35,7 @@
 #ifndef _D_BT_HAVE_NONE_MESSAGE_H_
 #define _D_BT_HAVE_NONE_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "ZeroBtMessage.h"
 
 namespace aria2 {
 
@@ -43,29 +43,17 @@ class BtHaveNoneMessage;
 
 typedef SharedHandle<BtHaveNoneMessage> BtHaveNoneMessageHandle;
 
-class BtHaveNoneMessage : public SimpleBtMessage {
-private:
-  unsigned char* msg;
-
-  static const size_t MESSAGE_LENGTH = 5;
+class BtHaveNoneMessage : public ZeroBtMessage {
 public:
-  BtHaveNoneMessage():SimpleBtMessage(ID), msg(0) {}
-
-  virtual ~BtHaveNoneMessage() {
-    delete []  msg;
-  }
-  
+  BtHaveNoneMessage():ZeroBtMessage(ID, NAME) {}
   static const uint8_t ID = 15;
 
-  static BtHaveNoneMessageHandle create(const unsigned char* data, size_t dataLength);
+  static const std::string NAME;
+
+  static SharedHandle<BtHaveNoneMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
-
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
 };
 
 } // namespace aria2

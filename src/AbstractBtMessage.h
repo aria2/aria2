@@ -58,6 +58,8 @@ protected:
   bool uploading;
   int32_t cuid;
 
+  std::string _name;
+
   SharedHandle<BtContext> btContext;
 
   SharedHandle<PieceStorage> pieceStorage;
@@ -78,7 +80,7 @@ protected:
 
   Logger* logger;
 public:
-  AbstractBtMessage(uint8_t id);
+  AbstractBtMessage(uint8_t id, const std::string& name);
 
   virtual ~AbstractBtMessage();
 
@@ -145,6 +147,8 @@ public:
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 
   void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
+
+  const std::string& getName() const;
 };
 
 typedef SharedHandle<AbstractBtMessage> AbstractBtMessageHandle;

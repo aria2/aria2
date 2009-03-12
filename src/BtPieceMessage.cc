@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "BtPieceMessage.h"
+
+#include <cstring>
+#include <cstdlib>
+#include <cassert>
+
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "message.h"
@@ -51,11 +56,10 @@
 #include "BtRequestFactory.h"
 #include "PeerConnection.h"
 #include "StringFormat.h"
-#include <cstring>
-#include <cstdlib>
-#include <cassert>
 
 namespace aria2 {
+
+const std::string BtPieceMessage::NAME("piece");
 
 void BtPieceMessage::setBlock(const unsigned char* block, size_t blockLength) {
   delete [] this->block;
@@ -65,15 +69,8 @@ void BtPieceMessage::setBlock(const unsigned char* block, size_t blockLength) {
 }
 
 BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength <= 9) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "piece", dataLength, 9).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID).str());
-  }
+  PeerMessageUtil::assertPayloadLengthGreater(9, dataLength, NAME);
+  PeerMessageUtil::assertID(ID, data, NAME);
   BtPieceMessageHandle message(new BtPieceMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   message->setBegin(PeerMessageUtil::getIntParam(data, 5));
@@ -173,7 +170,7 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
 }
 
 std::string BtPieceMessage::toString() const {
-  return "piece index="+Util::itos(index)+", begin="+Util::itos(begin)+
+  return NAME+" index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::itos(blockLength);
 }
 

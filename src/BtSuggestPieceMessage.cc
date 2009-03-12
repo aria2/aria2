@@ -33,50 +33,15 @@
  */
 /* copyright --> */
 #include "BtSuggestPieceMessage.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
-#include "DlAbortEx.h"
-#include "message.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
-BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 5) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "suggest piece", dataLength, 5).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "suggest piece", ID).str());
-  }
-  BtSuggestPieceMessageHandle message(new BtSuggestPieceMessage());
-  message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-  return message;
-}
+const std::string BtSuggestPieceMessage::NAME("suggest piece");
 
-const unsigned char* BtSuggestPieceMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 5, 4bytes
-     * id --- 13, 1byte
-     * piece index --- index, 4bytes
-     * total: 9bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 5, ID);
-    PeerMessageUtil::setIntParam(&msg[5], index);
-  }
-  return msg;
-}
-
-size_t BtSuggestPieceMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-std::string BtSuggestPieceMessage::toString() const {
-  return "suggest piece index="+Util::itos(index);
+SharedHandle<BtSuggestPieceMessage> BtSuggestPieceMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return IndexBtMessage::create<BtSuggestPieceMessage>(data, dataLength);
 }
 
 } // namespace aria2

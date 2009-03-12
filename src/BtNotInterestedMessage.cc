@@ -33,65 +33,34 @@
  */
 /* copyright --> */
 #include "BtNotInterestedMessage.h"
-#include "PeerMessageUtil.h"
-#include "DlAbortEx.h"
-#include "message.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "PeerStorage.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
-BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 1) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "not interested", dataLength, 1).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "not interested", ID).str());
-  }
-  BtNotInterestedMessageHandle message(new BtNotInterestedMessage());
-  return message;
+const std::string BtNotInterestedMessage::NAME("not interested");
+
+SharedHandle<BtNotInterestedMessage> BtNotInterestedMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return ZeroBtMessage::create<BtNotInterestedMessage>(data, dataLength);
 }
 
-void BtNotInterestedMessage::doReceivedAction() {
+void BtNotInterestedMessage::doReceivedAction()
+{
   peer->peerInterested(false);
   if(!peer->amChoking()) {
     _peerStorage->executeChoke();
   }
 }
 
-bool BtNotInterestedMessage::sendPredicate() const {
+bool BtNotInterestedMessage::sendPredicate() const
+{
   return peer->amInterested();
-}
-
-const unsigned char* BtNotInterestedMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 1, 4bytes
-     * id --- 3, 1byte
-     * total: 5bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
-  }
-  return msg;
-}
-
-size_t BtNotInterestedMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
 }
 
 void BtNotInterestedMessage::onSendComplete() {
   peer->amInterested(false);
-}
-
-std::string BtNotInterestedMessage::toString() const {
-  static const std::string NOT_INTERESTED("not interested");
-  return NOT_INTERESTED;
 }
 
 void BtNotInterestedMessage::setPeerStorage

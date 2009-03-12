@@ -35,7 +35,7 @@
 #ifndef _D_BT_CHOKE_MESSAGE_H_
 #define _D_BT_CHOKE_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "ZeroBtMessage.h"
 
 namespace aria2 {
 
@@ -43,29 +43,18 @@ class BtChokeMessage;
 
 typedef SharedHandle<BtChokeMessage> BtChokeMessageHandle;
 
-class BtChokeMessage : public SimpleBtMessage {
-private:
-  unsigned char* msg;
-
-  static const size_t MESSAGE_LENGTH = 5;
+class BtChokeMessage : public ZeroBtMessage {
 public:
-  BtChokeMessage():SimpleBtMessage(ID), msg(0) {}
-
-  virtual ~BtChokeMessage() {
-    delete [] msg;
-  }
+  BtChokeMessage():ZeroBtMessage(ID, NAME) {}
 
   static const uint8_t ID = 0;
 
+  static const std::string NAME;
+
   virtual void doReceivedAction();
 
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
-
-  static BtChokeMessageHandle create(const unsigned char* data, size_t dataLength);
+  static SharedHandle<BtChokeMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual bool sendPredicate() const;
 

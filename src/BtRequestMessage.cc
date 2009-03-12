@@ -33,101 +33,70 @@
  */
 /* copyright --> */
 #include "BtRequestMessage.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
-#include "DlAbortEx.h"
 #include "BtAbortOutstandingRequestEvent.h"
-#include "message.h"
 #include "Peer.h"
 #include "Piece.h"
-#include "BtContext.h"
 #include "PieceStorage.h"
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
-BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 13) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "request", dataLength, 13).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "request", ID).str());
-  }
-  BtRequestMessageHandle message(new BtRequestMessage());
-  message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-  message->setBegin(PeerMessageUtil::getIntParam(data, 5));
-  message->setLength(PeerMessageUtil::getIntParam(data, 9));
-  return message;
+const std::string BtRequestMessage::NAME("request");
+
+SharedHandle<BtRequestMessage> BtRequestMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return RangeBtMessage::create<BtRequestMessage>(data, dataLength);
 }
 
-void BtRequestMessage::doReceivedAction() {
-  if(pieceStorage->hasPiece(index) &&
+void BtRequestMessage::doReceivedAction()
+{
+  if(pieceStorage->hasPiece(getIndex()) &&
      (!peer->amChoking() ||
-      (peer->amChoking() && peer->isInAmAllowedIndexSet(index)))) {
-    BtMessageHandle msg = messageFactory->createPieceMessage(index,
-							     begin,
-							     length);
+      (peer->amChoking() && peer->isInAmAllowedIndexSet(getIndex())))) {
+    BtMessageHandle msg = messageFactory->createPieceMessage(getIndex(),
+							     getBegin(),
+							     getLength());
     dispatcher->addMessageToQueue(msg);
   } else {
     if(peer->isFastExtensionEnabled()) {
-      BtMessageHandle msg = messageFactory->createRejectMessage(index,
-								begin,
-								length);
+      BtMessageHandle msg = messageFactory->createRejectMessage(getIndex(),
+								getBegin(),
+								getLength());
       dispatcher->addMessageToQueue(msg);
     }
   }
 }
 
-const unsigned char* BtRequestMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 13, 4bytes
-     * id --- 6, 1byte
-     * index --- index, 4bytes
-     * begin --- begin, 4bytes
-     * length --- length, 4bytes
-     * total: 17bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 13, ID);
-    PeerMessageUtil::setIntParam(&msg[5], index);
-    PeerMessageUtil::setIntParam(&msg[9], begin);
-    PeerMessageUtil::setIntParam(&msg[13], length);
-  }
-  return msg;
-}
-
-size_t BtRequestMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-std::string BtRequestMessage::toString() const {
-  return "request index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
-    ", length="+Util::uitos(length);
-}
-
-void BtRequestMessage::onQueued() {
-  RequestSlot requestSlot(index, begin, length, blockIndex, pieceStorage->getPiece(index));
+void BtRequestMessage::onQueued()
+{
+  RequestSlot requestSlot(getIndex(), getBegin(), getLength(), _blockIndex,
+			  pieceStorage->getPiece(getIndex()));
   dispatcher->addOutstandingRequest(requestSlot);
 }
 
-bool BtRequestMessage::BtAbortOutstandingRequestEventListener::canHandle(const BtEventHandle& event) {
-  BtAbortOutstandingRequestEvent* intEvent = dynamic_cast<BtAbortOutstandingRequestEvent*>(event.get());
+bool BtRequestMessage::
+BtAbortOutstandingRequestEventListener::canHandle(const BtEventHandle& event)
+{
+  BtAbortOutstandingRequestEvent* intEvent =
+    dynamic_cast<BtAbortOutstandingRequestEvent*>(event.get());
   return intEvent != 0;
 }
 
-void BtRequestMessage::BtAbortOutstandingRequestEventListener::handleEventInternal(const BtEventHandle& event) {
+void BtRequestMessage::
+BtAbortOutstandingRequestEventListener::handleEventInternal
+(const BtEventHandle& event)
+{
   message->handleAbortOutstandingRequestEvent(event);
 }
 
-void BtRequestMessage::handleAbortOutstandingRequestEvent(const BtEventHandle& event) {
-  BtAbortOutstandingRequestEvent* intEvent = (BtAbortOutstandingRequestEvent*)event.get();
-  if(index == intEvent->getPiece()->getIndex() &&
+void BtRequestMessage::
+handleAbortOutstandingRequestEvent(const BtEventHandle& event)
+{
+  BtAbortOutstandingRequestEvent* intEvent =
+    (BtAbortOutstandingRequestEvent*)event.get();
+  if(getIndex() == intEvent->getPiece()->getIndex() &&
      !invalidate &&
      !sendingInProgress) {
     invalidate = true;

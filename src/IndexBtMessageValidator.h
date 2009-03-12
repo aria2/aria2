@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,41 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CANCEL_MESSAGE_VALIDATOR_H_
-#define _D_BT_CANCEL_MESSAGE_VALIDATOR_H_
+#ifndef _D_INDEX_BT_VALIDATOR_H_
+#define _D_INDEX_BT_VALIDATOR_H_
 
 #include "BtMessageValidator.h"
-#include "BtCancelMessage.h"
+#include "IndexBtMessage.h"
 #include "PeerMessageUtil.h"
 
 namespace aria2 {
 
-class BtCancelMessageValidator : public BtMessageValidator {
+class IndexBtMessageValidator : public BtMessageValidator {
 private:
-  const BtCancelMessage* message;
-  size_t numPiece;
-  size_t pieceLength;
+  const IndexBtMessage* _message;
+  size_t _numPiece;
 public:
-  BtCancelMessageValidator(const BtCancelMessage* message,
-			   size_t numPiece,
-			   size_t pieceLength):
-    message(message),
-    numPiece(numPiece),
-    pieceLength(pieceLength) {}
+  IndexBtMessageValidator(const IndexBtMessage* message,
+			  size_t numPiece):
+    _message(message),
+    _numPiece(numPiece) {}
 
-  virtual bool validate(Errors& error) {
+  virtual bool validate(Errors& errors)
+  {
     // TODO
-    PeerMessageUtil::checkIndex(message->getIndex(), numPiece);
-    PeerMessageUtil::checkBegin(message->getBegin(), pieceLength);
-    PeerMessageUtil::checkLength(message->getLength());
-    PeerMessageUtil::checkRange(message->getBegin(), message->getLength(),
-				pieceLength);
+    PeerMessageUtil::checkIndex(_message->getIndex(), _numPiece);
     return true;
   }
-};
 
-typedef SharedHandle<BtCancelMessageValidator> BtCancelMessageValidatorHandle;
+};
 
 } // namespace aria2
 
-#endif // _D_BT_CANCEL_MESSAGE_VALIDATOR_H_
+#endif // _D_INDEX_BT_MESSAGE_VALIDATOR_H_

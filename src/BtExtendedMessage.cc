@@ -47,9 +47,11 @@
 
 namespace aria2 {
 
+const std::string BtExtendedMessage::NAME("extended");
+
 BtExtendedMessage::BtExtendedMessage
 (const ExtensionMessageHandle& extensionMessage):
-  SimpleBtMessage(ID),
+  SimpleBtMessage(ID, NAME),
   _extensionMessage(extensionMessage),
   _msg(0),
   _msgLength(0)
@@ -90,7 +92,7 @@ bool BtExtendedMessage::sendPredicate() const
 }
 
 std::string BtExtendedMessage::toString() const {
-  return "extended "+_extensionMessage->toString();
+  return NAME+" "+_extensionMessage->toString();
 }
 
 BtExtendedMessageHandle
@@ -98,15 +100,8 @@ BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
 			  const PeerHandle& peer,
 			  const unsigned char* data, size_t dataLength)
 {
-  if(dataLength < 2) {
-    throw DlAbortEx
-      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, "extended", dataLength).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "extended", ID).str());
-  }
+  PeerMessageUtil::assertPayloadLengthGreater(1, dataLength, NAME);
+  PeerMessageUtil::assertID(ID, data, NAME);
   assert(!factory.isNull());
   ExtensionMessageHandle extmsg = factory->createMessage(data+1,
 							 dataLength-1);

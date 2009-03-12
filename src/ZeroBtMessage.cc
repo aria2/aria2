@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,33 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_HAVE_MESSAGE_VALIDATOR_H_
-#define _D_BT_HAVE_MESSAGE_VALIDATOR_H_
-
-#include "BtMessageValidator.h"
-#include "BtHaveMessage.h"
-#include "PeerMessageUtil.h"
+#include "ZeroBtMessage.h"
 
 namespace aria2 {
 
-class BtHaveMessageValidator : public BtMessageValidator {
-private:
-  const BtHaveMessage* message;
-  size_t numPiece;
-public:
-  BtHaveMessageValidator(const BtHaveMessage* message,
-			 size_t numPiece):
-    message(message),
-    numPiece(numPiece) {}
-
-  virtual bool validate(Errors& errors) {
-    // TODO
-    PeerMessageUtil::checkIndex(message->getIndex(), numPiece);
-    return true;
+const unsigned char* ZeroBtMessage::getMessage()
+{
+  if(!_msg) {
+    /**
+     * len --- 1, 4bytes
+     * id --- ?, 1byte
+     * total: 5bytes
+     */
+    _msg = new unsigned char[MESSAGE_LENGTH];
+    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 1, getId());
   }
+  return _msg;
+}
 
-};
+size_t ZeroBtMessage::getMessageLength()
+{
+  return MESSAGE_LENGTH;
+}
+
+std::string ZeroBtMessage::toString() const
+{
+  return getName();
+}
 
 } // namespace aria2
-
-#endif // _D_BT_HAVE_MESSAGE_VALIDATOR_H_

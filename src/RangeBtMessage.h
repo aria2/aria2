@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,35 +32,60 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_SUGGEST_PIECE_MESSAGE_VALIDATOR_H_
-#define _D_BT_SUGGEST_PIECE_MESSAGE_VALIDATOR_H_
+#ifndef _D_RANGE_BT_MESSAGE_H_
+#define _D_RANGE_BT_MESSAGE_H_
 
-#include "BtMessageValidator.h"
-#include "BtSuggestPieceMessage.h"
+#include "SimpleBtMessage.h"
 #include "PeerMessageUtil.h"
 
 namespace aria2 {
 
-class BtSuggestPieceMessageValidator : public BtMessageValidator {
+class RangeBtMessage : public SimpleBtMessage {
 private:
-  const BtSuggestPieceMessage* message;
-  size_t numPiece;
-public:
-  BtSuggestPieceMessageValidator(const BtSuggestPieceMessage* message,
-				 size_t numPiece):
-    message(message),
-    numPiece(numPiece) {}
+  size_t _index;
+  uint32_t _begin;
+  size_t _length;
+  unsigned char* _msg;
 
-  virtual bool validate(Errors& errors) {
-    // TODO
-    PeerMessageUtil::checkIndex(message->getIndex(), numPiece);
-    return true;
+  static const size_t MESSAGE_LENGTH = 17;
+protected:
+  template<typename T>
+  static SharedHandle<T> create
+  (const unsigned char* data, size_t dataLength)
+  {
+    PeerMessageUtil::assertPayloadLengthEqual(13, dataLength, T::NAME);
+    PeerMessageUtil::assertID(T::ID, data, T::NAME);
+    SharedHandle<T> message(new T());
+    message->setIndex(PeerMessageUtil::getIntParam(data, 1));
+    message->setBegin(PeerMessageUtil::getIntParam(data, 5));
+    message->setLength(PeerMessageUtil::getIntParam(data, 9));
+    return message;
   }
+public:
+  RangeBtMessage(uint8_t id, const std::string& name,
+		 size_t index, uint32_t begin, size_t length);
 
+  virtual ~RangeBtMessage();
+
+  size_t getIndex() const { return _index; }
+
+  void setIndex(size_t index) { _index = index; }
+
+  uint32_t getBegin() const { return _begin; }
+
+  void setBegin(uint32_t begin) { _begin = begin; }
+
+  size_t getLength() const { return _length; }
+
+  void setLength(size_t length) { _length = length; }
+
+  virtual const unsigned char* getMessage();
+
+  virtual size_t getMessageLength();
+
+  virtual std::string toString() const;
 };
-
-typedef SharedHandle<BtSuggestPieceMessageValidator> BtSuggestPieceMessageValidatorHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_SUGGEST_PIECE_MESSAGE_VALIDATOR_H_
+#endif // _D_RANGE_BT_MESSAGE_H_

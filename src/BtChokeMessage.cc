@@ -33,65 +33,36 @@
  */
 /* copyright --> */
 #include "BtChokeMessage.h"
-#include "PeerMessageUtil.h"
-#include "DlAbortEx.h"
-#include "message.h"
 #include "Peer.h"
 #include "BtMessageDispatcher.h"
 #include "BtRequestFactory.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
-BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 1) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "choke", dataLength, 1).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "choke", ID).str());
-  }
-  BtChokeMessageHandle chokeMessage(new BtChokeMessage());
-  return chokeMessage;
+const std::string BtChokeMessage::NAME("choke");
+
+SharedHandle<BtChokeMessage> BtChokeMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return ZeroBtMessage::create<BtChokeMessage>(data, dataLength);
 }
 
-void BtChokeMessage::doReceivedAction() {
+void BtChokeMessage::doReceivedAction()
+{
   peer->peerChoking(true);
   dispatcher->doChokedAction();
   requestFactory->doChokedAction();
 }
 
-bool BtChokeMessage::sendPredicate() const {
+bool BtChokeMessage::sendPredicate() const
+{
   return !peer->amChoking();
 }
 
-const unsigned char* BtChokeMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 1, 4bytes
-     * id --- 0, 1byte
-     * total: 5bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
-  }
-  return msg;
-}
-
-size_t BtChokeMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-void BtChokeMessage::onSendComplete() {
+void BtChokeMessage::onSendComplete()
+{
   peer->amChoking(true);
   dispatcher->doChokingAction();
-}
-
-std::string BtChokeMessage::toString() const {
-  static const std::string CHOKE("choke");
-  return CHOKE;
 }
 
 } // namespace aria2

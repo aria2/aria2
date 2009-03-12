@@ -57,13 +57,13 @@ private:
     msgLength = 0;
   }
 public:
-  BtBitfieldMessage():SimpleBtMessage(ID)
+  BtBitfieldMessage():SimpleBtMessage(ID, NAME)
   {
     init();
   }
 
   BtBitfieldMessage(const unsigned char* bitfield,
-		    size_t bitfieldLength):SimpleBtMessage(ID)
+		    size_t bitfieldLength):SimpleBtMessage(ID, NAME)
   {
     init();
     setBitfield(bitfield, bitfieldLength);
@@ -75,6 +75,8 @@ public:
   }
 
   static const uint8_t ID = 5;
+
+  static const std::string NAME;
 
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 

@@ -33,10 +33,7 @@
  */
 /* copyright --> */
 #include "BtRejectMessage.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
 #include "DlAbortEx.h"
-#include "message.h"
 #include "Peer.h"
 #include "RequestSlot.h"
 #include "BtMessageDispatcher.h"
@@ -44,24 +41,16 @@
 
 namespace aria2 {
 
-BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 13) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "reject", dataLength, 13).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "reject", ID).str());
-  }
-  BtRejectMessageHandle message(new BtRejectMessage());
-  message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-  message->setBegin(PeerMessageUtil::getIntParam(data, 5));
-  message->setLength(PeerMessageUtil::getIntParam(data, 9));
-  return message;
+const std::string BtRejectMessage::NAME("reject");
+
+SharedHandle<BtRejectMessage> BtRejectMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return RangeBtMessage::create<BtRejectMessage>(data, dataLength);
 }
 
-void BtRejectMessage::doReceivedAction() {
+void BtRejectMessage::doReceivedAction()
+{
   if(!peer->isFastExtensionEnabled()) {
     throw DlAbortEx
       (StringFormat("%s received while fast extension is disabled.",
@@ -69,41 +58,14 @@ void BtRejectMessage::doReceivedAction() {
   }
   // TODO Current implementation does not close a connection even if
   // a request for this reject message has never sent.
-  RequestSlot slot = dispatcher->getOutstandingRequest(index, begin, length);
+  RequestSlot slot =
+    dispatcher->getOutstandingRequest(getIndex(), getBegin(), getLength());
   if(RequestSlot::isNull(slot)) {
     //throw DlAbortEx("reject recieved, but it is not in the request slots.");
   } else {
     dispatcher->removeOutstandingRequest(slot);
   }
 
-}
-
-const unsigned char* BtRejectMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 13, 4bytes
-     * id --- 16, 1byte
-     * index --- index, 4bytes
-     * begin --- begin, 4bytes
-     * length -- length, 4bytes
-     * total: 17bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 13, ID);
-    PeerMessageUtil::setIntParam(&msg[5], index);
-    PeerMessageUtil::setIntParam(&msg[9], begin);
-    PeerMessageUtil::setIntParam(&msg[13], length);
-  }
-  return msg;
-}
-
-size_t BtRejectMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-std::string BtRejectMessage::toString() const {
-  return "reject index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
-    ", length="+Util::uitos(length);
 }
 
 } // namespace aria2

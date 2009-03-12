@@ -35,7 +35,7 @@
 #ifndef _D_BT_ALLOWED_FAST_MESSAGE_H_
 #define _D_BT_ALLOWED_FAST_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "IndexBtMessage.h"
 
 namespace aria2 {
 
@@ -43,38 +43,19 @@ class BtAllowedFastMessage;
 
 typedef SharedHandle<BtAllowedFastMessage> BtAllowedFastMessageHandle;
 
-class BtAllowedFastMessage : public SimpleBtMessage {
-private:
-  size_t index;
-  unsigned char* msg;
-
-  static const size_t MESSAGE_LENGTH = 9;
+class BtAllowedFastMessage : public IndexBtMessage {
 public:
   BtAllowedFastMessage(size_t index = 0)
-    :SimpleBtMessage(ID),
-     index(index),
-     msg(0) {}
-
-  virtual ~BtAllowedFastMessage() {
-    delete [] msg;
-  }
+    :IndexBtMessage(ID, NAME, index) {}
 
   static const uint8_t ID = 17;
 
-  void setIndex(size_t index) {
-    this->index = index;
-  }
-  size_t getIndex() const { return index; }
+  static const std::string NAME;
 
-  static BtAllowedFastMessageHandle create(const unsigned char* data, size_t dataLength);
+  static SharedHandle<BtAllowedFastMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
-
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
 
   virtual void onSendComplete();
 

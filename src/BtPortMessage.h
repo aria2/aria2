@@ -64,6 +64,8 @@ public:
 
   static const uint8_t ID = 9;
 
+  static const std::string NAME;
+
   uint16_t getPort() const { return _port; }
 
   static SharedHandle<BtPortMessage> create(const unsigned char* data, size_t dataLength);

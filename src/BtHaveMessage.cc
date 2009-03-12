@@ -33,57 +33,23 @@
  */
 /* copyright --> */
 #include "BtHaveMessage.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
-#include "DlAbortEx.h"
-#include "message.h"
 #include "Peer.h"
-#include "StringFormat.h"
 #include "PieceStorage.h"
 
 namespace aria2 {
 
-BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 5) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "have", dataLength, 5).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "have", ID).str());
-  }
-  BtHaveMessageHandle message(new BtHaveMessage());
-  message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-  return message;
+const std::string BtHaveMessage::NAME("have");
+
+SharedHandle<BtHaveMessage> BtHaveMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return IndexBtMessage::create<BtHaveMessage>(data, dataLength);
 }
 
-void BtHaveMessage::doReceivedAction() {
-  peer->updateBitfield(index, 1);
-  pieceStorage->addPieceStats(index);
-}
-
-const unsigned char* BtHaveMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 5, 4bytes
-     * id --- 4, 1byte
-     * piece index --- index, 4bytes
-     * total: 9bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 5, ID);
-    PeerMessageUtil::setIntParam(&msg[5], index);
-  }
-  return msg;
-}
-
-size_t BtHaveMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-std::string BtHaveMessage::toString() const {
-  return "have index="+Util::itos(index);
+void BtHaveMessage::doReceivedAction()
+{
+  peer->updateBitfield(getIndex(), 1);
+  pieceStorage->addPieceStats(getIndex());
 }
 
 } // namespace aria2

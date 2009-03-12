@@ -1,3 +1,72 @@
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Refactored BtMessage subclasses. BtCancelMessage, BtRequestMessage
+	and BtRejectMessage are derived from RangeBtMessage class.
+	BtAllowedFastMessage, BtHaveMessage and BtSuggestPieceMessage are
+	derived from IndexBtMessage class. BtChokeMessage,
+	BtHaveAllMessage, BtHaveNoneMessage, BtInterestedMessage,
+	BtNotInterestedMessage and BtUnchokeMessage are derived from
+	ZeroBtMessage class.
+	* src/AbstractBtMessage.cc
+	* src/AbstractBtMessage.h
+	* src/BtAllowedFastMessage.cc
+	* src/BtAllowedFastMessage.h
+	* src/BtAllowedFastMessageValidator.h: Removed
+	* src/BtBitfieldMessage.cc
+	* src/BtBitfieldMessage.h
+	* src/BtCancelMessage.cc
+	* src/BtCancelMessage.h
+	* src/BtCancelMessageValidator.h: Removed
+	* src/BtChokeMessage.cc
+	* src/BtChokeMessage.h
+	* src/BtExtendedMessage.cc
+	* src/BtExtendedMessage.h
+	* src/BtHandshakeMessage.cc
+	* src/BtHandshakeMessage.h
+	* src/BtHaveAllMessage.cc
+	* src/BtHaveAllMessage.h
+	* src/BtHaveMessage.cc
+	* src/BtHaveMessage.h
+	* src/BtHaveMessageValidator.h: Removed
+	* src/BtHaveNoneMessage.cc
+	* src/BtHaveNoneMessage.h
+	* src/BtInterestedMessage.cc
+	* src/BtInterestedMessage.h
+	* src/BtKeepAliveMessage.cc
+	* src/BtKeepAliveMessage.h
+	* src/BtNotInterestedMessage.cc
+	* src/BtNotInterestedMessage.h
+	* src/BtPieceMessage.cc
+	* src/BtPieceMessage.h
+	* src/BtPortMessage.cc
+	* src/BtPortMessage.h
+	* src/BtRejectMessage.cc
+	* src/BtRejectMessage.h
+	* src/BtRejectMessageValidator.h: Removed
+	* src/BtRequestMessage.cc
+	* src/BtRequestMessage.h
+	* src/BtRequestMessageValidator.h: Removed
+	* src/BtSuggestPieceMessage.cc
+	* src/BtSuggestPieceMessage.h
+	* src/BtSuggestPieceMessageValidator.h: Removed
+	* src/BtUnchokeMessage.cc
+	* src/BtUnchokeMessage.h
+	* src/DefaultBtMessageFactory.cc
+	* src/IndexBtMessage.cc
+	* src/IndexBtMessage.h
+	* src/IndexBtMessageValidator.h
+	* src/Makefile.am
+	* src/PeerMessageUtil.cc
+	* src/PeerMessageUtil.h
+	* src/RangeBtMessage.cc
+	* src/RangeBtMessage.h
+	* src/RangeBtMessageValidator.h
+	* src/SimpleBtMessage.cc
+	* src/SimpleBtMessage.h
+	* src/ZeroBtMessage.cc
+	* src/ZeroBtMessage.h
+	* test/BtRequestMessageTest.cc
+
 2009-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Reverted usage_text.h to r1093 to avoid to lose translated

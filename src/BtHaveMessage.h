@@ -35,7 +35,7 @@
 #ifndef _D_BT_HAVE_MESSAGE_H_
 #define _D_BT_HAVE_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "IndexBtMessage.h"
 
 namespace aria2 {
 
@@ -43,35 +43,18 @@ class BtHaveMessage;
 
 typedef SharedHandle<BtHaveMessage> BtHaveMessageHandle;
 
-class BtHaveMessage : public SimpleBtMessage {
-private:
-  size_t index;
-  unsigned char* msg;
-  static const size_t MESSAGE_LENGTH = 9;
+class BtHaveMessage : public IndexBtMessage {
 public:
-  BtHaveMessage(size_t index = 0):SimpleBtMessage(ID), index(index), msg(0) {}
-
-  virtual ~BtHaveMessage() {
-    delete [] msg;
-  }
+  BtHaveMessage(size_t index = 0):IndexBtMessage(ID, NAME, index) {}
 
   static const uint8_t ID = 4;
 
-  void setIndex(size_t index) {
-    this->index = index;
-  }
+  static const std::string NAME;
 
-  size_t getIndex() const { return index; }
-
-  static BtHaveMessageHandle create(const unsigned char* data, size_t dataLength);
+  static SharedHandle<BtHaveMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
-
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
 };
 
 } // namespace aria2

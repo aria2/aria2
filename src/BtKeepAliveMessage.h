@@ -49,13 +49,15 @@ private:
 
   static const size_t MESSAGE_LENGTH = 4;
 public:
-  BtKeepAliveMessage():SimpleBtMessage(ID), msg(0) {}
+  BtKeepAliveMessage():SimpleBtMessage(ID, NAME), msg(0) {}
 
   virtual ~BtKeepAliveMessage() {
     delete [] msg;
   }
 
   static const uint8_t ID = 99;
+
+  static const std::string NAME;
 
   virtual void doReceivedAction() {}
 
@@ -64,7 +66,7 @@ public:
   virtual size_t getMessageLength();
 
   virtual std::string toString() const {
-    return "keep alive";
+    return NAME;
   }
 };
 

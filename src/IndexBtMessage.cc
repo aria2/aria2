@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,34 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_ALLOWED_FAST_MESSAGE_VALIDATOR_H_
-#define _D_BT_ALLOWED_FAST_MESSAGE_VALIDATOR_H_
-
-#include "BtMessageValidator.h"
-#include "BtAllowedFastMessage.h"
-#include "PeerMessageUtil.h"
+#include "IndexBtMessage.h"
+#include "Util.h"
 
 namespace aria2 {
 
-class BtAllowedFastMessageValidator : public BtMessageValidator {
-private:
-  const BtAllowedFastMessage* message;
-  size_t numPiece;
-public:
-  BtAllowedFastMessageValidator(const BtAllowedFastMessage* message,
-				size_t numPiece):
-    message(message),
-    numPiece(numPiece) {}
-
-  virtual bool validate(Errors& error) {
-    // TODO
-    PeerMessageUtil::checkIndex(message->getIndex(), numPiece);
-    return true;
+const unsigned char* IndexBtMessage::getMessage()
+{
+  if(!_msg) {
+    /**
+     * len --- 5, 4bytes
+     * id --- ?, 1byte
+     * piece index --- index, 4bytes
+     * total: 9bytes
+     */
+    _msg = new unsigned char[MESSAGE_LENGTH];
+    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 5, getId());
+    PeerMessageUtil::setIntParam(&_msg[5], _index);
   }
-};
+  return _msg;
+}
 
-typedef SharedHandle<BtAllowedFastMessageValidator> BtAllowedFastMessageValidatorHandle;
+size_t IndexBtMessage::getMessageLength()
+{
+  return MESSAGE_LENGTH;
+}
+
+std::string IndexBtMessage::toString() const
+{
+  return getName()+" index="+Util::itos(_index);
+}
 
 } // namespace aria2
-
-#endif // _D_BT_ALLOWED_FAST_MESSAGE_VALIDATOR_H_

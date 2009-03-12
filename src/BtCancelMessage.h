@@ -35,7 +35,7 @@
 #ifndef _D_BT_CANCEL_MESSAGE_H_
 #define _D_BT_CANCEL_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "RangeBtMessage.h"
 
 namespace aria2 {
 
@@ -43,49 +43,18 @@ class BtCancelMessage;
 
 typedef SharedHandle<BtCancelMessage> BtCancelMessageHandle;
 
-class BtCancelMessage : public SimpleBtMessage {
-private:
-  size_t index;
-  uint32_t begin;
-  size_t length;
-  unsigned char* msg;
-
-  static const size_t MESSAGE_LENGTH = 17;
+class BtCancelMessage : public RangeBtMessage {
 public:
   BtCancelMessage(size_t index = 0, uint32_t begin = 0, size_t length = 0)
-    :SimpleBtMessage(ID),
-     index(index),
-     begin(begin),
-     length(length),
-     msg(0) {}
-
-  virtual ~BtCancelMessage() {
-    delete [] msg;
-  }
+    :RangeBtMessage(ID, NAME, index, begin, length) {}
 
   static const int8_t ID = 8;
 
-  size_t getIndex() const { return index; }
-
-  void setIndex(size_t index) { this->index = index; }
-
-  uint32_t getBegin() const { return begin; }
-
-  void setBegin(uint32_t begin) { this->begin = begin; }
-
-  size_t getLength() const { return length; }
-
-  void setLength(size_t length) { this->length = length; }
+  static const std::string NAME;
 
   static BtCancelMessageHandle create(const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
-
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
 };
 
 } // namespace aria2

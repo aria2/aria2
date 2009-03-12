@@ -35,7 +35,7 @@
 #ifndef _D_BT_SUGGEST_PIECE_MESSAGE_H_
 #define _D_BT_SUGGEST_PIECE_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "IndexBtMessage.h"
 
 namespace aria2 {
 
@@ -43,37 +43,20 @@ class BtSuggestPieceMessage;
 
 typedef SharedHandle<BtSuggestPieceMessage> BtSuggestPieceMessageHandle;
 
-class BtSuggestPieceMessage : public SimpleBtMessage {
-private:
-  size_t index;
-  unsigned char* msg;
-  static const size_t MESSAGE_LENGTH = 9;
+class BtSuggestPieceMessage : public IndexBtMessage {
 public:
-  BtSuggestPieceMessage():SimpleBtMessage(ID), index(0), msg(0) {}
-
-  virtual ~BtSuggestPieceMessage() {
-    delete [] msg;
-  }
+  BtSuggestPieceMessage():IndexBtMessage(ID, NAME, 0) {}
 
   static const uint8_t ID = 13;
 
-  void setIndex(size_t index) {
-    this->index = index;
-  }
+  static const std::string NAME;
 
-  size_t getIndex() const { return index; }
-
-  static BtSuggestPieceMessageHandle create(const unsigned char* data, size_t dataLength);
+  static SharedHandle<BtSuggestPieceMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction() {
     // TODO Current implementation ignores this message.
   }
-
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
 };
 
 } // namespace aria2

@@ -93,7 +93,7 @@ private:
   typedef SharedHandle<BtCancelSendingPieceEventListener> BtCancelSendingPieceEventListenerHandle;
 public:
   BtPieceMessage(size_t index = 0, uint32_t begin = 0, size_t blockLength = 0)
-    :AbstractBtMessage(ID),
+    :AbstractBtMessage(ID, NAME),
      index(index),
      begin(begin),
      blockLength(blockLength),
@@ -117,6 +117,8 @@ public:
   }
 
   static const uint8_t ID = 7;
+
+  static const std::string NAME;
 
   size_t getIndex() const { return index; }
 

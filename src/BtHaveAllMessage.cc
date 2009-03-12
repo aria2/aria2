@@ -34,59 +34,31 @@
 /* copyright --> */
 #include "BtHaveAllMessage.h"
 #include "DlAbortEx.h"
-#include "PeerMessageUtil.h"
-#include "message.h"
 #include "Peer.h"
 #include "StringFormat.h"
 #include "PieceStorage.h"
 
 namespace aria2 {
 
-BtHaveAllMessageHandle BtHaveAllMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 1) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "have all", dataLength, 1).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "have all", ID).str());
-  }
-  BtHaveAllMessageHandle message(new BtHaveAllMessage());
-  return message;
+const std::string BtHaveAllMessage::NAME("have all");
+
+SharedHandle<BtHaveAllMessage> BtHaveAllMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return ZeroBtMessage::create<BtHaveAllMessage>(data, dataLength);
 }
 
-void BtHaveAllMessage::doReceivedAction() {
+void BtHaveAllMessage::doReceivedAction()
+{
   if(!peer->isFastExtensionEnabled()) {
     throw DlAbortEx
       (StringFormat("%s received while fast extension is disabled",
 		    toString().c_str()).str());
   }
-  pieceStorage->subtractPieceStats(peer->getBitfield(), peer->getBitfieldLength());
+  pieceStorage->subtractPieceStats(peer->getBitfield(),
+				   peer->getBitfieldLength());
   peer->setAllBitfield();
   pieceStorage->addPieceStats(peer->getBitfield(), peer->getBitfieldLength());
-}
-
-const unsigned char* BtHaveAllMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 1, 4bytes
-     * id --- 14, 1byte
-     * total: 5bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
-  }
-  return msg;
-}
-
-size_t BtHaveAllMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-std::string BtHaveAllMessage::toString() const {
-  static const std::string HAVE_ALL("have all");
-  return HAVE_ALL;
 }
 
 } // namespace aria2

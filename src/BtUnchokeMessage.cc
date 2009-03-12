@@ -33,60 +33,30 @@
  */
 /* copyright --> */
 #include "BtUnchokeMessage.h"
-#include "PeerMessageUtil.h"
-#include "DlAbortEx.h"
-#include "message.h"
 #include "Peer.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
-BtUnchokeMessageHandle BtUnchokeMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 1) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "unchoke", dataLength, 1).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "unchoke", ID).str());
-  }
-  BtUnchokeMessageHandle message(new BtUnchokeMessage());
-  return message;
+const std::string BtUnchokeMessage::NAME("unchoke");
+
+SharedHandle<BtUnchokeMessage> BtUnchokeMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return ZeroBtMessage::create<BtUnchokeMessage>(data, dataLength);
 }
 
-void BtUnchokeMessage::doReceivedAction() {
+void BtUnchokeMessage::doReceivedAction()
+{
   peer->peerChoking(false);
 }
 
-bool BtUnchokeMessage::sendPredicate() const {
+bool BtUnchokeMessage::sendPredicate() const
+{
   return peer->amChoking();
-}
-
-const unsigned char* BtUnchokeMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 1, 4bytes
-     * id --- 1, 1byte
-     * total: 5bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
-  }
-  return msg;
-}
-
-size_t BtUnchokeMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
 }
 
 void BtUnchokeMessage::onSendComplete() {
   peer->amChoking(false);
-}
-
-std::string BtUnchokeMessage::toString() const {
-  static const std::string UNCHOKE("unchoke");
-  return UNCHOKE;
 }
 
 } // namespace aria2

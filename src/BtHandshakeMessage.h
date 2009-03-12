@@ -74,6 +74,8 @@ public:
 
   static const uint8_t ID = INT8_MAX;
 
+  static const std::string NAME;
+
   virtual void doReceivedAction() {};
 
   virtual const unsigned char* getMessage();

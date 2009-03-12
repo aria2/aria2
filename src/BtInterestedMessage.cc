@@ -33,65 +33,34 @@
  */
 /* copyright --> */
 #include "BtInterestedMessage.h"
-#include "PeerMessageUtil.h"
-#include "DlAbortEx.h"
-#include "message.h"
 #include "Peer.h"
-#include "BtContext.h"
-#include "StringFormat.h"
 #include "PeerStorage.h"
 
 namespace aria2 {
 
-BtInterestedMessageHandle BtInterestedMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 1) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "interested", dataLength, 1).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "interested", ID).str());
-  }
-  BtInterestedMessageHandle message(new BtInterestedMessage());
-  return message;
+const std::string BtInterestedMessage::NAME("interested");
+
+SharedHandle<BtInterestedMessage> BtInterestedMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return ZeroBtMessage::create<BtInterestedMessage>(data, dataLength);
 }
 
-void BtInterestedMessage::doReceivedAction() {
+void BtInterestedMessage::doReceivedAction()
+{
   peer->peerInterested(true);
   if(!peer->amChoking()) {
     _peerStorage->executeChoke();
   }
 }
 
-bool BtInterestedMessage::sendPredicate() const {
+bool BtInterestedMessage::sendPredicate() const
+{
   return !peer->amInterested();
-}
-
-const unsigned char* BtInterestedMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 1, 4bytes
-     * id --- 2, 1byte
-     * total: 5bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
-  }
-  return msg;
-}
-
-size_t BtInterestedMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
 }
 
 void BtInterestedMessage::onSendComplete() {
   peer->amInterested(true);
-}
-
-std::string BtInterestedMessage::toString() const {
-  static const std::string INTERESTED("interested");
-  return INTERESTED;
 }
 
 void BtInterestedMessage::setPeerStorage

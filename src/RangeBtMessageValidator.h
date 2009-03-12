@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,42 +32,41 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_REQUEST_MESSAGE_VALIDATOR_H_
-#define _D_BT_REQUEST_MESSAGE_VALIDATOR_H_
+#ifndef _D_RANGE_BT_MESSAGE_VALIDATOR_H_
+#define _D_RANGE_BT_MESSAGE_VALIDATOR_H_
 
 #include "BtMessageValidator.h"
-#include "BtRequestMessage.h"
+#include "RangeBtMessage.h"
 #include "PeerMessageUtil.h"
 
 namespace aria2 {
 
-class BtRequestMessageValidator : public BtMessageValidator {
+class RangeBtMessageValidator : public BtMessageValidator {
 private:
-  const BtRequestMessage* message;
-  size_t numPiece;
-  size_t pieceLength;
+  const RangeBtMessage* _message;
+  size_t _numPiece;
+  size_t _pieceLength;
 public:
-  BtRequestMessageValidator(const BtRequestMessage* message,
-			   size_t numPiece,
-			   size_t pieceLength):
-    message(message),
-    numPiece(numPiece),
-    pieceLength(pieceLength) {}
+  RangeBtMessageValidator(const RangeBtMessage* message,
+			  size_t numPiece,
+			  size_t pieceLength):
+    _message(message),
+    _numPiece(numPiece),
+    _pieceLength(pieceLength) {}
 
-  virtual bool validate(Errors& error) {
+  virtual bool validate(Errors& errors)
+  {
     // TODO
-    PeerMessageUtil::checkIndex(message->getIndex(), numPiece);
-    PeerMessageUtil::checkBegin(message->getBegin(), pieceLength);
-    PeerMessageUtil::checkLength(message->getLength());
-    PeerMessageUtil::checkRange(message->getBegin(),
-				message->getLength(),
-				pieceLength);
+    PeerMessageUtil::checkIndex(_message->getIndex(), _numPiece);
+    PeerMessageUtil::checkBegin(_message->getBegin(), _pieceLength);
+    PeerMessageUtil::checkLength(_message->getLength());
+    PeerMessageUtil::checkRange(_message->getBegin(),
+				_message->getLength(),
+				_pieceLength);
     return true;
   }
 };
 
-typedef SharedHandle<BtRequestMessageValidator> BtRequestMessageValidatorHandle;
-
 } // namespace aria2
 
-#endif // _D_BT_REQUEST_MESSAGE_VALIDATOR_H_
+#endif // _D_RANGE_BT_MESSAGE_VALIDATOR_H_

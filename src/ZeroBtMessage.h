@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,38 +32,45 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_UNCHOKE_MESSAGE_H_
-#define _D_BT_UNCHOKE_MESSAGE_H_
+#ifndef _D_ZERO_BT_MESSAGE_H_
+#define _D_ZERO_BT_MESSAGE_H_
 
-#include "ZeroBtMessage.h"
+#include "SimpleBtMessage.h"
+#include "PeerMessageUtil.h"
 
 namespace aria2 {
 
-class BtUnchokeMessage;
-
-typedef SharedHandle<BtUnchokeMessage> BtUnchokeMessageHandle;
-
-class BtUnchokeMessage : public ZeroBtMessage {
+class ZeroBtMessage : public SimpleBtMessage {
 private:
-  unsigned char* msg;
+  unsigned char* _msg;
+
   static const size_t MESSAGE_LENGTH = 5;
+protected:
+  template<typename T>
+  static SharedHandle<T> create(const unsigned char* data, size_t dataLength)
+  {
+    PeerMessageUtil::assertPayloadLengthEqual(1, dataLength, T::NAME);
+    PeerMessageUtil::assertID(T::ID, data, T::NAME);
+    SharedHandle<T> message(new T());
+    return message;
+  }
+
 public:
-  BtUnchokeMessage():ZeroBtMessage(ID, NAME) {}
+  ZeroBtMessage(uint8_t id, const std::string& name):
+    SimpleBtMessage(id, name), _msg(0) {}
 
-  static const uint8_t ID = 1;
+  virtual ~ZeroBtMessage()
+  {
+    delete [] _msg;
+  }
 
-  static const std::string NAME;
+  virtual const unsigned char* getMessage();
 
-  static SharedHandle<BtUnchokeMessage> create
-  (const unsigned char* data, size_t dataLength);
+  virtual size_t getMessageLength();
 
-  virtual void doReceivedAction();
-
-  virtual bool sendPredicate() const;
-
-  virtual void onSendComplete();
+  virtual std::string toString() const;
 };
 
 } // namespace aria2
 
-#endif // _D_BT_UNCHOKE_MESSAGE_H_
+#endif // _D_ZERO_BT_MESSAGE_H_

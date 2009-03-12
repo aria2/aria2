@@ -33,62 +33,21 @@
  */
 /* copyright --> */
 #include "BtCancelMessage.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
-#include "DlAbortEx.h"
-#include "message.h"
 #include "BtMessageDispatcher.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
-BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 13) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "cancel", dataLength, 13).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "cancel", ID).str());
-  }
-  BtCancelMessageHandle message(new BtCancelMessage());
-  message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-  message->setBegin(PeerMessageUtil::getIntParam(data, 5));
-  message->setLength(PeerMessageUtil::getIntParam(data, 9));
-  return message;
+const std::string BtCancelMessage::NAME("cancel");
+
+SharedHandle<BtCancelMessage> BtCancelMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return RangeBtMessage::create<BtCancelMessage>(data, dataLength);
 }
 
-void BtCancelMessage::doReceivedAction() {
-  dispatcher->doCancelSendingPieceAction(index, begin, length);
-}
-
-const unsigned char* BtCancelMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 13, 4bytes
-     * id --- 8, 1byte
-     * index --- index, 4bytes
-     * begin --- begin, 4bytes
-     * length -- length, 4bytes
-     * total: 17bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 13, ID);
-    PeerMessageUtil::setIntParam(&msg[5], index);
-    PeerMessageUtil::setIntParam(&msg[9], begin);
-    PeerMessageUtil::setIntParam(&msg[13], length);
-  }
-  return msg;
-}
-
-size_t BtCancelMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-std::string BtCancelMessage::toString() const {
-  return "cancel index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
-    ", length="+Util::uitos(length);
+void BtCancelMessage::doReceivedAction()
+{
+  dispatcher->doCancelSendingPieceAction(getIndex(), getBegin(), getLength());
 }
 
 } // namespace aria2

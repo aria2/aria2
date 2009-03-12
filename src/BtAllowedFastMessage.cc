@@ -33,28 +33,18 @@
  */
 /* copyright --> */
 #include "BtAllowedFastMessage.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
 #include "DlAbortEx.h"
-#include "message.h"
 #include "Peer.h"
 #include "StringFormat.h"
 
 namespace aria2 {
 
-BtAllowedFastMessageHandle BtAllowedFastMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 5) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "allowed fast", dataLength, 5).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "allowed fast", ID).str());
-  }
-  BtAllowedFastMessageHandle message(new BtAllowedFastMessage());
-  message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-  return message;
+const std::string BtAllowedFastMessage::NAME("allowed fast");
+
+SharedHandle<BtAllowedFastMessage> BtAllowedFastMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return IndexBtMessage::create<BtAllowedFastMessage>(data, dataLength);
 }
 
 void BtAllowedFastMessage::doReceivedAction() {
@@ -63,34 +53,11 @@ void BtAllowedFastMessage::doReceivedAction() {
       (StringFormat("%s received while fast extension is disabled",
 		    toString().c_str()).str());
   }
-  peer->addPeerAllowedIndex(index);
-}
-
-const unsigned char* BtAllowedFastMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 5, 4bytes
-     * id --- 17, 1byte
-     * piece index --- index, 4bytes
-     * total: 9bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 5, ID);
-    PeerMessageUtil::setIntParam(&msg[5], index);
-  }
-  return msg;
-}
-
-size_t BtAllowedFastMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
+  peer->addPeerAllowedIndex(getIndex());
 }
 
 void BtAllowedFastMessage::onSendComplete() {
-  peer->addAmAllowedIndex(index);
-}
-
-std::string BtAllowedFastMessage::toString() const {
-  return "allowed fast index="+Util::itos(index);
+  peer->addAmAllowedIndex(getIndex());
 }
 
 } // namespace aria2

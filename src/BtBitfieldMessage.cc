@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "BtBitfieldMessage.h"
+
+#include <cstring>
+
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"
@@ -40,9 +43,10 @@
 #include "Peer.h"
 #include "StringFormat.h"
 #include "PieceStorage.h"
-#include <cstring>
 
 namespace aria2 {
+
+const std::string BtBitfieldMessage::NAME("bitfield");
 
 void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, size_t bitfieldLength) {
   if(this->bitfield == bitfield) {
@@ -58,15 +62,8 @@ void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, size_t bitfie
 BtBitfieldMessageHandle
 BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
 {
-  if(dataLength <= 1) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "bitfield", dataLength, 1).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "bitfield", ID).str());
-  }
+  PeerMessageUtil::assertPayloadLengthGreater(1,dataLength, NAME);
+  PeerMessageUtil::assertID(ID, data, NAME);
   BtBitfieldMessageHandle message(new BtBitfieldMessage());
   message->setBitfield((unsigned char*)data+1, dataLength-1);
   return message;
@@ -100,7 +97,7 @@ size_t BtBitfieldMessage::getMessageLength() {
 }
 
 std::string BtBitfieldMessage::toString() const {
-  return "bitfield "+Util::toHex(bitfield, bitfieldLength);
+  return NAME+" "+Util::toHex(bitfield, bitfieldLength);
 }
 
 } // namespace aria2

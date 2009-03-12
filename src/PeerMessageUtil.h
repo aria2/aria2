@@ -79,6 +79,18 @@ public:
   static bool createcompact(unsigned char* compact, const std::string& addr, uint16_t port);
 
   static std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact);
+
+  // Throws exception if threshold >= actual
+  static void assertPayloadLengthGreater(size_t threshold, size_t actual,
+					 const std::string& msgName);
+
+  // Throws exception if expected != actual
+  static void assertPayloadLengthEqual(size_t expected, size_t actual,
+				       const std::string& msgName);
+
+  // Throws exception if expected is not equal to id from data.
+  static void assertID(uint8_t expected, const unsigned char* data,
+		       const std::string& msgName);
 };
 
 } // namespace aria2

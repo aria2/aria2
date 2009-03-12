@@ -35,7 +35,7 @@
 #ifndef _D_BT_NOT_INTERESTED_MESSAGE_H_
 #define _D_BT_NOT_INTERESTED_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "ZeroBtMessage.h"
 
 namespace aria2 {
 
@@ -44,31 +44,20 @@ class BtNotInterestedMessage;
 
 typedef SharedHandle<BtNotInterestedMessage> BtNotInterestedMessageHandle;
 
-class BtNotInterestedMessage : public SimpleBtMessage {
+class BtNotInterestedMessage : public ZeroBtMessage {
 private:
-  unsigned char* msg;
-  
   SharedHandle<PeerStorage> _peerStorage;
-
-  static const size_t MESSAGE_LENGTH = 5;
 public:
-  BtNotInterestedMessage():SimpleBtMessage(ID), msg(0) {}
-
-  virtual ~BtNotInterestedMessage() {
-    delete [] msg;
-  }
+  BtNotInterestedMessage():ZeroBtMessage(ID, NAME) {}
 
   static const uint8_t ID = 3;
 
-  static BtNotInterestedMessageHandle create(const unsigned char* data, size_t dataLength);
+  static const std::string NAME;
+
+  static SharedHandle<BtNotInterestedMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
-
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
 
   virtual bool sendPredicate() const;
 

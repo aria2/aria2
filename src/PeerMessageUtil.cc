@@ -41,6 +41,8 @@
 #include "a2netcompat.h"
 #include "StringFormat.h"
 #include "BtConstants.h"
+#include "message.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -178,6 +180,37 @@ PeerMessageUtil::unpackcompact(const unsigned char* compact)
   }
   uint16_t port = ntohs(*(uint16_t*)(compact+sizeof(uint32_t)));
   return std::pair<std::string, uint16_t>(host, port);
+}
+
+
+void PeerMessageUtil::assertPayloadLengthGreater
+(size_t threshold, size_t actual, const std::string& msgName)
+{
+  if(actual <= threshold) {
+    throw DlAbortEx
+      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(), actual).str());
+  }
+}
+
+void PeerMessageUtil::assertPayloadLengthEqual
+(size_t expected, size_t actual, const std::string& msgName)
+{
+  if(expected != actual) {
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
+		    actual, expected).str());
+  }
+}
+
+void PeerMessageUtil::assertID
+(uint8_t expected, const unsigned char* data, const std::string& msgName)
+{
+  uint8_t id = getId(data);
+  if(expected != id) {
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
+		    expected).str());
+  }
 }
 
 } // namespace aria2

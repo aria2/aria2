@@ -34,55 +34,26 @@
 /* copyright --> */
 #include "BtHaveNoneMessage.h"
 #include "DlAbortEx.h"
-#include "PeerMessageUtil.h"
-#include "message.h"
 #include "Peer.h"
 #include "StringFormat.h"
 
 namespace aria2 {
 
-BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, size_t dataLength) {
-  if(dataLength != 1) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "have none", dataLength, 1).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "have none", ID).str());
-  }
-  BtHaveNoneMessageHandle message(new BtHaveNoneMessage());
-  return message;
+const std::string BtHaveNoneMessage::NAME("have none");
+
+SharedHandle<BtHaveNoneMessage> BtHaveNoneMessage::create
+(const unsigned char* data, size_t dataLength)
+{
+  return ZeroBtMessage::create<BtHaveNoneMessage>(data, dataLength);
 }
 
-void BtHaveNoneMessage::doReceivedAction() {
+void BtHaveNoneMessage::doReceivedAction()
+{
   if(!peer->isFastExtensionEnabled()) {
     throw DlAbortEx
       (StringFormat("%s received while fast extension is disabled",
 		    toString().c_str()).str());
   }
-}
-
-const unsigned char* BtHaveNoneMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 1, 4bytes
-     * id --- 15, 1byte
-     * total: 5bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
-  }
-  return msg;
-}
-
-size_t BtHaveNoneMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
-
-std::string BtHaveNoneMessage::toString() const {
-  static const std::string HAVE_NONE("have none");
-  return HAVE_NONE;
 }
 
 } // namespace aria2

@@ -14,7 +14,7 @@
 #include "Peer.h"
 #include "FileEntry.h"
 #include "BtHandshakeMessage.h"
-#include "BtRequestMessageValidator.h"
+#include "RangeBtMessageValidator.h"
 
 namespace aria2 {
 
@@ -144,7 +144,7 @@ void BtRequestMessageTest::testCreate() {
   CPPUNIT_ASSERT_EQUAL((uint8_t)6, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL((uint32_t)256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pm->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)1024, pm->getLength());
 
   // case: payload size is wrong
   try {
@@ -289,7 +289,7 @@ void BtRequestMessageTest::testValidate() {
   BtRequestMessage msg(0, 0, 16*1024);
   msg.setBtMessageValidator
     (SharedHandle<BtMessageValidator>
-     (new BtRequestMessageValidator(&msg, 1024, 256*1024)));
+     (new RangeBtMessageValidator(&msg, 1024, 256*1024)));
   std::deque<std::string> errors;
 
   msg.validate(errors);
@@ -299,7 +299,7 @@ void BtRequestMessageTest::testValidate_lengthTooLong() {
   BtRequestMessage msg(0, 0, 16*1024+1);
   msg.setBtMessageValidator
     (SharedHandle<BtMessageValidator>
-     (new BtRequestMessageValidator(&msg, 1024, 256*1024)));
+     (new RangeBtMessageValidator(&msg, 1024, 256*1024)));
   std::deque<std::string> errors;
   try {
     msg.validate(errors);

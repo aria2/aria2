@@ -100,14 +100,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtUnchokeMessage.cc BtUnchokeMessage.h\
 @ENABLE_BITTORRENT_TRUE@	BtHandshakeMessage.cc BtHandshakeMessage.h\
 @ENABLE_BITTORRENT_TRUE@	BtMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	BtCancelMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	BtHaveMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	BtPieceMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	BtRejectMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	BtRequestMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	BtSuggestPieceMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	BtHandshakeMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	BtMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactory.cc DefaultBtMessageFactory.h\
@@ -218,7 +212,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	LibsslDHKeyExchange.h\
 @ENABLE_BITTORRENT_TRUE@	BtConstants.h\
 @ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.cc BtLeecherStateChoke.h\
-@ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.cc BtSeederStateChoke.h
+@ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.cc BtSeederStateChoke.h\
+@ENABLE_BITTORRENT_TRUE@	RangeBtMessage.cc RangeBtMessage.h\
+@ENABLE_BITTORRENT_TRUE@	IndexBtMessage.cc IndexBtMessage.h\
+@ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.cc ZeroBtMessage.h\
+@ENABLE_BITTORRENT_TRUE@	RangeBtMessageValidator.h
 
 @ENABLE_METALINK_TRUE@am__append_10 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -464,10 +462,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtSuggestPieceMessage.cc BtSuggestPieceMessage.h \
 	BtUnchokeMessage.cc BtUnchokeMessage.h BtHandshakeMessage.cc \
 	BtHandshakeMessage.h BtMessageValidator.h \
-	BtAllowedFastMessageValidator.h BtBitfieldMessageValidator.h \
-	BtCancelMessageValidator.h BtHaveMessageValidator.h \
-	BtPieceMessageValidator.h BtRejectMessageValidator.h \
-	BtRequestMessageValidator.h BtSuggestPieceMessageValidator.h \
+	BtBitfieldMessageValidator.h BtPieceMessageValidator.h \
 	BtHandshakeMessageValidator.h BtMessageFactory.h \
 	DefaultBtMessageFactory.cc DefaultBtMessageFactory.h \
 	BtMessageDispatcher.h DefaultBtMessageDispatcher.cc \
@@ -544,9 +539,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	LibsslARC4Decryptor.h LibsslARC4Encryptor.h \
 	LibsslDHKeyExchange.h BtConstants.h BtLeecherStateChoke.cc \
 	BtLeecherStateChoke.h BtSeederStateChoke.cc \
-	BtSeederStateChoke.h Metalinker.cc Metalinker.h \
-	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
-	MetalinkResource.h MetalinkProcessor.h \
+	BtSeederStateChoke.h RangeBtMessage.cc RangeBtMessage.h \
+	IndexBtMessage.cc IndexBtMessage.h ZeroBtMessage.cc \
+	ZeroBtMessage.h RangeBtMessageValidator.h Metalinker.cc \
+	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \
@@ -698,7 +695,10 @@ am__objects_2 =
 @ENABLE_BITTORRENT_TRUE@	ReceiverMSEHandshakeCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshake.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	RangeBtMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	IndexBtMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_10 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -1427,6 +1427,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpServerResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpSkipResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InOrderURISelector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IndexBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitialMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
@@ -1484,6 +1485,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PiecesMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Platform.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolDetector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RangeBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RarestPieceSelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealtimeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReceiverMSEHandshakeCommand.Po@am__quote@
@@ -1532,6 +1534,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VerificationMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VersionMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XML2SAXMetalinkProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asctime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bencode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/download_helper.Po@am__quote@

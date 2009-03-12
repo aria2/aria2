@@ -60,6 +60,8 @@ public:
 
   static const uint8_t ID = 20;
 
+  static const std::string NAME;
+
   static BtExtendedMessageHandle create
     (const SharedHandle<ExtensionMessageFactory>& factory,
      const SharedHandle<Peer>& peer,

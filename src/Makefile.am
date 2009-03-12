@@ -296,14 +296,8 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	BtUnchokeMessage.cc BtUnchokeMessage.h\
 	BtHandshakeMessage.cc BtHandshakeMessage.h\
 	BtMessageValidator.h\
-	BtAllowedFastMessageValidator.h\
 	BtBitfieldMessageValidator.h\
-	BtCancelMessageValidator.h\
-	BtHaveMessageValidator.h\
 	BtPieceMessageValidator.h\
-	BtRejectMessageValidator.h\
-	BtRequestMessageValidator.h\
-	BtSuggestPieceMessageValidator.h\
 	BtHandshakeMessageValidator.h\
 	BtMessageFactory.h\
 	DefaultBtMessageFactory.cc DefaultBtMessageFactory.h\
@@ -414,7 +408,11 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	LibsslDHKeyExchange.h\
 	BtConstants.h\
 	BtLeecherStateChoke.cc BtLeecherStateChoke.h\
-	BtSeederStateChoke.cc BtSeederStateChoke.h
+	BtSeederStateChoke.cc BtSeederStateChoke.h\
+	RangeBtMessage.cc RangeBtMessage.h\
+	IndexBtMessage.cc IndexBtMessage.h\
+	ZeroBtMessage.cc ZeroBtMessage.h\
+	RangeBtMessageValidator.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

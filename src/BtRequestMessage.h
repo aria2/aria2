@@ -35,7 +35,7 @@
 #ifndef _D_BT_REQUEST_MESSAGE_H_
 #define _D_BT_REQUEST_MESSAGE_H_
 
-#include "SimpleBtMessage.h"
+#include "RangeBtMessage.h"
 #include "AbstractBtEventListener.h"
 
 namespace aria2 {
@@ -44,75 +44,53 @@ class BtRequestMessage;
 
 typedef SharedHandle<BtRequestMessage> BtRequestMessageHandle;
 
-class BtRequestMessage : public SimpleBtMessage {
+class BtRequestMessage : public RangeBtMessage {
 private:
-  size_t index;
-  uint32_t begin;
-  uint32_t length;
-  size_t blockIndex;
-  unsigned char* msg;
+  size_t _blockIndex;
 
-  static const size_t MESSAGE_LENGTH = 17;
-
-  class BtAbortOutstandingRequestEventListener : public AbstractBtEventListener {
+  class BtAbortOutstandingRequestEventListener:public AbstractBtEventListener {
   private:
     BtRequestMessage* message;
   public:
-    BtAbortOutstandingRequestEventListener(BtRequestMessage* message):message(message) {}
+    BtAbortOutstandingRequestEventListener(BtRequestMessage* message):
+      message(message) {}
 
     virtual bool canHandle(const SharedHandle<BtEvent>& event);
 
     virtual void handleEventInternal(const SharedHandle<BtEvent>& event);
   };
 
-  typedef SharedHandle<BtAbortOutstandingRequestEventListener> BtAbortOutstandingRequestEventListenerHandle;
+  typedef SharedHandle<BtAbortOutstandingRequestEventListener>
+  BtAbortOutstandingRequestEventListenerHandle;
 public:
   BtRequestMessage(size_t index = 0,
 		   uint32_t begin = 0,
 		   uint32_t length = 0,
 		   size_t blockIndex = 0)
-    :SimpleBtMessage(ID),
-     index(index),
-     begin(begin),
-     length(length),
-     blockIndex(blockIndex),
-     msg(0)
+    :RangeBtMessage(ID, NAME, index, begin, length),
+     _blockIndex(blockIndex)
   {
-    SharedHandle<BtEventListener> listener(new BtAbortOutstandingRequestEventListener(this));
+    SharedHandle<BtEventListener> listener
+      (new BtAbortOutstandingRequestEventListener(this));
     addEventListener(listener);
-  }
-
-  virtual ~BtRequestMessage() {
-    delete [] msg;
   }
 
   static const uint8_t ID = 6;
 
-  size_t getIndex() const { return index; }
-  void setIndex(size_t index) { this->index = index; }
+  static const std::string NAME;
 
-  uint32_t getBegin() const { return begin; }
-  void setBegin(uint32_t begin) { this->begin = begin; }
+  size_t getBlockIndex() const { return _blockIndex; }
+  void setBlockIndex(size_t blockIndex) { _blockIndex = blockIndex; }
 
-  uint32_t getLength() const { return length; }
-  void setLength(uint32_t length) { this->length = length; }
-
-  size_t getBlockIndex() const { return blockIndex; }
-  void setBlockIndex(size_t blockIndex) { this->blockIndex = blockIndex; }
-
-  static BtRequestMessageHandle create(const unsigned char* data, size_t dataLength);
+  static SharedHandle<BtRequestMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
 
-  virtual const unsigned char* getMessage();
-
-  virtual size_t getMessageLength();
-
-  virtual std::string toString() const;
-
   virtual void onQueued();
 
-  virtual void handleAbortOutstandingRequestEvent(const SharedHandle<BtEvent>& event);
+  virtual void handleAbortOutstandingRequestEvent
+  (const SharedHandle<BtEvent>& event);
 };
 
 } // namespace aria2

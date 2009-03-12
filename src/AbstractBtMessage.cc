@@ -43,12 +43,13 @@
 
 namespace aria2 {
 
-AbstractBtMessage::AbstractBtMessage(uint8_t id):
+AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name):
   BtMessage(id),
   sendingInProgress(false),
   invalidate(false),
   uploading(false),
   cuid(0),
+  _name(name),
   logger(LogFactory::getInstance())
 {}
 
@@ -130,6 +131,11 @@ void AbstractBtMessage::setBtMessageFactory(const WeakHandle<BtMessageFactory>& 
 void AbstractBtMessage::setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory)
 {
   this->requestFactory = factory;
+}
+
+const std::string& AbstractBtMessage::getName() const
+{
+  return _name;
 }
 
 } // namespace aria2

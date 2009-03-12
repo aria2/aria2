@@ -48,8 +48,10 @@
 
 namespace aria2 {
 
+const std::string BtPortMessage::NAME("port");
+
 BtPortMessage::BtPortMessage(uint16_t port):
-  SimpleBtMessage(ID), _port(port), _msg(0) {}
+  SimpleBtMessage(ID, NAME), _port(port), _msg(0) {}
 
 BtPortMessage::~BtPortMessage()
 {
@@ -58,15 +60,8 @@ BtPortMessage::~BtPortMessage()
 
 SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, size_t dataLength)
 {
-  if(dataLength != 3) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "port", dataLength, 3).str());
-  }
-  uint8_t id = PeerMessageUtil::getId(data);
-  if(id != ID) {
-    throw DlAbortEx
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID).str());
-  }
+  PeerMessageUtil::assertPayloadLengthEqual(3, dataLength, NAME);
+  PeerMessageUtil::assertID(ID, data, NAME);
   uint16_t port = PeerMessageUtil::getShortIntParam(data, 1);
   SharedHandle<BtPortMessage> message(new BtPortMessage(port));
   return message;
@@ -114,7 +109,7 @@ size_t BtPortMessage::getMessageLength() {
 }
 
 std::string BtPortMessage::toString() const {
-  return "port port="+Util::uitos(_port);
+  return NAME+" port="+Util::uitos(_port);
 }
 
 void BtPortMessage::setLocalNode(const WeakHandle<DHTNode>& localNode)

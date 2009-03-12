@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,38 +32,54 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_UNCHOKE_MESSAGE_H_
-#define _D_BT_UNCHOKE_MESSAGE_H_
-
-#include "ZeroBtMessage.h"
+#include "RangeBtMessage.h"
+#include "Util.h"
 
 namespace aria2 {
 
-class BtUnchokeMessage;
+RangeBtMessage::RangeBtMessage(uint8_t id,
+			       const std::string& name,
+			       size_t index, uint32_t begin, size_t length)
+  :SimpleBtMessage(id, name),
+   _index(index),
+   _begin(begin),
+   _length(length),
+   _msg(0) {}
 
-typedef SharedHandle<BtUnchokeMessage> BtUnchokeMessageHandle;
+RangeBtMessage::~RangeBtMessage()
+{
+  delete [] _msg;
+}
 
-class BtUnchokeMessage : public ZeroBtMessage {
-private:
-  unsigned char* msg;
-  static const size_t MESSAGE_LENGTH = 5;
-public:
-  BtUnchokeMessage():ZeroBtMessage(ID, NAME) {}
+const unsigned char* RangeBtMessage::getMessage()
+{
+  if(!_msg) {
+    /**
+     * len --- 13, 4bytes
+     * id --- ?, 1byte
+     * index --- index, 4bytes
+     * begin --- begin, 4bytes
+     * length -- length, 4bytes
+     * total: 17bytes
+     */
+    _msg = new unsigned char[MESSAGE_LENGTH];
+    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 13, getId());
+    PeerMessageUtil::setIntParam(&_msg[5], _index);
+    PeerMessageUtil::setIntParam(&_msg[9], _begin);
+    PeerMessageUtil::setIntParam(&_msg[13], _length);
+  }
+  return _msg;
+}
 
-  static const uint8_t ID = 1;
+size_t RangeBtMessage::getMessageLength()
+{
+  return MESSAGE_LENGTH;
+}
 
-  static const std::string NAME;
-
-  static SharedHandle<BtUnchokeMessage> create
-  (const unsigned char* data, size_t dataLength);
-
-  virtual void doReceivedAction();
-
-  virtual bool sendPredicate() const;
-
-  virtual void onSendComplete();
-};
+std::string RangeBtMessage::toString() const
+{
+  return getName()+" index="+Util::uitos(_index)+", begin="+Util::uitos(_begin)+
+    ", length="+Util::uitos(_length);
+}
 
 } // namespace aria2
-
-#endif // _D_BT_UNCHOKE_MESSAGE_H_
