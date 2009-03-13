@@ -537,7 +537,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
 				   (PREF_URI_SELECTOR,
 				    TEXT_URI_SELECTOR,
-				    V_INORDER,
+				    V_FEEDBACK,
 				    std::deque<std::string>
 				    (&params[0], &params[arrayLength(params)])));
     op->addTag(TAG_FTP);

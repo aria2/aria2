@@ -1,5 +1,11 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed the default value of --uri-selector option from 'inorder'
+	to 'feedback'
+	* src/OptionHandlerFactory.cc
+	
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Included current URI in exception message.
 	* src/AbstractCommand.cc
 	
