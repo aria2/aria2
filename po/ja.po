@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-02-15 23:45+0900\n"
+"POT-Creation-Date: 2009-03-13 23:24+0900\n"
 "PO-Revision-Date: 2009-02-15 23:46+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/RequestGroupMan.cc:417
+#: src/RequestGroupMan.cc:423
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:458
+#: src/RequestGroupMan.cc:464
 msgid "Status Legend:"
 msgstr "凡例:"
 
@@ -60,49 +60,49 @@ msgstr "                              タグ: "
 msgid "                              Possible Values: "
 msgstr "                              設定可能な値: "
 
-#: src/OptionHandlerImpl.h:127
+#: src/OptionHandlerImpl.h:129
 msgid "must be either 'true' or 'false'."
 msgstr "は, 'true' または 'false' のどちらかで指定してください."
 
-#: src/OptionHandlerImpl.h:160 src/OptionHandlerImpl.h:208
+#: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
 #, c-format
 msgid "must be between %s and %s."
 msgstr "は, %s と %s の間で指定してください."
 
-#: src/OptionHandlerImpl.h:205
+#: src/OptionHandlerImpl.h:207
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "は, %s 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:211
+#: src/OptionHandlerImpl.h:213
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "は, %s 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:214 src/OptionHandlerImpl.h:280
+#: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
 msgid "must be a number."
 msgstr "は, 数字でなければなりません."
 
-#: src/OptionHandlerImpl.h:271
+#: src/OptionHandlerImpl.h:273
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "は, %.1f 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:274
+#: src/OptionHandlerImpl.h:276
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "は, %1.f と %.1f の間で指定してください."
 
-#: src/OptionHandlerImpl.h:277
+#: src/OptionHandlerImpl.h:279
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "は, %.1f 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:428
+#: src/OptionHandlerImpl.h:456
 msgid "must be one of the following:"
 msgstr "は, 以下のいずれかを指定してください:"
 
-#: src/OptionHandlerImpl.h:477 src/OptionHandlerImpl.h:520
+#: src/OptionHandlerImpl.h:505 src/OptionHandlerImpl.h:548
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
 
@@ -314,18 +314,47 @@ msgstr ""
 "                              ードには影響しません."
 
 #: src/usage_text.h:107
+#, fuzzy
 msgid ""
-" --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
+" --max-overall-download-limit=SPEED Set max overall download speed in bytes/"
+"sec.\n"
 "                              0 means unrestricted.\n"
-"                              You can append K or M(1K = 1024, 1M = 1024K)."
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the download speed per download, use\n"
+"                              --max-download-limit option."
 msgstr ""
-" --max-download-limit=SPEED   ダウンロードの最大速度 (バイト/秒) を指定しま"
-"す.\n"
-"                              0 を指定すると速度の制限をしません. K または M"
+" -u, --max-upload-limit=SPEED torrent 毎のアップロードの最大速度 (バイト/秒) "
 "を\n"
-"                              付加することができます (1K = 1024, 1M = 1024K)."
+"                              指定します. 0 を指定すると速度の制限をしませ"
+"ん.\n"
+"                              K または M を付加することができます (1K = "
+"1024, 1M\n"
+"                              = 1024K). 全体のアップロード速度を制御するに"
+"は,\n"
+"                              --max-overall-upload-limit オプションを使用しま"
+"す."
 
-#: src/usage_text.h:111
+#: src/usage_text.h:113
+#, fuzzy
+msgid ""
+" --max-download-limit=SPEED   Set max download speed per each download in\n"
+"                              bytes/sec. 0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              To limit the overall download speed, use\n"
+"                              --max-overall-download-limit option."
+msgstr ""
+" -u, --max-upload-limit=SPEED torrent 毎のアップロードの最大速度 (バイト/秒) "
+"を\n"
+"                              指定します. 0 を指定すると速度の制限をしませ"
+"ん.\n"
+"                              K または M を付加することができます (1K = "
+"1024, 1M\n"
+"                              = 1024K). 全体のアップロード速度を制御するに"
+"は,\n"
+"                              --max-overall-upload-limit オプションを使用しま"
+"す."
+
+#: src/usage_text.h:119
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -345,7 +374,7 @@ msgstr ""
 "か\n"
 "                              る場合があります."
 
-#: src/usage_text.h:117
+#: src/usage_text.h:125
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
@@ -357,7 +386,7 @@ msgstr ""
 "1024,\n"
 "                              1M = 1024K)."
 
-#: src/usage_text.h:121
+#: src/usage_text.h:129
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
@@ -369,7 +398,7 @@ msgstr ""
 "                              ファイル領域確保中の CPU 利用率が下がります.\n"
 "                              エラーが発生する場合は, 無効にしてください."
 
-#: src/usage_text.h:125
+#: src/usage_text.h:133
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
 "                              already exists but the corresponding .aria2 "
@@ -384,7 +413,7 @@ msgstr ""
 "を\n"
 "                              中止します."
 
-#: src/usage_text.h:129
+#: src/usage_text.h:137
 msgid ""
 " --allow-piece-length-change=true|false If false is given, aria2 aborts "
 "download\n"
@@ -407,7 +436,7 @@ msgstr ""
 "も\n"
 "                              しれません."
 
-#: src/usage_text.h:134
+#: src/usage_text.h:142
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -429,7 +458,7 @@ msgstr ""
 "舞\n"
 "                              うはずである."
 
-#: src/usage_text.h:138
+#: src/usage_text.h:146
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -448,7 +477,7 @@ msgstr ""
 "号\n"
 "                             (1..9999) を付加する."
 
-#: src/usage_text.h:144
+#: src/usage_text.h:152
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -479,19 +508,19 @@ msgstr ""
 "い\n"
 "                              ない場合は, -Z オプションが必要である."
 
-#: src/usage_text.h:155
+#: src/usage_text.h:163
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
 " --enable-http-keep-alive[=true|false] HTTP/1.1 持続的接続を有効にします."
 
-#: src/usage_text.h:157
+#: src/usage_text.h:165
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
 " --enable-http-pipelining[=true|false] HTTP/1.1 パイプライニングを有効にしま"
 "す."
 
-#: src/usage_text.h:159
+#: src/usage_text.h:167
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -515,7 +544,7 @@ msgstr ""
 "                              --bt-hash-check-seed オプションも参照してくださ"
 "い."
 
-#: src/usage_text.h:165
+#: src/usage_text.h:173
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -539,7 +568,7 @@ msgstr ""
 "ロー\n"
 "                              ドでのみ有効です."
 
-#: src/usage_text.h:173
+#: src/usage_text.h:181
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk of data by "
 "calculating\n"
@@ -552,7 +581,7 @@ msgstr ""
 "しま\n"
 "                              す."
 
-#: src/usage_text.h:177
+#: src/usage_text.h:185
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -571,15 +600,15 @@ msgstr ""
 "用\n"
 "                              できます."
 
-#: src/usage_text.h:184
+#: src/usage_text.h:192
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr " -U, --user-agent=USER_AGENT  ユーザーエージェントを設定します."
 
-#: src/usage_text.h:186
+#: src/usage_text.h:194
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc               netrc サポートを止めます."
 
-#: src/usage_text.h:188
+#: src/usage_text.h:196
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -613,7 +642,7 @@ msgstr ""
 "く\n"
 "                              ださい."
 
-#: src/usage_text.h:197
+#: src/usage_text.h:205
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
@@ -624,7 +653,7 @@ msgstr ""
 " -j, --max-concurrent-downloads=N 同時並行ダウンロード数を指定します.\n"
 "                              -s および -C オプションも参照してください."
 
-#: src/usage_text.h:201
+#: src/usage_text.h:209
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
@@ -636,7 +665,7 @@ msgstr ""
 "(1.x/\n"
 "                              2.x)/Netscape です."
 
-#: src/usage_text.h:204
+#: src/usage_text.h:212
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -652,7 +681,7 @@ msgstr ""
 "さ\n"
 "                              らに詳しい内容も表示されます."
 
-#: src/usage_text.h:208
+#: src/usage_text.h:216
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -680,11 +709,11 @@ msgstr ""
 "イ\n"
 "                              ンデックスは変化する場合があります."
 
-#: src/usage_text.h:217
+#: src/usage_text.h:225
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  .torrent ファイルのパスを指定."
 
-#: src/usage_text.h:219
+#: src/usage_text.h:227
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -717,7 +746,7 @@ msgstr ""
 "せ\n"
 "                              ん."
 
-#: src/usage_text.h:229
+#: src/usage_text.h:237
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
@@ -726,7 +755,7 @@ msgstr ""
 "き\n"
 "                              します."
 
-#: src/usage_text.h:232
+#: src/usage_text.h:240
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -746,33 +775,28 @@ msgstr ""
 "う\n"
 "                              ことができます."
 
-#: src/usage_text.h:238
+#: src/usage_text.h:246
+#, fuzzy
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              To limit the upload speed per torrent, use\n"
-"                              --max-upload-limit option. If non-zero value "
-"is\n"
-"                              specified, --max-upload-limit option is "
-"ignored."
+"                              --max-upload-limit option."
 msgstr ""
-" --max-overall-upload-limit=SPEED プロセス全体のアップロードの最大速度 (バイ"
-"ト/\n"
-"                              秒) を指定します. 0 を指定すると速度の制限をし"
-"ませ\n"
-"                              ん.\n"
+" -u, --max-upload-limit=SPEED torrent 毎のアップロードの最大速度 (バイト/秒) "
+"を\n"
+"                              指定します. 0 を指定すると速度の制限をしませ"
+"ん.\n"
 "                              K または M を付加することができます (1K = "
 "1024, 1M\n"
-"                              = 1024K). torrent 毎のアップロード速度を制限す"
-"るに\n"
-"                              は --max-upload-limit オプションを使用します. "
-"この\n"
-"                              オプションに 0 以外の値が指定されている場合,\n"
-"                              --max-upload-limit オプションは無視されます."
+"                              = 1024K). 全体のアップロード速度を制御するに"
+"は,\n"
+"                              --max-overall-upload-limit オプションを使用しま"
+"す."
 
-#: src/usage_text.h:245
+#: src/usage_text.h:252
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -791,7 +815,7 @@ msgstr ""
 "                              --max-overall-upload-limit オプションを使用しま"
 "す."
 
-#: src/usage_text.h:251
+#: src/usage_text.h:258
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -799,7 +823,7 @@ msgstr ""
 " --seed-time=MINUTES          シードを行う時間を分単位で指定します. \n"
 "                              --seed-ratio オプションも参照してください."
 
-#: src/usage_text.h:254
+#: src/usage_text.h:261
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -826,7 +850,7 @@ msgstr ""
 "らか\n"
 "                              の条件が成立した時点でシードは終了となります."
 
-#: src/usage_text.h:263
+#: src/usage_text.h:270
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -846,15 +870,15 @@ msgstr ""
 "し\n"
 "                              20 バイトにします."
 
-#: src/usage_text.h:270
+#: src/usage_text.h:277
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr " --enable-peer-exchange[=true|false] Peer Exchange を有効にします."
 
-#: src/usage_text.h:272
+#: src/usage_text.h:279
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr " --enable-dht[=true|false]    DHT を有効にします."
 
-#: src/usage_text.h:274
+#: src/usage_text.h:281
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -872,7 +896,7 @@ msgstr ""
 "う\n"
 "                              ことができます."
 
-#: src/usage_text.h:280
+#: src/usage_text.h:287
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
@@ -881,12 +905,12 @@ msgstr ""
 "用\n"
 "                              するホストとポート番号を指定します."
 
-#: src/usage_text.h:283
+#: src/usage_text.h:290
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
 msgstr " --dht-file-path=PATH DHT ルーティングテーブルを PATH に保存します."
 
-#: src/usage_text.h:285
+#: src/usage_text.h:292
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -903,7 +927,7 @@ msgstr ""
 "号化\n"
 "                              レベルが選択されます."
 
-#: src/usage_text.h:290
+#: src/usage_text.h:297
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -918,7 +942,7 @@ msgstr ""
 "い\n"
 "                              ます."
 
-#: src/usage_text.h:295
+#: src/usage_text.h:302
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
 "                              torrent is lower than SPEED, aria2 "
@@ -941,7 +965,7 @@ msgstr ""
 "1024,\n"
 "                              1M = 1024K)."
 
-#: src/usage_text.h:303
+#: src/usage_text.h:310
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -951,7 +975,7 @@ msgstr ""
 "時に\n"
 "                              オープンするファイルの最大値を指定します."
 
-#: src/usage_text.h:306
+#: src/usage_text.h:313
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
@@ -960,7 +984,7 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/usage_text.h:309
+#: src/usage_text.h:316
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
@@ -973,11 +997,11 @@ msgstr ""
 "ショ\n"
 "                              ンも参照してください."
 
-#: src/usage_text.h:313
+#: src/usage_text.h:320
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE .metalink ファイルのパスを指定."
 
-#: src/usage_text.h:315
+#: src/usage_text.h:322
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -1003,15 +1027,15 @@ msgstr ""
 "                              maxconnections 属性の値を使います.\n"
 "                              -s と -j オプションも参照してください."
 
-#: src/usage_text.h:324
+#: src/usage_text.h:331
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   ダウンロードするファイルのバージョン."
 
-#: src/usage_text.h:326
+#: src/usage_text.h:333
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE ダウンロードするファイルの言語."
 
-#: src/usage_text.h:328
+#: src/usage_text.h:335
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
@@ -1019,7 +1043,7 @@ msgstr ""
 "レー\n"
 "                              ティング・システム."
 
-#: src/usage_text.h:330
+#: src/usage_text.h:337
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
@@ -1028,7 +1052,7 @@ msgstr ""
 " --metalink-location=LOCATION[,...] お好みのサーバーの地域を指定します.\n"
 "                              コンマ区切りの地域のリストが指定可能です."
 
-#: src/usage_text.h:334
+#: src/usage_text.h:341
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
@@ -1040,7 +1064,7 @@ msgstr ""
 "定す\n"
 "                              してください."
 
-#: src/usage_text.h:337
+#: src/usage_text.h:344
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type of\n"
@@ -1073,7 +1097,7 @@ msgstr ""
 "いま\n"
 "                              せん."
 
-#: src/usage_text.h:347
+#: src/usage_text.h:354
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -1094,11 +1118,11 @@ msgstr ""
 "protocol\n"
 "                              オプションを使ってください."
 
-#: src/usage_text.h:353
+#: src/usage_text.h:360
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
-#: src/usage_text.h:355
+#: src/usage_text.h:362
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -1124,18 +1148,18 @@ msgstr ""
 "                              索を行い, 該当するオプションのヘルプを表示しま"
 "す."
 
-#: src/usage_text.h:363
+#: src/usage_text.h:370
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
 " --no-conf                    aria2.conf ファイルの読み込みを抑制します."
 
-#: src/usage_text.h:365
+#: src/usage_text.h:372
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 " --conf-path=PATH             読み込む設定ファイルのパスを PATH に変更します."
 
-#: src/usage_text.h:367
+#: src/usage_text.h:374
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1145,7 +1169,7 @@ msgstr ""
 "す.\n"
 "                              0 を指定すると, この機能は無効になります."
 
-#: src/usage_text.h:370
+#: src/usage_text.h:377
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1164,19 +1188,19 @@ msgstr ""
 "9J1\"\n"
 "                              http://host/file"
 
-#: src/usage_text.h:376
+#: src/usage_text.h:383
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr " -q, --quiet[=true|false]     コンソールに何も表示しないようにします."
 
-#: src/usage_text.h:378
+#: src/usage_text.h:385
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false]     非同期 DNS を有効にします."
 
-#: src/usage_text.h:380
+#: src/usage_text.h:387
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr " --ftp-reuse-connection[=true|false] FTP で接続を再利用します."
 
-#: src/usage_text.h:382
+#: src/usage_text.h:389
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1188,11 +1212,11 @@ msgstr ""
 "0\n"
 "                              を指定します."
 
-#: src/usage_text.h:385
+#: src/usage_text.h:392
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL            出力するログレベルを指定します."
 
-#: src/usage_text.h:387
+#: src/usage_text.h:394
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1204,7 +1228,7 @@ msgstr ""
 "し\n"
 "                              て保存したファイルの更新日付としてに使用します."
 
-#: src/usage_text.h:391
+#: src/usage_text.h:398
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1219,7 +1243,7 @@ msgstr ""
 "                              で指定します. 接続完了後のタイムアウトは,\n"
 "                              --timeout で指定する値を使用します."
 
-#: src/usage_text.h:396
+#: src/usage_text.h:403
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1243,7 +1267,7 @@ msgstr ""
 "有効\n"
 "                              です."
 
-#: src/usage_text.h:403
+#: src/usage_text.h:410
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1308,7 +1332,7 @@ msgstr ""
 "ファ\n"
 "                              イルを使用します."
 
-#: src/usage_text.h:422
+#: src/usage_text.h:429
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1323,7 +1347,7 @@ msgstr ""
 "で\n"
 "                              きます."
 
-#: src/usage_text.h:426
+#: src/usage_text.h:433
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1338,7 +1362,7 @@ msgstr ""
 "                              'feedback' 等の URI セレクターで使用されます.\n"
 "                              --uri-selector オプションを参照してください."
 
-#: src/usage_text.h:431
+#: src/usage_text.h:438
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1353,7 +1377,7 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/usage_text.h:435
+#: src/usage_text.h:442
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1372,7 +1396,7 @@ msgstr ""
 "                              aria2 は終了時にコントロールファイルを保存しま"
 "す."
 
-#: src/usage_text.h:440
+#: src/usage_text.h:447
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1387,7 +1411,7 @@ msgstr ""
 "定\n"
 "                              します."
 
-#: src/usage_text.h:445
+#: src/usage_text.h:452
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
@@ -1401,7 +1425,7 @@ msgstr ""
 "して\n"
 "                              ください."
 
-#: src/usage_text.h:449
+#: src/usage_text.h:456
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1421,7 +1445,7 @@ msgstr ""
 "効に\n"
 "                              します."
 
-#: src/usage_text.h:455
+#: src/usage_text.h:462
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
@@ -1431,7 +1455,7 @@ msgstr ""
 "を\n"
 "                              使ってピアを検証します."
 
-#: src/usage_text.h:458
+#: src/usage_text.h:465
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
@@ -1441,7 +1465,7 @@ msgstr ""
 "をコ\n"
 "                              ンマで区切って指定します."
 
-#: src/usage_text.h:461
+#: src/usage_text.h:468
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
@@ -1450,13 +1474,13 @@ msgstr ""
 " --use-head[=true|false]      HTTP サーバーへの最初のリクエストに HEAD を使い"
 "ます."
 
-#: src/usage_text.h:464
+#: src/usage_text.h:471
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 " --event-poll=POLL            イベントを検出する方法 (システム コール) を指定"
 "します."
 
-#: src/usage_text.h:477
+#: src/usage_text.h:484
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1470,6 +1494,75 @@ msgstr ""
 "                              指定します. '外部' という名前がついていますが, "
 "ど\n"
 "                              のような IP アドレスでも受け付けます."
+
+#: src/usage_text.h:489
+#, fuzzy
+msgid ""
+" --http-auth-challenge[=true|false] Send HTTP authorization header only when "
+"it\n"
+"                              is requested by the server. If false is set, "
+"then\n"
+"                              authorization header is always sent to the "
+"server.\n"
+"                              There is an exception: if username and "
+"password\n"
+"                              are embedded in URI, authorization header is\n"
+"                              always sent to the server regardless of this\n"
+"                              option."
+msgstr ""
+" --bt-hash-check-seed[=true|false] true が指定された場合, --check-integrity "
+"オプ\n"
+"                              ションによるハッシュ チェック後にファイルが完全"
+"で\n"
+"                              ある場合, 引き続きシードを行います. ダウンロー"
+"ドが\n"
+"                              未完の場合のみダウンロードをしたい場合は, "
+"false を\n"
+"                              指定します. このオプションは BitTorrent ダウン"
+"ロー\n"
+"                              ドでのみ有効です."
+
+#: src/usage_text.h:497
+#, fuzzy
+msgid ""
+" -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
+"can\n"
+"                              find the file index using the --show-files "
+"option.\n"
+"                              PATH is a relative path to the path specified "
+"in\n"
+"                              --dir option. You can use this option "
+"multiple\n"
+"                              times."
+msgstr ""
+" --file-allocation=METHOD     ファイル領域を確保する方法を指定します. \n"
+"                              'none' を指定するとファイル領域を事前確保しませ"
+"ん.\n"
+"                              'prealloc' を指定するとファイル領域を事前確保し"
+"ま\n"
+"                              す. この処理は, ファイルサイズによって時間がか"
+"か\n"
+"                              る場合があります."
+
+#: src/usage_text.h:503
+#, fuzzy
+msgid ""
+" --dry-run[=true|false]       If true is given, aria2 just checks whether "
+"the\n"
+"                              remote file is available and doesn't download\n"
+"                              data. This option has effect on HTTP/FTP "
+"download.\n"
+"                              BitTorrent downloads are canceled if true is\n"
+"                              specified."
+msgstr ""
+" --auto-file-renaming[=true|false] 同じファイル名のファイルがすでにファイル"
+"シ\n"
+"                             ステムに存在する場合, ファイル名を自動で変更す"
+"る.\n"
+"                             http(s)/ftp のダウンロードのみで有効である.\n"
+"                             変更の仕方は, ファイル名末尾にドット (.) と番"
+"号\n"
+"                             (1..9999) を付加する."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -2543,9 +2636,49 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
-#: src/Util.cc:724
+#: src/Util.cc:731
 msgid "Files:"
 msgstr "ファイル:"
+
+#~ msgid ""
+#~ " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
+#~ "                              0 means unrestricted.\n"
+#~ "                              You can append K or M(1K = 1024, 1M = "
+#~ "1024K)."
+#~ msgstr ""
+#~ " --max-download-limit=SPEED   ダウンロードの最大速度 (バイト/秒) を指定し"
+#~ "ます.\n"
+#~ "                              0 を指定すると速度の制限をしません. K また"
+#~ "は Mを\n"
+#~ "                              付加することができます (1K = 1024, 1M = "
+#~ "1024K)."
+
+#~ msgid ""
+#~ " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
+#~ "sec.\n"
+#~ "                              0 means unrestricted.\n"
+#~ "                              You can append K or M(1K = 1024, 1M = "
+#~ "1024K).\n"
+#~ "                              To limit the upload speed per torrent, use\n"
+#~ "                              --max-upload-limit option. If non-zero "
+#~ "value is\n"
+#~ "                              specified, --max-upload-limit option is "
+#~ "ignored."
+#~ msgstr ""
+#~ " --max-overall-upload-limit=SPEED プロセス全体のアップロードの最大速度 (バ"
+#~ "イト/\n"
+#~ "                              秒) を指定します. 0 を指定すると速度の制限を"
+#~ "しませ\n"
+#~ "                              ん.\n"
+#~ "                              K または M を付加することができます (1K = "
+#~ "1024, 1M\n"
+#~ "                              = 1024K). torrent 毎のアップロード速度を制限"
+#~ "するに\n"
+#~ "                              は --max-upload-limit オプションを使用しま"
+#~ "す. この\n"
+#~ "                              オプションに 0 以外の値が指定されている場"
+#~ "合,\n"
+#~ "                              --max-upload-limit オプションは無視されます."
 
 #~ msgid ""
 #~ "\n"

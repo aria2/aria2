@@ -1,5 +1,15 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Indonesian, Russian, Italian, Ukrainian and Simplified
+	Chinese translations. Thank you for contributing our project.
+	* po/id.po
+	* po/it.po
+	* po/ru.po
+	* po/uk.po
+	* po/zh_CN.po
+	
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated README
 	* README
 
