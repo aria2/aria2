@@ -1,5 +1,11 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Prepended _dir+"/" after joining path elements in torrent file.
+	* src/DefaultBtContext.cc
+	* test/DefaultBtContextTest.cc
+	
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added missing IndexBtMessageValidator.h
 	* src/Makefile.am
 

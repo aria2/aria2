@@ -154,19 +154,18 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
       std::vector<std::string> pathelem(pathList.size());
       std::transform(pathList.listBegin(), pathList.listEnd(), pathelem.begin(),
 		     std::mem_fun_ref(&bencode::BDE::s));
-      std::string path = Util::joinPath(pathelem.begin(), pathelem.end());
+      std::string path =
+	name+"/"+Util::joinPath(pathelem.begin(), pathelem.end());
       // Split path with '/' again because each pathList element can
       // contain "/" inside.
       std::deque<std::string> elements;
       Util::slice(elements, path, '/');
-      elements.push_front(name);
-      elements.push_front(_dir);
       path = Util::joinPath(elements.begin(), elements.end());
 
       std::deque<std::string> uris;
       std::transform(urlList.begin(), urlList.end(), std::back_inserter(uris),
 		     std::bind2nd(std::plus<std::string>(), "/"+path));
-      FileEntryHandle fileEntry(new FileEntry(path, fileLengthData.i(),
+      FileEntryHandle fileEntry(new FileEntry(_dir+"/"+path, fileLengthData.i(),
 					      offset, uris));
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
@@ -184,9 +183,8 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
     // Slice path by '/' just in case nasty ".." is included in name
     std::deque<std::string> pathelems;
     Util::slice(pathelems, name, '/');
-    pathelems.push_front(_dir);
     SharedHandle<FileEntry> fileEntry
-      (new FileEntry(Util::joinPath(pathelems.begin(), pathelems.end()),
+      (new FileEntry(_dir+"/"+Util::joinPath(pathelems.begin(),pathelems.end()),
 		     totalLength, 0, urlList));
     fileEntries.push_back(fileEntry);
   }

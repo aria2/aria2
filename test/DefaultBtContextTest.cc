@@ -39,6 +39,8 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoadFromMemory);
   CPPUNIT_TEST(testLoadFromMemory_somethingMissing);
   CPPUNIT_TEST(testLoadFromMemory_overrideName);
+  CPPUNIT_TEST(testLoadFromMemory_joinPathMulti);
+  CPPUNIT_TEST(testLoadFromMemory_joinPathSingle);
   CPPUNIT_TEST(testGetNodes);
   CPPUNIT_TEST_SUITE_END();
 public:
@@ -67,6 +69,8 @@ public:
   void testLoadFromMemory();
   void testLoadFromMemory_somethingMissing();
   void testLoadFromMemory_overrideName();
+  void testLoadFromMemory_joinPathMulti();
+  void testLoadFromMemory_joinPathSingle();
   void testGetNodes();
 };
 
@@ -108,11 +112,11 @@ void DefaultBtContextTest::testGetFileEntries() {
   std::deque<SharedHandle<FileEntry> >::iterator itr = fileEntries.begin();
 
   SharedHandle<FileEntry> fileEntry1 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2/src/aria2c"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2/src/aria2c"),
 		       fileEntry1->getPath());
   itr++;
   SharedHandle<FileEntry> fileEntry2 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2-0.2.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2-0.2.2.tar.bz2"),
 		       fileEntry2->getPath());
 }
 
@@ -126,7 +130,7 @@ void DefaultBtContextTest::testGetFileEntriesSingle() {
   std::deque<SharedHandle<FileEntry> >::iterator itr = fileEntries.begin();
 
   SharedHandle<FileEntry> fileEntry1 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-0.8.2.tar.bz2"),
 		       fileEntry1->getPath());
 }
 
@@ -289,7 +293,7 @@ void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {
   std::deque<SharedHandle<FileEntry> >::iterator itr = fileEntries.begin();
 
   SharedHandle<FileEntry> fileEntry1 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2/src/aria2c"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2/src/aria2c"),
 		       fileEntry1->getPath());
   std::deque<std::string> uris1 = fileEntry1->getAssociatedUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris1.size());
@@ -300,7 +304,7 @@ void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {
 
   itr++;
   SharedHandle<FileEntry> fileEntry2 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2-0.2.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2-0.2.2.tar.bz2"),
 		       fileEntry2->getPath());
   std::deque<std::string> uris2 = fileEntry2->getAssociatedUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris2.size());
@@ -319,7 +323,7 @@ void DefaultBtContextTest::testGetFileEntries_singleFileUrlList() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
 
   SharedHandle<FileEntry> fileEntry1 = fileEntries.front();
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2.tar.bz2"),
 		       fileEntry1->getPath());
   std::deque<std::string> uris1 = fileEntry1->getAssociatedUris();
   CPPUNIT_ASSERT_EQUAL((size_t)1, uris1.size());
@@ -362,6 +366,34 @@ void DefaultBtContextTest::testLoadFromMemory_overrideName()
   btContext.loadFromMemory(memory, "default", "aria2-override.name");
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"), btContext.getName());
+}
+
+void DefaultBtContextTest::testLoadFromMemory_joinPathMulti()
+{
+  std::string memory =
+    "d8:announce27:http://example.com/announce4:infod5:filesld6:lengthi262144e4:pathl7:../dir14:dir28:file.imgeee4:name14:../name1/name212:piece lengthi262144e6:pieces20:00000000000000000000ee";
+
+  DefaultBtContext btContext;
+  btContext.setDir("/tmp");
+  btContext.loadFromMemory(memory, "default");
+
+  CPPUNIT_ASSERT_EQUAL(std::string("../name1/name2"), btContext.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/name1/dir1/dir2/file.img"),
+		       btContext.getFileEntries().front()->getPath());
+}
+
+void DefaultBtContextTest::testLoadFromMemory_joinPathSingle()
+{
+  std::string memory =
+    "d8:announce27:http://example.com/announce4:infod4:name14:../name1/name26:lengthi262144e12:piece lengthi262144e6:pieces20:00000000000000000000ee";
+
+  DefaultBtContext btContext;
+  btContext.setDir("/tmp");
+  btContext.loadFromMemory(memory, "default");
+
+  CPPUNIT_ASSERT_EQUAL(std::string("../name1/name2"), btContext.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/name1/name2"),
+		       btContext.getFileEntries().front()->getPath());
 }
 
 void DefaultBtContextTest::testGetNodes()
