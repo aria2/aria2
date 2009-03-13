@@ -164,19 +164,11 @@ multi-file mode::
     is created.  The directory to store the top directory of
     downloaded files can be specified by -d option.
 
-In the default behavior, before download starts, a complete directory
-structure is created if needed. By default, aria2 opens at most 100
-files mentioned in .torrent file, directly writes to and reads from
-these files. The number of files to open simultaneously can be
-controlled by \--bt-max-open-files option.
-
-If \--direct-file-mapping option set to be false, aria2 creates
-temporary file in the store directory. The length of this file is the
-sum of length of the files in .torrent file, so at least 2 times more
-disk space than the file size itself is required. Writing and reading
-are done against this file.  After download completes, aria2 creates
-complete directory structure if needed, and copies whole file or a
-part of it to the destination.
+Before download starts, a complete directory structure is created if
+needed. By default, aria2 opens at most 100 files mentioned in
+.torrent file, directly writes to and reads from these files. The
+number of files to open simultaneously can be controlled by
+\--bt-max-open-files option.
 
 DHT
 ~~~

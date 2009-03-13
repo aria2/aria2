@@ -735,18 +735,11 @@ multi-file mode
 </p>
 </dd>
 </dl></div>
-<div class="para"><p>In the default behavior, before download starts, a complete directory
-structure is created if needed. By default, aria2 opens at most 100
-files mentioned in .torrent file, directly writes to and reads from
-these files. The number of files to open simultaneously can be
-controlled by --bt-max-open-files option.</p></div>
-<div class="para"><p>If --direct-file-mapping option set to be false, aria2 creates
-temporary file in the store directory. The length of this file is the
-sum of length of the files in .torrent file, so at least 2 times more
-disk space than the file size itself is required. Writing and reading
-are done against this file.  After download completes, aria2 creates
-complete directory structure if needed, and copies whole file or a
-part of it to the destination.</p></div>
+<div class="para"><p>Before download starts, a complete directory structure is created if
+needed. By default, aria2 opens at most 100 files mentioned in
+.torrent file, directly writes to and reads from these files. The
+number of files to open simultaneously can be controlled by
+--bt-max-open-files option.</p></div>
 <h3 id="_dht">5.2. DHT</h3><div style="clear:left"></div>
 <div class="para"><p>As of release 0.13.0, aria2 supports DHT. By default, the routing
 table is saved to $HOME/.aria2/dht.dat.</p></div>
@@ -831,7 +824,7 @@ man aria2c
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-15 12:21:10 JST
+Last updated 2009-03-13 22:50:09 JST
 </div>
 </div>
 </body>
