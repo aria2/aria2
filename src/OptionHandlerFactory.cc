@@ -603,7 +603,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_HTTP_AUTH_CHALLENGE,
 				    TEXT_HTTP_AUTH_CHALLENGE,
-				    V_TRUE,
+				    V_FALSE,
 				    OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);

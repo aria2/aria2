@@ -1,5 +1,10 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed the default value of --http-auth-challenge option to false.
+	* src/OptionHandlerFactory.cc
+
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reuse URIs when all unused URIs run out.
 	* src/OptionHandlerFactory.cc
 	* src/RequestGroup.cc
