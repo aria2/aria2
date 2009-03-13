@@ -120,6 +120,9 @@ private:
   virtual const std::deque<SharedHandle<AnnounceTier> >&
   getAnnounceTiers() const;
 
+  // Note: Before calling load* function, call setDir() to specify
+  // directory.  Setting directory after load* function doesn't change
+  // the output file path.
   virtual void load(const std::string& torrentFile,
 		    const std::string& overrideName = "");
 

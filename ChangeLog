@@ -1,5 +1,10 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* src/DefaultBtContext.h
+
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Slice/joinPath for name of single torrent.
 	* src/DefaultBtContext.cc
 	* test/DefaultBtContextTest.cc
