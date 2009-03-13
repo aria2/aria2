@@ -126,7 +126,7 @@ void DefaultBtContextTest::testGetFileEntriesSingle() {
   std::deque<SharedHandle<FileEntry> >::iterator itr = fileEntries.begin();
 
   SharedHandle<FileEntry> fileEntry1 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-0.8.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
 		       fileEntry1->getPath());
 }
 
@@ -319,7 +319,7 @@ void DefaultBtContextTest::testGetFileEntries_singleFileUrlList() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
 
   SharedHandle<FileEntry> fileEntry1 = fileEntries.front();
-  CPPUNIT_ASSERT_EQUAL(std::string("./aria2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
 		       fileEntry1->getPath());
   std::deque<std::string> uris1 = fileEntry1->getAssociatedUris();
   CPPUNIT_ASSERT_EQUAL((size_t)1, uris1.size());

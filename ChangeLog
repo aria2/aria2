@@ -1,5 +1,11 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Slice/joinPath for name of single torrent.
+	* src/DefaultBtContext.cc
+	* test/DefaultBtContextTest.cc
+	
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated man page: Documented --dry-run and --index-out
 	options. Changed the default value of --uri-selector and
 	--http-auth-challenge options. Removed --direct-file-mapping

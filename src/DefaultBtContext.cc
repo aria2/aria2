@@ -181,8 +181,13 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
 				     BtContext::C_LENGTH.c_str()).str());      
     }
     totalLength = lengthData.i();
-    // TODO slice name and apply Util::joinPath()
-    FileEntryHandle fileEntry(new FileEntry(_dir+"/"+name, totalLength, 0, urlList));
+    // Slice path by '/' just in case nasty ".." is included in name
+    std::deque<std::string> pathelems;
+    Util::slice(pathelems, name, '/');
+    pathelems.push_front(_dir);
+    SharedHandle<FileEntry> fileEntry
+      (new FileEntry(Util::joinPath(pathelems.begin(), pathelems.end()),
+		     totalLength, 0, urlList));
     fileEntries.push_back(fileEntry);
   }
 }
