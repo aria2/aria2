@@ -1,5 +1,12 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that AdaptiveURISelector doesn't select any URI when
+	all URIs are tested and their timeout is not reached.
+	* src/AdaptiveURISelector.cc
+	* src/AdaptiveURISelector.h
+
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed the default value of --http-auth-challenge option to false.
 	* src/OptionHandlerFactory.cc
 

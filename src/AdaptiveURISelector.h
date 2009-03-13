@@ -70,6 +70,7 @@ private:
   std::string getFirstToTestUri(const std::deque<std::string>& uris) const;
   SharedHandle<ServerStat> getServerStats(const std::string& uri) const;
   unsigned int getNbTestedServers(const std::deque<std::string>& uris) const;
+  std::string getBestMirror(const std::deque<std::string>& uris) const;
 public:
   AdaptiveURISelector(const SharedHandle<ServerStatMan>& serverStatMan, 
           const SharedHandle<RequestGroup>& requestGroup);
