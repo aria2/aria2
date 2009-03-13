@@ -495,6 +495,17 @@ downloading a file like BitTorrent.</p></div>
 </p>
 </dd>
 <dt>
+<strong>--dry-run</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  If <em>true</em> is given, aria2 just checks whether the remote file is
+  available and doesn't download data. This option has effect on
+  HTTP/FTP download.  BitTorrent downloads are canceled if <em>true</em> is
+  specified.  Default: <em>false</em>
+</p>
+</dd>
+<dt>
 <strong>--lowest-speed-limit</strong>=SPEED
 </dt>
 <dd>
@@ -663,7 +674,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
   yet, and if each of them has already been tested, returns mirrors
   which has to be tested again. Otherwise, it doesn't select anymore
   mirrors. Like <em>feedback</em>, it uses a performance profile of servers.
-  Default: <em>inorder</em>
+  Default: <em>feedback</em>
 </p>
 </dd>
 </dl></div>
@@ -708,7 +719,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
   server. If <em>false</em> is set, then authorization header is always sent
   to the server.  There is an exception: if username and password are
   embedded in URI, authorization header is always sent to the server
-  regardless of this option.  Default: <em>true</em>
+  regardless of this option.  Default: <em>false</em>
 </p>
 </dd>
 <dt>
@@ -1075,17 +1086,6 @@ writes the piece to the appropriate files.</td>
 </div>
 <div class="vlist"><dl>
 <dt>
-<strong>--direct-file-mapping</strong>=<em>true</em>|<em>false</em>
-</dt>
-<dd>
-<p>
-  Directly read from and write to each file mentioned in .torrent file.
-  Use this option if lots of files are listed in .torrent file and aria2
-  complains it cannot open files anymore.
-  Default: <em>true</em>
-</p>
-</dd>
-<dt>
 <strong>--enable-dht</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
@@ -1117,6 +1117,18 @@ writes the piece to the appropriate files.</td>
   kept in memory.
   If <em>false</em> is specified, the action mentioned above is not taken.
   Default: <em>true</em>
+</p>
+</dd>
+<dt>
+<strong>-O</strong>, <strong>--index-out</strong>=INDEX=PATH
+</dt>
+<dd>
+<p>
+  Set file path for file with index=INDEX. You can find the file index
+  using the <strong>--show-files</strong> option.  PATH is a relative path to the
+  path specified in <strong>--dir</strong> option. You can use this option multiple
+  times. Using this option, you can specify the output filenames of
+  BitTorrent downloads.
 </p>
 </dd>
 <dt>
@@ -1810,6 +1822,11 @@ dir
 select-file
 </p>
 </li>
+<li>
+<p>
+index-out
+</p>
+</li>
 </ul></div>
 <div class="para"><p>These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.</p></div>
@@ -2106,6 +2123,28 @@ directory.</td>
 <td class="content">The index is printed to the console using -S option.</td>
 </tr></table>
 </div>
+<h4 id="_specify_output_filename">Specify output filename</h4>
+<div class="para"><p>To specify output filename for BitTorrent downloads, you need to know
+the index of file in torrent file using <strong>-S</strong> option. For example, the
+output looks like this:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>idx|path/length
+===+======================
+  1|dist/base-2.6.18.iso
+   |99.9MiB
+---+----------------------
+  2|dist/driver-2.6.18.iso
+   |169.0MiB
+---+----------------------</tt></pre>
+</div></div>
+<div class="para"><p>To save <em>dist/base-2.6.18.iso</em> in <em>/tmp/mydir/base.iso</em> and
+<em>dist/driver-2.6.18.iso</em> in <em>/tmp/dir/driver.iso</em>, use the following
+command:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --dir=/tmp --index-out=1=mydir/base.iso --index-out=2=dir/driver.iso file.torrent</tt></pre>
+</div></div>
 <h4 id="_change_the_listening_port_for_incoming_peer">Change the listening port for incoming peer</h4>
 <div class="listingblock">
 <div class="content">
@@ -2286,7 +2325,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-02-28 20:50:20 JST
+Last updated 2009-03-13 22:35:04 JST
 </div>
 </div>
 </body>

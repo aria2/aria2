@@ -85,6 +85,12 @@ HTTP/FTP Options
   option makes no effect and *--timeout* option is used instead.
   Default: '60'
 
+*--dry-run*[='true'|'false']::
+  If 'true' is given, aria2 just checks whether the remote file is
+  available and doesn't download data. This option has effect on
+  HTTP/FTP download.  BitTorrent downloads are canceled if 'true' is
+  specified.  Default: 'false'
+
 *--lowest-speed-limit*=SPEED::
   Close connection if download speed is lower than or equal to this
   value(bytes per sec).
@@ -178,7 +184,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
   yet, and if each of them has already been tested, returns mirrors
   which has to be tested again. Otherwise, it doesn't select anymore
   mirrors. Like 'feedback', it uses a performance profile of servers.
-  Default: 'inorder'
+  Default: 'feedback'
 
 HTTP Specific Options
 ~~~~~~~~~~~~~~~~~~~~~
@@ -202,7 +208,7 @@ HTTP Specific Options
   server. If 'false' is set, then authorization header is always sent
   to the server.  There is an exception: if username and password are
   embedded in URI, authorization header is always sent to the server
-  regardless of this option.  Default: 'true'
+  regardless of this option.  Default: 'false'
 
 *--http-auth-scheme*=SCHEME::
   Set HTTP authentication scheme.
@@ -379,12 +385,6 @@ BitTorrent Specific Options
 [NOTE]
 Make sure that the specified ports are open for incoming UDP traffic.
 
-*--direct-file-mapping*='true'|'false'::
-  Directly read from and write to each file mentioned in .torrent file.
-  Use this option if lots of files are listed in .torrent file and aria2
-  complains it cannot open files anymore.
-  Default: 'true'
-
 *--enable-dht*[='true'|'false']::
   Enable DHT functionality. If a private flag is set in a torrent, aria2
   doesn't use DHT for that download even if 'true' is given.
@@ -403,6 +403,13 @@ Make sure that the specified ports are open for incoming UDP traffic.
   kept in memory.
   If 'false' is specified, the action mentioned above is not taken.
   Default: 'true'
+
+*-O*, *--index-out*=INDEX=PATH::
+  Set file path for file with index=INDEX. You can find the file index
+  using the *--show-files* option.  PATH is a relative path to the
+  path specified in *--dir* option. You can use this option multiple
+  times. Using this option, you can specify the output filenames of
+  BitTorrent downloads.
 
 *--listen-port*=PORT...::
   Set TCP port number for BitTorrent downloads.
@@ -814,6 +821,7 @@ of URIs. These optional lines must start with white space(s).
 * out
 * dir
 * select-file
+* index-out
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
@@ -1032,6 +1040,32 @@ aria2c --select-file=1-4,8 file.torrent
 ---------------------------------------
 [NOTE]
 The index is printed to the console using -S option.
+
+Specify output filename
+^^^^^^^^^^^^^^^^^^^^^^^
+
+To specify output filename for BitTorrent downloads, you need to know
+the index of file in torrent file using *-S* option. For example, the
+output looks like this:
+
+--------------------------
+idx|path/length
+===+======================
+  1|dist/base-2.6.18.iso
+   |99.9MiB
+---+----------------------
+  2|dist/driver-2.6.18.iso
+   |169.0MiB
+---+----------------------
+--------------------------
+
+To save 'dist/base-2.6.18.iso' in '/tmp/mydir/base.iso' and
+'dist/driver-2.6.18.iso' in '/tmp/dir/driver.iso', use the following
+command:
+
+-----------------------------------------------------------------------------------------
+aria2c --dir=/tmp --index-out=1=mydir/base.iso --index-out=2=dir/driver.iso file.torrent
+-----------------------------------------------------------------------------------------
 
 Change the listening port for incoming peer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

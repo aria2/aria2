@@ -1,5 +1,13 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page: Documented --dry-run and --index-out
+	options. Changed the default value of --uri-selector and
+	--http-auth-challenge options. Removed --direct-file-mapping
+	option. Added example for --index-out
+	* doc/aria2c.1.txt
+	
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated TEXT_DRY_RUN
 	* src/usage_text.h
 
