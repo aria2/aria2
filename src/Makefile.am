@@ -189,7 +189,7 @@ SRCS =  Socket.h\
 	URISelector.h\
 	AdaptiveURISelector.cc AdaptiveURISelector.h\
 	InOrderURISelector.cc InOrderURISelector.h\
-	ServerStatURISelector.cc ServerStatURISelector.h\
+	FeedbackURISelector.cc FeedbackURISelector.h\
 	NsCookieParser.cc NsCookieParser.h\
 	CookieStorage.cc CookieStorage.h\
 	SocketBuffer.cc SocketBuffer.h\

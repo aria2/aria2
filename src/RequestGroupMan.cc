@@ -55,7 +55,7 @@
 #include "ServerStat.h"
 #include "PeerStat.h"
 #include "SegmentMan.h"
-#include "ServerStatURISelector.h"
+#include "FeedbackURISelector.h"
 #include "InOrderURISelector.h"
 #include "AdaptiveURISelector.h"
 #include "Option.h"
@@ -279,7 +279,7 @@ void RequestGroupMan::configureRequestGroup
   const std::string& uriSelectorValue = _option->get(PREF_URI_SELECTOR);
   if(uriSelectorValue == V_FEEDBACK) {
     requestGroup->setURISelector
-      (SharedHandle<URISelector>(new ServerStatURISelector(_serverStatMan)));
+      (SharedHandle<URISelector>(new FeedbackURISelector(_serverStatMan)));
   } else if(uriSelectorValue == V_INORDER) {
     requestGroup->setURISelector
       (SharedHandle<URISelector>(new InOrderURISelector()));

@@ -1,17 +1,20 @@
-#include "ServerStatURISelector.h"
+#include "FeedbackURISelector.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "array_fun.h"
 #include "ServerStatMan.h"
 #include "ServerStat.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
-class ServerStatURISelectorTest:public CppUnit::TestFixture {
+class FeedbackURISelectorTest:public CppUnit::TestFixture {
 
-  CPPUNIT_TEST_SUITE(ServerStatURISelectorTest);
+  CPPUNIT_TEST_SUITE(FeedbackURISelectorTest);
   CPPUNIT_TEST(testSelect_withoutServerStat);
   CPPUNIT_TEST(testSelect);
   CPPUNIT_TEST(testSelect_skipErrorHost);
@@ -22,7 +25,7 @@ private:
 
   SharedHandle<ServerStatMan> ssm;
 
-  SharedHandle<ServerStatURISelector> sel;
+  SharedHandle<FeedbackURISelector> sel;
   
 public:
   void setUp()
@@ -35,7 +38,7 @@ public:
     uris.assign(&urisSrc[0], &urisSrc[arrayLength(urisSrc)]);
     
     ssm.reset(new ServerStatMan());
-    sel.reset(new ServerStatURISelector(ssm));
+    sel.reset(new FeedbackURISelector(ssm));
   }
 
   void tearDown() {}
@@ -48,9 +51,9 @@ public:
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ServerStatURISelectorTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(FeedbackURISelectorTest);
 
-void ServerStatURISelectorTest::testSelect_withoutServerStat()
+void FeedbackURISelectorTest::testSelect_withoutServerStat()
 {
   // Without ServerStat, selector returns first URI
   std::string uri = sel->select(uris);
@@ -58,7 +61,7 @@ void ServerStatURISelectorTest::testSelect_withoutServerStat()
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
 }
 
-void ServerStatURISelectorTest::testSelect()
+void FeedbackURISelectorTest::testSelect()
 {
   SharedHandle<ServerStat> bravo(new ServerStat("bravo", "http"));
   bravo->updateDownloadSpeed(100000);
@@ -79,7 +82,7 @@ void ServerStatURISelectorTest::testSelect()
   CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
 }
 
-void ServerStatURISelectorTest::testSelect_skipErrorHost()
+void FeedbackURISelectorTest::testSelect_skipErrorHost()
 {
   SharedHandle<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
   alphaHTTP->setError();

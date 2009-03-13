@@ -186,7 +186,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	StringFormatTest.cc ExceptionTest.cc \
 	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
-	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
+	FeedbackURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc FtpConnectionTest.cc OptionParserTest.cc \
@@ -352,8 +352,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	ProtocolDetectorTest.$(OBJEXT) StringFormatTest.$(OBJEXT) \
 	ExceptionTest.$(OBJEXT) DownloadHandlerFactoryTest.$(OBJEXT) \
 	ChunkedDecoderTest.$(OBJEXT) SignatureTest.$(OBJEXT) \
-	ServerStatManTest.$(OBJEXT) \
-	ServerStatURISelectorTest.$(OBJEXT) \
+	ServerStatManTest.$(OBJEXT) FeedbackURISelectorTest.$(OBJEXT) \
 	InOrderURISelectorTest.$(OBJEXT) ServerStatTest.$(OBJEXT) \
 	NsCookieParserTest.$(OBJEXT) DirectDiskAdaptorTest.$(OBJEXT) \
 	CookieTest.$(OBJEXT) CookieStorageTest.$(OBJEXT) \
@@ -582,7 +581,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	StringFormatTest.cc ExceptionTest.cc \
 	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
 	SignatureTest.cc ServerStatManTest.cc \
-	ServerStatURISelectorTest.cc InOrderURISelectorTest.cc \
+	FeedbackURISelectorTest.cc InOrderURISelectorTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc FtpConnectionTest.cc OptionParserTest.cc \
@@ -755,6 +754,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExceptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeedbackURISelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnectionTest.Po@am__quote@
@@ -803,7 +803,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SequentialPickerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatURISelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignatureTest.Po@am__quote@

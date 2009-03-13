@@ -51,7 +51,7 @@ aria2c_SOURCES = AllTest.cc\
 	ChunkedDecoderTest.cc\
 	SignatureTest.cc\
 	ServerStatManTest.cc\
-	ServerStatURISelectorTest.cc\
+	FeedbackURISelectorTest.cc\
 	InOrderURISelectorTest.cc\
 	ServerStatTest.cc\
 	NsCookieParserTest.cc\

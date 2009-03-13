@@ -404,8 +404,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Signature.h ServerStat.cc ServerStat.h ServerStatMan.cc \
 	ServerStatMan.h URISelector.h AdaptiveURISelector.cc \
 	AdaptiveURISelector.h InOrderURISelector.cc \
-	InOrderURISelector.h ServerStatURISelector.cc \
-	ServerStatURISelector.h NsCookieParser.cc NsCookieParser.h \
+	InOrderURISelector.h FeedbackURISelector.cc \
+	FeedbackURISelector.h NsCookieParser.cc NsCookieParser.h \
 	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
 	SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
@@ -809,7 +809,7 @@ am__objects_22 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	RarestPieceSelector.$(OBJEXT) ChunkedDecoder.$(OBJEXT) \
 	Signature.$(OBJEXT) ServerStat.$(OBJEXT) \
 	ServerStatMan.$(OBJEXT) AdaptiveURISelector.$(OBJEXT) \
-	InOrderURISelector.$(OBJEXT) ServerStatURISelector.$(OBJEXT) \
+	InOrderURISelector.$(OBJEXT) FeedbackURISelector.$(OBJEXT) \
 	NsCookieParser.$(OBJEXT) CookieStorage.$(OBJEXT) \
 	SocketBuffer.$(OBJEXT) OptionHandlerException.$(OBJEXT) \
 	bencode.$(OBJEXT) URIResult.$(OBJEXT) \
@@ -1141,8 +1141,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	Signature.h ServerStat.cc ServerStat.h ServerStatMan.cc \
 	ServerStatMan.h URISelector.h AdaptiveURISelector.cc \
 	AdaptiveURISelector.h InOrderURISelector.cc \
-	InOrderURISelector.h ServerStatURISelector.cc \
-	ServerStatURISelector.h NsCookieParser.cc NsCookieParser.h \
+	InOrderURISelector.h FeedbackURISelector.cc \
+	FeedbackURISelector.h NsCookieParser.cc NsCookieParser.h \
 	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
 	SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
@@ -1389,6 +1389,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExpatMetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeedbackURISelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationDispatcherCommand.Po@am__quote@
@@ -1502,7 +1503,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerHost.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatURISelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Signature.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignatureMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBtMessage.Po@am__quote@

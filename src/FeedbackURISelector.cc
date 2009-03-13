@@ -32,20 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ServerStatURISelector.h"
+#include "FeedbackURISelector.h"
+
+#include <algorithm>
+
 #include "ServerStatMan.h"
 #include "ServerStat.h"
 #include "Request.h"
 #include "A2STR.h"
-#include <algorithm>
 
 namespace aria2 {
 
-ServerStatURISelector::ServerStatURISelector
+FeedbackURISelector::FeedbackURISelector
 (const SharedHandle<ServerStatMan>& serverStatMan):
   _serverStatMan(serverStatMan) {}
 
-ServerStatURISelector::~ServerStatURISelector() {}
+FeedbackURISelector::~FeedbackURISelector() {}
 
 class ServerStatFaster {
 public:
@@ -57,7 +59,7 @@ public:
   }
 };
 
-std::string ServerStatURISelector::select(std::deque<std::string>& uris)
+std::string FeedbackURISelector::select(std::deque<std::string>& uris)
 {
   if(uris.empty()) {
     return A2STR::NIL;

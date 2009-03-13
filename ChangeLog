@@ -1,5 +1,18 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed ServerStatURISelector as FeedbackURISelector.
+	* src/FeedbackURISelector.cc
+	* src/FeedbackURISelector.h
+	* src/Makefile.am
+	* src/RequestGroupMan.cc
+	* src/ServerStatURISelector.cc
+	* src/ServerStatURISelector.h
+	* test/FeedbackURISelectorTest.cc
+	* test/Makefile.am
+	* test/ServerStatURISelectorTest.cc
+	
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that AdaptiveURISelector doesn't select any URI when
 	all URIs are tested and their timeout is not reached.
 	* src/AdaptiveURISelector.cc

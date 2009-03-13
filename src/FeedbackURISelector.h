@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SERVER_STAT_URI_SELECTOR_H_
-#define _D_SERVER_STAT_URI_SELECTOR_H_
+#ifndef _D_FEEDBACK_URI_SELECTOR_H_
+#define _D_FEEDBACK_URI_SELECTOR_H_
 #include "URISelector.h"
 #include "SharedHandle.h"
 
@@ -41,18 +41,18 @@ namespace aria2 {
 
 class ServerStatMan;
 
-class ServerStatURISelector:public URISelector {
+class FeedbackURISelector:public URISelector {
 private:
   SharedHandle<ServerStatMan> _serverStatMan;
 
 public:
-  ServerStatURISelector(const SharedHandle<ServerStatMan>& serverStatMan);
+  FeedbackURISelector(const SharedHandle<ServerStatMan>& serverStatMan);
 
-  virtual ~ServerStatURISelector();
+  virtual ~FeedbackURISelector();
 
   virtual std::string select(std::deque<std::string>& uris);
 };
 
 } // namespace aria2
 
-#endif // _D_SERVER_STAT_URI_SELECTOR_H_
+#endif // _D_FEEDBACK_URI_SELECTOR_H_
