@@ -216,7 +216,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	RangeBtMessage.cc RangeBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessage.cc IndexBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.cc ZeroBtMessage.h\
-@ENABLE_BITTORRENT_TRUE@	RangeBtMessageValidator.h
+@ENABLE_BITTORRENT_TRUE@	RangeBtMessageValidator.h\
+@ENABLE_BITTORRENT_TRUE@	IndexBtMessageValidator.h
 
 @ENABLE_METALINK_TRUE@am__append_10 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -541,9 +542,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtLeecherStateChoke.h BtSeederStateChoke.cc \
 	BtSeederStateChoke.h RangeBtMessage.cc RangeBtMessage.h \
 	IndexBtMessage.cc IndexBtMessage.h ZeroBtMessage.cc \
-	ZeroBtMessage.h RangeBtMessageValidator.h Metalinker.cc \
-	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
-	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
+	ZeroBtMessage.h RangeBtMessageValidator.h \
+	IndexBtMessageValidator.h Metalinker.cc Metalinker.h \
+	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
+	MetalinkResource.h MetalinkProcessor.h \
 	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \

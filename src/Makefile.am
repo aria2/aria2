@@ -412,7 +412,8 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	RangeBtMessage.cc RangeBtMessage.h\
 	IndexBtMessage.cc IndexBtMessage.h\
 	ZeroBtMessage.cc ZeroBtMessage.h\
-	RangeBtMessageValidator.h
+	RangeBtMessageValidator.h\
+	IndexBtMessageValidator.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
