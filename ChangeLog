@@ -1,5 +1,10 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Included current URI in exception message.
+	* src/AbstractCommand.cc
+	
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed ServerStatURISelector as FeedbackURISelector.
 	* src/FeedbackURISelector.cc
 	* src/FeedbackURISelector.h

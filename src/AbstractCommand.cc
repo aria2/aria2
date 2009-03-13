@@ -155,14 +155,20 @@ bool AbstractCommand::execute() {
       return false;
     }
   } catch(DlAbortEx& err) {
-    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
+    logger->error(MSG_DOWNLOAD_ABORTED,
+		  DlAbortEx(StringFormat
+			    ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
+		  cuid, req->getUrl().c_str());
     _requestGroup->addURIResult(req->getUrl(), err.getCode());
     onAbort();
     req->resetUrl();
     tryReserved();
     return true;
   } catch(DlRetryEx& err) {
-    logger->info(MSG_RESTARTING_DOWNLOAD, err, cuid, req->getUrl().c_str());
+    logger->info(MSG_RESTARTING_DOWNLOAD,
+		 DlRetryEx(StringFormat
+			   ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
+		 cuid, req->getUrl().c_str());
     req->addTryCount();
     req->resetRedirectCount();
     bool isAbort = _requestGroup->getMaxTries() != 0 &&
