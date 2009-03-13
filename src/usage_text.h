@@ -502,6 +502,6 @@ _(" -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You ca
 #define TEXT_DRY_RUN \
 _(" --dry-run[=true|false]       If true is given, aria2 just checks whether the\n"\
   "                              remote file is available and doesn't download\n"\
-  "                              data. This option has effect on HTTP/FTP downloads\n"\
-  "                              and BitTorrent downloads are canceled if true is\n"\
+  "                              data. This option has effect on HTTP/FTP download.\n"\
+  "                              BitTorrent downloads are canceled if true is\n"\
   "                              specified.")

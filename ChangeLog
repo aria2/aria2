@@ -1,5 +1,10 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated TEXT_DRY_RUN
+	* src/usage_text.h
+
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed the default value of --uri-selector option from 'inorder'
 	to 'feedback'
 	* src/OptionHandlerFactory.cc
