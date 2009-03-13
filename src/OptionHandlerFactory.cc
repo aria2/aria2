@@ -454,6 +454,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_REUSE_URI,
+				    NO_DESCRIPTION,
+				    V_TRUE));
+    op->hide();
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<UnitNumberOptionHandler> op(new UnitNumberOptionHandler
 					     (PREF_SEGMENT_SIZE,
 					      NO_DESCRIPTION,

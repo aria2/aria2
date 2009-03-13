@@ -164,6 +164,8 @@ extern const std::string PREF_ENABLE_HTTP_SERVER;
 extern const std::string PREF_RESET_URI;
 // value: true | false
 extern const std::string PREF_DRY_RUN;
+// value: true | false
+extern const std::string PREF_REUSE_URI;
 
 /**
  * FTP related preferences

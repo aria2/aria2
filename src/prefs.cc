@@ -160,6 +160,8 @@ const std::string PREF_ENABLE_HTTP_SERVER("enable-http-server");
 const std::string PREF_RESET_URI("reset-uri");
 // value: true | false
 const std::string PREF_DRY_RUN("dry-run");
+// value: true | false
+const std::string PREF_REUSE_URI("reuse-uri");
 
 /**
  * FTP related preferences

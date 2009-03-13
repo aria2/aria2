@@ -1,5 +1,13 @@
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Reuse URIs when all unused URIs run out.
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/prefs.cc
+	* src/prefs.h
+
+2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Refactored BtMessage subclasses. BtCancelMessage, BtRequestMessage
 	and BtRejectMessage are derived from RangeBtMessage class.
 	BtAllowedFastMessage, BtHaveMessage and BtSuggestPieceMessage are
