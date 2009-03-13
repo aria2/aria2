@@ -1,131 +1,79 @@
-aria2 1.2.0
+aria2 1.3.0
 ===========
 
 Release Note
 ------------
 
-This release adds the AdaptiveURISelector from Mandriva developers and
-changes the default value of --proxy-method option from 'tunnel' to
-'get'. The several BitTorrent options were added: limiting the number
-of peers, choosing port randomly from specified range, a toggle to
-seed after successful hash check and specifying IP address to report
-to a tracker. Hash checking is now done sequentially rather than
-simultaneously.  HTTP Authorization was also refined so that now
-authorization header is sent to the server only when it is
-requested(there are some exceptions, see Changes below). aria2 now
-returns exit code depending on the last error. All exit codes are
-documented in man page.  This release also adds experimental built-in
-HTTP server which provides the current download progress in plain
-html. Indonesian, Italian, Japanese, Russian, Spanish and Ukrainian
+This release adds the ability to specify the output filenames in
+BitTorrent downloads and the option to limit overall download speed
+and dry run mode which just checks the availability of the remove
+file. -i list option can now take more options: select-file and
+index-out.  The default behavior of sending HTTP Authorization header
+is reverted back to version 1.1.2 style. The bug in
+AdaptiveURISelector was fixed.  You can now seed read-only files in
+BitTorrent.
+
+Indonesian, Russian, Italian, Ukrainian and Simplified Chinese
 translations were updated.
 
 Changes
 -------
 
-* Updated Indonesian, Italian, Japanese, Russian, Spanish and
-  Ukrainian translations.  Thanks to all translators.
+* Changed the default value of --uri-selector option from 'inorder' to
+  'feedback'
+	
+* Included current URI in exception message.
+	
+* Fixed the bug that AdaptiveURISelector doesn't select any URI when
+  all URIs are tested and their timeout is not reached.
 
-* Fixed the segmentation fault during execution of choking algorithm
-  in leecher state because of broken compare operator implementation.
+* Reuse URIs when all unused URIs run out.
 
-* Open file in binary mode. This fixes the bug that local torrent file
-  doesn't work on win32.
+* Removed --direct-file-mapping option and CopyDiskAdaptor.
 
-* Added a check to see struct sockaddr_in has sin_len member.  Set
-  struct sockaddr_in.sin_len if HAVE_SOCKADDR_IN_SIN_LEN is defined.
+* Added --dry-run option.  In this mode, aria2 just checks whether
+  the remote file is available and doesn't download data. This
+  option has effect on HTTP/FTP downloads and BitTorrent downloads
+  are canceled in this mode.
 
-* Fixed possible buffer overrun when writing dht.dat.
+* Parse options in -i list using OptionParser.
 
-* Fix epoll error on the old kernel 2.6.8 or ealier.
+* Don't reset URI in retry to avoid additional round trips because
+  of redirects.	
 
-* Fixed the bug that adding 0 length filter to BitfieldMan filters 1
-  block. It should not filter anything.
+* Added --index-out option to specify each file path for torrent.
+  Here index shown in --show-files option is used to specify which
+  file path should be altered. For example, to change the file path
+  with index=2, use --index-out=2=aria2.tar.bz2. You can use this
+  option multiple times: --index-out=1=aria2.tar.bz2
+  --index-out=2=aria2-opt.tar.bz2. The short hand form -O is also
+  available. This option can be specified in -i list.
 
-* Fixed broken selected file BitTorrent download.
+* Added --max-overall-download-limit option.  Now --max-upload-limit
+  option is not ignored when --max-overall-upload-limit option has
+  non-zero value. aria2 checks download(upload) speed in the order:
+  first checks overall speed limit and if it is not exceeded, then
+  checks speed limit per download.  Thus you can specify both
+  value. For example, set --max-overall-download-limit=1M and
+  --max-download-limit=500K to prevent from one download from eating
+  all overall speed limit.
 
-* Changed the default value of --proxy-method option from 'tunnel' to
-  'get'. Use 'tunnel' for HTTPS regardless of --proxy-method option.
+* Now select-file can be specified in the uri list(-i list).
 
-* Added --bt-external-ip option. You can specify the external IP
-  address to report to a BitTorrent tracker. Although this function is
-  named 'external', it can accept any kind of IP addresses.
+* Made the upper value of --max-concurrent-downloads options unlimited.
 
-* Applied AdaptiveURISelector-timeout patch from Pascal Rigaux at
-  Mandriva. I modified the patch: make RequestGroup have the timeout
-  value and AdaptiveURISelector directly modifies that value.
+* Fixed the bug that disk writer is not created even if it shares same
+  piece with the preceding file if the length of previous file is 0.
 
-* Use LongestSequencePieceSelector for HTTP/FTP/BitTorrent integrated
-  downloads. This PieceSelector subclass finds the longest continuous
-  sequence in the available missing pieces and selects the last index
-  of such sequence. This makes HTTP/FTP connections less interrupted
-  by the pieces obtained by BitTorrent peers.
+* In BitTorrent, Open files in read-only mode for hash check.  After
+  that, re-open file in read/write mode only when the download is
+  not finished.	
 
-* Fixed the bug that the average speed is wrong in http/ftp/BitTorrent
-  integrated download. Only the download bytes in BitTorrent were
-  considered.
-
-* Choose port for BitTorrent/DHT randomly from the specified range.
-  REQUEST#2543518
-
-* Send HTTP Authorization header only if it is requested by the
-  server(response 401). There are some exceptions. The authorization
-  header for proxy is always sent if it is available without request
-  by the server.  If username/password is specified in the URI, it is
-  immediately sent to the server without request by the server.
-  Implements REQUEST#2540844.
-
-* Remove leading "--" from help keyword and a substring after "=" from
-  help keyword, so that one can query options by '-h--max-' or
-  '-hmax-peers=10'.
-
-* Added experimental built-in HTTP server. Currently, when a client
-  accesses to the server, it responds with the current download
-  progress. By default, it is disabled. To enable the server, give
-  --enable-http-server option.  To change the default port number for
-  the server to listen to, use --http-server-listen-port option.  The
-  response HTML is very simple and refreshes it self each 1 second.
-  Because of this refresh, you see flicker in normal web browser such
-  as Firefox.  I recommend to use console-based browser such as
-  elinks, w3m.  To connect to the server, run 'elinks
-  http://localhost:6800/' while running aria2. Please replace port
-  number '6800'(which is default) with your preference.
-
-* Made (piece) hash check sequential for each RequestGroup because
-  simultaneous hash check is slower than sequential execution.
-
-* Added --bt-max-peers option to specify the maximum number of peers
-  per torrent. 0 means unlimited number of peers. REQUEST#2451382
-
-* Added --bt-hash-check-seed option.  If true is given to this option,
-  after hash check using --check-integrity option and file is
-  complete, continue to seed file. If you want to check file and
-  download it only when it is damaged or incomplete, set this option
-  to false.  This option has effect only on BitTorrent download.  The
-  default value is true(This is the same behavior with the previous
-  release).
-
-* Made the max value of split option unlimited. REQUEST#2496748
-
-* Added --event-poll option to select the method for polling events.
-  The available methods are "select" and "epoll". "epoll" is
-  available on Linux only. The earlier release has the compile
-  option to choose from these methods.
-
-* Included RecoverableException.h from main.cc. BUG#2498160
-
-* Applied exit-status patch from Pascal Rigaux at Mandriva.  aria2 now
-  returns last error encountered in the HTTP/FTP downloads as a exit
-  status value.  If all downloads finished successfully, aria2 returns
-  0.  The error code is defined in src/DownloadResult.h.  The error
-  occurred in the download currently in progress is not reported as a
-  last error.  If no error has encountered but there are in progress
-  or waiting downloads, aria2 returns 7.
-
-* Applied AdaptiveURISelector patch from Aurelien Lefebvre.  This
-  patch adds AdaptiveURISelector, which selects one of the bests
-  mirrors for first and reserved connections. For supplementary
-  ones, it returns mirrors which has not been tested yet, and if
-  each of them already tested, returns mirrors which has to be
-  tested again. Otherwise, it doesn't return anymore mirrors.
-
-* Fixed unit test error in HTTPResponseTest. PATCH#2485509
+* Added --http-auth-challenge option.  If it is set to true, aria2
+  sends HTTP authorization header only when it is requested by the
+  server. If false is set, then authorization header is always sent to
+  the server. This is useful for servers that don't respond 401 code
+  when authentication is required.  There is an exception: if username
+  and password are embedded in URI, authorization header is always
+  sent to the server regardless of this option. The default value of
+  this option is false.
