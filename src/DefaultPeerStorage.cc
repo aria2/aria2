@@ -59,7 +59,8 @@ DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
   removedPeerSessionDownloadLength(0),
   removedPeerSessionUploadLength(0),
   _seederStateChoke(new BtSeederStateChoke()),
-  _leecherStateChoke(new BtLeecherStateChoke())
+  _leecherStateChoke(new BtLeecherStateChoke()),
+  _lastTransferStatMapUpdated(0)
 {}
 
 DefaultPeerStorage::~DefaultPeerStorage()
@@ -191,36 +192,57 @@ void DefaultPeerStorage::getActivePeers(std::deque<SharedHandle<Peer> >& activeP
   std::for_each(peers.begin(), peers.end(), CollectActivePeer(activePeers));
 }
 
-class CalculateStat {
-private:
-  TransferStat _stat;
-  struct timeval _now;
-public:
-  CalculateStat()
-  {
-    gettimeofday(&_now, 0);
-  }
+static TransferStat caluclateStatFor(const SharedHandle<Peer>& peer)
+{
+  struct timeval now;
+  gettimeofday(&now, 0);
+  TransferStat s;
+  s.downloadSpeed = peer->calculateDownloadSpeed(now);
+  s.uploadSpeed = peer->calculateUploadSpeed(now);
+  s.sessionDownloadLength = peer->getSessionDownloadLength();
+  s.sessionUploadLength = peer->getSessionUploadLength();
+  return s;
+}
 
-  void operator()(const PeerHandle& peer)
-  {
-    if(peer->isActive()) {
-      _stat.downloadSpeed += peer->calculateDownloadSpeed(_now);
-      _stat.uploadSpeed += peer->calculateUploadSpeed(_now);
-      _stat.sessionDownloadLength += peer->getSessionDownloadLength();
-      _stat.sessionUploadLength += peer->getSessionUploadLength();    
+TransferStat DefaultPeerStorage::calculateStat()
+{
+  TransferStat stat;
+  if(_lastTransferStatMapUpdated.elapsedInMillis(250)) {
+    logger->debug("Updating TransferStat of PeerStorage");
+    _lastTransferStatMapUpdated.reset();
+    _peerTransferStatMap.clear();
+    std::deque<SharedHandle<Peer> > activePeers;
+    getActivePeers(activePeers);
+    struct timeval now;
+    gettimeofday(&now, 0);
+    for(std::deque<SharedHandle<Peer> >::const_iterator i = activePeers.begin();
+	i != activePeers.end(); ++i) {
+      TransferStat s;
+      s.downloadSpeed = (*i)->calculateDownloadSpeed(now);
+      s.uploadSpeed = (*i)->calculateUploadSpeed(now);
+      s.sessionDownloadLength = (*i)->getSessionDownloadLength();
+      s.sessionUploadLength = (*i)->getSessionUploadLength();
+
+      _peerTransferStatMap[(*i)->getID()] = caluclateStatFor(*i);
+      stat = stat+s;
+    }
+  } else {
+    for(std::map<std::string, TransferStat>::const_iterator i =
+	  _peerTransferStatMap.begin(); i != _peerTransferStatMap.end(); ++i) {
+      stat = stat+(*i).second;
     }
   }
-
-  const TransferStat& getTransferStat() { return _stat; }
-};
-
-TransferStat DefaultPeerStorage::calculateStat() {
-  TransferStat stat = std::for_each(peers.begin(), peers.end(), CalculateStat()).getTransferStat();
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
   stat.setAllTimeUploadLength(_btRuntime->getUploadLengthAtStartup()+
 			      stat.getSessionUploadLength());
   return stat;
+}
+
+void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
+{
+  logger->debug("Updating TransferStat for peer %s", peer->getID().c_str());
+  _peerTransferStatMap[peer->getID()] = caluclateStatFor(peer);
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {

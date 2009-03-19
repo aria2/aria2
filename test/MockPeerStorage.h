@@ -71,6 +71,8 @@ public:
     ++_numChokeExecuted;
   }
 
+  virtual void updateTransferStatFor(const SharedHandle<Peer>& peer) {}
+
   int getNumChokeExecuted() const
   {
     return _numChokeExecuted;

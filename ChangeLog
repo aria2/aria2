@@ -1,3 +1,19 @@
+2009-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Reduced the number of calls to PeerStorage::calculateStat() and
+	SegmentMan::calculateDownloadSpeed() to lower CPU usage on higher
+	transfer rate.	
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/PeerStorage.h
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* test/MockPeerStorage.h
+	
 2009-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Prepended _dir+"/" after joining path elements in torrent file.

@@ -161,6 +161,8 @@ bool DownloadCommand::executeInternal() {
   
   peerStat->updateDownloadLength(bufSize);
 
+  _requestGroup->getSegmentMan()->updateDownloadSpeedFor(peerStat);
+
   if(_requestGroup->getTotalLength() != 0 && bufSize == 0 &&
      !socket->wantRead() && !socket->wantWrite()) {
     throw DlRetryEx(EX_GOT_EOF);

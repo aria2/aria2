@@ -36,8 +36,13 @@
 #define _D_SEGMENT_MAN_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <deque>
+#include <map>
+
+#include "SharedHandle.h"
+#include "TimeA2.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -78,6 +83,11 @@ private:
   SegmentEntries usedSegmentEntries;
 
   std::deque<SharedHandle<PeerStat> > peerStats;
+
+  // key: PeerStat's cuid, value: its download speed
+  std::map<int32_t, unsigned int> _peerStatDlspdMap;
+
+  Time _lastPeerStatDlspdMapUpdated;
 
   SharedHandle<Segment> checkoutSegment(int32_t cuid,
 					const SharedHandle<Piece>& piece);
@@ -177,7 +187,9 @@ public:
   /**
    * Returns current download speed in bytes per sec. 
    */
-  unsigned int calculateDownloadSpeed() const;
+  unsigned int calculateDownloadSpeed();
+
+  void updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat);
 
   /**
    * Returns the downloaded bytes in this session.

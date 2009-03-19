@@ -85,6 +85,8 @@ public:
    */
   virtual TransferStat calculateStat() = 0;
 
+  virtual void updateTransferStatFor(const SharedHandle<Peer>& peer) = 0;
+
   /**
    * Tells PeerStorage object that peer is no longer used in the session.
    */

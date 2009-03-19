@@ -37,6 +37,10 @@
 
 #include "PeerStorage.h"
 
+#include <map>
+
+#include "TimeA2.h"
+
 namespace aria2 {
 
 class BtContext;
@@ -60,6 +64,10 @@ private:
 
   BtSeederStateChoke* _seederStateChoke;
   BtLeecherStateChoke* _leecherStateChoke;
+
+  std::map<std::string, TransferStat> _peerTransferStatMap;
+
+  Time _lastTransferStatMapUpdated;
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:
@@ -85,6 +93,8 @@ public:
   virtual void getActivePeers(std::deque<SharedHandle<Peer> >& peers);
 
   virtual TransferStat calculateStat();
+
+  virtual void updateTransferStatFor(const SharedHandle<Peer>& peer);
 
   virtual void returnPeer(const SharedHandle<Peer>& peer);
 

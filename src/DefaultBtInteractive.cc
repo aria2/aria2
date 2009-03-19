@@ -265,8 +265,10 @@ size_t DefaultBtInteractive::receiveMessages() {
 	floodingStat.incChokeUnchokeCount();
       }
       break;
-    case BtRequestMessage::ID:
     case BtPieceMessage::ID:
+      _peerStorage->updateTransferStatFor(peer);
+      // pass through
+    case BtRequestMessage::ID:
       inactiveCheckPoint.reset();
       break;
     }

@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "SegmentMan.h"
+
+#include <cassert>
+#include <algorithm>
+#include <numeric>
+
 #include "Util.h"
 #include "message.h"
 #include "prefs.h"
@@ -45,9 +50,6 @@
 #include "Option.h"
 #include "DownloadContext.h"
 #include "Piece.h"
-#include <algorithm>
-#include <numeric>
-#include <cassert>
 
 namespace aria2 {
 
@@ -62,7 +64,8 @@ SegmentMan::SegmentMan(const Option* option,
   _option(option),
   logger(LogFactory::getInstance()),
   _downloadContext(downloadContext),
-  _pieceStorage(pieceStorage)
+  _pieceStorage(pieceStorage),
+  _lastPeerStatDlspdMapUpdated(0)
 {}
 
 SegmentMan::~SegmentMan() {}
@@ -296,15 +299,33 @@ const std::deque<SharedHandle<PeerStat> >& SegmentMan::getPeerStats() const
   return peerStats;
 }
 
-unsigned int SegmentMan::calculateDownloadSpeed() const {
+unsigned int SegmentMan::calculateDownloadSpeed()
+{
   unsigned int speed = 0;
-  for(std::deque<SharedHandle<PeerStat> >::const_iterator itr = peerStats.begin(); itr != peerStats.end(); itr++) {
-    const PeerStatHandle& peerStat = *itr;
-    if(peerStat->getStatus() == PeerStat::ACTIVE) {
-      speed += peerStat->calculateDownloadSpeed();
+  if(_lastPeerStatDlspdMapUpdated.elapsedInMillis(250)) {
+    _lastPeerStatDlspdMapUpdated.reset();
+    _peerStatDlspdMap.clear();
+    for(std::deque<SharedHandle<PeerStat> >::const_iterator i =
+	  peerStats.begin(); i != peerStats.end(); ++i) {
+      if((*i)->getStatus() == PeerStat::ACTIVE) {
+	unsigned int s = (*i)->calculateDownloadSpeed();
+	_peerStatDlspdMap[(*i)->getCuid()] = s;
+	speed += s;
+      }
+    }
+  } else {
+    for(std::map<int32_t, unsigned int>::const_iterator i =
+	  _peerStatDlspdMap.begin();
+	i != _peerStatDlspdMap.end(); ++i) {
+      speed += (*i).second;
     }
   }
   return speed;
+}
+
+void SegmentMan::updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat)
+{
+  _peerStatDlspdMap[pstat->getCuid()] = pstat->calculateDownloadSpeed();
 }
 
 class PeerStatDownloadLengthOperator {

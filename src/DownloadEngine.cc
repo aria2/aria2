@@ -204,6 +204,7 @@ void DownloadEngine::onEndOfRun()
 
 void DownloadEngine::afterEachIteration()
 {
+  _requestGroupMan->calculateStat();
   if(globalHaltRequested == 1) {
     logger->notice(_("Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."));
     requestHalt();
