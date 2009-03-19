@@ -36,9 +36,12 @@
 #define _D_PEER_STAT_H_
 
 #include "common.h"
+
+#include <string>
+
 #include "SpeedCalc.h"
 #include "SharedHandle.h"
-#include <string>
+#include "Command.h"
 
 namespace aria2 {
 
@@ -50,7 +53,7 @@ public:
     REQUEST_IDLE,
   };
 private:
-  int32_t cuid;
+  cuid_t cuid;
   std::string _hostname;
   std::string _protocol;
   SpeedCalc downloadSpeed;
@@ -63,7 +66,7 @@ private:
   uint64_t _sessionUploadLength;
 public:
 
-  PeerStat(int32_t cuid, const std::string& hostname,
+  PeerStat(cuid_t cuid, const std::string& hostname,
 	   const::std::string& protocol):
     cuid(cuid),
     _hostname(hostname),
@@ -74,11 +77,11 @@ public:
     _sessionDownloadLength(0),
     _sessionUploadLength(0) {}
 
-  PeerStat(int32_t cuid = 0):cuid(cuid), status(PeerStat::IDLE),
-			     _avgDownloadSpeed(0),
-			     _avgUploadSpeed(0),
-			     _sessionDownloadLength(0),
-			     _sessionUploadLength(0) {}
+  PeerStat(cuid_t cuid = 0):cuid(cuid), status(PeerStat::IDLE),
+			    _avgDownloadSpeed(0),
+			    _avgUploadSpeed(0),
+			    _sessionDownloadLength(0),
+			    _sessionUploadLength(0) {}
 
   ~PeerStat() {}
 
@@ -167,7 +170,7 @@ public:
     return status;
   }
 
-  int32_t getCuid() const {
+  cuid_t getCuid() const {
     return cuid;
   }
 

@@ -36,22 +36,25 @@
 #define _D_CUID_COUNTER_H_
 
 #include "common.h"
+#include "Command.h"
 
 namespace aria2 {
 
-typedef int32_t CUID;
-
 class CUIDCounter {
 private:
-  int32_t count;
+  cuid_t _count;
 public:
-  CUIDCounter():count(0) {}
+  CUIDCounter():_count(0) {}
 
   ~CUIDCounter() {}
 
-  CUID newID()
+  cuid_t newID()
   {
-    return ++count;
+    cuid_t id = ++_count;
+    if(id == INT32_MAX) {
+      _count = 0;
+    }
+    return id;
   }
 };
 

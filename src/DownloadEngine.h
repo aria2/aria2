@@ -230,7 +230,7 @@ public:
 
   SharedHandle<BtRegistry> getBtRegistry() const;
 
-  CUID newCUID();
+  cuid_t newCUID();
 
   const std::string& findCachedIPAddress(const std::string& hostname) const;
 

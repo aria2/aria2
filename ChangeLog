@@ -1,5 +1,17 @@
 2009-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Typedefed cuid_t as int32_t in Command.h
+	* src/CUIDCounter.h
+	* src/Command.cc
+	* src/Command.h
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/PeerStat.h
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+
+2009-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reduced the number of calls to PeerStorage::calculateStat() and
 	SegmentMan::calculateDownloadSpeed() to lower CPU usage on higher
 	transfer rate.	

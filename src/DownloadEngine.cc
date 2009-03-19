@@ -459,7 +459,7 @@ DownloadEngine::SocketPoolEntry::getOptions() const
   return _options;
 }
 
-CUID DownloadEngine::newCUID()
+cuid_t DownloadEngine::newCUID()
 {
   return _cuidCounter.newID();
 }

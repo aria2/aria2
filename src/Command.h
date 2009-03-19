@@ -45,6 +45,8 @@ class Logger;
 
 typedef int32_t CommandUuid;
 
+typedef int32_t cuid_t;
+
 class Command {
 public:
   enum STATUS {
@@ -67,13 +69,13 @@ protected:
   bool _errorEvent;
   bool _hupEvent;
 public:
-  Command(int32_t cuid);
+  Command(cuid_t cuid);
 
   virtual ~Command() {}
 
   virtual bool execute() = 0;
 
-  int32_t getCuid() const { return cuid; }
+  cuid_t getCuid() const { return cuid; }
 
   const CommandUuid& getUuid() const { return uuid; }
 

@@ -56,10 +56,10 @@ class Piece;
 
 class SegmentEntry {
 public:
-  int32_t cuid;
+  cuid_t cuid;
   SharedHandle<Segment> segment;
 public:
-  SegmentEntry(int32_t cuid, const SharedHandle<Segment>& segment);
+  SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment);
 
   ~SegmentEntry();
 };
@@ -85,11 +85,11 @@ private:
   std::deque<SharedHandle<PeerStat> > peerStats;
 
   // key: PeerStat's cuid, value: its download speed
-  std::map<int32_t, unsigned int> _peerStatDlspdMap;
+  std::map<cuid_t, unsigned int> _peerStatDlspdMap;
 
   Time _lastPeerStatDlspdMapUpdated;
 
-  SharedHandle<Segment> checkoutSegment(int32_t cuid,
+  SharedHandle<Segment> checkoutSegment(cuid_t cuid,
 					const SharedHandle<Piece>& piece);
 
   SharedHandle<SegmentEntry> findSlowerSegmentEntry
@@ -125,9 +125,9 @@ public:
    * This function doesn't clear passed segments.
    */
   void getInFlightSegment(std::deque<SharedHandle<Segment> >& segments,
-			  int32_t cuid);
+			  cuid_t cuid);
 
-  SharedHandle<Segment> getSegment(int32_t cuid);
+  SharedHandle<Segment> getSegment(cuid_t cuid);
 
   /**
    * Returns a segment whose index is index. 
@@ -135,7 +135,7 @@ public:
    * to another cuid or has been downloaded, then returns a segment instance
    * whose isNull call is true.
    */
-  SharedHandle<Segment> getSegment(int32_t cuid, size_t index);
+  SharedHandle<Segment> getSegment(cuid_t cuid, size_t index);
   /**
    * Updates download status.
    */
@@ -144,11 +144,11 @@ public:
    * Cancels all the segment which the command having given cuid
    * uses.
    */
-  void cancelSegment(int32_t cuid);
+  void cancelSegment(cuid_t cuid);
   /**
    * Tells SegmentMan that the segment has been downloaded successfully.
    */
-  bool completeSegment(int32_t cuid, const SharedHandle<Segment>& segment);
+  bool completeSegment(cuid_t cuid, const SharedHandle<Segment>& segment);
 
   /**
    * Injects PieceStorage.
@@ -179,7 +179,7 @@ public:
    * Returns peerStat whose cuid is given cuid. If it is not found, returns
    * 0.
    */
-  SharedHandle<PeerStat> getPeerStat(int32_t cuid) const;
+  SharedHandle<PeerStat> getPeerStat(cuid_t cuid) const;
 
 
   const std::deque<SharedHandle<PeerStat> >& getPeerStats() const;
