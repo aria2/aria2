@@ -1,3 +1,12 @@
+2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Cached TransferStat/download speed to avoid to sum them up in each
+	call.	
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+
 2009-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Typedefed cuid_t as int32_t in Command.h

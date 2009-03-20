@@ -65,7 +65,8 @@ SegmentMan::SegmentMan(const Option* option,
   logger(LogFactory::getInstance()),
   _downloadContext(downloadContext),
   _pieceStorage(pieceStorage),
-  _lastPeerStatDlspdMapUpdated(0)
+  _lastPeerStatDlspdMapUpdated(0),
+  _cachedDlspd(0)
 {}
 
 SegmentMan::~SegmentMan() {}
@@ -313,19 +314,24 @@ unsigned int SegmentMan::calculateDownloadSpeed()
 	speed += s;
       }
     }
+    _cachedDlspd = speed;
   } else {
-    for(std::map<cuid_t, unsigned int>::const_iterator i =
-	  _peerStatDlspdMap.begin();
-	i != _peerStatDlspdMap.end(); ++i) {
-      speed += (*i).second;
-    }
+    speed = _cachedDlspd;
   }
   return speed;
 }
 
 void SegmentMan::updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat)
 {
-  _peerStatDlspdMap[pstat->getCuid()] = pstat->calculateDownloadSpeed();
+  unsigned int newspd = pstat->calculateDownloadSpeed();
+  unsigned int oldSpd = _peerStatDlspdMap[pstat->getCuid()];
+  if(_cachedDlspd > oldSpd) {
+    _cachedDlspd -= oldSpd;
+    _cachedDlspd += newspd;
+  } else {
+    _cachedDlspd = newspd;
+  }
+  _peerStatDlspdMap[pstat->getCuid()] = newspd;
 }
 
 class PeerStatDownloadLengthOperator {

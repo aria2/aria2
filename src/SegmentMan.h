@@ -89,6 +89,8 @@ private:
 
   Time _lastPeerStatDlspdMapUpdated;
 
+  unsigned int _cachedDlspd;
+
   SharedHandle<Segment> checkoutSegment(cuid_t cuid,
 					const SharedHandle<Piece>& piece);
 

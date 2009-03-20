@@ -69,6 +69,8 @@ private:
 
   Time _lastTransferStatMapUpdated;
 
+  TransferStat _cachedTransferStat;
+
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:
   DefaultPeerStorage(const SharedHandle<BtContext>& btContext,

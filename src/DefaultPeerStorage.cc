@@ -224,13 +224,11 @@ TransferStat DefaultPeerStorage::calculateStat()
       s.sessionUploadLength = (*i)->getSessionUploadLength();
 
       _peerTransferStatMap[(*i)->getID()] = caluclateStatFor(*i);
-      stat = stat+s;
+      stat += s;
     }
+    _cachedTransferStat = stat;
   } else {
-    for(std::map<std::string, TransferStat>::const_iterator i =
-	  _peerTransferStatMap.begin(); i != _peerTransferStatMap.end(); ++i) {
-      stat = stat+(*i).second;
-    }
+    stat = _cachedTransferStat;
   }
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
@@ -242,7 +240,10 @@ TransferStat DefaultPeerStorage::calculateStat()
 void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
 {
   logger->debug("Updating TransferStat for peer %s", peer->getID().c_str());
-  _peerTransferStatMap[peer->getID()] = caluclateStatFor(peer);
+  _cachedTransferStat = _cachedTransferStat-_peerTransferStatMap[peer->getID()];
+  TransferStat s = caluclateStatFor(peer);
+  _cachedTransferStat += s;
+  _peerTransferStatMap[peer->getID()] = s;
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
