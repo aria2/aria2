@@ -212,8 +212,10 @@ bool BitfieldMan::getMissingIndexRandomly(size_t& index,
     } else {
       mask = 0xff;
     }
-    if(bitfield[byte]&mask) {
-      index = byte*8+getNthBitIndex(bitfield[byte], 1);
+    unsigned char bits = bitfield[byte];
+
+    if(bits&mask) {
+      index = byte*8+getNthBitIndex(bits, 1);
       return true;
     }
     byte++;
@@ -270,11 +272,12 @@ template<typename Array>
 bool BitfieldMan::getFirstMissingIndex(size_t& index, const Array& bitfield, size_t bitfieldLength) const
 {
   for(size_t i = 0; i < bitfieldLength; ++i) {
-    size_t base = i*8;
-    for(size_t bi = 0; bi < 8 && base+bi < blocks; ++bi) {
-      unsigned char mask = 128 >> bi;
-      if(bitfield[i] & mask) {
-	index = base+bi;
+    unsigned char bits = bitfield[i];
+    unsigned char mask = 128;
+    size_t tindex = i*8;
+    for(size_t bi = 0; bi < 8 && tindex < blocks; ++bi, mask >>= 1, ++tindex) {
+      if(bits & mask) {
+	index = tindex;
 	return true;
       }
     }
@@ -395,11 +398,12 @@ bool BitfieldMan::getAllMissingIndexes(std::deque<size_t>& indexes,
 				       size_t bitfieldLength) const
 {
   for(size_t i = 0; i < bitfieldLength; ++i) {
-    size_t base = i*8;
-    for(size_t bi = 0; bi < 8 && base+bi < blocks; ++bi) {
-      unsigned char mask = 128 >> bi;
-      if(bitfield[i] & mask) {
-	indexes.push_back(base+bi);
+    unsigned char bits = bitfield[i];
+    unsigned char mask = 128;
+    size_t index = i*8;
+    for(size_t bi = 0; bi < 8 && index < blocks; ++bi, mask >>= 1, ++index) {
+      if(bits & mask) {
+	indexes.push_back(index);
       }
     }
   }

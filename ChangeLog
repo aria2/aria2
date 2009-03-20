@@ -1,5 +1,12 @@
 2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Refactored getMissingIndexRandomly, getFirstMissingIndex,
+	getAllMissingBlockIndexes to reduce a call to
+	array_function_base::operator[].
+	* src/BitfieldMan.cc
+	
+2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Cached TransferStat/download speed to avoid to sum them up in each
 	call.	
 	* src/DefaultPeerStorage.cc
