@@ -1,5 +1,20 @@
 2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added an option to specify the interval between tracker requests.
+	If non-zero value is specified, aria2 uses it and ignores the
+	interval value in the response of tracker. If zero is specified,
+	aria2 determines the inteval value based on the tarcker response
+	and download progress.
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtAnnounce.h
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	
+2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added operator+=, operator-=, operator-
 	* src/TransferStat.cc
 	* src/TransferStat.h

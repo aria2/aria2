@@ -267,6 +267,8 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       btAnnounce->setBtRuntime(btRuntime);
       btAnnounce->setPieceStorage(_pieceStorage);
       btAnnounce->setPeerStorage(peerStorage);
+      btAnnounce->setUserDefinedInterval
+	(_option->getAsInt(PREF_BT_TRACKER_INTERVAL));
       btRegistry->registerBtAnnounce(btContext->getInfoHashAsString(),
 				     btAnnounce);
       btAnnounce->shuffleAnnounce();

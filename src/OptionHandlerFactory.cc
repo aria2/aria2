@@ -931,6 +931,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<NumberOptionHandler> op(new NumberOptionHandler
+					 (PREF_BT_TRACKER_INTERVAL,
+					  TEXT_BT_TRACKER_INTERVAL,
+					  "0",
+					  0));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new HostPortOptionHandler
 				   (PREF_DHT_ENTRY_POINT,
 				    TEXT_DHT_ENTRY_POINT,

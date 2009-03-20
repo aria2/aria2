@@ -60,6 +60,7 @@ DefaultBtAnnounce::DefaultBtAnnounce(const BtContextHandle& btContext,
   trackers(0),
   interval(DEFAULT_ANNOUNCE_INTERVAL),
   minInterval(DEFAULT_ANNOUNCE_INTERVAL),
+  _userDefinedInterval(0),
   complete(0),
   incomplete(0),
   announceList(btContext->getAnnounceTiers()),
@@ -80,7 +81,9 @@ void DefaultBtAnnounce::generateKey()
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
-  return (trackers == 0 && prevAnnounceTime.elapsed(minInterval) &&
+  return (trackers == 0 &&
+	  prevAnnounceTime.elapsed(_userDefinedInterval==0?
+				   minInterval:_userDefinedInterval) &&
 	  !announceList.allTiersFailed());
 }
 

@@ -505,3 +505,11 @@ _(" --dry-run[=true|false]       If true is given, aria2 just checks whether the
   "                              data. This option has effect on HTTP/FTP download.\n"\
   "                              BitTorrent downloads are canceled if true is\n"\
   "                              specified.")
+#define TEXT_BT_TRACKER_INTERVAL \
+_(" --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"\
+  "                              requests. This completely overrides interval value\n"\
+  "                              and aria2 just uses this value and ignores the\n"\
+  "                              minInterval and interval value in the response of\n"\
+  "                              tracker. If 0 is set, aria2 determines interval\n"\
+  "                              based on the response of tracker and the download\n"\
+  "                              progress.")

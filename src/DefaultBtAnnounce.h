@@ -56,6 +56,7 @@ private:
   Time prevAnnounceTime;
   time_t interval;
   time_t minInterval;
+  time_t _userDefinedInterval;
   unsigned int complete;
   unsigned int incomplete;
   AnnounceList announceList;
@@ -141,6 +142,11 @@ public:
   const std::string& getTrackerID() const
   {
     return trackerId;
+  }
+
+  void setUserDefinedInterval(time_t interval)
+  {
+    _userDefinedInterval = interval;
   }
 };
 

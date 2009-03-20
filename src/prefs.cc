@@ -289,6 +289,8 @@ const std::string PREF_BT_MAX_PEERS("bt-max-peers");
 const std::string PREF_BT_EXTERNAL_IP("bt-external-ip");
 // values: 1*digit '=' a string that your file system recognizes as a file name.
 const std::string PREF_INDEX_OUT("index-out");
+// values: 1*digit
+const std::string PREF_BT_TRACKER_INTERVAL("bt-tracker-interval");
 
 /**
  * Metalink related preferences
