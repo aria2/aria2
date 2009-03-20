@@ -37,6 +37,8 @@
 
 #include "PieceSelector.h"
 
+#include <vector>
+
 namespace aria2 {
 
 class PieceStat {
@@ -60,9 +62,9 @@ public:
 
 class RarestPieceSelector:public PieceSelector {
 private:
-  std::deque<SharedHandle<PieceStat> > _pieceStats;
+  std::vector<SharedHandle<PieceStat> > _pieceStats;
 
-  std::deque<SharedHandle<PieceStat> > _sortedPieceStats;
+  std::vector<SharedHandle<PieceStat> > _sortedPieceStats;
 public:
   RarestPieceSelector(size_t pieceNum, bool randomShuffle);
 
@@ -81,7 +83,7 @@ public:
 				size_t newBitfieldLength,
 				const unsigned char* oldBitfield);
 
-  const std::deque<SharedHandle<PieceStat> >& getSortedPieceStats() const;
+  const std::vector<SharedHandle<PieceStat> >& getSortedPieceStats() const;
 };
 
 } // namespace aria2

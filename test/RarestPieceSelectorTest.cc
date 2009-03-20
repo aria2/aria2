@@ -1,9 +1,12 @@
 #include "RarestPieceSelector.h"
-#include "Exception.h"
-#include "Util.h"
+
 #include <cstring>
 #include <iostream>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Exception.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -37,7 +40,7 @@ void RarestPieceSelectorTest::testAddPieceStats_index()
     size_t indexes[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 1 };
     size_t counts[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
     
-    const std::deque<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
@@ -52,7 +55,7 @@ void RarestPieceSelectorTest::testAddPieceStats_index()
     size_t indexes[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 1 };
     size_t counts[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 };
 
-    const std::deque<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
 
     for(size_t i = 0; i < 10; ++i) {
       CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
@@ -69,7 +72,7 @@ void RarestPieceSelectorTest::testAddPieceStats_index()
     size_t indexes[] = { 2, 4, 5, 6, 7, 8, 0, 9, 1, 3 };
     size_t counts[] = {  0, 0, 0, 0, 0, 0, 1, 1, 2, 2 };
 
-    const std::deque<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
 
     for(size_t i = 0; i < 10; ++i) {
       CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
@@ -88,7 +91,7 @@ void RarestPieceSelectorTest::testAddPieceStats_bitfield()
     size_t indexes[] = { 1, 3, 5, 7, 9, 0, 2, 4, 6, 8 };
     size_t counts[] = { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 };
 
-    const std::deque<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
@@ -103,7 +106,7 @@ void RarestPieceSelectorTest::testAddPieceStats_bitfield()
     size_t indexes[] = { 1, 3, 5, 7, 9, 0, 2, 4, 6, 8 };
     size_t counts[] = { 0, 0, 0, 0, 0, 2, 2, 2, 2, 2 };
 
-    const std::deque<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
@@ -135,7 +138,7 @@ void RarestPieceSelectorTest::testUpdatePieceStats()
     size_t indexes[] = { 0, 1, 2, 3, 8, 9, 4, 5, 6, 7 };
     size_t counts[] =  { 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 };
 
-    const std::deque<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
@@ -165,7 +168,7 @@ void RarestPieceSelectorTest::testSubtractPieceStats()
     size_t indexes[] = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
     size_t counts[] =  { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 };
 
-    const std::deque<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {

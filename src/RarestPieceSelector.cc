@@ -109,7 +109,7 @@ RarestPieceSelector::RarestPieceSelector(size_t pieceNum, bool randomShuffle):
   }
   {
     size_t order = 0;
-    for(std::deque<SharedHandle<PieceStat> >::iterator i = _sortedPieceStats.begin();
+    for(std::vector<SharedHandle<PieceStat> >::iterator i = _sortedPieceStats.begin();
 	i != _sortedPieceStats.end(); ++i) {
       (*i)->setOrder(order++);
     }
@@ -133,7 +133,7 @@ bool RarestPieceSelector::select
 (size_t& index,
  const std::deque<size_t>& candidateIndexes) const
 {
-  std::deque<SharedHandle<PieceStat> >::const_iterator i =
+  std::vector<SharedHandle<PieceStat> >::const_iterator i =
     std::find_if(_sortedPieceStats.begin(), _sortedPieceStats.end(),
 		 FindRarestPiece(candidateIndexes));
   if(i == _sortedPieceStats.end()) {
@@ -201,22 +201,19 @@ void RarestPieceSelector::updatePieceStats(const unsigned char* newBitfield,
 void RarestPieceSelector::addPieceStats(size_t index)
 {
   SharedHandle<PieceStat> pieceStat(_pieceStats[index]);
-  {
-    std::deque<SharedHandle<PieceStat> >::iterator cur =
-      std::lower_bound(_sortedPieceStats.begin(), _sortedPieceStats.end(),
-		       pieceStat);
-    _sortedPieceStats.erase(cur);
-  }
-  pieceStat->addCount();
-
-  std::deque<SharedHandle<PieceStat> >::iterator to =
+  std::vector<SharedHandle<PieceStat> >::iterator cur =
     std::lower_bound(_sortedPieceStats.begin(), _sortedPieceStats.end(),
 		     pieceStat);
 
-  _sortedPieceStats.insert(to, pieceStat);
+  pieceStat->addCount();
+
+  std::vector<SharedHandle<PieceStat> >::iterator to =
+    std::upper_bound(cur+1, _sortedPieceStats.end(), pieceStat);
+  
+  std::rotate(cur, cur+1, to);
 }
 
-const std::deque<SharedHandle<PieceStat> >&
+const std::vector<SharedHandle<PieceStat> >&
 RarestPieceSelector::getSortedPieceStats() const
 {
   return _sortedPieceStats;

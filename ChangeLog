@@ -1,5 +1,12 @@
 2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Refactored RarestPieceSelector to reduce CPU load, especially for
+	addPieceStats.	
+	* src/RarestPieceSelector.cc
+	* src/RarestPieceSelector.h
+	
+2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Refactored getMissingIndexRandomly, getFirstMissingIndex,
 	getAllMissingBlockIndexes to reduce a call to
 	array_function_base::operator[].
