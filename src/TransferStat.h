@@ -76,6 +76,12 @@ public:
 
   friend TransferStat operator+(const TransferStat& a, const TransferStat& b);
 
+  friend TransferStat operator-(const TransferStat& a, const TransferStat& b);
+
+  TransferStat& operator+=(const TransferStat& stat);
+
+  TransferStat& operator-=(const TransferStat& stat);
+
   unsigned int getDownloadSpeed() const {
     return downloadSpeed;
   }
@@ -120,6 +126,8 @@ public:
 };
 
 TransferStat operator+(const TransferStat& a, const TransferStat& b);
+
+TransferStat operator-(const TransferStat& a, const TransferStat& b);
 
 } // namespace aria2
 

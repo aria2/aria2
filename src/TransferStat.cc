@@ -41,9 +41,61 @@ TransferStat operator+(const TransferStat& a, const TransferStat& b)
   TransferStat c;
   c.downloadSpeed = a.downloadSpeed+b.downloadSpeed;
   c.uploadSpeed = a.uploadSpeed+b.uploadSpeed;
-  c.sessionUploadLength = a.sessionUploadLength+b.sessionUploadLength;
   c.sessionDownloadLength = a.sessionDownloadLength+b.sessionDownloadLength;
+  c.sessionUploadLength = a.sessionUploadLength+b.sessionUploadLength;
   return c;
+}
+
+TransferStat operator-(const TransferStat& a, const TransferStat& b)
+{
+  TransferStat c;
+  if(a.downloadSpeed > b.downloadSpeed) {
+    c.downloadSpeed = a.downloadSpeed-b.downloadSpeed;
+  }
+  if(a.uploadSpeed > b.uploadSpeed) {
+    c.uploadSpeed = a.uploadSpeed-b.uploadSpeed;
+  }
+  if(a.sessionDownloadLength > b.sessionDownloadLength) {
+    c.sessionDownloadLength = a.sessionDownloadLength-b.sessionDownloadLength;
+  }
+  if(a.sessionUploadLength > b.sessionUploadLength) {
+    c.sessionUploadLength = a.sessionUploadLength-b.sessionUploadLength;
+  }
+  return c;
+}
+
+TransferStat& TransferStat::operator+=(const TransferStat& stat)
+{
+  downloadSpeed += stat.downloadSpeed;
+  uploadSpeed += stat.uploadSpeed;
+  sessionDownloadLength += stat.sessionDownloadLength;
+  sessionUploadLength += stat.sessionUploadLength;
+  return *this;
+}
+
+TransferStat& TransferStat::operator-=(const TransferStat& stat)
+{
+  if(downloadSpeed > stat.downloadSpeed) {
+    downloadSpeed -= stat.downloadSpeed;
+  } else {
+    downloadSpeed = 0;
+  }
+  if(uploadSpeed > stat.uploadSpeed) {
+    uploadSpeed -= stat.uploadSpeed;
+  } else {
+    uploadSpeed = 0;
+  }
+  if(sessionDownloadLength > stat.sessionDownloadLength) {
+    sessionDownloadLength -= stat.sessionDownloadLength;
+  } else {
+    sessionDownloadLength = 0;
+  }
+  if(sessionUploadLength > stat.sessionUploadLength) {
+    sessionUploadLength -= stat.sessionUploadLength;
+  } else {
+    sessionUploadLength = 0;
+  }
+  return *this;
 }
 
 } // namespace aria2

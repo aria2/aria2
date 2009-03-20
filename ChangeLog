@@ -1,5 +1,11 @@
 2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added operator+=, operator-=, operator-
+	* src/TransferStat.cc
+	* src/TransferStat.h
+	
+2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Refactored RarestPieceSelector to reduce CPU load, especially for
 	addPieceStats.	
 	* src/RarestPieceSelector.cc
