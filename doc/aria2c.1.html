@@ -1047,6 +1047,18 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
+<strong>--bt-tracker-interval</strong>=SEC
+</dt>
+<dd>
+<p>
+  Set the interval in seconds between tracker requests. This
+  completely overrides interval value and aria2 just uses this value
+  and ignores the minInterval and interval value in the response of
+  tracker. If <em>0</em> is set, aria2 determines interval based on the
+  response of tracker and the download progress.  Default: <em>0</em>
+</p>
+</dd>
+<dt>
 <strong>--dht-entry-point</strong>=HOST:PORT
 </dt>
 <dd>
@@ -2325,7 +2337,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-03-13 22:35:04 JST
+Last updated 2009-03-22 00:13:56 JST
 </div>
 </div>
 </body>

@@ -1,3 +1,8 @@
+2009-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Documented --bt-tracker-interval option in man page.
+	* doc/aria2c.1.txt
+
 2009-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added an option to specify the interval between tracker requests.

@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 03/13/2009
+.\"      Date: 03/22/2009
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "03/13/2009" "" ""
+.TH "ARIA2C" "1" "03/22/2009" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -493,6 +493,14 @@ or
 .RS 4
 Seed previously downloaded files without verifying piece hashes\&. Default:
 \fIfalse\fR
+.RE
+.PP
+\fB\-\-bt\-tracker\-interval\fR=SEC
+.RS 4
+Set the interval in seconds between tracker requests\&. This completely overrides interval value and aria2 just uses this value and ignores the minInterval and interval value in the response of tracker\&. If
+\fI0\fR
+is set, aria2 determines interval based on the response of tracker and the download progress\&. Default:
+\fI0\fR
 .RE
 .PP
 \fB\-\-dht\-entry\-point\fR=HOST:PORT
