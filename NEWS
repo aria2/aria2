@@ -19,6 +19,16 @@ translations were updated.
 Changes
 -------
 
+* Added --bt-tracker-interval option to specify the interval between
+  tracker requests.  If non-zero value is specified, aria2 uses it and
+  ignores the interval value in the response of tracker. If zero is
+  specified, aria2 determines the inteval value based on the tarcker
+  response and download progress.
+
+* Reduced CPU usage in RarestPieceSelector.
+
+* Reduced CPU usage when hitting download limit/upload limit.
+
 * Changed the default value of --uri-selector option from 'inorder' to
   'feedback'
 	
