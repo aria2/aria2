@@ -1,3 +1,18 @@
+2009-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Replaced std::vector<SharedHandle<PieceStats> _sortedPieceStats
+	with std::vector<size_t> _sortedPieceStatIndexes to reduce the
+	cost of std::rotate().
+	* src/RarestPieceSelector.cc
+	* src/RarestPieceSelector.h
+	* test/RarestPieceSelectorTest.cc
+
+2009-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated usage doc for --bt-tracker-interval option.
+	* src/usage_text.h
+	* doc/aria2c.1.txt
+
 2009-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Documented --bt-tracker-interval option in man page.

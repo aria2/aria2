@@ -40,12 +40,13 @@ void RarestPieceSelectorTest::testAddPieceStats_index()
     size_t indexes[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 1 };
     size_t counts[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
     
-    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<size_t>& statsidx(selector.getSortedPieceStatIndexes());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getPieceStats());
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
-      CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
-      CPPUNIT_ASSERT_EQUAL(counts[i], stats[i]->getCount());
+      CPPUNIT_ASSERT_EQUAL(indexes[i], statsidx[i]);
+      CPPUNIT_ASSERT_EQUAL(counts[i], stats[statsidx[i]]->getCount());
     }
   }
 
@@ -55,11 +56,12 @@ void RarestPieceSelectorTest::testAddPieceStats_index()
     size_t indexes[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 1 };
     size_t counts[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 };
 
-    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<size_t>& statsidx(selector.getSortedPieceStatIndexes());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getPieceStats());
 
     for(size_t i = 0; i < 10; ++i) {
-      CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
-      CPPUNIT_ASSERT_EQUAL(counts[i], stats[i]->getCount());
+      CPPUNIT_ASSERT_EQUAL(indexes[i], statsidx[i]);
+      CPPUNIT_ASSERT_EQUAL(counts[i], stats[statsidx[i]]->getCount());
     }
   }
 
@@ -72,11 +74,12 @@ void RarestPieceSelectorTest::testAddPieceStats_index()
     size_t indexes[] = { 2, 4, 5, 6, 7, 8, 0, 9, 1, 3 };
     size_t counts[] = {  0, 0, 0, 0, 0, 0, 1, 1, 2, 2 };
 
-    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<size_t>& statsidx(selector.getSortedPieceStatIndexes());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getPieceStats());
 
     for(size_t i = 0; i < 10; ++i) {
-      CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
-      CPPUNIT_ASSERT_EQUAL(counts[i], stats[i]->getCount());
+      CPPUNIT_ASSERT_EQUAL(indexes[i], statsidx[i]);
+      CPPUNIT_ASSERT_EQUAL(counts[i], stats[statsidx[i]]->getCount());
     }
   }
 
@@ -91,12 +94,14 @@ void RarestPieceSelectorTest::testAddPieceStats_bitfield()
     size_t indexes[] = { 1, 3, 5, 7, 9, 0, 2, 4, 6, 8 };
     size_t counts[] = { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 };
 
-    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<size_t>& statsidx(selector.getSortedPieceStatIndexes());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getPieceStats());
+
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
-      CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
-      CPPUNIT_ASSERT_EQUAL(counts[i], stats[i]->getCount());
+      CPPUNIT_ASSERT_EQUAL(indexes[i], statsidx[i]);
+      CPPUNIT_ASSERT_EQUAL(counts[i], stats[statsidx[i]]->getCount());
     }
   }
 
@@ -106,12 +111,14 @@ void RarestPieceSelectorTest::testAddPieceStats_bitfield()
     size_t indexes[] = { 1, 3, 5, 7, 9, 0, 2, 4, 6, 8 };
     size_t counts[] = { 0, 0, 0, 0, 0, 2, 2, 2, 2, 2 };
 
-    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<size_t>& statsidx(selector.getSortedPieceStatIndexes());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getPieceStats());
+
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
-      CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
-      CPPUNIT_ASSERT_EQUAL(counts[i], stats[i]->getCount());
+      CPPUNIT_ASSERT_EQUAL(indexes[i], statsidx[i]);
+      CPPUNIT_ASSERT_EQUAL(counts[i], stats[statsidx[i]]->getCount());
     }
   }
 }
@@ -138,12 +145,14 @@ void RarestPieceSelectorTest::testUpdatePieceStats()
     size_t indexes[] = { 0, 1, 2, 3, 8, 9, 4, 5, 6, 7 };
     size_t counts[] =  { 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 };
 
-    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<size_t>& statsidx(selector.getSortedPieceStatIndexes());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getPieceStats());
+
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
-      CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
-      CPPUNIT_ASSERT_EQUAL(counts[i], stats[i]->getCount());
+      CPPUNIT_ASSERT_EQUAL(indexes[i], statsidx[i]);
+      CPPUNIT_ASSERT_EQUAL(counts[i], stats[statsidx[i]]->getCount());
     }
   }
 }
@@ -168,12 +177,14 @@ void RarestPieceSelectorTest::testSubtractPieceStats()
     size_t indexes[] = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
     size_t counts[] =  { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 };
 
-    const std::vector<SharedHandle<PieceStat> >& stats(selector.getSortedPieceStats());
+    const std::vector<size_t>& statsidx(selector.getSortedPieceStatIndexes());
+    const std::vector<SharedHandle<PieceStat> >& stats(selector.getPieceStats());
+
     CPPUNIT_ASSERT_EQUAL((size_t)10, stats.size());
     
     for(size_t i = 0; i < 10; ++i) {
-      CPPUNIT_ASSERT_EQUAL(indexes[i], stats[i]->getIndex());
-      CPPUNIT_ASSERT_EQUAL(counts[i], stats[i]->getCount());
+      CPPUNIT_ASSERT_EQUAL(indexes[i], statsidx[i]);
+      CPPUNIT_ASSERT_EQUAL(counts[i], stats[statsidx[i]]->getCount());
     }
   }
 }

@@ -64,7 +64,7 @@ class RarestPieceSelector:public PieceSelector {
 private:
   std::vector<SharedHandle<PieceStat> > _pieceStats;
 
-  std::vector<SharedHandle<PieceStat> > _sortedPieceStats;
+  std::vector<size_t> _sortedPieceStatIndexes;
 public:
   RarestPieceSelector(size_t pieceNum, bool randomShuffle);
 
@@ -83,7 +83,9 @@ public:
 				size_t newBitfieldLength,
 				const unsigned char* oldBitfield);
 
-  const std::vector<SharedHandle<PieceStat> >& getSortedPieceStats() const;
+  const std::vector<size_t>& getSortedPieceStatIndexes() const;
+
+  const std::vector<SharedHandle<PieceStat> >& getPieceStats() const;
 };
 
 } // namespace aria2

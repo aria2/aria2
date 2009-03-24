@@ -98,22 +98,24 @@ public:
 };
 
 RarestPieceSelector::RarestPieceSelector(size_t pieceNum, bool randomShuffle):
-  _pieceStats(pieceNum)
+  _pieceStats(pieceNum),
+  _sortedPieceStatIndexes(pieceNum)
 {
   std::generate(_pieceStats.begin(), _pieceStats.end(), GenPieceStat());
-  _sortedPieceStats = _pieceStats;
+  std::vector<SharedHandle<PieceStat> > sortedPieceStats(_pieceStats);
   // we need some randomness in ordering.
   if(randomShuffle) {
-    std::random_shuffle(_sortedPieceStats.begin(), _sortedPieceStats.end(),
+    std::random_shuffle(sortedPieceStats.begin(), sortedPieceStats.end(),
 			*(SimpleRandomizer::getInstance().get()));
   }
   {
     size_t order = 0;
-    for(std::vector<SharedHandle<PieceStat> >::iterator i = _sortedPieceStats.begin();
-	i != _sortedPieceStats.end(); ++i) {
+    for(std::vector<SharedHandle<PieceStat> >::iterator i =
+	  sortedPieceStats.begin(); i != sortedPieceStats.end(); ++i) {
+      _sortedPieceStatIndexes[order] = (*i)->getIndex();
       (*i)->setOrder(order++);
     }
-  }
+  }  
 }
 
 class FindRarestPiece
@@ -123,9 +125,9 @@ private:
 public:
   FindRarestPiece(const std::deque<size_t>& indexes):_indexes(indexes) {}
 
-  bool operator()(const SharedHandle<PieceStat>& pieceStat)
+  bool operator()(const size_t& index)
   {
-    return std::binary_search(_indexes.begin(), _indexes.end(), pieceStat->getIndex());
+    return std::binary_search(_indexes.begin(), _indexes.end(), index);
   }
 };
 
@@ -133,16 +135,29 @@ bool RarestPieceSelector::select
 (size_t& index,
  const std::deque<size_t>& candidateIndexes) const
 {
-  std::vector<SharedHandle<PieceStat> >::const_iterator i =
-    std::find_if(_sortedPieceStats.begin(), _sortedPieceStats.end(),
+  std::vector<size_t>::const_iterator i =
+    std::find_if(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
 		 FindRarestPiece(candidateIndexes));
-  if(i == _sortedPieceStats.end()) {
+  if(i == _sortedPieceStatIndexes.end()) {
     return false;
   } else {
-    index = (*i)->getIndex();
+    index = *i;
     return true;
   }
 }
+
+class PieceStatRarer {
+private:
+  const std::vector<SharedHandle<PieceStat> >& _pieceStats;
+public:
+  PieceStatRarer(const std::vector<SharedHandle<PieceStat> >& ps):
+    _pieceStats(ps) {}
+
+  bool operator()(size_t lhs, size_t rhs) const
+  {
+    return _pieceStats[lhs] < _pieceStats[rhs];
+  }
+};
 
 void RarestPieceSelector::addPieceStats(const unsigned char* bitfield,
 					size_t bitfieldLength)
@@ -158,7 +173,8 @@ void RarestPieceSelector::addPieceStats(const unsigned char* bitfield,
     }
 
   }
-  std::sort(_sortedPieceStats.begin(), _sortedPieceStats.end());
+  std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
+	    PieceStatRarer(_pieceStats));
 }
 
 void RarestPieceSelector::subtractPieceStats(const unsigned char* bitfield,
@@ -175,7 +191,8 @@ void RarestPieceSelector::subtractPieceStats(const unsigned char* bitfield,
     }
 
   }
-  std::sort(_sortedPieceStats.begin(), _sortedPieceStats.end());
+  std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
+	    PieceStatRarer(_pieceStats));
 }
 
 void RarestPieceSelector::updatePieceStats(const unsigned char* newBitfield,
@@ -195,28 +212,36 @@ void RarestPieceSelector::updatePieceStats(const unsigned char* newBitfield,
     }
 
   }
-  std::sort(_sortedPieceStats.begin(), _sortedPieceStats.end());
+  std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
+	    PieceStatRarer(_pieceStats));
 }
 
 void RarestPieceSelector::addPieceStats(size_t index)
 {
-  SharedHandle<PieceStat> pieceStat(_pieceStats[index]);
-  std::vector<SharedHandle<PieceStat> >::iterator cur =
-    std::lower_bound(_sortedPieceStats.begin(), _sortedPieceStats.end(),
-		     pieceStat);
+  std::vector<size_t>::iterator cur =
+    std::lower_bound(_sortedPieceStatIndexes.begin(),
+		     _sortedPieceStatIndexes.end(),
+		     index, PieceStatRarer(_pieceStats));
 
-  pieceStat->addCount();
+  _pieceStats[index]->addCount();
 
-  std::vector<SharedHandle<PieceStat> >::iterator to =
-    std::upper_bound(cur+1, _sortedPieceStats.end(), pieceStat);
+  std::vector<size_t>::iterator to =
+    std::upper_bound(cur+1, _sortedPieceStatIndexes.end(),
+		     index, PieceStatRarer(_pieceStats));
   
   std::rotate(cur, cur+1, to);
 }
 
-const std::vector<SharedHandle<PieceStat> >&
-RarestPieceSelector::getSortedPieceStats() const
+const std::vector<size_t>&
+RarestPieceSelector::getSortedPieceStatIndexes() const
 {
-  return _sortedPieceStats;
+  return _sortedPieceStatIndexes;
+}
+
+const std::vector<SharedHandle<PieceStat> >&
+RarestPieceSelector::getPieceStats() const
+{
+  return _pieceStats;
 }
 
 } // namespace aria2
