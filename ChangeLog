@@ -1,5 +1,10 @@
 2009-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed duplicate enableDirectIO() call.
+	* src/MultiFileAllocationIterator.cc
+	
+2009-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced std::vector<SharedHandle<PieceStats> _sortedPieceStats
 	with std::vector<size_t> _sortedPieceStatIndexes to reduce the
 	cost of std::rotate().
