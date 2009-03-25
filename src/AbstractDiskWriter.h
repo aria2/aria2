@@ -74,6 +74,11 @@ public:
 
   virtual void truncate(uint64_t length);
 
+#ifdef HAVE_POSIX_FALLOCATE
+  // File must be opened before calling this function.
+  virtual void allocate(off_t offset, uint64_t length);
+#endif // HAVE_POSIX_FALLOCATE
+
   virtual uint64_t size();
   
   virtual void enableDirectIO();

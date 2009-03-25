@@ -43,11 +43,16 @@ namespace aria2 {
 
 class IteratableValidator;
 class DownloadEngine;
+class FileAllocationEntry;
 
 class CheckIntegrityEntry : public RequestGroupEntry,
 			    public ProgressAwareEntry {
 protected:
   SharedHandle<IteratableValidator> _validator;
+
+  void proceedFileAllocation(std::deque<Command*>& commands,
+			     const SharedHandle<FileAllocationEntry>& entry,
+			     DownloadEngine* e);
 public:
   CheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 

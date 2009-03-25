@@ -1,5 +1,45 @@
 2009-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added 'falloc' parameter for --file-allocation option.  'falloc'
+	allocation mode uses posix_fallocate() system call to allocate
+	file on disk.  If you are using newer file systems such as ext4
+        (with extents support), btrfs or xfs, 'falloc' is your best
+	choice. It allocates large(few GiB) files almost instantly. Don't
+	use 'falloc' with legacy file systems such as ext3 because it
+	takes almost same time as 'prealloc' and it blocks aria2 entirely
+	until allocation finishes. 'falloc' may not be available if your
+	system doesn't have posix_fallocate() system call.
+	* configure.ac
+	* src/AbstractDiskWriter.cc
+	* src/AbstractDiskWriter.h
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/BinaryStream.h
+	* src/BtCheckIntegrityEntry.cc
+	* src/ByteArrayDiskWriter.h
+	* src/CheckIntegrityEntry.cc
+	* src/CheckIntegrityEntry.h
+	* src/DefaultPieceStorage.cc
+	* src/DiskAdaptor.cc
+	* src/DiskAdaptor.h
+	* src/DiskWriter.h
+	* src/FallocFileAllocationIterator.cc
+	* src/FallocFileAllocationIterator.h
+	* src/FileAllocationEntry.cc
+	* src/FileAllocationEntry.h
+	* src/Makefile.am
+	* src/MultiFileAllocationIterator.cc
+	* src/MultiFileAllocationIterator.h
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/StreamCheckIntegrityEntry.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/FallocFileAllocationIteratorTest.cc
+	* test/Makefile.am
+
+2009-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed duplicate enableDirectIO() call.
 	* src/MultiFileAllocationIterator.cc
 	

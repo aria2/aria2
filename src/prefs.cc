@@ -81,10 +81,11 @@ const std::string PREF_MAX_OVERALL_DOWNLOAD_LIMIT("max-overall-download-limit");
 const std::string PREF_MAX_DOWNLOAD_LIMIT("max-download-limit");
 // value: 1*digit
 const std::string PREF_STARTUP_IDLE_TIME("startup-idle-time");
-// value: prealloc | none
+// value: prealloc | fallc | none
 const std::string PREF_FILE_ALLOCATION("file-allocation");
 const std::string V_PREALLOC("prealloc");
-#// value: 1*digit
+const std::string V_FALLOC("falloc");
+// value: 1*digit
 const std::string PREF_NO_FILE_ALLOCATION_LIMIT("no-file-allocation-limit");
 // value: true | false
 const std::string PREF_ALLOW_OVERWRITE("allow-overwrite");

@@ -36,6 +36,7 @@
 #include "MultiDiskAdaptor.h"
 #include "FileEntry.h"
 #include "SingleFileAllocationIterator.h"
+#include "FallocFileAllocationIterator.h"
 #include "DiskWriter.h"
 
 namespace aria2 {
@@ -61,11 +62,19 @@ void MultiFileAllocationIterator::allocateChunk()
     _diskAdaptor->openIfNot(entry, &DiskWriterEntry::openFile);
     if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {
       // Calling private function of MultiDiskAdaptor.
-      _fileAllocationIterator.reset
-	(new SingleFileAllocationIterator(entry->getDiskWriter().get(),
-					  entry->size(),
-					  fileEntry->getLength()));
-      _fileAllocationIterator->init();
+      if(_diskAdaptor->doesFallocate()) {
+	_fileAllocationIterator.reset
+	  (new FallocFileAllocationIterator(entry->getDiskWriter().get(),
+					    entry->size(),
+					    fileEntry->getLength()));
+      } else {
+	SharedHandle<SingleFileAllocationIterator> fa
+	  (new SingleFileAllocationIterator(entry->getDiskWriter().get(),
+					    entry->size(),
+					    fileEntry->getLength()));
+	fa->init();
+	_fileAllocationIterator = fa;
+      }
     }
   }
   if(finished()) {

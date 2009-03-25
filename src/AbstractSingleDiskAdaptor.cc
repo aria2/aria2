@@ -35,6 +35,7 @@
 #include "AbstractSingleDiskAdaptor.h"
 #include "File.h"
 #include "SingleFileAllocationIterator.h"
+#include "FallocFileAllocationIterator.h"
 #include "DiskWriter.h"
 
 namespace aria2 {
@@ -90,10 +91,17 @@ void AbstractSingleDiskAdaptor::truncate(uint64_t length)
 
 FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
-  SingleFileAllocationIteratorHandle h
-    (new SingleFileAllocationIterator(this, size(), totalLength));
-  h->init();
-  return h;
+  
+  if(_fallocate) {
+    SharedHandle<FallocFileAllocationIterator> h
+      (new FallocFileAllocationIterator(this, size(), totalLength));
+    return h;
+  } else {
+    SingleFileAllocationIteratorHandle h
+      (new SingleFileAllocationIterator(this, size(), totalLength));
+    h->init();
+    return h;
+  }
 }
 
 void AbstractSingleDiskAdaptor::enableDirectIO()

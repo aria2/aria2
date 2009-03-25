@@ -207,6 +207,10 @@ SRCS =  Socket.h\
 	PieceSelector.h\
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h
 
+if HAVE_POSIX_FALLOCATE
+SRCS += FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
+endif # HAVE_POSIX_FALLOCATE
+
 if HAVE_EPOLL
 SRCS += EpollEventPoll.cc EpollEventPoll.h
 endif # HAVE_EPOLL

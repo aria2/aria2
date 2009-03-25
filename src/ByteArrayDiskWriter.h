@@ -60,9 +60,6 @@ public:
   virtual void writeData(const unsigned char* data, size_t len, off_t position);
   virtual ssize_t readData(unsigned char* data, size_t len, off_t position);
 
-  // Not implemented yet
-  virtual void truncate(uint64_t length) {}
-
   virtual uint64_t size();
 
   virtual void enableDirectIO() {}

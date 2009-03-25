@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,49 +32,38 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "BtCheckIntegrityEntry.h"
-#include "BtFileAllocationEntry.h"
-#include "RequestGroup.h"
-#include "PieceStorage.h"
-#include "DownloadEngine.h"
-#include "DiskAdaptor.h"
-#include "prefs.h"
-#include "Option.h"
+#include "FallocFileAllocationIterator.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
-BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
-  PieceHashCheckIntegrityEntry(requestGroup, 0) {}
+FallocFileAllocationIterator::FallocFileAllocationIterator
+(BinaryStream* stream, off_t offset, uint64_t totalLength):
+  _stream(stream), _offset(offset), _totalLength(totalLength) {}
 
-BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
-
-void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
-						 DownloadEngine* e)
+void FallocFileAllocationIterator::allocateChunk()
 {
-  // Now reopen DiskAdaptor with read only disabled.
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableReadOnly();
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
-
-  SharedHandle<BtFileAllocationEntry> entry
-    (new BtFileAllocationEntry(_requestGroup));
-  proceedFileAllocation(commands, entry, e);
-}
-
-void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
-					       DownloadEngine* e)
-{
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->onDownloadComplete();
-  // TODO Currently,when all the checksums
-  // are valid, then aira2 goes to seeding mode. Sometimes it is better
-  // to exit rather than doing seeding. So, it would be good to toggle this
-  // behavior.
-  if(e->option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
-    SharedHandle<BtFileAllocationEntry> entry
-      (new BtFileAllocationEntry(_requestGroup));
-    proceedFileAllocation(commands, entry, e);
+  if(static_cast<uint64_t>(_offset) > _totalLength) {
+    throw DlAbortEx("FallocFileAllocationIterator: offset is larger than"
+		    " totalLength");
   }
+  _stream->allocate(_offset, _totalLength-_offset);
+  _offset = _totalLength;
 }
 
+bool FallocFileAllocationIterator::finished()
+{
+  return static_cast<uint64_t>(_offset) == _totalLength;
+}
+
+off_t FallocFileAllocationIterator::getCurrentLength()
+{
+  return _offset;
+}
+
+uint64_t FallocFileAllocationIterator::getTotalLength()
+{
+  return _totalLength;
+}
 
 } // namespace aria2

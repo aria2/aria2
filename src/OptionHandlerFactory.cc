@@ -203,6 +203,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_FILE_ALLOCATION,
 				    V_PREALLOC,
 				    V_NONE, V_PREALLOC,
+#ifdef HAVE_POSIX_FALLOCATE
+				    V_FALLOC,
+#endif // HAVE_POSIX_FALLOCATE
 				    'a'));
     op->addTag(TAG_BASIC);
     handlers.push_back(op);

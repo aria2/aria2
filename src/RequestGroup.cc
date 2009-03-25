@@ -134,11 +134,7 @@ RequestGroup::RequestGroup(const Option* option,
   _option(option),
   _logger(LogFactory::getInstance())
 {
-  if(_option->get(PREF_FILE_ALLOCATION) == V_PREALLOC) {
-    _fileAllocationEnabled = true;
-  } else {
-    _fileAllocationEnabled = false;
-  }
+  _fileAllocationEnabled = _option->get(PREF_FILE_ALLOCATION) != V_NONE;
   // Add types to be sent as a Accept header value here.
   // It would be good to put this value in Option so that user can tweak
   // and add this list.

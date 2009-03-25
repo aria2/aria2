@@ -69,6 +69,10 @@ aria2c_SOURCES = AllTest.cc\
 	LongestSequencePieceSelectorTest.cc\
 	a2algoTest.cc
 
+if HAVE_POSIX_FALLOCATE
+aria2c_SOURCES += FallocFileAllocationIteratorTest.cc
+endif  # HAVE_POSIX_FALLOCATE
+
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc
 endif # HAVE_LIBZ

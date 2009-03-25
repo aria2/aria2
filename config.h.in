@@ -282,6 +282,9 @@
 /* Define to 1 if you have old openssl. */
 #undef HAVE_OLD_LIBSSL
 
+/* Define to 1 if you have the `posix_fallocate' function. */
+#undef HAVE_POSIX_FALLOCATE
+
 /* Define to 1 if you have the `posix_memalign' function. */
 #undef HAVE_POSIX_MEMALIGN
 

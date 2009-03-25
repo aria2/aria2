@@ -42,7 +42,8 @@
 
 namespace aria2 {
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
+DiskAdaptor::DiskAdaptor():
+  _fallocate(false), logger(LogFactory::getInstance()) {}
 
 DiskAdaptor::~DiskAdaptor() {}
 

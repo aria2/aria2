@@ -36,8 +36,10 @@
 #define _D_BINARY_STREAM_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <unistd.h>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -49,7 +51,13 @@ public:
 
   virtual ssize_t readData(unsigned char* data, size_t len, off_t offset) = 0;
 
-  virtual void truncate(uint64_t length) = 0;
+  // Truncates a file to given length. The default implementation does
+  // nothing.
+  virtual void truncate(uint64_t length) {}
+
+  // Allocates given length bytes of disk space from given offset. The
+  // default implementation does nothing.
+  virtual void allocate(off_t offset, uint64_t length) {}
 
   virtual void enableDirectIO() = 0;
 

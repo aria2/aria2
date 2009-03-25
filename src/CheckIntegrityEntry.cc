@@ -37,6 +37,10 @@
 #include "RequestGroup.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
+#include "prefs.h"
+#include "FileAllocationEntry.h"
+#include "DownloadEngine.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -79,5 +83,22 @@ void CheckIntegrityEntry::cutTrailingGarbage()
 {
   _requestGroup->getPieceStorage()->getDiskAdaptor()->cutTrailingGarbage();
 }
+
+void CheckIntegrityEntry::proceedFileAllocation
+(std::deque<Command*>& commands,
+ const SharedHandle<FileAllocationEntry>& entry,
+ DownloadEngine* e)
+{
+  if(_requestGroup->needsFileAllocation()) {
+    e->_fileAllocationMan->pushEntry(entry);
+  } else {
+    entry->prepareForNextAction(commands, e);
+  }
+  // Disable directIO when fallocation() is going to be used.
+  if(e->option->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
+    entry->disableDirectIO();
+  }
+}
+
 
 } // namespace aria2

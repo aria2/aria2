@@ -73,4 +73,9 @@ void FileAllocationEntry::allocateChunk()
   _fileAllocationIterator->allocateChunk();
 }
 
+void FileAllocationEntry::disableDirectIO()
+{
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
+}
+
 } // namespace aria2

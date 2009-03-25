@@ -292,6 +292,9 @@ if test "x$enable_epoll" = "xyes"; then
 fi
 AM_CONDITIONAL([HAVE_EPOLL], [test "x$have_epoll" = "xyes"])
 
+AC_CHECK_FUNCS([posix_fallocate],[have_posix_fallocate=yes])
+AM_CONDITIONAL([HAVE_POSIX_FALLOCATE], [test "x$have_posix_fallocate" = "xyes"])
+
 AC_CHECK_FUNCS([asctime_r],
 	[AM_CONDITIONAL([HAVE_ASCTIME_R], true)],
 	[AM_CONDITIONAL([HAVE_ASCTIME_R], false)])

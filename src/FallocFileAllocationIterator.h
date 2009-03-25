@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,49 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "BtCheckIntegrityEntry.h"
-#include "BtFileAllocationEntry.h"
-#include "RequestGroup.h"
-#include "PieceStorage.h"
-#include "DownloadEngine.h"
-#include "DiskAdaptor.h"
-#include "prefs.h"
-#include "Option.h"
+#ifndef _D_FALLOC_FILE_ALLOCATION_ITERATOR_H_
+#define _D_FALLOC_FILE_ALLOCATION_ITERATOR_H_
+
+#include "FileAllocationIterator.h"
+#include "BinaryStream.h"
 
 namespace aria2 {
 
-BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
-  PieceHashCheckIntegrityEntry(requestGroup, 0) {}
+// Allocate disk space using posix_fallocate() system call.
+class FallocFileAllocationIterator:public FileAllocationIterator {
+private:
+  BinaryStream* _stream;
+  off_t _offset;
+  uint64_t _totalLength;
+public:
+  FallocFileAllocationIterator(BinaryStream* stream, off_t offset,
+			       uint64_t totalLength);
 
-BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
+  virtual void allocateChunk();
 
-void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
-						 DownloadEngine* e)
-{
-  // Now reopen DiskAdaptor with read only disabled.
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableReadOnly();
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
+  virtual bool finished();
 
-  SharedHandle<BtFileAllocationEntry> entry
-    (new BtFileAllocationEntry(_requestGroup));
-  proceedFileAllocation(commands, entry, e);
-}
+  virtual off_t getCurrentLength();
 
-void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
-					       DownloadEngine* e)
-{
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->onDownloadComplete();
-  // TODO Currently,when all the checksums
-  // are valid, then aira2 goes to seeding mode. Sometimes it is better
-  // to exit rather than doing seeding. So, it would be good to toggle this
-  // behavior.
-  if(e->option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
-    SharedHandle<BtFileAllocationEntry> entry
-      (new BtFileAllocationEntry(_requestGroup));
-    proceedFileAllocation(commands, entry, e);
-  }
-}
-
+  virtual uint64_t getTotalLength();
+};
 
 } // namespace aria2
+
+#endif // _D_FALLOC_FILE_ALLOCATION_ITERATOR_H_
+

@@ -192,6 +192,20 @@ void AbstractDiskWriter::truncate(uint64_t length)
 #endif
 }
 
+#ifdef HAVE_POSIX_FALLOCATE
+void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
+{
+  if(fd == -1) {
+    throw DlAbortEx("File not yet opened.");
+  }
+  int r = posix_fallocate(fd, offset, length);
+  if(r != 0) {
+    throw DlAbortEx(StringFormat("posix_fallocate failed. cause: %s",
+				 strerror(r)).str());
+  }
+}
+#endif // HAVE_POSIX_FALLOCATE
+
 // TODO the file descriptor fd must be opened before calling this function.
 uint64_t AbstractDiskWriter::size()
 {

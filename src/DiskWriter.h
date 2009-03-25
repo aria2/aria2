@@ -74,8 +74,6 @@ public:
    */
   virtual void openExistingFile(const std::string& filename, uint64_t totalLength = 0) = 0;
 
-  virtual void truncate(uint64_t length) = 0;
-
   // Returns file length
   virtual uint64_t size() = 0;
 

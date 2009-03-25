@@ -36,7 +36,6 @@
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "StreamFileAllocationEntry.h"
-#include "FileAllocationMan.h"
 #include "Request.h"
 
 namespace aria2 {
@@ -50,17 +49,13 @@ StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(const RequestHandle& curren
 
 StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 
-void StreamCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
-						     DownloadEngine* e)
+void StreamCheckIntegrityEntry::onDownloadIncomplete
+(std::deque<Command*>& commands, DownloadEngine* e)
 {
   FileAllocationEntryHandle entry
     (new StreamFileAllocationEntry(_currentRequest, _requestGroup,
 				   popNextCommand()));
-  if(_requestGroup->needsFileAllocation()) {
-    e->_fileAllocationMan->pushEntry(entry);
-  } else {
-    entry->prepareForNextAction(commands, e);
-  }
+  proceedFileAllocation(commands, entry, e);
 }
 
 void StreamCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,

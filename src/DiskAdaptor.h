@@ -50,6 +50,7 @@ class DiskAdaptor:public BinaryStream {
 protected:
   std::string storeDir;
   std::deque<SharedHandle<FileEntry> > fileEntries;
+  bool _fallocate;
   Logger* logger;
 public:
   DiskAdaptor();
@@ -68,9 +69,6 @@ public:
   virtual bool fileExists() = 0;
 
   virtual uint64_t size() = 0;
-
-  // optional behavior
-  virtual void truncate(uint64_t length) {}
 
   void setFileEntries(const std::deque<SharedHandle<FileEntry> >& fileEntries);
 
@@ -110,6 +108,21 @@ public:
   // Returns the number of files, the actime and modtime of which are
   // successfully changed.
   virtual size_t utime(const Time& actime, const Time& modtime) = 0;
+
+  void enableFallocate()
+  {
+    _fallocate = true;
+  }
+
+  void disableFallocate()
+  {
+    _fallocate = false;
+  }
+
+  bool doesFallocate() const
+  {
+    return _fallocate;
+  }
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

@@ -42,14 +42,13 @@ namespace aria2 {
 
 class MultiDiskAdaptor;
 class DiskWriterEntry;
-class SingleFileAllocationIterator;
 
 class MultiFileAllocationIterator:public FileAllocationIterator
 {
 private:
   MultiDiskAdaptor* _diskAdaptor;
   std::deque<SharedHandle<DiskWriterEntry> > _entries;
-  SharedHandle<SingleFileAllocationIterator> _fileAllocationIterator;
+  SharedHandle<FileAllocationIterator> _fileAllocationIterator;
   off_t _offset;
 
 public:

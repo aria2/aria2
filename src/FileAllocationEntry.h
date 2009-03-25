@@ -63,6 +63,8 @@ public:
 
   virtual void prepareForNextAction(std::deque<Command*>& commands,
 				    DownloadEngine* e) = 0;
+
+  void disableDirectIO();
 };
 
 typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;

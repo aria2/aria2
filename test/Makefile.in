@@ -34,13 +34,14 @@ host_triplet = @host@
 target_triplet = @target@
 TESTS = aria2c$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
-@HAVE_LIBZ_TRUE@am__append_1 = GZipDecoderTest.cc
-@HAVE_SQLITE3_TRUE@am__append_2 = Sqlite3MozCookieParserTest.cc
-@ENABLE_MESSAGE_DIGEST_TRUE@am__append_3 = MessageDigestHelperTest.cc\
+@HAVE_POSIX_FALLOCATE_TRUE@am__append_1 = FallocFileAllocationIteratorTest.cc
+@HAVE_LIBZ_TRUE@am__append_2 = GZipDecoderTest.cc
+@HAVE_SQLITE3_TRUE@am__append_3 = Sqlite3MozCookieParserTest.cc
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_4 = MessageDigestHelperTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.cc
 
-@ENABLE_BITTORRENT_TRUE@am__append_4 = BtAllowedFastMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@am__append_5 = BtAllowedFastMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtChokeMessageTest.cc\
@@ -126,7 +127,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h
 
-@ENABLE_METALINK_TRUE@am__append_5 = MetalinkerTest.cc\
+@ENABLE_METALINK_TRUE@am__append_6 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.cc\
@@ -193,8 +194,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	SimpleDNSCacheTest.cc DownloadHelperTest.cc BencodeTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
-	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
-	MessageDigestHelperTest.cc \
+	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
+	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -242,14 +243,15 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
-@HAVE_LIBZ_TRUE@am__objects_1 = GZipDecoderTest.$(OBJEXT)
-@HAVE_SQLITE3_TRUE@am__objects_2 =  \
+@HAVE_POSIX_FALLOCATE_TRUE@am__objects_1 = FallocFileAllocationIteratorTest.$(OBJEXT)
+@HAVE_LIBZ_TRUE@am__objects_2 = GZipDecoderTest.$(OBJEXT)
+@HAVE_SQLITE3_TRUE@am__objects_3 =  \
 @HAVE_SQLITE3_TRUE@	Sqlite3MozCookieParserTest.$(OBJEXT)
-@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_3 =  \
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_4 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_4 =  \
+@ENABLE_BITTORRENT_TRUE@am__objects_5 =  \
 @ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.$(OBJEXT) \
@@ -317,7 +319,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_5 = MetalinkerTest.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_6 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.$(OBJEXT) \
@@ -363,7 +365,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	RarestPieceSelectorTest.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
 	a2algoTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5)
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a ../src/download_helper.o \
@@ -589,7 +592,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5)
+	$(am__append_4) $(am__append_5) $(am__append_6)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -753,6 +756,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandlerFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExceptionTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FallocFileAllocationIteratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeedbackURISelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@

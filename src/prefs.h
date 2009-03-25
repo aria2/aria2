@@ -83,9 +83,10 @@ extern const std::string PREF_SEGMENT_SIZE;
 extern const std::string PREF_MAX_DOWNLOAD_LIMIT;
 // value: 1*digit
 extern const std::string PREF_STARTUP_IDLE_TIME;
-// value: prealloc | none
+// value: prealloc | falloc | none
 extern const std::string PREF_FILE_ALLOCATION;
 extern const std::string V_PREALLOC;
+extern const std::string V_FALLOC;
 // value: 1*digit
 extern const std::string PREF_NO_FILE_ALLOCATION_LIMIT;
 // value: true | false
