@@ -1,5 +1,10 @@
 2009-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* src/usage_text.h
+
+2009-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added 'falloc' parameter for --file-allocation option.  'falloc'
 	allocation mode uses posix_fallocate() system call to allocate
 	file on disk.  If you are using newer file systems such as ext4
