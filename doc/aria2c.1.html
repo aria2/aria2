@@ -1446,6 +1446,15 @@ writes the piece to the appropriate files.</td>
   <em>none</em> doesn't pre-allocate file space. <em>prealloc</em> pre-allocates file space
   before download begins. This may take some time depending on the size of the
   file.
+  If you are using newer file systems such as ext4
+  (with extents support), btrfs or xfs, <em>falloc</em> is
+  your best choice. It allocates large(few GiB)
+  files almost instantly. Don't use <em>falloc</em> with
+  legacy file systems such as ext3 because it takes
+  almost same time as <em>prealloc</em> and it blocks aria2
+  entirely until allocation finishes. <em>falloc</em> may
+  not be available if your system doesn't have
+  <strong>posix_fallocate</strong>() function.
   Default: <em>prealloc</em>
 </p>
 </dd>
@@ -2337,7 +2346,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-03-22 16:27:15 JST
+Last updated 2009-03-25 15:03:34 JST
 </div>
 </div>
 </body>

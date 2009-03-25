@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 03/22/2009
+.\"      Date: 03/25/2009
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "03/22/2009" "" ""
+.TH "ARIA2C" "1" "03/25/2009" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -800,7 +800,16 @@ or
 \fInone\fR
 doesn\'t pre\-allocate file space\&.
 \fIprealloc\fR
-pre\-allocates file space before download begins\&. This may take some time depending on the size of the file\&. Default:
+pre\-allocates file space before download begins\&. This may take some time depending on the size of the file\&. If you are using newer file systems such as ext4 (with extents support), btrfs or xfs,
+\fIfalloc\fR
+is your best choice\&. It allocates large(few GiB) files almost instantly\&. Don\'t use
+\fIfalloc\fR
+with legacy file systems such as ext3 because it takes almost same time as
+\fIprealloc\fR
+and it blocks aria2 entirely until allocation finishes\&.
+\fIfalloc\fR
+may not be available if your system doesn\'t have
+\fBposix_fallocate\fR() function\&. Default:
 \fIprealloc\fR
 .RE
 .PP
