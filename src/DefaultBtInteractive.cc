@@ -438,8 +438,10 @@ void DefaultBtInteractive::doInteractionProcessing() {
 
   detectMessageFlooding();
 
-  dispatcher->checkRequestSlotAndDoNecessaryThing();
-
+  if(_perSecCheckPoint.elapsed(1)) {
+    _perSecCheckPoint.reset();
+    dispatcher->checkRequestSlotAndDoNecessaryThing();
+  }
   checkHave();
 
   sendKeepAlive();

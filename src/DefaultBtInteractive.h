@@ -123,6 +123,7 @@ private:
   FloodingStat floodingStat;
   Time inactiveCheckPoint;
   Time _pexCheckPoint;
+  Time _perSecCheckPoint;
   time_t keepAliveInterval;
   bool _utPexEnabled;
   bool _dhtEnabled;
