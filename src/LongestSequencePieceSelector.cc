@@ -33,21 +33,55 @@
  */
 /* copyright --> */
 #include "LongestSequencePieceSelector.h"
-#include "a2algo.h"
+#include "bitfield.h"
 
 namespace aria2 {
 
-bool LongestSequencePieceSelector::select
-(size_t& index,
- const std::deque<size_t>& candidateIndexes) const
+static size_t getStartIndex
+(size_t from, const unsigned char* bitfield, size_t nbits)
 {
-  std::pair<std::deque<size_t>::const_iterator, size_t> p = 
-    max_sequence(candidateIndexes.begin(), candidateIndexes.end());
-  if(p.second == 0) {
-    return false;
+  while(from < nbits && !bitfield::test(bitfield, nbits, from)) {
+    ++from;
+  }
+  if(nbits <= from) {
+    return nbits;
   } else {
-    index = *(p.first)+p.second-1;
+    return from;
+  }
+}
+
+static size_t getEndIndex
+(size_t from, const unsigned char* bitfield, size_t nbits)
+{
+  while(from < nbits && bitfield::test(bitfield, nbits, from)) {
+    ++from;
+  }
+  return from;
+}
+
+bool LongestSequencePieceSelector::select
+(size_t& index, const unsigned char* bitfield, size_t nbits) const
+{
+  size_t mstartindex = 0;
+  size_t mendindex = 0;
+  size_t nextIndex = 0;
+  while(nextIndex < nbits) {
+    size_t startindex = getStartIndex(nextIndex, bitfield, nbits);
+    if(startindex == nbits) {
+      break;
+    }
+    size_t endindex = getEndIndex(startindex, bitfield, nbits);
+    if(mendindex-mstartindex < endindex-startindex) {
+      mstartindex = startindex;
+      mendindex = endindex;
+    }
+    nextIndex = endindex;
+  }
+  if(mendindex-mstartindex > 0) {
+    index = mendindex-1;
     return true;
+  } else {
+    return false;
   }
 }
 

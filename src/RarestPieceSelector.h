@@ -69,7 +69,7 @@ public:
   RarestPieceSelector(size_t pieceNum, bool randomShuffle);
 
   virtual bool select
-  (size_t& index, const std::deque<size_t>& candidateIndexes) const;
+  (size_t& index, const unsigned char* bitfield, size_t nbits) const;
 
   virtual void addPieceStats(size_t index);
 

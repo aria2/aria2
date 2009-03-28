@@ -48,7 +48,7 @@ public:
   virtual ~PieceSelector() {}
 
   virtual bool select
-  (size_t& index, const std::deque<size_t>& candidateIndexes) const = 0;
+  (size_t& index, const unsigned char* bitfield, size_t nbits) const = 0;
 
   virtual void addPieceStats(size_t index) = 0;
 

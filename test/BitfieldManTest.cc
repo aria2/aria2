@@ -5,6 +5,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "FixedNumberRandomizer.h"
+#include "bitfield.h"
 
 namespace aria2 {
 
@@ -25,6 +26,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetBitRange);
   CPPUNIT_TEST(testGetAllMissingIndexes);
   CPPUNIT_TEST(testGetAllMissingIndexes_noarg);
+  CPPUNIT_TEST(testGetAllMissingIndexes_checkLastByte);
   CPPUNIT_TEST(testGetAllMissingUnusedIndexes);
   CPPUNIT_TEST(testGetMissingUnusedIndex);
   CPPUNIT_TEST(testGetMissingIndex_noarg);
@@ -54,6 +56,7 @@ public:
   void testGetMissingUnusedIndex_noarg();
   void testGetAllMissingIndexes();
   void testGetAllMissingIndexes_noarg();
+  void testGetAllMissingIndexes_checkLastByte();
   void testGetAllMissingUnusedIndexes();
   
   void testIsAllBitSet();
@@ -607,83 +610,87 @@ void BitfieldManTest::testGetAllMissingIndexes_noarg()
 {
   size_t blockLength = 16*1024;
   uint64_t totalLength = 1024*1024;
+  size_t nbits = (totalLength+blockLength-1)/blockLength;
   BitfieldMan bf(blockLength, totalLength);
+  unsigned char misbitfield[8];
+  CPPUNIT_ASSERT(bf.getAllMissingIndexes(misbitfield, sizeof(misbitfield)));
+  CPPUNIT_ASSERT_EQUAL((size_t)64, bitfield::countSetBit(misbitfield, nbits));
 
-  {
-    std::deque<size_t> indexes;
-    CPPUNIT_ASSERT(bf.getAllMissingIndexes(indexes));
-    CPPUNIT_ASSERT_EQUAL((size_t)64, indexes.size());
-  }
   for(size_t i = 0; i < 63; ++i) {
     bf.setBit(i);
   }
-  {
-    std::deque<size_t> indexes;
-    CPPUNIT_ASSERT(bf.getAllMissingIndexes(indexes));
-    CPPUNIT_ASSERT_EQUAL((size_t)1, indexes.size());
-    CPPUNIT_ASSERT_EQUAL((size_t)63, indexes.front());
-  }
+  CPPUNIT_ASSERT(bf.getAllMissingIndexes(misbitfield, sizeof(misbitfield)));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, bitfield::countSetBit(misbitfield, nbits));
+  CPPUNIT_ASSERT(bitfield::test(misbitfield, nbits, 63));
+}
+
+// See garbage bits of last byte are 0
+void BitfieldManTest::testGetAllMissingIndexes_checkLastByte()
+{
+  size_t blockLength = 16*1024;
+  uint64_t totalLength = blockLength*2;
+  size_t nbits = (totalLength+blockLength-1)/blockLength;
+  BitfieldMan bf(blockLength, totalLength);
+  unsigned char misbitfield[1];
+  CPPUNIT_ASSERT(bf.getAllMissingIndexes(misbitfield, sizeof(misbitfield)));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, bitfield::countSetBit(misbitfield, nbits));
+  CPPUNIT_ASSERT(bitfield::test(misbitfield, nbits, 0));
+  CPPUNIT_ASSERT(bitfield::test(misbitfield, nbits, 1));
 }
 
 void BitfieldManTest::testGetAllMissingIndexes()
 {
   size_t blockLength = 16*1024;
   uint64_t totalLength = 1024*1024;
+  size_t nbits = (totalLength+blockLength-1)/blockLength;
   BitfieldMan bf(blockLength, totalLength);
   BitfieldMan peerBf(blockLength, totalLength);
   peerBf.setAllBit();
+  unsigned char misbitfield[8];
 
-  {
-    std::deque<size_t> indexes;
-    CPPUNIT_ASSERT(bf.getAllMissingIndexes(indexes,
-					   peerBf.getBitfield(),
-					   peerBf.getBitfieldLength()));
-    CPPUNIT_ASSERT_EQUAL((size_t)64, indexes.size());
-  }
+  CPPUNIT_ASSERT(bf.getAllMissingIndexes(misbitfield, sizeof(misbitfield),
+					 peerBf.getBitfield(),
+					 peerBf.getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL((size_t)64, bitfield::countSetBit(misbitfield, nbits));
   for(size_t i = 0; i < 62; ++i) {
     bf.setBit(i);
   }
   peerBf.unsetBit(62);
-  {
-    std::deque<size_t> indexes;
-    CPPUNIT_ASSERT(bf.getAllMissingIndexes(indexes,
-					   peerBf.getBitfield(),
-					   peerBf.getBitfieldLength()));
-    
-    CPPUNIT_ASSERT_EQUAL((size_t)1, indexes.size());
-    CPPUNIT_ASSERT_EQUAL((size_t)63, indexes.front());
-  }
+
+  CPPUNIT_ASSERT(bf.getAllMissingIndexes(misbitfield, sizeof(misbitfield),
+					 peerBf.getBitfield(),
+					 peerBf.getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, bitfield::countSetBit(misbitfield, nbits));
+  CPPUNIT_ASSERT(bitfield::test(misbitfield, nbits, 63));
 }
 
 void BitfieldManTest::testGetAllMissingUnusedIndexes()
 {
   size_t blockLength = 16*1024;
   uint64_t totalLength = 1024*1024;
+  size_t nbits = (totalLength+blockLength-1)/blockLength;
   BitfieldMan bf(blockLength, totalLength);
   BitfieldMan peerBf(blockLength, totalLength);
   peerBf.setAllBit();
+  unsigned char misbitfield[8];
 
-  {
-    std::deque<size_t> indexes;
-    CPPUNIT_ASSERT(bf.getAllMissingUnusedIndexes(indexes,
-						 peerBf.getBitfield(),
-						 peerBf.getBitfieldLength()));
-    CPPUNIT_ASSERT_EQUAL((size_t)64, indexes.size());
-  }
+  CPPUNIT_ASSERT(bf.getAllMissingUnusedIndexes(misbitfield,
+					       sizeof(misbitfield),
+					       peerBf.getBitfield(),
+					       peerBf.getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL((size_t)64, bitfield::countSetBit(misbitfield, nbits));
+
   for(size_t i = 0; i < 61; ++i) {
     bf.setBit(i);
   }
   bf.setUseBit(61);
   peerBf.unsetBit(62);
-  {
-    std::deque<size_t> indexes;
-    CPPUNIT_ASSERT(bf.getAllMissingUnusedIndexes(indexes,
-						 peerBf.getBitfield(),
-						 peerBf.getBitfieldLength()));
-    
-    CPPUNIT_ASSERT_EQUAL((size_t)1, indexes.size());
-    CPPUNIT_ASSERT_EQUAL((size_t)63, indexes.front());
-  }
+  CPPUNIT_ASSERT(bf.getAllMissingUnusedIndexes(misbitfield,
+					       sizeof(misbitfield),
+					       peerBf.getBitfield(),
+					       peerBf.getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, bitfield::countSetBit(misbitfield, nbits));
+  CPPUNIT_ASSERT(bitfield::test(misbitfield, nbits, 63));
 }
 
 void BitfieldManTest::testGetMissingUnusedIndex()

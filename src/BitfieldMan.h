@@ -62,7 +62,6 @@ private:
   uint64_t cachedFilteredComletedLength;
   uint64_t cachedFilteredTotalLength;
 
-  size_t countSetBit(const unsigned char* bitfield, size_t len) const;
   size_t getNthBitIndex(const unsigned char bit, size_t nth) const;
   bool getMissingIndexRandomly(size_t& index, const unsigned char* bitfield, size_t len) const;
 
@@ -77,7 +76,6 @@ private:
 			    const Array& bitfield,
 			    size_t bitfieldLength) const;
 
-  bool isBitSetInternal(const unsigned char* bitfield, size_t index) const;
   bool setBitInternal(unsigned char* bitfield, size_t index, bool on);
   bool setFilterBit(size_t index);
 
@@ -85,6 +83,27 @@ private:
   size_t getEndIndex(size_t index) const;
 
   uint64_t getCompletedLength(bool useFilter) const;
+
+  // [startIndex, endIndex)
+  class Range {
+  public:
+    size_t startIndex;
+    size_t endIndex;
+    Range(size_t startIndex = 0, size_t endIndex = 0):startIndex(startIndex),
+						      endIndex(endIndex) {}
+  
+    size_t getSize() const {
+      return endIndex-startIndex;
+    }
+
+    size_t getMidIndex() const {
+      return (endIndex-startIndex)/2+startIndex;
+    }
+
+    bool operator<(const Range& range) const {
+      return getSize() < range.getSize();
+    }
+  };
 public:
   BitfieldMan(size_t blockLength, uint64_t totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);
@@ -139,16 +158,16 @@ public:
   /**
    * affected by filter
    */
-  bool getAllMissingIndexes(std::deque<size_t>&indexes) const;
+  bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen) const;
   /**
    * affected by filter
    */
-  bool getAllMissingIndexes(std::deque<size_t>& indexes,
+  bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen,
 			    const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
-  bool getAllMissingUnusedIndexes(std::deque<size_t>& indexes,
+  bool getAllMissingUnusedIndexes(unsigned char* misbitfield, size_t mislen,
 				  const unsigned char* bitfield,
 				  size_t len) const;
   /**

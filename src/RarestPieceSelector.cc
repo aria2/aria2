@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "RarestPieceSelector.h"
 
+#include <cassert>
 #include <algorithm>
 
 #include "SimpleRandomizer.h"
@@ -121,23 +122,26 @@ RarestPieceSelector::RarestPieceSelector(size_t pieceNum, bool randomShuffle):
 class FindRarestPiece
 {
 private:
-  const std::deque<size_t>& _indexes;
+  const unsigned char* _misbitfield;
+  size_t _numbits;
 public:
-  FindRarestPiece(const std::deque<size_t>& indexes):_indexes(indexes) {}
+  FindRarestPiece(const unsigned char* misbitfield, size_t numbits):
+    _misbitfield(misbitfield), _numbits(numbits) {}
 
   bool operator()(const size_t& index)
   {
-    return std::binary_search(_indexes.begin(), _indexes.end(), index);
+    assert(index < _numbits);
+    unsigned char mask = (128 >> (index%8));
+    return _misbitfield[index/8]&mask;
   }
 };
 
 bool RarestPieceSelector::select
-(size_t& index,
- const std::deque<size_t>& candidateIndexes) const
+(size_t& index, const unsigned char* bitfield, size_t nbits) const
 {
   std::vector<size_t>::const_iterator i =
     std::find_if(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
-		 FindRarestPiece(candidateIndexes));
+		 FindRarestPiece(bitfield, nbits));
   if(i == _sortedPieceStatIndexes.end()) {
     return false;
   } else {

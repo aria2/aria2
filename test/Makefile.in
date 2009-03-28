@@ -194,8 +194,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	SimpleDNSCacheTest.cc DownloadHelperTest.cc BencodeTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
-	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
-	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
+	bitfieldTest.cc FallocFileAllocationIteratorTest.cc \
+	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -364,9 +365,9 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	SequentialPickerTest.$(OBJEXT) \
 	RarestPieceSelectorTest.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
-	a2algoTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6)
+	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a ../src/download_helper.o \
@@ -591,8 +592,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	SimpleDNSCacheTest.cc DownloadHelperTest.cc BencodeTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6)
+	bitfieldTest.cc $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5) \
+	$(am__append_6)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -828,6 +830,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a2algoTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a2functionalTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/array_funTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitfieldTest.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

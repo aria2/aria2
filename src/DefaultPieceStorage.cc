@@ -57,6 +57,7 @@
 #include "Option.h"
 #include "StringFormat.h"
 #include "RarestPieceSelector.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -97,18 +98,21 @@ bool DefaultPieceStorage::isEndGame()
 
 bool DefaultPieceStorage::getMissingPieceIndex(size_t& index,
 					       const unsigned char* bitfield,
-					       size_t& length)
+					       size_t length)
 {
-  std::deque<size_t> indexes;
+  const size_t mislen = bitfieldMan->getBitfieldLength();
+  array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
   bool r;
   if(isEndGame()) {
-    r = bitfieldMan->getAllMissingIndexes(indexes, bitfield, length);
+    r = bitfieldMan->getAllMissingIndexes(misbitfield, mislen,
+					  bitfield, length);
   } else {
-    r = bitfieldMan->getAllMissingUnusedIndexes(indexes, bitfield, length);
+    r = bitfieldMan->getAllMissingUnusedIndexes(misbitfield, mislen,
+						bitfield, length);
   }
   if(r) {
     // We assume indexes is sorted using comparator less.
-    return _pieceSelector->select(index, indexes);
+    return _pieceSelector->select(index, misbitfield,bitfieldMan->countBlock());
   } else {
     return false;
   }

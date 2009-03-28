@@ -30,7 +30,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testToUpper);
   CPPUNIT_TEST(testToLower);
   CPPUNIT_TEST(testUrldecode);
-  CPPUNIT_TEST(testCountBit);
   CPPUNIT_TEST(testGetRealSize);
   CPPUNIT_TEST(testAbbrevSize);
   CPPUNIT_TEST(testToStream);
@@ -75,7 +74,6 @@ public:
   void testToUpper();
   void testToLower();
   void testUrldecode();
-  void testCountBit();
   void testGetRealSize();
   void testAbbrevSize();
   void testToStream();
@@ -336,11 +334,6 @@ void UtilTest::testUrldecode() {
 
   std::string src6 = "%2f";
   CPPUNIT_ASSERT_EQUAL(std::string("/"), Util::urldecode(src6));
-}
-
-void UtilTest::testCountBit() {
-  CPPUNIT_ASSERT_EQUAL((unsigned int)32, Util::countBit(UINT32_MAX));
-  CPPUNIT_ASSERT_EQUAL((unsigned int)8, Util::countBit(255));
 }
 
 void UtilTest::testGetRealSize()

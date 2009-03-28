@@ -47,6 +47,7 @@
 #include "BtMessage.h"
 #include "a2functional.h"
 #include "SimpleRandomizer.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -170,13 +171,27 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < max; ++itr) {
     PieceHandle& piece = *itr;
+    const size_t mislen = piece->getBitfieldLength();
+    array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
+
+    piece->getAllMissingBlockIndexes(misbitfield, mislen);
+
     std::deque<size_t> missingBlockIndexes;
-    piece->getAllMissingBlockIndexes(missingBlockIndexes);
+    size_t blockIndex = 0;
+    for(size_t i = 0; i < mislen; ++i) {
+      unsigned char bits = misbitfield[i];
+      unsigned char mask = 128;
+      for(size_t bi = 0; bi < 8; ++bi, mask >>= 1, ++blockIndex) {
+	if(bits & mask) {
+	  missingBlockIndexes.push_back(blockIndex);
+	}
+      }
+    }
     std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
 			*(SimpleRandomizer::getInstance().get()));
     for(std::deque<size_t>::const_iterator bitr = missingBlockIndexes.begin();
 	bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
-      size_t blockIndex = *bitr;
+      const size_t& blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
 					   blockIndex)) {
       _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",

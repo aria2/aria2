@@ -84,7 +84,7 @@ private:
   SharedHandle<PieceSelector> _pieceSelector;
 
   bool getMissingPieceIndex(size_t& index,
-			    const unsigned char* bitfield, size_t& length);
+			    const unsigned char* bitfield, size_t length);
 
   SharedHandle<Piece> getMissingPiece(const unsigned char* bitfield,
 				      size_t length);

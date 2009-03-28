@@ -1,5 +1,37 @@
 2009-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	BitfieldMan::getMissingIndexes family functions now takes unsigned
+	char* bitfield instead of stl container for efficiency.
+	PieceSelector::select now takes this
+	bitfield. RarestPieceSelector::select now also performs
+	efficiently for this change.  bitfield namespace is introduced and
+	it has several helper functions to handle basic bitfield
+	operations such as test, count set bits, etc.
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/LongestSequencePieceSelector.cc
+	* src/LongestSequencePieceSelector.h
+	* src/Makefile.am
+	* src/Piece.cc
+	* src/Piece.h
+	* src/PieceSelector.h
+	* src/RarestPieceSelector.cc
+	* src/RarestPieceSelector.h
+	* src/Util.cc
+	* src/Util.h
+	* src/bitfield.h
+	* test/BitfieldManTest.cc
+	* test/LongestSequencePieceSelectorTest.cc
+	* test/Makefile.am
+	* test/RarestPieceSelectorTest.cc
+	* test/UtilTest.cc
+	* test/bitfieldTest.cc
+	
+2009-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made accepted socket non-block.
 	* src/FtpNegotiationCommand.cc
 	* src/HttpListenCommand.cc

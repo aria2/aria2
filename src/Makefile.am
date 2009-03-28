@@ -205,7 +205,8 @@ SRCS =  Socket.h\
 	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
 	HttpServer.cc HttpServer.h\
 	PieceSelector.h\
-	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h
+	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h\
+	bitfield.h
 
 if HAVE_POSIX_FALLOCATE
 SRCS += FallocFileAllocationIterator.cc FallocFileAllocationIterator.h

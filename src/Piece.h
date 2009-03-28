@@ -89,7 +89,8 @@ public:
   bool getMissingUnusedBlockIndex(size_t& index) const;
   bool getMissingBlockIndex(size_t& index) const;
   bool getFirstMissingBlockIndexWithoutLock(size_t& index) const;
-  bool getAllMissingBlockIndexes(std::deque<size_t>& indexes) const;
+  bool getAllMissingBlockIndexes(unsigned char* misbitfield,
+				 size_t mislen) const;
   void completeBlock(size_t blockIndex);
   void cancelBlock(size_t blockIndex);
 

@@ -212,8 +212,6 @@ public:
   // this function temporarily put here
   static std::string getContentDispositionFilename(const std::string& header);
 
-  static unsigned int countBit(uint32_t n);
-  
   static std::string randomAlpha(size_t length,
 				 const SharedHandle<Randomizer>& randomizer);
   
