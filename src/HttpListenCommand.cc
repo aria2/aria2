@@ -62,6 +62,7 @@ bool HttpListenCommand::execute()
   try {
     if(_serverSocket->isReadable(0)) {
       SharedHandle<SocketCore> socket(_serverSocket->acceptConnection());
+      socket->setNonBlockingMode();
       HttpServerCommand* c =
 	new HttpServerCommand(_e->newCUID(), _e, socket);
       c->setStatus(Command::STATUS_ONESHOT_REALTIME);

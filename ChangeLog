@@ -1,5 +1,11 @@
 2009-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made accepted socket non-block.
+	* src/FtpNegotiationCommand.cc
+	* src/HttpListenCommand.cc
+
+2009-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Guarded #ifdef HAVE_POSIX_FALLOCATE
 	* src/AbstractSingleDiskAdaptor.cc
 	* src/DefaultPieceStorage.cc
