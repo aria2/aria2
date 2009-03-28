@@ -50,7 +50,9 @@ class DiskAdaptor:public BinaryStream {
 protected:
   std::string storeDir;
   std::deque<SharedHandle<FileEntry> > fileEntries;
+#ifdef HAVE_POSIX_FALLOCATE
   bool _fallocate;
+#endif // HAVE_POSIX_FALLOCATE
   Logger* logger;
 public:
   DiskAdaptor();
@@ -109,6 +111,7 @@ public:
   // successfully changed.
   virtual size_t utime(const Time& actime, const Time& modtime) = 0;
 
+#ifdef HAVE_POSIX_FALLOCATE
   void enableFallocate()
   {
     _fallocate = true;
@@ -123,6 +126,7 @@ public:
   {
     return _fallocate;
   }
+#endif // HAVE_POSIX_FALLOCATE
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

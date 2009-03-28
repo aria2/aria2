@@ -498,9 +498,11 @@ void DefaultPieceStorage::initStorage()
   }
   diskAdaptor->setStoreDir(downloadContext->getDir());
   diskAdaptor->setFileEntries(downloadContext->getFileEntries());
+#ifdef HAVE_POSIX_FALLOCATE
   if(option->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
     diskAdaptor->enableFallocate();
   }
+#endif // HAVE_POSIX_FALLOCATE
 }
 
 void DefaultPieceStorage::setBitfield(const unsigned char* bitfield,

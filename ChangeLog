@@ -1,5 +1,14 @@
 2009-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Guarded #ifdef HAVE_POSIX_FALLOCATE
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/DefaultPieceStorage.cc
+	* src/DiskAdaptor.h
+	* src/DiskAdaptor.h
+	* src/MultiFileAllocationIterator.cc
+	
+2009-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Run
 	DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 	in every 1 sec. The timeout of RequestSlot is 60s by default and
