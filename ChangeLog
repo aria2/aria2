@@ -1,3 +1,9 @@
+2009-03-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed AC_FUNC_MALLOC and AC_FUNC_REALLOC because 0-byte
+	malloc/realloc is not used.
+	* src/configure.ac
+	
 2009-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	BitfieldMan::getMissingIndexes family functions now takes unsigned

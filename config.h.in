@@ -235,10 +235,6 @@
 /* Define to 1 if the system has the type `long long int'. */
 #undef HAVE_LONG_LONG_INT
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
-
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -302,10 +298,6 @@
 
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
-
-/* Define to 1 if your system has a GNU libc compatible `realloc' function,
-   and to 0 otherwise. */
-#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `rmdir' function. */
 #undef HAVE_RMDIR
@@ -673,9 +665,6 @@
    a type exists and the standard includes do not define it. */
 #undef int8_t
 
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
 /* Define to `int' if <sys/types.h> does not define. */
 #undef mode_t
 
@@ -685,9 +674,6 @@
 /* Define as the type of the result of subtracting two pointers, if the system
    doesn't define it. */
 #undef ptrdiff_t
-
-/* Define to rpl_realloc if the replacement function should be used. */
-#undef realloc
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
