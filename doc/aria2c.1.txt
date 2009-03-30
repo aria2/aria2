@@ -1034,7 +1034,7 @@ aria2c --max-upload-limit=40K file.torrent
 --max-upload-limit specifies the max of upload rate.
 
 [NOTE]
-To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument in the same directory.
+To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory.
 
 Download 2 torrents
 ^^^^^^^^^^^^^^^^^^^
