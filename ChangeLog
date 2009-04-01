@@ -1,5 +1,15 @@
 2009-04-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Russian, Japanese, Spanish, Ukrainian and Norwegian
+	Nynorsk translations. Thanks to all translators.	
+	* po/es.po
+	* po/ja.po
+	* po/nn.po
+	* po/ru.po
+	* po/uk.po
+
+2009-04-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten isInRange()
 	* src/DHTBucket.cc
 	* test/DHTBucketTest.cc
