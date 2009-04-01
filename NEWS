@@ -17,8 +17,8 @@ ext4, btrfs or xfs, large(few GiB) files are allocated almost
 instantly. The performance optimization has been done and aria2 runs
 more efficiently.
 
-Indonesian, Russian, Italian, Ukrainian and Simplified Chinese
-translations were updated.
+Indonesian, Russian, Italian, Ukrainian, Simplified Chinese, Japanese,
+Spanish and Norwegian Nynorsk translations were updated.
 
 Changes
 -------
