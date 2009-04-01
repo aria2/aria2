@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "DHTBucket.h"
+
+#include <cstring>
+#include <cassert>
+#include <algorithm>
+
 #include "DHTUtil.h"
 #include "DHTNode.h"
 #include "LogFactory.h"
@@ -40,9 +45,6 @@
 #include "Util.h"
 #include "DHTConstants.h"
 #include "a2functional.h"
-#include <cstring>
-#include <cassert>
-#include <algorithm>
 
 namespace aria2 {
 
@@ -89,25 +91,16 @@ bool DHTBucket::isInRange(const unsigned char* nodeID) const
   return isInRange(nodeID, _max, _min);
 }
 
+// Returns true if nodeID is in [min, max] (inclusive).
 bool DHTBucket::isInRange(const unsigned char* nodeID,
 			  const unsigned char* max,
 			  const unsigned char* min) const
 {
-  for(size_t i = 0; i < DHT_ID_LENGTH; ++i) {
-    if(nodeID[i] < min[i]) {
-      return false;
-    } else if(min[i] < nodeID[i]) {
-      break;
-    }
-  }
-  for(size_t i = 0; i < DHT_ID_LENGTH; ++i) {
-    if(max[i] < nodeID[i]) {
-      return false;
-    } else if(nodeID[i] < max[i]) {
-      break;
-    }
-  }
-  return true;
+  return
+    !std::lexicographical_compare(&nodeID[0], &nodeID[DHT_ID_LENGTH],
+				  &min[0], &min[DHT_ID_LENGTH]) &&
+    !std::lexicographical_compare(&max[0], &max[DHT_ID_LENGTH],
+				  &nodeID[0], &nodeID[DHT_ID_LENGTH]);
 }
 
 bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)

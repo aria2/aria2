@@ -1,3 +1,9 @@
+2009-04-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten isInRange()
+	* src/DHTBucket.cc
+	* test/DHTBucketTest.cc
+
 2009-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed typo
