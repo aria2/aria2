@@ -6,18 +6,32 @@ Release Note
 
 This release adds the ability to specify the output filenames in
 BitTorrent downloads and the option to limit overall download speed
-and dry run mode which just checks the availability of the remove
-file. -i list option can now take more options: select-file and
+and dry run mode which just checks the availability of the remote
+file. -i list option can now take new options: select-file and
 index-out.  The default behavior of sending HTTP Authorization header
 is reverted back to version 1.1.2 style. The bug in
 AdaptiveURISelector was fixed.  You can now seed read-only files in
-BitTorrent.
+BitTorrent. --file-allocation option can take new parameter
+'falloc'. If it is given and you are using newer file systems such as
+ext4, btrfs or xfs, large(few GiB) files are allocated almost
+instantly. The performance optimization has been done and aria2 runs
+more efficiently.
 
 Indonesian, Russian, Italian, Ukrainian and Simplified Chinese
 translations were updated.
 
 Changes
 -------
+
+* Added 'falloc' parameter for --file-allocation option.  'falloc'
+  allocation mode uses posix_fallocate() system call to allocate file
+  on disk.  If you are using newer file systems such as ext4 (with
+  extents support), btrfs or xfs, 'falloc' is your best choice. It
+  allocates large(few GiB) files almost instantly. Don't use 'falloc'
+  with legacy file systems such as ext3 because it takes almost same
+  time as 'prealloc' and it blocks aria2 entirely until allocation
+  finishes. 'falloc' may not be available if your system doesn't have
+  posix_fallocate() system call.
 
 * Added --bt-tracker-interval option to specify the interval between
   tracker requests.  If non-zero value is specified, aria2 uses it and
@@ -51,11 +65,11 @@ Changes
 * Don't reset URI in retry to avoid additional round trips because
   of redirects.	
 
-* Added --index-out option to specify each file path for torrent.
-  Here index shown in --show-files option is used to specify which
-  file path should be altered. For example, to change the file path
-  with index=2, use --index-out=2=aria2.tar.bz2. You can use this
-  option multiple times: --index-out=1=aria2.tar.bz2
+* Added --index-out option to specify each file path for torrent.  The
+  index shown in --show-files option is used to specify which file
+  path should be altered. For example, to change the file path with
+  index=2, use --index-out=2=aria2.tar.bz2. You can use this option
+  multiple times: --index-out=1=aria2.tar.bz2
   --index-out=2=aria2-opt.tar.bz2. The short hand form -O is also
   available. This option can be specified in -i list.
 
