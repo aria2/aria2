@@ -686,7 +686,7 @@ as much as possible because all the features are enabled by default.</p></div>
 If you build with HTTPS support, I recommend to supply the path to the
 CA bundle file. For example, in Debian the path to CA bundle file is
 <em>/etc/ssl/certs/ca-certificates.crt</em> (in ca-certificates package). This
-may varies depending on the distributions. You can give it to
+may vary depending on your distribution. You can give it to
 configure script using --with-ca-bundle option:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -700,7 +700,7 @@ using aria2's --ca-certificate option.  If you don't have CA bundle
 file installed, then the last resort is disable the certificate
 validation using --check-certificate=false.</p></div>
 <div class="para"><p>The executable is <em>aria2c</em> in src directory.</p></div>
-<div class="para"><p>aria2 uses CppUnit for automated unit testing. To run run the unit test:</p></div>
+<div class="para"><p>aria2 uses CppUnit for automated unit testing. To run the unit test:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>$ make check</tt></pre>
@@ -737,8 +737,8 @@ multi-file mode
 </dl></div>
 <div class="para"><p>Before download starts, a complete directory structure is created if
 needed. By default, aria2 opens at most 100 files mentioned in
-.torrent file, directly writes to and reads from these files. The
-number of files to open simultaneously can be controlled by
+.torrent file, and directly writes to and reads from these files.
+The number of files to open simultaneously can be controlled by
 --bt-max-open-files option.</p></div>
 <h3 id="_dht">5.2. DHT</h3><div style="clear:left"></div>
 <div class="para"><p>As of release 0.13.0, aria2 supports DHT. By default, the routing
@@ -824,7 +824,7 @@ man aria2c
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-03-13 22:50:09 JST
+Last updated 2009-04-05 21:25:07 JST
 </div>
 </div>
 </body>
