@@ -192,7 +192,7 @@ void DefaultPeerStorage::getActivePeers(std::deque<SharedHandle<Peer> >& activeP
   std::for_each(peers.begin(), peers.end(), CollectActivePeer(activePeers));
 }
 
-static TransferStat caluclateStatFor(const SharedHandle<Peer>& peer)
+static TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
 {
   struct timeval now;
   gettimeofday(&now, 0);
@@ -223,7 +223,7 @@ TransferStat DefaultPeerStorage::calculateStat()
       s.sessionDownloadLength = (*i)->getSessionDownloadLength();
       s.sessionUploadLength = (*i)->getSessionUploadLength();
 
-      _peerTransferStatMap[(*i)->getID()] = caluclateStatFor(*i);
+      _peerTransferStatMap[(*i)->getID()] = calculateStatFor(*i);
       stat += s;
     }
     _cachedTransferStat = stat;
@@ -240,8 +240,8 @@ TransferStat DefaultPeerStorage::calculateStat()
 void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
 {
   logger->debug("Updating TransferStat for peer %s", peer->getID().c_str());
-  _cachedTransferStat = _cachedTransferStat-_peerTransferStatMap[peer->getID()];
-  TransferStat s = caluclateStatFor(peer);
+  _cachedTransferStat -= _peerTransferStatMap[peer->getID()];
+  TransferStat s = calculateStatFor(peer);
   _cachedTransferStat += s;
   _peerTransferStatMap[peer->getID()] = s;
 }
@@ -266,8 +266,11 @@ void DefaultPeerStorage::onErasingPeer(const SharedHandle<Peer>& peer) {}
 void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
 {
   if(peer->isActive()) {
-    removedPeerSessionDownloadLength += peer->getSessionDownloadLength();
-    removedPeerSessionUploadLength += peer->getSessionUploadLength();
+    TransferStat removedStat(calculateStatFor(peer));
+    removedPeerSessionDownloadLength += removedStat.getSessionDownloadLength();
+    removedPeerSessionUploadLength += removedStat.getSessionUploadLength();
+    _cachedTransferStat -= removedStat;
+
     // Execute choking algorithm if unchoked and interested peer is
     // disconnected.
     if(!peer->amChoking() && peer->peerInterested()) {

@@ -39,7 +39,6 @@
 #include "BtContext.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
-#include "BtRuntime.h"
 
 namespace aria2 {
 
@@ -49,7 +48,6 @@ private:
   SharedHandle<BtContext> btContext;
   SharedHandle<PeerStorage> _peerStorage;
   SharedHandle<PieceStorage> _pieceStorage;
-  SharedHandle<BtRuntime> _btRuntime;
 public:
   ShareRatioSeedCriteria(double ratio, const SharedHandle<BtContext>& btContext)
     :ratio(ratio),
@@ -64,10 +62,9 @@ public:
       return false;
     }
     TransferStat stat = _peerStorage->calculateStat();
-    uint64_t allTimeUploadLength =
-      _btRuntime->getUploadLengthAtStartup()+stat.getSessionUploadLength();
     return ratio <=
-      ((double)allTimeUploadLength)/_pieceStorage->getCompletedLength();
+      (double)stat.getAllTimeUploadLength()/
+       _pieceStorage->getCompletedLength();
   }
 
   void setRatio(double ratio) {
@@ -86,11 +83,6 @@ public:
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
   {
     _pieceStorage = pieceStorage;
-  }
-
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
-  {
-    _btRuntime = btRuntime;
   }
 };
 

@@ -30,13 +30,9 @@ void ShareRatioSeedCriteriaTest::testEvaluate() {
   btContext->setTotalLength(1000000);
   btContext->setInfoHash((const unsigned char*)infoHash.c_str());
   
-  SharedHandle<BtRuntime> btRuntime(new BtRuntime());
-  btRuntime->setUploadLengthAtStartup(500000);
-  
   SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
   TransferStat stat;
-  stat.setSessionDownloadLength(1000000);
-  stat.setSessionUploadLength(500000);
+  stat.setAllTimeUploadLength(1000000);
   peerStorage->setStat(stat);
 
   SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
@@ -45,7 +41,6 @@ void ShareRatioSeedCriteriaTest::testEvaluate() {
   ShareRatioSeedCriteria cri(1.0, btContext);
   cri.setPeerStorage(peerStorage);
   cri.setPieceStorage(pieceStorage);
-  cri.setBtRuntime(btRuntime);
 
   CPPUNIT_ASSERT(cri.evaluate());
   

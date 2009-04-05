@@ -57,6 +57,7 @@
 #include "DHTRegistry.h"
 #include "BtProgressInfoFile.h"
 #include "BtAnnounce.h"
+#include "BtRuntime.h"
 
 namespace aria2 {
 
@@ -136,7 +137,6 @@ void BtSetup::setup(std::deque<Command*>& commands,
 				    btContext));
       cri->setPieceStorage(pieceStorage);
       cri->setPeerStorage(peerStorage);
-      cri->setBtRuntime(btRuntime);
 
       unionCri->addSeedCriteria(cri);
     }
