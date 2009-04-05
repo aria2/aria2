@@ -122,7 +122,7 @@ Since 1.1.0, aria2 checks the certificate of HTTPS servers by default.
 If you build with HTTPS support, I recommend to supply the path to the
 CA bundle file. For example, in Debian the path to CA bundle file is
 '/etc/ssl/certs/ca-certificates.crt' (in ca-certificates package). This
-may varies depending on the distributions. You can give it to
+may vary depending on your distribution. You can give it to
 configure script using \--with-ca-bundle option:
 
 -------------------------------------------------------------------
@@ -139,7 +139,7 @@ validation using \--check-certificate=false.
 
 The executable is 'aria2c' in src directory.
 
-aria2 uses CppUnit for automated unit testing. To run run the unit test:
+aria2 uses CppUnit for automated unit testing. To run the unit test:
 
 ------------
 $ make check
@@ -166,8 +166,8 @@ multi-file mode::
 
 Before download starts, a complete directory structure is created if
 needed. By default, aria2 opens at most 100 files mentioned in
-.torrent file, directly writes to and reads from these files. The
-number of files to open simultaneously can be controlled by
+.torrent file, and directly writes to and reads from these files. 
+The number of files to open simultaneously can be controlled by
 \--bt-max-open-files option.
 
 DHT
