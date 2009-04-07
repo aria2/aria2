@@ -38,7 +38,6 @@
 #include "Command.h"
 #include "SharedHandle.h"
 #include "RequestGroupAware.h"
-#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -56,7 +55,6 @@ private:
   SharedHandle<BtContext> _btContext;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<BtRuntime> _btRuntime;
-  Time checkPoint;
   SharedHandle<SeedCriteria> seedCriteria;
   bool checkStarted;
 public:
