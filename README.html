@@ -782,10 +782,10 @@ As of release 0.10.0, aria2 stops sending request message after
 <div class="sectionbody">
 <div class="para"><p>The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
 P2P protocols are ignored.</p></div>
-<div class="para"><p>For checksum checking, MD5, SHA1, SHA256 are supported. If multiple
-hash algorithms are provided, aria2 uses SHA1. If checksum checking is
-failed, aria2 doesn't retry the download and just exits with non-zero
-return code.</p></div>
+<div class="para"><p>For checksum verification, MD5, SHA1, and SHA256 are supported. If
+multiple hash algorithms are provided, aria2 uses SHA1. If whole file
+checksum verification fails, aria2 doesn't retry the download and just
+exits with non-zero return code.</p></div>
 <div class="para"><p>The supported user preferences are version, language, location,
 protocol and os.</p></div>
 <div class="para"><p>If chunk checksums are provided in Metalink file, aria2 automatically
@@ -824,7 +824,7 @@ man aria2c
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-04-05 21:25:07 JST
+Last updated 2009-04-07 21:36:14 JST
 </div>
 </div>
 </body>
