@@ -1,3 +1,10 @@
+2009-04-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that upload limit exceeds the value specified in
+	--seed-ratio option depending on the timing of the execution of
+	SeedCheckCommand.	
+	* src/SeedCheckCommand.cc
+
 2009-04-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that removed peer's session upload/download length

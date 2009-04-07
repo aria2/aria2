@@ -53,7 +53,10 @@ SeedCheckCommand::SeedCheckCommand(int cuid,
    e(e),
    _btContext(btContext),
    seedCriteria(seedCriteria),
-   checkStarted(false) {}
+   checkStarted(false)
+{
+  setStatusRealtime();
+}
 
 bool SeedCheckCommand::execute() {
   if(_btRuntime->isHalt()) {
@@ -62,18 +65,16 @@ bool SeedCheckCommand::execute() {
   if(!seedCriteria.get()) {
     return false;
   }
-  if(checkPoint.elapsed(1)) {
-    if(!checkStarted) {
-      if(_pieceStorage->downloadFinished()) {
-	checkStarted = true;
-	seedCriteria->reset();
-      }
+  if(!checkStarted) {
+    if(_pieceStorage->downloadFinished()) {
+      checkStarted = true;
+      seedCriteria->reset();
     }
-    if(checkStarted) {
-      if(seedCriteria->evaluate()) {
-	logger->notice(MSG_SEEDING_END);
-	_btRuntime->setHalt(true);
-      }
+  }
+  if(checkStarted) {
+    if(seedCriteria->evaluate()) {
+      logger->notice(MSG_SEEDING_END);
+      _btRuntime->setHalt(true);
     }
   }
   e->commands.push_back(this);
