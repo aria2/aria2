@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.61)
-AC_INIT(aria2, 1.3.0, t-tujikawa@users.sourceforge.net)
+AC_INIT(aria2, 1.3.1, t-tujikawa@users.sourceforge.net)
 AC_CANONICAL_HOST
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE()
@@ -317,7 +317,7 @@ AC_CHECK_FUNCS([timegm],
 case "$target" in
   *mingw*)
     dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
-    AM_CONDITIONAL([HAVE_GETADDRINFO], true)
+    AM_CONDITIONAL([HAVE_GETADDRINFO], false)
     dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
     AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
     ;;
