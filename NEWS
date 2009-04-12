@@ -1,3 +1,31 @@
+aria2 1.3.1
+===========
+
+Release Note
+------------
+
+This release fixes the bug that aria2 wrongly determines that
+specified share ratio is reached because of miscalculation of upload
+bytes and the bug that upload limit exceeds the value specified in
+--seed-ratio option depending on the timing of the execution of
+SeedCheckCommand.
+
+Changes
+-------
+
+* Updated README
+
+* Fixed the bug that upload limit exceeds the value specified in
+  --seed-ratio option depending on the timing of the execution of
+  SeedCheckCommand.
+
+* Fixed the bug that removed peer's session upload/download length are
+  counted twice in _cachedTransferStat before it is re-calculated.
+  This affected the calculation of shara ratio, resulting aria2
+  wrongly determines that specified share ratio is reached.
+
+
+
 aria2 1.3.0
 ===========
 
