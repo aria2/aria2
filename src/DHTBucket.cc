@@ -185,38 +185,27 @@ SharedHandle<DHTBucket> DHTBucket::split()
 
   DHTUtil::flipBit(_min, DHT_ID_LENGTH, _prefixLength);
 
-  size_t rPrefixLength;
-  size_t lPrefixLength;
-  if(isInRange(_localNode->getID(), rMax, rMin)) {
-    rPrefixLength = _prefixLength+1;
-    lPrefixLength = _prefixLength;
-  } else if(isInRange(_localNode->getID(), _max, _min)) {
-    rPrefixLength = _prefixLength;
-    lPrefixLength = _prefixLength+1;
-  } else {
-    rPrefixLength = _prefixLength;
-    lPrefixLength = _prefixLength;
-  }
-
-  SharedHandle<DHTBucket> rBucket(new DHTBucket(rPrefixLength,
+  ++_prefixLength;
+  SharedHandle<DHTBucket> rBucket(new DHTBucket(_prefixLength,
 						rMax, rMin, _localNode));
-  std::deque<SharedHandle<DHTNode> > tempNodes = _nodes;
-  for(std::deque<SharedHandle<DHTNode> >::iterator i = tempNodes.begin();
-      i != tempNodes.end();) {
+
+  std::deque<SharedHandle<DHTNode> > lNodes;
+  for(std::deque<SharedHandle<DHTNode> >::iterator i = _nodes.begin();
+      i != _nodes.end(); ++i) {
     if(rBucket->isInRange(*i)) {
       assert(rBucket->addNode(*i));
-      i = tempNodes.erase(i);
     } else {
-      ++i;
-    }
+      lNodes.push_back(*i);
+    }      
   }
-  _prefixLength = lPrefixLength;
-  _nodes = tempNodes;
+  _nodes = lNodes;
   // TODO create toString() and use it.
-  _logger->debug("New bucket. Range:%s-%s",
+  _logger->debug("New bucket. prefixLength=%u, Range:%s-%s",
+		 static_cast<unsigned int>(rBucket->getPrefixLength()),
  		 Util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
  		 Util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
-  _logger->debug("Existing bucket. Range:%s-%s",
+  _logger->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
+		 static_cast<unsigned int>(_prefixLength),
 		 Util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
 		 Util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
 

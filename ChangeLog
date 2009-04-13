@@ -1,5 +1,12 @@
 2009-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Increase prefixLength for the bucket which doesn't own local node
+	ID when splitting bucket.
+	* src/DHTBucket.cc
+	* test/DHTBucketTest.cc
+
+2009-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	* Release 1.3.1
 
 2009-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>

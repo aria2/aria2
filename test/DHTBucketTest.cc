@@ -1,10 +1,13 @@
 #include "DHTBucket.h"
+
+#include <cstring>
+#include <algorithm>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "DHTNode.h"
 #include "Exception.h"
 #include "Util.h"
-#include <cstring>
-#include <algorithm>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -224,8 +227,7 @@ void DHTBucketTest::testSplit()
 			     Util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
 	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedLMin, DHT_ID_LENGTH),
 			     Util::toHex(bucket.getMinID(), DHT_ID_LENGTH));
-	// prefixLength is not changed because bucket cannot include localNode
-	CPPUNIT_ASSERT_EQUAL((size_t)0, bucket.getPrefixLength());
+	CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getPrefixLength());
       }
     }
     {
@@ -268,8 +270,7 @@ void DHTBucketTest::testSplit()
 			   Util::toHex(r->getMaxID(), DHT_ID_LENGTH));
       CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMin, DHT_ID_LENGTH),
 			   Util::toHex(r->getMinID(), DHT_ID_LENGTH));
-      // prefixLength is not changed because bucket cannot include localNode
-      CPPUNIT_ASSERT_EQUAL((size_t)0, r->getPrefixLength());
+      CPPUNIT_ASSERT_EQUAL((size_t)1, r->getPrefixLength());
     }
     {
       unsigned char expectedLMax[DHT_ID_LENGTH];
