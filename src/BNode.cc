@@ -176,10 +176,10 @@ void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
 	bnode = bnode->getUp();
       }
     }
-    visited.push_back(bnode);
     if(!bnode) {
       break;
     }
+    visited.push_back(bnode);
     {
       SharedHandle<DHTBucket> bucket = bnode->getBucket();
       if(!bucket.isNull()) {
@@ -194,7 +194,6 @@ void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
       }
     }
   }
-  return;
 }
 
 void BNode::enumerateBucket(std::deque<SharedHandle<DHTBucket> >& buckets,

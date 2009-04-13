@@ -1,5 +1,10 @@
 2009-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/BNode.cc
+
+2009-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Increase prefixLength for the bucket which doesn't own local node
 	ID when splitting bucket.
 	* src/DHTBucket.cc
