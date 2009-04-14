@@ -154,7 +154,6 @@ bool Request::redirectUrl(const std::string& url) {
 bool Request::parseUrl(const std::string& url) {
   currentUrl = url;
   std::string tempUrl = url;
-  std::string query;
   host = A2STR::NIL;
   port = 0;
   dir = A2STR::NIL;

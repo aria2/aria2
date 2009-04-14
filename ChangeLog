@@ -1,5 +1,10 @@
 2009-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused variable 'query'
+	* src/Request.cc
+
+2009-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set conditional HAVE_GETADDRINFO true for mingw32. It was
 	accidentally set to false in r1162.	
 	* configure.ac
