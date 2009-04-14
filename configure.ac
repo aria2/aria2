@@ -317,7 +317,7 @@ AC_CHECK_FUNCS([timegm],
 case "$target" in
   *mingw*)
     dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
-    AM_CONDITIONAL([HAVE_GETADDRINFO], false)
+    AM_CONDITIONAL([HAVE_GETADDRINFO], true)
     dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
     AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
     ;;

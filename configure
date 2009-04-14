@@ -21612,7 +21612,7 @@ done
 
 case "$target" in
   *mingw*)
-         if false; then
+         if true; then
   HAVE_GETADDRINFO_TRUE=
   HAVE_GETADDRINFO_FALSE='#'
 else
