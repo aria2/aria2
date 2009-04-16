@@ -40,164 +40,6 @@
 
 namespace aria2 {
 
-template<typename T>
-class bit_negate:public std::unary_function<T, T> {
-public:
-  T operator()(const T& t) const
-  {
-    return ~t;
-  }
-};
-
-template<typename T>
-class bit_and:public std::binary_function<T, T, T> {
-public:
-  T operator()(const T& t1, const T& t2) const
-  {
-    return t1&t2;
-  }
-};
-
-template<typename R>
-class array_function_base {
-public:
-  virtual ~array_function_base() {}
-
-  virtual R operator[](size_t index) const = 0;
-
-  virtual array_function_base* clone() const = 0;
-};
-
-template<typename A, typename F>
-class array_unary_function:public array_function_base<typename F::result_type> {
-private:
-  A _a;
-  F _f;
-public:
-  array_unary_function(A a, F f):_a(a), _f(f) {}
-
-  virtual typename F::result_type operator[](size_t index) const
-  {
-    return _f(_a[index]);
-  }
-
-  virtual array_function_base<typename F::result_type>* clone() const
-  {
-    return new array_unary_function(*this);
-  }
-};
-
-template<typename A, typename B, typename F>
-class array_binary_function:public array_function_base<typename F::result_type>{
-private:
-  A _a;
-  B _b;
-  F _f;
-public:
-  array_binary_function(A a, B b, F f):_a(a), _b(b), _f(f) {}
-
-  virtual typename F::result_type operator[](size_t index) const
-  {
-    return _f(_a[index], _b[index]);
-  }
-
-  virtual array_function_base<typename F::result_type>* clone() const
-  {
-    return new array_binary_function(*this);
-  }
-};
-
-template<typename R>
-class array_fun {
-private:
-  array_function_base<R>* _p;
-public:
-  template<typename A, typename F>
-  array_fun(A a, F f):_p(new array_unary_function<A, F>(a, f)) {}
-
-  template<typename A, typename B, typename F>
-  array_fun(A a, B b, F f):_p(new array_binary_function<A, B, F>(a, b, f)) {}
-
-  array_fun(const array_fun& af):_p(af._p->clone()) {}
-
-  ~array_fun()
-  {
-    delete _p;
-  }
-
-  array_fun& operator=(const array_fun& af)
-  {
-    if(this != &af) {
-      delete _p;
-      _p = af._p->clone();
-    }
-    return *this;
-  }
-
-  R operator[](size_t index) const
-  {
-    return (*_p)[index];
-  }
-
-  typedef R result_type;
-};
-
-template<typename R, typename A>
-array_fun<R>
-array_negate(A a)
-{
-  return array_fun<R>(a, bit_negate<R>());
-}
-
-template<typename T>
-array_fun<T>
-array_negate(T* a)
-{
-  return array_fun<T>(a, bit_negate<T>());
-}
-
-template<typename A>
-array_fun<typename A::result_type>
-array_negate(A a)
-{
-  return array_fun<typename A::result_type>(a, bit_negate<typename A::result_type>());
-}
-
-template<typename R, typename A, typename B>
-array_fun<R>
-array_and(A a, B b)
-{
-  return array_fun<R>(a, b, bit_and<R>());
-}
-
-template<typename T>
-array_fun<T>
-array_and(T* a, T* b)
-{
-  return array_fun<T>(a, b, bit_and<T>());
-}
-
-template<typename T>
-array_fun<typename T::result_type>
-array_and(T a, T b)
-{
-  return array_fun<typename T::result_type>(a, b, bit_and<typename T::result_type>());
-}
-
-template<typename A, typename B>
-array_fun<typename A::result_type>
-array_and(A a, B b)
-{
-  return array_fun<typename A::result_type>(a, b, bit_and<typename A::result_type>());
-}
-
-template<typename A, typename B>
-array_fun<typename B::result_type>
-array_and(A a, B b)
-{
-  return array_fun<typename B::result_type>(a, b, bit_and<typename B::result_type>());
-}
-
 // calculate length of array
 
 template<typename T, size_t N>
@@ -271,6 +113,122 @@ public:
     return N;
   }
 };
+
+// Expression Template for array
+
+namespace expr {
+
+template<typename T>
+struct Expr {
+  Expr(const T& expOp):_expOp(expOp) {}
+
+  typename T::returnType operator[](size_t index) const
+  {
+    return _expOp(index);
+  }
+
+  const T& _expOp;
+};
+
+template<typename T>
+struct And
+{
+  typedef T returnType;
+  static inline T apply(T lhs, T rhs) { return lhs&rhs; }
+};
+
+template<typename T>
+struct Noop
+{
+  typedef T returnType;
+  static inline T apply(T arg) { return arg; }
+};
+
+template<typename T>
+struct Negate
+{
+  typedef T returnType;
+  static inline T apply(T arg) { return ~arg; }
+};
+
+template<typename T1, typename T2, typename BinOp>
+struct ExpBinOp
+{
+  typedef typename BinOp::returnType returnType;
+
+  ExpBinOp(const T1& lhs, const T2& rhs):_lhs(lhs), _rhs(rhs) {}
+
+  returnType operator()(size_t index) const
+  {
+    return BinOp::apply(_lhs[index], _rhs[index]);
+  }
+
+  const T1& _lhs;
+  const T2& _rhs;
+};
+
+template<typename T, typename UnOp>
+struct ExpUnOp
+{
+  typedef typename UnOp::returnType returnType;
+
+  ExpUnOp(const T& arg):_arg(arg) {}
+
+  returnType operator()(size_t index) const
+  {
+    return UnOp::apply(_arg[index]);
+  }
+
+  const T& _arg;
+};
+
+// Partial specialization for pointers
+template<typename T, typename UnOp>
+struct ExpUnOp<T*, UnOp>
+{
+  typedef typename UnOp::returnType returnType;
+
+  ExpUnOp(const T* arg):_arg(arg) {}
+
+  returnType operator()(size_t index) const
+  {
+    return UnOp::apply(_arg[index]);
+  }
+
+  const T* _arg;
+};
+
+template<typename T, size_t N>
+Expr<ExpUnOp<T(&)[N], Noop<T> > > arrayRef(T (&t)[N])
+{
+  typedef ExpUnOp<T(&)[N], Noop<T> > ExpUnOpT;
+  return Expr<ExpUnOpT>(ExpUnOpT(t));
+}
+
+template<typename T>
+Expr<ExpUnOp<T*, Noop<T> > > array(T* a)
+{
+  typedef ExpUnOp<T*, Noop<T> > ExpUnOpT;
+  return Expr<ExpUnOpT>(ExpUnOpT(a));
+}
+
+template<typename T>
+Expr<ExpUnOp<Expr<T>, Negate<typename T::returnType> > >
+operator~(const Expr<T>& arg)
+{
+  typedef ExpUnOp<Expr<T>, Negate<typename T::returnType> > ExpUnOpT;
+  return Expr<ExpUnOpT>(ExpUnOpT(arg));
+}
+
+template<typename T1, typename T2>
+Expr<ExpBinOp<Expr<T1>, Expr<T2>, And<typename T1::returnType> > >
+operator&(const Expr<T1>& lhs, const Expr<T2>& rhs)
+{
+  typedef ExpBinOp<Expr<T1>, Expr<T2>, And<typename T1::returnType> > ExpBinOpT;
+  return Expr<ExpBinOpT>(ExpBinOpT(lhs, rhs));
+}
+
+} // namespace expr
 
 } // namespace aria2
 

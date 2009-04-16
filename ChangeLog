@@ -1,3 +1,10 @@
+2009-04-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten array operation functions.
+	* src/BitfieldMan.cc
+	* src/array_fun.h
+	* test/array_funTest.cc
+
 2009-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused variable 'query'

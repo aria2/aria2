@@ -42,6 +42,8 @@
 #include "array_fun.h"
 #include "bitfield.h"
 
+using namespace aria2::expr;
+
 namespace aria2 {
 
 BitfieldMan::BitfieldMan(size_t blockLength, uint64_t totalLength)
@@ -227,24 +229,32 @@ bool BitfieldMan::getMissingIndex(size_t& index, const unsigned char* peerBitfie
   if(bitfieldLength != length) {
     return false;
   }
-  array_fun<unsigned char> bf = array_and(array_negate(bitfield), peerBitfield);
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return getMissingIndexRandomly
+      (index,
+       ~array(bitfield)&array(peerBitfield)&array(filterBitfield),
+       bitfieldLength);
+  } else {
+    return getMissingIndexRandomly
+      (index, ~array(bitfield)&array(peerBitfield), bitfieldLength);
   }
-  return getMissingIndexRandomly(index, bf, bitfieldLength);
 }
 
 bool BitfieldMan::getMissingUnusedIndex(size_t& index, const unsigned char* peerBitfield, size_t length) const {
   if(bitfieldLength != length) {
     return false;
   }
-  array_fun<unsigned char> bf = array_and(array_and(array_negate(bitfield),
-						    array_negate(useBitfield)),
-					  peerBitfield);
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return getMissingIndexRandomly
+      (index,
+       ~array(bitfield)&~array(useBitfield)&array(peerBitfield)&array(filterBitfield),
+       bitfieldLength);
+  } else {
+    return getMissingIndexRandomly
+      (index,
+       ~array(bitfield)&~array(useBitfield)&array(peerBitfield),
+       bitfieldLength);
   }
-  return getMissingIndexRandomly(index, bf, bitfieldLength);
 }
 
 template<typename Array>
@@ -266,39 +276,46 @@ bool BitfieldMan::getFirstMissingIndex(size_t& index, const Array& bitfield, siz
 
 bool BitfieldMan::getFirstMissingUnusedIndex(size_t& index) const
 {
-  array_fun<unsigned char> bf = array_and(array_negate(bitfield),
-					  array_negate(useBitfield));
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return getFirstMissingIndex
+      (index, ~array(bitfield)&~array(useBitfield)&array(filterBitfield),
+       bitfieldLength);
+  } else {
+    return getFirstMissingIndex
+      (index, ~array(bitfield)&~array(useBitfield),
+       bitfieldLength);
   }
-  return getFirstMissingIndex(index, bf, bitfieldLength);
 }
 
 bool BitfieldMan::getFirstMissingIndex(size_t& index) const
 {
-  array_fun<unsigned char> bf = array_negate(bitfield);
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return getFirstMissingIndex(index, ~array(bitfield)&array(filterBitfield),
+				bitfieldLength);
+  } else {
+    return getFirstMissingIndex(index, ~array(bitfield), bitfieldLength);
   }
-  return getFirstMissingIndex(index, bf, bitfieldLength);
 }
 
 bool BitfieldMan::getMissingIndex(size_t& index) const {
-  array_fun<unsigned char> bf = array_negate(bitfield);
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return getMissingIndexRandomly
+      (index, ~array(bitfield)&array(filterBitfield), bitfieldLength);
+  } else {
+    return getMissingIndexRandomly(index, ~array(bitfield), bitfieldLength);
   }
-  return getMissingIndexRandomly(index, bf, bitfieldLength);
 }
 
 bool BitfieldMan::getMissingUnusedIndex(size_t& index) const
 {
-  array_fun<unsigned char> bf = array_and(array_negate(bitfield),
-					  array_negate(useBitfield));
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return getMissingIndexRandomly
+      (index, ~array(bitfield)&~array(useBitfield)&array(filterBitfield),
+       bitfieldLength);
+  } else {
+    return getMissingIndexRandomly
+      (index, ~array(bitfield)&~array(useBitfield), bitfieldLength);
   }
-  return getMissingIndexRandomly(index, bf, bitfieldLength);
 }
 
 size_t BitfieldMan::getStartIndex(size_t index) const {
@@ -368,11 +385,12 @@ bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len)
   const
 {
   assert(len == bitfieldLength);
-  array_fun<unsigned char> bf = array_negate(bitfield);
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return copyBitfield
+      (misbitfield, ~array(bitfield)&array(filterBitfield), blocks);
+  } else {
+    return copyBitfield(misbitfield, ~array(bitfield), blocks);
   }
-  return copyBitfield(misbitfield, bf, blocks);
 }
 
 bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len,
@@ -383,12 +401,15 @@ bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len,
   if(bitfieldLength != peerBitfieldLength) {
     return false;
   }
-  array_fun<unsigned char> bf = array_and(array_negate(bitfield),
-					  peerBitfield);
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return copyBitfield
+      (misbitfield, ~array(bitfield)&array(peerBitfield)&array(filterBitfield),
+       blocks);
+  } else {
+    return copyBitfield
+      (misbitfield, ~array(bitfield)&array(peerBitfield),
+       blocks);
   }
-  return copyBitfield(misbitfield, bf, blocks);
 }
 
 bool BitfieldMan::getAllMissingUnusedIndexes(unsigned char* misbitfield,
@@ -400,13 +421,17 @@ bool BitfieldMan::getAllMissingUnusedIndexes(unsigned char* misbitfield,
   if(bitfieldLength != peerBitfieldLength) {
     return false;
   }
-  array_fun<unsigned char> bf = array_and(array_and(array_negate(bitfield),
-						    array_negate(useBitfield)),
-					  peerBitfield);
   if(filterEnabled) {
-    bf = array_and(bf, filterBitfield);
+    return copyBitfield
+      (misbitfield,
+       ~array(bitfield)&~array(useBitfield)&array(peerBitfield)&array(filterBitfield),
+       blocks);
+  } else {
+    return copyBitfield
+      (misbitfield,
+       ~array(bitfield)&~array(useBitfield)&array(peerBitfield),
+       blocks);
   }
-  return copyBitfield(misbitfield, bf, blocks);
 }
 
 size_t BitfieldMan::countMissingBlock() const {
