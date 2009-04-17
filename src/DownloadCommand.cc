@@ -172,22 +172,11 @@ bool DownloadCommand::executeInternal() {
 	      !socket->wantRead() && !socket->wantWrite()) {
       segmentComplete = true;
     }
-  } else if(!_transferEncodingDecoder.isNull() &&
-	    !_contentEncodingDecoder.isNull()) {
-    if(_transferEncodingDecoder->finished() &&
-       _contentEncodingDecoder->finished()) {
-      segmentComplete = true;
-    }
-  } else if(!_transferEncodingDecoder.isNull() &&
-	    _contentEncodingDecoder.isNull()) {
-    if(_transferEncodingDecoder->finished()) {
-      segmentComplete = true;
-    }
-  } else if(_transferEncodingDecoder.isNull() &&
-	    !_contentEncodingDecoder.isNull()) {
-    if(_contentEncodingDecoder->finished()) {
-      segmentComplete = true;
-    }
+  } else if((_transferEncodingDecoder.isNull() ||
+	     _transferEncodingDecoder->finished()) &&
+	    (_contentEncodingDecoder.isNull() ||
+	     _contentEncodingDecoder->finished())) {
+    segmentComplete = true;
   }
 
   if(!segmentComplete && bufSize == 0 &&

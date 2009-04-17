@@ -1,5 +1,10 @@
 2009-04-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/DownloadCommand.cc
+
+2009-04-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed segmentation fault when GZipDecoder::decode() returns 0
 	byte.
 	* src/DownloadCommand.cc
