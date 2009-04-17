@@ -68,6 +68,12 @@
 
 namespace aria2 {
 
+static SharedHandle<Decoder> getTransferEncodingDecoder
+(const SharedHandle<HttpResponse>& httpResponse);
+
+static SharedHandle<Decoder> getContentEncodingDecoder
+(const SharedHandle<HttpResponse>& httpResponse);
+
 HttpResponseCommand::HttpResponseCommand(int32_t cuid,
 					 const RequestHandle& req,
 					 RequestGroup* requestGroup,
@@ -147,6 +153,8 @@ bool HttpResponseCommand::executeInternal()
       if(req->getMethod() == Request::METHOD_GET &&
 	 (totalLength != 0 ||
 	  !httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH))){
+	// dctx->knowsTotalLength() == true only when server says the
+	// size of file is 0 explicitly.
 	dctx->markTotalLengthIsUnknown();
       }
       return handleOtherEncoding(httpResponse);
@@ -158,8 +166,19 @@ bool HttpResponseCommand::executeInternal()
     _requestGroup->validateTotalLength(httpResponse->getEntityLength());
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
-
-    e->commands.push_back(createHttpDownloadCommand(httpResponse));
+    if(_requestGroup->getTotalLength() == 0) {
+      // Since total length is unknown, the file size in previously
+      // failed download could be larger than the size this time.
+      // Also we can't resume in this case too.  So truncate the file
+      // anyway.
+      _requestGroup->getPieceStorage()->getDiskAdaptor()->truncate(0);
+      e->commands.push_back
+	(createHttpDownloadCommand(httpResponse,
+				   getTransferEncodingDecoder(httpResponse),
+				   getContentEncodingDecoder(httpResponse)));
+    } else {
+      e->commands.push_back(createHttpDownloadCommand(httpResponse));
+    }
     return true;
   }
 }
@@ -299,11 +318,12 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   _requestGroup->shouldCancelDownloadForSafety();
   _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
+  // In this context, knowsTotalLength() is true only when the file is
+  // really zero-length.
   if(_requestGroup->getDownloadContext()->knowsTotalLength()) {
     poolConnection();
     return true;
   }
-
   e->commands.push_back
     (createHttpDownloadCommand(httpResponse,
 			       getTransferEncodingDecoder(httpResponse),

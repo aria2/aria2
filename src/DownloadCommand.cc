@@ -156,17 +156,14 @@ bool DownloadCommand::executeInternal() {
   }
 
 #endif // ENABLE_MESSAGE_DIGEST
+  if(bufSizeFinal > 0) {
+    segment->updateWrittenLength(bufSizeFinal);
+  }
 
-  segment->updateWrittenLength(bufSizeFinal);
-  
   peerStat->updateDownloadLength(bufSize);
 
   _requestGroup->getSegmentMan()->updateDownloadSpeedFor(peerStat);
 
-  if(_requestGroup->getTotalLength() != 0 && bufSize == 0 &&
-     !socket->wantRead() && !socket->wantWrite()) {
-    throw DlRetryEx(EX_GOT_EOF);
-  }
   bool segmentComplete = false;
   if(_transferEncodingDecoder.isNull() && _contentEncodingDecoder.isNull()) {
     if(segment->complete()) {
@@ -191,6 +188,11 @@ bool DownloadCommand::executeInternal() {
     if(_contentEncodingDecoder->finished()) {
       segmentComplete = true;
     }
+  }
+
+  if(!segmentComplete && bufSize == 0 &&
+     !socket->wantRead() && !socket->wantWrite()) {
+    throw DlRetryEx(EX_GOT_EOF);
   }
 
   if(segmentComplete) {

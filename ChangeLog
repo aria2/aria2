@@ -1,3 +1,20 @@
+2009-04-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed segmentation fault when GZipDecoder::decode() returns 0
+	byte.
+	* src/DownloadCommand.cc
+	* src/bitfield.h
+	* test/bitfieldTest.cc
+
+	Fixed the bug that causes infinite loop if broken web server
+	returns chunked response without last "0" chunk-size marker and
+	closes connection.
+	* src/DownloadCommand.cc
+
+	Instantiate properly configured HttpDownloadCommand for
+	non-resumable downlaods.
+	* src/HttpResponseCommand.cc
+	
 2009-04-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten array operation functions.

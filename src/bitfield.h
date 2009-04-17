@@ -91,6 +91,9 @@ inline size_t countBit32(uint32_t n)
 // Counts set bit in bitfield.
 inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
 {
+  if(nbits == 0) {
+    return 0;
+  }
   size_t count = 0;
   size_t size = sizeof(uint32_t);
   size_t len = (nbits+7)/8;
