@@ -307,7 +307,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   removeStoppedGroup(e);
   unsigned int count = 0;
   for(int num = _maxSimultaneousDownloads-_requestGroups.size();
-      num > 0 && _reservedGroups.size() > 0; --num) {
+      num > 0 && !_reservedGroups.empty(); --num) {
     RequestGroupHandle groupToAdd = _reservedGroups.front();
     _reservedGroups.pop_front();
     try {
