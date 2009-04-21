@@ -44,7 +44,7 @@ namespace aria2 {
 
 class DHTTaskQueue;
 class DHTTaskFactory;
-class DHTPeerLookupTask;
+class DHTTask;
 class DownloadEngine;
 class RequestGroup;
 class BtContext;
@@ -73,7 +73,7 @@ private:
 
   SharedHandle<DHTTaskFactory> _taskFactory;
 
-  SharedHandle<DHTPeerLookupTask> _task;
+  SharedHandle<DHTTask> _task;
 
   size_t _numRetry;
 

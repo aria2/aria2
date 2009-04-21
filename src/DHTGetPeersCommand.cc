@@ -38,7 +38,6 @@
 #include "DHTTask.h"
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
-#include "DHTPeerLookupTask.h"
 #include "DHTNode.h"
 #include "DHTNodeLookupEntry.h"
 #include "BtContext.h"
@@ -73,9 +72,8 @@ bool DHTGetPeersCommand::execute()
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
     logger->debug("Issuing PeerLookup for infoHash=%s",
 		  _btContext->getInfoHashAsString().c_str());
-    _task = dynamic_pointer_cast<DHTPeerLookupTask>
-      (_taskFactory->createPeerLookupTask(_btContext, _btRuntime,
-					  _peerStorage));
+    _task = _taskFactory->createPeerLookupTask(_btContext, _btRuntime,
+					       _peerStorage);
     _taskQueue->addPeriodicTask2(_task);
   } else if(!_task.isNull() && _task->finished()) {
     _lastGetPeerTime.reset();
