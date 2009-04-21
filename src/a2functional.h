@@ -88,6 +88,31 @@ mem_fun_sh(ReturnType (ClassType::*f)() const)
   return const_mem_fun_sh_t<ReturnType, ClassType>(f);
 };
 
+// mem_fun1_t for SharedHandle
+template<typename ReturnType, typename ClassType, typename ArgType>
+class mem_fun1_sh_t:public std::binary_function<SharedHandle<ClassType>,
+						ArgType,
+						ReturnType>
+{
+private:
+  ReturnType (ClassType::*f)(ArgType);
+
+public:
+  mem_fun1_sh_t(ReturnType (ClassType::*f)(ArgType)):f(f) {}
+
+  ReturnType operator()(const SharedHandle<ClassType>& x, ArgType a) const
+  {
+    return (x.get()->*f)(a);
+  }
+};
+
+template<typename ReturnType, typename ClassType, typename ArgType>
+mem_fun1_sh_t<ReturnType, ClassType, ArgType>
+mem_fun_sh(ReturnType (ClassType::*f)(ArgType))
+{
+  return mem_fun1_sh_t<ReturnType, ClassType, ArgType>(f);
+};
+
 template<class BinaryOp, class UnaryOp>
 class adopt2nd_t:public std::binary_function<typename BinaryOp::first_argument_type,
 					     typename UnaryOp::argument_type,

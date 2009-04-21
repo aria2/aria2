@@ -36,11 +36,9 @@
 #define _D_BT_PIECE_MESSAGE_H_
 
 #include "AbstractBtMessage.h"
-#include "AbstractBtEventListener.h"
 
 namespace aria2 {
 
-class BtEvent;
 class Piece;
 class BtPieceMessage;
 
@@ -65,32 +63,6 @@ private:
   void erasePieceOnDisk(const SharedHandle<Piece>& piece);
 
   size_t sendPieceData(off_t offset, size_t length) const;
-
-  class BtChokingEventListener : public AbstractBtEventListener {
-  private:
-    BtPieceMessage* message;
-  public:
-    BtChokingEventListener(BtPieceMessage* message):message(message) {}
-
-    virtual bool canHandle(const SharedHandle<BtEvent>& btEvent);
-
-    virtual void handleEventInternal(const SharedHandle<BtEvent>& btEvent);
-  };
-
-  typedef SharedHandle<BtChokingEventListener> BtChokingEventListenerHandle;
-
-  class BtCancelSendingPieceEventListener : public AbstractBtEventListener {
-  private:
-    BtPieceMessage* message;
-  public:
-    BtCancelSendingPieceEventListener(BtPieceMessage* message):message(message) {}
-
-    virtual bool canHandle(const SharedHandle<BtEvent>& btEvent);
-
-    virtual void handleEventInternal(const SharedHandle<BtEvent>& btEvent);
-  };
-
-  typedef SharedHandle<BtCancelSendingPieceEventListener> BtCancelSendingPieceEventListenerHandle;
 public:
   BtPieceMessage(size_t index = 0, uint32_t begin = 0, size_t blockLength = 0)
     :AbstractBtMessage(ID, NAME),
@@ -101,14 +73,6 @@ public:
      msgHeader(0)
   {
     uploading = true;
-    {
-      SharedHandle<BtEventListener> listener(new BtChokingEventListener(this));
-      addEventListener(listener);
-    }
-    {
-      SharedHandle<BtEventListener> listener(new BtCancelSendingPieceEventListener(this));
-      addEventListener(listener);
-    }
   }
 
   virtual ~BtPieceMessage() {
@@ -148,9 +112,10 @@ public:
 
   virtual std::string toString() const;
 
-  void handleChokingEvent(const SharedHandle<BtEvent>& event);
+  virtual void onChokingEvent(const BtChokingEvent& event);
   
-  void handleCancelSendingPieceEvent(const SharedHandle<BtEvent>& event);
+  virtual void onCancelSendingPieceEvent
+  (const BtCancelSendingPieceEvent& event);
 };
 
 } // namespace aria2

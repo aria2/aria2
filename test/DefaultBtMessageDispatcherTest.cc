@@ -99,12 +99,10 @@ public:
       return sendCalled;
     }
 
-    virtual void handleEvent(const SharedHandle<BtEvent>& event) {
-      BtCancelSendingPieceEvent* e =
-	dynamic_cast<BtCancelSendingPieceEvent*>(event.get());
-      if(e) {
-	doCancelActionCalled = true;
-      }
+    virtual void onCancelSendingPieceEvent
+    (const BtCancelSendingPieceEvent& event)
+    {
+      doCancelActionCalled = true;
     }
 
     bool isDoCancelActionCalled() const {

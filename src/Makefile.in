@@ -112,12 +112,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageReceiver.cc DefaultBtMessageReceiver.h\
 @ENABLE_BITTORRENT_TRUE@	BtRequestFactory.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactory.cc DefaultBtRequestFactory.h\
-@ENABLE_BITTORRENT_TRUE@	BtEvent.h\
-@ENABLE_BITTORRENT_TRUE@	BtEventListener.h\
-@ENABLE_BITTORRENT_TRUE@	AbstractBtEventListener.h\
 @ENABLE_BITTORRENT_TRUE@	BtCancelSendingPieceEvent.h\
 @ENABLE_BITTORRENT_TRUE@	BtAbortOutstandingRequestEvent.h\
-@ENABLE_BITTORRENT_TRUE@	BtChokedEvent.h\
 @ENABLE_BITTORRENT_TRUE@	BtChokingEvent.h\
 @ENABLE_BITTORRENT_TRUE@	BtInteractive.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.cc DefaultBtInteractive.h\
@@ -473,18 +469,16 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultBtMessageDispatcher.h BtMessageReceiver.h \
 	DefaultBtMessageReceiver.cc DefaultBtMessageReceiver.h \
 	BtRequestFactory.h DefaultBtRequestFactory.cc \
-	DefaultBtRequestFactory.h BtEvent.h BtEventListener.h \
-	AbstractBtEventListener.h BtCancelSendingPieceEvent.h \
-	BtAbortOutstandingRequestEvent.h BtChokedEvent.h \
-	BtChokingEvent.h BtInteractive.h DefaultBtInteractive.cc \
-	DefaultBtInteractive.h ActivePeerConnectionCommand.cc \
-	ActivePeerConnectionCommand.h BtDependency.cc BtDependency.h \
-	PeerReceiveHandshakeCommand.cc PeerReceiveHandshakeCommand.h \
-	BtSetup.cc BtSetup.h BtFileAllocationEntry.cc \
-	BtFileAllocationEntry.h BtPostDownloadHandler.cc \
-	BtPostDownloadHandler.h BtCheckIntegrityEntry.cc \
-	BtCheckIntegrityEntry.h BtExtendedMessage.cc \
-	BtExtendedMessage.h ExtensionMessage.h \
+	DefaultBtRequestFactory.h BtCancelSendingPieceEvent.h \
+	BtAbortOutstandingRequestEvent.h BtChokingEvent.h \
+	BtInteractive.h DefaultBtInteractive.cc DefaultBtInteractive.h \
+	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h \
+	BtDependency.cc BtDependency.h PeerReceiveHandshakeCommand.cc \
+	PeerReceiveHandshakeCommand.h BtSetup.cc BtSetup.h \
+	BtFileAllocationEntry.cc BtFileAllocationEntry.h \
+	BtPostDownloadHandler.cc BtPostDownloadHandler.h \
+	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h \
+	BtExtendedMessage.cc BtExtendedMessage.h ExtensionMessage.h \
 	ExtensionMessageFactory.h DefaultExtensionMessageFactory.cc \
 	DefaultExtensionMessageFactory.h HandshakeExtensionMessage.cc \
 	HandshakeExtensionMessage.h UTPexExtensionMessage.cc \

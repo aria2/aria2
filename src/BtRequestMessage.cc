@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "BtRequestMessage.h"
-#include "BtAbortOutstandingRequestEvent.h"
 #include "Peer.h"
 #include "Piece.h"
 #include "PieceStorage.h"
@@ -76,29 +75,11 @@ void BtRequestMessage::onQueued()
   dispatcher->addOutstandingRequest(requestSlot);
 }
 
-bool BtRequestMessage::
-BtAbortOutstandingRequestEventListener::canHandle(const BtEventHandle& event)
+void BtRequestMessage::onAbortOutstandingRequestEvent
+(const BtAbortOutstandingRequestEvent& event)
 {
-  BtAbortOutstandingRequestEvent* intEvent =
-    dynamic_cast<BtAbortOutstandingRequestEvent*>(event.get());
-  return intEvent != 0;
-}
-
-void BtRequestMessage::
-BtAbortOutstandingRequestEventListener::handleEventInternal
-(const BtEventHandle& event)
-{
-  message->handleAbortOutstandingRequestEvent(event);
-}
-
-void BtRequestMessage::
-handleAbortOutstandingRequestEvent(const BtEventHandle& event)
-{
-  BtAbortOutstandingRequestEvent* intEvent =
-    (BtAbortOutstandingRequestEvent*)event.get();
-  if(getIndex() == intEvent->getPiece()->getIndex() &&
-     !invalidate &&
-     !sendingInProgress) {
+  if(getIndex() == event.getPiece()->getIndex() &&
+     !invalidate && !sendingInProgress) {
     invalidate = true;
   }
 }

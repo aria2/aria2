@@ -36,7 +36,6 @@
 #define _D_BT_REQUEST_MESSAGE_H_
 
 #include "RangeBtMessage.h"
-#include "AbstractBtEventListener.h"
 
 namespace aria2 {
 
@@ -48,32 +47,13 @@ class BtRequestMessage : public RangeBtMessage {
 private:
   size_t _blockIndex;
 
-  class BtAbortOutstandingRequestEventListener:public AbstractBtEventListener {
-  private:
-    BtRequestMessage* message;
-  public:
-    BtAbortOutstandingRequestEventListener(BtRequestMessage* message):
-      message(message) {}
-
-    virtual bool canHandle(const SharedHandle<BtEvent>& event);
-
-    virtual void handleEventInternal(const SharedHandle<BtEvent>& event);
-  };
-
-  typedef SharedHandle<BtAbortOutstandingRequestEventListener>
-  BtAbortOutstandingRequestEventListenerHandle;
 public:
   BtRequestMessage(size_t index = 0,
 		   uint32_t begin = 0,
 		   uint32_t length = 0,
 		   size_t blockIndex = 0)
     :RangeBtMessage(ID, NAME, index, begin, length),
-     _blockIndex(blockIndex)
-  {
-    SharedHandle<BtEventListener> listener
-      (new BtAbortOutstandingRequestEventListener(this));
-    addEventListener(listener);
-  }
+     _blockIndex(blockIndex) {}
 
   static const uint8_t ID = 6;
 
@@ -89,8 +69,8 @@ public:
 
   virtual void onQueued();
 
-  virtual void handleAbortOutstandingRequestEvent
-  (const SharedHandle<BtEvent>& event);
+  virtual void onAbortOutstandingRequestEvent
+  (const BtAbortOutstandingRequestEvent& event);
 };
 
 } // namespace aria2

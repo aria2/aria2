@@ -48,7 +48,6 @@ class BtMessageFactory;
 class BtRequestFactory;
 class PeerConnection;
 class BtMessageValidator;
-class BtEventListener;
 class Logger;
 
 class AbstractBtMessage : public BtMessage {
@@ -75,8 +74,6 @@ protected:
   WeakHandle<PeerConnection> peerConnection;
 
   SharedHandle<BtMessageValidator> validator;
-
-  std::deque<SharedHandle<BtEventListener> > listeners;
 
   Logger* logger;
 public:
@@ -126,9 +123,13 @@ public:
   
   virtual void onQueued() {}
 
-  virtual void handleEvent(const SharedHandle<BtEvent>& event);
+  virtual void onAbortOutstandingRequestEvent
+  (const BtAbortOutstandingRequestEvent& event) {}
 
-  void addEventListener(const SharedHandle<BtEventListener>& listener);
+  virtual void onCancelSendingPieceEvent
+  (const BtCancelSendingPieceEvent& event) {}
+
+  virtual void onChokingEvent(const BtChokingEvent& event) {}
 
   void setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator);
 

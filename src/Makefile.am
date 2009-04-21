@@ -312,12 +312,8 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	DefaultBtMessageReceiver.cc DefaultBtMessageReceiver.h\
 	BtRequestFactory.h\
 	DefaultBtRequestFactory.cc DefaultBtRequestFactory.h\
-	BtEvent.h\
-	BtEventListener.h\
-	AbstractBtEventListener.h\
 	BtCancelSendingPieceEvent.h\
 	BtAbortOutstandingRequestEvent.h\
-	BtChokedEvent.h\
 	BtChokingEvent.h\
 	BtInteractive.h\
 	DefaultBtInteractive.cc DefaultBtInteractive.h\

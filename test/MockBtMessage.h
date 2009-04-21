@@ -84,7 +84,13 @@ public:
     return false;
   }
 
-  virtual void handleEvent(const SharedHandle<BtEvent>& event) {}
+  virtual void onAbortOutstandingRequestEvent
+  (const BtAbortOutstandingRequestEvent& event) {}
+
+  virtual void onCancelSendingPieceEvent
+  (const BtCancelSendingPieceEvent& event) {}
+
+  virtual void onChokingEvent(const BtChokingEvent& event) {}
 
   virtual void onQueued() {}
 

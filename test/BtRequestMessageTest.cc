@@ -236,47 +236,34 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionD
 
 void BtRequestMessageTest::testHandleAbortRequestEvent() {
   SharedHandle<Piece> piece(new Piece(1, 16*1024));
-  SharedHandle<BtAbortOutstandingRequestEvent> event
-    (new BtAbortOutstandingRequestEvent(piece));
-
   CPPUNIT_ASSERT(!msg->isInvalidate());
-  msg->handleEvent(event);
-
+  msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
   SharedHandle<Piece> piece(new Piece(2, 16*1024));
-  SharedHandle<BtAbortOutstandingRequestEvent> event
-    (new BtAbortOutstandingRequestEvent(piece));
-
   CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT(!msg->isSendingInProgress());
-  msg->handleEvent(event);
+  msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
   SharedHandle<Piece> piece(new Piece(1, 16*1024));
-  SharedHandle<BtAbortOutstandingRequestEvent> event
-    (new BtAbortOutstandingRequestEvent(piece));
   msg->setInvalidate(true);
-
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT(!msg->isSendingInProgress());
-  msg->handleEvent(event);
+  msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_sendingInProgress() {
   SharedHandle<Piece> piece(new Piece(1, 16*1024));
-  SharedHandle<BtAbortOutstandingRequestEvent> event
-    (new BtAbortOutstandingRequestEvent(piece));
   msg->setSendingInProgress(true);
-
   CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT(msg->isSendingInProgress());
-  msg->handleEvent(event);
+  msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
 

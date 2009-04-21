@@ -35,28 +35,21 @@
 #ifndef _D_BT_ABORT_OUTSTANDING_REQUEST_EVENT_H_
 #define _D_BT_ABORT_OUTSTANDING_REQUEST_EVENT_H_
 
-#include "BtEvent.h"
+#include "common.h"
+#include "SharedHandle.h"
+#include "Piece.h"
 
 namespace aria2 {
 
-class Piece;
-
-class BtAbortOutstandingRequestEvent : public BtEvent {
+class BtAbortOutstandingRequestEvent {
 private:
   SharedHandle<Piece> piece;
 public:
-  BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece):piece(piece) {}
+  BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece):
+    piece(piece) {}
 
-  SharedHandle<Piece> getPiece() const {
-    return piece;
-  }
-
-  void setPiece(const SharedHandle<Piece>& piece) {
-    this->piece = piece;
-  }
+  SharedHandle<Piece> getPiece() const { return piece; }
 };
-
-typedef SharedHandle<BtAbortOutstandingRequestEvent> BtAbortOutstandingRequestEventHandle;
 
 } // namespace aria2
 

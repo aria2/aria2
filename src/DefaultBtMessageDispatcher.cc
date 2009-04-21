@@ -39,7 +39,6 @@
 #include "prefs.h"
 #include "BtAbortOutstandingRequestEvent.h"
 #include "BtCancelSendingPieceEvent.h"
-#include "BtChokedEvent.h"
 #include "BtChokingEvent.h"
 #include "BtMessageFactory.h"
 #include "message.h"
@@ -114,26 +113,15 @@ void DefaultBtMessageDispatcher::sendMessages() {
   }
 }
 
-class HandleEvent {
-private:
-  SharedHandle<BtEvent> _event;
-public:
-  HandleEvent(const SharedHandle<BtEvent>& event):_event(event) {}
-
-  void operator()(const SharedHandle<BtMessage>& msg) const
-  {
-    msg->handleEvent(_event);
-  }
-};
-
 // Cancel sending piece message to peer.
 void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32_t begin, size_t length)
 {
-  BtCancelSendingPieceEventHandle event
-    (new BtCancelSendingPieceEvent(index, begin, length));
+  BtCancelSendingPieceEvent event(index, begin, length);
 
   BtMessages tempQueue = messageQueue;
-  std::for_each(tempQueue.begin(), tempQueue.end(), HandleEvent(event));
+  std::for_each(tempQueue.begin(), tempQueue.end(),
+		std::bind2nd(mem_fun_sh(&BtMessage::onCancelSendingPieceEvent),
+			     event));
 }
 
 // Cancel sending piece message to peer.
@@ -177,11 +165,12 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction(const PieceHand
   std::for_each(first, last, AbortOutstandingRequest(piece, cuid));
   requestSlots.erase(first, last);
 
-  BtAbortOutstandingRequestEventHandle event
-    (new BtAbortOutstandingRequestEvent(piece));
+  BtAbortOutstandingRequestEvent event(piece);
 
   BtMessages tempQueue = messageQueue;
-  std::for_each(tempQueue.begin(), tempQueue.end(), HandleEvent(event));
+  std::for_each(tempQueue.begin(), tempQueue.end(),
+		std::bind2nd(mem_fun_sh(&BtMessage::onAbortOutstandingRequestEvent),
+			     event));
 }
 
 class ProcessChokedRequestSlot {
@@ -236,20 +225,16 @@ void DefaultBtMessageDispatcher::doChokedAction()
   requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
 				    FindChokedRequestSlot(peer)),
 		     requestSlots.end());
-
-  BtChokedEventHandle event(new BtChokedEvent());
-
-  BtMessages tempQueue = messageQueue;
-  std::for_each(tempQueue.begin(), tempQueue.end(), HandleEvent(event));
 }
 
 // localhost dispatched choke message to the peer.
 void DefaultBtMessageDispatcher::doChokingAction()
 {
-  BtChokingEventHandle event(new BtChokingEvent());
+  BtChokingEvent event;
 
   BtMessages tempQueue = messageQueue;
-  std::for_each(tempQueue.begin(), tempQueue.end(), HandleEvent(event));
+  std::for_each(tempQueue.begin(), tempQueue.end(),
+		std::bind2nd(mem_fun_sh(&BtMessage::onChokingEvent), event));
 }
 
 class ProcessStaleRequestSlot {

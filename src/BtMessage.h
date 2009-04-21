@@ -36,9 +36,14 @@
 #define _D_BT_MESSAGE_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
+#include "BtAbortOutstandingRequestEvent.h"
+#include "BtCancelSendingPieceEvent.h"
+#include "BtChokingEvent.h"
 
 namespace aria2 {
 
@@ -66,7 +71,13 @@ public:
 
   virtual bool validate(std::deque<std::string>& errors) = 0;
 
-  virtual void handleEvent(const SharedHandle<BtEvent>& event) = 0;
+  virtual void onAbortOutstandingRequestEvent
+  (const BtAbortOutstandingRequestEvent& event) = 0;
+
+  virtual void onCancelSendingPieceEvent
+  (const BtCancelSendingPieceEvent& event) = 0;
+
+  virtual void onChokingEvent(const BtChokingEvent& event) = 0;
 
   virtual void onQueued() = 0;
 

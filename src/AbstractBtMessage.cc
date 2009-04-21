@@ -36,7 +36,6 @@
 #include "Peer.h"
 #include "BtContext.h"
 #include "PieceStorage.h"
-#include "BtEventListener.h"
 #include "BtMessageValidator.h"
 #include "LogFactory.h"
 #include "Logger.h"
@@ -72,20 +71,6 @@ bool AbstractBtMessage::validate(std::deque<std::string>& errors)
   } else {
     return true;
   }
-}
-
-void AbstractBtMessage::handleEvent(const SharedHandle<BtEvent>& event)
-{
-  for(std::deque<SharedHandle<BtEventListener> >::iterator itr = listeners.begin();
-      itr != listeners.end(); ++itr) {
-    (*itr)->handleEvent(event);
-  }
-}
-
-void
-AbstractBtMessage::addEventListener(const SharedHandle<BtEventListener>& listener)
-{
-  listeners.push_back(listener);
 }
 
 void

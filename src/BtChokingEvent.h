@@ -35,14 +35,11 @@
 #ifndef _D_BT_CHOKING_EVENT_H_
 #define _D_BT_CHOKING_EVENT_H_
 
-#include "BtEvent.h"
+#include "common.h"
 
 namespace aria2 {
 
-class BtChokingEvent : public BtEvent {
-};
-
-typedef SharedHandle<BtChokingEvent> BtChokingEventHandle;
+class BtChokingEvent {};
 
 } // namespace aria2
 

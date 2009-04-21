@@ -1,3 +1,29 @@
+2009-04-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten event dispatch in BtMessage. Removed BtEventListener,
+	BtEvent.	
+	* src/AbstractBtEventListener.h: Removed.
+	* src/AbstractBtMessage.cc
+	* src/AbstractBtMessage.h
+	* src/BtAbortOutstandingRequestEvent.h
+	* src/BtCancelSendingPieceEvent.h
+	* src/BtChokedEvent.h: Removed.
+	* src/BtChokingEvent.h
+	* src/BtEvent.h: Removed
+	* src/BtEventListener.h: Removed.
+	* src/BtMessage.h
+	* src/BtPieceMessage.cc
+	* src/BtPieceMessage.h
+	* src/BtRequestMessage.cc
+	* src/BtRequestMessage.h
+	* src/DefaultBtMessageDispatcher.cc
+	* src/Makefile.am
+	* src/a2functional.h
+	* test/BtPieceMessageTest.cc
+	* test/BtRequestMessageTest.cc
+	* test/DefaultBtMessageDispatcherTest.cc
+	* test/MockBtMessage.h
+
 2009-04-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code cleanup

@@ -35,11 +35,11 @@
 #ifndef _D_BT_CANCEL_SENDING_PIECE_EVENT_H_
 #define _D_BT_CANCEL_SENDING_PIECE_EVENT_H_
 
-#include "BtEvent.h"
+#include "common.h"
 
 namespace aria2 {
 
-class BtCancelSendingPieceEvent : public BtEvent {
+class BtCancelSendingPieceEvent {
 private:
   size_t index;
   uint32_t begin;
@@ -48,34 +48,12 @@ public:
   BtCancelSendingPieceEvent(size_t index, uint32_t begin, size_t length):
     index(index), begin(begin), length(length) {}
 
-  virtual ~BtCancelSendingPieceEvent() {}
+  size_t getIndex() const { return index; }
 
-  void setIndex(size_t index) {
-    this->index = index;
-  }
+  uint32_t getBegin() const { return begin; }
 
-  size_t getIndex() const {
-    return index;
-  }
-
-  void setBegin(uint32_t begin) {
-    this->begin = begin;
-  }
-
-  uint32_t getBegin() const {
-    return begin;
-  }
-
-  void setLength(size_t length) {
-    this->length = length;
-  }
-
-  size_t getLength() const {
-    return length;
-  }
+  size_t getLength() const { return length; }
 };
-
-typedef SharedHandle<BtCancelSendingPieceEvent> BtCancelSendingPieceEventHandle;
 
 } // namespace aria2
 

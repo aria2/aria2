@@ -42,8 +42,6 @@
 #include "Util.h"
 #include "message.h"
 #include "DlAbortEx.h"
-#include "BtChokingEvent.h"
-#include "BtCancelSendingPieceEvent.h"
 #include "MessageDigestHelper.h"
 #include "DiskAdaptor.h"
 #include "Logger.h"
@@ -216,16 +214,8 @@ void BtPieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
   }
 }
 
-bool BtPieceMessage::BtChokingEventListener::canHandle(const BtEventHandle& event) {
-  BtChokingEvent* intEvent = dynamic_cast<BtChokingEvent*>(event.get());
-  return intEvent != 0;
-}
-
-void BtPieceMessage::BtChokingEventListener::handleEventInternal(const BtEventHandle& event) {
-  message->handleChokingEvent(event);
-}
-
-void BtPieceMessage::handleChokingEvent(const BtEventHandle& event) {
+void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
+{
   if(!invalidate &&
      !sendingInProgress &&
      !peer->isInAmAllowedIndexSet(index)) {
@@ -245,22 +235,14 @@ void BtPieceMessage::handleChokingEvent(const BtEventHandle& event) {
   }
 }
 
-bool BtPieceMessage::BtCancelSendingPieceEventListener::canHandle(const BtEventHandle& event) {
-  BtCancelSendingPieceEvent* intEvent = dynamic_cast<BtCancelSendingPieceEvent*>(event.get());
-  return intEvent != 0;
-}
-
-void BtPieceMessage::BtCancelSendingPieceEventListener::handleEventInternal(const BtEventHandle& event) {
-  message->handleCancelSendingPieceEvent(event);
-}
-
-void BtPieceMessage::handleCancelSendingPieceEvent(const BtEventHandle& event) {
-  BtCancelSendingPieceEvent* intEvent = (BtCancelSendingPieceEvent*)(event.get());
+void BtPieceMessage::onCancelSendingPieceEvent
+(const BtCancelSendingPieceEvent& event)
+{
   if(!invalidate &&
      !sendingInProgress &&
-     index == intEvent->getIndex() &&
-     begin == intEvent->getBegin() &&
-     blockLength == intEvent->getLength()) {
+     index == event.getIndex() &&
+     begin == event.getBegin() &&
+     blockLength == event.getLength()) {
     logger->debug(MSG_REJECT_PIECE_CANCEL,
 		  cuid, index, begin, blockLength);
     if(peer->isFastExtensionEnabled()) {
