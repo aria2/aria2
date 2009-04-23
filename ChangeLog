@@ -1,3 +1,9 @@
+2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed unnecessary virtual destructor for Request class.
+	* src/Request.cc
+	* src/Request.h
+
 2009-04-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Avoid dynamic_pointer_cast.

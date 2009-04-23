@@ -73,8 +73,6 @@ Request::Request():
   method(METHOD_GET)
 {}
 
-Request::~Request() {}
-
 static std::string removeFragment(const std::string url)
 {
   std::string::size_type sharpIndex = url.find("#");

@@ -84,7 +84,6 @@ private:
   bool parseUrl(const std::string& url);
 public:
   Request();
-  virtual ~Request();
 
   // Parses URL and sets url, host, port, dir, file fields.
   // Returns true if parsing goes successful, otherwise returns false.
