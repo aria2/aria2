@@ -268,9 +268,6 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	UnionSeedCriteria.h\
 	SeedCheckCommand.cc SeedCheckCommand.h\
 	PeerListProcessor.h\
-	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h\
-	CompactPeerListProcessor.cc CompactPeerListProcessor.h\
-	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h\
 	AnnounceTier.h\
 	AnnounceList.h AnnounceList.cc\
 	BtContext.cc BtContext.h\

@@ -1,5 +1,22 @@
 2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten PeerListProcessor
+	* src/PeerListProcessor.h
+	* src/CompactPeerListProcessor.h: Removed
+	* src/CompactPeerListProcessor.cc: Removed
+	* src/DelegatingPeerListProcessor.cc: Removed.
+	* src/DefaultBtAnnounce.cc
+	* src/Makefile.am
+	* src/UTPexExtensionMessage.cc
+	* src/DefaultPeerListProcessor.h: Removed.
+	* src/DefaultPeerListProcessor.cc: Removed.
+	* src/DelegatingPeerListProcessor.h: Removed.
+	* test/Makefile.am
+	* test/PeerListProcessorTest.cc
+	* test/DefaultPeerListProcessorTest.cc: Removed.
+
+2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten RequestGroupMan::calculateStat()
 	* src/RequestGroupMan.cc
 	

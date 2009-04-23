@@ -68,9 +68,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	UnionSeedCriteria.h\
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.cc SeedCheckCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerListProcessor.h\
-@ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h\
-@ENABLE_BITTORRENT_TRUE@	CompactPeerListProcessor.cc CompactPeerListProcessor.h\
-@ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceTier.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc\
 @ENABLE_BITTORRENT_TRUE@	BtContext.cc BtContext.h\
@@ -438,10 +435,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerChokeCommand.cc PeerChokeCommand.h SeedCriteria.h \
 	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
-	PeerListProcessor.h DefaultPeerListProcessor.cc \
-	DefaultPeerListProcessor.h CompactPeerListProcessor.cc \
-	CompactPeerListProcessor.h DelegatingPeerListProcessor.cc \
-	DelegatingPeerListProcessor.h AnnounceTier.h AnnounceList.h \
+	PeerListProcessor.h AnnounceTier.h AnnounceList.h \
 	AnnounceList.cc BtContext.cc BtContext.h DefaultBtContext.cc \
 	DefaultBtContext.h PeerStorage.h DefaultPeerStorage.cc \
 	DefaultPeerStorage.h BtAnnounce.cc BtAnnounce.h \
@@ -598,9 +592,6 @@ am__objects_3 =
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	CompactPeerListProcessor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtContext.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.$(OBJEXT) \
@@ -1304,7 +1295,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleStatCalc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ContentTypeRequestGroupCriteria.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Cookie.Po@am__quote@
@@ -1371,11 +1361,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriterFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultExtensionMessageFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultSegmentManFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DelegatingPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@

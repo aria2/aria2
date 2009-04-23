@@ -66,7 +66,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtMessageDispatcher.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtMessageFactory.h\
-@ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessorTest.cc\
+@ENABLE_BITTORRENT_TRUE@	PeerListProcessorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	AnnounceListTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	MockPeerStorage.h\
@@ -211,7 +211,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DefaultBtContextTest.cc DefaultBtMessageDispatcherTest.cc \
 	DefaultBtRequestFactoryTest.cc MockBtMessage.h \
 	MockBtMessageDispatcher.h MockBtMessageFactory.h \
-	DefaultPeerListProcessorTest.cc AnnounceListTest.cc \
+	PeerListProcessorTest.cc AnnounceListTest.cc \
 	DefaultPeerStorageTest.cc MockPeerStorage.h \
 	ByteArrayDiskWriterTest.cc PeerTest.cc \
 	PeerSessionResourceTest.cc PeerMessageUtilTest.cc \
@@ -275,7 +275,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactoryTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessorTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerListProcessorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AnnounceListTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriterTest.$(OBJEXT) \
@@ -751,7 +751,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtRequestFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultExtensionMessageFactoryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptorTest.Po@am__quote@
@@ -794,6 +793,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PStringBuildVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterizedStringParserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerSessionResourceTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@

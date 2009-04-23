@@ -36,29 +36,62 @@
 #define _D_PEER_LIST_PROCESSOR_H_
 
 #include "common.h"
-
-#include <deque>
-
-#include "SharedHandle.h"
+#include "a2netcompat.h"
+#include "bencode.h"
+#include "Peer.h"
 
 namespace aria2 {
 
-class Peer;
-namespace bencode {
-class BDE;
-}
-
 class PeerListProcessor {
 public:
-  virtual ~PeerListProcessor() {}
+  template<typename OutputIterator>
+  void extractPeer(const bencode::BDE& peerData, OutputIterator dest)
+  {
+    if(peerData.isList()) {
+      extractPeerFromList(peerData, dest);
+    } else if(peerData.isString()) {
+      extractPeerFromCompact(peerData, dest);
+    }
+  }
 
-  virtual void extractPeer
-  (std::deque<SharedHandle<Peer> >& peers, const bencode::BDE& peerData) = 0;
+  template<typename OutputIterator>
+  void extractPeerFromList(const bencode::BDE& peerData, OutputIterator dest)
+  {
+    for(bencode::BDE::List::const_iterator itr = peerData.listBegin();
+	itr != peerData.listEnd(); ++itr) {
+      const bencode::BDE& peerDict = *itr;
+      if(!peerDict.isDict()) {
+	continue;
+      }
+      static const std::string IP = "ip";
+      static const std::string PORT("port");
+      const bencode::BDE& ip = peerDict[IP];
+      const bencode::BDE& port = peerDict[PORT];
+      if(!ip.isString() || !port.isInteger() ||
+	 !(0 < port.i() && port.i() < 65536)) {
+	continue;
+      }
+      *dest = SharedHandle<Peer>(new Peer(ip.s(), port.i()));
+      ++dest;
+    }
+  }
 
-  virtual bool canHandle(const bencode::BDE& peerData) const = 0;
+  template<typename OutputIterator>
+  void extractPeerFromCompact(const bencode::BDE& peerData, OutputIterator dest)
+  {
+    size_t length = peerData.s().size();
+    if(length%6 == 0) {
+      for(size_t i = 0; i < length; i += 6) {
+	struct in_addr in;
+	in.s_addr = *(uint32_t*)(peerData.s().c_str()+i);
+	std::string ipaddr = inet_ntoa(in);
+	uint16_t port = ntohs(*(uint16_t*)(peerData.s().c_str()+i+4));
+	*dest = SharedHandle<Peer>(new Peer(ipaddr, port));
+	++dest;
+      }
+    }
+  }
 };
-
-typedef SharedHandle<PeerListProcessor> PeerListProcessorHandle;
 
 } // namespace aria2
 

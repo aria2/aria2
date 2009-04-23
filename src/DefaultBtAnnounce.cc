@@ -35,7 +35,7 @@
 #include "DefaultBtAnnounce.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "DelegatingPeerListProcessor.h"
+#include "PeerListProcessor.h"
 #include "Util.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
@@ -250,15 +250,14 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     logger->debug("Incomplete:%d", incomplete);
   }
   const bencode::BDE& peerData = dict[BtAnnounce::PEERS];
-  if(!peerData.isNone()) {
+  if(peerData.isNone()) {
+    logger->info(MSG_NO_PEER_LIST_RECEIVED);
+  } else {
     if(!btRuntime->isHalt() && btRuntime->lessThanMinPeers()) {
-      DelegatingPeerListProcessor proc;
       std::deque<SharedHandle<Peer> > peers;
-      proc.extractPeer(peers, peerData);
+      PeerListProcessor().extractPeer(peerData, std::back_inserter(peers));
       peerStorage->addPeer(peers);
     }
-  } else {
-    logger->info(MSG_NO_PEER_LIST_RECEIVED);
   }
 }
 

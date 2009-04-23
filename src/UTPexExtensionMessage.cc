@@ -37,7 +37,7 @@
 #include "Util.h"
 #include "PeerMessageUtil.h"
 #include "PeerStorage.h"
-#include "CompactPeerListProcessor.h"
+#include "PeerListProcessor.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
@@ -174,14 +174,15 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 
   const bencode::BDE dict = bencode::decode(data+1, len-1);
   if(dict.isDict()) {
-    CompactPeerListProcessor proc;
+    PeerListProcessor proc;
     const bencode::BDE& added = dict["added"];
     if(added.isString()) {
-      proc.extractPeer(msg->_freshPeers, added);
+      proc.extractPeerFromCompact(added, std::back_inserter(msg->_freshPeers));
     }
     const bencode::BDE& dropped = dict["dropped"];
     if(dropped.isString()) {
-      proc.extractPeer(msg->_droppedPeers, dropped);
+      proc.extractPeerFromCompact(dropped,
+				  std::back_inserter(msg->_droppedPeers));
     }
   }
   return msg;
