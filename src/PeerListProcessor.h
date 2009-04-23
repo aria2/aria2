@@ -64,7 +64,7 @@ public:
 	continue;
       }
       static const std::string IP = "ip";
-      static const std::string PORT("port");
+      static const std::string PORT = "port";
       const bencode::BDE& ip = peerDict[IP];
       const bencode::BDE& port = peerDict[PORT];
       if(!ip.isString() || !port.isInteger() ||

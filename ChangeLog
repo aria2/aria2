@@ -1,3 +1,8 @@
+2009-04-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Code cleanup
+	* src/PeerListProcessor.h
+
 2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed RequestGroupAware
