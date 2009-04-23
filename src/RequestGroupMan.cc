@@ -566,8 +566,12 @@ void RequestGroupMan::forceHalt()
 
 TransferStat RequestGroupMan::calculateStat()
 {
-  return std::accumulate(_requestGroups.begin(), _requestGroups.end(), TransferStat(),
-			 adopt2nd(std::plus<TransferStat>(), mem_fun_sh(&RequestGroup::calculateStat)));
+  TransferStat s;
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+	_requestGroups.begin(); i != _requestGroups.end(); ++i) {
+    s += (*i)->calculateStat();
+  }
+  return s;
 }
 
 const std::deque<SharedHandle<DownloadResult> >&

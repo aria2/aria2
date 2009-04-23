@@ -1,5 +1,10 @@
 2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten RequestGroupMan::calculateStat()
+	* src/RequestGroupMan.cc
+	
+2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unnecessary virtual destructor for Request class.
 	* src/Request.cc
 	* src/Request.h
