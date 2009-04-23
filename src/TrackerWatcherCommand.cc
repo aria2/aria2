@@ -67,12 +67,17 @@ TrackerWatcherCommand::TrackerWatcherCommand(int32_t cuid,
 					     DownloadEngine* e,
 					     const BtContextHandle& btContext):
   Command(cuid),
-  RequestGroupAware(requestGroup),
+  _requestGroup(requestGroup),
   e(e),
-  _btContext(btContext) {}
+  _btContext(btContext)
+{
+  _requestGroup->increaseNumCommand();
+}
 
-TrackerWatcherCommand::~TrackerWatcherCommand() {}
-
+TrackerWatcherCommand::~TrackerWatcherCommand()
+{
+  _requestGroup->decreaseNumCommand();
+}
 
 bool TrackerWatcherCommand::execute() {
   if(_requestGroup->isForceHaltRequested()) {

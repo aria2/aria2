@@ -36,10 +36,10 @@
 #define _D_PEER_INTERACTION_COMMAND_H_
 
 #include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
 
 namespace aria2 {
 
+class RequestGroup;
 class BtContext;
 class BtInteractive;
 class PeerConnection;
@@ -47,9 +47,7 @@ class BtRuntime;
 class PeerStorage;
 class PieceStorage;
 
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public RequestGroupAware
-{
+class PeerInteractionCommand : public PeerAbstractCommand {
 public:
   enum Seq {
     INITIATOR_SEND_HANDSHAKE,
@@ -57,6 +55,8 @@ public:
     RECEIVER_WAIT_HANDSHAKE,
     WIRED};
 private:
+  RequestGroup* _requestGroup;
+
   SharedHandle<BtContext> _btContext;
 
   SharedHandle<BtRuntime> _btRuntime;

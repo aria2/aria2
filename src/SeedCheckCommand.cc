@@ -40,6 +40,7 @@
 #include "Logger.h"
 #include "SeedCriteria.h"
 #include "message.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -49,13 +50,19 @@ SeedCheckCommand::SeedCheckCommand(int cuid,
 				   const SharedHandle<BtContext>& btContext,
 				   const SeedCriteriaHandle& seedCriteria)
   :Command(cuid),
-   RequestGroupAware(requestGroup),
+   _requestGroup(requestGroup),
    e(e),
    _btContext(btContext),
    seedCriteria(seedCriteria),
    checkStarted(false)
 {
   setStatusRealtime();
+  _requestGroup->increaseNumCommand();
+}
+
+SeedCheckCommand::~SeedCheckCommand()
+{
+  _requestGroup->decreaseNumCommand();
 }
 
 bool SeedCheckCommand::execute() {

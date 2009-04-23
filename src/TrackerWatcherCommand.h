@@ -37,7 +37,6 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "RequestGroupAware.h"
 
 namespace aria2 {
 
@@ -49,10 +48,11 @@ class PieceStorage;
 class BtRuntime;
 class BtAnnounce;
 
-class TrackerWatcherCommand : public Command,
-			      public RequestGroupAware
+class TrackerWatcherCommand : public Command
 {
 private:
+  RequestGroup* _requestGroup;
+
   DownloadEngine* e;
 
   SharedHandle<BtContext> _btContext;

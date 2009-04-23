@@ -36,12 +36,12 @@
 #define _D_DHT_GET_PEERS_COMMAND_H_
 
 #include "Command.h"
-#include "RequestGroupAware.h"
 #include "SharedHandle.h"
 #include "TimeA2.h"
 
 namespace aria2 {
 
+class RequestGroup;
 class DHTTaskQueue;
 class DHTTaskFactory;
 class DHTTask;
@@ -51,15 +51,15 @@ class BtContext;
 class BtRuntime;
 class PeerStorage;
 
-class DHTGetPeersCommand:public Command,
-			 public RequestGroupAware
-{
+class DHTGetPeersCommand:public Command {
 private:
   static const time_t GET_PEER_INTERVAL = (15*60);
 
   static const time_t RETRY_INTERVAL = 60;
 
   static const size_t MAX_RETRIES = 10;
+
+  RequestGroup* _requestGroup;
 
   SharedHandle<BtContext> _btContext;
 

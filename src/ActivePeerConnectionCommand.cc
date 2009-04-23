@@ -59,7 +59,7 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
  time_t interval)
   :
   Command(cuid),
-  RequestGroupAware(requestGroup),
+  _requestGroup(requestGroup),
   _btContext(btContext),
   interval(interval),
   e(e),
@@ -71,9 +71,13 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
   if(maxDownloadSpeed > 0) {
     _thresholdSpeed = std::min(maxDownloadSpeed, _thresholdSpeed);
   }
+  _requestGroup->increaseNumCommand();
 }
 
-ActivePeerConnectionCommand::~ActivePeerConnectionCommand() {}
+ActivePeerConnectionCommand::~ActivePeerConnectionCommand()
+{
+  _requestGroup->decreaseNumCommand();
+}
 
 bool ActivePeerConnectionCommand::execute() {
   if(_btRuntime->isHalt()) {

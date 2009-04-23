@@ -333,9 +333,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	OptionHandlerFactory.cc OptionHandlerFactory.h \
 	OptionHandler.cc OptionHandler.h OptionHandlerImpl.h \
 	NameMatchOptionHandler.h NameResolver.cc NameResolver.h \
-	RequestGroup.cc RequestGroup.h RequestGroupAware.cc \
-	RequestGroupAware.h RequestGroupMan.cc RequestGroupMan.h \
-	FileAllocationMan.h FileAllocationCommand.cc \
+	RequestGroup.cc RequestGroup.h RequestGroupMan.cc \
+	RequestGroupMan.h FileAllocationMan.h FileAllocationCommand.cc \
 	FileAllocationCommand.h FillRequestGroupCommand.cc \
 	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
@@ -760,8 +759,7 @@ am__objects_23 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AuthConfigFactory.$(OBJEXT) OptionParser.$(OBJEXT) \
 	OptionHandlerFactory.$(OBJEXT) OptionHandler.$(OBJEXT) \
 	NameResolver.$(OBJEXT) RequestGroup.$(OBJEXT) \
-	RequestGroupAware.$(OBJEXT) RequestGroupMan.$(OBJEXT) \
-	FileAllocationCommand.$(OBJEXT) \
+	RequestGroupMan.$(OBJEXT) FileAllocationCommand.$(OBJEXT) \
 	FillRequestGroupCommand.$(OBJEXT) \
 	FileAllocationDispatcherCommand.$(OBJEXT) \
 	FileAllocationEntry.$(OBJEXT) \
@@ -1066,9 +1064,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	OptionHandlerFactory.cc OptionHandlerFactory.h \
 	OptionHandler.cc OptionHandler.h OptionHandlerImpl.h \
 	NameMatchOptionHandler.h NameResolver.cc NameResolver.h \
-	RequestGroup.cc RequestGroup.h RequestGroupAware.cc \
-	RequestGroupAware.h RequestGroupMan.cc RequestGroupMan.h \
-	FileAllocationMan.h FileAllocationCommand.cc \
+	RequestGroup.cc RequestGroup.h RequestGroupMan.cc \
+	RequestGroupMan.h FileAllocationMan.h FileAllocationCommand.cc \
 	FileAllocationCommand.h FillRequestGroupCommand.cc \
 	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
@@ -1481,7 +1478,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReceiverMSEHandshakeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroup.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupAware.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@

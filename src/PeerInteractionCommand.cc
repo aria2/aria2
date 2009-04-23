@@ -84,7 +84,7 @@ PeerInteractionCommand::PeerInteractionCommand
  Seq sequence,
  const PeerConnectionHandle& passedPeerConnection)
   :PeerAbstractCommand(cuid, p, e, s),
-   RequestGroupAware(requestGroup),
+   _requestGroup(requestGroup),
    _btContext(btContext),
    _btRuntime(btRuntime),
    _pieceStorage(pieceStorage),
@@ -193,6 +193,7 @@ PeerInteractionCommand::PeerInteractionCommand
   maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
 
   _btRuntime->increaseConnections();
+  _requestGroup->increaseNumCommand();
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
@@ -201,7 +202,8 @@ PeerInteractionCommand::~PeerInteractionCommand() {
 				      peer->getBitfieldLength());
   }
   peer->releaseSessionResource();
-					
+
+  _requestGroup->decreaseNumCommand();
   _btRuntime->decreaseConnections();
   //logger->debug("CUID#%d - unregistered message factory using ID:%s",
   //cuid, peer->getId().c_str());

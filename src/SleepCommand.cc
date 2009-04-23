@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "SleepCommand.h"
-#include "RequestGroupAware.h"
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 

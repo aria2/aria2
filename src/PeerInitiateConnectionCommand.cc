@@ -47,6 +47,7 @@
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "PeerConnection.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -60,16 +61,18 @@ PeerInitiateConnectionCommand::PeerInitiateConnectionCommand
  bool mseHandshakeEnabled)
   :
   PeerAbstractCommand(cuid, peer, e),
-  RequestGroupAware(requestGroup),
+  _requestGroup(requestGroup),
   _btContext(btContext),
   _btRuntime(btRuntime),
   _mseHandshakeEnabled(mseHandshakeEnabled)
 {
   _btRuntime->increaseConnections();
+  _requestGroup->increaseNumCommand();
 }
 
 PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 {
+  _requestGroup->decreaseNumCommand();
   _btRuntime->decreaseConnections();
 }
 

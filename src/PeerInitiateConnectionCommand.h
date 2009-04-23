@@ -36,19 +36,19 @@
 #define _D_PEER_INITIATE_CONNECTION_H_
 
 #include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
 
 namespace aria2 {
 
+class RequestGroup;
 class BtContext;
 class BtRuntime;
 class PeerStorage;
 class PieceStorage;
 
-class PeerInitiateConnectionCommand : public PeerAbstractCommand,
-				      public RequestGroupAware
-{
+class PeerInitiateConnectionCommand : public PeerAbstractCommand {
 private:
+  RequestGroup* _requestGroup;
+
   SharedHandle<BtContext> _btContext;
 
   SharedHandle<BtRuntime> _btRuntime;

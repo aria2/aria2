@@ -38,7 +38,6 @@
 #include "Command.h"
 #include "SharedHandle.h"
 #include "TimeA2.h"
-#include "RequestGroupAware.h"
 
 namespace aria2 {
 
@@ -52,11 +51,12 @@ class SocketCore;
 class AsyncNameResolver;
 #endif // ENABLE_ASYNC_DNS
 
-class AbstractCommand : public Command, public RequestGroupAware {
+class AbstractCommand : public Command {
 private:
   Time checkPoint;
   time_t timeout;
 protected:
+  RequestGroup* _requestGroup;
   SharedHandle<Request> req;
   DownloadEngine* e;
   SharedHandle<SocketCore> socket;

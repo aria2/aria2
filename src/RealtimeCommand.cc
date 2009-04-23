@@ -35,16 +35,24 @@
 #include "RealtimeCommand.h"
 #include "DownloadEngine.h"
 #include "Exception.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
 RealtimeCommand::RealtimeCommand(int cuid, RequestGroup* requestGroup,
 				 DownloadEngine* e):
   Command(cuid),
-  RequestGroupAware(requestGroup),
+  _requestGroup(requestGroup),
   _e(e)
 {
   setStatusRealtime();
+
+  _requestGroup->increaseNumCommand();
+}
+
+RealtimeCommand::~RealtimeCommand()
+{
+  _requestGroup->decreaseNumCommand();
 }
 
 bool RealtimeCommand::execute()

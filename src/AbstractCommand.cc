@@ -70,7 +70,7 @@ AbstractCommand::AbstractCommand(int32_t cuid,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  Command(cuid), RequestGroupAware(requestGroup),
+  Command(cuid), _requestGroup(requestGroup),
   req(req), e(e), socket(s),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   nameResolverCheck(false)
@@ -80,6 +80,7 @@ AbstractCommand::AbstractCommand(int32_t cuid,
   }
   timeout = _requestGroup->getTimeout();
   _requestGroup->increaseStreamConnection();
+  _requestGroup->increaseNumCommand();
 }
 
 AbstractCommand::~AbstractCommand() {
@@ -88,6 +89,7 @@ AbstractCommand::~AbstractCommand() {
 #ifdef ENABLE_ASYNC_DNS
   disableNameResolverCheck(_asyncNameResolver);
 #endif // ENABLE_ASYNC_DNS
+  _requestGroup->decreaseNumCommand();
   _requestGroup->decreaseStreamConnection();
 }
 

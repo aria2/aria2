@@ -37,11 +37,11 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "RequestGroupAware.h"
 #include "TimeA2.h"
 
 namespace aria2 {
 
+class RequestGroup;
 class DownloadEngine;
 class Peer;
 class BtContext;
@@ -50,10 +50,9 @@ class PieceStorage;
 class PeerStorage;
 class BtAnnounce;
 
-class ActivePeerConnectionCommand : public Command,
-				    public RequestGroupAware
-{
+class ActivePeerConnectionCommand : public Command {
 private:
+  RequestGroup* _requestGroup;
   SharedHandle<BtContext> _btContext;
   SharedHandle<BtRuntime> _btRuntime;
   SharedHandle<PieceStorage> _pieceStorage;
@@ -72,9 +71,9 @@ public:
 			      DownloadEngine* e,
 			      const SharedHandle<BtContext>& btContext,
 			      time_t interval);
-     
-  virtual ~ActivePeerConnectionCommand();
 
+  virtual ~ActivePeerConnectionCommand();
+     
   virtual bool execute();
 
   void connectToPeer(const SharedHandle<Peer>& peer);

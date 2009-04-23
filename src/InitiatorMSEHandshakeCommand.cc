@@ -51,6 +51,7 @@
 #include "MSEHandshake.h"
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -64,7 +65,7 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
  const SharedHandle<SocketCore>& s):
 
   PeerAbstractCommand(cuid, p, e, s),
-  RequestGroupAware(requestGroup),
+  _requestGroup(requestGroup),
   _btContext(btContext),
   _btRuntime(btRuntime),
   _sequence(INITIATOR_SEND_KEY),
@@ -75,10 +76,12 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
   setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
 
   _btRuntime->increaseConnections();
+  _requestGroup->increaseNumCommand();
 }
 
 InitiatorMSEHandshakeCommand::~InitiatorMSEHandshakeCommand()
 {
+  _requestGroup->decreaseNumCommand();
   _btRuntime->decreaseConnections();
   
   delete _mseHandshake;

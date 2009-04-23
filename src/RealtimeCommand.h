@@ -36,20 +36,21 @@
 #define _D_REALTIME_COMMAND_H_
 
 #include "Command.h"
-#include "RequestGroupAware.h"
 
 namespace aria2 {
 
+class RequestGroup;
 class DownloadEngine;
 class Exception;
 
-class RealtimeCommand : public Command, public RequestGroupAware {
+class RealtimeCommand : public Command {
 protected:
+  RequestGroup* _requestGroup;
   DownloadEngine* _e;
 public:
   RealtimeCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e);
 
-  virtual ~RealtimeCommand() {}
+  virtual ~RealtimeCommand();
 
   virtual bool execute();
 

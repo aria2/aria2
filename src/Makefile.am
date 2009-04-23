@@ -82,7 +82,6 @@ SRCS =  Socket.h\
 	NameMatchOptionHandler.h\
 	NameResolver.cc NameResolver.h\
 	RequestGroup.cc RequestGroup.h\
-	RequestGroupAware.cc RequestGroupAware.h\
 	RequestGroupMan.cc RequestGroupMan.h\
 	FileAllocationMan.h\
 	FileAllocationCommand.cc FileAllocationCommand.h\

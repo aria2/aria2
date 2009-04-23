@@ -53,14 +53,19 @@ DHTGetPeersCommand::DHTGetPeersCommand(int32_t cuid,
 				       DownloadEngine* e,
 				       const BtContextHandle& ctx):
   Command(cuid),
-  RequestGroupAware(requestGroup),
+  _requestGroup(requestGroup),
   _btContext(ctx),
   _e(e),
   _numRetry(0),
   _lastGetPeerTime(0)
-{}
+{
+  _requestGroup->increaseNumCommand();
+}
 
-DHTGetPeersCommand::~DHTGetPeersCommand() {}
+DHTGetPeersCommand::~DHTGetPeersCommand()
+{
+  _requestGroup->decreaseNumCommand();
+}
 
 bool DHTGetPeersCommand::execute()
 {

@@ -1,5 +1,31 @@
 2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed RequestGroupAware
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/ActivePeerConnectionCommand.cc
+	* src/ActivePeerConnectionCommand.h
+	* src/DHTGetPeersCommand.cc
+	* src/DHTGetPeersCommand.h
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/InitiatorMSEHandshakeCommand.h
+	* src/Makefile.am
+	* src/PeerInitiateConnectionCommand.cc
+	* src/PeerInitiateConnectionCommand.h
+	* src/PeerInteractionCommand.cc
+	* src/PeerInteractionCommand.h
+	* src/RealtimeCommand.cc
+	* src/RealtimeCommand.h
+	* src/RequestGroupAware.cc: Removed
+	* src/RequestGroupAware.h: Removed
+	* src/SeedCheckCommand.cc
+	* src/SeedCheckCommand.h
+	* src/SleepCommand.cc
+	* src/TrackerWatcherCommand.cc
+	* src/TrackerWatcherCommand.h
+	
+2009-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten PeerListProcessor
 	* src/PeerListProcessor.h
 	* src/CompactPeerListProcessor.h: Removed

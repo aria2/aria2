@@ -36,19 +36,17 @@
 #define _D_INITIATOR_MSE_HANDSHAKE_COMMAND_H_
 
 #include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
 
 namespace aria2 {
 
+class RequestGroup;
 class BtContext;
 class PeerStorage;
 class PieceStorage;
 class BtRuntime;
 class MSEHandshake;
 
-class InitiatorMSEHandshakeCommand : public PeerAbstractCommand,
-				     public RequestGroupAware
-{
+class InitiatorMSEHandshakeCommand : public PeerAbstractCommand {
 public:
   enum Seq {
     INITIATOR_SEND_KEY,
@@ -60,6 +58,8 @@ public:
     INITIATOR_RECEIVE_PAD_D,
   };
 private:
+  RequestGroup* _requestGroup;
+
   SharedHandle<BtContext> _btContext;
 
   SharedHandle<PeerStorage> _peerStorage;

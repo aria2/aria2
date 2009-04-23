@@ -37,20 +37,20 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "RequestGroupAware.h"
 
 namespace aria2 {
 
+class RequestGroup;
 class DownloadEngine;
 class SeedCriteria;
 class BtContext;
 class BtRuntime;
 class PieceStorage;
 
-class SeedCheckCommand : public Command,
-			 public RequestGroupAware
+class SeedCheckCommand : public Command
 {
 private:
+  RequestGroup* _requestGroup;
   DownloadEngine* e;
   SharedHandle<BtContext> _btContext;
   SharedHandle<PieceStorage> _pieceStorage;
@@ -64,7 +64,7 @@ public:
 		   const SharedHandle<BtContext>& btContext,
 		   const SharedHandle<SeedCriteria>& seedCriteria);
 
-  virtual ~SeedCheckCommand() {}
+  virtual ~SeedCheckCommand();
 
   virtual bool execute();
 
