@@ -326,7 +326,6 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	DefaultExtensionMessageFactory.cc DefaultExtensionMessageFactory.h\
 	HandshakeExtensionMessage.cc HandshakeExtensionMessage.h\
 	UTPexExtensionMessage.cc UTPexExtensionMessage.h\
-	ExtendedMessagingAware.h\
 	DHTNode.cc DHTNode.h\
 	DHTUtil.cc DHTUtil.h\
 	DHTBucket.cc DHTBucket.h\
@@ -410,7 +409,8 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	IndexBtMessage.cc IndexBtMessage.h\
 	ZeroBtMessage.cc ZeroBtMessage.h\
 	RangeBtMessageValidator.h\
-	IndexBtMessageValidator.h
+	IndexBtMessageValidator.h\
+	ExtensionMessageRegistry.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

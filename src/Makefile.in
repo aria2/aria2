@@ -127,7 +127,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.cc DefaultExtensionMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.cc HandshakeExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.cc UTPexExtensionMessage.h\
-@ENABLE_BITTORRENT_TRUE@	ExtendedMessagingAware.h\
 @ENABLE_BITTORRENT_TRUE@	DHTNode.cc DHTNode.h\
 @ENABLE_BITTORRENT_TRUE@	DHTUtil.cc DHTUtil.h\
 @ENABLE_BITTORRENT_TRUE@	DHTBucket.cc DHTBucket.h\
@@ -211,7 +210,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessage.cc IndexBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.cc ZeroBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	RangeBtMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	IndexBtMessageValidator.h
+@ENABLE_BITTORRENT_TRUE@	IndexBtMessageValidator.h\
+@ENABLE_BITTORRENT_TRUE@	ExtensionMessageRegistry.h
 
 @ENABLE_METALINK_TRUE@am__append_11 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -475,13 +475,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ExtensionMessageFactory.h DefaultExtensionMessageFactory.cc \
 	DefaultExtensionMessageFactory.h HandshakeExtensionMessage.cc \
 	HandshakeExtensionMessage.h UTPexExtensionMessage.cc \
-	UTPexExtensionMessage.h ExtendedMessagingAware.h DHTNode.cc \
-	DHTNode.h DHTUtil.cc DHTUtil.h DHTBucket.cc DHTBucket.h \
-	DHTRoutingTable.cc DHTRoutingTable.h DHTMessageEntry.cc \
-	DHTMessageEntry.h DHTMessageDispatcher.h \
-	DHTMessageDispatcherImpl.cc DHTMessageDispatcherImpl.h \
-	DHTMessageReceiver.cc DHTMessageReceiver.h \
-	DHTMessageTracker.cc DHTMessageTracker.h \
+	UTPexExtensionMessage.h DHTNode.cc DHTNode.h DHTUtil.cc \
+	DHTUtil.h DHTBucket.cc DHTBucket.h DHTRoutingTable.cc \
+	DHTRoutingTable.h DHTMessageEntry.cc DHTMessageEntry.h \
+	DHTMessageDispatcher.h DHTMessageDispatcherImpl.cc \
+	DHTMessageDispatcherImpl.h DHTMessageReceiver.cc \
+	DHTMessageReceiver.h DHTMessageTracker.cc DHTMessageTracker.h \
 	DHTMessageTrackerEntry.cc DHTMessageTrackerEntry.h \
 	DHTMessage.cc DHTMessage.h DHTConnection.h \
 	DHTConnectionImpl.cc DHTConnectionImpl.h DHTAbstractMessage.cc \
@@ -533,9 +532,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtSeederStateChoke.h RangeBtMessage.cc RangeBtMessage.h \
 	IndexBtMessage.cc IndexBtMessage.h ZeroBtMessage.cc \
 	ZeroBtMessage.h RangeBtMessageValidator.h \
-	IndexBtMessageValidator.h Metalinker.cc Metalinker.h \
-	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
-	MetalinkResource.h MetalinkProcessor.h \
+	IndexBtMessageValidator.h ExtensionMessageRegistry.h \
+	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \

@@ -50,6 +50,7 @@
 #include "HandshakeExtensionMessage.h"
 #include "UTPexExtensionMessage.h"
 #include "DefaultExtensionMessageFactory.h"
+#include "ExtensionMessageRegistry.h"
 #include "DHTNode.h"
 #include "Peer.h"
 #include "Piece.h"
@@ -115,7 +116,7 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   if(message->isExtendedMessagingEnabled()) {
     peer->setExtendedMessagingEnabled(true);
     if(!_utPexEnabled) {
-      _extensionMessageFactory->removeExtension("ut_pex");
+      _extensionMessageRegistry->removeExtension("ut_pex");
     }
     logger->info(MSG_EXTENDED_MESSAGING_ENABLED, cuid);
   }
@@ -162,7 +163,7 @@ void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
   HandshakeExtensionMessageHandle m(new HandshakeExtensionMessage());
   m->setClientVersion(CLIENT_ARIA2);
   m->setTCPPort(_btRuntime->getListenPort());
-  m->setExtensions(_extensionMessageFactory->getExtensions());
+  m->setExtensions(_extensionMessageRegistry->getExtensions());
   
   SharedHandle<BtMessage> msg = messageFactory->createBtExtendedMessage(m);
   dispatcher->addMessageToQueue(msg);

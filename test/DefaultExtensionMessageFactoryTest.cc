@@ -12,6 +12,7 @@
 #include "UTPexExtensionMessage.h"
 #include "Exception.h"
 #include "FileEntry.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
@@ -27,6 +28,7 @@ private:
   SharedHandle<MockPeerStorage> _peerStorage;
   SharedHandle<Peer> _peer;
   SharedHandle<DefaultExtensionMessageFactory> _factory;
+  SharedHandle<ExtensionMessageRegistry> _registry;
 public:
   void setUp()
   {
@@ -41,10 +43,13 @@ public:
     _peer->allocateSessionResource(1024, 1024*1024);
     _peer->setExtension("ut_pex", 1);
 
+    _registry.reset(new ExtensionMessageRegistry());
+
     _factory.reset(new DefaultExtensionMessageFactory());
     _factory->setBtContext(_btContext);
     _factory->setPeerStorage(_peerStorage);
     _factory->setPeer(_peer);
+    _factory->setExtensionMessageRegistry(_registry);
   }
 
   void testCreateMessage_unknown();
@@ -95,7 +100,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
   PeerMessageUtil::createcompact(c3, "192.168.0.2", 6882);
   PeerMessageUtil::createcompact(c4, "10.1.1.3",10000);
 
-  char id[1] = { _factory->getExtensionMessageID("ut_pex") };
+  char id[1] = { _registry->getExtensionMessageID("ut_pex") };
 
   std::string data = std::string(&id[0], &id[1])+"d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
@@ -107,7 +112,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
     (dynamic_pointer_cast<UTPexExtensionMessage>
      (_factory->createMessage
       (reinterpret_cast<const unsigned char*>(data.c_str()), data.size())));
-  CPPUNIT_ASSERT_EQUAL(_factory->getExtensionMessageID("ut_pex"),
+  CPPUNIT_ASSERT_EQUAL(_registry->getExtensionMessageID("ut_pex"),
 		       m->getExtensionMessageID());
 }
 

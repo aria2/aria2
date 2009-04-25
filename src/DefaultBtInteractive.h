@@ -55,6 +55,7 @@ class BtMessageFactory;
 class BtRequestFactory;
 class PeerConnection;
 class ExtensionMessageFactory;
+class ExtensionMessageRegistry;
 class DHTNode;
 class Logger;
 class RequestGroupMan;
@@ -112,6 +113,7 @@ private:
   SharedHandle<PeerConnection> peerConnection;
   SharedHandle<BtMessageFactory> messageFactory;
   SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
+  SharedHandle<ExtensionMessageRegistry> _extensionMessageRegistry;
 
   WeakHandle<DHTNode> _localNode;
 
@@ -202,6 +204,12 @@ public:
 
   void setExtensionMessageFactory
   (const SharedHandle<ExtensionMessageFactory>& factory);
+
+  void setExtensionMessageRegistry
+  (const SharedHandle<ExtensionMessageRegistry>& registry)
+  {
+    _extensionMessageRegistry = registry;
+  }
 
   void setKeepAliveInterval(time_t keepAliveInterval) {
     this->keepAliveInterval = keepAliveInterval;

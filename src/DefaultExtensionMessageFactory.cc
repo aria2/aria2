@@ -42,16 +42,20 @@
 #include "Logger.h"
 #include "StringFormat.h"
 #include "PeerStorage.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
   _logger(LogFactory::getInstance()) {}
 
-DefaultExtensionMessageFactory::DefaultExtensionMessageFactory(const BtContextHandle& btContext,
-							       const PeerHandle& peer):
+DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
+(const BtContextHandle& btContext,
+ const PeerHandle& peer,
+ const SharedHandle<ExtensionMessageRegistry>& registry):
   _btContext(btContext),
   _peer(peer),
+  _registry(registry),
   _logger(LogFactory::getInstance()) {}
 
 DefaultExtensionMessageFactory::~DefaultExtensionMessageFactory() {}
@@ -67,7 +71,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     m->setPeer(_peer);
     return m;
   } else {
-    std::string extensionName = getExtensionName(extensionMessageID);
+    std::string extensionName = _registry->getExtensionName(extensionMessageID);
     if(extensionName.empty()) {
       throw DlAbortEx
 	(StringFormat("No extension registered for extended message ID %u",

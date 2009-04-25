@@ -43,6 +43,7 @@ class BtContext;
 class PeerStorage;
 class Peer;
 class Logger;
+class ExtensionMessageRegistry;
 
 class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
@@ -52,13 +53,17 @@ private:
 
   SharedHandle<Peer> _peer;
 
+  SharedHandle<ExtensionMessageRegistry> _registry;
+
   Logger* _logger;
 
 public:
   DefaultExtensionMessageFactory();
 
-  DefaultExtensionMessageFactory(const SharedHandle<BtContext>& btContext,
-				 const SharedHandle<Peer>& peer);
+  DefaultExtensionMessageFactory
+  (const SharedHandle<BtContext>& btContext,
+   const SharedHandle<Peer>& peer,
+   const SharedHandle<ExtensionMessageRegistry>& registry);
 
   virtual ~DefaultExtensionMessageFactory();
 
@@ -70,6 +75,12 @@ public:
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
   void setPeer(const SharedHandle<Peer>& peer);
+
+  void setExtensionMessageRegistry
+  (const SharedHandle<ExtensionMessageRegistry>& registry)
+  {
+    _registry = registry;
+  }
 };
 
 typedef SharedHandle<DefaultExtensionMessageFactory> DefaultExtensionMessageFactoryHandle;

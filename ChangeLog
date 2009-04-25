@@ -1,5 +1,21 @@
 2009-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed ExtendedMessagingAware. Instead of using inheritance,
+	added ExtensionMessageRegistry and it is passed to
+	DefaultExtensionMessageFactory.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtInteractive.h
+	* src/DefaultExtensionMessageFactory.cc
+	* src/DefaultExtensionMessageFactory.h
+	* src/ExtendedMessagingAware.h: Removed.
+	* src/ExtensionMessageFactory.h
+	* src/ExtensionMessageRegistry.h: Added.
+	* src/Makefile.am
+	* src/PeerInteractionCommand.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+	
+2009-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo in log messages
 	* src/MSEHandshake.cc
 

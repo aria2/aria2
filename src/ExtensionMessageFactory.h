@@ -35,14 +35,14 @@
 #ifndef _D_EXTENSION_MESSAGE_FACTORY_H_
 #define _D_EXTENSION_MESSAGE_FACTORY_H_
 
-#include "ExtendedMessagingAware.h"
+#include "common.h"
 #include "SharedHandle.h"
 
 namespace aria2 {
 
 class ExtensionMessage;
 
-class ExtensionMessageFactory:public ExtendedMessagingAware {
+class ExtensionMessageFactory {
 public:
   virtual ~ExtensionMessageFactory() {}
 

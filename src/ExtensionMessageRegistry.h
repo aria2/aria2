@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,26 +32,26 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXTENDED_MESSAGING_AWARE_H_
-#define _D_EXTENDED_MESSAGING_AWARE_H_
+#ifndef _D_EXTENSION_MESSAGE_REGISTRY_H_
+#define _D_EXTENSION_MESSAGE_REGISTRY_H_
 
 #include "common.h"
+
+#include <string>
+
 #include "BtConstants.h"
 #include "A2STR.h"
-#include <string>
 
 namespace aria2 {
 
-class ExtendedMessagingAware {
+class ExtensionMessageRegistry {
 private:
   Extensions _extensions;
 public:
-  ExtendedMessagingAware()
+  ExtensionMessageRegistry()
   {
     _extensions["ut_pex"] = 8;
   }
-
-  virtual ~ExtendedMessagingAware() {}
 
   const Extensions& getExtensions() const
   {
@@ -68,10 +68,10 @@ public:
     }
   }
 
-  std::string getExtensionName(uint8_t id) const
+  const std::string& getExtensionName(uint8_t id) const
   {
     for(Extensions::const_iterator itr = _extensions.begin();
-      itr != _extensions.end(); ++itr) {
+	itr != _extensions.end(); ++itr) {
       const Extensions::value_type& p = *itr;
       if(p.second == id) {
 	return p.first;
@@ -88,4 +88,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_EXTENDED_MESSAGING_AWARE_H_
+#endif // _D_EXTENSION_MESSAGE_REGISTRY_H_

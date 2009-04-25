@@ -69,6 +69,7 @@
 #include "BtProgressInfoFile.h"
 #include "DefaultExtensionMessageFactory.h"
 #include "RequestGroupMan.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
@@ -102,8 +103,11 @@ PeerInteractionCommand::PeerInteractionCommand
   SharedHandle<PeerStorage> peerStorage =
     btRegistry->getPeerStorage(_btContext->getInfoHashAsString());
 
+  SharedHandle<ExtensionMessageRegistry> exMsgRegistry
+    (new ExtensionMessageRegistry());
+
   SharedHandle<DefaultExtensionMessageFactory> extensionMessageFactory
-    (new DefaultExtensionMessageFactory(_btContext, peer));
+    (new DefaultExtensionMessageFactory(_btContext, peer, exMsgRegistry));
   extensionMessageFactory->setPeerStorage(peerStorage);
 
   SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());
@@ -164,6 +168,7 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractive->setBtRequestFactory(reqFactory);
   btInteractive->setPeerConnection(peerConnection);
   btInteractive->setExtensionMessageFactory(extensionMessageFactory);
+  btInteractive->setExtensionMessageRegistry(exMsgRegistry);
   btInteractive->setKeepAliveInterval
     (e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setRequestGroupMan(e->_requestGroupMan);
