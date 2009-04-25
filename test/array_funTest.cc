@@ -36,28 +36,28 @@ CPPUNIT_TEST_SUITE_REGISTRATION(array_funTest);
 void array_funTest::testArray_negate()
 {
   unsigned char a[] = { 0xaa, 0x55 };
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x55, (~arrayRef(a))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x55, (~array(a))[0]);
   CPPUNIT_ASSERT_EQUAL((unsigned char)0xaa, (~array((unsigned char*)a))[1]);
 
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0xaa, (~~arrayRef(a))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x55, (~~arrayRef(a))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0xaa, (~~array(a))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x55, (~~array(a))[1]);
 }
 
 void array_funTest::testArray_and()
 {
   unsigned char a1[] = { 0xaa, 0x55 };
   unsigned char a2[] = { 0x1a, 0x25 };
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x0a, (arrayRef(a1)&arrayRef(a2))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x05, (arrayRef(a1)&arrayRef(a2))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x0a, (array(a1)&array(a2))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x05, (array(a1)&array(a2))[1]);
 
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (arrayRef(a1)&~arrayRef(a2))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (arrayRef(a1)&~arrayRef(a2))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (array(a1)&~array(a2))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (array(a1)&~array(a2))[1]);
 
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (~arrayRef(a2)&arrayRef(a1))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (~arrayRef(a2)&arrayRef(a1))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (~array(a2)&array(a1))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (~array(a2)&array(a1))[1]);
 
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x45, (~arrayRef(a1)&~arrayRef(a2))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x8a, (~arrayRef(a1)&~arrayRef(a2))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x45, (~array(a1)&~array(a2))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x8a, (~array(a1)&~array(a2))[1]);
 }
 
 void array_funTest::testArrayLength()

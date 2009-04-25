@@ -1,5 +1,11 @@
 2009-04-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten expr
+	* src/array_fun.h
+	* test/array_funTest.cc
+	
+2009-04-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added forEachMemFunSH(). Use it in BitTorrent event dispatch.
 	* src/DefaultBtMessageDispatcher.cc
 	* src/a2algo.h

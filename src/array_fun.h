@@ -118,114 +118,77 @@ public:
 
 namespace expr {
 
-template<typename T>
-struct Expr {
-  Expr(const T& expOp):_expOp(expOp) {}
+template<typename L, typename OpTag, typename R>
+struct BinExpr {
+  BinExpr(const L& l, const R& r):_l(l), _r(r) {}
 
-  typename T::returnType operator[](size_t index) const
+  typedef typename OpTag::returnType returnType;
+
+  returnType operator[](size_t index) const
   {
-    return _expOp(index);
+    return OpTag::apply(_l[index], _r[index]);
   }
 
-  const T& _expOp;
+  const L& _l;
+  const R& _r;
+};
+
+template<typename OpTag, typename A>
+struct UnExpr {
+  UnExpr(const A& a):_a(a) {}
+
+  typedef typename OpTag::returnType returnType;
+
+  returnType operator[](size_t index) const
+  {
+    return OpTag::apply(_a[index]);
+  }
+
+  const A& _a;
 };
 
 template<typename T>
 struct And
 {
   typedef T returnType;
-  static inline T apply(T lhs, T rhs) { return lhs&rhs; }
-};
-
-template<typename T>
-struct Noop
-{
-  typedef T returnType;
-  static inline T apply(T arg) { return arg; }
+  static inline returnType apply(T lhs, T rhs) { return lhs&rhs; }
 };
 
 template<typename T>
 struct Negate
 {
   typedef T returnType;
-  static inline T apply(T arg) { return ~arg; }
+  static inline returnType apply(T a) { return ~a; }
 };
-
-template<typename T1, typename T2, typename BinOp>
-struct ExpBinOp
-{
-  typedef typename BinOp::returnType returnType;
-
-  ExpBinOp(const T1& lhs, const T2& rhs):_lhs(lhs), _rhs(rhs) {}
-
-  returnType operator()(size_t index) const
-  {
-    return BinOp::apply(_lhs[index], _rhs[index]);
-  }
-
-  const T1& _lhs;
-  const T2& _rhs;
-};
-
-template<typename T, typename UnOp>
-struct ExpUnOp
-{
-  typedef typename UnOp::returnType returnType;
-
-  ExpUnOp(const T& arg):_arg(arg) {}
-
-  returnType operator()(size_t index) const
-  {
-    return UnOp::apply(_arg[index]);
-  }
-
-  const T& _arg;
-};
-
-// Partial specialization for pointers
-template<typename T, typename UnOp>
-struct ExpUnOp<T*, UnOp>
-{
-  typedef typename UnOp::returnType returnType;
-
-  ExpUnOp(const T* arg):_arg(arg) {}
-
-  returnType operator()(size_t index) const
-  {
-    return UnOp::apply(_arg[index]);
-  }
-
-  const T* _arg;
-};
-
-template<typename T, size_t N>
-Expr<ExpUnOp<T(&)[N], Noop<T> > > arrayRef(T (&t)[N])
-{
-  typedef ExpUnOp<T(&)[N], Noop<T> > ExpUnOpT;
-  return Expr<ExpUnOpT>(ExpUnOpT(t));
-}
 
 template<typename T>
-Expr<ExpUnOp<T*, Noop<T> > > array(T* a)
+struct Array
 {
-  typedef ExpUnOp<T*, Noop<T> > ExpUnOpT;
-  return Expr<ExpUnOpT>(ExpUnOpT(a));
-}
+  typedef T returnType;
+
+  Array(const T* t):_t(t) {}
+
+  const T* _t;
+
+  returnType operator[](size_t index) const { return _t[index]; }
+};
 
 template<typename T>
-Expr<ExpUnOp<Expr<T>, Negate<typename T::returnType> > >
-operator~(const Expr<T>& arg)
+Array<T>
+array(const T* t) { return Array<T>(t); }
+
+template<typename L, typename R>
+BinExpr<L, And<typename L::returnType>, R>
+operator&(const L& l, const R& r)
 {
-  typedef ExpUnOp<Expr<T>, Negate<typename T::returnType> > ExpUnOpT;
-  return Expr<ExpUnOpT>(ExpUnOpT(arg));
+  return BinExpr<L, And<typename L::returnType>, R>(l, r);
 }
 
-template<typename T1, typename T2>
-Expr<ExpBinOp<Expr<T1>, Expr<T2>, And<typename T1::returnType> > >
-operator&(const Expr<T1>& lhs, const Expr<T2>& rhs)
+template<typename A>
+UnExpr<Negate<typename A::returnType>, A>
+operator~(const A& a)
 {
-  typedef ExpBinOp<Expr<T1>, Expr<T2>, And<typename T1::returnType> > ExpBinOpT;
-  return Expr<ExpBinOpT>(ExpBinOpT(lhs, rhs));
+  return UnExpr<Negate<typename A::returnType>, A>(a);
 }
 
 } // namespace expr
