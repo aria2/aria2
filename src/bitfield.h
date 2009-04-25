@@ -97,16 +97,17 @@ inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
   size_t count = 0;
   size_t size = sizeof(uint32_t);
   size_t len = (nbits+7)/8;
+  if(nbits%32 != 0) {
+    --len;
+    count +=
+      countBit32(static_cast<uint32_t>(bitfield[len]&lastByteMask(nbits)));
+  }
   size_t to = len/size;
   for(size_t i = 0; i < to; ++i) {
     count += countBit32(*reinterpret_cast<const uint32_t*>(&bitfield[i*size]));
   }
-  for(size_t i = len-len%size; i < len-1; ++i) {
+  for(size_t i = len-len%size; i < len; ++i) {
     count += countBit32(static_cast<uint32_t>(bitfield[i]));
-  }
-  if(nbits%32 != 0) {
-    count +=
-      countBit32(static_cast<uint32_t>(bitfield[len-1]&lastByteMask(nbits)));
   }
   return count;
 }

@@ -40,11 +40,17 @@ void bitfieldTest::testCountBit32()
 
 void bitfieldTest::testCountSetBit()
 {
-  unsigned char bitfield[] = { 0xff, 0xff, 0xff, 0xf0, 0xff, 0x01 };
-
-  CPPUNIT_ASSERT_EQUAL((size_t)37, bitfield::countSetBit(bitfield, 48));
-  CPPUNIT_ASSERT_EQUAL((size_t)36, bitfield::countSetBit(bitfield, 47));
-  CPPUNIT_ASSERT_EQUAL((size_t)28, bitfield::countSetBit(bitfield, 32));
+  unsigned char bitfield[] = { 0xff, 0xff, 0xff, 0xff,
+			       0xff, 0xff, 0xff, 0xf9 };
+  // (nbits+7)/8 == 0 && nbits%32 == 0
+  CPPUNIT_ASSERT_EQUAL((size_t)62, bitfield::countSetBit(bitfield, 64));
+  // (nbits+7)/8 != 0 && nbits%32 != 0 && len%4 == 0
+  CPPUNIT_ASSERT_EQUAL((size_t)56, bitfield::countSetBit(bitfield, 56));
+  // (nbits+7)/8 != 0 && nbits%32 != 0 && len%4 != 0
+  CPPUNIT_ASSERT_EQUAL((size_t)40, bitfield::countSetBit(bitfield, 40));
+  // (nbits+7)/8 == 0 && nbits%32 != 0
+  CPPUNIT_ASSERT_EQUAL((size_t)61, bitfield::countSetBit(bitfield, 63));
+  // nbts == 0
   CPPUNIT_ASSERT_EQUAL((size_t)0, bitfield::countSetBit(bitfield, 0));
 }
 

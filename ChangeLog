@@ -1,3 +1,13 @@
+2009-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	
+	Fixed the bug that prevents torrent download from finishing.  The
+	bug doesn't reveal for all torrents. The torrents affected this
+	bug satisfies ((N+7)/8)%4 == 0 and N%32 != 0 where N is the number
+	of pieces.	
+	* src/bitfield.h
+	* test/bitfieldTest.cc
+
 2009-04-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code cleanup
