@@ -51,6 +51,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "a2functional.h"
+#include "a2algo.h"
 #include "RequestGroupMan.h"
 #include "RequestGroup.h"
 
@@ -119,9 +120,9 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32
   BtCancelSendingPieceEvent event(index, begin, length);
 
   BtMessages tempQueue = messageQueue;
-  std::for_each(tempQueue.begin(), tempQueue.end(),
-		std::bind2nd(mem_fun_sh(&BtMessage::onCancelSendingPieceEvent),
-			     event));
+
+   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
+ 		&BtMessage::onCancelSendingPieceEvent, event);
 }
 
 // Cancel sending piece message to peer.
@@ -168,9 +169,8 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction(const PieceHand
   BtAbortOutstandingRequestEvent event(piece);
 
   BtMessages tempQueue = messageQueue;
-  std::for_each(tempQueue.begin(), tempQueue.end(),
-		std::bind2nd(mem_fun_sh(&BtMessage::onAbortOutstandingRequestEvent),
-			     event));
+  forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
+		  &BtMessage::onAbortOutstandingRequestEvent, event);
 }
 
 class ProcessChokedRequestSlot {
@@ -233,8 +233,8 @@ void DefaultBtMessageDispatcher::doChokingAction()
   BtChokingEvent event;
 
   BtMessages tempQueue = messageQueue;
-  std::for_each(tempQueue.begin(), tempQueue.end(),
-		std::bind2nd(mem_fun_sh(&BtMessage::onChokingEvent), event));
+  forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
+		&BtMessage::onChokingEvent, event);
 }
 
 class ProcessStaleRequestSlot {

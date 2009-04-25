@@ -1,3 +1,9 @@
+2009-04-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added forEachMemFunSH(). Use it in BitTorrent event dispatch.
+	* src/DefaultBtMessageDispatcher.cc
+	* src/a2algo.h
+
 2009-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed ExtendedMessagingAware. Instead of using inheritance,
