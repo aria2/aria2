@@ -542,7 +542,7 @@ bool MSEHandshake::sendReceiverStep2()
 
 uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const char* padName)
 {
-  _logger->debug("CUID#%d - Veryfying Pad length for %s", _cuid, padName);
+  _logger->debug("CUID#%d - Verifying Pad length for %s", _cuid, padName);
 
   uint16_t padLength = decodeLength16(padlenbuf);
   _logger->debug("CUID#%d - len(%s)=%u", _cuid, padName, padLength);
@@ -555,7 +555,7 @@ uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const cha
 
 void MSEHandshake::verifyVC(const unsigned char* vcbuf)
 {
-  _logger->debug("CUID#%d - Veryfying VC.", _cuid);
+  _logger->debug("CUID#%d - Verifying VC.", _cuid);
   unsigned char vc[VC_LENGTH];
   _decryptor->decrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
   if(memcmp(VC, vc, sizeof(VC)) != 0) {

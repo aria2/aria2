@@ -1,5 +1,10 @@
 2009-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo in log messages
+	* src/MSEHandshake.cc
+
+2009-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	
 	Fixed the bug that prevents torrent download from finishing.  The
 	bug doesn't reveal for all torrents. The torrents affected this
