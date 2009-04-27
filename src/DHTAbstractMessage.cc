@@ -55,7 +55,7 @@ DHTAbstractMessage::~DHTAbstractMessage() {}
 
 std::string DHTAbstractMessage::getBencodedMessage()
 {
-  bencode::BDE msgDict = bencode::BDE::dict();
+  BDE msgDict = BDE::dict();
   msgDict[T] = _transactionID;
   msgDict[Y] = getType();
   fillMessage(msgDict);

@@ -52,9 +52,9 @@ public:
 
   virtual std::string getType() const;
 
-  virtual void fillMessage(bencode::BDE& msgDict);
+  virtual void fillMessage(BDE& msgDict);
 
-  virtual bencode::BDE getArgument() = 0;
+  virtual BDE getArgument() = 0;
   
   virtual bool isReply() const;
 

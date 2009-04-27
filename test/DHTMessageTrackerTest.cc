@@ -76,7 +76,7 @@ void DHTMessageTrackerTest::testMessageArrived()
   tracker.addMessage(m3);
 
   {
-    bencode::BDE resDict = bencode::BDE::dict();
+    BDE resDict = BDE::dict();
     resDict["t"] = m2->getTransactionID();
     
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
@@ -90,7 +90,7 @@ void DHTMessageTrackerTest::testMessageArrived()
     CPPUNIT_ASSERT_EQUAL((size_t)2, tracker.countEntry());
   }
   {
-    bencode::BDE resDict = bencode::BDE::dict();
+    BDE resDict = BDE::dict();
     resDict["t"] = m3->getTransactionID();
 
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
@@ -103,7 +103,7 @@ void DHTMessageTrackerTest::testMessageArrived()
     CPPUNIT_ASSERT_EQUAL((size_t)1, tracker.countEntry());
   }
   {
-    bencode::BDE resDict = bencode::BDE::dict();
+    BDE resDict = BDE::dict();
     resDict["t"] = m1->getTransactionID();
 
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =

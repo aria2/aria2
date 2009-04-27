@@ -194,7 +194,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	SimpleDNSCacheTest.cc DownloadHelperTest.cc BencodeTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
-	bitfieldTest.cc FallocFileAllocationIteratorTest.cc \
+	bitfieldTest.cc BDETest.cc FallocFileAllocationIteratorTest.cc \
 	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
 	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
@@ -365,9 +365,9 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	SequentialPickerTest.$(OBJEXT) \
 	RarestPieceSelectorTest.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
-	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5) $(am__objects_6)
+	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) BDETest.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a ../src/download_helper.o \
@@ -592,7 +592,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	SimpleDNSCacheTest.cc DownloadHelperTest.cc BencodeTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
-	bitfieldTest.cc $(am__append_1) $(am__append_2) \
+	bitfieldTest.cc BDETest.cc $(am__append_1) $(am__append_2) \
 	$(am__append_3) $(am__append_4) $(am__append_5) \
 	$(am__append_6)
 
@@ -688,6 +688,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlphaNumberDecoratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactoryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BDETest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNodeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeTest.Po@am__quote@

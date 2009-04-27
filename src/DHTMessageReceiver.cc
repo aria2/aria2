@@ -74,9 +74,9 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
   }
   try {
     bool isReply = false;
-    const bencode::BDE dict = bencode::decode(data, length);
+    const BDE dict = bencode::decode(data, length);
     if(dict.isDict()) {
-      const bencode::BDE& y = dict[DHTMessage::Y];
+      const BDE& y = dict[DHTMessage::Y];
       if(y.isString()) {
 	if(y.s() == DHTResponseMessage::R || y.s() == DHTUnknownMessage::E) {
 	  isReply = true;

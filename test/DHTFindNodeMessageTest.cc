@@ -61,13 +61,13 @@ void DHTFindNodeMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["t"] = transactionID;
-  dict["y"] = bencode::BDE("q");
-  dict["q"] = bencode::BDE("find_node");
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
-  aDict["target"] = bencode::BDE(targetNode->getID(), DHT_ID_LENGTH);
+  dict["y"] = BDE("q");
+  dict["q"] = BDE("find_node");
+  BDE aDict = BDE::dict();
+  aDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
+  aDict["target"] = BDE(targetNode->getID(), DHT_ID_LENGTH);
   dict["a"] = aDict;
 
   CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);

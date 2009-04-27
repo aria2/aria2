@@ -35,7 +35,7 @@ void PeerListProcessorTest::testExtractPeerFromList() {
   PeerListProcessor proc;
   std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
 
-  const bencode::BDE dict = bencode::decode(peersString);
+  const BDE dict = bencode::decode(peersString);
   
   std::deque<SharedHandle<Peer> > peers;
   proc.extractPeerFromList(dict["peers"], std::back_inserter(peers));
@@ -49,7 +49,7 @@ void PeerListProcessorTest::testExtract2PeersFromList() {
   PeerListProcessor proc;
   std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
 
-  const bencode::BDE dict = bencode::decode(peersString);
+  const BDE dict = bencode::decode(peersString);
 
   std::deque<SharedHandle<Peer> > peers;
   proc.extractPeerFromList(dict["peers"], std::back_inserter(peers));

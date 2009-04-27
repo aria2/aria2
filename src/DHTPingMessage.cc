@@ -58,10 +58,10 @@ void DHTPingMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-bencode::BDE DHTPingMessage::getArgument()
+BDE DHTPingMessage::getArgument()
 {
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  BDE aDict = BDE::dict();
+  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
   return aDict;
 }
 

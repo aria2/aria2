@@ -84,11 +84,11 @@ void DHTAnnouncePeerMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-bencode::BDE DHTAnnouncePeerMessage::getArgument()
+BDE DHTAnnouncePeerMessage::getArgument()
 {
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
-  aDict[INFO_HASH] = bencode::BDE(_infoHash, DHT_ID_LENGTH);
+  BDE aDict = BDE::dict();
+  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[INFO_HASH] = BDE(_infoHash, DHT_ID_LENGTH);
   aDict[PORT] = _tcpPort;
   aDict[TOKEN] = _token;
   return aDict;

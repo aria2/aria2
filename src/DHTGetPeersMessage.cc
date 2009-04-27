@@ -88,11 +88,11 @@ void DHTGetPeersMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-bencode::BDE DHTGetPeersMessage::getArgument()
+BDE DHTGetPeersMessage::getArgument()
 {
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
-  aDict[INFO_HASH] = bencode::BDE(_infoHash, DHT_ID_LENGTH);
+  BDE aDict = BDE::dict();
+  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[INFO_HASH] = BDE(_infoHash, DHT_ID_LENGTH);
   return aDict;
 }
 

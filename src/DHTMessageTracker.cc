@@ -69,10 +69,10 @@ void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, cons
 }
 
 std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
-DHTMessageTracker::messageArrived(const bencode::BDE& dict,
+DHTMessageTracker::messageArrived(const BDE& dict,
 				  const std::string& ipaddr, uint16_t port)
 {
-  const bencode::BDE& tid = dict[DHTMessage::T];
+  const BDE& tid = dict[DHTMessage::T];
   if(!tid.isString()) {
     throw DlAbortEx(StringFormat("Malformed DHT message. From:%s:%u",
 				 ipaddr.c_str(), port).str());

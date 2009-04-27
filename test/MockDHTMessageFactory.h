@@ -17,7 +17,7 @@ public:
   virtual ~MockDHTMessageFactory() {}
 
   virtual SharedHandle<DHTMessage>
-  createQueryMessage(const bencode::BDE& dict,
+  createQueryMessage(const BDE& dict,
 		     const std::string& ipaddr, uint16_t port)
   {
     return SharedHandle<DHTMessage>();
@@ -25,7 +25,7 @@ public:
 
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
-			const bencode::BDE& dict,
+			const BDE& dict,
 			const std::string& ipaddr, uint16_t port)
   {
     SharedHandle<DHTNode> remoteNode(new DHTNode());

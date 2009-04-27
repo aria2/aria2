@@ -68,7 +68,8 @@ aria2c_SOURCES = AllTest.cc\
 	RarestPieceSelectorTest.cc\
 	LongestSequencePieceSelectorTest.cc\
 	a2algoTest.cc\
-	bitfieldTest.cc
+	bitfieldTest.cc\
+	BDETest.cc
 
 if HAVE_POSIX_FALLOCATE
 aria2c_SOURCES += FallocFileAllocationIteratorTest.cc

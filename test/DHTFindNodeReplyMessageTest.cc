@@ -56,11 +56,11 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["t"] = transactionID;
-  dict["y"] = bencode::BDE("r");
-  bencode::BDE rDict = bencode::BDE::dict();
-  rDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
+  dict["y"] = BDE("r");
+  BDE rDict = BDE::dict();
+  rDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
   rDict["nodes"] = compactNodeInfo;
   dict["r"] = rDict;
 

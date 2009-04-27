@@ -55,7 +55,7 @@ std::string DHTQueryMessage::getType() const
   return Q;
 }
 
-void DHTQueryMessage::fillMessage(bencode::BDE& msgDict)
+void DHTQueryMessage::fillMessage(BDE& msgDict)
 {
   msgDict[Q] = getMessageType();
   msgDict[A] = getArgument();

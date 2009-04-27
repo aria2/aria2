@@ -60,13 +60,13 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["t"] = transactionID;
-  dict["y"] = bencode::BDE("q");
-  dict["q"] = bencode::BDE("announce_peer");
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
-  aDict["info_hash"] = bencode::BDE(infoHash, DHT_ID_LENGTH);
+  dict["y"] = BDE("q");
+  dict["q"] = BDE("announce_peer");
+  BDE aDict = BDE::dict();
+  aDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
+  aDict["info_hash"] = BDE(infoHash, DHT_ID_LENGTH);
   aDict["port"] = port;
   aDict["token"] = token;
   dict["a"] = aDict;

@@ -48,7 +48,7 @@ const std::string AnnounceList::STOPPED("stopped");
 
 const std::string AnnounceList::COMPLETED("completed");
 
-AnnounceList::AnnounceList(const bencode::BDE& announceList):
+AnnounceList::AnnounceList(const BDE& announceList):
   currentTrackerInitialized(false) {
   reconfigure(announceList);
 }
@@ -58,19 +58,19 @@ AnnounceList::AnnounceList(const AnnounceTiers& announceTiers):
   resetIterator();
 }
 
-void AnnounceList::reconfigure(const bencode::BDE& announceList)
+void AnnounceList::reconfigure(const BDE& announceList)
 {
   if(announceList.isList()) {
-    for(bencode::BDE::List::const_iterator itr = announceList.listBegin();
+    for(BDE::List::const_iterator itr = announceList.listBegin();
 	itr != announceList.listEnd(); ++itr) {
-      const bencode::BDE& elemList = *itr;
+      const BDE& elemList = *itr;
       if(!elemList.isList()) {
 	continue;
       }
       std::deque<std::string> urls;
-      for(bencode::BDE::List::const_iterator elemItr = elemList.listBegin();
+      for(BDE::List::const_iterator elemItr = elemList.listBegin();
 	  elemItr != elemList.listEnd(); ++elemItr) {
-	const bencode::BDE& data = *elemItr;
+	const BDE& data = *elemItr;
 	if(data.isString()) {
 	  urls.push_back(data.s());
 	}

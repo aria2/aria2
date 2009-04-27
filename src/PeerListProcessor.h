@@ -45,7 +45,7 @@ namespace aria2 {
 class PeerListProcessor {
 public:
   template<typename OutputIterator>
-  void extractPeer(const bencode::BDE& peerData, OutputIterator dest)
+  void extractPeer(const BDE& peerData, OutputIterator dest)
   {
     if(peerData.isList()) {
       extractPeerFromList(peerData, dest);
@@ -55,18 +55,18 @@ public:
   }
 
   template<typename OutputIterator>
-  void extractPeerFromList(const bencode::BDE& peerData, OutputIterator dest)
+  void extractPeerFromList(const BDE& peerData, OutputIterator dest)
   {
-    for(bencode::BDE::List::const_iterator itr = peerData.listBegin();
+    for(BDE::List::const_iterator itr = peerData.listBegin();
 	itr != peerData.listEnd(); ++itr) {
-      const bencode::BDE& peerDict = *itr;
+      const BDE& peerDict = *itr;
       if(!peerDict.isDict()) {
 	continue;
       }
       static const std::string IP = "ip";
       static const std::string PORT = "port";
-      const bencode::BDE& ip = peerDict[IP];
-      const bencode::BDE& port = peerDict[PORT];
+      const BDE& ip = peerDict[IP];
+      const BDE& port = peerDict[PORT];
       if(!ip.isString() || !port.isInteger() ||
 	 !(0 < port.i() && port.i() < 65536)) {
 	continue;
@@ -77,7 +77,7 @@ public:
   }
 
   template<typename OutputIterator>
-  void extractPeerFromCompact(const bencode::BDE& peerData, OutputIterator dest)
+  void extractPeerFromCompact(const BDE& peerData, OutputIterator dest)
   {
     size_t length = peerData.s().size();
     if(length%6 == 0) {

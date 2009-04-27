@@ -409,7 +409,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	HttpServerCommand.h HttpServerResponseCommand.cc \
 	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
 	PieceSelector.h LongestSequencePieceSelector.cc \
-	LongestSequencePieceSelector.h bitfield.h \
+	LongestSequencePieceSelector.h bitfield.h BDE.cc BDE.h \
 	FallocFileAllocationIterator.cc FallocFileAllocationIterator.h \
 	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
 	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
@@ -804,14 +804,15 @@ am__objects_23 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	SelectEventPoll.$(OBJEXT) HttpListenCommand.$(OBJEXT) \
 	HttpServerCommand.$(OBJEXT) \
 	HttpServerResponseCommand.$(OBJEXT) HttpServer.$(OBJEXT) \
-	LongestSequencePieceSelector.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
-	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
-	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
-	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
-	$(am__objects_20) $(am__objects_21) $(am__objects_22)
+	LongestSequencePieceSelector.$(OBJEXT) BDE.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
+	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
+	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
+	$(am__objects_16) $(am__objects_17) $(am__objects_18) \
+	$(am__objects_19) $(am__objects_20) $(am__objects_21) \
+	$(am__objects_22)
 am_libaria2c_a_OBJECTS = $(am__objects_23)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1139,14 +1140,15 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	HttpServerCommand.h HttpServerResponseCommand.cc \
 	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
 	PieceSelector.h LongestSequencePieceSelector.cc \
-	LongestSequencePieceSelector.h bitfield.h $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_15) $(am__append_16) \
-	$(am__append_17) $(am__append_18) $(am__append_19) \
-	$(am__append_20) $(am__append_21) $(am__append_22)
+	LongestSequencePieceSelector.h bitfield.h BDE.cc BDE.h \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(am__append_14) $(am__append_15) \
+	$(am__append_16) $(am__append_17) $(am__append_18) \
+	$(am__append_19) $(am__append_20) $(am__append_21) \
+	$(am__append_22)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1251,6 +1253,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoSaveCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BDE.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@

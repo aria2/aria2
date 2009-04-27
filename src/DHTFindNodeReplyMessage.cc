@@ -68,10 +68,10 @@ void DHTFindNodeReplyMessage::doReceivedAction()
   }
 }
 
-bencode::BDE DHTFindNodeReplyMessage::getResponse()
+BDE DHTFindNodeReplyMessage::getResponse()
 {
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  BDE aDict = BDE::dict();
+  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
   size_t offset = 0;
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
@@ -85,7 +85,7 @@ bencode::BDE DHTFindNodeReplyMessage::getResponse()
       offset += 26;
     }
   }
-  aDict[NODES] = bencode::BDE(buffer, offset);
+  aDict[NODES] = BDE(buffer, offset);
   return aDict;
 }
 

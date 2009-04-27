@@ -42,11 +42,11 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["t"] = transactionID;
-  dict["y"] = bencode::BDE("r");
-  bencode::BDE rDict = bencode::BDE::dict();
-  rDict["id"] = bencode::BDE(id, DHT_ID_LENGTH);
+  dict["y"] = BDE("r");
+  BDE rDict = BDE::dict();
+  rDict["id"] = BDE(id, DHT_ID_LENGTH);
   dict["r"] = rDict;
 
   CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);

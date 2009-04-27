@@ -40,9 +40,7 @@
 
 namespace aria2 {
 
-namespace bencode {
 class BDE;
-} // namespace bencode
 class DHTConnection;
 class DHTMessageDispatcher;
 class DHTMessageFactory;
@@ -68,7 +66,7 @@ public:
 
   virtual std::string getType() const = 0;
 
-  virtual void fillMessage(bencode::BDE& msgDict) = 0;
+  virtual void fillMessage(BDE& msgDict) = 0;
 
   std::string getBencodedMessage();
 

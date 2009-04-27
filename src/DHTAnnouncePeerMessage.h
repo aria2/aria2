@@ -69,7 +69,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual bencode::BDE getArgument();
+  virtual BDE getArgument();
   
   virtual std::string getMessageType() const;
 

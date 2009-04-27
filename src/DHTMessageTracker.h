@@ -51,9 +51,7 @@ class DHTRoutingTable;
 class DHTMessageFactory;
 class DHTMessageTrackerEntry;
 class Logger;
-namespace bencode {
 class BDE;
-} // namespace bencode
 
 class DHTMessageTracker {
 private:
@@ -79,7 +77,7 @@ public:
 		  SharedHandle<DHTMessageCallback>());
 
   std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
-  messageArrived(const bencode::BDE& dict,
+  messageArrived(const BDE& dict,
 		 const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();

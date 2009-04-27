@@ -1,5 +1,67 @@
 2009-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Put BDE in aria2 namespace. BDE will also be used to store xml-rpc
+	request.
+	* src/AnnounceList.cc
+	* src/AnnounceList.h
+	* src/BDE.cc: Added
+	* src/BDE.h: Added
+	* src/DHTAbstractMessage.cc
+	* src/DHTAbstractMessage.h
+	* src/DHTAnnouncePeerMessage.cc
+	* src/DHTAnnouncePeerMessage.h
+	* src/DHTAnnouncePeerReplyMessage.cc
+	* src/DHTAnnouncePeerReplyMessage.h
+	* src/DHTFindNodeMessage.cc
+	* src/DHTFindNodeMessage.h
+	* src/DHTFindNodeReplyMessage.cc
+	* src/DHTFindNodeReplyMessage.h
+	* src/DHTGetPeersMessage.cc
+	* src/DHTGetPeersMessage.h
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTGetPeersReplyMessage.h
+	* src/DHTMessageFactory.h
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTMessageFactoryImpl.h
+	* src/DHTMessageReceiver.cc
+	* src/DHTMessageTracker.cc
+	* src/DHTMessageTracker.h
+	* src/DHTPingMessage.cc
+	* src/DHTPingMessage.h
+	* src/DHTPingReplyMessage.cc
+	* src/DHTPingReplyMessage.h
+	* src/DHTQueryMessage.cc
+	* src/DHTQueryMessage.h
+	* src/DHTResponseMessage.cc
+	* src/DHTResponseMessage.h
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/HandshakeExtensionMessage.cc
+	* src/Makefile.am
+	* src/PeerListProcessor.h
+	* src/UTPexExtensionMessage.cc
+	* src/bencode.cc
+	* src/bencode.h
+	* test/AnnounceListTest.cc
+	* test/BDETest.cc: Added
+	* test/BencodeTest.cc
+	* test/DHTAnnouncePeerMessageTest.cc
+	* test/DHTAnnouncePeerReplyMessageTest.cc
+	* test/DHTFindNodeMessageTest.cc
+	* test/DHTFindNodeReplyMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/DHTGetPeersReplyMessageTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTMessageTrackerTest.cc
+	* test/DHTPingMessageTest.cc
+	* test/DHTPingReplyMessageTest.cc
+	* test/Makefile.am
+	* test/MockDHTMessageFactory.h
+	* test/PeerListProcessorTest.cc
+
+2009-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use url-list (web-seeding) only for single-file torrent.  This is
 	basically the same behavior with Metalink file with torrent and
 	URIs.

@@ -57,12 +57,12 @@ void DHTPingMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["t"] = transactionID;
-  dict["y"] = bencode::BDE("q");
-  dict["q"] = bencode::BDE("ping");
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
+  dict["y"] = BDE("q");
+  dict["q"] = BDE("ping");
+  BDE aDict = BDE::dict();
+  aDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
   dict["a"] = aDict;
 
   CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);

@@ -56,10 +56,10 @@ DHTPingReplyMessage::~DHTPingReplyMessage() {}
 
 void DHTPingReplyMessage::doReceivedAction() {}
 
-bencode::BDE DHTPingReplyMessage::getResponse()
+BDE DHTPingReplyMessage::getResponse()
 {
-  bencode::BDE rDict = bencode::BDE::dict();
-  rDict[DHTMessage::ID] = bencode::BDE(_id, DHT_ID_LENGTH);
+  BDE rDict = BDE::dict();
+  rDict[DHTMessage::ID] = BDE(_id, DHT_ID_LENGTH);
   return rDict;
 }
 

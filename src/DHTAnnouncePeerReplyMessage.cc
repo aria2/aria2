@@ -49,10 +49,10 @@ DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
 
 void DHTAnnouncePeerReplyMessage::doReceivedAction() {}
 
-bencode::BDE DHTAnnouncePeerReplyMessage::getResponse()
+BDE DHTAnnouncePeerReplyMessage::getResponse()
 {
-  bencode::BDE rDict = bencode::BDE::dict();
-  rDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  BDE rDict = BDE::dict();
+  rDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
   return rDict;
 }
 

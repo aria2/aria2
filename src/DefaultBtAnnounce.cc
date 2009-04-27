@@ -204,31 +204,31 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
 					   size_t trackerResponseLength)
 {
   logger->debug("Now processing tracker response.");
-  const bencode::BDE dict =
+  const BDE dict =
     bencode::decode(trackerResponse, trackerResponseLength);
   if(!dict.isDict()) {
     throw DlAbortEx(MSG_NULL_TRACKER_RESPONSE);
   }
-  const bencode::BDE& failure = dict[BtAnnounce::FAILURE_REASON];
+  const BDE& failure = dict[BtAnnounce::FAILURE_REASON];
   if(failure.isString()) {
     throw DlAbortEx
       (StringFormat(EX_TRACKER_FAILURE, failure.s().c_str()).str());
   }
-  const bencode::BDE& warn = dict[BtAnnounce::WARNING_MESSAGE];
+  const BDE& warn = dict[BtAnnounce::WARNING_MESSAGE];
   if(warn.isString()) {
     logger->warn(MSG_TRACKER_WARNING_MESSAGE, warn.s().c_str());
   }
-  const bencode::BDE& tid = dict[BtAnnounce::TRACKER_ID];
+  const BDE& tid = dict[BtAnnounce::TRACKER_ID];
   if(tid.isString()) {
     trackerId = tid.s();
     logger->debug("Tracker ID:%s", trackerId.c_str());
   }
-  const bencode::BDE& ival = dict[BtAnnounce::INTERVAL];
+  const BDE& ival = dict[BtAnnounce::INTERVAL];
   if(ival.isInteger() && ival.i() > 0) {
     interval = ival.i();
     logger->debug("Interval:%d", interval);
   }
-  const bencode::BDE& mival = dict[BtAnnounce::MIN_INTERVAL];
+  const BDE& mival = dict[BtAnnounce::MIN_INTERVAL];
   if(mival.isInteger() && mival.i() > 0) {
     minInterval = mival.i();
     logger->debug("Min interval:%d", minInterval);
@@ -239,17 +239,17 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     // Use interval as a minInterval if minInterval is not supplied.
     minInterval = interval;
   }
-  const bencode::BDE& comp = dict[BtAnnounce::COMPLETE];
+  const BDE& comp = dict[BtAnnounce::COMPLETE];
   if(comp.isInteger()) {
     complete = comp.i();
     logger->debug("Complete:%d", complete);
   }
-  const bencode::BDE& incomp = dict[BtAnnounce::INCOMPLETE];
+  const BDE& incomp = dict[BtAnnounce::INCOMPLETE];
   if(incomp.isInteger()) {
     incomplete = incomp.i();
     logger->debug("Incomplete:%d", incomplete);
   }
-  const bencode::BDE& peerData = dict[BtAnnounce::PEERS];
+  const BDE& peerData = dict[BtAnnounce::PEERS];
   if(peerData.isNone()) {
     logger->info(MSG_NO_PEER_LIST_RECEIVED);
   } else {

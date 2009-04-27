@@ -42,11 +42,11 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 
   DHTGetPeersReplyMessage msg(localNode, remoteNode, token, transactionID);
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["t"] = transactionID;
-  dict["y"] = bencode::BDE("r");
-  bencode::BDE rDict = bencode::BDE::dict();
-  rDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
+  dict["y"] = BDE("r");
+  BDE rDict = BDE::dict();
+  rDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
   rDict["token"] = token;
   dict["r"] = rDict;
   {
@@ -77,12 +77,12 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
   rDict.removeKey("nodes");
   {
     std::deque<SharedHandle<Peer> > peers;
-    bencode::BDE valuesList = bencode::BDE::list();
+    BDE valuesList = BDE::list();
     for(size_t i = 0; i < 4; ++i) {
       SharedHandle<Peer> peer(new Peer("192.168.0."+Util::uitos(i+1), 6881+i));
       unsigned char buffer[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port));
-      valuesList << bencode::BDE(buffer, sizeof(buffer));
+      valuesList << BDE(buffer, sizeof(buffer));
       peers.push_back(peer);
     }
     rDict["values"] = valuesList;

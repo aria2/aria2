@@ -44,7 +44,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AnnounceListTest );
 
 void AnnounceListTest::testSingleElementList() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -90,7 +90,7 @@ void AnnounceListTest::testSingleElementList() {
 
 void AnnounceListTest::testMultiElementList() {
   std::string peersString = "ll8:tracker18:tracker28:tracker3ee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2, tracker3 ] ]
@@ -123,7 +123,7 @@ void AnnounceListTest::testMultiElementList() {
 
 void AnnounceListTest::testSingleAndMulti() {
   std::string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2 ], [ tracker3 ] ]
@@ -149,7 +149,7 @@ void AnnounceListTest::testSingleAndMulti() {
 
 void AnnounceListTest::testNoGroup() {
   std::string peersString = "llee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   AnnounceList announceList(announcesList);
 
@@ -158,7 +158,7 @@ void AnnounceListTest::testNoGroup() {
 
 void AnnounceListTest::testNextEventIfAfterStarted() {
   std::string peersString = "ll8:tracker1ee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ] ]
@@ -178,7 +178,7 @@ void AnnounceListTest::testNextEventIfAfterStarted() {
 
 void AnnounceListTest::testEvent() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -202,7 +202,7 @@ void AnnounceListTest::testEvent() {
 
 void AnnounceListTest::testCountStoppedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -229,7 +229,7 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
 
 void AnnounceListTest::testCountCompletedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const bencode::BDE announcesList = bencode::decode(peersString);
+  const BDE announcesList = bencode::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]

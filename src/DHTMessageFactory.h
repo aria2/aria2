@@ -48,21 +48,19 @@ namespace aria2 {
 class DHTMessage;
 class DHTNode;
 class Peer;
-namespace bencode {
 class BDE;
-} // namespace bencode
 
 class DHTMessageFactory {
 public:
   virtual ~DHTMessageFactory() {}
 
   virtual SharedHandle<DHTMessage>
-  createQueryMessage(const bencode::BDE& dict,
+  createQueryMessage(const BDE& dict,
 		     const std::string& ipaddr, uint16_t port) = 0;
 
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
-			const bencode::BDE& dict,
+			const BDE& dict,
 			const std::string& ipaddr, uint16_t port) = 0;
 
   virtual SharedHandle<DHTMessage>

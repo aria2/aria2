@@ -72,10 +72,10 @@ void DHTGetPeersReplyMessage::doReceivedAction()
   // Returned peers and nodes are handled in DHTPeerLookupTask.
 }
 
-bencode::BDE DHTGetPeersReplyMessage::getResponse()
+BDE DHTGetPeersReplyMessage::getResponse()
 {
-  bencode::BDE rDict = bencode::BDE::dict();
-  rDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
+  BDE rDict = BDE::dict();
+  rDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
   rDict[TOKEN] = _token;
   if(_values.empty()) {
     size_t offset = 0;
@@ -89,15 +89,15 @@ bencode::BDE DHTGetPeersReplyMessage::getResponse()
 	offset += 26;
       }
     }
-    rDict[NODES] = bencode::BDE(buffer, offset);
+    rDict[NODES] = BDE(buffer, offset);
   } else {
-    bencode::BDE valuesList = bencode::BDE::list();
+    BDE valuesList = BDE::list();
     for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin();
 	i != _values.end(); ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
       if(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port)) {
-	valuesList << bencode::BDE(buffer, sizeof(buffer));
+	valuesList << BDE(buffer, sizeof(buffer));
       }
     }
     rDict[VALUES] = valuesList;

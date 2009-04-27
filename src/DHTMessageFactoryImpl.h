@@ -68,9 +68,9 @@ private:
   // search node in routingTable. If it is not found, create new one.
   SharedHandle<DHTNode> getRemoteNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
 
-  void validateID(const bencode::BDE& id) const;
+  void validateID(const BDE& id) const;
 
-  void validatePort(const bencode::BDE& i) const;
+  void validatePort(const BDE& i) const;
 
   std::deque<SharedHandle<DHTNode> > extractNodes(const unsigned char* src, size_t length);
 
@@ -82,12 +82,12 @@ public:
   virtual ~DHTMessageFactoryImpl();
 
   virtual SharedHandle<DHTMessage>
-  createQueryMessage(const bencode::BDE& dict,
+  createQueryMessage(const BDE& dict,
 		     const std::string& ipaddr, uint16_t port);
 
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
-			const bencode::BDE& dict,
+			const BDE& dict,
 			const std::string& ipaddr, uint16_t port);
 
   virtual SharedHandle<DHTMessage>
@@ -106,7 +106,7 @@ public:
 
   SharedHandle<DHTMessage>
   createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			     const bencode::BDE& dict,
+			     const BDE& dict,
 			     const std::string& transactionID);
 
 
@@ -128,7 +128,7 @@ public:
 
   SharedHandle<DHTMessage>
   createGetPeersReplyMessageWithNodes(const SharedHandle<DHTNode>& remoteNode,
-				      const bencode::BDE& dict,
+				      const BDE& dict,
 				      const std::string& transactionID);
 
   virtual SharedHandle<DHTMessage>
@@ -139,7 +139,7 @@ public:
 
   SharedHandle<DHTMessage>
   createGetPeersReplyMessageWithValues(const SharedHandle<DHTNode>& remoteNode,
-				       const bencode::BDE& dict,
+				       const BDE& dict,
 				       const std::string& transactionID);
 
   virtual SharedHandle<DHTMessage>

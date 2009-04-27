@@ -62,7 +62,7 @@ std::string UTPexExtensionMessage::getBencodedData()
   std::pair<std::string, std::string> droppedPeerPair =
     createCompactPeerListAndFlag(_droppedPeers);
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["added"] = freshPeerPair.first;
   dict["added.f"] = freshPeerPair.second;
   dict["dropped"] = droppedPeerPair.first;
@@ -172,14 +172,14 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
 
-  const bencode::BDE dict = bencode::decode(data+1, len-1);
+  const BDE dict = bencode::decode(data+1, len-1);
   if(dict.isDict()) {
     PeerListProcessor proc;
-    const bencode::BDE& added = dict["added"];
+    const BDE& added = dict["added"];
     if(added.isString()) {
       proc.extractPeerFromCompact(added, std::back_inserter(msg->_freshPeers));
     }
-    const bencode::BDE& dropped = dict["dropped"];
+    const BDE& dropped = dict["dropped"];
     if(dropped.isString()) {
       proc.extractPeerFromCompact(dropped,
 				  std::back_inserter(msg->_droppedPeers));

@@ -43,10 +43,7 @@ namespace aria2 {
 
 class Randomizer;
 class Logger;
-
-namespace bencode {
 class BDE;
-}
 
 #define INFO_HASH_LENGTH 20
 #define PIECE_HASH_LENGTH 20
@@ -74,19 +71,19 @@ private:
 
   void clear();
   void extractPieceHash(const std::string& hashData, size_t hashLength);
-  void extractFileEntries(const bencode::BDE& infoDic,
+  void extractFileEntries(const BDE& infoDic,
 			  const std::string& defaultName,
 			  const std::string& overrideName,
 			  const std::deque<std::string>& urlList);
-  void extractAnnounceURI(const bencode::BDE& announceData);
-  void extractAnnounceList(const bencode::BDE& announceListData);
-  void extractAnnounce(const bencode::BDE& rootDict);
+  void extractAnnounceURI(const BDE& announceData);
+  void extractAnnounceList(const BDE& announceListData);
+  void extractAnnounce(const BDE& rootDict);
 
-  void extractUrlList(std::deque<std::string>& uris, const bencode::BDE& obj);
+  void extractUrlList(std::deque<std::string>& uris, const BDE& obj);
 
-  void extractNodes(const bencode::BDE& nodes);
+  void extractNodes(const BDE& nodes);
 
-  void processRootDictionary(const bencode::BDE& rootDic,
+  void processRootDictionary(const BDE& rootDic,
 			     const std::string& defaultName,
 			     const std::string& overrideName);
 

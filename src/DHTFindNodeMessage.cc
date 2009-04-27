@@ -70,11 +70,11 @@ void DHTFindNodeMessage::doReceivedAction()
   _dispatcher->addMessageToQueue(reply);
 }
 
-bencode::BDE DHTFindNodeMessage::getArgument()
+BDE DHTFindNodeMessage::getArgument()
 {
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict[DHTMessage::ID] = bencode::BDE(_localNode->getID(), DHT_ID_LENGTH);
-  aDict[TARGET_NODE] = bencode::BDE(_targetNodeID, DHT_ID_LENGTH);
+  BDE aDict = BDE::dict();
+  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[TARGET_NODE] = BDE(_targetNodeID, DHT_ID_LENGTH);
   return aDict;
 }
 

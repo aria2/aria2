@@ -53,7 +53,7 @@ std::string DHTResponseMessage::getType() const
   return R;
 }
 
-void DHTResponseMessage::fillMessage(bencode::BDE& msgDict)
+void DHTResponseMessage::fillMessage(BDE& msgDict)
 {
   msgDict[R] = getResponse();
 }

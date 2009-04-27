@@ -80,13 +80,13 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   dict["t"] = transactionID;
-  dict["y"] = bencode::BDE("q");
-  dict["q"] = bencode::BDE("get_peers");
-  bencode::BDE aDict = bencode::BDE::dict();
-  aDict["id"] = bencode::BDE(localNode->getID(), DHT_ID_LENGTH);
-  aDict["info_hash"] = bencode::BDE(infoHash, DHT_ID_LENGTH);
+  dict["y"] = BDE("q");
+  dict["q"] = BDE("get_peers");
+  BDE aDict = BDE::dict();
+  aDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
+  aDict["info_hash"] = BDE(infoHash, DHT_ID_LENGTH);
   dict["a"] = aDict;
 
   CPPUNIT_ASSERT_EQUAL(Util::urlencode(bencode::encode(dict)),

@@ -55,14 +55,14 @@ HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
 std::string HandshakeExtensionMessage::getBencodedData()
 {
-  bencode::BDE dict = bencode::BDE::dict();
+  BDE dict = BDE::dict();
   if(!_clientVersion.empty()) {
     dict["v"] = _clientVersion;
   }
   if(_tcpPort > 0) {
     dict["p"] = _tcpPort;
   }
-  bencode::BDE extDict = bencode::BDE::dict();
+  BDE extDict = BDE::dict();
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
@@ -133,21 +133,21 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
 		      Util::urlencode(data, length).c_str());
-  const bencode::BDE dict = bencode::decode(data+1, length-1);
+  const BDE dict = bencode::decode(data+1, length-1);
   if(!dict.isDict()) {
     throw DlAbortEx("Unexpected payload format for extended message handshake");
   }
-  const bencode::BDE& port = dict["p"];
+  const BDE& port = dict["p"];
   if(port.isInteger() && 0 < port.i() && port.i() < 65536) {
     msg->_tcpPort = port.i();
   }
-  const bencode::BDE& version = dict["v"];
+  const BDE& version = dict["v"];
   if(version.isString()) {
     msg->_clientVersion = version.s();
   }
-  const bencode::BDE& extDict = dict["m"];
+  const BDE& extDict = dict["m"];
   if(extDict.isDict()) {
-    for(bencode::BDE::Dict::const_iterator i = extDict.dictBegin();
+    for(BDE::Dict::const_iterator i = extDict.dictBegin();
 	i != extDict.dictEnd(); ++i) {
       if((*i).second.isInteger()) {
 	msg->_extensions[(*i).first] = (*i).second.i();

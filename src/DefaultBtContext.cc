@@ -111,13 +111,13 @@ void DefaultBtContext::extractPieceHash(const std::string& hashData,
   }
 }
 
-void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
+void DefaultBtContext::extractFileEntries(const BDE& infoDict,
 					  const std::string& defaultName,
 					  const std::string& overrideName,
 					  const std::deque<std::string>& urlList)
 {
   if(overrideName.empty()) {
-    const bencode::BDE& nameData = infoDict[BtContext::C_NAME];
+    const BDE& nameData = infoDict[BtContext::C_NAME];
     if(nameData.isString()) {
       name = nameData.s();
     } else {
@@ -126,34 +126,34 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
   } else {
     name = overrideName;
   }
-  const bencode::BDE& filesList = infoDict[BtContext::C_FILES];
+  const BDE& filesList = infoDict[BtContext::C_FILES];
   if(filesList.isList()) {
     uint64_t length = 0;
     off_t offset = 0;
     // multi-file mode
     fileMode = BtContext::MULTI;
-    for(bencode::BDE::List::const_iterator itr = filesList.listBegin();
+    for(BDE::List::const_iterator itr = filesList.listBegin();
 	itr != filesList.listEnd(); ++itr) {
-      const bencode::BDE& fileDict = *itr;
+      const BDE& fileDict = *itr;
       if(!fileDict.isDict()) {
 	continue;
       }
 
-      const bencode::BDE& fileLengthData = fileDict[BtContext::C_LENGTH];
+      const BDE& fileLengthData = fileDict[BtContext::C_LENGTH];
       if(!fileLengthData.isInteger()) {
 	throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
 				     BtContext::C_LENGTH.c_str()).str());
       }
       length += fileLengthData.i();
 
-      const bencode::BDE& pathList = fileDict[BtContext::C_PATH];
+      const BDE& pathList = fileDict[BtContext::C_PATH];
       if(!pathList.isList() || pathList.empty()) {
 	throw DlAbortEx("Path is empty.");
       }
       
       std::vector<std::string> pathelem(pathList.size());
       std::transform(pathList.listBegin(), pathList.listEnd(), pathelem.begin(),
-		     std::mem_fun_ref(&bencode::BDE::s));
+		     std::mem_fun_ref(&BDE::s));
       std::string path =
 	name+"/"+Util::joinPath(pathelem.begin(), pathelem.end());
       // Split path with '/' again because each pathList element can
@@ -174,7 +174,7 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
   } else {
     // single-file mode;
     fileMode = BtContext::SINGLE;
-    const bencode::BDE& lengthData = infoDict[BtContext::C_LENGTH];
+    const BDE& lengthData = infoDict[BtContext::C_LENGTH];
     if(!lengthData.isInteger()) {
 	throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
 				     BtContext::C_LENGTH.c_str()).str());      
@@ -203,7 +203,7 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
   }
 }
 
-void DefaultBtContext::extractAnnounceURI(const bencode::BDE& announceData)
+void DefaultBtContext::extractAnnounceURI(const BDE& announceData)
 {
   // Assumed announceData is string
   std::deque<std::string> urls;
@@ -211,19 +211,19 @@ void DefaultBtContext::extractAnnounceURI(const bencode::BDE& announceData)
   announceTiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
 }
 
-void DefaultBtContext::extractAnnounceList(const bencode::BDE& announceList)
+void DefaultBtContext::extractAnnounceList(const BDE& announceList)
 {
   // Assumed announceList is string
-  for(bencode::BDE::List::const_iterator itr = announceList.listBegin();
+  for(BDE::List::const_iterator itr = announceList.listBegin();
       itr != announceList.listEnd(); ++itr) {
-    const bencode::BDE& elemList = *itr;
+    const BDE& elemList = *itr;
     if(!elemList.isList()) {
       continue;
     }
     std::deque<std::string> urls;
-    for(bencode::BDE::List::const_iterator elemItr = elemList.listBegin();
+    for(BDE::List::const_iterator elemItr = elemList.listBegin();
 	elemItr != elemList.listEnd(); ++elemItr) {
-      const bencode::BDE& url = (*elemItr);
+      const BDE& url = (*elemItr);
       if(url.isString()) {
 	urls.push_back(Util::trim(url.s()));
       }
@@ -235,13 +235,13 @@ void DefaultBtContext::extractAnnounceList(const bencode::BDE& announceList)
   }
 }
 
-void DefaultBtContext::extractAnnounce(const bencode::BDE& rootDict)
+void DefaultBtContext::extractAnnounce(const BDE& rootDict)
 {
-  const bencode::BDE& announceList = rootDict[BtContext::C_ANNOUNCE_LIST];
+  const BDE& announceList = rootDict[BtContext::C_ANNOUNCE_LIST];
   if(announceList.isList()) {
     extractAnnounceList(announceList);
   } else {
-    const bencode::BDE& announce = rootDict[BtContext::C_ANNOUNCE];
+    const BDE& announce = rootDict[BtContext::C_ANNOUNCE];
     if(announce.isString()) {
       extractAnnounceURI(announce);
     }
@@ -249,10 +249,10 @@ void DefaultBtContext::extractAnnounce(const bencode::BDE& rootDict)
 }
 
 void DefaultBtContext::extractUrlList(std::deque<std::string>& uris,
-				      const bencode::BDE& bde)
+				      const BDE& bde)
 {
   if(bde.isList()) {
-    for(bencode::BDE::List::const_iterator itr = bde.listBegin();
+    for(BDE::List::const_iterator itr = bde.listBegin();
 	itr != bde.listEnd(); ++itr) {
       if((*itr).isString()) {
 	uris.push_back((*itr).s());
@@ -263,25 +263,25 @@ void DefaultBtContext::extractUrlList(std::deque<std::string>& uris,
   }
 }
 
-void DefaultBtContext::extractNodes(const bencode::BDE& nodesList)
+void DefaultBtContext::extractNodes(const BDE& nodesList)
 {
   if(!nodesList.isList()) {
     return;
   }
-  for(bencode::BDE::List::const_iterator i = nodesList.listBegin();
+  for(BDE::List::const_iterator i = nodesList.listBegin();
       i != nodesList.listEnd(); ++i) {
-    const bencode::BDE& addrPairList = (*i);
+    const BDE& addrPairList = (*i);
     if(!addrPairList.isList() || addrPairList.size() != 2) {
       continue;
     }
-    const bencode::BDE& hostname = addrPairList[0];
+    const BDE& hostname = addrPairList[0];
     if(!hostname.isString()) {
       continue;
     }
     if(Util::trim(hostname.s()).empty()) {
       continue;
     }
-    const bencode::BDE& port = addrPairList[1];
+    const BDE& port = addrPairList[1];
     if(!port.isInteger() || !(0 < port.i() && port.i() < 65536)) {
       continue;
     }
@@ -304,7 +304,7 @@ void DefaultBtContext::load(const std::string& torrentFile,
 			overrideName);
 }
 
-void DefaultBtContext::processRootDictionary(const bencode::BDE& rootDict,
+void DefaultBtContext::processRootDictionary(const BDE& rootDict,
 					     const std::string& defaultName,
 					     const std::string& overrideName)
 {
@@ -312,7 +312,7 @@ void DefaultBtContext::processRootDictionary(const bencode::BDE& rootDict,
   if(!rootDict.isDict()) {
     throw DlAbortEx("torrent file does not contain a root dictionary.");
   }
-  const bencode::BDE& infoDict = rootDict[BtContext::C_INFO];
+  const BDE& infoDict = rootDict[BtContext::C_INFO];
   if(!infoDict.isDict()) {
     throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
 				 BtContext::C_INFO.c_str()).str());
@@ -325,7 +325,7 @@ void DefaultBtContext::processRootDictionary(const bencode::BDE& rootDict,
 			      encodedInfoDict.size());
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces
-  const bencode::BDE& piecesData = infoDict[BtContext::C_PIECES];
+  const BDE& piecesData = infoDict[BtContext::C_PIECES];
   if(!piecesData.isString()) {
     throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
 				 BtContext::C_PIECES.c_str()).str());
@@ -338,7 +338,7 @@ void DefaultBtContext::processRootDictionary(const bencode::BDE& rootDict,
     throw DlAbortEx("The number of pieces is 0.");
   }
   // retrieve piece length
-  const bencode::BDE& pieceLengthData = infoDict[BtContext::C_PIECE_LENGTH];
+  const BDE& pieceLengthData = infoDict[BtContext::C_PIECE_LENGTH];
   if(!pieceLengthData.isInteger()) {
     throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
 				 BtContext::C_PIECE_LENGTH.c_str()).str());
@@ -347,7 +347,7 @@ void DefaultBtContext::processRootDictionary(const bencode::BDE& rootDict,
   // retrieve piece hashes
   extractPieceHash(piecesData.s(), PIECE_HASH_LENGTH);
   // private flag
-  const bencode::BDE& privateData = infoDict[BtContext::C_PRIVATE];
+  const BDE& privateData = infoDict[BtContext::C_PRIVATE];
   if(privateData.isInteger()) {
     _private = (privateData.i() == 1);
   }
