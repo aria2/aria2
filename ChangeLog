@@ -1,5 +1,11 @@
 2009-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added missing file.
+	* test/Makefile.am
+	* test/url-list-singleFileEndsWithSlash.torrent
+
+2009-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Put BDE in aria2 namespace. BDE will also be used to store xml-rpc
 	request.
 	* src/AnnounceList.cc
