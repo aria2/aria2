@@ -183,9 +183,22 @@ void DefaultBtContext::extractFileEntries(const bencode::BDE& infoDict,
     // Slice path by '/' just in case nasty ".." is included in name
     std::deque<std::string> pathelems;
     Util::slice(pathelems, name, '/');
+
+    // For each uri in urlList, if it ends with '/', then
+    // concatenate name to it. Specification just says so.
+    std::deque<std::string> uris;
+    for(std::deque<std::string>::const_iterator i = urlList.begin();
+	i != urlList.end(); ++i) {
+      if(Util::endsWith(*i, "/")) {
+	uris.push_back((*i)+name);
+      } else {
+	uris.push_back(*i);
+      }
+    }
+
     SharedHandle<FileEntry> fileEntry
       (new FileEntry(_dir+"/"+Util::joinPath(pathelems.begin(),pathelems.end()),
-		     totalLength, 0, urlList));
+		     totalLength, 0, uris));
     fileEntries.push_back(fileEntry);
   }
 }

@@ -1,3 +1,12 @@
+2009-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use url-list (web-seeding) only for single-file torrent.  This is
+	basically the same behavior with Metalink file with torrent and
+	URIs.
+	* src/RequestGroup.cc
+	* src/DefaultBtContext.cc
+	* test/DefaultBtContextTest.cc
+
 2009-04-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten expr

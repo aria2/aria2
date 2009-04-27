@@ -226,6 +226,12 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	_uris.clear();
 
 	_pieceStorage->setFileFilter(btContext->getFileFilter());
+      } else if(btContext->getFileEntries().size() == 1) {
+	// web-seeding is only enabled for single file torrent
+	SharedHandle<FileEntry> fileEntry = btContext->getFileEntries().front();
+	_uris.insert(_uris.end(),
+		     fileEntry->getAssociatedUris().begin(),
+		     fileEntry->getAssociatedUris().end());
       }
       
       SharedHandle<DefaultBtProgressInfoFile>

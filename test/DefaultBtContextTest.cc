@@ -36,6 +36,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testComputeFastSet);
   CPPUNIT_TEST(testGetFileEntries_multiFileUrlList);
   CPPUNIT_TEST(testGetFileEntries_singleFileUrlList);
+  CPPUNIT_TEST(testGetFileEntries_singleFileUrlListEndsWithSlash);
   CPPUNIT_TEST(testLoadFromMemory);
   CPPUNIT_TEST(testLoadFromMemory_somethingMissing);
   CPPUNIT_TEST(testLoadFromMemory_overrideName);
@@ -66,6 +67,7 @@ public:
   void testComputeFastSet();
   void testGetFileEntries_multiFileUrlList();
   void testGetFileEntries_singleFileUrlList();
+  void testGetFileEntries_singleFileUrlListEndsWithSlash();
   void testLoadFromMemory();
   void testLoadFromMemory_somethingMissing();
   void testLoadFromMemory_overrideName();
@@ -317,7 +319,24 @@ void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {
 void DefaultBtContextTest::testGetFileEntries_singleFileUrlList() {
   DefaultBtContext btContext;
   btContext.load("url-list-singleFile.torrent");
-  // This is multi-file torrent.
+  // This is single-file torrent.
+  std::deque<SharedHandle<FileEntry> > fileEntries = btContext.getFileEntries();
+  // There are 1 file entries.
+  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
+
+  SharedHandle<FileEntry> fileEntry1 = fileEntries.front();
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2.tar.bz2"),
+		       fileEntry1->getPath());
+  std::deque<std::string> uris1 = fileEntry1->getAssociatedUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)1, uris1.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2.tar.bz2"),
+		       uris1[0]);
+}
+
+void DefaultBtContextTest::testGetFileEntries_singleFileUrlListEndsWithSlash() {
+  DefaultBtContext btContext;
+  btContext.load("url-list-singleFileEndsWithSlash.torrent");
+  // This is single-file torrent.
   std::deque<SharedHandle<FileEntry> > fileEntries = btContext.getFileEntries();
   // There are 1 file entries.
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
