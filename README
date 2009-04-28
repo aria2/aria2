@@ -42,6 +42,10 @@ Here is a list of features.
 * FTP through HTTP Proxy
 * Download/Upload speed throttling
 * BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
+* BitTorrent http://getright.com/seedtorrent.html[WEB-Seeding]
+  (single-file torrent only)
+* Rename/change the directory structure of BitTorrent downloads
+  completely
 * Run as a daemon process
 * Selective download in multi-file torrent/Metalink
 * Chunk checksum validation in Metalink
