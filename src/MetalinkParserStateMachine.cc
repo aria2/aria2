@@ -159,15 +159,15 @@ void MetalinkParserStateMachine::setFinState()
   _state = _finState;
 }
 
-void MetalinkParserStateMachine::setSkipTagState(MetalinkParserState* prevSate)
+void MetalinkParserStateMachine::setSkipTagState(MetalinkParserState* prevState)
 {
-  _skipTagState = new SkipTagMetalinkParserState(prevSate);
+  _skipTagState = new SkipTagMetalinkParserState(prevState);
   _state = _skipTagState;
 }
 
 void MetalinkParserStateMachine::restoreSavedState()
 {
-  _state = ((SkipTagMetalinkParserState*)_state)->getPreviousState();
+  _state = _skipTagState->getPreviousState();
   delete _skipTagState;
   _skipTagState = 0;
 }

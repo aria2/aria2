@@ -1,5 +1,11 @@
 2009-04-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+
+2009-04-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed MetalinkProcessorFactory. Since we don't use both libxml2
 	and expat simultaneously, MetalinkProcessor is now not base class
 	and it is directly implemented in XML2SAXMetalinkProcessor and

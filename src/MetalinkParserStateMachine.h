@@ -106,7 +106,7 @@ public:
 
   void setFinState();
 
-  void setSkipTagState(MetalinkParserState* prevSate);
+  void setSkipTagState(MetalinkParserState* prevState);
 
   void restoreSavedState();
   
