@@ -35,11 +35,9 @@
 #include "MetalinkHelper.h"
 #include "Option.h"
 #include "MetalinkEntry.h"
-#include "MetalinkProcessorFactory.h"
 #include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
 #include "MetalinkProcessor.h"
-#include "MetalinkProcessorFactory.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "BinaryStream.h"
@@ -54,9 +52,8 @@ void MetalinkHelper::parseAndQuery
 (std::deque<SharedHandle<MetalinkEntry> >& result,
  const std::string& filename, const Option* option)
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-
-  SharedHandle<Metalinker> metalinker = proc->parseFile(filename);
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> metalinker = proc.parseFile(filename);
   query(result, metalinker, option);
 }
 
@@ -64,9 +61,8 @@ void MetalinkHelper::parseAndQuery
 (std::deque<SharedHandle<MetalinkEntry> >& result,
  const SharedHandle<BinaryStream>& binaryStream, const Option* option)
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-
-  SharedHandle<Metalinker> metalinker = proc->parseFromBinaryStream(binaryStream);
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> metalinker =proc.parseFromBinaryStream(binaryStream);
   query(result, metalinker, option);
 }
 

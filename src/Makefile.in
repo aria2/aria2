@@ -217,7 +217,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
-@ENABLE_METALINK_TRUE@	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h\
 @ENABLE_METALINK_TRUE@	MetalinkParserController.cc MetalinkParserController.h\
 @ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
 @ENABLE_METALINK_TRUE@	MetalinkParserState.h\
@@ -535,7 +534,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	IndexBtMessageValidator.h ExtensionMessageRegistry.h \
 	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
-	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \
 	MetalinkParserState.h InitialMetalinkParserState.cc \
@@ -691,7 +689,6 @@ am__objects_3 =
 @ENABLE_METALINK_TRUE@am__objects_11 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
-@ENABLE_METALINK_TRUE@	MetalinkProcessorFactory.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserController.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	InitialMetalinkParserState.$(OBJEXT) \
@@ -1438,7 +1435,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserController.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserStateMachine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkPostDownloadHandler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkProcessorFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@

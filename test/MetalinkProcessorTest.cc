@@ -1,4 +1,4 @@
-#include "MetalinkProcessorFactory.h"
+#include "MetalinkProcessor.h"
 
 #include <iostream>
 
@@ -8,7 +8,6 @@
 #include "Exception.h"
 #include "DefaultDiskWriter.h"
 #include "ByteArrayDiskWriter.h"
-#include "MetalinkProcessor.h"
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
@@ -68,9 +67,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkProcessorTest );
 
 void MetalinkProcessorTest::testParseFile()
 {
-  SharedHandle<MetalinkProcessor> proc(MetalinkProcessorFactory::newInstance());
+  MetalinkProcessor proc;
   try {
-    SharedHandle<Metalinker> metalinker = proc->parseFile("test.xml");
+    SharedHandle<Metalinker> metalinker = proc.parseFile("test.xml");
 
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = metalinker->entries.begin();
 
@@ -175,12 +174,12 @@ void MetalinkProcessorTest::testParseFile()
 
 void MetalinkProcessorTest::testParseFromBinaryStream()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   DefaultDiskWriterHandle dw(new DefaultDiskWriter());
   dw->openExistingFile("test.xml");
   
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
 
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> entry1 = *entryItr;
@@ -192,12 +191,12 @@ void MetalinkProcessorTest::testParseFromBinaryStream()
 
 void MetalinkProcessorTest::testMalformedXML()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink><files></file></metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -206,12 +205,12 @@ void MetalinkProcessorTest::testMalformedXML()
 
 void MetalinkProcessorTest::testMalformedXML2()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink><files></files>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -220,7 +219,7 @@ void MetalinkProcessorTest::testMalformedXML2()
 
 void MetalinkProcessorTest::testBadSize()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -234,7 +233,7 @@ void MetalinkProcessorTest::testBadSize()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
 
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
@@ -251,7 +250,7 @@ void MetalinkProcessorTest::testBadSize()
 
 void MetalinkProcessorTest::testBadMaxConn()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -266,7 +265,7 @@ void MetalinkProcessorTest::testBadMaxConn()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
 
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
@@ -278,7 +277,7 @@ void MetalinkProcessorTest::testBadMaxConn()
 
 void MetalinkProcessorTest::testNoName()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -298,7 +297,7 @@ void MetalinkProcessorTest::testNoName()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
@@ -310,7 +309,7 @@ void MetalinkProcessorTest::testNoName()
 
 void MetalinkProcessorTest::testBadURLPrefs()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -327,7 +326,7 @@ void MetalinkProcessorTest::testBadURLPrefs()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
@@ -341,7 +340,7 @@ void MetalinkProcessorTest::testBadURLPrefs()
 
 void MetalinkProcessorTest::testBadURLMaxConn()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -358,7 +357,7 @@ void MetalinkProcessorTest::testBadURLMaxConn()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
@@ -373,7 +372,7 @@ void MetalinkProcessorTest::testBadURLMaxConn()
 #ifdef ENABLE_MESSAGE_DIGEST
 void MetalinkProcessorTest::testUnsupportedType()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -392,7 +391,7 @@ void MetalinkProcessorTest::testUnsupportedType()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->resources.size());
     SharedHandle<MetalinkResource> r1 = e->resources[0];
@@ -408,7 +407,7 @@ void MetalinkProcessorTest::testUnsupportedType()
 
 void MetalinkProcessorTest::testMultiplePieces()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -425,7 +424,7 @@ void MetalinkProcessorTest::testMultiplePieces()
 
   try {
     // aria2 prefers sha1
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
@@ -438,7 +437,7 @@ void MetalinkProcessorTest::testMultiplePieces()
 
 void MetalinkProcessorTest::testBadPieceNo()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -457,7 +456,7 @@ void MetalinkProcessorTest::testBadPieceNo()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
 
@@ -471,7 +470,7 @@ void MetalinkProcessorTest::testBadPieceNo()
 
 void MetalinkProcessorTest::testBadPieceLength()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -489,7 +488,7 @@ void MetalinkProcessorTest::testBadPieceLength()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
      SharedHandle<MetalinkEntry> e = m->entries[0];
      SharedHandle<ChunkChecksum> c = e->chunkChecksum;
@@ -503,7 +502,7 @@ void MetalinkProcessorTest::testBadPieceLength()
 
 void MetalinkProcessorTest::testUnsupportedType_piece()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -521,7 +520,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
@@ -536,7 +535,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
 
 void MetalinkProcessorTest::testLargeFileSize()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
@@ -550,7 +549,7 @@ void MetalinkProcessorTest::testLargeFileSize()
 		"</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, e->getLength());
   } catch(Exception& e) {

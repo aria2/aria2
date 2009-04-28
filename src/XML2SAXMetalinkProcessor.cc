@@ -128,10 +128,8 @@ static xmlSAXHandler mySAXHandler =
   0, //   xmlStructuredErrorFunc
 };
 
-XML2SAXMetalinkProcessor::XML2SAXMetalinkProcessor() {}
-
 SharedHandle<Metalinker>
-XML2SAXMetalinkProcessor::parseFile(const std::string& filename)
+MetalinkProcessor::parseFile(const std::string& filename)
 {
   _stm.reset(new MetalinkParserStateMachine());
   SharedHandle<SessionData> sessionData(new SessionData(_stm));
@@ -144,7 +142,7 @@ XML2SAXMetalinkProcessor::parseFile(const std::string& filename)
 }
 	 
 SharedHandle<Metalinker>
-XML2SAXMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
+MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
   _stm.reset(new MetalinkParserStateMachine());
   size_t bufSize = 4096;

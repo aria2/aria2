@@ -93,10 +93,8 @@ static void mlCharacters(void* userData, const char* ch, int len)
   }
 }
 
-ExpatMetalinkProcessor::ExpatMetalinkProcessor() {}
-	 
 SharedHandle<Metalinker>
-ExpatMetalinkProcessor::parseFile(const std::string& filename)
+MetalinkProcessor::parseFile(const std::string& filename)
 {
   SharedHandle<DefaultDiskWriter> dw(new DefaultDiskWriter());
   dw->openExistingFile(filename);
@@ -105,7 +103,7 @@ ExpatMetalinkProcessor::parseFile(const std::string& filename)
 }
 	 
 SharedHandle<Metalinker>
-ExpatMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
+MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
   _stm.reset(new MetalinkParserStateMachine());
   ssize_t bufSize = 4096;

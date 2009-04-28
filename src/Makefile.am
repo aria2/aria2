@@ -419,7 +419,6 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
-	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h\
 	MetalinkParserController.cc MetalinkParserController.h\
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
 	MetalinkParserState.h\

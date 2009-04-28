@@ -36,23 +36,11 @@
 #define _D_METALINK_PROCESSOR_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include <string>
 
-namespace aria2 {
-
-class Metalinker;
-class BinaryStream;
-
-class MetalinkProcessor {
-public:
-  virtual ~MetalinkProcessor() {}
-
-  virtual SharedHandle<Metalinker> parseFile(const std::string& filename) = 0;
-
-  virtual SharedHandle<Metalinker> parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream) = 0;
-};
-
-} // namespace aria2
+#ifdef HAVE_LIBXML2
+# include "XML2SAXMetalinkProcessor.h"
+#elif HAVE_LIBEXPAT
+# include "ExpatMetalinkProcessor.h"
+#endif
 
 #endif // _D_METALINK_PROCESSOR_H_

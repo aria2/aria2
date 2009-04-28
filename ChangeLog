@@ -1,3 +1,20 @@
+2009-04-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed MetalinkProcessorFactory. Since we don't use both libxml2
+	and expat simultaneously, MetalinkProcessor is now not base class
+	and it is directly implemented in XML2SAXMetalinkProcessor and
+	ExpatMetalinkProcessor.	
+	* src/ExpatMetalinkProcessor.cc
+	* src/ExpatMetalinkProcessor.h
+	* src/Makefile.am
+	* src/MetalinkHelper.cc
+	* src/MetalinkProcessor.h
+	* src/MetalinkProcessorFactory.cc: Removed.
+	* src/MetalinkProcessorFactory.h: Removed
+	* src/XML2SAXMetalinkProcessor.cc
+	* src/XML2SAXMetalinkProcessor.h
+	* test/MetalinkProcessorTest.cc
+
 2009-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Bump up version number to 1.3.2
