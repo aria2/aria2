@@ -1,3 +1,49 @@
+aria2 1.3.2
+===========
+
+Release Note
+------------
+
+This release fixes the bug that prevents certain BitTorrent downloads
+from finishing and possible segmentation fault when gzip decoding is
+involved and infinite loop bug if last "0" chunk-size marker is not
+received in chunked encoding transfer. aria2 now supports
+WEB-Seeding(HTTP-Seeding) for single file torrent.  Ukrainian
+translation was updated.
+
+Changes
+-------
+
+ * Updated Ukrainian translation.
+
+ * Use url-list (web-seeding) only for single-file torrent.  This is
+   basically the same behavior with Metalink file with torrent and
+   URIs.
+
+ * Fixed the bug that prevents torrent download from finishing.  The
+   bug doesn't reveal for all torrents. The torrents affected this bug
+   satisfies ((N+7)/8)%4 == 0 and N%32 != 0 where N is the number of
+   pieces.
+
+ * Fixed segmentation fault when GZipDecoder::decode() returns 0 byte.
+
+ * Fixed the bug that causes infinite loop if broken web server
+   returns chunked response without last "0" chunk-size marker and
+   closes connection.
+
+ * Instantiate properly configured HttpDownloadCommand for
+   non-resumable downloads.
+
+ * Rewritten bitfield operation functions for efficiently.
+
+ * Set conditional HAVE_GETADDRINFO true for mingw32. It was
+   accidentally set to false in r1162.
+
+ * Increase prefixLength for the bucket which doesn't own local node
+   ID when splitting bucket.
+
+
+
 aria2 1.3.1
 ===========
 
