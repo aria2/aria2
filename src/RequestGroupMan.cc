@@ -286,7 +286,7 @@ void RequestGroupMan::configureRequestGroup
   } else if(uriSelectorValue == V_ADAPTIVE) {
     requestGroup->setURISelector
       (SharedHandle<URISelector>(new AdaptiveURISelector(_serverStatMan,
-							 requestGroup)));
+							 requestGroup.get())));
   }
 }
 

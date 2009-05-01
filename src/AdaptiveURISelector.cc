@@ -61,8 +61,7 @@ namespace aria2 {
  */
 
 AdaptiveURISelector::AdaptiveURISelector
-(const SharedHandle<ServerStatMan>& serverStatMan, 
- const SharedHandle<RequestGroup>& requestGroup):
+(const SharedHandle<ServerStatMan>& serverStatMan, RequestGroup* requestGroup):
   _serverStatMan(serverStatMan),
   _requestGroup(requestGroup),
   _nbConnections(1),

@@ -48,7 +48,8 @@ class Logger;
 class AdaptiveURISelector:public URISelector {
 private:
   SharedHandle<ServerStatMan> _serverStatMan;
-  SharedHandle<RequestGroup> _requestGroup;
+  // No need to delete _requestGroup
+  RequestGroup* _requestGroup;
   unsigned int _nbServerToEvaluate;
   unsigned int _nbConnections;
 
@@ -73,7 +74,7 @@ private:
   std::string getBestMirror(const std::deque<std::string>& uris) const;
 public:
   AdaptiveURISelector(const SharedHandle<ServerStatMan>& serverStatMan, 
-          const SharedHandle<RequestGroup>& requestGroup);
+		      RequestGroup* requestGroup);
 
   virtual ~AdaptiveURISelector();
 
