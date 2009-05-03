@@ -116,8 +116,11 @@ bool DiskWriterEntry::fileExists()
 
 uint64_t DiskWriterEntry::size() const
 {
-  assert(!diskWriter.isNull());
-  return diskWriter->size();
+  if(diskWriter.isNull()) {
+    return File(getFilePath()).size();
+  } else {
+    return diskWriter->size();
+  }
 }
 
 SharedHandle<FileEntry> DiskWriterEntry::getFileEntry() const

@@ -1,3 +1,9 @@
+2009-05-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that aria2 aborts when --select-file is used.  This
+	bug was introduced in r1199.
+	* src/MultiDiskAdaptor.cc
+	
 2009-05-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code cleanup
