@@ -15,6 +15,7 @@ class IteratableChunkChecksumValidatorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(IteratableChunkChecksumValidatorTest);
   CPPUNIT_TEST(testValidate);
+  CPPUNIT_TEST(testValidate_readError);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -24,6 +25,7 @@ public:
   }
 
   void testValidate();
+  void testValidate_readError();
 };
 
 
@@ -68,6 +70,36 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   CPPUNIT_ASSERT(ps->hasPiece(0));
   CPPUNIT_ASSERT(!ps->hasPiece(1));
   CPPUNIT_ASSERT(ps->hasPiece(2));
+}
+
+void IteratableChunkChecksumValidatorTest::testValidate_readError() {
+  Option option;
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(100, 500, "chunkChecksumTestFile250.txt"));
+  std::deque<std::string> hashes(&csArray[0], &csArray[3]);
+  hashes.push_back("ffffffffffffffffffffffffffffffffffffffff");
+  hashes.push_back("ffffffffffffffffffffffffffffffffffffffff");
+  dctx->setPieceHashes(hashes);
+  dctx->setPieceHashAlgo("sha1");
+  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
+  ps->initStorage();
+  ps->getDiskAdaptor()->openFile();
+
+  IteratableChunkChecksumValidator validator(dctx, ps);
+  validator.init();
+
+  while(!validator.finished()) {
+    validator.validateChunk();
+  }
+
+  CPPUNIT_ASSERT(ps->hasPiece(0));
+  CPPUNIT_ASSERT(ps->hasPiece(1));
+  CPPUNIT_ASSERT(!ps->hasPiece(2)); // #2 piece is not valid because
+				    // #program expects its size is
+				    // #100, but it reads only 50
+				    // #bytes and raises error.
+  CPPUNIT_ASSERT(!ps->hasPiece(3));
+  CPPUNIT_ASSERT(!ps->hasPiece(4));
 }
 
 } // namespace aria2

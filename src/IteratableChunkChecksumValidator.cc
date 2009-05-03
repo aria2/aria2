@@ -83,23 +83,22 @@ void IteratableChunkChecksumValidator::validateChunk()
     std::string actualChecksum;
     try {
       actualChecksum = calculateActualChecksum();
+      if(actualChecksum == _dctx->getPieceHashes()[_currentIndex]) {
+	_bitfield->setBit(_currentIndex);
+      } else {
+	_logger->info(EX_INVALID_CHUNK_CHECKSUM,
+		      _currentIndex,
+		      Util::itos(getCurrentOffset(), true).c_str(),
+		      _dctx->getPieceHashes()[_currentIndex].c_str(),
+		      actualChecksum.c_str());
+	_bitfield->unsetBit(_currentIndex);
+      }
     } catch(RecoverableException& ex) {
       _logger->debug("Caught exception while validating piece index=%d. Some part of file may be missing. Continue operation.", ex, _currentIndex);
       _bitfield->unsetBit(_currentIndex);
-      _currentIndex++;
-      return;
     }
-    if(actualChecksum == _dctx->getPieceHashes()[_currentIndex]) {
-      _bitfield->setBit(_currentIndex);
-    } else {
-      _logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		    _currentIndex,
-		    Util::itos(getCurrentOffset(), true).c_str(),
-		    _dctx->getPieceHashes()[_currentIndex].c_str(),
-		    actualChecksum.c_str());
-      _bitfield->unsetBit(_currentIndex);
-    }
-    _currentIndex++;
+
+    ++_currentIndex;
     if(finished()) {
       _pieceStorage->setBitfield(_bitfield->getBitfield(), _bitfield->getBitfieldLength());
     }
@@ -152,7 +151,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
   while(curoffset < max) {
     size_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
 							 curoffset);
-    if(r == 0) {
+    if(r == 0 || r < static_cast<size_t>(woffset)) {
       throw DlAbortEx
 	(StringFormat(EX_FILE_READ, _dctx->getActualBasePath().c_str(),
 		      strerror(errno)).str());

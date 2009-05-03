@@ -1,3 +1,13 @@
+2009-05-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that with --check-integrity option aria2 reports
+	downloaded file size is 0 even if some parts of file is correctly
+	downloaded.  This bug is reproducible for the download that a file
+	includes last piece is missing. This bug doesn't reveal for
+	single-torrent with file allocation on.
+	* src/IteratableChecksumValidator.cc
+	* test/IteratableChecksumValidatorTest.cc
+
 2009-05-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Avoid circular reference between RequestGroup and AdaptiveURISelector
