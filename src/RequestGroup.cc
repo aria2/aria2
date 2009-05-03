@@ -311,7 +311,20 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	}
       }
       _progressInfoFile = progressInfoFile;
-
+      {
+	uint64_t actualFileSize = _pieceStorage->getDiskAdaptor()->size();
+	if(actualFileSize != btContext->getTotalLength()) {
+	  // Re-open file in writable mode to allow the program
+	  // truncate the file to the specified length
+	  _logger->debug("File size not match. Re-open file in writable mode."
+			 " Expected:%s Actual:%s",
+			 Util::uitos(btContext->getTotalLength()).c_str(),
+			 Util::uitos(actualFileSize).c_str());
+	  _pieceStorage->getDiskAdaptor()->closeFile();
+	  _pieceStorage->getDiskAdaptor()->disableReadOnly();
+	  _pieceStorage->getDiskAdaptor()->openFile();
+	}
+      }
       if(!btContext->isPrivate() && _option->getAsBool(PREF_ENABLE_DHT)) {
 	std::deque<Command*> commands;
 	DHTSetup().setup(commands, e, _option);
@@ -371,7 +384,7 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
   if(e->option->getAsBool(PREF_CHECK_INTEGRITY) &&
      entry->isValidationReady()) {
     entry->initValidator();
-    entry->cutTrailingGarbage();    
+    entry->cutTrailingGarbage();
     e->_checkIntegrityMan->pushEntry(entry);
   } else
 #endif // ENABLE_MESSAGE_DIGEST

@@ -46,6 +46,7 @@ class AbstractSingleDiskAdaptor : public DiskAdaptor {
 protected:
   SharedHandle<DiskWriter> diskWriter;
   uint64_t totalLength;
+  bool _readOnly;
 public:
   AbstractSingleDiskAdaptor();
 
@@ -84,6 +85,8 @@ public:
   // Make sure that DiskWriter is set before calling this function.
   virtual void disableReadOnly();
     
+  virtual bool isReadOnlyEnabled() const { return _readOnly; }
+  
   virtual void cutTrailingGarbage();
 
   virtual std::string getFilePath() = 0;

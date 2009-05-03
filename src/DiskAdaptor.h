@@ -100,6 +100,8 @@ public:
 
   virtual void disableReadOnly() {}
 
+  virtual bool isReadOnlyEnabled() const { return false; }
+
   // Assumed each file length is stored in fileEntries or DiskAdaptor knows it.
   // If each actual file's length is larger than that, truncate file to that
   // length.

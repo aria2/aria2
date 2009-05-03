@@ -51,11 +51,14 @@ BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
 						 DownloadEngine* e)
 {
-  // Now reopen DiskAdaptor with read only disabled.
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableReadOnly();
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
-
+  const SharedHandle<DiskAdaptor>& diskAdaptor =
+    _requestGroup->getPieceStorage()->getDiskAdaptor();
+  if(diskAdaptor->isReadOnlyEnabled()) {
+    // Now reopen DiskAdaptor with read only disabled.
+    diskAdaptor->closeFile();
+    diskAdaptor->disableReadOnly();
+    diskAdaptor->openFile();
+  }
   SharedHandle<BtFileAllocationEntry> entry
     (new BtFileAllocationEntry(_requestGroup));
   proceedFileAllocation(commands, entry, e);

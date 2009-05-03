@@ -42,7 +42,8 @@
 
 namespace aria2 {
 
-AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor():totalLength(0) {}
+AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor():
+  totalLength(0), _readOnly(false) {}
 
 AbstractSingleDiskAdaptor::~AbstractSingleDiskAdaptor() {}
 
@@ -126,11 +127,13 @@ bool AbstractSingleDiskAdaptor::directIOAllowed() const
 void AbstractSingleDiskAdaptor::enableReadOnly()
 {
   diskWriter->enableReadOnly();
+  _readOnly = true;
 }
 
 void AbstractSingleDiskAdaptor::disableReadOnly()
 {
   diskWriter->disableReadOnly();
+  _readOnly = false;
 }
 
 void AbstractSingleDiskAdaptor::cutTrailingGarbage()

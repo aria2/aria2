@@ -155,6 +155,8 @@ public:
 
   virtual void disableReadOnly();
 
+  virtual bool isReadOnlyEnabled() const { return _readOnly; }
+
   void setPieceLength(size_t pieceLength) {
     this->pieceLength = pieceLength;
   }

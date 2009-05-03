@@ -1,5 +1,18 @@
 2009-05-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that read-only file with wrong file size will cause
+	error because it cannot be truncated to the correct size.  Now if
+	file size is different than the expected one, re-open file in
+	writable mode.
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/AbstractSingleDiskAdaptor.h
+	* src/BtCheckIntegrityEntry.cc
+	* src/DiskAdaptor.h
+	* src/MultiDiskAdaptor.h
+	* src/RequestGroup.cc
+
+2009-05-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that with --check-integrity option aria2 reports
 	downloaded file size is 0 even if some parts of file is correctly
 	downloaded.  This bug is reproducible for the download that a file
