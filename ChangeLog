@@ -1,5 +1,10 @@
 2009-05-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* test/MockPieceStorage.cc
+
+2009-05-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that read-only file with wrong file size will cause
 	error because it cannot be truncated to the correct size.  Now if
 	file size is different than the expected one, re-open file in

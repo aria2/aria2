@@ -181,7 +181,7 @@ public:
     return diskAdaptor;
   }
 
-  void setDiskAdaptor(const SharedHandle<DiskAdaptor> adaptor) {
+  void setDiskAdaptor(const SharedHandle<DiskAdaptor>& adaptor) {
     this->diskAdaptor = adaptor;
   }
   
