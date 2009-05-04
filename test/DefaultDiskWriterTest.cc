@@ -22,8 +22,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DefaultDiskWriterTest );
 
 void DefaultDiskWriterTest::testSize()
 {
-  DefaultDiskWriter dw;
-  dw.openExistingFile("4096chunk.txt");
+  DefaultDiskWriter dw("4096chunk.txt");
+  dw.openExistingFile();
   CPPUNIT_ASSERT_EQUAL((uint64_t)4096ULL, dw.size());
 }
 

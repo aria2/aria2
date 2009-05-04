@@ -638,7 +638,7 @@ void UtilTest::testToString_binaryStream()
 {
   SharedHandle<DiskWriter> dw(new ByteArrayDiskWriter());
   std::string data(16*1024+256, 'a');
-  dw->initAndOpenFile("dummy");
+  dw->initAndOpenFile();
   dw->writeData((const unsigned char*)data.c_str(), data.size(), 0);
 
   std::string readData = Util::toString(dw);

@@ -34,12 +34,12 @@ void SingleFileAllocationIteratorTest::testAllocate()
   File x(fn);
   CPPUNIT_ASSERT_EQUAL((uint64_t)10, x.size());
 
-  DefaultDiskWriter writer;
+  DefaultDiskWriter writer(fn);
   int64_t offset = 10;
   int64_t totalLength = 16*1024*2+8*1024;
 
   // we have to open file first.
-  writer.openExistingFile(fn);
+  writer.openExistingFile();
   SingleFileAllocationIterator itr(&writer, offset, totalLength);
   itr.init();
 

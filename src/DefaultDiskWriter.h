@@ -41,11 +41,11 @@ namespace aria2 {
 
 class DefaultDiskWriter:public AbstractDiskWriter {
 public:
-  DefaultDiskWriter();
+  DefaultDiskWriter(const std::string& filename);
 
   virtual ~DefaultDiskWriter();
 
-  virtual void initAndOpenFile(const std::string& filename, uint64_t totalLength = 0);
+  virtual void initAndOpenFile(uint64_t totalLength = 0);
 };
 
 typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;

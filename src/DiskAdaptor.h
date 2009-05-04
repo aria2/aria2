@@ -48,7 +48,6 @@ class FileAllocationIterator;
 
 class DiskAdaptor:public BinaryStream {
 protected:
-  std::string storeDir;
   std::deque<SharedHandle<FileEntry> > fileEntries;
 #ifdef HAVE_POSIX_FALLOCATE
   bool _fallocate;
@@ -85,10 +84,6 @@ public:
   void addAllDownloadEntry();
 
   void removeAllDownloadEntry();
-
-  void setStoreDir(const std::string& storeDir) { this->storeDir = storeDir; }
-
-  const std::string& getStoreDir() const { return this->storeDir; }
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;
 

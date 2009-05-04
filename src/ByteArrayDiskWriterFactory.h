@@ -44,7 +44,7 @@ class ByteArrayDiskWriter;
 class ByteArrayDiskWriterFactory:public DiskWriterFactory
 {
 public:
-  SharedHandle<DiskWriter> newDiskWriter();
+  SharedHandle<DiskWriter> newDiskWriter(const std::string& filename);
 };
 
 typedef SharedHandle<ByteArrayDiskWriterFactory> ByteArrayDiskWriterFactoryHandle;

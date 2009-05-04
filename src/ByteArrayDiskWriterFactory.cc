@@ -37,7 +37,8 @@
 
 namespace aria2 {
 
-DiskWriterHandle ByteArrayDiskWriterFactory::newDiskWriter()
+DiskWriterHandle ByteArrayDiskWriterFactory::newDiskWriter
+(const std::string& filename)
 {
   return SharedHandle<DiskWriter>(new ByteArrayDiskWriter());
 }

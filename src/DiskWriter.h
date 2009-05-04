@@ -52,13 +52,11 @@ public:
 
   virtual ~DiskWriter() {}
   /**
-   * Creates a file output stream to write to the file with the specified name.
-   * If the file exists, then it is truncated to 0 length.
-   * @param filename the file name to be opened.
+   * Opens file. If the file exists, then it is truncated to 0 length.
    */
-  virtual void initAndOpenFile(const std::string& filename, uint64_t totalLength = 0)  = 0;
+  virtual void initAndOpenFile(uint64_t totalLength = 0)  = 0;
   
-  virtual void openFile(const std::string& filename, uint64_t totalLength = 0) = 0;
+  virtual void openFile(uint64_t totalLength = 0) = 0;
 
   /**
    * Closes this output stream.
@@ -67,12 +65,10 @@ public:
   virtual void closeFile() = 0;
 
   /**
-   * Opens a file output stream to write to the file with the specified name.
-   * If the file doesnot exists, an exception may be throwed.
-   *
-   * @param filename the file name to be opened.
+   * Opens a file.  If the file doesnot exists, an exception may be
+   * thrown.
    */
-  virtual void openExistingFile(const std::string& filename, uint64_t totalLength = 0) = 0;
+  virtual void openExistingFile(uint64_t totalLength = 0) = 0;
 
   // Returns file length
   virtual uint64_t size() = 0;

@@ -111,8 +111,8 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
 
 std::string MessageDigestHelper::digest(const std::string& algo, const std::string& filename)
 {
-  DiskWriterHandle writer(new DefaultDiskWriter());
-  writer->openExistingFile(filename);
+  DiskWriterHandle writer(new DefaultDiskWriter(filename));
+  writer->openExistingFile();
   return digest(algo, writer, 0, writer->size());
 }
 

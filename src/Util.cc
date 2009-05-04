@@ -303,11 +303,11 @@ void Util::rangedFileCopy(const std::string& dest, const std::string& src, off_t
 {
   size_t bufSize = 4096;
   unsigned char buf[bufSize];
-  DefaultDiskWriter srcdw;
-  DefaultDiskWriter destdw;
+  DefaultDiskWriter srcdw(src);
+  DefaultDiskWriter destdw(dest);
 
-  srcdw.openExistingFile(src);
-  destdw.initAndOpenFile(dest);
+  srcdw.openExistingFile();
+  destdw.initAndOpenFile();
 
   lldiv_t res = lldiv(length, bufSize);
   unsigned int x = res.quot;

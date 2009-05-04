@@ -31,7 +31,6 @@ public:
   void setUp() {
     adaptor.reset(new MultiDiskAdaptor());
     adaptor->setPieceLength(2);
-    adaptor->setStoreDir(".");
   }
 
   void testWriteData();
@@ -384,7 +383,6 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
     (&entries[0], &entries[arrayLength(entries)]);
   
   MultiDiskAdaptor adaptor;
-  adaptor.setStoreDir(dir);
   adaptor.setFileEntries(fileEntries);
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
@@ -414,7 +412,6 @@ void MultiDiskAdaptorTest::testSize()
     (&entries[0], &entries[arrayLength(entries)]);
   
   MultiDiskAdaptor adaptor;
-  adaptor.setStoreDir(dir);
   adaptor.setFileEntries(fileEntries);
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
@@ -444,7 +441,6 @@ void MultiDiskAdaptorTest::testUtime()
   std::deque<SharedHandle<FileEntry> > fileEntries
     (&entries[0], &entries[arrayLength(entries)]);
   MultiDiskAdaptor adaptor;
-  adaptor.setStoreDir(storeDir);
   adaptor.setFileEntries(fileEntries);
 
   time_t atime = (time_t) 100000;

@@ -67,7 +67,6 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   diskAdaptor->setFileEntries
     (std::deque<SharedHandle<FileEntry> >(&fs[0], &fs[arrayLength(fs)]));
   diskAdaptor->setPieceLength(1024);
-  diskAdaptor->setStoreDir(storeDir);
   diskAdaptor->openFile();
 
   SharedHandle<MultiFileAllocationIterator> itr
@@ -155,7 +154,6 @@ void MultiFileAllocationIteratorTest::testAllocate()
 
   try {
     SharedHandle<MultiDiskAdaptor> diskAdaptor(new MultiDiskAdaptor());
-    diskAdaptor->setStoreDir(storeDir);
     diskAdaptor->setPieceLength(1);
 
     int64_t offset = 0;

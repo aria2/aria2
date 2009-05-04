@@ -485,23 +485,26 @@ void DefaultPieceStorage::initStorage()
 {
   if(downloadContext->getFileMode() == DownloadContext::SINGLE) {
     logger->debug("Instantiating DirectDiskAdaptor");
-    DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
-    writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
     DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
-    directDiskAdaptor->setDiskWriter(writer);
     directDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
+    directDiskAdaptor->setFileEntries(downloadContext->getFileEntries());
+
+    DiskWriterHandle writer =
+      _diskWriterFactory->newDiskWriter(directDiskAdaptor->getFilePath());
+    writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
+
+    directDiskAdaptor->setDiskWriter(writer);
     this->diskAdaptor = directDiskAdaptor;
   } else {
     // file mode == DownloadContext::MULTI
     logger->debug("Instantiating MultiDiskAdaptor");
     MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
+    multiDiskAdaptor->setFileEntries(downloadContext->getFileEntries());
     multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
     multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
     multiDiskAdaptor->setMaxOpenFiles(option->getAsInt(PREF_BT_MAX_OPEN_FILES));
     this->diskAdaptor = multiDiskAdaptor;
   }
-  diskAdaptor->setStoreDir(downloadContext->getDir());
-  diskAdaptor->setFileEntries(downloadContext->getFileEntries());
 #ifdef HAVE_POSIX_FALLOCATE
   if(option->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
     diskAdaptor->enableFallocate();

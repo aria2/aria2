@@ -44,7 +44,7 @@ public:
   DirectDiskAdaptor() {};
   virtual ~DirectDiskAdaptor() {};
 
-  virtual std::string getFilePath();
+  virtual const std::string& getFilePath();
 
   virtual void onDownloadComplete();
 

@@ -37,9 +37,10 @@
 
 namespace aria2 {
 
-SharedHandle<DiskWriter> DefaultDiskWriterFactory::newDiskWriter()
+SharedHandle<DiskWriter> DefaultDiskWriterFactory::newDiskWriter
+(const std::string& filename)
 {
-  return SharedHandle<DiskWriter>(new DefaultDiskWriter());
+  return SharedHandle<DiskWriter>(new DefaultDiskWriter(filename));
 }
 
 } // namespace aria2

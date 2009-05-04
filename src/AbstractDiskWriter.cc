@@ -56,7 +56,8 @@
 
 namespace aria2 {
 
-AbstractDiskWriter::AbstractDiskWriter():
+AbstractDiskWriter::AbstractDiskWriter(const std::string& filename):
+  _filename(filename),
   fd(-1),
   _readOnly(false),
   logger(LogFactory::getInstance()) {}
@@ -66,13 +67,12 @@ AbstractDiskWriter::~AbstractDiskWriter()
   closeFile();
 }
 
-void AbstractDiskWriter::openFile(const std::string& filename, uint64_t totalLength)
+void AbstractDiskWriter::openFile(uint64_t totalLength)
 {
-  File f(filename);
-  if(f.exists()) {
-    openExistingFile(filename, totalLength);
+  if(File(_filename).exists()) {
+    openExistingFile(totalLength);
   } else {
-    initAndOpenFile(filename, totalLength);
+    initAndOpenFile(totalLength);
   }
 }
 
@@ -84,14 +84,11 @@ void AbstractDiskWriter::closeFile()
   }
 }
 
-void AbstractDiskWriter::openExistingFile(const std::string& filename,
-					  uint64_t totalLength)
+void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
 {
-  this->filename = filename;
-  File f(filename);
-  if(!f.exists()) {
+  if(!File(_filename).exists()) {
     throw DlAbortEx
-      (StringFormat(EX_FILE_OPEN, filename.c_str(), MSG_FILE_NOT_FOUND).str());
+      (StringFormat(EX_FILE_OPEN, _filename.c_str(), MSG_FILE_NOT_FOUND).str());
   }
 
   int flags = O_BINARY;
@@ -101,19 +98,20 @@ void AbstractDiskWriter::openExistingFile(const std::string& filename,
     flags |= O_RDWR;
   }
 
-  if((fd = open(filename.c_str(), flags, OPEN_MODE)) < 0) {
+  if((fd = open(_filename.c_str(), flags, OPEN_MODE)) < 0) {
     throw DlAbortEx
-      (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
+      (StringFormat(EX_FILE_OPEN, _filename.c_str(), strerror(errno)).str());
   }
 }
 
-void AbstractDiskWriter::createFile(const std::string& filename, int addFlags)
+void AbstractDiskWriter::createFile(int addFlags)
 {
-  this->filename = filename;
-  assert(filename.size());
-  Util::mkdirs(File(filename).getDirname());
-  if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags, OPEN_MODE)) < 0) {
-    throw DlAbortEx(StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
+  assert(!_filename.empty());
+  Util::mkdirs(File(_filename).getDirname());
+  if((fd = open(_filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
+		OPEN_MODE)) < 0) {
+    throw DlAbortEx(StringFormat(EX_FILE_OPEN,
+				 _filename.c_str(), strerror(errno)).str());
   }  
 }
 
@@ -142,7 +140,7 @@ void AbstractDiskWriter::seek(off_t offset)
 {
   if(lseek(fd, offset, SEEK_SET) == (off_t)-1) {
     throw DlAbortEx
-      (StringFormat(EX_FILE_SEEK, filename.c_str(), strerror(errno)).str());
+      (StringFormat(EX_FILE_SEEK, _filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -154,9 +152,10 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
     // DownloadFailureException and abort download instantly.
     if(errno == ENOSPC) {
       throw DownloadFailureException
-	(StringFormat(EX_FILE_WRITE, filename.c_str(), strerror(errno)).str());
+	(StringFormat(EX_FILE_WRITE, _filename.c_str(), strerror(errno)).str());
     }
-    throw DlAbortEx(StringFormat(EX_FILE_WRITE, filename.c_str(), strerror(errno)).str());
+    throw DlAbortEx(StringFormat(EX_FILE_WRITE,
+				 _filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -165,7 +164,8 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
   ssize_t ret;
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {
-    throw DlAbortEx(StringFormat(EX_FILE_READ, filename.c_str(), strerror(errno)).str());
+    throw DlAbortEx(StringFormat(EX_FILE_READ,
+				 _filename.c_str(), strerror(errno)).str());
   }
   return ret;
 }
@@ -206,17 +206,9 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
 }
 #endif // HAVE_POSIX_FALLOCATE
 
-// TODO the file descriptor fd must be opened before calling this function.
 uint64_t AbstractDiskWriter::size()
 {
-  if(fd == -1) {
-    throw DlAbortEx("File not opened.");
-  }
-  a2_struct_stat fileStat;
-  if(fstat(fd, &fileStat) < 0) {
-    return 0;
-  }
-  return fileStat.st_size;
+  return File(_filename).size();
 }
 
 void AbstractDiskWriter::enableDirectIO()

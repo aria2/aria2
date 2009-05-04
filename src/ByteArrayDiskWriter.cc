@@ -47,21 +47,18 @@ void ByteArrayDiskWriter::clear()
   buf.str(A2STR::NIL);
 }
 
-void ByteArrayDiskWriter::initAndOpenFile(const std::string& filename,
-					  uint64_t totalLength)
+void ByteArrayDiskWriter::initAndOpenFile(uint64_t totalLength)
 {
   clear();
 }
 
-void ByteArrayDiskWriter::openFile(const std::string& filename,
-				   uint64_t totalLength) {}
+void ByteArrayDiskWriter::openFile(uint64_t totalLength) {}
 
 void ByteArrayDiskWriter::closeFile() {}
 
-void ByteArrayDiskWriter::openExistingFile(const std::string& filename,
-					   uint64_t totalLength)
+void ByteArrayDiskWriter::openExistingFile(uint64_t totalLength)
 {
-  openFile(filename);
+  openFile();
 }
 
 void ByteArrayDiskWriter::writeData(const unsigned char* data, size_t dataLength, off_t position)

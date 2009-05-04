@@ -38,7 +38,7 @@
 
 namespace aria2 {
 
-std::string DirectDiskAdaptor::getFilePath()
+const std::string& DirectDiskAdaptor::getFilePath()
 {
   return fileEntries.front()->getPath();
 }

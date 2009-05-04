@@ -44,14 +44,14 @@ class Logger;
 
 class AbstractDiskWriter : public DiskWriter {
 protected:
-  std::string filename;
+  std::string _filename;
   int fd;
 
   bool _readOnly;
 
   Logger* logger;
 
-  void createFile(const std::string& filename, int addFlags = 0);
+  void createFile(int addFlags = 0);
 
 private:
   ssize_t writeDataInternal(const unsigned char* data, size_t len);
@@ -59,14 +59,14 @@ private:
 
   void seek(off_t offset);
 public:
-  AbstractDiskWriter();
+  AbstractDiskWriter(const std::string& filename);
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(const std::string& filename, uint64_t totalLength = 0);
+  virtual void openFile(uint64_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const std::string& filename, uint64_t totalLength = 0);
+  virtual void openExistingFile(uint64_t totalLength = 0);
 
   virtual void writeData(const unsigned char* data, size_t len, off_t offset);
 

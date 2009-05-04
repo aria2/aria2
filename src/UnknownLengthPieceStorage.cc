@@ -56,17 +56,15 @@ UnknownLengthPieceStorage::~UnknownLengthPieceStorage() {}
 
 void UnknownLengthPieceStorage::initStorage()
 {
-  DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
   DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
-  directDiskAdaptor->setDiskWriter(writer);
   directDiskAdaptor->setTotalLength(_downloadContext->getTotalLength());
+  directDiskAdaptor->setFileEntries(_downloadContext->getFileEntries());
+
+  DiskWriterHandle writer =
+    _diskWriterFactory->newDiskWriter(directDiskAdaptor->getFilePath());
+  directDiskAdaptor->setDiskWriter(writer);
+
   _diskAdaptor = directDiskAdaptor;
-  std::string storeDir = _downloadContext->getDir();
-//   if(storeDir == "") {
-//     storeDir = ".";
-//   }
-  _diskAdaptor->setStoreDir(storeDir);
-  _diskAdaptor->setFileEntries(_downloadContext->getFileEntries());
 }
 
 bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)

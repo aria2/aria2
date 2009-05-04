@@ -66,7 +66,7 @@ const std::string& DiskWriterEntry::getFilePath() const
 void DiskWriterEntry::initAndOpenFile()
 {
   if(!diskWriter.isNull()) {
-    diskWriter->initAndOpenFile(getFilePath(), fileEntry->getLength());
+    diskWriter->initAndOpenFile(fileEntry->getLength());
     if(_directIO) {
       diskWriter->enableDirectIO();
     }
@@ -77,7 +77,7 @@ void DiskWriterEntry::initAndOpenFile()
 void DiskWriterEntry::openFile()
 {
   if(!diskWriter.isNull()) {
-    diskWriter->openFile(getFilePath(), fileEntry->getLength());
+    diskWriter->openFile(fileEntry->getLength());
     if(_directIO) {
       diskWriter->enableDirectIO();
     }
@@ -88,7 +88,7 @@ void DiskWriterEntry::openFile()
 void DiskWriterEntry::openExistingFile()
 {
   if(!diskWriter.isNull()) {
-    diskWriter->openExistingFile(getFilePath(), fileEntry->getLength());
+    diskWriter->openExistingFile(fileEntry->getLength());
     if(_directIO) {
       diskWriter->enableDirectIO();
     }
@@ -116,11 +116,7 @@ bool DiskWriterEntry::fileExists()
 
 uint64_t DiskWriterEntry::size() const
 {
-  if(diskWriter.isNull()) {
-    return File(getFilePath()).size();
-  } else {
-    return diskWriter->size();
-  }
+  return File(getFilePath()).size();
 }
 
 SharedHandle<FileEntry> DiskWriterEntry::getFileEntry() const
@@ -276,7 +272,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
        (*i)->fileExists()) {
       logger->debug("Creating DiskWriter for filename=%s",
 		    (*i)->getFilePath().c_str());
-      (*i)->setDiskWriter(dwFactory.newDiskWriter());
+      (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
       (*i)->getDiskWriter()->setDirectIOAllowed(_directIOAllowed);
       if(_readOnly) {
 	(*i)->getDiskWriter()->enableReadOnly();
@@ -479,7 +475,6 @@ bool MultiDiskAdaptor::fileExists()
   return false;
 }
 
-// TODO call DiskWriter::openFile() before calling this function.
 uint64_t MultiDiskAdaptor::size()
 {
   uint64_t size = 0;

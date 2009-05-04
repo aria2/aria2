@@ -282,9 +282,21 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 			progressInfoFile->getFilename().c_str(),
 			getFilePath().c_str());
       }
-      // First, make DiskAdaptor read-only mode.
-      _pieceStorage->getDiskAdaptor()->enableReadOnly();
-
+      {
+	uint64_t actualFileSize = _pieceStorage->getDiskAdaptor()->size();
+	if(actualFileSize == btContext->getTotalLength()) {
+	  // First, make DiskAdaptor read-only mode to allow the
+	  // program to seed file in read-only media.
+	  _pieceStorage->getDiskAdaptor()->enableReadOnly();
+	} else {
+	  // Open file in writable mode to allow the program
+	  // truncate the file to btContext->getTotalLength()
+	  _logger->debug("File size not match. File is opened in writable mode."
+			 " Expected:%s Actual:%s",
+			 Util::uitos(btContext->getTotalLength()).c_str(),
+			 Util::uitos(actualFileSize).c_str());
+	}
+      }
       // Call Load, Save and file allocation command here
       if(progressInfoFile->exists()) {
 	// load .aria2 file if it exists.
@@ -311,20 +323,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	}
       }
       _progressInfoFile = progressInfoFile;
-      {
-	uint64_t actualFileSize = _pieceStorage->getDiskAdaptor()->size();
-	if(actualFileSize != btContext->getTotalLength()) {
-	  // Re-open file in writable mode to allow the program
-	  // truncate the file to the specified length
-	  _logger->debug("File size not match. Re-open file in writable mode."
-			 " Expected:%s Actual:%s",
-			 Util::uitos(btContext->getTotalLength()).c_str(),
-			 Util::uitos(actualFileSize).c_str());
-	  _pieceStorage->getDiskAdaptor()->closeFile();
-	  _pieceStorage->getDiskAdaptor()->disableReadOnly();
-	  _pieceStorage->getDiskAdaptor()->openFile();
-	}
-      }
+
       if(!btContext->isPrivate() && _option->getAsBool(PREF_ENABLE_DHT)) {
 	std::deque<Command*> commands;
 	DHTSetup().setup(commands, e, _option);

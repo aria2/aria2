@@ -89,7 +89,7 @@ public:
   
   virtual void cutTrailingGarbage();
 
-  virtual std::string getFilePath() = 0;
+  virtual const std::string& getFilePath() = 0;
 
   void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 

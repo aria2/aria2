@@ -37,9 +37,9 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
   fileEntries.push_back(entry);
 
   DirectDiskAdaptor adaptor;
-  adaptor.setDiskWriter(SharedHandle<DiskWriter>(new DefaultDiskWriter()));
+  adaptor.setDiskWriter
+    (SharedHandle<DiskWriter>(new DefaultDiskWriter(entry->getPath())));
   adaptor.setTotalLength(entry->getLength());
-  adaptor.setStoreDir(dir);
   adaptor.setFileEntries(fileEntries);
   adaptor.openFile();
 

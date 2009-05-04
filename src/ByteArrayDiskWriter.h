@@ -49,13 +49,13 @@ public:
   ByteArrayDiskWriter();
   virtual ~ByteArrayDiskWriter();
 
-  virtual void initAndOpenFile(const std::string& filename, uint64_t totalLength = 0);
+  virtual void initAndOpenFile(uint64_t totalLength = 0);
 
-  virtual void openFile(const std::string& filename, uint64_t totalLength = 0);
+  virtual void openFile(uint64_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const std::string& filename, uint64_t totalLength = 0);
+  virtual void openExistingFile(uint64_t totalLength = 0);
 
   virtual void writeData(const unsigned char* data, size_t len, off_t position);
   virtual ssize_t readData(unsigned char* data, size_t len, off_t position);

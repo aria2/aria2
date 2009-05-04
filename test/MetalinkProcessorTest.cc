@@ -175,8 +175,8 @@ void MetalinkProcessorTest::testParseFile()
 void MetalinkProcessorTest::testParseFromBinaryStream()
 {
   MetalinkProcessor proc;
-  DefaultDiskWriterHandle dw(new DefaultDiskWriter());
-  dw->openExistingFile("test.xml");
+  DefaultDiskWriterHandle dw(new DefaultDiskWriter("test.xml"));
+  dw->openExistingFile();
   
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);

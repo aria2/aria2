@@ -1,5 +1,47 @@
 2009-05-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Now the constructor of AbstractDiskWriter takes filename as an
+	argument and filename argument is removed from openFile(),
+	initAndOpenFile(), openExistingFile() interface.  storeDir member
+	and its accessor functions are removed from DiskAdaptor because it
+	is not used anymore.  size() member function of DefaultDiskWriter,
+	DirectDiskAdaptor and MultiDiskAdaptor now can be called without
+	opening file.
+	* src/AbstractDiskWriter.cc
+	* src/AbstractDiskWriter.h
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/AbstractSingleDiskAdaptor.h
+	* src/ByteArrayDiskWriter.cc
+	* src/ByteArrayDiskWriter.h
+	* src/ByteArrayDiskWriterFactory.cc
+	* src/ByteArrayDiskWriterFactory.h
+	* src/DefaultDiskWriter.cc
+	* src/DefaultDiskWriter.h
+	* src/DefaultDiskWriterFactory.cc
+	* src/DefaultDiskWriterFactory.h
+	* src/DefaultPieceStorage.cc
+	* src/DirectDiskAdaptor.cc
+	* src/DirectDiskAdaptor.h
+	* src/DiskAdaptor.h
+	* src/DiskWriter.h
+	* src/DiskWriterFactory.h
+	* src/MessageDigestHelper.cc
+	* src/MultiDiskAdaptor.cc
+	* src/RequestGroup.cc
+	* src/UnknownLengthPieceStorage.cc
+	* src/Util.cc
+	* test/DefaultDiskWriterTest.cc
+	* test/DirectDiskAdaptorTest.cc
+	* test/FallocFileAllocationIteratorTest.cc
+	* test/MessageDigestHelperTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+	* test/SingleFileAllocationIteratorTest.cc
+	* test/UtilTest.cc
+	
+2009-05-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that aria2 aborts when --select-file is used.  This
 	bug was introduced in r1199.
 	* src/MultiDiskAdaptor.cc

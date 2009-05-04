@@ -46,7 +46,7 @@ class DiskWriterFactory {
 public:
   virtual ~DiskWriterFactory() {}
 
-  virtual SharedHandle<DiskWriter> newDiskWriter() = 0;
+  virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename)=0;
 };
 
 typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
