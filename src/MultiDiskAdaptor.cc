@@ -273,7 +273,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       logger->debug("Creating DiskWriter for filename=%s",
 		    (*i)->getFilePath().c_str());
       (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
-      (*i)->getDiskWriter()->setDirectIOAllowed(_directIOAllowed);
+      if(_directIOAllowed) {
+	(*i)->getDiskWriter()->allowDirectIO();
+      }
       if(_readOnly) {
 	(*i)->getDiskWriter()->enableReadOnly();
       }

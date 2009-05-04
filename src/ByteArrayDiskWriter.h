@@ -66,11 +66,6 @@ public:
 
   virtual void disableDirectIO() {}
 
-  virtual bool directIOAllowed() const
-  {
-    return false;
-  }
-
   void setString(const std::string& s)
   {
     buf.str(s);

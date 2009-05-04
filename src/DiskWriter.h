@@ -44,11 +44,8 @@ namespace aria2 {
  *
  */
 class DiskWriter:public BinaryStream {
-protected:
-  bool _directIOAllowed;
-
 public:
-  DiskWriter():_directIOAllowed(false) {}
+  DiskWriter() {}
 
   virtual ~DiskWriter() {}
   /**
@@ -77,15 +74,7 @@ public:
 
   virtual void disableDirectIO() = 0;
 
-  virtual bool directIOAllowed() const
-  {
-    return _directIOAllowed;
-  }
-
-  void setDirectIOAllowed(bool f)
-  {
-    _directIOAllowed = f;
-  }
+  virtual void allowDirectIO() {}
 
   // Enables read-only mode. After this call, openExistingFile() opens
   // file in read-only mode. This is an optional functionality. The

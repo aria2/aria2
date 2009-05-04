@@ -491,7 +491,9 @@ void DefaultPieceStorage::initStorage()
 
     DiskWriterHandle writer =
       _diskWriterFactory->newDiskWriter(directDiskAdaptor->getFilePath());
-    writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
+    if(option->getAsBool(PREF_ENABLE_DIRECT_IO)) {
+      writer->allowDirectIO();
+    }
 
     directDiskAdaptor->setDiskWriter(writer);
     this->diskAdaptor = directDiskAdaptor;
@@ -500,7 +502,9 @@ void DefaultPieceStorage::initStorage()
     logger->debug("Instantiating MultiDiskAdaptor");
     MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
     multiDiskAdaptor->setFileEntries(downloadContext->getFileEntries());
-    multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
+    if(option->getAsBool(PREF_ENABLE_DIRECT_IO)) {
+      multiDiskAdaptor->allowDirectIO();
+    }
     multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
     multiDiskAdaptor->setMaxOpenFiles(option->getAsInt(PREF_BT_MAX_OPEN_FILES));
     this->diskAdaptor = multiDiskAdaptor;

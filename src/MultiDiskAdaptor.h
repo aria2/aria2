@@ -165,14 +165,9 @@ public:
     return pieceLength;
   }
 
-  virtual bool directIOAllowed() const
+  void allowDirectIO()
   {
-    return _directIOAllowed;
-  }
-
-  void setDirectIOAllowed(bool b)
-  {
-    _directIOAllowed = b;
+    _directIOAllowed = true;
   }
 
   virtual void cutTrailingGarbage();

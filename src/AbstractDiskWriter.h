@@ -49,6 +49,8 @@ protected:
 
   bool _readOnly;
 
+  bool _directIOAllowed;
+
   Logger* logger;
 
   void createFile(int addFlags = 0);
@@ -84,6 +86,8 @@ public:
   virtual void enableDirectIO();
 
   virtual void disableDirectIO();
+
+  virtual void allowDirectIO() { _directIOAllowed = true; }
 
   virtual void enableReadOnly();
 

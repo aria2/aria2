@@ -62,8 +62,6 @@ public:
   virtual void enableDirectIO() = 0;
 
   virtual void disableDirectIO() = 0;
-  
-  virtual bool directIOAllowed() const = 0;
 };
 
 typedef SharedHandle<BinaryStream> BinaryStreamHandle;

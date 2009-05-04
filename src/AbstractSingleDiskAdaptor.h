@@ -77,8 +77,6 @@ public:
 
   virtual void disableDirectIO();
   
-  virtual bool directIOAllowed() const;
-
   // Make sure that DiskWriter is set before calling this function.
   virtual void enableReadOnly();
 

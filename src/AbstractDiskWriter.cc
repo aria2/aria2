@@ -60,6 +60,7 @@ AbstractDiskWriter::AbstractDiskWriter(const std::string& filename):
   _filename(filename),
   fd(-1),
   _readOnly(false),
+  _directIOAllowed(false),
   logger(LogFactory::getInstance()) {}
 
 AbstractDiskWriter::~AbstractDiskWriter()

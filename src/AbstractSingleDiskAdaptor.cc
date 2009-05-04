@@ -119,11 +119,6 @@ void AbstractSingleDiskAdaptor::disableDirectIO()
   diskWriter->disableDirectIO();
 }
 
-bool AbstractSingleDiskAdaptor::directIOAllowed() const
-{
-  return diskWriter->directIOAllowed();
-}
-
 void AbstractSingleDiskAdaptor::enableReadOnly()
 {
   diskWriter->enableReadOnly();

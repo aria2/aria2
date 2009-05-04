@@ -1,5 +1,21 @@
 2009-05-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed directIOAllowed() from BinaryStream, DiskWriter,
+	DiskAdaptor.  setDirectIOAllowed() was renamed as allowDirectIO().
+	Removed _directIOAllowed member from DiskWriter.
+	* src/AbstractDiskWriter.cc
+	* src/AbstractDiskWriter.h
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/AbstractSingleDiskAdaptor.h
+	* src/BinaryStream.h
+	* src/ByteArrayDiskWriter.h
+	* src/DefaultPieceStorage.cc
+	* src/DiskWriter.h
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	
+2009-05-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Now the constructor of AbstractDiskWriter takes filename as an
 	argument and filename argument is removed from openFile(),
 	initAndOpenFile(), openExistingFile() interface.  storeDir member
