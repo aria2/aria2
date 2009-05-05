@@ -43,6 +43,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoadFromMemory_joinPathMulti);
   CPPUNIT_TEST(testLoadFromMemory_joinPathSingle);
   CPPUNIT_TEST(testGetNodes);
+  CPPUNIT_TEST(testGetActualBasePath);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -74,6 +75,7 @@ public:
   void testLoadFromMemory_joinPathMulti();
   void testLoadFromMemory_joinPathSingle();
   void testGetNodes();
+  void testGetActualBasePath();
 };
 
 
@@ -530,6 +532,20 @@ void DefaultBtContextTest::testGetNodes()
     CPPUNIT_ASSERT_EQUAL((uint16_t)6882, nodes[0].second);
   }
 
+}
+
+void DefaultBtContextTest::testGetActualBasePath()
+{
+  DefaultBtContext singleCtx;
+  singleCtx.load("single.torrent");
+  singleCtx.setFilePathWithIndex(1, "new-path");
+  CPPUNIT_ASSERT_EQUAL(std::string("new-path"), singleCtx.getActualBasePath());
+
+  DefaultBtContext multiCtx;
+  multiCtx.setDir("downloads");
+  multiCtx.load("test.torrent");
+  CPPUNIT_ASSERT_EQUAL(std::string("downloads/aria2-test"),
+		       multiCtx.getActualBasePath());
 }
 
 } // namespace aria2

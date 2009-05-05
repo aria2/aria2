@@ -418,7 +418,11 @@ size_t DefaultBtContext::getNumPieces() const {
 
 std::string DefaultBtContext::getActualBasePath() const
 {
-  return _dir+"/"+name;
+  if(fileEntries.size() == 1) {
+    return fileEntries.front()->getPath();
+  } else {
+    return _dir+"/"+name;
+  }
 }
 
 void DefaultBtContext::computeFastSet
