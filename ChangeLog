@@ -1,5 +1,10 @@
 2009-05-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.3.3
+	* configure.ac
+
+2009-05-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Applied Pascal Bleser's patch: increases MAX_RECV_BUFFER for ftp
 	from 4096 to 65536 (for insanely large ftp login banners)
 	* src/FtpConnection.h
