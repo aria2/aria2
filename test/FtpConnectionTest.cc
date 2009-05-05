@@ -195,7 +195,7 @@ void FtpConnectionTest::testReceiveResponse_overflow()
   char data[1024];
   memset(data, 0, sizeof(data));
   memcpy(data, "213 ", 4);
-  for(int i = 0; i < 4; ++i) {
+  for(int i = 0; i < 64; ++i) {
     _serverSocket->writeData(data, sizeof(data));
     waitRead(_clientSocket);
     CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());

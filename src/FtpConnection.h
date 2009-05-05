@@ -79,7 +79,8 @@ private:
 
   static const std::string I;
 
-  static const size_t MAX_RECV_BUFFER = 4096;
+  //prepare for large banners
+  static const size_t MAX_RECV_BUFFER = 65536;
 public:
   FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
 		const SharedHandle<Request>& req,
