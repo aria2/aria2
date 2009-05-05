@@ -146,9 +146,10 @@ bool HttpResponseCommand::executeInternal()
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
 
-    if(totalLength == 0 || httpResponse->isTransferEncodingSpecified() ||
-       shouldInflateContentEncoding(httpResponse)) {
-      // we ignore content-length when transfer-encoding is set
+    // If both transfer-encoding and total length is specified, we
+    // assume we can do segmented downloading
+    if(totalLength == 0 || shouldInflateContentEncoding(httpResponse)) {
+      // we ignore content-length when inflate is required
       dctx->setTotalLength(0);
       if(req->getMethod() == Request::METHOD_GET &&
 	 (totalLength != 0 ||
@@ -177,7 +178,8 @@ bool HttpResponseCommand::executeInternal()
 				   getTransferEncodingDecoder(httpResponse),
 				   getContentEncodingDecoder(httpResponse)));
     } else {
-      e->commands.push_back(createHttpDownloadCommand(httpResponse));
+      e->commands.push_back(createHttpDownloadCommand(httpResponse,
+						      getTransferEncodingDecoder(httpResponse)));
     }
     return true;
   }

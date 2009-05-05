@@ -1,3 +1,10 @@
+2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Supported segmented downloading with chunked transfer encoding and
+	content-length.	
+	* src/DownloadCommand.cc
+	* src/HttpResponseCommand.cc
+
 2009-05-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Bump up version number to 1.3.3

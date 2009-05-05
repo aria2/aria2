@@ -165,6 +165,7 @@ bool DownloadCommand::executeInternal() {
   _requestGroup->getSegmentMan()->updateDownloadSpeedFor(peerStat);
 
   bool segmentComplete = false;
+  // Note that GrowSegment::complete() always returns false.
   if(_transferEncodingDecoder.isNull() && _contentEncodingDecoder.isNull()) {
     if(segment->complete()) {
       segmentComplete = true;
@@ -172,6 +173,8 @@ bool DownloadCommand::executeInternal() {
 	      !socket->wantRead() && !socket->wantWrite()) {
       segmentComplete = true;
     }
+  } else if(!_transferEncodingDecoder.isNull() && segment->complete()) {
+    segmentComplete = true;
   } else if((_transferEncodingDecoder.isNull() ||
 	     _transferEncodingDecoder->finished()) &&
 	    (_contentEncodingDecoder.isNull() ||
