@@ -1,5 +1,10 @@
 2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Avoid std::bad_alloc for negative bencode string length.
+	* src/bencode.cc
+	
+2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Supported segmented downloading with chunked transfer encoding and
 	content-length.	
 	* src/DownloadCommand.cc

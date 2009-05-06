@@ -57,9 +57,9 @@ static void checkdelim(std::istream& ss, const char delim = ':')
 
 static std::string decoderawstring(std::istream& ss)
 {
-  size_t length;
+  int length;
   ss >> length;
-  if(!ss) {
+  if(!ss || length < 0) {
     throw RecoverableException("A positive integer expected but none found.");
   }
   // TODO check length, it must be less than or equal to INT_MAX
