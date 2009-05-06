@@ -1,3 +1,38 @@
+aria2 1.3.3
+===========
+
+Release Note
+------------
+
+This release fixes the bug that --check-integrity option doesn't work
+properly if a file including last piece is missing.
+
+Changes
+-------
+
+ * Generated configure and Makefile.in using autoconf 2.63 and
+   automake 1.10.2.  Removed AC_GNU_SOURCE from configure.ac because
+   it is subset of AC_USE_SYSTEM_EXTENSIONS and we use latter.
+
+ * Supported segmented downloading with chunked transfer encoding and
+   content-length.
+
+ * Applied Pascal Bleser's patch: increases MAX_RECV_BUFFER for ftp
+   from 4096 to 65536 (for insanely large ftp login banners)
+
+ * Fixed the bug that read-only file with wrong file size will cause
+   error because it cannot be truncated to the correct size.  Now if
+   file size is different than the expected one, re-open file in
+   writable mode.
+
+ * Fixed the bug that with --check-integrity option aria2 reports
+   downloaded file size is 0 even if some parts of file is correctly
+   downloaded.  This bug is reproducible for the download that a file
+   includes last piece is missing. This bug doesn't reveal for
+   single-torrent with file allocation on.
+
+
+
 aria2 1.3.2
 ===========
 
