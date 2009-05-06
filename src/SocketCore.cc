@@ -616,7 +616,6 @@ void SocketCore::peekData(char* data, size_t& len)
      // for SSL
      // TODO handling len == 0 case required
     ret = SSL_peek(ssl, data, len);
-    LogFactory::getInstance()->debug("len = %d", ret);
     if(ret == 0) {
       throw DlRetryEx
 	(StringFormat(EX_SOCKET_PEEK,

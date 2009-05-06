@@ -1,5 +1,10 @@
 2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused debug log
+	* src/SocketCore.cc
+
+2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Generated configure and Makefile.in using autoconf 2.63 and
 	automake 1.10.2.  Removed AC_GNU_SOURCE from configure.ac because
 	it is subset of AC_USE_SYSTEM_EXTENSIONS and we use latter.
