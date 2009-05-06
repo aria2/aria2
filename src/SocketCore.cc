@@ -49,7 +49,6 @@
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "Util.h"
-#include "LogFactory.h"
 #include "TimeA2.h"
 #include "a2functional.h"
 #ifdef ENABLE_SSL
@@ -81,6 +80,8 @@ SocketCore::PollMethod SocketCore::_pollMethod = SocketCore::POLL_METHOD_EPOLL;
 #else // !HAVE_EPOLL
 SocketCore::PollMethod SocketCore::_pollMethod = SocketCore::POLL_METHOD_SELECT;
 #endif // !HAVE_EPOLL
+
+int SocketCore::_protocolFamily = AF_UNSPEC;
 
 #ifdef ENABLE_SSL
 SharedHandle<TLSContext> SocketCore::_tlsContext;
@@ -165,7 +166,7 @@ void SocketCore::bind(uint16_t port)
   struct addrinfo hints;
   struct addrinfo* res;
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
+  hints.ai_family = _protocolFamily;
   hints.ai_socktype = _sockType;
   hints.ai_flags = AI_PASSIVE;
   hints.ai_protocol = 0;
@@ -246,7 +247,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   struct addrinfo hints;
   struct addrinfo* res;
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
+  hints.ai_family = _protocolFamily;
   hints.ai_socktype = _sockType;
   hints.ai_flags = 0;
   hints.ai_protocol = 0;
@@ -976,7 +977,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   struct addrinfo hints;
   struct addrinfo* res;
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
+  hints.ai_family = _protocolFamily;
   hints.ai_socktype = _sockType;
   hints.ai_flags = 0;
   hints.ai_protocol = 0;

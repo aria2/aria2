@@ -90,6 +90,8 @@ private:
 
   static PollMethod _pollMethod;
 
+  static int _protocolFamily;
+
   bool blocking;
   int secure;
 
@@ -341,6 +343,11 @@ public:
 #ifdef ENABLE_SSL
   static void setTLSContext(const SharedHandle<TLSContext>& tlsContext);
 #endif // ENABLE_SSL
+
+  static void setProtocolFamily(int protocolFamily)
+  {
+    _protocolFamily = protocolFamily;
+  }
 };
 
 } // namespace aria2

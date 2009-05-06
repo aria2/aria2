@@ -1,5 +1,17 @@
 2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added static member _protocolFamily to SocketCore.  By default,
+	SocketCore uses AF_UNSPEC for getaddrinfo hints to resolve
+	address. Sometime SocketCore::bind() and
+	SocketCore::establishConnection() use difference protocl family
+	and latter cannot connect to former. To avoid this situation, we
+	limit protocol family to AF_INET for unit tests.
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* test/AllTest.cc
+
+2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Avoid std::bad_alloc for negative bencode string length.
 	* src/bencode.cc
 	
