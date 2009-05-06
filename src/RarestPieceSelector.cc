@@ -37,87 +37,12 @@
 #include <cassert>
 #include <algorithm>
 
-#include "SimpleRandomizer.h"
+#include "PieceStatMan.h"
 
 namespace aria2 {
 
-PieceStat::PieceStat(size_t index):_order(0), _index(index), _count(0) {}
-
-bool PieceStat::operator<(const PieceStat& pieceStat) const
-{
-  if(_count == pieceStat._count) {
-    return _order < pieceStat._order;
-  } else {
-    return _count < pieceStat._count;
-  }
-}
-
-void PieceStat::addCount()
-{
-  if(_count < SIZE_MAX) {
-    ++_count;
-  }
-}
-
-void PieceStat::subCount()
-{
-  if(_count > 0) {
-    --_count;
-  }
-}
-
-size_t PieceStat::getIndex() const
-{
-  return _index;
-}
-
-size_t PieceStat::getCount() const
-{
-  return _count;
-}
-
-void PieceStat::setOrder(size_t order)
-{
-  _order = order;
-}
-
-size_t PieceStat::getOrder() const
-{
-  return _order;
-}
-
-class GenPieceStat {
-private:
-  size_t _index;
-public:
-  GenPieceStat():_index(0) {}
-
-  SharedHandle<PieceStat> operator()()
-  {
-    return SharedHandle<PieceStat>(new PieceStat(_index++));
-  }
-};
-
-RarestPieceSelector::RarestPieceSelector(size_t pieceNum, bool randomShuffle):
-  _pieceStats(pieceNum),
-  _sortedPieceStatIndexes(pieceNum)
-{
-  std::generate(_pieceStats.begin(), _pieceStats.end(), GenPieceStat());
-  std::vector<SharedHandle<PieceStat> > sortedPieceStats(_pieceStats);
-  // we need some randomness in ordering.
-  if(randomShuffle) {
-    std::random_shuffle(sortedPieceStats.begin(), sortedPieceStats.end(),
-			*(SimpleRandomizer::getInstance().get()));
-  }
-  {
-    size_t order = 0;
-    for(std::vector<SharedHandle<PieceStat> >::iterator i =
-	  sortedPieceStats.begin(); i != sortedPieceStats.end(); ++i) {
-      _sortedPieceStatIndexes[order] = (*i)->getIndex();
-      (*i)->setOrder(order++);
-    }
-  }  
-}
+RarestPieceSelector::RarestPieceSelector
+(const SharedHandle<PieceStatMan>& pieceStatMan):_pieceStatMan(pieceStatMan) {}
 
 class FindRarestPiece
 {
@@ -139,113 +64,17 @@ public:
 bool RarestPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const
 {
+  const std::vector<size_t>& pieceIndexes =
+    _pieceStatMan->getRarerPieceIndexes();
   std::vector<size_t>::const_iterator i =
-    std::find_if(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
+    std::find_if(pieceIndexes.begin(), pieceIndexes.end(),
 		 FindRarestPiece(bitfield, nbits));
-  if(i == _sortedPieceStatIndexes.end()) {
+  if(i == pieceIndexes.end()) {
     return false;
   } else {
     index = *i;
     return true;
   }
-}
-
-class PieceStatRarer {
-private:
-  const std::vector<SharedHandle<PieceStat> >& _pieceStats;
-public:
-  PieceStatRarer(const std::vector<SharedHandle<PieceStat> >& ps):
-    _pieceStats(ps) {}
-
-  bool operator()(size_t lhs, size_t rhs) const
-  {
-    return _pieceStats[lhs] < _pieceStats[rhs];
-  }
-};
-
-void RarestPieceSelector::addPieceStats(const unsigned char* bitfield,
-					size_t bitfieldLength)
-{
-  size_t index = 0;
-  for(size_t bi = 0; bi < bitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if(bitfield[bi]&mask) {
-	_pieceStats[index]->addCount();
-      }
-    }
-
-  }
-  std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
-	    PieceStatRarer(_pieceStats));
-}
-
-void RarestPieceSelector::subtractPieceStats(const unsigned char* bitfield,
-					     size_t bitfieldLength)
-{
-  size_t index = 0;
-  for(size_t bi = 0; bi < bitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if(bitfield[bi]&mask) {
-	_pieceStats[index]->subCount();
-      }
-    }
-
-  }
-  std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
-	    PieceStatRarer(_pieceStats));
-}
-
-void RarestPieceSelector::updatePieceStats(const unsigned char* newBitfield,
-					   size_t newBitfieldLength,
-					   const unsigned char* oldBitfield)
-{
-  size_t index = 0;
-  for(size_t bi = 0; bi < newBitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if((newBitfield[bi]&mask) && !(oldBitfield[bi]&mask)) {
-	_pieceStats[index]->addCount();
-      } else if(!(newBitfield[bi]&mask) && (oldBitfield[bi]&mask)) {
-	_pieceStats[index]->subCount();
-      }
-    }
-
-  }
-  std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
-	    PieceStatRarer(_pieceStats));
-}
-
-void RarestPieceSelector::addPieceStats(size_t index)
-{
-  std::vector<size_t>::iterator cur =
-    std::lower_bound(_sortedPieceStatIndexes.begin(),
-		     _sortedPieceStatIndexes.end(),
-		     index, PieceStatRarer(_pieceStats));
-
-  _pieceStats[index]->addCount();
-
-  std::vector<size_t>::iterator to =
-    std::upper_bound(cur+1, _sortedPieceStatIndexes.end(),
-		     index, PieceStatRarer(_pieceStats));
-  
-  std::rotate(cur, cur+1, to);
-}
-
-const std::vector<size_t>&
-RarestPieceSelector::getSortedPieceStatIndexes() const
-{
-  return _sortedPieceStatIndexes;
-}
-
-const std::vector<SharedHandle<PieceStat> >&
-RarestPieceSelector::getPieceStats() const
-{
-  return _pieceStats;
 }
 
 } // namespace aria2

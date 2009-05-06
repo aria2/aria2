@@ -37,9 +37,7 @@
 
 #include "common.h"
 
-#include <deque>
-
-#include "SharedHandle.h"
+#include <cstdlib>
 
 namespace aria2 {
 
@@ -49,18 +47,6 @@ public:
 
   virtual bool select
   (size_t& index, const unsigned char* bitfield, size_t nbits) const = 0;
-
-  virtual void addPieceStats(size_t index) = 0;
-
-  virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength) = 0;
-  
-  virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength) = 0;
-
-  virtual void updatePieceStats(const unsigned char* newBitfield,
-				size_t newBitfieldLength,
-				const unsigned char* oldBitfield) = 0;
 };
 
 } // namespace aria2

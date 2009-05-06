@@ -58,13 +58,12 @@
 #include "StringFormat.h"
 #include "RarestPieceSelector.h"
 #include "array_fun.h"
+#include "PieceStatMan.h"
 
 namespace aria2 {
 
 DefaultPieceStorage::DefaultPieceStorage
-(const DownloadContextHandle& downloadContext,
- const Option* option,
- const SharedHandle<PieceSelector>& pieceSelector):
+(const DownloadContextHandle& downloadContext, const Option* option):
   downloadContext(downloadContext),
   bitfieldMan(BitfieldManFactory::getFactoryInstance()->
 	      createBitfieldMan(downloadContext->getPieceLength(),
@@ -73,13 +72,9 @@ DefaultPieceStorage::DefaultPieceStorage
   endGamePieceNum(END_GAME_PIECE_NUM),
   logger(LogFactory::getInstance()),
   option(option),
-  _pieceSelector(pieceSelector)
-{
-  if(_pieceSelector.isNull()) {
-    _pieceSelector.reset
-      (new RarestPieceSelector(downloadContext->getNumPieces(), true));
-  }
-}
+  _pieceStatMan(new PieceStatMan(downloadContext->getNumPieces(), true)),
+  _pieceSelector(new RarestPieceSelector(_pieceStatMan))
+{}
 
 DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan;
@@ -653,26 +648,26 @@ void DefaultPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHandle& di
 void DefaultPieceStorage::addPieceStats(const unsigned char* bitfield,
 					size_t bitfieldLength)
 {
-  _pieceSelector->addPieceStats(bitfield, bitfieldLength);
+  _pieceStatMan->addPieceStats(bitfield, bitfieldLength);
 }
 
 void DefaultPieceStorage::subtractPieceStats(const unsigned char* bitfield,
 					     size_t bitfieldLength)
 {
-  _pieceSelector->subtractPieceStats(bitfield, bitfieldLength);
+  _pieceStatMan->subtractPieceStats(bitfield, bitfieldLength);
 }
 
 void DefaultPieceStorage::updatePieceStats(const unsigned char* newBitfield,
 					   size_t newBitfieldLength,
 					   const unsigned char* oldBitfield)
 {
-  _pieceSelector->updatePieceStats(newBitfield, newBitfieldLength,
+  _pieceStatMan->updatePieceStats(newBitfield, newBitfieldLength,
 				   oldBitfield);
 }
 
 void DefaultPieceStorage::addPieceStats(size_t index)
 {
-  _pieceSelector->addPieceStats(index);
+  _pieceStatMan->addPieceStats(index);
 }
 
 } // namespace aria2

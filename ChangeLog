@@ -1,5 +1,26 @@
 2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved piece statistics stuff to new PieceStatMan class.
+	Refactored PieceSelector interface.
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/LongestSequencePieceSelector.cc
+	* src/LongestSequencePieceSelector.h
+	* src/Makefile.am
+	* src/PieceSelector.h
+	* src/PieceStatMan.cc
+	* src/PieceStatMan.h
+	* src/RarestPieceSelector.cc
+	* src/RarestPieceSelector.h
+	* src/RequestGroup.cc
+	* test/DefaultPieceStorageTest.cc
+	* test/InOrderPieceSelector.h
+	* test/Makefile.am
+	* test/PieceStatManTest.cc
+	* test/RarestPieceSelectorTest.cc
+	
+2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added static member _protocolFamily to SocketCore.  By default,
 	SocketCore uses AF_UNSPEC for getaddrinfo hints to resolve
 	address. Sometime SocketCore::bind() and

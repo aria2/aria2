@@ -47,18 +47,6 @@ public:
   // returns 15 because { 10, 11, 12, 13, 14, 15 } is the longest sequence.
   virtual bool select
   (size_t& index, const unsigned char* bitfield, size_t nbits) const;
-
-  virtual void addPieceStats(size_t index);
-
-  virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength);
-  
-  virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength);
-
-  virtual void updatePieceStats(const unsigned char* newBitfield,
-				size_t newBitfieldLength,
-				const unsigned char* oldBitfield);
 };
 
 } // namespace aria2

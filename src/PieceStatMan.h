@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,27 +32,62 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RAREST_PIECE_SELECTOR_H_
-#define _D_RAREST_PIECE_SELECTOR_H_
+#ifndef _D_PIECE_STAT_MAN_H_
+#define _D_PIECE_STAT_MAN_H_
 
-#include "PieceSelector.h"
+#include "common.h"
+
+#include <vector>
+
 #include "SharedHandle.h"
 
 namespace aria2 {
 
-class PieceStatMan;
-
-class RarestPieceSelector:public PieceSelector {
+class PieceStat {
 private:
-  SharedHandle<PieceStatMan> _pieceStatMan;
+  size_t _order;
+  size_t _index;
+  size_t _count;
 public:
-  RarestPieceSelector(const SharedHandle<PieceStatMan>& pieceStatMan);
+  PieceStat(size_t index);
 
-  virtual bool select
-  (size_t& index, const unsigned char* bitfield, size_t nbits) const;
+  bool operator<(const PieceStat& pieceStat) const;
+
+  void addCount();
+  void subCount();
+
+  size_t getOrder() const;
+  void setOrder(size_t order);
+  size_t getIndex() const;
+  size_t getCount() const;
+};
+
+class PieceStatMan {
+private:
+  std::vector<SharedHandle<PieceStat> > _pieceStats;
+
+  std::vector<size_t> _sortedPieceStatIndexes;
+public:
+  PieceStatMan(size_t pieceNum, bool randomShuffle);
+
+  void addPieceStats(size_t index);
+
+  void addPieceStats(const unsigned char* bitfield,
+		     size_t bitfieldLength);
+  
+  void subtractPieceStats(const unsigned char* bitfield,
+			  size_t bitfieldLength);
+
+  void updatePieceStats(const unsigned char* newBitfield,
+			size_t newBitfieldLength,
+			const unsigned char* oldBitfield);
+
+  // Returns piece index in rarest first order.
+  const std::vector<size_t>& getRarerPieceIndexes() const;
+
+  const std::vector<SharedHandle<PieceStat> >& getPieceStats() const;
 };
 
 } // namespace aria2
 
-#endif // _D_RAREST_PIECE_SELECTOR_H_
-
+#endif // _D_PIECE_STAT_MAN_H_

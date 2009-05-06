@@ -85,16 +85,4 @@ bool LongestSequencePieceSelector::select
   }
 }
 
-void LongestSequencePieceSelector::addPieceStats
-(const unsigned char* bitfield, size_t bitfieldLength) {}
-
-void LongestSequencePieceSelector::subtractPieceStats
-(const unsigned char* bitfield, size_t bitfieldLength) {}
-
-void LongestSequencePieceSelector::updatePieceStats
-(const unsigned char* newBitfield, size_t newBitfieldLength,
- const unsigned char* oldBitfield) {}
-
-void LongestSequencePieceSelector::addPieceStats(size_t index) {}
-
 } // namespace aria2

@@ -117,6 +117,7 @@ SRCS =  Socket.h\
 	PieceStorage.h\
 	DefaultPieceStorage.cc DefaultPieceStorage.h\
 	UnknownLengthPieceStorage.cc UnknownLengthPieceStorage.h\
+	PieceStatMan.cc PieceStatMan.h\
 	StatCalc.h\
 	ConsoleStatCalc.cc ConsoleStatCalc.h\
 	TransferStat.cc TransferStat.h\

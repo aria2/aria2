@@ -45,6 +45,7 @@ class Logger;
 class Option;
 class DiskWriterFactory;
 class FileEntry;
+class PieceStatMan;
 class PieceSelector;
 
 #define END_GAME_PIECE_NUM 20
@@ -81,6 +82,8 @@ private:
   const Option* option;
   Haves haves;
 
+  SharedHandle<PieceStatMan> _pieceStatMan;
+
   SharedHandle<PieceSelector> _pieceSelector;
 
   bool getMissingPieceIndex(size_t& index,
@@ -108,9 +111,7 @@ public:
   // If it is set to false, a piece whose index is smallest has the highest
   // priority.
   DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
-		      const Option* option,
-		      const SharedHandle<PieceSelector>& pieceSelector
-		      = SharedHandle<PieceSelector>());
+		      const Option* option);
 		      
   virtual ~DefaultPieceStorage();
 
@@ -223,6 +224,16 @@ public:
   void addUsedPiece(const SharedHandle<Piece>& piece);
 
   void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
+
+  const SharedHandle<PieceStatMan>& getPieceStatMan() const
+  {
+    return _pieceStatMan;
+  }
+
+  void setPieceSelector(const SharedHandle<PieceSelector>& pieceSelector)
+  {
+    _pieceSelector = pieceSelector;
+  }
 };
 
 typedef SharedHandle<DefaultPieceStorage> DefaultPieceStorageHandle;

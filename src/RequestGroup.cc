@@ -396,17 +396,17 @@ void RequestGroup::initPieceStorage()
 {
   if(_downloadContext->knowsTotalLength()) {
 #ifdef ENABLE_BITTORRENT
-    SharedHandle<DefaultPieceStorage> ps;
-    SharedHandle<PieceSelector> selector;
+    SharedHandle<DefaultPieceStorage> ps
+      (new DefaultPieceStorage(_downloadContext, _option));
     // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent integrated
     // downloads. Currently multi-file integrated download is not supported.
     if(!_uris.empty() &&
        _downloadContext->getFileEntries().size() == 1 &&
        !dynamic_pointer_cast<BtContext>(_downloadContext).isNull()) {
       _logger->debug("Using LongestSequencePieceSelector");
-      selector.reset(new LongestSequencePieceSelector());
+      ps->setPieceSelector
+	(SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
     }
-    ps.reset(new DefaultPieceStorage(_downloadContext, _option, selector));
 #else // !ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps
       (new DefaultPieceStorage(_downloadContext, _option));
