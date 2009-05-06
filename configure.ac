@@ -51,9 +51,6 @@ AC_PROG_YACC
 # Setting language choice
 AC_LANG([C++])
 
-# Check for GNU library
-AC_GNU_SOURCE
-
 # Enable system extensions
 AC_USE_SYSTEM_EXTENSIONS
 
