@@ -5,10 +5,15 @@ Release Note
 ------------
 
 This release fixes the bug that --check-integrity option doesn't work
-properly if a file including last piece is missing.
+properly if a file including last piece is missing and increases
+internal receive buffer for FTP in order to receive big banner.
+Ukrainian, Russian and Simplified Chinese translations were updated.
 
 Changes
 -------
+
+ * Updated Ukrainian, Russian and Simplified Chinese
+   translations. Thanks to all translators.
 
  * Generated configure and Makefile.in using autoconf 2.63 and
    automake 1.10.2.  Removed AC_GNU_SOURCE from configure.ac because
