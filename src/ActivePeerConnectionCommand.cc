@@ -64,13 +64,8 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
   interval(interval),
   e(e),
   _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT)),
-  _maxUploadSpeedLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
   _numNewConnection(5)
 {
-  unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
-  if(maxDownloadSpeed > 0) {
-    _thresholdSpeed = std::min(maxDownloadSpeed, _thresholdSpeed);
-  }
   _requestGroup->increaseNumCommand();
 }
 
@@ -86,13 +81,19 @@ bool ActivePeerConnectionCommand::execute() {
   if(checkPoint.elapsed(interval)) {
     checkPoint.reset();
     TransferStat tstat = _requestGroup->calculateStat();
+    const unsigned int maxDownloadLimit =
+      _requestGroup->getMaxDownloadSpeedLimit();
+    const unsigned int maxUploadLimit = _requestGroup->getMaxUploadSpeedLimit();
+    unsigned int thresholdSpeed = _thresholdSpeed;
+    if(maxDownloadLimit > 0) {
+      thresholdSpeed = std::min(maxDownloadLimit, _thresholdSpeed);
+    }
     if(// for seeder state
        (_pieceStorage->downloadFinished() && _btRuntime->lessThanMaxPeers() &&
-	(_maxUploadSpeedLimit == 0 ||
-	 tstat.getUploadSpeed() < _maxUploadSpeedLimit*0.8)) ||
+	(maxUploadLimit == 0 || tstat.getUploadSpeed() < maxUploadLimit*0.8)) ||
        // for leecher state
        (!_pieceStorage->downloadFinished() &&
-	(tstat.getDownloadSpeed() < _thresholdSpeed ||
+	(tstat.getDownloadSpeed() < thresholdSpeed ||
 	 _btRuntime->lessThanMinPeers()))) {
 
       unsigned int numConnection = 0;

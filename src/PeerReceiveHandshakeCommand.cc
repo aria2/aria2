@@ -73,10 +73,6 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
   if(_peerConnection.isNull()) {
     _peerConnection.reset(new PeerConnection(cuid, socket, e->option));
   }
-  unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
-  if(maxDownloadSpeed > 0) {
-    _thresholdSpeed = std::min(maxDownloadSpeed, _thresholdSpeed);
-  }
 }
 
 PeerReceiveHandshakeCommand::~PeerReceiveHandshakeCommand() {}
@@ -111,8 +107,15 @@ bool PeerReceiveHandshakeCommand::executeInternal()
 	(StringFormat("Unknown info hash %s", infoHash.c_str()).str());
     }
     TransferStat tstat = btContext->getOwnerRequestGroup()->calculateStat();
+    const unsigned int maxDownloadLimit =
+      btContext->getOwnerRequestGroup()->getMaxDownloadSpeedLimit();
+    unsigned int thresholdSpeed = _thresholdSpeed;
+    if(maxDownloadLimit > 0) {
+      thresholdSpeed = std::min(maxDownloadLimit, _thresholdSpeed);
+    }
+
     if((!pieceStorage->downloadFinished() &&
-       tstat.getDownloadSpeed() < _thresholdSpeed) ||
+	tstat.getDownloadSpeed() < thresholdSpeed) ||
        btRuntime->lessThanMaxPeers()) {
       if(peerStorage->addPeer(peer)) {
 

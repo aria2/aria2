@@ -1,5 +1,14 @@
 2009-05-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't retrieve PREF_MAX_DOWNLOAD_LIMIT and PREF_MAX_UPLOAD_LIMIT
+	from option directly. Instead, get them from RequestGroup.
+	* src/ActivePeerConnectionCommand.cc
+	* src/ActivePeerConnectionCommand.h
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/RequestGroup.h
+
+2009-05-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused uploadLimitCheck and uploadLimit from
 	PeerAbstractCommand. Removed unused maxDownloadLimit from
 	PeerInteractionCommand.

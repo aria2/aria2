@@ -63,7 +63,6 @@ private:
   DownloadEngine* e;
   Time checkPoint;
   unsigned int _thresholdSpeed; // UNIT: byte/sec
-  unsigned int _maxUploadSpeedLimit;
   unsigned int _numNewConnection; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(int cuid,

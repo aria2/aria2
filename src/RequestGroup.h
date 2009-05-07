@@ -458,6 +458,16 @@ public:
   // _maxUploadSpeedLimit. Always returns false if
   // _maxUploadSpeedLimit == 0. Otherwise returns false.
   bool doesUploadSpeedExceed();
+
+  unsigned int getMaxDownloadSpeedLimit() const
+  {
+    return _maxDownloadSpeedLimit;
+  }
+
+  unsigned int getMaxUploadSpeedLimit() const
+  {
+    return _maxUploadSpeedLimit;
+  }
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
