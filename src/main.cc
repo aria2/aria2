@@ -115,10 +115,10 @@ static void showTorrentFile(const std::string& uri)
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-static void showMetalinkFile(const std::string& uri, const Option* op)
+static void showMetalinkFile(const std::string& uri, const Option& op)
 {
   std::deque<SharedHandle<MetalinkEntry> > metalinkEntries;
-  MetalinkHelper::parseAndQuery(metalinkEntries, uri, op);
+  MetalinkHelper::parseAndQuery(metalinkEntries, uri, &op);
   std::deque<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
   Util::toStream(std::cout, fileEntries);
@@ -127,7 +127,7 @@ static void showMetalinkFile(const std::string& uri, const Option* op)
 #endif // ENABLE_METALINK
 
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
-static void showFiles(const std::deque<std::string>& uris, const Option* op)
+static void showFiles(const std::deque<std::string>& uris, const Option& op)
 {
   ProtocolDetector dt;
   for(std::deque<std::string>::const_iterator i = uris.begin();
@@ -210,7 +210,7 @@ DownloadResult::RESULT main(int argc, char* argv[])
 	showTorrentFile(op.get(PREF_TORRENT_FILE));
 	return exitStatus;
       } else {
-	createRequestGroupForBitTorrent(requestGroups, &op, args);
+	createRequestGroupForBitTorrent(requestGroups, op, args);
       }
     }
     else
@@ -218,22 +218,22 @@ DownloadResult::RESULT main(int argc, char* argv[])
 #ifdef ENABLE_METALINK
       if(!op.blank(PREF_METALINK_FILE)) {
 	if(op.get(PREF_SHOW_FILES) == V_TRUE) {
-	  showMetalinkFile(op.get(PREF_METALINK_FILE), &op);
+	  showMetalinkFile(op.get(PREF_METALINK_FILE), op);
 	  return exitStatus;
 	} else {
-	  createRequestGroupForMetalink(requestGroups, &op);
+	  createRequestGroupForMetalink(requestGroups, op);
 	}
       }
       else
 #endif // ENABLE_METALINK
 	if(!op.blank(PREF_INPUT_FILE)) {
-	  createRequestGroupForUriList(requestGroups, &op);
+	  createRequestGroupForUriList(requestGroups, op);
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
 	} else if(op.get(PREF_SHOW_FILES) == V_TRUE) {
-	  showFiles(args, &op);
+	  showFiles(args, op);
 #endif // ENABLE_METALINK || ENABLE_METALINK
 	} else {
-	  createRequestGroupForUri(requestGroups, &op, args);
+	  createRequestGroupForUri(requestGroups, op, args);
 	}
 
     if(requestGroups.empty()) {

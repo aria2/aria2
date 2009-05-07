@@ -1,5 +1,13 @@
 2009-05-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Pass reference of Option object instead of pointer.
+	* src/download_helper.cc
+	* src/download_helper.h
+	* src/main.cc
+	* test/DownloadHelperTest.cc
+
+2009-05-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't retrieve PREF_MAX_DOWNLOAD_LIMIT and PREF_MAX_UPLOAD_LIMIT
 	from option directly. Instead, get them from RequestGroup.
 	* src/ActivePeerConnectionCommand.cc

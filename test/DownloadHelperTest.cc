@@ -73,7 +73,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
   {
     std::deque<SharedHandle<RequestGroup> > result;
     
-    createRequestGroupForUri(result, &op, uris);
+    createRequestGroupForUri(result, op, uris);
     
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
@@ -93,7 +93,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
   {
     std::deque<SharedHandle<RequestGroup> > result;
     
-    createRequestGroupForUri(result, &op, uris);
+    createRequestGroupForUri(result, op, uris);
     
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
@@ -112,7 +112,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
   {
     std::deque<SharedHandle<RequestGroup> > result;
     
-    createRequestGroupForUri(result, &op, uris);
+    createRequestGroupForUri(result, op, uris);
     
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
@@ -128,7 +128,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
   {
     std::deque<SharedHandle<RequestGroup> > result;
     
-    createRequestGroupForUri(result, &op, uris);
+    createRequestGroupForUri(result, op, uris);
     
     CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
 
@@ -164,7 +164,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
   {
     std::deque<SharedHandle<RequestGroup> > result;
     
-    createRequestGroupForUri(result, &op, uris);
+    createRequestGroupForUri(result, op, uris);
     
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
@@ -201,7 +201,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
   {
     std::deque<SharedHandle<RequestGroup> > result;
     
-    createRequestGroupForUri(result, &op, uris);
+    createRequestGroupForUri(result, op, uris);
     
     CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
     SharedHandle<RequestGroup> group = result[0];
@@ -251,7 +251,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
   {
     std::deque<SharedHandle<RequestGroup> > result;
     
-    createRequestGroupForUri(result, &op, uris);
+    createRequestGroupForUri(result, op, uris);
     
     // group1: http://alpha/file, ...
     // group2-7: 6 file entry in Metalink and 1 torrent file download
@@ -300,7 +300,7 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
 
   std::deque<SharedHandle<RequestGroup> > result;
   
-  createRequestGroupForUriList(result, &op);
+  createRequestGroupForUriList(result, op);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
 
@@ -341,7 +341,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
   {
     std::deque<SharedHandle<RequestGroup> > result;
   
-    createRequestGroupForBitTorrent(result, &op, auxURIs);
+    createRequestGroupForBitTorrent(result, op, auxURIs);
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
 
@@ -361,7 +361,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     // no URIs are given
     std::deque<SharedHandle<RequestGroup> > result;
     std::deque<std::string> emptyURIs;
-    createRequestGroupForBitTorrent(result, &op, emptyURIs);
+    createRequestGroupForBitTorrent(result, op, emptyURIs);
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
@@ -373,7 +373,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
   {
     std::deque<SharedHandle<RequestGroup> > result;
   
-    createRequestGroupForBitTorrent(result, &op, auxURIs);
+    createRequestGroupForBitTorrent(result, op, auxURIs);
 
     // See --force-requencial is ignored
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
@@ -393,7 +393,7 @@ void DownloadHelperTest::testCreateRequestGroupForMetalink()
   {
     std::deque<SharedHandle<RequestGroup> > result;
   
-    createRequestGroupForMetalink(result, &op);
+    createRequestGroupForMetalink(result, op);
 
 #ifdef ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)6, result.size());
