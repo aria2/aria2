@@ -67,8 +67,6 @@ protected:
   void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
-  void setUploadLimit(unsigned int uploadLimit);
-  void setUploadLimitCheck(bool check);
   void setNoCheck(bool check);
   void updateKeepAlive();
 private:
@@ -76,8 +74,6 @@ private:
   bool checkSocketIsWritable;
   SharedHandle<SocketCore> readCheckTarget;
   SharedHandle<SocketCore> writeCheckTarget;
-  bool uploadLimitCheck;
-  unsigned int uploadLimit;
   bool noCheck;
 public:
   PeerAbstractCommand(int32_t cuid,

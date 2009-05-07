@@ -67,7 +67,6 @@ private:
 
   Seq sequence;
   SharedHandle<BtInteractive> btInteractive;
-  unsigned int maxDownloadSpeedLimit;
 protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(time_t wait);

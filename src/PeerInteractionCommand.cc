@@ -89,8 +89,7 @@ PeerInteractionCommand::PeerInteractionCommand
    _btContext(btContext),
    _btRuntime(btRuntime),
    _pieceStorage(pieceStorage),
-   sequence(sequence),
-   maxDownloadSpeedLimit(0)
+   sequence(sequence)
 {
   // TODO move following bunch of processing to separate method, like init()
   if(sequence == INITIATOR_SEND_HANDSHAKE) {
@@ -190,12 +189,9 @@ PeerInteractionCommand::PeerInteractionCommand
   factory->setBtRequestFactory(reqFactory);
   factory->setPeerConnection(peerConnection);
 
-  setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   peer->allocateSessionResource(_btContext->getPieceLength(),
 				_btContext->getTotalLength());
   peer->setBtMessageDispatcher(dispatcher);
-
-  maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
 
   _btRuntime->increaseConnections();
   _requestGroup->increaseNumCommand();
@@ -215,7 +211,6 @@ PeerInteractionCommand::~PeerInteractionCommand() {
 }
 
 bool PeerInteractionCommand::executeInternal() {
-  setUploadLimitCheck(false);
   setNoCheck(false);
   switch(sequence) {
   case INITIATOR_SEND_HANDSHAKE:

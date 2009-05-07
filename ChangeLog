@@ -1,5 +1,15 @@
 2009-05-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused uploadLimitCheck and uploadLimit from
+	PeerAbstractCommand. Removed unused maxDownloadLimit from
+	PeerInteractionCommand.
+	* src/PeerAbstractCommand.cc
+	* src/PeerAbstractCommand.h
+	* src/PeerInteractionCommand.cc
+	* src/PeerInteractionCommand.h
+
+2009-05-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed broken file renaming feature since r1202.
 	* src/FtpNegotiationCommand.cc
 	* src/FtpNegotiationCommand.h

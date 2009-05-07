@@ -56,8 +56,6 @@ PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
   peer(peer),
   checkSocketIsReadable(false),
   checkSocketIsWritable(false),
-  uploadLimitCheck(false),
-  uploadLimit(0),
   noCheck(false)
 {
   if(!socket.isNull() && socket->isOpen()) {
@@ -170,16 +168,6 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket)
       writeCheckTarget = socket;
     }
   }
-}
-
-void PeerAbstractCommand::setUploadLimit(unsigned int uploadLimit)
-{
-  this->uploadLimit = uploadLimit;
-}
-
-void PeerAbstractCommand::setUploadLimitCheck(bool check)
-{
-  this->uploadLimitCheck = check;
 }
 
 void PeerAbstractCommand::setNoCheck(bool check)
