@@ -371,6 +371,8 @@ public:
 
   void shouldCancelDownloadForSafety();
 
+  void adjustFilename(const SharedHandle<BtProgressInfoFile>& infoFile);
+
   SharedHandle<DownloadResult> createDownloadResult() const;
 
   const Option* getOption() const

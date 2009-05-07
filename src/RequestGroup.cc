@@ -363,10 +363,19 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
 		      getFilePath().c_str()).str());
     }
+    adjustFilename
+      (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
+					(_downloadContext,
+					 SharedHandle<PieceStorage>(),
+					 _option)));
     initPieceStorage();
     BtProgressInfoFileHandle infoFile
       (new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option));
-    if(infoFile->exists() || !downloadFinishedByFileLength()) {
+    if(!infoFile->exists() && downloadFinishedByFileLength()) {
+      _pieceStorage->markAllPiecesDone();
+      _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+		      _gid, getFilePath().c_str());
+    } else {
       loadAndOpenFile(infoFile);
       SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
 	(new StreamCheckIntegrityEntry(SharedHandle<Request>(), this));
@@ -436,14 +445,43 @@ bool RequestGroup::downloadFinishedByFileLength()
       !_downloadContext->getPieceHashes().empty())) {
     return false;
   }
+  if(!_downloadContext->knowsTotalLength()) {
+    return false;
+  }
   // TODO consider the case when the getFilePath() returns dir path. 
   File outfile(getFilePath());
-  if(outfile.exists() && getTotalLength() == outfile.size()) {
-    _pieceStorage->markAllPiecesDone();
-    _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, _gid, getFilePath().c_str());
+  if(outfile.exists() && _downloadContext->getTotalLength() == outfile.size()) {
     return true;
   } else {
     return false;
+  }
+}
+
+void RequestGroup::adjustFilename
+(const SharedHandle<BtProgressInfoFile>& infoFile)
+{
+  if(!isPreLocalFileCheckEnabled()) {
+    // OK, no need to care about filename.
+  } else if(infoFile->exists()) {
+    // Use current filename
+  } else if(downloadFinishedByFileLength()) {
+    // File was downloaded already, no need to change file name.
+  } else {
+    File outfile(getFilePath());    
+    if(outfile.exists() && _option->getAsBool(PREF_CONTINUE) &&
+       outfile.size() <= _downloadContext->getTotalLength()) {
+      // File exists but user decided to resume it.
+    } else {
+#ifdef ENABLE_MESSAGE_DIGEST
+      if(outfile.exists() && _option->getAsBool(PREF_CHECK_INTEGRITY)) {
+	// check-integrity existing file
+      } else {
+#endif // ENABLE_MESSAGE_DIGEST
+	shouldCancelDownloadForSafety();
+#ifdef ENABLE_MESSAGE_DIGEST
+      }
+#endif // ENABLE_MESSAGE_DIGEST
+    }
   }
 }
 
@@ -461,41 +499,29 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 		      progressInfoFile->getFilename().c_str(),
 		      getFilePath().c_str());
     }
-    while(1) {
-      if(progressInfoFile->exists()) {
-	progressInfoFile->load();
+
+    if(progressInfoFile->exists()) {
+      progressInfoFile->load();
+      _pieceStorage->getDiskAdaptor()->openExistingFile();
+    } else {
+      File outfile(getFilePath());    
+      if(outfile.exists() && _option->getAsBool(PREF_CONTINUE) &&
+	 outfile.size() <= getTotalLength()) {
 	_pieceStorage->getDiskAdaptor()->openExistingFile();
+	_pieceStorage->markPiecesDone(outfile.size());
       } else {
-	File outfile(getFilePath());    
-	if(outfile.exists() && _option->getAsBool(PREF_CONTINUE) &&
-	   outfile.size() <= getTotalLength()) {
+#ifdef ENABLE_MESSAGE_DIGEST
+	if(outfile.exists() && _option->getAsBool(PREF_CHECK_INTEGRITY)) {
 	  _pieceStorage->getDiskAdaptor()->openExistingFile();
-	  _pieceStorage->markPiecesDone(outfile.size());
 	} else {
-#ifdef ENABLE_MESSAGE_DIGEST
-	  if(outfile.exists() && _option->getAsBool(PREF_CHECK_INTEGRITY)) {
-	    _pieceStorage->getDiskAdaptor()->openExistingFile();
-	  } else {
 #endif // ENABLE_MESSAGE_DIGEST
-	    shouldCancelDownloadForSafety();
-	    // call updateFilename here in case when filename is renamed
-	    // by tryAutoFileRenaming()
-	    progressInfoFile->updateFilename();
-	    if(progressInfoFile->exists()) {
-	      // Close DiskAdaptor here. Renmaed file will be opened in the
-	      // next loop .
-	      _pieceStorage->getDiskAdaptor()->closeFile();
-	      continue;
-	    }
-	    _pieceStorage->getDiskAdaptor()->initAndOpenFile();
+	  _pieceStorage->getDiskAdaptor()->initAndOpenFile();
 #ifdef ENABLE_MESSAGE_DIGEST
-	  }
-#endif // ENABLE_MESSAGE_DIGEST
 	}
+#endif // ENABLE_MESSAGE_DIGEST
       }
-      setProgressInfoFile(progressInfoFile);
-      break;
     }
+    setProgressInfoFile(progressInfoFile);
   } catch(RecoverableException& e) {
     throw DownloadFailureException
       (StringFormat(EX_DOWNLOAD_ABORTED).str(), e);

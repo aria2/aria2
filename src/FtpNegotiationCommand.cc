@@ -341,16 +341,29 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     } else {
       sequence = SEQ_PREPARE_SERVER_SOCKET;
     }
-    _requestGroup->initPieceStorage();
-    if(dctx->knowsTotalLength() &&
-       _requestGroup->downloadFinishedByFileLength()) {
+
+    if(e->option->getAsBool(PREF_DRY_RUN)) {
+      _requestGroup->initPieceStorage();
+      onDryRunFileFound();
+      return false;
+    }
+
+    if(_requestGroup->downloadFinishedByFileLength()) {
+      _requestGroup->initPieceStorage();
+      _requestGroup->getPieceStorage()->markAllPiecesDone();
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+
+      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+		     _requestGroup->getGID(),
+		     _requestGroup->getFilePath().c_str());
 
       poolConnection();
 
       return false;
     }
+
     _requestGroup->shouldCancelDownloadForSafety();
+    _requestGroup->initPieceStorage();
     _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
     if(dctx->knowsTotalLength()) {
@@ -361,19 +374,28 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 
     return true;
   } else {
+    _requestGroup->adjustFilename
+      (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
+					(_requestGroup->getDownloadContext(),
+					 SharedHandle<PieceStorage>(),
+					 e->option)));
     _requestGroup->initPieceStorage();
 
     if(e->option->getAsBool(PREF_DRY_RUN)) {
-      _requestGroup->getPieceStorage()->markAllPiecesDone();
-      poolConnection();
-      sequence = SEQ_HEAD_OK;
+      onDryRunFileFound();
       return false;
     }
 
     BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
+      _requestGroup->getPieceStorage()->markAllPiecesDone();
+
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       
+      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+		     _requestGroup->getGID(),
+		     _requestGroup->getFilePath().c_str());
+
       poolConnection();
       
       return false;
@@ -647,6 +669,13 @@ void FtpNegotiationCommand::poolConnection() const
     options["baseWorkingDir"] = ftp->getBaseWorkingDir();
     e->poolSocket(req, isProxyDefined(),  socket, options);
   }
+}
+
+void FtpNegotiationCommand::onDryRunFileFound()
+{
+  _requestGroup->getPieceStorage()->markAllPiecesDone();
+  poolConnection();
+  sequence = SEQ_HEAD_OK;
 }
 
 } // namespace aria2

@@ -216,6 +216,11 @@ bool HttpResponseCommand::shouldInflateContentEncoding
 bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpResponse)
 {
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
+  _requestGroup->adjustFilename
+    (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
+				      (_requestGroup->getDownloadContext(),
+				       SharedHandle<PieceStorage>(),
+				       e->option)));
   _requestGroup->initPieceStorage();
 
   if(e->option->getAsBool(PREF_DRY_RUN)) {
@@ -225,6 +230,12 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
 
   BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
   if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
+    _requestGroup->getPieceStorage()->markAllPiecesDone();
+
+    logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+		   _requestGroup->getGID(),
+		   _requestGroup->getFilePath().c_str());
+
     return true;
   }
 
@@ -308,16 +319,23 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
     req->setMethod(Request::METHOD_GET);
     return prepareForRetry(0);
   }
-  _requestGroup->initPieceStorage();
 
   // For zero-length file, check existing file comparing its size
-  if(_requestGroup->getDownloadContext()->knowsTotalLength() &&
-     _requestGroup->downloadFinishedByFileLength()) {
+  if(_requestGroup->downloadFinishedByFileLength()) {
+    _requestGroup->initPieceStorage();
+    _requestGroup->getPieceStorage()->markAllPiecesDone();
+
+    logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+		   _requestGroup->getGID(),
+		   _requestGroup->getFilePath().c_str());
+
     poolConnection();
     return true;
   }
 
   _requestGroup->shouldCancelDownloadForSafety();
+  _requestGroup->initPieceStorage();
+
   _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
   // In this context, knowsTotalLength() is true only when the file is

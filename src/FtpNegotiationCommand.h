@@ -112,6 +112,8 @@ private:
 
   bool onFileSizeDetermined(uint64_t totalLength);
 
+  void onDryRunFileFound();
+
   SharedHandle<SocketCore> dataSocket;
   SharedHandle<SocketCore> serverSocket;
   Seq sequence;

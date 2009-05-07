@@ -1,3 +1,12 @@
+2009-05-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed broken file renaming feature since r1202.
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* src/HttpResponseCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+
 2009-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused debug log
