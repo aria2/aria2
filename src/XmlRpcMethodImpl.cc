@@ -196,6 +196,12 @@ BDE TellActiveStatusXmlRpcMethod::process
     SharedHandle<BtContext> btctx =
       dynamic_pointer_cast<BtContext>((*i)->getDownloadContext());
     if(!btctx.isNull()) {
+      entryDict["infoHash"] = BDE(btctx->getInfoHashAsString());
+      entryDict["pieceLength"] = 
+	BDE(Util::uitos((*i)->getDownloadContext()->getPieceLength()));
+      entryDict["numPieces"] =
+	BDE(Util::uitos((*i)->getDownloadContext()->getNumPieces()));
+
       SharedHandle<BtRegistry> btreg = e->getBtRegistry();
 
       BDE peers = BDE::list();

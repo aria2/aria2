@@ -1,5 +1,11 @@
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added infoHash, pieceLength, numPieces value for tellActiveStatus
+	command.
+	* src/XmlRpcMethodImpl.cc
+	
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Now RequestGroup has its own copy of Option object. This will help
 	to give custom option for each RequestGroup.
 	addTorrentFile command now takes options.
