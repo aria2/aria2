@@ -136,7 +136,7 @@ public:
   void setUp() {
     _option.reset(new Option());
 
-    _rg.reset(new RequestGroup(_option.get(), std::deque<std::string>()));
+    _rg.reset(new RequestGroup(_option, std::deque<std::string>()));
 
     btContext.reset(new DefaultBtContext());
     btContext->load("test.torrent");

@@ -58,9 +58,9 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand
   :
   AbstractCommand(cuid, req, requestGroup, e, s),
   _proxyRequest(proxyRequest),
-  httpConnection(new HttpConnection(cuid, s, e->option))
+  httpConnection(new HttpConnection(cuid, s, getOption().get()))
 {
-  setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
+  setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
@@ -71,7 +71,7 @@ bool AbstractProxyRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(httpConnection->sendBufferIsEmpty()) {
     HttpRequestHandle httpRequest(new HttpRequest());
-    httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
+    httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(req);
     httpRequest->setProxyRequest(_proxyRequest);
 

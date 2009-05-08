@@ -48,12 +48,10 @@ class BtDependency : public Dependency
 private:
   WeakHandle<RequestGroup> _dependant;
   SharedHandle<RequestGroup> _dependee;
-  const Option* _option;
   Logger* _logger;
 public:
   BtDependency(const WeakHandle<RequestGroup>& dependant,
-	       const SharedHandle<RequestGroup>& dependee,
-	       const Option* option);
+	       const SharedHandle<RequestGroup>& dependee);
 
   virtual ~BtDependency();
 

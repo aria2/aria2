@@ -95,7 +95,7 @@ PeerInteractionCommand::PeerInteractionCommand
   if(sequence == INITIATOR_SEND_HANDSHAKE) {
     disableReadCheckSocket();
     setWriteCheckSocket(socket);
-    setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
+    setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
 
   SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
@@ -123,7 +123,7 @@ PeerInteractionCommand::PeerInteractionCommand
 
   PeerConnectionHandle peerConnection;
   if(passedPeerConnection.isNull()) {
-    peerConnection.reset(new PeerConnection(cuid, socket, e->option));
+    peerConnection.reset(new PeerConnection(cuid, socket, getOption().get()));
   } else {
     peerConnection = passedPeerConnection;
   }
@@ -135,7 +135,7 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setBtContext(_btContext);
   dispatcher->setPieceStorage(pieceStorage);
   dispatcher->setPeerStorage(peerStorage);
-  dispatcher->setRequestTimeout(e->option->getAsInt(PREF_BT_REQUEST_TIMEOUT));
+  dispatcher->setRequestTimeout(getOption()->getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcher->setBtMessageFactory(factory);
   dispatcher->setRequestGroupMan(e->_requestGroupMan);
 
@@ -169,11 +169,11 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractive->setExtensionMessageFactory(extensionMessageFactory);
   btInteractive->setExtensionMessageRegistry(exMsgRegistry);
   btInteractive->setKeepAliveInterval
-    (e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
+    (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setRequestGroupMan(e->_requestGroupMan);
   btInteractive->setBtMessageFactory(factory);
   if(!_btContext->isPrivate()) {
-    if(e->option->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
+    if(getOption()->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
       btInteractive->setUTPexEnabled(true);
     }
     if(DHTSetup::initialized()) {
@@ -220,7 +220,7 @@ bool PeerInteractionCommand::executeInternal() {
     disableWriteCheckSocket();
     setReadCheckSocket(socket);
     //socket->setBlockingMode();
-    setTimeout(e->option->getAsInt(PREF_BT_TIMEOUT));
+    setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
     btInteractive->initiateHandshake();
     sequence = INITIATOR_WAIT_HANDSHAKE;
     break;
@@ -322,6 +322,11 @@ void PeerInteractionCommand::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
   _peerStorage = peerStorage;
+}
+
+const SharedHandle<Option>& PeerInteractionCommand::getOption() const
+{
+  return _requestGroup->getOption();
 }
 
 } // namespace aria2

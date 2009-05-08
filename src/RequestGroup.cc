@@ -110,14 +110,15 @@ int32_t RequestGroup::_gidCounter = 0;
 
 const std::string RequestGroup::ACCEPT_METALINK = "application/metalink+xml";
 
-RequestGroup::RequestGroup(const Option* option,
+RequestGroup::RequestGroup(const SharedHandle<Option>& option,
 			   const std::deque<std::string>& uris):
   _gid(++_gidCounter),
+  _option(new Option(*option.get())),
   _uris(uris),
   _numConcurrentCommand(option->getAsInt(PREF_SPLIT)),
   _numStreamConnection(0),
   _numCommand(0),
-  _segmentManFactory(new DefaultSegmentManFactory(option)),
+  _segmentManFactory(new DefaultSegmentManFactory(_option.get())),
   _progressInfoFile(new NullProgressInfoFile()),
   _preLocalFileCheckEnabled(true),
   _haltRequested(false),
@@ -131,7 +132,6 @@ RequestGroup::RequestGroup(const Option* option,
   _inMemoryDownload(false),
   _maxDownloadSpeedLimit(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT)),
   _maxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
-  _option(option),
   _logger(LogFactory::getInstance())
 {
   _fileAllocationEnabled = _option->get(PREF_FILE_ALLOCATION) != V_NONE;
@@ -237,7 +237,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       SharedHandle<DefaultBtProgressInfoFile>
 	progressInfoFile(new DefaultBtProgressInfoFile(_downloadContext,
 						       _pieceStorage,
-						       _option));
+						       _option.get()));
       
       btRegistry->registerBtContext(btContext->getInfoHashAsString(),
 				    btContext);
@@ -256,7 +256,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       progressInfoFile->setBtRuntime(btRuntime);
 
       SharedHandle<DefaultPeerStorage> peerStorage
-	(new DefaultPeerStorage(btContext, _option));
+	(new DefaultPeerStorage(btContext, _option.get()));
       peerStorage->setBtRuntime(btRuntime);
       peerStorage->setPieceStorage(_pieceStorage);
       btRegistry->registerPeerStorage(btContext->getInfoHashAsString(),
@@ -265,7 +265,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       progressInfoFile->setPeerStorage(peerStorage);
 
       SharedHandle<DefaultBtAnnounce> btAnnounce
-	(new DefaultBtAnnounce(btContext, _option));
+	(new DefaultBtAnnounce(btContext, _option.get()));
       btAnnounce->setBtRuntime(btRuntime);
       btAnnounce->setPieceStorage(_pieceStorage);
       btAnnounce->setPeerStorage(peerStorage);
@@ -326,7 +326,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 
       if(!btContext->isPrivate() && _option->getAsBool(PREF_ENABLE_DHT)) {
 	std::deque<Command*> commands;
-	DHTSetup().setup(commands, e, _option);
+	DHTSetup().setup(commands, e, _option.get());
 	e->addCommand(commands);
 	if(!btContext->getNodes().empty() && DHTSetup::initialized()) {
 	  DHTEntryPointNameResolveCommand* command =
@@ -367,10 +367,11 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
 					(_downloadContext,
 					 SharedHandle<PieceStorage>(),
-					 _option)));
+					 _option.get())));
     initPieceStorage();
     BtProgressInfoFileHandle infoFile
-      (new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option));
+      (new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage,
+				     _option.get()));
     if(!infoFile->exists() && downloadFinishedByFileLength()) {
       _pieceStorage->markAllPiecesDone();
       _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
@@ -389,7 +390,7 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
 					      DownloadEngine* e)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  if(e->option->getAsBool(PREF_CHECK_INTEGRITY) &&
+  if(_option->getAsBool(PREF_CHECK_INTEGRITY) &&
      entry->isValidationReady()) {
     entry->initValidator();
     entry->cutTrailingGarbage();
@@ -406,7 +407,7 @@ void RequestGroup::initPieceStorage()
   if(_downloadContext->knowsTotalLength()) {
 #ifdef ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps
-      (new DefaultPieceStorage(_downloadContext, _option));
+      (new DefaultPieceStorage(_downloadContext, _option.get()));
     // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent integrated
     // downloads. Currently multi-file integrated download is not supported.
     if(!_uris.empty() &&
@@ -418,7 +419,7 @@ void RequestGroup::initPieceStorage()
     }
 #else // !ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps
-      (new DefaultPieceStorage(_downloadContext, _option));
+      (new DefaultPieceStorage(_downloadContext, _option.get()));
 #endif // !ENABLE_BITTORRENT
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
@@ -426,7 +427,7 @@ void RequestGroup::initPieceStorage()
     _pieceStorage = ps;
   } else {
     UnknownLengthPieceStorageHandle ps
-      (new UnknownLengthPieceStorage(_downloadContext, _option));
+      (new UnknownLengthPieceStorage(_downloadContext, _option.get()));
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }

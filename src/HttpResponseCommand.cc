@@ -108,7 +108,7 @@ bool HttpResponseCommand::executeInternal()
   req->supportsPersistentConnection
     (httpResponse->supportsPersistentConnection());
   if(req->isPipeliningEnabled()) {
-    req->setMaxPipelinedRequest(e->option->getAsInt(PREF_MAX_HTTP_PIPELINING));
+    req->setMaxPipelinedRequest(getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
   }
 
   if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
@@ -187,7 +187,7 @@ bool HttpResponseCommand::executeInternal()
 
 void HttpResponseCommand::updateLastModifiedTime(const Time& lastModified)
 {
-  if(e->option->getAsBool(PREF_REMOTE_TIME)) {
+  if(getOption()->getAsBool(PREF_REMOTE_TIME)) {
     _requestGroup->updateLastModifiedTime(lastModified);
   }
 }
@@ -220,15 +220,15 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
 				      (_requestGroup->getDownloadContext(),
 				       SharedHandle<PieceStorage>(),
-				       e->option)));
+				       getOption().get())));
   _requestGroup->initPieceStorage();
 
-  if(e->option->getAsBool(PREF_DRY_RUN)) {
+  if(getOption()->getAsBool(PREF_DRY_RUN)) {
     onDryRunFileFound();
     return true;
   }
 
-  BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
+  BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), getOption().get()));
   if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
     _requestGroup->getPieceStorage()->markAllPiecesDone();
 
@@ -308,7 +308,7 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   // We assume that RequestGroup::getTotalLength() == 0 here
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
 
-  if(e->option->getAsBool(PREF_DRY_RUN)) {
+  if(getOption()->getAsBool(PREF_DRY_RUN)) {
     _requestGroup->initPieceStorage();
     onDryRunFileFound();
     return true;
@@ -386,9 +386,9 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
   HttpDownloadCommand* command =
     new HttpDownloadCommand(cuid, req, _requestGroup,
 			    httpResponse, httpConnection, e, socket);
-  command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
+  command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit
-    (e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+    (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   command->setTransferEncodingDecoder(transferEncodingDecoder);
 
   if(!contentEncodingDecoder.isNull()) {

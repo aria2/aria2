@@ -179,7 +179,7 @@ bool AbstractCommand::execute() {
       onAbort();
       req->resetUrl();
     } else {
-      if(e->option->getAsBool(PREF_RESET_URI)) {
+      if(getOption()->getAsBool(PREF_RESET_URI)) {
 	req->resetUrl();
       }
     }
@@ -190,7 +190,7 @@ bool AbstractCommand::execute() {
       tryReserved();
       return true;
     } else {
-      return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
+      return prepareForRetry(getOption()->getAsInt(PREF_RETRY_WAIT));
     }
   } catch(DownloadFailureException& err) {
     logger->error(EX_EXCEPTION_CAUGHT, err);
@@ -310,7 +310,7 @@ void AbstractCommand::setWriteCheckSocketIf
 }
 
 static const std::string& getProxyStringFor(const std::string& proxyPref,
-					    const Option* option)
+					    const SharedHandle<Option>& option)
 {
   if(option->defined(proxyPref)) {
     return option->get(proxyPref);
@@ -320,7 +320,7 @@ static const std::string& getProxyStringFor(const std::string& proxyPref,
 }
 
 static bool isProxyUsed(const std::string& proxyPref,
-			const Option* option)
+			const SharedHandle<Option>& option)
 {
   std::string proxy = getProxyStringFor(proxyPref, option);
   if(proxy.empty()) {
@@ -330,7 +330,8 @@ static bool isProxyUsed(const std::string& proxyPref,
   }
 }
 
-static bool isProxyRequest(const std::string& protocol, const Option* option)
+static bool isProxyRequest(const std::string& protocol,
+			   const SharedHandle<Option>& option)
 {
   return
     (protocol == Request::PROTO_HTTP && isProxyUsed(PREF_HTTP_PROXY, option)) ||
@@ -369,12 +370,12 @@ static bool inNoProxy(const SharedHandle<Request>& req,
 
 bool AbstractCommand::isProxyDefined() const
 {
-  return isProxyRequest(req->getProtocol(), e->option) &&
-    !inNoProxy(req, e->option->get(PREF_NO_PROXY));
+  return isProxyRequest(req->getProtocol(), getOption()) &&
+    !inNoProxy(req, getOption()->get(PREF_NO_PROXY));
 }
 
 static const std::string& getProxyString(const SharedHandle<Request>& req,
-					 const Option* option)
+					 const SharedHandle<Option>& option)
 {
   if(req->getProtocol() == Request::PROTO_HTTP) {
     return getProxyStringFor(PREF_HTTP_PROXY, option);
@@ -390,10 +391,10 @@ static const std::string& getProxyString(const SharedHandle<Request>& req,
 SharedHandle<Request> AbstractCommand::createProxyRequest() const
 {
   SharedHandle<Request> proxyRequest;
-  if(inNoProxy(req, e->option->get(PREF_NO_PROXY))) {
+  if(inNoProxy(req, getOption()->get(PREF_NO_PROXY))) {
     return proxyRequest;
   }
-  std::string proxy = getProxyString(req, e->option);
+  std::string proxy = getProxyString(req, getOption());
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
     if(proxyRequest->setUrl(proxy)) {
@@ -427,7 +428,7 @@ bool AbstractCommand::asyncResolveHostname()
   case AsyncNameResolver::STATUS_SUCCESS:
     return true;
   case AsyncNameResolver::STATUS_ERROR:
-    if(!isProxyRequest(req->getProtocol(), e->option)) {
+    if(!isProxyRequest(req->getProtocol(), getOption())) {
       e->_requestGroupMan->getOrCreateServerStat
 	(req->getHost(), req->getProtocol())->setError();
     }
@@ -486,7 +487,7 @@ void AbstractCommand::checkIfConnectionEstablished
     if(!error.empty()) {
       // Don't set error if proxy server is used and its method is GET.
       if(resolveProxyMethod(req->getProtocol()) != V_GET ||
-	 !isProxyRequest(req->getProtocol(), e->option)) {
+	 !isProxyRequest(req->getProtocol(), getOption())) {
 	e->_requestGroupMan->getOrCreateServerStat
 	  (req->getHost(), req->getProtocol())->setError();
       }
@@ -499,12 +500,17 @@ void AbstractCommand::checkIfConnectionEstablished
 const std::string& AbstractCommand::resolveProxyMethod
 (const std::string& protocol) const
 {
-  if(e->option->get(PREF_PROXY_METHOD) == V_TUNNEL ||
+  if(getOption()->get(PREF_PROXY_METHOD) == V_TUNNEL ||
      Request::PROTO_HTTPS == protocol) {
     return V_TUNNEL;
   } else {
     return V_GET;
   }
+}
+
+const SharedHandle<Option>& AbstractCommand::getOption() const
+{
+  return _requestGroup->getOption();
 }
 
 } // namespace aria2

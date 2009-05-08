@@ -72,7 +72,7 @@ void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
   // are valid, then aira2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
-  if(e->option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
+  if(_requestGroup->getOption()->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
     SharedHandle<BtFileAllocationEntry> entry
       (new BtFileAllocationEntry(_requestGroup));
     proceedFileAllocation(commands, entry, e);

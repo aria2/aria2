@@ -47,6 +47,7 @@ class RequestGroup;
 class Segment;
 class Exception;
 class SocketCore;
+class Option;
 #ifdef ENABLE_ASYNC_DNS
 class AsyncNameResolver;
 #endif // ENABLE_ASYNC_DNS
@@ -117,6 +118,8 @@ protected:
   // Returns proxy method for given protocol. Either V_GET or V_TUNNEL
   // is returned.  For HTTPS, always returns V_TUNNEL.
   const std::string& resolveProxyMethod(const std::string& protocol) const;
+
+  const SharedHandle<Option>& getOption() const;
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;

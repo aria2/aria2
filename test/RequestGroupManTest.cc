@@ -25,8 +25,13 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testSaveServerStat);
   CPPUNIT_TEST_SUITE_END();
 private:
-
+  SharedHandle<Option> _option;
 public:
+  void setUp()
+  {
+    _option.reset(new Option());
+  }
+
   void testIsSameFileBeingDownloaded();
   void testGetInitialCommands();
   void testLoadServerStat();
@@ -38,12 +43,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupManTest );
 
 void RequestGroupManTest::testIsSameFileBeingDownloaded()
 {
-  Option option;
-
   std::deque<std::string> uris;
   uris.push_back("http://localhost/aria2.tar.bz2");
-  SharedHandle<RequestGroup> rg1(new RequestGroup(&option, uris));
-  SharedHandle<RequestGroup> rg2(new RequestGroup(&option, uris));
+  SharedHandle<RequestGroup> rg1(new RequestGroup(_option, uris));
+  SharedHandle<RequestGroup> rg2(new RequestGroup(_option, uris));
 
   SharedHandle<SingleFileDownloadContext> dctx1
     (new SingleFileDownloadContext(0, 0, "aria2.tar.bz2"));
@@ -57,7 +60,7 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   rgs.push_back(rg1);
   rgs.push_back(rg2);
 
-  RequestGroupMan gm(rgs, 1, &option);
+  RequestGroupMan gm(rgs, 1, _option.get());
   
   CPPUNIT_ASSERT(gm.isSameFileBeingDownloaded(rg1.get()));
 
@@ -74,8 +77,7 @@ void RequestGroupManTest::testGetInitialCommands()
 
 void RequestGroupManTest::testSaveServerStat()
 {
-  Option option;
-  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(), 0, &option);
+  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(),0,_option.get());
   SharedHandle<ServerStat> ss_localhost(new ServerStat("localhost", "http"));
   rm.addServerStat(ss_localhost);
   File f("/tmp/aria2_RequestGroupManTest_testSaveServerStat");
@@ -98,8 +100,7 @@ void RequestGroupManTest::testLoadServerStat()
     << "status=OK";
   o.close();
 
-  Option option;
-  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(), 0, &option);
+  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(),0,_option.get());
   std::cerr << "testLoadServerStat" << std::endl;
   CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
   SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",

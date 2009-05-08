@@ -140,7 +140,7 @@ std::string XmlRpcMethod::execute(const XmlRpcRequest& req, DownloadEngine* e)
 }
 
 void XmlRpcMethod::gatherRequestOption
-(Option& requestOption, const Option& option, const BDE& optionsDict)
+(const SharedHandle<Option>& option, const BDE& optionsDict)
 {
   for(std::vector<std::string>::const_iterator i = listRequestOptions().begin();
       i != listRequestOptions().end(); ++i) {
@@ -148,11 +148,10 @@ void XmlRpcMethod::gatherRequestOption
       const BDE& value = optionsDict[*i];
       if(value.isString()) {
 	_optionParser->findByName(*i)->parse
-	  (requestOption, value.s());
+	  (*option.get(), value.s());
       }
     }
   }
-  completeRequestOption(requestOption, option);
 }
 
 } // namespace xmlrpc

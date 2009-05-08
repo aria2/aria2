@@ -52,7 +52,7 @@ InitiateConnectionCommand::InitiateConnectionCommand
  DownloadEngine* e):
   AbstractCommand(cuid, req, requestGroup, e)
 {
-  setTimeout(e->option->getAsInt(PREF_DNS_TIMEOUT));
+  setTimeout(getOption()->getAsInt(PREF_DNS_TIMEOUT));
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();
   disableWriteCheckSocket();
@@ -72,7 +72,7 @@ bool InitiateConnectionCommand::executeInternal() {
   std::string ipaddr = e->findCachedIPAddress(hostname);
   if(ipaddr.empty()) {
 #ifdef ENABLE_ASYNC_DNS
-    if(e->option->getAsBool(PREF_ASYNC_DNS)) {
+    if(getOption()->getAsBool(PREF_ASYNC_DNS)) {
       if(!isAsyncNameResolverInitialized()) {
 	initAsyncNameResolver(hostname);
       }

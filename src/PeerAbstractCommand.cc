@@ -61,6 +61,7 @@ PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
   if(!socket.isNull() && socket->isOpen()) {
     setReadCheckSocket(socket);
   }
+  // TODO referring global option
   timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
 }
 

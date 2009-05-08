@@ -1,3 +1,63 @@
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Now RequestGroup has its own copy of Option object. This will help
+	to give custom option for each RequestGroup.
+	addTorrentFile command now takes options.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/AbstractProxyRequestCommand.cc
+	* src/ActivePeerConnectionCommand.cc
+	* src/ActivePeerConnectionCommand.h
+	* src/AdaptiveURISelector.cc
+	* src/BtCheckIntegrityEntry.cc
+	* src/BtDependency.cc
+	* src/BtDependency.h
+	* src/BtFileAllocationEntry.cc
+	* src/BtPostDownloadHandler.cc
+	* src/CheckIntegrityEntry.cc
+	* src/DownloadCommand.cc
+	* src/FtpDownloadCommand.cc
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/InitiateConnectionCommand.cc
+	* src/InitiateConnectionCommandFactory.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/InitiatorMSEHandshakeCommand.h
+	* src/Metalink2RequestGroup.cc
+	* src/Metalink2RequestGroup.h
+	* src/MetalinkPostDownloadHandler.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/MultiUrlRequestInfo.h
+	* src/PeerAbstractCommand.cc
+	* src/PeerInteractionCommand.cc
+	* src/PeerInteractionCommand.h
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/PeerReceiveHandshakeCommand.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/TrackerWatcherCommand.cc
+	* src/TrackerWatcherCommand.h
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethod.h
+	* src/XmlRpcMethodImpl.cc
+	* src/download_helper.cc
+	* src/download_helper.h
+	* src/main.cc
+	* test/BtDependencyTest.cc
+	* test/BtPostDownloadHandlerTest.cc
+	* test/DefaultBtMessageDispatcherTest.cc
+	* test/DownloadHandlerFactoryTest.cc
+	* test/DownloadHelperTest.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkPostDownloadHandlerTest.cc
+	* test/RequestGroupManTest.cc
+	* test/RequestGroupTest.cc
+
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added tellActiveStatus xml-rpc command which reports download

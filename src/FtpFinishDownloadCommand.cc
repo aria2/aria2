@@ -84,7 +84,7 @@ bool FtpFinishDownloadCommand::execute()
     if(status != 226) {
       throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
     }
-    if(e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+    if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::map<std::string, std::string> options;
       options["baseWorkingDir"] = _ftpConnection->getBaseWorkingDir();
       e->poolSocket(req, isProxyDefined(), socket, options);

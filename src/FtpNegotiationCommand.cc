@@ -77,11 +77,11 @@ FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
   AbstractCommand(cuid, req, requestGroup, e, s), sequence(seq),
   ftp(new FtpConnection(cuid, socket, req,
 			e->getAuthConfigFactory()->createAuthConfig(req),
-			e->option))
+			getOption().get()))
 {
   ftp->setBaseWorkingDir(baseWorkingDir);
   if(seq == SEQ_RECV_GREETING) {
-    setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
+    setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   }
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
@@ -96,8 +96,8 @@ bool FtpNegotiationCommand::executeInternal() {
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
     FtpDownloadCommand* command =
       new FtpDownloadCommand(cuid, req, _requestGroup, ftp, e, dataSocket, socket);
-    command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
-    command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+    command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
+    command->setLowestDownloadSpeedLimit(getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
       SharedHandle<ServerHost> sv =
 	_requestGroup->searchServerHost(req->getHost());
@@ -111,7 +111,7 @@ bool FtpNegotiationCommand::executeInternal() {
   } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
     return true;
   } else if(sequence == SEQ_FILE_PREPARATION) {
-    if(e->option->getAsBool(PREF_FTP_PASV)) {
+    if(getOption()->getAsBool(PREF_FTP_PASV)) {
       sequence = SEQ_SEND_PASV;
     } else {
       sequence = SEQ_PREPARE_SERVER_SOCKET;
@@ -265,7 +265,7 @@ bool FtpNegotiationCommand::recvCwd() {
     else
       throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
-  if(e->option->getAsBool(PREF_REMOTE_TIME)) {
+  if(getOption()->getAsBool(PREF_REMOTE_TIME)) {
     sequence = SEQ_SEND_MDTM;
   } else {
     sequence = SEQ_SEND_SIZE;
@@ -336,13 +336,13 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   }
   if(totalLength == 0) {
 
-    if(e->option->getAsBool(PREF_FTP_PASV)) {
+    if(getOption()->getAsBool(PREF_FTP_PASV)) {
       sequence = SEQ_SEND_PASV;
     } else {
       sequence = SEQ_PREPARE_SERVER_SOCKET;
     }
 
-    if(e->option->getAsBool(PREF_DRY_RUN)) {
+    if(getOption()->getAsBool(PREF_DRY_RUN)) {
       _requestGroup->initPieceStorage();
       onDryRunFileFound();
       return false;
@@ -378,15 +378,15 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
 					(_requestGroup->getDownloadContext(),
 					 SharedHandle<PieceStorage>(),
-					 e->option)));
+					 getOption().get())));
     _requestGroup->initPieceStorage();
 
-    if(e->option->getAsBool(PREF_DRY_RUN)) {
+    if(getOption()->getAsBool(PREF_DRY_RUN)) {
       onDryRunFileFound();
       return false;
     }
 
-    BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
+    BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), getOption().get()));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       _requestGroup->getPieceStorage()->markAllPiecesDone();
 
@@ -448,7 +448,7 @@ bool FtpNegotiationCommand::recvSize() {
     // TODO Skipping RequestGroup::validateTotalLength(0) here will allow
     // wrong file to be downloaded if user-specified URL is wrong.
   }
-  if(e->option->getAsBool(PREF_FTP_PASV)) {
+  if(getOption()->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_SEND_PASV;
   } else {
     sequence = SEQ_PREPARE_SERVER_SOCKET;
@@ -580,7 +580,7 @@ bool FtpNegotiationCommand::recvRetr() {
     else
       throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
-  if(e->option->getAsBool(PREF_FTP_PASV)) {
+  if(getOption()->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_NEGOTIATION_COMPLETED;
     return false;
   } else {
@@ -664,7 +664,7 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
 
 void FtpNegotiationCommand::poolConnection() const
 {
-  if(e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+  if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
     std::map<std::string, std::string> options;
     options["baseWorkingDir"] = ftp->getBaseWorkingDir();
     e->poolSocket(req, isProxyDefined(),  socket, options);

@@ -49,11 +49,9 @@
 namespace aria2 {
 
 BtDependency::BtDependency(const RequestGroupWeakHandle& dependant,
-			   const RequestGroupHandle& dependee,
-			   const Option* option):
+			   const RequestGroupHandle& dependee):
   _dependant(dependant),
   _dependee(dependee),
-  _option(option),
   _logger(LogFactory::getInstance()) {}
 
 BtDependency::~BtDependency() {}
@@ -84,8 +82,9 @@ bool BtDependency::resolve()
       btContext->loadFromMemory(content,
 				File(dependee->getFilePath()).getBasename(),
 				overrideName);
-      if(_option->defined(PREF_PEER_ID_PREFIX)) {
-	btContext->setPeerIdPrefix(_option->get(PREF_PEER_ID_PREFIX));
+      if(_dependant->getOption()->defined(PREF_PEER_ID_PREFIX)) {
+	btContext->setPeerIdPrefix
+	  (_dependant->getOption()->get(PREF_PEER_ID_PREFIX));
       }
     } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);

@@ -62,7 +62,7 @@ void BtPostDownloadHandler::getNextRequestGroups
 (std::deque<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
-  const Option* op = requestGroup->getOption();
+  const SharedHandle<Option>& op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Torrent file %s",
 		 requestGroup->getFilePath().c_str());
   RequestGroupHandle rg(new RequestGroup(op, std::deque<std::string>()));

@@ -55,10 +55,10 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, 
 #endif // ENABLE_SSL
      ) {
     
-    if(e->option->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
+    if(requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
       req->setKeepAliveHint(true);
     }
-    if(e->option->getAsBool(PREF_ENABLE_HTTP_PIPELINING)) {
+    if(requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_PIPELINING)) {
       req->setPipeliningHint(true);
     }
 

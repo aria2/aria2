@@ -205,7 +205,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 {
   std::deque<std::string> uris;
   uris.push_back(uri);
-  RequestGroupHandle rg(new RequestGroup(e->option, uris));
+  RequestGroupHandle rg(new RequestGroup(getOption(), uris));
   // If backup tracker is available, only try 2 times for each tracker
   // and if they all fails, then try next one.
   if(backupTrackerIsAvailable(_btContext->getAnnounceTiers())) {
@@ -218,7 +218,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SingleFileDownloadContextHandle dctx
-    (new SingleFileDownloadContext(e->option->getAsInt(PREF_SEGMENT_SIZE),
+    (new SingleFileDownloadContext(getOption()->getAsInt(PREF_SEGMENT_SIZE),
 				   0,
 				   A2STR::NIL,
 				   TRACKER_ANNOUNCE_FILE));
@@ -254,6 +254,11 @@ void TrackerWatcherCommand::setBtAnnounce
 (const SharedHandle<BtAnnounce>& btAnnounce)
 {
   _btAnnounce = btAnnounce;
+}
+
+const SharedHandle<Option>& TrackerWatcherCommand::getOption() const
+{
+  return _requestGroup->getOption();
 }
 
 } // namespace aria2

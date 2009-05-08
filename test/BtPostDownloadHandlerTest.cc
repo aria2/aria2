@@ -16,9 +16,12 @@ class BtPostDownloadHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetNextRequestGroups);
   CPPUNIT_TEST_SUITE_END();
 private:
-
+  SharedHandle<Option> _option;
 public:
-  void setUp() {}
+  void setUp()
+  {
+    _option.reset(new Option());
+  }
 
   void testCanHandle_extension();
   void testCanHandle_contentType();
@@ -30,10 +33,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtPostDownloadHandlerTest );
 
 void BtPostDownloadHandlerTest::testCanHandle_extension()
 {
-  Option op;
   SharedHandle<SingleFileDownloadContext> dctx
     (new SingleFileDownloadContext(0, 0, "test.torrent"));
-  RequestGroup rg(&op, std::deque<std::string>());
+  RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -46,11 +48,10 @@ void BtPostDownloadHandlerTest::testCanHandle_extension()
 
 void BtPostDownloadHandlerTest::testCanHandle_contentType()
 {
-  Option op;
   SharedHandle<SingleFileDownloadContext> dctx
     (new SingleFileDownloadContext(0, 0, "test"));
   dctx->setContentType("application/x-bittorrent");
-  RequestGroup rg(&op, std::deque<std::string>());
+  RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -63,10 +64,9 @@ void BtPostDownloadHandlerTest::testCanHandle_contentType()
 
 void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
-  Option op;
   SharedHandle<SingleFileDownloadContext> dctx
     (new SingleFileDownloadContext(1024, 0, "test.torrent"));
-  RequestGroup rg(&op, std::deque<std::string>());
+  RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
 

@@ -87,12 +87,12 @@ BDE AddURIXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
     }
   }
 
-  Option requestOption;
+  SharedHandle<Option> requestOption(new Option(*e->option));
   if(params.size() > 1 && params[1].isDict()) {
-    gatherRequestOption(requestOption, *e->option, params[1]);
+    gatherRequestOption(requestOption, params[1]);
   }
   std::deque<SharedHandle<RequestGroup> > result;
-  createRequestGroupForUri(result, *e->option, uris, requestOption,
+  createRequestGroupForUri(result, requestOption, uris,
 			   /* ignoreForceSeq = */ true,
 			   /* ignoreNonURI = */ true);
 
@@ -113,9 +113,14 @@ BDE AddTorrentFileXmlRpcMethod::process
     throw DlAbortEx("Torrent data is not provided.");
   }
   
-  // TODO should accect uris from xml rpc request
+  // TODO should accept uris from xml rpc request
+
+  SharedHandle<Option> requestOption(new Option(*e->option));
+  if(params.size() > 2 && params[2].isDict()) {
+    gatherRequestOption(requestOption, params[2]);
+  }
   std::deque<SharedHandle<RequestGroup> > result;
-  createRequestGroupForBitTorrent(result, *e->option,
+  createRequestGroupForBitTorrent(result, requestOption,
 				  std::deque<std::string>(),
 				  params[0].s());
 

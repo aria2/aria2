@@ -45,6 +45,7 @@ class PeerStorage;
 class PieceStorage;
 class BtRuntime;
 class MSEHandshake;
+class Option;
 
 class InitiatorMSEHandshakeCommand : public PeerAbstractCommand {
 public:
@@ -70,6 +71,8 @@ private:
 
   Seq _sequence;
   MSEHandshake* _mseHandshake;
+
+  const SharedHandle<Option>& getOption() const;
 protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(time_t wait);

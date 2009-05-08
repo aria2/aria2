@@ -25,9 +25,10 @@ class BtDependencyTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testResolve_dependeeInProgress);
   CPPUNIT_TEST_SUITE_END();
 
-  SharedHandle<RequestGroup> createDependant(const Option* option)
+  SharedHandle<RequestGroup> createDependant(const SharedHandle<Option>& option)
   {
-    SharedHandle<RequestGroup> dependant(new RequestGroup(option, std::deque<std::string>()));
+    SharedHandle<RequestGroup> dependant
+      (new RequestGroup(option, std::deque<std::string>()));
     SharedHandle<SingleFileDownloadContext> dctx
       (new SingleFileDownloadContext(0, 0, "/tmp/outfile.path"));
     dctx->setDir("/tmp");
@@ -36,7 +37,10 @@ class BtDependencyTest:public CppUnit::TestFixture {
   }
 
   SharedHandle<RequestGroup>
-  createDependee(const Option* option, const std::string& torrentFile, int64_t length)
+  createDependee
+  (const SharedHandle<Option>& option,
+   const std::string& torrentFile,
+   int64_t length)
   {
     SharedHandle<RequestGroup> dependee
       (new RequestGroup(option, std::deque<std::string>()));
@@ -44,15 +48,19 @@ class BtDependencyTest:public CppUnit::TestFixture {
       (new SingleFileDownloadContext(1024*1024, length, torrentFile));
     dctx->setDir(".");
     dependee->setDownloadContext(dctx);
-    DefaultPieceStorageHandle ps(new DefaultPieceStorage(dctx, option));
+    DefaultPieceStorageHandle ps(new DefaultPieceStorage(dctx, option.get()));
     dependee->setPieceStorage(ps);
     ps->initStorage();
     dependee->initSegmentMan();
     return dependee;
   }
 
+  SharedHandle<Option> _option;
 public:
-  void setUp() {}
+  void setUp()
+  {
+    _option.reset(new Option());
+  }
 
   void testResolve();
   void testResolve_loadError();
@@ -66,12 +74,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtDependencyTest );
 void BtDependencyTest::testResolve()
 {
   std::string filename = "test.torrent";
-  Option option;
-  SharedHandle<RequestGroup> dependant = createDependant(&option);
-  SharedHandle<RequestGroup> dependee = createDependee(&option, filename, File(filename).size());
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  SharedHandle<RequestGroup> dependee =
+    createDependee(_option, filename, File(filename).size());
   dependee->getPieceStorage()->markAllPiecesDone();
   
-  BtDependency dep(dependant, dependee, &option);
+  BtDependency dep(dependant, dependee);
   CPPUNIT_ASSERT(dep.resolve());
   
   SharedHandle<BtContext> btContext
@@ -84,12 +92,12 @@ void BtDependencyTest::testResolve()
 void BtDependencyTest::testResolve_loadError()
 {
   try {
-    Option option;
-    SharedHandle<RequestGroup> dependant = createDependant(&option);
-    SharedHandle<RequestGroup> dependee = createDependee(&option, "notExist", 40);
+    SharedHandle<RequestGroup> dependant = createDependant(_option);
+    SharedHandle<RequestGroup> dependee =
+      createDependee(_option, "notExist", 40);
     dependee->getPieceStorage()->markAllPiecesDone();
     
-    BtDependency dep(dependant, dependee, &option);
+    BtDependency dep(dependant, dependee);
     CPPUNIT_ASSERT(dep.resolve());
     
     SharedHandle<SingleFileDownloadContext> dctx
@@ -106,11 +114,10 @@ void BtDependencyTest::testResolve_loadError()
 
 void BtDependencyTest::testResolve_dependeeFailure()
 {
-  Option option;
-  SharedHandle<RequestGroup> dependant = createDependant(&option);
-  SharedHandle<RequestGroup> dependee = createDependee(&option, "notExist", 40);
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  SharedHandle<RequestGroup> dependee = createDependee(_option, "notExist", 40);
     
-  BtDependency dep(dependant, dependee, &option);
+  BtDependency dep(dependant, dependee);
   CPPUNIT_ASSERT(dep.resolve());
   
   SharedHandle<SingleFileDownloadContext> dctx
@@ -124,12 +131,12 @@ void BtDependencyTest::testResolve_dependeeFailure()
 void BtDependencyTest::testResolve_dependeeInProgress()
 {
   std::string filename = "test.torrent";
-  Option option;
-  SharedHandle<RequestGroup> dependant = createDependant(&option);
-  SharedHandle<RequestGroup> dependee = createDependee(&option, filename, File(filename).size());
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  SharedHandle<RequestGroup> dependee =
+    createDependee(_option, filename, File(filename).size());
   dependee->increaseNumCommand();
 
-  BtDependency dep(dependant, dependee, &option);
+  BtDependency dep(dependant, dependee);
   CPPUNIT_ASSERT(!dep.resolve());
 }
 

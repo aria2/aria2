@@ -46,6 +46,7 @@ class PeerConnection;
 class BtRuntime;
 class PeerStorage;
 class PieceStorage;
+class Option;
 
 class PeerInteractionCommand : public PeerAbstractCommand {
 public:
@@ -67,6 +68,8 @@ private:
 
   Seq sequence;
   SharedHandle<BtInteractive> btInteractive;
+
+  const SharedHandle<Option>& getOption() const;
 protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(time_t wait);

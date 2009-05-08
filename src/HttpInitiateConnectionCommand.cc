@@ -80,7 +80,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
 					      proxyRequest, socket);
       } else if(proxyMethod == V_GET) {
 	SharedHandle<HttpConnection> httpConnection
-	  (new HttpConnection(cuid, socket, e->option));
+	  (new HttpConnection(cuid, socket, getOption().get()));
 	HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
 						       httpConnection, e,
 						       socket);
@@ -92,7 +92,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       }
     } else {
       SharedHandle<HttpConnection> httpConnection
-	(new HttpConnection(cuid, pooledSocket, e->option));
+	(new HttpConnection(cuid, pooledSocket, getOption().get()));
       HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
 						     httpConnection, e,
 						     pooledSocket);
@@ -112,7 +112,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     } else {
       socket = pooledSocket;
     }
-    SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, e->option));
+    SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, getOption().get()));
     command = new HttpRequestCommand(cuid, req, _requestGroup, httpConnection,
 				     e, socket);
   }

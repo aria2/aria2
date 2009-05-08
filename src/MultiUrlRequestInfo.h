@@ -54,7 +54,7 @@ class MultiUrlRequestInfo {
 private:
   std::deque<SharedHandle<RequestGroup> > _requestGroups;
 
-  Option* _option;
+  SharedHandle<Option> _option;
 
   SharedHandle<StatCalc> _statCalc;
 
@@ -67,7 +67,7 @@ private:
 public:
   MultiUrlRequestInfo
   (const std::deque<SharedHandle<RequestGroup> >& requestGroups,
-   Option* op,
+   const SharedHandle<Option>& op,
    const SharedHandle<StatCalc>& statCalc,
    std::ostream& summaryOut);
   

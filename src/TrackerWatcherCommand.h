@@ -47,6 +47,7 @@ class PeerStorage;
 class PieceStorage;
 class BtRuntime;
 class BtAnnounce;
+class Option;
 
 class TrackerWatcherCommand : public Command
 {
@@ -76,6 +77,7 @@ private:
 
   void processTrackerResponse(const std::string& response);
 
+  const SharedHandle<Option>& getOption() const;
 public:
   TrackerWatcherCommand(int32_t cuid,
 			RequestGroup* requestGroup,

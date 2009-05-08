@@ -64,11 +64,9 @@ AdaptiveURISelector::AdaptiveURISelector
 (const SharedHandle<ServerStatMan>& serverStatMan, RequestGroup* requestGroup):
   _serverStatMan(serverStatMan),
   _requestGroup(requestGroup),
-  _nbConnections(1),
   _logger(LogFactory::getInstance())
 {
-  const Option* op = _requestGroup->getOption();
-  _nbServerToEvaluate = op->getAsInt(PREF_METALINK_SERVERS) - 1;
+  resetCounters();
 }
 
 AdaptiveURISelector::~AdaptiveURISelector() {}
@@ -191,9 +189,9 @@ std::string AdaptiveURISelector::getBestMirror
 
 void AdaptiveURISelector::resetCounters()
 {
-  const Option* op = _requestGroup->getOption();
   _nbConnections = 1;
-  _nbServerToEvaluate = op->getAsInt(PREF_METALINK_SERVERS) - 1;
+  _nbServerToEvaluate =
+    _requestGroup->getOption()->getAsInt(PREF_METALINK_SERVERS) - 1;
 }
 
 void AdaptiveURISelector::tuneDownloadCommand
@@ -205,8 +203,8 @@ void AdaptiveURISelector::tuneDownloadCommand
 void AdaptiveURISelector::adjustLowestSpeedLimit
 (const std::deque<std::string>& uris, DownloadCommand* command) const
 {
-  const Option* op = _requestGroup->getOption();
-  unsigned int lowest = op->getAsInt(PREF_LOWEST_SPEED_LIMIT);
+  unsigned int lowest =
+    _requestGroup->getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT);
   if (lowest > 0) {
     unsigned int low_lowest = 4 * 1024;
     unsigned int max = getMaxDownloadSpeed(uris);

@@ -69,11 +69,11 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
   _btContext(btContext),
   _btRuntime(btRuntime),
   _sequence(INITIATOR_SEND_KEY),
-  _mseHandshake(new MSEHandshake(cuid, socket, e->option))
+  _mseHandshake(new MSEHandshake(cuid, socket, getOption().get()))
 {
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
-  setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
+  setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
 
   _btRuntime->increaseConnections();
   _requestGroup->increaseNumCommand();
@@ -96,7 +96,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
     disableWriteCheckSocket();
     setReadCheckSocket(socket);
     //socket->setBlockingMode();
-    setTimeout(e->option->getAsInt(PREF_BT_TIMEOUT));
+    setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
     _mseHandshake->initEncryptionFacility(true);
     if(_mseHandshake->sendPublicKey()) {
       _sequence = INITIATOR_WAIT_KEY;
@@ -145,7 +145,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   case INITIATOR_RECEIVE_PAD_D: {
     if(_mseHandshake->receivePad()) {
       SharedHandle<PeerConnection> peerConnection
-	(new PeerConnection(cuid, socket, e->option));
+	(new PeerConnection(cuid, socket, getOption().get()));
       if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
 	peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
 					 _mseHandshake->getDecryptor());
@@ -169,7 +169,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
 
 bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
-  if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+  if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     logger->info("CUID#%d - Establishing connection using legacy BitTorrent handshake is disabled by preference.", cuid);
     if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
       SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
@@ -197,7 +197,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 
 void InitiatorMSEHandshakeCommand::onAbort()
 {
-  if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+  if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     _peerStorage->returnPeer(peer);
   }
 }
@@ -217,6 +217,11 @@ void InitiatorMSEHandshakeCommand::setPieceStorage
 (const SharedHandle<PieceStorage>& pieceStorage)
 {
   _pieceStorage = pieceStorage;
+}
+
+const SharedHandle<Option>& InitiatorMSEHandshakeCommand::getOption() const
+{
+  return _requestGroup->getOption();
 }
 
 } // namespace aria2

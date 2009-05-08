@@ -61,7 +61,7 @@ protected:
 
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e) = 0;
 
-  void gatherRequestOption(Option& requestOption, const Option& option,
+  void gatherRequestOption(const SharedHandle<Option>& option,
 			   const BDE& optionsDict);
 public:
   XmlRpcMethod();

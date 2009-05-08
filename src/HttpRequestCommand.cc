@@ -65,7 +65,7 @@ HttpRequestCommand::HttpRequestCommand
   :AbstractCommand(cuid, req, requestGroup, e, s),
    _httpConnection(httpConnection)
 {
-  setTimeout(e->option->getAsInt(PREF_CONNECT_TIMEOUT));
+  setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
@@ -76,7 +76,7 @@ static SharedHandle<HttpRequest>
 createHttpRequest(const SharedHandle<Request>& req,
 		  const SharedHandle<Segment>& segment,
 		  uint64_t totalLength,
-		  const Option* option,
+		  const SharedHandle<Option>& option,
 		  const RequestGroup* rg,
 		  const SharedHandle<CookieStorage>& cookieStorage,
 		  const SharedHandle<AuthConfigFactory>& authConfigFactory,
@@ -121,7 +121,8 @@ bool HttpRequestCommand::executeInternal() {
     if(_segments.empty()) {
       HttpRequestHandle httpRequest
 	(createHttpRequest(req, SharedHandle<Segment>(),
-			   _requestGroup->getTotalLength(), e->option,
+			   _requestGroup->getTotalLength(),
+			   getOption(),
 			   _requestGroup,
 			   e->getCookieStorage(),
 			   e->getAuthConfigFactory(),
@@ -133,7 +134,8 @@ bool HttpRequestCommand::executeInternal() {
 	if(!_httpConnection->isIssued(segment)) {
 	  HttpRequestHandle httpRequest
 	    (createHttpRequest(req, segment,
-			       _requestGroup->getTotalLength(), e->option,
+			       _requestGroup->getTotalLength(),
+			       getOption(),
 			       _requestGroup,
 			       e->getCookieStorage(),
 			       e->getAuthConfigFactory(),

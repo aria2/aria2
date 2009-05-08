@@ -52,7 +52,7 @@ BtFileAllocationEntry::~BtFileAllocationEntry() {}
 void BtFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
 						 DownloadEngine* e)
 {
-  BtSetup().setup(commands, _requestGroup, e, e->option);
+  BtSetup().setup(commands, _requestGroup, e, _requestGroup->getOption().get());
   if(!_requestGroup->downloadFinished()) {
     _requestGroup->getDownloadContext()->resetDownloadStartTime();
     _requestGroup->createNextCommandWithAdj(commands, e, 0);

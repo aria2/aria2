@@ -76,7 +76,7 @@ DownloadCommand::DownloadCommand(int cuid,
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    if(e->option->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
+    if(getOption()->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
       std::string algo = _requestGroup->getDownloadContext()->getPieceHashAlgo();
       if(MessageDigestContext::supports(algo)) {
 	_messageDigestContext.reset(new MessageDigestContext());

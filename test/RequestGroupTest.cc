@@ -20,9 +20,12 @@ class RequestGroupTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testExtractURIResult);
   CPPUNIT_TEST_SUITE_END();
 private:
-
+  SharedHandle<Option> _option;
 public:
-  void setUp() {}
+  void setUp()
+  {
+    _option.reset(new Option());
+  }
 
   void testRegisterSearchRemove();
   void testRemoveURIWhoseHostnameIs();
@@ -36,8 +39,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupTest );
 
 void RequestGroupTest::testRegisterSearchRemove()
 {
-  Option op;
-  RequestGroup rg(&op, std::deque<std::string>());
+  RequestGroup rg(_option, std::deque<std::string>());
   SharedHandle<ServerHost> sv1(new ServerHost(1, "localhost1"));
   SharedHandle<ServerHost> sv2(new ServerHost(2, "localhost2"));
   SharedHandle<ServerHost> sv3(new ServerHost(3, "localhost3"));
@@ -72,8 +74,7 @@ void RequestGroupTest::testRemoveURIWhoseHostnameIs()
   const char* uris[] = { "http://localhost/aria2.zip",
 			 "ftp://localhost/aria2.zip",
 			 "http://mirror/aria2.zip" };
-  Option op;
-  RequestGroup rg(&op, std::deque<std::string>(&uris[0], &uris[3]));
+  RequestGroup rg(_option, std::deque<std::string>(&uris[0], &uris[3]));
   rg.removeURIWhoseHostnameIs("localhost");
   CPPUNIT_ASSERT_EQUAL((size_t)1, rg.getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
@@ -84,10 +85,9 @@ void RequestGroupTest::testGetFilePath()
 {
   SharedHandle<SingleFileDownloadContext> ctx
     (new SingleFileDownloadContext(1024, 1024, "/tmp/myfile"));
-  Option op;
   std::deque<std::string> uris;
 
-  RequestGroup group(&op, uris);
+  RequestGroup group(_option, uris);
   group.setDownloadContext(ctx);
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFilePath());
@@ -102,12 +102,11 @@ void RequestGroupTest::testCreateDownloadResult()
   SharedHandle<SingleFileDownloadContext> ctx
     (new SingleFileDownloadContext(1024, 1024*1024, "/tmp/myfile"));
   //ctx->setDir("/tmp");
-  Option op;
   std::deque<std::string> uris;
   uris.push_back("http://first/file");
   uris.push_back("http://second/file");
 
-  RequestGroup group(&op, uris);
+  RequestGroup group(_option, uris);
   group.setDownloadContext(ctx);
   group.initPieceStorage();
   {
@@ -142,8 +141,7 @@ void RequestGroupTest::testCreateDownloadResult()
 
 void RequestGroupTest::testExtractURIResult()
 {
-  Option op;
-  RequestGroup group(&op, std::deque<std::string>());
+  RequestGroup group(_option, std::deque<std::string>());
   group.addURIResult("http://timeout/file", DownloadResult::TIME_OUT);
   group.addURIResult("http://finished/file", DownloadResult::FINISHED);
   group.addURIResult("http://timeout/file2", DownloadResult::TIME_OUT);

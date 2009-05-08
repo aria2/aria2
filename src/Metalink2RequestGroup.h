@@ -50,26 +50,22 @@ class MetalinkEntry;
 
 class Metalink2RequestGroup {
 private:
-  const Option* _option;
-
   Logger* _logger;
 
   void
   createRequestGroup(std::deque<SharedHandle<RequestGroup> >& groups,
 		     std::deque<SharedHandle<MetalinkEntry> > entries,
-		     const Option& requestOption);
+		     const SharedHandle<Option>& option);
 public:
-  Metalink2RequestGroup(const Option* option);
-
-  ~Metalink2RequestGroup();
+  Metalink2RequestGroup();
 
   void generate(std::deque<SharedHandle<RequestGroup> >& groups,
 		const std::string& metalinkFile,
-		const Option& requestOption);
+		const SharedHandle<Option>& option);
 
   void generate(std::deque<SharedHandle<RequestGroup> >& groups,
 		const SharedHandle<BinaryStream>& binaryStream,
-		const Option& requestOption);
+		const SharedHandle<Option>& option);
 };
 
 } // namespace aria2

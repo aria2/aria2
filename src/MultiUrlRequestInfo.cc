@@ -77,7 +77,7 @@ static void handler(int signal) {
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
 (const RequestGroups& requestGroups,
- Option* op,
+ const SharedHandle<Option>& op,
  const SharedHandle<StatCalc>& statCalc,
  std::ostream& summaryOut)
   :
@@ -104,7 +104,7 @@ DownloadResult::RESULT MultiUrlRequestInfo::execute()
   DownloadResult::RESULT returnValue = DownloadResult::FINISHED;
   try {
     DownloadEngineHandle e =
-      DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
+      DownloadEngineFactory().newDownloadEngine(_option.get(), _requestGroups);
 
     try {
       if(!_option->blank(PREF_LOAD_COOKIES)) {
@@ -121,7 +121,7 @@ DownloadResult::RESULT MultiUrlRequestInfo::execute()
     }
 
     SharedHandle<AuthConfigFactory> authConfigFactory
-      (new AuthConfigFactory(_option));
+      (new AuthConfigFactory(_option.get()));
     File netrccf(_option->get(PREF_NETRC_PATH));
     if(!_option->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();

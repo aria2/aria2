@@ -79,6 +79,8 @@ private:
 
   int32_t _gid;
 
+  SharedHandle<Option> _option;
+
   std::deque<std::string> _uris;
   std::deque<std::string> _spentUris;
 
@@ -154,8 +156,6 @@ private:
 
   unsigned int _maxUploadSpeedLimit;
 
-  const Option* _option;
-
   Logger* _logger;
 
   void validateFilename(const std::string& expectedFilename,
@@ -177,7 +177,8 @@ private:
   // Otherwise returns DownloadResult::UNKNOWN_ERROR.
   DownloadResult::RESULT downloadResult() const;
 public:
-  RequestGroup(const Option* option, const std::deque<std::string>& uris);
+  RequestGroup(const SharedHandle<Option>& option,
+	       const std::deque<std::string>& uris);
 
   ~RequestGroup();
   /**
@@ -375,7 +376,7 @@ public:
 
   SharedHandle<DownloadResult> createDownloadResult() const;
 
-  const Option* getOption() const
+  const SharedHandle<Option>& getOption() const
   {
     return _option;
   }

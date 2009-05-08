@@ -60,11 +60,8 @@
 
 namespace aria2 {
 
-Metalink2RequestGroup::Metalink2RequestGroup(const Option* option):
-  _option(option),
+Metalink2RequestGroup::Metalink2RequestGroup():
   _logger(LogFactory::getInstance()) {}
-
-Metalink2RequestGroup::~Metalink2RequestGroup() {}
 
 class AccumulateNonP2PUrl {
 private:
@@ -102,35 +99,35 @@ public:
 void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
 				const std::string& metalinkFile,
-				const Option& requestOption)
+				const SharedHandle<Option>& option)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries;
-  MetalinkHelper::parseAndQuery(entries, metalinkFile, _option);
-  createRequestGroup(groups, entries, requestOption);
+  MetalinkHelper::parseAndQuery(entries, metalinkFile, option.get());
+  createRequestGroup(groups, entries, option);
 }
 
 void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
 				const SharedHandle<BinaryStream>& binaryStream,
-				const Option& requestOption)
+				const SharedHandle<Option>& option)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries;
-  MetalinkHelper::parseAndQuery(entries, binaryStream, _option);
-  createRequestGroup(groups, entries, requestOption);
+  MetalinkHelper::parseAndQuery(entries, binaryStream, option.get());
+  createRequestGroup(groups, entries, option);
 }
 
 void
 Metalink2RequestGroup::createRequestGroup
 (std::deque<SharedHandle<RequestGroup> >& groups,
  std::deque<SharedHandle<MetalinkEntry> > entries,
- const Option& requestOption)
+ const SharedHandle<Option>& option)
 {
   if(entries.size() == 0) {
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
   std::deque<int32_t> selectIndexes =
-    Util::parseIntRange(_option->get(PREF_SELECT_FILE)).flush();
+    Util::parseIntRange(option->get(PREF_SELECT_FILE)).flush();
   bool useIndex;
   if(selectIndexes.size()) {
     useIndex = true;
@@ -141,13 +138,13 @@ Metalink2RequestGroup::createRequestGroup
   for(std::deque<SharedHandle<MetalinkEntry> >::iterator itr = entries.begin(); itr != entries.end();
       itr++, ++count) {
     SharedHandle<MetalinkEntry>& entry = *itr;
-    if(_option->defined(PREF_METALINK_LOCATION)) {
+    if(option->defined(PREF_METALINK_LOCATION)) {
       std::deque<std::string> locations;
-      Util::slice(locations, _option->get(PREF_METALINK_LOCATION), ',', true);
+      Util::slice(locations, option->get(PREF_METALINK_LOCATION), ',', true);
       entry->setLocationPreference(locations, 100);
     }
-    if(_option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
-      entry->setProtocolPreference(_option->get(PREF_METALINK_PREFERRED_PROTOCOL), 100);
+    if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
+      entry->setProtocolPreference(option->get(PREF_METALINK_PREFERRED_PROTOCOL), 100);
     }
     if(useIndex) {
       if(std::find(selectIndexes.begin(), selectIndexes.end(), count+1) ==
@@ -169,9 +166,9 @@ Metalink2RequestGroup::createRequestGroup
     if(itr != entry->resources.end()) {
       std::deque<std::string> uris;
       uris.push_back((*itr)->url);
-      torrentRg.reset(new RequestGroup(_option, uris));
+      torrentRg.reset(new RequestGroup(option, uris));
       SharedHandle<SingleFileDownloadContext> dctx
-	(new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
+	(new SingleFileDownloadContext(option->getAsInt(PREF_SEGMENT_SIZE),
 				       0,
 				       A2STR::NIL));
       //dctx->setDir(_option->get(PREF_DIR));
@@ -195,26 +192,26 @@ Metalink2RequestGroup::createRequestGroup
     std::deque<std::string> uris;
     std::for_each(entry->resources.begin(), entry->resources.end(),
 		  AccumulateNonP2PUrl(uris));
-    SharedHandle<RequestGroup> rg(new RequestGroup(_option, uris));
+    SharedHandle<RequestGroup> rg(new RequestGroup(option, uris));
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.
     size_t pieceLength;
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
-      pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
+      pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
     } else {
       pieceLength = entry->chunkChecksum->getChecksumLength();
     }
 #else
-    pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
+    pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
 #endif // ENABLE_MESSAGE_DIGEST
     SharedHandle<SingleFileDownloadContext> dctx
-      (new SingleFileDownloadContext(pieceLength,
-				     entry->getLength(),
-				     A2STR::NIL,
-				     requestOption.get(PREF_DIR)+"/"+
-				     entry->file->getPath()));
-    dctx->setDir(requestOption.get(PREF_DIR));
+      (new SingleFileDownloadContext
+       (pieceLength,
+	entry->getLength(),
+	A2STR::NIL,
+	option->get(PREF_DIR)+"/"+entry->file->getPath()));
+    dctx->setDir(option->get(PREF_DIR));
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       if(!entry->checksum.isNull()) {
@@ -230,11 +227,11 @@ Metalink2RequestGroup::createRequestGroup
     rg->setDownloadContext(dctx);
     rg->setNumConcurrentCommand
       (entry->maxConnections < 0 ?
-       _option->getAsInt(PREF_METALINK_SERVERS) :
-       std::min(_option->getAsInt(PREF_METALINK_SERVERS),
+       option->getAsInt(PREF_METALINK_SERVERS) :
+       std::min(option->getAsInt(PREF_METALINK_SERVERS),
 		static_cast<int32_t>(entry->maxConnections)));
     // In metalink, multi connection to a single host is not allowed by default.
-    rg->setSingleHostMultiConnectionEnabled(!_option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
+    rg->setSingleHostMultiConnectionEnabled(!option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
     // remove "metalink" from Accept Type list to avoid loop in tranparent
     // metalink
     rg->removeAcceptType(RequestGroup::ACCEPT_METALINK);
@@ -242,7 +239,7 @@ Metalink2RequestGroup::createRequestGroup
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
     if(!torrentRg.isNull()) {
-      SharedHandle<Dependency> dep(new BtDependency(rg, torrentRg, _option));
+      SharedHandle<Dependency> dep(new BtDependency(rg, torrentRg));
       rg->dependsOn(dep);
     }
 #endif // ENABLE_BITTORRENT

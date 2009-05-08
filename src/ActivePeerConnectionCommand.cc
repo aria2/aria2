@@ -63,7 +63,6 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
   _btContext(btContext),
   interval(interval),
   e(e),
-  _thresholdSpeed(e->option->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT)),
   _numNewConnection(5)
 {
   _requestGroup->increaseNumCommand();
@@ -84,9 +83,10 @@ bool ActivePeerConnectionCommand::execute() {
     const unsigned int maxDownloadLimit =
       _requestGroup->getMaxDownloadSpeedLimit();
     const unsigned int maxUploadLimit = _requestGroup->getMaxUploadSpeedLimit();
-    unsigned int thresholdSpeed = _thresholdSpeed;
+    unsigned int thresholdSpeed =
+      _requestGroup->getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
     if(maxDownloadLimit > 0) {
-      thresholdSpeed = std::min(maxDownloadLimit, _thresholdSpeed);
+      thresholdSpeed = std::min(maxDownloadLimit, thresholdSpeed);
     }
     if(// for seeder state
        (_pieceStorage->downloadFinished() && _btRuntime->lessThanMaxPeers() &&

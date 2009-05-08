@@ -108,19 +108,19 @@ static void splitURI(std::deque<std::string>& result,
 }
 
 static SharedHandle<RequestGroup> createRequestGroup
-(const Option& op, const std::deque<std::string>& uris,
- const Option& requestOption,
+(const SharedHandle<Option>& option, const std::deque<std::string>& uris,
  bool useOutOption = false)
 {
-  SharedHandle<RequestGroup> rg(new RequestGroup(&op, uris));
+  SharedHandle<RequestGroup> rg(new RequestGroup(option, uris));
   SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(op.getAsInt(PREF_SEGMENT_SIZE),
-				   0,
-				   A2STR::NIL,
-				   useOutOption&&!requestOption.blank(PREF_OUT)?
-				   requestOption.get(PREF_DIR)+"/"+requestOption.get(PREF_OUT):A2STR::NIL));
+    (new SingleFileDownloadContext
+     (option->getAsInt(PREF_SEGMENT_SIZE),
+      0,
+      A2STR::NIL,
+      useOutOption&&!option->blank(PREF_OUT)?
+      option->get(PREF_DIR)+"/"+option->get(PREF_OUT):A2STR::NIL));
 
-  dctx->setDir(requestOption.get(PREF_DIR));
+  dctx->setDir(option->get(PREF_DIR));
   rg->setDownloadContext(dctx);
   return rg;
 }
@@ -130,25 +130,24 @@ static SharedHandle<RequestGroup> createRequestGroup
 static
 SharedHandle<RequestGroup>
 createBtRequestGroup(const std::string& torrentFilePath,
-		     const Option& op,
+		     const SharedHandle<Option>& option,
 		     const std::deque<std::string>& auxUris,
-		     const Option& requestOption,
 		     const std::string& torrentData = "")
 {
-  SharedHandle<RequestGroup> rg(new RequestGroup(&op, auxUris));
+  SharedHandle<RequestGroup> rg(new RequestGroup(option, auxUris));
   SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
-  btContext->setDir(requestOption.get(PREF_DIR));
+  btContext->setDir(option->get(PREF_DIR));
   if(torrentData.empty()) {
     btContext->load(torrentFilePath);// may throw exception
   } else {
     btContext->loadFromMemory(torrentData, "default"); // may throw exception
   }
-  if(op.defined(PREF_PEER_ID_PREFIX)) {
-    btContext->setPeerIdPrefix(op.get(PREF_PEER_ID_PREFIX));
+  if(option->defined(PREF_PEER_ID_PREFIX)) {
+    btContext->setPeerIdPrefix(option->get(PREF_PEER_ID_PREFIX));
   }
   btContext->setFileFilter
-    (Util::parseIntRange(requestOption.get(PREF_SELECT_FILE)));
-  std::istringstream indexOutIn(requestOption.get(PREF_INDEX_OUT));
+    (Util::parseIntRange(option->get(PREF_SELECT_FILE)));
+  std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
   std::map<size_t, std::string> indexPathMap =
     Util::createIndexPathMap(indexOutIn);
   for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
@@ -162,22 +161,23 @@ createBtRequestGroup(const std::string& torrentFilePath,
 }
 
 void createRequestGroupForBitTorrent
-(std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
+(std::deque<SharedHandle<RequestGroup> >& result,
+ const SharedHandle<Option>& option,
  const std::deque<std::string>& uris,
  const std::string& torrentData)
 {
   std::deque<std::string> nargs;
-  if(op.get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+  if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
     unfoldURI(nargs, uris);
   } else {
     nargs = uris;
   }
   // we ignore -Z option here
-  size_t numSplit = op.getAsInt(PREF_SPLIT);
+  size_t numSplit = option->getAsInt(PREF_SPLIT);
   std::deque<std::string> auxUris;
   splitURI(auxUris, nargs.begin(), nargs.end(), numSplit);
   SharedHandle<RequestGroup> rg =
-    createBtRequestGroup(op.get(PREF_TORRENT_FILE), op, auxUris, op,
+    createBtRequestGroup(option->get(PREF_TORRENT_FILE), option, auxUris,
 			 torrentData);
   rg->setNumConcurrentCommand(numSplit);
   result.push_back(rg);
@@ -187,9 +187,12 @@ void createRequestGroupForBitTorrent
 
 #ifdef ENABLE_METALINK
 void createRequestGroupForMetalink
-(std::deque<SharedHandle<RequestGroup> >& result, const Option& op)
+(std::deque<SharedHandle<RequestGroup> >& result,
+ const SharedHandle<Option>& option)
 {
-  Metalink2RequestGroup(&op).generate(result, op.get(PREF_METALINK_FILE), op);
+  Metalink2RequestGroup().generate(result,
+				   option->get(PREF_METALINK_FILE),
+				   option);
   if(result.empty()) {
     throw FatalException(MSG_NO_FILES_TO_DOWNLOAD);
   }
@@ -200,34 +203,31 @@ class AccRequestGroup {
 private:
   std::deque<SharedHandle<RequestGroup> >& _requestGroups;
   ProtocolDetector _detector;
-  const Option& _op;
-  const Option& _requestOption;
+  SharedHandle<Option> _option;
 public:
   AccRequestGroup(std::deque<SharedHandle<RequestGroup> >& requestGroups,
-		  const Option& op,
-		  const Option& requestOption):
-    _requestGroups(requestGroups), _op(op), _requestOption(requestOption) {}
+		  const SharedHandle<Option>& option):
+    _requestGroups(requestGroups), _option(option) {}
 
   void
   operator()(const std::string& uri)
   {
     if(_detector.isStreamProtocol(uri)) {
       std::deque<std::string> streamURIs;
-      size_t numSplit = _op.getAsInt(PREF_SPLIT);
+      size_t numSplit = _option->getAsInt(PREF_SPLIT);
       for(size_t i = 0; i < numSplit; ++i) {
 	streamURIs.push_back(uri);
       }
       SharedHandle<RequestGroup> rg =
-	createRequestGroup(_op, streamURIs, _requestOption);
+	createRequestGroup(_option, streamURIs);
       rg->setNumConcurrentCommand(numSplit);
       _requestGroups.push_back(rg);
     }
 #ifdef ENABLE_BITTORRENT
     else if(_detector.guessTorrentFile(uri)) {
       try {
-	_requestGroups.push_back(createBtRequestGroup(uri, _op,
-						      std::deque<std::string>(),
-						      _requestOption));
+	_requestGroups.push_back(createBtRequestGroup(uri, _option,
+						      std::deque<std::string>()));
       } catch(RecoverableException& e) {
 	// error occurred while parsing torrent file.
 	// We simply ignore it.	
@@ -238,8 +238,7 @@ public:
 #ifdef ENABLE_METALINK
     else if(_detector.guessMetalinkFile(uri)) {
       try {
-	Metalink2RequestGroup(&_op).generate(_requestGroups, uri,
-					    _requestOption);
+	Metalink2RequestGroup().generate(_requestGroups, uri, _option);
       } catch(RecoverableException& e) {
 	// error occurred while parsing metalink file.
 	// We simply ignore it.
@@ -262,104 +261,76 @@ public:
   }
 };
 
-static void copyIfndef(Option& dest, const Option& src, const std::string& name)
-{
-  if(!dest.defined(name)) {
-    dest.put(name, src.get(name));
-  }
-}
-
 void createRequestGroupForUri
-(std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
- const std::deque<std::string>& uris, const Option& requestOption,
- bool ignoreForceSequential, bool ignoreNonURI)
+(std::deque<SharedHandle<RequestGroup> >& result,
+ const SharedHandle<Option>& option,
+ const std::deque<std::string>& uris,
+ bool ignoreForceSequential,
+ bool ignoreNonURI)
 {
   std::deque<std::string> nargs;
-  if(op.get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+  if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
     unfoldURI(nargs, uris);
   } else {
     nargs = uris;
   }
-  if(!ignoreForceSequential && op.get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
+  if(!ignoreForceSequential && option->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
     std::for_each(nargs.begin(), nargs.end(),
-		  AccRequestGroup(result, op, requestOption));
+		  AccRequestGroup(result, option));
   } else {
     std::deque<std::string>::iterator strmProtoEnd =
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
     // let's process http/ftp protocols first.
     if(nargs.begin() != strmProtoEnd) {
-      size_t numSplit = op.getAsInt(PREF_SPLIT);
+      size_t numSplit = option->getAsInt(PREF_SPLIT);
       std::deque<std::string> streamURIs;
       splitURI(streamURIs, nargs.begin(), strmProtoEnd,
 	       numSplit);
       SharedHandle<RequestGroup> rg =
-	createRequestGroup(op, streamURIs, requestOption, true);
+	createRequestGroup(option, streamURIs, true);
       rg->setNumConcurrentCommand(numSplit);
       result.push_back(rg);
     }
     if(!ignoreNonURI) {
       // process remaining URIs(local metalink, BitTorrent files)
       std::for_each(strmProtoEnd, nargs.end(),
-		    AccRequestGroup(result, op, requestOption));
+		    AccRequestGroup(result, option));
     }
   }
 }
 
-void createRequestGroupForUri
-(std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
- const std::deque<std::string>& uris)
-{
-  createRequestGroupForUri(result, op, uris, op);
-}
-
-template<typename InputIterator>
-static void foreachCopyIfndef(InputIterator first, InputIterator last,
-		       Option& dest, const Option& src)
-{
-  for(; first != last; ++first) {
-    copyIfndef(dest, src, *first);
-  }
-}
-
 static void createRequestGroupForUriList
-(std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
+(std::deque<SharedHandle<RequestGroup> >& result,
+ const SharedHandle<Option>& option,
  std::istream& in)
 {
   UriListParser p(in);
   while(p.hasNext()) {
     std::deque<std::string> uris;
-    Option requestOption;
-    p.parseNext(uris, requestOption);
+    SharedHandle<Option> requestOption(new Option(*option.get()));
+    p.parseNext(uris, *requestOption.get());
     if(uris.empty()) {
       continue;
     }
-    completeRequestOption(requestOption, op);
-
-    createRequestGroupForUri(result, op, uris, requestOption);
+    createRequestGroupForUri(result, requestOption, uris);
   }
 }
 
 void createRequestGroupForUriList
-(std::deque<SharedHandle<RequestGroup> >& result, const Option& op)
+(std::deque<SharedHandle<RequestGroup> >& result,
+ const SharedHandle<Option>& option)
 {
-  if(op.get(PREF_INPUT_FILE) == "-") {
-    createRequestGroupForUriList(result, op, std::cin);
+  if(option->get(PREF_INPUT_FILE) == "-") {
+    createRequestGroupForUriList(result, option, std::cin);
   } else {
-    if(!File(op.get(PREF_INPUT_FILE)).isFile()) {
+    if(!File(option->get(PREF_INPUT_FILE)).isFile()) {
       throw FatalException
-	(StringFormat(EX_FILE_OPEN, op.get(PREF_INPUT_FILE).c_str(),
+	(StringFormat(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
 		      "No such file").str());
     }
-    std::ifstream f(op.get(PREF_INPUT_FILE).c_str(), std::ios::binary);
-    createRequestGroupForUriList(result, op, f);
+    std::ifstream f(option->get(PREF_INPUT_FILE).c_str(), std::ios::binary);
+    createRequestGroupForUriList(result, option, f);
   }
-}
-
-void completeRequestOption(Option& requestOption, const Option& option)
-{
-  foreachCopyIfndef(listRequestOptions().begin(),
-		    listRequestOptions().end(),
-		    requestOption, option);
 }
 
 } // namespace aria2
