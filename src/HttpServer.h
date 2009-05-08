@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <string>
+#include <sstream>
 
 #include "SharedHandle.h"
 #include "SocketBuffer.h"
@@ -58,6 +59,9 @@ private:
   SharedHandle<HttpHeaderProcessor> _headerProcessor;
   Logger* _logger;
   SharedHandle<HttpHeader> _lastRequestHeader;
+  uint64_t _lastContentLength;
+  std::stringstream _lastBody;
+  bool _keepAlive;
 public:
   HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
 
@@ -65,13 +69,23 @@ public:
 
   SharedHandle<HttpHeader> receiveRequest();
 
-  void feedResponse(const std::string& text);
+  bool receiveBody();
+
+  std::string getBody() const;
+
+  const std::string& getRequestPath() const;
+
+  void feedResponse(const std::string& text, const std::string& contentType);
 
   ssize_t sendResponse();
 
   bool sendBufferIsEmpty() const;
 
   bool supportsPersistentConnection() const;
+
+  void enableKeepAlive() { _keepAlive = true; }
+
+  void disableKeepAlive() { _keepAlive = false; }
 };
 
 } // namespace aria2

@@ -47,6 +47,7 @@
 #include "A2STR.h"
 #include "a2functional.h"
 #include "array_fun.h"
+#include "OptionHandlerFactory.h"
 
 namespace aria2 {
 
@@ -335,6 +336,17 @@ const std::deque<SharedHandle<OptionHandler> >&
 OptionParser::getOptionHandlers() const
 {
   return _optionHandlers;
+}
+
+SharedHandle<OptionParser> OptionParser::_optionParser;
+
+SharedHandle<OptionParser> OptionParser::getInstance()
+{
+  if(_optionParser.isNull()) {
+    _optionParser.reset(new OptionParser());
+    _optionParser->setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
+  }
+  return _optionParser;
 }
 
 } // namespace aria2

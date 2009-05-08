@@ -32,59 +32,70 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpServerResponseCommand.h"
-#include "SocketCore.h"
-#include "DownloadEngine.h"
-#include "HttpServer.h"
+#include "XmlRpcMethodImpl.h"
+
+#include <cassert>
+
 #include "Logger.h"
-#include "HttpServerCommand.h"
+#include "BDE.h"
+#include "DlAbortEx.h"
+#include "Option.h"
+#include "OptionParser.h"
+#include "OptionHandler.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "download_helper.h"
+#include "Util.h"
 #include "RequestGroupMan.h"
+#include "StringFormat.h"
+#include "XmlRpcRequest.h"
 
 namespace aria2 {
 
-HttpServerResponseCommand::HttpServerResponseCommand
-(int32_t cuid,
- const SharedHandle<HttpServer>& httpServer,
- DownloadEngine* e,
- const SharedHandle<SocketCore>& socket):
-  Command(cuid),
-  _e(e),
-  _socket(socket),
- _httpServer(httpServer)
-{
- 
-  _e->addSocketForWriteCheck(_socket, this);
-}
+namespace xmlrpc {
 
-HttpServerResponseCommand::~HttpServerResponseCommand()
+BDE AddURIXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
-  _e->deleteSocketForWriteCheck(_socket, this);
-}
-
-bool HttpServerResponseCommand::execute()
-{
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
-    return true;
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isList() || params[0].empty()) {
+    throw DlAbortEx("URI is not provided.");
   }
-  _httpServer->sendResponse();
-  if(_httpServer->sendBufferIsEmpty()) {
-    logger->info("CUID#%d - HttpServer: all response transmitted.", cuid);
-//     if(_httpServer->supportsPersistentConnection()) {
-//       logger->info("CUID#%d - Persist connection.", cuid);
-//       _e->commands.push_back
-// 	(new HttpServerCommand(cuid, _httpServer, _e, _socket));
-//     }
-    return true;
-  } else {
-    if(_timeout.elapsed(10)) {
-      logger->info("CUID#%d - HttpServer: Timeout while trasmitting response.",
-		   cuid);
-      return true;
-    } else {
-      _e->commands.push_back(this);
-      return true;
+  std::deque<std::string> uris;
+  for(BDE::List::const_iterator i = params[0].listBegin();
+      i != params[0].listEnd(); ++i) {
+    if((*i).isString()) {
+      uris.push_back((*i).s());
     }
   }
+
+  Option requestOption;
+  if(params.size() > 1 && params[1].isDict()) {
+    gatherRequestOption(requestOption, *e->option, params[1]);
+  }
+  std::deque<SharedHandle<RequestGroup> > result;
+  createRequestGroupForUri(result, *e->option, uris, requestOption,
+			   /* ignoreForceSeq = */ true,
+			   /* ignoreNonURI = */ true);
+
+  if(!result.empty()) {
+    e->_requestGroupMan->addReservedGroup(result.front());
+    BDE resParams = BDE::list();
+    resParams << BDE("OK");
+    resParams << BDE(Util::itos(result.front()->getGID()));
+    return resParams;
+  } else {
+    throw DlAbortEx("No URI to download.");
+  }
 }
+
+BDE FailXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  throw DlAbortEx
+    (StringFormat("Method %s was not recognized.",
+		  req._methodName.c_str()).str());
+}
+
+} // namespace xmlrpc
 
 } // namespace aria2

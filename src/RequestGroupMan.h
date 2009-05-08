@@ -112,6 +112,8 @@ public:
   
   const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const;
 
+  const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const;
+
   void showDownloadResults(std::ostream& o) const;
 
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;

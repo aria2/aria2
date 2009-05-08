@@ -36,7 +36,7 @@
 
 #include <sstream>
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 #include <iomanip>
 
 #include "SocketCore.h"
@@ -49,6 +49,7 @@
 #include "BtContext.h"
 #include "Util.h"
 #include "HttpServerResponseCommand.h"
+#include "HttpServerBodyCommand.h"
 #include "CheckIntegrityEntry.h"
 #include "FileAllocationEntry.h"
 #include "RecoverableException.h"
@@ -248,9 +249,8 @@ bool HttpServerCommand::execute()
       _e->commands.push_back(this);
       return false;
     } else {
-      _httpServer->feedResponse(createResponse(_e));
-      Command* command = new HttpServerResponseCommand(cuid, _httpServer, _e,
-						       _socket);
+      Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
+						   _socket);
       command->setStatus(Command::STATUS_ONESHOT_REALTIME);
       _e->commands.push_back(command);
       _e->setNoWait(true);

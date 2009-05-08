@@ -1,5 +1,34 @@
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added xml-rpc functionality. Currently only addURI commad is
+	supported. To enable xml-rpc, run aria2 with
+	--enable-http-server. This option name is temporal and will be
+	changed. The feature that reports download progress in html format
+	is temporarily disabled.
+	* src/HttpServer.cc
+	* src/HttpServer.h
+	* src/HttpServerBodyCommand.cc
+	* src/HttpServerBodyCommand.h
+	* src/HttpServerCommand.cc
+	* src/HttpServerResponseCommand.cc
+	* src/Makefile.am
+	* src/OptionParser.cc
+	* src/OptionParser.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethod.h
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodFactory.h
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* src/download_helper.cc
+	* src/download_helper.h
+	* test/Makefile.am
+	* test/XmlRpcMethodTest.cc
+
+2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added xml-rpc request parser. The supported value types are:
 	i4/int, string, double, struct, array, base64.  Currently only
 	libxml2 version is provided.

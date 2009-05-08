@@ -32,59 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpServerResponseCommand.h"
-#include "SocketCore.h"
-#include "DownloadEngine.h"
-#include "HttpServer.h"
-#include "Logger.h"
-#include "HttpServerCommand.h"
-#include "RequestGroupMan.h"
+#ifndef _D_XML_RPC_METHOD_IMPL_H_
+#define _D_XML_RPC_METHOD_IMPL_H_
+
+#include "XmlRpcMethod.h"
 
 namespace aria2 {
 
-HttpServerResponseCommand::HttpServerResponseCommand
-(int32_t cuid,
- const SharedHandle<HttpServer>& httpServer,
- DownloadEngine* e,
- const SharedHandle<SocketCore>& socket):
-  Command(cuid),
-  _e(e),
-  _socket(socket),
- _httpServer(httpServer)
-{
- 
-  _e->addSocketForWriteCheck(_socket, this);
-}
+namespace xmlrpc {
 
-HttpServerResponseCommand::~HttpServerResponseCommand()
-{
-  _e->deleteSocketForWriteCheck(_socket, this);
-}
+class AddURIXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+};
 
-bool HttpServerResponseCommand::execute()
-{
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
-    return true;
-  }
-  _httpServer->sendResponse();
-  if(_httpServer->sendBufferIsEmpty()) {
-    logger->info("CUID#%d - HttpServer: all response transmitted.", cuid);
-//     if(_httpServer->supportsPersistentConnection()) {
-//       logger->info("CUID#%d - Persist connection.", cuid);
-//       _e->commands.push_back
-// 	(new HttpServerCommand(cuid, _httpServer, _e, _socket));
-//     }
-    return true;
-  } else {
-    if(_timeout.elapsed(10)) {
-      logger->info("CUID#%d - HttpServer: Timeout while trasmitting response.",
-		   cuid);
-      return true;
-    } else {
-      _e->commands.push_back(this);
-      return true;
-    }
-  }
-}
+class FailXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+};
+
+} // namespace xmlrpc
 
 } // namespace aria2
+
+#endif // _D_XML_RPC_METHOD_IMPL_H_

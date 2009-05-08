@@ -39,6 +39,7 @@
 
 #include <string>
 #include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 
@@ -46,6 +47,8 @@ namespace aria2 {
 
 class RequestGroup;
 class Option;
+
+const std::vector<std::string>& listRequestOptions();
 
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by torrent-file 
@@ -74,6 +77,13 @@ void createRequestGroupForUriList
 void createRequestGroupForUri
 (std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
  const std::deque<std::string>& uris);
+
+void createRequestGroupForUri
+(std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
+ const std::deque<std::string>& uris, const Option& requestOption,
+ bool ignoreForceSequential = false, bool ignoreNonURI = false);
+
+void completeRequestOption(Option& requestOption, const Option& option);
 
 } // namespace aria2
 

@@ -209,6 +209,28 @@ SRCS =  Socket.h\
 	bitfield.h\
 	BDE.cc BDE.h
 
+if ENABLE_XML_RPC
+SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
+	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
+	XmlRpcRequestParserState.h\
+	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
+	XmlRpcElements.cc XmlRpcElements.h\
+	XmlRpcRequest.h\
+	XmlRpcRequestProcessor.h\
+	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
+	XmlRpcMethod.cc XmlRpcMethod.h\
+	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h\
+	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h
+endif # ENABLE_XML_RPC
+
+if HAVE_LIBXML2
+SRCS += Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
+endif # HAVE_LIBXML2
+
+if HAVE_LIBEXPAT
+SRCS += ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
+endif # HAVE_LIBEXPAT
+
 if HAVE_POSIX_FALLOCATE
 SRCS += FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
 endif # HAVE_POSIX_FALLOCATE
@@ -445,13 +467,13 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkHelper.cc MetalinkHelper.h
 endif # ENABLE_METALINK
 
-if ENABLE_LIBXML2
+if ENABLE_METALINK_LIBXML2
 SRCS += XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
-endif # ENABLE_LIBXML2
+endif # ENABLE_METALINK_LIBXML2
 
-if ENABLE_LIBEXPAT
+if ENABLE_METALINK_LIBEXPAT
 SRCS += ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
-endif # ENABLE_LIBEXPAT
+endif # ENABLE_METALINK_LIBEXPAT
 
 if !HAVE_ASCTIME_R
 SRCS += asctime_r.c asctime_r.h

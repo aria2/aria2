@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,74 +32,45 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_OPTION_PARSER_H_
-#define _D_OPTION_PARSER_H_
+#ifndef _D_XML_RPC_METHOD_H_
+#define _D_XML_RPC_METHOD_H_
 
 #include "common.h"
 
 #include <string>
-#include <deque>
-#include <iosfwd>
 
 #include "SharedHandle.h"
 
 namespace aria2 {
 
+class DownloadEngine;
+class OptionParser;
+class BDE;
+class Logger;
 class Option;
-class OptionHandler;
 
-class OptionParser {
-private:
-  int _idCounter;
+namespace xmlrpc {
 
-  std::deque<SharedHandle<OptionHandler> > _optionHandlers;
+struct XmlRpcRequest;
 
-  SharedHandle<OptionHandler>
-  getOptionHandlerByName(const std::string& optName);
+class XmlRpcMethod {
+protected:
+  SharedHandle<OptionParser> _optionParser;
 
-  static SharedHandle<OptionParser> _optionParser;
+  Logger* _logger;
+
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e) = 0;
+
+  void gatherRequestOption(Option& requestOption, const Option& option,
+			   const BDE& optionsDict);
 public:
-  OptionParser();
+  XmlRpcMethod();
 
-  ~OptionParser() {}
-
-  // Parses options in argv and writes option name and value to out in
-  // NAME=VALUE format. Non-option strings are stored in nonopts.
-  // Throws FatalException when an unrecognized option is found.
-  void parseArg(std::ostream& out, std::deque<std::string>& nonopts,
-		int argc, char* const argv[]);
-
-  void parse(Option& option, std::istream& ios);
-
-  void parseDefaultValues(Option& option) const;
-
-  void setOptionHandlers
-  (const std::deque<SharedHandle<OptionHandler> >& optionHandlers);
-
-  void addOptionHandler(const SharedHandle<OptionHandler>& optionHandler);
-
-  std::deque<SharedHandle<OptionHandler> >
-  findByTag(const std::string& tag) const;
-
-  std::deque<SharedHandle<OptionHandler> >
-  findByNameSubstring(const std::string& substring) const;
-
-  std::deque<SharedHandle<OptionHandler> > findAll() const;
-
-  SharedHandle<OptionHandler>
-  findByName(const std::string& name) const;
-
-  SharedHandle<OptionHandler> findByID(int id) const;
-
-  SharedHandle<OptionHandler> findByShortName(char shortName) const;
-
-  const std::deque<SharedHandle<OptionHandler> >& getOptionHandlers() const;
-
-  static SharedHandle<OptionParser> getInstance();
+  std::string execute(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
-typedef SharedHandle<OptionParser> OptionParserHandle;
+} // namespace xmlrpc
 
 } // namespace aria2
 
-#endif // _D_OPTION_PARSER_H_
+#endif // _D_XML_RPC_METHOD_H_

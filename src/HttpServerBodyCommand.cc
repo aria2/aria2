@@ -32,17 +32,26 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpServerResponseCommand.h"
+#include "HttpServerBodyCommand.h"
 #include "SocketCore.h"
 #include "DownloadEngine.h"
 #include "HttpServer.h"
+#include "HttpHeader.h"
 #include "Logger.h"
-#include "HttpServerCommand.h"
+#include "RequestGroup.h"
 #include "RequestGroupMan.h"
+#include "RecoverableException.h"
+#include "HttpServerResponseCommand.h"
+#include "OptionParser.h"
+#include "OptionHandler.h"
+#include "XmlRpcRequestProcessor.h"
+#include "XmlRpcRequestParserStateMachine.h"
+#include "XmlRpcMethod.h"
+#include "XmlRpcMethodFactory.h"
 
 namespace aria2 {
 
-HttpServerResponseCommand::HttpServerResponseCommand
+HttpServerBodyCommand::HttpServerBodyCommand
 (int32_t cuid,
  const SharedHandle<HttpServer>& httpServer,
  DownloadEngine* e,
@@ -50,39 +59,62 @@ HttpServerResponseCommand::HttpServerResponseCommand
   Command(cuid),
   _e(e),
   _socket(socket),
- _httpServer(httpServer)
+  _httpServer(httpServer)
 {
- 
-  _e->addSocketForWriteCheck(_socket, this);
+  _e->addSocketForReadCheck(_socket, this);
 }
 
-HttpServerResponseCommand::~HttpServerResponseCommand()
+HttpServerBodyCommand::~HttpServerBodyCommand()
 {
-  _e->deleteSocketForWriteCheck(_socket, this);
+  _e->deleteSocketForReadCheck(_socket, this);
 }
 
-bool HttpServerResponseCommand::execute()
+bool HttpServerBodyCommand::execute()
 {
   if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-  _httpServer->sendResponse();
-  if(_httpServer->sendBufferIsEmpty()) {
-    logger->info("CUID#%d - HttpServer: all response transmitted.", cuid);
-//     if(_httpServer->supportsPersistentConnection()) {
-//       logger->info("CUID#%d - Persist connection.", cuid);
-//       _e->commands.push_back
-// 	(new HttpServerCommand(cuid, _httpServer, _e, _socket));
-//     }
-    return true;
+  if(_socket->isReadable(0)) {
+    _timeout.reset();
+
+    try {
+      if(_httpServer->receiveBody()) {
+	// Do something for requestpath and body
+	if(_httpServer->getRequestPath() == "/rpc") {
+	  // For xml-rpc, disable keep-alive
+	  //_httpServer->disableKeepAlive();
+	  xmlrpc::XmlRpcRequest req =
+	    xmlrpc::XmlRpcRequestProcessor().parseMemory(_httpServer->getBody());
+	  
+	  SharedHandle<xmlrpc::XmlRpcMethod> method =
+	    xmlrpc::XmlRpcMethodFactory::create(req._methodName);
+	  std::string response = method->execute(req, _e);
+	  _httpServer->feedResponse(response, "text/xml");
+	  Command* command =
+	    new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
+	  command->setStatus(Command::STATUS_ONESHOT_REALTIME);
+	  _e->commands.push_back(command);
+	  _e->setNoWait(true);
+	  return true;
+	} else {
+	  return true;
+	}
+      } else {
+	_e->commands.push_back(this);
+	return false;
+      }	
+    } catch(RecoverableException& e) {
+      logger->info("CUID#%d - Error occurred while reading HTTP request body",
+		   e, cuid);
+      return true;
+    }
   } else {
-    if(_timeout.elapsed(10)) {
-      logger->info("CUID#%d - HttpServer: Timeout while trasmitting response.",
-		   cuid);
+    if(_timeout.elapsed(30)) {
+      logger->info("HTTP request body timeout.");
       return true;
     } else {
       _e->commands.push_back(this);
-      return true;
+      return false;
     }
   }
 }

@@ -73,6 +73,12 @@ aria2c_SOURCES = AllTest.cc\
 	bitfieldTest.cc\
 	BDETest.cc
 
+if ENABLE_XML_RPC
+aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\
+	XmlRpcRequestProcessorTest.cc\
+	XmlRpcMethodTest.cc
+endif # ENABLE_XML_RPC
+
 if HAVE_POSIX_FALLOCATE
 aria2c_SOURCES += FallocFileAllocationIteratorTest.cc
 endif  # HAVE_POSIX_FALLOCATE

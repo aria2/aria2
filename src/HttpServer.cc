@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "HttpServer.h"
+
+#include <sstream>
+
 #include "HttpHeader.h"
 #include "SocketCore.h"
 #include "HttpHeaderProcessor.h"
@@ -50,7 +53,8 @@ HttpServer::HttpServer(const SharedHandle<SocketCore>& socket,
   _socketBuffer(socket),
   _e(e),
   _headerProcessor(new HttpHeaderProcessor()),
-  _logger(LogFactory::getInstance())
+  _logger(LogFactory::getInstance()),
+  _keepAlive(true)
 {}
 
 HttpServer::~HttpServer() {}
@@ -77,14 +81,48 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     _logger->info("HTTP Server received request\n%s",
 		  _headerProcessor->getHeaderString().c_str());
     _lastRequestHeader = header;
+    _lastBody.clear();
+    _lastBody.str("");
+    _lastContentLength =
+      _lastRequestHeader->getFirstAsUInt(HttpHeader::CONTENT_LENGTH);
     _headerProcessor->clear();
   }
 
   return header;
 }
 
+bool HttpServer::receiveBody()
+{
+  if(_lastContentLength == 0) {
+    return true;
+  }
+  const size_t BUFLEN = 4096;
+  char buf[BUFLEN];
+  size_t length = std::min(BUFLEN, _lastContentLength-_lastBody.tellg());
+  _socket->readData(buf, length);
+  if(length == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
+    throw DlAbortEx(EX_EOF_FROM_PEER);
+  }
+  _lastBody.write(buf, length);
+  return _lastContentLength == static_cast<uint64_t>(_lastBody.tellp());
+}
+
+std::string HttpServer::getBody() const
+{
+  return _lastBody.str();
+}
+
+const std::string& HttpServer::getRequestPath() const
+{
+  return _lastRequestHeader->getRequestPath();
+}
+
 bool HttpServer::supportsPersistentConnection() const
 {
+  if(!_keepAlive) {
+    return false;
+  }
+
   std::string connection =
     Util::toLower(_lastRequestHeader->getFirst(HttpHeader::CONNECTION));
 
@@ -93,10 +131,10 @@ bool HttpServer::supportsPersistentConnection() const
      connection.find("keep-alive") != std::string::npos);
 }
 
-void HttpServer::feedResponse(const std::string& text)
+void HttpServer::feedResponse(const std::string& text, const std::string& contentType)
 {
   std::string header = "HTTP/1.1 200 OK\r\n"
-    "Content-Type: text/html\r\n"
+    "Content-Type: "+contentType+"\r\n"
     "Content-Length: "+Util::uitos(text.size())+"\r\n";
 
   if(!supportsPersistentConnection()) {

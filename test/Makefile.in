@@ -34,14 +34,18 @@ host_triplet = @host@
 target_triplet = @target@
 TESTS = aria2c$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
-@HAVE_POSIX_FALLOCATE_TRUE@am__append_1 = FallocFileAllocationIteratorTest.cc
-@HAVE_LIBZ_TRUE@am__append_2 = GZipDecoderTest.cc
-@HAVE_SQLITE3_TRUE@am__append_3 = Sqlite3MozCookieParserTest.cc
-@ENABLE_MESSAGE_DIGEST_TRUE@am__append_4 = MessageDigestHelperTest.cc\
+@ENABLE_XML_RPC_TRUE@am__append_1 = XmlRpcRequestParserControllerTest.cc\
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestProcessorTest.cc\
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodTest.cc
+
+@HAVE_POSIX_FALLOCATE_TRUE@am__append_2 = FallocFileAllocationIteratorTest.cc
+@HAVE_LIBZ_TRUE@am__append_3 = GZipDecoderTest.cc
+@HAVE_SQLITE3_TRUE@am__append_4 = Sqlite3MozCookieParserTest.cc
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_5 = MessageDigestHelperTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.cc
 
-@ENABLE_BITTORRENT_TRUE@am__append_5 = BtAllowedFastMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@am__append_6 = BtAllowedFastMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtChokeMessageTest.cc\
@@ -127,7 +131,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h
 
-@ENABLE_METALINK_TRUE@am__append_6 = MetalinkerTest.cc\
+@ENABLE_METALINK_TRUE@am__append_7 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.cc\
@@ -195,9 +199,11 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	PieceStatManTest.cc InOrderPieceSelector.h \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
-	bitfieldTest.cc BDETest.cc FallocFileAllocationIteratorTest.cc \
-	GZipDecoderTest.cc Sqlite3MozCookieParserTest.cc \
-	MessageDigestHelperTest.cc \
+	bitfieldTest.cc BDETest.cc \
+	XmlRpcRequestParserControllerTest.cc \
+	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
+	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
+	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -245,15 +251,18 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
-@HAVE_POSIX_FALLOCATE_TRUE@am__objects_1 = FallocFileAllocationIteratorTest.$(OBJEXT)
-@HAVE_LIBZ_TRUE@am__objects_2 = GZipDecoderTest.$(OBJEXT)
-@HAVE_SQLITE3_TRUE@am__objects_3 =  \
+@ENABLE_XML_RPC_TRUE@am__objects_1 = XmlRpcRequestParserControllerTest.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestProcessorTest.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodTest.$(OBJEXT)
+@HAVE_POSIX_FALLOCATE_TRUE@am__objects_2 = FallocFileAllocationIteratorTest.$(OBJEXT)
+@HAVE_LIBZ_TRUE@am__objects_3 = GZipDecoderTest.$(OBJEXT)
+@HAVE_SQLITE3_TRUE@am__objects_4 =  \
 @HAVE_SQLITE3_TRUE@	Sqlite3MozCookieParserTest.$(OBJEXT)
-@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_4 =  \
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_5 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_5 =  \
+@ENABLE_BITTORRENT_TRUE@am__objects_6 =  \
 @ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.$(OBJEXT) \
@@ -321,7 +330,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_6 = MetalinkerTest.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_7 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.$(OBJEXT) \
@@ -368,7 +377,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
 	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) BDETest.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6)
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a ../src/download_helper.o \
@@ -597,7 +607,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
 	bitfieldTest.cc BDETest.cc $(am__append_1) $(am__append_2) \
 	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6)
+	$(am__append_6) $(am__append_7)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -833,6 +843,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XORCloserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcMethodTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserControllerTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a2algoTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a2functionalTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/array_funTest.Po@am__quote@

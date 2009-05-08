@@ -130,6 +130,12 @@ RequestGroupMan::getRequestGroups() const
   return _requestGroups;
 }
 
+const std::deque<SharedHandle<RequestGroup> >&
+RequestGroupMan::getReservedGroups() const
+{
+  return _reservedGroups;
+}
+
 class ProcessStoppedRequestGroup {
 private:
   DownloadEngine* _e;

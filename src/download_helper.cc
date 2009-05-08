@@ -38,6 +38,7 @@
 #include <fstream>
 #include <algorithm>
 #include <sstream>
+#include <vector>
 
 #include "RequestGroup.h"
 #include "Option.h"
@@ -61,6 +62,21 @@
 #include "OptionHandler.h"
 
 namespace aria2 {
+
+const std::vector<std::string>& listRequestOptions()
+{
+  static const std::string REQUEST_OPTIONS[] = {
+    PREF_DIR,
+    PREF_OUT,
+    PREF_SELECT_FILE,
+    PREF_INDEX_OUT
+  };
+  static std::vector<std::string> requestOptions
+    (&REQUEST_OPTIONS[0],
+     &REQUEST_OPTIONS[arrayLength(REQUEST_OPTIONS)]);;
+
+  return requestOptions;
+}
 
 static void unfoldURI
 (std::deque<std::string>& result, const std::deque<std::string>& args)
@@ -246,9 +262,10 @@ static void copyIfndef(Option& dest, const Option& src, const std::string& name)
   }
 }
 
-static void createRequestGroupForUri
+void createRequestGroupForUri
 (std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
- const std::deque<std::string>& uris, const Option& requestOption)
+ const std::deque<std::string>& uris, const Option& requestOption,
+ bool ignoreForceSequential, bool ignoreNonURI)
 {
   std::deque<std::string> nargs;
   if(op.get(PREF_PARAMETERIZED_URI) == V_TRUE) {
@@ -256,7 +273,7 @@ static void createRequestGroupForUri
   } else {
     nargs = uris;
   }
-  if(op.get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
+  if(!ignoreForceSequential && op.get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
     std::for_each(nargs.begin(), nargs.end(),
 		  AccRequestGroup(result, op, requestOption));
   } else {
@@ -273,9 +290,11 @@ static void createRequestGroupForUri
       rg->setNumConcurrentCommand(numSplit);
       result.push_back(rg);
     }
-    // process remaining URIs(local metalink, BitTorrent files)
-    std::for_each(strmProtoEnd, nargs.end(),
-		  AccRequestGroup(result, op, requestOption));
+    if(!ignoreNonURI) {
+      // process remaining URIs(local metalink, BitTorrent files)
+      std::for_each(strmProtoEnd, nargs.end(),
+		    AccRequestGroup(result, op, requestOption));
+    }
   }
 }
 
@@ -288,7 +307,7 @@ void createRequestGroupForUri
 
 template<typename InputIterator>
 static void foreachCopyIfndef(InputIterator first, InputIterator last,
-			      Option& dest, const Option& src)
+		       Option& dest, const Option& src)
 {
   for(; first != last; ++first) {
     copyIfndef(dest, src, *first);
@@ -307,17 +326,7 @@ static void createRequestGroupForUriList
     if(uris.empty()) {
       continue;
     }
-    // TODO use OptionParser to validate the value in the options.
-    // These options can be specified in input list(-i list).
-    static const std::string REQUEST_OPTIONS[] = {
-      PREF_DIR,
-      PREF_OUT,
-      PREF_SELECT_FILE,
-      PREF_INDEX_OUT
-    };
-    foreachCopyIfndef(&REQUEST_OPTIONS[0],
-		      &REQUEST_OPTIONS[arrayLength(REQUEST_OPTIONS)],
-		      requestOption, op);
+    completeRequestOption(requestOption, op);
 
     createRequestGroupForUri(result, op, uris, requestOption);
   }
@@ -337,6 +346,13 @@ void createRequestGroupForUriList
     std::ifstream f(op.get(PREF_INPUT_FILE).c_str(), std::ios::binary);
     createRequestGroupForUriList(result, op, f);
   }
+}
+
+void completeRequestOption(Option& requestOption, const Option& option)
+{
+  foreachCopyIfndef(listRequestOptions().begin(),
+		    listRequestOptions().end(),
+		    requestOption, option);
 }
 
 } // namespace aria2

@@ -35,15 +35,29 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = aria2c$(EXEEXT)
-@HAVE_POSIX_FALLOCATE_TRUE@am__append_1 = FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
-@HAVE_EPOLL_TRUE@am__append_2 = EpollEventPoll.cc EpollEventPoll.h
-@ENABLE_SSL_TRUE@am__append_3 = TLSContext.h
-@HAVE_LIBGNUTLS_TRUE@am__append_4 = LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
-@HAVE_LIBSSL_TRUE@am__append_5 = LibsslTLSContext.cc LibsslTLSContext.h
-@HAVE_LIBZ_TRUE@am__append_6 = GZipDecoder.cc GZipDecoder.h
-@HAVE_SQLITE3_TRUE@am__append_7 = Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h
-@ENABLE_ASYNC_DNS_TRUE@am__append_8 = AsyncNameResolver.cc AsyncNameResolver.h
-@ENABLE_MESSAGE_DIGEST_TRUE@am__append_9 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+@ENABLE_XML_RPC_TRUE@am__append_1 = XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserState.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcElements.cc XmlRpcElements.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequest.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestProcessor.h\
+@ENABLE_XML_RPC_TRUE@	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethod.cc XmlRpcMethod.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h
+
+@HAVE_LIBXML2_TRUE@am__append_2 = Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
+@HAVE_LIBEXPAT_TRUE@am__append_3 = ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
+@HAVE_POSIX_FALLOCATE_TRUE@am__append_4 = FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
+@HAVE_EPOLL_TRUE@am__append_5 = EpollEventPoll.cc EpollEventPoll.h
+@ENABLE_SSL_TRUE@am__append_6 = TLSContext.h
+@HAVE_LIBGNUTLS_TRUE@am__append_7 = LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
+@HAVE_LIBSSL_TRUE@am__append_8 = LibsslTLSContext.cc LibsslTLSContext.h
+@HAVE_LIBZ_TRUE@am__append_9 = GZipDecoder.cc GZipDecoder.h
+@HAVE_SQLITE3_TRUE@am__append_10 = Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h
+@ENABLE_ASYNC_DNS_TRUE@am__append_11 = AsyncNameResolver.cc AsyncNameResolver.h
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_12 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
@@ -53,7 +67,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@	Checksum.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksum.h
 
-@ENABLE_BITTORRENT_TRUE@am__append_10 = PeerMessageUtil.cc PeerMessageUtil.h\
+@ENABLE_BITTORRENT_TRUE@am__append_13 = PeerMessageUtil.cc PeerMessageUtil.h\
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.cc PeerAbstractCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.cc PeerInteractionCommand.h\
@@ -213,7 +227,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	ExtensionMessageRegistry.h
 
-@ENABLE_METALINK_TRUE@am__append_11 = Metalinker.cc Metalinker.h\
+@ENABLE_METALINK_TRUE@am__append_14 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
@@ -241,17 +255,17 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 @ENABLE_METALINK_TRUE@	MetalinkHelper.cc MetalinkHelper.h
 
-@ENABLE_LIBXML2_TRUE@am__append_12 = XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
-@ENABLE_LIBEXPAT_TRUE@am__append_13 = ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
-@HAVE_ASCTIME_R_FALSE@am__append_14 = asctime_r.c asctime_r.h
-@HAVE_BASENAME_FALSE@am__append_15 = libgen.c libgen.h
-@HAVE_GETADDRINFO_FALSE@am__append_16 = getaddrinfo.c getaddrinfo.h
-@HAVE_GAI_STRERROR_FALSE@am__append_17 = gai_strerror.c gai_strerror.h
-@HAVE_GETTIMEOFDAY_FALSE@am__append_18 = gettimeofday.c gettimeofday.h
-@HAVE_INET_ATON_FALSE@am__append_19 = inet_aton.c inet_aton.h
-@HAVE_LOCALTIME_R_FALSE@am__append_20 = localtime_r.c localtime_r.h
-@HAVE_STRPTIME_FALSE@am__append_21 = strptime.c strptime.h
-@HAVE_TIMEGM_FALSE@am__append_22 = timegm.c timegm.h
+@ENABLE_METALINK_LIBXML2_TRUE@am__append_15 = XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
+@ENABLE_METALINK_LIBEXPAT_TRUE@am__append_16 = ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
+@HAVE_ASCTIME_R_FALSE@am__append_17 = asctime_r.c asctime_r.h
+@HAVE_BASENAME_FALSE@am__append_18 = libgen.c libgen.h
+@HAVE_GETADDRINFO_FALSE@am__append_19 = getaddrinfo.c getaddrinfo.h
+@HAVE_GAI_STRERROR_FALSE@am__append_20 = gai_strerror.c gai_strerror.h
+@HAVE_GETTIMEOFDAY_FALSE@am__append_21 = gettimeofday.c gettimeofday.h
+@HAVE_INET_ATON_FALSE@am__append_22 = inet_aton.c inet_aton.h
+@HAVE_LOCALTIME_R_FALSE@am__append_23 = localtime_r.c localtime_r.h
+@HAVE_STRPTIME_FALSE@am__append_24 = strptime.c strptime.h
+@HAVE_TIMEGM_FALSE@am__append_25 = timegm.c timegm.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -409,11 +423,22 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
 	PieceSelector.h LongestSequencePieceSelector.cc \
 	LongestSequencePieceSelector.h bitfield.h BDE.cc BDE.h \
-	FallocFileAllocationIterator.cc FallocFileAllocationIterator.h \
-	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
-	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
-	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
-	GZipDecoder.h Sqlite3MozCookieParser.cc \
+	XmlRpcRequestParserController.cc \
+	XmlRpcRequestParserController.h \
+	XmlRpcRequestParserStateMachine.cc \
+	XmlRpcRequestParserStateMachine.h XmlRpcRequestParserState.h \
+	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h \
+	XmlRpcElements.cc XmlRpcElements.h XmlRpcRequest.h \
+	XmlRpcRequestProcessor.h HttpServerBodyCommand.cc \
+	HttpServerBodyCommand.h XmlRpcMethod.cc XmlRpcMethod.h \
+	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h XmlRpcMethodFactory.cc \
+	XmlRpcMethodFactory.h Xml2XmlRpcRequestProcessor.cc \
+	Xml2XmlRpcRequestProcessor.h ExpatXmlRpcRequestProcessor.cc \
+	ExpatXmlRpcRequestProcessor.h FallocFileAllocationIterator.cc \
+	FallocFileAllocationIterator.h EpollEventPoll.cc \
+	EpollEventPoll.h TLSContext.h LibgnutlsTLSContext.cc \
+	LibgnutlsTLSContext.h LibsslTLSContext.cc LibsslTLSContext.h \
+	GZipDecoder.cc GZipDecoder.h Sqlite3MozCookieParser.cc \
 	Sqlite3MozCookieParser.h AsyncNameResolver.cc \
 	AsyncNameResolver.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
@@ -563,22 +588,35 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	gai_strerror.h gettimeofday.c gettimeofday.h inet_aton.c \
 	inet_aton.h localtime_r.c localtime_r.h strptime.c strptime.h \
 	timegm.c timegm.h
-@HAVE_POSIX_FALLOCATE_TRUE@am__objects_1 = FallocFileAllocationIterator.$(OBJEXT)
-@HAVE_EPOLL_TRUE@am__objects_2 = EpollEventPoll.$(OBJEXT)
-am__objects_3 =
-@HAVE_LIBGNUTLS_TRUE@am__objects_4 = LibgnutlsTLSContext.$(OBJEXT)
-@HAVE_LIBSSL_TRUE@am__objects_5 = LibsslTLSContext.$(OBJEXT)
-@HAVE_LIBZ_TRUE@am__objects_6 = GZipDecoder.$(OBJEXT)
-@HAVE_SQLITE3_TRUE@am__objects_7 = Sqlite3MozCookieParser.$(OBJEXT)
-@ENABLE_ASYNC_DNS_TRUE@am__objects_8 = AsyncNameResolver.$(OBJEXT)
-@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_9 = IteratableChunkChecksumValidator.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@am__objects_1 =  \
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserController.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserStateMachine.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserStateImpl.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcElements.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	HttpServerBodyCommand.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethod.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodImpl.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.$(OBJEXT)
+@HAVE_LIBXML2_TRUE@am__objects_2 =  \
+@HAVE_LIBXML2_TRUE@	Xml2XmlRpcRequestProcessor.$(OBJEXT)
+@HAVE_LIBEXPAT_TRUE@am__objects_3 =  \
+@HAVE_LIBEXPAT_TRUE@	ExpatXmlRpcRequestProcessor.$(OBJEXT)
+@HAVE_POSIX_FALLOCATE_TRUE@am__objects_4 = FallocFileAllocationIterator.$(OBJEXT)
+@HAVE_EPOLL_TRUE@am__objects_5 = EpollEventPoll.$(OBJEXT)
+am__objects_6 =
+@HAVE_LIBGNUTLS_TRUE@am__objects_7 = LibgnutlsTLSContext.$(OBJEXT)
+@HAVE_LIBSSL_TRUE@am__objects_8 = LibsslTLSContext.$(OBJEXT)
+@HAVE_LIBZ_TRUE@am__objects_9 = GZipDecoder.$(OBJEXT)
+@HAVE_SQLITE3_TRUE@am__objects_10 = Sqlite3MozCookieParser.$(OBJEXT)
+@ENABLE_ASYNC_DNS_TRUE@am__objects_11 = AsyncNameResolver.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_12 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityDispatcherCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_10 = PeerMessageUtil.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@am__objects_13 = PeerMessageUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.$(OBJEXT) \
@@ -686,7 +724,7 @@ am__objects_3 =
 @ENABLE_BITTORRENT_TRUE@	RangeBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_11 = Metalinker.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_14 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserController.$(OBJEXT) \
@@ -711,20 +749,18 @@ am__objects_3 =
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkHelper.$(OBJEXT)
-@ENABLE_LIBXML2_TRUE@am__objects_12 =  \
-@ENABLE_LIBXML2_TRUE@	XML2SAXMetalinkProcessor.$(OBJEXT)
-@ENABLE_LIBEXPAT_TRUE@am__objects_13 =  \
-@ENABLE_LIBEXPAT_TRUE@	ExpatMetalinkProcessor.$(OBJEXT)
-@HAVE_ASCTIME_R_FALSE@am__objects_14 = asctime_r.$(OBJEXT)
-@HAVE_BASENAME_FALSE@am__objects_15 = libgen.$(OBJEXT)
-@HAVE_GETADDRINFO_FALSE@am__objects_16 = getaddrinfo.$(OBJEXT)
-@HAVE_GAI_STRERROR_FALSE@am__objects_17 = gai_strerror.$(OBJEXT)
-@HAVE_GETTIMEOFDAY_FALSE@am__objects_18 = gettimeofday.$(OBJEXT)
-@HAVE_INET_ATON_FALSE@am__objects_19 = inet_aton.$(OBJEXT)
-@HAVE_LOCALTIME_R_FALSE@am__objects_20 = localtime_r.$(OBJEXT)
-@HAVE_STRPTIME_FALSE@am__objects_21 = strptime.$(OBJEXT)
-@HAVE_TIMEGM_FALSE@am__objects_22 = timegm.$(OBJEXT)
-am__objects_23 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+@ENABLE_METALINK_LIBXML2_TRUE@am__objects_15 = XML2SAXMetalinkProcessor.$(OBJEXT)
+@ENABLE_METALINK_LIBEXPAT_TRUE@am__objects_16 = ExpatMetalinkProcessor.$(OBJEXT)
+@HAVE_ASCTIME_R_FALSE@am__objects_17 = asctime_r.$(OBJEXT)
+@HAVE_BASENAME_FALSE@am__objects_18 = libgen.$(OBJEXT)
+@HAVE_GETADDRINFO_FALSE@am__objects_19 = getaddrinfo.$(OBJEXT)
+@HAVE_GAI_STRERROR_FALSE@am__objects_20 = gai_strerror.$(OBJEXT)
+@HAVE_GETTIMEOFDAY_FALSE@am__objects_21 = gettimeofday.$(OBJEXT)
+@HAVE_INET_ATON_FALSE@am__objects_22 = inet_aton.$(OBJEXT)
+@HAVE_LOCALTIME_R_FALSE@am__objects_23 = localtime_r.$(OBJEXT)
+@HAVE_STRPTIME_FALSE@am__objects_24 = strptime.$(OBJEXT)
+@HAVE_TIMEGM_FALSE@am__objects_25 = timegm.$(OBJEXT)
+am__objects_26 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -810,8 +846,9 @@ am__objects_23 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
 	$(am__objects_16) $(am__objects_17) $(am__objects_18) \
 	$(am__objects_19) $(am__objects_20) $(am__objects_21) \
-	$(am__objects_22)
-am_libaria2c_a_OBJECTS = $(am__objects_23)
+	$(am__objects_22) $(am__objects_23) $(am__objects_24) \
+	$(am__objects_25)
+am_libaria2c_a_OBJECTS = $(am__objects_26)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -1147,7 +1184,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	$(am__append_13) $(am__append_14) $(am__append_15) \
 	$(am__append_16) $(am__append_17) $(am__append_18) \
 	$(am__append_19) $(am__append_20) $(am__append_21) \
-	$(am__append_22)
+	$(am__append_22) $(am__append_23) $(am__append_24) \
+	$(am__append_25)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1374,6 +1412,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EpollEventPoll.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExpatMetalinkProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExpatXmlRpcRequestProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FallocFileAllocationIterator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeedbackURISelector.Po@am__quote@
@@ -1411,6 +1450,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpServer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpServerBodyCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpServerCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpServerResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpSkipResponseCommand.Po@am__quote@
@@ -1520,6 +1560,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VerificationMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VersionMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XML2SAXMetalinkProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2XmlRpcRequestProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcElements.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcMethod.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcMethodFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcMethodImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserController.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserStateImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserStateMachine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asctime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bencode.Po@am__quote@
