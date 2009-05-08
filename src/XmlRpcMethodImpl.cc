@@ -54,6 +54,14 @@ namespace aria2 {
 
 namespace xmlrpc {
 
+static BDE createGIDResponse(int32_t gid)
+{
+  BDE resParams = BDE::list();
+  resParams << BDE("OK");
+  resParams << BDE(Util::itos(gid));
+  return resParams;
+}
+
 BDE AddURIXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   const BDE& params = req._params;
@@ -80,14 +88,34 @@ BDE AddURIXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 
   if(!result.empty()) {
     e->_requestGroupMan->addReservedGroup(result.front());
-    BDE resParams = BDE::list();
-    resParams << BDE("OK");
-    resParams << BDE(Util::itos(result.front()->getGID()));
-    return resParams;
+    return createGIDResponse(result.front()->getGID());
   } else {
     throw DlAbortEx("No URI to download.");
   }
 }
+
+BDE AddTorrentFileXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isString()) {
+    throw DlAbortEx("Torrent data is not provided.");
+  }
+  
+  // TODO should accect uris from xml rpc request
+  std::deque<SharedHandle<RequestGroup> > result;
+  createRequestGroupForBitTorrent(result, *e->option,
+				  std::deque<std::string>(),
+				  params[0].s());
+
+  if(!result.empty()) {
+    e->_requestGroupMan->addReservedGroup(result.front());
+    return createGIDResponse(result.front()->getGID());
+  } else {
+    throw DlAbortEx("No Torrent to download.");
+  }
+} 
 
 BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {

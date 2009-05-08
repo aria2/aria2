@@ -132,12 +132,17 @@ SharedHandle<RequestGroup>
 createBtRequestGroup(const std::string& torrentFilePath,
 		     const Option& op,
 		     const std::deque<std::string>& auxUris,
-		     const Option& requestOption)
+		     const Option& requestOption,
+		     const std::string& torrentData = "")
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(&op, auxUris));
   SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
   btContext->setDir(requestOption.get(PREF_DIR));
-  btContext->load(torrentFilePath);// may throw exception
+  if(torrentData.empty()) {
+    btContext->load(torrentFilePath);// may throw exception
+  } else {
+    btContext->loadFromMemory(torrentData, "default"); // may throw exception
+  }
   if(op.defined(PREF_PEER_ID_PREFIX)) {
     btContext->setPeerIdPrefix(op.get(PREF_PEER_ID_PREFIX));
   }
@@ -158,7 +163,8 @@ createBtRequestGroup(const std::string& torrentFilePath,
 
 void createRequestGroupForBitTorrent
 (std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
- const std::deque<std::string>& uris)
+ const std::deque<std::string>& uris,
+ const std::string& torrentData)
 {
   std::deque<std::string> nargs;
   if(op.get(PREF_PARAMETERIZED_URI) == V_TRUE) {
@@ -171,7 +177,8 @@ void createRequestGroupForBitTorrent
   std::deque<std::string> auxUris;
   splitURI(auxUris, nargs.begin(), nargs.end(), numSplit);
   SharedHandle<RequestGroup> rg =
-    createBtRequestGroup(op.get(PREF_TORRENT_FILE), op, auxUris, op);
+    createBtRequestGroup(op.get(PREF_TORRENT_FILE), op, auxUris, op,
+			 torrentData);
   rg->setNumConcurrentCommand(numSplit);
   result.push_back(rg);
 }

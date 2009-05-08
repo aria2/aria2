@@ -51,11 +51,14 @@ class Option;
 const std::vector<std::string>& listRequestOptions();
 
 #ifdef ENABLE_BITTORRENT
-// Create RequestGroup object using torrent file specified by torrent-file 
-// option. In this function, force-sequential is ignored.
+// Create RequestGroup object using torrent file specified by
+// torrent-file option.  If torrentData is specified, then it is used
+// as a content of torrent file in stead. In this function,
+// force-sequential is ignored.
 void createRequestGroupForBitTorrent
 (std::deque<SharedHandle<RequestGroup> >& result, const Option& op,
- const std::deque<std::string>& uris);
+ const std::deque<std::string>& uris,
+ const std::string& torrentData = "");
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK

@@ -346,6 +346,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       e->addCommand(commands);
     } catch(RecoverableException& ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
+      groupToAdd->releaseRuntimeResource(e);
       _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
   }
