@@ -1,5 +1,16 @@
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added remove xml-rpc command which removes specified download.
+	There is a known issue: the removed unfinished downloads are
+	reported ERR when aria2 exits. They should be reported as INPR.
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	
+2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	If --enable-http-server is enabled, don't stop aria2 when all
 	download finished and don't quit when no files to download at
 	start up.

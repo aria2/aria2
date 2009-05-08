@@ -133,6 +133,18 @@ RequestGroupMan::getRequestGroups() const
   return _requestGroups;
 }
 
+SharedHandle<RequestGroup>
+RequestGroupMan::findRequestGroup(int32_t gid) const
+{
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+	_requestGroups.begin(); i != _requestGroups.end(); ++i) {
+    if((*i)->getGID() == gid) {
+      return *i;
+    }
+  }
+  return SharedHandle<RequestGroup>();
+}
+
 const std::deque<SharedHandle<RequestGroup> >&
 RequestGroupMan::getReservedGroups() const
 {

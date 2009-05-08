@@ -89,6 +89,32 @@ BDE AddURIXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   }
 }
 
+BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.empty() || !params[0].isString()) {
+    throw DlAbortEx("GID is not provided.");
+  }
+  
+  int32_t gid = Util::parseInt(params[0].s());
+
+  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+
+  if(group.isNull()) {
+    throw DlAbortEx
+      (StringFormat("Active Download not found for GID#%d", gid).str());
+  }
+
+  group->setHaltRequested(true);
+
+  BDE resParams = BDE::list();
+  resParams << BDE("OK");
+  resParams << BDE(Util::itos(gid));
+  return resParams;
+}
+
 BDE FailXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   throw DlAbortEx

@@ -112,6 +112,8 @@ public:
   
   const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const;
 
+  SharedHandle<RequestGroup> findRequestGroup(int32_t gid) const;
+
   const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const;
 
   void showDownloadResults(std::ostream& o) const;
