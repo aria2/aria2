@@ -83,6 +83,9 @@ RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
 
 bool RequestGroupMan::downloadFinished()
 {
+  if(_option->getAsBool(PREF_ENABLE_HTTP_SERVER)) {
+    return false;
+  }
   if(!_reservedGroups.empty()) {
     return false;
   }

@@ -1,5 +1,14 @@
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	If --enable-http-server is enabled, don't stop aria2 when all
+	download finished and don't quit when no files to download at
+	start up.
+	* src/RequestGroupMan.cc
+	* src/main.cc
+	* src/option_processing.cc
+	
+2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added missing AM_CONDITIONAL
 	* configure.ac
 	

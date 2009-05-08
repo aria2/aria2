@@ -236,7 +236,11 @@ DownloadResult::RESULT main(int argc, char* argv[])
 	  createRequestGroupForUri(requestGroups, op, args);
 	}
 
-    if(requestGroups.empty()) {
+    if(
+#ifdef ENABLE_XML_RPC
+       !op.getAsBool(PREF_ENABLE_HTTP_SERVER) &&
+#endif // ENABLE_XML_RPC
+       requestGroups.empty()) {
       std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
     } else {
       exitStatus = MultiUrlRequestInfo(requestGroups, &op, getStatCalc(&op),
