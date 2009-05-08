@@ -138,10 +138,19 @@ else
   AM_CONDITIONAL([ENABLE_METALINK], false)
 fi
 
-AM_CONDITIONAL([ENABLE_LIBXML2],
+AM_CONDITIONAL([ENABLE_METALINK_LIBXML2],
           [test "x$enable_metalink" = "xyes" && test "x$have_libxml2" = "xyes"])
-AM_CONDITIONAL([ENABLE_LIBEXPAT],
+AM_CONDITIONAL([ENABLE_METALINK_LIBEXPAT],
          [test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"])
+
+if test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes"; then
+  enable_xml_rpc=yes
+fi
+
+AM_CONDITIONAL([ENABLE_XML_RPC], [test "x$enable_xml_rpc" = "xyes"])
+
+AM_CONDITIONAL([HAVE_LIBXML2], [test "x$have_libxml2" = "xyes"])
+AM_CONDITIONAL([HAVE_LIBEXPAT], [test "x$have_libexpat" = "xyes"])
 
 if test "x$have_libcares" = "xyes"; then
   AC_DEFINE([ENABLE_ASYNC_DNS], [1],
@@ -355,3 +364,4 @@ echo "Libz:           $have_libz"
 echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"
+echo "XML-RPC:        $enable_xml_rpc"

@@ -1,5 +1,10 @@
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added missing AM_CONDITIONAL
+	* configure.ac
+	
+2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added xml-rpc functionality. Currently only addURI commad is
 	supported. To enable xml-rpc, run aria2 with
 	--enable-http-server. This option name is temporal and will be

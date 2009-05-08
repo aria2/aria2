@@ -717,10 +717,16 @@ HAVE_LIBZ_FALSE
 HAVE_LIBZ_TRUE
 ENABLE_ASYNC_DNS_FALSE
 ENABLE_ASYNC_DNS_TRUE
-ENABLE_LIBEXPAT_FALSE
-ENABLE_LIBEXPAT_TRUE
-ENABLE_LIBXML2_FALSE
-ENABLE_LIBXML2_TRUE
+HAVE_LIBEXPAT_FALSE
+HAVE_LIBEXPAT_TRUE
+HAVE_LIBXML2_FALSE
+HAVE_LIBXML2_TRUE
+ENABLE_XML_RPC_FALSE
+ENABLE_XML_RPC_TRUE
+ENABLE_METALINK_LIBEXPAT_FALSE
+ENABLE_METALINK_LIBEXPAT_TRUE
+ENABLE_METALINK_LIBXML2_FALSE
+ENABLE_METALINK_LIBXML2_TRUE
 ENABLE_METALINK_FALSE
 ENABLE_METALINK_TRUE
 ENABLE_BITTORRENT_FALSE
@@ -7656,19 +7662,49 @@ fi
 fi
 
  if test "x$enable_metalink" = "xyes" && test "x$have_libxml2" = "xyes"; then
-  ENABLE_LIBXML2_TRUE=
-  ENABLE_LIBXML2_FALSE='#'
+  ENABLE_METALINK_LIBXML2_TRUE=
+  ENABLE_METALINK_LIBXML2_FALSE='#'
 else
-  ENABLE_LIBXML2_TRUE='#'
-  ENABLE_LIBXML2_FALSE=
+  ENABLE_METALINK_LIBXML2_TRUE='#'
+  ENABLE_METALINK_LIBXML2_FALSE=
 fi
 
  if test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"; then
-  ENABLE_LIBEXPAT_TRUE=
-  ENABLE_LIBEXPAT_FALSE='#'
+  ENABLE_METALINK_LIBEXPAT_TRUE=
+  ENABLE_METALINK_LIBEXPAT_FALSE='#'
 else
-  ENABLE_LIBEXPAT_TRUE='#'
-  ENABLE_LIBEXPAT_FALSE=
+  ENABLE_METALINK_LIBEXPAT_TRUE='#'
+  ENABLE_METALINK_LIBEXPAT_FALSE=
+fi
+
+
+if test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes"; then
+  enable_xml_rpc=yes
+fi
+
+ if test "x$enable_xml_rpc" = "xyes"; then
+  ENABLE_XML_RPC_TRUE=
+  ENABLE_XML_RPC_FALSE='#'
+else
+  ENABLE_XML_RPC_TRUE='#'
+  ENABLE_XML_RPC_FALSE=
+fi
+
+
+ if test "x$have_libxml2" = "xyes"; then
+  HAVE_LIBXML2_TRUE=
+  HAVE_LIBXML2_FALSE='#'
+else
+  HAVE_LIBXML2_TRUE='#'
+  HAVE_LIBXML2_FALSE=
+fi
+
+ if test "x$have_libexpat" = "xyes"; then
+  HAVE_LIBEXPAT_TRUE=
+  HAVE_LIBEXPAT_FALSE='#'
+else
+  HAVE_LIBEXPAT_TRUE='#'
+  HAVE_LIBEXPAT_FALSE=
 fi
 
 
@@ -23022,17 +23058,38 @@ $as_echo "$as_me: error: conditional \"ENABLE_METALINK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${ENABLE_LIBXML2_TRUE}" && test -z "${ENABLE_LIBXML2_FALSE}"; then
-  { { $as_echo "$as_me:$LINENO: error: conditional \"ENABLE_LIBXML2\" was never defined.
+if test -z "${ENABLE_METALINK_LIBXML2_TRUE}" && test -z "${ENABLE_METALINK_LIBXML2_FALSE}"; then
+  { { $as_echo "$as_me:$LINENO: error: conditional \"ENABLE_METALINK_LIBXML2\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-$as_echo "$as_me: error: conditional \"ENABLE_LIBXML2\" was never defined.
+$as_echo "$as_me: error: conditional \"ENABLE_METALINK_LIBXML2\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${ENABLE_LIBEXPAT_TRUE}" && test -z "${ENABLE_LIBEXPAT_FALSE}"; then
-  { { $as_echo "$as_me:$LINENO: error: conditional \"ENABLE_LIBEXPAT\" was never defined.
+if test -z "${ENABLE_METALINK_LIBEXPAT_TRUE}" && test -z "${ENABLE_METALINK_LIBEXPAT_FALSE}"; then
+  { { $as_echo "$as_me:$LINENO: error: conditional \"ENABLE_METALINK_LIBEXPAT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-$as_echo "$as_me: error: conditional \"ENABLE_LIBEXPAT\" was never defined.
+$as_echo "$as_me: error: conditional \"ENABLE_METALINK_LIBEXPAT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${ENABLE_XML_RPC_TRUE}" && test -z "${ENABLE_XML_RPC_FALSE}"; then
+  { { $as_echo "$as_me:$LINENO: error: conditional \"ENABLE_XML_RPC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+$as_echo "$as_me: error: conditional \"ENABLE_XML_RPC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_LIBXML2_TRUE}" && test -z "${HAVE_LIBXML2_FALSE}"; then
+  { { $as_echo "$as_me:$LINENO: error: conditional \"HAVE_LIBXML2\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+$as_echo "$as_me: error: conditional \"HAVE_LIBXML2\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_LIBEXPAT_TRUE}" && test -z "${HAVE_LIBEXPAT_FALSE}"; then
+  { { $as_echo "$as_me:$LINENO: error: conditional \"HAVE_LIBEXPAT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+$as_echo "$as_me: error: conditional \"HAVE_LIBEXPAT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -24706,3 +24763,4 @@ echo "Libz:           $have_libz"
 echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"
+echo "XML-RPC:        $enable_xml_rpc"
