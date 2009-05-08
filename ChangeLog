@@ -1,5 +1,13 @@
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added tellActiveStatus xml-rpc command which reports download
+	status of active downloads.
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+
+2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added addTorrentFile xml-rpc command which receives uploaded
 	torrent file and add download for it.
 	* src/RequestGroupMan.cc

@@ -49,6 +49,16 @@
 #include "RequestGroupMan.h"
 #include "StringFormat.h"
 #include "XmlRpcRequest.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
+#include "BtContext.h"
+#include "BtRegistry.h"
+#include "Peer.h"
+#include "DiskAdaptor.h"
+#include "FileEntry.h"
+#include "BtProgressInfoFile.h"
+#include "BtRuntime.h"
+#include "BtAnnounce.h"
 
 namespace aria2 {
 
@@ -141,6 +151,73 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   resParams << BDE("OK");
   resParams << BDE(Util::itos(gid));
   return resParams;
+}
+
+BDE TellActiveStatusXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  BDE res = BDE::list();
+  const std::deque<SharedHandle<RequestGroup> >& groups =
+    e->_requestGroupMan->getRequestGroups();
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+	groups.begin(); i != groups.end(); ++i) {
+    BDE entryDict = BDE::dict();
+    entryDict["gid"] = BDE(Util::itos((*i)->getGID()));
+    entryDict["totalLength"] = BDE(Util::uitos((*i)->getTotalLength()));
+    entryDict["completedLength"] = BDE(Util::uitos((*i)->getCompletedLength()));
+    TransferStat stat = (*i)->calculateStat();
+    entryDict["downloadSpeed"] = BDE(Util::uitos(stat.getDownloadSpeed()));
+    entryDict["uploadSpeed"] = BDE(Util::uitos(stat.getUploadSpeed()));
+    
+    SharedHandle<PieceStorage> ps = (*i)->getPieceStorage();
+    if(!ps.isNull()) {
+      if(ps->getBitfieldLength() > 0) {
+	entryDict["bitfield"] = BDE(Util::toHex(ps->getBitfield(),
+						ps->getBitfieldLength()));
+      }
+
+      if(!ps->getDiskAdaptor().isNull()) {
+	BDE files = BDE::list();
+	const std::deque<SharedHandle<FileEntry> >& entries =
+	  ps->getDiskAdaptor()->getFileEntries();
+	for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	      entries.begin(); i != entries.end(); ++i) {
+	  files << BDE((*i)->getPath());
+	}
+	entryDict["files"] = files;
+      }
+    }
+    
+    SharedHandle<BtContext> btctx =
+      dynamic_pointer_cast<BtContext>((*i)->getDownloadContext());
+    if(!btctx.isNull()) {
+      SharedHandle<BtRegistry> btreg = e->getBtRegistry();
+
+      BDE peers = BDE::list();
+      SharedHandle<PeerStorage> ps =
+	btreg->getPeerStorage(btctx->getInfoHashAsString());
+
+      assert(!ps.isNull());
+
+      std::deque<SharedHandle<Peer> > activePeers;
+      ps->getActivePeers(activePeers);
+      for(std::deque<SharedHandle<Peer> >::const_iterator i =
+	    activePeers.begin(); i != activePeers.end(); ++i) {
+	BDE peerEntry = BDE::dict();
+	peerEntry["peerId"] = BDE(Util::torrentUrlencode((*i)->getPeerId(),
+							 PEER_ID_LENGTH));
+	peerEntry["ip"] = BDE((*i)->ipaddr);
+	peerEntry["port"] = BDE(Util::uitos((*i)->port));
+	peerEntry["bitfield"] = BDE(Util::toHex((*i)->getBitfield(),
+						(*i)->getBitfieldLength()));
+	peers << peerEntry;
+      }
+      entryDict["peers"] = peers;
+    }
+
+    res << entryDict;
+  }
+  return res;
 }
 
 BDE FailXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
