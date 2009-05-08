@@ -1,5 +1,9 @@
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	* Release 1.3.3
+
+2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error since r1202.
 	* src/ExpatMetalinkProcessor.cc
 
