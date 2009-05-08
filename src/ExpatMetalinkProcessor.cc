@@ -96,8 +96,8 @@ static void mlCharacters(void* userData, const char* ch, int len)
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(const std::string& filename)
 {
-  SharedHandle<DefaultDiskWriter> dw(new DefaultDiskWriter());
-  dw->openExistingFile(filename);
+  SharedHandle<DefaultDiskWriter> dw(new DefaultDiskWriter(filename));
+  dw->openExistingFile();
 
   return parseFromBinaryStream(dw);
 }
