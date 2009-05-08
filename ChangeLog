@@ -1,5 +1,26 @@
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added xml-rpc request parser. The supported value types are:
+	i4/int, string, double, struct, array, base64.  Currently only
+	libxml2 version is provided.
+	* src/Xml2XmlRpcRequestProcessor.cc
+	* src/Xml2XmlRpcRequestProcessor.h
+	* src/XmlRpcElements.cc
+	* src/XmlRpcElements.h
+	* src/XmlRpcRequest.h
+	* src/XmlRpcRequestParserController.cc
+	* src/XmlRpcRequestParserController.h
+	* src/XmlRpcRequestParserState.h
+	* src/XmlRpcRequestParserStateImpl.cc
+	* src/XmlRpcRequestParserStateImpl.h
+	* src/XmlRpcRequestParserStateMachine.cc
+	* src/XmlRpcRequestParserStateMachine.h
+	* src/XmlRpcRequestProcessor.h
+	* test/XmlRpcRequestParserControllerTest.cc
+	* test/XmlRpcRequestProcessorTest.cc
+
+2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	* Release 1.3.3
 
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
