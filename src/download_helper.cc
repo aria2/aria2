@@ -307,11 +307,20 @@ static void createRequestGroupForUriList
   UriListParser p(in);
   while(p.hasNext()) {
     std::deque<std::string> uris;
-    SharedHandle<Option> requestOption(new Option(*option.get()));
-    p.parseNext(uris, *requestOption.get());
+    SharedHandle<Option> tempOption(new Option());
+    p.parseNext(uris, *tempOption.get());
     if(uris.empty()) {
       continue;
     }
+
+    SharedHandle<Option> requestOption(new Option(*option.get()));
+    for(std::vector<std::string>::const_iterator i =
+	  listRequestOptions().begin(); i != listRequestOptions().end(); ++i) {
+      if(tempOption->defined(*i)) {
+	requestOption->put(*i, tempOption->get(*i));
+      }
+    }
+
     createRequestGroupForUri(result, requestOption, uris);
   }
 }

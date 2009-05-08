@@ -1,5 +1,11 @@
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	The available options in -i list should be listed in
+	listRequestOptions().
+	* src/download_helper.cc
+	
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added infoHash, pieceLength, numPieces value for tellActiveStatus
 	command.
 	* src/XmlRpcMethodImpl.cc
