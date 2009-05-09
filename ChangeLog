@@ -1,5 +1,12 @@
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added "uris" key to the response of tellStatus command.  Added
+	"connections" key to the response of tellStatus and tellActive
+	command.
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed TellActiveStatusXmlRpcMethod as TellActiveXmlRpcMethod.
 	Added TellStatusXmlRpcMethod.  Remove command can now remove
 	waiting RequestGroup.	

@@ -172,7 +172,7 @@ static void gatherProgressCommon
   TransferStat stat = group->calculateStat();
   entryDict["downloadSpeed"] = BDE(Util::uitos(stat.getDownloadSpeed()));
   entryDict["uploadSpeed"] = BDE(Util::uitos(stat.getUploadSpeed()));
-    
+  entryDict["connections"] = group->getNumConnection();
   SharedHandle<PieceStorage> ps = group->getPieceStorage();
   if(!ps.isNull()) {
     if(ps->getBitfieldLength() > 0) {
@@ -228,6 +228,15 @@ static void gatherProgress
 (BDE& entryDict, const SharedHandle<RequestGroup>& group, DownloadEngine* e)
 {
   gatherProgressCommon(entryDict, group);
+
+  BDE uriList = BDE::list();
+  std::deque<std::string> uris;
+  group->getURIs(uris);
+  for(std::deque<std::string>::const_iterator i = uris.begin(); i != uris.end();
+      ++i) {
+    uriList << *i;
+  }
+  entryDict["uris"] = uriList;
 
   SharedHandle<BtContext> btctx =
     dynamic_pointer_cast<BtContext>(group->getDownloadContext());
