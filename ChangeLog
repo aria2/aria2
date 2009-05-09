@@ -1,5 +1,11 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed --max-overall-upload-limit and
+	--max-overall-download-limit option from listRequestOptions.
+	* src/download_helper.cc
+	
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Log incoming host in HttpListenCommand.
 	* src/HttpListenCommand.cc
 	
