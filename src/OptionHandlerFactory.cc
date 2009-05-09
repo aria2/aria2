@@ -364,6 +364,20 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_XML_RPC_USER,
+				    TEXT_XML_RPC_USER));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_XML_RPC_PASSWD,
+				    TEXT_XML_RPC_PASSWD));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }			    
 #endif // ENABLE_XML_RPC
   // HTTP/FTP options
   {

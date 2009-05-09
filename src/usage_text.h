@@ -481,10 +481,15 @@ _(" --event-poll=POLL            Specify the method for polling events.")
 #define TEXT_XML_RPC_LISTEN_PORT \
 _(" --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to listen\n"\
   "                              to.")
-// Excluded from translation candidiates because it is subject to change.
 #define TEXT_ENABLE_XML_RPC \
 _(" --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"\
-  "                              See also --xml-rpc-listen-port option.")
+  "                              It is strongly recommended to set username and\n"\
+  "                              password using --xml-rpc-user and --xml-rpc-passwd\n"\
+  "                              option. See also --xml-rpc-listen-port option.")
+#define TEXT_XML_RPC_USER \
+_(" --xml-rpc-user=USER          Set XML-RPC user.")
+#define TEXT_XML_RPC_PASSWD \
+_(" --xml-rpc-passwd=PASSWD      Set XML-RPC password.")
 #define TEXT_BT_EXTERNAL_IP \
 _(" --bt-external-ip=IPADDRESS   Specify the external IP address to report to a\n"\
   "                              BitTorrent tracker. Although this function is\n"\

@@ -1,5 +1,17 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added BASIC authentication for XML-RPC. Added --xml-rpc-user and
+	--xml-rpc-passwd option.
+	* src/HttpServer.cc
+	* src/HttpServer.h
+	* src/HttpServerCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that SocketCore::isReadable() prevents aria2 from
 	processing 0 length request.	
 	* src/HttpServerBodyCommand.cc

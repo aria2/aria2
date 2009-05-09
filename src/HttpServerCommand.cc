@@ -41,7 +41,10 @@
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "HttpServerBodyCommand.h"
+#include "HttpServerResponseCommand.h"
 #include "RecoverableException.h"
+#include "prefs.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -53,6 +56,8 @@ HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
   _httpServer(new HttpServer(socket, e))
 {
   _e->addSocketForReadCheck(_socket, this);
+  _httpServer->setUsernamePassword(_e->option->get(PREF_XML_RPC_USER),
+				   _e->option->get(PREF_XML_RPC_PASSWD));
 }
 
 HttpServerCommand::HttpServerCommand(int32_t cuid,
@@ -85,6 +90,18 @@ bool HttpServerCommand::execute()
     } catch(RecoverableException& e) {
       logger->info("CUID#%d - Error occurred while reading HTTP request",
 		   e, cuid);
+      return true;
+    }
+    if(!_httpServer->authenticate()) {
+      _httpServer->disableKeepAlive();
+      _httpServer->feedResponse("401 Unauthorized",
+				"WWW-Authenticate: Basic realm=\"aria2\"",
+				"","text/html");
+      Command* command =
+	new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
+      command->setStatus(Command::STATUS_ONESHOT_REALTIME);
+      _e->commands.push_back(command);
+      _e->setNoWait(true);
       return true;
     }
     if(header.isNull()) {

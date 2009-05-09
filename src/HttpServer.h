@@ -62,6 +62,8 @@ private:
   uint64_t _lastContentLength;
   std::stringstream _lastBody;
   bool _keepAlive;
+  std::string _username;
+  std::string _password;
 public:
   HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
 
@@ -77,6 +79,20 @@ public:
 
   void feedResponse(const std::string& text, const std::string& contentType);
 
+  void feedResponse(const std::string& status,
+		    const std::string& headers,
+		    const std::string& text,
+		    const std::string& contentType);
+
+  bool authenticate();
+
+  void setUsernamePassword
+  (const std::string& username, const std::string& password)
+  {
+    _username = username;
+    _password = password;
+  }
+
   ssize_t sendResponse();
 
   bool sendBufferIsEmpty() const;
@@ -86,6 +102,8 @@ public:
   void enableKeepAlive() { _keepAlive = true; }
 
   void disableKeepAlive() { _keepAlive = false; }
+
+  uint64_t getContentLength() const { return _lastContentLength; }
 };
 
 } // namespace aria2

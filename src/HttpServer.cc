@@ -44,6 +44,7 @@
 #include "Util.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "Base64.h"
 
 namespace aria2 {
 
@@ -133,13 +134,28 @@ bool HttpServer::supportsPersistentConnection() const
 
 void HttpServer::feedResponse(const std::string& text, const std::string& contentType)
 {
-  std::string header = "HTTP/1.1 200 OK\r\n"
+  feedResponse("200 OK", "", text, contentType);
+}
+
+void HttpServer::feedResponse(const std::string& status,
+			      const std::string& headers,
+			      const std::string& text,
+			      const std::string& contentType)
+{
+  std::string header = "HTTP/1.1 "+status+"\r\n"
     "Content-Type: "+contentType+"\r\n"
     "Content-Length: "+Util::uitos(text.size())+"\r\n";
 
   if(!supportsPersistentConnection()) {
     header += "Connection: close\r\n";
   }
+  if(!headers.empty()) {
+    header += headers;
+    if(!Util::endsWith(headers, "\r\n")) {
+      header += "\r\n";
+    }
+  }
+
   header += "\r\n";
 
   _logger->debug("HTTP Server sends response:\n%s", header.c_str());
@@ -156,6 +172,25 @@ ssize_t HttpServer::sendResponse()
 bool HttpServer::sendBufferIsEmpty() const
 {
   return _socketBuffer.sendBufferIsEmpty();
+}
+
+bool HttpServer::authenticate()
+{
+  if(_username.empty()) {
+    return true;
+  }
+
+  std::string authHeader = _lastRequestHeader->getFirst("Authorization");
+  if(authHeader.empty()) {
+    return false;
+  }
+  std::pair<std::string, std::string> p = Util::split(authHeader, " ");
+  if(p.first != "Basic") {
+    return false;
+  }
+  std::string userpass = Base64::decode(p.second);
+  std::pair<std::string, std::string> userpassPair = Util::split(userpass, ":");
+  return _username == userpassPair.first && _password == userpassPair.second;
 }
 
 } // namespace aria2

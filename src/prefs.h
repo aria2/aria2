@@ -167,6 +167,10 @@ extern const std::string PREF_RESET_URI;
 extern const std::string PREF_DRY_RUN;
 // value: true | false
 extern const std::string PREF_REUSE_URI;
+// value: string
+extern const std::string PREF_XML_RPC_USER;
+// value: string
+extern const std::string PREF_XML_RPC_PASSWD;
 
 /**
  * FTP related preferences
