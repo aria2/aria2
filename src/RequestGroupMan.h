@@ -116,6 +116,10 @@ public:
 
   const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const;
 
+  SharedHandle<RequestGroup> findReservedGroup(int32_t gid) const;
+
+  bool removeReservedGroup(int32_t gid);
+
   void showDownloadResults(std::ostream& o) const;
 
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
@@ -162,6 +166,8 @@ public:
 
   const std::deque<SharedHandle<DownloadResult> >&
   getDownloadResults() const;
+
+  SharedHandle<DownloadResult> findDownloadResult(int32_t gid) const;
 
   SharedHandle<ServerStat> findServerStat(const std::string& hostname,
 					  const std::string& protocol) const;

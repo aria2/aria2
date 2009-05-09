@@ -133,22 +133,57 @@ RequestGroupMan::getRequestGroups() const
   return _requestGroups;
 }
 
+template<typename Iterator>
+static Iterator findByGID(Iterator first, Iterator last, int32_t gid)
+{
+  for(; first != last; ++first) {
+    if((*first)->getGID() == gid) {
+      return first;
+    }
+  }
+  return first;
+}
+
 SharedHandle<RequestGroup>
 RequestGroupMan::findRequestGroup(int32_t gid) const
 {
-  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-	_requestGroups.begin(); i != _requestGroups.end(); ++i) {
-    if((*i)->getGID() == gid) {
-      return *i;
-    }
+  std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+    findByGID(_requestGroups.begin(), _requestGroups.end(), gid);
+  if(i == _requestGroups.end()) {
+    return SharedHandle<RequestGroup>();
+  } else {
+    return *i;
   }
-  return SharedHandle<RequestGroup>();
 }
 
 const std::deque<SharedHandle<RequestGroup> >&
 RequestGroupMan::getReservedGroups() const
 {
   return _reservedGroups;
+}
+
+SharedHandle<RequestGroup>
+RequestGroupMan::findReservedGroup(int32_t gid) const
+{
+  std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+    findByGID(_reservedGroups.begin(), _reservedGroups.end(), gid);
+  if(i == _reservedGroups.end()) {
+    return SharedHandle<RequestGroup>();
+  } else {
+    return *i;
+  }
+}
+
+bool RequestGroupMan::removeReservedGroup(int32_t gid)
+{
+  std::deque<SharedHandle<RequestGroup> >::iterator i =
+    findByGID(_reservedGroups.begin(), _reservedGroups.end(), gid);
+  if(i == _reservedGroups.end()) {
+    return false;
+  } else {
+    _reservedGroups.erase(i);
+    return true;
+  }
 }
 
 class ProcessStoppedRequestGroup {
@@ -603,6 +638,18 @@ const std::deque<SharedHandle<DownloadResult> >&
 RequestGroupMan::getDownloadResults() const
 {
   return _downloadResults;
+}
+
+SharedHandle<DownloadResult>
+RequestGroupMan::findDownloadResult(int32_t gid) const
+{
+  for(std::deque<SharedHandle<DownloadResult> >::const_iterator i =
+	_downloadResults.begin(); i != _downloadResults.end(); ++i) {
+    if((*i)->gid == gid) {
+      return *i;
+    }
+  }
+  return SharedHandle<DownloadResult>();
 }
 
 SharedHandle<ServerStat>
