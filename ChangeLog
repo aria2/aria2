@@ -1,3 +1,9 @@
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that SocketCore::isReadable() prevents aria2 from
+	processing 0 length request.	
+	* src/HttpServerBodyCommand.cc
+
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed --enable-http-server and --http-server-listen-port

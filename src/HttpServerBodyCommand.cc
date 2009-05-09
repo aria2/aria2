@@ -74,15 +74,13 @@ bool HttpServerBodyCommand::execute()
   if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-  if(_socket->isReadable(0)) {
+  if(_socket->isReadable(0) || _httpServer->getContentLength() == 0) {
     _timeout.reset();
 
     try {
       if(_httpServer->receiveBody()) {
 	// Do something for requestpath and body
 	if(_httpServer->getRequestPath() == "/rpc") {
-	  // For xml-rpc, disable keep-alive
-	  //_httpServer->disableKeepAlive();
 	  xmlrpc::XmlRpcRequest req =
 	    xmlrpc::XmlRpcRequestProcessor().parseMemory(_httpServer->getBody());
 	  
