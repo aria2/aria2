@@ -56,6 +56,7 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   _res(0),
   _incoming(incoming)
 {
+  memset(_peerId, 0, PEER_ID_LENGTH);
   resetStatus();
   std::string idSeed = ipaddr+":"+Util::uitos(port);
 #ifdef ENABLE_MESSAGE_DIGEST

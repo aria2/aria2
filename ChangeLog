@@ -1,5 +1,10 @@
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Initialized _peerId
+	* src/Peer.cc
+
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Return fault structure for error. FailXmlRpcMethod is renamed as
 	NoSuchMethodXmlRpcMethod. pieceLength and numPieces are returned
 	in non-torrent download. Return single param value.
