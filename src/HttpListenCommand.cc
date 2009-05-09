@@ -63,6 +63,13 @@ bool HttpListenCommand::execute()
     if(_serverSocket->isReadable(0)) {
       SharedHandle<SocketCore> socket(_serverSocket->acceptConnection());
       socket->setNonBlockingMode();
+
+      std::pair<std::string, uint16_t> peerInfo;
+      socket->getPeerInfo(peerInfo);
+
+      logger->info("XML-RPC: Accepted the connection from %s:%u.",
+		   peerInfo.first.c_str(), peerInfo.second);
+
       HttpServerCommand* c =
 	new HttpServerCommand(_e->newCUID(), _e, socket);
       c->setStatus(Command::STATUS_ONESHOT_REALTIME);

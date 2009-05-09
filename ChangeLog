@@ -1,5 +1,10 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Log incoming host in HttpListenCommand.
+	* src/HttpListenCommand.cc
+	
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added BASIC authentication for XML-RPC. Added --xml-rpc-user and
 	--xml-rpc-passwd option.
 	* src/HttpServer.cc
