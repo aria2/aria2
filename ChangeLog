@@ -1,5 +1,16 @@
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Return fault structure for error. FailXmlRpcMethod is renamed as
+	NoSuchMethodXmlRpcMethod. pieceLength and numPieces are returned
+	in non-torrent download. Return single param value.
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* test/XmlRpcMethodTest.cc
+
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set DownloadResult::IN_PROGRESS for downloads removed by xml-rpc
 	command.
 	* src/RequestGroup.cc

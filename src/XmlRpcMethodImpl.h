@@ -61,7 +61,7 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
-class FailXmlRpcMethod:public XmlRpcMethod {
+class NoSuchMethodXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };

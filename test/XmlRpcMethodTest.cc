@@ -22,6 +22,7 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(XmlRpcMethodTest);
   CPPUNIT_TEST(testAddURI);
+  CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DownloadEngine> _e;
@@ -40,6 +41,7 @@ public:
   void tearDown() {}
 
   void testAddURI();
+  void testNoSuchMethod();
 };
 
 
@@ -57,7 +59,33 @@ void XmlRpcMethodTest::testAddURI()
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgs.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/"),
 		       rgs.front()->getRemainingUris().front());
-  CPPUNIT_ASSERT(res.find("OK") != std::string::npos);
+}
+
+void XmlRpcMethodTest::testNoSuchMethod()
+{
+  NoSuchMethodXmlRpcMethod m;
+  XmlRpcRequest req("make.hamburger", BDE::none);
+  std::string res = m.execute(req, 0);
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("<?xml version=\"1.0\"?>"
+		 "<methodResponse>"
+		 "<fault>"
+		 "<value>"
+		 "<struct>"
+		 "<member>"
+		 "<name>faultCode</name><value><int>1</int></value>"
+		 "</member>"
+		 "<member>"
+		 "<name>faultString</name>"
+		 "<value>"
+		 "<string>No such method: make.hamburger</string>"
+		 "</value>"
+		 "</member>"
+		 "</struct>"
+		 "</value>"
+		 "</fault>"
+		 "</methodResponse>"),
+     res);
 }
 
 } // namespace xmlrpc

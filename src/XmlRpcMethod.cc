@@ -59,9 +59,9 @@ XmlRpcMethod::XmlRpcMethod():
 
 static BDE createErrorResponse(const Exception& e)
 {
-  BDE params = BDE::list();
-  params << BDE("ERROR");
-  params << BDE(e.what());
+  BDE params = BDE::dict();
+  params["faultCode"] = BDE(1);
+  params["faultString"] = BDE(e.what());
   return params;
 }
 
@@ -97,6 +97,8 @@ static void encodeValue(const BDE& value, std::ostream& o)
   o << "<value>";
   if(value.isString()) {
     o << "<string>" << value.s() << "</string>";
+  } else if(value.isInteger()) {
+    o << "<int>" << value.i() << "</int>";
   } else if(value.isList()) {
     encodeArray(value.listBegin(), value.listEnd(), o);
   } else if(value.isDict()) {
@@ -128,6 +130,23 @@ static std::string encodeXml(const BDE& params)
   return o.str();
 }
 
+static void encodeFault(const BDE& faultValue, std::ostream& o)
+{
+  o << "<fault>";
+  encodeValue(faultValue, o);
+  o << "</fault>";
+}
+
+static std::string encodeErrorXml(const BDE& faultValue)
+{
+  assert(faultValue.isDict());
+  std::stringstream o;
+  o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
+  encodeFault(faultValue, o);
+  o << "</methodResponse>";
+  return o.str();
+}
+
 std::string XmlRpcMethod::execute(const XmlRpcRequest& req, DownloadEngine* e)
 {
   try {
@@ -135,7 +154,7 @@ std::string XmlRpcMethod::execute(const XmlRpcRequest& req, DownloadEngine* e)
     return encodeXml(retparams);
   } catch(RecoverableException& e) {
     _logger->debug(EX_EXCEPTION_CAUGHT, e);
-    return encodeXml(createErrorResponse(e));
+    return encodeErrorXml(createErrorResponse(e));
   }
 }
 

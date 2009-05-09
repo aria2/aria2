@@ -67,7 +67,6 @@ namespace xmlrpc {
 static BDE createGIDResponse(int32_t gid)
 {
   BDE resParams = BDE::list();
-  resParams << BDE("OK");
   resParams << BDE(Util::itos(gid));
   return resParams;
 }
@@ -152,10 +151,7 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 
   group->setHaltRequested(true, RequestGroup::USER_REQUEST);
 
-  BDE resParams = BDE::list();
-  resParams << BDE("OK");
-  resParams << BDE(Util::itos(gid));
-  return resParams;
+  return createGIDResponse(gid);
 }
 
 BDE TellActiveStatusXmlRpcMethod::process
@@ -192,15 +188,16 @@ BDE TellActiveStatusXmlRpcMethod::process
 	entryDict["files"] = files;
       }
     }
+
+    entryDict["pieceLength"] = 
+      BDE(Util::uitos((*i)->getDownloadContext()->getPieceLength()));
+    entryDict["numPieces"] =
+      BDE(Util::uitos((*i)->getDownloadContext()->getNumPieces()));
     
     SharedHandle<BtContext> btctx =
       dynamic_pointer_cast<BtContext>((*i)->getDownloadContext());
     if(!btctx.isNull()) {
       entryDict["infoHash"] = BDE(btctx->getInfoHashAsString());
-      entryDict["pieceLength"] = 
-	BDE(Util::uitos((*i)->getDownloadContext()->getPieceLength()));
-      entryDict["numPieces"] =
-	BDE(Util::uitos((*i)->getDownloadContext()->getNumPieces()));
 
       SharedHandle<BtRegistry> btreg = e->getBtRegistry();
 
@@ -228,14 +225,17 @@ BDE TellActiveStatusXmlRpcMethod::process
 
     res << entryDict;
   }
-  return res;
+
+  BDE resParams = BDE::list();
+  resParams << res;
+  return resParams;
 }
 
-BDE FailXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+BDE NoSuchMethodXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   throw DlAbortEx
-    (StringFormat("Method %s was not recognized.",
-		  req._methodName.c_str()).str());
+    (StringFormat("No such method: %s", req._methodName.c_str()).str());
 }
 
 } // namespace xmlrpc

@@ -53,7 +53,7 @@ XmlRpcMethodFactory::create(const std::string& methodName)
   } else if(methodName == "aria2.tellActiveStatus") {
     return SharedHandle<XmlRpcMethod>(new TellActiveStatusXmlRpcMethod());
   } else {
-    return SharedHandle<XmlRpcMethod>(new FailXmlRpcMethod());
+    return SharedHandle<XmlRpcMethod>(new NoSuchMethodXmlRpcMethod());
   }
 }
 
