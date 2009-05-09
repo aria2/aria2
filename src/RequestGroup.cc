@@ -123,6 +123,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option,
   _preLocalFileCheckEnabled(true),
   _haltRequested(false),
   _forceHaltRequested(false),
+  _haltReason(RequestGroup::NONE),
   _singleHostMultiConnectionEnabled(true),
   _uriSelector(new InOrderURISelector()),
   _lastModifiedTime(Time::null()),
@@ -179,7 +180,11 @@ DownloadResult::RESULT RequestGroup::downloadResult() const
     return DownloadResult::FINISHED;
   else {
     if (_uriResults.empty()) {
-      return DownloadResult::UNKNOWN_ERROR;
+      if(_haltReason == RequestGroup::USER_REQUEST) {
+	return DownloadResult::IN_PROGRESS;
+      } else {
+	return DownloadResult::UNKNOWN_ERROR;
+      }
     } else {
       return _uriResults.back().getResult();
     }
@@ -793,9 +798,12 @@ TransferStat RequestGroup::calculateStat()
   return stat;
 }
 
-void RequestGroup::setHaltRequested(bool f)
+void RequestGroup::setHaltRequested(bool f, HaltReason haltReason)
 {
   _haltRequested = f;
+  if(_haltRequested) {
+    _haltReason = haltReason;
+  }
 #ifdef ENABLE_BITTORRENT
   if(!_btRuntime.isNull()) {
     _btRuntime->setHalt(f);
@@ -803,9 +811,9 @@ void RequestGroup::setHaltRequested(bool f)
 #endif // ENABLE_BITTORRENT
 }
 
-void RequestGroup::setForceHaltRequested(bool f)
+void RequestGroup::setForceHaltRequested(bool f, HaltReason haltReason)
 {
-  setHaltRequested(f);
+  setHaltRequested(f, haltReason);
   _forceHaltRequested = f;
 }
 

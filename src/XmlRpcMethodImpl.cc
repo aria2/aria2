@@ -150,7 +150,7 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
       (StringFormat("Active Download not found for GID#%d", gid).str());
   }
 
-  group->setHaltRequested(true);
+  group->setHaltRequested(true, RequestGroup::USER_REQUEST);
 
   BDE resParams = BDE::list();
   resParams << BDE("OK");

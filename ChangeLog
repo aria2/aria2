@@ -1,5 +1,15 @@
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Set DownloadResult::IN_PROGRESS for downloads removed by xml-rpc
+	command.
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/XmlRpcMethodImpl.cc
+	* test/RequestGroupTest.cc
+
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added more options that can be specified in -i list and xml-rpc
 	add* command.	
 	* src/download_helper.h

@@ -121,6 +121,12 @@ void RequestGroupTest::testCreateDownloadResult()
     // result is UNKNOWN_ERROR if download has not completed and no specific
     // error has been reported
     CPPUNIT_ASSERT_EQUAL(DownloadResult::UNKNOWN_ERROR, result->result);
+
+    // if haltReason is set to RequestGroup::USER_REQUEST, download
+    // result becomes IN_PROGRESS
+    group.setHaltRequested(true, RequestGroup::USER_REQUEST);
+    result = group.createDownloadResult();
+    CPPUNIT_ASSERT_EQUAL(DownloadResult::IN_PROGRESS, result->result);
   }
   {
     group.addURIResult("http://first/file", DownloadResult::TIME_OUT);

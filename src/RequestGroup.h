@@ -74,6 +74,12 @@ class PeerStorage;
 #endif // ENABLE_BITTORRENT
 
 class RequestGroup {
+public:
+  enum HaltReason {
+    NONE,
+    SHUTDOWN_SIGNAL,
+    USER_REQUEST
+  };
 private:
   static int32_t _gidCounter;
 
@@ -115,6 +121,8 @@ private:
   bool _haltRequested;
 
   bool _forceHaltRequested;
+
+  HaltReason _haltReason;
 
   // URIResult is stored in the ascending order of the time when its result is
   // available.
@@ -320,9 +328,9 @@ public:
     return _preLocalFileCheckEnabled;
   }
 
-  void setHaltRequested(bool f);
+  void setHaltRequested(bool f, HaltReason = SHUTDOWN_SIGNAL);
 
-  void setForceHaltRequested(bool f);
+  void setForceHaltRequested(bool f, HaltReason = SHUTDOWN_SIGNAL);
 
   bool isHaltRequested() const
   {

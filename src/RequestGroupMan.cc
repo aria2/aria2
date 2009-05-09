@@ -456,6 +456,9 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
     if((*itr)->result == DownloadResult::FINISHED) {
       status = MARK_OK;
       ++ok;
+    } else if((*itr)->result == DownloadResult::IN_PROGRESS) {
+      status = MARK_INPR;
+      ++inpr;
     } else {
       status = MARK_ERR;
       ++err;
