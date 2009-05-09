@@ -240,7 +240,7 @@ DownloadResult::RESULT main(int argc, char* argv[])
 
     if(
 #ifdef ENABLE_XML_RPC
-       !op->getAsBool(PREF_ENABLE_HTTP_SERVER) &&
+       !op->getAsBool(PREF_ENABLE_XML_RPC) &&
 #endif // ENABLE_XML_RPC
        requestGroups.empty()) {
       std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;

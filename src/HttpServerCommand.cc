@@ -33,12 +33,6 @@
  */
 /* copyright --> */
 #include "HttpServerCommand.h"
-
-#include <sstream>
-#include <algorithm>
-#include <ostream>
-#include <iomanip>
-
 #include "SocketCore.h"
 #include "DownloadEngine.h"
 #include "HttpServer.h"
@@ -46,12 +40,7 @@
 #include "Logger.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
-#include "BtContext.h"
-#include "Util.h"
-#include "HttpServerResponseCommand.h"
 #include "HttpServerBodyCommand.h"
-#include "CheckIntegrityEntry.h"
-#include "FileAllocationEntry.h"
 #include "RecoverableException.h"
 
 namespace aria2 {
@@ -81,153 +70,6 @@ HttpServerCommand::HttpServerCommand(int32_t cuid,
 HttpServerCommand::~HttpServerCommand()
 {
   _e->deleteSocketForReadCheck(_socket, this);
-}
-
-class PrintSummaryHtml
-{
-private:
-  std::ostream& _o;
-  
-public:
-  PrintSummaryHtml(std::ostream& o):_o(o) {}
-
-  void operator()(const SharedHandle<RequestGroup>& rg)
-  {
-    _o << "<div id=\"gid" << rg->getGID() << "\">"
-       << "[#" << rg->getGID() << "]"
-       << " FILE:" << "<strong>"
-       << Util::htmlEscape(rg->getFilePath()) << "</strong>";
-#ifdef ENABLE_BITTORRENT
-    SharedHandle<BtContext> btContext =
-      dynamic_pointer_cast<BtContext>(rg->getDownloadContext());
-    if(!btContext.isNull()) {
-      _o << "<br />" << "  Info Hash:" << btContext->getInfoHashAsString();
-    }
-#endif // ENABLE_BITTORRENT
-    _o << "<br />";
-
-    TransferStat stat = rg->calculateStat();
-    unsigned int eta = 0;
-    if(rg->getTotalLength() > 0 && stat.getDownloadSpeed() > 0) {
-      eta =
-	(rg->getTotalLength()-rg->getCompletedLength())/stat.getDownloadSpeed();
-    }
-#ifdef ENABLE_BITTORRENT
-    if(!btContext.isNull() && rg->downloadFinished()) {
-      _o << "SEEDING" << "(" << "ratio:"
-	 << std::fixed << std::setprecision(1)
-	 << ((stat.getAllTimeUploadLength()*10)/rg->getCompletedLength())/10.0
-	 << ") ";
-    }
-#endif // ENABLE_BITTORRENT
-    _o << Util::abbrevSize(rg->getCompletedLength())
-       << "B"
-       << "/"
-       << Util::abbrevSize(rg->getTotalLength())
-       << "B";
-    if(rg->getTotalLength() > 0) {
-      _o << "("
-	 << 100*rg->getCompletedLength()/rg->getTotalLength()
-	 << "%)";
-    }
-    _o << " "
-       << "CN:"
-       << rg->getNumConnection();
-    if(!rg->downloadFinished()) {
-      _o << " "
-	 << "SPD:"
-	 << std::fixed << std::setprecision(2)
-	 << stat.getDownloadSpeed()/1024.0 << "KiB/s";
-    }
-    if(stat.getSessionUploadLength() > 0) {
-      _o << " "
-	 << "UP:"
-	 << std::fixed << std::setprecision(2)
-	 << stat.getUploadSpeed()/1024.0 << "KiB/s"
-	 << "(" << Util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
-    }
-    if(eta > 0) {
-      _o << " "
-	<< "ETA:"
-	 << Util::htmlEscape(Util::secfmt(eta));
-    }
-    _o << "</div>"
-       << "<hr />";
-  }
-};
-
-static std::string createResponse(DownloadEngine* e)
-{
-  std::ostringstream strm;
-  const std::deque<SharedHandle<RequestGroup> > groups =
-    e->_requestGroupMan->getRequestGroups();
-  std::for_each(groups.begin(), groups.end(), PrintSummaryHtml(strm));
-
-  {
-    SharedHandle<FileAllocationEntry> entry =
-      e->_fileAllocationMan->getPickedEntry();
-    if(!entry.isNull()) {
-      strm << "<div id=\"filealloc\">"
-	   << "[FileAlloc:"
-	   << "#" << entry->getRequestGroup()->getGID() << " "
-	   << Util::abbrevSize(entry->getCurrentLength())
-	   << "B"
-	   << "/"
-	   << Util::abbrevSize(entry->getTotalLength())
-	   << "B"
-	   << "(";
-      if(entry->getTotalLength() > 0) {
-	strm << 100*entry->getCurrentLength()/entry->getTotalLength();
-      } else {
-	strm << "--";
-      }
-      strm << "%)"
-	<< "]";
-      if(e->_fileAllocationMan->hasNext()) {
-	strm << "("
-	     << e->_fileAllocationMan->countEntryInQueue()
-	     << "waiting...)";
-      }
-      strm << "</div><hr />";
-    }
-  }
-#ifdef ENABLE_MESSAGE_DIGEST
-  {
-    SharedHandle<CheckIntegrityEntry> entry =
-      e->_checkIntegrityMan->getPickedEntry();
-    if(!entry.isNull()) {
-      strm << "<div id=\"hashcheck\">"
-	   << "[HashCheck:"
-	   << "#" << entry->getRequestGroup()->getGID() << " "
-	   << Util::abbrevSize(entry->getCurrentLength())
-	   << "B"
-	   << "/"
-	   << Util::abbrevSize(entry->getTotalLength())
-	   << "B"
-	   << "("
-	   << 100*entry->getCurrentLength()/entry->getTotalLength()
-	   << "%)"
-	   << "]";
-      if(e->_checkIntegrityMan->hasNext()) {
-	strm << "("
-	     << e->_checkIntegrityMan->countEntryInQueue()
-	     << "waiting...)";
-      }
-      strm << "</div><hr />";
-    }
-  }
-#endif // ENABLE_MESSAGE_DIGEST
-  std::string body =
-    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\""
-    " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">"
-    "<head>"
-    "<meta http-equiv=\"refresh\" content=\"1\" />"
-    "<title>aria2</title>"
-    "</head>"
-    "<body><h1>aria2 - Download Progress</h1>"+strm.str()+"</body>"
-    "</html>";
-  return body;
 }
 
 bool HttpServerCommand::execute()

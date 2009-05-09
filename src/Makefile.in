@@ -45,7 +45,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_XML_RPC_TRUE@	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethod.cc XmlRpcMethod.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h\
-@ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h\
+@ENABLE_XML_RPC_TRUE@	HttpListenCommand.cc HttpListenCommand.h\
+@ENABLE_XML_RPC_TRUE@	HttpServerCommand.cc HttpServerCommand.h\
+@ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
+@ENABLE_XML_RPC_TRUE@	HttpServer.cc HttpServer.h
 
 @HAVE_LIBXML2_TRUE@am__append_2 = Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
 @HAVE_LIBEXPAT_TRUE@am__append_3 = ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
@@ -418,9 +422,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
 	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
 	SequentialPicker.h SequentialDispatcherCommand.h \
-	HttpListenCommand.cc HttpListenCommand.h HttpServerCommand.cc \
-	HttpServerCommand.h HttpServerResponseCommand.cc \
-	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
 	PieceSelector.h LongestSequencePieceSelector.cc \
 	LongestSequencePieceSelector.h bitfield.h BDE.cc BDE.h \
 	XmlRpcRequestParserController.cc \
@@ -432,7 +433,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	XmlRpcRequestProcessor.h HttpServerBodyCommand.cc \
 	HttpServerBodyCommand.h XmlRpcMethod.cc XmlRpcMethod.h \
 	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h XmlRpcMethodFactory.cc \
-	XmlRpcMethodFactory.h Xml2XmlRpcRequestProcessor.cc \
+	XmlRpcMethodFactory.h HttpListenCommand.cc HttpListenCommand.h \
+	HttpServerCommand.cc HttpServerCommand.h \
+	HttpServerResponseCommand.cc HttpServerResponseCommand.h \
+	HttpServer.cc HttpServer.h Xml2XmlRpcRequestProcessor.cc \
 	Xml2XmlRpcRequestProcessor.h ExpatXmlRpcRequestProcessor.cc \
 	ExpatXmlRpcRequestProcessor.h FallocFileAllocationIterator.cc \
 	FallocFileAllocationIterator.h EpollEventPoll.cc \
@@ -596,7 +600,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_XML_RPC_TRUE@	HttpServerBodyCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethod.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodImpl.$(OBJEXT) \
-@ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.$(OBJEXT)
+@ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	HttpListenCommand.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	HttpServerCommand.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	HttpServer.$(OBJEXT)
 @HAVE_LIBXML2_TRUE@am__objects_2 =  \
 @HAVE_LIBXML2_TRUE@	Xml2XmlRpcRequestProcessor.$(OBJEXT)
 @HAVE_LIBEXPAT_TRUE@am__objects_3 =  \
@@ -835,9 +843,7 @@ am__objects_26 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	NsCookieParser.$(OBJEXT) CookieStorage.$(OBJEXT) \
 	SocketBuffer.$(OBJEXT) OptionHandlerException.$(OBJEXT) \
 	bencode.$(OBJEXT) URIResult.$(OBJEXT) \
-	SelectEventPoll.$(OBJEXT) HttpListenCommand.$(OBJEXT) \
-	HttpServerCommand.$(OBJEXT) \
-	HttpServerResponseCommand.$(OBJEXT) HttpServer.$(OBJEXT) \
+	SelectEventPoll.$(OBJEXT) \
 	LongestSequencePieceSelector.$(OBJEXT) BDE.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
@@ -1172,9 +1178,6 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
 	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
 	SequentialPicker.h SequentialDispatcherCommand.h \
-	HttpListenCommand.cc HttpListenCommand.h HttpServerCommand.cc \
-	HttpServerCommand.h HttpServerResponseCommand.cc \
-	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
 	PieceSelector.h LongestSequencePieceSelector.cc \
 	LongestSequencePieceSelector.h bitfield.h BDE.cc BDE.h \
 	$(am__append_1) $(am__append_2) $(am__append_3) \

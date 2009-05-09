@@ -158,9 +158,9 @@ extern const std::string PREF_EVENT_POLL;
 extern const std::string V_EPOLL;
 extern const std::string V_SELECT;
 // value: 1*digit
-extern const std::string PREF_HTTP_SERVER_LISTEN_PORT;
+extern const std::string PREF_XML_RPC_LISTEN_PORT;
 // value: true | false
-extern const std::string PREF_ENABLE_HTTP_SERVER;
+extern const std::string PREF_ENABLE_XML_RPC;
 // value: true | false
 extern const std::string PREF_RESET_URI;
 // value: true | false

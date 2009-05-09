@@ -200,10 +200,6 @@ SRCS =  Socket.h\
 	SelectEventPoll.cc SelectEventPoll.h\
 	SequentialPicker.h\
 	SequentialDispatcherCommand.h\
-	HttpListenCommand.cc HttpListenCommand.h\
-	HttpServerCommand.cc HttpServerCommand.h\
-	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
-	HttpServer.cc HttpServer.h\
 	PieceSelector.h\
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h\
 	bitfield.h\
@@ -220,7 +216,11 @@ SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
 	XmlRpcMethod.cc XmlRpcMethod.h\
 	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h\
-	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h
+	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h\
+	HttpListenCommand.cc HttpListenCommand.h\
+	HttpServerCommand.cc HttpServerCommand.h\
+	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
+	HttpServer.cc HttpServer.h
 endif # ENABLE_XML_RPC
 
 if HAVE_LIBXML2

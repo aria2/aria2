@@ -63,7 +63,9 @@
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
 #include "FileAllocationEntry.h"
-#include "HttpListenCommand.h"
+#ifdef ENABLE_XML_RPC
+# include "HttpListenCommand.h"
+#endif // ENABLE_XML_RPC
 
 namespace aria2 {
 
@@ -139,15 +141,17 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 						stopSec));
     }
   }
-  if(op->getAsBool(PREF_ENABLE_HTTP_SERVER)) {
+#ifdef ENABLE_XML_RPC
+  if(op->getAsBool(PREF_ENABLE_XML_RPC)) {
     HttpListenCommand* httpListenCommand =
       new HttpListenCommand(e->newCUID(), e.get());
-    if(httpListenCommand->bindPort(op->getAsInt(PREF_HTTP_SERVER_LISTEN_PORT))){
+    if(httpListenCommand->bindPort(op->getAsInt(PREF_XML_RPC_LISTEN_PORT))){
       e->addRoutineCommand(httpListenCommand);
     } else {
       delete httpListenCommand;
     }
   }
+#endif // ENABLE_XML_RPC
   return e;
 }
 

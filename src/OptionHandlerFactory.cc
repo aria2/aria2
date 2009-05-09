@@ -168,15 +168,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_DIRECT_IO
+#ifdef ENABLE_XML_RPC
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
-				   (PREF_ENABLE_HTTP_SERVER,
-				    TEXT_ENABLE_HTTP_SERVER,
+				   (PREF_ENABLE_XML_RPC,
+				    TEXT_ENABLE_XML_RPC,
 				    V_FALSE,
 				    OptionHandler::OPT_ARG));
-    op->addTag(TAG_EXPERIMENTAL);
+    op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+#endif // ENABLE_XML_RPC
   {
     std::string params[] = {
 #ifdef HAVE_EPOLL
@@ -218,15 +220,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    OptionHandler::OPT_ARG,
 				    'Z'));
     op->addTag(TAG_BASIC);
-    handlers.push_back(op);
-  }
-  {
-    SharedHandle<OptionHandler> op(new NumberOptionHandler
-				   (PREF_HTTP_SERVER_LISTEN_PORT,
-				    TEXT_HTTP_SERVER_LISTEN_PORT,
-				    "6800",
-				    1024, UINT16_MAX));
-    op->addTag(TAG_EXPERIMENTAL);
     handlers.push_back(op);
   }
   {
@@ -361,6 +354,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+#ifdef ENABLE_XML_RPC
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_XML_RPC_LISTEN_PORT,
+				    TEXT_XML_RPC_LISTEN_PORT,
+				    "6800",
+				    1024, UINT16_MAX));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+#endif // ENABLE_XML_RPC
   // HTTP/FTP options
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler

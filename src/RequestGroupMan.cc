@@ -83,9 +83,11 @@ RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
 
 bool RequestGroupMan::downloadFinished()
 {
-  if(_option->getAsBool(PREF_ENABLE_HTTP_SERVER)) {
+#ifdef ENABLE_XML_RPC
+  if(_option->getAsBool(PREF_ENABLE_XML_RPC)) {
     return false;
   }
+#endif // ENABLE_XML_RPC
   if(!_reservedGroups.empty()) {
     return false;
   }

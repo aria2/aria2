@@ -478,17 +478,13 @@ _(" --use-head[=true|false]      Use HEAD method for the first request to the HT
   "                              server.")
 #define TEXT_EVENT_POLL \
 _(" --event-poll=POLL            Specify the method for polling events.")
-#define TEXT_HTTP_SERVER_LISTEN_PORT \
-  " --http-server-listen-port=PORT Specify a port number for the built-in HTTP\n"\
-  "                              Server to listen to."
+#define TEXT_XML_RPC_LISTEN_PORT \
+_(" --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to listen\n"\
+  "                              to.")
 // Excluded from translation candidiates because it is subject to change.
-#define TEXT_ENABLE_HTTP_SERVER \
-  " --enable-http-server[=true|false] Enable the built-in HTTP server. Currently,\n"\
-  "                              this is the experimental feature and it just\n"\
-  "                              provides the current download progress. Use your\n"\
-  "                              web browser(console-based ones, such as elinks,\n"\
-  "                              w3m, are recommended) to connect the server and\n"\
-  "                              see what's what."
+#define TEXT_ENABLE_XML_RPC \
+_(" --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"\
+  "                              See also --xml-rpc-listen-port option.")
 #define TEXT_BT_EXTERNAL_IP \
 _(" --bt-external-ip=IPADDRESS   Specify the external IP address to report to a\n"\
   "                              BitTorrent tracker. Although this function is\n"\

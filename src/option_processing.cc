@@ -174,7 +174,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
   }
   if(
 #ifdef ENABLE_XML_RPC
-     !op.getAsBool(PREF_ENABLE_HTTP_SERVER) &&
+     !op.getAsBool(PREF_ENABLE_XML_RPC) &&
 #endif // ENABLE_XML_RPC
 #ifdef ENABLE_BITTORRENT
      op.blank(PREF_TORRENT_FILE) &&

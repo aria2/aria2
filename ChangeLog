@@ -1,5 +1,25 @@
 2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed --enable-http-server and --http-server-listen-port
+	options.  Added --enable-xml-rpc and --xml-rpc-listen-port
+	instead.  The original feature for --enable-http-server that
+	reports download progress in HTML was officially removed.  Persist
+	XML-RPC connection if client supports keep-alive.	
+	* src/DownloadEngineFactory.cc
+	* src/HttpServerCommand.cc
+	* src/HttpServerResponseCommand.cc
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroupMan.cc
+	* src/main.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2009-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added "uris" key to the response of tellStatus command.  Added
 	"connections" key to the response of tellStatus and tellActive
 	command.
