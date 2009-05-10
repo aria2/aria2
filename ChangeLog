@@ -1,5 +1,15 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	The information for files, URIs, peers are removed from the
+	reponse of TellaActive, TellStatus command because they tend to be
+	large. Instead they can be retrieved by the dedicated commands:
+	getFiles, getUris and getPeers respectively.
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed --max-overall-upload-limit and
 	--max-overall-download-limit option from listRequestOptions.
 	* src/download_helper.cc

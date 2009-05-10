@@ -35,6 +35,7 @@
 #include "XmlRpcMethodImpl.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include "Logger.h"
 #include "BDE.h"
@@ -179,19 +180,7 @@ static void gatherProgressCommon
       entryDict["bitfield"] = BDE(Util::toHex(ps->getBitfield(),
 					      ps->getBitfieldLength()));
     }
-
-    if(!ps->getDiskAdaptor().isNull()) {
-      BDE files = BDE::list();
-      const std::deque<SharedHandle<FileEntry> >& entries =
-	ps->getDiskAdaptor()->getFileEntries();
-      for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
-	    entries.begin(); i != entries.end(); ++i) {
-	files << BDE((*i)->getPath());
-      }
-      entryDict["files"] = files;
-    }
   }
-
   entryDict["pieceLength"] = 
     BDE(Util::uitos(group->getDownloadContext()->getPieceLength()));
   entryDict["numPieces"] =
@@ -204,10 +193,8 @@ static void gatherProgressBitTorrent
   entryDict["infoHash"] = BDE(btctx->getInfoHashAsString());
 }
 
-static void gatherPeer(BDE& entryDict, const SharedHandle<PeerStorage>& ps)
+static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
 {
-  BDE peers = BDE::list();
-
   std::deque<SharedHandle<Peer> > activePeers;
   ps->getActivePeers(activePeers);
   for(std::deque<SharedHandle<Peer> >::const_iterator i =
@@ -221,34 +208,16 @@ static void gatherPeer(BDE& entryDict, const SharedHandle<PeerStorage>& ps)
 					    (*i)->getBitfieldLength()));
     peers << peerEntry;
   }
-  entryDict["peers"] = peers;
 }
 
 static void gatherProgress
 (BDE& entryDict, const SharedHandle<RequestGroup>& group, DownloadEngine* e)
 {
   gatherProgressCommon(entryDict, group);
-
-  BDE uriList = BDE::list();
-  std::deque<std::string> uris;
-  group->getURIs(uris);
-  for(std::deque<std::string>::const_iterator i = uris.begin(); i != uris.end();
-      ++i) {
-    uriList << *i;
-  }
-  entryDict["uris"] = uriList;
-
   SharedHandle<BtContext> btctx =
     dynamic_pointer_cast<BtContext>(group->getDownloadContext());
   if(!btctx.isNull()) {
     gatherProgressBitTorrent(entryDict, btctx);
-
-    SharedHandle<BtRegistry> btreg = e->getBtRegistry();
-    SharedHandle<PeerStorage> ps =
-      btreg->getPeerStorage(btctx->getInfoHashAsString());
-    if(!ps.isNull()) {
-      gatherPeer(entryDict, ps);
-    }
   }
 }
 
@@ -263,6 +232,138 @@ static void gatherStoppedDownload
   } else {
     entryDict["status"] = BDE("error");
   }
+}
+
+static
+SharedHandle<RequestGroup>
+findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, int32_t gid)
+{
+  SharedHandle<RequestGroup> group = rgman->findRequestGroup(gid);
+  if(group.isNull()) {
+    group = rgman->findReservedGroup(gid);
+  }
+  return group;
+}
+
+BDE GetFilesXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.empty() || !params[0].isString()) {
+    throw DlAbortEx("GID is not provided.");
+  }
+  
+  int32_t gid = Util::parseInt(params[0].s());
+
+  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  if(group.isNull()) {
+    throw DlAbortEx
+      (StringFormat("No file data is available for GID#%d", gid).str());
+  }
+  BDE files = BDE::list();
+  SharedHandle<BtContext> btctx =
+    dynamic_pointer_cast<BtContext>(group->getDownloadContext());
+  if(btctx.isNull()) {
+    BDE entry = BDE::dict();
+    entry["index"] = BDE("1");
+    entry["path"] = group->getDownloadContext()->getActualBasePath();
+    entry["selected"] = BDE("true");
+    files << entry;
+  } else {
+    std::deque<int32_t> fileIndexes = btctx->getFileFilter().flush();
+    std::sort(fileIndexes.begin(), fileIndexes.end());
+    fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
+		      fileIndexes.end());
+    std::deque<SharedHandle<FileEntry> > fileEntries =
+      btctx->getFileEntries();
+
+    bool selectAll = fileIndexes.empty() || fileEntries.size() == 1;
+
+    size_t index = 1;
+    for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	  fileEntries.begin(); i != fileEntries.end(); ++i, ++index) {
+      BDE entry = BDE::dict();
+      entry["index"] = Util::uitos(index);
+      entry["path"] = (*i)->getPath();
+      if(selectAll ||
+	 std::binary_search(fileIndexes.begin(), fileIndexes.end(), index)) {
+	entry["selected"] = BDE("true");
+      } else {
+	entry["selected"] = BDE("false");
+      }
+      files << entry;
+    }
+  }
+  BDE resParams = BDE::list();
+  resParams << files;
+  return resParams;
+}
+
+BDE GetUrisXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.empty() || !params[0].isString()) {
+    throw DlAbortEx("GID is not provided.");
+  }
+  
+  int32_t gid = Util::parseInt(params[0].s());
+
+  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  if(group.isNull()) {
+    throw DlAbortEx
+      (StringFormat("No URI data is available for GID#%d", gid).str());
+  }
+  BDE uriList = BDE::list();
+  std::deque<std::string> uris;
+  group->getURIs(uris);
+  for(std::deque<std::string>::const_iterator i = uris.begin(); i != uris.end();
+      ++i) {
+    BDE entry = BDE::dict();
+    entry["uri"] = *i;
+    uriList << entry;
+  }
+  BDE resParams = BDE::list();
+  resParams << uriList;
+  return resParams;
+}
+
+BDE GetPeersXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.empty() || !params[0].isString()) {
+    throw DlAbortEx("GID is not provided.");
+  }
+  
+  int32_t gid = Util::parseInt(params[0].s());
+
+  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  if(group.isNull()) {
+    throw DlAbortEx
+      (StringFormat("No peer data is available for GID#%d", gid).str());
+  }
+  BDE peers = BDE::list();
+  SharedHandle<BtContext> btctx =
+    dynamic_pointer_cast<BtContext>(group->getDownloadContext());
+  if(!btctx.isNull()) {
+    SharedHandle<BtRegistry> btreg = e->getBtRegistry();
+    SharedHandle<PeerStorage> ps =
+      btreg->getPeerStorage(btctx->getInfoHashAsString());
+    if(!ps.isNull()) {
+      BDE entry = BDE::dict();
+      gatherPeer(peers, ps);
+    }
+  }
+  BDE resParams = BDE::list();
+  resParams << peers;
+  return resParams;
 }
 
 BDE TellStatusXmlRpcMethod::process

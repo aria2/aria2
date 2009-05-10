@@ -52,6 +52,12 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new RemoveXmlRpcMethod());
   } else if(methodName == "aria2.tellStatus") {
     return SharedHandle<XmlRpcMethod>(new TellStatusXmlRpcMethod());
+  } else if(methodName == "aria2.getUris") {
+    return SharedHandle<XmlRpcMethod>(new GetUrisXmlRpcMethod());
+  } else if(methodName == "aria2.getFiles") {
+    return SharedHandle<XmlRpcMethod>(new GetFilesXmlRpcMethod());
+  } else if(methodName == "aria2.getPeers") {
+    return SharedHandle<XmlRpcMethod>(new GetPeersXmlRpcMethod());
   } else if(methodName == "aria2.tellActive") {
     return SharedHandle<XmlRpcMethod>(new TellActiveXmlRpcMethod());
   } else {
