@@ -68,7 +68,7 @@ namespace xmlrpc {
 static BDE createGIDResponse(int32_t gid)
 {
   BDE resParams = BDE::list();
-  resParams << BDE(Util::itos(gid));
+  resParams << Util::itos(gid);
   return resParams;
 }
 
@@ -167,30 +167,30 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 static void gatherProgressCommon
 (BDE& entryDict, const SharedHandle<RequestGroup>& group)
 {
-  entryDict["gid"] = BDE(Util::itos(group->getGID()));
-  entryDict["totalLength"] = BDE(Util::uitos(group->getTotalLength()));
-  entryDict["completedLength"] = BDE(Util::uitos(group->getCompletedLength()));
+  entryDict["gid"] = Util::itos(group->getGID());
+  entryDict["totalLength"] = Util::uitos(group->getTotalLength());
+  entryDict["completedLength"] = Util::uitos(group->getCompletedLength());
   TransferStat stat = group->calculateStat();
-  entryDict["downloadSpeed"] = BDE(Util::uitos(stat.getDownloadSpeed()));
-  entryDict["uploadSpeed"] = BDE(Util::uitos(stat.getUploadSpeed()));
-  entryDict["connections"] = BDE(Util::uitos(group->getNumConnection()));
+  entryDict["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
+  entryDict["uploadSpeed"] = Util::uitos(stat.getUploadSpeed());
+  entryDict["connections"] = Util::uitos(group->getNumConnection());
   SharedHandle<PieceStorage> ps = group->getPieceStorage();
   if(!ps.isNull()) {
     if(ps->getBitfieldLength() > 0) {
-      entryDict["bitfield"] = BDE(Util::toHex(ps->getBitfield(),
-					      ps->getBitfieldLength()));
+      entryDict["bitfield"] = Util::toHex(ps->getBitfield(),
+					  ps->getBitfieldLength());
     }
   }
   entryDict["pieceLength"] = 
-    BDE(Util::uitos(group->getDownloadContext()->getPieceLength()));
+    Util::uitos(group->getDownloadContext()->getPieceLength());
   entryDict["numPieces"] =
-    BDE(Util::uitos(group->getDownloadContext()->getNumPieces()));
+    Util::uitos(group->getDownloadContext()->getNumPieces());
 }
 
 static void gatherProgressBitTorrent
 (BDE& entryDict, const SharedHandle<BtContext>& btctx)
 {
-  entryDict["infoHash"] = BDE(btctx->getInfoHashAsString());
+  entryDict["infoHash"] = btctx->getInfoHashAsString();
 }
 
 static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
@@ -200,12 +200,12 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
   for(std::deque<SharedHandle<Peer> >::const_iterator i =
 	activePeers.begin(); i != activePeers.end(); ++i) {
     BDE peerEntry = BDE::dict();
-    peerEntry["peerId"] = BDE(Util::torrentUrlencode((*i)->getPeerId(),
-						     PEER_ID_LENGTH));
-    peerEntry["ip"] = BDE((*i)->ipaddr);
-    peerEntry["port"] = BDE(Util::uitos((*i)->port));
-    peerEntry["bitfield"] = BDE(Util::toHex((*i)->getBitfield(),
-					    (*i)->getBitfieldLength()));
+    peerEntry["peerId"] = Util::torrentUrlencode((*i)->getPeerId(),
+						 PEER_ID_LENGTH);
+    peerEntry["ip"] = (*i)->ipaddr;
+    peerEntry["port"] = Util::uitos((*i)->port);
+    peerEntry["bitfield"] = Util::toHex((*i)->getBitfield(),
+					(*i)->getBitfieldLength());
     peers << peerEntry;
   }
 }
@@ -224,7 +224,7 @@ static void gatherProgress
 static void gatherStoppedDownload
 (BDE& entryDict, const SharedHandle<DownloadResult>& ds)
 {
-  entryDict["gid"] = BDE(Util::itos(ds->gid));
+  entryDict["gid"] = Util::itos(ds->gid);
   if(ds->result == DownloadResult::IN_PROGRESS) {
     entryDict["status"] = BDE("removed");
   } else if(ds->result == DownloadResult::FINISHED) {
