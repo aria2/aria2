@@ -21,7 +21,7 @@ namespace xmlrpc {
 class XmlRpcMethodTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(XmlRpcMethodTest);
-  CPPUNIT_TEST(testAddURI);
+  CPPUNIT_TEST(testAddUri);
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -40,17 +40,17 @@ public:
 
   void tearDown() {}
 
-  void testAddURI();
+  void testAddUri();
   void testNoSuchMethod();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XmlRpcMethodTest);
 
-void XmlRpcMethodTest::testAddURI()
+void XmlRpcMethodTest::testAddUri()
 {
-  AddURIXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addURI", BDE::list());
+  AddUriXmlRpcMethod m;
+  XmlRpcRequest req("aria2.addUri", BDE::list());
   req._params << BDE::list();
   req._params[0] << BDE("http://localhost/");
   std::string res = m.execute(req, _e.get());

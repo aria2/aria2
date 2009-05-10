@@ -44,8 +44,8 @@ namespace xmlrpc {
 SharedHandle<XmlRpcMethod>
 XmlRpcMethodFactory::create(const std::string& methodName)
 {
-  if(methodName == "aria2.addURI") {
-    return SharedHandle<XmlRpcMethod>(new AddURIXmlRpcMethod());
+  if(methodName == "aria2.addUri") {
+    return SharedHandle<XmlRpcMethod>(new AddUriXmlRpcMethod());
   } else if(methodName == "aria2.addTorrent") {
     return SharedHandle<XmlRpcMethod>(new AddTorrentXmlRpcMethod());
   } else if(methodName == "aria2.remove") {

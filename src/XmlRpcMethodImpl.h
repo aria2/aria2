@@ -41,7 +41,7 @@ namespace aria2 {
 
 namespace xmlrpc {
 
-class AddURIXmlRpcMethod:public XmlRpcMethod {
+class AddUriXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };

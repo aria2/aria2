@@ -72,7 +72,7 @@ static BDE createGIDResponse(int32_t gid)
   return resParams;
 }
 
-BDE AddURIXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   const BDE& params = req._params;
   assert(params.isList());
