@@ -51,7 +51,7 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
-class AddTorrentFileXmlRpcMethod:public XmlRpcMethod {
+class AddTorrentXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };

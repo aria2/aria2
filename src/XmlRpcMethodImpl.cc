@@ -104,7 +104,7 @@ BDE AddURIXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   }
 }
 
-BDE AddTorrentFileXmlRpcMethod::process
+BDE AddTorrentXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   const BDE& params = req._params;
