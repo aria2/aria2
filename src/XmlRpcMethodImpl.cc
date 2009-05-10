@@ -173,7 +173,7 @@ static void gatherProgressCommon
   TransferStat stat = group->calculateStat();
   entryDict["downloadSpeed"] = BDE(Util::uitos(stat.getDownloadSpeed()));
   entryDict["uploadSpeed"] = BDE(Util::uitos(stat.getUploadSpeed()));
-  entryDict["connections"] = group->getNumConnection();
+  entryDict["connections"] = BDE(Util::uitos(group->getNumConnection()));
   SharedHandle<PieceStorage> ps = group->getPieceStorage();
   if(!ps.isNull()) {
     if(ps->getBitfieldLength() > 0) {
@@ -224,7 +224,7 @@ static void gatherProgress
 static void gatherStoppedDownload
 (BDE& entryDict, const SharedHandle<DownloadResult>& ds)
 {
-  entryDict["gid"] = ds->gid;
+  entryDict["gid"] = BDE(Util::itos(ds->gid));
   if(ds->result == DownloadResult::IN_PROGRESS) {
     entryDict["status"] = BDE("removed");
   } else if(ds->result == DownloadResult::FINISHED) {

@@ -1,5 +1,10 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Return connections and gid in string
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed addURI as addUri
 	* src/XmlRpcMethodFactory.cc
 	* src/XmlRpcMethodImpl.cc
