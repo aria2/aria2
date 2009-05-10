@@ -1,5 +1,10 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use std::binary_search instead of std::find
+	* src/DefaultPieceStorage.cc
+	
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unnecessary BDE() call; leave them to implicit conversion.
 	* src/XmlRpcMethodImpl.cc
 

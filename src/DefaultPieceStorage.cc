@@ -440,14 +440,13 @@ void DefaultPieceStorage::setFileFilter(const std::deque<std::string>& filePaths
 void DefaultPieceStorage::setFileFilter(IntSequence seq)
 {
   std::deque<int32_t> fileIndexes = seq.flush();
-  // TODO Is sorting necessary?
   std::sort(fileIndexes.begin(), fileIndexes.end());
   fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()), fileIndexes.end());
   std::deque<std::string> filePaths;
   const FileEntries& entries = diskAdaptor->getFileEntries();
   int32_t entriesSize = entries.size();
   for(int32_t i = 0; i < entriesSize; i++) {
-    if(std::find(fileIndexes.begin(), fileIndexes.end(), i+1) != fileIndexes.end()) {
+    if(std::binary_search(fileIndexes.begin(), fileIndexes.end(), i+1)) {
       logger->debug("index=%d is %s", i+1, entries[i]->getPath().c_str());
       filePaths.push_back(entries[i]->getPath());
     }
