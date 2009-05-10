@@ -66,6 +66,8 @@ protected:
 public:
   XmlRpcMethod();
 
+  virtual ~XmlRpcMethod() {}
+
   std::string execute(const XmlRpcRequest& req, DownloadEngine* e);
 };
 

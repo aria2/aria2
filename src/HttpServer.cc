@@ -99,7 +99,9 @@ bool HttpServer::receiveBody()
   }
   const size_t BUFLEN = 4096;
   char buf[BUFLEN];
-  size_t length = std::min(BUFLEN, _lastContentLength-_lastBody.tellg());
+  size_t length = std::min(BUFLEN,
+			   static_cast<size_t>
+			   (_lastContentLength-_lastBody.tellg()));
   _socket->readData(buf, length);
   if(length == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
     throw DlAbortEx(EX_EOF_FROM_PEER);

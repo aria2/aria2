@@ -1,5 +1,12 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error on Mac OS X
+	* src/HttpServer.cc
+	* src/XmlRpcMethod.h
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use std::binary_search instead of std::find
 	* src/DefaultPieceStorage.cc
 	

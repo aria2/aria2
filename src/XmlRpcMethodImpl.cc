@@ -168,7 +168,9 @@ static void gatherProgressCommon
 (BDE& entryDict, const SharedHandle<RequestGroup>& group)
 {
   entryDict["gid"] = Util::itos(group->getGID());
+  // This is "filtered" total length if --select-file is used.
   entryDict["totalLength"] = Util::uitos(group->getTotalLength());
+  // This is "filtered" total length if --select-file is used.
   entryDict["completedLength"] = Util::uitos(group->getCompletedLength());
   TransferStat stat = group->calculateStat();
   entryDict["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
@@ -280,12 +282,12 @@ BDE GetFilesXmlRpcMethod::process
       btctx->getFileEntries();
 
     bool selectAll = fileIndexes.empty() || fileEntries.size() == 1;
-
-    size_t index = 1;
+    
+    int32_t index = 1;
     for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
 	  fileEntries.begin(); i != fileEntries.end(); ++i, ++index) {
       BDE entry = BDE::dict();
-      entry["index"] = Util::uitos(index);
+      entry["index"] = Util::itos(index);
       entry["path"] = (*i)->getPath();
       if(selectAll ||
 	 std::binary_search(fileIndexes.begin(), fileIndexes.end(), index)) {
