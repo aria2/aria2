@@ -516,6 +516,24 @@ Metalink Specific Options
   protocol.
   Default: 'true'
 
+XML-RPC Options
+~~~~~~~~~~~~~~~
+
+*--enable-xml-rpc*[='true'|'false']::
+  Enable XML-RPC server.  It is strongly recommended to set username
+  and password using *--xml-rpc-user* and *--xml-rpc-passwd*
+  option. See also *--xml-rpc-listen-port* option.  Default: 'false'
+
+*--xml-rpc-listen-port*=PORT::
+  Specify a port number for XML-RPC server to listen to.  Possible
+  Values: '1024'-'65535' Default: '6800'
+
+*--xml-rpc-passwd*=PASSWD::
+  Set XML-RPC password.
+
+*--xml-rpc-user*=USER::
+  Set XML-RPC user.
+
 Advanced Options
 ~~~~~~~~~~~~~~~~
 *--allow-overwrite*='true'|'false'::
@@ -560,14 +578,6 @@ Advanced Options
   Turn off if you encounter any error.
   Default: 'true'
 
-
-*--enable-http-server*[='true'|'false']::
-  Enable the built-in HTTP server. Currently, this is the experimental
-  feature and it just provides the current download progress. Use your
-  web browser(console-based ones, such as elinks, w3m, are
-  recommended) to connect the server and see what's what.  See also
-  *--http-server-listen-port* option.  Default: 'false'
-
 *--event-poll*=POLL::
   Specify the method for polling events.  The possible Values are
   'epoll' and 'select'. If you use recent Linux that has epoll, then
@@ -609,11 +619,6 @@ are also allocated if they share the same piece.
   Fetch URIs in the command-line sequentially and download each URI in a
   separate session, like the usual command-line download utilities.
   Default: 'false'
-
-*--http-server-listen-port*=PORT::
-  Specify a port number for the built-in HTTP Server to listen to.
-  See also *--enable-http-server* option.  The possible Values are
-  '1024'-'65535'. Default: '6800'
 
 *--max-overall-download-limit*=SPEED::
   Set max overall download speed in bytes/sec.  '0' means
@@ -835,10 +840,74 @@ Therefore they are affected by *-Z* and *-P* options.
 Additionally, the following options can be specified after each line
 of URIs. These optional lines must start with white space(s).
 
-* out
 * dir
+* check-integrity
+* continue
+* all-proxy
+* connect-timeout
+* dry-run
+* lowest-speed-limit
+* max-file-not-found
+* max-tries
+* no-proxy
+* out
+* proxy-method
+* remote-time
+* retry-wait
+* split
+* timeout
+* http-auth-challenge
+* http-user
+* http-passwd
+* http-proxy
+* https-proxy
+* referer
+* enable-http-keep-alive
+* enable-http-pipelining
+* header
+* use-head
+* user-agent
+* ftp-user
+* ftp-passwd
+* ftp-pasv
+* ftp-proxy
+* ftp-type
+* ftp-reuse-connection
+* no-netrc
 * select-file
+* bt-external-ip
+* bt-hash-check-seed
+* bt-max-open-files
+* bt-max-peers
+* bt-min-crypto-level
+* bt-require-crypto
+* bt-request-peer-speed-limit
+* bt-seed-unverified
+* bt-tracker-interval
+* enable-peer-exchange
+* follow-torrent
 * index-out
+* max-upload-limit
+* peer-id-prefix
+* seed-ratio
+* seed-time
+* follow-metalink
+* metalink-servers
+* metalink-language
+* metalink-location
+* metalink-os
+* metalink-version
+* metalink-preferred-protocol
+* metalink-enable-unique-protocol
+* allow-overwrite
+* allow-piece-length-change
+* async-dns
+* auto-file-renaming
+* file-allocation
+* max-download-limit
+* no-file-allocation-limit
+* parameterized-uri
+* realtime-chunk-checksum 
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

@@ -1,5 +1,13 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented additional options that can be specified in -i list.
+	Documented --enable-xml-rpc, --xml-rpc-listen-port, --xml-rpc-user
+	and --xml-rpc-passwd. Removed --enable-http-server and
+	--http-server-listen-port.
+	* doc/aria2c.1.txt
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added "downloadSpeed" and uploadSpeed" key in getPeers response.	
 	* src/DefaultPeerStorage.cc
 	* src/DefaultPeerStorage.h
