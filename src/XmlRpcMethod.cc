@@ -65,6 +65,23 @@ static BDE createErrorResponse(const Exception& e)
   return params;
 }
 
+static std::string xmlEscape(const std::string& s)
+{
+  std::string d;
+  for(std::string::const_iterator i = s.begin(); i != s.end(); ++i) {
+    if(*i == '<') {
+      d += "&lt;";
+    } else if(*i == '>') {
+      d += "&gt;";
+    } else if(*i == '&') {
+      d += "&amp;";
+    } else {
+      d += *i;
+    }
+  }
+  return d;
+}
+
 static void encodeValue(const BDE& value, std::ostream& o);
 
 template<typename InputIterator>
@@ -85,7 +102,7 @@ static void encodeStruct
   o << "<struct>";
   for(; first != last; ++first) {
     o << "<member>"
-      << "<name>" << (*first).first << "</name>";
+      << "<name>" << xmlEscape((*first).first) << "</name>";
     encodeValue((*first).second, o);
     o << "</member>";
   }
@@ -96,7 +113,7 @@ static void encodeValue(const BDE& value, std::ostream& o)
 {
   o << "<value>";
   if(value.isString()) {
-    o << "<string>" << value.s() << "</string>";
+    o << "<string>" << xmlEscape(value.s()) << "</string>";
   } else if(value.isInteger()) {
     o << "<int>" << value.i() << "</int>";
   } else if(value.isList()) {
