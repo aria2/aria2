@@ -1,5 +1,11 @@
 2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed segmentation fault error. SocketBuffer::sendResponse() may throw
+	exception , so it is now in try block.
+	* src/HttpServerResponseCommand.cc
+
+2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added "amChoking" and "peerChoking" key in getPeers response.
 	* src/XmlRpcMethodImpl.cc
 

@@ -39,6 +39,7 @@
 #include "Logger.h"
 #include "HttpServerCommand.h"
 #include "RequestGroupMan.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -66,7 +67,13 @@ bool HttpServerResponseCommand::execute()
   if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-  _httpServer->sendResponse();
+  try {
+    _httpServer->sendResponse();
+  } catch(RecoverableException& e) {
+    logger->info("CUID#%d - Error occurred while transmitting response body.",
+		 e, cuid);
+    return true;
+  }
   if(_httpServer->sendBufferIsEmpty()) {
     logger->info("CUID#%d - HttpServer: all response transmitted.", cuid);
     if(_httpServer->supportsPersistentConnection()) {
@@ -82,7 +89,7 @@ bool HttpServerResponseCommand::execute()
       return true;
     } else {
       _e->commands.push_back(this);
-      return true;
+      return false;
     }
   }
 }
