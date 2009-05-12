@@ -50,7 +50,7 @@
 #include "UriListParser.h"
 #include "SingleFileDownloadContext.h"
 #include "RecoverableException.h"
-#include "FatalException.h"
+#include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
 #include "DefaultBtContext.h"
@@ -258,7 +258,7 @@ void createRequestGroupForMetalink
 				   option->get(PREF_METALINK_FILE),
 				   option);
   if(result.empty()) {
-    throw FatalException(MSG_NO_FILES_TO_DOWNLOAD);
+    throw DlAbortEx(MSG_NO_FILES_TO_DOWNLOAD);
   }
 }
 #endif // ENABLE_METALINK
@@ -397,7 +397,7 @@ void createRequestGroupForUriList
     createRequestGroupForUriList(result, option, std::cin);
   } else {
     if(!File(option->get(PREF_INPUT_FILE)).isFile()) {
-      throw FatalException
+      throw DlAbortEx
 	(StringFormat(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
 		      "No such file").str());
     }

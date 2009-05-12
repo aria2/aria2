@@ -41,17 +41,17 @@ const std::string OptionHandlerException::MESSAGE
 ("Exception occurred while processing option %s:");
 
 OptionHandlerException::OptionHandlerException(const std::string& optName):
-  FatalException
+  RecoverableException
   (StringFormat(MESSAGE.c_str(), optName.c_str()).str()), _optName(optName) {}
 
 OptionHandlerException::OptionHandlerException(const std::string& optName,
 					       const Exception& cause):
-  FatalException
+  RecoverableException
   (StringFormat(MESSAGE.c_str(), optName.c_str()).str(), cause),
   _optName(optName) {}
 
 OptionHandlerException::OptionHandlerException(const OptionHandlerException& e):
-  FatalException(e), _optName(e._optName) {}
+  RecoverableException(e), _optName(e._optName) {}
 
 OptionHandlerException::~OptionHandlerException() throw() {}
 

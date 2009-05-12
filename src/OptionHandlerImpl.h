@@ -46,7 +46,7 @@
 
 #include "NameMatchOptionHandler.h"
 #include "Util.h"
-#include "FatalException.h"
+#include "DlAbortEx.h"
 #include "prefs.h"
 #include "Option.h"
 #include "StringFormat.h"
@@ -127,7 +127,7 @@ public:
       option.put(_optName, V_FALSE);
     } else {
       std::string msg = _optName+" "+_("must be either 'true' or 'false'.");
-      throw FatalException(msg);
+      throw DlAbortEx(msg);
     }
   }
 
@@ -160,7 +160,7 @@ public:
       int32_t v = seq.next();
       if(v < _min || _max < v) {
 	std::string msg = _optName+" "+_("must be between %s and %s.");
-	throw FatalException
+	throw DlAbortEx
 	  (StringFormat(msg.c_str(), Util::itos(_min).c_str(),
 			Util::itos(_max).c_str()).str());
       }
@@ -215,7 +215,7 @@ public:
       } else {
 	msg += _("must be a number.");
       }
-      throw FatalException(msg);
+      throw DlAbortEx(msg);
     }
   }
 
@@ -281,7 +281,7 @@ public:
       } else {
 	msg += _("must be a number.");
       }
-      throw FatalException(msg);
+      throw DlAbortEx(msg);
     }
   }
 
@@ -462,7 +462,7 @@ public:
 	  msg += "'"+*itr+"' ";
 	}
       }
-      throw FatalException(msg);
+      throw DlAbortEx(msg);
     } else {
       option.put(_optName, optarg);
     }
@@ -502,7 +502,7 @@ public:
     int32_t port = Util::parseInt(proxy.second);
     if(proxy.first.empty() || proxy.second.empty() ||
        port <= 0 || 65535 < port) {
-      throw FatalException(_("unrecognized proxy format"));
+      throw DlAbortEx(_("unrecognized proxy format"));
     }
     option.put(_optName, optarg);
     setHostAndPort(option, proxy.first, port);
@@ -545,7 +545,7 @@ public:
     if(req.setUrl(url)) {
       option.put(_optName, url);
     } else {
-      throw FatalException(_("unrecognized proxy format"));
+      throw DlAbortEx(_("unrecognized proxy format"));
     }
   }
 

@@ -33,7 +33,10 @@
  */
 /* copyright --> */
 #include "ParameterizedStringParser.h"
-#include "FatalException.h"
+
+#include <utility>
+
+#include "DlAbortEx.h"
 #include "Util.h"
 #include "PStringSegment.h"
 #include "PStringSelect.h"
@@ -41,7 +44,6 @@
 #include "NumberDecorator.h"
 #include "FixedWidthNumberDecorator.h"
 #include "AlphaNumberDecorator.h"
-#include <utility>
 
 namespace aria2 {
 
@@ -86,12 +88,12 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
   ++offset;
   std::string::size_type rightParenIndex = src.find("}", offset);
   if(rightParenIndex == std::string::npos) {
-    throw FatalException("Missing '}' in the parameterized string.");
+    throw DlAbortEx("Missing '}' in the parameterized string.");
   }
   std::deque<std::string> values;
   Util::slice(values, src.substr(offset, rightParenIndex-offset), ',', true);
   if(values.empty()) {
-    throw FatalException("Empty {} is not allowed.");
+    throw DlAbortEx("Empty {} is not allowed.");
   }
   offset = rightParenIndex+1;
   PStringDatumHandle next = diggPString(src, offset);
@@ -104,7 +106,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   ++offset;
   std::string::size_type rightParenIndex = src.find("]", offset);
   if(rightParenIndex == std::string::npos) {
-    throw FatalException("Missing ']' in the parameterized string.");
+    throw DlAbortEx("Missing ']' in the parameterized string.");
   }
   std::string loopStr = src.substr(offset, rightParenIndex-offset);
   offset = rightParenIndex+1;
@@ -116,13 +118,13 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     if(Util::isNumber(stepStr)) {
       step = Util::parseUInt(stepStr);
     } else {
-      throw FatalException("A step count must be a positive number.");
+      throw DlAbortEx("A step count must be a positive number.");
     }
     loopStr.erase(colonIndex);
   }
   std::pair<std::string, std::string> range = Util::split(loopStr, "-");
   if(range.first.empty() || range.second.empty()) {
-    throw FatalException("Loop range missing.");
+    throw DlAbortEx("Loop range missing.");
   }
   NumberDecoratorHandle nd;
   unsigned int start;
@@ -140,7 +142,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     start = Util::alphaToNum(range.first);
     end = Util::alphaToNum(range.second);
   } else {
-    throw FatalException("Invalid loop range.");
+    throw DlAbortEx("Invalid loop range.");
   }
 
   PStringDatumHandle next(diggPString(src, offset));

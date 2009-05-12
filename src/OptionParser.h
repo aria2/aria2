@@ -65,7 +65,7 @@ public:
 
   // Parses options in argv and writes option name and value to out in
   // NAME=VALUE format. Non-option strings are stored in nonopts.
-  // Throws FatalException when an unrecognized option is found.
+  // Throws Exception when an unrecognized option is found.
   void parseArg(std::ostream& out, std::deque<std::string>& nonopts,
 		int argc, char* const argv[]);
 

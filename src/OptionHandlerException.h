@@ -34,11 +34,11 @@
 /* copyright --> */
 #ifndef _D_OPTION_HANDLER_EXCEPTION_H_
 #define _D_OPTION_HANDLER_EXCEPTION_H_
-#include "FatalException.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
-class OptionHandlerException:public FatalException {
+class OptionHandlerException:public RecoverableException {
 private:
   std::string _optName;
 

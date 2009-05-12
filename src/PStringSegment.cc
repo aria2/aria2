@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "PStringSegment.h"
-#include "FatalException.h"
 #include "PStringVisitor.h"
 
 namespace aria2 {

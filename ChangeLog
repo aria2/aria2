@@ -1,5 +1,20 @@
 2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Throw DlAbortEx instead of FatalException during parsing options
+	because we don't want for aria2 to quit when bad option is passed
+	via XML-RPC.
+	* src/OptionHandlerException.cc
+	* src/OptionHandlerException.h
+	* src/OptionHandlerImpl.h
+	* src/OptionParser.cc
+	* src/OptionParser.h
+	* src/PStringSegment.cc
+	* src/ParameterizedStringParser.cc
+	* src/download_helper.cc
+	* test/ParameterizedStringParserTest.cc
+
+2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Selecting files are now done in
 	DefaultBtContext::setFileFileter().
 	PieceStorage::setFileFilter(), DiskAdaptor::addDownloadEntry()
