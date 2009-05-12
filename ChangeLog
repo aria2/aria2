@@ -1,5 +1,14 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added "downloadSpeed" and uploadSpeed" key in getPeers response.	
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/PeerStorage.h
+	* src/XmlRpcMethodImpl.cc
+	* test/MockPeerStorage.h
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Put a call to Socket::isReadable() in try block.
 	* src/HttpServerBodyCommand.cc
 	* src/HttpServerCommand.cc

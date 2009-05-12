@@ -73,6 +73,11 @@ public:
 
   virtual void updateTransferStatFor(const SharedHandle<Peer>& peer) {}
 
+  virtual TransferStat getTransferStatFor(const SharedHandle<Peer>& peer)
+  {
+    return TransferStat();
+  }
+
   int getNumChokeExecuted() const
   {
     return _numChokeExecuted;

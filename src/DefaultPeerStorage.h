@@ -98,6 +98,8 @@ public:
 
   virtual void updateTransferStatFor(const SharedHandle<Peer>& peer);
 
+  virtual TransferStat getTransferStatFor(const SharedHandle<Peer>& peer);
+
   virtual void returnPeer(const SharedHandle<Peer>& peer);
 
   virtual bool chokeRoundIntervalElapsed();

@@ -246,6 +246,12 @@ void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
   _peerTransferStatMap[peer->getID()] = s;
 }
 
+TransferStat DefaultPeerStorage::getTransferStatFor
+(const SharedHandle<Peer>& peer)
+{
+  return _peerTransferStatMap[peer->getID()];
+}
+
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
   Peers temp;
   for(Peers::reverse_iterator itr = peers.rbegin();

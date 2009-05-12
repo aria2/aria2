@@ -210,6 +210,9 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
 					(*i)->getBitfieldLength());
     peerEntry["amChoking"] = (*i)->amChoking()?BDE("true"):BDE("false");
     peerEntry["peerChoking"] = (*i)->peerChoking()?BDE("true"):BDE("false");
+    TransferStat stat = ps->getTransferStatFor(*i);
+    peerEntry["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
+    peerEntry["uploadSpeed"] = Util::uitos(stat.getUploadSpeed());
     peers << peerEntry;
   }
 }
