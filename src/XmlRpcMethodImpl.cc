@@ -247,6 +247,19 @@ findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, int32_t gid)
   return group;
 }
 
+template<typename InputIterator>
+static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
+{
+  size_t index = 1;
+  for(; first != last; ++first, ++index) {
+    BDE entry = BDE::dict();
+    entry["index"] = Util::uitos(index);
+    entry["path"] = (*first)->getPath();
+    entry["selected"] = (*first)->isRequested()?BDE("true"):BDE("false");
+    files << entry;
+  }
+}
+
 BDE GetFilesXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
@@ -259,22 +272,21 @@ BDE GetFilesXmlRpcMethod::process
   
   int32_t gid = Util::parseInt(params[0].s());
 
+  BDE files = BDE::list();
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
-    throw DlAbortEx
-      (StringFormat("No file data is available for GID#%d", gid).str());
-  }
-  BDE files = BDE::list();
-  std::deque<SharedHandle<FileEntry> > fileEntries =
-    group->getDownloadContext()->getFileEntries();
-  size_t index = 1;
-  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
-	fileEntries.begin(); i != fileEntries.end(); ++i, ++index) {
-    BDE entry = BDE::dict();
-    entry["index"] = Util::uitos(index);
-    entry["path"] = (*i)->getPath();
-    entry["selected"] = (*i)->isRequested()?BDE("true"):BDE("false");
-    files << entry;
+    SharedHandle<DownloadResult> dr =
+      e->_requestGroupMan->findDownloadResult(gid);
+    if(dr.isNull()) {
+      throw DlAbortEx
+	(StringFormat("No file data is available for GID#%d", gid).str());
+    } else {
+      createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
+    }
+  } else {
+    std::deque<SharedHandle<FileEntry> > fileEntries =
+      group->getDownloadContext()->getFileEntries();
+    createFileEntry(files, fileEntries.begin(), fileEntries.end());
   }
   BDE resParams = BDE::list();
   resParams << files;

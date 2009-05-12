@@ -1,5 +1,11 @@
 2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	getFiles command now returns file data for finished/stopped
+	downloads.	
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	DownloadResult now has the list of FileEntry.  The download
 	summary displays the path of first selected file and the number of
 	remaining files for multi-file torrent.
