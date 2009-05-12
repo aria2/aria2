@@ -1,5 +1,11 @@
 2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed segmentation fault error when no file is selected in
+	multi-file torrent.	
+	* src/BitfieldMan.cc
+	
+2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Escaped <,>,& character in XML-RPC response.
 	* src/XmlRpcMethod.cc
 

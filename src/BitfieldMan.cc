@@ -605,6 +605,10 @@ void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
 }
 
 void BitfieldMan::enableFilter() {
+  if(!filterBitfield) {
+    filterBitfield = new unsigned char[bitfieldLength];
+    memset(filterBitfield, 0, bitfieldLength);
+  }    
   filterEnabled = true;
   updateCache();
 }
