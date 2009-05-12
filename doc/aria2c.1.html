@@ -521,7 +521,7 @@ downloading a file like BitTorrent.</p></div>
   You can override this setting and specify a proxy server for a particular
   protocol using <strong>--http-proxy</strong>, <strong>--https-proxy</strong> and <strong>--ftp-proxy</strong> options.
   This affects all URLs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
@@ -796,7 +796,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 <p>
   Use this proxy server for HTTP. See also <strong>--all-proxy</strong> option.
   This affects all URLs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
@@ -806,7 +806,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 <p>
   Use this proxy server for HTTPS. See also <strong>--all-proxy</strong> option.
   This affects all URLs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
@@ -930,7 +930,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 <p>
   Use this proxy server for FTP. See also <strong>--all-proxy</strong> option.
   This affects all URLs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1614,7 +1614,7 @@ are also allocated if they share the same piece.</td>
   Enable parameterized URI support.
   You can specify set of parts: <em>http://{sv1,sv2,sv3}/foo.iso</em>.
   Also you can specify numeric sequences with step counter:
-  <em>\http://host/image[000-100:2].img</em>.
+  <em>http://host/image[000-100:2].img</em>.
   A step counter can be omitted.
   If all URIs do not point to the same file, such as the second example above,
   -Z option is required.
@@ -1784,7 +1784,7 @@ as exit status.</td>
 <div class="paragraph"><p>aria2 recognizes the following environment variables.</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-http_proxy [\http://][USER:PASSWORD@]HOST[:PORT]
+http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -1794,7 +1794,7 @@ http_proxy [\http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
-https_proxy [\http://][USER:PASSWORD@]HOST[:PORT]
+https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -1804,7 +1804,7 @@ https_proxy [\http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
-ftp_proxy [\http://][USER:PASSWORD@]HOST[:PORT]
+ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -1814,7 +1814,7 @@ ftp_proxy [\http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
-all_proxy [\http://][USER:PASSWORD@]HOST[:PORT]
+all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -2723,7 +2723,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-05-13 01:27:43 JST
+Last updated 2009-05-13 01:38:23 JST
 </div>
 </div>
 </body>

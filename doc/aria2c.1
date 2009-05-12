@@ -98,7 +98,7 @@ Use this proxy server for all protocols\&. You can override this setting and spe
 \fB\-\-https\-proxy\fR
 and
 \fB\-\-ftp\-proxy\fR
-options\&. This affects all URLs\&. The format of PROXY is [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+options\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-connect\-timeout\fR=SEC
@@ -316,14 +316,14 @@ Set HTTP password\&. This affects all URLs\&.
 .RS 4
 Use this proxy server for HTTP\&. See also
 \fB\-\-all\-proxy\fR
-option\&. This affects all URLs\&. The format of PROXY is [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-https\-proxy\fR=PROXY
 .RS 4
 Use this proxy server for HTTPS\&. See also
 \fB\-\-all\-proxy\fR
-option\&. This affects all URLs\&. The format of PROXY is [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-private\-key\fR=FILE
@@ -414,7 +414,7 @@ is given, the active mode will be used\&. Default:
 .RS 4
 Use this proxy server for FTP\&. See also
 \fB\-\-all\-proxy\fR
-option\&. This affects all URLs\&. The format of PROXY is [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-ftp\-type\fR=TYPE
@@ -975,7 +975,7 @@ or
 .RS 4
 Enable parameterized URI support\&. You can specify set of parts:
 \fIhttp://{sv1,sv2,sv3}/foo\&.iso\fR\&. Also you can specify numeric sequences with step counter:
-\fI\ehttp://host/image[000\-100:2]\&.img\fR\&. A step counter can be omitted\&. If all URIs do not point to the same file, such as the second example above, \-Z option is required\&. Default:
+\fIhttp://host/image[000\-100:2]\&.img\fR\&. A step counter can be omitted\&. If all URIs do not point to the same file, such as the second example above, \-Z option is required\&. Default:
 \fIfalse\fR
 .RE
 .PP
@@ -1101,28 +1101,28 @@ An error occurred in a finished download will not be reported as exit status\&.
 .sp
 aria2 recognizes the following environment variables\&.
 .PP
-http_proxy [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 .RS 4
 Specify proxy server for use in HTTP\&. Overrides http\-proxy value in configuration file\&. The command\-line option
 \fB\-\-http\-proxy\fR
 overrides this value\&.
 .RE
 .PP
-https_proxy [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 .RS 4
 Specify proxy server for use in HTTPS\&. Overrides https\-proxy value in configuration file\&. The command\-line option
 \fB\-\-https\-proxy\fR
 overrides this value\&.
 .RE
 .PP
-ftp_proxy [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 .RS 4
 Specify proxy server for use in FTP\&. Overrides ftp\-proxy value in configuration file\&. The command\-line option
 \fB\-\-ftp\-proxy\fR
 overrides this value\&.
 .RE
 .PP
-all_proxy [\ehttp://][USER:PASSWORD@]HOST[:PORT]
+all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 .RS 4
 Specify proxy server for use if no protocol\-specific proxy is specified\&. Overrides all\-proxy value in configuration file\&. The command\-line option
 \fB\-\-all\-proxy\fR
