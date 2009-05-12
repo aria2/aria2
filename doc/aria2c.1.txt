@@ -692,7 +692,7 @@ while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
 only single file torrent can be integrated with HTTP(S)/FTP.
 
 [NOTE]
-Make sure that URL is quoted with single(\') or double(") quotation if it
+Make sure that URL is quoted with single(') or double(") quotation if it
 contains "&" or any characters that have special meaning in shell.
 
 Resuming Download

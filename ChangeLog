@@ -1,5 +1,10 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed garbage "\" character before '
+	* doc/aria2c.1.txt
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed garbage "\" character before http.
 	* doc/aria2c.1.txt
 
