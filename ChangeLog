@@ -1,5 +1,10 @@
 2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added test case for zero-length filter.
+	* test/BitfieldManTest.cc
+
+2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	getFiles command now returns file data for finished/stopped
 	downloads.	
 	* src/XmlRpcMethodImpl.cc

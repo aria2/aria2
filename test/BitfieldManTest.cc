@@ -33,6 +33,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetMissingUnusedIndex_noarg);
   CPPUNIT_TEST(testCountFilteredBlock);
   CPPUNIT_TEST(testCountMissingBlock);
+  CPPUNIT_TEST(testZeroLengthFilter);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Randomizer> fixedNumberRandomizer;
@@ -69,6 +70,7 @@ public:
   void testSetBitRange();
   void testCountFilteredBlock();
   void testCountMissingBlock();
+  void testZeroLengthFilter();
 };
 
 
@@ -768,6 +770,13 @@ void BitfieldManTest::testCountMissingBlock()
   bt.setBit(1);
   CPPUNIT_ASSERT_EQUAL((size_t)9, bt.countMissingBlock());
   bt.setAllBit();
+  CPPUNIT_ASSERT_EQUAL((size_t)0, bt.countMissingBlock());
+}
+
+void BitfieldManTest::testZeroLengthFilter()
+{
+  BitfieldMan bt(1024, 1024*10);
+  bt.enableFilter();
   CPPUNIT_ASSERT_EQUAL((size_t)0, bt.countMissingBlock());
 }
 
