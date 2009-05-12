@@ -208,6 +208,8 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
     peerEntry["port"] = Util::uitos((*i)->port);
     peerEntry["bitfield"] = Util::toHex((*i)->getBitfield(),
 					(*i)->getBitfieldLength());
+    peerEntry["amChoking"] = (*i)->amChoking()?BDE("true"):BDE("false");
+    peerEntry["peerChoking"] = (*i)->peerChoking()?BDE("true"):BDE("false");
     peers << peerEntry;
   }
 }

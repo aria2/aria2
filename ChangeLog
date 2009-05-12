@@ -1,5 +1,10 @@
 2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added "amChoking" and "peerChoking" key in getPeers response.
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added test case for zero-length filter.
 	* test/BitfieldManTest.cc
 
