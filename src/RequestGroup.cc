@@ -1025,7 +1025,7 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
   return
     SharedHandle<DownloadResult>
     (new DownloadResult(_gid,
-			getFilePath(),
+			_downloadContext->getFileEntries(),
 			getTotalLength(),
 			uris.empty() ? A2STR::NIL:uris.front(),
 			uris.size(),

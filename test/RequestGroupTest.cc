@@ -112,7 +112,8 @@ void RequestGroupTest::testCreateDownloadResult()
   {
     SharedHandle<DownloadResult> result = group.createDownloadResult();
   
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), result->filePath);
+    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"),
+			 result->fileEntries[0]->getPath());
     CPPUNIT_ASSERT_EQUAL((uint64_t)1024*1024, result->totalLength);
     CPPUNIT_ASSERT_EQUAL(std::string("http://first/file"), result->uri);
     CPPUNIT_ASSERT_EQUAL((size_t)2, result->numUri);

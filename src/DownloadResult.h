@@ -40,8 +40,10 @@
 #include <stdint.h>
 
 #include <string>
+#include <deque>
 
 #include "SharedHandle.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -62,7 +64,7 @@ public:
 
   int32_t gid;
  
-  std::string filePath;
+  std::deque<SharedHandle<FileEntry> > fileEntries;
 
   uint64_t totalLength;
 
@@ -78,7 +80,7 @@ public:
   RESULT result;
 
   DownloadResult(int32_t gid,
-		 const std::string& filePath,
+		 const std::deque<SharedHandle<FileEntry> >& fileEntries,
 		 uint64_t totalLength,
 		 const std::string& uri,
 		 size_t numUri,
@@ -86,7 +88,7 @@ public:
 		 int64_t sessionTime,
 		 RESULT result):
     gid(gid),
-    filePath(filePath),
+    fileEntries(fileEntries),
     totalLength(totalLength),
     uri(uri),
     numUri(numUri),
