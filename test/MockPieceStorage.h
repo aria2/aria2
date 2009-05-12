@@ -121,9 +121,7 @@ public:
     this->filteredCompletedLength = completedLength;
   }
   
-  virtual void setFileFilter(const std::deque<std::string>& filePaths) {}
-
-  virtual void setFileFilter(IntSequence seq) {}
+  virtual void setupFileFilter() {}
 
   virtual void clearFileFilter() {}
 
@@ -166,8 +164,6 @@ public:
   void setSelectiveDownloadingMode(bool flag) {
     this->selectiveDownloadingMode = flag;
   }
-
-  virtual void finishSelectiveDownloadingMode() {}
 
   virtual bool isEndGame() {
     return endGame;

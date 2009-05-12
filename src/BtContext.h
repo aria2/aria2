@@ -36,6 +36,7 @@
 #define _D_BT_CONTEXT_H_
 
 #include "DownloadContext.h"
+
 #include <utility>
 #include <deque>
 
@@ -49,8 +50,6 @@ class RequestGroup;
 class BtContext:public DownloadContext {
 protected:
   bool _private;
-
-  IntSequence _fileFilter;
 public:
   BtContext():_private(false) {}
   
@@ -87,9 +86,7 @@ public:
 
   virtual const std::string& getName() const = 0;
 
-  void setFileFilter(const IntSequence& seq);
-
-  IntSequence getFileFilter() const;
+  virtual void setFileFilter(IntSequence seq) = 0;
 
   static const std::string C_NAME;
 

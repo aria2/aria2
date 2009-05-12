@@ -514,4 +514,22 @@ void DefaultBtContext::setFilePathWithIndex
   }
 }
 
+void DefaultBtContext::setFileFilter(IntSequence seq)
+{
+  std::deque<int32_t> fileIndexes = seq.flush();
+  std::sort(fileIndexes.begin(), fileIndexes.end());
+  fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
+		    fileIndexes.end());
+
+  bool selectAll = fileIndexes.empty() || fileEntries.size() == 1;
+    
+  int32_t index = 1;
+  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i, ++index) {
+    (*i)->setRequested
+      (selectAll ||
+       std::binary_search(fileIndexes.begin(), fileIndexes.end(), index));
+  }
+}
+
 } // namespace aria2

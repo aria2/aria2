@@ -358,12 +358,6 @@ bool DefaultPieceStorage::isSelectiveDownloadingMode()
   return bitfieldMan->isFilterEnabled();
 }
 
-void DefaultPieceStorage::finishSelectiveDownloadingMode()
-{
-  bitfieldMan->clearFilter();
-  diskAdaptor->addAllDownloadEntry();
-}
-
 // not unittested
 void DefaultPieceStorage::cancelPiece(const PieceHandle& piece)
 {
@@ -420,45 +414,34 @@ size_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 }
 
 // not unittested
-void DefaultPieceStorage::setFileFilter(const std::deque<std::string>& filePaths)
+void DefaultPieceStorage::setupFileFilter()
 {
-  if(downloadContext->getFileMode() != DownloadContext::MULTI || filePaths.empty()) {
+  std::deque<SharedHandle<FileEntry> > fileEntries =
+    downloadContext->getFileEntries();
+  bool allSelected = true;
+  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i) {
+    if(!(*i)->isRequested()) {
+      allSelected = false;
+      break;
+    }
+  }
+  if(allSelected) {
     return;
   }
-  diskAdaptor->removeAllDownloadEntry();
-  for(std::deque<std::string>::const_iterator pitr = filePaths.begin();
-      pitr != filePaths.end(); pitr++) {
-    if(!diskAdaptor->addDownloadEntry(*pitr)) {
-      throw DlAbortEx(StringFormat(EX_NO_SUCH_FILE_ENTRY, (*pitr).c_str()).str());
+  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i) {
+    if((*i)->isRequested()) {
+      bitfieldMan->addFilter((*i)->getOffset(), (*i)->getLength());
     }
-    FileEntryHandle fileEntry = diskAdaptor->getFileEntryFromPath(*pitr);
-    bitfieldMan->addFilter(fileEntry->getOffset(), fileEntry->getLength());
   }
   bitfieldMan->enableFilter();
-}
-
-void DefaultPieceStorage::setFileFilter(IntSequence seq)
-{
-  std::deque<int32_t> fileIndexes = seq.flush();
-  std::sort(fileIndexes.begin(), fileIndexes.end());
-  fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()), fileIndexes.end());
-  std::deque<std::string> filePaths;
-  const FileEntries& entries = diskAdaptor->getFileEntries();
-  int32_t entriesSize = entries.size();
-  for(int32_t i = 0; i < entriesSize; i++) {
-    if(std::binary_search(fileIndexes.begin(), fileIndexes.end(), i+1)) {
-      logger->debug("index=%d is %s", i+1, entries[i]->getPath().c_str());
-      filePaths.push_back(entries[i]->getPath());
-    }
-  }
-  setFileFilter(filePaths);
 }
 
 // not unittested
 void DefaultPieceStorage::clearFileFilter()
 {
   bitfieldMan->clearFilter();
-  diskAdaptor->addAllDownloadEntry();
 }
 
 // not unittested

@@ -170,6 +170,7 @@ public:
     _nodes = nodes;
   }
 
+  virtual void setFileFilter(IntSequence seq) {}
 };
 
 } // namespace aria2

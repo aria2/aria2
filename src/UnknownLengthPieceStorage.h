@@ -152,9 +152,7 @@ public:
     return getCompletedLength();
   }
   
-  virtual void setFileFilter(const std::deque<std::string>& filePaths) {}
-
-  virtual void setFileFilter(IntSequence seq) {}
+  virtual void setupFileFilter() {}
 
   virtual void clearFileFilter() {}
   
@@ -200,8 +198,6 @@ public:
   {
     return false;
   }
-
-  virtual void finishSelectiveDownloadingMode() {}
 
   virtual bool isEndGame()
   {

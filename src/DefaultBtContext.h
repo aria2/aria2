@@ -39,6 +39,8 @@
 
 #include <iosfwd>
 
+#include "IntSequence.h"
+
 namespace aria2 {
 
 class Randomizer;
@@ -159,6 +161,8 @@ private:
   }
 
   virtual std::deque<std::pair<std::string, uint16_t> >& getNodes();
+
+  virtual void setFileFilter(IntSequence seq);
 
   std::string generatePeerId() const;
 

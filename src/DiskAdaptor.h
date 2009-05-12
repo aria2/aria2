@@ -36,9 +36,11 @@
 #define _D_DISK_ADAPTOR_H_
 
 #include "BinaryStream.h"
-#include "TimeA2.h"
+
 #include <string>
 #include <deque>
+
+#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -73,17 +75,7 @@ public:
 
   void setFileEntries(const std::deque<SharedHandle<FileEntry> >& fileEntries);
 
-  SharedHandle<FileEntry> getFileEntryFromPath(const std::string& fileEntryPath) const;
-
   const std::deque<SharedHandle<FileEntry> >& getFileEntries() const;
-
-  bool addDownloadEntry(const std::string& fileEntryPath);
-
-  bool addDownloadEntry(size_t index);
-
-  void addAllDownloadEntry();
-
-  void removeAllDownloadEntry();
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;
 

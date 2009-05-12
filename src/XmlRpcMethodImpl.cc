@@ -265,38 +265,16 @@ BDE GetFilesXmlRpcMethod::process
       (StringFormat("No file data is available for GID#%d", gid).str());
   }
   BDE files = BDE::list();
-  SharedHandle<BtContext> btctx =
-    dynamic_pointer_cast<BtContext>(group->getDownloadContext());
-  if(btctx.isNull()) {
+  std::deque<SharedHandle<FileEntry> > fileEntries =
+    group->getDownloadContext()->getFileEntries();
+  size_t index = 1;
+  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i, ++index) {
     BDE entry = BDE::dict();
-    entry["index"] = BDE("1");
-    entry["path"] = group->getDownloadContext()->getActualBasePath();
-    entry["selected"] = BDE("true");
+    entry["index"] = Util::uitos(index);
+    entry["path"] = (*i)->getPath();
+    entry["selected"] = (*i)->isRequested()?BDE("true"):BDE("false");
     files << entry;
-  } else {
-    std::deque<int32_t> fileIndexes = btctx->getFileFilter().flush();
-    std::sort(fileIndexes.begin(), fileIndexes.end());
-    fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
-		      fileIndexes.end());
-    std::deque<SharedHandle<FileEntry> > fileEntries =
-      btctx->getFileEntries();
-
-    bool selectAll = fileIndexes.empty() || fileEntries.size() == 1;
-    
-    int32_t index = 1;
-    for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
-	  fileEntries.begin(); i != fileEntries.end(); ++i, ++index) {
-      BDE entry = BDE::dict();
-      entry["index"] = Util::itos(index);
-      entry["path"] = (*i)->getPath();
-      if(selectAll ||
-	 std::binary_search(fileIndexes.begin(), fileIndexes.end(), index)) {
-	entry["selected"] = BDE("true");
-      } else {
-	entry["selected"] = BDE("false");
-      }
-      files << entry;
-    }
   }
   BDE resParams = BDE::list();
   resParams << files;

@@ -1,3 +1,27 @@
+2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Selecting files are now done in
+	DefaultBtContext::setFileFileter().
+	PieceStorage::setFileFilter(), DiskAdaptor::addDownloadEntry()
+	functions are removed because they are no longer used.  Creating
+	filter in BitfieldMan is done in new funtion
+	PieceStorage::setupFileFilter()	
+	* src/BtContext.cc
+	* src/BtContext.h
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/DiskAdaptor.cc
+	* src/DiskAdaptor.h
+	* src/PieceStorage.h
+	* src/RequestGroup.cc
+	* src/UnknownLengthPieceStorage.h
+	* src/XmlRpcMethodImpl.cc
+	* test/DefaultBtContextTest.cc
+	* test/MockBtContext.h
+	* test/MockPieceStorage.h
+
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compile error on Mac OS X

@@ -44,6 +44,8 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoadFromMemory_joinPathSingle);
   CPPUNIT_TEST(testGetNodes);
   CPPUNIT_TEST(testGetActualBasePath);
+  CPPUNIT_TEST(testSetFileFilter_single);
+  CPPUNIT_TEST(testSetFileFilter_multi);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -76,6 +78,8 @@ public:
   void testLoadFromMemory_joinPathSingle();
   void testGetNodes();
   void testGetActualBasePath();
+  void testSetFileFilter_single();
+  void testSetFileFilter_multi();
 };
 
 
@@ -546,6 +550,50 @@ void DefaultBtContextTest::testGetActualBasePath()
   multiCtx.load("test.torrent");
   CPPUNIT_ASSERT_EQUAL(std::string("downloads/aria2-test"),
 		       multiCtx.getActualBasePath());
+}
+
+void DefaultBtContextTest::testSetFileFilter_single()
+{
+  DefaultBtContext ctx;
+  ctx.load("single.torrent");
+
+  CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
+
+  ctx.setFileFilter(Util::parseIntRange(""));
+  CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
+
+  ctx.setFileFilter(Util::parseIntRange("1"));
+  CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
+
+  // For single file torrent, file is always selected whatever range
+  // is passed.
+  ctx.setFileFilter(Util::parseIntRange("2"));
+  CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
+}
+
+void DefaultBtContextTest::testSetFileFilter_multi()
+{
+  DefaultBtContext ctx;
+  ctx.load("test.torrent");
+
+  CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
+  CPPUNIT_ASSERT(ctx.getFileEntries()[1]->isRequested());
+
+  ctx.setFileFilter(Util::parseIntRange(""));
+  CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
+  CPPUNIT_ASSERT(ctx.getFileEntries()[1]->isRequested());
+
+  ctx.setFileFilter(Util::parseIntRange("2"));
+  CPPUNIT_ASSERT(!ctx.getFileEntries()[0]->isRequested());
+  CPPUNIT_ASSERT(ctx.getFileEntries()[1]->isRequested());
+
+  ctx.setFileFilter(Util::parseIntRange("3"));
+  CPPUNIT_ASSERT(!ctx.getFileEntries()[0]->isRequested());
+  CPPUNIT_ASSERT(!ctx.getFileEntries()[1]->isRequested());
+
+  ctx.setFileFilter(Util::parseIntRange("1,2"));
+  CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
+  CPPUNIT_ASSERT(ctx.getFileEntries()[1]->isRequested());
 }
 
 } // namespace aria2

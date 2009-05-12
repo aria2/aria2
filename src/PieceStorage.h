@@ -142,11 +142,9 @@ public:
   virtual uint64_t getCompletedLength() = 0;
 
   virtual uint64_t getFilteredCompletedLength() = 0;
+
+  virtual void setupFileFilter() = 0;
   
-  virtual void setFileFilter(const std::deque<std::string>& filePaths) = 0;
-
-  virtual void setFileFilter(IntSequence seq) = 0;
-
   virtual void clearFileFilter() = 0;
   
   /**
@@ -176,8 +174,6 @@ public:
   virtual size_t getBitfieldLength() = 0;
 
   virtual bool isSelectiveDownloadingMode() = 0;
-
-  virtual void finishSelectiveDownloadingMode() = 0;
 
   virtual bool isEndGame() = 0;
 

@@ -151,10 +151,8 @@ public:
 
   virtual void initStorage();
 
-  virtual void setFileFilter(const std::deque<std::string>& filePaths);
-
-  virtual void setFileFilter(IntSequence seq);
-
+  virtual void setupFileFilter();
+  
   virtual void clearFileFilter();
 
   virtual bool downloadFinished();
@@ -177,8 +175,6 @@ public:
   }
 
   virtual bool isSelectiveDownloadingMode();
-
-  virtual void finishSelectiveDownloadingMode();
 
   virtual bool isEndGame();
   
