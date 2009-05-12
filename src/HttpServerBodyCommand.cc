@@ -74,10 +74,10 @@ bool HttpServerBodyCommand::execute()
   if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-  if(_socket->isReadable(0) || _httpServer->getContentLength() == 0) {
-    _timeout.reset();
+  try {
+    if(_socket->isReadable(0) || _httpServer->getContentLength() == 0) {
+      _timeout.reset();
 
-    try {
       if(_httpServer->receiveBody()) {
 	// Do something for requestpath and body
 	if(_httpServer->getRequestPath() == "/rpc") {
@@ -101,20 +101,21 @@ bool HttpServerBodyCommand::execute()
 	_e->commands.push_back(this);
 	return false;
       }	
-    } catch(RecoverableException& e) {
-      logger->info("CUID#%d - Error occurred while reading HTTP request body",
-		   e, cuid);
-      return true;
-    }
-  } else {
-    if(_timeout.elapsed(30)) {
-      logger->info("HTTP request body timeout.");
-      return true;
     } else {
-      _e->commands.push_back(this);
-      return false;
+      if(_timeout.elapsed(30)) {
+	logger->info("HTTP request body timeout.");
+	return true;
+      } else {
+	_e->commands.push_back(this);
+	return false;
+      }
     }
+  } catch(RecoverableException& e) {
+    logger->info("CUID#%d - Error occurred while reading HTTP request body",
+		 e, cuid);
+    return true;
   }
+
 }
 
 } // namespace aria2

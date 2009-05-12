@@ -1,3 +1,9 @@
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Put a call to Socket::isReadable() in try block.
+	* src/HttpServerBodyCommand.cc
+	* src/HttpServerCommand.cc
+
 2009-05-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed segmentation fault error. SocketBuffer::sendResponse() may throw

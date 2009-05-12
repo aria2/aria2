@@ -82,48 +82,50 @@ bool HttpServerCommand::execute()
   if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-  if(_socket->isReadable(0)) {
-    _timeout.reset();
-    SharedHandle<HttpHeader> header;
-    try {
+  try {
+    if(_socket->isReadable(0)) {
+      _timeout.reset();
+      SharedHandle<HttpHeader> header;
+
       header = _httpServer->receiveRequest();
-    } catch(RecoverableException& e) {
-      logger->info("CUID#%d - Error occurred while reading HTTP request",
-		   e, cuid);
-      return true;
-    }
-    if(!_httpServer->authenticate()) {
-      _httpServer->disableKeepAlive();
-      _httpServer->feedResponse("401 Unauthorized",
-				"WWW-Authenticate: Basic realm=\"aria2\"",
-				"","text/html");
-      Command* command =
-	new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
-      command->setStatus(Command::STATUS_ONESHOT_REALTIME);
-      _e->commands.push_back(command);
-      _e->setNoWait(true);
-      return true;
-    }
-    if(header.isNull()) {
-      _e->commands.push_back(this);
-      return false;
+      if(!_httpServer->authenticate()) {
+	_httpServer->disableKeepAlive();
+	_httpServer->feedResponse("401 Unauthorized",
+				  "WWW-Authenticate: Basic realm=\"aria2\"",
+				  "","text/html");
+	Command* command =
+	  new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
+	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
+	_e->commands.push_back(command);
+	_e->setNoWait(true);
+	return true;
+      }
+      if(header.isNull()) {
+	_e->commands.push_back(this);
+	return false;
+      } else {
+	Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
+						     _socket);
+	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
+	_e->commands.push_back(command);
+	_e->setNoWait(true);
+	return true;
+      }
     } else {
-      Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
-						   _socket);
-      command->setStatus(Command::STATUS_ONESHOT_REALTIME);
-      _e->commands.push_back(command);
-      _e->setNoWait(true);
-      return true;
+      if(_timeout.elapsed(30)) {
+	logger->info("HTTP request timeout.");
+	return true;
+      } else {
+	_e->commands.push_back(this);
+	return false;
+      }
     }
-  } else {
-    if(_timeout.elapsed(30)) {
-      logger->info("HTTP request timeout.");
-      return true;
-    } else {
-      _e->commands.push_back(this);
-      return false;
-    }
+  } catch(RecoverableException& e) {
+    logger->info("CUID#%d - Error occurred while reading HTTP request",
+		 e, cuid);
+    return true;
   }
+
 }
 
 } // namespace aria2
