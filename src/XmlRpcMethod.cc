@@ -48,6 +48,7 @@
 #include "array_fun.h"
 #include "download_helper.h"
 #include "XmlRpcRequest.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -182,9 +183,17 @@ void XmlRpcMethod::gatherRequestOption
       i != listRequestOptions().end(); ++i) {
     if(optionsDict.containsKey(*i)) {
       const BDE& value = optionsDict[*i];
-      if(value.isString()) {
-	_optionParser->findByName(*i)->parse
-	  (*option.get(), value.s());
+      SharedHandle<OptionHandler> optionHandler = _optionParser->findByName(*i);
+      // header and index-out option can take array as value
+      if((*i == PREF_HEADER || *i == PREF_INDEX_OUT) && value.isList()) {
+	for(BDE::List::const_iterator argiter = value.listBegin();
+	    argiter != value.listEnd(); ++argiter) {
+	  if((*argiter).isString()) {
+	    optionHandler->parse(*option.get(), (*argiter).s());
+	  }
+	}
+      } else if(value.isString()) {
+	optionHandler->parse(*option.get(), value.s());
       }
     }
   }
