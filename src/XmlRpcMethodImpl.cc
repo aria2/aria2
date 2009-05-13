@@ -261,6 +261,7 @@ static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
     entry["index"] = Util::uitos(index);
     entry["path"] = (*first)->getPath();
     entry["selected"] = (*first)->isRequested()?BDE("true"):BDE("false");
+    entry["length"] = Util::uitos((*first)->getLength());
     files << entry;
   }
 }

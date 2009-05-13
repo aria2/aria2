@@ -1,5 +1,10 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added "length" key to getFiles response.
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Moved --no-netrc option from ftp option section to http/ftp option
 	section.
 	* doc/aria2c.1.txt
