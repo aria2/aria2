@@ -1,5 +1,10 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added web-seeding URI handling in addTorrent command.
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added "length" key to getFiles response.
 	* src/XmlRpcMethodImpl.cc
 
