@@ -123,7 +123,7 @@ PeerInteractionCommand::PeerInteractionCommand
 
   PeerConnectionHandle peerConnection;
   if(passedPeerConnection.isNull()) {
-    peerConnection.reset(new PeerConnection(cuid, socket, getOption().get()));
+    peerConnection.reset(new PeerConnection(cuid, socket));
   } else {
     peerConnection = passedPeerConnection;
   }

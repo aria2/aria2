@@ -42,7 +42,6 @@
 
 namespace aria2 {
 
-class Option;
 class Logger;
 class SocketCore;
 class ARC4Encryptor;
@@ -56,7 +55,6 @@ class PeerConnection {
 private:
   int32_t cuid;
   SharedHandle<SocketCore> socket;
-  const Option* option;
   Logger* logger;
 
   unsigned char resbuf[MAX_PAYLOAD_LEN];
@@ -78,7 +76,7 @@ private:
   ssize_t sendData(const unsigned char* data, size_t length, bool encryption);
 
 public:
-  PeerConnection(int32_t cuid, const SharedHandle<SocketCore>& socket, const Option* op);
+  PeerConnection(int32_t cuid, const SharedHandle<SocketCore>& socket);
 
   ~PeerConnection();
   

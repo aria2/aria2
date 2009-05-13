@@ -70,8 +70,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
   _peerConnection(peerConnection)
 {
   if(_peerConnection.isNull()) {
-    // TODO referring global option
-    _peerConnection.reset(new PeerConnection(cuid, socket, e->option));
+    _peerConnection.reset(new PeerConnection(cuid, socket));
   }
 }
 

@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "PeerConnection.h"
+
+#include <cstring>
+#include <cassert>
+#include <algorithm>
+
 #include "message.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
@@ -43,18 +48,13 @@
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
 #include "StringFormat.h"
-#include <cstring>
-#include <cassert>
-#include <algorithm>
 
 namespace aria2 {
 
-PeerConnection::PeerConnection(int32_t cuid,
-			       const SocketHandle& socket,
-			       const Option* op)
+PeerConnection::PeerConnection(int32_t cuid, const SocketHandle& socket)
+
   :cuid(cuid),
    socket(socket),
-   option(op),
    logger(LogFactory::getInstance()),
    resbufLength(0),
    currentPayloadLength(0),

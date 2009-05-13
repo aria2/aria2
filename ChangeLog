@@ -1,5 +1,15 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused option member from PeerConnection.
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/PeerConnection.cc
+	* src/PeerConnection.h
+	* src/PeerInteractionCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/ReceiverMSEHandshakeCommand.cc
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added "seeder" key to getPeers response.
 	* src/XmlRpcMethodImpl.cc
 
