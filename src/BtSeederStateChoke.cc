@@ -87,6 +87,11 @@ unsigned int BtSeederStateChoke::PeerEntry::getUploadSpeed() const
   return _uploadSpeed;
 }
 
+void BtSeederStateChoke::PeerEntry::disableOptUnchoking()
+{
+  _peer->optUnchoking(false);
+}
+
 void BtSeederStateChoke::unchoke
 (std::deque<BtSeederStateChoke::PeerEntry>& peers)
 {
@@ -100,11 +105,16 @@ void BtSeederStateChoke::unchoke
     _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->ipaddr.c_str(),
 		  (*r).getUploadSpeed());
   }
-  if(_round == 2 && r != peers.end()) {
-    std::random_shuffle(r, peers.end(),
-			*(SimpleRandomizer::getInstance().get()));
-    (*r).getPeer()->optUnchoking(true);
-    _logger->info("POU: %s", (*r).getPeer()->ipaddr.c_str());
+
+  if(_round == 2) {
+    std::for_each(peers.begin(), peers.end(),
+		  std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
+    if(r != peers.end()) {
+      std::random_shuffle(r, peers.end(),
+			  *(SimpleRandomizer::getInstance().get()));
+      (*r).getPeer()->optUnchoking(true);
+      _logger->info("POU: %s", (*r).getPeer()->ipaddr.c_str());
+    }
   }
 }
 

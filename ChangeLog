@@ -1,5 +1,11 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that POU peers are never choked in seeding.
+	* src/BtSeederStateChoke.cc
+	* src/BtSeederStateChoke.h
+	
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added web-seeding URI handling in addTorrent command.
 	* src/XmlRpcMethodImpl.cc
 

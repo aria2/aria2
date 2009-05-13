@@ -72,6 +72,8 @@ private:
     SharedHandle<Peer> getPeer() const;
 
     unsigned int getUploadSpeed() const;
+
+    void disableOptUnchoking();
   };
 
   void unchoke(std::deque<PeerEntry>& peers);
