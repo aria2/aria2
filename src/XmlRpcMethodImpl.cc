@@ -252,6 +252,7 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
     TransferStat stat = ps->getTransferStatFor(*i);
     peerEntry["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
     peerEntry["uploadSpeed"] = Util::uitos(stat.getUploadSpeed());
+    peerEntry["seeder"] = (*i)->isSeeder()?BDE("true"):BDE("false");
     peers << peerEntry;
   }
 }

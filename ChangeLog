@@ -1,5 +1,10 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added "seeder" key to getPeers response.
+	* src/XmlRpcMethodImpl.cc
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added addMetalink XML-RPC command.
 	* src/XmlRpcMethodFactory.cc
 	* src/XmlRpcMethodImpl.cc
