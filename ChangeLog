@@ -1,5 +1,12 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved --no-netrc option from ftp option section to http/ftp option
+	section.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+	
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed garbage "\" character before '
 	* doc/aria2c.1.txt
 

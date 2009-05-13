@@ -110,6 +110,9 @@ HTTP/FTP Options
   Set number of tries. '0' means unlimited.
   Default: '5'
 
+*-n*, *--no-netrc*::
+  Disables netrc support. netrc support is enabled by default.
+
 *--no-proxy*=DOMAINS::
   Specify comma separated hostnames or domains where proxy should not be
   used.
@@ -295,9 +298,6 @@ FTP Specific Options
 *--ftp-reuse-connection*[='true'|'false']::
   Reuse connection in FTP.
   Default: 'true'
-
-*-n*, *--no-netrc*::
-  Disables netrc support. netrc support is enabled by default.
 
 BitTorrent/Metalink Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

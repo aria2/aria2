@@ -432,6 +432,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_NO_NETRC,
+				    TEXT_NO_NETRC,
+				    V_FALSE, // TODO ommit?
+				    OptionHandler::NO_ARG,
+				    'n'));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_OUT,
 				    TEXT_OUT,
@@ -760,17 +771,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 					   Util::getHomeDir()+"/.netrc",
 					   "/PATH/TO/NETRC"));
     op->hide();
-    handlers.push_back(op);
-  }
-  {
-    SharedHandle<OptionHandler> op(new BooleanOptionHandler
-				   (PREF_NO_NETRC,
-				    TEXT_NO_NETRC,
-				    V_FALSE, // TODO ommit?
-				    OptionHandler::NO_ARG,
-				    'n'));
-    op->addTag(TAG_FTP);
-    op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
   // Proxy options
