@@ -52,8 +52,8 @@ const std::vector<std::string>& listRequestOptions();
 
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by
-// torrent-file option.  If torrentData is specified, then it is used
-// as a content of torrent file in stead. In this function,
+// torrent-file option.  If non-empty torrentData is specified, then
+// it is used as a content of torrent file instead. In this function,
 // force-sequential is ignored.
 void createRequestGroupForBitTorrent
 (std::deque<SharedHandle<RequestGroup> >& result,
@@ -63,11 +63,13 @@ void createRequestGroupForBitTorrent
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-// Create RequestGroup objects using Metalink file specified by metalink-file
-// option.
+// Create RequestGroup objects using Metalink file specified by
+// metalink-file option. If non-empty metalinkData is specified, it is
+// used as a content of metalink file instead.
 void createRequestGroupForMetalink
 (std::deque<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option);
+ const SharedHandle<Option>& option,
+ const std::string& metalinkData = "");
 #endif // ENABLE_METALINK
 
 // Create RequestGroup objects from reading file specified by input-file option.

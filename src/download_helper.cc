@@ -60,6 +60,7 @@
 #include "Util.h"
 #include "array_fun.h"
 #include "OptionHandler.h"
+#include "ByteArrayDiskWriter.h"
 
 namespace aria2 {
 
@@ -252,11 +253,18 @@ void createRequestGroupForBitTorrent
 #ifdef ENABLE_METALINK
 void createRequestGroupForMetalink
 (std::deque<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option)
+ const SharedHandle<Option>& option,
+ const std::string& metalinkData)
 {
-  Metalink2RequestGroup().generate(result,
-				   option->get(PREF_METALINK_FILE),
-				   option);
+  if(metalinkData.empty()) {
+    Metalink2RequestGroup().generate(result,
+				     option->get(PREF_METALINK_FILE),
+				     option);
+  } else {
+    SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
+    dw->setString(metalinkData);
+    Metalink2RequestGroup().generate(result, dw, option);
+  }
   if(result.empty()) {
     throw DlAbortEx(MSG_NO_FILES_TO_DOWNLOAD);
   }

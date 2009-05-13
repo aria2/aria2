@@ -140,6 +140,37 @@ BDE AddTorrentXmlRpcMethod::process
   }
 } 
 
+BDE AddMetalinkXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isString()) {
+    throw DlAbortEx("Metalink data is not provided.");
+  }
+  
+  SharedHandle<Option> requestOption(new Option(*e->option));
+  if(params.size() > 1 && params[1].isDict()) {
+    gatherRequestOption(requestOption, params[1]);
+  }
+  std::deque<SharedHandle<RequestGroup> > result;
+  createRequestGroupForMetalink(result, requestOption, params[0].s());
+  if(!result.empty()) {
+    e->_requestGroupMan->addReservedGroup(result);
+    BDE resParams = BDE::list();
+    BDE gids = BDE::list();
+    for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+	  result.begin(); i != result.end(); ++i) {
+      gids << BDE(Util::itos((*i)->getGID()));
+    }
+    resParams << gids;
+    return resParams;
+  } else {
+    throw DlAbortEx("No files to download.");
+  }
+} 
+
+
 BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   const BDE& params = req._params;

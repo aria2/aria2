@@ -1,5 +1,14 @@
 2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added addMetalink XML-RPC command.
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* src/download_helper.cc
+	* src/download_helper.h
+
+2009-05-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that POU peers are never choked in seeding.
 	* src/BtSeederStateChoke.cc
 	* src/BtSeederStateChoke.h

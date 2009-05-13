@@ -48,6 +48,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new AddUriXmlRpcMethod());
   } else if(methodName == "aria2.addTorrent") {
     return SharedHandle<XmlRpcMethod>(new AddTorrentXmlRpcMethod());
+  } else if(methodName == "aria2.addMetalink") {
+    return SharedHandle<XmlRpcMethod>(new AddMetalinkXmlRpcMethod());
   } else if(methodName == "aria2.remove") {
     return SharedHandle<XmlRpcMethod>(new RemoveXmlRpcMethod());
   } else if(methodName == "aria2.tellStatus") {
