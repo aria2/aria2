@@ -452,6 +452,13 @@ BDE TellActiveXmlRpcMethod::process
   return list;
 }
 
+BDE PurgeDownloadResultXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  e->_requestGroupMan->purgeDownloadResult();
+  return BDE("OK");
+}
+
 BDE NoSuchMethodXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {

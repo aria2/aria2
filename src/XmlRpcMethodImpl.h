@@ -61,6 +61,11 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
+class PurgeDownloadResultXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+};
+
 class GetUrisXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);

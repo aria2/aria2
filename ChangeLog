@@ -1,5 +1,14 @@
 2009-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added purgeDownloadResult command.
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+
+2009-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Refactored.
 	* src/XmlRpcMethod.cc
 

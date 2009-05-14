@@ -696,6 +696,11 @@ RequestGroupMan::findDownloadResult(int32_t gid) const
   return SharedHandle<DownloadResult>();
 }
 
+void RequestGroupMan::purgeDownloadResult()
+{
+  _downloadResults.clear();
+}
+
 SharedHandle<ServerStat>
 RequestGroupMan::findServerStat(const std::string& hostname,
 				const std::string& protocol) const

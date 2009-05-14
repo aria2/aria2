@@ -169,6 +169,9 @@ public:
 
   SharedHandle<DownloadResult> findDownloadResult(int32_t gid) const;
 
+  // Removes all download results.
+  void purgeDownloadResult();
+
   SharedHandle<ServerStat> findServerStat(const std::string& hostname,
 					  const std::string& protocol) const;
 
