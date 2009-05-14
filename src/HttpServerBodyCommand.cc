@@ -48,6 +48,7 @@
 #include "XmlRpcRequestParserStateMachine.h"
 #include "XmlRpcMethod.h"
 #include "XmlRpcMethodFactory.h"
+#include "XmlRpcResponse.h"
 
 namespace aria2 {
 
@@ -86,8 +87,8 @@ bool HttpServerBodyCommand::execute()
 	  
 	  SharedHandle<xmlrpc::XmlRpcMethod> method =
 	    xmlrpc::XmlRpcMethodFactory::create(req._methodName);
-	  std::string response = method->execute(req, _e);
-	  _httpServer->feedResponse(response, "text/xml");
+	  xmlrpc::XmlRpcResponse res = method->execute(req, _e);
+	  _httpServer->feedResponse(res.toXml(), "text/xml");
 	  Command* command =
 	    new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
 	  command->setStatus(Command::STATUS_ONESHOT_REALTIME);

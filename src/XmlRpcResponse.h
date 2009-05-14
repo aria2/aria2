@@ -32,48 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML_RPC_METHOD_H_
-#define _D_XML_RPC_METHOD_H_
+#ifndef _D_XML_RPC_RESPONSE_H_
+#define _D_XML_RPC_RESPONSE_H_
 
 #include "common.h"
 
 #include <string>
 
-#include "SharedHandle.h"
+#include "BDE.h"
 
 namespace aria2 {
 
-class DownloadEngine;
-class OptionParser;
-class BDE;
-class Logger;
-class Option;
-
 namespace xmlrpc {
 
-struct XmlRpcRequest;
-struct XmlRpcResponse;
+struct XmlRpcResponse {
+  // 0 for success, non-zero for error
+  int _code;
+  
+  BDE _param;
 
-class XmlRpcMethod {
-protected:
-  SharedHandle<OptionParser> _optionParser;
+  XmlRpcResponse(int code, const BDE& param):_code(code), _param(param) {}
 
-  Logger* _logger;
-
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e) = 0;
-
-  void gatherRequestOption(const SharedHandle<Option>& option,
-			   const BDE& optionsDict);
-public:
-  XmlRpcMethod();
-
-  virtual ~XmlRpcMethod() {}
-
-  XmlRpcResponse execute(const XmlRpcRequest& req, DownloadEngine* e);
+  std::string toXml() const;
 };
 
 } // namespace xmlrpc
 
 } // namespace aria2
 
-#endif // _D_XML_RPC_METHOD_H_
+#endif // _D_XML_RPC_RESPONSE_H_

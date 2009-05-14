@@ -33,10 +33,6 @@
  */
 /* copyright --> */
 #include "XmlRpcMethod.h"
-
-#include <cassert>
-#include <sstream>
-
 #include "DownloadEngine.h"
 #include "BDE.h"
 #include "LogFactory.h"
@@ -48,6 +44,7 @@
 #include "array_fun.h"
 #include "download_helper.h"
 #include "XmlRpcRequest.h"
+#include "XmlRpcResponse.h"
 #include "prefs.h"
 
 namespace aria2 {
@@ -66,113 +63,14 @@ static BDE createErrorResponse(const Exception& e)
   return params;
 }
 
-static std::string xmlEscape(const std::string& s)
-{
-  std::string d;
-  for(std::string::const_iterator i = s.begin(); i != s.end(); ++i) {
-    if(*i == '<') {
-      d += "&lt;";
-    } else if(*i == '>') {
-      d += "&gt;";
-    } else if(*i == '&') {
-      d += "&amp;";
-    } else {
-      d += *i;
-    }
-  }
-  return d;
-}
-
-static void encodeValue(const BDE& value, std::ostream& o);
-
-template<typename InputIterator>
-static void encodeArray
-(InputIterator first, InputIterator last, std::ostream& o)
-{
-  o << "<array>" << "<data>";
-  for(; first != last; ++first) {
-    encodeValue(*first, o);
-  }
-  o << "</data>" << "</array>";
-}
-
-template<typename InputIterator>
-static void encodeStruct
-(InputIterator first, InputIterator last, std::ostream& o)
-{
-  o << "<struct>";
-  for(; first != last; ++first) {
-    o << "<member>"
-      << "<name>" << xmlEscape((*first).first) << "</name>";
-    encodeValue((*first).second, o);
-    o << "</member>";
-  }
-  o << "</struct>";
-}
-
-static void encodeValue(const BDE& value, std::ostream& o)
-{
-  o << "<value>";
-  if(value.isString()) {
-    o << "<string>" << xmlEscape(value.s()) << "</string>";
-  } else if(value.isInteger()) {
-    o << "<int>" << value.i() << "</int>";
-  } else if(value.isList()) {
-    encodeArray(value.listBegin(), value.listEnd(), o);
-  } else if(value.isDict()) {
-    encodeStruct(value.dictBegin(), value.dictEnd(), o);
-  }
-  o << "</value>";
-}
-
-template<typename InputIterator>
-static void encodeParams
-(InputIterator first, InputIterator last, std::ostream& o)
-{
-  o << "<params>";
-  for(; first != last; ++first) {
-    o << "<param>";
-    encodeValue(*first, o);
-    o << "</param>";
-  }
-  o << "</params>";
-}
-
-static std::string encodeXml(const BDE& params)
-{
-  assert(params.isList());
-  std::stringstream o;
-  o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
-  encodeParams(params.listBegin(), params.listEnd(), o);
-  o << "</methodResponse>";
-  return o.str();
-}
-
-static void encodeFault(const BDE& faultValue, std::ostream& o)
-{
-  o << "<fault>";
-  encodeValue(faultValue, o);
-  o << "</fault>";
-}
-
-static std::string encodeErrorXml(const BDE& faultValue)
-{
-  assert(faultValue.isDict());
-  std::stringstream o;
-  o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
-  encodeFault(faultValue, o);
-  o << "</methodResponse>";
-  return o.str();
-}
-
-std::string XmlRpcMethod::execute(const XmlRpcRequest& req, DownloadEngine* e)
+XmlRpcResponse XmlRpcMethod::execute
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   try {
-    BDE retparams = process(req, e);
-    return encodeXml(retparams);
+    return XmlRpcResponse(0, process(req, e));
   } catch(RecoverableException& e) {
     _logger->debug(EX_EXCEPTION_CAUGHT, e);
-    return encodeErrorXml(createErrorResponse(e));
+    return XmlRpcResponse(1, createErrorResponse(e));
   }
 }
 

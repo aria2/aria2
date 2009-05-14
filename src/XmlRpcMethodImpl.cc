@@ -67,9 +67,7 @@ namespace xmlrpc {
 
 static BDE createGIDResponse(int32_t gid)
 {
-  BDE resParams = BDE::list();
-  resParams << Util::itos(gid);
-  return resParams;
+  return BDE(Util::itos(gid));
 }
 
 BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
@@ -157,14 +155,12 @@ BDE AddMetalinkXmlRpcMethod::process
   createRequestGroupForMetalink(result, requestOption, params[0].s());
   if(!result.empty()) {
     e->_requestGroupMan->addReservedGroup(result);
-    BDE resParams = BDE::list();
     BDE gids = BDE::list();
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
 	  result.begin(); i != result.end(); ++i) {
       gids << BDE(Util::itos((*i)->getGID()));
     }
-    resParams << gids;
-    return resParams;
+    return gids;
   } else {
     throw DlAbortEx("No files to download.");
   }
@@ -334,9 +330,7 @@ BDE GetFilesXmlRpcMethod::process
       group->getDownloadContext()->getFileEntries();
     createFileEntry(files, fileEntries.begin(), fileEntries.end());
   }
-  BDE resParams = BDE::list();
-  resParams << files;
-  return resParams;
+  return files;
 }
 
 BDE GetUrisXmlRpcMethod::process
@@ -365,9 +359,7 @@ BDE GetUrisXmlRpcMethod::process
     entry["uri"] = *i;
     uriList << entry;
   }
-  BDE resParams = BDE::list();
-  resParams << uriList;
-  return resParams;
+  return uriList;
 }
 
 BDE GetPeersXmlRpcMethod::process
@@ -399,9 +391,7 @@ BDE GetPeersXmlRpcMethod::process
       gatherPeer(peers, ps);
     }
   }
-  BDE resParams = BDE::list();
-  resParams << peers;
-  return resParams;
+  return peers;
 }
 
 BDE TellStatusXmlRpcMethod::process
@@ -437,10 +427,7 @@ BDE TellStatusXmlRpcMethod::process
     entryDict["status"] = BDE("active");
     gatherProgress(entryDict, group, e);
   }
-
-  BDE resParams = BDE::list();
-  resParams << entryDict;
-  return resParams;
+  return entryDict;
 }
 
 BDE TellActiveXmlRpcMethod::process
@@ -462,9 +449,7 @@ BDE TellActiveXmlRpcMethod::process
     }
     list << entryDict;
   }
-  BDE resParams = BDE::list();
-  resParams << list;
-  return resParams;
+  return list;
 }
 
 BDE NoSuchMethodXmlRpcMethod::process

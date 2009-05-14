@@ -13,6 +13,7 @@
 #include "OptionParser.h"
 #include "OptionHandler.h"
 #include "XmlRpcRequest.h"
+#include "XmlRpcResponse.h"
 
 namespace aria2 {
 
@@ -53,7 +54,8 @@ void XmlRpcMethodTest::testAddUri()
   XmlRpcRequest req("aria2.addUri", BDE::list());
   req._params << BDE::list();
   req._params[0] << BDE("http://localhost/");
-  std::string res = m.execute(req, _e.get());
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
   const std::deque<SharedHandle<RequestGroup> > rgs =
     _e->_requestGroupMan->getReservedGroups();
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgs.size());
@@ -65,7 +67,10 @@ void XmlRpcMethodTest::testNoSuchMethod()
 {
   NoSuchMethodXmlRpcMethod m;
   XmlRpcRequest req("make.hamburger", BDE::none);
-  std::string res = m.execute(req, 0);
+  XmlRpcResponse res = m.execute(req, 0);
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+  CPPUNIT_ASSERT_EQUAL(std::string("No such method: make.hamburger"),
+		       res._param["faultString"].s());
   CPPUNIT_ASSERT_EQUAL
     (std::string("<?xml version=\"1.0\"?>"
 		 "<methodResponse>"
@@ -85,7 +90,7 @@ void XmlRpcMethodTest::testNoSuchMethod()
 		 "</value>"
 		 "</fault>"
 		 "</methodResponse>"),
-     res);
+     res.toXml());
 }
 
 } // namespace xmlrpc

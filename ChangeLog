@@ -1,5 +1,18 @@
 2009-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added XmlRpcResponse class. XmlRpcMethod::execute() now returns
+	XmlRpcResponse.
+	* src/HttpServerBodyCommand.cc
+	* src/Makefile.am
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethod.h
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcResponse.cc
+	* src/XmlRpcResponse.h
+	* test/XmlRpcMethodTest.cc
+
+2009-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	In XML-RPC option struct, header and index-out option can take
 	array as value.
 	* src/XmlRpcMethod.cc

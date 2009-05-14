@@ -46,6 +46,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethod.cc XmlRpcMethod.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcResponse.cc XmlRpcResponse.h\
 @ENABLE_XML_RPC_TRUE@	HttpListenCommand.cc HttpListenCommand.h\
 @ENABLE_XML_RPC_TRUE@	HttpServerCommand.cc HttpServerCommand.h\
 @ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
@@ -433,16 +434,17 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	XmlRpcRequestProcessor.h HttpServerBodyCommand.cc \
 	HttpServerBodyCommand.h XmlRpcMethod.cc XmlRpcMethod.h \
 	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h XmlRpcMethodFactory.cc \
-	XmlRpcMethodFactory.h HttpListenCommand.cc HttpListenCommand.h \
-	HttpServerCommand.cc HttpServerCommand.h \
-	HttpServerResponseCommand.cc HttpServerResponseCommand.h \
-	HttpServer.cc HttpServer.h Xml2XmlRpcRequestProcessor.cc \
-	Xml2XmlRpcRequestProcessor.h ExpatXmlRpcRequestProcessor.cc \
-	ExpatXmlRpcRequestProcessor.h FallocFileAllocationIterator.cc \
-	FallocFileAllocationIterator.h EpollEventPoll.cc \
-	EpollEventPoll.h TLSContext.h LibgnutlsTLSContext.cc \
-	LibgnutlsTLSContext.h LibsslTLSContext.cc LibsslTLSContext.h \
-	GZipDecoder.cc GZipDecoder.h Sqlite3MozCookieParser.cc \
+	XmlRpcMethodFactory.h XmlRpcResponse.cc XmlRpcResponse.h \
+	HttpListenCommand.cc HttpListenCommand.h HttpServerCommand.cc \
+	HttpServerCommand.h HttpServerResponseCommand.cc \
+	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
+	Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h \
+	ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h \
+	FallocFileAllocationIterator.cc FallocFileAllocationIterator.h \
+	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
+	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
+	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
+	GZipDecoder.h Sqlite3MozCookieParser.cc \
 	Sqlite3MozCookieParser.h AsyncNameResolver.cc \
 	AsyncNameResolver.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
@@ -601,6 +603,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethod.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodImpl.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodFactory.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcResponse.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpListenCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpServerCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.$(OBJEXT) \
@@ -1571,6 +1574,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserController.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserStateImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserStateMachine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asctime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bencode.Po@am__quote@
