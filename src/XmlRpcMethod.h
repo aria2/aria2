@@ -67,6 +67,9 @@ protected:
 
   void gatherChangeableOption(const SharedHandle<Option>& option,
 			      const BDE& optionDict);
+
+  void gatherChangeableGlobalOption(const SharedHandle<Option>& option,
+				    const BDE& optionDict);
 public:
   XmlRpcMethod();
 

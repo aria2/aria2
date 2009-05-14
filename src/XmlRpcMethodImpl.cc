@@ -488,6 +488,27 @@ BDE ChangeOptionXmlRpcMethod::process
   return BDE("OK");
 }
 
+BDE ChangeGlobalOptionXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isDict()) {
+    return BDE("OK");
+  }
+  SharedHandle<Option> option(new Option(*e->option));
+  gatherChangeableGlobalOption(option, params[0]);
+  if(option->defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
+    e->_requestGroupMan->setMaxOverallDownloadSpeedLimit
+      (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
+  }
+  if(option->defined(PREF_MAX_OVERALL_UPLOAD_LIMIT)) {
+    e->_requestGroupMan->setMaxOverallUploadSpeedLimit
+      (option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
+  }
+  return BDE("OK");
+}
+
 BDE NoSuchMethodXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {

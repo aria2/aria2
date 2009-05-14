@@ -25,6 +25,7 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(XmlRpcMethodTest);
   CPPUNIT_TEST(testAddUri);
   CPPUNIT_TEST(testChangeOption);
+  CPPUNIT_TEST(testChangeGlobalOption);
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -46,6 +47,7 @@ public:
 
   void testAddUri();
   void testChangeOption();
+  void testChangeGlobalOption();
   void testNoSuchMethod();
 };
 
@@ -86,6 +88,23 @@ void XmlRpcMethodTest::testChangeOption()
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
 		       group->getMaxDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024, group->getMaxUploadSpeedLimit());
+}
+
+void XmlRpcMethodTest::testChangeGlobalOption()
+{
+  ChangeGlobalOptionXmlRpcMethod m;
+  XmlRpcRequest req("aria2.changeGlobalOption", BDE::list());
+  BDE opt = BDE::dict();
+  opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
+  opt[PREF_MAX_OVERALL_UPLOAD_LIMIT] = BDE("50K");
+  req._params << opt;
+  XmlRpcResponse res = m.execute(req, _e.get());
+
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
+		       _e->_requestGroupMan->getMaxOverallDownloadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
+		       _e->_requestGroupMan->getMaxOverallUploadSpeedLimit());
 }
 
 void XmlRpcMethodTest::testNoSuchMethod()

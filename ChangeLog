@@ -1,5 +1,18 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added changeGlobalOption command. Currently,
+	max-overall-download-limit and max-overall-upload-limit option are
+	available.
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethod.h
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* test/XmlRpcMethodTest.cc
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added changeOption command. Currently, max-download-limit,
 	max-upload-limit option are available in this command.
 	* src/RequestGroup.h

@@ -115,7 +115,7 @@ const std::vector<std::string>& listChangeableOptions()
     PREF_MAX_DOWNLOAD_LIMIT,
   };
   static std::vector<std::string> options
-    (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);;
+    (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);
   return options;
 }
 
@@ -123,6 +123,25 @@ void XmlRpcMethod::gatherChangeableOption
 (const SharedHandle<Option>& option, const BDE& optionsDict)
 {
   gatherOption(listChangeableOptions().begin(), listChangeableOptions().end(),
+	       option, optionsDict, _optionParser);
+}
+
+const std::vector<std::string>& listChangeableGlobalOptions()
+{
+  static const std::string OPTIONS[] = {
+    PREF_MAX_OVERALL_UPLOAD_LIMIT,
+    PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
+  };
+  static std::vector<std::string> options
+    (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);
+  return options;
+}
+
+void XmlRpcMethod::gatherChangeableGlobalOption
+(const SharedHandle<Option>& option, const BDE& optionsDict)
+{
+  gatherOption(listChangeableGlobalOptions().begin(),
+	       listChangeableGlobalOptions().end(),
 	       option, optionsDict, _optionParser);
 }
 

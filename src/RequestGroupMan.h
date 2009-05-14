@@ -193,10 +193,30 @@ public:
   // _maxOverallDownloadSpeedLimit == 0.  Otherwise returns false.
   bool doesOverallDownloadSpeedExceed();
 
+  void setMaxOverallDownloadSpeedLimit(unsigned int speed)
+  {
+    _maxOverallDownloadSpeedLimit = speed;
+  }
+
+  unsigned int getMaxOverallDownloadSpeedLimit() const
+  {
+    return _maxOverallDownloadSpeedLimit;
+  }
+
   // Returns true if current upload speed exceeds
   // _maxOverallUploadSpeedLimit. Always returns false if
   // _maxOverallUploadSpeedLimit == 0. Otherwise returns false.
   bool doesOverallUploadSpeedExceed();
+
+  void setMaxOverallUploadSpeedLimit(unsigned int speed)
+  {
+    _maxOverallUploadSpeedLimit = speed;
+  }
+
+  unsigned int getMaxOverallUploadSpeedLimit() const
+  {
+    return _maxOverallUploadSpeedLimit;
+  }
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
