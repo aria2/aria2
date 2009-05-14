@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.74.3 <http://docbook.sf.net/>
-.\"      Date: 05/13/2009
+.\"      Date: 05/15/2009
 .\"    Manual: [FIXME: manual]
 .\"    Source: [FIXME: source]
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "05/13/2009" "[FIXME: source]" "[FIXME: manual]"
+.TH "ARIA2C" "1" "05/15/2009" "[FIXME: source]" "[FIXME: manual]"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -869,10 +869,7 @@ and
 .PP
 \fB\-\-file\-allocation\fR=METHOD
 .RS 4
-Specify file allocation method\&. METHOD is either
-\fInone\fR
-or
-\fIprealloc\fR\&.
+Specify file allocation method\&.
 \fInone\fR
 doesn\(cqt pre\-allocate file space\&.
 \fIprealloc\fR
@@ -885,7 +882,11 @@ with legacy file systems such as ext3 because it takes almost same time as
 and it blocks aria2 entirely until allocation finishes\&.
 \fIfalloc\fR
 may not be available if your system doesn\(cqt have
-\fBposix_fallocate\fR() function\&. Default:
+\fBposix_fallocate\fR() function\&. Possible Values:
+\fInone\fR,
+\fIprealloc\fR,
+\fIfalloc\fR
+Default:
 \fIprealloc\fR
 .RE
 .PP

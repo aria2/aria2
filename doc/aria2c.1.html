@@ -1509,7 +1509,7 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Specify file allocation method. METHOD is either <em>none</em> or <em>prealloc</em>.
+  Specify file allocation method.
   <em>none</em> doesn&#8217;t pre-allocate file space. <em>prealloc</em> pre-allocates file space
   before download begins. This may take some time depending on the size of the
   file.
@@ -1522,6 +1522,7 @@ writes the piece to the appropriate files.</td>
   entirely until allocation finishes. <em>falloc</em> may
   not be available if your system doesn&#8217;t have
   <strong>posix_fallocate</strong>() function.
+  Possible Values: <em>none</em>, <em>prealloc</em>, <em>falloc</em>
   Default: <em>prealloc</em>
 </p>
 </dd>
@@ -2723,7 +2724,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-05-13 21:29:04 JST
+Last updated 2009-05-15 01:05:53 JST
 </div>
 </div>
 </body>

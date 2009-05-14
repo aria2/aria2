@@ -586,7 +586,7 @@ Advanced Options
 
 *--file-allocation*=METHOD::
 
-  Specify file allocation method. METHOD is either 'none' or 'prealloc'.
+  Specify file allocation method.
   'none' doesn't pre-allocate file space. 'prealloc' pre-allocates file space
   before download begins. This may take some time depending on the size of the
   file.
@@ -599,6 +599,7 @@ Advanced Options
   entirely until allocation finishes. 'falloc' may
   not be available if your system doesn't have
   *posix_fallocate*() function.
+  Possible Values: 'none', 'prealloc', 'falloc'
   Default: 'prealloc'
 
 *--log-level*=LEVEL::
