@@ -60,6 +60,7 @@
 #include "BtProgressInfoFile.h"
 #include "BtRuntime.h"
 #include "BtAnnounce.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -456,6 +457,34 @@ BDE PurgeDownloadResultXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   e->_requestGroupMan->purgeDownloadResult();
+  return BDE("OK");
+}
+
+BDE ChangeOptionXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isString()) {
+    throw DlAbortEx("GID is not provided.");
+  }  
+  int32_t gid = Util::parseInt(params[0].s());
+
+  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  if(group.isNull()) {
+    throw DlAbortEx
+      (StringFormat("Cannot change option for GID#%d", gid).str());
+  }
+  SharedHandle<Option> option(new Option(*group->getOption().get()));
+  if(params.size() > 1 && params[1].isDict()) {
+    gatherChangeableOption(option, params[1]);
+  }
+  if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
+    group->setMaxDownloadSpeedLimit(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+  }
+  if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
+    group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+  }
   return BDE("OK");
 }
 

@@ -74,16 +74,20 @@ XmlRpcResponse XmlRpcMethod::execute
   }
 }
 
-void XmlRpcMethod::gatherRequestOption
-(const SharedHandle<Option>& option, const BDE& optionsDict)
+
+template<typename InputIterator>
+static void gatherOption
+(InputIterator first, InputIterator last,
+ const SharedHandle<Option>& option, const BDE& optionsDict,
+ const SharedHandle<OptionParser>& optionParser)
 {
-  for(std::vector<std::string>::const_iterator i = listRequestOptions().begin();
-      i != listRequestOptions().end(); ++i) {
-    if(optionsDict.containsKey(*i)) {
-      const BDE& value = optionsDict[*i];
-      SharedHandle<OptionHandler> optionHandler = _optionParser->findByName(*i);
+  for(; first != last; ++first) {
+    if(optionsDict.containsKey(*first)) {
+      const BDE& value = optionsDict[*first];
+      SharedHandle<OptionHandler> optionHandler =
+	optionParser->findByName(*first);
       // header and index-out option can take array as value
-      if((*i == PREF_HEADER || *i == PREF_INDEX_OUT) && value.isList()) {
+      if((*first == PREF_HEADER || *first == PREF_INDEX_OUT) && value.isList()){
 	for(BDE::List::const_iterator argiter = value.listBegin();
 	    argiter != value.listEnd(); ++argiter) {
 	  if((*argiter).isString()) {
@@ -94,7 +98,32 @@ void XmlRpcMethod::gatherRequestOption
 	optionHandler->parse(*option.get(), value.s());
       }
     }
-  }
+  }  
+}
+
+void XmlRpcMethod::gatherRequestOption
+(const SharedHandle<Option>& option, const BDE& optionsDict)
+{
+  gatherOption(listRequestOptions().begin(), listRequestOptions().end(),
+	       option, optionsDict, _optionParser);
+}
+
+const std::vector<std::string>& listChangeableOptions()
+{
+  static const std::string OPTIONS[] = {
+    PREF_MAX_UPLOAD_LIMIT,
+    PREF_MAX_DOWNLOAD_LIMIT,
+  };
+  static std::vector<std::string> options
+    (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);;
+  return options;
+}
+
+void XmlRpcMethod::gatherChangeableOption
+(const SharedHandle<Option>& option, const BDE& optionsDict)
+{
+  gatherOption(listChangeableOptions().begin(), listChangeableOptions().end(),
+	       option, optionsDict, _optionParser);
 }
 
 } // namespace xmlrpc

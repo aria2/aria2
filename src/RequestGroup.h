@@ -473,10 +473,22 @@ public:
     return _maxDownloadSpeedLimit;
   }
 
+  void setMaxDownloadSpeedLimit(unsigned int speed)
+  {
+    _maxDownloadSpeedLimit = speed;
+  }
+
   unsigned int getMaxUploadSpeedLimit() const
   {
     return _maxUploadSpeedLimit;
   }
+
+  void setMaxUploadSpeedLimit(unsigned int speed)
+  {
+    _maxUploadSpeedLimit = speed;
+  }
+
+  static void resetGIDCounter() { _gidCounter = 0; }
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

@@ -14,6 +14,7 @@
 #include "OptionHandler.h"
 #include "XmlRpcRequest.h"
 #include "XmlRpcResponse.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -23,6 +24,7 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(XmlRpcMethodTest);
   CPPUNIT_TEST(testAddUri);
+  CPPUNIT_TEST(testChangeOption);
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -31,6 +33,7 @@ private:
 public:
   void setUp()
   {
+    RequestGroup::resetGIDCounter();
     _option.reset(new Option());
     _e.reset(new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
     _e->option = _option.get();
@@ -42,6 +45,7 @@ public:
   void tearDown() {}
 
   void testAddUri();
+  void testChangeOption();
   void testNoSuchMethod();
 };
 
@@ -61,6 +65,27 @@ void XmlRpcMethodTest::testAddUri()
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgs.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/"),
 		       rgs.front()->getRemainingUris().front());
+}
+
+void XmlRpcMethodTest::testChangeOption()
+{
+  SharedHandle<RequestGroup> group
+    (new RequestGroup(_option, std::deque<std::string>()));
+  _e->_requestGroupMan->addReservedGroup(group);
+
+  ChangeOptionXmlRpcMethod m;
+  XmlRpcRequest req("aria2.changeOption", BDE::list());
+  req._params << BDE("1");
+  BDE opt = BDE::dict();
+  opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
+  opt[PREF_MAX_UPLOAD_LIMIT] = BDE("50K");
+  req._params << opt;
+  XmlRpcResponse res = m.execute(req, _e.get());
+
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
+		       group->getMaxDownloadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024, group->getMaxUploadSpeedLimit());
 }
 
 void XmlRpcMethodTest::testNoSuchMethod()
