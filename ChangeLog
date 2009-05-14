@@ -1,5 +1,10 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use gatherProgress() in TellActiveXmlRpcMethod::process().
+	* src/XmlRpcMethodImpl.cc
+	
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added changeGlobalOption command. Currently,
 	max-overall-download-limit and max-overall-upload-limit option are
 	available.

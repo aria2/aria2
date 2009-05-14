@@ -441,13 +441,7 @@ BDE TellActiveXmlRpcMethod::process
 	groups.begin(); i != groups.end(); ++i) {
     BDE entryDict = BDE::dict();
     entryDict["status"] = BDE("active");
-    gatherProgressCommon(entryDict, *i);
-
-    SharedHandle<BtContext> btctx =
-      dynamic_pointer_cast<BtContext>((*i)->getDownloadContext());
-    if(!btctx.isNull()) {
-      gatherProgressBitTorrent(entryDict, btctx);
-    }
+    gatherProgress(entryDict, *i, e);
     list << entryDict;
   }
   return list;
