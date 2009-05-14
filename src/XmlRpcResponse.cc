@@ -100,33 +100,21 @@ static void encodeValue(const BDE& value, std::ostream& o)
   o << "</value>";
 }
 
-static std::string encodeXml(const BDE& param)
-{
-  std::stringstream o;
-  o << "<?xml version=\"1.0\"?>" << "<methodResponse>"
-    << "<params>" << "<param>";
-  encodeValue(param, o);
-  o << "</param>" << "</params>" << "</methodResponse>";
-  return o.str();
-}
-
-static std::string encodeErrorXml(const BDE& faultValue)
-{
-  assert(faultValue.isDict());
-  std::stringstream o;
-  o << "<?xml version=\"1.0\"?>" << "<methodResponse>" << "<fault>";
-  encodeValue(faultValue, o);
-  o << "</fault>" << "</methodResponse>";
-  return o.str();
-}
-
 std::string XmlRpcResponse::toXml() const
 {
+  std::stringstream o;
+  o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
   if(_code == 0) {
-    return encodeXml(_param);
+    o << "<params>" << "<param>";
+    encodeValue(_param, o);
+    o << "</param>" << "</params>";
   } else {
-    return encodeErrorXml(_param);
+    o << "<fault>";
+    encodeValue(_param, o);
+    o << "</fault>";
   }
+  o << "</methodResponse>";
+  return o.str();
 }
 
 } // namespace xmlrpc

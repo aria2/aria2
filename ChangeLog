@@ -1,5 +1,10 @@
 2009-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Refactored.
+	* src/XmlRpcMethod.cc
+
+2009-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added XmlRpcResponse class. XmlRpcMethod::execute() now returns
 	XmlRpcResponse.
 	* src/HttpServerBodyCommand.cc
