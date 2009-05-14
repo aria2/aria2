@@ -447,6 +447,39 @@ BDE TellActiveXmlRpcMethod::process
   return list;
 }
 
+BDE TellAllXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  BDE list = BDE::list();
+  const std::deque<SharedHandle<RequestGroup> >& groups =
+    e->_requestGroupMan->getRequestGroups();
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+	groups.begin(); i != groups.end(); ++i) {
+    BDE entryDict = BDE::dict();
+    entryDict["status"] = BDE("active");
+    gatherProgress(entryDict, *i, e);
+    list << entryDict;
+  }
+  const std::deque<SharedHandle<RequestGroup> >& waiting =
+    e->_requestGroupMan->getReservedGroups();
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+	waiting.begin(); i != waiting.end(); ++i) {
+    BDE entryDict = BDE::dict();
+    entryDict["status"] = BDE("waiting");
+    gatherProgress(entryDict, *i, e);
+    list << entryDict;
+  }
+  const std::deque<SharedHandle<DownloadResult> >& stopped =
+    e->_requestGroupMan->getDownloadResults();
+  for(std::deque<SharedHandle<DownloadResult> >::const_iterator i =
+	stopped.begin(); i != stopped.end(); ++i) {
+    BDE entryDict = BDE::dict();
+    gatherStoppedDownload(entryDict, *i);
+    list << entryDict;
+  }
+  return list;
+}
+
 BDE PurgeDownloadResultXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
