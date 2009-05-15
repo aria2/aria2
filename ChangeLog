@@ -1,5 +1,12 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Defined const BDEs to avoid duplicate instantiation.
+	Defined MSG_GID_NOT_PROVIDED.
+	* src/XmlRpcMethodImpl.cc
+	* src/message.h
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/Xml2XmlRpcRequestProcessor.cc
 	* src/Xml2XmlRpcRequestProcessor.h

@@ -61,10 +61,20 @@
 #include "BtRuntime.h"
 #include "BtAnnounce.h"
 #include "prefs.h"
+#include "message.h"
 
 namespace aria2 {
 
 namespace xmlrpc {
+
+static const BDE BDE_TRUE = BDE("true");
+static const BDE BDE_FALSE = BDE("false");
+static const BDE BDE_OK = BDE("OK");
+static const BDE BDE_ACTIVE = BDE("active");
+static const BDE BDE_WAITING = BDE("waiting");
+static const BDE BDE_REMOVED = BDE("removed");
+static const BDE BDE_ERROR = BDE("error");
+static const BDE BDE_COMPLETE = BDE("complete");
 
 static BDE createGIDResponse(int32_t gid)
 {
@@ -174,7 +184,7 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("GID is not provided.");
+    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -244,12 +254,12 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
     peerEntry["port"] = Util::uitos((*i)->port);
     peerEntry["bitfield"] = Util::toHex((*i)->getBitfield(),
 					(*i)->getBitfieldLength());
-    peerEntry["amChoking"] = (*i)->amChoking()?BDE("true"):BDE("false");
-    peerEntry["peerChoking"] = (*i)->peerChoking()?BDE("true"):BDE("false");
+    peerEntry["amChoking"] = (*i)->amChoking()?BDE_TRUE:BDE_FALSE;
+    peerEntry["peerChoking"] = (*i)->peerChoking()?BDE_TRUE:BDE_FALSE;
     TransferStat stat = ps->getTransferStatFor(*i);
     peerEntry["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
     peerEntry["uploadSpeed"] = Util::uitos(stat.getUploadSpeed());
-    peerEntry["seeder"] = (*i)->isSeeder()?BDE("true"):BDE("false");
+    peerEntry["seeder"] = (*i)->isSeeder()?BDE_TRUE:BDE_FALSE;
     peers << peerEntry;
   }
 }
@@ -270,11 +280,11 @@ static void gatherStoppedDownload
 {
   entryDict["gid"] = Util::itos(ds->gid);
   if(ds->result == DownloadResult::IN_PROGRESS) {
-    entryDict["status"] = BDE("removed");
+    entryDict["status"] = BDE_REMOVED;
   } else if(ds->result == DownloadResult::FINISHED) {
-    entryDict["status"] = BDE("complete");
+    entryDict["status"] = BDE_COMPLETE;
   } else {
-    entryDict["status"] = BDE("error");
+    entryDict["status"] = BDE_ERROR;
   }
 }
 
@@ -297,7 +307,7 @@ static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
     BDE entry = BDE::dict();
     entry["index"] = Util::uitos(index);
     entry["path"] = (*first)->getPath();
-    entry["selected"] = (*first)->isRequested()?BDE("true"):BDE("false");
+    entry["selected"] = (*first)->isRequested()?BDE_TRUE:BDE_FALSE;
     entry["length"] = Util::uitos((*first)->getLength());
     files << entry;
   }
@@ -310,7 +320,7 @@ BDE GetFilesXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("GID is not provided.");
+    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -341,7 +351,7 @@ BDE GetUrisXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("GID is not provided.");
+    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -370,7 +380,7 @@ BDE GetPeersXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("GID is not provided.");
+    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -402,7 +412,7 @@ BDE TellStatusXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("GID is not provided.");
+    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -421,11 +431,11 @@ BDE TellStatusXmlRpcMethod::process
       }
       gatherStoppedDownload(entryDict, ds);
     } else {
-      entryDict["status"] = BDE("waiting");
+      entryDict["status"] = BDE_WAITING;
       gatherProgress(entryDict, group, e);
     }
   } else {
-    entryDict["status"] = BDE("active");
+    entryDict["status"] = BDE_ACTIVE;
     gatherProgress(entryDict, group, e);
   }
   return entryDict;
@@ -440,7 +450,7 @@ BDE TellActiveXmlRpcMethod::process
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
 	groups.begin(); i != groups.end(); ++i) {
     BDE entryDict = BDE::dict();
-    entryDict["status"] = BDE("active");
+    entryDict["status"] = BDE_ACTIVE;
     gatherProgress(entryDict, *i, e);
     list << entryDict;
   }
@@ -456,7 +466,7 @@ BDE TellAllXmlRpcMethod::process
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
 	groups.begin(); i != groups.end(); ++i) {
     BDE entryDict = BDE::dict();
-    entryDict["status"] = BDE("active");
+    entryDict["status"] = BDE_ACTIVE;
     gatherProgress(entryDict, *i, e);
     list << entryDict;
   }
@@ -465,7 +475,7 @@ BDE TellAllXmlRpcMethod::process
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
 	waiting.begin(); i != waiting.end(); ++i) {
     BDE entryDict = BDE::dict();
-    entryDict["status"] = BDE("waiting");
+    entryDict["status"] = BDE_WAITING;
     gatherProgress(entryDict, *i, e);
     list << entryDict;
   }
@@ -484,7 +494,7 @@ BDE PurgeDownloadResultXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   e->_requestGroupMan->purgeDownloadResult();
-  return BDE("OK");
+  return BDE_OK;
 }
 
 BDE ChangeOptionXmlRpcMethod::process
@@ -493,7 +503,7 @@ BDE ChangeOptionXmlRpcMethod::process
   const BDE& params = req._params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("GID is not provided.");
+    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
   }  
   int32_t gid = Util::parseInt(params[0].s());
 
@@ -512,7 +522,7 @@ BDE ChangeOptionXmlRpcMethod::process
   if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
     group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   }
-  return BDE("OK");
+  return BDE_OK;
 }
 
 BDE ChangeGlobalOptionXmlRpcMethod::process
@@ -521,7 +531,7 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
   const BDE& params = req._params;
   assert(params.isList());
   if(params.empty() || !params[0].isDict()) {
-    return BDE("OK");
+    return BDE_OK;
   }
   SharedHandle<Option> option(new Option(*e->option));
   gatherChangeableGlobalOption(option, params[0]);
@@ -533,7 +543,7 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
     e->_requestGroupMan->setMaxOverallUploadSpeedLimit
       (option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
   }
-  return BDE("OK");
+  return BDE_OK;
 }
 
 BDE NoSuchMethodXmlRpcMethod::process
