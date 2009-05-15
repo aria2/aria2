@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metalink version="3.0" xmlns="http://www.metalinker.org/">
+  <publisher>
+    <name>aria2</name>
+    <url>http://aria2.sourceforge.net/</url>
+  </publisher>
+  <description>The high speed download utility</description>
+  <files>
+    <file name="aria2-5.0.0.tar.bz2">
+      <resources>
+        <url type="http">http://localhost/aria2-5.0.0.tar.bz2</url>
+      </resources>
+    </file>
+    <file name="aria2-5.0.0.deb">
+      <resources>
+        <url type="http">http://localhost/aria2-5.0.0.deb</url>
+      </resources>
+    </file>
+  </files>
+</metalink>

@@ -1,5 +1,10 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added missing 2files.metalink
+	* test/2files.metalink
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Show "[MEMORY]" prefix before filename in download summary if it
 	is downloaded into memory.
 	* src/DownloadResult.h
