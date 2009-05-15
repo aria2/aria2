@@ -41,6 +41,7 @@
 #include "XmlRpcRequestParserStateMachine.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
 namespace aria2 {
 
@@ -111,7 +112,7 @@ XmlRpcRequestProcessor::parseMemory(const std::string& xml)
   XML_ParserFree(parser);
 
   if(r == XML_STATUS_ERROR) {
-    throw DlAbortEx("Failed to parse xml-rpc request.");
+    throw DlAbortEx(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
   return XmlRpcRequest(_stm->getMethodName(), _stm->getCurrentFrameValue());
 }

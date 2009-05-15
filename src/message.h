@@ -171,6 +171,7 @@
 #define MSG_NOT_TORRENT_METALINK _("This file is neither Torrent nor Metalink"\
 				   " file. Skipping.")
 #define MSG_GID_NOT_PROVIDED "GID is not provided."
+#define MSG_CANNOT_PARSE_XML_RPC_REQUEST "Failed to parse xml-rpc request."
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

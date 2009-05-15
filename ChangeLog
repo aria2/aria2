@@ -1,5 +1,12 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Defined MSG_CANNOT_PARSE_XML_RPC_REQUEST
+	* src/ExpatXmlRpcRequestProcessor.cc
+	* src/Xml2XmlRpcRequestProcessor.cc
+	* src/message.h
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Defined const BDEs to avoid duplicate instantiation.
 	Defined MSG_GID_NOT_PROVIDED.
 	* src/XmlRpcMethodImpl.cc
