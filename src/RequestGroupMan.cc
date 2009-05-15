@@ -564,7 +564,7 @@ static size_t countRequestedFileEntry(InputIterator first, InputIterator last)
 
 template<typename InputIterator>
 static void writeFilePath
-(InputIterator first, InputIterator last, std::ostream& o)
+(InputIterator first, InputIterator last, std::ostream& o, bool memory)
 {
   SharedHandle<FileEntry> e = getFirstRequestedFileEntry(first, last);
   if(e.isNull()) {
@@ -573,7 +573,11 @@ static void writeFilePath
     if(e->getPath().empty()) {
       o << "n/a";
     } else {
-      o << e->getPath();
+      if(memory) {
+	o << "[MEMORY]" << File(e->getPath()).getBasename();
+      } else {
+	o << e->getPath();
+      }
     }
     size_t count = countRequestedFileEntry(first, last);
     if(count > 1) {
@@ -598,16 +602,14 @@ std::string RequestGroupMan::formatDownloadResult(const std::string& status, con
   o << "|";
   const std::deque<SharedHandle<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
-  if(downloadResult->result == DownloadResult::FINISHED) {
-    writeFilePath(fileEntries.begin(), fileEntries.end(), o);
+  if(downloadResult->result == DownloadResult::FINISHED ||
+     downloadResult->numUri == 0) {
+    writeFilePath(fileEntries.begin(), fileEntries.end(), o,
+		  downloadResult->inMemoryDownload);
   } else {
-    if(downloadResult->numUri == 0) {
-      writeFilePath(fileEntries.begin(), fileEntries.end(), o);
-    } else {
-      o << downloadResult->uri;
-      if(downloadResult->numUri > 1) {
-	o << " (" << downloadResult->numUri-1 << "more)";
-      }
+    o << downloadResult->uri;
+    if(downloadResult->numUri > 1) {
+      o << " (" << downloadResult->numUri-1 << "more)";
     }
   }
   return o.str();

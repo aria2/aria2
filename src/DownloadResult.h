@@ -66,6 +66,8 @@ public:
  
   std::deque<SharedHandle<FileEntry> > fileEntries;
 
+  bool inMemoryDownload;
+
   uint64_t totalLength;
 
   std::string uri;
@@ -81,6 +83,7 @@ public:
 
   DownloadResult(int32_t gid,
 		 const std::deque<SharedHandle<FileEntry> >& fileEntries,
+		 bool inMemoryDownload,
 		 uint64_t totalLength,
 		 const std::string& uri,
 		 size_t numUri,
@@ -89,6 +92,7 @@ public:
 		 RESULT result):
     gid(gid),
     fileEntries(fileEntries),
+    inMemoryDownload(inMemoryDownload),
     totalLength(totalLength),
     uri(uri),
     numUri(numUri),

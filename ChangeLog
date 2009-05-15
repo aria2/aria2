@@ -1,5 +1,13 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Show "[MEMORY]" prefix before filename in download summary if it
+	is downloaded into memory.
+	* src/DownloadResult.h
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Defined MSG_CANNOT_PARSE_XML_RPC_REQUEST
 	* src/ExpatXmlRpcRequestProcessor.cc
 	* src/Xml2XmlRpcRequestProcessor.cc
