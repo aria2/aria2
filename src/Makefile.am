@@ -222,7 +222,6 @@ SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	HttpServerCommand.cc HttpServerCommand.h\
 	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
 	HttpServer.cc HttpServer.h
-endif # ENABLE_XML_RPC
 
 if HAVE_LIBXML2
 SRCS += Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
@@ -231,6 +230,8 @@ endif # HAVE_LIBXML2
 if HAVE_LIBEXPAT
 SRCS += ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
 endif # HAVE_LIBEXPAT
+
+endif # ENABLE_XML_RPC
 
 if HAVE_POSIX_FALLOCATE
 SRCS += FallocFileAllocationIterator.cc FallocFileAllocationIterator.h

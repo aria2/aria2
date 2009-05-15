@@ -1,5 +1,12 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added ExpatXmlRpcRequestProcessor
+	* src/ExpatXmlRpcRequestProcessor.cc
+	* src/ExpatXmlRpcRequestProcessor.h
+	* src/Makefile.am
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added tests for addTorrent and addMetalink command.
 	* test/TestUtil.cc
 	* test/TestUtil.h

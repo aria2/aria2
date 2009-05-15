@@ -52,8 +52,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
 @ENABLE_XML_RPC_TRUE@	HttpServer.cc HttpServer.h
 
-@HAVE_LIBXML2_TRUE@am__append_2 = Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
-@HAVE_LIBEXPAT_TRUE@am__append_3 = ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
+@ENABLE_XML_RPC_TRUE@@HAVE_LIBXML2_TRUE@am__append_2 = Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
+@ENABLE_XML_RPC_TRUE@@HAVE_LIBEXPAT_TRUE@am__append_3 = ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
 @HAVE_POSIX_FALLOCATE_TRUE@am__append_4 = FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
 @HAVE_EPOLL_TRUE@am__append_5 = EpollEventPoll.cc EpollEventPoll.h
 @ENABLE_SSL_TRUE@am__append_6 = TLSContext.h
@@ -608,10 +608,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_XML_RPC_TRUE@	HttpServerCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpServer.$(OBJEXT)
-@HAVE_LIBXML2_TRUE@am__objects_2 =  \
-@HAVE_LIBXML2_TRUE@	Xml2XmlRpcRequestProcessor.$(OBJEXT)
-@HAVE_LIBEXPAT_TRUE@am__objects_3 =  \
-@HAVE_LIBEXPAT_TRUE@	ExpatXmlRpcRequestProcessor.$(OBJEXT)
+@ENABLE_XML_RPC_TRUE@@HAVE_LIBXML2_TRUE@am__objects_2 = Xml2XmlRpcRequestProcessor.$(OBJEXT)
+@ENABLE_XML_RPC_TRUE@@HAVE_LIBEXPAT_TRUE@am__objects_3 = ExpatXmlRpcRequestProcessor.$(OBJEXT)
 @HAVE_POSIX_FALLOCATE_TRUE@am__objects_4 = FallocFileAllocationIterator.$(OBJEXT)
 @HAVE_EPOLL_TRUE@am__objects_5 = EpollEventPoll.$(OBJEXT)
 am__objects_6 =
