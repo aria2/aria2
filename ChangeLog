@@ -1,5 +1,12 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Defined ENABLE_XML_RPC
+	* configure.ac
+	* configure
+	* config.h.in
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added ExpatXmlRpcRequestProcessor
 	* src/ExpatXmlRpcRequestProcessor.cc
 	* src/ExpatXmlRpcRequestProcessor.h

@@ -147,6 +147,10 @@ if test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes"; then
   enable_xml_rpc=yes
 fi
 
+if test "x$enable_xml_rpc" = "xyes"; then
+  AC_DEFINE([ENABLE_XML_RPC], [1],
+            [Define to 1 if XML-RPC support is enabled.])
+fi
 AM_CONDITIONAL([ENABLE_XML_RPC], [test "x$enable_xml_rpc" = "xyes"])
 
 AM_CONDITIONAL([HAVE_LIBXML2], [test "x$have_libxml2" = "xyes"])

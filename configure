@@ -7682,6 +7682,13 @@ if test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes"; then
   enable_xml_rpc=yes
 fi
 
+if test "x$enable_xml_rpc" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define ENABLE_XML_RPC 1
+_ACEOF
+
+fi
  if test "x$enable_xml_rpc" = "xyes"; then
   ENABLE_XML_RPC_TRUE=
   ENABLE_XML_RPC_FALSE='#'

@@ -30,6 +30,9 @@
 /* Define to 1 if ssl support is enabled. */
 #undef ENABLE_SSL
 
+/* Define to 1 if XML-RPC support is enabled. */
+#undef ENABLE_XML_RPC
+
 /* Define to 1 if you have the `alarm' function. */
 #undef HAVE_ALARM
 
