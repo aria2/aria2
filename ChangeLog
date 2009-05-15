@@ -1,5 +1,12 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added tests for addTorrent and addMetalink command.
+	* test/TestUtil.cc
+	* test/TestUtil.h
+	* test/XmlRpcMethodTest.cc
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Corrected the description of --file-allocation option.
 	* doc/aria2c.1.txt
 
