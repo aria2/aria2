@@ -36,6 +36,8 @@
 
 #include <stack>
 
+#include <libxml/parser.h>
+
 #include "XmlRpcRequestParserStateMachine.h"
 #include "Util.h"
 #include "DlAbortEx.h"

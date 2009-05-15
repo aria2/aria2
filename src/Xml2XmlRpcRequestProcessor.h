@@ -39,9 +39,6 @@
 
 #include <string>
 
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
-
 #include "SharedHandle.h"
 #include "XmlRpcRequest.h"
 

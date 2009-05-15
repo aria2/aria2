@@ -1,5 +1,11 @@
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/Xml2XmlRpcRequestProcessor.cc
+	* src/Xml2XmlRpcRequestProcessor.h
+
+2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Defined ENABLE_XML_RPC
 	* configure.ac
 	* configure
