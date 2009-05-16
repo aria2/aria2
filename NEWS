@@ -1,3 +1,42 @@
+aria2 1.4.0
+===========
+
+Release Note
+------------
+
+This release adds XML-RPC interface.  The current API allows users to
+add URI/torrent/Metalink file and change options dynamically.  The
+querying APIs such as reporting download progress, file paths, URIs
+and peer information are also available. For complete API
+specification, see
+http://apps.sourceforge.net/trac/aria2/wiki/XmlrpcInterface
+
+Changes
+-------
+
+* Fixed the bug that POU peers are never choked in seeding.
+
+* DownloadResult now has the list of FileEntry.  The download summary
+  displays the path of first selected file and the number of remaining
+  files for multi-file torrent.
+
+* Added BASIC authentication for XML-RPC. Added --xml-rpc-user and
+  --xml-rpc-passwd option.
+
+* Added XML-RPC interface. See complete API specification at
+  http://apps.sourceforge.net/trac/aria2/wiki/XmlrpcInterface
+
+* Removed --enable-http-server and --http-server-listen-port options.
+  Added --enable-xml-rpc and --xml-rpc-listen-port instead.  The
+  original feature for --enable-http-server that reports download
+  progress in HTML was officially removed.  Persist XML-RPC connection
+  if client supports keep-alive.
+
+ * Added more options that can be specified in -i list and xml-rpc
+   add* command. See Input File in aria2c man page.
+
+
+
 aria2 1.3.3
 ===========
 
