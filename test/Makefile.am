@@ -235,4 +235,5 @@ EXTRA_DIST = 4096chunk.txt\
 	url-list-multiFile.torrent\
 	url-list-singleFile.torrent\
 	url-list-singleFileEndsWithSlash.torrent\
-	input_uris.txt
+	input_uris.txt\
+	2files.metalink

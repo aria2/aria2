@@ -1,3 +1,8 @@
+2009-05-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added 2files.metalink to EXTRA_DIST
+	* test/Makefile.am
+
 2009-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing 2files.metalink
