@@ -1,5 +1,10 @@
 2009-05-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.4.0
+	* configure.ac
+
+2009-05-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added 2files.metalink to EXTRA_DIST
 	* test/Makefile.am
 
