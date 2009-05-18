@@ -121,7 +121,7 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
       o.write(zero, 4);
     }
   } catch(std::ios::failure const& exception) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Failed to save DHT routing table. cause:%s",
 		    strerror(errno)).str());
   }

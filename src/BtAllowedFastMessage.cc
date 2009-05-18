@@ -49,7 +49,7 @@ SharedHandle<BtAllowedFastMessage> BtAllowedFastMessage::create
 
 void BtAllowedFastMessage::doReceivedAction() {
   if(!peer->isFastExtensionEnabled()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("%s received while fast extension is disabled",
 		    toString().c_str()).str());
   }

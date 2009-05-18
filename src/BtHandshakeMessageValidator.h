@@ -36,11 +36,13 @@
 #define _D_BT_HANDSHAKE_MESSAGE_VALIDATOR_H_
 
 #include "BtMessageValidator.h"
+
+#include <cstring>
+
 #include "BtHandshakeMessage.h"
 #include "Util.h"
 #include "PeerMessageUtil.h"
 #include "StringFormat.h"
-#include <cstring>
 
 namespace aria2 {
 
@@ -59,16 +61,16 @@ public:
   virtual bool validate(Errors& error) {
     // TODO
     if(message->getPstrlen() != 19) {
-      throw DlAbortEx(StringFormat("invalid handshake pstrlen=%u",
+      throw DL_ABORT_EX(StringFormat("invalid handshake pstrlen=%u",
 				   message->getPstrlen()).str());
     }
     if(memcmp(BtHandshakeMessage::BT_PSTR, message->getPstr(), 19) != 0) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("invalid handshake pstr=%s",
 		      Util::urlencode(message->getPstr(), 19).c_str()).str());
     }
     if(memcmp(infoHash, message->getInfoHash(), 20) != 0) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("invalid handshake info hash: expected:%s, actual:%s",
 		      Util::toHex(infoHash, 20).c_str(),
 		      Util::toHex(message->getInfoHash(), 20).c_str()).str());

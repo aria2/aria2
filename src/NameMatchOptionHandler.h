@@ -99,7 +99,7 @@ public:
     try {
       parseArg(option, arg);
     } catch(Exception& e) {
-      throw OptionHandlerException(_optName, e);
+      throw OPTION_HANDLER_EXCEPTION2(_optName, e);
     }
   }
 

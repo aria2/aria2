@@ -114,7 +114,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     } else if(memcmp(headerCompat, buf, 8) == 0) {
       version = 2;
     } else {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Failed to load DHT routing table. cause:%s",
 		      "bad header").str());
     }
@@ -192,7 +192,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     _localNode = localNode;
   } catch(std::ios::failure const& exception) {
     _nodes.clear();
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Failed to load DHT routing table. cause:%s",
 		    strerror(errno)).str());
   }

@@ -398,7 +398,7 @@ findFirstDiskWriterEntry(const DiskWriterEntries& diskWriterEntries, off_t offse
 
   // In case when offset is out-of-range
   if(!isInRange(*first, offset)) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_FILE_OFFSET_OUT_OF_RANGE,
 		    Util::itos(offset, true).c_str()).str());
   }
@@ -408,7 +408,7 @@ findFirstDiskWriterEntry(const DiskWriterEntries& diskWriterEntries, off_t offse
 static void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
 				       off_t offset)
 {
-  throw DlAbortEx
+  throw DL_ABORT_EX
     (StringFormat("DiskWriter for offset=%s, filename=%s is not opened.",
 		  Util::itos(offset).c_str(),
 		  e->getFilePath().c_str()).str());  

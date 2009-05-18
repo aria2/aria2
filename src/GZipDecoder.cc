@@ -60,7 +60,7 @@ void GZipDecoder::init()
 
   // initalize z_stream with gzip/zlib format auto detection enabled.
   if(Z_OK != inflateInit2(_strm, 47)) {
-    throw DlAbortEx("Initializing z_stream failed.");
+    throw DL_ABORT_EX("Initializing z_stream failed.");
   }
 }
 
@@ -94,7 +94,7 @@ std::string GZipDecoder::decode(const unsigned char* in, size_t length)
     if(ret == Z_STREAM_END) {
       _finished = true;
     } else if(ret != Z_OK) {
-      throw DlAbortEx(StringFormat("libz::inflate() failed. cause:%s",
+      throw DL_ABORT_EX(StringFormat("libz::inflate() failed. cause:%s",
 				   _strm->msg).str());
     }
 

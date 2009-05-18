@@ -52,7 +52,7 @@ SharedHandle<BtRejectMessage> BtRejectMessage::create
 void BtRejectMessage::doReceivedAction()
 {
   if(!peer->isFastExtensionEnabled()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("%s received while fast extension is disabled.",
 		    toString().c_str()).str());
   }
@@ -61,7 +61,7 @@ void BtRejectMessage::doReceivedAction()
   RequestSlot slot =
     dispatcher->getOutstandingRequest(getIndex(), getBegin(), getLength());
   if(RequestSlot::isNull(slot)) {
-    //throw DlAbortEx("reject recieved, but it is not in the request slots.");
+    //throw DL_ABORT_EX("reject recieved, but it is not in the request slots.");
   } else {
     dispatcher->removeOutstandingRequest(slot);
   }

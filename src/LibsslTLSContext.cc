@@ -79,13 +79,13 @@ void TLSContext::addClientKeyFile(const std::string& certfile,
 {
   if(SSL_CTX_use_PrivateKey_file(_sslCtx, keyfile.c_str(),
 				 SSL_FILETYPE_PEM) != 1) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat
        ("Failed to load client private key from %s. Cause: %s",
 	keyfile.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
   }
   if(SSL_CTX_use_certificate_chain_file(_sslCtx, certfile.c_str()) != 1) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat
        ("Failed to load client certificate from %s. Cause: %s",
 	certfile.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
@@ -96,7 +96,7 @@ void TLSContext::addTrustedCACertFile(const std::string& certfile)
   throw(DlAbortEx)
 {
   if(SSL_CTX_load_verify_locations(_sslCtx, certfile.c_str(), 0) != 1) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat
        (MSG_LOADING_TRUSTED_CA_CERT_FAILED,
 	certfile.c_str(), ERR_error_string(ERR_get_error(), 0)).str());

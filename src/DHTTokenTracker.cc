@@ -63,7 +63,7 @@ std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
 {
   unsigned char src[DHT_ID_LENGTH+6+SECRET_SIZE];
   if(!PeerMessageUtil::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Token generation failed: ipaddr=%s, port=%u",
 		    ipaddr.c_str(), port).str());
   }

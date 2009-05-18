@@ -46,13 +46,20 @@ protected:
     return e;
   }
 public:
-  DlAbortEx(const std::string& msg):RecoverableException(msg) {}
-  DlAbortEx(const std::string& msg,
-	    const Exception& cause):RecoverableException(msg, cause) {}
-  DlAbortEx(const RecoverableException& e):RecoverableException(e) {}
-  DlAbortEx(const std::string& msg, DownloadResult::RESULT code):
-    RecoverableException(msg, code) {}
+  DlAbortEx(const char* file, int line, const std::string& msg):
+    RecoverableException(file, line, msg) {}
+  DlAbortEx(const char* file, int line, const std::string& msg,
+	    const Exception& cause):
+    RecoverableException(file, line, msg, cause) {}
+  DlAbortEx(const char* file, int line, const RecoverableException& e):
+    RecoverableException(file, line, e) {}
+  DlAbortEx(const char* file, int line, const std::string& msg,
+	    DownloadResult::RESULT code):
+    RecoverableException(file, line, msg, code) {}
 };
+
+#define DL_ABORT_EX(arg) DlAbortEx(__FILE__, __LINE__, arg)
+#define DL_ABORT_EX2(arg1, arg2) DlAbortEx(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2
 

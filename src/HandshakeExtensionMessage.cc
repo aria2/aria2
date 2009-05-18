@@ -126,7 +126,7 @@ HandshakeExtensionMessageHandle
 HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 {
   if(length < 1) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
 		    EXTENSION_NAME.c_str(), length).str());
   }
@@ -135,7 +135,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 		      Util::urlencode(data, length).c_str());
   const BDE dict = bencode::decode(data+1, length-1);
   if(!dict.isDict()) {
-    throw DlAbortEx("Unexpected payload format for extended message handshake");
+    throw DL_ABORT_EX("Unexpected payload format for extended message handshake");
   }
   const BDE& port = dict["p"];
   if(port.isInteger() && 0 < port.i() && port.i() < 65536) {

@@ -75,7 +75,7 @@ static bool readData(std::string& out, uint64_t& chunkSize, std::string& in)
       in.erase(0, 2);
       return true;
     } else {
-      throw DlAbortEx(EX_INVALID_CHUNK_SIZE);
+      throw DL_ABORT_EX(EX_INVALID_CHUNK_SIZE);
     }
   } else {
     return false;

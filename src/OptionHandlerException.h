@@ -46,16 +46,24 @@ private:
 protected:
   virtual SharedHandle<Exception> copy() const;
 public:
-  OptionHandlerException(const std::string& optName);
+  OptionHandlerException(const char* file, int line,
+			 const std::string& optName);
 
-  OptionHandlerException(const std::string& optName, const Exception& cause);
+  OptionHandlerException(const char* file, int line, const std::string& optName,
+			 const Exception& cause);
 
-  OptionHandlerException(const OptionHandlerException& e);
+  OptionHandlerException(const char* file, int line,
+			 const OptionHandlerException& e);
 
   virtual ~OptionHandlerException() throw();
 
   const std::string& getOptionName() const throw();
 };
+
+#define OPTION_HANDLER_EXCEPTION(arg)\
+  OptionHandlerException(__FILE__, __LINE__, arg)
+#define OPTION_HANDLER_EXCEPTION2(arg1, arg2)\
+  OptionHandlerException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2
 

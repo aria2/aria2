@@ -40,18 +40,22 @@ namespace aria2 {
 const std::string OptionHandlerException::MESSAGE
 ("Exception occurred while processing option %s:");
 
-OptionHandlerException::OptionHandlerException(const std::string& optName):
+OptionHandlerException::OptionHandlerException(const char* file, int line,
+					       const std::string& optName):
   RecoverableException
-  (StringFormat(MESSAGE.c_str(), optName.c_str()).str()), _optName(optName) {}
-
-OptionHandlerException::OptionHandlerException(const std::string& optName,
-					       const Exception& cause):
-  RecoverableException
-  (StringFormat(MESSAGE.c_str(), optName.c_str()).str(), cause),
+  (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str()),
   _optName(optName) {}
 
-OptionHandlerException::OptionHandlerException(const OptionHandlerException& e):
-  RecoverableException(e), _optName(e._optName) {}
+OptionHandlerException::OptionHandlerException(const char* file, int line,
+					       const std::string& optName,
+					       const Exception& cause):
+  RecoverableException
+  (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str(), cause),
+  _optName(optName) {}
+
+OptionHandlerException::OptionHandlerException(const char* file, int line,
+					       const OptionHandlerException& e):
+  RecoverableException(file, line, e), _optName(e._optName) {}
 
 OptionHandlerException::~OptionHandlerException() throw() {}
 

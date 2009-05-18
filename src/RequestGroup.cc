@@ -207,18 +207,18 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
     BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
     if(!btContext.isNull()) {
       if(_option->getAsBool(PREF_DRY_RUN)) {
-	throw DownloadFailureException
+	throw DOWNLOAD_FAILURE_EXCEPTION
 	  ("Cancel BitTorrent download in dry-run context.");
       }
       SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
       if(!btRegistry->getBtContext(btContext->getInfoHashAsString()).isNull()) {
-	throw DownloadFailureException
+	throw DOWNLOAD_FAILURE_EXCEPTION
 	  (StringFormat("InfoHash %s is already registered.",
 			btContext->getInfoHashAsString().c_str()).str());
       }
 
       if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
-	throw DownloadFailureException
+	throw DOWNLOAD_FAILURE_EXCEPTION
 	  (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
 			getFilePath().c_str()).str());
       }
@@ -313,7 +313,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	     !_option->getAsBool(PREF_ALLOW_OVERWRITE) &&
 	     !_option->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
 	    // TODO we need this->haltRequested = true?
-	    throw DownloadFailureException
+	    throw DOWNLOAD_FAILURE_EXCEPTION
 	      (StringFormat
 	       (MSG_FILE_ALREADY_EXISTS,
 		getFilePath().c_str()).str());
@@ -364,7 +364,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
     createNextCommand(commands, e, 1, method);
   }else {
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
-      throw DownloadFailureException
+      throw DOWNLOAD_FAILURE_EXCEPTION
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
 		      getFilePath().c_str()).str());
     }
@@ -529,7 +529,7 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
     }
     setProgressInfoFile(progressInfoFile);
   } catch(RecoverableException& e) {
-    throw DownloadFailureException
+    throw DOWNLOAD_FAILURE_EXCEPTION2
       (StringFormat(EX_DOWNLOAD_ABORTED).str(), e);
   }
 }
@@ -546,12 +546,12 @@ void RequestGroup::shouldCancelDownloadForSafety()
       if(tryAutoFileRenaming()) {
 	_logger->notice(MSG_FILE_RENAMED, getFilePath().c_str());
       } else {
-	throw DownloadFailureException
+	throw DOWNLOAD_FAILURE_EXCEPTION
 	  (StringFormat("File renaming failed: %s",
 			getFilePath().c_str()).str());
       }
     } else {
-      throw DownloadFailureException
+      throw DOWNLOAD_FAILURE_EXCEPTION
 	(StringFormat(MSG_FILE_ALREADY_EXISTS,
 		      getFilePath().c_str()).str());
     }
@@ -722,7 +722,7 @@ void RequestGroup::validateFilename(const std::string& expectedFilename,
     return;
   }
   if(expectedFilename != actualFilename) {
-    throw DlAbortEx(StringFormat(EX_FILENAME_MISMATCH,
+    throw DL_ABORT_EX(StringFormat(EX_FILENAME_MISMATCH,
 				 expectedFilename.c_str(),
 				 actualFilename.c_str()).str());
   }
@@ -735,7 +735,7 @@ void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
     return;
   }
   if(expectedTotalLength != actualTotalLength) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_SIZE_MISMATCH,
 		    Util::itos(expectedTotalLength, true).c_str(),
 		    Util::itos(actualTotalLength, true).c_str()).str());
@@ -1200,7 +1200,7 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
   const unsigned int maxCount = _option->getAsInt(PREF_MAX_FILE_NOT_FOUND);
   if(maxCount > 0 && _fileNotFoundCount >= maxCount &&
      _segmentMan->calculateSessionDownloadLength() == 0) {
-    throw DownloadFailureException
+    throw DOWNLOAD_FAILURE_EXCEPTION2
       (StringFormat("Reached max-file-not-found count=%u", maxCount).str(),
        DownloadResult::MAX_FILE_NOT_FOUND);
   }

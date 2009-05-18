@@ -207,11 +207,11 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   const BDE dict =
     bencode::decode(trackerResponse, trackerResponseLength);
   if(!dict.isDict()) {
-    throw DlAbortEx(MSG_NULL_TRACKER_RESPONSE);
+    throw DL_ABORT_EX(MSG_NULL_TRACKER_RESPONSE);
   }
   const BDE& failure = dict[BtAnnounce::FAILURE_REASON];
   if(failure.isString()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_TRACKER_FAILURE, failure.s().c_str()).str());
   }
   const BDE& warn = dict[BtAnnounce::WARNING_MESSAGE];

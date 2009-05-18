@@ -86,7 +86,7 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   const BDE& params = req._params;
   assert(params.isList());
   if(params.empty() || !params[0].isList() || params[0].empty()) {
-    throw DlAbortEx("URI is not provided.");
+    throw DL_ABORT_EX("URI is not provided.");
   }
   std::deque<std::string> uris;
   for(BDE::List::const_iterator i = params[0].listBegin();
@@ -109,7 +109,7 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
     e->_requestGroupMan->addReservedGroup(result.front());
     return createGIDResponse(result.front()->getGID());
   } else {
-    throw DlAbortEx("No URI to download.");
+    throw DL_ABORT_EX("No URI to download.");
   }
 }
 
@@ -119,7 +119,7 @@ BDE AddTorrentXmlRpcMethod::process
   const BDE& params = req._params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("Torrent data is not provided.");
+    throw DL_ABORT_EX("Torrent data is not provided.");
   }
   
   std::deque<std::string> uris;
@@ -145,7 +145,7 @@ BDE AddTorrentXmlRpcMethod::process
     e->_requestGroupMan->addReservedGroup(result.front());
     return createGIDResponse(result.front()->getGID());
   } else {
-    throw DlAbortEx("No Torrent to download.");
+    throw DL_ABORT_EX("No Torrent to download.");
   }
 } 
 
@@ -155,7 +155,7 @@ BDE AddMetalinkXmlRpcMethod::process
   const BDE& params = req._params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx("Metalink data is not provided.");
+    throw DL_ABORT_EX("Metalink data is not provided.");
   }
   
   SharedHandle<Option> requestOption(new Option(*e->option));
@@ -173,7 +173,7 @@ BDE AddMetalinkXmlRpcMethod::process
     }
     return gids;
   } else {
-    throw DlAbortEx("No files to download.");
+    throw DL_ABORT_EX("No files to download.");
   }
 } 
 
@@ -184,7 +184,7 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -194,13 +194,13 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   if(group.isNull()) {
     group = e->_requestGroupMan->findReservedGroup(gid);
     if(group.isNull()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Active Download not found for GID#%d", gid).str());
     }
     if(group->isDependencyResolved()) {
       e->_requestGroupMan->removeReservedGroup(gid);
     } else {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("GID#%d cannot be removed now", gid).str());
     }
   } else {
@@ -320,7 +320,7 @@ BDE GetFilesXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -331,7 +331,7 @@ BDE GetFilesXmlRpcMethod::process
     SharedHandle<DownloadResult> dr =
       e->_requestGroupMan->findDownloadResult(gid);
     if(dr.isNull()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("No file data is available for GID#%d", gid).str());
     } else {
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
@@ -351,14 +351,14 @@ BDE GetUrisXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("No URI data is available for GID#%d", gid).str());
   }
   BDE uriList = BDE::list();
@@ -380,14 +380,14 @@ BDE GetPeersXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("No peer data is available for GID#%d", gid).str());
   }
   BDE peers = BDE::list();
@@ -412,7 +412,7 @@ BDE TellStatusXmlRpcMethod::process
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
   int32_t gid = Util::parseInt(params[0].s());
@@ -426,7 +426,7 @@ BDE TellStatusXmlRpcMethod::process
       SharedHandle<DownloadResult> ds =
 	e->_requestGroupMan->findDownloadResult(gid);
       if(ds.isNull()) {
-	throw DlAbortEx
+	throw DL_ABORT_EX
 	  (StringFormat("No such download for GID#%d", gid).str());
       }
       gatherStoppedDownload(entryDict, ds);
@@ -503,13 +503,13 @@ BDE ChangeOptionXmlRpcMethod::process
   const BDE& params = req._params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
-    throw DlAbortEx(MSG_GID_NOT_PROVIDED);
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }  
   int32_t gid = Util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Cannot change option for GID#%d", gid).str());
   }
   SharedHandle<Option> option(new Option(*group->getOption().get()));
@@ -549,7 +549,7 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
 BDE NoSuchMethodXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  throw DlAbortEx
+  throw DL_ABORT_EX
     (StringFormat("No such method: %s", req._methodName.c_str()).str());
 }
 

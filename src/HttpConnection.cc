@@ -121,7 +121,7 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 HttpResponseHandle HttpConnection::receiveResponse()
 {
   if(outstandingHttpRequests.empty()) {
-    throw DlAbortEx(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
+    throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
   HttpRequestEntryHandle entry = outstandingHttpRequests.front();
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
@@ -133,7 +133,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
     if(socket->wantRead() || socket->wantWrite()) {
       return SharedHandle<HttpResponse>();
     } else {
-      throw DlRetryEx(EX_INVALID_RESPONSE);
+      throw DL_RETRY_EX(EX_INVALID_RESPONSE);
     }
   }
   proc->update(buf, size);

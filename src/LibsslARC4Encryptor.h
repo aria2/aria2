@@ -36,11 +36,13 @@
 #define _D_LIBSSL_ARC4_ENCRYPTOR_H_
 
 #include "common.h"
+
+#include <openssl/evp.h>
+#include <openssl/err.h>
+
 #include "DlAbortEx.h"
 #include "LibsslARC4Context.h"
 #include "StringFormat.h"
-#include <openssl/evp.h>
-#include <openssl/err.h>
 
 namespace aria2 {
 
@@ -50,7 +52,7 @@ private:
 
   void handleError() const
   {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Exception in libssl routine(ARC4Encryptor class): %s",
 		    ERR_error_string(ERR_get_error(), 0)).str());
   }

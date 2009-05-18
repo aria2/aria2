@@ -34,15 +34,19 @@
 /* copyright --> */
 #include "Exception.h"
 
+#include <sstream>
+
 namespace aria2 {
 
-Exception::Exception(const std::string& msg):exception(), _msg(msg) {}
+Exception::Exception(const char* file, int line, const std::string& msg):
+  _file(file), _line(line), _msg(msg) {}
 
-Exception::Exception(const std::string& msg,
+Exception::Exception(const char* file, int line, const std::string& msg,
 		     const Exception& cause):
-  exception(), _msg(msg), _cause(cause.copy()) {}
+  _file(file), _line(line), _msg(msg), _cause(cause.copy()) {}
 
-Exception::Exception(const Exception& e):_msg(e._msg), _cause(e._cause)
+Exception::Exception(const char* file, int line, const Exception& e):
+  _file(file), _line(line), _msg(e._msg), _cause(e._cause)
 {}
 
 Exception::~Exception() throw() {}
@@ -54,17 +58,15 @@ const char* Exception::what() const throw()
 
 std::string Exception::stackTrace() const throw()
 {
-  std::string stackTrace = "Exception: ";
-  stackTrace += what();
-  stackTrace += "\n";
+  std::stringstream s;
+  s << "Exception: " << "[" << _file << ":" << _line << "] " << what() << "\n";
   SharedHandle<Exception> e = _cause;
   while(!e.isNull()) {
-    stackTrace += "  -> ";
-    stackTrace += e->what();
-    stackTrace += "\n";
+    s << "  -> " << "[" << e->_file << ":" << e->_line << "] "
+      << e->what() << "\n";
     e = e->_cause;
   }
-  return stackTrace;
+  return s.str();
 }
 
 } // namespace aria2

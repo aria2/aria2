@@ -67,7 +67,7 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, 
     return new FtpInitiateConnectionCommand(cuid, req, requestGroup, e);
   } else {
     // these protocols are not supported yet
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("%s is not supported yet.",
 		    req->getProtocol().c_str()).str());
   }

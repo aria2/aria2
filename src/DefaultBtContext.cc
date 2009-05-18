@@ -141,14 +141,14 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
 
       const BDE& fileLengthData = fileDict[BtContext::C_LENGTH];
       if(!fileLengthData.isInteger()) {
-	throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+	throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
 				     BtContext::C_LENGTH.c_str()).str());
       }
       length += fileLengthData.i();
 
       const BDE& pathList = fileDict[BtContext::C_PATH];
       if(!pathList.isList() || pathList.empty()) {
-	throw DlAbortEx("Path is empty.");
+	throw DL_ABORT_EX("Path is empty.");
       }
       
       std::vector<std::string> pathelem(pathList.size());
@@ -176,7 +176,7 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
     fileMode = BtContext::SINGLE;
     const BDE& lengthData = infoDict[BtContext::C_LENGTH];
     if(!lengthData.isInteger()) {
-	throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+	throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
 				     BtContext::C_LENGTH.c_str()).str());      
     }
     totalLength = lengthData.i();
@@ -310,11 +310,11 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
 {
   clear();
   if(!rootDict.isDict()) {
-    throw DlAbortEx("torrent file does not contain a root dictionary.");
+    throw DL_ABORT_EX("torrent file does not contain a root dictionary.");
   }
   const BDE& infoDict = rootDict[BtContext::C_INFO];
   if(!infoDict.isDict()) {
-    throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+    throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
 				 BtContext::C_INFO.c_str()).str());
   }
   // retrieve infoHash
@@ -327,20 +327,20 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
   // calculate the number of pieces
   const BDE& piecesData = infoDict[BtContext::C_PIECES];
   if(!piecesData.isString()) {
-    throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+    throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
 				 BtContext::C_PIECES.c_str()).str());
   }
   if(piecesData.s().empty()) {
-    throw DlAbortEx("The length of piece hash is 0.");
+    throw DL_ABORT_EX("The length of piece hash is 0.");
   }
   numPieces = piecesData.s().size()/PIECE_HASH_LENGTH;
   if(numPieces == 0) {
-    throw DlAbortEx("The number of pieces is 0.");
+    throw DL_ABORT_EX("The number of pieces is 0.");
   }
   // retrieve piece length
   const BDE& pieceLengthData = infoDict[BtContext::C_PIECE_LENGTH];
   if(!pieceLengthData.isInteger()) {
-    throw DlAbortEx(StringFormat(MSG_MISSING_BT_INFO,
+    throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
 				 BtContext::C_PIECE_LENGTH.c_str()).str());
   }
   pieceLength = pieceLengthData.i();
@@ -360,7 +360,7 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
   // retrieve file entries
   extractFileEntries(infoDict, defaultName, overrideName, urlList);
   if((totalLength+pieceLength-1)/pieceLength != numPieces) {
-    throw DlAbortEx("Too few/many piece hash.");
+    throw DL_ABORT_EX("Too few/many piece hash.");
   }
   // retrieve announce
   extractAnnounce(rootDict);
@@ -509,7 +509,7 @@ void DefaultBtContext::setFilePathWithIndex
   if(0 < index && index <= fileEntries.size()) {
     fileEntries[index-1]->setPath(path);
   } else {
-    throw DlAbortEx(StringFormat("No such file with index=%u",
+    throw DL_ABORT_EX(StringFormat("No such file with index=%u",
 				 static_cast<unsigned int>(index)).str());
   }
 }

@@ -33,11 +33,13 @@
  */
 /* copyright --> */
 #include "NsCookieParser.h"
+
+#include <fstream>
+
 #include "Util.h"
 #include "A2STR.h"
-#include "RecoverableException.h"
+#include "DlAbortEx.h"
 #include "StringFormat.h"
-#include <fstream>
 
 namespace aria2 {
 
@@ -75,7 +77,7 @@ std::deque<Cookie> NsCookieParser::parse(const std::string& filename)
 {
   std::ifstream s(filename.c_str(), std::ios::binary);
   if(!s) {
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("Failed to open file %s", filename.c_str()).str());
   }
   std::string line;

@@ -123,12 +123,12 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
 	break;
       }
       if(XML_Parse(parser, (const char*)buf, res, 0) == XML_STATUS_ERROR) {
-	throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+	throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
       }
       readOffset += res;
     }
     if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
-      throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+      throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
     }
   } catch(Exception& e) {
     XML_ParserFree(parser);
@@ -136,7 +136,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
   }
   XML_ParserFree(parser);
   if(!_stm->finished()) {
-    throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
   return _stm->getResult();
 }

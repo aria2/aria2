@@ -88,7 +88,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
 	command = c;
       } else {
 	// TODO
-	throw DlAbortEx("ERROR");
+	throw DL_ABORT_EX("ERROR");
       }
     } else {
       SharedHandle<HttpConnection> httpConnection

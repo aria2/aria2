@@ -50,20 +50,23 @@ protected:
     return e;
   }
 public:
-  RecoverableException(const std::string& msg):
-    Exception(msg),
+  RecoverableException(const char* file, int line, const std::string& msg):
+    Exception(file, line, msg),
     _code(DownloadResult::UNKNOWN_ERROR) {}
 
-  RecoverableException(const std::string& msg, const Exception& cause):
-    Exception(msg, cause),
+  RecoverableException(const char* file, int line, const std::string& msg,
+		       const Exception& cause):
+    Exception(file, line, msg, cause),
     _code(DownloadResult::UNKNOWN_ERROR) {}
 
-  RecoverableException(const RecoverableException& e):
-    Exception(e),
+  RecoverableException(const char* file, int line,
+		       const RecoverableException& e):
+    Exception(file, line, e),
     _code(DownloadResult::UNKNOWN_ERROR) {}
   
-  RecoverableException(const std::string& msg, DownloadResult::RESULT result):
-    Exception(msg), _code(result) {}
+  RecoverableException(const char* file, int line, const std::string& msg,
+		       DownloadResult::RESULT result):
+    Exception(file, line, msg), _code(result) {}
 
   DownloadResult::RESULT getCode() const { return _code; }
 };

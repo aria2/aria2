@@ -73,7 +73,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
   } else {
     std::string extensionName = _registry->getExtensionName(extensionMessageID);
     if(extensionName.empty()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("No extension registered for extended message ID %u",
 		      extensionMessageID).str());
     }
@@ -84,7 +84,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       m->setPeerStorage(_peerStorage);
       return m;
     } else {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Unsupported extension message received. extensionMessageID=%u, extensionName=%s",
 		      extensionMessageID, extensionName.c_str()).str());
     }

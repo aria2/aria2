@@ -66,7 +66,7 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
   unsigned char buf[size];
   _socket->peekData(buf, size);
   if(size == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
-    throw DlAbortEx(EX_EOF_FROM_PEER);
+    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
   _headerProcessor->update(buf, size);
   if(!_headerProcessor->eoh()) {
@@ -104,7 +104,7 @@ bool HttpServer::receiveBody()
 			   (_lastContentLength-_lastBody.tellg()));
   _socket->readData(buf, length);
   if(length == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
-    throw DlAbortEx(EX_EOF_FROM_PEER);
+    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
   _lastBody.write(buf, length);
   return _lastContentLength == static_cast<uint64_t>(_lastBody.tellp());

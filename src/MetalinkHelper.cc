@@ -71,7 +71,7 @@ void MetalinkHelper::query
  const SharedHandle<Metalinker>& metalinker, const Option* option)
 {
   if(metalinker->entries.empty()) {
-    throw DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
+    throw DL_ABORT_EX("No file entry found. Probably, the metalink file is not configured properly or broken.");
   }
   metalinker->queryEntry(result,
 			 option->get(PREF_METALINK_VERSION),

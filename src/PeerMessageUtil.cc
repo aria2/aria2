@@ -65,38 +65,38 @@ uint16_t PeerMessageUtil::getShortIntParam(const unsigned char* msg, size_t pos)
 
 void PeerMessageUtil::checkIndex(size_t index, size_t pieces) {
   if(!(index < pieces)) {
-    throw DlAbortEx(StringFormat("Invalid index: %lu",
+    throw DL_ABORT_EX(StringFormat("Invalid index: %lu",
 				 static_cast<unsigned long>(index)).str());
   }
 }
 
 void PeerMessageUtil::checkBegin(uint32_t begin, size_t pieceLength) {
   if(!(begin < pieceLength)) {
-    throw DlAbortEx(StringFormat("Invalid begin: %u", begin).str());
+    throw DL_ABORT_EX(StringFormat("Invalid begin: %u", begin).str());
   }  
 }
 
 void PeerMessageUtil::checkLength(size_t length) {
   if(length > MAX_BLOCK_LENGTH) {
-    throw DlAbortEx(StringFormat("Length too long: %lu > %uKB",
+    throw DL_ABORT_EX(StringFormat("Length too long: %lu > %uKB",
 				 static_cast<unsigned long>(length),
 				 MAX_BLOCK_LENGTH/1024).str());
   }
   if(length == 0) {
-    throw DlAbortEx(StringFormat("Invalid length: %lu",
+    throw DL_ABORT_EX(StringFormat("Invalid length: %lu",
 				 static_cast<unsigned long>(length)).str());
   }
 }
 
 void PeerMessageUtil::checkRange(uint32_t begin, size_t length, size_t pieceLength) {
   if(!(0 < length)) {
-    throw DlAbortEx(StringFormat("Invalid range: begin=%u, length=%lu",
+    throw DL_ABORT_EX(StringFormat("Invalid range: begin=%u, length=%lu",
 				 begin,
 				 static_cast<unsigned long>(length)).str());
   }
   uint32_t end = begin+length;
   if(!(end <= pieceLength)) {
-    throw DlAbortEx(StringFormat("Invalid range: begin=%u, length=%lu",
+    throw DL_ABORT_EX(StringFormat("Invalid range: begin=%u, length=%lu",
 				 begin,
 				 static_cast<unsigned long>(length)).str());
   }
@@ -106,14 +106,14 @@ void PeerMessageUtil::checkBitfield(const unsigned char* bitfield,
 				    size_t bitfieldLength,
 				    size_t pieces) {
   if(!(bitfieldLength == (pieces+7)/8)) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Invalid bitfield length: %lu",
 		    static_cast<unsigned long>(bitfieldLength)).str());
   }
   char lastbyte = bitfield[bitfieldLength-1];
   for(size_t i = 0; i < 8-pieces%8 && pieces%8 != 0; ++i) {
     if(!(((lastbyte >> i) & 1) == 0)) {
-      throw DlAbortEx("Invalid bitfield");
+      throw DL_ABORT_EX("Invalid bitfield");
     }
   }
 }
@@ -187,7 +187,7 @@ void PeerMessageUtil::assertPayloadLengthGreater
 (size_t threshold, size_t actual, const std::string& msgName)
 {
   if(actual <= threshold) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(), actual).str());
   }
 }
@@ -196,7 +196,7 @@ void PeerMessageUtil::assertPayloadLengthEqual
 (size_t expected, size_t actual, const std::string& msgName)
 {
   if(expected != actual) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
 		    actual, expected).str());
   }
@@ -207,7 +207,7 @@ void PeerMessageUtil::assertID
 {
   uint8_t id = getId(data);
   if(expected != id) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
 		    expected).str());
   }

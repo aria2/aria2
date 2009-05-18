@@ -91,7 +91,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
   for(uint64_t i = 0; i < iteration; ++i) {
     ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
     if((size_t)readLength != BUFSIZE) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
     }
     ctx->digestUpdate(BUF, readLength);
@@ -100,7 +100,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
   if(tail) {
     ssize_t readLength = bs->readData(BUF, tail, offset);
     if((size_t)readLength != tail) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
     }
     ctx->digestUpdate(BUF, readLength);
@@ -130,7 +130,7 @@ void MessageDigestHelper::digest(unsigned char* md, size_t mdLength,
 				 const std::string& algo, const void* data, size_t length)
 {
   if(mdLength < MessageDigestContext::digestLength(algo)) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Insufficient space for storing message digest: %d required, but only %d is allocated",
 		    MessageDigestContext::digestLength(algo), mdLength).str());
   }

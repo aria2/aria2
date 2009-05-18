@@ -184,7 +184,7 @@ bool DownloadCommand::executeInternal() {
 
   if(!segmentComplete && bufSize == 0 &&
      !socket->wantRead() && !socket->wantWrite()) {
-    throw DlRetryEx(EX_GOT_EOF);
+    throw DL_RETRY_EX(EX_GOT_EOF);
   }
 
   if(segmentComplete) {
@@ -236,10 +236,11 @@ void DownloadCommand::checkLowestDownloadSpeed() const
   if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
     unsigned int nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
-      throw DlAbortEx(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,
-				   nowSpeed,
-				   lowestDownloadSpeedLimit,
-				   req->getHost().c_str()).str(), DownloadResult::TOO_SLOW_DOWNLOAD_SPEED);
+      throw DL_ABORT_EX2(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,
+				      nowSpeed,
+				      lowestDownloadSpeedLimit,
+				      req->getHost().c_str()).str(),
+			 DownloadResult::TOO_SLOW_DOWNLOAD_SPEED);
     }
   }
 }
@@ -294,7 +295,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
 		 actualPieceHash.c_str());
     segment->clear();
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
-    throw DlRetryEx
+    throw DL_RETRY_EX
       (StringFormat("Invalid checksum index=%d", segment->getIndex()).str());
   }
 }

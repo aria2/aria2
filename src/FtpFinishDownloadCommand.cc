@@ -82,7 +82,7 @@ bool FtpFinishDownloadCommand::execute()
       return false;
     }
     if(status != 226) {
-      throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
+      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
     }
     if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::map<std::string, std::string> options;

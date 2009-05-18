@@ -46,13 +46,20 @@ protected:
     return e;
   }
 public:
-  DlRetryEx(const std::string& msg):RecoverableException(msg) {}
-  DlRetryEx(const std::string& msg,
-	    const Exception& cause):RecoverableException(msg, cause) {}
-  DlRetryEx(const DlRetryEx& e):RecoverableException(e) {}
-  DlRetryEx(const std::string& msg, DownloadResult::RESULT code):
-    RecoverableException(msg, code) {}
+  DlRetryEx(const char* file, int line, const std::string& msg):
+    RecoverableException(file, line, msg) {}
+  DlRetryEx(const char* file, int line, const std::string& msg,
+	    const Exception& cause):
+    RecoverableException(file, line, msg, cause) {}
+  DlRetryEx(const char* file, int line, const DlRetryEx& e):
+    RecoverableException(file, line, e) {}
+  DlRetryEx(const char* file, int line, const std::string& msg,
+	    DownloadResult::RESULT code):
+    RecoverableException(file, line, msg, code) {}
 };
+
+#define DL_RETRY_EX(arg) DlRetryEx(__FILE__, __LINE__, arg)
+#define DL_RETRY_EX2(arg1, arg2) DlRetryEx(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2
 

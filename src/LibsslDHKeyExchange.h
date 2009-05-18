@@ -62,7 +62,7 @@ private:
 
   void handleError(const std::string& funName) const
   {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Exception in libssl routine %s(DHKeyExchange class): %s",
 		    funName.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
   }
@@ -123,7 +123,7 @@ public:
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
     if(outLength < _keyLength) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
 		      _keyLength, outLength).str());
     }
@@ -132,7 +132,7 @@ public:
     size_t offset = _keyLength-publicKeyBytes;
     size_t nwritten = BN_bn2bin(_publicKey, out+offset);
     if(nwritten != publicKeyBytes) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes).str());
     }
     return nwritten;
@@ -150,7 +150,7 @@ public:
 		       size_t peerPublicKeyLength) const
   {
     if(outLength < _keyLength) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
 		      _keyLength, outLength).str());
     }
@@ -171,7 +171,7 @@ public:
     size_t nwritten = BN_bn2bin(secret, out+offset);
     BN_free(secret);
     if(nwritten != secretBytes) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, secretBytes).str());
     }
     return nwritten;

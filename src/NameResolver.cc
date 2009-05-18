@@ -56,7 +56,7 @@ void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
   int s;
   s = getaddrinfo(hostname.c_str(), 0, &hints, &res);
   if(s) {
-    throw DlAbortEx(StringFormat(EX_RESOLVE_HOSTNAME,
+    throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
 				 hostname.c_str(), gai_strerror(s)).str());
   }
   struct addrinfo* rp;

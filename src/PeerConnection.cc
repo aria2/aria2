@@ -90,7 +90,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%lu",
 		    cuid, static_cast<unsigned long>(temp));
-      throw DlAbortEx(EX_EOF_FROM_PEER);
+      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     lenbufLength += remaining;
     if(4 > lenbufLength) {
@@ -99,7 +99,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
     }
     uint32_t payloadLength = ntohl(*(reinterpret_cast<uint32_t*>(lenbuf)));
     if(payloadLength > MAX_PAYLOAD_LEN) {
-      throw DlAbortEx(StringFormat(EX_TOO_LONG_PAYLOAD, payloadLength).str());
+      throw DL_ABORT_EX(StringFormat(EX_TOO_LONG_PAYLOAD, payloadLength).str());
     }
     currentPayloadLength = payloadLength;
   }
@@ -121,7 +121,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
 		    cuid,
 		    static_cast<unsigned long>(currentPayloadLength),
 		    static_cast<unsigned long>(temp));
-      throw DlAbortEx(EX_EOF_FROM_PEER);
+      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     resbufLength += remaining;
     if(currentPayloadLength > resbufLength) {
@@ -168,7 +168,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
 	logger->debug
 	  ("CUID#%d - In PeerConnection::receiveHandshake(), remain=%lu",
 	   cuid, static_cast<unsigned long>(temp));
-	throw DlAbortEx(EX_EOF_FROM_PEER);
+	throw DL_ABORT_EX(EX_EOF_FROM_PEER);
       }
       resbufLength += remaining;
       if(BtHandshakeMessage::MESSAGE_LENGTH > resbufLength) {

@@ -427,19 +427,19 @@ int32_t Util::parseInt(const std::string& s, int32_t base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
   }
   char* stop;
   errno = 0;
   long int v = strtol(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   } else if((((v == LONG_MIN) || (v == LONG_MAX)) && (errno == ERANGE)) ||
 	    (v > INT32_MAX) ||
 	    (v < INT32_MIN)) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   }
   return v;
@@ -449,22 +449,22 @@ uint32_t Util::parseUInt(const std::string& s, int base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
   }
   // We don't allow negative number.
   if(trimed[0] == '-') {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   }
   char* stop;
   errno = 0;
   unsigned long int v = strtoul(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   }
   return v;
@@ -474,17 +474,17 @@ int64_t Util::parseLLInt(const std::string& s, int32_t base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
   }
   char* stop;
   errno = 0;
   int64_t v = strtoll(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   }
   return v;
@@ -494,22 +494,22 @@ uint64_t Util::parseULLInt(const std::string& s, int base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
   }
   // We don't allow negative number.
   if(trimed[0] == '-') {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   }
   char* stop;
   errno = 0;
   uint64_t v = strtoull(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   } else if((v == ULLONG_MAX) && (errno == ERANGE)) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 trimed.c_str()).str());
   }
   return v;
@@ -531,7 +531,7 @@ IntSequence Util::parseIntRange(const std::string& src)
     } else {
       std::pair<std::string, std::string> vp = Util::split(p.first.c_str(), "-");
       if(vp.first.empty() || vp.second.empty()) {
-	throw DlAbortEx
+	throw DL_ABORT_EX
 	  (StringFormat(MSG_INCOMPLETE_RANGE, p.first.c_str()).str());
       }
       int32_t v1 = Util::parseInt(vp.first.c_str());
@@ -656,10 +656,10 @@ int64_t Util::getRealSize(const std::string& sizeWithUnit)
   int64_t v = Util::parseLLInt(size);
 
   if(v < 0) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Negative value detected: %s", sizeWithUnit.c_str()).str());
   } else if(INT64_MAX/mult < v) {
-    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "overflow/underflow").str());
   }
   return v*mult;
@@ -827,11 +827,11 @@ void Util::mkdirs(const std::string& dirpath)
   if(dir.isDir()) {
     // do nothing
   } else if(dir.exists()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
 		    "File already exists.").str());
   } else if(!dir.mkdirs()) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
 		    strerror(errno)).str());
   }
@@ -871,7 +871,7 @@ void* Util::allocateAlignedMemory(size_t alignment, size_t size)
   void* buffer;
   int res;
   if((res = posix_memalign(&buffer, alignment, size)) != 0) {
-    throw FatalException
+    throw FATAL_EXCEPTION
       (StringFormat("Error in posix_memalign: %s", strerror(res)).str());
   }
   return buffer;
@@ -886,7 +886,7 @@ Util::getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
   int s = getnameinfo(sockaddr, len, host, NI_MAXHOST, service, NI_MAXSERV,
 		      NI_NUMERICHOST|NI_NUMERICSERV);
   if(s != 0) {
-    throw DlAbortEx(StringFormat("Failed to get hostname and port. cause: %s",
+    throw DL_ABORT_EX(StringFormat("Failed to get hostname and port. cause: %s",
 				 gai_strerror(s)).str());
   }
   return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
@@ -920,7 +920,7 @@ Util::parseIndexPath(const std::string& line)
   std::pair<std::string, std::string> p = Util::split(line, "=");
   size_t index = parseUInt(p.first);
   if(p.second.empty()) {
-    throw DlAbortEx(StringFormat("Path with index=%u is empty.",
+    throw DL_ABORT_EX(StringFormat("Path with index=%u is empty.",
 				 static_cast<unsigned int>(index)).str());
   }
   return std::map<size_t, std::string>::value_type(index, p.second);

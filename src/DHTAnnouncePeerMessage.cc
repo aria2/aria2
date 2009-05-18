@@ -104,7 +104,7 @@ void DHTAnnouncePeerMessage::validate() const
   if(!_tokenTracker->validateToken(_token, _infoHash,
 				   _remoteNode->getIPAddress(),
 				   _remoteNode->getPort())) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Invalid token=%s from %s:%u",
 		    Util::toHex(_token).c_str(),
 		    _remoteNode->getIPAddress().c_str(),

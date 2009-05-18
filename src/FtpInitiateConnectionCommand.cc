@@ -94,7 +94,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 					      proxyRequest, socket);
       } else {
 	// TODO
-	throw DlAbortEx("ERROR");
+	throw DL_ABORT_EX("ERROR");
       }
     } else {
       if(proxyMethod == V_TUNNEL) {
@@ -114,7 +114,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	command = c;
       } else {
 	// TODO
-	throw DlAbortEx("ERROR");
+	throw DL_ABORT_EX("ERROR");
       }
     }
   } else {

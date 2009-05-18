@@ -204,12 +204,12 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
 	msg = BtExtendedMessage::create(_extensionMessageFactory,
 					peer, data, dataLength);
       } else {
-	throw DlAbortEx("Received extended message from peer during a session with extended messaging disabled.");
+	throw DL_ABORT_EX("Received extended message from peer during a session with extended messaging disabled.");
       }
       break;
     }
     default:
-      throw DlAbortEx(StringFormat("Invalid message ID. id=%u", id).str());
+      throw DL_ABORT_EX(StringFormat("Invalid message ID. id=%u", id).str());
     }
   }
   setCommonProperty(msg);

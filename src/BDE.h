@@ -42,7 +42,7 @@
 #include <deque>
 
 #include "SharedHandle.h"
-#include "RecoverableException.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -72,7 +72,7 @@ private:
     // Returns Integer.
     virtual Integer i() const
     {
-      throw RecoverableException("Not Integer");
+      throw DL_ABORT_EX("Not Integer");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -81,14 +81,14 @@ private:
     // Returns std::string.
     virtual const std::string& s() const
     {
-      throw RecoverableException("Not String");
+      throw DL_ABORT_EX("Not String");
     } 
 
     // Returns std::string.data() casted to unsigned char*.
     // Use s().size() to get length.
     virtual const unsigned char* uc() const
     {
-      throw RecoverableException("Not String");
+      throw DL_ABORT_EX("Not String");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -100,33 +100,33 @@ private:
     // this is the same behavior of std::map's operator[].
     virtual BDE& operator[](const std::string& key)
     {
-      throw RecoverableException("Not Dict");
+      throw DL_ABORT_EX("Not Dict");
     }
 
     // Returns true if the given key is found in dict.
     virtual bool containsKey(const std::string& key) const
     {
-      throw RecoverableException("Not Dict");
+      throw DL_ABORT_EX("Not Dict");
     }
 
     // Removes specified key from dict.
     virtual void removeKey(const std::string& key)
     {
-      throw RecoverableException("Not Dict");
+      throw DL_ABORT_EX("Not Dict");
     }
 
     // Returns a read/write iterator that points to the first pair in
     // the dict.
     virtual Dict::iterator dictBegin()
     {
-      throw RecoverableException("Not Dict");
+      throw DL_ABORT_EX("Not Dict");
     }
 
     // Returns a read/write read-only iterator that points to one past
     // the last pair in the dict.
     virtual Dict::iterator dictEnd()
     {
-      throw RecoverableException("Not Dict");
+      throw DL_ABORT_EX("Not Dict");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -135,45 +135,45 @@ private:
     // Appends given bde to list.
     virtual void append(const BDE& bde)
     {
-      throw RecoverableException("Not List");
+      throw DL_ABORT_EX("Not List");
     }
 
     // Alias for append()
     virtual void operator<<(const BDE& bde)
     {
-      throw RecoverableException("Not List");
+      throw DL_ABORT_EX("Not List");
     }
 
     // Returns the reference of the object at the given index.
     virtual BDE& operator[](size_t index)
     {
-      throw RecoverableException("Not List");
+      throw DL_ABORT_EX("Not List");
     }
 
     // Returns a read/write iterator that points to the first object
     // in list.
     virtual List::iterator listBegin()
     {
-      throw RecoverableException("Not List");
+      throw DL_ABORT_EX("Not List");
     }
 
     // Returns a read/write iterator that points to the one past the
     // last object in list.
     virtual List::iterator listEnd()
     {
-      throw RecoverableException("Not List");
+      throw DL_ABORT_EX("Not List");
     }
     
     // Returns size of list or dict.
     virtual size_t size() const
     {
-      throw RecoverableException("Neither Dict nor List");
+      throw DL_ABORT_EX("Neither Dict nor List");
     }
 
     // Returns true if size of list or dict is 0.
     virtual bool empty() const
     {
-      throw RecoverableException("Neither Dict nor List");
+      throw DL_ABORT_EX("Neither Dict nor List");
     }
   };
 

@@ -95,7 +95,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       break;
     case MSEHandshake::HANDSHAKE_LEGACY: {
       if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-	throw DlAbortEx("The legacy BitTorrent handshake is not acceptable by the preference.");
+	throw DL_ABORT_EX("The legacy BitTorrent handshake is not acceptable by the preference.");
       }
       SharedHandle<PeerConnection> peerConnection
 	(new PeerConnection(cuid, socket));
@@ -107,7 +107,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       return true;
     }
     default:
-      throw DlAbortEx("Not supported handshake type.");
+      throw DL_ABORT_EX("Not supported handshake type.");
     }
     break;
   }

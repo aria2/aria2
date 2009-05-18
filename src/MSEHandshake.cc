@@ -95,7 +95,7 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
   size_t r = 20-_rbufLength;
   _socket->readData(_rbuf+_rbufLength, r);
   if(r == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
-    throw DlAbortEx(EX_EOF_FROM_PEER);
+    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
   _rbufLength += r;
   if(_rbufLength < 20) {
@@ -305,7 +305,7 @@ bool MSEHandshake::findInitiatorVCMarker()
     if(_socket->wantRead() || _socket->wantWrite()) {
       return false;
     }
-    throw DlAbortEx(EX_EOF_FROM_PEER);
+    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
   // find vc
   {
@@ -313,7 +313,7 @@ bool MSEHandshake::findInitiatorVCMarker()
     std::string vc(&_initiatorVCMarker[0], &_initiatorVCMarker[VC_LENGTH]);
     if((_markerIndex = buf.find(vc)) == std::string::npos) {
       if(616-KEY_LENGTH <= _rbufLength+r) {
-	throw DlAbortEx("Failed to find VC marker.");
+	throw DL_ABORT_EX("Failed to find VC marker.");
       } else {
 	_socket->readData(_rbuf+_rbufLength, r);
 	_rbufLength += r;
@@ -355,7 +355,7 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
       _negotiatedCryptoType = CRYPTO_ARC4;
     }
     if(_negotiatedCryptoType == CRYPTO_NONE) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("CUID#%d - No supported crypto type selected.", _cuid).str());
     }
   }
@@ -395,7 +395,7 @@ bool MSEHandshake::findReceiverHashMarker()
     if(_socket->wantRead() || _socket->wantWrite()) {
       return false;
     }
-    throw DlAbortEx(EX_EOF_FROM_PEER);
+    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
   // find hash('req1', S), S is _secret.
   {
@@ -405,7 +405,7 @@ bool MSEHandshake::findReceiverHashMarker()
     std::string req1(&md[0], &md[sizeof(md)]);
     if((_markerIndex = buf.find(req1)) == std::string::npos) {
       if(628-KEY_LENGTH <= _rbufLength+r) {
-	throw DlAbortEx("Failed to find hash marker.");
+	throw DL_ABORT_EX("Failed to find hash marker.");
       } else {
 	_socket->readData(_rbuf+_rbufLength, r);
 	_rbufLength += r;
@@ -447,7 +447,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
     }
   }
   if(btContext.isNull()) {
-    throw DlAbortEx("Unknown info hash.");
+    throw DL_ABORT_EX("Unknown info hash.");
   }
   initCipher(btContext->getInfoHash());
 
@@ -471,7 +471,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
       _negotiatedCryptoType = CRYPTO_ARC4;
     }
     if(_negotiatedCryptoType == CRYPTO_NONE) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("CUID#%d - No supported crypto type provided.", _cuid).str());
     }
   }
@@ -547,7 +547,7 @@ uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const cha
   uint16_t padLength = decodeLength16(padlenbuf);
   _logger->debug("CUID#%d - len(%s)=%u", _cuid, padName, padLength);
   if(padLength > 512) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Too large %s length: %u", padName, padLength).str());
   }
   return padLength;
@@ -559,7 +559,7 @@ void MSEHandshake::verifyVC(const unsigned char* vcbuf)
   unsigned char vc[VC_LENGTH];
   _decryptor->decrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
   if(memcmp(VC, vc, sizeof(VC)) != 0) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Invalid VC: %s", Util::toHex(vc, VC_LENGTH).c_str()).str());
   }
 }
@@ -570,7 +570,7 @@ void MSEHandshake::verifyReq1Hash(const unsigned char* req1buf)
   unsigned char md[20];
   createReq1Hash(md);
   if(memcmp(md, req1buf, sizeof(md)) != 0) {
-    throw DlAbortEx("Invalid req1 hash found.");
+    throw DL_ABORT_EX("Invalid req1 hash found.");
   }
 }
 
@@ -583,7 +583,7 @@ size_t MSEHandshake::receiveNBytes(size_t bytes)
     }
     _socket->readData(_rbuf+_rbufLength, r);
     if(r == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
-      throw DlAbortEx(EX_EOF_FROM_PEER);
+      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     _rbufLength += r;
   }

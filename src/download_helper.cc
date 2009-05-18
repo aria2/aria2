@@ -266,7 +266,7 @@ void createRequestGroupForMetalink
     Metalink2RequestGroup().generate(result, dw, option);
   }
   if(result.empty()) {
-    throw DlAbortEx(MSG_NO_FILES_TO_DOWNLOAD);
+    throw DL_ABORT_EX(MSG_NO_FILES_TO_DOWNLOAD);
   }
 }
 #endif // ENABLE_METALINK
@@ -405,7 +405,7 @@ void createRequestGroupForUriList
     createRequestGroupForUriList(result, option, std::cin);
   } else {
     if(!File(option->get(PREF_INPUT_FILE)).isFile()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
 		      "No such file").str());
     }

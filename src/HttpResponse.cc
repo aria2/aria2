@@ -74,7 +74,7 @@ void HttpResponse::validateResponse() const
   }
   if(status >= HttpHeader::S300) {
     if(!httpHeader->defined(HttpHeader::LOCATION)) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_LOCATION_HEADER_REQUIRED,
 		      Util::parseUInt(status)).str());
     }
@@ -82,7 +82,7 @@ void HttpResponse::validateResponse() const
     // compare the received range against the requested range
     RangeHandle responseRange = httpHeader->getRange();
     if(!httpRequest->isRangeSatisfied(responseRange)) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat
 	 (EX_INVALID_RANGE_HEADER,
 	  Util::itos(httpRequest->getStartByte(), true).c_str(),
@@ -139,7 +139,7 @@ void HttpResponse::processRedirect()
     logger->info(MSG_REDIRECT, cuid,
 		 httpRequest->getRequest()->getCurrentUrl().c_str());
   } else {
-    throw DlRetryEx
+    throw DL_RETRY_EX
       (StringFormat("CUID#%d - Redirect to %s failed. It may not be a valid"
 		    " URI.", cuid,
 		    httpRequest->getRequest()->getCurrentUrl().c_str()).str());

@@ -136,7 +136,7 @@ MetalinkProcessor::parseFile(const std::string& filename)
   int retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
 				   filename.c_str());
   if(retval != 0) {
-    throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
   return _stm->getResult();
 }
@@ -150,7 +150,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
 
   ssize_t res = binaryStream->readData(buf, 4, 0);
   if(res != 4) {
-    throw DlAbortEx("Too small data for parsing XML.");
+    throw DL_ABORT_EX("Too small data for parsing XML.");
   }
 
   SharedHandle<SessionData> sessionData(new SessionData(_stm));
@@ -163,7 +163,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
 	break;
       }
       if(xmlParseChunk(ctx, (const char*)buf, res, 0) != 0) {
-	throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+	throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
       }
       readOffset += res;
     }
@@ -175,7 +175,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
   xmlFreeParserCtxt(ctx);
 
   if(!_stm->finished()) {
-    throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
   return _stm->getResult();
 }

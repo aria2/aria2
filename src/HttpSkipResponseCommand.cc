@@ -109,7 +109,7 @@ bool HttpSkipResponseCommand::executeInternal()
     }
     if(_totalLength != 0 && bufSize == 0 &&
        !socket->wantRead() && !socket->wantWrite()) {
-      throw DlRetryEx(EX_GOT_EOF);
+      throw DL_RETRY_EX(EX_GOT_EOF);
     }
   } catch(RecoverableException& e) {
     logger->debug(EX_EXCEPTION_CAUGHT, e);
@@ -151,7 +151,7 @@ bool HttpSkipResponseCommand::processResponse()
     unsigned int rnum =
       _httpResponse->getHttpRequest()->getRequest()->getRedirectCount();
     if(rnum >= Request::MAX_REDIRECT) {
-      throw DlAbortEx(StringFormat("Too many redirects: count=%u", rnum).str());
+      throw DL_ABORT_EX(StringFormat("Too many redirects: count=%u", rnum).str());
     }
     _httpResponse->processRedirect();
     return prepareForRetry(0);
@@ -165,13 +165,13 @@ bool HttpSkipResponseCommand::processResponse()
 	 (req->getHost(), req->getDir())) {
 	return prepareForRetry(0);
       } else {
-	throw DlAbortEx(EX_AUTH_FAILED);
+	throw DL_ABORT_EX(EX_AUTH_FAILED);
       }
     }else if(_httpResponse->getResponseStatus() == HttpHeader::S404) {
-      throw DlAbortEx(MSG_RESOURCE_NOT_FOUND,
-		      DownloadResult::RESOURCE_NOT_FOUND);
+      throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
+			 DownloadResult::RESOURCE_NOT_FOUND);
     } else {
-      throw DlAbortEx(StringFormat(EX_BAD_STATUS, Util::parseUInt(_httpResponse->getResponseStatus())).str());
+      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, Util::parseUInt(_httpResponse->getResponseStatus())).str());
     }
   } else {
     return prepareForRetry(0);

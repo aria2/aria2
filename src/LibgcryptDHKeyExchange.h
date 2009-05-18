@@ -56,7 +56,7 @@ private:
 
   void handleError(gcry_error_t err) const
   {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Exception in libgcrypt routine(DHKeyExchange class): %s",
 		    gcry_strerror(err)).str());
   }
@@ -112,7 +112,7 @@ public:
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
     if(outLength < _keyLength) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
 		      _keyLength, outLength).str());
     }
@@ -138,7 +138,7 @@ public:
 		       size_t peerPublicKeyLength) const
   {
     if(outLength < _keyLength) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
 		      _keyLength, outLength).str());
     }

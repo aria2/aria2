@@ -173,7 +173,7 @@ void SocketCore::bind(uint16_t port)
   int s;
   s = getaddrinfo(0, uitos(port).c_str(), &hints, &res);
   if(s) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_BIND, gai_strerror(s)).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, gai_strerror(s)).str());
   }
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
@@ -195,14 +195,14 @@ void SocketCore::bind(uint16_t port)
   }
   freeaddrinfo(res);
   if(sockfd == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_BIND, "all addresses failed").str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, "all addresses failed").str());
   }
 }
 
 void SocketCore::beginListen()
 {
   if(listen(sockfd, 1) == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_LISTEN, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_LISTEN, errorMsg()).str());
   }
 }
 
@@ -213,7 +213,7 @@ SocketCore* SocketCore::acceptConnection() const
   sock_t fd;
   while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == -1 && SOCKET_ERRNO == EINTR);
   if(fd == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
   }
   return new SocketCore(fd, _sockType);
 }
@@ -224,7 +224,7 @@ void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
   socklen_t len = sizeof(sockaddr);
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   if(getsockname(sockfd, addrp, &len) == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
   addrinfo = Util::getNumericNameInfo(addrp, len);
 }
@@ -235,7 +235,7 @@ void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
   socklen_t len = sizeof(sockaddr);
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   if(getpeername(sockfd, addrp, &len) == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
   peerinfo = Util::getNumericNameInfo(addrp, len);
 }
@@ -254,7 +254,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   int s;
   s = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &res);
   if(s) {
-    throw DlAbortEx(StringFormat(EX_RESOLVE_HOSTNAME,
+    throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
 				 host.c_str(), gai_strerror(s)).str());
   }
   struct addrinfo* rp;
@@ -283,7 +283,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   }
   freeaddrinfo(res);
   if(sockfd == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
 				 "all addresses failed").str());
   }
 }
@@ -293,7 +293,7 @@ void SocketCore::setNonBlockingMode()
 #ifdef __MINGW32__
   static u_long flag = 1;
   if (::ioctlsocket(sockfd, FIONBIO, &flag) == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_NONBLOCKING, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_NONBLOCKING, errorMsg()).str());
   }
 #else
   int flags;
@@ -309,7 +309,7 @@ void SocketCore::setBlockingMode()
 #ifdef __MINGW32__
   static u_long flag = 0;
   if (::ioctlsocket(sockfd, FIONBIO, &flag) == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_BLOCKING, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BLOCKING, errorMsg()).str());
   }
 #else
   int flags;
@@ -355,7 +355,7 @@ void SocketCore::closeConnection()
 void SocketCore::initEPOLL()
 {
   if((_epfd = epoll_create(1)) == -1) {
-    throw DlRetryEx(StringFormat("epoll_create failed:%s", errorMsg()).str());
+    throw DL_RETRY_EX(StringFormat("epoll_create failed:%s", errorMsg()).str());
   }
 
   memset(&_epEvent, 0, sizeof(struct epoll_event));
@@ -363,7 +363,7 @@ void SocketCore::initEPOLL()
   _epEvent.data.fd = sockfd;
 
   if(epoll_ctl(_epfd, EPOLL_CTL_ADD, sockfd, &_epEvent) == -1) {
-    throw DlRetryEx(StringFormat("epoll_ctl failed:%s", errorMsg()).str());
+    throw DL_RETRY_EX(StringFormat("epoll_ctl failed:%s", errorMsg()).str());
   }
 }
 
@@ -384,7 +384,7 @@ bool SocketCore::isWritable(time_t timeout)
     } else if(r == 0) {
       return false;
     } else {
-      throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+      throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
     }
   } else
 #endif // HAVE_EPOLL
@@ -407,7 +407,7 @@ bool SocketCore::isWritable(time_t timeout)
 	if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
 	  return false;
 	} else {
-	  throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+	  throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
 	}
       }
     } else {
@@ -437,7 +437,7 @@ bool SocketCore::isReadable(time_t timeout)
     } else if(r == 0) {
       return false;
     } else {
-      throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+      throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
     }
   } else
 #endif // HAVE_EPOLL
@@ -460,7 +460,7 @@ bool SocketCore::isReadable(time_t timeout)
 	if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
 	  return false;
 	} else {
-	  throw DlRetryEx(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+	  throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
 	}
       }
     } else {
@@ -509,14 +509,14 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
 	_wantWrite = true;
 	ret = 0;
       } else {
-	throw DlRetryEx(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
+	throw DL_RETRY_EX(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
       }
     }
   } else {
 #ifdef HAVE_LIBSSL
     ret = SSL_write(ssl, data, len);
     if(ret == 0) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat
 	 (EX_SOCKET_SEND, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
@@ -524,7 +524,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat
 	 (EX_SOCKET_SEND, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
@@ -536,7 +536,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
       gnutlsRecordCheckDirection();
       ret = 0;
     } else if(ret < 0) {
-      throw DlRetryEx(StringFormat(EX_SOCKET_SEND, gnutls_strerror(ret)).str());
+      throw DL_RETRY_EX(StringFormat(EX_SOCKET_SEND, gnutls_strerror(ret)).str());
     }
 #endif // HAVE_LIBGNUTLS
   }
@@ -558,7 +558,7 @@ void SocketCore::readData(char* data, size_t& len)
 	_wantRead = true;
 	ret = 0;
       } else {
-	throw DlRetryEx(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
+	throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
       }
     }
   } else {
@@ -567,7 +567,7 @@ void SocketCore::readData(char* data, size_t& len)
      // TODO handling len == 0 case required
     ret = SSL_read(ssl, data, len);
     if(ret == 0) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat
 	 (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
@@ -575,7 +575,7 @@ void SocketCore::readData(char* data, size_t& len)
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat
 	 (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
@@ -586,7 +586,7 @@ void SocketCore::readData(char* data, size_t& len)
       gnutlsRecordCheckDirection();
       ret = 0;
     } else if(ret < 0) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat(EX_SOCKET_RECV, gnutls_strerror(ret)).str());
     }
 #endif // HAVE_LIBGNUTLS
@@ -608,7 +608,7 @@ void SocketCore::peekData(char* data, size_t& len)
 	_wantRead = true;
 	ret = 0;
       } else {
-	throw DlRetryEx(StringFormat(EX_SOCKET_PEEK, errorMsg()).str());
+	throw DL_RETRY_EX(StringFormat(EX_SOCKET_PEEK, errorMsg()).str());
       }
     }
   } else {
@@ -617,7 +617,7 @@ void SocketCore::peekData(char* data, size_t& len)
      // TODO handling len == 0 case required
     ret = SSL_peek(ssl, data, len);
     if(ret == 0) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat(EX_SOCKET_PEEK,
 		      ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
@@ -625,7 +625,7 @@ void SocketCore::peekData(char* data, size_t& len)
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat(EX_SOCKET_PEEK,
 		      ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
@@ -636,7 +636,7 @@ void SocketCore::peekData(char* data, size_t& len)
       gnutlsRecordCheckDirection();
       ret = 0;
     } else if(ret < 0) {
-      throw DlRetryEx(StringFormat(EX_SOCKET_PEEK,
+      throw DL_RETRY_EX(StringFormat(EX_SOCKET_PEEK,
 				   gnutls_strerror(ret)).str());
     }
 #endif // HAVE_LIBGNUTLS
@@ -685,7 +685,7 @@ static ssize_t GNUTLS_RECORD_RECV_NO_INTERRUPT
   while((ret = gnutls_record_recv(sslSession, data, len)) ==
 	GNUTLS_E_INTERRUPTED);
   if(ret < 0 && ret != GNUTLS_E_AGAIN) {
-    throw DlRetryEx
+    throw DL_RETRY_EX
       (StringFormat(EX_SOCKET_RECV, gnutls_strerror(ret)).str());
   }
   return ret;
@@ -731,12 +731,12 @@ void SocketCore::prepareSecureConnection()
     // for SSL
     ssl = SSL_new(_tlsContext->getSSLCtx());
     if(!ssl) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_SSL_INIT_FAILURE,
 		      ERR_error_string(ERR_get_error(), 0)).str());
     }
     if(SSL_set_fd(ssl, sockfd) == 0) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_SSL_INIT_FAILURE,
 		      ERR_error_string(ERR_get_error(), 0)).str());
     }
@@ -782,19 +782,19 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         case SSL_ERROR_WANT_X509_LOOKUP:
         case SSL_ERROR_ZERO_RETURN:
           if (blocking) {
-            throw DlAbortEx
+            throw DL_ABORT_EX
 	      (StringFormat(EX_SSL_CONNECT_ERROR, ssl_error).str());
           }
           break;
 
         case SSL_ERROR_SYSCALL:
-          throw DlAbortEx(EX_SSL_IO_ERROR);
+          throw DL_ABORT_EX(EX_SSL_IO_ERROR);
 
         case SSL_ERROR_SSL:
-          throw DlAbortEx(EX_SSL_PROTOCOL_ERROR);
+          throw DL_ABORT_EX(EX_SSL_PROTOCOL_ERROR);
 
         default:
-          throw DlAbortEx
+          throw DL_ABORT_EX
 	    (StringFormat(EX_SSL_UNKNOWN_ERROR, ssl_error).str());
       }
     }
@@ -802,19 +802,19 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       // verify peer
       X509* peerCert = SSL_get_peer_certificate(ssl);
       if(!peerCert) {
-	throw DlAbortEx(MSG_NO_CERT_FOUND);
+	throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
       }
       auto_delete<X509*> certDeleter(peerCert, X509_free);
 
       long verifyResult = SSL_get_verify_result(ssl);
       if(verifyResult != X509_V_OK) {
-	throw DlAbortEx
+	throw DL_ABORT_EX
 	  (StringFormat(MSG_CERT_VERIFICATION_FAILED,
 			X509_verify_cert_error_string(verifyResult)).str());
       }
       X509_NAME* name = X509_get_subject_name(peerCert);
       if(!name) {
-	throw DlAbortEx("Could not get X509 name object from the certificate.");
+	throw DL_ABORT_EX("Could not get X509 name object from the certificate.");
       }
 
       bool hostnameOK = false;
@@ -838,7 +838,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
 	}
       }
       if(!hostnameOK) {
-	throw DlAbortEx(MSG_HOSTNAME_NOT_MATCH);
+	throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
       }
     }
 #endif // HAVE_LIBSSL
@@ -848,7 +848,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       gnutlsRecordCheckDirection();
       return false;
     } else if(ret < 0) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(ret)).str());
     }
 
@@ -857,7 +857,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       unsigned int status;
       ret = gnutls_certificate_verify_peers2(sslSession, &status);
       if(ret < 0) {
-	throw DlAbortEx
+	throw DL_ABORT_EX
 	  (StringFormat("gnutls_certificate_verify_peer2() failed. Cause: %s",
 			gnutls_strerror(ret)).str());
       }
@@ -873,27 +873,27 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
 	  errors += " `issuer is not known'";
 	}
 	if(!errors.empty()) {
-	  throw DlAbortEx
+	  throw DL_ABORT_EX
 	    (StringFormat(MSG_CERT_VERIFICATION_FAILED, errors.c_str()).str());
 	}
       }
       // certificate type: only X509 is allowed.
       if(gnutls_certificate_type_get(sslSession) != GNUTLS_CRT_X509) {
-	throw DlAbortEx("Certificate type is not X509.");
+	throw DL_ABORT_EX("Certificate type is not X509.");
       }
 
       unsigned int peerCertsLength;
       const gnutls_datum_t* peerCerts = gnutls_certificate_get_peers
 	(sslSession, &peerCertsLength);
       if(!peerCerts) {
-	throw DlAbortEx(MSG_NO_CERT_FOUND);
+	throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
       }
       Time now;
       for(unsigned int i = 0; i < peerCertsLength; ++i) {
 	gnutls_x509_crt_t cert;
 	ret = gnutls_x509_crt_init(&cert);
 	if(ret < 0) {
-	  throw DlAbortEx
+	  throw DL_ABORT_EX
 	    (StringFormat("gnutls_x509_crt_init() failed. Cause: %s",
 			  gnutls_strerror(ret)).str());
 	}
@@ -901,28 +901,28 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
 	  (cert, gnutls_x509_crt_deinit);
 	ret = gnutls_x509_crt_import(cert, &peerCerts[i], GNUTLS_X509_FMT_DER);
 	if(ret < 0) {
-	  throw DlAbortEx
+	  throw DL_ABORT_EX
 	    (StringFormat("gnutls_x509_crt_import() failed. Cause: %s",
 			  gnutls_strerror(ret)).str());
 	}
 	if(i == 0) {
 	  if(!gnutls_x509_crt_check_hostname(cert, hostname.c_str())) {
-	    throw DlAbortEx(MSG_HOSTNAME_NOT_MATCH);
+	    throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
 	  }
 	}
 	time_t activationTime = gnutls_x509_crt_get_activation_time(cert);
 	if(activationTime == -1) {
-	  throw DlAbortEx("Could not get activation time from certificate.");
+	  throw DL_ABORT_EX("Could not get activation time from certificate.");
 	}
 	if(now.getTime() < activationTime) {
-	  throw DlAbortEx("Certificate is not activated yet.");
+	  throw DL_ABORT_EX("Certificate is not activated yet.");
 	}
 	time_t expirationTime = gnutls_x509_crt_get_expiration_time(cert);
 	if(expirationTime == -1) {
-	  throw DlAbortEx("Could not get expiration time from certificate.");
+	  throw DL_ABORT_EX("Could not get expiration time from certificate.");
 	}
 	if(expirationTime < now.getTime()) {
-	  throw DlAbortEx("Certificate has expired.");
+	  throw DL_ABORT_EX("Certificate has expired.");
 	}
       }
     }
@@ -983,7 +983,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   int s;
   s = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &res);
   if(s) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_SEND, gai_strerror(s)).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, gai_strerror(s)).str());
   }
   struct addrinfo* rp;
   ssize_t r = -1;
@@ -1000,7 +1000,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   }
   freeaddrinfo(res);
   if(r == -1) {
-    throw DlAbortEx(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
   }
   return r;
 }
@@ -1022,7 +1022,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
       _wantRead = true;
       r = 0;
     } else {
-      throw DlRetryEx(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
+      throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
     }
   } else {
     sender = Util::getNumericNameInfo(addrp, sockaddrlen);
@@ -1037,7 +1037,7 @@ std::string SocketCore::getSocketError() const
   socklen_t optlen = sizeof(error);
 
   if(getsockopt(sockfd, SOL_SOCKET, SO_ERROR, (a2_sockopt_t) &error, &optlen) == -1) {
-    throw DlAbortEx(StringFormat("Failed to get socket error: %s",
+    throw DL_ABORT_EX(StringFormat("Failed to get socket error: %s",
 				 errorMsg()).str());
   }
   if(error != 0) {

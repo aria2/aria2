@@ -38,7 +38,7 @@
 #include <sstream>
 
 #include "StringFormat.h"
-#include "RecoverableException.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -50,7 +50,7 @@ static void checkdelim(std::istream& ss, const char delim = ':')
 {
   char d;
   if(!(ss.get(d) && d == delim)) {
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("Delimiter '%c' not found.", delim).str());
   }
 }
@@ -60,7 +60,7 @@ static std::string decoderawstring(std::istream& ss)
   int length;
   ss >> length;
   if(!ss || length < 0) {
-    throw RecoverableException("A positive integer expected but none found.");
+    throw DL_ABORT_EX("A positive integer expected but none found.");
   }
   // TODO check length, it must be less than or equal to INT_MAX
   checkdelim(ss);
@@ -69,7 +69,7 @@ static std::string decoderawstring(std::istream& ss)
   std::string str(&buf[0], &buf[length]);
   delete [] buf;
   if(ss.gcount() != static_cast<int>(length)) {
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("Expected %lu bytes of data, but only %d read.",
 		    static_cast<unsigned long>(length), ss.gcount()).str());
   }
@@ -86,7 +86,7 @@ static BDE decodeinteger(std::istream& ss)
   BDE::Integer integer;
   ss >> integer;
   if(!ss) {
-    throw RecoverableException("Integer expected but none found");
+    throw DL_ABORT_EX("Integer expected but none found");
   }
   checkdelim(ss, 'e');
   return BDE(integer);
@@ -105,7 +105,7 @@ static BDE decodedict(std::istream& ss)
       dict[key] = decodeiter(ss);
     }
   }
-  throw RecoverableException("Unexpected EOF in dict context. 'e' expected.");
+  throw DL_ABORT_EX("Unexpected EOF in dict context. 'e' expected.");
 }
 
 static BDE decodelist(std::istream& ss)
@@ -120,14 +120,14 @@ static BDE decodelist(std::istream& ss)
       list << decodeiter(ss);
     }
   }
-  throw RecoverableException("Unexpected EOF in list context. 'e' expected.");
+  throw DL_ABORT_EX("Unexpected EOF in list context. 'e' expected.");
 }
 
 static BDE decodeiter(std::istream& ss)
 {
   char c;
   if(!ss.get(c)) {
-    throw RecoverableException("Unexpected EOF in term context."
+    throw DL_ABORT_EX("Unexpected EOF in term context."
 			       " 'd', 'l', 'i' or digit is expected.");
   }
   if(c == 'd') {
@@ -168,7 +168,7 @@ BDE decodeFromFile(const std::string& filename)
   if(f) {
     return decode(f);
   } else {
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("Cannot open file '%s'.", filename.c_str()).str());
   }
 }

@@ -140,7 +140,7 @@ bool AbstractCommand::execute() {
       }
       return executeInternal();
     } else if(_errorEvent) {
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat(MSG_NETWORK_PROBLEM,
 		      socket->getSocketError().c_str()).str());
     } else {
@@ -151,15 +151,15 @@ bool AbstractCommand::execute() {
 						     req->getProtocol());
 	ss->setError();
 
-	throw DlRetryEx(EX_TIME_OUT, DownloadResult::TIME_OUT);
+	throw DL_RETRY_EX2(EX_TIME_OUT, DownloadResult::TIME_OUT);
       }
       e->commands.push_back(this);
       return false;
     }
   } catch(DlAbortEx& err) {
     logger->error(MSG_DOWNLOAD_ABORTED,
-		  DlAbortEx(StringFormat
-			    ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
+		  DL_ABORT_EX2(StringFormat
+			      ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
 		  cuid, req->getUrl().c_str());
     _requestGroup->addURIResult(req->getUrl(), err.getCode());
     onAbort();
@@ -168,8 +168,8 @@ bool AbstractCommand::execute() {
     return true;
   } catch(DlRetryEx& err) {
     logger->info(MSG_RESTARTING_DOWNLOAD,
-		 DlRetryEx(StringFormat
-			   ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
+		 DL_RETRY_EX2(StringFormat
+			     ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
 		 cuid, req->getUrl().c_str());
     req->addTryCount();
     req->resetRedirectCount();
@@ -432,7 +432,7 @@ bool AbstractCommand::asyncResolveHostname()
       e->_requestGroupMan->getOrCreateServerStat
 	(req->getHost(), req->getProtocol())->setError();
     }
-    throw DlAbortEx(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
+    throw DL_ABORT_EX(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
 				 _asyncNameResolver->getHostname().c_str(),
 				 _asyncNameResolver->getError().c_str()).str());
   default:
@@ -491,7 +491,7 @@ void AbstractCommand::checkIfConnectionEstablished
 	e->_requestGroupMan->getOrCreateServerStat
 	  (req->getHost(), req->getProtocol())->setError();
       }
-      throw DlRetryEx
+      throw DL_RETRY_EX
 	(StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
     }
   }

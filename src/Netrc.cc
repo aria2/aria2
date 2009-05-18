@@ -33,11 +33,13 @@
  */
 /* copyright --> */
 #include "Netrc.h"
-#include "RecoverableException.h"
-#include "StringFormat.h"
-#include "A2STR.h"
+
 #include <fstream>
 #include <algorithm>
+
+#include "DlAbortEx.h"
+#include "StringFormat.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -59,7 +61,7 @@ std::string Netrc::getRequiredNextToken(std::ifstream& f) const
   if(f >> token) {
     return token;
   } else {
-    throw RecoverableException
+    throw DL_ABORT_EX
       ("Netrc:parse error. EOF reached where a token expected.");
   }
 }
@@ -81,7 +83,7 @@ void Netrc::parse(const std::string& path)
   std::ifstream f(path.c_str(), std::ios::binary);
   
   if(!f) {
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("File not found: %s", path.c_str()).str());
   }
 
@@ -97,7 +99,7 @@ void Netrc::parse(const std::string& path)
       authenticator.reset(new DefaultAuthenticator());
     } else {
       if(authenticator.isNull()) {
-	throw RecoverableException
+	throw DL_ABORT_EX
 	  ("Netrc:parse error. %s encounterd where 'machine' or 'default' expected.");
       }
       if(token == Netrc::LOGIN) {

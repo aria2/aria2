@@ -104,7 +104,7 @@ public:
   {
     DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
     if(itr == digestAlgos.end()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Digest algorithm %s is not supported.",
 		      algostring.c_str()).str());
     }

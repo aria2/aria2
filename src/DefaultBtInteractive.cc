@@ -102,7 +102,7 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   }
   if(memcmp(message->getPeerId(), _btContext->getPeerId(),
 	    PEER_ID_LENGTH) == 0) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat
        ("CUID#%d - Drop connection from the same Peer ID", cuid).str());
   }
@@ -369,7 +369,7 @@ void DefaultBtInteractive::detectMessageFlooding() {
   if(floodingCheckPoint.elapsed(FLOODING_CHECK_INTERVAL)) {
     if(floodingStat.getChokeUnchokeCount() >= 2 ||
        floodingStat.getKeepAliveCount() >= 2) {
-      throw DlAbortEx(EX_FLOODING_DETECTED);
+      throw DL_ABORT_EX(EX_FLOODING_DETECTED);
     } else {
       floodingStat.reset();
     }
@@ -386,7 +386,7 @@ void DefaultBtInteractive::checkActiveInteraction()
     if(!peer->amInterested() && !peer->peerInterested() &&
        inactiveCheckPoint.elapsed(interval)) {
       // TODO change the message
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Disconnect peer because we are not interested each other"
 		      " after %u second(s).", interval).str());
     }
@@ -397,7 +397,7 @@ void DefaultBtInteractive::checkActiveInteraction()
   {
     time_t interval = 2*60;
     if(inactiveCheckPoint.elapsed(interval)) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());
     }
   }

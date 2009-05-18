@@ -36,10 +36,12 @@
 #define _D_LIBGCRYPT_ARC4_DECRYPTOR_H_
 
 #include "common.h"
+
+#include <gcrypt.h>
+
 #include "DlAbortEx.h"
 #include "LibgcryptARC4Context.h"
 #include "StringFormat.h"
-#include <gcrypt.h>
 
 namespace aria2 {
 
@@ -49,7 +51,7 @@ private:
 
   void handleError(gcry_error_t err) const
   {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Exception in libgcrypt routine(ARC4Decryptor class): %s",
 		    gcry_strerror(err)).str());
   }

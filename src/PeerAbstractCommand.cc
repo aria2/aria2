@@ -87,12 +87,12 @@ bool PeerAbstractCommand::execute()
        _hupEvent) {
       checkPoint.reset();
     } else if(_errorEvent) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(MSG_NETWORK_PROBLEM,
 		      socket->getSocketError().c_str()).str());
     }
     if(checkPoint.elapsed(timeout)) {
-      throw DlAbortEx(EX_TIME_OUT);
+      throw DL_ABORT_EX(EX_TIME_OUT);
     }
     return executeInternal();
   } catch(DownloadFailureException& err) {

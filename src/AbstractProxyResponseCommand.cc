@@ -67,7 +67,7 @@ bool AbstractProxyResponseCommand::executeInternal() {
     return false;
   }
   if(httpResponse->getResponseStatus() != HttpHeader::S200) {
-    throw DlRetryEx(EX_PROXY_CONNECTION_FAILED);
+    throw DL_RETRY_EX(EX_PROXY_CONNECTION_FAILED);
   }
   e->commands.push_back(getNextCommand());
   return true;

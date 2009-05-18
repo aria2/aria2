@@ -102,7 +102,7 @@ bool Platform::setUp()
   WSADATA wsaData;
   memset((char*)&wsaData, 0, sizeof(wsaData));
   if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {
-    throw DlAbortEx(MSG_WINSOCK_INIT_FAILD);
+    throw DL_ABORT_EX(MSG_WINSOCK_INIT_FAILD);
   }
 #endif // HAVE_WINSOCK2_H
 

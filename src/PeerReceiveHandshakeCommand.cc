@@ -102,7 +102,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
       btRegistry->getPeerStorage(infoHash);
 
     if(btContext.isNull() || !btRuntime->ready()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Unknown info hash %s", infoHash.c_str()).str());
     }
     TransferStat tstat = btContext->getOwnerRequestGroup()->calculateStat();

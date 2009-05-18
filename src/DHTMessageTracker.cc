@@ -74,7 +74,7 @@ DHTMessageTracker::messageArrived(const BDE& dict,
 {
   const BDE& tid = dict[DHTMessage::T];
   if(!tid.isString()) {
-    throw DlAbortEx(StringFormat("Malformed DHT message. From:%s:%u",
+    throw DL_ABORT_EX(StringFormat("Malformed DHT message. From:%s:%u",
 				 ipaddr.c_str(), port).str());
   }
   _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",

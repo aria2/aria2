@@ -38,7 +38,7 @@
 
 #include <sqlite3.h>
 
-#include "RecoverableException.h"
+#include "DlAbortEx.h"
 #include "Util.h"
 #include "StringFormat.h"
 #include "A2STR.h"
@@ -98,7 +98,7 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
   ret = sqlite3_open_v2(filename.c_str(), &db, SQLITE_OPEN_READONLY, 0);
 #else // !HAVE_SQLITE3_OPEN_V2
   if(!File(filename).isFile()) {
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("Failed to open SQLite3 database: %s",
 		    filename.c_str()).str());
   }
@@ -107,7 +107,7 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
   if(SQLITE_OK != ret) {
     std::string errMsg = sqlite3_errmsg(db);
     sqlite3_close(db);
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("Failed to open SQLite3 database: %s",
 		    errMsg.c_str()).str());
   }
@@ -123,7 +123,7 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
   }
   if(SQLITE_OK != ret) {
     sqlite3_close(db);
-    throw RecoverableException
+    throw DL_ABORT_EX
       (StringFormat("Failed to read SQLite3 database: %s",
 		    errMsg.c_str()).str());
   }

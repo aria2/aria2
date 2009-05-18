@@ -114,7 +114,7 @@ void DHTSetup::setup(std::deque<Command*>& commands,
       IntSequence seq = Util::parseIntRange(option->get(PREF_DHT_LISTEN_PORT));
       uint16_t port;
       if(!connection->bind(port, seq)) {
-	throw DlAbortEx("Error occurred while binding port for DHT");
+	throw DL_ABORT_EX("Error occurred while binding port for DHT");
       }
       localNode->setPort(port);
     }

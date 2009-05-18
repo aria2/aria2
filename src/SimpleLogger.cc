@@ -94,7 +94,7 @@ SimpleLogger::~SimpleLogger() {
 void SimpleLogger::openFile(const std::string& filename) {
   file.open(filename.c_str(), std::ios::app|std::ios::binary);
   if(!file) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
   }
 }

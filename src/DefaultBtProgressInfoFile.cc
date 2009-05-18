@@ -183,11 +183,11 @@ void DefaultBtProgressInfoFile::save() {
     _logger->info(MSG_SAVED_SEGMENT_FILE);
   } catch(std::ios::failure const& exception) {
     // TODO std::ios::failure doesn't give us the reasons of failure...
-    throw DlAbortEx(StringFormat(EX_SEGMENT_FILE_WRITE,
+    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
 				 _filename.c_str(), strerror(errno)).str());
   }
   if(!File(filenameTemp).renameTo(_filename)) {
-    throw DlAbortEx(StringFormat(EX_SEGMENT_FILE_WRITE,
+    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
 				 _filename.c_str(), strerror(errno)).str());
   }
 }
@@ -212,7 +212,7 @@ void DefaultBtProgressInfoFile::load()
     } else if(DefaultBtProgressInfoFile::V0001 == versionHex) {
       version = 1;
     } else {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Unsupported ctrl file version: %s",
 		      versionHex.c_str()).str());
     }
@@ -232,7 +232,7 @@ void DefaultBtProgressInfoFile::load()
     }
     if((infoHashLength < 0) ||
        ((infoHashLength == 0) && infoHashCheckEnabled)) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("Invalid info hash length: %d", infoHashLength).str());
     }
     if(infoHashLength > 0) {
@@ -242,7 +242,7 @@ void DefaultBtProgressInfoFile::load()
       if(infoHashCheckEnabled &&
 	 Util::toHex(savedInfoHash, infoHashLength) !=
 	 btContext->getInfoHashAsString()) {
-	throw DlAbortEx
+	throw DL_ABORT_EX
 	  (StringFormat("info hash mismatch. expected: %s, actual: %s",
 			btContext->getInfoHashAsString().c_str(),
 			Util::toHex(savedInfoHash,
@@ -264,7 +264,7 @@ void DefaultBtProgressInfoFile::load()
       totalLength = ntoh64(totalLength);
     }
     if(totalLength != _dctx->getTotalLength()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("total length mismatch. expected: %s, actual: %s",
 		      Util::itos(_dctx->getTotalLength()).c_str(),
 		      Util::itos(totalLength).c_str()).str());
@@ -288,7 +288,7 @@ void DefaultBtProgressInfoFile::load()
     uint32_t expectedBitfieldLength =
       ((totalLength+pieceLength-1)/pieceLength+7)/8;
     if(expectedBitfieldLength != bitfieldLength) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat("bitfield length mismatch. expected: %d, actual: %d",
 		      expectedBitfieldLength,
 		      bitfieldLength).str());
@@ -316,7 +316,7 @@ void DefaultBtProgressInfoFile::load()
 	  index = ntohl(index);
 	}
 	if(!(index < _dctx->getNumPieces())) {
-	  throw DlAbortEx
+	  throw DL_ABORT_EX
 	    (StringFormat("piece index out of range: %u", index).str());
 	}
 	uint32_t length;
@@ -325,7 +325,7 @@ void DefaultBtProgressInfoFile::load()
 	  length = ntohl(length);
 	}
 	if(!(length <=_dctx->getPieceLength())) {
-	  throw DlAbortEx
+	  throw DL_ABORT_EX
 	    (StringFormat("piece length out of range: %u", length).str());
 	}
 	PieceHandle piece(new Piece(index, length));
@@ -336,7 +336,7 @@ void DefaultBtProgressInfoFile::load()
 	  bitfieldLength = ntohl(bitfieldLength);
 	}
 	if(piece->getBitfieldLength() != bitfieldLength) {
-	  throw DlAbortEx
+	  throw DL_ABORT_EX
 	    (StringFormat("piece bitfield length mismatch."
 			  " expected: %u actual: %u",
 			  piece->getBitfieldLength(), bitfieldLength).str());
@@ -368,7 +368,7 @@ void DefaultBtProgressInfoFile::load()
       src.setBitfield(savedBitfield, bitfieldLength);
       if((src.getCompletedLength() || numInFlightPiece) &&
 	 !_option->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
-	throw DownloadFailureException
+	throw DOWNLOAD_FAILURE_EXCEPTION
 	  ("WARNING: Detected a change in piece length. You can proceed with"
 	   " --allow-piece-length-change=true, but you may lose some download"
 	   " progress.");
@@ -384,7 +384,7 @@ void DefaultBtProgressInfoFile::load()
     delete [] savedBitfield;
     delete [] savedInfoHash;
     // TODO std::ios::failure doesn't give us the reasons of failure...
-    throw DlAbortEx(StringFormat(EX_SEGMENT_FILE_READ,
+    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,
 				 _filename.c_str(), strerror(errno)).str());
   } 
 }

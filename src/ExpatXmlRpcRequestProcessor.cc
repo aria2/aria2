@@ -112,7 +112,7 @@ XmlRpcRequestProcessor::parseMemory(const std::string& xml)
   XML_ParserFree(parser);
 
   if(r == XML_STATUS_ERROR) {
-    throw DlAbortEx(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
   return XmlRpcRequest(_stm->getMethodName(), _stm->getCurrentFrameValue());
 }

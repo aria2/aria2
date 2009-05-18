@@ -50,15 +50,23 @@ protected:
     return e;
   }
 public:
-  DownloadFailureException(const std::string& msg):RecoverableException(msg) {}
-  DownloadFailureException(const std::string& msg,
+  DownloadFailureException(const char* file, int line, const std::string& msg):
+    RecoverableException(file, line, msg) {}
+  DownloadFailureException(const char* file, int line, const std::string& msg,
 			   const Exception& cause):
-    RecoverableException(msg, cause) {}
-  DownloadFailureException(const DownloadFailureException& e):
-    RecoverableException(e) {}
-  DownloadFailureException(const std::string& msg, DownloadResult::RESULT code):
-    RecoverableException(msg, code) {}
+    RecoverableException(file, line, msg, cause) {}
+  DownloadFailureException(const char* file, int line,
+			   const DownloadFailureException& e):
+    RecoverableException(file, line, e) {}
+  DownloadFailureException(const char* file, int line,
+			   const std::string& msg, DownloadResult::RESULT code):
+    RecoverableException(file, line, msg, code) {}
 };
+
+#define DOWNLOAD_FAILURE_EXCEPTION(arg)\
+  DownloadFailureException(__FILE__, __LINE__, arg)
+#define DOWNLOAD_FAILURE_EXCEPTION2(arg1, arg2)\
+  DownloadFailureException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2
 

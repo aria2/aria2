@@ -88,12 +88,12 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
   ++offset;
   std::string::size_type rightParenIndex = src.find("}", offset);
   if(rightParenIndex == std::string::npos) {
-    throw DlAbortEx("Missing '}' in the parameterized string.");
+    throw DL_ABORT_EX("Missing '}' in the parameterized string.");
   }
   std::deque<std::string> values;
   Util::slice(values, src.substr(offset, rightParenIndex-offset), ',', true);
   if(values.empty()) {
-    throw DlAbortEx("Empty {} is not allowed.");
+    throw DL_ABORT_EX("Empty {} is not allowed.");
   }
   offset = rightParenIndex+1;
   PStringDatumHandle next = diggPString(src, offset);
@@ -106,7 +106,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   ++offset;
   std::string::size_type rightParenIndex = src.find("]", offset);
   if(rightParenIndex == std::string::npos) {
-    throw DlAbortEx("Missing ']' in the parameterized string.");
+    throw DL_ABORT_EX("Missing ']' in the parameterized string.");
   }
   std::string loopStr = src.substr(offset, rightParenIndex-offset);
   offset = rightParenIndex+1;
@@ -118,13 +118,13 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     if(Util::isNumber(stepStr)) {
       step = Util::parseUInt(stepStr);
     } else {
-      throw DlAbortEx("A step count must be a positive number.");
+      throw DL_ABORT_EX("A step count must be a positive number.");
     }
     loopStr.erase(colonIndex);
   }
   std::pair<std::string, std::string> range = Util::split(loopStr, "-");
   if(range.first.empty() || range.second.empty()) {
-    throw DlAbortEx("Loop range missing.");
+    throw DL_ABORT_EX("Loop range missing.");
   }
   NumberDecoratorHandle nd;
   unsigned int start;
@@ -142,7 +142,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     start = Util::alphaToNum(range.first);
     end = Util::alphaToNum(range.second);
   } else {
-    throw DlAbortEx("Invalid loop range.");
+    throw DL_ABORT_EX("Invalid loop range.");
   }
 
   PStringDatumHandle next(diggPString(src, offset));

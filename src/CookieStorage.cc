@@ -33,17 +33,19 @@
  */
 /* copyright --> */
 #include "CookieStorage.h"
+
+#include <algorithm>
+#include <fstream>
+
 #include "Util.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "RecoverableException.h"
+#include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "NsCookieParser.h"
 #ifdef HAVE_SQLITE3
 # include "Sqlite3MozCookieParser.h"
 #endif // HAVE_SQLITE3
-#include <algorithm>
-#include <fstream>
 
 namespace aria2 {
 
@@ -145,7 +147,7 @@ void CookieStorage::load(const std::string& filename)
     std::ifstream s(filename.c_str(), std::ios::binary);
     s.get(header, sizeof(header));
     if(s.bad()) {
-      throw RecoverableException
+      throw DL_ABORT_EX
 	(StringFormat("Failed to read header of cookie file %s",
 		      filename.c_str()).str());
     }
@@ -155,7 +157,7 @@ void CookieStorage::load(const std::string& filename)
 #ifdef HAVE_SQLITE3
       storeCookies(Sqlite3MozCookieParser().parse(filename));
 #else // !HAVE_SQLITE3
-      throw RecoverableException
+      throw DL_ABORT_EX
 	("Cannot read SQLite3 database because SQLite3 support is disabled by"
 	 " configuration.");
 #endif // !HAVE_SQLITE3
@@ -163,7 +165,7 @@ void CookieStorage::load(const std::string& filename)
       storeCookies(NsCookieParser().parse(filename));
     }
   } catch(RecoverableException& e) {
-    throw RecoverableException
+    throw DL_ABORT_EX2
       (StringFormat("Failed to load cookies from %s", filename.c_str()).str(),
        e);
   }

@@ -87,7 +87,7 @@ void TLSContext::addClientKeyFile(const std::string& certfile,
 						 keyfile.c_str(),
 						 GNUTLS_X509_FMT_PEM);
   if(ret != GNUTLS_E_SUCCESS) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat("Failed to load client certificate from %s and"
 		    " private key from %s. Cause: %s",
 		    certfile.c_str(), keyfile.c_str(),
@@ -102,7 +102,7 @@ void TLSContext::addTrustedCACertFile(const std::string& certfile)
 						   certfile.c_str(),
 						   GNUTLS_X509_FMT_PEM);
   if(ret < 0) {
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat
        (MSG_LOADING_TRUSTED_CA_CERT_FAILED,
 	certfile.c_str(), gnutls_strerror(ret)).str());

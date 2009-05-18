@@ -142,7 +142,7 @@ void OptionParser::parseArg
       op = findByShortName(c);
     }
     if(op.isNull()) {
-      throw DlAbortEx("Failed to parse command-line options.");
+      throw DL_ABORT_EX("Failed to parse command-line options.");
     }
     out << op->getName() << "=";
     if(optarg) {

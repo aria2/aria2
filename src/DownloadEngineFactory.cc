@@ -98,7 +98,7 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
     if(ep->good()) {
       eventPoll = ep;
     } else {
-      throw DlAbortEx("Initializing EpollEventPoll failed."
+      throw DL_ABORT_EX("Initializing EpollEventPoll failed."
 		      " Try --event-poll=select");
     }
   } else

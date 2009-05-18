@@ -152,7 +152,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     size_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
 							 curoffset);
     if(r == 0 || r < static_cast<size_t>(woffset)) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_FILE_READ, _dctx->getActualBasePath().c_str(),
 		      strerror(errno)).str());
     }

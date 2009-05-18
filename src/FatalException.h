@@ -46,11 +46,18 @@ protected:
     return e;
   }
 public:
-  FatalException(const std::string& msg):Exception(msg) {}
-  FatalException(const std::string& msg,
-		 const Exception& cause):Exception(msg, cause) {}
+  FatalException(const char* file, int line, const std::string& msg):
+    Exception(file, line, msg) {}
+  FatalException(const char* file, int line, const std::string& msg,
+		 const Exception& cause):
+    Exception(file, line, msg, cause) {}
   FatalException(const FatalException& e):Exception(e) {}
 };
+
+#define FATAL_EXCEPTION(arg)\
+  FatalException(__FILE__, __LINE__, arg)
+#define FATAL_EXCEPTION2(arg1, arg2)\
+  FatalException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2
 

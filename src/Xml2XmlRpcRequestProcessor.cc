@@ -141,7 +141,7 @@ XmlRpcRequestProcessor::parseMemory(const std::string& xml)
   int r = xmlSAXUserParseMemory(&mySAXHandler, sessionData.get(),
 				xml.data(), xml.size());
   if(r != 0) {
-    throw DlAbortEx(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
   return XmlRpcRequest(_stm->getMethodName(), _stm->getCurrentFrameValue());
 }

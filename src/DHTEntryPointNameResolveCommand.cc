@@ -159,7 +159,7 @@ bool DHTEntryPointNameResolveCommand::resolveHostname
     return true;
     break;
   case AsyncNameResolver::STATUS_ERROR:
-    throw DlAbortEx
+    throw DL_ABORT_EX
       (StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
 		    hostname.c_str(),
 		    resolver->getError().c_str()).str());

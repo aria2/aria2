@@ -163,7 +163,7 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
      static_cast<ssize_t>(length)) {
     return peerConnection->sendMessage(buf, length);
   } else {
-    throw DlAbortEx(EX_DATA_READ);
+    throw DL_ABORT_EX(EX_DATA_READ);
   }
 }
 

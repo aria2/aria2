@@ -44,7 +44,7 @@ FallocFileAllocationIterator::FallocFileAllocationIterator
 void FallocFileAllocationIterator::allocateChunk()
 {
   if(static_cast<uint64_t>(_offset) > _totalLength) {
-    throw DlAbortEx("FallocFileAllocationIterator: offset is larger than"
+    throw DL_ABORT_EX("FallocFileAllocationIterator: offset is larger than"
 		    " totalLength");
   }
   _stream->allocate(_offset, _totalLength-_offset);

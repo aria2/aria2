@@ -139,7 +139,7 @@ bool HttpResponseCommand::executeInternal()
     dctx->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
-      throw DownloadFailureException
+      throw DOWNLOAD_FAILURE_EXCEPTION
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
 		      _requestGroup->getFilePath().c_str()).str());
     }
@@ -276,7 +276,7 @@ static SharedHandle<Decoder> getTransferEncodingDecoder
   if(httpResponse->isTransferEncodingSpecified()) {
     decoder = httpResponse->getTransferEncodingDecoder();
     if(decoder.isNull()) {
-      throw DlAbortEx
+      throw DL_ABORT_EX
 	(StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
 		      httpResponse->getTransferEncoding().c_str()).str());
     }

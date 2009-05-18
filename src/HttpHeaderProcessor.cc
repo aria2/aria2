@@ -62,7 +62,7 @@ void HttpHeaderProcessor::update(const std::string& data)
 void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
 {
   if(_buf.size()+incomingLength > _limit) {
-    throw DlAbortEx("Too large http header");
+    throw DL_ABORT_EX("Too large http header");
   }
 }
 
@@ -99,7 +99,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
   if(((delimpos = _buf.find("\r\n")) == std::string::npos &&
       (delimpos = _buf.find("\n")) == std::string::npos) ||
      delimpos < 12) {
-    throw DlRetryEx(EX_NO_STATUS_HEADER);
+    throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
   HttpHeaderHandle httpHeader(new HttpHeader());
   httpHeader->setVersion(_buf.substr(0, 8));
@@ -120,12 +120,12 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
   if(((delimpos = _buf.find("\r\n")) == std::string::npos &&
       (delimpos = _buf.find("\n")) == std::string::npos) ||
      delimpos < 14) {
-    throw DlRetryEx(EX_NO_STATUS_HEADER);
+    throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
   std::deque<std::string> firstLine;
   Util::slice(firstLine, _buf.substr(0, delimpos), ' ', true);
   if(firstLine.size() != 3) {
-    throw DlAbortEx("Malformed HTTP request header.");    
+    throw DL_ABORT_EX("Malformed HTTP request header.");    
   }
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->setMethod(firstLine[0]);

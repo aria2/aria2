@@ -167,7 +167,7 @@ UTPexExtensionMessageHandle
 UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
-    throw DlAbortEx(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
+    throw DL_ABORT_EX(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
 				 EXTENSION_NAME.c_str(), len).str());
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));

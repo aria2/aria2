@@ -43,6 +43,10 @@ namespace aria2 {
 
 class Exception:public std::exception {
 private:
+  const char* _file;
+  
+  int _line;
+
   std::string _msg;
 
   SharedHandle<Exception> _cause;
@@ -51,11 +55,12 @@ protected:
   virtual SharedHandle<Exception> copy() const = 0;
 
 public:
-  explicit Exception(const std::string& msg);
+  explicit Exception(const char* file, int line, const std::string& msg);
 
-  Exception(const std::string& msg, const Exception& cause);
+  Exception(const char* file, int line, const std::string& msg,
+	    const Exception& cause);
 
-  Exception(const Exception& e);
+  Exception(const char* file, int line, const Exception& e);
 
   virtual ~Exception() throw();
 
