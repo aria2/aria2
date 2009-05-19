@@ -127,12 +127,12 @@ static void printProgress
   if(!rg->downloadFinished()) {
     o << " "
       << "SPD:"
-      << std::fixed << std::setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s";
+      << Util::abbrevSize(stat.getDownloadSpeed()) << "Bs";
   }
   if(stat.getSessionUploadLength() > 0) {
     o << " "
       << "UP:"
-      << std::fixed << std::setprecision(2) << stat.getUploadSpeed()/1024.0 << "KiB/s"
+      << Util::abbrevSize(stat.getUploadSpeed()) << "Bs"
       << "(" << Util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
   }
   if(eta > 0) {
@@ -235,7 +235,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     TransferStat stat = e->_requestGroupMan->calculateStat();
     o << " "
       << "[TOTAL SPD:"
-      << std::fixed << std::setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s" << "]";
+      << Util::abbrevSize(stat.getDownloadSpeed()) << "Bs" << "]";
   }
 
   {
