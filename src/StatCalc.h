@@ -37,21 +37,16 @@
 
 #include "common.h"
 #include "SharedHandle.h"
-#include "FileAllocationMan.h"
-#include "CheckIntegrityMan.h"
 
 namespace aria2 {
 
-class RequestGroupMan;
+class DownloadEngine;
 
 class StatCalc {
 public:
   virtual ~StatCalc() {}
 
-  virtual void 
-  calculateStat(const SharedHandle<RequestGroupMan>& requestGroupMan,
-		const SharedHandle<FileAllocationMan>& fileAllocationMan,
-		const SharedHandle<CheckIntegrityMan>& checkIntegrityMan) = 0;
+  virtual void calculateStat(const DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<StatCalc> StatCalcHandle;

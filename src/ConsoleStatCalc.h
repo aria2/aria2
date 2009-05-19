@@ -53,10 +53,7 @@ public:
 
   virtual ~ConsoleStatCalc() {}
 
-  virtual void
-  calculateStat(const SharedHandle<RequestGroupMan>& requestGroupMan,
-		const SharedHandle<FileAllocationMan>& fileAllocationMan,
-		const SharedHandle<CheckIntegrityMan>& checkIntegrityMan);
+  virtual void calculateStat(const DownloadEngine* e);
 };
 
 typedef SharedHandle<ConsoleStatCalc> ConsoleStatCalcHandle;

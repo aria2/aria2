@@ -49,6 +49,7 @@
 #include <sstream>
 #include <iterator>
 
+#include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 #include "RequestGroup.h"
 #include "FileAllocationMan.h"
@@ -58,11 +59,19 @@
 #include "Util.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtContext.h"
+# include "Peer.h"
+# include "PeerStorage.h"
+# include "BtRegistry.h"
+# include "BtProgressInfoFile.h"
+# include "BtRuntime.h"
+# include "BtAnnounce.h"
+# include "PieceStorage.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
-static void printProgress(std::ostream& o, const SharedHandle<RequestGroup>& rg)
+static void printProgress
+(std::ostream& o, const SharedHandle<RequestGroup>& rg, const DownloadEngine* e)
 {
   TransferStat stat = rg->calculateStat();
   unsigned int eta = 0;
@@ -72,9 +81,12 @@ static void printProgress(std::ostream& o, const SharedHandle<RequestGroup>& rg)
 
   o << "["
     << "#" << rg->getGID() << " ";
+
 #ifdef ENABLE_BITTORRENT
-  if(rg->downloadFinished() &&
-     !dynamic_pointer_cast<BtContext>(rg->getDownloadContext()).isNull()) {
+  SharedHandle<BtContext> btctx =
+    dynamic_pointer_cast<BtContext>(rg->getDownloadContext());
+
+  if(!btctx.isNull() && rg->downloadFinished()) {
     o << "SEEDING" << "(" << "ratio:";
     if(rg->getCompletedLength() > 0) {
       o << std::fixed << std::setprecision(1)
@@ -101,6 +113,17 @@ static void printProgress(std::ostream& o, const SharedHandle<RequestGroup>& rg)
   o << " "
     << "CN:"
     << rg->getNumConnection();
+#ifdef ENABLE_BITTORRENT
+  if(!btctx.isNull()) {
+    SharedHandle<PeerStorage> ps =
+      e->getBtRegistry()->getPeerStorage(btctx->getInfoHashAsString());
+    std::deque<SharedHandle<Peer> > peers;
+    ps->getActivePeers(peers);
+    o << " " << "SEED:"
+      << std::count_if(peers.begin(), peers.end(), mem_fun_sh(&Peer::isSeeder));
+  }
+#endif // ENABLE_BITTORRENT
+
   if(!rg->downloadFinished()) {
     o << " "
       << "SPD:"
@@ -124,20 +147,23 @@ class PrintSummary
 {
 private:
   size_t _cols;
+  const DownloadEngine* _e;
 public:
-  PrintSummary(size_t cols):_cols(cols) {}
+  PrintSummary(size_t cols, const DownloadEngine* e):_cols(cols), _e(e) {}
 
   void operator()(const SharedHandle<RequestGroup>& rg)
   {
     const char SEP_CHAR = '-';
-    printProgress(std::cout, rg);
+    printProgress(std::cout, rg, _e);
     std::cout << "\n"
 	      << "FILE: " << rg->getFilePath() << "\n"
 	      << std::setfill(SEP_CHAR) << std::setw(_cols) << SEP_CHAR << "\n";
   }
 };
 
-static void printProgressSummary(const std::deque<SharedHandle<RequestGroup> >& groups, size_t cols)
+static void printProgressSummary
+(const std::deque<SharedHandle<RequestGroup> >& groups, size_t cols,
+ const DownloadEngine* e)
 {
   const char SEP_CHAR = '=';
   time_t now;
@@ -158,7 +184,7 @@ static void printProgressSummary(const std::deque<SharedHandle<RequestGroup> >& 
   }
   std::cout << " *** " << "\n"
 	    << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
-  std::for_each(groups.begin(), groups.end(), PrintSummary(cols));
+  std::for_each(groups.begin(), groups.end(), PrintSummary(cols, e));
 }
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval):
@@ -166,10 +192,7 @@ ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval):
 {}
 
 void
-ConsoleStatCalc::calculateStat
-(const RequestGroupManHandle& requestGroupMan,
- const SharedHandle<FileAllocationMan>& fileAllocationMan,
- const SharedHandle<CheckIntegrityMan>& checkIntegrityMan)
+ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 {
   if(!_cp.elapsed(1)) {
     return;
@@ -188,35 +211,35 @@ ConsoleStatCalc::calculateStat
     std::cout << '\r' << std::setfill(' ') << std::setw(cols) << ' ' << '\r';
   }
   std::ostringstream o;
-  if(requestGroupMan->countRequestGroup() > 0) {
+  if(e->_requestGroupMan->countRequestGroup() > 0) {
     if((_summaryInterval > 0) &&
        _lastSummaryNotified.elapsed(_summaryInterval)) {
       _lastSummaryNotified.reset();
-      printProgressSummary(requestGroupMan->getRequestGroups(), cols);
+      printProgressSummary(e->_requestGroupMan->getRequestGroups(), cols, e);
       std::cout << "\n";
     }
 
-    RequestGroupHandle firstRequestGroup = requestGroupMan->getRequestGroup(0);
+    RequestGroupHandle firstRequestGroup = e->_requestGroupMan->getRequestGroup(0);
 
-    printProgress(o, firstRequestGroup);
+    printProgress(o, firstRequestGroup, e);
 
-    if(requestGroupMan->countRequestGroup() > 1) {
+    if(e->_requestGroupMan->countRequestGroup() > 1) {
       o << "("
-	<< requestGroupMan->countRequestGroup()-1
+	<< e->_requestGroupMan->countRequestGroup()-1
 	<< "more...)";
     }
   }
 
-  if(requestGroupMan->countRequestGroup() > 1 &&
-     !requestGroupMan->downloadFinished()) {
-    TransferStat stat = requestGroupMan->calculateStat();
+  if(e->_requestGroupMan->countRequestGroup() > 1 &&
+     !e->_requestGroupMan->downloadFinished()) {
+    TransferStat stat = e->_requestGroupMan->calculateStat();
     o << " "
       << "[TOTAL SPD:"
       << std::fixed << std::setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s" << "]";
   }
 
   {
-    SharedHandle<FileAllocationEntry> entry=fileAllocationMan->getPickedEntry();
+    SharedHandle<FileAllocationEntry> entry=e->_fileAllocationMan->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
 	<< "[FileAlloc:"
@@ -234,16 +257,16 @@ ConsoleStatCalc::calculateStat
       }
       o << "%)"
 	<< "]";
-      if(fileAllocationMan->hasNext()) {
+      if(e->_fileAllocationMan->hasNext()) {
 	o << "("
-	  << fileAllocationMan->countEntryInQueue()
+	  << e->_fileAllocationMan->countEntryInQueue()
 	  << "waiting...)";
       }
     }
   }
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    CheckIntegrityEntryHandle entry = checkIntegrityMan->getPickedEntry();
+    CheckIntegrityEntryHandle entry = e->_checkIntegrityMan->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
 	<< "[Checksum:"
@@ -257,9 +280,9 @@ ConsoleStatCalc::calculateStat
 	<< 100*entry->getCurrentLength()/entry->getTotalLength()
 	<< "%)"
 	<< "]";
-      if(checkIntegrityMan->hasNext()) {
+      if(e->_checkIntegrityMan->hasNext()) {
 	o << "("
-	  << checkIntegrityMan->countEntryInQueue()
+	  << e->_checkIntegrityMan->countEntryInQueue()
 	  << "waiting...)";
       }
     }

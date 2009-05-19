@@ -191,7 +191,7 @@ bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
 void DownloadEngine::calculateStatistics()
 {
   if(!_statCalc.isNull()) {
-    _statCalc->calculateStat(_requestGroupMan, _fileAllocationMan, _checkIntegrityMan);
+    _statCalc->calculateStat(this);
   }
 }
 

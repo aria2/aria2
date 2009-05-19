@@ -1,3 +1,13 @@
+2009-05-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added SEED to console output, which represents the number of
+	seeders currently the client is connecting to.	
+	* src/ConsoleStatCalc.cc
+	* src/ConsoleStatCalc.h
+	* src/DownloadEngine.cc
+	* src/NullStatCalc.h
+	* src/StatCalc.h
+
 2009-05-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added source filename(__FILE__) and line number(__LINE__) to
