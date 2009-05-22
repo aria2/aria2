@@ -72,7 +72,8 @@ void BencodeTest::testDecode()
       bencode::decode("i3");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
-      CPPUNIT_ASSERT_EQUAL(std::string("Delimiter 'e' not found."),
+      CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
+				       " Delimiter 'e' not found."),
 			   std::string(e.what()));
     }    
   }
@@ -82,7 +83,8 @@ void BencodeTest::testDecode()
       bencode::decode("d");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
-      CPPUNIT_ASSERT_EQUAL(std::string("Unexpected EOF in dict context."
+      CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
+				       " Unexpected EOF in dict context."
 				       " 'e' expected."),
 			   std::string(e.what()));
     }          
@@ -93,7 +95,8 @@ void BencodeTest::testDecode()
       bencode::decode("l");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
-      CPPUNIT_ASSERT_EQUAL(std::string("Unexpected EOF in list context."
+      CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
+				       " Unexpected EOF in list context."
 				       " 'e' expected."),
 			   std::string(e.what()));
     }          
@@ -104,7 +107,8 @@ void BencodeTest::testDecode()
       bencode::decode("3:ab");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
-      CPPUNIT_ASSERT_EQUAL(std::string("Expected 3 bytes of data,"
+      CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
+				       " Expected 3 bytes of data,"
 				       " but only 2 read."),
 			   std::string(e.what()));
     }
@@ -115,7 +119,8 @@ void BencodeTest::testDecode()
       bencode::decode("x:abc");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
-      CPPUNIT_ASSERT_EQUAL(std::string("A positive integer expected"
+      CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
+				       " A positive integer expected"
 				       " but none found."),
 			   std::string(e.what()));
     }
@@ -126,7 +131,8 @@ void BencodeTest::testDecode()
       bencode::decode("-1:a");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
-      CPPUNIT_ASSERT_EQUAL(std::string("A positive integer expected"
+      CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
+				       " A positive integer expected"
 				       " but none found."),
 			   std::string(e.what()));
     }
