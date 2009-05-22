@@ -1,3 +1,8 @@
+2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made exception message more verbose.
+	* src/bencode.cc
+
 2009-05-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Abbreviated KiB/s to KiBs and its precision decreased to 1 to save
