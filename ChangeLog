@@ -1,5 +1,23 @@
 2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added the ability to execute command when download starts and
+	stops. You can also specify command for particular cases such as
+	complete/error download.  Added --on-download-start,
+	--on-download-stop, --on-download-complete and --on-download-error
+	option.
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroupMan.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed test error
+	* test/BencodeTest.cc
+
+2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added unit tests.
 	* test/XmlRpcMethodTest.cc
 

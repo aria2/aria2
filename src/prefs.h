@@ -171,6 +171,11 @@ extern const std::string PREF_REUSE_URI;
 extern const std::string PREF_XML_RPC_USER;
 // value: string
 extern const std::string PREF_XML_RPC_PASSWD;
+// value: string
+extern const std::string PREF_ON_DOWNLOAD_START;
+extern const std::string PREF_ON_DOWNLOAD_STOP;
+extern const std::string PREF_ON_DOWNLOAD_COMPLETE;
+extern const std::string PREF_ON_DOWNLOAD_ERROR;
 
 /**
  * FTP related preferences

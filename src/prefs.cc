@@ -167,6 +167,11 @@ const std::string PREF_REUSE_URI("reuse-uri");
 const std::string PREF_XML_RPC_USER("xml-rpc-user");
 // value: string
 const std::string PREF_XML_RPC_PASSWD("xml-rpc-passwd");
+// value: string
+const std::string PREF_ON_DOWNLOAD_START("on-download-start");
+const std::string PREF_ON_DOWNLOAD_STOP("on-download-stop");
+const std::string PREF_ON_DOWNLOAD_COMPLETE("on-download-complete");
+const std::string PREF_ON_DOWNLOAD_ERROR("on-download-error");
 
 /**
  * FTP related preferences

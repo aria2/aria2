@@ -34,6 +34,8 @@
 /* copyright --> */
 #include "RequestGroupMan.h"
 
+#include <unistd.h>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
 #include <ostream>
@@ -188,6 +190,43 @@ bool RequestGroupMan::removeReservedGroup(int32_t gid)
   }
 }
 
+static void executeHook(const std::string& command, int gid)
+{
+  LogFactory::getInstance()->info("Executing user command: %s %d",
+				  command.c_str(), gid);
+  pid_t cpid = fork();
+  if(cpid == -1) {
+    LogFactory::getInstance()->error("fork() failed."
+				     " Cannot execute user command.");
+  } else if(cpid == 0) {
+    execl(command.c_str(), command.c_str(), Util::itos(gid).c_str(), (char*)0);
+    perror(("Could not execute user command: "+command).c_str());
+    _exit(1);
+  }
+}
+
+static void executeStartHook
+(const SharedHandle<RequestGroup>& group, const Option* option)
+{
+  if(!option->blank(PREF_ON_DOWNLOAD_START)) {
+    executeHook(option->get(PREF_ON_DOWNLOAD_START), group->getGID());
+  }
+}
+
+static void executeStopHook
+(const SharedHandle<DownloadResult>& result, const Option* option)
+{
+  if(result->result == DownloadResult::FINISHED &&
+     !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
+    executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE), result->gid);
+  } else if(result->result != DownloadResult::IN_PROGRESS &&
+	    !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
+    executeHook(option->get(PREF_ON_DOWNLOAD_ERROR), result->gid);
+  } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
+    executeHook(option->get(PREF_ON_DOWNLOAD_STOP), result->gid);
+  }
+}
+
 class ProcessStoppedRequestGroup {
 private:
   DownloadEngine* _e;
@@ -251,6 +290,8 @@ public:
       }
       group->releaseRuntimeResource(_e);
       _downloadResults.push_back(group->createDownloadResult());
+
+      executeStopHook(_downloadResults.back(), _e->option);
     }
   }
 };
@@ -381,6 +422,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
+      executeStartHook(groupToAdd, e->option);
     } catch(RecoverableException& ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
       groupToAdd->releaseRuntimeResource(e);
@@ -404,6 +446,7 @@ void RequestGroupMan::getInitialCommands(std::deque<Command*>& commands,
 	configureRequestGroup(*itr);
 	createInitialCommand(*itr, commands, e,
 			     _option->getAsBool(PREF_USE_HEAD));
+	executeStartHook(*itr, e->option);
 	++itr;
       } else {
 	_reservedGroups.push_front((*itr));

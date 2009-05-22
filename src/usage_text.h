@@ -523,3 +523,28 @@ _(" --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"\
   "                              tracker. If 0 is set, aria2 determines interval\n"\
   "                              based on the response of tracker and the download\n"\
   "                              progress.")
+#define TEXT_ON_DOWNLOAD_COMPLETE \
+_(" --on-download-complete=COMMAND Set the command to be executed when download\n"\
+  "                              completes.\n"\
+  "                              See --on-download-start option for the\n"\
+  "                              requirement of COMMAND.\n"\
+  "                              See also --on-download-stop option.")
+#define TEXT_ON_DOWNLOAD_START \
+_(" --on-download-start=COMMAND  Set the command to be executed when download\n"\
+  "                              starts up. COMMAND must take just one argument and\n"\
+  "                              GID is passed to COMMAND as a first argument.")
+#define TEXT_ON_DOWNLOAD_ERROR \
+_(" --on-download-error=COMMAND  Set the command to be executed when download\n"\
+  "                              aborts due to error.\n"\
+  "                              See --on-download-start option for the\n"\
+  "                              requirement of COMMAND.\n"\
+  "                              See also --on-download-stop option.")
+#define TEXT_ON_DOWNLOAD_STOP \
+_(" --on-download-stop=COMMAND   Set the command to be executed when download\n"\
+  "                              stops. You can override the command to be executed\n"\
+  "                              for particular download result using\n"\
+  "                              --on-download-complete and --on-download-error. If\n"\
+  "                              they are specified, command specified in this\n"\
+  "                              option is not executed.\n"\
+  "                              See --on-download-start option for the\n"\
+  "                              requirement of COMMAND.")

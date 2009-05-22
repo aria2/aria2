@@ -307,6 +307,42 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_ON_DOWNLOAD_COMPLETE,
+				    TEXT_ON_DOWNLOAD_COMPLETE,
+				    NO_DEFAULT_VALUE,
+				    "/path/to/command"));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_ON_DOWNLOAD_ERROR,
+				    TEXT_ON_DOWNLOAD_ERROR,
+				    NO_DEFAULT_VALUE,
+				    "/path/to/command"));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_ON_DOWNLOAD_START,
+				    TEXT_ON_DOWNLOAD_START,
+				    NO_DEFAULT_VALUE,
+				    "/path/to/command"));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_ON_DOWNLOAD_STOP,
+				    TEXT_ON_DOWNLOAD_STOP,
+				    NO_DEFAULT_VALUE,
+				    "/path/to/command"));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_PARAMETERIZED_URI,
 				    TEXT_PARAMETERIZED_URI,
