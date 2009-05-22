@@ -4,15 +4,36 @@ aria2 1.4.0
 Release Note
 ------------
 
-This release adds XML-RPC interface.  The current API allows users to
-add URI/torrent/Metalink file and change options dynamically.  The
-querying APIs such as reporting download progress, file paths, URIs
-and peer information are also available. For complete API
-specification, see
-http://apps.sourceforge.net/trac/aria2/wiki/XmlrpcInterface
+This release adds XML-RPC interface and the ability to run command
+when download started/stopped and the ability to save cookies.  The
+current XML-RPC API allows users to add URI/torrent/Metalink file and
+change options dynamically.  The querying APIs such as reporting
+download progress, file paths, URIs and peer information are also
+available. For complete API specification, see
+http://apps.sourceforge.net/trac/aria2/wiki/XmlrpcInterface The
+console readout was slightly updated and now includes the number of
+seeders the client has connected to.
 
 Changes
 -------
+
+* Added --save-cookies option.
+
+* Added the ability to execute command when download starts and
+  stops. You can also specify command for particular cases such as
+  complete/error download.  Added --on-download-start,
+  --on-download-stop, --on-download-complete and --on-download-error
+  option.
+
+* Abbreviated KiB/s to KiBs and its precision decreased to 1 to save
+  space in console readout. Also they are now shown in MiB/s if speed
+  > 1024KiB/s.
+
+* Added SEED to console output, which represents the number of seeders
+  currently the client is connecting to.
+
+* Added source filename(__FILE__) and line number(__LINE__) to
+  exception message.
 
 * Fixed the bug that POU peers are never choked in seeding.
 
