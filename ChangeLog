@@ -1,5 +1,10 @@
 2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use s itself instead of !s.bad()
+	* src/CookieStorage.cc
+
+2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --on-download-* option and --save-cookies option in man
 	page.	
 	* doc/aria2c.1.txt

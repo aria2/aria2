@@ -147,7 +147,7 @@ void CookieStorage::load(const std::string& filename)
   {
     std::ifstream s(filename.c_str(), std::ios::binary);
     s.get(header, sizeof(header));
-    if(s.bad()) {
+    if(!s) {
       throw DL_ABORT_EX
 	(StringFormat("Failed to read header of cookie file %s",
 		      filename.c_str()).str());
