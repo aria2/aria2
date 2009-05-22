@@ -1,5 +1,11 @@
 2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --on-download-* option and --save-cookies option in man
+	page.	
+	* doc/aria2c.1.txt
+
+2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set possible values for --load-cookie option to "/path/to/file".
 	* src/OptionHandlerFactory.cc
 

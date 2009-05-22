@@ -884,6 +884,17 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
+<strong>--save-cookies</strong>=FILE
+</dt>
+<dd>
+<p>
+  Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape
+  format. If FILE already exists, it is overwritten. Session Cookies
+  are also saved and their expiry values are treated as 0.  Possible
+  Values: <em>/path/to/file</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--use-head</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
@@ -1534,6 +1545,51 @@ writes the piece to the appropriate files.</td>
   Set log level to output.
   LEVEL is either <em>debug</em>, <em>info</em>, <em>notice</em>, <em>warn</em> or <em>error</em>.
   Default: <em>debug</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--on-download-complete</strong>=COMMAND
+</dt>
+<dd>
+<p>
+  Set the command to be executed when download completes.  See
+  <strong>--on-download-start</strong> option for the requirement of COMMAND.  See
+  also <strong>--on-download-stop</strong> option.  Possible Values:
+  <em>/path/to/command</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--on-download-error</strong>=COMMAND
+</dt>
+<dd>
+<p>
+  Set the command to be executed when download aborts due to error.
+  See <strong>--on-download-start</strong> option for the requirement of COMMAND.
+  See also <strong>--on-download-stop</strong> option.  Possible Values:
+  <em>/path/to/command</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--on-download-start</strong>=COMMAND
+</dt>
+<dd>
+<p>
+  Set the command to be executed when download starts up. COMMAND must
+  take just one argument and GID is passed to COMMAND as a first
+  argument.  Possible Values: <em>/path/to/command</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--on-download-stop</strong>=COMMAND
+</dt>
+<dd>
+<p>
+  Set the command to be executed when download stops. You can override
+  the command to be executed for particular download result using
+  <strong>--on-download-complete</strong> and <strong>--on-download-error</strong>. If they are
+  specified, command specified in this option is not executed.  See
+  <strong>--on-download-start</strong> option for the requirement of COMMAND.
+  Possible Values: <em>/path/to/command</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2724,7 +2780,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-05-15 01:05:53 JST
+Last updated 2009-05-23 00:00:58 JST
 </div>
 </div>
 </body>

@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.74.3 <http://docbook.sf.net/>
-.\"      Date: 05/15/2009
+.\"      Date: 05/23/2009
 .\"    Manual: [FIXME: manual]
 .\"    Source: [FIXME: source]
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "05/15/2009" "[FIXME: source]" "[FIXME: manual]"
+.TH "ARIA2C" "1" "05/23/2009" "[FIXME: source]" "[FIXME: manual]"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -381,6 +381,12 @@ Load Cookies from FILE using the Firefox3 format (SQLite3) and the Mozilla/Firef
 .sp
 If aria2 is built without libsqlite3, then it doesn\(cqt support Firefox3 cookie format\&.
 .sp .5v
+.RE
+.PP
+\fB\-\-save\-cookies\fR=FILE
+.RS 4
+Save Cookies to FILE in Mozilla/Firefox(1\&.x/2\&.x)/ Netscape format\&. If FILE already exists, it is overwritten\&. Session Cookies are also saved and their expiry values are treated as 0\&. Possible Values:
+\fI/path/to/file\fR
 .RE
 .PP
 \fB\-\-use\-head\fR[=\fItrue\fR|\fIfalse\fR]
@@ -900,6 +906,43 @@ Set log level to output\&. LEVEL is either
 or
 \fIerror\fR\&. Default:
 \fIdebug\fR
+.RE
+.PP
+\fB\-\-on\-download\-complete\fR=COMMAND
+.RS 4
+Set the command to be executed when download completes\&. See
+\fB\-\-on\-download\-start\fR
+option for the requirement of COMMAND\&. See also
+\fB\-\-on\-download\-stop\fR
+option\&. Possible Values:
+\fI/path/to/command\fR
+.RE
+.PP
+\fB\-\-on\-download\-error\fR=COMMAND
+.RS 4
+Set the command to be executed when download aborts due to error\&. See
+\fB\-\-on\-download\-start\fR
+option for the requirement of COMMAND\&. See also
+\fB\-\-on\-download\-stop\fR
+option\&. Possible Values:
+\fI/path/to/command\fR
+.RE
+.PP
+\fB\-\-on\-download\-start\fR=COMMAND
+.RS 4
+Set the command to be executed when download starts up\&. COMMAND must take just one argument and GID is passed to COMMAND as a first argument\&. Possible Values:
+\fI/path/to/command\fR
+.RE
+.PP
+\fB\-\-on\-download\-stop\fR=COMMAND
+.RS 4
+Set the command to be executed when download stops\&. You can override the command to be executed for particular download result using
+\fB\-\-on\-download\-complete\fR
+and
+\fB\-\-on\-download\-error\fR\&. If they are specified, command specified in this option is not executed\&. See
+\fB\-\-on\-download\-start\fR
+option for the requirement of COMMAND\&. Possible Values:
+\fI/path/to/command\fR
 .RE
 .PP
 \fB\-\-summary\-interval\fR=SEC

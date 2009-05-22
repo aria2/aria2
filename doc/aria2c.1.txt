@@ -263,6 +263,13 @@ HTTP Specific Options
 [NOTE]
 If aria2 is built without libsqlite3, then it doesn't support Firefox3 cookie format.
 
+*--save-cookies*=FILE::
+
+  Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape
+  format. If FILE already exists, it is overwritten. Session Cookies
+  are also saved and their expiry values are treated as 0.  Possible
+  Values: '/path/to/file'
+
 *--use-head*[='true'|'false']::
   Use HEAD method for the first request to the HTTP server.
   Default: 'true'
@@ -606,6 +613,35 @@ Advanced Options
   Set log level to output.
   LEVEL is either 'debug', 'info', 'notice', 'warn' or 'error'.
   Default: 'debug'
+
+*--on-download-complete*=COMMAND::
+
+  Set the command to be executed when download completes.  See
+  *--on-download-start* option for the requirement of COMMAND.  See
+  also *--on-download-stop* option.  Possible Values:
+  '/path/to/command'
+
+*--on-download-error*=COMMAND::
+
+  Set the command to be executed when download aborts due to error.
+  See *--on-download-start* option for the requirement of COMMAND.
+  See also *--on-download-stop* option.  Possible Values:
+  '/path/to/command'
+
+*--on-download-start*=COMMAND::
+
+  Set the command to be executed when download starts up. COMMAND must
+  take just one argument and GID is passed to COMMAND as a first
+  argument.  Possible Values: '/path/to/command'
+
+*--on-download-stop*=COMMAND::
+
+  Set the command to be executed when download stops. You can override
+  the command to be executed for particular download result using
+  *--on-download-complete* and *--on-download-error*. If they are
+  specified, command specified in this option is not executed.  See
+  *--on-download-start* option for the requirement of COMMAND.
+  Possible Values: '/path/to/command'
 
 *--summary-interval*=SEC::
   Set interval in seconds to output download progress summary.
