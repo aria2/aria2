@@ -1,5 +1,10 @@
 2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added unit tests.
+	* test/XmlRpcMethodTest.cc
+
+2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made exception message more verbose.
 	* src/bencode.cc
 
