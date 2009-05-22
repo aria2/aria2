@@ -1,5 +1,13 @@
 2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed tellAll XML-RPC command because its reponse tends to be
+	big if stopped/waiting downloads pile up.
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+
+2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added the ability to execute command when download starts and
 	stops. You can also specify command for particular cases such as
 	complete/error download.  Added --on-download-start,
