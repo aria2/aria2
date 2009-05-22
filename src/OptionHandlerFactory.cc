@@ -736,6 +736,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_SAVE_COOKIES,
+				    TEXT_SAVE_COOKIES,
+				    NO_DEFAULT_VALUE,
+				    "/path/to/file"));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_USE_HEAD,
 				    TEXT_USE_HEAD,

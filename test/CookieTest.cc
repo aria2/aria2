@@ -18,6 +18,7 @@ class CookieTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMatch);
   CPPUNIT_TEST(testIsExpired);
   CPPUNIT_TEST(testNormalizeDomain);
+  CPPUNIT_TEST(testToNsCookieFormat);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -29,6 +30,7 @@ public:
   void testMatch();
   void testIsExpired();
   void testNormalizeDomain();
+  void testToNsCookieFormat();
 };
 
 
@@ -174,6 +176,17 @@ void CookieTest::testNormalizeDomain()
   CPPUNIT_ASSERT_EQUAL(std::string("..local"), dot.getDomain());
   Cookie ip("k", "v", "/", "192.168.1.1", false);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.1.1"), ip.getDomain());
+}
+
+void CookieTest::testToNsCookieFormat()
+{
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(".domain.org\tTRUE\t/\tFALSE\t12345678\thello\tworld"),
+     Cookie("hello","world",12345678,"/",".domain.org",false).toNsCookieFormat());
+  // Session cookie's expiry is 0
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(".domain.org\tTRUE\t/\tTRUE\t0\thello\tworld"),
+     Cookie("hello","world","/","domain.org",true).toNsCookieFormat());
 }
 
 } // namespace aria2

@@ -182,6 +182,14 @@ DownloadResult::RESULT MultiUrlRequestInfo::execute()
     
     e->run();
     
+    if(!_option->blank(PREF_SAVE_COOKIES)) {
+      try {
+	e->getCookieStorage()->saveNsFormat(_option->get(PREF_SAVE_COOKIES));
+      } catch(RecoverableException& e) {
+	_logger->error(EX_EXCEPTION_CAUGHT, e);
+      }
+    }
+
     std::string serverStatOf = _option->get(PREF_SERVER_STAT_OF);
     if(!serverStatOf.empty()) {
       e->_requestGroupMan->saveServerStat(serverStatOf);

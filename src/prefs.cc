@@ -199,6 +199,8 @@ const std::string V_BASIC("basic");
 const std::string PREF_USER_AGENT("user-agent");
 // value: string that your file system recognizes as a file name.
 const std::string PREF_LOAD_COOKIES("load-cookies");
+// value: string that your file system recognizes as a file name.
+const std::string PREF_SAVE_COOKIES("save-cookies");
 // values: true | false
 const std::string PREF_ENABLE_HTTP_KEEP_ALIVE("enable-http-keep-alive");
 // values: true | false

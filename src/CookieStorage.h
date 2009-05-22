@@ -36,11 +36,13 @@
 #define _D_COOKIE_STORAGE_H_
 
 #include "common.h"
+
+#include <string>
+#include <deque>
+
 #include "a2time.h"
 #include "Cookie.h"
 #include "CookieParser.h"
-#include <string>
-#include <deque>
 
 namespace aria2 {
 
@@ -75,6 +77,8 @@ public:
 				  time_t date, bool secure) const;
 
   void load(const std::string& filename);
+  
+  void saveNsFormat(const std::string& filename);
 
   size_t size() const;
   

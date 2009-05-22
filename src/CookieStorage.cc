@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "CookieStorage.h"
 
+#include <cstring>
 #include <algorithm>
 #include <fstream>
 
@@ -168,6 +169,24 @@ void CookieStorage::load(const std::string& filename)
     throw DL_ABORT_EX2
       (StringFormat("Failed to load cookies from %s", filename.c_str()).str(),
        e);
+  }
+}
+
+void CookieStorage::saveNsFormat(const std::string& filename)
+{
+  std::ofstream o(filename.c_str(), std::ios::binary);
+  if(!o) {
+    throw DL_ABORT_EX
+      (StringFormat("Cannot create cookie file %s, cause %s",
+		    filename.c_str(), strerror(errno)).str());
+  }
+  for(std::deque<Cookie>::const_iterator i = _cookies.begin();
+      i != _cookies.end(); ++i) {
+    o << (*i).toNsCookieFormat() << "\n";
+    if(!o) {
+      throw DL_ABORT_EX
+	(StringFormat("Failed to save cookies to %s", filename.c_str()).str());
+    }
   }
 }
 

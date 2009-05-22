@@ -1,5 +1,20 @@
 2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --save-cookies option.
+	* src/Cookie.cc
+	* src/Cookie.h
+	* src/CookieStorage.cc
+	* src/CookieStorage.h
+	* src/MultiUrlRequestInfo.cc
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/CookieStorageTest.cc
+	* test/CookieTest.cc
+
+2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed tellAll XML-RPC command because its reponse tends to be
 	big if stopped/waiting downloads pile up.
 	* src/XmlRpcMethodFactory.cc

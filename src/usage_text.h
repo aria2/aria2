@@ -217,6 +217,11 @@ _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads fo
 #define TEXT_LOAD_COOKIES \
 _(" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 format\n"\
   "                              and Mozilla/Firefox(1.x/2.x)/Netscape format.")
+#define TEXT_SAVE_COOKIES \
+_(" --save-cookies=FILE          Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/\n"\
+  "                              Netscape format. If FILE already exists, it is\n"\
+  "                              overwritten. Session Cookies are also saved and\n"\
+  "                              their expiry values are treated as 0.")
 #define TEXT_SHOW_FILES \
 _(" -S, --show-files             Print file listing of .torrent or .metalink file\n"\
   "                              and exit. More detailed information will be listed\n"\

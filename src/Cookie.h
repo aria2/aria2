@@ -104,6 +104,8 @@ public:
   bool isSecureCookie() const;
 
   bool isSessionCookie() const;
+
+  std::string toNsCookieFormat() const;
 };
 
 typedef std::deque<Cookie> Cookies;

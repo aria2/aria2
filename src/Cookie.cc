@@ -35,6 +35,7 @@
 #include "Cookie.h"
 
 #include <algorithm>
+#include <sstream>
 
 #include "Util.h"
 #include "A2STR.h"
@@ -238,6 +239,29 @@ bool Cookie::isSecureCookie() const
 bool Cookie::isSessionCookie() const
 {
   return _expiry == 0;
+}
+
+std::string Cookie::toNsCookieFormat() const
+{
+  std::stringstream ss;
+  ss << _domain << "\t";
+  if(Util::startsWith(_domain, ".")) {
+    ss << "TRUE";
+  } else {
+    ss << "FALSE";
+  }
+  ss << "\t";
+  ss << _path << "\t";
+  if(_secure) {
+    ss << "TRUE";
+  } else {
+    ss << "FALSE";
+  }
+  ss << "\t";
+  ss << _expiry << "\t";
+  ss << _name << "\t";
+  ss << _value;
+  return ss.str();
 }
 
 } // namespace aria2

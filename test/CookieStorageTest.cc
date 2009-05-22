@@ -22,6 +22,8 @@ class CookieStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoad);
   CPPUNIT_TEST(testLoad_sqlite3);
   CPPUNIT_TEST(testLoad_fileNotfound);
+  CPPUNIT_TEST(testSaveNsFormat);
+  CPPUNIT_TEST(testSaveNsFormat_fail);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -34,6 +36,8 @@ public:
   void testLoad();
   void testLoad_sqlite3();
   void testLoad_fileNotfound();
+  void testSaveNsFormat();
+  void testSaveNsFormat_fail();
 };
 
 
@@ -258,6 +262,39 @@ void CookieStorageTest::testLoad_fileNotfound()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // success
+  }
+}
+
+void CookieStorageTest::testSaveNsFormat()
+{
+  std::string filename = "/tmp/aria2_CookieStorageTest_testSaveNsFormat";
+  File(filename).remove();
+  CookieStorage st;
+  st.store(Cookie("uid","tujikawa","/",".domain.org",true));
+  st.store(Cookie("favorite","classic","/config",".domain.org",false));
+  st.saveNsFormat(filename);
+  CookieStorage loadst;
+  loadst.load(filename);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, loadst.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("uid"), (*loadst.begin()).getName());
+  CPPUNIT_ASSERT_EQUAL((time_t)0, (*loadst.begin()).getExpiry());
+  CPPUNIT_ASSERT((*loadst.begin()).isSessionCookie());
+  CPPUNIT_ASSERT_EQUAL(std::string("favorite"), (*(loadst.begin()+1)).getName());
+}
+
+void CookieStorageTest::testSaveNsFormat_fail()
+{
+  std::string filename = "/tmp/aria2_CookieStorageTest_testSaveNsFormat_fail";
+  File f(filename);
+  if(!f.exists()) {
+    f.mkdirs();
+  }
+  CookieStorage st;
+  try {
+    st.saveNsFormat(filename);
+    CPPUNIT_FAIL("exception should be thrown.");
+  } catch(RecoverableException& e) {
+    // OK
   }
 }
 

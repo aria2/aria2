@@ -203,6 +203,8 @@ extern const std::string V_BASIC;
 extern const std::string PREF_USER_AGENT;
 // value: string that your file system recognizes as a file name.
 extern const std::string PREF_LOAD_COOKIES;
+// value: string that your file system recognizes as a file name.
+extern const std::string PREF_SAVE_COOKIES;
 // values: true | false
 extern const std::string PREF_ENABLE_HTTP_KEEP_ALIVE;
 // values: true | false
