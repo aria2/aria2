@@ -1,3 +1,8 @@
+2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Set possible values for --load-cookie option to "/path/to/file".
+	* src/OptionHandlerFactory.cc
+
 2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --save-cookies option.

@@ -706,7 +706,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_LOAD_COOKIES,
 				    TEXT_LOAD_COOKIES,
 				    NO_DEFAULT_VALUE,
-				    "FILENAME"));
+				    "/path/to/file"));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
