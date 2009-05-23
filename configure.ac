@@ -73,7 +73,7 @@ fi
 if test "x$with_gnutls" = "xyes"; then
   # gnutls >= 2.8 doesn't have libgnutls-config anymore.
   # First check the presence of libgnutls using pkg-config.
-  PKG_CHECK_MODULES([LIBGNUTLS], [gnutlsx >= 1.2.9],
+  PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 1.2.9],
                     [have_libgnutls=yes], [have_libgnutls=no])
   # If no libgnutls found by pkg-config, fall back to old macro
   if test "x$have_libgnutls" = "xno"; then

@@ -6469,12 +6469,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBGNUTLS_CFLAGS="$LIBGNUTLS_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gnutlsx >= 1.2.9\"") >&5
-  ($PKG_CONFIG --exists --print-errors "gnutlsx >= 1.2.9") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gnutls >= 1.2.9\"") >&5
+  ($PKG_CONFIG --exists --print-errors "gnutls >= 1.2.9") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBGNUTLS_CFLAGS=`$PKG_CONFIG --cflags "gnutlsx >= 1.2.9" 2>/dev/null`
+  pkg_cv_LIBGNUTLS_CFLAGS=`$PKG_CONFIG --cflags "gnutls >= 1.2.9" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -6487,12 +6487,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_LIBGNUTLS_LIBS="$LIBGNUTLS_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gnutlsx >= 1.2.9\"") >&5
-  ($PKG_CONFIG --exists --print-errors "gnutlsx >= 1.2.9") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gnutls >= 1.2.9\"") >&5
+  ($PKG_CONFIG --exists --print-errors "gnutls >= 1.2.9") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_LIBGNUTLS_LIBS=`$PKG_CONFIG --libs "gnutlsx >= 1.2.9" 2>/dev/null`
+  pkg_cv_LIBGNUTLS_LIBS=`$PKG_CONFIG --libs "gnutls >= 1.2.9" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -6511,9 +6511,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBGNUTLS_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gnutlsx >= 1.2.9"`
+	        LIBGNUTLS_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gnutls >= 1.2.9"`
         else
-	        LIBGNUTLS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gnutlsx >= 1.2.9"`
+	        LIBGNUTLS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gnutls >= 1.2.9"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$LIBGNUTLS_PKG_ERRORS" >&5
