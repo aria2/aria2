@@ -1,5 +1,12 @@
 2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Since upcoming libgnutls 2.8 doesn't have libgnutls-config, Check
+	presence of libgnutls using pkg-config first. If it fails, fall
+	back to old macro libgnutls.m4.
+	* configure.ac
+
+2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use s itself instead of !s.bad()
 	* src/CookieStorage.cc
 

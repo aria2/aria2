@@ -749,9 +749,10 @@ OPENSSL_LIBS
 LIBGCRYPT_LIBS
 LIBGCRYPT_CFLAGS
 LIBGCRYPT_CONFIG
+LIBGNUTLS_CONFIG
 LIBGNUTLS_LIBS
 LIBGNUTLS_CFLAGS
-LIBGNUTLS_CONFIG
+PKG_CONFIG
 SQLITE3_CPPFLAGS
 SQLITE3_LIBS
 LIBEXPAT_CPPFLAGS
@@ -913,7 +914,10 @@ CC
 CFLAGS
 YACC
 YFLAGS
-CXXCPP'
+CXXCPP
+PKG_CONFIG
+LIBGNUTLS_CFLAGS
+LIBGNUTLS_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1606,6 +1610,11 @@ Some influential environment variables:
               This script will default YFLAGS to the empty string to avoid a
               default value of `-d' given by some make applications.
   CXXCPP      C++ preprocessor
+  PKG_CONFIG  path to pkg-config utility
+  LIBGNUTLS_CFLAGS
+              C compiler flags for LIBGNUTLS, overriding pkg-config
+  LIBGNUTLS_LIBS
+              linker flags for LIBGNUTLS, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -6332,6 +6341,199 @@ CPPFLAGS=$CPPFLAGS_save
 fi
 
 if test "x$with_gnutls" = "xyes"; then
+  # gnutls >= 2.8 doesn't have libgnutls-config anymore.
+  # First check the presence of libgnutls using pkg-config.
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_ac_pt_PKG_CONFIG+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:$LINENO: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:$LINENO: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.9.0
+	{ $as_echo "$as_me:$LINENO: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+
+fi
+
+pkg_failed=no
+{ $as_echo "$as_me:$LINENO: checking for LIBGNUTLS" >&5
+$as_echo_n "checking for LIBGNUTLS... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LIBGNUTLS_CFLAGS"; then
+        pkg_cv_LIBGNUTLS_CFLAGS="$LIBGNUTLS_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gnutlsx >= 1.2.9\"") >&5
+  ($PKG_CONFIG --exists --print-errors "gnutlsx >= 1.2.9") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_LIBGNUTLS_CFLAGS=`$PKG_CONFIG --cflags "gnutlsx >= 1.2.9" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LIBGNUTLS_LIBS"; then
+        pkg_cv_LIBGNUTLS_LIBS="$LIBGNUTLS_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gnutlsx >= 1.2.9\"") >&5
+  ($PKG_CONFIG --exists --print-errors "gnutlsx >= 1.2.9") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_LIBGNUTLS_LIBS=`$PKG_CONFIG --libs "gnutlsx >= 1.2.9" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBGNUTLS_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gnutlsx >= 1.2.9"`
+        else
+	        LIBGNUTLS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gnutlsx >= 1.2.9"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBGNUTLS_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+                have_libgnutls=no
+elif test $pkg_failed = untried; then
+	have_libgnutls=no
+else
+	LIBGNUTLS_CFLAGS=$pkg_cv_LIBGNUTLS_CFLAGS
+	LIBGNUTLS_LIBS=$pkg_cv_LIBGNUTLS_LIBS
+        { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_libgnutls=yes
+fi
+  # If no libgnutls found by pkg-config, fall back to old macro
+  if test "x$have_libgnutls" = "xno"; then
+    { $as_echo "$as_me:$LINENO: WARNING: $LIBGNUTLS_PKG_ERRORS" >&5
+$as_echo "$as_me: WARNING: $LIBGNUTLS_PKG_ERRORS" >&2;}
 
 # Check whether --with-libgnutls-prefix was given.
 if test "${with_libgnutls_prefix+set}" = set; then
@@ -6609,6 +6811,7 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
 
 
 
+  fi
   if test "x$have_libgnutls" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
@@ -6616,6 +6819,8 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
   fi
+
+
 fi
 
 if test "x$have_libgnutls" = "xyes"; then
