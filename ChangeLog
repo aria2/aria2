@@ -1,3 +1,10 @@
+2009-05-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed g++-4.4 compiler warning: dereferencing type-punned pointer
+	will break strict-aliasing rules
+	* src/PeerConnection.cc
+	* test/DHTRoutingTableSerializerTest.cc
+
 2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed PKG_CONFIG variable in sqlite3.m4, which conflicts the

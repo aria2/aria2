@@ -70,7 +70,10 @@ void DHTRoutingTableSerializerTest::testSerialize()
 
   // time
   ss.read(buf, 8);
-  time_t time = ntoh64(*reinterpret_cast<uint64_t*>(buf));
+  time_t time;
+  uint64_t timebuf;
+  memcpy(&timebuf, buf, sizeof(timebuf));
+  time = ntoh64(timebuf);
   std::cerr << time << std::endl;
 
   // localnode
@@ -86,7 +89,10 @@ void DHTRoutingTableSerializerTest::testSerialize()
 
   // number of nodes saved
   ss.read(buf, 4);
-  uint32_t numNodes = ntohl(*reinterpret_cast<uint32_t*>(buf));
+  uint32_t numNodes;
+  memcpy(&numNodes, buf, sizeof(numNodes));
+  numNodes = ntohl(numNodes);
+
   CPPUNIT_ASSERT_EQUAL((uint32_t)3, numNodes);
   // 4bytes reserved
   ss.read(buf, 4);

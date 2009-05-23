@@ -97,7 +97,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
       // still 4-lenbufLength bytes to go
       return false;
     }
-    uint32_t payloadLength = ntohl(*(reinterpret_cast<uint32_t*>(lenbuf)));
+    uint32_t payloadLength;
+    memcpy(&payloadLength, lenbuf, sizeof(payloadLength));
+    payloadLength = ntohl(payloadLength);
     if(payloadLength > MAX_PAYLOAD_LEN) {
       throw DL_ABORT_EX(StringFormat(EX_TOO_LONG_PAYLOAD, payloadLength).str());
     }
