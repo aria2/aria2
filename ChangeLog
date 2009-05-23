@@ -1,5 +1,15 @@
 2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed PKG_CONFIG variable in sqlite3.m4, which conflicts the
+	variable in pkg.m4. Use PKG_CHECK_MODULES instead of hand-crafted
+	scripts. Renamed SQLITE3_CPPFLAGS as SQLITE3_CFLAGS since
+	PKG_CHECK_MODULES macro uses latter name.	
+	* m4/sqlite3.m4
+	* src/Makefile.am
+	* test/Makefile.am
+
+2009-05-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo
 	* configure.ac
 
