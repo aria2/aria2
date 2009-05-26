@@ -535,6 +535,11 @@ XML-RPC Options
   Specify a port number for XML-RPC server to listen to.  Possible
   Values: '1024'-'65535' Default: '6800'
 
+*--xml-rpc-max-request-size*=SIZE::
+
+  Set max size of XML-RPC request. If aria2 detected the request is
+  more than SIZE bytes, it drops connection. Default: '2M'
+
 *--xml-rpc-passwd*=PASSWD::
   Set XML-RPC password.
 

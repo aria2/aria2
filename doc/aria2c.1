@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.0 <http://docbook.sf.net/>
-.\"      Date: 05/26/2009
+.\"      Date: 05/27/2009
 .\"    Manual: [FIXME: manual]
 .\"    Source: [FIXME: source]
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "05/26/2009" "[FIXME: source]" "[FIXME: manual]"
+.TH "ARIA2C" "1" "05/27/2009" "[FIXME: source]" "[FIXME: manual]"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -792,6 +792,12 @@ Specify a port number for XML\-RPC server to listen to\&. Possible Values:
 \fI1024\fR\-\fI65535\fR
 Default:
 \fI6800\fR
+.RE
+.PP
+\fB\-\-xml\-rpc\-max\-request\-size\fR=SIZE
+.RS 4
+Set max size of XML\-RPC request\&. If aria2 detected the request is more than SIZE bytes, it drops connection\&. Default:
+\fI2M\fR
 .RE
 .PP
 \fB\-\-xml\-rpc\-passwd\fR=PASSWD
