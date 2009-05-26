@@ -1017,6 +1017,284 @@ host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=O
 host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
 --------------------------------------------------------------------------------
 
+XML-RPC INTERFACE
+-----------------
+
+Terminology
+~~~~~~~~~~~
+
+GID::
+
+  GID(or gid) is the key to manage each download. Each download has an
+  unique GID. Currently GID looks like an integer, but don't treat it
+  as integer because it may be changed to another type in the future
+  release.
+
+Methods
+~~~~~~~
+
+*aria2.addUri* 'uris[, options]'
+
+This method adds new HTTP(S)/FTP download.  'uris' is of type array
+and its element is URI which is of type string. URI should be
+percent-encoded.  'options' is of type struct and its members are a
+pair of option name and value. See *Options* below for more details.
+This method returns GID of registered download.
+
+*aria2.addTorrent* 'torrent[, uris[, options]]'
+
+This method adds BitTorrent download by uploading .torrent file.
+'torrent' is of type base64 which contains Base64-encoded .torrent
+file.  'uris' is of type array and its element is URI which is of type
+string. 'uris' is used for Web-seeding. Note that 'uris' is ignored if
+specified torrent is a multi-file torrent.  'options' is of type
+struct and its members are a pair of option name and value. See
+*Options* below for more details.  This method returns GID of
+registered download.
+
+*aria2.addMetalink* 'metalink[, options]'
+
+This method adds Metalink download by uploading .metalink file.
+'metalink' is of type base64 which contains Base64-encoded .metalink
+file.  'options' is of type struct and its members are a pair of
+option name and value. See *Options* below for more details.  This
+method returns GID of registered download.
+
+*aria2.remove* 'gid'
+
+This method removes the download denoted by 'gid'. 'gid' is of type
+string. If specified download is in progress, it is stopped at
+first. The status of removed download becomes "removed".  This method
+returns GID of removed download.
+
+*aria2.tellStatus* 'gid'
+
+This method returns download progress of the download denoted by
+'gid'. 'gid' is of type string. The response is of type struct and it
+contains following keys. The value type is string.
+
+gid::
+
+  GID of this download.
+
+status::
+
+  "active" for currently downloading/seeding entry. "waiting" for the
+  entry in the queue; download is not started. "error" for the stopped
+  download because of error. "complete" for the stopped and completed
+  download. "removed" for the download removed by user.
+
+totalLength::
+
+  Total length of this download in bytes.
+
+completedLength::
+
+  Completed length of this download in bytes.
+
+bitfield::
+
+  Hexadecimal representation of the download progress. The highest bit
+  corresponds to piece index 0. The set bits indicate the piece is
+  available and unset bits indicate the piece is missing. The spare
+  bits at the end are set to zero.
+
+downloadSpeed::
+
+  Download speed of this download measured in bytes/sec.
+
+uploadSpeed::
+
+  Upload speed of this download measured in bytes/sec.
+
+infoHash::
+
+  InfoHash. BitTorrent only.
+
+pieceLength::
+
+  Piece length in bytes.
+
+numPieces::
+
+  The number of pieces.
+
+connections::
+
+  The number of peers/servers the client has connected to.
+
+*aria2.getUris* 'gid'
+
+This method returns URIs used in the download denoted by 'gid'.  'gid'
+is of type string. The response is of type array and its element is of
+type struct and it contains following keys. The value type is string.
+
+uri::
+
+  URI
+
+*aria2.getFiles* 'gid'
+
+This method returns file list of the download denoted by 'gid'. 'gid'
+is of type string. The response is of type array and its element is of
+type struct and it contains following keys. The value type is string.
+
+index::
+
+  Index of file. Starting with 1. This is the same order with the
+  files in multi-file torrent.
+
+path::
+
+  File path.
+
+length::
+
+  File size in bytes.
+
+selected::
+
+  "true" if this file is selected by *--select-file* option. If
+  *--select-file* is not specified or this is single torrent or no
+  torrent download, this value is always "true". Otherwise "false".
+
+
+*aria2.getPeers* 'gid'
+
+This method returns peer list of the download denoted by 'gid'. 'gid'
+is of type string. This method is for BitTorrent only.  The response
+is of type array and its element is of type struct and it contains
+following keys. The value type is string.
+
+peerId::
+
+  Percent-encoded peer ID.
+
+ip::
+
+  IP address of the peer.
+
+port::
+
+  Port number of the peer.
+
+bitfield::
+
+  Hexadecimal representation of the download progress of the peer. The
+  highest bit corresponds to piece index 0. The set bits indicate the
+  piece is available and unset bits indicate the piece is missing. The
+  spare bits at the end are set to zero.
+
+amChoking::
+
+  "true" if this client is choking the peer. Otherwise "false".
+
+peerChoking::
+
+  "true" if the peer is choking this client. Otherwise "false".
+
+downloadSpeed::
+
+  Download speed (byte/sec) that this client obtains from the peer.
+
+uploadSpeed::
+
+  Upload speed(byte/sec) that this client uploads to the peer. 
+
+*aria2.tellActive*
+
+This method returns the list of active downloads.  The respose is of
+type array and its element is the same struct returned by
+*aria2.tellStatus* method.
+
+*aria2.changeOption* 'gid, options'
+
+This method changes options of the download denoted by 'gid'
+dynamically.  'gid' is of type string.  'options' is of type struct
+and the available options are *max-download-limit* and *max-upload-limit*.
+This method returns "OK" for success.
+
+*aria2.changeGlobalOption* 'options'
+
+This method changes global options dynamically.  'options' is of type
+struct and the available options are *max-overall-download-limit* and
+*max-overall-upload-limit*.  This method returns "OK" for success.
+
+*aria2.purgeDownloadResult*
+
+This method purges completed/error/removed downloads to free memory.
+This method returns "OK".
+
+Error Handling
+~~~~~~~~~~~~~~
+
+In case of error, aria2 returns faultCode=1 and the error message in
+faultString.
+
+Options
+~~~~~~~
+
+Same options for *-i* list are available. See *Input File* subsection
+for complete list of options.
+
+In the option struct, name element is option name(without preceeding
+"--") and value element is argument as string.
+
+-------------------------------------------------
+<struct>
+  <member>
+    <name>split</name>
+    <value><string>1</string></value>
+  </member>
+  <member>
+    <name>http-proxy</name>
+    <value><string>http://proxy/</string></value>
+  </member>
+</struct>
+-------------------------------------------------
+
+*header* and *index-out* option are allowed multiple times in
+command-line. Since name should be unique in struct(many XML-RPC
+library implementation uses hash or dict for struct), single string is
+not enough. To overcome this situation, they can take array as value
+as well as string.
+
+---------------------------------------------------------------
+<struct>
+  <member>
+    <name>header</name>
+    <value>
+      <array>
+        <data>
+          <value><string>Accept-Language: ja</string></value>
+          <value><string>Accept-Charset: utf-8</string></value>
+        </data>
+      </array>
+    </value>
+  </member>
+</struct>
+---------------------------------------------------------------
+
+Sample XML-RPC Client Code
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following Ruby script adds 'http://localhost/aria2.tar.bz2' to
+aria2c operated on localhost with option *--dir*='/downloads' and
+prints its reponse.
+
+----------------------------------------------
+#!/usr/bin/env ruby
+
+require 'xmlrpc/client'
+require 'pp'
+
+client=XMLRPC::Client.new2("http://localhost:6800/rpc")
+
+options={ "dir" => "/downloads" }
+result=client.call("aria2.addUri", [ "http://localhost/aria2.tar.bz2" ], options)
+
+pp result
+----------------------------------------------
 
 EXAMPLE
 -------

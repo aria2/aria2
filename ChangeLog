@@ -1,3 +1,8 @@
+2009-05-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Documented XML-RPC API in man page.
+	* doc/aria2c.1.txt
+
 2009-05-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed g++-4.4 compiler warning: dereferencing type-punned pointer

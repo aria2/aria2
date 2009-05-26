@@ -2389,6 +2389,355 @@ ignored.</p></div>
 host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR</tt></pre>
 </div></div>
 </div>
+<h2 id="_xml_rpc_interface">XML-RPC INTERFACE</h2>
+<div class="sectionbody">
+<h3 id="_terminology">Terminology</h3><div style="clear:left"></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+GID
+</dt>
+<dd>
+<p>
+  GID(or gid) is the key to manage each download. Each download has an
+  unique GID. Currently GID looks like an integer, but don&#8217;t treat it
+  as integer because it may be changed to another type in the future
+  release.
+</p>
+</dd>
+</dl></div>
+<h3 id="_methods">Methods</h3><div style="clear:left"></div>
+<div class="paragraph"><p><strong>aria2.addUri</strong> <em>uris[, options]</em></p></div>
+<div class="paragraph"><p>This method adds new HTTP(S)/FTP download.  <em>uris</em> is of type array
+and its element is URI which is of type string. URI should be
+percent-encoded.  <em>options</em> is of type struct and its members are a
+pair of option name and value. See <strong>Options</strong> below for more details.
+This method returns GID of registered download.</p></div>
+<div class="paragraph"><p><strong>aria2.addTorrent</strong> <em>torrent[, uris[, options]]</em></p></div>
+<div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.
+<em>torrent</em> is of type base64 which contains Base64-encoded .torrent
+file.  <em>uris</em> is of type array and its element is URI which is of type
+string. <em>uris</em> is used for Web-seeding. Note that <em>uris</em> is ignored if
+specified torrent is a multi-file torrent.  <em>options</em> is of type
+struct and its members are a pair of option name and value. See
+<strong>Options</strong> below for more details.  This method returns GID of
+registered download.</p></div>
+<div class="paragraph"><p><strong>aria2.addMetalink</strong> <em>metalink[, options]</em></p></div>
+<div class="paragraph"><p>This method adds Metalink download by uploading .metalink file.
+<em>metalink</em> is of type base64 which contains Base64-encoded .metalink
+file.  <em>options</em> is of type struct and its members are a pair of
+option name and value. See <strong>Options</strong> below for more details.  This
+method returns GID of registered download.</p></div>
+<div class="paragraph"><p><strong>aria2.remove</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method removes the download denoted by <em>gid</em>. <em>gid</em> is of type
+string. If specified download is in progress, it is stopped at
+first. The status of removed download becomes "removed".  This method
+returns GID of removed download.</p></div>
+<div class="paragraph"><p><strong>aria2.tellStatus</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method returns download progress of the download denoted by
+<em>gid</em>. <em>gid</em> is of type string. The response is of type struct and it
+contains following keys. The value type is string.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+gid
+</dt>
+<dd>
+<p>
+  GID of this download.
+</p>
+</dd>
+<dt class="hdlist1">
+status
+</dt>
+<dd>
+<p>
+  "active" for currently downloading/seeding entry. "waiting" for the
+  entry in the queue; download is not started. "error" for the stopped
+  download because of error. "complete" for the stopped and completed
+  download. "removed" for the download removed by user.
+</p>
+</dd>
+<dt class="hdlist1">
+totalLength
+</dt>
+<dd>
+<p>
+  Total length of this download in bytes.
+</p>
+</dd>
+<dt class="hdlist1">
+completedLength
+</dt>
+<dd>
+<p>
+  Completed length of this download in bytes.
+</p>
+</dd>
+<dt class="hdlist1">
+bitfield
+</dt>
+<dd>
+<p>
+  Hexadecimal representation of the download progress. The highest bit
+  corresponds to piece index 0. The set bits indicate the piece is
+  available and unset bits indicate the piece is missing. The spare
+  bits at the end are set to zero.
+</p>
+</dd>
+<dt class="hdlist1">
+downloadSpeed
+</dt>
+<dd>
+<p>
+  Download speed of this download measured in bytes/sec.
+</p>
+</dd>
+<dt class="hdlist1">
+uploadSpeed
+</dt>
+<dd>
+<p>
+  Upload speed of this download measured in bytes/sec.
+</p>
+</dd>
+<dt class="hdlist1">
+infoHash
+</dt>
+<dd>
+<p>
+  InfoHash. BitTorrent only.
+</p>
+</dd>
+<dt class="hdlist1">
+pieceLength
+</dt>
+<dd>
+<p>
+  Piece length in bytes.
+</p>
+</dd>
+<dt class="hdlist1">
+numPieces
+</dt>
+<dd>
+<p>
+  The number of pieces.
+</p>
+</dd>
+<dt class="hdlist1">
+connections
+</dt>
+<dd>
+<p>
+  The number of peers/servers the client has connected to.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p><strong>aria2.getUris</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method returns URIs used in the download denoted by <em>gid</em>.  <em>gid</em>
+is of type string. The response is of type array and its element is of
+type struct and it contains following keys. The value type is string.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+uri
+</dt>
+<dd>
+<p>
+  URI
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p><strong>aria2.getFiles</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method returns file list of the download denoted by <em>gid</em>. <em>gid</em>
+is of type string. The response is of type array and its element is of
+type struct and it contains following keys. The value type is string.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+index
+</dt>
+<dd>
+<p>
+  Index of file. Starting with 1. This is the same order with the
+  files in multi-file torrent.
+</p>
+</dd>
+<dt class="hdlist1">
+path
+</dt>
+<dd>
+<p>
+  File path.
+</p>
+</dd>
+<dt class="hdlist1">
+length
+</dt>
+<dd>
+<p>
+  File size in bytes.
+</p>
+</dd>
+<dt class="hdlist1">
+selected
+</dt>
+<dd>
+<p>
+  "true" if this file is selected by <strong>--select-file</strong> option. If
+  <strong>--select-file</strong> is not specified or this is single torrent or no
+  torrent download, this value is always "true". Otherwise "false".
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p><strong>aria2.getPeers</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method returns peer list of the download denoted by <em>gid</em>. <em>gid</em>
+is of type string. This method is for BitTorrent only.  The response
+is of type array and its element is of type struct and it contains
+following keys. The value type is string.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+peerId
+</dt>
+<dd>
+<p>
+  Percent-encoded peer ID.
+</p>
+</dd>
+<dt class="hdlist1">
+ip
+</dt>
+<dd>
+<p>
+  IP address of the peer.
+</p>
+</dd>
+<dt class="hdlist1">
+port
+</dt>
+<dd>
+<p>
+  Port number of the peer.
+</p>
+</dd>
+<dt class="hdlist1">
+bitfield
+</dt>
+<dd>
+<p>
+  Hexadecimal representation of the download progress of the peer. The
+  highest bit corresponds to piece index 0. The set bits indicate the
+  piece is available and unset bits indicate the piece is missing. The
+  spare bits at the end are set to zero.
+</p>
+</dd>
+<dt class="hdlist1">
+amChoking
+</dt>
+<dd>
+<p>
+  "true" if this client is choking the peer. Otherwise "false".
+</p>
+</dd>
+<dt class="hdlist1">
+peerChoking
+</dt>
+<dd>
+<p>
+  "true" if the peer is choking this client. Otherwise "false".
+</p>
+</dd>
+<dt class="hdlist1">
+downloadSpeed
+</dt>
+<dd>
+<p>
+  Download speed (byte/sec) that this client obtains from the peer.
+</p>
+</dd>
+<dt class="hdlist1">
+uploadSpeed
+</dt>
+<dd>
+<p>
+  Upload speed(byte/sec) that this client uploads to the peer.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p><strong>aria2.tellActive</strong></p></div>
+<div class="paragraph"><p>This method returns the list of active downloads.  The respose is of
+type array and its element is the same struct returned by
+<strong>aria2.tellStatus</strong> method.</p></div>
+<div class="paragraph"><p><strong>aria2.changeOption</strong> <em>gid, options</em></p></div>
+<div class="paragraph"><p>This method changes options of the download denoted by <em>gid</em>
+dynamically.  <em>gid</em> is of type string.  <em>options</em> is of type struct
+and the available options are <strong>max-download-limit</strong> and <strong>max-upload-limit</strong>.
+This method returns "OK" for success.</p></div>
+<div class="paragraph"><p><strong>aria2.changeGlobalOption</strong> <em>options</em></p></div>
+<div class="paragraph"><p>This method changes global options dynamically.  <em>options</em> is of type
+struct and the available options are <strong>max-overall-download-limit</strong> and
+<strong>max-overall-upload-limit</strong>.  This method returns "OK" for success.</p></div>
+<div class="paragraph"><p><strong>aria2.purgeDownloadResult</strong></p></div>
+<div class="paragraph"><p>This method purges completed/error/removed downloads to free memory.
+This method returns "OK".</p></div>
+<h3 id="_error_handling">Error Handling</h3><div style="clear:left"></div>
+<div class="paragraph"><p>In case of error, aria2 returns faultCode=1 and the error message in
+faultString.</p></div>
+<h3 id="_options_2">Options</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Same options for <strong>-i</strong> list are available. See <strong>Input File</strong> subsection
+for complete list of options.</p></div>
+<div class="paragraph"><p>In the option struct, name element is option name(without preceeding
+"--") and value element is argument as string.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&lt;struct&gt;
+  &lt;member&gt;
+    &lt;name&gt;split&lt;/name&gt;
+    &lt;value&gt;&lt;string&gt;1&lt;/string&gt;&lt;/value&gt;
+  &lt;/member&gt;
+  &lt;member&gt;
+    &lt;name&gt;http-proxy&lt;/name&gt;
+    &lt;value&gt;&lt;string&gt;http://proxy/&lt;/string&gt;&lt;/value&gt;
+  &lt;/member&gt;
+&lt;/struct&gt;</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>header</strong> and <strong>index-out</strong> option are allowed multiple times in
+command-line. Since name should be unique in struct(many XML-RPC
+library implementation uses hash or dict for struct), single string is
+not enough. To overcome this situation, they can take array as value
+as well as string.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&lt;struct&gt;
+  &lt;member&gt;
+    &lt;name&gt;header&lt;/name&gt;
+    &lt;value&gt;
+      &lt;array&gt;
+        &lt;data&gt;
+          &lt;value&gt;&lt;string&gt;Accept-Language: ja&lt;/string&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;string&gt;Accept-Charset: utf-8&lt;/string&gt;&lt;/value&gt;
+        &lt;/data&gt;
+      &lt;/array&gt;
+    &lt;/value&gt;
+  &lt;/member&gt;
+&lt;/struct&gt;</tt></pre>
+</div></div>
+<h3 id="_sample_xml_rpc_client_code">Sample XML-RPC Client Code</h3><div style="clear:left"></div>
+<div class="paragraph"><p>The following Ruby script adds <em>http://localhost/aria2.tar.bz2</em> to
+aria2c operated on localhost with option <strong>--dir</strong>=<em>/downloads</em> and
+prints its reponse.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>#!/usr/bin/env ruby
+
+require 'xmlrpc/client'
+require 'pp'
+
+client=XMLRPC::Client.new2("http://localhost:6800/rpc")
+
+options={ "dir" =&gt; "/downloads" }
+result=client.call("aria2.addUri", [ "http://localhost/aria2.tar.bz2" ], options)
+
+pp result</tt></pre>
+</div></div>
+</div>
 <h2 id="_example">EXAMPLE</h2>
 <div class="sectionbody">
 <h3 id="_http_ftp_segmented_download">HTTP/FTP Segmented Download</h3><div style="clear:left"></div>
@@ -2780,7 +3129,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-05-23 00:00:58 JST
+Last updated 2009-05-26 23:15:48 JST
 </div>
 </div>
 </body>

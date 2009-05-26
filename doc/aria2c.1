@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
-.\" Generator: DocBook XSL Stylesheets v1.74.3 <http://docbook.sf.net/>
-.\"      Date: 05/23/2009
+.\" Generator: DocBook XSL Stylesheets v1.75.0 <http://docbook.sf.net/>
+.\"      Date: 05/26/2009
 .\"    Manual: [FIXME: manual]
 .\"    Source: [FIXME: source]
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "05/23/2009" "[FIXME: source]" "[FIXME: manual]"
+.TH "ARIA2C" "1" "05/26/2009" "[FIXME: source]" "[FIXME: manual]"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -2040,6 +2040,260 @@ An example follows:
 .nf
 host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
 host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
+.fi
+.if n \{\
+.RE
+.\}
+.SH "XML-RPC INTERFACE"
+.SS "Terminology"
+.PP
+GID
+.RS 4
+GID(or gid) is the key to manage each download\&. Each download has an unique GID\&. Currently GID looks like an integer, but don\(cqt treat it as integer because it may be changed to another type in the future release\&.
+.RE
+.SS "Methods"
+.sp
+\fBaria2\&.addUri\fR \fIuris[, options]\fR
+.sp
+This method adds new HTTP(S)/FTP download\&. \fIuris\fR is of type array and its element is URI which is of type string\&. URI should be percent\-encoded\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. This method returns GID of registered download\&.
+.sp
+\fBaria2\&.addTorrent\fR \fItorrent[, uris[, options]]\fR
+.sp
+This method adds BitTorrent download by uploading \&.torrent file\&. \fItorrent\fR is of type base64 which contains Base64\-encoded \&.torrent file\&. \fIuris\fR is of type array and its element is URI which is of type string\&. \fIuris\fR is used for Web\-seeding\&. Note that \fIuris\fR is ignored if specified torrent is a multi\-file torrent\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. This method returns GID of registered download\&.
+.sp
+\fBaria2\&.addMetalink\fR \fImetalink[, options]\fR
+.sp
+This method adds Metalink download by uploading \&.metalink file\&. \fImetalink\fR is of type base64 which contains Base64\-encoded \&.metalink file\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. This method returns GID of registered download\&.
+.sp
+\fBaria2\&.remove\fR \fIgid\fR
+.sp
+This method removes the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. If specified download is in progress, it is stopped at first\&. The status of removed download becomes "removed"\&. This method returns GID of removed download\&.
+.sp
+\fBaria2\&.tellStatus\fR \fIgid\fR
+.sp
+This method returns download progress of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type struct and it contains following keys\&. The value type is string\&.
+.PP
+gid
+.RS 4
+GID of this download\&.
+.RE
+.PP
+status
+.RS 4
+"active" for currently downloading/seeding entry\&. "waiting" for the entry in the queue; download is not started\&. "error" for the stopped download because of error\&. "complete" for the stopped and completed download\&. "removed" for the download removed by user\&.
+.RE
+.PP
+totalLength
+.RS 4
+Total length of this download in bytes\&.
+.RE
+.PP
+completedLength
+.RS 4
+Completed length of this download in bytes\&.
+.RE
+.PP
+bitfield
+.RS 4
+Hexadecimal representation of the download progress\&. The highest bit corresponds to piece index 0\&. The set bits indicate the piece is available and unset bits indicate the piece is missing\&. The spare bits at the end are set to zero\&.
+.RE
+.PP
+downloadSpeed
+.RS 4
+Download speed of this download measured in bytes/sec\&.
+.RE
+.PP
+uploadSpeed
+.RS 4
+Upload speed of this download measured in bytes/sec\&.
+.RE
+.PP
+infoHash
+.RS 4
+InfoHash\&. BitTorrent only\&.
+.RE
+.PP
+pieceLength
+.RS 4
+Piece length in bytes\&.
+.RE
+.PP
+numPieces
+.RS 4
+The number of pieces\&.
+.RE
+.PP
+connections
+.RS 4
+The number of peers/servers the client has connected to\&.
+.RE
+.sp
+\fBaria2\&.getUris\fR \fIgid\fR
+.sp
+This method returns URIs used in the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
+.PP
+uri
+.RS 4
+URI
+.RE
+.sp
+\fBaria2\&.getFiles\fR \fIgid\fR
+.sp
+This method returns file list of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
+.PP
+index
+.RS 4
+Index of file\&. Starting with 1\&. This is the same order with the files in multi\-file torrent\&.
+.RE
+.PP
+path
+.RS 4
+File path\&.
+.RE
+.PP
+length
+.RS 4
+File size in bytes\&.
+.RE
+.PP
+selected
+.RS 4
+"true" if this file is selected by
+\fB\-\-select\-file\fR
+option\&. If
+\fB\-\-select\-file\fR
+is not specified or this is single torrent or no torrent download, this value is always "true"\&. Otherwise "false"\&.
+.RE
+.sp
+\fBaria2\&.getPeers\fR \fIgid\fR
+.sp
+This method returns peer list of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. This method is for BitTorrent only\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
+.PP
+peerId
+.RS 4
+Percent\-encoded peer ID\&.
+.RE
+.PP
+ip
+.RS 4
+IP address of the peer\&.
+.RE
+.PP
+port
+.RS 4
+Port number of the peer\&.
+.RE
+.PP
+bitfield
+.RS 4
+Hexadecimal representation of the download progress of the peer\&. The highest bit corresponds to piece index 0\&. The set bits indicate the piece is available and unset bits indicate the piece is missing\&. The spare bits at the end are set to zero\&.
+.RE
+.PP
+amChoking
+.RS 4
+"true" if this client is choking the peer\&. Otherwise "false"\&.
+.RE
+.PP
+peerChoking
+.RS 4
+"true" if the peer is choking this client\&. Otherwise "false"\&.
+.RE
+.PP
+downloadSpeed
+.RS 4
+Download speed (byte/sec) that this client obtains from the peer\&.
+.RE
+.PP
+uploadSpeed
+.RS 4
+Upload speed(byte/sec) that this client uploads to the peer\&.
+.RE
+.sp
+\fBaria2\&.tellActive\fR
+.sp
+This method returns the list of active downloads\&. The respose is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&.
+.sp
+\fBaria2\&.changeOption\fR \fIgid, options\fR
+.sp
+This method changes options of the download denoted by \fIgid\fR dynamically\&. \fIgid\fR is of type string\&. \fIoptions\fR is of type struct and the available options are \fBmax\-download\-limit\fR and \fBmax\-upload\-limit\fR\&. This method returns "OK" for success\&.
+.sp
+\fBaria2\&.changeGlobalOption\fR \fIoptions\fR
+.sp
+This method changes global options dynamically\&. \fIoptions\fR is of type struct and the available options are \fBmax\-overall\-download\-limit\fR and \fBmax\-overall\-upload\-limit\fR\&. This method returns "OK" for success\&.
+.sp
+\fBaria2\&.purgeDownloadResult\fR
+.sp
+This method purges completed/error/removed downloads to free memory\&. This method returns "OK"\&.
+.SS "Error Handling"
+.sp
+In case of error, aria2 returns faultCode=1 and the error message in faultString\&.
+.SS "Options"
+.sp
+Same options for \fB\-i\fR list are available\&. See \fBInput File\fR subsection for complete list of options\&.
+.sp
+In the option struct, name element is option name(without preceeding "\-\-") and value element is argument as string\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+<struct>
+  <member>
+    <name>split</name>
+    <value><string>1</string></value>
+  </member>
+  <member>
+    <name>http\-proxy</name>
+    <value><string>http://proxy/</string></value>
+  </member>
+</struct>
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBheader\fR and \fBindex\-out\fR option are allowed multiple times in command\-line\&. Since name should be unique in struct(many XML\-RPC library implementation uses hash or dict for struct), single string is not enough\&. To overcome this situation, they can take array as value as well as string\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+<struct>
+  <member>
+    <name>header</name>
+    <value>
+      <array>
+        <data>
+          <value><string>Accept\-Language: ja</string></value>
+          <value><string>Accept\-Charset: utf\-8</string></value>
+        </data>
+      </array>
+    </value>
+  </member>
+</struct>
+.fi
+.if n \{\
+.RE
+.\}
+.SS "Sample XML\-RPC Client Code"
+.sp
+The following Ruby script adds \fIhttp://localhost/aria2\&.tar\&.bz2\fR to aria2c operated on localhost with option \fB\-\-dir\fR=\fI/downloads\fR and prints its reponse\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#!/usr/bin/env ruby
+
+require \'xmlrpc/client\'
+require \'pp\'
+
+client=XMLRPC::Client\&.new2("http://localhost:6800/rpc")
+
+options={ "dir" => "/downloads" }
+result=client\&.call("aria2\&.addUri", [ "http://localhost/aria2\&.tar\&.bz2" ], options)
+
+pp result
 .fi
 .if n \{\
 .RE
