@@ -38,11 +38,15 @@ namespace aria2 {
 
 const std::string BtContext::C_NAME("name");
 
+const std::string BtContext::C_NAME_UTF8("name.utf-8");
+
 const std::string BtContext::C_FILES("files");
 
 const std::string BtContext::C_LENGTH("length");
 
 const std::string BtContext::C_PATH("path");
+
+const std::string BtContext::C_PATH_UTF8("path.utf-8");
 
 const std::string BtContext::C_INFO("info");
 

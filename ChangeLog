@@ -1,3 +1,13 @@
+2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use name.utf-8 and path.utf-8 key in higher priority than name and
+	path key respectively when persing .torrent file.
+	* src/BtContext.cc
+	* src/BtContext.h
+	* src/DefaultBtContext.cc
+	* test/DefaultBtContextTest.cc
+	* test/utf8.torrent
+
 2009-05-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --xml-rpc-max-request-size option to limit the size of

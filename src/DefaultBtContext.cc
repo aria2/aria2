@@ -117,7 +117,13 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
 					  const std::deque<std::string>& urlList)
 {
   if(overrideName.empty()) {
-    const BDE& nameData = infoDict[BtContext::C_NAME];
+    std::string nameKey;
+    if(infoDict.containsKey(BtContext::C_NAME_UTF8)) {
+      nameKey = BtContext::C_NAME_UTF8;
+    } else {
+      nameKey = BtContext::C_NAME;
+    }
+    const BDE& nameData = infoDict[nameKey];
     if(nameData.isString()) {
       name = nameData.s();
     } else {
@@ -146,7 +152,13 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
       }
       length += fileLengthData.i();
 
-      const BDE& pathList = fileDict[BtContext::C_PATH];
+      std::string pathKey;
+      if(fileDict.containsKey(BtContext::C_PATH_UTF8)) {
+	pathKey = BtContext::C_PATH_UTF8;
+      } else {
+	pathKey = BtContext::C_PATH;
+      }
+      const BDE& pathList = fileDict[pathKey];
       if(!pathList.isList() || pathList.empty()) {
 	throw DL_ABORT_EX("Path is empty.");
       }

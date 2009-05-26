@@ -90,11 +90,15 @@ public:
 
   static const std::string C_NAME;
 
+  static const std::string C_NAME_UTF8;
+
   static const std::string C_FILES;
 
   static const std::string C_LENGTH;
 
   static const std::string C_PATH;
+
+  static const std::string C_PATH_UTF8;
 
   static const std::string C_INFO;
 

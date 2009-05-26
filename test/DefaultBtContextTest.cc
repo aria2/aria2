@@ -46,6 +46,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetActualBasePath);
   CPPUNIT_TEST(testSetFileFilter_single);
   CPPUNIT_TEST(testSetFileFilter_multi);
+  CPPUNIT_TEST(testUTF8Torrent);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -80,6 +81,7 @@ public:
   void testGetActualBasePath();
   void testSetFileFilter_single();
   void testSetFileFilter_multi();
+  void testUTF8Torrent();
 };
 
 
@@ -594,6 +596,15 @@ void DefaultBtContextTest::testSetFileFilter_multi()
   ctx.setFileFilter(Util::parseIntRange("1,2"));
   CPPUNIT_ASSERT(ctx.getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(ctx.getFileEntries()[1]->isRequested());
+}
+
+void DefaultBtContextTest::testUTF8Torrent()
+{
+  DefaultBtContext ctx;
+  ctx.load("utf8.torrent");
+  CPPUNIT_ASSERT_EQUAL(std::string("name in utf-8"), ctx.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("./name in utf-8/path in utf-8"),
+		       ctx.getFileEntries()[0]->getPath());
 }
 
 } // namespace aria2
