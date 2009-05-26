@@ -57,6 +57,36 @@
 
 namespace aria2 {
 
+const std::string DefaultBtContext::C_NAME("name");
+
+const std::string DefaultBtContext::C_NAME_UTF8("name.utf-8");
+
+const std::string DefaultBtContext::C_FILES("files");
+
+const std::string DefaultBtContext::C_LENGTH("length");
+
+const std::string DefaultBtContext::C_PATH("path");
+
+const std::string DefaultBtContext::C_PATH_UTF8("path.utf-8");
+
+const std::string DefaultBtContext::C_INFO("info");
+
+const std::string DefaultBtContext::C_PIECES("pieces");
+
+const std::string DefaultBtContext::C_PIECE_LENGTH("piece length");
+
+const std::string DefaultBtContext::C_PRIVATE("private");
+
+const std::string DefaultBtContext::C_PRIVATE_ON("1");
+
+const std::string DefaultBtContext::C_URL_LIST("url-list");
+
+const std::string DefaultBtContext::C_ANNOUNCE("announce");
+
+const std::string DefaultBtContext::C_ANNOUNCE_LIST("announce-list");
+
+const std::string DefaultBtContext::C_NODES("nodes");
+
 const std::string DefaultBtContext::DEFAULT_PEER_ID_PREFIX("-aria2-");
 
 DefaultBtContext::DefaultBtContext():_peerIdPrefix(DEFAULT_PEER_ID_PREFIX),
@@ -118,10 +148,10 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
 {
   if(overrideName.empty()) {
     std::string nameKey;
-    if(infoDict.containsKey(BtContext::C_NAME_UTF8)) {
-      nameKey = BtContext::C_NAME_UTF8;
+    if(infoDict.containsKey(C_NAME_UTF8)) {
+      nameKey = C_NAME_UTF8;
     } else {
-      nameKey = BtContext::C_NAME;
+      nameKey = C_NAME;
     }
     const BDE& nameData = infoDict[nameKey];
     if(nameData.isString()) {
@@ -132,7 +162,7 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
   } else {
     name = overrideName;
   }
-  const BDE& filesList = infoDict[BtContext::C_FILES];
+  const BDE& filesList = infoDict[C_FILES];
   if(filesList.isList()) {
     uint64_t length = 0;
     off_t offset = 0;
@@ -145,18 +175,18 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
 	continue;
       }
 
-      const BDE& fileLengthData = fileDict[BtContext::C_LENGTH];
+      const BDE& fileLengthData = fileDict[C_LENGTH];
       if(!fileLengthData.isInteger()) {
 	throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				     BtContext::C_LENGTH.c_str()).str());
+				       C_LENGTH.c_str()).str());
       }
       length += fileLengthData.i();
 
       std::string pathKey;
-      if(fileDict.containsKey(BtContext::C_PATH_UTF8)) {
-	pathKey = BtContext::C_PATH_UTF8;
+      if(fileDict.containsKey(C_PATH_UTF8)) {
+	pathKey = C_PATH_UTF8;
       } else {
-	pathKey = BtContext::C_PATH;
+	pathKey = C_PATH;
       }
       const BDE& pathList = fileDict[pathKey];
       if(!pathList.isList() || pathList.empty()) {
@@ -186,10 +216,10 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
   } else {
     // single-file mode;
     fileMode = BtContext::SINGLE;
-    const BDE& lengthData = infoDict[BtContext::C_LENGTH];
+    const BDE& lengthData = infoDict[C_LENGTH];
     if(!lengthData.isInteger()) {
 	throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				     BtContext::C_LENGTH.c_str()).str());      
+				       C_LENGTH.c_str()).str());      
     }
     totalLength = lengthData.i();
     // Slice path by '/' just in case nasty ".." is included in name
@@ -249,11 +279,11 @@ void DefaultBtContext::extractAnnounceList(const BDE& announceList)
 
 void DefaultBtContext::extractAnnounce(const BDE& rootDict)
 {
-  const BDE& announceList = rootDict[BtContext::C_ANNOUNCE_LIST];
+  const BDE& announceList = rootDict[C_ANNOUNCE_LIST];
   if(announceList.isList()) {
     extractAnnounceList(announceList);
   } else {
-    const BDE& announce = rootDict[BtContext::C_ANNOUNCE];
+    const BDE& announce = rootDict[C_ANNOUNCE];
     if(announce.isString()) {
       extractAnnounceURI(announce);
     }
@@ -324,10 +354,10 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
   if(!rootDict.isDict()) {
     throw DL_ABORT_EX("torrent file does not contain a root dictionary.");
   }
-  const BDE& infoDict = rootDict[BtContext::C_INFO];
+  const BDE& infoDict = rootDict[C_INFO];
   if(!infoDict.isDict()) {
     throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				 BtContext::C_INFO.c_str()).str());
+				   C_INFO.c_str()).str());
   }
   // retrieve infoHash
   std::string encodedInfoDict = bencode::encode(infoDict);
@@ -337,10 +367,10 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
 			      encodedInfoDict.size());
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces
-  const BDE& piecesData = infoDict[BtContext::C_PIECES];
+  const BDE& piecesData = infoDict[C_PIECES];
   if(!piecesData.isString()) {
     throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				 BtContext::C_PIECES.c_str()).str());
+				   C_PIECES.c_str()).str());
   }
   if(piecesData.s().empty()) {
     throw DL_ABORT_EX("The length of piece hash is 0.");
@@ -350,16 +380,16 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
     throw DL_ABORT_EX("The number of pieces is 0.");
   }
   // retrieve piece length
-  const BDE& pieceLengthData = infoDict[BtContext::C_PIECE_LENGTH];
+  const BDE& pieceLengthData = infoDict[C_PIECE_LENGTH];
   if(!pieceLengthData.isInteger()) {
     throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				 BtContext::C_PIECE_LENGTH.c_str()).str());
+				   C_PIECE_LENGTH.c_str()).str());
   }
   pieceLength = pieceLengthData.i();
   // retrieve piece hashes
   extractPieceHash(piecesData.s(), PIECE_HASH_LENGTH);
   // private flag
-  const BDE& privateData = infoDict[BtContext::C_PRIVATE];
+  const BDE& privateData = infoDict[C_PRIVATE];
   if(privateData.isInteger()) {
     _private = (privateData.i() == 1);
   }
@@ -367,7 +397,7 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::deque<std::string> urlList;
-  extractUrlList(urlList, rootDict[BtContext::C_URL_LIST]);
+  extractUrlList(urlList, rootDict[C_URL_LIST]);
 
   // retrieve file entries
   extractFileEntries(infoDict, defaultName, overrideName, urlList);
@@ -377,7 +407,7 @@ void DefaultBtContext::processRootDictionary(const BDE& rootDict,
   // retrieve announce
   extractAnnounce(rootDict);
   // retrieve nodes
-  extractNodes(rootDict[BtContext::C_NODES]);
+  extractNodes(rootDict[C_NODES]);
 }
 
 const std::string& DefaultBtContext::getPieceHash(size_t index) const {

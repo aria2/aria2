@@ -87,38 +87,6 @@ public:
   virtual const std::string& getName() const = 0;
 
   virtual void setFileFilter(IntSequence seq) = 0;
-
-  static const std::string C_NAME;
-
-  static const std::string C_NAME_UTF8;
-
-  static const std::string C_FILES;
-
-  static const std::string C_LENGTH;
-
-  static const std::string C_PATH;
-
-  static const std::string C_PATH_UTF8;
-
-  static const std::string C_INFO;
-
-  static const std::string C_PIECES;
-
-  static const std::string C_PIECE_LENGTH;
-
-  static const std::string C_PRIVATE;
-
-  // This is just a string "1". Used as a value of "private" flag.
-  static const std::string C_PRIVATE_ON;
-
-  static const std::string C_URL_LIST;
-
-  static const std::string C_ANNOUNCE;
-
-  static const std::string C_ANNOUNCE_LIST;
-
-  static const std::string C_NODES;
-
 };
 
 class BtContext;

@@ -89,7 +89,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	PeerListProcessor.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceTier.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc\
-@ENABLE_BITTORRENT_TRUE@	BtContext.cc BtContext.h\
+@ENABLE_BITTORRENT_TRUE@	BtContext.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.cc DefaultBtContext.h\
 @ENABLE_BITTORRENT_TRUE@	PeerStorage.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.cc DefaultPeerStorage.h\
@@ -465,7 +465,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
 	PeerListProcessor.h AnnounceTier.h AnnounceList.h \
-	AnnounceList.cc BtContext.cc BtContext.h DefaultBtContext.cc \
+	AnnounceList.cc BtContext.h DefaultBtContext.cc \
 	DefaultBtContext.h PeerStorage.h DefaultPeerStorage.cc \
 	DefaultPeerStorage.h BtAnnounce.cc BtAnnounce.h \
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h BtRuntime.h \
@@ -636,7 +636,6 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BtContext.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.$(OBJEXT) \
@@ -1306,7 +1305,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCancelMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtChokeMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtDependency.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtExtendedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtFileAllocationEntry.Po@am__quote@

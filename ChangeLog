@@ -1,5 +1,14 @@
 2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved C_* constants from BtContext to DefaultBtContext.
+	* src/BtContext.cc: Removed.
+	* src/BtContext.h
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/Makefile.am
+
+2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use name.utf-8 and path.utf-8 key in higher priority than name and
 	path key respectively when persing .torrent file.
 	* src/BtContext.cc

@@ -295,7 +295,7 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerListProcessor.h\
 	AnnounceTier.h\
 	AnnounceList.h AnnounceList.cc\
-	BtContext.cc BtContext.h\
+	BtContext.h\
 	DefaultBtContext.cc DefaultBtContext.h\
 	PeerStorage.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
