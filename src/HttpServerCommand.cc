@@ -45,6 +45,7 @@
 #include "RecoverableException.h"
 #include "prefs.h"
 #include "Option.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -103,6 +104,14 @@ bool HttpServerCommand::execute()
       if(header.isNull()) {
 	_e->commands.push_back(this);
 	return false;
+      } else if(static_cast<uint64_t>
+		(_e->option->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
+		_httpServer->getContentLength()) {
+	logger->info("Request too long. ContentLength=%s."
+		     " See --xml-rpc-max-request-size option to loose"
+		     " this limitation.",
+		     Util::uitos(_httpServer->getContentLength()).c_str());
+	return true;
       } else {
 	Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
 						     _socket);

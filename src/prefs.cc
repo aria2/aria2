@@ -167,6 +167,8 @@ const std::string PREF_REUSE_URI("reuse-uri");
 const std::string PREF_XML_RPC_USER("xml-rpc-user");
 // value: string
 const std::string PREF_XML_RPC_PASSWD("xml-rpc-passwd");
+// value: 1*digit
+const std::string PREF_XML_RPC_MAX_REQUEST_SIZE("xml-rpc-max-request-size");
 // value: string
 const std::string PREF_ON_DOWNLOAD_START("on-download-start");
 const std::string PREF_ON_DOWNLOAD_STOP("on-download-stop");

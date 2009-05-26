@@ -1,5 +1,10 @@
 2009-05-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --xml-rpc-max-request-size option to limit the size of
+	XML-RPC request.
+	
+2009-05-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented XML-RPC API in man page.
 	* doc/aria2c.1.txt
 

@@ -401,6 +401,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+				   (PREF_XML_RPC_MAX_REQUEST_SIZE,
+				    TEXT_XML_RPC_MAX_REQUEST_SIZE,
+				    "2M",
+				    0));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }			    
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_XML_RPC_USER,
 				    TEXT_XML_RPC_USER));

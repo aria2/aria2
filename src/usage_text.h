@@ -491,6 +491,10 @@ _(" --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"\
   "                              It is strongly recommended to set username and\n"\
   "                              password using --xml-rpc-user and --xml-rpc-passwd\n"\
   "                              option. See also --xml-rpc-listen-port option.")
+#define TEXT_XML_RPC_MAX_REQUEST_SIZE \
+_(" --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"\
+  "                              detected the request is more than SIZE bytes, it\n"\
+  "                              drops connection.")
 #define TEXT_XML_RPC_USER \
 _(" --xml-rpc-user=USER          Set XML-RPC user.")
 #define TEXT_XML_RPC_PASSWD \
