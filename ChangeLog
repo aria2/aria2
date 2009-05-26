@@ -1,5 +1,11 @@
 2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated README for 1.4.0 release. Use new table syntax of
+	asciidoc.
+	* README
+
+2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --xml-rpc-max-request-size option in man page.
 	* doc/aria2c.1.txt
 

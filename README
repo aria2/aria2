@@ -37,6 +37,7 @@ Here is a list of features.
 * Chunked transfer encoding support
 * Load Cookies from file using the Firefox3 format and the Mozilla/Firefox
   (1.x/2.x)/Netscape format.
+* Save Cookies in the Mozilla/Firefox (1.x/2.x)/Netscape format.
 * Custom HTTP Header support
 * Persistent Connections support
 * FTP through HTTP Proxy
@@ -46,6 +47,7 @@ Here is a list of features.
   (single-file torrent only)
 * Rename/change the directory structure of BitTorrent downloads
   completely
+* XML-RPC interface
 * Run as a daemon process
 * Selective download in multi-file torrent/Metalink
 * Chunk checksum validation in Metalink
@@ -60,18 +62,18 @@ Dependency
 ----------
 
 .External Library Dependency
-[frame="all", grid="all"]
-`--------------------`---------------------------
-features              dependency
--------------------------------------------------
-HTTPS                 GnuTLS or OpenSSL
-BitTorrent            GnuTLS+Libgcrypt or OpenSSL
-Metalink              libxml2 or Expat.
-Checksum              GnuTLS+Libgcrypt or OpenSSL
-gzip, deflate in HTTP zlib
-Async DNS             C-Ares
-Firefox3 cookie       libsqlite3
--------------------------------------------------
+[options="header"]
+|=================================================
+|features             |dependency
+|HTTPS                |GnuTLS or OpenSSL
+|BitTorrent           |GnuTLS+Libgcrypt or OpenSSL
+|Metalink             |libxml2 or Expat.
+|Checksum             |GnuTLS+Libgcrypt or OpenSSL
+|gzip, deflate in HTTP|zlib
+|Async DNS            |C-Ares
+|Firefox3 cookie      |libsqlite3
+|XML-RPC              |libxml2 or Expat.
+|=================================================
 
 Note;;
   GNU TLS has precedence over OpenSSL if both libraries are installed.
