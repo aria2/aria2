@@ -1,5 +1,11 @@
 2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
+2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated README for 1.4.0 release. Use new table syntax of
 	asciidoc.
 	* README

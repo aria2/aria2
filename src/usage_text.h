@@ -493,7 +493,7 @@ _(" --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"\
   "                              option. See also --xml-rpc-listen-port option.")
 #define TEXT_XML_RPC_MAX_REQUEST_SIZE \
 _(" --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"\
-  "                              detected the request is more than SIZE bytes, it\n"\
+  "                              detects the request is more than SIZE bytes, it\n"\
   "                              drops connection.")
 #define TEXT_XML_RPC_USER \
 _(" --xml-rpc-user=USER          Set XML-RPC user.")

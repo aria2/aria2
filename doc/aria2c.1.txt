@@ -537,7 +537,7 @@ XML-RPC Options
 
 *--xml-rpc-max-request-size*=SIZE::
 
-  Set max size of XML-RPC request. If aria2 detected the request is
+  Set max size of XML-RPC request. If aria2 detects the request is
   more than SIZE bytes, it drops connection. Default: '2M'
 
 *--xml-rpc-passwd*=PASSWD::
