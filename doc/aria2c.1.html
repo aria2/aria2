@@ -1436,10 +1436,9 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  If <em>false</em> is given, aria2 doesn&#8217;t download a file which already exists but
-  the corresponding .aria2 file doesn&#8217;t exist.
-  In HTTP(S)/FTP download, if <strong>--auto-file-renaming</strong>=<em>true</em> then,
-  file name will be renamed. See <strong>--auto-file-renaming</strong> for details.
+  If <em>false</em> is given, and a file already exists but the corresponding
+  control file (filename.aria2) doesn&#8217;t exist, then aria2 will not
+  re-download the file. See also <strong>--auto-file-renaming</strong> option.
   Default: <em>false</em>
 </p>
 </dd>
@@ -3138,7 +3137,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-05-27 21:37:30 JST
+Last updated 2009-05-27 21:56:45 JST
 </div>
 </div>
 </body>

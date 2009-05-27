@@ -1,5 +1,11 @@
 2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten the help message for --allow-overwrite option.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
+2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo
 	* doc/aria2c.1.txt
 	* src/usage_text.h
