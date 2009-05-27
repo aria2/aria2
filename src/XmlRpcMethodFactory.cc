@@ -46,11 +46,17 @@ XmlRpcMethodFactory::create(const std::string& methodName)
 {
   if(methodName == "aria2.addUri") {
     return SharedHandle<XmlRpcMethod>(new AddUriXmlRpcMethod());
+#ifdef ENABLE_BITTORRENT
   } else if(methodName == "aria2.addTorrent") {
     return SharedHandle<XmlRpcMethod>(new AddTorrentXmlRpcMethod());
-  } else if(methodName == "aria2.addMetalink") {
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+  }
+  else if(methodName == "aria2.addMetalink") {
     return SharedHandle<XmlRpcMethod>(new AddMetalinkXmlRpcMethod());
-  } else if(methodName == "aria2.remove") {
+#endif // ENABLE_METALINK
+  }
+  else if(methodName == "aria2.remove") {
     return SharedHandle<XmlRpcMethod>(new RemoveXmlRpcMethod());
   } else if(methodName == "aria2.tellStatus") {
     return SharedHandle<XmlRpcMethod>(new TellStatusXmlRpcMethod());
@@ -58,8 +64,11 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new GetUrisXmlRpcMethod());
   } else if(methodName == "aria2.getFiles") {
     return SharedHandle<XmlRpcMethod>(new GetFilesXmlRpcMethod());
-  } else if(methodName == "aria2.getPeers") {
+#ifdef ENABLE_BITTORRENT
+  }
+  else if(methodName == "aria2.getPeers") {
     return SharedHandle<XmlRpcMethod>(new GetPeersXmlRpcMethod());
+#endif // ENABLE_BITTORRENT
   } else if(methodName == "aria2.tellActive") {
     return SharedHandle<XmlRpcMethod>(new TellActiveXmlRpcMethod());
   } else if(methodName == "aria2.changeOption") {

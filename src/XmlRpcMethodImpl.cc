@@ -113,6 +113,7 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   }
 }
 
+#ifdef ENABLE_BITTORRENT
 BDE AddTorrentXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
@@ -147,8 +148,10 @@ BDE AddTorrentXmlRpcMethod::process
   } else {
     throw DL_ABORT_EX("No Torrent to download.");
   }
-} 
+}
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 BDE AddMetalinkXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
@@ -176,7 +179,7 @@ BDE AddMetalinkXmlRpcMethod::process
     throw DL_ABORT_EX("No files to download.");
   }
 } 
-
+#endif // ENABLE_METALINK
 
 BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
@@ -235,6 +238,7 @@ static void gatherProgressCommon
     Util::uitos(group->getDownloadContext()->getNumPieces());
 }
 
+#ifdef ENABLE_BITTORRENT
 static void gatherProgressBitTorrent
 (BDE& entryDict, const SharedHandle<BtContext>& btctx)
 {
@@ -263,16 +267,19 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
     peers << peerEntry;
   }
 }
+#endif // ENABLE_BITTORRENT
 
 static void gatherProgress
 (BDE& entryDict, const SharedHandle<RequestGroup>& group, DownloadEngine* e)
 {
   gatherProgressCommon(entryDict, group);
+#ifdef ENABLE_BITTORRENT
   SharedHandle<BtContext> btctx =
     dynamic_pointer_cast<BtContext>(group->getDownloadContext());
   if(!btctx.isNull()) {
     gatherProgressBitTorrent(entryDict, btctx);
   }
+#endif // ENABLE_BITTORRENT
 }
 
 static void gatherStoppedDownload
@@ -373,6 +380,7 @@ BDE GetUrisXmlRpcMethod::process
   return uriList;
 }
 
+#ifdef ENABLE_BITTORRENT
 BDE GetPeersXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
@@ -404,6 +412,7 @@ BDE GetPeersXmlRpcMethod::process
   }
   return peers;
 }
+#endif // ENABLE_BITTORRENT
 
 BDE TellStatusXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)

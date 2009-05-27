@@ -51,15 +51,19 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
+#ifdef ENABLE_BITTORRENT
 class AddTorrentXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 class AddMetalinkXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
+#endif // ENABLE_METALINK
 
 class PurgeDownloadResultXmlRpcMethod:public XmlRpcMethod {
 protected:
@@ -76,10 +80,12 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
+#ifdef ENABLE_BITTORRENT
 class GetPeersXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
+#endif // ENABLE_BITTORRENT
 
 class TellStatusXmlRpcMethod:public XmlRpcMethod {
 protected:

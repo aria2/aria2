@@ -86,6 +86,9 @@ static void gatherOption
       const BDE& value = optionsDict[*first];
       SharedHandle<OptionHandler> optionHandler =
 	optionParser->findByName(*first);
+      if(optionHandler.isNull()) {
+	continue;
+      }
       // header and index-out option can take array as value
       if((*first == PREF_HEADER || *first == PREF_INDEX_OUT) && value.isList()){
 	for(BDE::List::const_iterator argiter = value.listBegin();

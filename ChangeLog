@@ -1,3 +1,12 @@
+2009-05-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error without BitTorrent and Metalink support.
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* test/XmlRpcMethodTest.cc
+
 2009-05-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten the help message for --allow-overwrite option.

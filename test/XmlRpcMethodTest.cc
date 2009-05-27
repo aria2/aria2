@@ -29,12 +29,16 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddUri_withoutUri);
   CPPUNIT_TEST(testAddUri_notUri);
   CPPUNIT_TEST(testAddUri_withBadOption);
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testAddTorrent);
   CPPUNIT_TEST(testAddTorrent_withoutTorrent);
   CPPUNIT_TEST(testAddTorrent_notBase64Torrent);
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
   CPPUNIT_TEST(testAddMetalink);
   CPPUNIT_TEST(testAddMetalink_withoutMetalink);
   CPPUNIT_TEST(testAddMetalink_notBase64Metalink);
+#endif // ENABLE_METALINK
   CPPUNIT_TEST(testChangeOption);
   CPPUNIT_TEST(testChangeOption_withBadOption);
   CPPUNIT_TEST(testChangeOption_withoutGid);
@@ -65,12 +69,16 @@ public:
   void testAddUri_withoutUri();
   void testAddUri_notUri();
   void testAddUri_withBadOption();
+#ifdef ENABLE_BITTORRENT
   void testAddTorrent();
   void testAddTorrent_withoutTorrent();
   void testAddTorrent_notBase64Torrent();
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
   void testAddMetalink();
   void testAddMetalink_withoutMetalink();
   void testAddMetalink_notBase64Metalink();
+#endif // ENABLE_METALINK
   void testChangeOption();
   void testChangeOption_withBadOption();
   void testChangeOption_withoutGid();
@@ -142,6 +150,7 @@ void XmlRpcMethodTest::testAddUri_withBadOption()
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
 
+#ifdef ENABLE_BITTORRENT
 void XmlRpcMethodTest::testAddTorrent()
 {
   AddTorrentXmlRpcMethod m;
@@ -191,7 +200,9 @@ void XmlRpcMethodTest::testAddTorrent_notBase64Torrent()
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 void XmlRpcMethodTest::testAddMetalink()
 {
   AddMetalinkXmlRpcMethod m;
@@ -241,6 +252,7 @@ void XmlRpcMethodTest::testAddMetalink_notBase64Metalink()
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
+#endif // ENABLE_METALINK
 
 void XmlRpcMethodTest::testChangeOption()
 {
@@ -253,14 +265,18 @@ void XmlRpcMethodTest::testChangeOption()
   req._params << BDE("1");
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
+#ifdef ENABLE_BITTORRENT
   opt[PREF_MAX_UPLOAD_LIMIT] = BDE("50K");
+#endif // ENABLE_BITTORRENT
   req._params << opt;
   XmlRpcResponse res = m.execute(req, _e.get());
 
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
 		       group->getMaxDownloadSpeedLimit());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024, group->getMaxUploadSpeedLimit());
+#ifdef ENABLE_BITTORRENT
+   CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024, group->getMaxUploadSpeedLimit());
+#endif // ENABLE_BITTORRENT
 }
 
 void XmlRpcMethodTest::testChangeOption_withBadOption()
@@ -293,15 +309,19 @@ void XmlRpcMethodTest::testChangeGlobalOption()
   XmlRpcRequest req("aria2.changeGlobalOption", BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
+#ifdef ENABLE_BITTORRENT
   opt[PREF_MAX_OVERALL_UPLOAD_LIMIT] = BDE("50K");
+#endif // ENABLE_BITTORRENT
   req._params << opt;
   XmlRpcResponse res = m.execute(req, _e.get());
 
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
 		       _e->_requestGroupMan->getMaxOverallDownloadSpeedLimit());
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
 		       _e->_requestGroupMan->getMaxOverallUploadSpeedLimit());
+#endif // ENABLE_BITTORRENT
 }
 
 void XmlRpcMethodTest::testChangeGlobalOption_withBadOption()
