@@ -36,22 +36,26 @@
 #define _D_PIECE_STORAGE_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "TimeA2.h"
-#include "IntSequence.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
+#include "TimeA2.h"
 
 namespace aria2 {
 
 class Piece;
+#ifdef ENABLE_BITTORRENT
 class Peer;
+#endif // ENABLE_BITTORRENT
 class DiskAdaptor;
 
 class PieceStorage {
 public:
   virtual ~PieceStorage() {}
 
+#ifdef ENABLE_BITTORRENT
   /**
    * Returns true if the peer has a piece that localhost doesn't have.
    * Otherwise returns false.
@@ -92,6 +96,8 @@ public:
   virtual SharedHandle<Piece> getMissingFastPiece
   (const SharedHandle<Peer>& peer,
    const std::deque<size_t>& excludedIndexes) = 0;
+
+#endif // ENABLE_BITTORRENT
 
   /**
    * Returns a missing piece if available. Otherwise returns 0;

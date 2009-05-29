@@ -65,6 +65,8 @@ public:
 
   virtual ~UnknownLengthPieceStorage();
 
+#ifdef ENABLE_BITTORRENT
+
   /**
    * Returns true if the peer has a piece that localhost doesn't have.
    * Otherwise returns false.
@@ -93,6 +95,8 @@ public:
 
   virtual SharedHandle<Piece> getMissingFastPiece
   (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+
+#endif // ENABLE_BITTORRENT
 
   /**
    * Returns a missing piece if available. Otherwise returns 0;

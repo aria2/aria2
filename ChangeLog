@@ -1,5 +1,18 @@
 2009-05-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed Peer.cc from compile source list when --disable-bittorrent
+	is specified.  Added #ifdef ENABLE_BITTORRENT guard to methods that
+	takes Peer.
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/Makefile.am
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+
+2009-05-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Implemented getter methods in header files to give them more
 	chance of optimization.
 	Return const reference for SharadHandle if possible.

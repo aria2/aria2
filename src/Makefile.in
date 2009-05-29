@@ -393,7 +393,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
 	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h MultiDiskAdaptor.cc \
-	MultiDiskAdaptor.h Peer.cc PeerSessionResource.cc \
+	MultiDiskAdaptor.h PeerSessionResource.cc \
 	PeerSessionResource.h BtRegistry.cc BtRegistry.h \
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
 	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
@@ -458,7 +458,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerAbstractCommand.cc PeerAbstractCommand.h \
 	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
-	PeerInteractionCommand.h Peer.h PeerListenCommand.cc \
+	PeerInteractionCommand.h Peer.cc Peer.h PeerListenCommand.cc \
 	PeerListenCommand.h RequestSlot.cc RequestSlot.h \
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h \
 	PeerChokeCommand.cc PeerChokeCommand.h SeedCriteria.h \
@@ -826,9 +826,9 @@ am__objects_26 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	StreamCheckIntegrityEntry.$(OBJEXT) DiskAdaptor.$(OBJEXT) \
 	AbstractSingleDiskAdaptor.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
-	Peer.$(OBJEXT) PeerSessionResource.$(OBJEXT) \
-	BtRegistry.$(OBJEXT) MultiFileAllocationIterator.$(OBJEXT) \
-	PeerConnection.$(OBJEXT) ByteArrayDiskWriter.$(OBJEXT) \
+	PeerSessionResource.$(OBJEXT) BtRegistry.$(OBJEXT) \
+	MultiFileAllocationIterator.$(OBJEXT) PeerConnection.$(OBJEXT) \
+	ByteArrayDiskWriter.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
 	DownloadContext.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
 	TimedHaltCommand.$(OBJEXT) prefs.$(OBJEXT) \
@@ -1149,7 +1149,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
 	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h MultiDiskAdaptor.cc \
-	MultiDiskAdaptor.h Peer.cc PeerSessionResource.cc \
+	MultiDiskAdaptor.h PeerSessionResource.cc \
 	PeerSessionResource.h BtRegistry.cc BtRegistry.h \
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
 	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \

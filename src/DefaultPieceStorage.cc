@@ -80,12 +80,6 @@ DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan;
 }
 
-bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer)
-{
-  return bitfieldMan->hasMissingPiece(peer->getBitfield(),
-				      peer->getBitfieldLength());
-}
-
 bool DefaultPieceStorage::isEndGame()
 {
   return bitfieldMan->countMissingBlock() <= endGamePieceNum;
@@ -194,6 +188,14 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
   return getMissingPiece(bitfield.getBitfield(), bitfield.getBitfieldLength());
 }
 
+#ifdef ENABLE_BITTORRENT
+
+bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer)
+{
+  return bitfieldMan->hasMissingPiece(peer->getBitfield(),
+				      peer->getBitfieldLength());
+}
+
 PieceHandle DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 {
   return getMissingPiece(peer->getBitfield(), peer->getBitfieldLength());
@@ -256,6 +258,8 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
     return SharedHandle<Piece>();
   }
 }
+
+#endif // ENABLE_BITTORRENT
 
 PieceHandle DefaultPieceStorage::getMissingPiece()
 {

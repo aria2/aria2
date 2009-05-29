@@ -94,8 +94,10 @@ private:
 
   SharedHandle<Piece> getMissingPiece(const BitfieldMan& bitfield);
 
+#ifdef ENABLE_BITTORRENT
   void createFastIndexBitfield(BitfieldMan& bitfield,
 			       const SharedHandle<Peer>& peer);
+#endif // ENABLE_BITTORRENT
 
   SharedHandle<Piece> checkOutPiece(size_t index);
 //   size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
@@ -115,6 +117,8 @@ public:
 		      
   virtual ~DefaultPieceStorage();
 
+#ifdef ENABLE_BITTORRENT
+
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
@@ -126,6 +130,8 @@ public:
 
   virtual SharedHandle<Piece> getMissingFastPiece
   (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+
+#endif // ENABLE_BITTORRENT
 
   virtual SharedHandle<Piece> getMissingPiece();
 

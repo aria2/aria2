@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "UnknownLengthPieceStorage.h"
+
+#include <cstdlib>
+
 #include "DefaultDiskWriter.h"
 #include "DirectDiskAdaptor.h"
 #include "prefs.h"
@@ -40,7 +43,6 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include "FileEntry.h"
-#include <stdlib.h>
 
 namespace aria2 {
 
@@ -66,6 +68,8 @@ void UnknownLengthPieceStorage::initStorage()
 
   _diskAdaptor = directDiskAdaptor;
 }
+
+#ifdef ENABLE_BITTORRENT
 
 bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
 {
@@ -93,6 +97,8 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece
 {
   abort();
 }
+
+#endif // ENABLE_BITTORRENT
 
 PieceHandle UnknownLengthPieceStorage::getMissingPiece()
 {

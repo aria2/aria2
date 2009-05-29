@@ -144,7 +144,6 @@ SRCS =  Socket.h\
 	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	Peer.cc\
 	PeerSessionResource.cc PeerSessionResource.h\
 	BtRegistry.cc BtRegistry.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\

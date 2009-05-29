@@ -2,10 +2,12 @@
 #define _D_MOCK_PIECE_STORAGE_H_
 
 #include "PieceStorage.h"
+
+#include <algorithm>
+
 #include "BitfieldMan.h"
 #include "Piece.h"
 #include "DiskAdaptor.h"
-#include <algorithm>
 
 namespace aria2 {
 
@@ -34,6 +36,8 @@ public:
 
   virtual ~MockPieceStorage() {}
 
+#ifdef ENABLE_BITTORRENT
+
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer) {
     return false;
   }
@@ -57,6 +61,8 @@ public:
   {
     return SharedHandle<Piece>(new Piece());
   }
+
+#endif // ENABLE_BITTORRENT
 
   virtual SharedHandle<Piece> getMissingPiece()
   {
