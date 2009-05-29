@@ -131,12 +131,6 @@ RequestGroupHandle RequestGroupMan::getRequestGroup(size_t index) const
   }
 }
 
-const std::deque<SharedHandle<RequestGroup> >&
-RequestGroupMan::getRequestGroups() const
-{
-  return _requestGroups;
-}
-
 template<typename Iterator>
 static Iterator findByGID(Iterator first, Iterator last, int32_t gid)
 {
@@ -158,12 +152,6 @@ RequestGroupMan::findRequestGroup(int32_t gid) const
   } else {
     return *i;
   }
-}
-
-const std::deque<SharedHandle<RequestGroup> >&
-RequestGroupMan::getReservedGroups() const
-{
-  return _reservedGroups;
 }
 
 SharedHandle<RequestGroup>
@@ -721,12 +709,6 @@ TransferStat RequestGroupMan::calculateStat()
     s += (*i)->calculateStat();
   }
   return s;
-}
-
-const std::deque<SharedHandle<DownloadResult> >&
-RequestGroupMan::getDownloadResults() const
-{
-  return _downloadResults;
 }
 
 SharedHandle<DownloadResult>

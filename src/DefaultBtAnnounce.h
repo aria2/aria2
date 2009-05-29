@@ -76,15 +76,24 @@ public:
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 
-  SharedHandle<BtRuntime> getBtRuntime() const;
+  const SharedHandle<BtRuntime>& getBtRuntime() const
+  {
+    return btRuntime;
+  }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
-  SharedHandle<PieceStorage> getPieceStorage() const;
+  const SharedHandle<PieceStorage>& getPieceStorage() const
+  {
+    return pieceStorage;
+  }
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
-  SharedHandle<PeerStorage> getPeerStorage() const;
+  const SharedHandle<PeerStorage>& getPeerStorage() const
+  {
+    return peerStorage;
+  }
 
   bool isDefaultAnnounceReady();
 

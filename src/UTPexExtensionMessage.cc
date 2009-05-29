@@ -106,11 +106,6 @@ bool UTPexExtensionMessage::addFreshPeer(const PeerHandle& peer)
   }
 }
 
-const Peers& UTPexExtensionMessage::getFreshPeers() const
-{
-  return _freshPeers;
-}
-
 bool UTPexExtensionMessage::freshPeersAreFull() const
 {
   return _freshPeers.size() >= _maxFreshPeer;
@@ -127,11 +122,6 @@ bool UTPexExtensionMessage::addDroppedPeer(const PeerHandle& peer)
   }
 }
 
-const Peers& UTPexExtensionMessage::getDroppedPeers() const
-{
-  return _droppedPeers;
-}
-
 bool UTPexExtensionMessage::droppedPeersAreFull() const
 {
   return _droppedPeers.size() >= _maxDroppedPeer;
@@ -142,19 +132,9 @@ void UTPexExtensionMessage::setMaxFreshPeer(size_t maxFreshPeer)
   _maxFreshPeer = maxFreshPeer;
 }
 
-size_t UTPexExtensionMessage::getMaxFreshPeer() const
-{
-  return _maxFreshPeer;
-}
-
 void UTPexExtensionMessage::setMaxDroppedPeer(size_t maxDroppedPeer)
 {
   _maxDroppedPeer = maxDroppedPeer;
-}
-
-size_t UTPexExtensionMessage::getMaxDroppedPeer() const
-{
-  return _maxDroppedPeer;
 }
 
 void UTPexExtensionMessage::setPeerStorage

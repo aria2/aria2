@@ -48,36 +48,6 @@ namespace aria2 {
 SelectEventPoll::CommandEvent::CommandEvent(Command* command, int events):
   _command(command), _events(events) {}
 
-bool SelectEventPoll::CommandEvent::operator==(const CommandEvent& commandEvent) const
-{
-  return _command == commandEvent._command;
-}
-
-Command* SelectEventPoll::CommandEvent::getCommand() const
-{
-  return _command;
-}
-
-int SelectEventPoll::CommandEvent::getEvents() const
-{
-  return _events;
-}
-
-void SelectEventPoll::CommandEvent::addEvents(int events)
-{
-  _events |= events;
-}
-
-void SelectEventPoll::CommandEvent::removeEvents(int events)
-{
-  _events &= (~events); 
-}
-
-bool SelectEventPoll::CommandEvent::eventsEmpty() const
-{
-  return _events == 0;
-}
-
 void SelectEventPoll::CommandEvent::processEvents(int events)
 {
   if((_events&events) ||
@@ -99,16 +69,6 @@ void SelectEventPoll::CommandEvent::processEvents(int events)
 }
 
 SelectEventPoll::SocketEntry::SocketEntry(sock_t socket):_socket(socket) {}
-
-bool SelectEventPoll::SocketEntry::operator==(const SocketEntry& entry) const
-{
-  return _socket == entry._socket;
-}
-
-bool SelectEventPoll::SocketEntry::operator<(const SocketEntry& entry) const
-{
-  return _socket < entry._socket;
-}
 
 void SelectEventPoll::SocketEntry::addCommandEvent
 (Command* command, int events)
@@ -146,16 +106,6 @@ void SelectEventPoll::SocketEntry::processEvents(int events)
                              events));
 }
 
-sock_t SelectEventPoll::SocketEntry::getSocket() const
-{
-  return _socket;
-}
-
-bool SelectEventPoll::SocketEntry::eventEmpty() const
-{
-  return _commandEvents.empty();
-}
-
 int accumulateEvent(int events, const SelectEventPoll::CommandEvent& event)
 {
   return events|event.getEvents();
@@ -174,12 +124,6 @@ SelectEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry
 (const SharedHandle<AsyncNameResolver>& nameResolver, Command* command):
   _nameResolver(nameResolver), _command(command) {}
 
-bool SelectEventPoll::AsyncNameResolverEntry::operator==
-(const AsyncNameResolverEntry& entry)
-{
-  return _nameResolver == entry._nameResolver &&
-    _command == entry._command;
-}
 int SelectEventPoll::AsyncNameResolverEntry::getFds
 (fd_set* rfdsPtr, fd_set* wfdsPtr)
 {

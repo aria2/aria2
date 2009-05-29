@@ -149,7 +149,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option,
 
 RequestGroup::~RequestGroup() {}
 
-SegmentManHandle RequestGroup::initSegmentMan()
+const SegmentManHandle& RequestGroup::initSegmentMan()
 {
   _segmentMan = _segmentManFactory->createNewInstance(_downloadContext,
 						      _pieceStorage);
@@ -937,11 +937,6 @@ void RequestGroup::setDiskWriterFactory(const DiskWriterFactoryHandle& diskWrite
   _diskWriterFactory = diskWriterFactory;
 }
 
-DiskWriterFactoryHandle RequestGroup::getDiskWriterFactory() const
-{
-  return _diskWriterFactory;
-}
-
 void RequestGroup::addPostDownloadHandler(const PostDownloadHandlerHandle& handler)
 {
   _postDownloadHandlers.push_back(handler);
@@ -962,34 +957,14 @@ void RequestGroup::clearPreDowloadHandler()
   _preDownloadHandlers.clear();
 }
 
-SegmentManHandle RequestGroup::getSegmentMan() const
-{
-  return _segmentMan;
-}
-
-DownloadContextHandle RequestGroup::getDownloadContext() const
-{
-  return _downloadContext;
-}
-
 void RequestGroup::setDownloadContext(const DownloadContextHandle& downloadContext)
 {
   _downloadContext = downloadContext;
 }
 
-PieceStorageHandle RequestGroup::getPieceStorage() const
-{
-  return _pieceStorage;
-}
-
 void RequestGroup::setPieceStorage(const PieceStorageHandle& pieceStorage)
 {
   _pieceStorage = pieceStorage;
-}
-
-BtProgressInfoFileHandle RequestGroup::getProgressInfoFile() const
-{
-  return _progressInfoFile;
 }
 
 void RequestGroup::setProgressInfoFile(const BtProgressInfoFileHandle& progressInfoFile)
@@ -1131,11 +1106,6 @@ void RequestGroup::reportDownloadFinished()
 #endif // ENABLE_BITTORRENT
 }
 
-const std::deque<std::string>& RequestGroup::getAcceptFeatures() const
-{
-  return _acceptFeatures;
-}
-
 void RequestGroup::addAcceptFeatureHeader(const std::string& feature)
 {
   if(std::find(_acceptFeatures.begin(), _acceptFeatures.end(), feature) == _acceptFeatures.end()) {
@@ -1149,11 +1119,6 @@ void RequestGroup::removeAcceptFeatureHeader(const std::string& feature)
   if(i != _acceptFeatures.end()) {
     _acceptFeatures.erase(i);
   }
-}
-
-const std::deque<std::string>& RequestGroup::getAcceptTypes() const
-{
-  return _acceptTypes;
 }
 
 void RequestGroup::addAcceptType(const std::string& type)
@@ -1206,19 +1171,9 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
   }
 }
 
-unsigned int RequestGroup::getNumConcurrentCommand() const
-{
-  return _numConcurrentCommand;
-}
-
 void RequestGroup::markInMemoryDownload()
 {
   _inMemoryDownload = true;
-}
-
-bool RequestGroup::inMemoryDownload() const
-{
-  return _inMemoryDownload;
 }
 
 void RequestGroup::tuneDownloadCommand(DownloadCommand* command)
@@ -1229,11 +1184,6 @@ void RequestGroup::tuneDownloadCommand(DownloadCommand* command)
 void RequestGroup::addURIResult(std::string uri, DownloadResult::RESULT result)
 {
   _uriResults.push_back(URIResult(uri, result));
-}
-
-const std::deque<URIResult>& RequestGroup::getURIResults() const
-{
-  return _uriResults;
 }
 
 class FindURIResultByResult {
@@ -1263,19 +1213,9 @@ void RequestGroup::setTimeout(time_t timeout)
   _timeout = timeout;
 }
 
-time_t RequestGroup::getTimeout() const
-{
-  return _timeout;
-}
-
 void RequestGroup::setMaxTries(unsigned int maxTries)
 {
   _maxTries = maxTries;
-}
-
-unsigned int RequestGroup::getMaxTries() const
-{
-  return _maxTries;
 }
 
 bool RequestGroup::doesDownloadSpeedExceed()

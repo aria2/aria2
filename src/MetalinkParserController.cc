@@ -60,11 +60,6 @@ MetalinkParserController::MetalinkParserController():
 
 MetalinkParserController::~MetalinkParserController() {}
 
-SharedHandle<Metalinker> MetalinkParserController::getResult() const
-{
-  return _metalinker;
-}
-
 void MetalinkParserController::newEntryTransaction()
 {
   _tEntry.reset(new MetalinkEntry());

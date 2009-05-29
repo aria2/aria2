@@ -54,11 +54,6 @@ AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name):
 
 AbstractBtMessage::~AbstractBtMessage() {}
 
-SharedHandle<Peer> AbstractBtMessage::getPeer() const
-{
-  return peer;
-}
-
 void AbstractBtMessage::setPeer(const SharedHandle<Peer>& peer)
 {
   this->peer = peer;
@@ -78,19 +73,9 @@ AbstractBtMessage::setBtMessageValidator(const SharedHandle<BtMessageValidator>&
   this->validator = validator;
 }
 
-SharedHandle<BtMessageValidator> AbstractBtMessage::getBtMessageValidator() const
-{
-  return validator;
-}
-
 void AbstractBtMessage::setBtContext(const SharedHandle<BtContext>& btContext)
 {
   this->btContext = btContext;
-}
-
-SharedHandle<BtContext> AbstractBtMessage::getBtContext() const
-{
-  return btContext;
 }
 
 void AbstractBtMessage::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
@@ -116,11 +101,6 @@ void AbstractBtMessage::setBtMessageFactory(const WeakHandle<BtMessageFactory>& 
 void AbstractBtMessage::setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory)
 {
   this->requestFactory = factory;
-}
-
-const std::string& AbstractBtMessage::getName() const
-{
-  return _name;
 }
 
 } // namespace aria2

@@ -73,11 +73,6 @@ void NetrcAuthResolver::setNetrc(const NetrcHandle& netrc)
   _netrc = netrc;
 }
 
-NetrcHandle NetrcAuthResolver::getNetrc() const
-{
-  return _netrc;
-}
-
 void NetrcAuthResolver::ignoreDefault()
 {
   _ignoreDefault = true;

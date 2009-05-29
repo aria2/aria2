@@ -143,19 +143,9 @@ void AbstractSingleDiskAdaptor::setDiskWriter(const DiskWriterHandle& diskWriter
   this->diskWriter = diskWriter;
 }
 
-DiskWriterHandle AbstractSingleDiskAdaptor::getDiskWriter() const
-{
-  return diskWriter;
-}
-
 void AbstractSingleDiskAdaptor::setTotalLength(const uint64_t& totalLength)
 {
   this->totalLength = totalLength;
-}
-
-uint64_t AbstractSingleDiskAdaptor::getTotalLength() const
-{
-  return totalLength;
 }
 
 } // namespace aria2

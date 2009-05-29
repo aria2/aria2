@@ -97,9 +97,15 @@ private:
 
     bool isTimeout() const;
 
-    SharedHandle<SocketCore> getSocket() const;
+    const SharedHandle<SocketCore>& getSocket() const
+    {
+      return _socket;
+    }
 
-    const std::map<std::string, std::string>& getOptions() const;
+    const std::map<std::string, std::string>& getOptions() const
+    {
+      return _options;
+    }
   };
 
   // key = IP address:port, value = SocketPoolEntry
@@ -226,9 +232,15 @@ public:
    const std::deque<std::string>& ipaddrs,
    uint16_t port);
 
-  SharedHandle<CookieStorage> getCookieStorage() const;
+  const SharedHandle<CookieStorage>& getCookieStorage() const
+  {
+    return _cookieStorage;
+  }
 
-  SharedHandle<BtRegistry> getBtRegistry() const;
+  const SharedHandle<BtRegistry>& getBtRegistry() const
+  {
+    return _btRegistry;
+  }
 
   cuid_t newCUID();
 
@@ -238,7 +250,10 @@ public:
 
   void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
 
-  SharedHandle<AuthConfigFactory> getAuthConfigFactory() const;
+  const SharedHandle<AuthConfigFactory>& getAuthConfigFactory() const
+  {
+    return _authConfigFactory;
+  }
 
   void setRefreshInterval(time_t interval);
 };

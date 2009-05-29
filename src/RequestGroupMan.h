@@ -110,11 +110,17 @@ public:
 		  
   SharedHandle<RequestGroup> getRequestGroup(size_t index) const;
   
-  const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const;
+  const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const
+  {
+    return _requestGroups;
+  }
 
   SharedHandle<RequestGroup> findRequestGroup(int32_t gid) const;
 
-  const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const;
+  const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const
+  {
+    return _reservedGroups;
+  }
 
   SharedHandle<RequestGroup> findReservedGroup(int32_t gid) const;
 
@@ -164,8 +170,10 @@ public:
 
   DownloadStat getDownloadStat() const;
 
-  const std::deque<SharedHandle<DownloadResult> >&
-  getDownloadResults() const;
+  const std::deque<SharedHandle<DownloadResult> >& getDownloadResults() const
+  {
+    return _downloadResults;
+  }
 
   SharedHandle<DownloadResult> findDownloadResult(int32_t gid) const;
 

@@ -66,11 +66,6 @@ PeerSessionResource::~PeerSessionResource()
   delete _bitfieldMan;
 }
 
-bool PeerSessionResource::amChoking() const
-{
-  return _amChoking;
-}
-
 void PeerSessionResource::amChoking(bool b)
 {
   _amChoking = b;
@@ -79,19 +74,9 @@ void PeerSessionResource::amChoking(bool b)
   }
 }
 
-bool PeerSessionResource::amInterested() const
-{
-  return _amInterested;
-}
-
 void PeerSessionResource::amInterested(bool b)
 {
   _amInterested = b;
-}
-
-bool PeerSessionResource::peerChoking() const
-{
-  return _peerChoking;
 }
 
 void PeerSessionResource::peerChoking(bool b)
@@ -99,29 +84,14 @@ void PeerSessionResource::peerChoking(bool b)
   _peerChoking = b;
 }
 
-bool PeerSessionResource::peerInterested() const
-{
-  return _peerInterested;
-}
-
 void PeerSessionResource::peerInterested(bool b)
 {
   _peerInterested = b;
 }
   
-bool PeerSessionResource::chokingRequired() const
-{
-  return _chokingRequired;
-}
-
 void PeerSessionResource::chokingRequired(bool b)
 {
   _chokingRequired = b;
-}
-
-bool PeerSessionResource::optUnchoking() const
-{
-  return _optUnchoking;
 }
 
 void PeerSessionResource::optUnchoking(bool b)
@@ -135,11 +105,6 @@ bool PeerSessionResource::shouldBeChoking() const
     return false;
   }
   return _chokingRequired;
-}
-
-bool PeerSessionResource::snubbing() const
-{
-  return _snubbing;
 }
 
 void PeerSessionResource::snubbing(bool b)
@@ -190,11 +155,6 @@ void PeerSessionResource::markSeeder()
   _bitfieldMan->setAllBit();
 }
 
-bool PeerSessionResource::fastExtensionEnabled() const
-{
-  return _fastExtensionEnabled;
-}
-
 void PeerSessionResource::fastExtensionEnabled(bool b)
 {
   _fastExtensionEnabled = b;
@@ -225,11 +185,6 @@ bool PeerSessionResource::peerAllowedIndexSetContains(size_t index) const
 			    index);
 }
 
-const std::deque<size_t>& PeerSessionResource::amAllowedIndexSet() const
-{
-  return _amAllowedIndexSet;
-}
-
 void PeerSessionResource::addAmAllowedIndex(size_t index)
 {
   updateIndexSet(_amAllowedIndexSet, index);
@@ -240,11 +195,6 @@ bool PeerSessionResource::amAllowedIndexSetContains(size_t index) const
   return std::binary_search(_amAllowedIndexSet.begin(),
 			    _amAllowedIndexSet.end(),
 			    index);
-}
-
-bool PeerSessionResource::extendedMessagingEnabled() const
-{
-  return _extendedMessagingEnabled;
 }
 
 void PeerSessionResource::extendedMessagingEnabled(bool b)
@@ -280,24 +230,9 @@ void PeerSessionResource::addExtension(const std::string& name, uint8_t id)
   _extensions[name] = id;
 }
 
-bool PeerSessionResource::dhtEnabled() const
-{
-  return _dhtEnabled;
-}
-
 void PeerSessionResource::dhtEnabled(bool b)
 {
   _dhtEnabled = b;
-}
-
-PeerStat& PeerSessionResource::getPeerStat()
-{
-  return _peerStat;
-}
-
-unsigned int PeerSessionResource::latency() const
-{
-  return _latency;
 }
 
 void PeerSessionResource::updateLatency(unsigned int latency)
@@ -325,16 +260,6 @@ void PeerSessionResource::updateDownloadLength(size_t bytes)
   _peerStat.updateDownloadLength(bytes);
 
   _lastDownloadUpdate.reset();
-}
-
-const Time& PeerSessionResource::getLastDownloadUpdate() const
-{
-  return _lastDownloadUpdate;
-}
-
-const Time& PeerSessionResource::getLastAmUnchoking() const
-{
-  return _lastAmUnchoking;
 }
 
 uint64_t PeerSessionResource::getCompletedLength() const

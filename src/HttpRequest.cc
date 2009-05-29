@@ -37,7 +37,6 @@
 #include <cassert>
 #include <numeric>
 
-#include "Request.h"
 #include "Segment.h"
 #include "Range.h"
 #include "CookieStorage.h"
@@ -59,11 +58,6 @@ HttpRequest::HttpRequest():entityLength(0),
 			   userAgent(USER_AGENT)
 {}
 
-SharedHandle<Segment> HttpRequest::getSegment() const
-{
-  return segment;
-}
-
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
 {
   this->segment = segment;
@@ -72,11 +66,6 @@ void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
 void HttpRequest::setRequest(const SharedHandle<Request>& request)
 {
   this->request = request;
-}
-
-SharedHandle<Request> HttpRequest::getRequest() const
-{
-  return request;
 }
 
 off_t HttpRequest::getStartByte() const
@@ -287,60 +276,10 @@ void HttpRequest::addAcceptType(const std::string& type)
   _acceptTypes.push_back(type);
 }
 
-const std::string& HttpRequest::getPreviousURI() const
-{
-  return request->getPreviousUrl();
-}
-
-const std::string& HttpRequest::getHost() const
-{
-  return request->getHost();
-}
-
-uint16_t HttpRequest::getPort() const
-{
-  return request->getPort();
-}
-
-const std::string& HttpRequest::getMethod() const
-{
-  return request->getMethod();
-}
-
-const std::string& HttpRequest::getProtocol() const
-{
-  return request->getProtocol();
-}
-
-const std::string& HttpRequest::getCurrentURI() const
-{
-  return request->getCurrentUrl();
-}
-  
-const std::string& HttpRequest::getDir() const
-{
-  return request->getDir();
-}
-
-const std::string& HttpRequest::getFile() const
-{
-  return request->getFile();
-}
-
-const std::string& HttpRequest::getQuery() const
-{
-  return request->getQuery();
-}
-
 void HttpRequest::setCookieStorage
 (const SharedHandle<CookieStorage>& cookieStorage)
 {
   _cookieStorage = cookieStorage;
-}
-
-SharedHandle<CookieStorage> HttpRequest::getCookieStorage() const
-{
-  return _cookieStorage;
 }
 
 void HttpRequest::setAuthConfigFactory

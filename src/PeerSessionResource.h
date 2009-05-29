@@ -87,39 +87,60 @@ public:
   ~PeerSessionResource();
 
   // localhost is choking this peer
-  bool amChoking() const;
+  bool amChoking() const
+  {
+    return _amChoking;
+  }
 
   void amChoking(bool b);
 
   // localhost is interested in this peer
-  bool amInterested() const;
+  bool amInterested() const
+  {
+    return _amInterested;
+  }
 
   void amInterested(bool b);
 
   // this peer is choking localhost
-  bool peerChoking() const;
+  bool peerChoking() const
+  {
+    return _peerChoking;
+  }
 
   void peerChoking(bool b);
 
   // this peer is interested in localhost
-  bool peerInterested() const;
+  bool peerInterested() const
+  {
+    return _peerInterested;
+  }
 
   void peerInterested(bool b);
   
   // this peer should be choked
-  bool chokingRequired() const;
+  bool chokingRequired() const
+  {
+    return _chokingRequired;
+  }
 
   void chokingRequired(bool b);
 
   // this peer is eligible for unchoking optionally.
-  bool optUnchoking() const;
+  bool optUnchoking() const
+  {
+    return _optUnchoking;
+  }
 
   void optUnchoking(bool b);
 
   bool shouldBeChoking() const;
 
   // this peer is snubbing.
-  bool snubbing() const;
+  bool snubbing() const
+  {
+    return _snubbing;
+  }
 
   void snubbing(bool b);
 
@@ -137,7 +158,10 @@ public:
 
   void markSeeder();
 
-  bool fastExtensionEnabled() const;
+  bool fastExtensionEnabled() const
+  {
+    return _fastExtensionEnabled;
+  }
 
   void fastExtensionEnabled(bool b);
 
@@ -149,13 +173,19 @@ public:
   bool peerAllowedIndexSetContains(size_t index) const;
 
   // fast index set which localhost has sent to a peer.
-  const std::deque<size_t>& amAllowedIndexSet() const;
+  const std::deque<size_t>& amAllowedIndexSet() const
+  {
+    return _amAllowedIndexSet;
+  }
 
   void addAmAllowedIndex(size_t index);
 
   bool amAllowedIndexSetContains(size_t index) const;
 
-  bool extendedMessagingEnabled() const;
+  bool extendedMessagingEnabled() const
+  {
+    return _extendedMessagingEnabled;
+  }
 
   void extendedMessagingEnabled(bool b);
 
@@ -165,13 +195,22 @@ public:
 
   void addExtension(const std::string& name, uint8_t id);
 
-  bool dhtEnabled() const;
+  bool dhtEnabled() const
+  {
+    return _dhtEnabled;
+  }
 
   void dhtEnabled(bool b);
 
-  PeerStat& getPeerStat();
+  PeerStat& getPeerStat()
+  {
+    return _peerStat;
+  }
 
-  unsigned int latency() const;
+  unsigned int latency() const
+  {
+    return _latency;
+  }
 
   void updateLatency(unsigned int latency);
 
@@ -183,9 +222,15 @@ public:
 
   void updateDownloadLength(size_t bytes);
 
-  const Time& getLastDownloadUpdate() const;
+  const Time& getLastDownloadUpdate() const
+  {
+    return _lastDownloadUpdate;
+  }
 
-  const Time& getLastAmUnchoking() const;
+  const Time& getLastAmUnchoking() const
+  {
+    return _lastAmUnchoking;
+  }
 
   uint64_t getCompletedLength() const;
 

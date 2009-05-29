@@ -52,26 +52,6 @@ BNode::~BNode()
   delete _right;
 }
 
-SharedHandle<DHTBucket> BNode::getBucket() const
-{
-  return _bucket;
-}
-
-BNode* BNode::getLeft() const
-{
-  return _left;
-}
-
-BNode* BNode::getRight() const
-{
-  return _right;
-}
-
-BNode* BNode::getUp() const
-{
-  return _up;
-}
-
 void BNode::setLeft(BNode* left)
 {
   _left = left;

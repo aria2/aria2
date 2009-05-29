@@ -96,11 +96,6 @@ void DiskWriterEntry::openExistingFile()
   }
 }
 
-bool DiskWriterEntry::isOpen() const
-{
-  return _open;
-}
-
 void DiskWriterEntry::closeFile()
 {
   if(_open) {
@@ -119,19 +114,9 @@ uint64_t DiskWriterEntry::size() const
   return File(getFilePath()).size();
 }
 
-SharedHandle<FileEntry> DiskWriterEntry::getFileEntry() const
-{
-  return fileEntry;
-}
-
 void DiskWriterEntry::setDiskWriter(const SharedHandle<DiskWriter>& diskWriter)
 {
   this->diskWriter = diskWriter;
-}
-
-SharedHandle<DiskWriter> DiskWriterEntry::getDiskWriter() const
-{
-  return diskWriter;
 }
 
 bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
@@ -153,16 +138,6 @@ void DiskWriterEntry::disableDirectIO()
     diskWriter->disableDirectIO();
   }
   _directIO = false;
-}
-
-bool DiskWriterEntry::needsFileAllocation() const
-{
-  return _needsFileAllocation;
-}
-
-void DiskWriterEntry::needsFileAllocation(bool f)
-{
-  _needsFileAllocation = f;
 }
 
 MultiDiskAdaptor::MultiDiskAdaptor():
@@ -550,12 +525,6 @@ size_t MultiDiskAdaptor::utime(const Time& actime, const Time& modtime)
     }
   }
   return numOK;
-}
-
-const std::deque<SharedHandle<DiskWriterEntry> >&
-MultiDiskAdaptor::getDiskWriterEntries() const
-{
-  return diskWriterEntries;
 }
 
 } // namespace aria2

@@ -181,19 +181,9 @@ void MetalinkEntry::toFileEntry
 		 mem_fun_sh(&MetalinkEntry::getFile));
 }
 
-SharedHandle<FileEntry> MetalinkEntry::getFile() const
-{
-  return file;
-}
-
 void MetalinkEntry::setSignature(const SharedHandle<Signature>& signature)
 {
   _signature = signature;
-}
-
-SharedHandle<Signature> MetalinkEntry::getSignature() const
-{
-  return _signature;
 }
 
 } // namespace aria2

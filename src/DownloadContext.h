@@ -97,7 +97,10 @@ public:
    */
   virtual std::string getActualBasePath() const = 0;
 
-  const std::string& getDir() const;
+  const std::string& getDir() const
+  {
+    return _dir;
+  }
 
   void setDir(const std::string& dir);
 

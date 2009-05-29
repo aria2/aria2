@@ -142,16 +142,6 @@ BitfieldMan::~BitfieldMan() {
   delete [] filterBitfield;
 }
 
-size_t BitfieldMan::getBlockLength() const
-{
-  return blockLength;
-}
-
-size_t BitfieldMan::getLastBlockLength() const
-{
-  return totalLength-blockLength*(blocks-1);
-}
-
 size_t BitfieldMan::getBlockLength(size_t index) const
 {
   if(index == blocks-1) {
@@ -452,25 +442,12 @@ size_t BitfieldMan::countMissingBlockNow() const {
   }
 }
 
-size_t BitfieldMan::countFilteredBlock() const {
-  return cachedNumFilteredBlock;
-}
-
-size_t BitfieldMan::countBlock() const {
-  return blocks;
-}
-
 size_t BitfieldMan::countFilteredBlockNow() const {
   if(filterEnabled) {
     return bitfield::countSetBit(filterBitfield, blocks);
   } else {
     return 0;
   }
-}
-
-size_t BitfieldMan::getMaxIndex() const
-{
-  return blocks-1;
 }
 
 bool BitfieldMan::setBitInternal(unsigned char* bitfield, size_t index, bool on) {
@@ -552,16 +529,6 @@ void BitfieldMan::setBitfield(const unsigned char* bitfield, size_t bitfieldLeng
   updateCache();
 }
 
-const unsigned char* BitfieldMan::getBitfield() const
-{
-  return bitfield;
-}
-
-size_t BitfieldMan::getBitfieldLength() const
-{
-  return bitfieldLength;
-}
-
 void BitfieldMan::clearAllBit() {
   memset(this->bitfield, 0, this->bitfieldLength);
   updateCache();
@@ -627,14 +594,6 @@ void BitfieldMan::clearFilter() {
   updateCache();
 }
 
-bool BitfieldMan::isFilterEnabled() const {
-  return filterEnabled;
-}
-
-uint64_t BitfieldMan::getFilteredTotalLength() const {
-  return cachedFilteredTotalLength;
-}
-
 uint64_t BitfieldMan::getFilteredTotalLengthNow() const {
   if(!filterBitfield) {
     return 0;
@@ -677,16 +636,8 @@ uint64_t BitfieldMan::getCompletedLength(bool useFilter) const {
   return completedLength;
 }
 
-uint64_t BitfieldMan::getCompletedLength() const {
-  return cachedCompletedLength;
-}
-
 uint64_t BitfieldMan::getCompletedLengthNow() const {
   return getCompletedLength(false);
-}
-
-uint64_t BitfieldMan::getFilteredCompletedLength() const {
-  return cachedFilteredComletedLength;
 }
 
 uint64_t BitfieldMan::getFilteredCompletedLengthNow() const {
@@ -767,11 +718,6 @@ uint64_t BitfieldMan::getMissingUnusedLength(size_t startingIndex) const
 void BitfieldMan::setRandomizer(const SharedHandle<Randomizer>& randomizer)
 {
   this->randomizer = randomizer;
-}
-
-SharedHandle<Randomizer> BitfieldMan::getRandomizer() const
-{
-  return randomizer;
 }
 
 } // namespace aria2

@@ -446,9 +446,4 @@ void FtpConnection::setBaseWorkingDir(const std::string& baseWorkingDir)
   _baseWorkingDir = baseWorkingDir;
 }
 
-const std::string& FtpConnection::getBaseWorkingDir() const
-{
-  return _baseWorkingDir;
-}
-
 } // namespace aria2

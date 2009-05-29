@@ -42,6 +42,7 @@
 #include "Logger.h"
 #include "DHTConstants.h"
 #include "StringFormat.h"
+#include "DHTNode.h"
 
 namespace aria2 {
 

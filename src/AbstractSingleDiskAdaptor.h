@@ -91,11 +91,17 @@ public:
 
   void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 
-  SharedHandle<DiskWriter> getDiskWriter() const;
+  const SharedHandle<DiskWriter>& getDiskWriter() const
+  {
+    return diskWriter;
+  }
 
   void setTotalLength(const uint64_t& totalLength);
 
-  uint64_t getTotalLength() const;
+  uint64_t getTotalLength() const
+  {
+    return totalLength;
+  }
 };
 
 } // namespace aria2

@@ -77,7 +77,10 @@ public:
   virtual ssize_t sendMessage(const unsigned char* data, size_t len,
 			      const std::string& host, uint16_t port);
 
-  SharedHandle<SocketCore> getSocket() const;
+  const SharedHandle<SocketCore>& getSocket() const
+  {
+    return _socket;
+  }
 };
 
 } // namespace aria2

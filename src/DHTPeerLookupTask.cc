@@ -102,11 +102,6 @@ void DHTPeerLookupTask::onFinish()
   }
 }
 
-const std::deque<SharedHandle<Peer> >& DHTPeerLookupTask::getPeers() const
-{
-  return _peers;
-}
-
 void DHTPeerLookupTask::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
 {
   _btRuntime = btRuntime;

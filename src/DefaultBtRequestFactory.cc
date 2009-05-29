@@ -235,11 +235,6 @@ void DefaultBtRequestFactory::getTargetPieceIndexes
 		 mem_fun_sh(&Piece::getIndex));
 }
 
-std::deque<SharedHandle<Piece> >& DefaultBtRequestFactory::getTargetPieces()
-{
-  return pieces;
-}
-
 void DefaultBtRequestFactory::setBtContext(const SharedHandle<BtContext>& btContext)
 {
   this->btContext = btContext;

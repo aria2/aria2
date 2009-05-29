@@ -111,9 +111,15 @@ public:
 
   BitfieldMan& operator=(const BitfieldMan& bitfieldMan);
 
-  size_t getBlockLength() const;
+  size_t getBlockLength() const
+  {
+    return blockLength;
+  }
 
-  size_t getLastBlockLength() const;
+  size_t getLastBlockLength() const
+  {
+    return totalLength-blockLength*(blocks-1);
+  }
 
   size_t getBlockLength(size_t index) const;
 
@@ -195,22 +201,38 @@ public:
 
   bool isAllBitSet() const;
 
-  const unsigned char* getBitfield() const;
+  const unsigned char* getBitfield() const
+  {
+    return bitfield;
+  }
 
-  size_t getBitfieldLength() const;
+  size_t getBitfieldLength() const
+  {
+    return bitfieldLength;
+  }
 
   /**
    * affected by filter
    */
-  size_t countFilteredBlock() const;
+  size_t countFilteredBlock() const
+  {
+    return cachedNumFilteredBlock;
+  }
 
-  size_t countBlock() const;
+  size_t countBlock() const
+  {
+    return blocks;
+  }
+
   /**
    * affected by filter
    */
   size_t countFilteredBlockNow() const;
 
-  size_t getMaxIndex() const;
+  size_t getMaxIndex() const
+  {
+    return blocks-1;
+  }
 
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
@@ -228,24 +250,38 @@ public:
   
   void enableFilter();
   void disableFilter();
-  bool isFilterEnabled() const;
+  bool isFilterEnabled() const
+  {
+    return filterEnabled;
+  }
+
   /**
    * affected by filter
    */
-  uint64_t getFilteredTotalLength() const;
+  uint64_t getFilteredTotalLength() const
+  {
+    return cachedFilteredTotalLength;
+  }
+
   /**
    * affected by filter
    */
   uint64_t getFilteredTotalLengthNow() const;
 
-  uint64_t getCompletedLength() const;
+  uint64_t getCompletedLength() const
+  {
+    return cachedCompletedLength;
+  }
 
   uint64_t getCompletedLengthNow() const;
 
   /**
    * affected by filter
    */
-  uint64_t getFilteredCompletedLength() const;
+  uint64_t getFilteredCompletedLength() const
+  {
+    return cachedFilteredComletedLength;
+  }
   /**
    * affected by filter
    */
@@ -253,7 +289,10 @@ public:
 
   void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
-  SharedHandle<Randomizer> getRandomizer() const;
+  const SharedHandle<Randomizer>& getRandomizer() const
+  {
+    return randomizer;
+  }
 
   void updateCache();
 

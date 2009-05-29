@@ -36,8 +36,10 @@
 #define _D_SIGNATURE_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -55,15 +57,24 @@ public:
 
   void setType(const std::string& type);
 
-  const std::string& getType() const;
+  const std::string& getType() const
+  {
+    return _type;
+  }
 
   void setFile(const std::string& file);
 
-  const std::string& getFile() const;
+  const std::string& getFile() const
+  {
+    return _file;
+  }
 
   void setBody(const std::string& body);
 
-  const std::string& getBody() const;
+  const std::string& getBody() const
+  {
+    return _body;
+  }
 
   bool save(const std::string& filepath) const;
 };

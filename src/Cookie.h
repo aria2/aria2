@@ -91,19 +91,40 @@ public:
 
   bool isExpired() const;
 
-  const std::string& getName() const;
+  const std::string& getName() const
+  {
+    return _name;
+  }
 
-  const std::string& getValue() const;
+  const std::string& getValue() const
+  {
+    return _value;
+  }
 
-  const std::string& getPath() const;
+  const std::string& getPath() const
+  {
+    return _path;
+  }
 
-  const std::string& getDomain() const;
+  const std::string& getDomain() const
+  {
+    return _domain;
+  }
 
-  time_t getExpiry() const;
+  time_t getExpiry() const
+  {
+    return _expiry;
+  }
 
-  bool isSecureCookie() const;
+  bool isSecureCookie() const
+  {
+    return _secure;
+  }
 
-  bool isSessionCookie() const;
+  bool isSessionCookie() const
+  {
+    return _expiry == 0;
+  }
 
   std::string toNsCookieFormat() const;
 };

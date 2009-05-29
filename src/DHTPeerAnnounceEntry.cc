@@ -76,11 +76,6 @@ size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
   return _peerAddrEntries.size();
 }
 
-const std::deque<PeerAddrEntry>& DHTPeerAnnounceEntry::getPeerAddrEntries() const
-{
-  return _peerAddrEntries;
-}
-
 class FindStaleEntry {
 private:
   time_t _timeout;

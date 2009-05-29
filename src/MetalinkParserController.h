@@ -79,7 +79,10 @@ public:
 
   ~MetalinkParserController();
 
-  SharedHandle<Metalinker> getResult() const;
+  const SharedHandle<Metalinker>& getResult() const
+  {
+    return _metalinker;
+  }
 
   void newEntryTransaction();
 

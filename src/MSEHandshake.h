@@ -167,21 +167,46 @@ public:
   bool sendReceiverStep2();
 
   // returns plain text IA
-  const unsigned char* getIA() const;
+  const unsigned char* getIA() const
+  {
+    return _ia;
+  }
 
-  size_t getIALength() const;
+  size_t getIALength() const
+  {
+    return _iaLength;
+  }
 
-  const unsigned char* getInfoHash() const;
+  const unsigned char* getInfoHash() const
+  {
+    return _infoHash;
+  }
 
-  CRYPTO_TYPE getNegotiatedCryptoType() const;
+  CRYPTO_TYPE getNegotiatedCryptoType() const
+  {
+    return _negotiatedCryptoType;
+  }
 
-  SharedHandle<ARC4Encryptor> getEncryptor() const;
+  const SharedHandle<ARC4Encryptor>& getEncryptor() const
+  {
+    return _encryptor;
+  }
 
-  SharedHandle<ARC4Decryptor> getDecryptor() const;
+  const SharedHandle<ARC4Decryptor>& getDecryptor() const
+  {
+    return _decryptor;
+  }
 
-  const unsigned char* getBuffer() const;
+  const unsigned char* getBuffer() const
+  {
+    return _rbuf;
+  }
 
-  size_t getBufferLength() const;
+  size_t getBufferLength() const
+  {
+    return _rbufLength;
+  }
+
 };
 
 } // namespace aria2

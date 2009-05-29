@@ -68,7 +68,10 @@ public:
 
   virtual void onFinish();
   
-  const std::deque<SharedHandle<Peer> >& getPeers() const;
+  const std::deque<SharedHandle<Peer> >& getPeers() const
+  {
+    return _peers;
+  }
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 

@@ -48,7 +48,7 @@ public:
   BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece):
     piece(piece) {}
 
-  SharedHandle<Piece> getPiece() const { return piece; }
+  const SharedHandle<Piece>& getPiece() const { return piece; }
 };
 
 } // namespace aria2

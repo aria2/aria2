@@ -57,9 +57,15 @@ public:
 
   ~DHTRoutingTableDeserializer();
 
-  SharedHandle<DHTNode> getLocalNode() const;
+  const SharedHandle<DHTNode>& getLocalNode() const
+  {
+    return _localNode;
+  }
 
-  const std::deque<SharedHandle<DHTNode> >& getNodes() const;
+  const std::deque<SharedHandle<DHTNode> >& getNodes() const
+  {
+    return _nodes;
+  }
 
   Time getSerializedTime() const
   {

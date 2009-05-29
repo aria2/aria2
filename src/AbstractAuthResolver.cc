@@ -46,19 +46,9 @@ void AbstractAuthResolver::setUserDefinedAuthConfig(const AuthConfigHandle& auth
   _userDefinedAuthConfig = authConfig;
 }
 
-AuthConfigHandle AbstractAuthResolver::getUserDefinedAuthConfig() const
-{
-  return _userDefinedAuthConfig;
-}
-
 void AbstractAuthResolver::setDefaultAuthConfig(const AuthConfigHandle& authConfig)
 {
   _defaultAuthConfig = authConfig;
-}
-
-AuthConfigHandle AbstractAuthResolver::getDefaultAuthConfig() const
-{
-  return _defaultAuthConfig;
 }
 
 } // namespace aria2

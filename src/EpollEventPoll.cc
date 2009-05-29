@@ -47,35 +47,9 @@ namespace aria2 {
 EpollEventPoll::CommandEvent::CommandEvent(Command* command, int events):
   _command(command), _events(events) {}
 
-bool EpollEventPoll::CommandEvent::operator==
-(const CommandEvent& commandEvent) const
-{
-  return _command == commandEvent._command;
-}
-
-Command* EpollEventPoll::CommandEvent::getCommand() const
-{
-  return _command;
-}
-
 int EpollEventPoll::CommandEvent::getEvents() const
 {
   return _events;
-}
-
-void EpollEventPoll::CommandEvent::addEvents(int events)
-{
-  _events |= events;
-}
-
-void EpollEventPoll::CommandEvent::removeEvents(int events)
-{
-  _events &= (~events); 
-}
-
-bool EpollEventPoll::CommandEvent::eventsEmpty() const
-{
-  return _events == 0;
 }
 
 void EpollEventPoll::CommandEvent::processEvents(int events)
@@ -117,11 +91,6 @@ EpollEventPoll::ADNSEvent::ADNSEvent
  Command* command,
  sock_t socket, int events):
   _resolver(resolver), _command(command), _socket(socket), _events(events) {}
-
-bool EpollEventPoll::ADNSEvent::operator==(const ADNSEvent& event) const
-{
-  return _resolver == event._resolver;
-}
 
 int EpollEventPoll::ADNSEvent::getEvents() const
 {
@@ -165,16 +134,6 @@ void EpollEventPoll::ADNSEvent::removeSelf
 EpollEventPoll::SocketEntry::SocketEntry(sock_t socket):_socket(socket)
 {
   memset(&_epEvent, 0, sizeof(struct epoll_event));
-}
-
-bool EpollEventPoll::SocketEntry::operator==(const SocketEntry& entry) const
-{
-  return _socket == entry._socket;
-}
-
-bool EpollEventPoll::SocketEntry::operator<(const SocketEntry& entry) const
-{
-  return _socket < entry._socket;
 }
 
 void EpollEventPoll::SocketEntry::addCommandEvent(const CommandEvent& cev)
@@ -247,11 +206,6 @@ void EpollEventPoll::SocketEntry::processEvents(int events)
 
 }
 
-sock_t EpollEventPoll::SocketEntry::getSocket() const
-{
-  return _socket;
-}
-
 bool EpollEventPoll::SocketEntry::eventEmpty() const
 {
 
@@ -302,13 +256,6 @@ EpollEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry
   _nameResolver(nameResolver), _command(command), _socketsSize(0)
 
 {}
-
-bool EpollEventPoll::AsyncNameResolverEntry::operator==
-(const AsyncNameResolverEntry& entry)
-{
-  return _nameResolver == entry._nameResolver &&
-    _command == entry._command;
-}
 
 void EpollEventPoll::AsyncNameResolverEntry::addSocketEvents
 (EpollEventPoll* e)

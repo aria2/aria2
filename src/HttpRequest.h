@@ -41,10 +41,10 @@
 #include <deque>
 
 #include "SharedHandle.h"
+#include "Request.h"
 
 namespace aria2 {
 
-class Request;
 class Segment;
 class Range;
 class Option;
@@ -85,7 +85,10 @@ private:
 public:
   HttpRequest();
 
-  SharedHandle<Segment> getSegment() const;
+  const SharedHandle<Segment>& getSegment() const
+  {
+    return segment;
+  }
 
   void setSegment(const SharedHandle<Segment>& segment);
 
@@ -104,23 +107,50 @@ public:
     return entityLength;
   }
 
-  const std::string& getHost() const;
+  const std::string& getHost() const
+  {
+    return request->getHost();
+  }
 
-  uint16_t getPort() const;
+  uint16_t getPort() const
+  {
+    return request->getPort();
+  }
 
-  const std::string& getMethod() const;
+  const std::string& getMethod() const
+  {
+    return request->getMethod();
+  }
 
-  const std::string& getProtocol() const;
+  const std::string& getProtocol() const
+  {
+    return request->getProtocol();
+  }
 
-  const std::string& getCurrentURI() const;
+  const std::string& getCurrentURI() const
+  {
+    return request->getCurrentUrl();
+  }
   
-  const std::string& getDir() const;
+  const std::string& getDir() const
+  {
+    return request->getDir();
+  }
 
-  const std::string& getFile() const;
+  const std::string& getFile() const
+  {
+    return request->getFile();
+  }
 
-  const std::string& getQuery() const;
+  const std::string& getQuery() const
+  {
+    return request->getQuery();
+  }
 
-  const std::string& getPreviousURI() const;
+  const std::string& getPreviousURI() const
+  {
+    return request->getPreviousUrl();
+  }
 
   SharedHandle<Range> getRange() const;
 
@@ -130,7 +160,10 @@ public:
    */
   bool isRangeSatisfied(const SharedHandle<Range>& range) const;
 
-  SharedHandle<Request> getRequest() const;
+  const SharedHandle<Request>& getRequest() const
+  {
+    return request;
+  }
 
   off_t getStartByte() const;
 
@@ -173,7 +206,10 @@ public:
 
   void setCookieStorage(const SharedHandle<CookieStorage>& cookieStorage);
 
-  SharedHandle<CookieStorage> getCookieStorage() const;
+  const SharedHandle<CookieStorage>& getCookieStorage() const
+  {
+    return _cookieStorage;
+  }
 
   void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
 

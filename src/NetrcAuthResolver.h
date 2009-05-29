@@ -57,7 +57,10 @@ public:
 
   void setNetrc(const SharedHandle<Netrc>& netrc);
 
-  SharedHandle<Netrc> getNetrc() const;
+  const SharedHandle<Netrc>& getNetrc() const
+  {
+    return _netrc;
+  }
 
   // Ignores default token of netrc
   void ignoreDefault();

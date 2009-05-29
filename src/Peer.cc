@@ -71,34 +71,9 @@ Peer::~Peer()
   releaseSessionResource();
 }
 
-bool Peer::operator==(const Peer& p)
-{
-  return id == p.id;
-}
-  
-bool Peer::operator!=(const Peer& p)
-{
-  return !(*this == p);
-}
-
-const std::string& Peer::getID() const
-{
-  return id;
-}
-
 void Peer::usedBy(int32_t cuid)
 {
   _cuid = cuid;
-}
-
-int32_t Peer::usedBy() const
-{
-  return _cuid;
-}
-
-bool Peer::unused() const
-{
-  return _cuid == 0;
 }
 
 void Peer::allocateSessionResource(size_t pieceLength, uint64_t totalLength)
@@ -114,19 +89,9 @@ void Peer::releaseSessionResource()
   _res = 0;
 }
 
-bool Peer::isActive() const
-{
-  return _res != 0;
-}
-
 void Peer::setPeerId(const unsigned char* peerId)
 {
   memcpy(_peerId, peerId, PEER_ID_LENGTH);
-}
-
-const unsigned char* Peer::getPeerId() const
-{
-  return _peerId;
 }
 
 void Peer::resetStatus() {
@@ -432,21 +397,6 @@ bool Peer::isDHTEnabled() const
   return _res->dhtEnabled();
 }
 
-bool Peer::isSeeder() const
-{
-  return _seeder;
-}
-
-const Time& Peer::getFirstContactTime() const
-{
-  return _firstContactTime;
-}
-
-const Time& Peer::getBadConditionStartTime() const
-{
-  return _badConditionStartTime;
-}
-
 const Time& Peer::getLastDownloadUpdate() const
 {
   assert(_res);
@@ -463,11 +413,6 @@ uint64_t Peer::getCompletedLength() const
 {
   assert(_res);
   return _res->getCompletedLength();
-}
-
-bool Peer::isIncomingPeer() const
-{
-  return _incoming;
 }
 
 void Peer::setIncomingPeer(bool incoming)

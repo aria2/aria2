@@ -100,7 +100,10 @@ public:
 
   void resetRedirectCount();
   
-  unsigned int getRedirectCount() const;
+  unsigned int getRedirectCount() const
+  {
+    return _redirectCount;
+  }
 
   // Returns URI passed by setUrl()
   const std::string& getUrl() const { return url; }
@@ -145,11 +148,17 @@ public:
     _pipeliningHint = pipeliningHint;
   }
 
-  bool isPipeliningHint() const;
+  bool isPipeliningHint() const
+  {
+    return _pipeliningHint;
+  }
 
   void setMaxPipelinedRequest(unsigned int num);
 
-  unsigned int getMaxPipelinedRequest() const;
+  unsigned int getMaxPipelinedRequest() const
+  {
+    return _maxPipelinedRequest;
+  }
 
   void setMethod(const std::string& method) {
     this->method = method;

@@ -107,9 +107,4 @@ ssize_t DHTConnectionImpl::sendMessage(const unsigned char* data, size_t len,
   return _socket->writeData(data, len, host, port);
 }
 
-SharedHandle<SocketCore> DHTConnectionImpl::getSocket() const
-{
-  return _socket;
-}
-
 } // namespace aria2

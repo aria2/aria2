@@ -62,16 +62,28 @@ public:
 
   ~ServerStat();
 
-  const std::string& getHostname() const;
+  const std::string& getHostname() const
+  {
+    return _hostname;
+  }
 
-  const std::string& getProtocol() const;
+  const std::string& getProtocol() const
+  {
+    return _protocol;
+  }
 
-  const Time& getLastUpdated() const;
+  const Time& getLastUpdated() const
+  {
+    return _lastUpdated;
+  }
 
   // This method doesn't update _lastUpdate.
   void setLastUpdated(const Time& time);
 
-  unsigned int getDownloadSpeed() const;
+  unsigned int getDownloadSpeed() const
+  {
+    return _downloadSpeed;
+  }
 
   // update download speed and update _lastUpdated
   void updateDownloadSpeed(unsigned int downloadSpeed);
@@ -79,15 +91,27 @@ public:
   // set download speed. This method doesn't update _lastUpdate.
   void setDownloadSpeed(unsigned int downloadSpeed);
 
-  unsigned int getSingleConnectionAvgSpeed() const;
+  unsigned int getSingleConnectionAvgSpeed() const
+  {
+    return _singleConnectionAvgSpeed;
+  }
+
   void updateSingleConnectionAvgSpeed(unsigned int downloadSpeed);
   void setSingleConnectionAvgSpeed(unsigned int singleConnectionAvgSpeed);
 
-  unsigned int getMultiConnectionAvgSpeed() const;
+  unsigned int getMultiConnectionAvgSpeed() const
+  {
+    return _multiConnectionAvgSpeed;
+  }
+
   void updateMultiConnectionAvgSpeed(unsigned int downloadSpeed);
   void setMultiConnectionAvgSpeed(unsigned int singleConnectionAvgSpeed);
 
-  unsigned int getCounter() const;
+  unsigned int getCounter() const
+  {
+    return _counter;
+  }
+
   void increaseCounter();
   void setCounter(unsigned int value);
 
@@ -99,14 +123,23 @@ public:
   // This method doesn't update _lastUpdate.
   void setStatus(const std::string& status);
 
-  STATUS getStatus() const;
+  STATUS getStatus() const
+  {
+    return _status;
+  }
 
-  bool isOK() const;
+  bool isOK() const
+  {
+    return _status == OK;
+  }
 
   // set status OK and update _lastUpdated
   void setOK();
 
-  bool isError() const;
+  bool isError() const
+  {
+    return _status == ERROR;
+  }
 
   // set status ERROR and update _lastUpdated
   void setError();

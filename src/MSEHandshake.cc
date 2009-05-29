@@ -590,44 +590,4 @@ size_t MSEHandshake::receiveNBytes(size_t bytes)
   return r;
 }
 
-const unsigned char* MSEHandshake::getIA() const
-{
-  return _ia;
-}
-
-size_t MSEHandshake::getIALength() const
-{
-  return _iaLength;
-}
-
-const unsigned char* MSEHandshake::getInfoHash() const
-{
-  return _infoHash;
-}
-
-MSEHandshake::CRYPTO_TYPE MSEHandshake::getNegotiatedCryptoType() const
-{
-  return _negotiatedCryptoType;
-}
-
-SharedHandle<ARC4Encryptor> MSEHandshake::getEncryptor() const
-{
-  return _encryptor;
-}
-
-SharedHandle<ARC4Decryptor> MSEHandshake::getDecryptor() const
-{
-  return _decryptor;
-}
-
-const unsigned char* MSEHandshake::getBuffer() const
-{
-  return _rbuf;
-}
-
-size_t MSEHandshake::getBufferLength() const
-{
-  return _rbufLength;
-}
-
 } // namespace aria2

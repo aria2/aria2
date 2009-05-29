@@ -96,11 +96,6 @@ std::string DHTFindNodeReplyMessage::getMessageType() const
 
 void DHTFindNodeReplyMessage::validate() const {}
 
-const std::deque<SharedHandle<DHTNode> >& DHTFindNodeReplyMessage::getClosestKNodes() const
-{
-  return _closestKNodes;
-}
-
 void DHTFindNodeReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes)
 {
   _closestKNodes = closestKNodes;

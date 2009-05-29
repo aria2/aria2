@@ -112,19 +112,9 @@ std::string DHTGetPeersReplyMessage::getMessageType() const
 
 void DHTGetPeersReplyMessage::validate() const {}
 
-const std::deque<SharedHandle<DHTNode> >& DHTGetPeersReplyMessage::getClosestKNodes() const
-{
-  return _closestKNodes;
-}
-
 void DHTGetPeersReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes)
 {
   _closestKNodes = closestKNodes;
-}
-
-const std::deque<SharedHandle<Peer> >& DHTGetPeersReplyMessage::getValues() const
-{
-  return _values;
 }
 
 void DHTGetPeersReplyMessage::setValues(const std::deque<SharedHandle<Peer> >& peers)

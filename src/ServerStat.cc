@@ -61,29 +61,9 @@ ServerStat::ServerStat(const std::string& hostname, const std::string& protocol)
 
 ServerStat::~ServerStat() {}
 
-const std::string& ServerStat::getHostname() const
-{
-  return _hostname;
-}
-
-const std::string& ServerStat::getProtocol() const
-{
-  return _protocol;
-}
-
-const Time& ServerStat::getLastUpdated() const
-{
-  return _lastUpdated;
-}
-
 void ServerStat::setLastUpdated(const Time& time)
 {
   _lastUpdated = time;
-}
-
-unsigned int ServerStat::getDownloadSpeed() const
-{
-  return _downloadSpeed;
 }
 
 void ServerStat::setDownloadSpeed(unsigned int downloadSpeed)
@@ -98,11 +78,6 @@ void ServerStat::updateDownloadSpeed(unsigned int downloadSpeed)
     _status = OK;
   }
   _lastUpdated.reset();
-}
-
-unsigned int ServerStat::getSingleConnectionAvgSpeed() const
-{
-  return _singleConnectionAvgSpeed;
 }
 
 void ServerStat::setSingleConnectionAvgSpeed
@@ -139,11 +114,6 @@ void ServerStat::updateSingleConnectionAvgSpeed(unsigned int downloadSpeed)
   _singleConnectionAvgSpeed = (int)avgDownloadSpeed;
 }
 
-unsigned int ServerStat::getMultiConnectionAvgSpeed() const
-{
-  return _multiConnectionAvgSpeed;
-}
-
 void ServerStat::setMultiConnectionAvgSpeed
 (unsigned int multiConnectionAvgSpeed)
 {
@@ -171,11 +141,6 @@ void ServerStat::updateMultiConnectionAvgSpeed(unsigned int downloadSpeed)
 		 (float) avgDownloadSpeed/1024,
 		 (float) downloadSpeed / 1024);
   _multiConnectionAvgSpeed = (int)avgDownloadSpeed;
-}
-
-unsigned int ServerStat::getCounter() const
-{
-  return _counter;
 }
 
 void ServerStat::increaseCounter()
@@ -214,24 +179,9 @@ void ServerStat::setStatusInternal(STATUS status)
   _lastUpdated.reset();
 }
 
-ServerStat::STATUS ServerStat::getStatus() const
-{
-  return _status;
-}
-
-bool ServerStat::isOK() const
-{
-  return _status == OK;
-}
-
 void ServerStat::setOK()
 {
   setStatusInternal(OK);
-}
-
-bool ServerStat::isError() const
-{
-  return _status == ERROR;
 }
 
 void ServerStat::setError()

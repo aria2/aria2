@@ -44,6 +44,7 @@
 #include "RequestGroupMan.h"
 #include "Logger.h"
 #include "DHTMessageCallback.h"
+#include "DHTNode.h"
 
 namespace aria2 {
 

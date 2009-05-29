@@ -75,14 +75,4 @@ bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::
   return false;
 }
 
-SharedHandle<DHTMessageCallback> DHTMessageTrackerEntry::getCallback() const
-{
-  return _callback;
-}
-
-SharedHandle<DHTNode> DHTMessageTrackerEntry::getTargetNode() const
-{
-  return _targetNode;
-}
-
 } // namespace aria2

@@ -36,6 +36,7 @@
 #define _D_ABSTRACT_BT_MESSAGE_H_
 
 #include "BtMessage.h"
+
 #include <deque>
 
 namespace aria2 {
@@ -113,7 +114,10 @@ public:
     this->cuid = cuid;
   }
 
-  SharedHandle<Peer> getPeer() const;
+  const SharedHandle<Peer>& getPeer() const
+  {
+    return peer;
+  }
 
   void setPeer(const SharedHandle<Peer>& peer);
 
@@ -133,11 +137,12 @@ public:
 
   void setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator);
 
-  SharedHandle<BtMessageValidator> getBtMessageValidator() const;
-
   void setBtContext(const SharedHandle<BtContext>& btContext);
 
-  SharedHandle<BtContext> getBtContext() const;
+  const SharedHandle<BtContext>& getBtContext() const
+  {
+    return btContext;
+  }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
@@ -149,7 +154,10 @@ public:
 
   void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
 
-  const std::string& getName() const;
+  const std::string& getName() const
+  {
+    return _name;
+  }
 };
 
 typedef SharedHandle<AbstractBtMessage> AbstractBtMessageHandle;

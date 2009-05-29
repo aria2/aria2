@@ -77,16 +77,6 @@ BtSeederStateChoke::PeerEntry::operator<(const PeerEntry& rhs) const
   }
 }
 
-SharedHandle<Peer> BtSeederStateChoke::PeerEntry::getPeer() const
-{
-  return _peer;
-}
-
-unsigned int BtSeederStateChoke::PeerEntry::getUploadSpeed() const
-{
-  return _uploadSpeed;
-}
-
 void BtSeederStateChoke::PeerEntry::disableOptUnchoking()
 {
   _peer->optUnchoking(false);
@@ -171,11 +161,6 @@ BtSeederStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet)
   if(++_round == 3) {
     _round = 0;
   }
-}
-
-const Time& BtSeederStateChoke::getLastRound() const
-{
-  return _lastRound;
 }
 
 } // namespace aria2

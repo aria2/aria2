@@ -193,9 +193,12 @@ public:
    * Reinitializes SegmentMan based on current property values and
    * returns new one.
    */
-  SharedHandle<SegmentMan> initSegmentMan();
+  const SharedHandle<SegmentMan>& initSegmentMan();
 
-  SharedHandle<SegmentMan> getSegmentMan() const;
+  const SharedHandle<SegmentMan>& getSegmentMan() const
+  {
+    return _segmentMan;
+  }
 
   // Returns first bootstrap commands to initiate a download.
   // If this is HTTP/FTP download and file size is unknown, only 1 command
@@ -260,7 +263,10 @@ public:
     _numConcurrentCommand = num;
   }
 
-  unsigned int getNumConcurrentCommand() const;
+  unsigned int getNumConcurrentCommand() const
+  {
+    return _numConcurrentCommand;
+  }
 
   int32_t getGID() const
   {
@@ -269,15 +275,24 @@ public:
 
   TransferStat calculateStat();
 
-  SharedHandle<DownloadContext> getDownloadContext() const;
+  const SharedHandle<DownloadContext>& getDownloadContext() const
+  {
+    return _downloadContext;
+  }
 
   void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
-  SharedHandle<PieceStorage> getPieceStorage() const;
+  const SharedHandle<PieceStorage>& getPieceStorage() const
+  {
+    return _pieceStorage;
+  }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
-  SharedHandle<BtProgressInfoFile> getProgressInfoFile() const;
+  const SharedHandle<BtProgressInfoFile>& getProgressInfoFile() const
+  {
+    return _progressInfoFile;
+  }
 
   void setProgressInfoFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 
@@ -299,7 +314,10 @@ public:
   // TODO is it better to move the following 2 methods to SingleFileDownloadContext?
   void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
 
-  SharedHandle<DiskWriterFactory> getDiskWriterFactory() const;
+  const SharedHandle<DiskWriterFactory>& getDiskWriterFactory() const
+  {
+    return _diskWriterFactory;
+  }
 
   void setFileAllocationEnabled(bool f)
   {
@@ -344,7 +362,10 @@ public:
 
   void addURIResult(std::string uri, DownloadResult::RESULT result);
 
-  const std::deque<URIResult>& getURIResults() const;
+  const std::deque<URIResult>& getURIResults() const
+  {
+    return _uriResults;
+  }
 
   // Extracts URIResult whose _result is r and stores them into res.
   // The extracted URIResults are removed from _uriResults.
@@ -420,13 +441,19 @@ public:
 
   void reportDownloadFinished();
 
-  const std::deque<std::string>& getAcceptFeatures() const;
+  const std::deque<std::string>& getAcceptFeatures() const
+  {
+    return _acceptFeatures;
+  }
 
   void addAcceptFeatureHeader(const std::string& feature);
 
   void removeAcceptFeatureHeader(const std::string& feature);
 
-  const std::deque<std::string>& getAcceptTypes() const;
+  const std::deque<std::string>& getAcceptTypes() const
+  {
+    return _acceptTypes;
+  }
 
   void addAcceptType(const std::string& type);
 
@@ -446,17 +473,26 @@ public:
   void markInMemoryDownload();
 
   // Returns inMemoryDownload flag.
-  bool inMemoryDownload() const;
+  bool inMemoryDownload() const
+  {
+    return _inMemoryDownload;
+  }
 
   void tuneDownloadCommand(DownloadCommand* command);
 
   void setTimeout(time_t timeout);
 
-  time_t getTimeout() const;
+  time_t getTimeout() const
+  {
+    return _timeout;
+  }
 
   void setMaxTries(unsigned int maxTries);
 
-  unsigned int getMaxTries() const;
+  unsigned int getMaxTries() const
+  {
+    return _maxTries;
+  }
 
   // Returns true if current download speed exceeds
   // _maxDownloadSpeedLimit.  Always returns false if

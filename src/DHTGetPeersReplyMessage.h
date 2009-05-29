@@ -70,9 +70,15 @@ public:
 
   virtual void validate() const;
 
-  const std::deque<SharedHandle<DHTNode> >& getClosestKNodes() const;
+  const std::deque<SharedHandle<DHTNode> >& getClosestKNodes() const
+  {
+    return _closestKNodes;
+  }
 
-  const std::deque<SharedHandle<Peer> >& getValues() const;
+  const std::deque<SharedHandle<Peer> >& getValues() const
+  {
+    return _values;
+  }
 
   void setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes);
 

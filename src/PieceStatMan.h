@@ -51,15 +51,38 @@ private:
 public:
   PieceStat(size_t index);
 
-  bool operator<(const PieceStat& pieceStat) const;
+  bool operator<(const PieceStat& pieceStat) const
+  {
+    if(_count == pieceStat._count) {
+      return _order < pieceStat._order;
+    } else {
+      return _count < pieceStat._count;
+    }
+  }
 
   void addCount();
   void subCount();
 
-  size_t getOrder() const;
-  void setOrder(size_t order);
-  size_t getIndex() const;
-  size_t getCount() const;
+  size_t getOrder() const
+  {
+    return _order;
+  }
+
+  void setOrder(size_t order)
+  {
+    _order = order;
+  }
+
+  size_t getIndex() const
+  {
+    return _index;
+  }
+
+  size_t getCount() const
+  {
+    return _count;
+  }
+
 };
 
 class PieceStatMan {
@@ -83,9 +106,16 @@ public:
 			const unsigned char* oldBitfield);
 
   // Returns piece index in rarest first order.
-  const std::vector<size_t>& getRarerPieceIndexes() const;
+  const std::vector<size_t>& getRarerPieceIndexes() const
+  {
+    return _sortedPieceStatIndexes;
+  }
 
-  const std::vector<SharedHandle<PieceStat> >& getPieceStats() const;
+  const std::vector<SharedHandle<PieceStat> >& getPieceStats() const
+  {
+    return _pieceStats;
+  }
+
 };
 
 } // namespace aria2

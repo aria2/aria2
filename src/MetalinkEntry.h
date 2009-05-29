@@ -36,9 +36,11 @@
 #define _D_METALINK_ENTRY_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -75,7 +77,10 @@ public:
 
   uint64_t getLength() const;
 
-  SharedHandle<FileEntry> getFile() const;
+  const SharedHandle<FileEntry>& getFile() const
+  {
+    return file;
+  }
 
   void dropUnsupportedResource();
 
@@ -90,7 +95,11 @@ public:
 
   void setSignature(const SharedHandle<Signature>& signature);
 
-  SharedHandle<Signature> getSignature() const;
+  const SharedHandle<Signature>& getSignature() const
+  {
+    return _signature;
+  }
+
 };
 
 } // namespace aria2

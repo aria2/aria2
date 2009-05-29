@@ -67,9 +67,15 @@ public:
     return _transactionID;
   }
 
-  SharedHandle<DHTNode> getLocalNode() const;
+  const SharedHandle<DHTNode>& getLocalNode() const
+  {
+    return _localNode;
+  }
 
-  SharedHandle<DHTNode> getRemoteNode() const;
+  const SharedHandle<DHTNode>& getRemoteNode() const
+  {
+    return _remoteNode;
+  }
 
   virtual void doReceivedAction() = 0;
 

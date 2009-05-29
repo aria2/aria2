@@ -116,9 +116,4 @@ void BtExtendedMessage::doReceivedAction()
   }
 }
 
-ExtensionMessageHandle BtExtendedMessage::getExtensionMessage() const
-{
-  return _extensionMessage;
-}
-
 } // namespace aria2

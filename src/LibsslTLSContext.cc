@@ -103,11 +103,6 @@ void TLSContext::addTrustedCACertFile(const std::string& certfile)
   }
 }
 
-SSL_CTX* TLSContext::getSSLCtx() const
-{
-  return _sslCtx;
-}
-
 void TLSContext::enablePeerVerification()
 {
   _peerVerificationEnabled = true;
@@ -116,11 +111,6 @@ void TLSContext::enablePeerVerification()
 void TLSContext::disablePeerVerification()
 {
   _peerVerificationEnabled = false;
-}
-
-bool TLSContext::peerVerificationEnabled() const
-{
-  return _peerVerificationEnabled;
 }
 
 } // namespace aria2

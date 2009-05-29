@@ -36,9 +36,11 @@
 #define _D_REQUEST_SLOT_H_
 
 #include "common.h"
+
+#include <deque>
+
 #include "TimeA2.h"
 #include "Piece.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -94,7 +96,10 @@ public:
   size_t getBlockIndex() const { return blockIndex; }
   void setBlockIndex(size_t blockIndex) { this->blockIndex = blockIndex; }
 
-  SharedHandle<Piece> getPiece() const;
+  const SharedHandle<Piece>& getPiece() const
+  {
+    return _piece;
+  }
 
   static RequestSlot nullSlot;
 

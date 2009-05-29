@@ -75,7 +75,10 @@ public:
 
   void setFileEntries(const std::deque<SharedHandle<FileEntry> >& fileEntries);
 
-  const std::deque<SharedHandle<FileEntry> >& getFileEntries() const;
+  const std::deque<SharedHandle<FileEntry> >& getFileEntries() const
+  {
+    return fileEntries;
+  }
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;
 

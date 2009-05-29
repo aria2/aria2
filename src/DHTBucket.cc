@@ -212,16 +212,6 @@ SharedHandle<DHTBucket> DHTBucket::split()
   return rBucket;
 }
 
-size_t DHTBucket::countNode() const
-{
-  return _nodes.size();
-}
-
-const std::deque<SharedHandle<DHTNode> >& DHTBucket::getNodes() const
-{
-  return _nodes;
-}
-
 void DHTBucket::getGoodNodes(std::deque<SharedHandle<DHTNode> >& goodNodes) const
 {
   goodNodes = _nodes;
@@ -281,11 +271,6 @@ SharedHandle<DHTNode> DHTBucket::getLRUQuestionableNode() const
   } else {
     return *i;
   }
-}
-
-const std::deque<SharedHandle<DHTNode> >& DHTBucket::getCachedNodes() const
-{
-  return _cachedNodes;
 }
 
 } // namespace aria2

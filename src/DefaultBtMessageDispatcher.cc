@@ -407,17 +407,6 @@ size_t DefaultBtMessageDispatcher::countOutstandingUpload()
 		       mem_fun_sh(&BtMessage::isUploading));
 }
 
-const std::deque<SharedHandle<BtMessage> >&
-DefaultBtMessageDispatcher::getMessageQueue()
-{
-  return messageQueue;
-}
-
-const std::deque<RequestSlot>& DefaultBtMessageDispatcher::getRequestSlots()
-{
-  return requestSlots;
-}
-
 void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)
 {
   this->peer = peer;

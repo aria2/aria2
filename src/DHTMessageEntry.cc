@@ -35,6 +35,7 @@
 #include "DHTMessageEntry.h"
 #include "DHTMessage.h"
 #include "DHTMessageCallback.h"
+#include "DHTNode.h"
 
 namespace aria2 {
 

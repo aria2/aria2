@@ -238,24 +238,9 @@ void Request::resetRedirectCount()
   _redirectCount = 0;
 }
   
-unsigned int Request::getRedirectCount() const
-{
-  return _redirectCount;
-}
-
-bool Request::isPipeliningHint() const
-{
-  return _pipeliningHint;
-}
-
 void Request::setMaxPipelinedRequest(unsigned int num)
 {
   _maxPipelinedRequest = num;
-}
-
-unsigned int Request::getMaxPipelinedRequest() const
-{
-  return _maxPipelinedRequest;
 }
 
 } // namespace aria2

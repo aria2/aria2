@@ -79,11 +79,20 @@ public:
 
   void resolve(const std::string& name);
 
-  const std::deque<std::string>& getResolvedAddresses() const;
+  const std::deque<std::string>& getResolvedAddresses() const
+  {
+    return _resolvedAddresses;
+  }
 
-  const std::string& getError() const;
+  const std::string& getError() const
+  {
+    return error;
+  }
 
-  STATUS getStatus() const;
+  STATUS getStatus() const
+  {
+    return status;
+  }
 
   int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const;
 
@@ -103,7 +112,11 @@ public:
 
   void reset();
 
-  const std::string& getHostname() const;
+  const std::string& getHostname() const
+  {
+    return _hostname;
+  }
+
 };
 
 } // namespace aria2

@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "MetalinkParserStateMachine.h"
-#include "MetalinkParserController.h"
 #include "InitialMetalinkParserState.h"
 #include "MetalinkMetalinkParserState.h"
 #include "FilesMetalinkParserState.h"
@@ -366,11 +365,6 @@ void MetalinkParserStateMachine::endElement(const std::string& name, const std::
 bool MetalinkParserStateMachine::needsCharactersBuffering() const
 {
   return _state->needsCharactersBuffering();
-}
-
-SharedHandle<Metalinker> MetalinkParserStateMachine::getResult() const
-{
-  return _ctrl->getResult();
 }
 
 } // namespace aria2

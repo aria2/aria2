@@ -53,11 +53,18 @@ public:
 
   void setUserDefinedAuthConfig(const SharedHandle<AuthConfig>& authConfig);
 
-  SharedHandle<AuthConfig> getUserDefinedAuthConfig() const;
+  const SharedHandle<AuthConfig>& getUserDefinedAuthConfig() const
+  {
+    return _userDefinedAuthConfig;
+  }
 
   void setDefaultAuthConfig(const SharedHandle<AuthConfig>& authConfig);
 
-  SharedHandle<AuthConfig> getDefaultAuthConfig() const;
+  const SharedHandle<AuthConfig>& getDefaultAuthConfig() const
+  {
+    return _defaultAuthConfig;
+  }
+
 };
 
 typedef SharedHandle<AbstractAuthResolver> AbstractAuthResolverHandle;

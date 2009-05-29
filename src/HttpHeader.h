@@ -77,19 +77,31 @@ public:
 
   SharedHandle<Range> getRange() const;
 
-  const std::string& getResponseStatus() const;
+  const std::string& getResponseStatus() const
+  {
+    return _responseStatus;
+  }
 
   void setResponseStatus(const std::string& responseStatus);
 
-  const std::string& getVersion() const;
+  const std::string& getVersion() const
+  {
+    return _version;
+  }
 
   void setVersion(const std::string& version);
 
-  const std::string& getMethod() const;
+  const std::string& getMethod() const
+  {
+    return _method;
+  }
 
   void setMethod(const std::string& method);
 
-  const std::string& getRequestPath() const;
+  const std::string& getRequestPath() const
+  {
+    return _requestPath;
+  }
 
   void setRequestPath(const std::string& requestPath);
 

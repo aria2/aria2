@@ -228,19 +228,9 @@ void HttpResponse::setHttpHeader(const SharedHandle<HttpHeader>& httpHeader)
   this->httpHeader = httpHeader;
 }
 
-SharedHandle<HttpHeader> HttpResponse::getHttpHeader() const
-{
-  return httpHeader;
-}
-
 void HttpResponse::setHttpRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   this->httpRequest = httpRequest;
-}
-
-SharedHandle<HttpRequest> HttpResponse::getHttpRequest() const
-{
-  return httpRequest;
 }
 
 // TODO return std::string

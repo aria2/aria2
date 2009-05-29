@@ -113,9 +113,15 @@ public:
     return _min;
   }
 
-  size_t countNode() const;
+  size_t countNode() const
+  {
+    return _nodes.size();
+  }
 
-  const std::deque<SharedHandle<DHTNode> >& getNodes() const;
+  const std::deque<SharedHandle<DHTNode> >& getNodes() const
+  {
+    return _nodes;
+  }
 
   void getGoodNodes(std::deque<SharedHandle<DHTNode> >& nodes) const;
 
@@ -139,7 +145,11 @@ public:
 
   SharedHandle<DHTNode> getLRUQuestionableNode() const;
 
-  const std::deque<SharedHandle<DHTNode> >& getCachedNodes() const;
+  const std::deque<SharedHandle<DHTNode> >& getCachedNodes() const
+  {
+    return _cachedNodes;
+  }
+
 };
 
 } // namespace aria2

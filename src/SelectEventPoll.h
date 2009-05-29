@@ -56,17 +56,35 @@ private:
   public:
     CommandEvent(Command* command, int events);
     
-    Command* getCommand() const;
+    Command* getCommand() const
+    {
+      return _command;
+    }
     
-    void addEvents(int events);
-    
-    void removeEvents(int events);
-    
-    bool eventsEmpty() const;
-        
-    bool operator==(const CommandEvent& event) const;
+    void addEvents(int events)
+    {
+      _events |= events;
+    }
 
-    int getEvents() const;
+    void removeEvents(int events)
+    {
+      _events &= (~events); 
+    }
+    
+    bool eventsEmpty() const
+    {
+      return _events == 0;
+    }
+        
+    bool operator==(const CommandEvent& commandEvent) const
+    {
+      return _command == commandEvent._command;
+    }
+
+    int getEvents() const
+    {
+      return _events;
+    }
     
     void processEvents(int events);
   };
@@ -82,9 +100,15 @@ private:
   public: 
     SocketEntry(sock_t socket);
 
-    bool operator==(const SocketEntry& entry) const;
+    bool operator==(const SocketEntry& entry) const
+    {
+      return _socket == entry._socket;
+    }
 
-    bool operator<(const SocketEntry& entry) const;
+    bool operator<(const SocketEntry& entry) const
+    {
+      return _socket < entry._socket;
+    }
     
     void addCommandEvent(Command* command, int events);
     
@@ -92,9 +116,15 @@ private:
 
     int getEvents();
 
-    sock_t getSocket() const;
+    sock_t getSocket() const
+    {
+      return _socket;
+    }
     
-    bool eventEmpty() const;
+    bool eventEmpty() const
+    {
+      return _commandEvents.empty();
+    }
     
     void processEvents(int events);
   };
@@ -111,7 +141,11 @@ private:
     AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
 			   Command* command);
 
-    bool operator==(const AsyncNameResolverEntry& entry);
+    bool operator==(const AsyncNameResolverEntry& entry)
+    {
+      return _nameResolver == entry._nameResolver &&
+	_command == entry._command;
+    }
 
     int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr);
 

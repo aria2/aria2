@@ -43,11 +43,6 @@ DownloadContext::DownloadContext():
 
 DownloadContext::~DownloadContext() {}
 
-const std::string& DownloadContext::getDir() const
-{
-  return _dir;
-}
-
 void DownloadContext::setDir(const std::string& dir)
 {
   _dir = dir;

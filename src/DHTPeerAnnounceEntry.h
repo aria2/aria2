@@ -73,7 +73,10 @@ public:
 
   size_t countPeerAddrEntry() const;
 
-  const std::deque<PeerAddrEntry>& getPeerAddrEntries() const;
+  const std::deque<PeerAddrEntry>& getPeerAddrEntries() const
+  {
+    return _peerAddrEntries;
+  }
 
   void removeStalePeerAddrEntry(time_t timeout);
   

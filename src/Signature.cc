@@ -33,8 +33,10 @@
  */
 /* copyright --> */
 #include "Signature.h"
-#include "File.h"
+
 #include <fstream>
+
+#include "File.h"
 
 namespace aria2 {
 
@@ -47,29 +49,14 @@ void Signature::setType(const std::string& type)
   _type = type;
 }
 
-const std::string& Signature::getType() const
-{
-  return _type;
-}
-
 void Signature::setFile(const std::string& file)
 {
   _file = file;
 }
 
-const std::string& Signature::getFile() const
-{
-  return _file;
-}
-
 void Signature::setBody(const std::string& body)
 {
   _body = body;
-}
-
-const std::string& Signature::getBody() const
-{
-  return _body;
 }
 
 bool Signature::save(const std::string& filepath) const

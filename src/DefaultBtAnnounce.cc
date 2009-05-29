@@ -281,29 +281,14 @@ void DefaultBtAnnounce::setBtRuntime(const BtRuntimeHandle& btRuntime)
   this->btRuntime = btRuntime;
 }
 
-BtRuntimeHandle DefaultBtAnnounce::getBtRuntime() const
-{
-  return btRuntime;
-}
-
 void DefaultBtAnnounce::setPieceStorage(const PieceStorageHandle& pieceStorage)
 {
   this->pieceStorage = pieceStorage;
 }
 
-PieceStorageHandle DefaultBtAnnounce::getPieceStorage() const
-{
-  return pieceStorage;
-}
-
 void DefaultBtAnnounce::setPeerStorage(const PeerStorageHandle& peerStorage)
 {
   this->peerStorage = peerStorage;
-}
-
-PeerStorageHandle DefaultBtAnnounce::getPeerStorage() const
-{
-  return peerStorage;
 }
 
 void DefaultBtAnnounce::overrideMinInterval(time_t interval)

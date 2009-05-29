@@ -63,14 +63,4 @@ void DHTMessage::generateTransactionID()
   _transactionID = std::string(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 }
 
-SharedHandle<DHTNode> DHTMessage::getLocalNode() const
-{
-  return _localNode;
-}
-
-SharedHandle<DHTNode> DHTMessage::getRemoteNode() const
-{
-  return _remoteNode;
-}
-
 } // namespace aria2

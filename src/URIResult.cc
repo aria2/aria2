@@ -39,14 +39,4 @@ namespace aria2 {
 URIResult::URIResult(const std::string& uri, DownloadResult::RESULT result):
   _uri(uri), _result(result) {}
 
-const std::string& URIResult::getURI() const
-{
-  return _uri;
-}
-
-DownloadResult::RESULT URIResult::getResult() const
-{
-  return _result;
-}
-
 } // namespace aria2

@@ -206,41 +206,6 @@ bool Cookie::isExpired() const
   return !_expiry == 0 && Time().getTime() >= _expiry;
 }
 
-const std::string& Cookie::getName() const
-{
-  return _name;
-}
-
-const std::string& Cookie::getValue() const
-{
-  return _value;
-}
-
-const std::string& Cookie::getPath() const
-{
-  return _path;
-}
-
-const std::string& Cookie::getDomain() const
-{
-  return _domain;
-}
-
-time_t Cookie::getExpiry() const
-{
-  return _expiry;
-}
-
-bool Cookie::isSecureCookie() const
-{
-  return _secure;
-}
-
-bool Cookie::isSessionCookie() const
-{
-  return _expiry == 0;
-}
-
 std::string Cookie::toNsCookieFormat() const
 {
   std::stringstream ss;

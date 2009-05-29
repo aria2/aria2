@@ -86,7 +86,10 @@ public:
 
   virtual void getTargetPieceIndexes(std::deque<size_t>& indexes) const;
 
-  std::deque<SharedHandle<Piece> >& getTargetPieces();
+  std::deque<SharedHandle<Piece> >& getTargetPieces()
+  {
+    return pieces;
+  }
 
   void setCuid(int32_t cuid)
   {

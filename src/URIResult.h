@@ -52,9 +52,16 @@ private:
 public:
   URIResult(const std::string& uri, DownloadResult::RESULT result);
 
-  const std::string& getURI() const;
+  const std::string& getURI() const
+  {
+    return _uri;
+  }
 
-  DownloadResult::RESULT getResult() const;
+  DownloadResult::RESULT getResult() const
+  {
+    return _result;
+  }
+
 };
 
 } // namespace aria2

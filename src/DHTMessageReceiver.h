@@ -72,9 +72,15 @@ public:
 
   void handleTimeout();
 
-  SharedHandle<DHTConnection> getConnection() const;
+  const SharedHandle<DHTConnection>& getConnection() const
+  {
+    return _connection;
+  }
 
-  SharedHandle<DHTMessageTracker> getMessageTracker() const;
+  const SharedHandle<DHTMessageTracker>& getMessageTracker() const
+  {
+    return _tracker;
+  }
 
   void setConnection(const SharedHandle<DHTConnection>& connection);
 

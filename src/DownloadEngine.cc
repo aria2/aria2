@@ -267,11 +267,6 @@ void DownloadEngine::addRoutineCommand(Command* command)
   _routineCommands.push_back(command);
 }
 
-SharedHandle<CookieStorage> DownloadEngine::getCookieStorage() const
-{
-  return _cookieStorage;
-}
-
 void DownloadEngine::poolSocket(const std::string& ipaddr,
 				uint16_t port,
 				const SocketPoolEntry& entry)
@@ -428,11 +423,6 @@ DownloadEngine::popPooledSocket
   return s;
 }
 
-SharedHandle<BtRegistry> DownloadEngine::getBtRegistry() const
-{
-  return _btRegistry;
-}
-
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
 (const SharedHandle<SocketCore>& socket,
  const std::map<std::string, std::string>& options,
@@ -446,17 +436,6 @@ DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
 bool DownloadEngine::SocketPoolEntry::isTimeout() const
 {
   return _registeredTime.elapsed(_timeout);
-}
-
-SharedHandle<SocketCore> DownloadEngine::SocketPoolEntry::getSocket() const
-{
-  return _socket;
-}
-
-const std::map<std::string, std::string>&
-DownloadEngine::SocketPoolEntry::getOptions() const
-{
-  return _options;
 }
 
 cuid_t DownloadEngine::newCUID()
@@ -480,11 +459,6 @@ void DownloadEngine::setAuthConfigFactory
 (const SharedHandle<AuthConfigFactory>& factory)
 {
   _authConfigFactory = factory;
-}
-
-SharedHandle<AuthConfigFactory> DownloadEngine::getAuthConfigFactory() const
-{
-  return _authConfigFactory;
 }
 
 void DownloadEngine::setRefreshInterval(time_t interval)

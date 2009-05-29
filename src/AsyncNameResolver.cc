@@ -81,21 +81,6 @@ void AsyncNameResolver::resolve(const std::string& name)
   ares_gethostbyname(channel, name.c_str(), AF_INET, callback, this);
 }
 
-const std::deque<std::string>& AsyncNameResolver::getResolvedAddresses() const
-{
-  return _resolvedAddresses;
-}
-
-const std::string& AsyncNameResolver::getError() const
-{
-  return error;
-}
-
-AsyncNameResolver::STATUS AsyncNameResolver::getStatus() const
-{
-  return status;
-}
-
 int AsyncNameResolver::getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const
 {
   return ares_fds(channel, rfdsPtr, wfdsPtr);
@@ -133,11 +118,6 @@ void AsyncNameResolver::reset()
   ares_destroy(channel);
   // TODO evaluate return value
   ares_init(&channel);
-}
-
-const std::string& AsyncNameResolver::getHostname() const
-{
-  return _hostname;
 }
 
 } // namespace aria2

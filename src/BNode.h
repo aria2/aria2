@@ -59,19 +59,31 @@ public:
 
   ~BNode();
 
-  SharedHandle<DHTBucket> getBucket() const;
+  const SharedHandle<DHTBucket>& getBucket() const
+  {
+    return _bucket;
+  }
 
   void setBucket(const SharedHandle<DHTBucket>& bucket);
 
-  BNode* getLeft() const;
+  BNode* getLeft() const
+  {
+    return _left;
+  }
 
   void setLeft(BNode* left);
 
-  BNode* getRight() const;
+  BNode* getRight() const
+  {
+    return _right;
+  }
 
   void setRight(BNode* right);
 
-  BNode* getUp() const;
+  BNode* getUp() const
+  {
+    return _up;
+  }
 
   void setUp(BNode* up);
   

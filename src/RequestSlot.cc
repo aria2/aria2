@@ -107,9 +107,4 @@ bool RequestSlot::isNull(const RequestSlot& requestSlot) {
     requestSlot.length == 0;
 }
 
-SharedHandle<Piece> RequestSlot::getPiece() const
-{
-  return _piece;
-}
-
 } // namespace aria2

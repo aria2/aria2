@@ -78,15 +78,30 @@ private:
   public:
     CommandEvent(Command* command, int events);
     
-    Command* getCommand() const;
+    Command* getCommand() const
+    {
+      return _command;
+    }
     
-    void addEvents(int events);
-    
-    void removeEvents(int events);
-    
-    bool eventsEmpty() const;
+    void addEvents(int events)
+    {
+      _events |= events;
+    }
+
+    void removeEvents(int events)
+    {
+      _events &= (~events); 
+    }
+
+    bool eventsEmpty() const
+    {
+      return _events == 0;
+    }
         
-    bool operator==(const CommandEvent& event) const;
+    bool operator==(const CommandEvent& commandEvent) const
+    {
+      return _command == commandEvent._command;
+    }
 
     virtual int getEvents() const;
     
@@ -107,7 +122,10 @@ private:
     ADNSEvent(const SharedHandle<AsyncNameResolver>& resolver, Command* command,
 	      sock_t socket, int events);
     
-    bool operator==(const ADNSEvent& event) const;
+    bool operator==(const ADNSEvent& event) const
+    {
+      return _resolver == event._resolver;
+    }
     
     virtual int getEvents() const;
 
@@ -136,9 +154,15 @@ private:
   public:
     SocketEntry(sock_t socket);
 
-    bool operator==(const SocketEntry& entry) const;
+    bool operator==(const SocketEntry& entry) const
+    {
+      return _socket == entry._socket;
+    }
 
-    bool operator<(const SocketEntry& entry) const;
+    bool operator<(const SocketEntry& entry) const
+    {
+      return _socket < entry._socket;
+    }
 
     void addCommandEvent(const CommandEvent& cev);
 
@@ -154,8 +178,11 @@ private:
 
     struct epoll_event& getEpEvent();
     
-    sock_t getSocket() const;
-    
+    sock_t getSocket() const
+    {
+      return _socket;
+    }
+
     bool eventEmpty() const;
     
     void processEvents(int events);
@@ -177,7 +204,11 @@ private:
     AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
 			   Command* command);
 
-    bool operator==(const AsyncNameResolverEntry& entry);
+    bool operator==(const AsyncNameResolverEntry& entry)
+    {
+      return _nameResolver == entry._nameResolver &&
+	_command == entry._command;
+    }
 
     void addSocketEvents(EpollEventPoll* socketPoll);
     

@@ -102,13 +102,19 @@ public:
 
   void setHttpHeader(const SharedHandle<HttpHeader>& httpHeader);
 
-  SharedHandle<HttpHeader> getHttpHeader() const;
+  const SharedHandle<HttpHeader>& getHttpHeader() const
+  {
+    return httpHeader;
+  }
 
   const std::string& getResponseStatus() const;
 
   void setHttpRequest(const SharedHandle<HttpRequest>& httpRequest);
 
-  SharedHandle<HttpRequest> getHttpRequest() const;
+  const SharedHandle<HttpRequest>& getHttpRequest() const
+  {
+    return httpRequest;
+  }
 
   void setCuid(int32_t cuid)
   {

@@ -72,14 +72,20 @@ public:
 
   bool match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const;
 
-  SharedHandle<DHTNode> getTargetNode() const;
+  const SharedHandle<DHTNode>& getTargetNode() const
+  {
+    return _targetNode;
+  }
 
   const std::string& getMessageType() const
   {
     return _messageType;
   }
 
-  SharedHandle<DHTMessageCallback> getCallback() const;
+  const SharedHandle<DHTMessageCallback>& getCallback() const
+  {
+    return _callback;
+  }  
 
   int64_t getElapsedMillis() const
   {

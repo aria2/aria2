@@ -143,16 +143,6 @@ DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
   return m;
 }
 
-SharedHandle<DHTConnection> DHTMessageReceiver::getConnection() const
-{
-  return _connection;
-}
-
-SharedHandle<DHTMessageTracker> DHTMessageReceiver::getMessageTracker() const
-{
-  return _tracker;
-}
-
 void DHTMessageReceiver::setConnection(const SharedHandle<DHTConnection>& connection)
 {
   _connection = connection;

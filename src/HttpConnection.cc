@@ -63,16 +63,6 @@ HttpRequestEntry::HttpRequestEntry(const HttpRequestHandle& httpRequest):
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
-HttpRequestHandle HttpRequestEntry::getHttpRequest() const
-{
-  return _httpRequest;
-}
-
-HttpHeaderProcessorHandle HttpRequestEntry::getHttpHeaderProcessor() const
-{
-  return _proc;
-}
-
 HttpConnection::HttpConnection(int32_t cuid,
 			       const SocketHandle& socket,
 			       const Option* op):

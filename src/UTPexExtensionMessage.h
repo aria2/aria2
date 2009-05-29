@@ -93,13 +93,19 @@ public:
 
   bool addFreshPeer(const SharedHandle<Peer>& peer);
 
-  const std::deque<SharedHandle<Peer> >& getFreshPeers() const;
+  const std::deque<SharedHandle<Peer> >& getFreshPeers() const
+  {
+    return _freshPeers;
+  }
   
   bool freshPeersAreFull() const;
 
   bool addDroppedPeer(const SharedHandle<Peer>& peer);
 
-  const std::deque<SharedHandle<Peer> >& getDroppedPeers() const;
+  const std::deque<SharedHandle<Peer> >& getDroppedPeers() const
+  {
+    return _droppedPeers;
+  }
 
   bool droppedPeersAreFull() const;
 
@@ -110,11 +116,17 @@ public:
 
   void setMaxFreshPeer(size_t maxFreshPeer);
 
-  size_t getMaxFreshPeer() const;
+  size_t getMaxFreshPeer() const
+  {
+    return _maxFreshPeer;
+  }
 
   void setMaxDroppedPeer(size_t maxDroppedPeer);
 
-  size_t getMaxDroppedPeer() const;
+  size_t getMaxDroppedPeer() const
+  {
+    return _maxDroppedPeer;
+  }
 
   static const time_t DEFAULT_INTERVAL = 60;
 

@@ -295,11 +295,6 @@ PeerStatHandle SegmentMan::getPeerStat(cuid_t cuid) const
   }
 }
 
-const std::deque<SharedHandle<PeerStat> >& SegmentMan::getPeerStats() const
-{
-  return peerStats;
-}
-
 unsigned int SegmentMan::calculateDownloadSpeed()
 {
   unsigned int speed = 0;

@@ -69,9 +69,9 @@ private:
 
     bool operator<(const PeerEntry& rhs) const;
 
-    SharedHandle<Peer> getPeer() const;
+    const SharedHandle<Peer>& getPeer() const { return _peer; }
 
-    unsigned int getUploadSpeed() const;
+    unsigned int getUploadSpeed() const { return _uploadSpeed; }
 
     void disableOptUnchoking();
   };
@@ -87,7 +87,7 @@ public:
 
   void executeChoke(const std::deque<SharedHandle<Peer> >& peerSet);
 
-  const Time& getLastRound() const;
+  const Time& getLastRound() const { return _lastRound; }
 };
 
 } // namespace aria2

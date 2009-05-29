@@ -56,16 +56,6 @@ DHTRoutingTableDeserializer::DHTRoutingTableDeserializer() {}
 
 DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() {}
 
-SharedHandle<DHTNode> DHTRoutingTableDeserializer::getLocalNode() const
-{
-  return _localNode;
-}
-
-const std::deque<SharedHandle<DHTNode> >& DHTRoutingTableDeserializer::getNodes() const
-{
-  return _nodes;
-}
-
 static std::istream& readBytes(unsigned char* buf, size_t buflen,
 			       std::istream& in, size_t readlen)
 {

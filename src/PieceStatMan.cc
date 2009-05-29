@@ -42,15 +42,6 @@ namespace aria2 {
 
 PieceStat::PieceStat(size_t index):_order(0), _index(index), _count(0) {}
 
-bool PieceStat::operator<(const PieceStat& pieceStat) const
-{
-  if(_count == pieceStat._count) {
-    return _order < pieceStat._order;
-  } else {
-    return _count < pieceStat._count;
-  }
-}
-
 void PieceStat::addCount()
 {
   if(_count < SIZE_MAX) {
@@ -63,26 +54,6 @@ void PieceStat::subCount()
   if(_count > 0) {
     --_count;
   }
-}
-
-size_t PieceStat::getIndex() const
-{
-  return _index;
-}
-
-size_t PieceStat::getCount() const
-{
-  return _count;
-}
-
-void PieceStat::setOrder(size_t order)
-{
-  _order = order;
-}
-
-size_t PieceStat::getOrder() const
-{
-  return _order;
 }
 
 class GenPieceStat {
@@ -202,17 +173,6 @@ void PieceStatMan::addPieceStats(size_t index)
 		     index, PieceStatRarer(_pieceStats));
   
   std::rotate(cur, cur+1, to);
-}
-
-const std::vector<size_t>& PieceStatMan::getRarerPieceIndexes() const
-{
-  return _sortedPieceStatIndexes;
-}
-
-const std::vector<SharedHandle<PieceStat> >&
-PieceStatMan::getPieceStats() const
-{
-  return _pieceStats;
 }
 
 } // namespace aria2

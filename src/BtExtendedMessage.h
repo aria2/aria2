@@ -78,7 +78,11 @@ public:
 
   virtual std::string toString() const;
 
-  SharedHandle<ExtensionMessage> getExtensionMessage() const;
+  const SharedHandle<ExtensionMessage>& getExtensionMessage() const
+  {
+    return _extensionMessage;
+  }
+
 };
 
 } // namespace aria2

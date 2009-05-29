@@ -62,9 +62,15 @@ public:
 
   ~HttpRequestEntry();
 
-  SharedHandle<HttpRequest> getHttpRequest() const;
+  const SharedHandle<HttpRequest>& getHttpRequest() const
+  {
+    return _httpRequest;
+  }
 
-  SharedHandle<HttpHeaderProcessor> getHttpHeaderProcessor() const;
+  const SharedHandle<HttpHeaderProcessor>& getHttpHeaderProcessor() const
+  {
+    return _proc;
+  }
 };
 
 typedef SharedHandle<HttpRequestEntry> HttpRequestEntryHandle;

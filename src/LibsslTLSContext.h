@@ -72,13 +72,20 @@ public:
 
   bool bad() const;
 
-  SSL_CTX* getSSLCtx() const;
+  SSL_CTX* getSSLCtx() const
+  {
+    return _sslCtx;
+  }
   
   void enablePeerVerification();
 
   void disablePeerVerification();
 
-  bool peerVerificationEnabled() const;
+  bool peerVerificationEnabled() const
+  {
+    return _peerVerificationEnabled;
+  }
+
 };
 
 } // namespace aria2

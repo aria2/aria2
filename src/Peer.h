@@ -36,12 +36,15 @@
 #define _D_PEER_H_
 
 #include "common.h"
+
+#include <cassert>
+#include <string>
+#include <deque>
+
 #include "SharedHandle.h"
 #include "TimeA2.h"
 #include "BtConstants.h"
 #include "PeerStat.h"
-#include <string>
-#include <deque>
 
 namespace aria2 {
 
@@ -82,28 +85,52 @@ public:
 
   ~Peer();
 
-  bool operator==(const Peer& p);
+  bool operator==(const Peer& p)
+  {
+    return id == p.id;
+  }
   
-  bool operator!=(const Peer& p);
+  bool operator!=(const Peer& p)
+  {
+    return !(*this == p);
+  }
 
   void resetStatus();
 
   void usedBy(int32_t cuid);
 
-  int32_t usedBy() const;
+  int32_t usedBy() const
+  {
+    return _cuid;
+  }
 
-  bool unused() const;
+  bool unused() const
+  {
+    return _cuid == 0;
+  }
 
   // Returns true iff _res != 0.
-  bool isActive() const;
+  bool isActive() const
+  {
+    return _res != 0;
+  }
 
   void setPeerId(const unsigned char* peerId);
 
-  const unsigned char* getPeerId() const;
+  const unsigned char* getPeerId() const
+  {
+    return _peerId;
+  }
 
-  bool isSeeder() const;
+  bool isSeeder() const
+  {
+    return _seeder;
+  }
 
-  const std::string& getID() const;
+  const std::string& getID() const
+  {
+    return id;
+  }
 
   void startBadCondition();
 
@@ -113,11 +140,17 @@ public:
 
   void releaseSessionResource();
 
-  const Time& getFirstContactTime() const;
+  const Time& getFirstContactTime() const
+  {
+    return _firstContactTime;
+  }
 
   void setFirstContactTime(const Time& time);
 
-  const Time& getBadConditionStartTime() const;
+  const Time& getBadConditionStartTime() const
+  {
+    return _badConditionStartTime;
+  }
 
   // Before calling following member functions,  make sure that
   // allocateSessionResource() is called and _res is created.
@@ -244,7 +277,10 @@ public:
 
   uint64_t getCompletedLength() const;
 
-  bool isIncomingPeer() const;
+  bool isIncomingPeer() const
+  {
+    return _incoming;
+  }
 
   void setIncomingPeer(bool incoming);
 

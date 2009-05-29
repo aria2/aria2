@@ -65,17 +65,26 @@ public:
 
   void closeFile();
 
-  bool isOpen() const;
+  bool isOpen() const
+  {
+    return _open;
+  }
 
   bool fileExists();
 
   uint64_t size() const;
 
-  SharedHandle<FileEntry> getFileEntry() const;
+  const SharedHandle<FileEntry>& getFileEntry() const
+  {
+    return fileEntry;
+  }
 
   void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 
-  SharedHandle<DiskWriter> getDiskWriter() const;
+  const SharedHandle<DiskWriter>& getDiskWriter() const
+  {
+    return diskWriter;
+  }
 
   bool operator<(const DiskWriterEntry& entry) const;
 
@@ -89,9 +98,16 @@ public:
   // called.
   void disableDirectIO();
 
-  bool needsFileAllocation() const;
+  bool needsFileAllocation() const
+  {
+    return _needsFileAllocation;
+  }
 
-  void needsFileAllocation(bool f);
+  void needsFileAllocation(bool f)
+  {
+    _needsFileAllocation = f;
+  }
+
 };
 
 typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
@@ -177,7 +193,11 @@ public:
   virtual size_t utime(const Time& actime, const Time& modtime);
 
   const std::deque<SharedHandle<DiskWriterEntry> >&
-  getDiskWriterEntries() const;
+  getDiskWriterEntries() const
+  {
+    return diskWriterEntries;
+  }
+
 };
 
 typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;

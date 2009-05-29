@@ -173,19 +173,9 @@ RangeHandle HttpHeader::getRange() const
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }
 
-const std::string& HttpHeader::getResponseStatus() const
-{
-  return _responseStatus;
-}
-
 void HttpHeader::setResponseStatus(const std::string& responseStatus)
 {
   _responseStatus = responseStatus;
-}
-
-const std::string& HttpHeader::getVersion() const
-{
-  return _version;
 }
 
 void HttpHeader::setVersion(const std::string& version)
@@ -193,19 +183,9 @@ void HttpHeader::setVersion(const std::string& version)
   _version = version;
 }
 
-const std::string& HttpHeader::getMethod() const
-{
-  return _method;
-}
-
 void HttpHeader::setMethod(const std::string& method)
 {
   _method = method;
-}
-
-const std::string& HttpHeader::getRequestPath() const
-{
-  return _requestPath;
 }
 
 void HttpHeader::setRequestPath(const std::string& requestPath)

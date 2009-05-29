@@ -114,7 +114,10 @@ public:
 
   void setBaseWorkingDir(const std::string& baseWorkingDir);
 
-  const std::string& getBaseWorkingDir() const;
+  const std::string& getBaseWorkingDir() const
+  {
+    return _baseWorkingDir;
+  }
 };
 
 } // namespace aria2

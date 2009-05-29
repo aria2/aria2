@@ -36,13 +36,14 @@
 #define _D_METALINK_PARSER_STATE_MACHINE_H_
 
 #include "common.h"
-#include "SharedHandle.h"
 #include <string>
 #include <map>
 
+#include "SharedHandle.h"
+#include "MetalinkParserController.h"
+
 namespace aria2 {
 
-class MetalinkParserController;
 class MetalinkParserState;
 class SkipTagMetalinkParserState;
 class Metalinker;
@@ -191,7 +192,10 @@ public:
 
   bool needsCharactersBuffering() const;
 
-  SharedHandle<Metalinker> getResult() const;
+  const SharedHandle<Metalinker>& getResult() const
+  {
+    return _ctrl->getResult();
+  }
 };
 
 } //  namespace aria2

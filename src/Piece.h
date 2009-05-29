@@ -82,9 +82,15 @@ public:
 
   Piece& operator=(const Piece& piece);
   
-  bool operator==(const Piece& piece) const;
+  bool operator==(const Piece& piece) const
+  {
+    return index == piece.index;
+  }
 
-  bool operator<(const Piece& piece) const;
+  bool operator<(const Piece& piece) const
+  {
+    return index < piece.index;
+  }
 
   bool getMissingUnusedBlockIndex(size_t& index) const;
   bool getMissingBlockIndex(size_t& index) const;
