@@ -1038,15 +1038,18 @@ GID::
 Methods
 ~~~~~~~
 
-*aria2.addUri* 'uris[, options]'
+*aria2.addUri* 'uris[, options[, position]]'
 
 This method adds new HTTP(S)/FTP download.  'uris' is of type array
 and its element is URI which is of type string. URI should be
 percent-encoded.  'options' is of type struct and its members are a
 pair of option name and value. See *Options* below for more details.
-This method returns GID of registered download.
+If 'position' is given as an integer, the new download is inserted at
+'position' in the waiting queue. If 'position' is not given or
+'position' is larger than the size of the queue, it is appended at the
+end of the queue.  This method returns GID of registered download.
 
-*aria2.addTorrent* 'torrent[, uris[, options]]'
+*aria2.addTorrent* 'torrent[, uris[, options[, position]]]'
 
 This method adds BitTorrent download by uploading .torrent file.
 'torrent' is of type base64 which contains Base64-encoded .torrent
@@ -1054,16 +1057,22 @@ file.  'uris' is of type array and its element is URI which is of type
 string. 'uris' is used for Web-seeding. Note that 'uris' is ignored if
 specified torrent is a multi-file torrent.  'options' is of type
 struct and its members are a pair of option name and value. See
-*Options* below for more details.  This method returns GID of
-registered download.
+*Options* below for more details.  If 'position' is given as an
+integer, the new download is inserted at 'position' in the waiting
+queue. If 'position' is not given or 'position' is larger than the
+size of the queue, it is appended at the end of the queue.  This
+method returns GID of registered download.
 
-*aria2.addMetalink* 'metalink[, options]'
+*aria2.addMetalink* 'metalink[, options[, position]]'
 
 This method adds Metalink download by uploading .metalink file.
 'metalink' is of type base64 which contains Base64-encoded .metalink
 file.  'options' is of type struct and its members are a pair of
-option name and value. See *Options* below for more details.  This
-method returns GID of registered download.
+option name and value. See *Options* below for more details.  If
+'position' is given as an integer, the new download is inserted at
+'position' in the waiting queue. If 'position' is not given or
+'position' is larger than the size of the queue, it is appended at the
+end of the queue.  This method returns GID of registered download.
 
 *aria2.remove* 'gid'
 

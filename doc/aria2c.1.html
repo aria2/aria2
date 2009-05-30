@@ -2414,27 +2414,36 @@ GID
 </dd>
 </dl></div>
 <h3 id="_methods">Methods</h3><div style="clear:left"></div>
-<div class="paragraph"><p><strong>aria2.addUri</strong> <em>uris[, options]</em></p></div>
+<div class="paragraph"><p><strong>aria2.addUri</strong> <em>uris[, options[, position]]</em></p></div>
 <div class="paragraph"><p>This method adds new HTTP(S)/FTP download.  <em>uris</em> is of type array
 and its element is URI which is of type string. URI should be
 percent-encoded.  <em>options</em> is of type struct and its members are a
 pair of option name and value. See <strong>Options</strong> below for more details.
-This method returns GID of registered download.</p></div>
-<div class="paragraph"><p><strong>aria2.addTorrent</strong> <em>torrent[, uris[, options]]</em></p></div>
+If <em>position</em> is given as an integer, the new download is inserted at
+<em>position</em> in the waiting queue. If <em>position</em> is not given or
+<em>position</em> is larger than the size of the queue, it is appended at the
+end of the queue.  This method returns GID of registered download.</p></div>
+<div class="paragraph"><p><strong>aria2.addTorrent</strong> <em>torrent[, uris[, options[, position]]]</em></p></div>
 <div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.
 <em>torrent</em> is of type base64 which contains Base64-encoded .torrent
 file.  <em>uris</em> is of type array and its element is URI which is of type
 string. <em>uris</em> is used for Web-seeding. Note that <em>uris</em> is ignored if
 specified torrent is a multi-file torrent.  <em>options</em> is of type
 struct and its members are a pair of option name and value. See
-<strong>Options</strong> below for more details.  This method returns GID of
-registered download.</p></div>
-<div class="paragraph"><p><strong>aria2.addMetalink</strong> <em>metalink[, options]</em></p></div>
+<strong>Options</strong> below for more details.  If <em>position</em> is given as an
+integer, the new download is inserted at <em>position</em> in the waiting
+queue. If <em>position</em> is not given or <em>position</em> is larger than the
+size of the queue, it is appended at the end of the queue.  This
+method returns GID of registered download.</p></div>
+<div class="paragraph"><p><strong>aria2.addMetalink</strong> <em>metalink[, options[, position]]</em></p></div>
 <div class="paragraph"><p>This method adds Metalink download by uploading .metalink file.
 <em>metalink</em> is of type base64 which contains Base64-encoded .metalink
 file.  <em>options</em> is of type struct and its members are a pair of
-option name and value. See <strong>Options</strong> below for more details.  This
-method returns GID of registered download.</p></div>
+option name and value. See <strong>Options</strong> below for more details.  If
+<em>position</em> is given as an integer, the new download is inserted at
+<em>position</em> in the waiting queue. If <em>position</em> is not given or
+<em>position</em> is larger than the size of the queue, it is appended at the
+end of the queue.  This method returns GID of registered download.</p></div>
 <div class="paragraph"><p><strong>aria2.remove</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method removes the download denoted by <em>gid</em>. <em>gid</em> is of type
 string. If specified download is in progress, it is stopped at
@@ -3137,7 +3146,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-05-27 21:56:45 JST
+Last updated 2009-05-31 07:57:09 JST
 </div>
 </div>
 </body>

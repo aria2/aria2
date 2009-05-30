@@ -1,5 +1,10 @@
 2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented position parameter in man page.
+	* doc/aria2c.1.txt
+
+2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added 'position' parameter to addUri, addTorrent and addMetalink
 	xml-rpc method.
 	* src/RequestGroupMan.cc
