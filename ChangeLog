@@ -1,5 +1,11 @@
 2009-05-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed *.gmo files in po because they are generated on 'make
+	dist'
+	* po/*.gmo
+
+2009-05-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented max-concurrent-downloads of changeGlobalOption method
 	in man page.
 	* doc/aria2c.1.txt
