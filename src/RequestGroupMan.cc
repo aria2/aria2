@@ -405,11 +405,14 @@ static void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
 
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
-  RequestGroups temp;
   removeStoppedGroup(e);
+  if(_maxSimultaneousDownloads <= _requestGroups.size()) {
+    return;
+  }
+  RequestGroups temp;
   unsigned int count = 0;
-  for(int num = _maxSimultaneousDownloads-_requestGroups.size();
-      num > 0 && !_reservedGroups.empty(); --num) {
+  size_t num = _maxSimultaneousDownloads-_requestGroups.size();
+  while(count < num && !_reservedGroups.empty()) {
     RequestGroupHandle groupToAdd = _reservedGroups.front();
     _reservedGroups.pop_front();
     try {

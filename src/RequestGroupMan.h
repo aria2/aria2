@@ -230,6 +230,11 @@ public:
   {
     return _maxOverallUploadSpeedLimit;
   }
+
+  void setMaxSimultaneousDownloads(unsigned int max)
+  {
+    _maxSimultaneousDownloads = max;
+  }
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

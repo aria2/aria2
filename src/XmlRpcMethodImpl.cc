@@ -560,6 +560,10 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
     e->_requestGroupMan->setMaxOverallUploadSpeedLimit
       (option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
   }
+  if(option->defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
+    e->_requestGroupMan->setMaxSimultaneousDownloads
+      (option->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
+  }
   return BDE_OK;
 }
 

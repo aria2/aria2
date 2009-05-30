@@ -134,6 +134,7 @@ const std::vector<std::string>& listChangeableGlobalOptions()
   static const std::string OPTIONS[] = {
     PREF_MAX_OVERALL_UPLOAD_LIMIT,
     PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
+    PREF_MAX_CONCURRENT_DOWNLOADS,
   };
   static std::vector<std::string> options
     (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);

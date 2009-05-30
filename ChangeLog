@@ -1,5 +1,15 @@
 2009-05-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added max-concurrent-downloads option to changeGlobalOption
+	xml-rpc method.  Rewritten loop conditional in
+	RequestGroupMan::fillRequestGroupFromReserver().
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethodImpl.cc
+	
+2009-05-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented position parameter in man page.
 	* doc/aria2c.1.txt
 
