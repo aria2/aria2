@@ -106,6 +106,11 @@ public:
 
   void addReservedGroup(const SharedHandle<RequestGroup>& group);
 
+  void insertReservedGroup
+  (size_t pos, const std::deque<SharedHandle<RequestGroup> >& groups);
+
+  void insertReservedGroup(size_t pos, const SharedHandle<RequestGroup>& group);
+
   size_t countRequestGroup() const;
 		  
   SharedHandle<RequestGroup> getRequestGroup(size_t index) const;

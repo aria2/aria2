@@ -1,3 +1,12 @@
+2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added 'position' parameter to addUri, addTorrent and addMetalink
+	xml-rpc method.
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethodImpl.cc
+	* test/XmlRpcMethodTest.cc
+
 2009-05-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed Peer.cc from compile source list when --disable-bittorrent

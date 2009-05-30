@@ -29,15 +29,18 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddUri_withoutUri);
   CPPUNIT_TEST(testAddUri_notUri);
   CPPUNIT_TEST(testAddUri_withBadOption);
+  CPPUNIT_TEST(testAddUri_withPosition);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testAddTorrent);
   CPPUNIT_TEST(testAddTorrent_withoutTorrent);
   CPPUNIT_TEST(testAddTorrent_notBase64Torrent);
+  CPPUNIT_TEST(testAddTorrent_withPosition);
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   CPPUNIT_TEST(testAddMetalink);
   CPPUNIT_TEST(testAddMetalink_withoutMetalink);
   CPPUNIT_TEST(testAddMetalink_notBase64Metalink);
+  CPPUNIT_TEST(testAddMetalink_withPosition);
 #endif // ENABLE_METALINK
   CPPUNIT_TEST(testChangeOption);
   CPPUNIT_TEST(testChangeOption_withBadOption);
@@ -69,15 +72,18 @@ public:
   void testAddUri_withoutUri();
   void testAddUri_notUri();
   void testAddUri_withBadOption();
+  void testAddUri_withPosition();
 #ifdef ENABLE_BITTORRENT
   void testAddTorrent();
   void testAddTorrent_withoutTorrent();
   void testAddTorrent_notBase64Torrent();
+  void testAddTorrent_withPosition();
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   void testAddMetalink();
   void testAddMetalink_withoutMetalink();
   void testAddMetalink_notBase64Metalink();
+  void testAddMetalink_withPosition();
 #endif // ENABLE_METALINK
   void testChangeOption();
   void testChangeOption_withBadOption();
@@ -150,6 +156,28 @@ void XmlRpcMethodTest::testAddUri_withBadOption()
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
 
+void XmlRpcMethodTest::testAddUri_withPosition()
+{
+  AddUriXmlRpcMethod m;
+  XmlRpcRequest req1("aria2.addUri", BDE::list());
+  req1._params << BDE::list();
+  req1._params[0] << BDE("http://uri1");
+  XmlRpcResponse res1 = m.execute(req1, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res1._code);
+  
+  XmlRpcRequest req2("aria2.addUri", BDE::list());
+  req2._params << BDE::list();
+  req2._params[0] << BDE("http://uri2");
+  req2._params << BDE::dict();
+  req2._params << BDE((int64_t)0);
+  m.execute(req2, _e.get());
+
+  std::string uri =
+    _e->_requestGroupMan->getReservedGroups()[0]->getRemainingUris()[0];
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://uri2"), uri);
+}
+
 #ifdef ENABLE_BITTORRENT
 void XmlRpcMethodTest::testAddTorrent()
 {
@@ -200,6 +228,29 @@ void XmlRpcMethodTest::testAddTorrent_notBase64Torrent()
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
+
+void XmlRpcMethodTest::testAddTorrent_withPosition()
+{
+  AddTorrentXmlRpcMethod m;
+  XmlRpcRequest req1("aria2.addTorrent", BDE::list());
+  req1._params << BDE(readFile("test.torrent"));
+  req1._params << BDE::list();
+  req1._params << BDE::dict();
+  XmlRpcResponse res1 = m.execute(req1, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res1._code);
+
+  XmlRpcRequest req2("aria2.addTorrent", BDE::list());
+  req2._params << BDE(readFile("single.torrent"));
+  req2._params << BDE::list();
+  req2._params << BDE::dict();
+  req2._params << BDE((int64_t)0);
+  m.execute(req2, _e.get());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1,
+		       _e->_requestGroupMan->getReservedGroups()[0]->
+		       getDownloadContext()->getFileEntries().size());
+}
+
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
@@ -252,6 +303,29 @@ void XmlRpcMethodTest::testAddMetalink_notBase64Metalink()
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
+
+void XmlRpcMethodTest::testAddMetalink_withPosition()
+{
+  AddUriXmlRpcMethod m1;
+  XmlRpcRequest req1("aria2.addUri", BDE::list());
+  req1._params << BDE::list();
+  req1._params[0] << BDE("http://uri");
+  XmlRpcResponse res1 = m1.execute(req1, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res1._code);
+
+  AddMetalinkXmlRpcMethod m2;
+  XmlRpcRequest req2("ari2.addMetalink", BDE::list());
+  req2._params << BDE(readFile("2files.metalink"));
+  req2._params << BDE::dict();
+  req2._params << BDE((int64_t)0);
+  XmlRpcResponse res2 = m2.execute(req2, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res2._code);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
+		       _e->_requestGroupMan->getReservedGroups()[0]->
+		       getFilePath());
+}
+
 #endif // ENABLE_METALINK
 
 void XmlRpcMethodTest::testChangeOption()

@@ -112,9 +112,24 @@ void RequestGroupMan::addReservedGroup(const RequestGroups& groups)
   _reservedGroups.insert(_reservedGroups.end(), groups.begin(), groups.end());
 }
 
-void RequestGroupMan::addReservedGroup(const RequestGroupHandle& group)
+void RequestGroupMan::addReservedGroup(const SharedHandle<RequestGroup>& group)
 {
   _reservedGroups.push_back(group);
+}
+
+void RequestGroupMan::insertReservedGroup
+(size_t pos, const std::deque<SharedHandle<RequestGroup> >& groups)
+{
+  _reservedGroups.insert
+    (_reservedGroups.begin()+std::min(_reservedGroups.size(), pos),
+     groups.begin(), groups.end());
+}
+
+void RequestGroupMan::insertReservedGroup
+(size_t pos, const SharedHandle<RequestGroup>& group)
+{
+  _reservedGroups.insert
+    (_reservedGroups.begin()+std::min(_reservedGroups.size(), pos), group);
 }
 
 size_t RequestGroupMan::countRequestGroup() const

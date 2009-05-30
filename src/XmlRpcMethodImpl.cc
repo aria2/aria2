@@ -81,6 +81,34 @@ static BDE createGIDResponse(int32_t gid)
   return BDE(Util::itos(gid));
 }
 
+static BDE addRequestGroup(const SharedHandle<RequestGroup>& group,
+			   DownloadEngine* e,
+			   bool posGiven, int pos)
+{
+  if(posGiven) {
+    e->_requestGroupMan->insertReservedGroup(pos, group);
+  } else {
+    e->_requestGroupMan->addReservedGroup(group);
+  }
+  return createGIDResponse(group->getGID());
+}
+
+static bool hasDictParam(const BDE& params, size_t index)
+{
+  return params.size() > index && params[index].isDict();
+}
+
+static void getPosParam(const BDE& params, size_t posParamIndex,
+			bool& posGiven, size_t& pos)
+{
+  if(params.size() > posParamIndex && params[posParamIndex].isInteger()) {
+    pos = params[posParamIndex].i();
+    posGiven = true;
+  } else {
+    posGiven = false;
+  }
+} 
+
 BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   const BDE& params = req._params;
@@ -97,17 +125,20 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   }
 
   SharedHandle<Option> requestOption(new Option(*e->option));
-  if(params.size() > 1 && params[1].isDict()) {
+  if(hasDictParam(params, 1)) {
     gatherRequestOption(requestOption, params[1]);
   }
+  size_t pos = 0;
+  bool posGiven = false;
+  getPosParam(params, 2, posGiven, pos);
+
   std::deque<SharedHandle<RequestGroup> > result;
   createRequestGroupForUri(result, requestOption, uris,
 			   /* ignoreForceSeq = */ true,
 			   /* ignoreNonURI = */ true);
 
   if(!result.empty()) {
-    e->_requestGroupMan->addReservedGroup(result.front());
-    return createGIDResponse(result.front()->getGID());
+    return addRequestGroup(result.front(), e, posGiven, pos);
   } else {
     throw DL_ABORT_EX("No URI to download.");
   }
@@ -132,19 +163,21 @@ BDE AddTorrentXmlRpcMethod::process
       }
     }
   }
-
   SharedHandle<Option> requestOption(new Option(*e->option));
-  if(params.size() > 2 && params[2].isDict()) {
+  if(hasDictParam(params, 2)) {
     gatherRequestOption(requestOption, params[2]);
   }
+  size_t pos = 0;
+  bool posGiven = false;
+  getPosParam(params, 3, posGiven, pos);
+
   std::deque<SharedHandle<RequestGroup> > result;
   createRequestGroupForBitTorrent(result, requestOption,
 				  uris,
 				  params[0].s());
 
   if(!result.empty()) {
-    e->_requestGroupMan->addReservedGroup(result.front());
-    return createGIDResponse(result.front()->getGID());
+    return addRequestGroup(result.front(), e, posGiven, pos);
   } else {
     throw DL_ABORT_EX("No Torrent to download.");
   }
@@ -162,13 +195,21 @@ BDE AddMetalinkXmlRpcMethod::process
   }
   
   SharedHandle<Option> requestOption(new Option(*e->option));
-  if(params.size() > 1 && params[1].isDict()) {
+  if(hasDictParam(params, 1)) {
     gatherRequestOption(requestOption, params[1]);
-  }
+  };
+  size_t pos = 0;
+  bool posGiven = false;
+  getPosParam(params, 2, posGiven, pos);
+
   std::deque<SharedHandle<RequestGroup> > result;
   createRequestGroupForMetalink(result, requestOption, params[0].s());
   if(!result.empty()) {
-    e->_requestGroupMan->addReservedGroup(result);
+    if(posGiven) {
+      e->_requestGroupMan->insertReservedGroup(pos, result);
+    } else {
+      e->_requestGroupMan->addReservedGroup(result);
+    }
     BDE gids = BDE::list();
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
 	  result.begin(); i != result.end(); ++i) {
