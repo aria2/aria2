@@ -1231,8 +1231,9 @@ This method returns "OK" for success.
 *aria2.changeGlobalOption* 'options'
 
 This method changes global options dynamically.  'options' is of type
-struct and the available options are *max-overall-download-limit* and
-*max-overall-upload-limit*.  This method returns "OK" for success.
+struct and the available options are *max-concurrent-downloads*,
+*max-overall-download-limit* and *max-overall-upload-limit*.  This
+method returns "OK" for success.
 
 *aria2.purgeDownloadResult*
 
