@@ -13,10 +13,14 @@ available. For complete API specification, see XML-RPC INTERFACE
 section in man page and
 http://apps.sourceforge.net/trac/aria2/wiki/XmlrpcInterface. The
 console readout was slightly updated and now includes the number of
-seeders the client has connected to.
+seeders the client has connected to.  Slovak translation was
+added. Ukrainian and Brazilian Portuguese translation were updated.
 
 Changes
 -------
+
+* Added Slovak translation. Updated Ukrainian and Brazilian Portuguese
+  translation. Thanks to all translators.
 
 * Use name.utf-8 and path.utf-8 key in higher priority than name and
   path key respectively when persing .torrent file.
