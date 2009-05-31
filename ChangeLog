@@ -1,5 +1,10 @@
 2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed docs of aria2.addMetalink xml-rpc method.
+	* doc/aria2c.1.txt
+
+2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added Slovak translation. Updated Ukrainian and Brazilian
 	Portuguese translation. Thanks to all translators.
 	* po/sk.po

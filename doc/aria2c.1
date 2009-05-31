@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.0 <http://docbook.sf.net/>
-.\"      Date: 05/30/2009
+.\"      Date: 05/31/2009
 .\"    Manual: [FIXME: manual]
 .\"    Source: [FIXME: source]
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "05/30/2009" "[FIXME: source]" "[FIXME: manual]"
+.TH "ARIA2C" "1" "05/31/2009" "[FIXME: source]" "[FIXME: manual]"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -2067,7 +2067,7 @@ This method adds BitTorrent download by uploading \&.torrent file\&. \fItorrent\
 .sp
 \fBaria2\&.addMetalink\fR \fImetalink[, options[, position]]\fR
 .sp
-This method adds Metalink download by uploading \&.metalink file\&. \fImetalink\fR is of type base64 which contains Base64\-encoded \&.metalink file\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
+This method adds Metalink download by uploading \&.metalink file\&. \fImetalink\fR is of type base64 which contains Base64\-encoded \&.metalink file\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns array of GID of registered download\&.
 .sp
 \fBaria2\&.remove\fR \fIgid\fR
 .sp
