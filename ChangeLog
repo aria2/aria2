@@ -1,3 +1,8 @@
+2009-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added utf8.torrent to EXTRA_DIST
+	* test/Makefile.am
+
 2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed docs of aria2.addMetalink xml-rpc method.
