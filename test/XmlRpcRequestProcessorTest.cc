@@ -12,6 +12,7 @@ class XmlRpcRequestProcessorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(XmlRpcRequestProcessorTest);
   CPPUNIT_TEST(testParseMemory);
+  CPPUNIT_TEST(testParseMemory_shouldFail);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -19,6 +20,7 @@ public:
   void tearDown() {}
 
   void testParseMemory();
+  void testParseMemory_shouldFail();
 };
 
 
@@ -70,6 +72,22 @@ void XmlRpcRequestProcessorTest::testParseMemory()
   CPPUNIT_ASSERT_EQUAL(std::string("0.99"), req._params[1]["seed-ratio"].s());
   CPPUNIT_ASSERT_EQUAL(std::string("pudding"), req._params[2][0].s());
   CPPUNIT_ASSERT_EQUAL(std::string("hello world"), req._params[2][1].s());
+}
+
+void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()
+{
+  XmlRpcRequestProcessor proc;
+  try {
+    proc.parseMemory("<methodCall>"
+		     "  <methodName>aria2.addURI</methodName>"
+		     "    <params>"
+		     "      <param>"
+		     "        <value><i4>100</i4></value>"
+		     "      </param>");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
 }
 
 } // namespace xmlrpc

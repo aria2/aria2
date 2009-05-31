@@ -1,3 +1,9 @@
+2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added test case for XmlRpcProcessor to fail to parse malformed
+	document.
+	* test/XmlRpcRequestProcessorTest.cc
+
 2009-05-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed *.gmo files in po because they are generated on 'make
