@@ -1,5 +1,9 @@
 2009-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	* Release 1.4.0
+
+2009-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added utf8.torrent to EXTRA_DIST
 	* test/Makefile.am
 
