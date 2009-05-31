@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-29 23:44+0900\n"
+"POT-Creation-Date: 2009-05-31 22:15+0900\n"
 "PO-Revision-Date: 2008-10-08 08:24+0000\n"
 "Last-Translator: snufkinto <Unknown>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -37,11 +37,11 @@ msgid ""
 msgstr ""
 "如有錯誤，請查看日誌記錄檔案。詳細資訊請參考幫助/man page內的 '-l' 選項。"
 
-#: src/RequestGroupMan.cc:528
+#: src/RequestGroupMan.cc:531
 msgid "Download Results:"
 msgstr "下載結果："
 
-#: src/RequestGroupMan.cc:572
+#: src/RequestGroupMan.cc:575
 msgid "Status Legend:"
 msgstr "狀態說明："
 

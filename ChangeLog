@@ -1,5 +1,14 @@
 2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added Slovak translation. Updated Ukrainian and Brazilian
+	Portuguese translation. Thanks to all translators.
+	* po/sk.po
+	* po/uk.po
+	* po/pt_BR.po
+	* po/LINGUAS
+
+2009-05-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added test case for XmlRpcProcessor to fail to parse malformed
 	document.
 	* test/XmlRpcRequestProcessorTest.cc

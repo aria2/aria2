@@ -32,8 +32,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 1.4.0\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-29 23:44+0900\n"
-"PO-Revision-Date: 2009-05-29 23:44+0900\n"
+"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"PO-Revision-Date: 2009-05-31 22:15+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -63,11 +63,11 @@ msgstr ""
 "If there are any errors, then see the log file. See ‘[1m-l[0m’ option in "
 "help/man page for details."
 
-#: src/RequestGroupMan.cc:528
+#: src/RequestGroupMan.cc:531
 msgid "Download Results:"
 msgstr "Download Results:"
 
-#: src/RequestGroupMan.cc:572
+#: src/RequestGroupMan.cc:575
 msgid "Status Legend:"
 msgstr "Status Legend:"
 

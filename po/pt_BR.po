@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-29 23:44+0900\n"
-"PO-Revision-Date: 2007-12-01 14:25+0000\n"
-"Last-Translator: jareth-Br <fcarretoni@gmail.com>\n"
+"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"PO-Revision-Date: 2009-05-11 18:09+0000\n"
+"Last-Translator: elchevive <elchevive68@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
+"X-Launchpad-Export-Date: 2009-05-31 13:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:209
@@ -36,17 +36,17 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:528
+#: src/RequestGroupMan.cc:531
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:572
+#: src/RequestGroupMan.cc:575
 msgid "Status Legend:"
 msgstr ""
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
-msgstr ""
+msgstr "                              Padrão: "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
@@ -54,26 +54,26 @@ msgstr ""
 
 #: src/OptionHandler.cc:40
 msgid "                              Possible Values: "
-msgstr ""
+msgstr "                              Possíveis valores: "
 
 #: src/OptionHandlerImpl.h:129
 msgid "must be either 'true' or 'false'."
-msgstr "deve ser 'true' ou 'false'"
+msgstr "deve ser 'true' ou 'false'."
 
 #: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
 #, c-format
 msgid "must be between %s and %s."
-msgstr "deve estar entre %s e %s"
+msgstr "deve estar entre %s e %s."
 
 #: src/OptionHandlerImpl.h:207
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "deve ser menor que, ou igual a %s"
+msgstr "deve ser menor que, ou igual a %s."
 
 #: src/OptionHandlerImpl.h:213
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "deve ser maior que, ou igual a %s"
+msgstr "deve ser maior que, ou igual a %s."
 
 #: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
 msgid "must be a number."
@@ -2108,4 +2108,4 @@ msgstr ""
 
 #: src/Util.cc:704
 msgid "Files:"
-msgstr ""
+msgstr "Arquivos:"

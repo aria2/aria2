@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-29 23:44+0900\n"
-"PO-Revision-Date: 2009-05-07 07:37+0000\n"
+"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"PO-Revision-Date: 2009-05-29 07:29+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-07 15:56+0000\n"
+"X-Launchpad-Export-Date: 2009-05-31 13:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:209
@@ -40,11 +40,11 @@ msgstr ""
 "При наявності помилок дивіться log файл. Дивіться параметр '-l' в допомозі "
 "(help/man-сторінки) для детальнішої інформації."
 
-#: src/RequestGroupMan.cc:528
+#: src/RequestGroupMan.cc:531
 msgid "Download Results:"
 msgstr "Результати завантаження:"
 
-#: src/RequestGroupMan.cc:572
+#: src/RequestGroupMan.cc:575
 msgid "Status Legend:"
 msgstr "Роз'яснення позначень:"
 
@@ -407,7 +407,6 @@ msgstr ""
 "якась помилка"
 
 #: src/usage_text.h:142
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false is given, and a file already exists "
 "but\n"
@@ -417,14 +416,6 @@ msgid ""
 "download\n"
 "                              the file. See also --auto-file-renaming option."
 msgstr ""
-" --allow-piece-length-change=true|false Якщо встановлено false (ні), aria2 "
-"припиняє завантаження,\n"
-"                              коли довжина частини інша за ту, що "
-"знаходиться у\n"
-"                              контрольному файлі. Якщо встановлено true "
-"(так), Ви можете продовжувати,\n"
-"                              проте деякий прогрес завантаження буде "
-"втрачено."
 
 #: src/usage_text.h:147
 msgid ""
@@ -665,6 +656,13 @@ msgid ""
 "and\n"
 "                              their expiry values are treated as 0."
 msgstr ""
+" --save-cookies=FILE Зберегти куки до FILE у Mozilla/Firefox(1.x/2.x)/\n"
+"                              Netscape форматі. Якщо FILE вже існує, його "
+"буде\n"
+"                              перезаписано. Сесія куків також збережеться "
+"та\n"
+"                              та значення її закінчення трактуватиметься як "
+"0."
 
 #: src/usage_text.h:227
 msgid ""
@@ -1433,18 +1431,15 @@ msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr " --event-poll=POLL Вказати метод для опитування подій."
 
 #: src/usage_text.h:488
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
-" --dht-entry-point=HOST:PORT Вказати хост та порт, як точку входження до "
-"DHT\n"
-"                              мережі."
+" --xml-rpc-listen-port=PORT Вказати номер порта для прослуховування XML-RPC\n"
+"                              сервера."
 
 #: src/usage_text.h:491
-#, fuzzy
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1453,12 +1448,13 @@ msgid ""
 "passwd\n"
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
-" --server-stat-if=FILE Вказати ім'я файлу для завантаження профілю "
-"налаштувань\n"
-"                              серверу. Завантажені дані будуть використані "
-"у\n"
-"                              деяких URI селекторах, таких як 'feedback'.\n"
-"                              Дивіться також параметр --uri-selector"
+" --enable-xml-rpc[=true|false] Дозволити XML-RPC сервер.\n"
+"                              Дуже рекомендується встановити ім'я "
+"користувача та\n"
+"                              пароль за допомогою параметрів using --xml-rpc-"
+"user та\n"
+"                              --xml-rpc-passwd. Дивіться також параметр --"
+"xml-rpc-listen-port."
 
 #: src/usage_text.h:496
 msgid ""
@@ -1469,14 +1465,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:500
-#, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
-msgstr " --ftp-user=USER Задати FTP користувача. Це діє на усі URL."
+msgstr " --xml-rpc-user=USER Встановити XML-RPC користувача."
 
 #: src/usage_text.h:502
-#, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
-msgstr " --ftp-passwd=PASSWD Задати FTP пароль. Це діє на усі URL."
+msgstr " --xml-rpc-passwd=PASSWD Вказати XML-RPC пароль."
 
 #: src/usage_text.h:504
 msgid ""
@@ -1590,7 +1584,6 @@ msgstr ""
 "                              завантаження."
 
 #: src/usage_text.h:537
-#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1599,14 +1592,6 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-download-limit=SPEED Встановити максимальну швидкість кожного вузла "
-"завантаження у\n"
-"                              байтах/сек. 0 означає необмежено.\n"
-"                              Ви можете додати K або M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Щоб обмежити загальну швидкість завантаження, "
-"використовуйте\n"
-"                              параметр  --max-overall-download-limit."
 
 #: src/usage_text.h:543
 msgid ""
@@ -1615,9 +1600,14 @@ msgid ""
 "and\n"
 "                              GID is passed to COMMAND as a first argument."
 msgstr ""
+" --on-download-start=COMMAND Вказати команду, яку буде виконано тоді, коли "
+"розпочнеться\n"
+"                              завантаження. COMMAND мусить вміщувати лише "
+"один аргумент та\n"
+"                              GID додається до COMMAND у якості першого "
+"аргументу."
 
 #: src/usage_text.h:547
-#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1625,17 +1615,8 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-download-limit=SPEED Встановити максимальну швидкість кожного вузла "
-"завантаження у\n"
-"                              байтах/сек. 0 означає необмежено.\n"
-"                              Ви можете додати K або M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Щоб обмежити загальну швидкість завантаження, "
-"використовуйте\n"
-"                              параметр  --max-overall-download-limit."
 
 #: src/usage_text.h:553
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1648,16 +1629,6 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --follow-torrent=true|false|mem Якщо вказано true або mem, тоді "
-"завантажений файл,\n"
-"                              чий суфікс - .torrent або тип -\n"
-"                              application/x-bittorrent, aria2\n"
-"                              аналізує як torrent файл та завантажує файли\n"
-"                              згадані у ньому.\n"
-"                              Якщо вказано mem, тоді torrent файл не\n"
-"                              записується на диск, а тримається у пам'яті.\n"
-"                              Якщо вказано false, дії, згадані вище,\n"
-"                              не відбуваються."
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -2719,16 +2690,3 @@ msgstr "Помилка при відкритті порту.\n"
 #: src/Util.cc:704
 msgid "Files:"
 msgstr "Файли:"
-
-#~ msgid ""
-#~ " --allow-overwrite=true|false If false, aria2 doesn't download a file "
-#~ "which\n"
-#~ "                              already exists but the corresponding .aria2 "
-#~ "file\n"
-#~ "                              doesn't exist."
-#~ msgstr ""
-#~ " --allow-overwrite=true|false Якщо false (ні), aria2 не завантажує той "
-#~ "файл, який \n"
-#~ "                              вже існує, а відповідний .aria2 файл, "
-#~ "який \n"
-#~ "                              не існує."
