@@ -197,6 +197,7 @@ static void executeHook(const std::string& command, int gid)
 {
   LogFactory::getInstance()->info("Executing user command: %s %d",
 				  command.c_str(), gid);
+#ifndef __MINGW32__
   pid_t cpid = fork();
   if(cpid == -1) {
     LogFactory::getInstance()->error("fork() failed."
@@ -206,6 +207,33 @@ static void executeHook(const std::string& command, int gid)
     perror(("Could not execute user command: "+command).c_str());
     _exit(1);
   }
+#else
+  PROCESS_INFORMATION pi;
+  STARTUPINFO si;
+
+  memset(&si, 0, sizeof (si));
+  si.cb = sizeof(STARTUPINFO);
+
+  memset(&pi, 0, sizeof (pi));
+
+  std::string cmdline = command + " " + Util::itos(gid);
+
+  DWORD rc = CreateProcess(
+    NULL,
+    (LPSTR)cmdline.c_str(),
+    NULL,
+    NULL,
+    true,
+    NULL,
+    NULL,
+    0,
+    &si,
+    &pi);
+
+  if(!rc)
+    LogFactory::getInstance()->error("CreateProcess() failed."
+				     " Cannot execute user command.");
+#endif 
 }
 
 static void executeStartHook
