@@ -112,6 +112,8 @@ private:
     virtual void removeSelf(const SharedHandle<SocketEntry>& socketEntry) const;
   };
   
+#ifdef ENABLE_ASYNC_DNS
+
   class ADNSEvent : public Event {
   private:
     SharedHandle<AsyncNameResolver> _resolver;
@@ -136,6 +138,7 @@ private:
     virtual void removeSelf(const SharedHandle<SocketEntry>& socketEntry) const;
   };
 
+#endif // ENABLE_ASYNC_DNS
 
   class SocketEntry {
   private:

@@ -1,3 +1,8 @@
+2009-06-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added missing #ifdef ENABLE_ASYNC_DNS guard.
+	* src/EpollEventPoll.h
+
 2009-06-01  Ross Smith II  <aria2spam at smithii dot com>
 
 	Added fork() emulation using CreateProcess() in MinGW
