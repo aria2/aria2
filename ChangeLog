@@ -1,3 +1,9 @@
+2009-06-02  Ross Smith II  <aria2spam at smithii dot com>
+
+	Added (sock_t) to quiet compiler warnings in MinGW
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
 2009-06-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing #ifdef ENABLE_ASYNC_DNS guard.
