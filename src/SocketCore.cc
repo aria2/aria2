@@ -178,7 +178,7 @@ void SocketCore::bind(uint16_t port)
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-    if(fd == -1) {
+    if(fd == (sock_t) -1) {
       continue;
     }
     int sockopt = 1;
@@ -194,7 +194,7 @@ void SocketCore::bind(uint16_t port)
     break;
   }
   freeaddrinfo(res);
-  if(sockfd == -1) {
+  if(sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, "all addresses failed").str());
   }
 }
@@ -211,8 +211,8 @@ SocketCore* SocketCore::acceptConnection() const
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
   sock_t fd;
-  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == -1 && SOCKET_ERRNO == EINTR);
-  if(fd == -1) {
+  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == (sock_t) -1 && SOCKET_ERRNO == EINTR);
+  if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
   }
   return new SocketCore(fd, _sockType);
@@ -260,7 +260,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-    if(fd == -1) {
+    if(fd == (sock_t) -1) {
       continue;
     }
     int sockopt = 1;
@@ -274,7 +274,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     if(connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
        SOCKET_ERRNO != A2_EINPROGRESS) {
       CLOSE(sockfd);
-      sockfd = -1;
+      sockfd = (sock_t) -1;
       continue;
     }
     // TODO at this point, connection may not be established and it may fail
@@ -282,7 +282,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     break;
   }
   freeaddrinfo(res);
-  if(sockfd == -1) {
+  if(sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
 				 "all addresses failed").str());
   }
@@ -333,7 +333,7 @@ void SocketCore::closeConnection()
     gnutls_bye(sslSession, GNUTLS_SHUT_RDWR);
   }
 #endif // HAVE_LIBGNUTLS
-  if(sockfd != -1) {
+  if(sockfd != (sock_t) -1) {
     CLOSE(sockfd);
     sockfd = -1;
   }

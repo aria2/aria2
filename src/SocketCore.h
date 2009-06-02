@@ -141,7 +141,7 @@ public:
 
   sock_t getSockfd() const { return sockfd; }
 
-  bool isOpen() const { return sockfd != -1; }
+  bool isOpen() const { return sockfd != (sock_t) -1; }
 
   /**
    * Creates a socket and bind it with locahost's address and port.
@@ -161,7 +161,7 @@ public:
    * @param addrinfo placeholder to store host address and port.
    */
   void getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
-  
+
   /**
    * Stores peer's address and port to peerinfo.
    * @param peerinfo placeholder to store peer's address and port.
@@ -280,7 +280,7 @@ public:
   {
     return readDataFrom(reinterpret_cast<char*>(data), len, sender);
   }
-			
+
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from
    * this socket.
@@ -291,7 +291,7 @@ public:
    * the number of bytes read to len.
    */
   void peekData(char* data, size_t& len);
-  
+
   void peekData(unsigned char* data, size_t& len)
   {
     peekData(reinterpret_cast<char*>(data), len);
@@ -311,11 +311,11 @@ public:
   bool operator==(const SocketCore& s) {
     return sockfd == s.sockfd;
   }
-  
+
   bool operator!=(const SocketCore& s) {
     return !(*this == s);
   }
-  
+
   bool operator<(const SocketCore& s) {
     return sockfd < s.sockfd;
   }
