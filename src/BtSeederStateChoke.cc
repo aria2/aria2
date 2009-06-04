@@ -96,7 +96,7 @@ void BtSeederStateChoke::unchoke
 		  (*r).getUploadSpeed());
   }
 
-  if(_round == 2) {
+  if(_round < 2) {
     std::for_each(peers.begin(), peers.end(),
 		  std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
     if(r != peers.end()) {
