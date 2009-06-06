@@ -1,5 +1,10 @@
 2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use htmlEscape instead of xmlEscape. Removed static function xmlEscape.
+	* src/XmlRpcResponse.cc
+
+2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Avoid intermediate object during string concatenation.
 	* src/HttpRequest.cc
 
