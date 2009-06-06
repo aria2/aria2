@@ -265,6 +265,7 @@ static void gatherProgressCommon
   TransferStat stat = group->calculateStat();
   entryDict["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
   entryDict["uploadSpeed"] = Util::uitos(stat.getUploadSpeed());
+  entryDict["uploadLength"] = Util::uitos(stat.getAllTimeUploadLength());
   entryDict["connections"] = Util::uitos(group->getNumConnection());
   SharedHandle<PieceStorage> ps = group->getPieceStorage();
   if(!ps.isNull()) {
@@ -281,9 +282,20 @@ static void gatherProgressCommon
 
 #ifdef ENABLE_BITTORRENT
 static void gatherProgressBitTorrent
-(BDE& entryDict, const SharedHandle<BtContext>& btctx)
+(BDE& entryDict, const SharedHandle<BtContext>& btctx,
+ const SharedHandle<BtRegistry>& btreg)
 {
   entryDict["infoHash"] = btctx->getInfoHashAsString();
+
+  SharedHandle<PeerStorage> peerStorage =
+    btreg->getPeerStorage(btctx->getInfoHashAsString());
+  assert(!peerStorage.isNull());
+
+  std::deque<SharedHandle<Peer> > peers;
+  peerStorage->getActivePeers(peers);
+  entryDict["numSeeders"] =
+    Util::uitos(std::count_if(peers.begin(), peers.end(),
+			      mem_fun_sh(&Peer::isSeeder)));
 }
 
 static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
@@ -318,7 +330,8 @@ static void gatherProgress
   SharedHandle<BtContext> btctx =
     dynamic_pointer_cast<BtContext>(group->getDownloadContext());
   if(!btctx.isNull()) {
-    gatherProgressBitTorrent(entryDict, btctx);
+    SharedHandle<BtRegistry> btreg = e->getBtRegistry();
+    gatherProgressBitTorrent(entryDict, btctx, btreg);
   }
 #endif // ENABLE_BITTORRENT
 }
@@ -444,12 +457,11 @@ BDE GetPeersXmlRpcMethod::process
     dynamic_pointer_cast<BtContext>(group->getDownloadContext());
   if(!btctx.isNull()) {
     SharedHandle<BtRegistry> btreg = e->getBtRegistry();
-    SharedHandle<PeerStorage> ps =
+    SharedHandle<PeerStorage> peerStorage =
       btreg->getPeerStorage(btctx->getInfoHashAsString());
-    if(!ps.isNull()) {
-      BDE entry = BDE::dict();
-      gatherPeer(peers, ps);
-    }
+    assert(!peerStorage.isNull());
+    BDE entry = BDE::dict();
+    gatherPeer(peers, peerStorage);
   }
   return peers;
 }

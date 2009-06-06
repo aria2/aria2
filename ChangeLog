@@ -1,5 +1,13 @@
 2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added uploadLength and numSeeders to the response of tellStatus
+	xml-rpc method. Assert that PeerStorage instance is not null
+	instead of checking if statement. It should be non-null in this
+	context.
+	* src/XmlRpcMethodImpl.cc
+	
+2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use htmlEscape instead of xmlEscape. Removed static function xmlEscape.
 	* src/XmlRpcResponse.cc
 
