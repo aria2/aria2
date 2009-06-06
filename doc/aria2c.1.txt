@@ -1107,6 +1107,10 @@ completedLength::
 
   Completed length of this download in bytes.
 
+uploadLength::
+
+  Uploaded length of this download in bytes.
+
 bitfield::
 
   Hexadecimal representation of the download progress. The highest bit
@@ -1125,6 +1129,10 @@ uploadSpeed::
 infoHash::
 
   InfoHash. BitTorrent only.
+
+numSeeders::
+
+  The number of seeders the client has connected to. BitTorrent only.
 
 pieceLength::
 
@@ -1215,6 +1223,10 @@ downloadSpeed::
 uploadSpeed::
 
   Upload speed(byte/sec) that this client uploads to the peer. 
+
+seeder::
+
+  "true" is this client is a seeder. Otherwise "false".
 
 *aria2.tellActive*
 

@@ -1,5 +1,11 @@
 2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented missing seeder in getPeers xml-rpc method.
+	Documented uploadLength and numSeeders.
+	* doc/aria2c.1.txt
+
+2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added uploadLength and numSeeders to the response of tellStatus
 	xml-rpc method. Assert that PeerStorage instance is not null
 	instead of checking if statement. It should be non-null in this

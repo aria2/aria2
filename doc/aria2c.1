@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.0 <http://docbook.sf.net/>
-.\"      Date: 05/31/2009
+.\"      Date: 06/06/2009
 .\"    Manual: [FIXME: manual]
 .\"    Source: [FIXME: source]
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "05/31/2009" "[FIXME: source]" "[FIXME: manual]"
+.TH "ARIA2C" "1" "06/06/2009" "[FIXME: source]" "[FIXME: manual]"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -2097,6 +2097,11 @@ completedLength
 Completed length of this download in bytes\&.
 .RE
 .PP
+uploadLength
+.RS 4
+Uploaded length of this download in bytes\&.
+.RE
+.PP
 bitfield
 .RS 4
 Hexadecimal representation of the download progress\&. The highest bit corresponds to piece index 0\&. The set bits indicate the piece is available and unset bits indicate the piece is missing\&. The spare bits at the end are set to zero\&.
@@ -2115,6 +2120,11 @@ Upload speed of this download measured in bytes/sec\&.
 infoHash
 .RS 4
 InfoHash\&. BitTorrent only\&.
+.RE
+.PP
+numSeeders
+.RS 4
+The number of seeders the client has connected to\&. BitTorrent only\&.
 .RE
 .PP
 pieceLength
@@ -2211,6 +2221,11 @@ Download speed (byte/sec) that this client obtains from the peer\&.
 uploadSpeed
 .RS 4
 Upload speed(byte/sec) that this client uploads to the peer\&.
+.RE
+.PP
+seeder
+.RS 4
+"true" is this client is a seeder\&. Otherwise "false"\&.
 .RE
 .sp
 \fBaria2\&.tellActive\fR
