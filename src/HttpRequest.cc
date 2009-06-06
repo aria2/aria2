@@ -128,7 +128,8 @@ std::string HttpRequest::getHostText(const std::string& host, uint16_t port) con
 std::string HttpRequest::createRequest()
 {
   _authConfig = _authConfigFactory->createAuthConfig(request);
-  std::string requestLine = request->getMethod()+" ";
+  std::string requestLine = request->getMethod();
+  requestLine += " ";
   if(!_proxyRequest.isNull()) {
     if(getProtocol() == Request::PROTO_FTP &&
        request->getUsername().empty() && !_authConfig.isNull()) {
@@ -144,18 +145,19 @@ std::string HttpRequest::createRequest()
     if(getDir() == A2STR::SLASH_C) {
       requestLine += getDir();
     } else {
-      requestLine += getDir()+A2STR::SLASH_C;
+      requestLine += getDir();
+      requestLine += A2STR::SLASH_C;
     }
-    requestLine += getFile()+getQuery();
+    requestLine += getFile();
+    requestLine += getQuery();
   }
-  requestLine +=
-    std::string(" HTTP/1.1\r\n")+
-    "User-Agent: "+userAgent+"\r\n";
+  requestLine += " HTTP/1.1\r\n";
+  strappend(requestLine, "User-Agent: ", userAgent, "\r\n");
   
   requestLine += "Accept: */*"; /* */
   for(std::deque<std::string>::const_iterator i = _acceptTypes.begin();
       i != _acceptTypes.end(); ++i) {
-    requestLine += ","+(*i);
+    strappend(requestLine, ",", (*i));
   }
   requestLine += "\r\n";
 
@@ -165,21 +167,21 @@ std::string HttpRequest::createRequest()
     acceptableEncodings += "deflate, gzip";
 #endif // HAVE_LIBZ
     if(!acceptableEncodings.empty()) {
-      requestLine += "Accept-Encoding: "+acceptableEncodings+"\r\n";
+      strappend(requestLine, "Accept-Encoding: ", acceptableEncodings, "\r\n");
     }
   }
 
-  requestLine +=
-    "Host: "+getHostText(getHost(), getPort())+"\r\n"+
-    "Pragma: no-cache\r\n"+
-    "Cache-Control: no-cache\r\n";
+  strappend(requestLine, "Host: ", getHostText(getHost(), getPort()), "\r\n");
+  requestLine += "Pragma: no-cache\r\n";
+  requestLine += "Cache-Control: no-cache\r\n";
 
   if(!request->isKeepAliveEnabled() && !request->isPipeliningEnabled()) {
     requestLine += "Connection: close\r\n";
   }
   if(!segment.isNull() && segment->getLength() > 0 && 
      (request->isPipeliningEnabled() || getStartByte() > 0)) {
-    requestLine += "Range: bytes="+Util::itos(getStartByte());
+    requestLine += "Range: bytes=";
+    requestLine += Util::itos(getStartByte());
     requestLine += "-";
     if(request->isPipeliningEnabled()) {
       requestLine += Util::itos(getEndByte());
@@ -197,11 +199,11 @@ std::string HttpRequest::createRequest()
     requestLine += getProxyAuthString();
   }
   if(!_authConfig.isNull()) {
-    requestLine += "Authorization: Basic "+
-      Base64::encode(_authConfig->getAuthText())+"\r\n";
+    strappend(requestLine, "Authorization: Basic ",
+	      Base64::encode(_authConfig->getAuthText()), "\r\n");
   }
   if(getPreviousURI().size()) {
-    requestLine += "Referer: "+getPreviousURI()+"\r\n";
+    strappend(requestLine, "Referer: ", getPreviousURI(), "\r\n");
   }
   if(!_cookieStorage.isNull()) {
     std::string cookiesValue;
@@ -213,16 +215,16 @@ std::string HttpRequest::createRequest()
 				   true : false);
     for(std::deque<Cookie>::const_iterator itr = cookies.begin();
 	itr != cookies.end(); ++itr) {
-      cookiesValue += (*itr).toString()+";";
+      strappend(cookiesValue, (*itr).toString(), ";");
     }
     if(!cookiesValue.empty()) {
-      requestLine += std::string("Cookie: ")+cookiesValue+"\r\n";
+      strappend(requestLine, "Cookie: ", cookiesValue, "\r\n");
     }
   }
   // append additional headers given by user.
   for(std::deque<std::string>::const_iterator i = _headers.begin();
       i != _headers.end(); ++i) {
-    requestLine += (*i)+"\r\n";
+    strappend(requestLine, (*i), "\r\n");
   }
 
   requestLine += "\r\n";
@@ -232,11 +234,13 @@ std::string HttpRequest::createRequest()
 std::string HttpRequest::createProxyRequest() const
 {
   assert(!_proxyRequest.isNull());
-  std::string requestLine =
-    std::string("CONNECT ")+getHost()+":"+Util::uitos(getPort())+
-    std::string(" HTTP/1.1\r\n")+
-    "User-Agent: "+userAgent+"\r\n"+
-    "Host: "+getHost()+":"+Util::uitos(getPort())+"\r\n";
+  std::string hostport = getHost();
+  strappend(hostport, ":", Util::uitos(getPort()));
+
+  std::string requestLine = "CONNECT ";
+  strappend(requestLine, hostport, " HTTP/1.1\r\n");
+  strappend(requestLine, "User-Agent: ", userAgent, "\r\n");
+  strappend(requestLine, "Host: ", hostport, "\r\n");
   // TODO Is "Proxy-Connection" needed here?
 //   if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
 //     requestLine += "Proxy-Connection: Keep-Alive\r\n";
@@ -252,10 +256,11 @@ std::string HttpRequest::createProxyRequest() const
 
 std::string HttpRequest::getProxyAuthString() const
 {
-  return "Proxy-Authorization: Basic "+
-    Base64::encode(_proxyRequest->getUsername()+":"+
-		   _proxyRequest->getPassword())
-    +"\r\n";
+  return strconcat("Proxy-Authorization: Basic ",
+		   Base64::encode(strconcat(_proxyRequest->getUsername(),
+					    ":",
+					    _proxyRequest->getPassword())),
+		   "\r\n");
 }
 
 void HttpRequest::enableContentEncoding()

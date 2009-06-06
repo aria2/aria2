@@ -1,5 +1,10 @@
 2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Avoid intermediate object during string concatenation.
+	* src/HttpRequest.cc
+
+2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added strjoin function template. Use it in pathJoin()
 	* src/Util.h
 	* src/a2functional.h
