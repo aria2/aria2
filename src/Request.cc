@@ -41,6 +41,7 @@
 #include "RecoverableException.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include "a2functional.h"
 
 #define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
@@ -139,10 +140,10 @@ bool Request::redirectUrl(const std::string& url) {
     // field, but some servers don't obey this rule.
     if(Util::startsWith(url, "/")) {
       // abosulute path
-      return parseUrl(protocol+"://"+host+url);
+      return parseUrl(strconcat(protocol, "://", host, url));
     } else {
       // relative path
-      return parseUrl(protocol+"://"+host+dir+"/"+url);
+      return parseUrl(strconcat(protocol, "://", host, dir, "/", url));
     }
   } else {
     return parseUrl(url);

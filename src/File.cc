@@ -114,7 +114,7 @@ bool File::mkdirs() {
     accDir = A2STR::SLASH_C;
   }
   for(std::deque<std::string>::const_iterator itr = dirs.begin(); itr != dirs.end();
-      itr++, accDir += A2STR::SLASH_C) {
+      ++itr, accDir += A2STR::SLASH_C) {
     accDir += *itr;
     if(File(accDir).isDir()) {
       continue;

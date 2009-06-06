@@ -61,6 +61,7 @@
 #include "array_fun.h"
 #include "OptionHandler.h"
 #include "ByteArrayDiskWriter.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -183,7 +184,7 @@ static SharedHandle<RequestGroup> createRequestGroup
       0,
       A2STR::NIL,
       useOutOption&&!option->blank(PREF_OUT)?
-      option->get(PREF_DIR)+"/"+option->get(PREF_OUT):A2STR::NIL));
+      strconcat(option->get(PREF_DIR), "/", option->get(PREF_OUT)):A2STR::NIL));
 
   dctx->setDir(option->get(PREF_DIR));
   rg->setDownloadContext(dctx);
@@ -217,8 +218,8 @@ createBtRequestGroup(const std::string& torrentFilePath,
     Util::createIndexPathMap(indexOutIn);
   for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
       i != indexPathMap.end(); ++i) {
-    btContext->setFilePathWithIndex((*i).first,
-				    btContext->getDir()+"/"+(*i).second);
+    btContext->setFilePathWithIndex
+      ((*i).first, strconcat(btContext->getDir(), "/", (*i).second));
   }
   rg->setDownloadContext(btContext);
   btContext->setOwnerRequestGroup(rg.get());

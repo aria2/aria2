@@ -65,6 +65,7 @@
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -135,7 +136,8 @@ bool HttpResponseCommand::executeInternal()
     SingleFileDownloadContextHandle dctx =
       dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
     dctx->setTotalLength(totalLength);
-    dctx->setFilename(dctx->getDir()+"/"+httpResponse->determinFilename());
+    dctx->setFilename
+      (strconcat(dctx->getDir(), "/", httpResponse->determinFilename()));
     dctx->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {

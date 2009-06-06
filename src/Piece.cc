@@ -38,6 +38,7 @@
 #include "BitfieldMan.h"
 #include "A2STR.h"
 #include "Util.h"
+#include "a2functional.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -194,7 +195,8 @@ bool Piece::getAllMissingBlockIndexes
 }
 
 std::string Piece::toString() const {
-  return "piece: index="+Util::itos(index)+", length="+Util::itos(length);
+  return strconcat("piece: index=", Util::itos(index),
+		   ", length=", Util::itos(length));
 }
 
 void Piece::reconfigure(size_t length)

@@ -33,10 +33,13 @@
  */
 /* copyright --> */
 #include "BtHandshakeMessage.h"
+
+#include <cstring>
+
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "BtConstants.h"
-#include <cstring>
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -102,9 +105,10 @@ size_t BtHandshakeMessage::getMessageLength() {
 }
 
 std::string BtHandshakeMessage::toString() const {
-  return NAME+" peerId="+
-    Util::urlencode(peerId, PEER_ID_LENGTH)+
-    ", reserved="+Util::toHex(reserved, RESERVED_LENGTH);
+  return strconcat(NAME, " peerId=",
+		   Util::urlencode(peerId, PEER_ID_LENGTH),
+		   ", reserved=",
+		   Util::toHex(reserved, RESERVED_LENGTH));
 }
 
 bool BtHandshakeMessage::isFastExtensionSupported() const {

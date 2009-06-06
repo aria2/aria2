@@ -124,7 +124,7 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
     bool selectBest = numPieces == 0 || reservedContext;
     
     if(numPieces > 0)
-      _nbConnections++;
+      ++_nbConnections;
 
     /* At least, 3 mirrors must be tested */
     if(getNbTestedServers(uris) < 3) {
@@ -335,7 +335,7 @@ unsigned int AdaptiveURISelector::getNbTestedServers
       i != uris.end(); ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
     if(ss.isNull())
-      counter++;
+      ++counter;
   }
   return uris.size() - counter;
 }

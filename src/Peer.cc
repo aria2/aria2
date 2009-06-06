@@ -38,6 +38,7 @@
 #include <cassert>
 
 #include "Util.h"
+#include "a2functional.h"
 #include "PeerSessionResource.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
@@ -58,7 +59,8 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
 {
   memset(_peerId, 0, PEER_ID_LENGTH);
   resetStatus();
-  std::string idSeed = ipaddr+":"+Util::uitos(port);
+  std::string idSeed = ipaddr;
+  strappend(idSeed, ":", Util::uitos(port));
 #ifdef ENABLE_MESSAGE_DIGEST
   id = MessageDigestHelper::digestString(MessageDigestContext::SHA1, idSeed);
 #else

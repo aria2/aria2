@@ -39,6 +39,7 @@
 
 #include "DHTNode.h"
 #include "Util.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -91,8 +92,9 @@ std::string DHTUnknownMessage::toString() const
   }
   std::string sample(&_data[0], &_data[sampleLength]);
 
-  return "dht unknown Remote:"+_ipaddr+":"+Util::uitos(_port)+" length="+
-    Util::uitos(_length)+", first 8 bytes(hex)="+Util::toHex(sample);
+  return strconcat("dht unknown Remote:", _ipaddr, ":", Util::uitos(_port),
+		   " length=", Util::uitos(_length),
+		   ", first 8 bytes(hex)=", Util::toHex(sample));
 }
 
 } // namespace aria2

@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "DHTAutoSaveCommand.h"
+
+#include <cerrno>
+#include <cstring>
+#include <fstream>
+
 #include "DHTRoutingTable.h"
 #include "DHTNode.h"
 #include "File.h"
@@ -46,9 +51,7 @@
 #include "Option.h"
 #include "message.h"
 #include "Logger.h"
-#include <cerrno>
-#include <fstream>
-#include <cstring>
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -75,7 +78,8 @@ void DHTAutoSaveCommand::save()
   std::string dhtFile = _e->option->get(PREF_DHT_FILE_PATH);
   logger->info("Saving DHT routing table to %s.", dhtFile.c_str());
 
-  std::string tempFile = dhtFile+"__temp";
+  std::string tempFile = dhtFile;
+  tempFile += "__temp";
   {
     File f(tempFile);
     if(!f.isFile()) {

@@ -36,9 +36,12 @@
 #define _D_AUTH_CONFIG_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <iosfwd>
+
+#include "SharedHandle.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -55,7 +58,7 @@ public:
 
   std::string getAuthText() const
   {
-    return _user+":"+_password;
+    return strconcat(_user, ":", _password);
   }
 
   const std::string& getUser() const

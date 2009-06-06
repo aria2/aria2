@@ -52,6 +52,7 @@
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "Request.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -126,7 +127,8 @@ public:
     } else if(optarg == "false") {
       option.put(_optName, V_FALSE);
     } else {
-      std::string msg = _optName+" "+_("must be either 'true' or 'false'.");
+      std::string msg = _optName;
+      strappend(msg, " ", _("must be either 'true' or 'false'."));
       throw DL_ABORT_EX(msg);
     }
   }
@@ -159,7 +161,8 @@ public:
     while(seq.hasNext()) {
       int32_t v = seq.next();
       if(v < _min || _max < v) {
-	std::string msg = _optName+" "+_("must be between %s and %s.");
+	std::string msg = _optName;
+	strappend(msg, " ", _("must be between %s and %s."));
 	throw DL_ABORT_EX
 	  (StringFormat(msg.c_str(), Util::itos(_min).c_str(),
 			Util::itos(_max).c_str()).str());
@@ -202,7 +205,8 @@ public:
     if((_min == -1 || _min <= number) && (_max ==  -1 || number <= _max)) {
       option.put(_optName, Util::itos(number));
     } else {
-      std::string msg = _optName+" ";
+      std::string msg = _optName;
+      msg += " ";
       if(_min == -1 && _max != -1) {
 	msg += StringFormat(_("must be smaller than or equal to %s."),
 			    Util::itos(_max).c_str()).str();
@@ -221,8 +225,19 @@ public:
 
   virtual std::string createPossibleValuesString() const
   {
-    return (_min == -1 ? "*" : Util::itos(_min))+"-"+
-      (_max == -1 ? "*" : Util::itos(_max));
+    std::string values;
+    if(_min == -1) {
+      values += "*";
+    } else {
+      values += Util::itos(_min);
+    }
+    values += "-";
+    if(_max == -1) {
+      values += "*";
+    } else {
+      values += Util::itos(_max);
+    }
+    return values;
   }
 };
 
@@ -268,7 +283,8 @@ public:
     if((_min < 0 || _min <= number) && (_max < 0 || number <= _max)) {
       option.put(_optName, optarg);
     } else {
-      std::string msg = _optName+" ";
+      std::string msg = _optName;
+      msg += " ";
       if(_min < 0 && _max >= 0) {
 	msg += StringFormat(_("must be smaller than or equal to %.1f."),
 			    _max).str();
@@ -358,7 +374,7 @@ public:
   virtual void parseArg(Option& option, const std::string& optarg)
   {
     std::string value = option.get(_optName);
-    value += optarg+_delim;
+    strappend(value, optarg, _delim);
     option.put(_optName, value);
   }
 
@@ -384,7 +400,7 @@ public:
     // See optarg is in the fomrat of "INDEX=PATH"
     Util::parseIndexPath(optarg);
     std::string value = option.get(_optName);
-    value += optarg+"\n";
+    strappend(value, optarg, "\n");
     option.put(_optName, value);
   }
 
@@ -453,13 +469,14 @@ public:
     std::deque<std::string>::const_iterator itr =
       std::find(_validParamValues.begin(), _validParamValues.end(), optarg);
     if(itr == _validParamValues.end()) {
-      std::string msg = _optName+" "+_("must be one of the following:");
+      std::string msg = _optName;
+      strappend(msg, " ", _("must be one of the following:"));
       if(_validParamValues.size() == 0) {
 	msg += "''";
       } else {
 	for(std::deque<std::string>::const_iterator itr = _validParamValues.begin();
 	    itr != _validParamValues.end(); ++itr) {
-	  msg += "'"+*itr+"' ";
+	  strappend(msg, "'", *itr, "' ");
 	}
       }
       throw DL_ABORT_EX(msg);

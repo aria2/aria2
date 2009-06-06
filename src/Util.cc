@@ -66,6 +66,7 @@
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "array_fun.h"
+#include "a2functional.h"
 
 // For libc6 which doesn't define ULLONG_MAX properly because of broken limits.h
 #ifndef ULLONG_MAX
@@ -202,7 +203,8 @@ std::string Util::replace(const std::string& target, const std::string& oldstr, 
   std::string::size_type p = 0;
   std::string::size_type np = target.find(oldstr);
   while(np != std::string::npos) {
-    result += target.substr(p, np-p)+newstr;
+    result += target.substr(p, np-p);
+    result += newstr;
     p = np+oldstr.size();
     np = target.find(oldstr, p);
   }
@@ -235,7 +237,7 @@ bool Util::inRFC3986UnreservedChars(const char c)
 
 std::string Util::urlencode(const unsigned char* target, size_t len) {
   std::string dest;
-  for(size_t i = 0; i < len; i++) {
+  for(size_t i = 0; i < len; ++i) {
     if(!inRFC3986UnreservedChars(target[i])) {
       dest.append(StringFormat("%%%02X", target[i]).str());
     } else {
@@ -247,7 +249,7 @@ std::string Util::urlencode(const unsigned char* target, size_t len) {
 
 std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
   std::string dest;
-  for(size_t i = 0; i < len; i++) {
+  for(size_t i = 0; i < len; ++i) {
     if(('0' <= target[i] && target[i] <= '9') ||
        ('A' <= target[i] && target[i] <= 'Z') ||
        ('a' <= target[i] && target[i] <= 'z')) {
@@ -262,7 +264,7 @@ std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
 std::string Util::urldecode(const std::string& target) {
   std::string result;
   for(std::string::const_iterator itr = target.begin();
-      itr != target.end(); itr++) {
+      itr != target.end(); ++itr) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
 	 isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
@@ -280,7 +282,7 @@ std::string Util::urldecode(const std::string& target) {
 
 std::string Util::toHex(const unsigned char* src, size_t len) {
   char* temp = new char[len*2+1];
-  for(size_t i = 0; i < len; i++) {
+  for(size_t i = 0; i < len; ++i) {
     sprintf(temp+i*2, "%02x", src[i]);
   }
   temp[len*2] = '\0';
@@ -350,7 +352,8 @@ bool Util::isPowerOf(int num, int base) {
 std::string Util::secfmt(time_t sec) {
   std::string str;
   if(sec >= 3600) {
-    str = itos(sec/3600)+"h";
+    str = itos(sec/3600);
+    str += "h";
     sec %= 3600;
   }
   if(sec >= 60) {
@@ -358,13 +361,15 @@ std::string Util::secfmt(time_t sec) {
     if(min < 10) {
       str += "0";
     }
-    str += itos(min)+"m";
+    str += itos(min);
+    str += "m";
     sec %= 60;
   }
   if(sec < 10) {
     str += "0";
   }
-  str += itos(sec)+"s";
+  str += itos(sec);
+  str += "s";
   return str;
 }
 
@@ -407,7 +412,7 @@ void unfoldSubRange(const std::string& src, std::deque<int>& range) {
       }
       int left = getNum(src.c_str(), 0, p);
       int right = getNum(src.c_str(), rightNumBegin, nextDelim-rightNumBegin);
-      for(int i = left; i <= right; i++) {
+      for(int i = left; i <= right; ++i) {
 	range.push_back(i);
       }
       if(src.size() > nextDelim) {
@@ -577,7 +582,7 @@ std::string Util::getContentDispositionFilename(const std::string& header) {
 std::string Util::randomAlpha(size_t length, const RandomizerHandle& randomizer) {
   static const char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   std::string str;
-  for(size_t i = 0; i < length; i++) {
+  for(size_t i = 0; i < length; ++i) {
     size_t index = randomizer->getRandomNumber(strlen(random_chars));
     str += random_chars[index];
   }
@@ -679,7 +684,12 @@ std::string Util::abbrevSize(int64_t size)
     r = size&0x3ff;
     size >>= 10;
   }
-  return Util::itos(size, true)+"."+Util::itos(r*10/1024)+units[i]+"i";
+  std::string result = Util::itos(size, true);
+  result += ".";
+  result += Util::itos(r*10/1024);
+  result += units[i];
+  result += "i";
+  return result;
 }
 
 time_t Util::httpGMT(const std::string& httpStdTime)
@@ -706,7 +716,7 @@ void Util::toStream(std::ostream& os, const FileEntries& fileEntries)
   os << "===+===========================================================================" << "\n";
   int32_t count = 1;
   for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); count++, itr++) {
+      itr != fileEntries.end(); ++count, ++itr) {
     os << std::setw(3) << count << "|" << (*itr)->getPath() << "\n";
     os << "   |" << Util::abbrevSize((*itr)->getLength()) << "B" << "\n";
     os << "---+---------------------------------------------------------------------------" << "\n";

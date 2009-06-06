@@ -168,8 +168,8 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
 }
 
 std::string BtPieceMessage::toString() const {
-  return NAME+" index="+Util::itos(index)+", begin="+Util::itos(begin)+
-    ", length="+Util::itos(blockLength);
+  return strconcat(NAME, " index=", Util::itos(index), ", begin=",
+		   Util::itos(begin), ", length=", Util::itos(blockLength));
 }
 
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
@@ -205,7 +205,7 @@ void BtPieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
   memset(buf, 0, BUFSIZE);
   off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();
   div_t res = div(piece->getLength(), BUFSIZE);
-  for(int i = 0; i < res.quot; i++) {
+  for(int i = 0; i < res.quot; ++i) {
     pieceStorage->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
     offset += BUFSIZE;
   }

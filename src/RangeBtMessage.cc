@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "RangeBtMessage.h"
 #include "Util.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -78,8 +79,9 @@ size_t RangeBtMessage::getMessageLength()
 
 std::string RangeBtMessage::toString() const
 {
-  return getName()+" index="+Util::uitos(_index)+", begin="+Util::uitos(_begin)+
-    ", length="+Util::uitos(_length);
+  return strconcat(getName(), " index=", Util::uitos(_index),
+		   ", begin=", Util::uitos(_begin),
+		   ", length=", Util::uitos(_length));
 }
 
 } // namespace aria2

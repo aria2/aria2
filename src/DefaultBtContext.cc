@@ -54,6 +54,7 @@
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "bencode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -135,7 +136,7 @@ void DefaultBtContext::extractPieceHash(const std::string& hashData,
 					size_t hashLength)
 {
   size_t numPieces = hashData.size()/hashLength;
-  for(size_t i = 0; i < numPieces; i++) {
+  for(size_t i = 0; i < numPieces; ++i) {
     pieceHashes.push_back(Util::toHex(hashData.data()+i*hashLength,
 				      hashLength));
   }
@@ -157,7 +158,7 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
     if(nameData.isString()) {
       name = nameData.s();
     } else {
-      name = File(defaultName).getBasename()+".file";
+      name = strconcat(File(defaultName).getBasename(), ".file");
     }
   } else {
     name = overrideName;
@@ -196,8 +197,8 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
       std::vector<std::string> pathelem(pathList.size());
       std::transform(pathList.listBegin(), pathList.listEnd(), pathelem.begin(),
 		     std::mem_fun_ref(&BDE::s));
-      std::string path =
-	name+"/"+Util::joinPath(pathelem.begin(), pathelem.end());
+      std::string path = name;
+      strappend(path, "/", Util::joinPath(pathelem.begin(), pathelem.end()));
       // Split path with '/' again because each pathList element can
       // contain "/" inside.
       std::deque<std::string> elements;
@@ -207,7 +208,8 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
       std::deque<std::string> uris;
       std::transform(urlList.begin(), urlList.end(), std::back_inserter(uris),
 		     std::bind2nd(std::plus<std::string>(), "/"+path));
-      FileEntryHandle fileEntry(new FileEntry(_dir+"/"+path, fileLengthData.i(),
+      FileEntryHandle fileEntry(new FileEntry(strconcat(_dir, "/", path),
+					      fileLengthData.i(),
 					      offset, uris));
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
@@ -239,7 +241,9 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
     }
 
     SharedHandle<FileEntry> fileEntry
-      (new FileEntry(_dir+"/"+Util::joinPath(pathelems.begin(),pathelems.end()),
+      (new FileEntry(strconcat(_dir, "/",
+			       Util::joinPath(pathelems.begin(),
+					      pathelems.end())),
 		     totalLength, 0, uris));
     fileEntries.push_back(fileEntry);
   }
@@ -463,7 +467,7 @@ std::string DefaultBtContext::getActualBasePath() const
   if(fileEntries.size() == 1) {
     return fileEntries.front()->getPath();
   } else {
-    return _dir+"/"+name;
+    return strconcat(_dir, "/", name);
   }
 }
 
@@ -489,7 +493,7 @@ void DefaultBtContext::computeFastSet
   unsigned char x[20];
   MessageDigestHelper::digest(x, sizeof(x), MessageDigestContext::SHA1, tx, 24);
   while(fastSet.size() < fastSetSize) {
-    for(size_t i = 0; i < 5 && fastSet.size() < fastSetSize; i++) {
+    for(size_t i = 0; i < 5 && fastSet.size() < fastSetSize; ++i) {
       size_t j = i*4;
       uint32_t ny;
       memcpy(&ny, x+j, 4);

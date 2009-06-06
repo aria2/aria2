@@ -54,6 +54,7 @@
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -84,7 +85,7 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
     } else if(Util::startsWith(line, PROXY_AUTH_HEADER)) {
       result += "Proxy-Authorization: Basic ********\n";
     } else {
-      result += line+"\n";
+      strappend(result, line, "\n");
     }
   }
   return result;

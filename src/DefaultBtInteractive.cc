@@ -190,7 +190,7 @@ void DefaultBtInteractive::addAllowedFastMessageToQueue() {
     std::deque<size_t> fastSet;
     _btContext->computeFastSet(fastSet, peer->ipaddr, allowedFastSetSize);
     for(std::deque<size_t>::const_iterator itr = fastSet.begin();
-	itr != fastSet.end(); itr++) {
+	itr != fastSet.end(); ++itr) {
       dispatcher->addMessageToQueue
 	(messageFactory->createAllowedFastMessage(*itr));
     }
@@ -221,7 +221,7 @@ void DefaultBtInteractive::checkHave() {
     }
   } else {
     for(std::deque<size_t>::iterator itr = indexes.begin();
-	itr != indexes.end(); itr++) {
+	itr != indexes.end(); ++itr) {
       dispatcher->addMessageToQueue(messageFactory->createHaveMessage(*itr));
     }
   }
@@ -237,7 +237,7 @@ void DefaultBtInteractive::sendKeepAlive() {
 
 size_t DefaultBtInteractive::receiveMessages() {
   size_t msgcount = 0;
-  for(int i = 0; i < 50; i++) {
+  for(int i = 0; i < 50; ++i) {
     if(_requestGroupMan->doesOverallDownloadSpeedExceed() ||
        _btContext->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;
@@ -382,7 +382,7 @@ void DefaultBtInteractive::checkActiveInteraction()
   // To allow aria2 to accept mutially interested peer, disconnect unintersted
   // peer.
   {
-    time_t interval = 30;
+    const time_t interval = 30;
     if(!peer->amInterested() && !peer->peerInterested() &&
        inactiveCheckPoint.elapsed(interval)) {
       // TODO change the message
@@ -395,7 +395,7 @@ void DefaultBtInteractive::checkActiveInteraction()
   // mutual download progress are completely waste of resources, those peers
   // are disconnected in a certain time period.
   {
-    time_t interval = 2*60;
+    const time_t interval = 2*60;
     if(inactiveCheckPoint.elapsed(interval)) {
       throw DL_ABORT_EX
 	(StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());

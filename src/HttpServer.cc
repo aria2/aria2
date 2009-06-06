@@ -45,6 +45,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Base64.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -144,9 +145,10 @@ void HttpServer::feedResponse(const std::string& status,
 			      const std::string& text,
 			      const std::string& contentType)
 {
-  std::string header = "HTTP/1.1 "+status+"\r\n"
-    "Content-Type: "+contentType+"\r\n"
-    "Content-Length: "+Util::uitos(text.size())+"\r\n";
+  std::string header = "HTTP/1.1 ";
+  strappend(header, status, "\r\n",
+	    "Content-Type: ", contentType, "\r\n",
+	    "Content-Length: ", Util::uitos(text.size()), "\r\n");
 
   if(!supportsPersistentConnection()) {
     header += "Connection: close\r\n";

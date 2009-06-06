@@ -43,6 +43,7 @@
 #include "Peer.h"
 #include "StringFormat.h"
 #include "PieceStorage.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -97,7 +98,7 @@ size_t BtBitfieldMessage::getMessageLength() {
 }
 
 std::string BtBitfieldMessage::toString() const {
-  return NAME+" "+Util::toHex(bitfield, bitfieldLength);
+  return strconcat(NAME, " ", Util::toHex(bitfield, bitfieldLength));
 }
 
 } // namespace aria2

@@ -33,10 +33,12 @@
  */
 /* copyright --> */
 #include "FeatureConfig.h"
+
+#include <numeric>
+
 #include "array_fun.h"
 #include "Util.h"
 #include "Request.h"
-#include <numeric>
 
 namespace aria2 {
 
@@ -144,7 +146,8 @@ std::string FeatureConfig::featureSummary() const
   for(FeatureMap::const_iterator i = _features.begin();
       i != _features.end(); ++i) {
     if((*i).second) {
-      s += (*i).first+", ";
+      s += (*i).first;
+      s += ", ";
     }
   }
   return Util::trim(s, ", ");

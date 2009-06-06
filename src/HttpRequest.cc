@@ -118,7 +118,11 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
 
 std::string HttpRequest::getHostText(const std::string& host, uint16_t port) const
 {
-  return  host+(port == 80 || port == 443 ? "" : ":"+Util::uitos(port));
+  std::string hosttext = host;
+  if(!(port == 80 || port == 443)) {
+    strappend(hosttext, ":", Util::uitos(port));
+  }
+  return hosttext;
 }
 
 std::string HttpRequest::createRequest()

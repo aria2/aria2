@@ -40,6 +40,7 @@
 #include "Util.h"
 #include "A2STR.h"
 #include "TimeA2.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -98,7 +99,7 @@ Cookie::~Cookie() {}
 
 std::string Cookie::toString() const
 {
-  return _name+"="+_value;
+  return strconcat(_name, "=", _value);
 }
 
 bool Cookie::good() const

@@ -94,7 +94,7 @@ public:
   bool redirectUrl(const std::string& url);
   bool resetUrl();
   void resetTryCount() { tryCount = 0; }
-  void addTryCount() { tryCount++; }
+  void addTryCount() { ++tryCount; }
   unsigned int getTryCount() const { return tryCount; }
   //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
 

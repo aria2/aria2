@@ -76,7 +76,8 @@ std::string MessageDigestContext::getSupportedAlgoString()
   std::string algos;
   for(DigestAlgoMap::const_iterator itr = digestAlgos.begin();
       itr != digestAlgos.end(); ++itr) {
-    algos += (*itr).first+", ";
+    algos += (*itr).first;
+    algos += ", ";
   }
   return Util::trim(algos, ", ");
 }

@@ -77,6 +77,7 @@
 #include "URISelector.h"
 #include "InOrderURISelector.h"
 #include "PieceSelector.h"
+#include "a2functional.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -572,7 +573,7 @@ bool RequestGroup::tryAutoFileRenaming()
   DefaultBtProgressInfoFile tempInfoFile(tempCtx, SharedHandle<PieceStorage>(), 0);
 
   for(unsigned int i = 1; i < 10000; ++i) {
-    File newfile(filepath+"."+Util::uitos(i));
+    File newfile(strconcat(filepath, ".", Util::uitos(i)));
     tempCtx->setUFilename(newfile.getPath());
     tempInfoFile.updateFilename();
     if(!newfile.exists() || (newfile.exists() && tempInfoFile.exists())) {

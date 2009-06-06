@@ -54,6 +54,7 @@
 #include "A2STR.h"
 #include "StringFormat.h"
 #include "AuthConfig.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -76,7 +77,9 @@ FtpConnection::~FtpConnection() {}
 bool FtpConnection::sendUser()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "USER "+_authConfig->getUser()+"\r\n";
+    std::string request = "USER ";
+    request += _authConfig->getUser();
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, "USER ********");
     _socketBuffer.feedSendBuffer(request);
   }
@@ -87,7 +90,9 @@ bool FtpConnection::sendUser()
 bool FtpConnection::sendPass()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "PASS "+_authConfig->getPassword()+"\r\n";
+    std::string request = "PASS ";
+    request += _authConfig->getPassword();
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
     _socketBuffer.feedSendBuffer(request);
   }
@@ -104,7 +109,9 @@ bool FtpConnection::sendType()
     } else {
       type = FtpConnection::I;
     }
-    std::string request = "TYPE "+type+"\r\n";
+    std::string request = "TYPE ";
+    request += type;
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
   }
@@ -128,9 +135,12 @@ bool FtpConnection::sendCwd()
   if(_socketBuffer.sendBufferIsEmpty()) {
     logger->info("CUID#%d - Using base working directory '%s'",
 		 cuid, _baseWorkingDir.c_str());
-    std::string request = "CWD "+
-      (_baseWorkingDir == "/" ? "" : _baseWorkingDir)+
-      Util::urldecode(req->getDir())+"\r\n";
+    std::string request = "CWD ";
+    if(_baseWorkingDir != "/") {
+      request += _baseWorkingDir;
+    }
+    request += Util::urldecode(req->getDir());
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
   }
@@ -141,7 +151,9 @@ bool FtpConnection::sendCwd()
 bool FtpConnection::sendMdtm()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "MDTM "+Util::urlencode(req->getFile())+"\r\n";
+    std::string request = "MDTM ";
+    request += Util::urlencode(req->getFile());
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
   }
@@ -152,7 +164,9 @@ bool FtpConnection::sendMdtm()
 bool FtpConnection::sendSize()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "SIZE "+Util::urldecode(req->getFile())+"\r\n";
+    std::string request = "SIZE ";
+    request += Util::urldecode(req->getFile());
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
   }
@@ -189,11 +203,19 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
     sscanf(addrinfo.first.c_str(), "%u.%u.%u.%u",
 	   &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
     serverSocket->getAddrInfo(addrinfo);
-    std::string request = "PORT "+
-      Util::uitos(ipaddr[0])+","+Util::uitos(ipaddr[1])+","+
-      Util::uitos(ipaddr[2])+","+Util::uitos(ipaddr[3])+","+
-      Util::uitos(addrinfo.second/256)+","+
-      Util::uitos(addrinfo.second%256)+"\r\n";
+    std::string request = "PORT ";
+    request += Util::uitos(ipaddr[0]);
+    request += ",";
+    request += Util::uitos(ipaddr[1]);
+    request += ",";
+    request += Util::uitos(ipaddr[2]);
+    request += ",";
+    request += Util::uitos(ipaddr[3]);
+    request += ",";
+    request += Util::uitos(addrinfo.second/256);
+    request += ",";
+    request += Util::uitos(addrinfo.second%256);
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
   }
@@ -222,7 +244,9 @@ bool FtpConnection::sendRest(const SegmentHandle& segment)
 bool FtpConnection::sendRetr()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    std::string request = "RETR "+Util::urldecode(req->getFile())+"\r\n";
+    std::string request = "RETR ";
+    request += Util::urldecode(req->getFile());
+    request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
   }
@@ -260,7 +284,11 @@ FtpConnection::findEndOfResponse(unsigned int status,
   if(buf.at(3) == '-') {
     // multi line response
     std::string::size_type p;
-    p = buf.find(A2STR::CRLF+Util::uitos(status)+" ");
+
+    std::string endPattern = A2STR::CRLF;
+    endPattern += Util::uitos(status);
+    endPattern += " ";
+    p = buf.find(endPattern);
     if(p == std::string::npos) {
       return std::string::npos;
     }
@@ -407,7 +435,13 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
 	       "(%u,%u,%u,%u,%u,%u).",
 	       &h1, &h2, &h3, &h4, &p1, &p2);
 	// ip address
-	dest.first = Util::uitos(h1)+"."+Util::uitos(h2)+"."+Util::uitos(h3)+"."+Util::uitos(h4);
+ 	dest.first = Util::uitos(h1);
+ 	dest.first += ".";
+	dest.first += Util::uitos(h2);
+	dest.first += ".";
+	dest.first += Util::uitos(h3);
+	dest.first += ".";
+	dest.first += Util::uitos(h4);
 	// port number
 	dest.second = 256*p1+p2;
       } else {

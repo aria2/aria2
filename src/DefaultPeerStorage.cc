@@ -111,7 +111,7 @@ bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
 
 void DefaultPeerStorage::addPeer(const Peers& peers) {
   for(Peers::const_iterator itr = peers.begin();
-      itr != peers.end(); itr++) {
+      itr != peers.end(); ++itr) {
     const PeerHandle& peer = *itr;
     if(addPeer(peer)) {
       logger->debug(MSG_ADDING_PEER,

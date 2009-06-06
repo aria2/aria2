@@ -33,13 +33,15 @@
  */
 /* copyright --> */
 #include "ServerStatMan.h"
-#include "ServerStat.h"
-#include "Util.h"
-#include "RecoverableException.h"
+
 #include <algorithm>
 #include <ostream>
 #include <iterator>
 #include <map>
+
+#include "ServerStat.h"
+#include "Util.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 

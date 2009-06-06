@@ -1,3 +1,58 @@
+2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Avoid intermediate object during string concatenation.  Replaced
+	post-increment unary operator with pre-increment one in for loop.	
+	* src/AdaptiveURISelector.cc
+	* src/AnnounceList.cc
+	* src/AuthConfig.h
+	* src/BtBitfieldMessage.cc
+	* src/BtExtendedMessage.cc
+	* src/BtHandshakeMessage.cc
+	* src/BtPieceMessage.cc
+	* src/BtPortMessage.cc
+	* src/Cookie.cc
+	* src/DHTAnnouncePeerMessage.cc
+	* src/DHTAutoSaveCommand.cc
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTNode.cc
+	* src/DHTQueryMessage.cc
+	* src/DHTResponseMessage.cc
+	* src/DHTUnknownMessage.cc
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtContext.cc
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultPeerStorage.cc
+	* src/DownloadEngine.cc
+	* src/FeatureConfig.cc
+	* src/File.cc
+	* src/FtpConnection.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HandshakeExtensionMessage.cc
+	* src/HttpConnection.cc
+	* src/HttpRequest.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpServer.cc
+	* src/IndexBtMessage.cc
+	* src/Metalink2RequestGroup.cc
+	* src/OptionHandlerImpl.h
+	* src/PStringBuildVisitor.cc
+	* src/Peer.cc
+	* src/PeerListenCommand.cc
+	* src/Piece.cc
+	* src/RangeBtMessage.cc
+	* src/Request.cc
+	* src/Request.h
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/ServerStat.cc
+	* src/ServerStatMan.cc
+	* src/UTPexExtensionMessage.cc
+	* src/Util.cc
+	* src/a2functional.h
+	* src/download_helper.cc
+	* src/messageDigest.cc
+
 2009-06-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Unchoke a peer randomly at first and second choke round in seed

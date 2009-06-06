@@ -99,7 +99,7 @@ bool PeerListenCommand::execute() {
   if(e->isHaltRequested() || e->_requestGroupMan->downloadFinished()) {
     return true;
   }
-  for(int i = 0; i < 3 && socket->isReadable(0); i++) {
+  for(int i = 0; i < 3 && socket->isReadable(0); ++i) {
     SocketHandle peerSocket;
     try {
       peerSocket.reset(socket->acceptConnection());

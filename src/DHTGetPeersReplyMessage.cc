@@ -47,6 +47,7 @@
 #include "DHTUtil.h"
 #include "Util.h"
 #include "bencode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -124,8 +125,9 @@ void DHTGetPeersReplyMessage::setValues(const std::deque<SharedHandle<Peer> >& p
 
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {
-  return "token="+Util::toHex(_token)+", values="+Util::uitos(_values.size())+
-    ", nodes="+Util::uitos(_closestKNodes.size());
+  return strconcat("token=", Util::toHex(_token),
+		   ", values=", Util::uitos(_values.size()),
+		   ", nodes=", Util::uitos(_closestKNodes.size()));
 }
 
 } // namespace aria2

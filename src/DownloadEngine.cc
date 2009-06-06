@@ -107,7 +107,7 @@ static void executeCommand(std::deque<Command*>& commands,
 			   Command::STATUS statusFilter)
 {
   size_t max = commands.size();
-  for(size_t i = 0; i < max; i++) {
+  for(size_t i = 0; i < max; ++i) {
     Command* com = commands.front();
     commands.pop_front();
     if(com->statusMatch(statusFilter)) {
@@ -271,7 +271,7 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
 				uint16_t port,
 				const SocketPoolEntry& entry)
 {
-  std::string addr = ipaddr+":"+Util::uitos(port);
+  std::string addr = strconcat(ipaddr, ":", Util::uitos(port));
   logger->info("Pool socket for %s", addr.c_str());
   std::multimap<std::string, SocketPoolEntry>::value_type p(addr, entry);
   _socketPool.insert(p);
@@ -349,7 +349,8 @@ void DownloadEngine::poolSocket
 std::multimap<std::string, DownloadEngine::SocketPoolEntry>::iterator
 DownloadEngine::findSocketPoolEntry(const std::string& ipaddr, uint16_t port)
 {
-  std::string addr = ipaddr+":"+Util::uitos(port);
+  std::string addr = ipaddr;
+  strappend(addr, ":", Util::uitos(port));
   std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
     std::multimap<std::string, SocketPoolEntry>::iterator> range =
     _socketPool.equal_range(addr);

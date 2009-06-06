@@ -36,6 +36,7 @@
 #include "DHTNode.h"
 #include "Util.h"
 #include "bencode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -68,12 +69,12 @@ bool DHTQueryMessage::isReply() const
 
 std::string DHTQueryMessage::toString() const
 {
-  return "dht query "+getMessageType()+
-    " TransactionID="+Util::toHex(_transactionID)+
-    " Remote:"+
-    _remoteNode->getIPAddress()+":"+Util::uitos(_remoteNode->getPort())+
-    ", id="+Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH)+
-    ", "+toStringOptional();
+  return strconcat("dht query ", getMessageType(),
+		   " TransactionID=", Util::toHex(_transactionID),
+		   " Remote:", _remoteNode->getIPAddress(),
+		   ":", Util::uitos(_remoteNode->getPort()),
+		   ", id=", Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH),
+		   ", ", toStringOptional());
 }
 
 } // namespace aria2

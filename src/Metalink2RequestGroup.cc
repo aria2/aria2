@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "Metalink2RequestGroup.h"
+
+#include <algorithm>
+
 #include "RequestGroup.h"
 #include "Option.h"
 #include "LogFactory.h"
@@ -49,6 +52,7 @@
 #include "MetalinkResource.h"
 #include "FileEntry.h"
 #include "A2STR.h"
+#include "a2functional.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 #endif // ENABLE_BITTORRENT
@@ -56,7 +60,6 @@
 # include "Checksum.h"
 # include "ChunkChecksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <algorithm>
 
 namespace aria2 {
 
@@ -136,7 +139,7 @@ Metalink2RequestGroup::createRequestGroup
   }
   int32_t count = 0;
   for(std::deque<SharedHandle<MetalinkEntry> >::iterator itr = entries.begin(); itr != entries.end();
-      itr++, ++count) {
+      ++itr, ++count) {
     SharedHandle<MetalinkEntry>& entry = *itr;
     if(option->defined(PREF_METALINK_LOCATION)) {
       std::deque<std::string> locations;
@@ -210,7 +213,7 @@ Metalink2RequestGroup::createRequestGroup
        (pieceLength,
 	entry->getLength(),
 	A2STR::NIL,
-	option->get(PREF_DIR)+"/"+entry->file->getPath()));
+	strconcat(option->get(PREF_DIR), "/", entry->file->getPath())));
     dctx->setDir(option->get(PREF_DIR));
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {

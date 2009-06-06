@@ -36,6 +36,7 @@
 #include "PStringSegment.h"
 #include "PStringNumLoop.h"
 #include "PStringSelect.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -45,7 +46,8 @@ void PStringBuildVisitor::visit(PStringSegment& segment)
   if(_buildQueue.empty()) {
     uri += segment.getValue();
   } else {
-    uri = _buildQueue.front()+segment.getValue();
+    uri = _buildQueue.front();
+    uri += segment.getValue();
   }
   _buildQueue.push_front(uri);
   if(!segment.hasNext()) {

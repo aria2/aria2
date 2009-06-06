@@ -216,6 +216,158 @@ public:
   }
 };
 
+template<typename T1, typename T2>
+inline std::string strconcat(const T1& a1, const T2& a2)
+{
+  return std::string(a1).append(a2);
+}
+
+template<typename T1, typename T2, typename T3>
+inline std::string strconcat(const T1& a1, const T2& a2, const T3& a3)
+{
+  return std::string(a1).append(a2).append(a3);
+}
+
+template<typename T1, typename T2, typename T3, typename T4>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4)
+{
+  return std::string(a1).append(a2).append(a3).append(a4);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5, const T6& a6)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5).append(a6);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5, const T6& a6, const T7& a7)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7, typename T8>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5, const T6& a6, const T7& a7, const T8& a8)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7).append(a8);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7, typename T8, typename T9>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+	  const T9& a9)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7).append(a8).append(a9);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7, typename T8, typename T9, typename T10>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+	  const T9& a9, const T10& a10)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7).append(a8).append(a9).append(a10);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7, typename T8, typename T9, typename T10,
+	 typename T11>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+	  const T9& a9, const T10& a10, const T11& a11)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7).append(a8).append(a9).append(a10).append(a11);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7, typename T8, typename T9, typename T10,
+	 typename T11, typename T12>
+inline std::string
+strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+	  const T9& a9, const T10& a10, const T11& a11,
+	  const T12& a12)
+{
+  return std::string(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7).append(a8).append(a9).append(a10).append(a11).append(a12);
+}
+
+template<typename T1, typename T2>
+inline void strappend(std::string& base, const T1& a1, const T2& a2)
+{
+  base.append(a1).append(a2);
+}
+
+template<typename T1, typename T2, typename T3>
+inline void strappend(std::string& base,
+		       const T1& a1, const T2& a2, const T3& a3)
+{
+  base.append(a1).append(a2).append(a3);
+}
+
+template<typename T1, typename T2, typename T3, typename T4>
+inline void strappend(std::string& base,
+		       const T1& a1, const T2& a2, const T3& a3, const T4& a4)
+{
+  base.append(a1).append(a2).append(a3).append(a4);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+inline void strappend(std::string& base,
+		       const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+		       const T5& a5)
+{
+  base.append(a1).append(a2).append(a3).append(a4).append(a5);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6>
+inline void strappend(std::string& base,
+		       const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+		      const T5& a5, const T6& a6)
+{
+  base.append(a1).append(a2).append(a3).append(a4).append(a5).append(a6);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7>
+inline void strappend(std::string& base,
+		       const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+		      const T5& a5, const T6& a6, const T7& a7)
+{
+  base.append(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7);
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5,
+	 typename T6, typename T7, typename T8>
+inline void strappend(std::string& base,
+		      const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+		      const T5& a5, const T6& a6, const T7& a7, const T8& a8)
+{
+  base.append(a1).append(a2).append(a3).append(a4).append(a5).append(a6).append(a7).append(a8);
+}
+
 } // namespace aria2
 
 #endif // _D_A2_FUNCTIONAL_H_

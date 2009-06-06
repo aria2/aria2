@@ -45,6 +45,7 @@
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
 #include "StringFormat.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -109,7 +110,7 @@ size_t BtPortMessage::getMessageLength() {
 }
 
 std::string BtPortMessage::toString() const {
-  return NAME+" port="+Util::uitos(_port);
+  return strconcat(NAME, " port=", Util::uitos(_port));
 }
 
 void BtPortMessage::setLocalNode(const WeakHandle<DHTNode>& localNode)

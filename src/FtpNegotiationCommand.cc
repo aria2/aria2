@@ -64,6 +64,7 @@
 #include "SegmentMan.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -327,7 +328,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   SingleFileDownloadContextHandle dctx =
     dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
   dctx->setTotalLength(totalLength);
-  dctx->setFilename(dctx->getDir()+"/"+Util::urldecode(req->getFile()));
+  dctx->setFilename
+    (strconcat(dctx->getDir(), "/", Util::urldecode(req->getFile())));
   _requestGroup->preDownloadProcessing();
   if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
     throw DOWNLOAD_FAILURE_EXCEPTION

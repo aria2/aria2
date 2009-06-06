@@ -66,7 +66,9 @@ const std::string DefaultBtProgressInfoFile::V0001("0001");
 
 static std::string createFilename(const SharedHandle<DownloadContext>& dctx)
 {
-  return dctx->getActualBasePath()+".aria2";
+  std::string t = dctx->getActualBasePath();
+  t += ".aria2";
+  return t;
 }
 
 DefaultBtProgressInfoFile::DefaultBtProgressInfoFile

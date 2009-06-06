@@ -144,23 +144,31 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
   std::string url = announceList.getAnnounce();
   url += uriHasQuery(url) ? "&" : "?";
-  url += 
-    "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
-					btContext->getInfoHashLength())+
-    "&peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+
-    "&uploaded="+Util::uitos(stat.getSessionUploadLength())+
-    "&downloaded="+Util::uitos(stat.getSessionDownloadLength())+
-    "&left="+Util::uitos(left)+
-    "&compact=1"+
-    "&key="+key+
-    "&numwant="+Util::uitos(numWant)+
-    "&no_peer_id=1";
+  url += "info_hash=";
+  url += Util::torrentUrlencode(btContext->getInfoHash(),
+				btContext->getInfoHashLength());
+  url += "&peer_id=";
+  url += Util::torrentUrlencode(btContext->getPeerId(), 20);
+  url += "&uploaded=";
+  url += Util::uitos(stat.getSessionUploadLength());
+  url += "&downloaded=";
+  url += Util::uitos(stat.getSessionDownloadLength());
+  url += "&left=";
+  url += Util::uitos(left);
+  url += "&compact=1";
+  url += "&key=";
+  url += key;
+  url += "&numwant=";
+  url += Util::uitos(numWant);
+  url += "&no_peer_id=1";
   if(btRuntime->getListenPort() > 0) {
-    url += "&port="+Util::uitos(btRuntime->getListenPort());
+    url += "&port=";
+    url += Util::uitos(btRuntime->getListenPort());
   }
   std::string event = announceList.getEventString();
   if(!event.empty()) {
-    url += "&event="+event;
+    url += "&event=";
+    url += event;
   }
   if(!trackerId.empty()) {
     url += "&trackerid="+Util::torrentUrlencode(trackerId);
@@ -171,7 +179,8 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     url += "&supportcrypto=1";
   }
   if(!option->blank(PREF_BT_EXTERNAL_IP)) {
-    url += "&ip="+option->get(PREF_BT_EXTERNAL_IP);
+    url += "&ip=";
+    url += option->get(PREF_BT_EXTERNAL_IP);
   }
   return url;
 }

@@ -216,7 +216,8 @@ static void executeHook(const std::string& command, int gid)
 
   memset(&pi, 0, sizeof (pi));
 
-  std::string cmdline = command + " " + Util::itos(gid);
+  std::string cmdline = command;
+  strappend(cmdline, " ", Util::itos(gid));
 
   DWORD rc = CreateProcess(
     NULL,
@@ -816,7 +817,8 @@ bool RequestGroupMan::loadServerStat(const std::string& filename)
 
 bool RequestGroupMan::saveServerStat(const std::string& filename) const
 {
-  std::string tempfile = filename+"__temp";
+  std::string tempfile = filename;
+  tempfile += "__temp";
   std::ofstream out(tempfile.c_str(), std::ios::binary);
   if(!out) {
     _logger->error(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,

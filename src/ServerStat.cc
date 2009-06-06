@@ -145,7 +145,7 @@ void ServerStat::updateMultiConnectionAvgSpeed(unsigned int downloadSpeed)
 
 void ServerStat::increaseCounter()
 {
-  _counter++;
+  ++_counter;
 }
 
 void ServerStat::setCounter(unsigned int value)

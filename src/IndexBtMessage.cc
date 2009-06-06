@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IndexBtMessage.h"
 #include "Util.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -60,7 +61,7 @@ size_t IndexBtMessage::getMessageLength()
 
 std::string IndexBtMessage::toString() const
 {
-  return getName()+" index="+Util::itos(_index);
+  return strconcat(getName(), " index=", Util::itos(_index));
 }
 
 } // namespace aria2

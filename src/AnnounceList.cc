@@ -122,11 +122,11 @@ void AnnounceList::announceSuccess() {
 
 void AnnounceList::announceFailure() {
   if(currentTrackerInitialized) {
-    currentTracker++;
+    ++currentTracker;
     if(currentTracker == (*currentTier)->urls.end()) {
       // force next event
       (*currentTier)->nextEventIfAfterStarted();
-      currentTier++;
+      ++currentTier;
       if(currentTier == tiers.end()) {
 	currentTrackerInitialized = false;
       } else {
@@ -238,7 +238,7 @@ void AnnounceList::moveToCompletedAllowedTier() {
 
 void AnnounceList::shuffle() {
   for(AnnounceTiers::iterator itr = tiers.begin();
-      itr != tiers.end(); itr++) {
+      itr != tiers.end(); ++itr) {
     std::deque<std::string>& urls = (*itr)->urls;
     std::random_shuffle(urls.begin(), urls.end(),
 			*(SimpleRandomizer::getInstance().get()));

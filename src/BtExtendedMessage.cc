@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "BtExtendedMessage.h"
+
+#include <cassert>
+#include <cstring>
+
 #include "ExtensionMessage.h"
 #include "ExtensionMessageFactory.h"
 #include "PeerMessageUtil.h"
@@ -42,8 +46,7 @@
 #include "message.h"
 #include "Util.h"
 #include "StringFormat.h"
-#include <cassert>
-#include <cstring>
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -92,7 +95,7 @@ bool BtExtendedMessage::sendPredicate() const
 }
 
 std::string BtExtendedMessage::toString() const {
-  return NAME+" "+_extensionMessage->toString();
+  return strconcat(NAME, " ", _extensionMessage->toString());
 }
 
 BtExtendedMessageHandle

@@ -48,6 +48,7 @@
 #include "BtConstants.h"
 #include "StringFormat.h"
 #include "bencode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -124,9 +125,9 @@ void DHTAnnouncePeerMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& 
 
 std::string DHTAnnouncePeerMessage::toStringOptional() const
 {
-  return "token="+Util::toHex(_token)+
-    ", info_hash="+Util::toHex(_infoHash, INFO_HASH_LENGTH)+
-    ", tcpPort="+Util::uitos(_tcpPort);
+  return strconcat("token=", Util::toHex(_token),
+		   ", info_hash=", Util::toHex(_infoHash, INFO_HASH_LENGTH),
+		   ", tcpPort=", Util::uitos(_tcpPort));
 }
 
 } // namespace aria2

@@ -42,6 +42,7 @@
 #include "message.h"
 #include "StringFormat.h"
 #include "bencode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -86,8 +87,8 @@ UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
 
 std::string UTPexExtensionMessage::toString() const
 {
-  return "ut_pex added="+Util::uitos(_freshPeers.size())+", dropped="+
-    Util::uitos(_droppedPeers.size());
+  return strconcat("ut_pex added=", Util::uitos(_freshPeers.size()),
+		   ", dropped=", Util::uitos(_droppedPeers.size()));
 }
 
 void UTPexExtensionMessage::doReceivedAction()

@@ -76,15 +76,15 @@ std::string HandshakeExtensionMessage::toString() const
 {
   std::string s = getExtensionName();
   if(!_clientVersion.empty()) {
-    s += " client="+Util::urlencode(_clientVersion);
+    strappend(s, " client=", Util::urlencode(_clientVersion));
   }
   if(_tcpPort > 0) {
-    s += ", tcpPort="+Util::uitos(_tcpPort);
+    strappend(s, ", tcpPort=", Util::uitos(_tcpPort));
   }
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    s += ", "+vt.first+"="+Util::uitos(vt.second);
+    strappend(s, ", ", vt.first, "=", Util::uitos(vt.second));
   }
   return s;
 }
