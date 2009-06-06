@@ -165,18 +165,6 @@ public:
   }
 };
 
-class Concat {
-private:
-  std::string _delim;
-public:
-  Concat(const std::string& delim = A2STR::NIL):_delim(delim) {}
-
-  std::string operator()(const std::string& s1, const std::string& s2) const
-  {
-    return s1+_delim+s2;
-  }
-};
-
 class Deleter {
 public:
   template<class T>
@@ -215,6 +203,23 @@ public:
     _deleter(_obj);
   }
 };
+
+template<typename InputIterator, typename DelimiterType>
+std::string strjoin(InputIterator first, InputIterator last,
+		    const DelimiterType& delim)
+{
+  std::string result;
+  if(first == last) {
+    return result;
+  }
+  InputIterator beforeLast = last-1;
+  for(; first != beforeLast; ++first) {
+    result += *first;
+    result += delim;
+  }
+  result += *beforeLast;
+  return result;
+}
 
 template<typename T1, typename T2>
 inline std::string strconcat(const T1& a1, const T2& a2)

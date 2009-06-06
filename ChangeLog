@@ -1,5 +1,11 @@
 2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added strjoin function template. Use it in pathJoin()
+	* src/Util.h
+	* src/a2functional.h
+
+2009-06-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Avoid intermediate object during string concatenation.  Replaced
 	post-increment unary operator with pre-increment one in for loop.	
 	* src/AdaptiveURISelector.cc

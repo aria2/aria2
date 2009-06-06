@@ -299,11 +299,7 @@ public:
 	elements.push_back(*first);
       }
     }
-    if(elements.empty()) {
-      return "";
-    }
-    return std::accumulate(elements.begin()+1, elements.end(), elements[0],
-			   Concat("/"));
+    return strjoin(elements.begin(), elements.end(), "/");
   }
 
   // Parses INDEX=PATH format string. INDEX must be an unsigned
