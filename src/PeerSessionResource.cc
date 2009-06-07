@@ -237,7 +237,7 @@ void PeerSessionResource::dhtEnabled(bool b)
 
 void PeerSessionResource::updateLatency(unsigned int latency)
 {
-  _latency = _latency*0.2+latency*0.8;
+  _latency = static_cast<unsigned int>(_latency*0.2+latency*0.8);
 }
 
 uint64_t PeerSessionResource::uploadLength() const

@@ -1,5 +1,13 @@
 2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compiler warnings on netbsd
+	* src/DHTConnectionImpl.cc
+	* src/PeerListenCommand.cc
+	* src/PeerSessionResource.cc
+	* src/SegmentMan.cc
+
+2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated Ukrainian translation. Thanks to all translators.
 	* po/uk.po
 

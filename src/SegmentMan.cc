@@ -132,7 +132,8 @@ SegmentHandle SegmentMan::checkoutSegment(cuid_t cuid,
 SegmentEntryHandle SegmentMan::findSlowerSegmentEntry
 (const PeerStatHandle& peerStat)
 {
-  unsigned int speed = peerStat->getAvgDownloadSpeed()*0.8;
+  unsigned int speed =
+    static_cast<unsigned int>(peerStat->getAvgDownloadSpeed()*0.8);
   SegmentEntryHandle slowSegmentEntry;
   int startupIdleTime = _option->getAsInt(PREF_STARTUP_IDLE_TIME);
   for(std::deque<SharedHandle<SegmentEntry> >::const_iterator itr =

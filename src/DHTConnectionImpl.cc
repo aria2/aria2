@@ -60,7 +60,7 @@ bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
   
   for(std::deque<int32_t>::const_iterator portItr = randPorts.begin();
       portItr != randPorts.end(); ++portItr) {
-    if(!(0 < (*portItr) && (*portItr) <= UINT16_MAX)) {
+    if(!(0 < (*portItr) && (*portItr) <= 65535)) {
       continue;
     }
     port = (*portItr);
