@@ -1,5 +1,11 @@
 2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten strconcat and strappend using operator+ instead of
+	append().
+	* src/a2functional.h
+
+2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Compile bencode.cc and BencodeTest.cc only if BitTorrent support
 	is enabled.
 	* src/Makefile.am
