@@ -293,9 +293,7 @@ static void gatherProgressBitTorrent
 
   std::deque<SharedHandle<Peer> > peers;
   peerStorage->getActivePeers(peers);
-  entryDict["numSeeders"] =
-    Util::uitos(std::count_if(peers.begin(), peers.end(),
-			      mem_fun_sh(&Peer::isSeeder)));
+  entryDict["numSeeders"] = countSeeder(peers.begin(), peers.end());
 }
 
 static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)

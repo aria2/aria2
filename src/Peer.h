@@ -40,11 +40,13 @@
 #include <cassert>
 #include <string>
 #include <deque>
+#include <algorithm>
 
 #include "SharedHandle.h"
 #include "TimeA2.h"
 #include "BtConstants.h"
 #include "PeerStat.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -288,6 +290,12 @@ public:
 
   size_t countOutstandingUpload() const;
 };
+
+template<typename InputIterator>
+size_t countSeeder(InputIterator first, InputIterator last)
+{
+  return std::count_if(first, last, mem_fun_sh(&Peer::isSeeder));
+}
 
 typedef SharedHandle<Peer> PeerHandle;
 typedef std::deque<PeerHandle> Peers;

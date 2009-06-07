@@ -120,7 +120,7 @@ static void printProgress
     std::deque<SharedHandle<Peer> > peers;
     ps->getActivePeers(peers);
     o << " " << "SEED:"
-      << std::count_if(peers.begin(), peers.end(), mem_fun_sh(&Peer::isSeeder));
+      << countSeeder(peers.begin(), peers.end());
   }
 #endif // ENABLE_BITTORRENT
 
