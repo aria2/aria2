@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"POT-Creation-Date: 2009-06-07 17:21+0900\n"
 "PO-Revision-Date: 2009-04-01 21:34+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/RequestGroupMan.cc:531
+#: src/RequestGroupMan.cc:560
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:575
+#: src/RequestGroupMan.cc:604
 msgid "Status Legend:"
 msgstr "凡例:"
 
@@ -60,49 +60,49 @@ msgstr "                              タグ: "
 msgid "                              Possible Values: "
 msgstr "                              設定可能な値: "
 
-#: src/OptionHandlerImpl.h:129
+#: src/OptionHandlerImpl.h:131
 msgid "must be either 'true' or 'false'."
 msgstr "は, 'true' または 'false' のどちらかで指定してください."
 
-#: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
+#: src/OptionHandlerImpl.h:165 src/OptionHandlerImpl.h:214
 #, c-format
 msgid "must be between %s and %s."
 msgstr "は, %s と %s の間で指定してください."
 
-#: src/OptionHandlerImpl.h:207
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "は, %s 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:213
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "は, %s 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
+#: src/OptionHandlerImpl.h:220 src/OptionHandlerImpl.h:298
 msgid "must be a number."
 msgstr "は, 数字でなければなりません."
 
-#: src/OptionHandlerImpl.h:273
+#: src/OptionHandlerImpl.h:289
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "は, %.1f 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:276
+#: src/OptionHandlerImpl.h:292
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "は, %1.f と %.1f の間で指定してください."
 
-#: src/OptionHandlerImpl.h:279
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "は, %.1f 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:456
+#: src/OptionHandlerImpl.h:473
 msgid "must be one of the following:"
 msgstr "は, 以下のいずれかを指定してください:"
 
-#: src/OptionHandlerImpl.h:505 src/OptionHandlerImpl.h:548
+#: src/OptionHandlerImpl.h:522 src/OptionHandlerImpl.h:565
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
 
@@ -2841,7 +2841,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
-#: src/Util.cc:704
+#: src/Util.cc:714
 msgid "Files:"
 msgstr "ファイル:"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"POT-Creation-Date: 2009-06-07 17:21+0900\n"
 "PO-Revision-Date: 2008-12-17 00:40+0900\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
@@ -40,11 +40,11 @@ msgstr ""
 "En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
 "d'informations."
 
-#: src/RequestGroupMan.cc:531
+#: src/RequestGroupMan.cc:560
 msgid "Download Results:"
 msgstr "Résultats du ou des téléchargements:"
 
-#: src/RequestGroupMan.cc:575
+#: src/RequestGroupMan.cc:604
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 
@@ -60,49 +60,49 @@ msgstr "                              Signets: "
 msgid "                              Possible Values: "
 msgstr "                              Valeurs possibles: "
 
-#: src/OptionHandlerImpl.h:129
+#: src/OptionHandlerImpl.h:131
 msgid "must be either 'true' or 'false'."
 msgstr "doit contenir comme valeur soit \"true\" ou \"false\""
 
-#: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
+#: src/OptionHandlerImpl.h:165 src/OptionHandlerImpl.h:214
 #, c-format
 msgid "must be between %s and %s."
 msgstr "doit être compris entre %s et %s"
 
-#: src/OptionHandlerImpl.h:207
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "doit être plus petit ou égal à %s"
 
-#: src/OptionHandlerImpl.h:213
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "doit être plus grand ou égal à %s"
 
-#: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
+#: src/OptionHandlerImpl.h:220 src/OptionHandlerImpl.h:298
 msgid "must be a number."
 msgstr "doit être un nombre"
 
-#: src/OptionHandlerImpl.h:273
+#: src/OptionHandlerImpl.h:289
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "doit être plus petit ou égal à %.1f."
 
-#: src/OptionHandlerImpl.h:276
+#: src/OptionHandlerImpl.h:292
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "doit être compris entre %.1f et %.1f."
 
-#: src/OptionHandlerImpl.h:279
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "doit être plus grand ou égal à %.1f."
 
-#: src/OptionHandlerImpl.h:456
+#: src/OptionHandlerImpl.h:473
 msgid "must be one of the following:"
 msgstr "doit être l'une de ces valeurs suivantes:"
 
-#: src/OptionHandlerImpl.h:505 src/OptionHandlerImpl.h:548
+#: src/OptionHandlerImpl.h:522 src/OptionHandlerImpl.h:565
 msgid "unrecognized proxy format"
 msgstr "format de proxy non reconnu"
 
@@ -2487,7 +2487,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
 
-#: src/Util.cc:704
+#: src/Util.cc:714
 msgid "Files:"
 msgstr "Fichiers:"
 

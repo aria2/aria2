@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-31 22:15+0900\n"
-"PO-Revision-Date: 2009-05-29 07:29+0000\n"
-"Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
+"POT-Creation-Date: 2009-06-07 17:21+0900\n"
+"PO-Revision-Date: 2009-06-05 11:43+0000\n"
+"Last-Translator: avaris <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-31 13:04+0000\n"
+"X-Launchpad-Export-Date: 2009-06-07 08:12+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:209
@@ -40,11 +40,11 @@ msgstr ""
 "При наявності помилок дивіться log файл. Дивіться параметр '-l' в допомозі "
 "(help/man-сторінки) для детальнішої інформації."
 
-#: src/RequestGroupMan.cc:531
+#: src/RequestGroupMan.cc:560
 msgid "Download Results:"
 msgstr "Результати завантаження:"
 
-#: src/RequestGroupMan.cc:575
+#: src/RequestGroupMan.cc:604
 msgid "Status Legend:"
 msgstr "Роз'яснення позначень:"
 
@@ -60,49 +60,49 @@ msgstr "                              Ознаки: "
 msgid "                              Possible Values: "
 msgstr "                              Можливі значення: "
 
-#: src/OptionHandlerImpl.h:129
+#: src/OptionHandlerImpl.h:131
 msgid "must be either 'true' or 'false'."
 msgstr "має бути 'true' або 'false' (так чи ні)."
 
-#: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
+#: src/OptionHandlerImpl.h:165 src/OptionHandlerImpl.h:214
 #, c-format
 msgid "must be between %s and %s."
 msgstr "має бути між %s та %s."
 
-#: src/OptionHandlerImpl.h:207
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "має бути менше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:213
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "має бути більше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
+#: src/OptionHandlerImpl.h:220 src/OptionHandlerImpl.h:298
 msgid "must be a number."
 msgstr "має бути числом."
 
-#: src/OptionHandlerImpl.h:273
+#: src/OptionHandlerImpl.h:289
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "має бути менше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:276
+#: src/OptionHandlerImpl.h:292
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "має бути між %.1f та %.1f."
 
-#: src/OptionHandlerImpl.h:279
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "має бути більше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:456
+#: src/OptionHandlerImpl.h:473
 msgid "must be one of the following:"
 msgstr "має бути одним із наступних:"
 
-#: src/OptionHandlerImpl.h:505 src/OptionHandlerImpl.h:548
+#: src/OptionHandlerImpl.h:522 src/OptionHandlerImpl.h:565
 msgid "unrecognized proxy format"
 msgstr "невідомий формат проксі"
 
@@ -416,6 +416,13 @@ msgid ""
 "download\n"
 "                              the file. See also --auto-file-renaming option."
 msgstr ""
+" --allow-overwrite=true|false Якщо вказано false, та файл вже існує, проте\n"
+"                              відповідний контрольний файл (ім'я файлу ."
+"aria2)\n"
+"                              не існує, тоді aria2 не буде "
+"перезавантажувати\n"
+"                              файл. Дивіться також параметр also --auto-file-"
+"renaming."
 
 #: src/usage_text.h:147
 msgid ""
@@ -1463,6 +1470,10 @@ msgid ""
 "it\n"
 "                              drops connection."
 msgstr ""
+" --xml-rpc-max-request-size=SIZE Встановити максимальний розмір XML-RPC "
+"запиту. Якщо aria2\n"
+"                              із розміром більшим за SIZE байтів, тоді\n"
+"                              з'єднання буде скасовано."
 
 #: src/usage_text.h:500
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
@@ -1592,6 +1603,12 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
+" --on-download-complete=COMMAND Вказати команду, яку буде виконано тоді, "
+"коли завантаження\n"
+"                              закінчиться.\n"
+"                              Дивіться параметр --on-download-start аби\n"
+"                              з'ясувати вимоги до COMMAND.\n"
+"                              Дивіться також параметр --on-download-stop."
 
 #: src/usage_text.h:543
 msgid ""
@@ -1615,6 +1632,13 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
+" --on-download-error=COMMAND Вказати команду, яку буде виконано тоді, коли "
+"завантаження\n"
+"                              буде перервано через помилку.\n"
+"                              Дивіться параметр --on-download-start, щоб "
+"з'ясувати\n"
+"                              вимоги до COMMAND.\n"
+"                              Дивіться також параметр --on-download-stop."
 
 #: src/usage_text.h:553
 msgid ""
@@ -2687,6 +2711,6 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"
 
-#: src/Util.cc:704
+#: src/Util.cc:714
 msgid "Files:"
 msgstr "Файли:"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"POT-Creation-Date: 2009-06-07 17:21+0900\n"
 "PO-Revision-Date: 2008-08-04 07:10+0000\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "Si hi han errors, llavors miri el fitxer d'anotacions. Per més informació "
 "vegi l'opció '-l' en les pàgines help/man."
 
-#: src/RequestGroupMan.cc:531
+#: src/RequestGroupMan.cc:560
 msgid "Download Results:"
 msgstr "Resultats de la descàrrega:"
 
-#: src/RequestGroupMan.cc:575
+#: src/RequestGroupMan.cc:604
 msgid "Status Legend:"
 msgstr "llegenda d'estat:"
 
@@ -61,49 +61,49 @@ msgstr "                              Etiquetes: "
 msgid "                              Possible Values: "
 msgstr "                              Valors Disponibles: "
 
-#: src/OptionHandlerImpl.h:129
+#: src/OptionHandlerImpl.h:131
 msgid "must be either 'true' or 'false'."
 msgstr "ha de ser \"true\" o \"false\""
 
-#: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
+#: src/OptionHandlerImpl.h:165 src/OptionHandlerImpl.h:214
 #, c-format
 msgid "must be between %s and %s."
 msgstr "ha de estar entre %s i %s"
 
-#: src/OptionHandlerImpl.h:207
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "ha de ser més petit o igual que %s"
 
-#: src/OptionHandlerImpl.h:213
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "ha de ser més gran o igual que %s"
 
-#: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
+#: src/OptionHandlerImpl.h:220 src/OptionHandlerImpl.h:298
 msgid "must be a number."
 msgstr "ha de ser un número."
 
-#: src/OptionHandlerImpl.h:273
+#: src/OptionHandlerImpl.h:289
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "ha de ser més petit o igual a %.1f."
 
-#: src/OptionHandlerImpl.h:276
+#: src/OptionHandlerImpl.h:292
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "ha de estar entre %.1f i %.1f."
 
-#: src/OptionHandlerImpl.h:279
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "ha de ser més gran o igual que %.1f."
 
-#: src/OptionHandlerImpl.h:456
+#: src/OptionHandlerImpl.h:473
 msgid "must be one of the following:"
 msgstr "ha de ser un dels següents:"
 
-#: src/OptionHandlerImpl.h:505 src/OptionHandlerImpl.h:548
+#: src/OptionHandlerImpl.h:522 src/OptionHandlerImpl.h:565
 msgid "unrecognized proxy format"
 msgstr "format proxy no reconegut"
 
@@ -2570,7 +2570,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Han ocorregut errors mentre agafàvem el port.\n"
 
-#: src/Util.cc:704
+#: src/Util.cc:714
 msgid "Files:"
 msgstr "Fitxers:"
 

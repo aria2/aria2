@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"POT-Creation-Date: 2009-06-07 17:21+0900\n"
 "PO-Revision-Date: 2009-05-01 03:42+0000\n"
 "Last-Translator: aerowolf <aerowolf@tom.com>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
@@ -38,11 +38,11 @@ msgstr ""
 "如果发生任何错误，请参阅日志文件。要了解详细信息，请在help/man页面中参阅'-"
 "l'选项。"
 
-#: src/RequestGroupMan.cc:531
+#: src/RequestGroupMan.cc:560
 msgid "Download Results:"
 msgstr "下载结果："
 
-#: src/RequestGroupMan.cc:575
+#: src/RequestGroupMan.cc:604
 msgid "Status Legend:"
 msgstr "状态标识："
 
@@ -58,49 +58,49 @@ msgstr "                              标记： "
 msgid "                              Possible Values: "
 msgstr "                              可能的取值： "
 
-#: src/OptionHandlerImpl.h:129
+#: src/OptionHandlerImpl.h:131
 msgid "must be either 'true' or 'false'."
 msgstr "必须为'true'或'false'."
 
-#: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
+#: src/OptionHandlerImpl.h:165 src/OptionHandlerImpl.h:214
 #, c-format
 msgid "must be between %s and %s."
 msgstr "必须在%s和%s之间。"
 
-#: src/OptionHandlerImpl.h:207
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "必须小于或等于%s。"
 
-#: src/OptionHandlerImpl.h:213
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "必须大于或等于%s。"
 
-#: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
+#: src/OptionHandlerImpl.h:220 src/OptionHandlerImpl.h:298
 msgid "must be a number."
 msgstr "必须是一个数字。"
 
-#: src/OptionHandlerImpl.h:273
+#: src/OptionHandlerImpl.h:289
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "必须小于或等于%.1f。"
 
-#: src/OptionHandlerImpl.h:276
+#: src/OptionHandlerImpl.h:292
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "必须在%.1f 和%.1f之间。"
 
-#: src/OptionHandlerImpl.h:279
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "必须大于或等于%.1f。"
 
-#: src/OptionHandlerImpl.h:456
+#: src/OptionHandlerImpl.h:473
 msgid "must be one of the following:"
 msgstr "必须是下列取值之一："
 
-#: src/OptionHandlerImpl.h:505 src/OptionHandlerImpl.h:548
+#: src/OptionHandlerImpl.h:522 src/OptionHandlerImpl.h:565
 msgid "unrecognized proxy format"
 msgstr "无法识别的代理格式"
 
@@ -2392,7 +2392,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "绑定端口时发生错误。\n"
 
-#: src/Util.cc:704
+#: src/Util.cc:714
 msgid "Files:"
 msgstr "文件："
 

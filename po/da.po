@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-05-31 22:15+0900\n"
+"POT-Creation-Date: 2009-06-07 17:21+0900\n"
 "PO-Revision-Date: 2008-08-09 20:45+0000\n"
 "Last-Translator: Jeppe Toustrup <launchpad@tenzer.dk>\n"
 "Language-Team: Danish <da@li.org>\n"
@@ -38,11 +38,11 @@ msgstr ""
 "Hvis der er nogle fejl, så kig i logfilen. Se '-l' flaget i hjælp/man siden "
 "for mere information."
 
-#: src/RequestGroupMan.cc:531
+#: src/RequestGroupMan.cc:560
 msgid "Download Results:"
 msgstr "Overførsels resultater:"
 
-#: src/RequestGroupMan.cc:575
+#: src/RequestGroupMan.cc:604
 msgid "Status Legend:"
 msgstr "Status forklaring:"
 
@@ -59,49 +59,49 @@ msgstr "                              Mærker: "
 msgid "                              Possible Values: "
 msgstr "                              Mulige værdier: "
 
-#: src/OptionHandlerImpl.h:129
+#: src/OptionHandlerImpl.h:131
 msgid "must be either 'true' or 'false'."
 msgstr "skal enten være 'true' (sand) eller 'false' (falsk)"
 
-#: src/OptionHandlerImpl.h:162 src/OptionHandlerImpl.h:210
+#: src/OptionHandlerImpl.h:165 src/OptionHandlerImpl.h:214
 #, c-format
 msgid "must be between %s and %s."
 msgstr "skal være i mellem %s og %s."
 
-#: src/OptionHandlerImpl.h:207
+#: src/OptionHandlerImpl.h:211
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "skal være mindre end eller lig med %s."
 
-#: src/OptionHandlerImpl.h:213
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "skal være større end eller lig med %s."
 
-#: src/OptionHandlerImpl.h:216 src/OptionHandlerImpl.h:282
+#: src/OptionHandlerImpl.h:220 src/OptionHandlerImpl.h:298
 msgid "must be a number."
 msgstr "skal være et tal."
 
-#: src/OptionHandlerImpl.h:273
+#: src/OptionHandlerImpl.h:289
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "skal være mindre end eller lig med %.1f."
 
-#: src/OptionHandlerImpl.h:276
+#: src/OptionHandlerImpl.h:292
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "skal være i mellem %.1f og %.1f."
 
-#: src/OptionHandlerImpl.h:279
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "skal være større end eller lig med %.1f."
 
-#: src/OptionHandlerImpl.h:456
+#: src/OptionHandlerImpl.h:473
 msgid "must be one of the following:"
 msgstr "skal være en af de følgende:"
 
-#: src/OptionHandlerImpl.h:505 src/OptionHandlerImpl.h:548
+#: src/OptionHandlerImpl.h:522 src/OptionHandlerImpl.h:565
 msgid "unrecognized proxy format"
 msgstr "ukendt proxy format"
 
@@ -2329,7 +2329,7 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/Util.cc:704
+#: src/Util.cc:714
 msgid "Files:"
 msgstr ""
 

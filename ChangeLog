@@ -1,5 +1,10 @@
 2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Ukrainian translation. Thanks to all translators.
+	* po/uk.po
+
+2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.4.1.
 	* configure.ac
 
