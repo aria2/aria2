@@ -1,5 +1,10 @@
 2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.4.1.
+	* configure.ac
+
+2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added unit tests for strjoin, strconcat and strappend.
 	* test/a2functionalTest.cc
 
