@@ -230,7 +230,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.cc ZeroBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	RangeBtMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessageValidator.h\
-@ENABLE_BITTORRENT_TRUE@	ExtensionMessageRegistry.h
+@ENABLE_BITTORRENT_TRUE@	ExtensionMessageRegistry.h\
+@ENABLE_BITTORRENT_TRUE@	bencode.cc bencode.h
 
 @ENABLE_METALINK_TRUE@am__append_14 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -420,12 +421,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FeedbackURISelector.h NsCookieParser.cc NsCookieParser.h \
 	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
 	SocketBuffer.h OptionHandlerException.cc \
-	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
-	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
-	SequentialPicker.h SequentialDispatcherCommand.h \
-	PieceSelector.h LongestSequencePieceSelector.cc \
-	LongestSequencePieceSelector.h bitfield.h BDE.cc BDE.h \
-	XmlRpcRequestParserController.cc \
+	OptionHandlerException.h URIResult.cc URIResult.h EventPoll.h \
+	SelectEventPoll.cc SelectEventPoll.h SequentialPicker.h \
+	SequentialDispatcherCommand.h PieceSelector.h \
+	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h \
+	bitfield.h BDE.cc BDE.h XmlRpcRequestParserController.cc \
 	XmlRpcRequestParserController.h \
 	XmlRpcRequestParserStateMachine.cc \
 	XmlRpcRequestParserStateMachine.h XmlRpcRequestParserState.h \
@@ -563,8 +563,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	IndexBtMessage.cc IndexBtMessage.h ZeroBtMessage.cc \
 	ZeroBtMessage.h RangeBtMessageValidator.h \
 	IndexBtMessageValidator.h ExtensionMessageRegistry.h \
-	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
-	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
+	bencode.cc bencode.h Metalinker.cc Metalinker.h \
+	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
+	MetalinkResource.h MetalinkProcessor.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \
 	MetalinkParserState.h InitialMetalinkParserState.cc \
@@ -731,7 +732,8 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	RangeBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	bencode.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_14 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -842,8 +844,7 @@ am__objects_26 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	InOrderURISelector.$(OBJEXT) FeedbackURISelector.$(OBJEXT) \
 	NsCookieParser.$(OBJEXT) CookieStorage.$(OBJEXT) \
 	SocketBuffer.$(OBJEXT) OptionHandlerException.$(OBJEXT) \
-	bencode.$(OBJEXT) URIResult.$(OBJEXT) \
-	SelectEventPoll.$(OBJEXT) \
+	URIResult.$(OBJEXT) SelectEventPoll.$(OBJEXT) \
 	LongestSequencePieceSelector.$(OBJEXT) BDE.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
@@ -1176,20 +1177,19 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	FeedbackURISelector.h NsCookieParser.cc NsCookieParser.h \
 	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
 	SocketBuffer.h OptionHandlerException.cc \
-	OptionHandlerException.h bencode.cc bencode.h URIResult.cc \
-	URIResult.h EventPoll.h SelectEventPoll.cc SelectEventPoll.h \
-	SequentialPicker.h SequentialDispatcherCommand.h \
-	PieceSelector.h LongestSequencePieceSelector.cc \
-	LongestSequencePieceSelector.h bitfield.h BDE.cc BDE.h \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_17) $(am__append_18) \
-	$(am__append_19) $(am__append_20) $(am__append_21) \
-	$(am__append_22) $(am__append_23) $(am__append_24) \
-	$(am__append_25)
+	OptionHandlerException.h URIResult.cc URIResult.h EventPoll.h \
+	SelectEventPoll.cc SelectEventPoll.h SequentialPicker.h \
+	SequentialDispatcherCommand.h PieceSelector.h \
+	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h \
+	bitfield.h BDE.cc BDE.h $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5) \
+	$(am__append_6) $(am__append_7) $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(am__append_11) \
+	$(am__append_12) $(am__append_13) $(am__append_14) \
+	$(am__append_15) $(am__append_16) $(am__append_17) \
+	$(am__append_18) $(am__append_19) $(am__append_20) \
+	$(am__append_21) $(am__append_22) $(am__append_23) \
+	$(am__append_24) $(am__append_25)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

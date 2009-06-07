@@ -1,5 +1,12 @@
 2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Compile bencode.cc and BencodeTest.cc only if BitTorrent support
+	is enabled.
+	* src/Makefile.am
+	* test/Makefile.am
+
+2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added countSeeder() function which counts seeder in the given
 	iterator range. Use it in ConsoleStatCalc and XmlRpcMethodImpl.
 	* src/ConsoleStatCalc.cc

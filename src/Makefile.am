@@ -193,7 +193,6 @@ SRCS =  Socket.h\
 	CookieStorage.cc CookieStorage.h\
 	SocketBuffer.cc SocketBuffer.h\
 	OptionHandlerException.cc OptionHandlerException.h\
-	bencode.cc bencode.h\
 	URIResult.cc URIResult.h\
 	EventPoll.h\
 	SelectEventPoll.cc SelectEventPoll.h\
@@ -435,7 +434,8 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	ZeroBtMessage.cc ZeroBtMessage.h\
 	RangeBtMessageValidator.h\
 	IndexBtMessageValidator.h\
-	ExtensionMessageRegistry.h
+	ExtensionMessageRegistry.h\
+	bencode.cc bencode.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

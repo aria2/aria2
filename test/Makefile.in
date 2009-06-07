@@ -129,7 +129,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockDHTTaskQueue.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
-@ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h
+@ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h\
+@ENABLE_BITTORRENT_TRUE@	BencodeTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_7 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -195,7 +196,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc FtpConnectionTest.cc OptionParserTest.cc \
-	SimpleDNSCacheTest.cc DownloadHelperTest.cc BencodeTest.cc \
+	SimpleDNSCacheTest.cc DownloadHelperTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	PieceStatManTest.cc InOrderPieceSelector.h \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
@@ -247,7 +248,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
 	MockDHTTaskQueue.h MockExtensionMessage.h \
 	MockExtensionMessageFactory.h MockPieceStorage.h \
-	MetalinkerTest.cc MetalinkEntryTest.cc \
+	BencodeTest.cc MetalinkerTest.cc MetalinkEntryTest.cc \
 	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
@@ -329,7 +330,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BencodeTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_7 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -371,8 +373,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	CookieTest.$(OBJEXT) CookieStorageTest.$(OBJEXT) \
 	TimeTest.$(OBJEXT) FtpConnectionTest.$(OBJEXT) \
 	OptionParserTest.$(OBJEXT) SimpleDNSCacheTest.$(OBJEXT) \
-	DownloadHelperTest.$(OBJEXT) BencodeTest.$(OBJEXT) \
-	SequentialPickerTest.$(OBJEXT) \
+	DownloadHelperTest.$(OBJEXT) SequentialPickerTest.$(OBJEXT) \
 	RarestPieceSelectorTest.$(OBJEXT) PieceStatManTest.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
 	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) BDETest.$(OBJEXT) \
@@ -602,7 +603,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	ServerStatTest.cc NsCookieParserTest.cc \
 	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
 	TimeTest.cc FtpConnectionTest.cc OptionParserTest.cc \
-	SimpleDNSCacheTest.cc DownloadHelperTest.cc BencodeTest.cc \
+	SimpleDNSCacheTest.cc DownloadHelperTest.cc \
 	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
 	PieceStatManTest.cc InOrderPieceSelector.h \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
