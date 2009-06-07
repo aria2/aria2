@@ -1,3 +1,28 @@
+aria2 1.4.1
+===========
+
+Release Note
+------------
+
+This release fixes the compile error without the development package
+of c-ares library installed.  The compile error under MinGW was fixed.
+aria2.tellStatus XML-RPC method now returns "uploadLength" and
+"numSeeders". Ukrainian translation was updated.
+
+Changes
+-------
+
+* Documented missing seeder in getPeers xml-rpc method.
+
+* Added uploadLength and numSeeders to the response of tellStatus
+  xml-rpc method.
+
+* Added missing #ifdef ENABLE_ASYNC_DNS guard.
+
+* Added fork() emulation using CreateProcess() in MinGW
+
+
+
 aria2 1.4.0
 ===========
 
