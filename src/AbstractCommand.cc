@@ -173,8 +173,8 @@ bool AbstractCommand::execute() {
 		 cuid, req->getUrl().c_str());
     req->addTryCount();
     req->resetRedirectCount();
-    bool isAbort = _requestGroup->getMaxTries() != 0 &&
-      req->getTryCount() >= _requestGroup->getMaxTries();
+    const unsigned int maxTries = getOption()->getAsInt(PREF_MAX_TRIES);
+    bool isAbort = maxTries != 0 && req->getTryCount() >= maxTries;
     if(isAbort) {
       onAbort();
       req->resetUrl();

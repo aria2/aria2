@@ -210,10 +210,10 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   // and if they all fails, then try next one.
   if(backupTrackerIsAvailable(_btContext->getAnnounceTiers())) {
     logger->debug("This is multi-tracker announce.");
-    rg->setMaxTries(2);
+    rg->getOption()->put(PREF_MAX_TRIES, "2");
   } else {
     logger->debug("This is single-tracker announce.");
-    rg->setMaxTries(5);
+    rg->getOption()->put(PREF_MAX_TRIES, "5");
   }
 
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");

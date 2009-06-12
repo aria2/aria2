@@ -1,3 +1,13 @@
+2009-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed member _maxTries from RequestGroup class to avoid
+	duplicate option value. Those classes who refer this variable
+	should use option value of PREF_MAX_TRIES directly.
+	* src/AbstractCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/TrackerWatcherCommand.cc
+
 2009-06-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	* Release 1.4.1
