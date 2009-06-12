@@ -1,5 +1,10 @@
 2009-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc.
+	* src/MSEHandshake.cc
+
+2009-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed _acceptFeatures and its accessor functions from
 	RequestGroup since they are not used practically.
 	* src/HttpRequestCommand.cc

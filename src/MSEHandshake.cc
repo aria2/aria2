@@ -257,35 +257,44 @@ bool MSEHandshake::sendInitiatorStep2()
     _socketBuffer.feedSendBuffer(std::string(&md[0], &md[sizeof(md)]));
 
     {
-      unsigned char buffer[8+4+2+MAX_PAD_LENGTH+2];
+      // buffer is filled in this order:
+      //   VC(VC_LENGTH bytes),
+      //   crypto_provide(CRYPTO_BITFIELD_LENGTH bytes),
+      //   len(padC)(2bytes),
+      //   padC(len(padC)bytes <= MAX_PAD_LENGTH),
+      //   len(IA)(2bytes)
+      unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
 
       // VC
       memcpy(buffer, VC, sizeof(VC));
       // crypto_provide
-      unsigned char cryptoProvide[4];
+      unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
       memset(cryptoProvide, 0, sizeof(cryptoProvide));
       if(_option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
 	cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
       }
       cryptoProvide[3] |= CRYPTO_ARC4;
-      memcpy(buffer+8, cryptoProvide, sizeof(cryptoProvide));
+      memcpy(buffer+VC_LENGTH, cryptoProvide, sizeof(cryptoProvide));
 
       // len(padC)
       uint16_t padCLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
       {
 	uint16_t padCLengthBE = htons(padCLength);
-	memcpy(buffer+8+4, &padCLengthBE, sizeof(padCLengthBE));
+	memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padCLengthBE,
+	       sizeof(padCLengthBE));
       }
       // padC
-      memset(buffer+8+4+2, 0, padCLength);
+      memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padCLength);
       // len(IA)
       // currently, IA is zero-length.
       uint16_t iaLength = 0;
       {
 	uint16_t iaLengthBE = htons(iaLength);
-	memcpy(buffer+8+4+2+padCLength, &iaLengthBE, sizeof(iaLengthBE));
+	memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength,
+	       &iaLengthBE,sizeof(iaLengthBE));
       }
-      encryptAndSendData(buffer, 8+4+2+padCLength+2);
+      encryptAndSendData(buffer,
+			 VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength+2);
     }
   }
   _socketBuffer.send();
@@ -457,7 +466,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   // decrypt crypto_provide
   rbufptr += VC_LENGTH;
   {
-    unsigned char cryptoProvide[4];
+    unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
     _decryptor->decrypt(cryptoProvide, sizeof(cryptoProvide),
 			 rbufptr, sizeof(cryptoProvide));
     // TODO choose the crypto type based on the preference.
@@ -518,23 +527,29 @@ bool MSEHandshake::receiveReceiverIA()
 bool MSEHandshake::sendReceiverStep2()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
-    unsigned char buffer[8+4+2+MAX_PAD_LENGTH];
+    // buffer is filled in this order:
+    //   VC(VC_LENGTH bytes),
+    //   cryptoSelect(CRYPTO_BITFIELD_LENGTH bytes),
+    //   len(padD)(2bytes),
+    //   padD(len(padD)bytes <= MAX_PAD_LENGTH)
+    unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH];
     // VC
     memcpy(buffer, VC, sizeof(VC));
     // crypto_select
-    unsigned char cryptoSelect[4];
+    unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
     memset(cryptoSelect, 0, sizeof(cryptoSelect));
     cryptoSelect[3] = _negotiatedCryptoType;
-    memcpy(buffer+8, cryptoSelect, sizeof(cryptoSelect));
+    memcpy(buffer+VC_LENGTH, cryptoSelect, sizeof(cryptoSelect));
     // len(padD)
     uint16_t padDLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
     {
       uint16_t padDLengthBE = htons(padDLength);
-      memcpy(buffer+8+4, &padDLengthBE, sizeof(padDLengthBE));
+      memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padDLengthBE,
+	     sizeof(padDLengthBE));
     }
     // padD, all zeroed
-    memset(buffer+8+4+2, 0, padDLength);
-    encryptAndSendData(buffer, 8+4+2+padDLength);
+    memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padDLength);
+    encryptAndSendData(buffer, VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padDLength);
   }
   _socketBuffer.send();
   return _socketBuffer.sendBufferIsEmpty();
