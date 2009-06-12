@@ -1,5 +1,13 @@
 2009-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed _acceptFeatures and its accessor functions from
+	RequestGroup since they are not used practically.
+	* src/HttpRequestCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h	
+
+2009-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed member _maxTries from RequestGroup class to avoid
 	duplicate option value. Those classes who refer this variable
 	should use option value of PREF_MAX_TRIES directly.

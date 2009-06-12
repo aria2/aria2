@@ -134,8 +134,6 @@ private:
 
   std::deque<SharedHandle<PostDownloadHandler> > _postDownloadHandlers;
 
-  std::deque<std::string> _acceptFeatures;
-
   std::deque<std::string> _acceptTypes;
 
   SharedHandle<URISelector> _uriSelector;
@@ -437,15 +435,6 @@ public:
   void removeIdenticalURI(const std::string& uri);
 
   void reportDownloadFinished();
-
-  const std::deque<std::string>& getAcceptFeatures() const
-  {
-    return _acceptFeatures;
-  }
-
-  void addAcceptFeatureHeader(const std::string& feature);
-
-  void removeAcceptFeatureHeader(const std::string& feature);
 
   const std::deque<std::string>& getAcceptTypes() const
   {

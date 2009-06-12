@@ -1106,21 +1106,6 @@ void RequestGroup::reportDownloadFinished()
 #endif // ENABLE_BITTORRENT
 }
 
-void RequestGroup::addAcceptFeatureHeader(const std::string& feature)
-{
-  if(std::find(_acceptFeatures.begin(), _acceptFeatures.end(), feature) == _acceptFeatures.end()) {
-    _acceptFeatures.push_back(feature);
-  }
-}
-
-void RequestGroup::removeAcceptFeatureHeader(const std::string& feature)
-{
-  std::deque<std::string>::iterator i = std::find(_acceptFeatures.begin(), _acceptFeatures.end(), feature);
-  if(i != _acceptFeatures.end()) {
-    _acceptFeatures.erase(i);
-  }
-}
-
 void RequestGroup::addAcceptType(const std::string& type)
 {
   if(std::find(_acceptTypes.begin(), _acceptTypes.end(), type) == _acceptTypes.end()) {

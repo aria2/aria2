@@ -91,13 +91,6 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setCookieStorage(cookieStorage);
   httpRequest->setAuthConfigFactory(authConfigFactory);
   httpRequest->setProxyRequest(proxyRequest);
-  if(!rg->getAcceptFeatures().empty()) {
-    const std::deque<std::string>& acceptFeatures = rg->getAcceptFeatures();
-    std::string acceptFeaturesHeader = "Accept-Features: ";
-    std::for_each(acceptFeatures.begin(), acceptFeatures.end(),
-		  StringAppend(acceptFeaturesHeader, ","));
-    httpRequest->addHeader(Util::trim(acceptFeaturesHeader, ","));
-  }
   httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
 			     rg->getAcceptTypes().end());
 
