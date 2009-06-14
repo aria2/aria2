@@ -670,7 +670,7 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     if((*itr).get() != requestGroup) {
-      std::deque<SharedHandle<FileEntry> > entries =
+      const std::deque<SharedHandle<FileEntry> >& entries =
 	(*itr)->getDownloadContext()->getFileEntries();
       std::transform(entries.begin(), entries.end(),
 		     std::back_inserter(files),
@@ -678,7 +678,7 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
     }
   }
   std::sort(files.begin(), files.end());
-  std::deque<SharedHandle<FileEntry> > entries =
+  const std::deque<SharedHandle<FileEntry> >& entries =
     requestGroup->getDownloadContext()->getFileEntries();
   return sameFilePathExists(files.begin(), files.end(),
 			    entries.begin(), entries.end());

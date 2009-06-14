@@ -1,5 +1,13 @@
 2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Receive the return value as const reference from
+	DownloadContext::getFileEntries().
+	* src/DefaultPieceStorage.cc
+	* src/RequestGroupMan.cc
+	* src/XmlRpcMethodImpl.cc
+
+2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	DownloadContext now has _fileEntries so that
 	DownloadContext::getFileEntries() can returns its const reference.
 	* src/DefaultBtContext.cc

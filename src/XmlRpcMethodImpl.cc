@@ -396,7 +396,7 @@ BDE GetFilesXmlRpcMethod::process
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
     }
   } else {
-    std::deque<SharedHandle<FileEntry> > fileEntries =
+    const std::deque<SharedHandle<FileEntry> >& fileEntries =
       group->getDownloadContext()->getFileEntries();
     createFileEntry(files, fileEntries.begin(), fileEntries.end());
   }

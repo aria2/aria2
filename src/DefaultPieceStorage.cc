@@ -420,7 +420,7 @@ size_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 // not unittested
 void DefaultPieceStorage::setupFileFilter()
 {
-  std::deque<SharedHandle<FileEntry> > fileEntries =
+  const std::deque<SharedHandle<FileEntry> >& fileEntries =
     downloadContext->getFileEntries();
   bool allSelected = true;
   for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
