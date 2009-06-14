@@ -616,54 +616,6 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   }
 }
 
-template<typename InputIterator>
-static SharedHandle<FileEntry> getFirstRequestedFileEntry
-(InputIterator first, InputIterator last)
-{
-  for(; first != last; ++first) {
-    if((*first)->isRequested()) {
-      return *first;
-    }
-  }
-  return SharedHandle<FileEntry>();
-}
-
-template<typename InputIterator>
-static size_t countRequestedFileEntry(InputIterator first, InputIterator last)
-{
-  size_t count = 0;
-  for(; first != last; ++first) {
-    if((*first)->isRequested()) {
-      ++count;
-    }
-  }
-  return count;
-}
-
-template<typename InputIterator>
-static void writeFilePath
-(InputIterator first, InputIterator last, std::ostream& o, bool memory)
-{
-  SharedHandle<FileEntry> e = getFirstRequestedFileEntry(first, last);
-  if(e.isNull()) {
-    o << "n/a";
-  } else {
-    if(e->getPath().empty()) {
-      o << "n/a";
-    } else {
-      if(memory) {
-	o << "[MEMORY]" << File(e->getPath()).getBasename();
-      } else {
-	o << e->getPath();
-      }
-    }
-    size_t count = countRequestedFileEntry(first, last);
-    if(count > 1) {
-      o << " (" << count-1 << "more)";
-    }
-  }
-}
-
 std::string RequestGroupMan::formatDownloadResult(const std::string& status, const DownloadResultHandle& downloadResult) const
 {
   std::stringstream o;

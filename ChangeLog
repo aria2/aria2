@@ -1,5 +1,13 @@
 2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved getFirstRequestedFileEntry(), countRequestedFileEntry() and
+	writeFilePath() function template from RequestGroupMan.cc to
+	FileEntry.h
+	* src/FileEntry.h
+	* src/RequestGroupMan.cc
+
+2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented 'position' parameter is starting from 0 in man page.
 	* doc/aria2c.1.txt
 
