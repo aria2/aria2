@@ -1,3 +1,8 @@
+2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Documented 'position' parameter is starting from 0 in man page.
+	* doc/aria2c.1.txt
+
 2009-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated doc.
