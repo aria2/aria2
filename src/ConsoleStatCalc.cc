@@ -155,8 +155,13 @@ public:
   {
     const char SEP_CHAR = '-';
     printProgress(std::cout, rg, _e);
+    const std::deque<SharedHandle<FileEntry> >& fileEntries =
+      rg->getDownloadContext()->getFileEntries();
     std::cout << "\n"
-	      << "FILE: " << rg->getFilePath() << "\n"
+	      << "FILE: ";
+    writeFilePath(fileEntries.begin(), fileEntries.end(),
+		  std::cout, rg->inMemoryDownload());
+    std::cout << "\n"
 	      << std::setfill(SEP_CHAR) << std::setw(_cols) << SEP_CHAR << "\n";
   }
 };

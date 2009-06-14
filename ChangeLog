@@ -1,5 +1,10 @@
 2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use writeFilePath() in ConsoleStatCalc.cc
+	* src/ConsoleStatCalc.cc
+
+2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Receive the return value as const reference from
 	DownloadContext::getFileEntries().
 	* src/DefaultPieceStorage.cc
