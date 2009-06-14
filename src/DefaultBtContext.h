@@ -55,7 +55,6 @@ private:
   unsigned char infoHash[INFO_HASH_LENGTH];
   std::string infoHashString;
   std::deque<std::string> pieceHashes;
-  std::deque<SharedHandle<FileEntry> > fileEntries;
   FILE_MODE fileMode;
   uint64_t totalLength;
   size_t pieceLength;
@@ -142,8 +141,6 @@ private:
   virtual bool knowsTotalLength() const;
 
   virtual FILE_MODE getFileMode() const;
-
-  virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;
 
   virtual const std::string& getPieceHashAlgo() const;
 

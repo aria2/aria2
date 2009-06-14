@@ -36,9 +36,11 @@
 #define _D_SINGLE_FILE_DOWNLOAD_CONTEXT_H_
 
 #include "DownloadContext.h"
-#include "A2STR.h"
+
 #include <string>
 #include <deque>
+
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -46,7 +48,6 @@ class SingleFileDownloadContext:public DownloadContext
 {
 private:
   size_t _pieceLength;
-  SharedHandle<FileEntry> _fileEntry;
   /**
    * _filename and _ufilename may contains directory path name.  So
    * /usr/local/aria2c is acceptable here.  These should be complete
@@ -94,8 +95,6 @@ public:
   {
     return SINGLE;
   }
-
-  virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;
 
   virtual size_t getPieceLength() const
   {

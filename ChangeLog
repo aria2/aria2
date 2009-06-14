@@ -1,5 +1,16 @@
 2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	DownloadContext now has _fileEntries so that
+	DownloadContext::getFileEntries() can returns its const reference.
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/SingleFileDownloadContext.cc
+	* src/SingleFileDownloadContext.h
+
+2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Moved getFirstRequestedFileEntry(), countRequestedFileEntry() and
 	writeFilePath() function template from RequestGroupMan.cc to
 	FileEntry.h

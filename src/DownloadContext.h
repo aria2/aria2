@@ -51,8 +51,9 @@ class FileEntry;
 class DownloadContext
 {
 protected:
-  std::string _dir;
+  std::deque<SharedHandle<FileEntry> > _fileEntries;
 
+  std::string _dir;
 private:
   Time _downloadStartTime;
 
@@ -79,7 +80,10 @@ public:
 
   virtual FILE_MODE getFileMode() const = 0;
 
-  virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const = 0;
+  const std::deque<SharedHandle<FileEntry> >& getFileEntries() const
+  {
+    return _fileEntries;
+  }
 
   virtual size_t getPieceLength() const = 0;
 

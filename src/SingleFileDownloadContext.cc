@@ -44,22 +44,24 @@ SingleFileDownloadContext::SingleFileDownloadContext(size_t pieceLength,
 						     const std::string& filename,
 						     const std::string& ufilename):
   _pieceLength(pieceLength),
-  _fileEntry(new FileEntry(filename, totalLength, 0)),
   _filename(filename),
   _ufilename(ufilename),
   _knowsTotalLength(true)
 {
+  _fileEntries.push_back
+    (SharedHandle<FileEntry>(new FileEntry(filename, totalLength, 0)));
   updateFileEntry();
 }
 
 void SingleFileDownloadContext::updateFileEntry()
 {
+  const SharedHandle<FileEntry>& fileEntry = _fileEntries.front();
   if(!_ufilename.empty()) {
-    _fileEntry->setPath(_ufilename);
+    fileEntry->setPath(_ufilename);
   } else if(!_filename.empty()) {
-    _fileEntry->setPath(_filename);
+    fileEntry->setPath(_filename);
   } else {
-    _fileEntry->setPath("");
+    fileEntry->setPath("");
   }
 }
 
@@ -71,7 +73,7 @@ SingleFileDownloadContext::getPieceHashes() const
 
 uint64_t SingleFileDownloadContext::getTotalLength() const
 {
-  return _fileEntry->getLength();
+  return _fileEntries.front()->getLength();
 }
 
 bool SingleFileDownloadContext::knowsTotalLength() const
@@ -79,27 +81,19 @@ bool SingleFileDownloadContext::knowsTotalLength() const
   return _knowsTotalLength;
 }
 
-FileEntries
-SingleFileDownloadContext::getFileEntries() const
-{
-  FileEntries fs;
-  fs.push_back(_fileEntry);
-  return fs;
-}
-
 size_t SingleFileDownloadContext::getNumPieces() const
 {
-  return (_fileEntry->getLength()+_pieceLength-1)/_pieceLength;
+  return (_fileEntries.front()->getLength()+_pieceLength-1)/_pieceLength;
 }
 
 std::string SingleFileDownloadContext::getActualBasePath() const
 {
-  return _fileEntry->getPath();
+  return _fileEntries.front()->getPath();
 }
 
 void SingleFileDownloadContext::setTotalLength(uint64_t totalLength)
 {
-  _fileEntry->setLength(totalLength);
+  _fileEntries.front()->setLength(totalLength);
 }
 
 void SingleFileDownloadContext::markTotalLengthIsUnknown()

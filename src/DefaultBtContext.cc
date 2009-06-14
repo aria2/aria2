@@ -122,7 +122,7 @@ void DefaultBtContext::clear() {
   memset(infoHash, 0, INFO_HASH_LENGTH);
   infoHashString = A2STR::NIL;
   pieceHashes.clear();
-  fileEntries.clear();
+  _fileEntries.clear();
   totalLength = 0;
   pieceLength = 0;
   fileMode = BtContext::SINGLE;
@@ -211,7 +211,7 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
       FileEntryHandle fileEntry(new FileEntry(strconcat(_dir, "/", path),
 					      fileLengthData.i(),
 					      offset, uris));
-      fileEntries.push_back(fileEntry);
+      _fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
     totalLength = length;
@@ -245,7 +245,7 @@ void DefaultBtContext::extractFileEntries(const BDE& infoDict,
 			       Util::joinPath(pathelems.begin(),
 					      pathelems.end())),
 		     totalLength, 0, uris));
-    fileEntries.push_back(fileEntry);
+    _fileEntries.push_back(fileEntry);
   }
 }
 
@@ -435,10 +435,6 @@ BtContext::FILE_MODE DefaultBtContext::getFileMode() const {
   return fileMode;
 }
 
-FileEntries DefaultBtContext::getFileEntries() const {
-  return fileEntries;
-}
-
 const std::string& DefaultBtContext::getPieceHashAlgo() const
 {
   return MessageDigestContext::SHA1;
@@ -464,8 +460,8 @@ size_t DefaultBtContext::getNumPieces() const {
 
 std::string DefaultBtContext::getActualBasePath() const
 {
-  if(fileEntries.size() == 1) {
-    return fileEntries.front()->getPath();
+  if(_fileEntries.size() == 1) {
+    return _fileEntries.front()->getPath();
   } else {
     return strconcat(_dir, "/", name);
   }
@@ -552,8 +548,8 @@ void DefaultBtContext::setInfoHash(const unsigned char* infoHash)
 void DefaultBtContext::setFilePathWithIndex
 (size_t index, const std::string& path)
 {
-  if(0 < index && index <= fileEntries.size()) {
-    fileEntries[index-1]->setPath(path);
+  if(0 < index && index <= _fileEntries.size()) {
+    _fileEntries[index-1]->setPath(path);
   } else {
     throw DL_ABORT_EX(StringFormat("No such file with index=%u",
 				 static_cast<unsigned int>(index)).str());
@@ -567,11 +563,11 @@ void DefaultBtContext::setFileFilter(IntSequence seq)
   fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
 		    fileIndexes.end());
 
-  bool selectAll = fileIndexes.empty() || fileEntries.size() == 1;
+  bool selectAll = fileIndexes.empty() || _fileEntries.size() == 1;
     
   int32_t index = 1;
   for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
-	fileEntries.begin(); i != fileEntries.end(); ++i, ++index) {
+	_fileEntries.begin(); i != _fileEntries.end(); ++i, ++index) {
     (*i)->setRequested
       (selectAll ||
        std::binary_search(fileIndexes.begin(), fileIndexes.end(), index));

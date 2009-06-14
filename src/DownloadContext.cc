@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "DownloadContext.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
