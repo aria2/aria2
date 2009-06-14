@@ -30,6 +30,7 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddUri_notUri);
   CPPUNIT_TEST(testAddUri_withBadOption);
   CPPUNIT_TEST(testAddUri_withPosition);
+  CPPUNIT_TEST(testAddUri_withBadPosition);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testAddTorrent);
   CPPUNIT_TEST(testAddTorrent_withoutTorrent);
@@ -73,6 +74,7 @@ public:
   void testAddUri_notUri();
   void testAddUri_withBadOption();
   void testAddUri_withPosition();
+  void testAddUri_withBadPosition();
 #ifdef ENABLE_BITTORRENT
   void testAddTorrent();
   void testAddTorrent_withoutTorrent();
@@ -176,6 +178,18 @@ void XmlRpcMethodTest::testAddUri_withPosition()
     _e->_requestGroupMan->getReservedGroups()[0]->getRemainingUris()[0];
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://uri2"), uri);
+}
+
+void XmlRpcMethodTest::testAddUri_withBadPosition()
+{
+  AddUriXmlRpcMethod m;
+  XmlRpcRequest req("aria2.addUri", BDE::list());
+  req._params << BDE::list();
+  req._params[0] << BDE("http://localhost/");
+  req._params << BDE::dict();
+  req._params << BDE((int64_t)-1);
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
 
 #ifdef ENABLE_BITTORRENT

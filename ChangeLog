@@ -1,5 +1,11 @@
 2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Throw an exception if position is less than 0.
+	* src/XmlRpcMethodImpl.cc
+	* test/XmlRpcMethodTest.cc
+
+2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use writeFilePath() in ConsoleStatCalc.cc
 	* src/ConsoleStatCalc.cc
 

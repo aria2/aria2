@@ -102,8 +102,12 @@ static void getPosParam(const BDE& params, size_t posParamIndex,
 			bool& posGiven, size_t& pos)
 {
   if(params.size() > posParamIndex && params[posParamIndex].isInteger()) {
-    pos = params[posParamIndex].i();
-    posGiven = true;
+    if(params[posParamIndex].i() >= 0) {
+      pos = params[posParamIndex].i();
+      posGiven = true;
+    } else {
+      throw DL_ABORT_EX("Position must be greater than or equal to 0.");
+    }
   } else {
     posGiven = false;
   }
