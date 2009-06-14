@@ -1,5 +1,10 @@
 2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Used array_ptr for savedInfoHash, savedBitfield and pieceBitfield.
+	* src/DefaultBtProgressInfoFile.cc
+
+2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Throw an exception if position is less than 0.
 	* src/XmlRpcMethodImpl.cc
 	* test/XmlRpcMethodTest.cc

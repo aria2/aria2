@@ -58,6 +58,7 @@
 #include "a2io.h"
 #include "DownloadFailureException.h"
 #include "StringFormat.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -201,8 +202,6 @@ void DefaultBtProgressInfoFile::load()
 {
   _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
   std::ifstream in(_filename.c_str(), std::ios::in|std::ios::binary);
-  unsigned char* savedInfoHash = 0;
-  unsigned char* savedBitfield = 0;
   try {
     in.exceptions(std::ios::failbit);
     unsigned char versionBuf[2];
@@ -238,8 +237,9 @@ void DefaultBtProgressInfoFile::load()
 	(StringFormat("Invalid info hash length: %d", infoHashLength).str());
     }
     if(infoHashLength > 0) {
-      savedInfoHash = new unsigned char[infoHashLength];
-      in.read(reinterpret_cast<char*>(savedInfoHash), infoHashLength);
+      array_ptr<unsigned char> savedInfoHash(new unsigned char[infoHashLength]);
+      in.read(reinterpret_cast<char*>
+	      (static_cast<unsigned char*>(savedInfoHash)), infoHashLength);
       BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       if(infoHashCheckEnabled &&
 	 Util::toHex(savedInfoHash, infoHashLength) !=
@@ -250,8 +250,6 @@ void DefaultBtProgressInfoFile::load()
 			Util::toHex(savedInfoHash,
 				    infoHashLength).c_str()).str());
       }
-      delete [] savedInfoHash;
-      savedInfoHash = 0;
     }
 
     uint32_t pieceLength;
@@ -296,13 +294,12 @@ void DefaultBtProgressInfoFile::load()
 		      bitfieldLength).str());
     }
 
-    savedBitfield = new unsigned char[bitfieldLength];
-    in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
+    array_ptr<unsigned char> savedBitfield(new unsigned char[bitfieldLength]);
+    in.read(reinterpret_cast<char*>
+	    (static_cast<unsigned char*>(savedBitfield)), bitfieldLength);
 
     if(pieceLength == _dctx->getPieceLength()) {
       _pieceStorage->setBitfield(savedBitfield, bitfieldLength);
-      delete [] savedBitfield;
-      savedBitfield = 0;
 
       uint32_t numInFlightPiece;
       in.read(reinterpret_cast<char*>(&numInFlightPiece),
@@ -343,18 +340,17 @@ void DefaultBtProgressInfoFile::load()
 			  " expected: %u actual: %u",
 			  piece->getBitfieldLength(), bitfieldLength).str());
 	}
-	savedBitfield = new unsigned char[bitfieldLength];
-	in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
-	piece->setBitfield(savedBitfield, bitfieldLength);
+	array_ptr<unsigned char> pieceBitfield
+	  (new unsigned char[bitfieldLength]);
+	in.read(reinterpret_cast<char*>
+		(static_cast<unsigned char*>(pieceBitfield)), bitfieldLength);
+	piece->setBitfield(pieceBitfield, bitfieldLength);
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
 	piece->setHashAlgo(_dctx->getPieceHashAlgo());
 
 #endif // ENABLE_MESSAGE_DIGEST
-
-	delete [] savedBitfield;
-	savedBitfield = 0;
 	
 	inFlightPieces.push_back(piece);
       }
@@ -378,13 +374,9 @@ void DefaultBtProgressInfoFile::load()
       BitfieldMan dest(_dctx->getPieceLength(), totalLength);
       Util::convertBitfield(&dest, &src);
       _pieceStorage->setBitfield(dest.getBitfield(), dest.getBitfieldLength());
-      delete [] savedBitfield;
-      savedBitfield = 0;
     }
     _logger->info(MSG_LOADED_SEGMENT_FILE);
   } catch(std::ios::failure const& exception) {
-    delete [] savedBitfield;
-    delete [] savedInfoHash;
     // TODO std::ios::failure doesn't give us the reasons of failure...
     throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,
 				 _filename.c_str(), strerror(errno)).str());
