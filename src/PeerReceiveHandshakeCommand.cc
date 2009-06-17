@@ -93,13 +93,11 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     // check info_hash
     std::string infoHash = Util::toHex(&data[28], INFO_HASH_LENGTH);
 
-    SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-    SharedHandle<BtContext> btContext = btRegistry->getBtContext(infoHash);
-    SharedHandle<BtRuntime> btRuntime = btRegistry->getBtRuntime(infoHash);
-    SharedHandle<PieceStorage> pieceStorage =
-      btRegistry->getPieceStorage(infoHash);
-    SharedHandle<PeerStorage> peerStorage =
-      btRegistry->getPeerStorage(infoHash);
+    BtObject btObject = e->getBtRegistry()->get(infoHash);
+    SharedHandle<BtContext> btContext = btObject._btContext;
+    SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
+    SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
+    SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
 
     if(btContext.isNull() || !btRuntime->ready()) {
       throw DL_ABORT_EX

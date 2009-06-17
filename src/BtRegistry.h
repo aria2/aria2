@@ -39,9 +39,9 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 #include "SharedHandle.h"
-#include "HandleRegistry.h"
 
 namespace aria2 {
 
@@ -52,54 +52,62 @@ class BtRuntime;
 class BtProgressInfoFile;
 class BtContext;
 
-typedef HandleRegistry<std::string, PeerStorage> PeerStorageMap;
-typedef HandleRegistry<std::string, PieceStorage> PieceStorageMap;
-typedef HandleRegistry<std::string, BtAnnounce> BtAnnounceMap;
-typedef HandleRegistry<std::string, BtRuntime> BtRuntimeMap;
-typedef HandleRegistry<std::string, BtProgressInfoFile> BtProgressInfoFileMap;
-typedef HandleRegistry<std::string, BtContext>  BtContextMap;
+struct BtObject {
+  SharedHandle<BtContext> _btContext;
+  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<BtAnnounce> _btAnnounce;
+  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtProgressInfoFile> _btProgressInfoFile;
+
+  BtObject(const SharedHandle<BtContext>& btContext,
+	   const SharedHandle<PieceStorage>& pieceStorage,
+	   const SharedHandle<PeerStorage>& peerStorage,
+	   const SharedHandle<BtAnnounce>& btAnnounce,
+	   const SharedHandle<BtRuntime>& btRuntime,
+	   const SharedHandle<BtProgressInfoFile>& btProgressInfoFile):
+    _btContext(btContext),
+    _pieceStorage(pieceStorage),
+    _peerStorage(peerStorage),
+    _btAnnounce(btAnnounce),
+    _btRuntime(btRuntime),
+    _btProgressInfoFile(btProgressInfoFile) {}
+
+  BtObject() {}
+
+  bool isNull() const
+  {
+    return _btContext.isNull() &&
+      _pieceStorage.isNull() &&
+      _peerStorage.isNull() &&
+      _btAnnounce.isNull() &&
+      _btRuntime.isNull() &&
+      _btProgressInfoFile.isNull();
+  }
+};
 
 class BtRegistry {
 private:
-  BtContextMap btContextMap;
-  PeerStorageMap peerStorageMap;
-  PieceStorageMap pieceStorageMap;
-  BtAnnounceMap btAnnounceMap;
-  BtRuntimeMap btRuntimeMap;
-  BtProgressInfoFileMap btProgressInfoFileMap;
+  std::map<std::string, BtObject> _pool;
 public:
-  BtRegistry();
-  
-  SharedHandle<BtContext> getBtContext(const std::string& key);
-  void registerBtContext(const std::string& key,
-			 const SharedHandle<BtContext>& btContext);
+  SharedHandle<BtContext> getBtContext(const std::string& infoHash) const;
 
-  SharedHandle<PeerStorage> getPeerStorage(const std::string& key);
-  void registerPeerStorage(const std::string& key,
-			   const SharedHandle<PeerStorage>& peer);
-				  
-  SharedHandle<PieceStorage> getPieceStorage(const std::string& key);
-  void registerPieceStorage(const std::string& key,
-			    const SharedHandle<PieceStorage>& pieceStorage);
+  void put(const std::string& infoHash, const BtObject& obj);
 
-  SharedHandle<BtRuntime> getBtRuntime(const std::string& key);
-  void registerBtRuntime(const std::string& key,
-			 const SharedHandle<BtRuntime>& btRuntime);
+  BtObject get(const std::string& infoHash) const;
 
-  SharedHandle<BtAnnounce> getBtAnnounce(const std::string& key);
-  void registerBtAnnounce(const std::string& key,
-				 const SharedHandle<BtAnnounce>& btAnnounce);
+  template<typename OutputIterator>
+  void getAllBtContext(OutputIterator dest)
+  {
+    for(std::map<std::string, BtObject>::const_iterator i = _pool.begin();
+	i != _pool.end(); ++i) {
+      *dest++ = (*i).second._btContext;
+    }
+  }
 
-  SharedHandle<BtProgressInfoFile>
-  getBtProgressInfoFile(const std::string& key);
-  void registerBtProgressInfoFile(const std::string& key,
-				  const SharedHandle<BtProgressInfoFile>& file);
+  void removeAll();
 
-  std::deque<SharedHandle<BtContext> > getAllBtContext();
-
-  void unregisterAll();
-
-  void unregister(const std::string& key);
+  bool remove(const std::string& infoHash);
 };
 
 } // namespace aria2

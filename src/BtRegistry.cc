@@ -43,103 +43,36 @@
 
 namespace aria2 {
 
-BtRegistry::BtRegistry() {}
-
-PeerStorageHandle BtRegistry::getPeerStorage(const std::string& key)
+SharedHandle<BtContext>
+BtRegistry::getBtContext(const std::string& infoHash) const
 {
-  return peerStorageMap.getHandle(key);
+  return get(infoHash)._btContext;
 }
 
-void BtRegistry::registerPeerStorage(const std::string& key,
-				     const PeerStorageHandle& peerStorage)
+void BtRegistry::put(const std::string& infoHash, const BtObject& obj)
 {
-  peerStorageMap.registerHandle(key, peerStorage);
-}
-				  
-PieceStorageHandle
-BtRegistry::getPieceStorage(const std::string& key)
-{
-  return pieceStorageMap.getHandle(key);
+  remove(infoHash);
+  std::map<std::string, BtObject>::value_type p(infoHash, obj);
+  _pool.insert(p);
 }
 
-void
-BtRegistry::registerPieceStorage(const std::string& key,
-				 const PieceStorageHandle& pieceStorage)
+BtObject BtRegistry::get(const std::string& infoHash) const
 {
-  pieceStorageMap.registerHandle(key, pieceStorage);
+  std::map<std::string, BtObject>::const_iterator i = _pool.find(infoHash);
+  if(i == _pool.end()) {
+    return BtObject();
+  } else {
+    return (*i).second;
+  }
 }
 
-BtRuntimeHandle BtRegistry::getBtRuntime(const std::string& key)
+bool BtRegistry::remove(const std::string& infoHash)
 {
-  return btRuntimeMap.getHandle(key);
+  return _pool.erase(infoHash);
 }
 
-void
-BtRegistry::registerBtRuntime(const std::string& key,
-			      const BtRuntimeHandle& btRuntime)
-{
-  btRuntimeMap.registerHandle(key, btRuntime);
-}
-
-BtAnnounceHandle BtRegistry::getBtAnnounce(const std::string& key)
-{
-  return btAnnounceMap.getHandle(key);
-}
-
-void
-BtRegistry::registerBtAnnounce(const std::string& key,
-			       const BtAnnounceHandle& btAnnounce)
-{
-  btAnnounceMap.registerHandle(key, btAnnounce);
-}
-
-BtProgressInfoFileHandle BtRegistry::getBtProgressInfoFile(const std::string& key)
-{
-  return btProgressInfoFileMap.getHandle(key);
-}
-
-void
-BtRegistry::registerBtProgressInfoFile(const std::string& key,
-				       const BtProgressInfoFileHandle& btProgressInfoFile)
-{
-  btProgressInfoFileMap.registerHandle(key, btProgressInfoFile);
-}
-
-BtContextHandle
-BtRegistry::getBtContext(const std::string& key)
-{
-  return btContextMap.getHandle(key);
-}
-
-void
-BtRegistry::registerBtContext(const std::string& key,
-			      const BtContextHandle& btContext)
-{
-  btContextMap.registerHandle(key, btContext);
-}
-
-std::deque<SharedHandle<BtContext> > BtRegistry::getAllBtContext()
-{
-  return btContextMap.getAll();
-}
-
-void BtRegistry::unregisterAll() {
-  btContextMap.clear();
-  peerStorageMap.clear();
-  pieceStorageMap.clear();
-  btAnnounceMap.clear();
-  btRuntimeMap.clear();
-  btProgressInfoFileMap.clear();
-}
-
-void BtRegistry::unregister(const std::string& key)
-{
-  btContextMap.unregisterHandle(key);
-  peerStorageMap.unregisterHandle(key);
-  pieceStorageMap.unregisterHandle(key);
-  btAnnounceMap.unregisterHandle(key);
-  btRuntimeMap.unregisterHandle(key);
-  btProgressInfoFileMap.unregisterHandle(key);
+void BtRegistry::removeAll() {
+  _pool.clear();
 }
 
 } // namespace aria2

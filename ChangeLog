@@ -1,3 +1,17 @@
+2009-06-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten BtRegistry
+	* src/BtRegistry.cc
+	* src/BtRegistry.h
+	* src/BtSetup.cc
+	* src/ConsoleStatCalc.cc
+	* src/PeerInteractionCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/ReceiverMSEHandshakeCommand.cc
+	* src/RequestGroup.cc
+	* src/XmlRpcMethodImpl.cc
+	* test/BtRegistryTest.cc
+
 2009-06-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Used array_ptr for savedInfoHash, savedBitfield and pieceBitfield.

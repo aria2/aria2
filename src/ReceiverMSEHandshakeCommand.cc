@@ -135,8 +135,9 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     break;
   }
   case RECEIVER_RECEIVE_PAD_C_LENGTH: {
-    if(_mseHandshake->receiveReceiverHashAndPadCLength
-       (e->getBtRegistry()->getAllBtContext())) {
+    std::deque<SharedHandle<BtContext> > btContexts;
+    e->getBtRegistry()->getAllBtContext(std::back_inserter(btContexts));
+    if(_mseHandshake->receiveReceiverHashAndPadCLength(btContexts)) {
       _sequence = RECEIVER_RECEIVE_PAD_C;
     }
     break;

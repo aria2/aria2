@@ -72,16 +72,11 @@ void BtSetup::setup(std::deque<Command*>& commands,
   if(btContext.isNull()) {
     return;
   }
-  SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-  SharedHandle<PieceStorage> pieceStorage =
-    btRegistry->getPieceStorage(btContext->getInfoHashAsString());
-  SharedHandle<PeerStorage> peerStorage =
-    btRegistry->getPeerStorage(btContext->getInfoHashAsString());
-  SharedHandle<BtRuntime> btRuntime =
-    btRegistry->getBtRuntime(btContext->getInfoHashAsString());
-  SharedHandle<BtAnnounce> btAnnounce =
-    btRegistry->getBtAnnounce(btContext->getInfoHashAsString());
-
+  BtObject btObject = e->getBtRegistry()->get(btContext->getInfoHashAsString());
+  SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
+  SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
+  SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
+  SharedHandle<BtAnnounce> btAnnounce = btObject._btAnnounce;
   // commands
   {
     TrackerWatcherCommand* c =

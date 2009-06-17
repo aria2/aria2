@@ -100,7 +100,7 @@ PeerInteractionCommand::PeerInteractionCommand
 
   SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
   SharedHandle<PeerStorage> peerStorage =
-    btRegistry->getPeerStorage(_btContext->getInfoHashAsString());
+    btRegistry->get(_btContext->getInfoHashAsString())._peerStorage;
 
   SharedHandle<ExtensionMessageRegistry> exMsgRegistry
     (new ExtensionMessageRegistry());

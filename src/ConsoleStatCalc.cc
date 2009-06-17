@@ -116,7 +116,7 @@ static void printProgress
 #ifdef ENABLE_BITTORRENT
   if(!btctx.isNull()) {
     SharedHandle<PeerStorage> ps =
-      e->getBtRegistry()->getPeerStorage(btctx->getInfoHashAsString());
+      e->getBtRegistry()->get(btctx->getInfoHashAsString())._peerStorage;
     std::deque<SharedHandle<Peer> > peers;
     ps->getActivePeers(peers);
     o << " " << "SEED:"

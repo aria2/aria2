@@ -292,7 +292,7 @@ static void gatherProgressBitTorrent
   entryDict["infoHash"] = btctx->getInfoHashAsString();
 
   SharedHandle<PeerStorage> peerStorage =
-    btreg->getPeerStorage(btctx->getInfoHashAsString());
+    btreg->get(btctx->getInfoHashAsString())._peerStorage;
   assert(!peerStorage.isNull());
 
   std::deque<SharedHandle<Peer> > peers;
@@ -460,7 +460,7 @@ BDE GetPeersXmlRpcMethod::process
   if(!btctx.isNull()) {
     SharedHandle<BtRegistry> btreg = e->getBtRegistry();
     SharedHandle<PeerStorage> peerStorage =
-      btreg->getPeerStorage(btctx->getInfoHashAsString());
+      btreg->get(btctx->getInfoHashAsString())._peerStorage;
     assert(!peerStorage.isNull());
     BDE entry = BDE::dict();
     gatherPeer(peers, peerStorage);

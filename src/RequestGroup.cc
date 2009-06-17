@@ -243,20 +243,10 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	progressInfoFile(new DefaultBtProgressInfoFile(_downloadContext,
 						       _pieceStorage,
 						       _option.get()));
-      
-      btRegistry->registerBtContext(btContext->getInfoHashAsString(),
-				    btContext);
-      btRegistry->registerPieceStorage(btContext->getInfoHashAsString(),
-				       _pieceStorage);
-      btRegistry->registerBtProgressInfoFile(btContext->getInfoHashAsString(),
-					     progressInfoFile);
-
-  
+        
       BtRuntimeHandle btRuntime(new BtRuntime());
       btRuntime->setListenPort(_option->getAsInt(PREF_LISTEN_PORT));
       btRuntime->setMaxPeers(_option->getAsInt(PREF_BT_MAX_PEERS));
-      btRegistry->registerBtRuntime(btContext->getInfoHashAsString(),
-				    btRuntime);
       _btRuntime = btRuntime;
       progressInfoFile->setBtRuntime(btRuntime);
 
@@ -264,8 +254,6 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	(new DefaultPeerStorage(btContext, _option.get()));
       peerStorage->setBtRuntime(btRuntime);
       peerStorage->setPieceStorage(_pieceStorage);
-      btRegistry->registerPeerStorage(btContext->getInfoHashAsString(),
-				      peerStorage);
       _peerStorage = peerStorage;
       progressInfoFile->setPeerStorage(peerStorage);
 
@@ -276,10 +264,16 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       btAnnounce->setPeerStorage(peerStorage);
       btAnnounce->setUserDefinedInterval
 	(_option->getAsInt(PREF_BT_TRACKER_INTERVAL));
-      btRegistry->registerBtAnnounce(btContext->getInfoHashAsString(),
-				     btAnnounce);
       btAnnounce->shuffleAnnounce();
       
+      btRegistry->put(btContext->getInfoHashAsString(),
+		      BtObject(btContext,
+			       _pieceStorage,
+			       peerStorage,
+			       btAnnounce,
+			       btRuntime,
+			       progressInfoFile));
+
       // Remove the control file if download file doesn't exist
       if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
 	progressInfoFile->removeFile();
@@ -828,7 +822,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
     if(!btContextInReg.isNull() &&
        btContextInReg->getOwnerRequestGroup()->getGID() ==
 	btContext->getOwnerRequestGroup()->getGID()) {
-      btRegistry->unregister(btContext->getInfoHashAsString());
+      btRegistry->remove(btContext->getInfoHashAsString());
       if(!DHTRegistry::_peerAnnounceStorage.isNull()) {
 	DHTRegistry::_peerAnnounceStorage->
 	  removeLocalPeerAnnounce(btContext->getInfoHash());

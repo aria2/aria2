@@ -17,21 +17,17 @@ class BtRegistryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtRegistryTest);
   CPPUNIT_TEST(testGetBtContext);
-  CPPUNIT_TEST(testGetPeerStorage);
-  CPPUNIT_TEST(testGetPieceStorage);
-  CPPUNIT_TEST(testGetBtRuntime);
-  CPPUNIT_TEST(testGetBtAnnounce);
-  CPPUNIT_TEST(testGetBtProgressInfoFile);
+  CPPUNIT_TEST(testGetAllBtContext);
+  CPPUNIT_TEST(testRemove);
+  CPPUNIT_TEST(testRemoveAll);
   CPPUNIT_TEST_SUITE_END();
 private:
 
 public:
   void testGetBtContext();
-  void testGetPeerStorage();
-  void testGetPieceStorage();
-  void testGetBtRuntime();
-  void testGetBtAnnounce();
-  void testGetBtProgressInfoFile();
+  void testGetAllBtContext();
+  void testRemove();
+  void testRemoveAll();
 };
 
 
@@ -42,64 +38,51 @@ void BtRegistryTest::testGetBtContext()
   BtRegistry btRegistry;
   CPPUNIT_ASSERT(btRegistry.getBtContext("test").isNull());
   SharedHandle<BtContext> btContext(new MockBtContext());
-  btRegistry.registerBtContext("test", btContext);
+  BtObject btObject;
+  btObject._btContext = btContext;
+  btRegistry.put("test", btObject);
   CPPUNIT_ASSERT_EQUAL(btContext.get(),
 		       btRegistry.getBtContext("test").get());
 }
 
-void BtRegistryTest::testGetPeerStorage() {
-  BtRegistry btRegistry;
-  CPPUNIT_ASSERT(!btRegistry.getPeerStorage("test").get());
-
-  SharedHandle<PeerStorage> peerStorage(new MockPeerStorage());
-
-  btRegistry.registerPeerStorage("test", peerStorage);
-  CPPUNIT_ASSERT_EQUAL(peerStorage.get(),
-		       btRegistry.getPeerStorage("test").get());
+static void addTwoBtContext(BtRegistry& btRegistry)
+{
+  SharedHandle<BtContext> btContext1(new MockBtContext());
+  SharedHandle<BtContext> btContext2(new MockBtContext());
+  BtObject btObject1;
+  btObject1._btContext = btContext1;
+  BtObject btObject2;
+  btObject2._btContext = btContext2;
+  btRegistry.put("ctx1", btObject1);
+  btRegistry.put("ctx2", btObject2);
 }
 
-void BtRegistryTest::testGetPieceStorage() {
+void BtRegistryTest::testGetAllBtContext()
+{
   BtRegistry btRegistry;
-  CPPUNIT_ASSERT(!btRegistry.getPieceStorage("test").get());
+  addTwoBtContext(btRegistry);
 
-  SharedHandle<PieceStorage> pieceStorage(new MockPieceStorage());
-
-  btRegistry.registerPieceStorage("test", pieceStorage);
-  CPPUNIT_ASSERT_EQUAL(pieceStorage.get(),
-		       btRegistry.getPieceStorage("test").get());
+  std::vector<SharedHandle<BtContext> > result;
+  btRegistry.getAllBtContext(std::back_inserter(result));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
 }
 
-void BtRegistryTest::testGetBtRuntime() {
+void BtRegistryTest::testRemove()
+{
   BtRegistry btRegistry;
-  CPPUNIT_ASSERT(!btRegistry.getBtRuntime("test").get());
-
-  SharedHandle<BtRuntime> runtime;
-
-  btRegistry.registerBtRuntime("test", runtime);
-  CPPUNIT_ASSERT_EQUAL(runtime.get(),
-		       btRegistry.getBtRuntime("test").get());
+  addTwoBtContext(btRegistry);
+  CPPUNIT_ASSERT(btRegistry.remove("ctx1"));
+  CPPUNIT_ASSERT(btRegistry.get("ctx1").isNull());
+  CPPUNIT_ASSERT(!btRegistry.get("ctx2").isNull());
 }
 
-void BtRegistryTest::testGetBtAnnounce() {
+void BtRegistryTest::testRemoveAll()
+{
   BtRegistry btRegistry;
-  CPPUNIT_ASSERT(!btRegistry.getBtAnnounce("test").get());
-  
-  SharedHandle<BtAnnounce> btAnnounce(new MockBtAnnounce());
-
-  btRegistry.registerBtAnnounce("test", btAnnounce);
-  CPPUNIT_ASSERT_EQUAL(btAnnounce.get(),
-		       btRegistry.getBtAnnounce("test").get());
-}
-
-void BtRegistryTest::testGetBtProgressInfoFile() {
-  BtRegistry btRegistry;
-  CPPUNIT_ASSERT(!btRegistry.getBtProgressInfoFile("test").get());
-
-  SharedHandle<BtProgressInfoFile> btProgressInfoFile(new MockBtProgressInfoFile());
-
-  btRegistry.registerBtProgressInfoFile("test", btProgressInfoFile);
-  CPPUNIT_ASSERT_EQUAL(btProgressInfoFile.get(),
-  		       btRegistry.getBtProgressInfoFile("test").get());
+  addTwoBtContext(btRegistry);
+  btRegistry.removeAll();
+  CPPUNIT_ASSERT(btRegistry.get("ctx1").isNull());
+  CPPUNIT_ASSERT(btRegistry.get("ctx2").isNull());
 }
 
 } // namespace aria2
