@@ -1,5 +1,10 @@
 2009-06-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed include vector
+	* src/BtRegistry.h
+
+2009-06-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten BtRegistry
 	* src/BtRegistry.cc
 	* src/BtRegistry.h
