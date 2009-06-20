@@ -393,10 +393,13 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 		ProcessStoppedRequestGroup(e, _reservedGroups,
 					   _downloadResults));
 
-  _requestGroups.erase(std::remove_if(_requestGroups.begin(),
-				      _requestGroups.end(),
-				      FindStoppedRequestGroup()),
-		       _requestGroups.end());
+  std::deque<SharedHandle<RequestGroup> >::iterator i =
+    std::remove_if(_requestGroups.begin(),
+		   _requestGroups.end(),
+		   FindStoppedRequestGroup());
+  if(i != _requestGroups.end()) {
+    _requestGroups.erase(i, _requestGroups.end());
+  }
 
   size_t numRemoved = numPrev-_requestGroups.size();
   if(numRemoved > 0) {
@@ -465,7 +468,9 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
   }
-  _reservedGroups.insert(_reservedGroups.begin(), temp.begin(), temp.end());
+  if(!temp.empty()) {
+    _reservedGroups.insert(_reservedGroups.begin(), temp.begin(), temp.end());
+  }
   if(count > 0) {
     e->setNoWait(true);
     _logger->debug("%d RequestGroup(s) added.", count);

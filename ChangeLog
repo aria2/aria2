@@ -1,3 +1,8 @@
+2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Small performance optimizations.
+	* src/RequestGroupMan.cc
+
 2009-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added _xmlRpc member variable to RequestGroupMan to reduce the
