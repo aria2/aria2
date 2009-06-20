@@ -141,7 +141,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_DIR,
 				    TEXT_DIR,
-				    ".",
+				    File::getCurrentDir(),
 				    A2STR::NIL,
 				    OptionHandler::REQ_ARG,
 				    'd'));

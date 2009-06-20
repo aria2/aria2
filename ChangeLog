@@ -1,5 +1,17 @@
 2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	The default value of --dir option is the absolute path to the
+	current directory. If getcwd() is failed, then it is ".", which is
+	the same value with old implementation. This change is necessary
+	because after daemon() call, the current working directory is
+	changed to /.
+	* src/File.cc
+	* src/File.h
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+
+2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call daemon() with arguments(0,0), which means daemon() changes
 	current working directory to / and redirects stdin, stdout and
 	stderr to /dev/null.

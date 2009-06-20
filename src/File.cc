@@ -37,6 +37,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <utime.h>
+#include <unistd.h>
 
 #include <deque>
 #include <cstring>
@@ -44,6 +45,7 @@
 
 #include "Util.h"
 #include "A2STR.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -199,6 +201,22 @@ Time File::getModifiedTime()
     return 0;
   }
   return Time(fstat.st_mtime);
+}
+
+std::string File::getCurrentDir()
+{
+  size_t buflen = 256;
+  while(buflen <= 2048) {
+    array_ptr<char> buf(new char[buflen]);
+    if(getcwd(buf, buflen)) {
+      return std::string(buf);
+    } else if(errno == ERANGE) {
+      buflen *= 2;
+    } else {
+      break;
+    }
+  }
+  return A2STR::DOT_C;
 }
 
 } // namespace aria2

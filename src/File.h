@@ -109,6 +109,11 @@ public:
   bool utime(const Time& actime, const Time& modtime) const;
 
   Time getModifiedTime();
+
+  // Returns the current working directory.  If the current working
+  // directory cannot be retrieved or its length is larger than 2048,
+  // returns ".".
+  static std::string getCurrentDir();
 };
 
 } // namespace aria2
