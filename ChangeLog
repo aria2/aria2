@@ -1,5 +1,12 @@
 2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Call daemon() with arguments(0,0), which means daemon() changes
+	current working directory to / and redirects stdin, stdout and
+	stderr to /dev/null.
+	* src/option_processing.cc
+
+2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Small performance optimizations.
 	* src/RequestGroupMan.cc
 

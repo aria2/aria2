@@ -191,7 +191,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
   }
 #ifdef HAVE_DAEMON
   if(op.getAsBool(PREF_DAEMON)) {
-    if(daemon(1, 1) < 0) {
+    if(daemon(0, 0) < 0) {
       perror(MSG_DAEMON_FAILED);
       exit(DownloadResult::UNKNOWN_ERROR);
     }
