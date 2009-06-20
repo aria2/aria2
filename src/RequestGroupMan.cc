@@ -80,13 +80,14 @@ RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
   _serverStatMan(new ServerStatMan()),
   _maxOverallDownloadSpeedLimit
   (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
-  _maxOverallUploadSpeedLimit(option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT))
+  _maxOverallUploadSpeedLimit(option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT)),
+  _xmlRpc(option->getAsBool(PREF_ENABLE_XML_RPC))
 {}
 
 bool RequestGroupMan::downloadFinished()
 {
 #ifdef ENABLE_XML_RPC
-  if(_option->getAsBool(PREF_ENABLE_XML_RPC)) {
+  if(_xmlRpc) {
     return false;
   }
 #endif // ENABLE_XML_RPC

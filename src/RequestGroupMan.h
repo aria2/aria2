@@ -73,6 +73,9 @@ private:
 
   unsigned int _maxOverallUploadSpeedLimit;
 
+  // truf if XML-RPC is enabled.
+  bool _xmlRpc;
+
   std::string
   formatDownloadResult(const std::string& status,
 		       const SharedHandle<DownloadResult>& downloadResult) const;

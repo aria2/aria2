@@ -1,5 +1,12 @@
 2009-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added _xmlRpc member variable to RequestGroupMan to reduce the
+	number of call Option::getAsBool(PREF_ENABLE_XML_RPC)	
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+
+2009-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call setStatus(STATUS_ONESHOT_REALTIME) from constructor.  Call
 	setNoWiat(true) if newly created command calls
 	setStatus(STATUS_ONESHOT_REALTIME) from its constructor.
