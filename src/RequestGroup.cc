@@ -659,8 +659,6 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 	  (e->newCUID(), req, this, e);
 	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
 	registerServerHost(sv);
-	// give a chance to be executed in the next loop in DownloadEngine
-	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
 	commands.push_back(command);
       } else {
 	pendingURIs.push_back(uri);
@@ -670,6 +668,9 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
     }
   }
   _uris.insert(_uris.begin(), pendingURIs.begin(), pendingURIs.end());
+  if(!commands.empty()) {
+    e->setNoWait(true);
+  }
 }
 
 std::string RequestGroup::getFilePath() const

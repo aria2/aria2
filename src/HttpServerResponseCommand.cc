@@ -53,7 +53,7 @@ HttpServerResponseCommand::HttpServerResponseCommand
   _socket(socket),
  _httpServer(httpServer)
 {
- 
+  setStatus(Command::STATUS_ONESHOT_REALTIME); 
   _e->addSocketForWriteCheck(_socket, this);
 }
 

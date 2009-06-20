@@ -62,6 +62,7 @@ HttpServerBodyCommand::HttpServerBodyCommand
   _socket(socket),
   _httpServer(httpServer)
 {
+  setStatus(Command::STATUS_ONESHOT_REALTIME);
   _e->addSocketForReadCheck(_socket, this);
 }
 
@@ -91,7 +92,6 @@ bool HttpServerBodyCommand::execute()
 	  _httpServer->feedResponse(res.toXml(), "text/xml");
 	  Command* command =
 	    new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
-	  command->setStatus(Command::STATUS_ONESHOT_REALTIME);
 	  _e->commands.push_back(command);
 	  _e->setNoWait(true);
 	  return true;

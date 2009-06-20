@@ -63,6 +63,7 @@ void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& comma
   if(_nextCommand) {
     // give _nextCommand a chance to execute in the next execution loop.
     _nextCommand->setStatus(Command::STATUS_ONESHOT_REALTIME);
+    e->setNoWait(true);
     commands.push_back(popNextCommand());
     // try remaining uris
     _requestGroup->createNextCommandWithAdj(commands, e, -1);
@@ -73,9 +74,8 @@ void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& comma
       Command* command =
 	InitiateConnectionCommandFactory::createInitiateConnectionCommand
 	(e->newCUID(), _currentRequest, _requestGroup, e);
-
+      e->setNoWait(true);
       commands.push_back(command);
-
       _requestGroup->createNextCommandWithAdj(commands, e, -1);
     }
   }

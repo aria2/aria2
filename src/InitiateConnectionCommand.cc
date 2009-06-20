@@ -53,6 +53,7 @@ InitiateConnectionCommand::InitiateConnectionCommand
   AbstractCommand(cuid, req, requestGroup, e)
 {
   setTimeout(getOption()->getAsInt(PREF_DNS_TIMEOUT));
+  // give a chance to be executed in the next loop in DownloadEngine
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();
   disableWriteCheckSocket();

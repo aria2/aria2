@@ -1,3 +1,16 @@
+2009-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Call setStatus(STATUS_ONESHOT_REALTIME) from constructor.  Call
+	setNoWiat(true) if newly created command calls
+	setStatus(STATUS_ONESHOT_REALTIME) from its constructor.
+	* src/HttpListenCommand.cc
+	* src/HttpServerBodyCommand.cc
+	* src/HttpServerCommand.cc
+	* src/HttpServerResponseCommand.cc
+	* src/InitiateConnectionCommand.cc
+	* src/RequestGroup.cc
+	* src/StreamFileAllocationEntry.cc
+
 2009-06-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed include vector

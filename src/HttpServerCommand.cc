@@ -56,6 +56,7 @@ HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
   _socket(socket),
   _httpServer(new HttpServer(socket, e))
 {
+  setStatus(Command::STATUS_ONESHOT_REALTIME);
   _e->addSocketForReadCheck(_socket, this);
   _httpServer->setUsernamePassword(_e->option->get(PREF_XML_RPC_USER),
 				   _e->option->get(PREF_XML_RPC_PASSWD));
@@ -96,7 +97,6 @@ bool HttpServerCommand::execute()
 				  "","text/html");
 	Command* command =
 	  new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
-	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
 	_e->commands.push_back(command);
 	_e->setNoWait(true);
 	return true;
@@ -115,7 +115,6 @@ bool HttpServerCommand::execute()
       } else {
 	Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
 						     _socket);
-	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
 	_e->commands.push_back(command);
 	_e->setNoWait(true);
 	return true;

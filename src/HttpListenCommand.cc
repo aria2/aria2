@@ -72,7 +72,6 @@ bool HttpListenCommand::execute()
 
       HttpServerCommand* c =
 	new HttpServerCommand(_e->newCUID(), _e, socket);
-      c->setStatus(Command::STATUS_ONESHOT_REALTIME);
       _e->setNoWait(true);
       _e->commands.push_back(c);
     }
