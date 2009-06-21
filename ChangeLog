@@ -1,5 +1,15 @@
 2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	In TLSContext::addClientKeyFile() and addTrustedCACertFile(),
+	handle excepion inside these functions.
+	* src/LibgnutlsTLSContext.cc
+	* src/LibgnutlsTLSContext.h
+	* src/LibsslTLSContext.cc
+	* src/LibsslTLSContext.h
+	* src/MultiUrlRequestInfo.cc
+
+2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added comment
 	* src/RequestGroup.cc
 

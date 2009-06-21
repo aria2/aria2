@@ -62,11 +62,11 @@ public:
   ~TLSContext();
 
   // private key `keyfile' must be decrypted.
-  void addClientKeyFile(const std::string& certfile,
-			const std::string& keyfile) throw(DlAbortEx);
+  bool addClientKeyFile(const std::string& certfile,
+			const std::string& keyfile);
 
   // certfile can contain multiple certificates.
-  void addTrustedCACertFile(const std::string& certfile) throw(DlAbortEx);
+  bool addTrustedCACertFile(const std::string& certfile);
 
   bool good() const;
 

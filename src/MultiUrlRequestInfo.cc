@@ -140,10 +140,7 @@ DownloadResult::RESULT MultiUrlRequestInfo::execute()
 				   _option->get(PREF_PRIVATE_KEY));
     }
     if(!_option->blank(PREF_CA_CERTIFICATE)) {
-      try {
-	tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE));
-      } catch(RecoverableException& e) {
-	_logger->error(EX_EXCEPTION_CAUGHT, e);
+      if(!tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE))) {
 	_logger->warn(MSG_WARN_NO_CA_CERT);
       }
     } else if(_option->getAsBool(PREF_CHECK_CERTIFICATE)) {

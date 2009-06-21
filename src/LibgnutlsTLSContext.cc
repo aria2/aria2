@@ -78,36 +78,39 @@ bool TLSContext::bad() const
   return !_good;
 }
 
-void TLSContext::addClientKeyFile(const std::string& certfile,
+bool TLSContext::addClientKeyFile(const std::string& certfile,
 				  const std::string& keyfile)
-  throw(DlAbortEx)
 {
   int ret = gnutls_certificate_set_x509_key_file(_certCred,
 						 certfile.c_str(),
 						 keyfile.c_str(),
 						 GNUTLS_X509_FMT_PEM);
-  if(ret != GNUTLS_E_SUCCESS) {
-    throw DL_ABORT_EX
-      (StringFormat("Failed to load client certificate from %s and"
-		    " private key from %s. Cause: %s",
-		    certfile.c_str(), keyfile.c_str(),
-		    gnutls_strerror(ret)).str());
+  if(ret == GNUTLS_E_SUCCESS) {
+    _logger->info("Client Key File(cert=%s, key=%s) were successfully added.",
+		  certfile.c_str(), keyfile.c_str());
+    return true;
+  } else {
+    _logger->error("Failed to load client certificate from %s and"
+		   " private key from %s. Cause: %s",
+		   certfile.c_str(), keyfile.c_str(),
+		   gnutls_strerror(ret));
+    return false;
   }
 }
 
-void TLSContext::addTrustedCACertFile(const std::string& certfile)
-  throw(DlAbortEx)
+bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   int ret = gnutls_certificate_set_x509_trust_file(_certCred,
 						   certfile.c_str(),
 						   GNUTLS_X509_FMT_PEM);
   if(ret < 0) {
-    throw DL_ABORT_EX
-      (StringFormat
-       (MSG_LOADING_TRUSTED_CA_CERT_FAILED,
-	certfile.c_str(), gnutls_strerror(ret)).str());
+    _logger->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
+		   certfile.c_str(), gnutls_strerror(ret));
+    return false;
+  } else {
+    _logger->info("%d certificate(s) were imported.", ret);
+    return true;
   }
-  _logger->info("%d certificate(s) were imported.", ret);
 }
 
 gnutls_certificate_credentials_t TLSContext::getCertCred() const
