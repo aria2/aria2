@@ -820,6 +820,12 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
     SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
     BtContextHandle btContextInReg =
       btRegistry->getBtContext(btContext->getInfoHashAsString());
+    // Make sure that the registered BtContext's GID is equal to
+    // this->getGID().  Even if createInitialCommand() throws
+    // exception without registering this BtContext, after that, this
+    // method is called. In this case, just finding BtContext using
+    // infoHash may detect another download's BtContext and deleting
+    // it from BtRegistry causes Segmentation Fault.
     if(!btContextInReg.isNull() &&
        btContextInReg->getOwnerRequestGroup()->getGID() ==
 	btContext->getOwnerRequestGroup()->getGID()) {

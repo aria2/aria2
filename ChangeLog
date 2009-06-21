@@ -1,5 +1,10 @@
 2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added comment
+	* src/RequestGroup.cc
+
+2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	In CookieStorage::load() and saveNsFormat(), handle exception
 	inside the functions. When saving Cookies, first write temporary
 	file and after successful writes, then renames it to final
