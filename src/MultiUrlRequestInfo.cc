@@ -106,18 +106,14 @@ DownloadResult::RESULT MultiUrlRequestInfo::execute()
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option.get(), _requestGroups);
 
-    try {
-      if(!_option->blank(PREF_LOAD_COOKIES)) {
-	File cookieFile(_option->get(PREF_LOAD_COOKIES));
-	if(cookieFile.isFile()) {
-	  e->getCookieStorage()->load(_option->get(PREF_LOAD_COOKIES));
-	} else {
-	  _logger->error(MSG_LOADING_COOKIE_FAILED,
-			 _option->get(PREF_LOAD_COOKIES).c_str());
-	}
+    if(!_option->blank(PREF_LOAD_COOKIES)) {
+      File cookieFile(_option->get(PREF_LOAD_COOKIES));
+      if(cookieFile.isFile()) {
+	e->getCookieStorage()->load(_option->get(PREF_LOAD_COOKIES));
+      } else {
+	_logger->error(MSG_LOADING_COOKIE_FAILED,
+		       _option->get(PREF_LOAD_COOKIES).c_str());
       }
-    } catch(RecoverableException& e) {
-      _logger->error(EX_EXCEPTION_CAUGHT, e);
     }
 
     SharedHandle<AuthConfigFactory> authConfigFactory
@@ -183,11 +179,7 @@ DownloadResult::RESULT MultiUrlRequestInfo::execute()
     e->run();
     
     if(!_option->blank(PREF_SAVE_COOKIES)) {
-      try {
-	e->getCookieStorage()->saveNsFormat(_option->get(PREF_SAVE_COOKIES));
-      } catch(RecoverableException& e) {
-	_logger->error(EX_EXCEPTION_CAUGHT, e);
-      }
+      e->getCookieStorage()->saveNsFormat(_option->get(PREF_SAVE_COOKIES));
     }
 
     std::string serverStatOf = _option->get(PREF_SERVER_STAT_OF);

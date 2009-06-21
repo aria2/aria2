@@ -76,9 +76,17 @@ public:
 				  const std::string& requestPath,
 				  time_t date, bool secure) const;
 
-  void load(const std::string& filename);
+  // Loads Cookies from file denoted by filename.  If compiled with
+  // libsqlite3, this method automatically detects the specified file
+  // is sqlite3 or just plain text file and calls appropriate parser
+  // implementation class.  If Cookies are successfully loaded, this
+  // method returns true.  Otherwise, this method returns false.
+  bool load(const std::string& filename);
   
-  void saveNsFormat(const std::string& filename);
+  // Saves Cookies in Netspace format which is used in
+  // Firefox1.2/Netscape/Mozilla.  If Cookies are successfully saved,
+  // this method returns true, otherwise returns false.
+  bool saveNsFormat(const std::string& filename);
 
   size_t size() const;
   

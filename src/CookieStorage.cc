@@ -141,17 +141,15 @@ size_t CookieStorage::size() const
   return _cookies.size();
 }
 
-void CookieStorage::load(const std::string& filename)
+bool CookieStorage::load(const std::string& filename)
 {
   char header[16]; // "SQLite format 3" plus \0
-  {
-    std::ifstream s(filename.c_str(), std::ios::binary);
-    s.get(header, sizeof(header));
-    if(!s) {
-      throw DL_ABORT_EX
-	(StringFormat("Failed to read header of cookie file %s",
-		      filename.c_str()).str());
-    }
+  std::ifstream s(filename.c_str(), std::ios::binary);
+  s.get(header, sizeof(header));
+  if(!s) {
+    _logger->error("Failed to read header of cookie file %s",
+		   filename.c_str());
+    return false;
   }
   try {
     if(std::string(header) == "SQLite format 3") {
@@ -165,28 +163,36 @@ void CookieStorage::load(const std::string& filename)
     } else {
       storeCookies(NsCookieParser().parse(filename));
     }
+    return true;
   } catch(RecoverableException& e) {
-    throw DL_ABORT_EX2
-      (StringFormat("Failed to load cookies from %s", filename.c_str()).str(),
-       e);
+    _logger->error("Failed to load cookies from %s", filename.c_str());
+    return false;
   }
 }
 
-void CookieStorage::saveNsFormat(const std::string& filename)
+bool CookieStorage::saveNsFormat(const std::string& filename)
 {
-  std::ofstream o(filename.c_str(), std::ios::binary);
+  std::string tempfilename = filename+"__temp";
+  std::ofstream o(tempfilename.c_str(), std::ios::binary);
   if(!o) {
-    throw DL_ABORT_EX
-      (StringFormat("Cannot create cookie file %s, cause %s",
-		    filename.c_str(), strerror(errno)).str());
+    _logger->error("Cannot create cookie file %s, cause %s",
+		   filename.c_str(), strerror(errno));
+    return false;
   }
   for(std::deque<Cookie>::const_iterator i = _cookies.begin();
       i != _cookies.end(); ++i) {
     o << (*i).toNsCookieFormat() << "\n";
     if(!o) {
-      throw DL_ABORT_EX
-	(StringFormat("Failed to save cookies to %s", filename.c_str()).str());
+      _logger->error("Failed to save cookies to %s", filename.c_str());
+      return false;
     }
+  }
+  if(File(tempfilename).renameTo(filename)) {
+    return true;
+  } else {
+    _logger->error("Could not rename file %s as %s",
+		   tempfilename.c_str(), filename.c_str());
+    return false;
   }
 }
 

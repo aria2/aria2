@@ -1,5 +1,15 @@
 2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	In CookieStorage::load() and saveNsFormat(), handle exception
+	inside the functions. When saving Cookies, first write temporary
+	file and after successful writes, then renames it to final
+	destination.
+	* src/CookieStorage.cc
+	* src/CookieStorage.h
+	* src/MultiUrlRequestInfo.cc
+
+2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	The default value of --dir option is the absolute path to the
 	current directory. If getcwd() is failed, then it is ".", which is
 	the same value with old implementation. This change is necessary
