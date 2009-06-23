@@ -49,6 +49,8 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testChangeGlobalOption);
   CPPUNIT_TEST(testChangeGlobalOption_withBadOption);
   CPPUNIT_TEST(testTellStatus_withoutGid);
+  CPPUNIT_TEST(testTellWaiting);
+  CPPUNIT_TEST(testTellWaiting_fail);
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -60,6 +62,7 @@ public:
     RequestGroup::resetGIDCounter();
     _option.reset(new Option());
     _option->put(PREF_DIR, "/tmp");
+    _option->put(PREF_SEGMENT_SIZE, "1048576");
     _e.reset(new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
     _e->option = _option.get();
     _e->_requestGroupMan.reset
@@ -93,6 +96,8 @@ public:
   void testChangeGlobalOption();
   void testChangeGlobalOption_withBadOption();
   void testTellStatus_withoutGid();
+  void testTellWaiting();
+  void testTellWaiting_fail();
   void testNoSuchMethod();
 };
 
@@ -457,6 +462,56 @@ void XmlRpcMethodTest::testTellStatus_withoutGid()
 {
   TellStatusXmlRpcMethod m;
   XmlRpcRequest req("aria2.tellStatus", BDE::list());
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+}
+
+static void addUri(const std::string& uri,
+		   const SharedHandle<DownloadEngine>& e)
+{
+  AddUriXmlRpcMethod m;
+  XmlRpcRequest req("aria2.addUri", BDE::list());
+  req._params << BDE::list();
+  req._params[0] << BDE(uri);
+  CPPUNIT_ASSERT_EQUAL(0, m.execute(req, e.get())._code);
+}
+
+void XmlRpcMethodTest::testTellWaiting()
+{
+  addUri("http://1/", _e);
+  addUri("http://2/", _e);
+  addUri("http://3/", _e);
+  addUri("http://4/", _e);
+
+  TellWaitingXmlRpcMethod m;
+  XmlRpcRequest req("aria2.tellWaiting", BDE::list());
+  req._params << BDE((int64_t)1);
+  req._params << BDE((int64_t)2);
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, res._param.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"), res._param[0]["gid"].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("3"), res._param[1]["gid"].s());
+  // waiting.size() == offset+num 
+  req = XmlRpcRequest("aria2.tellWaiting", BDE::list());
+  req._params << BDE((int64_t)1);
+  req._params << BDE((int64_t)3);
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, res._param.size());
+  // waiting.size() < offset+num 
+  req = XmlRpcRequest("aria2.tellWaiting", BDE::list());
+  req._params << BDE((int64_t)1);
+  req._params << BDE((int64_t)4);
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, res._param.size());
+}
+
+void XmlRpcMethodTest::testTellWaiting_fail()
+{
+  TellWaitingXmlRpcMethod m;
+  XmlRpcRequest req("aria2.tellWaiting", BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }

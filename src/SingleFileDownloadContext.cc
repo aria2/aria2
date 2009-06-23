@@ -83,7 +83,11 @@ bool SingleFileDownloadContext::knowsTotalLength() const
 
 size_t SingleFileDownloadContext::getNumPieces() const
 {
-  return (_fileEntries.front()->getLength()+_pieceLength-1)/_pieceLength;
+  if(_pieceLength == 0) {
+    return 0;
+  } else {
+    return (_fileEntries.front()->getLength()+_pieceLength-1)/_pieceLength;
+  }
 }
 
 std::string SingleFileDownloadContext::getActualBasePath() const

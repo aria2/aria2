@@ -71,6 +71,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
 #endif // ENABLE_BITTORRENT
   } else if(methodName == "aria2.tellActive") {
     return SharedHandle<XmlRpcMethod>(new TellActiveXmlRpcMethod());
+  } else if(methodName == "aria2.tellWaiting") {
+    return SharedHandle<XmlRpcMethod>(new TellWaitingXmlRpcMethod());
   } else if(methodName == "aria2.changeOption") {
     return SharedHandle<XmlRpcMethod>(new ChangeOptionXmlRpcMethod());
   } else if(methodName == "aria2.changeGlobalOption") {

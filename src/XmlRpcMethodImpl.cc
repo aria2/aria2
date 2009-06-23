@@ -521,6 +521,48 @@ BDE TellActiveXmlRpcMethod::process
   return list;
 }
 
+BDE TellWaitingXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.size() != 2 ||
+     !params[0].isInteger() || !params[1].isInteger() ||
+     params[0].i() < 0 || params[1].i() < 0) {
+    throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
+  }
+
+  size_t offset = params[0].i();
+  size_t num = params[1].i();
+
+  BDE list = BDE::list();
+  const std::deque<SharedHandle<RequestGroup> >& waitings =
+    e->_requestGroupMan->getReservedGroups();
+  if(waitings.size() <= offset) {
+    return list;
+  }
+  size_t lastDistance;
+  if(waitings.size() < offset+num) {
+    lastDistance = waitings.size();
+  } else {
+    lastDistance = offset+num;
+  }
+  std::deque<SharedHandle<RequestGroup> >::const_iterator first =
+    waitings.begin();
+  std::advance(first, offset);
+  std::deque<SharedHandle<RequestGroup> >::const_iterator last =
+    waitings.begin();
+  std::advance(last, lastDistance);
+  for(; first != last; ++first) {
+    BDE entryDict = BDE::dict();
+    entryDict["status"] = BDE_WAITING;
+    gatherProgress(entryDict, *first, e);
+    list << entryDict;
+  }
+  return list;
+}
+
 BDE PurgeDownloadResultXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
