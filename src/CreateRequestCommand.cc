@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,30 +32,54 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpProxyResponseCommand.h"
-#include "HttpRequestCommand.h"
-#include "Request.h"
-#include "HttpConnection.h"
-#include "HttpRequest.h"
+#include "CreateRequestCommand.h"
+
+#include "InitiateConnectionCommandFactory.h"
+#include "RequestGroup.h"
 #include "Segment.h"
-#include "Socket.h"
+#include "DownloadContext.h"
+#include "DlAbortEx.h"
+#include "DownloadEngine.h"
+#include "SocketCore.h"
+#include "SegmentMan.h"
 
 namespace aria2 {
 
-HttpProxyResponseCommand::HttpProxyResponseCommand(int cuid,
-						   const RequestHandle& req,
-						   RequestGroup* requestGroup,
-						   const HttpConnectionHandle& httpConnection,
-						   DownloadEngine* e,
-						   const SocketHandle& s)
-  :AbstractProxyResponseCommand(cuid, req, requestGroup, httpConnection, e, s) {}
-
-HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
-
-Command* HttpProxyResponseCommand::getNextCommand()
+CreateRequestCommand::CreateRequestCommand(int32_t cuid,
+					   RequestGroup* requestGroup,
+					   DownloadEngine* e):
+  AbstractCommand(cuid, SharedHandle<Request>(), requestGroup, e)
 {
-  return new HttpRequestCommand(cuid, req, _fileEntry,
-				_requestGroup, httpConnection, e, socket);
+  setStatus(Command::STATUS_ONESHOT_REALTIME);
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
+}
+		  
+bool CreateRequestCommand::executeInternal()
+{
+  if(_segments.empty()) {
+    _fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset(0);
+  } else {
+    // We assume all segments belongs to same file.
+    _fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset
+      (_segments.front()->getPositionToWrite());
+  }
+  req = _fileEntry->getRequest(_requestGroup->getURISelector());
+  if(req.isNull()) {
+    if(!_requestGroup->getSegmentMan().isNull()) {
+      _requestGroup->getSegmentMan()->ignoreSegmentFor(_fileEntry);
+    }
+    throw DL_ABORT_EX("No URI available.");
+  }
+
+  Command* command =
+    InitiateConnectionCommandFactory::createInitiateConnectionCommand
+    (cuid, req, _fileEntry, _requestGroup, e);
+  //ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
+  //registerServerHost(sv);
+  e->setNoWait(true);
+  e->commands.push_back(command);
+  return true;
 }
 
 } // namespace aria2

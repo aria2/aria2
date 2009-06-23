@@ -261,10 +261,11 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
 
 #endif // ENABLE_BITTORRENT
 
-PieceHandle DefaultPieceStorage::getMissingPiece()
+PieceHandle DefaultPieceStorage::getSparseMissingUnusedPiece
+(const unsigned char* ignoreBitfield, size_t length)
 {
   size_t index;
-  if(bitfieldMan->getSparseMissingUnusedIndex(index)) {
+  if(bitfieldMan->getSparseMissingUnusedIndex(index, ignoreBitfield, length)) {
     return checkOutPiece(index);
   } else {
     return SharedHandle<Piece>();

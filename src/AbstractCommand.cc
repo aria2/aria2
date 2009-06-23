@@ -47,7 +47,7 @@
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "DownloadFailureException.h"
-#include "InitiateConnectionCommandFactory.h"
+#include "CreateRequestCommand.h"
 #include "SleepCommand.h"
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
@@ -62,9 +62,12 @@
 #include "RequestGroupMan.h"
 #include "A2STR.h"
 #include "Util.h"
+#include "LogFactory.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
+// TODO1.5 Remove this
 AbstractCommand::AbstractCommand(int32_t cuid,
 				 const SharedHandle<Request>& req,
 				 RequestGroup* requestGroup,
@@ -72,6 +75,25 @@ AbstractCommand::AbstractCommand(int32_t cuid,
 				 const SocketHandle& s):
   Command(cuid), _requestGroup(requestGroup),
   req(req), e(e), socket(s),
+  checkSocketIsReadable(false), checkSocketIsWritable(false),
+  nameResolverCheck(false)
+{
+  if(!socket.isNull() && socket->isOpen()) {
+    setReadCheckSocket(socket);
+  }
+  timeout = _requestGroup->getTimeout();
+  _requestGroup->increaseStreamConnection();
+  _requestGroup->increaseNumCommand();
+}
+
+AbstractCommand::AbstractCommand(int32_t cuid,
+				 const SharedHandle<Request>& req,
+				 const SharedHandle<FileEntry>& fileEntry,
+				 RequestGroup* requestGroup,
+				 DownloadEngine* e,
+				 const SocketHandle& s):
+  Command(cuid), _requestGroup(requestGroup),
+  req(req), _fileEntry(fileEntry), e(e), socket(s),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   nameResolverCheck(false)
 {
@@ -125,7 +147,8 @@ bool AbstractCommand::execute() {
       if(!_requestGroup->getPieceStorage().isNull()) {
 	_segments.clear();
 	_requestGroup->getSegmentMan()->getInFlightSegment(_segments, cuid);
-	while(_segments.size() < req->getMaxPipelinedRequest()) {
+	size_t maxSegments = req.isNull()?1:req->getMaxPipelinedRequest();
+	while(_segments.size() < maxSegments) {
 	  SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid);
 	  if(segment.isNull()) {
 	    break;
@@ -135,7 +158,7 @@ bool AbstractCommand::execute() {
 	if(_segments.empty()) {
 	  // TODO socket could be pooled here if pipelining is enabled...
 	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
-	  return prepareForRetry(1);
+	  return true;
 	}
       }
       return executeInternal();
@@ -146,6 +169,7 @@ bool AbstractCommand::execute() {
     } else {
       if(checkPoint.elapsed(timeout)) {
 	// timeout triggers ServerStat error state.
+
 	SharedHandle<ServerStat> ss =
 	  e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
 						     req->getProtocol());
@@ -157,13 +181,18 @@ bool AbstractCommand::execute() {
       return false;
     }
   } catch(DlAbortEx& err) {
-    logger->error(MSG_DOWNLOAD_ABORTED,
-		  DL_ABORT_EX2(StringFormat
-			      ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
-		  cuid, req->getUrl().c_str());
-    _requestGroup->addURIResult(req->getUrl(), err.getCode());
+    if(req.isNull()) {
+      logger->debug(EX_EXCEPTION_CAUGHT, err);
+    } else {
+      logger->error(MSG_DOWNLOAD_ABORTED,
+		    DL_ABORT_EX2(StringFormat
+				 ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
+		    cuid, req->getUrl().c_str());
+      _requestGroup->addURIResult(req->getUrl(), err.getCode());
+    }
     onAbort();
-    req->resetUrl();
+    // TODO Do we need this?
+    //req->resetUrl();
     tryReserved();
     return true;
   } catch(DlRetryEx& err) {
@@ -202,6 +231,16 @@ bool AbstractCommand::execute() {
 
 void AbstractCommand::tryReserved() {
   _requestGroup->removeServerHost(cuid);
+  if(_requestGroup->getDownloadContext()->getFileMode() == DownloadContext::SINGLE) {
+    const SharedHandle<FileEntry>& entry =
+      _requestGroup->getDownloadContext()->getFileEntries().front();
+    // Don't create new command if currently file length is unknown
+    // and there are no URI left. Because file length is unknown, we
+    // can assume that there are no in-flight request object.
+    if(entry->getLength() == 0 && entry->getRemainingUris().size() == 0) {
+      return;
+    }
+  }
   Commands commands;
   _requestGroup->createNextCommand(commands, e, 1);
   e->setNoWait(true);
@@ -212,7 +251,18 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
-  Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, _requestGroup, e);
+  if(!req.isNull()) {
+    _fileEntry->poolRequest(req);
+  }
+  if(!_segments.empty()) {
+    // TODO1.5 subtract 1 from getPositionToWrite()
+    SharedHandle<FileEntry> fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset(_segments.front()->getPositionToWrite()-1);
+    logger->debug("CUID#%d - Pooling request URI=%s",
+		  cuid, req->getUrl().c_str());
+    _requestGroup->getSegmentMan()->recognizeSegmentFor(_fileEntry);
+  }
+
+  Command* command = new CreateRequestCommand(cuid, _requestGroup, e);
   if(wait == 0) {
     e->setNoWait(true);
     e->commands.push_back(command);
@@ -225,16 +275,22 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
 }
 
 void AbstractCommand::onAbort() {
-  // TODO This might be a problem if the failure is caused by proxy.
-  e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
-					     req->getProtocol())->setError();
+  if(!req.isNull()) {
+    logger->debug(req->getCurrentUrl().c_str());
+    // TODO This might be a problem if the failure is caused by proxy.
+    e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
+					       req->getProtocol())->setError();
+    _requestGroup->removeIdenticalURI(req->getUrl());
+    _fileEntry->removeRequest(req);
+  }
 
   logger->debug(MSG_UNREGISTER_CUID, cuid);
   //_segmentMan->unregisterId(cuid);
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
-  _requestGroup->removeIdenticalURI(req->getUrl());
+  // TODO1.5 Should be moved to FileEntry
+  // _requestGroup->removeIdenticalURI(req->getUrl());
 }
 
 void AbstractCommand::disableReadCheckSocket() {

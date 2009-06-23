@@ -51,6 +51,7 @@ protected:
 public:
   FtpFinishDownloadCommand(int cuid,
 			   const SharedHandle<Request>& req,
+			   const SharedHandle<FileEntry>& fileEntry,
 			   RequestGroup* requestGroup,
 			   const SharedHandle<FtpConnection>& ftpConnection,
 			   DownloadEngine* e,

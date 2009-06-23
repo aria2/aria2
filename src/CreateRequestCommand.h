@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,30 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpProxyResponseCommand.h"
-#include "HttpRequestCommand.h"
-#include "Request.h"
-#include "HttpConnection.h"
-#include "HttpRequest.h"
-#include "Segment.h"
-#include "Socket.h"
+#ifndef _D_CREATE_REQUEST_COMMAND_H_
+#define _D_CREATE_REQUEST_COMMAND_H_
+
+#include "AbstractCommand.h"
 
 namespace aria2 {
 
-HttpProxyResponseCommand::HttpProxyResponseCommand(int cuid,
-						   const RequestHandle& req,
-						   RequestGroup* requestGroup,
-						   const HttpConnectionHandle& httpConnection,
-						   DownloadEngine* e,
-						   const SocketHandle& s)
-  :AbstractProxyResponseCommand(cuid, req, requestGroup, httpConnection, e, s) {}
-
-HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
-
-Command* HttpProxyResponseCommand::getNextCommand()
-{
-  return new HttpRequestCommand(cuid, req, _fileEntry,
-				_requestGroup, httpConnection, e, socket);
-}
+class CreateRequestCommand:public AbstractCommand {
+public:
+  CreateRequestCommand(int32_t cuid,
+		       RequestGroup* requestGroup,
+		       DownloadEngine* e);
+protected:
+  virtual bool executeInternal();
+};
 
 } // namespace aria2
+
+#endif // _D_CREATE_REQUEST_COMMAND_H_

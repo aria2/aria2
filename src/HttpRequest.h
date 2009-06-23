@@ -42,6 +42,7 @@
 
 #include "SharedHandle.h"
 #include "Request.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -58,6 +59,8 @@ private:
   static const std::string USER_AGENT;
 
   SharedHandle<Request> request;
+
+  SharedHandle<FileEntry> _fileEntry;
 
   SharedHandle<Segment> segment;
 
@@ -232,6 +235,16 @@ public:
   // Returns AuthConfig used in the last invocation of
   // createRequest().
   const SharedHandle<AuthConfig>& getAuthConfig() const;
+
+  void setFileEntry(const SharedHandle<FileEntry>& fileEntry)
+  {
+    _fileEntry = fileEntry;
+  }
+
+  const SharedHandle<FileEntry>& getFileEntry() const
+  {
+    return _fileEntry;
+  }
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

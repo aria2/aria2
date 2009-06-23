@@ -52,12 +52,13 @@ namespace aria2 {
 HttpDownloadCommand::HttpDownloadCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const SharedHandle<HttpResponse>& httpResponse,
  const HttpConnectionHandle& httpConnection,
  DownloadEngine* e,
  const SocketHandle& socket)
-  :DownloadCommand(cuid, req, requestGroup, e, socket),
+  :DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket),
    _httpResponse(httpResponse),
    _httpConnection(httpConnection) {}
 
@@ -67,7 +68,8 @@ bool HttpDownloadCommand::prepareForNextSegment() {
   bool downloadFinished = _requestGroup->downloadFinished();
   if(req->isPipeliningEnabled() && !downloadFinished) {
     HttpRequestCommand* command =
-      new HttpRequestCommand(cuid, req, _requestGroup, _httpConnection, e,
+      new HttpRequestCommand(cuid, req, _fileEntry,
+			     _requestGroup, _httpConnection, e,
 			     socket);
     // Set proxy request here. aria2 sends the HTTP request specialized for
     // proxy.
@@ -81,8 +83,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
        (req->isKeepAliveEnabled() &&
 	((!_transferEncodingDecoder.isNull() &&
 	  _requestGroup->downloadFinished()) ||
-	 (uint64_t)_segments.front()->getPositionToWrite() ==
-	 _requestGroup->getTotalLength()))) {
+	 static_cast<uint64_t>(_fileEntry->gtoloff(_segments.front()->getPositionToWrite())) == _fileEntry->getLength()))) {
       e->poolSocket(req, isProxyDefined(), socket);
     }
     // The request was sent assuming that server supported pipelining, but

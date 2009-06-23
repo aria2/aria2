@@ -63,6 +63,7 @@ protected:
 public:
   HttpSkipResponseCommand(int cuid,
 			  const SharedHandle<Request>& req,
+			  const SharedHandle<FileEntry>& fileEntry,
 			  RequestGroup* requestGroup,
 			  const SharedHandle<HttpConnection>& httpConnection,
 			  const SharedHandle<HttpResponse>& httpResponse,

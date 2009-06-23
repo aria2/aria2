@@ -42,15 +42,20 @@
 #include "NameResolver.h"
 #include "DNSCache.h"
 #include "SocketCore.h"
+#include "FileEntry.h"
+#include "RequestGroup.h"
+#include "DownloadContext.h"
+#include "Segment.h"
 
 namespace aria2 {
 
 InitiateConnectionCommand::InitiateConnectionCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e):
-  AbstractCommand(cuid, req, requestGroup, e)
+  AbstractCommand(cuid, req, fileEntry, requestGroup, e)
 {
   setTimeout(getOption()->getAsInt(PREF_DNS_TIMEOUT));
   // give a chance to be executed in the next loop in DownloadEngine

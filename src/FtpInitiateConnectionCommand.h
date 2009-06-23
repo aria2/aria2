@@ -46,6 +46,7 @@ protected:
    const SharedHandle<Request>& proxyRequest);
 public:
   FtpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
+			       const SharedHandle<FileEntry>& fileEntry,
 			       RequestGroup* requestGroup, DownloadEngine* e);
 
   virtual ~FtpInitiateConnectionCommand();

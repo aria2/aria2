@@ -47,7 +47,13 @@
 namespace aria2 {
 
 Command*
-InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e) {
+InitiateConnectionCommandFactory::createInitiateConnectionCommand
+(int32_t cuid,
+ const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ DownloadEngine* e)
+{
   if(req->getProtocol() == Request::PROTO_HTTP
 #ifdef ENABLE_SSL
      // for SSL
@@ -62,9 +68,11 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, 
       req->setPipeliningHint(true);
     }
 
-    return new HttpInitiateConnectionCommand(cuid, req, requestGroup, e);
+    return
+      new HttpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
   } else if(req->getProtocol() == Request::PROTO_FTP) {
-    return new FtpInitiateConnectionCommand(cuid, req, requestGroup, e);
+    return
+      new FtpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
   } else {
     // these protocols are not supported yet
     throw DL_ABORT_EX

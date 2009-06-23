@@ -117,6 +117,10 @@ public:
   void resetDownloadStopTime();
 
   int64_t calculateSessionTime() const;
+  
+  // Returns FileEntry at given offset. SharedHandle<FileEntry>() is
+  // returned if no such FileEntry is found.
+  SharedHandle<FileEntry> findFileEntryByOffset(off_t offset) const;
 };
 
 typedef SharedHandle<DownloadContext> DownloadContextHandle;

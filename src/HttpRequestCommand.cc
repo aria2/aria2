@@ -58,11 +58,12 @@ namespace aria2 {
 HttpRequestCommand::HttpRequestCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const HttpConnectionHandle& httpConnection,
  DownloadEngine* e,
  const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s),
+  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
    _httpConnection(httpConnection)
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
@@ -74,6 +75,7 @@ HttpRequestCommand::~HttpRequestCommand() {}
 
 static SharedHandle<HttpRequest>
 createHttpRequest(const SharedHandle<Request>& req,
+		  const SharedHandle<FileEntry>& fileEntry,
 		  const SharedHandle<Segment>& segment,
 		  uint64_t totalLength,
 		  const SharedHandle<Option>& option,
@@ -85,8 +87,9 @@ createHttpRequest(const SharedHandle<Request>& req,
   HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
+  httpRequest->setFileEntry(fileEntry);
   httpRequest->setSegment(segment);
-  httpRequest->setEntityLength(totalLength);
+  httpRequest->setEntityLength(fileEntry->getLength());
   httpRequest->addHeader(option->get(PREF_HEADER));
   httpRequest->setCookieStorage(cookieStorage);
   httpRequest->setAuthConfigFactory(authConfigFactory);
@@ -113,7 +116,9 @@ bool HttpRequestCommand::executeInternal() {
 
     if(_segments.empty()) {
       HttpRequestHandle httpRequest
-	(createHttpRequest(req, SharedHandle<Segment>(),
+	(createHttpRequest(req,
+			   _fileEntry,
+			   SharedHandle<Segment>(),
 			   _requestGroup->getTotalLength(),
 			   getOption(),
 			   _requestGroup,
@@ -126,7 +131,9 @@ bool HttpRequestCommand::executeInternal() {
 	const SegmentHandle& segment = *itr;
 	if(!_httpConnection->isIssued(segment)) {
 	  HttpRequestHandle httpRequest
-	    (createHttpRequest(req, segment,
+	    (createHttpRequest(req,
+			       _fileEntry,
+			       segment,
 			       _requestGroup->getTotalLength(),
 			       getOption(),
 			       _requestGroup,
@@ -141,7 +148,8 @@ bool HttpRequestCommand::executeInternal() {
     _httpConnection->sendPendingData();
   }
   if(_httpConnection->sendBufferIsEmpty()) {
-    Command* command = new HttpResponseCommand(cuid, req, _requestGroup,
+    Command* command = new HttpResponseCommand(cuid, req, _fileEntry,
+					       _requestGroup,
 					       _httpConnection, e, socket);
     e->commands.push_back(command);
     return true;

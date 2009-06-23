@@ -50,6 +50,7 @@
 #include "Option.h"
 #include "DownloadContext.h"
 #include "Piece.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -66,8 +67,12 @@ SegmentMan::SegmentMan(const Option* option,
   _downloadContext(downloadContext),
   _pieceStorage(pieceStorage),
   _lastPeerStatDlspdMapUpdated(0),
-  _cachedDlspd(0)
-{}
+  _cachedDlspd(0),
+  _ignoreBitfield(downloadContext->getPieceLength(),
+		  downloadContext->getTotalLength())
+{
+  _ignoreBitfield.enableFilter();
+}
 
 SegmentMan::~SegmentMan() {}
 
@@ -126,6 +131,22 @@ SegmentHandle SegmentMan::checkoutSegment(cuid_t cuid,
 		segment->getLength(),
 		segment->getSegmentLength(),
 		segment->getWrittenLength());
+  if(piece->getLength() > 0) {
+    std::map<size_t, size_t>::iterator positr =
+      _segmentWrittenLengthMemo.find(segment->getIndex());
+    if(positr != _segmentWrittenLengthMemo.end()) {
+      const size_t writtenLength = (*positr).second;
+      logger->debug("writtenLength(in memo)=%d, writtenLength=%d",
+		    writtenLength, segment->getWrittenLength());
+      //  If the difference between cached writtenLength and segment's
+      //  writtenLength is less than one block, we assume that these
+      //  missing bytes are already downloaded.
+      if(segment->getWrittenLength() < writtenLength &&
+	 writtenLength-segment->getWrittenLength() < piece->getBlockLength()) {
+	segment->updateWrittenLength(writtenLength-segment->getWrittenLength());
+      }
+    }
+  }
   return segment;
 }
 
@@ -178,7 +199,9 @@ void SegmentMan::getInFlightSegment(std::deque<SharedHandle<Segment> >& segments
 }
 
 SegmentHandle SegmentMan::getSegment(cuid_t cuid) {
-  PieceHandle piece = _pieceStorage->getMissingPiece();
+  PieceHandle piece =
+    _pieceStorage->getSparseMissingUnusedPiece
+    (_ignoreBitfield.getFilterBitfield(),_ignoreBitfield.getBitfieldLength());
   if(piece.isNull()) {
     PeerStatHandle myPeerStat = getPeerStat(cuid);
     if(myPeerStat.isNull()) {
@@ -219,6 +242,11 @@ void SegmentMan::cancelSegment(cuid_t cuid) {
       itr != usedSegmentEntries.end();) {
     if((*itr)->cuid == cuid) {
       _pieceStorage->cancelPiece((*itr)->segment->getPiece());
+      _segmentWrittenLengthMemo[(*itr)->segment->getIndex()] =
+	(*itr)->segment->getWrittenLength();
+      logger->debug("Memorized segment index=%u, writtenLength=%u",
+		    (*itr)->segment->getIndex(),
+		    (*itr)->segment->getWrittenLength());
       itr = usedSegmentEntries.erase(itr);
     } else {
       ++itr;
@@ -354,6 +382,16 @@ size_t SegmentMan::countFreePieceFrom(size_t index) const
     }
   }
   return _downloadContext->getNumPieces()-index;
+}
+
+void SegmentMan::ignoreSegmentFor(const SharedHandle<FileEntry>& fileEntry)
+{
+  _ignoreBitfield.addFilter(fileEntry->getOffset(), fileEntry->getLength());
+}
+
+void SegmentMan::recognizeSegmentFor(const SharedHandle<FileEntry>& fileEntry)
+{
+  _ignoreBitfield.removeFilter(fileEntry->getOffset(), fileEntry->getLength());
 }
 
 } // namespace aria2

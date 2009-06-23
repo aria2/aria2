@@ -155,6 +155,13 @@ struct And
 };
 
 template<typename T>
+struct Or
+{
+  typedef T returnType;
+  static inline returnType apply(T lhs, T rhs) { return lhs|rhs; }
+};
+
+template<typename T>
 struct Negate
 {
   typedef T returnType;
@@ -182,6 +189,13 @@ BinExpr<L, And<typename L::returnType>, R>
 operator&(const L& l, const R& r)
 {
   return BinExpr<L, And<typename L::returnType>, R>(l, r);
+}
+
+template<typename L, typename R>
+BinExpr<L, Or<typename L::returnType>, R>
+operator|(const L& l, const R& r)
+{
+  return BinExpr<L, Or<typename L::returnType>, R>(l, r);
 }
 
 template<typename A>

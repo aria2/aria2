@@ -187,6 +187,7 @@ static SharedHandle<RequestGroup> createRequestGroup
       strconcat(option->get(PREF_DIR), "/", option->get(PREF_OUT)):A2STR::NIL));
 
   dctx->setDir(option->get(PREF_DIR));
+  dctx->getFileEntries().front()->setUris(uris);
   rg->setDownloadContext(dctx);
   return rg;
 }

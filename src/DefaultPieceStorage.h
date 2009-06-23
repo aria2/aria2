@@ -133,7 +133,8 @@ public:
 
 #endif // ENABLE_BITTORRENT
 
-  virtual SharedHandle<Piece> getMissingPiece();
+  virtual SharedHandle<Piece> getSparseMissingUnusedPiece
+  (const unsigned char* ignoreBitfield, size_t length);
 
   virtual SharedHandle<Piece> getMissingPiece(size_t index);
 

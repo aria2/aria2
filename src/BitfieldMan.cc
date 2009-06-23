@@ -308,9 +308,10 @@ bool BitfieldMan::getMissingUnusedIndex(size_t& index) const
   }
 }
 
-size_t BitfieldMan::getStartIndex(size_t index) const {
-  while(index < blocks && (isUseBitSet(index) || isBitSet(index))) {
-    index++;
+template<typename Array>
+static size_t getStartIndex(size_t index, const Array& bitfield, const unsigned char* useBitfield, size_t blocks) {
+  while(index < blocks && (bitfield::test(bitfield, blocks, index) || bitfield::test(useBitfield, blocks, index))) {
+    ++index;
   }
   if(blocks <= index) {
     return blocks;
@@ -319,24 +320,33 @@ size_t BitfieldMan::getStartIndex(size_t index) const {
   }
 }
 
-size_t BitfieldMan::getEndIndex(size_t index) const {
-  while(index < blocks && (!isUseBitSet(index) && !isBitSet(index))) {
-    index++;
+template<typename Array>
+static size_t getEndIndex(size_t index, const Array& bitfield, const unsigned char* useBitfield, size_t blocks) {
+  while(index < blocks && (!bitfield::test(bitfield, blocks, index) && !bitfield::test(useBitfield, blocks, index))) {
+    ++index;
   }
   return index;
 }
 
-bool BitfieldMan::getSparseMissingUnusedIndex(size_t& index) const {
-  Range maxRange;
-  Range currentRange;
+template<typename Array>
+static bool getSparseMissingUnusedIndex
+(size_t& index,
+ const Array& bitfield,
+ const unsigned char* useBitfield,
+ size_t blocks)
+{
+  BitfieldMan::Range maxRange;
+  BitfieldMan::Range currentRange;
   {
     size_t nextIndex = 0;
     while(nextIndex < blocks) {
-      currentRange.startIndex = getStartIndex(nextIndex);
+      currentRange.startIndex =
+	getStartIndex(nextIndex, bitfield, useBitfield, blocks);
       if(currentRange.startIndex == blocks) {
 	break;
       }
-      currentRange.endIndex = getEndIndex(currentRange.startIndex);
+      currentRange.endIndex =
+	getEndIndex(currentRange.startIndex, bitfield, useBitfield, blocks);
       if(maxRange < currentRange) {
 	maxRange = currentRange;
       }
@@ -346,7 +356,7 @@ bool BitfieldMan::getSparseMissingUnusedIndex(size_t& index) const {
   if(maxRange.getSize()) {
     if(maxRange.startIndex == 0) {
       index = 0;
-    } else if(isUseBitSet(maxRange.startIndex-1)) {
+    } else if(bitfield::test(useBitfield, blocks, maxRange.startIndex-1)) {
       index = maxRange.getMidIndex();
     } else {
       index = maxRange.startIndex;
@@ -354,6 +364,22 @@ bool BitfieldMan::getSparseMissingUnusedIndex(size_t& index) const {
     return true;
   } else {
     return false;
+  }
+}
+
+bool BitfieldMan::getSparseMissingUnusedIndex
+(size_t& index,
+ const unsigned char* ignoreBitfield,
+ size_t ignoreBitfieldLength) const
+{
+  if(filterEnabled) {
+    return aria2::getSparseMissingUnusedIndex
+      (index, array(ignoreBitfield)|~array(filterBitfield)|array(bitfield),
+       useBitfield, blocks);
+  } else {
+    return aria2::getSparseMissingUnusedIndex
+      (index, array(ignoreBitfield)|array(bitfield),
+       useBitfield, blocks);
   }
 }
 
@@ -566,6 +592,21 @@ void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
     size_t endBlock = (offset+length-1)/blockLength;
     for(size_t i = startBlock; i <= endBlock && i < blocks; i++) {
       setFilterBit(i);
+    }
+  }
+  updateCache();
+}
+
+void BitfieldMan::removeFilter(uint64_t offset, uint64_t length) {
+  if(!filterBitfield) {
+    filterBitfield = new unsigned char[bitfieldLength];
+    memset(filterBitfield, 0, bitfieldLength);
+  }
+  if(length > 0) {
+    size_t startBlock = offset/blockLength;
+    size_t endBlock = (offset+length-1)/blockLength;
+    for(size_t i = startBlock; i <= endBlock && i < blocks; i++) {
+      setBitInternal(filterBitfield, i, false);
     }
   }
   updateCache();

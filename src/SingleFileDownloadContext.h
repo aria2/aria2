@@ -93,7 +93,11 @@ public:
 
   virtual FILE_MODE getFileMode() const
   {
-    return SINGLE;
+    if(_fileEntries.size() == 1) {
+      return SINGLE;
+    } else {
+      return MULTI;
+    }
   }
 
   virtual size_t getPieceLength() const

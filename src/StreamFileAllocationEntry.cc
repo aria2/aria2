@@ -41,7 +41,6 @@
 #include "Request.h"
 #include "prefs.h"
 #include "RequestGroup.h"
-#include "InitiateConnectionCommandFactory.h"
 #include "DownloadContext.h"
 #include "Command.h"
 
@@ -68,16 +67,7 @@ void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& comma
     // try remaining uris
     _requestGroup->createNextCommandWithAdj(commands, e, -1);
   } else {
-    if(_currentRequest.isNull()) {
-      _requestGroup->createNextCommandWithAdj(commands, e, 0);
-    } else {
-      Command* command =
-	InitiateConnectionCommandFactory::createInitiateConnectionCommand
-	(e->newCUID(), _currentRequest, _requestGroup, e);
-      e->setNoWait(true);
-      commands.push_back(command);
-      _requestGroup->createNextCommandWithAdj(commands, e, -1);
-    }
+    _requestGroup->createNextCommandWithAdj(commands, e, 0);
   }
 }
 

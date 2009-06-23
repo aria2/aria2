@@ -59,12 +59,13 @@ namespace aria2 {
 HttpSkipResponseCommand::HttpSkipResponseCommand
 (int cuid,
  const SharedHandle<Request>& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const SharedHandle<HttpConnection>& httpConnection,
  const SharedHandle<HttpResponse>& httpResponse,
  DownloadEngine* e,
  const SharedHandle<SocketCore>& s):
-  AbstractCommand(cuid, req, requestGroup, e, s),
+  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   _httpConnection(httpConnection),
   _httpResponse(httpResponse),
   _totalLength(_httpResponse->getEntityLength()),

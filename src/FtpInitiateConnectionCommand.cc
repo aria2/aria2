@@ -56,9 +56,10 @@ namespace aria2 {
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e)
-  :InitiateConnectionCommand(cuid, req, requestGroup, e) {}
+  :InitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e) {}
 
 FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
 
@@ -86,7 +87,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	  (new HttpConnection(cuid, socket, getOption().get()));
 	
 	HttpRequestCommand* c =
-	  new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
+	  new HttpRequestCommand(cuid, req, _fileEntry,
+				 _requestGroup, hc, e, socket);
 	c->setProxyRequest(proxyRequest);
 	command = c;
       } else if(proxyMethod == V_TUNNEL) {
@@ -99,7 +101,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     } else {
       if(proxyMethod == V_TUNNEL) {
 	command =
-	  new FtpNegotiationCommand(cuid, req, _requestGroup, e, pooledSocket,
+	  new FtpNegotiationCommand(cuid, req, _fileEntry,
+				    _requestGroup, e, pooledSocket,
 				    FtpNegotiationCommand::SEQ_SEND_CWD,
 				    options["baseWorkingDir"]);
       } else if(proxyMethod == V_GET) {
@@ -109,7 +112,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	  (new HttpConnection(cuid, pooledSocket, getOption().get()));
 	
 	HttpRequestCommand* c =
-	  new HttpRequestCommand(cuid, req, _requestGroup, hc, e, pooledSocket);
+	  new HttpRequestCommand(cuid, req, _fileEntry,
+				 _requestGroup, hc, e, pooledSocket);
 	c->setProxyRequest(proxyRequest);
 	command = c;
       } else {
@@ -126,10 +130,12 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 		   req->getPort());
       socket.reset(new SocketCore());
       socket->establishConnection(resolvedAddresses.front(), req->getPort());
-      command = new FtpNegotiationCommand(cuid, req, _requestGroup, e, socket);
+      command = new FtpNegotiationCommand(cuid, req, _fileEntry,
+					  _requestGroup, e, socket);
     } else {
       command =
-	new FtpNegotiationCommand(cuid, req, _requestGroup, e, pooledSocket,
+	new FtpNegotiationCommand(cuid, req, _fileEntry,
+				  _requestGroup, e, pooledSocket,
 				  FtpNegotiationCommand::SEQ_SEND_CWD,
 				  options["baseWorkingDir"]);
     }

@@ -123,6 +123,7 @@ protected:
 public:
   FtpNegotiationCommand(int32_t cuid,
 			const SharedHandle<Request>& req,
+			const SharedHandle<FileEntry>& fileEntry,
 			RequestGroup* requestGroup,
 			DownloadEngine* e,
 			const SharedHandle<SocketCore>& s,

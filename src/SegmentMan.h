@@ -43,6 +43,7 @@
 #include "SharedHandle.h"
 #include "TimeA2.h"
 #include "Command.h"
+#include "BitfieldMan.h"
 
 namespace aria2 {
 
@@ -53,6 +54,7 @@ class PeerStat;
 class DownloadContext;
 class PieceStorage;
 class Piece;
+class FileEntry;
 
 class SegmentEntry {
 public:
@@ -82,6 +84,10 @@ private:
 
   SegmentEntries usedSegmentEntries;
 
+  // Remember writtenLength for each segment. The key is an index of a
+  // segment. The value is writtenLength for that segment.
+  std::map<size_t, size_t> _segmentWrittenLengthMemo;
+
   std::deque<SharedHandle<PeerStat> > peerStats;
 
   // key: PeerStat's cuid, value: its download speed
@@ -90,6 +96,8 @@ private:
   Time _lastPeerStatDlspdMapUpdated;
 
   unsigned int _cachedDlspd;
+
+  BitfieldMan _ignoreBitfield;
 
   SharedHandle<Segment> checkoutSegment(cuid_t cuid,
 					const SharedHandle<Piece>& piece);
@@ -201,6 +209,12 @@ public:
   uint64_t calculateSessionDownloadLength() const;
 
   size_t countFreePieceFrom(size_t index) const;
+
+  // Excludes segments that fileEntry covers from segment selection.
+  void ignoreSegmentFor(const SharedHandle<FileEntry>& fileEntry);
+
+  // Includes segments that fileEntry covers in segment selection.
+  void recognizeSegmentFor(const SharedHandle<FileEntry>& fileEntry);
 };
 
 typedef SharedHandle<SegmentMan> SegmentManHandle;

@@ -66,10 +66,11 @@ namespace aria2 {
 
 DownloadCommand::DownloadCommand(int cuid,
 				 const RequestHandle& req,
+				 const SharedHandle<FileEntry>& fileEntry,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  AbstractCommand(cuid, req, requestGroup, e, s)
+  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s)
 #ifdef ENABLE_MESSAGE_DIGEST
   , _pieceHashValidationEnabled(false)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -114,8 +115,13 @@ bool DownloadCommand::executeInternal() {
   size_t BUFSIZE = 16*1024;
   unsigned char buf[BUFSIZE];
   size_t bufSize;
-  if(segment->getLength() > 0 && segment->getLength()-segment->getWrittenLength() < BUFSIZE) {
-    bufSize = segment->getLength()-segment->getWrittenLength();
+  if(segment->getLength() > 0) {
+    if(segment->getPosition()+segment->getLength() <= static_cast<uint64_t>(_fileEntry->getLastOffset())) {
+      bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
+			 BUFSIZE);
+    } else {
+      bufSize = std::min(static_cast<size_t>(_fileEntry->getLastOffset()-_fileEntry->gtoloff(segment->getPositionToWrite())), BUFSIZE);
+    }
   } else {
     bufSize = BUFSIZE;
   }
@@ -167,13 +173,15 @@ bool DownloadCommand::executeInternal() {
   bool segmentComplete = false;
   // Note that GrowSegment::complete() always returns false.
   if(_transferEncodingDecoder.isNull() && _contentEncodingDecoder.isNull()) {
-    if(segment->complete()) {
+    if(segment->complete() ||
+       segment->getPositionToWrite() == _fileEntry->getLastOffset()) {
       segmentComplete = true;
     } else if(segment->getLength() == 0 && bufSize == 0 &&
 	      !socket->wantRead() && !socket->wantWrite()) {
       segmentComplete = true;
     }
-  } else if(!_transferEncodingDecoder.isNull() && segment->complete()) {
+  } else if(!_transferEncodingDecoder.isNull() &&
+	    (segment->complete() || segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
     segmentComplete = true;
   } else if((_transferEncodingDecoder.isNull() ||
 	     _transferEncodingDecoder->finished()) &&
@@ -188,36 +196,40 @@ bool DownloadCommand::executeInternal() {
   }
 
   if(segmentComplete) {
-    logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
+    if(segment->complete() || segment->getLength() == 0) {
+      // If segment->getLength() == 0, the server doesn't provide
+      // content length, but the client detected that download
+      // completed.
+      logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
 #ifdef ENABLE_MESSAGE_DIGEST
 
-    {
-      std::string expectedPieceHash =
-	_requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
-      if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
-	if(segment->isHashCalculated()) {
-	  logger->debug("Hash is available! index=%lu",
-			static_cast<unsigned long>(segment->getIndex()));
-	  validatePieceHash(segment, expectedPieceHash, segment->getHashString());
+      {
+	std::string expectedPieceHash =
+	  _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
+	if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
+	  if(segment->isHashCalculated()) {
+	    logger->debug("Hash is available! index=%lu",
+			  static_cast<unsigned long>(segment->getIndex()));
+	    validatePieceHash(segment, expectedPieceHash, segment->getHashString());
+	  } else {
+	    _messageDigestContext->digestReset();
+	    validatePieceHash(segment, expectedPieceHash,
+			      MessageDigestHelper::digest
+			      (_messageDigestContext.get(),
+			       _requestGroup->getPieceStorage()->getDiskAdaptor(),
+			       segment->getPosition(),
+			       segment->getLength()));
+	  }
 	} else {
-	  _messageDigestContext->digestReset();
-	  validatePieceHash(segment, expectedPieceHash,
-			    MessageDigestHelper::digest
-			    (_messageDigestContext.get(),
-			     _requestGroup->getPieceStorage()->getDiskAdaptor(),
-			     segment->getPosition(),
-			     segment->getLength()));
+	  _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
 	}
-      } else {
-	_requestGroup->getSegmentMan()->completeSegment(cuid, segment);
       }
-    }
 
 #else // !ENABLE_MESSAGE_DIGEST
-
-    _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
-
+      _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
 #endif // !ENABLE_MESSAGE_DIGEST
+    }
+
 
     checkLowestDownloadSpeed();
     // this unit is going to download another segment.
@@ -263,6 +275,10 @@ bool DownloadCommand::prepareForNextSegment() {
     // segment.
     if(_segments.size() == 1) {
       SegmentHandle tempSegment = _segments.front();
+      if(!tempSegment->complete()) {
+	return prepareForRetry(0);
+      }
+      // TODO1.5 get segment for the same file only
       SegmentHandle nextSegment =
 	_requestGroup->getSegmentMan()->getSegment(cuid,
 						   tempSegment->getIndex()+1);

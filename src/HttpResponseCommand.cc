@@ -75,14 +75,17 @@ static SharedHandle<Decoder> getTransferEncodingDecoder
 static SharedHandle<Decoder> getContentEncodingDecoder
 (const SharedHandle<HttpResponse>& httpResponse);
 
-HttpResponseCommand::HttpResponseCommand(int32_t cuid,
-					 const RequestHandle& req,
-					 RequestGroup* requestGroup,
-					 const HttpConnectionHandle& httpConnection,
-					 DownloadEngine* e,
-					 const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s),
-   httpConnection(httpConnection) {}
+HttpResponseCommand::HttpResponseCommand
+(int32_t cuid,
+ const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ const HttpConnectionHandle& httpConnection,
+ DownloadEngine* e,
+ const SocketHandle& s)
+  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+   httpConnection(httpConnection)
+{}
 
 HttpResponseCommand::~HttpResponseCommand() {}
 
@@ -136,6 +139,7 @@ bool HttpResponseCommand::executeInternal()
     SingleFileDownloadContextHandle dctx =
       dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
     dctx->setTotalLength(totalLength);
+    _fileEntry->setLength(totalLength);
     dctx->setFilename
       (strconcat(dctx->getDir(), "/", httpResponse->determinFilename()));
     dctx->setContentType(httpResponse->getContentType());
@@ -166,7 +170,8 @@ bool HttpResponseCommand::executeInternal()
     }
   } else {
     // validate totalsize
-    _requestGroup->validateTotalLength(httpResponse->getEntityLength());
+    _requestGroup->validateTotalLength(_fileEntry->getLength(),
+				       httpResponse->getEntityLength());
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
     if(_requestGroup->getTotalLength() == 0) {
@@ -258,6 +263,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
       command = createHttpDownloadCommand(httpResponse);
     } else {
       _requestGroup->getSegmentMan()->cancelSegment(cuid);
+      _fileEntry->poolRequest(req);
     }
     prepareForNextAction(command);
     if(req->getMethod() == Request::METHOD_HEAD) {
@@ -361,7 +367,7 @@ bool HttpResponseCommand::skipResponseBody
   // thrown away.
 
   HttpSkipResponseCommand* command = new HttpSkipResponseCommand
-    (cuid, req, _requestGroup, httpConnection, httpResponse, e, socket);
+    (cuid, req, _fileEntry, _requestGroup, httpConnection, httpResponse, e, socket);
   command->setTransferEncodingDecoder(decoder);
 
   // If request method is HEAD or the response body is zero-length,
@@ -386,7 +392,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 {
 
   HttpDownloadCommand* command =
-    new HttpDownloadCommand(cuid, req, _requestGroup,
+    new HttpDownloadCommand(cuid, req, _fileEntry, _requestGroup,
 			    httpResponse, httpConnection, e, socket);
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit

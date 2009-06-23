@@ -44,12 +44,14 @@ class Request;
 class RequestGroup;
 class DownloadEngine;
 class Command;
+class FileEntry;
 
 class InitiateConnectionCommandFactory {
 public:
   static Command*
   createInitiateConnectionCommand(int32_t cuid,
 				  const SharedHandle<Request>& req,
+				  const SharedHandle<FileEntry>& fileEntry,
 				  RequestGroup* requestGroup,
 				  DownloadEngine* e);
 };

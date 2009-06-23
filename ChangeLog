@@ -1,5 +1,69 @@
 2009-06-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added experimental support of WEB-Seeding for multi-file torrent.
+	Due to fundamental changes in file handling in HTTP/FTP code, many
+	functions are not working: PeerStat, ServerHost, proxy..etc
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/CreateRequestCommand.cc
+	* src/CreateRequestCommand.h
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/FtpDownloadCommand.cc
+	* src/FtpDownloadCommand.h
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpFinishDownloadCommand.h
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpInitiateConnectionCommand.h
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* src/FtpTunnelResponseCommand.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpDownloadCommand.h
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpInitiateConnectionCommand.h
+	* src/HttpProxyResponseCommand.cc
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpRequestCommand.cc
+	* src/HttpRequestCommand.h
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	* src/HttpSkipResponseCommand.cc
+	* src/HttpSkipResponseCommand.h
+	* src/InitiateConnectionCommand.cc
+	* src/InitiateConnectionCommand.h
+	* src/InitiateConnectionCommandFactory.cc
+	* src/InitiateConnectionCommandFactory.h
+	* src/Makefile.am
+	* src/PieceStorage.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* src/SingleFileDownloadContext.h
+	* src/StreamFileAllocationEntry.cc
+	* src/TrackerWatcherCommand.cc
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* src/array_fun.h
+	* src/bitfield.h
+	* src/download_helper.cc
+	* test/DownloadContextTest.cc
+	* test/Makefile.am
+	* test/MockDownloadContext.h
+
+2009-06-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added tellWaiting XML-RPC method.
 	* src/SingleFileDownloadContext.cc
 	* src/XmlRpcMethodFactory.cc

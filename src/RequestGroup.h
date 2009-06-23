@@ -164,9 +164,6 @@ private:
   void validateFilename(const std::string& expectedFilename,
 			const std::string& actualFilename) const;
 
-  void validateTotalLength(uint64_t expectedTotalLength,
-			   uint64_t actualTotalLength) const;
-
   void initializePreDownloadHandler();
 
   void initializePostDownloadHandler();
@@ -248,6 +245,9 @@ public:
    * element of DownloadContext::getFileEntries()
    */
   void validateFilename(const std::string& actualFilename) const;
+
+  void validateTotalLength(uint64_t expectedTotalLength,
+			   uint64_t actualTotalLength) const;
 
   void validateTotalLength(uint64_t actualTotalLength) const;
 
@@ -448,6 +448,11 @@ public:
   static const std::string ACCEPT_METALINK;
 
   void setURISelector(const SharedHandle<URISelector>& uriSelector);
+
+  const SharedHandle<URISelector>& getURISelector() const
+  {
+    return _uriSelector;
+  }
 
   void applyLastModifiedTimeToLocalFiles();
 

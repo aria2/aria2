@@ -68,14 +68,16 @@
 
 namespace aria2 {
 
-FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
-					     const RequestHandle& req,
-					     RequestGroup* requestGroup,
-					     DownloadEngine* e,
-					     const SocketHandle& s,
-					     Seq seq,
-					     const std::string& baseWorkingDir):
-  AbstractCommand(cuid, req, requestGroup, e, s), sequence(seq),
+FtpNegotiationCommand::FtpNegotiationCommand
+(int32_t cuid,
+ const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const SocketHandle& s,
+ Seq seq,
+ const std::string& baseWorkingDir):
+  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s), sequence(seq),
   ftp(new FtpConnection(cuid, socket, req,
 			e->getAuthConfigFactory()->createAuthConfig(req),
 			getOption().get()))
@@ -96,7 +98,8 @@ bool FtpNegotiationCommand::executeInternal() {
     return prepareForRetry(0);
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
     FtpDownloadCommand* command =
-      new FtpDownloadCommand(cuid, req, _requestGroup, ftp, e, dataSocket, socket);
+      new FtpDownloadCommand
+      (cuid, req, _fileEntry, _requestGroup, ftp, e, dataSocket, socket);
     command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit(getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
@@ -328,6 +331,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   SingleFileDownloadContextHandle dctx =
     dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
   dctx->setTotalLength(totalLength);
+  _fileEntry->setLength(totalLength);
   dctx->setFilename
     (strconcat(dctx->getDir(), "/", Util::urldecode(req->getFile())));
   _requestGroup->preDownloadProcessing();
@@ -429,7 +433,7 @@ bool FtpNegotiationCommand::recvSize() {
       return onFileSizeDetermined(size);
 
     } else {
-      _requestGroup->validateTotalLength(size);
+      _requestGroup->validateTotalLength(_fileEntry->getLength(), size);
     }
 
   } else {

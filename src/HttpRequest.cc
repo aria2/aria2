@@ -73,7 +73,7 @@ off_t HttpRequest::getStartByte() const
   if(segment.isNull()) {
     return 0;
   } else {
-    return segment->getPositionToWrite();
+    return _fileEntry->gtoloff(segment->getPositionToWrite());
   }
 }
 
@@ -83,7 +83,7 @@ off_t HttpRequest::getEndByte() const
     return 0;
   } else {
     if(request->isPipeliningEnabled()) {
-      return segment->getPosition()+segment->getLength()-1;
+      return _fileEntry->gtoloff(segment->getPosition()+segment->getLength()-1);
     } else {
       return 0;
     }

@@ -100,7 +100,8 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece
 
 #endif // ENABLE_BITTORRENT
 
-PieceHandle UnknownLengthPieceStorage::getMissingPiece()
+SharedHandle<Piece> UnknownLengthPieceStorage::getSparseMissingUnusedPiece
+(const unsigned char* ignoreBitfield, size_t length)
 {
   if(_downloadFinished) {
     return SharedHandle<Piece>();
@@ -116,7 +117,7 @@ PieceHandle UnknownLengthPieceStorage::getMissingPiece()
 PieceHandle UnknownLengthPieceStorage::getMissingPiece(size_t index)
 {
   if(index == 0) {
-    return getMissingPiece();
+    return getSparseMissingUnusedPiece(0, 0);
   } else {
     return SharedHandle<Piece>();
   }

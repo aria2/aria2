@@ -54,7 +54,8 @@ inline unsigned char lastByteMask(size_t nbits)
 }
 
 // Returns true if index-th bits is set. Otherwise returns false.
-inline bool test(const unsigned char* bitfield, size_t nbits, size_t index)
+template<typename Array>
+inline bool test(const Array& bitfield, size_t nbits, size_t index)
 {
   assert(index < nbits);
   unsigned char mask = 128 >> (index%8);

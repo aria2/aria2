@@ -49,12 +49,13 @@ namespace aria2 {
 FtpDownloadCommand::FtpDownloadCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const SharedHandle<FtpConnection>& ftpConnection,
  DownloadEngine* e,
  const SocketHandle& dataSocket,
  const SocketHandle& ctrlSocket)
-  :DownloadCommand(cuid, req, requestGroup, e, dataSocket),
+  :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket),
    _ftpConnection(ftpConnection),
    ctrlSocket(ctrlSocket) {}
 
@@ -64,8 +65,9 @@ FtpDownloadCommand::~FtpDownloadCommand() {}
 bool FtpDownloadCommand::prepareForNextSegment()
 {
   if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
-     (uint64_t)_segments.front()->getPositionToWrite() == _requestGroup->getTotalLength()) {
-    Command* command = new FtpFinishDownloadCommand(cuid, req, _requestGroup, _ftpConnection, e, ctrlSocket);
+     static_cast<uint64_t>(_fileEntry->gtoloff(_segments.front()->getPositionToWrite())) == _fileEntry->getLength()) {
+    Command* command = new FtpFinishDownloadCommand
+      (cuid, req, _fileEntry, _requestGroup, _ftpConnection, e, ctrlSocket);
     e->commands.push_back(command);
 
     if(_requestGroup->downloadFinished()) {

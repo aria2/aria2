@@ -486,6 +486,7 @@ void RequestGroupMan::getInitialCommands(std::deque<Command*>& commands,
       if((*itr)->isDependencyResolved()) {
 	configureRequestGroup(*itr);
 	createInitialCommand(*itr, commands, e,
+			     // TODO1.5 We need PREF_DRY_RUN here?
 			     _option->getAsBool(PREF_USE_HEAD));
 	executeStartHook(*itr, e->option);
 	++itr;

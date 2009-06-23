@@ -53,9 +53,10 @@ namespace aria2 {
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e):
-  InitiateConnectionCommand(cuid, req, requestGroup, e) {}
+  InitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e) {}
 
 HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
 
@@ -81,7 +82,9 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       } else if(proxyMethod == V_GET) {
 	SharedHandle<HttpConnection> httpConnection
 	  (new HttpConnection(cuid, socket, getOption().get()));
-	HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
+	HttpRequestCommand* c = new HttpRequestCommand(cuid, req,
+						       _fileEntry,
+						       _requestGroup,
 						       httpConnection, e,
 						       socket);
 	c->setProxyRequest(proxyRequest);
@@ -93,7 +96,9 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     } else {
       SharedHandle<HttpConnection> httpConnection
 	(new HttpConnection(cuid, pooledSocket, getOption().get()));
-      HttpRequestCommand* c = new HttpRequestCommand(cuid, req, _requestGroup,
+      HttpRequestCommand* c = new HttpRequestCommand(cuid, req,
+						     _fileEntry,
+						     _requestGroup,
 						     httpConnection, e,
 						     pooledSocket);
       if(proxyMethod == V_GET) {
@@ -113,8 +118,8 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       socket = pooledSocket;
     }
     SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, getOption().get()));
-    command = new HttpRequestCommand(cuid, req, _requestGroup, httpConnection,
-				     e, socket);
+    command = new HttpRequestCommand(cuid, req, _fileEntry, _requestGroup,
+				     httpConnection, e, socket);
   }
   return command;
 }

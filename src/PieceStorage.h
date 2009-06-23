@@ -101,8 +101,10 @@ public:
 
   /**
    * Returns a missing piece if available. Otherwise returns 0;
+   * If ignoreBitfield is set, indexes of true bit are excluded.
    */
-  virtual SharedHandle<Piece> getMissingPiece() = 0;
+  virtual SharedHandle<Piece> getSparseMissingUnusedPiece
+  (const unsigned char* ignoreBitfield, size_t length) = 0;
 
   /**
    * Returns a missing piece whose index is index.

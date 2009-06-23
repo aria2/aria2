@@ -38,6 +38,7 @@
 #include "Command.h"
 #include "SharedHandle.h"
 #include "TimeA2.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -59,6 +60,7 @@ private:
 protected:
   RequestGroup* _requestGroup;
   SharedHandle<Request> req;
+  SharedHandle<FileEntry> _fileEntry;
   DownloadEngine* e;
   SharedHandle<SocketCore> socket;
   std::deque<SharedHandle<Segment> > _segments;
@@ -137,6 +139,11 @@ private:
 #endif // ENABLE_ASYNC_DNS
 public:
   AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
+		  RequestGroup* requestGroup, DownloadEngine* e,
+		  const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>());
+
+  AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
+		  const SharedHandle<FileEntry>& fileEntry,
 		  RequestGroup* requestGroup, DownloadEngine* e,
 		  const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>());
 

@@ -43,17 +43,23 @@
 
 #include "SharedHandle.h"
 #include "File.h"
+#include "Request.h"
 
 namespace aria2 {
+
+class URISelector;
 
 class FileEntry {
 private:
   std::string path;
   std::deque<std::string> _uris;
+  std::deque<std::string> _spentUris;
   uint64_t length;
   off_t offset;
   bool extracted;
   bool requested;
+  std::deque<SharedHandle<Request> > _requestPool;
+  std::deque<SharedHandle<Request> > _inFlightRequests;
 public:
   FileEntry():length(0), offset(0), extracted(false), requested(false) {}
 
@@ -86,6 +92,8 @@ public:
 
   void setOffset(off_t offset) { this->offset = offset; }
 
+  off_t getLastOffset() { return offset+length; }
+
   bool isExtracted() const { return extracted; }
 
   void setExtracted(bool flag) { this->extracted = flag; }
@@ -96,14 +104,53 @@ public:
 
   void setupDir();
 
+  // TODO1.5 remove this in favor of getRemainingUris()
   const std::deque<std::string>& getAssociatedUris() const
   {
     return _uris;
   }
 
+  const std::deque<std::string>& getRemainingUris() const
+  {
+    return _uris;
+  }
+
+  const std::deque<std::string>& getSpentUris() const
+  {
+    return _spentUris;
+  }
+
+  void setUris(const std::deque<std::string>& uris)
+  {
+    _uris = uris;
+  }
+
+  // Inserts _uris and _spentUris into uris.
+  void getUris(std::deque<std::string>& uris) const;
+
+  std::string selectUri(const SharedHandle<URISelector>& uriSelector);
+
+  // If pooled Request object is available, one of them is removed
+  // from the pool and returned.  If pool is empty, then select URI
+  // using selectUri(selector) and construct Request object using it
+  // and return the Request object.
+  SharedHandle<Request> getRequest(const SharedHandle<URISelector>& selector);
+
+  void poolRequest(const SharedHandle<Request>& request);
+
+  bool removeRequest(const SharedHandle<Request>& request);
+
+  size_t countInFlightRequest() const
+  {
+    return _inFlightRequests.size();
+  }
+
   bool operator<(const FileEntry& fileEntry) const;
 
   bool exists() const;
+
+  // Translate global offset goff to file local offset.
+  off_t gtoloff(off_t goff) const;
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

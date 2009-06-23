@@ -54,6 +54,7 @@ protected:
    const SharedHandle<Request>& proxyRequest) = 0;
 public:
   InitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
+			    const SharedHandle<FileEntry>& fileEntry,
 			    RequestGroup* requestGroup,
 			    DownloadEngine* e);
 

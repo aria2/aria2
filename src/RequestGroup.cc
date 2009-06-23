@@ -44,7 +44,7 @@
 #include "NullProgressInfoFile.h"
 #include "Dependency.h"
 #include "prefs.h"
-#include "InitiateConnectionCommandFactory.h"
+#include "CreateRequestCommand.h"
 #include "File.h"
 #include "message.h"
 #include "Util.h"
@@ -78,6 +78,7 @@
 #include "InOrderURISelector.h"
 #include "PieceSelector.h"
 #include "a2functional.h"
+#include "SocketCore.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -604,6 +605,7 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 				     unsigned int numCommand,
 				     const std::string& method)
 {
+  // TODO1.5 The following block should be moved into FileEntry
   if(_option->getAsBool(PREF_REUSE_URI) && _uris.empty()) {
     std::deque<std::string> uris = _spentUris;
     std::sort(uris.begin(), uris.end());
@@ -639,35 +641,45 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
   }
 
   std::deque<std::string> pendingURIs;
-  for(; numCommand--; ) {    
-    std::string uri = _uriSelector->select(_uris);
-    if(uri.empty())
-      continue;
-    RequestHandle req(new Request());
-    if(req->setUrl(uri)) {
-      ServerHostHandle sv;
-      if(!_singleHostMultiConnectionEnabled){
-	sv = searchServerHost(req->getHost());
-      }
-      if(sv.isNull()) {
-	_spentUris.push_back(uri);
-	req->setReferer(_option->get(PREF_REFERER));
-	req->setMethod(method);
+  for(; numCommand--; ) {
+    Command* command = new CreateRequestCommand(e->newCUID(), this, e);
+    _logger->debug("filePath=%s", _downloadContext->getFileEntries().front()->getPath().c_str());
+    commands.push_back(command);
 
-	Command* command =
-	  InitiateConnectionCommandFactory::createInitiateConnectionCommand
-	  (e->newCUID(), req, this, e);
-	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
-	registerServerHost(sv);
-	commands.push_back(command);
-      } else {
-	pendingURIs.push_back(uri);
-      }
-    } else {
-      _logger->error(MSG_UNRECOGNIZED_URI, req->getUrl().c_str());
-    }
+    // TODO1.5 ServerHost stuff should be moved into FileEntry or
+    // CreateRequestCommand
+
+//     std::string uri = _uriSelector->select(_uris);
+//     if(uri.empty())
+//       continue;
+//     RequestHandle req(new Request());
+//     if(req->setUrl(uri)) {
+//       ServerHostHandle sv;
+//       if(!_singleHostMultiConnectionEnabled){
+// 	sv = searchServerHost(req->getHost());
+//       }
+//       if(sv.isNull()) {
+// 	_spentUris.push_back(uri);
+// 	req->setReferer(_option->get(PREF_REFERER));
+// 	req->setMethod(method);
+
+// 	Command* command =
+// 	  InitiateConnectionCommandFactory::createInitiateConnectionCommand
+// 	  (e->newCUID(), req, this, e);
+// 	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
+// 	registerServerHost(sv);
+// 	// give a chance to be executed in the next loop in DownloadEngine
+// 	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
+// 	commands.push_back(command);
+//       } else {
+// 	pendingURIs.push_back(uri);
+//       }
+//     } else {
+//       _logger->error(MSG_UNRECOGNIZED_URI, req->getUrl().c_str());
+//     }
+//  }
   }
-  _uris.insert(_uris.begin(), pendingURIs.begin(), pendingURIs.end());
+//  _uris.insert(_uris.begin(), pendingURIs.begin(), pendingURIs.end());
   if(!commands.empty()) {
     e->setNoWait(true);
   }

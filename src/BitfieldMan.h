@@ -83,7 +83,7 @@ private:
   size_t getEndIndex(size_t index) const;
 
   uint64_t getCompletedLength(bool useFilter) const;
-
+public:
   // [startIndex, endIndex)
   class Range {
   public:
@@ -160,7 +160,11 @@ public:
   /**
    * affected by filter
    */
-  bool getSparseMissingUnusedIndex(size_t& index) const;
+  bool getSparseMissingUnusedIndex
+  (size_t& index,
+   const unsigned char* ignoreBitfield,
+   size_t ignoreBitfieldLength) const;
+
   /**
    * affected by filter
    */
@@ -243,6 +247,7 @@ public:
   void setAllUseBit();
 
   void addFilter(uint64_t offset, uint64_t length);
+  void removeFilter(uint64_t offset, uint64_t length);
   /**
    * Clears filter and disables filter
    */
@@ -306,6 +311,10 @@ public:
 
   uint64_t getMissingUnusedLength(size_t startingIndex) const;
 
+  const unsigned char* getFilterBitfield() const
+  {
+    return filterBitfield;
+  }
 };
 
 } // namespace aria2

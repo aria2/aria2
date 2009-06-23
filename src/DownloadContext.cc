@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DownloadContext.h"
+
+#include <algorithm>
+
 #include "FileEntry.h"
 
 namespace aria2 {
@@ -76,6 +79,27 @@ int64_t DownloadContext::calculateSessionTime() const
       _downloadStopTime.getTimeInMillis()-_downloadStartTime.getTimeInMillis();
   } else {
     return 0;
+  }
+}
+
+SharedHandle<FileEntry>
+DownloadContext::findFileEntryByOffset(off_t offset) const
+{
+  if(_fileEntries.empty() ||
+     (offset > 0 &&
+      _fileEntries.back()->getOffset()+_fileEntries.back()->getLength() <=
+      static_cast<uint64_t>(offset))){
+    return SharedHandle<FileEntry>();
+  }
+
+  SharedHandle<FileEntry> obj(new FileEntry());
+  obj->setOffset(offset);
+  std::deque<SharedHandle<FileEntry> >::const_iterator i =
+    std::upper_bound(_fileEntries.begin(), _fileEntries.end(), obj);
+  if(i != _fileEntries.end() && (*i)->getOffset() == offset) {
+    return *i;
+  } else {
+    return *(--i);
   }
 }
 

@@ -33,8 +33,11 @@
  */
 /* copyright --> */
 #include "FileEntry.h"
-#include "File.h"
+
+#include <cassert>
+
 #include "Util.h"
+#include "URISelector.h"
 
 namespace aria2 {
 
@@ -72,6 +75,68 @@ bool FileEntry::operator<(const FileEntry& fileEntry) const
 bool FileEntry::exists() const
 {
   return File(getPath()).exists();
+}
+
+off_t FileEntry::gtoloff(off_t goff) const
+{
+  assert(offset <= goff);
+  return goff-offset;
+}
+
+void FileEntry::getUris(std::deque<std::string>& uris) const
+{
+  uris.insert(uris.end(), _spentUris.begin(), _spentUris.end());
+  uris.insert(uris.end(), _uris.begin(), _uris.end());
+}
+
+std::string FileEntry::selectUri(const SharedHandle<URISelector>& uriSelector)
+{
+  return uriSelector->select(_uris);
+}
+
+SharedHandle<Request>
+FileEntry::getRequest(const SharedHandle<URISelector>& selector)
+{
+  SharedHandle<Request> req;
+  if(_requestPool.empty()) {
+    while(1) {
+      std::string uri = selector->select(_uris);
+      if(uri.empty()) {
+	return req;
+      }
+      req.reset(new Request());
+      if(req->setUrl(uri)) {
+	_spentUris.push_back(uri);
+	_inFlightRequests.push_back(req);
+	return req;
+      } else {
+	req.reset();
+      }
+    }
+  } else {
+    req = _requestPool.back();
+    _requestPool.pop_back();
+    _inFlightRequests.push_back(req);
+    return req;
+  }
+}
+
+void FileEntry::poolRequest(const SharedHandle<Request>& request)
+{
+  removeRequest(request);
+  _requestPool.push_back(request);
+}
+
+bool FileEntry::removeRequest(const SharedHandle<Request>& request)
+{
+  for(std::deque<SharedHandle<Request> >::iterator i =
+	_inFlightRequests.begin(); i != _inFlightRequests.end(); ++i) {
+    if((*i).get() == request.get()) {
+      _inFlightRequests.erase(i);
+      return true;
+    }
+  }
+  return false;
 }
 
 } // namespace aria2

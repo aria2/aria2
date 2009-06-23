@@ -52,6 +52,7 @@ protected:
 public:
   HttpRequestCommand(int cuid,
 		     const SharedHandle<Request>& req,
+		     const SharedHandle<FileEntry>& fileEntry,
 		     RequestGroup* requestGroup,
 		     const SharedHandle<HttpConnection>& httpConnection,
 		     DownloadEngine* e,

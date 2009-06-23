@@ -53,11 +53,12 @@ namespace aria2 {
 FtpFinishDownloadCommand::FtpFinishDownloadCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const SharedHandle<FtpConnection>& ftpConnection,
  DownloadEngine* e,
  const SharedHandle<SocketCore>& socket)
-  :AbstractCommand(cuid, req, requestGroup, e, socket),
+  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
    _ftpConnection(ftpConnection)
 {
   e->addSocketForReadCheck(socket, this);
