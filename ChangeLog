@@ -1,3 +1,8 @@
+2009-06-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated CookieStorageTest
+	* test/CookieStorageTest.cc
+
 2009-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	In TLSContext::addClientKeyFile() and addTrustedCACertFile(),

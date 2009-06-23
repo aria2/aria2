@@ -257,12 +257,7 @@ void CookieStorageTest::testLoad_sqlite3()
 void CookieStorageTest::testLoad_fileNotfound()
 {
   CookieStorage st;
-  try {
-    st.load("/tmp/aria2_CookieStorageTest_testLoad_fileNotfound");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(RecoverableException& e) {
-    // success
-  }
+  CPPUNIT_ASSERT(!st.load("/tmp/aria2_CookieStorageTest_testLoad_fileNotfound"));
 }
 
 void CookieStorageTest::testSaveNsFormat()
@@ -290,12 +285,7 @@ void CookieStorageTest::testSaveNsFormat_fail()
     f.mkdirs();
   }
   CookieStorage st;
-  try {
-    st.saveNsFormat(filename);
-    CPPUNIT_FAIL("exception should be thrown.");
-  } catch(RecoverableException& e) {
-    // OK
-  }
+  CPPUNIT_ASSERT(!st.saveNsFormat(filename));
 }
 
 } // namespace aria2
