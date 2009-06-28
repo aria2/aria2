@@ -47,13 +47,13 @@
 #include "Logger.h"
 #include "Peer.h"
 #include "Piece.h"
-#include "BtContext.h"
 #include "PieceStorage.h"
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
 #include "BtRequestFactory.h"
 #include "PeerConnection.h"
 #include "StringFormat.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -85,7 +85,7 @@ void BtPieceMessage::doReceivedAction() {
     peer->snubbing(false);
     peer->updateLatency(slot.getLatencyInMillis());
     PieceHandle piece = pieceStorage->getPiece(index);
-    off_t offset = (off_t)index*btContext->getPieceLength()+begin;
+    off_t offset = (off_t)index*_downloadContext->getPieceLength()+begin;
     logger->debug(MSG_PIECE_RECEIVED,
 		  cuid, index, begin, blockLength, offset, slot.getBlockIndex());
     pieceStorage->getDiskAdaptor()->writeData(block, blockLength, offset);
@@ -143,7 +143,7 @@ void BtPieceMessage::send() {
     getMessageHeader();
     peerConnection->sendMessage(msgHeader, getMessageHeaderLength());
     off_t pieceDataOffset =
-      (off_t)index*btContext->getPieceLength()+begin;
+      (off_t)index*_downloadContext->getPieceLength()+begin;
     size_t writtenLength = sendPieceData(pieceDataOffset, blockLength);
     logger->debug("msglength = %lu bytes",
 		  static_cast<unsigned long>(getMessageHeaderLength()+
@@ -176,12 +176,13 @@ bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
   if(piece->isHashCalculated()) {
     logger->debug("Hash is available!! index=%lu",
 		  static_cast<unsigned long>(piece->getIndex()));
-    return piece->getHashString() == btContext->getPieceHash(piece->getIndex());
+    return
+      piece->getHashString()==_downloadContext->getPieceHash(piece->getIndex());
   } else {
-    off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();
+    off_t offset = (off_t)piece->getIndex()*_downloadContext->getPieceLength();
     
     return MessageDigestHelper::staticSHA1Digest(pieceStorage->getDiskAdaptor(), offset, piece->getLength())
-      == btContext->getPieceHash(piece->getIndex());
+      == _downloadContext->getPieceHash(piece->getIndex());
   }
 }
 
@@ -203,7 +204,7 @@ void BtPieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
   size_t BUFSIZE = 4096;
   unsigned char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);
-  off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();
+  off_t offset = (off_t)piece->getIndex()*_downloadContext->getPieceLength();
   div_t res = div(piece->getLength(), BUFSIZE);
   for(int i = 0; i < res.quot; ++i) {
     pieceStorage->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
@@ -253,6 +254,12 @@ void BtPieceMessage::onCancelSendingPieceEvent
     }
     invalidate = true;
   } 
+}
+
+void BtPieceMessage::setDownloadContext
+(const SharedHandle<DownloadContext>& downloadContext)
+{
+  _downloadContext = downloadContext;
 }
 
 } // namespace aria2

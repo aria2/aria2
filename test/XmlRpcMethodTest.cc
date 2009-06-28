@@ -214,7 +214,7 @@ void XmlRpcMethodTest::testAddTorrent()
     SharedHandle<RequestGroup> group = _e->_requestGroupMan->findReservedGroup(1);
     CPPUNIT_ASSERT(!group.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.8.2.tar.bz2"),
-			 group->getFilePath());
+			 group->getFirstFilePath());
     CPPUNIT_ASSERT_EQUAL((size_t)1, group->getRemainingUris().size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/aria2-0.8.2.tar.bz2"),
 			 group->getRemainingUris()[0]);
@@ -227,7 +227,7 @@ void XmlRpcMethodTest::testAddTorrent()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-0.8.2.tar.bz2"),
-			 _e->_requestGroupMan->findReservedGroup(2)->getFilePath());
+			 _e->_requestGroupMan->findReservedGroup(2)->getFirstFilePath());
   }
 }
 
@@ -288,11 +288,11 @@ void XmlRpcMethodTest::testAddMetalink()
     SharedHandle<RequestGroup> tar = _e->_requestGroupMan->findReservedGroup(1);
     CPPUNIT_ASSERT(!tar.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
-			 tar->getFilePath());
+			 tar->getFirstFilePath());
     SharedHandle<RequestGroup> deb = _e->_requestGroupMan->findReservedGroup(2);
     CPPUNIT_ASSERT(!deb.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.deb"),
-			 deb->getFilePath());
+			 deb->getFirstFilePath());
   }
   // with options
   BDE opt = BDE::dict();
@@ -302,7 +302,7 @@ void XmlRpcMethodTest::testAddMetalink()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-5.0.0.tar.bz2"),
-			 _e->_requestGroupMan->findReservedGroup(3)->getFilePath());
+			 _e->_requestGroupMan->findReservedGroup(3)->getFirstFilePath());
   }
 }
 
@@ -342,7 +342,7 @@ void XmlRpcMethodTest::testAddMetalink_withPosition()
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
 		       _e->_requestGroupMan->getReservedGroups()[0]->
-		       getFilePath());
+		       getFirstFilePath());
 }
 
 #endif // ENABLE_METALINK

@@ -41,6 +41,10 @@
 
 typedef std::map<std::string, uint8_t> Extensions;
 
+#define INFO_HASH_LENGTH 20
+
+#define PIECE_HASH_LENGTH 20
+
 #define PEER_ID_LENGTH 20
 
 #define INFO_HASH_LENGTH 20

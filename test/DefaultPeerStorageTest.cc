@@ -1,12 +1,14 @@
 #include "DefaultPeerStorage.h"
-#include "DefaultBtContext.h"
+
+#include <algorithm>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Util.h"
 #include "Exception.h"
 #include "Peer.h"
 #include "Option.h"
 #include "BtRuntime.h"
-#include <algorithm>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -24,13 +26,10 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnErasingPeer);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<BtContext> btContext;
   SharedHandle<BtRuntime> btRuntime;
   Option* option;
 public:
   void setUp() {
-    btContext.reset(new DefaultBtContext());
-    btContext->load("test.torrent");
     option = new Option();
     btRuntime.reset(new BtRuntime());
   }
@@ -54,7 +53,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPeerStorageTest);
 
 void DefaultPeerStorageTest::testCountPeer() {
-  DefaultPeerStorage ps(btContext, option);
+  DefaultPeerStorage ps(option);
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, ps.countPeer());
 
@@ -65,7 +64,7 @@ void DefaultPeerStorageTest::testCountPeer() {
 }
 
 void DefaultPeerStorageTest::testDeleteUnusedPeer() {
-  DefaultPeerStorage ps(btContext, option);
+  DefaultPeerStorage ps(option);
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
   SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
@@ -96,7 +95,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 }
 
 void DefaultPeerStorageTest::testAddPeer() {
-  DefaultPeerStorage ps(btContext, option);
+  DefaultPeerStorage ps(option);
   SharedHandle<BtRuntime> btRuntime(new BtRuntime());
   btRuntime->setMaxPeers(3);
   ps.setBtRuntime(btRuntime);
@@ -133,7 +132,7 @@ void DefaultPeerStorageTest::testAddPeer() {
 }
 
 void DefaultPeerStorageTest::testGetUnusedPeer() {
-  DefaultPeerStorage ps(btContext, option);
+  DefaultPeerStorage ps(option);
   ps.setBtRuntime(btRuntime);
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
@@ -154,7 +153,7 @@ void DefaultPeerStorageTest::testGetUnusedPeer() {
 }
 
 void DefaultPeerStorageTest::testIsPeerAvailable() {
-  DefaultPeerStorage ps(btContext, option);
+  DefaultPeerStorage ps(option);
   ps.setBtRuntime(btRuntime);
 
   CPPUNIT_ASSERT_EQUAL(false, ps.isPeerAvailable());
@@ -177,7 +176,7 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
 }
 
 void DefaultPeerStorageTest::testActivatePeer() {
-  DefaultPeerStorage ps(btContext, option);
+  DefaultPeerStorage ps(option);
 
   {
     std::deque<SharedHandle<Peer> > peers;
@@ -196,8 +195,7 @@ void DefaultPeerStorageTest::testActivatePeer() {
     CPPUNIT_ASSERT_EQUAL((size_t)0, activePeers.size());
   }
   {
-    peer1->allocateSessionResource(btContext->getPieceLength(),
-				   btContext->getTotalLength());
+    peer1->allocateSessionResource(1024*1024, 1024*1024*10);
 
     std::deque<SharedHandle<Peer> > activePeers;
     ps.getActivePeers(activePeers);
@@ -211,14 +209,12 @@ void DefaultPeerStorageTest::testCalculateStat() {
 
 void DefaultPeerStorageTest::testReturnPeer()
 {
-  DefaultPeerStorage ps(btContext, option);
+  DefaultPeerStorage ps(option);
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 0));
-  peer1->allocateSessionResource(btContext->getPieceLength(),
-				 btContext->getTotalLength());
+  peer1->allocateSessionResource(1024*1024, 1024*1024*10);
   SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
-  peer2->allocateSessionResource(btContext->getPieceLength(),
-				 btContext->getTotalLength());
+  peer2->allocateSessionResource(1024*1024, 1024*1024*10);
   SharedHandle<Peer> peer3(new Peer("192.168.0.1", 6889));
   ps.addPeer(peer1);
   ps.addPeer(peer2);

@@ -45,6 +45,7 @@
 #include "DlRetryEx.h"
 #include "message.h"
 #include "HttpHeader.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

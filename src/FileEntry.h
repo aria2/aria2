@@ -60,6 +60,7 @@ private:
   bool requested;
   std::deque<SharedHandle<Request> > _requestPool;
   std::deque<SharedHandle<Request> > _inFlightRequests;
+  std::string _contentType;
 public:
   FileEntry():length(0), offset(0), extracted(false), requested(false) {}
 
@@ -127,6 +128,13 @@ public:
 
   // Inserts _uris and _spentUris into uris.
   void getUris(std::deque<std::string>& uris) const;
+
+  void setContentType(const std::string& contentType)
+  {
+    _contentType = contentType;
+  }
+
+  const std::string& getContentType() const { return _contentType; }
 
   std::string selectUri(const SharedHandle<URISelector>& uriSelector);
 

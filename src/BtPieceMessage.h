@@ -41,6 +41,7 @@ namespace aria2 {
 
 class Piece;
 class BtPieceMessage;
+class DownloadContext;
 
 typedef SharedHandle<BtPieceMessage> BtPieceMessageHandle;
 
@@ -51,6 +52,7 @@ private:
   uint32_t blockLength;
   unsigned char* block;
   unsigned char* msgHeader;
+  SharedHandle<DownloadContext> _downloadContext;
 
   static size_t MESSAGE_HEADER_LENGTH;
 
@@ -99,6 +101,8 @@ public:
   size_t getBlockLength() const { return blockLength; }
 
   void setBlockLength(size_t blockLength) { this->blockLength = blockLength; }
+
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
   static BtPieceMessageHandle create(const unsigned char* data, size_t dataLength);
 

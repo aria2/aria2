@@ -50,10 +50,11 @@
 #include "MessageDigestHelper.h"
 #include "SimpleRandomizer.h"
 #include "Util.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "prefs.h"
 #include "Option.h"
 #include "StringFormat.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -435,7 +436,7 @@ bool MSEHandshake::findReceiverHashMarker()
 }
 
 bool MSEHandshake::receiveReceiverHashAndPadCLength
-(const std::deque<SharedHandle<BtContext> >& btContexts)
+(const std::deque<SharedHandle<DownloadContext> >& downloadContexts)
 {
   size_t r = 20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/-_rbufLength;
   if(r > receiveNBytes(r)) {
@@ -444,22 +445,23 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   // resolve info hash
   // pointing to the position of HASH('req2', SKEY) xor HASH('req3', S)
   unsigned char* rbufptr = _rbuf;
-  SharedHandle<BtContext> btContext;
-  for(std::deque<SharedHandle<BtContext> >::const_iterator i = btContexts.begin();
-      i != btContexts.end(); ++i) {
+  SharedHandle<DownloadContext> downloadContext;
+  for(std::deque<SharedHandle<DownloadContext> >::const_iterator i =
+	downloadContexts.begin(); i != downloadContexts.end(); ++i) {
     unsigned char md[20];
-    createReq23Hash(md, (*i)->getInfoHash());
+    const BDE& torrentAttrs = (*i)->getAttribute(bittorrent::BITTORRENT);
+    createReq23Hash(md, torrentAttrs[bittorrent::INFO_HASH].uc());
     if(memcmp(md, rbufptr, sizeof(md)) == 0) {
-      _logger->debug("CUID#%d - info hash found: %s", _cuid, (*i)->getInfoHashAsString().c_str());
-      btContext = *i;
+      _logger->debug("CUID#%d - info hash found: %s", _cuid,
+		     Util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str());
+      downloadContext = *i;
       break;
     }
   }
-  if(btContext.isNull()) {
+  if(downloadContext.isNull()) {
     throw DL_ABORT_EX("Unknown info hash.");
   }
-  initCipher(btContext->getInfoHash());
-
+  initCipher(bittorrent::getInfoHash(downloadContext));
   // decrypt VC
   rbufptr += 20;
   verifyVC(rbufptr);

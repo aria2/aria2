@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "HttpResponseCommand.h"
 #include "DownloadEngine.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
 #include "ServerHost.h"
@@ -136,18 +136,20 @@ bool HttpResponseCommand::executeInternal()
   }
   if(_requestGroup->getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();
-    SingleFileDownloadContextHandle dctx =
-      dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
-    dctx->setTotalLength(totalLength);
     _fileEntry->setLength(totalLength);
-    dctx->setFilename
-      (strconcat(dctx->getDir(), "/", httpResponse->determinFilename()));
-    dctx->setContentType(httpResponse->getContentType());
+    // We assume that in this context
+    // DownloadContext::getFileEntries().size() == 1
+    if(getOption()->get(PREF_OUT).empty()) {
+      _fileEntry->setPath
+	(strconcat(getDownloadContext()->getDir(),
+		   "/", httpResponse->determinFilename()));
+    }
+    _fileEntry->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-		      _requestGroup->getFilePath().c_str()).str());
+		      _requestGroup->getFirstFilePath().c_str()).str());
     }
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
@@ -156,13 +158,13 @@ bool HttpResponseCommand::executeInternal()
     // assume we can do segmented downloading
     if(totalLength == 0 || shouldInflateContentEncoding(httpResponse)) {
       // we ignore content-length when inflate is required
-      dctx->setTotalLength(0);
+      _fileEntry->setLength(0);
       if(req->getMethod() == Request::METHOD_GET &&
 	 (totalLength != 0 ||
 	  !httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH))){
-	// dctx->knowsTotalLength() == true only when server says the
-	// size of file is 0 explicitly.
-	dctx->markTotalLengthIsUnknown();
+	// DownloadContext::knowsTotalLength() == true only when
+	// server says the size of file is 0 explicitly.
+	getDownloadContext()->markTotalLengthIsUnknown();
       }
       return handleOtherEncoding(httpResponse);
     } else {
@@ -241,7 +243,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
 
     logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
 		   _requestGroup->getGID(),
-		   _requestGroup->getFilePath().c_str());
+		   _requestGroup->getFirstFilePath().c_str());
 
     return true;
   }
@@ -249,7 +251,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   DownloadCommand* command = 0;
   try {
     _requestGroup->loadAndOpenFile(infoFile);
-    File file(_requestGroup->getFilePath());
+    File file(_requestGroup->getFirstFilePath());
 
     SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid, 0);
     // pipelining requires implicit range specified. But the request for
@@ -335,7 +337,7 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
 
     logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
 		   _requestGroup->getGID(),
-		   _requestGroup->getFilePath().c_str());
+		   _requestGroup->getFirstFilePath().c_str());
 
     poolConnection();
     return true;

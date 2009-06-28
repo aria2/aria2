@@ -40,7 +40,7 @@
 #include <stdint.h>
 
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "FileEntry.h"
@@ -64,7 +64,7 @@ public:
 
   int32_t gid;
  
-  std::deque<SharedHandle<FileEntry> > fileEntries;
+  std::vector<SharedHandle<FileEntry> > fileEntries;
 
   bool inMemoryDownload;
 
@@ -82,7 +82,7 @@ public:
   RESULT result;
 
   DownloadResult(int32_t gid,
-		 const std::deque<SharedHandle<FileEntry> >& fileEntries,
+		 const std::vector<SharedHandle<FileEntry> >& fileEntries,
 		 bool inMemoryDownload,
 		 uint64_t totalLength,
 		 const std::string& uri,

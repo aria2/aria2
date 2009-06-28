@@ -391,7 +391,7 @@ void UtilTest::testToStream()
   std::deque<SharedHandle<FileEntry> > entries;
   entries.push_back(f1);
   entries.push_back(f2);
-  Util::toStream(os, entries);
+  Util::toStream(entries.begin(), entries.end(), os);
   CPPUNIT_ASSERT_EQUAL(
 		       std::string("Files:\n"
 			      "idx|path/length\n"

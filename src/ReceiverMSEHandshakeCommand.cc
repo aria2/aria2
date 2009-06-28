@@ -49,7 +49,7 @@
 #include "ARC4Decryptor.h"
 #include "RequestGroupMan.h"
 #include "BtRegistry.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtAnnounce.h"
@@ -135,9 +135,10 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     break;
   }
   case RECEIVER_RECEIVE_PAD_C_LENGTH: {
-    std::deque<SharedHandle<BtContext> > btContexts;
-    e->getBtRegistry()->getAllBtContext(std::back_inserter(btContexts));
-    if(_mseHandshake->receiveReceiverHashAndPadCLength(btContexts)) {
+    std::deque<SharedHandle<DownloadContext> > downloadContexts;
+    e->getBtRegistry()->getAllDownloadContext
+      (std::back_inserter(downloadContexts));
+    if(_mseHandshake->receiveReceiverHashAndPadCLength(downloadContexts)) {
       _sequence = RECEIVER_RECEIVE_PAD_C;
     }
     break;

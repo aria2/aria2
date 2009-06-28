@@ -34,9 +34,9 @@
 /* copyright --> */
 #include "ContentTypeRequestGroupCriteria.h"
 #include "RequestGroup.h"
-#include "SingleFileDownloadContext.h"
 #include "Util.h"
 #include "FileEntry.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -49,15 +49,15 @@ ContentTypeRequestGroupCriteria::~ContentTypeRequestGroupCriteria() {}
 
 bool ContentTypeRequestGroupCriteria::match(const RequestGroup* requestGroup) const
 {
-  if(forwardMatch(requestGroup->getFilePath(), _extensions)) {
+  if(requestGroup->getDownloadContext()->getFileEntries().size() != 1) {
+    return false;
+  }
+  if(forwardMatch(requestGroup->getFirstFilePath(), _extensions)) {
     return true;
   } else {
-    SingleFileDownloadContextHandle dctx(dynamic_pointer_cast<SingleFileDownloadContext>(requestGroup->getDownloadContext()));
-    if(dctx.isNull()) {
-      return false;
-    } else {
-      return exactMatch(dctx->getContentType(), _contentTypes);
-    }
+    return exactMatch
+      (requestGroup->getDownloadContext()->getFirstFileEntry()->getContentType(),
+       _contentTypes);
   }
 }
 

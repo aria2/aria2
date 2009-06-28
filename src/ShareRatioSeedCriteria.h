@@ -36,7 +36,7 @@
 #define _D_SHARE_RATIO_SEED_CRITERIA_H_
 
 #include "SeedCriteria.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 
@@ -45,20 +45,21 @@ namespace aria2 {
 class ShareRatioSeedCriteria : public SeedCriteria {
 private:
   double ratio;
-  SharedHandle<BtContext> btContext;
+  SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<PeerStorage> _peerStorage;
   SharedHandle<PieceStorage> _pieceStorage;
 public:
-  ShareRatioSeedCriteria(double ratio, const SharedHandle<BtContext>& btContext)
+  ShareRatioSeedCriteria
+  (double ratio, const SharedHandle<DownloadContext>& downloadContext)
     :ratio(ratio),
-     btContext(btContext) {}
+     _downloadContext(downloadContext) {}
 
   virtual ~ShareRatioSeedCriteria() {}
 
   virtual void reset() {}
 
   virtual bool evaluate() {
-    if(btContext->getTotalLength() == 0) {
+    if(_downloadContext->getTotalLength() == 0) {
       return false;
     }
     TransferStat stat = _peerStorage->calculateStat();

@@ -47,6 +47,7 @@
 #include "SocketCore.h"
 #include "RequestGroup.h"
 #include "Logger.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

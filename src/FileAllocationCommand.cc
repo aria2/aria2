@@ -42,6 +42,7 @@
 #include "prefs.h"
 #include "Util.h"
 #include "DownloadEngine.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -78,7 +79,8 @@ bool FileAllocationCommand::handleException(Exception& e)
 {
   _e->_fileAllocationMan->dropPickedEntry();
   logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);
-  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
+  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid,
+		_requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

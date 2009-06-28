@@ -53,8 +53,7 @@ namespace aria2 {
 
 const std::string HttpRequest::USER_AGENT("aria2");
 
-HttpRequest::HttpRequest():entityLength(0),
-			   _contentEncodingEnabled(true),
+HttpRequest::HttpRequest():_contentEncodingEnabled(true),
 			   userAgent(USER_AGENT)
 {}
 
@@ -83,7 +82,8 @@ off_t HttpRequest::getEndByte() const
     return 0;
   } else {
     if(request->isPipeliningEnabled()) {
-      return _fileEntry->gtoloff(segment->getPosition()+segment->getLength()-1);
+      off_t endByte = _fileEntry->gtoloff(segment->getPosition()+segment->getLength()-1);
+      return std::min(endByte, _fileEntry->getLastOffset()-1);
     } else {
       return 0;
     }
@@ -96,7 +96,8 @@ RangeHandle HttpRequest::getRange() const
   if(segment.isNull()) {
     return SharedHandle<Range>(new Range());
   } else {
-    return SharedHandle<Range>(new Range(getStartByte(), getEndByte(), entityLength));
+    return SharedHandle<Range>(new Range(getStartByte(), getEndByte(),
+					 _fileEntry->getLength()));
   }
 }
 
@@ -107,9 +108,9 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
   }
   if((getStartByte() == range->getStartByte()) &&
      ((getEndByte() == 0) ||
-      ((getEndByte() > 0) && (getEndByte() == range->getEndByte()))) &&
-     ((entityLength == 0) ||
-      ((entityLength > 0) && (entityLength == range->getEntityLength())))) {
+      (getEndByte() == range->getEndByte())) &&
+     ((_fileEntry->getLength() == 0) ||
+      (_fileEntry->getLength() == range->getEntityLength()))) {
     return true;
   } else {
     return false;

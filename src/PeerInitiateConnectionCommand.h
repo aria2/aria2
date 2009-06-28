@@ -40,7 +40,6 @@
 namespace aria2 {
 
 class RequestGroup;
-class BtContext;
 class BtRuntime;
 class PeerStorage;
 class PieceStorage;
@@ -48,8 +47,6 @@ class PieceStorage;
 class PeerInitiateConnectionCommand : public PeerAbstractCommand {
 private:
   RequestGroup* _requestGroup;
-
-  SharedHandle<BtContext> _btContext;
 
   SharedHandle<BtRuntime> _btRuntime;
 
@@ -69,7 +66,6 @@ public:
 				RequestGroup* requestGroup,
 				const SharedHandle<Peer>& peer,
 				DownloadEngine* e,
-				const SharedHandle<BtContext>& btContext,
 				const SharedHandle<BtRuntime>& btRuntime,
 				bool mseHandshakeEnabled = true);
 

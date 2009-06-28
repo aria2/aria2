@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "HandshakeExtensionMessage.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
@@ -105,11 +104,6 @@ void HandshakeExtensionMessage::doReceivedAction()
 void HandshakeExtensionMessage::setPeer(const PeerHandle& peer)
 {
   _peer = peer;
-}
-
-void HandshakeExtensionMessage::setBtContext(const BtContextHandle& btContext)
-{
-  _btContext = btContext;
 }
 
 uint8_t HandshakeExtensionMessage::getExtensionMessageID(const std::string& name) const

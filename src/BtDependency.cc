@@ -37,7 +37,7 @@
 #include "Option.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "DefaultBtContext.h"
+#include "DownloadContext.h"
 #include "RecoverableException.h"
 #include "message.h"
 #include "prefs.h"
@@ -45,6 +45,8 @@
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
 #include "File.h"
+#include "bittorrent_helper.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -62,39 +64,38 @@ bool BtDependency::resolve()
     RequestGroupHandle dependee = _dependee;
     // cut reference here
     _dependee.reset();
-    DefaultBtContextHandle btContext(new DefaultBtContext());
-    btContext->setDir(_dependant->getDownloadContext()->getDir());
+    SharedHandle<DownloadContext> context(new DownloadContext());
+    context->setDir(_dependant->getDownloadContext()->getDir());
     try {
-      DiskAdaptorHandle diskAdaptor = dependee->getPieceStorage()->getDiskAdaptor();
+      DiskAdaptorHandle diskAdaptor =
+	dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = Util::toString(diskAdaptor);
-
-      std::string overrideName;
-      if(Util::startsWith(_dependant->getDownloadContext()->getActualBasePath(),
-			  _dependant->getDownloadContext()->getDir())) {
-	overrideName =
-	  _dependant->getDownloadContext()->getActualBasePath().substr
-	  (_dependant->getDownloadContext()->getDir().size());
-	if(Util::startsWith(overrideName, "/")) {
-	  overrideName = overrideName.substr(1);
-	}
+      bittorrent::loadFromMemory
+	(content, context, File(dependee->getFirstFilePath()).getBasename());
+      if(context->getFileEntries().size() !=
+	 _dependant->getDownloadContext()->getFileEntries().size()) {
+	throw DL_ABORT_EX("The number of file in torrent doesn't match to"
+			  " the dependant.");
       }
-      btContext->loadFromMemory(content,
-				File(dependee->getFilePath()).getBasename(),
-				overrideName);
-      if(_dependant->getOption()->defined(PREF_PEER_ID_PREFIX)) {
-	btContext->setPeerIdPrefix
-	  (_dependant->getOption()->get(PREF_PEER_ID_PREFIX));
+      // Copy file path in _dependant's FileEntries to newly created
+      // context's FileEntries to endorse the path structure of
+      // _dependant.
+      for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
+	    _dependant->getDownloadContext()->getFileEntries().begin(),
+	    d = context->getFileEntries().begin();
+	  d != context->getFileEntries().end(); ++s, ++d) {
+	(*d)->setPath((*s)->getPath());
       }
     } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);
-      _logger->debug("BtDependency for GID#%d failed. Go without Bt.",
-		     _dependant->getGID());
+      _logger->info("BtDependency for GID#%d failed. Go without Bt.",
+		    _dependant->getGID());
       return true;
     }
     _logger->debug("Dependency resolved for GID#%d", _dependant->getGID());
-    _dependant->setDownloadContext(btContext);
-    btContext->setOwnerRequestGroup(_dependant.get());
+    _dependant->setDownloadContext(context);
+    context->setOwnerRequestGroup(_dependant.get());
     return true;
   } else if(_dependee->getNumCommand() == 0) {
     // _dependee's download failed.

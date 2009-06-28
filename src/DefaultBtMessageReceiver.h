@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class BtContext;
+class DownloadContext;
 class Peer;
 class PeerConnection;
 class BtMessageDispatcher;
@@ -50,7 +50,7 @@ class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:
   int32_t cuid;
   bool handshakeSent;
-  SharedHandle<BtContext> btContext;
+  SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<Peer> peer;
   WeakHandle<PeerConnection> peerConnection;
   WeakHandle<BtMessageDispatcher> dispatcher;
@@ -77,7 +77,7 @@ public:
     return cuid;
   }
 
-  void setBtContext(const SharedHandle<BtContext>& btContext);
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
   void setPeer(const SharedHandle<Peer>& peer);
 

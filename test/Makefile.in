@@ -64,7 +64,6 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BtUnchokeMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultPieceStorageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounceTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	MockBtMessage.h\
@@ -130,7 +129,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h\
-@ENABLE_BITTORRENT_TRUE@	BencodeTest.cc
+@ENABLE_BITTORRENT_TRUE@	BencodeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_7 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -175,8 +175,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	SequenceTest.cc a2functionalTest.cc FileEntryTest.cc \
 	PieceTest.cc SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
-	DefaultBtProgressInfoFileTest.cc \
-	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
+	DefaultBtProgressInfoFileTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
 	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
 	HttpHeaderProcessorTest.cc RequestTest.cc CookieParserTest.cc \
@@ -201,7 +200,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	PieceStatManTest.cc InOrderPieceSelector.h \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
 	bitfieldTest.cc BDETest.cc DownloadContextTest.cc \
-	MockDownloadContext.h XmlRpcRequestParserControllerTest.cc \
+	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
 	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
@@ -216,7 +215,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	BtRejectMessageTest.cc BtRequestMessageTest.cc \
 	BtSuggestPieceMessageTest.cc BtUnchokeMessageTest.cc \
 	DefaultPieceStorageTest.cc DefaultBtAnnounceTest.cc \
-	DefaultBtContextTest.cc DefaultBtMessageDispatcherTest.cc \
+	DefaultBtMessageDispatcherTest.cc \
 	DefaultBtRequestFactoryTest.cc MockBtMessage.h \
 	MockBtMessageDispatcher.h MockBtMessageFactory.h \
 	PeerListProcessorTest.cc AnnounceListTest.cc \
@@ -248,8 +247,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
 	MockDHTTaskQueue.h MockExtensionMessage.h \
 	MockExtensionMessageFactory.h MockPieceStorage.h \
-	BencodeTest.cc MetalinkerTest.cc MetalinkEntryTest.cc \
-	Metalink2RequestGroupTest.cc \
+	BencodeTest.cc BittorrentHelperTest.cc MetalinkerTest.cc \
+	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_XML_RPC_TRUE@am__objects_1 = XmlRpcRequestParserControllerTest.$(OBJEXT) \
@@ -283,7 +282,6 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	BtUnchokeMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPieceStorageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounceTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerListProcessorTest.$(OBJEXT) \
@@ -331,7 +329,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BencodeTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	BencodeTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_7 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -347,7 +346,6 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	GrowSegmentTest.$(OBJEXT) \
 	SingleFileAllocationIteratorTest.$(OBJEXT) \
 	DefaultBtProgressInfoFileTest.$(OBJEXT) \
-	SingleFileDownloadContextTest.$(OBJEXT) \
 	RequestGroupTest.$(OBJEXT) PStringBuildVisitorTest.$(OBJEXT) \
 	ParameterizedStringParserTest.$(OBJEXT) UtilTest.$(OBJEXT) \
 	AlphaNumberDecoratorTest.$(OBJEXT) UriListParserTest.$(OBJEXT) \
@@ -582,8 +580,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	a2functionalTest.cc FileEntryTest.cc PieceTest.cc \
 	SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
-	DefaultBtProgressInfoFileTest.cc \
-	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
+	DefaultBtProgressInfoFileTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
 	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
 	HttpHeaderProcessorTest.cc RequestTest.cc CookieParserTest.cc \
@@ -608,9 +605,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	PieceStatManTest.cc InOrderPieceSelector.h \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
 	bitfieldTest.cc BDETest.cc DownloadContextTest.cc \
-	MockDownloadContext.h $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7)
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -712,6 +709,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BittorrentHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtBitfieldMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCancelMessageTest.Po@am__quote@
@@ -764,7 +762,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolverTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtContextTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtMessageDispatcherTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtMessageFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtProgressInfoFileTest.Po@am__quote@
@@ -836,7 +833,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignatureTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleDNSCacheTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIteratorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileDownloadContextTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@

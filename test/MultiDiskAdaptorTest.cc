@@ -44,7 +44,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MultiDiskAdaptorTest );
 
-std::deque<SharedHandle<FileEntry> > createEntries() {
+std::vector<SharedHandle<FileEntry> > createEntries() {
   SharedHandle<FileEntry> array[] = {
     SharedHandle<FileEntry>(new FileEntry("file0.txt", 0, 0)),
     SharedHandle<FileEntry>(new FileEntry("file1.txt", 15, 0)),
@@ -68,9 +68,9 @@ std::deque<SharedHandle<FileEntry> > createEntries() {
   //                         *** file6
   //                            |file7
   //                            ** file8
-  std::deque<SharedHandle<FileEntry> > entries(&array[0],
-					       &array[arrayLength(array)]);
-  for(std::deque<SharedHandle<FileEntry> >::const_iterator i = entries.begin();
+  std::vector<SharedHandle<FileEntry> > entries(&array[0],
+						&array[arrayLength(array)]);
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i = entries.begin();
       i != entries.end(); ++i) {
     File((*i)->getPath()).remove();
   }
@@ -80,12 +80,12 @@ std::deque<SharedHandle<FileEntry> > createEntries() {
 void MultiDiskAdaptorTest::testResetDiskWriterEntries()
 {
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
-    adaptor->setFileEntries(fileEntries);
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
     
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
@@ -97,13 +97,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     fileEntries[0]->setRequested(false);
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
     
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     // Because entries[1] spans entries[0]
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
@@ -116,14 +116,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     fileEntries[0]->setRequested(false);
     fileEntries[1]->setRequested(false);
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
     
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter().isNull());
     // Because entries[2] spans entries[1]
@@ -137,13 +137,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     fileEntries[3]->setRequested(false);
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
     
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
@@ -157,13 +157,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     fileEntries[4]->setRequested(false);
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
     
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
@@ -176,14 +176,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     fileEntries[3]->setRequested(false);
     fileEntries[4]->setRequested(false);
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
     
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
@@ -195,15 +195,15 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     for(size_t i = 5; i < 9; ++i) {
       fileEntries[i]->setRequested(false);
     }
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
     
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
@@ -215,13 +215,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     for(size_t i = 1; i < 9; ++i) {
       fileEntries[i]->setRequested(false);
     }
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     adaptor->openFile();
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter().isNull());
@@ -233,13 +233,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     for(size_t i = 2; i < 9; ++i) {
       fileEntries[i]->setRequested(false);
     }
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     adaptor->openFile();
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
@@ -253,14 +253,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::deque<SharedHandle<FileEntry> > fileEntries = createEntries();
+    std::vector<SharedHandle<FileEntry> > fileEntries = createEntries();
     for(size_t i = 0; i < 6; ++i) {
       fileEntries[i]->setRequested(false);
     }
     fileEntries[8]->setRequested(false);
-    adaptor->setFileEntries(fileEntries);
+    adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     adaptor->openFile();
-    std::deque<SharedHandle<DiskWriterEntry> > entries =
+    std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter().isNull());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter().isNull());
@@ -290,8 +290,8 @@ void readFile(const std::string& filename, char* buf, int bufLength) {
 }
 
 void MultiDiskAdaptorTest::testWriteData() {
-  try {
-  adaptor->setFileEntries(createEntries());
+  std::vector<SharedHandle<FileEntry> > fileEntries(createEntries());
+  adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
 
   adaptor->openFile();
   std::string msg = "12345";
@@ -335,22 +335,18 @@ void MultiDiskAdaptorTest::testWriteData() {
   CPPUNIT_ASSERT_EQUAL(std::string("12"), std::string(buf));
 
   CPPUNIT_ASSERT(File("file5.txt").isFile());
-
-  } catch(Exception& e) {
-    CPPUNIT_FAIL(e.stackTrace());
-  }
 }
 
 void MultiDiskAdaptorTest::testReadData() {
   SharedHandle<FileEntry> entry1(new FileEntry("file1r.txt", 15, 0));
   SharedHandle<FileEntry> entry2(new FileEntry("file2r.txt", 7, 15));
   SharedHandle<FileEntry> entry3(new FileEntry("file3r.txt", 3, 22));
-  std::deque<SharedHandle<FileEntry> > entries;
+  std::vector<SharedHandle<FileEntry> > entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
   entries.push_back(entry3);
 
-  adaptor->setFileEntries(entries);
+  adaptor->setFileEntries(entries.begin(), entries.end());
 
   adaptor->openFile();
   unsigned char buf[128];
@@ -379,11 +375,11 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
   for(size_t i = 0; i < arrayLength(entries); ++i) {
     createFile(entries[i]->getPath(), entries[i]->getLength()+100);
   }
-  std::deque<SharedHandle<FileEntry> > fileEntries
+  std::vector<SharedHandle<FileEntry> > fileEntries
     (&entries[0], &entries[arrayLength(entries)]);
   
   MultiDiskAdaptor adaptor;
-  adaptor.setFileEntries(fileEntries);
+  adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
   
@@ -408,11 +404,11 @@ void MultiDiskAdaptorTest::testSize()
   for(size_t i = 0; i < arrayLength(entries); ++i) {
     createFile(entries[i]->getPath(), entries[i]->getLength());
   }
-  std::deque<SharedHandle<FileEntry> > fileEntries
+  std::vector<SharedHandle<FileEntry> > fileEntries
     (&entries[0], &entries[arrayLength(entries)]);
   
   MultiDiskAdaptor adaptor;
-  adaptor.setFileEntries(fileEntries);
+  adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
   
@@ -438,10 +434,10 @@ void MultiDiskAdaptorTest::testUtime()
 
   entries[2]->setRequested(false);
 
-  std::deque<SharedHandle<FileEntry> > fileEntries
+  std::vector<SharedHandle<FileEntry> > fileEntries
     (&entries[0], &entries[arrayLength(entries)]);
   MultiDiskAdaptor adaptor;
-  adaptor.setFileEntries(fileEntries);
+  adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
 
   time_t atime = (time_t) 100000;
   time_t mtime = (time_t) 200000;

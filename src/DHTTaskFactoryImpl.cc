@@ -47,7 +47,6 @@
 #include "DHTReplaceNodeTask.h"
 #include "Peer.h"
 #include "DHTNodeLookupEntry.h"
-#include "BtContext.h"
 #include "PeerStorage.h"
 #include "BtRuntime.h"
 #include "DHTMessageCallback.h"
@@ -85,7 +84,7 @@ DHTTaskFactoryImpl::createBucketRefreshTask()
 
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createPeerLookupTask
-(const SharedHandle<BtContext>& ctx,
+(const SharedHandle<DownloadContext>& ctx,
  const SharedHandle<BtRuntime>& btRuntime,
  const SharedHandle<PeerStorage>& peerStorage)
 {

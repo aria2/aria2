@@ -52,6 +52,7 @@
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -89,7 +90,6 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setRequest(req);
   httpRequest->setFileEntry(fileEntry);
   httpRequest->setSegment(segment);
-  httpRequest->setEntityLength(fileEntry->getLength());
   httpRequest->addHeader(option->get(PREF_HEADER));
   httpRequest->setCookieStorage(cookieStorage);
   httpRequest->setAuthConfigFactory(authConfigFactory);

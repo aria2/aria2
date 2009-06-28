@@ -37,6 +37,7 @@
 #include "DownloadEngine.h"
 #include "StreamFileAllocationEntry.h"
 #include "Request.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

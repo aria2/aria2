@@ -40,6 +40,7 @@
 #include "DiskAdaptor.h"
 #include "prefs.h"
 #include "Option.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

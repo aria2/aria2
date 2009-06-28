@@ -69,13 +69,14 @@ void HttpRequestTest::testGetStartByte()
   HttpRequest httpRequest;
   SharedHandle<Piece> p(new Piece(1, 1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024, p));
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*10, 0));
 
   CPPUNIT_ASSERT_EQUAL((off_t)0LL, httpRequest.getStartByte());
 
   httpRequest.setSegment(segment);
+  httpRequest.setFileEntry(fileEntry);
   
   CPPUNIT_ASSERT_EQUAL((off_t)1024LL, httpRequest.getStartByte());
-
 }
 
 void HttpRequestTest::testGetEndByte()
@@ -87,6 +88,7 @@ void HttpRequestTest::testGetEndByte()
   HttpRequest httpRequest;
   SharedHandle<Piece> piece(new Piece(index, length));
   SharedHandle<Segment> segment(new PiecedSegment(segmentLength, piece));
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", segmentLength*10, 0));
 
   CPPUNIT_ASSERT_EQUAL((off_t)0LL, httpRequest.getEndByte());
 
@@ -99,10 +101,16 @@ void HttpRequestTest::testGetEndByte()
   request->setPipeliningHint(true);
 
   httpRequest.setRequest(request);
+  httpRequest.setFileEntry(fileEntry);
 
   CPPUNIT_ASSERT_EQUAL((off_t)(segmentLength*index+length-1),
 		       httpRequest.getEndByte());
 
+  // The end byte of FileEntry are placed inside segment
+  fileEntry->setLength(segmentLength+100);
+
+  CPPUNIT_ASSERT_EQUAL((off_t)(segmentLength*index+100-1),
+		       httpRequest.getEndByte());
 
   request->setPipeliningHint(false);
 
@@ -120,11 +128,13 @@ void HttpRequestTest::testCreateRequest()
 
   p.reset(new Piece(0, 1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024, p));
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setFileEntry(fileEntry);
   httpRequest.setAuthConfigFactory(_authConfigFactory);
 
   // remove "Connection: close" and add end byte range
@@ -311,9 +321,12 @@ void HttpRequestTest::testCreateRequest_ftp()
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment
     (new PiecedSegment(1024*1024, p));
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setFileEntry(fileEntry);
   httpRequest.setAuthConfigFactory(_authConfigFactory);
   httpRequest.setProxyRequest(proxyRequest);
 
@@ -360,6 +373,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment
     (new PiecedSegment(1024*1024, p));
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
 
   Cookie cookie1("name1", "value1", "/archives", "localhost", false);
   Cookie cookie2("name2", "value2", "/archives/download", "localhost", false);
@@ -377,6 +391,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setFileEntry(fileEntry);
   httpRequest.setCookieStorage(st);
   httpRequest.setAuthConfigFactory(_authConfigFactory);
 
@@ -547,11 +562,13 @@ void HttpRequestTest::testIsRangeSatisfied()
   request->setPipeliningHint(false); // default: false
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 0, 0));
 
   HttpRequest httpRequest;
 
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+  httpRequest.setFileEntry(fileEntry);
 
   SharedHandle<Range> range(new Range());
 
@@ -569,11 +586,11 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  httpRequest.setEntityLength(entityLength-1);
+  fileEntry->setLength(entityLength-1);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
-  httpRequest.setEntityLength(entityLength);
+  fileEntry->setLength(entityLength);
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
@@ -598,13 +615,13 @@ void HttpRequestTest::testUserAgent()
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SharedHandle<Piece> p(new Piece(0, 1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024, p));
+  //SharedHandle<Piece> p(new Piece(0, 1024));
+  //SharedHandle<Segment> segment(new PiecedSegment(1024, p));
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
-  httpRequest.setSegment(segment);
+  //httpRequest.setSegment(segment);
   httpRequest.setUserAgent("aria2 (Linux)");
   httpRequest.setAuthConfigFactory(_authConfigFactory);
 

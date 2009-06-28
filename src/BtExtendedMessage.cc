@@ -41,7 +41,6 @@
 #include "ExtensionMessageFactory.h"
 #include "PeerMessageUtil.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"

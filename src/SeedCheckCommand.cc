@@ -36,23 +36,21 @@
 #include "DownloadEngine.h"
 #include "BtRuntime.h"
 #include "PieceStorage.h"
-#include "BtContext.h"
 #include "Logger.h"
 #include "SeedCriteria.h"
 #include "message.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
 SeedCheckCommand::SeedCheckCommand(int cuid,
 				   RequestGroup* requestGroup,
 				   DownloadEngine* e,
-				   const SharedHandle<BtContext>& btContext,
 				   const SeedCriteriaHandle& seedCriteria)
   :Command(cuid),
    _requestGroup(requestGroup),
    e(e),
-   _btContext(btContext),
    seedCriteria(seedCriteria),
    checkStarted(false)
 {

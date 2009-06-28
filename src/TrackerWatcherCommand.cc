@@ -37,7 +37,6 @@
 #include <sstream>
 
 #include "DownloadEngine.h"
-#include "BtContext.h"
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
 #include "PieceStorage.h"
@@ -45,7 +44,6 @@
 #include "Peer.h"
 #include "prefs.h"
 #include "message.h"
-#include "SingleFileDownloadContext.h"
 #include "ByteArrayDiskWriterFactory.h"
 #include "RecoverableException.h"
 #include "PeerInitiateConnectionCommand.h"
@@ -59,17 +57,16 @@
 #include "SocketCore.h"
 #include "Request.h"
 #include "AnnounceTier.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
-TrackerWatcherCommand::TrackerWatcherCommand(int32_t cuid,
-					     RequestGroup* requestGroup,
-					     DownloadEngine* e,
-					     const BtContextHandle& btContext):
+TrackerWatcherCommand::TrackerWatcherCommand
+(int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e):
   Command(cuid),
   _requestGroup(requestGroup),
-  e(e),
-  _btContext(btContext)
+  e(e)
 {
   _requestGroup->increaseNumCommand();
 }
@@ -162,12 +159,8 @@ void TrackerWatcherCommand::processTrackerResponse
     }
     peer->usedBy(e->newCUID());
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(peer->usedBy(),
-					_requestGroup,
-					peer,
-					e,
-					_btContext,
-					_btRuntime);
+      new PeerInitiateConnectionCommand
+      (peer->usedBy(), _requestGroup, peer, e, _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);
@@ -185,15 +178,17 @@ RequestGroupHandle TrackerWatcherCommand::createAnnounce() {
 }
 
 static bool backupTrackerIsAvailable
-(const std::deque<SharedHandle<AnnounceTier> >& announceTiers)
+(const SharedHandle<DownloadContext>& context)
 {
-  if(announceTiers.size() >= 2) {
+  const BDE& announceList =
+    context->getAttribute(bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST];
+  if(announceList.size() >= 2) {
     return true;
   }
-  if(announceTiers.empty()) {
+  if(announceList.empty()) {
     return false;
   }
-  if(announceTiers[0]->urls.size() >= 2) {
+  if(announceList[0].size() >= 2) {
     return true;
   } else {
     return false;
@@ -208,7 +203,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   RequestGroupHandle rg(new RequestGroup(getOption(), uris));
   // If backup tracker is available, only try 2 times for each tracker
   // and if they all fails, then try next one.
-  if(backupTrackerIsAvailable(_btContext->getAnnounceTiers())) {
+  if(backupTrackerIsAvailable(_requestGroup->getDownloadContext())) {
     logger->debug("This is multi-tracker announce.");
     rg->getOption()->put(PREF_MAX_TRIES, "2");
   } else {
@@ -217,11 +212,10 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   }
 
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
-  SingleFileDownloadContextHandle dctx
-    (new SingleFileDownloadContext(getOption()->getAsInt(PREF_SEGMENT_SIZE),
-				   0,
-				   A2STR::NIL,
-				   TRACKER_ANNOUNCE_FILE));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(getOption()->getAsInt(PREF_SEGMENT_SIZE),
+			 0,
+			 TRACKER_ANNOUNCE_FILE));
   dctx->setDir(A2STR::NIL);
   dctx->getFileEntries().front()->setUris(uris);
   rg->setDownloadContext(dctx);

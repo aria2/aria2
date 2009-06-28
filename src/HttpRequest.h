@@ -37,6 +37,7 @@
 
 #include "common.h"
 
+#include <cassert>
 #include <string>
 #include <deque>
 
@@ -63,8 +64,6 @@ private:
   SharedHandle<FileEntry> _fileEntry;
 
   SharedHandle<Segment> segment;
-
-  uint64_t entityLength;
 
   bool _contentEncodingEnabled;
 
@@ -97,17 +96,10 @@ public:
 
   void setRequest(const SharedHandle<Request>& request);
 
-  /**
-   * entityLength is used in isRangeSatisfied() method.
-   */
-  void setEntityLength(uint64_t entityLength)
-  {
-    this->entityLength = entityLength;
-  }
-
   uint64_t getEntityLength() const
   {
-    return entityLength;
+    assert(!_fileEntry.isNull());
+    return _fileEntry->getLength();
   }
 
   const std::string& getHost() const

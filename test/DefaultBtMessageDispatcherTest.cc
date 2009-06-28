@@ -8,7 +8,6 @@
 #include "Exception.h"
 #include "MockPieceStorage.h"
 #include "MockPeerStorage.h"
-#include "DefaultBtContext.h"
 #include "MockBtMessage.h"
 #include "MockBtMessageFactory.h"
 #include "prefs.h"
@@ -18,6 +17,8 @@
 #include "RequestGroupMan.h"
 #include "ServerStatMan.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -41,7 +42,7 @@ class DefaultBtMessageDispatcherTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveOutstandingRequest);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DefaultBtContext> btContext;
+  SharedHandle<DownloadContext> _dctx;
   SharedHandle<Peer> peer;
   SharedHandle<DefaultBtMessageDispatcher> btMessageDispatcher;
   SharedHandle<MockPeerStorage> peerStorage;
@@ -138,13 +139,13 @@ public:
 
     _rg.reset(new RequestGroup(_option, std::deque<std::string>()));
 
-    btContext.reset(new DefaultBtContext());
-    btContext->load("test.torrent");
-    btContext->setOwnerRequestGroup(_rg.get());
+    _dctx.reset(new DownloadContext());
+    bittorrent::load("test.torrent", _dctx);
+    _dctx->setOwnerRequestGroup(_rg.get());
 
     peer.reset(new Peer("192.168.0.1", 6969));
-    peer->allocateSessionResource(btContext->getPieceLength(),
-				  btContext->getTotalLength());
+    peer->allocateSessionResource
+      (_dctx->getPieceLength(), _dctx->getTotalLength());
     peerStorage.reset(new MockPeerStorage());
     pieceStorage.reset(new MockPieceStorage());
 
@@ -155,7 +156,7 @@ public:
 
     btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
     btMessageDispatcher->setPeer(peer);
-    btMessageDispatcher->setBtContext(btContext);
+    btMessageDispatcher->setDownloadContext(_dctx);
     btMessageDispatcher->setPieceStorage(pieceStorage);
     btMessageDispatcher->setPeerStorage(peerStorage);
     btMessageDispatcher->setBtMessageFactory(_messageFactory);

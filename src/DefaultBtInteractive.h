@@ -43,7 +43,7 @@
 
 namespace aria2 {
 
-class BtContext;
+class DownloadContext;
 class BtRuntime;
 class PieceStorage;
 class PeerStorage;
@@ -97,7 +97,7 @@ class DefaultBtInteractive : public BtInteractive {
 private:
   int32_t cuid;
 
-  SharedHandle<BtContext> _btContext;
+  SharedHandle<DownloadContext> _downloadContext;
 
   SharedHandle<BtRuntime> _btRuntime;
 
@@ -151,7 +151,7 @@ private:
   void addPortMessageToQueue();
 
 public:
-  DefaultBtInteractive(const SharedHandle<BtContext>& btContext,
+  DefaultBtInteractive(const SharedHandle<DownloadContext>& downloadContext,
 		       const SharedHandle<Peer>& peer);
 
   virtual ~DefaultBtInteractive();

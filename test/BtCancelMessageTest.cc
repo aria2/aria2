@@ -6,7 +6,6 @@
 
 #include "PeerMessageUtil.h"
 #include "MockBtMessageDispatcher.h"
-#include "MockBtContext.h"
 #include "Peer.h"
 #include "FileEntry.h"
 #include "Piece.h"
@@ -22,12 +21,9 @@ class BtCancelMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Peer> peer;
-  SharedHandle<MockBtContext> btContext;
 public:
   void setUp() {
     peer.reset(new Peer("host", 6969));
-    btContext.reset(new MockBtContext());
-    btContext->setInfoHash((const unsigned char*)"12345678901234567890");
   }
 
   void testCreate();
@@ -103,7 +99,6 @@ void BtCancelMessageTest::testDoReceivedAction() {
   msg.setIndex(1);
   msg.setBegin(2*16*1024);
   msg.setLength(16*1024);
-  msg.setBtContext(btContext);
   msg.setPeer(peer);
   SharedHandle<MockBtMessageDispatcher2> dispatcher
     (new MockBtMessageDispatcher2());

@@ -48,7 +48,6 @@
 #include "File.h"
 #include "message.h"
 #include "Util.h"
-#include "BtRegistry.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "DiskAdaptor.h"
@@ -57,8 +56,7 @@
 #include "StreamCheckIntegrityEntry.h"
 #include "CheckIntegrityCommand.h"
 #include "UnknownLengthPieceStorage.h"
-#include "BtContext.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "DlAbortEx.h"
 #include "DownloadFailureException.h"
 #include "RequestGroupMan.h"
@@ -83,6 +81,8 @@
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #ifdef ENABLE_BITTORRENT
+# include "bittorrent_helper.h"
+# include "BtRegistry.h"
 # include "BtCheckIntegrityEntry.h"
 # include "DefaultPeerStorage.h"
 # include "DefaultBtAnnounce.h"
@@ -205,39 +205,30 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 {
 #ifdef ENABLE_BITTORRENT
   {
-    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
-    if(!btContext.isNull()) {
+    if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
+      const BDE& torrentAttrs =
+	_downloadContext->getAttribute(bittorrent::BITTORRENT);
       if(_option->getAsBool(PREF_DRY_RUN)) {
 	throw DOWNLOAD_FAILURE_EXCEPTION
 	  ("Cancel BitTorrent download in dry-run context.");
       }
       SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-      if(!btRegistry->getBtContext(btContext->getInfoHashAsString()).isNull()) {
+      if(!btRegistry->getDownloadContext
+	 (torrentAttrs[bittorrent::INFO_HASH].s()).isNull()) {
 	throw DOWNLOAD_FAILURE_EXCEPTION
-	  (StringFormat("InfoHash %s is already registered.",
-			btContext->getInfoHashAsString().c_str()).str());
+	  (StringFormat
+	   ("InfoHash %s is already registered.",
+	    Util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str()).str());
       }
 
       if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
 	throw DOWNLOAD_FAILURE_EXCEPTION
 	  (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-			getFilePath().c_str()).str());
+			_downloadContext->getBasePath().c_str()).str());
       }
       initPieceStorage();
-      if(btContext->getFileEntries().size() > 1) {
-	// this is really multi file torrent.
-	// clear http/ftp uris because the current implementation does not
-	// allow integrating multi-file torrent and http/ftp.
-	_logger->debug("Clearing http/ftp URIs because the current implementation does not allow integrating multi-file torrent and http/ftp.");
-	_uris.clear();
-
+      if(_downloadContext->getFileEntries().size() > 1) {
 	_pieceStorage->setupFileFilter();
-      } else if(btContext->getFileEntries().size() == 1) {
-	// web-seeding is only enabled for single file torrent
-	SharedHandle<FileEntry> fileEntry = btContext->getFileEntries().front();
-	_uris.insert(_uris.end(),
-		     fileEntry->getAssociatedUris().begin(),
-		     fileEntry->getAssociatedUris().end());
       }
       
       SharedHandle<DefaultBtProgressInfoFile>
@@ -252,14 +243,14 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       progressInfoFile->setBtRuntime(btRuntime);
 
       SharedHandle<DefaultPeerStorage> peerStorage
-	(new DefaultPeerStorage(btContext, _option.get()));
+	(new DefaultPeerStorage(_option.get()));
       peerStorage->setBtRuntime(btRuntime);
       peerStorage->setPieceStorage(_pieceStorage);
       _peerStorage = peerStorage;
       progressInfoFile->setPeerStorage(peerStorage);
 
       SharedHandle<DefaultBtAnnounce> btAnnounce
-	(new DefaultBtAnnounce(btContext, _option.get()));
+	(new DefaultBtAnnounce(_downloadContext, _option.get()));
       btAnnounce->setBtRuntime(btRuntime);
       btAnnounce->setPieceStorage(_pieceStorage);
       btAnnounce->setPeerStorage(peerStorage);
@@ -267,8 +258,8 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	(_option->getAsInt(PREF_BT_TRACKER_INTERVAL));
       btAnnounce->shuffleAnnounce();
       
-      btRegistry->put(btContext->getInfoHashAsString(),
-		      BtObject(btContext,
+      btRegistry->put(torrentAttrs[bittorrent::INFO_HASH].s(),
+		      BtObject(_downloadContext,
 			       _pieceStorage,
 			       peerStorage,
 			       btAnnounce,
@@ -280,20 +271,20 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	progressInfoFile->removeFile();
 	_logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
 			progressInfoFile->getFilename().c_str(),
-			getFilePath().c_str());
+			_downloadContext->getBasePath().c_str());
       }
       {
 	uint64_t actualFileSize = _pieceStorage->getDiskAdaptor()->size();
-	if(actualFileSize == btContext->getTotalLength()) {
+	if(actualFileSize == _downloadContext->getTotalLength()) {
 	  // First, make DiskAdaptor read-only mode to allow the
 	  // program to seed file in read-only media.
 	  _pieceStorage->getDiskAdaptor()->enableReadOnly();
 	} else {
 	  // Open file in writable mode to allow the program
-	  // truncate the file to btContext->getTotalLength()
+	  // truncate the file to _downloadContext->getTotalLength()
 	  _logger->debug("File size not match. File is opened in writable mode."
 			 " Expected:%s Actual:%s",
-			 Util::uitos(btContext->getTotalLength()).c_str(),
+			 Util::uitos(_downloadContext->getTotalLength()).c_str(),
 			 Util::uitos(actualFileSize).c_str());
 	}
       }
@@ -311,7 +302,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	    throw DOWNLOAD_FAILURE_EXCEPTION
 	      (StringFormat
 	       (MSG_FILE_ALREADY_EXISTS,
-		getFilePath().c_str()).str());
+		_downloadContext->getBasePath().c_str()).str());
 	  } else {
 	    _pieceStorage->getDiskAdaptor()->openFile();
 	  }
@@ -324,14 +315,22 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
       }
       _progressInfoFile = progressInfoFile;
 
-      if(!btContext->isPrivate() && _option->getAsBool(PREF_ENABLE_DHT)) {
+      if(torrentAttrs[bittorrent::PRIVATE].i() == 0 &&
+	 _option->getAsBool(PREF_ENABLE_DHT)) {
 	std::deque<Command*> commands;
 	DHTSetup().setup(commands, e, _option.get());
 	e->addCommand(commands);
-	if(!btContext->getNodes().empty() && DHTSetup::initialized()) {
+	if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
+	  std::deque<std::pair<std::string, uint16_t> > entryPoints;
+	  const BDE& nodes = torrentAttrs[bittorrent::NODES];
+	  for(BDE::List::const_iterator i = nodes.listBegin();
+	      i != nodes.listEnd(); ++i) {
+	    std::pair<std::string, uint16_t> addr
+	      ((*i)[bittorrent::HOSTNAME].s(), (*i)[bittorrent::PORT].i());
+	    entryPoints.push_back(addr);
+	  }
 	  DHTEntryPointNameResolveCommand* command =
-	    new DHTEntryPointNameResolveCommand(e->newCUID(), e,
-						btContext->getNodes());
+	    new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
 	  command->setTaskQueue(DHTRegistry::_taskQueue);
 	  command->setTaskFactory(DHTRegistry::_taskFactory);
 	  command->setRoutingTable(DHTRegistry::_routingTable);
@@ -361,8 +360,10 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-		      getFilePath().c_str()).str());
+		      _downloadContext->getBasePath().c_str()).str());
     }
+    // TODO1.5 Renaming filename doesn't take into account of
+    // multi-file download.
     adjustFilename
       (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
 					(_downloadContext,
@@ -375,7 +376,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
     if(!infoFile->exists() && downloadFinishedByFileLength()) {
       _pieceStorage->markAllPiecesDone();
       _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-		      _gid, getFilePath().c_str());
+		      _gid, _downloadContext->getBasePath().c_str());
     } else {
       loadAndOpenFile(infoFile);
       SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
@@ -412,7 +413,7 @@ void RequestGroup::initPieceStorage()
     // downloads. Currently multi-file integrated download is not supported.
     if(!_uris.empty() &&
        _downloadContext->getFileEntries().size() == 1 &&
-       !dynamic_pointer_cast<BtContext>(_downloadContext).isNull()) {
+       _downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
       _logger->debug("Using LongestSequencePieceSelector");
       ps->setPieceSelector
 	(SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
@@ -449,8 +450,7 @@ bool RequestGroup::downloadFinishedByFileLength()
   if(!_downloadContext->knowsTotalLength()) {
     return false;
   }
-  // TODO consider the case when the getFilePath() returns dir path. 
-  File outfile(getFilePath());
+  File outfile(getFirstFilePath());
   if(outfile.exists() && _downloadContext->getTotalLength() == outfile.size()) {
     return true;
   } else {
@@ -468,7 +468,7 @@ void RequestGroup::adjustFilename
   } else if(downloadFinishedByFileLength()) {
     // File was downloaded already, no need to change file name.
   } else {
-    File outfile(getFilePath());    
+    File outfile(getFirstFilePath());    
     if(outfile.exists() && _option->getAsBool(PREF_CONTINUE) &&
        outfile.size() <= _downloadContext->getTotalLength()) {
       // File exists but user decided to resume it.
@@ -498,14 +498,14 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
       progressInfoFile->removeFile();
       _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
 		      progressInfoFile->getFilename().c_str(),
-		      getFilePath().c_str());
+		      _downloadContext->getBasePath().c_str());
     }
 
     if(progressInfoFile->exists()) {
       progressInfoFile->load();
       _pieceStorage->getDiskAdaptor()->openExistingFile();
     } else {
-      File outfile(getFilePath());    
+      File outfile(getFirstFilePath());    
       if(outfile.exists() && _option->getAsBool(PREF_CONTINUE) &&
 	 outfile.size() <= getTotalLength()) {
 	_pieceStorage->getDiskAdaptor()->openExistingFile();
@@ -535,43 +535,36 @@ void RequestGroup::shouldCancelDownloadForSafety()
   if(_option->getAsBool(PREF_ALLOW_OVERWRITE)) {
     return;
   }
-  File outfile(getFilePath());
+  File outfile(getFirstFilePath());
   if(outfile.exists()) {
     if(_option->getAsBool(PREF_AUTO_FILE_RENAMING)) {
       if(tryAutoFileRenaming()) {
-	_logger->notice(MSG_FILE_RENAMED, getFilePath().c_str());
+	_logger->notice(MSG_FILE_RENAMED, getFirstFilePath().c_str());
       } else {
 	throw DOWNLOAD_FAILURE_EXCEPTION
 	  (StringFormat("File renaming failed: %s",
-			getFilePath().c_str()).str());
+			getFirstFilePath().c_str()).str());
       }
     } else {
       throw DOWNLOAD_FAILURE_EXCEPTION
 	(StringFormat(MSG_FILE_ALREADY_EXISTS,
-		      getFilePath().c_str()).str());
+		      getFirstFilePath().c_str()).str());
     }
   }
 }
 
 bool RequestGroup::tryAutoFileRenaming()
 {
-  std::string filepath = getFilePath();
+  std::string filepath = getFirstFilePath();
   if(filepath.empty()) {
     return false;
   }
-  SingleFileDownloadContextHandle ctx =
-    dynamic_pointer_cast<SingleFileDownloadContext>(_downloadContext);
-  // Make a copy of ctx.
-  SingleFileDownloadContextHandle tempCtx(new SingleFileDownloadContext(*ctx.get()));
-
-  DefaultBtProgressInfoFile tempInfoFile(tempCtx, SharedHandle<PieceStorage>(), 0);
-
   for(unsigned int i = 1; i < 10000; ++i) {
     File newfile(strconcat(filepath, ".", Util::uitos(i)));
-    tempCtx->setUFilename(newfile.getPath());
-    tempInfoFile.updateFilename();
-    if(!newfile.exists() || (newfile.exists() && tempInfoFile.exists())) {
-      ctx->setUFilename(newfile.getPath());
+    // TODO1.5 hard coded ".aria2" extension.
+    File ctrlfile(newfile.getPath()+".aria2");
+    if(!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
+      _downloadContext->getFirstFileEntry()->setPath(newfile.getPath());
       return true;
     }
   }
@@ -639,8 +632,8 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 		     static_cast<unsigned int>(_uris.size()));
     }
   }
-
   std::deque<std::string> pendingURIs;
+
   for(; numCommand--; ) {
     Command* command = new CreateRequestCommand(e->newCUID(), this, e);
     _logger->debug("filePath=%s", _downloadContext->getFileEntries().front()->getPath().c_str());
@@ -685,14 +678,14 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
   }
 }
 
-std::string RequestGroup::getFilePath() const
+std::string RequestGroup::getFirstFilePath() const
 {
   assert(!_downloadContext.isNull());
   if(inMemoryDownload()) {
     static const std::string DIR_MEMORY("[MEMORY]");
-    return DIR_MEMORY+File(_downloadContext->getActualBasePath()).getBasename();
+    return DIR_MEMORY+File(_downloadContext->getFirstFileEntry()->getPath()).getBasename();
   } else {
-    return _downloadContext->getActualBasePath();
+    return _downloadContext->getFirstFileEntry()->getPath();
   }
 }
 
@@ -827,24 +820,25 @@ void RequestGroup::setForceHaltRequested(bool f, HaltReason haltReason)
 void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
-  BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
-  if(!btContext.isNull()) {
+  if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
     SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-    BtContextHandle btContextInReg =
-      btRegistry->getBtContext(btContext->getInfoHashAsString());
-    // Make sure that the registered BtContext's GID is equal to
-    // this->getGID().  Even if createInitialCommand() throws
-    // exception without registering this BtContext, after that, this
-    // method is called. In this case, just finding BtContext using
-    // infoHash may detect another download's BtContext and deleting
-    // it from BtRegistry causes Segmentation Fault.
-    if(!btContextInReg.isNull() &&
-       btContextInReg->getOwnerRequestGroup()->getGID() ==
-	btContext->getOwnerRequestGroup()->getGID()) {
-      btRegistry->remove(btContext->getInfoHashAsString());
+    const BDE& torrentAttrs =
+      _downloadContext->getAttribute(bittorrent::BITTORRENT);
+    const std::string& infoHash = torrentAttrs[bittorrent::INFO_HASH].s();
+    SharedHandle<DownloadContext> contextInReg =
+      btRegistry->getDownloadContext(infoHash);
+    // Make sure that the registered DownloadContext's GID is equal to
+    // _gid.  Even if createInitialCommand() throws exception without
+    // registering this DownloadContext, after that, this method is
+    // called. In this case, just finding DownloadContext using
+    // infoHash may detect another download's DownloadContext and
+    // deleting it from BtRegistry causes Segmentation Fault.
+    if(!contextInReg.isNull() &&
+       contextInReg->getOwnerRequestGroup()->getGID() == _gid) {
+      btRegistry->remove(infoHash);
       if(!DHTRegistry::_peerAnnounceStorage.isNull()) {
-	DHTRegistry::_peerAnnounceStorage->
-	  removeLocalPeerAnnounce(btContext->getInfoHash());
+	DHTRegistry::_peerAnnounceStorage->removeLocalPeerAnnounce
+	  (torrentAttrs[bittorrent::INFO_HASH].uc());
       }
     }
   }
@@ -856,7 +850,8 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 
 void RequestGroup::preDownloadProcessing()
 {
-  _logger->debug("Finding PreDownloadHandler for path %s.", getFilePath().c_str());
+  _logger->debug("Finding PreDownloadHandler for path %s.",
+		 getFirstFilePath().c_str());
   try {
     for(PreDownloadHandlers::const_iterator itr = _preDownloadHandlers.begin();
 	itr != _preDownloadHandlers.end(); ++itr) {
@@ -876,7 +871,8 @@ void RequestGroup::preDownloadProcessing()
 void RequestGroup::postDownloadProcessing
 (std::deque<SharedHandle<RequestGroup> >& groups)
 {
-  _logger->debug("Finding PostDownloadHandler for path %s.", getFilePath().c_str());
+  _logger->debug("Finding PostDownloadHandler for path %s.",
+		 getFirstFilePath().c_str());
   try {
     for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
 	itr != _postDownloadHandlers.end(); ++itr) {
@@ -968,11 +964,6 @@ void RequestGroup::clearPostDowloadHandler()
 void RequestGroup::clearPreDowloadHandler()
 {
   _preDownloadHandlers.clear();
-}
-
-void RequestGroup::setDownloadContext(const DownloadContextHandle& downloadContext)
-{
-  _downloadContext = downloadContext;
 }
 
 void RequestGroup::setPieceStorage(const PieceStorageHandle& pieceStorage)
@@ -1104,11 +1095,10 @@ void RequestGroup::removeIdenticalURI(const std::string& uri)
 void RequestGroup::reportDownloadFinished()
 {
   _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
-		  getFilePath().c_str());
+		  _downloadContext->getBasePath().c_str());
   _uriSelector->resetCounters();
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<BtContext> ctx = dynamic_pointer_cast<BtContext>(_downloadContext);
-  if(!ctx.isNull()) {
+  if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
     TransferStat stat = calculateStat();
     double shareRatio = ((stat.getAllTimeUploadLength()*10)/getCompletedLength())/10.0;
     _logger->notice(MSG_SHARE_RATIO_REPORT,

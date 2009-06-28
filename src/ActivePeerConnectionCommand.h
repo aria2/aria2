@@ -44,7 +44,6 @@ namespace aria2 {
 class RequestGroup;
 class DownloadEngine;
 class Peer;
-class BtContext;
 class BtRuntime;
 class PieceStorage;
 class PeerStorage;
@@ -53,7 +52,6 @@ class BtAnnounce;
 class ActivePeerConnectionCommand : public Command {
 private:
   RequestGroup* _requestGroup;
-  SharedHandle<BtContext> _btContext;
   SharedHandle<BtRuntime> _btRuntime;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<PeerStorage> _peerStorage;
@@ -67,7 +65,6 @@ public:
   ActivePeerConnectionCommand(int cuid,
 			      RequestGroup* requestGroup,
 			      DownloadEngine* e,
-			      const SharedHandle<BtContext>& btContext,
 			      time_t interval);
 
   virtual ~ActivePeerConnectionCommand();

@@ -4,15 +4,15 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "SingleFileDownloadContext.h"
 #include "DefaultPieceStorage.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "RequestGroup.h"
 #include "Option.h"
 #include "Exception.h"
 #include "SegmentMan.h"
 #include "FileEntry.h"
 #include "PieceSelector.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -29,8 +29,8 @@ class BtDependencyTest:public CppUnit::TestFixture {
   {
     SharedHandle<RequestGroup> dependant
       (new RequestGroup(option, std::deque<std::string>()));
-    SharedHandle<SingleFileDownloadContext> dctx
-      (new SingleFileDownloadContext(0, 0, "/tmp/outfile.path"));
+    SharedHandle<DownloadContext> dctx
+      (new DownloadContext(0, 0, "/tmp/outfile.path"));
     dctx->setDir("/tmp");
     dependant->setDownloadContext(dctx);
     return dependant;
@@ -44,8 +44,8 @@ class BtDependencyTest:public CppUnit::TestFixture {
   {
     SharedHandle<RequestGroup> dependee
       (new RequestGroup(option, std::deque<std::string>()));
-    SharedHandle<SingleFileDownloadContext> dctx
-      (new SingleFileDownloadContext(1024*1024, length, torrentFile));
+    SharedHandle<DownloadContext> dctx
+      (new DownloadContext(1024*1024, length, torrentFile));
     dctx->setDir(".");
     dependee->setDownloadContext(dctx);
     DefaultPieceStorageHandle ps(new DefaultPieceStorage(dctx, option.get()));
@@ -73,7 +73,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtDependencyTest );
 
 void BtDependencyTest::testResolve()
 {
-  std::string filename = "test.torrent";
+  std::string filename = "single.torrent";
   SharedHandle<RequestGroup> dependant = createDependant(_option);
   SharedHandle<RequestGroup> dependee =
     createDependee(_option, filename, File(filename).size());
@@ -81,35 +81,28 @@ void BtDependencyTest::testResolve()
   
   BtDependency dep(dependant, dependee);
   CPPUNIT_ASSERT(dep.resolve());
-  
-  SharedHandle<BtContext> btContext
-    (dynamic_pointer_cast<BtContext>(dependant->getDownloadContext()));
-  CPPUNIT_ASSERT(!btContext.isNull());
+
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
+     bittorrent::getInfoHashString(dependant->getDownloadContext()));
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-		       btContext->getActualBasePath());
+		       dependant->getFirstFilePath());
 }
 
 void BtDependencyTest::testResolve_loadError()
 {
-  try {
-    SharedHandle<RequestGroup> dependant = createDependant(_option);
-    SharedHandle<RequestGroup> dependee =
-      createDependee(_option, "notExist", 40);
-    dependee->getPieceStorage()->markAllPiecesDone();
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  SharedHandle<RequestGroup> dependee =
+    createDependee(_option, "notExist", 40);
+  dependee->getPieceStorage()->markAllPiecesDone();
     
-    BtDependency dep(dependant, dependee);
-    CPPUNIT_ASSERT(dep.resolve());
+  BtDependency dep(dependant, dependee);
+  CPPUNIT_ASSERT(dep.resolve());
     
-    SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>
-       (dependant->getDownloadContext()));
-    CPPUNIT_ASSERT(!dctx.isNull());
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-			 dctx->getActualBasePath());
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace() << std::endl;
-    CPPUNIT_FAIL("an exception was thrown.");
-  }
+  CPPUNIT_ASSERT
+    (!dependant->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT));
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
+		       dependant->getFirstFilePath());
 }
 
 void BtDependencyTest::testResolve_dependeeFailure()
@@ -120,17 +113,15 @@ void BtDependencyTest::testResolve_dependeeFailure()
   BtDependency dep(dependant, dependee);
   CPPUNIT_ASSERT(dep.resolve());
   
-  SharedHandle<SingleFileDownloadContext> dctx
-    (dynamic_pointer_cast<SingleFileDownloadContext>
-     (dependant->getDownloadContext()));
-  CPPUNIT_ASSERT(!dctx.isNull());
+  CPPUNIT_ASSERT
+    (!dependant->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT));
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-		       dctx->getActualBasePath());
+		       dependant->getFirstFilePath());
 }
 
 void BtDependencyTest::testResolve_dependeeInProgress()
 {
-  std::string filename = "test.torrent";
+  std::string filename = "single.torrent";
   SharedHandle<RequestGroup> dependant = createDependant(_option);
   SharedHandle<RequestGroup> dependee =
     createDependee(_option, filename, File(filename).size());
@@ -138,6 +129,8 @@ void BtDependencyTest::testResolve_dependeeInProgress()
 
   BtDependency dep(dependant, dependee);
   CPPUNIT_ASSERT(!dep.resolve());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
+		       dependant->getFirstFilePath());
 }
 
 } // namespace aria2

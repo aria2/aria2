@@ -1,9 +1,11 @@
 #include "MetalinkPostDownloadHandler.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "RequestGroup.h"
 #include "Option.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "FileEntry.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -32,8 +34,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkPostDownloadHandlerTest );
 
 void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 {
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(0, 0, "test.metalink"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(0, 0, "test.metalink"));
   RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
@@ -41,15 +43,14 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 
   CPPUNIT_ASSERT(handler.canHandle(&rg));
 
-  dctx->setFilename("test.metalink2");
+  dctx->getFirstFileEntry()->setPath("test.metalink2");
   CPPUNIT_ASSERT(!handler.canHandle(&rg));
 }
 
 void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 {
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(0, 0, "test"));
-  dctx->setContentType("application/metalink+xml");
+  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
+  dctx->getFirstFileEntry()->setContentType("application/metalink+xml");
   RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
@@ -57,14 +58,14 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 
   CPPUNIT_ASSERT(handler.canHandle(&rg));
 
-  dctx->setContentType("application/octet-stream");
+  dctx->getFirstFileEntry()->setContentType("application/octet-stream");
   CPPUNIT_ASSERT(!handler.canHandle(&rg));
 }
 
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(1024, 0, "test.xml"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(1024, 0, "test.xml"));
   RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();

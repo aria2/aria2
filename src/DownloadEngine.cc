@@ -65,14 +65,15 @@
 #include "Command.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
-
-#include "BtRegistry.h"
-#include "BtContext.h"
-#include "PeerStorage.h"
-#include "PieceStorage.h"
-#include "BtAnnounce.h"
-#include "BtRuntime.h"
 #include "BtProgressInfoFile.h"
+#include "DownloadContext.h"
+#ifdef ENABLE_BITTORRENT
+# include "BtRegistry.h"
+# include "PeerStorage.h"
+# include "PieceStorage.h"
+# include "BtAnnounce.h"
+# include "BtRuntime.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 

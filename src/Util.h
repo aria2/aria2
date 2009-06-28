@@ -43,8 +43,10 @@
 #include <utility>
 #include <deque>
 #include <iosfwd>
+#include <ostream>
 #include <numeric>
 #include <map>
+#include <iomanip>
 
 #include "SharedHandle.h"
 #include "IntSequence.h"
@@ -243,8 +245,20 @@ public:
    */
   static time_t httpGMT(const std::string& httpTimeFormat);
 
-  static void toStream(std::ostream& os,
-		       const std::deque<SharedHandle<FileEntry> >& entries);
+  template<typename InputIterator>
+  static void toStream
+  (InputIterator first, InputIterator last, std::ostream& os)
+  {
+    os << _("Files:") << "\n";
+    os << "idx|path/length" << "\n";
+    os << "===+===========================================================================" << "\n";
+    int32_t count = 1;
+    for(; first != last; ++first, ++count) {
+    os << std::setw(3) << count << "|" << (*first)->getPath() << "\n";
+    os << "   |" << Util::abbrevSize((*first)->getLength()) << "B" << "\n";
+    os << "---+---------------------------------------------------------------------------" << "\n";
+    }
+  }
 
   static void sleep(long seconds);
 

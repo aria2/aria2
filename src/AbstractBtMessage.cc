@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "AbstractBtMessage.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "PieceStorage.h"
 #include "BtMessageValidator.h"
 #include "LogFactory.h"
@@ -71,11 +70,6 @@ bool AbstractBtMessage::validate(std::deque<std::string>& errors)
 void
 AbstractBtMessage::setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator) {
   this->validator = validator;
-}
-
-void AbstractBtMessage::setBtContext(const SharedHandle<BtContext>& btContext)
-{
-  this->btContext = btContext;
 }
 
 void AbstractBtMessage::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)

@@ -63,7 +63,7 @@
 namespace aria2 {
 
 DefaultPieceStorage::DefaultPieceStorage
-(const DownloadContextHandle& downloadContext, const Option* option):
+(const SharedHandle<DownloadContext>& downloadContext, const Option* option):
   downloadContext(downloadContext),
   bitfieldMan(BitfieldManFactory::getFactoryInstance()->
 	      createBitfieldMan(downloadContext->getPieceLength(),
@@ -421,10 +421,10 @@ size_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 // not unittested
 void DefaultPieceStorage::setupFileFilter()
 {
-  const std::deque<SharedHandle<FileEntry> >& fileEntries =
+  const std::vector<SharedHandle<FileEntry> >& fileEntries =
     downloadContext->getFileEntries();
   bool allSelected = true;
-  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
     if(!(*i)->isRequested()) {
       allSelected = false;
@@ -434,7 +434,7 @@ void DefaultPieceStorage::setupFileFilter()
   if(allSelected) {
     return;
   }
-  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
     if((*i)->isRequested()) {
       bitfieldMan->addFilter((*i)->getOffset(), (*i)->getLength());
@@ -465,11 +465,12 @@ bool DefaultPieceStorage::allDownloadFinished()
 // not unittested
 void DefaultPieceStorage::initStorage()
 {
-  if(downloadContext->getFileMode() == DownloadContext::SINGLE) {
+  if(downloadContext->getFileEntries().size() == 1) {
     logger->debug("Instantiating DirectDiskAdaptor");
     DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
     directDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
-    directDiskAdaptor->setFileEntries(downloadContext->getFileEntries());
+    directDiskAdaptor->setFileEntries(downloadContext->getFileEntries().begin(),
+				      downloadContext->getFileEntries().end());
 
     DiskWriterHandle writer =
       _diskWriterFactory->newDiskWriter(directDiskAdaptor->getFilePath());
@@ -480,10 +481,10 @@ void DefaultPieceStorage::initStorage()
     directDiskAdaptor->setDiskWriter(writer);
     this->diskAdaptor = directDiskAdaptor;
   } else {
-    // file mode == DownloadContext::MULTI
     logger->debug("Instantiating MultiDiskAdaptor");
     MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
-    multiDiskAdaptor->setFileEntries(downloadContext->getFileEntries());
+    multiDiskAdaptor->setFileEntries(downloadContext->getFileEntries().begin(),
+				     downloadContext->getFileEntries().end());
     if(option->getAsBool(PREF_ENABLE_DIRECT_IO)) {
       multiDiskAdaptor->allowDirectIO();
     }

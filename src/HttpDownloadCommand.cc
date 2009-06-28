@@ -46,6 +46,7 @@
 #include "HttpResponse.h"
 #include "HttpHeader.h"
 #include "Range.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

@@ -1,11 +1,14 @@
 #include "Metalink2RequestGroup.h"
-#include "SingleFileDownloadContext.h"
+
+#include <algorithm>
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "DownloadContext.h"
 #include "prefs.h"
 #include "Option.h"
 #include "RequestGroup.h"
 #include "FileEntry.h"
-#include <algorithm>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -47,9 +50,7 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL
       (std::string("http://httphost/aria2-0.5.2.tar.bz2"), uris[1]);
 
-    SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>
-       (rg->getDownloadContext()));
+    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, dctx->getTotalLength());
@@ -70,9 +71,7 @@ void Metalink2RequestGroupTest::testGenerate()
     rg->getURIs(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
 
-    SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>
-       (rg->getDownloadContext()));
+    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
@@ -95,9 +94,7 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL
       (std::string("http://host/torrent-http.integrated.torrent"), uris[0]);
-    SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>
-       (rg->getDownloadContext()));
+    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(!dctx.isNull());
     // PREF_DIR has no effect for internal torrent file download
@@ -118,9 +115,7 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL
       (std::string("http://host/torrent-http.integrated"), uris[0]);
 
-    SharedHandle<SingleFileDownloadContext> dctx
-      (dynamic_pointer_cast<SingleFileDownloadContext>
-       (rg->getDownloadContext()));
+    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());

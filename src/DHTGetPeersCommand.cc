@@ -40,21 +40,20 @@
 #include "RequestGroup.h"
 #include "DHTNode.h"
 #include "DHTNodeLookupEntry.h"
-#include "BtContext.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
 #include "Peer.h"
 #include "Logger.h"
+#include "bittorrent_helper.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
 DHTGetPeersCommand::DHTGetPeersCommand(int32_t cuid,
 				       RequestGroup* requestGroup,
-				       DownloadEngine* e,
-				       const BtContextHandle& ctx):
+				       DownloadEngine* e):
   Command(cuid),
   _requestGroup(requestGroup),
-  _btContext(ctx),
   _e(e),
   _numRetry(0),
   _lastGetPeerTime(0)
@@ -76,9 +75,9 @@ bool DHTGetPeersCommand::execute()
      ((_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL)) ||
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
     logger->debug("Issuing PeerLookup for infoHash=%s",
-		  _btContext->getInfoHashAsString().c_str());
-    _task = _taskFactory->createPeerLookupTask(_btContext, _btRuntime,
-					       _peerStorage);
+		  bittorrent::getInfoHashString(_requestGroup->getDownloadContext()).c_str());
+    _task = _taskFactory->createPeerLookupTask
+      (_requestGroup->getDownloadContext(), _btRuntime, _peerStorage);
     _taskQueue->addPeriodicTask2(_task);
   } else if(!_task.isNull() && _task->finished()) {
     _lastGetPeerTime.reset();

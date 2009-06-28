@@ -45,7 +45,8 @@ namespace aria2 {
 
 MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
   _diskAdaptor(diskAdaptor),
-  _entries(_diskAdaptor->diskWriterEntries),
+  _entries(_diskAdaptor->diskWriterEntries.begin(),
+	   _diskAdaptor->diskWriterEntries.end()),
   _offset(0)
 {}
 
@@ -111,7 +112,8 @@ uint64_t MultiFileAllocationIterator::getTotalLength()
   }
 }
 
-const DiskWriterEntries& MultiFileAllocationIterator::getDiskWriterEntries() const
+const std::deque<SharedHandle<DiskWriterEntry> >&
+MultiFileAllocationIterator::getDiskWriterEntries() const
 {
   return _entries;
 }

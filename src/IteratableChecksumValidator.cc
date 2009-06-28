@@ -38,7 +38,6 @@
 
 #include "Util.h"
 #include "message.h"
-#include "SingleFileDownloadContext.h"
 #include "PieceStorage.h"
 #include "messageDigest.h"
 #include "LogFactory.h"
@@ -46,14 +45,16 @@
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
 #include "BitfieldMan.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
 
-IteratableChecksumValidator::IteratableChecksumValidator(const SingleFileDownloadContextHandle& dctx,
-							 const PieceStorageHandle& pieceStorage):
+IteratableChecksumValidator::IteratableChecksumValidator
+(const SharedHandle<DownloadContext>& dctx,
+ const PieceStorageHandle& pieceStorage):
   _dctx(dctx),
   _pieceStorage(pieceStorage),
   _currentOffset(0),

@@ -44,7 +44,7 @@
 #include "prefs.h"
 #include "Socket.h"
 #include "Option.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "BtRegistry.h"
 #include "Peer.h"
 #include "BtMessage.h"
@@ -70,6 +70,7 @@
 #include "DefaultExtensionMessageFactory.h"
 #include "RequestGroupMan.h"
 #include "ExtensionMessageRegistry.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -78,7 +79,6 @@ PeerInteractionCommand::PeerInteractionCommand
  RequestGroup* requestGroup,
  const PeerHandle& p,
  DownloadEngine* e,
- const SharedHandle<BtContext>& btContext,
  const SharedHandle<BtRuntime>& btRuntime,
  const SharedHandle<PieceStorage>& pieceStorage,
  const SocketHandle& s,
@@ -86,7 +86,6 @@ PeerInteractionCommand::PeerInteractionCommand
  const PeerConnectionHandle& passedPeerConnection)
   :PeerAbstractCommand(cuid, p, e, s),
    _requestGroup(requestGroup),
-   _btContext(btContext),
    _btRuntime(btRuntime),
    _pieceStorage(pieceStorage),
    sequence(sequence)
@@ -98,20 +97,22 @@ PeerInteractionCommand::PeerInteractionCommand
     setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
 
+  const BDE& torrentAttrs =
+    _requestGroup->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
   SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
   SharedHandle<PeerStorage> peerStorage =
-    btRegistry->get(_btContext->getInfoHashAsString())._peerStorage;
+    btRegistry->get(torrentAttrs[bittorrent::INFO_HASH].s())._peerStorage;
 
   SharedHandle<ExtensionMessageRegistry> exMsgRegistry
     (new ExtensionMessageRegistry());
 
   SharedHandle<DefaultExtensionMessageFactory> extensionMessageFactory
-    (new DefaultExtensionMessageFactory(_btContext, peer, exMsgRegistry));
+    (new DefaultExtensionMessageFactory(peer, exMsgRegistry));
   extensionMessageFactory->setPeerStorage(peerStorage);
 
   SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());
   factory->setCuid(cuid);
-  factory->setBtContext(_btContext);
+  factory->setDownloadContext(_requestGroup->getDownloadContext());
   factory->setPieceStorage(pieceStorage);
   factory->setPeerStorage(peerStorage);
   factory->setExtensionMessageFactory(extensionMessageFactory);
@@ -132,7 +133,7 @@ PeerInteractionCommand::PeerInteractionCommand
     (new DefaultBtMessageDispatcher());
   dispatcher->setCuid(cuid);
   dispatcher->setPeer(peer);
-  dispatcher->setBtContext(_btContext);
+  dispatcher->setDownloadContext(_requestGroup->getDownloadContext());
   dispatcher->setPieceStorage(pieceStorage);
   dispatcher->setPeerStorage(peerStorage);
   dispatcher->setRequestTimeout(getOption()->getAsInt(PREF_BT_REQUEST_TIMEOUT));
@@ -142,7 +143,7 @@ PeerInteractionCommand::PeerInteractionCommand
   DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
   receiver->setCuid(cuid);
   receiver->setPeer(peer);
-  receiver->setBtContext(_btContext);
+  receiver->setDownloadContext(_requestGroup->getDownloadContext());
   receiver->setPeerConnection(peerConnection);
   receiver->setDispatcher(dispatcher);
   receiver->setBtMessageFactory(factory);
@@ -151,13 +152,12 @@ PeerInteractionCommand::PeerInteractionCommand
     (new DefaultBtRequestFactory());
   reqFactory->setCuid(cuid);
   reqFactory->setPeer(peer);
-  reqFactory->setBtContext(_btContext);
   reqFactory->setPieceStorage(pieceStorage);
   reqFactory->setBtMessageDispatcher(dispatcher);
   reqFactory->setBtMessageFactory(factory);
 
   DefaultBtInteractiveHandle btInteractive
-    (new DefaultBtInteractive(_btContext, peer));
+    (new DefaultBtInteractive(_requestGroup->getDownloadContext(), peer));
   btInteractive->setBtRuntime(_btRuntime);
   btInteractive->setPieceStorage(_pieceStorage);
   btInteractive->setPeerStorage(peerStorage); // Note: Not a member variable.
@@ -172,7 +172,7 @@ PeerInteractionCommand::PeerInteractionCommand
     (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setRequestGroupMan(e->_requestGroupMan);
   btInteractive->setBtMessageFactory(factory);
-  if(!_btContext->isPrivate()) {
+  if(torrentAttrs[bittorrent::PRIVATE].i() == 0) {
     if(getOption()->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
       btInteractive->setUTPexEnabled(true);
     }
@@ -189,8 +189,9 @@ PeerInteractionCommand::PeerInteractionCommand
   factory->setBtRequestFactory(reqFactory);
   factory->setPeerConnection(peerConnection);
 
-  peer->allocateSessionResource(_btContext->getPieceLength(),
-				_btContext->getTotalLength());
+  peer->allocateSessionResource
+    (_requestGroup->getDownloadContext()->getPieceLength(),
+     _requestGroup->getDownloadContext()->getTotalLength());
   peer->setBtMessageDispatcher(dispatcher);
 
   _btRuntime->increaseConnections();
@@ -290,12 +291,8 @@ bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
     PeerHandle peer = _peerStorage->getUnusedPeer();
     peer->usedBy(e->newCUID());
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(peer->usedBy(),
-					_requestGroup,
-					peer,
-					e,
-					_btContext,
-					_btRuntime);
+      new PeerInitiateConnectionCommand
+      (peer->usedBy(), _requestGroup, peer, e, _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);

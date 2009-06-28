@@ -89,8 +89,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	PeerListProcessor.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceTier.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc\
-@ENABLE_BITTORRENT_TRUE@	BtContext.h\
-@ENABLE_BITTORRENT_TRUE@	DefaultBtContext.cc DefaultBtContext.h\
 @ENABLE_BITTORRENT_TRUE@	PeerStorage.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.cc DefaultPeerStorage.h\
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.cc BtAnnounce.h\
@@ -231,7 +229,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	RangeBtMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	ExtensionMessageRegistry.h\
-@ENABLE_BITTORRENT_TRUE@	bencode.cc bencode.h
+@ENABLE_BITTORRENT_TRUE@	bencode.cc bencode.h\
+@ENABLE_BITTORRENT_TRUE@	bittorrent_helper.cc bittorrent_helper.h
 
 @ENABLE_METALINK_TRUE@am__append_14 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -400,11 +399,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
 	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
 	ByteArrayDiskWriterFactory.h ServerHost.cc ServerHost.h \
-	DownloadContext.cc DownloadContext.h \
-	SingleFileDownloadContext.cc SingleFileDownloadContext.h \
-	TimedHaltCommand.cc TimedHaltCommand.h CUIDCounter.h \
-	DNSCache.h DownloadResult.h Sequence.h IntSequence.h \
-	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
+	DownloadContext.cc DownloadContext.h TimedHaltCommand.cc \
+	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
+	Sequence.h IntSequence.h PostDownloadHandler.h \
+	PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
@@ -466,8 +464,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
 	PeerListProcessor.h AnnounceTier.h AnnounceList.h \
-	AnnounceList.cc BtContext.h DefaultBtContext.cc \
-	DefaultBtContext.h PeerStorage.h DefaultPeerStorage.cc \
+	AnnounceList.cc PeerStorage.h DefaultPeerStorage.cc \
 	DefaultPeerStorage.h BtAnnounce.cc BtAnnounce.h \
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h BtRuntime.h \
 	BtMessage.h AbstractBtMessage.cc AbstractBtMessage.h \
@@ -564,9 +561,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	IndexBtMessage.cc IndexBtMessage.h ZeroBtMessage.cc \
 	ZeroBtMessage.h RangeBtMessageValidator.h \
 	IndexBtMessageValidator.h ExtensionMessageRegistry.h \
-	bencode.cc bencode.h Metalinker.cc Metalinker.h \
-	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
-	MetalinkResource.h MetalinkProcessor.h \
+	bencode.cc bencode.h bittorrent_helper.cc bittorrent_helper.h \
+	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \
 	MetalinkParserState.h InitialMetalinkParserState.cc \
@@ -638,7 +635,6 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DefaultBtContext.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.$(OBJEXT) \
@@ -734,7 +730,8 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	RangeBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	bencode.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	bencode.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	bittorrent_helper.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_14 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -833,10 +830,9 @@ am__objects_26 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	MultiFileAllocationIterator.$(OBJEXT) PeerConnection.$(OBJEXT) \
 	ByteArrayDiskWriter.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
-	DownloadContext.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
-	TimedHaltCommand.$(OBJEXT) prefs.$(OBJEXT) \
-	ProtocolDetector.$(OBJEXT) StringFormat.$(OBJEXT) \
-	HttpSkipResponseCommand.$(OBJEXT) \
+	DownloadContext.$(OBJEXT) TimedHaltCommand.$(OBJEXT) \
+	prefs.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
+	StringFormat.$(OBJEXT) HttpSkipResponseCommand.$(OBJEXT) \
 	InitiateConnectionCommand.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) A2STR.$(OBJEXT) \
 	RarestPieceSelector.$(OBJEXT) ChunkedDecoder.$(OBJEXT) \
@@ -1157,11 +1153,10 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
 	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
 	ByteArrayDiskWriterFactory.h ServerHost.cc ServerHost.h \
-	DownloadContext.cc DownloadContext.h \
-	SingleFileDownloadContext.cc SingleFileDownloadContext.h \
-	TimedHaltCommand.cc TimedHaltCommand.h CUIDCounter.h \
-	DNSCache.h DownloadResult.h Sequence.h IntSequence.h \
-	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
+	DownloadContext.cc DownloadContext.h TimedHaltCommand.cc \
+	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
+	Sequence.h IntSequence.h PostDownloadHandler.h \
+	PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
@@ -1393,7 +1388,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounce.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtInteractive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtMessageDispatcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtMessageFactory.Po@am__quote@
@@ -1541,7 +1535,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIterator.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileDownloadContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SizeMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SkipTagMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
@@ -1578,6 +1571,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asctime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bencode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bittorrent_helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/download_helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gai_strerror.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getaddrinfo.Po@am__quote@

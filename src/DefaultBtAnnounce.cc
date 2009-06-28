@@ -41,7 +41,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "SimpleRandomizer.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "PieceStorage.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
@@ -51,19 +51,21 @@
 #include "A2STR.h"
 #include "Request.h"
 #include "bencode.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
-DefaultBtAnnounce::DefaultBtAnnounce(const BtContextHandle& btContext,
-				     const Option* option):
-  btContext(btContext),
+DefaultBtAnnounce::DefaultBtAnnounce
+(const SharedHandle<DownloadContext>& downloadContext,
+ const Option* option):
+  _downloadContext(downloadContext),
   trackers(0),
   interval(DEFAULT_ANNOUNCE_INTERVAL),
   minInterval(DEFAULT_ANNOUNCE_INTERVAL),
   _userDefinedInterval(0),
   complete(0),
   incomplete(0),
-  announceList(btContext->getAnnounceTiers()),
+  announceList(downloadContext->getAttribute(bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST]),
   option(option),
   logger(LogFactory::getInstance()),
   _randomizer(SimpleRandomizer::getInstance())
@@ -145,10 +147,10 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   std::string url = announceList.getAnnounce();
   url += uriHasQuery(url) ? "&" : "?";
   url += "info_hash=";
-  url += Util::torrentUrlencode(btContext->getInfoHash(),
-				btContext->getInfoHashLength());
+  url += Util::torrentUrlencode(bittorrent::getInfoHash(_downloadContext),
+				INFO_HASH_LENGTH);
   url += "&peer_id=";
-  url += Util::torrentUrlencode(btContext->getPeerId(), 20);
+  url += Util::torrentUrlencode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH);
   url += "&uploaded=";
   url += Util::uitos(stat.getSessionUploadLength());
   url += "&downloaded=";

@@ -35,7 +35,7 @@ public:
   }
 
   virtual SharedHandle<DHTTask>
-  createPeerLookupTask(const SharedHandle<BtContext>& ctx,
+  createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
 		       const SharedHandle<BtRuntime>& btRuntime,
 		       const SharedHandle<PeerStorage>& peerStorage)
   {

@@ -57,8 +57,9 @@
 #include "CheckIntegrityMan.h"
 #include "CheckIntegrityEntry.h"
 #include "Util.h"
+#include "DownloadContext.h"
 #ifdef ENABLE_BITTORRENT
-# include "BtContext.h"
+# include "bittorrent_helper.h"
 # include "Peer.h"
 # include "PeerStorage.h"
 # include "BtRegistry.h"
@@ -83,10 +84,8 @@ static void printProgress
     << "#" << rg->getGID() << " ";
 
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<BtContext> btctx =
-    dynamic_pointer_cast<BtContext>(rg->getDownloadContext());
-
-  if(!btctx.isNull() && rg->downloadFinished()) {
+  if(rg->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT) &&
+     rg->downloadFinished()) {
     o << "SEEDING" << "(" << "ratio:";
     if(rg->getCompletedLength() > 0) {
       o << std::fixed << std::setprecision(1)
@@ -114,9 +113,11 @@ static void printProgress
     << "CN:"
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
-  if(!btctx.isNull()) {
+  if(rg->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
+    const BDE& torrentAttrs =
+      rg->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
     SharedHandle<PeerStorage> ps =
-      e->getBtRegistry()->get(btctx->getInfoHashAsString())._peerStorage;
+      e->getBtRegistry()->get(torrentAttrs[bittorrent::INFO_HASH].s())._peerStorage;
     std::deque<SharedHandle<Peer> > peers;
     ps->getActivePeers(peers);
     o << " " << "SEED:"
@@ -155,7 +156,7 @@ public:
   {
     const char SEP_CHAR = '-';
     printProgress(std::cout, rg, _e);
-    const std::deque<SharedHandle<FileEntry> >& fileEntries =
+    const std::vector<SharedHandle<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
     std::cout << "\n"
 	      << "FILE: ";

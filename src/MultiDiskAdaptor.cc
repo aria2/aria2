@@ -166,7 +166,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
     return;
   }
 
-  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
     diskWriterEntries.push_back
       (createDiskWriterEntry(*i, (*i)->isRequested()));
@@ -176,9 +176,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 
   // TODO Currently, pieceLength == 0 is used for unit testing only.
   if(pieceLength > 0) {
-    std::deque<SharedHandle<DiskWriterEntry> >::iterator done =
+    std::vector<SharedHandle<DiskWriterEntry> >::iterator done =
       diskWriterEntries.begin();
-    for(std::deque<SharedHandle<DiskWriterEntry> >::iterator itr =
+    for(std::vector<SharedHandle<DiskWriterEntry> >::iterator itr =
 	  diskWriterEntries.begin(); itr != diskWriterEntries.end();) {
       const SharedHandle<FileEntry>& fileEntry = (*itr)->getFileEntry();
 
@@ -189,7 +189,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       off_t pieceStartOffset =
 	(fileEntry->getOffset()/pieceLength)*pieceLength;
       if(itr != diskWriterEntries.begin()) {
-	for(std::deque<SharedHandle<DiskWriterEntry> >::iterator i =
+	for(std::vector<SharedHandle<DiskWriterEntry> >::iterator i =
 	      itr-1; true; --i) {
 	  const SharedHandle<FileEntry>& fileEntry = (*i)->getFileEntry();
 	  if(pieceStartOffset <= fileEntry->getOffset() ||
@@ -240,7 +240,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
     }
   }
   DefaultDiskWriterFactory dwFactory;
-  for(std::deque<SharedHandle<DiskWriterEntry> >::iterator i =
+  for(std::vector<SharedHandle<DiskWriterEntry> >::iterator i =
 	diskWriterEntries.begin(); i != diskWriterEntries.end(); ++i) {
     if((*i)->needsFileAllocation() ||
        dwreq.find((*i)->getFileEntry()->getPath()) != dwreq.end() ||
@@ -260,7 +260,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 
 void MultiDiskAdaptor::mkdir() const
 {
-  for(std::deque<SharedHandle<DiskWriterEntry> >::const_iterator i =
+  for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
 	diskWriterEntries.begin(); i != diskWriterEntries.end(); ++i) {
     (*i)->getFileEntry()->setupDir();
   }
@@ -279,7 +279,7 @@ void MultiDiskAdaptor::openIfNot
       // Cache is full. 
       // Choose one DiskWriterEntry randomly and close it.
       size_t index = SimpleRandomizer::getInstance()->getRandomNumber(numOpened);
-      std::deque<SharedHandle<DiskWriterEntry> >::iterator i =
+      std::vector<SharedHandle<DiskWriterEntry> >::iterator i =
 	_openedDiskWriterEntries.begin();
       std::advance(i, index);
       (*i)->closeFile();
@@ -443,7 +443,7 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset
 
 bool MultiDiskAdaptor::fileExists()
 {
-  for(std::deque<SharedHandle<FileEntry> >::iterator i =
+  for(std::vector<SharedHandle<FileEntry> >::iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
     if((*i)->exists()) {
       return true;
@@ -455,10 +455,9 @@ bool MultiDiskAdaptor::fileExists()
 uint64_t MultiDiskAdaptor::size()
 {
   uint64_t size = 0;
-  for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end(); ++itr) {
-    openIfNot(*itr, &DiskWriterEntry::openFile);
-    size += (*itr)->size();
+  for(std::vector<SharedHandle<FileEntry> >::iterator i =
+	fileEntries.begin(); i != fileEntries.end(); ++i) {
+    size += File((*i)->getPath()).size();
   }
   return size;
 }
@@ -496,7 +495,7 @@ void MultiDiskAdaptor::disableReadOnly()
 
 void MultiDiskAdaptor::cutTrailingGarbage()
 {
-  for(std::deque<SharedHandle<DiskWriterEntry> >::const_iterator i =
+  for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
 	diskWriterEntries.begin(); i != diskWriterEntries.end(); ++i) {
     uint64_t length = (*i)->getFileEntry()->getLength();
     if(File((*i)->getFilePath()).size() > length) {
@@ -515,7 +514,7 @@ void MultiDiskAdaptor::setMaxOpenFiles(size_t maxOpenFiles)
 size_t MultiDiskAdaptor::utime(const Time& actime, const Time& modtime)
 {
   size_t numOK = 0;
-  for(std::deque<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
 	fileEntries.begin(); i != fileEntries.end(); ++i) {
     if((*i)->isRequested()) {
       File f((*i)->getPath());

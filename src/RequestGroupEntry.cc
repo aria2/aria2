@@ -35,6 +35,7 @@
 #include "RequestGroupEntry.h"
 #include "RequestGroup.h"
 #include "Command.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

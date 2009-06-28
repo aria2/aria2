@@ -5,7 +5,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "prefs.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "RequestGroup.h"
 #include "Option.h"
 #include "DownloadResult.h"
@@ -48,10 +48,10 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   SharedHandle<RequestGroup> rg1(new RequestGroup(_option, uris));
   SharedHandle<RequestGroup> rg2(new RequestGroup(_option, uris));
 
-  SharedHandle<SingleFileDownloadContext> dctx1
-    (new SingleFileDownloadContext(0, 0, "aria2.tar.bz2"));
-  SharedHandle<SingleFileDownloadContext> dctx2
-    (new SingleFileDownloadContext(0, 0, "aria2.tar.bz2"));
+  SharedHandle<DownloadContext> dctx1
+    (new DownloadContext(0, 0, "aria2.tar.bz2"));
+  SharedHandle<DownloadContext> dctx2
+    (new DownloadContext(0, 0, "aria2.tar.bz2"));
 
   rg1->setDownloadContext(dctx1);
   rg2->setDownloadContext(dctx2);
@@ -64,7 +64,7 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   
   CPPUNIT_ASSERT(gm.isSameFileBeingDownloaded(rg1.get()));
 
-  dctx2->setFilename("aria2.tar.gz");
+  dctx2->getFirstFileEntry()->setPath("aria2.tar.gz");
 
   CPPUNIT_ASSERT(!gm.isSameFileBeingDownloaded(rg1.get()));
 

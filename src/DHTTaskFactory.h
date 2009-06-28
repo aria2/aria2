@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-class BtContext;
+class DownloadContext;
 class BtRuntime;
 class PeerStorage;
 class DHTTask;
@@ -61,7 +61,7 @@ public:
   virtual SharedHandle<DHTTask> createBucketRefreshTask() = 0;
 
   virtual SharedHandle<DHTTask>
-  createPeerLookupTask(const SharedHandle<BtContext>& ctx,
+  createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
 		       const SharedHandle<BtRuntime>& btRuntime,
 		       const SharedHandle<PeerStorage>& peerStorage) = 0;
   

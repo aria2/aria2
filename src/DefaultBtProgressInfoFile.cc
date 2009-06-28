@@ -38,13 +38,8 @@
 #include <cstring>
 #include <fstream>
 
-#include "BtContext.h"
 #include "PieceStorage.h"
 #include "Piece.h"
-#ifdef ENABLE_BITTORRENT
-#include "PeerStorage.h"
-#include "BtRuntime.h"
-#endif // ENABLE_BITTORRENT
 #include "BitfieldMan.h"
 #include "Option.h"
 #include "TransferStat.h"
@@ -59,6 +54,12 @@
 #include "DownloadFailureException.h"
 #include "StringFormat.h"
 #include "array_fun.h"
+#include "DownloadContext.h"
+#ifdef ENABLE_BITTORRENT
+# include "PeerStorage.h"
+# include "BtRuntime.h"
+# include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -67,13 +68,13 @@ const std::string DefaultBtProgressInfoFile::V0001("0001");
 
 static std::string createFilename(const SharedHandle<DownloadContext>& dctx)
 {
-  std::string t = dctx->getActualBasePath();
+  std::string t = dctx->getBasePath();
   t += ".aria2";
   return t;
 }
 
 DefaultBtProgressInfoFile::DefaultBtProgressInfoFile
-(const DownloadContextHandle& dctx,
+(const SharedHandle<DownloadContext>& dctx,
  const PieceStorageHandle& pieceStorage,
  const Option* option):
   _dctx(dctx),
@@ -123,13 +124,12 @@ void DefaultBtProgressInfoFile::save() {
     if(torrentDownload) {
       // infoHashLength:
       // length: 32 bits
-      BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
-      uint32_t infoHashLengthNL = htonl(btContext->getInfoHashLength());
+      const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
+      uint32_t infoHashLengthNL = htonl(INFO_HASH_LENGTH);
       o.write(reinterpret_cast<const char*>(&infoHashLengthNL),
 	      sizeof(infoHashLengthNL));
       // infoHash:
-      o.write(reinterpret_cast<const char*>(btContext->getInfoHash()),
-	      btContext->getInfoHashLength());
+      o.write(reinterpret_cast<const char*>(infoHash), INFO_HASH_LENGTH);
     } else {
       // infoHashLength:
       // length: 32 bits
@@ -240,15 +240,16 @@ void DefaultBtProgressInfoFile::load()
       array_ptr<unsigned char> savedInfoHash(new unsigned char[infoHashLength]);
       in.read(reinterpret_cast<char*>
 	      (static_cast<unsigned char*>(savedInfoHash)), infoHashLength);
-      BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
-      if(infoHashCheckEnabled &&
-	 Util::toHex(savedInfoHash, infoHashLength) !=
-	 btContext->getInfoHashAsString()) {
-	throw DL_ABORT_EX
-	  (StringFormat("info hash mismatch. expected: %s, actual: %s",
-			btContext->getInfoHashAsString().c_str(),
-			Util::toHex(savedInfoHash,
-				    infoHashLength).c_str()).str());
+      if(infoHashCheckEnabled) {
+	const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
+	if(infoHashLength != INFO_HASH_LENGTH ||
+	   memcmp(savedInfoHash, infoHash, INFO_HASH_LENGTH) != 0) {
+	  throw DL_ABORT_EX
+	    (StringFormat("info hash mismatch. expected: %s, actual: %s",
+			  Util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
+			  Util::toHex(savedInfoHash, infoHashLength).c_str()
+			  ).str());
+	}
       }
     }
 

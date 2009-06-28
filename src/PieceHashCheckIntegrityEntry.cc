@@ -48,8 +48,10 @@ PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
 
 bool PieceHashCheckIntegrityEntry::isValidationReady()
 {
-  DownloadContextHandle dctx = _requestGroup->getDownloadContext();
-  return dctx->getPieceHashes().size() > 0 &&
+  const SharedHandle<DownloadContext>& dctx =
+    _requestGroup->getDownloadContext();
+  return !dctx->getPieceHashAlgo().empty() &&
+    dctx->getPieceHashes().size() > 0 &&
     dctx->getPieceHashes().size() == dctx->getNumPieces();
 }
 

@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "BtRegistry.h"
 #include "DlAbortEx.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtAnnounce.h"
@@ -43,10 +43,10 @@
 
 namespace aria2 {
 
-SharedHandle<BtContext>
-BtRegistry::getBtContext(const std::string& infoHash) const
+SharedHandle<DownloadContext>
+BtRegistry::getDownloadContext(const std::string& infoHash) const
 {
-  return get(infoHash)._btContext;
+  return get(infoHash)._downloadContext;
 }
 
 void BtRegistry::put(const std::string& infoHash, const BtObject& obj)

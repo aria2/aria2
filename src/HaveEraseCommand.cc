@@ -37,6 +37,7 @@
 #include "RequestGroupMan.h"
 #include "PieceStorage.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

@@ -37,80 +37,194 @@
 
 #include "common.h"
 
+#include <cassert>
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "Signature.h"
 #include "TimeA2.h"
+#include "A2STR.h"
+#include "BDE.h"
+#include "IntSequence.h"
 
 namespace aria2 {
 
 class FileEntry;
+class RequestGroup;
 
 class DownloadContext
 {
-protected:
-  std::deque<SharedHandle<FileEntry> > _fileEntries;
+private:
+  std::vector<SharedHandle<FileEntry> > _fileEntries;
 
   std::string _dir;
-private:
+
+  std::vector<std::string> _pieceHashes;
+
+  size_t _pieceLength;
+
+  std::string _pieceHashAlgo;
+
+  std::string _checksum;
+
+  std::string _checksumHashAlgo;
+
+  std::string _basePath;
+
+  bool _knowsTotalLength;
+
+  RequestGroup* _ownerRequestGroup;
+  
+  BDE _attrs;
+
   Time _downloadStartTime;
 
   Time _downloadStopTime;
 
   SharedHandle<Signature> _signature;
+
+  void ensureAttrs();
 public:
   DownloadContext();
 
-  virtual ~DownloadContext();
+  // Convenient constructor that creates single file download.
+  DownloadContext(size_t pieceLength,
+		  uint64_t totalLength,
+		  const std::string& path = A2STR::NIL);
 
-  enum FILE_MODE {
-    SINGLE,
-    MULTI
-  };
-
-  virtual const std::string& getPieceHash(size_t index) const = 0;
+  const std::string& getPieceHash(size_t index) const
+  {
+    if(index < _pieceHashes.size()) {
+      return _pieceHashes[index];
+    } else {
+      return A2STR::NIL;
+    }
+  }
   
-  virtual const std::deque<std::string>& getPieceHashes() const = 0;
+  const std::vector<std::string>& getPieceHashes() const
+  {
+    return _pieceHashes;
+  }
 
-  virtual uint64_t getTotalLength() const = 0;
+  template<typename InputIterator>
+  void setPieceHashes(InputIterator first, InputIterator last)
+  {
+    _pieceHashes.assign(first, last);
+  }
 
-  virtual bool knowsTotalLength() const = 0;
+  uint64_t getTotalLength() const
+  {
+    if(_fileEntries.empty()) {
+      return 0;
+    } else {
+      return _fileEntries.back()->getLastOffset();
+    }
+  }
 
-  virtual FILE_MODE getFileMode() const = 0;
+  bool knowsTotalLength() const { return _knowsTotalLength; }
 
-  const std::deque<SharedHandle<FileEntry> >& getFileEntries() const
+  void markTotalLengthIsUnknown() { _knowsTotalLength = false; }
+
+  const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
   {
     return _fileEntries;
   }
 
-  virtual size_t getPieceLength() const = 0;
-
-  virtual size_t getNumPieces() const = 0;
-
-  virtual const std::string& getPieceHashAlgo() const = 0;
-
-  /**
-   * Returns an actual file path.
-   * If this contains a single file entry, then returns its file path,
-   * for example, "/tmp/downloads/aria2.txt"
-   * If this contains multiple file entries(i,e /tmp/downloads/aria2.txt,
-   * /tmp/downloads/aria2.bin), then returns its base dir path,
-   * for example, "/tmp/downloads"
-   */
-  virtual std::string getActualBasePath() const = 0;
-
-  const std::string& getDir() const
+  const SharedHandle<FileEntry>& getFirstFileEntry() const
   {
-    return _dir;
+    assert(!_fileEntries.empty());
+    return _fileEntries[0];
   }
 
-  void setDir(const std::string& dir);
+  template<typename InputIterator>
+  void setFileEntries(InputIterator first, InputIterator last)
+  {
+    _fileEntries.assign(first, last);
+  }
 
-  SharedHandle<Signature> getSignature() const;
+  size_t getPieceLength() const { return _pieceLength; }
 
-  void setSignature(const SharedHandle<Signature>& signature);
+  void setPieceLength(size_t length) { _pieceLength = length; }
+
+  size_t getNumPieces() const
+  {
+    if(_pieceLength == 0) {
+      return 0;
+    } else {
+      assert(!_fileEntries.empty());
+      return (_fileEntries.back()->getLastOffset()+_pieceLength-1)/_pieceLength;
+    }
+  }
+
+  const std::string& getPieceHashAlgo() const { return _pieceHashAlgo; }
+
+  void setPieceHashAlgo(const std::string& algo)
+  {
+    _pieceHashAlgo = algo;
+  }
+
+  const std::string& getChecksum() const { return _checksum; }
+
+  void setChecksum(const std::string& checksum)
+  {
+    _checksum = checksum;
+  }
+
+  const std::string& getChecksumHashAlgo() const { return _checksumHashAlgo; }
+
+  void setChecksumHashAlgo(const std::string& algo)
+  {
+    _checksumHashAlgo = algo;
+  }
+
+  // The representative path name for this context. It is used as a
+  // part of .aria2 control file. If _basePath is set, returns
+  // _basePath. Otherwise, the first FileEntry's getFilePath() is
+  // returned.
+  const std::string& getBasePath() const
+  {
+    if(_basePath.empty()) {
+      assert(!_fileEntries.empty());
+      return getFirstFileEntry()->getPath();
+    } else {
+      return _basePath;
+    }
+  }
+
+  void setBasePath(const std::string& basePath) { _basePath = basePath; }
+
+  const std::string& getDir() const { return _dir; }
+
+  void setDir(const std::string& dir) { _dir = dir; }
+
+  SharedHandle<Signature> getSignature() const { return _signature; }
+
+  void setSignature(const SharedHandle<Signature>& signature)
+  {
+    _signature = signature;
+  }
+
+  RequestGroup* getOwnerRequestGroup() { return _ownerRequestGroup; }
+
+  void setOwnerRequestGroup(RequestGroup* owner)
+  {
+    _ownerRequestGroup = owner;
+  }
+
+  void setFileFilter(IntSequence seq);
+
+  // Sets file path for spcified index. index starts from 1. The index
+  // is the same used in setFileFilter().  Please note that path is
+  // not the actual file path. The actual file path is
+  // getDir()+"/"+path.
+  void setFilePathWithIndex(size_t index, const std::string& path);
+
+  void setAttribute(const std::string& key, const BDE& value);
+
+  BDE& getAttribute(const std::string& key);
+
+  bool hasAttribute(const std::string& key) const;
 
   void resetDownloadStartTime();
 
@@ -122,8 +236,6 @@ public:
   // returned if no such FileEntry is found.
   SharedHandle<FileEntry> findFileEntryByOffset(off_t offset) const;
 };
-
-typedef SharedHandle<DownloadContext> DownloadContextHandle;
 
 } // namespace aria2
 

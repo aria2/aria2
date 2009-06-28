@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class SingleFileDownloadContext;
+class DownloadContext;
 class PieceStorage;
 class Logger;
 class MessageDigestContext;
@@ -47,7 +47,7 @@ class MessageDigestContext;
 class IteratableChecksumValidator:public IteratableValidator
 {
 private:
-  SharedHandle<SingleFileDownloadContext> _dctx;
+  SharedHandle<DownloadContext> _dctx;
 
   SharedHandle<PieceStorage> _pieceStorage;
 
@@ -60,7 +60,7 @@ private:
   unsigned char* _buffer;
 
 public:
-  IteratableChecksumValidator(const SharedHandle<SingleFileDownloadContext>& dctx,
+  IteratableChecksumValidator(const SharedHandle<DownloadContext>& dctx,
 			      const SharedHandle<PieceStorage>& pieceStorage);
 
   virtual ~IteratableChecksumValidator();

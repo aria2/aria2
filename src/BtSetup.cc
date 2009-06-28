@@ -58,6 +58,7 @@
 #include "BtProgressInfoFile.h"
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -68,11 +69,13 @@ void BtSetup::setup(std::deque<Command*>& commands,
 		    DownloadEngine* e,
 		    const Option* option)
 {
-  BtContextHandle btContext(dynamic_pointer_cast<BtContext>(requestGroup->getDownloadContext()));
-  if(btContext.isNull()) {
+  if(!requestGroup->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
     return;
   }
-  BtObject btObject = e->getBtRegistry()->get(btContext->getInfoHashAsString());
+  const BDE& torrentAttrs =
+    requestGroup->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
+  BtObject btObject =
+    e->getBtRegistry()->get(torrentAttrs[bittorrent::INFO_HASH].s());
   SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
   SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
   SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
@@ -80,7 +83,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   // commands
   {
     TrackerWatcherCommand* c =
-      new TrackerWatcherCommand(e->newCUID(), requestGroup, e, btContext);
+      new TrackerWatcherCommand(e->newCUID(), requestGroup, e);
     c->setPeerStorage(peerStorage);
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
@@ -90,7 +93,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
   {
     PeerChokeCommand* c =
-      new PeerChokeCommand(e->newCUID(), e, btContext);
+      new PeerChokeCommand(e->newCUID(), e);
     c->setPeerStorage(peerStorage);
     c->setBtRuntime(btRuntime);
 
@@ -98,8 +101,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
   {
     ActivePeerConnectionCommand* c =
-      new ActivePeerConnectionCommand(e->newCUID(), requestGroup, e, btContext,
-				      10);
+      new ActivePeerConnectionCommand(e->newCUID(), requestGroup, e, 10);
     c->setBtRuntime(btRuntime);
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);
@@ -108,11 +110,11 @@ void BtSetup::setup(std::deque<Command*>& commands,
     commands.push_back(c);
   }
 
-  if(!btContext->isPrivate() && DHTSetup::initialized()) {
-    DHTRegistry::_peerAnnounceStorage->addPeerAnnounce(btContext->getInfoHash(),
-						       peerStorage);
+  if(torrentAttrs[bittorrent::PRIVATE].i() == 0 && DHTSetup::initialized()) {
+    DHTRegistry::_peerAnnounceStorage->addPeerAnnounce
+      (torrentAttrs[bittorrent::INFO_HASH].uc(), peerStorage);
     DHTGetPeersCommand* command =
-      new DHTGetPeersCommand(e->newCUID(), requestGroup, e, btContext);
+      new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
     command->setTaskQueue(DHTRegistry::_taskQueue);
     command->setTaskFactory(DHTRegistry::_taskFactory);
     command->setBtRuntime(btRuntime);
@@ -129,7 +131,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
     if(ratio > 0.0) {
       SharedHandle<ShareRatioSeedCriteria> cri
 	(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
-				    btContext));
+				    requestGroup->getDownloadContext()));
       cri->setPieceStorage(pieceStorage);
       cri->setPeerStorage(peerStorage);
 
@@ -138,7 +140,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
   if(unionCri->getSeedCriterion().size() > 0) {
     SeedCheckCommand* c =
-      new SeedCheckCommand(e->newCUID(), requestGroup, e, btContext, unionCri);
+      new SeedCheckCommand(e->newCUID(), requestGroup, e, unionCri);
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
     commands.push_back(c);

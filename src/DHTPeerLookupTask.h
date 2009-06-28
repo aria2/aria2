@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-class BtContext;
+class DownloadContext;
 class Peer;
 class PeerStorage;
 class BtRuntime;
@@ -51,13 +51,11 @@ private:
 
   std::deque<SharedHandle<Peer> > _peers;
 
-  SharedHandle<BtContext> _ctx;
-
   SharedHandle<PeerStorage> _peerStorage;
 
   SharedHandle<BtRuntime> _btRuntime;
 public:
-  DHTPeerLookupTask(const SharedHandle<BtContext>& btContext);
+  DHTPeerLookupTask(const SharedHandle<DownloadContext>& downloadContext);
 
   virtual void getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
 				   const SharedHandle<DHTMessage>& message);

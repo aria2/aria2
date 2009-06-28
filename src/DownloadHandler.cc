@@ -37,6 +37,7 @@
 #include "Logger.h"
 #include "RequestGroup.h"
 #include "RequestGroupCriteria.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

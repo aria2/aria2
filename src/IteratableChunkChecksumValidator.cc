@@ -58,7 +58,7 @@ namespace aria2 {
 #define ALIGNMENT 512
 
 IteratableChunkChecksumValidator::
-IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
+IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
 				 const PieceStorageHandle& pieceStorage):
   _dctx(dctx),
   _pieceStorage(pieceStorage),
@@ -153,7 +153,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
 							 curoffset);
     if(r == 0 || r < static_cast<size_t>(woffset)) {
       throw DL_ABORT_EX
-	(StringFormat(EX_FILE_READ, _dctx->getActualBasePath().c_str(),
+	(StringFormat(EX_FILE_READ, _dctx->getBasePath().c_str(),
 		      strerror(errno)).str());
     }
     size_t wlength;

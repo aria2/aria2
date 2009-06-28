@@ -41,7 +41,6 @@
 #include "message.h"
 #include "a2time.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "BtRuntime.h"
 #include "BtSeederStateChoke.h"
 #include "BtLeecherStateChoke.h"
@@ -51,9 +50,7 @@ namespace aria2 {
 
 static const int MAX_PEER_LIST_SIZE = 1024;
 
-DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
-				       const Option* option):
-  btContext(btContext),
+DefaultPeerStorage::DefaultPeerStorage(const Option* option):
   option(option),
   logger(LogFactory::getInstance()),
   removedPeerSessionDownloadLength(0),

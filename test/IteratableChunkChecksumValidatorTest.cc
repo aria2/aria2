@@ -2,7 +2,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "DefaultPieceStorage.h"
 #include "Option.h"
 #include "DiskAdaptor.h"
@@ -37,9 +37,9 @@ const char* IteratableChunkChecksumValidatorTest::csArray[] = { "29b0e7878271645
 
 void IteratableChunkChecksumValidatorTest::testValidate() {
   Option option;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
-  dctx->setPieceHashes(std::deque<std::string>(&csArray[0], &csArray[3]));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
+  dctx->setPieceHashes(&csArray[0], &csArray[3]);
   dctx->setPieceHashAlgo("sha1");
   SharedHandle<DefaultPieceStorage> ps
     (new DefaultPieceStorage(dctx, &option));
@@ -60,7 +60,7 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   // make the test fail
   std::deque<std::string> badHashes(&csArray[0], &csArray[3]);
   badHashes[1] = "ffffffffffffffffffffffffffffffffffffffff";
-  dctx->setPieceHashes(badHashes);
+  dctx->setPieceHashes(badHashes.begin(), badHashes.end());
 
   validator.init();
 
@@ -74,12 +74,12 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
 
 void IteratableChunkChecksumValidatorTest::testValidate_readError() {
   Option option;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(100, 500, "chunkChecksumTestFile250.txt"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(100, 500, "chunkChecksumTestFile250.txt"));
   std::deque<std::string> hashes(&csArray[0], &csArray[3]);
   hashes.push_back("ffffffffffffffffffffffffffffffffffffffff");
   hashes.push_back("ffffffffffffffffffffffffffffffffffffffff");
-  dctx->setPieceHashes(hashes);
+  dctx->setPieceHashes(hashes.begin(), hashes.end());
   dctx->setPieceHashAlgo("sha1");
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();

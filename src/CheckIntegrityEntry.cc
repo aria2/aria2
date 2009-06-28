@@ -41,6 +41,7 @@
 #include "FileAllocationEntry.h"
 #include "DownloadEngine.h"
 #include "Option.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

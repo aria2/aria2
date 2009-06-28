@@ -2,7 +2,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "MockBtContext.h"
+#include "DownloadContext.h"
 #include "MockPeerStorage.h"
 #include "MockPieceStorage.h"
 #include "FileEntry.h"
@@ -23,13 +23,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(ShareRatioSeedCriteriaTest);
 
 void ShareRatioSeedCriteriaTest::testEvaluate() {
-  std::string infoHash = "01234567890123456789";
-  std::string infoHashString =
-    Util::toHex((const unsigned char*)infoHash.c_str(), infoHash.size());
-  SharedHandle<MockBtContext> btContext(new MockBtContext());
-  btContext->setTotalLength(1000000);
-  btContext->setInfoHash((const unsigned char*)infoHash.c_str());
-  
+  SharedHandle<DownloadContext> dctx(new DownloadContext(1024*1024, 1000000));  
   SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
   TransferStat stat;
   stat.setAllTimeUploadLength(1000000);
@@ -38,7 +32,7 @@ void ShareRatioSeedCriteriaTest::testEvaluate() {
   SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
   pieceStorage->setCompletedLength(1000000);
 
-  ShareRatioSeedCriteria cri(1.0, btContext);
+  ShareRatioSeedCriteria cri(1.0, dctx);
   cri.setPeerStorage(peerStorage);
   cri.setPieceStorage(pieceStorage);
 
@@ -47,7 +41,7 @@ void ShareRatioSeedCriteriaTest::testEvaluate() {
   cri.setRatio(2.0);
   CPPUNIT_ASSERT(!cri.evaluate());
   // check div by zero
-  btContext->setTotalLength(0);
+  dctx->getFirstFileEntry()->setLength(0);
   CPPUNIT_ASSERT(!cri.evaluate());
 }
 

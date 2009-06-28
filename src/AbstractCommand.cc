@@ -36,7 +36,6 @@
 
 #include <algorithm>
 
-#include "RequestGroup.h"
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "Option.h"
@@ -231,9 +230,9 @@ bool AbstractCommand::execute() {
 
 void AbstractCommand::tryReserved() {
   _requestGroup->removeServerHost(cuid);
-  if(_requestGroup->getDownloadContext()->getFileMode() == DownloadContext::SINGLE) {
+  if(_requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
     const SharedHandle<FileEntry>& entry =
-      _requestGroup->getDownloadContext()->getFileEntries().front();
+      _requestGroup->getDownloadContext()->getFirstFileEntry();
     // Don't create new command if currently file length is unknown
     // and there are no URI left. Because file length is unknown, we
     // can assume that there are no in-flight request object.

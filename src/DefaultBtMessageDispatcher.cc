@@ -42,7 +42,7 @@
 #include "BtChokingEvent.h"
 #include "BtMessageFactory.h"
 #include "message.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtMessage.h"
@@ -87,7 +87,7 @@ void DefaultBtMessageDispatcher::sendMessages() {
     messageQueue.pop_front();
     if(msg->isUploading() && !msg->isSendingInProgress()) {
       if(_requestGroupMan->doesOverallUploadSpeedExceed() ||
-	 btContext->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
+	 _downloadContext->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
 	tempQueue.push_back(msg);
 	continue;
       }
@@ -412,9 +412,10 @@ void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)
   this->peer = peer;
 }
 
-void DefaultBtMessageDispatcher::setBtContext(const BtContextHandle& btContext)
+void DefaultBtMessageDispatcher::setDownloadContext
+(const SharedHandle<DownloadContext>& downloadContext)
 {
-  this->btContext = btContext;
+  _downloadContext = downloadContext;
 }
 
 void DefaultBtMessageDispatcher::setPieceStorage

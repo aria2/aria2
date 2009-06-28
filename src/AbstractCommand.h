@@ -39,12 +39,12 @@
 #include "SharedHandle.h"
 #include "TimeA2.h"
 #include "FileEntry.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
 class Request;
 class DownloadEngine;
-class RequestGroup;
 class Segment;
 class Exception;
 class SocketCore;
@@ -122,6 +122,11 @@ protected:
   const std::string& resolveProxyMethod(const std::string& protocol) const;
 
   const SharedHandle<Option>& getOption() const;
+
+  const SharedHandle<DownloadContext>& getDownloadContext() const
+  {
+    return _requestGroup->getDownloadContext();
+  }
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;

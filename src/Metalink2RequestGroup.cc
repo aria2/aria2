@@ -43,7 +43,7 @@
 #include "prefs.h"
 #include "Util.h"
 #include "message.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "MetalinkHelper.h"
 #include "BinaryStream.h"
 #include "MemoryBufferPreDownloadHandler.h"
@@ -170,10 +170,11 @@ Metalink2RequestGroup::createRequestGroup
       std::deque<std::string> uris;
       uris.push_back((*itr)->url);
       torrentRg.reset(new RequestGroup(option, uris));
-      SharedHandle<SingleFileDownloadContext> dctx
-	(new SingleFileDownloadContext(option->getAsInt(PREF_SEGMENT_SIZE),
-				       0,
-				       A2STR::NIL));
+      SharedHandle<DownloadContext> dctx
+	(new DownloadContext(option->getAsInt(PREF_SEGMENT_SIZE),
+			     0,
+			     A2STR::NIL));
+      // Since torrent is downloaded in memory, setting dir has no effect.
       //dctx->setDir(_option->get(PREF_DIR));
       torrentRg->setDownloadContext(dctx);
       torrentRg->clearPreDowloadHandler();
@@ -208,11 +209,10 @@ Metalink2RequestGroup::createRequestGroup
 #else
     pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
 #endif // ENABLE_MESSAGE_DIGEST
-    SharedHandle<SingleFileDownloadContext> dctx
-      (new SingleFileDownloadContext
+    SharedHandle<DownloadContext> dctx
+      (new DownloadContext
        (pieceLength,
 	entry->getLength(),
-	A2STR::NIL,
 	strconcat(option->get(PREF_DIR), "/", entry->file->getPath())));
     dctx->setDir(option->get(PREF_DIR));
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -222,7 +222,8 @@ Metalink2RequestGroup::createRequestGroup
 	dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
       }
     } else {
-      dctx->setPieceHashes(entry->chunkChecksum->getChecksums());
+      dctx->setPieceHashes(entry->chunkChecksum->getChecksums().begin(),
+			   entry->chunkChecksum->getChecksums().end());
       dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
     }
 #endif // ENABLE_MESSAGE_DIGEST

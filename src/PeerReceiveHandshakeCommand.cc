@@ -37,7 +37,7 @@
 #include "DownloadEngine.h"
 #include "BtHandshakeMessage.h"
 #include "Util.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "DlAbortEx.h"
 #include "PeerInteractionCommand.h"
 #include "Peer.h"
@@ -91,23 +91,25 @@ bool PeerReceiveHandshakeCommand::executeInternal()
   // To handle tracker's NAT-checking feature
   if(dataLength >= 48) {
     // check info_hash
-    std::string infoHash = Util::toHex(&data[28], INFO_HASH_LENGTH);
+    std::string infoHash = std::string(&data[28], &data[28+INFO_HASH_LENGTH]);
 
     BtObject btObject = e->getBtRegistry()->get(infoHash);
-    SharedHandle<BtContext> btContext = btObject._btContext;
+    SharedHandle<DownloadContext> downloadContext = btObject._downloadContext;
     SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
     SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
     SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
 
-    if(btContext.isNull() || !btRuntime->ready()) {
+    if(downloadContext.isNull() || !btRuntime->ready()) {
       throw DL_ABORT_EX
-	(StringFormat("Unknown info hash %s", infoHash.c_str()).str());
+	(StringFormat("Unknown info hash %s",
+		      Util::toHex(infoHash).c_str()).str());
     }
-    TransferStat tstat = btContext->getOwnerRequestGroup()->calculateStat();
+    TransferStat tstat =
+      downloadContext->getOwnerRequestGroup()->calculateStat();
     const unsigned int maxDownloadLimit =
-      btContext->getOwnerRequestGroup()->getMaxDownloadSpeedLimit();
+      downloadContext->getOwnerRequestGroup()->getMaxDownloadSpeedLimit();
     unsigned int thresholdSpeed =
-      btContext->getOwnerRequestGroup()->
+      downloadContext->getOwnerRequestGroup()->
       getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
     if(maxDownloadLimit > 0) {
       thresholdSpeed = std::min(maxDownloadLimit, thresholdSpeed);
@@ -123,10 +125,9 @@ bool PeerReceiveHandshakeCommand::executeInternal()
 	PeerInteractionCommand* command =
 	  new PeerInteractionCommand
 	  (cuid,
-	   btContext->getOwnerRequestGroup(),
+	   downloadContext->getOwnerRequestGroup(),
 	   peer,
 	   e,
-	   btContext,
 	   btRuntime,
 	   pieceStorage,
 	   socket,

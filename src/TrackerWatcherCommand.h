@@ -42,7 +42,6 @@ namespace aria2 {
 
 class DownloadEngine;
 class RequestGroup;
-class BtContext;
 class PeerStorage;
 class PieceStorage;
 class BtRuntime;
@@ -55,8 +54,6 @@ private:
   RequestGroup* _requestGroup;
 
   DownloadEngine* e;
-
-  SharedHandle<BtContext> _btContext;
 
   SharedHandle<PeerStorage> _peerStorage;
 
@@ -81,8 +78,7 @@ private:
 public:
   TrackerWatcherCommand(int32_t cuid,
 			RequestGroup* requestGroup,
-			DownloadEngine* e,
-			const SharedHandle<BtContext>& btContext);
+			DownloadEngine* e);
 
   virtual ~TrackerWatcherCommand();
 

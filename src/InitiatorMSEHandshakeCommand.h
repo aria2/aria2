@@ -40,7 +40,6 @@
 namespace aria2 {
 
 class RequestGroup;
-class BtContext;
 class PeerStorage;
 class PieceStorage;
 class BtRuntime;
@@ -61,8 +60,6 @@ public:
 private:
   RequestGroup* _requestGroup;
 
-  SharedHandle<BtContext> _btContext;
-
   SharedHandle<PeerStorage> _peerStorage;
 
   SharedHandle<PieceStorage> _pieceStorage;
@@ -79,13 +76,13 @@ protected:
   virtual void onAbort();
   virtual bool exitBeforeExecute();
 public:
-  InitiatorMSEHandshakeCommand(int32_t cuid,
-			       RequestGroup* requestGroup,
-			       const SharedHandle<Peer>& peer,
-			       DownloadEngine* e,
-			       const SharedHandle<BtContext>& btContext,
-			       const SharedHandle<BtRuntime>& btRuntime,
-			       const SharedHandle<SocketCore>& s);
+  InitiatorMSEHandshakeCommand
+    (int32_t cuid,
+     RequestGroup* requestGroup,
+     const SharedHandle<Peer>& peer,
+     DownloadEngine* e,
+     const SharedHandle<BtRuntime>& btRuntime,
+     const SharedHandle<SocketCore>& s);
 
   virtual ~InitiatorMSEHandshakeCommand();
 

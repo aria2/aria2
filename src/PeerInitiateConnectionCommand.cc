@@ -42,12 +42,12 @@
 #include "Socket.h"
 #include "Logger.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "PeerConnection.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -56,13 +56,11 @@ PeerInitiateConnectionCommand::PeerInitiateConnectionCommand
  RequestGroup* requestGroup,
  const PeerHandle& peer,
  DownloadEngine* e,
- const SharedHandle<BtContext>& btContext,
  const SharedHandle<BtRuntime>& btRuntime,
  bool mseHandshakeEnabled)
   :
   PeerAbstractCommand(cuid, peer, e),
   _requestGroup(requestGroup),
-  _btContext(btContext),
   _btRuntime(btRuntime),
   _mseHandshakeEnabled(mseHandshakeEnabled)
 {
@@ -83,7 +81,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   socket->establishConnection(peer->ipaddr, peer->port);
   if(_mseHandshakeEnabled) {
     InitiatorMSEHandshakeCommand* c =
-      new InitiatorMSEHandshakeCommand(cuid, _requestGroup, peer, e, _btContext,
+      new InitiatorMSEHandshakeCommand(cuid, _requestGroup, peer, e,
 				       _btRuntime, socket);
     c->setPeerStorage(_peerStorage);
     c->setPieceStorage(_pieceStorage);
@@ -91,7 +89,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   } else {
     PeerInteractionCommand* command =
       new PeerInteractionCommand
-      (cuid, _requestGroup, peer, e, _btContext, _btRuntime, _pieceStorage,
+      (cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage,
        socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
     command->setPeerStorage(_peerStorage);
     e->commands.push_back(command);
@@ -106,7 +104,7 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
     peer->usedBy(e->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
-					_btContext, _btRuntime);
+					_btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);

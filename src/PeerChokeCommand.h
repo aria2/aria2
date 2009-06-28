@@ -41,7 +41,6 @@
 namespace aria2 {
 
 class DownloadEngine;
-class BtContext;
 class BtRuntime;
 class PeerStorage;
 
@@ -49,15 +48,12 @@ class PeerChokeCommand : public Command {
 private:
   DownloadEngine* e;
 
-  SharedHandle<BtContext> _btContext;
-
   SharedHandle<PeerStorage> _peerStorage;
 
   SharedHandle<BtRuntime> _btRuntime;
 public:
   PeerChokeCommand(int32_t cuid,
-		   DownloadEngine* e,
-		   const SharedHandle<BtContext>& btContext);
+		   DownloadEngine* e);
 
   virtual ~PeerChokeCommand();
 

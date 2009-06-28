@@ -5,7 +5,7 @@
 #include "File.h"
 #include "prefs.h"
 #include "Util.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "UnknownLengthPieceStorage.h"
 #include "DefaultPieceStorage.h"
 #include "Segment.h"
@@ -43,8 +43,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SegmentManTest );
 void SegmentManTest::testNullBitfield()
 {
   Option op;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(0, 0, "aria2.tar.bz2"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(0, 0, "aria2.tar.bz2"));
   SharedHandle<UnknownLengthPieceStorage> ps
     (new UnknownLengthPieceStorage(dctx, &op));
   SegmentMan segmentMan(&op, dctx, ps);
@@ -68,8 +68,8 @@ void SegmentManTest::testCompleteSegment()
   Option op;
   size_t pieceLength = 1024*1024;
   uint64_t totalLength = 64*1024*1024;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
 
   SegmentMan segmentMan(&op, dctx, ps);
@@ -94,8 +94,8 @@ void SegmentManTest::testGetPeerStat()
   Option op;
   size_t pieceLength = 1;
   uint64_t totalLength = 1;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
   SharedHandle<PieceStorage> ps(new MockPieceStorage());
   SegmentMan segmentMan(&op, dctx, ps);
 
@@ -128,8 +128,8 @@ void SegmentManTest::testGetSegment_segmentForward()
   Option op;
   size_t pieceLength = 1;
   uint64_t totalLength = 1;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
   SharedHandle<PieceStorage> ps(new DefaultPieceStorage(dctx, &op));
   SegmentMan segmentMan(&op, dctx, ps);
 

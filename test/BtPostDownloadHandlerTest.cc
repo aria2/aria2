@@ -1,10 +1,12 @@
 #include "BtPostDownloadHandler.h"
-#include "BtContext.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "DownloadContext.h"
 #include "RequestGroup.h"
 #include "Option.h"
-#include "SingleFileDownloadContext.h"
 #include "FileEntry.h"
-#include <cppunit/extensions/HelperMacros.h>
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -33,8 +35,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtPostDownloadHandlerTest );
 
 void BtPostDownloadHandlerTest::testCanHandle_extension()
 {
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(0, 0, "test.torrent"));
+  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test.torrent"));
   RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
@@ -42,15 +43,14 @@ void BtPostDownloadHandlerTest::testCanHandle_extension()
 
   CPPUNIT_ASSERT(handler.canHandle(&rg));
 
-  dctx->setFilename("test.torrent2");
+  dctx->getFirstFileEntry()->setPath("test.torrent2");
   CPPUNIT_ASSERT(!handler.canHandle(&rg));
 }
 
 void BtPostDownloadHandlerTest::testCanHandle_contentType()
 {
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(0, 0, "test"));
-  dctx->setContentType("application/x-bittorrent");
+  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
+  dctx->getFirstFileEntry()->setContentType("application/x-bittorrent");
   RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
@@ -58,14 +58,14 @@ void BtPostDownloadHandlerTest::testCanHandle_contentType()
 
   CPPUNIT_ASSERT(handler.canHandle(&rg));
 
-  dctx->setContentType("application/octet-stream");
+  dctx->getFirstFileEntry()->setContentType("application/octet-stream");
   CPPUNIT_ASSERT(!handler.canHandle(&rg));
 }
 
 void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(1024, 0, "test.torrent"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(1024, 0, "test.torrent"));
   RequestGroup rg(_option, std::deque<std::string>());
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
@@ -74,10 +74,9 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
   std::deque<SharedHandle<RequestGroup> > groups;
   handler.getNextRequestGroups(groups, &rg);
   CPPUNIT_ASSERT_EQUAL((size_t)1, groups.size());
-  SharedHandle<BtContext> btctx
-    (dynamic_pointer_cast<BtContext>(groups.front()->getDownloadContext()));
-  CPPUNIT_ASSERT(!btctx.isNull());
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"), btctx->getName());
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
+     bittorrent::getInfoHashString(groups.front()->getDownloadContext()));
 }
 
 } // namespace aria2

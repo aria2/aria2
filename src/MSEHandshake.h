@@ -51,7 +51,7 @@ class SocketCore;
 class DHKeyExchange;
 class ARC4Encryptor;
 class ARC4Decryptor;
-class BtContext;
+class DownloadContext;
 
 class MSEHandshake {
 public:
@@ -158,7 +158,7 @@ public:
   bool findReceiverHashMarker();
 
   bool receiveReceiverHashAndPadCLength
-  (const std::deque<SharedHandle<BtContext> >& btContexts);
+  (const std::deque<SharedHandle<DownloadContext> >& downloadContexts);
 
   bool receiveReceiverIALength();
 

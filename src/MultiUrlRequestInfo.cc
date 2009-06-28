@@ -54,6 +54,7 @@
 #include "File.h"
 #include "Netrc.h"
 #include "AuthConfigFactory.h"
+#include "DownloadContext.h"
 #ifdef ENABLE_SSL
 # include "SocketCore.h"
 # include "TLSContext.h"

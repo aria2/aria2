@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "DefaultExtensionMessageFactory.h"
-#include "BtContext.h"
 #include "Peer.h"
 #include "DlAbortEx.h"
 #include "HandshakeExtensionMessage.h"
@@ -50,10 +49,8 @@ DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
   _logger(LogFactory::getInstance()) {}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
-(const BtContextHandle& btContext,
- const PeerHandle& peer,
+(const PeerHandle& peer,
  const SharedHandle<ExtensionMessageRegistry>& registry):
-  _btContext(btContext),
   _peer(peer),
   _registry(registry),
   _logger(LogFactory::getInstance()) {}
@@ -67,7 +64,6 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
   if(extensionMessageID == 0) {
     // handshake
     HandshakeExtensionMessageHandle m = HandshakeExtensionMessage::create(data, length);
-    m->setBtContext(_btContext);
     m->setPeer(_peer);
     return m;
   } else {
@@ -89,11 +85,6 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 		      extensionMessageID, extensionName.c_str()).str());
     }
   }
-}
-
-void DefaultExtensionMessageFactory::setBtContext(const BtContextHandle& btContext)
-{
-  _btContext = btContext;
 }
 
 void DefaultExtensionMessageFactory::setPeerStorage

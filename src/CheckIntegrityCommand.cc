@@ -39,6 +39,7 @@
 #include "Logger.h"
 #include "message.h"
 #include "prefs.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -62,13 +63,13 @@ bool CheckIntegrityCommand::executeInternal()
 
     if(_requestGroup->downloadFinished()) {
       logger->notice(MSG_VERIFICATION_SUCCESSFUL,
-		     _requestGroup->getFilePath().c_str());
+		     _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::deque<Command*> commands;
       _entry->onDownloadFinished(commands, _e);
       _e->addCommand(commands);
     } else {
       logger->error(MSG_VERIFICATION_FAILED,
-		    _requestGroup->getFilePath().c_str());
+		    _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::deque<Command*> commands;
       _entry->onDownloadIncomplete(commands,_e);
       _e->addCommand(commands);
@@ -86,7 +87,7 @@ bool CheckIntegrityCommand::handleException(Exception& e)
   _e->_checkIntegrityMan->dropPickedEntry();
   logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE,
-		cuid, _requestGroup->getFilePath().c_str());
+		cuid, _requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

@@ -37,29 +37,30 @@
 #include <algorithm>
 
 #include "FileEntry.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 DownloadContext::DownloadContext():
   _dir("."),
+  _pieceLength(0),
+  _knowsTotalLength(true),
+  _ownerRequestGroup(0),
   _downloadStartTime(0),
   _downloadStopTime(_downloadStartTime) {}
 
-DownloadContext::~DownloadContext() {}
-
-void DownloadContext::setDir(const std::string& dir)
+DownloadContext::DownloadContext(size_t pieceLength,
+				 uint64_t totalLength,
+				 const std::string& path):
+  _dir("."),
+  _pieceLength(pieceLength),
+  _knowsTotalLength(true),
+  _ownerRequestGroup(0),
+  _downloadStartTime(0),
+  _downloadStopTime(_downloadStartTime)
 {
-  _dir = dir;
-}
-
-SharedHandle<Signature> DownloadContext::getSignature() const
-{
-  return _signature;
-}
-
-void DownloadContext::setSignature(const SharedHandle<Signature>& signature)
-{
-  _signature = signature;
+  SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
+  _fileEntries.push_back(fileEntry);
 }
 
 void DownloadContext::resetDownloadStartTime()
@@ -94,12 +95,73 @@ DownloadContext::findFileEntryByOffset(off_t offset) const
 
   SharedHandle<FileEntry> obj(new FileEntry());
   obj->setOffset(offset);
-  std::deque<SharedHandle<FileEntry> >::const_iterator i =
+  std::vector<SharedHandle<FileEntry> >::const_iterator i =
     std::upper_bound(_fileEntries.begin(), _fileEntries.end(), obj);
   if(i != _fileEntries.end() && (*i)->getOffset() == offset) {
     return *i;
   } else {
     return *(--i);
+  }
+}
+
+void DownloadContext::setFilePathWithIndex
+(size_t index, const std::string& path)
+{
+  if(0 < index && index <= _fileEntries.size()) {
+    _fileEntries[index-1]->setPath(path);
+  } else {
+    throw DL_ABORT_EX(StringFormat("No such file with index=%u",
+				   static_cast<unsigned int>(index)).str());
+  }
+}
+
+void DownloadContext::setFileFilter(IntSequence seq)
+{
+  std::deque<int32_t> fileIndexes = seq.flush();
+  std::sort(fileIndexes.begin(), fileIndexes.end());
+  fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
+		    fileIndexes.end());
+
+  bool selectAll = fileIndexes.empty() || _fileEntries.size() == 1;
+    
+  int32_t index = 1;
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+	_fileEntries.begin(); i != _fileEntries.end(); ++i, ++index) {
+    (*i)->setRequested
+      (selectAll ||
+       std::binary_search(fileIndexes.begin(), fileIndexes.end(), index));
+  }
+}
+
+void DownloadContext::ensureAttrs()
+{
+  if(_attrs.isNone()) {
+    _attrs = BDE::dict();
+  }
+}
+
+void DownloadContext::setAttribute(const std::string& key, const BDE& value)
+{
+  ensureAttrs();
+  _attrs[key] = value;
+}
+
+BDE& DownloadContext::getAttribute(const std::string& key)
+{
+  ensureAttrs();
+  if(_attrs.containsKey(key)) {
+    return _attrs[key];
+  } else {
+    throw DL_ABORT_EX(StringFormat("No attribute named %s", key.c_str()).str());
+  }
+}
+
+bool DownloadContext::hasAttribute(const std::string& key) const
+{
+  if(_attrs.isNone()) {
+    return false;
+  } else {
+    return _attrs.containsKey(key);
   }
 }
 

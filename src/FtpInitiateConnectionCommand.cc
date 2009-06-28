@@ -50,6 +50,7 @@
 #include "prefs.h"
 #include "HttpConnection.h"
 #include "Socket.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

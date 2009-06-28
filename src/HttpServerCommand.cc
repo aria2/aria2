@@ -46,6 +46,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "Util.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

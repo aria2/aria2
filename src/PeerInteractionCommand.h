@@ -40,7 +40,6 @@
 namespace aria2 {
 
 class RequestGroup;
-class BtContext;
 class BtInteractive;
 class PeerConnection;
 class BtRuntime;
@@ -57,8 +56,6 @@ public:
     WIRED};
 private:
   RequestGroup* _requestGroup;
-
-  SharedHandle<BtContext> _btContext;
 
   SharedHandle<BtRuntime> _btRuntime;
 
@@ -81,7 +78,6 @@ public:
 			 RequestGroup* requestGroup,
 			 const SharedHandle<Peer>& peer,
 			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
 			 const SharedHandle<BtRuntime>& btRuntime,
 			 const SharedHandle<PieceStorage>& pieceStorage,
 			 const SharedHandle<SocketCore>& s,

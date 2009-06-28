@@ -2,7 +2,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "DefaultBtContext.h"
 #include "Util.h"
 #include "Exception.h"
 #include "FixedNumberRandomizer.h"
@@ -11,9 +10,10 @@
 #include "Peer.h"
 #include "Option.h"
 #include "FileEntry.h"
-#include "MockBtContext.h"
 #include "RarestPieceSelector.h"
 #include "InOrderPieceSelector.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -35,7 +35,7 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetCompletedLength);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<BtContext> btContext;
+  SharedHandle<DownloadContext> _dctx;
   SharedHandle<Peer> peer;
   Option* option;
   SharedHandle<PieceSelector> _pieceSelector;
@@ -48,11 +48,11 @@ public:
   }
 
   void setUp() {
-    btContext.reset(new DefaultBtContext());
-    btContext->load("test.torrent");
+    _dctx.reset(new DownloadContext());
+    bittorrent::load("test.torrent", _dctx);
     peer.reset(new Peer("192.168.0.1", 6889));
-    peer->allocateSessionResource(btContext->getPieceLength(),
-				  btContext->getTotalLength());
+    peer->allocateSessionResource(_dctx->getPieceLength(),
+				  _dctx->getTotalLength());
     option = new Option();
     _pieceSelector.reset(new InOrderPieceSelector());
   }
@@ -82,13 +82,13 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPieceStorageTest);
 
 void DefaultPieceStorageTest::testGetTotalLength() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)384ULL, pss.getTotalLength());
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   pss.setPieceSelector(_pieceSelector);
   pss.setEndGamePieceNum(0);
 
@@ -109,7 +109,7 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
 
 void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   pss.setPieceSelector(_pieceSelector);
   pss.setEndGamePieceNum(0);
 
@@ -131,7 +131,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 }
 
 void DefaultPieceStorageTest::testGetMissingFastPiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   pss.setPieceSelector(_pieceSelector);
   pss.setEndGamePieceNum(0);
 
@@ -148,7 +148,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
 
 void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
 {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   pss.setPieceSelector(_pieceSelector);
   pss.setEndGamePieceNum(0);
 
@@ -168,7 +168,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
 }
 
 void DefaultPieceStorageTest::testHasMissingPiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
 
   CPPUNIT_ASSERT(!pss.hasMissingPiece(peer));
   
@@ -178,7 +178,7 @@ void DefaultPieceStorageTest::testHasMissingPiece() {
 }
 
 void DefaultPieceStorageTest::testCompletePiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   pss.setPieceSelector(_pieceSelector);
   pss.setEndGamePieceNum(0);
 
@@ -200,7 +200,7 @@ void DefaultPieceStorageTest::testCompletePiece() {
 }
 
 void DefaultPieceStorageTest::testGetPiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   
   SharedHandle<Piece> pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
@@ -209,7 +209,7 @@ void DefaultPieceStorageTest::testGetPiece() {
 }
 
 void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   SharedHandle<Piece> piece = SharedHandle<Piece>(new Piece(0, 128));
   piece->completeBlock(0);
   pss.addUsedPiece(piece);
@@ -220,7 +220,7 @@ void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
 }
 
 void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(_dctx, option);
   SharedHandle<Piece> piece = SharedHandle<Piece>(new Piece(0, 128));
   pss.completePiece(piece);
   SharedHandle<Piece> pieceGot = pss.getPiece(0);
@@ -237,19 +237,17 @@ void DefaultPieceStorageTest::testCancelPiece()
   uris1.push_back("http://localhost/src/file1.txt");
   SharedHandle<FileEntry> file1(new FileEntry("src/file1.txt", totalLength, 0 /*, uris1*/));
 
-  SharedHandle<MockBtContext> dctx(new MockBtContext());
-  dctx->setPieceLength(pieceLength);
-  dctx->setTotalLength(totalLength);
-  dctx->addFileEntry(file1);
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(pieceLength, totalLength, "src/file1.txt"));
 
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, option));
 
-  SharedHandle<Piece> p = ps->getMissingPiece();
+  SharedHandle<Piece> p = ps->getMissingPiece(0);
   p->completeBlock(0);
   
   ps->cancelPiece(p);
 
-  SharedHandle<Piece> p2 = ps->getMissingPiece();
+  SharedHandle<Piece> p2 = ps->getMissingPiece(0);
 
   CPPUNIT_ASSERT(p2->hasBlock(0));
 }
@@ -258,9 +256,8 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 {
   size_t pieceLength = 256*1024;
   uint64_t totalLength = 4*1024*1024;
-  SharedHandle<MockBtContext> dctx(new MockBtContext());
-  dctx->setPieceLength(pieceLength);
-  dctx->setTotalLength(totalLength);
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(pieceLength, totalLength));
 
   DefaultPieceStorage ps(dctx, option);
 
@@ -283,9 +280,8 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 
 void DefaultPieceStorageTest::testGetCompletedLength()
 {
-  SharedHandle<MockBtContext> dctx(new MockBtContext());
-  dctx->setPieceLength(1024*1024);
-  dctx->setTotalLength(256*1024*1024);
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(1024*1024, 256*1024*1024));
   
   DefaultPieceStorage ps(dctx, option);
   

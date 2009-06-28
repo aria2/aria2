@@ -36,6 +36,7 @@
 #include "DownloadEngine.h"
 #include "Exception.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

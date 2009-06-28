@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "ChecksumCheckIntegrityEntry.h"
 #include "RequestGroup.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "FileEntry.h"
 #include "IteratableChecksumValidator.h"
 #include "DownloadEngine.h"
@@ -49,18 +49,15 @@ ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
 
 bool ChecksumCheckIntegrityEntry::isValidationReady()
 {
-  SingleFileDownloadContextHandle dctx
-    (dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext()));
-  return !dctx.isNull() && dctx->getChecksum().size() > 0 &&
-    dctx->getChecksumHashAlgo().size() > 0;
+  return !_requestGroup->getDownloadContext()->getChecksum().empty() &&
+    !_requestGroup->getDownloadContext()->getChecksumHashAlgo().empty();
 }
 
 void ChecksumCheckIntegrityEntry::initValidator()
 {
-  SingleFileDownloadContextHandle dctx
-    (dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext()));
-  _validator.reset(new IteratableChecksumValidator(dctx,
-						   _requestGroup->getPieceStorage()));
+  _validator.reset(new IteratableChecksumValidator
+		   (_requestGroup->getDownloadContext(),
+		    _requestGroup->getPieceStorage()));
   _validator->init();
 }
 

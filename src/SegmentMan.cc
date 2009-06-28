@@ -60,7 +60,7 @@ SegmentEntry::SegmentEntry(cuid_t cuid, const SegmentHandle& segment):
 SegmentEntry::~SegmentEntry() {}
 
 SegmentMan::SegmentMan(const Option* option,
-		       const DownloadContextHandle& downloadContext,
+		       const SharedHandle<DownloadContext>& downloadContext,
 		       const PieceStorageHandle& pieceStorage):
   _option(option),
   logger(LogFactory::getInstance()),
@@ -104,7 +104,8 @@ void SegmentMan::setPieceStorage(const PieceStorageHandle& pieceStorage)
   _pieceStorage = pieceStorage;
 }
 
-void SegmentMan::setDownloadContext(const DownloadContextHandle& downloadContext)
+void SegmentMan::setDownloadContext
+(const SharedHandle<DownloadContext>& downloadContext)
 {
   _downloadContext = downloadContext;
 }

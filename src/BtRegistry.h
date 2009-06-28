@@ -49,23 +49,23 @@ class PieceStorage;
 class BtAnnounce;
 class BtRuntime;
 class BtProgressInfoFile;
-class BtContext;
+class DownloadContext;
 
 struct BtObject {
-  SharedHandle<BtContext> _btContext;
+  SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<PeerStorage> _peerStorage;
   SharedHandle<BtAnnounce> _btAnnounce;
   SharedHandle<BtRuntime> _btRuntime;
   SharedHandle<BtProgressInfoFile> _btProgressInfoFile;
 
-  BtObject(const SharedHandle<BtContext>& btContext,
+  BtObject(const SharedHandle<DownloadContext>& downloadContext,
 	   const SharedHandle<PieceStorage>& pieceStorage,
 	   const SharedHandle<PeerStorage>& peerStorage,
 	   const SharedHandle<BtAnnounce>& btAnnounce,
 	   const SharedHandle<BtRuntime>& btRuntime,
 	   const SharedHandle<BtProgressInfoFile>& btProgressInfoFile):
-    _btContext(btContext),
+    _downloadContext(downloadContext),
     _pieceStorage(pieceStorage),
     _peerStorage(peerStorage),
     _btAnnounce(btAnnounce),
@@ -76,7 +76,7 @@ struct BtObject {
 
   bool isNull() const
   {
-    return _btContext.isNull() &&
+    return _downloadContext.isNull() &&
       _pieceStorage.isNull() &&
       _peerStorage.isNull() &&
       _btAnnounce.isNull() &&
@@ -89,19 +89,21 @@ class BtRegistry {
 private:
   std::map<std::string, BtObject> _pool;
 public:
-  SharedHandle<BtContext> getBtContext(const std::string& infoHash) const;
+  SharedHandle<DownloadContext>
+  getDownloadContext(const std::string& infoHash) const;
 
   void put(const std::string& infoHash, const BtObject& obj);
 
   BtObject get(const std::string& infoHash) const;
 
   template<typename OutputIterator>
-  void getAllBtContext(OutputIterator dest)
+  OutputIterator getAllDownloadContext(OutputIterator dest)
   {
     for(std::map<std::string, BtObject>::const_iterator i = _pool.begin();
 	i != _pool.end(); ++i) {
-      *dest++ = (*i).second._btContext;
+      *dest++ = (*i).second._downloadContext;
     }
+    return dest;
   }
 
   void removeAll();

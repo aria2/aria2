@@ -48,12 +48,11 @@
 #include "ParameterizedStringParser.h"
 #include "PStringBuildVisitor.h"
 #include "UriListParser.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "RecoverableException.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
-#include "DefaultBtContext.h"
 #include "FileEntry.h"
 #include "LogFactory.h"
 #include "File.h"
@@ -62,6 +61,9 @@
 #include "OptionHandler.h"
 #include "ByteArrayDiskWriter.h"
 #include "a2functional.h"
+#ifdef ENABLE_BITTORRENT
+# include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -178,16 +180,14 @@ static SharedHandle<RequestGroup> createRequestGroup
  bool useOutOption = false)
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option, uris));
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext
      (option->getAsInt(PREF_SEGMENT_SIZE),
       0,
-      A2STR::NIL,
       useOutOption&&!option->blank(PREF_OUT)?
       strconcat(option->get(PREF_DIR), "/", option->get(PREF_OUT)):A2STR::NIL));
-
   dctx->setDir(option->get(PREF_DIR));
-  dctx->getFileEntries().front()->setUris(uris);
+  dctx->getFirstFileEntry()->setUris(uris);
   rg->setDownloadContext(dctx);
   return rg;
 }
@@ -202,28 +202,26 @@ createBtRequestGroup(const std::string& torrentFilePath,
 		     const std::string& torrentData = "")
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option, auxUris));
-  SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
-  btContext->setDir(option->get(PREF_DIR));
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  dctx->setDir(option->get(PREF_DIR));
   if(torrentData.empty()) {
-    btContext->load(torrentFilePath);// may throw exception
+    bittorrent::load(torrentFilePath, dctx);// may throw exception
   } else {
-    btContext->loadFromMemory(torrentData, "default"); // may throw exception
+    bittorrent::loadFromMemory(torrentData, dctx, "default"); // may
+							      // throw
+							      // exception
   }
-  if(option->defined(PREF_PEER_ID_PREFIX)) {
-    btContext->setPeerIdPrefix(option->get(PREF_PEER_ID_PREFIX));
-  }
-  btContext->setFileFilter
-    (Util::parseIntRange(option->get(PREF_SELECT_FILE)));
+  dctx->setFileFilter(Util::parseIntRange(option->get(PREF_SELECT_FILE)));
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
   std::map<size_t, std::string> indexPathMap =
     Util::createIndexPathMap(indexOutIn);
   for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
       i != indexPathMap.end(); ++i) {
-    btContext->setFilePathWithIndex
-      ((*i).first, strconcat(btContext->getDir(), "/", (*i).second));
+    dctx->setFilePathWithIndex
+      ((*i).first, strconcat(dctx->getDir(), "/", (*i).second));
   }
-  rg->setDownloadContext(btContext);
-  btContext->setOwnerRequestGroup(rg.get());
+  rg->setDownloadContext(dctx);
+  dctx->setOwnerRequestGroup(rg.get());
   return rg;
 }
 

@@ -43,7 +43,6 @@
 
 namespace aria2 {
 
-class BtContext;
 class Option;
 class Logger;
 class BtRuntime;
@@ -53,7 +52,6 @@ class PieceStorage;
 
 class DefaultPeerStorage : public PeerStorage {
 private:
-  SharedHandle<BtContext> btContext;
   SharedHandle<BtRuntime> _btRuntime;
   SharedHandle<PieceStorage> _pieceStorage;
   const Option* option;
@@ -73,8 +71,7 @@ private:
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:
-  DefaultPeerStorage(const SharedHandle<BtContext>& btContext,
-		     const Option* option);
+  DefaultPeerStorage(const Option* option);
 
   virtual ~DefaultPeerStorage();
 

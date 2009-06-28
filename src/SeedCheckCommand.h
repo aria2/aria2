@@ -43,7 +43,6 @@ namespace aria2 {
 class RequestGroup;
 class DownloadEngine;
 class SeedCriteria;
-class BtContext;
 class BtRuntime;
 class PieceStorage;
 
@@ -52,7 +51,6 @@ class SeedCheckCommand : public Command
 private:
   RequestGroup* _requestGroup;
   DownloadEngine* e;
-  SharedHandle<BtContext> _btContext;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<BtRuntime> _btRuntime;
   SharedHandle<SeedCriteria> seedCriteria;
@@ -61,7 +59,6 @@ public:
   SeedCheckCommand(int cuid,
 		   RequestGroup* requestGroup,
 		   DownloadEngine* e,
-		   const SharedHandle<BtContext>& btContext,
 		   const SharedHandle<SeedCriteria>& seedCriteria);
 
   virtual ~SeedCheckCommand();

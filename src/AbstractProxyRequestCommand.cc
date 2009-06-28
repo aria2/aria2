@@ -45,6 +45,7 @@
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

@@ -221,7 +221,7 @@ public:
 
   void closeFile();
 
-  std::string getFilePath() const;
+  std::string getFirstFilePath() const;
 
   uint64_t getTotalLength() const;
 
@@ -275,7 +275,10 @@ public:
     return _downloadContext;
   }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext)
+  {
+    _downloadContext = downloadContext;
+  }
 
   const SharedHandle<PieceStorage>& getPieceStorage() const
   {

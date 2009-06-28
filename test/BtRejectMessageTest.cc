@@ -8,7 +8,6 @@
 #include "Peer.h"
 #include "FileEntry.h"
 #include "MockBtMessageDispatcher.h"
-#include "MockBtContext.h"
 
 namespace aria2 {
 
@@ -63,7 +62,6 @@ public:
 
   typedef SharedHandle<MockBtMessageDispatcher2> MockBtMessageDispatcher2Handle;
 
-  SharedHandle<MockBtContext> _btContext;
   SharedHandle<Peer> peer;
   SharedHandle<MockBtMessageDispatcher2> dispatcher;
   SharedHandle<BtRejectMessage> msg;
@@ -72,14 +70,10 @@ public:
     peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(1024, 1024*1024);
 
-    _btContext.reset(new MockBtContext());
-    _btContext->setInfoHash((const unsigned char*)"12345678901234567890");
-
     dispatcher.reset(new MockBtMessageDispatcher2());
 
     msg.reset(new BtRejectMessage());
     msg->setPeer(peer);
-    msg->setBtContext(_btContext);
     msg->setIndex(1);
     msg->setBegin(16);
     msg->setLength(32);

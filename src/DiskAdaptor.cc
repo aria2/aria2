@@ -47,8 +47,4 @@ DiskAdaptor::DiskAdaptor():
 
 DiskAdaptor::~DiskAdaptor() {}
 
-void DiskAdaptor::setFileEntries(const FileEntries& fileEntries) {
-  this->fileEntries = fileEntries;
-}
-
 } // namespace aria2

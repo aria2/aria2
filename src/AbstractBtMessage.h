@@ -41,7 +41,6 @@
 
 namespace aria2 {
 
-class BtContext;
 class PieceStorage;
 class Peer;
 class BtMessageDispatcher;
@@ -59,8 +58,6 @@ protected:
   int32_t cuid;
 
   std::string _name;
-
-  SharedHandle<BtContext> btContext;
 
   SharedHandle<PieceStorage> pieceStorage;
 
@@ -136,13 +133,6 @@ public:
   virtual void onChokingEvent(const BtChokingEvent& event) {}
 
   void setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator);
-
-  void setBtContext(const SharedHandle<BtContext>& btContext);
-
-  const SharedHandle<BtContext>& getBtContext() const
-  {
-    return btContext;
-  }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 

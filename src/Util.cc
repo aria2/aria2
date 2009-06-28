@@ -43,7 +43,6 @@
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
-#include <iomanip>
 #include <sstream>
 #include <ostream>
 #include <algorithm>
@@ -707,20 +706,6 @@ time_t Util::httpGMT(const std::string& httpStdTime)
     }
   }
   return thetime;
-}
-
-void Util::toStream(std::ostream& os, const FileEntries& fileEntries)
-{
-  os << _("Files:") << "\n";
-  os << "idx|path/length" << "\n";
-  os << "===+===========================================================================" << "\n";
-  int32_t count = 1;
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); ++count, ++itr) {
-    os << std::setw(3) << count << "|" << (*itr)->getPath() << "\n";
-    os << "   |" << Util::abbrevSize((*itr)->getLength()) << "B" << "\n";
-    os << "---+---------------------------------------------------------------------------" << "\n";
-  }
 }
 
 void Util::sleep(long seconds) {

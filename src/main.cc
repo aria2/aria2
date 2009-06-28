@@ -59,7 +59,6 @@
 #include "a2io.h"
 #include "a2time.h"
 #include "Platform.h"
-#include "DefaultBtContext.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
 #include "ConsoleStatCalc.h"
@@ -69,6 +68,10 @@
 #include "ProtocolDetector.h"
 #include "RecoverableException.h"
 #include "SocketCore.h"
+#include "DownloadContext.h"
+#ifdef ENABLE_BITTORRENT
+# include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "MetalinkEntry.h"
@@ -108,9 +111,9 @@ std::ostream& getSummaryOut(const SharedHandle<Option>& op)
 #ifdef ENABLE_BITTORRENT
 static void showTorrentFile(const std::string& uri)
 {
-  SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
-  btContext->load(uri);
-  std::cout << btContext << std::endl;
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  bittorrent::load(uri, dctx);
+  bittorrent::print(std::cout, dctx);
 }
 #endif // ENABLE_BITTORRENT
 
@@ -122,7 +125,7 @@ static void showMetalinkFile
   MetalinkHelper::parseAndQuery(metalinkEntries, uri, op.get());
   std::deque<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
-  Util::toStream(std::cout, fileEntries);
+  Util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);
   std::cout << std::endl;
 }
 #endif // ENABLE_METALINK

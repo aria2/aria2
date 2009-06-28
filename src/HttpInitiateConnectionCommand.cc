@@ -47,6 +47,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "A2STR.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

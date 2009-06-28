@@ -2,7 +2,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "DefaultPieceStorage.h"
 #include "Option.h"
 #include "DiskAdaptor.h"
@@ -32,8 +32,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( IteratableChecksumValidatorTest );
 
 void IteratableChecksumValidatorTest::testValidate() {
   Option option;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
   dctx->setChecksum("898a81b8e0181280ae2ee1b81e269196d91e869a");
   dctx->setChecksumHashAlgo("sha1");
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
@@ -51,8 +51,8 @@ void IteratableChecksumValidatorTest::testValidate() {
 
 void IteratableChecksumValidatorTest::testValidate_fail() {
   Option option;
-  SharedHandle<SingleFileDownloadContext> dctx
-    (new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
   dctx->setChecksum(std::string(40, '0')); // set wrong checksum
   dctx->setChecksumHashAlgo("sha1");
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));

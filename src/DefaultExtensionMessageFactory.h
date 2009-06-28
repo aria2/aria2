@@ -39,7 +39,6 @@
 
 namespace aria2 {
 
-class BtContext;
 class PeerStorage;
 class Peer;
 class Logger;
@@ -47,8 +46,6 @@ class ExtensionMessageRegistry;
 
 class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
-  SharedHandle<BtContext> _btContext;
-
   SharedHandle<PeerStorage> _peerStorage;
 
   SharedHandle<Peer> _peer;
@@ -61,16 +58,13 @@ public:
   DefaultExtensionMessageFactory();
 
   DefaultExtensionMessageFactory
-  (const SharedHandle<BtContext>& btContext,
-   const SharedHandle<Peer>& peer,
+  (const SharedHandle<Peer>& peer,
    const SharedHandle<ExtensionMessageRegistry>& registry);
 
   virtual ~DefaultExtensionMessageFactory();
 
   virtual SharedHandle<ExtensionMessage>
   createMessage(const unsigned char* data, size_t length);
-
-  void setBtContext(const SharedHandle<BtContext>& btContext);
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 

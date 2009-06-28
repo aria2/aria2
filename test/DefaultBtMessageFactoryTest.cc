@@ -8,7 +8,7 @@
 
 #include "Peer.h"
 #include "PeerMessageUtil.h"
-#include "MockBtContext.h"
+#include "DownloadContext.h"
 #include "MockExtensionMessageFactory.h"
 #include "BtExtendedMessage.h"
 #include "BtPortMessage.h"
@@ -24,17 +24,14 @@ class DefaultBtMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreatePortMessage);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<MockBtContext> _btContext;
+  SharedHandle<DownloadContext> _dctx;
   SharedHandle<Peer> _peer;
   SharedHandle<MockExtensionMessageFactory> _exmsgFactory;
   SharedHandle<DefaultBtMessageFactory> _factory;
 public:
   void setUp()
   {
-    _btContext.reset(new MockBtContext());
-    unsigned char infohash[20];
-    memset(infohash, 0, sizeof(infohash));
-    _btContext->setInfoHash(infohash);
+    _dctx.reset(new DownloadContext());
 
     _peer.reset(new Peer("192.168.0.1", 6969));
     _peer->allocateSessionResource(1024, 1024*1024);
@@ -43,7 +40,7 @@ public:
     _exmsgFactory.reset(new MockExtensionMessageFactory());
 
     _factory.reset(new DefaultBtMessageFactory());
-    _factory->setBtContext(_btContext);
+    _factory->setDownloadContext(_dctx);
     _factory->setPeer(_peer);
     _factory->setExtensionMessageFactory(_exmsgFactory);
   }

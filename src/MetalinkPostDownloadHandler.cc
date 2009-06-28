@@ -62,7 +62,7 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
  RequestGroup* requestGroup)
 {
   _logger->debug("Generating RequestGroups for Metalink file %s",
-		 requestGroup->getFilePath().c_str());
+		 requestGroup->getFirstFilePath().c_str());
   SharedHandle<DiskAdaptor> diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();

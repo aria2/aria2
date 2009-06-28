@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class BtContext;
+class DownloadContext;
 class PieceStorage;
 class PeerStorage;
 class Peer;
@@ -56,7 +56,7 @@ class DHTTaskFactory;
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
   int32_t cuid;
-  SharedHandle<BtContext> btContext;
+  SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<PeerStorage> _peerStorage;
   SharedHandle<Peer> peer;
@@ -134,7 +134,7 @@ public:
 
   void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtContext(const SharedHandle<BtContext>& btContext);
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 

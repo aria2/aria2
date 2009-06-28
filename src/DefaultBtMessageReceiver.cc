@@ -38,13 +38,14 @@
 
 #include "BtHandshakeMessage.h"
 #include "message.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "Peer.h"
 #include "PeerConnection.h"
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
 #include "Logger.h"
 #include "LogFactory.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -71,7 +72,8 @@ DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
   if(!handshakeSent && quickReply && dataLength >= 48) {
     handshakeSent = true;
     // check info_hash
-    if(memcmp(btContext->getInfoHash(), &data[28], INFO_HASH_LENGTH) == 0) {
+    if(memcmp(bittorrent::getInfoHash(_downloadContext), &data[28],
+	      INFO_HASH_LENGTH) == 0) {
       sendHandshake();
     }
   }
@@ -92,8 +94,8 @@ DefaultBtMessageReceiver::receiveAndSendHandshake()
 
 void DefaultBtMessageReceiver::sendHandshake() {
   SharedHandle<BtMessage> msg =
-    messageFactory->createHandshakeMessage(btContext->getInfoHash(),
-					   btContext->getPeerId());
+    messageFactory->createHandshakeMessage
+    (bittorrent::getInfoHash(_downloadContext), bittorrent::getStaticPeerId());
   dispatcher->addMessageToQueue(msg);
   dispatcher->sendMessages();
 }
@@ -114,9 +116,10 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
   }
 }
 
-void DefaultBtMessageReceiver::setBtContext(const SharedHandle<BtContext>& btContext)
+void DefaultBtMessageReceiver::setDownloadContext
+(const SharedHandle<DownloadContext>& downloadContext)
 {
-  this->btContext = btContext;
+  _downloadContext = downloadContext;
 }
 
 void DefaultBtMessageReceiver::setPeer(const SharedHandle<Peer>& peer)

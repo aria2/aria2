@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
-#include "MockBtContext.h"
+#include "DownloadContext.h"
 #include "MockPeerStorage.h"
 #include "MockPieceStorage.h"
 #include "MockBtAnnounce.h"
@@ -16,16 +16,16 @@ namespace aria2 {
 class BtRegistryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtRegistryTest);
-  CPPUNIT_TEST(testGetBtContext);
-  CPPUNIT_TEST(testGetAllBtContext);
+  CPPUNIT_TEST(testGetDownloadContext);
+  CPPUNIT_TEST(testGetAllDownloadContext);
   CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST(testRemoveAll);
   CPPUNIT_TEST_SUITE_END();
 private:
 
 public:
-  void testGetBtContext();
-  void testGetAllBtContext();
+  void testGetDownloadContext();
+  void testGetAllDownloadContext();
   void testRemove();
   void testRemoveAll();
 };
@@ -33,44 +33,43 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( BtRegistryTest );
 
-void BtRegistryTest::testGetBtContext()
+void BtRegistryTest::testGetDownloadContext()
 {
   BtRegistry btRegistry;
-  CPPUNIT_ASSERT(btRegistry.getBtContext("test").isNull());
-  SharedHandle<BtContext> btContext(new MockBtContext());
+  CPPUNIT_ASSERT(btRegistry.getDownloadContext("test").isNull());
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
   BtObject btObject;
-  btObject._btContext = btContext;
+  btObject._downloadContext = dctx;
   btRegistry.put("test", btObject);
-  CPPUNIT_ASSERT_EQUAL(btContext.get(),
-		       btRegistry.getBtContext("test").get());
+  CPPUNIT_ASSERT_EQUAL(dctx.get(), btRegistry.getDownloadContext("test").get());
 }
 
-static void addTwoBtContext(BtRegistry& btRegistry)
+static void addTwoDownloadContext(BtRegistry& btRegistry)
 {
-  SharedHandle<BtContext> btContext1(new MockBtContext());
-  SharedHandle<BtContext> btContext2(new MockBtContext());
+  SharedHandle<DownloadContext> dctx1(new DownloadContext());
+  SharedHandle<DownloadContext> dctx2(new DownloadContext());
   BtObject btObject1;
-  btObject1._btContext = btContext1;
+  btObject1._downloadContext = dctx1;
   BtObject btObject2;
-  btObject2._btContext = btContext2;
+  btObject2._downloadContext = dctx2;
   btRegistry.put("ctx1", btObject1);
   btRegistry.put("ctx2", btObject2);
 }
 
-void BtRegistryTest::testGetAllBtContext()
+void BtRegistryTest::testGetAllDownloadContext()
 {
   BtRegistry btRegistry;
-  addTwoBtContext(btRegistry);
+  addTwoDownloadContext(btRegistry);
 
-  std::vector<SharedHandle<BtContext> > result;
-  btRegistry.getAllBtContext(std::back_inserter(result));
+  std::vector<SharedHandle<DownloadContext> > result;
+  btRegistry.getAllDownloadContext(std::back_inserter(result));
   CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
 }
 
 void BtRegistryTest::testRemove()
 {
   BtRegistry btRegistry;
-  addTwoBtContext(btRegistry);
+  addTwoDownloadContext(btRegistry);
   CPPUNIT_ASSERT(btRegistry.remove("ctx1"));
   CPPUNIT_ASSERT(btRegistry.get("ctx1").isNull());
   CPPUNIT_ASSERT(!btRegistry.get("ctx2").isNull());
@@ -79,7 +78,7 @@ void BtRegistryTest::testRemove()
 void BtRegistryTest::testRemoveAll()
 {
   BtRegistry btRegistry;
-  addTwoBtContext(btRegistry);
+  addTwoDownloadContext(btRegistry);
   btRegistry.removeAll();
   CPPUNIT_ASSERT(btRegistry.get("ctx1").isNull());
   CPPUNIT_ASSERT(btRegistry.get("ctx2").isNull());

@@ -358,12 +358,14 @@ void HttpResponseTest::testValidateResponse_good_range()
   SharedHandle<Piece> p(new Piece(1, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  httpRequest->setFileEntry(fileEntry);
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setResponseStatus("206");
-  httpHeader->put("Content-Range", "bytes 1048576-10485760/10485761");
+  httpHeader->put("Content-Range", "bytes 1048576-10485760/10485760");
   
   try {
     httpResponse.validateResponse();
@@ -383,6 +385,8 @@ void HttpResponseTest::testValidateResponse_bad_range()
   SharedHandle<Piece> p(new Piece(1, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  httpRequest->setFileEntry(fileEntry);
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
@@ -407,6 +411,8 @@ void HttpResponseTest::testValidateResponse_chunked()
   SharedHandle<Piece> p(new Piece(1, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
+  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  httpRequest->setFileEntry(fileEntry);
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);

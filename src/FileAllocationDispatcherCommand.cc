@@ -37,6 +37,7 @@
 #include "FileAllocationCommand.h"
 #include "message.h"
 #include "Logger.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

@@ -38,7 +38,7 @@
 #include "BinaryStream.h"
 
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "TimeA2.h"
 
@@ -50,7 +50,7 @@ class FileAllocationIterator;
 
 class DiskAdaptor:public BinaryStream {
 protected:
-  std::deque<SharedHandle<FileEntry> > fileEntries;
+  std::vector<SharedHandle<FileEntry> > fileEntries;
 #ifdef HAVE_POSIX_FALLOCATE
   bool _fallocate;
 #endif // HAVE_POSIX_FALLOCATE
@@ -73,9 +73,13 @@ public:
 
   virtual uint64_t size() = 0;
 
-  void setFileEntries(const std::deque<SharedHandle<FileEntry> >& fileEntries);
+  template<typename InputIterator>
+  void setFileEntries(InputIterator first, InputIterator last)
+  {
+    fileEntries.assign(first, last);
+  }
 
-  const std::deque<SharedHandle<FileEntry> >& getFileEntries() const
+  const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
   {
     return fileEntries;
   }

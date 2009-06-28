@@ -39,6 +39,7 @@
 #include "A2STR.h"
 #include "SimpleRandomizer.h"
 #include "bencode.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -72,7 +73,7 @@ void AnnounceList::reconfigure(const BDE& announceList)
 	  elemItr != elemList.listEnd(); ++elemItr) {
 	const BDE& data = *elemItr;
 	if(data.isString()) {
-	  urls.push_back(data.s());
+	  urls.push_back(Util::trim(data.s()));
 	}
       }
       if(!urls.empty()) {

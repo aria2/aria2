@@ -53,7 +53,7 @@
 #include "Option.h"
 #include "Logger.h"
 #include "Segment.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "DefaultBtProgressInfoFile.h"
 #include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
@@ -328,17 +328,17 @@ bool FtpNegotiationCommand::sendSize() {
 
 bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 {
-  SingleFileDownloadContextHandle dctx =
-    dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
-  dctx->setTotalLength(totalLength);
   _fileEntry->setLength(totalLength);
-  dctx->setFilename
-    (strconcat(dctx->getDir(), "/", Util::urldecode(req->getFile())));
+  if(getOption()->get(PREF_OUT).empty()) {
+    _fileEntry->setPath
+      (strconcat(getDownloadContext()->getDir(),
+		 "/", Util::urldecode(req->getFile())));
+  }
   _requestGroup->preDownloadProcessing();
   if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
     throw DOWNLOAD_FAILURE_EXCEPTION
       (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-		    _requestGroup->getFilePath().c_str()).str());
+		    _requestGroup->getFirstFilePath().c_str()).str());
   }
   if(totalLength == 0) {
 
@@ -361,7 +361,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
 		     _requestGroup->getGID(),
-		     _requestGroup->getFilePath().c_str());
+		     _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();
 
@@ -372,7 +372,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     _requestGroup->initPieceStorage();
     _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
-    if(dctx->knowsTotalLength()) {
+    if(getDownloadContext()->knowsTotalLength()) {
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       poolConnection();
       return false;
@@ -400,7 +400,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
 		     _requestGroup->getGID(),
-		     _requestGroup->getFilePath().c_str());
+		     _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();
       
@@ -444,10 +444,7 @@ bool FtpNegotiationCommand::recvSize() {
     // command, resuming and segmented downloading are disabled when the first
     // contacted FTP server doesn't support it.
     if(_requestGroup->getPieceStorage().isNull()) {
-      SingleFileDownloadContextHandle dctx =
-	dynamic_pointer_cast<SingleFileDownloadContext>
-	(_requestGroup->getDownloadContext());
-      dctx->markTotalLengthIsUnknown();
+      getDownloadContext()->markTotalLengthIsUnknown();
       return onFileSizeDetermined(0);
 
     }

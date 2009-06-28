@@ -1,3 +1,192 @@
+2009-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten DownloadContext and removed SingleFileDownloadContext
+	and BtContext and its derived classes. BitTorrent specific
+	attributes are now set by DownloadContext::setAttribute() with key
+	bittorrent::BITTORRENT.
+	* src/AbstractBtMessage.cc
+	* src/AbstractBtMessage.h
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/AbstractProxyRequestCommand.cc
+	* src/AbstractProxyResponseCommand.cc
+	* src/ActivePeerConnectionCommand.cc
+	* src/ActivePeerConnectionCommand.h
+	* src/AnnounceList.cc
+	* src/BtCheckIntegrityEntry.cc
+	* src/BtConstants.h
+	* src/BtContext.h: Removed
+	* src/BtDependency.cc
+	* src/BtExtendedMessage.cc
+	* src/BtPieceMessage.cc
+	* src/BtPieceMessage.h
+	* src/BtPostDownloadHandler.cc
+	* src/BtRegistry.cc
+	* src/BtRegistry.h
+	* src/BtSetup.cc
+	* src/CheckIntegrityCommand.cc
+	* src/CheckIntegrityEntry.cc
+	* src/ChecksumCheckIntegrityEntry.cc
+	* src/ConsoleStatCalc.cc
+	* src/ContentTypeRequestGroupCriteria.cc
+	* src/DHTGetPeersCommand.cc
+	* src/DHTGetPeersCommand.h
+	* src/DHTPeerLookupTask.cc
+	* src/DHTPeerLookupTask.h
+	* src/DHTTaskFactory.h
+	* src/DHTTaskFactoryImpl.cc
+	* src/DHTTaskFactoryImpl.h
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtAnnounce.h
+	* src/DefaultBtContext.cc: Removed
+	* src/DefaultBtContext.h: Removed
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtInteractive.h
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtMessageDispatcher.h
+	* src/DefaultBtMessageFactory.cc
+	* src/DefaultBtMessageFactory.h
+	* src/DefaultBtMessageReceiver.cc
+	* src/DefaultBtMessageReceiver.h
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultBtRequestFactory.h
+	* src/DefaultExtensionMessageFactory.cc
+	* src/DefaultExtensionMessageFactory.h
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/DefaultPieceStorage.cc
+	* src/DefaultSegmentManFactory.cc
+	* src/DiskAdaptor.cc
+	* src/DiskAdaptor.h
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/DownloadEngine.cc
+	* src/DownloadEngineFactory.cc
+	* src/DownloadHandler.cc
+	* src/DownloadResult.h
+	* src/FileAllocationCommand.cc
+	* src/FileAllocationDispatcherCommand.cc
+	* src/FileAllocationEntry.cc
+	* src/FileEntry.h
+	* src/FillRequestGroupCommand.cc
+	* src/FtpDownloadCommand.cc
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/FtpTunnelRequestCommand.cc
+	* src/FtpTunnelResponseCommand.cc
+	* src/HandshakeExtensionMessage.cc
+	* src/HandshakeExtensionMessage.h
+	* src/HaveEraseCommand.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpProxyRequestCommand.cc
+	* src/HttpProxyResponseCommand.cc
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpServerBodyCommand.cc
+	* src/HttpServerCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/InitiateConnectionCommandFactory.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/InitiatorMSEHandshakeCommand.h
+	* src/IteratableChecksumValidator.cc
+	* src/IteratableChecksumValidator.h
+	* src/IteratableChunkChecksumValidator.cc
+	* src/MSEHandshake.cc
+	* src/MSEHandshake.h
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkPostDownloadHandler.cc
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/MultiFileAllocationIterator.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/PeerChokeCommand.cc
+	* src/PeerChokeCommand.h
+	* src/PeerInitiateConnectionCommand.cc
+	* src/PeerInitiateConnectionCommand.h
+	* src/PeerInteractionCommand.cc
+	* src/PeerInteractionCommand.h
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/PieceHashCheckIntegrityEntry.cc
+	* src/RealtimeCommand.cc
+	* src/ReceiverMSEHandshakeCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupEntry.cc
+	* src/RequestGroupMan.cc
+	* src/SeedCheckCommand.cc
+	* src/SeedCheckCommand.h
+	* src/SegmentMan.cc
+	* src/ShareRatioSeedCriteria.h
+	* src/SingleFileDownloadContext.cc: Removed
+	* src/SingleFileDownloadContext.h: Removed
+	* src/SleepCommand.cc
+	* src/StreamCheckIntegrityEntry.cc
+	* src/TrackerWatcherCommand.cc
+	* src/TrackerWatcherCommand.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/Util.cc
+	* src/Util.h
+	* src/XmlRpcMethodImpl.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/download_helper.cc
+	* src/main.cc
+	* src/option_processing.cc
+	* test/BitfieldManTest.cc
+	* test/BittorrentHelperTest.cc
+	* test/BtCancelMessageTest.cc
+	* test/BtChokeMessageTest.cc
+	* test/BtDependencyTest.cc
+	* test/BtPieceMessageTest.cc
+	* test/BtPostDownloadHandlerTest.cc
+	* test/BtRegistryTest.cc
+	* test/BtRejectMessageTest.cc
+	* test/BtRequestMessageTest.cc
+	* test/DHTPeerAnnounceStorageTest.cc
+	* test/DefaultBtAnnounceTest.cc
+	* test/DefaultBtContextTest.cc: Removed
+	* test/DefaultBtMessageDispatcherTest.cc
+	* test/DefaultBtMessageFactoryTest.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/DefaultBtRequestFactoryTest.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* test/DefaultPeerStorageTest.cc
+	* test/DefaultPieceStorageTest.cc
+	* test/DirectDiskAdaptorTest.cc
+	* test/DownloadContextTest.cc
+	* test/DownloadHandlerFactoryTest.cc
+	* test/DownloadHelperTest.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* test/HttpRequestTest.cc
+	* test/HttpResponseTest.cc
+	* test/IteratableChecksumValidatorTest.cc
+	* test/IteratableChunkChecksumValidatorTest.cc
+	* test/MSEHandshakeTest.cc
+	* test/Makefile.am
+	* test/Makefile.in
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkPostDownloadHandlerTest.cc
+	* test/MockBtContext.h: Removed
+	* test/MockDHTTaskFactory.h
+	* test/MockDownloadContext.h: Removed
+	* test/MockPieceStorage.h
+	* test/MultiDiskAdaptorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+	* test/RequestGroupManTest.cc
+	* test/RequestGroupTest.cc
+	* test/SegmentManTest.cc
+	* test/ShareRatioSeedCriteriaTest.cc
+	* test/SingleFileDownloadContextTest.cc: Removed
+	* test/UtilTest.cc
+	* test/XmlRpcMethodTest.cc
+	
 2009-06-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added experimental support of WEB-Seeding for multi-file torrent.

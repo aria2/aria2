@@ -5,7 +5,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "PeerMessageUtil.h"
-#include "MockBtContext.h"
 #include "MockBtMessage.h"
 #include "MockPieceStorage.h"
 #include "MockBtMessageFactory.h"
@@ -15,6 +14,7 @@
 #include "FileEntry.h"
 #include "BtHandshakeMessage.h"
 #include "RangeBtMessageValidator.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -95,7 +95,6 @@ public:
 
   typedef SharedHandle<MockBtMessageFactory2> MockBtMessageFactory2Handle;
 
-  SharedHandle<MockBtContext> _btContext;
   SharedHandle<MockPieceStorage> _pieceStorage;
   SharedHandle<Peer> _peer;
   SharedHandle<MockBtMessageDispatcher> _dispatcher;
@@ -103,23 +102,16 @@ public:
   SharedHandle<BtRequestMessage> msg;
 
   void setUp() {
-    _btContext.reset(new MockBtContext());
-    _btContext->setInfoHash((const unsigned char*)"12345678901234567890");
-    _btContext->setPieceLength(16*1024);
-    _btContext->setTotalLength(256*1024);
-
     _pieceStorage.reset(new MockPieceStorage2());
 
     _peer.reset(new Peer("host", 6969));
-    _peer->allocateSessionResource(_btContext->getPieceLength(),
-				  _btContext->getTotalLength());
+    _peer->allocateSessionResource(16*1024, 256*1024);
 
     _dispatcher.reset(new MockBtMessageDispatcher());
 
     _messageFactory.reset(new MockBtMessageFactory2());
 
     msg.reset(new BtRequestMessage());
-    msg->setBtContext(_btContext);
     msg->setPeer(_peer);
     msg->setIndex(1);
     msg->setBegin(16);

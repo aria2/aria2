@@ -40,7 +40,6 @@
 #include "Logger.h"
 #include "Piece.h"
 #include "Peer.h"
-#include "BtContext.h"
 #include "PieceStorage.h"
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
@@ -233,11 +232,6 @@ void DefaultBtRequestFactory::getTargetPieceIndexes
 {
   std::transform(pieces.begin(), pieces.end(), std::back_inserter(indexes),
 		 mem_fun_sh(&Piece::getIndex));
-}
-
-void DefaultBtRequestFactory::setBtContext(const SharedHandle<BtContext>& btContext)
-{
-  this->btContext = btContext;
 }
 
 void DefaultBtRequestFactory::setPieceStorage

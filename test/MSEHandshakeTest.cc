@@ -1,5 +1,7 @@
 #include "MSEHandshake.h"
 
+#include <cstring>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
@@ -7,8 +9,10 @@
 #include "prefs.h"
 #include "Socket.h"
 #include "Option.h"
-#include "MockBtContext.h"
+#include "DownloadContext.h"
 #include "FileEntry.h"
+#include "array_fun.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -18,7 +22,7 @@ class MSEHandshakeTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHandshake);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<MockBtContext> _btctx;
+  SharedHandle<DownloadContext> _dctx;
 
   void doHandshake(const SharedHandle<MSEHandshake>& initiator,
 		   const SharedHandle<MSEHandshake>& receiver);
@@ -26,10 +30,13 @@ private:
 public:
   void setUp()
   {
-    _btctx.reset(new MockBtContext());
+    _dctx.reset(new DownloadContext());
     unsigned char infoHash[20];
     memset(infoHash, 0, sizeof(infoHash));
-    _btctx->setInfoHash(infoHash);
+    BDE torrentAttrs = BDE::dict();
+    torrentAttrs[bittorrent::INFO_HASH] =
+      std::string(&infoHash[0], &infoHash[arrayLength(infoHash)]);
+    _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
   }
 
   void testHandshake();
@@ -67,13 +74,13 @@ void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, 
   receiver->sendPublicKey();
 
   while(!initiator->receivePublicKey());
-  initiator->initCipher(_btctx->getInfoHash());
+  initiator->initCipher(bittorrent::getInfoHash(_dctx));
   initiator->sendInitiatorStep2();
 
   while(!receiver->findReceiverHashMarker());
-  std::deque<SharedHandle<BtContext> > btContexts;
-  btContexts.push_back(_btctx);
-  while(!receiver->receiveReceiverHashAndPadCLength(btContexts));
+  std::deque<SharedHandle<DownloadContext> > contexts;
+  contexts.push_back(_dctx);
+  while(!receiver->receiveReceiverHashAndPadCLength(contexts));
   while(!receiver->receivePad());
   while(!receiver->receiveReceiverIALength());
   while(!receiver->receiveReceiverIA());

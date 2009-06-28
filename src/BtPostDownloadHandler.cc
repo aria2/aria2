@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "BtPostDownloadHandler.h"
-#include "DefaultBtContext.h"
 #include "prefs.h"
 #include "RequestGroup.h"
 #include "Option.h"
@@ -45,6 +44,8 @@
 #include "Util.h"
 #include "ContentTypeRequestGroupCriteria.h"
 #include "Exception.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -64,7 +65,7 @@ void BtPostDownloadHandler::getNextRequestGroups
 {
   const SharedHandle<Option>& op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Torrent file %s",
-		 requestGroup->getFilePath().c_str());
+		 requestGroup->getFirstFilePath().c_str());
   RequestGroupHandle rg(new RequestGroup(op, std::deque<std::string>()));
 
   std::string content;
@@ -76,14 +77,12 @@ void BtPostDownloadHandler::getNextRequestGroups
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
     throw;
   }
-  DefaultBtContextHandle btContext(new DefaultBtContext());
-  btContext->setDir(requestGroup->getDownloadContext()->getDir());
-  btContext->loadFromMemory(content, File(requestGroup->getFilePath()).getBasename());
-  if(op->defined(PREF_PEER_ID_PREFIX)) {
-    btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
-  }
-  rg->setDownloadContext(btContext);
-  btContext->setOwnerRequestGroup(rg.get());
+  SharedHandle<DownloadContext> context(new DownloadContext());
+  context->setDir(requestGroup->getDownloadContext()->getDir());
+  bittorrent::loadFromMemory(content, context,
+			     File(requestGroup->getFirstFilePath()).getBasename());
+  rg->setDownloadContext(context);
+  context->setOwnerRequestGroup(rg.get());
   
   groups.push_back(rg);
 }

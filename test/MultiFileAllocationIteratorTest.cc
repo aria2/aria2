@@ -64,8 +64,7 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   createFile(storeDir+std::string("/file4"), 0);
   
   SharedHandle<MultiDiskAdaptor> diskAdaptor(new MultiDiskAdaptor());
-  diskAdaptor->setFileEntries
-    (std::deque<SharedHandle<FileEntry> >(&fs[0], &fs[arrayLength(fs)]));
+  diskAdaptor->setFileEntries(&fs[0], &fs[arrayLength(fs)]);
   diskAdaptor->setPieceLength(1024);
   diskAdaptor->openFile();
 
@@ -73,7 +72,8 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
     (dynamic_pointer_cast<MultiFileAllocationIterator>
      (diskAdaptor->fileAllocationIterator()));
 
-  DiskWriterEntries entries = itr->getDiskWriterEntries();
+  const std::deque<SharedHandle<DiskWriterEntry> >& entries =
+    itr->getDiskWriterEntries();
 
   CPPUNIT_ASSERT_EQUAL((size_t)11, entries.size());
 
@@ -187,16 +187,16 @@ void MultiFileAllocationIteratorTest::testAllocate()
 						     offset));
     fileEntry6->setRequested(false);
 
-    std::deque<SharedHandle<FileEntry> > fs;
+    std::vector<SharedHandle<FileEntry> > fs;
     fs.push_back(fileEntry1);
     fs.push_back(fileEntry2);
     fs.push_back(fileEntry3);
     fs.push_back(fileEntry4);
     fs.push_back(fileEntry5);
     fs.push_back(fileEntry6);
-    diskAdaptor->setFileEntries(fs);
+    diskAdaptor->setFileEntries(fs.begin(), fs.end());
 
-    for(std::deque<SharedHandle<FileEntry> >::const_iterator i = fs.begin();
+    for(std::vector<SharedHandle<FileEntry> >::const_iterator i = fs.begin();
 	i != fs.end(); ++i) {
       File((*i)->getPath()).remove();
     }

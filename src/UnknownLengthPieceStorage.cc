@@ -46,8 +46,9 @@
 
 namespace aria2 {
 
-UnknownLengthPieceStorage::UnknownLengthPieceStorage(const DownloadContextHandle& downloadContext,
-						     const Option* option):
+UnknownLengthPieceStorage::UnknownLengthPieceStorage
+(const SharedHandle<DownloadContext>& downloadContext,
+ const Option* option):
   _downloadContext(downloadContext),
   _option(option),
   _diskWriterFactory(new DefaultDiskWriterFactory()),
@@ -60,7 +61,8 @@ void UnknownLengthPieceStorage::initStorage()
 {
   DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
   directDiskAdaptor->setTotalLength(_downloadContext->getTotalLength());
-  directDiskAdaptor->setFileEntries(_downloadContext->getFileEntries());
+  directDiskAdaptor->setFileEntries(_downloadContext->getFileEntries().begin(),
+				    _downloadContext->getFileEntries().end());
 
   DiskWriterHandle writer =
     _diskWriterFactory->newDiskWriter(directDiskAdaptor->getFilePath());

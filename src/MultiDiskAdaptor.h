@@ -37,6 +37,8 @@
 
 #include "DiskAdaptor.h"
 
+#include <deque>
+
 namespace aria2 {
 
 class MultiFileAllocationIterator;
@@ -112,7 +114,7 @@ public:
 
 typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
 
-typedef std::deque<DiskWriterEntryHandle> DiskWriterEntries;
+typedef std::vector<DiskWriterEntryHandle> DiskWriterEntries;
 
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
@@ -120,7 +122,7 @@ private:
   size_t pieceLength;
   DiskWriterEntries diskWriterEntries;
 
-  std::deque<SharedHandle<DiskWriterEntry> > _openedDiskWriterEntries;
+  std::vector<SharedHandle<DiskWriterEntry> > _openedDiskWriterEntries;
 
   size_t _maxOpenFiles;
 
@@ -192,7 +194,7 @@ public:
 
   virtual size_t utime(const Time& actime, const Time& modtime);
 
-  const std::deque<SharedHandle<DiskWriterEntry> >&
+  const std::vector<SharedHandle<DiskWriterEntry> >&
   getDiskWriterEntries() const
   {
     return diskWriterEntries;

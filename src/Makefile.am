@@ -152,7 +152,6 @@ SRCS =  Socket.h\
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h\
 	ServerHost.cc ServerHost.h\
 	DownloadContext.cc DownloadContext.h\
-	SingleFileDownloadContext.cc SingleFileDownloadContext.h\
 	TimedHaltCommand.cc TimedHaltCommand.h\
 	CUIDCounter.h\
 	DNSCache.h\
@@ -294,8 +293,6 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerListProcessor.h\
 	AnnounceTier.h\
 	AnnounceList.h AnnounceList.cc\
-	BtContext.h\
-	DefaultBtContext.cc DefaultBtContext.h\
 	PeerStorage.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
 	BtAnnounce.cc BtAnnounce.h\
@@ -436,7 +433,8 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	RangeBtMessageValidator.h\
 	IndexBtMessageValidator.h\
 	ExtensionMessageRegistry.h\
-	bencode.cc bencode.h
+	bencode.cc bencode.h\
+	bittorrent_helper.cc bittorrent_helper.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

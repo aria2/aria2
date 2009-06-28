@@ -49,6 +49,7 @@
 #include "XmlRpcMethod.h"
 #include "XmlRpcMethodFactory.h"
 #include "XmlRpcResponse.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-class BtContext;
+class DownloadContext;
 class Option;
 class Logger;
 class BtRuntime;
@@ -51,7 +51,7 @@ class Randomizer;
 
 class DefaultBtAnnounce : public BtAnnounce {
 private:
-  SharedHandle<BtContext> btContext;
+  SharedHandle<DownloadContext> _downloadContext;
   unsigned int trackers;
   Time prevAnnounceTime;
   time_t interval;
@@ -69,7 +69,7 @@ private:
   SharedHandle<PieceStorage> pieceStorage;
   SharedHandle<PeerStorage> peerStorage;
 public:
-  DefaultBtAnnounce(const SharedHandle<BtContext>& btContext,
+  DefaultBtAnnounce(const SharedHandle<DownloadContext>& downloadContext,
 		    const Option* option);
 
   virtual ~DefaultBtAnnounce();

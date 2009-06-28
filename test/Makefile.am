@@ -13,7 +13,6 @@ aria2c_SOURCES = AllTest.cc\
 	GrowSegmentTest.cc\
 	SingleFileAllocationIteratorTest.cc\
 	DefaultBtProgressInfoFileTest.cc\
-	SingleFileDownloadContextTest.cc\
 	RequestGroupTest.cc\
 	PStringBuildVisitorTest.cc\
 	ParameterizedStringParserTest.cc\
@@ -71,8 +70,7 @@ aria2c_SOURCES = AllTest.cc\
 	a2algoTest.cc\
 	bitfieldTest.cc\
 	BDETest.cc\
-	DownloadContextTest.cc\
-	MockDownloadContext.h
+	DownloadContextTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\
@@ -118,7 +116,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtUnchokeMessageTest.cc\
 	DefaultPieceStorageTest.cc\
 	DefaultBtAnnounceTest.cc\
-	DefaultBtContextTest.cc\
 	DefaultBtMessageDispatcherTest.cc\
 	DefaultBtRequestFactoryTest.cc\
 	MockBtMessage.h\
@@ -184,7 +181,8 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MockExtensionMessage.h\
 	MockExtensionMessageFactory.h\
 	MockPieceStorage.h\
-	BencodeTest.cc
+	BencodeTest.cc\
+	BittorrentHelperTest.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

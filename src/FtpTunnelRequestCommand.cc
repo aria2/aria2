@@ -36,6 +36,7 @@
 #include "FtpTunnelResponseCommand.h"
 #include "Request.h"
 #include "Socket.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 

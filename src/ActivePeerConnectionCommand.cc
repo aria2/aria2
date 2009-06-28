@@ -36,7 +36,6 @@
 #include "PeerInitiateConnectionCommand.h"
 #include "message.h"
 #include "DownloadEngine.h"
-#include "BtContext.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtRuntime.h"
@@ -48,6 +47,7 @@
 #include "SocketCore.h"
 #include "BtAnnounce.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -55,12 +55,10 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
 (int cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const BtContextHandle& btContext,
  time_t interval)
   :
   Command(cuid),
   _requestGroup(requestGroup),
-  _btContext(btContext),
   interval(interval),
   e(e),
   _numNewConnection(5)
@@ -130,7 +128,7 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   peer->usedBy(e->newCUID());
   PeerInitiateConnectionCommand* command =
     new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
-				      _btContext, _btRuntime);
+				      _btRuntime);
   command->setPeerStorage(_peerStorage);
   command->setPieceStorage(_pieceStorage);
   e->commands.push_back(command);

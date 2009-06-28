@@ -51,17 +51,20 @@
 #include "StringFormat.h"
 #include "XmlRpcRequest.h"
 #include "PieceStorage.h"
-#include "PeerStorage.h"
-#include "BtContext.h"
-#include "BtRegistry.h"
-#include "Peer.h"
+#include "DownloadContext.h"
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
 #include "BtProgressInfoFile.h"
-#include "BtRuntime.h"
-#include "BtAnnounce.h"
 #include "prefs.h"
 #include "message.h"
+#ifdef ENABLE_BITTORRENT
+# include "bittorrent_helper.h"
+# include "BtRegistry.h"
+# include "PeerStorage.h"
+# include "Peer.h"
+# include "BtRuntime.h"
+# include "BtAnnounce.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -286,13 +289,12 @@ static void gatherProgressCommon
 
 #ifdef ENABLE_BITTORRENT
 static void gatherProgressBitTorrent
-(BDE& entryDict, const SharedHandle<BtContext>& btctx,
- const SharedHandle<BtRegistry>& btreg)
+(BDE& entryDict, const BDE& torrentAttrs, const SharedHandle<BtRegistry>& btreg)
 {
-  entryDict["infoHash"] = btctx->getInfoHashAsString();
+  const std::string& infoHash = torrentAttrs[bittorrent::INFO_HASH].s();
+  entryDict["infoHash"] = Util::toHex(infoHash);
 
-  SharedHandle<PeerStorage> peerStorage =
-    btreg->get(btctx->getInfoHashAsString())._peerStorage;
+  SharedHandle<PeerStorage> peerStorage = btreg->get(infoHash)._peerStorage;
   assert(!peerStorage.isNull());
 
   std::deque<SharedHandle<Peer> > peers;
@@ -329,11 +331,11 @@ static void gatherProgress
 {
   gatherProgressCommon(entryDict, group);
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<BtContext> btctx =
-    dynamic_pointer_cast<BtContext>(group->getDownloadContext());
-  if(!btctx.isNull()) {
+  if(group->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
+    const BDE& torrentAttrs =
+      group->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
     SharedHandle<BtRegistry> btreg = e->getBtRegistry();
-    gatherProgressBitTorrent(entryDict, btctx, btreg);
+    gatherProgressBitTorrent(entryDict, torrentAttrs, btreg);
   }
 #endif // ENABLE_BITTORRENT
 }
@@ -400,9 +402,9 @@ BDE GetFilesXmlRpcMethod::process
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
     }
   } else {
-    const std::deque<SharedHandle<FileEntry> >& fileEntries =
-      group->getDownloadContext()->getFileEntries();
-    createFileEntry(files, fileEntries.begin(), fileEntries.end());
+    createFileEntry(files,
+		    group->getDownloadContext()->getFileEntries().begin(),
+		    group->getDownloadContext()->getFileEntries().end());
   }
   return files;
 }
@@ -455,12 +457,12 @@ BDE GetPeersXmlRpcMethod::process
       (StringFormat("No peer data is available for GID#%d", gid).str());
   }
   BDE peers = BDE::list();
-  SharedHandle<BtContext> btctx =
-    dynamic_pointer_cast<BtContext>(group->getDownloadContext());
-  if(!btctx.isNull()) {
+  if(group->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
     SharedHandle<BtRegistry> btreg = e->getBtRegistry();
+    const BDE& torrentAttrs =
+      group->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
     SharedHandle<PeerStorage> peerStorage =
-      btreg->get(btctx->getInfoHashAsString())._peerStorage;
+      btreg->get(torrentAttrs[bittorrent::INFO_HASH].s())._peerStorage;
     assert(!peerStorage.isNull());
     BDE entry = BDE::dict();
     gatherPeer(peers, peerStorage);

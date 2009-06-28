@@ -7,11 +7,12 @@
 #include "MockBtMessage.h"
 #include "MockBtMessageFactory.h"
 #include "MockBtMessageDispatcher.h"
-#include "MockBtContext.h"
 #include "MockPieceStorage.h"
 #include "Peer.h"
 #include "FileEntry.h"
 #include "BtHandshakeMessage.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -28,7 +29,7 @@ class DefaultBtRequestFactoryTest:public CppUnit::TestFixture {
 private:
   SharedHandle<Peer> _peer;
   SharedHandle<DefaultBtRequestFactory> _requestFactory;
-  SharedHandle<MockBtContext> _btContext;
+  SharedHandle<DownloadContext> _dctx;
   SharedHandle<MockPieceStorage> _pieceStorage;
   SharedHandle<MockBtMessageFactory> _messageFactory;
   SharedHandle<MockBtMessageDispatcher> _dispatcher;
@@ -87,11 +88,6 @@ public:
 
   void setUp()
   {
-    _btContext.reset(new MockBtContext());
-    _btContext->setInfoHash((const unsigned char*)"12345678901234567890");
-    _btContext->setPieceLength(16*1024);
-    _btContext->setTotalLength(256*1024);
-
     _pieceStorage.reset(new MockPieceStorage());
 
     _peer.reset(new Peer("host", 6969));
@@ -101,7 +97,6 @@ public:
     _dispatcher.reset(new MockBtMessageDispatcher());
     
     _requestFactory.reset(new DefaultBtRequestFactory());
-    _requestFactory->setBtContext(_btContext);
     _requestFactory->setPieceStorage(_pieceStorage);
     _requestFactory->setPeer(_peer);
     _requestFactory->setBtMessageDispatcher(_dispatcher);
@@ -229,9 +224,9 @@ void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {
 
 void DefaultBtRequestFactoryTest::testGetTargetPieceIndexes()
 {
-  SharedHandle<Piece> piece1(new Piece(1, _btContext->getPieceLength()));
-  SharedHandle<Piece> piece3(new Piece(3, _btContext->getPieceLength()));
-  SharedHandle<Piece> piece5(new Piece(5, _btContext->getPieceLength()));
+  SharedHandle<Piece> piece1(new Piece(1, 16*1024));
+  SharedHandle<Piece> piece3(new Piece(3, 16*1024));
+  SharedHandle<Piece> piece5(new Piece(5, 16*1024));
 
   _requestFactory->addTargetPiece(piece3);
   _requestFactory->addTargetPiece(piece1);

@@ -1,11 +1,12 @@
 #include "DirectDiskAdaptor.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "FileEntry.h"
 #include "DefaultDiskWriter.h"
 #include "Exception.h"
 #include "Util.h"
 #include "TestUtil.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -33,14 +34,14 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
 		   256, 0));
   createFile(entry->getPath(), entry->getLength()+100);
 
-  std::deque<SharedHandle<FileEntry> > fileEntries;
+  std::vector<SharedHandle<FileEntry> > fileEntries;
   fileEntries.push_back(entry);
 
   DirectDiskAdaptor adaptor;
   adaptor.setDiskWriter
     (SharedHandle<DiskWriter>(new DefaultDiskWriter(entry->getPath())));
   adaptor.setTotalLength(entry->getLength());
-  adaptor.setFileEntries(fileEntries);
+  adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.openFile();
 
   adaptor.cutTrailingGarbage();

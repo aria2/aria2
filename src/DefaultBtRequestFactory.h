@@ -39,7 +39,6 @@
 
 namespace aria2 {
 
-class BtContext;
 class PieceStorage;
 class Peer;
 class BtMessageDispatcher;
@@ -50,7 +49,6 @@ class Logger;
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
   int32_t cuid;
-  SharedHandle<BtContext> btContext;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<Peer> peer;
   WeakHandle<BtMessageDispatcher> dispatcher;
@@ -95,8 +93,6 @@ public:
   {
     this->cuid = cuid;
   }
-
-  void setBtContext(const SharedHandle<BtContext>& btContext);
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 

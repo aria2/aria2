@@ -57,6 +57,7 @@
 #include "DownloadResult.h"
 #include "ServerStatMan.h"
 #include "a2io.h"
+#include "DownloadContext.h"
 #ifdef HAVE_EPOLL
 # include "EpollEventPoll.h"
 #endif // HAVE_EPOLL

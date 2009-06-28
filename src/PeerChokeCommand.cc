@@ -34,18 +34,15 @@
 /* copyright --> */
 #include "PeerChokeCommand.h"
 #include "DownloadEngine.h"
-#include "BtContext.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
 
 namespace aria2 {
 
 PeerChokeCommand::PeerChokeCommand(int32_t cuid,
-				   DownloadEngine* e,
-				   const SharedHandle<BtContext>& btContext):
+				   DownloadEngine* e):
   Command(cuid),
-  e(e),
-  _btContext(btContext) {}
+  e(e) {}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 

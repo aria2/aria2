@@ -43,7 +43,6 @@
 #include "Logger.h"
 #include "Peer.h"
 #include "PeerConnection.h"
-#include "BtContext.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
@@ -52,6 +51,8 @@
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -60,13 +61,11 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
  RequestGroup* requestGroup,
  const SharedHandle<Peer>& p,
  DownloadEngine* e,
- const SharedHandle<BtContext>& btContext,
  const SharedHandle<BtRuntime>& btRuntime,
  const SharedHandle<SocketCore>& s):
 
   PeerAbstractCommand(cuid, p, e, s),
   _requestGroup(requestGroup),
-  _btContext(btContext),
   _btRuntime(btRuntime),
   _sequence(INITIATOR_SEND_KEY),
   _mseHandshake(new MSEHandshake(cuid, socket, getOption().get()))
@@ -114,7 +113,8 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
     break;
   case INITIATOR_WAIT_KEY: {
     if(_mseHandshake->receivePublicKey()) {
-      _mseHandshake->initCipher(_btContext->getInfoHash());
+      _mseHandshake->initCipher
+	(bittorrent::getInfoHash(_requestGroup->getDownloadContext()));;
       if(_mseHandshake->sendInitiatorStep2()) {
 	_sequence = INITIATOR_FIND_VC_MARKER;
       } else {
@@ -151,11 +151,11 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
 					 _mseHandshake->getDecryptor());
       }
       PeerInteractionCommand* c =
-	  new PeerInteractionCommand(cuid, _requestGroup, peer, e, _btContext,
-				     _btRuntime, _pieceStorage,
-				     socket,
-				     PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
-				     peerConnection);
+	  new PeerInteractionCommand
+	(cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage,
+	 socket,
+	 PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
+	 peerConnection);
       c->setPeerStorage(_peerStorage);
       e->commands.push_back(c);
       return true;
@@ -176,7 +176,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
       peer->usedBy(e->newCUID());
       PeerInitiateConnectionCommand* command =
 	new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer,
-					  e, _btContext, _btRuntime);
+					  e, _btRuntime);
       command->setPeerStorage(_peerStorage);
       command->setPieceStorage(_pieceStorage);
       e->commands.push_back(command);
@@ -187,7 +187,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     logger->info("CUID#%d - Retry using legacy BitTorrent handshake.", cuid);
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e,
-					_btContext, _btRuntime, false);
+					_btRuntime, false);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);

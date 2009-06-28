@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-class BtContext;
+class DownloadContext;
 class PeerStorage;
 class PieceStorage;
 class BtMessage;
@@ -55,7 +55,7 @@ private:
   int32_t cuid;
   std::deque<SharedHandle<BtMessage> > messageQueue;
   std::deque<RequestSlot> requestSlots;
-  SharedHandle<BtContext> btContext;
+  SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<PeerStorage> _peerStorage;
   SharedHandle<PieceStorage> _pieceStorage;
   WeakHandle<BtMessageFactory> messageFactory;
@@ -116,7 +116,7 @@ public:
 
   void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtContext(const SharedHandle<BtContext>& btContext);
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 

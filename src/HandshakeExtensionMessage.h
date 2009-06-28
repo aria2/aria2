@@ -43,7 +43,6 @@
 
 namespace aria2 {
 
-class BtContext;
 class Peer;
 class Logger;
 class HandshakeExtensionMessage;
@@ -56,8 +55,6 @@ private:
   uint16_t _tcpPort;
 
   std::map<std::string, uint8_t> _extensions;
-
-  SharedHandle<BtContext> _btContext;
 
   SharedHandle<Peer> _peer;
 
@@ -119,8 +116,6 @@ public:
   uint8_t getExtensionMessageID(const std::string& name) const;
 
   void setPeer(const SharedHandle<Peer>& peer);
-
-  void setBtContext(const SharedHandle<BtContext>& btContext);
 
   static HandshakeExtensionMessageHandle create(const unsigned char* data,
 						size_t dataLength);

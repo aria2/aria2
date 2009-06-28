@@ -54,7 +54,7 @@
 #include "DHTNode.h"
 #include "Peer.h"
 #include "Piece.h"
-#include "BtContext.h"
+#include "DownloadContext.h"
 #include "PieceStorage.h"
 #include "PeerStorage.h"
 #include "BtRuntime.h"
@@ -68,13 +68,15 @@
 #include "StringFormat.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
 DefaultBtInteractive::DefaultBtInteractive
-(const SharedHandle<BtContext>& btContext, const SharedHandle<Peer>& peer)
+(const SharedHandle<DownloadContext>& downloadContext,
+ const SharedHandle<Peer>& peer)
   :
-  _btContext(btContext),
+  _downloadContext(downloadContext),
   peer(peer),
   logger(LogFactory::getInstance()),
   allowedFastSetSize(10),
@@ -88,8 +90,8 @@ DefaultBtInteractive::~DefaultBtInteractive() {}
 
 void DefaultBtInteractive::initiateHandshake() {
   SharedHandle<BtMessage> message =
-    messageFactory->createHandshakeMessage(_btContext->getInfoHash(),
-					   _btContext->getPeerId());
+    messageFactory->createHandshakeMessage
+    (bittorrent::getInfoHash(_downloadContext), bittorrent::getStaticPeerId());
   dispatcher->addMessageToQueue(message);
   dispatcher->sendMessages();
 }
@@ -100,7 +102,7 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   if(message.isNull()) {
     return SharedHandle<BtMessage>();
   }
-  if(memcmp(message->getPeerId(), _btContext->getPeerId(),
+  if(memcmp(message->getPeerId(), bittorrent::getStaticPeerId(),
 	    PEER_ID_LENGTH) == 0) {
     throw DL_ABORT_EX
       (StringFormat
@@ -187,9 +189,12 @@ void DefaultBtInteractive::addBitfieldMessageToQueue() {
 
 void DefaultBtInteractive::addAllowedFastMessageToQueue() {
   if(peer->isFastExtensionEnabled()) {
-    std::deque<size_t> fastSet;
-    _btContext->computeFastSet(fastSet, peer->ipaddr, allowedFastSetSize);
-    for(std::deque<size_t>::const_iterator itr = fastSet.begin();
+    std::vector<size_t> fastSet;
+    bittorrent::computeFastSet(fastSet, peer->ipaddr,
+			       _downloadContext->getNumPieces(),
+			       bittorrent::getInfoHash(_downloadContext),
+			       allowedFastSetSize);
+    for(std::vector<size_t>::const_iterator itr = fastSet.begin();
 	itr != fastSet.end(); ++itr) {
       dispatcher->addMessageToQueue
 	(messageFactory->createAllowedFastMessage(*itr));
@@ -239,7 +244,7 @@ size_t DefaultBtInteractive::receiveMessages() {
   size_t msgcount = 0;
   for(int i = 0; i < 50; ++i) {
     if(_requestGroupMan->doesOverallDownloadSpeedExceed() ||
-       _btContext->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
+       _downloadContext->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;
     }
     BtMessageHandle message = btMessageReceiver->receiveMessage();

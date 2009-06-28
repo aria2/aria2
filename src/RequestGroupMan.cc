@@ -274,7 +274,7 @@ private:
     if(!sig.isNull() && !sig->getBody().empty()) {
       // filename of signature file is the path to download file followed by
       // ".sig".
-      std::string signatureFile = group->getFilePath()+".sig";
+      std::string signatureFile = group->getFirstFilePath()+".sig";
       if(sig->save(signatureFile)) {
 	_logger->notice(MSG_SIGNATURE_SAVED, signatureFile.c_str());
       } else {
@@ -637,7 +637,7 @@ std::string RequestGroupMan::formatDownloadResult(const std::string& status, con
     o << "n/a";
   }
   o << "|";
-  const std::deque<SharedHandle<FileEntry> >& fileEntries =
+  const std::vector<SharedHandle<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
   if(downloadResult->result == DownloadResult::FINISHED ||
      downloadResult->numUri == 0) {
@@ -677,7 +677,7 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     if((*itr).get() != requestGroup) {
-      const std::deque<SharedHandle<FileEntry> >& entries =
+      const std::vector<SharedHandle<FileEntry> >& entries =
 	(*itr)->getDownloadContext()->getFileEntries();
       std::transform(entries.begin(), entries.end(),
 		     std::back_inserter(files),
@@ -685,7 +685,7 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
     }
   }
   std::sort(files.begin(), files.end());
-  const std::deque<SharedHandle<FileEntry> >& entries =
+  const std::vector<SharedHandle<FileEntry> >& entries =
     requestGroup->getDownloadContext()->getFileEntries();
   return sameFilePathExists(files.begin(), files.end(),
 			    entries.begin(), entries.end());

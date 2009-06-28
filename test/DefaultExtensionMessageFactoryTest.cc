@@ -5,7 +5,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Peer.h"
-#include "MockBtContext.h"
 #include "MockPeerStorage.h"
 #include "PeerMessageUtil.h"
 #include "HandshakeExtensionMessage.h"
@@ -24,7 +23,6 @@ class DefaultExtensionMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateMessage_UTPex);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<MockBtContext> _btContext;
   SharedHandle<MockPeerStorage> _peerStorage;
   SharedHandle<Peer> _peer;
   SharedHandle<DefaultExtensionMessageFactory> _factory;
@@ -32,11 +30,6 @@ private:
 public:
   void setUp()
   {
-    _btContext.reset(new MockBtContext());
-    unsigned char infohash[20];
-    memset(infohash, 0, sizeof(infohash));
-    _btContext->setInfoHash(infohash);
-
     _peerStorage.reset(new MockPeerStorage());
 
     _peer.reset(new Peer("192.168.0.1", 6969));
@@ -46,7 +39,6 @@ public:
     _registry.reset(new ExtensionMessageRegistry());
 
     _factory.reset(new DefaultExtensionMessageFactory());
-    _factory->setBtContext(_btContext);
     _factory->setPeerStorage(_peerStorage);
     _factory->setPeer(_peer);
     _factory->setExtensionMessageRegistry(_registry);

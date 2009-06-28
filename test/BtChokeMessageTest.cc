@@ -7,7 +7,6 @@
 #include "PeerMessageUtil.h"
 #include "MockBtMessageDispatcher.h"
 #include "MockBtRequestFactory.h"
-#include "MockBtContext.h"
 #include "Peer.h"
 #include "FileEntry.h"
 
@@ -25,16 +24,13 @@ class BtChokeMessageTest:public CppUnit::TestFixture {
 private:
 
 public:
-  BtChokeMessageTest():peer(0), btContext(0) {}
+  BtChokeMessageTest():peer(0) {}
 
   SharedHandle<Peer> peer;
-  SharedHandle<MockBtContext> btContext;
 
   void setUp() {
     peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(1024, 1024*1024);
-    btContext.reset(new MockBtContext());
-    btContext->setInfoHash((const unsigned char*)"12345678901234567890");
   }
 
   void testCreate();
@@ -108,7 +104,6 @@ void BtChokeMessageTest::testGetMessage() {
 void BtChokeMessageTest::testDoReceivedAction() {
   BtChokeMessage msg;
   msg.setPeer(peer);
-  msg.setBtContext(btContext);
 
   SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher);
@@ -124,7 +119,6 @@ void BtChokeMessageTest::testDoReceivedAction() {
 void BtChokeMessageTest::testOnSendComplete() {
   BtChokeMessage msg;
   msg.setPeer(peer);
-  msg.setBtContext(btContext);
 
   SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher);

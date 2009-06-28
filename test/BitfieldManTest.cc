@@ -455,77 +455,105 @@ void BitfieldManTest::testGetMissingIndex() {
 
 }
 
+// TODO1.5 add test using ignoreBitfield
 void BitfieldManTest::testGetSparceMissingUnusedIndex() {
   BitfieldMan bitfield(1024*1024, 10*1024*1024);
-
+  const size_t length = 2;
+  unsigned char ignoreBitfield[length];
+  memset(ignoreBitfield, 0, sizeof(ignoreBitfield));
   size_t index;
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
   bitfield.setUseBit(0);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)5, index);
   bitfield.setUseBit(5);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)3, index);
   bitfield.setUseBit(3);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)8, index);
   bitfield.setUseBit(8);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)2, index);
   bitfield.setUseBit(2);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)7, index);
   bitfield.setUseBit(7);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)1, index);
   bitfield.setUseBit(1);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)4, index);
   bitfield.setUseBit(4);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)6, index);
   bitfield.setUseBit(6);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)9, index);
   bitfield.setUseBit(9);
-  CPPUNIT_ASSERT(!bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(!bitfield.getSparseMissingUnusedIndex(index,
+						       ignoreBitfield, length));
 }
 
 void BitfieldManTest::testGetSparceMissingUnusedIndex_setBit() {
   BitfieldMan bitfield(1024*1024, 10*1024*1024);
+  const size_t length = 2;
+  unsigned char ignoreBitfield[length];
+  memset(ignoreBitfield, 0, sizeof(ignoreBitfield));
   size_t index;
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
   bitfield.setBit(0);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)1, index);
   bitfield.setBit(1);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)2, index);
   bitfield.setBit(2);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)3, index);
   bitfield.setBit(3);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)4, index);
   bitfield.setBit(4);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)5, index);
   bitfield.setBit(5);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)6, index);
   bitfield.setBit(6);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)7, index);
   bitfield.setBit(7);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)8, index);
   bitfield.setBit(8);
-  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)9, index);
   bitfield.setBit(9);
-  CPPUNIT_ASSERT(!bitfield.getSparseMissingUnusedIndex(index));
+  CPPUNIT_ASSERT(!bitfield.getSparseMissingUnusedIndex(index,
+						      ignoreBitfield, length));
 }
 
 void BitfieldManTest::testIsBitSetOffsetRange()

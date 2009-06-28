@@ -47,7 +47,6 @@ class DHTTaskFactory;
 class DHTTask;
 class DownloadEngine;
 class RequestGroup;
-class BtContext;
 class BtRuntime;
 class PeerStorage;
 
@@ -60,8 +59,6 @@ private:
   static const size_t MAX_RETRIES = 10;
 
   RequestGroup* _requestGroup;
-
-  SharedHandle<BtContext> _btContext;
 
   SharedHandle<BtRuntime> _btRuntime;
 
@@ -80,8 +77,7 @@ private:
   Time _lastGetPeerTime;
 public:
   DHTGetPeersCommand(int32_t cuid, RequestGroup* requestGroup,
-		     DownloadEngine* e,
-		     const SharedHandle<BtContext>& ctx);
+		     DownloadEngine* e);
 
   virtual ~DHTGetPeersCommand();
 

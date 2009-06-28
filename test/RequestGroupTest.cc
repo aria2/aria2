@@ -4,7 +4,7 @@
 
 #include "ServerHost.h"
 #include "Option.h"
-#include "SingleFileDownloadContext.h"
+#include "DownloadContext.h"
 #include "FileEntry.h"
 #include "PieceStorage.h"
 
@@ -15,7 +15,7 @@ class RequestGroupTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(RequestGroupTest);
   CPPUNIT_TEST(testRegisterSearchRemove);
   CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
-  CPPUNIT_TEST(testGetFilePath);
+  CPPUNIT_TEST(testGetFirstFilePath);
   CPPUNIT_TEST(testCreateDownloadResult);
   CPPUNIT_TEST(testExtractURIResult);
   CPPUNIT_TEST_SUITE_END();
@@ -29,7 +29,7 @@ public:
 
   void testRegisterSearchRemove();
   void testRemoveURIWhoseHostnameIs();
-  void testGetFilePath();
+  void testGetFirstFilePath();
   void testCreateDownloadResult();
   void testExtractURIResult();
 };
@@ -81,26 +81,26 @@ void RequestGroupTest::testRemoveURIWhoseHostnameIs()
 		       rg.getRemainingUris()[0]);
 }
 
-void RequestGroupTest::testGetFilePath()
+void RequestGroupTest::testGetFirstFilePath()
 {
-  SharedHandle<SingleFileDownloadContext> ctx
-    (new SingleFileDownloadContext(1024, 1024, "/tmp/myfile"));
+  SharedHandle<DownloadContext> ctx
+    (new DownloadContext(1024, 1024, "/tmp/myfile"));
   std::deque<std::string> uris;
 
   RequestGroup group(_option, uris);
   group.setDownloadContext(ctx);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFilePath());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFirstFilePath());
 
   group.markInMemoryDownload();
 
-  CPPUNIT_ASSERT_EQUAL(std::string("[MEMORY]myfile"), group.getFilePath());
+  CPPUNIT_ASSERT_EQUAL(std::string("[MEMORY]myfile"), group.getFirstFilePath());
 }
 
 void RequestGroupTest::testCreateDownloadResult()
 {
-  SharedHandle<SingleFileDownloadContext> ctx
-    (new SingleFileDownloadContext(1024, 1024*1024, "/tmp/myfile"));
+  SharedHandle<DownloadContext> ctx
+    (new DownloadContext(1024, 1024*1024, "/tmp/myfile"));
   //ctx->setDir("/tmp");
   std::deque<std::string> uris;
   uris.push_back("http://first/file");

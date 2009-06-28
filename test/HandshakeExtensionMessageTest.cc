@@ -5,7 +5,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Peer.h"
-#include "MockBtContext.h"
 #include "Exception.h"
 #include "FileEntry.h"
 
@@ -22,8 +21,6 @@ class HandshakeExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testCreate_stringnum);
   CPPUNIT_TEST_SUITE_END();
-private:
-  SharedHandle<BtContext> _btContext;
 public:
   void setUp() {}
 
@@ -87,7 +84,6 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
   msg.setPeer(peer);
-  msg.setBtContext(_btContext);
 
   msg.doReceivedAction();
 
