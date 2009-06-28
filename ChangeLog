@@ -1,4 +1,8 @@
 2009-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+	Removed MockBtContext.h
+	* test/Makefile.am
+
+2009-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed _currentRequest from StreamCheckIntegrityEntry and
 	StreamFileAllocationEntry.

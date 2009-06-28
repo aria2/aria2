@@ -168,7 +168,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MSEHandshakeTest.cc\
 	DHTUtilTest.cc\
 	MockBtAnnounce.h\
-	MockBtContext.h\
 	MockBtProgressInfoFile.h\
 	MockBtRequestFactory.h\
 	MockDHTMessage.h\

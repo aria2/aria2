@@ -116,7 +116,6 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTUtilTest.cc\
 @ENABLE_BITTORRENT_TRUE@	MockBtAnnounce.h\
-@ENABLE_BITTORRENT_TRUE@	MockBtContext.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtProgressInfoFile.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtRequestFactory.h\
 @ENABLE_BITTORRENT_TRUE@	MockDHTMessage.h\
@@ -241,7 +240,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DHTRoutingTableSerializerTest.cc \
 	DHTRoutingTableDeserializerTest.cc DHKeyExchangeTest.cc \
 	ARC4Test.cc MSEHandshakeTest.cc DHTUtilTest.cc \
-	MockBtAnnounce.h MockBtContext.h MockBtProgressInfoFile.h \
+	MockBtAnnounce.h MockBtProgressInfoFile.h \
 	MockBtRequestFactory.h MockDHTMessage.h \
 	MockDHTMessageCallback.h MockDHTMessageDispatcher.h \
 	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
