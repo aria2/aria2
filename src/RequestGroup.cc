@@ -380,7 +380,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
     } else {
       loadAndOpenFile(infoFile);
       SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
-	(new StreamCheckIntegrityEntry(SharedHandle<Request>(), this));
+	(new StreamCheckIntegrityEntry(this));
       processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
     }
   }

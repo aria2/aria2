@@ -122,12 +122,12 @@ bool HttpResponseCommand::executeInternal()
     return skipResponseBody(httpResponse);
   }
   if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
-    // Query by hostname. Searching by CUID may returns NULL.
-    // In case when resuming download, ServerHost is registered with CUID A.
+    // Query by hostname. Searching by CUID may returns NULL.  In case
+    // when resuming download, ServerHost is registered with CUID A.
     // Then if requested range is not equal to saved one,
-    // StreamFileAllocationEntry is created with _nextCommand NULL and
-    // _currentRequest not NULL. This results creating new command CUID, say
-    // B and same URI. So searching ServerHost by CUID B fails.
+    // StreamFileAllocationEntry is created with _nextCommand NULL.
+    // This results creating new command CUID, say B and same URI. So
+    // searching ServerHost by CUID B fails.
     SharedHandle<ServerHost> sv =
       _requestGroup->searchServerHost(req->getHost());
     if(!sv.isNull()) {

@@ -36,16 +36,13 @@
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "StreamFileAllocationEntry.h"
-#include "Request.h"
 #include "DownloadContext.h"
 
 namespace aria2 {
 
-StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(const RequestHandle& currentRequest,
-						     RequestGroup* requestGroup,
+StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(RequestGroup* requestGroup,
 						     Command* nextCommand):
-  PieceHashCheckIntegrityEntry(requestGroup, nextCommand),
-  _currentRequest(currentRequest)
+  PieceHashCheckIntegrityEntry(requestGroup, nextCommand)
 {}
 
 StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
@@ -54,8 +51,7 @@ void StreamCheckIntegrityEntry::onDownloadIncomplete
 (std::deque<Command*>& commands, DownloadEngine* e)
 {
   FileAllocationEntryHandle entry
-    (new StreamFileAllocationEntry(_currentRequest, _requestGroup,
-				   popNextCommand()));
+    (new StreamFileAllocationEntry(_requestGroup, popNextCommand()));
   proceedFileAllocation(commands, entry, e);
 }
 

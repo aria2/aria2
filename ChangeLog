@@ -1,5 +1,17 @@
 2009-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed _currentRequest from StreamCheckIntegrityEntry and
+	StreamFileAllocationEntry.
+	* src/AbstractCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/RequestGroup.cc
+	* src/StreamCheckIntegrityEntry.cc
+	* src/StreamCheckIntegrityEntry.h
+	* src/StreamFileAllocationEntry.cc
+	* src/StreamFileAllocationEntry.h
+
+2009-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten DownloadContext and removed SingleFileDownloadContext
 	and BtContext and its derived classes. BitTorrent specific
 	attributes are now set by DownloadContext::setAttribute() with key

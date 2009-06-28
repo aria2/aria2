@@ -38,7 +38,6 @@
 
 #include "DownloadEngine.h"
 #include "Option.h"
-#include "Request.h"
 #include "prefs.h"
 #include "RequestGroup.h"
 #include "DownloadContext.h"
@@ -46,11 +45,9 @@
 
 namespace aria2 {
 
-StreamFileAllocationEntry::StreamFileAllocationEntry(const RequestHandle& currentRequest,
-						     RequestGroup* requestGroup,
+StreamFileAllocationEntry::StreamFileAllocationEntry(RequestGroup* requestGroup,
 						     Command* nextCommand):
-  FileAllocationEntry(requestGroup, nextCommand),
-  _currentRequest(currentRequest)
+  FileAllocationEntry(requestGroup, nextCommand)
 {}
 
 StreamFileAllocationEntry::~StreamFileAllocationEntry() {}

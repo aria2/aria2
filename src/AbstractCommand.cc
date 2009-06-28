@@ -525,7 +525,8 @@ bool AbstractCommand::nameResolveFinished() const {
 
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
-  CheckIntegrityEntryHandle entry(new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand));
+  CheckIntegrityEntryHandle entry
+    (new StreamCheckIntegrityEntry(_requestGroup, nextCommand));
 
   std::deque<Command*> commands;
   _requestGroup->processCheckIntegrityEntry(commands, entry, e);

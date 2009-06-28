@@ -40,16 +40,12 @@
 
 namespace aria2 {
 
-class Request;
-
 class StreamCheckIntegrityEntry:public PieceHashCheckIntegrityEntry
 {
 private:
-  SharedHandle<Request> _currentRequest;
   Time _timer;
 public:
-  StreamCheckIntegrityEntry(const SharedHandle<Request>& currentRequest,
-			    RequestGroup* requestGroup,
+  StreamCheckIntegrityEntry(RequestGroup* requestGroup,
 			    Command* nextCommand = 0);
 
   virtual ~StreamCheckIntegrityEntry();

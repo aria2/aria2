@@ -40,15 +40,11 @@
 
 namespace aria2 {
 
-class Request;
-
 class StreamFileAllocationEntry : public FileAllocationEntry {
 private:
-  SharedHandle<Request> _currentRequest;
   Time _timer;
 public:
-  StreamFileAllocationEntry(const SharedHandle<Request>& currentRequest,
-			    RequestGroup* requestGroup,
+  StreamFileAllocationEntry(RequestGroup* requestGroup,
 			    Command* nextCommand = 0);
 
   virtual ~StreamFileAllocationEntry();
