@@ -40,6 +40,7 @@
 #include <deque>
 
 #include "SharedHandle.h"
+#include "PeerStat.h"
 
 namespace aria2 {
 
@@ -80,6 +81,8 @@ private:
   std::string _username;
 
   std::string _password;
+
+  SharedHandle<PeerStat> _peerStat;
 
   bool parseUrl(const std::string& url);
 public:
@@ -177,6 +180,12 @@ public:
   const std::string& getMethod() const {
     return method;
   }
+
+  const SharedHandle<PeerStat>& getPeerStat() const { return _peerStat; }
+
+  const SharedHandle<PeerStat>& initPeerStat();
+
+  void purgePeerStat() { _peerStat.reset(); }
 
   static const std::string METHOD_GET;
   static const std::string METHOD_HEAD;

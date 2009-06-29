@@ -1,3 +1,23 @@
+2009-06-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten PeerStat handling. In the previous implementation,
+	faster command tries to find slower command. In this new
+	implementation, slower command tries to find faster command.
+	PeerStat is now created in each HTTP/FTP request to get download
+	rate correctly. If the download range is small, the download rate
+	tends to small and this will occur at the later stage of download.
+	* src/AbstractCommand.cc
+	* src/DownloadCommand.cc
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/Request.cc
+	* src/Request.h
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* test/SegmentManTest.cc
+
 2009-06-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed _uris from RequestGroup. All functions that refer to _uris

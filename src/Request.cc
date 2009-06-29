@@ -244,4 +244,10 @@ void Request::setMaxPipelinedRequest(unsigned int num)
   _maxPipelinedRequest = num;
 }
 
+const SharedHandle<PeerStat>& Request::initPeerStat()
+{
+  _peerStat.reset(new PeerStat(0, host, protocol));
+  return _peerStat;
+}
+
 } // namespace aria2

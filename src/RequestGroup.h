@@ -275,6 +275,9 @@ public:
 
   void decreaseStreamConnection();
 
+  // Returns the number of connections used in HTTP(S)/FTP.
+  unsigned int getNumStreamConnection() { return _numStreamConnection; }
+
   unsigned int getNumConnection() const;
 
   void increaseNumCommand();

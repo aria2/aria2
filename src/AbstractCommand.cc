@@ -47,6 +47,7 @@
 #include "DlRetryEx.h"
 #include "DownloadFailureException.h"
 #include "CreateRequestCommand.h"
+#include "InitiateConnectionCommandFactory.h"
 #include "SleepCommand.h"
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
@@ -122,16 +123,29 @@ bool AbstractCommand::execute() {
       //logger->debug("CUID#%d - finished.", cuid);
       return true;
     }
-    PeerStatHandle peerStat;
-    if(!_requestGroup->getSegmentMan().isNull()) {
-      peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
-    }
-    if(!peerStat.isNull()) {
-      if(peerStat->getStatus() == PeerStat::REQUEST_IDLE) {
-	logger->info(MSG_ABORT_REQUESTED, cuid);
-	onAbort();
-	req->resetUrl();
-	tryReserved();
+    // TODO1.5 it is not needed to check other PeerStats every time.
+
+    // Find faster Request when this is the only active Request
+    if(!req.isNull() && _requestGroup->getNumStreamConnection() == 1 &&
+       _fileEntry->countPooledRequest() > 0) {
+      SharedHandle<Request> fasterRequest = _fileEntry->findFasterRequest(req);
+      if(!fasterRequest.isNull()) {
+	logger->info("CUID#%d - Use faster Request hostname=%s, port=%u",
+		     cuid,
+		     fasterRequest->getHost().c_str(),
+		     fasterRequest->getPort());
+
+	// Cancel current Request object and use faster one.
+	_fileEntry->removeRequest(req);
+	Command* command =
+	  InitiateConnectionCommandFactory::createInitiateConnectionCommand
+	  (cuid, fasterRequest, _fileEntry, _requestGroup, e);
+	// TODO1.5 Here is ServerHost stuff
+	//ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
+	//registerServerHost(sv);
+
+	e->setNoWait(true);
+	e->commands.push_back(command);
 	return true;
       }
     }
@@ -259,8 +273,6 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
     _fileEntry->poolRequest(req);
   }
   if(!_segments.empty()) {
-    // TODO1.5 subtract 1 from getPositionToWrite()
-    SharedHandle<FileEntry> fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset(_segments.front()->getPositionToWrite()-1);
     logger->debug("CUID#%d - Pooling request URI=%s",
 		  cuid, req->getUrl().c_str());
     _requestGroup->getSegmentMan()->recognizeSegmentFor(_fileEntry);

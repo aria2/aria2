@@ -70,6 +70,8 @@ private:
   std::deque<URIResult> _uriResults;
 
   Logger* _logger;
+
+  void storePool(const SharedHandle<Request>& request);
 public:
   FileEntry();
 
@@ -158,6 +160,11 @@ public:
   // and return the Request object.
   SharedHandle<Request> getRequest(const SharedHandle<URISelector>& selector);
 
+  // Finds pooled Request object which is faster than passed one,
+  // comparing their PeerStat objects. If such Request is found, it is
+  // removed from the pool and returned.
+  SharedHandle<Request> findFasterRequest(const SharedHandle<Request>& base);
+
   void poolRequest(const SharedHandle<Request>& request);
 
   bool removeRequest(const SharedHandle<Request>& request);
@@ -165,6 +172,11 @@ public:
   size_t countInFlightRequest() const
   {
     return _inFlightRequests.size();
+  }
+
+  size_t countPooledRequest() const
+  {
+    return _requestPool.size();
   }
 
   bool operator<(const FileEntry& fileEntry) const;

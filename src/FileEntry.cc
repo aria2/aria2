@@ -121,17 +121,71 @@ FileEntry::getRequest(const SharedHandle<URISelector>& selector)
       }
     }
   } else {
-    req = _requestPool.back();
-    _requestPool.pop_back();
+    req = _requestPool.front();
+    _requestPool.pop_front();
     _inFlightRequests.push_back(req);
     return req;
   }
 }
 
+SharedHandle<Request>
+FileEntry::findFasterRequest(const SharedHandle<Request>& base)
+{
+  if(_requestPool.empty()) {
+    return SharedHandle<Request>();
+  }
+  const SharedHandle<PeerStat>& fastest = _requestPool.front()->getPeerStat();
+  if(fastest.isNull()) {
+    return SharedHandle<Request>();
+  }
+  const SharedHandle<PeerStat>& basestat = base->getPeerStat();
+  // TODO1.5 hard coded value. See PREF_STARTUP_IDLE_TIME
+  const int startupIdleTime = 10;
+  if(basestat.isNull() ||
+     (basestat->getDownloadStartTime().elapsed(startupIdleTime) &&
+      fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
+    // TODO1.5 we should consider that "fastest" is very slow.
+    SharedHandle<Request> fastestRequest = _requestPool.front();
+    _requestPool.pop_front();
+    return fastestRequest;
+  }
+  return SharedHandle<Request>();
+}
+
+class RequestFaster {
+public:
+  bool operator()(const SharedHandle<Request>& lhs,
+		  const SharedHandle<Request>& rhs) const
+  {
+    if(lhs->getPeerStat().isNull()) {
+      return false;
+    }
+    if(rhs->getPeerStat().isNull()) {
+      return true;
+    }
+    return
+      lhs->getPeerStat()->getAvgDownloadSpeed() > rhs->getPeerStat()->getAvgDownloadSpeed();
+  }
+};
+
+void FileEntry::storePool(const SharedHandle<Request>& request)
+{
+  const SharedHandle<PeerStat>& peerStat = request->getPeerStat();
+  if(!peerStat.isNull()) {
+    // We need to calculate average download speed here in order to
+    // store Request in the right position in the pool.
+    peerStat->calculateAvgDownloadSpeed();
+  }
+  std::deque<SharedHandle<Request> >::iterator i =
+    std::lower_bound(_requestPool.begin(), _requestPool.end(), request,
+		     RequestFaster());
+  _requestPool.insert(i, request);
+}
+
 void FileEntry::poolRequest(const SharedHandle<Request>& request)
 {
   removeRequest(request);
-  _requestPool.push_back(request);
+  storePool(request);
 }
 
 bool FileEntry::removeRequest(const SharedHandle<Request>& request)
