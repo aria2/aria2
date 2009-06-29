@@ -1,5 +1,26 @@
 2009-06-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed ServerHost. Same functionality is implemented using
+	FileEntry's in-flight Request objects.
+	* src/AbstractCommand.cc
+	* src/BtDependency.cc
+	* src/CreateRequestCommand.cc
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/Makefile.am
+	* src/Metalink2RequestGroup.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/ServerHost.cc: Removed
+	* src/ServerHost.h: Removed
+	* test/BtDependencyTest.cc
+	* test/FileEntryTest.cc
+	* test/RequestGroupTest.cc
+
+2009-06-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten PeerStat handling. In the previous implementation,
 	faster command tries to find slower command. In this new
 	implementation, slower command tries to find faster command.

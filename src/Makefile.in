@@ -398,27 +398,26 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
 	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
 	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
-	ByteArrayDiskWriterFactory.h ServerHost.cc ServerHost.h \
-	DownloadContext.cc DownloadContext.h TimedHaltCommand.cc \
-	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
-	Sequence.h IntSequence.h PostDownloadHandler.h \
-	PreDownloadHandler.h SingletonHolder.h \
-	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
-	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
-	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
-	NullStatCalc.h StringFormat.cc StringFormat.h \
-	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h \
-	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
-	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
-	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
-	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h Signature.cc \
-	Signature.h ServerStat.cc ServerStat.h ServerStatMan.cc \
-	ServerStatMan.h URISelector.h AdaptiveURISelector.cc \
-	AdaptiveURISelector.h InOrderURISelector.cc \
-	InOrderURISelector.h FeedbackURISelector.cc \
-	FeedbackURISelector.h NsCookieParser.cc NsCookieParser.h \
-	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
-	SocketBuffer.h OptionHandlerException.cc \
+	ByteArrayDiskWriterFactory.h DownloadContext.cc \
+	DownloadContext.h TimedHaltCommand.cc TimedHaltCommand.h \
+	CUIDCounter.h DNSCache.h DownloadResult.h Sequence.h \
+	IntSequence.h PostDownloadHandler.h PreDownloadHandler.h \
+	SingletonHolder.h TrueRequestGroupCriteria.h a2algo.h \
+	a2functional.h a2io.h a2netcompat.h a2time.h array_fun.h \
+	help_tags.h prefs.cc prefs.h usage_text.h ProtocolDetector.cc \
+	ProtocolDetector.h NullStatCalc.h StringFormat.cc \
+	StringFormat.h HttpSkipResponseCommand.cc \
+	HttpSkipResponseCommand.h InitiateConnectionCommand.cc \
+	InitiateConnectionCommand.h FtpFinishDownloadCommand.cc \
+	FtpFinishDownloadCommand.h A2STR.cc A2STR.h \
+	RarestPieceSelector.cc RarestPieceSelector.h Decoder.h \
+	ChunkedDecoder.cc ChunkedDecoder.h Signature.cc Signature.h \
+	ServerStat.cc ServerStat.h ServerStatMan.cc ServerStatMan.h \
+	URISelector.h AdaptiveURISelector.cc AdaptiveURISelector.h \
+	InOrderURISelector.cc InOrderURISelector.h \
+	FeedbackURISelector.cc FeedbackURISelector.h NsCookieParser.cc \
+	NsCookieParser.h CookieStorage.cc CookieStorage.h \
+	SocketBuffer.cc SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h URIResult.cc URIResult.h EventPoll.h \
 	SelectEventPoll.cc SelectEventPoll.h SequentialPicker.h \
 	SequentialDispatcherCommand.h PieceSelector.h \
@@ -830,10 +829,10 @@ am__objects_26 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	PeerSessionResource.$(OBJEXT) BtRegistry.$(OBJEXT) \
 	MultiFileAllocationIterator.$(OBJEXT) PeerConnection.$(OBJEXT) \
 	ByteArrayDiskWriter.$(OBJEXT) \
-	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
-	DownloadContext.$(OBJEXT) TimedHaltCommand.$(OBJEXT) \
-	prefs.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
-	StringFormat.$(OBJEXT) HttpSkipResponseCommand.$(OBJEXT) \
+	ByteArrayDiskWriterFactory.$(OBJEXT) DownloadContext.$(OBJEXT) \
+	TimedHaltCommand.$(OBJEXT) prefs.$(OBJEXT) \
+	ProtocolDetector.$(OBJEXT) StringFormat.$(OBJEXT) \
+	HttpSkipResponseCommand.$(OBJEXT) \
 	InitiateConnectionCommand.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) A2STR.$(OBJEXT) \
 	RarestPieceSelector.$(OBJEXT) ChunkedDecoder.$(OBJEXT) \
@@ -1153,27 +1152,26 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
 	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
 	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
-	ByteArrayDiskWriterFactory.h ServerHost.cc ServerHost.h \
-	DownloadContext.cc DownloadContext.h TimedHaltCommand.cc \
-	TimedHaltCommand.h CUIDCounter.h DNSCache.h DownloadResult.h \
-	Sequence.h IntSequence.h PostDownloadHandler.h \
-	PreDownloadHandler.h SingletonHolder.h \
-	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
-	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
-	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
-	NullStatCalc.h StringFormat.cc StringFormat.h \
-	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h \
-	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
-	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
-	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
-	Decoder.h ChunkedDecoder.cc ChunkedDecoder.h Signature.cc \
-	Signature.h ServerStat.cc ServerStat.h ServerStatMan.cc \
-	ServerStatMan.h URISelector.h AdaptiveURISelector.cc \
-	AdaptiveURISelector.h InOrderURISelector.cc \
-	InOrderURISelector.h FeedbackURISelector.cc \
-	FeedbackURISelector.h NsCookieParser.cc NsCookieParser.h \
-	CookieStorage.cc CookieStorage.h SocketBuffer.cc \
-	SocketBuffer.h OptionHandlerException.cc \
+	ByteArrayDiskWriterFactory.h DownloadContext.cc \
+	DownloadContext.h TimedHaltCommand.cc TimedHaltCommand.h \
+	CUIDCounter.h DNSCache.h DownloadResult.h Sequence.h \
+	IntSequence.h PostDownloadHandler.h PreDownloadHandler.h \
+	SingletonHolder.h TrueRequestGroupCriteria.h a2algo.h \
+	a2functional.h a2io.h a2netcompat.h a2time.h array_fun.h \
+	help_tags.h prefs.cc prefs.h usage_text.h ProtocolDetector.cc \
+	ProtocolDetector.h NullStatCalc.h StringFormat.cc \
+	StringFormat.h HttpSkipResponseCommand.cc \
+	HttpSkipResponseCommand.h InitiateConnectionCommand.cc \
+	InitiateConnectionCommand.h FtpFinishDownloadCommand.cc \
+	FtpFinishDownloadCommand.h A2STR.cc A2STR.h \
+	RarestPieceSelector.cc RarestPieceSelector.h Decoder.h \
+	ChunkedDecoder.cc ChunkedDecoder.h Signature.cc Signature.h \
+	ServerStat.cc ServerStat.h ServerStatMan.cc ServerStatMan.h \
+	URISelector.h AdaptiveURISelector.cc AdaptiveURISelector.h \
+	InOrderURISelector.cc InOrderURISelector.h \
+	FeedbackURISelector.cc FeedbackURISelector.h NsCookieParser.cc \
+	NsCookieParser.h CookieStorage.cc CookieStorage.h \
+	SocketBuffer.cc SocketBuffer.h OptionHandlerException.cc \
 	OptionHandlerException.h URIResult.cc URIResult.h EventPoll.h \
 	SelectEventPoll.cc SelectEventPoll.h SequentialPicker.h \
 	SequentialDispatcherCommand.h PieceSelector.h \
@@ -1527,7 +1525,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SelectEventPoll.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerHost.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Signature.Po@am__quote@

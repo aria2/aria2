@@ -68,7 +68,7 @@ private:
   // URIResult is stored in the ascending order of the time when its result is
   // available.
   std::deque<URIResult> _uriResults;
-
+  bool _singleHostMultiConnection;
   Logger* _logger;
 
   void storePool(const SharedHandle<Request>& request);
@@ -142,6 +142,12 @@ public:
     _uris = uris;
   }
 
+  template<typename InputIterator>
+  void addUris(InputIterator first, InputIterator last)
+  {
+    _uris.insert(_uris.end(), first, last);
+  }
+
   // Inserts _uris and _spentUris into uris.
   void getUris(std::deque<std::string>& uris) const;
 
@@ -201,6 +207,16 @@ public:
   // The extracted URIResults are removed from _uriResults.
   void extractURIResult
   (std::deque<URIResult>& res, downloadresultcode::RESULT r);
+
+  void disableSingleHostMultiConnection()
+  {
+    _singleHostMultiConnection = false;
+  }
+
+  bool isSingleHostMultiConnectionEnabled() const
+  {
+    return _singleHostMultiConnection;
+  }
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

@@ -217,6 +217,9 @@ Metalink2RequestGroup::createRequestGroup
 	strconcat(option->get(PREF_DIR), "/", entry->file->getPath())));
     dctx->setDir(option->get(PREF_DIR));
     dctx->getFirstFileEntry()->setUris(uris);
+    if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
+      dctx->getFirstFileEntry()->disableSingleHostMultiConnection();
+    }
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       if(!entry->checksum.isNull()) {
@@ -236,8 +239,6 @@ Metalink2RequestGroup::createRequestGroup
        option->getAsInt(PREF_METALINK_SERVERS) :
        std::min(option->getAsInt(PREF_METALINK_SERVERS),
 		static_cast<int32_t>(entry->maxConnections)));
-    // In metalink, multi connection to a single host is not allowed by default.
-    rg->setSingleHostMultiConnectionEnabled(!option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
     // remove "metalink" from Accept Type list to avoid loop in tranparent
     // metalink
     rg->removeAcceptType(RequestGroup::ACCEPT_METALINK);

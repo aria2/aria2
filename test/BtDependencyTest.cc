@@ -31,6 +31,9 @@ class BtDependencyTest:public CppUnit::TestFixture {
     SharedHandle<DownloadContext> dctx
       (new DownloadContext(0, 0, "/tmp/outfile.path"));
     dctx->setDir("/tmp");
+    std::deque<std::string> uris;
+    uris.push_back("http://localhost/outfile.path");
+    dctx->getFirstFileEntry()->setUris(uris);
     dependant->setDownloadContext(dctx);
     return dependant;
   }
@@ -83,8 +86,11 @@ void BtDependencyTest::testResolve()
   CPPUNIT_ASSERT_EQUAL
     (std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
      bittorrent::getInfoHashString(dependant->getDownloadContext()));
+  const SharedHandle<FileEntry>& firstFileEntry =
+    dependant->getDownloadContext()->getFirstFileEntry();
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-		       dependant->getFirstFilePath());
+		       firstFileEntry->getPath());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, firstFileEntry->getRemainingUris().size());
 }
 
 void BtDependencyTest::testResolve_loadError()

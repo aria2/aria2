@@ -65,7 +65,6 @@ class Logger;
 class RequestGroup;
 class CheckIntegrityEntry;
 class DownloadResult;
-class ServerHost;
 class URISelector;
 class URIResult;
 #ifdef ENABLE_BITTORRENT
@@ -109,8 +108,6 @@ private:
 
   SharedHandle<Dependency> _dependency;
 
-  std::deque<SharedHandle<ServerHost> > _serverHosts;
-
   bool _fileAllocationEnabled;
 
   bool _preLocalFileCheckEnabled;
@@ -120,8 +117,6 @@ private:
   bool _forceHaltRequested;
 
   HaltReason _haltReason;
-
-  bool _singleHostMultiConnectionEnabled;
 
   std::deque<SharedHandle<PreDownloadHandler> > _preDownloadHandlers;
 
@@ -377,31 +372,6 @@ public:
     return _option;
   }
 
-  bool isSingleHostMultiConnectionEnabled() const
-  {
-    return _singleHostMultiConnectionEnabled;
-  }
-
-  void setSingleHostMultiConnectionEnabled(bool f)
-  {
-    _singleHostMultiConnectionEnabled = f;
-  }
-
-  /**
-   * Registers given ServerHost.
-   */
-  void registerServerHost(const SharedHandle<ServerHost>& serverHost);
-
-  /**
-   * Returns ServerHost whose cuid is given cuid. If it is not found, returns
-   * 0.
-   */
-  SharedHandle<ServerHost> searchServerHost(int32_t cuid) const;
-
-  SharedHandle<ServerHost> searchServerHost(const std::string& hostname) const;
-
-  void removeServerHost(int32_t cuid);
-  
   void reportDownloadFinished();
 
   const std::deque<std::string>& getAcceptTypes() const

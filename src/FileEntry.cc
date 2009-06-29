@@ -49,10 +49,12 @@ FileEntry::FileEntry(const std::string& path,
 		     const std::deque<std::string>& uris):
   path(path), _uris(uris), length(length), offset(offset),
   extracted(false), requested(true),
+  _singleHostMultiConnection(true),
   _logger(LogFactory::getInstance()) {}
 
 FileEntry::FileEntry():
   length(0), offset(0), extracted(false), requested(false),
+  _singleHostMultiConnection(true),
   _logger(LogFactory::getInstance()) {}
 
 FileEntry::~FileEntry() {}
@@ -101,11 +103,26 @@ std::string FileEntry::selectUri(const SharedHandle<URISelector>& uriSelector)
   return uriSelector->select(this);
 }
 
+template<typename InputIterator>
+static bool inFlightHost(InputIterator first, InputIterator last,
+			 const std::string& hostname)
+{
+  // TODO1.5 redirection should be considered here. We need to parse
+  // original URI to get hostname.
+  for(; first != last; ++first) {
+    if((*first)->getHost() == hostname) {
+      return true;
+    }
+  }
+  return false;
+}
+
 SharedHandle<Request>
 FileEntry::getRequest(const SharedHandle<URISelector>& selector)
 {
   SharedHandle<Request> req;
   if(_requestPool.empty()) {
+    std::deque<std::string> pending;
     while(1) {
       std::string uri = selector->select(this);
       if(uri.empty()) {
@@ -113,19 +130,28 @@ FileEntry::getRequest(const SharedHandle<URISelector>& selector)
       }
       req.reset(new Request());
       if(req->setUrl(uri)) {
+	if(!_singleHostMultiConnection) {
+	  if(inFlightHost(_inFlightRequests.begin(), _inFlightRequests.end(),
+			  req->getHost())) {
+	    pending.push_back(uri);
+	    req.reset();
+	    continue;
+	  }
+	}
 	_spentUris.push_back(uri);
 	_inFlightRequests.push_back(req);
-	return req;
+	break;
       } else {
 	req.reset();
       }
     }
+    _uris.insert(_uris.begin(), pending.begin(), pending.end());
   } else {
     req = _requestPool.front();
     _requestPool.pop_front();
     _inFlightRequests.push_back(req);
-    return req;
   }
+  return req;
 }
 
 SharedHandle<Request>

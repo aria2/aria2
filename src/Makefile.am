@@ -150,7 +150,6 @@ SRCS =  Socket.h\
 	PeerConnection.cc PeerConnection.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h\
-	ServerHost.cc ServerHost.h\
 	DownloadContext.cc DownloadContext.h\
 	TimedHaltCommand.cc TimedHaltCommand.h\
 	CUIDCounter.h\

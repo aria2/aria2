@@ -75,8 +75,6 @@ bool CreateRequestCommand::executeInternal()
   Command* command =
     InitiateConnectionCommandFactory::createInitiateConnectionCommand
     (cuid, req, _fileEntry, _requestGroup, e);
-  //ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
-  //registerServerHost(sv);
   e->setNoWait(true);
   e->commands.push_back(command);
   return true;

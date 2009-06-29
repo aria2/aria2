@@ -57,7 +57,6 @@
 #include "DefaultBtProgressInfoFile.h"
 #include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
-#include "ServerHost.h"
 #include "Socket.h"
 #include "StringFormat.h"
 #include "DiskAdaptor.h"
@@ -103,12 +102,8 @@ bool FtpNegotiationCommand::executeInternal() {
       (cuid, req, _fileEntry, _requestGroup, ftp, e, dataSocket, socket);
     command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit(getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
-    if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
-      SharedHandle<ServerHost> sv =
-	_requestGroup->searchServerHost(req->getHost());
-      if(!sv.isNull()) {
-	_fileEntry->removeURIWhoseHostnameIs(sv->getHostname());
-      }
+    if(!_fileEntry->isSingleHostMultiConnectionEnabled()) {
+      _fileEntry->removeURIWhoseHostnameIs(req->getHost());
     }
     _requestGroup->getURISelector()->tuneDownloadCommand
       (_fileEntry->getRemainingUris(), command);

@@ -65,7 +65,6 @@
 #include "DownloadHandlerFactory.h"
 #include "MemoryBufferPreDownloadHandler.h"
 #include "DownloadHandlerConstants.h"
-#include "ServerHost.h"
 #include "Option.h"
 #include "FileEntry.h"
 #include "Request.h"
@@ -124,7 +123,6 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _haltRequested(false),
   _forceHaltRequested(false),
   _haltReason(RequestGroup::NONE),
-  _singleHostMultiConnectionEnabled(true),
   _uriSelector(new InOrderURISelector()),
   _lastModifiedTime(Time::null()),
   _fileNotFoundCount(0),
@@ -641,41 +639,7 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
     Command* command = new CreateRequestCommand(e->newCUID(), this, e);
     _logger->debug("filePath=%s", _downloadContext->getFileEntries().front()->getPath().c_str());
     commands.push_back(command);
-
-    // TODO1.5 ServerHost stuff should be moved into FileEntry or
-    // CreateRequestCommand
-
-//     std::string uri = _uriSelector->select(_uris);
-//     if(uri.empty())
-//       continue;
-//     RequestHandle req(new Request());
-//     if(req->setUrl(uri)) {
-//       ServerHostHandle sv;
-//       if(!_singleHostMultiConnectionEnabled){
-// 	sv = searchServerHost(req->getHost());
-//       }
-//       if(sv.isNull()) {
-// 	_spentUris.push_back(uri);
-// 	req->setReferer(_option->get(PREF_REFERER));
-// 	req->setMethod(method);
-
-// 	Command* command =
-// 	  InitiateConnectionCommandFactory::createInitiateConnectionCommand
-// 	  (e->newCUID(), req, this, e);
-// 	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
-// 	registerServerHost(sv);
-// 	// give a chance to be executed in the next loop in DownloadEngine
-// 	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
-// 	commands.push_back(command);
-//       } else {
-// 	pendingURIs.push_back(uri);
-//       }
-//     } else {
-//       _logger->error(MSG_UNRECOGNIZED_URI, req->getUrl().c_str());
-//     }
-//  }
   }
-//  _uris.insert(_uris.begin(), pendingURIs.begin(), pendingURIs.end());
   if(!commands.empty()) {
     e->setNoWait(true);
   }
@@ -1004,64 +968,6 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 			sessionDownloadLength,
 			_downloadContext->calculateSessionTime(),
 			downloadResult()));
-}
-
-void RequestGroup::registerServerHost(const ServerHostHandle& serverHost)
-{
-  _serverHosts.push_back(serverHost);
-}
-
-class FindServerHostByCUID
-{
-private:
-  int32_t _cuid;
-public:
-  FindServerHostByCUID(int32_t cuid):_cuid(cuid) {}
-
-  bool operator()(const ServerHostHandle& sv) const
-  {
-    return sv->getCuid() == _cuid;
-  }
-};
-
-ServerHostHandle RequestGroup::searchServerHost(int32_t cuid) const
-{
-  std::deque<SharedHandle<ServerHost> >::const_iterator itr =
-    std::find_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid));
-  if(itr == _serverHosts.end()) {
-    return SharedHandle<ServerHost>();
-  } else {
-    return *itr;
-  }
-}
-
-class FindServerHostByHostname
-{
-private:
-  std::string _hostname;
-public:
-  FindServerHostByHostname(const std::string& hostname):_hostname(hostname) {}
-
-  bool operator()(const ServerHostHandle& sv) const
-  {
-    return sv->getHostname() == _hostname;
-  }
-};
-
-ServerHostHandle RequestGroup::searchServerHost(const std::string& hostname) const
-{
-  std::deque<SharedHandle<ServerHost> >::const_iterator itr =
-    std::find_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByHostname(hostname));
-  if(itr == _serverHosts.end()) {
-    return SharedHandle<ServerHost>();
-  } else {
-    return *itr;
-  }
-}
-
-void RequestGroup::removeServerHost(int32_t cuid)
-{
-  _serverHosts.erase(std::remove_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid)), _serverHosts.end());
 }
   
 void RequestGroup::reportDownloadFinished()

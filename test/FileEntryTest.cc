@@ -1,5 +1,8 @@
 #include "FileEntry.h"
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "InOrderURISelector.h"
 
 namespace aria2 {
 
@@ -9,6 +12,8 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetupDir);
   CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
   CPPUNIT_TEST(testExtractURIResult);
+  CPPUNIT_TEST(testGetRequest);
+  CPPUNIT_TEST(testGetRequest_disableSingleHostMultiConnection);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -16,10 +21,22 @@ public:
   void testSetupDir();
   void testRemoveURIWhoseHostnameIs();
   void testExtractURIResult();
+  void testGetRequest();
+  void testGetRequest_disableSingleHostMultiConnection();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FileEntryTest );
+
+static SharedHandle<FileEntry> createFileEntry()
+{
+  const char* uris[] = { "http://localhost/aria2.zip",
+			 "ftp://localhost/aria2.zip",
+			 "http://mirror/aria2.zip" };
+  SharedHandle<FileEntry> fileEntry(new FileEntry());
+  fileEntry->setUris(std::deque<std::string>(&uris[0], &uris[3]));
+  return fileEntry;
+}
 
 void FileEntryTest::testSetupDir()
 {
@@ -40,15 +57,11 @@ void FileEntryTest::testSetupDir()
 
 void FileEntryTest::testRemoveURIWhoseHostnameIs()
 {
-  const char* uris[] = { "http://localhost/aria2.zip",
-			 "ftp://localhost/aria2.zip",
-			 "http://mirror/aria2.zip" };
-  FileEntry fileEntry;
-  fileEntry.setUris(std::deque<std::string>(&uris[0], &uris[3]));
-  fileEntry.removeURIWhoseHostnameIs("localhost");
-  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry.getRemainingUris().size());
+  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  fileEntry->removeURIWhoseHostnameIs("localhost");
+  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry->getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
-		       fileEntry.getRemainingUris()[0]);
+		       fileEntry->getRemainingUris()[0]);
 }
 
 
@@ -77,6 +90,42 @@ void FileEntryTest::testExtractURIResult()
   fileEntry.extractURIResult(res, downloadresultcode::TIME_OUT);
   CPPUNIT_ASSERT(res.empty());
   CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry.getURIResults().size());
+}
+
+void FileEntryTest::testGetRequest()
+{
+  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<Request> req = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
+
+  fileEntry->poolRequest(req);
+
+  SharedHandle<Request> req2nd = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req2nd->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req2nd->getProtocol());
+
+  SharedHandle<Request> req3rd = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req3rd->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req3rd->getProtocol());
+}
+
+void FileEntryTest::testGetRequest_disableSingleHostMultiConnection()
+{
+  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  fileEntry->disableSingleHostMultiConnection();
+  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<Request> req = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
+
+  SharedHandle<Request> req2nd = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req2nd->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req2nd->getProtocol());
+
+  SharedHandle<Request> req3rd = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT(req3rd.isNull());
 }
 
 } // namespace aria2

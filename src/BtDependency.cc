@@ -80,12 +80,17 @@ bool BtDependency::resolve()
       }
       // Copy file path in _dependant's FileEntries to newly created
       // context's FileEntries to endorse the path structure of
-      // _dependant.
+      // _dependant.  URIs and singleHostMultiConnection are also copied.
       for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
 	    _dependant->getDownloadContext()->getFileEntries().begin(),
 	    d = context->getFileEntries().begin();
 	  d != context->getFileEntries().end(); ++s, ++d) {
 	(*d)->setPath((*s)->getPath());
+	(*d)->addUris((*s)->getRemainingUris().begin(),
+		      (*s)->getRemainingUris().end());
+	if(!(*s)->isSingleHostMultiConnectionEnabled()) {
+	  (*d)->disableSingleHostMultiConnection();
+	}
       }
     } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);

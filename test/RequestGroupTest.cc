@@ -2,7 +2,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "ServerHost.h"
 #include "Option.h"
 #include "DownloadContext.h"
 #include "FileEntry.h"
@@ -14,7 +13,6 @@ namespace aria2 {
 class RequestGroupTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(RequestGroupTest);
-  CPPUNIT_TEST(testRegisterSearchRemove);
   CPPUNIT_TEST(testGetFirstFilePath);
   CPPUNIT_TEST(testCreateDownloadResult);
   CPPUNIT_TEST_SUITE_END();
@@ -26,45 +24,12 @@ public:
     _option.reset(new Option());
   }
 
-  void testRegisterSearchRemove();
   void testGetFirstFilePath();
   void testCreateDownloadResult();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupTest );
-
-void RequestGroupTest::testRegisterSearchRemove()
-{
-  RequestGroup rg(_option);
-  SharedHandle<ServerHost> sv1(new ServerHost(1, "localhost1"));
-  SharedHandle<ServerHost> sv2(new ServerHost(2, "localhost2"));
-  SharedHandle<ServerHost> sv3(new ServerHost(3, "localhost3"));
-
-  rg.registerServerHost(sv3);
-  rg.registerServerHost(sv1);
-  rg.registerServerHost(sv2);
-
-  CPPUNIT_ASSERT(rg.searchServerHost(0).isNull());
-
-  {
-    SharedHandle<ServerHost> sv = rg.searchServerHost(1);
-    CPPUNIT_ASSERT(!sv.isNull());
-    CPPUNIT_ASSERT_EQUAL(std::string("localhost1"), sv->getHostname());
-  }
-
-  rg.removeServerHost(1);
-
-  {
-    SharedHandle<ServerHost> sv = rg.searchServerHost(1);
-    CPPUNIT_ASSERT(sv.isNull());
-  }
-  {
-    SharedHandle<ServerHost> sv = rg.searchServerHost(2);
-    CPPUNIT_ASSERT(!sv.isNull());
-    CPPUNIT_ASSERT_EQUAL(std::string("localhost2"), sv->getHostname());
-  }
-}
 
 void RequestGroupTest::testGetFirstFilePath()
 {

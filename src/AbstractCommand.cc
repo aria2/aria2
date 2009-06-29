@@ -140,10 +140,6 @@ bool AbstractCommand::execute() {
 	Command* command =
 	  InitiateConnectionCommandFactory::createInitiateConnectionCommand
 	  (cuid, fasterRequest, _fileEntry, _requestGroup, e);
-	// TODO1.5 Here is ServerHost stuff
-	//ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
-	//registerServerHost(sv);
-
 	e->setNoWait(true);
 	e->commands.push_back(command);
 	return true;
@@ -248,7 +244,6 @@ bool AbstractCommand::execute() {
 }
 
 void AbstractCommand::tryReserved() {
-  _requestGroup->removeServerHost(cuid);
   if(_requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
     const SharedHandle<FileEntry>& entry =
       _requestGroup->getDownloadContext()->getFirstFileEntry();

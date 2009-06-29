@@ -37,7 +37,6 @@
 #include "DownloadContext.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
-#include "ServerHost.h"
 #include "RequestGroupMan.h"
 #include "Request.h"
 #include "HttpRequest.h"
@@ -122,18 +121,10 @@ bool HttpResponseCommand::executeInternal()
     }
     return skipResponseBody(httpResponse);
   }
-  if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
-    // Query by hostname. Searching by CUID may returns NULL.  In case
-    // when resuming download, ServerHost is registered with CUID A.
-    // Then if requested range is not equal to saved one,
-    // StreamFileAllocationEntry is created with _nextCommand NULL.
-    // This results creating new command CUID, say B and same URI. So
-    // searching ServerHost by CUID B fails.
-    SharedHandle<ServerHost> sv =
-      _requestGroup->searchServerHost(req->getHost());
-    if(!sv.isNull()) {
-      _fileEntry->removeURIWhoseHostnameIs(sv->getHostname());
-    }
+  if(!_fileEntry->isSingleHostMultiConnectionEnabled()) {
+    // TODO1.5 redirection should be considered here. We need to parse
+    // original URI to get hostname.
+    _fileEntry->removeURIWhoseHostnameIs(req->getHost());
   }
   if(_requestGroup->getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();
