@@ -41,6 +41,7 @@
 #include "Util.h"
 #include "help_tags.h"
 #include "StringFormat.h"
+#include "File.h"
 
 namespace aria2 {
 

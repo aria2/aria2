@@ -117,7 +117,7 @@ void XmlRpcMethodTest::testAddUri()
       _e->_requestGroupMan->getReservedGroups();
     CPPUNIT_ASSERT_EQUAL((size_t)1, rgs.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/"),
-			 rgs.front()->getRemainingUris().front());
+			 rgs.front()->getDownloadContext()->getFirstFileEntry()->getRemainingUris().front());
   }
   // with options
   BDE opt = BDE::dict();
@@ -180,7 +180,7 @@ void XmlRpcMethodTest::testAddUri_withPosition()
   m.execute(req2, _e.get());
 
   std::string uri =
-    _e->_requestGroupMan->getReservedGroups()[0]->getRemainingUris()[0];
+    _e->_requestGroupMan->getReservedGroups()[0]->getDownloadContext()->getFirstFileEntry()->getRemainingUris()[0];
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://uri2"), uri);
 }
@@ -215,9 +215,9 @@ void XmlRpcMethodTest::testAddTorrent()
     CPPUNIT_ASSERT(!group.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.8.2.tar.bz2"),
 			 group->getFirstFilePath());
-    CPPUNIT_ASSERT_EQUAL((size_t)1, group->getRemainingUris().size());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, group->getDownloadContext()->getFirstFileEntry()->getRemainingUris().size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/aria2-0.8.2.tar.bz2"),
-			 group->getRemainingUris()[0]);
+			 group->getDownloadContext()->getFirstFileEntry()->getRemainingUris()[0]);
   }
   // with options
   BDE opt = BDE::dict();
@@ -349,8 +349,7 @@ void XmlRpcMethodTest::testAddMetalink_withPosition()
 
 void XmlRpcMethodTest::testChangeOption()
 {
-  SharedHandle<RequestGroup> group
-    (new RequestGroup(_option, std::deque<std::string>()));
+  SharedHandle<RequestGroup> group(new RequestGroup(_option));
   _e->_requestGroupMan->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
@@ -374,8 +373,7 @@ void XmlRpcMethodTest::testChangeOption()
 
 void XmlRpcMethodTest::testChangeOption_withBadOption()
 {
-  SharedHandle<RequestGroup> group
-    (new RequestGroup(_option, std::deque<std::string>()));
+  SharedHandle<RequestGroup> group(new RequestGroup(_option));
   _e->_requestGroupMan->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;

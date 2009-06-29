@@ -45,6 +45,7 @@
 #include "Logger.h"
 #include "DHTMessageCallback.h"
 #include "DHTNode.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

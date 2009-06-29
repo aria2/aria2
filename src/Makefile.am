@@ -201,7 +201,8 @@ SRCS =  Socket.h\
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h\
 	bitfield.h\
 	BDE.cc BDE.h\
-	CreateRequestCommand.cc CreateRequestCommand.h
+	CreateRequestCommand.cc CreateRequestCommand.h\
+	DownloadResultCode.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

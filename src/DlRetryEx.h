@@ -54,7 +54,7 @@ public:
   DlRetryEx(const char* file, int line, const DlRetryEx& e):
     RecoverableException(file, line, e) {}
   DlRetryEx(const char* file, int line, const std::string& msg,
-	    DownloadResult::RESULT code):
+	    downloadresultcode::RESULT code):
     RecoverableException(file, line, msg, code) {}
 };
 

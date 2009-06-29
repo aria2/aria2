@@ -50,6 +50,7 @@
 #include "Option.h"
 #include "SimpleRandomizer.h"
 #include "SocketCore.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -71,14 +72,15 @@ AdaptiveURISelector::AdaptiveURISelector
 
 AdaptiveURISelector::~AdaptiveURISelector() {}
 
-std::string AdaptiveURISelector::select(std::deque<std::string>& uris)
+std::string AdaptiveURISelector::select(FileEntry* fileEntry)
 {
   _logger->debug("AdaptiveURISelector: called %d",
 		 _requestGroup->getNumConnection());
+  std::deque<std::string>& uris = fileEntry->getRemainingUris();
   if (uris.empty() && _requestGroup->getNumConnection() <= 1) {
     // here we know the download will fail, trying to find previously
     // failed uris that may succeed with more permissive values
-    mayRetryWithIncreasedTimeout(uris);
+    mayRetryWithIncreasedTimeout(fileEntry);
   }
  
   std::string selected = selectOne(uris);
@@ -89,15 +91,15 @@ std::string AdaptiveURISelector::select(std::deque<std::string>& uris)
   return selected;
 }
 
-void AdaptiveURISelector::mayRetryWithIncreasedTimeout
-(std::deque<std::string>& uris)
+void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
 {
   if (_requestGroup->getTimeout()*2 >= MAX_TIMEOUT) return;
   _requestGroup->setTimeout(_requestGroup->getTimeout()*2);
 
+  std::deque<std::string>& uris = fileEntry->getRemainingUris();
   // looking for retries
   std::deque<URIResult> timeouts;
-  _requestGroup->extractURIResult(timeouts, DownloadResult::TIME_OUT);
+  fileEntry->extractURIResult(timeouts, downloadresultcode::TIME_OUT);
   std::transform(timeouts.begin(), timeouts.end(), std::back_inserter(uris),
 		 std::mem_fun_ref(&URIResult::getURI));
 

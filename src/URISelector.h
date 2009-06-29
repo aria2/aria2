@@ -41,14 +41,15 @@
 namespace aria2 {
 
 class DownloadCommand;
+class FileEntry;
 
 class URISelector {
 public:
   virtual ~URISelector() {}
 
-  virtual std::string select(std::deque<std::string>& uris) = 0;
+  virtual std::string select(FileEntry* fileEntry) = 0;
 
-  virtual void tuneDownloadCommand(std::deque<std::string>& uris,
+  virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
 				   DownloadCommand* command) {};
 
   virtual void resetCounters() { return; };

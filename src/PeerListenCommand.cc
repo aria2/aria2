@@ -47,6 +47,7 @@
 #include "Logger.h"
 #include "Socket.h"
 #include "SimpleRandomizer.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

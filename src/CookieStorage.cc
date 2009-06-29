@@ -44,6 +44,7 @@
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "NsCookieParser.h"
+#include "File.h"
 #ifdef HAVE_SQLITE3
 # include "Sqlite3MozCookieParser.h"
 #endif // HAVE_SQLITE3

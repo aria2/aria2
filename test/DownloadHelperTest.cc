@@ -82,7 +82,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
     for(size_t i = 0; i < arrayLength(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
@@ -101,7 +101,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)5, uris.size());
     for(size_t i = 0; i < arrayLength(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
@@ -120,7 +120,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
     for(size_t i = 0; i < arrayLength(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
@@ -138,7 +138,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     // for alpha server
     SharedHandle<RequestGroup> alphaGroup = result[0];
     std::deque<std::string> alphaURIs;
-    alphaGroup->getURIs(alphaURIs);
+    alphaGroup->getDownloadContext()->getFirstFileEntry()->getUris(alphaURIs);
     CPPUNIT_ASSERT_EQUAL((size_t)2, alphaURIs.size());
     for(size_t i = 0; i < 2; ++i) {
       CPPUNIT_ASSERT_EQUAL(array[0], uris[0]);
@@ -171,7 +171,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
 
     CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), uris[0]);
@@ -206,7 +206,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
 
     CPPUNIT_ASSERT_EQUAL(array[0], uris[0]);
@@ -221,7 +221,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
 
     SharedHandle<RequestGroup> torrentGroup = result[1];
     std::deque<std::string> auxURIs;
-    torrentGroup->getURIs(auxURIs);
+    torrentGroup->getDownloadContext()->getFirstFileEntry()->getUris(auxURIs);
     CPPUNIT_ASSERT(auxURIs.empty());
     CPPUNIT_ASSERT_EQUAL((unsigned int)3,
 			 torrentGroup->getNumConcurrentCommand());
@@ -262,7 +262,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
 
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
     for(size_t i = 0; i < 3; ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
@@ -304,7 +304,7 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
 
   SharedHandle<RequestGroup> fileGroup = result[0];
   std::deque<std::string> fileURIs;
-  fileGroup->getURIs(fileURIs);
+  fileGroup->getDownloadContext()->getFirstFileEntry()->getUris(fileURIs);
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), fileURIs[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"), fileURIs[1]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://charlie/file"), fileURIs[2]);
@@ -344,13 +344,11 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
 
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
-    CPPUNIT_ASSERT_EQUAL((size_t)5, uris.size());
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
+    // See -s option is ignored
+    CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
     for(size_t i = 0; i < arrayLength(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
-    }
-    for(size_t i = 0; i < 5-arrayLength(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i+arrayLength(array)]);
+      CPPUNIT_ASSERT_EQUAL(array[i]+"/aria2-test/aria2/src/aria2c", uris[i]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)5, group->getNumConcurrentCommand());
   }
@@ -363,7 +361,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)0, uris.size());
   }
   _option->put(PREF_FORCE_SEQUENTIAL, V_TRUE);
@@ -398,7 +396,7 @@ void DownloadHelperTest::testCreateRequestGroupForMetalink()
 #endif // !ENABLE_BITTORRENT
     SharedHandle<RequestGroup> group = result[0];
     std::deque<std::string> uris;
-    group->getURIs(uris);
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     std::sort(uris.begin(), uris.end());
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"),

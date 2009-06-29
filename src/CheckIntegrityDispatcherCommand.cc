@@ -37,6 +37,7 @@
 #include "CheckIntegrityCommand.h"
 #include "message.h"
 #include "Logger.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

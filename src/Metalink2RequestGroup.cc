@@ -169,13 +169,14 @@ Metalink2RequestGroup::createRequestGroup
     if(itr != entry->resources.end()) {
       std::deque<std::string> uris;
       uris.push_back((*itr)->url);
-      torrentRg.reset(new RequestGroup(option, uris));
+      torrentRg.reset(new RequestGroup(option));
       SharedHandle<DownloadContext> dctx
 	(new DownloadContext(option->getAsInt(PREF_SEGMENT_SIZE),
 			     0,
 			     A2STR::NIL));
       // Since torrent is downloaded in memory, setting dir has no effect.
       //dctx->setDir(_option->get(PREF_DIR));
+      dctx->getFirstFileEntry()->setUris(uris);
       torrentRg->setDownloadContext(dctx);
       torrentRg->clearPreDowloadHandler();
       torrentRg->clearPostDowloadHandler();
@@ -196,7 +197,7 @@ Metalink2RequestGroup::createRequestGroup
     std::deque<std::string> uris;
     std::for_each(entry->resources.begin(), entry->resources.end(),
 		  AccumulateNonP2PUrl(uris));
-    SharedHandle<RequestGroup> rg(new RequestGroup(option, uris));
+    SharedHandle<RequestGroup> rg(new RequestGroup(option));
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.
     size_t pieceLength;
@@ -215,6 +216,7 @@ Metalink2RequestGroup::createRequestGroup
 	entry->getLength(),
 	strconcat(option->get(PREF_DIR), "/", entry->file->getPath())));
     dctx->setDir(option->get(PREF_DIR));
+    dctx->getFirstFileEntry()->setUris(uris);
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       if(!entry->checksum.isNull()) {

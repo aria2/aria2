@@ -53,7 +53,7 @@
 #include "File.h"
 #include "StringFormat.h"
 #include "OptionHandlerException.h"
-#include "DownloadResult.h"
+#include "DownloadResultCode.h"
 #include "SimpleRandomizer.h"
 #include "bittorrent_helper.h"
 
@@ -98,7 +98,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
 
       if(op.defined("version")) {
 	showVersion();
-	exit(DownloadResult::FINISHED);
+	exit(downloadresultcode::FINISHED);
       }
       if(op.defined("help")) {
 	std::string keyword;
@@ -115,7 +115,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
 	  }
 	}
 	showUsage(keyword, oparser);
-	exit(DownloadResult::FINISHED);
+	exit(downloadresultcode::FINISHED);
       }
     }
 
@@ -137,18 +137,18 @@ void option_processing(Option& op, std::deque<std::string>& uris,
 		    << "Usage:" << "\n"
 		    << oparser.findByName(e.getOptionName())->getDescription()
 		    << std::endl;
-	  exit(DownloadResult::UNKNOWN_ERROR);
+	  exit(downloadresultcode::UNKNOWN_ERROR);
 	} catch(Exception& e) {
 	  std::cerr << "Parse error in " << cfname << "\n"
 		    << e.stackTrace() << std::endl;
-	  exit(DownloadResult::UNKNOWN_ERROR);
+	  exit(downloadresultcode::UNKNOWN_ERROR);
 	}
       } else if(!ucfname.empty()) {
 	std::cerr << StringFormat("Configuration file %s is not found.",
 				  cfname.c_str())
 		  << "\n";
 	showUsage(TAG_HELP, oparser);
-	exit(DownloadResult::UNKNOWN_ERROR);
+	exit(downloadresultcode::UNKNOWN_ERROR);
       }
     }
     // Override configuration with environment variables.
@@ -168,11 +168,11 @@ void option_processing(Option& op, std::deque<std::string>& uris,
 	      << "Usage:" << "\n"
 	      << oparser.findByName(e.getOptionName())
 	      << std::endl;
-    exit(DownloadResult::UNKNOWN_ERROR);
+    exit(downloadresultcode::UNKNOWN_ERROR);
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
     showUsage(TAG_HELP, oparser);
-    exit(DownloadResult::UNKNOWN_ERROR);
+    exit(downloadresultcode::UNKNOWN_ERROR);
   }
   if(
 #ifdef ENABLE_XML_RPC
@@ -188,7 +188,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
     if(uris.empty()) {
       std::cerr << MSG_URI_REQUIRED << std::endl;
       showUsage(TAG_HELP, oparser);
-      exit(DownloadResult::UNKNOWN_ERROR);
+      exit(downloadresultcode::UNKNOWN_ERROR);
     }
   }
 #ifdef HAVE_DAEMON
@@ -200,7 +200,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
     }
     if(daemon(0, 0) < 0) {
       perror(MSG_DAEMON_FAILED);
-      exit(DownloadResult::UNKNOWN_ERROR);
+      exit(downloadresultcode::UNKNOWN_ERROR);
     }
   }
 #endif // HAVE_DAEMON

@@ -59,7 +59,8 @@ public:
 			   const DownloadFailureException& e):
     RecoverableException(file, line, e) {}
   DownloadFailureException(const char* file, int line,
-			   const std::string& msg, DownloadResult::RESULT code):
+			   const std::string& msg,
+			   downloadresultcode::RESULT code):
     RecoverableException(file, line, msg, code) {}
 };
 

@@ -171,7 +171,7 @@ bool HttpSkipResponseCommand::processResponse()
       }
     }else if(_httpResponse->getResponseStatus() == HttpHeader::S404) {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
-			 DownloadResult::RESOURCE_NOT_FOUND);
+			 downloadresultcode::RESOURCE_NOT_FOUND);
     } else {
       throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, Util::parseUInt(_httpResponse->getResponseStatus())).str());
     }

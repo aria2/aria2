@@ -51,6 +51,7 @@
 #include "RequestGroupMan.h"
 #include "Logger.h"
 #include "StringFormat.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

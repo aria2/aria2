@@ -57,7 +57,7 @@ private:
 
   Logger* _logger;
 
-  void mayRetryWithIncreasedTimeout(std::deque<std::string>& uris);
+  void mayRetryWithIncreasedTimeout(FileEntry* fileEntry);
 
   std::string selectOne(const std::deque<std::string>& uris);
   void adjustLowestSpeedLimit(const std::deque<std::string>& uris,
@@ -78,7 +78,7 @@ public:
 
   virtual ~AdaptiveURISelector();
 
-  virtual std::string select(std::deque<std::string>& uris);
+  virtual std::string select(FileEntry* fileEntry);
   virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
 				   DownloadCommand* command);
 

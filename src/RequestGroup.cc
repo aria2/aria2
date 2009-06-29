@@ -112,11 +112,9 @@ int32_t RequestGroup::_gidCounter = 0;
 
 const std::string RequestGroup::ACCEPT_METALINK = "application/metalink+xml";
 
-RequestGroup::RequestGroup(const SharedHandle<Option>& option,
-			   const std::deque<std::string>& uris):
+RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _gid(++_gidCounter),
   _option(new Option(*option.get())),
-  _uris(uris),
   _numConcurrentCommand(option->getAsInt(PREF_SPLIT)),
   _numStreamConnection(0),
   _numCommand(0),
@@ -175,19 +173,19 @@ bool RequestGroup::allDownloadFinished() const
   }
 }
 
-DownloadResult::RESULT RequestGroup::downloadResult() const
+downloadresultcode::RESULT RequestGroup::downloadResult() const
 {
   if (downloadFinished())
-    return DownloadResult::FINISHED;
+    return downloadresultcode::FINISHED;
   else {
-    if (_uriResults.empty()) {
+    if (_lastUriResult.isNull()) {
       if(_haltReason == RequestGroup::USER_REQUEST) {
-	return DownloadResult::IN_PROGRESS;
+	return downloadresultcode::IN_PROGRESS;
       } else {
-	return DownloadResult::UNKNOWN_ERROR;
+	return downloadresultcode::UNKNOWN_ERROR;
       }
     } else {
-      return _uriResults.back().getResult();
+      return _lastUriResult->getResult();
     }
   }    
 }
@@ -403,6 +401,17 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
     }
 }
 
+template<typename InputIterator>
+static bool hasAssociatedUri(InputIterator first, InputIterator last)
+{
+  for(; first != last; ++first) {
+    if((*first)->isRequested() && !(*first)->getRemainingUris().empty()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void RequestGroup::initPieceStorage()
 {
   if(_downloadContext->knowsTotalLength()) {
@@ -411,9 +420,9 @@ void RequestGroup::initPieceStorage()
       (new DefaultPieceStorage(_downloadContext, _option.get()));
     // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent integrated
     // downloads. Currently multi-file integrated download is not supported.
-    if(!_uris.empty() &&
-       _downloadContext->getFileEntries().size() == 1 &&
-       _downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
+    if(_downloadContext->hasAttribute(bittorrent::BITTORRENT) &&
+       hasAssociatedUri(_downloadContext->getFileEntries().begin(),
+			_downloadContext->getFileEntries().end())) {
       _logger->debug("Using LongestSequencePieceSelector");
       ps->setPieceSelector
 	(SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
@@ -578,14 +587,8 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
   if(getTotalLength() == 0) {
     numCommand = 1+numAdj;
   } else {
-    if(_numConcurrentCommand == 0) {
-      // TODO remove _uris.size() support
-      numCommand = _uris.size();
-    } else {
-      numCommand = _numConcurrentCommand;
-    }
-    numCommand = std::min(static_cast<int>(_downloadContext->getNumPieces()),
-			  numCommand);
+    numCommand = std::min(_downloadContext->getNumPieces(),
+			  _numConcurrentCommand);
     numCommand += numAdj;
   }
   if(numCommand > 0) {
@@ -599,40 +602,40 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 				     const std::string& method)
 {
   // TODO1.5 The following block should be moved into FileEntry
-  if(_option->getAsBool(PREF_REUSE_URI) && _uris.empty()) {
-    std::deque<std::string> uris = _spentUris;
-    std::sort(uris.begin(), uris.end());
-    uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
+//   if(_option->getAsBool(PREF_REUSE_URI) && _uris.empty()) {
+//     std::deque<std::string> uris = _spentUris;
+//     std::sort(uris.begin(), uris.end());
+//     uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
 
-    std::deque<std::string> errorUris(_uriResults.size());
-    std::transform(_uriResults.begin(), _uriResults.end(),
-		   errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
-    std::sort(errorUris.begin(), errorUris.end());
-    errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
-		    errorUris.end());
+//     std::deque<std::string> errorUris(_uriResults.size());
+//     std::transform(_uriResults.begin(), _uriResults.end(),
+// 		   errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
+//     std::sort(errorUris.begin(), errorUris.end());
+//     errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
+// 		    errorUris.end());
      
-    std::deque<std::string> reusableURIs;
-    std::set_difference(uris.begin(), uris.end(),
-			errorUris.begin(), errorUris.end(),
-			std::back_inserter(reusableURIs));
-    size_t ininum = reusableURIs.size();
-    _logger->debug("Found %u reusable URIs",
-		   static_cast<unsigned int>(ininum));
-    // Reuse at least _numConcurrentCommand URIs here to avoid to
-    // run this process repeatedly.
-    if(ininum > 0 && ininum < _numConcurrentCommand) {
-      _logger->debug("fewer than _numConcurrentCommand=%u",
-		     _numConcurrentCommand);
-      for(size_t i = 0; i < _numConcurrentCommand/ininum; ++i) {
-	_uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
-      }
-      _uris.insert(_uris.end(), reusableURIs.begin(),
-		   reusableURIs.begin()+(_numConcurrentCommand%ininum));
-      _logger->debug("Duplication complete: now %u URIs for reuse",
-		     static_cast<unsigned int>(_uris.size()));
-    }
-  }
-  std::deque<std::string> pendingURIs;
+//     std::deque<std::string> reusableURIs;
+//     std::set_difference(uris.begin(), uris.end(),
+// 			errorUris.begin(), errorUris.end(),
+// 			std::back_inserter(reusableURIs));
+//     size_t ininum = reusableURIs.size();
+//     _logger->debug("Found %u reusable URIs",
+// 		   static_cast<unsigned int>(ininum));
+//     // Reuse at least _numConcurrentCommand URIs here to avoid to
+//     // run this process repeatedly.
+//     if(ininum > 0 && ininum < _numConcurrentCommand) {
+//       _logger->debug("fewer than _numConcurrentCommand=%u",
+// 		     _numConcurrentCommand);
+//       for(size_t i = 0; i < _numConcurrentCommand/ininum; ++i) {
+// 	_uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
+//       }
+//       _uris.insert(_uris.end(), reusableURIs.begin(),
+// 		   reusableURIs.begin()+(_numConcurrentCommand%ininum));
+//       _logger->debug("Duplication complete: now %u URIs for reuse",
+// 		     static_cast<unsigned int>(_uris.size()));
+//     }
+//   }
+//   std::deque<std::string> pendingURIs;
 
   for(; numCommand--; ) {
     Command* command = new CreateRequestCommand(e->newCUID(), this, e);
@@ -917,12 +920,6 @@ void RequestGroup::initializePostDownloadHandler()
 #endif // ENABLE_METALINK
 }
 
-void RequestGroup::getURIs(std::deque<std::string>& uris) const
-{
-  uris.insert(uris.end(), _spentUris.begin(), _spentUris.end());
-  uris.insert(uris.end(), _uris.begin(), _uris.end());
-}
-
 bool RequestGroup::isDependencyResolved()
 {
   if(_dependency.isNull()) {
@@ -985,9 +982,6 @@ bool RequestGroup::needsFileAllocation() const
 
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
-  std::deque<std::string> uris;
-  getURIs(uris);
-
   uint64_t sessionDownloadLength = 0;
 
 #ifdef ENABLE_BITTORRENT
@@ -1001,14 +995,12 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
       _segmentMan->calculateSessionDownloadLength();
   }
 
+  // TODO1.5 Purge unnecessary data in FileEntry here.
   return
     SharedHandle<DownloadResult>
     (new DownloadResult(_gid,
 			_downloadContext->getFileEntries(),
 			_inMemoryDownload,
-			getTotalLength(),
-			uris.empty() ? A2STR::NIL:uris.front(),
-			uris.size(),
 			sessionDownloadLength,
 			_downloadContext->calculateSessionTime(),
 			downloadResult()));
@@ -1072,26 +1064,6 @@ void RequestGroup::removeServerHost(int32_t cuid)
   _serverHosts.erase(std::remove_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid)), _serverHosts.end());
 }
   
-void RequestGroup::removeURIWhoseHostnameIs(const std::string& hostname)
-{
-  std::deque<std::string> newURIs;
-  Request req;
-  for(std::deque<std::string>::const_iterator itr = _uris.begin(); itr != _uris.end(); ++itr) {
-    if(((*itr).find(hostname) == std::string::npos) ||
-       (req.setUrl(*itr) && (req.getHost() != hostname))) {
-      newURIs.push_back(*itr);
-    }
-  }
-  _logger->debug("GUID#%d - Removed %d duplicate hostname URIs",
-		 _gid, _uris.size()-newURIs.size());
-  _uris = newURIs;
-}
-
-void RequestGroup::removeIdenticalURI(const std::string& uri)
-{
-  _uris.erase(std::remove(_uris.begin(), _uris.end(), uri), _uris.end());
-}
-
 void RequestGroup::reportDownloadFinished()
 {
   _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
@@ -1155,45 +1127,13 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
      _segmentMan->calculateSessionDownloadLength() == 0) {
     throw DOWNLOAD_FAILURE_EXCEPTION2
       (StringFormat("Reached max-file-not-found count=%u", maxCount).str(),
-       DownloadResult::MAX_FILE_NOT_FOUND);
+       downloadresultcode::MAX_FILE_NOT_FOUND);
   }
 }
 
 void RequestGroup::markInMemoryDownload()
 {
   _inMemoryDownload = true;
-}
-
-void RequestGroup::tuneDownloadCommand(DownloadCommand* command)
-{
-  _uriSelector->tuneDownloadCommand(_uris, command);
-}
-
-void RequestGroup::addURIResult(std::string uri, DownloadResult::RESULT result)
-{
-  _uriResults.push_back(URIResult(uri, result));
-}
-
-class FindURIResultByResult {
-private:
-  DownloadResult::RESULT _r;
-public:
-  FindURIResultByResult(DownloadResult::RESULT r):_r(r) {}
-
-  bool operator()(const URIResult& uriResult) const
-  {
-    return uriResult.getResult() == _r;
-  }
-};
-
-void RequestGroup::extractURIResult
-(std::deque<URIResult>& res, DownloadResult::RESULT r)
-{
-  std::deque<URIResult>::iterator i =
-    std::stable_partition(_uriResults.begin(), _uriResults.end(),
-			  FindURIResultByResult(r));
-  std::copy(_uriResults.begin(), i, std::back_inserter(res));
-  _uriResults.erase(_uriResults.begin(), i);
 }
 
 void RequestGroup::setTimeout(time_t timeout)
@@ -1211,6 +1151,12 @@ bool RequestGroup::doesUploadSpeedExceed()
 {
   return _maxUploadSpeedLimit > 0 &&
     _maxUploadSpeedLimit < calculateStat().getUploadSpeed();
+}
+
+void RequestGroup::setLastUriResult
+(const std::string uri, downloadresultcode::RESULT result)
+{
+  _lastUriResult.reset(new URIResult(uri, result));
 }
 
 } // namespace aria2

@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "InOrderURISelector.h"
 #include "A2STR.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -41,8 +42,9 @@ InOrderURISelector::InOrderURISelector() {}
 
 InOrderURISelector::~InOrderURISelector() {}
 
-std::string InOrderURISelector::select(std::deque<std::string>& uris)
+std::string InOrderURISelector::select(FileEntry* fileEntry)
 {
+  std::deque<std::string>& uris = fileEntry->getRemainingUris();
   if(uris.empty()) {
     return A2STR::NIL;
   } else {

@@ -179,7 +179,7 @@ static SharedHandle<RequestGroup> createRequestGroup
 (const SharedHandle<Option>& option, const std::deque<std::string>& uris,
  bool useOutOption = false)
 {
-  SharedHandle<RequestGroup> rg(new RequestGroup(option, uris));
+  SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext
      (option->getAsInt(PREF_SEGMENT_SIZE),
@@ -201,15 +201,16 @@ createBtRequestGroup(const std::string& torrentFilePath,
 		     const std::deque<std::string>& auxUris,
 		     const std::string& torrentData = "")
 {
-  SharedHandle<RequestGroup> rg(new RequestGroup(option, auxUris));
+  SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   dctx->setDir(option->get(PREF_DIR));
+  // TODO1.5 Add additional argument auxUris for bittorrent::load* functions.
   if(torrentData.empty()) {
-    bittorrent::load(torrentFilePath, dctx);// may throw exception
+    bittorrent::load(torrentFilePath, dctx, auxUris);// may throw exception
   } else {
-    bittorrent::loadFromMemory(torrentData, dctx, "default"); // may
-							      // throw
-							      // exception
+    bittorrent::loadFromMemory(torrentData, dctx, auxUris, "default"); // may
+    // throw
+    // exception
   }
   dctx->setFileFilter(Util::parseIntRange(option->get(PREF_SELECT_FILE)));
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));

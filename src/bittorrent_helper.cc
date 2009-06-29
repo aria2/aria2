@@ -301,7 +301,8 @@ static void processRootDictionary
 (const SharedHandle<DownloadContext>& ctx,
  const BDE& rootDict,
  const std::string& defaultName,
- const std::string& overrideName)
+ const std::string& overrideName,
+ const std::deque<std::string>& uris)
 {
   if(!rootDict.isDict()) {
     throw DL_ABORT_EX("torrent file does not contain a root dictionary.");
@@ -359,6 +360,9 @@ static void processRootDictionary
   // see http://www.getright.com/seedtorrent.html
   std::vector<std::string> urlList;
   extractUrlList(urlList, rootDict[C_URL_LIST]);
+  urlList.insert(urlList.end(), uris.begin(), uris.end());
+  std::sort(urlList.begin(), urlList.end());
+  urlList.erase(std::unique(urlList.begin(), urlList.end()), urlList.end());
 
   // retrieve file entries
   extractFileEntries(ctx, torrent, infoDict, defaultName, overrideName, urlList);
@@ -380,8 +384,20 @@ void load(const std::string& torrentFile,
   processRootDictionary(ctx,
 			bencode::decodeFromFile(torrentFile),
 			torrentFile,
-			overrideName);
+			overrideName,
+			std::deque<std::string>());
+}
 
+void load(const std::string& torrentFile,
+	  const SharedHandle<DownloadContext>& ctx,
+	  const std::deque<std::string>& uris,
+	  const std::string& overrideName)
+{
+  processRootDictionary(ctx,
+			bencode::decodeFromFile(torrentFile),
+			torrentFile,
+			overrideName,
+			uris);
 }
 
 void loadFromMemory(const unsigned char* content,
@@ -393,7 +409,22 @@ void loadFromMemory(const unsigned char* content,
   processRootDictionary(ctx,
 			bencode::decode(content, length),
 			defaultName,
-			overrideName);
+			overrideName,
+			std::deque<std::string>());
+}
+
+void loadFromMemory(const unsigned char* content,
+		    size_t length,
+		    const SharedHandle<DownloadContext>& ctx,
+		    const std::deque<std::string>& uris,
+		    const std::string& defaultName,
+		    const std::string& overrideName)
+{
+  processRootDictionary(ctx,
+			bencode::decode(content, length),
+			defaultName,
+			overrideName,
+			uris);
 }
 
 void loadFromMemory(const std::string& context,
@@ -405,7 +436,22 @@ void loadFromMemory(const std::string& context,
     (ctx,
      bencode::decode(reinterpret_cast<const unsigned char*>(context.c_str()),
 		     context.size()),
-     defaultName, overrideName);
+     defaultName, overrideName,
+     std::deque<std::string>());
+}
+
+void loadFromMemory(const std::string& context,
+		    const SharedHandle<DownloadContext>& ctx,
+		    const std::deque<std::string>& uris,
+		    const std::string& defaultName,
+		    const std::string& overrideName)
+{
+  processRootDictionary
+    (ctx,
+     bencode::decode(reinterpret_cast<const unsigned char*>(context.c_str()),
+		     context.size()),
+     defaultName, overrideName,
+     uris);
 }
 
 const unsigned char*

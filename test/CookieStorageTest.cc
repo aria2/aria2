@@ -10,6 +10,7 @@
 #include "TimeA2.h"
 #include "CookieParser.h"
 #include "RecoverableException.h"
+#include "File.h"
 
 namespace aria2 {
 

@@ -35,9 +35,11 @@
 #include "FileEntry.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include "Util.h"
 #include "URISelector.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -46,7 +48,12 @@ FileEntry::FileEntry(const std::string& path,
 		     off_t offset,
 		     const std::deque<std::string>& uris):
   path(path), _uris(uris), length(length), offset(offset),
-  extracted(false), requested(true) {}
+  extracted(false), requested(true),
+  _logger(LogFactory::getInstance()) {}
+
+FileEntry::FileEntry():
+  length(0), offset(0), extracted(false), requested(false),
+  _logger(LogFactory::getInstance()) {}
 
 FileEntry::~FileEntry() {}
 
@@ -91,7 +98,7 @@ void FileEntry::getUris(std::deque<std::string>& uris) const
 
 std::string FileEntry::selectUri(const SharedHandle<URISelector>& uriSelector)
 {
-  return uriSelector->select(_uris);
+  return uriSelector->select(this);
 }
 
 SharedHandle<Request>
@@ -100,7 +107,7 @@ FileEntry::getRequest(const SharedHandle<URISelector>& selector)
   SharedHandle<Request> req;
   if(_requestPool.empty()) {
     while(1) {
-      std::string uri = selector->select(_uris);
+      std::string uri = selector->select(this);
       if(uri.empty()) {
 	return req;
       }
@@ -137,6 +144,53 @@ bool FileEntry::removeRequest(const SharedHandle<Request>& request)
     }
   }
   return false;
+}
+
+void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
+{
+  std::deque<std::string> newURIs;
+  Request req;
+  for(std::deque<std::string>::const_iterator itr = _uris.begin(); itr != _uris.end(); ++itr) {
+    if(((*itr).find(hostname) == std::string::npos) ||
+       (req.setUrl(*itr) && (req.getHost() != hostname))) {
+      newURIs.push_back(*itr);
+    }
+  }
+  _logger->debug("Removed %d duplicate hostname URIs for path=%s",
+		 _uris.size()-newURIs.size(), getPath().c_str());
+  _uris = newURIs;
+}
+
+void FileEntry::removeIdenticalURI(const std::string& uri)
+{
+  _uris.erase(std::remove(_uris.begin(), _uris.end(), uri), _uris.end());
+}
+
+void FileEntry::addURIResult(std::string uri, downloadresultcode::RESULT result)
+{
+  _uriResults.push_back(URIResult(uri, result));
+}
+
+class FindURIResultByResult {
+private:
+  downloadresultcode::RESULT _r;
+public:
+  FindURIResultByResult(downloadresultcode::RESULT r):_r(r) {}
+
+  bool operator()(const URIResult& uriResult) const
+  {
+    return uriResult.getResult() == _r;
+  }
+};
+
+void FileEntry::extractURIResult
+(std::deque<URIResult>& res, downloadresultcode::RESULT r)
+{
+  std::deque<URIResult>::iterator i =
+    std::stable_partition(_uriResults.begin(), _uriResults.end(),
+			  FindURIResultByResult(r));
+  std::copy(_uriResults.begin(), i, std::back_inserter(res));
+  _uriResults.erase(_uriResults.begin(), i);
 }
 
 } // namespace aria2

@@ -1,7 +1,5 @@
 #include "FeedbackURISelector.h"
 
-#include <iostream>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
@@ -9,6 +7,7 @@
 #include "array_fun.h"
 #include "ServerStatMan.h"
 #include "ServerStat.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -20,8 +19,7 @@ class FeedbackURISelectorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSelect_skipErrorHost);
   CPPUNIT_TEST_SUITE_END();
 private:
-
-  std::deque<std::string> uris;
+  FileEntry _fileEntry;
 
   SharedHandle<ServerStatMan> ssm;
 
@@ -35,8 +33,11 @@ public:
       "ftp://alpha/file",
       "http://bravo/file"
     };
+    std::deque<std::string> uris;
     uris.assign(&urisSrc[0], &urisSrc[arrayLength(urisSrc)]);
     
+    _fileEntry.setUris(uris);
+
     ssm.reset(new ServerStatMan());
     sel.reset(new FeedbackURISelector(ssm));
   }
@@ -56,9 +57,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FeedbackURISelectorTest);
 void FeedbackURISelectorTest::testSelect_withoutServerStat()
 {
   // Without ServerStat, selector returns first URI
-  std::string uri = sel->select(uris);
+  std::string uri = sel->select(&_fileEntry);
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), uri);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, _fileEntry.getRemainingUris().size());
 }
 
 void FeedbackURISelectorTest::testSelect()
@@ -75,11 +76,13 @@ void FeedbackURISelectorTest::testSelect()
   ssm->add(alphaFTP);
   ssm->add(alphaHTTP);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"), sel->select(uris));
-  CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
+		       sel->select(&_fileEntry));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, _fileEntry.getRemainingUris().size());
   
-  CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"), sel->select(uris));
-  CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
+		       sel->select(&_fileEntry));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, _fileEntry.getRemainingUris().size());
 }
 
 void FeedbackURISelectorTest::testSelect_skipErrorHost()
@@ -93,8 +96,9 @@ void FeedbackURISelectorTest::testSelect_skipErrorHost()
   ssm->add(alphaFTP);
 
   // See error URIs are removed from URI List.
-  CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"), sel->select(uris));
-  CPPUNIT_ASSERT_EQUAL((size_t)0, uris.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
+		       sel->select(&_fileEntry));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, _fileEntry.getRemainingUris().size());
 }
 
 } // namespace aria2

@@ -165,7 +165,7 @@ static void showFiles
 extern void option_processing(Option& option, std::deque<std::string>& uris,
 			      int argc, char* const argv[]);
 
-DownloadResult::RESULT main(int argc, char* argv[])
+downloadresultcode::RESULT main(int argc, char* argv[])
 {
   std::deque<std::string> args;
   SharedHandle<Option> op(new Option());
@@ -192,7 +192,7 @@ DownloadResult::RESULT main(int argc, char* argv[])
     if(op->get(PREF_EVENT_POLL) == V_SELECT) {
       SocketCore::useSelect();
     }
-  DownloadResult::RESULT exitStatus = DownloadResult::FINISHED;
+  downloadresultcode::RESULT exitStatus = downloadresultcode::FINISHED;
   try {
     Logger* logger = LogFactory::getInstance();
     logger->info("<<--- --- --- ---");
@@ -253,7 +253,7 @@ DownloadResult::RESULT main(int argc, char* argv[])
     }
   } catch(Exception& ex) {
     std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
-    exitStatus = DownloadResult::UNKNOWN_ERROR;
+    exitStatus = downloadresultcode::UNKNOWN_ERROR;
   }
   LogFactory::release();
   return exitStatus;
@@ -264,7 +264,7 @@ DownloadResult::RESULT main(int argc, char* argv[])
 int main(int argc, char* argv[]) {
   aria2::Platform platform;
 
-  aria2::DownloadResult::RESULT r = aria2::main(argc, argv);
+  aria2::downloadresultcode::RESULT r = aria2::main(argc, argv);
 
   return r;
 }

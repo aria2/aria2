@@ -40,6 +40,7 @@
 #include "ServerStat.h"
 #include "Request.h"
 #include "A2STR.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -59,8 +60,9 @@ public:
   }
 };
 
-std::string FeedbackURISelector::select(std::deque<std::string>& uris)
+std::string FeedbackURISelector::select(FileEntry* fileEntry)
 {
+  std::deque<std::string>& uris = fileEntry->getRemainingUris();
   if(uris.empty()) {
     return A2STR::NIL;
   }

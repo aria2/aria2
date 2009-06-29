@@ -44,8 +44,7 @@
 #include "TransferStat.h"
 #include "TimeA2.h"
 #include "Request.h"
-#include "DownloadResult.h"
-#include "URIResult.h"
+#include "DownloadResultCode.h"
 
 namespace aria2 {
 
@@ -68,6 +67,7 @@ class CheckIntegrityEntry;
 class DownloadResult;
 class ServerHost;
 class URISelector;
+class URIResult;
 #ifdef ENABLE_BITTORRENT
 class BtRuntime;
 class PeerStorage;
@@ -87,10 +87,7 @@ private:
 
   SharedHandle<Option> _option;
 
-  std::deque<std::string> _uris;
-  std::deque<std::string> _spentUris;
-
-  unsigned int _numConcurrentCommand;
+  size_t _numConcurrentCommand;
 
   /**
    * This is the number of connections used in streaming protocol(http/ftp)
@@ -124,10 +121,6 @@ private:
 
   HaltReason _haltReason;
 
-  // URIResult is stored in the ascending order of the time when its result is
-  // available.
-  std::deque<URIResult> _uriResults;
-
   bool _singleHostMultiConnectionEnabled;
 
   std::deque<SharedHandle<PreDownloadHandler> > _preDownloadHandlers;
@@ -159,6 +152,8 @@ private:
 
   unsigned int _maxUploadSpeedLimit;
 
+  SharedHandle<URIResult> _lastUriResult;
+
   Logger* _logger;
 
   void validateFilename(const std::string& expectedFilename,
@@ -170,15 +165,14 @@ private:
 
   bool tryAutoFileRenaming();
 
-  // Returns the result code of this RequestGroup.
-  // If the download finished, then returns DownloadResult::FINISHED.
-  // If the download didn't finish and error result is available in _uriResults,
-  // then last result code is returned.
-  // Otherwise returns DownloadResult::UNKNOWN_ERROR.
-  DownloadResult::RESULT downloadResult() const;
+  // Returns the result code of this RequestGroup.  If the download
+  // finished, then returns downloadresultcode::FINISHED.  If the
+  // download didn't finish and error result is available in
+  // _uriResults, then last result code is returned.  Otherwise
+  // returns downloadresultcode::UNKNOWN_ERROR.
+  downloadresultcode::RESULT downloadResult() const;
 public:
-  RequestGroup(const SharedHandle<Option>& option,
-	       const std::deque<std::string>& uris);
+  RequestGroup(const SharedHandle<Option>& option);
 
   ~RequestGroup();
   /**
@@ -210,11 +204,6 @@ public:
 			 DownloadEngine* e, unsigned int numCommand,
 			 const std::string& method = Request::METHOD_GET);
   
-  void addURI(const std::string& uri)
-  {
-    _uris.push_back(uri);
-  }
-
   bool downloadFinished() const;
 
   bool allDownloadFinished() const;
@@ -226,18 +215,6 @@ public:
   uint64_t getTotalLength() const;
 
   uint64_t getCompletedLength() const;
-
-  const std::deque<std::string>& getRemainingUris() const
-  {
-    return _uris;
-  }
-
-  const std::deque<std::string>& getSpentUris() const
-  {
-    return _spentUris;
-  }
-
-  void getURIs(std::deque<std::string>& uris) const;
 
   /**
    * Compares expected filename with specified actualFilename.
@@ -358,17 +335,6 @@ public:
     return _forceHaltRequested;
   }
 
-  void addURIResult(std::string uri, DownloadResult::RESULT result);
-
-  const std::deque<URIResult>& getURIResults() const
-  {
-    return _uriResults;
-  }
-
-  // Extracts URIResult whose _result is r and stores them into res.
-  // The extracted URIResults are removed from _uriResults.
-  void extractURIResult(std::deque<URIResult>& res, DownloadResult::RESULT r);
-
   void dependsOn(const SharedHandle<Dependency>& dep);
 
   bool isDependencyResolved();
@@ -433,10 +399,6 @@ public:
 
   void removeServerHost(int32_t cuid);
   
-  void removeURIWhoseHostnameIs(const std::string& hostname);
-
-  void removeIdenticalURI(const std::string& uri);
-
   void reportDownloadFinished();
 
   const std::deque<std::string>& getAcceptTypes() const
@@ -471,8 +433,6 @@ public:
   {
     return _inMemoryDownload;
   }
-
-  void tuneDownloadCommand(DownloadCommand* command);
 
   void setTimeout(time_t timeout);
 
@@ -510,6 +470,8 @@ public:
   {
     _maxUploadSpeedLimit = speed;
   }
+
+  void setLastUriResult(std::string uri, downloadresultcode::RESULT result);
 
   static void resetGIDCounter() { _gidCounter = 0; }
 };

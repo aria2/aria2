@@ -44,10 +44,14 @@
 #include "SharedHandle.h"
 #include "File.h"
 #include "Request.h"
+#include "URIResult.h"
+#include "DownloadResultCode.h"
 
 namespace aria2 {
 
 class URISelector;
+
+class Logger;
 
 class FileEntry {
 private:
@@ -61,8 +65,13 @@ private:
   std::deque<SharedHandle<Request> > _requestPool;
   std::deque<SharedHandle<Request> > _inFlightRequests;
   std::string _contentType;
+  // URIResult is stored in the ascending order of the time when its result is
+  // available.
+  std::deque<URIResult> _uriResults;
+
+  Logger* _logger;
 public:
-  FileEntry():length(0), offset(0), extracted(false), requested(false) {}
+  FileEntry();
 
   FileEntry(const std::string& path, uint64_t length, off_t offset,
 	    const std::deque<std::string>& uris = std::deque<std::string>());
@@ -116,6 +125,11 @@ public:
     return _uris;
   }
 
+  std::deque<std::string>& getRemainingUris()
+  {
+    return _uris;
+  }
+
   const std::deque<std::string>& getSpentUris() const
   {
     return _spentUris;
@@ -159,6 +173,22 @@ public:
 
   // Translate global offset goff to file local offset.
   off_t gtoloff(off_t goff) const;
+
+  void removeURIWhoseHostnameIs(const std::string& hostname);
+
+  void removeIdenticalURI(const std::string& uri);
+
+  void addURIResult(std::string uri, downloadresultcode::RESULT result);
+
+  const std::deque<URIResult>& getURIResults() const
+  {
+    return _uriResults;
+  }
+
+  // Extracts URIResult whose _result is r and stores them into res.
+  // The extracted URIResults are removed from _uriResults.
+  void extractURIResult
+  (std::deque<URIResult>& res, downloadresultcode::RESULT r);
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

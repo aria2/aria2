@@ -7,6 +7,7 @@
 #include "DownloadContext.h"
 #include "FileEntry.h"
 #include "PieceStorage.h"
+#include "DownloadResult.h"
 
 namespace aria2 {
 
@@ -14,10 +15,8 @@ class RequestGroupTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(RequestGroupTest);
   CPPUNIT_TEST(testRegisterSearchRemove);
-  CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
   CPPUNIT_TEST(testGetFirstFilePath);
   CPPUNIT_TEST(testCreateDownloadResult);
-  CPPUNIT_TEST(testExtractURIResult);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Option> _option;
@@ -28,10 +27,8 @@ public:
   }
 
   void testRegisterSearchRemove();
-  void testRemoveURIWhoseHostnameIs();
   void testGetFirstFilePath();
   void testCreateDownloadResult();
-  void testExtractURIResult();
 };
 
 
@@ -39,7 +36,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupTest );
 
 void RequestGroupTest::testRegisterSearchRemove()
 {
-  RequestGroup rg(_option, std::deque<std::string>());
+  RequestGroup rg(_option);
   SharedHandle<ServerHost> sv1(new ServerHost(1, "localhost1"));
   SharedHandle<ServerHost> sv2(new ServerHost(2, "localhost2"));
   SharedHandle<ServerHost> sv3(new ServerHost(3, "localhost3"));
@@ -69,25 +66,12 @@ void RequestGroupTest::testRegisterSearchRemove()
   }
 }
 
-void RequestGroupTest::testRemoveURIWhoseHostnameIs()
-{
-  const char* uris[] = { "http://localhost/aria2.zip",
-			 "ftp://localhost/aria2.zip",
-			 "http://mirror/aria2.zip" };
-  RequestGroup rg(_option, std::deque<std::string>(&uris[0], &uris[3]));
-  rg.removeURIWhoseHostnameIs("localhost");
-  CPPUNIT_ASSERT_EQUAL((size_t)1, rg.getRemainingUris().size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
-		       rg.getRemainingUris()[0]);
-}
-
 void RequestGroupTest::testGetFirstFilePath()
 {
   SharedHandle<DownloadContext> ctx
     (new DownloadContext(1024, 1024, "/tmp/myfile"));
-  std::deque<std::string> uris;
 
-  RequestGroup group(_option, uris);
+  RequestGroup group(_option);
   group.setDownloadContext(ctx);
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFirstFilePath());
@@ -101,12 +85,7 @@ void RequestGroupTest::testCreateDownloadResult()
 {
   SharedHandle<DownloadContext> ctx
     (new DownloadContext(1024, 1024*1024, "/tmp/myfile"));
-  //ctx->setDir("/tmp");
-  std::deque<std::string> uris;
-  uris.push_back("http://first/file");
-  uris.push_back("http://second/file");
-
-  RequestGroup group(_option, uris);
+  RequestGroup group(_option);
   group.setDownloadContext(ctx);
   group.initPieceStorage();
   {
@@ -114,64 +93,35 @@ void RequestGroupTest::testCreateDownloadResult()
   
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"),
 			 result->fileEntries[0]->getPath());
-    CPPUNIT_ASSERT_EQUAL((uint64_t)1024*1024, result->totalLength);
-    CPPUNIT_ASSERT_EQUAL(std::string("http://first/file"), result->uri);
-    CPPUNIT_ASSERT_EQUAL((size_t)2, result->numUri);
+    CPPUNIT_ASSERT_EQUAL((off_t)1024*1024,
+			 result->fileEntries.back()->getLastOffset());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0, result->sessionDownloadLength);
     CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime);
     // result is UNKNOWN_ERROR if download has not completed and no specific
     // error has been reported
-    CPPUNIT_ASSERT_EQUAL(DownloadResult::UNKNOWN_ERROR, result->result);
+    CPPUNIT_ASSERT_EQUAL(downloadresultcode::UNKNOWN_ERROR, result->result);
 
     // if haltReason is set to RequestGroup::USER_REQUEST, download
     // result becomes IN_PROGRESS
     group.setHaltRequested(true, RequestGroup::USER_REQUEST);
     result = group.createDownloadResult();
-    CPPUNIT_ASSERT_EQUAL(DownloadResult::IN_PROGRESS, result->result);
+    CPPUNIT_ASSERT_EQUAL(downloadresultcode::IN_PROGRESS, result->result);
   }
   {
-    group.addURIResult("http://first/file", DownloadResult::TIME_OUT);
-    group.addURIResult("http://second/file",DownloadResult::RESOURCE_NOT_FOUND);
+    group.setLastUriResult
+      ("http://second/file",downloadresultcode::RESOURCE_NOT_FOUND);
   
     SharedHandle<DownloadResult> result = group.createDownloadResult();
 
-    CPPUNIT_ASSERT_EQUAL(DownloadResult::RESOURCE_NOT_FOUND, result->result);
+    CPPUNIT_ASSERT_EQUAL(downloadresultcode::RESOURCE_NOT_FOUND, result->result);
   }
   {
     group.getPieceStorage()->markAllPiecesDone();
 
     SharedHandle<DownloadResult> result = group.createDownloadResult();
 
-    CPPUNIT_ASSERT_EQUAL(DownloadResult::FINISHED, result->result);
+    CPPUNIT_ASSERT_EQUAL(downloadresultcode::FINISHED, result->result);
   }
 }
-
-void RequestGroupTest::testExtractURIResult()
-{
-  RequestGroup group(_option, std::deque<std::string>());
-  group.addURIResult("http://timeout/file", DownloadResult::TIME_OUT);
-  group.addURIResult("http://finished/file", DownloadResult::FINISHED);
-  group.addURIResult("http://timeout/file2", DownloadResult::TIME_OUT);
-  group.addURIResult("http://unknownerror/file", DownloadResult::UNKNOWN_ERROR);
-
-  std::deque<URIResult> res;
-  group.extractURIResult(res, DownloadResult::TIME_OUT);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://timeout/file"), res[0].getURI());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://timeout/file2"), res[1].getURI());
-
-  CPPUNIT_ASSERT_EQUAL((size_t)2, group.getURIResults().size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://finished/file"),
-		       group.getURIResults()[0].getURI());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://unknownerror/file"),
-		       group.getURIResults()[1].getURI());
-
-  res.clear();
-
-  group.extractURIResult(res, DownloadResult::TIME_OUT);
-  CPPUNIT_ASSERT(res.empty());
-  CPPUNIT_ASSERT_EQUAL((size_t)2, group.getURIResults().size());
-}
-
 
 } // namespace aria2

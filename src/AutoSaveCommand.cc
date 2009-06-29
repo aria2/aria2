@@ -35,6 +35,7 @@
 #include "AutoSaveCommand.h"
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

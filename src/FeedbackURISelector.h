@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2006 Tatsuhiro Tsujikawa
  *
- * This program is free software; you can redistribute it and/or modify
+nn * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -50,7 +50,7 @@ public:
 
   virtual ~FeedbackURISelector();
 
-  virtual std::string select(std::deque<std::string>& uris);
+  virtual std::string select(FileEntry* fileEntry);
 };
 
 } // namespace aria2

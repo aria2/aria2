@@ -52,6 +52,7 @@
 #include "message.h"
 #include "Logger.h"
 #include "a2functional.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

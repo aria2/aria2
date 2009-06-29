@@ -200,7 +200,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 {
   std::deque<std::string> uris;
   uris.push_back(uri);
-  RequestGroupHandle rg(new RequestGroup(getOption(), uris));
+  RequestGroupHandle rg(new RequestGroup(getOption()));
   // If backup tracker is available, only try 2 times for each tracker
   // and if they all fails, then try next one.
   if(backupTrackerIsAvailable(_requestGroup->getDownloadContext())) {

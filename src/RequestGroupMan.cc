@@ -249,10 +249,10 @@ static void executeStartHook
 static void executeStopHook
 (const SharedHandle<DownloadResult>& result, const Option* option)
 {
-  if(result->result == DownloadResult::FINISHED &&
+  if(result->result == downloadresultcode::FINISHED &&
      !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
     executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE), result->gid);
-  } else if(result->result != DownloadResult::IN_PROGRESS &&
+  } else if(result->result != downloadresultcode::IN_PROGRESS &&
 	    !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
     executeHook(option->get(PREF_ON_DOWNLOAD_ERROR), result->gid);
   } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
@@ -531,10 +531,10 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   size_t finished = 0;
   size_t error = 0;
   size_t inprogress = 0;
-  DownloadResult::RESULT lastError = DownloadResult::FINISHED;
+  downloadresultcode::RESULT lastError = downloadresultcode::FINISHED;
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
       itr != _downloadResults.end(); ++itr) {
-    if((*itr)->result == DownloadResult::FINISHED) {
+    if((*itr)->result == downloadresultcode::FINISHED) {
       ++finished;
     } else {
       ++error;
@@ -544,7 +544,7 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
-    if(result->result == DownloadResult::FINISHED) {
+    if(result->result == downloadresultcode::FINISHED) {
       ++finished;
     } else {
       ++inprogress;
@@ -575,10 +575,10 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
       itr != _downloadResults.end(); ++itr) {
     std::string status;
-    if((*itr)->result == DownloadResult::FINISHED) {
+    if((*itr)->result == downloadresultcode::FINISHED) {
       status = MARK_OK;
       ++ok;
-    } else if((*itr)->result == DownloadResult::IN_PROGRESS) {
+    } else if((*itr)->result == downloadresultcode::IN_PROGRESS) {
       status = MARK_INPR;
       ++inpr;
     } else {
@@ -591,7 +591,7 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
       itr != _requestGroups.end(); ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
     std::string status;
-    if(result->result == DownloadResult::FINISHED) {
+    if(result->result == downloadresultcode::FINISHED) {
       status = MARK_OK;
       ++ok;
     } else {
@@ -639,16 +639,8 @@ std::string RequestGroupMan::formatDownloadResult(const std::string& status, con
   o << "|";
   const std::vector<SharedHandle<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
-  if(downloadResult->result == DownloadResult::FINISHED ||
-     downloadResult->numUri == 0) {
-    writeFilePath(fileEntries.begin(), fileEntries.end(), o,
-		  downloadResult->inMemoryDownload);
-  } else {
-    o << downloadResult->uri;
-    if(downloadResult->numUri > 1) {
-      o << " (" << downloadResult->numUri-1 << "more)";
-    }
-  }
+  writeFilePath(fileEntries.begin(), fileEntries.end(), o,
+		downloadResult->inMemoryDownload);
   return o.str();
 }
 

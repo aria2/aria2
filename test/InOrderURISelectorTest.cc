@@ -1,9 +1,11 @@
 #include "InOrderURISelector.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
 #include "array_fun.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -13,8 +15,7 @@ class InOrderURISelectorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSelect);
   CPPUNIT_TEST_SUITE_END();
 private:
-
-  std::deque<std::string> uris;
+  FileEntry _fileEntry;
 
   SharedHandle<InOrderURISelector> sel;
   
@@ -26,8 +27,11 @@ public:
       "ftp://alpha/file",
       "http://bravo/file"
     };
+    std::deque<std::string> uris;
     uris.assign(&urisSrc[0], &urisSrc[arrayLength(urisSrc)]);
     
+    _fileEntry.setUris(uris);
+
     sel.reset(new InOrderURISelector());
   }
 
@@ -41,10 +45,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(InOrderURISelectorTest);
 
 void InOrderURISelectorTest::testSelect()
 {
-  CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), sel->select(uris));
-  CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"), sel->select(uris));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"), sel->select(uris));
-  CPPUNIT_ASSERT_EQUAL(std::string(""), sel->select(uris));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
+		       sel->select(&_fileEntry));
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
+		       sel->select(&_fileEntry));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
+		       sel->select(&_fileEntry));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), sel->select(&_fileEntry));
 }
 
 } // namespace aria2

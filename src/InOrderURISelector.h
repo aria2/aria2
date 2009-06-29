@@ -44,7 +44,7 @@ public:
 
   virtual ~InOrderURISelector();
 
-  virtual std::string select(std::deque<std::string>& uris);
+  virtual std::string select(FileEntry* fileEntry);
 };
 
 } // namespace aria2

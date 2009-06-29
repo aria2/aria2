@@ -65,6 +65,7 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "a2functional.h"
+#include "URISelector.h"
 
 namespace aria2 {
 
@@ -106,10 +107,11 @@ bool FtpNegotiationCommand::executeInternal() {
       SharedHandle<ServerHost> sv =
 	_requestGroup->searchServerHost(req->getHost());
       if(!sv.isNull()) {
-	_requestGroup->removeURIWhoseHostnameIs(sv->getHostname());
+	_fileEntry->removeURIWhoseHostnameIs(sv->getHostname());
       }
     }
-    _requestGroup->tuneDownloadCommand(command);
+    _requestGroup->getURISelector()->tuneDownloadCommand
+      (_fileEntry->getRemainingUris(), command);
     e->commands.push_back(command);
     return true;
   } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
@@ -265,7 +267,8 @@ bool FtpNegotiationCommand::recvCwd() {
     poolConnection();
     _requestGroup->increaseAndValidateFileNotFoundCount();
     if (status == 550)
-      throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND, DownloadResult::RESOURCE_NOT_FOUND);
+      throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
+			 downloadresultcode::RESOURCE_NOT_FOUND);
     else
       throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
@@ -579,7 +582,8 @@ bool FtpNegotiationCommand::recvRetr() {
   if(status != 150 && status != 125) {
     _requestGroup->increaseAndValidateFileNotFoundCount();
     if (status == 550)
-      throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND, DownloadResult::RESOURCE_NOT_FOUND);
+      throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
+			 downloadresultcode::RESOURCE_NOT_FOUND);
     else
       throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }

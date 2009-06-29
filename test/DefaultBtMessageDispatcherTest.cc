@@ -137,7 +137,7 @@ public:
   void setUp() {
     _option.reset(new Option());
 
-    _rg.reset(new RequestGroup(_option, std::deque<std::string>()));
+    _rg.reset(new RequestGroup(_option));
 
     _dctx.reset(new DownloadContext());
     bittorrent::load("test.torrent", _dctx);

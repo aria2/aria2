@@ -174,7 +174,7 @@ bool AbstractCommand::execute() {
 						     req->getProtocol());
 	ss->setError();
 
-	throw DL_RETRY_EX2(EX_TIME_OUT, DownloadResult::TIME_OUT);
+	throw DL_RETRY_EX2(EX_TIME_OUT, downloadresultcode::TIME_OUT);
       }
       e->commands.push_back(this);
       return false;
@@ -187,7 +187,8 @@ bool AbstractCommand::execute() {
 		    DL_ABORT_EX2(StringFormat
 				 ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
 		    cuid, req->getUrl().c_str());
-      _requestGroup->addURIResult(req->getUrl(), err.getCode());
+      _fileEntry->addURIResult(req->getUrl(), err.getCode());
+      _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
     }
     onAbort();
     // TODO Do we need this?
@@ -195,6 +196,7 @@ bool AbstractCommand::execute() {
     tryReserved();
     return true;
   } catch(DlRetryEx& err) {
+    // TODO1.5 Consider the case when req is null
     logger->info(MSG_RESTARTING_DOWNLOAD,
 		 DL_RETRY_EX2(StringFormat
 			     ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
@@ -214,15 +216,18 @@ bool AbstractCommand::execute() {
     if(isAbort) {
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
       logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
-      _requestGroup->addURIResult(req->getUrl(), err.getCode());
+      _fileEntry->addURIResult(req->getUrl(), err.getCode());
+      _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
       tryReserved();
       return true;
     } else {
       return prepareForRetry(getOption()->getAsInt(PREF_RETRY_WAIT));
     }
   } catch(DownloadFailureException& err) {
+    // TODO1.5 Consider the case when req is null
     logger->error(EX_EXCEPTION_CAUGHT, err);
-    _requestGroup->addURIResult(req->getUrl(), err.getCode());
+    _fileEntry->addURIResult(req->getUrl(), err.getCode());
+    _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
     _requestGroup->setHaltRequested(true);
     return true;
   }
@@ -279,7 +284,7 @@ void AbstractCommand::onAbort() {
     // TODO This might be a problem if the failure is caused by proxy.
     e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
 					       req->getProtocol())->setError();
-    _requestGroup->removeIdenticalURI(req->getUrl());
+    _fileEntry->removeIdenticalURI(req->getUrl());
     _fileEntry->removeRequest(req);
   }
 

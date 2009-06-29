@@ -36,7 +36,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtPostDownloadHandlerTest );
 void BtPostDownloadHandlerTest::testCanHandle_extension()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test.torrent"));
-  RequestGroup rg(_option, std::deque<std::string>());
+  RequestGroup rg(_option);
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -51,7 +51,7 @@ void BtPostDownloadHandlerTest::testCanHandle_contentType()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/x-bittorrent");
-  RequestGroup rg(_option, std::deque<std::string>());
+  RequestGroup rg(_option);
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -66,7 +66,7 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(1024, 0, "test.torrent"));
-  RequestGroup rg(_option, std::deque<std::string>());
+  RequestGroup rg(_option);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
 

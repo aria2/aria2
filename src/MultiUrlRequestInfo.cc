@@ -100,9 +100,9 @@ void MultiUrlRequestInfo::printMessageForContinue()
 	      << "\n";
 }
 
-DownloadResult::RESULT MultiUrlRequestInfo::execute()
+downloadresultcode::RESULT MultiUrlRequestInfo::execute()
 {
-  DownloadResult::RESULT returnValue = DownloadResult::FINISHED;
+  downloadresultcode::RESULT returnValue = downloadresultcode::FINISHED;
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option.get(), _requestGroups);
@@ -190,9 +190,9 @@ DownloadResult::RESULT MultiUrlRequestInfo::execute()
     RequestGroupMan::DownloadStat s = e->_requestGroupMan->getDownloadStat();
     if(!s.allCompleted()) {
       printMessageForContinue();
-      if(s.getLastErrorResult() == DownloadResult::FINISHED &&
+      if(s.getLastErrorResult() == downloadresultcode::FINISHED &&
 	 s.getInProgress() > 0) {
-	returnValue = DownloadResult::IN_PROGRESS;
+	returnValue = downloadresultcode::IN_PROGRESS;
       } else {
 	returnValue = s.getLastErrorResult();
       }

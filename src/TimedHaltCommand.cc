@@ -37,6 +37,7 @@
 #include "RequestGroupMan.h"
 #include "Logger.h"
 #include "message.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

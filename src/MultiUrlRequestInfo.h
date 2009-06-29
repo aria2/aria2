@@ -77,7 +77,7 @@ public:
    * Returns FINISHED if all downloads have completed, otherwise returns the
    * last download result.
    */
-  DownloadResult::RESULT execute();
+  downloadresultcode::RESULT execute();
 };
 
 typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;

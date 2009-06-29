@@ -40,6 +40,7 @@
 #include "HttpServerCommand.h"
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

@@ -47,10 +47,10 @@
 #include "A2STR.h"
 #include "BDE.h"
 #include "IntSequence.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
-class FileEntry;
 class RequestGroup;
 
 class DownloadContext

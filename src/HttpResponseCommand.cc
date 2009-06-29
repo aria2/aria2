@@ -66,6 +66,7 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "a2functional.h"
+#include "URISelector.h"
 
 namespace aria2 {
 
@@ -131,7 +132,7 @@ bool HttpResponseCommand::executeInternal()
     SharedHandle<ServerHost> sv =
       _requestGroup->searchServerHost(req->getHost());
     if(!sv.isNull()) {
-      _requestGroup->removeURIWhoseHostnameIs(sv->getHostname());
+      _fileEntry->removeURIWhoseHostnameIs(sv->getHostname());
     }
   }
   if(_requestGroup->getPieceStorage().isNull()) {
@@ -409,7 +410,8 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
     _requestGroup->setFileAllocationEnabled(false);
   }
 
-  _requestGroup->tuneDownloadCommand(command);
+  _requestGroup->getURISelector()->tuneDownloadCommand
+    (_fileEntry->getRemainingUris(), command);
 
   return command;
 }

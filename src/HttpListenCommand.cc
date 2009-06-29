@@ -41,6 +41,7 @@
 #include "HttpServerCommand.h"
 #include "CUIDCounter.h"
 #include "RequestGroupMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

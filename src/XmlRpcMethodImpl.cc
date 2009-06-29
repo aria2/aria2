@@ -344,9 +344,9 @@ static void gatherStoppedDownload
 (BDE& entryDict, const SharedHandle<DownloadResult>& ds)
 {
   entryDict["gid"] = Util::itos(ds->gid);
-  if(ds->result == DownloadResult::IN_PROGRESS) {
+  if(ds->result == downloadresultcode::IN_PROGRESS) {
     entryDict["status"] = BDE_REMOVED;
-  } else if(ds->result == DownloadResult::FINISHED) {
+  } else if(ds->result == downloadresultcode::FINISHED) {
     entryDict["status"] = BDE_COMPLETE;
   } else {
     entryDict["status"] = BDE_ERROR;
@@ -428,7 +428,9 @@ BDE GetUrisXmlRpcMethod::process
   }
   BDE uriList = BDE::list();
   std::deque<std::string> uris;
-  group->getURIs(uris);
+  // TODO1.5 getUris should return list of URIs attached to each FileEntry.
+  // Current implementation just returns first FileEntry's URIs.
+  group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
   for(std::deque<std::string>::const_iterator i = uris.begin(); i != uris.end();
       ++i) {
     BDE entry = BDE::dict();

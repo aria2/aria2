@@ -1,3 +1,77 @@
+2009-06-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed _uris from RequestGroup. All functions that refer to _uris
+	were moved to FileEntry. Exit status code are now defined in
+	DownloadResultCode.h.
+	* src/AbstractCommand.cc
+	* src/AdaptiveURISelector.cc
+	* src/AdaptiveURISelector.h
+	* src/AutoSaveCommand.cc
+	* src/BtPostDownloadHandler.cc
+	* src/CheckIntegrityDispatcherCommand.cc
+	* src/CookieStorage.cc
+	* src/DHTAutoSaveCommand.cc
+	* src/DHTBucketRefreshCommand.cc
+	* src/DHTEntryPointNameResolveCommand.cc
+	* src/DHTInteractionCommand.cc
+	* src/DHTPeerAnnounceCommand.cc
+	* src/DHTTokenUpdateCommand.cc
+	* src/DlAbortEx.h
+	* src/DlRetryEx.h
+	* src/DownloadCommand.cc
+	* src/DownloadContext.h
+	* src/DownloadFailureException.h
+	* src/DownloadResult.h
+	* src/DownloadResultCode.h
+	* src/FeedbackURISelector.cc
+	* src/FeedbackURISelector.h
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpListenCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpServerResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/InOrderURISelector.cc
+	* src/InOrderURISelector.h
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/Metalink2RequestGroup.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/MultiUrlRequestInfo.h
+	* src/OptionHandlerFactory.cc
+	* src/PeerListenCommand.cc
+	* src/RecoverableException.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/TimedHaltCommand.cc
+	* src/TrackerWatcherCommand.cc
+	* src/URIResult.cc
+	* src/URIResult.h
+	* src/URISelector.h
+	* src/XmlRpcMethodImpl.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/download_helper.cc
+	* src/main.cc
+	* src/option_processing.cc
+	* test/BtDependencyTest.cc
+	* test/BtPostDownloadHandlerTest.cc
+	* test/CookieStorageTest.cc
+	* test/DefaultBtMessageDispatcherTest.cc
+	* test/DownloadHandlerFactoryTest.cc
+	* test/DownloadHelperTest.cc
+	* test/FeedbackURISelectorTest.cc
+	* test/FileEntryTest.cc
+	* test/InOrderURISelectorTest.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkPostDownloadHandlerTest.cc
+	* test/RequestGroupManTest.cc
+	* test/RequestGroupTest.cc
+	* test/XmlRpcMethodTest.cc
+
 2009-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 	Removed MockBtContext.h
 	* test/Makefile.am

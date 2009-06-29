@@ -424,7 +424,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	SequentialDispatcherCommand.h PieceSelector.h \
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h \
 	bitfield.h BDE.cc BDE.h CreateRequestCommand.cc \
-	CreateRequestCommand.h XmlRpcRequestParserController.cc \
+	CreateRequestCommand.h DownloadResultCode.h \
+	XmlRpcRequestParserController.cc \
 	XmlRpcRequestParserController.h \
 	XmlRpcRequestParserStateMachine.cc \
 	XmlRpcRequestParserStateMachine.h XmlRpcRequestParserState.h \
@@ -1178,15 +1179,15 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	SequentialDispatcherCommand.h PieceSelector.h \
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h \
 	bitfield.h BDE.cc BDE.h CreateRequestCommand.cc \
-	CreateRequestCommand.h $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_12) $(am__append_13) $(am__append_14) \
-	$(am__append_15) $(am__append_16) $(am__append_17) \
-	$(am__append_18) $(am__append_19) $(am__append_20) \
-	$(am__append_21) $(am__append_22) $(am__append_23) \
-	$(am__append_24) $(am__append_25)
+	CreateRequestCommand.h DownloadResultCode.h $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5) $(am__append_6) $(am__append_7) \
+	$(am__append_8) $(am__append_9) $(am__append_10) \
+	$(am__append_11) $(am__append_12) $(am__append_13) \
+	$(am__append_14) $(am__append_15) $(am__append_16) \
+	$(am__append_17) $(am__append_18) $(am__append_19) \
+	$(am__append_20) $(am__append_21) $(am__append_22) \
+	$(am__append_23) $(am__append_24) $(am__append_25)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

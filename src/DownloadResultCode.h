@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,55 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DOWNLOAD_RESULT_H_
-#define _D_DOWNLOAD_RESULT_H_
+#ifndef _D_DOWNLOAD_RESULT_CODE_H_
+#define _D_DOWNLOAD_RESULT_CODE_H_
 
 #include "common.h"
 
-#include <stdint.h>
-
-#include <string>
-#include <vector>
-
-#include "SharedHandle.h"
-#include "DownloadResultCode.h"
-
 namespace aria2 {
 
-class FileEntry;
+namespace downloadresultcode {
 
-class DownloadResult
-{
-public:
-  int32_t gid;
- 
-  std::vector<SharedHandle<FileEntry> > fileEntries;
-
-  bool inMemoryDownload;
-
-  uint64_t sessionDownloadLength;
-
-  // milliseconds
-  int64_t sessionTime;
-
-  downloadresultcode::RESULT result;
-
-  DownloadResult(int32_t gid,
-		 const std::vector<SharedHandle<FileEntry> >& fileEntries,
-		 bool inMemoryDownload,
-		 uint64_t sessionDownloadLength,
-		 int64_t sessionTime,
-		 downloadresultcode::RESULT result):
-    gid(gid),
-    fileEntries(fileEntries),
-    inMemoryDownload(inMemoryDownload),
-    sessionDownloadLength(sessionDownloadLength),
-    sessionTime(sessionTime),
-    result(result) {}
+enum RESULT {
+  FINISHED = 0,
+  UNKNOWN_ERROR = 1,
+  TIME_OUT = 2,
+  RESOURCE_NOT_FOUND = 3,
+  MAX_FILE_NOT_FOUND = 4,
+  TOO_SLOW_DOWNLOAD_SPEED = 5,
+  NETWORK_PROBLEM = 6,
+  IN_PROGRESS = 7,
 };
 
-typedef SharedHandle<DownloadResult> DownloadResultHandle;
+} // namespace downloadresultcode
 
 } // namespace aria2
 
-#endif // _D_DOWNLOAD_RESULT_H_
+#endif // _D_DOWNLOAD_RESULT_CODE_H_

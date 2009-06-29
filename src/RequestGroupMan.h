@@ -146,21 +146,21 @@ public:
     size_t _error;
     size_t _inProgress;
     size_t _waiting;
-    DownloadResult::RESULT _lastErrorResult;
+    downloadresultcode::RESULT _lastErrorResult;
   public:
     DownloadStat(size_t completed,
 		 size_t error,
 		 size_t inProgress,
 		 size_t waiting,
-		 DownloadResult::RESULT lastErrorResult =
-		 DownloadResult::FINISHED):
+		 downloadresultcode::RESULT lastErrorResult =
+		 downloadresultcode::FINISHED):
       _completed(completed),
       _error(error),
       _inProgress(inProgress),
       _waiting(waiting),
       _lastErrorResult(lastErrorResult) {}
 
-    DownloadResult::RESULT getLastErrorResult() const
+    downloadresultcode::RESULT getLastErrorResult() const
     {
       return _lastErrorResult;
     }
