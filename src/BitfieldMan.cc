@@ -96,7 +96,7 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
   memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
   memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
   filterEnabled = bitfieldMan.filterEnabled;
-  if(filterBitfield) {
+  if(filterEnabled) {
     filterBitfield = new unsigned char[bitfieldLength];
     memcpy(filterBitfield, bitfieldMan.filterBitfield, bitfieldLength);
   } else {
@@ -607,6 +607,29 @@ void BitfieldMan::removeFilter(uint64_t offset, uint64_t length) {
     size_t endBlock = (offset+length-1)/blockLength;
     for(size_t i = startBlock; i <= endBlock && i < blocks; i++) {
       setBitInternal(filterBitfield, i, false);
+    }
+  }
+  updateCache();
+}
+
+void BitfieldMan::addNotFilter(uint64_t offset, uint64_t length)
+{
+  // TODO1.5 Create ensureFilterBitfield() to initialize this
+  if(!filterBitfield) {
+    filterBitfield = new unsigned char[bitfieldLength];
+    memset(filterBitfield, 0, bitfieldLength);
+  }
+  if(length > 0 && blocks > 0) {
+    size_t startBlock = offset/blockLength;
+    if(blocks <= startBlock) {
+      startBlock = blocks;
+    }
+    size_t endBlock = (offset+length-1)/blockLength;
+    for(size_t i = 0; i < startBlock; ++i) {
+      setFilterBit(i);
+    }
+    for(size_t i = endBlock+1; i < blocks; ++i) {
+      setFilterBit(i);
     }
   }
   updateCache();

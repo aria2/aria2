@@ -156,18 +156,28 @@ bool AbstractCommand::execute() {
       if(!_requestGroup->getPieceStorage().isNull()) {
 	_segments.clear();
 	_requestGroup->getSegmentMan()->getInFlightSegment(_segments, cuid);
-	size_t maxSegments = req.isNull()?1:req->getMaxPipelinedRequest();
-	while(_segments.size() < maxSegments) {
-	  SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid);
-	  if(segment.isNull()) {
-	    break;
+	if(req.isNull() || req->getMaxPipelinedRequest() == 1) {
+	  if(_segments.empty()) {
+	    SharedHandle<Segment> segment =
+	      _requestGroup->getSegmentMan()->getSegment(cuid);
+	    if(!segment.isNull()) {
+	      _segments.push_back(segment);
+	    }
 	  }
-	  _segments.push_back(segment);
-	}
-	if(_segments.empty()) {
-	  // TODO socket could be pooled here if pipelining is enabled...
-	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
-	  return true;
+	  if(_segments.empty()) {
+	    // TODO socket could be pooled here if pipelining is enabled...
+	    logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
+	    return true;
+	  }
+	} else {
+	  size_t maxSegments = req->getMaxPipelinedRequest();
+	  if(_segments.size() < maxSegments) {
+	      _requestGroup->getSegmentMan()->getSegment
+	      (_segments, cuid, _fileEntry, maxSegments);
+	  }
+	  if(_segments.empty()) {
+	    return prepareForRetry(0);
+	  }
 	}
       }
       return executeInternal();
@@ -266,11 +276,11 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
   }
   if(!req.isNull()) {
     _fileEntry->poolRequest(req);
-  }
-  if(!_segments.empty()) {
     logger->debug("CUID#%d - Pooling request URI=%s",
 		  cuid, req->getUrl().c_str());
-    _requestGroup->getSegmentMan()->recognizeSegmentFor(_fileEntry);
+    if(!_requestGroup->getSegmentMan().isNull()) {
+      _requestGroup->getSegmentMan()->recognizeSegmentFor(_fileEntry);
+    }
   }
 
   Command* command = new CreateRequestCommand(cuid, _requestGroup, e);

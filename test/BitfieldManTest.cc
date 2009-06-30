@@ -18,6 +18,9 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsAllBitSet);
   CPPUNIT_TEST(testFilter);
   CPPUNIT_TEST(testAddFilter_zeroLength);
+  CPPUNIT_TEST(testAddNotFilter);
+  CPPUNIT_TEST(testAddNotFilter_zeroLength);
+  CPPUNIT_TEST(testAddNotFilter_overflow);
   CPPUNIT_TEST(testGetMissingIndex);
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex_setBit);
@@ -63,6 +66,9 @@ public:
   void testIsAllBitSet();
   void testFilter();
   void testAddFilter_zeroLength();
+  void testAddNotFilter();
+  void testAddNotFilter_zeroLength();
+  void testAddNotFilter_overflow();
   void testGetSparceMissingUnusedIndex();
   void testGetSparceMissingUnusedIndex_setBit();
   void testIsBitSetOffsetRange();
@@ -386,6 +392,35 @@ void BitfieldManTest::testAddFilter_zeroLength()
   bits.enableFilter();
   CPPUNIT_ASSERT_EQUAL((size_t)0, bits.countMissingBlock());
   CPPUNIT_ASSERT(bits.isFilteredAllBitSet());
+}
+
+void BitfieldManTest::testAddNotFilter() {
+  BitfieldMan btman(2, 32);
+
+  btman.addNotFilter(3, 6);
+  CPPUNIT_ASSERT(bitfield::test(btman.getFilterBitfield(), 16, 0));
+  for(size_t i = 1; i < 5; ++i) {
+    CPPUNIT_ASSERT(!bitfield::test(btman.getFilterBitfield(), 16, i));
+  }
+  for(size_t i = 5; i < 16; ++i) {
+    CPPUNIT_ASSERT(bitfield::test(btman.getFilterBitfield(), 16, i));
+  }
+}
+
+void BitfieldManTest::testAddNotFilter_zeroLength() {
+  BitfieldMan btman(2, 6);
+  btman.addNotFilter(2, 0);
+  CPPUNIT_ASSERT(!bitfield::test(btman.getFilterBitfield(), 3, 0));
+  CPPUNIT_ASSERT(!bitfield::test(btman.getFilterBitfield(), 3, 1));
+  CPPUNIT_ASSERT(!bitfield::test(btman.getFilterBitfield(), 3, 2));
+}
+
+void BitfieldManTest::testAddNotFilter_overflow() {
+  BitfieldMan btman(2, 6);
+  btman.addNotFilter(6, 100);
+  CPPUNIT_ASSERT(bitfield::test(btman.getFilterBitfield(), 3, 0));
+  CPPUNIT_ASSERT(bitfield::test(btman.getFilterBitfield(), 3, 1));
+  CPPUNIT_ASSERT(bitfield::test(btman.getFilterBitfield(), 3, 2));
 }
 
 void BitfieldManTest::testGetMissingIndex() {

@@ -229,9 +229,12 @@ bool DownloadCommand::executeInternal() {
 #else // !ENABLE_MESSAGE_DIGEST
       _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
 #endif // !ENABLE_MESSAGE_DIGEST
+    } else {
+      // If segment is not cacnel here, in the next pipelining
+      // request, aria2 requests bad range
+      // [FileEntry->getLastOffset(), FileEntry->getLastOffset())
+      _requestGroup->getSegmentMan()->cancelSegment(cuid, segment);
     }
-
-
     checkLowestDownloadSpeed();
     // this unit is going to download another segment.
     return prepareForNextSegment();

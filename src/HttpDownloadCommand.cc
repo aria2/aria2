@@ -80,11 +80,12 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     e->commands.push_back(command);
     return true;
   } else {
-    if(req->isPipeliningEnabled() ||
+    uint64_t loff = _fileEntry->gtoloff(_segments.front()->getPositionToWrite());
+    if((req->isPipeliningEnabled() && loff == _fileEntry->getLength()) ||
        (req->isKeepAliveEnabled() &&
 	((!_transferEncodingDecoder.isNull() &&
 	  _requestGroup->downloadFinished()) ||
-	 static_cast<uint64_t>(_fileEntry->gtoloff(_segments.front()->getPositionToWrite())) == _fileEntry->getLength()))) {
+	 loff == _fileEntry->getLength()))) {
       e->poolSocket(req, isProxyDefined(), socket);
     }
     // The request was sent assuming that server supported pipelining, but
@@ -93,11 +94,15 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     // of the response with the end byte of segment.
     // If it is the same, HTTP negotiation is necessary for the next request.
     if(!req->isPipeliningEnabled() && req->isPipeliningHint() &&
-       !_segments.empty() && !downloadFinished) {
+       !downloadFinished) {
       const SharedHandle<Segment>& segment = _segments.front();
-      if(static_cast<uint64_t>(segment->getPosition())+segment->getLength() ==
-	 static_cast<uint64_t>(_httpResponse->getHttpHeader()->
-			       getRange()->getEndByte()+1)) {
+
+      off_t lastOffset =_fileEntry->gtoloff
+	(std::min(static_cast<off_t>(segment->getPosition()+segment->getLength()),
+		  _fileEntry->getLastOffset()));
+      
+      if(lastOffset ==
+	 _httpResponse->getHttpHeader()->getRange()->getEndByte()+1) {
 	return prepareForRetry(0);
       }
     }

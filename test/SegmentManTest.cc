@@ -16,6 +16,7 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(SegmentManTest);
   CPPUNIT_TEST(testNullBitfield);
   CPPUNIT_TEST(testCompleteSegment);
+  CPPUNIT_TEST(testGetSegment_sameFileEntry);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -26,7 +27,7 @@ public:
   void testNullBitfield();
   void testCompleteSegment();
   void testGetPeerStat();
-  void testGetSegment_segmentForward();
+  void testGetSegment_sameFileEntry();
 };
 
 
@@ -79,6 +80,48 @@ void SegmentManTest::testCompleteSegment()
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segments[0]->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments[1]->getIndex());
+}
+
+void SegmentManTest::testGetSegment_sameFileEntry()
+{
+  Option op;
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  dctx->setPieceLength(2);
+  SharedHandle<FileEntry> fileEntries[] = {
+    SharedHandle<FileEntry>(new FileEntry("file1", 3, 0)),
+    SharedHandle<FileEntry>(new FileEntry("file2", 6, 3)),
+    SharedHandle<FileEntry>(new FileEntry("file3", 1, 9))
+  };
+  dctx->setFileEntries(&fileEntries[0], &fileEntries[3]);
+  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
+  SegmentMan segman(&op, dctx, ps);
+
+  std::deque<SharedHandle<Segment> > segments;
+  segman.getSegment(segments, 1, fileEntries[1], 4);
+  // See 3 segments are returned, not 4 because the part of file1 is
+  // not filled in segment#1
+  CPPUNIT_ASSERT_EQUAL((size_t)3, segments.size());
+  
+  SharedHandle<Segment> segmentNo1 = segman.getSegment(2, 1);
+  // Fill the part of file1 in segment#1
+  segmentNo1->updateWrittenLength(1);
+  segman.cancelSegment(2);
+
+  segman.cancelSegment(1);
+  segments.clear();
+  segman.getSegment(segments, 1, fileEntries[1], 4);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, segments.size());
+
+  segman.cancelSegment(1);
+  SharedHandle<Segment> segmentNo4 = segman.getSegment(1, 4);
+  // Fill the part of file2 in segment#4
+  segmentNo4->updateWrittenLength(1);
+  segman.cancelSegment(1);
+
+  segments.clear();
+  segman.getSegment(segments, 1, fileEntries[1], 4);
+  // segment#4 is not returned because the part of file2 is filled.
+  CPPUNIT_ASSERT_EQUAL((size_t)3, segments.size());
 }
 
 } // namespace aria2

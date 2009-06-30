@@ -170,6 +170,36 @@ SegmentHandle SegmentMan::getSegment(cuid_t cuid) {
   return checkoutSegment(cuid, piece);
 }
 
+void SegmentMan::getSegment(std::deque<SharedHandle<Segment> >& segments,
+			    cuid_t cuid,
+			    const SharedHandle<FileEntry>& fileEntry,
+			    size_t maxSegments)
+{
+  BitfieldMan filter(_ignoreBitfield);
+  filter.enableFilter();
+  filter.addNotFilter(fileEntry->getOffset(), fileEntry->getLength());
+  std::deque<SharedHandle<Segment> > pending;
+  while(segments.size() < maxSegments) {
+    SharedHandle<Segment> segment =
+      checkoutSegment(cuid,
+		      _pieceStorage->getSparseMissingUnusedPiece
+		      (filter.getFilterBitfield(), filter.getBitfieldLength()));
+    if(segment.isNull()) {
+      break;
+    }
+    if(segment->getPositionToWrite() < fileEntry->getOffset() ||
+       fileEntry->getLastOffset() <= segment->getPositionToWrite()) {
+      pending.push_back(segment);
+    } else {
+      segments.push_back(segment);
+    }
+  }
+  for(std::deque<SharedHandle<Segment> >::const_iterator i = pending.begin();
+      i != pending.end(); ++i) {
+    cancelSegment(cuid, *i);
+  }
+}
+
 SegmentHandle SegmentMan::getSegment(cuid_t cuid, size_t index) {
   if(_downloadContext->getNumPieces() <= index) {
     return SharedHandle<Segment>();
@@ -177,17 +207,35 @@ SegmentHandle SegmentMan::getSegment(cuid_t cuid, size_t index) {
   return checkoutSegment(cuid, _pieceStorage->getMissingPiece(index));
 }
 
+void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
+{
+  _pieceStorage->cancelPiece(segment->getPiece());
+  _segmentWrittenLengthMemo[segment->getIndex()] = segment->getWrittenLength();
+  logger->debug("Memorized segment index=%u, writtenLength=%u",
+		segment->getIndex(), segment->getWrittenLength());
+}
+
 void SegmentMan::cancelSegment(cuid_t cuid) {
   for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end();) {
     if((*itr)->cuid == cuid) {
-      _pieceStorage->cancelPiece((*itr)->segment->getPiece());
-      _segmentWrittenLengthMemo[(*itr)->segment->getIndex()] =
-	(*itr)->segment->getWrittenLength();
-      logger->debug("Memorized segment index=%u, writtenLength=%u",
-		    (*itr)->segment->getIndex(),
-		    (*itr)->segment->getWrittenLength());
+      cancelSegment((*itr)->segment);
       itr = usedSegmentEntries.erase(itr);
+    } else {
+      ++itr;
+    }
+  }
+}
+
+void SegmentMan::cancelSegment
+(cuid_t cuid, const SharedHandle<Segment>& segment)
+{
+  for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
+      itr != usedSegmentEntries.end();) {
+    if((*itr)->cuid == cuid && (*itr)->segment == segment) {
+      cancelSegment((*itr)->segment);
+      itr = usedSegmentEntries.erase(itr);
+      break;
     } else {
       ++itr;
     }

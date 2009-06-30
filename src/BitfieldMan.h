@@ -248,6 +248,9 @@ public:
 
   void addFilter(uint64_t offset, uint64_t length);
   void removeFilter(uint64_t offset, uint64_t length);
+  // Add filter not in the range of [offset, offset+length) bytes
+  void addNotFilter(uint64_t offset, uint64_t length);
+
   /**
    * Clears filter and disables filter
    */

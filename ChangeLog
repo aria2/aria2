@@ -1,3 +1,18 @@
+2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	HTTP pipelining is now working. Fixed Segmention fault in
+	BitfieldMan's copy ctor.	
+	* src/AbstractCommand.cc
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/DownloadCommand.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpRequest.cc
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* test/BitfieldManTest.cc
+	* test/SegmentManTest.cc
+
 2009-06-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed ServerHost. Same functionality is implemented using

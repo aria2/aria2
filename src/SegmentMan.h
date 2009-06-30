@@ -101,6 +101,8 @@ private:
 
   SharedHandle<Segment> checkoutSegment(cuid_t cuid,
 					const SharedHandle<Piece>& piece);
+
+  void cancelSegment(const SharedHandle<Segment>& segment);
 public:
   SegmentMan(const Option* option,
 	     const SharedHandle<DownloadContext>& downloadContext,
@@ -136,6 +138,13 @@ public:
 
   SharedHandle<Segment> getSegment(cuid_t cuid);
 
+  // Checkouts segments in the range of fileEntry and push back to
+  // segments until segments.size() < maxSegments holds false
+  void getSegment(std::deque<SharedHandle<Segment> >& segments,
+		  cuid_t cuid,
+		  const SharedHandle<FileEntry>& fileEntry,
+		  size_t maxSegments);
+
   /**
    * Returns a segment whose index is index. 
    * If it has already assigned
@@ -152,6 +161,9 @@ public:
    * uses.
    */
   void cancelSegment(cuid_t cuid);
+
+  void cancelSegment(cuid_t cuid, const SharedHandle<Segment>& segment);
+
   /**
    * Tells SegmentMan that the segment has been downloaded successfully.
    */

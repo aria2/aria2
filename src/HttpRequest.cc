@@ -83,7 +83,7 @@ off_t HttpRequest::getEndByte() const
   } else {
     if(request->isPipeliningEnabled()) {
       off_t endByte = _fileEntry->gtoloff(segment->getPosition()+segment->getLength()-1);
-      return std::min(endByte, _fileEntry->getLastOffset()-1);
+      return std::min(endByte, static_cast<off_t>(_fileEntry->getLength()-1));
     } else {
       return 0;
     }
