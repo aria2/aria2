@@ -134,6 +134,21 @@ static void extractUrlList(std::vector<std::string>& uris, const BDE& bde)
   }
 }
 
+template<typename InputIterator, typename OutputIterator>
+static OutputIterator createUri
+(InputIterator first, InputIterator last, OutputIterator out,
+ const std::string& filePath)
+{
+  for(; first != last; ++first) {
+    if(Util::endsWith(*first, "/")) {
+      *out++ = (*first)+filePath;
+    } else {
+      *out++ = (*first)+"/"+filePath;
+    }
+  }
+  return out;
+}
+
 static void extractFileEntries
 (const SharedHandle<DownloadContext>& ctx,
  BDE& torrent,
@@ -209,8 +224,7 @@ static void extractFileEntries
       path = Util::joinPath(elements.begin(), elements.end());
 
       std::deque<std::string> uris;
-      std::transform(urlList.begin(), urlList.end(), std::back_inserter(uris),
-		     std::bind2nd(std::plus<std::string>(), "/"+path));
+      createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
       SharedHandle<FileEntry> fileEntry
 	(new FileEntry(strconcat(ctx->getDir(), "/", path),
 		       fileLengthData.i(),
