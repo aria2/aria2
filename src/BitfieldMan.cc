@@ -49,12 +49,12 @@ namespace aria2 {
 BitfieldMan::BitfieldMan(size_t blockLength, uint64_t totalLength)
   :blockLength(blockLength),
    totalLength(totalLength),
-   bitfield(0),
-   useBitfield(0),
-   filterBitfield(0),
    bitfieldLength(0),
    blocks(0),
    filterEnabled(false),
+   bitfield(0),
+   useBitfield(0),
+   filterBitfield(0),
    cachedNumMissingBlock(0),
    cachedNumFilteredBlock(0),
    cachedCompletedLength(0),
@@ -73,36 +73,27 @@ BitfieldMan::BitfieldMan(size_t blockLength, uint64_t totalLength)
 }
 
 BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
-  :blockLength(0),
-   totalLength(0),
-   bitfield(0),
-   useBitfield(0),
+  :blockLength(bitfieldMan.blockLength),
+   totalLength(bitfieldMan.totalLength),
+   bitfieldLength(bitfieldMan.bitfieldLength),
+   blocks(bitfieldMan.blocks),
+   filterEnabled(bitfieldMan.filterEnabled),
+   bitfield(new unsigned char[bitfieldLength]),
+   useBitfield(new unsigned char[bitfieldLength]),
    filterBitfield(0),
-   bitfieldLength(0),
-   blocks(0),
-   filterEnabled(false),
+   randomizer(bitfieldMan.randomizer),
    cachedNumMissingBlock(0),
    cachedNumFilteredBlock(0),
    cachedCompletedLength(0),
    cachedFilteredComletedLength(0),
    cachedFilteredTotalLength(0)
 {
-  blockLength = bitfieldMan.blockLength;
-  totalLength = bitfieldMan.totalLength;
-  blocks = bitfieldMan.blocks;
-  bitfieldLength = bitfieldMan.bitfieldLength;
-  bitfield = new unsigned char[bitfieldLength];
-  useBitfield = new unsigned char[bitfieldLength];
   memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
   memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
-  filterEnabled = bitfieldMan.filterEnabled;
   if(filterEnabled) {
     filterBitfield = new unsigned char[bitfieldLength];
     memcpy(filterBitfield, bitfieldMan.filterBitfield, bitfieldLength);
-  } else {
-    filterBitfield = 0;
   }
-  this->randomizer = bitfieldMan.randomizer;
   updateCache();
 }
 

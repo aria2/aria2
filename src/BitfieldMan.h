@@ -47,12 +47,12 @@ class BitfieldMan {
 private:
   size_t blockLength;
   uint64_t totalLength;
-  unsigned char* bitfield;
-  unsigned char* useBitfield;
-  unsigned char* filterBitfield;
   size_t bitfieldLength;
   size_t blocks;
   bool filterEnabled;
+  unsigned char* bitfield;
+  unsigned char* useBitfield;
+  unsigned char* filterBitfield;
   SharedHandle<Randomizer> randomizer;
 
   // for caching
