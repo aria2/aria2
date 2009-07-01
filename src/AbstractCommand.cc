@@ -156,7 +156,8 @@ bool AbstractCommand::execute() {
       if(!_requestGroup->getPieceStorage().isNull()) {
 	_segments.clear();
 	_requestGroup->getSegmentMan()->getInFlightSegment(_segments, cuid);
-	if(req.isNull() || req->getMaxPipelinedRequest() == 1) {
+	if(req.isNull() || req->getMaxPipelinedRequest() == 1 ||
+	   _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
 	  if(_segments.empty()) {
 	    SharedHandle<Segment> segment =
 	      _requestGroup->getSegmentMan()->getSegment(cuid);

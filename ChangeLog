@@ -1,5 +1,10 @@
 2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use SegmentMan::getSegment(cuid) for single file download.
+	* src/AbstractCommand.cc
+
+2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed bufSize calculation
 	* src/DownloadCommand.cc
 
