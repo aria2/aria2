@@ -204,7 +204,6 @@ createBtRequestGroup(const std::string& torrentFilePath,
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   dctx->setDir(option->get(PREF_DIR));
-  // TODO1.5 Add additional argument auxUris for bittorrent::load* functions.
   if(torrentData.empty()) {
     bittorrent::load(torrentFilePath, dctx, auxUris);// may throw exception
   } else {

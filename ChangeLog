@@ -1,5 +1,10 @@
 2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* src/download_helper.cc
+
+2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Refactored fieldMan ctor.
 	* src/BitfieldMan.cc
 	* src/BitfieldMan.h
