@@ -121,7 +121,7 @@ bool DownloadCommand::executeInternal() {
       bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
 			 BUFSIZE);
     } else {
-      bufSize = std::min(static_cast<size_t>(_fileEntry->getLastOffset()-_fileEntry->gtoloff(segment->getPositionToWrite())), BUFSIZE);
+      bufSize = std::min(static_cast<size_t>(_fileEntry->getLastOffset()-segment->getPositionToWrite()), BUFSIZE);
     }
   } else {
     bufSize = BUFSIZE;
