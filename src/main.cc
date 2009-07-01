@@ -236,6 +236,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
 	} else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	  showFiles(args, op);
+	  return exitStatus;
 #endif // ENABLE_METALINK || ENABLE_METALINK
 	} else {
 	  createRequestGroupForUri(requestGroups, op, args);
