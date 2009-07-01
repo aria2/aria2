@@ -1,5 +1,12 @@
 2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Set referer and method to newly created Request object.
+	* src/CreateRequestCommand.cc
+	* src/FileEntry.cc
+	* src/FileEntry.h
+
+2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed ctor of AbstractCommand which doesn't take FileEntry.
 	* src/AbstractCommand.cc
 	* src/AbstractCommand.h

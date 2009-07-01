@@ -118,7 +118,10 @@ static bool inFlightHost(InputIterator first, InputIterator last,
 }
 
 SharedHandle<Request>
-FileEntry::getRequest(const SharedHandle<URISelector>& selector)
+FileEntry::getRequest
+(const SharedHandle<URISelector>& selector,
+ const std::string& referer,
+ const std::string& method)
 {
   SharedHandle<Request> req;
   if(_requestPool.empty()) {
@@ -138,6 +141,8 @@ FileEntry::getRequest(const SharedHandle<URISelector>& selector)
 	    continue;
 	  }
 	}
+	req->setReferer(referer);
+	req->setMethod(method);
 	_spentUris.push_back(uri);
 	_inFlightRequests.push_back(req);
 	break;

@@ -46,6 +46,7 @@
 #include "Request.h"
 #include "URIResult.h"
 #include "DownloadResultCode.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -163,8 +164,15 @@ public:
   // If pooled Request object is available, one of them is removed
   // from the pool and returned.  If pool is empty, then select URI
   // using selectUri(selector) and construct Request object using it
-  // and return the Request object.
-  SharedHandle<Request> getRequest(const SharedHandle<URISelector>& selector);
+  // and return the Request object.  If referer is given, it is set to
+  // newly created Request. If Request object is retrieved from the
+  // pool, referer is ignored.  If method is given, it is set to newly
+  // created Request. If Request object is retrieved from the pool,
+  // method is ignored.
+  SharedHandle<Request> getRequest
+  (const SharedHandle<URISelector>& selector,
+   const std::string& referer = A2STR::NIL,
+   const std::string& method = Request::METHOD_GET);
 
   // Finds pooled Request object which is faster than passed one,
   // comparing their PeerStat objects. If such Request is found, it is

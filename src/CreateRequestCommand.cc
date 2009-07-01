@@ -42,6 +42,8 @@
 #include "DownloadEngine.h"
 #include "SocketCore.h"
 #include "SegmentMan.h"
+#include "prefs.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -65,7 +67,13 @@ bool CreateRequestCommand::executeInternal()
     _fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset
       (_segments.front()->getPositionToWrite());
   }
-  req = _fileEntry->getRequest(_requestGroup->getURISelector());
+  req = _fileEntry->getRequest(_requestGroup->getURISelector(),
+			       getOption()->get(PREF_REFERER),
+			       // Don't use HEAD request when file
+			       // size is known.
+			       _fileEntry->getLength() == 0 &&
+			       getOption()->getAsBool(PREF_USE_HEAD)?
+			       Request::METHOD_HEAD:Request::METHOD_GET);
   if(req.isNull()) {
     if(!_requestGroup->getSegmentMan().isNull()) {
       _requestGroup->getSegmentMan()->ignoreSegmentFor(_fileEntry);
