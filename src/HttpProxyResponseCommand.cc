@@ -43,13 +43,17 @@
 
 namespace aria2 {
 
-HttpProxyResponseCommand::HttpProxyResponseCommand(int cuid,
-						   const RequestHandle& req,
-						   RequestGroup* requestGroup,
-						   const HttpConnectionHandle& httpConnection,
-						   DownloadEngine* e,
-						   const SocketHandle& s)
-  :AbstractProxyResponseCommand(cuid, req, requestGroup, httpConnection, e, s) {}
+HttpProxyResponseCommand::HttpProxyResponseCommand
+(int cuid,
+ const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ const HttpConnectionHandle& httpConnection,
+ DownloadEngine* e,
+ const SocketHandle& s)
+  :AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
+				httpConnection, e, s)
+{}
 
 HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
 

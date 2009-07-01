@@ -1,5 +1,23 @@
 2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Get proxy download working
+	* src/AbstractProxyRequestCommand.cc
+	* src/AbstractProxyRequestCommand.h
+	* src/AbstractProxyResponseCommand.cc
+	* src/AbstractProxyResponseCommand.h
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpTunnelRequestCommand.cc
+	* src/FtpTunnelRequestCommand.h
+	* src/FtpTunnelResponseCommand.cc
+	* src/FtpTunnelResponseCommand.h
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpProxyRequestCommand.cc
+	* src/HttpProxyRequestCommand.h
+	* src/HttpProxyResponseCommand.cc
+	* src/HttpProxyResponseCommand.h
+
+2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use SegmentMan::getSegment(cuid) for single file download.
 	* src/AbstractCommand.cc
 

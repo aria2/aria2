@@ -52,12 +52,13 @@ namespace aria2 {
 AbstractProxyRequestCommand::AbstractProxyRequestCommand
 (int cuid,
  const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
  const SharedHandle<Request>& proxyRequest,
  const SocketHandle& s)
   :
-  AbstractCommand(cuid, req, requestGroup, e, s),
+  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   _proxyRequest(proxyRequest),
   httpConnection(new HttpConnection(cuid, s, getOption().get()))
 {

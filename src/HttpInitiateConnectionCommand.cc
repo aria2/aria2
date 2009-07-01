@@ -78,7 +78,8 @@ Command* HttpInitiateConnectionCommand::createNextCommand
 				  proxyRequest->getPort());
 
       if(proxyMethod == V_TUNNEL) {
-	command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e,
+	command = new HttpProxyRequestCommand(cuid, req, _fileEntry,
+					      _requestGroup, e,
 					      proxyRequest, socket);
       } else if(proxyMethod == V_GET) {
 	SharedHandle<HttpConnection> httpConnection

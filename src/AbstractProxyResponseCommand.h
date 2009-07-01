@@ -48,12 +48,15 @@ protected:
 
   virtual bool executeInternal();
 public:
-  AbstractProxyResponseCommand(int cuid,
-			       const SharedHandle<Request>& req,
-			       RequestGroup* requestGroup,
-			       const SharedHandle<HttpConnection>& httpConnection,
-			       DownloadEngine* e,
-			       const SharedHandle<SocketCore>& s);
+  AbstractProxyResponseCommand
+  (int cuid,
+   const SharedHandle<Request>& req,
+   const SharedHandle<FileEntry>& fileEntry,
+   RequestGroup* requestGroup,
+   const SharedHandle<HttpConnection>& httpConnection,
+   DownloadEngine* e,
+   const SharedHandle<SocketCore>& s);
+
   virtual ~AbstractProxyResponseCommand();
 
   virtual Command* getNextCommand() = 0;

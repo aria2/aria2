@@ -45,6 +45,7 @@ class HttpProxyRequestCommand : public AbstractProxyRequestCommand {
 public:
   HttpProxyRequestCommand(int cuid,
 			  const SharedHandle<Request>& req,
+			  const SharedHandle<FileEntry>& fileEntry,
 			  RequestGroup* requestGroup,
 			  DownloadEngine* e,
 			  const SharedHandle<Request>& proxyRequest,

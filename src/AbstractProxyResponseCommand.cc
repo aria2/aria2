@@ -49,13 +49,15 @@
 
 namespace aria2 {
 
-AbstractProxyResponseCommand::AbstractProxyResponseCommand(int cuid,
-							   const RequestHandle& req,
-							   RequestGroup* requestGroup,
-							   const HttpConnectionHandle& httpConnection,
-							   DownloadEngine* e,
-							   const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s),
+AbstractProxyResponseCommand::AbstractProxyResponseCommand
+(int cuid,
+ const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ const HttpConnectionHandle& httpConnection,
+ DownloadEngine* e,
+ const SocketHandle& s)
+  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
    httpConnection(httpConnection) {}
 
 AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}

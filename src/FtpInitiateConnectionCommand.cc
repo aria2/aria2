@@ -93,7 +93,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	c->setProxyRequest(proxyRequest);
 	command = c;
       } else if(proxyMethod == V_TUNNEL) {
-	command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e,
+	command = new FtpTunnelRequestCommand(cuid, req, _fileEntry,
+					      _requestGroup, e,
 					      proxyRequest, socket);
       } else {
 	// TODO

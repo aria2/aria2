@@ -43,13 +43,17 @@
 
 namespace aria2 {
 
-FtpTunnelResponseCommand::FtpTunnelResponseCommand(int cuid,
-						   const RequestHandle& req,
-						   RequestGroup* requestGroup,
-						   const HttpConnectionHandle& httpConnection,
-						   DownloadEngine* e,
-						   const SocketHandle& s)
-  :AbstractProxyResponseCommand(cuid, req, requestGroup, httpConnection,e, s) {}
+FtpTunnelResponseCommand::FtpTunnelResponseCommand
+(int cuid,
+ const RequestHandle& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ const HttpConnectionHandle& httpConnection,
+ DownloadEngine* e,
+ const SocketHandle& s)
+  :AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
+				httpConnection,e, s)
+{}
 
 FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
 

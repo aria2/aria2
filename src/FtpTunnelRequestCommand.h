@@ -45,6 +45,7 @@ class FtpTunnelRequestCommand : public AbstractProxyRequestCommand {
 public:
   FtpTunnelRequestCommand(int cuid,
 			  const SharedHandle<Request>& req,
+			  const SharedHandle<FileEntry>& fileEntry,
 			  RequestGroup* requestGroup,
 			  DownloadEngine* e,
 			  const SharedHandle<Request>& proxyRequest,
