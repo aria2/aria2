@@ -67,25 +67,6 @@
 
 namespace aria2 {
 
-// TODO1.5 Remove this
-AbstractCommand::AbstractCommand(int32_t cuid,
-				 const SharedHandle<Request>& req,
-				 RequestGroup* requestGroup,
-				 DownloadEngine* e,
-				 const SocketHandle& s):
-  Command(cuid), _requestGroup(requestGroup),
-  req(req), e(e), socket(s),
-  checkSocketIsReadable(false), checkSocketIsWritable(false),
-  nameResolverCheck(false)
-{
-  if(!socket.isNull() && socket->isOpen()) {
-    setReadCheckSocket(socket);
-  }
-  timeout = _requestGroup->getTimeout();
-  _requestGroup->increaseStreamConnection();
-  _requestGroup->increaseNumCommand();
-}
-
 AbstractCommand::AbstractCommand(int32_t cuid,
 				 const SharedHandle<Request>& req,
 				 const SharedHandle<FileEntry>& fileEntry,

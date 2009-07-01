@@ -1,5 +1,12 @@
 2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed ctor of AbstractCommand which doesn't take FileEntry.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/CreateRequestCommand.cc
+
+2009-07-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Get proxy download working
 	* src/AbstractProxyRequestCommand.cc
 	* src/AbstractProxyRequestCommand.h

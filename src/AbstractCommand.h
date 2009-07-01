@@ -144,10 +144,6 @@ private:
 #endif // ENABLE_ASYNC_DNS
 public:
   AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
-		  RequestGroup* requestGroup, DownloadEngine* e,
-		  const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>());
-
-  AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
 		  const SharedHandle<FileEntry>& fileEntry,
 		  RequestGroup* requestGroup, DownloadEngine* e,
 		  const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>());

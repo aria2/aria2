@@ -48,7 +48,8 @@ namespace aria2 {
 CreateRequestCommand::CreateRequestCommand(int32_t cuid,
 					   RequestGroup* requestGroup,
 					   DownloadEngine* e):
-  AbstractCommand(cuid, SharedHandle<Request>(), requestGroup, e)
+  AbstractCommand
+  (cuid, SharedHandle<Request>(), SharedHandle<FileEntry>(), requestGroup, e)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();
