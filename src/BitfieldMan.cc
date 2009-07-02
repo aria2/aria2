@@ -300,8 +300,8 @@ bool BitfieldMan::getMissingUnusedIndex(size_t& index) const
 }
 
 template<typename Array>
-static size_t getStartIndex(size_t index, const Array& bitfield, const unsigned char* useBitfield, size_t blocks) {
-  while(index < blocks && (bitfield::test(bitfield, blocks, index) || bitfield::test(useBitfield, blocks, index))) {
+static size_t getStartIndex(size_t index, const Array& bitfield, size_t blocks) {
+  while(index < blocks && bitfield::test(bitfield, blocks, index)) {
     ++index;
   }
   if(blocks <= index) {
@@ -312,8 +312,8 @@ static size_t getStartIndex(size_t index, const Array& bitfield, const unsigned 
 }
 
 template<typename Array>
-static size_t getEndIndex(size_t index, const Array& bitfield, const unsigned char* useBitfield, size_t blocks) {
-  while(index < blocks && (!bitfield::test(bitfield, blocks, index) && !bitfield::test(useBitfield, blocks, index))) {
+static size_t getEndIndex(size_t index, const Array& bitfield, size_t blocks) {
+  while(index < blocks && !bitfield::test(bitfield, blocks, index)) {
     ++index;
   }
   return index;
@@ -332,12 +332,12 @@ static bool getSparseMissingUnusedIndex
     size_t nextIndex = 0;
     while(nextIndex < blocks) {
       currentRange.startIndex =
-	getStartIndex(nextIndex, bitfield, useBitfield, blocks);
+	getStartIndex(nextIndex, bitfield, blocks);
       if(currentRange.startIndex == blocks) {
 	break;
       }
       currentRange.endIndex =
-	getEndIndex(currentRange.startIndex, bitfield, useBitfield, blocks);
+	getEndIndex(currentRange.startIndex, bitfield, blocks);
       if(maxRange < currentRange) {
 	maxRange = currentRange;
       }
@@ -365,11 +365,11 @@ bool BitfieldMan::getSparseMissingUnusedIndex
 {
   if(filterEnabled) {
     return aria2::getSparseMissingUnusedIndex
-      (index, array(ignoreBitfield)|~array(filterBitfield)|array(bitfield),
+      (index, array(ignoreBitfield)|~array(filterBitfield)|array(bitfield)|array(useBitfield),
        useBitfield, blocks);
   } else {
     return aria2::getSparseMissingUnusedIndex
-      (index, array(ignoreBitfield)|array(bitfield),
+      (index, array(ignoreBitfield)|array(bitfield)|array(useBitfield),
        useBitfield, blocks);
   }
 }
