@@ -62,7 +62,8 @@ HttpInitiateConnectionCommand::HttpInitiateConnectionCommand
 HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
 
 Command* HttpInitiateConnectionCommand::createNextCommand
-(const std::deque<std::string>& resolvedAddresses,
+(const std::string& hostname, const std::string& addr, uint16_t port,
+ const std::deque<std::string>& resolvedAddresses,
  const SharedHandle<Request>& proxyRequest)
 {
   Command* command;
@@ -71,16 +72,17 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       e->popPooledSocket(req->getHost(), req->getPort());
     std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		   proxyRequest->getHost().c_str(), proxyRequest->getPort());
+      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
       socket.reset(new SocketCore());
-      socket->establishConnection(resolvedAddresses.front(),
-				  proxyRequest->getPort());
+      socket->establishConnection(addr, port);
 
       if(proxyMethod == V_TUNNEL) {
-	command = new HttpProxyRequestCommand(cuid, req, _fileEntry,
-					      _requestGroup, e,
-					      proxyRequest, socket);
+	HttpProxyRequestCommand* c =
+	  new HttpProxyRequestCommand(cuid, req, _fileEntry,
+				      _requestGroup, e,
+				      proxyRequest, socket);
+	c->setConnectedAddr(hostname, addr, port);
+	command = c;
       } else if(proxyMethod == V_GET) {
 	SharedHandle<HttpConnection> httpConnection
 	  (new HttpConnection(cuid, socket, getOption().get()));
@@ -89,6 +91,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
 						       _requestGroup,
 						       httpConnection, e,
 						       socket);
+	c->setConnectedAddr(hostname, addr, port);
 	c->setProxyRequest(proxyRequest);
 	command = c;
       } else {
@@ -112,16 +115,20 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     SharedHandle<SocketCore> pooledSocket =
       e->popPooledSocket(resolvedAddresses, req->getPort());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
-		   req->getPort());
+      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
       socket.reset(new SocketCore());
-      socket->establishConnection(resolvedAddresses.front(), req->getPort());
+      socket->establishConnection(addr, port);
     } else {
       socket = pooledSocket;
     }
     SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, getOption().get()));
-    command = new HttpRequestCommand(cuid, req, _fileEntry, _requestGroup,
-				     httpConnection, e, socket);
+    HttpRequestCommand* c =
+      new HttpRequestCommand(cuid, req, _fileEntry, _requestGroup,
+			     httpConnection, e, socket);
+    if(pooledSocket.isNull()) {
+      c->setConnectedAddr(hostname, addr, port);
+    }
+    command = c;
   }
   return command;
 }

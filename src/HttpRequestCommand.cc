@@ -112,7 +112,10 @@ bool HttpRequestCommand::executeInternal() {
     }
   }
   if(_httpConnection->sendBufferIsEmpty()) {
-    checkIfConnectionEstablished(socket);
+    if(!checkIfConnectionEstablished
+       (socket, _connectedHostname, _connectedAddr, _connectedPort)) {
+      return true;
+    }
 
     if(_segments.empty()) {
       HttpRequestHandle httpRequest

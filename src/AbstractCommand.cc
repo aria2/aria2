@@ -539,12 +539,28 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
   e->setNoWait(true);
 }
 
-void AbstractCommand::checkIfConnectionEstablished
-(const SharedHandle<SocketCore>& socket)
+bool AbstractCommand::checkIfConnectionEstablished
+(const SharedHandle<SocketCore>& socket,
+ const std::string& connectedHostname,
+ const std::string& connectedAddr,
+ uint16_t connectedPort)
 {
   if(socket->isReadable(0)) {
     std::string error = socket->getSocketError();
     if(!error.empty()) {
+      e->markBadIPAddress(connectedHostname, connectedAddr, connectedPort);
+      if(!e->findCachedIPAddress(connectedHostname, connectedPort).empty()) {
+	logger->info("CUID#%d - Could not to connect to %s:%u."
+		     " Trying another address",
+		     cuid, connectedAddr.c_str(), connectedPort);
+	Command* command =
+	  InitiateConnectionCommandFactory::createInitiateConnectionCommand
+	  (cuid, req, _fileEntry, _requestGroup, e);
+	e->setNoWait(true);
+	e->commands.push_back(command);
+	return false;
+      }
+      e->removeCachedIPAddress(connectedHostname, connectedPort);
       // Don't set error if proxy server is used and its method is GET.
       if(resolveProxyMethod(req->getProtocol()) != V_GET ||
 	 !isProxyRequest(req->getProtocol(), getOption())) {
@@ -555,6 +571,7 @@ void AbstractCommand::checkIfConnectionEstablished
 	(StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
     }
   }
+  return true;
 }
 
 const std::string& AbstractCommand::resolveProxyMethod

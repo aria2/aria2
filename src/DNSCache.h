@@ -38,57 +38,102 @@
 #include "common.h"
 
 #include <string>
-#include <map>
+#include <deque>
+#include <algorithm>
 
 #include "A2STR.h"
 
 namespace aria2 {
 
 class DNSCache {
-public:
-  virtual ~DNSCache() {}
-
-  virtual const std::string& find(const std::string& hostname) const = 0;
-
-  virtual void put(const std::string& hostname, const std::string& ipaddr) = 0;
-};
-
-class SimpleDNSCache : public DNSCache {
 private:
-  std::map<std::string, std::string> _table;
-public:
-  SimpleDNSCache() {}
+  struct CacheEntry {
+    std::string _hostname;
+    std::string _addr;
+    uint16_t _port;
+    bool _good;
+    CacheEntry
+    (const std::string& hostname, const std::string& addr, uint16_t port):
+      _hostname(hostname), _addr(addr), _port(port), _good(true) {}
 
-  virtual ~SimpleDNSCache() {}
+    void markBad() { _good = false; }
 
-  virtual const std::string& find(const std::string& hostname) const
+    bool operator<(const CacheEntry& e) const
+    {
+      int r = _hostname.compare(e._hostname);
+      if(r != 0) {
+	return r < 0;
+      }
+      if(_port != e._port) {
+	return _port < e._port;
+      }
+      return _addr < e._addr;
+    }
+
+    bool operator==(const CacheEntry& e) const
+    {
+      return _hostname == e._hostname && _addr == e._addr && _port == e._port;
+    }
+  };
+
+  std::deque<CacheEntry> _entries;
+
+  std::deque<CacheEntry>::iterator findEntry
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port)
   {
-    std::map<std::string, std::string>::const_iterator i =
-      _table.find(hostname);
-    if(i == _table.end()) {
-      return A2STR::NIL;
+    CacheEntry target(hostname, ipaddr, port);
+    std::deque<CacheEntry>::iterator i =
+      std::lower_bound(_entries.begin(), _entries.end(), target);
+    if(i != _entries.end() && (*i) == target) {
+      return i;
     } else {
-      return (*i).second;
+      return _entries.end();
     }
   }
 
-  virtual void put(const std::string& hostname, const std::string& ipaddr)
-  {
-    _table[hostname] = ipaddr;
-  }
-  
-};
-
-class NullDNSCache : public DNSCache {
 public:
-  virtual ~NullDNSCache() {}
-
-  virtual const std::string& find(const std::string& hostname)
+  const std::string& find(const std::string& hostname, uint16_t port) const
   {
+    CacheEntry target(hostname, A2STR::NIL, port);
+    std::deque<CacheEntry>::const_iterator i =
+      std::lower_bound(_entries.begin(), _entries.end(), target);
+    for(; i != _entries.end() && (*i)._hostname == hostname && (*i)._port == port; ++i) {
+      if((*i)._good) {
+	return (*i)._addr;
+      }
+    }
     return A2STR::NIL;
   }
 
-  virtual void put(const std::string& hostname, const std::string& ipaddr) {}
+  void put
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port)
+  {
+    CacheEntry target(hostname, ipaddr, port);
+    std::deque<CacheEntry>::iterator i =
+      std::lower_bound(_entries.begin(), _entries.end(), target);
+    if(i == _entries.end() || !((*i) == target)) {
+      _entries.insert(i, target);
+    }
+  }
+
+  void markBad
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port)
+  {
+    std::deque<CacheEntry>::iterator i = findEntry(hostname, ipaddr, port);
+    if(i != _entries.end()) {
+      (*i).markBad();
+    }
+  }
+
+  void remove(const std::string& hostname, uint16_t port)
+  {
+    CacheEntry target(hostname, A2STR::NIL, port);
+    std::deque<CacheEntry>::iterator i =
+      std::lower_bound(_entries.begin(), _entries.end(), target);
+    for(; i != _entries.end() && (*i)._hostname == hostname && (*i)._port == port;) {
+      i = _entries.erase(i);
+    }
+  }
 };
 
 } // namespace aria2

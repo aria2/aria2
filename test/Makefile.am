@@ -60,7 +60,7 @@ aria2c_SOURCES = AllTest.cc\
 	TimeTest.cc\
 	FtpConnectionTest.cc\
 	OptionParserTest.cc\
-	SimpleDNSCacheTest.cc\
+	DNSCacheTest.cc\
 	DownloadHelperTest.cc\
 	SequentialPickerTest.cc\
 	RarestPieceSelectorTest.cc\

@@ -49,8 +49,15 @@ protected:
    */
   virtual bool executeInternal();
 
+  // hostname and port are the hostname and port number we are going
+  // to connect. If proxy server is used, these values are hostname
+  // and port of proxy server. addr is one of resolved address and we
+  // use this address this time.  resolvedAddresses are all addresses
+  // resolved.  proxyRequest is set if we are going to use proxy
+  // server.
   virtual Command* createNextCommand
-  (const std::deque<std::string>& resolvedAddresses,
+  (const std::string& hostname, const std::string& addr, uint16_t port,
+   const std::deque<std::string>& resolvedAddresses,
    const SharedHandle<Request>& proxyRequest) = 0;
 public:
   InitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,

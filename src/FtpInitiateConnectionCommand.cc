@@ -65,7 +65,8 @@ FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
 FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
 
 Command* FtpInitiateConnectionCommand::createNextCommand
-(const std::deque<std::string>& resolvedAddresses,
+(const std::string& hostname, const std::string& addr, uint16_t port,
+ const std::deque<std::string>& resolvedAddresses,
  const SharedHandle<Request>& proxyRequest)
 {
   Command* command;
@@ -75,11 +76,9 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       e->popPooledSocket(options, req->getHost(), req->getPort());
     std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		   proxyRequest->getHost().c_str(), proxyRequest->getPort());
+      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
       socket.reset(new SocketCore());
-      socket->establishConnection(resolvedAddresses.front(),
-				  proxyRequest->getPort());
+      socket->establishConnection(addr, port);
       
       if(proxyMethod == V_GET) {
 	// Use GET for FTP via HTTP proxy.
@@ -90,12 +89,16 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 	HttpRequestCommand* c =
 	  new HttpRequestCommand(cuid, req, _fileEntry,
 				 _requestGroup, hc, e, socket);
+	c->setConnectedAddr(hostname, addr, port);
 	c->setProxyRequest(proxyRequest);
 	command = c;
       } else if(proxyMethod == V_TUNNEL) {
-	command = new FtpTunnelRequestCommand(cuid, req, _fileEntry,
-					      _requestGroup, e,
-					      proxyRequest, socket);
+	FtpTunnelRequestCommand* c =
+	  new FtpTunnelRequestCommand(cuid, req, _fileEntry,
+				      _requestGroup, e,
+				      proxyRequest, socket);
+	c->setConnectedAddr(hostname, addr, port);
+	command = c;
       } else {
 	// TODO
 	throw DL_ABORT_EX("ERROR");
@@ -128,12 +131,14 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     SharedHandle<SocketCore> pooledSocket =
       e->popPooledSocket(options, resolvedAddresses, req->getPort());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
-		   req->getPort());
+      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
       socket.reset(new SocketCore());
-      socket->establishConnection(resolvedAddresses.front(), req->getPort());
-      command = new FtpNegotiationCommand(cuid, req, _fileEntry,
-					  _requestGroup, e, socket);
+      socket->establishConnection(addr, port);
+      FtpNegotiationCommand* c =
+	new FtpNegotiationCommand(cuid, req, _fileEntry,
+				  _requestGroup, e, socket);
+      c->setConnectedAddr(hostname, addr, port);
+      command = c;
     } else {
       command =
 	new FtpNegotiationCommand(cuid, req, _fileEntry,

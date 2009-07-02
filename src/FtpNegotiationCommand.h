@@ -76,6 +76,7 @@ public:
     SEQ_HEAD_OK,
     SEQ_DOWNLOAD_ALREADY_COMPLETED,
     SEQ_FILE_PREPARATION, // File allocation after SIZE command
+    SEQ_EXIT
   };
 private:
   bool recvGreeting();
@@ -118,6 +119,10 @@ private:
   SharedHandle<SocketCore> serverSocket;
   Seq sequence;
   SharedHandle<FtpConnection> ftp;
+
+  std::string _connectedHostname;
+  std::string _connectedAddr;
+  uint16_t _connectedPort;
 protected:
   virtual bool executeInternal();
 public:
@@ -130,6 +135,14 @@ public:
 			Seq seq = SEQ_RECV_GREETING,
 			const std::string& baseWorkingDir = "/");
   virtual ~FtpNegotiationCommand();
+
+  void setConnectedAddr
+  (const std::string& hostname, const std::string& addr, uint16_t port)
+  {
+    _connectedHostname = hostname;
+    _connectedAddr = addr;
+    _connectedPort = port;
+  }
 };
 
 } // namespace aria2

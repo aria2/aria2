@@ -102,7 +102,16 @@ protected:
 
   void prepareForNextAction(Command* nextCommand = 0);
 
-  void checkIfConnectionEstablished(const SharedHandle<SocketCore>& socket);
+  // Check if socket is connected. If socket is not connected and
+  // there are other addresses to try, command is created using
+  // InitiateConnectionCommandFactory and it is pushed to
+  // DownloadEngine and returns false. If no addresses left, DlRetryEx
+  // exception is thrown.
+  bool checkIfConnectionEstablished
+  (const SharedHandle<SocketCore>& socket,
+   const std::string& connectedHostname,
+   const std::string& connectedAddr,
+   uint16_t connectedPort);
 
   /*
    * Returns true if proxy for the procol indicated by Request::getProtocol()

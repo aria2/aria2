@@ -92,7 +92,7 @@ DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll):
   _refreshInterval(DEFAULT_REFRESH_INTERVAL),
   _cookieStorage(new CookieStorage()),
   _btRegistry(new BtRegistry()),
-  _dnsCache(new SimpleDNSCache())
+  _dnsCache(new DNSCache())
 {}
 
 DownloadEngine::~DownloadEngine() {
@@ -446,15 +446,27 @@ cuid_t DownloadEngine::newCUID()
 }
 
 const std::string& DownloadEngine::findCachedIPAddress
-(const std::string& hostname) const
+(const std::string& hostname, uint16_t port) const
 {
-  return _dnsCache->find(hostname);
+  return _dnsCache->find(hostname, port);
 }
 
 void DownloadEngine::cacheIPAddress
-(const std::string& hostname, const std::string& ipaddr)
+(const std::string& hostname, const std::string& ipaddr, uint16_t port)
 {
-  _dnsCache->put(hostname, ipaddr);
+  _dnsCache->put(hostname, ipaddr, port);
+}
+
+void DownloadEngine::markBadIPAddress
+(const std::string& hostname, const std::string& ipaddr, uint16_t port)
+{
+  _dnsCache->markBad(hostname, ipaddr, port);
+}
+
+void DownloadEngine::removeCachedIPAddress
+(const std::string& hostname, uint16_t port)
+{
+  _dnsCache->remove(hostname, port);
 }
 
 void DownloadEngine::setAuthConfigFactory

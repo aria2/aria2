@@ -118,6 +118,8 @@ bool FtpNegotiationCommand::executeInternal() {
       sequence = SEQ_PREPARE_SERVER_SOCKET;
     }
     return false;
+  } else if(sequence == SEQ_EXIT) {
+    return true;
   } else {
     e->commands.push_back(this);
     return false;
@@ -125,7 +127,11 @@ bool FtpNegotiationCommand::executeInternal() {
 }
 
 bool FtpNegotiationCommand::recvGreeting() {
-  checkIfConnectionEstablished(socket);
+  if(!checkIfConnectionEstablished
+     (socket, _connectedHostname, _connectedAddr, _connectedPort)) {
+    sequence = SEQ_EXIT;
+    return false;
+  }
   setTimeout(_requestGroup->getTimeout());
   //socket->setBlockingMode();
   disableWriteCheckSocket();

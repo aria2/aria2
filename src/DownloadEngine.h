@@ -244,9 +244,16 @@ public:
 
   cuid_t newCUID();
 
-  const std::string& findCachedIPAddress(const std::string& hostname) const;
+  const std::string& findCachedIPAddress
+  (const std::string& hostname, uint16_t port) const;
 
-  void cacheIPAddress(const std::string& hostname, const std::string& ipaddr);
+  void cacheIPAddress
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
+
+  void markBadIPAddress
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
+
+  void removeCachedIPAddress(const std::string& hostname, uint16_t port);
 
   void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
 

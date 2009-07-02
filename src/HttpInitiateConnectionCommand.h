@@ -42,7 +42,8 @@ namespace aria2 {
 class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
 protected:
   virtual Command* createNextCommand
-  (const std::deque<std::string>& resolvedAddresses,
+  (const std::string& hostname, const std::string& addr, uint16_t port,
+   const std::deque<std::string>& resolvedAddresses,
    const SharedHandle<Request>& proxyRequest);
 public:
   HttpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,

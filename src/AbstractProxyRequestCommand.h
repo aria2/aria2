@@ -48,6 +48,10 @@ protected:
 
   SharedHandle<HttpConnection> httpConnection;
 
+  std::string _connectedHostname;
+  std::string _connectedAddr;
+  uint16_t _connectedPort;
+
   virtual bool executeInternal();
 public:
   AbstractProxyRequestCommand(int cuid,
@@ -61,6 +65,14 @@ public:
   virtual ~AbstractProxyRequestCommand();
 
   virtual Command* getNextCommand() = 0;
+
+  void setConnectedAddr
+  (const std::string& hostname, const std::string& addr, uint16_t port)
+  {
+    _connectedHostname = hostname;
+    _connectedAddr = addr;
+    _connectedPort = port;
+  }
 };
 
 } // namespace aria2

@@ -46,6 +46,7 @@
 #include "RequestGroup.h"
 #include "DownloadContext.h"
 #include "Segment.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -68,14 +69,17 @@ InitiateConnectionCommand::~InitiateConnectionCommand() {}
 
 bool InitiateConnectionCommand::executeInternal() {
   std::string hostname;
+  uint16_t port;
   SharedHandle<Request> proxyRequest = createProxyRequest();
   if(proxyRequest.isNull()) {
     hostname = req->getHost();
+    port = req->getPort();
   } else {
     hostname = proxyRequest->getHost();
+    port = proxyRequest->getPort();
   }
   std::deque<std::string> addrs;
-  std::string ipaddr = e->findCachedIPAddress(hostname);
+  std::string ipaddr = e->findCachedIPAddress(hostname, port);
   if(ipaddr.empty()) {
 #ifdef ENABLE_ASYNC_DNS
     if(getOption()->getAsBool(PREF_ASYNC_DNS)) {
@@ -97,14 +101,18 @@ bool InitiateConnectionCommand::executeInternal() {
       }
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
 		 hostname.c_str(),
-		 addrs.front().c_str());
-    e->cacheIPAddress(hostname, addrs.front());
+		 strjoin(addrs.begin(), addrs.end(), ",").c_str());
+    for(std::deque<std::string>::const_iterator i = addrs.begin();
+	i != addrs.end(); ++i) {
+      e->cacheIPAddress(hostname, *i, port);
+    }
+    ipaddr = e->findCachedIPAddress(hostname, port);
   } else {
     logger->info(MSG_DNS_CACHE_HIT, cuid, hostname.c_str(), ipaddr.c_str());
     addrs.push_back(ipaddr);
   }
-
-  Command* command = createNextCommand(addrs, proxyRequest);
+  Command* command = createNextCommand(hostname, ipaddr, port,
+				       addrs, proxyRequest);
   e->commands.push_back(command);
   return true;
 }

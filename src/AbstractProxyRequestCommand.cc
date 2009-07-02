@@ -72,6 +72,10 @@ AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 bool AbstractProxyRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(httpConnection->sendBufferIsEmpty()) {
+    if(!checkIfConnectionEstablished
+       (socket, _connectedHostname, _connectedAddr, _connectedPort)) {
+      return true;
+    }
     HttpRequestHandle httpRequest(new HttpRequest());
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(req);
