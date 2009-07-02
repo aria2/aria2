@@ -185,8 +185,6 @@ public:
 
   const SharedHandle<PeerStat>& initPeerStat();
 
-  void purgePeerStat() { _peerStat.reset(); }
-
   static const std::string METHOD_GET;
   static const std::string METHOD_HEAD;
 

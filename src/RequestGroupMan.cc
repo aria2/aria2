@@ -329,34 +329,6 @@ public:
   }
 };
 
-class PeerStatFaster {
-public:
-  bool operator()(const SharedHandle<PeerStat>& lhs,
-		  const SharedHandle<PeerStat>& rhs) const
-  {
-    int r;
-    r = lhs->getHostname().compare(rhs->getHostname());
-    if(r != 0) {
-      return r < 0;
-    }
-    r = lhs->getProtocol().compare(rhs->getProtocol());
-    if(r != 0) {
-      return r < 0;
-    }
-    return lhs->getAvgDownloadSpeed() > rhs->getAvgDownloadSpeed();
-  }
-};
-
-class PeerStatHostProtoEqual {
-public:
-  bool operator()(const SharedHandle<PeerStat>& lhs,
-		  const SharedHandle<PeerStat>& rhs) const
-  {
-    return lhs->getHostname() == rhs->getHostname() &&
-      lhs->getProtocol() == rhs->getProtocol();
-  }
-};
-
 class CollectServerStat {
 private:
   RequestGroupMan* _requestGroupMan;
@@ -370,16 +342,12 @@ public:
       // Collect statistics during download in PeerStats and update/register
       // ServerStatMan
       if(!group->getSegmentMan().isNull()) {
-
-	std::deque<SharedHandle<PeerStat> > peerStats =
-	  group->getSegmentMan()->getPeerStats();
-	std::sort(peerStats.begin(), peerStats.end(), PeerStatFaster());
-	// Use fastest PeerStat for each hostname/protocol pair.
+	bool singleConnection =
+	  group->getSegmentMan()->getPeerStats().size() == 1;
+	const std::deque<SharedHandle<PeerStat> >& peerStats =
+	  group->getSegmentMan()->getFastestPeerStats();
 	for(std::deque<SharedHandle<PeerStat> >::const_iterator i =
-	      peerStats.begin(),
-	      last = std::unique(peerStats.begin(), peerStats.end(),
-				 PeerStatHostProtoEqual());
-	    i != last; ++i) {
+	      peerStats.begin(); i != peerStats.end(); ++i) {
 	  if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
 	    continue;
 	  }
@@ -391,7 +359,7 @@ public:
 						    (*i)->getProtocol());
           ss->increaseCounter();
 	  ss->updateDownloadSpeed(speed);
-          if(peerStats.size() == 1) {
+          if(singleConnection) {
             ss->updateSingleConnectionAvgSpeed(speed);
           }
           else {

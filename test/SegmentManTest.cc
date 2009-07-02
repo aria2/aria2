@@ -17,6 +17,7 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNullBitfield);
   CPPUNIT_TEST(testCompleteSegment);
   CPPUNIT_TEST(testGetSegment_sameFileEntry);
+  CPPUNIT_TEST(testRegisterPeerStat);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -28,6 +29,7 @@ public:
   void testCompleteSegment();
   void testGetPeerStat();
   void testGetSegment_sameFileEntry();
+  void testRegisterPeerStat();
 };
 
 
@@ -122,6 +124,24 @@ void SegmentManTest::testGetSegment_sameFileEntry()
   segman.getSegment(segments, 1, fileEntries[1], 4);
   // segment#4 is not returned because the part of file2 is filled.
   CPPUNIT_ASSERT_EQUAL((size_t)3, segments.size());
+}
+
+void SegmentManTest::testRegisterPeerStat()
+{
+  Option op;
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
+  SegmentMan segman(&op, dctx, ps);
+  
+  SharedHandle<PeerStat> p1(new PeerStat(0, "host1", "http"));
+  segman.registerPeerStat(p1);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, segman.getPeerStats().size());
+  SharedHandle<PeerStat> p2(new PeerStat(0, "host2", "http"));
+  segman.registerPeerStat(p2);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, segman.getPeerStats().size());
+  p2->downloadStart();
+  segman.registerPeerStat(p1);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, segman.getPeerStats().size());
 }
 
 } // namespace aria2

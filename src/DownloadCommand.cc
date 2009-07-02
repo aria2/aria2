@@ -89,18 +89,15 @@ DownloadCommand::DownloadCommand(int cuid,
     }
   }
 #endif // ENABLE_MESSAGE_DIGEST
-  peerStat = req->getPeerStat();
-  if(peerStat.isNull()) {
-    peerStat = req->initPeerStat();
-    _requestGroup->getSegmentMan()->registerPeerStat(peerStat);
-  }
+
+  peerStat = req->initPeerStat();
   peerStat->downloadStart();
+  _requestGroup->getSegmentMan()->registerPeerStat(peerStat);
 }
 
 DownloadCommand::~DownloadCommand() {
-  assert(peerStat.get());
   peerStat->downloadStop();
-  req->purgePeerStat();
+  _requestGroup->getSegmentMan()->updateFastestPeerStat(peerStat);
 }
 
 bool DownloadCommand::executeInternal() {

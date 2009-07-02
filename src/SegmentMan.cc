@@ -282,7 +282,40 @@ uint64_t SegmentMan::getDownloadLength() const {
 
 void SegmentMan::registerPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
+  for(std::deque<SharedHandle<PeerStat> >::iterator i = peerStats.begin();
+      i != peerStats.end(); ++i) {
+    if((*i)->getStatus() == PeerStat::IDLE) {
+      *i = peerStat;
+      return;
+    }
+  }
   peerStats.push_back(peerStat);
+}
+
+class PeerStatHostProtoEqual {
+private:
+  const SharedHandle<PeerStat>& _peerStat;
+public:
+  PeerStatHostProtoEqual(const SharedHandle<PeerStat>& peerStat):
+    _peerStat(peerStat) {}
+
+  bool operator()(const SharedHandle<PeerStat>& p) const
+  {
+    return _peerStat->getHostname() == p->getHostname() &&
+      _peerStat->getProtocol() == p->getProtocol();
+  }
+};
+
+void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
+{
+  std::deque<SharedHandle<PeerStat> >::iterator i =
+    std::find_if(_fastestPeerStats.begin(), _fastestPeerStats.end(),
+		 PeerStatHostProtoEqual(peerStat));
+  if(i == _fastestPeerStats.end()) {
+    _fastestPeerStats.push_back(peerStat);
+  } else if((*i)->getAvgDownloadSpeed() < peerStat->getAvgDownloadSpeed()) {
+    *i = peerStat;
+  }
 }
 
 unsigned int SegmentMan::calculateDownloadSpeed()

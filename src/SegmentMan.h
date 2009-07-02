@@ -88,7 +88,11 @@ private:
   // segment. The value is writtenLength for that segment.
   std::map<size_t, size_t> _segmentWrittenLengthMemo;
 
+  // Used for calculating download speed.
   std::deque<SharedHandle<PeerStat> > peerStats;
+
+  // Keep track of fastest PeerStat for each server
+  std::deque<SharedHandle<PeerStat> > _fastestPeerStats;
 
   // key: PeerStat's cuid, value: its download speed
   std::map<cuid_t, unsigned int> _peerStatDlspdMap;
@@ -188,15 +192,26 @@ public:
    */
   uint64_t getDownloadLength() const;
 
-  /**
-   * Registers given peerStat if it has not been registerd and returns true.
-   * Otherwise does nothing and returns false.
-   */
+
+  // If there is inactive PeerStat in peerStats, it is replaced with
+  // given peerStat. If no such PeerStat exist, the given peerStat is
+  // inserted.
   void registerPeerStat(const SharedHandle<PeerStat>& peerStat);
 
   const std::deque<SharedHandle<PeerStat> >& getPeerStats() const
   {
     return peerStats;
+  }
+
+  // If there is slower PeerStat than given peerStat for the same
+  // hostname and protocol in _fastestPeerStats, the former is
+  // replaced with latter. If there are no PeerStat with same hostname
+  // and protocol with given peerStat, given peerStat is inserted.
+  void updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat);
+
+  const std::deque<SharedHandle<PeerStat> >& getFastestPeerStats() const
+  {
+    return _fastestPeerStats;
   }
 
   /**
