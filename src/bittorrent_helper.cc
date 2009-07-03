@@ -112,6 +112,7 @@ static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
 			     size_t numPieces)
 {
   std::vector<std::string> pieceHashes;
+  pieceHashes.reserve(numPieces);
   for(size_t i = 0; i < numPieces; ++i) {
     pieceHashes.push_back(Util::toHex(hashData.data()+i*hashLength,
 				      hashLength));
@@ -184,6 +185,7 @@ static void extractFileEntries
   const BDE& filesList = infoDict[C_FILES];
   std::vector<SharedHandle<FileEntry> > fileEntries;
   if(filesList.isList()) {
+    fileEntries.reserve(filesList.size());
     uint64_t length = 0;
     off_t offset = 0;
     // multi-file mode

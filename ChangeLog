@@ -1,5 +1,11 @@
 2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use std::vector::reserve() for fileEntries and pieceHashes in
+	bittorrent_helper
+	* src/bittorrent_helper.cc
+
+2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed calls to Request::resetUrl() in AbstractCommand.cc.
 	Removed hidden option PREF_RESET_URI.
 	* src/AbstractCommand.cc
