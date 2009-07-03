@@ -72,6 +72,11 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand
     return
       new HttpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
   } else if(req->getProtocol() == Request::PROTO_FTP) {
+    if(req->getFile().empty()) {
+      throw DL_ABORT_EX
+	(StringFormat("FTP URL %s doesn't contain file path.",
+		      req->getUrl().c_str()).str());
+    }
     return
       new FtpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
   } else {
