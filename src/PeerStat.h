@@ -50,7 +50,6 @@ public:
   enum STATUS {
     IDLE,
     ACTIVE,
-    REQUEST_IDLE,
   };
 private:
   cuid_t cuid;
@@ -156,10 +155,6 @@ public:
     calculateAvgDownloadSpeed();
     calculateAvgUploadSpeed();
     status = PeerStat::IDLE;
-  }
-
-  void requestIdle() {
-    status = PeerStat::REQUEST_IDLE;
   }
 
   const Time& getDownloadStartTime() const {
