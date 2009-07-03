@@ -260,6 +260,17 @@ void DownloadCommand::checkLowestDownloadSpeed() const
 
 bool DownloadCommand::prepareForNextSegment() {
   if(_requestGroup->downloadFinished()) {
+    // If this is a single file download, and file size becomes known
+    // just after downloading, set total length to FileEntry object
+    // here.
+    if(_requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
+      const SharedHandle<FileEntry>& fileEntry =
+	_requestGroup->getDownloadContext()->getFirstFileEntry();
+      if(fileEntry->getLength() == 0) {
+	fileEntry->setLength
+	  (_requestGroup->getPieceStorage()->getCompletedLength());
+      }
+    }
 #ifdef ENABLE_MESSAGE_DIGEST
     CheckIntegrityEntryHandle entry(new ChecksumCheckIntegrityEntry(_requestGroup));
     if(entry->isValidationReady()) {

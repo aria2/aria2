@@ -1,5 +1,12 @@
 2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	In a single file download, file size becomes known just after
+	downloading, set total length to FileEntry object when download
+	completed.	
+	* src/DownloadCommand.cc
+
+2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use std::vector::reserve() for fileEntries and pieceHashes in
 	bittorrent_helper
 	* src/bittorrent_helper.cc
