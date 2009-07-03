@@ -273,17 +273,23 @@ void writeFilePath
     o << "n/a";
   } else {
     if(e->getPath().empty()) {
-      o << "n/a";
+      std::deque<std::string> uris;
+      e->getUris(uris);
+      if(uris.empty()) {
+	o << "n/a";
+      } else {
+	o << uris.front();
+      }
     } else {
       if(memory) {
 	o << "[MEMORY]" << File(e->getPath()).getBasename();
       } else {
 	o << e->getPath();
       }
-    }
-    size_t count = countRequestedFileEntry(first, last);
-    if(count > 1) {
-      o << " (" << count-1 << "more)";
+      size_t count = countRequestedFileEntry(first, last);
+      if(count > 1) {
+	o << " (" << count-1 << "more)";
+      }
     }
   }
 }
