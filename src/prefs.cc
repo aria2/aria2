@@ -158,8 +158,6 @@ const std::string PREF_XML_RPC_LISTEN_PORT("xml-rpc-listen-port");
 // value: true | false
 const std::string PREF_ENABLE_XML_RPC("enable-xml-rpc");
 // value: true | false
-const std::string PREF_RESET_URI("reset-uri");
-// value: true | false
 const std::string PREF_DRY_RUN("dry-run");
 // value: true | false
 const std::string PREF_REUSE_URI("reuse-uri");

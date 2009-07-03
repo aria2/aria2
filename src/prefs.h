@@ -162,8 +162,6 @@ extern const std::string PREF_XML_RPC_LISTEN_PORT;
 // value: true | false
 extern const std::string PREF_ENABLE_XML_RPC;
 // value: true | false
-extern const std::string PREF_RESET_URI;
-// value: true | false
 extern const std::string PREF_DRY_RUN;
 // value: true | false
 extern const std::string PREF_REUSE_URI;

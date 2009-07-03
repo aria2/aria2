@@ -193,8 +193,6 @@ bool AbstractCommand::execute() {
       _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
     }
     onAbort();
-    // TODO Do we need this?
-    //req->resetUrl();
     tryReserved();
     return true;
   } catch(DlRetryEx& err) {
@@ -209,13 +207,6 @@ bool AbstractCommand::execute() {
     bool isAbort = maxTries != 0 && req->getTryCount() >= maxTries;
     if(isAbort) {
       onAbort();
-      req->resetUrl();
-    } else {
-      if(getOption()->getAsBool(PREF_RESET_URI)) {
-	req->resetUrl();
-      }
-    }
-    if(isAbort) {
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
       logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
       _fileEntry->addURIResult(req->getUrl(), err.getCode());

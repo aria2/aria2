@@ -513,15 +513,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new BooleanOptionHandler
-				   (PREF_RESET_URI,
-				    NO_DESCRIPTION,
-				    V_FALSE,
-				    OptionHandler::OPT_ARG));
-    op->hide();
-    handlers.push_back(op);
-  }
-  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
 				   (PREF_RETRY_WAIT,
 				    TEXT_RETRY_WAIT,
