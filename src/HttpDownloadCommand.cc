@@ -80,12 +80,11 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     e->commands.push_back(command);
     return true;
   } else {
-    uint64_t loff = _fileEntry->gtoloff(_segments.front()->getPositionToWrite());
-    if((req->isPipeliningEnabled() && loff == _fileEntry->getLength()) ||
+    if(req->isPipeliningEnabled() ||
        (req->isKeepAliveEnabled() &&
 	((!_transferEncodingDecoder.isNull() &&
 	  _requestGroup->downloadFinished()) ||
-	 loff == _fileEntry->getLength()))) {
+	 _fileEntry->getLastOffset() == _segments.front()->getPositionToWrite()))) {
       e->poolSocket(req, isProxyDefined(), socket);
     }
     // The request was sent assuming that server supported pipelining, but
