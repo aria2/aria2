@@ -204,10 +204,6 @@ void option_processing(Option& op, std::deque<std::string>& uris,
     }
   }
 #endif // HAVE_DAEMON
-#ifdef ENABLE_BITTORRENT
-  bittorrent::generateStaticPeerId(op.get(PREF_PEER_ID_PREFIX),
-				   SimpleRandomizer::getInstance());
-#endif // ENABLE_BITTORRENT
 }
 
 } // namespace aria2

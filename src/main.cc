@@ -173,6 +173,10 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 
   SimpleRandomizer::init();
   BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
+#ifdef ENABLE_BITTORRENT
+  bittorrent::generateStaticPeerId(op->get(PREF_PEER_ID_PREFIX),
+				   SimpleRandomizer::getInstance());
+#endif // ENABLE_BITTORRENT
   if(op->get(PREF_LOG) == "-") {
     LogFactory::setLogFile(DEV_STDOUT);
   } else if(!op->get(PREF_LOG).empty()) {

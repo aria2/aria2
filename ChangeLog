@@ -1,3 +1,9 @@
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Generate peer ID after SimpleRandomizer is initialized.
+	* src/main.cc
+	* src/option_processing.cc
+
 2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused method argument.
