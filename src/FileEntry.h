@@ -265,6 +265,18 @@ size_t countRequestedFileEntry(InputIterator first, InputIterator last)
   return count;
 }
 
+// Returns true if at least one requested FileEntry has URIs.
+template<typename InputIterator>
+bool isUriSuppliedForRequsetFileEntry(InputIterator first, InputIterator last)
+{
+  for(; first != last; ++first) {
+    if((*first)->isRequested() && !(*first)->getRemainingUris().empty()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // Writes first filename to given o.  If memory is true, the output is
 // "[MEMORY]" plus the basename of the first filename.  If there is no
 // FileEntry, writes "n/a" to o.  If more than 1 FileEntry are in the

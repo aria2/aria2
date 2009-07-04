@@ -55,7 +55,11 @@ void BtFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
   BtSetup().setup(commands, _requestGroup, e, _requestGroup->getOption().get());
   if(!_requestGroup->downloadFinished()) {
     _requestGroup->getDownloadContext()->resetDownloadStartTime();
-    _requestGroup->createNextCommandWithAdj(commands, e, 0);
+    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+      _requestGroup->getDownloadContext()->getFileEntries();
+    if(isUriSuppliedForRequsetFileEntry(fileEntries.begin(), fileEntries.end())) {
+      _requestGroup->createNextCommandWithAdj(commands, e, 0);
+    }
   }
 }
 

@@ -1,5 +1,15 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Call RequestGroup::createNextCommandWithAdj() from
+	BtFileAllocationEntry if at least one FileEntry has URI.  The
+	static function hasAssociatedUri in RequestGroup.cc is renamed as
+	isUriSuppliedForRequsetFileEntry() and placed in FileEntry.h.
+	* src/BtFileAllocationEntry.cc
+	* src/FileEntry.h
+	* src/RequestGroup.cc
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Generate peer ID after SimpleRandomizer is initialized.
 	* src/main.cc
 	* src/option_processing.cc

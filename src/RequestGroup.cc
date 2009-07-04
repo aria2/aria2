@@ -398,17 +398,6 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
     }
 }
 
-template<typename InputIterator>
-static bool hasAssociatedUri(InputIterator first, InputIterator last)
-{
-  for(; first != last; ++first) {
-    if((*first)->isRequested() && !(*first)->getRemainingUris().empty()) {
-      return true;
-    }
-  }
-  return false;
-}
-
 void RequestGroup::initPieceStorage()
 {
   if(_downloadContext->knowsTotalLength()) {
@@ -418,8 +407,9 @@ void RequestGroup::initPieceStorage()
     // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent integrated
     // downloads. Currently multi-file integrated download is not supported.
     if(_downloadContext->hasAttribute(bittorrent::BITTORRENT) &&
-       hasAssociatedUri(_downloadContext->getFileEntries().begin(),
-			_downloadContext->getFileEntries().end())) {
+       isUriSuppliedForRequsetFileEntry
+       (_downloadContext->getFileEntries().begin(),
+	_downloadContext->getFileEntries().end())) {
       _logger->debug("Using LongestSequencePieceSelector");
       ps->setPieceSelector
 	(SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
@@ -635,7 +625,6 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 
   for(; numCommand--; ) {
     Command* command = new CreateRequestCommand(e->newCUID(), this, e);
-    _logger->debug("filePath=%s", _downloadContext->getFileEntries().front()->getPath().c_str());
     commands.push_back(command);
   }
   if(!commands.empty()) {
