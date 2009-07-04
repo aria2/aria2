@@ -278,4 +278,39 @@ void FileEntry::extractURIResult
   _uriResults.erase(_uriResults.begin(), i);
 }
 
+void FileEntry::reuseUri(size_t num)
+{
+  std::deque<std::string> uris = _spentUris;
+  std::sort(uris.begin(), uris.end());
+  uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
+
+  std::deque<std::string> errorUris(_uriResults.size());
+  std::transform(_uriResults.begin(), _uriResults.end(),
+		 errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
+  std::sort(errorUris.begin(), errorUris.end());
+  errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
+		  errorUris.end());
+     
+  std::deque<std::string> reusableURIs;
+  std::set_difference(uris.begin(), uris.end(),
+		      errorUris.begin(), errorUris.end(),
+		      std::back_inserter(reusableURIs));
+  size_t ininum = reusableURIs.size();
+  _logger->debug("Found %u reusable URIs",
+		 static_cast<unsigned int>(ininum));
+  // Reuse at least num URIs here to avoid to
+  // run this process repeatedly.
+  if(ininum > 0 && ininum < num) {
+    _logger->debug("fewer than num=%u",
+		   num);
+    for(size_t i = 0; i < num/ininum; ++i) {
+      _uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
+    }
+    _uris.insert(_uris.end(), reusableURIs.begin(),
+		 reusableURIs.begin()+(num%ininum));
+    _logger->debug("Duplication complete: now %u URIs for reuse",
+		   static_cast<unsigned int>(_uris.size()));
+  }
+}
+
 } // namespace aria2

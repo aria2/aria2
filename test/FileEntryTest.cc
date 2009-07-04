@@ -14,6 +14,7 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testExtractURIResult);
   CPPUNIT_TEST(testGetRequest);
   CPPUNIT_TEST(testGetRequest_disableSingleHostMultiConnection);
+  CPPUNIT_TEST(testReuseUri);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -23,6 +24,7 @@ public:
   void testExtractURIResult();
   void testGetRequest();
   void testGetRequest_disableSingleHostMultiConnection();
+  void testReuseUri();
 };
 
 
@@ -126,6 +128,25 @@ void FileEntryTest::testGetRequest_disableSingleHostMultiConnection()
 
   SharedHandle<Request> req3rd = fileEntry->getRequest(selector);
   CPPUNIT_ASSERT(req3rd.isNull());
+}
+
+void FileEntryTest::testReuseUri()
+{
+  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  size_t numUris = fileEntry->getRemainingUris().size();
+  for(size_t i = 0; i < numUris; ++i) {
+    fileEntry->getRequest(selector);
+  }
+  CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry->getRemainingUris().size());
+  fileEntry->addURIResult("http://localhost/aria2.zip",
+			  downloadresultcode::UNKNOWN_ERROR);
+  fileEntry->reuseUri(3);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, fileEntry->getRemainingUris().size());
+  const std::deque<std::string>& uris = fileEntry->getRemainingUris();
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"), uris[1]);
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[2]);
 }
 
 } // namespace aria2

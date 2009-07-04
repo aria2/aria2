@@ -67,6 +67,10 @@ bool CreateRequestCommand::executeInternal()
     _fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset
       (_segments.front()->getPositionToWrite());
   }
+  if(_fileEntry->getRemainingUris().empty() &&
+     getOption()->getAsBool(PREF_REUSE_URI)) {
+    _fileEntry->reuseUri(_requestGroup->getNumConcurrentCommand());
+  }
   req = _fileEntry->getRequest(_requestGroup->getURISelector(),
 			       getOption()->get(PREF_REFERER),
 			       // Don't use HEAD request when file

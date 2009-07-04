@@ -225,6 +225,12 @@ public:
   {
     return _singleHostMultiConnection;
   }
+
+  // Reuse URIs which have not emitted error so far.  Thie method
+  // tries to reuse at least num URIs.  If less than num URIs found to
+  // reuse, those URIs are used more than once so that num URIs total
+  // are available to reuse.
+  void reuseUri(size_t num);
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;
