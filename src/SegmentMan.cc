@@ -314,6 +314,7 @@ void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
   if(i == _fastestPeerStats.end()) {
     _fastestPeerStats.push_back(peerStat);
   } else if((*i)->getAvgDownloadSpeed() < peerStat->getAvgDownloadSpeed()) {
+    peerStat->addSessionDownloadLength((*i)->getSessionDownloadLength());
     *i = peerStat;
   }
 }
@@ -362,9 +363,8 @@ public:
 
 uint64_t SegmentMan::calculateSessionDownloadLength() const
 {
-  return std::accumulate(peerStats.begin(), peerStats.end(), 0LL,
-			 PeerStatDownloadLengthOperator());
- 
+  return std::accumulate(_fastestPeerStats.begin(), _fastestPeerStats.end(),
+			 0LL, PeerStatDownloadLengthOperator());
 }
 
 size_t SegmentMan::countFreePieceFrom(size_t index) const

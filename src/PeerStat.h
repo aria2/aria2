@@ -188,6 +188,11 @@ public:
   {
     return _sessionUploadLength;
   }
+
+  void addSessionDownloadLength(uint64_t length)
+  {
+    _sessionDownloadLength += length;
+  }
 };
 
 typedef SharedHandle<PeerStat> PeerStatHandle;

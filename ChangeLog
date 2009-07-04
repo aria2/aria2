@@ -1,5 +1,13 @@
 2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Add formerly fastest PeerStat's sessionDownloadLength to new
+	fastest PeerStat and use _fastestPeerStats to calcuate downloaded
+	bytes in a session.	
+	* src/PeerStat.cc
+	* src/SegmentMan.cc
+
+2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	If pipelining is enabled, we can always pool socket.
 	* src/HttpDownloadCommand.cc
 
