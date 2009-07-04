@@ -196,8 +196,7 @@ void RequestGroup::closeFile()
 }
 
 void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
-					DownloadEngine* e,
-					const std::string& method)
+					DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   {
@@ -351,7 +350,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
   // not 0, then filepath is also set DownloadContext correctly....
   if(_option->getAsBool(PREF_DRY_RUN) ||
      _downloadContext->getTotalLength() == 0) {
-    createNextCommand(commands, e, 1, method);
+    createNextCommand(commands, e, 1);
   }else {
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
@@ -596,8 +595,7 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
 
 void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 				     DownloadEngine* e,
-				     unsigned int numCommand,
-				     const std::string& method)
+				     unsigned int numCommand)
 {
   // TODO1.5 The following block should be moved into FileEntry
 //   if(_option->getAsBool(PREF_REUSE_URI) && _uris.empty()) {

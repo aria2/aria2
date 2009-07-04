@@ -428,13 +428,9 @@ void RequestGroupMan::configureRequestGroup
 
 static void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
 				 std::deque<Command*>& commands,
-				 DownloadEngine* e,
-				 bool useHead)
+				 DownloadEngine* e)
 {
-  requestGroup->createInitialCommand(commands, e,
-				     useHead ?
-				     Request::METHOD_HEAD :
-				     Request::METHOD_GET);
+  requestGroup->createInitialCommand(commands, e);
 }
 
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
@@ -456,9 +452,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       }
       configureRequestGroup(groupToAdd);
       Commands commands;
-      createInitialCommand(groupToAdd, commands, e,
-			   _option->getAsBool(PREF_USE_HEAD)||
-			   _option->getAsBool(PREF_DRY_RUN));
+      createInitialCommand(groupToAdd, commands, e);
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
@@ -486,9 +480,7 @@ void RequestGroupMan::getInitialCommands(std::deque<Command*>& commands,
     try {
       if((*itr)->isDependencyResolved()) {
 	configureRequestGroup(*itr);
-	createInitialCommand(*itr, commands, e,
-			     // TODO1.5 We need PREF_DRY_RUN here?
-			     _option->getAsBool(PREF_USE_HEAD));
+	createInitialCommand(*itr, commands, e);
 	executeStartHook(*itr, e->option);
 	++itr;
       } else {

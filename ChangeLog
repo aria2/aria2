@@ -1,5 +1,14 @@
 2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused method argument.
+	* src/CreateRequestCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/TrackerWatcherCommand.cc
+
+2009-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made URI reusing function work.
 	* src/CreateRequestCommand.cc
 	* src/FileEntry.cc

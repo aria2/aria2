@@ -96,8 +96,7 @@ bool TrackerWatcherCommand::execute() {
     _trackerRequestGroup = createAnnounce();
     if(!_trackerRequestGroup.isNull()) {
       std::deque<Command*> commands;
-      _trackerRequestGroup->createInitialCommand(commands, e,
-						 Request::METHOD_GET);
+      _trackerRequestGroup->createInitialCommand(commands, e);
       e->addCommand(commands);
       logger->debug("added tracker request command");
     }
@@ -210,6 +209,9 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
     logger->debug("This is single-tracker announce.");
     rg->getOption()->put(PREF_MAX_TRIES, "5");
   }
+  // TODO When dry-run mode becomes available in BitTorrent, set
+  // PREF_DRY_RUN=false too.
+  rg->getOption()->put(PREF_USE_HEAD, V_FALSE);
 
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SharedHandle<DownloadContext> dctx

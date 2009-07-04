@@ -183,21 +183,15 @@ public:
 
   // Returns first bootstrap commands to initiate a download.
   // If this is HTTP/FTP download and file size is unknown, only 1 command
-  // (usually, HttpInitiateConnection or FtpInitiateConnection) will be created
-  // with its Request object having Requet::METHOD_HEAD in its method.
-  // This behavior can be changed by providing 3rd argument.
-  // The method has effect only for using HTTP request including FTP via HTTP
-  // proxy.
+  // (usually, HttpInitiateConnection or FtpInitiateConnection) will be created.
   void createInitialCommand(std::deque<Command*>& commands,
-			    DownloadEngine* e,
-			    const std::string& method = Request::METHOD_HEAD);
+			    DownloadEngine* e);
 
   void createNextCommandWithAdj(std::deque<Command*>& commands,
 				DownloadEngine* e, int numAdj);
 
   void createNextCommand(std::deque<Command*>& commands,
-			 DownloadEngine* e, unsigned int numCommand,
-			 const std::string& method = Request::METHOD_GET);
+			 DownloadEngine* e, unsigned int numCommand);
   
   bool downloadFinished() const;
 

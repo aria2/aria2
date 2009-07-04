@@ -75,8 +75,10 @@ bool CreateRequestCommand::executeInternal()
 			       getOption()->get(PREF_REFERER),
 			       // Don't use HEAD request when file
 			       // size is known.
-			       _fileEntry->getLength() == 0 &&
-			       getOption()->getAsBool(PREF_USE_HEAD)?
+			       // Use HEAD for dry-run mode.
+			       (_fileEntry->getLength() == 0 &&
+				getOption()->getAsBool(PREF_USE_HEAD)) ||
+			       getOption()->getAsBool(PREF_DRY_RUN)?
 			       Request::METHOD_HEAD:Request::METHOD_GET);
   if(req.isNull()) {
     if(!_requestGroup->getSegmentMan().isNull()) {
