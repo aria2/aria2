@@ -345,13 +345,15 @@ static void processRootDictionary
     throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
 				   C_PIECES.c_str()).str());
   }
-  if(piecesData.s().empty()) {
-    throw DL_ABORT_EX("The length of piece hash is 0.");
-  }
+  // Commented out To download 0 length torrent.
+  //   if(piecesData.s().empty()) {
+  //     throw DL_ABORT_EX("The length of piece hash is 0.");
+  //   }
   size_t numPieces = piecesData.s().size()/PIECE_HASH_LENGTH;
-  if(numPieces == 0) {
-    throw DL_ABORT_EX("The number of pieces is 0.");
-  }
+  // Commented out to download 0 length torrent.
+  //   if(numPieces == 0) {
+  //     throw DL_ABORT_EX("The number of pieces is 0.");
+  //   }
   // retrieve piece length
   const BDE& pieceLengthData = infoDict[C_PIECE_LENGTH];
   if(!pieceLengthData.isInteger()) {

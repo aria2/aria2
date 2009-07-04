@@ -1,5 +1,11 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Commented out throw statements when number of piece is 0 to
+	download 0 length torrent.
+	* src/bittorrent_helper.cc
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call RequestGroup::createNextCommandWithAdj() from
 	BtFileAllocationEntry if at least one FileEntry has URI.  The
 	static function hasAssociatedUri in RequestGroup.cc is renamed as
