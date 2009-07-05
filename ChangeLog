@@ -1,5 +1,11 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Allocate buffer in ctor of DownloadCommand.
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed DiskAdaptor::onDownloadComplete()
 	* src/DirectDiskAdaptor.cc
 	* src/DirectDiskAdaptor.h

@@ -70,7 +70,8 @@ DownloadCommand::DownloadCommand(int cuid,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s)
+  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+  _buf(new unsigned char[BUFSIZE])
 #ifdef ENABLE_MESSAGE_DIGEST
   , _pieceHashValidationEnabled(false)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -110,8 +111,6 @@ bool DownloadCommand::executeInternal() {
   setReadCheckSocket(socket);
   SegmentHandle segment = _segments.front();
 
-  size_t BUFSIZE = 16*1024;
-  unsigned char buf[BUFSIZE];
   size_t bufSize;
   if(segment->getLength() > 0) {
     if(segment->getPosition()+segment->getLength() <= static_cast<uint64_t>(_fileEntry->getLastOffset())) {
@@ -123,7 +122,7 @@ bool DownloadCommand::executeInternal() {
   } else {
     bufSize = BUFSIZE;
   }
-  socket->readData(buf, bufSize);
+  socket->readData(_buf, bufSize);
 
   const SharedHandle<DiskAdaptor>& diskAdaptor =
     _requestGroup->getPieceStorage()->getDiskAdaptor();
@@ -133,10 +132,10 @@ bool DownloadCommand::executeInternal() {
 
   std::string decoded;
   if(_transferEncodingDecoder.isNull()) {
-    bufFinal = buf;
+    bufFinal = _buf;
     bufSizeFinal = bufSize;
   } else {
-    decoded = _transferEncodingDecoder->decode(buf, bufSize);
+    decoded = _transferEncodingDecoder->decode(_buf, bufSize);
 
     bufFinal = reinterpret_cast<const unsigned char*>(decoded.c_str());
     bufSizeFinal = decoded.size();

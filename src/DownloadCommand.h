@@ -47,6 +47,10 @@ class MessageDigestContext;
 
 class DownloadCommand : public AbstractCommand {
 private:
+  static const size_t BUFSIZE = 16*1024;
+
+  unsigned char* _buf;
+
   time_t startupIdleTime;
   unsigned int lowestDownloadSpeedLimit;
   SharedHandle<PeerStat> peerStat;
