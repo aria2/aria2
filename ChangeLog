@@ -1,5 +1,11 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error regarding BUFSIZE.
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented tellWaiting xml-rpc method in man page.
 	* doc/aria2c.1.txt
 
