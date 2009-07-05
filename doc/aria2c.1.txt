@@ -455,7 +455,7 @@ Make sure that the specified ports are open for incoming TCP traffic.
   To limit the overall upload speed, use *--max-overall-upload-limit* option.
   Default: '0'
 
-*--peer-id-prefix*=PEERI_ID_PREFIX::
+*--peer-id-prefix*=PEER_ID_PREFIX::
   Specify the prefix of peer ID. The peer ID in BitTorrent is 20 byte length.
   If more than 20 bytes are specified, only first 20 bytes are used.
   If less than 20 bytes are specified, the random alphabet characters are

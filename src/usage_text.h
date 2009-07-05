@@ -282,7 +282,7 @@ _(" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
   "                              this option, seeding ends when at least one of\n"\
   "                              the conditions is satisfied.")
 #define TEXT_PEER_ID_PREFIX \
-_(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID in\n"\
+_(" --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID in\n"\
   "                              BitTorrent is 20 byte length. If more than 20\n"\
   "                              bytes are specified, only first 20\n"\
   "                              bytes are used. If less than 20 bytes are\n"\
