@@ -1,5 +1,10 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Set manual and source attribute in aria2c.1.txt
+	* doc/aria2c.1.txt
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented that the default value of --use-head is 'false' in man
 	page.
 	* doc/aria2c.1.txt
