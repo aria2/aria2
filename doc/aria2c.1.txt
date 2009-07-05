@@ -939,7 +939,6 @@ of URIs. These optional lines must start with white space(s).
 * follow-torrent
 * index-out
 * max-upload-limit
-* peer-id-prefix
 * seed-ratio
 * seed-time
 * follow-metalink

@@ -118,7 +118,6 @@ const std::vector<std::string>& listRequestOptions()
     PREF_FOLLOW_TORRENT,
     PREF_INDEX_OUT,
     PREF_MAX_UPLOAD_LIMIT,
-    PREF_PEER_ID_PREFIX,
     PREF_SEED_RATIO,
     PREF_SEED_TIME,
     PREF_FOLLOW_METALINK,

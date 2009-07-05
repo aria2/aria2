@@ -1,5 +1,11 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed peer-id-prefix option from -i list.
+	* doc/aria2c.1.txt
+	* src/download_helper.cc
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo
 	* doc/aria2c.1.txt
 	* src/usage_text.h
