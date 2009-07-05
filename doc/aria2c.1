@@ -2240,6 +2240,10 @@ seeder
 .sp
 This method returns the list of active downloads\&. The respose is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&.
 .sp
+\fBaria2\&.tellWaiting\fR \fIoffset, num\fR
+.sp
+This method returns the list of waiting download in the range of [\fIoffset\fR, \fIoffset\fR+\fInum\fR)\&. \fIoffset\fR specifies the offset from the download waiting at the front and \fInum\fR specifies the number of downloads to be returned\&. For example, imagine that three downloads "A","B" and "C" are waiting in this order\&. aria2\&.tellWaiting(0, 1) returns "A"\&. aria2\&.tellWaiting(1, 2) returns "B" and "C"\&. The respose is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&.
+.sp
 \fBaria2\&.changeOption\fR \fIgid, options\fR
 .sp
 This method changes options of the download denoted by \fIgid\fR dynamically\&. \fIgid\fR is of type string\&. \fIoptions\fR is of type struct and the available options are \fBmax\-download\-limit\fR and \fBmax\-upload\-limit\fR\&. This method returns "OK" for success\&.

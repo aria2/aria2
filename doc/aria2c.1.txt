@@ -1248,6 +1248,17 @@ This method returns the list of active downloads.  The respose is of
 type array and its element is the same struct returned by
 *aria2.tellStatus* method.
 
+*aria2.tellWaiting* 'offset, num'
+
+This method returns the list of waiting download in the range of
+['offset', 'offset'+'num'). 'offset' specifies the offset from the
+download waiting at the front and 'num' specifies the number of
+downloads to be returned. For example, imagine that three downloads
+"A","B" and "C" are waiting in this order. aria2.tellWaiting(0, 1)
+returns "A". aria2.tellWaiting(1, 2) returns "B" and "C".  The respose
+is of type array and its element is the same struct returned by
+*aria2.tellStatus* method.
+
 *aria2.changeOption* 'gid, options'
 
 This method changes options of the download denoted by 'gid'

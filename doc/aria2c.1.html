@@ -2723,6 +2723,15 @@ seeder
 <div class="paragraph"><p>This method returns the list of active downloads.  The respose is of
 type array and its element is the same struct returned by
 <strong>aria2.tellStatus</strong> method.</p></div>
+<div class="paragraph"><p><strong>aria2.tellWaiting</strong> <em>offset, num</em></p></div>
+<div class="paragraph"><p>This method returns the list of waiting download in the range of
+[<em>offset</em>, <em>offset</em>+<em>num</em>). <em>offset</em> specifies the offset from the
+download waiting at the front and <em>num</em> specifies the number of
+downloads to be returned. For example, imagine that three downloads
+"A","B" and "C" are waiting in this order. aria2.tellWaiting(0, 1)
+returns "A". aria2.tellWaiting(1, 2) returns "B" and "C".  The respose
+is of type array and its element is the same struct returned by
+<strong>aria2.tellStatus</strong> method.</p></div>
 <div class="paragraph"><p><strong>aria2.changeOption</strong> <em>gid, options</em></p></div>
 <div class="paragraph"><p>This method changes options of the download denoted by <em>gid</em>
 dynamically.  <em>gid</em> is of type string.  <em>options</em> is of type struct
@@ -3188,7 +3197,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-07-05 14:54:23 JST
+Last updated 2009-07-05 18:30:39 JST
 </div>
 </div>
 </body>
