@@ -749,7 +749,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_USE_HEAD,
 				    TEXT_USE_HEAD,
-				    V_TRUE,
+				    V_FALSE,
 				    OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
