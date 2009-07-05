@@ -1,97 +1,51 @@
-aria2 1.4.1
+aria2 1.5.0
 ===========
 
 Release Note
 ------------
 
-This release fixes the compile error without the development package
-of c-ares library installed.  The compile error under MinGW was fixed.
-aria2.tellStatus XML-RPC method now returns "uploadLength" and
-"numSeeders". Ukrainian translation was updated.
+This release adds WEB-Seeding support for multi-file torrent(in other
+words, integrating BitTorrent downloads with HTTP(S)/FTP). aria2 now
+tries all resolved addresses to connect to remote servers in
+HTTP(S)/FTP until it gets connected. aria2.tellWaiting XML-RPC method
+was added to get the download entries in the waiting queue.  The
+behavior of -D option has been changed: If -D is specified, the
+current working directory is set to / and stdin, stdout and stderr are
+redirected to /dev/null.  --use-head is now disabled by default since
+using HEAD request causes problems in some web sites.
+--bt-stop-timeout option was added. This function stops BitTorrent
+download if the download speed is 0 and the number of seeder is 0 in
+consecutive given seconds.
 
 Changes
 -------
 
-* Documented missing seeder in getPeers xml-rpc method.
+ * Disabled --use-head option by default because --use-head=true
+   causes problems on some web sites.
 
-* Added uploadLength and numSeeders to the response of tellStatus
-  xml-rpc method.
+ * Print URL List in -S option for torrent.
 
-* Added missing #ifdef ENABLE_ASYNC_DNS guard.
+ * Added --bt-stop-timeout=SEC option. This function stops BitTorrent
+   download if the download speed is 0 and the number of seeder is 0
+   in consecutive SEC seconds. By default, this function is disabled.
 
-* Added fork() emulation using CreateProcess() in MinGW
+ * Throw exception if file path doesn't exist in FTP URL.
 
-
+ * Try all available addresses returned by DNS until it gets connected
+   in HTTP(S)/FTP download
 
-aria2 1.4.0
-===========
+ * Don't print "No files to download." message if -S is given.
 
-Release Note
-------------
+ * Added support of WEB-Seeding for multi-file torrent.
 
-This release adds XML-RPC interface and the ability to run command
-when download started/stopped and the ability to save cookies.  The
-current XML-RPC API allows users to add http(s)/ftp/torrent/Metalink
-download and change options dynamically.  The APIs such as reporting
-download progress, file paths, URIs and peer information are also
-available. For complete API specification, see XML-RPC INTERFACE
-section in man page and
-http://apps.sourceforge.net/trac/aria2/wiki/XmlrpcInterface. The
-console readout was slightly updated and now includes the number of
-seeders the client has connected to.  Slovak translation was
-added. Ukrainian and Brazilian Portuguese translation were updated.
+ * Added tellWaiting XML-RPC method.
 
-Changes
--------
+ * The default value of --dir option is the absolute path to the
+   current directory. If getcwd() is failed, then it is ".", which is
+   the same value with old implementation. This change is necessary
+   because after daemon() call, the current working directory is
+   changed to /.
 
-* Added Slovak translation. Updated Ukrainian and Brazilian Portuguese
-  translation. Thanks to all translators.
-
-* Use name.utf-8 and path.utf-8 key in higher priority than name and
-  path key respectively when persing .torrent file.
-
-* Added --xml-rpc-max-request-size option to limit the size of XML-RPC
-  request.
-
-* Since upcoming libgnutls 2.8 doesn't have libgnutls-config, Check
-  presence of libgnutls using pkg-config first. If it fails, fall back
-  to old macro libgnutls.m4.
-
-* Added --save-cookies option.
-
-* Added the ability to execute command when download starts and
-  stops. You can also specify command for particular cases such as
-  complete/error download.  Added --on-download-start,
-  --on-download-stop, --on-download-complete and --on-download-error
-  option.
-
-* Abbreviated KiB/s to KiBs and its precision decreased to 1 to save
-  space in console readout. Also they are now shown in MiB/s if speed
-  > 1024KiB/s.
-
-* Added SEED to console output, which represents the number of seeders
-  currently the client is connecting to.
-
-* Added source filename(__FILE__) and line number(__LINE__) to
-  exception message.
-
-* Fixed the bug that POU peers are never choked in seeding.
-
-* DownloadResult now has the list of FileEntry.  The download summary
-  displays the path of first selected file and the number of remaining
-  files for multi-file torrent.
-
-* Added BASIC authentication for XML-RPC. Added --xml-rpc-user and
-  --xml-rpc-passwd option.
-
-* Added XML-RPC interface. See complete API specification at
-  http://apps.sourceforge.net/trac/aria2/wiki/XmlrpcInterface
-
-* Removed --enable-http-server and --http-server-listen-port options.
-  Added --enable-xml-rpc and --xml-rpc-listen-port instead.  The
-  original feature for --enable-http-server that reports download
-  progress in HTML was officially removed.  Persist XML-RPC connection
-  if client supports keep-alive.
-
- * Added more options that can be specified in -i list and xml-rpc
-   add* command. See Input File in aria2c man page.
+ * Call daemon() with arguments(0,0), which means daemon() changes
+   current working directory to / and redirects stdin, stdout and
+   stderr to /dev/null.
