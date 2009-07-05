@@ -68,7 +68,6 @@ void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
 void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
 					       DownloadEngine* e)
 {
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->onDownloadComplete();
   // TODO Currently,when all the checksums
   // are valid, then aira2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this

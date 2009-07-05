@@ -346,7 +346,6 @@ void DefaultPieceStorage::completePiece(const PieceHandle& piece)
   addPieceStats(piece->getIndex());
   if(downloadFinished()) {
     downloadContext->resetDownloadStopTime();
-    diskAdaptor->onDownloadComplete();
     if(isSelectiveDownloadingMode()) {
       logger->notice(MSG_SELECTIVE_DOWNLOAD_COMPLETED);
       // following line was commented out in order to stop sending request
