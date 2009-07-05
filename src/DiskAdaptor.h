@@ -67,8 +67,6 @@ public:
 
   virtual void initAndOpenFile() = 0;
 
-  virtual void onDownloadComplete() = 0;  
-
   virtual bool fileExists() = 0;
 
   virtual uint64_t size() = 0;

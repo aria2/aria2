@@ -152,8 +152,6 @@ public:
 
   virtual void closeFile();
 
-  virtual void onDownloadComplete();
-
   virtual void writeData(const unsigned char* data, size_t len,
 			 off_t offset);
 

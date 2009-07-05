@@ -43,12 +43,6 @@ const std::string& DirectDiskAdaptor::getFilePath()
   return fileEntries.front()->getPath();
 }
 
-void DirectDiskAdaptor::onDownloadComplete()
-{
-  closeFile();
-  openFile();
-}
-
 size_t DirectDiskAdaptor::utime(const Time& actime, const Time& modtime)
 {
   File f(getFilePath());

@@ -330,12 +330,6 @@ void MultiDiskAdaptor::closeFile()
   }
 }
 
-void MultiDiskAdaptor::onDownloadComplete()
-{
-  closeFile();
-  openFile();
-}
-
 static bool isInRange(const DiskWriterEntryHandle entry, off_t offset)
 {
   return entry->getFileEntry()->getOffset() <= offset &&
