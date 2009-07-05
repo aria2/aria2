@@ -303,6 +303,8 @@ const std::string PREF_BT_EXTERNAL_IP("bt-external-ip");
 const std::string PREF_INDEX_OUT("index-out");
 // values: 1*digit
 const std::string PREF_BT_TRACKER_INTERVAL("bt-tracker-interval");
+// values: 1*digit
+const std::string PREF_BT_STOP_TIMEOUT("bt-stop-timeout");
 
 /**
  * Metalink related preferences

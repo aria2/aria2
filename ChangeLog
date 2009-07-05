@@ -1,5 +1,17 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-stop-timeout=SEC option. This function stops BitTorrent
+	download if the download speed is 0 and the number of seeder is 0
+	in consecutive SEC seconds. By default, this function is disabled.
+	* src/BtSetup.cc
+	* src/Makefile.am
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed the call to DiskAdaptor::onDownloadComplete() from
 	BtCheckIntegrityEntry and DefaultPieceStorage.
 	* src/BtCheckIntegrityEntry.cc

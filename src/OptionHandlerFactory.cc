@@ -989,6 +989,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+				   (PREF_BT_STOP_TIMEOUT,
+				    TEXT_BT_STOP_TIMEOUT,
+				    "0",
+				    0));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<NumberOptionHandler> op(new NumberOptionHandler
 					 (PREF_BT_TIMEOUT,
 					  NO_DESCRIPTION,

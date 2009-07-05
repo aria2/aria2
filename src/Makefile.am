@@ -434,7 +434,8 @@ SRCS += PeerMessageUtil.cc PeerMessageUtil.h\
 	IndexBtMessageValidator.h\
 	ExtensionMessageRegistry.h\
 	bencode.cc bencode.h\
-	bittorrent_helper.cc bittorrent_helper.h
+	bittorrent_helper.cc bittorrent_helper.h\
+	BtStopDownloadCommand.cc BtStopDownloadCommand.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

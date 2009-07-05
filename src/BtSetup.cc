@@ -59,6 +59,7 @@
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
 #include "bittorrent_helper.h"
+#include "BtStopDownloadCommand.h"
 
 namespace aria2 {
 
@@ -158,7 +159,15 @@ void BtSetup::setup(std::deque<Command*>& commands,
       delete listenCommand;
     }
   }
-
+  time_t btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
+  if(btStopTimeout > 0) {
+    BtStopDownloadCommand* stopDownloadCommand =
+      new BtStopDownloadCommand(e->newCUID(), requestGroup, e, btStopTimeout);
+    stopDownloadCommand->setBtRuntime(btRuntime);
+    stopDownloadCommand->setPieceStorage(pieceStorage);
+    stopDownloadCommand->setPeerStorage(peerStorage);
+    commands.push_back(stopDownloadCommand);
+  }
   btRuntime->setReady(true);
 }
 

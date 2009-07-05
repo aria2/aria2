@@ -230,7 +230,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessageValidator.h\
 @ENABLE_BITTORRENT_TRUE@	ExtensionMessageRegistry.h\
 @ENABLE_BITTORRENT_TRUE@	bencode.cc bencode.h\
-@ENABLE_BITTORRENT_TRUE@	bittorrent_helper.cc bittorrent_helper.h
+@ENABLE_BITTORRENT_TRUE@	bittorrent_helper.cc bittorrent_helper.h\
+@ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.cc BtStopDownloadCommand.h
 
 @ENABLE_METALINK_TRUE@am__append_14 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -562,7 +563,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ZeroBtMessage.h RangeBtMessageValidator.h \
 	IndexBtMessageValidator.h ExtensionMessageRegistry.h \
 	bencode.cc bencode.h bittorrent_helper.cc bittorrent_helper.h \
-	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	BtStopDownloadCommand.cc BtStopDownloadCommand.h Metalinker.cc \
+	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \
@@ -731,7 +733,8 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	IndexBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	bencode.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	bittorrent_helper.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	bittorrent_helper.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_14 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -1320,6 +1323,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRequestMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSeederStateChoke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSetup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtStopDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
