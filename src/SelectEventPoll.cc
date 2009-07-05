@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "SelectEventPoll.h"
 
+#ifdef __MINGW32__
+# include <cassert>
+#endif // __MINGW32__
 #include <cstring>
 #include <algorithm>
 #include <numeric>
@@ -148,10 +151,19 @@ void SelectEventPoll::AsyncNameResolverEntry::process
 
 SelectEventPoll::SelectEventPoll():_logger(LogFactory::getInstance())
 {
+#ifdef __MINGW32__
+  _dummySocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  assert(_dummySocket != -1);
+#endif // __MINGW32__
   updateFdSet();
 }
 
-SelectEventPoll::~SelectEventPoll() {}
+SelectEventPoll::~SelectEventPoll()
+{
+#ifdef __MINGW32__
+  ::closesocket(_dummySocket);
+#endif // __MINGW32__
+}
 
 void SelectEventPoll::poll(const struct timeval& tv)
 {
@@ -160,6 +172,11 @@ void SelectEventPoll::poll(const struct timeval& tv)
   
   memcpy(&rfds, &_rfdset, sizeof(fd_set));
   memcpy(&wfds, &_wfdset, sizeof(fd_set));
+#ifdef __MINGW32__
+  fd_set efds;
+  FD_ZERO(&efds);
+  FD_SET(_dummySocket, &efds);
+#endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
   for(std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
@@ -177,7 +194,11 @@ void SelectEventPoll::poll(const struct timeval& tv)
   int retval;
   do {
     struct timeval ttv = tv;
+#ifdef __MINGW32__
+    retval = select(_fdmax+1, &rfds, &wfds, &efds, &ttv);
+#else // !__MINGW32__
     retval = select(_fdmax+1, &rfds, &wfds, NULL, &ttv);
+#endif // !__MINGW32__
   } while(retval == -1 && errno == EINTR);
   if(retval > 0) {
     for(std::deque<SharedHandle<SocketEntry> >::iterator i =
@@ -204,7 +225,11 @@ void SelectEventPoll::poll(const struct timeval& tv)
 
 void SelectEventPoll::updateFdSet()
 {
+#ifdef __MINGW32__
+  _fdmax = _dummySocket;
+#else // !__MINGW32__
   _fdmax = 0;
+#endif // !__MINGW32__
   FD_ZERO(&_rfdset);
   FD_ZERO(&_wfdset);
   for(std::deque<SharedHandle<SocketEntry> >::iterator i =
