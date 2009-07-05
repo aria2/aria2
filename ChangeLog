@@ -1,5 +1,11 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Committed missing BtStopDownloadCommand.{cc,h}
+	* src/BtStopDownloadCommand.cc
+	* src/BtStopDownloadCommand.h
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-stop-timeout=SEC option. This function stops BitTorrent
 	download if the download speed is 0 and the number of seeder is 0
 	in consecutive SEC seconds. By default, this function is disabled.
