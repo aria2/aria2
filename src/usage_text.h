@@ -559,6 +559,6 @@ _(" --on-download-stop=COMMAND   Set the command to be executed when download\n"
   "                              See --on-download-start option for the\n"\
   "                              requirement of COMMAND.")
 #define TEXT_BT_STOP_TIMEOUT \
-_(" --bt-stop-timteout=SEC       Stop BitTorrent download if download speed is 0\n"\
+_(" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is 0\n"\
   "                              and the number of seeder is 0 in consecutive NUM\n"\
   "                              seconds. If 0 is given, this feature is disabled.")
