@@ -43,8 +43,9 @@ Here is a list of features.
 * FTP through HTTP Proxy
 * Download/Upload speed throttling
 * BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
-* BitTorrent http://getright.com/seedtorrent.html[WEB-Seeding]
-  (single-file torrent only)
+* BitTorrent http://getright.com/seedtorrent.html[WEB-Seeding]. aria2
+  requests chunks more than piece size to reduce the request
+  overhead. It also supports pipelined requests with piece size.
 * Rename/change the directory structure of BitTorrent downloads
   completely
 * XML-RPC interface

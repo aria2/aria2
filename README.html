@@ -509,8 +509,9 @@ BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
 </li>
 <li>
 <p>
-BitTorrent <a href="http://getright.com/seedtorrent.html">WEB-Seeding</a>
-  (single-file torrent only)
+BitTorrent <a href="http://getright.com/seedtorrent.html">WEB-Seeding</a>. aria2
+  requests chunks more than piece size to reduce the request
+  overhead. It also supports pipelined requests with piece size.
 </p>
 </li>
 <li>
@@ -860,7 +861,7 @@ man aria2c
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-05-27 00:49:50 JST
+Last updated 2009-07-05 14:24:35 JST
 </div>
 </div>
 </body>
