@@ -728,10 +728,13 @@ You can also specify arbitrary number of torrent files and metalink files
 stored on a local drive. Please note that they are always treated as a
 separate download.
 
-You can specify both torrent file with -T option and URLs. By doing this,
-you can download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
-while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
-only single file torrent can be integrated with HTTP(S)/FTP.
+You can specify both torrent file with -T option and URLs. By doing
+this, you can download a file from both torrent swarm and HTTP(S)/FTP
+server at the same time, while the data from HTTP(S)/FTP are uploaded
+to the torrent swarm.  For single file torrents, URL can be a complete
+URL pointing to the resource or if URL ends with /, name in torrent
+file in torrent is added. For multi-file torrents, name and path are
+added to form a URL for each file.
 
 [NOTE]
 Make sure that URL is quoted with single(') or double(") quotation if it
@@ -1055,9 +1058,11 @@ registered download.
 This method adds BitTorrent download by uploading .torrent file.
 'torrent' is of type base64 which contains Base64-encoded .torrent
 file.  'uris' is of type array and its element is URI which is of type
-string. 'uris' is used for Web-seeding. Note that 'uris' is ignored if
-specified torrent is a multi-file torrent.  'options' is of type
-struct and its members are a pair of option name and value. See
+string. 'uris' is used for Web-seeding.  For single file torrents, URI
+can be a complete URI pointing to the resource or if URI ends with /,
+name in torrent file is added. For multi-file torrents, name and path
+in torrent are added to form a URI for each file.  'options' is of
+type struct and its members are a pair of option name and value. See
 *Options* below for more details.  If 'position' is given as an
 integer starting from 0, the new download is inserted at 'position' in
 the waiting queue. If 'position' is not given or 'position' is larger

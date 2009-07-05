@@ -1738,10 +1738,13 @@ Unless you specify <strong>-Z</strong> option, all URLs must point to the same f
 <div class="paragraph"><p>You can also specify arbitrary number of torrent files and metalink files
 stored on a local drive. Please note that they are always treated as a
 separate download.</p></div>
-<div class="paragraph"><p>You can specify both torrent file with -T option and URLs. By doing this,
-you can download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
-while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
-only single file torrent can be integrated with HTTP(S)/FTP.</p></div>
+<div class="paragraph"><p>You can specify both torrent file with -T option and URLs. By doing
+this, you can download a file from both torrent swarm and HTTP(S)/FTP
+server at the same time, while the data from HTTP(S)/FTP are uploaded
+to the torrent swarm.  For single file torrents, URL can be a complete
+URL pointing to the resource or if URL ends with /, name in torrent
+file in torrent is added. For multi-file torrents, name and path are
+added to form a URL for each file.</p></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -2428,9 +2431,11 @@ registered download.</p></div>
 <div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.
 <em>torrent</em> is of type base64 which contains Base64-encoded .torrent
 file.  <em>uris</em> is of type array and its element is URI which is of type
-string. <em>uris</em> is used for Web-seeding. Note that <em>uris</em> is ignored if
-specified torrent is a multi-file torrent.  <em>options</em> is of type
-struct and its members are a pair of option name and value. See
+string. <em>uris</em> is used for Web-seeding.  For single file torrents, URI
+can be a complete URI pointing to the resource or if URI ends with /,
+name in torrent file is added. For multi-file torrents, name and path
+in torrent are added to form a URI for each file.  <em>options</em> is of
+type struct and its members are a pair of option name and value. See
 <strong>Options</strong> below for more details.  If <em>position</em> is given as an
 integer starting from 0, the new download is inserted at <em>position</em> in
 the waiting queue. If <em>position</em> is not given or <em>position</em> is larger
@@ -3173,7 +3178,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-06-14 16:20:17 JST
+Last updated 2009-07-05 14:19:43 JST
 </div>
 </div>
 </body>
