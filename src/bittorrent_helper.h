@@ -69,6 +69,8 @@ extern const std::string PORT;
 
 extern const std::string NAME;
 
+extern const std::string URL_LIST;
+
 extern const std::string SINGLE;
 
 extern const std::string MULTI;

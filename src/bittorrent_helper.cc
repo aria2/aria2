@@ -100,6 +100,8 @@ const std::string PORT("port");
 
 const std::string NAME("name");
 
+const std::string URL_LIST("urlList");
+
 const std::string BITTORRENT("bittorrent");
 
 const std::string MULTI("multi");
@@ -121,7 +123,8 @@ static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
   ctx->setPieceHashAlgo(MessageDigestContext::SHA1);
 }
 
-static void extractUrlList(std::vector<std::string>& uris, const BDE& bde)
+static void extractUrlList
+(BDE& torrent, std::vector<std::string>& uris, const BDE& bde)
 {
   if(bde.isList()) {
     for(BDE::List::const_iterator itr = bde.listBegin();
@@ -130,8 +133,14 @@ static void extractUrlList(std::vector<std::string>& uris, const BDE& bde)
 	uris.push_back((*itr).s());
       }
     }
+    torrent[URL_LIST] = bde;
   } else if(bde.isString()) {
     uris.push_back(bde.s());
+    BDE urlList = BDE::list();
+    urlList << bde;
+    torrent[URL_LIST] = urlList;
+  } else {
+    torrent[URL_LIST] = BDE::list();
   }
 }
 
@@ -377,7 +386,7 @@ static void processRootDictionary
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::vector<std::string> urlList;
-  extractUrlList(urlList, rootDict[C_URL_LIST]);
+  extractUrlList(torrent, urlList, rootDict[C_URL_LIST]);
   urlList.insert(urlList.end(), uris.begin(), uris.end());
   std::sort(urlList.begin(), urlList.end());
   urlList.erase(std::unique(urlList.begin(), urlList.end()), urlList.end());
@@ -506,6 +515,14 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
   o << "Piece Length: " << Util::abbrevSize(dctx->getPieceLength()) << "B\n";
   o << "The Number of Pieces: " << dctx->getNumPieces() << "\n";
   o << "Total Length: " << Util::abbrevSize(dctx->getTotalLength()) << "B\n";
+  if(!torrentAttrs[URL_LIST].empty()) {
+    const BDE& urlList = torrentAttrs[URL_LIST];
+    o << "URL List: " << "\n";
+    for(BDE::List::const_iterator i = urlList.listBegin();
+	i != urlList.listEnd(); ++i) {
+      o << " " << (*i).s() << "\n";
+    }
+  }
   o << "Name: " << torrentAttrs[NAME].s() << "\n";
   Util::toStream(dctx->getFileEntries().begin(), dctx->getFileEntries().end(), o);
 }
