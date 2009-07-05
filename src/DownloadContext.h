@@ -235,6 +235,8 @@ public:
   // Returns FileEntry at given offset. SharedHandle<FileEntry>() is
   // returned if no such FileEntry is found.
   SharedHandle<FileEntry> findFileEntryByOffset(off_t offset) const;
+
+  void releaseRuntimeResource();
 };
 
 } // namespace aria2

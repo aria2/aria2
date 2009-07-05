@@ -231,6 +231,8 @@ public:
   // reuse, those URIs are used more than once so that num URIs total
   // are available to reuse.
   void reuseUri(size_t num);
+
+  void releaseRuntimeResource();
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

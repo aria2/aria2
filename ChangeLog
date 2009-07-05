@@ -1,5 +1,15 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release pooled and in-flight Request objectsand URIResult objects
+	in FileEntry after download completed.
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/RequestGroup.cc
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set manual and source attribute in aria2c.1.txt
 	* doc/aria2c.1.txt
 

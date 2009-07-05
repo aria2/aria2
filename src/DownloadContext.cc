@@ -165,4 +165,12 @@ bool DownloadContext::hasAttribute(const std::string& key) const
   }
 }
 
+void DownloadContext::releaseRuntimeResource()
+{
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+	_fileEntries.begin(); i != _fileEntries.end(); ++i) {
+    (*i)->releaseRuntimeResource();
+  }
+}
+
 } // namespace aria2

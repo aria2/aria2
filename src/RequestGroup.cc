@@ -800,6 +800,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
   if(!_pieceStorage.isNull()) {
     _pieceStorage->removeAdvertisedPiece(0);
   }
+  _downloadContext->releaseRuntimeResource();
 }
 
 void RequestGroup::preDownloadProcessing()
@@ -945,8 +946,6 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
     sessionDownloadLength +=
       _segmentMan->calculateSessionDownloadLength();
   }
-
-  // TODO1.5 Purge unnecessary data in FileEntry here.
   return
     SharedHandle<DownloadResult>
     (new DownloadResult(_gid,

@@ -313,4 +313,11 @@ void FileEntry::reuseUri(size_t num)
   }
 }
 
+void FileEntry::releaseRuntimeResource()
+{
+  _requestPool.clear();
+  _inFlightRequests.clear();
+  _uriResults.clear();
+}
+
 } // namespace aria2
