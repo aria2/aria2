@@ -1,5 +1,10 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* src/version_usage.cc
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Winsock select() doesn't work if no socket is in FD_SET.  To
 	overcome this problem, a dummy socket is added to FD_SET and it is
 	given to select().
