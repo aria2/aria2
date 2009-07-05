@@ -1,5 +1,10 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --bt-stop-timeout option in man page.
+	* doc/aria2c.1.txt
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated README regarding multi-file torrent web-seeding.
 	* doc/README.txt
 
