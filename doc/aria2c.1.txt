@@ -375,7 +375,7 @@ BitTorrent Specific Options
   Seed previously downloaded files without verifying piece hashes.
   Default: 'false'
 
-*--bt-stop-timteout*=SEC::
+*--bt-stop-timeout*=SEC::
 
   Stop BitTorrent download if download speed is 0 and the number of
   seeder is 0 in consecutive NUM seconds. If '0' is given, this
@@ -934,6 +934,7 @@ of URIs. These optional lines must start with white space(s).
 * bt-require-crypto
 * bt-request-peer-speed-limit
 * bt-seed-unverified
+* bt-stop-timeout
 * bt-tracker-interval
 * enable-peer-exchange
 * follow-torrent

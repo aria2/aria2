@@ -536,7 +536,7 @@ Seed previously downloaded files without verifying piece hashes\&. Default:
 \fIfalse\fR
 .RE
 .PP
-\fB\-\-bt\-stop\-timteout\fR=SEC
+\fB\-\-bt\-stop\-timeout\fR=SEC
 .RS 4
 Stop BitTorrent download if download speed is 0 and the number of seeder is 0 in consecutive NUM seconds\&. If
 \fI0\fR
@@ -1701,6 +1701,17 @@ bt\-request\-peer\-speed\-limit
 .IP \(bu 2.3
 .\}
 bt\-seed\-unverified
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+bt\-stop\-timeout
 .RE
 .sp
 .RS 4
