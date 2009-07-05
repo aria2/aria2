@@ -272,7 +272,7 @@ If aria2 is built without libsqlite3, then it doesn't support Firefox3 cookie fo
 
 *--use-head*[='true'|'false']::
   Use HEAD method for the first request to the HTTP server.
-  Default: 'true'
+  Default: 'false'
 
 
 *-U*, *--user-agent*=USER_AGENT::
