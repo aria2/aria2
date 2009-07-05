@@ -1,5 +1,10 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.5.0
+	* configure.ac
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed resolved TODO1.5
 	* src/AbstractCommand.cc
 	* src/DownloadCommand.cc
