@@ -1,5 +1,12 @@
 2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed resolved TODO1.5
+	* src/AbstractCommand.cc
+	* src/DownloadCommand.cc
+	* src/RequestGroup.cc
+
+2009-07-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Release pooled and in-flight Request objectsand URIResult objects
 	in FileEntry after download completed.
 	* src/DownloadContext.cc

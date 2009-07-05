@@ -289,7 +289,6 @@ bool DownloadCommand::prepareForNextSegment() {
       if(!tempSegment->complete()) {
 	return prepareForRetry(0);
       }
-      // TODO1.5 get segment for the same file only
       SegmentHandle nextSegment =
 	_requestGroup->getSegmentMan()->getSegment(cuid,
 						   tempSegment->getIndex()+1);

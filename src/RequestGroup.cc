@@ -587,42 +587,6 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 				     DownloadEngine* e,
 				     unsigned int numCommand)
 {
-  // TODO1.5 The following block should be moved into FileEntry
-//   if(_option->getAsBool(PREF_REUSE_URI) && _uris.empty()) {
-//     std::deque<std::string> uris = _spentUris;
-//     std::sort(uris.begin(), uris.end());
-//     uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
-
-//     std::deque<std::string> errorUris(_uriResults.size());
-//     std::transform(_uriResults.begin(), _uriResults.end(),
-// 		   errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
-//     std::sort(errorUris.begin(), errorUris.end());
-//     errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
-// 		    errorUris.end());
-     
-//     std::deque<std::string> reusableURIs;
-//     std::set_difference(uris.begin(), uris.end(),
-// 			errorUris.begin(), errorUris.end(),
-// 			std::back_inserter(reusableURIs));
-//     size_t ininum = reusableURIs.size();
-//     _logger->debug("Found %u reusable URIs",
-// 		   static_cast<unsigned int>(ininum));
-//     // Reuse at least _numConcurrentCommand URIs here to avoid to
-//     // run this process repeatedly.
-//     if(ininum > 0 && ininum < _numConcurrentCommand) {
-//       _logger->debug("fewer than _numConcurrentCommand=%u",
-// 		     _numConcurrentCommand);
-//       for(size_t i = 0; i < _numConcurrentCommand/ininum; ++i) {
-// 	_uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
-//       }
-//       _uris.insert(_uris.end(), reusableURIs.begin(),
-// 		   reusableURIs.begin()+(_numConcurrentCommand%ininum));
-//       _logger->debug("Duplication complete: now %u URIs for reuse",
-// 		     static_cast<unsigned int>(_uris.size()));
-//     }
-//   }
-//   std::deque<std::string> pendingURIs;
-
   for(; numCommand--; ) {
     Command* command = new CreateRequestCommand(e->newCUID(), this, e);
     commands.push_back(command);

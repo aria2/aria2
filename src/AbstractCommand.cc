@@ -283,8 +283,6 @@ void AbstractCommand::onAbort() {
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
-  // TODO1.5 Should be moved to FileEntry
-  // _requestGroup->removeIdenticalURI(req->getUrl());
 }
 
 void AbstractCommand::disableReadCheckSocket() {
