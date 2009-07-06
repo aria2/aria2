@@ -165,7 +165,6 @@ void BtSetup::setup(std::deque<Command*>& commands,
       new BtStopDownloadCommand(e->newCUID(), requestGroup, e, btStopTimeout);
     stopDownloadCommand->setBtRuntime(btRuntime);
     stopDownloadCommand->setPieceStorage(pieceStorage);
-    stopDownloadCommand->setPeerStorage(peerStorage);
     commands.push_back(stopDownloadCommand);
   }
   btRuntime->setReady(true);

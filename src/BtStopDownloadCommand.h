@@ -42,7 +42,6 @@ namespace aria2 {
 
 class RequestGroup;
 class PieceStorage;
-class PeerStorage;
 class BtRuntime;
 
 // Stop downloading torrent if in consecutive _timeout seconds,
@@ -56,8 +55,6 @@ private:
   Time _checkPoint;
 
   SharedHandle<BtRuntime> _btRuntime;
-
-  SharedHandle<PeerStorage> _peerStorage;
 
   SharedHandle<PieceStorage> _pieceStorage;
 public:
@@ -79,11 +76,6 @@ public:
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
   {
     _pieceStorage = pieceStorage;
-  }
-
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage)
-  {
-    _peerStorage = peerStorage;
   }
 };
 

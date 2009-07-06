@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "BtStopDownloadCommand.h"
 #include "PieceStorage.h"
-#include "PeerStorage.h"
 #include "RequestGroup.h"
 #include "BtRuntime.h"
 #include "Peer.h"
@@ -68,13 +67,7 @@ void BtStopDownloadCommand::preProcess()
 
 void BtStopDownloadCommand::process()
 {
-  if(_requestGroup->calculateStat().getDownloadSpeed() == 0) {
-    std::deque<SharedHandle<Peer> > activePeers;
-    _peerStorage->getActivePeers(activePeers);
-    if(countSeeder(activePeers.begin(), activePeers.end()) != 0) {
-      _checkPoint.reset();
-    }
-  } else {
+  if(_requestGroup->calculateStat().getDownloadSpeed() > 0) {
     _checkPoint.reset();
   }
 }
