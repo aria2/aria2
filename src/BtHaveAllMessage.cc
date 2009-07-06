@@ -37,6 +37,7 @@
 #include "Peer.h"
 #include "StringFormat.h"
 #include "PieceStorage.h"
+#include "message.h"
 
 namespace aria2 {
 
@@ -59,6 +60,9 @@ void BtHaveAllMessage::doReceivedAction()
 				   peer->getBitfieldLength());
   peer->setAllBitfield();
   pieceStorage->addPieceStats(peer->getBitfield(), peer->getBitfieldLength());
+  if(peer->isSeeder() && pieceStorage->downloadFinished()) {
+    throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
+  }
 }
 
 } // namespace aria2

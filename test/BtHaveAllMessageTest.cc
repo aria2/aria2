@@ -1,9 +1,13 @@
 #include "BtHaveAllMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Peer.h"
 #include "MockPieceStorage.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -13,6 +17,7 @@ class BtHaveAllMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testGetMessage);
   CPPUNIT_TEST(testDoReceivedAction);
+  CPPUNIT_TEST(testDoReceivedAction_goodByeSeeder);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -23,6 +28,7 @@ public:
   void testCreate();
   void testGetMessage();
   void testDoReceivedAction();
+  void testDoReceivedAction_goodByeSeeder();
 };
 
 
@@ -78,6 +84,26 @@ void BtHaveAllMessageTest::testDoReceivedAction() {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {}
+}
+
+void BtHaveAllMessageTest::testDoReceivedAction_goodByeSeeder()
+{
+  BtHaveAllMessage msg;
+  SharedHandle<Peer> peer(new Peer("ip", 6000));
+  peer->allocateSessionResource(1024, 1024);
+  peer->setFastExtensionEnabled(true);
+  msg.setPeer(peer);
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  msg.setPieceStorage(pieceStorage);
+
+  pieceStorage->setDownloadFinished(true);
+
+  try {
+    msg.doReceivedAction();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlAbortEx& e) {
+    // success
+  }
 }
 
 } // namespace aria2

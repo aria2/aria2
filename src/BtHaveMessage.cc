@@ -35,6 +35,8 @@
 #include "BtHaveMessage.h"
 #include "Peer.h"
 #include "PieceStorage.h"
+#include "message.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -50,6 +52,9 @@ void BtHaveMessage::doReceivedAction()
 {
   peer->updateBitfield(getIndex(), 1);
   pieceStorage->addPieceStats(getIndex());
+  if(peer->isSeeder() && pieceStorage->downloadFinished()) {
+    throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
+  }
 }
 
 } // namespace aria2

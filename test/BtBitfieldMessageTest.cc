@@ -1,10 +1,14 @@
 #include "BtBitfieldMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "Peer.h"
 #include "MockPieceStorage.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -14,6 +18,7 @@ class BtBitfieldMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testGetMessage);
   CPPUNIT_TEST(testDoReceivedAction);
+  CPPUNIT_TEST(testDoReceivedAction_goodByeSeeder);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -25,6 +30,7 @@ public:
   void testCreate();
   void testGetMessage();
   void testDoReceivedAction();
+  void testDoReceivedAction_goodByeSeeder();
   void testToString();
 };
 
@@ -85,6 +91,41 @@ void BtBitfieldMessageTest::testDoReceivedAction() {
   msg.doReceivedAction();
   CPPUNIT_ASSERT_EQUAL(std::string("ffff"), Util::toHex(peer->getBitfield(),
 							peer->getBitfieldLength()));
+}
+
+void BtBitfieldMessageTest::testDoReceivedAction_goodByeSeeder()
+{
+  SharedHandle<Peer> peer(new Peer("ip", 6000));
+  peer->allocateSessionResource(1024, 1024);
+  BtBitfieldMessage msg;
+  msg.setPeer(peer);
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  msg.setPieceStorage(pieceStorage);
+  unsigned char bitfield[] = { 0x00 };
+  msg.setBitfield(bitfield, sizeof(bitfield));
+
+  // peer is not seeder and client have not completed download
+  msg.doReceivedAction();
+
+  pieceStorage->setDownloadFinished(true);
+
+  // client completed download, but peer is not seeder
+  msg.doReceivedAction();
+
+  pieceStorage->setDownloadFinished(false);
+  bitfield[0] = 0x80;
+  msg.setBitfield(bitfield, sizeof(bitfield));
+
+  // peer is seeder, but client have not completed download
+  msg.doReceivedAction();
+
+  pieceStorage->setDownloadFinished(true);
+  try {
+    msg.doReceivedAction();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlAbortEx& e) {
+    // success
+  }
 }
 
 void BtBitfieldMessageTest::testToString() {

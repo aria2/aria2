@@ -1,3 +1,15 @@
+2009-07-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Disconnect seeder if client is also in seed state.
+	* src/BtBitfieldMessage.cc
+	* src/BtHaveAllMessage.cc
+	* src/BtHaveMessage.cc
+	* src/message.h
+	* test/BtBitfieldMessageTest.cc
+	* test/BtHaveAllMessageTest.cc
+	* test/BtHaveMessageTest.cc
+	* test/MockPieceStorage.h
+
 2009-07-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Keep CreateRequestCommand in queue when no segment is available so

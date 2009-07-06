@@ -23,6 +23,7 @@ private:
   SharedHandle<DiskAdaptor> diskAdaptor;
   std::deque<size_t> pieceLengthList;
   std::deque<SharedHandle<Piece> > inFlightPieces;
+  bool _downloadFinished;
   bool _allDownloadFinished;
 public:
   MockPieceStorage():totalLength(0),
@@ -32,6 +33,7 @@ public:
 		     bitfieldMan(0),
 		     selectiveDownloadingMode(false),
 		     endGame(false),
+		     _downloadFinished(false),
 		     _allDownloadFinished(false) {}
 
   virtual ~MockPieceStorage() {}
@@ -133,7 +135,12 @@ public:
   virtual void clearFileFilter() {}
 
   virtual bool downloadFinished() {
-    return false;
+    return _downloadFinished;
+  }
+
+  void setDownloadFinished(bool f)
+  {
+    _downloadFinished = f;
   }
 
   virtual bool allDownloadFinished() {

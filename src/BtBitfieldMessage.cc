@@ -73,6 +73,9 @@ BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
 void BtBitfieldMessage::doReceivedAction() {
   pieceStorage->updatePieceStats(bitfield, bitfieldLength, peer->getBitfield());
   peer->setBitfield(bitfield, bitfieldLength);
+  if(peer->isSeeder() && pieceStorage->downloadFinished()) {
+    throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
+  }
 }
 
 const unsigned char* BtBitfieldMessage::getMessage() {

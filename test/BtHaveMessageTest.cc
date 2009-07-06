@@ -1,9 +1,13 @@
 #include "BtHaveMessage.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "PeerMessageUtil.h"
 #include "Peer.h"
 #include "MockPieceStorage.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -13,6 +17,7 @@ class BtHaveMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testGetMessage);
   CPPUNIT_TEST(testDoReceivedAction);
+  CPPUNIT_TEST(testDoReceivedAction_goodByeSeeder);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -24,6 +29,7 @@ public:
   void testCreate();
   void testGetMessage();
   void testDoReceivedAction();
+  void testDoReceivedAction_goodByeSeeder();
   void testToString();
 };
 
@@ -79,6 +85,39 @@ void BtHaveMessageTest::testDoReceivedAction() {
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT(peer->hasPiece(msg.getIndex()));
+}
+
+void BtHaveMessageTest::testDoReceivedAction_goodByeSeeder()
+{
+  SharedHandle<Peer> peer(new Peer("ip", 6000));
+  peer->allocateSessionResource(1024, 2*1024);
+  BtHaveMessage msg;
+  msg.setIndex(0);
+  msg.setPeer(peer);
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  msg.setPieceStorage(pieceStorage);
+
+  // peer is not seeder and client have not completed download
+  msg.doReceivedAction();
+
+  pieceStorage->setDownloadFinished(true);
+
+  // client have completed download but, peer is not seeder
+  msg.doReceivedAction();
+
+  msg.setIndex(1);
+  pieceStorage->setDownloadFinished(false);
+
+  // peer is a seeder but client have not completed download
+  msg.doReceivedAction();
+
+  pieceStorage->setDownloadFinished(true);
+  try {
+    msg.doReceivedAction();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlAbortEx& e) {
+    // success
+  }
 }
   
 void BtHaveMessageTest::testToString() {
