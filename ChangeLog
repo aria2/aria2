@@ -1,5 +1,14 @@
 2009-07-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Keep CreateRequestCommand in queue when no segment is available so
+	that they can pick up pieces which slow BitTorrent peers are
+	downloading.
+	* src/AbstractCommand.cc
+	* src/CreateRequestCommand.cc
+	* src/CreateRequestCommand.h
+
+2009-07-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	--bt-stop-timeout now only checks download speed.
 	* src/BtStopDownloadCommand.cc
 	* src/BtStopDownloadCommand.h

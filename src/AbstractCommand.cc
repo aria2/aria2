@@ -149,7 +149,7 @@ bool AbstractCommand::execute() {
 	  if(_segments.empty()) {
 	    // TODO socket could be pooled here if pipelining is enabled...
 	    logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
-	    return true;
+	    return prepareForRetry(1);
 	  }
 	} else {
 	  size_t maxSegments = req->getMaxPipelinedRequest();

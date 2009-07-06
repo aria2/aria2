@@ -44,6 +44,8 @@
 #include "SegmentMan.h"
 #include "prefs.h"
 #include "Option.h"
+#include "SleepCommand.h"
+#include "Logger.h"
 
 namespace aria2 {
 
@@ -57,7 +59,7 @@ CreateRequestCommand::CreateRequestCommand(int32_t cuid,
   disableReadCheckSocket();
   disableWriteCheckSocket();
 }
-		  
+
 bool CreateRequestCommand::executeInternal()
 {
   if(_segments.empty()) {
@@ -93,6 +95,22 @@ bool CreateRequestCommand::executeInternal()
   e->setNoWait(true);
   e->commands.push_back(command);
   return true;
+}
+
+bool CreateRequestCommand::prepareForRetry(time_t wait)
+{
+  // We assume that this method is called from AbstractCommand when
+  // Segment is not available.  Normally,
+  // AbstractCommand::prepareForRetry() does the job, but it creates
+  // CreateRequestCommand and deletes current one. At the last stage
+  // of the download, commands are idle and prepareForRetry() is
+  // called repeatedly. This means that newly created
+  // CreateRequestCommand is deleted one second later: This is not
+  // efficient. For this reason, reuse current CreateRequestCommand.
+  logger->debug("CUID#%d - Reusing CreateRequestCommand", cuid);
+  SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup, this, wait);
+  e->commands.push_back(scom);
+  return false;
 }
 
 } // namespace aria2
