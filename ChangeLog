@@ -1,5 +1,11 @@
 2009-07-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed bad code: setting certificate type priority to key
+	exchange priority.
+	* src/SocketCore.cc
+
+2009-07-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Disconnect seeder if client is also in seed state.
 	* src/BtBitfieldMessage.cc
 	* src/BtHaveAllMessage.cc

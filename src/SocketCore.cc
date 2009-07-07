@@ -742,14 +742,8 @@ void SocketCore::prepareSecureConnection()
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-    const int cert_type_priority[3] = { GNUTLS_CRT_X509,
-					GNUTLS_CRT_OPENPGP, 0
-    };
-    // while we do not support X509 certificate, most web servers require
-    // X509 stuff.
     gnutls_init(&sslSession, GNUTLS_CLIENT);
     gnutls_set_default_priority(sslSession);
-    gnutls_kx_set_priority(sslSession, cert_type_priority);
     // put the x509 credentials to the current session
     gnutls_credentials_set(sslSession, GNUTLS_CRD_CERTIFICATE,
 			   _tlsContext->getCertCred());
