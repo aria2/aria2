@@ -742,8 +742,18 @@ void SocketCore::prepareSecureConnection()
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
+    int r;
     gnutls_init(&sslSession, GNUTLS_CLIENT);
-    gnutls_set_default_priority(sslSession);
+    // It seems err is not error message, but the argument string
+    // which causes syntax error.
+    const char* err;
+    // Disables TLS1.1 here because there are servers that don't
+    // understand TLS1.1.
+    r = gnutls_priority_set_direct(sslSession, "NORMAL:!VERS-TLS1.1", &err);
+    if(r != GNUTLS_E_SUCCESS) {
+      throw DL_ABORT_EX
+	(StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(r)).str());
+    }
     // put the x509 credentials to the current session
     gnutls_credentials_set(sslSession, GNUTLS_CRD_CERTIFICATE,
 			   _tlsContext->getCertCred());

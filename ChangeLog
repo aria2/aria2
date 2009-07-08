@@ -1,5 +1,11 @@
 2009-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed TLS1.1 protocol support when aria2 is built with gnutls
+	for compatibility issue.
+	* src/SocketCore.cc
+
+2009-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error with openSSL
 	* src/bittorrent_helper.cc
 	* src/messageDigest.h
