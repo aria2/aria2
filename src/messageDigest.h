@@ -36,10 +36,13 @@
 #define _D_MESSAGE_DIGEST_H_
 
 #include "common.h"
+
+#include <cstring>
+#include <map>
+
 #include "SharedHandle.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
-#include <map>
 
 #ifdef HAVE_LIBSSL
 #include <openssl/evp.h>

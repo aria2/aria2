@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "bittorrent_helper.h"
 
+#include <cstring>
 #include <algorithm>
 #include <deque>
 
