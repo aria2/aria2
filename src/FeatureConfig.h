@@ -62,6 +62,11 @@ public:
 
   std::string featureSummary() const;
 
+  const FeatureMap& getFeatures() const
+  {
+    return _features;
+  }
+
   static const std::string FEATURE_HTTPS;
   static const std::string FEATURE_BITTORRENT;
   static const std::string FEATURE_METALINK;

@@ -17,6 +17,7 @@
 #include "prefs.h"
 #include "TestUtil.h"
 #include "DownloadContext.h"
+#include "FeatureConfig.h"
 
 namespace aria2 {
 
@@ -51,6 +52,7 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testTellStatus_withoutGid);
   CPPUNIT_TEST(testTellWaiting);
   CPPUNIT_TEST(testTellWaiting_fail);
+  CPPUNIT_TEST(testGetVersion);
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -98,6 +100,7 @@ public:
   void testTellStatus_withoutGid();
   void testTellWaiting();
   void testTellWaiting_fail();
+  void testGetVersion();
   void testNoSuchMethod();
 };
 
@@ -512,6 +515,25 @@ void XmlRpcMethodTest::testTellWaiting_fail()
   XmlRpcRequest req("aria2.tellWaiting", BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
+}
+
+void XmlRpcMethodTest::testGetVersion()
+{
+  GetVersionXmlRpcMethod m;
+  XmlRpcRequest req("aria2.getVersion", BDE::none);
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL(std::string(PACKAGE_VERSION), res._param["version"].s());
+  const BDE& featureList = res._param["enabledFeatures"];
+  std::string features;
+  for(BDE::List::const_iterator i = featureList.listBegin();
+      i != featureList.listEnd(); ++i) {
+    features += (*i).s();
+    features += ", ";
+  }
+  
+  CPPUNIT_ASSERT_EQUAL(FeatureConfig::getInstance()->featureSummary()+", ",
+		       features);
 }
 
 } // namespace xmlrpc

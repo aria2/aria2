@@ -1,3 +1,16 @@
+2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Implemented getVersion xml-rpc method. This method returns struct
+	which has 2 key-value pairs: "version" key is associated to the
+	version of aria2, such as "1.5.0". "enabledFeatures" key is
+	associated to the list of enabled features, such as "Async DNS",
+	"BitTorrent".
+	* src/FeatureConfig.h
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* test/XmlRpcMethodTest.cc
+
 2009-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed TLS1.1 protocol support when aria2 is built with gnutls

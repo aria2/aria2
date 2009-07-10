@@ -57,6 +57,7 @@
 #include "BtProgressInfoFile.h"
 #include "prefs.h"
 #include "message.h"
+#include "FeatureConfig.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -625,6 +626,22 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
       (option->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
   }
   return BDE_OK;
+}
+
+BDE GetVersionXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  BDE result = BDE::dict();
+  result["version"] = std::string(PACKAGE_VERSION);
+  BDE featureList = BDE::list();
+  const FeatureMap& features = FeatureConfig::getInstance()->getFeatures();
+  for(FeatureMap::const_iterator i = features.begin(); i != features.end();++i){
+    if((*i).second) {
+      featureList << (*i).first;
+    }
+  }
+  result["enabledFeatures"] = featureList;
+  return result;
 }
 
 BDE NoSuchMethodXmlRpcMethod::process

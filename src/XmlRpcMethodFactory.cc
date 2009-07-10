@@ -79,6 +79,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new ChangeGlobalOptionXmlRpcMethod());
   } else if(methodName == "aria2.purgeDownloadResult") {
     return SharedHandle<XmlRpcMethod>(new PurgeDownloadResultXmlRpcMethod());
+  } else if(methodName == "aria2.getVersion") {
+    return SharedHandle<XmlRpcMethod>(new GetVersionXmlRpcMethod());
   } else {
     return SharedHandle<XmlRpcMethod>(new NoSuchMethodXmlRpcMethod());
   }
