@@ -1,5 +1,10 @@
 2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented type of offset and num for tellWaiting xml-rpc method.
+	* doc/aria2c.1.txt
+
+2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Implemented getVersion xml-rpc method. This method returns struct
 	which has 2 key-value pairs: "version" key is associated to the
 	version of aria2, such as "1.5.0". "enabledFeatures" key is
