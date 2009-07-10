@@ -2744,6 +2744,27 @@ method returns "OK" for success.</p></div>
 <div class="paragraph"><p><strong>aria2.purgeDownloadResult</strong></p></div>
 <div class="paragraph"><p>This method purges completed/error/removed downloads to free memory.
 This method returns "OK".</p></div>
+<div class="paragraph"><p><strong>aria2.getVersion</strong></p></div>
+<div class="paragraph"><p>This method returns version of the program and the list of enabled
+features. The response is of type struct and contains following keys.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+version
+</dt>
+<dd>
+<p>
+  Version number of the program in string.
+</p>
+</dd>
+<dt class="hdlist1">
+enabledFeatures
+</dt>
+<dd>
+<p>
+  List of enabled features. Each feature name is of type string.
+</p>
+</dd>
+</dl></div>
 <h3 id="_error_handling">Error Handling</h3><div style="clear:left"></div>
 <div class="paragraph"><p>In case of error, aria2 returns faultCode=1 and the error message in
 faultString.</p></div>
@@ -3196,7 +3217,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-07-11 00:50:11 JST
+Last updated 2009-07-11 01:08:42 JST
 </div>
 </div>
 </body>

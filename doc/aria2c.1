@@ -2255,6 +2255,20 @@ This method changes global options dynamically\&. \fIoptions\fR is of type struc
 \fBaria2\&.purgeDownloadResult\fR
 .sp
 This method purges completed/error/removed downloads to free memory\&. This method returns "OK"\&.
+.sp
+\fBaria2\&.getVersion\fR
+.sp
+This method returns version of the program and the list of enabled features\&. The response is of type struct and contains following keys\&.
+.PP
+version
+.RS 4
+Version number of the program in string\&.
+.RE
+.PP
+enabledFeatures
+.RS 4
+List of enabled features\&. Each feature name is of type string\&.
+.RE
 .SS "Error Handling"
 .sp
 In case of error, aria2 returns faultCode=1 and the error message in faultString\&.

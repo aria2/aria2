@@ -1277,6 +1277,20 @@ method returns "OK" for success.
 This method purges completed/error/removed downloads to free memory.
 This method returns "OK".
 
+*aria2.getVersion*
+
+This method returns version of the program and the list of enabled
+features. The response is of type struct and contains following keys.
+
+version::
+
+  Version number of the program in string.
+
+enabledFeatures::
+
+  List of enabled features. Each feature name is of type string.
+
+
 Error Handling
 ~~~~~~~~~~~~~~
 

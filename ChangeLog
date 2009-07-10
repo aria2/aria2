@@ -1,5 +1,10 @@
 2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented getVersion in man page.
+	* doc/aria2c.1.txt
+
+2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented type of offset and num for tellWaiting xml-rpc method.
 	* doc/aria2c.1.txt
 
