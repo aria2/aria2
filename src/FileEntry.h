@@ -117,12 +117,6 @@ public:
 
   void setupDir();
 
-  // TODO1.5 remove this in favor of getRemainingUris()
-  const std::deque<std::string>& getAssociatedUris() const
-  {
-    return _uris;
-  }
-
   const std::deque<std::string>& getRemainingUris() const
   {
     return _uris;
