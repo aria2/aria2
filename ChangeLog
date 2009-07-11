@@ -1,5 +1,12 @@
 2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added assert(!req.isNull()) when DlRetryEx is caught(this is
+	relatively naive approach, though).  For DownloadFailureException,
+	we handle the case when req is null properly.
+	* src/AbstractCommand.cc
+
+2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added function returning suffix of control file to
 	DefaultBtProgressInfoFile.
 	* src/DefaultBtProgressInfoFile.cc

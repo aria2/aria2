@@ -196,7 +196,7 @@ bool AbstractCommand::execute() {
     tryReserved();
     return true;
   } catch(DlRetryEx& err) {
-    // TODO1.5 Consider the case when req is null
+    assert(!req.isNull());
     logger->info(MSG_RESTARTING_DOWNLOAD,
 		 DL_RETRY_EX2(StringFormat
 			     ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
@@ -217,10 +217,11 @@ bool AbstractCommand::execute() {
       return prepareForRetry(getOption()->getAsInt(PREF_RETRY_WAIT));
     }
   } catch(DownloadFailureException& err) {
-    // TODO1.5 Consider the case when req is null
     logger->error(EX_EXCEPTION_CAUGHT, err);
-    _fileEntry->addURIResult(req->getUrl(), err.getCode());
-    _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
+    if(!req.isNull()) {
+      _fileEntry->addURIResult(req->getUrl(), err.getCode());
+      _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
+    }
     _requestGroup->setHaltRequested(true);
     return true;
   }
