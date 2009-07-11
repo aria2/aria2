@@ -557,8 +557,7 @@ bool RequestGroup::tryAutoFileRenaming()
   }
   for(unsigned int i = 1; i < 10000; ++i) {
     File newfile(strconcat(filepath, ".", Util::uitos(i)));
-    // TODO1.5 hard coded ".aria2" extension.
-    File ctrlfile(newfile.getPath()+".aria2");
+    File ctrlfile(newfile.getPath()+DefaultBtProgressInfoFile::getSuffix());
     if(!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
       _downloadContext->getFirstFileEntry()->setPath(newfile.getPath());
       return true;

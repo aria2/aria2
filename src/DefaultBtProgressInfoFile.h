@@ -88,6 +88,12 @@ public:
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 #endif // ENABLE_BITTORRENT
+
+  static const std::string& getSuffix()
+  {
+    static std::string suffix = ".aria2";
+    return suffix;
+  }
 };
 
 } // namespace aria2

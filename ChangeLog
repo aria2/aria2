@@ -1,5 +1,13 @@
 2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added function returning suffix of control file to
+	DefaultBtProgressInfoFile.
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultBtProgressInfoFile.h
+	* src/RequestGroup.cc
+
+2009-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented getVersion in man page.
 	* doc/aria2c.1.txt
 
