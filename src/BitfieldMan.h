@@ -83,6 +83,10 @@ private:
   size_t getEndIndex(size_t index) const;
 
   uint64_t getCompletedLength(bool useFilter) const;
+
+  // If filterBitfield is 0, allocate bitfieldLength bytes to it and
+  // set 0 to all bytes.
+  void ensureFilterBitfield();
 public:
   // [startIndex, endIndex)
   class Range {

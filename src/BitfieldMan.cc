@@ -573,11 +573,16 @@ bool BitfieldMan::setFilterBit(size_t index) {
   return setBitInternal(filterBitfield, index, true);
 }
 
-void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
+void BitfieldMan::ensureFilterBitfield()
+{
   if(!filterBitfield) {
     filterBitfield = new unsigned char[bitfieldLength];
     memset(filterBitfield, 0, bitfieldLength);
   }
+}
+
+void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
+  ensureFilterBitfield();
   if(length > 0) {
     size_t startBlock = offset/blockLength;
     size_t endBlock = (offset+length-1)/blockLength;
@@ -589,10 +594,7 @@ void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
 }
 
 void BitfieldMan::removeFilter(uint64_t offset, uint64_t length) {
-  if(!filterBitfield) {
-    filterBitfield = new unsigned char[bitfieldLength];
-    memset(filterBitfield, 0, bitfieldLength);
-  }
+  ensureFilterBitfield();
   if(length > 0) {
     size_t startBlock = offset/blockLength;
     size_t endBlock = (offset+length-1)/blockLength;
@@ -605,11 +607,7 @@ void BitfieldMan::removeFilter(uint64_t offset, uint64_t length) {
 
 void BitfieldMan::addNotFilter(uint64_t offset, uint64_t length)
 {
-  // TODO1.5 Create ensureFilterBitfield() to initialize this
-  if(!filterBitfield) {
-    filterBitfield = new unsigned char[bitfieldLength];
-    memset(filterBitfield, 0, bitfieldLength);
-  }
+  ensureFilterBitfield();
   if(length > 0 && blocks > 0) {
     size_t startBlock = offset/blockLength;
     if(blocks <= startBlock) {
@@ -627,10 +625,7 @@ void BitfieldMan::addNotFilter(uint64_t offset, uint64_t length)
 }
 
 void BitfieldMan::enableFilter() {
-  if(!filterBitfield) {
-    filterBitfield = new unsigned char[bitfieldLength];
-    memset(filterBitfield, 0, bitfieldLength);
-  }    
+  ensureFilterBitfield();
   filterEnabled = true;
   updateCache();
 }
