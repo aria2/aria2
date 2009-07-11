@@ -346,6 +346,12 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
     }
   }
 #endif // ENABLE_BITTORRENT
+  // TODO Currently, BitTorrent+WEB-Seeding is only way to download
+  // multiple files in one RequestGroup. In this context, we don't
+  // have BitTorrent, so add assertion here. This situation will be
+  // changed if Metalink spec is formalized to support multi-file
+  // torrent.
+  assert(_downloadContext->getFileEntries().size() == 1);
   // TODO I assume here when totallength is set to DownloadContext and it is
   // not 0, then filepath is also set DownloadContext correctly....
   if(_option->getAsBool(PREF_DRY_RUN) ||
@@ -357,8 +363,6 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
 		      _downloadContext->getBasePath().c_str()).str());
     }
-    // TODO1.5 Renaming filename doesn't take into account of
-    // multi-file download.
     adjustFilename
       (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
 					(_downloadContext,
