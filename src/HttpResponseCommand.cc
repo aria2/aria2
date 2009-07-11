@@ -122,7 +122,7 @@ bool HttpResponseCommand::executeInternal()
     return skipResponseBody(httpResponse);
   }
   if(!_fileEntry->isSingleHostMultiConnectionEnabled()) {
-    // TODO1.5 redirection should be considered here. We need to parse
+    // TODO redirection should be considered here. We need to parse
     // original URI to get hostname.
     _fileEntry->removeURIWhoseHostnameIs(req->getHost());
   }

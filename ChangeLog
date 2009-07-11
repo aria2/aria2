@@ -1,5 +1,11 @@
 2009-07-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc: TODO1.5 -> TODO
+	* src/FileEntry.cc
+	* src/HttpResponseCommand.cc
+
+2009-07-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added assertion fileEntries.size() == 1 if BitTorrent is not
 	involved.
 	* src/RequestGroup.cc

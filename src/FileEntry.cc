@@ -107,7 +107,7 @@ template<typename InputIterator>
 static bool inFlightHost(InputIterator first, InputIterator last,
 			 const std::string& hostname)
 {
-  // TODO1.5 redirection should be considered here. We need to parse
+  // TODO redirection should be considered here. We need to parse
   // original URI to get hostname.
   for(; first != last; ++first) {
     if((*first)->getHost() == hostname) {
@@ -170,12 +170,12 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
     return SharedHandle<Request>();
   }
   const SharedHandle<PeerStat>& basestat = base->getPeerStat();
-  // TODO1.5 hard coded value. See PREF_STARTUP_IDLE_TIME
+  // TODO hard coded value. See PREF_STARTUP_IDLE_TIME
   const int startupIdleTime = 10;
   if(basestat.isNull() ||
      (basestat->getDownloadStartTime().elapsed(startupIdleTime) &&
       fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
-    // TODO1.5 we should consider that "fastest" is very slow.
+    // TODO we should consider that "fastest" is very slow.
     SharedHandle<Request> fastestRequest = _requestPool.front();
     _requestPool.pop_front();
     return fastestRequest;
