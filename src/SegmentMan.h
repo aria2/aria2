@@ -233,6 +233,8 @@ public:
 
   // Includes segments that fileEntry covers in segment selection.
   void recognizeSegmentFor(const SharedHandle<FileEntry>& fileEntry);
+
+  bool allSegmentsIgnored() const;
 };
 
 typedef SharedHandle<SegmentMan> SegmentManHandle;

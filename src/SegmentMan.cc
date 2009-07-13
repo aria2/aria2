@@ -388,4 +388,9 @@ void SegmentMan::recognizeSegmentFor(const SharedHandle<FileEntry>& fileEntry)
   _ignoreBitfield.removeFilter(fileEntry->getOffset(), fileEntry->getLength());
 }
 
+bool SegmentMan::allSegmentsIgnored() const
+{
+  return _ignoreBitfield.isAllFilterBitSet();
+}
+
 } // namespace aria2

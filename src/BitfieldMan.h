@@ -209,6 +209,8 @@ public:
 
   bool isAllBitSet() const;
 
+  bool isAllFilterBitSet() const;
+
   const unsigned char* getBitfield() const
   {
     return bitfield;

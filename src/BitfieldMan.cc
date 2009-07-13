@@ -511,20 +511,35 @@ bool BitfieldMan::isFilteredAllBitSet() const {
   }
 }
 
-bool BitfieldMan::isAllBitSet() const {
-  if(bitfieldLength == 0) {
+static bool testAllBitSet
+(const unsigned char* bitfield, size_t length, size_t blocks)
+{
+  if(length == 0) {
     return true;
   }
-  for(size_t i = 0; i < bitfieldLength-1; ++i) {
+  for(size_t i = 0; i < length-1; ++i) {
     if(bitfield[i] != 0xff) {
       return false;
     }
   }
   unsigned char b = ~((128 >> (blocks-1)%8)-1);
-  if(bitfield[bitfieldLength-1] != b) {
+  if(bitfield[length-1] != b) {
     return false;
   }
   return true;
+}
+
+bool BitfieldMan::isAllBitSet() const
+{
+  return testAllBitSet(bitfield, bitfieldLength, blocks);
+}
+
+bool BitfieldMan::isAllFilterBitSet() const
+{
+  if(!filterBitfield) {
+    return false;
+  }
+  return testAllBitSet(filterBitfield, bitfieldLength, blocks);
 }
 
 bool BitfieldMan::isBitSet(size_t index) const
