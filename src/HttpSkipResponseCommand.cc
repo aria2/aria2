@@ -164,7 +164,7 @@ bool HttpSkipResponseCommand::processResponse()
       if(getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
 	 !_httpResponse->getHttpRequest()->authenticationUsed() &&
 	 e->getAuthConfigFactory()->activateBasicCred
-	 (req->getHost(), req->getDir())) {
+	 (req->getHost(), req->getDir(), getOption().get())) {
 	return prepareForRetry(0);
       } else {
 	throw DL_ABORT_EX(EX_AUTH_FAILED);

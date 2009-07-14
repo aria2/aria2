@@ -43,7 +43,7 @@ public:
   {
     _option.reset(new Option());
     _option->put(PREF_HTTP_AUTH_CHALLENGE, V_TRUE);
-    _authConfigFactory.reset(new AuthConfigFactory(_option.get()));
+    _authConfigFactory.reset(new AuthConfigFactory());
   }
 
   void testGetStartByte();
@@ -135,7 +135,7 @@ void HttpRequestTest::testCreateRequest()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setFileEntry(fileEntry);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
 
   // remove "Connection: close" and add end byte range
   request->setPipeliningHint(true);  
@@ -236,7 +236,8 @@ void HttpRequestTest::testCreateRequest()
   _option->put(PREF_HTTP_USER, "aria2user");
   _option->put(PREF_HTTP_PASSWD, "aria2passwd");
 
-  CPPUNIT_ASSERT(_authConfigFactory->activateBasicCred("localhost", "/"));
+  CPPUNIT_ASSERT(_authConfigFactory->activateBasicCred
+		 ("localhost", "/", _option.get()));
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -327,7 +328,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setFileEntry(fileEntry);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
   httpRequest.setProxyRequest(proxyRequest);
 
   std::string expectedText =
@@ -393,7 +394,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   httpRequest.setSegment(segment);
   httpRequest.setFileEntry(fileEntry);
   httpRequest.setCookieStorage(st);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -459,7 +460,7 @@ void HttpRequestTest::testCreateRequest_query()
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
 
   std::string expectedText =
     "GET /wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138 HTTP/1.1\r\n"
@@ -482,7 +483,7 @@ void HttpRequestTest::testCreateRequest_head()
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
   
   std::stringstream result(httpRequest.createRequest());
   std::string line;
@@ -623,7 +624,7 @@ void HttpRequestTest::testUserAgent()
   httpRequest.setRequest(request);
   //httpRequest.setSegment(segment);
   httpRequest.setUserAgent("aria2 (Linux)");
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2 (Linux)\r\n"
@@ -658,7 +659,7 @@ void HttpRequestTest::testAddHeader()
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
   httpRequest.addHeader("X-ARIA2: v0.13\nX-ARIA2-DISTRIBUTE: enabled\n");
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -686,7 +687,7 @@ void HttpRequestTest::testAddAcceptType()
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
   httpRequest.addAcceptType(&acceptTypes[0],
 			    &acceptTypes[arrayLength(acceptTypes)]);
 
@@ -710,7 +711,7 @@ void HttpRequestTest::testEnableAcceptEncoding()
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
-  httpRequest.setAuthConfigFactory(_authConfigFactory);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
 
   std::string acceptEncodings;
 #ifdef HAVE_LIBZ

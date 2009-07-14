@@ -128,7 +128,7 @@ std::string HttpRequest::getHostText(const std::string& host, uint16_t port) con
 
 std::string HttpRequest::createRequest()
 {
-  _authConfig = _authConfigFactory->createAuthConfig(request);
+  _authConfig = _authConfigFactory->createAuthConfig(request, _option);
   std::string requestLine = request->getMethod();
   requestLine += " ";
   if(!_proxyRequest.isNull()) {
@@ -293,9 +293,10 @@ void HttpRequest::setCookieStorage
 }
 
 void HttpRequest::setAuthConfigFactory
-(const SharedHandle<AuthConfigFactory>& factory)
+(const SharedHandle<AuthConfigFactory>& factory, const Option* option)
 {
   _authConfigFactory = factory;
+  _option = option;
 }
 
 void HttpRequest::setProxyRequest(const SharedHandle<Request>& proxyRequest)

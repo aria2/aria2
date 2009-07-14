@@ -43,7 +43,7 @@ public:
   void setUp()
   {
     _option.reset(new Option());
-    _authConfigFactory.reset(new AuthConfigFactory(_option.get()));
+    _authConfigFactory.reset(new AuthConfigFactory());
 
     //_ftpServerSocket.reset(new SocketCore());
     SharedHandle<SocketCore> listenSocket(new SocketCore());
@@ -64,7 +64,8 @@ public:
 
     _serverSocket.reset(listenSocket->acceptConnection());
     _ftp.reset(new FtpConnection(1, _clientSocket, req,
-				 _authConfigFactory->createAuthConfig(req),
+				 _authConfigFactory->createAuthConfig
+				 (req, _option.get()),
 				 _option.get()));
   }
 

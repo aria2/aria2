@@ -92,7 +92,7 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setSegment(segment);
   httpRequest->addHeader(option->get(PREF_HEADER));
   httpRequest->setCookieStorage(cookieStorage);
-  httpRequest->setAuthConfigFactory(authConfigFactory);
+  httpRequest->setAuthConfigFactory(authConfigFactory, option.get());
   httpRequest->setProxyRequest(proxyRequest);
   httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
 			     rg->getAcceptTypes().end());

@@ -79,7 +79,8 @@ FtpNegotiationCommand::FtpNegotiationCommand
  const std::string& baseWorkingDir):
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s), sequence(seq),
   ftp(new FtpConnection(cuid, socket, req,
-			e->getAuthConfigFactory()->createAuthConfig(req),
+			e->getAuthConfigFactory()->createAuthConfig
+			(req, requestGroup->getOption().get()),
 			getOption().get()))
 {
   ftp->setBaseWorkingDir(baseWorkingDir);

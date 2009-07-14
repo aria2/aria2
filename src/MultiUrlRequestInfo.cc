@@ -117,8 +117,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
       }
     }
 
-    SharedHandle<AuthConfigFactory> authConfigFactory
-      (new AuthConfigFactory(_option.get()));
+    SharedHandle<AuthConfigFactory> authConfigFactory(new AuthConfigFactory());
     File netrccf(_option->get(PREF_NETRC_PATH));
     if(!_option->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();

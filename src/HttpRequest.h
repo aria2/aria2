@@ -77,6 +77,8 @@ private:
 
   SharedHandle<AuthConfigFactory> _authConfigFactory;
 
+  const Option* _option;
+
   SharedHandle<AuthConfig> _authConfig;
 
   SharedHandle<Request> _proxyRequest;
@@ -206,7 +208,8 @@ public:
     return _cookieStorage;
   }
 
-  void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
+  void setAuthConfigFactory
+  (const SharedHandle<AuthConfigFactory>& factory, const Option* option);
 
   /*
    * To use proxy, pass proxy string to Request::setUrl() and set it this

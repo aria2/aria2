@@ -51,18 +51,18 @@ const std::string AuthConfigFactory::ANONYMOUS("anonymous");
 
 const std::string AuthConfigFactory::ARIA2USER_AT("ARIA2USER@");
 
-AuthConfigFactory::AuthConfigFactory(const Option* option):
-  _option(option) {}
+AuthConfigFactory::AuthConfigFactory() {}
 
 AuthConfigFactory::~AuthConfigFactory() {}
 
 AuthConfigHandle
-AuthConfigFactory::createAuthConfig(const RequestHandle& request)
+AuthConfigFactory::createAuthConfig
+(const SharedHandle<Request>& request, const Option* op)
 {
   if(request->getProtocol() == Request::PROTO_HTTP ||
      request->getProtocol() == Request::PROTO_HTTPS) {
 
-    if(_option->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
+    if(op->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
       if(!request->getUsername().empty()) {
 	// TODO setting "/" as path. Should we use request->getDir() instead?
 	updateBasicCred(BasicCred(request->getUsername(), request->getPassword(),
@@ -80,14 +80,16 @@ AuthConfigFactory::createAuthConfig(const RequestHandle& request)
       if(!request->getUsername().empty()) {
 	return createAuthConfig(request->getUsername(), request->getPassword());
       } else {
-	return createHttpAuthResolver()->resolveAuthConfig(request->getHost());
+	return
+	  createHttpAuthResolver(op)->resolveAuthConfig(request->getHost());
       }
     }
   } else if(request->getProtocol() == Request::PROTO_FTP) {
     if(!request->getUsername().empty()) {
       return createAuthConfig(request->getUsername(), request->getPassword());
     } else {
-      return createFtpAuthResolver()->resolveAuthConfig(request->getHost());
+      return
+	createFtpAuthResolver(op)->resolveAuthConfig(request->getHost());
     }
   } else {
     return SharedHandle<AuthConfig>();
@@ -104,10 +106,11 @@ AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& 
   return ac;
 }
 
-AuthResolverHandle AuthConfigFactory::createHttpAuthResolver() const
+AuthResolverHandle AuthConfigFactory::createHttpAuthResolver
+(const Option* op) const
 {
   AbstractAuthResolverHandle resolver;
-  if(_option->getAsBool(PREF_NO_NETRC)) {
+  if(op->getAsBool(PREF_NO_NETRC)) {
     resolver.reset(new DefaultAuthResolver());
   } else {
     NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
@@ -115,21 +118,24 @@ AuthResolverHandle AuthConfigFactory::createHttpAuthResolver() const
     authResolver->ignoreDefault();
     resolver = authResolver;
   }
-  resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_USER), _option->get(PREF_HTTP_PASSWD)));
+  resolver->setUserDefinedAuthConfig
+    (createAuthConfig(op->get(PREF_HTTP_USER), op->get(PREF_HTTP_PASSWD)));
   return resolver;
 }
 
-AuthResolverHandle AuthConfigFactory::createFtpAuthResolver() const
+AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
+(const Option* op) const
 {
   AbstractAuthResolverHandle resolver;
-  if(_option->getAsBool(PREF_NO_NETRC)) {
+  if(op->getAsBool(PREF_NO_NETRC)) {
     resolver.reset(new DefaultAuthResolver());
   } else {
     NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
     authResolver->setNetrc(_netrc);
     resolver = authResolver;
   }
-  resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_FTP_USER), _option->get(PREF_FTP_PASSWD)));
+  resolver->setUserDefinedAuthConfig
+    (createAuthConfig(op->get(PREF_FTP_USER), op->get(PREF_FTP_PASSWD)));
   SharedHandle<AuthConfig> defaultAuthConfig
     (new AuthConfig(AuthConfigFactory::ANONYMOUS,
 		    AuthConfigFactory::ARIA2USER_AT));
@@ -155,14 +161,14 @@ void AuthConfigFactory::updateBasicCred(const BasicCred& basicCred)
 }
 
 bool AuthConfigFactory::activateBasicCred
-(const std::string& host, const std::string& path)
+(const std::string& host, const std::string& path, const Option* op)
 {
 
   std::deque<BasicCred>::iterator i =
     findBasicCred(host, path);
   if(i == _basicCreds.end()) {
     SharedHandle<AuthConfig> authConfig =
-      createHttpAuthResolver()->resolveAuthConfig(host);
+      createHttpAuthResolver(op)->resolveAuthConfig(host);
     if(authConfig.isNull()) {
       return false;
     } else {

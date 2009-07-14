@@ -53,16 +53,14 @@ class AuthResolver;
 
 class AuthConfigFactory {
 private:
-  const Option* _option;
-
   SharedHandle<Netrc> _netrc;
   
   SharedHandle<AuthConfig> createAuthConfig(const std::string& user,
 					    const std::string& password) const;
 
-  SharedHandle<AuthResolver> createHttpAuthResolver() const;
+  SharedHandle<AuthResolver> createHttpAuthResolver(const Option* op) const;
   
-  SharedHandle<AuthResolver> createFtpAuthResolver() const;
+  SharedHandle<AuthResolver> createFtpAuthResolver(const Option* op) const;
 public:
   class BasicCred {
   public:
@@ -88,19 +86,27 @@ private:
   std::deque<BasicCred> _basicCreds;
 public:
   
-  AuthConfigFactory(const Option* option);
+  AuthConfigFactory();
 
   ~AuthConfigFactory();
 
+  // Creates AuthConfig object for request. Following option values
+  // are used in this method: PREF_HTTP_USER, PREF_HTTP_PASSWD,
+  // PREF_FTP_USER, PREF_FTP_PASSWD, PREF_NO_NETRC and
+  // PREF_HTTP_AUTH_CHALLENGE.
   SharedHandle<AuthConfig> createAuthConfig
-  (const SharedHandle<Request>& request);
+  (const SharedHandle<Request>& request, const Option* op);
 
   void setNetrc(const SharedHandle<Netrc>& netrc);
 
   // Find a BasicCred using findBasicCred() and activate it then
-  // return true.  If matching BasicCred is not found, then return
-  // false.
-  bool activateBasicCred(const std::string& host, const std::string& path);
+  // return true.  If matching BasicCred is not found, AuthConfig
+  // object is created using createHttpAuthResolver and op.  If it is
+  // null, then returns false. Otherwise new BasicCred is created
+  // using this AuthConfig object with given host and path "/" and
+  // returns true.
+  bool activateBasicCred
+  (const std::string& host, const std::string& path, const Option* op);
 
   // Find a BasicCred using host and path and return the iterator
   // pointing to it. If not found, then return _basicCreds.end().
