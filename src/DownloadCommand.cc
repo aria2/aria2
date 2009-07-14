@@ -169,32 +169,32 @@ bool DownloadCommand::executeInternal() {
 
   _requestGroup->getSegmentMan()->updateDownloadSpeedFor(peerStat);
 
-  bool segmentComplete = false;
+  bool segmentPartComplete = false;
   // Note that GrowSegment::complete() always returns false.
   if(_transferEncodingDecoder.isNull() && _contentEncodingDecoder.isNull()) {
     if(segment->complete() ||
        segment->getPositionToWrite() == _fileEntry->getLastOffset()) {
-      segmentComplete = true;
+      segmentPartComplete = true;
     } else if(segment->getLength() == 0 && bufSize == 0 &&
 	      !socket->wantRead() && !socket->wantWrite()) {
-      segmentComplete = true;
+      segmentPartComplete = true;
     }
   } else if(!_transferEncodingDecoder.isNull() &&
 	    (segment->complete() || segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
-    segmentComplete = true;
+    segmentPartComplete = true;
   } else if((_transferEncodingDecoder.isNull() ||
 	     _transferEncodingDecoder->finished()) &&
 	    (_contentEncodingDecoder.isNull() ||
 	     _contentEncodingDecoder->finished())) {
-    segmentComplete = true;
+    segmentPartComplete = true;
   }
 
-  if(!segmentComplete && bufSize == 0 &&
+  if(!segmentPartComplete && bufSize == 0 &&
      !socket->wantRead() && !socket->wantWrite()) {
     throw DL_RETRY_EX(EX_GOT_EOF);
   }
 
-  if(segmentComplete) {
+  if(segmentPartComplete) {
     if(segment->complete() || segment->getLength() == 0) {
       // If segment->getLength() == 0, the server doesn't provide
       // content length, but the client detected that download

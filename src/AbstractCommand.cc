@@ -240,7 +240,7 @@ void AbstractCommand::tryReserved() {
     // Don't create new command if currently file length is unknown
     // and there are no URI left. Because file length is unknown, we
     // can assume that there are no in-flight request object.
-    if(entry->getLength() == 0 && entry->getRemainingUris().size() == 0) {
+    if(entry->getLength() == 0 && entry->getRemainingUris().empty()) {
       return;
     }
   }
