@@ -349,6 +349,25 @@ AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
                 [],
                 [[#include <netinet/in.h>]])
 
+# Check struct option.name is assignable from const char*.  struct
+# option.name in opensolaris is of type char*. In Linux, it is const
+# char*
+AC_MSG_CHECKING([whether struct option.name is assignable from const char*])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <unistd.h>
+#include <getopt.h>
+]],
+[[
+const char* s = "const char";
+option op;
+op.name = s;
+]])],
+[have_option_const_name=yes], [have_option_const_name=no])
+AC_MSG_RESULT([$have_option_const_name])
+if test "x$have_option_const_name" = "xyes"; then
+  AC_DEFINE([HAVE_OPTION_CONST_NAME], [1], [Define 1 if struct option.name is const char*])
+fi
+
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		test/Makefile

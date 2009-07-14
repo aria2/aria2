@@ -284,6 +284,9 @@
 /* Define to 1 if you have old openssl. */
 #undef HAVE_OLD_LIBSSL
 
+/* Define 1 if struct option.name is const char* */
+#undef HAVE_OPTION_CONST_NAME
+
 /* Define to 1 if you have the `posix_fallocate' function. */
 #undef HAVE_POSIX_FALLOCATE
 

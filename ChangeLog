@@ -1,5 +1,11 @@
 2009-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Handle the situation where struct option.name is char *.
+	* configure.ac
+	* src/OptionParser.cc
+
+2009-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/AbstractCommand.cc
 	* src/DownloadCommand.cc

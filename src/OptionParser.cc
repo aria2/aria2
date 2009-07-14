@@ -71,7 +71,11 @@ static void putOptions(struct option* longOpts, int* plopt,
 {
   for(; first != last; ++first) {
     if(!(*first)->isHidden()) {
+#ifdef HAVE_OPTION_CONST_NAME
       (*longOpts).name = (*first)->getName().c_str();
+#else // !HAVE_OPTION_CONST_NAME
+      (*longOpts).name = strdup((*first)->getName().c_str());
+#endif // !HAVE_OPTION_CONST_NAME
       switch((*first)->getArgType()) {
       case OptionHandler::REQ_ARG:
 	(*longOpts).has_arg = required_argument;

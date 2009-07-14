@@ -23141,6 +23141,70 @@ _ACEOF
 fi
 
 
+# Check struct option.name is assignable from const char*.  struct
+# option.name in opensolaris is of type char*. In Linux, it is const
+# char*
+{ $as_echo "$as_me:$LINENO: checking whether struct option.name is assignable from const char*" >&5
+$as_echo_n "checking whether struct option.name is assignable from const char*... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <unistd.h>
+#include <getopt.h>
+
+int
+main ()
+{
+
+const char* s = "const char";
+option op;
+op.name = s;
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  have_option_const_name=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	have_option_const_name=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $have_option_const_name" >&5
+$as_echo "$have_option_const_name" >&6; }
+if test "x$have_option_const_name" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_OPTION_CONST_NAME 1
+_ACEOF
+
+fi
+
 ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile po/Makefile.in m4/Makefile intl/Makefile lib/Makefile doc/Makefile"
 
 cat >confcache <<\_ACEOF
