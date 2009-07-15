@@ -104,8 +104,7 @@ bool AbstractCommand::execute() {
       //logger->debug("CUID#%d - finished.", cuid);
       return true;
     }
-    // TODO1.5 it is not needed to check other PeerStats every time.
-
+    // TODO it is not needed to check other PeerStats every time.
     // Find faster Request when this is the only active Request
     if(!req.isNull() && _requestGroup->getNumStreamConnection() == 1 &&
        _fileEntry->countPooledRequest() > 0) {
