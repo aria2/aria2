@@ -345,6 +345,7 @@ static void gatherStoppedDownload
 (BDE& entryDict, const SharedHandle<DownloadResult>& ds)
 {
   entryDict["gid"] = Util::itos(ds->gid);
+  entryDict["errorCode"] = Util::itos(static_cast<int>(ds->result));
   if(ds->result == downloadresultcode::IN_PROGRESS) {
     entryDict["status"] = BDE_REMOVED;
   } else if(ds->result == downloadresultcode::FINISHED) {
