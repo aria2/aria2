@@ -1,5 +1,11 @@
 2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that session download length is not updated when
+	PeerStat is not fastest one.
+	* src/SegmentMan.cc
+
+2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc.
 	* doc/aria2c.1.txt
 

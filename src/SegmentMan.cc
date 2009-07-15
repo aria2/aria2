@@ -314,8 +314,12 @@ void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
   if(i == _fastestPeerStats.end()) {
     _fastestPeerStats.push_back(peerStat);
   } else if((*i)->getAvgDownloadSpeed() < peerStat->getAvgDownloadSpeed()) {
+    // *i's SessionDownloadLength must be added to peerStat
     peerStat->addSessionDownloadLength((*i)->getSessionDownloadLength());
     *i = peerStat;
+  } else {
+    // peerStat's SessionDownloadLength must be added to *i
+    (*i)->addSessionDownloadLength(peerStat->getSessionDownloadLength());
   }
 }
 
