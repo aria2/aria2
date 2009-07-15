@@ -1,6 +1,11 @@
 2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated doc.
+	* doc/aria2c.1.txt
+
+2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated doc.
 	* src/AbstractCommand.cc
 
 2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>

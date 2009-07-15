@@ -2428,14 +2428,13 @@ GID
 <h3 id="_methods">Methods</h3><div style="clear:left"></div>
 <div class="paragraph"><p><strong>aria2.addUri</strong> <em>uris[, options[, position]]</em></p></div>
 <div class="paragraph"><p>This method adds new HTTP(S)/FTP download.  <em>uris</em> is of type array
-and its element is URI which is of type string. URI should be
-percent-encoded.  <em>options</em> is of type struct and its members are a
-pair of option name and value. See <strong>Options</strong> below for more details.
-If <em>position</em> is given as an integer starting from 0, the new download
-is inserted at <em>position</em> in the waiting queue. If <em>position</em> is not
-given or <em>position</em> is larger than the size of the queue, it is
-appended at the end of the queue.  This method returns GID of
-registered download.</p></div>
+and its element is URI which is of type string. <em>options</em> is of type
+struct and its members are a pair of option name and value. See
+<strong>Options</strong> below for more details.  If <em>position</em> is given as an
+integer starting from 0, the new download is inserted at <em>position</em> in
+the waiting queue. If <em>position</em> is not given or <em>position</em> is larger
+than the size of the queue, it is appended at the end of the queue.
+This method returns GID of registered download.</p></div>
 <div class="paragraph"><p><strong>aria2.addTorrent</strong> <em>torrent[, uris[, options[, position]]]</em></p></div>
 <div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.
 <em>torrent</em> is of type base64 which contains Base64-encoded .torrent
@@ -3217,7 +3216,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-07-11 01:08:42 JST
+Last updated 2009-07-15 20:58:54 JST
 </div>
 </div>
 </body>
