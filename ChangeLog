@@ -1,3 +1,8 @@
+2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Handle the case when DownloadContext has no FileEntry.
+	* src/XmlRpcMethodImpl.cc
+
 2009-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Handle the situation where struct option.name is char *.

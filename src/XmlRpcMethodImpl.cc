@@ -429,14 +429,15 @@ BDE GetUrisXmlRpcMethod::process
   }
   BDE uriList = BDE::list();
   std::deque<std::string> uris;
-  // TODO1.5 getUris should return list of URIs attached to each FileEntry.
-  // Current implementation just returns first FileEntry's URIs.
-  group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-  for(std::deque<std::string>::const_iterator i = uris.begin(); i != uris.end();
-      ++i) {
-    BDE entry = BDE::dict();
-    entry["uri"] = *i;
-    uriList << entry;
+  // TODO Current implementation just returns first FileEntry's URIs.
+  if(!group->getDownloadContext()->getFileEntries().empty()) {
+    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
+    for(std::deque<std::string>::const_iterator i = uris.begin();
+	i != uris.end(); ++i) {
+      BDE entry = BDE::dict();
+      entry["uri"] = *i;
+      uriList << entry;
+    }
   }
   return uriList;
 }
