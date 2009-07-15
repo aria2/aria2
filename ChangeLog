@@ -1,5 +1,10 @@
 2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented 'errorCode' of tellStatus in man page.
+	* doc/aria2c.1.txt
+
+2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added 'errorCode' to the reponse of tellStatus xml-rpc method.
 	This key is only available for stopped/completed downloads and its
 	value is the error code defined in EXIT STATUS in man page.

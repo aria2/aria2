@@ -1158,6 +1158,12 @@ connections::
 
   The number of peers/servers the client has connected to.
 
+errorCode::
+
+  The last error code occurred in this download. The value is of type
+  string. The error codes are defined in EXIT STATUS section. This
+  value is only available for stopped/completed downloads.
+
 *aria2.getUris* 'gid'
 
 This method returns URIs used in the download denoted by 'gid'.  'gid'
