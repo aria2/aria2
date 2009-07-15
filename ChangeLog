@@ -1,5 +1,11 @@
 2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo
+	* src/usage_text.h
+	* doc/aria2c.1.txt
+
+2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented 'errorCode' of tellStatus in man page.
 	* doc/aria2c.1.txt
 

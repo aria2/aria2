@@ -379,7 +379,7 @@ BitTorrent Specific Options
 
 *--bt-stop-timeout*=SEC::
 
-  Stop BitTorrent download if download speed is 0 in consecutive NUM
+  Stop BitTorrent download if download speed is 0 in consecutive SEC
   seconds. If '0' is given, this feature is disabled.  Default: '0'
 
 *--bt-tracker-interval*=SEC::
