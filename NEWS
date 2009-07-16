@@ -7,18 +7,33 @@ Release Note
 This release adds WEB-Seeding support for multi-file torrent(in other
 words, integrating BitTorrent downloads with HTTP(S)/FTP). aria2 now
 tries all resolved addresses to connect to remote servers in
-HTTP(S)/FTP until it gets connected. aria2.tellWaiting XML-RPC method
-was added to get the download entries in the waiting queue.  The
-behavior of -D option has been changed: If -D is specified, the
-current working directory is set to / and stdin, stdout and stderr are
-redirected to /dev/null.  --use-head is now disabled by default since
-using HEAD request causes problems in some web sites.
---bt-stop-timeout option was added. This function stops BitTorrent
-download if the download speed is 0 and the number of seeder is 0 in
+HTTP(S)/FTP until it gets connected. 2 new XML-RPC methods were added:
+aria2.tellWaiting and aria2.getVersion.  The behavior of -D option has
+been changed: If -D is specified, the current working directory is set
+to / and stdin, stdout and stderr are redirected to /dev/null.
+--use-head is now disabled by default since using HEAD request causes
+problems in some web sites.  --bt-stop-timeout option was added. This
+function stops BitTorrent download if the download speed is 0 in
 consecutive given seconds.
 
 Changes
 -------
+
+ * Fixed the bug that http-user, http-passwd, ftp-user and ftp-passwd
+   are ignored when they are given via XML-RPC.
+
+ * Added 'errorCode' to the reponse of tellStatus xml-rpc method.
+   This key is only available for stopped/completed downloads and its
+   value is the error code defined in EXIT STATUS in man page.
+
+ * Implemented getVersion xml-rpc method. This method returns struct
+   which has 2 key-value pairs: "version" key is associated to the
+   version of aria2, such as "1.5.0". "enabledFeatures" key is
+   associated to the list of enabled features, such as "Async DNS",
+   "BitTorrent".
+
+ * Removed TLS1.1 protocol support when aria2 is built with gnutls for
+   compatibility issue.
 
  * Disabled --use-head option by default because --use-head=true
    causes problems on some web sites.
@@ -26,8 +41,8 @@ Changes
  * Print URL List in -S option for torrent.
 
  * Added --bt-stop-timeout=SEC option. This function stops BitTorrent
-   download if the download speed is 0 and the number of seeder is 0
-   in consecutive SEC seconds. By default, this function is disabled.
+   download if the download speed is 0 in consecutive SEC seconds. By
+   default, this function is disabled.
 
  * Throw exception if file path doesn't exist in FTP URL.
 
