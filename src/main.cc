@@ -212,6 +212,9 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 #ifdef SIGPIPE
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
+#ifdef SIGCHLD
+    Util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
+#endif // SIGCHILD
     std::deque<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT
     if(!op->blank(PREF_TORRENT_FILE)) {
