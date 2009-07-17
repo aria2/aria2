@@ -213,6 +213,8 @@ downloadresultcode::RESULT main(int argc, char* argv[])
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
 #ifdef SIGCHLD
+    // Avoid to create zombie process when forked child processes are
+    // died.
     Util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
 #endif // SIGCHILD
     std::deque<SharedHandle<RequestGroup> > requestGroups;
