@@ -1,3 +1,9 @@
+2009-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated debug log message
+	* src/AbstractCommand.cc
+	* src/message.h
+
 2009-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Avoid to create zombie process when commands specified in

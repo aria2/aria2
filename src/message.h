@@ -48,7 +48,6 @@
 #define MSG_RESTARTING_DOWNLOAD _("CUID#%d - Restarting the download. URI=%s")
 #define MSG_TORRENT_DOWNLOAD_ABORTED _("CUID#%d - Download aborted.")
 #define MSG_MAX_TRY _("CUID#%d - %d times attempted, but no success. Download aborted.")
-#define MSG_UNREGISTER_CUID _("CUID#%d - Unregistering cuid from segmentManager.")
 #define MSG_SEND_PEER_MESSAGE "CUID#%d - To: %s:%d %s"
 #define MSG_SEND_PEER_MESSAGE_WITH_INDEX "CUID#%d - To: %s:%d %s index=%d"
 #define MSG_SEND_PEER_MESSAGE_WITH_BITFIELD "CUID#%d - To: %s:%d %s %s"

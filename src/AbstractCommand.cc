@@ -240,9 +240,13 @@ void AbstractCommand::tryReserved() {
     // and there are no URI left. Because file length is unknown, we
     // can assume that there are no in-flight request object.
     if(entry->getLength() == 0 && entry->getRemainingUris().empty()) {
+      logger->debug("CUID#%d - Not trying next request."
+		    " No reserved/pooled request is remaining and"
+		    " total length is still unknown.", cuid);
       return;
     }
   }
+  logger->debug("CUID#%d - Trying reserved/pooled request.", cuid);
   Commands commands;
   _requestGroup->createNextCommand(commands, e, 1);
   e->setNoWait(true);
@@ -284,8 +288,7 @@ void AbstractCommand::onAbort() {
     _fileEntry->removeRequest(req);
   }
 
-  logger->debug(MSG_UNREGISTER_CUID, cuid);
-  //_segmentMan->unregisterId(cuid);
+  logger->debug("CUID#%d - Aborting download", cuid);
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
