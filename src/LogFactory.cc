@@ -36,7 +36,6 @@
 #include "SimpleLogger.h"
 #include "a2io.h"
 #include "prefs.h"
-#include <cstring>
 
 namespace aria2 {
 
@@ -46,7 +45,7 @@ bool LogFactory::_consoleOutput = true;
 Logger::LEVEL LogFactory::_logLevel = Logger::DEBUG;
 
 Logger* LogFactory::getInstance() {
-  if(logger == NULL) {
+  if(!logger) {
     SimpleLogger* slogger = new SimpleLogger();
     if(filename != DEV_NULL) {
       // don't open file DEV_NULL for performance sake.
@@ -55,9 +54,9 @@ Logger* LogFactory::getInstance() {
     }
     slogger->setLogLevel(_logLevel);
     if(_consoleOutput) {
-      slogger->setStdout(Logger::NOTICE, true);
-      slogger->setStdout(Logger::WARN, true);
-      slogger->setStdout(Logger::ERROR, true);
+      slogger->setStdoutLogLevel(Logger::NOTICE, true);
+      slogger->setStdoutLogLevel(Logger::WARN, true);
+      slogger->setStdoutLogLevel(Logger::ERROR, true);
     }
     logger = slogger;
   }

@@ -1,3 +1,15 @@
+2009-07-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten Logger to avoiding constly virtual call.
+	* src/LogFactory.cc
+	* src/LogFactory.h
+	* src/Logger.h
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/NullLogger.h: Removed.
+	* src/SimpleLogger.cc
+	* src/SimpleLogger.h
+
 2009-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated doc

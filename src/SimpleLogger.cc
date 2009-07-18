@@ -33,116 +33,27 @@
  */
 /* copyright --> */
 #include "SimpleLogger.h"
-#include "Util.h"
-#include "DlAbortEx.h"
-#include "message.h"
-#include "a2io.h"
-#include "a2time.h"
-#include "StringFormat.h"
-#include "A2STR.h"
-#include <cerrno>
-#include <cstring>
-#include <iostream>
-#include <cstdlib>
+
 #include <cassert>
+
+#include "Util.h"
+#include "a2time.h"
+#include "A2STR.h"
+#include "StringFormat.h"
+#include "Exception.h"
 
 namespace aria2 {
 
-#if !defined(va_copy)
-# if defined(__va_copy)
-#  define va_copy(dest, src) __va_copy(dest, src)
-# else
-#  define va_copy(dest, src) (dest = src)
-# endif
-#endif
-
-#define WRITE_LOG(LEVEL, MSG)						\
-  if(LEVEL >= _logLevel && (stdoutField&LEVEL || file.is_open())) {	\
-    va_list ap;								\
-    va_start(ap, MSG);							\
-    writeFile(LEVEL, MSG, ap);						\
-    flush();								\
-    va_end(ap);								\
-  }
-
-#define WRITE_LOG_EX(LEVEL, MSG, EX)					\
-  if(LEVEL >= _logLevel && (stdoutField&LEVEL || file.is_open())) {	\
-    va_list ap;								\
-    va_start(ap, EX);							\
-    writeFile(LEVEL, MSG, ap);						\
-    writeStackTrace(LEVEL, EX);						\
-    flush();								\
-    va_end(ap);								\
-}
-
-const std::string SimpleLogger::DEBUG("DEBUG");
-
-const std::string SimpleLogger::NOTICE("NOTICE");
-
-const std::string SimpleLogger::WARN("WARN");
-
-const std::string SimpleLogger::ERROR("ERROR");
-
-const std::string SimpleLogger::INFO("INFO");
-
-SimpleLogger::SimpleLogger():stdoutField(0), _logLevel(Logger::DEBUG) {}
-
-SimpleLogger::~SimpleLogger() {
-  closeFile();
-}
-
-void SimpleLogger::openFile(const std::string& filename) {
-  file.open(filename.c_str(), std::ios::app|std::ios::binary);
-  if(!file) {
-    throw DL_ABORT_EX
-      (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
-  }
-}
-
-void SimpleLogger::closeFile() {
-  if(file.is_open()) {
-    file.close();
-  }
-}
-
-void SimpleLogger::setStdout(Logger::LEVEL level, bool enabled) {
-  if(enabled) {
-    stdoutField |= level;
-  } else {
-    stdoutField &= ~level;
-  }
-}
-
-void SimpleLogger::writeHeader(std::ostream& o, const std::string& date,
-			       const std::string& level)
+static void writeHeader
+(std::ostream& o, const std::string& date, const std::string& logLevelLabel)
 {
-  o << StringFormat("%s %s - ", date.c_str(), level.c_str());
+  o << StringFormat("%s %s - ", date.c_str(), logLevelLabel.c_str());
 }
 
-void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
-			    const char* msg, va_list ap,
-			    bool printHeader)
+void SimpleLogger::writeLog
+(std::ostream& o, Logger::LEVEL level, const std::string& logLevelLabel,
+ const char* msg, va_list ap)
 {
-  va_list apCopy;
-  va_copy(apCopy, ap);
-  std::string levelStr;
-  switch(level) {
-  case Logger::DEBUG:
-    levelStr = DEBUG;
-    break;
-  case Logger::NOTICE:
-    levelStr = NOTICE;
-    break;
-  case Logger::WARN:
-    levelStr = WARN;
-    break;
-  case Logger::ERROR:
-    levelStr = ERROR;
-    break;
-  case Logger::INFO:
-  default:
-    levelStr = INFO;
-  }
   struct timeval tv;
   gettimeofday(&tv, 0);
   char datestr[27]; // 'YYYY-MM-DD hh:mm:ss.uuuuuu'+'\0' = 27 bytes
@@ -155,88 +66,24 @@ void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
   assert(dateLength <= (size_t)20);
   snprintf(datestr+dateLength, sizeof(datestr)-dateLength,
 	   ".%06ld", tv.tv_usec);
-
-  // TODO a quick hack not to print header in console
-  if(printHeader) {
-    writeHeader(o, datestr, levelStr);
-  }
+  writeHeader(o, datestr, logLevelLabel);
   {
     char buf[1024];
-    if(vsnprintf(buf, sizeof(buf), std::string(Util::replace(msg, A2STR::CR_C, A2STR::NIL)+A2STR::LF_C).c_str(), apCopy) < 0) {
+    std::string body = Util::replace(msg, A2STR::CR_C, A2STR::NIL);
+    body += A2STR::LF_C;
+    if(vsnprintf(buf, sizeof(buf), body.c_str(), ap) < 0) {
       o << "SimpleLogger error, failed to format message.\n";
     } else {
       o << buf;
     }
   }
-  va_end(apCopy);
 }
 
-void SimpleLogger::writeFile(Logger::LEVEL level, const char* msg, va_list ap)
+void SimpleLogger::writeStackTrace
+(std::ostream& o, Logger::LEVEL level, const std::string& logLevelLabel,
+ const Exception& e)
 {
-  writeLog(file, level, msg, ap);
-  if(stdoutField&level) {
-    std::cout << "\n";
-    writeLog(std::cout, level, msg, ap);
-  }
-}
-
-void SimpleLogger::writeStackTrace(Logger::LEVEL level, const Exception& e)
-{
-  file << e.stackTrace();
-  if(stdoutField&level) {
-    std::cout << e.stackTrace();
-  }
-}
-
-void SimpleLogger::flush()
-{
-  file << std::flush;
-  std::cout << std::flush;
-}
-
-void SimpleLogger::debug(const char* msg, ...) {
-  WRITE_LOG(Logger::DEBUG, msg);
-}
-
-void SimpleLogger::debug(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(Logger::DEBUG, msg, e);
-}
-
-void SimpleLogger::info(const char* msg, ...) {
-  WRITE_LOG(Logger::INFO, msg);
-}
-
-void SimpleLogger::info(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(Logger::INFO, msg, e);
-}
-
-void SimpleLogger::notice(const char* msg, ...) {
-  WRITE_LOG(Logger::NOTICE, msg);
-}
-
-void SimpleLogger::notice(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(Logger::INFO, msg, e);
-}
-
-void SimpleLogger::warn(const char* msg, ...) {
-  WRITE_LOG(Logger::WARN, msg);
-}
-
-void SimpleLogger::warn(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(Logger::WARN, msg, e);
-}
-
-void SimpleLogger::error(const char* msg, ...) {
-  WRITE_LOG(Logger::ERROR, msg);
-}
-
-void SimpleLogger::error(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(Logger::ERROR, msg, e);
-}
-
-void SimpleLogger::setLogLevel(Logger::LEVEL level)
-{
-  _logLevel = level;
+  o << e.stackTrace();
 }
 
 } // namespace aria2

@@ -36,8 +36,10 @@
 #define _D_LOG_FACTORY_H_
 
 #include "common.h"
-#include "Logger.h"
+
 #include <string>
+
+#include "Logger.h"
 
 namespace aria2 {
 

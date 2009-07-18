@@ -37,24 +37,17 @@
 
 #include "common.h"
 
+#include <cstdarg>
+#include <string>
+#include <fstream>
+#include <iostream>
+
 namespace aria2 {
 
 class Exception;
 
 class Logger {
 public:
-  virtual ~Logger() {}
-  virtual void debug(const char* msg, ...) = 0;
-  virtual void debug(const char* msg, const Exception& ex, ...) = 0;
-  virtual void info(const char* msg, ...) = 0;
-  virtual void info(const char* msg, const Exception& ex, ...) = 0;
-  virtual void notice(const char* msg, ...) = 0;
-  virtual void notice(const char* msg, const Exception& ex, ...) = 0;
-  virtual void warn(const char* msg, ...) = 0;
-  virtual void warn(const char* msg, const Exception& ex, ...) = 0;
-  virtual void error(const char*  msg, ...) = 0;
-  virtual void error(const char* msg, const Exception& ex, ...) = 0;
-
   enum LEVEL {
     DEBUG  = 1 << 0,
     INFO   = 1 << 1,
@@ -63,7 +56,137 @@ public:
     ERROR  = 1 << 4,
   };
 
-  virtual void setLogLevel(LEVEL level) = 0;
+  static const std::string DEBUG_LABEL;
+
+  static const std::string NOTICE_LABEL;
+
+  static const std::string WARN_LABEL;
+
+  static const std::string ERROR_LABEL;
+
+  static const std::string INFO_LABEL;
+private:
+  LEVEL _logLevel;
+
+  std::ofstream _file;
+
+  int _stdoutField;
+protected:
+  virtual void writeLog
+  (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
+   const char* msg, va_list ap) = 0;
+
+  virtual void writeStackTrace
+  (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
+   const Exception& ex) = 0;
+public:
+  Logger();
+
+  virtual ~Logger();
+
+#define WRITE_LOG(LEVEL, LEVEL_LABEL, MSG)				\
+  if(LEVEL >= _logLevel && _file.is_open()) {				\
+    va_list ap;								\
+    va_start(ap, MSG);							\
+    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);			\
+    va_end(ap);								\
+    _file << std::flush;						\
+  }									\
+  if(_stdoutField&LEVEL) {						\
+    std::cout << "\n";							\
+    va_list ap;								\
+    va_start(ap, MSG);							\
+    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);			\
+    va_end(ap);								\
+    std::cout << std::flush;						\
+  }									\
+
+#define WRITE_LOG_EX(LEVEL, LEVEL_LABEL, MSG, EX)			\
+  if(LEVEL >= _logLevel && _file.is_open()) {				\
+    va_list ap;								\
+    va_start(ap, EX);							\
+    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);			\
+    va_end(ap);								\
+    writeStackTrace(_file, LEVEL, LEVEL_LABEL, EX);			\
+    _file << std::flush;						\
+  }									\
+  if(_stdoutField&LEVEL) {						\
+    std::cout << "\n";							\
+    va_list ap;								\
+    va_start(ap, EX);							\
+    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);			\
+    va_end(ap);								\
+    writeStackTrace(std::cout, LEVEL, LEVEL_LABEL, EX);			\
+    std::cout << std::flush;						\
+  }									\
+
+  void debug(const char* msg, ...)
+  {
+    WRITE_LOG(DEBUG, DEBUG_LABEL, msg);
+  }
+
+  void debug(const char* msg, const Exception& ex, ...)
+  {
+    WRITE_LOG_EX(DEBUG, DEBUG_LABEL, msg, ex);
+  }
+
+  void info(const char* msg, ...)
+  {
+    WRITE_LOG(INFO, INFO_LABEL, msg);
+  }
+
+  void info(const char* msg, const Exception& ex, ...)
+  {
+    WRITE_LOG_EX(INFO, INFO_LABEL, msg, ex);
+  }
+
+  void notice(const char* msg, ...)
+  {
+    WRITE_LOG(NOTICE, NOTICE_LABEL, msg);
+  }
+
+  void notice(const char* msg, const Exception& ex, ...)
+  {
+    WRITE_LOG_EX(NOTICE, NOTICE_LABEL, msg, ex);
+  }
+
+  void warn(const char* msg, ...)
+  {
+    WRITE_LOG(WARN, WARN_LABEL, msg);
+  }
+
+  void warn(const char* msg, const Exception& ex, ...)
+  {
+    WRITE_LOG_EX(WARN, WARN_LABEL, msg, ex);
+  }
+
+  void error(const char*  msg, ...)
+  {
+    WRITE_LOG(ERROR, ERROR_LABEL, msg);
+  }
+
+  void error(const char* msg, const Exception& ex, ...)
+  {
+    WRITE_LOG_EX(ERROR, ERROR_LABEL, msg, ex);
+  }
+
+  void openFile(const std::string& filename);
+
+  void closeFile();
+
+  void setLogLevel(LEVEL level)
+  {
+    _logLevel = level;
+  }
+
+  void setStdoutLogLevel(Logger::LEVEL level, bool enabled)
+  {
+    if(enabled) {
+      _stdoutField |= level;
+    } else {
+      _stdoutField &= ~level;
+    }
+  }
 };
 
 } // namespace aria2

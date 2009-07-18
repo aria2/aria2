@@ -36,61 +36,18 @@
 #define _D_SIMPLE_LOGGER_H_
 
 #include "Logger.h"
-#include <cstdarg>
-#include <string>
-#include <fstream>
 
 namespace aria2 {
 
 class SimpleLogger:public Logger {
-private:
-  void writeFile(Logger::LEVEL level, const char* msg, va_list ap);
+protected:
+  virtual void writeLog
+  (std::ostream& out, Logger::LEVEL logLevel, const std::string& logLevelLabel,
+   const char* msg, va_list ap);
 
-  void writeStackTrace(Logger::LEVEL level, const Exception& e);
-
-  void flush();
-
-  void writeHeader(std::ostream& out,
-		   const std::string& date, const std::string& level);
-
-  void writeLog(std::ostream& out, Logger::LEVEL level,
-		const char* msg, va_list ap,
-		bool printHeader = true);
-
-  std::ofstream file;
-  int stdoutField;
-
-  Logger::LEVEL _logLevel;
-
-  static const std::string DEBUG;
-
-  static const std::string NOTICE;
-
-  static const std::string WARN;
-
-  static const std::string ERROR;
-
-  static const std::string INFO;
-public:
-  SimpleLogger();
-  ~SimpleLogger();
-
-  void openFile(const std::string& filename);
-  void closeFile();
-  virtual void debug(const char* msg, ...);
-  virtual void debug(const char* msg, const Exception& ex, ...);
-  virtual void info(const char* msg, ...);
-  virtual void info(const char* msg, const Exception& ex, ...);
-  virtual void notice(const char* msg, ...);
-  virtual void notice(const char* msg, const Exception& ex, ...);
-  virtual void warn(const char* msg, ...);
-  virtual void warn(const char* msg, const Exception& ex, ...);
-  virtual void error(const char* msg, ...);
-  virtual void error(const char* msg, const Exception& ex, ...);
-
-  virtual void setLogLevel(Logger::LEVEL level);
-
-  void setStdout(Logger::LEVEL level, bool enabled);
+  virtual void writeStackTrace
+  (std::ostream& out, Logger::LEVEL logLevel, const std::string& logLevelLabel,
+   const Exception& e);
 };
 
 } // namespace aria2

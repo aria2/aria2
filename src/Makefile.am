@@ -40,7 +40,7 @@ SRCS =  Socket.h\
 	DlAbortEx.h\
 	DlRetryEx.h\
 	DownloadFailureException.h\
-	Logger.h\
+	Logger.cc Logger.h\
 	SimpleLogger.cc SimpleLogger.h\
 	DiskWriter.h\
 	DiskWriterFactory.h\
@@ -51,7 +51,6 @@ SRCS =  Socket.h\
 	Option.cc Option.h\
 	Base64.cc Base64.h\
 	LogFactory.cc LogFactory.h\
-	NullLogger.h\
 	TimeA2.cc TimeA2.h\
 	SharedHandle.h\
 	HandleRegistry.h\
