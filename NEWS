@@ -4,20 +4,32 @@ aria2 1.5.0
 Release Note
 ------------
 
-This release adds WEB-Seeding support for multi-file torrent(in other
-words, integrating BitTorrent downloads with HTTP(S)/FTP). aria2 now
-tries all resolved addresses to connect to remote servers in
-HTTP(S)/FTP until it gets connected. 2 new XML-RPC methods were added:
-aria2.tellWaiting and aria2.getVersion.  The behavior of -D option has
-been changed: If -D is specified, the current working directory is set
-to / and stdin, stdout and stderr are redirected to /dev/null.
---use-head is now disabled by default since using HEAD request causes
-problems in some web sites.  --bt-stop-timeout option was added. This
-function stops BitTorrent download if the download speed is 0 in
-consecutive given seconds.
+This release adds WEB-Seeding support for multi-file torrent.
+--bt-stop-timeout option was added. This function stops BitTorrent
+download if the download speed is 0 in consecutive given seconds.
+aria2 now tries all resolved addresses to connect to remote servers in
+HTTP(S)/FTP until it gets connected.  For XML-RPC, two new methods
+were added: aria2.tellWaiting and aria2.getVersion. The error code is
+available in the response of aria2.tellStatus methods for
+stopped/completed downloads.  --use-head is now disabled by default
+since using HEAD request causes problems in some web sites.  The
+behavior of -D option has been changed: If -D is specified, the
+current working directory is set to / and stdin, stdout and stderr are
+redirected to /dev/null.  This release fixes the bug that zombie
+processes are created when commands specified in --on-download-*
+options are executed and the bug that http-user, http-passwd, ftp-user
+and ftp-passwd are ignored when they are given via XML-RPC.  Updated
+Russian, Italian, Danish, Bulgarian, Japanese and Ukrainian
+translations.
 
 Changes
 -------
+
+ * Updated Russian, Italian, Danish, Bulgarian, Japanese and Ukrainian
+   translations. Thanks to all translators.
+
+ * Avoid to create zombie process when commands specified in
+   --on-download-* options are executed.
 
  * Fixed the bug that http-user, http-passwd, ftp-user and ftp-passwd
    are ignored when they are given via XML-RPC.
