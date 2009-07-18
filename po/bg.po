@@ -7,32 +7,32 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-06-07 17:21+0900\n"
-"PO-Revision-Date: 2008-11-15 20:56+0000\n"
+"POT-Creation-Date: 2009-07-18 18:20+0900\n"
+"PO-Revision-Date: 2009-07-10 09:04+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-11-18 11:44+0000\n"
+"X-Launchpad-Export-Date: 2009-07-18 09:12+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:209
+#: src/DownloadEngine.cc:210
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Започване на поредица за изключване... Натиснете Ctrl-C отново за спешно "
 "изключване."
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:216
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Извънредно започване на поредица за изключване..."
 
-#: src/MultiUrlRequestInfo.cc:96
+#: src/MultiUrlRequestInfo.cc:97
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 ще продължи даунлоуда ако трансферът е рестартиран."
 
-#: src/MultiUrlRequestInfo.cc:98
+#: src/MultiUrlRequestInfo.cc:99
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -141,6 +141,18 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
+" -s, --split=N Даунлоуд на файл използвайки N връзки. Ако повече\n"
+"                              от N URL-и са дадени, първите N URL-и ще бъдат "
+"използвани и\n"
+"                              останалите N URL-и ще бъдат използвани за "
+"резерв. Ако по-малко от\n"
+"                              N URL-и са дадени, тези URL-и ще бъдат "
+"използвани повече от\n"
+"                              веднъж, така, че N връзки да бъдат създадени\n"
+"                              едновременно. Моля вижте също опцията -j.\n"
+"                              Моля забележете, че в Metalink даунлоуд, тази\n"
+"                              опция няма ефект и изплозвайте опцията -C "
+"вместо това."
 
 #: src/usage_text.h:55
 msgid ""
@@ -166,6 +178,9 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --http-proxy=PROXY Използване на този прокси сървър за HTTP.\n"
+"                              Вижте също опцията --all-proxy.\n"
+"                              Това оказва ефект върху всички URL-и."
 
 #: src/usage_text.h:66
 msgid ""
@@ -173,6 +188,9 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --https-proxy=PROXY Използване на този прокси сървър за HTTPS.\n"
+"                              Вижте също опцията --all-proxy.\n"
+"                              Това оказва ефект върху всички URL-и."
 
 #: src/usage_text.h:70
 msgid ""
@@ -180,9 +198,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --ftp-proxy=PROXY Използване на този прокси сървър за FTP.\n"
+"                              Вижте също опцията --all-proxy.\n"
+"                              Това оказва ефект върху всички URL-и."
 
 #: src/usage_text.h:74
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols.\n"
 "                              You can override this setting and specify a\n"
@@ -191,13 +211,14 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" -c, --continue Продължаване даунлоуда на частично даунлоуднат\n"
-"                              файл. Използвайте тази опция за да се "
-"възобнови даунлоуд\n"
-"                              стартиран от уеб браузър или друга програма\n"
-"                              която даунлоудва файлове последователно от\n"
-"                              началото. Понастоящем тази опция е само\n"
-"                              приложима към http(и)/ftp даунлоуди."
+" --all-proxy=PROXY Използване на този прокси сървър за всички протоколи.\n"
+"                              Можете да замените тази настройка и да "
+"уточните\n"
+"                              прокси сървър за специфичен протокол "
+"използвайки\n"
+"                              --http-proxy, --https-proxy и --ftp-proxy\n"
+"                              опциите.\n"
+"                              Това оказва ефект върху всички URL-и."
 
 #: src/usage_text.h:81
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -211,7 +232,7 @@ msgstr ""
 
 #: src/usage_text.h:85
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
-msgstr ""
+msgstr " --proxy-method=METHOD Определя използваният метод за прокси заявка."
 
 #: src/usage_text.h:87
 msgid ""
@@ -245,6 +266,9 @@ msgid ""
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
+" -p, --ftp-pasv[=true|false] Използване на пасивен режим във FTP. Ако false "
+"е дадено,\n"
+"                              активният режим ще бъде използван."
 
 #: src/usage_text.h:101
 msgid ""
@@ -267,7 +291,6 @@ msgstr ""
 "                              Тази опция не засяга BitTorrent даунлоудите."
 
 #: src/usage_text.h:107
-#, fuzzy
 msgid ""
 " --max-overall-download-limit=SPEED Set max overall download speed in bytes/"
 "sec.\n"
@@ -276,14 +299,16 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
-" --max-download-limit=SPEED Определя максимална скорост на даунлоуда в байта "
-"в секунда.\n"
+" --max-overall-download-limit=SPEED Определя цялостната максимална скорост "
+"на даунлоуд в байта/сек.\n"
 "                              0 означава неограничена.\n"
 "                              Можете да приложите K или M(1K = 1024, 1M = "
-"1024K)."
+"1024K).\n"
+"                              За да ограничите скоростта на даунлоуд за едно "
+"сваляне, използвайте\n"
+"                              опцията --max-download-limit."
 
 #: src/usage_text.h:113
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed per each download in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -291,11 +316,14 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
-" --max-download-limit=SPEED Определя максимална скорост на даунлоуда в байта "
-"в секунда.\n"
-"                              0 означава неограничена.\n"
+" --max-download-limit=SPEED Определя максималната скорост на даунлоуд за "
+"всяко сваляне в\n"
+"                              байта/сек. 0 означава неограничена.\n"
 "                              Можете да приложите K или M(1K = 1024, 1M = "
-"1024K)."
+"1024K).\n"
+"                              За да ограничите цялостната скорост на "
+"даунлоуд, използвайте\n"
+"                              опцията --max-overall-download-limit."
 
 #: src/usage_text.h:119
 msgid ""
@@ -323,6 +351,29 @@ msgid ""
 "                              not be available if your system doesn't have\n"
 "                              posix_fallocate() function."
 msgstr ""
+" --file-allocation=METHOD Уточнява методът на разпределяне на файла.\n"
+"                              'none' не разпределя предварително файлово "
+"пространство. 'prealloc'\n"
+"                              разпределя предварително файлово пространство "
+"преди даунлоудът да започне.\n"
+"                              Това може да отнеме малко време в зависимост "
+"от големината на\n"
+"                              файла.\n"
+"                              Ако използвате нови файлови системи като ext4\n"
+"                              (с поддръжка на обхвати), btrfs или xfs, "
+"'falloc' е\n"
+"                              най-добрият Ви избор. Разпределя големи"
+"(няколко GiB)\n"
+"                              файлове почти веднага. Не използвайте 'falloc' "
+"с\n"
+"                              наследствени файлови системи като ext3, защото "
+"отнема\n"
+"                              почти същото време като 'prealloc' и блокира "
+"aria2\n"
+"                              изцяло, докато не завърши разпределянето. "
+"'falloc' може\n"
+"                              да не бъде налична, ако системата Ви няма\n"
+"                              posix_fallocate() функция."
 
 #: src/usage_text.h:134
 msgid ""
@@ -349,7 +400,6 @@ msgstr ""
 "                              Изключете опцията ако срещнете някаква грешка"
 
 #: src/usage_text.h:142
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false is given, and a file already exists "
 "but\n"
@@ -359,14 +409,13 @@ msgid ""
 "download\n"
 "                              the file. See also --auto-file-renaming option."
 msgstr ""
-" --allow-piece-length-change=true|false Ако false е дадено, aria2 спира "
-"даунлоуда\n"
-"                              когато дължината на частта е различна от тази "
-"в\n"
-"                              контролния файл. Ако true е дадено, можете да "
-"продължите\n"
-"                              но малък прогрес от даунлоуда може да бъде "
-"загубен."
+" --allow-overwrite=true|false Ако false е дадено, и файлът вече съществува, "
+"но\n"
+"                              съответния контролен файл (име.aria2)\n"
+"                              не съществува, тогава aria2 няма да даунлоудне "
+"отново\n"
+"                              този файл. Вижте също опцията --auto-file-"
+"renaming."
 
 #: src/usage_text.h:147
 msgid ""
@@ -461,7 +510,6 @@ msgstr ""
 " --enable-http-pipelining[=true|false] Включване на HTTP/1.1 тръбопровеждане."
 
 #: src/usage_text.h:177
-#, fuzzy
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -473,17 +521,18 @@ msgid ""
 "                              of a file. See also --bt-hash-check-seed "
 "option."
 msgstr ""
-" --auto-file-renaming[=true|false] Преименуване на файла ако същият файл "
-"вече\n"
-"                              същесвува. Тази опция работи само в http(s)/"
-"ftp\n"
-"                              даунлоуд.\n"
-"                              Новото име на файла има точка и номер"
-"(1..9999)\n"
-"                              прикрепени."
+" -V, --check-integrity[=true|false] Проверка на цялостта на файла чрез "
+"потвърждаване на частите\n"
+"                              на хеша. Тази опция има ефект само в "
+"BitTorrent\n"
+"                              и Metalink даунлоудите с парчета на "
+"контролните суми.\n"
+"                              Използвайте тази опция за да даунлоуднете "
+"отново повредена част\n"
+"                              от файл. Вижте също опцията --bt-hash-check-"
+"seed."
 
 #: src/usage_text.h:183
-#, fuzzy
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -495,31 +544,29 @@ msgid ""
 "                              This option has effect only on BitTorrent\n"
 "                              download."
 msgstr ""
-" -h, --help[=CATEGORY] Отпечатва употребата и излиза.\n"
-"                              Помощните съобщения са групирани в няколко\n"
-"                              категории. Например, напишете \"--help=http\" "
-"за\n"
-"                              детайлно обяснение за опциите свързани с\n"
-"                              http. Ако не е намерена съответстваща "
-"категория, потърсете\n"
-"                              името на опцията използвайки дадена дума в "
-"общо съответствие\n"
-"                              и резултатът се отпечатва."
+" --bt-hash-check-seed[=true|false] Ако true е дадено, след проверката на "
+"хеша използвайки\n"
+"                              опцията --check-integrity и файлът е "
+"завършен,\n"
+"                              се продължава да се сийдва файла. Ако искате "
+"да проверите файла\n"
+"                              и да го даунлоуднете само ако е повреден или\n"
+"                              недовършен, определете тази опция на false.\n"
+"                              Тази опция оказва ефект само върху BitTorrent\n"
+"                              даунлоуди."
 
 #: src/usage_text.h:191
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
-" --realtime-chunk-checksum=true|false Потвърждаване на парчета с контролните "
-"суми докато\n"
-"                              се даунлоудва файл в режим Metalink. Тази "
-"опция\n"
-"                              само влияе в режим Metalink с парчета на "
-"контролните суми."
+" --realtime-chunk-checksum=true|false Потвърждаване на парче от информацията "
+"чрез изчисляване\n"
+"                              на контролната сума докато файлът се "
+"даунлоудва, ако парчетата\n"
+"                              на контролните суми са осигурени."
 
 #: src/usage_text.h:195
 msgid ""
@@ -562,6 +609,21 @@ msgid ""
 "INPUT\n"
 "                              FILE section of man page for details."
 msgstr ""
+" -i, --input-file=FILE Даунлоудва URI-ите, които се намират във FILE. Можете "
+"да уточните\n"
+"                              многобройни URI-и за един обект: разделете\n"
+"                              URI-ите на една линия използвайки клавиша "
+"TAB.\n"
+"                              Чете входните данни от stdin когато '-' е "
+"уточнено.\n"
+"                              Допълнителните изходни и папкови опции могат "
+"да бъдат\n"
+"                              уточнени след всяка линия на URI-ите. "
+"Незадължителната\n"
+"                              линия трябва да започне с бяло/бели разстояние"
+"(я). Вижте INPUT\n"
+"                              FILE секцията от ръководството за повече "
+"детайли."
 
 #: src/usage_text.h:215
 msgid ""
@@ -571,6 +633,11 @@ msgid ""
 "metalink.\n"
 "                              See also -s and -C options."
 msgstr ""
+" -j, --max-concurrent-downloads=N Определя максималният брой паралелни "
+"даунлоуди за\n"
+"                              всеки статичен (HTTP/FTP) URL, torrent и "
+"metalink.\n"
+"                              Вижте също -s и -C опциите."
 
 #: src/usage_text.h:219
 msgid ""
@@ -592,6 +659,13 @@ msgid ""
 "and\n"
 "                              their expiry values are treated as 0."
 msgstr ""
+" --save-cookies=FILE Запазване на бисквитките във FILE в Mozilla/Firefox(1."
+"x/2.x)/\n"
+"                              Netscape формат. Ако FILE вече съществува, ще "
+"бъде\n"
+"                              презаписан. Бисквитките за една сесия също се "
+"запазват и\n"
+"                              стойност на изтичане се разглежда като 0."
 
 #: src/usage_text.h:227
 msgid ""
@@ -608,7 +682,6 @@ msgstr ""
 "                              в случай на торент файл."
 
 #: src/usage_text.h:231
-#, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -621,21 +694,21 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
-" --select-file=INDEX... Определя файла за даунлоуд като се уточнява неговият "
+" --select-file=INDEX... Определя файл за даунлоуд като се уточни неговият "
 "индекс.\n"
-"                              Можете да намерите файловия индекс "
-"използвайки\n"
-"                              опцията --show-files. Многобройни индекси "
+"                              Можете да намерите файловият индекс като "
+"използвате\n"
+"                              --show-files опцията. Многобройни индекси "
 "могат да бъдат\n"
 "                              уточнени като се използва ',', например: \"3,6"
 "\".\n"
-"                              Можете също така да използвате '-' за да "
-"уточните обхват: \"1-5\".\n"
+"                              Можете също да използвате '-' за да уточните "
+"обхват: \"1-5\".\n"
 "                              ',' и '-' могат да бъдат използвани заедно.\n"
-"                              Когато се използва с опцията -M, индексът може "
-"да се променя\n"
-"                              в зависимост от въпроса(вижте --metalink-* "
-"options)."
+"                              Когато се използва с -M опцията, индексът може "
+"да варира\n"
+"                              в зависимост от заявката(вижте --metalink-* "
+"опциите)."
 
 #: src/usage_text.h:240
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
@@ -699,7 +772,6 @@ msgstr ""
 "                              да се използват заедно."
 
 #: src/usage_text.h:261
-#, fuzzy
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
@@ -708,14 +780,16 @@ msgid ""
 "                              To limit the upload speed per torrent, use\n"
 "                              --max-upload-limit option."
 msgstr ""
-" --max-download-limit=SPEED Определя максимална скорост на даунлоуда в байта "
-"в секунда.\n"
+" --max-overall-upload-limit=SPEED Определя цялостната максимална скорост на "
+"ъплоуд в байта/сек.\n"
 "                              0 означава неограничена.\n"
 "                              Можете да приложите K или M(1K = 1024, 1M = "
-"1024K)."
+"1024K).\n"
+"                              За да ограничите скоростта на ъплоуд за един "
+"торент, използвайте\n"
+"                              опцията --max-upload-limit."
 
 #: src/usage_text.h:267
-#, fuzzy
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -723,11 +797,14 @@ msgid ""
 "                              To limit the overall upload speed, use\n"
 "                              --max-overall-upload-limit option."
 msgstr ""
-" --max-download-limit=SPEED Определя максимална скорост на даунлоуда в байта "
-"в секунда.\n"
-"                              0 означава неограничена.\n"
+" -u, --max-upload-limit=SPEED Определя максималната скорост на ъплоуд за "
+"всеки един торент в\n"
+"                              байта/сек. 0 означава неограничена.\n"
 "                              Можете да приложите K или M(1K = 1024, 1M = "
-"1024K)."
+"1024K).\n"
+"                              За да ограничите цялостната скорост на ъплоуд, "
+"използвайте\n"
+"                              опцията --max-overall-upload-limit."
 
 #: src/usage_text.h:273
 msgid ""
@@ -738,7 +815,6 @@ msgstr ""
 "                              опцията --seed-ratio."
 
 #: src/usage_text.h:276
-#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -752,21 +828,10 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
-" --seed-ratio=RATIO Уточнява коефициент на споделяне. Сийдва завършените "
-"торенти\n"
-"                              докато коефициентът на споделяне достигне "
-"RATIO. 1.0 се\n"
-"                              насърчава. Уточнете 0.0 ако възнамерявате да\n"
-"                              сийдвате независимо от коефициента на "
-"споделяне.\n"
-"                              Ако опцията --seed-time е уточнена заедно с\n"
-"                              тази опция, сийдването приключва когато поне "
-"едно от\n"
-"                              условията е изпълнено."
 
 #: src/usage_text.h:285
 msgid ""
-" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
+" --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
 "                              BitTorrent is 20 byte length. If more than 20\n"
 "                              bytes are specified, only first 20\n"
@@ -774,15 +839,6 @@ msgid ""
 "                              specified, the random alphabet characters are\n"
 "                              added to make it's length 20 bytes."
 msgstr ""
-" --peer-id-prefix=PEERI_ID_PREFIX Уточнява представката на ID на пера. ID-то "
-"на пера в\n"
-"                              BitTorrent е с дължина 20 байта. Ако повече от "
-"20\n"
-"                              байта са уточнени, само първите 20\n"
-"                              байта се използват. Ако по-малко от 20 байта "
-"са\n"
-"                              уточнени, произволни букви от азбуката се\n"
-"                              добавят за да се направи дължината 20 байта."
 
 #: src/usage_text.h:292
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -827,7 +883,6 @@ msgid ""
 msgstr " --dht-file-path=PATH Сменя DHT файловата таблица за марширути с PATH."
 
 #: src/usage_text.h:307
-#, fuzzy
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -836,13 +891,6 @@ msgid ""
 "satisfies\n"
 "                              the given level."
 msgstr ""
-" --bt-min-crypto-level=plain|arc4 Определя минималнато ниво на метода на "
-"шифроване.\n"
-"                              Ако няколко метода на шифроване са осигурени "
-"от\n"
-"                              пера, aria2 избира най-ниския който "
-"задоволява\n"
-"                              даденото равнище."
 
 #: src/usage_text.h:312
 msgid ""
@@ -859,7 +907,6 @@ msgstr ""
 "                              ръкостискане."
 
 #: src/usage_text.h:317
-#, fuzzy
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
 "                              torrent is lower than SPEED, aria2 "
@@ -871,14 +918,6 @@ msgid ""
 "                              download speed in some cases.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --bt-request-peer-speed-limit=SPEED В BitTorrent даунлоудите, ако "
-"скоростта\n"
-"                              на даунлоуд е по-ниска от SPEED, aria2 започва "
-"и\n"
-"                              приема връзки пренебрегвайки максималното "
-"покриване на пера.\n"
-"                              Можете да приложите K или M(1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:325
 msgid ""
@@ -900,25 +939,18 @@ msgstr ""
 "                              проверяване на частта на хеша."
 
 #: src/usage_text.h:331
-#, fuzzy
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
-" --server-stat-of=FILE Уточнява името на файла за което изпълнителния "
-"профил\n"
-"                              от сървърите е записан. Можете да зареждате "
-"записана информация\n"
-"                              използвайки --server-stat-if опцията."
 
 #: src/usage_text.h:335
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Пътят към .metalink файла."
 
 #: src/usage_text.h:337
-#, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -931,18 +963,6 @@ msgid ""
 "NUM_SERVERS.\n"
 "                              See also -s and -j options."
 msgstr ""
-" --follow-metalink=true|false|mem Ако true или mem са уточнени, когато файл\n"
-"                              чиято наставка е .metaink или типа на "
-"съдържанието е\n"
-"                              application/metalink+xml е даунлоуднат, aria2\n"
-"                              му прави синтактичен разбор като металинк файл "
-"и даунлоудва файловете\n"
-"                              споменати в него.\n"
-"                              Ако mem е уточнено, металинк файла не се\n"
-"                              записва на диска, а само се държи в паметта.\n"
-"                              Ако false е уточнено, действието споменато "
-"отгоре\n"
-"                              не се извършва."
 
 #: src/usage_text.h:346
 msgid " --metalink-version=VERSION   The version of the file to download."
@@ -958,31 +978,20 @@ msgid ""
 msgstr " --metalink-os=OS Операционнта система на файла за даунлоуд."
 
 #: src/usage_text.h:352
-#, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
-" --metalink-location=LOCATION[,...] Местоположението на предпочитания "
-"сървър.\n"
-"                              Списък, разделен със запетайки на "
-"местоположенията е\n"
-"                              приемлив."
 
 #: src/usage_text.h:356
-#, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
 "                              if you don't have any preferred protocol."
 msgstr ""
-" --metalink-preferred-protocol=PROTO Уточнява предпочитания протокол. "
-"Уточнете 'none'\n"
-"                              ако нямате никакъв предпочитан протокол."
 
 #: src/usage_text.h:359
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type of\n"
@@ -997,18 +1006,6 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --follow-metalink=true|false|mem Ако true или mem са уточнени, когато файл\n"
-"                              чиято наставка е .metaink или типа на "
-"съдържанието е\n"
-"                              application/metalink+xml е даунлоуднат, aria2\n"
-"                              му прави синтактичен разбор като металинк файл "
-"и даунлоудва файловете\n"
-"                              споменати в него.\n"
-"                              Ако mem е уточнено, металинк файла не се\n"
-"                              записва на диска, а само се държи в паметта.\n"
-"                              Ако false е уточнено, действието споменато "
-"отгоре\n"
-"                              не се извършва."
 
 #: src/usage_text.h:369
 msgid ""
@@ -1096,10 +1093,8 @@ msgstr ""
 "                              http://хост/файл"
 
 #: src/usage_text.h:398
-#, fuzzy
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
-" -q, --quiet[=true|false] Прави aria2 тиха (без конзолно извеждане на данни)."
 
 #: src/usage_text.h:400
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
@@ -1155,7 +1150,6 @@ msgstr ""
 "това."
 
 #: src/usage_text.h:418
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1167,18 +1161,8 @@ msgid ""
 "                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --max-file-not-found=NUM Ако aria2 получи `file not found' състояние от\n"
-"                              отдалечените HTTP/FTP сървъри NUM пъти без да "
-"се получава\n"
-"                              един байт, тогава даунлоудът се форсира да се "
-"провали.\n"
-"                              Уточнете 0 за да изключите тази опция.\n"
-"                              Тази опция е само ефективна само когато се "
-"използват\n"
-"                              HTTP/FTP сървъри."
 
 #: src/usage_text.h:425
-#, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1207,20 +1191,6 @@ msgid ""
 "                              anymore mirrors. Like 'feedback', it uses a\n"
 "                              performance profile of servers."
 msgstr ""
-" --uri-selector=SELECTOR Уточнява алгоритъма за селектиране на URI.\n"
-"                              Ако 'inorder' е дадено, URI се пробва в реда\n"
-"                              в който се появяват URI в списъка.\n"
-"                              Ако 'feedback' е дадено, aria2 използва "
-"скоростта на даунлоуд\n"
-"                              наблюдавана в предишните даунлоуди и се "
-"избира\n"
-"                              най-бързият сървър в списъка с URI. Това също\n"
-"                              ефективно пропуска мъртви огледала. "
-"Наблюдаваната\n"
-"                              скорост на даунлоуд е част от изпълнителния "
-"профил\n"
-"                              от сървъри споменати в --server-stat-of и\n"
-"                              --server-stat-if опциите."
 
 #: src/usage_text.h:444
 msgid ""
@@ -1318,14 +1288,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:480
-#, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
-" --seed-time=MINUTES Уточнява време за сийдване в минути. Вижте също\n"
-"                              опцията --seed-ratio."
 
 #: src/usage_text.h:483
 msgid ""
@@ -1339,18 +1306,13 @@ msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
 #: src/usage_text.h:488
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
-" --dht-entry-point=HOST:PORT Определя хоста и порта като входно положение за "
-"DHT\n"
-"                              мрежата."
 
 #: src/usage_text.h:491
-#, fuzzy
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1359,12 +1321,6 @@ msgid ""
 "passwd\n"
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
-" --server-stat-if=FILE Уточнява името на файла за което да се зареди "
-"изпълнителния профил\n"
-"                              от сървърите. Заредената информация ще бъде "
-"използвана в\n"
-"                              някои URI селектори като 'feedback'.\n"
-"                              Вижте също --uri-selector опцията"
 
 #: src/usage_text.h:496
 msgid ""
@@ -1375,17 +1331,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:500
-#, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
-msgstr " --ftp-user=USER Определя FTP потребител. Това засяга всички URL-и."
+msgstr ""
 
 #: src/usage_text.h:502
-#, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
-msgstr " --ftp-passwd=PASSWD Определя FTP парола. Това засяга всички URL-и."
+msgstr ""
 
 #: src/usage_text.h:504
-#, fuzzy
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1394,15 +1347,8 @@ msgid ""
 "IP\n"
 "                              addresses."
 msgstr ""
-" --server-stat-if=FILE Уточнява името на файла за което да се зареди "
-"изпълнителния профил\n"
-"                              от сървърите. Заредената информация ще бъде "
-"използвана в\n"
-"                              някои URI селектори като 'feedback'.\n"
-"                              Вижте също --uri-selector опцията"
 
 #: src/usage_text.h:509
-#, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1416,19 +1362,8 @@ msgid ""
 "                              always sent to the server regardless of this\n"
 "                              option."
 msgstr ""
-" -h, --help[=CATEGORY] Отпечатва употребата и излиза.\n"
-"                              Помощните съобщения са групирани в няколко\n"
-"                              категории. Например, напишете \"--help=http\" "
-"за\n"
-"                              детайлно обяснение за опциите свързани с\n"
-"                              http. Ако не е намерена съответстваща "
-"категория, потърсете\n"
-"                              името на опцията използвайки дадена дума в "
-"общо съответствие\n"
-"                              и резултатът се отпечатва."
 
 #: src/usage_text.h:517
-#, fuzzy
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1440,17 +1375,8 @@ msgid ""
 "multiple\n"
 "                              times."
 msgstr ""
-" --file-allocation=METHOD Уточнява метода за разпределяне на файла.\n"
-"                              'none' не разпределя предварително "
-"пространство за файла. 'prealloc'\n"
-"                              разпределя предварително пространство за файла "
-"преди даунлоудът да започне.\n"
-"                              Това може да отнеме малко време в зависимост "
-"от големината на\n"
-"                              файла."
 
 #: src/usage_text.h:523
-#, fuzzy
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1460,17 +1386,8 @@ msgid ""
 "                              BitTorrent downloads are canceled if true is\n"
 "                              specified."
 msgstr ""
-" --auto-file-renaming[=true|false] Преименуване на файла ако същият файл "
-"вече\n"
-"                              същесвува. Тази опция работи само в http(s)/"
-"ftp\n"
-"                              даунлоуд.\n"
-"                              Новото име на файла има точка и номер"
-"(1..9999)\n"
-"                              прикрепени."
 
 #: src/usage_text.h:529
-#, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1485,19 +1402,8 @@ msgid ""
 "download\n"
 "                              progress."
 msgstr ""
-" -h, --help[=CATEGORY] Отпечатва употребата и излиза.\n"
-"                              Помощните съобщения са групирани в няколко\n"
-"                              категории. Например, напишете \"--help=http\" "
-"за\n"
-"                              детайлно обяснение за опциите свързани с\n"
-"                              http. Ако не е намерена съответстваща "
-"категория, потърсете\n"
-"                              името на опцията използвайки дадена дума в "
-"общо съответствие\n"
-"                              и резултатът се отпечатва."
 
 #: src/usage_text.h:537
-#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1506,11 +1412,6 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-download-limit=SPEED Определя максимална скорост на даунлоуда в байта "
-"в секунда.\n"
-"                              0 означава неограничена.\n"
-"                              Можете да приложите K или M(1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:543
 msgid ""
@@ -1521,7 +1422,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:547
-#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1529,14 +1429,8 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-download-limit=SPEED Определя максимална скорост на даунлоуда в байта "
-"в секунда.\n"
-"                              0 означава неограничена.\n"
-"                              Можете да приложите K или M(1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:553
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1549,18 +1443,14 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --follow-torrent=true|false|mem Ако true или mem е уточнено, когато файл\n"
-"                              чиято наставка е .torrent или типа на "
-"съдържанието е\n"
-"                              application/x-bittorrent е даунлоуднат, aria2\n"
-"                              му прави синтактичен разбор като торент файл и "
-"даунлоудва файловете\n"
-"                              споменати в него.\n"
-"                              Ако mem е уточнено, торент файла не се\n"
-"                              записва на диска, а само се държи в паметта.\n"
-"                              Ако false е уточнено, действието споменато "
-"отгоре\n"
-"                              не се извършва."
+
+#: src/usage_text.h:562
+msgid ""
+" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
+"0 in\n"
+"                              consecutive SEC seconds. If 0 is given, this\n"
+"                              feature is disabled."
+msgstr ""
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1629,16 +1519,16 @@ msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
-" only single file torrent can be integrated with http/ftp."
+" while the data from http/ftp are uploaded to the torrent swarm. For single "
+"file\n"
+" torrents, URL can be a complete URL pointing to the resource or if URL "
+"ends\n"
+" with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
+"and\n"
+" 'path' in torrent are added to form a URL for each file."
 msgstr ""
-" Можете да уточните и торент файл с -T опцията и URL-и. Правейки това,\n"
-" ще даунлоудвате файл и от торент тълпата и от http/ftp сървър по едно и "
-"също време,\n"
-" докато данните от http/ftp се ъплоудват към торент тълпата. Забележете, че\n"
-" само единичен торент файл може да бъде интегриран с http/ftp."
 
-#: src/version_usage.cc:132
+#: src/version_usage.cc:134
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1647,7 +1537,7 @@ msgstr ""
 " съдържа \"&\" или някакви знаци които имат специално значение в текстовата "
 "обвивка."
 
-#: src/version_usage.cc:136
+#: src/version_usage.cc:138
 msgid "Refer to man page for more information."
 msgstr "Позовете се на страницата в наръчника за повече информация."
 
@@ -1718,72 +1608,67 @@ msgstr "CUID#%d - Даунлоудът е прекратен."
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 msgstr "CUID#%d - %d пъти опити, но безуспешно. Даунлоудът е прекратен."
 
-#: src/message.h:51
-#, c-format
-msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - Премахване на регистрацията cuid от сегментМениджъра."
-
-#: src/message.h:57
+#: src/message.h:56
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
 msgstr "CUID#%d - имаме нова част. индекс=%d"
 
-#: src/message.h:58
+#: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
 msgstr "CUID#%d - имаме грешна част. индекс=%d"
 
-#: src/message.h:59
+#: src/message.h:58
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
 msgstr "CUID#%d - Даунлоудът не е завършен: %s"
 
-#: src/message.h:60
+#: src/message.h:59
 #, c-format
 msgid "#%d - Download has already completed: %s"
 msgstr "#%d - Даунлоудът вече е завършен: %s"
 
-#: src/message.h:61
+#: src/message.h:60
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
 msgstr "CUID#%d - Добра контролна сума: %s"
 
-#: src/message.h:62
+#: src/message.h:61
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
 msgstr "CUID#%d - Лоша контролна сума: %s"
 
-#: src/message.h:63
+#: src/message.h:62
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
 msgstr "CUID#%d - Анализиране на хостнейма %s"
 
-#: src/message.h:64
+#: src/message.h:63
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
 msgstr "CUID#%d - Анализа на името е завършен: %s -> %s"
 
-#: src/message.h:65
+#: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
 msgstr "CUID#%d - Анализа на името за %s е неуспешен:%s"
 
-#: src/message.h:66
+#: src/message.h:65
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
 msgstr "CUID#%d - DNS попадения на кеш паметта: %s -> %s"
 
-#: src/message.h:67
+#: src/message.h:66
 #, c-format
 msgid "CUID#%d - Abort requested."
 msgstr "CUID#%d - Заявка за прекратяване."
 
-#: src/message.h:68
+#: src/message.h:67
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
 msgstr "CUID#%d - Свързване към пера %s"
 
-#: src/message.h:69
+#: src/message.h:68
 #, c-format
 msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
@@ -1792,12 +1677,12 @@ msgstr ""
 "CUID#%d - Частта получена. индекс=%d, начало=%d, дължина=%d, отместване=%"
 "llu, блоков индекс=%d"
 
-#: src/message.h:70
+#: src/message.h:69
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
 msgstr "CUID#%d - Част на битовото поле %s"
 
-#: src/message.h:71
+#: src/message.h:70
 #, c-format
 msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
@@ -1806,7 +1691,7 @@ msgstr ""
 "CUID#%d - Отхвърляне на частното съобщение в опашката защото перът е бел "
 "задавен. индекс=%d, начало=%d, дължина=%d"
 
-#: src/message.h:72
+#: src/message.h:71
 #, c-format
 msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
@@ -1815,28 +1700,28 @@ msgstr ""
 "CUID#%d - Отхвърляне на частното съобщение в опашката защото е получено "
 "съобщение за отказ. индекс=%d, начало=%d, дължина=%d"
 
-#: src/message.h:73
+#: src/message.h:72
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
 msgstr ""
 "CUID#%d - Изключение е прихванато докато се потвърждава цялостта на файла."
 
-#: src/message.h:74
+#: src/message.h:73
 #, c-format
 msgid "CUID#%d - Interested in the peer"
 msgstr "CUID#%d - Заинтересуване от пера"
 
-#: src/message.h:75
+#: src/message.h:74
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
 msgstr "CUID#%d - Незаинтересуване от пера"
 
-#: src/message.h:76
+#: src/message.h:75
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
 msgstr "CUID#%d - Изтриване на слот за заявка индекс=%d, блоков индекс=%d"
 
-#: src/message.h:77
+#: src/message.h:76
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
@@ -1845,12 +1730,12 @@ msgstr ""
 "CUID#%d - Изтриване на слот за заявка индекс=%d, блоков индекс=%d защото "
 "локалния хост е задавен."
 
-#: src/message.h:78
+#: src/message.h:77
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
 msgstr "CUID#%d - Изтриване на слот за заявка блоков индекс=%d заради таймаут"
 
-#: src/message.h:79
+#: src/message.h:78
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
@@ -1859,117 +1744,117 @@ msgstr ""
 "CUID#%d - Изтриване на слот за заявка блоков индекс=%d защото блока е "
 "придобит."
 
-#: src/message.h:80
+#: src/message.h:79
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
 msgstr "CUID#%d - Бързо разширение включено."
 
-#: src/message.h:81
+#: src/message.h:80
 #, c-format
 msgid "CUID#%d - Extended Messaging enabled."
 msgstr "CUID#%d - Разширен обмен на съобщения включен."
 
-#: src/message.h:82
+#: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
 msgstr ""
 "CUID#%d - Изключение е прихванато докато се разпределя мястото на файла."
 
-#: src/message.h:83
+#: src/message.h:82
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr ""
 "CUID#%d - Засечено е разпределение на съдържанието. Използвайте %s като име "
 "на файла"
 
-#: src/message.h:84
+#: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
 msgstr "CUID#%d - Пера %s:%d е отлъчен."
 
-#: src/message.h:85
+#: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
 msgstr "CUID#%d - Използване на порт %d  за приемане на нови връзки"
 
-#: src/message.h:86
+#: src/message.h:85
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
 msgstr "CUID#%d - Намерена е грешка докато протича свързване с порт=%d"
 
-#: src/message.h:87
+#: src/message.h:86
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
 msgstr "CUID#%d - Входяща връзка, добавяне на нова команда CUID#%d"
 
-#: src/message.h:88
+#: src/message.h:87
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
 msgstr "CUID#%d - Грешка в приемането на връзката"
 
-#: src/message.h:89
+#: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
 msgstr "CUID#%d - Намерена е грешка докато се обработва отговорът на тракера."
 
-#: src/message.h:90
+#: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
 msgstr "CUID#%d - Не може да се създаде заявка за тракера."
 
-#: src/message.h:91
+#: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
 msgstr "CUID#%d - Създаване на нова тракерна заявка с команда #%d"
 
-#: src/message.h:92
+#: src/message.h:91
 #, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
 msgstr "CUID#%d - Перът е с включен DHT."
 
-#: src/message.h:94
+#: src/message.h:93
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr "Непознат URI или неподдържан протокол: %s"
 
-#: src/message.h:95
+#: src/message.h:94
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr "Тракерът върна предупредително съобщение: %s"
 
-#: src/message.h:96
+#: src/message.h:95
 #, c-format
 msgid "The segment file %s exists."
 msgstr "Файловият сегмент %s съществува."
 
-#: src/message.h:97
+#: src/message.h:96
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr "Файловият сегмент %s не съществува."
 
-#: src/message.h:98
+#: src/message.h:97
 #, c-format
 msgid "Saving the segment file %s"
 msgstr "Запазване на файловия сегмент %s"
 
-#: src/message.h:99
+#: src/message.h:98
 msgid "The segment file was saved successfully."
 msgstr "Файловият сегмент беше запазен успешно."
 
-#: src/message.h:100
+#: src/message.h:99
 #, c-format
 msgid "Loading the segment file %s."
 msgstr "Зареждане на файловия сегмент %s."
 
-#: src/message.h:101
+#: src/message.h:100
 msgid "The segment file was loaded successfully."
 msgstr "Файловият сегмент беше зареден успешно."
 
-#: src/message.h:102
+#: src/message.h:101
 msgid "No URI to download. Download aborted."
 msgstr "Няма URI за даунлоуд. Даунлоудът е прекратен."
 
-#: src/message.h:103
+#: src/message.h:102
 #, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
@@ -1982,108 +1867,108 @@ msgstr ""
 "да даунлоуднете файла отново, тогава го изтрийте или добавете опцията --"
 "allow-overwrite=true и рестартирайте aria2."
 
-#: src/message.h:104
+#: src/message.h:103
 #, c-format
 msgid "Allocating file %s, %s bytes"
 msgstr "Разпределяне на файл %s, %s байта"
 
-#: src/message.h:105
+#: src/message.h:104
 msgid "File not found"
 msgstr "Файлът не е открит"
 
-#: src/message.h:106
+#: src/message.h:105
 msgid "Not a directory"
 msgstr "Не е директория"
 
-#: src/message.h:107
+#: src/message.h:106
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 msgstr ""
 "Недостатъчни контролни суми. Дължина на контролната сума=%d, Номер на "
 "контролната сума=%d"
 
-#: src/message.h:108
+#: src/message.h:107
 #, c-format
 msgid "Writing file %s"
 msgstr "Записване на файл %s"
 
-#: src/message.h:109
+#: src/message.h:108
 msgid "No peer list received."
 msgstr "Не е получен списък с перове."
 
-#: src/message.h:110
+#: src/message.h:109
 #, c-format
 msgid "Adding peer %s:%d"
 msgstr "Добавяне на пер %s:%d"
 
-#: src/message.h:111
+#: src/message.h:110
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr ""
 "Изтриване на използвана част индекс=%d, Честота на запълване(%%)=%d<=%d"
 
-#: src/message.h:112
+#: src/message.h:111
 msgid "Download of selected files was complete."
 msgstr "Даунлоудът на избраните файлове е завършен."
 
-#: src/message.h:113
+#: src/message.h:112
 msgid "The download was complete."
 msgstr "Даунлоудът е завършен."
 
-#: src/message.h:114
+#: src/message.h:113
 #, c-format
 msgid "Removed %d have entries."
 msgstr "Премахнати %d имащи вписвания."
 
-#: src/message.h:115
+#: src/message.h:114
 #, c-format
 msgid "Validating file %s"
 msgstr "Потвърждение на файл %s"
 
-#: src/message.h:116
+#: src/message.h:115
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
 msgstr "%d секунди за разпределяне на %s байт(а)"
 
-#: src/message.h:117
+#: src/message.h:116
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
 msgstr "Изпращане на команда за разпределение на файл за CUID#%d."
 
-#: src/message.h:118
+#: src/message.h:117
 #, c-format
 msgid "Metalink: Queueing %s for download."
 msgstr "Металинк: Правене на опашка %s за даунлоуд."
 
-#: src/message.h:119
+#: src/message.h:118
 #, c-format
 msgid "Download complete: %s"
 msgstr "Даунлоудът е завършен: %s"
 
-#: src/message.h:120
+#: src/message.h:119
 msgid "Seeding is over."
 msgstr "Сийдването е приключено."
 
-#: src/message.h:121
+#: src/message.h:120
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
 msgstr "CUID#%d отменя сегмент индекс=%d. CUID#%d борави с него вместо това."
 
-#: src/message.h:122
+#: src/message.h:121
 msgid "No chunk to verify."
 msgstr "Няма голямо парче за проверка."
 
-#: src/message.h:123
+#: src/message.h:122
 #, c-format
 msgid "Good chunk checksum. hash=%s"
 msgstr "Добра контролна сума на парчето. хеш=%s"
 
-#: src/message.h:124
+#: src/message.h:123
 #, c-format
 msgid "Failed to load cookies from %s"
 msgstr "Неуспех при зареждане на бисквитки от %s"
 
-#: src/message.h:125
+#: src/message.h:124
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
@@ -2092,59 +1977,59 @@ msgstr ""
 ".netrc файл %s няма коректните позволения. Трябва да бъде 600. Поддръжката "
 "на netrc е изключена."
 
-#: src/message.h:126
+#: src/message.h:125
 msgid "Logging started."
 msgstr "Регистрирането е стартирано."
 
-#: src/message.h:127
+#: src/message.h:126
 msgid "Specify at least one URL."
 msgstr "Определете поне един URL."
 
-#: src/message.h:128
+#: src/message.h:127
 msgid "daemon failed."
 msgstr "демонът отказва да работи."
 
-#: src/message.h:129
+#: src/message.h:128
 #, c-format
 msgid "Verification finished successfully. file=%s"
 msgstr "Проверката приключи успешно. файл=%s"
 
-#: src/message.h:130
+#: src/message.h:129
 #, c-format
 msgid "Checksum error detected. file=%s"
 msgstr "Намерена е грешка в контролната сума. файл=%s"
 
-#: src/message.h:131
+#: src/message.h:130
 #, c-format
 msgid "Incomplete range specified. %s"
 msgstr "Определен е непълен обхват. %s"
 
-#: src/message.h:132
+#: src/message.h:131
 #, c-format
 msgid "Failed to convert string into value: %s"
 msgstr "Неуспех при конвертирането на низ в стойност:  %s"
 
-#: src/message.h:133
+#: src/message.h:132
 msgid "Resource not found"
 msgstr "Ресурсът не е намерен"
 
-#: src/message.h:134
+#: src/message.h:133
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr "Файлът вече съществува. Преименуван на %s."
 
-#: src/message.h:135
+#: src/message.h:134
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr ""
 "Не може да се направи синтактичен разбор на металинк XML файл. XML може да е "
 "деформиран."
 
-#: src/message.h:136
+#: src/message.h:135
 #, c-format
 msgid "Too small payload size for %s, size=%d."
 msgstr "Твърде малък размер за полезен товар за %s, размер=%d."
 
-#: src/message.h:137
+#: src/message.h:136
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
@@ -2153,116 +2038,116 @@ msgstr ""
 "Премахнат е покойния контролен файл %s защото даунлоуднатият файл %s не "
 "съществува."
 
-#: src/message.h:138
+#: src/message.h:137
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr "Вашият коефициент на споделяне е %.1f, ъплоуд/даунлоуд=%sB/%sB"
 
-#: src/message.h:139
+#: src/message.h:138
 #, c-format
 msgid "Missing %s in torrent metainfo."
 msgstr "Липсва %s в метаинформацията на торента."
 
-#: src/message.h:140
+#: src/message.h:139
 msgid "Tracker returned null data."
 msgstr "Тракерът върна данни равни на нула."
 
-#: src/message.h:141
+#: src/message.h:140
 msgid "Windows socket library initialization failed"
 msgstr "Инициализацията на сокет библиотеката на Уиндоус е неуспешна"
 
-#: src/message.h:142
+#: src/message.h:141
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
 msgstr "%d секунда(и) минаха. Спиране на програмата."
 
-#: src/message.h:143
+#: src/message.h:142
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr ""
 "Съхранен е подпис като %s. Моля забележете, че aria2 не проверява подписи."
 
-#: src/message.h:145
+#: src/message.h:144
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr ""
 "Съхраняването на подпис като %s е неуспешно. Може би файлът вече съществува."
 
-#: src/message.h:148
+#: src/message.h:147
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
 msgstr "Неуспех при отварянето на ServerStat файла %s за четене."
 
-#: src/message.h:149
+#: src/message.h:148
 #, c-format
 msgid "ServerStat file %s loaded successfully."
 msgstr "ServerStat файла %s зареден успешно."
 
-#: src/message.h:150
+#: src/message.h:149
 #, c-format
 msgid "Failed to read ServerStat from %s."
 msgstr "Неуспех четенето на ServerStat от %s."
 
-#: src/message.h:153
+#: src/message.h:152
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
 msgstr "Неуспех при отварянето на ServerStat файла %s за писане."
 
-#: src/message.h:154
+#: src/message.h:153
 #, c-format
 msgid "ServerStat file %s saved successfully."
 msgstr "ServerStat файла %s записан успешно."
 
-#: src/message.h:155
+#: src/message.h:154
 #, c-format
 msgid "Failed to write ServerStat to %s."
 msgstr "Неуспех при записването на ServerStat към %s."
 
-#: src/message.h:158
+#: src/message.h:157
 #, c-format
 msgid "Failed to establish connection, cause: %s"
 msgstr "Неуспех при установяването на връзка, причина: %s"
 
-#: src/message.h:159
+#: src/message.h:158
 #, c-format
 msgid "Network problem has occurred. cause:%s"
 msgstr "Мрежови проблем е намерен. Причина:%s"
 
-#: src/message.h:161
+#: src/message.h:160
 #, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr ""
 
-#: src/message.h:163
+#: src/message.h:162
 #, c-format
 msgid "Certificate verification failed. Cause: %s"
 msgstr ""
 
-#: src/message.h:164
+#: src/message.h:163
 msgid "No certificate found."
 msgstr ""
 
-#: src/message.h:165
+#: src/message.h:164
 msgid "Hostname not match."
 msgstr ""
 
-#: src/message.h:166
+#: src/message.h:165
 msgid "No files to download."
 msgstr ""
 
-#: src/message.h:168
+#: src/message.h:167
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
 msgstr ""
 
-#: src/message.h:170
-#, fuzzy, c-format
+#: src/message.h:169
+#, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr "Отпечатване на опциите чието име включва '%s'."
+msgstr ""
 
-#: src/message.h:171
+#: src/message.h:170
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr ""
 
@@ -2625,54 +2510,9 @@ msgstr ""
 "Невалидна дължина на файла. Даунлоудът не може да продължи %s: локална %s, "
 "отдалечена %s"
 
-#: src/BtSetup.cc:160
+#: src/BtSetup.cc:158
 msgid "Errors occurred while binding port.\n"
 msgstr "Намерени са грешки докато протича приързване към порта.\n"
 
-#: src/Util.cc:714
-msgid "Files:"
-msgstr "Файлове:"
-
-#~ msgid ""
-#~ " --allow-overwrite=true|false If false, aria2 doesn't download a file "
-#~ "which\n"
-#~ "                              already exists but the corresponding .aria2 "
-#~ "file\n"
-#~ "                              doesn't exist."
-#~ msgstr ""
-#~ " --allow-overwrite=true|false Ако е false, aria2 не даунлоудва файл, "
-#~ "който\n"
-#~ "                              вече съществува, но съответният .aria2 "
-#~ "файл\n"
-#~ "                              не съществува."
-
-#~ msgid ""
-#~ " --file-allocation=METHOD     Specify file allocation method.\n"
-#~ "                              'none' doesn't pre-allocate file space. "
-#~ "'prealloc'\n"
-#~ "                              pre-allocates file space before download "
-#~ "begins.\n"
-#~ "                              This may take some time depending on the "
-#~ "size of\n"
-#~ "                              the file."
-#~ msgstr ""
-#~ " --file-allocation=METHOD Уточнява метода за разпределяне на файла.\n"
-#~ "                              'none' не разпределя предварително "
-#~ "пространство за файла. 'prealloc'\n"
-#~ "                              разпределя предварително пространство за "
-#~ "файла преди даунлоудът да започне.\n"
-#~ "                              Това може да отнеме малко време в "
-#~ "зависимост от големината на\n"
-#~ "                              файла."
-
-#~ msgid ""
-#~ " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
-#~ "                              0 means unrestricted.\n"
-#~ "                              You can append K or M(1K = 1024, 1M = "
-#~ "1024K)."
-#~ msgstr ""
-#~ " --max-download-limit=SPEED Определя максимална скорост на даунлоуда в "
-#~ "байта в секунда.\n"
-#~ "                              0 означава неограничена.\n"
-#~ "                              Можете да приложите K или M(1K = 1024, 1M = "
-#~ "1024K)."
+#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
+#~ msgstr "CUID#%d - Премахване на регистрацията cuid от сегментМениджъра."

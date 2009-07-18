@@ -27,10 +27,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2 1.4.1\n"
+"Project-Id-Version: aria2 1.5.0\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-06-07 17:21+0900\n"
-"PO-Revision-Date: 2009-06-07 17:21+0900\n"
+"POT-Creation-Date: 2009-07-18 18:20+0900\n"
+"PO-Revision-Date: 2009-07-18 18:20+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -38,21 +38,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/DownloadEngine.cc:209
+#: src/DownloadEngine.cc:210
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:216
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Emergency shutdown sequence commencing..."
 
-#: src/MultiUrlRequestInfo.cc:96
+#: src/MultiUrlRequestInfo.cc:97
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 will resume download if the transfer is restarted."
 
-#: src/MultiUrlRequestInfo.cc:98
+#: src/MultiUrlRequestInfo.cc:99
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -823,7 +823,7 @@ msgstr ""
 
 #: src/usage_text.h:285
 msgid ""
-" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
+" --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
 "                              BitTorrent is 20 byte length. If more than 20\n"
 "                              bytes are specified, only first 20\n"
@@ -831,7 +831,7 @@ msgid ""
 "                              specified, the random alphabet characters are\n"
 "                              added to make it's length 20 bytes."
 msgstr ""
-" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
+" --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
 "                              BitTorrent is 20 byte length. If more than 20\n"
 "                              bytes are specified, only first 20\n"
@@ -1632,6 +1632,18 @@ msgstr ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 
+#: src/usage_text.h:562
+msgid ""
+" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
+"0 in\n"
+"                              consecutive SEC seconds. If 0 is given, this\n"
+"                              feature is disabled."
+msgstr ""
+" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
+"0 in\n"
+"                              consecutive SEC seconds. If 0 is given, this\n"
+"                              feature is disabled."
+
 #: src/version_usage.cc:54
 msgid " version "
 msgstr " version "
@@ -1697,16 +1709,26 @@ msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
-" only single file torrent can be integrated with http/ftp."
+" while the data from http/ftp are uploaded to the torrent swarm. For single "
+"file\n"
+" torrents, URL can be a complete URL pointing to the resource or if URL "
+"ends\n"
+" with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
+"and\n"
+" 'path' in torrent are added to form a URL for each file."
 msgstr ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
-" only single file torrent can be integrated with http/ftp."
+" while the data from http/ftp are uploaded to the torrent swarm. For single "
+"file\n"
+" torrents, URL can be a complete URL pointing to the resource or if URL "
+"ends\n"
+" with '/', ‘name’ in torrent file is added. For multi-file torrents, ‘name’ "
+"and\n"
+" ‘path’ in torrent are added to form a URL for each file."
 
-#: src/version_usage.cc:132
+#: src/version_usage.cc:134
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1714,7 +1736,7 @@ msgstr ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains “&” or any characters that have special meaning in shell."
 
-#: src/version_usage.cc:136
+#: src/version_usage.cc:138
 msgid "Refer to man page for more information."
 msgstr "Refer to man page for more information."
 
@@ -1785,72 +1807,67 @@ msgstr "CUID#%d - Download aborted."
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 msgstr "CUID#%d - %d times attempted, but no success. Download aborted."
 
-#: src/message.h:51
-#, c-format
-msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - Unregistering cuid from segmentManager."
-
-#: src/message.h:57
+#: src/message.h:56
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
 msgstr "CUID#%d - we got new piece. index=%d"
 
-#: src/message.h:58
+#: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
 msgstr "CUID#%d - we got wrong piece. index=%d"
 
-#: src/message.h:59
+#: src/message.h:58
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
 msgstr "CUID#%d - Download not complete: %s"
 
-#: src/message.h:60
+#: src/message.h:59
 #, c-format
 msgid "#%d - Download has already completed: %s"
 msgstr "#%d - Download has already completed: %s"
 
-#: src/message.h:61
+#: src/message.h:60
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
 msgstr "CUID#%d - Good checksum: %s"
 
-#: src/message.h:62
+#: src/message.h:61
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
 msgstr "CUID#%d - Bad checksum: %s"
 
-#: src/message.h:63
+#: src/message.h:62
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
 msgstr "CUID#%d - Resolving hostname %s"
 
-#: src/message.h:64
+#: src/message.h:63
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
 msgstr "CUID#%d - Name resolution complete: %s -> %s"
 
-#: src/message.h:65
+#: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
 msgstr "CUID#%d - Name resolution for %s failed:%s"
 
-#: src/message.h:66
+#: src/message.h:65
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
 msgstr "CUID#%d - DNS cache hit: %s -> %s"
 
-#: src/message.h:67
+#: src/message.h:66
 #, c-format
 msgid "CUID#%d - Abort requested."
 msgstr "CUID#%d - Abort requested."
 
-#: src/message.h:68
+#: src/message.h:67
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
 msgstr "CUID#%d - Connecting to the peer %s"
 
-#: src/message.h:69
+#: src/message.h:68
 #, c-format
 msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
@@ -1859,50 +1876,50 @@ msgstr ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 
-#: src/message.h:70
+#: src/message.h:69
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
 msgstr "CUID#%d - Piece bitfield %s"
 
-#: src/message.h:71
+#: src/message.h:70
 #, c-format
 msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
+"index=%d, begin=%d, length=%d"
+
+#: src/message.h:71
+#, c-format
+msgid ""
+"CUID#%d - Reject piece message in queue because cancel message received. "
+"index=%d, begin=%d, length=%d"
+msgstr ""
+"CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 
 #: src/message.h:72
 #, c-format
-msgid ""
-"CUID#%d - Reject piece message in queue because cancel message received. "
-"index=%d, begin=%d, length=%d"
-msgstr ""
-"CUID#%d - Reject piece message in queue because cancel message received. "
-"index=%d, begin=%d, length=%d"
-
-#: src/message.h:73
-#, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
 msgstr "CUID#%d - Exception caught while validating file integrity."
 
-#: src/message.h:74
+#: src/message.h:73
 #, c-format
 msgid "CUID#%d - Interested in the peer"
 msgstr "CUID#%d - Interested in the peer"
 
-#: src/message.h:75
+#: src/message.h:74
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
 msgstr "CUID#%d - Not interested in the peer"
 
-#: src/message.h:76
+#: src/message.h:75
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
 msgstr "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
 
-#: src/message.h:77
+#: src/message.h:76
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
@@ -1911,12 +1928,12 @@ msgstr ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
 "got choked."
 
-#: src/message.h:78
+#: src/message.h:77
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
 msgstr "CUID#%d - Deleting request slot blockIndex=%d because of time out"
 
-#: src/message.h:79
+#: src/message.h:78
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
@@ -1925,114 +1942,114 @@ msgstr ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
 "acquired."
 
-#: src/message.h:80
+#: src/message.h:79
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
 msgstr "CUID#%d - Fast extension enabled."
 
-#: src/message.h:81
+#: src/message.h:80
 #, c-format
 msgid "CUID#%d - Extended Messaging enabled."
 msgstr "CUID#%d - Extended Messaging enabled."
 
-#: src/message.h:82
+#: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
 msgstr "CUID#%d - Exception caught while allocating file space."
 
-#: src/message.h:83
+#: src/message.h:82
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr "CUID#%d - Content-Disposition detected. Use %s as filename"
 
-#: src/message.h:84
+#: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
 msgstr "CUID#%d - Peer %s:%d banned."
 
-#: src/message.h:85
+#: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
 msgstr "CUID#%d - Using port %d for accepting new connections"
 
-#: src/message.h:86
+#: src/message.h:85
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
 msgstr "CUID#%d - An error occurred while binding port=%d"
 
-#: src/message.h:87
+#: src/message.h:86
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
 msgstr "CUID#%d - Incoming connection, adding new command CUID#%d"
 
-#: src/message.h:88
+#: src/message.h:87
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
 msgstr "CUID#%d - Error in accepting connection"
 
-#: src/message.h:89
+#: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
 msgstr "CUID#%d - Error occurred while processing tracker response."
 
-#: src/message.h:90
+#: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
 msgstr "CUID#%d - Cannot create tracker request."
 
-#: src/message.h:91
+#: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
 msgstr "CUID#%d - Creating new tracker request command #%d"
 
-#: src/message.h:92
+#: src/message.h:91
 #, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
 msgstr "CUID#%d - The peer is DHT-enabled."
 
-#: src/message.h:94
+#: src/message.h:93
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr "Unrecognized URI or unsupported protocol: %s"
 
-#: src/message.h:95
+#: src/message.h:94
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr "Tracker returned warning message: %s"
 
-#: src/message.h:96
+#: src/message.h:95
 #, c-format
 msgid "The segment file %s exists."
 msgstr "The segment file %s exists."
 
-#: src/message.h:97
+#: src/message.h:96
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr "The segment file %s does not exist."
 
-#: src/message.h:98
+#: src/message.h:97
 #, c-format
 msgid "Saving the segment file %s"
 msgstr "Saving the segment file %s"
 
-#: src/message.h:99
+#: src/message.h:98
 msgid "The segment file was saved successfully."
 msgstr "The segment file was saved successfully."
 
-#: src/message.h:100
+#: src/message.h:99
 #, c-format
 msgid "Loading the segment file %s."
 msgstr "Loading the segment file %s."
 
-#: src/message.h:101
+#: src/message.h:100
 msgid "The segment file was loaded successfully."
 msgstr "The segment file was loaded successfully."
 
-#: src/message.h:102
+#: src/message.h:101
 msgid "No URI to download. Download aborted."
 msgstr "No URI to download. Download aborted."
 
-#: src/message.h:103
+#: src/message.h:102
 #, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
@@ -2045,105 +2062,105 @@ msgstr ""
 "sure to download the file all over again, then delete it or add --allow-"
 "overwrite=true option and restart aria2."
 
-#: src/message.h:104
+#: src/message.h:103
 #, c-format
 msgid "Allocating file %s, %s bytes"
 msgstr "Allocating file %s, %s bytes"
 
-#: src/message.h:105
+#: src/message.h:104
 msgid "File not found"
 msgstr "File not found"
 
-#: src/message.h:106
+#: src/message.h:105
 msgid "Not a directory"
 msgstr "Not a directory"
 
-#: src/message.h:107
+#: src/message.h:106
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 msgstr "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 
-#: src/message.h:108
+#: src/message.h:107
 #, c-format
 msgid "Writing file %s"
 msgstr "Writing file %s"
 
-#: src/message.h:109
+#: src/message.h:108
 msgid "No peer list received."
 msgstr "No peer list received."
 
-#: src/message.h:110
+#: src/message.h:109
 #, c-format
 msgid "Adding peer %s:%d"
 msgstr "Adding peer %s:%d"
 
-#: src/message.h:111
+#: src/message.h:110
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 
-#: src/message.h:112
+#: src/message.h:111
 msgid "Download of selected files was complete."
 msgstr "Download of selected files was complete."
 
-#: src/message.h:113
+#: src/message.h:112
 msgid "The download was complete."
 msgstr "The download was complete."
 
-#: src/message.h:114
+#: src/message.h:113
 #, c-format
 msgid "Removed %d have entries."
 msgstr "Removed %d have entries."
 
-#: src/message.h:115
+#: src/message.h:114
 #, c-format
 msgid "Validating file %s"
 msgstr "Validating file %s"
 
-#: src/message.h:116
+#: src/message.h:115
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
 msgstr "%d seconds to allocate %s byte(s)"
 
-#: src/message.h:117
+#: src/message.h:116
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
 msgstr "Dispatching FileAllocationCommand for CUID#%d."
 
-#: src/message.h:118
+#: src/message.h:117
 #, c-format
 msgid "Metalink: Queueing %s for download."
 msgstr "Metalink: Queueing %s for download."
 
-#: src/message.h:119
+#: src/message.h:118
 #, c-format
 msgid "Download complete: %s"
 msgstr "Download complete: %s"
 
-#: src/message.h:120
+#: src/message.h:119
 msgid "Seeding is over."
 msgstr "Seeding is over."
 
-#: src/message.h:121
+#: src/message.h:120
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
 msgstr "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
 
-#: src/message.h:122
+#: src/message.h:121
 msgid "No chunk to verify."
 msgstr "No chunk to verify."
 
-#: src/message.h:123
+#: src/message.h:122
 #, c-format
 msgid "Good chunk checksum. hash=%s"
 msgstr "Good chunk checksum. hash=%s"
 
-#: src/message.h:124
+#: src/message.h:123
 #, c-format
 msgid "Failed to load cookies from %s"
 msgstr "Failed to load cookies from %s"
 
-#: src/message.h:125
+#: src/message.h:124
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
@@ -2152,57 +2169,57 @@ msgstr ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 
-#: src/message.h:126
+#: src/message.h:125
 msgid "Logging started."
 msgstr "Logging started."
 
-#: src/message.h:127
+#: src/message.h:126
 msgid "Specify at least one URL."
 msgstr "Specify at least one URL."
 
-#: src/message.h:128
+#: src/message.h:127
 msgid "daemon failed."
 msgstr "daemon failed."
 
-#: src/message.h:129
+#: src/message.h:128
 #, c-format
 msgid "Verification finished successfully. file=%s"
 msgstr "Verification finished successfully. file=%s"
 
-#: src/message.h:130
+#: src/message.h:129
 #, c-format
 msgid "Checksum error detected. file=%s"
 msgstr "Checksum error detected. file=%s"
 
-#: src/message.h:131
+#: src/message.h:130
 #, c-format
 msgid "Incomplete range specified. %s"
 msgstr "Incomplete range specified. %s"
 
-#: src/message.h:132
+#: src/message.h:131
 #, c-format
 msgid "Failed to convert string into value: %s"
 msgstr "Failed to convert string into value: %s"
 
-#: src/message.h:133
+#: src/message.h:132
 msgid "Resource not found"
 msgstr "Resource not found"
 
-#: src/message.h:134
+#: src/message.h:133
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr "File already exists. Renamed to %s."
 
-#: src/message.h:135
+#: src/message.h:134
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr "Cannot parse metalink XML file. XML may be malformed."
 
-#: src/message.h:136
+#: src/message.h:135
 #, c-format
 msgid "Too small payload size for %s, size=%d."
 msgstr "Too small payload size for %s, size=%d."
 
-#: src/message.h:137
+#: src/message.h:136
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
@@ -2211,104 +2228,104 @@ msgstr ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
 
-#: src/message.h:138
+#: src/message.h:137
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 
-#: src/message.h:139
+#: src/message.h:138
 #, c-format
 msgid "Missing %s in torrent metainfo."
 msgstr "Missing %s in torrent metainfo."
 
-#: src/message.h:140
+#: src/message.h:139
 msgid "Tracker returned null data."
 msgstr "Tracker returned null data."
 
-#: src/message.h:141
+#: src/message.h:140
 msgid "Windows socket library initialization failed"
 msgstr "Windows socket library initialization failed"
 
-#: src/message.h:142
+#: src/message.h:141
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
 msgstr "%d second(s) has passed. Stopping application."
 
-#: src/message.h:143
+#: src/message.h:142
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 
-#: src/message.h:145
+#: src/message.h:144
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr "Saving signature as %s failed. Maybe file already exists."
 
-#: src/message.h:148
+#: src/message.h:147
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
 msgstr "Failed to open ServerStat file %s for read."
 
-#: src/message.h:149
+#: src/message.h:148
 #, c-format
 msgid "ServerStat file %s loaded successfully."
 msgstr "ServerStat file %s loaded successfully."
 
-#: src/message.h:150
+#: src/message.h:149
 #, c-format
 msgid "Failed to read ServerStat from %s."
 msgstr "Failed to read ServerStat from %s."
 
-#: src/message.h:153
+#: src/message.h:152
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
 msgstr "Failed to open ServerStat file %s for write."
 
-#: src/message.h:154
+#: src/message.h:153
 #, c-format
 msgid "ServerStat file %s saved successfully."
 msgstr "ServerStat file %s saved successfully."
 
-#: src/message.h:155
+#: src/message.h:154
 #, c-format
 msgid "Failed to write ServerStat to %s."
 msgstr "Failed to write ServerStat to %s."
 
-#: src/message.h:158
+#: src/message.h:157
 #, c-format
 msgid "Failed to establish connection, cause: %s"
 msgstr "Failed to establish connection, cause: %s"
 
-#: src/message.h:159
+#: src/message.h:158
 #, c-format
 msgid "Network problem has occurred. cause:%s"
 msgstr "Network problem has occurred. cause:%s"
 
-#: src/message.h:161
+#: src/message.h:160
 #, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "Failed to load trusted CA certificates from %s. Cause: %s"
 
-#: src/message.h:163
+#: src/message.h:162
 #, c-format
 msgid "Certificate verification failed. Cause: %s"
 msgstr "Certificate verification failed. Cause: %s"
 
-#: src/message.h:164
+#: src/message.h:163
 msgid "No certificate found."
 msgstr "No certificate found."
 
-#: src/message.h:165
+#: src/message.h:164
 msgid "Hostname not match."
 msgstr "Hostname not match."
 
-#: src/message.h:166
+#: src/message.h:165
 msgid "No files to download."
 msgstr "No files to download."
 
-#: src/message.h:168
+#: src/message.h:167
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
@@ -2316,12 +2333,12 @@ msgstr ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
 
-#: src/message.h:170
+#: src/message.h:169
 #, c-format
 msgid "Printing the contents of file '%s'..."
 msgstr "Printing the contents of file '%s'..."
 
-#: src/message.h:171
+#: src/message.h:170
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr "This file is neither Torrent nor Metalink file. Skipping."
 
@@ -2675,10 +2692,6 @@ msgstr "Max payload length exceeded or invalid. length = %u"
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr "Invalid file length. Cannot continue download %s: local %s, remote %s"
 
-#: src/BtSetup.cc:160
+#: src/BtSetup.cc:158
 msgid "Errors occurred while binding port.\n"
 msgstr "Errors occurred while binding port.\n"
-
-#: src/Util.cc:714
-msgid "Files:"
-msgstr "Files:"

@@ -7,30 +7,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-06-07 17:21+0900\n"
-"PO-Revision-Date: 2008-08-09 20:45+0000\n"
-"Last-Translator: Jeppe Toustrup <launchpad@tenzer.dk>\n"
+"POT-Creation-Date: 2009-07-18 18:20+0900\n"
+"PO-Revision-Date: 2009-07-01 06:37+0000\n"
+"Last-Translator: FuryFire <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
+"X-Launchpad-Export-Date: 2009-07-18 09:12+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:209
+#: src/DownloadEngine.cc:210
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "Afslutningsprocedure i gang... Tryk Ctrl-C igen for nød-afslutning."
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:216
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Nød-afslutningsprocedure i gang..."
 
-#: src/MultiUrlRequestInfo.cc:96
+#: src/MultiUrlRequestInfo.cc:97
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 vil forsætte filhentningen hvis overførslen bliver genstartet."
 
-#: src/MultiUrlRequestInfo.cc:98
+#: src/MultiUrlRequestInfo.cc:99
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -55,9 +55,8 @@ msgid "                              Tags: "
 msgstr "                              Mærker: "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
-msgstr "                              Mulige værdier: "
+msgstr ""
 
 #: src/OptionHandlerImpl.h:131
 msgid "must be either 'true' or 'false'."
@@ -127,7 +126,6 @@ msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 Kør som en dæmon."
 
 #: src/usage_text.h:46
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -141,76 +139,42 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
-"                              der er angivet flere adresser end N, vil de N\n"
-"                              første adresser blive brugt, og resten vil "
-"blive\n"
-"                              brugt som reserve. Hvis færre end N adresser "
-"er\n"
-"                              angivet, vil adresserne blive brugt flere "
-"gange,\n"
-"                              så der totalt er N samtidige forbindelser.\n"
-"                              Se også -j flaget."
 
 #: src/usage_text.h:55
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:58
-#, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr " -t, --timeout=SEK            Sæt tidsudløb i sekunder. Standard: 60"
+msgstr " -t, --timeout=SEC Sæt timeout i sekunder."
 
 #: src/usage_text.h:60
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
-msgstr ""
-" -m, --max-tries=N            Sæt antallet af forsøg. 0 betyder ubegrænset.\n"
-"                              Standard: 5"
+msgstr " -m, --max-tries=N Sæt antal forsøg. 0 betyder ubegrænset."
 
 #: src/usage_text.h:62
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP.\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy-method=METODE   Sæt metoden der skal bruges til proxy\n"
-"                              forespørgslen. METODE skal enten være 'get' "
-"or\n"
-"                              'tunnel'. Standard: tunnel"
 
 #: src/usage_text.h:66
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS.\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy-method=METODE   Sæt metoden der skal bruges til proxy\n"
-"                              forespørgslen. METODE skal enten være 'get' "
-"or\n"
-"                              'tunnel'. Standard: tunnel"
 
 #: src/usage_text.h:70
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP.\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-type=TYPE              Sæt FTP overførselstypen. TYPE er enten "
-"'binary'\n"
-"                              eller 'ascii'.\n"
-"                              Standard: binary"
 
 #: src/usage_text.h:74
 msgid ""
@@ -235,18 +199,15 @@ msgstr ""
 #: src/usage_text.h:85
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
 msgstr ""
+" --proxy-method=METHOD Sæt methoden der skal benyttes in en proxy "
+"forspørgsel."
 
 #: src/usage_text.h:87
-#, fuzzy
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
 "                              is the only supported scheme."
 msgstr ""
-" --http-auth-scheme=SKEMA     Sæt HTTP godkendelses skema. Lige nu er, "
-"basic\n"
-"                              det eneste understøttede skema.\n"
-"                              Standard: basic"
 
 #: src/usage_text.h:90
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
@@ -254,20 +215,16 @@ msgstr ""
 " --referer=HENVISER           Sæt henviser. Dette vil ramme alle URL'er."
 
 #: src/usage_text.h:92
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
-msgstr ""
-" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
+msgstr " --ftp-user=USER Sæt FTP bruger. Dette påvirker all URLs."
 
 #: src/usage_text.h:94
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
-msgstr ""
-" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
+msgstr " --ftp-passwd=PASSWD Sæt FTP password. Dette påvirker all URLs."
 
 #: src/usage_text.h:96
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr ""
+msgstr " --ftp-type=TYPE Set FTP overførslestype."
 
 #: src/usage_text.h:98
 msgid ""
@@ -277,7 +234,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:101
-#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -288,20 +244,8 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=FART    Luk forbindelsen hvis overførselshastigheden "
-"er\n"
-"                              lavere eller lig denne værdig (bytes per "
-"sekund).\n"
-"                              0 betyder aria2 ikke har en "
-"minimumshastighed.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Dette flag vedrører ikke BitTorrent "
-"overførsler.\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:107
-#, fuzzy
 msgid ""
 " --max-overall-download-limit=SPEED Set max overall download speed in bytes/"
 "sec.\n"
@@ -310,14 +254,8 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:113
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed per each download in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -325,11 +263,6 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:119
 msgid ""
@@ -458,7 +391,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:183
-#, fuzzy
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -470,15 +402,6 @@ msgid ""
 "                              This option has effect only on BitTorrent\n"
 "                              download."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:191
 msgid ""
@@ -558,7 +481,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:231
-#, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -571,16 +493,6 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
-" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
-"                              der er angivet flere adresser end N, vil de N\n"
-"                              første adresser blive brugt, og resten vil "
-"blive\n"
-"                              brugt som reserve. Hvis færre end N adresser "
-"er\n"
-"                              angivet, vil adresserne blive brugt flere "
-"gange,\n"
-"                              så der totalt er N samtidige forbindelser.\n"
-"                              Se også -j flaget."
 
 #: src/usage_text.h:240
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
@@ -620,7 +532,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:261
-#, fuzzy
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
@@ -629,14 +540,8 @@ msgid ""
 "                              To limit the upload speed per torrent, use\n"
 "                              --max-upload-limit option."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:267
-#, fuzzy
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -644,11 +549,6 @@ msgid ""
 "                              To limit the overall upload speed, use\n"
 "                              --max-overall-upload-limit option."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:273
 msgid ""
@@ -657,7 +557,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:276
-#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -671,20 +570,10 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
-" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
-"                              der er angivet flere adresser end N, vil de N\n"
-"                              første adresser blive brugt, og resten vil "
-"blive\n"
-"                              brugt som reserve. Hvis færre end N adresser "
-"er\n"
-"                              angivet, vil adresserne blive brugt flere "
-"gange,\n"
-"                              så der totalt er N samtidige forbindelser.\n"
-"                              Se også -j flaget."
 
 #: src/usage_text.h:285
 msgid ""
-" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
+" --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
 "                              BitTorrent is 20 byte length. If more than 20\n"
 "                              bytes are specified, only first 20\n"
@@ -768,24 +657,18 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:331
-#, fuzzy
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:335
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr ""
 
 #: src/usage_text.h:337
-#, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -798,16 +681,6 @@ msgid ""
 "NUM_SERVERS.\n"
 "                              See also -s and -j options."
 msgstr ""
-" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
-"                              der er angivet flere adresser end N, vil de N\n"
-"                              første adresser blive brugt, og resten vil "
-"blive\n"
-"                              brugt som reserve. Hvis færre end N adresser "
-"er\n"
-"                              angivet, vil adresserne blive brugt flere "
-"gange,\n"
-"                              så der totalt er N samtidige forbindelser.\n"
-"                              Se også -j flaget."
 
 #: src/usage_text.h:346
 msgid " --metalink-version=VERSION   The version of the file to download."
@@ -953,7 +826,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:418
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -965,15 +837,6 @@ msgid ""
 "                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:425
 msgid ""
@@ -1006,7 +869,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:444
-#, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1014,10 +876,6 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:448
 msgid ""
@@ -1030,17 +888,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:453
-#, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:457
 msgid ""
@@ -1063,19 +916,13 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:467
-#, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
-" --retry-wait=SEK             Sæt antallet af sekunder der skal ventes "
-"inden\n"
-"                              der bliver forsøgt igen efter en fejl. Sæt en\n"
-"                              værdi i mellem 0 og 60. Standard: 5"
 
 #: src/usage_text.h:471
-#, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1086,15 +933,6 @@ msgid ""
 "                              Use --check-certificate option to enable\n"
 "                              verification."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:477
 msgid ""
@@ -1147,16 +985,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:500
-#, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
-" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
 
 #: src/usage_text.h:502
-#, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr ""
-" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
 
 #: src/usage_text.h:504
 msgid ""
@@ -1169,7 +1003,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:509
-#, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1183,18 +1016,8 @@ msgid ""
 "                              always sent to the server regardless of this\n"
 "                              option."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:517
-#, fuzzy
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1206,18 +1029,8 @@ msgid ""
 "multiple\n"
 "                              times."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:523
-#, fuzzy
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1227,18 +1040,8 @@ msgid ""
 "                              BitTorrent downloads are canceled if true is\n"
 "                              specified."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:529
-#, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1253,18 +1056,8 @@ msgid ""
 "download\n"
 "                              progress."
 msgstr ""
-" --file-allocation=METODE     Vælg fil-allokerings metode. METODE er enten\n"
-"                              'none' eller 'prealloc'. 'none' allokerer "
-"ikke\n"
-"                              filpladsen. 'prealloc' forud allokerer "
-"pladsen\n"
-"                              før overførslen begynder. Dette kan tage "
-"noget\n"
-"                              tid, afhængig af størrelsen på filen.\n"
-"                              Standard: prealloc"
 
 #: src/usage_text.h:537
-#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1273,11 +1066,6 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:543
 msgid ""
@@ -1288,7 +1076,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:547
-#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1296,14 +1083,8 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes per\n"
-"                              sekund. 0 betyder ubegrænset.\n"
-"                              Du kan tilføje K eller M (1K = 1024, 1M = "
-"1024K).\n"
-"                              Standard: 0"
 
 #: src/usage_text.h:553
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1316,16 +1097,14 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" -s, --split=N                Hent en fil ved brug af N forbindelser. Hvis\n"
-"                              der er angivet flere adresser end N, vil de N\n"
-"                              første adresser blive brugt, og resten vil "
-"blive\n"
-"                              brugt som reserve. Hvis færre end N adresser "
-"er\n"
-"                              angivet, vil adresserne blive brugt flere "
-"gange,\n"
-"                              så der totalt er N samtidige forbindelser.\n"
-"                              Se også -j flaget."
+
+#: src/usage_text.h:562
+msgid ""
+" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
+"0 in\n"
+"                              consecutive SEC seconds. If 0 is given, this\n"
+"                              feature is disabled."
+msgstr ""
 
 #: src/version_usage.cc:54
 msgid " version "
@@ -1387,17 +1166,22 @@ msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
-" only single file torrent can be integrated with http/ftp."
+" while the data from http/ftp are uploaded to the torrent swarm. For single "
+"file\n"
+" torrents, URL can be a complete URL pointing to the resource or if URL "
+"ends\n"
+" with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
+"and\n"
+" 'path' in torrent are added to form a URL for each file."
 msgstr ""
 
-#: src/version_usage.cc:132
+#: src/version_usage.cc:134
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 
-#: src/version_usage.cc:136
+#: src/version_usage.cc:138
 msgid "Refer to man page for more information."
 msgstr ""
 
@@ -1462,244 +1246,239 @@ msgstr ""
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 msgstr ""
 
-#: src/message.h:51
-#, c-format
-msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr ""
-
-#: src/message.h:57
+#: src/message.h:56
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
 msgstr ""
 
-#: src/message.h:58
+#: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
 msgstr ""
 
-#: src/message.h:59
+#: src/message.h:58
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
 msgstr ""
 
-#: src/message.h:60
+#: src/message.h:59
 #, c-format
 msgid "#%d - Download has already completed: %s"
 msgstr ""
 
-#: src/message.h:61
+#: src/message.h:60
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
 msgstr ""
 
-#: src/message.h:62
+#: src/message.h:61
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
 msgstr ""
 
-#: src/message.h:63
+#: src/message.h:62
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
 msgstr ""
 
-#: src/message.h:64
+#: src/message.h:63
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
 msgstr ""
 
-#: src/message.h:65
+#: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
 msgstr ""
 
-#: src/message.h:66
+#: src/message.h:65
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
 msgstr ""
 
-#: src/message.h:67
+#: src/message.h:66
 #, c-format
 msgid "CUID#%d - Abort requested."
 msgstr ""
 
-#: src/message.h:68
+#: src/message.h:67
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
 msgstr ""
 
-#: src/message.h:69
+#: src/message.h:68
 #, c-format
 msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
 
-#: src/message.h:70
+#: src/message.h:69
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
 msgstr ""
 
-#: src/message.h:71
+#: src/message.h:70
 #, c-format
 msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
 
-#: src/message.h:72
+#: src/message.h:71
 #, c-format
 msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
 
-#: src/message.h:73
+#: src/message.h:72
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
 msgstr ""
 
-#: src/message.h:74
+#: src/message.h:73
 #, c-format
 msgid "CUID#%d - Interested in the peer"
 msgstr ""
 
-#: src/message.h:75
+#: src/message.h:74
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
 msgstr ""
 
-#: src/message.h:76
+#: src/message.h:75
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
 msgstr ""
 
-#: src/message.h:77
+#: src/message.h:76
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
 "got choked."
 msgstr ""
 
-#: src/message.h:78
+#: src/message.h:77
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
 msgstr ""
 
-#: src/message.h:79
+#: src/message.h:78
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
 "acquired."
 msgstr ""
 
-#: src/message.h:80
+#: src/message.h:79
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
 msgstr ""
 
-#: src/message.h:81
+#: src/message.h:80
 #, c-format
 msgid "CUID#%d - Extended Messaging enabled."
 msgstr ""
 
-#: src/message.h:82
+#: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
 msgstr ""
 
-#: src/message.h:83
+#: src/message.h:82
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr ""
 
-#: src/message.h:84
+#: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
 msgstr ""
 
-#: src/message.h:85
+#: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
 msgstr ""
 
-#: src/message.h:86
+#: src/message.h:85
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
 msgstr ""
 
-#: src/message.h:87
+#: src/message.h:86
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
 msgstr ""
 
-#: src/message.h:88
+#: src/message.h:87
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
 msgstr ""
 
-#: src/message.h:89
+#: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
 msgstr ""
 
-#: src/message.h:90
+#: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
 msgstr ""
 
-#: src/message.h:91
+#: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
 msgstr ""
 
-#: src/message.h:92
+#: src/message.h:91
 #, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
 msgstr ""
 
-#: src/message.h:94
+#: src/message.h:93
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr ""
 
-#: src/message.h:95
+#: src/message.h:94
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr ""
 
-#: src/message.h:96
+#: src/message.h:95
 #, c-format
 msgid "The segment file %s exists."
 msgstr ""
 
-#: src/message.h:97
+#: src/message.h:96
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr ""
 
-#: src/message.h:98
+#: src/message.h:97
 #, c-format
 msgid "Saving the segment file %s"
 msgstr ""
 
-#: src/message.h:99
+#: src/message.h:98
 msgid "The segment file was saved successfully."
 msgstr ""
 
-#: src/message.h:100
+#: src/message.h:99
 #, c-format
 msgid "Loading the segment file %s."
 msgstr ""
 
-#: src/message.h:101
+#: src/message.h:100
 msgid "The segment file was loaded successfully."
 msgstr ""
 
-#: src/message.h:102
+#: src/message.h:101
 msgid "No URI to download. Download aborted."
 msgstr ""
 
-#: src/message.h:103
+#: src/message.h:102
 #, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
@@ -1708,276 +1487,276 @@ msgid ""
 "overwrite=true option and restart aria2."
 msgstr ""
 
-#: src/message.h:104
+#: src/message.h:103
 #, c-format
 msgid "Allocating file %s, %s bytes"
 msgstr ""
 
-#: src/message.h:105
+#: src/message.h:104
 msgid "File not found"
 msgstr ""
 
-#: src/message.h:106
+#: src/message.h:105
 msgid "Not a directory"
 msgstr ""
 
-#: src/message.h:107
+#: src/message.h:106
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 msgstr ""
 
-#: src/message.h:108
+#: src/message.h:107
 #, c-format
 msgid "Writing file %s"
 msgstr ""
 
-#: src/message.h:109
+#: src/message.h:108
 msgid "No peer list received."
 msgstr ""
 
-#: src/message.h:110
+#: src/message.h:109
 #, c-format
 msgid "Adding peer %s:%d"
 msgstr ""
 
-#: src/message.h:111
+#: src/message.h:110
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr ""
 
-#: src/message.h:112
+#: src/message.h:111
 msgid "Download of selected files was complete."
 msgstr ""
 
-#: src/message.h:113
+#: src/message.h:112
 msgid "The download was complete."
 msgstr ""
 
-#: src/message.h:114
+#: src/message.h:113
 #, c-format
 msgid "Removed %d have entries."
 msgstr ""
 
-#: src/message.h:115
+#: src/message.h:114
 #, c-format
 msgid "Validating file %s"
 msgstr ""
 
-#: src/message.h:116
+#: src/message.h:115
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
 msgstr ""
 
-#: src/message.h:117
+#: src/message.h:116
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
 msgstr ""
 
-#: src/message.h:118
+#: src/message.h:117
 #, c-format
 msgid "Metalink: Queueing %s for download."
 msgstr ""
 
-#: src/message.h:119
+#: src/message.h:118
 #, c-format
 msgid "Download complete: %s"
 msgstr ""
 
-#: src/message.h:120
+#: src/message.h:119
 msgid "Seeding is over."
 msgstr ""
 
-#: src/message.h:121
+#: src/message.h:120
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
 msgstr ""
 
-#: src/message.h:122
+#: src/message.h:121
 msgid "No chunk to verify."
 msgstr ""
 
-#: src/message.h:123
+#: src/message.h:122
 #, c-format
 msgid "Good chunk checksum. hash=%s"
 msgstr ""
 
-#: src/message.h:124
+#: src/message.h:123
 #, c-format
 msgid "Failed to load cookies from %s"
 msgstr ""
 
-#: src/message.h:125
+#: src/message.h:124
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
 
-#: src/message.h:126
+#: src/message.h:125
 msgid "Logging started."
 msgstr ""
 
-#: src/message.h:127
+#: src/message.h:126
 msgid "Specify at least one URL."
 msgstr ""
 
-#: src/message.h:128
+#: src/message.h:127
 msgid "daemon failed."
 msgstr ""
 
-#: src/message.h:129
+#: src/message.h:128
 #, c-format
 msgid "Verification finished successfully. file=%s"
 msgstr ""
 
-#: src/message.h:130
+#: src/message.h:129
 #, c-format
 msgid "Checksum error detected. file=%s"
 msgstr ""
 
-#: src/message.h:131
+#: src/message.h:130
 #, c-format
 msgid "Incomplete range specified. %s"
 msgstr ""
 
-#: src/message.h:132
+#: src/message.h:131
 #, c-format
 msgid "Failed to convert string into value: %s"
 msgstr ""
 
-#: src/message.h:133
+#: src/message.h:132
 msgid "Resource not found"
 msgstr ""
 
-#: src/message.h:134
+#: src/message.h:133
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr ""
 
-#: src/message.h:135
+#: src/message.h:134
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr ""
 
-#: src/message.h:136
+#: src/message.h:135
 #, c-format
 msgid "Too small payload size for %s, size=%d."
 msgstr ""
 
-#: src/message.h:137
+#: src/message.h:136
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
 msgstr ""
 
-#: src/message.h:138
+#: src/message.h:137
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr ""
 
-#: src/message.h:139
+#: src/message.h:138
 #, c-format
 msgid "Missing %s in torrent metainfo."
 msgstr ""
 
-#: src/message.h:140
+#: src/message.h:139
 msgid "Tracker returned null data."
 msgstr ""
 
-#: src/message.h:141
+#: src/message.h:140
 msgid "Windows socket library initialization failed"
 msgstr ""
 
-#: src/message.h:142
+#: src/message.h:141
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
 msgstr ""
 
-#: src/message.h:143
+#: src/message.h:142
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr ""
 
-#: src/message.h:145
+#: src/message.h:144
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr ""
 
-#: src/message.h:148
+#: src/message.h:147
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
 msgstr ""
 
-#: src/message.h:149
+#: src/message.h:148
 #, c-format
 msgid "ServerStat file %s loaded successfully."
 msgstr ""
 
-#: src/message.h:150
+#: src/message.h:149
 #, c-format
 msgid "Failed to read ServerStat from %s."
 msgstr ""
 
-#: src/message.h:153
+#: src/message.h:152
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
 msgstr ""
 
-#: src/message.h:154
+#: src/message.h:153
 #, c-format
 msgid "ServerStat file %s saved successfully."
 msgstr ""
 
-#: src/message.h:155
+#: src/message.h:154
 #, c-format
 msgid "Failed to write ServerStat to %s."
 msgstr ""
 
-#: src/message.h:158
+#: src/message.h:157
 #, c-format
 msgid "Failed to establish connection, cause: %s"
 msgstr ""
 
-#: src/message.h:159
+#: src/message.h:158
 #, c-format
 msgid "Network problem has occurred. cause:%s"
 msgstr ""
 
-#: src/message.h:161
+#: src/message.h:160
 #, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr ""
 
-#: src/message.h:163
+#: src/message.h:162
 #, c-format
 msgid "Certificate verification failed. Cause: %s"
 msgstr ""
 
-#: src/message.h:164
+#: src/message.h:163
 msgid "No certificate found."
 msgstr ""
 
-#: src/message.h:165
+#: src/message.h:164
 msgid "Hostname not match."
 msgstr ""
 
-#: src/message.h:166
+#: src/message.h:165
 msgid "No files to download."
 msgstr ""
 
-#: src/message.h:168
+#: src/message.h:167
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
 msgstr ""
 
-#: src/message.h:170
+#: src/message.h:169
 #, c-format
 msgid "Printing the contents of file '%s'..."
 msgstr ""
 
-#: src/message.h:171
+#: src/message.h:170
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr ""
 
@@ -2325,94 +2104,6 @@ msgstr ""
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 
-#: src/BtSetup.cc:160
+#: src/BtSetup.cc:158
 msgid "Errors occurred while binding port.\n"
 msgstr ""
-
-#: src/Util.cc:714
-msgid "Files:"
-msgstr ""
-
-#, fuzzy
-#~ msgid ""
-#~ " --file-allocation=METHOD     Specify file allocation method.\n"
-#~ "                              'none' doesn't pre-allocate file space. "
-#~ "'prealloc'\n"
-#~ "                              pre-allocates file space before download "
-#~ "begins.\n"
-#~ "                              This may take some time depending on the "
-#~ "size of\n"
-#~ "                              the file."
-#~ msgstr ""
-#~ " --file-allocation=METODE     Vælg fil-allokerings metode. METODE er "
-#~ "enten\n"
-#~ "                              'none' eller 'prealloc'. 'none' allokerer "
-#~ "ikke\n"
-#~ "                              filpladsen. 'prealloc' forud allokerer "
-#~ "pladsen\n"
-#~ "                              før overførslen begynder. Dette kan tage "
-#~ "noget\n"
-#~ "                              tid, afhængig af størrelsen på filen.\n"
-#~ "                              Standard: prealloc"
-
-#, fuzzy
-#~ msgid ""
-#~ " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
-#~ "                              0 means unrestricted.\n"
-#~ "                              You can append K or M(1K = 1024, 1M = "
-#~ "1024K)."
-#~ msgstr ""
-#~ " --max-download-limit=FART    Sæt maksimal overførselshastighed i bytes "
-#~ "per\n"
-#~ "                              sekund. 0 betyder ubegrænset.\n"
-#~ "                              Du kan tilføje K eller M (1K = 1024, 1M = "
-#~ "1024K).\n"
-#~ "                              Standard: 0"
-
-#~ msgid ""
-#~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all "
-#~ "URLs."
-#~ msgstr ""
-#~ " --http-proxy=VÆRT:PORT       Brug HTTP proxy server. Dette rammer alle "
-#~ "URL'er."
-
-#~ msgid ""
-#~ " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
-#~ msgstr ""
-#~ " --http-proxy-user=BRUGER     Sæt HTTP proxy bruger. Dette rammer alle "
-#~ "URL'er."
-
-#~ msgid ""
-#~ " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all "
-#~ "URLs."
-#~ msgstr ""
-#~ " --http-proxy-passwd=KODE     Sæt HTTP proxy kodeord. Dette rammer alle "
-#~ "URL'er."
-
-#~ msgid " -p, --ftp-pasv               Use passive mode in FTP."
-#~ msgstr " -p, --ftp-pasv               Brug passiv tilstand i FTP."
-
-#~ msgid ""
-#~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
-#~ "                              Default: anonymous"
-#~ msgstr ""
-#~ " --ftp-user=BRUGER            Sæt FTP bruger. Dette rammer alle URL'er.\n"
-#~ "                              Standard: anonymous"
-
-#~ msgid ""
-#~ " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
-#~ "                              Default: ARIA2USER@"
-#~ msgstr ""
-#~ " --ftp-passwd=KODEORD         Sæt FTP kodeord. Dette rammer alle URL'er.\n"
-#~ "                              Standard: ARIA2USER@"
-
-#~ msgid ""
-#~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
-#~ "'get' or\n"
-#~ "                              'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --ftp-via-http-proxy=METODE  Brug HTTP proxy til FTP. METODE er enten "
-#~ "'get'\n"
-#~ "                              eller 'tunnel'.\n"
-#~ "                              Standard: tunnel"
