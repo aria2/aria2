@@ -1,5 +1,11 @@
 2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Make sure that stream is closed before renaming file. Unit test
+	fails on mingw32 in the previous implementation.
+	* src/CookieStorage.cc
+
+2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the unit test error without sqlite3
 	* test/CookieStorageTest.cc
 

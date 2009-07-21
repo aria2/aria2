@@ -174,19 +174,28 @@ bool CookieStorage::load(const std::string& filename)
 bool CookieStorage::saveNsFormat(const std::string& filename)
 {
   std::string tempfilename = filename+"__temp";
-  std::ofstream o(tempfilename.c_str(), std::ios::binary);
-  if(!o) {
-    _logger->error("Cannot create cookie file %s, cause %s",
-		   filename.c_str(), strerror(errno));
-    return false;
-  }
-  for(std::deque<Cookie>::const_iterator i = _cookies.begin();
-      i != _cookies.end(); ++i) {
-    o << (*i).toNsCookieFormat() << "\n";
+  {
+    std::ofstream o(tempfilename.c_str(), std::ios::binary);
     if(!o) {
-      _logger->error("Failed to save cookies to %s", filename.c_str());
+      _logger->error("Cannot create cookie file %s, cause %s",
+		     filename.c_str(), strerror(errno));
       return false;
     }
+    for(std::deque<Cookie>::const_iterator i = _cookies.begin();
+	i != _cookies.end(); ++i) {
+      o << (*i).toNsCookieFormat() << "\n";
+      if(!o) {
+	_logger->error("Failed to save cookies to %s, cause %s",
+		       filename.c_str(), strerror(errno));
+	return false;
+      }
+    }
+    o.flush();
+    if(!o) {
+      _logger->error("Failed to save cookies to %s, cause %s",
+		     filename.c_str(), strerror(errno));
+      return false;
+    }  
   }
   if(File(tempfilename).renameTo(filename)) {
     return true;
