@@ -1,8 +1,9 @@
+#include "HttpResponse.h"
+
 #include <iostream>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "HttpResponse.h"
 #include "prefs.h"
 #include "PiecedSegment.h"
 #include "Piece.h"
