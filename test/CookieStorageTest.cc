@@ -246,12 +246,7 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT(!c.isSessionCookie());
     
 #else // !HAVE_SQLITE3
-  try {
-    st.load("cookies.sqlite");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(RecoverableException& e) {
-    // success
-  }
+  CPPUNIT_ASSERT(!st.load("cookies.sqlite"));
 #endif // !HAVE_SQLITE3
 }
 

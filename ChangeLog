@@ -1,5 +1,10 @@
 2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the unit test error without sqlite3
+	* test/CookieStorageTest.cc
+
+2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the undefined reference error
 	* test/HttpResponseTest.cc
 
