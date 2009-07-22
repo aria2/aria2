@@ -108,6 +108,10 @@ void DefaultBtProgressInfoFile::save()
   std::string filenameTemp = _filename+"__temp";
   {
     std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
+    if(!o) {
+      throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
+				     _filename.c_str(), strerror(errno)).str());
+    }
     bool torrentDownload = isTorrentDownload();
     // file version: 16 bits
     // values: '1'
@@ -212,7 +216,10 @@ void DefaultBtProgressInfoFile::load()
 {
   _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
   std::ifstream in(_filename.c_str(), std::ios::in|std::ios::binary);
-
+  if(!in) {								\
+    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,		\
+				   _filename.c_str(), strerror(errno)).str());
+  }
   unsigned char versionBuf[2];
   in.read((char*)versionBuf, sizeof(versionBuf));
   CHECK_STREAM(in, sizeof(versionBuf));
