@@ -80,6 +80,7 @@ bool ServerStatMan::save(std::ostream& out) const
 {
   std::copy(_serverStats.begin(), _serverStats.end(),
 	    std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
+  out.flush();
   return !out.bad();
 }
 

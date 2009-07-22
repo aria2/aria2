@@ -1,5 +1,10 @@
 2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Call flush from ServerStatMan::save()
+	* src/ServerStatMan.cc
+
+2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Check stream status after file is opened.
 	* src/CookieStorage.cc
 
