@@ -1,5 +1,10 @@
 2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compiler warning on 32bit systems.
+	* src/DownloadCommand.cc
+
+2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call flush from ServerStatMan::save()
 	* src/ServerStatMan.cc
 
