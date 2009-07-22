@@ -64,15 +64,20 @@ bool Signature::save(const std::string& filepath) const
   if(File(filepath).exists()) {
     return false;
   }
-  std::ofstream out(filepath.c_str(), std::ios::binary);
-  try {
-    out.exceptions(std::ios::failbit);
+  std::string tempFilepath = filepath;
+  tempFilepath += "__temp";
+  {
+    std::ofstream out(tempFilepath.c_str(), std::ios::binary);
+    if(!out) {
+      return false;
+    }
     out << _body;
-    out.close();
-    return true;
-  } catch(const std::ios::failure& exception) {
-    return false;
+    out.flush();
+    if(!out) {
+      return false;
+    }
   }
+  return File(tempFilepath).renameTo(filepath);
 }
 
 } // namespace aria2

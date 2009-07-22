@@ -1,5 +1,10 @@
 2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten Signature::save()
+	* src/Signature.cc
+
+2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten stream error handling
 	* src/DHTAutoSaveCommand.cc
 	* src/DHTRoutingTableDeserializer.cc
