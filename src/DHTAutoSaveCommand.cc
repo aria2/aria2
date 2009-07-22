@@ -53,6 +53,8 @@
 #include "Logger.h"
 #include "a2functional.h"
 #include "FileEntry.h"
+#include "DlAbortEx.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -112,21 +114,22 @@ void DHTAutoSaveCommand::save()
   serializer.setNodes(nodes);
 
   try {
-    std::ofstream o(tempFile.c_str(), std::ios::out|std::ios::binary);
-    o.exceptions(std::ios::failbit);
-
-    serializer.serialize(o);
-
+    {
+      std::ofstream o(tempFile.c_str(), std::ios::out|std::ios::binary);
+      if(!o) {
+	throw DL_ABORT_EX
+	  (StringFormat("Failed to save DHT routing table to %s. cause:%s",
+			dhtFile.c_str(), strerror(errno)).str());
+      }
+      serializer.serialize(o);
+    }
     if(!File(tempFile).renameTo(dhtFile)) {
       logger->error("Cannot move file from %s to %s.",
 		    tempFile.c_str(), dhtFile.c_str());
     }
-  } catch(std::ios::failure const& e) {
-    logger->error("Failed to save DHT routing table to %s. cause:%s",
-		  tempFile.c_str(), strerror(errno));
   } catch(RecoverableException& e) {
     logger->error("Exception caught while saving DHT routing table to %s",
-		  e, tempFile.c_str());
+		  e, dhtFile.c_str());
   }
 }
 

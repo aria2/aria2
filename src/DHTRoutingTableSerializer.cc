@@ -76,51 +76,53 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   
   char zero[16];
   memset(zero, 0, sizeof(zero));
-  try {
-    o.write(header, 8);
-    // write save date
-    uint64_t ntime = hton64(Time().getTime());
-    o.write(reinterpret_cast<const char*>(&ntime), sizeof(ntime));
 
-    // localnode
-    // 8bytes reserved
-    o.write(zero, 8);
-    // 20bytes localnode ID
-    o.write(reinterpret_cast<const char*>(_localNode->getID()), DHT_ID_LENGTH);
-    // 4bytes reserved
-    o.write(zero, 4);
+  o.write(header, 8);
+  // write save date
+  uint64_t ntime = hton64(Time().getTime());
+  o.write(reinterpret_cast<const char*>(&ntime), sizeof(ntime));
 
-    // number of nodes
-    uint32_t numNodes = htonl(_nodes.size());
-    o.write(reinterpret_cast<const char*>(&numNodes), sizeof(uint32_t));
-    // 4bytes reserved
-    o.write(zero, 4);
+  // localnode
+  // 8bytes reserved
+  o.write(zero, 8);
+  // 20bytes localnode ID
+  o.write(reinterpret_cast<const char*>(_localNode->getID()), DHT_ID_LENGTH);
+  // 4bytes reserved
+  o.write(zero, 4);
 
-    // nodes
-    for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin(); i != _nodes.end(); ++i) {
-      const SharedHandle<DHTNode>& node = *i;
-      // Currently, only IPv4 address and IPv4-mapped address are saved.
-      // 6bytes: write IP address + port in Compact IP-address/port info form.
-      unsigned char compactPeer[6];
-      if(!PeerMessageUtil::createcompact(compactPeer, node->getIPAddress(), node->getPort())) {
-	memset(compactPeer, 0, 6);
-      }
-      // 1byte compact peer format length
-      o << static_cast<uint8_t>(sizeof(compactPeer));
-      // 7bytes reserved
-      o.write(zero, 7);
-      // 6 bytes compact peer
-      o.write(reinterpret_cast<const char*>(compactPeer), 6);
-      // 2bytes reserved
-      o.write(zero, 2);
-      // 16bytes reserved
-      o.write(zero, 16);
-      // 20bytes: node ID
-      o.write(reinterpret_cast<const char*>(node->getID()), DHT_ID_LENGTH);
-      // 4bytes reserved
-      o.write(zero, 4);
+  // number of nodes
+  uint32_t numNodes = htonl(_nodes.size());
+  o.write(reinterpret_cast<const char*>(&numNodes), sizeof(uint32_t));
+  // 4bytes reserved
+  o.write(zero, 4);
+
+  // nodes
+  for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin(); i != _nodes.end(); ++i) {
+    const SharedHandle<DHTNode>& node = *i;
+    // Currently, only IPv4 address and IPv4-mapped address are saved.
+    // 6bytes: write IP address + port in Compact IP-address/port info form.
+    unsigned char compactPeer[6];
+    if(!PeerMessageUtil::createcompact(compactPeer, node->getIPAddress(), node->getPort())) {
+      memset(compactPeer, 0, 6);
     }
-  } catch(std::ios::failure const& exception) {
+    // 1byte compact peer format length
+    o << static_cast<uint8_t>(sizeof(compactPeer));
+    // 7bytes reserved
+    o.write(zero, 7);
+    // 6 bytes compact peer
+    o.write(reinterpret_cast<const char*>(compactPeer), 6);
+    // 2bytes reserved
+    o.write(zero, 2);
+    // 16bytes reserved
+    o.write(zero, 16);
+    // 20bytes: node ID
+    o.write(reinterpret_cast<const char*>(node->getID()), DHT_ID_LENGTH);
+    // 4bytes reserved
+    o.write(zero, 4);
+  }
+
+  o.flush();
+  if(!o) {
     throw DL_ABORT_EX
       (StringFormat("Failed to save DHT routing table. cause:%s",
 		    strerror(errno)).str());

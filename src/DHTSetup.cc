@@ -94,16 +94,16 @@ void DHTSetup::setup(std::deque<Command*>& commands,
 
     DHTRoutingTableDeserializer deserializer;
     std::string dhtFile = option->get(PREF_DHT_FILE_PATH);
-    if(File(dhtFile).isFile()) {
-      try {
-	std::ifstream in(dhtFile.c_str(), std::ios::binary);
-	in.exceptions(std::ios::failbit);
-	deserializer.deserialize(in);
-	localNode = deserializer.getLocalNode();
-      } catch(RecoverableException& e) {
-	_logger->error("Exception caught while loading DHT routing table from %s",
-		       e, dhtFile.c_str());
+    try {
+      std::ifstream in(dhtFile.c_str(), std::ios::binary);
+      if(!in) {
+	throw DL_ABORT_EX("Could not open file");
       }
+      deserializer.deserialize(in);
+      localNode = deserializer.getLocalNode();
+    } catch(RecoverableException& e) {
+      _logger->error("Exception caught while loading DHT routing table from %s",
+		     e, dhtFile.c_str());
     }
     if(localNode.isNull()) {
       localNode.reset(new DHTNode());
