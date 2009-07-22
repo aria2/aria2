@@ -258,7 +258,7 @@ void DefaultBtProgressInfoFile::load()
     array_ptr<unsigned char> savedInfoHash(new unsigned char[infoHashLength]);
     in.read(reinterpret_cast<char*>
 	    (static_cast<unsigned char*>(savedInfoHash)), infoHashLength);
-    CHECK_STREAM(in, infoHashLength);
+    CHECK_STREAM(in, static_cast<int>(infoHashLength));
     if(infoHashCheckEnabled) {
       const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
       if(infoHashLength != INFO_HASH_LENGTH ||
@@ -321,7 +321,7 @@ void DefaultBtProgressInfoFile::load()
   array_ptr<unsigned char> savedBitfield(new unsigned char[bitfieldLength]);
   in.read(reinterpret_cast<char*>
 	  (static_cast<unsigned char*>(savedBitfield)), bitfieldLength);
-  CHECK_STREAM(in, bitfieldLength);
+  CHECK_STREAM(in, static_cast<int>(bitfieldLength));
   if(pieceLength == _dctx->getPieceLength()) {
     _pieceStorage->setBitfield(savedBitfield, bitfieldLength);
 
@@ -372,7 +372,7 @@ void DefaultBtProgressInfoFile::load()
 	(new unsigned char[bitfieldLength]);
       in.read(reinterpret_cast<char*>
 	      (static_cast<unsigned char*>(pieceBitfield)), bitfieldLength);
-      CHECK_STREAM(in, bitfieldLength);
+      CHECK_STREAM(in, static_cast<int>(bitfieldLength));
       piece->setBitfield(pieceBitfield, bitfieldLength);
 
 #ifdef ENABLE_MESSAGE_DIGEST
