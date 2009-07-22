@@ -146,6 +146,10 @@ bool CookieStorage::load(const std::string& filename)
 {
   char header[16]; // "SQLite format 3" plus \0
   std::ifstream s(filename.c_str(), std::ios::binary);
+  if(!s) {
+    _logger->error("Failed to open cookie file %s", filename.c_str());
+    return false;
+  }
   s.get(header, sizeof(header));
   if(!s) {
     _logger->error("Failed to read header of cookie file %s",
