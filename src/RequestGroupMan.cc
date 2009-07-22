@@ -763,21 +763,25 @@ bool RequestGroupMan::saveServerStat(const std::string& filename) const
 {
   std::string tempfile = filename;
   tempfile += "__temp";
-  std::ofstream out(tempfile.c_str(), std::ios::binary);
-  if(!out) {
-    _logger->error(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
-		   tempfile.c_str());
-    return false;
-  }
-  if (_serverStatMan->save(out)) {
-    out.close();
-    if (File(tempfile).renameTo(filename)) {
-      _logger->notice(MSG_SERVER_STAT_SAVED, filename.c_str());
-      return true;
+  {
+    std::ofstream out(tempfile.c_str(), std::ios::binary);
+    if(!out) {
+      _logger->error(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
+		     filename.c_str());
+      return false;
+    }
+    if(!_serverStatMan->save(out)) {
+      _logger->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
+      return false;
     }
   }
-  _logger->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
-  return false;
+  if(File(tempfile).renameTo(filename)) {
+    _logger->notice(MSG_SERVER_STAT_SAVED, filename.c_str());
+    return true;
+  } else {
+    _logger->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
+    return false;
+  }
 }
 
 void RequestGroupMan::removeStaleServerStat(time_t timeout)

@@ -15,6 +15,11 @@
 
 2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten RequestGroupMan::saveServerStat()
+	* src/RequestGroupMan.cc
+
+2009-07-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten stream error handling
 	* src/DHTAutoSaveCommand.cc
 	* src/DHTRoutingTableDeserializer.cc
