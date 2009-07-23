@@ -559,7 +559,7 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   o << "\n"
     <<_("Download Results:") << "\n"
     << "gid|stat|avg speed  |path/URI" << "\n"
-    << "===+====+===========+==========================================================" << "\n";
+    << "===+====+===========+===========================================================" << "\n";
 
   int ok = 0;
   int err = 0;
