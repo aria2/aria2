@@ -1,3 +1,10 @@
+2009-07-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error without BitTorrent support
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+
 2009-07-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing '=' in Download Results

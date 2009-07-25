@@ -91,7 +91,9 @@ DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll):
   _noWait(false),
   _refreshInterval(DEFAULT_REFRESH_INTERVAL),
   _cookieStorage(new CookieStorage()),
+#ifdef ENABLE_BITTORRENT
   _btRegistry(new BtRegistry()),
+#endif // ENABLE_BITTORRENT
   _dnsCache(new DNSCache())
 {}
 

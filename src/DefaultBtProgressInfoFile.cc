@@ -112,7 +112,12 @@ void DefaultBtProgressInfoFile::save()
       throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
 				     _filename.c_str(), strerror(errno)).str());
     }
+#ifdef ENABLE_BITTORRENT
     bool torrentDownload = isTorrentDownload();
+#else // !ENABLE_BITTORRENT
+    bool torrentDownload = false;
+#endif // !ENABLE_BITTORRENT
+
     // file version: 16 bits
     // values: '1'
     char version[] = { 0x00, 0x01 };
@@ -127,6 +132,7 @@ void DefaultBtProgressInfoFile::save()
     }
     o.write(reinterpret_cast<const char*>(&extension), sizeof(extension));
     if(torrentDownload) {
+#ifdef ENABLE_BITTORRENT
       // infoHashLength:
       // length: 32 bits
       const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
@@ -135,6 +141,7 @@ void DefaultBtProgressInfoFile::save()
 	      sizeof(infoHashLengthNL));
       // infoHash:
       o.write(reinterpret_cast<const char*>(infoHash), INFO_HASH_LENGTH);
+#endif // ENABLE_BITTORRENT
     } else {
       // infoHashLength:
       // length: 32 bits
@@ -259,6 +266,7 @@ void DefaultBtProgressInfoFile::load()
     in.read(reinterpret_cast<char*>
 	    (static_cast<unsigned char*>(savedInfoHash)), infoHashLength);
     CHECK_STREAM(in, static_cast<int>(infoHashLength));
+#ifdef ENABLE_BITTORRENT
     if(infoHashCheckEnabled) {
       const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
       if(infoHashLength != INFO_HASH_LENGTH ||
@@ -270,6 +278,7 @@ void DefaultBtProgressInfoFile::load()
 			).str());
       }
     }
+#endif // ENABLE_BITTORRENT
   }
 
   uint32_t pieceLength;

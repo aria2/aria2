@@ -60,12 +60,14 @@ class RequestGroupMan;
 class StatCalc;
 class SocketCore;
 class CookieStorage;
-class BtRegistry;
 class DNSCache;
 class AuthConfigFactory;
 class Request;
 class EventPoll;
 class Command;
+#ifdef ENABLE_BITTORRENT
+class BtRegistry;
+#endif // ENABLE_BITTORRENT
 
 class DownloadEngine {
 private:
@@ -123,7 +125,9 @@ private:
 
   SharedHandle<CookieStorage> _cookieStorage;
 
+#ifdef ENABLE_BITTORRENT
   SharedHandle<BtRegistry> _btRegistry;
+#endif // ENABLE_BITTORRENT
 
   CUIDCounter _cuidCounter;
 
@@ -237,10 +241,12 @@ public:
     return _cookieStorage;
   }
 
+#ifdef ENABLE_BITTORRENT
   const SharedHandle<BtRegistry>& getBtRegistry() const
   {
     return _btRegistry;
   }
+#endif // ENABLE_BITTORRENT
 
   cuid_t newCUID();
 
