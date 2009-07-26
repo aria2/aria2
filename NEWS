@@ -1,3 +1,29 @@
+aria2 1.5.1
+===========
+
+Release Note
+------------
+
+This release fixes linker error in unit test code on 32bit
+systems. The unit test failure on mingw32 was also fixed. The file I/O
+error handlings were written.
+
+Changes
+-------
+
+ * Fixed compile error without BitTorrent support
+
+ * Rewritten stream error handling
+
+ * Make sure that stream is closed before renaming file. Unit test
+   fails on mingw32 in the previous implementation.
+
+ * Fixed the unit test error without sqlite3
+
+ * Fixed the linker error under 32bit systems.
+
+
+
 aria2 1.5.0
 ===========
 
