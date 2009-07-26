@@ -25,6 +25,7 @@ build()
     fi
     ./configure $1 2>&1 | tee "$BUILDDIR/configure_$2.log"\
 	&& cp config.log "$BUILDDIR/config.log_$2" \
+	&& LANG=C make clean \
 	&& LANG=C make -j2 check 2>&1 |tee "$BUILDDIR/aria2c_$2.log" \
 	&& cp src/aria2c "$BUILDDIR/aria2c_$2"
 }
