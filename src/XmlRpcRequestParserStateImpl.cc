@@ -82,7 +82,7 @@ void MethodCallXmlRpcRequestParserState::beginElement
 {
   if(name == elements::METHOD_NAME) {
     stm->pushMethodNameState();
-  } else if(name == elements::PARAMS) {
+  } else if(name == elements::A2_PARAMS) {
     stm->setCurrentFrameValue(BDE::list());
     stm->pushParamsState();
   } else {

@@ -1,3 +1,11 @@
+2009-08-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed xmlrpc::elements::PARAMS to xmlrpc::elements::A2_PARAMS
+	because it causes compile error if PARAMS macro is defined.
+	* src/XmlRpcElements.cc
+	* src/XmlRpcElements.h
+	* src/XmlRpcRequestParserStateImpl.cc
+
 2009-07-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	* Release 1.5.1

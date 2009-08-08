@@ -40,7 +40,7 @@ namespace elements {
 
 const std::string METHOD_CALL("methodCall");
 const std::string METHOD_NAME("methodName");
-const std::string PARAMS("params");
+const std::string A2_PARAMS("params");
 const std::string PARAM("param");
 const std::string VALUE("value");
 const std::string I4("i4");

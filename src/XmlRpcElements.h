@@ -45,7 +45,7 @@ namespace elements {
 
 extern const std::string METHOD_CALL;
 extern const std::string METHOD_NAME;
-extern const std::string PARAMS;
+extern const std::string A2_PARAMS;
 extern const std::string PARAM;
 extern const std::string VALUE;
 extern const std::string I4;
