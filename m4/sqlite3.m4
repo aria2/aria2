@@ -29,6 +29,8 @@ if test "x$have_sqlite3" != "xyes"; then
   fi
 fi
 if test "x$have_sqlite3" = "xyes"; then
+    LIBS="$SQLITE3_LIBS $LIBS"
+    CPPFLAGS="$SQLITE3_CFLAGS $CPPFLAGS"
     AC_CHECK_FUNCS([sqlite3_open_v2])
     AC_DEFINE([HAVE_SQLITE3], [1], [Define to 1 if you have sqlite3.])
     AC_SUBST(SQLITE3_LIBS)

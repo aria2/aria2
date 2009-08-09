@@ -6401,6 +6401,8 @@ fi
   fi
 fi
 if test "x$have_sqlite3" = "xyes"; then
+    LIBS="$SQLITE3_LIBS"
+    CPPFLAGS="$SQLITE3_CFLAGS"
 
 for ac_func in sqlite3_open_v2
 do
