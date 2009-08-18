@@ -1,5 +1,11 @@
 2009-08-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Avoided unnecessary memory allocation in
+	BitfieldMan::getCompletedLength().
+	* src/BitfieldMan.cc
+
+2009-08-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that download fails if
 	SocketCore::establishConnection() throws exception and aria2
 	doesn't try another address.
