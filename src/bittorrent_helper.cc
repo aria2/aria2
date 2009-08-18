@@ -515,7 +515,8 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
   o << "Info Hash: " << Util::toHex(torrentAttrs[INFO_HASH].s()) << "\n";
   o << "Piece Length: " << Util::abbrevSize(dctx->getPieceLength()) << "B\n";
   o << "The Number of Pieces: " << dctx->getNumPieces() << "\n";
-  o << "Total Length: " << Util::abbrevSize(dctx->getTotalLength()) << "B\n";
+  o << "Total Length: " << Util::abbrevSize(dctx->getTotalLength()) << "B ("
+    << Util::uitos(dctx->getTotalLength(), true) << ")\n";
   if(!torrentAttrs[URL_LIST].empty()) {
     const BDE& urlList = torrentAttrs[URL_LIST];
     o << "URL List: " << "\n";

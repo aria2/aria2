@@ -255,7 +255,8 @@ public:
     int32_t count = 1;
     for(; first != last; ++first, ++count) {
     os << std::setw(3) << count << "|" << (*first)->getPath() << "\n";
-    os << "   |" << Util::abbrevSize((*first)->getLength()) << "B" << "\n";
+    os << "   |" << Util::abbrevSize((*first)->getLength()) << "B ("
+       << Util::uitos((*first)->getLength(), true) << ")\n";
     os << "---+---------------------------------------------------------------------------" << "\n";
     }
   }

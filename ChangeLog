@@ -1,5 +1,12 @@
 2009-08-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Show exact file size along in -S option output.
+	* src/Util.h
+	* src/bittorrent_helper.cc
+	* test/UtilTest.cc
+
+2009-08-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Avoided unnecessary memory allocation in
 	BitfieldMan::getCompletedLength().
 	* src/BitfieldMan.cc
