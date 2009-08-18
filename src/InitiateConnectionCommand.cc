@@ -47,6 +47,7 @@
 #include "DownloadContext.h"
 #include "Segment.h"
 #include "a2functional.h"
+#include "InitiateConnectionCommandFactory.h"
 
 namespace aria2 {
 
@@ -111,10 +112,28 @@ bool InitiateConnectionCommand::executeInternal() {
     logger->info(MSG_DNS_CACHE_HIT, cuid, hostname.c_str(), ipaddr.c_str());
     addrs.push_back(ipaddr);
   }
-  Command* command = createNextCommand(hostname, ipaddr, port,
+  try {
+    Command* command = createNextCommand(hostname, ipaddr, port,
 				       addrs, proxyRequest);
-  e->commands.push_back(command);
-  return true;
+    e->commands.push_back(command);
+    return true;
+  } catch(RecoverableException& ex) {
+    // Catch exception and retry another address.
+    // See also AbstractCommand::checkIfConnectionEstablished
+    e->markBadIPAddress(hostname, ipaddr, port);
+    if(!e->findCachedIPAddress(hostname, port).empty()) {
+      logger->info(EX_EXCEPTION_CAUGHT, ex);
+      logger->info(MSG_CONNECT_FAILED_AND_RETRY, cuid, ipaddr.c_str(), port);
+      Command* command =
+	InitiateConnectionCommandFactory::createInitiateConnectionCommand
+	(cuid, req, _fileEntry, _requestGroup, e);
+      e->setNoWait(true);
+      e->commands.push_back(command);
+      return true;
+    }
+    e->removeCachedIPAddress(hostname, port);
+    throw;
+  }
 }
 
 } // namespace aria2

@@ -546,10 +546,10 @@ bool AbstractCommand::checkIfConnectionEstablished
   if(socket->isReadable(0)) {
     std::string error = socket->getSocketError();
     if(!error.empty()) {
+      // See also InitiateConnectionCommand::executeInternal()
       e->markBadIPAddress(connectedHostname, connectedAddr, connectedPort);
       if(!e->findCachedIPAddress(connectedHostname, connectedPort).empty()) {
-	logger->info("CUID#%d - Could not to connect to %s:%u."
-		     " Trying another address",
+	logger->info(MSG_CONNECT_FAILED_AND_RETRY,
 		     cuid, connectedAddr.c_str(), connectedPort);
 	Command* command =
 	  InitiateConnectionCommandFactory::createInitiateConnectionCommand

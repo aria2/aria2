@@ -1,3 +1,18 @@
+2009-08-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that download fails if
+	SocketCore::establishConnection() throws exception and aria2
+	doesn't try another address.
+	* src/AbstractCommand.cc
+	* src/InitiateConnectionCommand.cc
+	* src/message.h
+
+2009-08-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed sqlite3.m4 macro so that sqlite3_open_v2 function is
+	detected properly.
+	* m4/sqlite3.m4
+
 2009-08-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed xmlrpc::elements::PARAMS to xmlrpc::elements::A2_PARAMS
