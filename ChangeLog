@@ -1,3 +1,13 @@
+2009-08-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Get comment, comment.utf-8, created by and creation date from
+	.torrent file and print them in -S output.
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+	* test/test.torrent
+	* test/utf8.torrent
+
 2009-08-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Show exact file size along in -S option output.

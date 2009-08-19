@@ -83,6 +83,14 @@ static const std::string C_ANNOUNCE_LIST("announce-list");
 
 static const std::string C_NODES("nodes");
 
+static const std::string C_CREATION_DATE("creation date");
+
+static const std::string C_COMMENT("comment");
+
+static const std::string C_COMMENT_UTF8("comment.utf-8");
+
+static const std::string C_CREATED_BY("created by");
+
 static const std::string DEFAULT_PEER_ID_PREFIX("-aria2-");
 
 const std::string INFO_HASH("infoHash");
@@ -102,6 +110,12 @@ const std::string PORT("port");
 const std::string NAME("name");
 
 const std::string URL_LIST("urlList");
+
+const std::string CREATION_DATE("creationDate");
+
+const std::string COMMENT("comment");
+
+const std::string CREATED_BY("createdBy");
 
 const std::string BITTORRENT("bittorrent");
 
@@ -402,6 +416,24 @@ static void processRootDictionary
   // retrieve nodes
   extractNodes(torrent, rootDict[C_NODES]);
 
+  const BDE& creationDate = rootDict[C_CREATION_DATE];
+  if(creationDate.isInteger()) {
+    torrent[CREATION_DATE] = creationDate;
+  }
+  const BDE& commentUtf8 = rootDict[C_COMMENT_UTF8];
+  if(commentUtf8.isString()) {
+    torrent[COMMENT] = commentUtf8;
+  } else {
+    const BDE& comment = rootDict[C_COMMENT];
+    if(comment.isString()) {
+      torrent[COMMENT] = comment;
+    }
+  }
+  const BDE& createdBy = rootDict[C_CREATED_BY];
+  if(createdBy.isString()) {
+    torrent[CREATED_BY] = createdBy;
+  }
+
   ctx->setAttribute(BITTORRENT, torrent);
 }
 
@@ -498,6 +530,22 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
 {
   const BDE& torrentAttrs = dctx->getAttribute(BITTORRENT);
   o << "*** BitTorrent File Information ***" << "\n";
+  if(torrentAttrs.containsKey(COMMENT)) {
+    o << "Comment: " << torrentAttrs[COMMENT].s() << "\n";
+  }
+  if(torrentAttrs.containsKey(CREATION_DATE)) {
+    struct tm* staticNowtmPtr;
+    char buf[26];
+    time_t t = torrentAttrs[CREATION_DATE].i();
+    if((staticNowtmPtr = localtime(&t)) != 0 &&
+       asctime_r(staticNowtmPtr, buf) != 0) {
+      // buf includes "\n"
+      o << "Creation Date: " << buf;
+    }
+  }
+  if(torrentAttrs.containsKey(CREATED_BY)) {
+    o << "Created By: " << torrentAttrs[CREATED_BY].s() << "\n";
+  }
   o << "Mode: " << torrentAttrs[MODE].s() << "\n";
   o << "Announce:" << "\n";
   const BDE& announceList = torrentAttrs[ANNOUNCE_LIST];

@@ -71,6 +71,12 @@ extern const std::string NAME;
 
 extern const std::string URL_LIST;
 
+extern const std::string CREATION_DATE;
+
+extern const std::string COMMENT;
+
+extern const std::string CREATED_BY;
+
 extern const std::string SINGLE;
 
 extern const std::string MULTI;

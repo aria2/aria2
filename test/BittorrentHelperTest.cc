@@ -51,6 +51,7 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetFileFilter_single);
   CPPUNIT_TEST(testSetFileFilter_multi);
   CPPUNIT_TEST(testUTF8Torrent);
+  CPPUNIT_TEST(testMetaData);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -86,6 +87,7 @@ public:
   void testSetFileFilter_single();
   void testSetFileFilter_multi();
   void testUTF8Torrent();
+  void testMetaData();
 };
 
 
@@ -625,6 +627,20 @@ void BittorrentHelperTest::testUTF8Torrent()
   CPPUNIT_ASSERT_EQUAL(std::string("name in utf-8"), getName(dctx));
   CPPUNIT_ASSERT_EQUAL(std::string("./name in utf-8/path in utf-8"),
 		       dctx->getFirstFileEntry()->getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("This is utf8 comment."),
+		       dctx->getAttribute(BITTORRENT)[COMMENT].s());
+}
+
+void BittorrentHelperTest::testMetaData()
+{
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  load("test.torrent", dctx);
+  CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"),
+		       dctx->getAttribute(BITTORRENT)[COMMENT].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
+		       dctx->getAttribute(BITTORRENT)[CREATED_BY].s());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1123456789,
+		       dctx->getAttribute(BITTORRENT)[CREATION_DATE].i());
 }
 
 } // namespace bittorrent
