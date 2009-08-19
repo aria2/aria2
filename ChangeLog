@@ -1,5 +1,10 @@
 2009-08-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.5.2
+	* configure.ac
+
+2009-08-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Get comment, comment.utf-8, created by and creation date from
 	.torrent file and print them in -S output.
 	* src/bittorrent_helper.cc
