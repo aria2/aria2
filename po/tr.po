@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-07-18 18:20+0900\n"
+"POT-Creation-Date: 2009-08-21 13:56+0900\n"
 "PO-Revision-Date: 2008-09-17 19:59+0900\n"
 "Last-Translator: wyginwys <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-09-17 10:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:210
+#: src/DownloadEngine.cc:212
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "Kapanma başlıyor...Acil kapanış için Ctrl-C ye tekrar basın."
 
-#: src/DownloadEngine.cc:216
+#: src/DownloadEngine.cc:218
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Acil kapanış başlıyor..."
 
@@ -1867,49 +1867,49 @@ msgstr "CUID#%d - #%d yeni izleyici istek komutu oluşturuluyor"
 msgid "CUID#%d - The peer is DHT-enabled."
 msgstr "CUID#%d - Peer de DHT mevcut."
 
-#: src/message.h:93
+#: src/message.h:95
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr "Anlaşılmayan URI ya da desteklenmeyen protokol: %s"
 
-#: src/message.h:94
+#: src/message.h:96
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr "İzleyici %s uyarı mesajını gönderdi."
 
-#: src/message.h:95
+#: src/message.h:97
 #, c-format
 msgid "The segment file %s exists."
 msgstr "%s dosya parçası var."
 
-#: src/message.h:96
+#: src/message.h:98
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr "%s dosya parçası yok."
 
-#: src/message.h:97
+#: src/message.h:99
 #, c-format
 msgid "Saving the segment file %s"
 msgstr "%s dosya parçası kaydediliyor."
 
-#: src/message.h:98
+#: src/message.h:100
 msgid "The segment file was saved successfully."
 msgstr "Dosya parçası başarıyla kaydedildi."
 
-#: src/message.h:99
+#: src/message.h:101
 #, c-format
 msgid "Loading the segment file %s."
 msgstr "%s dosya parçası yükleniyor."
 
-#: src/message.h:100
+#: src/message.h:102
 msgid "The segment file was loaded successfully."
 msgstr "Dosya parçası başarıyla yüklendi."
 
-#: src/message.h:101
+#: src/message.h:103
 msgid "No URI to download. Download aborted."
 msgstr "İndirilecek URI yok.İndirme iptal edildi."
 
-#: src/message.h:102
+#: src/message.h:104
 #, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
@@ -1922,105 +1922,105 @@ msgstr ""
 "Tekrar indirmek istediğinizden emin iseniz ya silin ya da --allow-"
 "overwrıte=true seçeneğini ekleyip aria2yi tekrar başlatın."
 
-#: src/message.h:103
+#: src/message.h:105
 #, c-format
 msgid "Allocating file %s, %s bytes"
 msgstr "%s dosyasına yer ayrılıyor, %s bytes"
 
-#: src/message.h:104
+#: src/message.h:106
 msgid "File not found"
 msgstr "Dosya bulunamadı"
 
-#: src/message.h:105
+#: src/message.h:107
 msgid "Not a directory"
 msgstr "Bir dizin değil"
 
-#: src/message.h:106
+#: src/message.h:108
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 msgstr "Chekcksumlar yetersiz. checksumuzunluğu=%d checksumsayısı=%d"
 
-#: src/message.h:107
+#: src/message.h:109
 #, c-format
 msgid "Writing file %s"
 msgstr "%s dosyası yazılıyor"
 
-#: src/message.h:108
+#: src/message.h:110
 msgid "No peer list received."
 msgstr "Hiç peer listesi alınmadı"
 
-#: src/message.h:109
+#: src/message.h:111
 #, c-format
 msgid "Adding peer %s:%d"
 msgstr "%s:%d peer i ekleniyor"
 
-#: src/message.h:110
+#: src/message.h:112
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr "Kullanılan parça siliniyor indeks=%d, fillRate(%%)=%d<=%d"
 
-#: src/message.h:111
+#: src/message.h:113
 msgid "Download of selected files was complete."
 msgstr "Seçilen dosya indirildi."
 
-#: src/message.h:112
+#: src/message.h:114
 msgid "The download was complete."
 msgstr "İndirme tamamnlandı."
 
-#: src/message.h:113
+#: src/message.h:115
 #, c-format
 msgid "Removed %d have entries."
 msgstr "Girdili %d silindi."
 
-#: src/message.h:114
+#: src/message.h:116
 #, c-format
 msgid "Validating file %s"
 msgstr "%s dosyası doğrulanıyor"
 
-#: src/message.h:115
+#: src/message.h:117
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
 msgstr "%d saniyede %s byte(s) için yer ayrılacak"
 
-#: src/message.h:116
+#: src/message.h:118
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
 msgstr "CUID#%d için FileAllocationCommand gönderiliyor"
 
-#: src/message.h:117
+#: src/message.h:119
 #, c-format
 msgid "Metalink: Queueing %s for download."
 msgstr "Metalink: %s indirme sırasına alınıyor."
 
-#: src/message.h:118
+#: src/message.h:120
 #, c-format
 msgid "Download complete: %s"
 msgstr "İndirme tamamnlandı: %s"
 
-#: src/message.h:119
+#: src/message.h:121
 msgid "Seeding is over."
 msgstr "Tohumlama bitti."
 
-#: src/message.h:120
+#: src/message.h:122
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
 msgstr "CUID#%d indeks=%d segmenti iptal etti.CUID#%d onunla ilgileniyor."
 
-#: src/message.h:121
+#: src/message.h:123
 msgid "No chunk to verify."
 msgstr "Doğrulanacak parça yok."
 
-#: src/message.h:122
+#: src/message.h:124
 #, c-format
 msgid "Good chunk checksum. hash=%s"
 msgstr "Parça checksumı doğru. hash=%s"
 
-#: src/message.h:123
+#: src/message.h:125
 #, c-format
 msgid "Failed to load cookies from %s"
 msgstr "%s den çerezler yüklenemedi."
 
-#: src/message.h:124
+#: src/message.h:126
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
@@ -2029,214 +2029,214 @@ msgstr ""
 "%s .netrc dosyasında doğru izinler yok.İzinler 600 olmalıydı. netrc desteği "
 "kaptıldı."
 
-#: src/message.h:125
+#: src/message.h:127
 msgid "Logging started."
 msgstr "Loglama başladı."
 
-#: src/message.h:126
+#: src/message.h:128
 msgid "Specify at least one URL."
 msgstr "En az bir URl belirlemelisiniz."
 
-#: src/message.h:127
+#: src/message.h:129
 msgid "daemon failed."
 msgstr "daemon başarısız."
 
-#: src/message.h:128
+#: src/message.h:130
 #, c-format
 msgid "Verification finished successfully. file=%s"
 msgstr "Doğrulama başarıyla tamamlandı.Dosya=%s"
 
-#: src/message.h:129
+#: src/message.h:131
 #, c-format
 msgid "Checksum error detected. file=%s"
 msgstr "Checksumda hata bulundu. Dosya=%s"
 
-#: src/message.h:130
+#: src/message.h:132
 #, c-format
 msgid "Incomplete range specified. %s"
 msgstr "Eksik aralık belirtildi.%s"
 
-#: src/message.h:131
+#: src/message.h:133
 #, c-format
 msgid "Failed to convert string into value: %s"
 msgstr "Dizi değeri sayıya çevrilemiyor: %s"
 
-#: src/message.h:132
+#: src/message.h:134
 msgid "Resource not found"
 msgstr "Kaynak bulunamadı"
 
-#: src/message.h:133
+#: src/message.h:135
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr "Bu isimde zaten bir dosya var. Yeni isim %s verildi."
 
-#: src/message.h:134
+#: src/message.h:136
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr "Metalink XML dosyası okunamıyor.Yanlış formatta olabilir."
 
-#: src/message.h:135
+#: src/message.h:137
 #, c-format
 msgid "Too small payload size for %s, size=%d."
 msgstr "%s için payload büyüklüğü çok az, büyüklük=%d"
 
-#: src/message.h:136
+#: src/message.h:138
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
 msgstr "Çalışmayan kontrol dosyası %s silindi, çünkü %s indirme dosyası yok."
 
-#: src/message.h:137
+#: src/message.h:139
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr "Paylaşma oranınız %.1f , upload/download=%sB/%sB"
 
-#: src/message.h:138
+#: src/message.h:140
 #, c-format
 msgid "Missing %s in torrent metainfo."
 msgstr "Torrent meta bilgilerinde %s eksik."
 
-#: src/message.h:139
+#: src/message.h:141
 msgid "Tracker returned null data."
 msgstr "İzleyici boş veri gönderdi."
 
-#: src/message.h:140
+#: src/message.h:142
 msgid "Windows socket library initialization failed"
 msgstr "Windows soket kütüphanesi başlatılamadı."
 
-#: src/message.h:141
+#: src/message.h:143
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
 msgstr "%d saniye geçti.Uygulama sonlandırılıyor."
 
-#: src/message.h:142
+#: src/message.h:144
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr ""
 "İmza %s olarak kaydedildi.aria2 nin imzaları kontrol etmediğini unutmayınız."
 
-#: src/message.h:144
+#: src/message.h:146
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr "İmza %s olarak kayededilemiyor.Böyle bir dosya var olabilir."
 
-#: src/message.h:147
+#: src/message.h:149
 #, fuzzy, c-format
 msgid "Failed to open ServerStat file %s for read."
 msgstr "%s dosyası %s sebebinden açılamadı"
 
-#: src/message.h:148
+#: src/message.h:150
 #, fuzzy, c-format
 msgid "ServerStat file %s loaded successfully."
 msgstr "Dosya parçası başarıyla yüklendi."
 
-#: src/message.h:149
+#: src/message.h:151
 #, fuzzy, c-format
 msgid "Failed to read ServerStat from %s."
 msgstr "Diskten veri okunamadı."
 
-#: src/message.h:152
+#: src/message.h:154
 #, fuzzy, c-format
 msgid "Failed to open ServerStat file %s for write."
 msgstr "%s dosyası %s sebebinden açılamadı"
 
-#: src/message.h:153
+#: src/message.h:155
 #, fuzzy, c-format
 msgid "ServerStat file %s saved successfully."
 msgstr "Dosya parçası başarıyla kaydedildi."
 
-#: src/message.h:154
+#: src/message.h:156
 #, fuzzy, c-format
 msgid "Failed to write ServerStat to %s."
 msgstr "%s sebebinden dolayı veri alınamıyor"
 
-#: src/message.h:157
+#: src/message.h:159
 #, fuzzy, c-format
 msgid "Failed to establish connection, cause: %s"
 msgstr "%s sebebiyle peer bağlantısı kabul edilmedi"
 
-#: src/message.h:158
+#: src/message.h:160
 #, c-format
 msgid "Network problem has occurred. cause:%s"
 msgstr ""
 
-#: src/message.h:160
+#: src/message.h:162
 #, fuzzy, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "%s dosyasından %s sebebiyle okunamadı"
 
-#: src/message.h:162
+#: src/message.h:164
 #, c-format
 msgid "Certificate verification failed. Cause: %s"
 msgstr ""
 
-#: src/message.h:163
+#: src/message.h:165
 #, fuzzy
 msgid "No certificate found."
 msgstr "Hiç başlık bulunamadı."
 
-#: src/message.h:164
+#: src/message.h:166
 msgid "Hostname not match."
 msgstr ""
 
-#: src/message.h:165
+#: src/message.h:167
 msgid "No files to download."
 msgstr ""
 
-#: src/message.h:167
+#: src/message.h:169
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
 msgstr ""
 
-#: src/message.h:169
+#: src/message.h:171
 #, fuzzy, c-format
 msgid "Printing the contents of file '%s'..."
 msgstr "'%s' ile başlayan seçenekler gösteriliyor."
 
-#: src/message.h:170
+#: src/message.h:172
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr ""
 
-#: src/message.h:176
+#: src/message.h:178
 msgid "Timeout."
 msgstr "Zamanaşımı."
 
-#: src/message.h:177
+#: src/message.h:179
 msgid "Invalid chunk size."
 msgstr "Geçersiz parça büyüklüğü."
 
-#: src/message.h:178
+#: src/message.h:180
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Çok büyük parça. büyüklük=%d"
 
-#: src/message.h:179
+#: src/message.h:181
 msgid "Invalid header."
 msgstr "Geçersiz başlık."
 
-#: src/message.h:180
+#: src/message.h:182
 msgid "Invalid response."
 msgstr "Geçersiz cevap."
 
-#: src/message.h:181
+#: src/message.h:183
 msgid "No header found."
 msgstr "Hiç başlık bulunamadı."
 
-#: src/message.h:182
+#: src/message.h:184
 msgid "No status header."
 msgstr "Durum başlığı yok."
 
-#: src/message.h:183
+#: src/message.h:185
 msgid "Proxy connection failed."
 msgstr "Proxy bağlantısı oluşturulamadı."
 
-#: src/message.h:184
+#: src/message.h:186
 msgid "Connection failed."
 msgstr "Bağlantı başarısız."
 
-#: src/message.h:185
+#: src/message.h:187
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2245,226 +2245,226 @@ msgstr ""
 "İstenilen ve daha önce kaydedilen dosya isimleri aynı değil. Beklenen:%s "
 "Verilen:%s"
 
-#: src/message.h:186
+#: src/message.h:188
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Cevap durumu başarılı değil. durum=%d"
 
-#: src/message.h:187
+#: src/message.h:189
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Çok büyük dosya büyüklüğü. büyüklük=%s"
 
-#: src/message.h:188
+#: src/message.h:190
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Transfer şifrelemesi %s desteklenmiyor."
 
-#: src/message.h:189
+#: src/message.h:191
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "SSl başlatılamadı: %s"
 
-#: src/message.h:190
+#: src/message.h:192
 msgid "SSL I/O error"
 msgstr "SSL G/Ç hatası"
 
-#: src/message.h:191
+#: src/message.h:193
 msgid "SSL protocol error"
 msgstr "SSL protokol hatası"
 
-#: src/message.h:192
+#: src/message.h:194
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "SSL bilinmeyen hata %d"
 
-#: src/message.h:193
+#: src/message.h:195
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "SSL başlatılamadı: OpenSSL bağlantı hatası %d"
 
-#: src/message.h:194
+#: src/message.h:196
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Büyüklük uyuşmuyor Beklenen:%s Gelen:%s"
 
-#: src/message.h:195
+#: src/message.h:197
 msgid "Authorization failed."
 msgstr "Yetkilendirme başarısız."
 
-#: src/message.h:196
+#: src/message.h:198
 msgid "Got EOF from the server."
 msgstr "Sunucudan EOF alındı."
 
-#: src/message.h:197
+#: src/message.h:199
 msgid "Got EOF from peer."
 msgstr "Peerden EOF alındı."
 
-#: src/message.h:198
+#: src/message.h:200
 msgid "Malformed meta info."
 msgstr "Yanlış formatlı meta bilgisi."
 
-#: src/message.h:200
+#: src/message.h:202
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "%s dosyası %s sebebinden açılamadı"
 
-#: src/message.h:201
+#: src/message.h:203
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "%s dosyasına %s sebebinden yazılamadı"
 
-#: src/message.h:202
+#: src/message.h:204
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "%s dosyasından %s sebebiyle okunamadı"
 
-#: src/message.h:203
+#: src/message.h:205
 msgid "Failed to read data from disk."
 msgstr "Diskten veri okunamadı."
 
-#: src/message.h:204
+#: src/message.h:206
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "%s dosyasının bir parçası veya SHA1 özeti hesaplaması %s sebebiyle yapılamadı"
 
-#: src/message.h:205
+#: src/message.h:207
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "%s dosyası %s sebebiyle aranamadı"
 
-#: src/message.h:206
+#: src/message.h:208
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Artış aralık dışı, artış=%s"
 
-#: src/message.h:207
+#: src/message.h:209
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s bir dizin değil"
 
-#: src/message.h:208
+#: src/message.h:210
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "%s dizini %s sebebiyle oluşturulamadı"
 
-#: src/message.h:209
+#: src/message.h:211
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "%s parça dosyası %s sebebiyle açılamadı"
 
-#: src/message.h:210
+#: src/message.h:212
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "%s parça dosyasına %s sebebiyle yazılamadı"
 
-#: src/message.h:211
+#: src/message.h:213
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "%s parça dosyasından %s sebebiyle okunamadı"
 
-#: src/message.h:213
+#: src/message.h:215
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "%s sebebiyle soket açılamadı"
 
-#: src/message.h:214
+#: src/message.h:216
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "%s sebebiyle soket yerleştirilemedi"
 
-#: src/message.h:215
+#: src/message.h:217
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "%s sebebiyle soket bloke edilemedi"
 
-#: src/message.h:216
+#: src/message.h:218
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "%s sebebiyle soket bloke olmayan olarak ayarlanamadı"
 
-#: src/message.h:217
+#: src/message.h:219
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "%s sebebiyle soket tutulamadı"
 
-#: src/message.h:218
+#: src/message.h:220
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "%s sebebiyle soket dinlenemedi"
 
-#: src/message.h:219
+#: src/message.h:221
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "%s sebebiyle peer bağlantısı kabul edilmedi"
 
-#: src/message.h:220
+#: src/message.h:222
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "%s sebeiyle soketin adı alınamadı"
 
-#: src/message.h:221
+#: src/message.h:223
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "%s sebebiyle bağlanılan peer in adı alınamadı"
 
-#: src/message.h:222
+#: src/message.h:224
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "%s makinesinin adı çözülemedi sebep: %s"
 
-#: src/message.h:223
+#: src/message.h:225
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "%s makinesine %s sebebinden dolayı bağlanılamyor"
 
-#: src/message.h:224
+#: src/message.h:226
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "%s sebebinden dolayı soketin yazılabilir olduğu anlaşılamıyor"
 
-#: src/message.h:225
+#: src/message.h:227
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "%s sebebinden dolayı soketin okunabilir olduğu anlaşılamıyor"
 
-#: src/message.h:226
+#: src/message.h:228
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "%s sebebiyle veri gönderilemiyor"
 
-#: src/message.h:227
+#: src/message.h:229
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "%s sebebinden dolayı veri alınamıyor"
 
-#: src/message.h:228
+#: src/message.h:230
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "%s sebebinden dolayı veri gözlenemiyor"
 
-#: src/message.h:229
+#: src/message.h:231
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Bilinmeyen soket hatası %d (0x%x)"
 
-#: src/message.h:230
+#: src/message.h:232
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "%s dosyası var ama %s dosyası yok."
 
-#: src/message.h:231
+#: src/message.h:233
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "%s için geçersiz payload büyüklüğü,büyüklük=%d. %d olmalıydı."
 
-#: src/message.h:232
+#: src/message.h:234
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Geçersiz ID=%d %s için . %d olmalıydı."
 
-#: src/message.h:233
+#: src/message.h:235
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2473,29 +2473,29 @@ msgstr ""
 "Parça checksum doğrulaması başarısız. checksumindeks=%d artış=%s, "
 "beklenenHash=%s, eldekıhash=%s"
 
-#: src/message.h:234
+#: src/message.h:236
 msgid "Download aborted."
 msgstr "İndirme iptal edildi."
 
-#: src/message.h:235
+#: src/message.h:237
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "%s dosyası başka bir komut tarafından indiriliyor."
 
-#: src/message.h:236
+#: src/message.h:238
 msgid "Insufficient checksums."
 msgstr "Yetersiz checksumlar."
 
-#: src/message.h:237
+#: src/message.h:239
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "İzleyici başarısızlık sebebi olarak %s gönderdi."
 
-#: src/message.h:238
+#: src/message.h:240
 msgid "Flooding detected."
 msgstr "Flooding algılandı."
 
-#: src/message.h:239
+#: src/message.h:241
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2504,48 +2504,48 @@ msgstr ""
 "%d saniyede herhangi istek/parça mesajı alişverişi yapılmadığı için bağlantı "
 "kapatıldı."
 
-#: src/message.h:240
+#: src/message.h:242
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr "Torrent dosyasındaki infoHash .aria2 dosyasındaki ile tutmuyor."
 
-#: src/message.h:241
+#: src/message.h:243
 #, c-format
 msgid "No such file entry %s"
 msgstr "%s dosya girdisi yok."
 
-#: src/message.h:242
+#: src/message.h:244
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Download hızı çok yavaş: %d <= %d(B/s), makine:%s"
 
-#: src/message.h:243
+#: src/message.h:245
 msgid "No HttpRequestEntry found."
 msgstr "HttpRequestEntry bulunamadı."
 
-#: src/message.h:244
+#: src/message.h:246
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "%d durumu alındı ama yer başlığı gönderilmedi."
 
-#: src/message.h:245
+#: src/message.h:247
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Geçersiz başlık aralığı.İstek: %s-%s/%s, Cevap: %s-%s/%s"
 
-#: src/message.h:246
+#: src/message.h:248
 msgid "No file matched with your preference."
 msgstr "Tercihlerinizle eşleşen dosya yok."
 
-#: src/message.h:247
+#: src/message.h:249
 msgid "Exception caught"
 msgstr "Öngörülmeyen hata algılandı."
 
-#: src/message.h:248
+#: src/message.h:250
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "Maksimum payload uzunluğu aşıldı ve geçersiz. uzunluk= %u"
 
-#: src/message.h:249
+#: src/message.h:251
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""

@@ -1,3 +1,10 @@
+2009-08-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated Ukrainian and Russian translations. Thanks to all
+	translators.
+	* po/ru.po
+	* po/uk.po
+
 2009-08-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Bump up version number to 1.5.2
