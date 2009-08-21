@@ -1,3 +1,39 @@
+aria2 1.5.2
+===========
+
+Release Note
+------------
+
+This release fixes the bug that when the first attempt to establishing
+connection fails, aria2 don't try to connect another address and a
+download immediately fails.  -S output was enhanced: exact file size
+is now printed. For -S with torrent file, meta data such as comment,
+comment.utf-8, created by and creation date are now printed. Ukrainian
+and Russian translations were updated.
+
+Changes
+-------
+
+ * Updated Ukrainian and Russian translations. Thanks to all
+   translators.
+
+ * Get comment, comment.utf-8, created by and creation date from
+   .torrent file and print them in -S output.
+
+ * Show exact file size along in -S option output.
+
+ * Fixed the bug that download fails if
+   SocketCore::establishConnection() throws exception and aria2
+   doesn't try another address.
+
+ * Fixed sqlite3.m4 macro so that sqlite3_open_v2 function is detected
+   properly.
+
+ * Renamed xmlrpc::elements::PARAMS to xmlrpc::elements::A2_PARAMS
+   because it causes compile error if PARAMS macro is defined.
+
+
+
 aria2 1.5.1
 ===========
 
