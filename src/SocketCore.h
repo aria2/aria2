@@ -145,10 +145,11 @@ public:
 
   /**
    * Creates a socket and bind it with locahost's address and port.
+   * flags is set to struct addrinfo's ai_flags.
    * @param port port to listen. If 0 is specified, os automaticaly
    * choose avaiable port.
    */
-  void bind(uint16_t port);
+  void bind(uint16_t port, int flags = AI_PASSIVE);
 
   /**
    * Listens form connection on it.

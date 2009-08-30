@@ -393,6 +393,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
 #ifdef ENABLE_XML_RPC
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_XML_RPC_LISTEN_ALL,
+				    TEXT_XML_RPC_LISTEN_ALL,
+				    V_FALSE,
+				    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
 				   (PREF_XML_RPC_LISTEN_PORT,
 				    TEXT_XML_RPC_LISTEN_PORT,

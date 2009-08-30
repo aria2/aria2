@@ -42,6 +42,8 @@
 #include "CUIDCounter.h"
 #include "RequestGroupMan.h"
 #include "FileEntry.h"
+#include "prefs.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -91,7 +93,11 @@ bool HttpListenCommand::bindPort(uint16_t port)
   _serverSocket.reset(new SocketCore());
   logger->info("CUID#%d - Setting up HttpListenCommand", cuid);
   try {
-    _serverSocket->bind(port);
+    int flags = 0;
+    if(_e->option->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
+      flags = AI_PASSIVE;
+    }
+    _serverSocket->bind(port, flags);
     _serverSocket->beginListen();
     _serverSocket->setNonBlockingMode();
     logger->info(MSG_LISTENING_PORT, cuid, port);

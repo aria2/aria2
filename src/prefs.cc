@@ -172,6 +172,8 @@ const std::string PREF_ON_DOWNLOAD_START("on-download-start");
 const std::string PREF_ON_DOWNLOAD_STOP("on-download-stop");
 const std::string PREF_ON_DOWNLOAD_COMPLETE("on-download-complete");
 const std::string PREF_ON_DOWNLOAD_ERROR("on-download-error");
+// value: true | false
+const std::string PREF_XML_RPC_LISTEN_ALL("xml-rpc-listen-all");
 
 /**
  * FTP related preferences

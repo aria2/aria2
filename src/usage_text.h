@@ -562,3 +562,7 @@ _(" --on-download-stop=COMMAND   Set the command to be executed when download\n"
 _(" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is 0 in\n"\
   "                              consecutive SEC seconds. If 0 is given, this\n"\
   "                              feature is disabled.")
+#define TEXT_XML_RPC_LISTEN_ALL \
+_(" --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"\
+  "                              network interfaces. If false is given, listen only\n"\
+  "                              on local loopback interface.")

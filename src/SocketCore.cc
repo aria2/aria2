@@ -159,7 +159,7 @@ std::string uitos(T value)
   return str;
 }
 
-void SocketCore::bind(uint16_t port)
+void SocketCore::bind(uint16_t port, int flags)
 {
   closeConnection();
 
@@ -168,7 +168,7 @@ void SocketCore::bind(uint16_t port)
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = _protocolFamily;
   hints.ai_socktype = _sockType;
-  hints.ai_flags = AI_PASSIVE;
+  hints.ai_flags = flags;
   hints.ai_protocol = 0;
   int s;
   s = getaddrinfo(0, uitos(port).c_str(), &hints, &res);
