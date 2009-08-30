@@ -1,5 +1,10 @@
 2009-08-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --xml-rpc-listen-all option in man page.
+	* doc/aria2c.1.txt
+
+2009-08-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --xml-rpc-listen-all option. If true is given to this
 	option, aria2 listens incoming XML-RPC requests on all network
 	interfaces. If false is given, listens only on local loopback

@@ -538,6 +538,11 @@ XML-RPC Options
   and password using *--xml-rpc-user* and *--xml-rpc-passwd*
   option. See also *--xml-rpc-listen-port* option.  Default: 'false'
 
+*--xml-rpc-listen-all*[='true'|'false']::
+
+  Listen incoming XML-RPC requests on all network interfaces. If false
+  is given, listen only on local loopback interface.  Default: 'false'
+
 *--xml-rpc-listen-port*=PORT::
   Specify a port number for XML-RPC server to listen to.  Possible
   Values: '1024'-'65535' Default: '6800'

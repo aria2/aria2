@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
-.\"      Date: 07/15/2009
+.\"      Date: 08/30/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "07/15/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "08/30/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -791,6 +791,12 @@ and
 option\&. See also
 \fB\-\-xml\-rpc\-listen\-port\fR
 option\&. Default:
+\fIfalse\fR
+.RE
+.PP
+\fB\-\-xml\-rpc\-listen\-all\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Listen incoming XML\-RPC requests on all network interfaces\&. If false is given, listen only on local loopback interface\&. Default:
 \fIfalse\fR
 .RE
 .PP
