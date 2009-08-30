@@ -91,6 +91,11 @@ bool HttpServerCommand::execute()
       SharedHandle<HttpHeader> header;
 
       header = _httpServer->receiveRequest();
+
+      if(header.isNull()) {
+	_e->commands.push_back(this);
+	return false;
+      }
       if(!_httpServer->authenticate()) {
 	_httpServer->disableKeepAlive();
 	_httpServer->feedResponse("401 Unauthorized",
@@ -102,24 +107,20 @@ bool HttpServerCommand::execute()
 	_e->setNoWait(true);
 	return true;
       }
-      if(header.isNull()) {
-	_e->commands.push_back(this);
-	return false;
-      } else if(static_cast<uint64_t>
-		(_e->option->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
-		_httpServer->getContentLength()) {
+      if(static_cast<uint64_t>
+	 (_e->option->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
+	 _httpServer->getContentLength()) {
 	logger->info("Request too long. ContentLength=%s."
 		     " See --xml-rpc-max-request-size option to loose"
 		     " this limitation.",
 		     Util::uitos(_httpServer->getContentLength()).c_str());
 	return true;
-      } else {
-	Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
-						     _socket);
-	_e->commands.push_back(command);
-	_e->setNoWait(true);
-	return true;
       }
+      Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
+						   _socket);
+      _e->commands.push_back(command);
+      _e->setNoWait(true);
+      return true;
     } else {
       if(_timeout.elapsed(30)) {
 	logger->info("HTTP request timeout.");

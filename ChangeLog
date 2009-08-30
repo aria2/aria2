@@ -1,5 +1,11 @@
 2009-08-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that XML-RPC authorization might be done before HTTP
+	request header is fully received.
+	* src/HttpServerCommand.cc
+
+2009-08-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --xml-rpc-listen-all option in man page.
 	* doc/aria2c.1.txt
 
