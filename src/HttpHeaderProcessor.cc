@@ -33,13 +33,15 @@
  */
 /* copyright --> */
 #include "HttpHeaderProcessor.h"
+
+#include <sstream>
+
 #include "HttpHeader.h"
 #include "message.h"
 #include "Util.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "A2STR.h"
-#include <sstream>
 
 namespace aria2 {
 
@@ -131,7 +133,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
   httpHeader->setMethod(firstLine[0]);
   httpHeader->setRequestPath(firstLine[1]);
   httpHeader->setVersion(firstLine[2]);
-  std::istringstream strm(_buf.substr(14));
+  std::istringstream strm(_buf.substr(delimpos));
   httpHeader->fill(strm);
   return httpHeader;
 }

@@ -33,10 +33,12 @@
  */
 /* copyright --> */
 #include "HttpHeader.h"
+
+#include <istream>
+
 #include "Range.h"
 #include "Util.h"
 #include "A2STR.h"
-#include <istream>
 
 namespace aria2 {
 
@@ -199,7 +201,7 @@ void HttpHeader::fill(std::istream& in)
   while(std::getline(in, line)) {
     line = Util::trim(line);
     if(line.empty()) {
-      break;
+      continue;
     }
     std::pair<std::string, std::string> hp;
     Util::split(hp, line, ':');

@@ -1,5 +1,12 @@
 2009-08-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that HTTP request header for XML-RPC request is not
+	parsed properly.
+	* src/HttpHeader.cc
+	* src/HttpHeaderProcessor.cc
+
+2009-08-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that XML-RPC authorization might be done before HTTP
 	request header is fully received.
 	* src/HttpServerCommand.cc
