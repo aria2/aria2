@@ -311,11 +311,7 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
 
   handler.parse(option, "http://proxy:8080");
   CPPUNIT_ASSERT_EQUAL(std::string("http://proxy:8080"),
-		       option.get(PREF_HTTP_PROXY));
-
-  handler.parse(option, "ftp://proxy:8080");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://ftp://proxy:8080"),
-		       option.get(PREF_HTTP_PROXY));
+  		       option.get(PREF_HTTP_PROXY));
 
   try {
     handler.parse(option, "http://bar:65536");

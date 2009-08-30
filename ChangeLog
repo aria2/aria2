@@ -1,3 +1,15 @@
+2009-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added support for IPv6 literal address in URI. Now aria2 can
+	handle URI such as http://[::1]/
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/Request.cc
+	* src/Request.h
+	* test/HttpRequestTest.cc
+	* test/OptionHandlerTest.cc
+	* test/RequestTest.cc
+
 2009-08-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that HTTP request header for XML-RPC request is not

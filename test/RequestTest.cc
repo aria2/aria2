@@ -32,6 +32,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl_usernamePassword);
   CPPUNIT_TEST(testSetUrl_zeroUsername);
   CPPUNIT_TEST(testSetUrl_supportsPersistentConnection);
+  CPPUNIT_TEST(testSetUrl_ipv6);
   CPPUNIT_TEST(testRedirectUrl);
   CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testRedirectUrl_supportsPersistentConnection);
@@ -39,6 +40,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testResetUrl_supportsPersistentConnection);
   CPPUNIT_TEST(testInnerLink);
   CPPUNIT_TEST(testInnerLinkInReferer);
+  CPPUNIT_TEST(testGetURIHost);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -63,6 +65,7 @@ public:
   void testSetUrl_usernamePassword();
   void testSetUrl_zeroUsername();
   void testSetUrl_supportsPersistentConnection();
+  void testSetUrl_ipv6();
   void testRedirectUrl();
   void testRedirectUrl2();
   void testRedirectUrl_supportsPersistentConnection();
@@ -70,6 +73,7 @@ public:
   void testResetUrl_supportsPersistentConnection();
   void testInnerLink();
   void testInnerLinkInReferer();
+  void testGetURIHost();
 };
 
 
@@ -91,6 +95,7 @@ void RequestTest::testSetUrl1() {
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getUsername());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPassword());
+  CPPUNIT_ASSERT(!req.isIPv6LiteralAddress());
 }
 
 void RequestTest::testSetUrl2() {
@@ -481,6 +486,28 @@ void RequestTest::testRedirectUrl_supportsPersistentConnection()
   CPPUNIT_ASSERT(!req.supportsPersistentConnection());
   req.redirectUrl("http://host/file");
   CPPUNIT_ASSERT(req.supportsPersistentConnection());
+}
+
+void RequestTest::testSetUrl_ipv6()
+{
+  Request req;
+  CPPUNIT_ASSERT(!req.setUrl("http://[::1"));
+  CPPUNIT_ASSERT(req.setUrl("http://[::1]"));
+  CPPUNIT_ASSERT_EQUAL(std::string("::1"), req.getHost());
+
+  CPPUNIT_ASSERT(req.setUrl("http://[::1]:8000/dir/file"));
+  CPPUNIT_ASSERT_EQUAL(std::string("::1"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)8000, req.getPort());
+  CPPUNIT_ASSERT_EQUAL(std::string("/dir"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(std::string("file"), req.getFile());
+  CPPUNIT_ASSERT(req.isIPv6LiteralAddress());
+}
+
+void RequestTest::testGetURIHost()
+{
+  Request req;
+  CPPUNIT_ASSERT(req.setUrl("http://[::1]"));
+  CPPUNIT_ASSERT_EQUAL(std::string("[::1]"), req.getURIHost());
 }
 
 } // namespace aria2

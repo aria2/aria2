@@ -117,7 +117,7 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
   }  
 }
 
-std::string HttpRequest::getHostText(const std::string& host, uint16_t port) const
+static std::string getHostText(const std::string& host, uint16_t port)
 {
   std::string hosttext = host;
   if(!(port == 80 || port == 443)) {
@@ -172,7 +172,7 @@ std::string HttpRequest::createRequest()
     }
   }
 
-  strappend(requestLine, "Host: ", getHostText(getHost(), getPort()), "\r\n");
+  strappend(requestLine, "Host: ", getHostText(getURIHost(), getPort()), "\r\n");
   requestLine += "Pragma: no-cache\r\n";
   requestLine += "Cache-Control: no-cache\r\n";
 
@@ -235,7 +235,7 @@ std::string HttpRequest::createRequest()
 std::string HttpRequest::createProxyRequest() const
 {
   assert(!_proxyRequest.isNull());
-  std::string hostport = getHost();
+  std::string hostport = getURIHost();
   strappend(hostport, ":", Util::uitos(getPort()));
 
   std::string requestLine = "CONNECT ";

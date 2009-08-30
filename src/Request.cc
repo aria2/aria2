@@ -71,7 +71,8 @@ Request::Request():
   _keepAliveHint(false),
   _pipeliningHint(false),
   _maxPipelinedRequest(1),
-  method(METHOD_GET)
+  method(METHOD_GET),
+  _ipv6LiteralAddress(false)
 {}
 
 static std::string removeFragment(const std::string url)
@@ -160,6 +161,7 @@ bool Request::parseUrl(const std::string& url) {
   _query = A2STR::NIL;
   _username = A2STR::NIL;
   _password = A2STR::NIL;
+  _ipv6LiteralAddress = false;
   // find query part
   std::string queryTemp;
   std::string::size_type startQueryIndex = tempUrl.find("?");
@@ -193,22 +195,40 @@ bool Request::parseUrl(const std::string& url) {
     _password = Util::urldecode(userPass.second);
     hostPart.erase(0, atmarkp+1);
   }
-  std::pair<std::string, std::string> hostAndPort;
-  Util::split(hostAndPort, hostPart, ':');
-  host = hostAndPort.first;
-  if(hostAndPort.second != A2STR::NIL) {
-    try {
-      unsigned int tempPort = Util::parseUInt(hostAndPort.second);
-      if(65535 < tempPort) {
+  {
+    std::string::size_type colonpos;
+    // Detect IPv6 literal address in square brackets
+    if(Util::startsWith(hostPart, "[")) {
+      std::string::size_type rbracketpos = hostPart.find("]");
+      if(rbracketpos == std::string::npos) {
 	return false;
       }
-      port = tempPort;
-    } catch(RecoverableException& e) {
-      return false;
+      _ipv6LiteralAddress = true;
+      colonpos = hostPart.find(":", rbracketpos+1);
+    } else {
+      colonpos = hostPart.find_last_of(":");
     }
-  } else {
-    // If port is not specified, then we set it to default port of its protocol..
-    port = defPort;
+    if(colonpos == std::string::npos) {
+      colonpos = hostPart.size();
+      // If port is not specified, then we set it to default port of
+      // its protocol..
+      port = defPort;
+    } else {
+      try {
+	unsigned int tempPort = Util::parseUInt(hostPart.substr(colonpos+1));
+	if(65535 < tempPort) {
+	  return false;
+	}
+	port = tempPort;
+      } catch(RecoverableException& e) {
+	return false;
+      }
+    }
+    if(_ipv6LiteralAddress) {
+      host = hostPart.substr(1, colonpos-2);
+    } else {
+      host = hostPart.substr(0, colonpos);
+    }
   }
   // find directory and file part
   std::string::size_type direp = tempUrl.find_last_of("/");

@@ -41,6 +41,7 @@
 
 #include "SharedHandle.h"
 #include "PeerStat.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -82,6 +83,8 @@ private:
 
   std::string _password;
 
+  bool _ipv6LiteralAddress;
+
   SharedHandle<PeerStat> _peerStat;
 
   bool parseUrl(const std::string& url);
@@ -116,10 +119,21 @@ public:
   void setReferer(const std::string& url);
   const std::string& getProtocol() const { return protocol; }
   const std::string& getHost() const { return host; }
+  // Same as getHost(), but for IPv6 literal addresses, enclose them
+  // with square brackets and return.
+  std::string getURIHost() const
+  {
+    if(isIPv6LiteralAddress()) {
+      return strconcat("[", getHost(), "]");
+    } else {
+      return getHost();
+    }
+  }
   uint16_t getPort() const { return port; }
   const std::string& getDir() const { return dir; }
   const std::string& getFile() const { return file;}
   const std::string& getQuery() const { return _query; }
+  bool isIPv6LiteralAddress() const { return _ipv6LiteralAddress; }
 
   void supportsPersistentConnection(bool f)
   {

@@ -83,8 +83,6 @@ private:
 
   SharedHandle<Request> _proxyRequest;
 
-  std::string getHostText(const std::string& host, uint16_t port) const;
-
   std::string getProxyAuthString() const;
 public:
   HttpRequest();
@@ -147,6 +145,11 @@ public:
   const std::string& getPreviousURI() const
   {
     return request->getPreviousUrl();
+  }
+
+  std::string getURIHost() const
+  {
+    return request->getURIHost();
   }
 
   SharedHandle<Range> getRange() const;

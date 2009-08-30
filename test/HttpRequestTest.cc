@@ -28,6 +28,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequest_with_cookie);
   CPPUNIT_TEST(testCreateRequest_query);
   CPPUNIT_TEST(testCreateRequest_head);
+  CPPUNIT_TEST(testCreateRequest_ipv6LiteralAddr);
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
   CPPUNIT_TEST(testUserAgent);
@@ -53,6 +54,7 @@ public:
   void testCreateRequest_with_cookie();
   void testCreateRequest_query();
   void testCreateRequest_head();
+  void testCreateRequest_ipv6LiteralAddr();
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
   void testUserAgent();
@@ -733,6 +735,25 @@ void HttpRequestTest::testEnableAcceptEncoding()
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+}
+
+void HttpRequestTest::testCreateRequest_ipv6LiteralAddr()
+{
+  SharedHandle<Request> request(new Request());
+  request->setUrl("http://[::1]/path");
+  HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
+  httpRequest.setRequest(request);
+  httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
+
+  CPPUNIT_ASSERT(httpRequest.createRequest().find("Host: [::1]") != std::string::npos);
+
+  SharedHandle<Request> proxy(new Request());
+  proxy->setUrl("http://proxy");
+  httpRequest.setProxyRequest(proxy);
+  std::string proxyRequest = httpRequest.createProxyRequest();
+  CPPUNIT_ASSERT(proxyRequest.find("Host: [::1]:80") != std::string::npos);
+  CPPUNIT_ASSERT(proxyRequest.find("CONNECT [::1]:80 ") != std::string::npos);
 }
 
 } // namespace aria2
