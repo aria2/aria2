@@ -1,0 +1,141 @@
+#!/usr/bin/env ruby
+# The MIT License
+#
+# Copyright (c) 2009 Tatsuhiro Tsujikawa
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+require 'xmlrpc/client'
+require 'optparse'
+
+program_name=File.basename($0)
+options={}
+args=nil
+OptionParser.new do |opt|
+  opt.on("--server SERVER", "hostname of XML-RPC server. Default: localhost"){|val| options["server"]=val }
+  opt.on("--port PORT", "port of XML-RPC server. Default: 6800"){|val| options["port"]=val }
+
+  opt.on("--user USERNAME", "XML-RPC username"){|val| options["user"]=val }
+  opt.on("--passwd PASSWORD", "XML-RPC password"){|val| options["passwd"]=val }
+
+  opt.banner=<<EOS
+Usage: #{program_name} [options]
+EOS
+  
+  args=opt.parse(ARGV)
+end
+
+def compute_eta speed,rem_length
+  return "n/a" if speed == 0
+  remsec=rem_length/speed
+  hr=remsec/3600
+  remsec=remsec%3600
+  min=remsec/60
+  remsec=remsec%60
+  result=""
+  result += "#{hr}h" if hr > 0
+  result += "#{min}m" if min > 0
+  result += "#{remsec}s"
+end
+
+def abbrev value
+  n=value/1024.0
+  if n < 1 then
+    return "#{value}"
+  end
+  value=n
+  n=value/1024.0
+  if n < 1 then
+    return sprintf("%.1fKi", value)
+  else
+    return sprintf("%.1fMi", n)
+  end
+end
+
+auth=""
+if options.has_key?("user") then
+  auth=options["user"]+":"+options["passwd"]+"@"
+end
+if not options.has_key?("server") then
+  options["server"]="localhost"
+end
+if not options.has_key?("port") then
+  options["port"]="6800"
+end
+
+client=XMLRPC::Client.new3({:host => options["server"],
+                             :port => options["port"],
+                             :path => "/rpc",
+                             :user => options["user"],
+                             :password => options["passwd"]})
+
+result=client.call("aria2.tellActive")
+
+print "-- Download Progress --\n"
+result.each { |entry|
+  gid=entry['gid']
+  total_length=entry['totalLength'].to_i
+  completed_length=entry['completedLength'].to_i
+  upload_length=entry['uploadLength'].to_i
+  download_speed=entry['downloadSpeed'].to_i
+  print "GID##{gid}"
+  if total_length == completed_length then
+    if entry.key? 'infoHash' then
+      # for BitTorrent print seed status
+      print " SEEDING"
+      if completed_length > 0 then
+        print "(#{upload_length*100/completed_length}%)"
+      end
+    end
+  else
+    print " SIZE:#{abbrev completed_length}B/#{abbrev total_length}B"
+    if total_length > 0 then
+      print "(#{completed_length*100/total_length}%)"
+    end
+  end
+  print " CN:#{entry['connections']}"
+  if entry.key? 'numSeeders' then
+    print " SEED:#{entry['numSeeders']}"
+  end
+  print " SPD:#{abbrev download_speed}B/s"
+  if entry.key? 'infoHash'
+    printf " UP:#{abbrev entry['uploadSpeed'].to_i}B/s(#{abbrev upload_length}B)"
+  end
+  print " ETA:#{compute_eta(download_speed, total_length-completed_length)}"
+  print "\n"
+
+  if entry.key? 'infoHash'
+    print " InfoHash:#{entry['infoHash']}"
+  end
+  print "\n"
+
+  files=client.call("aria2.getFiles",entry['gid'])
+  if files.length > 0 then
+    first_file=files.find{|file| file["selected"]=="true"}
+    if first_file != nil then
+      print " File:#{first_file['path']}"
+      count=0
+      files.each {|file| count += 1 if file["selected"]=="true"}
+      if count > 1 then
+        print "(#{count-1}more)"
+      end
+      print "\n"
+    end
+  end
+  print "--------------------------------------------------------------------------------"
+}

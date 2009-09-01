@@ -1,0 +1,256 @@
+#!/usr/bin/env ruby
+# The MIT License
+#
+# Copyright (c) 2009 Tatsuhiro Tsujikawa
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+require 'xmlrpc/client'
+require 'pp'
+require 'optparse'
+
+program_name=File.basename($0)
+options={}
+args=nil
+OptionParser.new do |opt|
+  opt.on("-d","--dir DIR"){|val| options["dir"]=val}
+  opt.on("-V","--check-integrity [BOOL]", ["true","false"]){|val|
+    options["check-integrity"]= val||"true"
+  }
+  opt.on("-c","--continue [BOOL]",["true","false"]){|val|
+    options["continue"]=val||"true"
+  }
+  opt.on("--all-proxy PROXY"){|val| options["all-proxy"]=val}
+  opt.on("--connect-timeout SEC"){|val| options["connect-timeout"]=val}
+  opt.on("--dry-run [BOOL]",["true","false"]){|val|
+    options["dry-run"]=val||"true"
+  }
+  opt.on("--lowest-speed-limit SPEED"){|val| options["lowest-speed-limit"]=val}
+  opt.on("--max-file-not-found NUM"){|val| options["max-file-not-found"]=val}
+  opt.on("-m","--max-tries N"){|val| options["max-tries"]=val}
+  opt.on("--no-proxy DOMAINS"){|val| options["no-proxy"]=val}
+  opt.on("-o","--out FILE"){|val| options["out"]=val}
+  opt.on("--proxy-method METHOD"){|val| options["proxy-method"]=val}
+  opt.on("-R","--remote-time [BOOL]",["true","false"]){|val|
+    options["remote-time"]=val||"true"
+  }
+  opt.on("--retry-wait SEC"){|val| options["retry-wait"]=val}
+  opt.on("-s","--split N"){|val| options["split"]=val}
+  opt.on("-t","--timeout SEC"){|val| options["timeout"]=val}
+  opt.on("--http-auth-challenge [BOOL]",["true","false"]){|val|
+    options["http-auth-challenge"]=val||"true"
+  }
+  opt.on("--http-user USER"){|val| options["http-user"]=val}
+  opt.on("--http-passwd PASSWD"){|val| options["http-passwd"]=val}
+  opt.on("--http-proxy PROXY"){|val| options["http-proxy"]=val}
+  opt.on("--https-proxy PROXY"){|val| options["https-proxy"]=val}
+  opt.on("--referer REFERER"){|val| options["referer"]=val}
+  opt.on("--enable-http-keep-alive [BOOL]",["true","false"]){|val|
+    options["enable-http-keep-alive"]=val||"true"
+  }
+  opt.on("--enable-http-pipelining [BOOL]",["true","false"]){|val|
+    options["enable-http-pipelining"]=val||"true"
+  }
+  opt.on("--header HEADER"){|val|
+    options["header"] = [] if options["header"] == nil
+    options["header"] << val
+  }
+  opt.on("--use-head [BOOL]",["true","false"]){|val|
+    options["use-head"]=val||"true"
+  }
+  opt.on("-U","--user-agent USERAGENT"){|val| options["user-agent"]=val}
+  opt.on("--ftp-user USER"){|val| options["ftp-user"]=val}
+  opt.on("--ftp-passwd PASSWD"){|val| options["ftp-passwd"]=val}
+  opt.on("-p","--ftp-pasv [BOOL]",["true","false"]){|val|
+    options["ftp-pasv"]=val||"true"
+  }
+  opt.on("--ftp-proxy PROXY"){|val| options["ftp-proxy"]=val}
+  opt.on("--ftp-type TYPE"){|val| options["ftp-type"]=val}
+  opt.on("--ftp-reuse-connection [BOOL]",["true","false"]){|val|
+    options["ftp-reuse-connection"]=val||"true"
+  }
+  opt.on("-n","--no-netrc [BOOL]",["true","false"]){|val|
+    options["no-netrc"]=val||"true"
+  }
+  opt.on("--select-file INDEXES"){|val| options["select-file"]=val}
+  opt.on("--bt-external-ip IPADDRESS"){|val| options["bt-external-ip"]=val}
+  opt.on("--bt-hash-check-seed [BOOL]",["true","false"]){|val|
+    options["bt-hash-check-seed"]=val||"true"
+  }
+  opt.on("--bt-max-open-files NUM"){|val| options["bt-max-open-files"]=val}
+  opt.on("--bt-max-peers NUM"){|val| options["bt-max-peers"]=val}
+  opt.on("--bt-min-crypto-level LEVEL",["plain","arc4"]){|val|
+    options["bt-min-crypto-level"]=val
+  }
+  opt.on("--bt-require-crypto BOOL",["true","false"]){|val|
+    options["bt-require-crypto"]=val
+  }
+  opt.on("--bt-request-peer-speed-limit SPEED"){|val|
+    options["bt-request-peer-speed-limit"]=val
+  }
+  opt.on("--bt-seed-unverified [BOOL]",["true","false"]){|val|
+    options["bt-seed-unverified"]=val||"true"
+  }
+  opt.on("--bt-stop-timeout SEC"){|val| options["bt-stop-timeout"]=val}
+  opt.on("--bt-tracker-interval SEC"){|val| options["bt-tracker-interval"]=val}
+  opt.on("--enable-peer-exchange [BOOL]",["true","false"]){|val|
+    options["enable-peer-exchange"]=val||"true"
+  }
+  opt.on("--follow-torrent VALUE", ["true","false","mem"]){|val|
+    options["follow-torrent"]=val
+  }
+  opt.on("-O","--index-out INDEXPATH"){|val|
+    options["index-out"]=[] if options["index-out"] == nil
+    options["index-out"] << val
+  }
+  opt.on("-u","--max-upload-limit SPEED"){|val| options["max-upload-limit"]=val}
+  opt.on("--seed-ratio RATIO"){|val| options["seed-ratio"]=val}
+  opt.on("--seed-time MINUTES"){|val| options["seed-time"]=val}
+  opt.on("--follow-metalink VALUE", ["true","false","mem"]){|val|
+    options["follow-metalink"]=val
+  }
+  opt.on("-C","--metalink-servers NUM"){|val| options["metalink-servers"]=val}
+  opt.on("--metalink-language LANG"){|val| options["metalink-language"]=val}
+  opt.on("--metalink-location LOCS"){|val| options["metalink-location"]=val}
+  opt.on("--metalink-os OS"){|val| options["metalink-os"]=val}
+  opt.on("--metalink-version VERSION"){|val| options["metalink-version"]=val}
+  opt.on("--metalink-preferred-protocol PROTO"){|val|
+    options["metalink-preferred-protocol"]=val
+  }
+  opt.on("--metalink-enable-unique-protocol BOOL",["true","false"]){|val|
+    options["metalink-enable-unique-protocol"]=val
+  }
+  opt.on("--allow-overwrite BOOL",["true","false"]){|val|
+    options["allow-overwrite"]=val
+  }
+  opt.on("--allow-piece-length-change BOOL",["true","false"]){|val|
+    options["allow-piece-length-change"]=val
+  }
+  opt.on("--async-dns [BOOL]",["true","false"]){|val|
+    options["async-dns"]=val||"true"
+  }
+  opt.on("--auto-file-renaming [BOOL]",["true","false"]){|val|
+    options["auto-file-renaming"]=val||"true"
+  }
+  opt.on("--file-allocation METHOD",["none","prealloc","falloc"]){|val|
+    options["file-allocation"]=val
+  }
+  opt.on("--max-download-limit LIMIT"){|val| options["max-download-limit"]=val}
+  opt.on("--no-file-allocation-limit SIZE"){|val|
+    options["no-file-allocation-limit"]=val
+  }
+  opt.on("-P","--parameterized-uri [BOOL]",["true","false"]){|val|
+    options["parameterized-uri"]=val||"true"
+  }
+  opt.on("--realtime-chunk-checksum BOOL",["true","false"]){|val|
+    options["realtime-chunk-checksum"]=val
+  }
+  opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
+  opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
+  opt.on("-j","--max-concurrent-downloads N"){|val| options["max-concurrent-downloads"]=val}
+
+  opt.on("--server SERVER", "hostname of XML-RPC server. Default: localhost"){|val| options["server"]=val }
+  opt.on("--port PORT", "port of XML-RPC server. Default: 6800"){|val| options["port"]=val }
+
+  opt.on("--user USERNAME", "XML-RPC username"){|val| options["user"]=val }
+  opt.on("--passwd PASSWORD", "XML-RPC password"){|val| options["passwd"]=val }
+
+  opt.banner=<<EOS
+Usage: #{program_name} addUri URI... [options]
+       #{program_name} addTorrent /path/to/torrent_file URI... [options]
+       #{program_name} addMetalink /path/to/metalink_file [options]
+       #{program_name} tellStatus GID [options]
+       #{program_name} tellActive [options]
+       #{program_name} tellWaiting [options]
+       #{program_name} getFiles   GID [options]
+       #{program_name} getUris    GID [options]
+       #{program_name} getPeers   GID [options]
+       #{program_name} purgeDownloadResult [options]
+       #{program_name} changeOption GID [options]
+       #{program_name} changeGlobalOption [options]
+       #{program_name} getVersion [options]
+EOS
+  
+
+  args=opt.parse(ARGV)
+
+end
+
+if !args or args.size == 0 then
+  puts "No command specified"
+  exit 1
+end
+
+command=args[0]
+resources=args[1..-1]
+
+auth=""
+if options.has_key?("user") then
+  auth=options["user"]+":"+options["passwd"]+"@"
+end
+if not options.has_key?("server") then
+  options["server"]="localhost"
+end
+if not options.has_key?("port") then
+  options["port"]="6800"
+end
+
+client=XMLRPC::Client.new3({:host => options["server"],
+                             :port => options["port"],
+                             :path => "/rpc",
+                             :user => options["user"],
+                             :password => options["passwd"]})
+ 
+if command == "addUri" then
+  result=client.call("aria2."+command, resources, options)
+elsif command == "addTorrent" then
+  torrentData=IO.read(resources[0])
+  result=client.call("aria2."+command,
+                     XMLRPC::Base64.new(torrentData), resources[1..-1], options)
+elsif command == "addMetalink" then
+  metalinkData=IO.read(resources[0])
+  result=client.call("aria2."+command,
+                     XMLRPC::Base64.new(metalinkData), options)
+elsif command == "tellStatus" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "tellActive" then
+  result=client.call("aria2."+command)
+elsif command == "tellWaiting" then
+  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i())
+elsif command == "remove" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "getFiles" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "getUris" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "getPeers" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "purgeDownloadResult" then
+  result=client.call("aria2."+command)
+elsif command == "changeOption" then
+  result=client.call("aria2."+command, resources[0], options)
+elsif command == "changeGlobalOption" then
+  result=client.call("aria2."+command, options)
+elsif command == "getVersion" then
+  result=client.call("aria2."+command)
+else
+  puts "Command not recognized"
+  exit 1
+end
+
+pp result

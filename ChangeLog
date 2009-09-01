@@ -1,3 +1,10 @@
+2009-09-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added XML-RPC client scripts written in ruby.
+	* doc/Makefile.am
+	* doc/xmlrpc/aria2mon
+	* doc/xmlrpc/aria2rpc
+
 2009-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added support for IPv6 literal address in URI. Now aria2 can
