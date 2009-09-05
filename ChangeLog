@@ -1,3 +1,8 @@
+2009-09-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Bump up version number to 1.6.0.
+	* configure.ac
+
 2009-09-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added XML-RPC client scripts written in ruby.
