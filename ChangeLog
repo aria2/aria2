@@ -1,5 +1,11 @@
 2009-09-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated wiki page URI.
+	* README
+	* doc/aria2c.1.txt
+
+2009-09-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added README.txt for xmlrpc directory.
 	* doc/Makefile.am
 	* doc/xmlrpc/README.txt
