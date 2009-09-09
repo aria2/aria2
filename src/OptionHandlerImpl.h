@@ -53,6 +53,8 @@
 #include "A2STR.h"
 #include "Request.h"
 #include "a2functional.h"
+#include "message.h"
+#include "File.h"
 
 namespace aria2 {
 
@@ -569,6 +571,32 @@ public:
   virtual std::string createPossibleValuesString() const
   {
     return "[http://][USER:PASSWORD@]HOST[:PORT]";
+  }
+};
+
+class LocalFilePathOptionHandler : public NameMatchOptionHandler {
+public:
+  LocalFilePathOptionHandler
+  (const std::string& optName,
+   const std::string& description = NO_DESCRIPTION,
+   const std::string& defaultValue = NO_DEFAULT_VALUE,
+   char shortName = 0):
+    NameMatchOptionHandler(optName, description, defaultValue,
+			   OptionHandler::REQ_ARG,
+			   shortName) {}
+
+  virtual void parseArg(Option& option, const std::string& optarg)
+  {
+    if(!File(optarg).exists()) {
+      throw DL_ABORT_EX
+	(StringFormat(MSG_FILE_NOT_EXIST, optarg.c_str()).str());
+    }
+    option.put(_optName, optarg);
+  }
+  
+  virtual std::string createPossibleValuesString() const
+  {
+    return "/path/to/file";
   }
 };
 
