@@ -1,5 +1,11 @@
 2009-09-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that server performence profile is not updated when
+	aria2c was terminated by emergency shutdown.
+	* src/TrackerWatcherCommand.cc
+
+2009-09-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use LocalFilePathOptionHandler for -T and -M option.
 	Updated message of MSG_FILE_NOT_EXIST.
 	* src/OptionHandlerFactory.cc

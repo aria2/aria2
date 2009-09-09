@@ -85,6 +85,7 @@ bool TrackerWatcherCommand::execute() {
       return true;
     } else {
       _trackerRequestGroup->setForceHaltRequested(true);
+      e->commands.push_back(this);
       return false;
     }
   }
