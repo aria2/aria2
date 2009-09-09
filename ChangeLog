@@ -1,5 +1,12 @@
 2009-09-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use LocalFilePathOptionHandler for -T and -M option.
+	Updated message of MSG_FILE_NOT_EXIST.
+	* src/OptionHandlerFactory.cc
+	* src/message.h
+
+2009-09-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added LocalFilePathOptionHandler which check whether the specified
 	file path does exist or not.
 	* src/OptionHandlerImpl.cc

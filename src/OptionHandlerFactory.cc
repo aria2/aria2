@@ -1156,12 +1156,10 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+    SharedHandle<OptionHandler> op(new LocalFilePathOptionHandler
 				   (PREF_TORRENT_FILE,
 				    TEXT_TORRENT_FILE,
 				    NO_DEFAULT_VALUE,
-				    A2STR::NIL,
-				    OptionHandler::REQ_ARG,
 				    'T'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
@@ -1189,12 +1187,10 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+    SharedHandle<OptionHandler> op(new LocalFilePathOptionHandler
 				   (PREF_METALINK_FILE,
 				    TEXT_METALINK_FILE,
 				    NO_DEFAULT_VALUE,
-				    A2STR::NIL,
-				    OptionHandler::REQ_ARG,
 				    'M'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_METALINK);
