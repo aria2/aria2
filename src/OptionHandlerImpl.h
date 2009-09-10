@@ -587,9 +587,9 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    if(!File(optarg).exists()) {
+    if(!File(optarg).isFile()) {
       throw DL_ABORT_EX
-	(StringFormat(MSG_FILE_NOT_EXIST, optarg.c_str()).str());
+	(StringFormat(MSG_NOT_FILE, optarg.c_str()).str());
     }
     option.put(_optName, optarg);
   }

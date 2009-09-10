@@ -1,3 +1,10 @@
+2009-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use File::isFile() instead of File::exists(). Updated message when
+	a path is not a file.
+	* src/OptionHandlerImpl.cc
+	* src/message.h
+
 2009-09-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that server performence profile is not updated when
