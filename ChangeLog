@@ -1,5 +1,11 @@
 2009-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented missing experimental tag and newly added xml-rpc tag in
+	man page.
+	* doc/aria2c.1.txt
+
+2009-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added xml-rpc help tag. Tagged xml-rpc related options with
 	xml-rpc tag.
 	* src/OptionHandlerFactory.cc

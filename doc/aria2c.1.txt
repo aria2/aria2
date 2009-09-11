@@ -69,7 +69,7 @@ Basic Options
   related to HTTP. If no matching category is found, search option name using
   a given word in middle match and print the result.
   Available Values: 'basic', 'advanced', 'http', 'https', 'ftp', 'metalink',
-  'bittorrent', 'all'
+  'bittorrent', 'xml-rpc', 'experimental', 'all'
   Default: 'basic'
 
 HTTP/FTP Options
