@@ -1,3 +1,10 @@
+2009-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated message when a path is not a file. Updated common message
+	for wrong option.
+	* src/OptionHandlerException.cc
+	* src/message.h
+
 2009-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use File::isFile() instead of File::exists(). Updated message when

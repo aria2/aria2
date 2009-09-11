@@ -38,7 +38,7 @@
 namespace aria2 {
 
 const std::string OptionHandlerException::MESSAGE
-("Exception occurred while processing option %s:");
+("We encountered a problem while processing the option '--%s'.");
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
 					       const std::string& optName):
