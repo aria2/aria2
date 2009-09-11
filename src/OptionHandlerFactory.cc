@@ -176,7 +176,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_ENABLE_XML_RPC,
 				    V_FALSE,
 				    OptionHandler::OPT_ARG));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }
 #endif // ENABLE_XML_RPC
@@ -398,7 +398,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_XML_RPC_LISTEN_ALL,
 				    V_FALSE,
 				    OptionHandler::OPT_ARG));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }
   {
@@ -407,7 +407,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_XML_RPC_LISTEN_PORT,
 				    "6800",
 				    1024, UINT16_MAX));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }
   {
@@ -416,21 +416,21 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_XML_RPC_MAX_REQUEST_SIZE,
 				    "2M",
 				    0));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }			    
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_XML_RPC_USER,
 				    TEXT_XML_RPC_USER));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_XML_RPC_PASSWD,
 				    TEXT_XML_RPC_PASSWD));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }			    
 #endif // ENABLE_XML_RPC
@@ -1264,16 +1264,19 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   ("help",
 				    TEXT_HELP,
 				    TAG_BASIC,
-				    StringFormat("%s,%s,%s,%s,%s,%s,%s,%s,%s,all",
-						 TAG_BASIC,
-						 TAG_ADVANCED,
-						 TAG_HTTP,
-						 TAG_HTTPS,
-						 TAG_FTP,
-						 TAG_METALINK,
-						 TAG_BITTORRENT,
-						 TAG_EXPERIMENTAL,
-						 TAG_HELP).str(),
+				    StringFormat
+				    ("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
+				     "all",
+				     TAG_BASIC,
+				     TAG_ADVANCED,
+				     TAG_HTTP,
+				     TAG_HTTPS,
+				     TAG_FTP,
+				     TAG_METALINK,
+				     TAG_BITTORRENT,
+				     TAG_XML_RPC,
+				     TAG_EXPERIMENTAL,
+				     TAG_HELP).str(),
 				    OptionHandler::OPT_ARG,
 				    'h'));
     op->addTag(TAG_BASIC);

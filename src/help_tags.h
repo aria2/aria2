@@ -42,6 +42,7 @@
 #define TAG_FTP "ftp"
 #define TAG_METALINK "metalink"
 #define TAG_BITTORRENT "bittorrent"
+#define TAG_XML_RPC "xml-rpc"
 #define TAG_EXPERIMENTAL "experimental"
 #define TAG_HELP "help"
 

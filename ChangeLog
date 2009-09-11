@@ -1,5 +1,12 @@
 2009-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added xml-rpc help tag. Tagged xml-rpc related options with
+	xml-rpc tag.
+	* src/OptionHandlerFactory.cc
+	* src/help_tags.h
+
+2009-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated message when a path is not a file. Updated common message
 	for wrong option.
 	* src/OptionHandlerException.cc
