@@ -1,5 +1,10 @@
 2009-09-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page for --help option.
+	* doc/aria2c.1.txt
+
+2009-09-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc.
 	* src/XmlRpcMethod.h
 

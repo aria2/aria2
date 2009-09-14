@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
-.\"      Date: 09/11/2009
+.\"      Date: 09/14/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "09/11/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "09/14/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -75,21 +75,22 @@ Check file integrity by validating piece hashes\&. This option has effect only i
 Continue downloading a partially downloaded file\&. Use this option to resume a download started by a web browser or another program which downloads files sequentially from the beginning\&. Currently this option is only applicable to HTTP(S)/FTP downloads\&.
 .RE
 .PP
-\fB\-h\fR, \fB\-\-help\fR[=CATEGORY]
+\fB\-h\fR, \fB\-\-help\fR[=CATEGORY|KEYWORD]
 .RS 4
-Print usage and exit\&. The help messages are classified in several categories\&. For example, type "\fB\-\-help\fR=http" for detailed explanation for the options related to HTTP\&. If no matching category is found, search option name using a given word in middle match and print the result\&. Available Values:
-\fIbasic\fR,
-\fIadvanced\fR,
-\fIhttp\fR,
-\fIhttps\fR,
-\fIftp\fR,
-\fImetalink\fR,
-\fIbittorrent\fR,
-\fIxml\-rpc\fR,
-\fIexperimental\fR,
-\fIall\fR
+Print usage and exit\&. The help messages are classified in several categories\&. A category starts with
+\fI#\fR\&. For example, type "\-\-help=#http" to get the usage for the options related to http\&. If non\-category keyword is given, print the usage of the options whose name includes given keyword\&. Available Values:
+\fI#basic\fR,
+\fI#advanced\fR,
+\fI#http\fR,
+\fI#https\fR,
+\fI#ftp\fR,
+\fI#metalink\fR,
+\fI#bittorrent\fR,
+\fI#xml\-rpc\fR,
+\fI#experimental\fR,
+\fI#all\fR
 Default:
-\fIbasic\fR
+\fI#basic\fR
 .RE
 .SS "HTTP/FTP Options"
 .PP

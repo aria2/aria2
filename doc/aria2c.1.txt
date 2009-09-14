@@ -62,15 +62,15 @@ Basic Options
    program which downloads files sequentially from the beginning.
    Currently this option is only applicable to HTTP(S)/FTP downloads.
 
-*-h*, *--help*[=CATEGORY]::
-  Print usage and exit.
-  The help messages are classified in several categories.
-  For example, type "*--help*=http" for detailed explanation for the options
-  related to HTTP. If no matching category is found, search option name using
-  a given word in middle match and print the result.
-  Available Values: 'basic', 'advanced', 'http', 'https', 'ftp', 'metalink',
-  'bittorrent', 'xml-rpc', 'experimental', 'all'
-  Default: 'basic'
+*-h*, *--help*[=CATEGORY|KEYWORD]::
+  Print usage and exit.  The help messages are classified in several
+  categories. A category starts with '#'. For example, type
+  "--help=#http" to get the usage for the options related to http. If
+  non-category keyword is given, print the usage of the options whose
+  name includes given keyword.
+  Available Values: '#basic', '#advanced', '#http', '#https', '#ftp',
+  '#metalink', '#bittorrent', '#xml-rpc', '#experimental', '#all'
+  Default: '#basic'
 
 HTTP/FTP Options
 ~~~~~~~~~~~~~~~~
