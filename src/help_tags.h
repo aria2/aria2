@@ -35,15 +35,16 @@
 #ifndef _D_HELP_TAGS_H_
 #define _D_HELP_TAGS_H_
 
-#define TAG_BASIC "basic"
-#define TAG_ADVANCED "advanced"
-#define TAG_HTTP "http"
-#define TAG_HTTPS "https"
-#define TAG_FTP "ftp"
-#define TAG_METALINK "metalink"
-#define TAG_BITTORRENT "bittorrent"
-#define TAG_XML_RPC "xml-rpc"
-#define TAG_EXPERIMENTAL "experimental"
-#define TAG_HELP "help"
+#define TAG_BASIC "#basic"
+#define TAG_ADVANCED "#advanced"
+#define TAG_HTTP "#http"
+#define TAG_HTTPS "#https"
+#define TAG_FTP "#ftp"
+#define TAG_METALINK "#metalink"
+#define TAG_BITTORRENT "#bittorrent"
+#define TAG_XML_RPC "#xml-rpc"
+#define TAG_EXPERIMENTAL "#experimental"
+#define TAG_HELP "#help"
+#define TAG_ALL "#all"
 
 #endif // _D_HELP_TAGS_H_

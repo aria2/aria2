@@ -1,3 +1,17 @@
+2009-09-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Help category now starts with "#" to distinguish a category from
+	keyword search. For example, "http" categroy is now "#http". You
+	can type "--help=#http" to get explanation of options related to
+	http. If '#' is omitted, then the argument is treated as a keyword
+	and aria2 searches options whose name includes the keyword and
+	print matched ones. For example, "--help=http" will show options
+	whose name includes "http".
+	* src/OptionHandlerFactory.cc
+	* src/help_tags.h
+	* src/usage_text.h
+	* src/version_usage.cc
+
 2009-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Documented missing experimental tag and newly added xml-rpc tag in

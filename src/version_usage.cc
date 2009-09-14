@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "common.h"
+
+#include <iostream>
+#include <iterator>
+#include <algorithm>
+
 #include "SharedHandle.h"
 #include "a2io.h"
 #include "FeatureConfig.h"
@@ -44,9 +49,7 @@
 #include "StringFormat.h"
 #include "OptionParser.h"
 #include "OptionHandler.h"
-#include <iostream>
-#include <iterator>
-#include <algorithm>
+#include "Util.h"
 
 namespace aria2 {
 
@@ -76,27 +79,10 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
   std::cout << StringFormat(_("Usage: %s [OPTIONS] [URL | TORRENT_FILE |"
 			      " METALINK_FILE]..."), PACKAGE_NAME) << "\n"
 	    << "\n";
-
-  std::deque<SharedHandle<OptionHandler> > handlers =
-    keyword == V_ALL ? oparser.findAll():oparser.findByTag(keyword);
-  if(handlers.empty()) {
+  if(Util::startsWith(keyword, "#")) {
     std::deque<SharedHandle<OptionHandler> > handlers =
-      oparser.findByNameSubstring(keyword);
-    if(!handlers.empty()) {
-      std::cout << StringFormat(_("Printing options whose name includes"
-				  " '%s'."), keyword.c_str())
-		<< "\n"
-		<< _("Options:") << "\n";
-      std::copy(handlers.begin(), handlers.end(),
-		std::ostream_iterator<SharedHandle<OptionHandler> >
-		(std::cout, "\n\n"));
-    } else {
-      std::cout << StringFormat(_("No help category or option name matching"
-				  " with '%s'."), keyword.c_str())
-		<< "\n" << oparser.findByName("help") << "\n";
-    }
-  } else {
-    if(keyword == V_ALL) {
+      keyword == TAG_ALL ? oparser.findAll():oparser.findByTag(keyword);
+    if(keyword == TAG_ALL) {
       std::cout << _("Printing all options.");
     } else {
       std::cout << StringFormat(_("Printing options tagged with '%s'."),
@@ -113,6 +99,22 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
     std::copy(handlers.begin(), handlers.end(),
 	      std::ostream_iterator<SharedHandle<OptionHandler> >
 	      (std::cout, "\n\n"));
+  } else {    
+    std::deque<SharedHandle<OptionHandler> > handlers =
+      oparser.findByNameSubstring(keyword);
+    if(!handlers.empty()) {
+      std::cout << StringFormat(_("Printing options whose name includes"
+				  " '%s'."), keyword.c_str())
+		<< "\n"
+		<< _("Options:") << "\n";
+      std::copy(handlers.begin(), handlers.end(),
+		std::ostream_iterator<SharedHandle<OptionHandler> >
+		(std::cout, "\n\n"));
+    } else {
+      std::cout << StringFormat(_("No option matching with '%s'."),
+				keyword.c_str())
+		<< "\n" << oparser.findByName("help") << "\n";
+    }
   }
 
   if(keyword == TAG_BASIC) {

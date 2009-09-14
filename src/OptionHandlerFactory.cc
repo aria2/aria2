@@ -1266,7 +1266,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TAG_BASIC,
 				    StringFormat
 				    ("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
-				     "all",
+				     "%s",
 				     TAG_BASIC,
 				     TAG_ADVANCED,
 				     TAG_HTTP,
@@ -1276,7 +1276,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				     TAG_BITTORRENT,
 				     TAG_XML_RPC,
 				     TAG_EXPERIMENTAL,
-				     TAG_HELP).str(),
+				     TAG_HELP,
+				     TAG_ALL).str(),
 				    OptionHandler::OPT_ARG,
 				    'h'));
     op->addTag(TAG_BASIC);
