@@ -54,12 +54,22 @@ namespace xmlrpc {
 struct XmlRpcRequest;
 struct XmlRpcResponse;
 
+// This class offers abstract implementation of processing XML-RPC
+// request. You have to inherit this class and implement process()
+// method to add new XML-RPC API.
+//
+// There is XmlRpcMethodFactory class which instantiates XmlRpcMethod
+// subclass. If you add new XmlRpcMethod subclass, don't forget to add
+// it to XmlRpcMethodFactory.
 class XmlRpcMethod {
 protected:
   SharedHandle<OptionParser> _optionParser;
 
   Logger* _logger;
 
+  // Subclass must implement this function to fulfil XmlRpcRequest
+  // req.  The return value of this method is used as a return value
+  // of XML-RPC request.
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e) = 0;
 
   void gatherRequestOption(const SharedHandle<Option>& option,
@@ -75,6 +85,8 @@ public:
 
   virtual ~XmlRpcMethod() {}
 
+  // Do work to fulfill XmlRpcRequest req and returns its result as
+  // XmlRpcResponse. This method delegates to process() method.
   XmlRpcResponse execute(const XmlRpcRequest& req, DownloadEngine* e);
 };
 

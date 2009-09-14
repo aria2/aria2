@@ -1,5 +1,10 @@
 2009-09-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc.
+	* src/XmlRpcMethod.h
+
+2009-09-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Help category now starts with "#" to distinguish a category from
 	keyword search. For example, "http" categroy is now "#http". You
 	can type "--help=#http" to get explanation of options related to
