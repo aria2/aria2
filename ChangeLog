@@ -1,3 +1,8 @@
+2009-09-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made MSG_NOT_FILE translatable.
+	* src/message.h
+
 2009-09-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated man page for --help option.
