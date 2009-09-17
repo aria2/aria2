@@ -314,6 +314,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    NO_DEFAULT_VALUE,
 				    "/path/to/command"));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
@@ -323,6 +324,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    NO_DEFAULT_VALUE,
 				    "/path/to/command"));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
@@ -332,6 +334,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    NO_DEFAULT_VALUE,
 				    "/path/to/command"));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
@@ -341,6 +344,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    NO_DEFAULT_VALUE,
 				    "/path/to/command"));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
@@ -719,6 +723,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    "/path/to/file"));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_COOKIE);
     handlers.push_back(op);
   }
   {
@@ -752,6 +757,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    NO_DEFAULT_VALUE,
 				    "/path/to/file"));
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_COOKIE);
     handlers.push_back(op);
   }
   {
@@ -843,6 +849,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_HTTPS_PROXY,
 				    NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
     handlers.push_back(op);
   }
   {
@@ -860,6 +867,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
     handlers.push_back(op);
   }
   {
@@ -868,6 +876,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_NO_PROXY));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
     handlers.push_back(op);
   }
   {
@@ -1266,7 +1275,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TAG_BASIC,
 				    StringFormat
 				    ("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
-				     "%s",
+				     "%s, %s, %s",
 				     TAG_BASIC,
 				     TAG_ADVANCED,
 				     TAG_HTTP,
@@ -1274,6 +1283,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				     TAG_FTP,
 				     TAG_METALINK,
 				     TAG_BITTORRENT,
+				     TAG_COOKIE,
+				     TAG_HOOK,
 				     TAG_XML_RPC,
 				     TAG_EXPERIMENTAL,
 				     TAG_HELP,

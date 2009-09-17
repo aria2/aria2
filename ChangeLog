@@ -1,3 +1,10 @@
+2009-09-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added help categories: #cookie and #hook. Added #https tag to
+	--https-proxy and --https-proxy, --all-proxy and --no-proxy.
+	* src/OptionHandlerFactory.cc
+	* src/help_tags
+
 2009-09-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made MSG_NOT_FILE translatable.
