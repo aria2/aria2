@@ -55,6 +55,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TEXT_ALLOW_OVERWRITE,
 				    V_FALSE));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
   {
@@ -83,6 +84,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    V_TRUE,
 				    OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
   {
@@ -105,6 +107,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -147,6 +150,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    OptionHandler::REQ_ARG,
 				    'd'));
     op->addTag(TAG_BASIC);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
   {
@@ -166,6 +170,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    V_TRUE,
 				    OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
 #endif // ENABLE_DIRECT_IO
@@ -211,6 +216,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 #endif // HAVE_POSIX_FALLOCATE
 				    'a'));
     op->addTag(TAG_BASIC);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
   {
@@ -305,6 +311,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    "5M",
 				    0));
     op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
   {
@@ -512,6 +519,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
   {
@@ -1275,7 +1283,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				    TAG_BASIC,
 				    StringFormat
 				    ("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
-				     "%s, %s, %s",
+				     "%s, %s, %s, %s",
 				     TAG_BASIC,
 				     TAG_ADVANCED,
 				     TAG_HTTP,
@@ -1285,6 +1293,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				     TAG_BITTORRENT,
 				     TAG_COOKIE,
 				     TAG_HOOK,
+				     TAG_FILE,
 				     TAG_XML_RPC,
 				     TAG_EXPERIMENTAL,
 				     TAG_HELP,

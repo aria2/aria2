@@ -1,9 +1,16 @@
 2009-09-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added help category #file. Added #file tag to the options related
+	to downloaded file.
+	* src/OptionHandlerFactory.cc
+	* src/help_tags.h
+
+2009-09-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added help categories: #cookie and #hook. Added #https tag to
 	--https-proxy and --https-proxy, --all-proxy and --no-proxy.
 	* src/OptionHandlerFactory.cc
-	* src/help_tags
+	* src/help_tags.h
 
 2009-09-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
