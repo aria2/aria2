@@ -69,7 +69,8 @@ Basic Options
   non-category keyword is given, print the usage of the options whose
   name includes given keyword.
   Available Values: '#basic', '#advanced', '#http', '#https', '#ftp',
-  '#metalink', '#bittorrent', '#xml-rpc', '#experimental', '#all'
+  '#metalink', '#bittorrent', '#cookie', '#hook', '#file', '#xml-rpc',
+  '#experimental', '#all'
   Default: '#basic'
 
 HTTP/FTP Options

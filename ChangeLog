@@ -1,5 +1,10 @@
 2009-09-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page for added help tags.
+	* doc/aria2c.1.txt
+
+2009-09-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added help category #file. Added #file tag to the options related
 	to downloaded file.
 	* src/OptionHandlerFactory.cc
