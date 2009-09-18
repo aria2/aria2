@@ -62,7 +62,7 @@ Basic Options
    program which downloads files sequentially from the beginning.
    Currently this option is only applicable to HTTP(S)/FTP downloads.
 
-*-h*, *--help*[=CATEGORY|KEYWORD]::
+*-h*, *--help*[=TAG|KEYWORD]::
 
    The help messages are classified with tags. A tag starts with
    "#". For example, type "--help=#http" to get the usage for the

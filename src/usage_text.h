@@ -374,7 +374,7 @@ _(" --metalink-enable-unique-protocol=true|false If true is given and several\n"
 #define TEXT_VERSION \
 _(" -v, --version                Print the version number and exit.")
 #define TEXT_HELP \
-_(" -h, --help[=CATEGORY|KEYWORD] Print usage and exit.\n"\
+_(" -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"\
   "                              The help messages are classified with tags. A tag\n"\
   "                              starts with \"#\". For example, type \"--help=#http\"\n"\
   "                              to get the usage for the options tagged with\n"\

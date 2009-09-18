@@ -1,5 +1,11 @@
 2009-09-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced "CATEGORY" with "TAGS".
+	* src/usage_text.h
+	* doc/aria2c.1.txt
+
+2009-09-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated the help message for --help option.
 	* src/usage_text.h
 	* doc/aria2c.1.txt
