@@ -63,15 +63,15 @@ Basic Options
    Currently this option is only applicable to HTTP(S)/FTP downloads.
 
 *-h*, *--help*[=CATEGORY|KEYWORD]::
-  Print usage and exit.  The help messages are classified in several
-  categories. A category starts with '#'. For example, type
-  "--help=#http" to get the usage for the options related to http. If
-  non-category keyword is given, print the usage of the options whose
-  name includes given keyword.
-  Available Values: '#basic', '#advanced', '#http', '#https', '#ftp',
-  '#metalink', '#bittorrent', '#cookie', '#hook', '#file', '#xml-rpc',
-  '#experimental', '#all'
-  Default: '#basic'
+
+   The help messages are classified with tags. A tag starts with
+   "#". For example, type "--help=#http" to get the usage for the
+   options tagged with "#http". If non-tag word is given, print the
+   usage for the options whose name includes that word.
+   Available Values: '#basic', '#advanced', '#http', '#https', '#ftp',
+   '#metalink', '#bittorrent', '#cookie', '#hook', '#file',
+   '#xml-rpc', '#experimental', '#all'
+   Default: '#basic'
 
 HTTP/FTP Options
 ~~~~~~~~~~~~~~~~

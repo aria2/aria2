@@ -375,12 +375,11 @@ _(" --metalink-enable-unique-protocol=true|false If true is given and several\n"
 _(" -v, --version                Print the version number and exit.")
 #define TEXT_HELP \
 _(" -h, --help[=CATEGORY|KEYWORD] Print usage and exit.\n"\
-  "                              The help messages are classified in several\n"\
-  "                              categories. A category starts with '#'. For\n"\
-  "                              example, type \"--help=#http\" to get the usage\n"\
-  "                              for the options related to http. If non-category\n"\
-  "                              keyword is given, print the usage of the options\n"\
-  "                              whose name includes given keyword.")
+  "                              The help messages are classified with tags. A tag\n"\
+  "                              starts with \"#\". For example, type \"--help=#http\"\n"\
+  "                              to get the usage for the options tagged with\n"\
+  "                              \"#http\". If non-tag word is given, print the usage\n"\
+  "                              for the options whose name includes that word.")
 #define TEXT_NO_CONF \
 _(" --no-conf                    Disable loading aria2.conf file.")
 #define TEXT_CONF_PATH \
