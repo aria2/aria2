@@ -511,6 +511,10 @@ if !HAVE_TIMEGM
 SRCS += timegm.c timegm.h
 endif # !HAVE_TIMEGM
 
+if !HAVE_DAEMON
+SRCS += daemon.cc daemon.h
+endif # !HAVE_DAEMON
+
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

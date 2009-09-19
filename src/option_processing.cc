@@ -56,6 +56,9 @@
 #include "DownloadResultCode.h"
 #include "SimpleRandomizer.h"
 #include "bittorrent_helper.h"
+#ifndef HAVE_DAEMON
+#include "daemon.h"
+#endif // !HAVE_DAEMON
 
 namespace aria2 {
 
@@ -191,19 +194,12 @@ void option_processing(Option& op, std::deque<std::string>& uris,
       exit(downloadresultcode::UNKNOWN_ERROR);
     }
   }
-#ifdef HAVE_DAEMON
   if(op.getAsBool(PREF_DAEMON)) {
-    if(File::getCurrentDir() == ".") {
-      std::cerr << "Failed to get the current working directory."
-		<< " With -D option engaged,"
-		<< " the default value of --dir option is /." << std::endl;
-    }
     if(daemon(0, 0) < 0) {
       perror(MSG_DAEMON_FAILED);
       exit(downloadresultcode::UNKNOWN_ERROR);
     }
   }
-#endif // HAVE_DAEMON
 }
 
 } // namespace aria2

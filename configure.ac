@@ -259,7 +259,6 @@ AC_CHECK_FUNCS([__argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
-                daemon \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \
@@ -333,6 +332,8 @@ AC_CHECK_FUNCS([strptime],
 AC_CHECK_FUNCS([timegm],
 	[AM_CONDITIONAL([HAVE_TIMEGM], true)],
 	[AM_CONDITIONAL([HAVE_TIMEGM], false)])
+AC_CHECK_FUNCS([daemon], [have_daemon=yes])
+AM_CONDITIONAL([HAVE_DAEMON], [test "x$have_daemon" = "xyes"])
 
 case "$target" in
   *mingw*)

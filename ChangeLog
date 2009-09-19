@@ -1,5 +1,15 @@
 2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added our own daemon() function for systems which desn't have
+	daemon(3).
+	* configure.ac
+	* src/Makefile.am
+	* src/daemon.cc
+	* src/daemon.h
+	* src/option_processing.cc
+
+2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Simplified File::getCurrentDir()
 	* src/File.cc
 
