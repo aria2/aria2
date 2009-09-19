@@ -1,5 +1,10 @@
 2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Simplified File::getCurrentDir()
+	* src/File.cc
+
+2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use exit() instead of _exit
 	* src/RequestGroupMan.cc
 

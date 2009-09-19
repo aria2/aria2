@@ -205,18 +205,13 @@ Time File::getModifiedTime()
 
 std::string File::getCurrentDir()
 {
-  size_t buflen = 256;
-  while(buflen <= 2048) {
-    array_ptr<char> buf(new char[buflen]);
-    if(getcwd(buf, buflen)) {
-      return std::string(buf);
-    } else if(errno == ERANGE) {
-      buflen *= 2;
-    } else {
-      break;
-    }
+  const size_t buflen = 2048;
+  char buf[buflen];
+  if(getcwd(buf, buflen)) {
+    return std::string(buf);
+  } else {
+    return A2STR::DOT_C;
   }
-  return A2STR::DOT_C;
 }
 
 } // namespace aria2
