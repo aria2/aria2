@@ -41,7 +41,10 @@ _(" -o, --out=FILE               The file name of the downloaded file.")
 _(" -l, --log=LOG                The file name of the log file. If '-' is\n"\
   "                              specified, log is written to stdout.")
 #define TEXT_DAEMON \
-_(" -D, --daemon                 Run as daemon.")
+_(" -D, --daemon                 Run as daemon. The current working directory will\n"\
+  "                              be changed to \"/\" and standard input, standard\n"\
+  "                              output and standard error will be redirected to\n"\
+  "                              \"/dev/null\".")
 #define TEXT_SPLIT \
 _(" -s, --split=N                Download a file using N connections. If more\n"\
   "                              than N URLs are given, first N URLs are used and\n"\

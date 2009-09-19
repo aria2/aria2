@@ -1,5 +1,11 @@
 2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated the help message for --daemon option.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
+2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added our own daemon() function for systems which desn't have
 	daemon(3).
 	* configure.ac
