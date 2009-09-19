@@ -206,7 +206,7 @@ static void executeHook(const std::string& command, int gid)
   } else if(cpid == 0) {
     execl(command.c_str(), command.c_str(), Util::itos(gid).c_str(), (char*)0);
     perror(("Could not execute user command: "+command).c_str());
-    _exit(1);
+    exit(EXIT_FAILURE);
   }
 #else
   PROCESS_INFORMATION pi;

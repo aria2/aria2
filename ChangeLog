@@ -1,3 +1,8 @@
+2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use exit() instead of _exit
+	* src/RequestGroupMan.cc
+
 2009-09-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Replaced "CATEGORY" with "TAGS".
