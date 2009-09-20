@@ -1,5 +1,14 @@
 2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Bulgarian, Russian, Slovak and Japanese
+	translations. Thanks to all translators.
+	* po/bg.po
+	* po/ja.po
+	* po/ru.po
+	* po/sk.po
+
+2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed --retry-wait option from aria2rpc
 	* doc/xmlrpc/aria2rpc
 
