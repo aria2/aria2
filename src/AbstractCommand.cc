@@ -219,7 +219,7 @@ bool AbstractCommand::execute() {
       tryReserved();
       return true;
     } else {
-      return prepareForRetry(getOption()->getAsInt(PREF_RETRY_WAIT));
+      return prepareForRetry(0);
     }
   } catch(DownloadFailureException& err) {
     logger->error(EX_EXCEPTION_CAUGHT, err);

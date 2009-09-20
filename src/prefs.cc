@@ -48,8 +48,6 @@ const std::string V_ALL("all");
  * General preferences
  */
 // values: 1*digit
-const std::string PREF_RETRY_WAIT("retry-wait");
-// values: 1*digit
 const std::string PREF_TIMEOUT("timeout");
 // values: 1*digit
 const std::string PREF_DNS_TIMEOUT("dns-timeout");

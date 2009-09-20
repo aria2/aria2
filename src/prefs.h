@@ -52,8 +52,6 @@ extern const std::string V_ALL;
  * General preferences
  */
 // values: 1*digit
-extern const std::string PREF_RETRY_WAIT;
-// values: 1*digit
 extern const std::string PREF_TIMEOUT;
 // values: 1*digit
 extern const std::string PREF_DNS_TIMEOUT;

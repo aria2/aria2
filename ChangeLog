@@ -1,5 +1,15 @@
 2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed --retry-wait option since the current architecture doesn't
+	allow sleep for particular URI.
+	* src/AbstractCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/download_helper.cc
+	* src/prefs.cc
+	* src/prefs.h
+
+2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed Retry-After header support. Since the current architecture
 	doesn't allow sleep for particular URI.
 	* src/HttpSkipResponseCommand.cc

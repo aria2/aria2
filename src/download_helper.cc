@@ -83,7 +83,6 @@ const std::vector<std::string>& listRequestOptions()
     PREF_OUT,
     PREF_PROXY_METHOD,
     PREF_REMOTE_TIME,
-    PREF_RETRY_WAIT,
     PREF_SPLIT,
     PREF_TIMEOUT,
     PREF_HTTP_AUTH_CHALLENGE,
