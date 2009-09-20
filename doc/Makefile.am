@@ -4,4 +4,4 @@ dist_doc_DATA = aria2c.1.html
 doc_xmlrpcdir = $(docdir)/xmlrpc
 dist_doc_xmlrpc_DATA = xmlrpc/aria2mon \
 	xmlrpc/aria2rpc \
-	README.txt
+	xmlrpc/README.txt

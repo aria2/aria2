@@ -1,5 +1,10 @@
 2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed a path to xmlrpc/README.txt
+	* doc/Makefile.am
+
+2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added XML-RPC in -v Configuration output.
 	* src/FeatureConfig.cc
 	* src/FeatureConfig.h
