@@ -640,16 +640,6 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--retry-wait</strong>=SEC
-</dt>
-<dd>
-<p>
-  Set the seconds to wait to retry after an error has occured.
-  Specify a value between <em>0</em> and <em>60</em>.
-  Default: <em>5</em>
-</p>
-</dd>
-<dt class="hdlist1">
 <strong>--server-stat-of</strong>=FILE
 </dt>
 <dd>
@@ -1517,7 +1507,9 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Run as daemon.
+  Run as daemon. The current working directory will be changed to <em>/</em>
+  and standard input, standard output and standard error will be
+  redirected to <em>/dev/null</em>. Default: <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2034,11 +2026,6 @@ proxy-method
 <li>
 <p>
 remote-time
-</p>
-</li>
-<li>
-<p>
-retry-wait
 </p>
 </li>
 <li>
@@ -3235,7 +3222,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-09-18 21:52:44 JST
+Last updated 2009-09-20 17:55:08 JST
 </div>
 </div>
 </body>

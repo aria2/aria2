@@ -140,11 +140,6 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
   server and if it is available, apply it to the local file.
   Default: 'false'
 
-*--retry-wait*=SEC::
-  Set the seconds to wait to retry after an error has occured.
-  Specify a value between '0' and '60'.
-  Default: '5'
-
 *--server-stat-of*=FILE::
   Specify the filename to which performance profile of the servers is
   saved. You can load saved data using *--server-stat-if* option. See
@@ -596,7 +591,9 @@ Advanced Options
   Default: '$HOME/.aria2/aria2.conf'
 
 *-D*, *--daemon*::
-  Run as daemon.
+  Run as daemon. The current working directory will be changed to '/'
+  and standard input, standard output and standard error will be
+  redirected to '/dev/null'. Default: 'false'
 
 *--enable-direct-io*[='true'|'false']::
   Enable directI/O, which lowers cpu usage while allocating/checking files.
@@ -911,7 +908,6 @@ of URIs. These optional lines must start with white space(s).
 * out
 * proxy-method
 * remote-time
-* retry-wait
 * split
 * timeout
 * http-auth-challenge

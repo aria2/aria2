@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
-.\"      Date: 09/18/2009
+.\"      Date: 09/20/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "09/18/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "09/20/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -199,15 +199,6 @@ regardless of this option\&. Default:
 .RS 4
 Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the local file\&. Default:
 \fIfalse\fR
-.RE
-.PP
-\fB\-\-retry\-wait\fR=SEC
-.RS 4
-Set the seconds to wait to retry after an error has occured\&. Specify a value between
-\fI0\fR
-and
-\fI60\fR\&. Default:
-\fI5\fR
 .RE
 .PP
 \fB\-\-server\-stat\-of\fR=FILE
@@ -877,7 +868,11 @@ Change the configuration file path to PATH\&. Default:
 .PP
 \fB\-D\fR, \fB\-\-daemon\fR
 .RS 4
-Run as daemon\&.
+Run as daemon\&. The current working directory will be changed to
+\fI/\fR
+and standard input, standard output and standard error will be redirected to
+\fI/dev/null\fR\&. Default:
+\fIfalse\fR
 .RE
 .PP
 \fB\-\-enable\-direct\-io\fR[=\fItrue\fR|\fIfalse\fR]
@@ -1382,17 +1377,6 @@ proxy\-method
 .IP \(bu 2.3
 .\}
 remote\-time
-.RE
-.sp
-.RS 4
-.ie n \{\
-\h'-04'\(bu\h'+03'\c
-.\}
-.el \{\
-.sp -1
-.IP \(bu 2.3
-.\}
-retry\-wait
 .RE
 .sp
 .RS 4
