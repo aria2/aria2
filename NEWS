@@ -1,140 +1,67 @@
-aria2 1.5.2
+aria2 1.6.0
 ===========
 
 Release Note
 ------------
 
-This release fixes the bug that when the first attempt to establishing
-connection fails, aria2 don't try to connect another address and a
-download immediately fails.  -S output was enhanced: exact file size
-is now printed. For -S with torrent file, meta data such as comment,
-comment.utf-8, created by and creation date are now printed. Ukrainian
-and Russian translations were updated.
-
-Changes
--------
-
- * Updated Ukrainian and Russian translations. Thanks to all
-   translators.
-
- * Get comment, comment.utf-8, created by and creation date from
-   .torrent file and print them in -S output.
-
- * Show exact file size along in -S option output.
-
- * Fixed the bug that download fails if
-   SocketCore::establishConnection() throws exception and aria2
-   doesn't try another address.
-
- * Fixed sqlite3.m4 macro so that sqlite3_open_v2 function is detected
-   properly.
-
- * Renamed xmlrpc::elements::PARAMS to xmlrpc::elements::A2_PARAMS
-   because it causes compile error if PARAMS macro is defined.
-
-
-
-aria2 1.5.1
-===========
-
-Release Note
-------------
-
-This release fixes linker error in unit test code on 32bit
-systems. The unit test failure on mingw32 was also fixed. The file I/O
-error handlings were written.
-
-Changes
--------
-
- * Fixed compile error without BitTorrent support
-
- * Rewritten stream error handling
-
- * Make sure that stream is closed before renaming file. Unit test
-   fails on mingw32 in the previous implementation.
-
- * Fixed the unit test error without sqlite3
-
- * Fixed the linker error under 32bit systems.
-
-
-
-aria2 1.5.0
-===========
-
-Release Note
-------------
-
-This release adds WEB-Seeding support for multi-file torrent.
---bt-stop-timeout option was added. This function stops BitTorrent
-download if the download speed is 0 in consecutive given seconds.
-aria2 now tries all resolved addresses to connect to remote servers in
-HTTP(S)/FTP until it gets connected.  For XML-RPC, two new methods
-were added: aria2.tellWaiting and aria2.getVersion. The error code is
-available in the response of aria2.tellStatus methods for
-stopped/completed downloads.  --use-head is now disabled by default
-since using HEAD request causes problems in some web sites.  The
-behavior of -D option has been changed: If -D is specified, the
-current working directory is set to / and stdin, stdout and stderr are
-redirected to /dev/null.  This release fixes the bug that zombie
-processes are created when commands specified in --on-download-*
-options are executed and the bug that http-user, http-passwd, ftp-user
-and ftp-passwd are ignored when they are given via XML-RPC.  Updated
-Russian, Italian, Danish, Bulgarian, Japanese and Ukrainian
+This release changes the default behavior of XML-RPC server. Now it
+listens only on local loopback interface by default for security
+reasons. If you want to connect to aria2c from remote hosts, use
+--xml-rpc-listen-all option. The XML-RPC client sample script written
+in Ruby are now included in the archive under doc/xmlrpc directory.
+These scripts are licensed under MIT License. The help category tags
+are now start "#" to distinguish them from keyword search. Several
+help category tags were added: #xml-rpc, #cookie, #hook and #file.
+--retry-wait option was removed because it doesn't work properly under
+the architecture. Updated Bulgarian, Russian, Slovak and Japanese
 translations.
 
 Changes
 -------
 
- * Updated Russian, Italian, Danish, Bulgarian, Japanese and Ukrainian
+ * Added XML-RPC in -v Configuration output.
+
+ * Updated Bulgarian, Russian, Slovak and Japanese
    translations. Thanks to all translators.
 
- * Avoid to create zombie process when commands specified in
-   --on-download-* options are executed.
+ * Removed --retry-wait option since the current architecture doesn't
+   allow sleep for particular URI.
 
- * Fixed the bug that http-user, http-passwd, ftp-user and ftp-passwd
-   are ignored when they are given via XML-RPC.
+ * Removed Retry-After header support since the current architecture
+   doesn't allow sleep for particular URI.
 
- * Added 'errorCode' to the reponse of tellStatus xml-rpc method.
-   This key is only available for stopped/completed downloads and its
-   value is the error code defined in EXIT STATUS in man page.
+ * Added our own daemon() function for systems which desn't have
+   daemon(3).
 
- * Implemented getVersion xml-rpc method. This method returns struct
-   which has 2 key-value pairs: "version" key is associated to the
-   version of aria2, such as "1.5.0". "enabledFeatures" key is
-   associated to the list of enabled features, such as "Async DNS",
-   "BitTorrent".
+ * Added help category tag #file. Added #file tag to the options
+   related to downloaded file.
 
- * Removed TLS1.1 protocol support when aria2 is built with gnutls for
-   compatibility issue.
+ * Added help category tags: #cookie and #hook. Added #https tag to
+   --https-proxy and --https-proxy, --all-proxy and --no-proxy.
 
- * Disabled --use-head option by default because --use-head=true
-   causes problems on some web sites.
+ * A help category tag now starts with "#" to distinguish a category
+   from keyword search. For example, "http" tag is now "#http". You
+   can type "--help=#http" to get explanation of options related to
+   http. If '#' is omitted, then the argument is treated as a keyword
+   and aria2 searches options whose name includes the keyword and
+   print matched ones. For example, "--help=http" will show options
+   whose name includes "http".
 
- * Print URL List in -S option for torrent.
+ * Added xml-rpc help tag. Tagged xml-rpc related options with
+   xml-rpc tag.
 
- * Added --bt-stop-timeout=SEC option. This function stops BitTorrent
-   download if the download speed is 0 in consecutive SEC seconds. By
-   default, this function is disabled.
+ * Fixed the bug that server performence profile is not updated when
+   aria2c was terminated by emergency shutdown.
 
- * Throw exception if file path doesn't exist in FTP URL.
+ * Added XML-RPC client scripts written in ruby.
 
- * Try all available addresses returned by DNS until it gets connected
-   in HTTP(S)/FTP download
+ * Added support for IPv6 literal address in URI. Now aria2 can
+   handle URI such as http://[::1]/
 
- * Don't print "No files to download." message if -S is given.
+ * Fixed the bug that HTTP request header for XML-RPC request is not
+   parsed properly.
 
- * Added support of WEB-Seeding for multi-file torrent.
-
- * Added tellWaiting XML-RPC method.
-
- * The default value of --dir option is the absolute path to the
-   current directory. If getcwd() is failed, then it is ".", which is
-   the same value with old implementation. This change is necessary
-   because after daemon() call, the current working directory is
-   changed to /.
-
- * Call daemon() with arguments(0,0), which means daemon() changes
-   current working directory to / and redirects stdin, stdout and
-   stderr to /dev/null.
+ * Added --xml-rpc-listen-all option. If true is given to this option,
+   aria2 listens incoming XML-RPC requests on all network
+   interfaces. If false is given, listens only on local loopback
+   interface. The default value is false.
