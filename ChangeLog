@@ -1,3 +1,9 @@
+2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed Retry-After header support. Since the current architecture
+	doesn't allow sleep for particular URI.
+	* src/HttpSkipResponseCommand.cc
+
 2009-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated the help message for --daemon option.

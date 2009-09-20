@@ -157,8 +157,6 @@ bool HttpSkipResponseCommand::processResponse()
     }
     _httpResponse->processRedirect();
     return prepareForRetry(0);
-  } else if(_httpResponse->hasRetryAfter()) {
-    return prepareForRetry(_httpResponse->getRetryAfter());
   } else if(_httpResponse->getResponseStatus() >= HttpHeader::S400) {
     if(_httpResponse->getResponseStatus() == HttpHeader::S401) {
       if(getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
