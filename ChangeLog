@@ -1,5 +1,9 @@
 2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	* Release 1.6.0
+
+2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed a path to xmlrpc/README.txt
 	* doc/Makefile.am
 
