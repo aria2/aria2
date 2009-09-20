@@ -36,9 +36,11 @@
 #define _D_FEATURE_CONFIG_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <map>
 #include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -72,6 +74,7 @@ public:
   static const std::string FEATURE_METALINK;
   static const std::string FEATURE_MESSAGE_DIGEST;
   static const std::string FEATURE_ASYNC_DNS;
+  static const std::string FEATURE_XML_RPC;
   static const std::string FEATURE_GZIP;
   static const std::string FEATURE_FIREFOX3_COOKIE;
 };

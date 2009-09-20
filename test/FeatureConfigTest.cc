@@ -1,9 +1,12 @@
 #include "FeatureConfig.h"
+
+#include <algorithm>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "a2functional.h"
 #include "array_fun.h"
 #include "Util.h"
-#include <algorithm>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -77,6 +80,10 @@ void FeatureConfigTest::testFeatureSummary() {
 #ifdef ENABLE_METALINK
     "Metalink",
 #endif // ENABLE_METALINK
+
+#ifdef ENABLE_XML_RPC
+    "XML-RPC",
+#endif // ENABLE_XML_RPC
 
   };
 

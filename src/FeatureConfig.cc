@@ -49,6 +49,7 @@ const std::string FeatureConfig::FEATURE_BITTORRENT("BitTorrent");
 const std::string FeatureConfig::FEATURE_METALINK("Metalink");
 const std::string FeatureConfig::FEATURE_MESSAGE_DIGEST("Message Digest");
 const std::string FeatureConfig::FEATURE_ASYNC_DNS("Async DNS");
+const std::string FeatureConfig::FEATURE_XML_RPC("XML-RPC");
 const std::string FeatureConfig::FEATURE_GZIP("GZip");
 const std::string FeatureConfig::FEATURE_FIREFOX3_COOKIE("Firefox3 Cookie");
 
@@ -82,6 +83,12 @@ const std::string FeatureConfig::FEATURE_FIREFOX3_COOKIE("Firefox3 Cookie");
 # define ASYNC_DNS_ENABLED false
 #endif // !ENABLE_ASYNC_DNS
 
+#ifdef ENABLE_XML_RPC
+# define XML_RPC_ENABLED true
+#else // !ENABLE_XML_RPC
+# define XML_RPC_ENABLED false
+#endif // !ENABLE_XML_RPC
+
 #ifdef HAVE_LIBZ
 # define GZIP_ENABLED true
 #else // !HAVE_LIBZ
@@ -105,6 +112,7 @@ FeatureConfig::FeatureConfig() {
     FeatureMap::value_type(FEATURE_METALINK, METALINK_ENABLED),
     FeatureMap::value_type(FEATURE_MESSAGE_DIGEST, MESSAGE_DIGEST_ENABLED),
     FeatureMap::value_type(FEATURE_ASYNC_DNS, ASYNC_DNS_ENABLED),
+    FeatureMap::value_type(FEATURE_XML_RPC, XML_RPC_ENABLED),
     FeatureMap::value_type(FEATURE_GZIP, GZIP_ENABLED),
     FeatureMap::value_type(FEATURE_FIREFOX3_COOKIE, FIREFOX3_COOKIE_ENABLED),
   };
