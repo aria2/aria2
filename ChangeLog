@@ -1,5 +1,10 @@
 2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed --retry-wait option from aria2rpc
+	* doc/xmlrpc/aria2rpc
+
+2009-09-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed --retry-wait option from man page.
 	* doc/aria2c.1.txt
 

@@ -49,7 +49,6 @@ OptionParser.new do |opt|
   opt.on("-R","--remote-time [BOOL]",["true","false"]){|val|
     options["remote-time"]=val||"true"
   }
-  opt.on("--retry-wait SEC"){|val| options["retry-wait"]=val}
   opt.on("-s","--split N"){|val| options["split"]=val}
   opt.on("-t","--timeout SEC"){|val| options["timeout"]=val}
   opt.on("--http-auth-challenge [BOOL]",["true","false"]){|val|
