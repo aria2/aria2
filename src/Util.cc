@@ -295,46 +295,6 @@ FILE* Util::openFile(const std::string& filename, const std::string& mode) {
   return file;
 }
 
-void Util::fileCopy(const std::string& dest, const std::string& src) {
-  File file(src);
-  rangedFileCopy(dest, src, 0, file.size());
-}
-
-void Util::rangedFileCopy(const std::string& dest, const std::string& src, off_t srcOffset, uint64_t length)
-{
-  size_t bufSize = 4096;
-  unsigned char buf[bufSize];
-  DefaultDiskWriter srcdw(src);
-  DefaultDiskWriter destdw(dest);
-
-  srcdw.openExistingFile();
-  destdw.initAndOpenFile();
-
-  lldiv_t res = lldiv(length, bufSize);
-  unsigned int x = res.quot;
-  unsigned int r = res.rem;
-
-  off_t initialOffset = srcOffset;
-  for(unsigned int i = 0; i < x; ++i) {
-    size_t readLength = 0;
-    while(readLength < bufSize) {
-      ssize_t ret = srcdw.readData(buf, bufSize-readLength, srcOffset);
-      destdw.writeData(buf, ret, srcOffset-initialOffset);
-      srcOffset += ret;
-      readLength += ret;
-    }
-  }
-  if(r > 0) {
-    size_t readLength = 0;
-    while(readLength < r) { 
-      ssize_t ret = srcdw.readData(buf, r-readLength, srcOffset);
-      destdw.writeData(buf, ret, srcOffset-initialOffset);
-      srcOffset += ret;
-      readLength += ret;
-    }
-  }     
-}
-
 bool Util::isPowerOf(int num, int base) {
   if(base <= 0) { return false; }
   if(base == 1) { return true; }
@@ -372,14 +332,6 @@ std::string Util::secfmt(time_t sec) {
   return str;
 }
 
-size_t Util::expandBuffer(char** pbuf, size_t curLength, size_t newLength) {
-  char* newbuf = new char[newLength];
-  memcpy(newbuf, *pbuf, curLength);
-  delete [] *pbuf;
-  *pbuf = newbuf;
-  return newLength;
-}
-
 int getNum(const char* buf, int offset, size_t length) {
   char* temp = new char[length+1];
   memcpy(temp, buf+offset, length);
@@ -387,44 +339,6 @@ int getNum(const char* buf, int offset, size_t length) {
   int x = strtol(temp, 0, 10);
   delete [] temp;
   return x;
-}
-
-void unfoldSubRange(const std::string& src, std::deque<int>& range) {
-  if(src.empty()) {
-    return;
-  }
-  std::string::size_type p = src.find_first_of(",-");
-  if(p == 0) {
-    return;
-  } else if(p == std::string::npos) {
-    range.push_back(atoi(src.c_str()));
-  } else {
-    if(src.at(p) == ',') {
-      int num = getNum(src.c_str(), 0, p);
-      range.push_back(num);
-      unfoldSubRange(src.substr(p+1), range);
-    } else if(src.at(p) == '-') {
-      std::string::size_type rightNumBegin = p+1;
-      std::string::size_type nextDelim = src.find_first_of(",", rightNumBegin);
-      if(nextDelim == std::string::npos) {
-	nextDelim = src.size();
-      }
-      int left = getNum(src.c_str(), 0, p);
-      int right = getNum(src.c_str(), rightNumBegin, nextDelim-rightNumBegin);
-      for(int i = left; i <= right; ++i) {
-	range.push_back(i);
-      }
-      if(src.size() > nextDelim) {
-	unfoldSubRange(src.substr(nextDelim+1), range);
-      }
-    }
-  }
-}
-
-void Util::unfoldRange(const std::string& src, std::deque<int>& range) {
-  unfoldSubRange(src, range);
-  std::sort(range.begin(), range.end());
-  range.erase(std::unique(range.begin(), range.end()), range.end());
 }
 
 int32_t Util::parseInt(const std::string& s, int32_t base)
@@ -621,17 +535,6 @@ void Util::setGlobalSignalHandler(int sig, void (*handler)(int), int flags) {
 #endif // HAVE_SIGACTION
 }
 
-void Util::indexRange(size_t& startIndex, size_t& endIndex,
-		      off_t offset, size_t srcLength, size_t destLength)
-{
-  int64_t _startIndex = offset/destLength;
-  int64_t _endIndex = (offset+srcLength-1)/destLength;
-  assert(_startIndex <= INT32_MAX);
-  assert(_endIndex <= INT32_MAX);
-  startIndex = _startIndex;
-  endIndex = _endIndex;
-}
-
 std::string Util::getHomeDir()
 {
   const char* p = getenv("HOME");
@@ -689,23 +592,6 @@ std::string Util::abbrevSize(int64_t size)
   result += units[i];
   result += "i";
   return result;
-}
-
-time_t Util::httpGMT(const std::string& httpStdTime)
-{
-  struct tm tm;
-  memset(&tm, 0, sizeof(tm));
-  char* r = strptime(httpStdTime.c_str(), "%a, %Y-%m-%d %H:%M:%S GMT", &tm);
-  if(r != httpStdTime.c_str()+httpStdTime.size()) {
-    return -1;
-  }
-  time_t thetime = timegm(&tm);
-  if(thetime == -1) {
-    if(tm.tm_year >= 2038-1900) {
-      thetime = INT32_MAX;
-    }
-  }
-  return thetime;
 }
 
 void Util::sleep(long seconds) {

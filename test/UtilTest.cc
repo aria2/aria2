@@ -48,7 +48,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testToString_binaryStream);
   CPPUNIT_TEST(testItos);
   CPPUNIT_TEST(testUitos);
-  CPPUNIT_TEST(testHttpGMT);
   CPPUNIT_TEST(testNtoh64);
   CPPUNIT_TEST(testUrlencode);
   CPPUNIT_TEST(testHtmlEscape);
@@ -92,7 +91,6 @@ public:
   void testToString_binaryStream();
   void testItos();
   void testUitos();
-  void testHttpGMT();
   void testNtoh64();
   void testUrlencode();
   void testHtmlEscape();
@@ -688,22 +686,6 @@ void UtilTest::testUitos()
     int16_t i = -12345;
     CPPUNIT_ASSERT_EQUAL(std::string("/.-,+"), Util::uitos(i));
   }
-}
-
-void UtilTest::testHttpGMT()
-{
-  CPPUNIT_ASSERT_EQUAL((time_t)0, Util::httpGMT("Thu, 1970-01-01 0:0:0 GMT"));
-  CPPUNIT_ASSERT_EQUAL((time_t)2147483647,
-		       Util::httpGMT("Tue, 2038-01-19 3:14:7 GMT"));
-  if(sizeof(time_t) == 4) {
-    CPPUNIT_ASSERT_EQUAL((time_t)2147483647,
-			 Util::httpGMT("Tue, 2038-01-19 3:14:8 GMT"));
-  } else if(sizeof(time_t) == 8) {
-    CPPUNIT_ASSERT_EQUAL((int64_t)2147483648LL,
-			 (int64_t)Util::httpGMT("Tue, 2038-01-19 3:14:8 GMT"));
-  }
-  CPPUNIT_ASSERT_EQUAL((time_t)-1,
-		       Util::httpGMT("Tue, 2008/10/10 23:33:33 UTC"));
 }
 
 void UtilTest::testNtoh64()

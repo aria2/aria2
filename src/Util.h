@@ -189,17 +189,9 @@ public:
 
   static FILE* openFile(const std::string& filename, const std::string& mode);
 
-  static void fileCopy(const std::string& destFile, const std::string& src);
-
-  static void rangedFileCopy(const std::string& destFile, const std::string& src, off_t srcOffset, uint64_t length);
-
   static bool isPowerOf(int num, int base);
 
   static std::string secfmt(time_t sec);
-
-  static size_t expandBuffer(char** pbuf, size_t curLength, size_t newLength);
-
-  static void unfoldRange(const std::string& src, std::deque<int>& range);
 
   static int32_t parseInt(const std::string& s, int32_t base = 10);
 
@@ -225,25 +217,11 @@ public:
 
   static void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);
 
-  static void indexRange(size_t& startIndex, size_t& endIndex,
-			 off_t offset,
-			 size_t srcLength, size_t destLength);
-
   static std::string getHomeDir();
 
   static int64_t getRealSize(const std::string& sizeWithUnit);
 
   static std::string abbrevSize(int64_t size);
-
-  /**
-   * Parses given httpTimeFormat and returns seconds ellapsed since epoc.
-   * The available format is "%a, %Y-%m-%d %H:%M:%S GMT".
-   * If specified date is later than "Tue, 2038-01-19 3:14:7 GMT",
-   * this function returns INT32_MAX.
-   * This function also cannot handle prior 1900-1-1 0:0:0 GMT.
-   * If parse operation is failed, then return -1.
-   */
-  static time_t httpGMT(const std::string& httpTimeFormat);
 
   template<typename InputIterator>
   static void toStream
