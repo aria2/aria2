@@ -259,6 +259,7 @@ AC_CHECK_FUNCS([__argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
+                fork \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \

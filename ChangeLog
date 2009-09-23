@@ -1,3 +1,9 @@
+2009-09-23  Ross Smith II  <aria2spam at smithii dot com>
+
+	Add check for fork(), which is missing on MinGW
+	* src/daemon.cc
+	* configure.ac
+
 2009-09-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused methods Util::fileCopy(), Util::rangedFileCopy(),
