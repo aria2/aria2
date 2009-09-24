@@ -1,3 +1,7 @@
+2009-09-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Generated configure and config.h.in
+
 2009-09-23  Ross Smith II  <aria2spam at smithii dot com>
 
 	Add check for fork(), which is missing on MinGW

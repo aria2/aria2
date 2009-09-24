@@ -21595,10 +21595,12 @@ done
 
 
 
+
 for ac_func in __argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
+                fork \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \
