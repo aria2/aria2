@@ -173,6 +173,7 @@ OptionParser.new do |opt|
 Usage: #{program_name} addUri URI... [options]
        #{program_name} addTorrent /path/to/torrent_file URI... [options]
        #{program_name} addMetalink /path/to/metalink_file [options]
+       #{program_name} remove GID [options]
        #{program_name} tellStatus GID [options]
        #{program_name} tellActive [options]
        #{program_name} tellWaiting [options]

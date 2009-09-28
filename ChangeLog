@@ -1,3 +1,8 @@
+2009-09-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added missing help message for remove command.
+	* doc/xmlrpc/aria2rpc
+
 2009-09-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Generated configure and config.h.in
