@@ -184,6 +184,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} changeOption GID [options]
        #{program_name} changeGlobalOption [options]
        #{program_name} getVersion [options]
+Options:
 EOS
   
 
