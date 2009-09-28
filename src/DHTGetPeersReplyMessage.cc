@@ -92,9 +92,21 @@ BDE DHTGetPeersReplyMessage::getResponse()
     }
     rDict[NODES] = BDE(buffer, offset);
   } else {
+    // Limit the size of values list.  The maxmum payload size of UDP
+    // packet is limited to 65507bytes.  aria2 uses 20bytes token and
+    // 2byte transaction ID. The size of get_peers reply message
+    // without values list is 87bytes:
+    //
+    // d1:rd2:id20:aaaaaaaaaaaaaaaaaaaa5:token20:aaaaaaaaaaaaaaaaaaaa
+    // 6:valueslee1:t2:bb1:y1:re
+    //
+    // With this configuration, We can send (65507-87)/8 = 8177
+    // values.  Since the size of token and transaction ID may vary in
+    // implementations, we use 8100.
+    static const size_t MAX_VALUES_SIZE = 8100;
     BDE valuesList = BDE::list();
     for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin();
-	i != _values.end(); ++i) {
+	i != _values.end() && valuesList.size() < MAX_VALUES_SIZE; ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
       if(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port)) {

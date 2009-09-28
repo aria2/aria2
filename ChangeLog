@@ -1,5 +1,10 @@
 2009-09-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Limit the size of values list when sending get_peers reply.
+	* src/DHTGetPeersReplyMessage.cc
+
+2009-09-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated banner
 	* doc/xmlrpc/aria2rpc
 
