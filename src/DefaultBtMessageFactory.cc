@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "DefaultBtMessageFactory.h"
 #include "DlAbortEx.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "BtKeepAliveMessage.h"
 #include "BtChokeMessage.h"
 #include "BtUnchokeMessage.h"
@@ -84,7 +84,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     // keep-alive
     msg.reset(new BtKeepAliveMessage());
   } else {
-    uint8_t id = PeerMessageUtil::getId(data);
+    uint8_t id = bittorrent::getId(data);
     switch(id) {
     case BtChokeMessage::ID:
       msg = BtChokeMessage::create(data, dataLength);

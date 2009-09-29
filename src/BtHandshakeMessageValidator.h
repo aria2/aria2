@@ -41,7 +41,6 @@
 
 #include "BtHandshakeMessage.h"
 #include "Util.h"
-#include "PeerMessageUtil.h"
 #include "StringFormat.h"
 
 namespace aria2 {

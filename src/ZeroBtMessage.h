@@ -36,7 +36,7 @@
 #define _D_ZERO_BT_MESSAGE_H_
 
 #include "SimpleBtMessage.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -49,8 +49,8 @@ protected:
   template<typename T>
   static SharedHandle<T> create(const unsigned char* data, size_t dataLength)
   {
-    PeerMessageUtil::assertPayloadLengthEqual(1, dataLength, T::NAME);
-    PeerMessageUtil::assertID(T::ID, data, T::NAME);
+    bittorrent::assertPayloadLengthEqual(1, dataLength, T::NAME);
+    bittorrent::assertID(T::ID, data, T::NAME);
     SharedHandle<T> message(new T());
     return message;
   }

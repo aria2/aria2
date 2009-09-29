@@ -7,7 +7,7 @@
 #include "Exception.h"
 #include "Util.h"
 #include "DHTBucket.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "bencode.h"
 
 namespace aria2 {
@@ -47,7 +47,8 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
     nodes[i]->setPort(6881+i);
 
     unsigned char buf[6];
-    CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+    CPPUNIT_ASSERT(bittorrent::createcompact
+		   (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
     compactNodeInfo +=
       std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
       std::string(&buf[0], &buf[sizeof(buf)]);

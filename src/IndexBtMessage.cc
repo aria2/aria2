@@ -35,6 +35,7 @@
 #include "IndexBtMessage.h"
 #include "Util.h"
 #include "a2functional.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -48,8 +49,8 @@ const unsigned char* IndexBtMessage::getMessage()
      * total: 9bytes
      */
     _msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 5, getId());
-    PeerMessageUtil::setIntParam(&_msg[5], _index);
+    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 5, getId());
+    bittorrent::setIntParam(&_msg[5], _index);
   }
   return _msg;
 }

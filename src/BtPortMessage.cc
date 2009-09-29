@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #include "BtPortMessage.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "DlAbortEx.h"
 #include "Util.h"
 #include "message.h"
@@ -61,9 +61,9 @@ BtPortMessage::~BtPortMessage()
 
 SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, size_t dataLength)
 {
-  PeerMessageUtil::assertPayloadLengthEqual(3, dataLength, NAME);
-  PeerMessageUtil::assertID(ID, data, NAME);
-  uint16_t port = PeerMessageUtil::getShortIntParam(data, 1);
+  bittorrent::assertPayloadLengthEqual(3, dataLength, NAME);
+  bittorrent::assertID(ID, data, NAME);
+  uint16_t port = bittorrent::getShortIntParam(data, 1);
   SharedHandle<BtPortMessage> message(new BtPortMessage(port));
   return message;
 }
@@ -99,8 +99,8 @@ const unsigned char* BtPortMessage::getMessage() {
      * total: 7bytes
      */
     _msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 3, ID);
-    PeerMessageUtil::setShortIntParam(&_msg[5], _port);
+    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 3, ID);
+    bittorrent::setShortIntParam(&_msg[5], _port);
   }
   return _msg;
 }

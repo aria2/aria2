@@ -76,7 +76,6 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriterTest.cc\
 @ENABLE_BITTORRENT_TRUE@	PeerTest.cc\
 @ENABLE_BITTORRENT_TRUE@	PeerSessionResourceTest.cc\
-@ENABLE_BITTORRENT_TRUE@	PeerMessageUtilTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ShareRatioSeedCriteriaTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.cc\
@@ -219,12 +218,11 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	PeerListProcessorTest.cc AnnounceListTest.cc \
 	DefaultPeerStorageTest.cc MockPeerStorage.h \
 	ByteArrayDiskWriterTest.cc PeerTest.cc \
-	PeerSessionResourceTest.cc PeerMessageUtilTest.cc \
-	ShareRatioSeedCriteriaTest.cc BtRegistryTest.cc \
-	BtDependencyTest.cc BtPostDownloadHandlerTest.cc \
-	TimeSeedCriteriaTest.cc BtExtendedMessageTest.cc \
-	HandshakeExtensionMessageTest.cc UTPexExtensionMessageTest.cc \
-	DefaultBtMessageFactoryTest.cc \
+	PeerSessionResourceTest.cc ShareRatioSeedCriteriaTest.cc \
+	BtRegistryTest.cc BtDependencyTest.cc \
+	BtPostDownloadHandlerTest.cc TimeSeedCriteriaTest.cc \
+	BtExtendedMessageTest.cc HandshakeExtensionMessageTest.cc \
+	UTPexExtensionMessageTest.cc DefaultBtMessageFactoryTest.cc \
 	DefaultExtensionMessageFactoryTest.cc DHTNodeTest.cc \
 	DHTBucketTest.cc DHTRoutingTableTest.cc \
 	DHTMessageTrackerEntryTest.cc DHTMessageTrackerTest.cc \
@@ -288,7 +286,6 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriterTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerSessionResourceTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PeerMessageUtilTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShareRatioSeedCriteriaTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.$(OBJEXT) \
@@ -810,7 +807,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PStringBuildVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterizedStringParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListProcessorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerSessionResourceTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceStatManTest.Po@am__quote@

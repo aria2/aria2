@@ -4,7 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Peer.h"
 #include "MockPieceStorage.h"
 #include "DlAbortEx.h"
@@ -38,8 +38,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveMessageTest);
 
 void BtHaveMessageTest::testCreate() {
   unsigned char msg[9];
-  PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 4);
-  PeerMessageUtil::setIntParam(&msg[5], 12345);
+  bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 4);
+  bittorrent::setIntParam(&msg[5], 12345);
   SharedHandle<BtHaveMessage> pm = BtHaveMessage::create(&msg[4], 5);
   CPPUNIT_ASSERT_EQUAL((uint8_t)4, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
@@ -47,7 +47,7 @@ void BtHaveMessageTest::testCreate() {
   // case: payload size is wrong
   try {
     unsigned char msg[10];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 6, 4);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 6, 4);
     BtHaveMessage::create(&msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -55,7 +55,7 @@ void BtHaveMessageTest::testCreate() {
   // case: id is wrong
   try {
     unsigned char msg[9];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 5);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 5);
     BtHaveMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -66,8 +66,8 @@ void BtHaveMessageTest::testGetMessage() {
   BtHaveMessage msg;
   msg.setIndex(12345);
   unsigned char data[9];
-  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 5, 4);
-  PeerMessageUtil::setIntParam(&data[5], 12345);
+  bittorrent::createPeerMessageString(data, sizeof(data), 5, 4);
+  bittorrent::setIntParam(&data[5], 12345);
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 9) == 0);
 }
 

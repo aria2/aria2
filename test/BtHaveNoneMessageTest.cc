@@ -1,8 +1,11 @@
 #include "BtHaveNoneMessage.h"
-#include "PeerMessageUtil.h"
-#include "Peer.h"
+
 #include <cstring>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "bittorrent_helper.h"
+#include "Peer.h"
 
 namespace aria2 {
 
@@ -31,14 +34,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveNoneMessageTest);
 
 void BtHaveNoneMessageTest::testCreate() {
   unsigned char msg[5];
-  PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 15);
+  bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 15);
   SharedHandle<BtHaveNoneMessage> pm = BtHaveNoneMessage::create(&msg[4], 1);
   CPPUNIT_ASSERT_EQUAL((uint8_t)15, pm->getId());
 
   // case: payload size is wrong
   try {
     unsigned char msg[6];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 2, 15);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 2, 15);
     BtHaveNoneMessage::create(&msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -46,7 +49,7 @@ void BtHaveNoneMessageTest::testCreate() {
   // case: id is wrong
   try {
     unsigned char msg[5];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 16);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 16);
     BtHaveNoneMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -56,7 +59,7 @@ void BtHaveNoneMessageTest::testCreate() {
 void BtHaveNoneMessageTest::testGetMessage() {
   BtHaveNoneMessage msg;
   unsigned char data[5];
-  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 1, 15);
+  bittorrent::createPeerMessageString(data, sizeof(data), 1, 15);
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 5) == 0);
 }
 

@@ -35,7 +35,7 @@
 #include "UTPexExtensionMessage.h"
 #include "Peer.h"
 #include "Util.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "PeerStorage.h"
 #include "PeerListProcessor.h"
 #include "DlAbortEx.h"
@@ -77,7 +77,7 @@ UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
   std::string flagstring;
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); ++itr) {
     unsigned char compact[6];
-    if(PeerMessageUtil::createcompact(compact, (*itr)->ipaddr, (*itr)->port)) {
+    if(bittorrent::createcompact(compact, (*itr)->ipaddr, (*itr)->port)) {
       addrstring.append(&compact[0], &compact[6]);
       flagstring += (*itr)->isSeeder() ? "2" : "0";
     }

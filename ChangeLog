@@ -1,5 +1,67 @@
 2009-09-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Move all functions in PeerMessageUtil to bittorrent_helper.
+	* src/BtBitfieldMessage.cc
+	* src/BtBitfieldMessageValidator.h
+	* src/BtExtendedMessage.cc
+	* src/BtHandshakeMessage.cc
+	* src/BtHandshakeMessageValidator.h
+	* src/BtPieceMessage.cc
+	* src/BtPieceMessageValidator.h
+	* src/BtPortMessage.cc
+	* src/DHTFindNodeReplyMessage.cc
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTRoutingTableSerializer.cc
+	* src/DHTTokenTracker.cc
+	* src/DefaultBtMessageFactory.cc
+	* src/IndexBtMessage.cc
+	* src/IndexBtMessage.h
+	* src/IndexBtMessageValidator.h
+	* src/Makefile.am
+	* src/PeerMessageUtil.cc: Removed.
+	* src/PeerMessageUtil.h: Removed.
+	* src/RangeBtMessage.cc
+	* src/RangeBtMessage.h
+	* src/RangeBtMessageValidator.h
+	* src/UTPexExtensionMessage.cc
+	* src/ZeroBtMessage.cc
+	* src/ZeroBtMessage.h
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+	* test/BtAllowedFastMessageTest.cc
+	* test/BtBitfieldMessageTest.cc
+	* test/BtCancelMessageTest.cc
+	* test/BtChokeMessageTest.cc
+	* test/BtExtendedMessageTest.cc
+	* test/BtHandshakeMessageTest.cc
+	* test/BtHaveAllMessageTest.cc
+	* test/BtHaveMessageTest.cc
+	* test/BtHaveNoneMessageTest.cc
+	* test/BtInterestedMessageTest.cc
+	* test/BtNotInterestedMessageTest.cc
+	* test/BtPieceMessageTest.cc
+	* test/BtPortMessageTest.cc
+	* test/BtRejectMessageTest.cc
+	* test/BtRequestMessageTest.cc
+	* test/BtSuggestPieceMessageTest.cc
+	* test/BtUnchokeMessageTest.cc
+	* test/DHTFindNodeReplyMessageTest.cc
+	* test/DHTGetPeersReplyMessageTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTRoutingTableDeserializerTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DefaultBtMessageFactoryTest.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* test/Makefile.am
+	* test/PeerListProcessorTest.cc
+	* test/PeerMessageUtilTest.cc: Removed.
+	* test/UTPexExtensionMessageTest.cc
+
+2009-09-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Limit the size of values list when sending get_peers reply.
 	* src/DHTGetPeersReplyMessage.cc
 

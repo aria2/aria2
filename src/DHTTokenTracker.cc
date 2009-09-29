@@ -33,13 +33,15 @@
  */
 /* copyright --> */
 #include "DHTTokenTracker.h"
+
+#include <cstring>
+
 #include "DHTUtil.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "MessageDigestHelper.h"
 #include "StringFormat.h"
-#include <cstring>
 
 namespace aria2 {
 
@@ -62,7 +64,7 @@ std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
 					   const unsigned char* secret) const
 {
   unsigned char src[DHT_ID_LENGTH+6+SECRET_SIZE];
-  if(!PeerMessageUtil::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
+  if(!bittorrent::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
     throw DL_ABORT_EX
       (StringFormat("Token generation failed: ipaddr=%s, port=%u",
 		    ipaddr.c_str(), port).str());

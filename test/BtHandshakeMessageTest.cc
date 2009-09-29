@@ -4,7 +4,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "PeerMessageUtil.h"
 #include "Util.h"
 #include "BtConstants.h"
 

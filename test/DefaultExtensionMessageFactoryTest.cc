@@ -6,7 +6,7 @@
 
 #include "Peer.h"
 #include "MockPeerStorage.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "HandshakeExtensionMessage.h"
 #include "UTPexExtensionMessage.h"
 #include "Exception.h"
@@ -87,10 +87,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
   unsigned char c2[6];
   unsigned char c3[6];
   unsigned char c4[6];
-  PeerMessageUtil::createcompact(c1, "192.168.0.1", 6881);
-  PeerMessageUtil::createcompact(c2, "10.1.1.2", 9999);
-  PeerMessageUtil::createcompact(c3, "192.168.0.2", 6882);
-  PeerMessageUtil::createcompact(c4, "10.1.1.3",10000);
+  bittorrent::createcompact(c1, "192.168.0.1", 6881);
+  bittorrent::createcompact(c2, "10.1.1.2", 9999);
+  bittorrent::createcompact(c3, "192.168.0.2", 6882);
+  bittorrent::createcompact(c4, "10.1.1.3",10000);
 
   char id[1] = { _registry->getExtensionMessageID("ut_pex") };
 

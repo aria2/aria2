@@ -37,6 +37,7 @@
 
 #include "BtMessageValidator.h"
 #include "BtBitfieldMessage.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -52,9 +53,9 @@ public:
 
   virtual bool validate(Errors& error) {
     // TODO
-    PeerMessageUtil::checkBitfield(message->getBitfield(),
-				   message->getBitfieldLength(),
-				   numPiece);
+    bittorrent::checkBitfield(message->getBitfield(),
+			      message->getBitfieldLength(),
+			      numPiece);
     return true;
   }
 };

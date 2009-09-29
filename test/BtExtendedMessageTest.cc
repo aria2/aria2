@@ -5,7 +5,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "MockExtensionMessageFactory.h"
 #include "Peer.h"
 #include "Exception.h"
@@ -42,8 +42,7 @@ void BtExtendedMessageTest::testCreate() {
   // payload:{4:name3:foo}->11bytes
   std::string payload = "4:name3:foo";
   unsigned char msg[17];// 6+11bytes
-  PeerMessageUtil::createPeerMessageString((unsigned char*)msg,
-					   sizeof(msg), 13, 20);
+  bittorrent::createPeerMessageString((unsigned char*)msg, sizeof(msg), 13, 20);
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
   SharedHandle<BtExtendedMessage> pm = BtExtendedMessage::create(exmsgFactory,
@@ -54,7 +53,7 @@ void BtExtendedMessageTest::testCreate() {
   // case: payload size is wrong
   try {
     unsigned char msg[5];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 20);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 20);
     BtExtendedMessage::create(exmsgFactory, peer, &msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
@@ -63,7 +62,7 @@ void BtExtendedMessageTest::testCreate() {
   // case: id is wrong
   try {
     unsigned char msg[6];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 2, 21);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 2, 21);
     BtExtendedMessage::create(exmsgFactory, peer, &msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
@@ -79,7 +78,7 @@ void BtExtendedMessageTest::testGetMessage() {
   BtExtendedMessage msg(exmsg);
 
   unsigned char data[17];
-  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 13, 20);
+  bittorrent::createPeerMessageString(data, sizeof(data), 13, 20);
   *(data+5) = extendedMessageID;
   memcpy(data+6, payload.c_str(), payload.size());
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 17) == 0);

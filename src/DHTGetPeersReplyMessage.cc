@@ -42,7 +42,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Peer.h"
 #include "DHTUtil.h"
 #include "Util.h"
@@ -86,7 +86,8 @@ BDE DHTGetPeersReplyMessage::getResponse()
 	i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
-      if(PeerMessageUtil::createcompact(buffer+20+offset, node->getIPAddress(), node->getPort())) {
+      if(bittorrent::createcompact
+	 (buffer+20+offset, node->getIPAddress(), node->getPort())) {
 	offset += 26;
       }
     }
@@ -109,7 +110,7 @@ BDE DHTGetPeersReplyMessage::getResponse()
 	i != _values.end() && valuesList.size() < MAX_VALUES_SIZE; ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
-      if(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port)) {
+      if(bittorrent::createcompact(buffer, peer->ipaddr, peer->port)) {
 	valuesList << BDE(buffer, sizeof(buffer));
       }
     }

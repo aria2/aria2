@@ -7,7 +7,7 @@
 #include "Exception.h"
 #include "Util.h"
 #include "DHTBucket.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Peer.h"
 #include "bencode.h"
 
@@ -58,7 +58,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
       nodes[i]->setPort(6881+i);
       
       unsigned char buf[6];
-      CPPUNIT_ASSERT(PeerMessageUtil::createcompact
+      CPPUNIT_ASSERT(bittorrent::createcompact
 		     (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
 	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
@@ -81,7 +81,8 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
     for(size_t i = 0; i < 4; ++i) {
       SharedHandle<Peer> peer(new Peer("192.168.0."+Util::uitos(i+1), 6881+i));
       unsigned char buffer[6];
-      CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port));
+      CPPUNIT_ASSERT(bittorrent::createcompact
+		     (buffer, peer->ipaddr, peer->port));
       valuesList << BDE(buffer, sizeof(buffer));
       peers.push_back(peer);
     }

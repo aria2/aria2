@@ -35,6 +35,7 @@
 #include "RangeBtMessage.h"
 #include "Util.h"
 #include "a2functional.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -64,10 +65,10 @@ const unsigned char* RangeBtMessage::getMessage()
      * total: 17bytes
      */
     _msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 13, getId());
-    PeerMessageUtil::setIntParam(&_msg[5], _index);
-    PeerMessageUtil::setIntParam(&_msg[9], _begin);
-    PeerMessageUtil::setIntParam(&_msg[13], _length);
+    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 13, getId());
+    bittorrent::setIntParam(&_msg[5], _index);
+    bittorrent::setIntParam(&_msg[9], _begin);
+    bittorrent::setIntParam(&_msg[13], _length);
   }
   return _msg;
 }

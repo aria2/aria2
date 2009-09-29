@@ -4,7 +4,7 @@
 #include "DHTNode.h"
 #include "array_fun.h"
 #include "DHTConstants.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "a2netcompat.h"
 #include <cstring>
 #include <sstream>
@@ -112,7 +112,7 @@ void DHTRoutingTableSerializerTest::testSerialize()
   ss.read(buf, 6);
   {
     std::pair<std::string, uint16_t> peer =
-      PeerMessageUtil::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
+      bittorrent::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peer.second);
   }
@@ -171,7 +171,7 @@ void DHTRoutingTableSerializerTest::testSerialize()
   ss.read(buf, 6);
   {
     std::pair<std::string, uint16_t> peer =
-      PeerMessageUtil::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
+      bittorrent::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6883, peer.second);
   }

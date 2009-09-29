@@ -39,7 +39,7 @@
 
 #include "ExtensionMessage.h"
 #include "ExtensionMessageFactory.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Peer.h"
 #include "DlAbortEx.h"
 #include "message.h"
@@ -76,7 +76,7 @@ const unsigned char* BtExtendedMessage::getMessage() {
     std::string payload = _extensionMessage->getBencodedData();
     _msgLength = 6+payload.size();
     _msg = new unsigned char[_msgLength];
-    PeerMessageUtil::createPeerMessageString(_msg, _msgLength, 2+payload.size(), ID);
+    bittorrent::createPeerMessageString(_msg, _msgLength, 2+payload.size(), ID);
     *(_msg+5) = _extensionMessage->getExtensionMessageID();
     memcpy(_msg+6, payload.c_str(), payload.size());
   }
@@ -102,8 +102,8 @@ BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
 			  const PeerHandle& peer,
 			  const unsigned char* data, size_t dataLength)
 {
-  PeerMessageUtil::assertPayloadLengthGreater(1, dataLength, NAME);
-  PeerMessageUtil::assertID(ID, data, NAME);
+  bittorrent::assertPayloadLengthGreater(1, dataLength, NAME);
+  bittorrent::assertID(ID, data, NAME);
   assert(!factory.isNull());
   ExtensionMessageHandle extmsg = factory->createMessage(data+1,
 							 dataLength-1);

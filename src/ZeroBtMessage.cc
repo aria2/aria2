@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "ZeroBtMessage.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -45,7 +46,7 @@ const unsigned char* ZeroBtMessage::getMessage()
      * total: 5bytes
      */
     _msg = new unsigned char[MESSAGE_LENGTH];
-    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 1, getId());
+    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 1, getId());
   }
   return _msg;
 }

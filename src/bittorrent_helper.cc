@@ -34,9 +34,9 @@
 /* copyright --> */
 #include "bittorrent_helper.h"
 
+#include <cassert>
 #include <cstring>
 #include <algorithm>
-#include <deque>
 
 #include "DownloadContext.h"
 #include "Randomizer.h"
@@ -48,8 +48,10 @@
 #include "BtConstants.h"
 #include "messageDigest.h"
 #include "MessageDigestHelper.h"
-#include "PeerMessageUtil.h"
 #include "SimpleRandomizer.h"
+#include "a2netcompat.h"
+#include "BtConstants.h"
+#include "bitfield.h"
 
 namespace aria2 {
 
@@ -582,7 +584,7 @@ void computeFastSet
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize)
 {
   unsigned char compact[6];
-  if(!PeerMessageUtil::createcompact(compact, ipaddr, 0)) {
+  if(!createcompact(compact, ipaddr, 0)) {
     return;
   }
   if(numPieces < fastSetSize) {
@@ -652,6 +654,181 @@ const unsigned char* getStaticPeerId()
       reinterpret_cast<const unsigned char*>(generateStaticPeerId(DEFAULT_PEER_ID_PREFIX, SimpleRandomizer::getInstance()).data());
   } else {
     return reinterpret_cast<const unsigned char*>(peerId.data());
+  }
+}
+
+uint8_t getId(const unsigned char* msg)
+{
+  return msg[0];
+}
+
+uint32_t getIntParam(const unsigned char* msg, size_t pos)
+{
+  uint32_t nParam;
+  memcpy(&nParam, msg+pos, sizeof(nParam));
+  return ntohl(nParam);
+}
+
+uint16_t getShortIntParam(const unsigned char* msg, size_t pos)
+{
+  uint16_t nParam;
+  memcpy(&nParam, msg+pos, sizeof(nParam));
+  return ntohs(nParam);
+}
+
+void checkIndex(size_t index, size_t pieces)
+{
+  if(!(index < pieces)) {
+    throw DL_ABORT_EX(StringFormat("Invalid index: %lu",
+				 static_cast<unsigned long>(index)).str());
+  }
+}
+
+void checkBegin(uint32_t begin, size_t pieceLength)
+{
+  if(!(begin < pieceLength)) {
+    throw DL_ABORT_EX(StringFormat("Invalid begin: %u", begin).str());
+  }  
+}
+
+void checkLength(size_t length)
+{
+  if(length > MAX_BLOCK_LENGTH) {
+    throw DL_ABORT_EX
+      (StringFormat("Length too long: %lu > %uKB",
+		    static_cast<unsigned long>(length),
+		    MAX_BLOCK_LENGTH/1024).str());
+  }
+  if(length == 0) {
+    throw DL_ABORT_EX
+      (StringFormat("Invalid length: %lu",
+		    static_cast<unsigned long>(length)).str());
+  }
+}
+
+void checkRange(uint32_t begin, size_t length, size_t pieceLength)
+{
+  if(!(0 < length)) {
+    throw DL_ABORT_EX
+      (StringFormat("Invalid range: begin=%u, length=%lu",
+		    begin,
+		    static_cast<unsigned long>(length)).str());
+  }
+  uint32_t end = begin+length;
+  if(!(end <= pieceLength)) {
+    throw DL_ABORT_EX
+      (StringFormat("Invalid range: begin=%u, length=%lu",
+		    begin,
+		    static_cast<unsigned long>(length)).str());
+  }
+}
+
+void checkBitfield
+(const unsigned char* bitfield, size_t bitfieldLength, size_t pieces)
+{
+  if(!(bitfieldLength == (pieces+7)/8)) {
+    throw DL_ABORT_EX
+      (StringFormat("Invalid bitfield length: %lu",
+		    static_cast<unsigned long>(bitfieldLength)).str());
+  }
+  // Check if last byte contains garbage set bit.
+  if(bitfield[bitfieldLength-1]&~bitfield::lastByteMask(pieces)) {
+      throw DL_ABORT_EX("Invalid bitfield");
+  }
+}
+
+void setIntParam(unsigned char* dest, uint32_t param)
+{
+  uint32_t nParam = htonl(param);
+  memcpy(dest, &nParam, sizeof(nParam));
+}
+
+void setShortIntParam(unsigned char* dest, uint16_t param)
+{
+  uint16_t nParam = htons(param);
+  memcpy(dest, &nParam, sizeof(nParam));
+}
+
+void createPeerMessageString
+(unsigned char* msg, size_t msgLength, size_t payloadLength, uint8_t messageId)
+{
+  assert(msgLength >= 5);
+  memset(msg, 0, msgLength);
+  setIntParam(msg, payloadLength);
+  msg[4] = messageId;
+}
+
+bool createcompact
+(unsigned char* compact, const std::string& addr, uint16_t port)
+{
+  struct addrinfo hints;
+  struct addrinfo* res;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_INET; // since compact peer format is ipv4 only.
+  hints.ai_flags = AI_NUMERICHOST;
+  if(getaddrinfo(addr.c_str(), 0, &hints, &res)) {
+    return false;
+  }
+  struct sockaddr_in* in = reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
+  uint32_t* addrp = (uint32_t*)compact;
+  *addrp = in->sin_addr.s_addr;
+  uint16_t* portp = (uint16_t*)(compact+4);
+  *portp = htons(port);
+  freeaddrinfo(res);
+  return true;
+}
+
+std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact)
+{
+  struct sockaddr_in in;
+  memset(&in, 0, sizeof(in));
+#ifdef HAVE_SOCKADDR_IN_SIN_LEN
+  // For netbsd
+  in.sin_len = sizeof(in);
+#endif // HAVE_SOCKADDR_IN_SIN_LEN
+  in.sin_family = AF_INET;
+  in.sin_addr.s_addr = *reinterpret_cast<const uint32_t*>(compact);
+  in.sin_port = 0;
+  char host[NI_MAXHOST];
+  int s;
+  s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&in), sizeof(in),
+		  host, NI_MAXHOST, 0, NI_MAXSERV,
+		  NI_NUMERICHOST);
+  if(s) {
+    return std::pair<std::string, uint16_t>();
+  }
+  uint16_t port = ntohs(*(uint16_t*)(compact+sizeof(uint32_t)));
+  return std::pair<std::string, uint16_t>(host, port);
+}
+
+
+void assertPayloadLengthGreater
+(size_t threshold, size_t actual, const std::string& msgName)
+{
+  if(actual <= threshold) {
+    throw DL_ABORT_EX
+      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(), actual).str());
+  }
+}
+
+void assertPayloadLengthEqual
+(size_t expected, size_t actual, const std::string& msgName)
+{
+  if(expected != actual) {
+    throw DL_ABORT_EX
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
+		    actual, expected).str());
+  }
+}
+
+void assertID
+(uint8_t expected, const unsigned char* data, const std::string& msgName)
+{
+  uint8_t id = getId(data);
+  if(expected != id) {
+    throw DL_ABORT_EX
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
+		    expected).str());
   }
 }
 

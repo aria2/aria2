@@ -128,7 +128,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	ByteArrayDiskWriterTest.cc\
 	PeerTest.cc\
 	PeerSessionResourceTest.cc\
-	PeerMessageUtilTest.cc\
 	ShareRatioSeedCriteriaTest.cc\
 	BtRegistryTest.cc\
 	BtDependencyTest.cc\

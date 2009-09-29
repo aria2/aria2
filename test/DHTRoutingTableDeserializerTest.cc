@@ -1,16 +1,18 @@
 #include "DHTRoutingTableDeserializer.h"
+
+#include <cstring>
+#include <sstream>
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "DHTRoutingTableSerializer.h"
 #include "Exception.h"
 #include "Util.h"
 #include "DHTNode.h"
 #include "array_fun.h"
 #include "DHTConstants.h"
-#include "PeerMessageUtil.h"
 #include "a2netcompat.h"
-#include <cstring>
-#include <sstream>
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 

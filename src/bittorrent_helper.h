@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <utility>
 
 #include "SharedHandle.h"
 #include "AnnounceTier.h"
@@ -150,6 +151,64 @@ getInfoHash(const SharedHandle<DownloadContext>& downloadContext);
 
 std::string
 getInfoHashString(const SharedHandle<DownloadContext>& downloadContext);
+
+// Returns 4bytes unsigned integer located at offset pos.  The integer
+// in msg is network byte order. This function converts it into host
+// byte order and returns it.
+uint32_t getIntParam(const unsigned char* msg, size_t pos);
+
+// Returns 2bytes unsigned integer located at offset pos.  The integer
+// in msg is network byte order. This function converts it into host
+// byte order and returns it.
+uint16_t getShortIntParam(const unsigned char* msg, size_t pos);
+
+// Put param at location pointed by dest. param is converted into
+// network byte order.
+void setIntParam(unsigned char* dest, uint32_t param);
+
+// Put param at location pointed by dest. param is converted into
+// network byte order.
+void setShortIntParam(unsigned char* dest, uint16_t param);
+
+// Returns message ID located at first byte:msg[0]
+uint8_t getId(const unsigned char* msg);
+  
+void checkIndex(size_t index, size_t pieces);
+void checkBegin(uint32_t begin, size_t pieceLength);
+void checkLength(size_t length);
+void checkRange(uint32_t begin, size_t length, size_t pieceLength);
+void checkBitfield
+(const unsigned char* bitfield, size_t bitfieldLength, size_t pieces);
+
+// Initialize msg with 0 and set payloadLength and messageId.
+void createPeerMessageString
+(unsigned char* msg, size_t msgLength, size_t payloadLength, uint8_t messageId);
+
+/**
+ * Creates compact tracker format(6bytes for ipv4 address and port)
+ * and stores the results in compact.
+ * compact must be at least 6 bytes and pre-allocated.
+ * Returns true if creation is successful, otherwise returns false.
+ * The example of failure reason is that addr is not numbers-and-dots
+ * notation.
+ */
+bool createcompact
+(unsigned char* compact, const std::string& addr, uint16_t port);
+
+// Unpack compact into pair of IPv4 address and port.
+std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact);
+
+// Throws exception if threshold >= actual
+void assertPayloadLengthGreater
+(size_t threshold, size_t actual, const std::string& msgName);
+
+// Throws exception if expected != actual
+void assertPayloadLengthEqual
+(size_t expected, size_t actual, const std::string& msgName);
+
+// Throws exception if expected is not equal to id from data.
+void assertID
+(uint8_t expected, const unsigned char* data, const std::string& msgName);
 
 } // namespace bittorrent
 

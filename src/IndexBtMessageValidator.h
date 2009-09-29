@@ -37,7 +37,7 @@
 
 #include "BtMessageValidator.h"
 #include "IndexBtMessage.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -54,7 +54,7 @@ public:
   virtual bool validate(Errors& errors)
   {
     // TODO
-    PeerMessageUtil::checkIndex(_message->getIndex(), _numPiece);
+    bittorrent::checkIndex(_message->getIndex(), _numPiece);
     return true;
   }
 

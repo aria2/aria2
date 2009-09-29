@@ -33,17 +33,19 @@
  */
 /* copyright --> */
 #include "DHTRoutingTableSerializer.h"
+
+#include <cerrno>
+#include <cstring>
+#include <ostream>
+
 #include "DHTNode.h"
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Logger.h"
 #include "a2netcompat.h"
 #include "StringFormat.h"
 #include "Util.h"
-#include <cerrno>
-#include <cstring>
-#include <ostream>
 
 namespace aria2 {
 
@@ -102,7 +104,8 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
     // Currently, only IPv4 address and IPv4-mapped address are saved.
     // 6bytes: write IP address + port in Compact IP-address/port info form.
     unsigned char compactPeer[6];
-    if(!PeerMessageUtil::createcompact(compactPeer, node->getIPAddress(), node->getPort())) {
+    if(!bittorrent::createcompact
+       (compactPeer, node->getIPAddress(), node->getPort())) {
       memset(compactPeer, 0, 6);
     }
     // 1byte compact peer format length

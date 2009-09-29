@@ -36,7 +36,6 @@
 
 #include <cstring>
 
-#include "PeerMessageUtil.h"
 #include "Util.h"
 #include "BtConstants.h"
 #include "a2functional.h"
@@ -45,7 +44,8 @@ namespace aria2 {
 
 const std::string BtHandshakeMessage::NAME("handshake");
 
-const unsigned char* BtHandshakeMessage::BT_PSTR = (const unsigned char*)"BitTorrent protocol";
+const unsigned char* BtHandshakeMessage::BT_PSTR =
+  (const unsigned char*)"BitTorrent protocol";
 
 BtHandshakeMessage::BtHandshakeMessage():SimpleBtMessage(ID, NAME)
 {

@@ -36,7 +36,7 @@
 #define _D_RANGE_BT_MESSAGE_H_
 
 #include "SimpleBtMessage.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -53,12 +53,12 @@ protected:
   static SharedHandle<T> create
   (const unsigned char* data, size_t dataLength)
   {
-    PeerMessageUtil::assertPayloadLengthEqual(13, dataLength, T::NAME);
-    PeerMessageUtil::assertID(T::ID, data, T::NAME);
+    bittorrent::assertPayloadLengthEqual(13, dataLength, T::NAME);
+    bittorrent::assertID(T::ID, data, T::NAME);
     SharedHandle<T> message(new T());
-    message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-    message->setBegin(PeerMessageUtil::getIntParam(data, 5));
-    message->setLength(PeerMessageUtil::getIntParam(data, 9));
+    message->setIndex(bittorrent::getIntParam(data, 1));
+    message->setBegin(bittorrent::getIntParam(data, 5));
+    message->setLength(bittorrent::getIntParam(data, 9));
     return message;
   }
 public:

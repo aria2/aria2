@@ -1,5 +1,5 @@
 #include "BtUnchokeMessage.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Peer.h"
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
@@ -32,14 +32,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtUnchokeMessageTest);
 
 void BtUnchokeMessageTest::testCreate() {
   unsigned char msg[5];
-  PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 1);
+  bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 1);
   SharedHandle<BtUnchokeMessage> pm = BtUnchokeMessage::create(&msg[4], 1);
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, pm->getId());
 
   // case: payload size is wrong
   try {
     unsigned char msg[6];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 2, 1);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 2, 1);
     BtUnchokeMessage::create(&msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -47,7 +47,7 @@ void BtUnchokeMessageTest::testCreate() {
   // case: id is wrong
   try {
     unsigned char msg[5];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 2);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 2);
     BtUnchokeMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -57,7 +57,7 @@ void BtUnchokeMessageTest::testCreate() {
 void BtUnchokeMessageTest::testGetMessage() {
   BtUnchokeMessage msg;
   unsigned char data[5];
-  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 1, 1);
+  bittorrent::createPeerMessageString(data, sizeof(data), 1, 1);
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 5) == 0);
 }
 

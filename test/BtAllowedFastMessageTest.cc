@@ -1,9 +1,11 @@
 #include "BtAllowedFastMessage.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
-#include "Peer.h"
+
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "bittorrent_helper.h"
+#include "Util.h"
+#include "Peer.h"
 
 namespace aria2 {
 
@@ -34,8 +36,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtAllowedFastMessageTest);
 
 void BtAllowedFastMessageTest::testCreate() {
   unsigned char msg[9];
-  PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 17);
-  PeerMessageUtil::setIntParam(&msg[5], 12345);
+  bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 17);
+  bittorrent::setIntParam(&msg[5], 12345);
   SharedHandle<BtAllowedFastMessage> pm = BtAllowedFastMessage::create(&msg[4], 5);
   CPPUNIT_ASSERT_EQUAL((uint8_t)17, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
@@ -43,7 +45,7 @@ void BtAllowedFastMessageTest::testCreate() {
   // case: payload size is wrong
   try {
     unsigned char msg[10];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 6, 17);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 6, 17);
     BtAllowedFastMessage::create(&msg[4], 6);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -51,7 +53,7 @@ void BtAllowedFastMessageTest::testCreate() {
   // case: id is wrong
   try {
     unsigned char msg[9];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 18);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 18);
     BtAllowedFastMessage::create(&msg[4], 5);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -62,8 +64,8 @@ void BtAllowedFastMessageTest::testGetMessage() {
   BtAllowedFastMessage msg;
   msg.setIndex(12345);
   unsigned char data[9];
-  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 5, 17);
-  PeerMessageUtil::setIntParam(&data[5], 12345);
+  bittorrent::createPeerMessageString(data, sizeof(data), 5, 17);
+  bittorrent::setIntParam(&data[5], 12345);
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 9) == 0);
 }
 

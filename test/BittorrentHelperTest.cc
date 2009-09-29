@@ -13,6 +13,7 @@
 #include "FileEntry.h"
 #include "array_fun.h"
 #include "messageDigest.h"
+#include "a2netcompat.h"
 
 namespace aria2 {
 
@@ -52,6 +53,8 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetFileFilter_multi);
   CPPUNIT_TEST(testUTF8Torrent);
   CPPUNIT_TEST(testMetaData);
+  CPPUNIT_TEST(testCreatecompact);
+  CPPUNIT_TEST(testCheckBitfield);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -88,6 +91,8 @@ public:
   void testSetFileFilter_multi();
   void testUTF8Torrent();
   void testMetaData();
+  void testCreatecompact();
+  void testCheckBitfield();
 };
 
 
@@ -641,6 +646,38 @@ void BittorrentHelperTest::testMetaData()
 		       dctx->getAttribute(BITTORRENT)[CREATED_BY].s());
   CPPUNIT_ASSERT_EQUAL((int64_t)1123456789,
 		       dctx->getAttribute(BITTORRENT)[CREATION_DATE].i());
+}
+
+void BittorrentHelperTest::testCreatecompact()
+{
+  unsigned char compact[6];
+  // Note: bittorrent::createcompact() on linux can handle IPv4-mapped
+  // addresses like `ffff::127.0.0.1', but on cygwin, it doesn't.
+  CPPUNIT_ASSERT(createcompact(compact, "127.0.0.1", 6881));
+
+  std::pair<std::string, uint16_t> p = unpackcompact(compact);
+  CPPUNIT_ASSERT_EQUAL(std::string("127.0.0.1"), p.first);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p.second);
+}
+
+void BittorrentHelperTest::testCheckBitfield()
+{
+  unsigned char bitfield[] = { 0xff, 0xe0 };
+  checkBitfield(bitfield, sizeof(bitfield), 11);
+  try {
+    checkBitfield(bitfield, sizeof(bitfield), 17);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
+  // Change last byte
+  bitfield[1] = 0xf0;
+  try {
+    checkBitfield(bitfield, sizeof(bitfield), 11);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
 }
 
 } // namespace bittorrent

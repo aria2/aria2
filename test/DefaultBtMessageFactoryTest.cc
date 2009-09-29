@@ -7,7 +7,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Peer.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "DownloadContext.h"
 #include "MockExtensionMessageFactory.h"
 #include "BtExtendedMessage.h"
@@ -57,7 +57,7 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
   // payload:{4:name3:foo}->11bytes
   std::string payload = "4:name3:foo";
   char msg[17];// 6+11bytes
-  PeerMessageUtil::createPeerMessageString((unsigned char*)msg, sizeof(msg),
+  bittorrent::createPeerMessageString((unsigned char*)msg, sizeof(msg),
 					   13, 20);
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
@@ -80,8 +80,8 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
 {
   {
     unsigned char data[7];
-    PeerMessageUtil::createPeerMessageString(data, sizeof(data), 3, 9);
-    PeerMessageUtil::setShortIntParam(&data[5], 6881);
+    bittorrent::createPeerMessageString(data, sizeof(data), 3, 9);
+    bittorrent::setShortIntParam(&data[5], 6881);
     try {
       SharedHandle<BtPortMessage> m
 	(dynamic_pointer_cast<BtPortMessage>

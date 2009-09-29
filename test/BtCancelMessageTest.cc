@@ -4,7 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "MockBtMessageDispatcher.h"
 #include "Peer.h"
 #include "FileEntry.h"
@@ -53,10 +53,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtCancelMessageTest);
 
 void BtCancelMessageTest::testCreate() {
   unsigned char msg[17];
-  PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 13, 8);
-  PeerMessageUtil::setIntParam(&msg[5], 12345);
-  PeerMessageUtil::setIntParam(&msg[9], 256);
-  PeerMessageUtil::setIntParam(&msg[13], 1024);
+  bittorrent::createPeerMessageString(msg, sizeof(msg), 13, 8);
+  bittorrent::setIntParam(&msg[5], 12345);
+  bittorrent::setIntParam(&msg[9], 256);
+  bittorrent::setIntParam(&msg[13], 1024);
   SharedHandle<BtCancelMessage> pm = BtCancelMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((uint8_t)8, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
@@ -66,7 +66,7 @@ void BtCancelMessageTest::testCreate() {
   // case: payload size is wrong
   try {
     unsigned char msg[18];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 14, 8);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 14, 8);
     BtCancelMessage::create(&msg[4], 14);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -74,7 +74,7 @@ void BtCancelMessageTest::testCreate() {
   // case: id is wrong
   try {
     unsigned char msg[17];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 13, 9);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 13, 9);
     BtCancelMessage::create(&msg[4], 13);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -87,10 +87,10 @@ void BtCancelMessageTest::testGetMessage() {
   msg.setBegin(256);
   msg.setLength(1024);
   unsigned char data[17];
-  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 13, 8);
-  PeerMessageUtil::setIntParam(&data[5], 12345);
-  PeerMessageUtil::setIntParam(&data[9], 256);
-  PeerMessageUtil::setIntParam(&data[13], 1024);
+  bittorrent::createPeerMessageString(data, sizeof(data), 13, 8);
+  bittorrent::setIntParam(&data[5], 12345);
+  bittorrent::setIntParam(&data[9], 256);
+  bittorrent::setIntParam(&data[13], 1024);
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 17) == 0);
 }
 

@@ -4,7 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Util.h"
 #include "Peer.h"
 #include "MockPieceStorage.h"
@@ -39,7 +39,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtBitfieldMessageTest);
 
 void BtBitfieldMessageTest::testCreate() {
   unsigned char msg[5+2];
-  PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 3, 5);
+  bittorrent::createPeerMessageString(msg, sizeof(msg), 3, 5);
   unsigned char bitfield[2];
   memset(bitfield, 0xff, sizeof(bitfield));
   memcpy(&msg[5], bitfield, sizeof(bitfield));
@@ -50,7 +50,7 @@ void BtBitfieldMessageTest::testCreate() {
   // case: payload size is wrong
   try {
     unsigned char msg[5];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 5);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 5);
     BtBitfieldMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -58,7 +58,7 @@ void BtBitfieldMessageTest::testCreate() {
   // case: id is wrong
   try {
     unsigned char msg[5+2];
-    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 3, 6);
+    bittorrent::createPeerMessageString(msg, sizeof(msg), 3, 6);
     BtBitfieldMessage::create(&msg[4], 3);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
@@ -71,7 +71,7 @@ void BtBitfieldMessageTest::testGetMessage() {
   memset(bitfield, 0xff, sizeof(bitfield));
   msg.setBitfield(bitfield, sizeof(bitfield));
   unsigned char data[5+2];
-  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 3, 5);
+  bittorrent::createPeerMessageString(data, sizeof(data), 3, 5);
   memcpy(&data[5], bitfield, sizeof(bitfield));
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 7) == 0);
 }

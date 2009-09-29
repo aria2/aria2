@@ -8,7 +8,6 @@
 #include "Peer.h"
 #include "bencode.h"
 #include "TimeA2.h"
-#include "PeerMessageUtil.h"
 
 namespace aria2 {
 
@@ -33,7 +32,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( PeerListProcessorTest );
 
 void PeerListProcessorTest::testExtractPeerFromList() {
   PeerListProcessor proc;
-  std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
+  std::string peersString =
+    "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-00000000000000"
+    "4:porti2006eeee";
 
   const BDE dict = bencode::decode(peersString);
   
@@ -47,7 +48,10 @@ void PeerListProcessorTest::testExtractPeerFromList() {
 
 void PeerListProcessorTest::testExtract2PeersFromList() {
   PeerListProcessor proc;
-  std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
+  std::string peersString =
+    "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-00000000000000"
+    "4:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-00000000000000"
+    "4:porti2007eeee";
 
   const BDE dict = bencode::decode(peersString);
 

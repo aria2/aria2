@@ -42,7 +42,7 @@
 
 #include "DHTNode.h"
 #include "DHTConstants.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "DlAbortEx.h"
 #include "Logger.h"
 #include "a2netcompat.h"
@@ -182,8 +182,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
       CHECK_STREAM(in, 42);
       continue;
     }
-    std::pair<std::string, uint16_t> peer =
-      PeerMessageUtil::unpackcompact(buf);
+    std::pair<std::string, uint16_t> peer = bittorrent::unpackcompact(buf);
     if(peer.first.empty()) {
       // skip this entry
       readBytes(buf, buf.size(), in, 42);

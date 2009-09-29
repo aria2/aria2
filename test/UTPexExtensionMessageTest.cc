@@ -7,7 +7,7 @@
 #include "Peer.h"
 #include "a2netcompat.h"
 #include "Util.h"
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "MockPeerStorage.h"
 #include "Exception.h"
 #include "FileEntry.h"
@@ -83,10 +83,10 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   unsigned char c2[6];
   unsigned char c3[6];
   unsigned char c4[6];
-  PeerMessageUtil::createcompact(c1, p1->ipaddr, p1->port);
-  PeerMessageUtil::createcompact(c2, p2->ipaddr, p2->port);
-  PeerMessageUtil::createcompact(c3, p3->ipaddr, p3->port);
-  PeerMessageUtil::createcompact(c4, p4->ipaddr, p4->port);
+  bittorrent::createcompact(c1, p1->ipaddr, p1->port);
+  bittorrent::createcompact(c2, p2->ipaddr, p2->port);
+  bittorrent::createcompact(c3, p3->ipaddr, p3->port);
+  bittorrent::createcompact(c4, p4->ipaddr, p4->port);
 
   std::string expected = "d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
@@ -154,10 +154,10 @@ void UTPexExtensionMessageTest::testCreate()
   unsigned char c2[6];
   unsigned char c3[6];
   unsigned char c4[6];
-  PeerMessageUtil::createcompact(c1, "192.168.0.1", 6881);
-  PeerMessageUtil::createcompact(c2, "10.1.1.2", 9999);
-  PeerMessageUtil::createcompact(c3, "192.168.0.2", 6882);
-  PeerMessageUtil::createcompact(c4, "10.1.1.3",10000);
+  bittorrent::createcompact(c1, "192.168.0.1", 6881);
+  bittorrent::createcompact(c2, "10.1.1.2", 9999);
+  bittorrent::createcompact(c3, "192.168.0.2", 6882);
+  bittorrent::createcompact(c4, "10.1.1.3",10000);
 
   char id[1] = { 1 };
 

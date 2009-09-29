@@ -38,7 +38,7 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Util.h"
 #include "message.h"
 #include "DlAbortEx.h"
@@ -67,11 +67,11 @@ void BtPieceMessage::setBlock(const unsigned char* block, size_t blockLength) {
 }
 
 BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t dataLength) {
-  PeerMessageUtil::assertPayloadLengthGreater(9, dataLength, NAME);
-  PeerMessageUtil::assertID(ID, data, NAME);
+  bittorrent::assertPayloadLengthGreater(9, dataLength, NAME);
+  bittorrent::assertID(ID, data, NAME);
   BtPieceMessageHandle message(new BtPieceMessage());
-  message->setIndex(PeerMessageUtil::getIntParam(data, 1));
-  message->setBegin(PeerMessageUtil::getIntParam(data, 5));
+  message->setIndex(bittorrent::getIntParam(data, 1));
+  message->setBegin(bittorrent::getIntParam(data, 5));
   message->setBlock(data+9, dataLength-9);
   return message;
 }
@@ -120,10 +120,10 @@ const unsigned char* BtPieceMessage::getMessageHeader() {
      * total: 13bytes
      */
     msgHeader = new unsigned char[MESSAGE_HEADER_LENGTH];
-    PeerMessageUtil::createPeerMessageString(msgHeader, MESSAGE_HEADER_LENGTH,
-					     9+blockLength, ID);
-    PeerMessageUtil::setIntParam(&msgHeader[5], index);
-    PeerMessageUtil::setIntParam(&msgHeader[9], begin);
+    bittorrent::createPeerMessageString(msgHeader, MESSAGE_HEADER_LENGTH,
+					9+blockLength, ID);
+    bittorrent::setIntParam(&msgHeader[5], index);
+    bittorrent::setIntParam(&msgHeader[9], begin);
   }
   return msgHeader;
 }

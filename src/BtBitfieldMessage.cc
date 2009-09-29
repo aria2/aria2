@@ -36,7 +36,7 @@
 
 #include <cstring>
 
-#include "PeerMessageUtil.h"
+#include "bittorrent_helper.h"
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
@@ -63,8 +63,8 @@ void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, size_t bitfie
 BtBitfieldMessageHandle
 BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
 {
-  PeerMessageUtil::assertPayloadLengthGreater(1,dataLength, NAME);
-  PeerMessageUtil::assertID(ID, data, NAME);
+  bittorrent::assertPayloadLengthGreater(1,dataLength, NAME);
+  bittorrent::assertID(ID, data, NAME);
   BtBitfieldMessageHandle message(new BtBitfieldMessage());
   message->setBitfield((unsigned char*)data+1, dataLength-1);
   return message;
@@ -88,8 +88,7 @@ const unsigned char* BtBitfieldMessage::getMessage() {
      */
     msgLength = 5+bitfieldLength;
     msg = new unsigned char[msgLength];
-    PeerMessageUtil::createPeerMessageString(msg, msgLength,
-					     1+bitfieldLength, ID);
+    bittorrent::createPeerMessageString(msg, msgLength, 1+bitfieldLength, ID);
     memcpy(msg+5, bitfield, bitfieldLength);
   }
   return msg;
