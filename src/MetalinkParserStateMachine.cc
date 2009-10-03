@@ -33,147 +33,129 @@
  */
 /* copyright --> */
 #include "MetalinkParserStateMachine.h"
-#include "InitialMetalinkParserState.h"
-#include "MetalinkMetalinkParserState.h"
-#include "FilesMetalinkParserState.h"
-#include "FileMetalinkParserState.h"
-#include "SizeMetalinkParserState.h"
-#include "VersionMetalinkParserState.h"
-#include "LanguageMetalinkParserState.h"
-#include "OSMetalinkParserState.h"
-#include "VerificationMetalinkParserState.h"
-#include "HashMetalinkParserState.h"
-#include "PiecesMetalinkParserState.h"
-#include "PieceHashMetalinkParserState.h"
-#include "SignatureMetalinkParserState.h"
-#include "ResourcesMetalinkParserState.h"
-#include "URLMetalinkParserState.h"
-#include "FinMetalinkParserState.h"
-#include "SkipTagMetalinkParserState.h"
+#include "MetalinkParserStateImpl.h"
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 
 namespace aria2 {
 
-MetalinkParserState* MetalinkParserStateMachine::_initialState = new InitialMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_metalinkState = new MetalinkMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_filesState = new FilesMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_fileState = new FileMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_sizeState = new SizeMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_versionState = new VersionMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_languageState = new LanguageMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_osState = new OSMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_verificationState = new VerificationMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_hashState = new HashMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_piecesState = new PiecesMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_pieceHashState = new PieceHashMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_initialState =
+  new InitialMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_metalinkState =
+  new MetalinkMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_filesState =
+  new FilesMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_fileState =
+  new FileMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_sizeState =
+  new SizeMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_versionState =
+  new VersionMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_languageState =
+  new LanguageMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_osState =
+  new OSMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_verificationState =
+  new VerificationMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_hashState =
+  new HashMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_piecesState =
+  new PiecesMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_pieceHashState =
+  new PieceHashMetalinkParserState();
 MetalinkParserState* MetalinkParserStateMachine::_signatureState =
   new SignatureMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_resourcesState = new ResourcesMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_urlState = new URLMetalinkParserState();
-MetalinkParserState* MetalinkParserStateMachine::_finState = new FinMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_resourcesState =
+  new ResourcesMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_urlState =
+  new URLMetalinkParserState();
+MetalinkParserState* MetalinkParserStateMachine::_skipTagState =
+  new SkipTagMetalinkParserState();
 
 MetalinkParserStateMachine::MetalinkParserStateMachine():
-  _ctrl(new MetalinkParserController()),
-  _state(_initialState),
-  _skipTagState(0) {}
-
-MetalinkParserStateMachine::~MetalinkParserStateMachine()
+  _ctrl(new MetalinkParserController())
 {
-  delete _skipTagState;
+  _stateStack.push(_initialState);
 }
 
 void MetalinkParserStateMachine::setMetalinkState()
 {
-  _state = _metalinkState;
+  _stateStack.push(_metalinkState);
 }
 
 void MetalinkParserStateMachine::setFilesState()
 {
-  _state = _filesState;
+  _stateStack.push(_filesState);
 }
 
 void MetalinkParserStateMachine::setFileState()
 {
-  _state = _fileState;
+  _stateStack.push(_fileState);
 }
 
 void MetalinkParserStateMachine::setSizeState()
 {
-  _state = _sizeState;
+  _stateStack.push(_sizeState);
 }
 
 void MetalinkParserStateMachine::setVersionState()
 {
-  _state = _versionState;
+  _stateStack.push(_versionState);
 }
 
 void MetalinkParserStateMachine::setLanguageState()
 {
-  _state = _languageState;
+  _stateStack.push(_languageState);
 }
 
 void MetalinkParserStateMachine::setOSState()
 {
-  _state = _osState;
+  _stateStack.push(_osState);
 }
 
 void MetalinkParserStateMachine::setVerificationState()
 {
-  _state = _verificationState;
+  _stateStack.push(_verificationState);
 }
 
 void MetalinkParserStateMachine::setHashState()
 {
-  _state = _hashState;
+  _stateStack.push(_hashState);
 }
 
 void MetalinkParserStateMachine::setPiecesState()
 {
-  _state = _piecesState;
+  _stateStack.push(_piecesState);
 }
 
 void MetalinkParserStateMachine::setPieceHashState()
 {
-  _state = _pieceHashState;
+  _stateStack.push(_pieceHashState);
 }
 
 void MetalinkParserStateMachine::setSignatureState()
 {
-  _state = _signatureState;
+  _stateStack.push(_signatureState);
 }
 
 void MetalinkParserStateMachine::setResourcesState()
 {
-  _state = _resourcesState;
+  _stateStack.push(_resourcesState);
 }
 
 void MetalinkParserStateMachine::setURLState()
 {
-  _state = _urlState;
+  _stateStack.push(_urlState);
 }
 
-void MetalinkParserStateMachine::setFinState()
+void MetalinkParserStateMachine::setSkipTagState()
 {
-  _state = _finState;
-}
-
-void MetalinkParserStateMachine::setSkipTagState(MetalinkParserState* prevState)
-{
-  _skipTagState = new SkipTagMetalinkParserState(prevState);
-  _state = _skipTagState;
-}
-
-void MetalinkParserStateMachine::restoreSavedState()
-{
-  _state = _skipTagState->getPreviousState();
-  delete _skipTagState;
-  _skipTagState = 0;
+  _stateStack.push(_skipTagState);
 }
 
 bool MetalinkParserStateMachine::finished() const
 {
-  return _state == _finState;
+  return _stateStack.top() == _initialState;
 }
 
 void MetalinkParserStateMachine::newEntryTransaction()
@@ -231,7 +213,8 @@ void MetalinkParserStateMachine::setTypeOfResource(const std::string& type)
   _ctrl->setTypeOfResource(type);
 }
 
-void MetalinkParserStateMachine::setLocationOfResource(const std::string& location)
+void MetalinkParserStateMachine::setLocationOfResource
+(const std::string& location)
 {
   _ctrl->setLocationOfResource(location);
 }
@@ -301,7 +284,8 @@ void MetalinkParserStateMachine::createNewHashOfChunkChecksum(size_t order)
   _ctrl->createNewHashOfChunkChecksum(order);
 }
 
-void MetalinkParserStateMachine::setMessageDigestOfChunkChecksum(const std::string& md)
+void MetalinkParserStateMachine::setMessageDigestOfChunkChecksum
+(const std::string& md)
 {
   _ctrl->setMessageDigestOfChunkChecksum(md);
 }
@@ -351,20 +335,23 @@ void MetalinkParserStateMachine::cancelSignatureTransaction()
   _ctrl->cancelSignatureTransaction();
 }
 
-void MetalinkParserStateMachine::beginElement(const std::string& name,
-					      const std::map<std::string, std::string>& attrs)
+void MetalinkParserStateMachine::beginElement
+(const std::string& name,
+ const std::map<std::string, std::string>& attrs)
 {
-  _state->beginElement(this, name, attrs);
+  _stateStack.top()->beginElement(this, name, attrs);
 }
   
-void MetalinkParserStateMachine::endElement(const std::string& name, const std::string& characters)
+void MetalinkParserStateMachine::endElement
+(const std::string& name, const std::string& characters)
 {
-  _state->endElement(this, name, characters);
+  _stateStack.top()->endElement(this, name, characters);
+  _stateStack.pop();
 }
 
 bool MetalinkParserStateMachine::needsCharactersBuffering() const
 {
-  return _state->needsCharactersBuffering();
+  return _stateStack.top()->needsCharactersBuffering();
 }
 
 } // namespace aria2

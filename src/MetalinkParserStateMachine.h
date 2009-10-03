@@ -38,6 +38,7 @@
 #include "common.h"
 #include <string>
 #include <map>
+#include <stack>
 
 #include "SharedHandle.h"
 #include "MetalinkParserController.h"
@@ -45,14 +46,13 @@
 namespace aria2 {
 
 class MetalinkParserState;
-class SkipTagMetalinkParserState;
 class Metalinker;
 
 class MetalinkParserStateMachine {
 private:
   SharedHandle<MetalinkParserController> _ctrl;
 
-  MetalinkParserState* _state;
+  std::stack<MetalinkParserState*> _stateStack;
 
   static MetalinkParserState* _initialState;
   static MetalinkParserState* _metalinkState;
@@ -69,13 +69,9 @@ private:
   static MetalinkParserState* _signatureState;
   static MetalinkParserState* _resourcesState;
   static MetalinkParserState* _urlState;
-  static MetalinkParserState* _finState;
-
-  SkipTagMetalinkParserState* _skipTagState;
+  static MetalinkParserState* _skipTagState;
 public:
   MetalinkParserStateMachine();
-
-  ~MetalinkParserStateMachine();
 
   void setMetalinkState();
 
@@ -105,18 +101,12 @@ public:
 
   void setURLState();
 
-  void setFinState();
+  void setSkipTagState();
 
-  void setSkipTagState(MetalinkParserState* prevState);
-
-  void restoreSavedState();
-  
   bool finished() const;
 
-  bool error() const;
-
-  void beginElement(const std::string& name, const std::map<std::string,
-		    std::string>& attrs);
+  void beginElement
+  (const std::string& name, const std::map<std::string, std::string>& attrs);
   
   void endElement(const std::string& name, const std::string& characters);
 

@@ -1,3 +1,46 @@
+2009-10-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Put all MetalinkParserState subclasses into
+	MetalinkParserStateImpl.cc. Use stack to track element structure.
+	* src/FileMetalinkParserState.cc: Removed
+	* src/FileMetalinkParserState.h: Removed
+	* src/FilesMetalinkParserState.cc: Removed
+	* src/FilesMetalinkParserState.h: Removed
+	* src/FinMetalinkParserState.cc: Removed
+	* src/FinMetalinkParserState.h: Removed
+	* src/HashMetalinkParserState.cc: Removed
+	* src/HashMetalinkParserState.h: Removed
+	* src/InitialMetalinkParserState.cc: Removed
+	* src/InitialMetalinkParserState.h: Removed
+	* src/LanguageMetalinkParserState.cc: Removed
+	* src/LanguageMetalinkParserState.h: Removed
+	* src/Makefile.am
+	* src/MetalinkMetalinkParserState.cc: Removed
+	* src/MetalinkMetalinkParserState.h: Removed
+	* src/MetalinkParserState.h
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+	* src/OSMetalinkParserState.cc: Removed
+	* src/OSMetalinkParserState.h: Removed
+	* src/PieceHashMetalinkParserState.cc: Removed
+	* src/PieceHashMetalinkParserState.h: Removed
+	* src/PiecesMetalinkParserState.cc: Removed
+	* src/PiecesMetalinkParserState.h: Removed
+	* src/ResourcesMetalinkParserState.cc: Removed
+	* src/ResourcesMetalinkParserState.h: Removed
+	* src/SignatureMetalinkParserState.cc: Removed
+	* src/SignatureMetalinkParserState.h: Removed
+	* src/SizeMetalinkParserState.cc: Removed
+	* src/SizeMetalinkParserState.h: Removed
+	* src/SkipTagMetalinkParserState.cc: Removed
+	* src/SkipTagMetalinkParserState.h: Removed
+	* src/URLMetalinkParserState.cc: Removed
+	* src/URLMetalinkParserState.h: Removed
+	* src/VerificationMetalinkParserState.cc: Removed
+	* src/VerificationMetalinkParserState.h: Removed
+	* src/VersionMetalinkParserState.cc: Removed
+	* src/VersionMetalinkParserState.h: Removed
+
 2009-09-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Move all functions in PeerMessageUtil to bittorrent_helper.

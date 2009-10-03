@@ -48,11 +48,14 @@ class MetalinkParserState
 public:
   virtual ~MetalinkParserState() {}
 
-  virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name, const std::map<std::string, std::string>& attrs) = 0;
+  virtual void beginElement
+  (MetalinkParserStateMachine* stm,
+   const std::string& name,
+   const std::map<std::string, std::string>& attrs) = 0;
   
-  virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name, const std::string& characters) = 0;
+  virtual void endElement
+  (MetalinkParserStateMachine* stm,
+   const std::string& name, const std::string& characters) = 0;
 
   virtual bool needsCharactersBuffering() const = 0;
 };

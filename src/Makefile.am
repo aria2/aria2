@@ -444,23 +444,7 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkParserController.cc MetalinkParserController.h\
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
 	MetalinkParserState.h\
-	InitialMetalinkParserState.cc InitialMetalinkParserState.h\
-	MetalinkMetalinkParserState.cc MetalinkMetalinkParserState.h\
-	FilesMetalinkParserState.cc FilesMetalinkParserState.h\
-	FileMetalinkParserState.cc FileMetalinkParserState.h\
-	SizeMetalinkParserState.cc SizeMetalinkParserState.h\
-	VersionMetalinkParserState.cc VersionMetalinkParserState.h\
-	LanguageMetalinkParserState.cc LanguageMetalinkParserState.h\
-	OSMetalinkParserState.cc OSMetalinkParserState.h\
-	VerificationMetalinkParserState.cc VerificationMetalinkParserState.h\
-	HashMetalinkParserState.cc HashMetalinkParserState.h\
-	PiecesMetalinkParserState.cc PiecesMetalinkParserState.h\
-	PieceHashMetalinkParserState.cc PieceHashMetalinkParserState.h\
-	SignatureMetalinkParserState.cc SignatureMetalinkParserState.h\
-	ResourcesMetalinkParserState.cc ResourcesMetalinkParserState.h\
-	URLMetalinkParserState.cc URLMetalinkParserState.h\
-	FinMetalinkParserState.cc FinMetalinkParserState.h\
-	SkipTagMetalinkParserState.cc SkipTagMetalinkParserState.h\
+	MetalinkParserStateImpl.cc MetalinkParserStateImpl.h\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 	MetalinkHelper.cc MetalinkHelper.h
