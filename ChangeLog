@@ -1,5 +1,10 @@
 2009-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Included version number in user-agent string.
+	* src/OptionHandlerFactory.cc
+
+2009-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that the option values changed by XML-RPC
 	method(changeOption and changeGlobalOption) are overwritten to the
 	previous value by the next these request which doesn't contain

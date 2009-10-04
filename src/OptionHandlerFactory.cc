@@ -771,7 +771,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_USER_AGENT,
 				    TEXT_USER_AGENT,
-				    "aria2",
+				    "aria2/"PACKAGE_VERSION,
 				    A2STR::NIL,
 				    OptionHandler::REQ_ARG,
 				    'U'));
