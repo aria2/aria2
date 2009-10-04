@@ -84,6 +84,11 @@ client=XMLRPC::Client.new3({:host => options["server"],
                              :user => options["user"],
                              :password => options["passwd"]})
 
+options.delete("server")
+options.delete("port")
+options.delete("user")
+options.delete("passwd")
+
 result=client.call("aria2.tellActive")
 
 print "-- Download Progress --\n"

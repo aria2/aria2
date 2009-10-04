@@ -1,5 +1,12 @@
 2009-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed server, port, user and passwd key from options before
+	XMLRPC::Client.call since they are not options of aria2.
+	* doc/xmlrpc/aria2mon
+	* doc/xmlrpc/aria2rpc
+
+2009-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Included version number in user-agent string.
 	* src/OptionHandlerFactory.cc
 
