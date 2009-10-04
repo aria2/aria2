@@ -592,15 +592,17 @@ BDE ChangeOptionXmlRpcMethod::process
     throw DL_ABORT_EX
       (StringFormat("Cannot change option for GID#%d", gid).str());
   }
-  SharedHandle<Option> option(new Option(*group->getOption().get()));
+  SharedHandle<Option> option(new Option());
   if(params.size() > 1 && params[1].isDict()) {
     gatherChangeableOption(option, params[1]);
-  }
-  if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
-    group->setMaxDownloadSpeedLimit(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
-  }
-  if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
-    group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+    applyChangeableOption(group->getOption().get(), option.get());
+    if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
+      group->setMaxDownloadSpeedLimit
+	(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+    }
+    if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
+      group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+    }
   }
   return BDE_OK;
 }
@@ -613,8 +615,10 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
   if(params.empty() || !params[0].isDict()) {
     return BDE_OK;
   }
-  SharedHandle<Option> option(new Option(*e->option));
+  SharedHandle<Option> option(new Option());
   gatherChangeableGlobalOption(option, params[0]);
+  applyChangeableGlobalOption(e->option, option.get());
+
   if(option->defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
     e->_requestGroupMan->setMaxOverallDownloadSpeedLimit
       (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));

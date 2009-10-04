@@ -46,6 +46,7 @@
 #include "XmlRpcRequest.h"
 #include "XmlRpcResponse.h"
 #include "prefs.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -74,23 +75,32 @@ XmlRpcResponse XmlRpcMethod::execute
   }
 }
 
-
 template<typename InputIterator>
 static void gatherOption
 (InputIterator first, InputIterator last,
- const SharedHandle<Option>& option, const BDE& optionsDict,
+ const std::set<std::string>& changeableOptions,
+ const SharedHandle<Option>& option,
  const SharedHandle<OptionParser>& optionParser)
 {
   for(; first != last; ++first) {
-    if(optionsDict.containsKey(*first)) {
-      const BDE& value = optionsDict[*first];
+    const std::string& optionName = (*first).first;
+    if(changeableOptions.find(optionName) == changeableOptions.end()) {
+      throw DL_ABORT_EX
+	(StringFormat
+	 ("%s cannot be changed or unknown option.", optionName.c_str()).str());
+    } else {
       SharedHandle<OptionHandler> optionHandler =
-	optionParser->findByName(*first);
+	optionParser->findByName(optionName);
       if(optionHandler.isNull()) {
-	continue;
+	throw DL_ABORT_EX
+	  (StringFormat
+	   ("We don't know how to deal with %s option",
+	    optionName.c_str()).str());
       }
       // header and index-out option can take array as value
-      if((*first == PREF_HEADER || *first == PREF_INDEX_OUT) && value.isList()){
+      const BDE& value = (*first).second;
+      if((optionName == PREF_HEADER || optionName == PREF_INDEX_OUT) &&
+	 value.isList()){
 	for(BDE::List::const_iterator argiter = value.listBegin();
 	    argiter != value.listEnd(); ++argiter) {
 	  if((*argiter).isString()) {
@@ -107,17 +117,33 @@ static void gatherOption
 void XmlRpcMethod::gatherRequestOption
 (const SharedHandle<Option>& option, const BDE& optionsDict)
 {
-  gatherOption(listRequestOptions().begin(), listRequestOptions().end(),
-	       option, optionsDict, _optionParser);
+  gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
+	       listRequestOptions(),
+	       option, _optionParser);
 }
 
-const std::vector<std::string>& listChangeableOptions()
+// Copy option in the range [optNameFirst, optNameLast) from src to
+// dest.
+template<typename InputIterator>
+static void applyOption(InputIterator optNameFirst,
+			InputIterator optNameLast,
+			Option* dest,
+			Option* src)
+{
+  for(; optNameFirst != optNameLast; ++optNameFirst) {
+    if(src->defined(*optNameFirst)) {
+      dest->put(*optNameFirst, src->get(*optNameFirst));
+    }
+  }
+}
+
+const std::set<std::string>& listChangeableOptions()
 {
   static const std::string OPTIONS[] = {
     PREF_MAX_UPLOAD_LIMIT,
     PREF_MAX_DOWNLOAD_LIMIT,
   };
-  static std::vector<std::string> options
+  static std::set<std::string> options
     (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);
   return options;
 }
@@ -125,18 +151,25 @@ const std::vector<std::string>& listChangeableOptions()
 void XmlRpcMethod::gatherChangeableOption
 (const SharedHandle<Option>& option, const BDE& optionsDict)
 {
-  gatherOption(listChangeableOptions().begin(), listChangeableOptions().end(),
-	       option, optionsDict, _optionParser);
+  gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
+	       listChangeableOptions(),
+	       option, _optionParser);
 }
 
-const std::vector<std::string>& listChangeableGlobalOptions()
+void XmlRpcMethod::applyChangeableOption(Option* dest, Option* src) const
+{
+  applyOption(listChangeableOptions().begin(), listChangeableOptions().end(),
+	      dest, src);
+}
+
+const std::set<std::string>& listChangeableGlobalOptions()
 {
   static const std::string OPTIONS[] = {
     PREF_MAX_OVERALL_UPLOAD_LIMIT,
     PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
     PREF_MAX_CONCURRENT_DOWNLOADS,
   };
-  static std::vector<std::string> options
+  static std::set<std::string> options
     (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);
   return options;
 }
@@ -144,9 +177,16 @@ const std::vector<std::string>& listChangeableGlobalOptions()
 void XmlRpcMethod::gatherChangeableGlobalOption
 (const SharedHandle<Option>& option, const BDE& optionsDict)
 {
-  gatherOption(listChangeableGlobalOptions().begin(),
-	       listChangeableGlobalOptions().end(),
-	       option, optionsDict, _optionParser);
+  gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
+	       listChangeableGlobalOptions(),
+	       option, _optionParser);
+}
+
+void XmlRpcMethod::applyChangeableGlobalOption(Option* dest, Option* src) const
+{
+  applyOption(listChangeableGlobalOptions().begin(),
+	      listChangeableGlobalOptions().end(),
+	      dest, src);
 }
 
 } // namespace xmlrpc

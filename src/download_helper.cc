@@ -67,7 +67,7 @@
 
 namespace aria2 {
 
-const std::vector<std::string>& listRequestOptions()
+const std::set<std::string>& listRequestOptions()
 {
   static const std::string REQUEST_OPTIONS[] = {
     PREF_DIR,
@@ -138,7 +138,7 @@ const std::vector<std::string>& listRequestOptions()
     PREF_PARAMETERIZED_URI,
     PREF_REALTIME_CHUNK_CHECKSUM
   };
-  static std::vector<std::string> requestOptions
+  static std::set<std::string> requestOptions
     (&REQUEST_OPTIONS[0],
      &REQUEST_OPTIONS[arrayLength(REQUEST_OPTIONS)]);;
 
@@ -385,7 +385,7 @@ static void createRequestGroupForUriList
     }
 
     SharedHandle<Option> requestOption(new Option(*option.get()));
-    for(std::vector<std::string>::const_iterator i =
+    for(std::set<std::string>::const_iterator i =
 	  listRequestOptions().begin(); i != listRequestOptions().end(); ++i) {
       if(tempOption->defined(*i)) {
 	requestOption->put(*i, tempOption->get(*i));

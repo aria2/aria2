@@ -155,7 +155,7 @@ public:
   SharedHandle<RequestGroupMan> _requestGroupMan;
   SharedHandle<FileAllocationMan> _fileAllocationMan;
   SharedHandle<CheckIntegrityMan> _checkIntegrityMan;
-  const Option* option;
+  Option* option;
   
   DownloadEngine(const SharedHandle<EventPoll>& eventPoll);
 

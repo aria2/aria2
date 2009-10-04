@@ -39,7 +39,7 @@
 
 #include <string>
 #include <deque>
-#include <vector>
+#include <set>
 
 #include "SharedHandle.h"
 
@@ -48,7 +48,7 @@ namespace aria2 {
 class RequestGroup;
 class Option;
 
-const std::vector<std::string>& listRequestOptions();
+const std::set<std::string>& listRequestOptions();
 
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by

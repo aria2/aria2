@@ -46,9 +46,11 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
 #endif // ENABLE_METALINK
   CPPUNIT_TEST(testChangeOption);
   CPPUNIT_TEST(testChangeOption_withBadOption);
+  CPPUNIT_TEST(testChangeOption_withNotAllowedOption);
   CPPUNIT_TEST(testChangeOption_withoutGid);
   CPPUNIT_TEST(testChangeGlobalOption);
   CPPUNIT_TEST(testChangeGlobalOption_withBadOption);
+  CPPUNIT_TEST(testChangeGlobalOption_withNotAllowedOption);
   CPPUNIT_TEST(testTellStatus_withoutGid);
   CPPUNIT_TEST(testTellWaiting);
   CPPUNIT_TEST(testTellWaiting_fail);
@@ -94,9 +96,11 @@ public:
 #endif // ENABLE_METALINK
   void testChangeOption();
   void testChangeOption_withBadOption();
+  void testChangeOption_withNotAllowedOption();
   void testChangeOption_withoutGid();
   void testChangeGlobalOption();
   void testChangeGlobalOption_withBadOption();
+  void testChangeGlobalOption_withNotAllowedOption();
   void testTellStatus_withoutGid();
   void testTellWaiting();
   void testTellWaiting_fail();
@@ -369,8 +373,12 @@ void XmlRpcMethodTest::testChangeOption()
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
 		       group->getMaxDownloadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL(std::string("102400"),
+		       group->getOption()->get(PREF_MAX_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
    CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024, group->getMaxUploadSpeedLimit());
+   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
+			group->getOption()->get(PREF_MAX_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
 }
 
@@ -384,6 +392,21 @@ void XmlRpcMethodTest::testChangeOption_withBadOption()
   req._params << BDE("1");
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("badvalue");
+  req._params << opt;
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+}
+
+void XmlRpcMethodTest::testChangeOption_withNotAllowedOption()
+{
+  SharedHandle<RequestGroup> group(new RequestGroup(_option));
+  _e->_requestGroupMan->addReservedGroup(group);
+
+  ChangeOptionXmlRpcMethod m;
+  XmlRpcRequest req("aria2.changeOption", BDE::list());
+  req._params << BDE("1");
+  BDE opt = BDE::dict();
+  opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
   req._params << opt;
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
@@ -412,9 +435,13 @@ void XmlRpcMethodTest::testChangeGlobalOption()
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
 		       _e->_requestGroupMan->getMaxOverallDownloadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL(std::string("102400"),
+		       _e->option->get(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
 		       _e->_requestGroupMan->getMaxOverallUploadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL(std::string("51200"),
+		       _e->option->get(PREF_MAX_OVERALL_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
 }
 
@@ -424,6 +451,17 @@ void XmlRpcMethodTest::testChangeGlobalOption_withBadOption()
   XmlRpcRequest req("aria2.changeGlobalOption", BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("badvalue");
+  req._params << opt;
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+}
+
+void XmlRpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
+{
+  ChangeGlobalOptionXmlRpcMethod m;
+  XmlRpcRequest req("aria2.changeGlobalOption", BDE::list());
+  BDE opt = BDE::dict();
+  opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
   req._params << opt;
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);

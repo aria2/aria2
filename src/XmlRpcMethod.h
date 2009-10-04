@@ -78,8 +78,16 @@ protected:
   void gatherChangeableOption(const SharedHandle<Option>& option,
 			      const BDE& optionDict);
 
+  // Copy options which is changeable in XML-RPC changeOption command
+  // to dest.
+  void applyChangeableOption(Option* dest, Option* src) const;
+
   void gatherChangeableGlobalOption(const SharedHandle<Option>& option,
 				    const BDE& optionDict);
+
+  // Copy options which is changeable in XML-RPC changeGlobalOption
+  // command to dest.
+  void applyChangeableGlobalOption(Option* dest, Option* src) const;
 public:
   XmlRpcMethod();
 
