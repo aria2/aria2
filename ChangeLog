@@ -1,3 +1,9 @@
+2009-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added missing MetalinkParserStateImpl.{cc,h}
+	* src/MetalinkParserStateImpl.cc
+	* src/MetalinkParserStateImpl.h
+
 2009-10-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Put all MetalinkParserState subclasses into
