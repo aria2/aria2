@@ -101,6 +101,7 @@ DownloadCommand::DownloadCommand(int cuid,
 DownloadCommand::~DownloadCommand() {
   peerStat->downloadStop();
   _requestGroup->getSegmentMan()->updateFastestPeerStat(peerStat);
+  delete [] _buf;
 }
 
 bool DownloadCommand::executeInternal() {

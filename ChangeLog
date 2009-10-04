@@ -1,3 +1,8 @@
+2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed memory leak.
+	* src/DownloadCommand.cc
+
 2009-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed server, port, user and passwd key from options before
