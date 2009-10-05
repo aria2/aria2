@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "ContentTypeRequestGroupCriteria.h"
+
+#include <algorithm>
+
 #include "RequestGroup.h"
 #include "Util.h"
 #include "FileEntry.h"
@@ -40,45 +43,33 @@
 
 namespace aria2 {
 
-ContentTypeRequestGroupCriteria::ContentTypeRequestGroupCriteria(const std::deque<std::string>& contentTypes,
-								 const std::deque<std::string>& extensions):
-  _contentTypes(contentTypes),
-  _extensions(extensions) {}
+template<typename InputIterator>
+bool tailMatch
+(InputIterator first, InputIterator last, const std::string& target)
+{
+  for(; first != last; ++first) {
+    if(Util::endsWith(target, *first)) {
+      return true;
+    }
+  }
+  return false;
+}
 
-ContentTypeRequestGroupCriteria::~ContentTypeRequestGroupCriteria() {}
-
-bool ContentTypeRequestGroupCriteria::match(const RequestGroup* requestGroup) const
+bool ContentTypeRequestGroupCriteria::match
+(const RequestGroup* requestGroup) const
 {
   if(requestGroup->getDownloadContext()->getFileEntries().size() != 1) {
     return false;
   }
-  if(forwardMatch(requestGroup->getFirstFilePath(), _extensions)) {
+  if(tailMatch(_extensions.begin(), _extensions.end(),
+	       requestGroup->getFirstFilePath())) {
     return true;
   } else {
-    return exactMatch
-      (requestGroup->getDownloadContext()->getFirstFileEntry()->getContentType(),
-       _contentTypes);
+    return
+      std::find(_contentTypes.begin(), _contentTypes.end(),
+		requestGroup->getDownloadContext()->getFirstFileEntry()->
+		getContentType()) != _contentTypes.end();
   }
-}
-
-bool ContentTypeRequestGroupCriteria::forwardMatch(const std::string& target, const std::deque<std::string>& candidates) const
-{
-  for(std::deque<std::string>::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
-    if(Util::endsWith(target, *itr)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool ContentTypeRequestGroupCriteria::exactMatch(const std::string& target, const std::deque<std::string>& candidates) const
-{
-  for(std::deque<std::string>::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
-    if(target == *itr) {
-      return true;
-    }
-  }
-  return false;
 }
 
 } // namespace aria2

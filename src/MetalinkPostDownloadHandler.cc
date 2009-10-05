@@ -50,8 +50,11 @@ namespace aria2 {
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
   SharedHandle<RequestGroupCriteria> cri
-    (new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getMetalinkContentTypes(),
-					 DownloadHandlerConstants::getMetalinkExtensions()));
+    (new ContentTypeRequestGroupCriteria
+     (DownloadHandlerConstants::getMetalinkContentTypes().begin(),
+      DownloadHandlerConstants::getMetalinkContentTypes().end(),
+      DownloadHandlerConstants::getMetalinkExtensions().begin(),
+      DownloadHandlerConstants::getMetalinkExtensions().end()));
   setCriteria(cri);
 }
 
@@ -63,7 +66,8 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
 {
   _logger->debug("Generating RequestGroups for Metalink file %s",
 		 requestGroup->getFirstFilePath().c_str());
-  SharedHandle<DiskAdaptor> diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
+  SharedHandle<DiskAdaptor> diskAdaptor =
+    requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();
     //requestOption.put(PREF_DIR, requestGroup->getDownloadContext()->getDir());

@@ -52,8 +52,11 @@ namespace aria2 {
 BtPostDownloadHandler::BtPostDownloadHandler()
 {
   SharedHandle<RequestGroupCriteria> cri
-    (new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getBtContentTypes(),
-					 DownloadHandlerConstants::getBtExtensions()));
+    (new ContentTypeRequestGroupCriteria
+     (DownloadHandlerConstants::getBtContentTypes().begin(),
+      DownloadHandlerConstants::getBtContentTypes().end(),
+      DownloadHandlerConstants::getBtExtensions().begin(),
+      DownloadHandlerConstants::getBtExtensions().end()));
   setCriteria(cri);
 }
 
@@ -79,8 +82,8 @@ void BtPostDownloadHandler::getNextRequestGroups
   }
   SharedHandle<DownloadContext> context(new DownloadContext());
   context->setDir(requestGroup->getDownloadContext()->getDir());
-  bittorrent::loadFromMemory(content, context,
-			     File(requestGroup->getFirstFilePath()).getBasename());
+  bittorrent::loadFromMemory
+    (content, context, File(requestGroup->getFirstFilePath()).getBasename());
   rg->setDownloadContext(context);
   context->setOwnerRequestGroup(rg.get());
   

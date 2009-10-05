@@ -49,33 +49,35 @@ const char* DownloadHandlerConstants::BT_CONTENT_TYPES[] = {
   "application/x-bittorrent"
 };
 
-const std::deque<std::string>& DownloadHandlerConstants::getMetalinkExtensions()
+const std::vector<std::string>&
+DownloadHandlerConstants::getMetalinkExtensions()
 {
-  static const std::deque<std::string> l
+  static const std::vector<std::string> l
     (&METALINK_EXTENSIONS[0],
      &METALINK_EXTENSIONS[arrayLength(METALINK_EXTENSIONS)]);
   return l;
 }
 
-const std::deque<std::string>& DownloadHandlerConstants::getMetalinkContentTypes()
+const std::vector<std::string>&
+DownloadHandlerConstants::getMetalinkContentTypes()
 {
-  static const std::deque<std::string> l
+  static const std::vector<std::string> l
     (&METALINK_CONTENT_TYPES[0],
      &METALINK_CONTENT_TYPES[arrayLength(METALINK_CONTENT_TYPES)]);
   return l;
 }
 
-const std::deque<std::string>& DownloadHandlerConstants::getBtExtensions()
+const std::vector<std::string>& DownloadHandlerConstants::getBtExtensions()
 {
-  static const std::deque<std::string> l
+  static const std::vector<std::string> l
     (&BT_EXTENSIONS[0],
      &BT_EXTENSIONS[arrayLength(BT_EXTENSIONS)]);
   return l;
 }
 
-const std::deque<std::string>& DownloadHandlerConstants::getBtContentTypes()
+const std::vector<std::string>& DownloadHandlerConstants::getBtContentTypes()
 {
-  static const std::deque<std::string> l
+  static const std::vector<std::string> l
     (&BT_CONTENT_TYPES[0],
      &BT_CONTENT_TYPES[arrayLength(BT_CONTENT_TYPES)]);
   return l;

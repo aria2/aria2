@@ -1,5 +1,16 @@
 2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code clean up
+	* src/BtPostDownloadHandler.cc
+	* src/ContentTypeRequestGroupCriteria.cc
+	* src/ContentTypeRequestGroupCriteria.h
+	* src/DownloadHandlerConstants.cc
+	* src/DownloadHandlerConstants.h
+	* src/DownloadHandlerFactory.cc
+	* src/MetalinkPostDownloadHandler.cc
+
+2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't save control file when aria2 exists while checking piece
 	hash(behavior of -V option). If control file doesn't exist when
 	aria2 launched, the completed length in saved control file will be

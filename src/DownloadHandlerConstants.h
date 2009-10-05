@@ -37,7 +37,7 @@
 
 #include "common.h"
 #include <string>
-#include <deque>
+#include <vector>
 
 namespace aria2 {
 
@@ -46,19 +46,19 @@ class DownloadHandlerConstants
 public:
   static const char* METALINK_EXTENSIONS[];
 
-  static const std::deque<std::string>& getMetalinkExtensions();
+  static const std::vector<std::string>& getMetalinkExtensions();
 
   static const char* METALINK_CONTENT_TYPES[];
 
-  static const std::deque<std::string>& getMetalinkContentTypes();
+  static const std::vector<std::string>& getMetalinkContentTypes();
 
   static const char* BT_EXTENSIONS[];
 
-  static const std::deque<std::string>& getBtExtensions();
+  static const std::vector<std::string>& getBtExtensions();
 
   static const char* BT_CONTENT_TYPES[];
 
-  static const std::deque<std::string>& getBtContentTypes();
+  static const std::vector<std::string>& getBtContentTypes();
 };
 
 } // namespace aria2
