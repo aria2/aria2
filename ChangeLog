@@ -1,5 +1,19 @@
 2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't save control file when aria2 exists while checking piece
+	hash(behavior of -V option). If control file doesn't exist when
+	aria2 launched, the completed length in saved control file will be
+	0 byte and this confuses user. disableSaveControlFile() is called
+	in RequestGroup::processCheckIntegrityEntry().
+	enableSaveControlFile() will be called after hash checking is
+	done. See CheckIntegrityCommand.
+	* src/CheckIntegrityCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+
+2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Included version number in Peer ID and client version.  Peer ID
 	now starts with "aria2/VERSION-", where VERSION is
 	MAJOR.MINOR.MICRO. Client version is aria2/VERSION.

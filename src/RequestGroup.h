@@ -102,6 +102,8 @@ private:
 
   SharedHandle<PieceStorage> _pieceStorage;
 
+  bool _saveControlFile;
+
   SharedHandle<BtProgressInfoFile> _progressInfoFile;
 
   SharedHandle<DiskWriterFactory> _diskWriterFactory;
@@ -252,11 +254,6 @@ public:
   }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
-
-  const SharedHandle<BtProgressInfoFile>& getProgressInfoFile() const
-  {
-    return _progressInfoFile;
-  }
 
   void setProgressInfoFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 
@@ -439,6 +436,14 @@ public:
   }
 
   void setLastUriResult(std::string uri, downloadresultcode::RESULT result);
+
+  void saveControlFile() const;
+
+  void removeControlFile() const;
+
+  void enableSaveControlFile() { _saveControlFile = true; }
+
+  void disableSaveControlFile() { _saveControlFile = false; }
 
   static void resetGIDCounter() { _gidCounter = 0; }
 };

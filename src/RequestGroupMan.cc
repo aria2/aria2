@@ -301,10 +301,10 @@ public:
 	  group->applyLastModifiedTimeToLocalFiles();
 	  group->reportDownloadFinished();
 	  if(group->allDownloadFinished()) {
-	    group->getProgressInfoFile()->removeFile();
+	    group->removeControlFile();
 	    saveSignature(group);
 	  } else {
-	    group->getProgressInfoFile()->save();
+	    group->saveControlFile();
 	  }
 	  RequestGroups nextGroups;
 	  group->postDownloadProcessing(nextGroups);
@@ -316,7 +316,7 @@ public:
 				   nextGroups.begin(), nextGroups.end());
 	  }
 	} else {
-	  group->getProgressInfoFile()->save();
+	  group->saveControlFile();
 	}
       } catch(RecoverableException& ex) {
 	_logger->error(EX_EXCEPTION_CAUGHT, ex);
@@ -500,10 +500,10 @@ void RequestGroupMan::save()
   for(RequestGroups::iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     if((*itr)->allDownloadFinished()) {
-      (*itr)->getProgressInfoFile()->removeFile();
+      (*itr)->removeControlFile();
     } else {
       try {
-	(*itr)->getProgressInfoFile()->save();
+	(*itr)->saveControlFile();
       } catch(RecoverableException& e) {
 	_logger->error(EX_EXCEPTION_CAUGHT, e);
       }

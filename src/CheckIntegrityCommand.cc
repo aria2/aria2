@@ -60,7 +60,10 @@ bool CheckIntegrityCommand::executeInternal()
   _entry->validateChunk();
   if(_entry->finished()) {
     _e->_checkIntegrityMan->dropPickedEntry();
-
+    // Enable control file saving here. See also
+    // RequestGroup::processCheckIntegrityEntry() to know why this is
+    // needed.
+    _requestGroup->enableSaveControlFile();
     if(_requestGroup->downloadFinished()) {
       logger->notice(MSG_VERIFICATION_SUCCESSFUL,
 		     _requestGroup->getDownloadContext()->getBasePath().c_str());

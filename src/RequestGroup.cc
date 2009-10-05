@@ -118,6 +118,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _numStreamConnection(0),
   _numCommand(0),
   _segmentManFactory(new DefaultSegmentManFactory(_option.get())),
+  _saveControlFile(true),
   _progressInfoFile(new NullProgressInfoFile()),
   _preLocalFileCheckEnabled(true),
   _haltRequested(false),
@@ -394,6 +395,13 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
      entry->isValidationReady()) {
     entry->initValidator();
     entry->cutTrailingGarbage();
+    // Don't save control file(.aria2 file) when user presses
+    // control-c key while aria2 is checking hashes. If control file
+    // doesn't exist when aria2 launched, the completed length in
+    // saved control file will be 0 byte and this confuses user.
+    // enableSaveControlFile() will be called after hash checking is
+    // done. See CheckIntegrityCommand.
+    disableSaveControlFile();
     e->_checkIntegrityMan->pushEntry(entry);
   } else
 #endif // ENABLE_MESSAGE_DIGEST
@@ -1016,6 +1024,18 @@ void RequestGroup::setLastUriResult
 (const std::string uri, downloadresultcode::RESULT result)
 {
   _lastUriResult.reset(new URIResult(uri, result));
+}
+
+void RequestGroup::saveControlFile() const
+{
+  if(_saveControlFile) {
+    _progressInfoFile->save();
+  }
+}
+
+void RequestGroup::removeControlFile() const
+{
+  _progressInfoFile->removeFile();
 }
 
 } // namespace aria2
