@@ -899,6 +899,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 <dd>
 <p>
   Set user agent for HTTP(S) downloads.
+  Default: <em>aria2/$VERSION</em>, $VERSION is replaced by package version.
 </p>
 </dd>
 </dl></div>
@@ -1245,11 +1246,12 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Specify the prefix of peer ID. The peer ID in BitTorrent is 20 byte length.
-  If more than 20 bytes are specified, only first 20 bytes are used.
-  If less than 20 bytes are specified, the random alphabet characters are
-  added to make it&#8217;s length 20 bytes.
-  Default: <em>-aria2-</em>
+  Specify the prefix of peer ID. The peer ID in
+  BitTorrent is 20 byte length. If more than 20
+  bytes are specified, only first 20 bytes are
+  used. If less than 20 bytes are specified, random
+  byte data are added to make its length 20 bytes.
+  Default: <em>aria2/$VERSION-</em>, $VERSION is replaced by package version.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -3222,7 +3224,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-09-20 17:55:08 JST
+Last updated 2009-10-05 23:56:06 JST
 </div>
 </div>
 </body>

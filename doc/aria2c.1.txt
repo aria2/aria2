@@ -275,6 +275,7 @@ If aria2 is built without libsqlite3, then it doesn't support Firefox3 cookie fo
 
 *-U*, *--user-agent*=USER_AGENT::
   Set user agent for HTTP(S) downloads.
+  Default: 'aria2/$VERSION', $VERSION is replaced by package version.
 
 FTP Specific Options
 ~~~~~~~~~~~~~~~~~~~~
@@ -453,11 +454,13 @@ Make sure that the specified ports are open for incoming TCP traffic.
   Default: '0'
 
 *--peer-id-prefix*=PEER_ID_PREFIX::
-  Specify the prefix of peer ID. The peer ID in BitTorrent is 20 byte length.
-  If more than 20 bytes are specified, only first 20 bytes are used.
-  If less than 20 bytes are specified, the random alphabet characters are
-  added to make it's length 20 bytes.
-  Default: '-aria2-'
+
+  Specify the prefix of peer ID. The peer ID in
+  BitTorrent is 20 byte length. If more than 20
+  bytes are specified, only first 20 bytes are
+  used. If less than 20 bytes are specified, random
+  byte data are added to make its length 20 bytes.
+  Default: 'aria2/$VERSION-', $VERSION is replaced by package version.
 
 *--seed-ratio*=RATIO::
   Specify share ratio. Seed completed torrents until share ratio reaches

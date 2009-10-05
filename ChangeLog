@@ -1,5 +1,10 @@
 2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page for --user-agent and --peer-id-prefix option.
+	* doc/aria2c.1.txt
+
+2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code clean up
 	* src/BtPostDownloadHandler.cc
 	* src/ContentTypeRequestGroupCriteria.cc

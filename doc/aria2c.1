@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
-.\"      Date: 09/20/2009
+.\"      Date: 10/05/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "09/20/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "10/05/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -393,7 +393,8 @@ Use HEAD method for the first request to the HTTP server\&. Default:
 .PP
 \fB\-U\fR, \fB\-\-user\-agent\fR=USER_AGENT
 .RS 4
-Set user agent for HTTP(S) downloads\&.
+Set user agent for HTTP(S) downloads\&. Default:
+\fIaria2/$VERSION\fR, $VERSION is replaced by package version\&.
 .RE
 .SS "FTP Specific Options"
 .PP
@@ -675,8 +676,8 @@ option\&. Default:
 .PP
 \fB\-\-peer\-id\-prefix\fR=PEER_ID_PREFIX
 .RS 4
-Specify the prefix of peer ID\&. The peer ID in BitTorrent is 20 byte length\&. If more than 20 bytes are specified, only first 20 bytes are used\&. If less than 20 bytes are specified, the random alphabet characters are added to make it\(cqs length 20 bytes\&. Default:
-\fI\-aria2\-\fR
+Specify the prefix of peer ID\&. The peer ID in BitTorrent is 20 byte length\&. If more than 20 bytes are specified, only first 20 bytes are used\&. If less than 20 bytes are specified, random byte data are added to make its length 20 bytes\&. Default:
+\fIaria2/$VERSION\-\fR, $VERSION is replaced by package version\&.
 .RE
 .PP
 \fB\-\-seed\-ratio\fR=RATIO
