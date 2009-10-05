@@ -161,7 +161,7 @@ void DefaultBtInteractive::addPortMessageToQueue()
 
 void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
 {
-  static const std::string CLIENT_ARIA2("aria2");
+  static const std::string CLIENT_ARIA2("aria2/"PACKAGE_VERSION);
   HandshakeExtensionMessageHandle m(new HandshakeExtensionMessage());
   m->setClientVersion(CLIENT_ARIA2);
   m->setTCPPort(_btRuntime->getListenPort());

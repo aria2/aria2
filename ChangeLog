@@ -1,5 +1,18 @@
 2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Included version number in Peer ID and client version.  Peer ID
+	now starts with "aria2/VERSION-", where VERSION is
+	MAJOR.MINOR.MICRO. Client version is aria2/VERSION.
+	* src/DefaultBtInteractive.cc
+	* src/OptionHandlerFactory.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/main.cc
+	* src/usage_text.h
+	* test/BittorrentHelperTest.cc
+
+2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed memory leak.
 	* src/DownloadCommand.cc
 

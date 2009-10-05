@@ -52,6 +52,7 @@
 #include "a2netcompat.h"
 #include "BtConstants.h"
 #include "bitfield.h"
+#include "DHTUtil.h"
 
 namespace aria2 {
 
@@ -93,7 +94,7 @@ static const std::string C_COMMENT_UTF8("comment.utf-8");
 
 static const std::string C_CREATED_BY("created by");
 
-static const std::string DEFAULT_PEER_ID_PREFIX("-aria2-");
+static const std::string DEFAULT_PEER_ID_PREFIX("aria2-");
 
 const std::string INFO_HASH("infoHash");
 
@@ -618,12 +619,16 @@ void computeFastSet
   }
 }
 
-std::string generatePeerId
-(const std::string& peerIdPrefix, const SharedHandle<Randomizer>& randomizer)
+std::string generatePeerId(const std::string& peerIdPrefix)
 {
   std::string peerId = peerIdPrefix;
-  peerId += Util::randomAlpha(20-peerIdPrefix.size(), randomizer);
-  if(peerId.size() > 20) {
+  unsigned char buf[20];
+  int len = 20-peerIdPrefix.size();
+  if(len > 0) {
+    DHTUtil::generateRandomData(buf, len);
+
+    peerId += std::string(&buf[0], &buf[len]);
+  } if(peerId.size() > 20) {
     peerId.erase(20);
   }
   return peerId;
@@ -631,11 +636,10 @@ std::string generatePeerId
 
 static std::string peerId;
 
-const std::string& generateStaticPeerId
-(const std::string& peerIdPrefix, const SharedHandle<Randomizer>& randomizer)
+const std::string& generateStaticPeerId(const std::string& peerIdPrefix)
 {
   if(peerId.empty()) {
-    peerId = generatePeerId(peerIdPrefix, randomizer);
+    peerId = generatePeerId(peerIdPrefix);
   }
   return peerId;
 }
@@ -646,12 +650,13 @@ void setStaticPeerId(const std::string& newPeerId)
 }
 
 // If PeerID is not generated, it is created with default peerIdPrefix
-// (-aria2-) and SimpleRandomizer.
+// (aria2-).
 const unsigned char* getStaticPeerId()
 {
   if(peerId.empty()) {
     return
-      reinterpret_cast<const unsigned char*>(generateStaticPeerId(DEFAULT_PEER_ID_PREFIX, SimpleRandomizer::getInstance()).data());
+      reinterpret_cast<const unsigned char*>
+      (generateStaticPeerId(DEFAULT_PEER_ID_PREFIX).data());
   } else {
     return reinterpret_cast<const unsigned char*>(peerId.data());
   }

@@ -284,11 +284,9 @@ void BittorrentHelperTest::testGetInfoHashAsString() {
 }
 
 void BittorrentHelperTest::testGetPeerId() {
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("-aria-AAAAAAAAAAAAAA"),
-     generatePeerId("-aria-",
-		    SharedHandle<Randomizer>(new FixedNumberRandomizer())));
+  std::string peerId = generatePeerId("aria2-");
+  CPPUNIT_ASSERT(peerId.find("aria2-") == 0);
+  CPPUNIT_ASSERT_EQUAL((size_t)20, peerId.size());
 }
 
 void BittorrentHelperTest::testComputeFastSet()

@@ -119,17 +119,15 @@ void loadFromMemory(const std::string& context,
 // length.  This function uses peerIdPrefix as a Peer ID and it is
 // less than 20bytes, random bytes are generated and appened to it. If
 // peerIdPrefix is larger than 20bytes, first 20bytes are used.
-std::string generatePeerId
-(const std::string& peerIdPrefix, const SharedHandle<Randomizer>& randomizer);
+std::string generatePeerId(const std::string& peerIdPrefix);
 
 // Generates Peer ID and stores it in static variable. This function
-// uses generatePeerId(peerIdPrefix, randomizer) to produce Peer ID.
-const std::string& generateStaticPeerId
-(const std::string& peerIdPrefix, const SharedHandle<Randomizer>& randomizer);
+// uses generatePeerId(peerIdPrefix) to produce Peer ID.
+const std::string& generateStaticPeerId(const std::string& peerIdPrefix);
 
 // Returns Peer ID statically stored by generateStaticPeerId().  If
 // Peer ID is not stored yet, this function calls
-// generateStaticPeerId("-aria2-", randomizer)
+// generateStaticPeerId("aria2-")
 const unsigned char* getStaticPeerId();
 
 // Set newPeerId as a static Peer ID. newPeerId must be 20-byte

@@ -1140,7 +1140,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_PEER_ID_PREFIX,
 				    TEXT_PEER_ID_PREFIX,
-				    "-aria2-"));
+				    "aria2/"PACKAGE_VERSION"-"));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
