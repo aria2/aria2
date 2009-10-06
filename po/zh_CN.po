@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2009-10-06 23:02+0900\n"
-"PO-Revision-Date: 2009-05-01 03:42+0000\n"
+"PO-Revision-Date: 2009-09-30 14:01+0000\n"
 "Last-Translator: aerowolf <aerowolf@tom.com>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-07 15:56+0000\n"
+"X-Launchpad-Export-Date: 2009-10-06 14:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:212
@@ -354,7 +354,6 @@ msgstr ""
 "                              如果遇到任何错误，请关闭。"
 
 #: src/usage_text.h:145
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false is given, and a file already exists "
 "but\n"
@@ -364,10 +363,6 @@ msgid ""
 "download\n"
 "                              the file. See also --auto-file-renaming option."
 msgstr ""
-" --allow-piece-length-change=true|false 如果选择false，当来自控制文件\n"
-"                              中的片段长度不相同时，aria2会放弃下\n"
-"                              载。如果选择true，您可以继续进行下\n"
-"                              载，但某些下载进度会丢失。"
 
 #: src/usage_text.h:150
 msgid ""
@@ -715,7 +710,6 @@ msgstr ""
 "                              满足时，做种结束。"
 
 #: src/usage_text.h:288
-#, fuzzy
 msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -726,11 +720,6 @@ msgid ""
 "                              byte data are added to make its length 20 "
 "bytes."
 msgstr ""
-" --peer-id-prefix=PEERI_ID_PREFIX 指定peer ID的前缀。在BT中，peer ID\n"
-"                              中，peer ID长度为20 byte。如果指定的\n"
-"                              长度大于20，仅前20 byte会被使用。如\n"
-"                              果少于20 byte，会添加随机字母来凑足\n"
-"                              20 byte长度。"
 
 #: src/usage_text.h:294
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -947,7 +936,6 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version 打印版本号并退出。"
 
 #: src/usage_text.h:379
-#, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -959,13 +947,6 @@ msgid ""
 "usage\n"
 "                              for the options whose name includes that word."
 msgstr ""
-" -h, --help[=CATEGORY] 打印使用情况并退出。\n"
-"                              帮助信息被分为几个类别。\n"
-"                              例如，输入\"--help=http\"可了解与\n"
-"                              HTTP相关的选项的详细解释。\n"
-"                              如果未找到匹配的类别，使用给出\n"
-"                              的单词以嘴匹配的方式搜索选项名\n"
-"                              称并打印结果。"
 
 #: src/usage_text.h:386
 msgid " --no-conf                    Disable loading aria2.conf file."
@@ -1224,17 +1205,13 @@ msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
 #: src/usage_text.h:489
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
-" --dht-entry-point=HOST:PORT 设置主机和端口作为进入DHT网络的进入点。\n"
-"                              网络的进入点。"
 
 #: src/usage_text.h:492
-#, fuzzy
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1243,10 +1220,6 @@ msgid ""
 "passwd\n"
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
-" --server-stat-if=FILE 指定要加载的服务器的性能配置文件的名称。\n"
-"                              加载的数据将被用在\n"
-"                              某些URI选择器之中，比如'feedback'。\n"
-"                              也可以参阅--uri-selector选项"
 
 #: src/usage_text.h:497
 msgid ""
@@ -1257,14 +1230,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:501
-#, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
-msgstr " --ftp-user=USER 设置FTP用户。此设置对所有链接有效。"
+msgstr ""
 
 #: src/usage_text.h:503
-#, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
-msgstr " --ftp-passwd=PASSWD 设置FTP密码。此设置对所有链接有效。"
+msgstr ""
 
 #: src/usage_text.h:505
 msgid ""
@@ -1332,7 +1303,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:538
-#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1341,11 +1311,6 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-overall-download-limit=SPEED 设置最大总体下载速度，以b/秒计。\n"
-"                              0意味着不限制。\n"
-"                              您可以附加K或M(1K = 1024, 1M = 1024K)。\n"
-"                              要限制每个下载的下载速度，请使用\n"
-"                              --max-download-limit选项。"
 
 #: src/usage_text.h:544
 msgid ""
@@ -1356,7 +1321,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:548
-#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1364,14 +1328,8 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-overall-download-limit=SPEED 设置最大总体下载速度，以b/秒计。\n"
-"                              0意味着不限制。\n"
-"                              您可以附加K或M(1K = 1024, 1M = 1024K)。\n"
-"                              要限制每个下载的下载速度，请使用\n"
-"                              --max-download-limit选项。"
 
 #: src/usage_text.h:554
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1384,38 +1342,22 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --follow-torrent=true|false|mem 如果指定true或mem，当后缀为.torrent\n"
-"                              或内容类型是application/x-bittorrent的文\n"
-"                              件被下载时，aria2将分析其为torrent文件\n"
-"                              并下载其中提及的文件。\n"
-"                              \n"
-"                              如果指定mem，torrent文件不会被写入\n"
-"                              到磁盘，但只保留在内存中。\n"
-"                              如果指定false，上面提到的动作\n"
-"                              将不会被采取。"
 
 #: src/usage_text.h:563
-#, fuzzy
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
 "                              consecutive SEC seconds. If 0 is given, this\n"
 "                              feature is disabled."
 msgstr ""
-" --stop=SEC 在经过SEC秒之后停止程序。\n"
-"                              如果给定的值是0，此功能将被禁止。"
 
 #: src/usage_text.h:567
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
 "only\n"
 "                              on local loopback interface."
 msgstr ""
-" -Z, --force-sequential[=true|false] 继续从命令行获取链接，\n"
-"                              并以单独的会话下载每个链接，\n"
-"                              如同常见的命令行下载工具。"
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -1614,7 +1556,7 @@ msgstr "CUID#%d - DNS cache 命中: %s -> %s"
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - Abort requested."
+msgstr "CUID#%d - 被请求中止。"
 
 #: src/message.h:67
 #, c-format
@@ -1626,7 +1568,7 @@ msgstr ""
 msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
-msgstr ""
+msgstr "CUID#%d - 接收的块。索引=%d，开始=%d，长度=%d，补偿=%llu，块索引=%d"
 
 #: src/message.h:69
 #, c-format
@@ -1639,6 +1581,7 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - 拒绝队列中的块信息，因为对等机已经被堵塞。索引=%d，开始=%d，长度=%d"
 
 #: src/message.h:71
 #, c-format
@@ -1646,11 +1589,12 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - 拒绝队列中的块信息，因为取消了信息接收。索引=%d，开始=%d，长度=%d"
 
 #: src/message.h:72
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr ""
+msgstr "CUID#%d - 在确认文件完整时，例外被捕获。"
 
 #: src/message.h:73
 #, c-format
@@ -2427,23 +2371,3 @@ msgstr ""
 #: src/BtSetup.cc:158
 msgid "Errors occurred while binding port.\n"
 msgstr "绑定端口时发生错误。\n"
-
-#~ msgid " -D, --daemon                 Run as daemon."
-#~ msgstr " -D, --daemon 以守护进程方式运行（即后台运行）。"
-
-#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
-#~ msgstr "CUID#%d - 正在从块管理器(segmentManager)中注销cuid."
-
-#~ msgid "Files:"
-#~ msgstr "文件："
-
-#~ msgid ""
-#~ " --allow-overwrite=true|false If false, aria2 doesn't download a file "
-#~ "which\n"
-#~ "                              already exists but the corresponding .aria2 "
-#~ "file\n"
-#~ "                              doesn't exist."
-#~ msgstr ""
-#~ " --allow-overwrite=true|false 选择false时，如果某个文件已经存在，\n"
-#~ "                              但与之对应的.aria2文件不存在时，\n"
-#~ "                              aria2不下载该文件。"

@@ -1,5 +1,10 @@
 2009-10-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Simplified Chinese translation. Thanks to translators.
+	* po/zh_CN.po
+
+2009-10-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated translation template
 	* po
 
