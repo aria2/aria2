@@ -1,5 +1,10 @@
 2009-10-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.6.1
+	* configure.ac
+
+2009-10-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed interval from 120 to 60 for dropping inactive peer.
 	* src/DefaultBtInteractive.cc
 
