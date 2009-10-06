@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-09-19 18:15+0900\n"
+"POT-Creation-Date: 2009-10-06 23:02+0900\n"
 "PO-Revision-Date: 2009-05-11 18:09+0000\n"
 "Last-Translator: elchevive <elchevive68@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
@@ -569,21 +569,22 @@ msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
 "                              BitTorrent is 20 byte length. If more than 20\n"
-"                              bytes are specified, only first 20\n"
-"                              bytes are used. If less than 20 bytes are\n"
-"                              specified, the random alphabet characters are\n"
-"                              added to make it's length 20 bytes."
+"                              bytes are specified, only first 20 bytes are\n"
+"                              used. If less than 20 bytes are specified, "
+"random\n"
+"                              byte data are added to make its length 20 "
+"bytes."
 msgstr ""
 
-#: src/usage_text.h:295
+#: src/usage_text.h:294
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 
-#: src/usage_text.h:297
+#: src/usage_text.h:296
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr ""
 
-#: src/usage_text.h:299
+#: src/usage_text.h:298
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -594,18 +595,18 @@ msgid ""
 "                              be used together."
 msgstr ""
 
-#: src/usage_text.h:305
+#: src/usage_text.h:304
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
 msgstr ""
 
-#: src/usage_text.h:308
+#: src/usage_text.h:307
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
 msgstr ""
 
-#: src/usage_text.h:310
+#: src/usage_text.h:309
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -615,7 +616,7 @@ msgid ""
 "                              the given level."
 msgstr ""
 
-#: src/usage_text.h:315
+#: src/usage_text.h:314
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -623,7 +624,7 @@ msgid ""
 "                              handshake."
 msgstr ""
 
-#: src/usage_text.h:320
+#: src/usage_text.h:319
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
 "                              torrent is lower than SPEED, aria2 "
@@ -636,20 +637,20 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
 
-#: src/usage_text.h:328
+#: src/usage_text.h:327
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
 "                              BitTorrent download."
 msgstr ""
 
-#: src/usage_text.h:331
+#: src/usage_text.h:330
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
 
-#: src/usage_text.h:334
+#: src/usage_text.h:333
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
@@ -657,11 +658,11 @@ msgid ""
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
 
-#: src/usage_text.h:338
+#: src/usage_text.h:337
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr ""
 
-#: src/usage_text.h:340
+#: src/usage_text.h:339
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -675,34 +676,34 @@ msgid ""
 "                              See also -s and -j options."
 msgstr ""
 
-#: src/usage_text.h:349
+#: src/usage_text.h:348
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr ""
 
-#: src/usage_text.h:351
+#: src/usage_text.h:350
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr ""
 
-#: src/usage_text.h:353
+#: src/usage_text.h:352
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 
-#: src/usage_text.h:355
+#: src/usage_text.h:354
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
 
-#: src/usage_text.h:359
+#: src/usage_text.h:358
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
 "                              if you don't have any preferred protocol."
 msgstr ""
 
-#: src/usage_text.h:362
+#: src/usage_text.h:361
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type of\n"
@@ -718,7 +719,7 @@ msgid ""
 "                              is not taken."
 msgstr ""
 
-#: src/usage_text.h:372
+#: src/usage_text.h:371
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -728,11 +729,11 @@ msgid ""
 "                              specify the preference of protocol."
 msgstr ""
 
-#: src/usage_text.h:378
+#: src/usage_text.h:377
 msgid " -v, --version                Print the version number and exit."
 msgstr ""
 
-#: src/usage_text.h:380
+#: src/usage_text.h:379
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -745,23 +746,23 @@ msgid ""
 "                              for the options whose name includes that word."
 msgstr ""
 
-#: src/usage_text.h:387
+#: src/usage_text.h:386
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
 
-#: src/usage_text.h:389
+#: src/usage_text.h:388
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 
-#: src/usage_text.h:391
+#: src/usage_text.h:390
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:394
+#: src/usage_text.h:393
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -773,30 +774,30 @@ msgid ""
 "                              http://host/file"
 msgstr ""
 
-#: src/usage_text.h:400
+#: src/usage_text.h:399
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 
-#: src/usage_text.h:402
+#: src/usage_text.h:401
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr ""
 
-#: src/usage_text.h:404
+#: src/usage_text.h:403
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
-#: src/usage_text.h:406
+#: src/usage_text.h:405
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
 
-#: src/usage_text.h:409
+#: src/usage_text.h:408
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 
-#: src/usage_text.h:411
+#: src/usage_text.h:410
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -805,7 +806,7 @@ msgid ""
 "                              apply it to the local file."
 msgstr ""
 
-#: src/usage_text.h:415
+#: src/usage_text.h:414
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -816,7 +817,7 @@ msgid ""
 "                              effect and --timeout option is used instead."
 msgstr ""
 
-#: src/usage_text.h:420
+#: src/usage_text.h:419
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -829,7 +830,7 @@ msgid ""
 "                              HTTP/FTP servers."
 msgstr ""
 
-#: src/usage_text.h:427
+#: src/usage_text.h:426
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -859,7 +860,7 @@ msgid ""
 "                              performance profile of servers."
 msgstr ""
 
-#: src/usage_text.h:446
+#: src/usage_text.h:445
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -868,7 +869,7 @@ msgid ""
 "                              using --server-stat-if option."
 msgstr ""
 
-#: src/usage_text.h:450
+#: src/usage_text.h:449
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -878,7 +879,7 @@ msgid ""
 "                              See also --uri-selector option"
 msgstr ""
 
-#: src/usage_text.h:455
+#: src/usage_text.h:454
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -886,7 +887,7 @@ msgid ""
 "                              contact to them."
 msgstr ""
 
-#: src/usage_text.h:459
+#: src/usage_text.h:458
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -897,7 +898,7 @@ msgid ""
 "                              regardless of the value."
 msgstr ""
 
-#: src/usage_text.h:464
+#: src/usage_text.h:463
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -906,14 +907,14 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:469
+#: src/usage_text.h:468
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
 
-#: src/usage_text.h:473
+#: src/usage_text.h:472
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -925,39 +926,39 @@ msgid ""
 "                              verification."
 msgstr ""
 
-#: src/usage_text.h:479
+#: src/usage_text.h:478
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:482
+#: src/usage_text.h:481
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
 
-#: src/usage_text.h:485
+#: src/usage_text.h:484
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
 "                              server."
 msgstr ""
 
-#: src/usage_text.h:488
+#: src/usage_text.h:487
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:490
+#: src/usage_text.h:489
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
 
-#: src/usage_text.h:493
+#: src/usage_text.h:492
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -967,7 +968,7 @@ msgid ""
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
 
-#: src/usage_text.h:498
+#: src/usage_text.h:497
 msgid ""
 " --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"
 "                              detects the request is more than SIZE bytes, "
@@ -975,15 +976,15 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:502
+#: src/usage_text.h:501
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
 
-#: src/usage_text.h:504
+#: src/usage_text.h:503
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr ""
 
-#: src/usage_text.h:506
+#: src/usage_text.h:505
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -993,7 +994,7 @@ msgid ""
 "                              addresses."
 msgstr ""
 
-#: src/usage_text.h:511
+#: src/usage_text.h:510
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1008,7 +1009,7 @@ msgid ""
 "                              option."
 msgstr ""
 
-#: src/usage_text.h:519
+#: src/usage_text.h:518
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1021,7 +1022,7 @@ msgid ""
 "                              times."
 msgstr ""
 
-#: src/usage_text.h:525
+#: src/usage_text.h:524
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1032,7 +1033,7 @@ msgid ""
 "                              specified."
 msgstr ""
 
-#: src/usage_text.h:531
+#: src/usage_text.h:530
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1048,7 +1049,7 @@ msgid ""
 "                              progress."
 msgstr ""
 
-#: src/usage_text.h:539
+#: src/usage_text.h:538
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1058,7 +1059,7 @@ msgid ""
 "                              See also --on-download-stop option."
 msgstr ""
 
-#: src/usage_text.h:545
+#: src/usage_text.h:544
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed when download\n"
 "                              starts up. COMMAND must take just one argument "
@@ -1066,7 +1067,7 @@ msgid ""
 "                              GID is passed to COMMAND as a first argument."
 msgstr ""
 
-#: src/usage_text.h:549
+#: src/usage_text.h:548
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1075,7 +1076,7 @@ msgid ""
 "                              See also --on-download-stop option."
 msgstr ""
 
-#: src/usage_text.h:555
+#: src/usage_text.h:554
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1089,7 +1090,7 @@ msgid ""
 "                              requirement of COMMAND."
 msgstr ""
 
-#: src/usage_text.h:564
+#: src/usage_text.h:563
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1097,7 +1098,7 @@ msgid ""
 "                              feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:568
+#: src/usage_text.h:567
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
