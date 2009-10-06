@@ -1,3 +1,39 @@
+aria2 1.6.1
+===========
+
+Release Note
+------------
+
+This release fixes memory leak in HTTP/FTP download. It also fixes the
+bug that the option values changed by XML-RPC changeOption and
+changeGlobalOption methods are cleared.  Now User-agent and Peer ID
+include version number.  Updated Simplified Chinese translations.
+
+Changes
+-------
+
+ * Don't save control file when aria2 exits while checking piece
+   hash(behavior of -V option). If control file doesn't exist when
+   aria2 launches, the completed length in saved control file will be
+   0 byte and this confuses user.
+
+ * Included version number in Peer ID and client version.  Peer ID now
+   starts with "aria2/VERSION-", where VERSION is
+   MAJOR.MINOR.MICRO. Client version is aria2/VERSION.
+
+ * Included version number in user-agent string.
+
+ * Fixed memory leak in HTTP/FTP download.
+
+ * Fixed the bug that the option values changed by XML-RPC
+   methods(changeOption and changeGlobalOption) are overwritten to the
+   previous value by the next these requests which doesn't contain
+   that option value.
+
+ * Added missing help message for remove command to aria2rpc.
+
+
+
 aria2 1.6.0
 ===========
 
