@@ -400,7 +400,7 @@ void DefaultBtInteractive::checkActiveInteraction()
   // mutual download progress are completely waste of resources, those peers
   // are disconnected in a certain time period.
   {
-    const time_t interval = 2*60;
+    const time_t interval = 60;
     if(inactiveCheckPoint.elapsed(interval)) {
       throw DL_ABORT_EX
 	(StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());

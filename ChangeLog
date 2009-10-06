@@ -1,3 +1,8 @@
+2009-10-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Changed interval from 120 to 60 for dropping inactive peer.
+	* src/DefaultBtInteractive.cc
+
 2009-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated man page for --user-agent and --peer-id-prefix option.
