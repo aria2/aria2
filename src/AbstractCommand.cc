@@ -280,7 +280,6 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
 
 void AbstractCommand::onAbort() {
   if(!req.isNull()) {
-    logger->debug(req->getCurrentUrl().c_str());
     // TODO This might be a problem if the failure is caused by proxy.
     e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
 					       req->getProtocol())->setError();
