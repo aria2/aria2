@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2009-10-10 23:30+0900\n"
-"PO-Revision-Date: 2009-07-28 07:21+0000\n"
-"Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
+"PO-Revision-Date: 2009-10-08 20:07+0000\n"
+"Last-Translator: atany <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-08-21 04:52+0000\n"
+"X-Launchpad-Export-Date: 2009-10-10 09:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:212
@@ -134,6 +134,11 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
+" -D, --daemon                 Виконати як демона. Поточна тека буде змінена\n"
+"                              на \"/\"; стандартне введення, стандартне "
+"виведення\n"
+"                              і виведення помилок будуть переадресовані до\n"
+"                              \"/dev/null\"."
 
 #: src/usage_text.h:49
 msgid ""
@@ -847,7 +852,6 @@ msgstr ""
 "                              умову буде задоволено."
 
 #: src/usage_text.h:288
-#, fuzzy
 msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -858,17 +862,6 @@ msgid ""
 "                              byte data are added to make its length 20 "
 "bytes."
 msgstr ""
-" --peer-id-prefix=PEER_ID_PREFIX Вказати префікс для ID вузла. Довжина ID "
-"вузла у\n"
-"                              BitTorrent дорівнює 20 байтам. Якщо вказано "
-"більше 20\n"
-"                              байтів, тоді лишень перші 20\n"
-"                              байтів будуть використовуватися. Якщо вказано "
-"менше ніж 20\n"
-"                              байтів, тоді випадкові символи алфавіту "
-"будуть\n"
-"                              додані, щоб зробити його довжину рівною 20 "
-"байтам."
 
 #: src/usage_text.h:294
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -1107,7 +1100,6 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Надрукувати номер версії та вийти."
 
 #: src/usage_text.h:379
-#, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -1119,17 +1111,6 @@ msgid ""
 "usage\n"
 "                              for the options whose name includes that word."
 msgstr ""
-" -h, --help[=CATEGORY] Друкує довідник користувача та виходить.\n"
-"                              Допоміжні повідомлення класифіковані у "
-"декількох\n"
-"                              категоріях. Наприклад, введіть \"--help=http\" "
-"для\n"
-"                              докладніших роз'яснень параметрів, які "
-"пов'язані з\n"
-"                              http. Якщо не знайдено відповідних категорій,\n"
-"                              надане ім'я параметру використовується для "
-"пошуку схожого слова\n"
-"                              та друку результату."
 
 #: src/usage_text.h:386
 msgid " --no-conf                    Disable loading aria2.conf file."
@@ -1690,18 +1671,12 @@ msgstr ""
 "                              можливість вимкнена."
 
 #: src/usage_text.h:567
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
 "only\n"
 "                              on local loopback interface."
 msgstr ""
-" -Z, --force-sequential[=true|false] Отримати URI в послідовності\n"
-"                              командного рядку та завантажити кожне URI в "
-"окремій сесії, наче у\n"
-"                              звичайних утилітах завантаження командного "
-"рядку."
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -1742,10 +1717,9 @@ msgid "Printing options whose name includes '%s'."
 msgstr "Друк параметрів, ім'я яких вміщує у собі '%s'."
 
 #: src/version_usage.cc:120
-#, fuzzy, c-format
+#, c-format
 msgid "No option matching with '%s'."
-msgstr ""
-"Нема категорії в допомозі або імені  параметру, який збігається із '%s'."
+msgstr "Жодна опція не відповідає '%s'."
 
 #: src/version_usage.cc:128
 msgid ""
@@ -2410,7 +2384,7 @@ msgstr "Цей файл не є фалом торенту або Metalink. Пр�
 #: src/message.h:177
 #, c-format
 msgid "Is '%s' a regular file?"
-msgstr ""
+msgstr "Чи є звичайним файлом '%s'?"
 
 #: src/message.h:179
 msgid "Timeout."
@@ -2770,6 +2744,3 @@ msgstr ""
 #: src/BtSetup.cc:158
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"
-
-#~ msgid " -D, --daemon                 Run as daemon."
-#~ msgstr " -D, --daemon Запускати як демон."
