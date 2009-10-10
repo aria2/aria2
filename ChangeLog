@@ -1,5 +1,11 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use AC_FUNC_FORK. Replaced HAVE_FORK with HAVE_WORKING_FORK.
+	* configure.ac
+	* src/daemon.cc
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't set localedir manually. Leave it to autoconf.
 	* configure.ac
 	* src/Makefile.am

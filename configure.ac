@@ -251,11 +251,11 @@ AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
+AC_FUNC_FORK
 AC_CHECK_FUNCS([__argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
-                fork \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \
