@@ -1,6 +1,6 @@
-SUBDIRS =  m4 po intl lib src test doc
+SUBDIRS =  po intl lib src test doc
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 --install
 
 EXTRA_DIST = config.rpath
 

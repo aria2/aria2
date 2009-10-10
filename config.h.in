@@ -522,6 +522,9 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
@@ -530,9 +533,6 @@
 
 /* Define if the pthread_in_use() detection is hard. */
 #undef PTHREAD_IN_USE_DETECTION_HARD
-
-/* Define as the return type of signal handlers (`int' or `void'). */
-#undef RETSIGTYPE
 
 /* Define to the type of arg 1 for `select'. */
 #undef SELECT_TYPE_ARG1

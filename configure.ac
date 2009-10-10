@@ -1,13 +1,14 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-AC_PREREQ(2.61)
-AC_INIT(aria2, 1.6.1, t-tujikawa@users.sourceforge.net)
+AC_PREREQ(2.64)
+AC_INIT([aria2],[1.6.1],[t-tujikawa@users.sourceforge.net],[aria2],
+        [http://aria2.sourceforge.net/])
 AC_CANONICAL_HOST
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
-AC_CONFIG_SRCDIR([src/Socket.h])
+AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
 
 case "$target" in
@@ -37,7 +38,7 @@ ARIA2_ARG_ENABLE([metalink])
 ARIA2_ARG_ENABLE([epoll])
 
 AC_ARG_WITH([ca-bundle],
-  AC_HELP_STRING([--with-ca-bundle=FILE], [Use FILE as default CA bundle.]),
+  AS_HELP_STRING([--with-ca-bundle=FILE],[Use FILE as default CA bundle.]),
   [ca_bundle=$withval], [ca_bundle=""])
 
 # Checks for programs.
@@ -251,7 +252,6 @@ AC_FUNC_MEMCMP
 AC_FUNC_MKTIME
 AC_FUNC_MMAP
 AC_FUNC_SELECT_ARGTYPES
-AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
