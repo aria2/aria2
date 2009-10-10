@@ -213,6 +213,7 @@ AC_CHECK_HEADERS([argz.h \
                   sys/time.h \
                   termios.h \
                   unistd.h \
+		  utime.h \
                   wchar.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -233,6 +234,7 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
+AC_TYPE_PID_T
 AC_C_VOLATILE
 AC_CHECK_TYPES([ptrdiff_t])
 AC_C_BIGENDIAN
@@ -252,6 +254,7 @@ AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
 AC_FUNC_FORK
+AC_FUNC_STRTOD
 AC_CHECK_FUNCS([__argz_count \
                 __argz_next \
                 __argz_stringify \
@@ -270,6 +273,7 @@ AC_CHECK_FUNCS([__argz_count \
                 munmap \
                 nl_langinfo \
                 posix_memalign \
+		pow \
                 putenv \
                 rmdir \
                 select \
@@ -289,7 +293,8 @@ AC_CHECK_FUNCS([__argz_count \
                 strtoull \
                 tzset \
                 unsetenv \
-                usleep])
+                usleep \
+		utime])
 
 if test "x$enable_epoll" = "xyes"; then
   AC_CHECK_FUNCS([epoll_create], [have_epoll=yes])
