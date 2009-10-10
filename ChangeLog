@@ -1,5 +1,10 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated licence message in -v output.
+	* src/version_usage.cc
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced aria2 with aria2c in help message.
 	* src/version_usage.cc
 
