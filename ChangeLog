@@ -1,5 +1,14 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused m4 macros.
+	* m4/intldir.m4
+	* m4/inttypes.m4
+	* m4/isc-posix.m4
+	* m4/libgnutls-extra.m4
+	* m4/ulonglong.m4
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that causes segmentation fault if
 	req->getCurrentUrl() contains printf formatting characters such as
 	%d. The statement that causes this bug is useless and removed.
