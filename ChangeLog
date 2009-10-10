@@ -1,5 +1,13 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed Makefile.am in m4 directory.
+	* configure.ac
+	* m4/ChangeLog
+	* m4/Makefile.am
+	* m4/Makefile.in
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused m4 macros.
 	* m4/intldir.m4
 	* m4/inttypes.m4

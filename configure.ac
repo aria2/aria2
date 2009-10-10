@@ -374,7 +374,6 @@ AC_CONFIG_FILES([Makefile
 		src/Makefile
 		test/Makefile
 		po/Makefile.in
-		m4/Makefile
 		intl/Makefile
 		lib/Makefile
 		doc/Makefile])
