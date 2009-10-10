@@ -20,10 +20,6 @@ esac
 
 AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 
-# Set localedir
-localedir=${datadir}/locale
-AC_SUBST(localedir)
-
 # Checks for arguments.
 ARIA2_ARG_WITH([gnutls])
 ARIA2_ARG_WITH([openssl])

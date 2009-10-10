@@ -1,5 +1,11 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't set localedir manually. Leave it to autoconf.
+	* configure.ac
+	* src/Makefile.am
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --install to ACLOCAL_AMFLAGS.
 	Removed m4 from SUBDIRS.
 	Updated automake 1.11 and autoconf 2.64.

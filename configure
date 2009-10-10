@@ -3578,10 +3578,6 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-# Set localedir
-localedir=${datadir}/locale
-
-
 # Checks for arguments.
 
 # Check whether --with-gnutls was given.
