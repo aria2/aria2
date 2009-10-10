@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-06 23:02+0900\n"
+"POT-Creation-Date: 2009-10-10 23:30+0900\n"
 "PO-Revision-Date: 2008-10-06 17:17+0900\n"
 "Last-Translator: Yuri <Unknown>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -1577,45 +1577,45 @@ msgstr ""
 msgid " version "
 msgstr " Version "
 
-#: src/version_usage.cc:74
+#: src/version_usage.cc:80
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Fehler an %s melden"
 
-#: src/version_usage.cc:79
-#, c-format
-msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+#: src/version_usage.cc:85
+#, fuzzy
+msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr "Gebrauch: %s [OPTIONEN] [URL | TORRENT_DATEI | METALINK_DATEI]..."
 
-#: src/version_usage.cc:86
+#: src/version_usage.cc:92
 msgid "Printing all options."
 msgstr "Ausgabe aller Optionen."
 
-#: src/version_usage.cc:88
+#: src/version_usage.cc:94
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "Ausgabe von Optionen, die zum Stichwort '%s' passen."
 
-#: src/version_usage.cc:92
+#: src/version_usage.cc:98
 #, c-format
 msgid "See -h option to know other command-line options(%s)."
 msgstr "Siehe Option -h für weitere Kommandozeilen-Optionen (%s)."
 
-#: src/version_usage.cc:97 src/version_usage.cc:109
+#: src/version_usage.cc:103 src/version_usage.cc:115
 msgid "Options:"
 msgstr "Optionen:"
 
-#: src/version_usage.cc:106
+#: src/version_usage.cc:112
 #, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr ""
 
-#: src/version_usage.cc:114
+#: src/version_usage.cc:120
 #, fuzzy, c-format
 msgid "No option matching with '%s'."
 msgstr "Keine Hilfekategorie oder Option passend zu '%s' gefunden."
 
-#: src/version_usage.cc:122
+#: src/version_usage.cc:128
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1623,7 +1623,7 @@ msgstr ""
 " Sie können mehrere URLs angeben. Solange Sie nicht die -Z Option benutzen,\n"
 " müssen alle URLs zur selben Datei zeigen, oder der Download schlägt fehl."
 
-#: src/version_usage.cc:124
+#: src/version_usage.cc:130
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1633,7 +1633,7 @@ msgstr ""
 " einem lokalen Speichermedium angegeben werden. Dabei ist zu beachten, daß\n"
 " diese stets als separater Download behandelt werden."
 
-#: src/version_usage.cc:129
+#: src/version_usage.cc:135
 #, fuzzy
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
@@ -1653,7 +1653,7 @@ msgstr ""
 " Daten auch in den Torrent-Schwarm hochgeladen werden. Zu beachten: Nur\n"
 " Einzeldatei-Torrents können zusammen mit HTTP/FTP betrieben werden."
 
-#: src/version_usage.cc:136
+#: src/version_usage.cc:142
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1664,7 +1664,7 @@ msgstr ""
 "der\n"
 " Kommandozeile eine besondere Bedeutung haben."
 
-#: src/version_usage.cc:140
+#: src/version_usage.cc:146
 msgid "Refer to man page for more information."
 msgstr "Für mehr Informationen, sehen Sie bitte in der man page nach."
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-06 23:02+0900\n"
+"POT-Creation-Date: 2009-10-10 23:30+0900\n"
 "PO-Revision-Date: 2009-09-20 18:18+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1808,47 +1808,47 @@ msgstr ""
 msgid " version "
 msgstr " バージョン "
 
-#: src/version_usage.cc:74
+#: src/version_usage.cc:80
 #, c-format
 msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
-#: src/version_usage.cc:79
-#, c-format
-msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+#: src/version_usage.cc:85
+#, fuzzy
+msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr "使い方: %s [オプション] [URL | TORRENT_FILE | METALINK_FILE]..."
 
-#: src/version_usage.cc:86
+#: src/version_usage.cc:92
 msgid "Printing all options."
 msgstr "すべてのオプションを表示します."
 
-#: src/version_usage.cc:88
+#: src/version_usage.cc:94
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "'%s' タグが付いたオプションのみ表示します."
 
-#: src/version_usage.cc:92
+#: src/version_usage.cc:98
 #, c-format
 msgid "See -h option to know other command-line options(%s)."
 msgstr ""
 "他のコマンドラインオプション(%s)について知るには, -h オプションを参照してくだ"
 "さい."
 
-#: src/version_usage.cc:97 src/version_usage.cc:109
+#: src/version_usage.cc:103 src/version_usage.cc:115
 msgid "Options:"
 msgstr "オプション:"
 
-#: src/version_usage.cc:106
+#: src/version_usage.cc:112
 #, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr "'%s' を含むオプションを表示しています."
 
-#: src/version_usage.cc:114
+#: src/version_usage.cc:120
 #, c-format
 msgid "No option matching with '%s'."
 msgstr "'%s' にマッチするオプションが見つかりませんでした."
 
-#: src/version_usage.cc:122
+#: src/version_usage.cc:128
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1857,7 +1857,7 @@ msgstr ""
 " URL が同じファイルをさしている必要があります. そうでない場合, ダウ\n"
 " ンロードは失敗します."
 
-#: src/version_usage.cc:124
+#: src/version_usage.cc:130
 msgid ""
 " You can also specify arbitrary number of torrent files and metalink files\n"
 " stored in a local drive. Please note that they are always treated as a\n"
@@ -1869,7 +1869,7 @@ msgstr ""
 "ま\n"
 " す."
 
-#: src/version_usage.cc:129
+#: src/version_usage.cc:135
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1893,7 +1893,7 @@ msgstr ""
 "'path'\n"
 " が URL に追加されて, それぞれのファイルの URL を形成します."
 
-#: src/version_usage.cc:136
+#: src/version_usage.cc:142
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1902,7 +1902,7 @@ msgstr ""
 "たは\n"
 " \" で囲って(クォートして)ください."
 
-#: src/version_usage.cc:140
+#: src/version_usage.cc:146
 msgid "Refer to man page for more information."
 msgstr "より詳しい情報は man ページを参照してください."
 
