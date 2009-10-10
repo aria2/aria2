@@ -1,3 +1,33 @@
+aria2 1.6.2
+===========
+
+Release Note
+------------
+
+This release fixes segmentation fault error if URI to download
+contains printf format string and logging is enabled.  The build
+scripts are updated to automake 1.11 and autoconf 2.64.  Updated
+Ukrainian translation.
+
+Changes
+-------
+
+ * Replaced aria2 with aria2c in help message.
+
+ * Don't set localedir manually. Leave it to autoconf.
+
+ * Added --install to ACLOCAL_AMFLAGS.  Removed m4 from SUBDIRS.
+   Updated automake 1.11 and autoconf 2.64.  Replaced some obsolute
+   macros with new one.
+
+ * Removed Makefile.am in m4 directory. Removed unused m4 macros.
+
+ * Fixed the bug that causes segmentation fault if
+   req->getCurrentUrl() contains printf format string such as %d. The
+   statement that causes this bug is useless and removed.
+
+
+
 aria2 1.6.1
 ===========
 
