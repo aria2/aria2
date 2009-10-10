@@ -1,5 +1,10 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Quoted localedir
+	* src/Makefile.am
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added AC_FUNC_STRTOD and AC_TYPE_PID_T.  Check function for pow,
 	utime. Check header for utime.h.
 	* configure.ac
