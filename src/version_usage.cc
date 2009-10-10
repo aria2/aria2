@@ -76,8 +76,8 @@ void showVersion() {
 }
 
 void showUsage(const std::string& keyword, const OptionParser& oparser) {
-  std::cout << StringFormat(_("Usage: %s [OPTIONS] [URL | TORRENT_FILE |"
-			      " METALINK_FILE]..."), PACKAGE_NAME) << "\n"
+  std::cout << _("Usage: aria2c [OPTIONS] [URL | TORRENT_FILE |"
+		 " METALINK_FILE]...") << "\n"
 	    << "\n";
   if(Util::startsWith(keyword, "#")) {
     std::deque<SharedHandle<OptionHandler> > handlers =
