@@ -1,5 +1,10 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.6.2
+	* configure.ac
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated licence message in -v output.
 	* src/version_usage.cc
 
