@@ -71,8 +71,8 @@ void showVersion() {
 	    << MessageDigestContext::getSupportedAlgoString() << "\n"
 #endif // ENABLE_MESSAGE_DIGEST
 	    << "\n"
-	    << StringFormat(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>")
-	    << std::endl;
+	    << StringFormat(_("Report bugs to %s"), PACKAGE_BUGREPORT) << "\n"
+	    << "Visit " << PACKAGE_URL << std::endl;
 }
 
 void showUsage(const std::string& keyword, const OptionParser& oparser) {

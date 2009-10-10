@@ -1,5 +1,10 @@
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use PACKAGE_BUGREPORT and PACKAGE_URL.
+	* src/version_usage.cc
+
+2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Quoted localedir
 	* src/Makefile.am
 
