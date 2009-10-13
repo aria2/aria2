@@ -61,7 +61,7 @@ void BtRejectMessage::doReceivedAction()
   RequestSlot slot =
     dispatcher->getOutstandingRequest(getIndex(), getBegin(), getLength());
   if(RequestSlot::isNull(slot)) {
-    //throw DL_ABORT_EX("reject recieved, but it is not in the request slots.");
+    //throw DL_ABORT_EX("reject received, but it is not in the request slots.");
   } else {
     dispatcher->removeOutstandingRequest(slot);
   }

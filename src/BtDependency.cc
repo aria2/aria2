@@ -76,7 +76,7 @@ bool BtDependency::resolve()
       if(context->getFileEntries().size() !=
 	 _dependant->getDownloadContext()->getFileEntries().size()) {
 	throw DL_ABORT_EX("The number of file in torrent doesn't match to"
-			  " the dependant.");
+			  " the dependent.");
       }
       // Copy file path in _dependant's FileEntries to newly created
       // context's FileEntries to endorse the path structure of

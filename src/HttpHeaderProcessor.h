@@ -71,7 +71,7 @@ public:
   size_t getPutBackDataLength() const;
 
   /**
-   * Processes the recieved header as a http response header and returns
+   * Processes the received header as a http response header and returns
    * HttpHeader object.
    */
   SharedHandle<HttpHeader> getHttpResponseHeader();

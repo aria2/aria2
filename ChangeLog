@@ -1,5 +1,13 @@
 2009-10-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo
+	* src/BtDependency.cc
+	* src/BtRejectMessage.cc
+	* src/FtpConnection.cc
+	* src/HttpHeaderProcessor.h
+
+2009-10-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed lintian report in man page
 	* doc/aria2c.1.txt
 

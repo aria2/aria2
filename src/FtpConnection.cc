@@ -272,7 +272,7 @@ unsigned int FtpConnection::getStatus(const std::string& response) const
 
 // Returns the length of the reponse if the whole response has been received.
 // The length includes \r\n.
-// If the whole response has not been recieved, then returns std::string::npos.
+// If the whole response has not been received, then returns std::string::npos.
 std::string::size_type
 FtpConnection::findEndOfResponse(unsigned int status,
 				 const std::string& buf) const
