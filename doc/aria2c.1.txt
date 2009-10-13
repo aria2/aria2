@@ -1616,8 +1616,8 @@ Throttle download speed
 aria2c --max-download-limit=100K file.metalink
 -------------------------------------------------
 
-Repair a damaged download using -V option
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Repair a damaged download
+^^^^^^^^^^^^^^^^^^^^^^^^^
 -----------------------
 aria2c -V file.metalink
 -----------------------

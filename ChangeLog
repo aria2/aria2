@@ -1,3 +1,8 @@
+2009-10-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed lintian report in man page
+	* doc/aria2c.1.txt
+
 2009-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.6.2
