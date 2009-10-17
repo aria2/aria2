@@ -36,10 +36,12 @@
 
 #include <fstream>
 #include <algorithm>
+#include <vector>
 
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -55,21 +57,9 @@ const std::string Netrc::ACCOUNT("account");
 
 const std::string Netrc::MACDEF("macdef");
 
-std::string Netrc::getRequiredNextToken(std::ifstream& f) const
-{
-  std::string token;
-  if(f >> token) {
-    return token;
-  } else {
-    throw DL_ABORT_EX
-      ("Netrc:parse error. EOF reached where a token expected.");
-  }
-}
-
 void Netrc::skipMacdef(std::ifstream& f) const
 {
   std::string line;
-  getline(f, line);
   while(getline(f, line)) {
     if(line == A2STR::CR_C || line.empty()) {
       break;
@@ -87,32 +77,69 @@ void Netrc::parse(const std::string& path)
       (StringFormat("File not found: %s", path.c_str()).str());
   }
 
+  enum STATE {
+    GET_TOKEN,
+    SET_MACHINE,
+    SET_LOGIN,
+    SET_PASSWORD,
+    SET_ACCOUNT,
+    SET_MACDEF
+  };
   AuthenticatorHandle authenticator;
-  std::string token;
-  while(f >> token) {
-    if(token == Netrc::MACHINE) {
-      storeAuthenticator(authenticator);
-      authenticator.reset(new Authenticator());
-      authenticator->setMachine(getRequiredNextToken(f));
-    } else if(token == Netrc::DEFAULT) {
-      storeAuthenticator(authenticator);
-      authenticator.reset(new DefaultAuthenticator());
-    } else {
-      if(authenticator.isNull()) {
-	throw DL_ABORT_EX
-	  ("Netrc:parse error. %s encounterd where 'machine' or 'default' expected.");
-      }
-      if(token == Netrc::LOGIN) {
-	authenticator->setLogin(getRequiredNextToken(f));
-      } else if(token == Netrc::PASSWORD) {
-	authenticator->setPassword(getRequiredNextToken(f));
-      } else if(token == Netrc::ACCOUNT) {
-	authenticator->setAccount(getRequiredNextToken(f));
-      } else if(token == Netrc::MACDEF) {
-	getRequiredNextToken(f);
-	skipMacdef(f);
-      }
+  std::string line;
+  STATE state = GET_TOKEN;
+  while(getline(f, line)) {
+    if(Util::startsWith(line, "#")) {
+      continue;
     }
+    std::vector<std::string> tokens;
+    Util::split(line, std::back_inserter(tokens), " \t", true);
+    for(std::vector<std::string>::const_iterator iter = tokens.begin();
+	iter != tokens.end(); ++iter) {
+      const std::string& token = *iter;
+      if(state == GET_TOKEN) {
+	if(token == Netrc::MACHINE) {
+	  storeAuthenticator(authenticator);
+	  authenticator.reset(new Authenticator());
+	  state = SET_MACHINE;
+	} else if(token == Netrc::DEFAULT) {
+	  storeAuthenticator(authenticator);
+	  authenticator.reset(new DefaultAuthenticator());
+	} else {
+	  if(authenticator.isNull()) {
+	    throw DL_ABORT_EX
+	      (StringFormat("Netrc:parse error. %s encounterd where 'machine'"
+			    " or 'default' expected.", token.c_str()).str());
+	  }
+	  if(token == Netrc::LOGIN) {
+	    state = SET_LOGIN;
+	  } else if(token == Netrc::PASSWORD) {
+	    state = SET_PASSWORD;
+	  } else if(token == Netrc::ACCOUNT) {
+	    state = SET_ACCOUNT;
+	  } else if(token == Netrc::MACDEF) {
+	    state = SET_MACDEF;
+	  }
+	}
+      } else {
+	if(state == SET_MACHINE) {
+	  authenticator->setMachine(token);
+	} else if(state == SET_LOGIN) {
+	  authenticator->setLogin(token);
+	} else if(state == SET_PASSWORD) {
+	  authenticator->setPassword(token);
+	} else if(state == SET_ACCOUNT) {
+	  authenticator->setAccount(token);
+	} else if(state == SET_MACDEF) {
+	  skipMacdef(f);
+	}
+	state = GET_TOKEN;
+      }	
+    }
+  }
+  if(state != GET_TOKEN) {
+    throw DL_ABORT_EX
+      ("Netrc:parse error. EOF reached where a token expected.");
   }
   storeAuthenticator(authenticator);
 }

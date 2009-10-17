@@ -1,3 +1,11 @@
+2009-10-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that Netrc::parse() cannot recognize comment line.
+	* src/Netrc.cc
+	* src/Util.h
+	* test/NetrcTest.cc
+	* test/sample.netrc
+
 2009-10-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed typo

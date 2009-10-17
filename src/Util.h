@@ -140,6 +140,37 @@ public:
   static void slice(std::deque<std::string>& result, const std::string& src,
 		    char delim, bool trim = false);
   
+  template<typename OutputIterator>
+  static OutputIterator split(const std::string& src, OutputIterator out,
+			      const std::string& delims, bool doTrim = false)
+  {
+    std::string::size_type p = 0;
+    while(1) {
+      std::string::size_type np = src.find_first_of(delims, p);
+      if(np == std::string::npos) {
+	std::string term = src.substr(p);
+	if(doTrim) {
+	  term = trim(term);
+	}
+	if(!term.empty()) {
+	  *out = term;
+	  ++out;
+	}
+	break;
+      }
+      std::string term = src.substr(p, np-p);
+      if(doTrim) {
+	term = trim(term);
+      }
+      p = np+1;
+      if(!term.empty()) {
+	*out = term;
+	++out;
+      }
+    }
+    return out;
+  }
+
   static const std::string DEFAULT_TRIM_CHARSET;
 
   static std::string trim(const std::string& src,

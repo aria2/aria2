@@ -1,7 +1,9 @@
 #include "Netrc.h"
-#include "Exception.h"
+
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Exception.h"
 
 namespace aria2 {
 
