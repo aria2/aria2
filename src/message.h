@@ -174,7 +174,7 @@
 #define MSG_GID_NOT_PROVIDED "GID is not provided."
 #define MSG_CANNOT_PARSE_XML_RPC_REQUEST "Failed to parse xml-rpc request."
 #define MSG_GOOD_BYE_SEEDER "Client is in seed state: Good Bye Seeder;)"
-#define MSG_NOT_FILE _("Is '%s' a regular file?")
+#define MSG_NOT_FILE _("Is '%s' a file?")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

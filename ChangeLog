@@ -1,5 +1,11 @@
 2009-10-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Allowed non-regular file in LocalFilePathOptionHandler
+	* src/OptionHandlerImpl.h
+	* src/message.h
+
+2009-10-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that Netrc::parse() cannot recognize comment line.
 	* src/Netrc.cc
 	* src/Util.h
