@@ -64,9 +64,9 @@ AuthConfigFactory::createAuthConfig
 
     if(op->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
       if(!request->getUsername().empty()) {
-	// TODO setting "/" as path. Should we use request->getDir() instead?
-	updateBasicCred(BasicCred(request->getUsername(), request->getPassword(),
-				  request->getHost(), "/", true));
+	updateBasicCred(BasicCred(request->getUsername(),
+				  request->getPassword(),
+				  request->getHost(), request->getDir(), true));
 	return createAuthConfig(request->getUsername(), request->getPassword());
       }
       std::deque<BasicCred>::const_iterator i =

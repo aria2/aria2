@@ -1,5 +1,11 @@
 2009-10-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use request->getDir() instead of "/" for embedded user/pass in
+	URI.
+	* src/AuthConfigFactory.cc
+
+2009-10-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed wrong insertion point for BasicCred.
 	* src/AuthConfigFactory.cc
 
