@@ -1,5 +1,11 @@
 2009-10-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed the call to trim() because trim() is called for each
+	element in split().
+	* src/CookieParser.cc
+
+2009-10-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced Util::slice() with split()
 	* src/AbstractCommand.cc
 	* src/CookieParser.cc

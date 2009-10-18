@@ -63,7 +63,7 @@ Cookie CookieParser::parse(const std::string& cookieStr) const
 Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const
 {
   std::vector<std::string> terms;
-  split(Util::trim(cookieStr), std::back_inserter(terms), ";", true);
+  split(cookieStr, std::back_inserter(terms), ";", true);
   if(terms.empty()) {
     return Cookie();
   }
