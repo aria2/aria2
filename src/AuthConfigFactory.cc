@@ -164,20 +164,17 @@ bool AuthConfigFactory::activateBasicCred
 (const std::string& host, const std::string& path, const Option* op)
 {
 
-  std::deque<BasicCred>::iterator i =
-    findBasicCred(host, path);
+  std::deque<BasicCred>::iterator i = findBasicCred(host, path);
   if(i == _basicCreds.end()) {
     SharedHandle<AuthConfig> authConfig =
       createHttpAuthResolver(op)->resolveAuthConfig(host);
     if(authConfig.isNull()) {
       return false;
     } else {
-      BasicCred bc("", "", host, path);
+      BasicCred bc(authConfig->getUser(), authConfig->getPassword(),
+		   host, path, true);
       i = std::lower_bound(_basicCreds.begin(), _basicCreds.end(), bc);
-      // TODO setting "/" as path. Should we use path instead?
-      _basicCreds.insert
-	(i, BasicCred(authConfig->getUser(), authConfig->getPassword(),
-		      host, "/", true));
+      _basicCreds.insert(i, bc);
       return true;
     }
   } else {

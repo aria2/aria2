@@ -1,3 +1,8 @@
+2009-10-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed wrong insertion point for BasicCred.
+	* src/AuthConfigFactory.cc
+
 2009-10-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Allowed non-regular file in LocalFilePathOptionHandler
