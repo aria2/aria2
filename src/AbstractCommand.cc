@@ -414,8 +414,8 @@ public:
 static bool inNoProxy(const SharedHandle<Request>& req,
 		      const std::string& noProxy)
 {
-  std::deque<std::string> entries;
-  Util::slice(entries, noProxy, ',', true);
+  std::vector<std::string> entries;
+  split(noProxy, std::back_inserter(entries), ",", true);
   if(entries.empty()) {
     return false;
   }

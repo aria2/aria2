@@ -195,9 +195,9 @@ static void extractFileEntries
     }
     const BDE& nameData = infoDict[nameKey];
     if(nameData.isString()) {
-      // Slice path by '/' just in case nasty ".." is included in name
-      std::deque<std::string> pathelems;
-      Util::slice(pathelems, nameData.s(), '/');
+      // Split path by '/' just in case nasty ".." is included in name
+      std::vector<std::string> pathelems;
+      split(nameData.s(), std::back_inserter(pathelems), "/");
       name = Util::joinPath(pathelems.begin(), pathelems.end());
       torrent[NAME] = nameData.s();
     } else {
@@ -248,8 +248,8 @@ static void extractFileEntries
       strappend(path, "/", Util::joinPath(pathelem.begin(), pathelem.end()));
       // Split path with '/' again because each pathList element can
       // contain "/" inside.
-      std::deque<std::string> elements;
-      Util::slice(elements, path, '/');
+      std::vector<std::string> elements;
+      split(path, std::back_inserter(elements), "/");
       path = Util::joinPath(elements.begin(), elements.end());
 
       std::deque<std::string> uris;

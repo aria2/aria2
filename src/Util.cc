@@ -141,31 +141,6 @@ int32_t Util::difftvsec(struct timeval tv1, struct timeval tv2) {
   return tv1.tv_sec-tv2.tv_sec;
 }
 
-void Util::slice(std::deque<std::string>& result, const std::string& src, char delim, bool doTrim) {
-  std::string::size_type p = 0;
-  while(1) {
-    std::string::size_type np = src.find(delim, p);
-    if(np == std::string::npos) {
-      std::string term = src.substr(p);
-      if(doTrim) {
-	term = trim(term);
-      }
-      if(term.size()) {
-	result.push_back(term);
-      }
-      break;
-    }
-    std::string term = src.substr(p, np-p);
-    if(doTrim) {
-      term = trim(term);
-    }
-    p = np+1;
-    if(term.size()) {
-      result.push_back(term);
-    }
-  } 
-}
-
 bool Util::startsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;

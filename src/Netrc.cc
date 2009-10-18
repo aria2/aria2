@@ -93,7 +93,7 @@ void Netrc::parse(const std::string& path)
       continue;
     }
     std::vector<std::string> tokens;
-    Util::split(line, std::back_inserter(tokens), " \t", true);
+    split(line, std::back_inserter(tokens), " \t", true);
     for(std::vector<std::string>::const_iterator iter = tokens.begin();
 	iter != tokens.end(); ++iter) {
       const std::string& token = *iter;

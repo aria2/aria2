@@ -35,6 +35,7 @@
 #include "MetalinkParserController.h"
 
 #include <algorithm>
+#include <vector>
 
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
@@ -75,8 +76,8 @@ void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
   if(_tEntry.isNull()) {
     return;
   }
-  std::deque<std::string> elements;
-  Util::slice(elements, filename, '/');
+  std::vector<std::string> elements;
+  split(filename, std::back_inserter(elements), "/");
   std::string path = Util::joinPath(elements.begin(), elements.end());
 
   if(_tEntry->file.isNull()) {

@@ -143,7 +143,8 @@ Metalink2RequestGroup::createRequestGroup
     SharedHandle<MetalinkEntry>& entry = *itr;
     if(option->defined(PREF_METALINK_LOCATION)) {
       std::deque<std::string> locations;
-      Util::slice(locations, option->get(PREF_METALINK_LOCATION), ',', true);
+      split(option->get(PREF_METALINK_LOCATION), std::back_inserter(locations),
+	    ",", true);
       entry->setLocationPreference(locations, 100);
     }
     if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {

@@ -36,6 +36,7 @@
 
 #include <cassert>
 #include <numeric>
+#include <vector>
 
 #include "Segment.h"
 #include "Range.h"
@@ -276,8 +277,8 @@ void HttpRequest::disableContentEncoding()
 
 void HttpRequest::addHeader(const std::string& headersString)
 {
-  std::deque<std::string> headers;
-  Util::slice(headers, headersString, '\n', true);
+  std::vector<std::string> headers;
+  split(headersString, std::back_inserter(headers), "\n", true);
   _headers.insert(_headers.end(), headers.begin(), headers.end());
 }
 

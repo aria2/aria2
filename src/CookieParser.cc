@@ -39,6 +39,7 @@
 #include <utility>
 #include <istream>
 #include <map>
+#include <vector>
 
 #include "Util.h"
 #include "A2STR.h"
@@ -61,8 +62,8 @@ Cookie CookieParser::parse(const std::string& cookieStr) const
 
 Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const
 {
-  std::deque<std::string> terms;
-  Util::slice(terms, Util::trim(cookieStr), ';', true);
+  std::vector<std::string> terms;
+  split(Util::trim(cookieStr), std::back_inserter(terms), ";", true);
   if(terms.empty()) {
     return Cookie();
   }
@@ -73,7 +74,7 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
   values[C_DOMAIN] = defaultDomain;
   values[C_PATH] = defaultPath;
   
-  for(std::deque<std::string>::iterator itr = terms.begin()+1;
+  for(std::vector<std::string>::iterator itr = terms.begin()+1;
       itr != terms.end(); ++itr) {
     std::pair<std::string, std::string> nv;
     Util::split(nv, *itr, '=');

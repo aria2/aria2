@@ -38,6 +38,7 @@
 #include <ostream>
 #include <iterator>
 #include <map>
+#include <vector>
 
 #include "ServerStat.h"
 #include "Util.h"
@@ -101,10 +102,10 @@ bool ServerStatMan::load(std::istream& in)
     if(line.empty()) {
       continue;
     }
-    std::deque<std::string> items;
-    Util::slice(items, line, ',');
+    std::vector<std::string> items;
+    split(line, std::back_inserter(items), ",");
     std::map<std::string, std::string> m;
-    for(std::deque<std::string>::const_iterator i = items.begin();
+    for(std::vector<std::string>::const_iterator i = items.begin();
 	i != items.end(); ++i) {
       std::pair<std::string, std::string> p = Util::split(*i, "=");
       Util::trimSelf(p.first);

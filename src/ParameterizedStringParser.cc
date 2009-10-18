@@ -91,7 +91,8 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
     throw DL_ABORT_EX("Missing '}' in the parameterized string.");
   }
   std::deque<std::string> values;
-  Util::slice(values, src.substr(offset, rightParenIndex-offset), ',', true);
+  split(src.substr(offset, rightParenIndex-offset), std::back_inserter(values),
+	",", true);
   if(values.empty()) {
     throw DL_ABORT_EX("Empty {} is not allowed.");
   }

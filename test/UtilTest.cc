@@ -20,7 +20,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(UtilTest);
   CPPUNIT_TEST(testTrim);
   CPPUNIT_TEST(testSplit);
-  CPPUNIT_TEST(testSlice);
+  CPPUNIT_TEST(testSplit_many);
   CPPUNIT_TEST(testEndsWith);
   CPPUNIT_TEST(testReplace);
   CPPUNIT_TEST(testStartsWith);
@@ -63,7 +63,7 @@ public:
 
   void testTrim();
   void testSplit();
-  void testSlice();
+  void testSplit_many();
   void testEndsWith();
   void testReplace();
   void testStartsWith();
@@ -140,12 +140,10 @@ void UtilTest::testSplit() {
   CPPUNIT_ASSERT_EQUAL(std::string(""), p1.second);
 }
 
-void UtilTest::testSlice() {
+void UtilTest::testSplit_many() {
   std::deque<std::string> v1;
-  Util::slice(v1, "name1=value1; name2=value2; name3=value3;", ';', true);
-  CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
-  v1.clear();
-  Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';', true);
+  split("name1=value1; name2=value2; name3=value3", std::back_inserter(v1),
+	";", true);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   std::deque<std::string>::iterator itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
@@ -154,7 +152,8 @@ void UtilTest::testSlice() {
 
   v1.clear();
 
-  Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';', false);
+  split("name1=value1; name2=value2; name3=value3", std::back_inserter(v1),
+	";", false);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);

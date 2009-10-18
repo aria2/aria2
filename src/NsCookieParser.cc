@@ -35,6 +35,7 @@
 #include "NsCookieParser.h"
 
 #include <fstream>
+#include <vector>
 
 #include "Util.h"
 #include "A2STR.h"
@@ -51,8 +52,8 @@ static const std::string C_TRUE("TRUE");
 
 static Cookie parseNsCookie(const std::string& nsCookieStr)
 {
-  std::deque<std::string> vs;
-  Util::slice(vs, nsCookieStr, '\t', true);
+  std::vector<std::string> vs;
+  split(nsCookieStr, std::back_inserter(vs), "\t", true);
   if(vs.size() < 6 ) {
     return Cookie();
   }

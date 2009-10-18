@@ -133,43 +133,6 @@ public:
    */
   static int64_t difftv(struct timeval tv1, struct timeval tv2);
   static int32_t difftvsec(struct timeval tv1, struct timeval tv2);
-  /**
-   * Take a string src which is a deliminated list and add its elements
-   * into result. result is not cleared before conversion begins.
-   */
-  static void slice(std::deque<std::string>& result, const std::string& src,
-		    char delim, bool trim = false);
-  
-  template<typename OutputIterator>
-  static OutputIterator split(const std::string& src, OutputIterator out,
-			      const std::string& delims, bool doTrim = false)
-  {
-    std::string::size_type p = 0;
-    while(1) {
-      std::string::size_type np = src.find_first_of(delims, p);
-      if(np == std::string::npos) {
-	std::string term = src.substr(p);
-	if(doTrim) {
-	  term = trim(term);
-	}
-	if(!term.empty()) {
-	  *out = term;
-	  ++out;
-	}
-	break;
-      }
-      std::string term = src.substr(p, np-p);
-      if(doTrim) {
-	term = trim(term);
-      }
-      p = np+1;
-      if(!term.empty()) {
-	*out = term;
-	++out;
-      }
-    }
-    return out;
-  }
 
   static const std::string DEFAULT_TRIM_CHARSET;
 
@@ -333,6 +296,41 @@ public:
 
   static std::map<size_t, std::string> createIndexPathMap(std::istream& i);
 };
+
+/**
+ * Take a string src which is a deliminated list and add its elements
+ * into result. result is stored in out.
+ */
+template<typename OutputIterator>
+static OutputIterator split(const std::string& src, OutputIterator out,
+			    const std::string& delims, bool doTrim = false)
+{
+  std::string::size_type p = 0;
+  while(1) {
+    std::string::size_type np = src.find_first_of(delims, p);
+    if(np == std::string::npos) {
+      std::string term = src.substr(p);
+      if(doTrim) {
+	term = Util::trim(term);
+      }
+      if(!term.empty()) {
+	*out = term;
+	++out;
+      }
+      break;
+    }
+    std::string term = src.substr(p, np-p);
+    if(doTrim) {
+      term = Util::trim(term);
+    }
+    p = np+1;
+    if(!term.empty()) {
+      *out = term;
+      ++out;
+    }
+  }
+  return out;
+}
 
 } // namespace aria2
 

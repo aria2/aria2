@@ -74,7 +74,7 @@ void UriListParser::parseNext(std::deque<std::string>& uris, Option& op)
   }
   do {
     if(!Util::trim(_line).empty()) {
-      Util::slice(uris, _line, '\t', true);
+      split(_line, std::back_inserter(uris), "\t", true);
       getOptions(op);
       return;
     }

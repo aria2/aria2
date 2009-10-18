@@ -35,6 +35,7 @@
 #include "HttpHeaderProcessor.h"
 
 #include <sstream>
+#include <vector>
 
 #include "HttpHeader.h"
 #include "message.h"
@@ -124,8 +125,8 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
      delimpos < 14) {
     throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
-  std::deque<std::string> firstLine;
-  Util::slice(firstLine, _buf.substr(0, delimpos), ' ', true);
+  std::vector<std::string> firstLine;
+  split(_buf.substr(0, delimpos), std::back_inserter(firstLine), " ", true);
   if(firstLine.size() != 3) {
     throw DL_ABORT_EX("Malformed HTTP request header.");    
   }
