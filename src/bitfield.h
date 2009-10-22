@@ -113,6 +113,8 @@ inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
   return count;
 }
 
+void flipBit(unsigned char* data, size_t length, size_t bitIndex);
+
 } // namespace bitfield
 
 } // namespace aria2

@@ -3,7 +3,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "DHTNode.h"
-#include "DHTUtil.h"
 #include "Exception.h"
 #include "Util.h"
 #include "MockDHTMessageFactory.h"
@@ -50,7 +49,7 @@ void DHTPingMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
-  DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
+  util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   DHTPingMessage msg(localNode, remoteNode, transactionID);
@@ -74,7 +73,7 @@ void DHTPingMessageTest::testDoReceivedAction()
   SharedHandle<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
-  DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
+  util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   MockDHTMessageDispatcher dispatcher;

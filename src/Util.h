@@ -332,6 +332,12 @@ static OutputIterator split(const std::string& src, OutputIterator out,
   return out;
 }
 
+namespace util {
+
+void generateRandomData(unsigned char* data, size_t length);
+
+} // namespace util
+
 } // namespace aria2
 
 #endif // _D_UTIL_H_

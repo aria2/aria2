@@ -1,9 +1,10 @@
 #include "DHTTokenTracker.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "Util.h"
-#include "DHTUtil.h"
 #include "DHTConstants.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -26,7 +27,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTTokenTrackerTest);
 void DHTTokenTrackerTest::testGenerateToken()
 {
   unsigned char infohash[DHT_ID_LENGTH];
-  DHTUtil::generateRandomData(infohash, DHT_ID_LENGTH);
+  util::generateRandomData(infohash, DHT_ID_LENGTH);
   std::string ipaddr = "192.168.0.1";
   uint16_t port = 6881;
   

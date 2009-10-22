@@ -3,7 +3,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "DHTNode.h"
-#include "DHTUtil.h"
 #include "Exception.h"
 #include "Util.h"
 #include "DHTBucket.h"
@@ -34,7 +33,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
-  DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
+  util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   DHTFindNodeReplyMessage msg(localNode, remoteNode, transactionID);

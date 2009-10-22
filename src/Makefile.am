@@ -197,7 +197,7 @@ SRCS =  Socket.h\
 	SequentialDispatcherCommand.h\
 	PieceSelector.h\
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h\
-	bitfield.h\
+	bitfield.cc bitfield.h\
 	BDE.cc BDE.h\
 	CreateRequestCommand.cc CreateRequestCommand.h\
 	DownloadResultCode.h
@@ -347,7 +347,6 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	HandshakeExtensionMessage.cc HandshakeExtensionMessage.h\
 	UTPexExtensionMessage.cc UTPexExtensionMessage.h\
 	DHTNode.cc DHTNode.h\
-	DHTUtil.cc DHTUtil.h\
 	DHTBucket.cc DHTBucket.h\
 	DHTRoutingTable.cc DHTRoutingTable.h\
 	DHTMessageEntry.cc DHTMessageEntry.h\

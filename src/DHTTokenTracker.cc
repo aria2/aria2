@@ -36,7 +36,7 @@
 
 #include <cstring>
 
-#include "DHTUtil.h"
+#include "Util.h"
 #include "bittorrent_helper.h"
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
@@ -47,7 +47,7 @@ namespace aria2 {
 
 DHTTokenTracker::DHTTokenTracker()
 {
-  DHTUtil::generateRandomData(_secret[0], SECRET_SIZE);
+  util::generateRandomData(_secret[0], SECRET_SIZE);
   memcpy(_secret[1], _secret[0], SECRET_SIZE);
 }
 
@@ -97,7 +97,7 @@ bool DHTTokenTracker::validateToken(const std::string& token,
 void DHTTokenTracker::updateTokenSecret()
 {
   memcpy(_secret[1], _secret[0], SECRET_SIZE);
-  DHTUtil::generateRandomData(_secret[0], SECRET_SIZE);
+  util::generateRandomData(_secret[0], SECRET_SIZE);
 }
 
 } // namespace aria2

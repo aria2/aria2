@@ -36,9 +36,9 @@
 
 #include <cstring>
 
-#include "DHTUtil.h"
 #include "Util.h"
 #include "a2functional.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -54,7 +54,7 @@ DHTNode::DHTNode(const unsigned char* id):_port(0), _rtt(0), _condition(1), _las
 
 void DHTNode::generateID()
 {
-  DHTUtil::generateRandomKey(_id);
+  bittorrent::generateRandomKey(_id);
 }
 
 bool DHTNode::operator==(const DHTNode& node) const

@@ -1,11 +1,12 @@
 #include "BNode.h"
-#include "DHTNode.h"
-#include "DHTBucket.h"
-#include "DHTUtil.h"
-#include "Exception.h"
-#include "Util.h"
+
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "DHTNode.h"
+#include "DHTBucket.h"
+#include "Exception.h"
+#include "Util.h"
 
 namespace aria2 {
 

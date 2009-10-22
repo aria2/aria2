@@ -1,3 +1,36 @@
+2009-10-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Moved generateRandomData to Util.cc Moved flipBit to bitfield.cc.
+	Moved generateRandomKey to bittorrent_helper.cc.
+	* src/DHTBucket.cc
+	* src/DHTGetPeersMessage.cc
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTMessage.cc
+	* src/DHTNode.cc
+	* src/DHTTokenTracker.cc
+	* src/DHTUtil.cc: Removed.
+	* src/DHTUtil.h: Removed.
+	* src/Makefile.am
+	* src/Util.cc
+	* src/Util.h
+	* src/bitfield.h
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/ARC4Test.cc
+	* test/BNodeTest.cc
+	* test/DHTAnnouncePeerMessageTest.cc
+	* test/DHTAnnouncePeerReplyMessageTest.cc
+	* test/DHTFindNodeMessageTest.cc
+	* test/DHTFindNodeReplyMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/DHTGetPeersReplyMessageTest.cc
+	* test/DHTPingMessageTest.cc
+	* test/DHTPingReplyMessageTest.cc
+	* test/DHTTokenTrackerTest.cc
+	* test/DHTUtilTest.cc: Removed.
+	* test/Makefile.am
+	* test/UtilTest.cc
+
 2009-10-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed the call to trim() because trim() is called for each

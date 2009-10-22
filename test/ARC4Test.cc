@@ -1,10 +1,11 @@
 #include "ARC4Encryptor.h"
+
+#include <cstring>
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "ARC4Decryptor.h"
 #include "Exception.h"
 #include "Util.h"
-#include "DHTUtil.h"
-#include <cstring>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -31,7 +32,7 @@ void ARC4Test::testEncryptDecrypt()
   const size_t LEN = 20;
   unsigned char key[LEN];
   memset(key, 0, LEN);
-  DHTUtil::generateRandomData(key, sizeof(key));
+  util::generateRandomData(key, sizeof(key));
   enc.init(key, sizeof(key));
   dec.init(key, sizeof(key));
 

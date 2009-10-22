@@ -42,7 +42,6 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
 #include "DHTPeerAnnounceStorage.h"
-#include "DHTUtil.h"
 #include "Peer.h"
 #include "DHTTokenTracker.h"
 #include "Util.h"

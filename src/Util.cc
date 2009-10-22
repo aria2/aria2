@@ -46,12 +46,21 @@
 #include <sstream>
 #include <ostream>
 #include <algorithm>
+#include <fstream>
+#include <iomanip>
 #ifndef HAVE_SLEEP
 # ifdef HAVE_WINSOCK_H
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 # endif // HAVE_WINSOCK_H
 #endif // HAVE_SLEEP
+
+#ifdef HAVE_LIBGCRYPT
+# include <gcrypt.h>
+#elif HAVE_LIBSSL
+# include <openssl/rand.h>
+# include "SimpleRandomizer.h"
+#endif // HAVE_LIBSSL
 
 #include "File.h"
 #include "message.h"
@@ -791,5 +800,25 @@ std::map<size_t, std::string> Util::createIndexPathMap(std::istream& i)
   }
   return indexPathMap;
 }
+
+namespace util {
+
+void generateRandomData(unsigned char* data, size_t length)
+{
+#ifdef HAVE_LIBGCRYPT
+  gcry_randomize(data, length, GCRY_STRONG_RANDOM);
+#elif HAVE_LIBSSL
+  if(RAND_bytes(data, length) != 1) {
+    for(size_t i = 0; i < length; ++i) {
+      data[i] = SimpleRandomizer::getInstance()->getRandomNumber(UINT8_MAX+1);
+    }
+  }
+#else
+  std::ifstream i("/dev/urandom", std::ios::binary);
+  i.read(data, length);
+#endif // HAVE_LIBSSL
+}
+
+} // namespace util
 
 } // namespace aria2

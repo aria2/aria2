@@ -52,7 +52,6 @@
 #include "a2netcompat.h"
 #include "BtConstants.h"
 #include "bitfield.h"
-#include "DHTUtil.h"
 
 namespace aria2 {
 
@@ -625,8 +624,7 @@ std::string generatePeerId(const std::string& peerIdPrefix)
   unsigned char buf[20];
   int len = 20-peerIdPrefix.size();
   if(len > 0) {
-    DHTUtil::generateRandomData(buf, len);
-
+    util::generateRandomData(buf, len);
     peerId += std::string(&buf[0], &buf[len]);
   } if(peerId.size() > 20) {
     peerId.erase(20);
@@ -835,6 +833,13 @@ void assertID
       (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
 		    expected).str());
   }
+}
+
+void generateRandomKey(unsigned char* key)
+{
+  unsigned char bytes[40];
+  util::generateRandomData(bytes, sizeof(bytes));
+  MessageDigestHelper::digest(key, 20, MessageDigestContext::SHA1, bytes, sizeof(bytes));
 }
 
 } // namespace bittorrent

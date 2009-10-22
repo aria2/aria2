@@ -38,13 +38,14 @@
 #include <cassert>
 #include <algorithm>
 
-#include "DHTUtil.h"
 #include "DHTNode.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Util.h"
 #include "DHTConstants.h"
 #include "a2functional.h"
+#include "bittorrent_helper.h"
+#include "bitfield.h"
 
 namespace aria2 {
 
@@ -73,10 +74,10 @@ DHTBucket::~DHTBucket() {}
 void DHTBucket::getRandomNodeID(unsigned char* nodeID) const
 {
   if(_prefixLength == 0) {
-    DHTUtil::generateRandomKey(nodeID);
+    bittorrent::generateRandomKey(nodeID);
   } else {
     size_t lastByteIndex = (_prefixLength-1)/8;
-    DHTUtil::generateRandomKey(nodeID);
+    bittorrent::generateRandomKey(nodeID);
     memcpy(nodeID, _min, lastByteIndex+1);
   }
 }
@@ -179,11 +180,11 @@ SharedHandle<DHTBucket> DHTBucket::split()
 
   unsigned char rMax[DHT_ID_LENGTH];
   memcpy(rMax, _max, DHT_ID_LENGTH);
-  DHTUtil::flipBit(rMax, DHT_ID_LENGTH, _prefixLength);
+  bitfield::flipBit(rMax, DHT_ID_LENGTH, _prefixLength);
   unsigned char rMin[DHT_ID_LENGTH];
   memcpy(rMin, _min, DHT_ID_LENGTH);
 
-  DHTUtil::flipBit(_min, DHT_ID_LENGTH, _prefixLength);
+  bitfield::flipBit(_min, DHT_ID_LENGTH, _prefixLength);
 
   ++_prefixLength;
   SharedHandle<DHTBucket> rBucket(new DHTBucket(_prefixLength,

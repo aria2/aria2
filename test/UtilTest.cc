@@ -1,5 +1,6 @@
 #include "Util.h"
 
+#include <cstring>
 #include <string>
 #include <iostream>
 
@@ -54,6 +55,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testJoinPath);
   CPPUNIT_TEST(testParseIndexPath);
   CPPUNIT_TEST(testCreateIndexPathMap);
+  CPPUNIT_TEST(testGenerateRandomData);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -97,6 +99,7 @@ public:
   void testJoinPath();
   void testParseIndexPath();
   void testCreateIndexPathMap();
+  void testGenerateRandomData();
 };
 
 
@@ -786,6 +789,15 @@ void UtilTest::testCreateIndexPathMap()
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), m[1]);
   CPPUNIT_ASSERT(m.find(100) != m.end());
   CPPUNIT_ASSERT_EQUAL(std::string("/myhome/mypicture.png"), m[100]);
+}
+
+void UtilTest::testGenerateRandomData()
+{
+  unsigned char data1[20];
+  util::generateRandomData(data1, sizeof(data1));
+  unsigned char data2[20];
+  util::generateRandomData(data2, sizeof(data2));
+  CPPUNIT_ASSERT(memcmp(data1, data2, sizeof(data1)) != 0);
 }
 
 } // namespace aria2

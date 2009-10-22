@@ -115,7 +115,6 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.cc\
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.cc\
 @ENABLE_BITTORRENT_TRUE@	MockBtAnnounce.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtProgressInfoFile.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtRequestFactory.h\
@@ -239,15 +238,15 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DHTTokenTrackerTest.cc XORCloserTest.cc DHTIDCloserTest.cc \
 	DHTRoutingTableSerializerTest.cc \
 	DHTRoutingTableDeserializerTest.cc DHKeyExchangeTest.cc \
-	ARC4Test.cc MSEHandshakeTest.cc DHTUtilTest.cc \
-	MockBtAnnounce.h MockBtProgressInfoFile.h \
-	MockBtRequestFactory.h MockDHTMessage.h \
-	MockDHTMessageCallback.h MockDHTMessageDispatcher.h \
-	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
-	MockDHTTaskQueue.h MockExtensionMessage.h \
-	MockExtensionMessageFactory.h MockPieceStorage.h \
-	BencodeTest.cc BittorrentHelperTest.cc MetalinkerTest.cc \
-	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
+	ARC4Test.cc MSEHandshakeTest.cc MockBtAnnounce.h \
+	MockBtProgressInfoFile.h MockBtRequestFactory.h \
+	MockDHTMessage.h MockDHTMessageCallback.h \
+	MockDHTMessageDispatcher.h MockDHTMessageFactory.h \
+	MockDHTTask.h MockDHTTaskFactory.h MockDHTTaskQueue.h \
+	MockExtensionMessage.h MockExtensionMessageFactory.h \
+	MockPieceStorage.h BencodeTest.cc BittorrentHelperTest.cc \
+	MetalinkerTest.cc MetalinkEntryTest.cc \
+	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_XML_RPC_TRUE@am__objects_1 = XmlRpcRequestParserControllerTest.$(OBJEXT) \
@@ -326,7 +325,6 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BencodeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_7 = MetalinkerTest.$(OBJEXT) \
@@ -762,7 +760,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTrackerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUnknownMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DNSCacheTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolverTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@

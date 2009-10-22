@@ -146,7 +146,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.cc HandshakeExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.cc UTPexExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	DHTNode.cc DHTNode.h\
-@ENABLE_BITTORRENT_TRUE@	DHTUtil.cc DHTUtil.h\
 @ENABLE_BITTORRENT_TRUE@	DHTBucket.cc DHTBucket.h\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.cc DHTRoutingTable.h\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.cc DHTMessageEntry.h\
@@ -410,7 +409,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	SelectEventPoll.cc SelectEventPoll.h SequentialPicker.h \
 	SequentialDispatcherCommand.h PieceSelector.h \
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h \
-	bitfield.h BDE.cc BDE.h CreateRequestCommand.cc \
+	bitfield.cc bitfield.h BDE.cc BDE.h CreateRequestCommand.cc \
 	CreateRequestCommand.h DownloadResultCode.h \
 	XmlRpcRequestParserController.cc \
 	XmlRpcRequestParserController.h \
@@ -490,12 +489,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ExtensionMessageFactory.h DefaultExtensionMessageFactory.cc \
 	DefaultExtensionMessageFactory.h HandshakeExtensionMessage.cc \
 	HandshakeExtensionMessage.h UTPexExtensionMessage.cc \
-	UTPexExtensionMessage.h DHTNode.cc DHTNode.h DHTUtil.cc \
-	DHTUtil.h DHTBucket.cc DHTBucket.h DHTRoutingTable.cc \
-	DHTRoutingTable.h DHTMessageEntry.cc DHTMessageEntry.h \
-	DHTMessageDispatcher.h DHTMessageDispatcherImpl.cc \
-	DHTMessageDispatcherImpl.h DHTMessageReceiver.cc \
-	DHTMessageReceiver.h DHTMessageTracker.cc DHTMessageTracker.h \
+	UTPexExtensionMessage.h DHTNode.cc DHTNode.h DHTBucket.cc \
+	DHTBucket.h DHTRoutingTable.cc DHTRoutingTable.h \
+	DHTMessageEntry.cc DHTMessageEntry.h DHTMessageDispatcher.h \
+	DHTMessageDispatcherImpl.cc DHTMessageDispatcherImpl.h \
+	DHTMessageReceiver.cc DHTMessageReceiver.h \
+	DHTMessageTracker.cc DHTMessageTracker.h \
 	DHTMessageTrackerEntry.cc DHTMessageTrackerEntry.h \
 	DHTMessage.cc DHTMessage.h DHTConnection.h \
 	DHTConnectionImpl.cc DHTConnectionImpl.h DHTAbstractMessage.cc \
@@ -645,8 +644,7 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTNode.$(OBJEXT) DHTUtil.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTBucket.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTNode.$(OBJEXT) DHTBucket.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcherImpl.$(OBJEXT) \
@@ -800,8 +798,8 @@ am__objects_27 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	NsCookieParser.$(OBJEXT) CookieStorage.$(OBJEXT) \
 	SocketBuffer.$(OBJEXT) OptionHandlerException.$(OBJEXT) \
 	URIResult.$(OBJEXT) SelectEventPoll.$(OBJEXT) \
-	LongestSequencePieceSelector.$(OBJEXT) BDE.$(OBJEXT) \
-	CreateRequestCommand.$(OBJEXT) $(am__objects_1) \
+	LongestSequencePieceSelector.$(OBJEXT) bitfield.$(OBJEXT) \
+	BDE.$(OBJEXT) CreateRequestCommand.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
@@ -1137,7 +1135,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	SelectEventPoll.cc SelectEventPoll.h SequentialPicker.h \
 	SequentialDispatcherCommand.h PieceSelector.h \
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h \
-	bitfield.h BDE.cc BDE.h CreateRequestCommand.cc \
+	bitfield.cc bitfield.h BDE.cc BDE.h CreateRequestCommand.cc \
 	CreateRequestCommand.h DownloadResultCode.h $(am__append_1) \
 	$(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
@@ -1362,7 +1360,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTracker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUnknownMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounce.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtInteractive.Po@am__quote@
@@ -1531,6 +1528,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asctime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bencode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitfield.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bittorrent_helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/daemon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/download_helper.Po@am__quote@

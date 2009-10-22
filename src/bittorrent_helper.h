@@ -208,6 +208,8 @@ void assertPayloadLengthEqual
 void assertID
 (uint8_t expected, const unsigned char* data, const std::string& msgName);
 
+void generateRandomKey(unsigned char* key);
+
 } // namespace bittorrent
 
 } // namespace aria2

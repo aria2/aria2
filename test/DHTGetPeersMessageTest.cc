@@ -3,7 +3,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "DHTNode.h"
-#include "DHTUtil.h"
 #include "Exception.h"
 #include "Util.h"
 #include "MockDHTMessageFactory.h"
@@ -70,11 +69,11 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
-  DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
+  util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   unsigned char infoHash[DHT_ID_LENGTH];
-  DHTUtil::generateRandomData(infoHash, DHT_ID_LENGTH);
+  util::generateRandomData(infoHash, DHT_ID_LENGTH);
 
   DHTGetPeersMessage msg(localNode, remoteNode, infoHash, transactionID);
 
@@ -101,11 +100,11 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
   remoteNode->setPort(6881);
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
-  DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
+  util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   unsigned char infoHash[DHT_ID_LENGTH];
-  DHTUtil::generateRandomData(infoHash, DHT_ID_LENGTH);
+  util::generateRandomData(infoHash, DHT_ID_LENGTH);
 
   DHTTokenTracker tokenTracker;
   MockDHTMessageDispatcher dispatcher;
