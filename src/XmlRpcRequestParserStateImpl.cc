@@ -185,7 +185,7 @@ void IntXmlRpcRequestParserState::endElement
  const std::string& characters)
 {
   try {
-    int64_t value = Util::parseLLInt(characters);
+    int64_t value = util::parseLLInt(characters);
     stm->setCurrentFrameValue(BDE(value));
   } catch(RecoverableException& e) {
     // nothing to do here: We just leave current frame value to BDE::none

@@ -101,7 +101,7 @@ static std::string urlencode(const std::string& src)
   for(int index = src.size()-1; index >= 0; --index) {
     const unsigned char c = result[index];
     // '/' is not urlencoded because src is expected to be a path.
-    if(!Util::inRFC3986ReservedChars(c) && !Util::inRFC3986UnreservedChars(c)) {
+    if(!util::inRFC3986ReservedChars(c) && !util::inRFC3986UnreservedChars(c)) {
       if(c == '%') {
 	if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
 	  result.replace(index, 1, "%25");
@@ -139,7 +139,7 @@ bool Request::redirectUrl(const std::string& url) {
   if(url.find("://") == std::string::npos) {
     // rfc2616 requires absolute URI should be provided by Location header
     // field, but some servers don't obey this rule.
-    if(Util::startsWith(url, "/")) {
+    if(util::startsWith(url, "/")) {
       // abosulute path
       return parseUrl(strconcat(protocol, "://", host, url));
     } else {
@@ -190,15 +190,15 @@ bool Request::parseUrl(const std::string& url) {
   if(atmarkp != std::string::npos) {
     std::string authPart = hostPart.substr(0, atmarkp);
     std::pair<std::string, std::string> userPass =
-      Util::split(authPart, A2STR::COLON_C);
-    _username = Util::urldecode(userPass.first);
-    _password = Util::urldecode(userPass.second);
+      util::split(authPart, A2STR::COLON_C);
+    _username = util::urldecode(userPass.first);
+    _password = util::urldecode(userPass.second);
     hostPart.erase(0, atmarkp+1);
   }
   {
     std::string::size_type colonpos;
     // Detect IPv6 literal address in square brackets
-    if(Util::startsWith(hostPart, "[")) {
+    if(util::startsWith(hostPart, "[")) {
       std::string::size_type rbracketpos = hostPart.find("]");
       if(rbracketpos == std::string::npos) {
 	return false;
@@ -215,7 +215,7 @@ bool Request::parseUrl(const std::string& url) {
       port = defPort;
     } else {
       try {
-	unsigned int tempPort = Util::parseUInt(hostPart.substr(colonpos+1));
+	unsigned int tempPort = util::parseUInt(hostPart.substr(colonpos+1));
 	if(65535 < tempPort) {
 	  return false;
 	}

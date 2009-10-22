@@ -163,10 +163,10 @@ void OptionParser::parse(Option& option, std::istream& is)
   int32_t linenum = 0;
   while(getline(is, line)) {
     ++linenum;
-    if(Util::startsWith(line, A2STR::SHARP_C)) {
+    if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
-    std::pair<std::string, std::string> nv = Util::split(line, A2STR::EQUAL_C);
+    std::pair<std::string, std::string> nv = util::split(line, A2STR::EQUAL_C);
     OptionHandlerHandle handler = getOptionHandlerByName(nv.first);
     handler->parse(option, nv.second);
   }

@@ -131,7 +131,7 @@ void FileMetalinkParserState::beginElement
 	maxConnections = -1;
       } else {
 	try {
-	  maxConnections = Util::parseInt((*itr).second);
+	  maxConnections = util::parseInt((*itr).second);
 	} catch(RecoverableException& e) {
 	  maxConnections = -1;
 	}
@@ -165,7 +165,7 @@ void SizeMetalinkParserState::endElement
  const std::string& characters)
 {
   try {
-    stm->setFileLengthOfEntry(Util::parseLLInt(characters));
+    stm->setFileLengthOfEntry(util::parseLLInt(characters));
   } catch(RecoverableException& e) {
     // current metalink specification doesn't require size element.
   }
@@ -245,7 +245,7 @@ void VerificationMetalinkParserState::beginElement
 	if(itr == attrs.end()) {
 	  return;
 	} else {
-	  length = Util::parseInt((*itr).second);
+	  length = util::parseInt((*itr).second);
 	}
       }
       std::string type;
@@ -314,7 +314,7 @@ void PiecesMetalinkParserState::beginElement
       stm->cancelChunkChecksumTransaction();
     } else {
       try {
-	stm->createNewHashOfChunkChecksum(Util::parseInt((*itr).second));
+	stm->createNewHashOfChunkChecksum(util::parseInt((*itr).second));
       } catch(RecoverableException& e) {
 	stm->cancelChunkChecksumTransaction();
       }
@@ -387,7 +387,7 @@ void ResourcesMetalinkParserState::beginElement
       std::map<std::string, std::string>::const_iterator itr =
 	attrs.find(LOCATION);
       if(itr != attrs.end()) {
-	location = Util::toUpper((*itr).second);
+	location = util::toUpper((*itr).second);
       }
     }
     int preference;
@@ -398,7 +398,7 @@ void ResourcesMetalinkParserState::beginElement
 	preference = 0;
       } else {
 	try {
-	  preference = Util::parseInt((*itr).second);
+	  preference = util::parseInt((*itr).second);
 	} catch(RecoverableException& e) {
 	  preference = 0;
 	}
@@ -412,7 +412,7 @@ void ResourcesMetalinkParserState::beginElement
 	maxConnections = -1;
       } else {
 	try {
-	  maxConnections = Util::parseInt((*itr).second);
+	  maxConnections = util::parseInt((*itr).second);
 	} catch(RecoverableException& e) {
 	  maxConnections = -1;
 	}

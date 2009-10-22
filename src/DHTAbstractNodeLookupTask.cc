@@ -86,7 +86,7 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
   }
   if(_inFlightMessage == 0) {
     _logger->debug("Finished node_lookup for node ID %s",
-		   Util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+		   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
     onFinish();
     updateBucket();
     _finished = true;
@@ -96,7 +96,7 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
 void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   _logger->debug("node lookup message timeout for node ID=%s",
-		 Util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
+		 util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
   --_inFlightMessage;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i = _entries.begin(); i != _entries.end(); ++i) {
     if((*i)->_node == node) {
@@ -109,7 +109,7 @@ void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
   }
   if(_inFlightMessage == 0) {
     _logger->debug("Finished node_lookup for node ID %s",
-		   Util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+		   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
     onFinish();
     updateBucket();
     _finished = true;

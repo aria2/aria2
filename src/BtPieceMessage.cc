@@ -91,7 +91,7 @@ void BtPieceMessage::doReceivedAction() {
     pieceStorage->getDiskAdaptor()->writeData(block, blockLength, offset);
     piece->completeBlock(slot.getBlockIndex());
     logger->debug(MSG_PIECE_BITFIELD, cuid,
-		  Util::toHex(piece->getBitfield(),
+		  util::toHex(piece->getBitfield(),
 			      piece->getBitfieldLength()).c_str());
     piece->updateHash(begin, block, blockLength);
     dispatcher->removeOutstandingRequest(slot);
@@ -168,8 +168,8 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
 }
 
 std::string BtPieceMessage::toString() const {
-  return strconcat(NAME, " index=", Util::itos(index), ", begin=",
-		   Util::itos(begin), ", length=", Util::itos(blockLength));
+  return strconcat(NAME, " index=", util::itos(index), ", begin=",
+		   util::itos(begin), ", length=", util::itos(blockLength));
 }
 
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {

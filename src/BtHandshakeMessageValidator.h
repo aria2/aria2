@@ -66,13 +66,13 @@ public:
     if(memcmp(BtHandshakeMessage::BT_PSTR, message->getPstr(), 19) != 0) {
       throw DL_ABORT_EX
 	(StringFormat("invalid handshake pstr=%s",
-		      Util::urlencode(message->getPstr(), 19).c_str()).str());
+		      util::urlencode(message->getPstr(), 19).c_str()).str());
     }
     if(memcmp(infoHash, message->getInfoHash(), 20) != 0) {
       throw DL_ABORT_EX
 	(StringFormat("invalid handshake info hash: expected:%s, actual:%s",
-		      Util::toHex(infoHash, 20).c_str(),
-		      Util::toHex(message->getInfoHash(), 20).c_str()).str());
+		      util::toHex(infoHash, 20).c_str(),
+		      util::toHex(message->getInfoHash(), 20).c_str()).str());
     }
     return true;
   }

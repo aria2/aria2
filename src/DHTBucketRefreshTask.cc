@@ -65,7 +65,7 @@ void DHTBucketRefreshTask::startup()
       task->setTaskQueue(_taskQueue);
       task->setLocalNode(_localNode);
 
-      _logger->info("Dispating bucket refresh. targetID=%s", Util::toHex(targetID, DHT_ID_LENGTH).c_str());
+      _logger->info("Dispating bucket refresh. targetID=%s", util::toHex(targetID, DHT_ID_LENGTH).c_str());
       _taskQueue->addPeriodicTask1(task);
     }
   }

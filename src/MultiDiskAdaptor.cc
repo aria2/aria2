@@ -271,7 +271,7 @@ void MultiDiskAdaptor::openIfNot
 {
   if(!entry->isOpen()) {
 //     logger->debug("DiskWriterEntry: Cache MISS. offset=%s",
-// 		  Util::itos(entry->getFileEntry()->getOffset()).c_str());
+// 		  util::itos(entry->getFileEntry()->getOffset()).c_str());
  
     size_t numOpened = _openedDiskWriterEntries.size();
     (entry.get()->*open)();
@@ -289,7 +289,7 @@ void MultiDiskAdaptor::openIfNot
     } 
   } else {
 //     logger->debug("DiskWriterEntry: Cache HIT. offset=%s",
-// 		  Util::itos(entry->getFileEntry()->getOffset()).c_str());
+// 		  util::itos(entry->getFileEntry()->getOffset()).c_str());
   }
 }
 
@@ -369,7 +369,7 @@ findFirstDiskWriterEntry(const DiskWriterEntries& diskWriterEntries, off_t offse
   if(!isInRange(*first, offset)) {
     throw DL_ABORT_EX
       (StringFormat(EX_FILE_OFFSET_OUT_OF_RANGE,
-		    Util::itos(offset, true).c_str()).str());
+		    util::itos(offset, true).c_str()).str());
   }
   return first;
 }
@@ -379,7 +379,7 @@ static void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
 {
   throw DL_ABORT_EX
     (StringFormat("DiskWriter for offset=%s, filename=%s is not opened.",
-		  Util::itos(offset).c_str(),
+		  util::itos(offset).c_str(),
 		  e->getFilePath().c_str()).str());  
 }
 

@@ -63,12 +63,12 @@ Cookie CookieParser::parse(const std::string& cookieStr) const
 Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const
 {
   std::vector<std::string> terms;
-  split(cookieStr, std::back_inserter(terms), ";", true);
+  util::split(cookieStr, std::back_inserter(terms), ";", true);
   if(terms.empty()) {
     return Cookie();
   }
   std::pair<std::string, std::string> nameValue;
-  Util::split(nameValue, terms.front(), '=');
+  util::split(nameValue, terms.front(), '=');
 
   std::map<std::string, std::string> values;
   values[C_DOMAIN] = defaultDomain;
@@ -77,7 +77,7 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
   for(std::vector<std::string>::iterator itr = terms.begin()+1;
       itr != terms.end(); ++itr) {
     std::pair<std::string, std::string> nv;
-    Util::split(nv, *itr, '=');
+    util::split(nv, *itr, '=');
     values[nv.first] = nv.second;
   }
   time_t expiry = 0;
@@ -99,7 +99,7 @@ Cookies CookieParser::parse(std::istream& s) const
   Cookies cookies;
   std::string line;
   while(getline(s, line)) {
-    if(Util::trim(line).empty() || Util::startsWith(line, A2STR::SHARP_C)) {
+    if(util::trim(line).empty() || util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
     Cookie cookie = parse(line);

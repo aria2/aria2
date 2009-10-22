@@ -106,13 +106,13 @@ bool File::mkdirs() {
     return false;
   }
   std::vector<std::string> dirs;
-  split(name, std::back_inserter(dirs), "/");
+  util::split(name, std::back_inserter(dirs), "/");
   if(!dirs.size()) {
     return true;
   }
 
   std::string accDir;
-  if(Util::startsWith(name, A2STR::SLASH_C)) {
+  if(util::startsWith(name, A2STR::SLASH_C)) {
     accDir = A2STR::SLASH_C;
   }
   for(std::vector<std::string>::const_iterator itr = dirs.begin();

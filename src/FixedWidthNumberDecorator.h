@@ -51,7 +51,7 @@ public:
 
   virtual std::string decorate(unsigned int number)
   {
-    std::string s = Util::uitos(number);
+    std::string s = util::uitos(number);
     while(s.size() < _width) {
       s.insert(0, "0");
     }

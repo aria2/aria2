@@ -69,7 +69,7 @@ void SimpleLogger::writeLog
   writeHeader(o, datestr, logLevelLabel);
   {
     char buf[1024];
-    std::string body = Util::replace(msg, A2STR::CR_C, A2STR::NIL);
+    std::string body = util::replace(msg, A2STR::CR_C, A2STR::NIL);
     body += A2STR::LF_C;
     if(vsnprintf(buf, sizeof(buf), body.c_str(), ap) < 0) {
       o << "SimpleLogger error, failed to format message.\n";

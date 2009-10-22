@@ -85,16 +85,16 @@ const std::string HttpHeader::S401("401");
 const std::string HttpHeader::S404("404");
 
 void HttpHeader::put(const std::string& name, const std::string& value) {
-  std::multimap<std::string, std::string>::value_type vt(Util::toLower(name), value);
+  std::multimap<std::string, std::string>::value_type vt(util::toLower(name), value);
   table.insert(vt);
 }
 
 bool HttpHeader::defined(const std::string& name) const {
-  return table.count(Util::toLower(name)) >= 1;
+  return table.count(util::toLower(name)) >= 1;
 }
 
 const std::string& HttpHeader::getFirst(const std::string& name) const {
-  std::multimap<std::string, std::string>::const_iterator itr = table.find(Util::toLower(name));
+  std::multimap<std::string, std::string>::const_iterator itr = table.find(util::toLower(name));
   if(itr == table.end()) {
     return A2STR::NIL;
   } else {
@@ -105,7 +105,7 @@ const std::string& HttpHeader::getFirst(const std::string& name) const {
 std::deque<std::string> HttpHeader::get(const std::string& name) const {
   std::deque<std::string> v;
 
-  std::string n(Util::toLower(name));
+  std::string n(util::toLower(name));
 
   std::multimap<std::string, std::string>::const_iterator first =
     table.lower_bound(n);
@@ -128,7 +128,7 @@ uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
   if(value.empty()) {
     return 0;
   } else {
-    return Util::parseULLInt(value);
+    return util::parseULLInt(value);
   }
 }
 
@@ -140,7 +140,7 @@ RangeHandle HttpHeader::getRange() const
     if(contentLengthStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
-      uint64_t contentLength = Util::parseULLInt(contentLengthStr);
+      uint64_t contentLength = util::parseULLInt(contentLengthStr);
       if(contentLength == 0) {
 	return SharedHandle<Range>(new Range());
       } else {
@@ -154,7 +154,7 @@ RangeHandle HttpHeader::getRange() const
     // but some server returns '100-199/100', omitting bytes-unit sepcifier
     // 'bytes'.
     std::pair<std::string, std::string> splist;
-    Util::split(splist, rangeStr, ' ');
+    util::split(splist, rangeStr, ' ');
     if(splist.second.empty()) {
       // we assume bytes-unit specifier omitted.
       byteRangeSpec = splist.first;
@@ -163,14 +163,14 @@ RangeHandle HttpHeader::getRange() const
     }
   }
   std::pair<std::string, std::string> byteRangeSpecPair;
-  Util::split(byteRangeSpecPair, byteRangeSpec, '/');
+  util::split(byteRangeSpecPair, byteRangeSpec, '/');
 
   std::pair<std::string, std::string> byteRangeRespSpecPair;
-  Util::split(byteRangeRespSpecPair, byteRangeSpecPair.first, '-');
+  util::split(byteRangeRespSpecPair, byteRangeSpecPair.first, '-');
 
-  off_t startByte = Util::parseLLInt(byteRangeRespSpecPair.first);
-  off_t endByte = Util::parseLLInt(byteRangeRespSpecPair.second);
-  uint64_t entityLength = Util::parseULLInt(byteRangeSpecPair.second);
+  off_t startByte = util::parseLLInt(byteRangeRespSpecPair.first);
+  off_t endByte = util::parseLLInt(byteRangeRespSpecPair.second);
+  uint64_t entityLength = util::parseULLInt(byteRangeSpecPair.second);
 
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }
@@ -199,12 +199,12 @@ void HttpHeader::fill(std::istream& in)
 {
   std::string line;
   while(std::getline(in, line)) {
-    line = Util::trim(line);
+    line = util::trim(line);
     if(line.empty()) {
       continue;
     }
     std::pair<std::string, std::string> hp;
-    Util::split(hp, line, ':');
+    util::split(hp, line, ':');
     put(hp.first, hp.second);
   }
 }

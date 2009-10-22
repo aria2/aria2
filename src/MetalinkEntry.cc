@@ -64,7 +64,7 @@ public:
   AddLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd):
     _locations(locations), _preferenceToAdd(preferenceToAdd)
   {
-    std::transform(_locations.begin(), _locations.end(), _locations.begin(), Util::toUpper);
+    std::transform(_locations.begin(), _locations.end(), _locations.begin(), util::toUpper);
     std::sort(_locations.begin(), _locations.end());
   }
 

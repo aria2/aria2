@@ -1,5 +1,11 @@
 2009-10-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved static functions in Util class to namespace util.
+	* src
+	* test
+
+2009-10-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Moved generateRandomData to Util.cc Moved flipBit to bitfield.cc.
 	Moved generateRandomKey to bittorrent_helper.cc.
 	* src/DHTBucket.cc

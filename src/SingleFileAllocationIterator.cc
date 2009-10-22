@@ -63,7 +63,7 @@ SingleFileAllocationIterator::~SingleFileAllocationIterator()
 void SingleFileAllocationIterator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  _buffer = (unsigned char*)Util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
+  _buffer = (unsigned char*)util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
 #else
   _buffer = new unsigned char[BUFSIZE];
 #endif // HAVE_POSIX_MEMALIGN

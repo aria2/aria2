@@ -100,7 +100,7 @@ size_t BtBitfieldMessage::getMessageLength() {
 }
 
 std::string BtBitfieldMessage::toString() const {
-  return strconcat(NAME, " ", Util::toHex(bitfield, bitfieldLength));
+  return strconcat(NAME, " ", util::toHex(bitfield, bitfieldLength));
 }
 
 } // namespace aria2

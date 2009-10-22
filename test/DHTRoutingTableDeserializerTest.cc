@@ -39,7 +39,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   SharedHandle<DHTNode> nodesSrc[3];
   for(size_t i = 0; i < arrayLength(nodesSrc); ++i) {
     nodesSrc[i].reset(new DHTNode());
-    nodesSrc[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
+    nodesSrc[i]->setIPAddress("192.168.0."+util::uitos(i+1));
     nodesSrc[i]->setPort(6881+i);
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");

@@ -76,7 +76,7 @@ void HttpResponse::validateResponse() const
     if(!httpHeader->defined(HttpHeader::LOCATION)) {
       throw DL_ABORT_EX
 	(StringFormat(EX_LOCATION_HEADER_REQUIRED,
-		      Util::parseUInt(status)).str());
+		      util::parseUInt(status)).str());
     }
   } else if(!httpHeader->defined(HttpHeader::TRANSFER_ENCODING)) {
     // compare the received range against the requested range
@@ -85,12 +85,12 @@ void HttpResponse::validateResponse() const
       throw DL_ABORT_EX
 	(StringFormat
 	 (EX_INVALID_RANGE_HEADER,
-	  Util::itos(httpRequest->getStartByte(), true).c_str(),
-	  Util::itos(httpRequest->getEndByte(), true).c_str(),
-	  Util::uitos(httpRequest->getEntityLength(), true).c_str(),
-	  Util::itos(responseRange->getStartByte(), true).c_str(),
-	  Util::itos(responseRange->getEndByte(), true).c_str(),
-	  Util::uitos(responseRange->getEntityLength(), true).c_str()).str());
+	  util::itos(httpRequest->getStartByte(), true).c_str(),
+	  util::itos(httpRequest->getEndByte(), true).c_str(),
+	  util::uitos(httpRequest->getEntityLength(), true).c_str(),
+	  util::itos(responseRange->getStartByte(), true).c_str(),
+	  util::itos(responseRange->getEndByte(), true).c_str(),
+	  util::uitos(responseRange->getEntityLength(), true).c_str()).str());
     }
   }
 }
@@ -98,10 +98,10 @@ void HttpResponse::validateResponse() const
 std::string HttpResponse::determinFilename() const
 {
   std::string contentDisposition =
-    Util::getContentDispositionFilename
+    util::getContentDispositionFilename
     (httpHeader->getFirst(HttpHeader::CONTENT_DISPOSITION));
   if(contentDisposition.empty()) {
-    std::string file = Util::urldecode(httpRequest->getFile());
+    std::string file = util::urldecode(httpRequest->getFile());
     if(file.empty()) {
       return "index.html";
     } else {
@@ -110,7 +110,7 @@ std::string HttpResponse::determinFilename() const
   } else {
     logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
 		 cuid, contentDisposition.c_str());
-    return Util::urldecode(contentDisposition);
+    return util::urldecode(contentDisposition);
   }
 }
 
@@ -219,7 +219,7 @@ std::string HttpResponse::getContentType() const
     return A2STR::NIL;
   } else {
     return
-      Util::split(httpHeader->getFirst(HttpHeader::CONTENT_TYPE), ";").first;
+      util::split(httpHeader->getFirst(HttpHeader::CONTENT_TYPE), ";").first;
   }
 }
 
@@ -257,7 +257,7 @@ Time HttpResponse::getLastModifiedTime() const
 bool HttpResponse::supportsPersistentConnection() const
 {
   std::string connection =
-    Util::toLower(httpHeader->getFirst(HttpHeader::CONNECTION));
+    util::toLower(httpHeader->getFirst(HttpHeader::CONNECTION));
   std::string version = httpHeader->getVersion();
 
   return
@@ -265,7 +265,7 @@ bool HttpResponse::supportsPersistentConnection() const
     (version == HttpHeader::HTTP_1_1 ||
      connection.find("keep-alive") != std::string::npos) &&
     (!httpRequest->isProxyRequestSet() ||
-     Util::toLower(httpHeader->getFirst("Proxy-Connection")).find("keep-alive")
+     util::toLower(httpHeader->getFirst("Proxy-Connection")).find("keep-alive")
      != std::string::npos);
 }
 

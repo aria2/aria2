@@ -76,7 +76,7 @@ Time& Time::operator=(const Time& time)
 
 bool Time::operator<(const Time& time) const
 {
-  return Util::difftv(time.tv, tv) > 0;
+  return util::difftv(time.tv, tv) > 0;
 }
 
 void Time::reset() {
@@ -99,36 +99,36 @@ bool Time::elapsed(time_t sec) const {
     return true;
   } else if(tv.tv_sec+sec == now) {
     return
-      Util::difftv(getCurrentTime(), tv) >= static_cast<int64_t>(sec)*1000000;
+      util::difftv(getCurrentTime(), tv) >= static_cast<int64_t>(sec)*1000000;
   } else {
     return false;
   }
 }
 
 bool Time::elapsedInMillis(int64_t millis) const {
-  return Util::difftv(getCurrentTime(), tv)/1000 >= millis;
+  return util::difftv(getCurrentTime(), tv)/1000 >= millis;
 }
 
 bool Time::isNewer(const Time& time) const {
-  return Util::difftv(this->tv, time.tv) > 0;
+  return util::difftv(this->tv, time.tv) > 0;
 }
 
 time_t Time::difference() const {
-  return Util::difftvsec(getCurrentTime(), tv);
+  return util::difftvsec(getCurrentTime(), tv);
 }
 
 time_t Time::difference(const struct timeval& now) const
 {
-  return Util::difftvsec(now, tv);
+  return util::difftvsec(now, tv);
 }
 
 int64_t Time::differenceInMillis() const {
-  return Util::difftv(getCurrentTime(), tv)/1000;
+  return util::difftv(getCurrentTime(), tv)/1000;
 }
 
 int64_t Time::differenceInMillis(const struct timeval& now) const
 {
-  return Util::difftv(now, tv)/1000;
+  return util::difftv(now, tv)/1000;
 }
 
 bool Time::isZero() const

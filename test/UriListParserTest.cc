@@ -36,7 +36,7 @@ std::string UriListParserTest::list2String(const std::deque<std::string>& src)
 {
   std::ostringstream strm;
   std::copy(src.begin(), src.end(), std::ostream_iterator<std::string>(strm, " "));
-  return Util::trim(strm.str());
+  return util::trim(strm.str());
 }
 
 void UriListParserTest::testHasNext()

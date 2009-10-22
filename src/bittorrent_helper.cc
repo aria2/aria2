@@ -133,7 +133,7 @@ static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
   std::vector<std::string> pieceHashes;
   pieceHashes.reserve(numPieces);
   for(size_t i = 0; i < numPieces; ++i) {
-    pieceHashes.push_back(Util::toHex(hashData.data()+i*hashLength,
+    pieceHashes.push_back(util::toHex(hashData.data()+i*hashLength,
 				      hashLength));
   }
   ctx->setPieceHashes(pieceHashes.begin(), pieceHashes.end());
@@ -167,7 +167,7 @@ static OutputIterator createUri
  const std::string& filePath)
 {
   for(; first != last; ++first) {
-    if(Util::endsWith(*first, "/")) {
+    if(util::endsWith(*first, "/")) {
       *out++ = (*first)+filePath;
     } else {
       *out++ = (*first)+"/"+filePath;
@@ -196,8 +196,8 @@ static void extractFileEntries
     if(nameData.isString()) {
       // Split path by '/' just in case nasty ".." is included in name
       std::vector<std::string> pathelems;
-      split(nameData.s(), std::back_inserter(pathelems), "/");
-      name = Util::joinPath(pathelems.begin(), pathelems.end());
+      util::split(nameData.s(), std::back_inserter(pathelems), "/");
+      name = util::joinPath(pathelems.begin(), pathelems.end());
       torrent[NAME] = nameData.s();
     } else {
       name = strconcat(File(defaultName).getBasename(), ".file");
@@ -244,12 +244,12 @@ static void extractFileEntries
       std::transform(pathList.listBegin(), pathList.listEnd(), pathelem.begin(),
 		     std::mem_fun_ref(&BDE::s));
       std::string path = name;
-      strappend(path, "/", Util::joinPath(pathelem.begin(), pathelem.end()));
+      strappend(path, "/", util::joinPath(pathelem.begin(), pathelem.end()));
       // Split path with '/' again because each pathList element can
       // contain "/" inside.
       std::vector<std::string> elements;
-      split(path, std::back_inserter(elements), "/");
-      path = Util::joinPath(elements.begin(), elements.end());
+      util::split(path, std::back_inserter(elements), "/");
+      path = util::joinPath(elements.begin(), elements.end());
 
       std::deque<std::string> uris;
       createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
@@ -275,7 +275,7 @@ static void extractFileEntries
     std::deque<std::string> uris;
     for(std::vector<std::string>::const_iterator i = urlList.begin();
 	i != urlList.end(); ++i) {
-      if(Util::endsWith(*i, "/")) {
+      if(util::endsWith(*i, "/")) {
 	uris.push_back((*i)+name);
       } else {
 	uris.push_back(*i);
@@ -323,7 +323,7 @@ static void extractNodes(BDE& torrent, const BDE& nodesList)
       if(!hostname.isString()) {
 	continue;
       }
-      if(Util::trim(hostname.s()).empty()) {
+      if(util::trim(hostname.s()).empty()) {
 	continue;
       }
       const BDE& port = addrPairList[1];
@@ -525,7 +525,7 @@ getInfoHash(const SharedHandle<DownloadContext>& downloadContext)
 std::string
 getInfoHashString(const SharedHandle<DownloadContext>& downloadContext)
 {
-  return Util::toHex(downloadContext->getAttribute(BITTORRENT)[INFO_HASH].s());
+  return util::toHex(downloadContext->getAttribute(BITTORRENT)[INFO_HASH].s());
 }
 
 void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
@@ -562,11 +562,11 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
     }
     o << "\n";
   }
-  o << "Info Hash: " << Util::toHex(torrentAttrs[INFO_HASH].s()) << "\n";
-  o << "Piece Length: " << Util::abbrevSize(dctx->getPieceLength()) << "B\n";
+  o << "Info Hash: " << util::toHex(torrentAttrs[INFO_HASH].s()) << "\n";
+  o << "Piece Length: " << util::abbrevSize(dctx->getPieceLength()) << "B\n";
   o << "The Number of Pieces: " << dctx->getNumPieces() << "\n";
-  o << "Total Length: " << Util::abbrevSize(dctx->getTotalLength()) << "B ("
-    << Util::uitos(dctx->getTotalLength(), true) << ")\n";
+  o << "Total Length: " << util::abbrevSize(dctx->getTotalLength()) << "B ("
+    << util::uitos(dctx->getTotalLength(), true) << ")\n";
   if(!torrentAttrs[URL_LIST].empty()) {
     const BDE& urlList = torrentAttrs[URL_LIST];
     o << "URL List: " << "\n";
@@ -576,7 +576,7 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
     }
   }
   o << "Name: " << torrentAttrs[NAME].s() << "\n";
-  Util::toStream(dctx->getFileEntries().begin(), dctx->getFileEntries().end(), o);
+  util::toStream(dctx->getFileEntries().begin(), dctx->getFileEntries().end(), o);
 }
 
 void computeFastSet

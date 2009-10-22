@@ -74,7 +74,7 @@ void BtPostDownloadHandler::getNextRequestGroups
   std::string content;
   try {
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
-    content = Util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
+    content = util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();    
   } catch(Exception& e) {
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();

@@ -60,14 +60,14 @@ void BtHandshakeMessageTest::testCreate() {
   SharedHandle<BtHandshakeMessage> message = BtHandshakeMessage::create(&msg[0], sizeof(msg));
   CPPUNIT_ASSERT_EQUAL((uint8_t)INT8_MAX, message->getId());
   CPPUNIT_ASSERT_EQUAL((uint8_t)19, message->getPstrlen());
-  CPPUNIT_ASSERT_EQUAL(Util::toHex((const unsigned char*)BTPSTR.c_str(), BTPSTR.size()),
-		       Util::toHex(message->getPstr(), BtHandshakeMessage::PSTR_LENGTH));
+  CPPUNIT_ASSERT_EQUAL(util::toHex((const unsigned char*)BTPSTR.c_str(), BTPSTR.size()),
+		       util::toHex(message->getPstr(), BtHandshakeMessage::PSTR_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("0000000000100004"),
-		       Util::toHex(message->getReserved(), BtHandshakeMessage::RESERVED_LENGTH));
+		       util::toHex(message->getReserved(), BtHandshakeMessage::RESERVED_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("ffffffffffffffffffffffffffffffffffffffff"),
-		       Util::toHex(message->getInfoHash(), INFO_HASH_LENGTH));
+		       util::toHex(message->getInfoHash(), INFO_HASH_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0"),
-		       Util::toHex(message->getPeerId(), PEER_ID_LENGTH));
+		       util::toHex(message->getPeerId(), PEER_ID_LENGTH));
 }
 
 void BtHandshakeMessageTest::testGetMessage() {
@@ -86,8 +86,8 @@ void BtHandshakeMessageTest::testGetMessage() {
 
   unsigned char data[68];
   createHandshakeMessageData(data);
-  CPPUNIT_ASSERT_EQUAL(Util::toHex((const unsigned char*)data, 68),
-		       Util::toHex((const unsigned char*)msg->getMessage(), 68));
+  CPPUNIT_ASSERT_EQUAL(util::toHex((const unsigned char*)data, 68),
+		       util::toHex((const unsigned char*)msg->getMessage(), 68));
 }
 
 void BtHandshakeMessageTest::testToString() {

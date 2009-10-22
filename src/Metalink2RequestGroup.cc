@@ -130,7 +130,7 @@ Metalink2RequestGroup::createRequestGroup
     return;
   }
   std::deque<int32_t> selectIndexes =
-    Util::parseIntRange(option->get(PREF_SELECT_FILE)).flush();
+    util::parseIntRange(option->get(PREF_SELECT_FILE)).flush();
   bool useIndex;
   if(selectIndexes.size()) {
     useIndex = true;
@@ -143,8 +143,8 @@ Metalink2RequestGroup::createRequestGroup
     SharedHandle<MetalinkEntry>& entry = *itr;
     if(option->defined(PREF_METALINK_LOCATION)) {
       std::deque<std::string> locations;
-      split(option->get(PREF_METALINK_LOCATION), std::back_inserter(locations),
-	    ",", true);
+      util::split(option->get(PREF_METALINK_LOCATION),
+		  std::back_inserter(locations), ",", true);
       entry->setLocationPreference(locations, 100);
     }
     if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {

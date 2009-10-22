@@ -60,7 +60,7 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   memset(_peerId, 0, PEER_ID_LENGTH);
   resetStatus();
   std::string idSeed = ipaddr;
-  strappend(idSeed, ":", Util::uitos(port));
+  strappend(idSeed, ":", util::uitos(port));
 #ifdef ENABLE_MESSAGE_DIGEST
   id = MessageDigestHelper::digestString(MessageDigestContext::SHA1, idSeed);
 #else

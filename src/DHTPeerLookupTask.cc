@@ -71,7 +71,7 @@ void DHTPeerLookupTask::onReceivedInternal(const SharedHandle<DHTMessage>& messa
     return;
   }
   SharedHandle<DHTNode> remoteNode = m->getRemoteNode();
-  _tokenStorage[Util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] = m->getToken();
+  _tokenStorage[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] = m->getToken();
 
   _peerStorage->addPeer(m->getValues());
   _peers.insert(_peers.end(), m->getValues().begin(), m->getValues().end());
@@ -96,7 +96,7 @@ void DHTPeerLookupTask::onFinish()
 	(node,
 	 _targetID, // this is infoHash
 	 _btRuntime->getListenPort(),
-	 _tokenStorage[Util::toHex(node->getID(), DHT_ID_LENGTH)]);
+	 _tokenStorage[util::toHex(node->getID(), DHT_ID_LENGTH)]);
       _dispatcher->addMessageToQueue(m);
     }
   }

@@ -114,7 +114,7 @@ void DHTGetPeersMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& toke
 
 std::string DHTGetPeersMessage::toStringOptional() const
 {
-  return "info_hash="+Util::toHex(_infoHash, INFO_HASH_LENGTH);
+  return "info_hash="+util::toHex(_infoHash, INFO_HASH_LENGTH);
 }
 
 } // namespace aria2

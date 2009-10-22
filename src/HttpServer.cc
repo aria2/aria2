@@ -128,7 +128,7 @@ bool HttpServer::supportsPersistentConnection() const
   }
 
   std::string connection =
-    Util::toLower(_lastRequestHeader->getFirst(HttpHeader::CONNECTION));
+    util::toLower(_lastRequestHeader->getFirst(HttpHeader::CONNECTION));
 
   return connection.find(HttpHeader::CLOSE) == std::string::npos &&
     (_lastRequestHeader->getVersion() == HttpHeader::HTTP_1_1 ||
@@ -148,14 +148,14 @@ void HttpServer::feedResponse(const std::string& status,
   std::string header = "HTTP/1.1 ";
   strappend(header, status, "\r\n",
 	    "Content-Type: ", contentType, "\r\n",
-	    "Content-Length: ", Util::uitos(text.size()), "\r\n");
+	    "Content-Length: ", util::uitos(text.size()), "\r\n");
 
   if(!supportsPersistentConnection()) {
     header += "Connection: close\r\n";
   }
   if(!headers.empty()) {
     header += headers;
-    if(!Util::endsWith(headers, "\r\n")) {
+    if(!util::endsWith(headers, "\r\n")) {
       header += "\r\n";
     }
   }
@@ -188,12 +188,12 @@ bool HttpServer::authenticate()
   if(authHeader.empty()) {
     return false;
   }
-  std::pair<std::string, std::string> p = Util::split(authHeader, " ");
+  std::pair<std::string, std::string> p = util::split(authHeader, " ");
   if(p.first != "Basic") {
     return false;
   }
   std::string userpass = Base64::decode(p.second);
-  std::pair<std::string, std::string> userpassPair = Util::split(userpass, ":");
+  std::pair<std::string, std::string> userpassPair = util::split(userpass, ":");
   return _username == userpassPair.first && _password == userpassPair.second;
 }
 

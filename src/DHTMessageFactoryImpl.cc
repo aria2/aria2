@@ -170,7 +170,7 @@ void DHTMessageFactoryImpl::validatePort(const BDE& i) const
   if(!(0 < port && port < UINT16_MAX)) {
     throw DL_ABORT_EX
       (StringFormat("Malformed DHT message. Invalid port=%s",
-		    Util::itos(port).c_str()).str());
+		    util::itos(port).c_str()).str());
   }
 }
 
@@ -233,8 +233,8 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
     const BDE& e = getList(dict, DHTUnknownMessage::E);
     if(e.size() == 2) {
       _logger->info("Received Error DHT message. code=%s, msg=%s",
-		    Util::itos(getInteger(e, 0).i()).c_str(),
-		    Util::urlencode(getString(e, 1).s()).c_str());
+		    util::itos(getInteger(e, 0).i()).c_str(),
+		    util::urlencode(getString(e, 1).s()).c_str());
     } else {
       _logger->debug("e doesn't have 2 elements.");
     }
@@ -242,7 +242,7 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
   } else if(y.s() != DHTResponseMessage::R) {
     throw DL_ABORT_EX
       (StringFormat("Malformed DHT message. y != r: y=%s",
-		    Util::urlencode(y.s()).c_str()).str());
+		    util::urlencode(y.s()).c_str()).str());
   }
   const BDE& rDict = getDictionary(dict, DHTResponseMessage::R);
   const BDE& id = getString(rDict, DHTMessage::ID);

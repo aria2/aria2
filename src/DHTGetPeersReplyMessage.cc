@@ -137,9 +137,9 @@ void DHTGetPeersReplyMessage::setValues(const std::deque<SharedHandle<Peer> >& p
 
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {
-  return strconcat("token=", Util::toHex(_token),
-		   ", values=", Util::uitos(_values.size()),
-		   ", nodes=", Util::uitos(_closestKNodes.size()));
+  return strconcat("token=", util::toHex(_token),
+		   ", values=", util::uitos(_values.size()),
+		   ", nodes=", util::uitos(_closestKNodes.size()));
 }
 
 } // namespace aria2

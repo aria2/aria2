@@ -82,7 +82,7 @@ static const BDE BDE_COMPLETE = BDE("complete");
 
 static BDE createGIDResponse(int32_t gid)
 {
-  return BDE(Util::itos(gid));
+  return BDE(util::itos(gid));
 }
 
 static BDE addRequestGroup(const SharedHandle<RequestGroup>& group,
@@ -221,7 +221,7 @@ BDE AddMetalinkXmlRpcMethod::process
     BDE gids = BDE::list();
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
 	  result.begin(); i != result.end(); ++i) {
-      gids << BDE(Util::itos((*i)->getGID()));
+      gids << BDE(util::itos((*i)->getGID()));
     }
     return gids;
   } else {
@@ -239,7 +239,7 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = Util::parseInt(params[0].s());
+  int32_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
 
@@ -265,27 +265,27 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 static void gatherProgressCommon
 (BDE& entryDict, const SharedHandle<RequestGroup>& group)
 {
-  entryDict["gid"] = Util::itos(group->getGID());
+  entryDict["gid"] = util::itos(group->getGID());
   // This is "filtered" total length if --select-file is used.
-  entryDict["totalLength"] = Util::uitos(group->getTotalLength());
+  entryDict["totalLength"] = util::uitos(group->getTotalLength());
   // This is "filtered" total length if --select-file is used.
-  entryDict["completedLength"] = Util::uitos(group->getCompletedLength());
+  entryDict["completedLength"] = util::uitos(group->getCompletedLength());
   TransferStat stat = group->calculateStat();
-  entryDict["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
-  entryDict["uploadSpeed"] = Util::uitos(stat.getUploadSpeed());
-  entryDict["uploadLength"] = Util::uitos(stat.getAllTimeUploadLength());
-  entryDict["connections"] = Util::uitos(group->getNumConnection());
+  entryDict["downloadSpeed"] = util::uitos(stat.getDownloadSpeed());
+  entryDict["uploadSpeed"] = util::uitos(stat.getUploadSpeed());
+  entryDict["uploadLength"] = util::uitos(stat.getAllTimeUploadLength());
+  entryDict["connections"] = util::uitos(group->getNumConnection());
   SharedHandle<PieceStorage> ps = group->getPieceStorage();
   if(!ps.isNull()) {
     if(ps->getBitfieldLength() > 0) {
-      entryDict["bitfield"] = Util::toHex(ps->getBitfield(),
+      entryDict["bitfield"] = util::toHex(ps->getBitfield(),
 					  ps->getBitfieldLength());
     }
   }
   entryDict["pieceLength"] = 
-    Util::uitos(group->getDownloadContext()->getPieceLength());
+    util::uitos(group->getDownloadContext()->getPieceLength());
   entryDict["numPieces"] =
-    Util::uitos(group->getDownloadContext()->getNumPieces());
+    util::uitos(group->getDownloadContext()->getNumPieces());
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -293,7 +293,7 @@ static void gatherProgressBitTorrent
 (BDE& entryDict, const BDE& torrentAttrs, const SharedHandle<BtRegistry>& btreg)
 {
   const std::string& infoHash = torrentAttrs[bittorrent::INFO_HASH].s();
-  entryDict["infoHash"] = Util::toHex(infoHash);
+  entryDict["infoHash"] = util::toHex(infoHash);
 
   SharedHandle<PeerStorage> peerStorage = btreg->get(infoHash)._peerStorage;
   assert(!peerStorage.isNull());
@@ -310,17 +310,17 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
   for(std::deque<SharedHandle<Peer> >::const_iterator i =
 	activePeers.begin(); i != activePeers.end(); ++i) {
     BDE peerEntry = BDE::dict();
-    peerEntry["peerId"] = Util::torrentUrlencode((*i)->getPeerId(),
+    peerEntry["peerId"] = util::torrentUrlencode((*i)->getPeerId(),
 						 PEER_ID_LENGTH);
     peerEntry["ip"] = (*i)->ipaddr;
-    peerEntry["port"] = Util::uitos((*i)->port);
-    peerEntry["bitfield"] = Util::toHex((*i)->getBitfield(),
+    peerEntry["port"] = util::uitos((*i)->port);
+    peerEntry["bitfield"] = util::toHex((*i)->getBitfield(),
 					(*i)->getBitfieldLength());
     peerEntry["amChoking"] = (*i)->amChoking()?BDE_TRUE:BDE_FALSE;
     peerEntry["peerChoking"] = (*i)->peerChoking()?BDE_TRUE:BDE_FALSE;
     TransferStat stat = ps->getTransferStatFor(*i);
-    peerEntry["downloadSpeed"] = Util::uitos(stat.getDownloadSpeed());
-    peerEntry["uploadSpeed"] = Util::uitos(stat.getUploadSpeed());
+    peerEntry["downloadSpeed"] = util::uitos(stat.getDownloadSpeed());
+    peerEntry["uploadSpeed"] = util::uitos(stat.getUploadSpeed());
     peerEntry["seeder"] = (*i)->isSeeder()?BDE_TRUE:BDE_FALSE;
     peers << peerEntry;
   }
@@ -344,8 +344,8 @@ static void gatherProgress
 static void gatherStoppedDownload
 (BDE& entryDict, const SharedHandle<DownloadResult>& ds)
 {
-  entryDict["gid"] = Util::itos(ds->gid);
-  entryDict["errorCode"] = Util::itos(static_cast<int>(ds->result));
+  entryDict["gid"] = util::itos(ds->gid);
+  entryDict["errorCode"] = util::itos(static_cast<int>(ds->result));
   if(ds->result == downloadresultcode::IN_PROGRESS) {
     entryDict["status"] = BDE_REMOVED;
   } else if(ds->result == downloadresultcode::FINISHED) {
@@ -372,10 +372,10 @@ static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
   size_t index = 1;
   for(; first != last; ++first, ++index) {
     BDE entry = BDE::dict();
-    entry["index"] = Util::uitos(index);
+    entry["index"] = util::uitos(index);
     entry["path"] = (*first)->getPath();
     entry["selected"] = (*first)->isRequested()?BDE_TRUE:BDE_FALSE;
-    entry["length"] = Util::uitos((*first)->getLength());
+    entry["length"] = util::uitos((*first)->getLength());
     files << entry;
   }
 }
@@ -390,7 +390,7 @@ BDE GetFilesXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = Util::parseInt(params[0].s());
+  int32_t gid = util::parseInt(params[0].s());
 
   BDE files = BDE::list();
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
@@ -421,7 +421,7 @@ BDE GetUrisXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = Util::parseInt(params[0].s());
+  int32_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
@@ -454,7 +454,7 @@ BDE GetPeersXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = Util::parseInt(params[0].s());
+  int32_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
@@ -486,7 +486,7 @@ BDE TellStatusXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = Util::parseInt(params[0].s());
+  int32_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
 
@@ -585,7 +585,7 @@ BDE ChangeOptionXmlRpcMethod::process
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }  
-  int32_t gid = Util::parseInt(params[0].s());
+  int32_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {

@@ -70,10 +70,10 @@ bool DHTQueryMessage::isReply() const
 std::string DHTQueryMessage::toString() const
 {
   return strconcat("dht query ", getMessageType(),
-		   " TransactionID=", Util::toHex(_transactionID),
+		   " TransactionID=", util::toHex(_transactionID),
 		   " Remote:", _remoteNode->getIPAddress(),
-		   ":", Util::uitos(_remoteNode->getPort()),
-		   ", id=", Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH),
+		   ":", util::uitos(_remoteNode->getPort()),
+		   ", id=", util::toHex(_remoteNode->getID(), DHT_ID_LENGTH),
 		   ", ", toStringOptional());
 }
 

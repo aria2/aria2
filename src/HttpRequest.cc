@@ -122,7 +122,7 @@ static std::string getHostText(const std::string& host, uint16_t port)
 {
   std::string hosttext = host;
   if(!(port == 80 || port == 443)) {
-    strappend(hosttext, ":", Util::uitos(port));
+    strappend(hosttext, ":", util::uitos(port));
   }
   return hosttext;
 }
@@ -138,7 +138,7 @@ std::string HttpRequest::createRequest()
       // Insert user into URI, like ftp://USER@host/
       std::string uri = getCurrentURI();
       assert(uri.size() >= 6);
-      uri.insert(6, Util::urlencode(_authConfig->getUser())+"@");
+      uri.insert(6, util::urlencode(_authConfig->getUser())+"@");
       requestLine += uri;
     } else {
       requestLine += getCurrentURI();
@@ -183,10 +183,10 @@ std::string HttpRequest::createRequest()
   if(!segment.isNull() && segment->getLength() > 0 && 
      (request->isPipeliningEnabled() || getStartByte() > 0)) {
     requestLine += "Range: bytes=";
-    requestLine += Util::itos(getStartByte());
+    requestLine += util::itos(getStartByte());
     requestLine += "-";
     if(request->isPipeliningEnabled()) {
-      requestLine += Util::itos(getEndByte());
+      requestLine += util::itos(getEndByte());
     }
     requestLine += "\r\n";
   }
@@ -237,7 +237,7 @@ std::string HttpRequest::createProxyRequest() const
 {
   assert(!_proxyRequest.isNull());
   std::string hostport = getURIHost();
-  strappend(hostport, ":", Util::uitos(getPort()));
+  strappend(hostport, ":", util::uitos(getPort()));
 
   std::string requestLine = "CONNECT ";
   strappend(requestLine, hostport, " HTTP/1.1\r\n");
@@ -278,7 +278,7 @@ void HttpRequest::disableContentEncoding()
 void HttpRequest::addHeader(const std::string& headersString)
 {
   std::vector<std::string> headers;
-  split(headersString, std::back_inserter(headers), "\n", true);
+  util::split(headersString, std::back_inserter(headers), "\n", true);
   _headers.insert(_headers.end(), headers.begin(), headers.end());
 }
 

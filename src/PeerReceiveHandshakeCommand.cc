@@ -102,7 +102,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     if(downloadContext.isNull() || !btRuntime->ready()) {
       throw DL_ABORT_EX
 	(StringFormat("Unknown info hash %s",
-		      Util::toHex(infoHash).c_str()).str());
+		      util::toHex(infoHash).c_str()).str());
     }
     TransferStat tstat =
       downloadContext->getOwnerRequestGroup()->calculateStat();

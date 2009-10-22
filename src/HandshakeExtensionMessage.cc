@@ -75,15 +75,15 @@ std::string HandshakeExtensionMessage::toString() const
 {
   std::string s = getExtensionName();
   if(!_clientVersion.empty()) {
-    strappend(s, " client=", Util::urlencode(_clientVersion));
+    strappend(s, " client=", util::urlencode(_clientVersion));
   }
   if(_tcpPort > 0) {
-    strappend(s, ", tcpPort=", Util::uitos(_tcpPort));
+    strappend(s, ", tcpPort=", util::uitos(_tcpPort));
   }
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    strappend(s, ", ", vt.first, "=", Util::uitos(vt.second));
+    strappend(s, ", ", vt.first, "=", util::uitos(vt.second));
   }
   return s;
 }
@@ -126,7 +126,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
-		      Util::urlencode(data, length).c_str());
+		      util::urlencode(data, length).c_str());
   const BDE dict = bencode::decode(data+1, length-1);
   if(!dict.isDict()) {
     throw DL_ABORT_EX("Unexpected payload format for extended message handshake");

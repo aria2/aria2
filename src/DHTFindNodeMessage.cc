@@ -87,7 +87,7 @@ void DHTFindNodeMessage::validate() const {}
 
 std::string DHTFindNodeMessage::toStringOptional() const
 {
-  return "targetNodeID="+Util::toHex(_targetNodeID, DHT_ID_LENGTH);
+  return "targetNodeID="+util::toHex(_targetNodeID, DHT_ID_LENGTH);
 }
 
 } // namespace aria2

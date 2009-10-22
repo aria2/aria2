@@ -42,7 +42,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> nodes[8];
   for(size_t i = 0; i < DHTBucket::K; ++i) {
     nodes[i].reset(new DHTNode());
-    nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
+    nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
     nodes[i]->setPort(6881+i);
 
     unsigned char buf[6];

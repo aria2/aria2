@@ -73,7 +73,7 @@ void AnnounceList::reconfigure(const BDE& announceList)
 	  elemItr != elemList.listEnd(); ++elemItr) {
 	const BDE& data = *elemItr;
 	if(data.isString()) {
-	  urls.push_back(Util::trim(data.s()));
+	  urls.push_back(util::trim(data.s()));
 	}
       }
       if(!urls.empty()) {

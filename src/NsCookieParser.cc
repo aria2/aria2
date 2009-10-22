@@ -53,12 +53,12 @@ static const std::string C_TRUE("TRUE");
 static Cookie parseNsCookie(const std::string& nsCookieStr)
 {
   std::vector<std::string> vs;
-  split(nsCookieStr, std::back_inserter(vs), "\t", true);
+  util::split(nsCookieStr, std::back_inserter(vs), "\t", true);
   if(vs.size() < 6 ) {
     return Cookie();
   }
 
-  int64_t expireDate = Util::parseLLInt(vs[4]);
+  int64_t expireDate = util::parseLLInt(vs[4]);
   // TODO assuming time_t is int32_t...
   if(expireDate > INT32_MAX) {
     expireDate = INT32_MAX;
@@ -84,7 +84,7 @@ std::deque<Cookie> NsCookieParser::parse(const std::string& filename)
   std::string line;
   std::deque<Cookie> cookies;
   while(getline(s, line)) {
-    if(Util::startsWith(line, A2STR::SHARP_C)) {
+    if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
     try {

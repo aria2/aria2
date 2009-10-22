@@ -83,16 +83,18 @@
 
 namespace aria2 {
 
-const std::string Util::DEFAULT_TRIM_CHARSET("\r\n\t ");
+namespace util {
 
-std::string Util::trim(const std::string& src, const std::string& trimCharset)
+const std::string DEFAULT_TRIM_CHARSET("\r\n\t ");
+
+std::string trim(const std::string& src, const std::string& trimCharset)
 {
   std::string temp(src);
   trimSelf(temp, trimCharset);
   return temp;
 }
 
-void Util::trimSelf(std::string& str, const std::string& trimCharset)
+void trimSelf(std::string& str, const std::string& trimCharset)
 {
   std::string::size_type first = str.find_first_not_of(trimCharset);
   if(first == std::string::npos) {
@@ -104,7 +106,7 @@ void Util::trimSelf(std::string& str, const std::string& trimCharset)
   }
 }
 
-void Util::split(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
+void split(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
 {
   hp.first = A2STR::NIL;
   hp.second = A2STR::NIL;
@@ -118,7 +120,7 @@ void Util::split(std::pair<std::string, std::string>& hp, const std::string& src
   }
 }
 
-std::pair<std::string, std::string> Util::split(const std::string& src, const std::string& delims)
+std::pair<std::string, std::string> split(const std::string& src, const std::string& delims)
 {
   std::pair<std::string, std::string> hp;
   hp.first = A2STR::NIL;
@@ -134,7 +136,7 @@ std::pair<std::string, std::string> Util::split(const std::string& src, const st
   return hp;
 }
 
-int64_t Util::difftv(struct timeval tv1, struct timeval tv2) {
+int64_t difftv(struct timeval tv1, struct timeval tv2) {
   if((tv1.tv_sec < tv2.tv_sec) ||
      ((tv1.tv_sec == tv2.tv_sec) && (tv1.tv_usec < tv2.tv_usec))) {
     return 0;
@@ -143,14 +145,14 @@ int64_t Util::difftv(struct timeval tv1, struct timeval tv2) {
 	  tv1.tv_usec-tv2.tv_usec);
 }
 
-int32_t Util::difftvsec(struct timeval tv1, struct timeval tv2) {
+int32_t difftvsec(struct timeval tv1, struct timeval tv2) {
   if(tv1.tv_sec < tv2.tv_sec) {
     return 0;
   }
   return tv1.tv_sec-tv2.tv_sec;
 }
 
-bool Util::startsWith(const std::string& target, const std::string& part) {
+bool startsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;
   }
@@ -164,7 +166,7 @@ bool Util::startsWith(const std::string& target, const std::string& part) {
   }
 }
 
-bool Util::endsWith(const std::string& target, const std::string& part) {
+bool endsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;
   }
@@ -178,7 +180,7 @@ bool Util::endsWith(const std::string& target, const std::string& part) {
   }
 }
 
-std::string Util::replace(const std::string& target, const std::string& oldstr, const std::string& newstr) {
+std::string replace(const std::string& target, const std::string& oldstr, const std::string& newstr) {
   if(target.empty() || oldstr.empty()) {
     return target;
   }
@@ -196,7 +198,7 @@ std::string Util::replace(const std::string& target, const std::string& oldstr, 
   return result;
 }
 
-bool Util::inRFC3986ReservedChars(const char c)
+bool inRFC3986ReservedChars(const char c)
 {
   static const char reserved[] = {
     ':' , '/' , '?' , '#' , '[' , ']' , '@',
@@ -206,7 +208,7 @@ bool Util::inRFC3986ReservedChars(const char c)
     &reserved[arrayLength(reserved)];
 }
 
-bool Util::inRFC3986UnreservedChars(const char c)
+bool inRFC3986UnreservedChars(const char c)
 {
   static const char unreserved[] = { '-', '.', '_', '~' };
   return
@@ -218,7 +220,7 @@ bool Util::inRFC3986UnreservedChars(const char c)
     &unreserved[arrayLength(unreserved)];
 }
 
-std::string Util::urlencode(const unsigned char* target, size_t len) {
+std::string urlencode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; ++i) {
     if(!inRFC3986UnreservedChars(target[i])) {
@@ -230,7 +232,12 @@ std::string Util::urlencode(const unsigned char* target, size_t len) {
   return dest;
 }
 
-std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
+std::string urlencode(const std::string& target)
+{
+  return urlencode((const unsigned char*)target.c_str(), target.size());
+}
+
+std::string torrentUrlencode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; ++i) {
     if(('0' <= target[i] && target[i] <= '9') ||
@@ -244,14 +251,20 @@ std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
   return dest;
 }
 
-std::string Util::urldecode(const std::string& target) {
+std::string torrentUrlencode(const std::string& target)
+{
+  return torrentUrlencode
+    (reinterpret_cast<const unsigned char*>(target.c_str()), target.size());
+}
+
+std::string urldecode(const std::string& target) {
   std::string result;
   for(std::string::const_iterator itr = target.begin();
       itr != target.end(); ++itr) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
 	 isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
-	result += Util::parseInt(std::string(itr+1, itr+3), 16);
+	result += parseInt(std::string(itr+1, itr+3), 16);
 	itr += 2;
       } else {
 	result += *itr;
@@ -263,7 +276,7 @@ std::string Util::urldecode(const std::string& target) {
   return result;
 }
 
-std::string Util::toHex(const unsigned char* src, size_t len) {
+std::string toHex(const unsigned char* src, size_t len) {
   char* temp = new char[len*2+1];
   for(size_t i = 0; i < len; ++i) {
     sprintf(temp+i*2, "%02x", src[i]);
@@ -274,12 +287,22 @@ std::string Util::toHex(const unsigned char* src, size_t len) {
   return hex;
 }
 
-FILE* Util::openFile(const std::string& filename, const std::string& mode) {
+std::string toHex(const char* src, size_t len)
+{
+  return toHex(reinterpret_cast<const unsigned char*>(src), len);
+}
+
+std::string toHex(const std::string& src)
+{
+  return toHex(reinterpret_cast<const unsigned char*>(src.c_str()), src.size());
+}
+
+FILE* openFile(const std::string& filename, const std::string& mode) {
   FILE* file = fopen(filename.c_str(), mode.c_str());
   return file;
 }
 
-bool Util::isPowerOf(int num, int base) {
+bool isPowerOf(int num, int base) {
   if(base <= 0) { return false; }
   if(base == 1) { return true; }
 
@@ -292,7 +315,7 @@ bool Util::isPowerOf(int num, int base) {
   return false;
 }
 
-std::string Util::secfmt(time_t sec) {
+std::string secfmt(time_t sec) {
   std::string str;
   if(sec >= 3600) {
     str = itos(sec/3600);
@@ -325,9 +348,9 @@ int getNum(const char* buf, int offset, size_t length) {
   return x;
 }
 
-int32_t Util::parseInt(const std::string& s, int32_t base)
+int32_t parseInt(const std::string& s, int32_t base)
 {
-  std::string trimed = Util::trim(s);
+  std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
@@ -347,9 +370,9 @@ int32_t Util::parseInt(const std::string& s, int32_t base)
   return v;
 }
 
-uint32_t Util::parseUInt(const std::string& s, int base)
+uint32_t parseUInt(const std::string& s, int base)
 {
-  std::string trimed = Util::trim(s);
+  std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
@@ -372,9 +395,9 @@ uint32_t Util::parseUInt(const std::string& s, int base)
   return v;
 }
 
-int64_t Util::parseLLInt(const std::string& s, int32_t base)
+int64_t parseLLInt(const std::string& s, int32_t base)
 {
-  std::string trimed = Util::trim(s);
+  std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
@@ -392,9 +415,9 @@ int64_t Util::parseLLInt(const std::string& s, int32_t base)
   return v;
 }
 
-uint64_t Util::parseULLInt(const std::string& s, int base)
+uint64_t parseULLInt(const std::string& s, int base)
 {
-  std::string trimed = Util::trim(s);
+  std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 				 "empty string").str());
@@ -417,34 +440,34 @@ uint64_t Util::parseULLInt(const std::string& s, int base)
   return v;
 }
 
-IntSequence Util::parseIntRange(const std::string& src)
+IntSequence parseIntRange(const std::string& src)
 {
   IntSequence::Values values;
   std::string temp = src;
   while(temp.size()) {
-    std::pair<std::string, std::string> p = Util::split(temp, ",");
+    std::pair<std::string, std::string> p = split(temp, ",");
     temp = p.second;
     if(p.first.empty()) {
       continue;
     }
     if(p.first.find("-") == std::string::npos) {
-      int32_t v = Util::parseInt(p.first.c_str());
+      int32_t v = parseInt(p.first.c_str());
       values.push_back(IntSequence::Value(v, v+1));
     } else {
-      std::pair<std::string, std::string> vp = Util::split(p.first.c_str(), "-");
+      std::pair<std::string, std::string> vp = split(p.first.c_str(), "-");
       if(vp.first.empty() || vp.second.empty()) {
 	throw DL_ABORT_EX
 	  (StringFormat(MSG_INCOMPLETE_RANGE, p.first.c_str()).str());
       }
-      int32_t v1 = Util::parseInt(vp.first.c_str());
-      int32_t v2 = Util::parseInt(vp.second.c_str());
+      int32_t v1 = parseInt(vp.first.c_str());
+      int32_t v2 = parseInt(vp.second.c_str());
       values.push_back(IntSequence::Value(v1, v2+1));
     } 
   }
   return values;
 }
 
-std::string Util::getContentDispositionFilename(const std::string& header) {
+std::string getContentDispositionFilename(const std::string& header) {
   static const std::string keyName = "filename=";
   std::string::size_type attributesp = header.find(keyName);
   if(attributesp == std::string::npos) {
@@ -476,7 +499,7 @@ std::string Util::getContentDispositionFilename(const std::string& header) {
   }
 }
 
-std::string Util::randomAlpha(size_t length, const RandomizerHandle& randomizer) {
+std::string randomAlpha(size_t length, const RandomizerHandle& randomizer) {
   static const char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   std::string str;
   for(size_t i = 0; i < length; ++i) {
@@ -486,19 +509,19 @@ std::string Util::randomAlpha(size_t length, const RandomizerHandle& randomizer)
   return str;
 }
 
-std::string Util::toUpper(const std::string& src) {
+std::string toUpper(const std::string& src) {
   std::string temp = src;
   std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
   return temp;
 }
 
-std::string Util::toLower(const std::string& src) {
+std::string toLower(const std::string& src) {
   std::string temp = src;
   std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
   return temp;
 }
 
-bool Util::isNumbersAndDotsNotation(const std::string& name) {
+bool isNumbersAndDotsNotation(const std::string& name) {
   struct sockaddr_in sockaddr;
   if(inet_aton(name.c_str(), &sockaddr.sin_addr)) {
     return true;
@@ -507,7 +530,7 @@ bool Util::isNumbersAndDotsNotation(const std::string& name) {
   }
 }
 
-void Util::setGlobalSignalHandler(int sig, void (*handler)(int), int flags) {
+void setGlobalSignalHandler(int sig, void (*handler)(int), int flags) {
 #ifdef HAVE_SIGACTION
   struct sigaction sigact;
   sigact.sa_handler = handler;
@@ -519,7 +542,7 @@ void Util::setGlobalSignalHandler(int sig, void (*handler)(int), int flags) {
 #endif // HAVE_SIGACTION
 }
 
-std::string Util::getHomeDir()
+std::string getHomeDir()
 {
   const char* p = getenv("HOME");
   if(p) {
@@ -529,7 +552,7 @@ std::string Util::getHomeDir()
   }
 }
 
-int64_t Util::getRealSize(const std::string& sizeWithUnit)
+int64_t getRealSize(const std::string& sizeWithUnit)
 {
   std::string::size_type p = sizeWithUnit.find_first_of("KM");
   std::string size;
@@ -544,7 +567,7 @@ int64_t Util::getRealSize(const std::string& sizeWithUnit)
     }
     size = sizeWithUnit.substr(0, p);
   }
-  int64_t v = Util::parseLLInt(size);
+  int64_t v = parseLLInt(size);
 
   if(v < 0) {
     throw DL_ABORT_EX
@@ -556,10 +579,10 @@ int64_t Util::getRealSize(const std::string& sizeWithUnit)
   return v*mult;
 }
 
-std::string Util::abbrevSize(int64_t size)
+std::string abbrevSize(int64_t size)
 {
   if(size < 1024) {
-    return Util::itos(size, true);
+    return itos(size, true);
   }
   char units[] = { 'K', 'M' };
   size_t numUnit = sizeof(units)/sizeof(char);
@@ -570,15 +593,15 @@ std::string Util::abbrevSize(int64_t size)
     r = size&0x3ff;
     size >>= 10;
   }
-  std::string result = Util::itos(size, true);
+  std::string result = itos(size, true);
   result += ".";
-  result += Util::itos(r*10/1024);
+  result += itos(r*10/1024);
   result += units[i];
   result += "i";
   return result;
 }
 
-void Util::sleep(long seconds) {
+void sleep(long seconds) {
 #ifdef HAVE_SLEEP
   ::sleep(seconds);
 #elif defined(HAVE_USLEEP)
@@ -590,7 +613,7 @@ void Util::sleep(long seconds) {
 #endif
 }
 
-void Util::usleep(long microseconds) {
+void usleep(long microseconds) {
 #ifdef HAVE_USLEEP
   ::usleep(microseconds);
 #elif defined(HAVE_WINSOCK2_H)
@@ -625,7 +648,7 @@ void Util::usleep(long microseconds) {
 #endif
 }
 
-bool Util::isNumber(const std::string& what)
+bool isNumber(const std::string& what)
 {
   if(what.empty()) {
     return false;
@@ -638,7 +661,7 @@ bool Util::isNumber(const std::string& what)
   return true;
 }
 
-bool Util::isLowercase(const std::string& what)
+bool isLowercase(const std::string& what)
 {
   if(what.empty()) {
     return false;
@@ -651,7 +674,7 @@ bool Util::isLowercase(const std::string& what)
   return true;
 }
 
-bool Util::isUppercase(const std::string& what)
+bool isUppercase(const std::string& what)
 {
   if(what.empty()) {
     return false;
@@ -664,7 +687,7 @@ bool Util::isUppercase(const std::string& what)
   return true;
 }
 
-unsigned int Util::alphaToNum(const std::string& alphabets)
+unsigned int alphaToNum(const std::string& alphabets)
 {
   if(alphabets.empty()) {
     return 0;
@@ -686,7 +709,7 @@ unsigned int Util::alphaToNum(const std::string& alphabets)
   return num;
 }
 
-void Util::mkdirs(const std::string& dirpath)
+void mkdirs(const std::string& dirpath)
 {
   File dir(dirpath);
   if(dir.isDir()) {
@@ -702,7 +725,7 @@ void Util::mkdirs(const std::string& dirpath)
   }
 }
 
-void Util::convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
+void convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
 {
   size_t numBlock = dest->countBlock();
   for(size_t index = 0; index < numBlock; ++index) {
@@ -713,7 +736,7 @@ void Util::convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
   }
 }
 
-std::string Util::toString(const BinaryStreamHandle& binaryStream)
+std::string toString(const BinaryStreamHandle& binaryStream)
 {
   std::stringstream strm;
   char data[2048];
@@ -731,7 +754,7 @@ std::string Util::toString(const BinaryStreamHandle& binaryStream)
 /**
  * In linux 2.6, alignment and size should be a multiple of 512.
  */
-void* Util::allocateAlignedMemory(size_t alignment, size_t size)
+void* allocateAlignedMemory(size_t alignment, size_t size)
 {
   void* buffer;
   int res;
@@ -744,7 +767,7 @@ void* Util::allocateAlignedMemory(size_t alignment, size_t size)
 #endif // HAVE_POSIX_MEMALIGN
 
 std::pair<std::string, uint16_t>
-Util::getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
+getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
 {
   char host[NI_MAXHOST];
   char service[NI_MAXSERV];
@@ -757,7 +780,7 @@ Util::getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
   return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
 }
 
-std::string Util::htmlEscape(const std::string& src)
+std::string htmlEscape(const std::string& src)
 {
   std::string dest;
   for(std::string::const_iterator i = src.begin(); i != src.end(); ++i) {
@@ -780,9 +803,9 @@ std::string Util::htmlEscape(const std::string& src)
 }
 
 std::map<size_t, std::string>::value_type
-Util::parseIndexPath(const std::string& line)
+parseIndexPath(const std::string& line)
 {
-  std::pair<std::string, std::string> p = Util::split(line, "=");
+  std::pair<std::string, std::string> p = split(line, "=");
   size_t index = parseUInt(p.first);
   if(p.second.empty()) {
     throw DL_ABORT_EX(StringFormat("Path with index=%u is empty.",
@@ -791,7 +814,7 @@ Util::parseIndexPath(const std::string& line)
   return std::map<size_t, std::string>::value_type(index, p.second);
 }
 
-std::map<size_t, std::string> Util::createIndexPathMap(std::istream& i)
+std::map<size_t, std::string> createIndexPathMap(std::istream& i)
 {
   std::map<size_t, std::string> indexPathMap;
   std::string line;
@@ -800,8 +823,6 @@ std::map<size_t, std::string> Util::createIndexPathMap(std::istream& i)
   }
   return indexPathMap;
 }
-
-namespace util {
 
 void generateRandomData(unsigned char* data, size_t length)
 {

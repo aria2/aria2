@@ -88,7 +88,7 @@ void IteratableChunkChecksumValidator::validateChunk()
       } else {
 	_logger->info(EX_INVALID_CHUNK_CHECKSUM,
 		      _currentIndex,
-		      Util::itos(getCurrentOffset(), true).c_str(),
+		      util::itos(getCurrentOffset(), true).c_str(),
 		      _dctx->getPieceHashes()[_currentIndex].c_str(),
 		      actualChecksum.c_str());
 	_bitfield->unsetBit(_currentIndex);
@@ -122,7 +122,7 @@ void IteratableChunkChecksumValidator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
   free(_buffer);
-  _buffer = (unsigned char*)Util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
+  _buffer = (unsigned char*)util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
 #else // !HAVE_POSIX_MEMALIGN
   delete [] _buffer;
   _buffer = new unsigned char[BUFSIZE];
@@ -166,7 +166,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     curoffset += r;
     woffset = 0;
   }
-  return Util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
+  return util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
 }
 
 

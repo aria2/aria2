@@ -453,7 +453,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
     createReq23Hash(md, torrentAttrs[bittorrent::INFO_HASH].uc());
     if(memcmp(md, rbufptr, sizeof(md)) == 0) {
       _logger->debug("CUID#%d - info hash found: %s", _cuid,
-		     Util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str());
+		     util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str());
       downloadContext = *i;
       break;
     }
@@ -577,7 +577,7 @@ void MSEHandshake::verifyVC(const unsigned char* vcbuf)
   _decryptor->decrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
   if(memcmp(VC, vc, sizeof(VC)) != 0) {
     throw DL_ABORT_EX
-      (StringFormat("Invalid VC: %s", Util::toHex(vc, VC_LENGTH).c_str()).str());
+      (StringFormat("Invalid VC: %s", util::toHex(vc, VC_LENGTH).c_str()).str());
   }
 }
 

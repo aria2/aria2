@@ -55,7 +55,7 @@ void UriListParser::getOptions(Option& op)
 {
   std::stringstream ss;
   while(getline(_in, _line)) {
-    if(Util::startsWith(_line, " ")) {
+    if(util::startsWith(_line, " ")) {
       ss << _line << "\n";
     } else {
       break;
@@ -73,8 +73,8 @@ void UriListParser::parseNext(std::deque<std::string>& uris, Option& op)
     return;
   }
   do {
-    if(!Util::trim(_line).empty()) {
-      split(_line, std::back_inserter(uris), "\t", true);
+    if(!util::trim(_line).empty()) {
+      util::split(_line, std::back_inserter(uris), "\t", true);
       getOptions(op);
       return;
     }

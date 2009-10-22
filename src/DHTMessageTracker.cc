@@ -78,7 +78,7 @@ DHTMessageTracker::messageArrived(const BDE& dict,
 				 ipaddr.c_str(), port).str());
   }
   _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
-		 Util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
+		 util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
   for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
 	_entries.begin(); i != _entries.end(); ++i) {
     if((*i)->match(tid.s(), ipaddr, port)) {
@@ -93,7 +93,7 @@ DHTMessageTracker::messageArrived(const BDE& dict,
 					targetNode->getPort());
 
       int64_t rtt = entry->getElapsedMillis();
-      _logger->debug("RTT is %s", Util::itos(rtt).c_str());
+      _logger->debug("RTT is %s", util::itos(rtt).c_str());
       message->getRemoteNode()->updateRTT(rtt);
       SharedHandle<DHTMessageCallback> callback = entry->getCallback();
       return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >(message, callback);

@@ -214,7 +214,7 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	throw DOWNLOAD_FAILURE_EXCEPTION
 	  (StringFormat
 	   ("InfoHash %s is already registered.",
-	    Util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str()).str());
+	    util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str()).str());
       }
 
       if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
@@ -280,8 +280,8 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	  // truncate the file to _downloadContext->getTotalLength()
 	  _logger->debug("File size not match. File is opened in writable mode."
 			 " Expected:%s Actual:%s",
-			 Util::uitos(_downloadContext->getTotalLength()).c_str(),
-			 Util::uitos(actualFileSize).c_str());
+			 util::uitos(_downloadContext->getTotalLength()).c_str(),
+			 util::uitos(actualFileSize).c_str());
 	}
       }
       // Call Load, Save and file allocation command here
@@ -568,7 +568,7 @@ bool RequestGroup::tryAutoFileRenaming()
     return false;
   }
   for(unsigned int i = 1; i < 10000; ++i) {
-    File newfile(strconcat(filepath, ".", Util::uitos(i)));
+    File newfile(strconcat(filepath, ".", util::uitos(i)));
     File ctrlfile(newfile.getPath()+DefaultBtProgressInfoFile::getSuffix());
     if(!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
       _downloadContext->getFirstFileEntry()->setPath(newfile.getPath());
@@ -666,8 +666,8 @@ void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
   if(expectedTotalLength != actualTotalLength) {
     throw DL_ABORT_EX
       (StringFormat(EX_SIZE_MISMATCH,
-		    Util::itos(expectedTotalLength, true).c_str(),
-		    Util::itos(actualTotalLength, true).c_str()).str());
+		    util::itos(expectedTotalLength, true).c_str(),
+		    util::itos(actualTotalLength, true).c_str()).str());
   }
 }
 
@@ -942,8 +942,8 @@ void RequestGroup::reportDownloadFinished()
     double shareRatio = ((stat.getAllTimeUploadLength()*10)/getCompletedLength())/10.0;
     _logger->notice(MSG_SHARE_RATIO_REPORT,
 		    shareRatio,
-		    Util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
-		    Util::abbrevSize(getCompletedLength()).c_str());
+		    util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
+		    util::abbrevSize(getCompletedLength()).c_str());
   }
 #endif // ENABLE_BITTORRENT
 }

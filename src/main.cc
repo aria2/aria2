@@ -125,7 +125,7 @@ static void showMetalinkFile
   MetalinkHelper::parseAndQuery(metalinkEntries, uri, op.get());
   std::deque<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
-  Util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);
+  util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);
   std::cout << std::endl;
 }
 #endif // ENABLE_METALINK
@@ -209,12 +209,12 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 #endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef SIGPIPE
-    Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
+    util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
 #ifdef SIGCHLD
     // Avoid to create zombie process when forked child processes are
     // died.
-    Util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
+    util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
 #endif // SIGCHILD
     std::deque<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT

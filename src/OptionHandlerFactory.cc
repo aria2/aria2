@@ -115,7 +115,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_CONF_PATH,
 				    TEXT_CONF_PATH,
-				    Util::getHomeDir()+"/.aria2/aria2.conf"));
+				    util::getHomeDir()+"/.aria2/aria2.conf"));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -827,7 +827,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<DefaultOptionHandler> op(new DefaultOptionHandler
 					  (PREF_NETRC_PATH,
 					   NO_DESCRIPTION,
-					   Util::getHomeDir()+"/.netrc",
+					   util::getHomeDir()+"/.netrc",
 					   "/PATH/TO/NETRC"));
     op->hide();
     handlers.push_back(op);
@@ -1045,7 +1045,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_DHT_FILE_PATH,
 				    TEXT_DHT_FILE_PATH,
-				    Util::getHomeDir()+"/.aria2/dht.dat",
+				    util::getHomeDir()+"/.aria2/dht.dat",
 				    "/PATH/TO/DHT_DAT"));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);

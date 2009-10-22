@@ -91,8 +91,8 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
     throw DL_ABORT_EX("Missing '}' in the parameterized string.");
   }
   std::deque<std::string> values;
-  split(src.substr(offset, rightParenIndex-offset), std::back_inserter(values),
-	",", true);
+  util::split(src.substr(offset, rightParenIndex-offset),
+	      std::back_inserter(values), ",", true);
   if(values.empty()) {
     throw DL_ABORT_EX("Empty {} is not allowed.");
   }
@@ -116,32 +116,32 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   std::string::size_type colonIndex = loopStr.find(":");
   if(colonIndex != std::string::npos) {
     std::string stepStr = loopStr.substr(colonIndex+1);
-    if(Util::isNumber(stepStr)) {
-      step = Util::parseUInt(stepStr);
+    if(util::isNumber(stepStr)) {
+      step = util::parseUInt(stepStr);
     } else {
       throw DL_ABORT_EX("A step count must be a positive number.");
     }
     loopStr.erase(colonIndex);
   }
-  std::pair<std::string, std::string> range = Util::split(loopStr, "-");
+  std::pair<std::string, std::string> range = util::split(loopStr, "-");
   if(range.first.empty() || range.second.empty()) {
     throw DL_ABORT_EX("Loop range missing.");
   }
   NumberDecoratorHandle nd;
   unsigned int start;
   unsigned int end;
-  if(Util::isNumber(range.first) && Util::isNumber(range.second)) {
+  if(util::isNumber(range.first) && util::isNumber(range.second)) {
     nd.reset(new FixedWidthNumberDecorator(range.first.size()));
-    start = Util::parseUInt(range.first);
-    end = Util::parseUInt(range.second);
-  } else if(Util::isLowercase(range.first) && Util::isLowercase(range.second)) {
+    start = util::parseUInt(range.first);
+    end = util::parseUInt(range.second);
+  } else if(util::isLowercase(range.first) && util::isLowercase(range.second)) {
     nd.reset(new AlphaNumberDecorator(range.first.size()));
-    start = Util::alphaToNum(range.first);
-    end = Util::alphaToNum(range.second);
-  } else if(Util::isUppercase(range.first) && Util::isUppercase(range.second)) {
+    start = util::alphaToNum(range.first);
+    end = util::alphaToNum(range.second);
+  } else if(util::isUppercase(range.first) && util::isUppercase(range.second)) {
     nd.reset(new AlphaNumberDecorator(range.first.size(), true));
-    start = Util::alphaToNum(range.first);
-    end = Util::alphaToNum(range.second);
+    start = util::alphaToNum(range.first);
+    end = util::alphaToNum(range.second);
   } else {
     throw DL_ABORT_EX("Invalid loop range.");
   }

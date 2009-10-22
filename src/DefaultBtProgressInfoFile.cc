@@ -230,7 +230,7 @@ void DefaultBtProgressInfoFile::load()
   unsigned char versionBuf[2];
   in.read((char*)versionBuf, sizeof(versionBuf));
   CHECK_STREAM(in, sizeof(versionBuf));
-  std::string versionHex = Util::toHex(versionBuf, sizeof(versionBuf));
+  std::string versionHex = util::toHex(versionBuf, sizeof(versionBuf));
   int version;
   if(DefaultBtProgressInfoFile::V0000 == versionHex) {
     version = 0;
@@ -273,8 +273,8 @@ void DefaultBtProgressInfoFile::load()
 	 memcmp(savedInfoHash, infoHash, INFO_HASH_LENGTH) != 0) {
 	throw DL_ABORT_EX
 	  (StringFormat("info hash mismatch. expected: %s, actual: %s",
-			Util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
-			Util::toHex(savedInfoHash, infoHashLength).c_str()
+			util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
+			util::toHex(savedInfoHash, infoHashLength).c_str()
 			).str());
       }
     }
@@ -297,8 +297,8 @@ void DefaultBtProgressInfoFile::load()
   if(totalLength != _dctx->getTotalLength()) {
     throw DL_ABORT_EX
       (StringFormat("total length mismatch. expected: %s, actual: %s",
-		    Util::itos(_dctx->getTotalLength()).c_str(),
-		    Util::itos(totalLength).c_str()).str());
+		    util::itos(_dctx->getTotalLength()).c_str(),
+		    util::itos(totalLength).c_str()).str());
   }
   uint64_t uploadLength;
   in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
@@ -411,7 +411,7 @@ void DefaultBtProgressInfoFile::load()
 	 " progress.");
     }
     BitfieldMan dest(_dctx->getPieceLength(), totalLength);
-    Util::convertBitfield(&dest, &src);
+    util::convertBitfield(&dest, &src);
     _pieceStorage->setBitfield(dest.getBitfield(), dest.getBitfieldLength());
   }
   _logger->info(MSG_LOADED_SEGMENT_FILE);

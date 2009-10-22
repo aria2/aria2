@@ -71,7 +71,7 @@ void Sqlite3MozCookieParserTest::testParse_fileNotFound()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // SUCCESS
-    CPPUNIT_ASSERT(Util::startsWith(e.what(),
+    CPPUNIT_ASSERT(util::startsWith(e.what(),
 				    "Failed to open SQLite3 database:"));
   }
 }

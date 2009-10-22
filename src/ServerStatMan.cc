@@ -98,18 +98,18 @@ bool ServerStatMan::load(std::istream& in)
 
   std::string line;
   while(getline(in, line)) {
-    Util::trimSelf(line);
+    util::trimSelf(line);
     if(line.empty()) {
       continue;
     }
     std::vector<std::string> items;
-    split(line, std::back_inserter(items), ",");
+    util::split(line, std::back_inserter(items), ",");
     std::map<std::string, std::string> m;
     for(std::vector<std::string>::const_iterator i = items.begin();
 	i != items.end(); ++i) {
-      std::pair<std::string, std::string> p = Util::split(*i, "=");
-      Util::trimSelf(p.first);
-      Util::trimSelf(p.second);
+      std::pair<std::string, std::string> p = util::split(*i, "=");
+      util::trimSelf(p.first);
+      util::trimSelf(p.second);
       m[p.first] = p.second;
     }
     if(m[S_HOST].empty() || m[S_PROTOCOL].empty()) {
@@ -117,20 +117,20 @@ bool ServerStatMan::load(std::istream& in)
     }
     SharedHandle<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
     try {
-      sstat->setDownloadSpeed(Util::parseUInt(m[S_DL_SPEED]));
+      sstat->setDownloadSpeed(util::parseUInt(m[S_DL_SPEED]));
       // Old serverstat file doesn't contains SC_AVG_SPEED
       if(m.find(S_SC_AVG_SPEED) != m.end()) {
-	sstat->setSingleConnectionAvgSpeed(Util::parseUInt(m[S_SC_AVG_SPEED]));
+	sstat->setSingleConnectionAvgSpeed(util::parseUInt(m[S_SC_AVG_SPEED]));
       }
       // Old serverstat file doesn't contains MC_AVG_SPEED
       if(m.find(S_MC_AVG_SPEED) != m.end()) {
-	sstat->setMultiConnectionAvgSpeed(Util::parseUInt(m[S_MC_AVG_SPEED]));
+	sstat->setMultiConnectionAvgSpeed(util::parseUInt(m[S_MC_AVG_SPEED]));
       }
       // Old serverstat file doesn't contains COUNTER_SPEED
       if(m.find(S_COUNTER) != m.end()) {
-	sstat->setCounter(Util::parseUInt(m[S_COUNTER]));
+	sstat->setCounter(util::parseUInt(m[S_COUNTER]));
       }
-      sstat->setLastUpdated(Time(Util::parseInt(m[S_LAST_UPDATED])));
+      sstat->setLastUpdated(Time(util::parseInt(m[S_LAST_UPDATED])));
       sstat->setStatus(m[S_STATUS]);
       add(sstat);
     } catch(RecoverableException& e) {

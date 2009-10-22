@@ -210,10 +210,10 @@ createBtRequestGroup(const std::string& torrentFilePath,
     // throw
     // exception
   }
-  dctx->setFileFilter(Util::parseIntRange(option->get(PREF_SELECT_FILE)));
+  dctx->setFileFilter(util::parseIntRange(option->get(PREF_SELECT_FILE)));
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
   std::map<size_t, std::string> indexPathMap =
-    Util::createIndexPathMap(indexOutIn);
+    util::createIndexPathMap(indexOutIn);
   for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
       i != indexPathMap.end(); ++i) {
     dctx->setFilePathWithIndex

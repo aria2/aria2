@@ -113,7 +113,7 @@ bool HttpServerCommand::execute()
 	logger->info("Request too long. ContentLength=%s."
 		     " See --xml-rpc-max-request-size option to loose"
 		     " this limitation.",
-		     Util::uitos(_httpServer->getContentLength()).c_str());
+		     util::uitos(_httpServer->getContentLength()).c_str());
 	return true;
       }
       Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,

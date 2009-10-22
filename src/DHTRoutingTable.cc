@@ -88,8 +88,8 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
       return true;
     } else if(bucket->splitAllowed()) {
       _logger->debug("Splitting bucket. Range:%s-%s",
-		     Util::toHex(bucket->getMinID(), DHT_ID_LENGTH).c_str(),
-		     Util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
+		     util::toHex(bucket->getMinID(), DHT_ID_LENGTH).c_str(),
+		     util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
       SharedHandle<DHTBucket> r = bucket->split();
 
       bnode->setBucket(SharedHandle<DHTBucket>());

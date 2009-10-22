@@ -98,10 +98,10 @@ static void printProgress
 #endif // ENABLE_BITTORRENT
     {
       o << "SIZE:"
-	<< Util::abbrevSize(rg->getCompletedLength())
+	<< util::abbrevSize(rg->getCompletedLength())
 	<< "B"
 	<< "/"
-	<< Util::abbrevSize(rg->getTotalLength())
+	<< util::abbrevSize(rg->getTotalLength())
 	<< "B";
       if(rg->getTotalLength() > 0) {
 	o << "("
@@ -128,18 +128,18 @@ static void printProgress
   if(!rg->downloadFinished()) {
     o << " "
       << "SPD:"
-      << Util::abbrevSize(stat.getDownloadSpeed()) << "Bs";
+      << util::abbrevSize(stat.getDownloadSpeed()) << "Bs";
   }
   if(stat.getSessionUploadLength() > 0) {
     o << " "
       << "UP:"
-      << Util::abbrevSize(stat.getUploadSpeed()) << "Bs"
-      << "(" << Util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
+      << util::abbrevSize(stat.getUploadSpeed()) << "Bs"
+      << "(" << util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
   }
   if(eta > 0) {
     o << " "
       << "ETA:"
-      << Util::secfmt(eta);
+      << util::secfmt(eta);
   }
   o << "]";
 }
@@ -241,7 +241,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     TransferStat stat = e->_requestGroupMan->calculateStat();
     o << " "
       << "[TOTAL SPD:"
-      << Util::abbrevSize(stat.getDownloadSpeed()) << "Bs" << "]";
+      << util::abbrevSize(stat.getDownloadSpeed()) << "Bs" << "]";
   }
 
   {
@@ -250,10 +250,10 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       o << " "
 	<< "[FileAlloc:"
 	<< "#" << entry->getRequestGroup()->getGID() << " "
-	<< Util::abbrevSize(entry->getCurrentLength())
+	<< util::abbrevSize(entry->getCurrentLength())
 	<< "B"
 	<< "/"
-	<< Util::abbrevSize(entry->getTotalLength())
+	<< util::abbrevSize(entry->getTotalLength())
 	<< "B"
 	<< "(";
       if(entry->getTotalLength() > 0) {
@@ -277,10 +277,10 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       o << " "
 	<< "[Checksum:"
 	<< "#" << entry->getRequestGroup()->getGID() << " "
-	<< Util::abbrevSize(entry->getCurrentLength())
+	<< util::abbrevSize(entry->getCurrentLength())
 	<< "B"
 	<< "/"
-	<< Util::abbrevSize(entry->getTotalLength())
+	<< util::abbrevSize(entry->getTotalLength())
 	<< "B"
 	<< "("
 	<< 100*entry->getCurrentLength()/entry->getTotalLength()

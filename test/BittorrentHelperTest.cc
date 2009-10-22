@@ -131,11 +131,11 @@ void BittorrentHelperTest::testGetPieceHash() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
 
-  CPPUNIT_ASSERT_EQUAL(Util::toHex("AAAAAAAAAAAAAAAAAAAA", 20),
+  CPPUNIT_ASSERT_EQUAL(util::toHex("AAAAAAAAAAAAAAAAAAAA", 20),
 		       dctx->getPieceHash(0));
-  CPPUNIT_ASSERT_EQUAL(Util::toHex("BBBBBBBBBBBBBBBBBBBB", 20),
+  CPPUNIT_ASSERT_EQUAL(util::toHex("BBBBBBBBBBBBBBBBBBBB", 20),
 		       dctx->getPieceHash(1));
-  CPPUNIT_ASSERT_EQUAL(Util::toHex("CCCCCCCCCCCCCCCCCCCC", 20),
+  CPPUNIT_ASSERT_EQUAL(util::toHex("CCCCCCCCCCCCCCCCCCCC", 20),
 		       dctx->getPieceHash(2));
   CPPUNIT_ASSERT_EQUAL(std::string(""),
 		       dctx->getPieceHash(3));
@@ -241,7 +241,7 @@ void BittorrentHelperTest::testGetAnnounceTier() {
   const BDE& tier = announceList[0]; 
   CPPUNIT_ASSERT_EQUAL((size_t)1, tier.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/announce.php"),
-		       Util::trim(tier[0].s()));
+		       util::trim(tier[0].s()));
 
 }
 
@@ -257,7 +257,7 @@ void BittorrentHelperTest::testGetAnnounceTierAnnounceList() {
   const BDE& tier1 = announceList[0];
   CPPUNIT_ASSERT_EQUAL((size_t)1, tier1.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
-		       Util::trim(tier1[0].s()));
+		       util::trim(tier1[0].s()));
 
   const BDE& tier2 = announceList[1];
   CPPUNIT_ASSERT_EQUAL((size_t)1, tier2.size());
@@ -586,15 +586,15 @@ void BittorrentHelperTest::testSetFileFilter_single()
 
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
 
-  dctx->setFileFilter(Util::parseIntRange(""));
+  dctx->setFileFilter(util::parseIntRange(""));
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
 
-  dctx->setFileFilter(Util::parseIntRange("1"));
+  dctx->setFileFilter(util::parseIntRange("1"));
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
 
   // For single file torrent, file is always selected whatever range
   // is passed.
-  dctx->setFileFilter(Util::parseIntRange("2"));
+  dctx->setFileFilter(util::parseIntRange("2"));
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
 }
 
@@ -606,19 +606,19 @@ void BittorrentHelperTest::testSetFileFilter_multi()
   CPPUNIT_ASSERT(dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(Util::parseIntRange(""));
+  dctx->setFileFilter(util::parseIntRange(""));
   CPPUNIT_ASSERT(dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(Util::parseIntRange("2"));
+  dctx->setFileFilter(util::parseIntRange("2"));
   CPPUNIT_ASSERT(!dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(Util::parseIntRange("3"));
+  dctx->setFileFilter(util::parseIntRange("3"));
   CPPUNIT_ASSERT(!dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(!dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(Util::parseIntRange("1,2"));
+  dctx->setFileFilter(util::parseIntRange("1,2"));
   CPPUNIT_ASSERT(dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 }

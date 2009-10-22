@@ -337,7 +337,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   if(getOption()->get(PREF_OUT).empty()) {
     _fileEntry->setPath
       (strconcat(getDownloadContext()->getDir(),
-		 "/", Util::urldecode(req->getFile())));
+		 "/", util::urldecode(req->getFile())));
   }
   _requestGroup->preDownloadProcessing();
   if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
@@ -430,7 +430,7 @@ bool FtpNegotiationCommand::recvSize() {
 
     if(size > INT64_MAX) {
       throw DL_ABORT_EX
-	(StringFormat(EX_TOO_LARGE_FILE, Util::uitos(size, true).c_str()).str());
+	(StringFormat(EX_TOO_LARGE_FILE, util::uitos(size, true).c_str()).str());
     }
     if(_requestGroup->getPieceStorage().isNull()) {
 

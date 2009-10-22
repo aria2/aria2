@@ -53,7 +53,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
     SharedHandle<DHTNode> nodes[8];
     for(size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i].reset(new DHTNode());
-      nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
+      nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
       nodes[i]->setPort(6881+i);
       
       unsigned char buf[6];
@@ -70,15 +70,15 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 
     rDict["nodes"] = compactNodeInfo;
 
-    CPPUNIT_ASSERT_EQUAL(Util::urlencode(bencode::encode(dict)),
-			 Util::urlencode(msgbody));
+    CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
+			 util::urlencode(msgbody));
   }
   rDict.removeKey("nodes");
   {
     std::deque<SharedHandle<Peer> > peers;
     BDE valuesList = BDE::list();
     for(size_t i = 0; i < 4; ++i) {
-      SharedHandle<Peer> peer(new Peer("192.168.0."+Util::uitos(i+1), 6881+i));
+      SharedHandle<Peer> peer(new Peer("192.168.0."+util::uitos(i+1), 6881+i));
       unsigned char buffer[6];
       CPPUNIT_ASSERT(bittorrent::createcompact
 		     (buffer, peer->ipaddr, peer->port));
@@ -90,8 +90,8 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
     msg.setValues(peers);
     std::string msgbody  = msg.getBencodedMessage();
 
-    CPPUNIT_ASSERT_EQUAL(Util::urlencode(bencode::encode(dict)),
-			 Util::urlencode(msgbody));
+    CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
+			 util::urlencode(msgbody));
   }
 }
 

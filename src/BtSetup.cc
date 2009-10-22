@@ -149,7 +149,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
 
   if(PeerListenCommand::getNumInstance() == 0) {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
-    IntSequence seq = Util::parseIntRange(option->get(PREF_LISTEN_PORT));
+    IntSequence seq = util::parseIntRange(option->get(PREF_LISTEN_PORT));
     uint16_t port;
     if(listenCommand->bindPort(port, seq)) {
       btRuntime->setListenPort(port);

@@ -79,7 +79,7 @@ std::string MessageDigestContext::getSupportedAlgoString()
     algos += (*itr).first;
     algos += ", ";
   }
-  return Util::trim(algos, ", ");
+  return util::trim(algos, ", ");
 }
 
 } // namespace aria2

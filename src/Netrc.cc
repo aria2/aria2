@@ -89,11 +89,11 @@ void Netrc::parse(const std::string& path)
   std::string line;
   STATE state = GET_TOKEN;
   while(getline(f, line)) {
-    if(Util::startsWith(line, "#")) {
+    if(util::startsWith(line, "#")) {
       continue;
     }
     std::vector<std::string> tokens;
-    split(line, std::back_inserter(tokens), " \t", true);
+    util::split(line, std::back_inserter(tokens), " \t", true);
     for(std::vector<std::string>::const_iterator iter = tokens.begin();
 	iter != tokens.end(); ++iter) {
       const std::string& token = *iter;

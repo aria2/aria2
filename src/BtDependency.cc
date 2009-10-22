@@ -70,7 +70,7 @@ bool BtDependency::resolve()
       DiskAdaptorHandle diskAdaptor =
 	dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
-      std::string content = Util::toString(diskAdaptor);
+      std::string content = util::toString(diskAdaptor);
       bittorrent::loadFromMemory
 	(content, context, File(dependee->getFirstFilePath()).getBasename());
       if(context->getFileEntries().size() !=

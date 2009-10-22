@@ -274,7 +274,7 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
 				uint16_t port,
 				const SocketPoolEntry& entry)
 {
-  std::string addr = strconcat(ipaddr, ":", Util::uitos(port));
+  std::string addr = strconcat(ipaddr, ":", util::uitos(port));
   logger->info("Pool socket for %s", addr.c_str());
   std::multimap<std::string, SocketPoolEntry>::value_type p(addr, entry);
   _socketPool.insert(p);
@@ -353,7 +353,7 @@ std::multimap<std::string, DownloadEngine::SocketPoolEntry>::iterator
 DownloadEngine::findSocketPoolEntry(const std::string& ipaddr, uint16_t port)
 {
   std::string addr = ipaddr;
-  strappend(addr, ":", Util::uitos(port));
+  strappend(addr, ":", util::uitos(port));
   std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
     std::multimap<std::string, SocketPoolEntry>::iterator> range =
     _socketPool.equal_range(addr);

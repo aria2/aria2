@@ -106,9 +106,9 @@ size_t BtHandshakeMessage::getMessageLength() {
 
 std::string BtHandshakeMessage::toString() const {
   return strconcat(NAME, " peerId=",
-		   Util::urlencode(peerId, PEER_ID_LENGTH),
+		   util::urlencode(peerId, PEER_ID_LENGTH),
 		   ", reserved=",
-		   Util::toHex(reserved, RESERVED_LENGTH));
+		   util::toHex(reserved, RESERVED_LENGTH));
 }
 
 bool BtHandshakeMessage::isFastExtensionSupported() const {

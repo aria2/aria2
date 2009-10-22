@@ -171,7 +171,7 @@ bool HttpSkipResponseCommand::processResponse()
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
 			 downloadresultcode::RESOURCE_NOT_FOUND);
     } else {
-      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, Util::parseUInt(_httpResponse->getResponseStatus())).str());
+      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, util::parseUInt(_httpResponse->getResponseStatus())).str());
     }
   } else {
     return prepareForRetry(0);

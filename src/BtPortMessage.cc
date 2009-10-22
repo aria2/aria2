@@ -110,7 +110,7 @@ size_t BtPortMessage::getMessageLength() {
 }
 
 std::string BtPortMessage::toString() const {
-  return strconcat(NAME, " port=", Util::uitos(_port));
+  return strconcat(NAME, " port=", util::uitos(_port));
 }
 
 void BtPortMessage::setLocalNode(const WeakHandle<DHTNode>& localNode)

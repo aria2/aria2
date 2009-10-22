@@ -70,7 +70,7 @@ void DHTBucketTest::testGetRandomNodeID()
     unsigned char nodeID[DHT_ID_LENGTH];
     bucket.getRandomNodeID(nodeID);
     CPPUNIT_ASSERT_EQUAL(std::string("0101"),
-			 Util::toHex(nodeID, sizeof(nodeID)).substr(0, 4));
+			 util::toHex(nodeID, sizeof(nodeID)).substr(0, 4));
   }
 }
 
@@ -210,10 +210,10 @@ void DHTBucketTest::testSplit()
 					 0xff, 0xff, 0xff, 0xff, 0xff };
 	unsigned char expectedRMin[DHT_ID_LENGTH];
 	memset(expectedRMin, 0, DHT_ID_LENGTH);
-	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMax, DHT_ID_LENGTH),
-			     Util::toHex(r->getMaxID(), DHT_ID_LENGTH));
-	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMin, DHT_ID_LENGTH),
-			     Util::toHex(r->getMinID(), DHT_ID_LENGTH));
+	CPPUNIT_ASSERT_EQUAL(util::toHex(expectedRMax, DHT_ID_LENGTH),
+			     util::toHex(r->getMaxID(), DHT_ID_LENGTH));
+	CPPUNIT_ASSERT_EQUAL(util::toHex(expectedRMin, DHT_ID_LENGTH),
+			     util::toHex(r->getMinID(), DHT_ID_LENGTH));
 	CPPUNIT_ASSERT_EQUAL((size_t)1, r->getPrefixLength());
       }
       {
@@ -223,10 +223,10 @@ void DHTBucketTest::testSplit()
 					 0x00, 0x00, 0x00, 0x00, 0x00,
 					 0x00, 0x00, 0x00, 0x00, 0x00,
 					 0x00, 0x00, 0x00, 0x00, 0x00 };
-	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedLMax, DHT_ID_LENGTH),
-			     Util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
-	CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedLMin, DHT_ID_LENGTH),
-			     Util::toHex(bucket.getMinID(), DHT_ID_LENGTH));
+	CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMax, DHT_ID_LENGTH),
+			     util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
+	CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMin, DHT_ID_LENGTH),
+			     util::toHex(bucket.getMinID(), DHT_ID_LENGTH));
 	CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getPrefixLength());
       }
     }
@@ -245,10 +245,10 @@ void DHTBucketTest::testSplit()
 				      0x00, 0x00, 0x00, 0x00, 0x01 };
       unsigned char expectedMin[DHT_ID_LENGTH];
       memset(expectedMin, 0, DHT_ID_LENGTH);
-      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedMax, DHT_ID_LENGTH),
-			   Util::toHex(bucket->getMaxID(), DHT_ID_LENGTH));
-      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedMin, DHT_ID_LENGTH),
-			   Util::toHex(bucket->getMinID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL(util::toHex(expectedMax, DHT_ID_LENGTH),
+			   util::toHex(bucket->getMaxID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL(util::toHex(expectedMin, DHT_ID_LENGTH),
+			   util::toHex(bucket->getMinID(), DHT_ID_LENGTH));
       CPPUNIT_ASSERT_EQUAL((size_t)159, bucket->getPrefixLength());
     }
   }
@@ -266,10 +266,10 @@ void DHTBucketTest::testSplit()
 				       0xff, 0xff, 0xff, 0xff, 0xff };
       unsigned char expectedRMin[DHT_ID_LENGTH];
       memset(expectedRMin, 0, DHT_ID_LENGTH);
-      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMax, DHT_ID_LENGTH),
-			   Util::toHex(r->getMaxID(), DHT_ID_LENGTH));
-      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedRMin, DHT_ID_LENGTH),
-			   Util::toHex(r->getMinID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL(util::toHex(expectedRMax, DHT_ID_LENGTH),
+			   util::toHex(r->getMaxID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL(util::toHex(expectedRMin, DHT_ID_LENGTH),
+			   util::toHex(r->getMinID(), DHT_ID_LENGTH));
       CPPUNIT_ASSERT_EQUAL((size_t)1, r->getPrefixLength());
     }
     {
@@ -279,10 +279,10 @@ void DHTBucketTest::testSplit()
 				       0x00, 0x00, 0x00, 0x00, 0x00,
 				       0x00, 0x00, 0x00, 0x00, 0x00,
 				       0x00, 0x00, 0x00, 0x00, 0x00 };
-      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedLMax, DHT_ID_LENGTH),
-			   Util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
-      CPPUNIT_ASSERT_EQUAL(Util::toHex(expectedLMin, DHT_ID_LENGTH),
-			   Util::toHex(bucket.getMinID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMax, DHT_ID_LENGTH),
+			   util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
+      CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMin, DHT_ID_LENGTH),
+			   util::toHex(bucket.getMinID(), DHT_ID_LENGTH));
       CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getPrefixLength());
     }
   }

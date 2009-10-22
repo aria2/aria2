@@ -320,7 +320,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
   } else {
     logger->info(EX_INVALID_CHUNK_CHECKSUM,
 		 segment->getIndex(),
-		 Util::itos(segment->getPosition(), true).c_str(),
+		 util::itos(segment->getPosition(), true).c_str(),
 		 expectedPieceHash.c_str(),
 		 actualPieceHash.c_str());
     segment->clear();

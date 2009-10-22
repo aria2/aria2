@@ -63,7 +63,7 @@ static void encodeStruct
   o << "<struct>";
   for(; first != last; ++first) {
     o << "<member>"
-      << "<name>" << Util::htmlEscape((*first).first) << "</name>";
+      << "<name>" << util::htmlEscape((*first).first) << "</name>";
     encodeValue((*first).second, o);
     o << "</member>";
   }
@@ -74,7 +74,7 @@ static void encodeValue(const BDE& value, std::ostream& o)
 {
   o << "<value>";
   if(value.isString()) {
-    o << "<string>" << Util::htmlEscape(value.s()) << "</string>";
+    o << "<string>" << util::htmlEscape(value.s()) << "</string>";
   } else if(value.isInteger()) {
     o << "<int>" << value.i() << "</int>";
   } else if(value.isList()) {

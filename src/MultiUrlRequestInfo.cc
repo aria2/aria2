@@ -170,8 +170,8 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     // This is done every 1 second. At the same time, it removes finished/error
     // RequestGroup from DownloadEngine.
 
-    Util::setGlobalSignalHandler(SIGINT, handler, 0);
-    Util::setGlobalSignalHandler(SIGTERM, handler, 0);
+    util::setGlobalSignalHandler(SIGINT, handler, 0);
+    util::setGlobalSignalHandler(SIGTERM, handler, 0);
     
     e->run();
     
@@ -199,8 +199,8 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
   } catch(RecoverableException& e) {
     _logger->error(EX_EXCEPTION_CAUGHT, e);
   }
-  Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
-  Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
+  util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
+  util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
   return returnValue;
 }
 

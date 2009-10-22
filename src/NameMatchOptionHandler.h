@@ -118,7 +118,7 @@ public:
     std::stringstream s;
     std::copy(_tags.begin(), _tags.end(),
 	      std::ostream_iterator<std::string>(s, ","));
-    return Util::trim(s.str(), ", ");
+    return util::trim(s.str(), ", ");
   }
 
   virtual const std::string& getName() const

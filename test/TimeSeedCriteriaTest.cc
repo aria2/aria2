@@ -22,7 +22,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TimeSeedCriteriaTest);
 void TimeSeedCriteriaTest::testEvaluate() {
   TimeSeedCriteria cri(1);
   // Seel 2seconds. 1 seconds are not enough in some systems.
-  Util::sleep(2);
+  util::sleep(2);
   CPPUNIT_ASSERT(cri.evaluate());
   cri.reset();
   cri.setDuration(10);

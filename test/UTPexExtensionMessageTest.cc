@@ -94,8 +94,8 @@ void UTPexExtensionMessageTest::testGetBencodedData()
     std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "e";
   std::string bd = msg.getBencodedData();
-  CPPUNIT_ASSERT_EQUAL(Util::urlencode(expected),
-		       Util::urlencode(bd));
+  CPPUNIT_ASSERT_EQUAL(util::urlencode(expected),
+		       util::urlencode(bd));
 }
 
 void UTPexExtensionMessageTest::testToString()

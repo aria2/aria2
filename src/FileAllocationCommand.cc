@@ -61,7 +61,7 @@ bool FileAllocationCommand::executeInternal()
   if(_fileAllocationEntry->finished()) {
     logger->debug(MSG_ALLOCATION_COMPLETED,
 		  _timer.difference(),
-		  Util::itos(_requestGroup->getTotalLength(), true).c_str());
+		  util::itos(_requestGroup->getTotalLength(), true).c_str());
     _e->_fileAllocationMan->dropPickedEntry();
     
     std::deque<Command*> commands;

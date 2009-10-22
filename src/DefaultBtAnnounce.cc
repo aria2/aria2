@@ -79,7 +79,7 @@ DefaultBtAnnounce::~DefaultBtAnnounce() {
 
 void DefaultBtAnnounce::generateKey()
 {
-  key = Util::randomAlpha(8, _randomizer);
+  key = util::randomAlpha(8, _randomizer);
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
@@ -147,25 +147,25 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   std::string url = announceList.getAnnounce();
   url += uriHasQuery(url) ? "&" : "?";
   url += "info_hash=";
-  url += Util::torrentUrlencode(bittorrent::getInfoHash(_downloadContext),
+  url += util::torrentUrlencode(bittorrent::getInfoHash(_downloadContext),
 				INFO_HASH_LENGTH);
   url += "&peer_id=";
-  url += Util::torrentUrlencode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH);
+  url += util::torrentUrlencode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH);
   url += "&uploaded=";
-  url += Util::uitos(stat.getSessionUploadLength());
+  url += util::uitos(stat.getSessionUploadLength());
   url += "&downloaded=";
-  url += Util::uitos(stat.getSessionDownloadLength());
+  url += util::uitos(stat.getSessionDownloadLength());
   url += "&left=";
-  url += Util::uitos(left);
+  url += util::uitos(left);
   url += "&compact=1";
   url += "&key=";
   url += key;
   url += "&numwant=";
-  url += Util::uitos(numWant);
+  url += util::uitos(numWant);
   url += "&no_peer_id=1";
   if(btRuntime->getListenPort() > 0) {
     url += "&port=";
-    url += Util::uitos(btRuntime->getListenPort());
+    url += util::uitos(btRuntime->getListenPort());
   }
   std::string event = announceList.getEventString();
   if(!event.empty()) {
@@ -173,7 +173,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     url += event;
   }
   if(!trackerId.empty()) {
-    url += "&trackerid="+Util::torrentUrlencode(trackerId);
+    url += "&trackerid="+util::torrentUrlencode(trackerId);
   }
   if(option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     url += "&requirecrypto=1";

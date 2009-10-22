@@ -86,10 +86,10 @@ void BtBitfieldMessageTest::testDoReceivedAction() {
   unsigned char bitfield[] = { 0xff, 0xff };
   msg.setBitfield(bitfield, sizeof(bitfield));
   
-  CPPUNIT_ASSERT_EQUAL(std::string("0000"), Util::toHex(peer->getBitfield(),
+  CPPUNIT_ASSERT_EQUAL(std::string("0000"), util::toHex(peer->getBitfield(),
 							peer->getBitfieldLength()));
   msg.doReceivedAction();
-  CPPUNIT_ASSERT_EQUAL(std::string("ffff"), Util::toHex(peer->getBitfield(),
+  CPPUNIT_ASSERT_EQUAL(std::string("ffff"), util::toHex(peer->getBitfield(),
 							peer->getBitfieldLength()));
 }
 

@@ -65,7 +65,7 @@ static int cookieRowMapper(void* data, int rowIndex,
 			   char** values, char** names)
 {
   try {
-    int64_t expireDate = Util::parseLLInt(toString(values[3]));
+    int64_t expireDate = util::parseLLInt(toString(values[3]));
     // TODO assuming time_t is int32_t...
     if(expireDate > INT32_MAX) {
       expireDate = INT32_MAX;

@@ -59,7 +59,7 @@ static bool readChunkSize(uint64_t& chunkSize, std::string& in)
   if(extPos == std::string::npos || crlfPos < extPos) {
     extPos = crlfPos;
   }
-  chunkSize = Util::parseULLInt(in.substr(0, extPos), 16);
+  chunkSize = util::parseULLInt(in.substr(0, extPos), 16);
   in.erase(0, crlfPos+2);
   return true;
 }

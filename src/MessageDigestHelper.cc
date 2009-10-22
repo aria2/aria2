@@ -106,7 +106,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
     ctx->digestUpdate(BUF, readLength);
   }
   std::string rawMD = ctx->digestFinal();
-  return Util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
+  return util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
 }
 
 std::string MessageDigestHelper::digest(const std::string& algo, const std::string& filename)
@@ -123,7 +123,7 @@ std::string MessageDigestHelper::digest(const std::string& algo, const void* dat
   ctx.digestInit();
   ctx.digestUpdate(data, length);
   std::string rawMD = ctx.digestFinal();
-  return Util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
+  return util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
 }
 
 void MessageDigestHelper::digest(unsigned char* md, size_t mdLength,

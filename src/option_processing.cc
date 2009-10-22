@@ -109,7 +109,7 @@ void option_processing(Option& op, std::deque<std::string>& uris,
 	  keyword = TAG_BASIC;
 	} else {
 	  keyword = op.get("help");
-	  if(Util::startsWith(keyword, "--")) {
+	  if(util::startsWith(keyword, "--")) {
 	    keyword = keyword.substr(2);
 	  }
 	  std::string::size_type eqpos = keyword.find("=");

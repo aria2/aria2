@@ -61,7 +61,7 @@ FileEntry::~FileEntry() {}
 
 void FileEntry::setupDir()
 {
-  Util::mkdirs(File(path).getDirname());
+  util::mkdirs(File(path).getDirname());
 }
 
 FileEntry& FileEntry::operator=(const FileEntry& entry)

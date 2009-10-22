@@ -403,10 +403,10 @@ public:
 
   bool operator()(const std::string& domain) const
   {
-    if(Util::startsWith(domain, ".")) {
-      return Util::endsWith(_hostname, domain);
+    if(util::startsWith(domain, ".")) {
+      return util::endsWith(_hostname, domain);
     } else {
-      return Util::endsWith(_hostname, "."+domain);
+      return util::endsWith(_hostname, "."+domain);
     }
   }
 };
@@ -415,7 +415,7 @@ static bool inNoProxy(const SharedHandle<Request>& req,
 		      const std::string& noProxy)
 {
   std::vector<std::string> entries;
-  split(noProxy, std::back_inserter(entries), ",", true);
+  util::split(noProxy, std::back_inserter(entries), ",", true);
   if(entries.empty()) {
     return false;
   }

@@ -88,7 +88,7 @@ DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
 					const std::string& ipaddr, uint16_t port)
 {
   _logger->debug("Adding %s:%u to peer announce list: infoHash=%s",
-		 ipaddr.c_str(), port, Util::toHex(infoHash, DHT_ID_LENGTH).c_str());
+		 ipaddr.c_str(), port, util::toHex(infoHash, DHT_ID_LENGTH).c_str());
   getPeerAnnounceEntry(infoHash)->addPeerAddrEntry(PeerAddrEntry(ipaddr, port));
 }
 
@@ -97,7 +97,7 @@ void DHTPeerAnnounceStorage::addPeerAnnounce
 (const unsigned char* infoHash, const SharedHandle<PeerStorage>& peerStorage)
 {
   _logger->debug("Adding localhost to peer announce list: infoHash=%s",
-		 Util::toHex(infoHash, DHT_ID_LENGTH).c_str());
+		 util::toHex(infoHash, DHT_ID_LENGTH).c_str());
   SharedHandle<DHTPeerAnnounceEntry> entry =
     getPeerAnnounceEntry(infoHash);
   entry->setPeerStorage(peerStorage);
@@ -172,7 +172,7 @@ void DHTPeerAnnounceStorage::announcePeer()
       SharedHandle<DHTTask> task = _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());
       _taskQueue->addPeriodicTask2(task);
       _logger->debug("Added 1 peer announce: infoHash=%s",
-		     Util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
+		     util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
     }
   }
 }

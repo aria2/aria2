@@ -195,8 +195,8 @@ bool Piece::getAllMissingBlockIndexes
 }
 
 std::string Piece::toString() const {
-  return strconcat("piece: index=", Util::itos(index),
-		   ", length=", Util::itos(length));
+  return strconcat("piece: index=", util::itos(index),
+		   ", length=", util::itos(length));
 }
 
 void Piece::reconfigure(size_t length)
@@ -256,7 +256,7 @@ std::string Piece::getHashString()
   if(_mdctx.isNull()) {
     return A2STR::NIL;
   } else {
-    return Util::toHex(_mdctx->digestFinal());
+    return util::toHex(_mdctx->digestFinal());
   }
 }
 

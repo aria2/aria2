@@ -159,15 +159,15 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    IntSequence seq = Util::parseIntRange(optarg);
+    IntSequence seq = util::parseIntRange(optarg);
     while(seq.hasNext()) {
       int32_t v = seq.next();
       if(v < _min || _max < v) {
 	std::string msg = _optName;
 	strappend(msg, " ", _("must be between %s and %s."));
 	throw DL_ABORT_EX
-	  (StringFormat(msg.c_str(), Util::itos(_min).c_str(),
-			Util::itos(_max).c_str()).str());
+	  (StringFormat(msg.c_str(), util::itos(_min).c_str(),
+			util::itos(_max).c_str()).str());
       }
       option.put(_optName, optarg);
     }
@@ -175,7 +175,7 @@ public:
 
   virtual std::string createPossibleValuesString() const
   {
-    return Util::itos(_min)+"-"+Util::itos(_max);
+    return util::itos(_min)+"-"+util::itos(_max);
   }
 };
 
@@ -198,26 +198,26 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    int64_t num = Util::parseLLInt(optarg);
+    int64_t num = util::parseLLInt(optarg);
     parseArg(option, num);
   }
 
   void parseArg(Option& option, int64_t number)
   {
     if((_min == -1 || _min <= number) && (_max ==  -1 || number <= _max)) {
-      option.put(_optName, Util::itos(number));
+      option.put(_optName, util::itos(number));
     } else {
       std::string msg = _optName;
       msg += " ";
       if(_min == -1 && _max != -1) {
 	msg += StringFormat(_("must be smaller than or equal to %s."),
-			    Util::itos(_max).c_str()).str();
+			    util::itos(_max).c_str()).str();
       } else if(_min != -1 && _max != -1) {
 	msg += StringFormat(_("must be between %s and %s."),
-			    Util::itos(_min).c_str(), Util::itos(_max).c_str()).str();
+			    util::itos(_min).c_str(), util::itos(_max).c_str()).str();
       } else if(_min != -1 && _max == -1) {
 	msg += StringFormat(_("must be greater than or equal to %s."),
-			    Util::itos(_min).c_str()).str();
+			    util::itos(_min).c_str()).str();
       } else {
 	msg += _("must be a number.");
       }
@@ -231,13 +231,13 @@ public:
     if(_min == -1) {
       values += "*";
     } else {
-      values += Util::itos(_min);
+      values += util::itos(_min);
     }
     values += "-";
     if(_max == -1) {
       values += "*";
     } else {
-      values += Util::itos(_max);
+      values += util::itos(_max);
     }
     return values;
   }
@@ -258,7 +258,7 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    int64_t num = Util::getRealSize(optarg);
+    int64_t num = util::getRealSize(optarg);
     NumberOptionHandler::parseArg(option, num);
   }
 };
@@ -400,7 +400,7 @@ public:
   virtual void parseArg(Option& option, const std::string& optarg)
   {
     // See optarg is in the fomrat of "INDEX=PATH"
-    Util::parseIndexPath(optarg);
+    util::parseIndexPath(optarg);
     std::string value = option.get(_optName);
     strappend(value, optarg, "\n");
     option.put(_optName, value);
@@ -492,7 +492,7 @@ public:
     std::stringstream s;
     std::copy(_validParamValues.begin(), _validParamValues.end(),
 	      std::ostream_iterator<std::string>(s, ","));
-    return Util::trim(s.str(), ", ");
+    return util::trim(s.str(), ", ");
   }
 };
 
@@ -517,8 +517,8 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    std::pair<std::string, std::string> proxy = Util::split(optarg, ":");
-    int32_t port = Util::parseInt(proxy.second);
+    std::pair<std::string, std::string> proxy = util::split(optarg, ":");
+    int32_t port = util::parseInt(proxy.second);
     if(proxy.first.empty() || proxy.second.empty() ||
        port <= 0 || 65535 < port) {
       throw DL_ABORT_EX(_("unrecognized proxy format"));
@@ -530,7 +530,7 @@ public:
   void setHostAndPort(Option& option, const std::string& hostname, uint16_t port)
   {
     option.put(_hostOptionName, hostname);
-    option.put(_portOptionName, Util::uitos(port));
+    option.put(_portOptionName, util::uitos(port));
   }
 
   virtual std::string createPossibleValuesString() const
@@ -556,7 +556,7 @@ public:
   {
     Request req;
     std::string url;
-    if(Util::startsWith(optarg, "http://")) {
+    if(util::startsWith(optarg, "http://")) {
       url = optarg;
     } else {
       url = "http://"+optarg;

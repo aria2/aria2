@@ -111,7 +111,7 @@ void DHTSetup::setup(std::deque<Command*>& commands,
 
     SharedHandle<DHTConnectionImpl> connection(new DHTConnectionImpl());
     {
-      IntSequence seq = Util::parseIntRange(option->get(PREF_DHT_LISTEN_PORT));
+      IntSequence seq = util::parseIntRange(option->get(PREF_DHT_LISTEN_PORT));
       uint16_t port;
       if(!connection->bind(port, seq)) {
 	throw DL_ABORT_EX("Error occurred while binding port for DHT");
@@ -119,7 +119,7 @@ void DHTSetup::setup(std::deque<Command*>& commands,
       localNode->setPort(port);
     }
     _logger->debug("Initialized local node ID=%s",
-		   Util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
+		   util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
 
     SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
 

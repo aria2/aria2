@@ -139,7 +139,7 @@ bool FtpConnection::sendCwd()
     if(_baseWorkingDir != "/") {
       request += _baseWorkingDir;
     }
-    request += Util::urldecode(req->getDir());
+    request += util::urldecode(req->getDir());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
@@ -152,7 +152,7 @@ bool FtpConnection::sendMdtm()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "MDTM ";
-    request += Util::urlencode(req->getFile());
+    request += util::urlencode(req->getFile());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
@@ -165,7 +165,7 @@ bool FtpConnection::sendSize()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "SIZE ";
-    request += Util::urldecode(req->getFile());
+    request += util::urldecode(req->getFile());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
@@ -204,17 +204,17 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
 	   &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
     serverSocket->getAddrInfo(addrinfo);
     std::string request = "PORT ";
-    request += Util::uitos(ipaddr[0]);
+    request += util::uitos(ipaddr[0]);
     request += ",";
-    request += Util::uitos(ipaddr[1]);
+    request += util::uitos(ipaddr[1]);
     request += ",";
-    request += Util::uitos(ipaddr[2]);
+    request += util::uitos(ipaddr[2]);
     request += ",";
-    request += Util::uitos(ipaddr[3]);
+    request += util::uitos(ipaddr[3]);
     request += ",";
-    request += Util::uitos(addrinfo.second/256);
+    request += util::uitos(addrinfo.second/256);
     request += ",";
-    request += Util::uitos(addrinfo.second%256);
+    request += util::uitos(addrinfo.second%256);
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
@@ -230,7 +230,7 @@ bool FtpConnection::sendRest(const SegmentHandle& segment)
     if(segment.isNull()) {
       request += "0";
     } else {
-      request += Util::itos(segment->getPositionToWrite());
+      request += util::itos(segment->getPositionToWrite());
     }
     request += "\r\n";
     
@@ -245,7 +245,7 @@ bool FtpConnection::sendRetr()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "RETR ";
-    request += Util::urldecode(req->getFile());
+    request += util::urldecode(req->getFile());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.feedSendBuffer(request);
@@ -286,7 +286,7 @@ FtpConnection::findEndOfResponse(unsigned int status,
     std::string::size_type p;
 
     std::string endPattern = A2STR::CRLF;
-    endPattern += Util::uitos(status);
+    endPattern += util::uitos(status);
     endPattern += " ";
     p = buf.find(endPattern);
     if(p == std::string::npos) {
@@ -378,8 +378,8 @@ unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
   std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
-      std::pair<std::string, std::string> rp = Util::split(response.second," ");
-      size = Util::parseULLInt(rp.second);
+      std::pair<std::string, std::string> rp = util::split(response.second," ");
+      size = util::parseULLInt(rp.second);
     }
     return response.first;
   } else {
@@ -400,17 +400,17 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
 	// and included strptime doesn't parse data for this format.
 	struct tm tm;
 	memset(&tm, 0, sizeof(tm));
-	tm.tm_sec = Util::parseInt(&buf[12]);
+	tm.tm_sec = util::parseInt(&buf[12]);
 	buf[12] = '\0';
-	tm.tm_min = Util::parseInt(&buf[10]);
+	tm.tm_min = util::parseInt(&buf[10]);
 	buf[10] = '\0';
-	tm.tm_hour = Util::parseInt(&buf[8]);
+	tm.tm_hour = util::parseInt(&buf[8]);
 	buf[8] = '\0';
-	tm.tm_mday = Util::parseInt(&buf[6]);
+	tm.tm_mday = util::parseInt(&buf[6]);
 	buf[6] = '\0';
-	tm.tm_mon = Util::parseInt(&buf[4])-1;
+	tm.tm_mon = util::parseInt(&buf[4])-1;
 	buf[4] = '\0';
-	tm.tm_year = Util::parseInt(&buf[0])-1900;
+	tm.tm_year = util::parseInt(&buf[0])-1900;
 	time = Time(timegm(&tm));
       } else {
 	time = Time::null();
@@ -435,13 +435,13 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
 	       "(%u,%u,%u,%u,%u,%u).",
 	       &h1, &h2, &h3, &h4, &p1, &p2);
 	// ip address
- 	dest.first = Util::uitos(h1);
+ 	dest.first = util::uitos(h1);
  	dest.first += ".";
-	dest.first += Util::uitos(h2);
+	dest.first += util::uitos(h2);
 	dest.first += ".";
-	dest.first += Util::uitos(h3);
+	dest.first += util::uitos(h3);
 	dest.first += ".";
-	dest.first += Util::uitos(h4);
+	dest.first += util::uitos(h4);
 	// port number
 	dest.second = 256*p1+p2;
       } else {

@@ -204,7 +204,7 @@ static void executeHook(const std::string& command, int gid)
     LogFactory::getInstance()->error("fork() failed."
 				     " Cannot execute user command.");
   } else if(cpid == 0) {
-    execl(command.c_str(), command.c_str(), Util::itos(gid).c_str(), (char*)0);
+    execl(command.c_str(), command.c_str(), util::itos(gid).c_str(), (char*)0);
     perror(("Could not execute user command: "+command).c_str());
     exit(EXIT_FAILURE);
   }
@@ -218,7 +218,7 @@ static void executeHook(const std::string& command, int gid)
   memset(&pi, 0, sizeof (pi));
 
   std::string cmdline = command;
-  strappend(cmdline, " ", Util::itos(gid));
+  strappend(cmdline, " ", util::itos(gid));
 
   DWORD rc = CreateProcess(
     NULL,
@@ -623,7 +623,7 @@ std::string RequestGroupMan::formatDownloadResult(const std::string& status, con
     << std::setw(4) << status << "|"
     << std::setw(11);
   if(downloadResult->sessionTime > 0) {
-    o << Util::abbrevSize
+    o << util::abbrevSize
       (downloadResult->sessionDownloadLength*1000/downloadResult->sessionTime)+
       "B/s";
   } else {

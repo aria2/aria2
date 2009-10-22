@@ -226,7 +226,7 @@ void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
   if(getsockname(sockfd, addrp, &len) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
-  addrinfo = Util::getNumericNameInfo(addrp, len);
+  addrinfo = util::getNumericNameInfo(addrp, len);
 }
 
 void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
@@ -237,7 +237,7 @@ void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
   if(getpeername(sockfd, addrp, &len) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
-  peerinfo = Util::getNumericNameInfo(addrp, len);
+  peerinfo = util::getNumericNameInfo(addrp, len);
 }
 
 void SocketCore::establishConnection(const std::string& host, uint16_t port)
@@ -1029,7 +1029,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
       throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
     }
   } else {
-    sender = Util::getNumericNameInfo(addrp, sockaddrlen);
+    sender = util::getNumericNameInfo(addrp, sockaddrlen);
   }
 
   return r;

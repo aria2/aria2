@@ -80,9 +80,9 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
   while(getline(istr, line)) {
     static const std::string AUTH_HEADER("Authorization: Basic");
     static const std::string PROXY_AUTH_HEADER("Proxy-Authorization: Basic");
-    if(Util::startsWith(line, AUTH_HEADER)) {
+    if(util::startsWith(line, AUTH_HEADER)) {
       result += "Authorization: Basic ********\n";
-    } else if(Util::startsWith(line, PROXY_AUTH_HEADER)) {
+    } else if(util::startsWith(line, PROXY_AUTH_HEADER)) {
       result += "Proxy-Authorization: Basic ********\n";
     } else {
       strappend(result, line, "\n");

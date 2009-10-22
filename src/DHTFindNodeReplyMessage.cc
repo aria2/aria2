@@ -103,7 +103,7 @@ void DHTFindNodeReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHT
 
 std::string DHTFindNodeReplyMessage::toStringOptional() const
 {
-  return "nodes="+Util::uitos(_closestKNodes.size());
+  return "nodes="+util::uitos(_closestKNodes.size());
 }
 
 } // namespace aria2

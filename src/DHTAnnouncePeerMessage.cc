@@ -107,7 +107,7 @@ void DHTAnnouncePeerMessage::validate() const
 				   _remoteNode->getPort())) {
     throw DL_ABORT_EX
       (StringFormat("Invalid token=%s from %s:%u",
-		    Util::toHex(_token).c_str(),
+		    util::toHex(_token).c_str(),
 		    _remoteNode->getIPAddress().c_str(),
 		    _remoteNode->getPort()).str());
   }
@@ -125,9 +125,9 @@ void DHTAnnouncePeerMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& 
 
 std::string DHTAnnouncePeerMessage::toStringOptional() const
 {
-  return strconcat("token=", Util::toHex(_token),
-		   ", info_hash=", Util::toHex(_infoHash, INFO_HASH_LENGTH),
-		   ", tcpPort=", Util::uitos(_tcpPort));
+  return strconcat("token=", util::toHex(_token),
+		   ", info_hash=", util::toHex(_infoHash, INFO_HASH_LENGTH),
+		   ", tcpPort=", util::uitos(_tcpPort));
 }
 
 } // namespace aria2

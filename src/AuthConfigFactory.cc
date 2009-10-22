@@ -190,7 +190,7 @@ AuthConfigFactory::BasicCred::BasicCred
   _user(user), _password(password),
   _host(host), _path(path), _activated(activated)
 {
-  if(!Util::endsWith(_path, "/")) {
+  if(!util::endsWith(_path, "/")) {
     _path += "/";
   }
 }
@@ -228,7 +228,7 @@ AuthConfigFactory::findBasicCred(const std::string& host,
   std::deque<BasicCred>::iterator i =
     std::lower_bound(_basicCreds.begin(), _basicCreds.end(), bc);
   for(; i != _basicCreds.end() && (*i)._host == host; ++i) {
-    if(Util::startsWith(bc._path, (*i)._path)) {
+    if(util::startsWith(bc._path, (*i)._path)) {
       return i;
     }
   }

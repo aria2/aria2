@@ -108,7 +108,7 @@ void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
 void AbstractDiskWriter::createFile(int addFlags)
 {
   assert(!_filename.empty());
-  Util::mkdirs(File(_filename).getDirname());
+  util::mkdirs(File(_filename).getDirname());
   if((fd = open(_filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
 		OPEN_MODE)) < 0) {
     throw DL_ABORT_EX(StringFormat(EX_FILE_OPEN,

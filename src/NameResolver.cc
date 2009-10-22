@@ -62,7 +62,7 @@ void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     std::pair<std::string, uint16_t> addressPort
-      = Util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
+      = util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
     resolvedAddresses.push_back(addressPort.first);
   }
   freeaddrinfo(res);

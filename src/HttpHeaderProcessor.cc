@@ -126,7 +126,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
     throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
   std::vector<std::string> firstLine;
-  split(_buf.substr(0, delimpos), std::back_inserter(firstLine), " ", true);
+  util::split(_buf.substr(0, delimpos), std::back_inserter(firstLine)," ",true);
   if(firstLine.size() != 3) {
     throw DL_ABORT_EX("Malformed HTTP request header.");    
   }

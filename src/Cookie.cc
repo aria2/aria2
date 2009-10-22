@@ -56,16 +56,16 @@ static std::string prependDotIfNotExists(const std::string& domain)
 
 static std::string normalizeDomain(const std::string& domain)
 {
-  if(domain.empty() || Util::isNumbersAndDotsNotation(domain)) {
+  if(domain.empty() || util::isNumbersAndDotsNotation(domain)) {
     return domain;
   }
   std::string md = prependDotIfNotExists(domain);
-  // TODO use Util::split to strict verification
+  // TODO use util::split to strict verification
   std::string::size_type p = md.find_last_of(".");
   if(p == 0 || p == std::string::npos) {
     md += ".local";
   }
-  return Util::toLower(prependDotIfNotExists(md));
+  return util::toLower(prependDotIfNotExists(md));
 }
 
 Cookie::Cookie(const std::string& name,
@@ -112,12 +112,12 @@ static bool pathInclude(const std::string& requestPath, const std::string& path)
   if(requestPath == path) {
     return true;
   }
-  if(Util::startsWith(requestPath, path)) {
+  if(util::startsWith(requestPath, path)) {
     if(*path.rbegin() != '/' && requestPath[path.size()] != '/') {
       return false;
     }
   } else if(*path.rbegin() != '/' || *requestPath.rbegin() == '/' ||
-	    !Util::startsWith(requestPath+"/", path)) {
+	    !util::startsWith(requestPath+"/", path)) {
     return false;
   }
   return true;
@@ -135,7 +135,7 @@ static bool domainMatch(const std::string& normReqHost,
   // Also original Netscape implementation behaves exactly the same.
 
   // _domain always starts ".". See Cookie::Cookie().
-  return Util::endsWith(normReqHost, domain);
+  return util::endsWith(normReqHost, domain);
 }
 
 bool Cookie::match(const std::string& requestHost,
@@ -172,7 +172,7 @@ bool Cookie::validate(const std::string& requestHost,
     if(_domain.size() < 4 || _domain.find(".", 1) == std::string::npos) {
       return false;
     }
-    if(!Util::endsWith(normReqHost, _domain)) {
+    if(!util::endsWith(normReqHost, _domain)) {
       return false;
     }
     // From RFC2965 3.3.2 Rejecting Cookies
@@ -211,7 +211,7 @@ std::string Cookie::toNsCookieFormat() const
 {
   std::stringstream ss;
   ss << _domain << "\t";
-  if(Util::startsWith(_domain, ".")) {
+  if(util::startsWith(_domain, ".")) {
     ss << "TRUE";
   } else {
     ss << "FALSE";

@@ -85,7 +85,7 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
   std::cout << _("Usage: aria2c [OPTIONS] [URL | TORRENT_FILE |"
 		 " METALINK_FILE]...") << "\n"
 	    << "\n";
-  if(Util::startsWith(keyword, "#")) {
+  if(util::startsWith(keyword, "#")) {
     std::deque<SharedHandle<OptionHandler> > handlers =
       keyword == TAG_ALL ? oparser.findAll():oparser.findByTag(keyword);
     if(keyword == TAG_ALL) {

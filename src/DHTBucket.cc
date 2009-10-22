@@ -203,12 +203,12 @@ SharedHandle<DHTBucket> DHTBucket::split()
   // TODO create toString() and use it.
   _logger->debug("New bucket. prefixLength=%u, Range:%s-%s",
 		 static_cast<unsigned int>(rBucket->getPrefixLength()),
- 		 Util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
- 		 Util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
+ 		 util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
+ 		 util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
   _logger->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
 		 static_cast<unsigned int>(_prefixLength),
-		 Util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
-		 Util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
+		 util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
+		 util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
 
   return rBucket;
 }

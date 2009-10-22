@@ -196,8 +196,8 @@ void HttpResponseCommand::updateLastModifiedTime(const Time& lastModified)
 static bool fileIsGzipped(const SharedHandle<HttpResponse>& httpResponse)
 {
   std::string filename =
-    Util::toLower(httpResponse->getHttpRequest()->getRequest()->getFile());
-  return Util::endsWith(filename, ".gz") || Util::endsWith(filename, ".tgz");
+    util::toLower(httpResponse->getHttpRequest()->getRequest()->getFile());
+  return util::endsWith(filename, ".gz") || util::endsWith(filename, ".tgz");
 }
 
 bool HttpResponseCommand::shouldInflateContentEncoding
