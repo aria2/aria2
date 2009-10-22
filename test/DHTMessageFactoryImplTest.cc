@@ -6,7 +6,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "RecoverableException.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTNode.h"
 #include "DHTRoutingTable.h"
 #include "Peer.h"

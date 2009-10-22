@@ -37,7 +37,7 @@
 #include <cstring>
 
 #include "bittorrent_helper.h"
-#include "Util.h"
+#include "util.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Peer.h"

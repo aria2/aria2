@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #include "IndexBtMessage.h"
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 #include "bittorrent_helper.h"
 

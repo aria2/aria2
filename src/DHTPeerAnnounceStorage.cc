@@ -46,7 +46,7 @@
 #include "DHTTask.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 
 namespace aria2 {

@@ -41,7 +41,7 @@
 #include "RecoverableException.h"
 #include "message.h"
 #include "prefs.h"
-#include "Util.h"
+#include "util.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
 #include "File.h"

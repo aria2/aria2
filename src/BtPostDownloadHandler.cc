@@ -41,7 +41,7 @@
 #include "File.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
-#include "Util.h"
+#include "util.h"
 #include "ContentTypeRequestGroupCriteria.h"
 #include "Exception.h"
 #include "DownloadContext.h"

@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "SingleFileAllocationIterator.h"
 #include "BinaryStream.h"
-#include "Util.h"
+#include "util.h"
 #include "a2io.h"
 #include <cstring>
 #include <cstdlib>

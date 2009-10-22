@@ -48,7 +48,7 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
-#include "Util.h"
+#include "util.h"
 #include "TimeA2.h"
 #include "a2functional.h"
 #ifdef ENABLE_SSL

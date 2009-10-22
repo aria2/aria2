@@ -37,7 +37,7 @@
 #include <istream>
 
 #include "Range.h"
-#include "Util.h"
+#include "util.h"
 #include "A2STR.h"
 
 namespace aria2 {

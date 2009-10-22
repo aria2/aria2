@@ -49,7 +49,7 @@
 # include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

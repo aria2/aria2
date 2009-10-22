@@ -45,7 +45,7 @@
 #endif // __MINGW32__
 
 #include "File.h"
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "LogFactory.h"
 #include "Logger.h"

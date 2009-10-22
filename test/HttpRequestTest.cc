@@ -13,7 +13,7 @@
 #include "Option.h"
 #include "array_fun.h"
 #include "CookieStorage.h"
-#include "Util.h"
+#include "util.h"
 #include "AuthConfig.h"
 
 namespace aria2 {

@@ -38,7 +38,7 @@
 #include "array_fun.h"
 #include "usage_text.h"
 #include "A2STR.h"
-#include "Util.h"
+#include "util.h"
 #include "help_tags.h"
 #include "StringFormat.h"
 #include "File.h"

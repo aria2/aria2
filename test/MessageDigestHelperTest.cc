@@ -2,7 +2,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "Util.h"
+#include "util.h"
 #include "DefaultDiskWriter.h"
 
 namespace aria2 {

@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTConstants.h"
 
 namespace aria2 {

@@ -49,7 +49,7 @@
 #include "StringFormat.h"
 #include "OptionParser.h"
 #include "OptionHandler.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

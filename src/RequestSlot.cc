@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #include "RequestSlot.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

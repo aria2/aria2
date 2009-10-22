@@ -49,7 +49,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "File.h"
-#include "Util.h"
+#include "util.h"
 #include "a2io.h"
 #include "DownloadFailureException.h"
 #include "StringFormat.h"

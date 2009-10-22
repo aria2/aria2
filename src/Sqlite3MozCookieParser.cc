@@ -39,7 +39,7 @@
 #include <sqlite3.h>
 
 #include "DlAbortEx.h"
-#include "Util.h"
+#include "util.h"
 #include "StringFormat.h"
 #include "A2STR.h"
 #ifndef HAVE_SQLITE3_OPEN_V2

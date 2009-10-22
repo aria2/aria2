@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "DHTResponseMessage.h"
 #include "DHTNode.h"
-#include "Util.h"
+#include "util.h"
 #include "bencode.h"
 #include "a2functional.h"
 

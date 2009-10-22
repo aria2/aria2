@@ -5,7 +5,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Option.h"
-#include "Util.h"
+#include "util.h"
 #include "Exception.h"
 #include "MockPieceStorage.h"
 #include "prefs.h"

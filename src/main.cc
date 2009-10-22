@@ -46,7 +46,7 @@
 #include "SharedHandle.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Util.h"
+#include "util.h"
 #include "BitfieldManFactory.h"
 #include "FeatureConfig.h"
 #include "MultiUrlRequestInfo.h"

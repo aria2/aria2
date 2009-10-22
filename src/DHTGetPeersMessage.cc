@@ -44,7 +44,7 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "Peer.h"
 #include "DHTTokenTracker.h"
-#include "Util.h"
+#include "util.h"
 #include "bencode.h"
 
 namespace aria2 {

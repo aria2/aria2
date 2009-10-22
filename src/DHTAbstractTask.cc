@@ -42,7 +42,7 @@
 #include "DHTBucket.h"
 #include "DHTTaskQueue.h"
 #include "LogFactory.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

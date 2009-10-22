@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <numeric>
 
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "prefs.h"
 #include "PiecedSegment.h"

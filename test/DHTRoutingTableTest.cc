@@ -4,7 +4,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTNode.h"
 #include "DHTBucket.h"
 #include "MockDHTTaskQueue.h"

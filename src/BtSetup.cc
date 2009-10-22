@@ -49,7 +49,7 @@
 #include "prefs.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Util.h"
+#include "util.h"
 #include "IntSequence.h"
 #include "DHTGetPeersCommand.h"
 #include "DHTPeerAnnounceStorage.h"

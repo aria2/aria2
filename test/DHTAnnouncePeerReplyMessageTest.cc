@@ -4,7 +4,7 @@
 
 #include "DHTNode.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "bencode.h"
 
 namespace aria2 {

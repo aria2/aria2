@@ -37,7 +37,7 @@
 #include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "DlAbortEx.h"
 

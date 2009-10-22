@@ -39,7 +39,7 @@
 #include <cassert>
 
 #include "bittorrent_helper.h"
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "DlAbortEx.h"
 #include "MessageDigestHelper.h"

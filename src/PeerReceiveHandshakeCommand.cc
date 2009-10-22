@@ -36,7 +36,7 @@
 #include "PeerConnection.h"
 #include "DownloadEngine.h"
 #include "BtHandshakeMessage.h"
-#include "Util.h"
+#include "util.h"
 #include "DownloadContext.h"
 #include "DlAbortEx.h"
 #include "PeerInteractionCommand.h"

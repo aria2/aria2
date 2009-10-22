@@ -56,7 +56,7 @@
 #include "FileEntry.h"
 #include "LogFactory.h"
 #include "File.h"
-#include "Util.h"
+#include "util.h"
 #include "array_fun.h"
 #include "OptionHandler.h"
 #include "ByteArrayDiskWriter.h"

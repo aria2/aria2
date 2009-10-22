@@ -36,7 +36,7 @@
 #define _D_FIXED_WIDTH_NUMBER_DECORATOR_H_
 
 #include "NumberDecorator.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

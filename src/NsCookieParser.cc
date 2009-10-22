@@ -37,7 +37,7 @@
 #include <fstream>
 #include <vector>
 
-#include "Util.h"
+#include "util.h"
 #include "A2STR.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"

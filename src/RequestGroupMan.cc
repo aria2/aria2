@@ -63,7 +63,7 @@
 #include "Option.h"
 #include "prefs.h"
 #include "File.h"
-#include "Util.h"
+#include "util.h"
 #include "Command.h"
 #include "FileEntry.h"
 

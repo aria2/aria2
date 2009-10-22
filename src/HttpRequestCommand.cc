@@ -48,7 +48,7 @@
 #include "Socket.h"
 #include "prefs.h"
 #include "a2functional.h"
-#include "Util.h"
+#include "util.h"
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"

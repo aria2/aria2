@@ -52,7 +52,7 @@
 #include "DefaultDiskWriterFactory.h"
 #include "FileEntry.h"
 #include "DlAbortEx.h"
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 #include "Option.h"
 #include "StringFormat.h"

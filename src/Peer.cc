@@ -37,7 +37,7 @@
 #include <cstring>
 #include <cassert>
 
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 #include "PeerSessionResource.h"
 #ifdef ENABLE_MESSAGE_DIGEST

@@ -36,7 +36,7 @@
 
 #include <cstring>
 
-#include "Util.h"
+#include "util.h"
 #include "bittorrent_helper.h"
 #include "DlAbortEx.h"
 #include "DHTConstants.h"

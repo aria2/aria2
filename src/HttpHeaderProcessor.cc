@@ -39,7 +39,7 @@
 
 #include "HttpHeader.h"
 #include "message.h"
-#include "Util.h"
+#include "util.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "A2STR.h"

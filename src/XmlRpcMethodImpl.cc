@@ -46,7 +46,7 @@
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
 #include "download_helper.h"
-#include "Util.h"
+#include "util.h"
 #include "RequestGroupMan.h"
 #include "StringFormat.h"
 #include "XmlRpcRequest.h"

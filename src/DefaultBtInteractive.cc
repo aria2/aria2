@@ -39,7 +39,7 @@
 #include "prefs.h"
 #include "message.h"
 #include "BtHandshakeMessage.h"
-#include "Util.h"
+#include "util.h"
 #include "BtKeepAliveMessage.h"
 #include "BtChokeMessage.h"
 #include "BtUnchokeMessage.h"

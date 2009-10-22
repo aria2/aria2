@@ -6,7 +6,7 @@
 
 #include "Peer.h"
 #include "a2netcompat.h"
-#include "Util.h"
+#include "util.h"
 #include "bittorrent_helper.h"
 #include "MockPeerStorage.h"
 #include "Exception.h"

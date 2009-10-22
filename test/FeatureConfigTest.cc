@@ -6,7 +6,7 @@
 
 #include "a2functional.h"
 #include "array_fun.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

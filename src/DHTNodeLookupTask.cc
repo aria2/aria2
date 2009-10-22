@@ -38,7 +38,7 @@
 #include "DHTNode.h"
 #include "DHTNodeLookupEntry.h"
 #include "LogFactory.h"
-#include "Util.h"
+#include "util.h"
 #include <cassert>
 
 namespace aria2 {

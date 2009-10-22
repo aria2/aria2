@@ -6,7 +6,7 @@
 #include "DHTNode.h"
 #include "DHTBucket.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

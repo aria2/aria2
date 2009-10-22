@@ -45,7 +45,7 @@
 #include "RecoverableException.h"
 #include "prefs.h"
 #include "Option.h"
-#include "Util.h"
+#include "util.h"
 #include "DownloadContext.h"
 
 namespace aria2 {

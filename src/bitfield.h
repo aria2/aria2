@@ -40,7 +40,7 @@
 #include <cassert>
 #include <cstdlib>
 
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

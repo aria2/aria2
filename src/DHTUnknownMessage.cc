@@ -38,7 +38,7 @@
 #include <cstdlib>
 
 #include "DHTNode.h"
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 
 namespace aria2 {

@@ -6,7 +6,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "DownloadContext.h"
-#include "Util.h"
+#include "util.h"
 #include "RecoverableException.h"
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"

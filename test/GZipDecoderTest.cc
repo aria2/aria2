@@ -1,6 +1,6 @@
 #include "GZipDecoder.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST

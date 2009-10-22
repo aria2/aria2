@@ -8,7 +8,7 @@
 
 #include "DHTRoutingTableSerializer.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTNode.h"
 #include "array_fun.h"
 #include "DHTConstants.h"

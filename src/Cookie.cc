@@ -37,7 +37,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include "Util.h"
+#include "util.h"
 #include "A2STR.h"
 #include "TimeA2.h"
 #include "a2functional.h"

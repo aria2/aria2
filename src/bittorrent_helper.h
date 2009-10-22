@@ -45,7 +45,7 @@
 #include "SharedHandle.h"
 #include "AnnounceTier.h"
 #include "BDE.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

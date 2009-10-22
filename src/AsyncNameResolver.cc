@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #include "AsyncNameResolver.h"
-#include "Util.h"
+#include "util.h"
 #include "A2STR.h"
 #include <cstring>
 

@@ -37,7 +37,7 @@
 #include <utility>
 
 #include "DlAbortEx.h"
-#include "Util.h"
+#include "util.h"
 #include "PStringSegment.h"
 #include "PStringSelect.h"
 #include "PStringNumLoop.h"

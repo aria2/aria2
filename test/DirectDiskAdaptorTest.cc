@@ -5,7 +5,7 @@
 #include "FileEntry.h"
 #include "DefaultDiskWriter.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "TestUtil.h"
 
 namespace aria2 {

@@ -38,7 +38,7 @@
 #include <cstring>
 
 #include "Randomizer.h"
-#include "Util.h"
+#include "util.h"
 #include "array_fun.h"
 #include "bitfield.h"
 

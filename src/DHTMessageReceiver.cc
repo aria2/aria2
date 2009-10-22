@@ -49,7 +49,7 @@
 #include "DlAbortEx.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Util.h"
+#include "util.h"
 #include "bencode.h"
 
 namespace aria2 {

@@ -37,7 +37,7 @@
 #include <cassert>
 #include <algorithm>
 
-#include "Util.h"
+#include "util.h"
 #include "URISelector.h"
 #include "LogFactory.h"
 

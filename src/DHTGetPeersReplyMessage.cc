@@ -44,7 +44,7 @@
 #include "DHTMessageCallback.h"
 #include "bittorrent_helper.h"
 #include "Peer.h"
-#include "Util.h"
+#include "util.h"
 #include "bencode.h"
 #include "a2functional.h"
 

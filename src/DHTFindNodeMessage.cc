@@ -41,7 +41,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
-#include "Util.h"
+#include "util.h"
 #include "bencode.h"
 
 namespace aria2 {

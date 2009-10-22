@@ -2,7 +2,7 @@
 #include "DHTNodeLookupEntry.h"
 #include "DHTIDCloser.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include <cstring>
 #include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>

@@ -41,7 +41,7 @@
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

@@ -1,6 +1,6 @@
 #include "DHKeyExchange.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

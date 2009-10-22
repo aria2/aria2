@@ -41,7 +41,7 @@
 #include <istream>
 #include <utility>
 
-#include "Util.h"
+#include "util.h"
 #include "OptionHandlerImpl.h"
 #include "Option.h"
 #include "A2STR.h"

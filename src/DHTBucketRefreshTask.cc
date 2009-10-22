@@ -39,7 +39,7 @@
 #include "DHTTaskQueue.h"
 #include "DHTNode.h"
 #include "DHTNodeLookupEntry.h"
-#include "Util.h"
+#include "util.h"
 #include "Logger.h"
 
 namespace aria2 {

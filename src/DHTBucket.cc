@@ -41,7 +41,7 @@
 #include "DHTNode.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTConstants.h"
 #include "a2functional.h"
 #include "bittorrent_helper.h"

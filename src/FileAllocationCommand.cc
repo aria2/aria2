@@ -40,7 +40,7 @@
 #include "Logger.h"
 #include "message.h"
 #include "prefs.h"
-#include "Util.h"
+#include "util.h"
 #include "DownloadEngine.h"
 #include "DownloadContext.h"
 

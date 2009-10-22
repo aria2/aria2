@@ -37,7 +37,7 @@
 #include <istream>
 #include <sstream>
 
-#include "Util.h"
+#include "util.h"
 #include "Option.h"
 #include "OptionHandlerFactory.h"
 #include "OptionHandler.h"

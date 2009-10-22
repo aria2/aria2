@@ -36,7 +36,7 @@
 
 #include <cstring>
 
-#include "Util.h"
+#include "util.h"
 #include "BtConstants.h"
 #include "a2functional.h"
 

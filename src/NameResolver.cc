@@ -36,7 +36,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
-#include "Util.h"
+#include "util.h"
 #include <cstring>
 
 namespace aria2 {

@@ -37,7 +37,7 @@
 #include <algorithm>
 
 #include "RequestGroup.h"
-#include "Util.h"
+#include "util.h"
 #include "FileEntry.h"
 #include "DownloadContext.h"
 

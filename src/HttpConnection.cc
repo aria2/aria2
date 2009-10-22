@@ -36,7 +36,7 @@
 
 #include <sstream>
 
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"

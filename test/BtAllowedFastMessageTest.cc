@@ -4,7 +4,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "bittorrent_helper.h"
-#include "Util.h"
+#include "util.h"
 #include "Peer.h"
 
 namespace aria2 {

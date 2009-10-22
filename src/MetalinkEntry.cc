@@ -38,7 +38,7 @@
 
 #include "MetalinkResource.h"
 #include "FileEntry.h"
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"

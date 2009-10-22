@@ -41,7 +41,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "prefs.h"
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "DownloadContext.h"
 #include "MetalinkHelper.h"

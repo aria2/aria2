@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "DHTMessage.h"
 #include "DHTNode.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

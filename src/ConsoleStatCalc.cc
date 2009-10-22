@@ -56,7 +56,7 @@
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityMan.h"
 #include "CheckIntegrityEntry.h"
-#include "Util.h"
+#include "util.h"
 #include "DownloadContext.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"

@@ -36,7 +36,7 @@
 
 #include <cstdlib>
 
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "PieceStorage.h"
 #include "messageDigest.h"

@@ -1,6 +1,6 @@
 #include "XORCloser.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTNodeLookupEntry.h"
 #include "DHTNode.h"
 #include <cstring>

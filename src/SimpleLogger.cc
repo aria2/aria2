@@ -36,7 +36,7 @@
 
 #include <cassert>
 
-#include "Util.h"
+#include "util.h"
 #include "a2time.h"
 #include "A2STR.h"
 #include "StringFormat.h"

@@ -1,3 +1,11 @@
+2009-10-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed Util.{cc,h} as util.{cc,h}
+	* src/Util.cc
+	* src/Util.h
+	* src/util.cc
+	* src/util.h
+
 2009-10-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Moved static functions in Util class to namespace util.

@@ -37,7 +37,7 @@
 #include <numeric>
 
 #include "array_fun.h"
-#include "Util.h"
+#include "util.h"
 #include "Request.h"
 
 namespace aria2 {

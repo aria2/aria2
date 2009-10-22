@@ -50,7 +50,7 @@
 #include "DefaultBtProgressInfoFile.h"
 #include "DownloadFailureException.h"
 #include "DlAbortEx.h"
-#include "Util.h"
+#include "util.h"
 #include "File.h"
 #include "Option.h"
 #include "Logger.h"

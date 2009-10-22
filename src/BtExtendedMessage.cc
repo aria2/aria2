@@ -43,7 +43,7 @@
 #include "Peer.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "Util.h"
+#include "util.h"
 #include "StringFormat.h"
 #include "a2functional.h"
 

@@ -37,7 +37,7 @@
 #include <cassert>
 #include <sstream>
 
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

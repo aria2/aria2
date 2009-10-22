@@ -4,7 +4,7 @@
 
 #include "DHTNode.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "MockDHTMessageFactory.h"
 #include "MockDHTMessage.h"
 #include "MockDHTMessageDispatcher.h"

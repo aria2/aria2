@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "UTPexExtensionMessage.h"
 #include "Peer.h"
-#include "Util.h"
+#include "util.h"
 #include "bittorrent_helper.h"
 #include "PeerStorage.h"
 #include "PeerListProcessor.h"

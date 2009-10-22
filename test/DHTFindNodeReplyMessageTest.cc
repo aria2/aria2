@@ -4,7 +4,7 @@
 
 #include "DHTNode.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTBucket.h"
 #include "bittorrent_helper.h"
 #include "bencode.h"

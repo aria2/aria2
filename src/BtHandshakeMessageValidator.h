@@ -40,7 +40,7 @@
 #include <cstring>
 
 #include "BtHandshakeMessage.h"
-#include "Util.h"
+#include "util.h"
 #include "StringFormat.h"
 
 namespace aria2 {

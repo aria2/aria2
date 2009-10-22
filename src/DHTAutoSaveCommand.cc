@@ -44,7 +44,7 @@
 #include "DHTRoutingTableSerializer.h"
 #include "RecoverableException.h"
 #include "DownloadEngine.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTBucket.h"
 #include "RequestGroupMan.h"
 #include "prefs.h"

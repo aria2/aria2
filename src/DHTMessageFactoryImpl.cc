@@ -57,7 +57,7 @@
 #include "DHTMessageCallback.h"
 #include "bittorrent_helper.h"
 #include "BtRuntime.h"
-#include "Util.h"
+#include "util.h"
 #include "Peer.h"
 #include "Logger.h"
 #include "StringFormat.h"

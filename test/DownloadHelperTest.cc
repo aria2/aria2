@@ -13,7 +13,7 @@
 #include "array_fun.h"
 #include "prefs.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

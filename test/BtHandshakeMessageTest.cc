@@ -4,7 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "Util.h"
+#include "util.h"
 #include "BtConstants.h"
 
 namespace aria2 {

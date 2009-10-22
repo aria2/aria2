@@ -49,7 +49,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
-#include "Util.h"
+#include "util.h"
 #include "Option.h"
 #include "Logger.h"
 #include "Segment.h"

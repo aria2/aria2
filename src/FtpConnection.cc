@@ -41,7 +41,7 @@
 #include "Request.h"
 #include "Segment.h"
 #include "Option.h"
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"

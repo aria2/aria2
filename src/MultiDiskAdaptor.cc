@@ -40,7 +40,7 @@
 
 #include "DefaultDiskWriter.h"
 #include "message.h"
-#include "Util.h"
+#include "util.h"
 #include "FileEntry.h"
 #include "MultiFileAllocationIterator.h"
 #include "DefaultDiskWriterFactory.h"

@@ -33,11 +33,11 @@
  */
 /* copyright --> */
 #include "Piece.h"
-#include "Util.h"
+#include "util.h"
 #include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
 #include "A2STR.h"
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "messageDigest.h"

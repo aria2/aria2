@@ -5,7 +5,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

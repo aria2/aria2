@@ -5,7 +5,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "bittorrent_helper.h"
-#include "Util.h"
+#include "util.h"
 #include "array_fun.h"
 #include "Peer.h"
 #include "DHTNode.h"

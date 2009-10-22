@@ -43,7 +43,7 @@
 #include "DHTMessageCallback.h"
 #include "PeerStorage.h"
 #include "BtRuntime.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTBucket.h"
 #include "bittorrent_helper.h"
 

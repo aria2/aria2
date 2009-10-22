@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "HandshakeExtensionMessage.h"
 #include "Peer.h"
-#include "Util.h"
+#include "util.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
 #include "Logger.h"

@@ -45,7 +45,7 @@
 #include "OptionParser.h"
 #include "OptionHandlerFactory.h"
 #include "OptionHandler.h"
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "Exception.h"
 #include "a2io.h"

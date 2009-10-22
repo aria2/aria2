@@ -44,7 +44,7 @@
 #include "Logger.h"
 #include "HttpRequest.h"
 #include "Segment.h"
-#include "Util.h"
+#include "util.h"
 #include "StringFormat.h"
 #include "DlAbortEx.h"
 #include "HttpHeader.h"

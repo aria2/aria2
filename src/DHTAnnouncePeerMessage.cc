@@ -41,7 +41,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTTokenTracker.h"
 #include "DlAbortEx.h"

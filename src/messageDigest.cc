@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #include "messageDigest.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

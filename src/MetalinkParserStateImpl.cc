@@ -35,7 +35,7 @@
 #include "MetalinkParserStateImpl.h"
 #include "MetalinkParserStateMachine.h"
 #include "RecoverableException.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

@@ -43,7 +43,7 @@
 #include "NetrcAuthResolver.h"
 #include "prefs.h"
 #include "Request.h"
-#include "Util.h"
+#include "util.h"
 
 namespace aria2 {
 

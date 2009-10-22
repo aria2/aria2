@@ -43,7 +43,7 @@
 #include "DHTBucket.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Util.h"
+#include "util.h"
 #include "DHTIDCloser.h"
 #include <cstring>
 #include <algorithm>

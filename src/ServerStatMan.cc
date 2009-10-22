@@ -41,7 +41,7 @@
 #include <vector>
 
 #include "ServerStat.h"
-#include "Util.h"
+#include "util.h"
 #include "RecoverableException.h"
 
 namespace aria2 {

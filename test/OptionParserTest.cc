@@ -8,7 +8,7 @@
 
 #include "OptionHandlerImpl.h"
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "Option.h"
 #include "array_fun.h"
 

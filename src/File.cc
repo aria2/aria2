@@ -43,7 +43,7 @@
 #include <cstring>
 #include <cstdio>
 
-#include "Util.h"
+#include "util.h"
 #include "A2STR.h"
 #include "array_fun.h"
 

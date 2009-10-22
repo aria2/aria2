@@ -51,7 +51,7 @@
 #include "DiskAdaptor.h"
 #include "DownloadContext.h"
 #include "Option.h"
-#include "Util.h"
+#include "util.h"
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"

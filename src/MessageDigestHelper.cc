@@ -37,7 +37,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "DefaultDiskWriter.h"
-#include "Util.h"
+#include "util.h"
 #include "StringFormat.h"
 #include <cerrno>
 #include <cstring>

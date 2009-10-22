@@ -47,7 +47,7 @@
 #include "Logger.h"
 #include "a2netcompat.h"
 #include "StringFormat.h"
-#include "Util.h"
+#include "util.h"
 #include "array_fun.h"
 
 namespace aria2 {

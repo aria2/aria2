@@ -41,7 +41,7 @@
 #include "DlAbortEx.h"
 #include "prefs.h"
 #include "message.h"
-#include "Util.h"
+#include "util.h"
 #include "Option.h"
 #include "DHTNode.h"
 #include "DHTTaskQueue.h"

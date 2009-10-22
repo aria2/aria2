@@ -39,7 +39,7 @@
 #include <libxml/parser.h>
 
 #include "XmlRpcRequestParserStateMachine.h"
-#include "Util.h"
+#include "util.h"
 #include "DlAbortEx.h"
 #include "message.h"
 

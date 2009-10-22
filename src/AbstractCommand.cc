@@ -61,7 +61,7 @@
 #include "ServerStat.h"
 #include "RequestGroupMan.h"
 #include "A2STR.h"
-#include "Util.h"
+#include "util.h"
 #include "LogFactory.h"
 #include "DownloadContext.h"
 

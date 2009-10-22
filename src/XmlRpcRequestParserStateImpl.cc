@@ -36,7 +36,7 @@
 #include "XmlRpcRequestParserStateMachine.h"
 #include "XmlRpcElements.h"
 #include "RecoverableException.h"
-#include "Util.h"
+#include "util.h"
 #include "Base64.h"
 
 namespace aria2 {

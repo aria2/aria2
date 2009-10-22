@@ -47,7 +47,7 @@
 #include "DownloadEngineFactory.h"
 #include "RecoverableException.h"
 #include "message.h"
-#include "Util.h"
+#include "util.h"
 #include "Option.h"
 #include "StatCalc.h"
 #include "CookieStorage.h"

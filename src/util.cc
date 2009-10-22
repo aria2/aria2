@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Util.h"
+#include "util.h"
 
 #include <signal.h>
 #include <limits.h>

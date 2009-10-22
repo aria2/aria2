@@ -51,7 +51,7 @@
 #include "TimeA2.h"
 #include "a2time.h"
 #include "Socket.h"
-#include "Util.h"
+#include "util.h"
 #include "a2functional.h"
 #include "DlAbortEx.h"
 #include "ServerStatMan.h"

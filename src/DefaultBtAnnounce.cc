@@ -36,7 +36,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "PeerListProcessor.h"
-#include "Util.h"
+#include "util.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "message.h"

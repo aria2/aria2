@@ -312,7 +312,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FtpTunnelResponseCommand.h SleepCommand.cc SleepCommand.h \
 	DownloadEngine.cc DownloadEngine.h Segment.h GrowSegment.cc \
 	GrowSegment.h PiecedSegment.cc PiecedSegment.h SegmentMan.cc \
-	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
+	SegmentMan.h util.cc util.h Request.cc Request.h common.h \
 	message.h Exception.cc Exception.h FatalException.h \
 	RecoverableException.h DlAbortEx.h DlRetryEx.h \
 	DownloadFailureException.h Logger.cc Logger.h SimpleLogger.cc \
@@ -739,7 +739,7 @@ am__objects_27 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FtpTunnelRequestCommand.$(OBJEXT) \
 	FtpTunnelResponseCommand.$(OBJEXT) SleepCommand.$(OBJEXT) \
 	DownloadEngine.$(OBJEXT) GrowSegment.$(OBJEXT) \
-	PiecedSegment.$(OBJEXT) SegmentMan.$(OBJEXT) Util.$(OBJEXT) \
+	PiecedSegment.$(OBJEXT) SegmentMan.$(OBJEXT) util.$(OBJEXT) \
 	Request.$(OBJEXT) Exception.$(OBJEXT) Logger.$(OBJEXT) \
 	SimpleLogger.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	DefaultDiskWriter.$(OBJEXT) DefaultDiskWriterFactory.$(OBJEXT) \
@@ -1038,7 +1038,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	FtpTunnelResponseCommand.h SleepCommand.cc SleepCommand.h \
 	DownloadEngine.cc DownloadEngine.h Segment.h GrowSegment.cc \
 	GrowSegment.h PiecedSegment.cc PiecedSegment.h SegmentMan.cc \
-	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
+	SegmentMan.h util.cc util.h Request.cc Request.h common.h \
 	message.h Exception.cc Exception.h FatalException.h \
 	RecoverableException.h DlAbortEx.h DlRetryEx.h \
 	DownloadFailureException.h Logger.cc Logger.h SimpleLogger.cc \
@@ -1514,7 +1514,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnknownLengthPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XML2SAXMetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2XmlRpcRequestProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcElements.Po@am__quote@
@@ -1544,6 +1543,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strptime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timegm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version_usage.Po@am__quote@
 
 .c.o:

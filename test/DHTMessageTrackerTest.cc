@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
-#include "Util.h"
+#include "util.h"
 #include "MockDHTMessage.h"
 #include "MockDHTMessageCallback.h"
 #include "DHTNode.h"

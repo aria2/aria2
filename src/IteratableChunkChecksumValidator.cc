@@ -38,7 +38,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "Util.h"
+#include "util.h"
 #include "message.h"
 #include "MessageDigestHelper.h"
 #include "DiskAdaptor.h"

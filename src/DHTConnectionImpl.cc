@@ -41,7 +41,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "RecoverableException.h"
-#include "Util.h"
+#include "util.h"
 #include "Socket.h"
 #include "SimpleRandomizer.h"
 

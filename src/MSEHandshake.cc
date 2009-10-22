@@ -49,7 +49,7 @@
 #include "ARC4Decryptor.h"
 #include "MessageDigestHelper.h"
 #include "SimpleRandomizer.h"
-#include "Util.h"
+#include "util.h"
 #include "DownloadContext.h"
 #include "prefs.h"
 #include "Option.h"

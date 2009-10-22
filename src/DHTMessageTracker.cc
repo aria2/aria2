@@ -42,7 +42,7 @@
 #include "DHTNode.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactory.h"
-#include "Util.h"
+#include "util.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "DlAbortEx.h"

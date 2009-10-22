@@ -42,7 +42,7 @@
 #include "Range.h"
 #include "CookieStorage.h"
 #include "Option.h"
-#include "Util.h"
+#include "util.h"
 #include "Base64.h"
 #include "prefs.h"
 #include "AuthConfigFactory.h"

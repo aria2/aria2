@@ -39,7 +39,7 @@
 
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Util.h"
+#include "util.h"
 #include "File.h"
 #include "DHTNode.h"
 #include "DHTConnectionImpl.h"

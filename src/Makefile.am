@@ -30,7 +30,7 @@ SRCS =  Socket.h\
 	GrowSegment.cc GrowSegment.h\
 	PiecedSegment.cc PiecedSegment.h\
 	SegmentMan.cc SegmentMan.h\
-	Util.cc Util.h\
+	util.cc util.h\
 	Request.cc Request.h\
 	common.h\
 	message.h\

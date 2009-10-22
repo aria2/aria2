@@ -44,7 +44,7 @@
 #include <iterator>
 
 #include "A2STR.h"
-#include "Util.h"
+#include "util.h"
 #include "OptionHandlerException.h"
 
 #define NO_DESCRIPTION A2STR::NIL

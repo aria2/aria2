@@ -45,7 +45,7 @@
 #include <iterator>
 
 #include "NameMatchOptionHandler.h"
-#include "Util.h"
+#include "util.h"
 #include "DlAbortEx.h"
 #include "prefs.h"
 #include "Option.h"

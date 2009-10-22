@@ -42,7 +42,7 @@
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
-#include "Util.h"
+#include "util.h"
 #include "LogFactory.h"
 #include "Logger.h"
 
