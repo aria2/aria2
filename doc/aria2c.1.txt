@@ -481,7 +481,7 @@ Make sure that the specified ports are open for incoming TCP traffic.
 Metalink Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 *--follow-metalink*='true'|'false'|'mem'::
-  If 'true' or 'mem' is specified, when a file whose suffix is ".metaink" or content
+  If 'true' or 'mem' is specified, when a file whose suffix is ".metalink" or content
   type of "application/metalink+xml" is downloaded, aria2 parses it as a metalink
   file and downloads files mentioned in it.
   If 'mem' is specified, a metalink file is not written to the disk, but is just
