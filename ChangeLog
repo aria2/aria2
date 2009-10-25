@@ -1,5 +1,10 @@
 2009-10-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo
+	* src/usage_text.h
+
+2009-10-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added missing bitfield.cc
 	* src/bitfield.cc
 

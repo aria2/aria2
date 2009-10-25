@@ -359,7 +359,7 @@ _(" --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify 'non
   "                              if you don't have any preferred protocol.")
 #define TEXT_FOLLOW_METALINK \
 _(" --follow-metalink=true|false|mem If true or mem is specified, when a file\n"\
-  "                              whose suffix is .metaink or content type of\n"\
+  "                              whose suffix is .metalink or content type of\n"\
   "                              application/metalink+xml is downloaded, aria2\n"\
   "                              parses it as a metalink file and downloads files\n"\
   "                              mentioned in it.\n"\
