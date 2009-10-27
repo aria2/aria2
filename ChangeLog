@@ -1,5 +1,10 @@
 2009-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed Util.cc from POTFILES.in
+	* po/POTFILES.in
+
+2009-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated man page for previous change.
 	* doc/aria2c.1.txt
 
