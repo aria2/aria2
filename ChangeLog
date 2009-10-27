@@ -1,3 +1,14 @@
+2009-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	If user name is embedded but password is missing in URI, first
+	resolve password using .netrc. If password is found in .netrc,
+	then use it as password. If not, use the password specified in
+	--ftp-passwd.
+	* src/AuthConfigFactory.cc
+	* src/Request.cc
+	* src/Request.h
+	* test/AuthConfigFactoryTest.cc
+
 2009-10-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed typo

@@ -83,6 +83,8 @@ private:
 
   std::string _password;
 
+  bool _hasPassword;
+
   bool _ipv6LiteralAddress;
 
   SharedHandle<PeerStat> _peerStat;
@@ -189,6 +191,12 @@ public:
   const std::string& getPassword() const
   {
     return _password;
+  }
+
+  // Returns true if current URI has embedded password.
+  bool hasPassword() const
+  {
+    return _hasPassword;
   }
 
   const std::string& getMethod() const {

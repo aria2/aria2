@@ -72,6 +72,7 @@ Request::Request():
   _pipeliningHint(false),
   _maxPipelinedRequest(1),
   method(METHOD_GET),
+  _hasPassword(false),
   _ipv6LiteralAddress(false)
 {}
 
@@ -161,6 +162,7 @@ bool Request::parseUrl(const std::string& url) {
   _query = A2STR::NIL;
   _username = A2STR::NIL;
   _password = A2STR::NIL;
+  _hasPassword = false;
   _ipv6LiteralAddress = false;
   // find query part
   std::string queryTemp;
@@ -193,6 +195,9 @@ bool Request::parseUrl(const std::string& url) {
       util::split(authPart, A2STR::COLON_C);
     _username = util::urldecode(userPass.first);
     _password = util::urldecode(userPass.second);
+    if(authPart.find(A2STR::COLON_C) != std::string::npos) {
+      _hasPassword = true;
+    }
     hostPart.erase(0, atmarkp+1);
   }
   {

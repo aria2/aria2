@@ -170,6 +170,29 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
   req->setUrl("ftp://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:aria2password"),
  		       factory.createAuthConfig(req, &option)->getAuthText());
+
+  // username in URI, but no password. We have DefaultAuthenticator
+  // but username is not aria2user
+  req->setUrl("ftp://aria2user@localhost/download/aria2-1.0.0.tar.bz2");
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2user:userDefinedPassword"),
+		       factory.createAuthConfig(req, &option)->getAuthText());
+
+  // Recreate netrc with entry for user aria2user
+  netrc.reset(new Netrc());
+  netrc->addAuthenticator
+    (SharedHandle<Authenticator>(new Authenticator("localhost",
+						   "aria2user",
+						   "netrcpass",
+						   "netrcacct")));
+  factory.setNetrc(netrc);
+  // This time, we can find same username "aria2user" in netrc, so the
+  // password "netrcpass" is used, instead of "userDefinedPassword"
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2user:netrcpass"),
+		       factory.createAuthConfig(req, &option)->getAuthText());
+  // No netrc entry for host mirror, so "userDefinedPassword" is used.
+  req->setUrl("ftp://aria2user@mirror/download/aria2-1.0.0.tar.bz2");
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2user:userDefinedPassword"),
+		       factory.createAuthConfig(req, &option)->getAuthText());
 }
 
 void AuthConfigFactoryTest::testUpdateBasicCred()

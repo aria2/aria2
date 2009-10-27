@@ -86,7 +86,26 @@ AuthConfigFactory::createAuthConfig
     }
   } else if(request->getProtocol() == Request::PROTO_FTP) {
     if(!request->getUsername().empty()) {
-      return createAuthConfig(request->getUsername(), request->getPassword());
+      if(request->hasPassword()) {
+	return createAuthConfig(request->getUsername(), request->getPassword());
+      } else {
+	if(!op->getAsBool(PREF_NO_NETRC)) {
+	  // First, check we have password corresponding to host and
+	  // username
+	  NetrcAuthResolver authResolver;
+	  authResolver.setNetrc(_netrc);
+
+	  SharedHandle<AuthConfig> ac =
+	    authResolver.resolveAuthConfig(request->getHost());
+	  if(!ac.isNull() && ac->getUser() == request->getUsername()) {
+	    return ac;
+	  }
+	}
+	// We don't have password for host and username. Return
+	// password specified by --ftp-passwd
+	return
+	  createAuthConfig(request->getUsername(), op->get(PREF_FTP_PASSWD));
+      }
     } else {
       return
 	createFtpAuthResolver(op)->resolveAuthConfig(request->getHost());
