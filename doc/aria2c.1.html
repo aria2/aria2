@@ -920,6 +920,10 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 <dd>
 <p>
   Set FTP password. This affects all URLs.
+  If user name is embedded but password is missing in URI, aria2 tries
+  to resolve password using .netrc. If password is found in .netrc,
+  then use it as password. If not, use the password specified in this
+  option.
   Default: <em>ARIA2USER@</em>
 </p>
 </dd>
@@ -3224,7 +3228,7 @@ files in the program, then also delete it here.</p></div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-10-25 23:40:35 JST
+Last updated 2009-10-27 22:02:41 JST
 </div>
 </div>
 </body>

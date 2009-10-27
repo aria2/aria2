@@ -285,6 +285,10 @@ FTP Specific Options
 
 *--ftp-passwd*=PASSWD::
   Set FTP password. This affects all URLs.
+  If user name is embedded but password is missing in URI, aria2 tries
+  to resolve password using .netrc. If password is found in .netrc,
+  then use it as password. If not, use the password specified in this
+  option.
   Default: 'ARIA2USER@'
 
 *-p*, *--ftp-pasv*[='true'|'false']::

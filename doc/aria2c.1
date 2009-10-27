@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
-.\"      Date: 10/25/2009
+.\"      Date: 10/27/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "10/25/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "10/27/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -406,7 +406,7 @@ Set FTP user\&. This affects all URLs\&. Default:
 .PP
 \fB\-\-ftp\-passwd\fR=PASSWD
 .RS 4
-Set FTP password\&. This affects all URLs\&. Default:
+Set FTP password\&. This affects all URLs\&. If user name is embedded but password is missing in URI, aria2 tries to resolve password using \&.netrc\&. If password is found in \&.netrc, then use it as password\&. If not, use the password specified in this option\&. Default:
 \fIARIA2USER@\fR
 .RE
 .PP
