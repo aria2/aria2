@@ -1,3 +1,8 @@
+2009-10-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Bump up version number to 1.6.3
+	* configure.ac
+
 2009-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed Util.cc from POTFILES.in
