@@ -67,6 +67,9 @@ public:
    */
   bool bindPort(uint16_t& port, IntSequence& seq);
 
+  // Returns binded port
+  uint16_t getPort() const;
+
   void setLowestSpeedLimit(unsigned int speed)
   {
     _lowestSpeedLimit = speed;

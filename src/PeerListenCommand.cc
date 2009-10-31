@@ -96,6 +96,17 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
   return false;
 }
 
+uint16_t PeerListenCommand::getPort() const
+{
+  if(socket.isNull()) {
+    return 0;
+  } else {
+    std::pair<std::string, uint16_t> addr;
+    socket->getAddrInfo(addr);
+    return addr.second;
+  }
+}
+
 bool PeerListenCommand::execute() {
   if(e->isHaltRequested() || e->_requestGroupMan->downloadFinished()) {
     return true;

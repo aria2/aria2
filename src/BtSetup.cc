@@ -158,6 +158,9 @@ void BtSetup::setup(std::deque<Command*>& commands,
       _logger->error(_("Errors occurred while binding port.\n"));
       delete listenCommand;
     }
+  } else {
+    PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
+    btRuntime->setListenPort(listenCommand->getPort());
   }
   time_t btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
   if(btStopTimeout > 0) {

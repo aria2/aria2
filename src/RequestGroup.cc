@@ -233,7 +233,6 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 						       _option.get()));
         
       BtRuntimeHandle btRuntime(new BtRuntime());
-      btRuntime->setListenPort(_option->getAsInt(PREF_LISTEN_PORT));
       btRuntime->setMaxPeers(_option->getAsInt(PREF_BT_MAX_PEERS));
       _btRuntime = btRuntime;
       progressInfoFile->setBtRuntime(btRuntime);
