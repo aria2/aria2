@@ -160,7 +160,6 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
 	(_option->getAsInt(PREF_SERVER_STAT_TIMEOUT));
     }
     e->setStatCalc(_statCalc);
-    e->fillCommand();
 
     // The number of simultaneous download is specified by
     // PREF_MAX_CONCURRENT_DOWNLOADS.

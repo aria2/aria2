@@ -74,24 +74,11 @@ DownloadEngineFactory::DownloadEngineFactory():
   _logger(LogFactory::getInstance()) {}
 
 DownloadEngineHandle
-DownloadEngineFactory::newDownloadEngine(Option* op,
-					 const RequestGroups& requestGroups)
+DownloadEngineFactory::newDownloadEngine
+(Option* op, const RequestGroups& requestGroups)
 {
-  RequestGroups workingSet;
-  RequestGroups reservedSet;
-  const size_t MAX_CONCURRENT_DOWNLOADS = op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
-  if(MAX_CONCURRENT_DOWNLOADS < requestGroups.size()) {
-    workingSet.insert(workingSet.end(),
-		      requestGroups.begin(),
-		      requestGroups.begin()+MAX_CONCURRENT_DOWNLOADS);
-
-    reservedSet.insert(reservedSet.end(),
-		       requestGroups.begin()+MAX_CONCURRENT_DOWNLOADS,
-		       requestGroups.end());
-  } else {
-    workingSet = requestGroups;
-  }
-
+  const size_t MAX_CONCURRENT_DOWNLOADS =
+    op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
   SharedHandle<EventPoll> eventPoll;
 #ifdef HAVE_EPOLL
   if(op->get(PREF_EVENT_POLL) == V_EPOLL) {
@@ -100,7 +87,7 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
       eventPoll = ep;
     } else {
       throw DL_ABORT_EX("Initializing EpollEventPoll failed."
-		      " Try --event-poll=select");
+			" Try --event-poll=select");
     }
   } else
 #endif // HAVE_EPLL
@@ -113,9 +100,8 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   e->option = op;
 
   RequestGroupManHandle
-    requestGroupMan(new RequestGroupMan(workingSet, MAX_CONCURRENT_DOWNLOADS,
+    requestGroupMan(new RequestGroupMan(requestGroups, MAX_CONCURRENT_DOWNLOADS,
 					op));
-  requestGroupMan->addReservedGroup(reservedSet);
   e->_requestGroupMan = requestGroupMan;
   e->_fileAllocationMan.reset(new FileAllocationMan());
 #ifdef ENABLE_MESSAGE_DIGEST

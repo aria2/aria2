@@ -54,11 +54,11 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   rg1->setDownloadContext(dctx1);
   rg2->setDownloadContext(dctx2);
 
-  RequestGroups rgs;
-  rgs.push_back(rg1);
-  rgs.push_back(rg2);
+  RequestGroupMan gm(std::deque<SharedHandle<RequestGroup> >(), 1,
+		     _option.get());
 
-  RequestGroupMan gm(rgs, 1, _option.get());
+  gm.addRequestGroup(rg1);
+  gm.addRequestGroup(rg2);
   
   CPPUNIT_ASSERT(gm.isSameFileBeingDownloaded(rg1.get()));
 

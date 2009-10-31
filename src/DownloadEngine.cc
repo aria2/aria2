@@ -229,13 +229,6 @@ void DownloadEngine::requestHalt()
   _requestGroupMan->halt();
 }
 
-void DownloadEngine::fillCommand()
-{
-  std::deque<Command*> commands;
-  _requestGroupMan->getInitialCommands(commands, this);
-  addCommand(commands);
-}
-
 void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
 {
   _statCalc = statCalc;

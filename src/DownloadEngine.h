@@ -184,8 +184,6 @@ public:
 
   void addCommand(const std::deque<Command*>& commands);
 
-  void fillCommand();
-
   void setStatCalc(const SharedHandle<StatCalc>& statCalc);
 
   bool isHaltRequested() const

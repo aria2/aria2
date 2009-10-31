@@ -72,7 +72,7 @@ namespace aria2 {
 RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
 				 unsigned int maxSimultaneousDownloads,
 				 const Option* option):
-  _requestGroups(requestGroups),
+  _reservedGroups(requestGroups),
   _logger(LogFactory::getInstance()),
   _maxSimultaneousDownloads(maxSimultaneousDownloads),
   _gidCounter(0),
@@ -445,20 +445,25 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   while(count < num && !_reservedGroups.empty()) {
     RequestGroupHandle groupToAdd = _reservedGroups.front();
     _reservedGroups.pop_front();
+    Commands commands;
     try {
       if(!groupToAdd->isDependencyResolved()) {
 	temp.push_back(groupToAdd);
 	continue;
       }
       configureRequestGroup(groupToAdd);
-      Commands commands;
       createInitialCommand(groupToAdd, commands, e);
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
+      commands.clear();
       executeStartHook(groupToAdd, e->option);
     } catch(RecoverableException& ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
+      _logger->debug("Deleting temporal commands.");
+      std::for_each(commands.begin(), commands.end(), Deleter());
+      commands.clear();
+      _logger->debug("Commands deleted");
       groupToAdd->releaseRuntimeResource(e);
       _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
@@ -469,29 +474,6 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   if(count > 0) {
     e->setNoWait(true);
     _logger->debug("%d RequestGroup(s) added.", count);
-  }
-}
-
-void RequestGroupMan::getInitialCommands(std::deque<Command*>& commands,
-					 DownloadEngine* e)
-{
-  for(RequestGroups::iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end();) {
-    try {
-      if((*itr)->isDependencyResolved()) {
-	configureRequestGroup(*itr);
-	createInitialCommand(*itr, commands, e);
-	executeStartHook(*itr, e->option);
-	++itr;
-      } else {
-	_reservedGroups.push_front((*itr));
-	itr = _requestGroups.erase(itr);
-      }
-    } catch(RecoverableException& e) {
-      _logger->error(EX_EXCEPTION_CAUGHT, e);
-      _downloadResults.push_back((*itr)->createDownloadResult());
-      itr = _requestGroups.erase(itr);
-    }  
   }
 }
 

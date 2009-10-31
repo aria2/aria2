@@ -153,10 +153,11 @@ void BtSetup::setup(std::deque<Command*>& commands,
     uint16_t port;
     if(listenCommand->bindPort(port, seq)) {
       btRuntime->setListenPort(port);
-      commands.push_back(listenCommand);
+      // Add command to DownloadEngine directly.
+      e->commands.push_back(listenCommand);
     } else {
-      _logger->error(_("Errors occurred while binding port.\n"));
       delete listenCommand;
+      throw DL_ABORT_EX(_("Errors occurred while binding port.\n"));
     }
   } else {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);

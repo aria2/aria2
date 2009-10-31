@@ -1,5 +1,20 @@
 2009-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Throw exception if binding listening port is failed.  Removed
+	RequestGroupMan::getInitialCommand(). Use
+	fillRequestGroupFromReserver() instead.  Delete commands for
+	RequestGroup which has errors when it is being added.
+	* src/BtSetup.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/DownloadEngineFactory.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* test/RequestGroupManTest.cc
+
+2009-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that when downloading more than one torrent,
 	listening port is not reported properly to tracker for 2nd or
 	later torrents.

@@ -97,8 +97,6 @@ public:
 
   void forceHalt();
 
-  void getInitialCommands(std::deque<Command*>& commands, DownloadEngine* e);
-
   void removeStoppedGroup(DownloadEngine* e);
 
   void fillRequestGroupFromReserver(DownloadEngine* e);
