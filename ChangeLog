@@ -1,5 +1,11 @@
 2009-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that in Windows environment new blank line is
+	inserted when console readout is updated.
+	* src/ConsoleStatCalc.cc
+
+2009-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Throw exception if binding listening port is failed.  Removed
 	RequestGroupMan::getInitialCommand(). Use
 	fillRequestGroupFromReserver() instead.  Delete commands for

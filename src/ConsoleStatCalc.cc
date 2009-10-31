@@ -207,11 +207,19 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 
   bool isTTY = isatty(STDOUT_FILENO) == 1;
   unsigned short int cols = 80;
+#ifdef __MINGW32__
+  // Windows terminal cannot handle at the end of line properly.
+  --cols;
+#endif // __MINGW32__
   if(isTTY) {
 #ifdef HAVE_TERMIOS_H
     struct winsize size;
     if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
       cols = size.ws_col;
+#ifdef __MINGW32__
+      // Windows terminal cannot handle at the end of line properly.
+      --cols;
+#endif // __MINGW32__
     }
 #endif // HAVE_TERMIOS_H
     std::cout << '\r' << std::setfill(' ') << std::setw(cols) << ' ' << '\r';
