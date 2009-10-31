@@ -41,7 +41,6 @@
 
 namespace aria2 {
 
-class PeerStorage;
 class Peer;
 class DHTPeerAnnounceEntry;
 class DHTTaskQueue;
@@ -66,14 +65,6 @@ public:
 
   void addPeerAnnounce(const unsigned char* infoHash,
 		       const std::string& ipaddr, uint16_t port);
-
-  // add peer announce as localhost downloading the content
-  void addPeerAnnounce(const unsigned char* infoHash,
-		       const SharedHandle<PeerStorage>& peerStorage);
-  
-  // Call DHTPeerAnnounceEntry::clearLocal() for infoHash if found.
-  // If DHTPeerAnnounceEntry is empty, it is erased.
-  void removeLocalPeerAnnounce(const unsigned char* infoHash);
 
   bool contains(const unsigned char* infoHash) const;
 

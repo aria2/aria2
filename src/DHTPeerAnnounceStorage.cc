@@ -39,7 +39,6 @@
 
 #include "DHTPeerAnnounceEntry.h"
 #include "Peer.h"
-#include "PeerStorage.h"
 #include "DHTConstants.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
@@ -90,34 +89,6 @@ DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
   _logger->debug("Adding %s:%u to peer announce list: infoHash=%s",
 		 ipaddr.c_str(), port, util::toHex(infoHash, DHT_ID_LENGTH).c_str());
   getPeerAnnounceEntry(infoHash)->addPeerAddrEntry(PeerAddrEntry(ipaddr, port));
-}
-
-// add peer announce as localhost downloading the content
-void DHTPeerAnnounceStorage::addPeerAnnounce
-(const unsigned char* infoHash, const SharedHandle<PeerStorage>& peerStorage)
-{
-  _logger->debug("Adding localhost to peer announce list: infoHash=%s",
-		 util::toHex(infoHash, DHT_ID_LENGTH).c_str());
-  SharedHandle<DHTPeerAnnounceEntry> entry =
-    getPeerAnnounceEntry(infoHash);
-  entry->setPeerStorage(peerStorage);
-}
-
-void DHTPeerAnnounceStorage::removeLocalPeerAnnounce
-(const unsigned char* infoHash)
-{
-  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
-
-  std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::lower_bound(_entries.begin(), _entries.end(), entry, InfoHashLess());
-
-  if(i != _entries.end() &&
-     memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0) {
-    (*i)->clearLocal();
-    if((*i)->empty()) {
-      _entries.erase(i);
-    }
-  }
 }
 
 bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const

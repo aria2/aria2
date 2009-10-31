@@ -7,7 +7,6 @@
 #include "Exception.h"
 #include "util.h"
 #include "DownloadContext.h"
-#include "MockPeerStorage.h"
 #include "DHTConstants.h"
 #include "Peer.h"
 #include "FileEntry.h"
@@ -19,11 +18,9 @@ class DHTPeerAnnounceStorageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPeerAnnounceStorageTest);
   CPPUNIT_TEST(testAddAnnounce);
-  CPPUNIT_TEST(testRemovePeerAnnounce);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testAddAnnounce();
-  void testRemovePeerAnnounce();
 };
 
 
@@ -59,31 +56,6 @@ static SharedHandle<DownloadContext> createDownloadContext
     std::string(&infoHash[0], &infoHash[DHT_ID_LENGTH]);
   dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
   return dctx;
-}
-
-void DHTPeerAnnounceStorageTest::testRemovePeerAnnounce()
-{
-  unsigned char infoHash1[DHT_ID_LENGTH];
-  memset(infoHash1, 0xff, DHT_ID_LENGTH);
-  unsigned char infoHash2[DHT_ID_LENGTH];
-  memset(infoHash2, 0xf0, DHT_ID_LENGTH);
-  DHTPeerAnnounceStorage storage;
-
-  SharedHandle<DownloadContext> ctx1 = createDownloadContext(infoHash1);
-  SharedHandle<DownloadContext> ctx2 = createDownloadContext(infoHash2);
-
-  SharedHandle<MockPeerStorage> peerStorage1(new MockPeerStorage());
-  SharedHandle<MockPeerStorage> peerStorage2(new MockPeerStorage());
-
-  storage.addPeerAnnounce(infoHash1, "192.168.0.1", 6881);
-  storage.addPeerAnnounce(infoHash1, peerStorage1);
-  storage.addPeerAnnounce(infoHash2, peerStorage2);
-
-  storage.removeLocalPeerAnnounce(bittorrent::getInfoHash(ctx2));
-  CPPUNIT_ASSERT(!storage.contains(infoHash2));
-
-  storage.removeLocalPeerAnnounce(bittorrent::getInfoHash(ctx1));
-  CPPUNIT_ASSERT(storage.contains(infoHash1));
 }
 
 } // namespace aria2

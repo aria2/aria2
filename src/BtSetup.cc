@@ -112,8 +112,6 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
 
   if(torrentAttrs[bittorrent::PRIVATE].i() == 0 && DHTSetup::initialized()) {
-    DHTRegistry::_peerAnnounceStorage->addPeerAnnounce
-      (torrentAttrs[bittorrent::INFO_HASH].uc(), peerStorage);
     DHTGetPeersCommand* command =
       new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
     command->setTaskQueue(DHTRegistry::_taskQueue);

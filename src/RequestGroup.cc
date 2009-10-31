@@ -764,10 +764,6 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
     if(!contextInReg.isNull() &&
        contextInReg->getOwnerRequestGroup()->getGID() == _gid) {
       btRegistry->remove(infoHash);
-      if(!DHTRegistry::_peerAnnounceStorage.isNull()) {
-	DHTRegistry::_peerAnnounceStorage->removeLocalPeerAnnounce
-	  (torrentAttrs[bittorrent::INFO_HASH].uc());
-      }
     }
   }
 #endif // ENABLE_BITTORRENT

@@ -1,5 +1,19 @@
 2009-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed peerStorage from DHTPeerAnnounceEntry. It is unlikely to
+	receive get_peers request for torrent which the client is now
+	downloading.
+	* src/BtSetup.cc
+	* src/DHTPeerAnnounceEntry.cc
+	* src/DHTPeerAnnounceEntry.h
+	* src/DHTPeerAnnounceStorage.cc
+	* src/DHTPeerAnnounceStorage.h
+	* src/RequestGroup.cc
+	* test/DHTPeerAnnounceEntryTest.cc
+	* test/DHTPeerAnnounceStorageTest.cc
+
+2009-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that in Windows environment new blank line is
 	inserted when console readout is updated.
 	* src/ConsoleStatCalc.cc

@@ -6,8 +6,8 @@
 
 #include "Exception.h"
 #include "util.h"
-#include "MockPeerStorage.h"
 #include "FileEntry.h"
+#include "Peer.h"
 
 namespace aria2 {
 
@@ -61,11 +61,6 @@ void DHTPeerAnnounceEntryTest::testEmpty()
   }
   {
     DHTPeerAnnounceEntry entry(infohash);
-    entry.setPeerStorage(SharedHandle<PeerStorage>(new MockPeerStorage()));
-    CPPUNIT_ASSERT(!entry.empty());
-  }
-  {
-    DHTPeerAnnounceEntry entry(infohash);
     CPPUNIT_ASSERT(entry.empty());
   }
 }
@@ -92,16 +87,6 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
   unsigned char infohash[DHT_ID_LENGTH];
   memset(infohash, 0xff, DHT_ID_LENGTH);
 
-  SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
-  {
-    SharedHandle<Peer> activePeers[2];
-    activePeers[0].reset(new Peer("192.168.0.3", 6883));
-    activePeers[1].reset(new Peer("192.168.0.4", 6884));
-
-    peerStorage->setActivePeers(std::deque<SharedHandle<Peer> >(&activePeers[0],
-								&activePeers[2]));
-  }
-
   DHTPeerAnnounceEntry entry(infohash);
   {
     std::deque<SharedHandle<Peer> > peers;
@@ -120,20 +105,6 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->port);
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peers[1]->ipaddr); 
     CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->port);
-  }
-  entry.setPeerStorage(peerStorage);
-  {
-    std::deque<SharedHandle<Peer> > peers;
-    entry.getPeers(peers);
-    CPPUNIT_ASSERT_EQUAL((size_t)4, peers.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->ipaddr);
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->port);
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peers[1]->ipaddr); 
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->port);
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peers[2]->ipaddr);
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6883, peers[2]->port);
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.4"), peers[3]->ipaddr); 
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6884, peers[3]->port);
   }
 }
 

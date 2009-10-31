@@ -38,7 +38,6 @@
 #include <algorithm>
 
 #include "Peer.h"
-#include "PeerStorage.h"
 
 namespace aria2 {
 
@@ -58,17 +57,6 @@ void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
     (*i).notifyUpdate();
   }
   notifyUpdate();
-}
-
-void DHTPeerAnnounceEntry::clearLocal()
-{
-  _peerStorage.reset();
-}
-
-void DHTPeerAnnounceEntry::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
-{
-  _peerStorage = peerStorage;
 }
 
 size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
@@ -100,7 +88,7 @@ void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
 
 bool DHTPeerAnnounceEntry::empty() const
 {
-  return _peerAddrEntries.empty() && _peerStorage.isNull();
+  return _peerAddrEntries.empty();
 }
 
 void DHTPeerAnnounceEntry::getPeers(std::deque<SharedHandle<Peer> >& peers) const
@@ -109,9 +97,6 @@ void DHTPeerAnnounceEntry::getPeers(std::deque<SharedHandle<Peer> >& peers) cons
       i != _peerAddrEntries.end(); ++i) {
     SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
     peers.push_back(peer);
-  }
-  if(!_peerStorage.isNull()) {
-    _peerStorage->getActivePeers(peers);
   }
 }
 

@@ -47,15 +47,12 @@
 namespace aria2 {
 
 class Peer;
-class PeerStorage;
 
 class DHTPeerAnnounceEntry {
 private:
   unsigned char _infoHash[DHT_ID_LENGTH];
 
   std::deque<PeerAddrEntry> _peerAddrEntries;
-
-  SharedHandle<PeerStorage> _peerStorage;
 
   Time _lastUpdated;
 public:
@@ -66,10 +63,6 @@ public:
   // add peer addr entry.
   // if it already exists, update "Last Updated" property.
   void addPeerAddrEntry(const PeerAddrEntry& entry);
-
-  void clearLocal();
-
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
   size_t countPeerAddrEntry() const;
 
