@@ -82,6 +82,13 @@ DHTMessageDispatcherImpl::sendMessage(const SharedHandle<DHTMessageEntry>& entry
     }
   } catch(RecoverableException& e) {
     _logger->error("Failed to send message: %s", e, entry->_message->toString().c_str());
+    // Add message to DHTMessageTracker with timeout 0 to treat it as
+    // time out. Without this, we have untracked message and some of
+    // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
+    // forever.
+    if(!entry->_message->isReply()) {
+      _tracker->addMessage(entry->_message, 0, entry->_callback);
+    }
   }
   return true;
 }

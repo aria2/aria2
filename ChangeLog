@@ -1,5 +1,11 @@
 2009-11-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that DHTAbstractNodeLookupTask never finishes if
+	error occurred in DHTMessageDispatcherImpl::sendMessage().
+	* src/DHTMessageDispatcherImpl.cc
+
+2009-11-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't reuse URI if Request pool is not empty.
 	* src/CreateRequestCommand.cc
 
