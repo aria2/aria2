@@ -1,3 +1,8 @@
+2009-11-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Don't reuse URI if Request pool is not empty.
+	* src/CreateRequestCommand.cc
+
 2009-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed peerStorage from DHTPeerAnnounceEntry. It is unlikely to

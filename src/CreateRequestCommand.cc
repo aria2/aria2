@@ -70,7 +70,8 @@ bool CreateRequestCommand::executeInternal()
       (_segments.front()->getPositionToWrite());
   }
   if(_fileEntry->getRemainingUris().empty() &&
-     getOption()->getAsBool(PREF_REUSE_URI)) {
+     getOption()->getAsBool(PREF_REUSE_URI) &&
+     _fileEntry->countPooledRequest() == 0) {
     _fileEntry->reuseUri(_requestGroup->getNumConcurrentCommand());
   }
   req = _fileEntry->getRequest(_requestGroup->getURISelector(),
