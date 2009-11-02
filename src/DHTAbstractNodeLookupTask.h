@@ -61,6 +61,7 @@ protected:
 
   void updateBucket();
 
+  void sendMessageAndCheckFinish();
 public:
   DHTAbstractNodeLookupTask(const unsigned char* targetID);
 

@@ -66,11 +66,14 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
   toEntries(newEntries, nodes);
 
   size_t count = 0;
-  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i = newEntries.begin();
-      i != newEntries.end(); ++i) {
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
+	newEntries.begin(); i != newEntries.end(); ++i) {
     if(memcmp(_localNode->getID(), (*i)->_node->getID(), DHT_ID_LENGTH) != 0) {
       _entries.push_front(*i);
       ++count;
+      _logger->debug("Received nodes: id=%s, ip=%s",
+		     util::toHex((*i)->_node->getID(), DHT_ID_LENGTH).c_str(),
+		     (*i)->_node->getIPAddress().c_str());
     }
   }
 
@@ -81,16 +84,7 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
   if(_entries.size() > DHTBucket::K) {
     _entries.erase(_entries.begin()+DHTBucket::K, _entries.end());
   }
-  if(needsAdditionalOutgoingMessage()) {
-    sendMessage();
-  }
-  if(_inFlightMessage == 0) {
-    _logger->debug("Finished node_lookup for node ID %s",
-		   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
-    onFinish();
-    updateBucket();
-    _finished = true;
-  }
+  sendMessageAndCheckFinish();
 }
 
 void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
@@ -104,6 +98,11 @@ void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
       break;
     }
   }
+  sendMessageAndCheckFinish();
+}
+
+void DHTAbstractNodeLookupTask::sendMessageAndCheckFinish()
+{
   if(needsAdditionalOutgoingMessage()) {
     sendMessage();
   }
@@ -113,7 +112,11 @@ void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
     onFinish();
     updateBucket();
     _finished = true;
-  }  
+  } else {
+    _logger->debug("%d in flight message for node ID %s",
+		   _inFlightMessage,
+		   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+  }
 }
 
 void DHTAbstractNodeLookupTask::sendMessage()
