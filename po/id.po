@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-10 23:30+0900\n"
+"POT-Creation-Date: 2009-11-02 23:05+0900\n"
 "PO-Revision-Date: 2009-03-05 06:58+0000\n"
 "Last-Translator: pepoluan <Unknown>\n"
 "Language-Team: Indonesian <id@li.org>\n"
@@ -39,11 +39,11 @@ msgstr ""
 "Jika terjadi error, silakan lihat berkas log. Lihat opsi '-l' pada laman "
 "help/man untuk keterangan lebih lanjut."
 
-#: src/RequestGroupMan.cc:560
+#: src/RequestGroupMan.cc:542
 msgid "Download Results:"
 msgstr "Hasil pengunduhan:"
 
-#: src/RequestGroupMan.cc:604
+#: src/RequestGroupMan.cc:586
 msgid "Status Legend:"
 msgstr "Legenda Status:"
 
@@ -936,9 +936,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:361
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type of\n"
+"                              whose suffix is .metalink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -950,6 +951,18 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-torrent=true|false|mem Jika true atau mem diberikan, saat "
+"mengunduh sebuah\n"
+"                              berkas berakhiran .torrent atau jenis konten "
+"application/x-bittorent,\n"
+"                              aria2 akan memeriksa berkas itu sebagai berkas "
+"torrent dan\n"
+"                              mengunduh berkas-berkas di dalamnya.\n"
+"                              Kalau mem diberikan, berkas torrent itu tidak "
+"ditulis ke disk,\n"
+"                              tetapi disimpan di memory saja.\n"
+"                              Jika false diberikan, tindakan di atas tidak "
+"dilakukan."
 
 #: src/usage_text.h:371
 msgid ""
@@ -2085,7 +2098,7 @@ msgstr "Berkas ini bukan berkas Torrent atau Metalink. Lewati."
 
 #: src/message.h:177
 #, c-format
-msgid "Is '%s' a regular file?"
+msgid "Is '%s' a file?"
 msgstr ""
 
 #: src/message.h:179

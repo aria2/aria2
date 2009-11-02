@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-10 23:30+0900\n"
+"POT-Creation-Date: 2009-11-02 23:05+0900\n"
 "PO-Revision-Date: 2008-08-16 00:00+0900\n"
 "Last-Translator: jimmyz <Unknown>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "Αν υπάρχουν σφάλματα, δείτε το αρχείο καταγραφών (log). Δώστε την παράμετρο -"
 "l στη σελίδα help/man για περαιτέρω λεπτομέρειες."
 
-#: src/RequestGroupMan.cc:560
+#: src/RequestGroupMan.cc:542
 msgid "Download Results:"
 msgstr "Αποτελέσματα μεταφορτώσεων:"
 
-#: src/RequestGroupMan.cc:604
+#: src/RequestGroupMan.cc:586
 #, fuzzy
 msgid "Status Legend:"
 msgstr "Ιστορικό κατάστασης:"
@@ -781,9 +781,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:361
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type of\n"
+"                              whose suffix is .metalink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -795,6 +796,14 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" -s, --split=N. Μεταφόρτωση αρχείου χρησιμοποιώντας πλήθος N συνδέσεων. Αν "
+"δίδονται περισσότερα\n"
+"                              από  N URLs, τα πρώτα είναι σε χρήση και τα "
+"υπόλοιπα είναι εφεδρικά. Αν\n"
+"                              δίδονται λιγότερα, τότε χρησιμοποιούνται κατ' "
+"επανάληψη, μέχρι να γίνουν\n"
+"                              συνολικά Ν συνδέσεις. Παρακαλώ δείτε και την "
+"παραμετρο -j."
 
 #: src/usage_text.h:371
 msgid ""
@@ -1871,7 +1880,7 @@ msgstr ""
 
 #: src/message.h:177
 #, c-format
-msgid "Is '%s' a regular file?"
+msgid "Is '%s' a file?"
 msgstr ""
 
 #: src/message.h:179

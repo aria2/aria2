@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-10 23:30+0900\n"
+"POT-Creation-Date: 2009-11-02 23:05+0900\n"
 "PO-Revision-Date: 2009-09-20 18:18+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/RequestGroupMan.cc:560
+#: src/RequestGroupMan.cc:542
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:604
+#: src/RequestGroupMan.cc:586
 msgid "Status Legend:"
 msgstr "凡例:"
 
@@ -1130,9 +1130,10 @@ msgstr ""
 "                              してください."
 
 #: src/usage_text.h:361
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type of\n"
+"                              whose suffix is .metalink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -2519,8 +2520,8 @@ msgstr ""
 "このファイルは, Torrent でも Metalink ファイルでもないのでスキップします."
 
 #: src/message.h:177
-#, c-format
-msgid "Is '%s' a regular file?"
+#, fuzzy, c-format
+msgid "Is '%s' a file?"
 msgstr "'%s' は普通のファイルですか?"
 
 #: src/message.h:179

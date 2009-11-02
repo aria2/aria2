@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-10 23:30+0900\n"
+"POT-Creation-Date: 2009-11-02 23:05+0900\n"
 "PO-Revision-Date: 2009-10-08 20:07+0000\n"
 "Last-Translator: atany <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "При наявності помилок дивіться log файл. Дивіться параметр '-l' в допомозі "
 "(help/man-сторінки) для детальнішої інформації."
 
-#: src/RequestGroupMan.cc:560
+#: src/RequestGroupMan.cc:542
 msgid "Download Results:"
 msgstr "Результати завантаження:"
 
-#: src/RequestGroupMan.cc:604
+#: src/RequestGroupMan.cc:586
 msgid "Status Legend:"
 msgstr "Роз'яснення позначень:"
 
@@ -1051,9 +1051,10 @@ msgstr ""
 "                              якщо у Вас нема бажаного протоколу."
 
 #: src/usage_text.h:361
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type of\n"
+"                              whose suffix is .metalink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -2382,8 +2383,8 @@ msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr "Цей файл не є фалом торенту або Metalink. Пропущення."
 
 #: src/message.h:177
-#, c-format
-msgid "Is '%s' a regular file?"
+#, fuzzy, c-format
+msgid "Is '%s' a file?"
 msgstr "Чи є звичайним файлом '%s'?"
 
 #: src/message.h:179

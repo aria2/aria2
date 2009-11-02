@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-10 23:30+0900\n"
+"POT-Creation-Date: 2009-11-02 23:05+0900\n"
 "PO-Revision-Date: 2008-12-17 00:40+0900\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
@@ -40,11 +40,11 @@ msgstr ""
 "En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
 "d'informations."
 
-#: src/RequestGroupMan.cc:560
+#: src/RequestGroupMan.cc:542
 msgid "Download Results:"
 msgstr "Résultats du ou des téléchargements:"
 
-#: src/RequestGroupMan.cc:604
+#: src/RequestGroupMan.cc:586
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 
@@ -902,9 +902,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:361
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type of\n"
+"                              whose suffix is .metalink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -916,6 +917,21 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-torrent=true|false|mem Si true ou mem est spécifié, quand un "
+"fichier\n"
+"                              dont le suffixe est .torrent ou dont le type\n"
+"                              de contenu est application/x-bittorrent est "
+"téléchargé, aria2 le\n"
+"                              considère comme un fichier \"torrent\" et "
+"télécharge les fichiers\n"
+"                              mentionnés dedans.\n"
+"                              Si mem est spécifié, le fichiertorrent n'est "
+"pas\n"
+"                              écrit sur le disque, mais est juste gardé en "
+"mémoire.\n"
+"                              Si false est spécifié, l'action mentionné ci-"
+"dessus\n"
+"                              n'est pas appliquée."
 
 #: src/usage_text.h:371
 msgid ""
@@ -2169,7 +2185,7 @@ msgstr ""
 
 #: src/message.h:177
 #, c-format
-msgid "Is '%s' a regular file?"
+msgid "Is '%s' a file?"
 msgstr ""
 
 #: src/message.h:179

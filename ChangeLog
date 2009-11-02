@@ -1,5 +1,10 @@
 2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated translation template
+	* po
+
+2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error without ssl library.
 	* src/util.cc
 

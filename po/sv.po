@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-10 23:30+0900\n"
+"POT-Creation-Date: 2009-11-02 23:05+0900\n"
 "PO-Revision-Date: 2007-12-09 00:07+0900\n"
 "Last-Translator: Hampus Wessman <hw@vox.nu>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -36,11 +36,11 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:560
+#: src/RequestGroupMan.cc:542
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:604
+#: src/RequestGroupMan.cc:586
 msgid "Status Legend:"
 msgstr ""
 
@@ -807,9 +807,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:361
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type of\n"
+"                              whose suffix is .metalink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -821,6 +822,13 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" -s, --split=N                Ladda ner en fil med N uppkopplingar. N måste "
+"vara\n"
+"                              mellan 1 och 5. Den här inställningen påverkar "
+"alla\n"
+"                               URLer. Aria2 gör alltså N uppkopplingar till "
+"varje URL.\n"
+"                              Förvalt: 1"
 
 #: src/usage_text.h:371
 msgid ""
@@ -1933,7 +1941,7 @@ msgstr ""
 
 #: src/message.h:177
 #, c-format
-msgid "Is '%s' a regular file?"
+msgid "Is '%s' a file?"
 msgstr ""
 
 #: src/message.h:179

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-10-10 23:30+0900\n"
+"POT-Creation-Date: 2009-11-02 23:05+0900\n"
 "PO-Revision-Date: 2008-08-04 07:10+0000\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "Si hi han errors, llavors miri el fitxer d'anotacions. Per més informació "
 "vegi l'opció '-l' en les pàgines help/man."
 
-#: src/RequestGroupMan.cc:560
+#: src/RequestGroupMan.cc:542
 msgid "Download Results:"
 msgstr "Resultats de la descàrrega:"
 
-#: src/RequestGroupMan.cc:604
+#: src/RequestGroupMan.cc:586
 msgid "Status Legend:"
 msgstr "llegenda d'estat:"
 
@@ -992,9 +992,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:361
+#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type of\n"
+"                              whose suffix is .metalink or content type of\n"
 "                              application/metalink+xml is downloaded, aria2\n"
 "                              parses it as a metalink file and downloads "
 "files\n"
@@ -1006,6 +1007,19 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --select-file=INDEX...       Establir el fitxer a descarregar especificant "
+"el seu índex.\n"
+"                              Es pot trobar el fitxer índex fent servir la "
+"opció\n"
+"                              --show-files. Es poden especificar varis\n"
+"                              índex fent servir ',', per exemple: \"3,6\".\n"
+"                              Es pot fer servir també '-' per especificar un "
+"rang: \"1-5\".\n"
+"                              ',' i '-' es poden fer servir junts.\n"
+"                              Quan es fa servir amb la opció -M, l'índex pot "
+"variar\n"
+"                              depenent de la consulta(veure les opcions --"
+"metalink-*)."
 
 #: src/usage_text.h:371
 msgid ""
@@ -2257,7 +2271,7 @@ msgstr ""
 
 #: src/message.h:177
 #, c-format
-msgid "Is '%s' a regular file?"
+msgid "Is '%s' a file?"
 msgstr ""
 
 #: src/message.h:179
