@@ -1,5 +1,9 @@
 2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release 1.6.3
+
+2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused function.
 	* test/DHTPeerAnnounceStorageTest.cc
 
