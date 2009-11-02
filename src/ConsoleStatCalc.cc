@@ -217,8 +217,10 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
       cols = size.ws_col;
 #ifdef __MINGW32__
-      // Windows terminal cannot handle at the end of line properly.
-      --cols;
+      if(cols > 0) {
+	// Windows terminal cannot handle at the end of line properly.
+	--cols;
+      }
 #endif // __MINGW32__
     }
 #endif // HAVE_TERMIOS_H

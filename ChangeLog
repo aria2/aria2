@@ -1,5 +1,10 @@
 2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Only decrement cols if cols > 0
+	* src/ConsoleStatCalc.cc
+
+2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated Polish, Catalan, French, Italian, Russian and Japanese
 	translations. Thanks to all translators.
 	* po/ca.po
