@@ -1,5 +1,10 @@
 2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error without ssl library.
+	* src/util.cc
+
+2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Logged received nodes in get_peers reply message.
 	* src/DHTAbstractNodeLookupTask.cc
 	* src/DHTAbstractNodeLookupTask.h

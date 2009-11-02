@@ -836,7 +836,7 @@ void generateRandomData(unsigned char* data, size_t length)
   }
 #else
   std::ifstream i("/dev/urandom", std::ios::binary);
-  i.read(data, length);
+  i.read(reinterpret_cast<char*>(data), length);
 #endif // HAVE_LIBSSL
 }
 
