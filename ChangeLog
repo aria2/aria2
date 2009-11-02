@@ -1,5 +1,10 @@
 2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused function.
+	* test/DHTPeerAnnounceStorageTest.cc
+
+2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Only decrement cols if cols > 0
 	* src/ConsoleStatCalc.cc
 

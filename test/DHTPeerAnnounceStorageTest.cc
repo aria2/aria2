@@ -47,15 +47,4 @@ void DHTPeerAnnounceStorageTest::testAddAnnounce()
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.4"), peers[1]->ipaddr);
 }
 
-static SharedHandle<DownloadContext> createDownloadContext
-(const unsigned char* infoHash)
-{
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
-  BDE torrentAttrs = BDE::dict();
-  torrentAttrs[bittorrent::INFO_HASH] =
-    std::string(&infoHash[0], &infoHash[DHT_ID_LENGTH]);
-  dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
-  return dctx;
-}
-
 } // namespace aria2
