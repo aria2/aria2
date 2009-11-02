@@ -1,3 +1,38 @@
+aria2 1.6.3
+===========
+
+Release Note
+------------
+
+This release fixes reported bugs and updates Polish, Catalan, French,
+Italian, Russian and Japanese translations.
+
+Changes
+-------
+
+ * Updated Polish, Catalan, French, Italian, Russian and Japanese
+   translations. Thanks to all translators.
+
+ * Fixed the bug that DHTAbstractNodeLookupTask never finishes if
+   error occurred in DHTMessageDispatcherImpl::sendMessage().
+
+ * Fixed the bug that in Windows environment new blank line is
+   inserted when console readout is updated.
+
+ * Fixed the bug that when downloading more than one torrent with
+   multiple ports in --listen-port, listening port is not reported
+   properly to tracker for 2nd or later torrents.
+
+ * Fixed typos in documentation.
+
+ * Fixed the bug that Netrc::parse() cannot recognize comment line.
+
+ * Fixed Metalink piping no longer works.
+
+ * Fixed "--ftp-passwd" option ignored when user name embedded in URI.
+
+
+
 aria2 1.6.2
 ===========
 
