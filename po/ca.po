@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2009-11-02 23:05+0900\n"
-"PO-Revision-Date: 2008-08-04 07:10+0000\n"
+"PO-Revision-Date: 2009-11-02 23:14+0900\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-08-15 12:32+0000\n"
+"X-Launchpad-Export-Date: 2009-11-01 09:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:212
@@ -57,9 +57,11 @@ msgid "                              Tags: "
 msgstr "                              Etiquetes: "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
-msgstr "                              Valors Disponibles: "
+msgstr ""
+"                              Valors vàlids: \n"
+"representa un espai. Entri un espai en la posició equivalent en la "
+"traducció. "
 
 #: src/OptionHandlerImpl.h:133
 msgid "must be either 'true' or 'false'."
@@ -139,7 +141,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:49
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -153,86 +154,44 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" --select-file=INDEX...       Establir el fitxer a descarregar especificant "
-"el seu índex.\n"
-"                              Es pot trobar el fitxer índex fent servir la "
-"opció\n"
-"                              --show-files. Es poden especificar varis\n"
-"                              índex fent servir ',', per exemple: \"3,6\".\n"
-"                              Es pot fer servir també '-' per especificar un "
-"rang: \"1-5\".\n"
-"                              ',' i '-' es poden fer servir junts.\n"
-"                              Quan es fa servir amb la opció -M, l'índex pot "
-"variar\n"
-"                              depenent de la consulta(veure les opcions --"
-"metalink-*)."
 
 #: src/usage_text.h:58
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
 msgstr ""
-" --retry-wait=SEC             Estableix els segons per esperar a "
-"reintentar \n"
-"                              desprès d'un error. Poseu un valor entre 0 i "
-"60.\n"
-"                              Defecte: 5"
 
 #: src/usage_text.h:61
-#, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
 msgstr ""
-" -t, --timeout=SEC                Estableix el temps d'espera en segonds. "
-"Defecte: 60"
 
 #: src/usage_text.h:63
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
-" -m, --max-tries=N            Estableix el número d'intents. 0 significa "
-"ilimitat.\n"
-"                              Defecte: 5"
 
 #: src/usage_text.h:65
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP.\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy-method=METHOD   Estableix el mètode a fer servir en "
-"les                               peticions al proxy.\n"
-"                              METHOD ès 'get' o 'tunnel'.\n"
-"                              Defecte: tunnel"
 
 #: src/usage_text.h:69
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS.\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy-method=METHOD   Estableix el mètode a fer servir en "
-"les                               peticions al proxy.\n"
-"                              METHOD ès 'get' o 'tunnel'.\n"
-"                              Defecte: tunnel"
 
 #: src/usage_text.h:73
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP.\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-type=TYPE              Estableix el tipus de transferència FTP. TYPE "
-"pot ser 'binary'\n"
-"                              o 'ascii'.\n"
-"                              Defecte: binary"
 
 #: src/usage_text.h:77
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols.\n"
 "                              You can override this setting and specify a\n"
@@ -241,16 +200,6 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" -c, --continue               Continua descarregant un fitxer parcialment "
-"descarregat.\n"
-"                              Feu servir aquesta opció per seguir la "
-"descàrrega\n"
-"                              començada per un navegador Web o un altre "
-"programa\n"
-"                              que descarrega els fitxers seqüèncialment des "
-"del\n"
-"                              principi. Aquesta opció només és\n"
-"                              aplicable a descàrregues http(s)/ftp."
 
 #: src/usage_text.h:84
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -269,16 +218,11 @@ msgid " --proxy-method=METHOD        Set the method to use in proxy request."
 msgstr ""
 
 #: src/usage_text.h:90
-#, fuzzy
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
 "                              is the only supported scheme."
 msgstr ""
-" --http-auth-scheme=SCHEME    Estableix l'esquema d'autentificació HTTP. "
-"Actualment, només\n"
-"                              es suporta l'esquema bàsic.\n"
-"                              Defecte: basic"
 
 #: src/usage_text.h:93
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
@@ -287,18 +231,12 @@ msgstr ""
 "totes les URLs."
 
 #: src/usage_text.h:95
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
-" --http-user=USER             Estableix l'usuari HTTP. Això afecta a totes "
-"les URLs."
 
 #: src/usage_text.h:97
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=PASSWD         Estableix el mot de pas HTTP. Això afecta a "
-"totes les URLs."
 
 #: src/usage_text.h:99
 msgid " --ftp-type=TYPE              Set FTP transfer type."
@@ -312,7 +250,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:104
-#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -323,18 +260,8 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=SPEED   Tancar la connexió si la velocitat de connexió "
-"és més petita\n"
-"                              o igual a aquest valor (bytes per seg).\n"
-"                              0 vol dir que aria2 no té límit en la "
-"velocitat baixa.\n"
-"                              Es pot afegir K o M(1K = 1024, 1M = 1024K).\n"
-"                              Aquesta opció no afecta les descàrregues de "
-"BitTorrent.\n"
-"                              Defecte: 0"
 
 #: src/usage_text.h:110
-#, fuzzy
 msgid ""
 " --max-overall-download-limit=SPEED Set max overall download speed in bytes/"
 "sec.\n"
@@ -343,14 +270,8 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
-" --max-upload-limit=SPEED     Estableix la velocitat màxima de pujada en "
-"bytes per seg.\n"
-"                              0 vol dir no restringit.\n"
-"                              Es pot afegir K o M(1K = 1024, 1M = 1024K).\n"
-"                              Defecte: 0"
 
 #: src/usage_text.h:116
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed per each download in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -358,11 +279,6 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
-" --max-upload-limit=SPEED     Estableix la velocitat màxima de pujada en "
-"bytes per seg.\n"
-"                              0 vol dir no restringit.\n"
-"                              Es pot afegir K o M(1K = 1024, 1M = 1024K).\n"
-"                              Defecte: 0"
 
 #: src/usage_text.h:122
 msgid ""
@@ -415,7 +331,6 @@ msgstr ""
 "                              Desactiveu-lo si trobeu algún error"
 
 #: src/usage_text.h:145
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false is given, and a file already exists "
 "but\n"
@@ -425,12 +340,6 @@ msgid ""
 "download\n"
 "                              the file. See also --auto-file-renaming option."
 msgstr ""
-" --allow-overwrite=true|false Si és false, aria2 no descarrega un fitxer "
-"que\n"
-"                              ja existeix però el corresponent fitxer ."
-"aria2\n"
-"                              no existeix.\n"
-"                              Defecte: false"
 
 #: src/usage_text.h:150
 msgid ""
@@ -443,7 +352,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:155
-#, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -451,16 +359,8 @@ msgid ""
 "like\n"
 "                              the usual command-line download utilities."
 msgstr ""
-" -Z, --force-sequential[=true|false] Agafa URIs seqüèncialment en la línia "
-"d'ordres\n"
-"                              i descarrega cada URI en una sessió separada, "
-"com\n"
-"                              normalment ho farien les utilitats de "
-"descàrrega de línia d'ordres.\n"
-"                              Defecte: false"
 
 #: src/usage_text.h:159
-#, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -470,17 +370,8 @@ msgid ""
 "(1..9999)\n"
 "                              appended."
 msgstr ""
-" --auto-file-renaming[=true|false] Canvia el nom del fitxer si el mateix "
-"fitxer\n"
-"                              ja existeix. Aquesta opció només va per "
-"descàrregues\n"
-"                              http/ftp\n"
-"                              Afegirem al nou nom de fitxer un punt i un "
-"número(1..9999).\n"
-"                              Defecte: true"
 
 #: src/usage_text.h:165
-#, fuzzy
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -495,20 +386,6 @@ msgid ""
 "                              as the second example above, -Z option is\n"
 "                              required."
 msgstr ""
-" -P, --parameterized-uri[=true|false] Activa el suport de URI "
-"parametritzada.\n"
-"                              Es poden especificar conjunts de parts:\n"
-"                              http://{sv1,sv2,sv3}/foo.iso\n"
-"                              També es poden posar sequències numèriques "
-"amb\n"
-"                              comptador de salt:\n"
-"                              http://host/image[000-100:2].img\n"
-"                              Es pot ometre el comptador de salt.\n"
-"                              Si totes les URIs no apunten al mateix fitxer, "
-"tal\n"
-"                              com en el segon exemple anterior, es necessita "
-"la opció -Z.\n"
-"                              Defecte: false"
 
 #: src/usage_text.h:176
 msgid ""
@@ -518,14 +395,10 @@ msgstr ""
 "HTTP/1.1."
 
 #: src/usage_text.h:178
-#, fuzzy
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
-" --enable-http-keep-alive[=true|false] Activa la connexió persistent "
-"HTTP/1.1."
 
 #: src/usage_text.h:180
-#, fuzzy
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -537,19 +410,8 @@ msgid ""
 "                              of a file. See also --bt-hash-check-seed "
 "option."
 msgstr ""
-" --check-integrity=true|false Comprova la integritat del fitxer validant el "
-"hash de les peces.\n"
-"                              Aquesta opció només serveix en descàrregues "
-"BitTorrent\n"
-"                              i descàrregues Metalink amb sumes de "
-"comprovació de trossos.\n"
-"                              Feu servir aquesta opció per tornar a "
-"descàrregar una part defectuosa\n"
-"                              d'un fitxer.\n"
-"                              Defecte: false"
 
 #: src/usage_text.h:186
-#, fuzzy
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -561,31 +423,14 @@ msgid ""
 "                              This option has effect only on BitTorrent\n"
 "                              download."
 msgstr ""
-" --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD pot "
-"ser\n"
-"                              'none' o 'prealloc'. 'none' no fa reserva "
-"d'espai\n"
-"                              per el fitxer. 'prealloc' reserva espai\n"
-"                              abans de que comenci la descàrrega. Això pot "
-"portar algun temps\n"
-"                              depenent de la mida del fitxer.\n"
-"                              Defecte: prealloc"
 
 #: src/usage_text.h:194
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
-" --realtime-chunk-checksum=true|false Validar les sumes de comprovació dels "
-"trossos\n"
-"                              mentre descarreguem un fitxer en mode "
-"Metalink. Aquesta opció\n"
-"                              només afecta a les descàrregues Metalink amb "
-"sumes de comprovació de trossos.\n"
-"                              Defecte: true"
 
 #: src/usage_text.h:198
 msgid ""
@@ -618,7 +463,6 @@ msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc               Desactiva el suport netrc."
 
 #: src/usage_text.h:209
-#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -632,14 +476,6 @@ msgid ""
 "INPUT\n"
 "                              FILE section of man page for details."
 msgstr ""
-" -i, --input-file=FILE       Descarrega les URIs que troba en el fitxer "
-"FILE. Es poden especificar\n"
-"                              vàries URIs per uns única entitat: separeu "
-"les\n"
-"                              URIs en una sola línia fent servir el caràcter "
-"TAB.\n"
-"                              Llegeix l'entrada des de stdin quan "
-"s'especifica '-'."
 
 #: src/usage_text.h:218
 msgid ""
@@ -651,15 +487,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:222
-#, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
-" --load-cookies=FILE Carregar els Cookies desde el fitxer FILE fent servir "
-"el format de\n"
-"                         Mozilla/Firefox (1.x/2.x) i Netscape."
 
 #: src/usage_text.h:225
 msgid ""
@@ -686,7 +518,6 @@ msgstr ""
 "                              en el cas d'un fitxer torrent."
 
 #: src/usage_text.h:234
-#, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -699,19 +530,6 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
-" --select-file=INDEX...       Establir el fitxer a descarregar especificant "
-"el seu índex.\n"
-"                              Es pot trobar el fitxer índex fent servir la "
-"opció\n"
-"                              --show-files. Es poden especificar varis\n"
-"                              índex fent servir ',', per exemple: \"3,6\".\n"
-"                              Es pot fer servir també '-' per especificar un "
-"rang: \"1-5\".\n"
-"                              ',' i '-' es poden fer servir junts.\n"
-"                              Quan es fa servir amb la opció -M, l'índex pot "
-"variar\n"
-"                              depenent de la consulta(veure les opcions --"
-"metalink-*)."
 
 #: src/usage_text.h:243
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
@@ -734,15 +552,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:255
-#, fuzzy
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
 msgstr ""
-" --direct-file-mapping=true|false Llegir i escriure directament a cada "
-"fitxer\n"
-"                              esmentat en el fitxer .torrent.\n"
-"                              Defecte: true"
 
 #: src/usage_text.h:258
 msgid ""
@@ -756,7 +569,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:264
-#, fuzzy
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
@@ -765,14 +577,8 @@ msgid ""
 "                              To limit the upload speed per torrent, use\n"
 "                              --max-upload-limit option."
 msgstr ""
-" --max-upload-limit=SPEED     Estableix la velocitat màxima de pujada en "
-"bytes per seg.\n"
-"                              0 vol dir no restringit.\n"
-"                              Es pot afegir K o M(1K = 1024, 1M = 1024K).\n"
-"                              Defecte: 0"
 
 #: src/usage_text.h:270
-#, fuzzy
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -780,11 +586,6 @@ msgid ""
 "                              To limit the overall upload speed, use\n"
 "                              --max-overall-upload-limit option."
 msgstr ""
-" --max-upload-limit=SPEED     Estableix la velocitat màxima de pujada en "
-"bytes per seg.\n"
-"                              0 vol dir no restringit.\n"
-"                              Es pot afegir K o M(1K = 1024, 1M = 1024K).\n"
-"                              Defecte: 0"
 
 #: src/usage_text.h:276
 msgid ""
@@ -796,7 +597,6 @@ msgstr ""
 "                              la opció --seed-ratio."
 
 #: src/usage_text.h:279
-#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -810,19 +610,6 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
-" --select-file=INDEX...       Establir el fitxer a descarregar especificant "
-"el seu índex.\n"
-"                              Es pot trobar el fitxer índex fent servir la "
-"opció\n"
-"                              --show-files. Es poden especificar varis\n"
-"                              índex fent servir ',', per exemple: \"3,6\".\n"
-"                              Es pot fer servir també '-' per especificar un "
-"rang: \"1-5\".\n"
-"                              ',' i '-' es poden fer servir junts.\n"
-"                              Quan es fa servir amb la opció -M, l'índex pot "
-"variar\n"
-"                              depenent de la consulta(veure les opcions --"
-"metalink-*)."
 
 #: src/usage_text.h:288
 msgid ""
@@ -866,10 +653,9 @@ msgstr ""
 "                                           una xarxa DHT."
 
 #: src/usage_text.h:307
-#, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
-msgstr " --conf-path=PATH Canvia el camí al fitxer de configuració a PATH."
+msgstr ""
 
 #: src/usage_text.h:309
 msgid ""
@@ -919,25 +705,18 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:333
-#, fuzzy
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
-" --retry-wait=SEC             Estableix els segons per esperar a "
-"reintentar \n"
-"                              desprès d'un error. Poseu un valor entre 0 i "
-"60.\n"
-"                              Defecte: 5"
 
 #: src/usage_text.h:337
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE  El camí al fitxer .metalink."
 
 #: src/usage_text.h:339
-#, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -950,14 +729,6 @@ msgid ""
 "NUM_SERVERS.\n"
 "                              See also -s and -j options."
 msgstr ""
-" -i, --input-file=FILE       Descarrega les URIs que troba en el fitxer "
-"FILE. Es poden especificar\n"
-"                              vàries URIs per uns única entitat: separeu "
-"les\n"
-"                              URIs en una sola línia fent servir el caràcter "
-"TAB.\n"
-"                              Llegeix l'entrada des de stdin quan "
-"s'especifica '-'."
 
 #: src/usage_text.h:348
 msgid " --metalink-version=VERSION   The version of the file to download."
@@ -974,15 +745,11 @@ msgstr ""
 " --metalink-os=OS            El Sistema Operatiu del fitxer a descarregar."
 
 #: src/usage_text.h:354
-#, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
-" --metalink-location=LOCATION[,...] La ubicació del servidor preferit.\n"
-"                              S'accepta una llista d'ubicacions delimitada "
-"per comes."
 
 #: src/usage_text.h:358
 msgid ""
@@ -992,7 +759,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:361
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metalink or content type of\n"
@@ -1007,19 +773,6 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --select-file=INDEX...       Establir el fitxer a descarregar especificant "
-"el seu índex.\n"
-"                              Es pot trobar el fitxer índex fent servir la "
-"opció\n"
-"                              --show-files. Es poden especificar varis\n"
-"                              índex fent servir ',', per exemple: \"3,6\".\n"
-"                              Es pot fer servir també '-' per especificar un "
-"rang: \"1-5\".\n"
-"                              ',' i '-' es poden fer servir junts.\n"
-"                              Quan es fa servir amb la opció -M, l'índex pot "
-"variar\n"
-"                              depenent de la consulta(veure les opcions --"
-"metalink-*)."
 
 #: src/usage_text.h:371
 msgid ""
@@ -1036,7 +789,6 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Escriure el número de versió i sortir."
 
 #: src/usage_text.h:379
-#, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -1048,15 +800,6 @@ msgid ""
 "usage\n"
 "                              for the options whose name includes that word."
 msgstr ""
-" --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD pot "
-"ser\n"
-"                              'none' o 'prealloc'. 'none' no fa reserva "
-"d'espai\n"
-"                              per el fitxer. 'prealloc' reserva espai\n"
-"                              abans de que comenci la descàrrega. Això pot "
-"portar algun temps\n"
-"                              depenent de la mida del fitxer.\n"
-"                              Defecte: prealloc"
 
 #: src/usage_text.h:386
 msgid " --no-conf                    Disable loading aria2.conf file."
@@ -1090,11 +833,8 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:399
-#, fuzzy
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
-" -q, --quiet[=true|false] aria2 ha de ser callat (no hi ha sortida a la "
-"consola)."
 
 #: src/usage_text.h:401
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
@@ -1119,7 +859,6 @@ msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL Estableix el nivell d'anotació."
 
 #: src/usage_text.h:410
-#, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1127,10 +866,6 @@ msgid ""
 "available,\n"
 "                              apply it to the local file."
 msgstr ""
-" --direct-file-mapping=true|false Llegir i escriure directament a cada "
-"fitxer\n"
-"                              esmentat en el fitxer .torrent.\n"
-"                              Defecte: true"
 
 #: src/usage_text.h:414
 msgid ""
@@ -1144,7 +879,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:419
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1156,15 +890,6 @@ msgid ""
 "                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD pot "
-"ser\n"
-"                              'none' o 'prealloc'. 'none' no fa reserva "
-"d'espai\n"
-"                              per el fitxer. 'prealloc' reserva espai\n"
-"                              abans de que comenci la descàrrega. Això pot "
-"portar algun temps\n"
-"                              depenent de la mida del fitxer.\n"
-"                              Defecte: prealloc"
 
 #: src/usage_text.h:426
 msgid ""
@@ -1197,7 +922,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:445
-#, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1205,11 +929,6 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
-" --retry-wait=SEC             Estableix els segons per esperar a "
-"reintentar \n"
-"                              desprès d'un error. Poseu un valor entre 0 i "
-"60.\n"
-"                              Defecte: 5"
 
 #: src/usage_text.h:449
 msgid ""
@@ -1222,18 +941,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:454
-#, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
-" --retry-wait=SEC             Estableix els segons per esperar a "
-"reintentar \n"
-"                              desprès d'un error. Poseu un valor entre 0 i "
-"60.\n"
-"                              Defecte: 5"
 
 #: src/usage_text.h:458
 msgid ""
@@ -1256,20 +969,13 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:468
-#, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
-" --retry-wait=SEC             Estableix els segons per esperar a "
-"reintentar \n"
-"                              desprès d'un error. Poseu un valor entre 0 i "
-"60.\n"
-"                              Defecte: 5"
 
 #: src/usage_text.h:472
-#, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1280,15 +986,6 @@ msgid ""
 "                              Use --check-certificate option to enable\n"
 "                              verification."
 msgstr ""
-" --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD pot "
-"ser\n"
-"                              'none' o 'prealloc'. 'none' no fa reserva "
-"d'espai\n"
-"                              per el fitxer. 'prealloc' reserva espai\n"
-"                              abans de que comenci la descàrrega. Això pot "
-"portar algun temps\n"
-"                              depenent de la mida del fitxer.\n"
-"                              Defecte: prealloc"
 
 #: src/usage_text.h:478
 msgid ""
@@ -1298,15 +995,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:481
-#, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
-" --seed-time=MINUTES          Especifica el temps de sembrar en minuts. "
-"Mirar també\n"
-"                              la opció --seed-ratio."
 
 #: src/usage_text.h:484
 msgid ""
@@ -1320,14 +1013,11 @@ msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
 #: src/usage_text.h:489
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
-" --dht-entry-point=HOST:PORT Estableix host i port com el punt d'entrada a \n"
-"                                           una xarxa DHT."
 
 #: src/usage_text.h:492
 msgid ""
@@ -1348,18 +1038,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:501
-#, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
-" --http-user=USER             Estableix l'usuari HTTP. Això afecta a totes "
-"les URLs."
 
 #: src/usage_text.h:503
-#, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr ""
-" --http-passwd=PASSWD         Estableix el mot de pas HTTP. Això afecta a "
-"totes les URLs."
 
 #: src/usage_text.h:505
 msgid ""
@@ -1372,7 +1056,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:510
-#, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1386,18 +1069,8 @@ msgid ""
 "                              always sent to the server regardless of this\n"
 "                              option."
 msgstr ""
-" --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD pot "
-"ser\n"
-"                              'none' o 'prealloc'. 'none' no fa reserva "
-"d'espai\n"
-"                              per el fitxer. 'prealloc' reserva espai\n"
-"                              abans de que comenci la descàrrega. Això pot "
-"portar algun temps\n"
-"                              depenent de la mida del fitxer.\n"
-"                              Defecte: prealloc"
 
 #: src/usage_text.h:518
-#, fuzzy
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1409,18 +1082,8 @@ msgid ""
 "multiple\n"
 "                              times."
 msgstr ""
-" --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD pot "
-"ser\n"
-"                              'none' o 'prealloc'. 'none' no fa reserva "
-"d'espai\n"
-"                              per el fitxer. 'prealloc' reserva espai\n"
-"                              abans de que comenci la descàrrega. Això pot "
-"portar algun temps\n"
-"                              depenent de la mida del fitxer.\n"
-"                              Defecte: prealloc"
 
 #: src/usage_text.h:524
-#, fuzzy
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1430,17 +1093,8 @@ msgid ""
 "                              BitTorrent downloads are canceled if true is\n"
 "                              specified."
 msgstr ""
-" --auto-file-renaming[=true|false] Canvia el nom del fitxer si el mateix "
-"fitxer\n"
-"                              ja existeix. Aquesta opció només va per "
-"descàrregues\n"
-"                              http/ftp\n"
-"                              Afegirem al nou nom de fitxer un punt i un "
-"número(1..9999).\n"
-"                              Defecte: true"
 
 #: src/usage_text.h:530
-#, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1455,18 +1109,8 @@ msgid ""
 "download\n"
 "                              progress."
 msgstr ""
-" --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD pot "
-"ser\n"
-"                              'none' o 'prealloc'. 'none' no fa reserva "
-"d'espai\n"
-"                              per el fitxer. 'prealloc' reserva espai\n"
-"                              abans de que comenci la descàrrega. Això pot "
-"portar algun temps\n"
-"                              depenent de la mida del fitxer.\n"
-"                              Defecte: prealloc"
 
 #: src/usage_text.h:538
-#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1475,11 +1119,6 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-upload-limit=SPEED     Estableix la velocitat màxima de pujada en "
-"bytes per seg.\n"
-"                              0 vol dir no restringit.\n"
-"                              Es pot afegir K o M(1K = 1024, 1M = 1024K).\n"
-"                              Defecte: 0"
 
 #: src/usage_text.h:544
 msgid ""
@@ -1490,7 +1129,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:548
-#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1498,14 +1136,8 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-upload-limit=SPEED     Estableix la velocitat màxima de pujada en "
-"bytes per seg.\n"
-"                              0 vol dir no restringit.\n"
-"                              Es pot afegir K o M(1K = 1024, 1M = 1024K).\n"
-"                              Defecte: 0"
 
 #: src/usage_text.h:554
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1518,47 +1150,22 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --select-file=INDEX...       Establir el fitxer a descarregar especificant "
-"el seu índex.\n"
-"                              Es pot trobar el fitxer índex fent servir la "
-"opció\n"
-"                              --show-files. Es poden especificar varis\n"
-"                              índex fent servir ',', per exemple: \"3,6\".\n"
-"                              Es pot fer servir també '-' per especificar un "
-"rang: \"1-5\".\n"
-"                              ',' i '-' es poden fer servir junts.\n"
-"                              Quan es fa servir amb la opció -M, l'índex pot "
-"variar\n"
-"                              depenent de la consulta(veure les opcions --"
-"metalink-*)."
 
 #: src/usage_text.h:563
-#, fuzzy
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
 "                              consecutive SEC seconds. If 0 is given, this\n"
 "                              feature is disabled."
 msgstr ""
-" --stop=SEC Aturar l'aplicació quan hagin passat SEC segons.\n"
-"                                                                   Si el "
-"valor és 0, aquesta funcionalitat es desactiva."
 
 #: src/usage_text.h:567
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
 "only\n"
 "                              on local loopback interface."
 msgstr ""
-" -Z, --force-sequential[=true|false] Agafa URIs seqüèncialment en la línia "
-"d'ordres\n"
-"                              i descarrega cada URI en una sessió separada, "
-"com\n"
-"                              normalment ho farien les utilitats de "
-"descàrrega de línia d'ordres.\n"
-"                              Defecte: false"
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -1570,9 +1177,8 @@ msgid "Report bugs to %s"
 msgstr "Informar d'errors a %s"
 
 #: src/version_usage.cc:85
-#, fuzzy
 msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
-msgstr "Ús: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+msgstr ""
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -1594,14 +1200,14 @@ msgid "Options:"
 msgstr "Opcions:"
 
 #: src/version_usage.cc:112
-#, fuzzy, c-format
+#, c-format
 msgid "Printing options whose name includes '%s'."
-msgstr "Imprimint les opcions ón el nom comença amb '%s'."
+msgstr ""
 
 #: src/version_usage.cc:120
-#, fuzzy, c-format
+#, c-format
 msgid "No option matching with '%s'."
-msgstr "No hi ha categoria d'ajuda o opció que concordi amb '%s'."
+msgstr ""
 
 #: src/version_usage.cc:128
 msgid ""
@@ -1623,7 +1229,6 @@ msgstr ""
 " son tractats com descàrregues separades."
 
 #: src/version_usage.cc:135
-#, fuzzy
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1636,12 +1241,6 @@ msgid ""
 "and\n"
 " 'path' in torrent are added to form a URL for each file."
 msgstr ""
-" Es pot posar tant un fitxer torrent amb la opció -T i URLs. Fent-ho així,\n"
-" descarreguem un fitxer des de l'eixam Torrent i el servidor http/ftp al "
-"mateix temps,\n"
-" mentre les dades provinents de http/ftp son pujades a l'eixam torrent. "
-"Observeu que\n"
-" només es pot integrar un únic fitxer amb http/ftp."
 
 #: src/version_usage.cc:142
 msgid ""
@@ -2142,9 +1741,9 @@ msgstr ""
 "No es pot interpretat el fitxer XML metalink. El XML pot ser malconstruït."
 
 #: src/message.h:137
-#, fuzzy, c-format
+#, c-format
 msgid "Too small payload size for %s, size=%d."
-msgstr "Mida de càrrega massa petita per %s, mida=%d."
+msgstr ""
 
 #: src/message.h:138
 #, c-format
@@ -2192,39 +1791,39 @@ msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr "Ha fallat guardar la signatura com %s. Potser el fitxer ja existeix."
 
 #: src/message.h:149
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for read."
-msgstr "Fallo al obrir el fitxer %s, causa: %s"
+msgstr ""
 
 #: src/message.h:150
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s loaded successfully."
-msgstr "S'ha carregat satisfactòriament el fitxer de segments."
+msgstr ""
 
 #: src/message.h:151
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read ServerStat from %s."
-msgstr "Fallo al llegir dades del disc."
+msgstr ""
 
 #: src/message.h:154
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for write."
-msgstr "Fallo al obrir el fitxer %s, causa: %s"
+msgstr ""
 
 #: src/message.h:155
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s saved successfully."
-msgstr "El fitxer de segments s'ha guardat satisfactòriament."
+msgstr ""
 
 #: src/message.h:156
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write ServerStat to %s."
-msgstr "Fallo al rebre dades, causa: %s"
+msgstr ""
 
 #: src/message.h:159
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to establish connection, cause: %s"
-msgstr "Fallo al acceptar una connexió d'igual, causa: %s"
+msgstr ""
 
 #: src/message.h:160
 #, c-format
@@ -2232,9 +1831,9 @@ msgid "Network problem has occurred. cause:%s"
 msgstr ""
 
 #: src/message.h:162
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
-msgstr "Fallo al llegir del fitxer %s, causa: %s"
+msgstr ""
 
 #: src/message.h:164
 #, c-format
@@ -2242,9 +1841,8 @@ msgid "Certificate verification failed. Cause: %s"
 msgstr ""
 
 #: src/message.h:165
-#, fuzzy
 msgid "No certificate found."
-msgstr "No s'ha trobat la capçalera."
+msgstr ""
 
 #: src/message.h:166
 msgid "Hostname not match."
@@ -2261,9 +1859,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:171
-#, fuzzy, c-format
+#, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr "Imprimint les opcions ón el nom comença amb '%s'."
+msgstr ""
 
 #: src/message.h:172
 msgid "This file is neither Torrent nor Metalink file. Skipping."
@@ -2617,11 +2215,9 @@ msgid "Exception caught"
 msgstr "Hem trobat una excepció."
 
 #: src/message.h:251
-#, fuzzy, c-format
+#, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
-"La longitud màxima de càrrega ha estat excedida o és incorrecte. longitud = %"
-"u"
 
 #: src/message.h:252
 #, c-format
@@ -2633,111 +2229,3 @@ msgstr ""
 #: src/BtSetup.cc:158
 msgid "Errors occurred while binding port.\n"
 msgstr "Han ocorregut errors mentre agafàvem el port.\n"
-
-#~ msgid " -D, --daemon                 Run as daemon."
-#~ msgstr " -D, --daemon                 Executa com dimoni."
-
-#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
-#~ msgstr "CUID#%d - Des-registrant cuid en el Gestor de segments."
-
-#~ msgid "Files:"
-#~ msgstr "Fitxers:"
-
-#, fuzzy
-#~ msgid ""
-#~ " --file-allocation=METHOD     Specify file allocation method.\n"
-#~ "                              'none' doesn't pre-allocate file space. "
-#~ "'prealloc'\n"
-#~ "                              pre-allocates file space before download "
-#~ "begins.\n"
-#~ "                              This may take some time depending on the "
-#~ "size of\n"
-#~ "                              the file."
-#~ msgstr ""
-#~ " --file-allocation=METHOD     És el mètode de reserva de fitxers. METHOD "
-#~ "pot ser\n"
-#~ "                              'none' o 'prealloc'. 'none' no fa reserva "
-#~ "d'espai\n"
-#~ "                              per el fitxer. 'prealloc' reserva espai\n"
-#~ "                              abans de que comenci la descàrrega. Això "
-#~ "pot portar algun temps\n"
-#~ "                              depenent de la mida del fitxer.\n"
-#~ "                              Defecte: prealloc"
-
-#, fuzzy
-#~ msgid ""
-#~ " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
-#~ "                              0 means unrestricted.\n"
-#~ "                              You can append K or M(1K = 1024, 1M = "
-#~ "1024K)."
-#~ msgstr ""
-#~ " --max-download-limit=SPEED   Establir la màxima velocitat de connexió en "
-#~ "bytes per seg.\n"
-#~ "                              0 vol dir no restringit.\n"
-#~ "                              Es pot afegir K o M(1K = 1024, 1M = "
-#~ "1024K).\n"
-#~ "                              Defecte: 0"
-
-#~ msgid ""
-#~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all "
-#~ "URLs."
-#~ msgstr ""
-#~ " --http-proxy=HOST:PORT       Fer servir un servidor proxy HTTP. Això "
-#~ "afecta a totes les URLs."
-
-#~ msgid ""
-#~ " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
-#~ msgstr ""
-#~ " --http-proxy-user=USER       Estableix l'usuari del proxy HTTP. Això "
-#~ "afecta a totes les URLs."
-
-#~ msgid ""
-#~ " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all "
-#~ "URLs."
-#~ msgstr ""
-#~ " --http-proxy-passwd=PASSWD   Estableix el mot de pas del proxy HTTP. "
-#~ "Això afecta a totes les URLs."
-
-#~ msgid " -p, --ftp-pasv               Use passive mode in FTP."
-#~ msgstr " -p, --ftp-pasv               Fer servir mode passiu en FTP."
-
-#~ msgid ""
-#~ " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-#~ "                              simultaneously."
-#~ msgstr ""
-#~ " -C, --metalink-servers=NUM_SERVERS El nombre de servidors a connectar\n"
-#~ "                                                       simultàniament."
-
-#~ msgid ""
-#~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
-#~ "                              Default: anonymous"
-#~ msgstr ""
-#~ " --ftp-user=USER              Estableix l'usuari FTP. Això afecta a totes "
-#~ "les URLs.\n"
-#~ "                              Defecte: anonymous"
-
-#~ msgid ""
-#~ " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
-#~ "                              Default: ARIA2USER@"
-#~ msgstr ""
-#~ " --ftp-passwd=PASSWD          Estableix el mot de pas FTP. Això afecta a "
-#~ "totes les URLs.\n"
-#~ "                              Defecte: ARIA2USER@"
-
-#~ msgid ""
-#~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
-#~ "'get' or\n"
-#~ "                              'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --ftp-via-http-proxy=METHOD  Fer servir el proxy HTTP per FTP. METHOD "
-#~ "pot ser 'get' o\n"
-#~ "                              'tunnel'.\n"
-#~ "                              Defecte: tunnel"
-
-#~ msgid ""
-#~ " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
-#~ "                              Default: false"
-#~ msgstr ""
-#~ " --enable-http-pipelining[=true|false] Activa la canalització HTTP/1.1.\n"
-#~ "                              Defecte: false"

@@ -11,13 +11,13 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2009-11-02 23:05+0900\n"
-"PO-Revision-Date: 2009-09-04 08:20+0000\n"
+"PO-Revision-Date: 2009-10-31 10:00+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-09-20 09:12+0000\n"
+"X-Launchpad-Export-Date: 2009-11-01 09:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:212
@@ -135,6 +135,13 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
+" -D, --daemon Запустить как демон (фоновый процесс). Текущая директория "
+"будет\n"
+"                              заменена на \"/\"; стандартный ввод, "
+"стандартный вывод\n"
+"                              и стандартный вывод ошибок будут "
+"перенаправлены на\n"
+"                              \"/dev/null\"."
 
 #: src/usage_text.h:49
 msgid ""
@@ -845,7 +852,6 @@ msgstr ""
 "                              условие будет удовлетворено."
 
 #: src/usage_text.h:288
-#, fuzzy
 msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -856,16 +862,6 @@ msgid ""
 "                              byte data are added to make its length 20 "
 "bytes."
 msgstr ""
-" --peer-id-prefix=PEER_ID_PREFIX Указать приставку для ID узла. Длина ID "
-"узла в\n"
-"                              BitTorrent равна 20 байтам. Если указано "
-"больше 20\n"
-"                              байтов, то лишь первые 20\n"
-"                              байт будут использоваться. Если указано меньше "
-"20\n"
-"                              байт, то случайные символы алфавита будут\n"
-"                              добавлены, чтобы сделать его длину равной 20 "
-"байтам."
 
 #: src/usage_text.h:294
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -1056,7 +1052,6 @@ msgstr ""
 "                              если у Вас нет желаемого протокола."
 
 #: src/usage_text.h:361
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metalink or content type of\n"
@@ -1071,19 +1066,6 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --follow-metalink=true|false|mem Если указано true или mem, тогда файл,\n"
-"                              суффиксом которого является .metaink или тип "
-"содержимого есть\n"
-"                              application/metalink+xml, загружается, aria2\n"
-"                              анализирует его как файл metalink и загружает "
-"файлы,\n"
-"                              упомянутые в нем.\n"
-"                              Если указано mem, то файл metalink не\n"
-"                              записывается на диск, а только остается в "
-"памяти.\n"
-"                              Если указано false, то упомянутые выше "
-"действия\n"
-"                              не совершаются."
 
 #: src/usage_text.h:371
 msgid ""
@@ -1675,9 +1657,8 @@ msgid "Report bugs to %s"
 msgstr "Сообщения об ошибках направляйте на адрес %s"
 
 #: src/version_usage.cc:85
-#, fuzzy
 msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
-msgstr "Использование: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+msgstr ""
 
 #: src/version_usage.cc:92
 msgid "Printing all options."

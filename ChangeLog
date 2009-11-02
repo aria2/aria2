@@ -1,5 +1,16 @@
 2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Polish, Catalan, French, Italian, Russian and Japanese
+	translations. Thanks to all translators.
+	* po/ca.po
+	* po/fr.po
+	* po/it.po
+	* po/ja.po
+	* po/pl.po
+	* po/ru.po
+
+2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated translation template
 	* po
 
