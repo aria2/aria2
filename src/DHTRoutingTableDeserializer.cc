@@ -195,7 +195,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     // 16byte reserved
     readBytes(buf, buf.size(), in, 16);
     CHECK_STREAM(in, 16);
-    // localnode ID
+    // node ID
     readBytes(buf, buf.size(), in, DHT_ID_LENGTH);
     CHECK_STREAM(in, DHT_ID_LENGTH);
 

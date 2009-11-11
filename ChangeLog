@@ -1,3 +1,8 @@
+2009-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated doc
+	* src/DHTRoutingTableDeserializer.cc
+
 2009-11-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.6.3
