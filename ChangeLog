@@ -1,5 +1,10 @@
 2009-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused macro SAFE_CHARS
+	* src/Request.cc
+
+2009-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc
 	* src/DHTRoutingTableDeserializer.cc
 

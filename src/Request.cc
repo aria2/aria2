@@ -43,15 +43,6 @@
 #include "A2STR.h"
 #include "a2functional.h"
 
-#define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
-"ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
-"0123456789"\
-":/?[]@"\
-"!$&'()*+,;="\
-"-._~"\
-"%"\
-"#"
-
 namespace aria2 {
 
 const std::string Request::METHOD_GET = "GET";
