@@ -28,6 +28,8 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl15);
   CPPUNIT_TEST(testSetUrl16);
   CPPUNIT_TEST(testSetUrl17);
+  CPPUNIT_TEST(testSetUrl18);
+  CPPUNIT_TEST(testSetUrl19);
   CPPUNIT_TEST(testSetUrl_username);
   CPPUNIT_TEST(testSetUrl_usernamePassword);
   CPPUNIT_TEST(testSetUrl_zeroUsername);
@@ -61,6 +63,8 @@ public:
   void testSetUrl15();
   void testSetUrl16();
   void testSetUrl17();
+  void testSetUrl18();
+  void testSetUrl19();
   void testSetUrl_username();
   void testSetUrl_usernamePassword();
   void testSetUrl_zeroUsername();
@@ -288,6 +292,21 @@ void RequestTest::testSetUrl17()
   CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file<with%2 %20space"
 				   "/file with space;param%?a=/?"),
 		       req.getUrl());
+}
+
+void RequestTest::testSetUrl18() {
+  Request req;
+  bool v = req.setUrl("http://1/");
+
+  CPPUNIT_ASSERT(v);
+}
+
+void RequestTest::testSetUrl19() {
+  Request req;
+  // No host
+  bool v = req.setUrl("http://user@");
+
+  CPPUNIT_ASSERT(!v);
 }
 
 void RequestTest::testRedirectUrl() {

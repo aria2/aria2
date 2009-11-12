@@ -1,3 +1,9 @@
+2009-11-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten Request::parseUrl()
+	* src/Request.cc
+	* test/RequestTest.cc
+
 2009-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused macro SAFE_CHARS

@@ -145,7 +145,6 @@ bool Request::redirectUrl(const std::string& url) {
 
 bool Request::parseUrl(const std::string& url) {
   currentUrl = url;
-  std::string tempUrl = url;
   host = A2STR::NIL;
   port = 0;
   dir = A2STR::NIL;
@@ -155,98 +154,150 @@ bool Request::parseUrl(const std::string& url) {
   _password = A2STR::NIL;
   _hasPassword = false;
   _ipv6LiteralAddress = false;
+
+  // http://user:password@aria2.sourceforge.net:80/dir/file?query
+  //        |            ||                    || |   |    |
+  //        |            ||             hostLast| |   |    |
+  //        |            ||              portFirst|   |    |
+  //    authorityFirst   ||             authorityLast |    |
+  //                     ||                       |   |    |
+  //                   userInfoLast               |   |    |
+  //                      |                       |   |    |
+  //                     hostPortFirst            |   |    |
+  //                                              |   |    |
+  //                                       dirFirst dirLast|
+  //                                                       |
+  //                                                queryFirst
+
   // find query part
-  std::string queryTemp;
-  std::string::size_type startQueryIndex = tempUrl.find("?");
-  if(startQueryIndex != std::string::npos) {
-    queryTemp = tempUrl.substr(startQueryIndex);
-    tempUrl.erase(startQueryIndex);
+  std::string::const_iterator queryFirst = url.begin();
+  for(; queryFirst != url.end(); ++queryFirst) {
+    if(*queryFirst == '?') break;
   }
+  _query = std::string(queryFirst, url.end());
   // find protocol
-  std::string::size_type hp = tempUrl.find("://");
-  if(hp == std::string::npos) return false;
-  protocol = tempUrl.substr(0, hp);
+  std::string::size_type protocolOffset = url.find("://");
+  if(protocolOffset == std::string::npos) return false;
+  protocol = std::string(url.begin(), url.begin()+protocolOffset);
   uint16_t defPort;
   if((defPort = FeatureConfig::getInstance()->getDefaultPort(protocol)) == 0) {
     return false;
   }
-  hp += 3;
-  // find host part
-  if(tempUrl.size() <= hp) return false;
-  std::string::size_type hep = tempUrl.find("/", hp);
-  if(hep == std::string::npos) {
-    hep = tempUrl.size();
+  // find authority
+  std::string::const_iterator authorityFirst = url.begin()+protocolOffset+3;
+  std::string::const_iterator authorityLast = authorityFirst;
+  for(; authorityLast != queryFirst; ++authorityLast) {
+    if(*authorityLast == '/') break;
   }
-  std::string hostPart = tempUrl.substr(hp, hep-hp);
-  //   find username and password in host part if they exist
-  std::string::size_type atmarkp =  hostPart.find_last_of("@");
-  if(atmarkp != std::string::npos) {
-    std::string authPart = hostPart.substr(0, atmarkp);
-    std::pair<std::string, std::string> userPass =
-      util::split(authPart, A2STR::COLON_C);
-    _username = util::urldecode(userPass.first);
-    _password = util::urldecode(userPass.second);
-    if(authPart.find(A2STR::COLON_C) != std::string::npos) {
-      _hasPassword = true;
-    }
-    hostPart.erase(0, atmarkp+1);
+  if(authorityFirst == authorityLast) {
+    // No authority found
+    return false;
   }
-  {
-    std::string::size_type colonpos;
-    // Detect IPv6 literal address in square brackets
-    if(util::startsWith(hostPart, "[")) {
-      std::string::size_type rbracketpos = hostPart.find("]");
-      if(rbracketpos == std::string::npos) {
-	return false;
-      }
-      _ipv6LiteralAddress = true;
-      colonpos = hostPart.find(":", rbracketpos+1);
-    } else {
-      colonpos = hostPart.find_last_of(":");
-    }
-    if(colonpos == std::string::npos) {
-      colonpos = hostPart.size();
-      // If port is not specified, then we set it to default port of
-      // its protocol..
-      port = defPort;
-    } else {
-      try {
-	unsigned int tempPort = util::parseUInt(hostPart.substr(colonpos+1));
-	if(65535 < tempPort) {
-	  return false;
+  // find userinfo(username and password) in authority if they exist
+  std::string::const_iterator userInfoLast = authorityFirst;
+  std::string::const_iterator hostPortFirst = authorityFirst;
+  for(; userInfoLast != authorityLast; ++userInfoLast) {
+    if(*userInfoLast == '@') {
+      hostPortFirst = userInfoLast;
+      ++hostPortFirst;
+      std::string::const_iterator userLast = authorityFirst;
+      for(; userLast != userInfoLast; ++userLast) {
+	if(*userLast == ':') {
+	  _password = util::urldecode(std::string(userLast+1, userInfoLast));
+	  _hasPassword = true;
+	  break;
 	}
-	port = tempPort;
-      } catch(RecoverableException& e) {
-	return false;
+      }
+      _username = util::urldecode(std::string(authorityFirst, userLast));
+      break;
+    }
+  }
+  std::string::const_iterator hostLast = hostPortFirst;
+  std::string::const_iterator portFirst = authorityLast;
+  if(*hostPortFirst == '[') {
+    // Detected IPv6 literal address in square brackets
+    for(; hostLast != authorityLast; ++hostLast) {
+      if(*hostLast == ']') {
+	++hostLast;
+	if(hostLast == authorityLast) {
+	  _ipv6LiteralAddress = true;
+	} else {
+	  if(*hostLast == ':') {
+	    portFirst = hostLast;
+	    ++portFirst;
+	    _ipv6LiteralAddress = true;
+	  }
+	}
+	break;
       }
     }
-    if(_ipv6LiteralAddress) {
-      host = hostPart.substr(1, colonpos-2);
-    } else {
-      host = hostPart.substr(0, colonpos);
+    if(!_ipv6LiteralAddress) {
+      return false;
     }
+  } else {
+    for(; hostLast != authorityLast; ++hostLast) {
+      if(*hostLast == ':') {
+	portFirst = hostLast;
+	++portFirst;
+	break;
+      }
+    }
+  }
+  if(hostPortFirst == hostLast) {
+    // No host
+    return false;
+  }
+  if(portFirst == authorityLast) {
+    // If port is not specified, then we set it to default port of
+    // its protocol..
+    port = defPort;
+  } else {
+    try {
+      unsigned int tempPort =
+	util::parseUInt(std::string(portFirst, authorityLast));
+      if(65535 < tempPort) {
+	return false;
+      }
+      port = tempPort;
+    } catch(RecoverableException& e) {
+      return false;
+    }
+  }
+  if(_ipv6LiteralAddress) {
+    host = std::string(hostPortFirst+1, hostLast-1);
+  } else {
+    host = std::string(hostPortFirst, hostLast);
   }
   // find directory and file part
-  std::string::size_type direp = tempUrl.find_last_of("/");
-  if(direp == std::string::npos || direp <= hep) {
+  std::string::const_iterator dirLast = authorityLast;
+  for(std::string::const_iterator i = authorityLast;
+      i != queryFirst; ++i) {
+    if(*i == '/') {
+      dirLast = i;
+    }
+  }
+  if(dirLast != queryFirst) {
+    file = std::string(dirLast+1, queryFirst);
+  }
+  // Erase duplicated slashes.
+  std::string::const_iterator dirFirst = authorityLast;
+  for(; dirFirst != dirLast; ++dirFirst) {
+    if(*dirFirst != '/') {
+      --dirFirst;
+      break;
+    }
+  }
+  for(; dirLast != dirFirst; --dirLast) {
+    if(*dirLast != '/') {
+      ++dirLast;
+      break;
+    }
+  }
+  if(dirFirst == dirLast) {
     dir = A2STR::SLASH_C;
-    direp = hep;
   } else {
-    std::string rawDir = tempUrl.substr(hep, direp-hep);
-    std::string::size_type p = rawDir.find_first_not_of("/");
-    if(p != std::string::npos) {
-      rawDir.erase(0, p-1);
-    }
-    p = rawDir.find_last_not_of("/");
-    if(p != std::string::npos) {
-      rawDir.erase(p+1);
-    }
-    dir = rawDir;
+    dir = std::string(dirFirst, dirLast);
   }
-  if(tempUrl.size() > direp+1) {
-    file = tempUrl.substr(direp+1);
-  }
-  _query = queryTemp;
   return true;
 }
 
