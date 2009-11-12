@@ -47,24 +47,24 @@ namespace aria2 {
 
 class Request {
 private:
-  std::string url;
-  std::string currentUrl;
+  std::string _url;
+  std::string _currentUrl;
   /**
    * URL previously requested to the server. This is used as Referer
    */
-  std::string previousUrl;
+  std::string _previousUrl;
   /**
    * URL used as Referer in the initial request
    */
-  std::string referer;
-  std::string protocol;
-  std::string host;
-  uint16_t port;
-  std::string dir;
-  std::string file;
+  std::string _referer;
+  std::string _protocol;
+  std::string _host;
+  uint16_t _port;
+  std::string _dir;
+  std::string _file;
   /* after ? mark(includes '?' itself) */
   std::string _query;
-  unsigned int tryCount;
+  unsigned int _tryCount;
 
   unsigned int _redirectCount;
 
@@ -77,7 +77,7 @@ private:
   // maximum number of pipelined requests
   unsigned int _maxPipelinedRequest;
 
-  std::string method;
+  std::string _method;
 
   std::string _username;
 
@@ -93,18 +93,16 @@ private:
 public:
   Request();
 
-  // Parses URL and sets url, host, port, dir, file fields.
-  // Returns true if parsing goes successful, otherwise returns false.
+  // Sets url to _url and parses URL.  Returns true if parsing goes
+  // successful, otherwise returns false.
   bool setUrl(const std::string& url);
-  // Parses URL and sets host, port, dir, file fields.
-  // url field are not altered by this method.
-  // Returns true if parsing goes successful, otherwise returns false.
+  // Parses URL.  _url field are not altered by this method.  Returns
+  // true if parsing goes successful, otherwise returns false.
   bool redirectUrl(const std::string& url);
   bool resetUrl();
-  void resetTryCount() { tryCount = 0; }
-  void addTryCount() { ++tryCount; }
-  unsigned int getTryCount() const { return tryCount; }
-  //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
+  void resetTryCount() { _tryCount = 0; }
+  void addTryCount() { ++_tryCount; }
+  unsigned int getTryCount() const { return _tryCount; }
 
   void resetRedirectCount();
   
@@ -114,13 +112,13 @@ public:
   }
 
   // Returns URI passed by setUrl()
-  const std::string& getUrl() const { return url; }
-  const std::string& getCurrentUrl() const { return currentUrl; }
-  const std::string& getPreviousUrl() const { return previousUrl; }
-  const std::string& getReferer() const { return referer; }
+  const std::string& getUrl() const { return _url; }
+  const std::string& getCurrentUrl() const { return _currentUrl; }
+  const std::string& getPreviousUrl() const { return _previousUrl; }
+  const std::string& getReferer() const { return _referer; }
   void setReferer(const std::string& url);
-  const std::string& getProtocol() const { return protocol; }
-  const std::string& getHost() const { return host; }
+  const std::string& getProtocol() const { return _protocol; }
+  const std::string& getHost() const { return _host; }
   // Same as getHost(), but for IPv6 literal addresses, enclose them
   // with square brackets and return.
   std::string getURIHost() const
@@ -131,9 +129,9 @@ public:
       return getHost();
     }
   }
-  uint16_t getPort() const { return port; }
-  const std::string& getDir() const { return dir; }
-  const std::string& getFile() const { return file;}
+  uint16_t getPort() const { return _port; }
+  const std::string& getDir() const { return _dir; }
+  const std::string& getFile() const { return _file;}
   const std::string& getQuery() const { return _query; }
   bool isIPv6LiteralAddress() const { return _ipv6LiteralAddress; }
 
@@ -180,7 +178,7 @@ public:
   }
 
   void setMethod(const std::string& method) {
-    this->method = method;
+    _method = method;
   }
 
   const std::string& getUsername() const
@@ -200,7 +198,7 @@ public:
   }
 
   const std::string& getMethod() const {
-    return method;
+    return _method;
   }
 
   const SharedHandle<PeerStat>& getPeerStat() const { return _peerStat; }

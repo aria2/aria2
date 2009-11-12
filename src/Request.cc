@@ -56,18 +56,18 @@ const std::string Request::PROTO_HTTPS("https");
 const std::string Request::PROTO_FTP("ftp");
 
 Request::Request():
-  port(0), tryCount(0),
+  _port(0), _tryCount(0),
   _redirectCount(0),
   _supportsPersistentConnection(true),
   _keepAliveHint(false),
   _pipeliningHint(false),
   _maxPipelinedRequest(1),
-  method(METHOD_GET),
+  _method(METHOD_GET),
   _hasPassword(false),
   _ipv6LiteralAddress(false)
 {}
 
-static std::string removeFragment(const std::string url)
+static std::string removeFragment(const std::string& url)
 {
   std::string::size_type sharpIndex = url.find("#");
   if(sharpIndex == std::string::npos) {
@@ -109,23 +109,23 @@ static std::string urlencode(const std::string& src)
 
 bool Request::setUrl(const std::string& url) {
   _supportsPersistentConnection = true;
-  this->url = url;
-  return parseUrl(urlencode(removeFragment(url)));
+  _url = url;
+  return parseUrl(urlencode(removeFragment(_url)));
 }
 
 bool Request::resetUrl() {
-  previousUrl = referer;
+  _previousUrl = _referer;
   _supportsPersistentConnection = true;
-  return parseUrl(urlencode(removeFragment(url)));
+  return parseUrl(urlencode(removeFragment(_url)));
 }
 
 void Request::setReferer(const std::string& url)
 {
-  referer = previousUrl = urlencode(removeFragment(url));
+  _referer = _previousUrl = urlencode(removeFragment(url));
 }
 
 bool Request::redirectUrl(const std::string& url) {
-  previousUrl = A2STR::NIL;
+  _previousUrl = A2STR::NIL;
   _supportsPersistentConnection = true;
   ++_redirectCount;
   if(url.find("://") == std::string::npos) {
@@ -133,10 +133,10 @@ bool Request::redirectUrl(const std::string& url) {
     // field, but some servers don't obey this rule.
     if(util::startsWith(url, "/")) {
       // abosulute path
-      return parseUrl(strconcat(protocol, "://", host, url));
+      return parseUrl(strconcat(_protocol, "://", _host, url));
     } else {
       // relative path
-      return parseUrl(strconcat(protocol, "://", host, dir, "/", url));
+      return parseUrl(strconcat(_protocol, "://", _host, _dir, "/", url));
     }
   } else {
     return parseUrl(url);
@@ -144,11 +144,11 @@ bool Request::redirectUrl(const std::string& url) {
 }
 
 bool Request::parseUrl(const std::string& url) {
-  currentUrl = url;
-  host = A2STR::NIL;
-  port = 0;
-  dir = A2STR::NIL;
-  file = A2STR::NIL;
+  _currentUrl = url;
+  _host = A2STR::NIL;
+  _port = 0;
+  _dir = A2STR::NIL;
+  _file = A2STR::NIL;
   _query = A2STR::NIL;
   _username = A2STR::NIL;
   _password = A2STR::NIL;
@@ -178,9 +178,9 @@ bool Request::parseUrl(const std::string& url) {
   // find protocol
   std::string::size_type protocolOffset = url.find("://");
   if(protocolOffset == std::string::npos) return false;
-  protocol = std::string(url.begin(), url.begin()+protocolOffset);
+  _protocol = std::string(url.begin(), url.begin()+protocolOffset);
   uint16_t defPort;
-  if((defPort = FeatureConfig::getInstance()->getDefaultPort(protocol)) == 0) {
+  if((defPort = FeatureConfig::getInstance()->getDefaultPort(_protocol)) == 0) {
     return false;
   }
   // find authority
@@ -250,7 +250,7 @@ bool Request::parseUrl(const std::string& url) {
   if(portFirst == authorityLast) {
     // If port is not specified, then we set it to default port of
     // its protocol..
-    port = defPort;
+    _port = defPort;
   } else {
     try {
       unsigned int tempPort =
@@ -258,15 +258,15 @@ bool Request::parseUrl(const std::string& url) {
       if(65535 < tempPort) {
 	return false;
       }
-      port = tempPort;
+      _port = tempPort;
     } catch(RecoverableException& e) {
       return false;
     }
   }
   if(_ipv6LiteralAddress) {
-    host = std::string(hostPortFirst+1, hostLast-1);
+    _host = std::string(hostPortFirst+1, hostLast-1);
   } else {
-    host = std::string(hostPortFirst, hostLast);
+    _host = std::string(hostPortFirst, hostLast);
   }
   // find directory and file part
   std::string::const_iterator dirLast = authorityLast;
@@ -277,7 +277,7 @@ bool Request::parseUrl(const std::string& url) {
     }
   }
   if(dirLast != queryFirst) {
-    file = std::string(dirLast+1, queryFirst);
+    _file = std::string(dirLast+1, queryFirst);
   }
   // Erase duplicated slashes.
   std::string::const_iterator dirFirst = authorityLast;
@@ -294,9 +294,9 @@ bool Request::parseUrl(const std::string& url) {
     }
   }
   if(dirFirst == dirLast) {
-    dir = A2STR::SLASH_C;
+    _dir = A2STR::SLASH_C;
   } else {
-    dir = std::string(dirFirst, dirLast);
+    _dir = std::string(dirFirst, dirLast);
   }
   return true;
 }
@@ -313,7 +313,7 @@ void Request::setMaxPipelinedRequest(unsigned int num)
 
 const SharedHandle<PeerStat>& Request::initPeerStat()
 {
-  _peerStat.reset(new PeerStat(0, host, protocol));
+  _peerStat.reset(new PeerStat(0, _host, _protocol));
   return _peerStat;
 }
 

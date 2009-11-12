@@ -1,3 +1,9 @@
+2009-11-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Code cleanup
+	* src/Request.cc
+	* src/Request.h
+
 2009-11-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten Request::parseUrl()
