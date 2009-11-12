@@ -395,6 +395,28 @@ uint32_t parseUInt(const std::string& s, int base)
   return v;
 }
 
+bool parseUIntNoThrow(uint32_t& result, const std::string& s, int base)
+{
+  std::string trimed = trim(s);
+  if(trimed.empty()) {
+    return false;
+  }
+  // We don't allow negative number.
+  if(trimed[0] == '-') {
+    return false;
+  }
+  char* stop;
+  errno = 0;
+  unsigned long int v = strtoul(trimed.c_str(), &stop, base);
+  if(*stop != '\0') {
+    return false;
+  } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
+    return false;
+  }
+  result = v;
+  return true;
+}
+
 int64_t parseLLInt(const std::string& s, int32_t base)
 {
   std::string trimed = trim(s);

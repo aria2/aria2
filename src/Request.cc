@@ -38,7 +38,6 @@
 
 #include "util.h"
 #include "FeatureConfig.h"
-#include "RecoverableException.h"
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "a2functional.h"
@@ -252,14 +251,13 @@ bool Request::parseUrl(const std::string& url) {
     // its protocol..
     _port = defPort;
   } else {
-    try {
-      unsigned int tempPort =
-	util::parseUInt(std::string(portFirst, authorityLast));
+    uint32_t tempPort;
+    if(util::parseUIntNoThrow(tempPort, std::string(portFirst, authorityLast))){
       if(65535 < tempPort) {
 	return false;
       }
-      _port = tempPort;
-    } catch(RecoverableException& e) {
+      _port = tempPort;      
+    } else {
       return false;
     }
   }

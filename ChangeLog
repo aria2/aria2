@@ -1,5 +1,13 @@
 2009-11-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added util::parseUIntNoThrow(). Use it in Request::parseUrl().
+	* src/Request.cc
+	* src/util.cc
+	* src/util.h
+	* test/RequestTest.cc
+
+2009-11-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten util::uitos()
 	* src/util.h
 
