@@ -47,6 +47,7 @@
 #include <numeric>
 #include <map>
 #include <iomanip>
+#include <algorithm>
 
 #include "SharedHandle.h"
 #include "IntSequence.h"
@@ -102,12 +103,13 @@ std::string uitos(T value, bool comma = false)
   while(value) {
     ++count;
     char digit = value%10+'0';
-    str.insert(str.begin(), digit);
-    value /= 10;
     if(comma && count > 3 && count%3 == 1) {
-      str.insert(str.begin()+1, ',');
+      str += ',';
     }
+    str += digit;
+    value /= 10;
   }
+  std::reverse(str.begin(), str.end());
   return str;
 }
 
