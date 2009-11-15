@@ -122,7 +122,8 @@ void IteratableChunkChecksumValidator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
   free(_buffer);
-  _buffer = (unsigned char*)util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
+  _buffer = reinterpret_cast<unsigned char*>
+    (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
 #else // !HAVE_POSIX_MEMALIGN
   delete [] _buffer;
   _buffer = new unsigned char[BUFSIZE];
@@ -166,7 +167,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     curoffset += r;
     woffset = 0;
   }
-  return util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
+  return util::toHex(_ctx->digestFinal());
 }
 
 

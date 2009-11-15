@@ -79,7 +79,7 @@ void IteratableChecksumValidator::validateChunk()
     _ctx->digestUpdate(_buffer, length);
     _currentOffset += length;
     if(finished()) {
-      std::string actualChecksum = util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
+      std::string actualChecksum = util::toHex(_ctx->digestFinal());
       if(_dctx->getChecksum() == actualChecksum) {
 	_pieceStorage->markAllPiecesDone();
       } else {
@@ -109,7 +109,8 @@ void IteratableChecksumValidator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
   free(_buffer);
-  _buffer = (unsigned char*)util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
+  _buffer = reinterpret_cast<unsigned char*>
+    (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
 #else // !HAVE_POSIX_MEMALIGN
   delete [] _buffer;
   _buffer = new unsigned char[BUFSIZE];

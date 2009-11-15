@@ -204,7 +204,8 @@ static void executeHook(const std::string& command, int gid)
     LogFactory::getInstance()->error("fork() failed."
 				     " Cannot execute user command.");
   } else if(cpid == 0) {
-    execl(command.c_str(), command.c_str(), util::itos(gid).c_str(), (char*)0);
+    execl(command.c_str(), command.c_str(), util::itos(gid).c_str(),
+	  reinterpret_cast<char*>(0));
     perror(("Could not execute user command: "+command).c_str());
     exit(EXIT_FAILURE);
   }

@@ -122,7 +122,8 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
       if(res == 0) {
 	break;
       }
-      if(XML_Parse(parser, (const char*)buf, res, 0) == XML_STATUS_ERROR) {
+      if(XML_Parse(parser, reinterpret_cast<const char*>(buf), res, 0) ==
+	 XML_STATUS_ERROR) {
 	throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
       }
       readOffset += res;

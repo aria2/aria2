@@ -66,7 +66,7 @@ BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
   bittorrent::assertPayloadLengthGreater(1,dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   BtBitfieldMessageHandle message(new BtBitfieldMessage());
-  message->setBitfield((unsigned char*)data+1, dataLength-1);
+  message->setBitfield(data+1, dataLength-1);
   return message;
 }
 

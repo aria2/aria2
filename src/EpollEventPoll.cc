@@ -331,7 +331,7 @@ void EpollEventPoll::poll(const struct timeval& tv)
 
   if(res > 0) {
     for(int i = 0; i < res; ++i) {
-      SocketEntry* p = (SocketEntry*)_epEvents[i].data.ptr;
+      SocketEntry* p = reinterpret_cast<SocketEntry*>(_epEvents[i].data.ptr);
       p->processEvents(_epEvents[i].events);
     }
   }

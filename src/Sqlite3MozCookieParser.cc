@@ -80,7 +80,7 @@ static int cookieRowMapper(void* data, int rowIndex,
 	     );
 		      
     if(c.good()) {
-      ((std::deque<Cookie>*)data)->push_back(c);
+      reinterpret_cast<std::deque<Cookie>*>(data)->push_back(c);
     }
   } catch(RecoverableException& e) {
     //failed to parse expiry.

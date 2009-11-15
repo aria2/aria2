@@ -234,7 +234,8 @@ std::string urlencode(const unsigned char* target, size_t len) {
 
 std::string urlencode(const std::string& target)
 {
-  return urlencode((const unsigned char*)target.c_str(), target.size());
+  return urlencode(reinterpret_cast<const unsigned char*>(target.c_str()),
+		   target.size());
 }
 
 std::string torrentUrlencode(const unsigned char* target, size_t len) {
@@ -763,7 +764,8 @@ std::string toString(const BinaryStreamHandle& binaryStream)
   std::stringstream strm;
   char data[2048];
   while(1) {
-    int32_t dataLength = binaryStream->readData((unsigned char*)data, sizeof(data), strm.tellp());
+    int32_t dataLength = binaryStream->readData
+      (reinterpret_cast<unsigned char*>(data), sizeof(data), strm.tellp());
     strm.write(data, dataLength);
     if(dataLength == 0) {
       break;

@@ -228,7 +228,7 @@ void DefaultBtProgressInfoFile::load()
 				   _filename.c_str(), strerror(errno)).str());
   }
   unsigned char versionBuf[2];
-  in.read((char*)versionBuf, sizeof(versionBuf));
+  in.read(reinterpret_cast<char*>(versionBuf), sizeof(versionBuf));
   CHECK_STREAM(in, sizeof(versionBuf));
   std::string versionHex = util::toHex(versionBuf, sizeof(versionBuf));
   int version;
@@ -242,7 +242,7 @@ void DefaultBtProgressInfoFile::load()
 		    versionHex.c_str()).str());
   }
   unsigned char extension[4];
-  in.read((char*)extension, sizeof(extension));
+  in.read(reinterpret_cast<char*>(extension), sizeof(extension));
   CHECK_STREAM(in, sizeof(extension));
   bool infoHashCheckEnabled = false;
   if(extension[3]&1 && isTorrentDownload()) {

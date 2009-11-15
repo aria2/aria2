@@ -62,8 +62,8 @@ class BitfieldMan;
 class BinaryStream;
 class FileEntry;
 
-#define STRTOLL(X) strtoll(X, (char**)0, 10)
-#define STRTOULL(X) strtoull(X, (char**)0, 10)
+#define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
+#define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)
 
 #define START_INDEX(OFFSET, PIECE_LENGTH) ((OFFSET)/(PIECE_LENGTH))
 #define END_INDEX(OFFSET, LENGTH, PIECE_LENGTH) (((OFFSET)+(LENGTH)-1)/(PIECE_LENGTH))

@@ -112,7 +112,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       msg = BtHaveMessage::create(data, dataLength);
       {
 	SharedHandle<BtMessageValidator> v
-	  (new IndexBtMessageValidator((BtHaveMessage*)msg.get(),
+	  (new IndexBtMessageValidator(static_cast<BtHaveMessage*>(msg.get()),
 				       _downloadContext->getNumPieces()));
 	msg->setBtMessageValidator(v);
       }
@@ -121,8 +121,9 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       msg = BtBitfieldMessage::create(data, dataLength);
       {
 	SharedHandle<BtMessageValidator> v
-	  (new BtBitfieldMessageValidator((BtBitfieldMessage*)msg.get(),
-					  _downloadContext->getNumPieces()));
+	  (new BtBitfieldMessageValidator
+	   (static_cast<BtBitfieldMessage*>(msg.get()),
+	    _downloadContext->getNumPieces()));
 	msg->setBtMessageValidator(v);
       }
       break;

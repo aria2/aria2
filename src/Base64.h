@@ -64,7 +64,8 @@ public:
   static void encode(unsigned char*& result, size_t& rlength,
 		     const char* src, size_t slength)
   {
-    encode(result, rlength, (const unsigned char*)src, slength);
+    encode(result, rlength, reinterpret_cast<const unsigned char*>(src),
+	   slength);
   }
 
   static std::string encode(const std::string& s);
@@ -84,7 +85,8 @@ public:
   static void decode(unsigned char*& result, size_t& rlength,
 		     const char* src, size_t slength)
   {
-    decode(result, rlength, (const unsigned char*)src, slength);
+    decode(result, rlength, reinterpret_cast<const unsigned char*>(src),
+	   slength);
   }
 
   static std::string decode(const std::string& s);
