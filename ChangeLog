@@ -1,5 +1,10 @@
 2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed integer potential alignment problem.
+	* src/bitfield.h
+
+2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Applied a patch from tizianomueller to fix sigbus errors on Linux
 	sparc. I modified the patch to eliminate a cast to uint32_t* and
 	include file ordering.

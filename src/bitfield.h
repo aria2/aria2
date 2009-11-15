@@ -39,6 +39,7 @@
 
 #include <cassert>
 #include <cstdlib>
+#include <cstring>
 
 #include "util.h"
 
@@ -105,7 +106,9 @@ inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
   }
   size_t to = len/size;
   for(size_t i = 0; i < to; ++i) {
-    count += countBit32(*reinterpret_cast<const uint32_t*>(&bitfield[i*size]));
+    uint32_t v;
+    memcpy(&v, &bitfield[i*size], sizeof(v));
+    count += countBit32(v);
   }
   for(size_t i = len-len%size; i < len; ++i) {
     count += countBit32(static_cast<uint32_t>(bitfield[i]));
