@@ -1,5 +1,10 @@
 2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/bittorrent_helper.cc
+
+2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use C++ style cast
 	* src/AsyncNameResolver.cc
 	* src/Base64.h

@@ -496,8 +496,7 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode::decode(reinterpret_cast<const unsigned char*>(context.c_str()),
-		     context.size()),
+     bencode::decode(context),
      defaultName, overrideName,
      std::deque<std::string>());
 }
@@ -510,8 +509,7 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode::decode(reinterpret_cast<const unsigned char*>(context.c_str()),
-		     context.size()),
+     bencode::decode(context),
      defaultName, overrideName,
      uris);
 }
