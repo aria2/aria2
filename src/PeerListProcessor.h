@@ -36,6 +36,9 @@
 #define _D_PEER_LIST_PROCESSOR_H_
 
 #include "common.h"
+
+#include <cstring>
+
 #include "a2netcompat.h"
 #include "bencode.h"
 #include "Peer.h"
@@ -83,9 +86,11 @@ public:
     if(length%6 == 0) {
       for(size_t i = 0; i < length; i += 6) {
 	struct in_addr in;
-	in.s_addr = *(uint32_t*)(peerData.s().c_str()+i);
+	memcpy(&in.s_addr, peerData.s().c_str()+i, sizeof(uint32_t));
 	std::string ipaddr = inet_ntoa(in);
-	uint16_t port = ntohs(*(uint16_t*)(peerData.s().c_str()+i+4));
+	uint16_t port_nworder;
+	memcpy(&port_nworder, peerData.s().c_str()+i+4, sizeof(uint16_t));
+	uint16_t port = ntohs(port_nworder);
 	*dest = SharedHandle<Peer>(new Peer(ipaddr, port));
 	++dest;
       }

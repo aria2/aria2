@@ -1,3 +1,11 @@
+2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Applied a patch from tizianomueller to fix sigbus errors on Linux
+	sparc. I modified the patch to eliminate a cast to uint32_t* and
+	include file ordering.
+	* src/PeerListProcessor.h
+	* src/bittorrent_helper.cc
+
 2009-11-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added util::parseUIntNoThrow(). Use it in Request::parseUrl().

@@ -773,10 +773,9 @@ bool createcompact
     return false;
   }
   struct sockaddr_in* in = reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
-  uint32_t* addrp = (uint32_t*)compact;
-  *addrp = in->sin_addr.s_addr;
-  uint16_t* portp = (uint16_t*)(compact+4);
-  *portp = htons(port);
+  memcpy(compact, &(in->sin_addr.s_addr), sizeof(uint32_t));
+  uint16_t port_nworder(htons(port));
+  memcpy(compact+4, &port_nworder, sizeof(uint16_t));
   freeaddrinfo(res);
   return true;
 }
@@ -790,7 +789,7 @@ std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact)
   in.sin_len = sizeof(in);
 #endif // HAVE_SOCKADDR_IN_SIN_LEN
   in.sin_family = AF_INET;
-  in.sin_addr.s_addr = *reinterpret_cast<const uint32_t*>(compact);
+  memcpy(&(in.sin_addr.s_addr), compact, sizeof(uint32_t));
   in.sin_port = 0;
   char host[NI_MAXHOST];
   int s;
@@ -800,7 +799,9 @@ std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact)
   if(s) {
     return std::pair<std::string, uint16_t>();
   }
-  uint16_t port = ntohs(*(uint16_t*)(compact+sizeof(uint32_t)));
+  uint16_t port_nworder;
+  memcpy(&port_nworder, compact+sizeof(uint32_t), sizeof(uint16_t));
+  uint16_t port = ntohs(port_nworder);
   return std::pair<std::string, uint16_t>(host, port);
 }
 
