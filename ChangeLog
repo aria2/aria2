@@ -1,5 +1,10 @@
 2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added testSetUrl20()
+	* test/RequestTest.cc
+
+2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/bittorrent_helper.cc
 

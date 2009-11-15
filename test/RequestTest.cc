@@ -30,6 +30,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl17);
   CPPUNIT_TEST(testSetUrl18);
   CPPUNIT_TEST(testSetUrl19);
+  CPPUNIT_TEST(testSetUrl20);
   CPPUNIT_TEST(testSetUrl_username);
   CPPUNIT_TEST(testSetUrl_usernamePassword);
   CPPUNIT_TEST(testSetUrl_zeroUsername);
@@ -65,6 +66,7 @@ public:
   void testSetUrl17();
   void testSetUrl18();
   void testSetUrl19();
+  void testSetUrl20();
   void testSetUrl_username();
   void testSetUrl_usernamePassword();
   void testSetUrl_zeroUsername();
@@ -306,6 +308,18 @@ void RequestTest::testSetUrl19() {
   // No host
   bool v = req.setUrl("http://user@");
 
+  CPPUNIT_ASSERT(!v);
+}
+
+void RequestTest::testSetUrl20() {
+  Request req;
+  bool v;
+  // Invalid port
+  v = req.setUrl("http://localhost:65536");
+  CPPUNIT_ASSERT(!v);
+  v = req.setUrl("http://localhost:65535");
+  CPPUNIT_ASSERT(v);
+  v = req.setUrl("http://localhost:-80");
   CPPUNIT_ASSERT(!v);
 }
 
