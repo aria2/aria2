@@ -56,8 +56,9 @@ void callback(void* arg, int status, struct hostent* host)
     return;
   }
   for(char** ap = host->h_addr_list; *ap; ++ap) {
-    resolverPtr->_resolvedAddresses.push_back
-      (inet_ntoa(*reinterpret_cast<struct in_addr*>(*ap)));
+    struct in_addr addr;
+    memcpy(&addr, *ap, sizeof(in_addr));
+    resolverPtr->_resolvedAddresses.push_back(inet_ntoa(addr));
   }
   resolverPtr->status = AsyncNameResolver::STATUS_SUCCESS;
 }

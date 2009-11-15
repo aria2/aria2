@@ -1,5 +1,11 @@
 2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Copied in_addr instead of just casting from char* which might
+	violate strict aliasing rules.
+	* src/AsyncNameResolver.cc
+
+2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use dynamic_pointer_cast
 	* test/BtPieceMessageTest.cc
 	* test/BtRequestMessageTest.cc
