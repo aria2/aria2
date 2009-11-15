@@ -1,5 +1,12 @@
 2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use dynamic_pointer_cast
+	* test/BtPieceMessageTest.cc
+	* test/BtRequestMessageTest.cc
+	* test/DefaultBtRequestFactoryTest.cc
+
+2009-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added testSetUrl20()
 	* test/RequestTest.cc
 

@@ -171,8 +171,9 @@ void BtPieceMessageTest::testChokingEvent_allowedFastEnabled() {
 
   CPPUNIT_ASSERT(msg->isInvalidate());  
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
-  MockBtMessage2* rej =
-    (MockBtMessage2*)btMessageDispatcher->messageQueue.front().get();
+  SharedHandle<MockBtMessage2> rej =
+    dynamic_pointer_cast<MockBtMessage2>
+    (btMessageDispatcher->messageQueue.front());
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)1024, rej->begin);
   CPPUNIT_ASSERT_EQUAL((size_t)16*1024, rej->length);
@@ -257,8 +258,9 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_allowedFastEnabled() {
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
-  MockBtMessage2* rej = (MockBtMessage2*)btMessageDispatcher->
-    messageQueue.front().get();
+  SharedHandle<MockBtMessage2> rej =
+    dynamic_pointer_cast<MockBtMessage2>
+    (btMessageDispatcher->messageQueue.front());
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)1024, rej->begin);
   CPPUNIT_ASSERT_EQUAL((size_t)16*1024, rej->length);

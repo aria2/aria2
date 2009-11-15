@@ -147,15 +147,16 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
   std::deque<SharedHandle<BtMessage> >::iterator itr = msgs.begin();
-  MockBtRequestMessage* msg = (MockBtRequestMessage*)itr->get();
+  SharedHandle<MockBtRequestMessage> msg =
+    dynamic_pointer_cast<MockBtRequestMessage>(*itr);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
   ++itr;
-  msg = (MockBtRequestMessage*)itr->get();
+  msg = dynamic_pointer_cast<MockBtRequestMessage>(*itr);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msg->blockIndex);
   ++itr;
-  msg = (MockBtRequestMessage*)itr->get();
+  msg = dynamic_pointer_cast<MockBtRequestMessage>(*itr);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
 

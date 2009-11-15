@@ -174,8 +174,8 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
   msg->doReceivedAction();
   
   CPPUNIT_ASSERT_EQUAL((size_t)1, _dispatcher->messageQueue.size());
-  MockBtMessage2* pieceMsg =
-    (MockBtMessage2*)_dispatcher->messageQueue.front().get();
+  SharedHandle<MockBtMessage2> pieceMsg =
+    dynamic_pointer_cast<MockBtMessage2>(_dispatcher->messageQueue.front());
   CPPUNIT_ASSERT_EQUAL(std::string("piece"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((size_t)1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
@@ -188,8 +188,8 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExten
   msg->doReceivedAction();
   
   CPPUNIT_ASSERT_EQUAL((size_t)1, _dispatcher->messageQueue.size());
-  MockBtMessage2* pieceMsg =
-    (MockBtMessage2*)_dispatcher->messageQueue.front().get();
+  SharedHandle<MockBtMessage2> pieceMsg =
+    dynamic_pointer_cast<MockBtMessage2>(_dispatcher->messageQueue.front());
   CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((size_t)1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
@@ -210,8 +210,8 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionE
   msg->doReceivedAction();
   
   CPPUNIT_ASSERT_EQUAL((size_t)1, _dispatcher->messageQueue.size());
-  MockBtMessage2* pieceMsg =
-    (MockBtMessage2*)_dispatcher->messageQueue.front().get();
+  SharedHandle<MockBtMessage2> pieceMsg =
+    dynamic_pointer_cast<MockBtMessage2>(_dispatcher->messageQueue.front());
   CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
