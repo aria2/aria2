@@ -59,24 +59,59 @@ private:
   // at the construction of RequestSlot as a cache.
   SharedHandle<Piece> _piece;
 
-  void copy(const RequestSlot& requestSlot);
+  // inlined for performance reason
+  void copy(const RequestSlot& requestSlot)
+  {
+    index = requestSlot.index;
+    begin = requestSlot.begin;
+    length = requestSlot.length;
+    blockIndex = requestSlot.blockIndex;
+    dispatchedTime = requestSlot.dispatchedTime;
+    _piece = requestSlot._piece;
+  }
 public:
+  
   RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex,
-	      const SharedHandle<Piece>& piece = SharedHandle<Piece>());
+	      const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
+    index(index), begin(begin), length(length), blockIndex(blockIndex),
+    _piece(piece) {}
 
-  RequestSlot(const RequestSlot& requestSlot);
+  RequestSlot(const RequestSlot& requestSlot)
+  {
+    copy(requestSlot);
+  }
 
-  RequestSlot();
+  RequestSlot():index(0), begin(0), length(0), blockIndex(0) {}
 
   ~RequestSlot() {}
 
-  RequestSlot& operator=(const RequestSlot& requestSlot);
+  RequestSlot& operator=(const RequestSlot& requestSlot)
+  {
+    if(this != &requestSlot) {
+      copy(requestSlot);
+    }
+    return *this;
+  }
 
-  bool operator==(const RequestSlot& requestSlot) const;
+  bool operator==(const RequestSlot& requestSlot) const
+  {
+    return index == requestSlot.index && begin == requestSlot.begin
+      && length == requestSlot.length;
+  }
 
-  bool operator!=(const RequestSlot& requestSlot) const;
-
-  bool operator<(const RequestSlot& requestSlot) const;
+  bool operator!=(const RequestSlot& requestSlot) const
+  {
+    return !(*this == requestSlot);
+  }
+  
+  bool operator<(const RequestSlot& requestSlot) const
+  {
+    if(index == requestSlot.index) {
+      return begin < requestSlot.begin;
+    } else {
+      return index < requestSlot.index;
+    }
+  }
 
   void setDispatchedTime();
   void setDispatchedTime(time_t secFromEpoch);

@@ -33,58 +33,10 @@
  */
 /* copyright --> */
 #include "RequestSlot.h"
-#include "util.h"
 
 namespace aria2 {
 
 RequestSlot RequestSlot::nullSlot = RequestSlot();
-
-RequestSlot::RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex, const SharedHandle<Piece>& piece)
-  :index(index), begin(begin), length(length), blockIndex(blockIndex),
-   _piece(piece) {}
-
-RequestSlot::RequestSlot(const RequestSlot& requestSlot) {
-  copy(requestSlot);
-}
-
-RequestSlot::RequestSlot():index(0), begin(0), length(0), blockIndex(0) {}
-
-void RequestSlot::copy(const RequestSlot& requestSlot) {
-  index = requestSlot.index;
-  begin = requestSlot.begin;
-  length = requestSlot.length;
-  blockIndex = requestSlot.blockIndex;
-  dispatchedTime = requestSlot.dispatchedTime;
-  _piece = requestSlot._piece;
-}
-
-RequestSlot& RequestSlot::operator=(const RequestSlot& requestSlot)
-{
-  if(this != &requestSlot) {
-    copy(requestSlot);
-  }
-  return *this;
-}
-
-bool RequestSlot::operator==(const RequestSlot& requestSlot) const
-{
-  return index == requestSlot.index && begin == requestSlot.begin
-    && length == requestSlot.length;
-}
-
-bool RequestSlot::operator!=(const RequestSlot& requestSlot) const
-{
-  return !(*this == requestSlot);
-}
-
-bool RequestSlot::operator<(const RequestSlot& requestSlot) const
-{
-  if(index == requestSlot.index) {
-    return begin < requestSlot.begin;
-  } else {
-    return index < requestSlot.index;
-  }
-}
 
 void RequestSlot::setDispatchedTime() {
   dispatchedTime.reset();
