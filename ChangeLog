@@ -1,3 +1,8 @@
+2009-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Check socket for reading if there are outstanding requests.
+	* src/PeerInteractionCommand.cc
+
 2009-11-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Moved frequently called methods to header file so they get
