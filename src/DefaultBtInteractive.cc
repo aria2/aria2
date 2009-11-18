@@ -83,7 +83,8 @@ DefaultBtInteractive::DefaultBtInteractive
   keepAliveInterval(120),
   _utPexEnabled(false),
   _dhtEnabled(false),
-  _numReceivedMessage(0)
+  _numReceivedMessage(0),
+  _maxOutstandingRequest(DEFAULT_MAX_OUTSTANDING_REQUEST)
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
@@ -241,6 +242,7 @@ void DefaultBtInteractive::sendKeepAlive() {
 }
 
 size_t DefaultBtInteractive::receiveMessages() {
+  size_t countOldOutstandingRequest = dispatcher->countOutstandingRequest();
   size_t msgcount = 0;
   for(int i = 0; i < 50; ++i) {
     if(_requestGroupMan->doesOverallDownloadSpeedExceed() ||
@@ -278,6 +280,11 @@ size_t DefaultBtInteractive::receiveMessages() {
       inactiveCheckPoint.reset();
       break;
     }
+  }
+  if(countOldOutstandingRequest > 0 &&
+     dispatcher->countOutstandingRequest() == 0){
+    _maxOutstandingRequest = std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
+				      _maxOutstandingRequest*2);
   }
   return msgcount;
 }
@@ -338,23 +345,14 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
 }
 
 void DefaultBtInteractive::addRequests() {
-  size_t MAX_PENDING_REQUEST;
-  if(peer->getLatency() < 500) {
-    MAX_PENDING_REQUEST = 24;
-  } else if(peer->getLatency() < 1500) {
-    MAX_PENDING_REQUEST = 12;
-  } else {
-    MAX_PENDING_REQUEST = 6;
-  }
-  fillPiece(MAX_PENDING_REQUEST);
-
+  fillPiece(_maxOutstandingRequest);
   size_t reqNumToCreate =
-    MAX_PENDING_REQUEST <= dispatcher->countOutstandingRequest() ?
-    0 : MAX_PENDING_REQUEST-dispatcher->countOutstandingRequest();
+    _maxOutstandingRequest <= dispatcher->countOutstandingRequest() ?
+    0 : _maxOutstandingRequest-dispatcher->countOutstandingRequest();
   if(reqNumToCreate > 0) {
     BtMessages requests;
     if(_pieceStorage->isEndGame()) {
-      btRequestFactory->createRequestMessagesOnEndGame(requests, reqNumToCreate);
+      btRequestFactory->createRequestMessagesOnEndGame(requests,reqNumToCreate);
     } else {
       btRequestFactory->createRequestMessages(requests, reqNumToCreate);
     }

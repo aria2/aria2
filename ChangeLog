@@ -1,5 +1,14 @@
 2009-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed the strategry of how to increase the number of outstanding
+	requests. Now the number is doubled if there are no outstanding
+	requests after receiving messages.
+	* src/BtConstants.h
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtInteractive.h
+
+2009-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Check socket for reading if there are outstanding requests.
 	* src/PeerInteractionCommand.cc
 

@@ -53,4 +53,9 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define MAX_BLOCK_LENGTH (16*1024)
 
+#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
+
+// Upper Bound of the number of outstanding request
+#define UB_MAX_OUTSTANDING_REQUEST 24
+
 #endif // _D_BT_CONSTANTS_

@@ -132,6 +132,8 @@ private:
 
   size_t _numReceivedMessage;
 
+  size_t _maxOutstandingRequest;
+
   WeakHandle<RequestGroupMan> _requestGroupMan;
 
   static const time_t FLOODING_CHECK_INTERVAL = 5;
