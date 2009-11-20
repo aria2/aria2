@@ -1,3 +1,9 @@
+2009-11-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Cancel segment in prepareForRetry() because there is a chance that
+	the command has segments.
+	* src/CreateRequestCommand.cc
+
 2009-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that slow server is not knocked down in favor of

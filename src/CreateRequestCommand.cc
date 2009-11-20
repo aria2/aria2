@@ -108,6 +108,9 @@ bool CreateRequestCommand::prepareForRetry(time_t wait)
   // called repeatedly. This means that newly created
   // CreateRequestCommand is deleted one second later: This is not
   // efficient. For this reason, reuse current CreateRequestCommand.
+  if(!_requestGroup->getPieceStorage().isNull()) {
+    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+  }
   logger->debug("CUID#%d - Reusing CreateRequestCommand", cuid);
   SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup, this, wait);
   e->commands.push_back(scom);
