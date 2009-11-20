@@ -121,6 +121,8 @@ public:
 
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
 
+  virtual bool hasMissingUnusedPiece();
+
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);

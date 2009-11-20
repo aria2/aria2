@@ -78,6 +78,11 @@ bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
   abort();
 }
 
+bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
+{
+  abort();
+}
+
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 {
   abort();

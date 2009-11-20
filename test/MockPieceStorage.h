@@ -44,6 +44,11 @@ public:
     return false;
   }
 
+  virtual bool hasMissingUnusedPiece()
+  {
+    return false;
+  }
+
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer) {
     return SharedHandle<Piece>(new Piece());
   }

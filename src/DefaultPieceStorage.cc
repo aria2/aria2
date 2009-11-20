@@ -196,6 +196,12 @@ bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer)
 				      peer->getBitfieldLength());
 }
 
+bool DefaultPieceStorage::hasMissingUnusedPiece()
+{
+  size_t index;
+  return bitfieldMan->getFirstMissingUnusedIndex(index);
+}
+
 PieceHandle DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 {
   return getMissingPiece(peer->getBitfield(), peer->getBitfieldLength());

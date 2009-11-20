@@ -105,9 +105,9 @@ bool AbstractCommand::execute() {
       return true;
     }
     // TODO it is not needed to check other PeerStats every time.
-    // Find faster Request when this is the only active Request
-    if(!req.isNull() && _requestGroup->getNumStreamConnection() == 1 &&
-       _fileEntry->countPooledRequest() > 0) {
+    // Find faster Request when no segment is available.
+    if(!req.isNull() && _fileEntry->countPooledRequest() > 0 &&
+       !_requestGroup->getPieceStorage()->hasMissingUnusedPiece()) {
       SharedHandle<Request> fasterRequest = _fileEntry->findFasterRequest(req);
       if(!fasterRequest.isNull()) {
 	logger->info("CUID#%d - Use faster Request hostname=%s, port=%u",

@@ -1,5 +1,17 @@
 2009-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that slow server is not knocked down in favor of
+	faster one.
+	* src/AbstractCommand.cc
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+
+2009-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that Request object is not added to
 	_inFlightRequests in findFasterRequest().
 	* src/FileEntry.cc
