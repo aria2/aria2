@@ -178,6 +178,7 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
     // TODO we should consider that "fastest" is very slow.
     SharedHandle<Request> fastestRequest = _requestPool.front();
     _requestPool.pop_front();
+    _inFlightRequests.push_back(fastestRequest);
     return fastestRequest;
   }
   return SharedHandle<Request>();

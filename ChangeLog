@@ -1,3 +1,9 @@
+2009-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that Request object is not added to
+	_inFlightRequests in findFasterRequest().
+	* src/FileEntry.cc
+
 2009-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Changed the strategry of how to increase the number of outstanding
