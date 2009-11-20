@@ -109,6 +109,8 @@ PeerInteractionCommand::PeerInteractionCommand
   SharedHandle<DefaultExtensionMessageFactory> extensionMessageFactory
     (new DefaultExtensionMessageFactory(peer, exMsgRegistry));
   extensionMessageFactory->setPeerStorage(peerStorage);
+  extensionMessageFactory->setDownloadContext
+    (_requestGroup->getDownloadContext());
 
   SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());
   factory->setCuid(cuid);
@@ -188,6 +190,9 @@ PeerInteractionCommand::PeerInteractionCommand
   factory->setBtMessageDispatcher(dispatcher);
   factory->setBtRequestFactory(reqFactory);
   factory->setPeerConnection(peerConnection);
+
+  extensionMessageFactory->setBtMessageDispatcher(dispatcher);
+  extensionMessageFactory->setBtMessageFactory(factory);
 
   peer->allocateSessionResource
     (_requestGroup->getDownloadContext()->getPieceLength(),

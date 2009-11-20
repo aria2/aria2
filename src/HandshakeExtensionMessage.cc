@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@
 #include "message.h"
 #include "StringFormat.h"
 #include "bencode.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -48,6 +50,7 @@ const std::string HandshakeExtensionMessage::EXTENSION_NAME = "handshake";
 
 HandshakeExtensionMessage::HandshakeExtensionMessage():
   _tcpPort(0),
+  _metadataSize(0),
   _logger(LogFactory::getInstance()) {}
 
 HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
@@ -68,6 +71,9 @@ std::string HandshakeExtensionMessage::getBencodedData()
     extDict[vt.first] = vt.second;
   }
   dict["m"] = extDict;
+  if(_metadataSize) {
+    dict["metadata_size"] = _metadataSize;
+  }
   return bencode::encode(dict);
 }
 
@@ -79,6 +85,9 @@ std::string HandshakeExtensionMessage::toString() const
   }
   if(_tcpPort > 0) {
     strappend(s, ", tcpPort=", util::uitos(_tcpPort));
+  }
+  if(_metadataSize) {
+    strappend(s, ", metadataSize=", util::uitos(_metadataSize));
   }
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
@@ -98,6 +107,12 @@ void HandshakeExtensionMessage::doReceivedAction()
       itr != _extensions.end(); ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     _peer->setExtension(vt.first, vt.second);
+  }
+  if(_metadataSize > 0) {
+    BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
+    if(!attrs.containsKey(bittorrent::METADATA_SIZE)) {
+      attrs[bittorrent::METADATA_SIZE] = _metadataSize;
+    }
   }
 }
 
@@ -147,6 +162,11 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 	msg->_extensions[(*i).first] = (*i).second.i();
       }
     }
+  }
+  const BDE& metadataSize = dict["metadata_size"];
+  // Only accept metadata smaller than 1MiB
+  if(metadataSize.isInteger() && metadataSize.i() <= 1024*1024) {
+    msg->_metadataSize = metadataSize.i();
   }
   return msg;
 }

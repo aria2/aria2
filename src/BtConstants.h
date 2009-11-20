@@ -58,4 +58,6 @@ typedef std::map<std::string, uint8_t> Extensions;
 // Upper Bound of the number of outstanding request
 #define UB_MAX_OUTSTANDING_REQUEST 24
 
+#define METADATA_PIECE_SIZE (16*1024)
+
 #endif // _D_BT_CONSTANTS_

@@ -84,6 +84,10 @@ extern const std::string MULTI;
 
 extern const std::string BITTORRENT;
 
+extern const std::string METADATA_SIZE;
+
+extern const std::string METADATA;
+
 void load(const std::string& torrentFile,
 	  const SharedHandle<DownloadContext>& ctx,
 	  const std::string& overrideName = "");

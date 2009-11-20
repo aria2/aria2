@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,33 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXTENSION_MESSAGE_H_
-#define _D_EXTENSION_MESSAGE_H_
-
-#include "common.h"
-
-#include <string>
-
-#include "SharedHandle.h"
+#include "UTMetadataRejectExtensionMessage.h"
+#include "BDE.h"
+#include "a2functional.h"
+#include "util.h"
+#include "bencode.h"
 
 namespace aria2 {
-class ExtensionMessage {
-public:
-  virtual ~ExtensionMessage() {}
 
-  virtual std::string getBencodedData() = 0;
+UTMetadataRejectExtensionMessage::UTMetadataRejectExtensionMessage
+(uint8_t extensionMessageID):
+  UTMetadataExtensionMessage(extensionMessageID) {}
 
-  virtual uint8_t getExtensionMessageID() = 0;
-  
-  virtual const std::string& getExtensionName() const = 0;
+std::string UTMetadataRejectExtensionMessage::getBencodedData()
+{
+  BDE dict = BDE::dict();
+  dict["msg_type"] = 2;
+  dict["piece"] = _index;
+  return bencode::encode(dict);
+}
 
-  virtual std::string toString() const = 0;
+std::string UTMetadataRejectExtensionMessage::toString() const
+{
+  return strconcat("ut_metadata reject piece=", util::uitos(_index));
+}
 
-  virtual void doReceivedAction() = 0;
-};
-
-typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
+void UTMetadataRejectExtensionMessage::doReceivedAction()
+{
+  // TODO Remove outstanding metadata request from tracker.
+  // OR drop connection.
+}
 
 } // namespace aria2
-
-#endif // _D_EXTENSION_MESSAGE_H_

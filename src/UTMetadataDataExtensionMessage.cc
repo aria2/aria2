@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,33 +32,46 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXTENSION_MESSAGE_H_
-#define _D_EXTENSION_MESSAGE_H_
-
-#include "common.h"
-
-#include <string>
-
-#include "SharedHandle.h"
+#include "UTMetadataDataExtensionMessage.h"
+#include "BDE.h"
+#include "bencode.h"
+#include "util.h"
+#include "a2functional.h"
 
 namespace aria2 {
-class ExtensionMessage {
-public:
-  virtual ~ExtensionMessage() {}
 
-  virtual std::string getBencodedData() = 0;
+UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
+(uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID) {}
 
-  virtual uint8_t getExtensionMessageID() = 0;
-  
-  virtual const std::string& getExtensionName() const = 0;
+std::string UTMetadataDataExtensionMessage::getBencodedData()
+{
+  BDE list = BDE::list();
 
-  virtual std::string toString() const = 0;
+  BDE dict = BDE::dict();
+  dict["msg_type"] = 1;
+  dict["piece"] = _index;
+  dict["total_size"] = _totalSize;
 
-  virtual void doReceivedAction() = 0;
-};
+  BDE data = _data;
 
-typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
+  list << dict;
+  list << data;
+
+  std::string encodedList = bencode::encode(list);
+  // Remove first 'l' and last 'e' and return.
+  return std::string(encodedList.begin()+1, encodedList.end()-1);
+}
+
+std::string UTMetadataDataExtensionMessage::toString() const
+{
+  return strconcat("ut_metadata data piece=", util::uitos(_index));
+}
+
+void UTMetadataDataExtensionMessage::doReceivedAction()
+{
+  // Update tracker
+
+  // Write to pieceStorage
+}
 
 } // namespace aria2
-
-#endif // _D_EXTENSION_MESSAGE_H_

@@ -14,6 +14,8 @@
 #include "array_fun.h"
 #include "messageDigest.h"
 #include "a2netcompat.h"
+#include "bencode.h"
+#include "TestUtil.h"
 
 namespace aria2 {
 
@@ -52,9 +54,10 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetFileFilter_single);
   CPPUNIT_TEST(testSetFileFilter_multi);
   CPPUNIT_TEST(testUTF8Torrent);
-  CPPUNIT_TEST(testMetaData);
+  CPPUNIT_TEST(testEtc);
   CPPUNIT_TEST(testCreatecompact);
   CPPUNIT_TEST(testCheckBitfield);
+  CPPUNIT_TEST(testMetadata);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -90,9 +93,10 @@ public:
   void testSetFileFilter_single();
   void testSetFileFilter_multi();
   void testUTF8Torrent();
-  void testMetaData();
+  void testEtc();
   void testCreatecompact();
   void testCheckBitfield();
+  void testMetadata();
 };
 
 
@@ -634,7 +638,7 @@ void BittorrentHelperTest::testUTF8Torrent()
 		       dctx->getAttribute(BITTORRENT)[COMMENT].s());
 }
 
-void BittorrentHelperTest::testMetaData()
+void BittorrentHelperTest::testEtc()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
@@ -676,6 +680,19 @@ void BittorrentHelperTest::testCheckBitfield()
   } catch(RecoverableException& e) {
     // success
   }
+}
+
+void BittorrentHelperTest::testMetadata() {
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  load("test.torrent", dctx);
+  std::string torrentData = readFile("test.torrent");
+  BDE tr = bencode::decode(torrentData);
+  BDE infoDic = tr["info"];
+  std::string metadata = bencode::encode(infoDic);
+  const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
+  CPPUNIT_ASSERT(metadata == attrs[bittorrent::METADATA].s());
+  CPPUNIT_ASSERT_EQUAL(metadata.size(),
+		       (size_t)attrs[bittorrent::METADATA_SIZE].i());
 }
 
 } // namespace bittorrent

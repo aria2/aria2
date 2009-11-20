@@ -32,49 +32,24 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HANDSHAKE_EXTENSION_MESSAGE_H_
-#define _D_HANDSHAKE_EXTENSION_MESSAGE_H_
+#ifndef _D_UT_METADATA_EXTENSION_MESSAGE_H_
+#define _D_UT_METADATA_EXTENSION_MESSAGE_H_
 
 #include "ExtensionMessage.h"
 
-#include <map>
-
-#include "BtConstants.h"
-
 namespace aria2 {
 
-class Peer;
-class Logger;
-class HandshakeExtensionMessage;
-class DownloadContext;
-typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;
+class UTMetadataExtensionMessage:public ExtensionMessage {
+protected:
+  uint8_t _extensionMessageID;
 
-class HandshakeExtensionMessage:public ExtensionMessage {
-private:
-  std::string _clientVersion;
-
-  uint16_t _tcpPort;
-
-  size_t _metadataSize;
-
-  std::map<std::string, uint8_t> _extensions;
-
-  SharedHandle<DownloadContext> _dctx;
-
-  SharedHandle<Peer> _peer;
-
-  Logger* _logger;
-
+  size_t _index;
 public:
-  HandshakeExtensionMessage();
-
-  virtual ~HandshakeExtensionMessage();
-
-  virtual std::string getBencodedData();
+  UTMetadataExtensionMessage(uint8_t extensionMessageID);
 
   virtual uint8_t getExtensionMessageID()
   {
-    return 0;
+    return _extensionMessageID;
   }
   
   virtual const std::string& getExtensionName() const
@@ -84,65 +59,17 @@ public:
 
   static const std::string EXTENSION_NAME;
 
-  virtual std::string toString() const;
-
-  virtual void doReceivedAction();
-
-  void setClientVersion(const std::string& version)
+  void setIndex(size_t index)
   {
-    _clientVersion = version;
+    _index = index;
   }
 
-  const std::string& getClientVersion() const
+  size_t getIndex()
   {
-    return _clientVersion;
+    return _index;
   }
-
-  void setTCPPort(uint16_t port)
-  {
-    _tcpPort = port;
-  }
-
-  uint16_t getTCPPort() const
-  {
-    return _tcpPort;
-  }
-
-  size_t getMetadataSize()
-  {
-    return _metadataSize;
-  }
-
-  void setMetadataSize(size_t size)
-  {
-    _metadataSize = size;
-  }
-
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    _dctx = dctx;
-  }
-
-  void setExtension(const std::string& name, uint8_t id)
-  {
-    _extensions[name] = id;
-  }
-
-  void setExtensions(const Extensions& extensions)
-  {
-    _extensions = extensions;
-  }
-
-  uint8_t getExtensionMessageID(const std::string& name) const;
-
-  void setPeer(const SharedHandle<Peer>& peer);
-
-  static HandshakeExtensionMessageHandle create(const unsigned char* data,
-						size_t dataLength);
 };
-
-typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;
 
 } // namespace aria2
 
-#endif // _D_HANDSHAKE_EXTENSION_MESSAGE_H_
+#endif // _D_UT_METADATA_EXTENSION_MESSAGE_H_

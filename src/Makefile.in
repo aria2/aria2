@@ -145,6 +145,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.cc DefaultExtensionMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.cc HandshakeExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.cc UTPexExtensionMessage.h\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataExtensionMessage.cc UTMetadataExtensionMessage.h\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestExtensionMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestExtensionMessage.h\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRejectExtensionMessage.cc UTMetadataRejectExtensionMessage.h\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataDataExtensionMessage.cc UTMetadataDataExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	DHTNode.cc DHTNode.h\
 @ENABLE_BITTORRENT_TRUE@	DHTBucket.cc DHTBucket.h\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.cc DHTRoutingTable.h\
@@ -489,8 +494,15 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ExtensionMessageFactory.h DefaultExtensionMessageFactory.cc \
 	DefaultExtensionMessageFactory.h HandshakeExtensionMessage.cc \
 	HandshakeExtensionMessage.h UTPexExtensionMessage.cc \
-	UTPexExtensionMessage.h DHTNode.cc DHTNode.h DHTBucket.cc \
-	DHTBucket.h DHTRoutingTable.cc DHTRoutingTable.h \
+	UTPexExtensionMessage.h UTMetadataExtensionMessage.cc \
+	UTMetadataExtensionMessage.h \
+	UTMetadataRequestExtensionMessage.cc \
+	UTMetadataRequestExtensionMessage.h \
+	UTMetadataRejectExtensionMessage.cc \
+	UTMetadataRejectExtensionMessage.h \
+	UTMetadataDataExtensionMessage.cc \
+	UTMetadataDataExtensionMessage.h DHTNode.cc DHTNode.h \
+	DHTBucket.cc DHTBucket.h DHTRoutingTable.cc DHTRoutingTable.h \
 	DHTMessageEntry.cc DHTMessageEntry.h DHTMessageDispatcher.h \
 	DHTMessageDispatcherImpl.cc DHTMessageDispatcherImpl.h \
 	DHTMessageReceiver.cc DHTMessageReceiver.h \
@@ -644,6 +656,10 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataExtensionMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestExtensionMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRejectExtensionMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataDataExtensionMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTNode.$(OBJEXT) DHTBucket.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.$(OBJEXT) \
@@ -1511,6 +1527,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TransferStat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/URIResult.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataDataExtensionMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataExtensionMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRejectExtensionMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRequestExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnknownLengthPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@

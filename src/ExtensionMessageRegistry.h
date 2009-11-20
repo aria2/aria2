@@ -51,6 +51,8 @@ public:
   ExtensionMessageRegistry()
   {
     _extensions["ut_pex"] = 8;
+    // http://www.bittorrent.org/beps/bep_0009.html
+    _extensions["ut_metadata"] = 9;
   }
 
   const Extensions& getExtensions() const

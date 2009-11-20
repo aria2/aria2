@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,77 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
-#define _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
+#ifndef _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
+#define _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
 
-#include "ExtensionMessageFactory.h"
+#include "UTMetadataExtensionMessage.h"
 
 namespace aria2 {
 
-class PeerStorage;
-class Peer;
-class Logger;
-class ExtensionMessageRegistry;
-class DownloadContext;
-class BtMessageFactory;
-class BtMessageDispatcher;
-
-class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
+class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
 private:
-  SharedHandle<PeerStorage> _peerStorage;
+  size_t _totalSize;
 
-  SharedHandle<Peer> _peer;
-
-  SharedHandle<ExtensionMessageRegistry> _registry;
-
-  SharedHandle<DownloadContext> _dctx;
-
-  WeakHandle<BtMessageFactory> _messageFactory;
-
-  WeakHandle<BtMessageDispatcher> _dispatcher;
-
-  Logger* _logger;
-
+  std::string _data;
 public:
-  DefaultExtensionMessageFactory();
+  UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
 
-  DefaultExtensionMessageFactory
-  (const SharedHandle<Peer>& peer,
-   const SharedHandle<ExtensionMessageRegistry>& registry);
+  virtual std::string getBencodedData();
 
-  virtual ~DefaultExtensionMessageFactory();
+  virtual std::string toString() const;
 
-  virtual SharedHandle<ExtensionMessage>
-  createMessage(const unsigned char* data, size_t length);
+  virtual void doReceivedAction();
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
-
-  void setPeer(const SharedHandle<Peer>& peer);
-
-  void setExtensionMessageRegistry
-  (const SharedHandle<ExtensionMessageRegistry>& registry)
+  void setTotalSize(size_t totalSize)
   {
-    _registry = registry;
+    _totalSize = totalSize;
   }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
+  size_t getTotalSize() const
   {
-    _dctx = dctx;
+    return _totalSize;
   }
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+  void setData(const std::string& data)
   {
-    _messageFactory = factory;
+    _data = data;
   }
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
+  const std::string& getData() const
   {
-    _dispatcher = disp;
+    return _data;
   }
 };
 
-typedef SharedHandle<DefaultExtensionMessageFactory> DefaultExtensionMessageFactoryHandle;
-
 } // namespace aria2
 
-#endif // _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
+#endif // _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_

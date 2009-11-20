@@ -1,5 +1,39 @@
 2009-11-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Initial support of Extension for Peers to Send Metadata
+	Files(BEP9). Currently aria2 only serves metadata and cannot get
+	metadata from swarm.
+	* src/BtConstants.h
+	* src/DefaultBtInteractive.cc
+	* src/DefaultExtensionMessageFactory.cc
+	* src/DefaultExtensionMessageFactory.h
+	* src/ExtensionMessage.h
+	* src/ExtensionMessageRegistry.h
+	* src/HandshakeExtensionMessage.cc
+	* src/HandshakeExtensionMessage.h
+	* src/Makefile.am
+	* src/PeerConnection.h
+	* src/PeerInteractionCommand.cc
+	* src/UTMetadataDataExtensionMessage.cc
+	* src/UTMetadataDataExtensionMessage.h
+	* src/UTMetadataExtensionMessage.cc
+	* src/UTMetadataExtensionMessage.h
+	* src/UTMetadataRejectExtensionMessage.cc
+	* src/UTMetadataRejectExtensionMessage.h
+	* src/UTMetadataRequestExtensionMessage.cc
+	* src/UTMetadataRequestExtensionMessage.h
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* test/Makefile.am
+	* test/UTMetadataDataExtensionMessageTest.cc
+	* test/UTMetadataRejectExtensionMessageTest.cc
+	* test/UTMetadataRequestExtensionMessageTest.cc
+
+2009-11-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Cancel segment in prepareForRetry() because there is a chance that
 	the command has segments.
 	* src/CreateRequestCommand.cc

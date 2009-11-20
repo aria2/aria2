@@ -346,6 +346,11 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	DefaultExtensionMessageFactory.cc DefaultExtensionMessageFactory.h\
 	HandshakeExtensionMessage.cc HandshakeExtensionMessage.h\
 	UTPexExtensionMessage.cc UTPexExtensionMessage.h\
+	UTMetadataExtensionMessage.cc UTMetadataExtensionMessage.h\
+	UTMetadataRequestExtensionMessage.cc\
+	UTMetadataRequestExtensionMessage.h\
+	UTMetadataRejectExtensionMessage.cc UTMetadataRejectExtensionMessage.h\
+	UTMetadataDataExtensionMessage.cc UTMetadataDataExtensionMessage.h\
 	DHTNode.cc DHTNode.h\
 	DHTBucket.cc DHTBucket.h\
 	DHTRoutingTable.cc DHTRoutingTable.h\

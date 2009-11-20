@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,33 +32,24 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXTENSION_MESSAGE_H_
-#define _D_EXTENSION_MESSAGE_H_
+#ifndef _D_UT_METADATA_REJECT_EXTENSION_MESSAGE_H_
+#define _D_UT_METADATA_REJECT_EXTENSION_MESSAGE_H_
 
-#include "common.h"
-
-#include <string>
-
-#include "SharedHandle.h"
+#include "UTMetadataExtensionMessage.h"
 
 namespace aria2 {
-class ExtensionMessage {
+
+class UTMetadataRejectExtensionMessage:public UTMetadataExtensionMessage {
 public:
-  virtual ~ExtensionMessage() {}
+  UTMetadataRejectExtensionMessage(uint8_t extensionMessageID);
 
-  virtual std::string getBencodedData() = 0;
+  virtual std::string getBencodedData();
 
-  virtual uint8_t getExtensionMessageID() = 0;
-  
-  virtual const std::string& getExtensionName() const = 0;
+  virtual std::string toString() const;
 
-  virtual std::string toString() const = 0;
-
-  virtual void doReceivedAction() = 0;
+  virtual void doReceivedAction();
 };
-
-typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
 
 } // namespace aria2
 
-#endif // _D_EXTENSION_MESSAGE_H_
+#endif // _D_UT_METADATA_REJECT_EXTENSION_MESSAGE_H_

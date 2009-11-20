@@ -42,6 +42,14 @@
 #include "StringFormat.h"
 #include "PeerStorage.h"
 #include "ExtensionMessageRegistry.h"
+#include "DownloadContext.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageFactory.h"
+#include "UTMetadataRequestExtensionMessage.h"
+#include "UTMetadataDataExtensionMessage.h"
+#include "UTMetadataRejectExtensionMessage.h"
+#include "message.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -65,6 +73,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     // handshake
     HandshakeExtensionMessageHandle m = HandshakeExtensionMessage::create(data, length);
     m->setPeer(_peer);
+    m->setDownloadContext(_dctx);
     return m;
   } else {
     std::string extensionName = _registry->getExtensionName(extensionMessageID);
@@ -79,6 +88,75 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 	UTPexExtensionMessage::create(data, length);
       m->setPeerStorage(_peerStorage);
       return m;
+    } else if(extensionName == "ut_metadata") {
+      if(length == 0) {
+	throw DL_ABORT_EX(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
+				       "ut_metadata", length).str());
+      }
+      std::string listdata;
+      listdata += 'l';
+      listdata += std::string(&data[1], &data[length]);
+      listdata += 'e';
+
+      const BDE& list = bencode::decode(listdata);
+      if(!list.isList() || list.empty()) {
+	throw DL_ABORT_EX("Bad ut_metadata");
+      }
+      const BDE& dict = list[0];
+      if(!dict.isDict()) {
+	throw DL_ABORT_EX("Bad ut_metadata: dictionary not found");
+      }
+      const BDE& msgType = dict["msg_type"];
+      if(!msgType.isInteger()) {
+	throw DL_ABORT_EX("Bad ut_metadata: msg_type not found");
+      }
+      const BDE& index = dict["piece"];
+      if(!index.isInteger()) {
+	throw DL_ABORT_EX("Bad ut_metadata: piece not found");
+      }
+      switch(msgType.i()) {
+      case 0: {
+	SharedHandle<UTMetadataRequestExtensionMessage> m
+	  (new UTMetadataRequestExtensionMessage(extensionMessageID));
+	m->setIndex(index.i());
+	m->setDownloadContext(_dctx);
+	m->setPeer(_peer);
+	m->setBtMessageFactory(_messageFactory);
+	m->setBtMessageDispatcher(_dispatcher);
+	return m;
+      }
+      case 1: {
+	if(list.size() != 2) {
+	  throw DL_ABORT_EX("Bad ut_metadata data: data not found");
+	}
+	const BDE& pieceData = list[1];
+	if(!pieceData.isString()) {
+	  throw DL_ABORT_EX("Bad ut_metadata data: data is not string");
+	}
+	const BDE& totalSize = dict["total_size"];
+	if(!totalSize.isInteger()) {
+	  throw DL_ABORT_EX("Bad ut_metadata data: total_size not found");
+	}
+	SharedHandle<UTMetadataDataExtensionMessage> m
+	  (new UTMetadataDataExtensionMessage(extensionMessageID));
+	m->setIndex(index.i());
+	m->setTotalSize(totalSize.i());
+	m->setData(pieceData.s());
+	// set tracker
+	// set piecestorage
+	return m;
+      }
+      case 2: {
+	SharedHandle<UTMetadataRejectExtensionMessage> m
+	  (new UTMetadataRejectExtensionMessage(extensionMessageID));
+	m->setIndex(index.i());
+	// set tracker if disconnecing peer on receive.
+	return m;
+      }
+      default:
+	throw DL_ABORT_EX(StringFormat("Bad ut_metadata: unknown msg_type=%u",
+				       msgType.i()).str());
+      }
     } else {
       throw DL_ABORT_EX
 	(StringFormat("Unsupported extension message received. extensionMessageID=%u, extensionName=%s",

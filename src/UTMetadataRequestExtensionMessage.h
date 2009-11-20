@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,62 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
-#define _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
+#ifndef _D_UT_METADATA_REQUEST_EXTENSION_MESSAGE_H_
+#define _D_UT_METADATA_REQUEST_EXTENSION_MESSAGE_H_
 
-#include "ExtensionMessageFactory.h"
+#include "UTMetadataExtensionMessage.h"
 
 namespace aria2 {
 
-class PeerStorage;
-class Peer;
-class Logger;
-class ExtensionMessageRegistry;
 class DownloadContext;
-class BtMessageFactory;
 class BtMessageDispatcher;
+class BtMessageFactory;
+class Peer;
 
-class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
+class UTMetadataRequestExtensionMessage:public UTMetadataExtensionMessage {
 private:
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<DownloadContext> _dctx;
 
   SharedHandle<Peer> _peer;
 
-  SharedHandle<ExtensionMessageRegistry> _registry;
-
-  SharedHandle<DownloadContext> _dctx;
-
-  WeakHandle<BtMessageFactory> _messageFactory;
-
   WeakHandle<BtMessageDispatcher> _dispatcher;
 
-  Logger* _logger;
-
+  WeakHandle<BtMessageFactory> _messageFactory;
 public:
-  DefaultExtensionMessageFactory();
+  UTMetadataRequestExtensionMessage(uint8_t extensionMessageID);
 
-  DefaultExtensionMessageFactory
-  (const SharedHandle<Peer>& peer,
-   const SharedHandle<ExtensionMessageRegistry>& registry);
+  virtual std::string getBencodedData();
 
-  virtual ~DefaultExtensionMessageFactory();
+  virtual std::string toString() const;
 
-  virtual SharedHandle<ExtensionMessage>
-  createMessage(const unsigned char* data, size_t length);
-
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
-
-  void setPeer(const SharedHandle<Peer>& peer);
-
-  void setExtensionMessageRegistry
-  (const SharedHandle<ExtensionMessageRegistry>& registry)
-  {
-    _registry = registry;
-  }
+  virtual void doReceivedAction();
 
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {
     _dctx = dctx;
+  }
+
+  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
+  {
+    _dispatcher = disp;
   }
 
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
@@ -95,14 +77,12 @@ public:
     _messageFactory = factory;
   }
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
+  void setPeer(const SharedHandle<Peer>& peer)
   {
-    _dispatcher = disp;
+    _peer = peer;
   }
 };
 
-typedef SharedHandle<DefaultExtensionMessageFactory> DefaultExtensionMessageFactoryHandle;
-
 } // namespace aria2
 
-#endif // _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
+#endif // _D_UT_METADATA_REQUEST_EXTENSION_MESSAGE_H_

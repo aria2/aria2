@@ -86,6 +86,9 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BtExtendedMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestExtensionMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataDataExtensionMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRejectExtensionMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTNodeTest.cc\
@@ -224,7 +227,11 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	BtRegistryTest.cc BtDependencyTest.cc \
 	BtPostDownloadHandlerTest.cc TimeSeedCriteriaTest.cc \
 	BtExtendedMessageTest.cc HandshakeExtensionMessageTest.cc \
-	UTPexExtensionMessageTest.cc DefaultBtMessageFactoryTest.cc \
+	UTPexExtensionMessageTest.cc \
+	UTMetadataRequestExtensionMessageTest.cc \
+	UTMetadataDataExtensionMessageTest.cc \
+	UTMetadataRejectExtensionMessageTest.cc \
+	DefaultBtMessageFactoryTest.cc \
 	DefaultExtensionMessageFactoryTest.cc DHTNodeTest.cc \
 	DHTBucketTest.cc DHTRoutingTableTest.cc \
 	DHTMessageTrackerEntryTest.cc DHTMessageTrackerTest.cc \
@@ -296,6 +303,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	BtExtendedMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestExtensionMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataDataExtensionMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRejectExtensionMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTNodeTest.$(OBJEXT) \
@@ -840,6 +850,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataDataExtensionMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRejectExtensionMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRequestExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@

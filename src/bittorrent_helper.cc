@@ -125,6 +125,10 @@ const std::string MULTI("multi");
 
 const std::string SINGLE("single");
 
+const std::string METADATA_SIZE("metadataSize");
+
+const std::string METADATA("metadata");
+
 static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
 			     const std::string& hashData,
 			     size_t hashLength,
@@ -364,6 +368,8 @@ static void processRootDictionary
 			      encodedInfoDict.data(),
 			      encodedInfoDict.size());
   torrent[INFO_HASH] = std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]);
+  torrent[METADATA] = encodedInfoDict;
+  torrent[METADATA_SIZE] = encodedInfoDict.size();
 
   // calculate the number of pieces
   const BDE& piecesData = infoDict[C_PIECES];

@@ -7,6 +7,8 @@
 #include "Peer.h"
 #include "Exception.h"
 #include "FileEntry.h"
+#include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -57,11 +59,18 @@ void HandshakeExtensionMessageTest::testGetBencodedData()
   msg.setTCPPort(6889);
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
-  CPPUNIT_ASSERT_EQUAL(std::string("d"
-				   "1:md6:a2_dhti2e6:ut_pexi1ee"
-				   "1:pi6889e"
-				   "1:v5:aria2"
-				   "e"), msg.getBencodedData());
+  msg.setMetadataSize(1024);
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("d"
+		 "1:md6:a2_dhti2e6:ut_pexi1ee"
+		 "13:metadata_sizei1024e"
+		 "1:pi6889e"
+		 "1:v5:aria2"
+		 "e"), msg.getBencodedData());
+
+  msg.setMetadataSize(0);
+  CPPUNIT_ASSERT
+    (msg.getBencodedData().find("metadata_size") == std::string::npos);
 }
 
 void HandshakeExtensionMessageTest::testToString()
@@ -71,11 +80,18 @@ void HandshakeExtensionMessageTest::testToString()
   msg.setTCPPort(6889);
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
-  CPPUNIT_ASSERT_EQUAL(std::string("handshake client=aria2, tcpPort=6889, a2_dht=2, ut_pex=1"), msg.toString());
+  msg.setMetadataSize(1024);
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("handshake client=aria2, tcpPort=6889, metadataSize=1024,"
+		 " a2_dht=2, ut_pex=1"), msg.toString());
 }
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
+  SharedHandle<DownloadContext> ctx(new DownloadContext());
+  BDE attrs = BDE::dict();
+  ctx->setAttribute(bittorrent::BITTORRENT, attrs);
+
   SharedHandle<Peer> peer(new Peer("192.168.0.1", 0));
   peer->allocateSessionResource(1024, 1024*1024);
   HandshakeExtensionMessage msg;
@@ -83,25 +99,29 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   msg.setTCPPort(6889);
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
+  msg.setMetadataSize(1024);
   msg.setPeer(peer);
+  msg.setDownloadContext(ctx);
 
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->port);
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, peer->getExtensionMessageID("ut_pex"));
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, peer->getExtensionMessageID("a2_dht"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024, attrs[bittorrent::METADATA_SIZE].i());
 }
 
 void HandshakeExtensionMessageTest::testCreate()
 {
-  std::string in = "0d1:pi6881e1:v5:aria21:md6:ut_pexi1eee";
+  std::string in = 
+    "0d1:pi6881e1:v5:aria21:md6:ut_pexi1ee13:metadata_sizei1024ee";
   SharedHandle<HandshakeExtensionMessage> m =
     HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
 				      in.size());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getTCPPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, m->getExtensionMessageID("ut_pex"));
-
+  CPPUNIT_ASSERT_EQUAL((size_t)1024, m->getMetadataSize());
   try {
     // bad payload format
     std::string in = "011:hello world";

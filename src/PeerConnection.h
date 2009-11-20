@@ -47,9 +47,9 @@ class SocketCore;
 class ARC4Encryptor;
 class ARC4Decryptor;
 
-// we assume maximum length of incoming message is "piece" message with 16KB
-// data. Messages beyond that size are dropped.
-#define MAX_PAYLOAD_LEN (9+16*1024)
+// The maximum length of payload. Messages beyond that length are
+// dropped.
+#define MAX_PAYLOAD_LEN (16*1024+128)
 
 class PeerConnection {
 private:

@@ -136,6 +136,9 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtExtendedMessageTest.cc\
 	HandshakeExtensionMessageTest.cc\
 	UTPexExtensionMessageTest.cc\
+	UTMetadataRequestExtensionMessageTest.cc\
+	UTMetadataDataExtensionMessageTest.cc\
+	UTMetadataRejectExtensionMessageTest.cc\
 	DefaultBtMessageFactoryTest.cc\
 	DefaultExtensionMessageFactoryTest.cc\
 	DHTNodeTest.cc\
