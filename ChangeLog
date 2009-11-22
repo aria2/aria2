@@ -1,5 +1,13 @@
 2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added setEndGamePieceNum() pure virtual function to PieceStorage.
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+
+2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added markTotalLengthIsKnown().
 	* src/DownloadContext.h
 

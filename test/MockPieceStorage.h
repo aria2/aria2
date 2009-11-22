@@ -188,6 +188,8 @@ public:
     return endGame;
   }
 
+  virtual void setEndGamePieceNum(size_t num) {}
+
   void setEndGame(bool flag) {
     this->endGame = flag;
   }

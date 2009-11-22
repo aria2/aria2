@@ -187,6 +187,8 @@ public:
 
   virtual bool isEndGame() = 0;
 
+  virtual void setEndGamePieceNum(size_t num) = 0;
+
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor() = 0;
   
   virtual size_t getPieceLength(size_t index) = 0;

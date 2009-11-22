@@ -175,7 +175,7 @@ public:
 
   virtual const unsigned char* getBitfield();
 
-  void setEndGamePieceNum(size_t num) {
+  virtual void setEndGamePieceNum(size_t num) {
     endGamePieceNum = num;
   }
 

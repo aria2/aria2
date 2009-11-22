@@ -211,6 +211,8 @@ public:
     return false;
   }
 
+  virtual void setEndGamePieceNum(size_t num) {}
+
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
   
   virtual size_t getPieceLength(size_t index);
