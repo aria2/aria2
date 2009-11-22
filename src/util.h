@@ -170,6 +170,11 @@ std::string toHex(const char* src, size_t len);
 
 std::string toHex(const std::string& src);
 
+// Converts hexadecimal ascii string 'src' into packed binary form and
+// return the result. If src is not well formed, then empty string is
+// returned.
+std::string fromHex(const std::string& src);
+
 FILE* openFile(const std::string& filename, const std::string& mode);
 
 bool isPowerOf(int num, int base);

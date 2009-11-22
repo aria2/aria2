@@ -298,6 +298,41 @@ std::string toHex(const std::string& src)
   return toHex(reinterpret_cast<const unsigned char*>(src.c_str()), src.size());
 }
 
+static unsigned int hexCharToUInt(unsigned char ch)
+{
+
+  if('a' <= ch && ch <= 'f') {
+    ch -= 'a';
+    ch += 10;
+  } else if('A' <= ch && ch <= 'F') {
+    ch -= 'A';
+    ch += 10;
+  } else if('0' <= ch && ch <= '9') {
+    ch -= '0';
+  } else {
+    ch = 255;
+  }
+  return ch;
+}
+
+std::string fromHex(const std::string& src)
+{
+  std::string dest;
+  if(src.size()%2) {
+    return dest;
+  }
+  for(size_t i = 0; i < src.size(); i += 2) {
+      unsigned char high = hexCharToUInt(src[i]);
+      unsigned char low = hexCharToUInt(src[i+1]);
+      if(high == 255 || low == 255) {
+	dest.clear();
+	return dest;
+      }
+      dest += (high*16+low);
+  }
+  return dest;
+}
+
 FILE* openFile(const std::string& filename, const std::string& mode) {
   FILE* file = fopen(filename.c_str(), mode.c_str());
   return file;

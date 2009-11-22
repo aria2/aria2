@@ -1,5 +1,12 @@
 2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added FromHex()
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
+2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added _metadataGetMode member variable. It toggles the action when
 	messages are received: usually they almost do nothing if
 	_metadataGetMode is true.

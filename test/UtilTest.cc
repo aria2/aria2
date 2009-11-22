@@ -56,6 +56,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseIndexPath);
   CPPUNIT_TEST(testCreateIndexPathMap);
   CPPUNIT_TEST(testGenerateRandomData);
+  CPPUNIT_TEST(testFromHex);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -100,6 +101,7 @@ public:
   void testParseIndexPath();
   void testCreateIndexPathMap();
   void testGenerateRandomData();
+  void testFromHex();
 };
 
 
@@ -798,6 +800,25 @@ void UtilTest::testGenerateRandomData()
   unsigned char data2[20];
   util::generateRandomData(data2, sizeof(data2));
   CPPUNIT_ASSERT(memcmp(data1, data2, sizeof(data1)) != 0);
+}
+
+void UtilTest::testFromHex()
+{
+  std::string src;
+  std::string dest;
+
+  src = "0011fF";
+  dest = util::fromHex(src);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, dest.size());
+  CPPUNIT_ASSERT_EQUAL((char)0x00, dest[0]);
+  CPPUNIT_ASSERT_EQUAL((char)0x11, dest[1]);
+  CPPUNIT_ASSERT_EQUAL((char)0xff, dest[2]);
+
+  src = "0011f";
+  CPPUNIT_ASSERT(util::fromHex(src).empty());
+
+  src = "001g";
+  CPPUNIT_ASSERT(util::fromHex(src).empty());
 }
 
 } // namespace aria2
