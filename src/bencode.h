@@ -51,7 +51,13 @@ BDE decode(std::istream& in);
 // Decode the data in s.
 BDE decode(const std::string& s);
 
+// Decode the data in s. After decode is done successfully, return the
+// bencoded string length in end.
+BDE decode(const std::string& s, size_t& end);
+
 BDE decode(const unsigned char* data, size_t length);
+
+BDE decode(const unsigned char* data, size_t length, size_t& end);
 
 BDE decodeFromFile(const std::string& filename);
 

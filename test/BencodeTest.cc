@@ -146,6 +146,13 @@ void BencodeTest::testDecode()
     BDE s = bencode::decode("5:aria2trail");
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"), s.s());
   }
+  {
+    // Get trailing garbage position
+    size_t end;
+    BDE s = bencode::decode("5:aria2trail", end);
+    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), s.s());
+    CPPUNIT_ASSERT_EQUAL((size_t)7, end);
+  }
 }
 
 void BencodeTest::testEncode()

@@ -156,17 +156,30 @@ BDE decode(std::istream& in)
 
 BDE decode(const std::string& s)
 {
+  size_t end;
+  return decode(s, end);
+}
+
+BDE decode(const std::string& s, size_t& end)
+{
   if(s.empty()) {
     return BDE::none;
   }
   std::istringstream ss(s);
 
-  return decodeiter(ss);
+  BDE bde = decodeiter(ss);
+  end = ss.tellg();
+  return bde;
 }
 
 BDE decode(const unsigned char* data, size_t length)
 {
   return decode(std::string(&data[0], &data[length]));
+}
+
+BDE decode(const unsigned char* data, size_t length, size_t& end)
+{
+  return decode(std::string(&data[0], &data[length]), end);
 }
 
 BDE decodeFromFile(const std::string& filename)

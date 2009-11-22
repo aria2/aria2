@@ -1,3 +1,12 @@
+2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added bencode::decode overload functions. They have extra argument
+	'end', passed by reference. 'end' points to the beyond the last
+	position of data used in decoding process.
+	* src/bencode.cc
+	* src/bencode.h
+	* test/BencodeTest.cc
+
 2009-11-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Initial support of Extension for Peers to Send Metadata
