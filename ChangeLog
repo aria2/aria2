@@ -1,5 +1,25 @@
 2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added _metadataGetMode member variable. It toggles the action when
+	messages are received: usually they almost do nothing if
+	_metadataGetMode is true.
+	* src/AbstractBtMessage.cc
+	* src/AbstractBtMessage.h
+	* src/BtAllowedFastMessage.cc
+	* src/BtBitfieldMessage.cc
+	* src/BtCancelMessage.cc
+	* src/BtChokeMessage.cc
+	* src/BtHaveAllMessage.cc
+	* src/BtHaveMessage.cc
+	* src/BtInterestedMessage.cc
+	* src/BtNotInterestedMessage.cc
+	* src/BtPieceMessage.cc
+	* src/BtRejectMessage.cc
+	* src/BtRequestMessage.cc
+	* src/BtUnchokeMessage.cc
+
+2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added bencode::decode overload functions. They have extra argument
 	'end', passed by reference. 'end' points to the beyond the last
 	position of data used in decoding process.

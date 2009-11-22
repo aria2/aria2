@@ -50,6 +50,9 @@ SharedHandle<BtHaveMessage> BtHaveMessage::create
 
 void BtHaveMessage::doReceivedAction()
 {
+  if(_metadataGetMode) {
+    return;
+  }
   peer->updateBitfield(getIndex(), 1);
   pieceStorage->addPieceStats(getIndex());
   if(peer->isSeeder() && pieceStorage->downloadFinished()) {

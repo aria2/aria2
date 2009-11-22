@@ -53,6 +53,9 @@ void BtAllowedFastMessage::doReceivedAction() {
       (StringFormat("%s received while fast extension is disabled",
 		    toString().c_str()).str());
   }
+  if(_metadataGetMode) {
+    return;
+  }
   peer->addPeerAllowedIndex(getIndex());
 }
 

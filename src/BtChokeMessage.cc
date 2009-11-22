@@ -49,6 +49,9 @@ SharedHandle<BtChokeMessage> BtChokeMessage::create
 
 void BtChokeMessage::doReceivedAction()
 {
+  if(_metadataGetMode) {
+    return;
+  }
   peer->peerChoking(true);
   dispatcher->doChokedAction();
   requestFactory->doChokedAction();

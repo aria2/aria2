@@ -56,6 +56,9 @@ void BtHaveAllMessage::doReceivedAction()
       (StringFormat("%s received while fast extension is disabled",
 		    toString().c_str()).str());
   }
+  if(_metadataGetMode) {
+    return;
+  }
   pieceStorage->subtractPieceStats(peer->getBitfield(),
 				   peer->getBitfieldLength());
   peer->setAllBitfield();

@@ -77,6 +77,9 @@ BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t da
 }
 
 void BtPieceMessage::doReceivedAction() {
+  if(_metadataGetMode) {
+    return;
+  }
   RequestSlot slot = dispatcher->getOutstandingRequest(index,
 						       begin,
 						       blockLength);

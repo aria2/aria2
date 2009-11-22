@@ -51,6 +51,9 @@ SharedHandle<BtRequestMessage> BtRequestMessage::create
 
 void BtRequestMessage::doReceivedAction()
 {
+  if(_metadataGetMode) {
+    return;
+  }
   if(pieceStorage->hasPiece(getIndex()) &&
      (!peer->amChoking() ||
       (peer->amChoking() && peer->isInAmAllowedIndexSet(getIndex())))) {

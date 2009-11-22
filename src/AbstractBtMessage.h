@@ -73,6 +73,8 @@ protected:
 
   SharedHandle<BtMessageValidator> validator;
 
+  bool _metadataGetMode;
+
   Logger* logger;
 public:
   AbstractBtMessage(uint8_t id, const std::string& name);
@@ -147,6 +149,11 @@ public:
   const std::string& getName() const
   {
     return _name;
+  }
+
+  void enableMetadataGetMode()
+  {
+    _metadataGetMode = true;
   }
 };
 

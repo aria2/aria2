@@ -47,6 +47,9 @@ SharedHandle<BtCancelMessage> BtCancelMessage::create
 
 void BtCancelMessage::doReceivedAction()
 {
+  if(_metadataGetMode) {
+    return;
+  }
   dispatcher->doCancelSendingPieceAction(getIndex(), getBegin(), getLength());
 }
 

@@ -71,6 +71,9 @@ BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
 }
 
 void BtBitfieldMessage::doReceivedAction() {
+  if(_metadataGetMode) {
+    return;
+  }
   pieceStorage->updatePieceStats(bitfield, bitfieldLength, peer->getBitfield());
   peer->setBitfield(bitfield, bitfieldLength);
   if(peer->isSeeder() && pieceStorage->downloadFinished()) {

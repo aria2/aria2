@@ -48,6 +48,9 @@ SharedHandle<BtInterestedMessage> BtInterestedMessage::create
 
 void BtInterestedMessage::doReceivedAction()
 {
+  if(_metadataGetMode) {
+    return;
+  }
   peer->peerInterested(true);
   if(!peer->amChoking()) {
     _peerStorage->executeChoke();

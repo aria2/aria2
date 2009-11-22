@@ -48,6 +48,7 @@ AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name):
   uploading(false),
   cuid(0),
   _name(name),
+  _metadataGetMode(false),
   logger(LogFactory::getInstance())
 {}
 

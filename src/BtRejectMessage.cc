@@ -56,6 +56,9 @@ void BtRejectMessage::doReceivedAction()
       (StringFormat("%s received while fast extension is disabled.",
 		    toString().c_str()).str());
   }
+  if(_metadataGetMode) {
+    return;
+  }
   // TODO Current implementation does not close a connection even if
   // a request for this reject message has never sent.
   RequestSlot slot =

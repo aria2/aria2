@@ -47,6 +47,9 @@ SharedHandle<BtUnchokeMessage> BtUnchokeMessage::create
 
 void BtUnchokeMessage::doReceivedAction()
 {
+  if(_metadataGetMode) {
+    return;
+  }
   peer->peerChoking(false);
 }
 
