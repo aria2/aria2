@@ -37,6 +37,7 @@
 #include "a2functional.h"
 #include "util.h"
 #include "bencode.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -59,8 +60,7 @@ std::string UTMetadataRejectExtensionMessage::toString() const
 
 void UTMetadataRejectExtensionMessage::doReceivedAction()
 {
-  // TODO Remove outstanding metadata request from tracker.
-  // OR drop connection.
+  throw DL_ABORT_EX("Drop connection because peer didn't offer metadata.");
 }
 
 } // namespace aria2

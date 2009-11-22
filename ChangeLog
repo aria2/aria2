@@ -1,5 +1,10 @@
 2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Drop connection if ut_metadata reject message is received.
+	* src/UTMetadataRejectExtensionMessage.cc
+
+2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set thresholdSpeed to 0 in metadataGetMode because speed doesn't
 	get high enough in that mode.
 	* src/ActivePeerConnectionCommand.cc
