@@ -21,6 +21,10 @@
 #include "UTMetadataRequestExtensionMessage.h"
 #include "UTMetadataDataExtensionMessage.h"
 #include "UTMetadataRejectExtensionMessage.h"
+#include "BtRuntime.h"
+#include "PieceStorage.h"
+#include "RequestGroup.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -42,6 +46,7 @@ private:
   SharedHandle<MockBtMessageDispatcher> _dispatcher;
   SharedHandle<MockBtMessageFactory> _messageFactory;
   SharedHandle<DownloadContext> _dctx;
+  SharedHandle<RequestGroup> _requestGroup;
 public:
   void setUp()
   {
@@ -58,6 +63,11 @@ public:
     _messageFactory.reset(new MockBtMessageFactory());
 
     _dctx.reset(new DownloadContext());
+
+    SharedHandle<Option> option(new Option());
+    _requestGroup.reset(new RequestGroup(option));
+    _requestGroup->setDownloadContext(_dctx);
+    _dctx->setOwnerRequestGroup(_requestGroup.get());
 
     _factory.reset(new DefaultExtensionMessageFactory());
     _factory->setPeerStorage(_peerStorage);
@@ -155,7 +165,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataRequest()
 void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataData()
 {
   std::string data = getExtensionMessageID("ut_metadata")+
-    "d8:msg_typei1e5:piecei1e10:total_sizei300ee10:0000000000";
+    "d8:msg_typei1e5:piecei1e10:total_sizei300ee0000000000";
   SharedHandle<UTMetadataDataExtensionMessage> m =
     createMessage<UTMetadataDataExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getIndex());

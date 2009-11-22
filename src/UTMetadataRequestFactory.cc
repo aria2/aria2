@@ -32,85 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
-#define _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
-
-#include "UTMetadataExtensionMessage.h"
+#include "UTMetadataRequestFactory.h"
+#include "PieceStorage.h"
+#include "DownloadContext.h"
+#include "Peer.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageFactory.h"
+#include "UTMetadataRequestExtensionMessage.h"
+#include "UTMetadataRequestTracker.h"
+#include "BtMessage.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
-class DownloadContext;
-class PieceStorage;
-class UTMetadataRequestTracker;
-class BtRuntime;
-class Logger;
+UTMetadataRequestFactory::UTMetadataRequestFactory():
+  _logger(LogFactory::getInstance()) {}
 
-class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
-private:
-  size_t _totalSize;
-
-  std::string _data;
-
-  SharedHandle<DownloadContext> _dctx;
-
-  SharedHandle<PieceStorage> _pieceStorage;
-
-  SharedHandle<BtRuntime> _btRuntime;
-
-  WeakHandle<UTMetadataRequestTracker> _tracker;
-
-  Logger* _logger;
-public:
-  UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
-
-  virtual std::string getBencodedData();
-
-  virtual std::string toString() const;
-
-  virtual void doReceivedAction();
-
-  void setTotalSize(size_t totalSize)
-  {
-    _totalSize = totalSize;
+void UTMetadataRequestFactory::create
+(std::deque<SharedHandle<BtMessage> >& msgs, size_t num,
+ const SharedHandle<PieceStorage>& pieceStorage)
+{
+  for(size_t index = 0; index < _dctx->getNumPieces() && num; ++index) {
+    SharedHandle<Piece> p = pieceStorage->getMissingPiece(index);
+    if(p.isNull()) {
+      _logger->debug("ut_metadata piece %lu is used or already acquired.");
+      continue;
+    }
+    --num;
+    _logger->debug("Creating ut_metadata request index=%lu",
+		   static_cast<unsigned long>(index));
+    SharedHandle<UTMetadataRequestExtensionMessage> m
+      (new UTMetadataRequestExtensionMessage
+       (_peer->getExtensionMessageID("ut_metadata")));
+    m->setIndex(index);
+    m->setDownloadContext(_dctx);
+    m->setBtMessageDispatcher(_dispatcher);
+    m->setBtMessageFactory(_messageFactory);
+    m->setPeer(_peer);
+    
+    SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
+    msgs.push_back(msg);
+    _tracker->add(index);
   }
-
-  size_t getTotalSize() const
-  {
-    return _totalSize;
-  }
-
-  void setData(const std::string& data)
-  {
-    _data = data;
-  }
-
-  const std::string& getData() const
-  {
-    return _data;
-  }
-
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
-  {
-    _pieceStorage = pieceStorage;
-  }
-
-  void setUTMetadataRequestTracker
-  (const WeakHandle<UTMetadataRequestTracker>& tracker)
-  {
-    _tracker = tracker;
-  }
-
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    _dctx = dctx;
-  }
-
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
-  {
-    _btRuntime = btRuntime;
-  }
-};
+}
 
 } // namespace aria2
-
-#endif // _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_

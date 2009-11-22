@@ -13,6 +13,9 @@
 #include "BtHandshakeMessage.h"
 #include "UTMetadataRejectExtensionMessage.h"
 #include "UTMetadataDataExtensionMessage.h"
+#include "PieceStorage.h"
+#include "BtRuntime.h"
+#include "extension_message_test_helper.h"
 
 namespace aria2 {
 
@@ -27,30 +30,14 @@ class UTMetadataRequestExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction_data);
   CPPUNIT_TEST_SUITE_END();
 public:
-  class MockExtensionMessage:public MockBtMessage {
-  public:
-    SharedHandle<ExtensionMessage> _m;
-    
-    MockExtensionMessage(const SharedHandle<ExtensionMessage>& m):_m(m) {}
-  };
-
-  class MockBtMessageFactory2:public MockBtMessageFactory {
-  public:
-    virtual SharedHandle<BtMessage>
-    createBtExtendedMessage(const SharedHandle<ExtensionMessage>& extmsg)
-    {
-      return SharedHandle<BtMessage>(new MockExtensionMessage(extmsg));
-    }
-  };
-
   SharedHandle<DownloadContext> _dctx;
-  SharedHandle<MockBtMessageFactory2> _messageFactory;
+  SharedHandle<WrapExtBtMessageFactory> _messageFactory;
   SharedHandle<MockBtMessageDispatcher> _dispatcher;
   SharedHandle<Peer> _peer;
 
   void setUp()
   {
-    _messageFactory.reset(new MockBtMessageFactory2());
+    _messageFactory.reset(new WrapExtBtMessageFactory());
     _dispatcher.reset(new MockBtMessageDispatcher());
     _dctx.reset(new DownloadContext());
     BDE attrs = BDE::dict();
@@ -63,8 +50,8 @@ public:
   template<typename T>
   SharedHandle<T> getFirstDispatchedMessage()
   {
-    SharedHandle<MockExtensionMessage> wrapmsg =
-      dynamic_pointer_cast<MockExtensionMessage>
+    SharedHandle<WrapExtBtMessage> wrapmsg =
+      dynamic_pointer_cast<WrapExtBtMessage>
       (_dispatcher->messageQueue.front());
     
     SharedHandle<T> msg = dynamic_pointer_cast<T>(wrapmsg->_m);

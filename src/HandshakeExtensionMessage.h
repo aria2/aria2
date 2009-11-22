@@ -45,9 +45,7 @@ namespace aria2 {
 
 class Peer;
 class Logger;
-class HandshakeExtensionMessage;
 class DownloadContext;
-typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;
 
 class HandshakeExtensionMessage:public ExtensionMessage {
 private:
@@ -137,8 +135,8 @@ public:
 
   void setPeer(const SharedHandle<Peer>& peer);
 
-  static HandshakeExtensionMessageHandle create(const unsigned char* data,
-						size_t dataLength);
+  static SharedHandle<HandshakeExtensionMessage>
+  create(const unsigned char* data, size_t dataLength);
 };
 
 typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;

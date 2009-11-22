@@ -9,6 +9,8 @@
 #include "FileEntry.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
+#include "Option.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -88,9 +90,16 @@ void HandshakeExtensionMessageTest::testToString()
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
-  SharedHandle<DownloadContext> ctx(new DownloadContext());
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(METADATA_PIECE_SIZE, 0));
+  SharedHandle<Option> op(new Option());
+  RequestGroup rg(op);
+  rg.setDownloadContext(dctx);
+  dctx->setOwnerRequestGroup(&rg);
+
   BDE attrs = BDE::dict();
-  ctx->setAttribute(bittorrent::BITTORRENT, attrs);
+  dctx->setAttribute(bittorrent::BITTORRENT, attrs);
+  dctx->markTotalLengthIsUnknown();
 
   SharedHandle<Peer> peer(new Peer("192.168.0.1", 0));
   peer->allocateSessionResource(1024, 1024*1024);
@@ -101,7 +110,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   msg.setExtension("a2_dht", 2);
   msg.setMetadataSize(1024);
   msg.setPeer(peer);
-  msg.setDownloadContext(ctx);
+  msg.setDownloadContext(dctx);
 
   msg.doReceivedAction();
 
@@ -109,6 +118,8 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, peer->getExtensionMessageID("ut_pex"));
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, peer->getExtensionMessageID("a2_dht"));
   CPPUNIT_ASSERT_EQUAL((int64_t)1024, attrs[bittorrent::METADATA_SIZE].i());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, dctx->getTotalLength());
+  CPPUNIT_ASSERT(dctx->knowsTotalLength());
 }
 
 void HandshakeExtensionMessageTest::testCreate()

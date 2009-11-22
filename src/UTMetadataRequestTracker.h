@@ -32,85 +32,69 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
-#define _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
+#ifndef _UT_METADATA_REQUEST_TRACKER_H_
+#define _UT_METADATA_REQUEST_TRACKER_H_
 
-#include "UTMetadataExtensionMessage.h"
+#include "common.h"
+
+#include <vector>
+
+#include "TimeA2.h"
 
 namespace aria2 {
 
-class DownloadContext;
-class PieceStorage;
-class UTMetadataRequestTracker;
-class BtRuntime;
 class Logger;
 
-class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataRequestTracker {
 private:
-  size_t _totalSize;
+  struct RequestEntry {
+    size_t _index;
+    Time _dispatchedTime;
 
-  std::string _data;
+    RequestEntry(size_t index):_index(index) {}
 
-  SharedHandle<DownloadContext> _dctx;
+    bool elapsed(time_t t) const
+    {
+      return _dispatchedTime.elapsed(t);
+    }
 
-  SharedHandle<PieceStorage> _pieceStorage;
+    bool operator==(const RequestEntry& e) const
+    {
+      return _index == e._index;
+    }
+  };
 
-  SharedHandle<BtRuntime> _btRuntime;
-
-  WeakHandle<UTMetadataRequestTracker> _tracker;
+  std::vector<RequestEntry> _trackedRequests;
 
   Logger* _logger;
 public:
-  UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
+  UTMetadataRequestTracker();
 
-  virtual std::string getBencodedData();
+  // Add request index to tracking list.
+  void add(size_t index);
 
-  virtual std::string toString() const;
+  // Returns true if request index is tracked.
+  bool tracks(size_t index);
 
-  virtual void doReceivedAction();
+  // Remove index from tracking list.
+  void remove(size_t index);
 
-  void setTotalSize(size_t totalSize)
+  // Returns all tracking indexes.
+  std::vector<size_t> getAllTrackedIndex() const;
+
+  // Removes request index which is timed out and returns their indexes.
+  std::vector<size_t> removeTimeoutEntry();
+
+  // Returns the number of tracking list.
+  size_t count() const
   {
-    _totalSize = totalSize;
+    return _trackedRequests.size();
   }
 
-  size_t getTotalSize() const
-  {
-    return _totalSize;
-  }
-
-  void setData(const std::string& data)
-  {
-    _data = data;
-  }
-
-  const std::string& getData() const
-  {
-    return _data;
-  }
-
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
-  {
-    _pieceStorage = pieceStorage;
-  }
-
-  void setUTMetadataRequestTracker
-  (const WeakHandle<UTMetadataRequestTracker>& tracker)
-  {
-    _tracker = tracker;
-  }
-
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    _dctx = dctx;
-  }
-
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
-  {
-    _btRuntime = btRuntime;
-  }
+  // Returns the number of additional index this tracker can track.
+  size_t avail() const;
 };
 
 } // namespace aria2
 
-#endif // _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
+#endif // _UT_METADATA_REQUEST_TRACKER_H_

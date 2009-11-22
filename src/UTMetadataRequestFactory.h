@@ -32,66 +32,65 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
-#define _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
+#ifndef _UT_METADATA_REQUEST_FACTORY_H_
+#define _UT_METADATA_REQUEST_FACTORY_H_
 
-#include "UTMetadataExtensionMessage.h"
+#include "common.h"
+
+#include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-class DownloadContext;
 class PieceStorage;
+class DownloadContext;
+class Peer;
+class BtMessageDispatcher;
+class BtMessageFactory;
 class UTMetadataRequestTracker;
-class BtRuntime;
+class BtMessage;
 class Logger;
 
-class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataRequestFactory {
 private:
-  size_t _totalSize;
-
-  std::string _data;
-
   SharedHandle<DownloadContext> _dctx;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<Peer> _peer;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  WeakHandle<BtMessageDispatcher> _dispatcher;
+
+  WeakHandle<BtMessageFactory> _messageFactory;
 
   WeakHandle<UTMetadataRequestTracker> _tracker;
 
   Logger* _logger;
 public:
-  UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
+  UTMetadataRequestFactory();
 
-  virtual std::string getBencodedData();
+  // Creates at most num of ut_metadata request message and appends
+  // them to msgs. pieceStorage is used to identify missing piece.
+  void create(std::deque<SharedHandle<BtMessage> >& msgs, size_t num,
+	      const SharedHandle<PieceStorage>& pieceStorage);
 
-  virtual std::string toString() const;
-
-  virtual void doReceivedAction();
-
-  void setTotalSize(size_t totalSize)
+  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {
-    _totalSize = totalSize;
+    _dctx = dctx;
   }
 
-  size_t getTotalSize() const
+  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
   {
-    return _totalSize;
+    _dispatcher = disp;
   }
 
-  void setData(const std::string& data)
+  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
   {
-    _data = data;
+    _messageFactory = factory;
   }
 
-  const std::string& getData() const
+  void setPeer(const SharedHandle<Peer>& peer)
   {
-    return _data;
-  }
-
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
-  {
-    _pieceStorage = pieceStorage;
+    _peer = peer;
   }
 
   void setUTMetadataRequestTracker
@@ -99,18 +98,8 @@ public:
   {
     _tracker = tracker;
   }
-
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    _dctx = dctx;
-  }
-
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
-  {
-    _btRuntime = btRuntime;
-  }
 };
 
 } // namespace aria2
 
-#endif // _D_UT_METADATA_DATA_EXTENSION_MESSAGE_H_
+#endif // _UT_METADATA_REQUEST_FACTORY_H_

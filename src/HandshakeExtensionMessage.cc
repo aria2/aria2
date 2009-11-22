@@ -43,6 +43,8 @@
 #include "bencode.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
+#include "RequestGroup.h"
+#include "PieceStorage.h"
 
 namespace aria2 {
 
@@ -110,8 +112,19 @@ void HandshakeExtensionMessage::doReceivedAction()
   }
   if(_metadataSize > 0) {
     BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
-    if(!attrs.containsKey(bittorrent::METADATA_SIZE)) {
+    if(attrs.containsKey(bittorrent::METADATA_SIZE)) {
+      if(_metadataSize != (size_t)attrs[bittorrent::METADATA_SIZE].i()) {
+	throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
+      }
+    } else {
       attrs[bittorrent::METADATA_SIZE] = _metadataSize;
+      _dctx->getFirstFileEntry()->setLength(_metadataSize);
+      _dctx->markTotalLengthIsKnown();
+      _dctx->getOwnerRequestGroup()->initPieceStorage();
+      
+      SharedHandle<PieceStorage> pieceStorage =
+	_dctx->getOwnerRequestGroup()->getPieceStorage();
+      pieceStorage->setEndGamePieceNum(0);
     }
   }
 }

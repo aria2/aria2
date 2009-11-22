@@ -37,29 +37,30 @@
 #include "bencode.h"
 #include "util.h"
 #include "a2functional.h"
+#include "DownloadContext.h"
+#include "UTMetadataRequestTracker.h"
+#include "PieceStorage.h"
+#include "BtConstants.h"
+#include "MessageDigestHelper.h"
+#include "bittorrent_helper.h"
+#include "DiskAdaptor.h"
+#include "Piece.h"
+#include "BtRuntime.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
 UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
-(uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID) {}
+(uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID),
+			     _logger(LogFactory::getInstance()) {}
 
 std::string UTMetadataDataExtensionMessage::getBencodedData()
 {
-  BDE list = BDE::list();
-
   BDE dict = BDE::dict();
   dict["msg_type"] = 1;
   dict["piece"] = _index;
   dict["total_size"] = _totalSize;
-
-  BDE data = _data;
-
-  list << dict;
-  list << data;
-
-  std::string encodedList = bencode::encode(list);
-  // Remove first 'l' and last 'e' and return.
-  return std::string(encodedList.begin()+1, encodedList.end()-1);
+  return bencode::encode(dict)+_data;
 }
 
 std::string UTMetadataDataExtensionMessage::toString() const
@@ -69,9 +70,36 @@ std::string UTMetadataDataExtensionMessage::toString() const
 
 void UTMetadataDataExtensionMessage::doReceivedAction()
 {
-  // Update tracker
-
-  // Write to pieceStorage
+  if(_tracker->tracks(_index)) {
+    _logger->debug("ut_metadata index=%lu found in tracking list",
+		  static_cast<unsigned long>(_index));
+    _tracker->remove(_index);
+    _pieceStorage->getDiskAdaptor()->writeData
+      (reinterpret_cast<const unsigned char*>(_data.c_str()), _data.size(),
+       _index*METADATA_PIECE_SIZE);
+    _pieceStorage->completePiece(_pieceStorage->getPiece(_index));
+    if(_pieceStorage->downloadFinished()) {
+      std::string metadata = util::toString(_pieceStorage->getDiskAdaptor());
+      unsigned char infoHash[INFO_HASH_LENGTH];
+      MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
+				  MessageDigestContext::SHA1,
+				  metadata.data(), metadata.size());
+      const BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
+      if(std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]) == 
+	 attrs[bittorrent::INFO_HASH].s()){
+	_logger->info("Got ut_metadata");
+	_btRuntime->setHalt(true);
+      } else {
+	_logger->info("Got wrong ut_metadata");
+	for(size_t i = 0; i < _dctx->getNumPieces(); ++i) {
+	  _pieceStorage->markPieceMissing(i);
+	}
+      }
+    }
+  } else {
+    _logger->debug("ut_metadata index=%lu is not tracked",
+		  static_cast<unsigned long>(_index));
+  }
 }
 
 } // namespace aria2

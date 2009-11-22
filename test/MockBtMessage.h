@@ -98,6 +98,15 @@ public:
 
 };
 
+template<typename T>
+class WrapBtMessage:public MockBtMessage {
+public:
+  SharedHandle<T> _m;
+  
+  WrapBtMessage(const SharedHandle<T>& m):_m(m) {}
+};
+
+
 } // namespace aria2
 
 #endif // _D_MOCK_BT_MESSAGE_H_

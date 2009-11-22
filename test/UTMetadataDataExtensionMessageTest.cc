@@ -5,6 +5,17 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "BtConstants.h"
+#include "PieceStorage.h"
+#include "DownloadContext.h"
+#include "BtRuntime.h"
+#include "DirectDiskAdaptor.h"
+#include "ByteArrayDiskWriter.h"
+#include "BDE.h"
+#include "DownloadContext.h"
+#include "MockPieceStorage.h"
+#include "UTMetadataRequestTracker.h"
+#include "bittorrent_helper.h"
+#include "MessageDigestHelper.h"
 
 namespace aria2 {
 
@@ -41,7 +52,7 @@ void UTMetadataDataExtensionMessageTest::testGetBencodedData()
   msg.setTotalSize(data.size());
   msg.setData(data);
   CPPUNIT_ASSERT_EQUAL
-    (std::string("d8:msg_typei1e5:piecei1e10:total_sizei16384ee16384:")+data,
+    (std::string("d8:msg_typei1e5:piecei1e10:total_sizei16384ee")+data,
      msg.getBencodedData());
 }
 
@@ -55,6 +66,52 @@ void UTMetadataDataExtensionMessageTest::testToString()
 
 void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 {
+  SharedHandle<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
+  SharedHandle<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
+  diskAdaptor->setDiskWriter(diskWriter);
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  pieceStorage->setDiskAdaptor(diskAdaptor);
+  SharedHandle<BtRuntime> btRuntime(new BtRuntime());
+  SharedHandle<UTMetadataRequestTracker> tracker
+    (new UTMetadataRequestTracker());
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  BDE attrs = BDE::dict();
+
+  std::string piece0 = std::string(METADATA_PIECE_SIZE, '0');
+  std::string piece1 = std::string(METADATA_PIECE_SIZE, '1');
+  std::string metadata = piece0+piece1;
+
+  unsigned char infoHash[INFO_HASH_LENGTH];
+  MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
+			      MessageDigestContext::SHA1,
+			      metadata.data(), metadata.size());
+  attrs[bittorrent::INFO_HASH] = std::string(&infoHash[0], &infoHash[20]);
+
+  dctx->setAttribute(bittorrent::BITTORRENT, attrs);
+
+  UTMetadataDataExtensionMessage m(1);
+  m.setPieceStorage(pieceStorage);
+  m.setBtRuntime(btRuntime);
+  m.setUTMetadataRequestTracker(tracker);
+  m.setDownloadContext(dctx);
+
+  m.setIndex(1);
+  m.setData(piece1);
+  
+  tracker->add(1);
+  m.doReceivedAction();
+  CPPUNIT_ASSERT(!tracker->tracks(1));
+
+  pieceStorage->setDownloadFinished(true);
+  // If piece is not tracked, it is ignored.
+  m.setIndex(0);
+  m.setData(piece0);
+  m.doReceivedAction();
+  CPPUNIT_ASSERT(!btRuntime->isHalt());
+
+  tracker->add(0);
+  m.doReceivedAction();
+  CPPUNIT_ASSERT(btRuntime->isHalt());
 }
 
 } // namespace aria2

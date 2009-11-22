@@ -50,6 +50,10 @@
 #include "UTMetadataRejectExtensionMessage.h"
 #include "message.h"
 #include "bencode.h"
+#include "PieceStorage.h"
+#include "UTMetadataRequestTracker.h"
+#include "BtRuntime.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -93,16 +97,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 	throw DL_ABORT_EX(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
 				       "ut_metadata", length).str());
       }
-      std::string listdata;
-      listdata += 'l';
-      listdata += std::string(&data[1], &data[length]);
-      listdata += 'e';
-
-      const BDE& list = bencode::decode(listdata);
-      if(!list.isList() || list.empty()) {
-	throw DL_ABORT_EX("Bad ut_metadata");
-      }
-      const BDE& dict = list[0];
+      size_t end;
+      BDE dict = bencode::decode(data+1, length-1, end);
       if(!dict.isDict()) {
 	throw DL_ABORT_EX("Bad ut_metadata: dictionary not found");
       }
@@ -126,12 +122,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 	return m;
       }
       case 1: {
-	if(list.size() != 2) {
+	if(end == length) {
 	  throw DL_ABORT_EX("Bad ut_metadata data: data not found");
-	}
-	const BDE& pieceData = list[1];
-	if(!pieceData.isString()) {
-	  throw DL_ABORT_EX("Bad ut_metadata data: data is not string");
 	}
 	const BDE& totalSize = dict["total_size"];
 	if(!totalSize.isInteger()) {
@@ -141,16 +133,18 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 	  (new UTMetadataDataExtensionMessage(extensionMessageID));
 	m->setIndex(index.i());
 	m->setTotalSize(totalSize.i());
-	m->setData(pieceData.s());
-	// set tracker
-	// set piecestorage
+	m->setData(std::string(&data[1+end], &data[length]));
+	m->setUTMetadataRequestTracker(_tracker);
+	m->setPieceStorage(_dctx->getOwnerRequestGroup()->getPieceStorage());
+	m->setDownloadContext(_dctx);
+	m->setBtRuntime(_btRuntime);
 	return m;
       }
       case 2: {
 	SharedHandle<UTMetadataRejectExtensionMessage> m
 	  (new UTMetadataRejectExtensionMessage(extensionMessageID));
 	m->setIndex(index.i());
-	// set tracker if disconnecing peer on receive.
+	// No need to inject tracker because peer will be disconnected.
 	return m;
       }
       default:

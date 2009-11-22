@@ -1,5 +1,31 @@
 2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed ut_metadata data handling. Implemented
+	UTMetadataDataExtensionMessage::doReceivedAction().  Initialize
+	PeerStorage in HandshakeExtensionMessage::doReceivedAction() when
+	metadata_size is received.
+	* src/DefaultExtensionMessageFactory.cc
+	* src/DefaultExtensionMessageFactory.h
+	* src/HandshakeExtensionMessage.cc
+	* src/HandshakeExtensionMessage.h
+	* src/UTMetadataDataExtensionMessage.cc
+	* src/UTMetadataDataExtensionMessage.h
+	* src/UTMetadataRequestExtensionMessage.cc
+	* src/UTMetadataRequestFactory.cc
+	* src/UTMetadataRequestFactory.h
+	* src/UTMetadataRequestTracker.cc
+	* src/UTMetadataRequestTracker.h
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* test/MockBtMessage.h
+	* test/UTMetadataDataExtensionMessageTest.cc
+	* test/UTMetadataRequestExtensionMessageTest.cc
+	* test/UTMetadataRequestFactoryTest.cc
+	* test/UTMetadataRequestTrackerTest.cc
+	* test/extension_message_test_helper.h
+
+2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Drop connection if ut_metadata reject message is received.
 	* src/UTMetadataRejectExtensionMessage.cc
 
