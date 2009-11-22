@@ -53,6 +53,10 @@ public:
   // metainfo file, otherwise returns false.
   bool guessTorrentFile(const std::string& uri) const;
 
+  // Returns true if ProtocolDetector thinks uri is BitTorrent Magnet link.
+  // magnet:?xt=urn:btih:<info-hash>...
+  bool guessTorrentMagnet(const std::string& uri) const;
+
   // Returns true if ProtocolDetector thinks uri is a path of Metalink XML
   // file, otherwise return false.
   bool guessMetalinkFile(const std::string& uri) const;

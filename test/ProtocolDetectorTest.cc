@@ -11,6 +11,7 @@ class ProtocolDetectorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(ProtocolDetectorTest);
   CPPUNIT_TEST(testIsStreamProtocol);
   CPPUNIT_TEST(testGuessTorrentFile);
+  CPPUNIT_TEST(testGuessTorrentMagnet);
   CPPUNIT_TEST(testGuessMetalinkFile);
   CPPUNIT_TEST_SUITE_END();
 public:
@@ -20,6 +21,7 @@ public:
 
   void testIsStreamProtocol();
   void testGuessTorrentFile();
+  void testGuessTorrentMagnet();
   void testGuessMetalinkFile();
 };
 
@@ -40,6 +42,15 @@ void ProtocolDetectorTest::testGuessTorrentFile()
   CPPUNIT_ASSERT(detector.guessTorrentFile("test.torrent"));
   CPPUNIT_ASSERT(!detector.guessTorrentFile("http://localhost/test.torrent"));
   CPPUNIT_ASSERT(!detector.guessTorrentFile("test.xml"));
+}
+
+void ProtocolDetectorTest::testGuessTorrentMagnet()
+{
+  ProtocolDetector detector;
+  CPPUNIT_ASSERT(detector.guessTorrentMagnet("magnet:?xt=urn:btih:abcdef"));
+  CPPUNIT_ASSERT(detector.guessTorrentMagnet
+		 ("magnet:?dn=name&xt=urn:btih:abcdef"));
+  CPPUNIT_ASSERT(!detector.guessTorrentMagnet("magnet:?"));
 }
 
 void ProtocolDetectorTest::testGuessMetalinkFile()

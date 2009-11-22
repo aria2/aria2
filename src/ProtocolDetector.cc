@@ -33,11 +33,14 @@
  */
 /* copyright --> */
 #include "ProtocolDetector.h"
-#include "Request.h"
-#include "File.h"
+
 #include <cstring>
 #include <fstream>
 #include <iomanip>
+
+#include "Request.h"
+#include "File.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -63,6 +66,12 @@ bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
   } else {
     return false;
   }
+}
+
+bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
+{
+  return util::startsWith(uri, "magnet:?") &&
+    uri.find("xt=urn:btih:") != std::string::npos;
 }
 
 bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
