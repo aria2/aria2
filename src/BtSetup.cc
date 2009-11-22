@@ -70,11 +70,12 @@ void BtSetup::setup(std::deque<Command*>& commands,
 		    DownloadEngine* e,
 		    const Option* option)
 {
-  if(!requestGroup->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
+  if(!requestGroup->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)){
     return;
   }
   const BDE& torrentAttrs =
     requestGroup->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
+  bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
   BtObject btObject =
     e->getBtRegistry()->get(torrentAttrs[bittorrent::INFO_HASH].s());
   SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
@@ -92,12 +93,12 @@ void BtSetup::setup(std::deque<Command*>& commands,
     
     commands.push_back(c);
   }
-  {
+  if(!metadataGetMode) {
     PeerChokeCommand* c =
       new PeerChokeCommand(e->newCUID(), e);
     c->setPeerStorage(peerStorage);
     c->setBtRuntime(btRuntime);
-
+    
     commands.push_back(c);
   }
   {
@@ -111,7 +112,8 @@ void BtSetup::setup(std::deque<Command*>& commands,
     commands.push_back(c);
   }
 
-  if(torrentAttrs[bittorrent::PRIVATE].i() == 0 && DHTSetup::initialized()) {
+  if((metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0) &&
+     DHTSetup::initialized()) {
     DHTGetPeersCommand* command =
       new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
     command->setTaskQueue(DHTRegistry::_taskQueue);
@@ -120,31 +122,33 @@ void BtSetup::setup(std::deque<Command*>& commands,
     command->setPeerStorage(peerStorage);
     commands.push_back(command);
   }
-  SharedHandle<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
-  if(option->defined(PREF_SEED_TIME)) {
-    SharedHandle<SeedCriteria> cri(new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
-    unionCri->addSeedCriteria(cri);
-  }
-  {
-    double ratio = option->getAsDouble(PREF_SEED_RATIO);
-    if(ratio > 0.0) {
-      SharedHandle<ShareRatioSeedCriteria> cri
-	(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
-				    requestGroup->getDownloadContext()));
-      cri->setPieceStorage(pieceStorage);
-      cri->setPeerStorage(peerStorage);
-
+  if(!metadataGetMode) {
+    SharedHandle<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
+    if(option->defined(PREF_SEED_TIME)) {
+      SharedHandle<SeedCriteria> cri
+	(new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
       unionCri->addSeedCriteria(cri);
     }
-  }
-  if(unionCri->getSeedCriterion().size() > 0) {
-    SeedCheckCommand* c =
-      new SeedCheckCommand(e->newCUID(), requestGroup, e, unionCri);
-    c->setPieceStorage(pieceStorage);
-    c->setBtRuntime(btRuntime);
-    commands.push_back(c);
-  }
+    {
+      double ratio = option->getAsDouble(PREF_SEED_RATIO);
+      if(ratio > 0.0) {
+	SharedHandle<ShareRatioSeedCriteria> cri
+	  (new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
+				      requestGroup->getDownloadContext()));
+	cri->setPieceStorage(pieceStorage);
+	cri->setPeerStorage(peerStorage);
 
+	unionCri->addSeedCriteria(cri);
+      }
+    }
+    if(unionCri->getSeedCriterion().size() > 0) {
+      SeedCheckCommand* c =
+	new SeedCheckCommand(e->newCUID(), requestGroup, e, unionCri);
+      c->setPieceStorage(pieceStorage);
+      c->setBtRuntime(btRuntime);
+      commands.push_back(c);
+    }
+  }
   if(PeerListenCommand::getNumInstance() == 0) {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
     IntSequence seq = util::parseIntRange(option->get(PREF_LISTEN_PORT));

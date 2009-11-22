@@ -1,5 +1,11 @@
 2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't add PeerChokeCommand and SeedCheckCommand if metadata is
+	missing. If metadata is missing, always use DHT when it is ready.
+	* src/BtSetup.cc
+
+2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added parseMagnetLink(). Hex encoded info hash is supported.
 	Base32 encoded info hash is not supported yet.
 	* src/bittorrent_helper.cc
