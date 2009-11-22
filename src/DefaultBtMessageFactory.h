@@ -79,6 +79,8 @@ private:
 
   WeakHandle<DHTTaskFactory> _taskFactory;
 
+  bool _metadataGetMode;
+
   void setCommonProperty(const SharedHandle<AbstractBtMessage>& msg);
 public:
   DefaultBtMessageFactory();
@@ -164,6 +166,11 @@ public:
   void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
 
   void setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory);
+
+  void enableMetadataGetMode()
+  {
+    _metadataGetMode = true;
+  }
 };
 
 typedef SharedHandle<DefaultBtMessageFactory> DefaultBtMessageFactoryHandle;

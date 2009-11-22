@@ -1,5 +1,13 @@
 2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't inject validator into BtMessage in metadataGetMode because
+	most of the checks depends on the total length of download but it
+	is unknown. Delegate metadataGetMode to BtMessage.
+	* src/DefaultBtMessageFactory.cc
+	* src/DefaultBtMessageFactory.h
+
+2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added setEndGamePieceNum() pure virtual function to PieceStorage.
 	* src/DefaultPieceStorage.h
 	* src/PieceStorage.h
