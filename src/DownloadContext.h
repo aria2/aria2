@@ -126,6 +126,8 @@ public:
 
   void markTotalLengthIsUnknown() { _knowsTotalLength = false; }
 
+  void markTotalLengthIsKnown() { _knowsTotalLength = true; }
+
   const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
   {
     return _fileEntries;
