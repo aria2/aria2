@@ -48,6 +48,7 @@
 #include "BtAnnounce.h"
 #include "RequestGroup.h"
 #include "DownloadContext.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -81,8 +82,14 @@ bool ActivePeerConnectionCommand::execute() {
     const unsigned int maxDownloadLimit =
       _requestGroup->getMaxDownloadSpeedLimit();
     const unsigned int maxUploadLimit = _requestGroup->getMaxUploadSpeedLimit();
-    unsigned int thresholdSpeed =
-      _requestGroup->getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
+    unsigned int thresholdSpeed;
+    if(_requestGroup->getDownloadContext()->
+       getAttribute(bittorrent::BITTORRENT).containsKey(bittorrent::METADATA)) {
+      thresholdSpeed =
+	_requestGroup->getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
+    } else {
+      thresholdSpeed = 0;
+    }
     if(maxDownloadLimit > 0) {
       thresholdSpeed = std::min(maxDownloadLimit, thresholdSpeed);
     }
