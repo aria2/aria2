@@ -58,6 +58,7 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreatecompact);
   CPPUNIT_TEST(testCheckBitfield);
   CPPUNIT_TEST(testMetadata);
+  CPPUNIT_TEST(testParseMagnetLink);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -97,6 +98,7 @@ public:
   void testCreatecompact();
   void testCheckBitfield();
   void testMetadata();
+  void testParseMagnetLink();
 };
 
 
@@ -693,6 +695,24 @@ void BittorrentHelperTest::testMetadata() {
   CPPUNIT_ASSERT(metadata == attrs[bittorrent::METADATA].s());
   CPPUNIT_ASSERT_EQUAL(metadata.size(),
 		       (size_t)attrs[bittorrent::METADATA_SIZE].i());
+}
+
+void BittorrentHelperTest::testParseMagnetLink()
+{
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  std::string magnet =
+    "magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c&dn=aria2";
+  bittorrent::parseMagnetLink(magnet, dctx);
+  CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
+		       bittorrent::getInfoHashString(dctx));
+  BDE attrs = dctx->getAttribute(bittorrent::BITTORRENT);
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), attrs[bittorrent::NAME].s());
+
+  magnet = "magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c";
+  bittorrent::parseMagnetLink(magnet, dctx);
+  attrs = dctx->getAttribute(bittorrent::BITTORRENT);
+  CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
+		       attrs[bittorrent::NAME].s());
 }
 
 } // namespace bittorrent

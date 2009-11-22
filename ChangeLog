@@ -1,5 +1,13 @@
 2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added parseMagnetLink(). Hex encoded info hash is supported.
+	Base32 encoded info hash is not supported yet.
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+
+2009-11-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added FromHex()
 	* src/util.cc
 	* src/util.h

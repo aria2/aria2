@@ -119,6 +119,11 @@ void loadFromMemory(const std::string& context,
 		    const std::string& defaultName,
 		    const std::string& overrideName = "");
 
+// Parses BitTorrent magnet link.
+// magnet:?xt=urn:btih:<info-hash>&dn=<name>&tr=<tracker-url>
+void parseMagnetLink(const std::string& magnetLink,
+		     const SharedHandle<DownloadContext>& ctx);
+
 // Generates Peer ID. BitTorrent specification says Peer ID is 20-byte
 // length.  This function uses peerIdPrefix as a Peer ID and it is
 // less than 20bytes, random bytes are generated and appened to it. If
