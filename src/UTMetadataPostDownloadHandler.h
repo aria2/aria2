@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,65 +32,30 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DOWNLOAD_HANDLER_FACTORY_H_
-#define _D_DOWNLOAD_HANDLER_FACTORY_H_
+#ifndef _D_UT_METADATA_POST_DOWNLOAD_HANDLER_H_
+#define _D_UT_METADATA_POST_DOWNLOAD_HANDLER_H_
 
-#include "common.h"
-#include "SharedHandle.h"
+#include "PostDownloadHandler.h"
+#include "RequestGroupCriteria.h"
 
 namespace aria2 {
 
-class MemoryBufferPreDownloadHandler;
-#ifdef ENABLE_METALINK
-class MetalinkPostDownloadHandler;
-#endif // ENABLE_METALINK
-#ifdef ENABLE_BITTORRENT
-class BtPostDownloadHandler;
-class UTMetadataPostDownloadHandler;
-#endif // ENABLE_BITTORRENT
-
-class DownloadHandlerFactory
+class UTMetadataPostDownloadHandler:public PostDownloadHandler
 {
 private:
-#ifdef ENABLE_METALINK
-  static SharedHandle<MemoryBufferPreDownloadHandler>
-  _metalinkPreDownloadHandler;
-
-  static SharedHandle<MetalinkPostDownloadHandler>
-  _metalinkPostDownloadHandler;
-#endif // ENABLE_METALINK
-
-#ifdef ENABLE_BITTORRENT
-  static SharedHandle<MemoryBufferPreDownloadHandler>
-  _btPreDownloadHandler;
-
-  static SharedHandle<BtPostDownloadHandler>
-  _btPostDownloadHandler;
-
-  static SharedHandle<UTMetadataPostDownloadHandler>
-  _btMetadataPostDownloadHandler;
-#endif // ENABLE_BITTORRENT
+  class Criteria:public RequestGroupCriteria
+  {
+  public:
+    virtual bool match(const RequestGroup* requestGroup) const;
+  };
 public:
-#ifdef ENABLE_METALINK
-  static SharedHandle<MemoryBufferPreDownloadHandler>
-  getMetalinkPreDownloadHandler();
+  UTMetadataPostDownloadHandler();
 
-  static SharedHandle<MetalinkPostDownloadHandler>
-  getMetalinkPostDownloadHandler();
-#endif // ENABLE_METALINK
-
-#ifdef ENABLE_BITTORRENT
-  static SharedHandle<MemoryBufferPreDownloadHandler>
-  getBtPreDownloadHandler();
-
-  static SharedHandle<BtPostDownloadHandler>
-  getBtPostDownloadHandler();
-
-  static SharedHandle<UTMetadataPostDownloadHandler>
-  getUTMetadataPostDownloadHandler();
-#endif // ENABLE_BITTORRENT
+  virtual void
+  getNextRequestGroups(std::deque<SharedHandle<RequestGroup> >& groups,
+		       RequestGroup* requestGroup);
 };
 
 } // namespace aria2
 
-#endif // _D_DOWNLOAD_HANDLER_FACTORY_H_
+#endif // _D_UT_METADATA_POST_DOWNLOAD_HANDLER_H_

@@ -179,8 +179,8 @@ Metalink2RequestGroup::createRequestGroup
       //dctx->setDir(_option->get(PREF_DIR));
       dctx->getFirstFileEntry()->setUris(uris);
       torrentRg->setDownloadContext(dctx);
-      torrentRg->clearPreDowloadHandler();
-      torrentRg->clearPostDowloadHandler();
+      torrentRg->clearPreDownloadHandler();
+      torrentRg->clearPostDownloadHandler();
       // remove "metalink" from Accept Type list to avoid loop in tranparent
       // metalink
       torrentRg->removeAcceptType(RequestGroup::ACCEPT_METALINK);

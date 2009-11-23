@@ -108,6 +108,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   msg.setTCPPort(6889);
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
+  msg.setExtension("ut_metadata", 3);
   msg.setMetadataSize(1024);
   msg.setPeer(peer);
   msg.setDownloadContext(dctx);

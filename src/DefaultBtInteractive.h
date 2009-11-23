@@ -59,6 +59,8 @@ class ExtensionMessageRegistry;
 class DHTNode;
 class Logger;
 class RequestGroupMan;
+class UTMetadataRequestFactory;
+class UTMetadataRequestTracker;
 
 class FloodingStat {
 private:
@@ -114,6 +116,10 @@ private:
   SharedHandle<BtMessageFactory> messageFactory;
   SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
   SharedHandle<ExtensionMessageRegistry> _extensionMessageRegistry;
+  SharedHandle<UTMetadataRequestFactory> _utMetadataRequestFactory;
+  SharedHandle<UTMetadataRequestTracker> _utMetadataRequestTracker;
+
+  bool _metadataGetMode;
 
   WeakHandle<DHTNode> _localNode;
 
@@ -230,6 +236,23 @@ public:
   }
 
   void setRequestGroupMan(const WeakHandle<RequestGroupMan>& rgman);
+
+  void setUTMetadataRequestTracker
+  (const SharedHandle<UTMetadataRequestTracker>& tracker)
+  {
+    _utMetadataRequestTracker = tracker;
+  }
+
+  void setUTMetadataRequestFactory
+  (const SharedHandle<UTMetadataRequestFactory>& factory)
+  {
+    _utMetadataRequestFactory = factory;
+  }
+
+  void enableMetadataGetMode()
+  {
+    _metadataGetMode = true;
+  }
 };
 
 typedef SharedHandle<DefaultBtInteractive> DefaultBtInteractiveHandle;

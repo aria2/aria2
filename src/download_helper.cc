@@ -61,8 +61,11 @@
 #include "OptionHandler.h"
 #include "ByteArrayDiskWriter.h"
 #include "a2functional.h"
+#include "ByteArrayDiskWriterFactory.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
+# include "BtConstants.h"
+# include "UTMetadataPostDownloadHandler.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -224,6 +227,35 @@ createBtRequestGroup(const std::string& torrentFilePath,
   return rg;
 }
 
+static
+SharedHandle<RequestGroup>
+createBtMagnetRequestGroup(const std::string& magnetLink,
+			   const SharedHandle<Option>& option,
+			   const std::deque<std::string>& auxUris)
+{
+  SharedHandle<RequestGroup> rg(new RequestGroup(option));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(METADATA_PIECE_SIZE, 0,
+			 A2STR::NIL));
+  dctx->setDir(A2STR::NIL);
+  // We only know info hash. Total Length is unknown at this moment.
+  dctx->markTotalLengthIsUnknown();
+  rg->setFileAllocationEnabled(false);
+  rg->setPreLocalFileCheckEnabled(false);
+  bittorrent::parseMagnetLink(magnetLink, dctx);
+  dctx->getFirstFileEntry()->setPath
+    (dctx->getAttribute(bittorrent::BITTORRENT)[bittorrent::NAME].s());
+  rg->setDownloadContext(dctx);
+  dctx->setOwnerRequestGroup(rg.get());
+  rg->clearPostDownloadHandler();
+  rg->addPostDownloadHandler
+    (SharedHandle<UTMetadataPostDownloadHandler>
+     (new UTMetadataPostDownloadHandler()));
+  rg->setDiskWriterFactory
+    (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
+  return rg;
+}
+
 void createRequestGroupForBitTorrent
 (std::deque<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
@@ -299,6 +331,16 @@ public:
       try {
 	_requestGroups.push_back(createBtRequestGroup(uri, _option,
 						      std::deque<std::string>()));
+      } catch(RecoverableException& e) {
+	// error occurred while parsing torrent file.
+	// We simply ignore it.	
+	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+      }
+    } else if(_detector.guessTorrentMagnet(uri)) {
+      try {
+	SharedHandle<RequestGroup> group =
+	  createBtMagnetRequestGroup(uri, _option, std::deque<std::string>());
+	_requestGroups.push_back(group);
       } catch(RecoverableException& e) {
 	// error occurred while parsing torrent file.
 	// We simply ignore it.	

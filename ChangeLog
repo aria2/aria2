@@ -1,5 +1,28 @@
 2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added BitTorrent Magnet Link support. Base32 encoded link is not
+	supported yet.  Fixed typo in method name in RequestGroup.  In
+	metadataGetMode, don't show "Your share ratio was ..." message.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtInteractive.h
+	* src/DownloadHandlerFactory.cc
+	* src/DownloadHandlerFactory.h
+	* src/HandshakeExtensionMessage.cc
+	* src/Makefile.am
+	* src/Metalink2RequestGroup.cc
+	* src/PeerInteractionCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/UTMetadataPostDownloadHandler.h
+	* src/download_helper.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* test/Makefile.am
+	* test/UTMetadataPostDownloadHandlerTest.cc
+	* test/UTMetadataRejectExtensionMessageTest.cc
+
+2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	In metadataGetMode, don't show SEEDING.
 	* src/ConsoleStatCalc.cc
 

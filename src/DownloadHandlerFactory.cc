@@ -38,6 +38,7 @@
 #include "BtPostDownloadHandler.h"
 #include "DownloadHandlerConstants.h"
 #include "ContentTypeRequestGroupCriteria.h"
+#include "UTMetadataPostDownloadHandler.h"
 
 namespace aria2 {
 
@@ -59,6 +60,8 @@ DownloadHandlerFactory::_btPreDownloadHandler;
 BtPostDownloadHandlerHandle
 DownloadHandlerFactory::_btPostDownloadHandler;
 
+SharedHandle<UTMetadataPostDownloadHandler>
+DownloadHandlerFactory::_btMetadataPostDownloadHandler;
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
@@ -116,6 +119,15 @@ BtPostDownloadHandlerHandle DownloadHandlerFactory::getBtPostDownloadHandler()
     _btPostDownloadHandler.reset(new BtPostDownloadHandler());
   }
   return _btPostDownloadHandler;
+}
+
+SharedHandle<UTMetadataPostDownloadHandler>
+DownloadHandlerFactory::getUTMetadataPostDownloadHandler()
+{
+  if(_btMetadataPostDownloadHandler.isNull()) {
+    _btMetadataPostDownloadHandler.reset(new UTMetadataPostDownloadHandler());
+  }
+  return _btMetadataPostDownloadHandler;
 }
 
 #endif // ENABLE_BITTORRENT

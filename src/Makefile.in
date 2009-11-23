@@ -150,6 +150,9 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRejectExtensionMessage.cc UTMetadataRejectExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	UTMetadataDataExtensionMessage.cc UTMetadataDataExtensionMessage.h\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestTracker.cc UTMetadataRequestTracker.h\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestFactory.cc UTMetadataRequestFactory.h\
+@ENABLE_BITTORRENT_TRUE@	UTMetadataPostDownloadHandler.cc UTMetadataPostDownloadHandler.h\
 @ENABLE_BITTORRENT_TRUE@	DHTNode.cc DHTNode.h\
 @ENABLE_BITTORRENT_TRUE@	DHTBucket.cc DHTBucket.h\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.cc DHTRoutingTable.h\
@@ -501,7 +504,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	UTMetadataRejectExtensionMessage.cc \
 	UTMetadataRejectExtensionMessage.h \
 	UTMetadataDataExtensionMessage.cc \
-	UTMetadataDataExtensionMessage.h DHTNode.cc DHTNode.h \
+	UTMetadataDataExtensionMessage.h UTMetadataRequestTracker.cc \
+	UTMetadataRequestTracker.h UTMetadataRequestFactory.cc \
+	UTMetadataRequestFactory.h UTMetadataPostDownloadHandler.cc \
+	UTMetadataPostDownloadHandler.h DHTNode.cc DHTNode.h \
 	DHTBucket.cc DHTBucket.h DHTRoutingTable.cc DHTRoutingTable.h \
 	DHTMessageEntry.cc DHTMessageEntry.h DHTMessageDispatcher.h \
 	DHTMessageDispatcherImpl.cc DHTMessageDispatcherImpl.h \
@@ -660,6 +666,9 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestExtensionMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRejectExtensionMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTMetadataDataExtensionMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestTracker.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataRequestFactory.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTMetadataPostDownloadHandler.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTNode.$(OBJEXT) DHTBucket.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.$(OBJEXT) \
@@ -1529,8 +1538,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/URIResult.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataDataExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataExtensionMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataPostDownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRejectExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRequestExtensionMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRequestFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTMetadataRequestTracker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnknownLengthPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@

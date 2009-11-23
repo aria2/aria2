@@ -5,6 +5,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "BtConstants.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -50,6 +51,14 @@ void UTMetadataRejectExtensionMessageTest::testToString()
 
 void UTMetadataRejectExtensionMessageTest::testDoReceivedAction()
 {
+  UTMetadataRejectExtensionMessage msg(1);
+  msg.setIndex(0);
+  try {
+    msg.doReceivedAction();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlAbortEx& e) {
+    // success
+  }
 }
 
 } // namespace aria2

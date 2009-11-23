@@ -71,6 +71,8 @@
 #include "RequestGroupMan.h"
 #include "ExtensionMessageRegistry.h"
 #include "bittorrent_helper.h"
+#include "UTMetadataRequestFactory.h"
+#include "UTMetadataRequestTracker.h"
 
 namespace aria2 {
 
@@ -103,14 +105,27 @@ PeerInteractionCommand::PeerInteractionCommand
   SharedHandle<PeerStorage> peerStorage =
     btRegistry->get(torrentAttrs[bittorrent::INFO_HASH].s())._peerStorage;
 
+  bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
+
   SharedHandle<ExtensionMessageRegistry> exMsgRegistry
     (new ExtensionMessageRegistry());
+
+  SharedHandle<UTMetadataRequestFactory> utMetadataRequestFactory;
+  SharedHandle<UTMetadataRequestTracker> utMetadataRequestTracker;
+  if(metadataGetMode) {
+    utMetadataRequestFactory.reset(new UTMetadataRequestFactory());
+    utMetadataRequestTracker.reset(new UTMetadataRequestTracker());
+  }
 
   SharedHandle<DefaultExtensionMessageFactory> extensionMessageFactory
     (new DefaultExtensionMessageFactory(peer, exMsgRegistry));
   extensionMessageFactory->setPeerStorage(peerStorage);
   extensionMessageFactory->setDownloadContext
     (_requestGroup->getDownloadContext());
+  extensionMessageFactory->setUTMetadataRequestTracker
+    (utMetadataRequestTracker);
+  extensionMessageFactory->setBtRuntime(_btRuntime);
+  // PieceStorage will be set later.
 
   SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());
   factory->setCuid(cuid);
@@ -123,6 +138,9 @@ PeerInteractionCommand::PeerInteractionCommand
   factory->setRoutingTable(DHTRegistry::_routingTable);
   factory->setTaskQueue(DHTRegistry::_taskQueue);
   factory->setTaskFactory(DHTRegistry::_taskFactory);
+  if(metadataGetMode) {
+    factory->enableMetadataGetMode();
+  }
 
   PeerConnectionHandle peerConnection;
   if(passedPeerConnection.isNull()) {
@@ -174,7 +192,7 @@ PeerInteractionCommand::PeerInteractionCommand
     (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setRequestGroupMan(e->_requestGroupMan);
   btInteractive->setBtMessageFactory(factory);
-  if(torrentAttrs[bittorrent::PRIVATE].i() == 0) {
+  if(metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0) {
     if(getOption()->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
       btInteractive->setUTPexEnabled(true);
     }
@@ -184,6 +202,12 @@ PeerInteractionCommand::PeerInteractionCommand
       factory->setDHTEnabled(true);
     }
   }
+  btInteractive->setUTMetadataRequestFactory(utMetadataRequestFactory);
+  btInteractive->setUTMetadataRequestTracker(utMetadataRequestTracker);
+  if(metadataGetMode) {
+    btInteractive->enableMetadataGetMode();
+  }
+
   this->btInteractive = btInteractive;
 
   // reverse depends
@@ -193,6 +217,16 @@ PeerInteractionCommand::PeerInteractionCommand
 
   extensionMessageFactory->setBtMessageDispatcher(dispatcher);
   extensionMessageFactory->setBtMessageFactory(factory);
+
+  if(metadataGetMode) {
+    utMetadataRequestFactory->setDownloadContext
+      (_requestGroup->getDownloadContext());
+    utMetadataRequestFactory->setBtMessageDispatcher(dispatcher);
+    utMetadataRequestFactory->setBtMessageFactory(factory);
+    utMetadataRequestFactory->setPeer(peer);
+    utMetadataRequestFactory->setUTMetadataRequestTracker
+      (utMetadataRequestTracker);
+  }
 
   peer->allocateSessionResource
     (_requestGroup->getDownloadContext()->getPieceLength(),

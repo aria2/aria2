@@ -169,6 +169,7 @@ private:
   // returns downloadresultcode::UNKNOWN_ERROR.
   downloadresultcode::RESULT downloadResult() const;
 public:
+  // The copy of option is stored in RequestGroup object.
   RequestGroup(const SharedHandle<Option>& option);
 
   ~RequestGroup();
@@ -334,13 +335,13 @@ public:
 
   void addPostDownloadHandler(const SharedHandle<PostDownloadHandler>& handler);
 
-  void clearPostDowloadHandler();
+  void clearPostDownloadHandler();
 
   void preDownloadProcessing();
 
   void addPreDownloadHandler(const SharedHandle<PreDownloadHandler>& handler);
 
-  void clearPreDowloadHandler();
+  void clearPreDownloadHandler();
 
   void processCheckIntegrityEntry(std::deque<Command*>& commands,
 				  const SharedHandle<CheckIntegrityEntry>& entry,

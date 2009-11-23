@@ -351,6 +351,9 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	UTMetadataRequestExtensionMessage.h\
 	UTMetadataRejectExtensionMessage.cc UTMetadataRejectExtensionMessage.h\
 	UTMetadataDataExtensionMessage.cc UTMetadataDataExtensionMessage.h\
+	UTMetadataRequestTracker.cc UTMetadataRequestTracker.h\
+	UTMetadataRequestFactory.cc UTMetadataRequestFactory.h\
+	UTMetadataPostDownloadHandler.cc UTMetadataPostDownloadHandler.h\
 	DHTNode.cc DHTNode.h\
 	DHTBucket.cc DHTBucket.h\
 	DHTRoutingTable.cc DHTRoutingTable.h\

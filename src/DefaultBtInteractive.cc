@@ -69,6 +69,8 @@
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "bittorrent_helper.h"
+#include "UTMetadataRequestFactory.h"
+#include "UTMetadataRequestTracker.h"
 
 namespace aria2 {
 
@@ -78,6 +80,7 @@ DefaultBtInteractive::DefaultBtInteractive
   :
   _downloadContext(downloadContext),
   peer(peer),
+  _metadataGetMode(false),
   logger(LogFactory::getInstance()),
   allowedFastSetSize(10),
   keepAliveInterval(120),
@@ -146,11 +149,15 @@ void DefaultBtInteractive::doPostHandshakeProcessing() {
   if(peer->isExtendedMessagingEnabled()) {
     addHandshakeExtendedMessageToQueue();
   }
-  addBitfieldMessageToQueue();
+  if(!_metadataGetMode) {
+    addBitfieldMessageToQueue();
+  }
   if(peer->isDHTEnabled() && _dhtEnabled) {
     addPortMessageToQueue();
   }
-  addAllowedFastMessageToQueue();  
+  if(!_metadataGetMode) {
+    addAllowedFastMessageToQueue();
+  }
   sendPendingMessage();
 }
 
@@ -365,6 +372,16 @@ void DefaultBtInteractive::addRequests() {
 
 void DefaultBtInteractive::cancelAllPiece() {
   btRequestFactory->removeAllTargetPiece();
+  if(_metadataGetMode && _downloadContext->getTotalLength() > 0) {
+    std::vector<size_t> metadataRequests =
+      _utMetadataRequestTracker->getAllTrackedIndex();
+    for(std::vector<size_t>::const_iterator i = metadataRequests.begin();
+	i != metadataRequests.end(); ++i) {
+      logger->debug("Cancel metadata: piece=%lu",
+		    static_cast<unsigned long>(*i));
+      _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
+    }
+  }
 }
 
 void DefaultBtInteractive::sendPendingMessage() {
@@ -439,29 +456,58 @@ void DefaultBtInteractive::addPeerExchangeMessage()
 }
 
 void DefaultBtInteractive::doInteractionProcessing() {
-  checkActiveInteraction();
+  if(_metadataGetMode) {
+    sendKeepAlive();
+    _numReceivedMessage = receiveMessages();
+    // PieceStorage is re-initialized with metadata_size in
+    // HandshakeExtensionMessage::doReceivedAction().
+    _pieceStorage =
+      _downloadContext->getOwnerRequestGroup()->getPieceStorage();
 
-  decideChoking();
+    if(peer->getExtensionMessageID("ut_metadata") &&
+       _downloadContext->getTotalLength() > 0) {
+      size_t num = _utMetadataRequestTracker->avail();
+      if(num > 0) {
+	std::deque<SharedHandle<BtMessage> > requests;
+	_utMetadataRequestFactory->create(requests, num, _pieceStorage);
+	dispatcher->addMessageToQueue(requests);
+      }
+      if(_perSecCheckPoint.elapsed(1)) {
+	_perSecCheckPoint.reset();
+	// Drop timeout request after queuing message to give a chance
+	// to other connection to request piece.
+	std::vector<size_t> indexes =
+	  _utMetadataRequestTracker->removeTimeoutEntry();
+	for(std::vector<size_t>::const_iterator i = indexes.begin();
+	    i != indexes.end(); ++i) {
+	  _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
+	}
+      }
+    }
+  } else {
+    checkActiveInteraction();
 
-  detectMessageFlooding();
+    decideChoking();
 
-  if(_perSecCheckPoint.elapsed(1)) {
-    _perSecCheckPoint.reset();
-    dispatcher->checkRequestSlotAndDoNecessaryThing();
-  }
-  checkHave();
+    detectMessageFlooding();
 
-  sendKeepAlive();
+    if(_perSecCheckPoint.elapsed(1)) {
+      _perSecCheckPoint.reset();
+      dispatcher->checkRequestSlotAndDoNecessaryThing();
+    }
+    checkHave();
 
-  _numReceivedMessage = receiveMessages();
+    sendKeepAlive();
+
+    _numReceivedMessage = receiveMessages();
   
-  btRequestFactory->removeCompletedPiece();
+    btRequestFactory->removeCompletedPiece();
 
-  decideInterest();
-  if(!_pieceStorage->downloadFinished()) {
-    addRequests();
+    decideInterest();
+    if(!_pieceStorage->downloadFinished()) {
+      addRequests();
+    }
   }
-
   if(peer->getExtensionMessageID("ut_pex") && _utPexEnabled) {
     addPeerExchangeMessage();
   }
@@ -491,7 +537,11 @@ size_t DefaultBtInteractive::countReceivedMessageInIteration() const
 
 size_t DefaultBtInteractive::countOutstandingRequest()
 {
-  return dispatcher->countOutstandingRequest();
+  if(_metadataGetMode) {
+    return _utMetadataRequestTracker->count();
+  } else {
+    return dispatcher->countOutstandingRequest();
+  }
 }
 
 void DefaultBtInteractive::setBtRuntime
