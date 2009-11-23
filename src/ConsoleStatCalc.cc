@@ -85,6 +85,8 @@ static void printProgress
 
 #ifdef ENABLE_BITTORRENT
   if(rg->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT) &&
+     rg->getDownloadContext()->getAttribute(bittorrent::BITTORRENT)
+     .containsKey(bittorrent::METADATA) &&
      rg->downloadFinished()) {
     o << "SEEDING" << "(" << "ratio:";
     if(rg->getCompletedLength() > 0) {

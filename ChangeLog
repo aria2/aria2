@@ -1,5 +1,10 @@
 2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	In metadataGetMode, don't show SEEDING.
+	* src/ConsoleStatCalc.cc
+
+2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed ut_metadata data handling. Implemented
 	UTMetadataDataExtensionMessage::doReceivedAction().  Initialize
 	PeerStorage in HandshakeExtensionMessage::doReceivedAction() when
