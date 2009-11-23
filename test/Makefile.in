@@ -177,7 +177,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
 am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
-	SocketCoreTest.cc array_funTest.cc Base64Test.cc \
+	SocketCoreTest.cc array_funTest.cc Base64Test.cc Base32Test.cc \
 	SequenceTest.cc a2functionalTest.cc FileEntryTest.cc \
 	PieceTest.cc SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
@@ -355,10 +355,10 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_METALINK_TRUE@	MetalinkProcessorTest.$(OBJEXT)
 am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	SocketCoreTest.$(OBJEXT) array_funTest.$(OBJEXT) \
-	Base64Test.$(OBJEXT) SequenceTest.$(OBJEXT) \
-	a2functionalTest.$(OBJEXT) FileEntryTest.$(OBJEXT) \
-	PieceTest.$(OBJEXT) SegmentTest.$(OBJEXT) \
-	GrowSegmentTest.$(OBJEXT) \
+	Base64Test.$(OBJEXT) Base32Test.$(OBJEXT) \
+	SequenceTest.$(OBJEXT) a2functionalTest.$(OBJEXT) \
+	FileEntryTest.$(OBJEXT) PieceTest.$(OBJEXT) \
+	SegmentTest.$(OBJEXT) GrowSegmentTest.$(OBJEXT) \
 	SingleFileAllocationIteratorTest.$(OBJEXT) \
 	DefaultBtProgressInfoFileTest.$(OBJEXT) \
 	RequestGroupTest.$(OBJEXT) PStringBuildVisitorTest.$(OBJEXT) \
@@ -596,7 +596,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
-	array_funTest.cc Base64Test.cc SequenceTest.cc \
+	array_funTest.cc Base64Test.cc Base32Test.cc SequenceTest.cc \
 	a2functionalTest.cc FileEntryTest.cc PieceTest.cc \
 	SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
@@ -726,6 +726,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BDETest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNodeTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base32Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@

@@ -16,6 +16,7 @@
 #include "a2netcompat.h"
 #include "bencode.h"
 #include "TestUtil.h"
+#include "base32.h"
 
 namespace aria2 {
 
@@ -59,6 +60,7 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCheckBitfield);
   CPPUNIT_TEST(testMetadata);
   CPPUNIT_TEST(testParseMagnetLink);
+  CPPUNIT_TEST(testParseMagnetLink_base32);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -99,6 +101,7 @@ public:
   void testCheckBitfield();
   void testMetadata();
   void testParseMagnetLink();
+  void testParseMagnetLink_base32();
 };
 
 
@@ -713,6 +716,17 @@ void BittorrentHelperTest::testParseMagnetLink()
   attrs = dctx->getAttribute(bittorrent::BITTORRENT);
   CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
 		       attrs[bittorrent::NAME].s());
+}
+
+void BittorrentHelperTest::testParseMagnetLink_base32()
+{
+  std::string infoHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
+  std::string base32InfoHash = base32::encode(util::fromHex(infoHash));
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  std::string magnet = "magnet:?xt=urn:btih:"+base32InfoHash+"&dn=aria2";
+  bittorrent::parseMagnetLink(magnet, dctx);
+  CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
+		       bittorrent::getInfoHashString(dctx));
 }
 
 } // namespace bittorrent

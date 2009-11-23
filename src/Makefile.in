@@ -328,14 +328,15 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
-	File.h Option.cc Option.h Base64.cc Base64.h LogFactory.cc \
-	LogFactory.h TimeA2.cc TimeA2.h SharedHandle.h \
-	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h SpeedCalc.cc \
-	SpeedCalc.h PeerStat.h BitfieldMan.cc BitfieldMan.h \
-	BitfieldManFactory.cc BitfieldManFactory.h Randomizer.h \
-	SimpleRandomizer.cc SimpleRandomizer.h HttpResponse.cc \
-	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
+	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
+	base32.h LogFactory.cc LogFactory.h TimeA2.cc TimeA2.h \
+	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
+	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
+	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
+	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
+	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
+	HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
 	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
@@ -769,11 +770,12 @@ am__objects_27 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	SimpleLogger.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	DefaultDiskWriter.$(OBJEXT) DefaultDiskWriterFactory.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
-	LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) FeatureConfig.$(OBJEXT) \
-	DownloadEngineFactory.$(OBJEXT) SpeedCalc.$(OBJEXT) \
-	BitfieldMan.$(OBJEXT) BitfieldManFactory.$(OBJEXT) \
-	SimpleRandomizer.$(OBJEXT) HttpResponse.$(OBJEXT) \
-	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
+	base32.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
+	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
+	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
+	BitfieldManFactory.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
+	HttpResponse.$(OBJEXT) HttpRequest.$(OBJEXT) \
+	AbstractProxyRequestCommand.$(OBJEXT) \
 	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) AbstractAuthResolver.$(OBJEXT) \
 	DefaultAuthResolver.$(OBJEXT) NetrcAuthResolver.$(OBJEXT) \
@@ -1071,14 +1073,15 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
-	File.h Option.cc Option.h Base64.cc Base64.h LogFactory.cc \
-	LogFactory.h TimeA2.cc TimeA2.h SharedHandle.h \
-	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h SpeedCalc.cc \
-	SpeedCalc.h PeerStat.h BitfieldMan.cc BitfieldMan.h \
-	BitfieldManFactory.cc BitfieldManFactory.h Randomizer.h \
-	SimpleRandomizer.cc SimpleRandomizer.h HttpResponse.cc \
-	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
+	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
+	base32.h LogFactory.cc LogFactory.h TimeA2.cc TimeA2.h \
+	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
+	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
+	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
+	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
+	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
+	HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
 	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
@@ -1558,6 +1561,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZeroBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asctime_r.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/base32.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bencode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitfield.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bittorrent_helper.Po@am__quote@

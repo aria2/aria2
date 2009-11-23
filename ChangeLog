@@ -1,3 +1,14 @@
+2009-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added Base32 encoded BitTorrent Magnet Link support.
+	* src/Makefile.am
+	* src/base32.cc
+	* src/base32.h
+	* src/bittorrent_helper.cc
+	* test/Base32Test.cc
+	* test/BittorrentHelperTest.cc
+	* test/Makefile.am
+
 2009-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added BitTorrent Magnet Link support. Base32 encoded link is not

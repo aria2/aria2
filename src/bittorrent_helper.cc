@@ -52,6 +52,7 @@
 #include "a2netcompat.h"
 #include "BtConstants.h"
 #include "bitfield.h"
+#include "base32.h"
 
 namespace aria2 {
 
@@ -883,8 +884,11 @@ void parseMagnetLink(const std::string& magnetLink,
     }
   }
   if(infoHash.size() == 32) {
-    // Not yet implemented
-    abort();
+    std::string rawhash = base32::decode(infoHash);
+    if(rawhash.size() != 20) {
+      throw DL_ABORT_EX("Invalid info hash");
+    }
+    infoHash = rawhash;
   } else if(infoHash.size() == 40) {
     std::string rawhash = util::fromHex(infoHash);
     if(rawhash.empty()) {
