@@ -1,3 +1,16 @@
+2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that trackers in BitTorrent Magnet URI are not
+	inherited to generated RequestGroup.
+	* src/UTMetadataPostDownloadHandler.cc
+	* test/UTMetadataPostDownloadHandlerTest.cc
+
+2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Prepended "[METADATA]" before dn.
+	* src/bittorrent_helper.cc
+	* test/BittorrentHelperTest.cc
+
 2009-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten Magnet URI parser.

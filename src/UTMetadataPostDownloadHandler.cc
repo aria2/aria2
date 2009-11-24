@@ -92,7 +92,8 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
 	   newAttrs[bittorrent::INFO_HASH].s()) {
 	  continue;
 	}
-	if(!newAttrs.containsKey(bittorrent::ANNOUNCE_LIST)) {
+	assert(newAttrs[bittorrent::ANNOUNCE_LIST].isList());
+	if(newAttrs[bittorrent::ANNOUNCE_LIST].size() == 0) {
 	  newAttrs[bittorrent::ANNOUNCE_LIST] =
 	    attrs[bittorrent::ANNOUNCE_LIST];
 	}

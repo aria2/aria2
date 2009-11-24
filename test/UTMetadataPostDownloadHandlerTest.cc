@@ -73,6 +73,8 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   BDE attrs = BDE::dict();
   attrs[bittorrent::INFO_HASH] = std::string(&infoHash[0], &infoHash[20]);
   BDE announceList = BDE::list();
+  announceList << BDE::list();
+  announceList[0] << std::string("http://tracker");
   attrs[bittorrent::ANNOUNCE_LIST] = announceList;
   _dctx->setAttribute(bittorrent::BITTORRENT, attrs);
   _requestGroup->setDiskWriterFactory
@@ -93,6 +95,9 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   CPPUNIT_ASSERT_EQUAL(util::toHex(attrs[bittorrent::INFO_HASH].s()),
 		       util::toHex(newAttrs[bittorrent::INFO_HASH].s()));
   CPPUNIT_ASSERT(newAttrs.containsKey(bittorrent::ANNOUNCE_LIST));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, newAttrs[bittorrent::ANNOUNCE_LIST].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker"),
+		       newAttrs[bittorrent::ANNOUNCE_LIST][0][0].s());
   CPPUNIT_ASSERT_EQUAL(_option->get("Hello"),
 		       newRg->getOption()->get("Hello"));
 
