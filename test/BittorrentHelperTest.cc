@@ -708,7 +708,8 @@ void BittorrentHelperTest::testParseMagnet()
   BDE attrs = bittorrent::parseMagnet(magnet);
   CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
 		       util::toHex(attrs[bittorrent::INFO_HASH].s()));
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), attrs[bittorrent::NAME].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("[METADATA]aria2"),
+		       attrs[bittorrent::NAME].s());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
 		       attrs[bittorrent::ANNOUNCE_LIST][0][0].s());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"),

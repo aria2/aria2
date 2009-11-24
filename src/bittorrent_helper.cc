@@ -883,11 +883,11 @@ BDE parseMagnet(const std::string& magnet)
   if(r.containsKey("tr")) {
     announceList << r["tr"];
   }
-  std::string name;
+  std::string name = "[METADATA]";
   if(r.containsKey("dn") && r["dn"].size()) {
-    name = r["dn"][0].s();
+    name += r["dn"][0].s();
   } else {
-    name = strconcat("[METADATA]", util::toHex(infoHash));
+    name += util::toHex(infoHash);
   }
   BDE attrs = BDE::dict();
   attrs[INFO_HASH] = infoHash;
