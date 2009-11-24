@@ -1,5 +1,10 @@
 2009-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use hton64
+	* src/base32.cc
+
+2009-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added Base32 encoded BitTorrent Magnet Link support.
 	* src/Makefile.am
 	* src/base32.cc

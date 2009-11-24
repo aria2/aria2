@@ -122,7 +122,7 @@ std::string decode(const std::string& src)
     }
     buf >>= (bits%8);
     bits = bits/8*8;
-    buf = ntoh64(buf);
+    buf = hton64(buf);
     char* p = reinterpret_cast<char*>(&buf);
     ret += std::string(&p[(64-bits)/8], &p[8]);
   }
