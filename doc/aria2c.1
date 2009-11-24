@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
-.\" Generator: DocBook XSL Stylesheets v1.75.1 <http://docbook.sf.net/>
-.\"      Date: 10/27/2009
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 11/25/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "10/27/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "11/25/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -22,7 +22,7 @@
 aria2c \- The ultra fast download utility
 .SH "SYNOPSIS"
 .sp
-aria2c [\fIOPTIONS\fR] [\fIURL\fR | \fITORRENT_FILE\fR | \fIMETALINK_FILE\fR]\&...
+aria2c [\fIOPTIONS\fR] [\fIURI\fR | \fITORRENT_FILE\fR | \fIMETALINK_FILE\fR]\&...
 .SH "DESCRIPTION"
 .sp
 aria2 is a utility for downloading files\&. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink\&. aria2 can download a file from multiple sources/protocols and tries to utilize your maximum download bandwidth\&. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm\&. Using Metalink\(cqs chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent\&.
@@ -1069,9 +1069,11 @@ Print the version number, copyright and the configuration information and exit\&
 .SS "Options That Take An Optional Argument"
 .sp
 The options that have its argument surrounded by square brackets([]) take an optional argument\&. Usually omiting the argument is evaluated to \fItrue\fR\&. If you use short form of these options(such as \fI\-V\fR) and give an argument, then the option name and its argument should be concatenated(e\&.g\&. \fI\-Vfalse\fR)\&. If any spaces are inserted between the option name and the argument, the argument will be treated as URI and usually this is not what you expect\&.
-.SS "URL, TORRENT_FILE, METALINK_FILE"
+.SS "URI, TORRENT_FILE, METALINK_FILE"
 .sp
 You can specify multiple URLs in command\-line\&. Unless you specify \fB\-Z\fR option, all URLs must point to the same file or downloading will fail\&.
+.sp
+You can specify arbitrary number of BitTorrent Magnet URI\&. Please note that they are always treated as a separate download\&. Both hex encoded 40 characters Info Hash and Base32 encoded 32 characters Info Hash are supported\&. The multiple "tr" paramters are supported\&. Because BitTorrent Magnet URI is likely to contain "&" character, it is highly recommended to always quote URI with single(\') or double(") quotation\&. See http://www\&.bittorrent\&.org/beps/bep_0009\&.html for more details about BitTorrent Magnet URI\&.
 .sp
 You can also specify arbitrary number of torrent files and metalink files stored on a local drive\&. Please note that they are always treated as a separate download\&.
 .sp
@@ -2769,6 +2771,41 @@ aria2c \-\-max\-upload\-limit=40K file\&.torrent
 .br
 .sp
 To pause a download, press Ctrl\-C\&. You can resume the transfer by running aria2c with the same argument in the same directory\&.
+.sp .5v
+.RE
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBDownload using BitTorrent Magnet URI\fR
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+aria2c "magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c&dn=aria2"
+.fi
+.if n \{\
+.RE
+.\}
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+Don\(cqt forget to quote BitTorrent Magnet URI which includes "&" character with single(\') or double(") quotation\&.
 .sp .5v
 .RE
 .RE

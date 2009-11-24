@@ -1,5 +1,10 @@
 2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented about BitTorrent Magnet URI in man page.
+	* doc/aria2c.1.txt
+
+2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that trackers in BitTorrent Magnet URI are not
 	inherited to generated RequestGroup.
 	* src/UTMetadataPostDownloadHandler.cc
