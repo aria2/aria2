@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,72 +32,39 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ProtocolDetector.h"
-
-#include <cstring>
-#include <fstream>
-#include <iomanip>
-
-#include "Request.h"
-#include "File.h"
+#include "magnet.h"
 #include "util.h"
-#ifdef ENABLE_BITTORRENT
-# include "bittorrent_helper.h"
-#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
-ProtocolDetector::ProtocolDetector() {}
+namespace magnet {
 
-ProtocolDetector::~ProtocolDetector() {}
-
-bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
+BDE parse(const std::string& magnet)
 {
-  return Request().setUrl(uri);
+  BDE result;
+  if(!util::startsWith(magnet, "magnet:?")) {
+    return result;
+  }
+  std::deque<std::string> queries;
+  util::split(std::string(magnet.begin()+8, magnet.end()),
+	      std::back_inserter(queries), "&");
+  BDE dict = BDE::dict();
+  for(std::deque<std::string>::const_iterator i = queries.begin();
+      i != queries.end(); ++i) {
+    std::pair<std::string, std::string> kv;
+    util::split(kv, *i, '=');
+    if(dict.containsKey(kv.first)) {
+      dict[kv.first] << kv.second;
+    } else {
+      BDE list = BDE::list();
+      list << kv.second;
+      dict[kv.first] = list;
+    }
+  }
+  result = dict;
+  return result;
 }
 
-bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
-{
-  if(!File(uri).isFile()) {
-    return false;
-  }
-  std::ifstream in(uri.c_str(), std::ios::binary);
-  if(in) {
-    char head;
-    in >> head;
-    return head == 'd';
-  } else {
-    return false;
-  }
-}
-
-bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
-{
-#ifdef ENABLE_BITTORRENT
-  try {
-    bittorrent::parseMagnet(uri);
-    return true;
-  } catch(RecoverableException& e) {
-    return false;
-  }
-#else // !ENABLE_BITTORRENT
-  return false;
-#endif // !ENABLE_BITTORRENT
-}
-
-bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
-{
-  if(!File(uri).isFile()) {
-    return false;
-  }
-  std::ifstream in(uri.c_str(), std::ios::binary);
-  if(in) {
-    char head[6];
-    in >> std::setw(6) >> head;
-    return strcmp(head, "<?xml") == 0;
-  } else {
-    return false;
-  }
-}
+} // namespace magnet
 
 } // namespace aria2

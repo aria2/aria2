@@ -143,6 +143,7 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	UTMetadataRequestTrackerTest.cc\
 	UTMetadataRequestFactoryTest.cc\
 	UTMetadataPostDownloadHandlerTest.cc\
+	MagnetTest.cc\
 	DefaultBtMessageFactoryTest.cc\
 	DefaultExtensionMessageFactoryTest.cc\
 	DHTNodeTest.cc\

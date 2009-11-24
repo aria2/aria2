@@ -92,6 +92,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestTrackerTest.cc\
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	UTMetadataPostDownloadHandlerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	MagnetTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTNodeTest.cc\
@@ -236,7 +237,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	UTMetadataRejectExtensionMessageTest.cc \
 	UTMetadataRequestTrackerTest.cc \
 	UTMetadataRequestFactoryTest.cc \
-	UTMetadataPostDownloadHandlerTest.cc \
+	UTMetadataPostDownloadHandlerTest.cc MagnetTest.cc \
 	DefaultBtMessageFactoryTest.cc \
 	DefaultExtensionMessageFactoryTest.cc DHTNodeTest.cc \
 	DHTBucketTest.cc DHTRoutingTableTest.cc \
@@ -315,6 +316,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestTrackerTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTMetadataPostDownloadHandlerTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	MagnetTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTNodeTest.$(OBJEXT) \
@@ -814,6 +816,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidatorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LongestSequencePieceSelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshakeTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MagnetTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroupTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntryTest.Po@am__quote@

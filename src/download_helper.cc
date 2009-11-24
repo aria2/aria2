@@ -242,7 +242,7 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   dctx->markTotalLengthIsUnknown();
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
-  bittorrent::parseMagnetLink(magnetLink, dctx);
+  bittorrent::loadMagnet(magnetLink, dctx);
   dctx->getFirstFileEntry()->setPath
     (dctx->getAttribute(bittorrent::BITTORRENT)[bittorrent::NAME].s());
   rg->setDownloadContext(dctx);
@@ -327,16 +327,7 @@ public:
       _requestGroups.push_back(rg);
     }
 #ifdef ENABLE_BITTORRENT
-    else if(_detector.guessTorrentFile(uri)) {
-      try {
-	_requestGroups.push_back(createBtRequestGroup(uri, _option,
-						      std::deque<std::string>()));
-      } catch(RecoverableException& e) {
-	// error occurred while parsing torrent file.
-	// We simply ignore it.	
-	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
-      }
-    } else if(_detector.guessTorrentMagnet(uri)) {
+    else if(_detector.guessTorrentMagnet(uri)) {
       try {
 	SharedHandle<RequestGroup> group =
 	  createBtMagnetRequestGroup(uri, _option, std::deque<std::string>());
@@ -346,7 +337,16 @@ public:
 	// We simply ignore it.	
 	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
       }
-    }
+    } else if(_detector.guessTorrentFile(uri)) {
+      try {
+	_requestGroups.push_back(createBtRequestGroup(uri, _option,
+						      std::deque<std::string>()));
+      } catch(RecoverableException& e) {
+	// error occurred while parsing torrent file.
+	// We simply ignore it.	
+	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+      }
+    } 
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
     else if(_detector.guessMetalinkFile(uri)) {

@@ -119,10 +119,21 @@ void loadFromMemory(const std::string& context,
 		    const std::string& defaultName,
 		    const std::string& overrideName = "");
 
-// Parses BitTorrent magnet link.
+// Parses BitTorrent Magnet URI and returns BDE::dict() which includes
+// infoHash, name and announceList. If parsing operation failed, an
+// RecoverableException will be thrown.  infoHash and name are string
+// and announceList is a list of list of announce URI.
+//
 // magnet:?xt=urn:btih:<info-hash>&dn=<name>&tr=<tracker-url>
-void parseMagnetLink(const std::string& magnetLink,
-		     const SharedHandle<DownloadContext>& ctx);
+// <info-hash> comes in 2 flavors: 40bytes hexadecimal ascii string,
+// or 32bytes Base32 encoded string.
+BDE parseMagnet(const std::string& magnet);
+
+// Parses BitTorrent Magnet URI and set them in ctx as a
+// bittorrent::BITTORRENT attibute. If parsing operation failed, an
+// RecoverableException will be thrown.
+void loadMagnet
+(const std::string& magnet, const SharedHandle<DownloadContext>& ctx);
 
 // Generates Peer ID. BitTorrent specification says Peer ID is 20-byte
 // length.  This function uses peerIdPrefix as a Peer ID and it is

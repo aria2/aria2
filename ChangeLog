@@ -1,5 +1,20 @@
 2009-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten Magnet URI parser.
+	* src/Makefile.am
+	* src/ProtocolDetector.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/download_helper.cc
+	* src/magnet.cc
+	* src/magnet.h
+	* test/BittorrentHelperTest.cc
+	* test/MagnetTest.cc
+	* test/Makefile.am
+	* test/ProtocolDetectorTest.cc
+
+2009-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use hton64
 	* src/base32.cc
 

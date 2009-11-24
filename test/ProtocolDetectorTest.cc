@@ -47,9 +47,9 @@ void ProtocolDetectorTest::testGuessTorrentFile()
 void ProtocolDetectorTest::testGuessTorrentMagnet()
 {
   ProtocolDetector detector;
-  CPPUNIT_ASSERT(detector.guessTorrentMagnet("magnet:?xt=urn:btih:abcdef"));
-  CPPUNIT_ASSERT(detector.guessTorrentMagnet
-		 ("magnet:?dn=name&xt=urn:btih:abcdef"));
+  CPPUNIT_ASSERT
+    (detector.guessTorrentMagnet
+     ("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c"));
   CPPUNIT_ASSERT(!detector.guessTorrentMagnet("magnet:?"));
 }
 

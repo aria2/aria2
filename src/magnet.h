@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2009 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,72 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ProtocolDetector.h"
+#ifndef _D_MAGNET_H_
+#define _D_MAGNET_H_
 
-#include <cstring>
-#include <fstream>
-#include <iomanip>
-
-#include "Request.h"
-#include "File.h"
-#include "util.h"
-#ifdef ENABLE_BITTORRENT
-# include "bittorrent_helper.h"
-#endif // ENABLE_BITTORRENT
+#include "common.h"
+#include "BDE.h"
 
 namespace aria2 {
 
-ProtocolDetector::ProtocolDetector() {}
+namespace magnet {
 
-ProtocolDetector::~ProtocolDetector() {}
+// Parses Magnet URI magnet and stores parameters in BDE::dict().
+// Because same parameter name can appear more than once, the value
+// associated with a key is BDE::list(). A parameter value is stored
+// in a list. If parsing operation failed, BDE::none is returned.
+BDE parse(const std::string& magnet);
 
-bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
-{
-  return Request().setUrl(uri);
-}
-
-bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
-{
-  if(!File(uri).isFile()) {
-    return false;
-  }
-  std::ifstream in(uri.c_str(), std::ios::binary);
-  if(in) {
-    char head;
-    in >> head;
-    return head == 'd';
-  } else {
-    return false;
-  }
-}
-
-bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
-{
-#ifdef ENABLE_BITTORRENT
-  try {
-    bittorrent::parseMagnet(uri);
-    return true;
-  } catch(RecoverableException& e) {
-    return false;
-  }
-#else // !ENABLE_BITTORRENT
-  return false;
-#endif // !ENABLE_BITTORRENT
-}
-
-bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
-{
-  if(!File(uri).isFile()) {
-    return false;
-  }
-  std::ifstream in(uri.c_str(), std::ios::binary);
-  if(in) {
-    char head[6];
-    in >> std::setw(6) >> head;
-    return strcmp(head, "<?xml") == 0;
-  } else {
-    return false;
-  }
-}
+} // namespace magnet
 
 } // namespace aria2
+
+
+#endif // _D_MAGNET_H_

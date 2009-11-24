@@ -53,6 +53,7 @@
 #include "BtConstants.h"
 #include "bitfield.h"
 #include "base32.h"
+#include "magnet.h"
 
 namespace aria2 {
 
@@ -848,64 +849,58 @@ void generateRandomKey(unsigned char* key)
   MessageDigestHelper::digest(key, 20, MessageDigestContext::SHA1, bytes, sizeof(bytes));
 }
 
-void parseMagnetLink(const std::string& magnetLink,
-		     const SharedHandle<DownloadContext>& dctx)
+BDE parseMagnet(const std::string& magnet)
 {
-  // magnet:?xt=urn:btih:<info-hash>&dn=<name>&tr=<tracker-url>
-  // <info-hash> comes in 2 flavors: 40bytes hexadecimal ascii info hash,
-  // or 32bytes Base32 encoded info hash.
-  if(!util::startsWith(magnetLink, "magnet:?")) {
-    throw DL_ABORT_EX("Invalid magnet link.");
+  BDE result;
+  BDE r = magnet::parse(magnet);
+  if(r.isNone()) {
+    throw DL_ABORT_EX("Bad BitTorrent Magnet URI.");
   }
-  std::deque<std::string> queries;
-  util::split(std::string(magnetLink.begin()+8, magnetLink.end()),
-	      std::back_inserter(queries), "&");
-  std::string infoHash;
-  std::string name;
-  BDE announceList = BDE::list();
-  announceList << BDE::list();
-  for(std::deque<std::string>::const_iterator i = queries.begin();
-      i != queries.end(); ++i) {
-    std::pair<std::string, std::string> kv;
-    util::split(kv, *i, '=');
-    if(kv.first == "xt") {
-      if(!util::startsWith(kv.second, "urn:btih:")) {
-	throw DL_ABORT_EX("Bad BitTorrent Magnet Link.");
-      }
-      if(infoHash.empty()) {
-	infoHash = kv.second.substr(9);
-      } else {
-	throw DL_ABORT_EX("More than 1 info hash in magnet link.");
-      }
-    } else if(kv.first == "dn") {
-      name = kv.second;
-    } else if(kv.first == "tr") {
-      announceList[0] << kv.second;
-    }
+  if(!r.containsKey("xt")) {
+    throw DL_ABORT_EX("Missing xt parameter in Magnet URI.");
   }
+  const BDE& xts = r["xt"];
+  if(xts.size() == 0 || !util::startsWith(xts[0].s(), "urn:btih:")) {
+    throw DL_ABORT_EX("Bad BitTorrent Magnet URI.");
+  }
+  std::string infoHash = xts[0].s().substr(9);
   if(infoHash.size() == 32) {
     std::string rawhash = base32::decode(infoHash);
     if(rawhash.size() != 20) {
-      throw DL_ABORT_EX("Invalid info hash");
+      throw DL_ABORT_EX("Invalid BitTorrent Info Hash.");
     }
     infoHash = rawhash;
   } else if(infoHash.size() == 40) {
     std::string rawhash = util::fromHex(infoHash);
     if(rawhash.empty()) {
-      throw DL_ABORT_EX("Invalid info hash");
+      throw DL_ABORT_EX("Invalid BitTorrent Info Hash.");
     }
     infoHash = rawhash;
   } else {
-    throw DL_ABORT_EX("Invalid magnet link.");
+    throw DL_ABORT_EX("Invalid BitTorrent Info Hash.");
   }
-  if(name.empty()) {
-    name = util::toHex(infoHash);
+  BDE announceList = BDE::list();
+  if(r.containsKey("tr")) {
+    announceList << r["tr"];
+  }
+  std::string name;
+  if(r.containsKey("dn") && r["dn"].size()) {
+    name = r["dn"][0].s();
+  } else {
+    name = strconcat("[METADATA]", util::toHex(infoHash));
   }
   BDE attrs = BDE::dict();
   attrs[INFO_HASH] = infoHash;
   attrs[NAME] = name;
   attrs[ANNOUNCE_LIST] = announceList;
+  result = attrs;
+  return result;
+}
 
+void loadMagnet
+(const std::string& magnet, const SharedHandle<DownloadContext>& dctx)
+{
+  BDE attrs = parseMagnet(magnet);
   dctx->setAttribute(BITTORRENT, attrs);
 }
 

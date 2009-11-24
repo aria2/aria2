@@ -153,6 +153,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestTracker.cc UTMetadataRequestTracker.h\
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestFactory.cc UTMetadataRequestFactory.h\
 @ENABLE_BITTORRENT_TRUE@	UTMetadataPostDownloadHandler.cc UTMetadataPostDownloadHandler.h\
+@ENABLE_BITTORRENT_TRUE@	magnet.cc magnet.h\
 @ENABLE_BITTORRENT_TRUE@	DHTNode.cc DHTNode.h\
 @ENABLE_BITTORRENT_TRUE@	DHTBucket.cc DHTBucket.h\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.cc DHTRoutingTable.h\
@@ -508,12 +509,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	UTMetadataDataExtensionMessage.h UTMetadataRequestTracker.cc \
 	UTMetadataRequestTracker.h UTMetadataRequestFactory.cc \
 	UTMetadataRequestFactory.h UTMetadataPostDownloadHandler.cc \
-	UTMetadataPostDownloadHandler.h DHTNode.cc DHTNode.h \
-	DHTBucket.cc DHTBucket.h DHTRoutingTable.cc DHTRoutingTable.h \
-	DHTMessageEntry.cc DHTMessageEntry.h DHTMessageDispatcher.h \
-	DHTMessageDispatcherImpl.cc DHTMessageDispatcherImpl.h \
-	DHTMessageReceiver.cc DHTMessageReceiver.h \
-	DHTMessageTracker.cc DHTMessageTracker.h \
+	UTMetadataPostDownloadHandler.h magnet.cc magnet.h DHTNode.cc \
+	DHTNode.h DHTBucket.cc DHTBucket.h DHTRoutingTable.cc \
+	DHTRoutingTable.h DHTMessageEntry.cc DHTMessageEntry.h \
+	DHTMessageDispatcher.h DHTMessageDispatcherImpl.cc \
+	DHTMessageDispatcherImpl.h DHTMessageReceiver.cc \
+	DHTMessageReceiver.h DHTMessageTracker.cc DHTMessageTracker.h \
 	DHTMessageTrackerEntry.cc DHTMessageTrackerEntry.h \
 	DHTMessage.cc DHTMessage.h DHTConnection.h \
 	DHTConnectionImpl.cc DHTConnectionImpl.h DHTAbstractMessage.cc \
@@ -670,7 +671,8 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestTracker.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTMetadataRequestFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTMetadataPostDownloadHandler.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTNode.$(OBJEXT) DHTBucket.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	magnet.$(OBJEXT) DHTNode.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTBucket.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcherImpl.$(OBJEXT) \
@@ -1573,6 +1575,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inet_aton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localtime_r.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magnet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messageDigest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/option_processing.Po@am__quote@
