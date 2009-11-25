@@ -1,5 +1,11 @@
 2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-request-peer-speed-limit option to changeOption XML-RPC
+	method.
+	* src/XmlRpcMethod.cc
+
+2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented about BitTorrent Magnet URI in man page.
 	* doc/aria2c.1.txt
 
