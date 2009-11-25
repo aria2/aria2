@@ -515,12 +515,21 @@ static void addUri(const std::string& uri,
   CPPUNIT_ASSERT_EQUAL(0, m.execute(req, e.get())._code);
 }
 
+static void addTorrent
+(const std::string& torrentFile, const SharedHandle<DownloadEngine>& e)
+{
+  AddTorrentXmlRpcMethod m;
+  XmlRpcRequest req("aria2.addTorrent", BDE::list());
+  req._params << BDE(readFile(torrentFile));
+  XmlRpcResponse res = m.execute(req, e.get());
+}
+
 void XmlRpcMethodTest::testTellWaiting()
 {
   addUri("http://1/", _e);
   addUri("http://2/", _e);
   addUri("http://3/", _e);
-  addUri("http://4/", _e);
+  addTorrent("single.torrent", _e);
 
   TellWaitingXmlRpcMethod m;
   XmlRpcRequest req("aria2.tellWaiting", BDE::list());

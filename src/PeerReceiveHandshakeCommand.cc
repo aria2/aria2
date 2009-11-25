@@ -93,17 +93,24 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     // check info_hash
     std::string infoHash = std::string(&data[28], &data[28+INFO_HASH_LENGTH]);
 
-    BtObject btObject = e->getBtRegistry()->get(infoHash);
-    SharedHandle<DownloadContext> downloadContext = btObject._downloadContext;
-    SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
-    SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
-    SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
-
-    if(downloadContext.isNull() || !btRuntime->ready()) {
+    SharedHandle<DownloadContext> downloadContext =
+      e->getBtRegistry()->getDownloadContext(infoHash);
+    if(downloadContext.isNull()) {
       throw DL_ABORT_EX
 	(StringFormat("Unknown info hash %s",
 		      util::toHex(infoHash).c_str()).str());
     }
+    BtObject btObject = e->getBtRegistry()->get
+      (downloadContext->getOwnerRequestGroup()->getGID());
+    SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
+    SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
+    SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
+    if(!btRuntime->ready()) {
+      throw DL_ABORT_EX
+	(StringFormat("Unknown info hash %s",
+		      util::toHex(infoHash).c_str()).str());
+    }
+
     TransferStat tstat =
       downloadContext->getOwnerRequestGroup()->calculateStat();
     const unsigned int maxDownloadLimit =
@@ -130,10 +137,10 @@ bool PeerReceiveHandshakeCommand::executeInternal()
 	   e,
 	   btRuntime,
 	   pieceStorage,
+	   peerStorage,
 	   socket,
 	   PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
 	   _peerConnection);
-	command->setPeerStorage(peerStorage);
 	e->commands.push_back(command);
 	logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
       }

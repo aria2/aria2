@@ -1,3 +1,23 @@
+2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug which causes segmentation fault with tellWaiting
+	XML-RPC method when BitTorrent download is waiting.  The key of
+	BtRegistry is changed from info hash to GID, because it is
+	registered per RequestGroup, not info hash.
+	* src/BtRegistry.cc
+	* src/BtRegistry.h
+	* src/BtSetup.cc
+	* src/ConsoleStatCalc.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/PeerInitiateConnectionCommand.cc
+	* src/PeerInteractionCommand.cc
+	* src/PeerInteractionCommand.h
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/RequestGroup.cc
+	* src/XmlRpcMethodImpl.cc
+	* test/BtRegistryTest.cc
+	* test/XmlRpcMethodTest.cc
+
 2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated man page for changeOption XML-RPC method.

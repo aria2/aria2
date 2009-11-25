@@ -37,7 +37,6 @@
 
 #include "common.h"
 
-#include <string>
 #include <map>
 
 #include "SharedHandle.h"
@@ -87,19 +86,22 @@ struct BtObject {
 
 class BtRegistry {
 private:
-  std::map<std::string, BtObject> _pool;
+  std::map<int32_t, BtObject> _pool;
 public:
+  SharedHandle<DownloadContext>
+  getDownloadContext(int32_t gid) const;
+
   SharedHandle<DownloadContext>
   getDownloadContext(const std::string& infoHash) const;
 
-  void put(const std::string& infoHash, const BtObject& obj);
+  void put(int32_t gid, const BtObject& obj);
 
-  BtObject get(const std::string& infoHash) const;
+  BtObject get(int32_t gid) const;
 
   template<typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<std::string, BtObject>::const_iterator i = _pool.begin();
+    for(std::map<int32_t, BtObject>::const_iterator i = _pool.begin();
 	i != _pool.end(); ++i) {
       *dest++ = (*i).second._downloadContext;
     }
@@ -108,7 +110,7 @@ public:
 
   void removeAll();
 
-  bool remove(const std::string& infoHash);
+  bool remove(int32_t gid);
 };
 
 } // namespace aria2

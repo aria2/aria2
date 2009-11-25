@@ -80,14 +80,13 @@ public:
 			 DownloadEngine* e,
 			 const SharedHandle<BtRuntime>& btRuntime,
 			 const SharedHandle<PieceStorage>& pieceStorage,
+			 const SharedHandle<PeerStorage>& peerStorage,
 			 const SharedHandle<SocketCore>& s,
 			 Seq sequence,
 			 const SharedHandle<PeerConnection>& peerConnection =
 			 SharedHandle<PeerConnection>());
 
   virtual ~PeerInteractionCommand();
-
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 };
 
 } // namespace aria2

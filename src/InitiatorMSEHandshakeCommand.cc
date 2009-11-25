@@ -152,11 +152,10 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
       }
       PeerInteractionCommand* c =
 	  new PeerInteractionCommand
-	(cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage,
+	(cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage, _peerStorage,
 	 socket,
 	 PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
 	 peerConnection);
-      c->setPeerStorage(_peerStorage);
       e->commands.push_back(c);
       return true;
     }

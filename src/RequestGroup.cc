@@ -264,7 +264,7 @@ void RequestGroup::createInitialCommand
 	(_option->getAsInt(PREF_BT_TRACKER_INTERVAL));
       btAnnounce->shuffleAnnounce();
       
-      btRegistry->put(torrentAttrs[bittorrent::INFO_HASH].s(),
+      btRegistry->put(_gid,
 		      BtObject(_downloadContext,
 			       _pieceStorage,
 			       peerStorage,
@@ -774,22 +774,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
-    SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-    const BDE& torrentAttrs =
-      _downloadContext->getAttribute(bittorrent::BITTORRENT);
-    const std::string& infoHash = torrentAttrs[bittorrent::INFO_HASH].s();
-    SharedHandle<DownloadContext> contextInReg =
-      btRegistry->getDownloadContext(infoHash);
-    // Make sure that the registered DownloadContext's GID is equal to
-    // _gid.  Even if createInitialCommand() throws exception without
-    // registering this DownloadContext, after that, this method is
-    // called. In this case, just finding DownloadContext using
-    // infoHash may detect another download's DownloadContext and
-    // deleting it from BtRegistry causes Segmentation Fault.
-    if(!contextInReg.isNull() &&
-       contextInReg->getOwnerRequestGroup()->getGID() == _gid) {
-      btRegistry->remove(infoHash);
-    }
+    e->getBtRegistry()->remove(_gid);
   }
 #endif // ENABLE_BITTORRENT
   if(!_pieceStorage.isNull()) {

@@ -40,25 +40,40 @@
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
 #include "BtProgressInfoFile.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
 SharedHandle<DownloadContext>
+BtRegistry::getDownloadContext(int32_t gid) const
+{
+  return get(gid)._downloadContext;
+}
+
+SharedHandle<DownloadContext>
 BtRegistry::getDownloadContext(const std::string& infoHash) const
 {
-  return get(infoHash)._downloadContext;
+  SharedHandle<DownloadContext> dctx;
+  for(std::map<int32_t, BtObject>::const_iterator i = _pool.begin();
+      i != _pool.end(); ++i) {
+    const BDE& attrs =
+      (*i).second._downloadContext->getAttribute(bittorrent::BITTORRENT);
+    if(attrs[bittorrent::INFO_HASH].s() == infoHash) {
+      dctx = (*i).second._downloadContext;
+      break;
+    }
+  }
+  return dctx;
 }
 
-void BtRegistry::put(const std::string& infoHash, const BtObject& obj)
+void BtRegistry::put(int32_t gid, const BtObject& obj)
 {
-  remove(infoHash);
-  std::map<std::string, BtObject>::value_type p(infoHash, obj);
-  _pool.insert(p);
+  _pool[gid] = obj;
 }
 
-BtObject BtRegistry::get(const std::string& infoHash) const
+BtObject BtRegistry::get(int32_t gid) const
 {
-  std::map<std::string, BtObject>::const_iterator i = _pool.find(infoHash);
+  std::map<int32_t, BtObject>::const_iterator i = _pool.find(gid);
   if(i == _pool.end()) {
     return BtObject();
   } else {
@@ -66,9 +81,9 @@ BtObject BtRegistry::get(const std::string& infoHash) const
   }
 }
 
-bool BtRegistry::remove(const std::string& infoHash)
+bool BtRegistry::remove(int32_t gid)
 {
-  return _pool.erase(infoHash);
+  return _pool.erase(gid);
 }
 
 void BtRegistry::removeAll() {

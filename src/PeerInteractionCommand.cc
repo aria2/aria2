@@ -45,7 +45,6 @@
 #include "Socket.h"
 #include "Option.h"
 #include "DownloadContext.h"
-#include "BtRegistry.h"
 #include "Peer.h"
 #include "BtMessage.h"
 #include "BtRuntime.h"
@@ -83,6 +82,7 @@ PeerInteractionCommand::PeerInteractionCommand
  DownloadEngine* e,
  const SharedHandle<BtRuntime>& btRuntime,
  const SharedHandle<PieceStorage>& pieceStorage,
+ const SharedHandle<PeerStorage>& peerStorage,
  const SocketHandle& s,
  Seq sequence,
  const PeerConnectionHandle& passedPeerConnection)
@@ -90,6 +90,7 @@ PeerInteractionCommand::PeerInteractionCommand
    _requestGroup(requestGroup),
    _btRuntime(btRuntime),
    _pieceStorage(pieceStorage),
+   _peerStorage(peerStorage),
    sequence(sequence)
 {
   // TODO move following bunch of processing to separate method, like init()
@@ -101,9 +102,6 @@ PeerInteractionCommand::PeerInteractionCommand
 
   const BDE& torrentAttrs =
     _requestGroup->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
-  SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-  SharedHandle<PeerStorage> peerStorage =
-    btRegistry->get(torrentAttrs[bittorrent::INFO_HASH].s())._peerStorage;
 
   bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
 
@@ -352,12 +350,6 @@ void PeerInteractionCommand::onFailure()
 bool PeerInteractionCommand::exitBeforeExecute()
 {
   return _btRuntime->isHalt();
-}
-
-void PeerInteractionCommand::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
-{
-  _peerStorage = peerStorage;
 }
 
 const SharedHandle<Option>& PeerInteractionCommand::getOption() const

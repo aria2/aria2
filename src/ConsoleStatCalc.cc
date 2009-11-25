@@ -116,10 +116,8 @@ static void printProgress
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
   if(rg->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
-    const BDE& torrentAttrs =
-      rg->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
     SharedHandle<PeerStorage> ps =
-      e->getBtRegistry()->get(torrentAttrs[bittorrent::INFO_HASH].s())._peerStorage;
+      e->getBtRegistry()->get(rg->getGID())._peerStorage;
     std::deque<SharedHandle<Peer> > peers;
     ps->getActivePeers(peers);
     o << " " << "SEED:"

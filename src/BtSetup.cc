@@ -76,8 +76,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
   const BDE& torrentAttrs =
     requestGroup->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
   bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
-  BtObject btObject =
-    e->getBtRegistry()->get(torrentAttrs[bittorrent::INFO_HASH].s());
+  BtObject btObject = e->getBtRegistry()->get(requestGroup->getGID());
   SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
   SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
   SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
