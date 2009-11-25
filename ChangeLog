@@ -1,5 +1,10 @@
 2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page for changeOption XML-RPC method.
+	* doc/aria2c.1.txt
+
+2009-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-request-peer-speed-limit option to changeOption XML-RPC
 	method.
 	* src/XmlRpcMethod.cc
