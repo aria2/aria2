@@ -464,12 +464,10 @@ BDE GetPeersXmlRpcMethod::process
       (StringFormat("No peer data is available for GID#%d", gid).str());
   }
   BDE peers = BDE::list();
-  if(group->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
-    BtObject btObject = e->getBtRegistry()->get(group->getGID());
-    if(!btObject.isNull()) {
-      assert(!btObject._peerStorage.isNull());
-      gatherPeer(peers, btObject._peerStorage);
-    }
+  BtObject btObject = e->getBtRegistry()->get(group->getGID());
+  if(!btObject.isNull()) {
+    assert(!btObject._peerStorage.isNull());
+    gatherPeer(peers, btObject._peerStorage);
   }
   return peers;
 }

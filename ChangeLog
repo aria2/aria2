@@ -1,5 +1,12 @@
 2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed redundant DownloadContext::hasAttribute(...) calls.
+	* src/ConsoleStatCalc.cc
+	* src/RequestGroup.cc
+	* src/XmlRpcMethodImpl.cc
+
+2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed the number of tracker request attempt from 5 to 2.
 	* src/TrackerWatcherCommand.cc
 

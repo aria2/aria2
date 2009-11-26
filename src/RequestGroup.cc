@@ -773,9 +773,7 @@ void RequestGroup::setForceHaltRequested(bool f, HaltReason haltReason)
 void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
-  if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
-    e->getBtRegistry()->remove(_gid);
-  }
+  e->getBtRegistry()->remove(_gid);
 #endif // ENABLE_BITTORRENT
   if(!_pieceStorage.isNull()) {
     _pieceStorage->removeAdvertisedPiece(0);
