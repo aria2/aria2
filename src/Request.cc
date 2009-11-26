@@ -311,7 +311,11 @@ void Request::setMaxPipelinedRequest(unsigned int num)
 
 const SharedHandle<PeerStat>& Request::initPeerStat()
 {
-  _peerStat.reset(new PeerStat(0, _host, _protocol));
+  // Use host and protocol in original URI, because URI selector
+  // selects URI based on original URI, not redirected one.
+  Request origReq;
+  origReq.setUrl(_url);
+  _peerStat.reset(new PeerStat(0, origReq.getHost(), origReq.getProtocol()));
   return _peerStat;
 }
 

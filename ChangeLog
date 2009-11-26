@@ -1,5 +1,11 @@
 2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use host and protocol in original URI, because URI selector
+	selects URI based on original URI, not redirected one.
+	* src/Request.cc
+
+2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug which causes segmentation fault with tellWaiting
 	XML-RPC method when BitTorrent download is waiting.  The key of
 	BtRegistry is changed from info hash to GID, because it is
