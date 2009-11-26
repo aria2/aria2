@@ -205,11 +205,10 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   // and if they all fails, then try next one.
   if(backupTrackerIsAvailable(_requestGroup->getDownloadContext())) {
     logger->debug("This is multi-tracker announce.");
-    rg->getOption()->put(PREF_MAX_TRIES, "2");
   } else {
     logger->debug("This is single-tracker announce.");
-    rg->getOption()->put(PREF_MAX_TRIES, "5");
   }
+  rg->getOption()->put(PREF_MAX_TRIES, "2");
   // TODO When dry-run mode becomes available in BitTorrent, set
   // PREF_DRY_RUN=false too.
   rg->getOption()->put(PREF_USE_HEAD, V_FALSE);

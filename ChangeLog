@@ -1,5 +1,10 @@
 2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed the number of tracker request attempt from 5 to 2.
+	* src/TrackerWatcherCommand.cc
+
+2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use host and protocol in original URI, because URI selector
 	selects URI based on original URI, not redirected one.
 	* src/Request.cc
