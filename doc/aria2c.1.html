@@ -2915,9 +2915,9 @@ is the same struct returned by <strong>aria2.tellStatus</strong> method.</p></di
 <div class="paragraph"><p><strong>aria2.changeOption</strong> <em>gid, options</em></p></div>
 <div class="paragraph"><p>This method changes options of the download denoted by <em>gid</em>
 dynamically.  <em>gid</em> is of type string.  <em>options</em> is of type struct
-and the available options are: <strong>bt-request-peer-speed-limit</strong>,
-<strong>max-download-limit</strong> and <strong>max-upload-limit</strong>.  This method returns "OK"
-for success.</p></div>
+and the available options are: <strong>bt-max-peers</strong>,
+<strong>bt-request-peer-speed-limit</strong>, <strong>max-download-limit</strong> and
+<strong>max-upload-limit</strong>.  This method returns "OK" for success.</p></div>
 <div class="paragraph"><p><strong>aria2.changeGlobalOption</strong> <em>options</em></p></div>
 <div class="paragraph"><p>This method changes global options dynamically.  <em>options</em> is of type
 struct and the available options are <strong>max-concurrent-downloads</strong>,
@@ -3415,7 +3415,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-11-25 21:44:45 JST
+Last updated 2009-11-27 22:08:57 JST
 </div>
 </div>
 </body>

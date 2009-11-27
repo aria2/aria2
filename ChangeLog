@@ -1,5 +1,10 @@
 2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page for changeOption XML-RPC method.
+	* doc/aria2c.1.txt
+
+2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-max-peers option to changeOption XML-RPC method.
 	* src/XmlRpcMethod.cc
 	* src/XmlRpcMethodImpl.cc

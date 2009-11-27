@@ -1287,9 +1287,9 @@ is the same struct returned by *aria2.tellStatus* method.
 
 This method changes options of the download denoted by 'gid'
 dynamically.  'gid' is of type string.  'options' is of type struct
-and the available options are: *bt-request-peer-speed-limit*,
-*max-download-limit* and *max-upload-limit*.  This method returns "OK"
-for success.
+and the available options are: *bt-max-peers*,
+*bt-request-peer-speed-limit*, *max-download-limit* and
+*max-upload-limit*.  This method returns "OK" for success.
 
 *aria2.changeGlobalOption* 'options'
 
