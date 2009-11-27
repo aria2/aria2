@@ -600,6 +600,14 @@ BDE ChangeOptionXmlRpcMethod::process
     if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
       group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
     }
+#ifdef ENABLE_BITTORRENT
+    BtObject btObject = e->getBtRegistry()->get(group->getGID());
+    if(!btObject.isNull()) {
+      if(option->defined(PREF_BT_MAX_PEERS)) {
+	btObject._btRuntime->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
+      }
+    }
+#endif // ENABLE_BITTORRENT
   }
   return BDE_OK;
 }

@@ -1,5 +1,12 @@
 2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-max-peers option to changeOption XML-RPC method.
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethodImpl.cc
+	* test/XmlRpcMethodTest.cc
+
+2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added test case for PREF_BT_REQUEST_PEER_SPEED_LIMIT
 	* test/XmlRpcMethodTest.cc
 

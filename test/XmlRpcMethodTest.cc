@@ -18,6 +18,14 @@
 #include "TestUtil.h"
 #include "DownloadContext.h"
 #include "FeatureConfig.h"
+#ifdef ENABLE_BITTORRENT
+# include "BtRegistry.h"
+# include "BtRuntime.h"
+# include "PieceStorage.h"
+# include "PeerStorage.h"
+# include "BtProgressInfoFile.h"
+# include "BtAnnounce.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -365,24 +373,35 @@ void XmlRpcMethodTest::testChangeOption()
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
 #ifdef ENABLE_BITTORRENT
+  opt[PREF_BT_MAX_PEERS] = BDE("100");
   opt[PREF_BT_REQUEST_PEER_SPEED_LIMIT] = BDE("300K");
   opt[PREF_MAX_UPLOAD_LIMIT] = BDE("50K");
+
+  BtObject btObject;
+  btObject._btRuntime = SharedHandle<BtRuntime>(new BtRuntime());
+  _e->getBtRegistry()->put(group->getGID(), btObject);
 #endif // ENABLE_BITTORRENT
   req._params << opt;
   XmlRpcResponse res = m.execute(req, _e.get());
+
+  SharedHandle<Option> option = group->getOption();
 
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
 		       group->getMaxDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
-		       group->getOption()->get(PREF_MAX_DOWNLOAD_LIMIT));
+		       option->get(PREF_MAX_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("307200"),
-     group->getOption()->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT));
-   CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024, group->getMaxUploadSpeedLimit());
-   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
-			group->getOption()->get(PREF_MAX_UPLOAD_LIMIT));
+  CPPUNIT_ASSERT_EQUAL(std::string("307200"),
+		       option->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("100"), option->get(PREF_BT_MAX_PEERS));
+  CPPUNIT_ASSERT_EQUAL((unsigned int)100, btObject._btRuntime->getMaxPeers());
+
+  CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
+		       group->getMaxUploadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL(std::string("51200"),
+		       option->get(PREF_MAX_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
 }
 

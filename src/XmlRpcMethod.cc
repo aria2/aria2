@@ -140,6 +140,7 @@ static void applyOption(InputIterator optNameFirst,
 const std::set<std::string>& listChangeableOptions()
 {
   static const std::string OPTIONS[] = {
+    PREF_BT_MAX_PEERS,
     PREF_BT_REQUEST_PEER_SPEED_LIMIT,
     PREF_MAX_DOWNLOAD_LIMIT,
     PREF_MAX_UPLOAD_LIMIT
