@@ -365,6 +365,7 @@ void XmlRpcMethodTest::testChangeOption()
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
 #ifdef ENABLE_BITTORRENT
+  opt[PREF_BT_REQUEST_PEER_SPEED_LIMIT] = BDE("300K");
   opt[PREF_MAX_UPLOAD_LIMIT] = BDE("50K");
 #endif // ENABLE_BITTORRENT
   req._params << opt;
@@ -376,6 +377,9 @@ void XmlRpcMethodTest::testChangeOption()
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
 		       group->getOption()->get(PREF_MAX_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("307200"),
+     group->getOption()->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT));
    CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024, group->getMaxUploadSpeedLimit());
    CPPUNIT_ASSERT_EQUAL(std::string("51200"),
 			group->getOption()->get(PREF_MAX_UPLOAD_LIMIT));

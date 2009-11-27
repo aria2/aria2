@@ -1,3 +1,8 @@
+2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added test case for PREF_BT_REQUEST_PEER_SPEED_LIMIT
+	* test/XmlRpcMethodTest.cc
+
 2009-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed redundant DownloadContext::hasAttribute(...) calls.
