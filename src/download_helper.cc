@@ -307,10 +307,13 @@ private:
   std::deque<SharedHandle<RequestGroup> >& _requestGroups;
   ProtocolDetector _detector;
   SharedHandle<Option> _option;
+  bool _ignoreLocalPath;
 public:
   AccRequestGroup(std::deque<SharedHandle<RequestGroup> >& requestGroups,
-		  const SharedHandle<Option>& option):
-    _requestGroups(requestGroups), _option(option) {}
+		  const SharedHandle<Option>& option,
+		  bool ignoreLocalPath = false):
+    _requestGroups(requestGroups), _option(option),
+    _ignoreLocalPath(ignoreLocalPath) {}
 
   void
   operator()(const std::string& uri)
@@ -337,7 +340,7 @@ public:
 	// We simply ignore it.	
 	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
       }
-    } else if(_detector.guessTorrentFile(uri)) {
+    } else if(!_ignoreLocalPath && _detector.guessTorrentFile(uri)) {
       try {
 	_requestGroups.push_back(createBtRequestGroup(uri, _option,
 						      std::deque<std::string>()));
@@ -349,7 +352,7 @@ public:
     } 
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-    else if(_detector.guessMetalinkFile(uri)) {
+    else if(!_ignoreLocalPath && _detector.guessMetalinkFile(uri)) {
       try {
 	Metalink2RequestGroup().generate(_requestGroups, uri, _option);
       } catch(RecoverableException& e) {
@@ -379,7 +382,7 @@ void createRequestGroupForUri
  const SharedHandle<Option>& option,
  const std::deque<std::string>& uris,
  bool ignoreForceSequential,
- bool ignoreNonURI)
+ bool ignoreLocalPath)
 {
   std::deque<std::string> nargs;
   if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
@@ -389,7 +392,7 @@ void createRequestGroupForUri
   }
   if(!ignoreForceSequential && option->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
     std::for_each(nargs.begin(), nargs.end(),
-		  AccRequestGroup(result, option));
+		  AccRequestGroup(result, option, ignoreLocalPath));
   } else {
     std::deque<std::string>::iterator strmProtoEnd =
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
@@ -404,11 +407,9 @@ void createRequestGroupForUri
       rg->setNumConcurrentCommand(numSplit);
       result.push_back(rg);
     }
-    if(!ignoreNonURI) {
-      // process remaining URIs(local metalink, BitTorrent files)
-      std::for_each(strmProtoEnd, nargs.end(),
-		    AccRequestGroup(result, option));
-    }
+    // process remaining URIs(local metalink, BitTorrent files)
+    std::for_each(strmProtoEnd, nargs.end(),
+		  AccRequestGroup(result, option, ignoreLocalPath));
   }
 }
 

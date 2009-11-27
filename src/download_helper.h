@@ -81,13 +81,14 @@ void createRequestGroupForUriList
 (std::deque<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option);
 
-// Create RequestGroup object using provided uris.
+// Create RequestGroup object using provided uris.  If ignoreLocalPath
+// is true, a path to torrent file abd metalink file are ignored.
 void createRequestGroupForUri
 (std::deque<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::deque<std::string>& uris,
  bool ignoreForceSequential = false,
- bool ignoreNonURI = false);
+ bool ignoreLocalPath = false);
 
 } // namespace aria2
 

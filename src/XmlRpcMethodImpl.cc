@@ -143,7 +143,7 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   std::deque<SharedHandle<RequestGroup> > result;
   createRequestGroupForUri(result, requestOption, uris,
 			   /* ignoreForceSeq = */ true,
-			   /* ignoreNonURI = */ true);
+			   /* ignoreLocalPath = */ true);
 
   if(!result.empty()) {
     return addRequestGroup(result.front(), e, posGiven, pos);

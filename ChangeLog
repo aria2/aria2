@@ -1,5 +1,12 @@
 2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Now addUri XML-RPC method accepts BitTorrent Magnet URI.
+	* src/download_helper.cc
+	* src/download_helper.h
+	* src/XmlRpcMethodImpl.cc
+
+2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated man page for changeOption XML-RPC method.
 	* doc/aria2c.1.txt
 
