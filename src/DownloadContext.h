@@ -216,7 +216,7 @@ public:
 
   void setFileFilter(IntSequence seq);
 
-  // Sets file path for spcified index. index starts from 1. The index
+  // Sets file path for specified index. index starts from 1. The index
   // is the same used in setFileFilter().  Please note that path is
   // not the actual file path. The actual file path is
   // getDir()+"/"+path.

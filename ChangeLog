@@ -1,5 +1,10 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo
+	* src/DownloadContext.h
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use createRequestGroupForBitTorrent()
 	* src/BtPostDownloadHandler.cc
 
