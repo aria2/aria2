@@ -1,5 +1,13 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed options which is only valid for URIs specified in
+	command-line.  If they are left, because op is used as a template
+	for new RequestGroup(such as created in XML-RPC command,
+	BtPostDownloadHandler etc), they causes unintentional effect.
+	* src/main.cc
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Refer to option value of PREF_OUT only in download_helper.
 	* src/FtpNegotiationCommand.cc
 	* src/HttpResponseCommand.cc
