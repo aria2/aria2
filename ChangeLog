@@ -1,5 +1,11 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added remove().
+	* src/Option.cc
+	* src/Option.h
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed options which is only valid for URIs specified in
 	command-line.  If they are left, because op is used as a template
 	for new RequestGroup(such as created in XML-RPC command,

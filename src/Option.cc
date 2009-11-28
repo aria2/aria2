@@ -99,6 +99,14 @@ double Option::getAsDouble(const std::string& name) const {
   }
 }
 
+void Option::remove(const std::string& name)
+{
+  std::map<std::string, std::string>::iterator i = table.find(name);
+  if(i != table.end()) {
+    table.erase(i);
+  }
+}
+
 void Option::clear()
 {
   table.clear();

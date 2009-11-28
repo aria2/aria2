@@ -61,6 +61,8 @@ public:
   bool getAsBool(const std::string& name) const;
   double getAsDouble(const std::string& name) const;
   
+  void remove(const std::string& name);
+
   void clear();
 };
 
