@@ -230,6 +230,11 @@ void assertID
 
 void generateRandomKey(unsigned char* key);
 
+// Converts attrs into torrent data. attrs must be a BDE::dict.  This
+// function does not guarantee the returned string is valid torrent
+// data.
+std::string metadata2Torrent(const std::string& metadata, const BDE& attrs);
+
 } // namespace bittorrent
 
 } // namespace aria2

@@ -904,6 +904,21 @@ void loadMagnet
   dctx->setAttribute(BITTORRENT, attrs);
 }
 
+std::string metadata2Torrent(const std::string& metadata, const BDE& attrs)
+{
+  std::string torrent = "d";
+  if(attrs.containsKey(bittorrent::ANNOUNCE_LIST)) {
+    const BDE& announceList = attrs[bittorrent::ANNOUNCE_LIST];
+    if(announceList.size() > 0) {
+      torrent += "13:announce-list";
+      torrent += bencode::encode(announceList);
+    }
+  }
+  torrent +=
+    strconcat("4:info", metadata, "e");
+  return torrent;
+}
+
 } // namespace bittorrent
 
 } // namespace aria2

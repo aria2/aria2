@@ -1,5 +1,17 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Accept BitTorrent Magnet URI in Metalink resource type bittorrent.
+	Rewritten UTMetadataPostDownloadHandler. To create torrent data
+	from metadata, use new metadata2Torrent() function.
+	* src/BtDependency.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+	* test/BtDependencyTest.cc
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use createRequestGroupForUri to create the download for torrent
 	file.
 	* src/Metalink2RequestGroup.cc

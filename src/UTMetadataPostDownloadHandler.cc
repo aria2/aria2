@@ -45,6 +45,7 @@
 #include "a2functional.h"
 #include "DiskAdaptor.h"
 #include "PieceStorage.h"
+#include "bencode.h"
 
 namespace aria2 {
 
@@ -72,35 +73,13 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
 {
   SharedHandle<DownloadContext> dctx = requestGroup->getDownloadContext();
   const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
-  std::string torrent =
-    strconcat("d4:info",
-	      util::toString(requestGroup->getPieceStorage()->getDiskAdaptor()),
-	      "e");
+  std::string metadata =
+    util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
+  std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);
   try {
     std::deque<SharedHandle<RequestGroup> > newRgs;
     createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
 				    std::deque<std::string>(), torrent);
-    if(attrs.containsKey(bittorrent::ANNOUNCE_LIST)) {
-      for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-	    newRgs.begin(); i != newRgs.end(); ++i) {
-	SharedHandle<DownloadContext> newDctx = (*i)->getDownloadContext();
-	if(!newDctx->hasAttribute(bittorrent::BITTORRENT)) {
-	  continue;
-	}
-	BDE& newAttrs = newDctx->getAttribute(bittorrent::BITTORRENT);
-	if(attrs[bittorrent::INFO_HASH].s() !=
-	   newAttrs[bittorrent::INFO_HASH].s()) {
-	  continue;
-	}
-	assert(newAttrs[bittorrent::ANNOUNCE_LIST].isList());
-	if(newAttrs[bittorrent::ANNOUNCE_LIST].size() == 0) {
-	  newAttrs[bittorrent::ANNOUNCE_LIST] =
-	    attrs[bittorrent::ANNOUNCE_LIST];
-	}
-	break;
-      }
-    }
-
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
   } catch(RecoverableException& e) {
     _logger->error("Failed to parse BitTorrent metadata.", e);

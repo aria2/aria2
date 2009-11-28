@@ -13,6 +13,9 @@
 #include "FileEntry.h"
 #include "PieceSelector.h"
 #include "bittorrent_helper.h"
+#include "DirectDiskAdaptor.h"
+#include "ByteArrayDiskWriter.h"
+#include "MockPieceStorage.h"
 
 namespace aria2 {
 
@@ -20,6 +23,7 @@ class BtDependencyTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtDependencyTest);
   CPPUNIT_TEST(testResolve);
+  CPPUNIT_TEST(testResolve_metadata);
   CPPUNIT_TEST(testResolve_loadError);
   CPPUNIT_TEST(testResolve_dependeeFailure);
   CPPUNIT_TEST(testResolve_dependeeInProgress);
@@ -64,6 +68,7 @@ public:
   }
 
   void testResolve();
+  void testResolve_metadata();
   void testResolve_loadError();
   void testResolve_dependeeFailure();
   void testResolve_dependeeInProgress();
@@ -91,6 +96,34 @@ void BtDependencyTest::testResolve()
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
 		       firstFileEntry->getPath());
   CPPUNIT_ASSERT_EQUAL((size_t)1, firstFileEntry->getRemainingUris().size());
+}
+
+void BtDependencyTest::testResolve_metadata()
+{
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  SharedHandle<RequestGroup> dependee =
+    createDependee(_option, "metadata", 0);
+
+  SharedHandle<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
+  SharedHandle<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
+  diskAdaptor->setDiskWriter(diskWriter);
+  diskWriter->setString
+    ("d4:name19:aria2-0.8.2.tar.bz26:lengthi384e12:piece lengthi128e"
+     "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCC"
+     "e");
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  pieceStorage->setDiskAdaptor(diskAdaptor);
+  pieceStorage->setDownloadFinished(true);
+  dependee->setPieceStorage(pieceStorage);
+  BDE attrs = BDE::dict();
+  dependee->getDownloadContext()->setAttribute(bittorrent::BITTORRENT, attrs);
+
+  BtDependency dep(dependant, dependee);
+  CPPUNIT_ASSERT(dep.resolve());
+
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
+     bittorrent::getInfoHashString(dependant->getDownloadContext()));
 }
 
 void BtDependencyTest::testResolve_loadError()

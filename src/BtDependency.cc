@@ -71,8 +71,15 @@ bool BtDependency::resolve()
 	dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = util::toString(diskAdaptor);
-      bittorrent::loadFromMemory
-	(content, context, File(dependee->getFirstFilePath()).getBasename());
+      if(dependee->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
+	const BDE& attrs =
+	  dependee->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
+	bittorrent::loadFromMemory
+	  (bittorrent::metadata2Torrent(content, attrs), context, "default");
+      } else {
+	bittorrent::loadFromMemory
+	  (content, context, File(dependee->getFirstFilePath()).getBasename());
+      }
       if(context->getFileEntries().size() !=
 	 _dependant->getDownloadContext()->getFileEntries().size()) {
 	throw DL_ABORT_EX("The number of file in torrent doesn't match to"

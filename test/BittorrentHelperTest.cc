@@ -61,6 +61,7 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMetadata);
   CPPUNIT_TEST(testParseMagnet);
   CPPUNIT_TEST(testParseMagnet_base32);
+  CPPUNIT_TEST(testMetadata2Torrent);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -102,6 +103,7 @@ public:
   void testMetadata();
   void testParseMagnet();
   void testParseMagnet_base32();
+  void testMetadata2Torrent();
 };
 
 
@@ -732,6 +734,25 @@ void BittorrentHelperTest::testParseMagnet_base32()
   CPPUNIT_ASSERT_EQUAL
     (std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
      util::toHex(attrs[bittorrent::INFO_HASH].s()));
+}
+
+void BittorrentHelperTest::testMetadata2Torrent()
+{
+  std::string metadata = "METADATA";
+  BDE attrs = BDE::dict();
+  BDE announceList = BDE::list();
+  attrs[ANNOUNCE_LIST] = announceList;
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("d4:infoMETADATAe"), metadata2Torrent(metadata, attrs));
+  announceList << BDE::list();
+  announceList[0] << std::string("http://localhost/announce");
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("d"
+		 "13:announce-list"
+		 "ll25:http://localhost/announceee"
+		 "4:infoMETADATA"
+		 "e"),
+     metadata2Torrent(metadata, attrs));
 }
 
 } // namespace bittorrent
