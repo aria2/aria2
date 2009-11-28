@@ -73,7 +73,7 @@ const unsigned char* BtExtendedMessage::getMessage() {
      * extpayload --- extpayload, nbytes
      * total: 6+extpayload.length bytes
      */
-    std::string payload = _extensionMessage->getBencodedData();
+    std::string payload = _extensionMessage->getPayload();
     _msgLength = 6+payload.size();
     _msg = new unsigned char[_msgLength];
     bittorrent::createPeerMessageString(_msg, _msgLength, 2+payload.size(), ID);

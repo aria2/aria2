@@ -45,7 +45,7 @@ UTMetadataRejectExtensionMessage::UTMetadataRejectExtensionMessage
 (uint8_t extensionMessageID):
   UTMetadataExtensionMessage(extensionMessageID) {}
 
-std::string UTMetadataRejectExtensionMessage::getBencodedData()
+std::string UTMetadataRejectExtensionMessage::getPayload()
 {
   BDE dict = BDE::dict();
   dict["msg_type"] = 2;

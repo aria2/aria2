@@ -53,7 +53,7 @@ void UTMetadataDataExtensionMessageTest::testGetBencodedData()
   msg.setData(data);
   CPPUNIT_ASSERT_EQUAL
     (std::string("d8:msg_typei1e5:piecei1e10:total_sizei16384ee")+data,
-     msg.getBencodedData());
+     msg.getPayload());
 }
 
 void UTMetadataDataExtensionMessageTest::testToString()

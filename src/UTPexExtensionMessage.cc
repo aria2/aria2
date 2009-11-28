@@ -56,7 +56,7 @@ UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
 
 UTPexExtensionMessage::~UTPexExtensionMessage() {}
 
-std::string UTPexExtensionMessage::getBencodedData()
+std::string UTPexExtensionMessage::getPayload()
 {
   std::pair<std::string, std::string> freshPeerPair =
     createCompactPeerListAndFlag(_freshPeers);

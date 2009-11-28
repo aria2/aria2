@@ -30,7 +30,7 @@ public:
 
   virtual ~MockExtensionMessage() {}
 
-  virtual std::string getBencodedData()
+  virtual std::string getPayload()
   {
     return _data;
   }

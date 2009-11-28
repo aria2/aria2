@@ -54,7 +54,7 @@ UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
 (uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID),
 			     _logger(LogFactory::getInstance()) {}
 
-std::string UTMetadataDataExtensionMessage::getBencodedData()
+std::string UTMetadataDataExtensionMessage::getPayload()
 {
   BDE dict = BDE::dict();
   dict["msg_type"] = 1;

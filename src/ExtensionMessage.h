@@ -46,7 +46,7 @@ class ExtensionMessage {
 public:
   virtual ~ExtensionMessage() {}
 
-  virtual std::string getBencodedData() = 0;
+  virtual std::string getPayload() = 0;
 
   virtual uint8_t getExtensionMessageID() = 0;
   

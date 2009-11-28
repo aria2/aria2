@@ -38,7 +38,7 @@ void UTMetadataRejectExtensionMessageTest::testGetBencodedReject()
   UTMetadataRejectExtensionMessage msg(1);
   msg.setIndex(1);
   CPPUNIT_ASSERT_EQUAL
-    (std::string("d8:msg_typei2e5:piecei1ee"), msg.getBencodedData());
+    (std::string("d8:msg_typei2e5:piecei1ee"), msg.getPayload());
 }
 
 void UTMetadataRejectExtensionMessageTest::testToString()

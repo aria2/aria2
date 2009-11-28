@@ -63,7 +63,7 @@ private:
 public:
   UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
 
-  virtual std::string getBencodedData();
+  virtual std::string getPayload();
 
   virtual std::string toString() const;
 

@@ -73,7 +73,7 @@ public:
 
   virtual ~UTPexExtensionMessage();
 
-  virtual std::string getBencodedData();
+  virtual std::string getPayload();
 
   virtual uint8_t getExtensionMessageID()
   {

@@ -86,7 +86,7 @@ void UTMetadataRequestExtensionMessageTest::testGetBencodedData()
   UTMetadataRequestExtensionMessage msg(1);
   msg.setIndex(99);
   CPPUNIT_ASSERT_EQUAL
-    (std::string("d8:msg_typei0e5:piecei99ee"), msg.getBencodedData());
+    (std::string("d8:msg_typei0e5:piecei99ee"), msg.getPayload());
 }
 
 void UTMetadataRequestExtensionMessageTest::testToString()

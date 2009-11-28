@@ -68,11 +68,11 @@ void HandshakeExtensionMessageTest::testGetBencodedData()
 		 "13:metadata_sizei1024e"
 		 "1:pi6889e"
 		 "1:v5:aria2"
-		 "e"), msg.getBencodedData());
+		 "e"), msg.getPayload());
 
   msg.setMetadataSize(0);
   CPPUNIT_ASSERT
-    (msg.getBencodedData().find("metadata_size") == std::string::npos);
+    (msg.getPayload().find("metadata_size") == std::string::npos);
 }
 
 void HandshakeExtensionMessageTest::testToString()

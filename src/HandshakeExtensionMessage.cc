@@ -57,7 +57,7 @@ HandshakeExtensionMessage::HandshakeExtensionMessage():
 
 HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
-std::string HandshakeExtensionMessage::getBencodedData()
+std::string HandshakeExtensionMessage::getPayload()
 {
   BDE dict = BDE::dict();
   if(!_clientVersion.empty()) {

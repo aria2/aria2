@@ -56,7 +56,7 @@ namespace aria2 {
 UTMetadataRequestExtensionMessage::UTMetadataRequestExtensionMessage
 (uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID) {}
 
-std::string UTMetadataRequestExtensionMessage::getBencodedData()
+std::string UTMetadataRequestExtensionMessage::getPayload()
 {
   BDE dict = BDE::dict();
   dict["msg_type"] = 0;

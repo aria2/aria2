@@ -1,5 +1,28 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed ExtensionMessage::getBencodedData() as
+	ExtensionMessage::getPayload()
+	* src/BtExtendedMessage.cc
+	* src/ExtensionMessage.h
+	* src/HandshakeExtensionMessage.cc
+	* src/HandshakeExtensionMessage.h
+	* src/UTMetadataDataExtensionMessage.cc
+	* src/UTMetadataDataExtensionMessage.h
+	* src/UTMetadataRejectExtensionMessage.cc
+	* src/UTMetadataRejectExtensionMessage.h
+	* src/UTMetadataRequestExtensionMessage.cc
+	* src/UTMetadataRequestExtensionMessage.h
+	* src/UTPexExtensionMessage.cc
+	* src/UTPexExtensionMessage.h
+	* test/HandshakeExtensionMessageTest.cc
+	* test/MockExtensionMessage.h
+	* test/UTMetadataDataExtensionMessageTest.cc
+	* test/UTMetadataRejectExtensionMessageTest.cc
+	* test/UTMetadataRequestExtensionMessageTest.cc
+	* test/UTPexExtensionMessageTest.cc
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated man page for BitTorrent Magnet URI.
 	* doc/aria2c.1.txt
 
