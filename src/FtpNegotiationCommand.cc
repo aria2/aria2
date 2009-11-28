@@ -334,7 +334,7 @@ bool FtpNegotiationCommand::sendSize() {
 bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 {
   _fileEntry->setLength(totalLength);
-  if(getOption()->get(PREF_OUT).empty()) {
+  if(_fileEntry->getPath().empty()) {
     _fileEntry->setPath
       (strconcat(getDownloadContext()->getDir(),
 		 "/", util::urldecode(req->getFile())));

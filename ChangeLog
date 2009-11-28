@@ -1,3 +1,9 @@
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Refer to option value of PREF_OUT only in download_helper.
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+
 2009-11-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Now addUri XML-RPC method accepts BitTorrent Magnet URI.

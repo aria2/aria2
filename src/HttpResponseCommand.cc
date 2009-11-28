@@ -129,9 +129,7 @@ bool HttpResponseCommand::executeInternal()
   if(_requestGroup->getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();
     _fileEntry->setLength(totalLength);
-    // We assume that in this context
-    // DownloadContext::getFileEntries().size() == 1
-    if(getOption()->get(PREF_OUT).empty()) {
+    if(_fileEntry->getPath().empty()) {
       _fileEntry->setPath
 	(strconcat(getDownloadContext()->getDir(),
 		   "/", httpResponse->determinFilename()));
