@@ -881,7 +881,13 @@ BDE parseMagnet(const std::string& magnet)
   }
   BDE announceList = BDE::list();
   if(r.containsKey("tr")) {
-    announceList << r["tr"];
+    const BDE& uris = r["tr"];
+    for(BDE::List::const_iterator i = uris.listBegin(); i != uris.listEnd();
+	++i) {
+      BDE tier = BDE::list();
+      tier << *i;
+      announceList << tier;
+    }
   }
   std::string name = "[METADATA]";
   if(r.containsKey("dn") && r["dn"].size()) {

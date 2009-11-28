@@ -1,5 +1,12 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	In Magnet URI with tr parameter, put each announce URI in separate
+	tier.
+	* src/bittorrent_helper.cc
+	* test/BittorrentHelperTest.cc
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed ExtensionMessage::getBencodedData() as
 	ExtensionMessage::getPayload()
 	* src/BtExtendedMessage.cc
