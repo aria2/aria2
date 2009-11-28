@@ -45,7 +45,7 @@
 #include "ContentTypeRequestGroupCriteria.h"
 #include "Exception.h"
 #include "DownloadContext.h"
-#include "bittorrent_helper.h"
+#include "download_helper.h"
 
 namespace aria2 {
 
@@ -66,11 +66,8 @@ void BtPostDownloadHandler::getNextRequestGroups
 (std::deque<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
-  const SharedHandle<Option>& op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Torrent file %s",
 		 requestGroup->getFirstFilePath().c_str());
-  RequestGroupHandle rg(new RequestGroup(op));
-
   std::string content;
   try {
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
@@ -80,14 +77,9 @@ void BtPostDownloadHandler::getNextRequestGroups
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
     throw;
   }
-  SharedHandle<DownloadContext> context(new DownloadContext());
-  context->setDir(requestGroup->getDownloadContext()->getDir());
-  bittorrent::loadFromMemory
-    (content, context, File(requestGroup->getFirstFilePath()).getBasename());
-  rg->setDownloadContext(context);
-  context->setOwnerRequestGroup(rg.get());
-  
-  groups.push_back(rg);
+  createRequestGroupForBitTorrent(groups, requestGroup->getOption(),
+				  std::deque<std::string>(),
+				  content);
 }
 
 } // namespace aria2
