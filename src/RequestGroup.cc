@@ -1045,4 +1045,13 @@ void RequestGroup::removeControlFile() const
   _progressInfoFile->removeFile();
 }
 
+void RequestGroup::setDownloadContext
+(const SharedHandle<DownloadContext>& downloadContext)
+{
+  _downloadContext = downloadContext;
+  if(!_downloadContext.isNull()) {
+    _downloadContext->setOwnerRequestGroup(this);
+  }
+}
+
 } // namespace aria2

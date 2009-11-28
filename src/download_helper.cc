@@ -223,7 +223,6 @@ createBtRequestGroup(const std::string& torrentFilePath,
       ((*i).first, strconcat(dctx->getDir(), "/", (*i).second));
   }
   rg->setDownloadContext(dctx);
-  dctx->setOwnerRequestGroup(rg.get());
   return rg;
 }
 
@@ -246,7 +245,6 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   dctx->getFirstFileEntry()->setPath
     (dctx->getAttribute(bittorrent::BITTORRENT)[bittorrent::NAME].s());
   rg->setDownloadContext(dctx);
-  dctx->setOwnerRequestGroup(rg.get());
   rg->clearPostDownloadHandler();
   rg->addPostDownloadHandler
     (SharedHandle<UTMetadataPostDownloadHandler>

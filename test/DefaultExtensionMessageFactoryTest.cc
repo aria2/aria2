@@ -67,7 +67,6 @@ public:
     SharedHandle<Option> option(new Option());
     _requestGroup.reset(new RequestGroup(option));
     _requestGroup->setDownloadContext(_dctx);
-    _dctx->setOwnerRequestGroup(_requestGroup.get());
 
     _factory.reset(new DefaultExtensionMessageFactory());
     _factory->setPeerStorage(_peerStorage);

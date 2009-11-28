@@ -244,10 +244,9 @@ public:
     return _downloadContext;
   }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext)
-  {
-    _downloadContext = downloadContext;
-  }
+  // This function also calls
+  // downloadContext->setOwnerRequestGroup(this).
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
   const SharedHandle<PieceStorage>& getPieceStorage() const
   {

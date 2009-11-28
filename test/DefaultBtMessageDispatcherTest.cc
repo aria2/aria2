@@ -141,7 +141,8 @@ public:
 
     _dctx.reset(new DownloadContext());
     bittorrent::load("test.torrent", _dctx);
-    _dctx->setOwnerRequestGroup(_rg.get());
+
+    _rg->setDownloadContext(_dctx);
 
     peer.reset(new Peer("192.168.0.1", 6969));
     peer->allocateSessionResource

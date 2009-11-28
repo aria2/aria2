@@ -95,7 +95,6 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   SharedHandle<Option> op(new Option());
   RequestGroup rg(op);
   rg.setDownloadContext(dctx);
-  dctx->setOwnerRequestGroup(&rg);
 
   BDE attrs = BDE::dict();
   dctx->setAttribute(bittorrent::BITTORRENT, attrs);

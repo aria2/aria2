@@ -107,7 +107,6 @@ bool BtDependency::resolve()
     }
     _logger->debug("Dependency resolved for GID#%d", _dependant->getGID());
     _dependant->setDownloadContext(context);
-    context->setOwnerRequestGroup(_dependant.get());
     return true;
   } else if(_dependee->getNumCommand() == 0) {
     // _dependee's download failed.
