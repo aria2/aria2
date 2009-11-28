@@ -97,8 +97,6 @@ void Metalink2RequestGroupTest::testGenerate()
     const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(!dctx.isNull());
-    // PREF_DIR has no effect for internal torrent file download
-    CPPUNIT_ASSERT_EQUAL(std::string("."), dctx->getDir());
   }
 #endif // ENABLE_BITTORRENT
 

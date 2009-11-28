@@ -1,5 +1,12 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use createRequestGroupForUri to create the download for torrent
+	file.
+	* src/Metalink2RequestGroup.cc
+	* test/Metalink2RequestGroupTest.cc
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo
 	* src/DownloadContext.h
 

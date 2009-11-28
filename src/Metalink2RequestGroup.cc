@@ -55,6 +55,7 @@
 #include "a2functional.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
+# include "download_helper.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"
@@ -170,28 +171,30 @@ Metalink2RequestGroup::createRequestGroup
     if(itr != entry->resources.end()) {
       std::deque<std::string> uris;
       uris.push_back((*itr)->url);
-      torrentRg.reset(new RequestGroup(option));
-      SharedHandle<DownloadContext> dctx
-	(new DownloadContext(option->getAsInt(PREF_SEGMENT_SIZE),
-			     0,
-			     A2STR::NIL));
-      // Since torrent is downloaded in memory, setting dir has no effect.
-      //dctx->setDir(_option->get(PREF_DIR));
-      dctx->getFirstFileEntry()->setUris(uris);
-      torrentRg->setDownloadContext(dctx);
-      torrentRg->clearPreDownloadHandler();
-      torrentRg->clearPostDownloadHandler();
-      // remove "metalink" from Accept Type list to avoid loop in tranparent
-      // metalink
-      torrentRg->removeAcceptType(RequestGroup::ACCEPT_METALINK);
-      // make it in-memory download
-      SharedHandle<PreDownloadHandler> preh(new MemoryBufferPreDownloadHandler());
       {
+	std::deque<SharedHandle<RequestGroup> > result;
+	createRequestGroupForUri(result, option, uris,
+				 /* ignoreForceSequential = */true,
+				 /* ignoreLocalPath = */true);
+	if(!uris.empty()) {
+	  torrentRg = result[0];
+	}
+      }
+      if(!torrentRg.isNull()) {
+	torrentRg->setNumConcurrentCommand(1);
+	torrentRg->clearPreDownloadHandler();
+	torrentRg->clearPostDownloadHandler();
+	// remove "metalink" from Accept Type list to avoid loop in
+	// tranparent metalink
+	torrentRg->removeAcceptType(RequestGroup::ACCEPT_METALINK);
+	// make it in-memory download
+	SharedHandle<PreDownloadHandler> preh
+	  (new MemoryBufferPreDownloadHandler());
 	SharedHandle<RequestGroupCriteria> cri(new TrueRequestGroupCriteria());
 	preh->setCriteria(cri);
+	torrentRg->addPreDownloadHandler(preh);
+	groups.push_back(torrentRg);
       }
-      torrentRg->addPreDownloadHandler(preh);
-      groups.push_back(torrentRg);
     }
 #endif // ENABLE_BITTORRENT
     entry->reorderResourcesByPreference();
