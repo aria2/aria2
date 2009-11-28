@@ -10,7 +10,7 @@ aria2c - The ultra fast download utility
 
 SYNOPSIS
 --------
-aria2c ['OPTIONS'] ['URI' | 'TORRENT_FILE' | 'METALINK_FILE']...
+aria2c ['OPTIONS'] ['URI' | 'MAGNET' | 'TORRENT_FILE' | 'METALINK_FILE']...
 
 DESCRIPTION
 -----------
@@ -736,8 +736,8 @@ an argument, then the option name and its argument should be concatenated(e.g.
 '-Vfalse'). If any spaces are inserted between the option name and the argument,
 the argument will be treated as URI and usually this is not what you expect.
 
-URI, TORRENT_FILE, METALINK_FILE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+URI, MAGNET, TORRENT_FILE, METALINK_FILE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can specify multiple URLs in command-line.  Unless you specify
 *-Z* option, all URLs must point to the same file or downloading will
@@ -1070,8 +1070,10 @@ Methods
 
 *aria2.addUri* 'uris[, options[, position]]'
 
-This method adds new HTTP(S)/FTP download.  'uris' is of type array
-and its element is URI which is of type string. 'options' is of type
+This method adds new HTTP(S)/FTP/BitTorrent Magnet URI with this
+method.  'uris' is of type array and its element is URI which is of
+type string.  For BitTorrent Magnet URI, 'uris' must have one element
+only and it should be BitTorrent Magnet URI.  'options' is of type
 struct and its members are a pair of option name and value. See
 *Options* below for more details.  If 'position' is given as an
 integer starting from 0, the new download is inserted at 'position' in

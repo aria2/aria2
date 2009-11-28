@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 11/27/2009
+.\"      Date: 11/28/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "11/27/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "11/28/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -22,7 +22,7 @@
 aria2c \- The ultra fast download utility
 .SH "SYNOPSIS"
 .sp
-aria2c [\fIOPTIONS\fR] [\fIURI\fR | \fITORRENT_FILE\fR | \fIMETALINK_FILE\fR]\&...
+aria2c [\fIOPTIONS\fR] [\fIURI\fR | \fIMAGNET\fR | \fITORRENT_FILE\fR | \fIMETALINK_FILE\fR]\&...
 .SH "DESCRIPTION"
 .sp
 aria2 is a utility for downloading files\&. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink\&. aria2 can download a file from multiple sources/protocols and tries to utilize your maximum download bandwidth\&. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm\&. Using Metalink\(cqs chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent\&.
@@ -1069,7 +1069,7 @@ Print the version number, copyright and the configuration information and exit\&
 .SS "Options That Take An Optional Argument"
 .sp
 The options that have its argument surrounded by square brackets([]) take an optional argument\&. Usually omiting the argument is evaluated to \fItrue\fR\&. If you use short form of these options(such as \fI\-V\fR) and give an argument, then the option name and its argument should be concatenated(e\&.g\&. \fI\-Vfalse\fR)\&. If any spaces are inserted between the option name and the argument, the argument will be treated as URI and usually this is not what you expect\&.
-.SS "URI, TORRENT_FILE, METALINK_FILE"
+.SS "URI, MAGNET, TORRENT_FILE, METALINK_FILE"
 .sp
 You can specify multiple URLs in command\-line\&. Unless you specify \fB\-Z\fR option, all URLs must point to the same file or downloading will fail\&.
 .sp
@@ -2065,7 +2065,7 @@ GID(or gid) is the key to manage each download\&. Each download has an unique GI
 .sp
 \fBaria2\&.addUri\fR \fIuris[, options[, position]]\fR
 .sp
-This method adds new HTTP(S)/FTP download\&. \fIuris\fR is of type array and its element is URI which is of type string\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
+This method adds new HTTP(S)/FTP/BitTorrent Magnet URI with this method\&. \fIuris\fR is of type array and its element is URI which is of type string\&. For BitTorrent Magnet URI, \fIuris\fR must have one element only and it should be BitTorrent Magnet URI\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
 .sp
 \fBaria2\&.addTorrent\fR \fItorrent[, uris[, options[, position]]]\fR
 .sp

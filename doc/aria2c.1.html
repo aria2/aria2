@@ -575,7 +575,7 @@ ARIA2C(1) Manual Page
 <div id="content">
 <h2 id="_synopsis">SYNOPSIS</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>aria2c [<em>OPTIONS</em>] [<em>URI</em> | <em>TORRENT_FILE</em> | <em>METALINK_FILE</em>]&#8230;</p></div>
+<div class="paragraph"><p>aria2c [<em>OPTIONS</em>] [<em>URI</em> | <em>MAGNET</em> | <em>TORRENT_FILE</em> | <em>METALINK_FILE</em>]&#8230;</p></div>
 </div>
 <h2 id="_description">DESCRIPTION</h2>
 <div class="sectionbody">
@@ -1909,7 +1909,7 @@ If you use short form of these options(such as <em>-V</em>) and give
 an argument, then the option name and its argument should be concatenated(e.g.
 <em>-Vfalse</em>). If any spaces are inserted between the option name and the argument,
 the argument will be treated as URI and usually this is not what you expect.</p></div>
-<h3 id="_uri_torrent_file_metalink_file">URI, TORRENT_FILE, METALINK_FILE</h3><div style="clear:left"></div>
+<h3 id="_uri_magnet_torrent_file_metalink_file">URI, MAGNET, TORRENT_FILE, METALINK_FILE</h3><div style="clear:left"></div>
 <div class="paragraph"><p>You can specify multiple URLs in command-line.  Unless you specify
 <strong>-Z</strong> option, all URLs must point to the same file or downloading will
 fail.</p></div>
@@ -2599,8 +2599,10 @@ GID
 </dl></div>
 <h3 id="_methods">Methods</h3><div style="clear:left"></div>
 <div class="paragraph"><p><strong>aria2.addUri</strong> <em>uris[, options[, position]]</em></p></div>
-<div class="paragraph"><p>This method adds new HTTP(S)/FTP download.  <em>uris</em> is of type array
-and its element is URI which is of type string. <em>options</em> is of type
+<div class="paragraph"><p>This method adds new HTTP(S)/FTP/BitTorrent Magnet URI with this
+method.  <em>uris</em> is of type array and its element is URI which is of
+type string.  For BitTorrent Magnet URI, <em>uris</em> must have one element
+only and it should be BitTorrent Magnet URI.  <em>options</em> is of type
 struct and its members are a pair of option name and value. See
 <strong>Options</strong> below for more details.  If <em>position</em> is given as an
 integer starting from 0, the new download is inserted at <em>position</em> in
@@ -3415,7 +3417,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-11-27 22:08:57 JST
+Last updated 2009-11-28 21:20:26 JST
 </div>
 </div>
 </body>

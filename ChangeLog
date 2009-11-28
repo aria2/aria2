@@ -1,5 +1,10 @@
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page for BitTorrent Magnet URI.
+	* doc/aria2c.1.txt
+
+2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call DownloadContext::setOwnerRequestGroup() in
 	RequestGroup::setDownloadContext().
 	* src/BtDependency.cc
