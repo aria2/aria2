@@ -138,7 +138,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BencodeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.cc\
 @ENABLE_BITTORRENT_TRUE@	PriorityPieceSelectorTest.cc\
-@ENABLE_BITTORRENT_TRUE@	MockPieceSelector.h
+@ENABLE_BITTORRENT_TRUE@	MockPieceSelector.h\
+@ENABLE_BITTORRENT_TRUE@	extension_message_test_helper.h
 
 @ENABLE_METALINK_TRUE@am__append_7 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -262,8 +263,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	MockExtensionMessage.h MockExtensionMessageFactory.h \
 	MockPieceStorage.h BencodeTest.cc BittorrentHelperTest.cc \
 	PriorityPieceSelectorTest.cc MockPieceSelector.h \
-	MetalinkerTest.cc MetalinkEntryTest.cc \
-	Metalink2RequestGroupTest.cc \
+	extension_message_test_helper.h MetalinkerTest.cc \
+	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_XML_RPC_TRUE@am__objects_1 = XmlRpcRequestParserControllerTest.$(OBJEXT) \

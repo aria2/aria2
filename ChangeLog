@@ -1,5 +1,10 @@
 2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added extension_message_test_helper.h to aria2c_SOURCES.
+	* test/Makefile.am
+
+2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --bt-prioritize-piece option in man page.
 	* doc/aria2c.1.txt
 
