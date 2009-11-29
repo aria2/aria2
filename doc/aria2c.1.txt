@@ -211,11 +211,6 @@ HTTP Specific Options
   embedded in URI, authorization header is always sent to the server
   regardless of this option.  Default: 'false'
 
-*--http-auth-scheme*=SCHEME::
-  Set HTTP authentication scheme.
-  Currently, 'basic' is the only supported scheme.
-  Default: 'basic'
-
 *--http-user*=USER::
   Set HTTP user. This affects all URLs.
 
