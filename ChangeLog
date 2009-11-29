@@ -1,5 +1,10 @@
 2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page for bt-prioritize-piece option in -i list.
+	* doc/aria2c.1.txt
+
+2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added bt-prioritize-piece option to -i list.
 	* src/download_helper.cc
 

@@ -957,6 +957,7 @@ of URIs. These optional lines must start with white space(s).
 * bt-max-open-files
 * bt-max-peers
 * bt-min-crypto-level
+* bt-prioritize-piece
 * bt-require-crypto
 * bt-request-peer-speed-limit
 * bt-seed-unverified
