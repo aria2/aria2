@@ -1,5 +1,10 @@
 2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added bt-prioritize-piece option to -i list.
+	* src/download_helper.cc
+
+2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed --http-auth-scheme option from man page.
 	* doc/aria2c.1.txt
 
