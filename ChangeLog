@@ -1,5 +1,10 @@
 2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --bt-prioritize-piece option in man page.
+	* doc/aria2c.1.txt
+
+2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added option --bt-prioritize-piece.  This option instruct aria2 to
 	try to download first and last pieces of each file first. The
 	argument can contain 2 keywords:head and tail. To include both

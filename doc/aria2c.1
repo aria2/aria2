@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 11/28/2009
+.\"      Date: 11/29/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "11/28/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "11/29/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -510,6 +510,19 @@ option\&. Default:
 .RS 4
 Set minimum level of encryption method\&. If several encryption methods are provided by a peer, aria2 chooses the lowest one which satisfies the given level\&. Default:
 \fIplain\fR
+.RE
+.PP
+\fB\-\-bt\-prioritize\-piece\fR=\fIhead\fR[=SIZE],\fItail\fR[=SIZE]
+.RS 4
+Try to download first and last pieces of each file first\&. The argument can contain 2 keywords:
+\fIhead\fR
+and
+\fItail\fR\&. To include both keywords, they must be separated by comma\&. These keywords can take one parameter, SIZE\&. For example , if
+\fIhead\fR=SIZE is specified, pieces in the range of first SIZE bytes of each file get higher priority\&.
+\fItail\fR=SIZE means the range of last SIZE bytes of each file\&. SIZE can include
+\fIK\fR
+or
+\fIM\fR(1K = 1024, 1M = 1024K)\&.
 .RE
 .PP
 \fB\-\-bt\-require\-crypto\fR=\fItrue\fR|\fIfalse\fR

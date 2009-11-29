@@ -1222,6 +1222,20 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--bt-prioritize-piece</strong>=<em>head</em>[=SIZE],<em>tail</em>[=SIZE]
+</dt>
+<dd>
+<p>
+  Try to download first and last pieces of each file first. The
+  argument can contain 2 keywords: <em>head</em> and <em>tail</em>. To include both
+  keywords, they must be separated by comma. These keywords can take
+  one parameter, SIZE. For example , if <em>head</em>=SIZE is specified,
+  pieces in the range of first SIZE bytes of each file get higher
+  priority. <em>tail</em>=SIZE means the range of last SIZE bytes of each
+  file. SIZE can include <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--bt-require-crypto</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
@@ -3417,7 +3431,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-11-28 21:20:26 JST
+Last updated 2009-11-29 15:46:53 JST
 </div>
 </div>
 </body>
