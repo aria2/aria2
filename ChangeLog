@@ -1,5 +1,11 @@
 2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Adjusted the number of peer info which get_peers reply message can
+	carry.
+	* src/DHTGetPeersReplyMessage.cc
+
+2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added extension_message_test_helper.h to aria2c_SOURCES.
 	* test/Makefile.am
 

@@ -92,18 +92,26 @@ BDE DHTGetPeersReplyMessage::getResponse()
     }
     rDict[NODES] = BDE(buffer, offset);
   } else {
-    // Limit the size of values list.  The maxmum payload size of UDP
-    // packet is limited to 65507bytes.  aria2 uses 20bytes token and
-    // 2byte transaction ID. The size of get_peers reply message
-    // without values list is 87bytes:
+    // Limit the size of values list.  The maxmum size of UDP datagram
+    // is limited to 65535 bytes. aria2 uses 20bytes token and 2byte
+    // transaction ID. The size of get_peers reply message without
+    // values list is 87bytes:
     //
     // d1:rd2:id20:aaaaaaaaaaaaaaaaaaaa5:token20:aaaaaaaaaaaaaaaaaaaa
     // 6:valueslee1:t2:bb1:y1:re
     //
-    // With this configuration, We can send (65507-87)/8 = 8177
-    // values.  Since the size of token and transaction ID may vary in
-    // implementations, we use 8100.
-    static const size_t MAX_VALUES_SIZE = 8100;
+    // Because of Path MTU Discovery, UDP packet size which need not
+    // to be fragmented is much smaller. Since Linux uses Path MTU
+    // Dicoverry by default and returning ICMP message might be
+    // filtered, we should avoid fragmentation.  MTU of pppoe is 1492
+    // max according to RFC2516.  We use maximum packet size to be
+    // 1000. Since it contains 20 bytes IP header and 8 bytes UDP
+    // header and 87 bytes reply message template described above, We
+    // can carry (1000-28-87)/8 = 110 peer info. Since DHT spec
+    // doesn't specify the maximum size of token, reply message
+    // template may get bigger than 87 bytes. So we use 100 as maximum
+    // number of peer info that a message can carry.
+    static const size_t MAX_VALUES_SIZE = 100;
     BDE valuesList = BDE::list();
     for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin();
 	i != _values.end() && valuesList.size() < MAX_VALUES_SIZE; ++i) {
