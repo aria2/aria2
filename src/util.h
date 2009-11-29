@@ -48,6 +48,7 @@
 #include <map>
 #include <iomanip>
 #include <algorithm>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "IntSequence.h"
@@ -193,6 +194,22 @@ uint64_t parseULLInt(const std::string& s, int base = 10);
 
 IntSequence parseIntRange(const std::string& src);
 
+// Parses string which specifies the range of piece index for higher
+// priority and appends those indexes into result.  The input string
+// src can contain 2 keywords "head" and "tail".  To include both
+// keywords, they must be separated by comma.  "head" means the pieces
+// where the first byte of each file sits.  "tail" means the pieces
+// where the last byte of each file sits.  These keywords can take one
+// parameter, SIZE. For example, if "head=SIZE" is specified, pieces
+// in the range of first SIZE bytes of each file get higher
+// priority. SIZE can include K or M(1K = 1024, 1M = 1024K).
+//
+// sample: head=512K,tail=512K
+void parsePrioritizePieceRange
+(std::vector<size_t>& result, const std::string& src,
+ const std::vector<SharedHandle<FileEntry> >& fileEntries,
+ size_t pieceLength);
+
 // this function temporarily put here
 std::string getContentDispositionFilename(const std::string& header);
 
@@ -293,7 +310,7 @@ parseIndexPath(const std::string& line);
 std::map<size_t, std::string> createIndexPathMap(std::istream& i);
 
 /**
- * Take a string src which is a deliminated list and add its elements
+ * Take a string src which is a delimited list and add its elements
  * into result. result is stored in out.
  */
 template<typename OutputIterator>

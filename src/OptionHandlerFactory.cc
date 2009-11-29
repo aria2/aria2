@@ -970,6 +970,13 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new PrioritizePieceOptionHandler
+				   (PREF_BT_PRIORITIZE_PIECE,
+				    TEXT_BT_PRIORITIZE_PIECE));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
 				   (PREF_BT_REQUEST_PEER_SPEED_LIMIT,
 				    TEXT_BT_REQUEST_PEER_SPEED_LIMIT,

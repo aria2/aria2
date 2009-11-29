@@ -76,6 +76,7 @@
 #include "PieceSelector.h"
 #include "a2functional.h"
 #include "SocketCore.h"
+#include "SimpleRandomizer.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -100,6 +101,7 @@
 # include "DHTPeerAnnounceStorage.h"
 # include "DHTEntryPointNameResolveCommand.h"
 # include "LongestSequencePieceSelector.h"
+# include "PriorityPieceSelector.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
@@ -440,15 +442,32 @@ void RequestGroup::initPieceStorage()
 #ifdef ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps
       (new DefaultPieceStorage(_downloadContext, _option.get()));
-    // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent integrated
-    // downloads. Currently multi-file integrated download is not supported.
-    if(_downloadContext->hasAttribute(bittorrent::BITTORRENT) &&
-       isUriSuppliedForRequsetFileEntry
-       (_downloadContext->getFileEntries().begin(),
-	_downloadContext->getFileEntries().end())) {
-      _logger->debug("Using LongestSequencePieceSelector");
-      ps->setPieceSelector
-	(SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
+    if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
+      if(isUriSuppliedForRequsetFileEntry
+	 (_downloadContext->getFileEntries().begin(),
+	  _downloadContext->getFileEntries().end())) {
+	// Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
+	// integrated downloads. Currently multi-file integrated
+	// download is not supported.
+	_logger->debug("Using LongestSequencePieceSelector");
+	ps->setPieceSelector
+	  (SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
+      }
+      if(_option->defined(PREF_BT_PRIORITIZE_PIECE)) {
+	std::vector<size_t> result;
+	util::parsePrioritizePieceRange
+	  (result, _option->get(PREF_BT_PRIORITIZE_PIECE),
+	   _downloadContext->getFileEntries(),
+	   _downloadContext->getPieceLength());
+	if(!result.empty()) {
+	  std::random_shuffle(result.begin(), result.end(),
+			      *(SimpleRandomizer::getInstance().get()));
+	  SharedHandle<PriorityPieceSelector> priSelector
+	    (new PriorityPieceSelector(ps->getPieceSelector()));
+	  priSelector->setPriorityPiece(result.begin(), result.end());
+	  ps->setPieceSelector(priSelector);
+	}
+      }
     }
 #else // !ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps

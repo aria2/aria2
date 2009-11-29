@@ -239,6 +239,12 @@ public:
   {
     _pieceSelector = pieceSelector;
   }
+
+  SharedHandle<PieceSelector> getPieceSelector() const
+  {
+    return _pieceSelector;
+  }
+    
 };
 
 typedef SharedHandle<DefaultPieceStorage> DefaultPieceStorageHandle;

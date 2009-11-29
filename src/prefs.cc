@@ -305,6 +305,8 @@ const std::string PREF_INDEX_OUT("index-out");
 const std::string PREF_BT_TRACKER_INTERVAL("bt-tracker-interval");
 // values: 1*digit
 const std::string PREF_BT_STOP_TIMEOUT("bt-stop-timeout");
+// values: head[=SIZE]|tail[=SIZE], ...
+const std::string PREF_BT_PRIORITIZE_PIECE("bt-prioritize-piece");
 
 /**
  * Metalink related preferences

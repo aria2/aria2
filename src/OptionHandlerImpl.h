@@ -55,6 +55,7 @@
 #include "a2functional.h"
 #include "message.h"
 #include "File.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -598,6 +599,32 @@ public:
   virtual std::string createPossibleValuesString() const
   {
     return "/path/to/file";
+  }
+};
+
+class PrioritizePieceOptionHandler:public NameMatchOptionHandler {
+public:
+  PrioritizePieceOptionHandler
+  (const std::string& optName,
+   const std::string& description = NO_DESCRIPTION,
+   const std::string& defaultValue = NO_DEFAULT_VALUE,
+   char shortName = 0):
+    NameMatchOptionHandler(optName, description, defaultValue,
+			   OptionHandler::REQ_ARG, shortName) {}
+
+  virtual void parseArg(Option& option, const std::string& optarg)
+  {
+    // Parse optarg against empty FileEntry list to detect syntax
+    // error.
+    std::vector<size_t> result;
+    util::parsePrioritizePieceRange
+      (result, optarg, std::vector<SharedHandle<FileEntry> >(), 1024);
+    option.put(_optName, optarg);
+  }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return "head[=SIZE],tail[=SIZE]";
   }
 };
 

@@ -567,3 +567,14 @@ _(" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is 0
 _(" --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"\
   "                              network interfaces. If false is given, listen only\n"\
   "                              on local loopback interface.")
+#define TEXT_BT_PRIORITIZE_PIECE \
+_(" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and last\n"\
+  "                              pieces of each file first. The argument can\n"\
+  "                              contain 2 keywords:head and tail. To include both\n"\
+  "                              keywords, they must be separated by comma. These\n"\
+  "                              keywords can take one parameter, SIZE. For example\n"\
+  "                              , if head=SIZE is specified, pieces in the range\n"\
+  "                              of first SIZE bytes of each file get higher\n"\
+  "                              priority. tail=SIZE means the range of last SIZE\n"\
+  "                              bytes of each file. SIZE can include K or M(1K =\n"\
+  "                              1024, 1M = 1024K).")

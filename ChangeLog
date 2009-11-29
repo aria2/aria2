@@ -1,5 +1,32 @@
 2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added option --bt-prioritize-piece.  This option instruct aria2 to
+	try to download first and last pieces of each file first. The
+	argument can contain 2 keywords:head and tail. To include both
+	keywords, they must be separated by comma. These keywords can take
+	one parameter, SIZE. For example , if head=SIZE is specified,
+	pieces in the range of first SIZE bytes of each file get higher
+	priority. tail=SIZE means the range of last SIZE bytes of each
+	file. SIZE can include K or M(1K = 1024, 1M = 1024K).
+	* src/DefaultPieceStorage.h
+	* src/Makefile.am
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/PriorityPieceSelector.cc
+	* src/PriorityPieceSelector.h
+	* src/RequestGroup.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* src/util.cc
+	* src/util.h
+	* test/Makefile.am
+	* test/MockPieceSelector.h
+	* test/PriorityPieceSelectorTest.cc
+	* test/UtilTest.cc
+
+2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo
 	* src/HttpRequest.h
 

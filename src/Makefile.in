@@ -240,7 +240,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	ExtensionMessageRegistry.h\
 @ENABLE_BITTORRENT_TRUE@	bencode.cc bencode.h\
 @ENABLE_BITTORRENT_TRUE@	bittorrent_helper.cc bittorrent_helper.h\
-@ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.cc BtStopDownloadCommand.h
+@ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.cc BtStopDownloadCommand.h\
+@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelector.cc PriorityPieceSelector.h
 
 @ENABLE_METALINK_TRUE@am__append_14 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -568,7 +569,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ZeroBtMessage.h RangeBtMessageValidator.h \
 	IndexBtMessageValidator.h ExtensionMessageRegistry.h \
 	bencode.cc bencode.h bittorrent_helper.cc bittorrent_helper.h \
-	BtStopDownloadCommand.cc BtStopDownloadCommand.h Metalinker.cc \
+	BtStopDownloadCommand.cc BtStopDownloadCommand.h \
+	PriorityPieceSelector.cc PriorityPieceSelector.h Metalinker.cc \
 	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkParserController.cc MetalinkParserController.h \
@@ -730,7 +732,8 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	ZeroBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	bencode.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	bittorrent_helper.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelector.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_14 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -1507,6 +1510,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceStatMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PiecedSegment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Platform.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PriorityPieceSelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolDetector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RangeBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RarestPieceSelector.Po@am__quote@

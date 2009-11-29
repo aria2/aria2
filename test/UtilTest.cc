@@ -57,6 +57,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateIndexPathMap);
   CPPUNIT_TEST(testGenerateRandomData);
   CPPUNIT_TEST(testFromHex);
+  CPPUNIT_TEST(testParsePrioritizePieceRange);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -102,6 +103,7 @@ public:
   void testCreateIndexPathMap();
   void testGenerateRandomData();
   void testFromHex();
+  void testParsePrioritizePieceRange();
 };
 
 
@@ -819,6 +821,69 @@ void UtilTest::testFromHex()
 
   src = "001g";
   CPPUNIT_ASSERT(util::fromHex(src).empty());
+}
+
+void UtilTest::testParsePrioritizePieceRange()
+{
+  // piece index
+  // 0     1     2     3     4     5     6     7
+  // |     |              |                    |
+  // file1 |              |                    |
+  //       |              |                    |
+  //       file2          |                    |
+  //                    file3                  |
+  //                      |                    |
+  //                      file4                |
+  size_t pieceLength = 1024;
+  std::vector<SharedHandle<FileEntry> > entries(4, SharedHandle<FileEntry>());
+  entries[0].reset(new FileEntry("file1", 1024, 0));
+  entries[1].reset(new FileEntry("file2",2560,entries[0]->getLastOffset()));
+  entries[2].reset(new FileEntry("file3",0,entries[1]->getLastOffset()));
+  entries[3].reset(new FileEntry("file4",3584,entries[2]->getLastOffset()));
+
+  std::vector<size_t> result;
+  util::parsePrioritizePieceRange(result, "head", entries, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, result[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
+  result.clear();
+  util::parsePrioritizePieceRange(result, "tail", entries, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, result[2]);
+  result.clear();
+  util::parsePrioritizePieceRange(result, "head=1K", entries, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, result[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, result[3]);
+  result.clear();
+  util::parsePrioritizePieceRange(result, "tail=1K", entries, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, result[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
+  result.clear();
+  util::parsePrioritizePieceRange(result, "head,tail", entries, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, result[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
+  result.clear();
+  util::parsePrioritizePieceRange
+    (result, "head=300M,tail=300M", entries, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((size_t)7, result.size());
+  for(size_t i = 0; i < 7; ++i) {
+    CPPUNIT_ASSERT_EQUAL(i, result[i]);
+  }
+  result.clear();
+  util::parsePrioritizePieceRange(result, "", entries, pieceLength);
+  CPPUNIT_ASSERT(result.empty());
 }
 
 } // namespace aria2

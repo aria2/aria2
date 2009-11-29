@@ -187,7 +187,9 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MockExtensionMessageFactory.h\
 	MockPieceStorage.h\
 	BencodeTest.cc\
-	BittorrentHelperTest.cc
+	BittorrentHelperTest.cc\
+	PriorityPieceSelectorTest.cc\
+	MockPieceSelector.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
