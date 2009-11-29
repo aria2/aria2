@@ -689,15 +689,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new ParameterOptionHandler
-				   (PREF_HTTP_AUTH_SCHEME,
-				    TEXT_HTTP_AUTH_SCHEME,
-				    V_BASIC,
-				    V_BASIC));
-    op->addTag(TAG_HTTP);
-    handlers.push_back(op);
-  }
-  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_HTTP_PASSWD,
 				    TEXT_HTTP_PASSWD));

@@ -192,9 +192,6 @@ const std::string PREF_FTP_REUSE_CONNECTION("ftp-reuse-connection");
  */
 const std::string PREF_HTTP_USER("http-user");
 const std::string PREF_HTTP_PASSWD("http-passwd");
-// values: basic
-const std::string PREF_HTTP_AUTH_SCHEME("http-auth-scheme");
-const std::string V_BASIC("basic");
 // values: string
 const std::string PREF_USER_AGENT("user-agent");
 // value: string that your file system recognizes as a file name.
