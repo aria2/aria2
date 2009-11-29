@@ -193,7 +193,7 @@ public:
     this->userAgent = userAgent;
   }
   
-  // accepts multiline headers, deliminated by LF
+  // accepts multiline headers, delimited by LF
   void addHeader(const std::string& headers);
 
   void addAcceptType(const std::string& type);

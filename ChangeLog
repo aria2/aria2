@@ -1,3 +1,8 @@
+2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed typo
+	* src/HttpRequest.h
+
 2009-11-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	In Magnet URI with tr parameter, put each announce URI in separate
