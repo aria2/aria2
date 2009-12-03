@@ -1,5 +1,10 @@
 2009-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed type of tail to uint64_t
+	* src/util.cc
+
+2009-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --interface option.  This feature binds sockets to given
 	interface. You can specify interface name, IP address and
 	hostname.

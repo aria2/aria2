@@ -565,7 +565,7 @@ void parsePrioritizePieceRange
     } else if(util::startsWith(*i, "tail=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
 					(*i).end());
-      size_t tail = std::max((int64_t)0, getRealSize(sizestr));
+      uint64_t tail = std::max((int64_t)0, getRealSize(sizestr));
       for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
 	    fileEntries.begin(); fi != fileEntries.end(); ++fi) {
 	if((*fi)->getLength() == 0) {
