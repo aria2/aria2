@@ -175,6 +175,8 @@
 #define MSG_CANNOT_PARSE_XML_RPC_REQUEST "Failed to parse xml-rpc request."
 #define MSG_GOOD_BYE_SEEDER "Client is in seed state: Good Bye Seeder;)"
 #define MSG_NOT_FILE _("Is '%s' a file?")
+#define MSG_INTERFACE_NOT_FOUND _("Failed to find given interface %s,"\
+				  " cause: %s")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

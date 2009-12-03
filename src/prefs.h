@@ -176,6 +176,8 @@ extern const std::string PREF_ON_DOWNLOAD_COMPLETE;
 extern const std::string PREF_ON_DOWNLOAD_ERROR;
 // value: true | false
 extern const std::string PREF_XML_RPC_LISTEN_ALL;
+// value: string
+extern const std::string PREF_INTERFACE;
 
 /**
  * FTP related preferences

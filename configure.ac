@@ -214,7 +214,8 @@ AC_CHECK_HEADERS([argz.h \
                   termios.h \
                   unistd.h \
 		  utime.h \
-                  wchar.h])
+                  wchar.h \
+		  ifaddrs.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -263,6 +264,7 @@ AC_CHECK_FUNCS([__argz_count \
                 getcwd \
                 gethostbyaddr \
                 gethostbyname \
+		getifaddrs \
                 getpagesize \
                 inet_ntoa \
                 memchr \

@@ -208,6 +208,12 @@ downloadresultcode::RESULT main(int argc, char* argv[])
     MessageDigestHelper::staticSHA1DigestInit();
 #endif // ENABLE_MESSAGE_DIGEST
 
+    // Bind interface
+    if(!op->get(PREF_INTERFACE).empty()) {
+      std::string interface = op->get(PREF_INTERFACE);
+      SocketCore::bindAddress(interface);
+    }
+
 #ifdef SIGPIPE
     util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif

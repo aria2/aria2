@@ -92,6 +92,10 @@ private:
 
   static int _protocolFamily;
 
+  static SharedHandle<struct sockaddr_storage> _bindAddr;
+
+  static socklen_t _bindAddrLen;
+
   bool blocking;
   int secure;
 
@@ -123,6 +127,8 @@ private:
 #endif // HAVE_LIBGNUTLS
 
   void init();
+
+  void bind(const struct sockaddr* addr, socklen_t addrlen);
 
 #ifdef HAVE_EPOLL
 
@@ -349,6 +355,13 @@ public:
   {
     _protocolFamily = protocolFamily;
   }
+
+  // Bind socket to interface. interface may be specified as a
+  // hostname, IP address or interface name like eth0.  If the given
+  // interface is not found or binding socket is failed, exception
+  // will be thrown.  Set _protocolFamily before calling this function
+  // if you limit protocol family.
+  static void bindAddress(const std::string& interface);
 };
 
 } // namespace aria2

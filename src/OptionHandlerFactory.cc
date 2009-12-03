@@ -242,6 +242,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
+				   (PREF_INTERFACE,
+				    TEXT_INTERFACE,
+				    NO_DEFAULT_VALUE,
+				    "interface, IP address, hostname",
+				    OptionHandler::REQ_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
 				   (PREF_LOG,
 				    TEXT_LOG,
 				    NO_DEFAULT_VALUE,

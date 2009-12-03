@@ -7682,7 +7682,8 @@ for ac_header in argz.h \
                   termios.h \
                   unistd.h \
 		  utime.h \
-                  wchar.h
+                  wchar.h \
+		  ifaddrs.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_cxx_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -14402,6 +14403,7 @@ for ac_func in __argz_count \
                 getcwd \
                 gethostbyaddr \
                 gethostbyname \
+		getifaddrs \
                 getpagesize \
                 inet_ntoa \
                 memchr \

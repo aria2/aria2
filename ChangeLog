@@ -1,3 +1,18 @@
+2009-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --interface option.  This feature binds sockets to given
+	interface. You can specify interface name, IP address and
+	hostname.
+	* configure.ac
+	* src/OptionHandlerFactory.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/main.cc
+	* src/message.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2009-11-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated man page for bt-prioritize-piece option in -i list.
