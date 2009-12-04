@@ -42,7 +42,6 @@ namespace aria2 {
 class DownloadContext;
 class PieceStorage;
 class UTMetadataRequestTracker;
-class BtRuntime;
 class Logger;
 
 class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
@@ -54,8 +53,6 @@ private:
   SharedHandle<DownloadContext> _dctx;
 
   SharedHandle<PieceStorage> _pieceStorage;
-
-  SharedHandle<BtRuntime> _btRuntime;
 
   WeakHandle<UTMetadataRequestTracker> _tracker;
 
@@ -103,11 +100,6 @@ public:
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {
     _dctx = dctx;
-  }
-
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
-  {
-    _btRuntime = btRuntime;
   }
 };
 

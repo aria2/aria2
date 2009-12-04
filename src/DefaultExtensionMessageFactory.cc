@@ -52,7 +52,6 @@
 #include "bencode.h"
 #include "PieceStorage.h"
 #include "UTMetadataRequestTracker.h"
-#include "BtRuntime.h"
 #include "RequestGroup.h"
 
 namespace aria2 {
@@ -137,7 +136,6 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 	m->setUTMetadataRequestTracker(_tracker);
 	m->setPieceStorage(_dctx->getOwnerRequestGroup()->getPieceStorage());
 	m->setDownloadContext(_dctx);
-	m->setBtRuntime(_btRuntime);
 	return m;
       }
       case 2: {

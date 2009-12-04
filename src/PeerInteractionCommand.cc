@@ -122,7 +122,6 @@ PeerInteractionCommand::PeerInteractionCommand
     (_requestGroup->getDownloadContext());
   extensionMessageFactory->setUTMetadataRequestTracker
     (utMetadataRequestTracker);
-  extensionMessageFactory->setBtRuntime(_btRuntime);
   // PieceStorage will be set later.
 
   SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());

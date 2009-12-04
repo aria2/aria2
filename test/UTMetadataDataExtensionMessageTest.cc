@@ -7,7 +7,6 @@
 #include "BtConstants.h"
 #include "PieceStorage.h"
 #include "DownloadContext.h"
-#include "BtRuntime.h"
 #include "DirectDiskAdaptor.h"
 #include "ByteArrayDiskWriter.h"
 #include "BDE.h"
@@ -71,7 +70,6 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
   diskAdaptor->setDiskWriter(diskWriter);
   SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
   pieceStorage->setDiskAdaptor(diskAdaptor);
-  SharedHandle<BtRuntime> btRuntime(new BtRuntime());
   SharedHandle<UTMetadataRequestTracker> tracker
     (new UTMetadataRequestTracker());
   SharedHandle<DownloadContext> dctx(new DownloadContext());
@@ -91,7 +89,6 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 
   UTMetadataDataExtensionMessage m(1);
   m.setPieceStorage(pieceStorage);
-  m.setBtRuntime(btRuntime);
   m.setUTMetadataRequestTracker(tracker);
   m.setDownloadContext(dctx);
 
@@ -107,11 +104,11 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
   m.setIndex(0);
   m.setData(piece0);
   m.doReceivedAction();
-  CPPUNIT_ASSERT(!btRuntime->isHalt());
 
   tracker->add(0);
   m.doReceivedAction();
-  CPPUNIT_ASSERT(btRuntime->isHalt());
+
+  CPPUNIT_ASSERT_EQUAL(metadata, diskWriter->getString());
 }
 
 } // namespace aria2

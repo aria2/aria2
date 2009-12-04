@@ -45,7 +45,6 @@
 #include "bittorrent_helper.h"
 #include "DiskAdaptor.h"
 #include "Piece.h"
-#include "BtRuntime.h"
 #include "LogFactory.h"
 
 namespace aria2 {
@@ -88,7 +87,6 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
       if(std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]) == 
 	 attrs[bittorrent::INFO_HASH].s()){
 	_logger->info("Got ut_metadata");
-	_btRuntime->setHalt(true);
       } else {
 	_logger->info("Got wrong ut_metadata");
 	for(size_t i = 0; i < _dctx->getNumPieces(); ++i) {

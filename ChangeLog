@@ -1,5 +1,20 @@
 2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Halt metadata download immediately when metadata download is done.
+	Don't wait unresponsive tracker.
+	* src/ByteArrayDiskWriter.h
+	* src/DefaultBtInteractive.cc
+	* src/DefaultExtensionMessageFactory.cc
+	* src/DefaultExtensionMessageFactory.h
+	* src/PeerInteractionCommand.cc
+	* src/UTMetadataDataExtensionMessage.cc
+	* src/UTMetadataDataExtensionMessage.h
+	* src/UTMetadataRequestExtensionMessage.cc
+	* test/UTMetadataDataExtensionMessageTest.cc
+	* test/UTMetadataRequestExtensionMessageTest.cc
+
+2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --interface option in man page.
 	* doc/aria2c.1.txt
 

@@ -47,7 +47,6 @@ class DownloadContext;
 class BtMessageFactory;
 class BtMessageDispatcher;
 class UTMetadataRequestTracker;
-class BtRuntime;
 
 class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
@@ -58,8 +57,6 @@ private:
   SharedHandle<ExtensionMessageRegistry> _registry;
 
   SharedHandle<DownloadContext> _dctx;
-
-  SharedHandle<BtRuntime> _btRuntime;
 
   WeakHandle<BtMessageFactory> _messageFactory;
 
@@ -110,11 +107,6 @@ public:
   (const WeakHandle<UTMetadataRequestTracker>& tracker)
   {
     _tracker = tracker;
-  }
-
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
-  {
-    _btRuntime = btRuntime;
   }
 };
 

@@ -483,6 +483,10 @@ void DefaultBtInteractive::doInteractionProcessing() {
 	  _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
 	}
       }
+      if(_pieceStorage->downloadFinished()) {
+	_downloadContext->getOwnerRequestGroup()->setForceHaltRequested
+	  (true, RequestGroup::NONE);
+      }
     }
   } else {
     checkActiveInteraction();

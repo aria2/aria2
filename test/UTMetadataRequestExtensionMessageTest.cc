@@ -14,7 +14,6 @@
 #include "UTMetadataRejectExtensionMessage.h"
 #include "UTMetadataDataExtensionMessage.h"
 #include "PieceStorage.h"
-#include "BtRuntime.h"
 #include "extension_message_test_helper.h"
 
 namespace aria2 {

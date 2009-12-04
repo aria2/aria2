@@ -70,6 +70,11 @@ public:
   {
     buf.str(s);
   }
+
+  std::string getString() const
+  {
+    return buf.str();
+  }
 };
 
 typedef SharedHandle<ByteArrayDiskWriter> ByteArrayDiskWriterHandle;

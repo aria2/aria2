@@ -49,7 +49,6 @@
 #include "DownloadContext.h"
 #include "BtMessage.h"
 #include "PieceStorage.h"
-#include "BtRuntime.h"
 
 namespace aria2 {
 
