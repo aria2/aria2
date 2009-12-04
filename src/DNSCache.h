@@ -40,6 +40,7 @@
 #include <string>
 #include <deque>
 #include <algorithm>
+#include <vector>
 
 #include "A2STR.h"
 
@@ -47,16 +48,72 @@ namespace aria2 {
 
 class DNSCache {
 private:
+  struct AddrEntry {
+    std::string _addr;
+    bool _good;
+
+    AddrEntry(const std::string& addr):_addr(addr), _good(true) {}
+  };
+
   struct CacheEntry {
     std::string _hostname;
-    std::string _addr;
     uint16_t _port;
-    bool _good;
-    CacheEntry
-    (const std::string& hostname, const std::string& addr, uint16_t port):
-      _hostname(hostname), _addr(addr), _port(port), _good(true) {}
+    std::vector<AddrEntry> _addrEntries;
 
-    void markBad() { _good = false; }
+    CacheEntry
+    (const std::string& hostname, uint16_t port):
+      _hostname(hostname), _port(port) {}
+
+    void add(const std::string& addr)
+    {
+      _addrEntries.push_back(AddrEntry(addr));
+    }
+
+    std::vector<AddrEntry>::iterator find(const std::string& addr)
+    {
+      for(std::vector<AddrEntry>::iterator i = _addrEntries.begin();
+	  i != _addrEntries.end(); ++i) {
+	if((*i)._addr == addr) {
+	  return i;
+	}
+      }
+      return _addrEntries.end();
+    }
+
+    std::vector<AddrEntry>::const_iterator find(const std::string& addr) const
+    {
+      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
+	  i != _addrEntries.end(); ++i) {
+	if((*i)._addr == addr) {
+	  return i;
+	}
+      }
+      return _addrEntries.end();
+    }
+
+    bool contains(const std::string& addr) const
+    {
+      return find(addr) != _addrEntries.end();
+    }
+
+    const std::string& getGoodAddr() const
+    {
+      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
+	  i != _addrEntries.end(); ++i) {
+	if((*i)._good) {
+	  return (*i)._addr;
+	}
+      }
+      return A2STR::NIL;
+    }
+
+    void markBad(const std::string& addr)
+    {
+      std::vector<AddrEntry>::iterator i = find(addr);
+      if(i != _addrEntries.end()) {
+	(*i)._good = false;
+      }
+    }
 
     bool operator<(const CacheEntry& e) const
     {
@@ -64,43 +121,25 @@ private:
       if(r != 0) {
 	return r < 0;
       }
-      if(_port != e._port) {
-	return _port < e._port;
-      }
-      return _addr < e._addr;
+      return _port < e._port;
     }
 
     bool operator==(const CacheEntry& e) const
     {
-      return _hostname == e._hostname && _addr == e._addr && _port == e._port;
+      return _hostname == e._hostname && _port == e._port;
     }
   };
 
   std::deque<CacheEntry> _entries;
 
-  std::deque<CacheEntry>::iterator findEntry
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port)
-  {
-    CacheEntry target(hostname, ipaddr, port);
-    std::deque<CacheEntry>::iterator i =
-      std::lower_bound(_entries.begin(), _entries.end(), target);
-    if(i != _entries.end() && (*i) == target) {
-      return i;
-    } else {
-      return _entries.end();
-    }
-  }
-
 public:
   const std::string& find(const std::string& hostname, uint16_t port) const
   {
-    CacheEntry target(hostname, A2STR::NIL, port);
+    CacheEntry target(hostname, port);
     std::deque<CacheEntry>::const_iterator i =
       std::lower_bound(_entries.begin(), _entries.end(), target);
-    for(; i != _entries.end() && (*i)._hostname == hostname && (*i)._port == port; ++i) {
-      if((*i)._good) {
-	return (*i)._addr;
-      }
+    if(i != _entries.end() && (*i) == target) {
+      return (*i).getGoodAddr();
     }
     return A2STR::NIL;
   }
@@ -108,30 +147,37 @@ public:
   void put
   (const std::string& hostname, const std::string& ipaddr, uint16_t port)
   {
-    CacheEntry target(hostname, ipaddr, port);
+    CacheEntry target(hostname, port);
     std::deque<CacheEntry>::iterator i =
       std::lower_bound(_entries.begin(), _entries.end(), target);
     if(i == _entries.end() || !((*i) == target)) {
+      target.add(ipaddr);
       _entries.insert(i, target);
+    } else {
+      if(!(*i).contains(ipaddr)) {
+	(*i).add(ipaddr);
+      }
     }
   }
 
   void markBad
   (const std::string& hostname, const std::string& ipaddr, uint16_t port)
   {
-    std::deque<CacheEntry>::iterator i = findEntry(hostname, ipaddr, port);
-    if(i != _entries.end()) {
-      (*i).markBad();
+    CacheEntry target(hostname, port);
+    std::deque<CacheEntry>::iterator i =
+      std::lower_bound(_entries.begin(), _entries.end(), target);
+    if(i != _entries.end() && (*i) == target) {
+      (*i).markBad(ipaddr);
     }
   }
 
   void remove(const std::string& hostname, uint16_t port)
   {
-    CacheEntry target(hostname, A2STR::NIL, port);
+    CacheEntry target(hostname, port);
     std::deque<CacheEntry>::iterator i =
       std::lower_bound(_entries.begin(), _entries.end(), target);
-    for(; i != _entries.end() && (*i)._hostname == hostname && (*i)._port == port;) {
-      i = _entries.erase(i);
+    if(i != _entries.end() && (*i) == target) {
+      _entries.erase(i);
     }
   }
 };

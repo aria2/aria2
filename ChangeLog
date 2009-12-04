@@ -1,5 +1,10 @@
 2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Try resolved address in the order received from the resolver.
+	* src/DNSCache.h
+
+2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added debug logs.
 	* src/SocketCore.cc
 
