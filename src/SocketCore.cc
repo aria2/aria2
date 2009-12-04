@@ -170,22 +170,22 @@ std::string uitos(T value)
 static sock_t bindInternal(int family, int socktype, int protocol,
 			   const struct sockaddr* addr, socklen_t addrlen)
 {
-    sock_t fd = socket(family, socktype, protocol);
-    if(fd == (sock_t) -1) {
-      return -1;
-    }
-    int sockopt = 1;
-    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt,
-		  sizeof(sockopt)) < 0) {
-      CLOSE(fd);
-      return -1;
-    }
-    if(::bind(fd, addr, addrlen) == -1) {
-      LogFactory::getInstance()->debug("%s", strerror(errno));
-      CLOSE(fd);
-      return -1;
-    }
-    return fd;
+  sock_t fd = socket(family, socktype, protocol);
+  if(fd == (sock_t) -1) {
+    return -1;
+  }
+  int sockopt = 1;
+  if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt,
+		sizeof(sockopt)) < 0) {
+    CLOSE(fd);
+    return -1;
+  }
+  if(::bind(fd, addr, addrlen) == -1) {
+    LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+    CLOSE(fd);
+    return -1;
+  }
+  return fd;
 }
 
 void SocketCore::bind(uint16_t port, int flags)
@@ -225,7 +225,7 @@ void SocketCore::bind(uint16_t port, int flags)
     }
   }
   if(sockfd == (sock_t) -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, "all addresses failed").str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, strerror(errno)).str());
   }
 }
 
@@ -236,8 +236,7 @@ void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
   sock_t fd = bindInternal(addr->sa_family, _sockType, 0, addr, addrlen);
   if(fd != (sock_t)-1) {
     sockfd = fd;
-  }
-  if(sockfd == (sock_t) -1) {
+  } else {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, strerror(errno)).str());
   }
 }
@@ -315,6 +314,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     if(!_bindAddr.isNull()) {
       if(::bind(fd, reinterpret_cast<const struct sockaddr*>(_bindAddr.get()),
 		_bindAddrLen) == -1) {
+	LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
 	CLOSE(fd);
 	continue;
       }
@@ -336,7 +336,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   freeaddrinfo(res);
   if(sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
-				 "all addresses failed").str());
+				   strerror(errno)).str());
   }
 }
 
@@ -1131,6 +1131,7 @@ void SocketCore::bindAddress(const std::string& interface)
   socklen_t bindAddrLen = 0;
   memset(bindAddr.get(), 0, sizeof(struct sockaddr_storage));
   bool found = false;
+  LogFactory::getInstance()->debug("Finding interface %s", interface.c_str());
 #ifdef HAVE_GETIFADDRS
   // First find interface in interface addresses
   struct ifaddrs* ifaddr = 0;
@@ -1201,7 +1202,7 @@ void SocketCore::bindAddress(const std::string& interface)
 	} catch(RecoverableException& e) {
 	  throw DL_ABORT_EX2
 	    (StringFormat(MSG_INTERFACE_NOT_FOUND,
-			  interface.c_str()).str(), e);
+			  interface.c_str(), e.what()).str(), e);
 	}
 	found = true;
 	break;
@@ -1209,6 +1210,15 @@ void SocketCore::bindAddress(const std::string& interface)
     }
   }
   if(found) {
+    char host[NI_MAXHOST];
+    int s;
+    s = getnameinfo(reinterpret_cast<struct sockaddr*>(bindAddr.get()),
+		    bindAddrLen,
+		    host, NI_MAXHOST, 0, NI_MAXSERV,
+		    NI_NUMERICHOST);
+    if(s == 0) {
+      LogFactory::getInstance()->debug("Sockets will bind to %s", host);
+    }
     _bindAddr = bindAddr;
     _bindAddrLen = bindAddrLen;
   }

@@ -1,3 +1,8 @@
+2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added debug logs.
+	* src/SocketCore.cc
+
 2009-12-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed type of tail to uint64_t
