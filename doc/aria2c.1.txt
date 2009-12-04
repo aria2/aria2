@@ -636,6 +636,16 @@ Advanced Options
   Possible Values: 'none', 'prealloc', 'falloc'
   Default: 'prealloc'
 
+*--interface*=INTERFACE::
+
+  Bind sockets to given interface. You can specify interface name, IP
+  address and hostname.
+  Possible Values: interface, IP address, hostname
+
+[NOTE]
+If an interface has multiple addresses, it is highly recommended to specify
+IP address explicitly.
+
 *--log-level*=LEVEL::
   Set log level to output.
   LEVEL is either 'debug', 'info', 'notice', 'warn' or 'error'.

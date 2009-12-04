@@ -1,5 +1,10 @@
 2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --interface option in man page.
+	* doc/aria2c.1.txt
+
+2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Try resolved address in the order received from the resolver.
 	* src/DNSCache.h
 
