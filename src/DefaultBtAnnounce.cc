@@ -71,15 +71,9 @@ DefaultBtAnnounce::DefaultBtAnnounce
   _randomizer(SimpleRandomizer::getInstance())
 {
   prevAnnounceTime.setTimeInSec(0);
-  generateKey();
 }
 
 DefaultBtAnnounce::~DefaultBtAnnounce() {
-}
-
-void DefaultBtAnnounce::generateKey()
-{
-  key = util::randomAlpha(8, _randomizer);
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
@@ -159,7 +153,10 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   url += util::uitos(left);
   url += "&compact=1";
   url += "&key=";
-  url += key;
+  // Use last 8 bytes of peer ID as a key
+  size_t keyLen = 8;
+  url += util::torrentUrlencode
+    (bittorrent::getStaticPeerId()+PEER_ID_LENGTH-keyLen, keyLen);
   url += "&numwant=";
   url += util::uitos(numWant);
   url += "&no_peer_id=1";

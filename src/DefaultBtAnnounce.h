@@ -61,7 +61,6 @@ private:
   unsigned int incomplete;
   AnnounceList announceList;
   std::string trackerId;
-  std::string key;
   const Option* option;
   Logger* logger;
   SharedHandle<Randomizer> _randomizer;
@@ -123,8 +122,6 @@ public:
   virtual void shuffleAnnounce();
 
   virtual void overrideMinInterval(time_t interval);
-
-  void generateKey();
 
   void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 

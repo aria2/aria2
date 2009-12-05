@@ -1,5 +1,12 @@
 2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use last 8 bytes of peer ID as 'key' parameter for tracker request.
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtAnnounce.h
+	* test/DefaultBtAnnounceTest.cc
+
+2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that connection is always dropped if handshake
 	message in extension protocol don't have metadata_size.
 	src/HandshakeExtensionMessage.cc
