@@ -113,7 +113,7 @@ void HandshakeExtensionMessage::doReceivedAction()
   BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
   if(!attrs.containsKey(bittorrent::METADATA) &&
      !_peer->getExtensionMessageID("ut_metadata")) {
-    // TODO In metadataGetMode, if peer dont' support metadata
+    // TODO In metadataGetMode, if peer don't support metadata
     // transfer, should we drop connection? There is a possibility
     // that peer can still tell us peers using PEX.
     throw DL_ABORT_EX("Peer doesn't support ut_metadata extension. Goodbye.");
@@ -133,7 +133,7 @@ void HandshakeExtensionMessage::doReceivedAction()
 	_dctx->getOwnerRequestGroup()->getPieceStorage();
       pieceStorage->setEndGamePieceNum(0);
     }
-  } else {
+  } else if(!attrs.containsKey(bittorrent::METADATA)) {
     throw DL_ABORT_EX("Peer didn't provide metadata_size."
 		      " It seems that it doesn't have whole metadata.");
   }
