@@ -1,3 +1,11 @@
+2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	In configure script, if --with-PACKAGE and --enable-FEATURE are
+	given and PACKAGE is missing in the system or FEATURE cannot be
+	enabled, print error message and stop the script.
+	* configure.ac
+	* m4/aria2_arg.m4
+
 2009-12-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Halt metadata download immediately when metadata download is done.

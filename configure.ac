@@ -56,15 +56,25 @@ if test "x$with_libxml2" = "xyes"; then
   AM_PATH_XML2([2.6.24], [have_libxml2=yes])
   if test "x$have_libxml2" = "xyes"; then
     AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
+  elif test "x$with_libxml2_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([libxml2])
   fi
 fi
 
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
   AM_PATH_LIBEXPAT
+  if test "x$have_libexpat" != "xyes" &&
+     test "x$with_libexpat_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([libexpat])
+  fi
 fi
 
 if test "x$with_sqlite3" = "xyes"; then
   AM_PATH_SQLITE3
+  if test "x$have_sqlite3" != "xyes" &&
+     test "x$with_sqlite3_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([sqlite3])
+  fi
 fi
 
 if test "x$with_gnutls" = "xyes"; then
@@ -79,6 +89,8 @@ if test "x$with_gnutls" = "xyes"; then
   fi
   if test "x$have_libgnutls" = "xyes"; then
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
+  elif test "x$with_gnutls_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([gnutls])
   fi
   AC_SUBST(LIBGNUTLS_LIBS)
   AC_SUBST(LIBGNUTLS_CFLAGS)
@@ -93,15 +105,26 @@ fi
 
 if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
   AM_PATH_OPENSSL
+  if test "x$have_openssl" != "xyes" &&
+     test "x$with_openssl_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([openssl])
+  fi
 fi
 
 if test "x$with_libcares" = "xyes"; then
   AM_PATH_LIBCARES
+  if test "x$have_libcares" != "xyes" &&
+     test "x$with_libcares_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([libcares])
+  fi
 fi
 
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
   AM_PATH_LIBZ
+  if test "x$have_libz" != "xyes" && test "x$with_libz_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([libz])
+  fi
 fi
 
 # Define variables based on the result of the checks for libraries.
@@ -131,6 +154,9 @@ if test "x$enable_bittorrent" = "xyes" &&
             [Define to 1 if BitTorrent support is enabled.])
   AM_CONDITIONAL([ENABLE_BITTORRENT], true)
 else
+  if test "x$enable_bittorrent_requested" = "xyes"; then
+    ARIA2_FET_NOT_SUPPORTED([bittorrent])
+  fi
   enable_bittorrent=no
   AM_CONDITIONAL([ENABLE_BITTORRENT], false)
 fi
@@ -141,6 +167,9 @@ if (test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes") &&
             [Define to 1 if Metalink support is enabled.])
   AM_CONDITIONAL([ENABLE_METALINK], true)
 else
+  if test "x$enable_metalink_requested" = "xyes"; then
+    ARIA2_FET_NOT_SUPPORTED([metalink])
+  fi
   enable_metalink=no
   AM_CONDITIONAL([ENABLE_METALINK], false)
 fi

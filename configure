@@ -3583,7 +3583,7 @@ _ACEOF
 
 # Check whether --with-gnutls was given.
 if test "${with_gnutls+set}" = set; then :
-  withval=$with_gnutls; with_gnutls=$withval
+  withval=$with_gnutls; with_gnutls_requested=$withval with_gnutls=$withval
 else
   with_gnutls=yes
 fi
@@ -3592,7 +3592,7 @@ fi
 
 # Check whether --with-openssl was given.
 if test "${with_openssl+set}" = set; then :
-  withval=$with_openssl; with_openssl=$withval
+  withval=$with_openssl; with_openssl_requested=$withval with_openssl=$withval
 else
   with_openssl=yes
 fi
@@ -3601,7 +3601,7 @@ fi
 
 # Check whether --with-sqlite3 was given.
 if test "${with_sqlite3+set}" = set; then :
-  withval=$with_sqlite3; with_sqlite3=$withval
+  withval=$with_sqlite3; with_sqlite3_requested=$withval with_sqlite3=$withval
 else
   with_sqlite3=yes
 fi
@@ -3610,7 +3610,7 @@ fi
 
 # Check whether --with-libxml2 was given.
 if test "${with_libxml2+set}" = set; then :
-  withval=$with_libxml2; with_libxml2=$withval
+  withval=$with_libxml2; with_libxml2_requested=$withval with_libxml2=$withval
 else
   with_libxml2=yes
 fi
@@ -3619,7 +3619,7 @@ fi
 
 # Check whether --with-libexpat was given.
 if test "${with_libexpat+set}" = set; then :
-  withval=$with_libexpat; with_libexpat=$withval
+  withval=$with_libexpat; with_libexpat_requested=$withval with_libexpat=$withval
 else
   with_libexpat=yes
 fi
@@ -3628,7 +3628,7 @@ fi
 
 # Check whether --with-libcares was given.
 if test "${with_libcares+set}" = set; then :
-  withval=$with_libcares; with_libcares=$withval
+  withval=$with_libcares; with_libcares_requested=$withval with_libcares=$withval
 else
   with_libcares=yes
 fi
@@ -3637,7 +3637,7 @@ fi
 
 # Check whether --with-libz was given.
 if test "${with_libz+set}" = set; then :
-  withval=$with_libz; with_libz=$withval
+  withval=$with_libz; with_libz_requested=$withval with_libz=$withval
 else
   with_libz=yes
 fi
@@ -3646,7 +3646,7 @@ fi
 
 # Check whether --enable-bittorrent was given.
 if test "${enable_bittorrent+set}" = set; then :
-  enableval=$enable_bittorrent; enable_bittorrent=$enableval
+  enableval=$enable_bittorrent; enable_bittorrent_requested=$enableval enable_bittorrent=$enableval
 else
   enable_bittorrent=yes
 fi
@@ -3654,7 +3654,7 @@ fi
 
 # Check whether --enable-metalink was given.
 if test "${enable_metalink+set}" = set; then :
-  enableval=$enable_metalink; enable_metalink=$enableval
+  enableval=$enable_metalink; enable_metalink_requested=$enableval enable_metalink=$enableval
 else
   enable_metalink=yes
 fi
@@ -3662,7 +3662,7 @@ fi
 
 # Check whether --enable-epoll was given.
 if test "${enable_epoll+set}" = set; then :
-  enableval=$enable_epoll; enable_epoll=$enableval
+  enableval=$enable_epoll; enable_epoll_requested=$enableval enable_epoll=$enableval
 else
   enable_epoll=yes
 fi
@@ -5889,6 +5889,11 @@ rm -f core conftest.err conftest.$ac_objext \
 
 $as_echo "#define HAVE_LIBXML2 1" >>confdefs.h
 
+  elif test "x$with_libxml2_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "libxml2 is requested but not found in the system.
+See \`config.log' for more details." "$LINENO" 5; }
   fi
 fi
 
@@ -5970,6 +5975,13 @@ LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
 
 
+  if test "x$have_libexpat" != "xyes" &&
+     test "x$with_libexpat_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "libexpat is requested but not found in the system.
+See \`config.log' for more details." "$LINENO" 5; }
+  fi
 fi
 
 if test "x$with_sqlite3" = "xyes"; then
@@ -6257,6 +6269,13 @@ LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
 
 
+  if test "x$have_sqlite3" != "xyes" &&
+     test "x$with_sqlite3_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "sqlite3 is requested but not found in the system.
+See \`config.log' for more details." "$LINENO" 5; }
+  fi
 fi
 
 if test "x$with_gnutls" = "xyes"; then
@@ -6559,6 +6578,11 @@ rm -f core conftest.err conftest.$ac_objext \
 
 $as_echo "#define HAVE_LIBGNUTLS 1" >>confdefs.h
 
+  elif test "x$with_gnutls_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "gnutls is requested but not found in the system.
+See \`config.log' for more details." "$LINENO" 5; }
   fi
 
 
@@ -6875,6 +6899,13 @@ fi
 LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
 
+  if test "x$have_openssl" != "xyes" &&
+     test "x$with_openssl_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "openssl is requested but not found in the system.
+See \`config.log' for more details." "$LINENO" 5; }
+  fi
 fi
 
 if test "x$with_libcares" = "xyes"; then
@@ -7038,6 +7069,13 @@ LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
 
 
+  if test "x$have_libcares" != "xyes" &&
+     test "x$with_libcares_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "libcares is requested but not found in the system.
+See \`config.log' for more details." "$LINENO" 5; }
+  fi
 fi
 
 # Check availability of libz
@@ -7119,6 +7157,12 @@ LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
 
 
+  if test "x$have_libz" != "xyes" && test "x$with_libz_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "libz is requested but not found in the system.
+See \`config.log' for more details." "$LINENO" 5; }
+  fi
 fi
 
 # Define variables based on the result of the checks for libraries.
@@ -7201,6 +7245,15 @@ else
 fi
 
 else
+  if test "x$enable_bittorrent_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "bittorrent is requested but cannot be enabled with current\
+ configuration.\
+ Make sure that dependent libraries are installed and configure script options\
+ are correct.
+See \`config.log' for more details." "$LINENO" 5; }
+  fi
   enable_bittorrent=no
    if false; then
   ENABLE_BITTORRENT_TRUE=
@@ -7226,6 +7279,15 @@ else
 fi
 
 else
+  if test "x$enable_metalink_requested" = "xyes"; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "metalink is requested but cannot be enabled with current\
+ configuration.\
+ Make sure that dependent libraries are installed and configure script options\
+ are correct.
+See \`config.log' for more details." "$LINENO" 5; }
+  fi
   enable_metalink=no
    if false; then
   ENABLE_METALINK_TRUE=
