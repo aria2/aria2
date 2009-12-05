@@ -277,9 +277,14 @@ void RequestGroup::createInitialCommand
 				SharedHandle<BtProgressInfoFile>
 				(progressInfoFile))));
       if(metadataGetMode) {
-	std::deque<Command*> dhtCommands;
-	DHTSetup().setup(dhtCommands, e, _option.get());
-	e->addCommand(dhtCommands);
+	if(_option->getAsBool(PREF_ENABLE_DHT)) {
+	  std::deque<Command*> dhtCommands;
+	  DHTSetup().setup(dhtCommands, e, _option.get());
+	  e->addCommand(dhtCommands);
+	} else {
+	  _logger->notice("For BitTorrent Magnet URI, enabling DHT is strongly"
+			  " recommended. See --enable-dht option.");
+	}
 
 	SharedHandle<CheckIntegrityEntry> entry
 	  (new BtCheckIntegrityEntry(this));

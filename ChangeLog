@@ -1,5 +1,12 @@
 2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that DHT is always enabled when BitTorrent Magnet
+	URI is supplied. Notify user that they should consider enabling
+	DHT if they use Magnet URI.
+	* src/RequestGroup.cc
+
+2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --disable-ipv6 option to disable IPv6.
 	* doc/aria2c.1.txt
 	* src/InitiateConnectionCommand.cc
