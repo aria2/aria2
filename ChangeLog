@@ -1,5 +1,10 @@
 2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.7.0
+	* configure.ac
+
+2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error if ENABLE_BITTORRENT is undefined.
 	* src/DefaultPieceStorage.cc
 	* src/DefaultPieceStorage.h
