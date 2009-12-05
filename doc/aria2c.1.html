@@ -1752,8 +1752,10 @@ writes the piece to the appropriate files.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">If an interface has multiple addresses, it is highly recommended to specify
-IP address explicitly. See also <strong>--disable-ipv6</strong>.</td>
+<td class="content">If an interface has multiple addresses, it is highly recommended to
+specify IP address explicitly. See also <strong>--disable-ipv6</strong>.  If your
+system doesn&#8217;t have getifaddrs(), this option doesn&#8217;t accept interface
+name.</td>
 </tr></table>
 </div>
 <div class="dlist"><dl>
@@ -3458,7 +3460,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-12-05 16:46:00 JST
+Last updated 2009-12-05 18:17:44 JST
 </div>
 </div>
 </body>

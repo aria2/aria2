@@ -649,8 +649,10 @@ Advanced Options
   Possible Values: interface, IP address, hostname
 
 [NOTE]
-If an interface has multiple addresses, it is highly recommended to specify
-IP address explicitly. See also *--disable-ipv6*.
+If an interface has multiple addresses, it is highly recommended to
+specify IP address explicitly. See also *--disable-ipv6*.  If your
+system doesn't have getifaddrs(), this option doesn't accept interface
+name.
 
 *--log-level*=LEVEL::
   Set log level to output.
