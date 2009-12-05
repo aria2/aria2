@@ -357,13 +357,14 @@ BitTorrent Specific Options
 
 *--bt-prioritize-piece*='head'[=SIZE],'tail'[=SIZE]::
 
-  Try to download first and last pieces of each file first. The
-  argument can contain 2 keywords: 'head' and 'tail'. To include both
-  keywords, they must be separated by comma. These keywords can take
-  one parameter, SIZE. For example , if 'head'=SIZE is specified,
-  pieces in the range of first SIZE bytes of each file get higher
-  priority. 'tail'=SIZE means the range of last SIZE bytes of each
-  file. SIZE can include 'K' or 'M'(1K = 1024, 1M = 1024K).
+  Try to download first and last pieces of each file first. This is
+  useful for previewing files. The argument can contain 2
+  keywords: 'head' and 'tail'. To include both keywords, they must be
+  separated by comma. These keywords can take one parameter, SIZE. For
+  example, if 'head'=SIZE is specified, pieces in the range of first
+  SIZE bytes of each file get higher priority.  'tail'=SIZE means the
+  range of last SIZE bytes of each file. SIZE can include 'K' or
+  'M'(1K = 1024, 1M = 1024K).
 
 *--bt-require-crypto*='true'|'false'::
   If true is given, aria2 doesn't accept and establish connection with legacy

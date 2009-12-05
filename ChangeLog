@@ -1,5 +1,11 @@
 2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated usage text for --bt-prioritize-piece option.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
+2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	In configure script, if --with-PACKAGE and --enable-FEATURE are
 	given and PACKAGE is missing in the system or FEATURE cannot be
 	enabled, print error message and stop the script.

@@ -566,15 +566,16 @@ _(" --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
   "                              on local loopback interface.")
 #define TEXT_BT_PRIORITIZE_PIECE \
 _(" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and last\n"\
-  "                              pieces of each file first. The argument can\n"\
-  "                              contain 2 keywords:head and tail. To include both\n"\
-  "                              keywords, they must be separated by comma. These\n"\
-  "                              keywords can take one parameter, SIZE. For example\n"\
-  "                              , if head=SIZE is specified, pieces in the range\n"\
-  "                              of first SIZE bytes of each file get higher\n"\
-  "                              priority. tail=SIZE means the range of last SIZE\n"\
-  "                              bytes of each file. SIZE can include K or M(1K =\n"\
-  "                              1024, 1M = 1024K).")
+  "                              pieces of each file first. This is useful for\n"\
+  "                              previewing files. The argument can contain 2\n"\
+  "                              keywords:head and tail. To include both keywords,\n"\
+  "                              they must be separated by comma. These keywords\n"\
+  "                              can take one parameter, SIZE. For example, if\n"\
+  "                              head=SIZE is specified, pieces in the range of\n"\
+  "                              first SIZE bytes of each file get higher priority.\n"\
+  "                              tail=SIZE means the range of last SIZE bytes of\n"\
+  "                              each file. SIZE can include K or M(1K = 1024, 1M =\n"\
+  "                              1024K).")
 #define TEXT_INTERFACE \
 _(" --interface=INTERFACE        Bind sockets to given interface. You can specify\n"\
   "                              interface name, IP address and hostname.")
