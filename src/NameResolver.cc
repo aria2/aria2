@@ -33,15 +33,17 @@
  */
 /* copyright --> */
 #include "NameResolver.h"
+
+#include <cstring>
+
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
 #include "util.h"
-#include <cstring>
 
 namespace aria2 {
 
-NameResolver::NameResolver():_socktype(0) {}
+NameResolver::NameResolver():_socktype(0), _family(AF_UNSPEC) {}
 
 void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
 			   const std::string& hostname)
@@ -49,7 +51,7 @@ void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
   struct addrinfo hints;
   struct addrinfo* res;
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
+  hints.ai_family = _family;
   hints.ai_socktype = _socktype;
   hints.ai_flags = 0;
   hints.ai_protocol = 0;

@@ -881,6 +881,12 @@ and standard input, standard output and standard error will be redirected to
 \fIfalse\fR
 .RE
 .PP
+\fB\-\-disable\-ipv6\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Disable IPv6\&. This is useful if you have to use broken DNS and want to avoid terribly slow AAAA record lookup\&. Default:
+\fIfalse\fR
+.RE
+.PP
 \fB\-\-enable\-direct\-io\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Enable directI/O, which lowers cpu usage while allocating/checking files\&. Turn off if you encounter any error\&. Default:
@@ -937,7 +943,7 @@ Bind sockets to given interface\&. You can specify interface name, IP address an
 .ps -1
 .br
 .sp
-If an interface has multiple addresses, it is highly recommended to specify IP address explicitly\&.
+If an interface has multiple addresses, it is highly recommended to specify IP address explicitly\&. See also \fB\-\-disable\-ipv6\fR\&.
 .sp .5v
 .RE
 .PP

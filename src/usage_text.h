@@ -579,3 +579,5 @@ _(" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and last
 #define TEXT_INTERFACE \
 _(" --interface=INTERFACE        Bind sockets to given interface. You can specify\n"\
   "                              interface name, IP address and hostname.")
+#define TEXT_DISABLE_IPV6 \
+_(" --disable-ipv6[=true|false]  Disable IPv6.")

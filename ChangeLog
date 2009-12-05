@@ -1,5 +1,18 @@
 2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --disable-ipv6 option to disable IPv6.
+	* doc/aria2c.1.txt
+	* src/InitiateConnectionCommand.cc
+	* src/NameResolver.cc
+	* src/NameResolver.h
+	* src/OptionHandlerFactory.cc
+	* src/main.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated usage text for --bt-prioritize-piece option.
 	* doc/aria2c.1.txt
 	* src/usage_text.h

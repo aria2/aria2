@@ -98,6 +98,9 @@ bool InitiateConnectionCommand::executeInternal() {
       {
 	NameResolver res;
 	res.setSocktype(SOCK_STREAM);
+	if(e->option->getAsBool(PREF_DISABLE_IPV6)) {
+	  res.setFamily(AF_INET);
+	}
 	res.resolve(addrs, hostname);
       }
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,

@@ -608,6 +608,11 @@ Advanced Options
   and standard input, standard output and standard error will be
   redirected to '/dev/null'. Default: 'false'
 
+*--disable-ipv6*[='true'|'false']::
+
+  Disable IPv6. This is useful if you have to use broken DNS and want
+  to avoid terribly slow AAAA record lookup. Default: 'false'
+
 *--enable-direct-io*[='true'|'false']::
   Enable directI/O, which lowers cpu usage while allocating/checking files.
   Turn off if you encounter any error.
@@ -645,7 +650,7 @@ Advanced Options
 
 [NOTE]
 If an interface has multiple addresses, it is highly recommended to specify
-IP address explicitly.
+IP address explicitly. See also *--disable-ipv6*.
 
 *--log-level*=LEVEL::
   Set log level to output.

@@ -208,6 +208,9 @@ downloadresultcode::RESULT main(int argc, char* argv[])
     MessageDigestHelper::staticSHA1DigestInit();
 #endif // ENABLE_MESSAGE_DIGEST
 
+    if(op->getAsBool(PREF_DISABLE_IPV6)) {
+      SocketCore::setProtocolFamily(AF_INET);
+    }
     // Bind interface
     if(!op->get(PREF_INTERFACE).empty()) {
       std::string interface = op->get(PREF_INTERFACE);

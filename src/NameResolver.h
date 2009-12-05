@@ -44,6 +44,7 @@ namespace aria2 {
 class NameResolver {
 private:
   int _socktype;
+  int _family;
 public:
   NameResolver();
 
@@ -55,6 +56,12 @@ public:
 
   // specify SOCK_STREAM or SOCK_DGRAM
   void setSocktype(int socktype);
+
+  // specify protocol family
+  void setFamily(int family)
+  {
+    _family = family;
+  }
 };
 
 } // namespace aria2

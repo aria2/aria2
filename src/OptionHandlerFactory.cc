@@ -154,6 +154,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_DISABLE_IPV6,
+				    TEXT_DISABLE_IPV6,
+				    V_FALSE,
+				    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<NumberOptionHandler> op(new NumberOptionHandler
 					 (PREF_DNS_TIMEOUT,
 					  NO_DESCRIPTION,
