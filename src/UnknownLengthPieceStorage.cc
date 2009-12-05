@@ -78,11 +78,6 @@ bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
   abort();
 }
 
-bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
-{
-  abort();
-}
-
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 {
   abort();
@@ -106,6 +101,11 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece
 }
 
 #endif // ENABLE_BITTORRENT
+
+bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
+{
+  abort();
+}
 
 SharedHandle<Piece> UnknownLengthPieceStorage::getSparseMissingUnusedPiece
 (const unsigned char* ignoreBitfield, size_t length)

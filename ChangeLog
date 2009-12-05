@@ -1,5 +1,17 @@
 2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error if ENABLE_BITTORRENT is undefined.
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+	* test/ProtocolDetectorTest.cc
+	* test/XmlRpcMethodTest.cc
+
+2009-12-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented in man page that if getifaddrs() is missing,
 	--interface option doesn't accept interface name.
 	* doc/aria2c.1.txt

@@ -121,8 +121,6 @@ public:
 
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
 
-  virtual bool hasMissingUnusedPiece();
-
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
@@ -134,6 +132,8 @@ public:
   (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
 
 #endif // ENABLE_BITTORRENT
+
+  virtual bool hasMissingUnusedPiece();
 
   virtual SharedHandle<Piece> getSparseMissingUnusedPiece
   (const unsigned char* ignoreBitfield, size_t length);

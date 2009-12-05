@@ -73,8 +73,6 @@ public:
    */
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
 
-  virtual bool hasMissingUnusedPiece();
-
   /**
    * Returns a piece that the peer has but localhost doesn't.
    * The piece will be marked "used" status in order to prevent other command
@@ -99,6 +97,8 @@ public:
   (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
 
 #endif // ENABLE_BITTORRENT
+
+  virtual bool hasMissingUnusedPiece();
 
   /**
    * Returns a missing piece if available. Otherwise returns 0;

@@ -44,11 +44,6 @@ public:
     return false;
   }
 
-  virtual bool hasMissingUnusedPiece()
-  {
-    return false;
-  }
-
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer) {
     return SharedHandle<Piece>(new Piece());
   }
@@ -70,6 +65,11 @@ public:
   }
 
 #endif // ENABLE_BITTORRENT
+
+  virtual bool hasMissingUnusedPiece()
+  {
+    return false;
+  }
 
   virtual SharedHandle<Piece> getSparseMissingUnusedPiece
   (const unsigned char* ignoreBitfield, size_t length)

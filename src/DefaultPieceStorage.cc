@@ -196,12 +196,6 @@ bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer)
 				      peer->getBitfieldLength());
 }
 
-bool DefaultPieceStorage::hasMissingUnusedPiece()
-{
-  size_t index;
-  return bitfieldMan->getFirstMissingUnusedIndex(index);
-}
-
 PieceHandle DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 {
   return getMissingPiece(peer->getBitfield(), peer->getBitfieldLength());
@@ -266,6 +260,12 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
 }
 
 #endif // ENABLE_BITTORRENT
+
+bool DefaultPieceStorage::hasMissingUnusedPiece()
+{
+  size_t index;
+  return bitfieldMan->getFirstMissingUnusedIndex(index);
+}
 
 PieceHandle DefaultPieceStorage::getSparseMissingUnusedPiece
 (const unsigned char* ignoreBitfield, size_t length)

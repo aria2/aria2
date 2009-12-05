@@ -538,6 +538,8 @@ static void addUri(const std::string& uri,
   CPPUNIT_ASSERT_EQUAL(0, m.execute(req, e.get())._code);
 }
 
+#ifdef ENABLE_BITTORRENT
+
 static void addTorrent
 (const std::string& torrentFile, const SharedHandle<DownloadEngine>& e)
 {
@@ -547,12 +549,16 @@ static void addTorrent
   XmlRpcResponse res = m.execute(req, e.get());
 }
 
+#endif // ENABLE_BITTORRENT
+
 void XmlRpcMethodTest::testTellWaiting()
 {
   addUri("http://1/", _e);
   addUri("http://2/", _e);
   addUri("http://3/", _e);
+#ifdef ENABLE_BITTORRENT
   addTorrent("single.torrent", _e);
+#endif // ENABLE_BITTORRENT
 
   TellWaitingXmlRpcMethod m;
   XmlRpcRequest req("aria2.tellWaiting", BDE::list());
@@ -566,17 +572,29 @@ void XmlRpcMethodTest::testTellWaiting()
   // waiting.size() == offset+num 
   req = XmlRpcRequest("aria2.tellWaiting", BDE::list());
   req._params << BDE((int64_t)1);
+#ifdef ENABLE_BITTORRENT
   req._params << BDE((int64_t)3);
+#else // !ENABLE_BITTORRENT
+  req._params << BDE((int64_t)2);
+#endif // !ENABLE_BITTORRENT
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res._code);
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)3, res._param.size());
+#else // !ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)2, res._param.size());
+#endif // !ENABLE_BITTORRENT
   // waiting.size() < offset+num 
   req = XmlRpcRequest("aria2.tellWaiting", BDE::list());
   req._params << BDE((int64_t)1);
   req._params << BDE((int64_t)4);
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res._code);
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)3, res._param.size());
+#else //!ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)2, res._param.size());
+#endif // !ENABLE_BITTORRENT
 }
 
 void XmlRpcMethodTest::testTellWaiting_fail()
