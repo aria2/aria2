@@ -1,5 +1,10 @@
 2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo. Referred --index-out option in BitTorrent notes.
+	* README
+
+2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Store all addresses found by getifaddrs() and getaddrinfo().  In
 	bind, try all addresses until success
 	* src/SocketCore.cc

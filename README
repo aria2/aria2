@@ -103,7 +103,7 @@ distribution you use):
 * libgcrypt-dev    (Required for BitTorrent, Checksum support)
 * libc-ares-dev    (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
-* libz1g-dev       (Required for gzip, deflate decoding support in HTTP)
+* zlib1g-dev       (Required for gzip, deflate decoding support in HTTP)
 * libsqlite3-dev   (Required for Firefox3 cookie support)
 
 You can use libssl-dev instead of
@@ -184,8 +184,10 @@ table is saved to $HOME/.aria2/dht.dat.
 
 Other things should be noted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 * -o option is used to change the filename of .torrent file itself,
-  not a filename of a file in .torrent file.
+  not a filename of a file in .torrent file. For this purpose, use
+  --index-out option instead.
 * The port numbers that aria2 uses by default are 6881-6999 for TCP
   and UDP.
 * aria2 doesn't configure port-forwarding automatically. Please
