@@ -1,5 +1,9 @@
 2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release 1.7.1
+
+2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.7.1
 	* configure.ac
 
