@@ -575,7 +575,7 @@ _(" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and last
   "                              first SIZE bytes of each file get higher priority.\n"\
   "                              tail=SIZE means the range of last SIZE bytes of\n"\
   "                              each file. SIZE can include K or M(1K = 1024, 1M =\n"\
-  "                              1024K).")
+  "                              1024K). If SIZE is omitted, SIZE=1M is used.")
 #define TEXT_INTERFACE \
 _(" --interface=INTERFACE        Bind sockets to given interface. You can specify\n"\
   "                              interface name, IP address and hostname.")

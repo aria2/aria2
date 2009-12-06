@@ -1,5 +1,12 @@
 2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Set default value for SIZE in --bt-prioritize-piece to 1MiB.
+	* src/usage_text.h
+	* src/util.cc
+	* test/UtilTest.cc
+
+2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated Russian, Ukrainian, German and French translations.
 	Thanks to all translators involved.
 	* po/de.po

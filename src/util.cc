@@ -525,60 +525,78 @@ IntSequence parseIntRange(const std::string& src)
   return values;
 }
 
+static void computeHeadPieces
+(std::vector<size_t>& indexes,
+ const std::vector<SharedHandle<FileEntry> >& fileEntries,
+ size_t pieceLength,
+ uint64_t head)
+{
+  if(head == 0) {
+    return;
+  }
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
+	fileEntries.begin(); fi != fileEntries.end(); ++fi) {
+    if((*fi)->getLength() == 0) {
+      continue;
+    }
+    size_t lastIndex =
+      ((*fi)->getOffset()+std::min(head, (*fi)->getLength())-1)/pieceLength;
+    for(size_t index = (*fi)->getOffset()/pieceLength;
+	index <= lastIndex; ++index) {
+      indexes.push_back(index);
+    }
+  }
+}
+
+static void computeTailPieces
+(std::vector<size_t>& indexes,
+ const std::vector<SharedHandle<FileEntry> >& fileEntries,
+ size_t pieceLength,
+ uint64_t tail)
+{
+  if(tail == 0) {
+    return;
+  }
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
+	fileEntries.begin(); fi != fileEntries.end(); ++fi) {
+    if((*fi)->getLength() == 0) {
+      continue;
+    }
+    uint64_t endOffset = (*fi)->getLastOffset();
+    size_t fromIndex =
+      (endOffset-1-(std::min(tail, (*fi)->getLength())-1))/pieceLength;
+    for(size_t index = fromIndex; index <= (endOffset-1)/pieceLength;
+	++index) {
+      indexes.push_back(index);
+    }
+  }
+}
+
 void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength)
 {
+  const uint64_t DEFAULT_SIZE = 1024*1024;
   std::vector<size_t> indexes;
   std::vector<std::string> parts;
   split(src, std::back_inserter(parts), ",", true);
   for(std::vector<std::string>::const_iterator i = parts.begin();
       i != parts.end(); ++i) {
     if((*i) == "head") {
-      for(std::vector<SharedHandle<FileEntry> >::const_iterator fi = 
-	    fileEntries.begin(); fi != fileEntries.end(); ++fi) {
-	indexes.push_back((*fi)->getOffset()/pieceLength);
-      }
+      computeHeadPieces(indexes, fileEntries, pieceLength, DEFAULT_SIZE);
     } else if(util::startsWith(*i, "head=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
 					(*i).end());
-      uint64_t head = std::max((int64_t)0, getRealSize(sizestr));
-      for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
-	    fileEntries.begin(); fi != fileEntries.end(); ++fi) {
-	if((*fi)->getLength() == 0) {
-	  continue;
-	}
-	size_t lastIndex =
-	  ((*fi)->getOffset()+std::min(head, (*fi)->getLength())-1)/pieceLength;
-	for(size_t index = (*fi)->getOffset()/pieceLength;
-	    index <= lastIndex; ++index) {
-	  indexes.push_back(index);
-	}
-      }
+      computeHeadPieces(indexes, fileEntries, pieceLength,
+			std::max((int64_t)0, getRealSize(sizestr)));
     } else if((*i) == "tail") {
-      for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
-	    fileEntries.begin(); fi != fileEntries.end(); ++fi) {
-	indexes.push_back
-	  (((*fi)->getOffset()+(*fi)->getLength()-1)/pieceLength);
-      }
+      computeHeadPieces(indexes, fileEntries, pieceLength, DEFAULT_SIZE);
     } else if(util::startsWith(*i, "tail=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
 					(*i).end());
-      uint64_t tail = std::max((int64_t)0, getRealSize(sizestr));
-      for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
-	    fileEntries.begin(); fi != fileEntries.end(); ++fi) {
-	if((*fi)->getLength() == 0) {
-	  continue;
-	}
-	uint64_t endOffset = (*fi)->getLastOffset();
-	size_t fromIndex =
-	  (endOffset-1-(std::min(tail, (*fi)->getLength())-1))/pieceLength;
-	for(size_t index = fromIndex; index <= (endOffset-1)/pieceLength;
-	    ++index) {
-	  indexes.push_back(index);
-	}
-      }
+      computeTailPieces(indexes, fileEntries, pieceLength,
+			std::max((int64_t)0, getRealSize(sizestr)));
     } else {
       throw DL_ABORT_EX
 	(StringFormat("Unrecognized token %s", (*i).c_str()).str());
