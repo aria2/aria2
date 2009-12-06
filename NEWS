@@ -1,3 +1,19 @@
+aria2 1.7.1
+===========
+
+Release Note
+------------
+
+This release fixes the bug that --bt-prioritize-piece=tail is not
+working.
+
+Changes
+-------
+
+ * Fixed the bug that --bt-prioritize-piece=tail is not working.
+
+
+
 aria2 1.7.0
 ===========
 
