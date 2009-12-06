@@ -591,7 +591,7 @@ void parsePrioritizePieceRange
       computeHeadPieces(indexes, fileEntries, pieceLength,
 			std::max((int64_t)0, getRealSize(sizestr)));
     } else if((*i) == "tail") {
-      computeHeadPieces(indexes, fileEntries, pieceLength, DEFAULT_SIZE);
+      computeTailPieces(indexes, fileEntries, pieceLength, DEFAULT_SIZE);
     } else if(util::startsWith(*i, "tail=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
 					(*i).end());
