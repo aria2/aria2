@@ -44,6 +44,7 @@
 #include <string>
 #include <cstdlib>
 #include <utility>
+#include <vector>
 
 #ifdef HAVE_LIBSSL
 // for SSL
@@ -92,9 +93,7 @@ private:
 
   static int _protocolFamily;
 
-  static SharedHandle<struct sockaddr_storage> _bindAddr;
-
-  static socklen_t _bindAddrLen;
+  static std::vector<std::pair<struct sockaddr_storage, socklen_t> > _bindAddrs;
 
   bool blocking;
   int secure;

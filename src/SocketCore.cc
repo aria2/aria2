@@ -87,9 +87,8 @@ SocketCore::PollMethod SocketCore::_pollMethod = SocketCore::POLL_METHOD_SELECT;
 
 int SocketCore::_protocolFamily = AF_UNSPEC;
 
-SharedHandle<struct sockaddr_storage> SocketCore::_bindAddr;
-
-socklen_t SocketCore::_bindAddrLen = 0;
+std::vector<std::pair<struct sockaddr_storage, socklen_t> >
+SocketCore::_bindAddrs;
 
 #ifdef ENABLE_SSL
 SharedHandle<TLSContext> SocketCore::_tlsContext;
@@ -192,7 +191,7 @@ void SocketCore::bind(uint16_t port, int flags)
 {
   closeConnection();
 
-  if(flags == 0 || _bindAddr.isNull()) {
+  if(flags == 0 || _bindAddrs.empty()) {
     struct addrinfo hints;
     struct addrinfo* res;
     memset(&hints, 0, sizeof(hints));
@@ -217,11 +216,16 @@ void SocketCore::bind(uint16_t port, int flags)
     }
     freeaddrinfo(res);
   } else {
-    sock_t fd = bindInternal
-      (_bindAddr->ss_family, _sockType, 0,
-       reinterpret_cast<const struct sockaddr*>(_bindAddr.get()), _bindAddrLen);
-    if(fd != (sock_t)-1) {
-      sockfd = fd;
+    for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
+	  const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+      sock_t fd = bindInternal
+	((*i).first.ss_family, _sockType, 0,
+	 reinterpret_cast<const struct sockaddr*>
+	 (&(*i).first), (*i).second);
+      if(fd != (sock_t)-1) {
+	sockfd = fd;
+	break;
+      }
     }
   }
   if(sockfd == (sock_t) -1) {
@@ -310,11 +314,19 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
       CLOSE(fd);
       continue;
     }
-
-    if(!_bindAddr.isNull()) {
-      if(::bind(fd, reinterpret_cast<const struct sockaddr*>(_bindAddr.get()),
-		_bindAddrLen) == -1) {
-	LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+    if(!_bindAddrs.empty()) {
+      bool bindSuccess = false;
+      for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
+	    const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+	if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
+		  (*i).second) == -1) {
+	  LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+	} else {
+	  bindSuccess = true;
+	  break;
+	}
+      }
+      if(!bindSuccess) {
 	CLOSE(fd);
 	continue;
       }
@@ -1127,10 +1139,7 @@ void SocketCore::useSelect()
 
 void SocketCore::bindAddress(const std::string& interface)
 {
-  SharedHandle<struct sockaddr_storage> bindAddr(new struct sockaddr_storage());
-  socklen_t bindAddrLen = 0;
-  memset(bindAddr.get(), 0, sizeof(struct sockaddr_storage));
-  bool found = false;
+  std::vector<std::pair<struct sockaddr_storage, socklen_t> > bindAddrs;
   LogFactory::getInstance()->debug("Finding interface %s", interface.c_str());
 #ifdef HAVE_GETIFADDRS
   // First find interface in interface addresses
@@ -1162,22 +1171,23 @@ void SocketCore::bindAddress(const std::string& interface)
 	continue;
       }
       if(std::string(ifa->ifa_name) == interface) {
-	bindAddrLen =
+	socklen_t bindAddrLen =
 	  family == AF_INET?sizeof(struct sockaddr_in):
 	  sizeof(struct sockaddr_in6);
-	memcpy(bindAddr.get(), ifa->ifa_addr, bindAddrLen);
-	found = true;
-	break;
+	struct sockaddr_storage bindAddr;
+	memset(&bindAddr, 0, sizeof(bindAddr));
+	memcpy(&bindAddr, ifa->ifa_addr, bindAddrLen);
+	bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
       }
     }
   }
 #endif // HAVE_GETIFADDRS
-  if(!found) {
+  if(bindAddrs.empty()) {
     struct addrinfo hints;
     struct addrinfo* res = 0;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = _protocolFamily;
-    hints.ai_socktype = 0;
+    hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = 0;
     hints.ai_protocol = 0;
     int s;
@@ -1190,37 +1200,41 @@ void SocketCore::bindAddress(const std::string& interface)
       auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
       struct addrinfo* rp;
       for(rp = res; rp; rp = rp->ai_next) {
-	bindAddrLen = rp->ai_addrlen;
-	memcpy(bindAddr.get(), rp->ai_addr, rp->ai_addrlen);
+	socklen_t bindAddrLen = rp->ai_addrlen;
+	struct sockaddr_storage bindAddr;
+	memset(&bindAddr, 0, sizeof(bindAddr));
+	memcpy(&bindAddr, rp->ai_addr, rp->ai_addrlen);
 	// Try to bind socket with this address. If it fails, the
 	// address is not for this machine.
 	try {
 	  SocketCore socket;
 	  socket.bind
-	    (reinterpret_cast<const struct sockaddr*>(bindAddr.get()),
-	     bindAddrLen);
+	    (reinterpret_cast<const struct sockaddr*>(&bindAddr), bindAddrLen);
+	  bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
 	} catch(RecoverableException& e) {
-	  throw DL_ABORT_EX2
-	    (StringFormat(MSG_INTERFACE_NOT_FOUND,
-			  interface.c_str(), e.what()).str(), e);
+	  continue;
 	}
-	found = true;
-	break;
       }
     }
   }
-  if(found) {
-    char host[NI_MAXHOST];
-    int s;
-    s = getnameinfo(reinterpret_cast<struct sockaddr*>(bindAddr.get()),
-		    bindAddrLen,
-		    host, NI_MAXHOST, 0, NI_MAXSERV,
-		    NI_NUMERICHOST);
-    if(s == 0) {
-      LogFactory::getInstance()->debug("Sockets will bind to %s", host);
+  if(bindAddrs.empty()) {
+      throw DL_ABORT_EX
+	(StringFormat(MSG_INTERFACE_NOT_FOUND,
+		      interface.c_str(), "not available").str());
+  } else {
+    _bindAddrs = bindAddrs;
+    for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
+	  const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+      char host[NI_MAXHOST];
+      int s;
+      s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
+		      (*i).second,
+		      host, NI_MAXHOST, 0, NI_MAXSERV,
+		      NI_NUMERICHOST);
+      if(s == 0) {
+	LogFactory::getInstance()->debug("Sockets will bind to %s", host);
+      }
     }
-    _bindAddr = bindAddr;
-    _bindAddrLen = bindAddrLen;
   }
 }
 
