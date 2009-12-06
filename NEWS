@@ -1,168 +1,65 @@
-aria2 1.6.3
+aria2 1.7.0
 ===========
 
 Release Note
 ------------
 
-This release fixes reported bugs and updates Polish, Catalan, French,
-Italian, Russian and Japanese translations.
+This release adds BitTorrent Magnet URI support.  3 options were
+added: the ability to bind to particular interface, disabling IPv6 and
+prioritizing piece in BitTorrent downloads.  In configure script, if
+--with-PACKAGE and --enable-FEATURE are given but PACKAGE is missing
+in the system or FEATURE cannot be enabled in the current
+configuration, the script now prints error message and exits.
+--http-auth-scheme option was removed since it is useless.  Updated
+Russian, Ukrainian, German and French translations.
 
 Changes
 -------
 
- * Updated Polish, Catalan, French, Italian, Russian and Japanese
-   translations. Thanks to all translators.
+ * Updated Russian, Ukrainian, German and French translations.  Thanks
+   to all translators involved.
 
- * Fixed the bug that DHTAbstractNodeLookupTask never finishes if
-   error occurred in DHTMessageDispatcherImpl::sendMessage().
+ * Use last 8 bytes of peer ID as 'key' parameter for tracker request.
 
- * Fixed the bug that in Windows environment new blank line is
-   inserted when console readout is updated.
+ * Added --disable-ipv6 option to disable IPv6.
 
- * Fixed the bug that when downloading more than one torrent with
-   multiple ports in --listen-port, listening port is not reported
-   properly to tracker for 2nd or later torrents.
+ * In configure script, if --with-PACKAGE and --enable-FEATURE are
+   given and PACKAGE is missing in the system or FEATURE cannot be
+   enabled, print error message and stop the script.
 
- * Fixed typos in documentation.
+ * Added --interface option.  This feature binds sockets to given
+   interface. You can specify interface name, IP address and hostname.
 
- * Fixed the bug that Netrc::parse() cannot recognize comment line.
+ * Removed --http-auth-scheme option since it is useless.
 
- * Fixed Metalink piping no longer works.
+ * Added --bt-request-peer-speed-limit, --bt-max-peers and
+   --bt-prioritize-piece option to changeOption XML-RPC method.
 
- * Fixed "--ftp-passwd" option ignored when user name embedded in URI.
+ * Added option --bt-prioritize-piece.  This option instruct aria2 to
+   try to download first and last pieces of each file first. This
+   option is useful for previewing files. The argument can contain 2
+   keywords:head and tail. To include both keywords, they must be
+   separated by comma. These keywords can take one parameter,
+   SIZE. For example , if head=SIZE is specified, pieces in the range
+   of first SIZE bytes of each file get higher priority. tail=SIZE
+   means the range of last SIZE bytes of each file. SIZE can include K
+   or M(1K = 1024, 1M = 1024K).
 
-
+ * Use host and protocol in original URI to record server's speed,
+   because URI selector selects URI based on original URI, not
+   redirected one.
 
-aria2 1.6.2
-===========
+ * Fixed the bug which causes segmentation fault with tellWaiting
+   XML-RPC method when BitTorrent download is waiting.
 
-Release Note
-------------
+ * Added support of Extension for Peers to Send Metadata Files(BEP9)
+   and BitTorrent Magnet URI. Now addUri XML-RPC method accepts
+   BitTorrent Magnet URI. Metalink resource type 'bittorrent' also
+   accepts BitTorrent Magnet URI.
 
-This release fixes segmentation fault error if URI to download
-contains printf format string and logging is enabled.  The build
-scripts are updated to automake 1.11 and autoconf 2.64.  Updated
-Ukrainian translation.
+ * Fixed the bug that slow server is not knocked down in favor of
+   faster one.
 
-Changes
--------
-
- * Replaced aria2 with aria2c in help message.
-
- * Don't set localedir manually. Leave it to autoconf.
-
- * Added --install to ACLOCAL_AMFLAGS.  Removed m4 from SUBDIRS.
-   Updated automake 1.11 and autoconf 2.64.  Replaced some obsolute
-   macros with new one.
-
- * Removed Makefile.am in m4 directory. Removed unused m4 macros.
-
- * Fixed the bug that causes segmentation fault if
-   req->getCurrentUrl() contains printf format string such as %d. The
-   statement that causes this bug is useless and removed.
-
-
-
-aria2 1.6.1
-===========
-
-Release Note
-------------
-
-This release fixes memory leak in HTTP/FTP download. It also fixes the
-bug that the option values changed by XML-RPC changeOption and
-changeGlobalOption methods are cleared.  Now User-agent and Peer ID
-include version number.  Updated Simplified Chinese translations.
-
-Changes
--------
-
- * Don't save control file when aria2 exits while checking piece
-   hash(behavior of -V option). If control file doesn't exist when
-   aria2 launches, the completed length in saved control file will be
-   0 byte and this confuses user.
-
- * Included version number in Peer ID and client version.  Peer ID now
-   starts with "aria2/VERSION-", where VERSION is
-   MAJOR.MINOR.MICRO. Client version is aria2/VERSION.
-
- * Included version number in user-agent string.
-
- * Fixed memory leak in HTTP/FTP download.
-
- * Fixed the bug that the option values changed by XML-RPC
-   methods(changeOption and changeGlobalOption) are overwritten to the
-   previous value by the next these requests which doesn't contain
-   that option value.
-
- * Added missing help message for remove command to aria2rpc.
-
-
-
-aria2 1.6.0
-===========
-
-Release Note
-------------
-
-This release changes the default behavior of XML-RPC server. Now it
-listens only on local loopback interface by default for security
-reasons. If you want to connect to aria2c from remote hosts, use
---xml-rpc-listen-all option. The XML-RPC client sample script written
-in Ruby are now included in the archive under doc/xmlrpc directory.
-These scripts are licensed under MIT License. The help category tags
-are now start "#" to distinguish them from keyword search. Several
-help category tags were added: #xml-rpc, #cookie, #hook and #file.
---retry-wait option was removed because it doesn't work properly under
-the architecture. Updated Bulgarian, Russian, Slovak and Japanese
-translations.
-
-Changes
--------
-
- * Added XML-RPC in -v Configuration output.
-
- * Updated Bulgarian, Russian, Slovak and Japanese
-   translations. Thanks to all translators.
-
- * Removed --retry-wait option since the current architecture doesn't
-   allow sleep for particular URI.
-
- * Removed Retry-After header support since the current architecture
-   doesn't allow sleep for particular URI.
-
- * Added our own daemon() function for systems which desn't have
-   daemon(3).
-
- * Added help category tag #file. Added #file tag to the options
-   related to downloaded file.
-
- * Added help category tags: #cookie and #hook. Added #https tag to
-   --https-proxy and --https-proxy, --all-proxy and --no-proxy.
-
- * A help category tag now starts with "#" to distinguish a category
-   from keyword search. For example, "http" tag is now "#http". You
-   can type "--help=#http" to get explanation of options related to
-   http. If '#' is omitted, then the argument is treated as a keyword
-   and aria2 searches options whose name includes the keyword and
-   print matched ones. For example, "--help=http" will show options
-   whose name includes "http".
-
- * Added xml-rpc help tag. Tagged xml-rpc related options with
-   xml-rpc tag.
-
- * Fixed the bug that server performence profile is not updated when
-   aria2c was terminated by emergency shutdown.
-
- * Added XML-RPC client scripts written in ruby.
-
- * Added support for IPv6 literal address in URI. Now aria2 can
-   handle URI such as http://[::1]/
-
- * Fixed the bug that HTTP request header for XML-RPC request is not
-   parsed properly.
-
- * Added --xml-rpc-listen-all option. If true is given to this option,
-   aria2 listens incoming XML-RPC requests on all network
-   interfaces. If false is given, listens only on local loopback
-   interface. The default value is false.
+ * Applied a patch from tizianomueller to fix sigbus errors on Linux
+   sparc. I modified the patch to eliminate a cast to uint32_t* and
+   include file ordering.
