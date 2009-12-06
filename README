@@ -115,6 +115,8 @@ You can use libexpat1-dev instead of libxml2-dev:
 
 * libexpat1-dev    (Required for Metalink support)
 
+You may also need pkg-config to detect the above mentioned libraries.
+
 The quickest way to build aria2 is just type following commands:
 
 -------------

@@ -1,5 +1,10 @@
 2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Mentioned about pkg-config
+	* README
+
+2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo. Referred --index-out option in BitTorrent notes.
 	* README
 
