@@ -1,5 +1,14 @@
 2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Russian, Ukrainian, German and French translations.
+	Thanks to all translators involved.
+	* po/de.po
+	* po/fr.po
+	* po/ru.po
+	* po/uk.po
+
+2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Mentioned about pkg-config
 	* README
 

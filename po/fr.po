@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2009-12-05 20:51+0900\n"
-"PO-Revision-Date: 2009-11-02 23:14+0900\n"
+"PO-Revision-Date: 2009-12-06 18:07+0900\n"
 "Last-Translator: <<g33ky>> <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-11-01 09:48+0000\n"
+"X-Launchpad-Export-Date: 2009-12-06 08:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:212
@@ -42,7 +42,7 @@ msgstr ""
 
 #: src/RequestGroupMan.cc:543
 msgid "Download Results:"
-msgstr "Résultats du ou des téléchargements:"
+msgstr "Résultats du téléchargement:"
 
 #: src/RequestGroupMan.cc:587
 msgid "Status Legend:"
@@ -62,7 +62,7 @@ msgstr "                              Valeurs possibles: "
 
 #: src/OptionHandlerImpl.h:134
 msgid "must be either 'true' or 'false'."
-msgstr "doit contenir comme valeur soit \"true\" ou \"false\""
+msgstr "doit impérativement être 'vrai' ou 'faux'"
 
 #: src/OptionHandlerImpl.h:168 src/OptionHandlerImpl.h:217
 #, c-format
@@ -81,7 +81,7 @@ msgstr "doit être plus grand ou égal à %s"
 
 #: src/OptionHandlerImpl.h:223 src/OptionHandlerImpl.h:301
 msgid "must be a number."
-msgstr "doit être un nombre"
+msgstr "doit être un nombre."
 
 #: src/OptionHandlerImpl.h:292
 #, c-format
@@ -104,7 +104,7 @@ msgstr "doit être l'une de ces valeurs suivantes:"
 
 #: src/OptionHandlerImpl.h:525 src/OptionHandlerImpl.h:568
 msgid "unrecognized proxy format"
-msgstr "format de proxy non reconnu"
+msgstr "type de proxy non reconnu"
 
 #: src/usage_text.h:37
 msgid ""
@@ -178,13 +178,12 @@ msgstr ""
 
 #: src/usage_text.h:61
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr " -t, --timeout=SEC Indique le timeout en secondes."
+msgstr " -t, --timeout=SEC Indique le délai d'expiration en secondes."
 
 #: src/usage_text.h:63
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
-" -m, --max-tries=N            Indique le nombre d'éssais. 0 signifiant "
-"illimité."
+" -m, --max-tries=N Indique le nombre d'éssais. 0 indiquant sans limites."
 
 #: src/usage_text.h:65
 msgid ""
@@ -225,18 +224,26 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
+" --all-proxy=PROXY Utiliser ce proxy pour tous les protocoles.\n"
+"                              Vous pouvez remplacer ce paramètre et "
+"spécifier un\n"
+"                              serveur de proxy pour un protocole spécifique "
+"en utilisant\n"
+"                              les options --http-proxy, --https-proxy et --"
+"ftp-proxy\n"
+"                              Ceci affecte toutes les URLs."
 
 #: src/usage_text.h:84
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
-" --http-user=USER             Définir un utilisateur HTTP. Ceci affecte tous "
-"les URLs."
+" --http-user=USER Permets de définir un utilisateur HTTP. Ceci affecte "
+"toutes les URLs."
 
 #: src/usage_text.h:86
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=PASSWD         Définir un mot de passe HTTP. Ceci affecte "
-"tous les URLs."
+" --http-passwd=PASSWD Permets de définir un mot de passe HTTP. Ceci affecte "
+"toutes les URLs."
 
 #: src/usage_text.h:88
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
@@ -274,6 +281,9 @@ msgid ""
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
+" -p, --ftp-pasv[=true|false]  Utiliser le mode passif en FTP. Si 'false' est "
+"indiqué,\n"
+"                              le mode actif sera utilisé."
 
 #: src/usage_text.h:101
 msgid ""
@@ -286,6 +296,15 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
+" --lowest-speed-limit=SPEED Ferme les connection si la vitesse de "
+"téléchargement est inférieure ou\n"
+"                              égale à cette valeur (en bytes par secondes).\n"
+"                              0 indique que Aria2 n'aura pas de limite de "
+"vitesse minimale de téléchargement.\n"
+"                              Vous pouvez indiquer les valeurs en K ou M (1K "
+"= 1024, 1M = 1024K).\n"
+"                              Cette option n'affecte pas les téléchargements "
+"via BitTorrent."
 
 #: src/usage_text.h:107
 msgid ""
@@ -296,6 +315,14 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
+" --max-overall-download-limit=SPEED Définit la vitesse maximale de "
+"téléchargement en bytes/sec.\n"
+"                              0 indique sans limitation.\n"
+"                              Vous pouvez indiquer les valeurs en K ou M (1K "
+"= 1024, 1M = 1024K).\n"
+"                              Afin de limiter la vitesse maximale par "
+"téléchargement, utiliser\n"
+"                              l'option --max-download-limit."
 
 #: src/usage_text.h:113
 msgid ""
@@ -305,6 +332,14 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
+" --max-download-limit=SPEED Définit la vitesse de téléchargement maximale "
+"par téléchargement en\n"
+"                              bytes/sec. 0 indique sans limitation.\n"
+"                              Vous pouvez indiquer les valeurs en K ou M (1K "
+"= 1024, 1M = 1024K).\n"
+"                              Afin de limiter la vitesse globale de "
+"téléchargement, utiliser\n"
+"                              l'option --max-overall-download-limit."
 
 #: src/usage_text.h:119
 msgid ""
@@ -332,6 +367,30 @@ msgid ""
 "                              not be available if your system doesn't have\n"
 "                              posix_fallocate() function."
 msgstr ""
+" --file-allocation=METHOD Définit la méthode d'allocation de fichier.\n"
+"                              'none' n'alloue pas d'espace disque par avance "
+"pour le fichier. 'prealloc'\n"
+"                              pré-alloue l'espace disque nécessaire avant "
+"que le téléchargement ne débute.\n"
+"                              Ceci peux prendre un certain temps, selon la "
+"taille\n"
+"                              du fichier.\n"
+"                              Si vous utilisez un système de fichiers "
+"récent, tel que de l'EXT4\n"
+"                              (avec la gestion des extensions), BTRFS ou "
+"XFS, 'falloc' sera l'option la\n"
+"                              plus recommandée. Elle alloue des fichiers de "
+"taille importante (plusieurs Gbs)\n"
+"                              de manière presque instantanée. Ne pas "
+"utiliser 'falloc' avec des systèmes\n"
+"                              de fichiers compatibles tels que EXT3, car le "
+"temps d'allocation d'espace disque\n"
+"                              serais identique qu'avec l'utilisation du "
+"paramètre 'prealloc'. Par ailleurs, celà bloquerais\n"
+"                              Aria2 jusqu'à ce que l'allocation soit "
+"achevée. 'falloc' pourrais ne pas être disponible si\n"
+"                              votre système ne prends pas en charge la "
+"fonction posix_fallocate()."
 
 #: src/usage_text.h:134
 msgid ""
@@ -368,6 +427,12 @@ msgid ""
 "download\n"
 "                              the file. See also --auto-file-renaming option."
 msgstr ""
+" --allow-overwrite=true|false Si false est indiqué, alors qu'un fichier "
+"existe déjà mais\n"
+"                              que le fichier de contrôle correspondant "
+"(nomdefichier.aria2) n'existe pas,\n"
+"                              Aria2 ne téléchargera pas à nouveau le "
+"fichier. Voir également l'option --auto-file-renaming."
 
 #: src/usage_text.h:147
 msgid ""
@@ -395,6 +460,11 @@ msgid ""
 "like\n"
 "                              the usual command-line download utilities."
 msgstr ""
+" -Z, --force-sequential[=true|false] Récupère les URIs par le terminal de "
+"manière séquentielle\n"
+"                              et télécharge chaque URI dans une session "
+"séparée, tout comme l'utilitaire\n"
+"                              en ligne de commande habituel."
 
 #: src/usage_text.h:156
 msgid ""
@@ -406,6 +476,14 @@ msgid ""
 "(1..9999)\n"
 "                              appended."
 msgstr ""
+" --auto-file-renaming[=true|false] Renomme le fichier si le même fichier "
+"existe\n"
+"                              déjà. Cette option ne fonctionne qu'en "
+"téléchargement via http(s)\n"
+"                              ou ftp.\n"
+"                              Le fichier une fois renommé aura un point (.) "
+"et un nombre\n"
+"                              (1..9999)."
 
 #: src/usage_text.h:162
 msgid ""
@@ -422,6 +500,18 @@ msgid ""
 "                              as the second example above, -Z option is\n"
 "                              required."
 msgstr ""
+" -P, --parameterized-uri[=true|false] Activer le support URI paramétré.\n"
+"                              Vous pouvez spécifier un ensemble d'éléments:\n"
+"                              http://{sv1,sv2,sv3}/foo.iso\n"
+"                              Vous pouvez également spécifier une séquence "
+"numérique avec \n"
+"                              un compteur d'étapes:\n"
+"                              http://host/image[000-100:2].img\n"
+"                              Un compteur d'étapes n'est pas obligatoire.\n"
+"                              Si toutes les URI ne pointent pas vers le même "
+"fichier, tel\n"
+"                              que dans le second exemple, l'option -Z est \n"
+"                              requise."
 
 #: src/usage_text.h:173
 msgid ""
@@ -447,6 +537,15 @@ msgid ""
 "                              of a file. See also --bt-hash-check-seed "
 "option."
 msgstr ""
+" -V, --check-integrity[=true|false] Contrôle l'intégrité du fichier en "
+"validant\n"
+"                              le hash de chaque morceau. Cette option n'as "
+"d'effet que pour les \n"
+"                              téléchargements BitTorrent et par Metalink "
+"avec somme de contrôle des segments. \n"
+"                              Utiliser cette option afin de re-télécharger "
+"un ensemble ou un fichier endommagé.\n"
+"                              Voir également l'option --bt-hash-check-seed."
 
 #: src/usage_text.h:183
 msgid ""
@@ -460,6 +559,16 @@ msgid ""
 "                              This option has effect only on BitTorrent\n"
 "                              download."
 msgstr ""
+" --bt-hash-check-seed[=true|false] Si 'true' est spécifié, une fois le "
+"contrôle du hash effectué\n"
+"                              en utilisant --check-integrity et que le "
+"fichier est terminé, continuer de seeder.\n"
+"                              Si vous souhaitez contrôler le fichier et le "
+"télécharger seulement s'il est endommagé\n"
+"                              ou incomplet, définir cette option sur "
+"'false'.\n"
+"                              Cette option n'est effective que lors de "
+"téléchargements via BitTorrent."
 
 #: src/usage_text.h:191
 msgid ""
@@ -468,6 +577,11 @@ msgid ""
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
+" --realtime-chunk-checksum=true|false Valide les segments de données en "
+"calculant\n"
+"                              les sommes de contrôle pendant le "
+"téléchargement d'un fichier\n"
+"                              si la fonction est supportée."
 
 #: src/usage_text.h:195
 msgid ""
@@ -522,6 +636,11 @@ msgid ""
 "metalink.\n"
 "                              See also -s and -C options."
 msgstr ""
+" -j, --max-concurrent-downloads=N Définit le nombre maximum de "
+"télachargements simultanés\n"
+"                              pour chaque (HTTP/FTP) URL, Torrent, ou "
+"Metalink.\n"
+"                              Voir également les options -s et -C."
 
 #: src/usage_text.h:219
 msgid ""
@@ -542,6 +661,11 @@ msgid ""
 "and\n"
 "                              their expiry values are treated as 0."
 msgstr ""
+" --save-cookies=FICHIER Sauvegarde les cookies vers FICHIER au format "
+"Mozilla / Firefox (1.x/2.x) / Netscape.\n"
+"                              Si FICHIER existe déjà, il sera remplacé. Les "
+"cookies de session sont également sauvegardés\n"
+"                              et leur valeur d'expiration sera remise à 0."
 
 #: src/usage_text.h:227
 msgid ""
@@ -569,6 +693,16 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
+" --select-file=INDEX... Définit le fichier à télécharger en spécifiant son "
+"index.\n"
+"                              Vous pouvez trouver l'index de fichiers en "
+"utilisant l'option --show-files. Plusieurs indexs peuvent être spécifiés  \n"
+"                              en utilisant par exemple \"3,6\". Vous pouvez "
+"également utiliser '-' pour spécifier un ensemble : \"1-5\".\n"
+"                               ',' et '-' peuvent être utilisés "
+"simultanément. Lorsque utilisé avec l'option -M, l'index peux varier selon "
+"la requête (voir\n"
+"                              l'option --metalink)."
 
 #: src/usage_text.h:240
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
@@ -611,6 +745,9 @@ msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
 msgstr ""
+" --direct-file-mapping=true|false Lis et écris directement vers chaque "
+"fichier\n"
+"                              mentionné dans le fichier  .torrent."
 
 #: src/usage_text.h:255
 msgid ""
@@ -641,6 +778,14 @@ msgid ""
 "                              To limit the upload speed per torrent, use\n"
 "                              --max-upload-limit option."
 msgstr ""
+" --max-overall-upload-limit=SPEED Définis la vitesse maximale d'envoi en "
+"bytes/sec.\n"
+"                              0 signifie aucune limite.\n"
+"                              Vous pouvez spécifier K ou M(1K = 1024, 1M = "
+"1024K).\n"
+"                              Afin de limiter la vitesse d'envoi par "
+"torrent, utiliser\n"
+"                              l'option --max-upload-limit."
 
 #: src/usage_text.h:267
 msgid ""
@@ -650,6 +795,13 @@ msgid ""
 "                              To limit the overall upload speed, use\n"
 "                              --max-overall-upload-limit option."
 msgstr ""
+" -u, --max-upload-limit=SPEED Définir la vitesse maximum d'upload par "
+"torrent en\n"
+"                              bytes/sec. 0 indique aucune restriction.\n"
+"                              Vous pouvez indiquer en K ou M (1K = 1024, 1M "
+"= 1024K).\n"
+"                              Afin de limiter la vitesse globale, utiliser "
+"l'option --max-overall-limit."
 
 #: src/usage_text.h:273
 msgid ""
@@ -674,6 +826,20 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
+" --seed-ratio=RATIO Spécifier le ratio de partage. Alimente les torrents "
+"achevés\n"
+"                              jusqu'à ce que le ratio atteigne RATIO.\n"
+"                              Il est fortement recommandé de spécifier une "
+"valeur égale ou\n"
+"                              supérieure à 1 ici. Spécifier 0.0 si vous "
+"souhaitez\n"
+"                              alimenter le partage sans tenir compte du "
+"ratio.\n"
+"                              Si l'option --seed-time est spécifiée "
+"parallèlement à\n"
+"                              cette option, l'alimentation prends fin une "
+"fois l'une des\n"
+"                              conditions remplie."
 
 #: src/usage_text.h:285
 msgid ""
@@ -686,6 +852,15 @@ msgid ""
 "                              byte data are added to make its length 20 "
 "bytes."
 msgstr ""
+" --peer-id-prefix=PEER_ID_PREFIX Spécifie le préfixe de l'identifiant de "
+"noeud. L'identifiant de nœud\n"
+"                              en BitTorrent a une longueur de 20 bytes. Si "
+"plus de 20 bytes sont spécifiés, seulement\n"
+"                              les 20 premiers bytes sont utilisés. Si moins "
+"de 20 bytes sont spécifiés, des données\n"
+"                              aléatoires en bytes sont ajoutées afin de "
+"compléter la séquence jusqu'à ce qu'elle\n"
+"                              atteigne 20 bytes."
 
 #: src/usage_text.h:291
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -739,6 +914,13 @@ msgid ""
 "satisfies\n"
 "                              the given level."
 msgstr ""
+" --bt-min-crypto-level=plain|arc4 Définis le niveau minimum de la méthode de "
+"cryptage.\n"
+"                              Si plusieurs méthodes de cryptage sont "
+"fournies par\n"
+"                              nœud, Aria2 sélectionnes le niveau le plus "
+"bas, remplissant\n"
+"                              les conditions du niveau donné."
 
 #: src/usage_text.h:311
 msgid ""
@@ -790,6 +972,10 @@ msgid ""
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
+" --bt-max-peers=NUM Spécifier le nombre maximum de peers par torrent.\n"
+"                              0 indique illimités.\n"
+"                              Voir également l'option --bt-request-peer-"
+"speed-limit."
 
 #: src/usage_text.h:334
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
@@ -809,6 +995,16 @@ msgid ""
 "NUM_SERVERS.\n"
 "                              See also -s and -j options."
 msgstr ""
+" -C, --metalink-servers=NUM_SERVERS Permets de spécifier le nombre de "
+"serveurs auxquels se connecter\n"
+"                              simultanément. Certains Metalinks régulent "
+"automatiquement ce nombre. Aria2 \n"
+"                              respecte strictement ce paramètre. Celà "
+"signifie que si un Metalink définit  l'attribut\n"
+"                              'maxconnections' à une valeur en dessous de "
+"NUM_SERVERS, Aria2 utilisera la valeur de\n"
+"                              'maxconnections' au lieu de NUM_SERVERS. Voir "
+"également les options -s et -j."
 
 #: src/usage_text.h:345
 msgid " --metalink-version=VERSION   The version of the file to download."
@@ -831,6 +1027,9 @@ msgid ""
 "                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
+" --metalink-location=LOCATION[,...] L'emplacement du serveur préféré.\n"
+"                              Une liste de noms séparés par virgule peut "
+"être utilisée."
 
 #: src/usage_text.h:355
 msgid ""
@@ -838,6 +1037,9 @@ msgid ""
 "'none'\n"
 "                              if you don't have any preferred protocol."
 msgstr ""
+" --metalink-prefered-protocol=PROTO Spécifie un protocole préféré. Indiquer "
+"'none'\n"
+"                              si vous n'avez pas de préférence."
 
 #: src/usage_text.h:358
 msgid ""
@@ -854,6 +1056,17 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-metalink=true|false|mem Si 'true' est indiqué, lorsqu'un fichier\n"
+"                              ayant pour suffixe .metalink ou un contenu "
+"mime de type application/metalink+xml\n"
+"                              est téléchargé, Aria2 considère qu'il s'agit "
+"d'un fichier Metalink et télécharge le fichier\n"
+"                              indiqué.\n"
+"                              Si 'mem' est spécifié, un Metalink n'est pas "
+"écrit sur le disque, mais simplement\n"
+"                              conservé en mémoire.\n"
+"                              Si 'false' est spécifié, Aria2 ne suivra pas "
+"le Metalink."
 
 #: src/usage_text.h:368
 msgid ""
@@ -932,7 +1145,7 @@ msgstr ""
 
 #: src/usage_text.h:396
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
-msgstr ""
+msgstr " -q, --quiet[=true|false] Mode silencieux. Aucun message d'état."
 
 #: src/usage_text.h:398
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
@@ -984,6 +1197,12 @@ msgid ""
 "no\n"
 "                              effect and --timeout option is used instead."
 msgstr ""
+" --connect-timeout=SEC Définit le paramètre de délai d'attente en secondes "
+"pour établir\n"
+"                              une connection à un serveur HTTP/FTP/Proxy. "
+"Une fois la connection établie,\n"
+"                              cette option n'as pas d'autre usage et le "
+"paramètre --timeout est utilisé."
 
 #: src/usage_text.h:416
 msgid ""
@@ -997,6 +1216,14 @@ msgid ""
 "                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
+" --max-file-not-found=NUM Si Aria2 reçois un statut 'file not found' depuis "
+"le serveur\n"
+"                              HTTP/FTP distant au nombre de NUM sans "
+"recevoir un seul byte, celà cause\n"
+"                              un échec du téléchargement. Définir NUM à 0 "
+"afin de désactiver cette option.\n"
+"                              Cette option est effective seulement sur des "
+"serveurs de type HTTP/FTP."
 
 #: src/usage_text.h:423
 msgid ""
@@ -1036,6 +1263,12 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
+" --server-stat-of=FILE Spécifie le nom de fichier dans lequel le profil de "
+"performance\n"
+"                              des serveurs est sauvegardé. Vous pouvez "
+"charger les données \n"
+"                              sauvegardées en utilisant l'option --server-"
+"stat-if."
 
 #: src/usage_text.h:446
 msgid ""
@@ -1046,6 +1279,12 @@ msgid ""
 "                              some URI selector such as 'feedback'.\n"
 "                              See also --uri-selector option"
 msgstr ""
+" --server-stat-if=FILE Spécifie le fichier de profil de performance des "
+"serveurs\n"
+"                              à charger. Les données chargées seront "
+"utilisées dans certains sélecteurs\n"
+"                              d'URI à titre de 'feedback'.\n"
+"                              Voir également l'option --uri-selector."
 
 #: src/usage_text.h:451
 msgid ""
@@ -1054,6 +1293,10 @@ msgid ""
 "last\n"
 "                              contact to them."
 msgstr ""
+" --server-stat-timeout=SEC Spécifie le délai d'attente en secondes pour "
+"invalider\n"
+"                              le profil de performance des serveurs depuis "
+"leur dernière connexion."
 
 #: src/usage_text.h:455
 msgid ""
@@ -1074,6 +1317,12 @@ msgid ""
 "the\n"
 "                              private key."
 msgstr ""
+" --certificate=FILE Utiliser le certificat client présent dans le fichier "
+"FILE.\n"
+"                              Le certificat doit être au format PEM.\n"
+"                              Vous pouvez utiliser l'option --private-key "
+"afin de\n"
+"                              spécifier la clé privée."
 
 #: src/usage_text.h:465
 msgid ""
@@ -1081,6 +1330,10 @@ msgid ""
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
+" --private-key=FILE Utiliser le fichier de clé privée nommé FILE.\n"
+"                              La clé privée doit être décryptée et au format "
+"PEM.\n"
+"                              Voir également l'option --certificate."
 
 #: src/usage_text.h:469
 msgid ""
@@ -1100,6 +1353,9 @@ msgid ""
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
+" --check-certificate[=true|false] Vérifie les nœuds utilisant le certificat "
+"spécifié\n"
+"                              dans l'option --ca-certificate."
 
 #: src/usage_text.h:478
 msgid ""
@@ -1125,6 +1381,8 @@ msgid ""
 "listen\n"
 "                              to."
 msgstr ""
+" --xml-rpc-listen-port=PORT Spécifie le port sur lequel le serveur XML-RPC "
+"va écouter."
 
 #: src/usage_text.h:489
 msgid ""
@@ -1135,6 +1393,12 @@ msgid ""
 "passwd\n"
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
+" --enable-xml-rpc[=true|false] Active le serveur XML-RPC.\n"
+"                              Il est fortement recommandé de définir un nom "
+"d'utilisateur et un\n"
+"                              mot de passe en utilisant les options --xms-"
+"rpc-user et --xms-rpc-passwd.\n"
+"                              Voir également l'option --xml-rpc-listen-port."
 
 #: src/usage_text.h:494
 msgid ""
@@ -1143,14 +1407,18 @@ msgid ""
 "it\n"
 "                              drops connection."
 msgstr ""
+" --xml-rpc-max-request-size=SIZE Définit la taille maximale de requête XML-"
+"RPC. Si Aria2\n"
+"                              détecte une requête supérieure à une taille de "
+"SIZE bytes, la connection est fermée."
 
 #: src/usage_text.h:498
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
-msgstr ""
+msgstr " --xml-rpc-user=USER Définit l'utilisateur XML-RPC"
 
 #: src/usage_text.h:500
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
-msgstr ""
+msgstr " --xml-rpc-passwd=PASSWD Définit le mot de passe XML-RPC"
 
 #: src/usage_text.h:502
 msgid ""
@@ -1234,6 +1502,11 @@ msgid ""
 "and\n"
 "                              GID is passed to COMMAND as a first argument."
 msgstr ""
+" --on-download-start=COMMAND  Spécifie la commande devant être exécutée\n"
+"                              lorsque le téléchargement démarre. COMMAND ne "
+"doit utiliser qu'un seul argument et\n"
+"                              le GID est mentionné dans COMMAND en tant "
+"qu'argument primaire."
 
 #: src/usage_text.h:545
 msgid ""
@@ -1265,6 +1538,11 @@ msgid ""
 "                              consecutive SEC seconds. If 0 is given, this\n"
 "                              feature is disabled."
 msgstr ""
+" --bt-stop-timeout=SEC Stoppe le téléchargement BitTorrent si la vitesse "
+"atteints 0 en\n"
+"                              SEC secondes consécutives. Si 0 est défini, "
+"cette\n"
+"                              fonctionnalité est désactivée."
 
 #: src/usage_text.h:564
 msgid ""
@@ -1273,6 +1551,12 @@ msgid ""
 "only\n"
 "                              on local loopback interface."
 msgstr ""
+" --xml-rpc-listen-all[=true|false] Ecoutes les requêtes entrantes XML-RPC "
+"sur\n"
+"                              toutes les interfaces réseau. Si l'argument "
+"'false' est fourni, l'écoute\n"
+"                              ne sera effective que sur l'interface de "
+"boucle locale."
 
 #: src/usage_text.h:568
 msgid ""
@@ -1319,6 +1603,7 @@ msgstr "Faire part des bugs à %s"
 #: src/version_usage.cc:85
 msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
+"Syntaxe : aria2c [OPTIONS] [URL | FICHIER_TORRENT | FICHIER_METALINK]..."
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -1348,7 +1633,7 @@ msgstr ""
 #: src/version_usage.cc:120
 #, c-format
 msgid "No option matching with '%s'."
-msgstr ""
+msgstr "Aucune option correspondant à '%s'."
 
 #: src/version_usage.cc:128
 msgid ""
@@ -1986,19 +2271,19 @@ msgstr ""
 #: src/message.h:164
 #, c-format
 msgid "Certificate verification failed. Cause: %s"
-msgstr ""
+msgstr "Vérification du certificat échouée. Cause: %s"
 
 #: src/message.h:165
 msgid "No certificate found."
-msgstr ""
+msgstr "Aucun certificat trouvé."
 
 #: src/message.h:166
 msgid "Hostname not match."
-msgstr ""
+msgstr "Le nom d'hôte ne corresponds pas."
 
 #: src/message.h:167
 msgid "No files to download."
-msgstr ""
+msgstr "Pas de fichiers à télécharger."
 
 #: src/message.h:169
 msgid ""
@@ -2009,21 +2294,21 @@ msgstr ""
 #: src/message.h:171
 #, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr ""
+msgstr "Impression en cours du contenu du fichier '%s'..."
 
 #: src/message.h:172
 msgid "This file is neither Torrent nor Metalink file. Skipping."
-msgstr ""
+msgstr "Ce fichier n'est ni un Torrent ou un Metalink. Ignorer."
 
 #: src/message.h:177
 #, c-format
 msgid "Is '%s' a file?"
-msgstr ""
+msgstr "Est-ce que '%s' est un fichier ?"
 
 #: src/message.h:178
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find given interface %s, cause: %s"
-msgstr "Impossible d'ouvrir le fichier %s, cause: %s"
+msgstr ""
 
 #: src/message.h:181
 msgid "Timeout."
@@ -2389,15 +2674,6 @@ msgstr ""
 #: src/BtSetup.cc:161
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
-
-#~ msgid ""
-#~ " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
-#~ "basic\n"
-#~ "                              is the only supported scheme."
-#~ msgstr ""
-#~ " --http-auth-scheme=SCHEME    Indique le schéma d'authentification HTTP.\n"
-#~ "                                                           En ce moment, "
-#~ "seul \"basic\" est supporté."
 
 #~ msgid "CUID#%d - Unregistering cuid from segmentManager."
 #~ msgstr "CUID#%d - Suppression du CUID dans le gestionnaire de segment."
