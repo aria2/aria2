@@ -1,5 +1,10 @@
 2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated po templates.
+	* po/aria2.pot
+
+2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated help message for --bt-prioritize-piece. Some cosmetic
 	changes.
 	* doc/aria2c.1.txt
