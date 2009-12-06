@@ -1,5 +1,11 @@
 2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated help message for --bt-prioritize-piece. Some cosmetic
+	changes.
+	* doc/aria2c.1.txt
+
+2009-12-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set default value for SIZE in --bt-prioritize-piece to 1MiB.
 	* src/usage_text.h
 	* src/util.cc

@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 12/05/2009
+.\"      Date: 12/06/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "12/05/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "12/06/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -514,7 +514,7 @@ and
 \fItail\fR=SIZE means the range of last SIZE bytes of each file\&. SIZE can include
 \fIK\fR
 or
-\fIM\fR(1K = 1024, 1M = 1024K)\&.
+\fIM\fR(1K = 1024, 1M = 1024K)\&. If SIZE is omitted, SIZE=1M is used\&.
 .RE
 .PP
 \fB\-\-bt\-require\-crypto\fR=\fItrue\fR|\fIfalse\fR
@@ -1105,7 +1105,7 @@ The options that have its argument surrounded by square brackets([]) take an opt
 .sp
 You can specify multiple URLs in command\-line\&. Unless you specify \fB\-Z\fR option, all URLs must point to the same file or downloading will fail\&.
 .sp
-You can specify arbitrary number of BitTorrent Magnet URI\&. Please note that they are always treated as a separate download\&. Both hex encoded 40 characters Info Hash and Base32 encoded 32 characters Info Hash are supported\&. The multiple "tr" paramters are supported\&. Because BitTorrent Magnet URI is likely to contain "&" character, it is highly recommended to always quote URI with single(\') or double(") quotation\&. Enabling DHT is strongly recommended especially when "tr" parameter is missing\&. See http://www\&.bittorrent\&.org/beps/bep_0009\&.html for more details about BitTorrent Magnet URI\&.
+You can specify arbitrary number of BitTorrent Magnet URI\&. Please note that they are always treated as a separate download\&. Both hex encoded 40 characters Info Hash and Base32 encoded 32 characters Info Hash are supported\&. The multiple "tr" paramters are supported\&. Because BitTorrent Magnet URI is likely to contain "&" character, it is highly recommended to always quote URI with single(\') or double(") quotation\&. It is strongly recommended to enable DHT especially when "tr" parameter is missing\&. See http://www\&.bittorrent\&.org/beps/bep_0009\&.html for more details about BitTorrent Magnet URI\&.
 .sp
 You can also specify arbitrary number of torrent files and metalink files stored on a local drive\&. Please note that they are always treated as a separate download\&.
 .sp

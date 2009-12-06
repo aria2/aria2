@@ -1217,13 +1217,13 @@ writes the piece to the appropriate files.</td>
 <dd>
 <p>
   Try to download first and last pieces of each file first. This is
-  useful for previewing files. The argument can contain 2
-  keywords: <em>head</em> and <em>tail</em>. To include both keywords, they must be
-  separated by comma. These keywords can take one parameter, SIZE. For
-  example, if <em>head</em>=SIZE is specified, pieces in the range of first
-  SIZE bytes of each file get higher priority.  <em>tail</em>=SIZE means the
-  range of last SIZE bytes of each file. SIZE can include <em>K</em> or
-  <em>M</em>(1K = 1024, 1M = 1024K).
+  useful for previewing files. The argument can contain 2 keywords:
+  <em>head</em> and <em>tail</em>. To include both keywords, they must be separated
+  by comma. These keywords can take one parameter, SIZE. For example,
+  if <em>head</em>=SIZE is specified, pieces in the range of first SIZE bytes
+  of each file get higher priority.  <em>tail</em>=SIZE means the range of
+  last SIZE bytes of each file. SIZE can include <em>K</em> or <em>M</em>(1K = 1024,
+  1M = 1024K). If SIZE is omitted, SIZE=1M is used.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1956,9 +1956,9 @@ that they are always treated as a separate download.  Both hex encoded
 supported. The multiple "tr" paramters are supported.  Because
 BitTorrent Magnet URI is likely to contain "&amp;" character, it is highly
 recommended to always quote URI with single(') or double(") quotation.
-Enabling DHT is strongly recommended especially when "tr" parameter is
-missing. See <a href="http://www.bittorrent.org/beps/bep_0009.html">http://www.bittorrent.org/beps/bep_0009.html</a> for more
-details about BitTorrent Magnet URI.</p></div>
+It is strongly recommended to enable DHT especially when "tr"
+parameter is missing. See <a href="http://www.bittorrent.org/beps/bep_0009.html">http://www.bittorrent.org/beps/bep_0009.html</a>
+for more details about BitTorrent Magnet URI.</p></div>
 <div class="paragraph"><p>You can also specify arbitrary number of torrent files and metalink files
 stored on a local drive. Please note that they are always treated as a
 separate download.</p></div>
@@ -3460,7 +3460,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-12-05 18:17:44 JST
+Last updated 2009-12-06 20:11:29 JST
 </div>
 </div>
 </body>
