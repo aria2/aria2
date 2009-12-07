@@ -861,7 +861,21 @@ void UtilTest::testParsePrioritizePieceRange()
   CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
   CPPUNIT_ASSERT_EQUAL((size_t)4, result[3]);
   result.clear();
+  util::parsePrioritizePieceRange(result, "head", entries, pieceLength, 1024);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, result[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, result[3]);
+  result.clear();
   util::parsePrioritizePieceRange(result, "tail=1K", entries, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, result[1]);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
+  result.clear();
+  util::parsePrioritizePieceRange(result, "tail", entries, pieceLength, 1024);
   CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
   CPPUNIT_ASSERT_EQUAL((size_t)2, result[1]);
@@ -875,7 +889,8 @@ void UtilTest::testParsePrioritizePieceRange()
   CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
   CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
   result.clear();
-  util::parsePrioritizePieceRange(result, "head,tail", entries, pieceLength);
+  util::parsePrioritizePieceRange(result, "head=300M,tail=300M",
+				  entries, pieceLength);
   CPPUNIT_ASSERT_EQUAL((size_t)7, result.size());
   for(size_t i = 0; i < 7; ++i) {
     CPPUNIT_ASSERT_EQUAL(i, result[i]);

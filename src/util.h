@@ -203,12 +203,14 @@ IntSequence parseIntRange(const std::string& src);
 // parameter, SIZE. For example, if "head=SIZE" is specified, pieces
 // in the range of first SIZE bytes of each file get higher
 // priority. SIZE can include K or M(1K = 1024, 1M = 1024K).
+// If SIZE is omitted, SIZE=defaultSize is used.
 //
 // sample: head=512K,tail=512K
 void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
- size_t pieceLength);
+ size_t pieceLength,
+ uint64_t defaultSize = 1048576 /* 1MiB */);
 
 // this function temporarily put here
 std::string getContentDispositionFilename(const std::string& header);

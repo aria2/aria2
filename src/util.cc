@@ -575,23 +575,23 @@ static void computeTailPieces
 void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
- size_t pieceLength)
+ size_t pieceLength,
+ uint64_t defaultSize)
 {
-  const uint64_t DEFAULT_SIZE = 1024*1024;
   std::vector<size_t> indexes;
   std::vector<std::string> parts;
   split(src, std::back_inserter(parts), ",", true);
   for(std::vector<std::string>::const_iterator i = parts.begin();
       i != parts.end(); ++i) {
     if((*i) == "head") {
-      computeHeadPieces(indexes, fileEntries, pieceLength, DEFAULT_SIZE);
+      computeHeadPieces(indexes, fileEntries, pieceLength, defaultSize);
     } else if(util::startsWith(*i, "head=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
 					(*i).end());
       computeHeadPieces(indexes, fileEntries, pieceLength,
 			std::max((int64_t)0, getRealSize(sizestr)));
     } else if((*i) == "tail") {
-      computeTailPieces(indexes, fileEntries, pieceLength, DEFAULT_SIZE);
+      computeTailPieces(indexes, fileEntries, pieceLength, defaultSize);
     } else if(util::startsWith(*i, "tail=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
 					(*i).end());
