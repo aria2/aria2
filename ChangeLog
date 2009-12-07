@@ -1,5 +1,11 @@
 2009-12-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that query parameter in magnet URI is not decoded.
+	* src/magnet.cc
+	* test/MagnetTest.cc
+
+2009-12-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Specified defaultSize as an argument for easy testing.
 	* src/util.cc
 	* src/util.h

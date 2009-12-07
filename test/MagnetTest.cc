@@ -24,7 +24,7 @@ void MagnetTest::testParse()
 {
   BDE r = parse
     ("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c&dn=aria2"
-     "&tr=http://tracker1&tr=http://tracker2");
+     "&tr=http%3A%2F%2Ftracker1&tr=http://tracker2");
   CPPUNIT_ASSERT_EQUAL
     (std::string("urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c"),
      r["xt"][0].s());

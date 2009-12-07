@@ -53,11 +53,12 @@ BDE parse(const std::string& magnet)
       i != queries.end(); ++i) {
     std::pair<std::string, std::string> kv;
     util::split(kv, *i, '=');
+    std::string value = util::urldecode(kv.second);
     if(dict.containsKey(kv.first)) {
-      dict[kv.first] << kv.second;
+      dict[kv.first] << value;
     } else {
       BDE list = BDE::list();
-      list << kv.second;
+      list << value;
       dict[kv.first] = list;
     }
   }
