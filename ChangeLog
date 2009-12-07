@@ -1,3 +1,9 @@
+2009-12-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that aria2 listens wrong port if --interface option
+	is used.
+	* src/SocketCore.cc
+
 2009-12-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that query parameter in magnet URI is not decoded.

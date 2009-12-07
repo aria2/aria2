@@ -187,41 +187,58 @@ static sock_t bindInternal(int family, int socktype, int protocol,
   return fd;
 }
 
+static sock_t bindTo
+(const char* host, uint16_t port, int family, int sockType,
+ int getaddrinfoFlags, std::string& error)
+{
+  struct addrinfo hints;
+  struct addrinfo* res;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = family;
+  hints.ai_socktype = sockType;
+  hints.ai_flags = getaddrinfoFlags;
+  hints.ai_protocol = 0;
+  int s = getaddrinfo(host, uitos(port).c_str(), &hints, &res);
+  if(s) {
+    error = gai_strerror(s);
+    return -1;
+  }
+  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  struct addrinfo* rp;
+  for(rp = res; rp; rp = rp->ai_next) {
+    sock_t fd = bindInternal(rp->ai_family, rp->ai_socktype, rp->ai_protocol,
+			     rp->ai_addr, rp->ai_addrlen);
+    if(fd != (sock_t)-1) {
+      return fd;
+    }
+  }
+  error = strerror(errno);
+  return -1;
+}
+
 void SocketCore::bind(uint16_t port, int flags)
 {
   closeConnection();
-
-  if(flags == 0 || _bindAddrs.empty()) {
-    struct addrinfo hints;
-    struct addrinfo* res;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = _protocolFamily;
-    hints.ai_socktype = _sockType;
-    hints.ai_flags = flags;
-    hints.ai_protocol = 0;
-    int s;
-    s = getaddrinfo(0, uitos(port).c_str(), &hints, &res);
-    if(s) {
-      throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, gai_strerror(s)).str());
-    }
-    struct addrinfo* rp;
-    for(rp = res; rp; rp = rp->ai_next) {
-      sock_t fd = bindInternal(rp->ai_family, rp->ai_socktype, rp->ai_protocol,
-			       rp->ai_addr, rp->ai_addrlen);
-      if(fd == (sock_t) -1) {
-	continue;
-      }
+  std::string error;
+  if(!(flags&AI_PASSIVE) || _bindAddrs.empty()) {
+    sock_t fd = bindTo(0, port, _protocolFamily, _sockType, flags, error);
+    if(fd != (sock_t) -1) {
       sockfd = fd;
-      break;
     }
-    freeaddrinfo(res);
   } else {
     for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
 	  const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
-      sock_t fd = bindInternal
-	((*i).first.ss_family, _sockType, 0,
-	 reinterpret_cast<const struct sockaddr*>
-	 (&(*i).first), (*i).second);
+      char host[NI_MAXHOST];
+      int s;
+      s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
+		      (*i).second,
+		      host, NI_MAXHOST, 0, NI_MAXSERV,
+		      NI_NUMERICHOST);
+      if(s) {
+	error = gai_strerror(s);
+	continue;
+      }
+      sock_t fd = bindTo(host, port, _protocolFamily, _sockType, flags, error);
       if(fd != (sock_t)-1) {
 	sockfd = fd;
 	break;
@@ -229,7 +246,7 @@ void SocketCore::bind(uint16_t port, int flags)
     }
   }
   if(sockfd == (sock_t) -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, strerror(errno)).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   }
 }
 
