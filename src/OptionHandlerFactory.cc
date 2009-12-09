@@ -1184,6 +1184,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_TORRENT_FILE,
 				    TEXT_TORRENT_FILE,
 				    NO_DEFAULT_VALUE,
+				    false,
 				    'T'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
@@ -1215,6 +1216,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 				   (PREF_METALINK_FILE,
 				    TEXT_METALINK_FILE,
 				    NO_DEFAULT_VALUE,
+				    true,
 				    'M'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_METALINK);

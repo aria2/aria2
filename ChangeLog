@@ -1,3 +1,11 @@
+2009-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	If '-' is given as an argument to --metalink-file option, aria2
+	reads Metalink file from stdin.
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/a2io.h
+
 2009-12-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that aria2 listens wrong port if --interface option

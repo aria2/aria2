@@ -56,6 +56,7 @@
 #include "message.h"
 #include "File.h"
 #include "FileEntry.h"
+#include "a2io.h"
 
 namespace aria2 {
 
@@ -576,24 +577,32 @@ public:
 };
 
 class LocalFilePathOptionHandler : public NameMatchOptionHandler {
+private:
+  bool _acceptStdin;
 public:
   LocalFilePathOptionHandler
   (const std::string& optName,
    const std::string& description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
+   bool acceptStdin = false,
    char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
 			   OptionHandler::REQ_ARG,
-			   shortName) {}
+			   shortName),
+    _acceptStdin(acceptStdin) {}
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    File f(optarg);
-    if(!f.exists() || f.isDir()) {
-      throw DL_ABORT_EX
-	(StringFormat(MSG_NOT_FILE, optarg.c_str()).str());
+    if(_acceptStdin && optarg == "-") {
+      option.put(_optName, DEV_STDIN);
+    } else {
+      File f(optarg);
+      if(!f.exists() || f.isDir()) {
+	throw DL_ABORT_EX
+	  (StringFormat(MSG_NOT_FILE, optarg.c_str()).str());
+      }
+      option.put(_optName, optarg);
     }
-    option.put(_optName, optarg);
   }
   
   virtual std::string createPossibleValuesString() const

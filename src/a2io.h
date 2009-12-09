@@ -103,10 +103,12 @@
 # define DEV_NULL "/dev/null"
 #endif // HAVE_WINSOCK2_H
 
-// Use 'con' instead of '/dev/stdout' in win32.
+// Use 'con' instead of '/dev/stdin' and '/dev/stdout' in win32.
 #ifdef HAVE_WINSOCK2_H
+# define DEV_STDIN "con"
 # define DEV_STDOUT "con"
 #else
+# define DEV_STDIN "/dev/stdin"
 # define DEV_STDOUT "/dev/stdout"
 #endif // HAVE_WINSOCK2_H
 
