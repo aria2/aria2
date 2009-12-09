@@ -1,5 +1,10 @@
 2009-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated usage text for --metalink-file option.
+	* src/usage_text.h
+
+2009-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	If '-' is given as an argument to --metalink-file option, aria2
 	reads Metalink file from stdin.
 	* src/OptionHandlerFactory.cc

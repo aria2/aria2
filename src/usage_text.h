@@ -331,7 +331,8 @@ _(" --bt-max-peers=NUM           Specify the maximum number of peers per torrent
   "                              0 means unlimited.\n"\
   "                              See also --bt-request-peer-speed-limit option.")
 #define TEXT_METALINK_FILE \
-_(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
+_(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file. Reads\n"\
+  "                              input from stdin when '-' is specified.")
 #define TEXT_METALINK_SERVERS \
 _(" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"\
   "                              simultaneously. Some Metalinks regulate the\n"\
