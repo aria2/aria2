@@ -1,5 +1,10 @@
 2009-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that line separator is missing in horizontal bar.
+	* doc/xmlrpc/aria2mon
+
+2009-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated usage text for --metalink-file option.
 	* src/usage_text.h
 
