@@ -96,6 +96,9 @@ OptionParser.new do |opt|
   opt.on("--bt-min-crypto-level LEVEL",["plain","arc4"]){|val|
     options["bt-min-crypto-level"]=val
   }
+  opt.on("--bt-prioritize-piece RANGE") {|val|
+    options["bt-prioritize-piece"]=val
+  }
   opt.on("--bt-require-crypto BOOL",["true","false"]){|val|
     options["bt-require-crypto"]=val
   }
