@@ -1,5 +1,10 @@
 2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Refer Magnet URI in --help. Made some cosmetic changes.
+	* src/version_usage.cc
+
+2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated -T and -M option.
 	* doc/aria2c.1.txt
 

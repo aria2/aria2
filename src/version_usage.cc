@@ -82,7 +82,7 @@ void showVersion() {
 }
 
 void showUsage(const std::string& keyword, const OptionParser& oparser) {
-  std::cout << _("Usage: aria2c [OPTIONS] [URL | TORRENT_FILE |"
+  std::cout << _("Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE |"
 		 " METALINK_FILE]...") << "\n"
 	    << "\n";
   if(util::startsWith(keyword, "#")) {
@@ -124,22 +124,22 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
   }
 
   if(keyword == TAG_BASIC) {
-    std::cout << "URL, TORRENT_FILE, METALINK_FILE:" << "\n"
-	      << _(" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
-		   " point to the same file or downloading will fail.") << "\n"
-	      << _(" You can also specify arbitrary number of torrent files and metalink files\n"
-		   " stored in a local drive. Please note that they are always treated as a\n"
-		   " separate download.") << "\n"
+    std::cout << "URI, MAGNET, TORRENT_FILE, METALINK_FILE:" << "\n"
+	      << _(" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, all\n"
+		   " URIs must point to the same file or downloading will fail.") << "\n"
+	      << _(" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
+		   " metalink files stored in a local drive. Please note that they are always\n"
+		   " treated as a separate download.") << "\n"
 
 	      << "\n"
-	      << _(" You can specify both torrent file with -T option and URLs. By doing this,\n"
-		   " download a file from both torrent swarm and http/ftp server at the same time,\n"
-		   " while the data from http/ftp are uploaded to the torrent swarm. For single file\n"
-		   " torrents, URL can be a complete URL pointing to the resource or if URL ends\n"
+	      << _(" You can specify both torrent file with -T option and URIs. By doing this,\n"
+		   " download a file from both torrent swarm and HTTP/FTP server at the same time,\n"
+		   " while the data from HTTP/FTP are uploaded to the torrent swarm. For single file\n"
+		   " torrents, URI can be a complete URI pointing to the resource or if URI ends\n"
 		   " with '/', 'name' in torrent file is added. For multi-file torrents, 'name' and\n"
-		   " 'path' in torrent are added to form a URL for each file.") << "\n"
+		   " 'path' in torrent are added to form a URI for each file.") << "\n"
 	      << "\n"
-	      << _(" Make sure that URL is quoted with single(\') or double(\") quotation if it\n"
+	      << _(" Make sure that URI is quoted with single(\') or double(\") quotation if it\n"
 		   " contains \"&\" or any characters that have special meaning in shell.") << "\n"
 	      << "\n";
   }
