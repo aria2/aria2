@@ -1,5 +1,10 @@
 2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated -T and -M option.
+	* doc/aria2c.1.txt
+
+2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo
 	* doc/aria2c.1.txt
 

@@ -485,8 +485,9 @@ Make sure that the specified ports are open for incoming TCP traffic.
   Specify seeding time in minutes. Also see the *--seed-ratio* option.
 
 *-T*, *--torrent-file*=TORRENT_FILE::
-  The path to the .torrent file.
-  You are not required to use this option because you can specify a torrent file without -T.
+
+  The path to the .torrent file.  You are not required to use this
+  option because you can specify .torrent files without *-T*.
 
 Metalink Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -500,8 +501,10 @@ Metalink Specific Options
   Default: 'true'
 
 *-M*, *--metalink-file*=METALINK_FILE::
-  The file path to .metalink file. You are not required to use this option because you can
-  specify a metalink file without -M.
+
+  The file path to .metalink file. Reads input from stdin when '-' is
+  specified.  You are not required to use this option because you can
+  specify .metalink files without *-M*.
 
 *-C*, *--metalink-servers*=NUM_SERVERS::
   The number of servers to connect to simultaneously.
