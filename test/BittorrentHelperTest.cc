@@ -62,6 +62,7 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseMagnet);
   CPPUNIT_TEST(testParseMagnet_base32);
   CPPUNIT_TEST(testMetadata2Torrent);
+  CPPUNIT_TEST(testTorrent2Magnet);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -104,6 +105,7 @@ public:
   void testParseMagnet();
   void testParseMagnet_base32();
   void testMetadata2Torrent();
+  void testTorrent2Magnet();
 };
 
 
@@ -252,7 +254,7 @@ void BittorrentHelperTest::testGetAnnounceTier() {
   const BDE& tier = announceList[0]; 
   CPPUNIT_ASSERT_EQUAL((size_t)1, tier.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/announce.php"),
-		       util::trim(tier[0].s()));
+		       tier[0].s());
 
 }
 
@@ -267,8 +269,7 @@ void BittorrentHelperTest::testGetAnnounceTierAnnounceList() {
 
   const BDE& tier1 = announceList[0];
   CPPUNIT_ASSERT_EQUAL((size_t)1, tier1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
-		       util::trim(tier1[0].s()));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"), tier1[0].s());
 
   const BDE& tier2 = announceList[1];
   CPPUNIT_ASSERT_EQUAL((size_t)1, tier2.size());
@@ -754,6 +755,20 @@ void BittorrentHelperTest::testMetadata2Torrent()
 		 "4:infoMETADATA"
 		 "e"),
      metadata2Torrent(metadata, attrs));
+}
+
+void BittorrentHelperTest::testTorrent2Magnet()
+{
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  load("test.torrent", dctx);
+  
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c"
+		 "&dn=aria2-test"
+		 "&tr=http%3A%2F%2Ftracker1"
+		 "&tr=http%3A%2F%2Ftracker2"
+		 "&tr=http%3A%2F%2Ftracker3"),
+     torrent2Magnet(dctx->getAttribute(BITTORRENT)));
 }
 
 } // namespace bittorrent

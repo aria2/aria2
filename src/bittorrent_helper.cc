@@ -304,12 +304,22 @@ static void extractAnnounce(BDE& torrent, const BDE& rootDict)
   const BDE& announceList = rootDict[C_ANNOUNCE_LIST];
   if(announceList.isList()) {
     torrent[ANNOUNCE_LIST] = announceList;
+    BDE& tiers = torrent[ANNOUNCE_LIST];
+    for(BDE::List::iterator tieriter = tiers.listBegin();
+	tieriter != tiers.listEnd(); ++tieriter) {
+      for(BDE::List::iterator uriiter = (*tieriter).listBegin();
+	  uriiter != (*tieriter).listEnd(); ++uriiter) {
+	if((*uriiter).isString()) {
+	  *uriiter = util::trim((*uriiter).s());
+	}
+      }
+    }
   } else {
     const BDE& announce = rootDict[C_ANNOUNCE];
     BDE announceList = BDE::list();
     if(announce.isString()) {
       announceList << BDE::list();
-      announceList[0] << announce;
+      announceList[0] << util::trim(announce.s());
     }
     torrent[ANNOUNCE_LIST] = announceList;
   }
@@ -582,6 +592,7 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
     }
   }
   o << "Name: " << torrentAttrs[NAME].s() << "\n";
+  o << "Magnet URI: " << torrent2Magnet(torrentAttrs) << "\n";
   util::toStream(dctx->getFileEntries().begin(), dctx->getFileEntries().end(), o);
 }
 
@@ -923,6 +934,33 @@ std::string metadata2Torrent(const std::string& metadata, const BDE& attrs)
   torrent +=
     strconcat("4:info", metadata, "e");
   return torrent;
+}
+
+std::string torrent2Magnet(const BDE& attrs)
+{
+  std::string uri = "magnet:?";
+  if(attrs.containsKey(INFO_HASH)) {
+    uri += "xt=urn:btih:";
+    uri += util::toHex(attrs[INFO_HASH].s());
+  } else {
+    return A2STR::NIL;
+  }
+  if(attrs.containsKey(NAME)) {
+    uri += "&dn=";
+    uri += util::urlencode(attrs[NAME].s());
+  }
+  if(attrs.containsKey(ANNOUNCE_LIST)) {
+    const BDE& tiers = attrs[ANNOUNCE_LIST];
+    for(BDE::List::const_iterator tieriter = tiers.listBegin();
+	tieriter != tiers.listEnd(); ++tieriter) {
+      for(BDE::List::const_iterator uriiter = (*tieriter).listBegin();
+	  uriiter != (*tieriter).listEnd(); ++uriiter) {
+	uri += "&tr=";
+	uri += util::urlencode((*uriiter).s());
+      }
+    }
+  }
+  return uri;
 }
 
 } // namespace bittorrent

@@ -235,6 +235,10 @@ void generateRandomKey(unsigned char* key);
 // data.
 std::string metadata2Torrent(const std::string& metadata, const BDE& attrs);
 
+// Constructs BitTorrent Magnet URI using attrs. attrs must be a
+// BDE::dict.
+std::string torrent2Magnet(const BDE& attrs);
+
 } // namespace bittorrent
 
 } // namespace aria2

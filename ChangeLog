@@ -1,5 +1,13 @@
 2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Print Magnet URI in -S output.
+	* src/AnnounceList.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+
+2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-prioritize-piece option to aria2rpc.
 	* doc/xmlrpc/aria2rpc
 
