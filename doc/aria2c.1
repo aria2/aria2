@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 12/06/2009
+.\"      Date: 12/10/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "12/06/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "12/10/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
@@ -2108,7 +2108,7 @@ GID(or gid) is the key to manage each download\&. Each download has an unique GI
 .sp
 \fBaria2\&.addUri\fR \fIuris[, options[, position]]\fR
 .sp
-This method adds new HTTP(S)/FTP/BitTorrent Magnet URI with this method\&. \fIuris\fR is of type array and its element is URI which is of type string\&. For BitTorrent Magnet URI, \fIuris\fR must have one element only and it should be BitTorrent Magnet URI\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
+This method adds new HTTP(S)/FTP/BitTorrent Magnet URI\&. \fIuris\fR is of type array and its element is URI which is of type string\&. For BitTorrent Magnet URI, \fIuris\fR must have only one element and it should be BitTorrent Magnet URI\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
 .sp
 \fBaria2\&.addTorrent\fR \fItorrent[, uris[, options[, position]]]\fR
 .sp

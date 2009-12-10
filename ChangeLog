@@ -1,3 +1,8 @@
+2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed typo
+	* doc/aria2c.1.txt
+
 2009-12-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that line separator is missing in horizontal bar.
