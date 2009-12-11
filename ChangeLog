@@ -1,3 +1,9 @@
+2009-12-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Enabled DHT by default because of Magnet URI support. To disable
+	DHT, use --enable-dht=false
+	* src/OptionHandlerFactory.cc
+
 2009-12-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Print Magnet URI in -S output.

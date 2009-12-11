@@ -1081,7 +1081,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
 				   (PREF_ENABLE_DHT,
 				    TEXT_ENABLE_DHT,
-				    V_FALSE,
+				    V_TRUE,
 				    OptionHandler::OPT_ARG));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
