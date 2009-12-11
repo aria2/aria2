@@ -416,7 +416,7 @@ Make sure that the specified ports are open for incoming UDP traffic.
 *--enable-dht*[='true'|'false']::
   Enable DHT functionality. If a private flag is set in a torrent, aria2
   doesn't use DHT for that download even if 'true' is given.
-  Default: 'false'
+  Default: 'true'
 
 *--enable-peer-exchange*[='true'|'false']::
   Enable Peer Exchange extension. If a private flag is set in a torrent, this
