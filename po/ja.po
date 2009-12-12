@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-12-06 20:37+0900\n"
+"POT-Creation-Date: 2009-12-12 22:04+0900\n"
 "PO-Revision-Date: 2009-11-02 23:14+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -60,49 +60,49 @@ msgstr "                              タグ: "
 msgid "                              Possible Values: "
 msgstr "                              設定可能な値: "
 
-#: src/OptionHandlerImpl.h:134
+#: src/OptionHandlerImpl.h:135
 msgid "must be either 'true' or 'false'."
 msgstr "は, 'true' または 'false' のどちらかで指定してください."
 
-#: src/OptionHandlerImpl.h:168 src/OptionHandlerImpl.h:217
+#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
 #, c-format
 msgid "must be between %s and %s."
 msgstr "は, %s と %s の間で指定してください."
 
-#: src/OptionHandlerImpl.h:214
+#: src/OptionHandlerImpl.h:215
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "は, %s 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:220
+#: src/OptionHandlerImpl.h:221
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "は, %s 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:223 src/OptionHandlerImpl.h:301
+#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
 msgid "must be a number."
 msgstr "は, 数字でなければなりません."
 
-#: src/OptionHandlerImpl.h:292
+#: src/OptionHandlerImpl.h:293
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "は, %.1f 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:295
+#: src/OptionHandlerImpl.h:296
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "は, %1.f と %.1f の間で指定してください."
 
-#: src/OptionHandlerImpl.h:298
+#: src/OptionHandlerImpl.h:299
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "は, %.1f 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:476
+#: src/OptionHandlerImpl.h:477
 msgid "must be one of the following:"
 msgstr "は, 以下のいずれかを指定してください:"
 
-#: src/OptionHandlerImpl.h:525 src/OptionHandlerImpl.h:568
+#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:569
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
 
@@ -1052,10 +1052,14 @@ msgstr ""
 "                              ンも参照してください."
 
 #: src/usage_text.h:334
-msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
+#, fuzzy
+msgid ""
+" -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
+"Reads\n"
+"                              input from stdin when '-' is specified."
 msgstr " -M, --metalink-file=METALINK_FILE .metalink ファイルのパスを指定."
 
-#: src/usage_text.h:336
+#: src/usage_text.h:337
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -1081,15 +1085,15 @@ msgstr ""
 "                              maxconnections 属性の値を使います.\n"
 "                              -s と -j オプションも参照してください."
 
-#: src/usage_text.h:345
+#: src/usage_text.h:346
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   ダウンロードするファイルのバージョン."
 
-#: src/usage_text.h:347
+#: src/usage_text.h:348
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE ダウンロードするファイルの言語."
 
-#: src/usage_text.h:349
+#: src/usage_text.h:350
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
@@ -1097,7 +1101,7 @@ msgstr ""
 "レー\n"
 "                              ティング・システム."
 
-#: src/usage_text.h:351
+#: src/usage_text.h:352
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
@@ -1106,7 +1110,7 @@ msgstr ""
 " --metalink-location=LOCATION[,...] お好みのサーバーの地域を指定します.\n"
 "                              コンマ区切りの地域のリストが指定可能です."
 
-#: src/usage_text.h:355
+#: src/usage_text.h:356
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
@@ -1118,7 +1122,7 @@ msgstr ""
 "定す\n"
 "                              してください."
 
-#: src/usage_text.h:358
+#: src/usage_text.h:359
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metalink or content type of\n"
@@ -1151,7 +1155,7 @@ msgstr ""
 "いま\n"
 "                              せん."
 
-#: src/usage_text.h:368
+#: src/usage_text.h:369
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -1172,11 +1176,11 @@ msgstr ""
 "protocol\n"
 "                              オプションを使ってください."
 
-#: src/usage_text.h:374
+#: src/usage_text.h:375
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
-#: src/usage_text.h:376
+#: src/usage_text.h:377
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -1199,18 +1203,18 @@ msgstr ""
 "を名\n"
 "                              前に含むオプションのヘルプを表示します."
 
-#: src/usage_text.h:383
+#: src/usage_text.h:384
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
 " --no-conf                    aria2.conf ファイルの読み込みを抑制します."
 
-#: src/usage_text.h:385
+#: src/usage_text.h:386
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 " --conf-path=PATH             読み込む設定ファイルのパスを PATH に変更します."
 
-#: src/usage_text.h:387
+#: src/usage_text.h:388
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1220,7 +1224,7 @@ msgstr ""
 "す.\n"
 "                              0 を指定すると, この機能は無効になります."
 
-#: src/usage_text.h:390
+#: src/usage_text.h:391
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1239,19 +1243,19 @@ msgstr ""
 "9J1\"\n"
 "                              http://host/file"
 
-#: src/usage_text.h:396
+#: src/usage_text.h:397
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr " -q, --quiet[=true|false]     コンソールに何も表示しないようにします."
 
-#: src/usage_text.h:398
+#: src/usage_text.h:399
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false]     非同期 DNS を有効にします."
 
-#: src/usage_text.h:400
+#: src/usage_text.h:401
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr " --ftp-reuse-connection[=true|false] FTP で接続を再利用します."
 
-#: src/usage_text.h:402
+#: src/usage_text.h:403
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1263,11 +1267,11 @@ msgstr ""
 "0\n"
 "                              を指定します."
 
-#: src/usage_text.h:405
+#: src/usage_text.h:406
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL            出力するログレベルを指定します."
 
-#: src/usage_text.h:407
+#: src/usage_text.h:408
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1279,7 +1283,7 @@ msgstr ""
 "し\n"
 "                              て保存したファイルの更新日付としてに使用します."
 
-#: src/usage_text.h:411
+#: src/usage_text.h:412
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1294,7 +1298,7 @@ msgstr ""
 "                              で指定します. 接続完了後のタイムアウトは,\n"
 "                              --timeout で指定する値を使用します."
 
-#: src/usage_text.h:416
+#: src/usage_text.h:417
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1318,7 +1322,7 @@ msgstr ""
 "有効\n"
 "                              です."
 
-#: src/usage_text.h:423
+#: src/usage_text.h:424
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1383,7 +1387,7 @@ msgstr ""
 "ファ\n"
 "                              イルを使用します."
 
-#: src/usage_text.h:442
+#: src/usage_text.h:443
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1398,7 +1402,7 @@ msgstr ""
 "で\n"
 "                              きます."
 
-#: src/usage_text.h:446
+#: src/usage_text.h:447
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1413,7 +1417,7 @@ msgstr ""
 "                              'feedback' 等の URI セレクターで使用されます.\n"
 "                              --uri-selector オプションを参照してください."
 
-#: src/usage_text.h:451
+#: src/usage_text.h:452
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1428,7 +1432,7 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/usage_text.h:455
+#: src/usage_text.h:456
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1447,7 +1451,7 @@ msgstr ""
 "                              aria2 は終了時にコントロールファイルを保存しま"
 "す."
 
-#: src/usage_text.h:460
+#: src/usage_text.h:461
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1462,7 +1466,7 @@ msgstr ""
 "定\n"
 "                              します."
 
-#: src/usage_text.h:465
+#: src/usage_text.h:466
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
@@ -1476,7 +1480,7 @@ msgstr ""
 "して\n"
 "                              ください."
 
-#: src/usage_text.h:469
+#: src/usage_text.h:470
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1496,7 +1500,7 @@ msgstr ""
 "効に\n"
 "                              します."
 
-#: src/usage_text.h:475
+#: src/usage_text.h:476
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
@@ -1506,7 +1510,7 @@ msgstr ""
 "を\n"
 "                              使ってピアを検証します."
 
-#: src/usage_text.h:478
+#: src/usage_text.h:479
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
@@ -1516,7 +1520,7 @@ msgstr ""
 "をコ\n"
 "                              ンマで区切って指定します."
 
-#: src/usage_text.h:481
+#: src/usage_text.h:482
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
@@ -1525,20 +1529,20 @@ msgstr ""
 " --use-head[=true|false]      HTTP サーバーへの最初のリクエストに HEAD を使い"
 "ます."
 
-#: src/usage_text.h:484
+#: src/usage_text.h:485
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 " --event-poll=POLL            イベントを検出する方法 (システム コール) を指定"
 "します."
 
-#: src/usage_text.h:486
+#: src/usage_text.h:487
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr " --xml-rpc-listen-port=PORT   XML-RPC で使うポート番号を指定します."
 
-#: src/usage_text.h:489
+#: src/usage_text.h:490
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1556,7 +1560,7 @@ msgstr ""
 "さい\n"
 "                              ."
 
-#: src/usage_text.h:494
+#: src/usage_text.h:495
 msgid ""
 " --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"
 "                              detects the request is more than SIZE bytes, "
@@ -1569,15 +1573,15 @@ msgstr ""
 "解除\n"
 "                              します."
 
-#: src/usage_text.h:498
+#: src/usage_text.h:499
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr " --xml-rpc-user=USER          XML-RPC ユーザーを設定します."
 
-#: src/usage_text.h:500
+#: src/usage_text.h:501
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr " --xml-rpc-passwd=PASSWD      XML-RPC パスワードを設定します."
 
-#: src/usage_text.h:502
+#: src/usage_text.h:503
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1592,7 +1596,7 @@ msgstr ""
 "ど\n"
 "                              のような IP アドレスでも受け付けます."
 
-#: src/usage_text.h:507
+#: src/usage_text.h:508
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1618,7 +1622,7 @@ msgstr ""
 "関わ\n"
 "                              らず常に送信されます."
 
-#: src/usage_text.h:515
+#: src/usage_text.h:516
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1642,7 +1646,7 @@ msgstr ""
 "も使\n"
 "                              うことができます."
 
-#: src/usage_text.h:521
+#: src/usage_text.h:522
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1662,7 +1666,7 @@ msgstr ""
 "合,\n"
 "                              BitTorrent ダウンロードはキャンセルされます."
 
-#: src/usage_text.h:527
+#: src/usage_text.h:528
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1690,7 +1694,7 @@ msgstr ""
 "隔を\n"
 "                              決定します."
 
-#: src/usage_text.h:535
+#: src/usage_text.h:536
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1706,7 +1710,7 @@ msgstr ""
 "stop\n"
 "                              オプションも参照してください."
 
-#: src/usage_text.h:541
+#: src/usage_text.h:542
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed when download\n"
 "                              starts up. COMMAND must take just one argument "
@@ -1719,7 +1723,7 @@ msgstr ""
 "ん.\n"
 "                              GID が引数として渡されます."
 
-#: src/usage_text.h:545
+#: src/usage_text.h:546
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1735,7 +1739,7 @@ msgstr ""
 "stop\n"
 "                              オプションも参照してください."
 
-#: src/usage_text.h:551
+#: src/usage_text.h:552
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1763,7 +1767,7 @@ msgstr ""
 "                              COMMAND の制限については, --on-download-start\n"
 "                              オプションを参照してください."
 
-#: src/usage_text.h:560
+#: src/usage_text.h:561
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1778,7 +1782,7 @@ msgstr ""
 "るこ\n"
 "                              とができます."
 
-#: src/usage_text.h:564
+#: src/usage_text.h:565
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
@@ -1793,7 +1797,7 @@ msgstr ""
 "受\n"
 "                              け付ける."
 
-#: src/usage_text.h:568
+#: src/usage_text.h:569
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1815,14 +1819,14 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:580
+#: src/usage_text.h:581
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:583
+#: src/usage_text.h:584
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
@@ -1836,7 +1840,9 @@ msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
 #: src/version_usage.cc:85
-msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+#, fuzzy
+msgid ""
+"Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr "使い方: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 
 #: src/version_usage.cc:92
@@ -1870,19 +1876,22 @@ msgid "No option matching with '%s'."
 msgstr "'%s' にマッチするオプションが見つかりませんでした."
 
 #: src/version_usage.cc:128
+#, fuzzy
 msgid ""
-" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
-" point to the same file or downloading will fail."
+" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
+"all\n"
+" URIs must point to the same file or downloading will fail."
 msgstr ""
 " 複数の URL を指定できます. -Z オプションを指定しない限り, すべての\n"
 " URL が同じファイルをさしている必要があります. そうでない場合, ダウ\n"
 " ンロードは失敗します."
 
 #: src/version_usage.cc:130
+#, fuzzy
 msgid ""
-" You can also specify arbitrary number of torrent files and metalink files\n"
-" stored in a local drive. Please note that they are always treated as a\n"
-" separate download."
+" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
+" metalink files stored in a local drive. Please note that they are always\n"
+" treated as a separate download."
 msgstr ""
 " ローカルディスクに保存している torrent ファイルや metalink ファイルへのパス"
 "を\n"
@@ -1891,17 +1900,18 @@ msgstr ""
 " す."
 
 #: src/version_usage.cc:135
+#, fuzzy
 msgid ""
-" You can specify both torrent file with -T option and URLs. By doing this,\n"
-" download a file from both torrent swarm and http/ftp server at the same "
+" You can specify both torrent file with -T option and URIs. By doing this,\n"
+" download a file from both torrent swarm and HTTP/FTP server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. For single "
+" while the data from HTTP/FTP are uploaded to the torrent swarm. For single "
 "file\n"
-" torrents, URL can be a complete URL pointing to the resource or if URL "
+" torrents, URI can be a complete URI pointing to the resource or if URI "
 "ends\n"
 " with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
 "and\n"
-" 'path' in torrent are added to form a URL for each file."
+" 'path' in torrent are added to form a URI for each file."
 msgstr ""
 " URL と -T で torrent ファイルとを同時に指定できます. これにより,\n"
 " torrent と http/ftp サーバー方からファイルをダウンロードします.\n"
@@ -1915,8 +1925,9 @@ msgstr ""
 " が URL に追加されて, それぞれのファイルの URL を形成します."
 
 #: src/version_usage.cc:142
+#, fuzzy
 msgid ""
-" Make sure that URL is quoted with single(') or double(\") quotation if it\n"
+" Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 " URL に \"&\" やシェルにおいて特別な意味を持つ文字が含まれる場合, URL を ' ま"

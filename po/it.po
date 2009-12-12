@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-12-06 20:37+0900\n"
+"POT-Creation-Date: 2009-12-12 22:04+0900\n"
 "PO-Revision-Date: 2009-10-28 13:02+0000\n"
 "Last-Translator: Davide Bagarotti <Unknown>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -61,49 +61,49 @@ msgstr "                              Etichette: "
 msgid "                              Possible Values: "
 msgstr "                              Valori possibili: "
 
-#: src/OptionHandlerImpl.h:134
+#: src/OptionHandlerImpl.h:135
 msgid "must be either 'true' or 'false'."
 msgstr "deve essere 'true' (vero) o 'false' (falso)."
 
-#: src/OptionHandlerImpl.h:168 src/OptionHandlerImpl.h:217
+#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
 #, c-format
 msgid "must be between %s and %s."
 msgstr "deve essere compreso tra %s e %s."
 
-#: src/OptionHandlerImpl.h:214
+#: src/OptionHandlerImpl.h:215
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "deve essere minore o uguale a %s."
 
-#: src/OptionHandlerImpl.h:220
+#: src/OptionHandlerImpl.h:221
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "deve essere maggiore o uguale a %s."
 
-#: src/OptionHandlerImpl.h:223 src/OptionHandlerImpl.h:301
+#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
 msgid "must be a number."
 msgstr "deve essere un numero."
 
-#: src/OptionHandlerImpl.h:292
+#: src/OptionHandlerImpl.h:293
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "deve essere minore o uguale a %.1f."
 
-#: src/OptionHandlerImpl.h:295
+#: src/OptionHandlerImpl.h:296
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "deve essere compreso tra %.1f e %.1f."
 
-#: src/OptionHandlerImpl.h:298
+#: src/OptionHandlerImpl.h:299
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "deve essere maggiore o uguale a %.1f."
 
-#: src/OptionHandlerImpl.h:476
+#: src/OptionHandlerImpl.h:477
 msgid "must be one of the following:"
 msgstr "deve essere uno dei seguenti:"
 
-#: src/OptionHandlerImpl.h:525 src/OptionHandlerImpl.h:568
+#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:569
 msgid "unrecognized proxy format"
 msgstr "formato del proxy non riconosciuto"
 
@@ -1044,12 +1044,16 @@ msgstr ""
 "limit."
 
 #: src/usage_text.h:334
-msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
+#, fuzzy
+msgid ""
+" -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
+"Reads\n"
+"                              input from stdin when '-' is specified."
 msgstr ""
 " -M, --metalink-file=FILE_METALINK\n"
 "                              Il percorso per il file .metalink."
 
-#: src/usage_text.h:336
+#: src/usage_text.h:337
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -1076,25 +1080,25 @@ msgstr ""
 "maxconnections.\n"
 "                              Vedere anche le opzioni -s e -j."
 
-#: src/usage_text.h:345
+#: src/usage_text.h:346
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr ""
 " --metalink-version=VERSIONE\n"
 "                              La versione del file da scaricare."
 
-#: src/usage_text.h:347
+#: src/usage_text.h:348
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr ""
 " --metalink-language=LINGUA\n"
 "                              La lingua del file da scaricare."
 
-#: src/usage_text.h:349
+#: src/usage_text.h:350
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 " --metalink-os=SO             Il Sistema Operativo del file da scaricare."
 
-#: src/usage_text.h:351
+#: src/usage_text.h:352
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
@@ -1106,7 +1110,7 @@ msgstr ""
 "separate da\n"
 "                              una virgola."
 
-#: src/usage_text.h:355
+#: src/usage_text.h:356
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
@@ -1117,7 +1121,7 @@ msgstr ""
 "                              Indicare 'none' se non c'è un protocollo "
 "preferito."
 
-#: src/usage_text.h:358
+#: src/usage_text.h:359
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metalink or content type of\n"
@@ -1148,7 +1152,7 @@ msgstr ""
 "above\n"
 "                              is not taken."
 
-#: src/usage_text.h:368
+#: src/usage_text.h:369
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -1166,11 +1170,11 @@ msgstr ""
 "protocol\n"
 "                              per indicare la preferenza del protocollo."
 
-#: src/usage_text.h:374
+#: src/usage_text.h:375
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Mostra il numero di versione ed esce."
 
-#: src/usage_text.h:376
+#: src/usage_text.h:377
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -1192,20 +1196,20 @@ msgstr ""
 "stampa tutte\n"
 "                              le opzioni che utilizzano quella parola.."
 
-#: src/usage_text.h:383
+#: src/usage_text.h:384
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
 " --no-conf                    Disabilita il file di configurazione aria2."
 "conf."
 
-#: src/usage_text.h:385
+#: src/usage_text.h:386
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 " --conf-path=PERCORSO         Cambia il percorso del file di configurazione\n"
 "                              in PERCORSO."
 
-#: src/usage_text.h:387
+#: src/usage_text.h:388
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1216,7 +1220,7 @@ msgstr ""
 "funzione\n"
 "                              viene disabilitata."
 
-#: src/usage_text.h:390
+#: src/usage_text.h:391
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1236,23 +1240,23 @@ msgstr ""
 "\"X-A: b78\" --header=\"X-B: 9J1\"\n"
 "                              http://host/file"
 
-#: src/usage_text.h:396
+#: src/usage_text.h:397
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 " -q, --quiet[=true|false]     Rende aria2 silenzioso(nessun output su "
 "console)."
 
-#: src/usage_text.h:398
+#: src/usage_text.h:399
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false]     Abilita il DNS asincrono."
 
-#: src/usage_text.h:400
+#: src/usage_text.h:401
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 " --ftp-reuse-connection[=true|false]\n"
 "                              Riutilizza la connessione per l'FTP."
 
-#: src/usage_text.h:402
+#: src/usage_text.h:403
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1264,13 +1268,13 @@ msgstr ""
 "impostato a 0\n"
 "                              non verrà visualizzato alcun sommario."
 
-#: src/usage_text.h:405
+#: src/usage_text.h:406
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 " --log-level=LIVELLO          Imposta il LIVELLO di registro (log) "
 "visualizzato."
 
-#: src/usage_text.h:407
+#: src/usage_text.h:408
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1284,7 +1288,7 @@ msgstr ""
 "applica al\n"
 "                              file locale."
 
-#: src/usage_text.h:411
+#: src/usage_text.h:412
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1303,7 +1307,7 @@ msgstr ""
 "utilizzata\n"
 "                              l'opzione --timeout."
 
-#: src/usage_text.h:416
+#: src/usage_text.h:417
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1324,7 +1328,7 @@ msgstr ""
 "                              Questa opzione ha effetto solo se sono in uso\n"
 "                              server HTTP/FTP."
 
-#: src/usage_text.h:423
+#: src/usage_text.h:424
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1385,7 +1389,7 @@ msgstr ""
 "'feedback',\n"
 "                              userà un profilo di prestazioni dei server."
 
-#: src/usage_text.h:442
+#: src/usage_text.h:443
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1399,7 +1403,7 @@ msgstr ""
 "                              caricare questo profilo con l'opzione --server-"
 "stat-if."
 
-#: src/usage_text.h:446
+#: src/usage_text.h:447
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1415,7 +1419,7 @@ msgstr ""
 "'feedback'.\n"
 "                              Vedere anche l'opzione --uri-selector"
 
-#: src/usage_text.h:451
+#: src/usage_text.h:452
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1427,7 +1431,7 @@ msgstr ""
 "prestazioni dei\n"
 "                              server affinché questo venga disabilitato."
 
-#: src/usage_text.h:455
+#: src/usage_text.h:456
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1446,7 +1450,7 @@ msgstr ""
 "                              che si interrompe, a prescindere da questa "
 "opzione."
 
-#: src/usage_text.h:460
+#: src/usage_text.h:461
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1460,7 +1464,7 @@ msgstr ""
 "key\n"
 "                              per indicare una chiave privata."
 
-#: src/usage_text.h:465
+#: src/usage_text.h:466
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
@@ -1472,7 +1476,7 @@ msgstr ""
 "                              il formato PEM. Vedi anche l'opzione --"
 "certificate."
 
-#: src/usage_text.h:469
+#: src/usage_text.h:470
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1491,7 +1495,7 @@ msgstr ""
 "                              Usa l'opzione --check-certificate per "
 "abilitare il controllo."
 
-#: src/usage_text.h:475
+#: src/usage_text.h:476
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
@@ -1502,7 +1506,7 @@ msgstr ""
 "specificati\n"
 "                              tramite l'opzione --ca-certificate."
 
-#: src/usage_text.h:478
+#: src/usage_text.h:479
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
@@ -1512,7 +1516,7 @@ msgstr ""
 "separati\n"
 "                              da virgola verso cui non usare proxy."
 
-#: src/usage_text.h:481
+#: src/usage_text.h:482
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
@@ -1521,12 +1525,12 @@ msgstr ""
 " --use-head[=true|false]      Usa il metodo HEAD per la prima richiesta al\n"
 "                              server HTTP."
 
-#: src/usage_text.h:484
+#: src/usage_text.h:485
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 " --event-poll=POLL            Configura il metodo di 'polling' degli eventi."
 
-#: src/usage_text.h:486
+#: src/usage_text.h:487
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
@@ -1536,7 +1540,7 @@ msgstr ""
 "                               Specifica un numero di porta sulla quale il\n"
 "                               server XML-RPC sarà in ascolto."
 
-#: src/usage_text.h:489
+#: src/usage_text.h:490
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1553,7 +1557,7 @@ msgstr ""
 "passwd.\n"
 "                              Vedere anche l'opzione --xml-rpc-listen-port."
 
-#: src/usage_text.h:494
+#: src/usage_text.h:495
 msgid ""
 " --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"
 "                              detects the request is more than SIZE bytes, "
@@ -1567,17 +1571,17 @@ msgstr ""
 "                              una richiesta maggiore di DIMENSIONE byte,\n"
 "                              termina la connessione."
 
-#: src/usage_text.h:498
+#: src/usage_text.h:499
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr " --xml-rpc-user=UTENTE        Imposta l'utente di XML-RPC."
 
-#: src/usage_text.h:500
+#: src/usage_text.h:501
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr ""
 " --xml-rpc-passwd=PASSWORD\n"
 "                              Imposta la password di XML-RPC."
 
-#: src/usage_text.h:502
+#: src/usage_text.h:503
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1594,7 +1598,7 @@ msgstr ""
 "indirizzo IP\n"
 "                              può andare bene."
 
-#: src/usage_text.h:507
+#: src/usage_text.h:508
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1620,7 +1624,7 @@ msgstr ""
 "autorizzazione verrà\n"
 "                              sempre inviata a prescindere da questa opzione."
 
-#: src/usage_text.h:515
+#: src/usage_text.h:516
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1642,7 +1646,7 @@ msgstr ""
 "                              l'opzione --dir. Puoi utilizzare l'opzione più "
 "volte."
 
-#: src/usage_text.h:521
+#: src/usage_text.h:522
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1660,7 +1664,7 @@ msgstr ""
 "                              Gli scaricamenti BitTorrent vengono annullati "
 "se si indica true."
 
-#: src/usage_text.h:527
+#: src/usage_text.h:528
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1685,7 +1689,7 @@ msgstr ""
 "risposta del\n"
 "                              tracker e del progresso di scaricamento."
 
-#: src/usage_text.h:535
+#: src/usage_text.h:536
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1701,7 +1705,7 @@ msgstr ""
 "COMANDO.\n"
 "                              Vedere anche l'opzione --on-download-stop."
 
-#: src/usage_text.h:541
+#: src/usage_text.h:542
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed when download\n"
 "                              starts up. COMMAND must take just one argument "
@@ -1716,7 +1720,7 @@ msgstr ""
 "COMANDO\n"
 "                              come primo argomento."
 
-#: src/usage_text.h:545
+#: src/usage_text.h:546
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1732,7 +1736,7 @@ msgstr ""
 "                              sintassi del COMANDO.\n"
 "                              Vedere anche l'opzione --on-download-stop."
 
-#: src/usage_text.h:551
+#: src/usage_text.h:552
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1760,7 +1764,7 @@ msgstr ""
 "requisiti\n"
 "                              del COMANDO."
 
-#: src/usage_text.h:560
+#: src/usage_text.h:561
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1773,7 +1777,7 @@ msgstr ""
 "questa\n"
 "                              configurazione è disabilitata."
 
-#: src/usage_text.h:564
+#: src/usage_text.h:565
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
@@ -1786,7 +1790,7 @@ msgstr ""
 "falso, ascolta solo\n"
 "                              sull'interfaccia di loopback locale."
 
-#: src/usage_text.h:568
+#: src/usage_text.h:569
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1808,14 +1812,14 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:580
+#: src/usage_text.h:581
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:583
+#: src/usage_text.h:584
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
@@ -1829,7 +1833,9 @@ msgid "Report bugs to %s"
 msgstr "Segnala i bachi (bug) a %s"
 
 #: src/version_usage.cc:85
-msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+#, fuzzy
+msgid ""
+"Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr "Utilizzo: aria2c [OPZIONI] [URL | FILE_TORRENT | FILE_METALINK]..."
 
 #: src/version_usage.cc:92
@@ -1861,35 +1867,39 @@ msgid "No option matching with '%s'."
 msgstr "Nessuna opzione corrispondente con '%s'."
 
 #: src/version_usage.cc:128
+#, fuzzy
 msgid ""
-" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
-" point to the same file or downloading will fail."
+" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
+"all\n"
+" URIs must point to the same file or downloading will fail."
 msgstr ""
 " Puoi specificare molte URL. A meno che sia specificata l'opzione -Z, tutte "
 "le URL\n"
 " devono puntare allo stesso file, altrimenti lo scaricamento fallirà."
 
 #: src/version_usage.cc:130
+#, fuzzy
 msgid ""
-" You can also specify arbitrary number of torrent files and metalink files\n"
-" stored in a local drive. Please note that they are always treated as a\n"
-" separate download."
+" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
+" metalink files stored in a local drive. Please note that they are always\n"
+" treated as a separate download."
 msgstr ""
 " Si può anche indicare un numero qualsiasi di file torrent e metalink\n"
 " contenuti su un disco locale. Ciascuno verrà trattato separatamente."
 
 #: src/version_usage.cc:135
+#, fuzzy
 msgid ""
-" You can specify both torrent file with -T option and URLs. By doing this,\n"
-" download a file from both torrent swarm and http/ftp server at the same "
+" You can specify both torrent file with -T option and URIs. By doing this,\n"
+" download a file from both torrent swarm and HTTP/FTP server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. For single "
+" while the data from HTTP/FTP are uploaded to the torrent swarm. For single "
 "file\n"
-" torrents, URL can be a complete URL pointing to the resource or if URL "
+" torrents, URI can be a complete URI pointing to the resource or if URI "
 "ends\n"
 " with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
 "and\n"
-" 'path' in torrent are added to form a URL for each file."
+" 'path' in torrent are added to form a URI for each file."
 msgstr ""
 " Puoi specificare entrambi i file torrent con -T opzioni e URL. In questo "
 "modo,\n"
@@ -1904,8 +1914,9 @@ msgstr ""
 " 'percorso' in torrent sono aggiunti a formare un URL per ogni file."
 
 #: src/version_usage.cc:142
+#, fuzzy
 msgid ""
-" Make sure that URL is quoted with single(') or double(\") quotation if it\n"
+" Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 " Accertati che l'URL sia racchiuso tra apici singoli(') o doppi(\") se\n"

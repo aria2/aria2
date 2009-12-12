@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-12-06 20:37+0900\n"
+"POT-Creation-Date: 2009-12-12 22:04+0900\n"
 "PO-Revision-Date: 2008-09-17 19:59+0900\n"
 "Last-Translator: wyginwys <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -59,49 +59,49 @@ msgstr "                              Etiketler: "
 msgid "                              Possible Values: "
 msgstr "                              Kullanılabilen Değerler: "
 
-#: src/OptionHandlerImpl.h:134
+#: src/OptionHandlerImpl.h:135
 msgid "must be either 'true' or 'false'."
 msgstr "ya 'doğru' ya da 'yanlış' olmalı"
 
-#: src/OptionHandlerImpl.h:168 src/OptionHandlerImpl.h:217
+#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
 #, c-format
 msgid "must be between %s and %s."
 msgstr "%s ya da %s arasında olmalı"
 
-#: src/OptionHandlerImpl.h:214
+#: src/OptionHandlerImpl.h:215
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "%s den küçük ya da ona eşit olmalı"
 
-#: src/OptionHandlerImpl.h:220
+#: src/OptionHandlerImpl.h:221
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "%s den büyük ya da ona eşit olmalı"
 
-#: src/OptionHandlerImpl.h:223 src/OptionHandlerImpl.h:301
+#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
 msgid "must be a number."
 msgstr "bir sayı olmalı."
 
-#: src/OptionHandlerImpl.h:292
+#: src/OptionHandlerImpl.h:293
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "%.1f den küçük ya da ona eşit olmalı."
 
-#: src/OptionHandlerImpl.h:295
+#: src/OptionHandlerImpl.h:296
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "%.1f ya da %.1f arasında olmalı."
 
-#: src/OptionHandlerImpl.h:298
+#: src/OptionHandlerImpl.h:299
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "%.1f den büyük ya da ona eşit olmalı"
 
-#: src/OptionHandlerImpl.h:476
+#: src/OptionHandlerImpl.h:477
 msgid "must be one of the following:"
 msgstr "şunlardan biri olmalı:"
 
-#: src/OptionHandlerImpl.h:525 src/OptionHandlerImpl.h:568
+#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:569
 msgid "unrecognized proxy format"
 msgstr "bilinmeyen proxy biçimi"
 
@@ -906,11 +906,15 @@ msgstr ""
 "                              Varsayılan: 5"
 
 #: src/usage_text.h:334
-msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
+#, fuzzy
+msgid ""
+" -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
+"Reads\n"
+"                              input from stdin when '-' is specified."
 msgstr ""
 " -M, --metalink-file=METALINK_FILE .metalink dosyasının yolunu belirle."
 
-#: src/usage_text.h:336
+#: src/usage_text.h:337
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
@@ -936,20 +940,20 @@ msgstr ""
 "                              tutulur. False seçilirse yukarıda bahsedilen "
 "işlem yapılmaz."
 
-#: src/usage_text.h:345
+#: src/usage_text.h:346
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=SÜRÜM İndirilecek dosyanın sürümü."
 
-#: src/usage_text.h:347
+#: src/usage_text.h:348
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=DİL İndirilecek dosyanın dili."
 
-#: src/usage_text.h:349
+#: src/usage_text.h:350
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS İndirilecek dosyanın işletim sistemi."
 
-#: src/usage_text.h:351
+#: src/usage_text.h:352
 #, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
@@ -959,7 +963,7 @@ msgstr ""
 " --metalink-location=YER[,...] Tercih edilen sunucunun yeri.\n"
 "                              Virgülle ayrılmış liste de yazabilirsiniz."
 
-#: src/usage_text.h:355
+#: src/usage_text.h:356
 #, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
@@ -967,7 +971,7 @@ msgid ""
 "                              if you don't have any preferred protocol."
 msgstr " --metalink-preferred-protocol=PROTO Tercih edilen prokolü belirle."
 
-#: src/usage_text.h:358
+#: src/usage_text.h:359
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
@@ -995,7 +999,7 @@ msgstr ""
 "                              tutulur. False seçilirse yukarıda bahsedilen "
 "işlem yapılmaz."
 
-#: src/usage_text.h:368
+#: src/usage_text.h:369
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -1012,11 +1016,11 @@ msgstr ""
 "protocol seçeneğini\n"
 "                              kullanın."
 
-#: src/usage_text.h:374
+#: src/usage_text.h:375
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Sürüm numarasını göster ve çık."
 
-#: src/usage_text.h:376
+#: src/usage_text.h:377
 #, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
@@ -1030,16 +1034,16 @@ msgid ""
 "                              for the options whose name includes that word."
 msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
 
-#: src/usage_text.h:383
+#: src/usage_text.h:384
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf aria2.conf dosyasını yüklemeyi kapa."
 
-#: src/usage_text.h:385
+#: src/usage_text.h:386
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=YOL Konfigürasyon dosyasının yerini belirle."
 
-#: src/usage_text.h:387
+#: src/usage_text.h:388
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1048,7 +1052,7 @@ msgstr ""
 " --stop=SANİYE SANİYE geçtiğinde uygulamayı durdur. 0 girilirse\n"
 "                              bu özellik kapatılır."
 
-#: src/usage_text.h:390
+#: src/usage_text.h:391
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1066,21 +1070,21 @@ msgstr ""
 "\"X-B 9j1\" \n"
 "                              http://host/file"
 
-#: src/usage_text.h:396
+#: src/usage_text.h:397
 #, fuzzy
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 " -q, --quiet=true|false aria2 yi sessiz (konsola çıktı gönderilmez) yapar."
 
-#: src/usage_text.h:398
+#: src/usage_text.h:399
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns=true|false Asenkronize DNSi açar."
 
-#: src/usage_text.h:400
+#: src/usage_text.h:401
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr " --ftp-reuse-connection=true|false FTPde bağlantıyı tekrar kullanır."
 
-#: src/usage_text.h:402
+#: src/usage_text.h:403
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1090,11 +1094,11 @@ msgstr ""
 "                              zaman aralığını belirler. 0 seçilirse çıktı "
 "gönderilmez."
 
-#: src/usage_text.h:405
+#: src/usage_text.h:406
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=SEVİYE Çıktı için log seviyesini belirler."
 
-#: src/usage_text.h:407
+#: src/usage_text.h:408
 #, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
@@ -1107,7 +1111,7 @@ msgstr ""
 "dosyalardan\n"
 "                              direkt oku ve hepsine yaz.Varsayılan: true."
 
-#: src/usage_text.h:411
+#: src/usage_text.h:412
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1118,7 +1122,7 @@ msgid ""
 "                              effect and --timeout option is used instead."
 msgstr ""
 
-#: src/usage_text.h:416
+#: src/usage_text.h:417
 #, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
@@ -1140,7 +1144,7 @@ msgstr ""
 "bütüklüğüne göre belli\n"
 "                              bir süre alabilir.Varsayılan: prealloc"
 
-#: src/usage_text.h:423
+#: src/usage_text.h:424
 #, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
@@ -1181,7 +1185,7 @@ msgstr ""
 "                              tutulur.Eğer false seçilirse, yukarıda "
 "anlatılan işler yapılmaz."
 
-#: src/usage_text.h:442
+#: src/usage_text.h:443
 #, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
@@ -1195,7 +1199,7 @@ msgstr ""
 "                              arasında bir değer veriniz.\n"
 "                              Varsayılan: 5"
 
-#: src/usage_text.h:446
+#: src/usage_text.h:447
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1205,7 +1209,7 @@ msgid ""
 "                              See also --uri-selector option"
 msgstr ""
 
-#: src/usage_text.h:451
+#: src/usage_text.h:452
 #, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
@@ -1218,7 +1222,7 @@ msgstr ""
 "                              arasında bir değer veriniz.\n"
 "                              Varsayılan: 5"
 
-#: src/usage_text.h:455
+#: src/usage_text.h:456
 #, fuzzy
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
@@ -1235,7 +1239,7 @@ msgstr ""
 "küçük\n"
 "                              olanın seçer."
 
-#: src/usage_text.h:460
+#: src/usage_text.h:461
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1244,7 +1248,7 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:465
+#: src/usage_text.h:466
 #, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
@@ -1256,7 +1260,7 @@ msgstr ""
 "                              arasında bir değer veriniz.\n"
 "                              Varsayılan: 5"
 
-#: src/usage_text.h:469
+#: src/usage_text.h:470
 #, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
@@ -1277,7 +1281,7 @@ msgstr ""
 "bütüklüğüne göre belli\n"
 "                              bir süre alabilir.Varsayılan: prealloc"
 
-#: src/usage_text.h:475
+#: src/usage_text.h:476
 #, fuzzy
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
@@ -1287,7 +1291,7 @@ msgstr ""
 " --bt-seed-unverified=true|false Daha önce indirilmiş dosyaları \n"
 "                              parça hashlerini kontrol etmeden tohumla."
 
-#: src/usage_text.h:478
+#: src/usage_text.h:479
 #, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
@@ -1297,18 +1301,18 @@ msgstr ""
 " --speed-time=DAKİKA Tohumlama(seed) zamanını belirler. \n"
 "                              --seed-ratio seçeneğine de bakınız."
 
-#: src/usage_text.h:481
+#: src/usage_text.h:482
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
 "                              server."
 msgstr ""
 
-#: src/usage_text.h:484
+#: src/usage_text.h:485
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:486
+#: src/usage_text.h:487
 #, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
@@ -1318,7 +1322,7 @@ msgstr ""
 " --dht-entry-point=MAKİNE:PORT Makine ve portu DHT ağına giriş noktası "
 "olarak belirle."
 
-#: src/usage_text.h:489
+#: src/usage_text.h:490
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1328,7 +1332,7 @@ msgid ""
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
 
-#: src/usage_text.h:494
+#: src/usage_text.h:495
 msgid ""
 " --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"
 "                              detects the request is more than SIZE bytes, "
@@ -1336,18 +1340,18 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:498
+#: src/usage_text.h:499
 #, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
 " --http-user=KULLANICI HTTP kullanıcısını belirle.Bu bütün URLleri etkiler."
 
-#: src/usage_text.h:500
+#: src/usage_text.h:501
 #, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr " --http-passwd=SIFRE HTTP şifresini belirle.Bu bütün URLleri etkiler."
 
-#: src/usage_text.h:502
+#: src/usage_text.h:503
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1357,7 +1361,7 @@ msgid ""
 "                              addresses."
 msgstr ""
 
-#: src/usage_text.h:507
+#: src/usage_text.h:508
 #, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
@@ -1373,7 +1377,7 @@ msgid ""
 "                              option."
 msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
 
-#: src/usage_text.h:515
+#: src/usage_text.h:516
 #, fuzzy
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
@@ -1395,7 +1399,7 @@ msgstr ""
 "bütüklüğüne göre belli\n"
 "                              bir süre alabilir.Varsayılan: prealloc"
 
-#: src/usage_text.h:521
+#: src/usage_text.h:522
 #, fuzzy
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
@@ -1414,7 +1418,7 @@ msgstr ""
 "eklenerek oluşturulur.\n"
 "                              Varsayılan: true"
 
-#: src/usage_text.h:527
+#: src/usage_text.h:528
 #, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
@@ -1431,7 +1435,7 @@ msgid ""
 "                              progress."
 msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
 
-#: src/usage_text.h:535
+#: src/usage_text.h:536
 #, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
@@ -1446,7 +1450,7 @@ msgstr ""
 "                              Değere K ve M (1K=1024, 1M=1024K)\n"
 "                              ekleyebilirsiniz.Varsayılan: 0"
 
-#: src/usage_text.h:541
+#: src/usage_text.h:542
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed when download\n"
 "                              starts up. COMMAND must take just one argument "
@@ -1454,7 +1458,7 @@ msgid ""
 "                              GID is passed to COMMAND as a first argument."
 msgstr ""
 
-#: src/usage_text.h:545
+#: src/usage_text.h:546
 #, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
@@ -1468,7 +1472,7 @@ msgstr ""
 "                              Değere K ve M (1K=1024, 1M=1024K)\n"
 "                              ekleyebilirsiniz.Varsayılan: 0"
 
-#: src/usage_text.h:551
+#: src/usage_text.h:552
 #, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
@@ -1493,7 +1497,7 @@ msgstr ""
 "                              tutulur.Eğer false seçilirse, yukarıda "
 "anlatılan işler yapılmaz."
 
-#: src/usage_text.h:560
+#: src/usage_text.h:561
 #, fuzzy
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
@@ -1504,7 +1508,7 @@ msgstr ""
 " --stop=SANİYE SANİYE geçtiğinde uygulamayı durdur. 0 girilirse\n"
 "                              bu özellik kapatılır."
 
-#: src/usage_text.h:564
+#: src/usage_text.h:565
 #, fuzzy
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
@@ -1517,7 +1521,7 @@ msgstr ""
 "komut satırı indirme\n"
 "                              programlarının yaptığı gibi).Varsayılan:false"
 
-#: src/usage_text.h:568
+#: src/usage_text.h:569
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1539,14 +1543,14 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:580
+#: src/usage_text.h:581
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:583
+#: src/usage_text.h:584
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
@@ -1561,7 +1565,8 @@ msgstr "Hataları %s ye raporla"
 
 #: src/version_usage.cc:85
 #, fuzzy
-msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+msgid ""
+"Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
 "Kullanım: %s [SEÇENEKLER ] [URL | TORRENT_DOSYASI | METALINK_DOSYASI]..."
 
@@ -1595,18 +1600,21 @@ msgid "No option matching with '%s'."
 msgstr "'%s' ile eşlenen bir seçenek ya da yardım kategorisi bulunamadı."
 
 #: src/version_usage.cc:128
+#, fuzzy
 msgid ""
-" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
-" point to the same file or downloading will fail."
+" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
+"all\n"
+" URIs must point to the same file or downloading will fail."
 msgstr ""
 " Birde fazla URL belirleyebilirsiniz. -Z seçeneğini kullanmadığınız sürece,\n"
 "tüm URLler aynı dosyayı göstermek zorundadır aksi halde download başlamaz."
 
 #: src/version_usage.cc:130
+#, fuzzy
 msgid ""
-" You can also specify arbitrary number of torrent files and metalink files\n"
-" stored in a local drive. Please note that they are always treated as a\n"
-" separate download."
+" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
+" metalink files stored in a local drive. Please note that they are always\n"
+" treated as a separate download."
 msgstr ""
 " Bir diskte depolanmış istediğiniz sayıda torrent ya da metalink dosyası\n"
 "belirleyebilirsiniz.Bunların farklı downloadlar olarak değerlendirileceğini\n"
@@ -1615,16 +1623,16 @@ msgstr ""
 #: src/version_usage.cc:135
 #, fuzzy
 msgid ""
-" You can specify both torrent file with -T option and URLs. By doing this,\n"
-" download a file from both torrent swarm and http/ftp server at the same "
+" You can specify both torrent file with -T option and URIs. By doing this,\n"
+" download a file from both torrent swarm and HTTP/FTP server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. For single "
+" while the data from HTTP/FTP are uploaded to the torrent swarm. For single "
 "file\n"
-" torrents, URL can be a complete URL pointing to the resource or if URL "
+" torrents, URI can be a complete URI pointing to the resource or if URI "
 "ends\n"
 " with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
 "and\n"
-" 'path' in torrent are added to form a URL for each file."
+" 'path' in torrent are added to form a URI for each file."
 msgstr ""
 " -T seçeneğiyle torrent dosyasını ve URLleri belirleyebilirsiniz.Bu şekilde\n"
 "bir dosyayı, http/ftp deki verinin torrent yığınına upload edildiği sırada,\n"
@@ -1633,8 +1641,9 @@ msgstr ""
 "Sadece bir dosyanın http/ftp ile entegre edileceğini unutmayın."
 
 #: src/version_usage.cc:142
+#, fuzzy
 msgid ""
-" Make sure that URL is quoted with single(') or double(\") quotation if it\n"
+" Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 " Yazdığınız URL içinde, kabukta özel anlama sahip karakterler veya \"&\" "

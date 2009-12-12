@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-12-06 20:37+0900\n"
+"POT-Creation-Date: 2009-12-12 22:04+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -59,49 +59,49 @@ msgstr "                              Tagit: "
 msgid "                              Possible Values: "
 msgstr "                              Mahdolliset arvot: "
 
-#: src/OptionHandlerImpl.h:134
+#: src/OptionHandlerImpl.h:135
 msgid "must be either 'true' or 'false'."
 msgstr "täytyy olla joko 'true' tai 'false'."
 
-#: src/OptionHandlerImpl.h:168 src/OptionHandlerImpl.h:217
+#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
 #, c-format
 msgid "must be between %s and %s."
 msgstr "täytyy olla välillä %s ja %s."
 
-#: src/OptionHandlerImpl.h:214
+#: src/OptionHandlerImpl.h:215
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "täytyy olla pienempi tai yhtä suuri kuin %s."
 
-#: src/OptionHandlerImpl.h:220
+#: src/OptionHandlerImpl.h:221
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "täytyy olla suurempi tai yhtä suuri kuin %s."
 
-#: src/OptionHandlerImpl.h:223 src/OptionHandlerImpl.h:301
+#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
 msgid "must be a number."
 msgstr "täytyy olla numero."
 
-#: src/OptionHandlerImpl.h:292
+#: src/OptionHandlerImpl.h:293
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "täytyy olla pienempi tai yhtä suuri kuin %.1f."
 
-#: src/OptionHandlerImpl.h:295
+#: src/OptionHandlerImpl.h:296
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "täytyy olla välillä %.1f ja %.1f"
 
-#: src/OptionHandlerImpl.h:298
+#: src/OptionHandlerImpl.h:299
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "täytyy olla suurempi tai yhtä suuri kuin %.1f"
 
-#: src/OptionHandlerImpl.h:476
+#: src/OptionHandlerImpl.h:477
 msgid "must be one of the following:"
 msgstr "täytyy olla yksi seuraavista:"
 
-#: src/OptionHandlerImpl.h:525 src/OptionHandlerImpl.h:568
+#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:569
 msgid "unrecognized proxy format"
 msgstr "tunnistamaton välityspalvelinmuoto"
 
@@ -890,10 +890,14 @@ msgstr ""
 "                              Oletus: 5"
 
 #: src/usage_text.h:334
-msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
+#, fuzzy
+msgid ""
+" -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
+"Reads\n"
+"                              input from stdin when '-' is specified."
 msgstr " -M, --metalink-file=METALINK Käytä ladattua .metalink-tiedostoa."
 
-#: src/usage_text.h:336
+#: src/usage_text.h:337
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
@@ -916,21 +920,21 @@ msgstr ""
 "                           Jos mem, metalink-tiedostoa ei ladata levylle, "
 "vaan pidetään muistissa."
 
-#: src/usage_text.h:345
+#: src/usage_text.h:346
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSIO Aseta minkä version tiedostosta haluat."
 
-#: src/usage_text.h:347
+#: src/usage_text.h:348
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr ""
 " --metalink-language=KIELI Aseta minkä kielisen version tiedostosta haluat."
 
-#: src/usage_text.h:349
+#: src/usage_text.h:350
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS Mille käyttöjärjestelmälle lataat tiedostoa."
 
-#: src/usage_text.h:351
+#: src/usage_text.h:352
 #, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
@@ -940,7 +944,7 @@ msgstr ""
 " --metalink-location=SIJAINTI[,...] Suosittavan palvelimen sijainti.\n"
 "                              Pilkuilla erotettu lista on hyväksyttävä."
 
-#: src/usage_text.h:355
+#: src/usage_text.h:356
 #, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
@@ -953,7 +957,7 @@ msgstr ""
 "'none'. Käytä 'none' poistaaksesi\n"
 "                              tämä ominaisuus käytöstä."
 
-#: src/usage_text.h:358
+#: src/usage_text.h:359
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
@@ -978,7 +982,7 @@ msgstr ""
 "                           Jos mem, metalink-tiedostoa ei ladata levylle, "
 "vaan pidetään muistissa."
 
-#: src/usage_text.h:368
+#: src/usage_text.h:369
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -995,11 +999,11 @@ msgstr ""
 "vaihtoehtoa\n"
 "                              valitaksesi mitä protokollaa käytetään."
 
-#: src/usage_text.h:374
+#: src/usage_text.h:375
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Tulosta versionumero ja lopeta."
 
-#: src/usage_text.h:376
+#: src/usage_text.h:377
 #, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
@@ -1020,23 +1024,23 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:383
+#: src/usage_text.h:384
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf Estä aria2.conf -asetustiedoston käyttö."
 
-#: src/usage_text.h:385
+#: src/usage_text.h:386
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
 
-#: src/usage_text.h:387
+#: src/usage_text.h:388
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:390
+#: src/usage_text.h:391
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1048,30 +1052,30 @@ msgid ""
 "                              http://host/file"
 msgstr ""
 
-#: src/usage_text.h:396
+#: src/usage_text.h:397
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 
-#: src/usage_text.h:398
+#: src/usage_text.h:399
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr ""
 
-#: src/usage_text.h:400
+#: src/usage_text.h:401
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
-#: src/usage_text.h:402
+#: src/usage_text.h:403
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
 
-#: src/usage_text.h:405
+#: src/usage_text.h:406
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 
-#: src/usage_text.h:407
+#: src/usage_text.h:408
 #, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
@@ -1085,7 +1089,7 @@ msgstr ""
 "                             joka mainitaan .torrent-tiedostossa\n"
 "                             Oletus: true"
 
-#: src/usage_text.h:411
+#: src/usage_text.h:412
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1096,7 +1100,7 @@ msgid ""
 "                              effect and --timeout option is used instead."
 msgstr ""
 
-#: src/usage_text.h:416
+#: src/usage_text.h:417
 #, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
@@ -1118,7 +1122,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:423
+#: src/usage_text.h:424
 #, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
@@ -1158,7 +1162,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:442
+#: src/usage_text.h:443
 #, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
@@ -1171,7 +1175,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:446
+#: src/usage_text.h:447
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1181,7 +1185,7 @@ msgid ""
 "                              See also --uri-selector option"
 msgstr ""
 
-#: src/usage_text.h:451
+#: src/usage_text.h:452
 #, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
@@ -1193,7 +1197,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:455
+#: src/usage_text.h:456
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1204,7 +1208,7 @@ msgid ""
 "                              regardless of the value."
 msgstr ""
 
-#: src/usage_text.h:460
+#: src/usage_text.h:461
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1213,7 +1217,7 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:465
+#: src/usage_text.h:466
 #, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
@@ -1224,7 +1228,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:469
+#: src/usage_text.h:470
 #, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
@@ -1245,14 +1249,14 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:475
+#: src/usage_text.h:476
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:478
+#: src/usage_text.h:479
 #, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
@@ -1262,18 +1266,18 @@ msgstr ""
 " --seed-time=MIN Aseta jakamisaika (seeding) minuuteissa. Ks. myös\n"
 "                             --seed-ratio valinta."
 
-#: src/usage_text.h:481
+#: src/usage_text.h:482
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
 "                              server."
 msgstr ""
 
-#: src/usage_text.h:484
+#: src/usage_text.h:485
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:486
+#: src/usage_text.h:487
 #, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
@@ -1283,7 +1287,7 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:489
+#: src/usage_text.h:490
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1293,7 +1297,7 @@ msgid ""
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
 
-#: src/usage_text.h:494
+#: src/usage_text.h:495
 msgid ""
 " --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"
 "                              detects the request is more than SIZE bytes, "
@@ -1301,19 +1305,19 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:498
+#: src/usage_text.h:499
 #, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
 " -http-user=USER Aseta http-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:500
+#: src/usage_text.h:501
 #, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr ""
 " --http-passwd=SALASANA Aseta http-salasana. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:502
+#: src/usage_text.h:503
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1323,7 +1327,7 @@ msgid ""
 "                              addresses."
 msgstr ""
 
-#: src/usage_text.h:507
+#: src/usage_text.h:508
 #, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
@@ -1346,7 +1350,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:515
+#: src/usage_text.h:516
 #, fuzzy
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
@@ -1368,7 +1372,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:521
+#: src/usage_text.h:522
 #, fuzzy
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
@@ -1388,7 +1392,7 @@ msgstr ""
 "                              (1..9999) lisättynä.\n"
 "                              Oletus: true"
 
-#: src/usage_text.h:527
+#: src/usage_text.h:528
 #, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
@@ -1412,7 +1416,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:535
+#: src/usage_text.h:536
 #, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
@@ -1428,7 +1432,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:541
+#: src/usage_text.h:542
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed when download\n"
 "                              starts up. COMMAND must take just one argument "
@@ -1436,7 +1440,7 @@ msgid ""
 "                              GID is passed to COMMAND as a first argument."
 msgstr ""
 
-#: src/usage_text.h:545
+#: src/usage_text.h:546
 #, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
@@ -1451,7 +1455,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:551
+#: src/usage_text.h:552
 #, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
@@ -1475,7 +1479,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:560
+#: src/usage_text.h:561
 #, fuzzy
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
@@ -1487,7 +1491,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:564
+#: src/usage_text.h:565
 #, fuzzy
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
@@ -1501,7 +1505,7 @@ msgstr ""
 "                              tavalliset komentorivilatausapuohjelmat.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:568
+#: src/usage_text.h:569
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1523,14 +1527,14 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:580
+#: src/usage_text.h:581
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:583
+#: src/usage_text.h:584
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
@@ -1545,7 +1549,8 @@ msgstr "Ilmoita bugit %s:lle."
 
 #: src/version_usage.cc:85
 #, fuzzy
-msgid "Usage: aria2c [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
+msgid ""
+"Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr "Käyttö: %s [parametrit] URL ...\n"
 
 #: src/version_usage.cc:92
@@ -1577,33 +1582,35 @@ msgid "No option matching with '%s'."
 msgstr "Ei ohjeosiota tai valintaa nimellä '%s'"
 
 #: src/version_usage.cc:128
+#, fuzzy
 msgid ""
-" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
-" point to the same file or downloading will fail."
+" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
+"all\n"
+" URIs must point to the same file or downloading will fail."
 msgstr ""
 " Voit antaa useita osoitteita. Jos et käytä -Z valintaa, kaikkien\n"
 " osoitteiden täytyy johtaa samaan tiedostoon, tai lataaminen keskeytyy."
 
 #: src/version_usage.cc:130
 msgid ""
-" You can also specify arbitrary number of torrent files and metalink files\n"
-" stored in a local drive. Please note that they are always treated as a\n"
-" separate download."
+" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
+" metalink files stored in a local drive. Please note that they are always\n"
+" treated as a separate download."
 msgstr ""
 
 #: src/version_usage.cc:135
 #, fuzzy
 msgid ""
-" You can specify both torrent file with -T option and URLs. By doing this,\n"
-" download a file from both torrent swarm and http/ftp server at the same "
+" You can specify both torrent file with -T option and URIs. By doing this,\n"
+" download a file from both torrent swarm and HTTP/FTP server at the same "
 "time,\n"
-" while the data from http/ftp are uploaded to the torrent swarm. For single "
+" while the data from HTTP/FTP are uploaded to the torrent swarm. For single "
 "file\n"
-" torrents, URL can be a complete URL pointing to the resource or if URL "
+" torrents, URI can be a complete URI pointing to the resource or if URI "
 "ends\n"
 " with '/', 'name' in torrent file is added. For multi-file torrents, 'name' "
 "and\n"
-" 'path' in torrent are added to form a URL for each file."
+" 'path' in torrent are added to form a URI for each file."
 msgstr ""
 " Voit yhdistää torrent-tiedoston -T:llä osoitteiden kanssa. Näin\n"
 " lataat samaa tiedostoa sekä torrent-parvesta että http/ftp-palvelimelta\n"
@@ -1611,8 +1618,9 @@ msgstr ""
 " HUOM: vain yhden tiedoston torrent-tiedostoa voi käyttää näin."
 
 #: src/version_usage.cc:142
+#, fuzzy
 msgid ""
-" Make sure that URL is quoted with single(') or double(\") quotation if it\n"
+" Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 " Varmista että URL on eristetty joko yksittäis(') tai tupla(\")"

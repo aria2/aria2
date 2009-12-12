@@ -1,5 +1,10 @@
 2009-12-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated po templates.
+	* po/aria2.pot
+
+2009-12-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.7.2
 	* configure.ac
 
