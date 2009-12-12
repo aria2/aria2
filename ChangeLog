@@ -1,3 +1,8 @@
+2009-12-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Bump up version number to 1.7.2
+	* configure.ac
+
 2009-12-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Changed default value of --enable-dht from 'false' to 'true'.
