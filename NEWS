@@ -1,3 +1,44 @@
+aria2 1.7.2
+===========
+
+Release Note
+------------
+
+This release fixes the bug that aria2 listens wrong port in
+BitTorrent/FTP downloads when --interface option is used. If
+--metalink-file='-' is given, aria2 now reads Metalink file from
+stdin. Magnet URI is printed in the output of -S option.  DHT is
+now enabled by default.  DHT doesn't start while aria2 only handles
+HTTP/FTP downloads. On the first torrent download begins, aria2
+initiates DHT functionality. After that, DHT runs until aria2 exits
+
+Changes
+-------
+
+ * Fixed the bug that RequestGroupMan::downloadFinished() returns true
+   even if all downloads haven't finished, especially when
+   PostDownloadHandler is involved. Changed the condition so that it
+   only returns true if both _requestGroups and _reservedGroups are
+   empty.
+
+ * Enabled DHT by default because of Magnet URI support. To disable
+   DHT, use --enable-dht=false
+
+ * Print Magnet URI in -S output.
+
+ * Fixed the bug that line separator is missing in horizontal bar in
+   aria2mon.
+
+ * If '-' is given as an argument to --metalink-file option, aria2
+   reads Metalink file from stdin.
+
+ * Fixed the bug that aria2 listens wrong port if --interface option
+   is used.
+
+ * Fixed the bug that query parameter in magnet URI is not decoded.
+
+
+
 aria2 1.7.1
 ===========
 
