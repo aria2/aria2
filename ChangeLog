@@ -1,3 +1,9 @@
+2009-12-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Log listening port for BitTorrent/DHT in notice level.
+	* src/DHTConnectionImpl.cc
+	* src/PeerListenCommand.cc
+
 2009-12-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated po templates.

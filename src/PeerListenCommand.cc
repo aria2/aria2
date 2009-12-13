@@ -86,7 +86,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       socket->bind(port);
       socket->beginListen();
       socket->setNonBlockingMode();
-      logger->info(MSG_LISTENING_PORT, cuid, port);
+      logger->notice("BitTorrent: listening to port %d", port);
       return true;
     } catch(RecoverableException& ex) {
       logger->error(MSG_BIND_FAILURE, ex, cuid, port);

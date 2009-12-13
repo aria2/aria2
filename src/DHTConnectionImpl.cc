@@ -79,7 +79,7 @@ bool DHTConnectionImpl::bind(uint16_t& port)
     std::pair<std::string, uint16_t> svaddr;
     _socket->getAddrInfo(svaddr);
     port = svaddr.second;
-    _logger->info("Bind socket for DHT. port=%u", port);
+    _logger->notice("DHT: listening to port %d", port);
     return true;
   } catch(RecoverableException& e) {
     _logger->error("Failed to bind for DHT. port=%u", e, port);
