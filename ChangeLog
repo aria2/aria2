@@ -1,5 +1,9 @@
 2009-12-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release 1.7.2
+
+2009-12-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that RequestGroupMan::downloadFinished() returns
 	true even if all downloads haven't finished, especially when
 	PostDownloadHandler is involved. Changed the condition so that it
