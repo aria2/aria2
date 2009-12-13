@@ -91,16 +91,7 @@ bool RequestGroupMan::downloadFinished()
     return false;
   }
 #endif // ENABLE_XML_RPC
-  if(!_reservedGroups.empty()) {
-    return false;
-  }
-  for(RequestGroups::iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
-    if((*itr)->getNumCommand() > 0 || !(*itr)->downloadFinished()) {
-      return false;
-    }
-  }
-  return true;
+  return _requestGroups.empty() && _reservedGroups.empty();
 }
 
 void RequestGroupMan::addRequestGroup(const RequestGroupHandle& group)

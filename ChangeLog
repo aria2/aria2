@@ -1,5 +1,14 @@
 2009-12-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that RequestGroupMan::downloadFinished() returns
+	true even if all downloads haven't finished, especially when
+	PostDownloadHandler is involved. Changed the condition so that it
+	only returns true if both _requestGroups and _reservedGroups are
+	empty.
+	* src/RequestGroupMan.cc
+
+2009-12-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Log listening port for BitTorrent/DHT in notice level.
 	* src/DHTConnectionImpl.cc
 	* src/PeerListenCommand.cc
