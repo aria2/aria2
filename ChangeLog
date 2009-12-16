@@ -1,3 +1,13 @@
+2009-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that if --without-sqlite3 is given, pkg-config is
+	not properly used in configure script and failed to detect gnutls.
+	This is because explicit call of PKG_PROG_PKG_CONFIG is missing
+	and the initialization of pkg-config is done in first occurrence
+	of PKG_CHECK_MODULES which is not executed because it is inside of
+	sqlite3.m4. Added explicit PKG_PROG_PKG_CONFIG call.
+	* configure.ac
+
 2009-12-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.7.2
