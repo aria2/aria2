@@ -1,3 +1,8 @@
+2009-12-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed old useless comment
+	* src/MultiUrlRequestInfo.cc
+
 2009-12-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that if --without-sqlite3 is given, pkg-config is

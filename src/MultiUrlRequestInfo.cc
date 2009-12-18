@@ -161,14 +161,6 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     }
     e->setStatCalc(_statCalc);
 
-    // The number of simultaneous download is specified by
-    // PREF_MAX_CONCURRENT_DOWNLOADS.
-    // The remaining urls are queued into FillRequestGroupCommand.
-    // It observes the number of simultaneous downloads and if it is under
-    // the limit, it adds RequestGroup object from its queue to DownloadEngine.
-    // This is done every 1 second. At the same time, it removes finished/error
-    // RequestGroup from DownloadEngine.
-
     util::setGlobalSignalHandler(SIGINT, handler, 0);
     util::setGlobalSignalHandler(SIGTERM, handler, 0);
     
