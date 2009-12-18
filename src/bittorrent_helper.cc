@@ -941,7 +941,7 @@ std::string torrent2Magnet(const BDE& attrs)
   std::string uri = "magnet:?";
   if(attrs.containsKey(INFO_HASH)) {
     uri += "xt=urn:btih:";
-    uri += util::toHex(attrs[INFO_HASH].s());
+    uri += util::toUpper(util::toHex(attrs[INFO_HASH].s()));
   } else {
     return A2STR::NIL;
   }

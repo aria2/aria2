@@ -763,7 +763,7 @@ void BittorrentHelperTest::testTorrent2Magnet()
   load("test.torrent", dctx);
   
   CPPUNIT_ASSERT_EQUAL
-    (std::string("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c"
+    (std::string("magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C"
 		 "&dn=aria2-test"
 		 "&tr=http%3A%2F%2Ftracker1"
 		 "&tr=http%3A%2F%2Ftracker2"

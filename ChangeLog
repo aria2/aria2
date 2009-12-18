@@ -1,5 +1,11 @@
 2009-12-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Show info hash in Magnet URI in upper case letters in -S output.
+	* src/bittorrent_helper.cc
+	* test/BittorrentHelperTest.cc
+
+2009-12-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed old useless comment
 	* src/MultiUrlRequestInfo.cc
 
