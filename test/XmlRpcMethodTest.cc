@@ -18,6 +18,7 @@
 #include "TestUtil.h"
 #include "DownloadContext.h"
 #include "FeatureConfig.h"
+#include "util.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 # include "BtRuntime.h"
@@ -64,6 +65,8 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testTellWaiting_fail);
   CPPUNIT_TEST(testGetVersion);
   CPPUNIT_TEST(testNoSuchMethod);
+  CPPUNIT_TEST(testGatherStoppedDownload);
+  CPPUNIT_TEST(testGatherProgressCommon);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DownloadEngine> _e;
@@ -114,6 +117,8 @@ public:
   void testTellWaiting_fail();
   void testGetVersion();
   void testNoSuchMethod();
+  void testGatherStoppedDownload();
+  void testGatherProgressCommon();
 };
 
 
@@ -622,6 +627,53 @@ void XmlRpcMethodTest::testGetVersion()
   
   CPPUNIT_ASSERT_EQUAL(FeatureConfig::getInstance()->featureSummary()+", ",
 		       features);
+}
+
+void XmlRpcMethodTest::testGatherStoppedDownload()
+{
+  std::vector<SharedHandle<FileEntry> > fileEntries;
+  std::vector<int32_t> followedBy;
+  followedBy.push_back(3);
+  followedBy.push_back(4);
+  SharedHandle<DownloadResult> d
+    (new DownloadResult(1,
+			fileEntries,
+			false,
+			UINT64_MAX,
+			1000,
+			downloadresultcode::FINISHED,
+			followedBy,
+			2));
+  BDE entry = BDE::dict();
+  gatherStoppedDownload(entry, d);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("3"), entry["followedBy"][0].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("4"), entry["followedBy"][1].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"), entry["belongsTo"].s());
+}
+
+void XmlRpcMethodTest::testGatherProgressCommon()
+{
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+
+  SharedHandle<RequestGroup> group(new RequestGroup(_option));
+  group->setDownloadContext(dctx);
+  std::vector<SharedHandle<RequestGroup> > followedBy;
+  for(int i = 0; i < 2; ++i) {
+    followedBy.push_back(SharedHandle<RequestGroup>(new RequestGroup(_option)));
+  }
+
+  group->followedBy(followedBy.begin(), followedBy.end());
+  group->belongsTo(2);
+
+  BDE entry = BDE::dict();
+  gatherProgressCommon(entry, group);
+  
+  CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[0]->getGID()),
+		       entry["followedBy"][0].s());
+  CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[1]->getGID()),
+		       entry["followedBy"][1].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"), entry["belongsTo"].s());
 }
 
 } // namespace xmlrpc

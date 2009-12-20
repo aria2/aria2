@@ -252,6 +252,8 @@ Metalink2RequestGroup::createRequestGroup
     if(!torrentRg.isNull()) {
       SharedHandle<Dependency> dep(new BtDependency(rg, torrentRg));
       rg->dependsOn(dep);
+
+      torrentRg->belongsTo(rg->getGID());
     }
 #endif // ENABLE_BITTORRENT
     groups.push_back(rg);

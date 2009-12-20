@@ -77,9 +77,12 @@ void BtPostDownloadHandler::getNextRequestGroups
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
     throw;
   }
-  createRequestGroupForBitTorrent(groups, requestGroup->getOption(),
+  std::deque<SharedHandle<RequestGroup> > newRgs;
+  createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
 				  std::deque<std::string>(),
 				  content);
+  requestGroup->followedBy(newRgs.begin(), newRgs.end());
+  groups.insert(groups.end(), newRgs.begin(), newRgs.end());
 }
 
 } // namespace aria2

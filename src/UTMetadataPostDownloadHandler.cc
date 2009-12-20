@@ -76,14 +76,12 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
   std::string metadata =
     util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
   std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);
-  try {
-    std::deque<SharedHandle<RequestGroup> > newRgs;
-    createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-				    std::deque<std::string>(), torrent);
-    groups.insert(groups.end(), newRgs.begin(), newRgs.end());
-  } catch(RecoverableException& e) {
-    _logger->error("Failed to parse BitTorrent metadata.", e);
-  }
+
+  std::deque<SharedHandle<RequestGroup> > newRgs;
+  createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
+				  std::deque<std::string>(), torrent);
+  requestGroup->followedBy(newRgs.begin(), newRgs.end());
+  groups.insert(groups.end(), newRgs.begin(), newRgs.end());
 }
 
 } // namespace aria2

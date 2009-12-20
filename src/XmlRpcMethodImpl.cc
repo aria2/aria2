@@ -262,7 +262,7 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   return createGIDResponse(gid);
 }
 
-static void gatherProgressCommon
+void gatherProgressCommon
 (BDE& entryDict, const SharedHandle<RequestGroup>& group)
 {
   entryDict["gid"] = util::itos(group->getGID());
@@ -286,6 +286,18 @@ static void gatherProgressCommon
     util::uitos(group->getDownloadContext()->getPieceLength());
   entryDict["numPieces"] =
     util::uitos(group->getDownloadContext()->getNumPieces());
+  if(!group->followedBy().empty()) {
+    BDE list = BDE::list();
+    // The element is GID.
+    for(std::vector<int32_t>::const_iterator i = group->followedBy().begin();
+	i != group->followedBy().end(); ++i) {
+      list << util::itos(*i);
+    }
+    entryDict["followedBy"] = list;
+  }
+  if(group->belongsTo()) {
+    entryDict["belongsTo"] = util::itos(group->belongsTo());
+  }
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -343,7 +355,7 @@ static void gatherProgress
 #endif // ENABLE_BITTORRENT
 }
 
-static void gatherStoppedDownload
+void gatherStoppedDownload
 (BDE& entryDict, const SharedHandle<DownloadResult>& ds)
 {
   entryDict["gid"] = util::itos(ds->gid);
@@ -354,6 +366,18 @@ static void gatherStoppedDownload
     entryDict["status"] = BDE_COMPLETE;
   } else {
     entryDict["status"] = BDE_ERROR;
+  }
+  if(!ds->followedBy.empty()) {
+    BDE list = BDE::list();
+    // The element is GID.
+    for(std::vector<int32_t>::const_iterator i = ds->followedBy.begin();
+	i != ds->followedBy.end(); ++i) {
+      list << util::itos(*i);
+    }
+    entryDict["followedBy"] = list;
+  }
+  if(ds->belongsTo) {
+    entryDict["belongsTo"] = util::itos(ds->belongsTo);
   }
 }
 

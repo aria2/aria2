@@ -39,6 +39,9 @@
 
 namespace aria2 {
 
+class DownloadResult;
+class RequestGroup;
+
 namespace xmlrpc {
 
 class AddUriXmlRpcMethod:public XmlRpcMethod {
@@ -121,6 +124,16 @@ class NoSuchMethodXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
+
+// Helper function to store data to entryDict from ds. This function
+// is used by tellStatus method.
+void gatherStoppedDownload
+(BDE& entryDict, const SharedHandle<DownloadResult>& ds);
+
+// Helper function to store data to entryDict from group. This
+// function is used by tellStatus/tellActive/tellWaiting method
+void gatherProgressCommon
+(BDE& entryDict, const SharedHandle<RequestGroup>& group);
 
 } // namespace xmlrpc
 

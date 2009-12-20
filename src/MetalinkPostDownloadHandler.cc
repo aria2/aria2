@@ -71,9 +71,11 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
   try {
     diskAdaptor->openExistingFile();
     //requestOption.put(PREF_DIR, requestGroup->getDownloadContext()->getDir());
-    
-    Metalink2RequestGroup().generate(groups, diskAdaptor,
+    std::deque<SharedHandle<RequestGroup> > newRgs;
+    Metalink2RequestGroup().generate(newRgs, diskAdaptor,
 				     requestGroup->getOption());
+    requestGroup->followedBy(newRgs.begin(), newRgs.end());
+    groups.insert(groups.end(), newRgs.begin(), newRgs.end());
     diskAdaptor->closeFile();
   } catch(Exception& e) {
     diskAdaptor->closeFile();

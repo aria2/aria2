@@ -65,18 +65,30 @@ public:
 
   downloadresultcode::RESULT result;
 
+  // This field contains GIDs. See comment in
+  // RequestGroup.cc::_followedByGIDs.
+  std::vector<int32_t> followedBy;
+
+  // This field contains GID. See comment in
+  // RequestGroup.cc::_belongsToGID.
+  int32_t belongsTo;
+
   DownloadResult(int32_t gid,
 		 const std::vector<SharedHandle<FileEntry> >& fileEntries,
 		 bool inMemoryDownload,
 		 uint64_t sessionDownloadLength,
 		 int64_t sessionTime,
-		 downloadresultcode::RESULT result):
+		 downloadresultcode::RESULT result,
+		 const std::vector<int32_t> followedBy,
+		 int32_t belongsTo):
     gid(gid),
     fileEntries(fileEntries),
     inMemoryDownload(inMemoryDownload),
     sessionDownloadLength(sessionDownloadLength),
     sessionTime(sessionTime),
-    result(result) {}
+    result(result),
+    followedBy(followedBy),
+    belongsTo(belongsTo) {}
 };
 
 typedef SharedHandle<DownloadResult> DownloadResultHandle;

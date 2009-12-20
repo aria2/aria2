@@ -100,6 +100,10 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
 		       newAttrs[bittorrent::ANNOUNCE_LIST][0][0].s());
   CPPUNIT_ASSERT_EQUAL(_option->get("Hello"),
 		       newRg->getOption()->get("Hello"));
+  CPPUNIT_ASSERT
+    (std::find(_requestGroup->followedBy().begin(),
+	       _requestGroup->followedBy().end(),
+	       newRg->getGID()) != _requestGroup->followedBy().end());
 
   results.clear();
 
@@ -109,8 +113,12 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData
     (reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size(),
      0);
-  handler.getNextRequestGroups(results, _requestGroup.get());
-  CPPUNIT_ASSERT(results.empty());  
+  try {
+    handler.getNextRequestGroups(results, _requestGroup.get());
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
 }
 
 } // namespace aria2

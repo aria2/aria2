@@ -97,10 +97,11 @@ void Metalink2RequestGroupTest::testGenerate()
     const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(!dctx.isNull());
+    CPPUNIT_ASSERT_EQUAL(groups[5]->getGID(), rg->belongsTo());
   }
 #endif // ENABLE_BITTORRENT
 
-  // sixth file <- depends on thrid file
+  // sixth file <- depends on fifth file to download .torrent file.
   {
 #ifdef ENABLE_BITTORRENT
     SharedHandle<RequestGroup> rg = groups[5];
