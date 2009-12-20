@@ -36,8 +36,10 @@
 #define _D_OPTION_HANDLER_FACTORY_H_
 
 #include "common.h"
+
+#include <vector>
+
 #include "SharedHandle.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -45,7 +47,7 @@ class OptionHandler;
 
 class OptionHandlerFactory {
 public:
-  static std::deque<SharedHandle<OptionHandler> > createOptionHandlers();
+  static std::vector<SharedHandle<OptionHandler> > createOptionHandlers();
 };
 
 } // namespace aria2

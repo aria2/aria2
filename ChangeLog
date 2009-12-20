@@ -1,5 +1,16 @@
 2009-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Sort _optionHandlers in OptionParser by name in ascending order.
+	Use vector instead of deque for efficiency.
+	* src/OptionHandler.h
+	* src/OptionHandlerFactory.h
+	* src/OptionParser.cc
+	* src/OptionParser.h
+	* src/version_usage.cc
+	* test/OptionParserTest.cc
+
+2009-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/XmlRpcMethod.cc
 

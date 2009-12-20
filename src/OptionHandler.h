@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <vector>
 #include <iosfwd>
 
 #include "SharedHandle.h"
@@ -87,8 +87,30 @@ public:
   virtual void setOptionID(int id) = 0;
 };
 
+class OptionHandlerNameLesser:public std::binary_function
+<SharedHandle<OptionHandler>, SharedHandle<OptionHandler>, bool> {
+public:
+  bool operator()
+  (const SharedHandle<OptionHandler>& lhs,
+   const SharedHandle<OptionHandler>& rhs) const
+  {
+    return lhs->getName() < rhs->getName();
+  }
+};
+
+class OptionHandlerIDLesser:public std::binary_function
+<SharedHandle<OptionHandler>, SharedHandle<OptionHandler>, bool> {
+public:
+  bool operator()
+  (const SharedHandle<OptionHandler>& lhs,
+   const SharedHandle<OptionHandler>& rhs) const
+  {
+    return lhs->getOptionID() < rhs->getOptionID();
+  }
+};
+
 typedef SharedHandle<OptionHandler> OptionHandlerHandle;
-typedef std::deque<OptionHandlerHandle> OptionHandlers;
+typedef std::vector<OptionHandlerHandle> OptionHandlers;
 
 std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler);
 

@@ -86,7 +86,7 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
 		 " METALINK_FILE]...") << "\n"
 	    << "\n";
   if(util::startsWith(keyword, "#")) {
-    std::deque<SharedHandle<OptionHandler> > handlers =
+    std::vector<SharedHandle<OptionHandler> > handlers =
       keyword == TAG_ALL ? oparser.findAll():oparser.findByTag(keyword);
     if(keyword == TAG_ALL) {
       std::cout << _("Printing all options.");
@@ -106,7 +106,7 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
 	      std::ostream_iterator<SharedHandle<OptionHandler> >
 	      (std::cout, "\n\n"));
   } else {    
-    std::deque<SharedHandle<OptionHandler> > handlers =
+    std::vector<SharedHandle<OptionHandler> > handlers =
       oparser.findByNameSubstring(keyword);
     if(!handlers.empty()) {
       std::cout << StringFormat(_("Printing options whose name includes"

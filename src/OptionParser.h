@@ -39,6 +39,7 @@
 
 #include <string>
 #include <deque>
+#include <vector>
 #include <iosfwd>
 
 #include "SharedHandle.h"
@@ -52,7 +53,9 @@ class OptionParser {
 private:
   int _idCounter;
 
-  std::deque<SharedHandle<OptionHandler> > _optionHandlers;
+  // _optionHandlers is sorted by OptionHandler::getName() in
+  // ascending order.
+  std::vector<SharedHandle<OptionHandler> > _optionHandlers;
 
   SharedHandle<OptionHandler>
   getOptionHandlerByName(const std::string& optName);
@@ -74,26 +77,30 @@ public:
   void parseDefaultValues(Option& option) const;
 
   void setOptionHandlers
-  (const std::deque<SharedHandle<OptionHandler> >& optionHandlers);
+  (const std::vector<SharedHandle<OptionHandler> >& optionHandlers);
 
   void addOptionHandler(const SharedHandle<OptionHandler>& optionHandler);
 
-  std::deque<SharedHandle<OptionHandler> >
+  // Hidden options are not returned.
+  std::vector<SharedHandle<OptionHandler> >
   findByTag(const std::string& tag) const;
 
-  std::deque<SharedHandle<OptionHandler> >
+  // Hidden options are not returned.
+  std::vector<SharedHandle<OptionHandler> >
   findByNameSubstring(const std::string& substring) const;
 
-  std::deque<SharedHandle<OptionHandler> > findAll() const;
+  // Hidden options are not returned.
+  std::vector<SharedHandle<OptionHandler> > findAll() const;
 
+  // Hidden options are not returned.
   SharedHandle<OptionHandler>
   findByName(const std::string& name) const;
 
+  // Hidden options are not returned.
   SharedHandle<OptionHandler> findByID(int id) const;
 
+  // Hidden options are not returned.
   SharedHandle<OptionHandler> findByShortName(char shortName) const;
-
-  const std::deque<SharedHandle<OptionHandler> >& getOptionHandlers() const;
 
   static SharedHandle<OptionParser> getInstance();
 };

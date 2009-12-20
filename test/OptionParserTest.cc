@@ -2,7 +2,6 @@
 
 #include <cstring>
 #include <sstream>
-#include <deque>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -75,7 +74,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(OptionParserTest);
 
 void OptionParserTest::testFindAll()
 {
-  std::deque<SharedHandle<OptionHandler> > res = _oparser->findAll();
+  std::vector<SharedHandle<OptionHandler> > res = _oparser->findAll();
   CPPUNIT_ASSERT_EQUAL((size_t)3, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), res[0]->getName());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), res[1]->getName());
@@ -84,7 +83,7 @@ void OptionParserTest::testFindAll()
 
 void OptionParserTest::testFindByNameSubstring()
 {
-  std::deque<SharedHandle<OptionHandler> > res =
+  std::vector<SharedHandle<OptionHandler> > res =
     _oparser->findByNameSubstring("l");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), res[0]->getName());
@@ -93,7 +92,7 @@ void OptionParserTest::testFindByNameSubstring()
 
 void OptionParserTest::testFindByTag()
 {
-  std::deque<SharedHandle<OptionHandler> > res =
+  std::vector<SharedHandle<OptionHandler> > res =
     _oparser->findByTag("pineapple");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), res[0]->getName());

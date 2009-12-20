@@ -172,36 +172,58 @@ void OptionParser::parse(Option& option, std::istream& is)
   }
 }
 
-OptionHandlerHandle OptionParser::getOptionHandlerByName(const std::string& optName)
-{
-  for(OptionHandlers::iterator itr = _optionHandlers.begin();
-      itr != _optionHandlers.end(); ++itr) {
-    if((*itr)->canHandle(optName)) {
-      return *itr;
-    }
+class DummyOptionHandler:public NameMatchOptionHandler {
+protected:
+  virtual void parseArg(Option& option, const std::string& arg) {}
+public:
+  DummyOptionHandler(const std::string& name):NameMatchOptionHandler(name) {}
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return A2STR::NIL;
   }
-  return SharedHandle<OptionHandler>(new NullOptionHandler());
+};
+
+OptionHandlerHandle OptionParser::getOptionHandlerByName
+(const std::string& optName)
+{
+  SharedHandle<OptionHandler> handler(new DummyOptionHandler(optName));
+  std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+    std::lower_bound(_optionHandlers.begin(), _optionHandlers.end(),
+		     handler, OptionHandlerNameLesser());
+  if(i == _optionHandlers.end()) {
+    handler.reset(new NullOptionHandler());
+  } else {
+    handler = *i;
+  }
+  return handler;
 }
 
-void OptionParser::setOptionHandlers(const std::deque<SharedHandle<OptionHandler> >& optionHandlers)
+void OptionParser::setOptionHandlers
+(const std::vector<SharedHandle<OptionHandler> >& optionHandlers)
 {
   _optionHandlers = optionHandlers;
-  for(std::deque<SharedHandle<OptionHandler> >::iterator i =
+  for(std::vector<SharedHandle<OptionHandler> >::iterator i =
 	_optionHandlers.begin(); i != _optionHandlers.end(); ++i) {
     (*i)->setOptionID(++_idCounter);
   }
+  std::sort(_optionHandlers.begin(), _optionHandlers.end(),
+	    OptionHandlerNameLesser());
 }
 
 void OptionParser::addOptionHandler
 (const SharedHandle<OptionHandler>& optionHandler)
 {
   optionHandler->setOptionID(++_idCounter);
-  _optionHandlers.push_back(optionHandler);
+  std::vector<SharedHandle<OptionHandler> >::iterator i =
+    std::lower_bound(_optionHandlers.begin(), _optionHandlers.end(),
+		     optionHandler, OptionHandlerNameLesser());
+  _optionHandlers.insert(i, optionHandler);
 }
 
 void OptionParser::parseDefaultValues(Option& option) const
 {
-  for(std::deque<SharedHandle<OptionHandler> >::const_iterator i =
+  for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
 	_optionHandlers.begin(); i != _optionHandlers.end(); ++i) {
     if(!(*i)->getDefaultValue().empty()) {
       (*i)->parse(option, (*i)->getDefaultValue());
@@ -209,12 +231,12 @@ void OptionParser::parseDefaultValues(Option& option) const
   }
 }
 
-class FindByTag :
+class FindOptionHandlerByTag :
   public std::unary_function<SharedHandle<OptionHandler>, bool> {
 private:
   std::string _tag;
 public:
-  FindByTag(const std::string& tag):_tag(tag) {}
+  FindOptionHandlerByTag(const std::string& tag):_tag(tag) {}
 
   bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
   {
@@ -222,22 +244,24 @@ public:
   }
 };
 
-std::deque<SharedHandle<OptionHandler> >
+std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByTag(const std::string& tag) const
 {
-  std::deque<SharedHandle<OptionHandler> > result;
+  std::vector<SharedHandle<OptionHandler> > result;
   std::remove_copy_if(_optionHandlers.begin(), _optionHandlers.end(),
 		      std::back_inserter(result),
-		      std::not1(FindByTag(tag)));
+		      std::not1(FindOptionHandlerByTag(tag)));
+  std::sort(result.begin(), result.end(), OptionHandlerIDLesser());
   return result;
 }
 
-class FindByNameSubstring :
+class FindOptionHandlerByNameSubstring :
   public std::unary_function<SharedHandle<OptionHandler> , bool> {
 private:
   std::string _substring;
 public:
-  FindByNameSubstring(const std::string& substring):_substring(substring) {}
+  FindOptionHandlerByNameSubstring
+  (const std::string& substring):_substring(substring) {}
 
   bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
   {
@@ -246,22 +270,24 @@ public:
   }
 };
 
-std::deque<SharedHandle<OptionHandler> >
+std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByNameSubstring(const std::string& substring) const
 {
-  std::deque<SharedHandle<OptionHandler> > result;
+  std::vector<SharedHandle<OptionHandler> > result;
   std::remove_copy_if(_optionHandlers.begin(), _optionHandlers.end(),
 		      std::back_inserter(result),
-		      std::not1(FindByNameSubstring(substring)));
+		      std::not1(FindOptionHandlerByNameSubstring(substring)));
+  std::sort(result.begin(), result.end(), OptionHandlerIDLesser());
   return result;  
 }
 
-std::deque<SharedHandle<OptionHandler> > OptionParser::findAll() const
+std::vector<SharedHandle<OptionHandler> > OptionParser::findAll() const
 {
-  std::deque<SharedHandle<OptionHandler> > result;
+  std::vector<SharedHandle<OptionHandler> > result;
   std::remove_copy_if(_optionHandlers.begin(), _optionHandlers.end(),
 		      std::back_inserter(result),
 		      mem_fun_sh(&OptionHandler::isHidden));
+  std::sort(result.begin(), result.end(), OptionHandlerIDLesser());
   return result;
 }
 
@@ -269,39 +295,35 @@ template<typename InputIterator, typename Predicate>
 static SharedHandle<OptionHandler> findOptionHandler
 (InputIterator first, InputIterator last, Predicate pred)
 {
+  SharedHandle<OptionHandler> handler;
   InputIterator i = std::find_if(first, last, pred);
-  if(i == last) {
-    return SharedHandle<OptionHandler>();
-  } else {
-    return *i;
+  if(i != last) {
+    handler = *i;
   }
+  return handler;
 }
-
-class FindByName :
-  public std::unary_function<SharedHandle<OptionHandler> , bool> {
-private:
-  std::string _name;
-public:
-  FindByName(const std::string& name):_name(name) {}
-
-  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
-  {
-    return !optionHandler->isHidden() && optionHandler->getName() == _name;
-  }
-};
 
 SharedHandle<OptionHandler>
 OptionParser::findByName(const std::string& name) const
 {
-  return findOptionHandler(_optionHandlers.begin(), _optionHandlers.end(),
-			   FindByName(name));
+  SharedHandle<OptionHandler> handler(new DummyOptionHandler(name));
+  std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+    std::lower_bound(_optionHandlers.begin(), _optionHandlers.end(),
+		     handler, OptionHandlerNameLesser());
+  if(i == _optionHandlers.end() || (*i)->isHidden()) {
+    handler.reset();
+  } else {
+    handler = *i;
+  }
+  return handler;
 }
 
-class FindByID:public std::unary_function<SharedHandle<OptionHandler>, bool> {
+class FindOptionHandlerByID:public std::unary_function
+<SharedHandle<OptionHandler>, bool> {
 private:
   int _id;
 public:
-  FindByID(int id):_id(id) {}
+  FindOptionHandlerByID(int id):_id(id) {}
 
   bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
   {
@@ -312,15 +334,15 @@ public:
 SharedHandle<OptionHandler> OptionParser::findByID(int id) const
 {
   return findOptionHandler(_optionHandlers.begin(), _optionHandlers.end(),
-			   FindByID(id));
+			   FindOptionHandlerByID(id));
 }
 
-class FindByShortName:
+class FindOptionHandlerByShortName:
     public std::unary_function<SharedHandle<OptionHandler>, bool> {
 private:
   char _shortName;
 public:
-  FindByShortName(char shortName):_shortName(shortName) {}
+  FindOptionHandlerByShortName(char shortName):_shortName(shortName) {}
 
   bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
   {
@@ -332,15 +354,9 @@ public:
 SharedHandle<OptionHandler> OptionParser::findByShortName(char shortName) const
 {
   return findOptionHandler(_optionHandlers.begin(), _optionHandlers.end(),
-			   FindByShortName(shortName));
+			   FindOptionHandlerByShortName(shortName));
 }
 
-
-const std::deque<SharedHandle<OptionHandler> >&
-OptionParser::getOptionHandlers() const
-{
-  return _optionHandlers;
-}
 
 SharedHandle<OptionParser> OptionParser::_optionParser;
 
