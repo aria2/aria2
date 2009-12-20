@@ -39,7 +39,7 @@ namespace aria2 {
 
 const BDE BDE::none;
 
-BDE::BDE():_type(TYPE_NONE) {}
+BDE::BDE():_type(TYPE_NONE), _bobject(new BObject()) {}
 
 BDE::BDE(Integer integer):_type(TYPE_INTEGER),
 			  _bobject(new BInteger(integer)) {}

@@ -1,3 +1,9 @@
+2009-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Assigned BObject in BDE() to avoid segmentation fault when calling
+	methods of BDE::none().
+	* src/BDE.cc
+
 2009-12-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Show info hash in Magnet URI in upper case letters in -S output.
