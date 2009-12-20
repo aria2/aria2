@@ -1,5 +1,18 @@
 2009-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added getOption and getGlobalOption XML-RPC method.  getOption
+	takes GID as a parameter and returns its options as struct.
+	getGlobalOption takes no parameter and returns global
+	options. Because global option is used as a template for the
+	option of newly added downloads, it includes options returned by
+	getOption.
+	* src/Option.h
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+
+2009-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Sort _optionHandlers in OptionParser by name in ascending order.
 	Use vector instead of deque for efficiency.
 	* src/OptionHandler.h

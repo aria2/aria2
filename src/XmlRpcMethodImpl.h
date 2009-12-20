@@ -120,6 +120,16 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
+class GetOptionXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+};
+
+class GetGlobalOptionXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+};
+
 class NoSuchMethodXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);

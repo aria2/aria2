@@ -64,6 +64,16 @@ public:
   void remove(const std::string& name);
 
   void clear();
+
+  std::map<std::string, std::string>::const_iterator begin() const
+  {
+    return table.begin();
+  }
+
+  std::map<std::string, std::string>::const_iterator end() const
+  {
+    return table.end();
+  }
 };
 
 } // namespace aria2

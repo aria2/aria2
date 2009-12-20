@@ -58,6 +58,7 @@
 #include "prefs.h"
 #include "message.h"
 #include "FeatureConfig.h"
+#include "array_fun.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -676,6 +677,53 @@ BDE GetVersionXmlRpcMethod::process
     }
   }
   result["enabledFeatures"] = featureList;
+  return result;
+}
+
+template<typename InputIterator>
+static void pushRequestOption
+(BDE& dict, InputIterator optionFirst, InputIterator optionLast)
+{
+  const std::set<std::string>& requestOptions = listRequestOptions();
+  for(; optionFirst != optionLast; ++optionFirst) {
+    if(requestOptions.count((*optionFirst).first)) {
+      dict[(*optionFirst).first] = (*optionFirst).second;
+    }
+  }
+}
+
+BDE GetOptionXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isString()) {
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
+  }  
+  int32_t gid = util::parseInt(params[0].s());
+
+  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  if(group.isNull()) {
+    throw DL_ABORT_EX
+      (StringFormat("Cannot get option for GID#%d", gid).str());
+  }
+  BDE result = BDE::dict();
+  SharedHandle<Option> option = group->getOption();
+  pushRequestOption(result, option->begin(), option->end());
+  return result;
+}
+
+BDE GetGlobalOptionXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  BDE result = BDE::dict();
+  for(std::map<std::string, std::string>::const_iterator i = e->option->begin();
+      i != e->option->end(); ++i) {
+    SharedHandle<OptionHandler> h = _optionParser->findByName((*i).first);
+    if(!h.isNull() && !h->isHidden()) {
+      result[(*i).first] = (*i).second;
+    }
+  }
   return result;
 }
 
