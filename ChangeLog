@@ -1,5 +1,11 @@
 2009-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented getOption and getGlobalOption XML-RPC method in man
+	page
+	* doc/aria2c.1.txt
+
+2009-12-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added getOption and getGlobalOption XML-RPC method.  getOption
 	takes GID as a parameter and returns its options as struct.
 	getGlobalOption takes no parameter and returns global

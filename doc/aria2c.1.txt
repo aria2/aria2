@@ -1330,6 +1330,12 @@ this order. aria2.tellWaiting(0, 1) returns "A". aria2.tellWaiting(1,
 2) returns "B" and "C".  The respose is of type array and its element
 is the same struct returned by *aria2.tellStatus* method.
 
+*aria2.getOption* 'gid'
+
+This method returns options of the download denoted by 'gid'.  The
+response is of type struct. Its key is the name of option.  The value type
+is string.
+
 *aria2.changeOption* 'gid, options'
 
 This method changes options of the download denoted by 'gid'
@@ -1337,6 +1343,14 @@ dynamically.  'gid' is of type string.  'options' is of type struct
 and the available options are: *bt-max-peers*,
 *bt-request-peer-speed-limit*, *max-download-limit* and
 *max-upload-limit*.  This method returns "OK" for success.
+
+*aria2.getGlobalOption*
+
+This method returns global options.  The response is of type
+struct. Its key is the name of option.  The value type is string.
+Because global options are used as a template for the options of newly
+added download, the response contains keys returned by
+*aria2.getOption* method.
 
 *aria2.changeGlobalOption* 'options'
 
