@@ -84,7 +84,7 @@ static void gatherOption
 {
   for(; first != last; ++first) {
     const std::string& optionName = (*first).first;
-    if(changeableOptions.find(optionName) == changeableOptions.end()) {
+    if(changeableOptions.count(optionName) == 0) {
       throw DL_ABORT_EX
 	(StringFormat
 	 ("%s cannot be changed or unknown option.", optionName.c_str()).str());
