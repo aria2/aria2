@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 12/20/2009
+.\"      Date: 12/22/2009
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "12/20/2009" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "12/22/2009" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -2314,6 +2314,12 @@ This method returns the list of active downloads\&. The respose is of type array
 \fBaria2\&.tellWaiting\fR \fIoffset, num\fR
 .sp
 This method returns the list of waiting download in the range of [\fIoffset\fR, \fIoffset\fR+\fInum\fR)\&. \fIoffset\fR is of type integer and specifies the offset from the download waiting at the front\&. \fInum\fR is of type integer and specifies the number of downloads to be returned\&. For example, imagine that three downloads "A","B" and "C" are waiting in this order\&. aria2\&.tellWaiting(0, 1) returns "A"\&. aria2\&.tellWaiting(1, 2) returns "B" and "C"\&. The respose is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&.
+.sp
+\fBaria2\&.changePosition\fR \fIgid, pos, how\fR
+.sp
+This method changes the position of the download denoted by \fIgid\fR\&. \fIpos\fR is of type integer\&. \fIhow\fR is of type string\&. If \fIhow\fR is "POS_SET", it moves the download to a position relative to the beginning of the queue\&. If \fIhow\fR is "POS_CUR", it moves the download to a position relative to the current position\&. If \fIhow\fR is "POS_END", it moves the download to a position relative to the end of the queue\&. If the destination position is less than 0 or beyond the end of the queue, it moves the download to the beginning or the end of the queue respectively\&. The response is of type integer and it is the destination position\&.
+.sp
+For example, if GID#1 is placed in position 3, aria2\&.changePosition(1, \-1, POS_CUR) will change its position to 2\&. Additional aria2\&.changePosition(1, 0, POS_SET) will change its position to 0(the beginning of the queue)\&.
 .sp
 \fBaria2\&.getOption\fR \fIgid\fR
 .sp

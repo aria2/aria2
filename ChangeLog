@@ -1,5 +1,10 @@
 2009-12-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented changePosition XML-RPC method in man page.
+	* doc/aria2c.1.txt
+
+2009-12-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added changePosition XML-RPC method. It takes 3 parameters: gid,
 	pos and how.  This method changes the position of download denoted
 	by gid.  If how is POS_SET, it moves the download to a position

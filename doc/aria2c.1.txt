@@ -1330,6 +1330,24 @@ this order. aria2.tellWaiting(0, 1) returns "A". aria2.tellWaiting(1,
 2) returns "B" and "C".  The respose is of type array and its element
 is the same struct returned by *aria2.tellStatus* method.
 
+*aria2.changePosition* 'gid, pos, how'
+
+This method changes the position of the download denoted by
+'gid'. 'pos' is of type integer. 'how' is of type string. If 'how' is
+"POS_SET", it moves the download to a position relative to the
+beginning of the queue.  If 'how' is "POS_CUR", it moves the download
+to a position relative to the current position. If 'how' is "POS_END",
+it moves the download to a position relative to the end of the
+queue. If the destination position is less than 0 or beyond the end of
+the queue, it moves the download to the beginning or the end of the
+queue respectively. The response is of type integer and it is the
+destination position.
+
+For example, if GID#1 is placed in position 3, aria2.changePosition(1,
+-1, POS_CUR) will change its position to 2. Additional
+aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
+beginning of the queue).
+
 *aria2.getOption* 'gid'
 
 This method returns options of the download denoted by 'gid'.  The

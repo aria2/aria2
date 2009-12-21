@@ -2983,6 +2983,21 @@ example, imagine that three downloads "A","B" and "C" are waiting in
 this order. aria2.tellWaiting(0, 1) returns "A". aria2.tellWaiting(1,
 2) returns "B" and "C".  The respose is of type array and its element
 is the same struct returned by <strong>aria2.tellStatus</strong> method.</p></div>
+<div class="paragraph"><p><strong>aria2.changePosition</strong> <em>gid, pos, how</em></p></div>
+<div class="paragraph"><p>This method changes the position of the download denoted by
+<em>gid</em>. <em>pos</em> is of type integer. <em>how</em> is of type string. If <em>how</em> is
+"POS_SET", it moves the download to a position relative to the
+beginning of the queue.  If <em>how</em> is "POS_CUR", it moves the download
+to a position relative to the current position. If <em>how</em> is "POS_END",
+it moves the download to a position relative to the end of the
+queue. If the destination position is less than 0 or beyond the end of
+the queue, it moves the download to the beginning or the end of the
+queue respectively. The response is of type integer and it is the
+destination position.</p></div>
+<div class="paragraph"><p>For example, if GID#1 is placed in position 3, aria2.changePosition(1,
+-1, POS_CUR) will change its position to 2. Additional
+aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
+beginning of the queue).</p></div>
 <div class="paragraph"><p><strong>aria2.getOption</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method returns options of the download denoted by <em>gid</em>.  The
 response is of type struct. Its key is the name of option.  The value type
@@ -3496,7 +3511,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-12-20 23:42:01 JST
+Last updated 2009-12-22 00:24:21 JST
 </div>
 </div>
 </body>
