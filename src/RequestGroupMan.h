@@ -130,6 +130,23 @@ public:
 
   SharedHandle<RequestGroup> findReservedGroup(int32_t gid) const;
 
+  enum HOW {
+    POS_SET,
+    POS_CUR,
+    POS_END
+  };
+
+  // Changes the position of download denoted by gid.  If how is
+  // POS_SET, it moves the download to a position relative to the
+  // beginning of the queue.  If how is POS_CUR, it moves the download
+  // to a position relative to the current position. If how is
+  // POS_END, it moves the download to a position relative to the end
+  // of the queue. If the destination position is less than 0 or
+  // beyond the end of the queue, it moves the download to the
+  // beginning or the end of the queue respectively.  Returns the
+  // destination position.
+  size_t changeReservedGroupPosition(int32_t gid, int pos, HOW how);
+
   bool removeReservedGroup(int32_t gid);
 
   void showDownloadResults(std::ostream& o) const;

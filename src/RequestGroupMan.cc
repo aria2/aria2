@@ -66,6 +66,7 @@
 #include "util.h"
 #include "Command.h"
 #include "FileEntry.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -171,6 +172,48 @@ RequestGroupMan::findReservedGroup(int32_t gid) const
   } else {
     return *i;
   }
+}
+
+size_t RequestGroupMan::changeReservedGroupPosition
+(int32_t gid, int pos, HOW how)
+{
+  std::deque<SharedHandle<RequestGroup> >::iterator i =
+    findByGID(_reservedGroups.begin(), _reservedGroups.end(), gid);
+  if(i == _reservedGroups.end()) {
+    throw DL_ABORT_EX
+      (StringFormat("GID#%d not found in the waiting queue.", gid).str());
+  }
+  SharedHandle<RequestGroup> rg = *i;
+  if(how == POS_SET) {
+    _reservedGroups.erase(i);
+    if(pos < 0) {
+      pos = 0;
+    } else if(pos > 0) {
+      pos = std::min(_reservedGroups.size(), (size_t)pos);
+    }
+  } else if(how == POS_CUR) {
+    size_t abspos = std::distance(_reservedGroups.begin(), i);
+    if(pos < 0) {
+      int dist = -std::distance(_reservedGroups.begin(), i);
+      pos = abspos+std::max(pos, dist);
+    } else if(pos > 0) {
+      int dist = std::distance(i, _reservedGroups.end())-1;
+      pos = abspos+std::min(pos, dist);
+    } else {
+      pos = abspos;
+    }
+    _reservedGroups.erase(i);
+  } else if(how == POS_END) {
+    _reservedGroups.erase(i);
+    if(pos >= 0) {
+      pos = _reservedGroups.size();
+    } else {
+      pos =
+	_reservedGroups.size()-std::min(_reservedGroups.size(), (size_t)-pos);
+    }
+  }
+  _reservedGroups.insert(_reservedGroups.begin()+pos, rg);
+  return pos;
 }
 
 bool RequestGroupMan::removeReservedGroup(int32_t gid)

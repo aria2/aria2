@@ -13,6 +13,7 @@
 #include "ServerStatMan.h"
 #include "ServerStat.h"
 #include "File.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -23,12 +24,14 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetInitialCommands);
   CPPUNIT_TEST(testLoadServerStat);
   CPPUNIT_TEST(testSaveServerStat);
+  CPPUNIT_TEST(testChangeReservedGroupPosition);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Option> _option;
 public:
   void setUp()
   {
+    RequestGroup::resetGIDCounter();
     _option.reset(new Option());
   }
 
@@ -36,6 +39,7 @@ public:
   void testGetInitialCommands();
   void testLoadServerStat();
   void testSaveServerStat();
+  void testChangeReservedGroupPosition();
 };
 
 
@@ -105,6 +109,60 @@ void RequestGroupManTest::testLoadServerStat()
 							    "http");
   CPPUNIT_ASSERT(!ss_localhost.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), ss_localhost->getHostname());
+}
+
+void RequestGroupManTest::testChangeReservedGroupPosition()
+{
+  SharedHandle<RequestGroup> gs[] = {
+    SharedHandle<RequestGroup>(new RequestGroup(_option)),
+    SharedHandle<RequestGroup>(new RequestGroup(_option)),
+    SharedHandle<RequestGroup>(new RequestGroup(_option)),
+    SharedHandle<RequestGroup>(new RequestGroup(_option))
+  };
+  std::deque<SharedHandle<RequestGroup> > groups(&gs[0], &gs[arrayLength(gs)]);
+  RequestGroupMan rm(groups, 0, _option.get());
+
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)0, rm.changeReservedGroupPosition(1, 0, RequestGroupMan::POS_SET));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)1, rm.changeReservedGroupPosition(1, 1, RequestGroupMan::POS_SET));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)3, rm.changeReservedGroupPosition(1, 10,RequestGroupMan::POS_SET));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)0, rm.changeReservedGroupPosition(1,-10,RequestGroupMan::POS_SET));
+  
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)1, rm.changeReservedGroupPosition(2, 0, RequestGroupMan::POS_CUR));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)2, rm.changeReservedGroupPosition(2, 1, RequestGroupMan::POS_CUR));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)1, rm.changeReservedGroupPosition(2, -1,RequestGroupMan::POS_CUR));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)0, rm.changeReservedGroupPosition(2,-10,RequestGroupMan::POS_CUR));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)1, rm.changeReservedGroupPosition(2, 1, RequestGroupMan::POS_CUR));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)3, rm.changeReservedGroupPosition(2, 10,RequestGroupMan::POS_CUR));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)1, rm.changeReservedGroupPosition(2, -2,RequestGroupMan::POS_CUR));
+
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)3, rm.changeReservedGroupPosition(4, 0, RequestGroupMan::POS_END));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)2, rm.changeReservedGroupPosition(4, -1,RequestGroupMan::POS_END));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)0, rm.changeReservedGroupPosition(4,-10,RequestGroupMan::POS_END));
+  CPPUNIT_ASSERT_EQUAL
+    ((size_t)3, rm.changeReservedGroupPosition(4, 10,RequestGroupMan::POS_END));
+
+  CPPUNIT_ASSERT_EQUAL((size_t)4, rm.getReservedGroups().size());
+
+  try {
+    rm.changeReservedGroupPosition(5, 0, RequestGroupMan::POS_CUR);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
 }
 
 } // namespace aria2

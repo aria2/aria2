@@ -727,6 +727,35 @@ BDE GetGlobalOptionXmlRpcMethod::process
   return result;
 }
 
+BDE ChangePositionXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.size() != 3 ||
+     !params[0].isString() || !params[1].isInteger() || !params[2].isString()) {
+    throw DL_ABORT_EX("Illegal argument.");
+  }
+  int32_t gid = util::parseInt(params[0].s());
+  int pos = params[1].i();
+  const std::string& howStr = params[2].s();
+  RequestGroupMan::HOW how;
+  if(howStr == "POS_SET") {
+    how = RequestGroupMan::POS_SET;
+  } else if(howStr == "POS_CUR") {
+    how = RequestGroupMan::POS_CUR;
+  } else if(howStr == "POS_END") {
+    how = RequestGroupMan::POS_END;
+  } else {
+    throw DL_ABORT_EX("Illegal argument.");
+  }
+  size_t destPos =
+    e->_requestGroupMan->changeReservedGroupPosition(gid, pos, how);
+  BDE result(destPos);
+  return result;
+}
+
 BDE NoSuchMethodXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {

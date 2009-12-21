@@ -67,6 +67,8 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST(testGatherStoppedDownload);
   CPPUNIT_TEST(testGatherProgressCommon);
+  CPPUNIT_TEST(testChangePosition);
+  CPPUNIT_TEST(testChangePosition_fail);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DownloadEngine> _e;
@@ -119,6 +121,8 @@ public:
   void testNoSuchMethod();
   void testGatherStoppedDownload();
   void testGatherProgressCommon();
+  void testChangePosition();
+  void testChangePosition_fail();
 };
 
 
@@ -674,6 +678,38 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[1]->getGID()),
 		       entry["followedBy"][1].s());
   CPPUNIT_ASSERT_EQUAL(std::string("2"), entry["belongsTo"].s());
+}
+
+void XmlRpcMethodTest::testChangePosition()
+{
+  _e->_requestGroupMan->addReservedGroup
+    (SharedHandle<RequestGroup>(new RequestGroup(_option)));
+  _e->_requestGroupMan->addReservedGroup
+    (SharedHandle<RequestGroup>(new RequestGroup(_option)));
+
+  ChangePositionXmlRpcMethod m;
+  XmlRpcRequest req("aria2.changePosition", BDE::list());
+  req._params << std::string("1");
+  req._params << BDE((int64_t)1);
+  req._params << std::string("POS_SET");
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, res._param.i());
+  CPPUNIT_ASSERT_EQUAL
+    ((int32_t)1, _e->_requestGroupMan->getReservedGroups()[1]->getGID());
+}
+
+void XmlRpcMethodTest::testChangePosition_fail()
+{
+  ChangePositionXmlRpcMethod m;
+  XmlRpcRequest req("aria2.changePosition", BDE::list());
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+
+  req._params << std::string("1");
+  req._params << BDE((int64_t)2);
+  req._params << std::string("bad keyword");
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
 
 } // namespace xmlrpc

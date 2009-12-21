@@ -58,6 +58,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
   }
   else if(methodName == "aria2.remove") {
     return SharedHandle<XmlRpcMethod>(new RemoveXmlRpcMethod());
+  } else if(methodName == "aria2.changePosition") {
+    return SharedHandle<XmlRpcMethod>(new ChangePositionXmlRpcMethod());
   } else if(methodName == "aria2.tellStatus") {
     return SharedHandle<XmlRpcMethod>(new TellStatusXmlRpcMethod());
   } else if(methodName == "aria2.getUris") {
