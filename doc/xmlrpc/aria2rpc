@@ -177,9 +177,10 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} addTorrent /path/to/torrent_file URI... [options]
        #{program_name} addMetalink /path/to/metalink_file [options]
        #{program_name} remove GID [options]
+       #{program_name} changePosition GID pos how [options]
        #{program_name} tellStatus GID [options]
        #{program_name} tellActive [options]
-       #{program_name} tellWaiting [options]
+       #{program_name} tellWaiting offset num [options]
        #{program_name} getOption GID [options]
        #{program_name} getGlobalOption [options]
        #{program_name} getFiles   GID [options]
@@ -249,6 +250,9 @@ elsif command == "getGlobalOption" then
   result=client.call("aria2."+command)
 elsif command == "remove" then
   result=client.call("aria2."+command, resources[0])
+elsif command == "changePosition" then
+  result=client.call("aria2."+command, resources[0], resources[1].to_i(),
+                     resources[2])
 elsif command == "getFiles" then
   result=client.call("aria2."+command, resources[0])
 elsif command == "getUris" then
