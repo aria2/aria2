@@ -2654,19 +2654,20 @@ new download is inserted at <em>position</em> in the waiting queue. If
 queue, it is appended at the end of the queue.  This method returns
 GID of registered download.</p></div>
 <div class="paragraph"><p><strong>aria2.addTorrent</strong> <em>torrent[, uris[, options[, position]]]</em></p></div>
-<div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.
-<em>torrent</em> is of type base64 which contains Base64-encoded .torrent
-file.  <em>uris</em> is of type array and its element is URI which is of type
-string. <em>uris</em> is used for Web-seeding.  For single file torrents, URI
-can be a complete URI pointing to the resource or if URI ends with /,
-name in torrent file is added. For multi-file torrents, name and path
-in torrent are added to form a URI for each file.  <em>options</em> is of
-type struct and its members are a pair of option name and value. See
-<strong>Options</strong> below for more details.  If <em>position</em> is given as an
-integer starting from 0, the new download is inserted at <em>position</em> in
-the waiting queue. If <em>position</em> is not given or <em>position</em> is larger
-than the size of the queue, it is appended at the end of the queue.
-This method returns GID of registered download.</p></div>
+<div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.  If
+you want to add BitTorrent Magnet URI, use <strong>aria2.addUri</strong> method
+instead.  <em>torrent</em> is of type base64 which contains Base64-encoded
+.torrent file.  <em>uris</em> is of type array and its element is URI which
+is of type string. <em>uris</em> is used for Web-seeding.  For single file
+torrents, URI can be a complete URI pointing to the resource or if URI
+ends with /, name in torrent file is added. For multi-file torrents,
+name and path in torrent are added to form a URI for each file.
+<em>options</em> is of type struct and its members are a pair of option name
+and value. See <strong>Options</strong> below for more details.  If <em>position</em> is
+given as an integer starting from 0, the new download is inserted at
+<em>position</em> in the waiting queue. If <em>position</em> is not given or
+<em>position</em> is larger than the size of the queue, it is appended at the
+end of the queue.  This method returns GID of registered download.</p></div>
 <div class="paragraph"><p><strong>aria2.addMetalink</strong> <em>metalink[, options[, position]]</em></p></div>
 <div class="paragraph"><p>This method adds Metalink download by uploading .metalink file.
 <em>metalink</em> is of type base64 which contains Base64-encoded .metalink
@@ -3511,7 +3512,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-12-22 00:24:21 JST
+Last updated 2009-12-23 00:06:15 JST
 </div>
 </div>
 </body>

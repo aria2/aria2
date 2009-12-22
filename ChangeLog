@@ -1,3 +1,8 @@
+2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated the description for aria2.addTorrent XML-RPC method.
+	* doc/aria2c.1.txt
+
 2009-12-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added changePosition to aria2rpc.
