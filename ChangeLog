@@ -1,5 +1,22 @@
 2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-save-metadata option. When true is given, it saves
+	metadata as .torrent file. This option has effect only when
+	BitTorrent Magnet URI is used.  The filename is name in metadata
+	with suffix .torrent. The directory to be saved is the same
+	directory where download file is saved. If the same file already
+	exists, metdata is not saved.
+	* src/OptionHandlerFactory.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/UTMetadataPostDownloadHandler.h
+	* src/message.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/UTMetadataDataExtensionMessageTest.cc
+
+2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added util::saveAs() function. Use it in Signature::save().
 	* src/Signature.cc
 	* src/util.cc

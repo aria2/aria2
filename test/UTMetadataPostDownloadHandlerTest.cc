@@ -13,6 +13,7 @@
 #include "DiskAdaptor.h"
 #include "util.h"
 #include "MessageDigestHelper.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -62,6 +63,10 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
 
 void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
 {
+  File trfile("aria2-0.8.2.tar.bz2.torrent");
+  if(trfile.exists()) {
+    trfile.remove();
+  }
   std::string metadata =
     "d6:lengthi384e4:name19:aria2-0.8.2.tar.bz212:piece lengthi128e"
     "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCe";
@@ -104,6 +109,13 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     (std::find(_requestGroup->followedBy().begin(),
 	       _requestGroup->followedBy().end(),
 	       newRg->getGID()) != _requestGroup->followedBy().end());
+  CPPUNIT_ASSERT(!trfile.exists());
+
+  results.clear();
+
+  _requestGroup->getOption()->put(PREF_BT_SAVE_METADATA, V_TRUE);
+  handler.getNextRequestGroups(results, _requestGroup.get());
+  CPPUNIT_ASSERT(trfile.exists());
 
   results.clear();
 

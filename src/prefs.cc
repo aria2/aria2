@@ -308,6 +308,8 @@ const std::string PREF_BT_TRACKER_INTERVAL("bt-tracker-interval");
 const std::string PREF_BT_STOP_TIMEOUT("bt-stop-timeout");
 // values: head[=SIZE]|tail[=SIZE], ...
 const std::string PREF_BT_PRIORITIZE_PIECE("bt-prioritize-piece");
+// values: true | false
+const std::string PREF_BT_SAVE_METADATA("bt-save-metadata");
 
 /**
  * Metalink related preferences

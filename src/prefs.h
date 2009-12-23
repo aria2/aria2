@@ -312,6 +312,8 @@ extern const std::string PREF_BT_TRACKER_INTERVAL;
 extern const std::string PREF_BT_STOP_TIMEOUT;
 // values: head[=SIZE]|tail[=SIZE], ...
 extern const std::string PREF_BT_PRIORITIZE_PIECE;
+// values: true | false
+extern const std::string PREF_BT_SAVE_METADATA;
 
 /**
  * Metalink related preferences

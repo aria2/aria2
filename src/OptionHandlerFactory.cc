@@ -1022,6 +1022,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+				   (PREF_BT_SAVE_METADATA,
+				    TEXT_BT_SAVE_METADATA,
+				    V_FALSE,
+				    OptionHandler::OPT_ARG));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
 				   (PREF_BT_STOP_TIMEOUT,
 				    TEXT_BT_STOP_TIMEOUT,
