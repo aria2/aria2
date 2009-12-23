@@ -1,5 +1,10 @@
 2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Upcase info hash in Magnet URI.
+	* doc/aria2c.1.txt
+
+2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Refactored RequestGroupMan::changeReservedGroupPosition()
 	* src/RequestGroupMan.cc
 
