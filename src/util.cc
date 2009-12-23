@@ -981,6 +981,25 @@ void generateRandomData(unsigned char* data, size_t length)
 #endif // HAVE_LIBSSL
 }
 
+bool saveAs
+(const std::string& filename, const std::string& data, bool overwrite)
+{
+  if(!overwrite && File(filename).exists()) {
+    return false;
+  }
+  std::string tempFilename = strconcat(filename, "__temp");
+  std::ofstream out(tempFilename.c_str(), std::ios::binary);
+  if(!out) {
+    return false;
+  }
+  out << data;
+  out.flush();
+  if(!out) {
+    return false;
+  }
+  return File(tempFilename).renameTo(filename);
+}
+
 } // namespace util
 
 } // namespace aria2

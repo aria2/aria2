@@ -1,5 +1,12 @@
 2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added util::saveAs() function. Use it in Signature::save().
+	* src/Signature.cc
+	* src/util.cc
+	* src/util.h
+
+2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Upcase info hash in Magnet URI.
 	* doc/aria2c.1.txt
 

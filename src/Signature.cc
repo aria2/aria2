@@ -37,6 +37,7 @@
 #include <fstream>
 
 #include "File.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -61,23 +62,7 @@ void Signature::setBody(const std::string& body)
 
 bool Signature::save(const std::string& filepath) const
 {
-  if(File(filepath).exists()) {
-    return false;
-  }
-  std::string tempFilepath = filepath;
-  tempFilepath += "__temp";
-  {
-    std::ofstream out(tempFilepath.c_str(), std::ios::binary);
-    if(!out) {
-      return false;
-    }
-    out << _body;
-    out.flush();
-    if(!out) {
-      return false;
-    }
-  }
-  return File(tempFilepath).renameTo(filepath);
+  return util::saveAs(filepath, _body);
 }
 
 } // namespace aria2

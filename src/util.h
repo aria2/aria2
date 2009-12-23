@@ -348,6 +348,13 @@ OutputIterator split(const std::string& src, OutputIterator out,
 
 void generateRandomData(unsigned char* data, size_t length);
 
+// Saves data to file whose name is filename. If overwrite is true,
+// existing file is overwritten. Otherwise, this function doesn't do
+// nothing.  If data is saved successfully, return true. Otherwise
+// returns false.
+bool saveAs
+(const std::string& filename, const std::string& data, bool overwrite=false);
+
 } // namespace util
 
 } // namespace aria2
