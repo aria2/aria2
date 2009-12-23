@@ -184,12 +184,12 @@ size_t RequestGroupMan::changeReservedGroupPosition
       (StringFormat("GID#%d not found in the waiting queue.", gid).str());
   }
   SharedHandle<RequestGroup> rg = *i;
+  const size_t maxPos = _reservedGroups.size()-1;
   if(how == POS_SET) {
-    _reservedGroups.erase(i);
     if(pos < 0) {
       pos = 0;
     } else if(pos > 0) {
-      pos = std::min(_reservedGroups.size(), (size_t)pos);
+      pos = std::min(maxPos, (size_t)pos);
     }
   } else if(how == POS_CUR) {
     size_t abspos = std::distance(_reservedGroups.begin(), i);
@@ -202,17 +202,18 @@ size_t RequestGroupMan::changeReservedGroupPosition
     } else {
       pos = abspos;
     }
-    _reservedGroups.erase(i);
   } else if(how == POS_END) {
-    _reservedGroups.erase(i);
     if(pos >= 0) {
-      pos = _reservedGroups.size();
+      pos = maxPos;
     } else {
-      pos =
-	_reservedGroups.size()-std::min(_reservedGroups.size(), (size_t)-pos);
+      pos = maxPos-std::min(maxPos, (size_t)-pos);
     }
   }
-  _reservedGroups.insert(_reservedGroups.begin()+pos, rg);
+  if(std::distance(_reservedGroups.begin(), i) < pos) {
+    std::rotate(i, i+1, _reservedGroups.begin()+pos+1);
+  } else {
+    std::rotate(_reservedGroups.begin()+pos, i, i+1);
+  }
   return pos;
 }
 
