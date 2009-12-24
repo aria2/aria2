@@ -363,6 +363,18 @@ public:
   static void bindAddress(const std::string& interface);
 };
 
+// Set default ai_flags. hints.ai_flags is initialized with this
+// value.
+void setDefaultAIFlags(int flags);
+
+// Wrapper function for getaddrinfo(). The value
+// flags|DEFAULT_AI_FLAGS is used as ai_flags.  You can override
+// DEFAULT_AI_FLAGS value by calling setDefaultAIFlags() with new
+// flags.
+int callGetaddrinfo
+(struct addrinfo** resPtr, const char* host, const char* service, int family,
+ int sockType, int flags, int protocol);
+
 } // namespace aria2
 
 #endif // _D_SOCKET_CORE_H_

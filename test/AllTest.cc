@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
   // and latter cannot connect to former. To avoid this situation, we
   // limit protocol family to AF_INET for unit tests.
   aria2::SocketCore::setProtocolFamily(AF_INET);
+  // If AI_ADDRCONFIG is set, tests fail if IPv4 address is not
+  // configured.
+  aria2::setDefaultAIFlags(0);
 
   CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
   CppUnit::TextUi::TestRunner runner;

@@ -97,4 +97,10 @@
 # define sock_t int
 #endif
 
+#ifdef AI_ADDRCONFIG
+# define DEFAULT_AI_FLAGS AI_ADDRCONFIG
+#else // !AI_ADDRCONFIG
+# define DEFAULT_AI_FLAGS 0
+#endif // !AI_ADDRCONFIG
+
 #endif // _D_A2NETCOMPAT_H_

@@ -40,6 +40,7 @@
 #include "message.h"
 #include "StringFormat.h"
 #include "util.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 
@@ -48,26 +49,20 @@ NameResolver::NameResolver():_socktype(0), _family(AF_UNSPEC) {}
 void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
 			   const std::string& hostname)
 {
-  struct addrinfo hints;
   struct addrinfo* res;
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = _family;
-  hints.ai_socktype = _socktype;
-  hints.ai_flags = 0;
-  hints.ai_protocol = 0;
   int s;
-  s = getaddrinfo(hostname.c_str(), 0, &hints, &res);
+  s = callGetaddrinfo(&res, hostname.c_str(), 0, _family, _socktype, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
 				 hostname.c_str(), gai_strerror(s)).str());
   }
+  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     std::pair<std::string, uint16_t> addressPort
       = util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
     resolvedAddresses.push_back(addressPort.first);
   }
-  freeaddrinfo(res);
 }
 
 void NameResolver::setSocktype(int socktype)

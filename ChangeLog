@@ -1,5 +1,17 @@
 2009-12-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use AI_ADDRCONFIG flag if it is available. Refactored so that
+	getaddrinfo calls are not scattered around. Unset AI_ADDRCONFIG
+	when conducting unit tests because they fail if networking
+	interface is not configured with IPv4 address.
+	* src/NameResolver.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/a2netcompat.h
+	* test/AllTest.cc
+
+2009-12-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed unit test error
 	* test/UTMetadataPostDownloadHandlerTest.cc
 

@@ -191,14 +191,9 @@ static sock_t bindTo
 (const char* host, uint16_t port, int family, int sockType,
  int getaddrinfoFlags, std::string& error)
 {
-  struct addrinfo hints;
   struct addrinfo* res;
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = family;
-  hints.ai_socktype = sockType;
-  hints.ai_flags = getaddrinfoFlags;
-  hints.ai_protocol = 0;
-  int s = getaddrinfo(host, uitos(port).c_str(), &hints, &res);
+  int s = callGetaddrinfo(&res, host, uitos(port).c_str(), family, sockType,
+			  getaddrinfoFlags, 0);  
   if(s) {
     error = gai_strerror(s);
     return -1;
@@ -307,19 +302,15 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
 {
   closeConnection();
 
-  struct addrinfo hints;
   struct addrinfo* res;
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = _protocolFamily;
-  hints.ai_socktype = _sockType;
-  hints.ai_flags = 0;
-  hints.ai_protocol = 0;
   int s;
-  s = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &res);
+  s = callGetaddrinfo(&res, host.c_str(), uitos(port).c_str(), _protocolFamily,
+		      _sockType, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
 				 host.c_str(), gai_strerror(s)).str());
   }
+  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
@@ -362,7 +353,6 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     // later. In such case, next ai_addr should be tried.
     break;
   }
-  freeaddrinfo(res);
   if(sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
 				   strerror(errno)).str());
@@ -1058,18 +1048,14 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   _wantRead = false;
   _wantWrite = false;
 
-  struct addrinfo hints;
   struct addrinfo* res;
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = _protocolFamily;
-  hints.ai_socktype = _sockType;
-  hints.ai_flags = 0;
-  hints.ai_protocol = 0;
   int s;
-  s = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &res);
+  s = callGetaddrinfo(&res, host.c_str(), uitos(port).c_str(), _protocolFamily,
+		      _sockType, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, gai_strerror(s)).str());
   }
+  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   ssize_t r = -1;
   for(rp = res; rp; rp = rp->ai_next) {
@@ -1083,7 +1069,6 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
       break;
     }
   }
-  freeaddrinfo(res);
   if(r == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
   }
@@ -1200,15 +1185,10 @@ void SocketCore::bindAddress(const std::string& interface)
   }
 #endif // HAVE_GETIFADDRS
   if(bindAddrs.empty()) {
-    struct addrinfo hints;
-    struct addrinfo* res = 0;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = _protocolFamily;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = 0;
-    hints.ai_protocol = 0;
+    struct addrinfo* res;
     int s;
-    s = getaddrinfo(interface.c_str(), 0, &hints, &res);
+    s = callGetaddrinfo(&res, interface.c_str(), 0, _protocolFamily,
+			SOCK_STREAM, 0, 0);
     if(s) {
       throw DL_ABORT_EX
 	(StringFormat(MSG_INTERFACE_NOT_FOUND,
@@ -1253,6 +1233,36 @@ void SocketCore::bindAddress(const std::string& interface)
       }
     }
   }
+}
+
+namespace {
+
+int defaultAIFlags = DEFAULT_AI_FLAGS;
+
+int getDefaultAIFlags()
+{
+  return defaultAIFlags;
+}
+
+}
+
+void setDefaultAIFlags(int flags)
+{
+  defaultAIFlags = flags;
+}
+
+int callGetaddrinfo
+(struct addrinfo** resPtr, const char* host, const char* service, int family,
+ int sockType, int flags, int protocol)
+{
+  struct addrinfo hints;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = family;
+  hints.ai_socktype = sockType;
+  hints.ai_flags = getDefaultAIFlags();
+  hints.ai_flags |= flags;
+  hints.ai_protocol = protocol;
+  return getaddrinfo(host, service, &hints, resPtr);  
 }
 
 } // namespace aria2
