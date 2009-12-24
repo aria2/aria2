@@ -1,3 +1,8 @@
+2009-12-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Defined static string constants for efficiency.
+	* src/XmlRpcMethodImpl.cc
+
 2009-12-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --bt-save-metadata option. When true is given, it saves

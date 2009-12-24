@@ -72,14 +72,46 @@ namespace aria2 {
 
 namespace xmlrpc {
 
-static const BDE BDE_TRUE = BDE("true");
-static const BDE BDE_FALSE = BDE("false");
-static const BDE BDE_OK = BDE("OK");
-static const BDE BDE_ACTIVE = BDE("active");
-static const BDE BDE_WAITING = BDE("waiting");
-static const BDE BDE_REMOVED = BDE("removed");
-static const BDE BDE_ERROR = BDE("error");
-static const BDE BDE_COMPLETE = BDE("complete");
+namespace {
+const BDE BDE_TRUE = BDE("true");
+const BDE BDE_FALSE = BDE("false");
+const BDE BDE_OK = BDE("OK");
+const BDE BDE_ACTIVE = BDE("active");
+const BDE BDE_WAITING = BDE("waiting");
+const BDE BDE_REMOVED = BDE("removed");
+const BDE BDE_ERROR = BDE("error");
+const BDE BDE_COMPLETE = BDE("complete");
+
+const std::string KEY_GID = "gid";
+const std::string KEY_ERROR_CODE = "errorCode";
+const std::string KEY_STATUS = "status";
+const std::string KEY_TOTAL_LENGTH = "totalLength";
+const std::string KEY_COMPLETED_LENGTH = "completedLength";
+const std::string KEY_DOWNLOAD_SPEED = "downloadSpeed";
+const std::string KEY_UPLOAD_SPEED = "uploadSpeed";
+const std::string KEY_UPLOAD_LENGTH = "uploadLength";
+const std::string KEY_CONNECTIONS = "connections";
+const std::string KEY_BITFIELD = "bitfield";
+const std::string KEY_PIECE_LENGTH = "pieceLength";
+const std::string KEY_NUM_PIECES = "numPieces";
+const std::string KEY_FOLLOWED_BY = "followedBy";
+const std::string KEY_BELONGS_TO = "belongsTo";
+const std::string KEY_INFO_HASH = "infoHash";
+const std::string KEY_NUM_SEEDERS = "numSeeders";
+const std::string KEY_PEER_ID = "peerId";
+const std::string KEY_IP = "ip";
+const std::string KEY_PORT = "port";
+const std::string KEY_AM_CHOKING = "amChoking";
+const std::string KEY_PEER_CHOKING = "peerChoking";
+const std::string KEY_SEEDER = "seeder";
+const std::string KEY_INDEX = "index";
+const std::string KEY_PATH = "path";
+const std::string KEY_SELECTED = "selected";
+const std::string KEY_LENGTH = "length";
+const std::string KEY_URI = "uri";
+const std::string KEY_VERSION = "version";
+const std::string KEY_ENABLED_FEATURES = "enabledFeatures";
+}
 
 static BDE createGIDResponse(int32_t gid)
 {
@@ -266,26 +298,26 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 void gatherProgressCommon
 (BDE& entryDict, const SharedHandle<RequestGroup>& group)
 {
-  entryDict["gid"] = util::itos(group->getGID());
+  entryDict[KEY_GID] = util::itos(group->getGID());
   // This is "filtered" total length if --select-file is used.
-  entryDict["totalLength"] = util::uitos(group->getTotalLength());
+  entryDict[KEY_TOTAL_LENGTH] = util::uitos(group->getTotalLength());
   // This is "filtered" total length if --select-file is used.
-  entryDict["completedLength"] = util::uitos(group->getCompletedLength());
+  entryDict[KEY_COMPLETED_LENGTH] = util::uitos(group->getCompletedLength());
   TransferStat stat = group->calculateStat();
-  entryDict["downloadSpeed"] = util::uitos(stat.getDownloadSpeed());
-  entryDict["uploadSpeed"] = util::uitos(stat.getUploadSpeed());
-  entryDict["uploadLength"] = util::uitos(stat.getAllTimeUploadLength());
-  entryDict["connections"] = util::uitos(group->getNumConnection());
+  entryDict[KEY_DOWNLOAD_SPEED] = util::uitos(stat.getDownloadSpeed());
+  entryDict[KEY_UPLOAD_SPEED] = util::uitos(stat.getUploadSpeed());
+  entryDict[KEY_UPLOAD_LENGTH] = util::uitos(stat.getAllTimeUploadLength());
+  entryDict[KEY_CONNECTIONS] = util::uitos(group->getNumConnection());
   SharedHandle<PieceStorage> ps = group->getPieceStorage();
   if(!ps.isNull()) {
     if(ps->getBitfieldLength() > 0) {
-      entryDict["bitfield"] = util::toHex(ps->getBitfield(),
-					  ps->getBitfieldLength());
+      entryDict[KEY_BITFIELD] = util::toHex(ps->getBitfield(),
+					    ps->getBitfieldLength());
     }
   }
-  entryDict["pieceLength"] = 
+  entryDict[KEY_PIECE_LENGTH] = 
     util::uitos(group->getDownloadContext()->getPieceLength());
-  entryDict["numPieces"] =
+  entryDict[KEY_NUM_PIECES] =
     util::uitos(group->getDownloadContext()->getNumPieces());
   if(!group->followedBy().empty()) {
     BDE list = BDE::list();
@@ -294,10 +326,10 @@ void gatherProgressCommon
 	i != group->followedBy().end(); ++i) {
       list << util::itos(*i);
     }
-    entryDict["followedBy"] = list;
+    entryDict[KEY_FOLLOWED_BY] = list;
   }
   if(group->belongsTo()) {
-    entryDict["belongsTo"] = util::itos(group->belongsTo());
+    entryDict[KEY_BELONGS_TO] = util::itos(group->belongsTo());
   }
 }
 
@@ -306,7 +338,7 @@ static void gatherProgressBitTorrent
 (BDE& entryDict, const BDE& torrentAttrs, const BtObject& btObject)
 {
   const std::string& infoHash = torrentAttrs[bittorrent::INFO_HASH].s();
-  entryDict["infoHash"] = util::toHex(infoHash);
+  entryDict[KEY_INFO_HASH] = util::toHex(infoHash);
 
   if(!btObject.isNull()) {
     SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
@@ -314,7 +346,7 @@ static void gatherProgressBitTorrent
 
     std::deque<SharedHandle<Peer> > peers;
     peerStorage->getActivePeers(peers);
-    entryDict["numSeeders"] = countSeeder(peers.begin(), peers.end());
+    entryDict[KEY_NUM_SEEDERS] = countSeeder(peers.begin(), peers.end());
   }
 }
 
@@ -325,18 +357,18 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
   for(std::deque<SharedHandle<Peer> >::const_iterator i =
 	activePeers.begin(); i != activePeers.end(); ++i) {
     BDE peerEntry = BDE::dict();
-    peerEntry["peerId"] = util::torrentUrlencode((*i)->getPeerId(),
-						 PEER_ID_LENGTH);
-    peerEntry["ip"] = (*i)->ipaddr;
-    peerEntry["port"] = util::uitos((*i)->port);
-    peerEntry["bitfield"] = util::toHex((*i)->getBitfield(),
+    peerEntry[KEY_PEER_ID] = util::torrentUrlencode((*i)->getPeerId(),
+						PEER_ID_LENGTH);
+    peerEntry[KEY_IP] = (*i)->ipaddr;
+    peerEntry[KEY_PORT] = util::uitos((*i)->port);
+    peerEntry[KEY_BITFIELD] = util::toHex((*i)->getBitfield(),
 					(*i)->getBitfieldLength());
-    peerEntry["amChoking"] = (*i)->amChoking()?BDE_TRUE:BDE_FALSE;
-    peerEntry["peerChoking"] = (*i)->peerChoking()?BDE_TRUE:BDE_FALSE;
+    peerEntry[KEY_AM_CHOKING] = (*i)->amChoking()?BDE_TRUE:BDE_FALSE;
+    peerEntry[KEY_PEER_CHOKING] = (*i)->peerChoking()?BDE_TRUE:BDE_FALSE;
     TransferStat stat = ps->getTransferStatFor(*i);
-    peerEntry["downloadSpeed"] = util::uitos(stat.getDownloadSpeed());
-    peerEntry["uploadSpeed"] = util::uitos(stat.getUploadSpeed());
-    peerEntry["seeder"] = (*i)->isSeeder()?BDE_TRUE:BDE_FALSE;
+    peerEntry[KEY_DOWNLOAD_SPEED] = util::uitos(stat.getDownloadSpeed());
+    peerEntry[KEY_UPLOAD_SPEED] = util::uitos(stat.getUploadSpeed());
+    peerEntry[KEY_SEEDER] = (*i)->isSeeder()?BDE_TRUE:BDE_FALSE;
     peers << peerEntry;
   }
 }
@@ -359,14 +391,14 @@ static void gatherProgress
 void gatherStoppedDownload
 (BDE& entryDict, const SharedHandle<DownloadResult>& ds)
 {
-  entryDict["gid"] = util::itos(ds->gid);
-  entryDict["errorCode"] = util::itos(static_cast<int>(ds->result));
+  entryDict[KEY_GID] = util::itos(ds->gid);
+  entryDict[KEY_ERROR_CODE] = util::itos(static_cast<int>(ds->result));
   if(ds->result == downloadresultcode::IN_PROGRESS) {
-    entryDict["status"] = BDE_REMOVED;
+    entryDict[KEY_STATUS] = BDE_REMOVED;
   } else if(ds->result == downloadresultcode::FINISHED) {
-    entryDict["status"] = BDE_COMPLETE;
+    entryDict[KEY_STATUS] = BDE_COMPLETE;
   } else {
-    entryDict["status"] = BDE_ERROR;
+    entryDict[KEY_STATUS] = BDE_ERROR;
   }
   if(!ds->followedBy.empty()) {
     BDE list = BDE::list();
@@ -375,10 +407,10 @@ void gatherStoppedDownload
 	i != ds->followedBy.end(); ++i) {
       list << util::itos(*i);
     }
-    entryDict["followedBy"] = list;
+    entryDict[KEY_FOLLOWED_BY] = list;
   }
   if(ds->belongsTo) {
-    entryDict["belongsTo"] = util::itos(ds->belongsTo);
+    entryDict[KEY_BELONGS_TO] = util::itos(ds->belongsTo);
   }
 }
 
@@ -399,10 +431,10 @@ static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
   size_t index = 1;
   for(; first != last; ++first, ++index) {
     BDE entry = BDE::dict();
-    entry["index"] = util::uitos(index);
-    entry["path"] = (*first)->getPath();
-    entry["selected"] = (*first)->isRequested()?BDE_TRUE:BDE_FALSE;
-    entry["length"] = util::uitos((*first)->getLength());
+    entry[KEY_INDEX] = util::uitos(index);
+    entry[KEY_PATH] = (*first)->getPath();
+    entry[KEY_SELECTED] = (*first)->isRequested()?BDE_TRUE:BDE_FALSE;
+    entry[KEY_LENGTH] = util::uitos((*first)->getLength());
     files << entry;
   }
 }
@@ -463,7 +495,7 @@ BDE GetUrisXmlRpcMethod::process
     for(std::deque<std::string>::const_iterator i = uris.begin();
 	i != uris.end(); ++i) {
       BDE entry = BDE::dict();
-      entry["uri"] = *i;
+      entry[KEY_URI] = *i;
       uriList << entry;
     }
   }
@@ -524,11 +556,11 @@ BDE TellStatusXmlRpcMethod::process
       }
       gatherStoppedDownload(entryDict, ds);
     } else {
-      entryDict["status"] = BDE_WAITING;
+      entryDict[KEY_STATUS] = BDE_WAITING;
       gatherProgress(entryDict, group, e);
     }
   } else {
-    entryDict["status"] = BDE_ACTIVE;
+    entryDict[KEY_STATUS] = BDE_ACTIVE;
     gatherProgress(entryDict, group, e);
   }
   return entryDict;
@@ -543,7 +575,7 @@ BDE TellActiveXmlRpcMethod::process
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
 	groups.begin(); i != groups.end(); ++i) {
     BDE entryDict = BDE::dict();
-    entryDict["status"] = BDE_ACTIVE;
+    entryDict[KEY_STATUS] = BDE_ACTIVE;
     gatherProgress(entryDict, *i, e);
     list << entryDict;
   }
@@ -585,7 +617,7 @@ BDE TellWaitingXmlRpcMethod::process
   std::advance(last, lastDistance);
   for(; first != last; ++first) {
     BDE entryDict = BDE::dict();
-    entryDict["status"] = BDE_WAITING;
+    entryDict[KEY_STATUS] = BDE_WAITING;
     gatherProgress(entryDict, *first, e);
     list << entryDict;
   }
@@ -668,7 +700,7 @@ BDE GetVersionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   BDE result = BDE::dict();
-  result["version"] = std::string(PACKAGE_VERSION);
+  result[KEY_VERSION] = std::string(PACKAGE_VERSION);
   BDE featureList = BDE::list();
   const FeatureMap& features = FeatureConfig::getInstance()->getFeatures();
   for(FeatureMap::const_iterator i = features.begin(); i != features.end();++i){
@@ -676,7 +708,7 @@ BDE GetVersionXmlRpcMethod::process
       featureList << (*i).first;
     }
   }
-  result["enabledFeatures"] = featureList;
+  result[KEY_ENABLED_FEATURES] = featureList;
   return result;
 }
 
