@@ -32,6 +32,7 @@ public:
   {
     _option.reset(new Option());
     _option->put("HELLO", "WORLD");
+    _option->put(PREF_DIR, ".");
     _dctx.reset(new DownloadContext(0, 0, "something"));
     _requestGroup.reset(new RequestGroup(_option));
     _requestGroup->setDownloadContext(_dctx);

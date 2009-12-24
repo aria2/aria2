@@ -1,5 +1,10 @@
 2009-12-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed unit test error
+	* test/UTMetadataPostDownloadHandlerTest.cc
+
+2009-12-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Defined static string constants for efficiency.
 	* src/XmlRpcMethodImpl.cc
 
