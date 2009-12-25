@@ -75,6 +75,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new TellActiveXmlRpcMethod());
   } else if(methodName == "aria2.tellWaiting") {
     return SharedHandle<XmlRpcMethod>(new TellWaitingXmlRpcMethod());
+  } else if(methodName == "aria2.tellStopped") {
+    return SharedHandle<XmlRpcMethod>(new TellStoppedXmlRpcMethod());
   } else if(methodName == "aria2.getOption") {
     return SharedHandle<XmlRpcMethod>(new GetOptionXmlRpcMethod());
   } else if(methodName == "aria2.changeOption") {

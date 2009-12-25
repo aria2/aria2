@@ -582,8 +582,10 @@ BDE TellActiveXmlRpcMethod::process
   return list;
 }
 
-BDE TellWaitingXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+template<typename InputIterator>
+static std::pair<InputIterator, InputIterator>
+getPaginationRange
+(const XmlRpcRequest& req, InputIterator first, InputIterator last)
 {
   const BDE& params = req._params;
   assert(params.isList());
@@ -598,27 +600,52 @@ BDE TellWaitingXmlRpcMethod::process
   size_t num = params[1].i();
 
   BDE list = BDE::list();
-  const std::deque<SharedHandle<RequestGroup> >& waitings =
-    e->_requestGroupMan->getReservedGroups();
-  if(waitings.size() <= offset) {
-    return list;
+  size_t size = std::distance(first, last);
+  if(size <= offset) {
+    return std::make_pair(last, last);
   }
   size_t lastDistance;
-  if(waitings.size() < offset+num) {
-    lastDistance = waitings.size();
+  if(size < offset+num) {
+    lastDistance = size;
   } else {
     lastDistance = offset+num;
   }
-  std::deque<SharedHandle<RequestGroup> >::const_iterator first =
-    waitings.begin();
+  last = first;
   std::advance(first, offset);
-  std::deque<SharedHandle<RequestGroup> >::const_iterator last =
-    waitings.begin();
   std::advance(last, lastDistance);
-  for(; first != last; ++first) {
+  return std::make_pair(first, last);
+}
+
+BDE TellWaitingXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const std::deque<SharedHandle<RequestGroup> >& waitings =
+    e->_requestGroupMan->getReservedGroups();
+  std::pair<std::deque<SharedHandle<RequestGroup> >::const_iterator,
+    std::deque<SharedHandle<RequestGroup> >::const_iterator> range =
+    getPaginationRange(req, waitings.begin(), waitings.end());
+  BDE list = BDE::list();
+  for(; range.first != range.second; ++range.first) {
     BDE entryDict = BDE::dict();
     entryDict[KEY_STATUS] = BDE_WAITING;
-    gatherProgress(entryDict, *first, e);
+    gatherProgress(entryDict, *range.first, e);
+    list << entryDict;
+  }
+  return list;
+}
+
+BDE TellStoppedXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const std::deque<SharedHandle<DownloadResult> >& stopped =
+    e->_requestGroupMan->getDownloadResults();
+  std::pair<std::deque<SharedHandle<DownloadResult> >::const_iterator,
+    std::deque<SharedHandle<DownloadResult> >::const_iterator> range =
+    getPaginationRange(req, stopped.begin(), stopped.end());
+  BDE list = BDE::list();
+  for(; range.first != range.second; ++range.first) {
+    BDE entryDict = BDE::dict();
+    gatherStoppedDownload(entryDict, *range.first);
     list << entryDict;
   }
   return list;

@@ -105,6 +105,11 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
 };
 
+class TellStoppedXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+};
+
 class ChangeOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
