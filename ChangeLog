@@ -1,5 +1,10 @@
 2009-12-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented tellStopped XML-RPC method in man page.
+	* doc/aria2c.1.txt
+
+2009-12-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added tellStopped XML-RPC method to aria2rpc.
 	* doc/xmlrpc/aria2rpc
 
