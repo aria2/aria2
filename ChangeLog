@@ -1,5 +1,10 @@
 2009-12-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added tellStopped XML-RPC method to aria2rpc.
+	* doc/xmlrpc/aria2rpc
+
+2009-12-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added tellStopped XML-RPC method. This method returns stopped
 	download in the specified range. It takes same parameters with
 	tellWaiting XML-RPC method. offset = 0 means the oldest download.

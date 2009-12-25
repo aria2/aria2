@@ -181,6 +181,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} tellStatus GID [options]
        #{program_name} tellActive [options]
        #{program_name} tellWaiting offset num [options]
+       #{program_name} tellStopped offset num [options]
        #{program_name} getOption GID [options]
        #{program_name} getGlobalOption [options]
        #{program_name} getFiles   GID [options]
@@ -243,6 +244,8 @@ elsif command == "tellStatus" then
 elsif command == "tellActive" then
   result=client.call("aria2."+command)
 elsif command == "tellWaiting" then
+  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i())
+elsif command == "tellStopped" then
   result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i())
 elsif command == "getOption" then
   result=client.call("aria2."+command, resources[0])
