@@ -10,12 +10,14 @@ class BencodeTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BencodeTest);
   CPPUNIT_TEST(testDecode);
+  CPPUNIT_TEST(testDecode_overflow);
   CPPUNIT_TEST(testEncode);
   CPPUNIT_TEST_SUITE_END();
 private:
 
 public:
   void testDecode();
+  void testDecode_overflow();
   void testEncode();
 };
 
@@ -152,6 +154,24 @@ void BencodeTest::testDecode()
     BDE s = bencode::decode("5:aria2trail", end);
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"), s.s());
     CPPUNIT_ASSERT_EQUAL((size_t)7, end);
+  }
+}
+
+void BencodeTest::testDecode_overflow()
+{
+  std::string s;
+  size_t depth = bencode::MAX_STRUCTURE_DEPTH+1;
+  for(size_t i = 0; i < depth; ++i) {
+    s += "l";
+  }
+  for(size_t i = 0; i < depth; ++i) {
+    s += "e";
+  }
+  try {
+    bencode::decode(s);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
   }
 }
 

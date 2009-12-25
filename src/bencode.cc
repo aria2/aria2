@@ -44,7 +44,7 @@ namespace aria2 {
 
 namespace bencode {
 
-static BDE decodeiter(std::istream& ss);
+static BDE decodeiter(std::istream& ss, size_t depth);
 
 static void checkdelim(std::istream& ss, const char delim = ':')
 {
@@ -96,7 +96,7 @@ static BDE decodeinteger(std::istream& ss)
   return BDE(integer);
 }
 
-static BDE decodedict(std::istream& ss)
+static BDE decodedict(std::istream& ss, size_t depth)
 {
   BDE dict = BDE::dict();
   char c;
@@ -106,14 +106,14 @@ static BDE decodedict(std::istream& ss)
     } else {
       ss.unget();
       std::string key = decoderawstring(ss);
-      dict[key] = decodeiter(ss);
+      dict[key] = decodeiter(ss, depth);
     }
   }
   throw DL_ABORT_EX("Bencode decoding failed:"
 		    " Unexpected EOF in dict context. 'e' expected.");
 }
 
-static BDE decodelist(std::istream& ss)
+static BDE decodelist(std::istream& ss, size_t depth)
 {
   BDE list = BDE::list();
   char c;
@@ -122,15 +122,23 @@ static BDE decodelist(std::istream& ss)
       return list;
     } else {
       ss.unget();
-      list << decodeiter(ss);
+      list << decodeiter(ss, depth);
     }
   }
   throw DL_ABORT_EX("Bencode decoding failed:"
 		    " Unexpected EOF in list context. 'e' expected.");
 }
 
-static BDE decodeiter(std::istream& ss)
+static void checkDepth(size_t depth)
 {
+  if(depth >= MAX_STRUCTURE_DEPTH) {
+    throw DL_ABORT_EX("Bencode decoding failed: Structure is too deep.");
+  }
+}
+
+static BDE decodeiter(std::istream& ss, size_t depth)
+{
+  checkDepth(depth);
   char c;
   if(!ss.get(c)) {
     throw DL_ABORT_EX("Bencode decoding failed:"
@@ -138,9 +146,9 @@ static BDE decodeiter(std::istream& ss)
 		      " 'd', 'l', 'i' or digit is expected.");
   }
   if(c == 'd') {
-    return decodedict(ss);
+    return decodedict(ss, depth+1);
   } else if(c == 'l') {
-    return decodelist(ss);
+    return decodelist(ss, depth+1);
   } else if(c == 'i') {
     return decodeinteger(ss);
   } else {
@@ -151,7 +159,7 @@ static BDE decodeiter(std::istream& ss)
 
 BDE decode(std::istream& in)
 {
-  return decodeiter(in);
+  return decodeiter(in, 0);
 }
 
 BDE decode(const std::string& s)
@@ -167,7 +175,7 @@ BDE decode(const std::string& s, size_t& end)
   }
   std::istringstream ss(s);
 
-  BDE bde = decodeiter(ss);
+  BDE bde = decodeiter(ss, 0);
   end = ss.tellg();
   return bde;
 }

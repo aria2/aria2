@@ -46,6 +46,8 @@ namespace aria2 {
 
 namespace bencode {
 
+const size_t MAX_STRUCTURE_DEPTH = 100;
+
 BDE decode(std::istream& in);
 
 // Decode the data in s.
