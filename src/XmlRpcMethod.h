@@ -48,6 +48,7 @@ class OptionParser;
 class BDE;
 class Logger;
 class Option;
+class Exception;
 
 namespace xmlrpc {
 
@@ -88,6 +89,8 @@ protected:
   // Copy options which is changeable in XML-RPC changeGlobalOption
   // command to dest.
   void applyChangeableGlobalOption(Option* dest, Option* src) const;
+
+  BDE createErrorResponse(const Exception& e);
 public:
   XmlRpcMethod();
 

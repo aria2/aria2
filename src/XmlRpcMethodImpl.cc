@@ -59,6 +59,8 @@
 #include "message.h"
 #include "FeatureConfig.h"
 #include "array_fun.h"
+#include "XmlRpcMethodFactory.h"
+#include "XmlRpcResponse.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -111,6 +113,8 @@ const std::string KEY_LENGTH = "length";
 const std::string KEY_URI = "uri";
 const std::string KEY_VERSION = "version";
 const std::string KEY_ENABLED_FEATURES = "enabledFeatures";
+const std::string KEY_METHOD_NAME = "methodName";
+const std::string KEY_PARAMS = "params";
 }
 
 static BDE createGIDResponse(int32_t gid)
@@ -813,6 +817,50 @@ BDE ChangePositionXmlRpcMethod::process
     e->_requestGroupMan->changeReservedGroupPosition(gid, pos, how);
   BDE result(destPos);
   return result;
+}
+
+BDE SystemMulticallXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  
+  if(params.size() != 1) {
+    throw DL_ABORT_EX("Illegal argument. One item list is expected.");
+  }
+  const BDE& methodSpecs = params[0];
+  BDE list = BDE::list();
+  for(BDE::List::const_iterator i = methodSpecs.listBegin();
+      i != methodSpecs.listEnd(); ++i) {
+    if(!(*i).isDict()) {
+      list << createErrorResponse
+	(DL_ABORT_EX("system.multicall expected struct."));
+      continue;
+    }
+    if(!(*i).containsKey(KEY_METHOD_NAME) ||
+       !(*i).containsKey(KEY_PARAMS)) {
+      list << createErrorResponse
+	(DL_ABORT_EX("Missing methodName or params."));
+      continue;
+    }
+    const std::string& methodName = (*i)[KEY_METHOD_NAME].s();
+    if(methodName == "system.multicall") {
+      list << createErrorResponse
+	(DL_ABORT_EX("Recursive system.multicall forbidden."));
+      continue;
+    }
+    SharedHandle<XmlRpcMethod> method = XmlRpcMethodFactory::create(methodName);
+    XmlRpcRequest innerReq(methodName, (*i)[KEY_PARAMS]);
+    XmlRpcResponse res = method->execute(innerReq, e);
+    if(res._code == 0) {
+      BDE l = BDE::list();
+      l << res._param;
+      list << l;
+    } else {
+      list << res._param;
+    }
+  }
+  return list;
 }
 
 BDE NoSuchMethodXmlRpcMethod::process

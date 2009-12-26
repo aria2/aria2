@@ -89,6 +89,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new PurgeDownloadResultXmlRpcMethod());
   } else if(methodName == "aria2.getVersion") {
     return SharedHandle<XmlRpcMethod>(new GetVersionXmlRpcMethod());
+  } else if(methodName == "system.multicall") {
+    return SharedHandle<XmlRpcMethod>(new SystemMulticallXmlRpcMethod());
   } else {
     return SharedHandle<XmlRpcMethod>(new NoSuchMethodXmlRpcMethod());
   }

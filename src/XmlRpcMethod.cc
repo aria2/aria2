@@ -56,7 +56,7 @@ XmlRpcMethod::XmlRpcMethod():
   _optionParser(OptionParser::getInstance()),
   _logger(LogFactory::getInstance()) {}
 
-static BDE createErrorResponse(const Exception& e)
+BDE XmlRpcMethod::createErrorResponse(const Exception& e)
 {
   BDE params = BDE::dict();
   params["faultCode"] = BDE(1);

@@ -69,6 +69,8 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGatherProgressCommon);
   CPPUNIT_TEST(testChangePosition);
   CPPUNIT_TEST(testChangePosition_fail);
+  CPPUNIT_TEST(testSystemMulticall);
+  CPPUNIT_TEST(testSystemMulticall_fail);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DownloadEngine> _e;
@@ -123,6 +125,8 @@ public:
   void testGatherProgressCommon();
   void testChangePosition();
   void testChangePosition_fail();
+  void testSystemMulticall();
+  void testSystemMulticall_fail();
 };
 
 
@@ -709,6 +713,68 @@ void XmlRpcMethodTest::testChangePosition_fail()
   req._params << std::string("1");
   req._params << BDE((int64_t)2);
   req._params << std::string("bad keyword");
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+}
+
+void XmlRpcMethodTest::testSystemMulticall()
+{
+  SystemMulticallXmlRpcMethod m;
+  XmlRpcRequest req("system.multicall", BDE::list());
+  BDE reqparams = BDE::list();
+  req._params << reqparams;
+  for(int i = 0; i < 2; ++i) {
+    BDE dict = BDE::dict();
+    dict["methodName"] = std::string("aria2.addUri");
+    BDE params = BDE::list();
+    params << BDE::list();
+    params[0] << BDE("http://localhost/"+util::itos(i));
+    dict["params"] = params;
+    reqparams << dict;
+  }
+  {
+    BDE dict = BDE::dict();
+    dict["methodName"] = std::string("not exists");
+    dict["params"] = BDE::list();
+    reqparams << dict;
+  }
+  {
+    reqparams << std::string("not struct");
+  }
+  {
+    BDE dict = BDE::dict();
+    dict["methodName"] = std::string("system.multicall");
+    dict["params"] = BDE::list();
+    reqparams << dict;
+  }
+  {
+    // missing params
+    BDE dict = BDE::dict();
+    dict["methodName"] = std::string("aria2.getVersion");
+    reqparams << dict;
+  }
+  {
+    BDE dict = BDE::dict();
+    dict["methodName"] = std::string("aria2.getVersion");
+    dict["params"] = BDE::list();
+    reqparams << dict;
+  }
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((size_t)7, res._param.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("1"), res._param[0][0].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"), res._param[1][0].s());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, res._param[2]["faultCode"].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, res._param[3]["faultCode"].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, res._param[4]["faultCode"].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, res._param[5]["faultCode"].i());
+  CPPUNIT_ASSERT(res._param[6].isList());
+}
+
+void XmlRpcMethodTest::testSystemMulticall_fail()
+{
+  SystemMulticallXmlRpcMethod m;
+  XmlRpcRequest req("system.multicall", BDE::list());
+  XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
 
