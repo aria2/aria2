@@ -1,5 +1,11 @@
 2009-12-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added signal handler for SIGHUP to save .aria2 file when terminal
+	is closed. The handler is the same one for SIGINT and SIGTERM.
+	* src/MultiUrlRequestInfo.cc
+
+2009-12-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Defined method name in XmlRpcMethod subclasses.
 	* src/XmlRpcMethodFactory.cc
 	* src/XmlRpcMethodImpl.cc

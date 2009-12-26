@@ -161,6 +161,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     }
     e->setStatCalc(_statCalc);
 
+    util::setGlobalSignalHandler(SIGHUP, handler, 0);
     util::setGlobalSignalHandler(SIGINT, handler, 0);
     util::setGlobalSignalHandler(SIGTERM, handler, 0);
     
@@ -190,6 +191,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
   } catch(RecoverableException& e) {
     _logger->error(EX_EXCEPTION_CAUGHT, e);
   }
+  util::setGlobalSignalHandler(SIGHUP, SIG_DFL, 0);
   util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
   util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
   return returnValue;
