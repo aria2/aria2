@@ -1405,6 +1405,16 @@ enabledFeatures::
 
   List of enabled features. Each feature name is of type string.
 
+*system.multicall* 'methods'
+
+This methods encapsulates multiple method calls in a single request.
+'methods' is of type array and its element is struct.  The struct
+contains two keys: "methodName" and "params".  "methodName" is the
+method name to call and "params" is array containing parameters to the
+method.  This method returns array of responses.  The element of array
+will either be a one-item array containing the return value of each
+method call or struct of fault element if an encapsulated method call
+fails.
 
 Error Handling
 ~~~~~~~~~~~~~~
