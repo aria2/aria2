@@ -135,7 +135,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(XmlRpcMethodTest);
 void XmlRpcMethodTest::testAddUri()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addUri", BDE::list());
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE::list();
   req._params[0] << BDE("http://localhost/");
   {
@@ -163,7 +163,7 @@ void XmlRpcMethodTest::testAddUri()
 void XmlRpcMethodTest::testAddUri_withoutUri()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addUri", BDE::list());
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
@@ -171,7 +171,7 @@ void XmlRpcMethodTest::testAddUri_withoutUri()
 void XmlRpcMethodTest::testAddUri_notUri()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addUri", BDE::list());
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE::list();
   req._params[0] << BDE("not uri");
   XmlRpcResponse res = m.execute(req, _e.get());
@@ -181,7 +181,7 @@ void XmlRpcMethodTest::testAddUri_notUri()
 void XmlRpcMethodTest::testAddUri_withBadOption()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addUri", BDE::list());
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE::list();
   req._params[0] << BDE("http://localhost");
   BDE opt = BDE::dict();
@@ -194,13 +194,13 @@ void XmlRpcMethodTest::testAddUri_withBadOption()
 void XmlRpcMethodTest::testAddUri_withPosition()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req1("aria2.addUri", BDE::list());
+  XmlRpcRequest req1(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req1._params << BDE::list();
   req1._params[0] << BDE("http://uri1");
   XmlRpcResponse res1 = m.execute(req1, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res1._code);
   
-  XmlRpcRequest req2("aria2.addUri", BDE::list());
+  XmlRpcRequest req2(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req2._params << BDE::list();
   req2._params[0] << BDE("http://uri2");
   req2._params << BDE::dict();
@@ -216,7 +216,7 @@ void XmlRpcMethodTest::testAddUri_withPosition()
 void XmlRpcMethodTest::testAddUri_withBadPosition()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addUri", BDE::list());
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE::list();
   req._params[0] << BDE("http://localhost/");
   req._params << BDE::dict();
@@ -229,7 +229,7 @@ void XmlRpcMethodTest::testAddUri_withBadPosition()
 void XmlRpcMethodTest::testAddTorrent()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addTorrent", BDE::list());
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE(readFile("single.torrent"));
   BDE uris = BDE::list();
   uris << BDE("http://localhost/aria2-0.8.2.tar.bz2");
@@ -262,7 +262,7 @@ void XmlRpcMethodTest::testAddTorrent()
 void XmlRpcMethodTest::testAddTorrent_withoutTorrent()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addTorrent", BDE::list());
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
@@ -270,7 +270,7 @@ void XmlRpcMethodTest::testAddTorrent_withoutTorrent()
 void XmlRpcMethodTest::testAddTorrent_notBase64Torrent()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addTorrent", BDE::list());
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE("not torrent");
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
@@ -279,14 +279,14 @@ void XmlRpcMethodTest::testAddTorrent_notBase64Torrent()
 void XmlRpcMethodTest::testAddTorrent_withPosition()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req1("aria2.addTorrent", BDE::list());
+  XmlRpcRequest req1(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
   req1._params << BDE(readFile("test.torrent"));
   req1._params << BDE::list();
   req1._params << BDE::dict();
   XmlRpcResponse res1 = m.execute(req1, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res1._code);
 
-  XmlRpcRequest req2("aria2.addTorrent", BDE::list());
+  XmlRpcRequest req2(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
   req2._params << BDE(readFile("single.torrent"));
   req2._params << BDE::list();
   req2._params << BDE::dict();
@@ -304,7 +304,7 @@ void XmlRpcMethodTest::testAddTorrent_withPosition()
 void XmlRpcMethodTest::testAddMetalink()
 {
   AddMetalinkXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addMetalink", BDE::list());
+  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE(readFile("2files.metalink"));
   {
     XmlRpcResponse res = m.execute(req, _e.get());
@@ -337,7 +337,7 @@ void XmlRpcMethodTest::testAddMetalink()
 void XmlRpcMethodTest::testAddMetalink_withoutMetalink()
 {
   AddMetalinkXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addMetalink", BDE::list());
+  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
@@ -345,7 +345,7 @@ void XmlRpcMethodTest::testAddMetalink_withoutMetalink()
 void XmlRpcMethodTest::testAddMetalink_notBase64Metalink()
 {
   AddMetalinkXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addMetalink", BDE::list());
+  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE("not metalink");
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
@@ -354,7 +354,7 @@ void XmlRpcMethodTest::testAddMetalink_notBase64Metalink()
 void XmlRpcMethodTest::testAddMetalink_withPosition()
 {
   AddUriXmlRpcMethod m1;
-  XmlRpcRequest req1("aria2.addUri", BDE::list());
+  XmlRpcRequest req1(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req1._params << BDE::list();
   req1._params[0] << BDE("http://uri");
   XmlRpcResponse res1 = m1.execute(req1, _e.get());
@@ -381,7 +381,7 @@ void XmlRpcMethodTest::testChangeOption()
   _e->_requestGroupMan->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changeOption", BDE::list());
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE("1");
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
@@ -424,7 +424,7 @@ void XmlRpcMethodTest::testChangeOption_withBadOption()
   _e->_requestGroupMan->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changeOption", BDE::list());
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE("1");
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("badvalue");
@@ -439,7 +439,7 @@ void XmlRpcMethodTest::testChangeOption_withNotAllowedOption()
   _e->_requestGroupMan->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changeOption", BDE::list());
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE("1");
   BDE opt = BDE::dict();
   opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
@@ -451,7 +451,7 @@ void XmlRpcMethodTest::testChangeOption_withNotAllowedOption()
 void XmlRpcMethodTest::testChangeOption_withoutGid()
 {
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changeOption", BDE::list());
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
@@ -459,7 +459,7 @@ void XmlRpcMethodTest::testChangeOption_withoutGid()
 void XmlRpcMethodTest::testChangeGlobalOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changeGlobalOption", BDE::list());
+  XmlRpcRequest req(ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
 #ifdef ENABLE_BITTORRENT
@@ -484,7 +484,7 @@ void XmlRpcMethodTest::testChangeGlobalOption()
 void XmlRpcMethodTest::testChangeGlobalOption_withBadOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changeGlobalOption", BDE::list());
+  XmlRpcRequest req(ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("badvalue");
   req._params << opt;
@@ -495,7 +495,7 @@ void XmlRpcMethodTest::testChangeGlobalOption_withBadOption()
 void XmlRpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changeGlobalOption", BDE::list());
+  XmlRpcRequest req(ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
   req._params << opt;
@@ -536,7 +536,7 @@ void XmlRpcMethodTest::testNoSuchMethod()
 void XmlRpcMethodTest::testTellStatus_withoutGid()
 {
   TellStatusXmlRpcMethod m;
-  XmlRpcRequest req("aria2.tellStatus", BDE::list());
+  XmlRpcRequest req(TellStatusXmlRpcMethod::getMethodName(), BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
@@ -545,7 +545,7 @@ static void addUri(const std::string& uri,
 		   const SharedHandle<DownloadEngine>& e)
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addUri", BDE::list());
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE::list();
   req._params[0] << BDE(uri);
   CPPUNIT_ASSERT_EQUAL(0, m.execute(req, e.get())._code);
@@ -557,7 +557,7 @@ static void addTorrent
 (const std::string& torrentFile, const SharedHandle<DownloadEngine>& e)
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req("aria2.addTorrent", BDE::list());
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE(readFile(torrentFile));
   XmlRpcResponse res = m.execute(req, e.get());
 }
@@ -574,7 +574,7 @@ void XmlRpcMethodTest::testTellWaiting()
 #endif // ENABLE_BITTORRENT
 
   TellWaitingXmlRpcMethod m;
-  XmlRpcRequest req("aria2.tellWaiting", BDE::list());
+  XmlRpcRequest req(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE((int64_t)1);
   req._params << BDE((int64_t)2);
   XmlRpcResponse res = m.execute(req, _e.get());
@@ -583,7 +583,7 @@ void XmlRpcMethodTest::testTellWaiting()
   CPPUNIT_ASSERT_EQUAL(std::string("2"), res._param[0]["gid"].s());
   CPPUNIT_ASSERT_EQUAL(std::string("3"), res._param[1]["gid"].s());
   // waiting.size() == offset+num 
-  req = XmlRpcRequest("aria2.tellWaiting", BDE::list());
+  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE((int64_t)1);
 #ifdef ENABLE_BITTORRENT
   req._params << BDE((int64_t)3);
@@ -598,7 +598,7 @@ void XmlRpcMethodTest::testTellWaiting()
   CPPUNIT_ASSERT_EQUAL((size_t)2, res._param.size());
 #endif // !ENABLE_BITTORRENT
   // waiting.size() < offset+num 
-  req = XmlRpcRequest("aria2.tellWaiting", BDE::list());
+  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
   req._params << BDE((int64_t)1);
   req._params << BDE((int64_t)4);
   res = m.execute(req, _e.get());
@@ -613,7 +613,7 @@ void XmlRpcMethodTest::testTellWaiting()
 void XmlRpcMethodTest::testTellWaiting_fail()
 {
   TellWaitingXmlRpcMethod m;
-  XmlRpcRequest req("aria2.tellWaiting", BDE::list());
+  XmlRpcRequest req(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
@@ -621,7 +621,7 @@ void XmlRpcMethodTest::testTellWaiting_fail()
 void XmlRpcMethodTest::testGetVersion()
 {
   GetVersionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.getVersion", BDE::none);
+  XmlRpcRequest req(GetVersionXmlRpcMethod::getMethodName(), BDE::none);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL(std::string(PACKAGE_VERSION), res._param["version"].s());
@@ -692,7 +692,7 @@ void XmlRpcMethodTest::testChangePosition()
     (SharedHandle<RequestGroup>(new RequestGroup(_option)));
 
   ChangePositionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changePosition", BDE::list());
+  XmlRpcRequest req(ChangePositionXmlRpcMethod::getMethodName(), BDE::list());
   req._params << std::string("1");
   req._params << BDE((int64_t)1);
   req._params << std::string("POS_SET");
@@ -706,7 +706,7 @@ void XmlRpcMethodTest::testChangePosition()
 void XmlRpcMethodTest::testChangePosition_fail()
 {
   ChangePositionXmlRpcMethod m;
-  XmlRpcRequest req("aria2.changePosition", BDE::list());
+  XmlRpcRequest req(ChangePositionXmlRpcMethod::getMethodName(), BDE::list());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 
@@ -724,7 +724,7 @@ void XmlRpcMethodTest::testSystemMulticall()
   req._params << reqparams;
   for(int i = 0; i < 2; ++i) {
     BDE dict = BDE::dict();
-    dict["methodName"] = std::string("aria2.addUri");
+    dict["methodName"] = std::string(AddUriXmlRpcMethod::getMethodName());
     BDE params = BDE::list();
     params << BDE::list();
     params[0] << BDE("http://localhost/"+util::itos(i));
@@ -749,12 +749,12 @@ void XmlRpcMethodTest::testSystemMulticall()
   {
     // missing params
     BDE dict = BDE::dict();
-    dict["methodName"] = std::string("aria2.getVersion");
+    dict["methodName"] = std::string(GetVersionXmlRpcMethod::getMethodName());
     reqparams << dict;
   }
   {
     BDE dict = BDE::dict();
-    dict["methodName"] = std::string("aria2.getVersion");
+    dict["methodName"] = std::string(GetVersionXmlRpcMethod::getMethodName());
     dict["params"] = BDE::list();
     reqparams << dict;
   }

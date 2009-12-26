@@ -44,52 +44,52 @@ namespace xmlrpc {
 SharedHandle<XmlRpcMethod>
 XmlRpcMethodFactory::create(const std::string& methodName)
 {
-  if(methodName == "aria2.addUri") {
+  if(methodName == AddUriXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new AddUriXmlRpcMethod());
 #ifdef ENABLE_BITTORRENT
-  } else if(methodName == "aria2.addTorrent") {
+  } else if(methodName == AddTorrentXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new AddTorrentXmlRpcMethod());
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   }
-  else if(methodName == "aria2.addMetalink") {
+  else if(methodName == AddMetalinkXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new AddMetalinkXmlRpcMethod());
 #endif // ENABLE_METALINK
   }
-  else if(methodName == "aria2.remove") {
+  else if(methodName == RemoveXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new RemoveXmlRpcMethod());
-  } else if(methodName == "aria2.changePosition") {
+  } else if(methodName == ChangePositionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new ChangePositionXmlRpcMethod());
-  } else if(methodName == "aria2.tellStatus") {
+  } else if(methodName == TellStatusXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new TellStatusXmlRpcMethod());
-  } else if(methodName == "aria2.getUris") {
+  } else if(methodName == GetUrisXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetUrisXmlRpcMethod());
-  } else if(methodName == "aria2.getFiles") {
+  } else if(methodName == GetFilesXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetFilesXmlRpcMethod());
 #ifdef ENABLE_BITTORRENT
   }
-  else if(methodName == "aria2.getPeers") {
+  else if(methodName == GetPeersXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetPeersXmlRpcMethod());
 #endif // ENABLE_BITTORRENT
-  } else if(methodName == "aria2.tellActive") {
+  } else if(methodName == TellActiveXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new TellActiveXmlRpcMethod());
-  } else if(methodName == "aria2.tellWaiting") {
+  } else if(methodName == TellWaitingXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new TellWaitingXmlRpcMethod());
-  } else if(methodName == "aria2.tellStopped") {
+  } else if(methodName == TellStoppedXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new TellStoppedXmlRpcMethod());
-  } else if(methodName == "aria2.getOption") {
+  } else if(methodName == GetOptionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetOptionXmlRpcMethod());
-  } else if(methodName == "aria2.changeOption") {
+  } else if(methodName == ChangeOptionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new ChangeOptionXmlRpcMethod());
-  } else if(methodName == "aria2.getGlobalOption") {
+  } else if(methodName == GetGlobalOptionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetGlobalOptionXmlRpcMethod());
-  } else if(methodName == "aria2.changeGlobalOption") {
+  } else if(methodName == ChangeGlobalOptionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new ChangeGlobalOptionXmlRpcMethod());
-  } else if(methodName == "aria2.purgeDownloadResult") {
+  } else if(methodName == PurgeDownloadResultXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new PurgeDownloadResultXmlRpcMethod());
-  } else if(methodName == "aria2.getVersion") {
+  } else if(methodName == GetVersionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetVersionXmlRpcMethod());
-  } else if(methodName == "system.multicall") {
+  } else if(methodName == SystemMulticallXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new SystemMulticallXmlRpcMethod());
   } else {
     return SharedHandle<XmlRpcMethod>(new NoSuchMethodXmlRpcMethod());

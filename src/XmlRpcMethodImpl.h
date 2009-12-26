@@ -47,17 +47,35 @@ namespace xmlrpc {
 class AddUriXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.addUri";
+    return methodName;
+  }
 };
 
 class RemoveXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.remove";
+    return methodName;
+  }
 };
 
 #ifdef ENABLE_BITTORRENT
 class AddTorrentXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.addTorrent";
+    return methodName;
+  }
 };
 #endif // ENABLE_BITTORRENT
 
@@ -65,84 +83,180 @@ protected:
 class AddMetalinkXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.addMetalink";
+    return methodName;
+  }
 };
 #endif // ENABLE_METALINK
 
 class PurgeDownloadResultXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.purgeDownloadResult";
+    return methodName;
+  }
 };
 
 class GetUrisXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getUris";
+    return methodName;
+  }
 };
 
 class GetFilesXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getFiles";
+    return methodName;
+  }
 };
 
 #ifdef ENABLE_BITTORRENT
 class GetPeersXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getPeers";
+    return methodName;
+  }
 };
 #endif // ENABLE_BITTORRENT
 
 class TellStatusXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.tellStatus";
+    return methodName;
+  }
 };
 
 class TellActiveXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.tellActive";
+    return methodName;
+  }
 };
 
 class TellWaitingXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.tellWaiting";
+    return methodName;
+  }
 };
 
 class TellStoppedXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.tellStopped";
+    return methodName;
+  }
 };
 
 class ChangeOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.changeOption";
+    return methodName;
+  }
 };
 
 class ChangeGlobalOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.changeGlobalOption";
+    return methodName;
+  }
 };
 
 class GetVersionXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getVersion";
+    return methodName;
+  }
 };
 
 class GetOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getOption";
+    return methodName;
+  }
 };
 
 class GetGlobalOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getGlobalOption";
+    return methodName;
+  }
 };
 
 class ChangePositionXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.changePosition";
+    return methodName;
+  }
 };
 
 class SystemMulticallXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "system.multicall";
+    return methodName;
+  }
 };
 
 class NoSuchMethodXmlRpcMethod:public XmlRpcMethod {

@@ -844,7 +844,7 @@ BDE SystemMulticallXmlRpcMethod::process
       continue;
     }
     const std::string& methodName = (*i)[KEY_METHOD_NAME].s();
-    if(methodName == "system.multicall") {
+    if(methodName == getMethodName()) {
       list << createErrorResponse
 	(DL_ABORT_EX("Recursive system.multicall forbidden."));
       continue;
