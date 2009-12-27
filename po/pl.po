@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2009-12-12 22:04+0900\n"
+"POT-Creation-Date: 2009-12-27 14:25+0900\n"
 "PO-Revision-Date: 2009-10-11 03:10+0000\n"
 "Last-Translator: Łukasz <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -36,11 +36,11 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:543
+#: src/RequestGroupMan.cc:578
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:587
+#: src/RequestGroupMan.cc:622
 msgid "Status Legend:"
 msgstr ""
 
@@ -1135,6 +1135,20 @@ msgstr ""
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
+#: src/usage_text.h:586
+msgid ""
+" --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
+"has\n"
+"                              effect only when BitTorrent Magnet URI is "
+"used.\n"
+"                              The filename is name in metadata with suffix\n"
+"                              .torrent. The directory to be saved is the "
+"same\n"
+"                              directory where download file is saved. If "
+"the\n"
+"                              same file already exists, metdata is not saved."
+msgstr ""
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr ""
@@ -1814,346 +1828,356 @@ msgstr ""
 msgid "Failed to find given interface %s, cause: %s"
 msgstr "Bład podczas konwertowania łańcucha znaków na wartość: %s"
 
+#: src/message.h:180
+#, c-format
+msgid "Saved metadata as %s."
+msgstr ""
+
 #: src/message.h:181
+#, c-format
+msgid "Saving metadata as %s failed. Maybe file already exists."
+msgstr ""
+
+#: src/message.h:184
 msgid "Timeout."
 msgstr ""
 
-#: src/message.h:182
+#: src/message.h:185
 msgid "Invalid chunk size."
 msgstr ""
 
-#: src/message.h:183
+#: src/message.h:186
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr ""
 
-#: src/message.h:184
+#: src/message.h:187
 msgid "Invalid header."
 msgstr ""
 
-#: src/message.h:185
+#: src/message.h:188
 msgid "Invalid response."
 msgstr ""
 
-#: src/message.h:186
+#: src/message.h:189
 msgid "No header found."
 msgstr ""
 
-#: src/message.h:187
+#: src/message.h:190
 msgid "No status header."
 msgstr ""
 
-#: src/message.h:188
+#: src/message.h:191
 msgid "Proxy connection failed."
 msgstr ""
 
-#: src/message.h:189
+#: src/message.h:192
 msgid "Connection failed."
 msgstr ""
 
-#: src/message.h:190
+#: src/message.h:193
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
 
-#: src/message.h:191
+#: src/message.h:194
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr ""
 
-#: src/message.h:192
+#: src/message.h:195
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr ""
 
-#: src/message.h:193
+#: src/message.h:196
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr ""
 
-#: src/message.h:194
+#: src/message.h:197
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr ""
 
-#: src/message.h:195
+#: src/message.h:198
 msgid "SSL I/O error"
 msgstr ""
 
-#: src/message.h:196
+#: src/message.h:199
 msgid "SSL protocol error"
 msgstr ""
 
-#: src/message.h:197
+#: src/message.h:200
 #, c-format
 msgid "SSL unknown error %d"
 msgstr ""
 
-#: src/message.h:198
+#: src/message.h:201
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr ""
 
-#: src/message.h:199
+#: src/message.h:202
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr ""
 
-#: src/message.h:200
+#: src/message.h:203
 msgid "Authorization failed."
 msgstr ""
 
-#: src/message.h:201
+#: src/message.h:204
 msgid "Got EOF from the server."
 msgstr ""
 
-#: src/message.h:202
+#: src/message.h:205
 msgid "Got EOF from peer."
 msgstr ""
 
-#: src/message.h:203
+#: src/message.h:206
 msgid "Malformed meta info."
 msgstr ""
 
-#: src/message.h:205
+#: src/message.h:208
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr ""
 
-#: src/message.h:206
+#: src/message.h:209
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr ""
 
-#: src/message.h:207
+#: src/message.h:210
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr ""
 
-#: src/message.h:208
-msgid "Failed to read data from disk."
-msgstr ""
-
-#: src/message.h:209
-#, c-format
-msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr ""
-
-#: src/message.h:210
-#, c-format
-msgid "Failed to seek the file %s, cause: %s"
-msgstr ""
-
 #: src/message.h:211
-#, c-format
-msgid "The offset is out of range, offset=%s"
+msgid "Failed to read data from disk."
 msgstr ""
 
 #: src/message.h:212
 #, c-format
-msgid "%s is not a directory."
+msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:213
 #, c-format
-msgid "Failed to make the directory %s, cause: %s"
+msgid "Failed to seek the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:214
 #, c-format
-msgid "Failed to open the segment file %s, cause: %s"
+msgid "The offset is out of range, offset=%s"
 msgstr ""
 
 #: src/message.h:215
 #, c-format
-msgid "Failed to write into the segment file %s, cause: %s"
+msgid "%s is not a directory."
 msgstr ""
 
 #: src/message.h:216
 #, c-format
-msgid "Failed to read from the segment file %s, cause: %s"
+msgid "Failed to make the directory %s, cause: %s"
+msgstr ""
+
+#: src/message.h:217
+#, c-format
+msgid "Failed to open the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:218
 #, c-format
-msgid "Failed to open a socket, cause: %s"
+msgid "Failed to write into the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:219
 #, c-format
-msgid "Failed to set a socket option, cause: %s"
-msgstr ""
-
-#: src/message.h:220
-#, c-format
-msgid "Failed to set a socket as blocking, cause: %s"
+msgid "Failed to read from the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:221
 #, c-format
-msgid "Failed to set a socket as non-blocking, cause: %s"
+msgid "Failed to open a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:222
 #, c-format
-msgid "Failed to bind a socket, cause: %s"
+msgid "Failed to set a socket option, cause: %s"
 msgstr ""
 
 #: src/message.h:223
 #, c-format
-msgid "Failed to listen to a socket, cause: %s"
+msgid "Failed to set a socket as blocking, cause: %s"
 msgstr ""
 
 #: src/message.h:224
 #, c-format
-msgid "Failed to accept a peer connection, cause: %s"
+msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr ""
 
 #: src/message.h:225
 #, c-format
-msgid "Failed to get the name of socket, cause: %s"
+msgid "Failed to bind a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:226
 #, c-format
-msgid "Failed to get the name of connected peer, cause: %s"
+msgid "Failed to listen to a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:227
 #, c-format
-msgid "Failed to resolve the hostname %s, cause: %s"
+msgid "Failed to accept a peer connection, cause: %s"
 msgstr ""
 
 #: src/message.h:228
 #, c-format
-msgid "Failed to connect to the host %s, cause: %s"
+msgid "Failed to get the name of socket, cause: %s"
 msgstr ""
 
 #: src/message.h:229
 #, c-format
-msgid "Failed to check whether the socket is writable, cause: %s"
+msgid "Failed to get the name of connected peer, cause: %s"
 msgstr ""
 
 #: src/message.h:230
 #, c-format
-msgid "Failed to check whether the socket is readable, cause: %s"
+msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr ""
 
 #: src/message.h:231
 #, c-format
-msgid "Failed to send data, cause: %s"
+msgid "Failed to connect to the host %s, cause: %s"
 msgstr ""
 
 #: src/message.h:232
 #, c-format
-msgid "Failed to receive data, cause: %s"
+msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr ""
 
 #: src/message.h:233
 #, c-format
-msgid "Failed to peek data, cause: %s"
+msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr ""
 
 #: src/message.h:234
 #, c-format
-msgid "Unknown socket error %d (0x%x)"
+msgid "Failed to send data, cause: %s"
 msgstr ""
 
 #: src/message.h:235
 #, c-format
-msgid "File %s exists, but %s does not exist."
+msgid "Failed to receive data, cause: %s"
 msgstr ""
 
 #: src/message.h:236
 #, c-format
-msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgid "Failed to peek data, cause: %s"
 msgstr ""
 
 #: src/message.h:237
 #, c-format
-msgid "Invalid ID=%d for %s. It should be %d."
+msgid "Unknown socket error %d (0x%x)"
 msgstr ""
 
 #: src/message.h:238
+#, c-format
+msgid "File %s exists, but %s does not exist."
+msgstr ""
+
+#: src/message.h:239
+#, c-format
+msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgstr ""
+
+#: src/message.h:240
+#, c-format
+msgid "Invalid ID=%d for %s. It should be %d."
+msgstr ""
+
+#: src/message.h:241
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
 
-#: src/message.h:239
+#: src/message.h:242
 msgid "Download aborted."
 msgstr ""
 
-#: src/message.h:240
+#: src/message.h:243
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr ""
 
-#: src/message.h:241
+#: src/message.h:244
 msgid "Insufficient checksums."
 msgstr ""
 
-#: src/message.h:242
+#: src/message.h:245
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr ""
 
-#: src/message.h:243
+#: src/message.h:246
 msgid "Flooding detected."
 msgstr ""
 
-#: src/message.h:244
+#: src/message.h:247
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
 
-#: src/message.h:245
-msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
-
-#: src/message.h:246
-#, c-format
-msgid "No such file entry %s"
-msgstr ""
-
-#: src/message.h:247
-#, c-format
-msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr ""
-
 #: src/message.h:248
-msgid "No HttpRequestEntry found."
+msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 
 #: src/message.h:249
 #, c-format
-msgid "Got %d status, but no location header provided."
+msgid "No such file entry %s"
 msgstr ""
 
 #: src/message.h:250
 #, c-format
-msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
+msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr ""
 
 #: src/message.h:251
-msgid "No file matched with your preference."
+msgid "No HttpRequestEntry found."
 msgstr ""
 
 #: src/message.h:252
-msgid "Exception caught"
+#, c-format
+msgid "Got %d status, but no location header provided."
 msgstr ""
 
 #: src/message.h:253
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %u"
+msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr ""
 
 #: src/message.h:254
+msgid "No file matched with your preference."
+msgstr ""
+
+#: src/message.h:255
+msgid "Exception caught"
+msgstr ""
+
+#: src/message.h:256
+#, c-format
+msgid "Max payload length exceeded or invalid. length = %u"
+msgstr ""
+
+#: src/message.h:257
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""

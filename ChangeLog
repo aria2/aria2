@@ -1,5 +1,10 @@
 2009-12-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated po templates.
+	* po/aria2.pot
+
+2009-12-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Get rid of AI_ADDRCONFIG when --disable-ipv6 opiton is given. It
 	causes name resolution error when none of network interface has
 	IPv4 address.
