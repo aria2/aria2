@@ -1,3 +1,9 @@
+2009-12-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use info hash as a filename when saving BitTorrent metadata.
+	* src/UTMetadataPostDownloadHandler.cc
+	* test/UTMetadataPostDownloadHandlerTest.cc
+
 2009-12-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Documented system.multicall XML-RPC method in man page.

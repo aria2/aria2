@@ -64,7 +64,7 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
 
 void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
 {
-  File trfile("aria2-0.8.2.tar.bz2.torrent");
+  File trfile("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf.torrent");
   if(trfile.exists()) {
     trfile.remove();
   }

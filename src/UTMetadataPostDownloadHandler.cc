@@ -88,14 +88,10 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
   requestGroup->followedBy(newRgs.begin(), newRgs.end());
   groups.insert(groups.end(), newRgs.begin(), newRgs.end());
 
-  if(!newRgs.empty() &&
-     requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
-    SharedHandle<DownloadContext> dctx = newRgs.front()->getDownloadContext();
-    assert(dctx->hasAttribute(bittorrent::BITTORRENT));
+  if(requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
     std::string filename = requestGroup->getOption()->get(PREF_DIR);
     filename += A2STR::SLASH_C;
-    filename +=
-      dctx->getAttribute(bittorrent::BITTORRENT)[bittorrent::NAME].s();
+    filename += util::toHex(attrs[bittorrent::INFO_HASH].s());
     filename += ".torrent";
     if(util::saveAs(filename, torrent)) {
       _logger->notice(MSG_METADATA_SAVED, filename.c_str());
