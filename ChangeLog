@@ -1,5 +1,10 @@
 2009-12-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed usage of --bt-save-metadata option.
+	* src/usage_text.h
+
+2009-12-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated po templates.
 	* po/aria2.pot
 

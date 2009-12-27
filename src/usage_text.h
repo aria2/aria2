@@ -585,7 +585,7 @@ _(" --disable-ipv6[=true|false]  Disable IPv6.")
 #define TEXT_BT_SAVE_METADATA \
 _(" --bt-save-metadata[=true|false] Save metadata as .torrent file. This option has\n" \
   "                              effect only when BitTorrent Magnet URI is used.\n" \
-  "                              The filename is name in metadata with suffix\n" \
+  "                              The filename is hex encoded info hash with suffix\n" \
   "                              .torrent. The directory to be saved is the same\n" \
   "                              directory where download file is saved. If the\n" \
-  "                              same file already exists, metdata is not saved.")
+  "                              same file already exists, metadata is not saved.")
