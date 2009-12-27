@@ -210,6 +210,9 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 
     if(op->getAsBool(PREF_DISABLE_IPV6)) {
       SocketCore::setProtocolFamily(AF_INET);
+      // Get rid of AI_ADDRCONFIG. It causes name resolution error
+      // when none of network interface has IPv4 address.
+      setDefaultAIFlags(0);
     }
     // Bind interface
     if(!op->get(PREF_INTERFACE).empty()) {
