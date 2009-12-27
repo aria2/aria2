@@ -1,5 +1,10 @@
 2009-12-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.8.0.
+	* configure.ac
+
+2009-12-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use info hash as a filename when saving BitTorrent metadata.
 	* src/UTMetadataPostDownloadHandler.cc
 	* test/UTMetadataPostDownloadHandlerTest.cc
