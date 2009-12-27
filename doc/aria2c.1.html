@@ -1251,6 +1251,18 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--bt-save-metadata</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Save metadata as .torrent file. This option has effect only when
+  BitTorrent Magnet URI is used.  The filename is hex encoded info
+  hash with suffix .torrent. The directory to be saved is the same
+  directory where download file is saved. If the same file already
+  exists, metadata is not saved. Default: <em>false</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--bt-seed-unverified</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
@@ -3528,7 +3540,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2009-12-26 23:34:30 JST
+Last updated 2009-12-27 14:37:51 JST
 </div>
 </div>
 </body>

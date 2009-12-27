@@ -380,6 +380,14 @@ BitTorrent Specific Options
   You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
   Default: '50K'
 
+*--bt-save-metadata*[='true'|'false']::
+
+  Save metadata as .torrent file. This option has effect only when
+  BitTorrent Magnet URI is used.  The filename is hex encoded info
+  hash with suffix .torrent. The directory to be saved is the same
+  directory where download file is saved. If the same file already
+  exists, metadata is not saved. Default: 'false'
+
 *--bt-seed-unverified*[='true'|'false']::
   Seed previously downloaded files without verifying piece hashes.
   Default: 'false'
