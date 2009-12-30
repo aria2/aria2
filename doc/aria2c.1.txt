@@ -780,7 +780,7 @@ fail.
 You can specify arbitrary number of BitTorrent Magnet URI. Please note
 that they are always treated as a separate download.  Both hex encoded
 40 characters Info Hash and Base32 encoded 32 characters Info Hash are
-supported. The multiple "tr" paramters are supported.  Because
+supported. The multiple "tr" parameters are supported.  Because
 BitTorrent Magnet URI is likely to contain "&" character, it is highly
 recommended to always quote URI with single(') or double(") quotation.
 It is strongly recommended to enable DHT especially when "tr"
@@ -1436,7 +1436,7 @@ Options
 Same options for *-i* list are available. See *Input File* subsection
 for complete list of options.
 
-In the option struct, name element is option name(without preceeding
+In the option struct, name element is option name(without preceding
 "--") and value element is argument as string.
 
 -------------------------------------------------
