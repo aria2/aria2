@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -56,10 +56,10 @@ private:
 
   HttpDownloadCommand*
   createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse,
-			    const SharedHandle<Decoder>& transferEncodingDecoder
-			    = SharedHandle<Decoder>(),
-			    const SharedHandle<Decoder>& contentEncodingDecoder
-			    = SharedHandle<Decoder>());
+                            const SharedHandle<Decoder>& transferEncodingDecoder
+                            = SharedHandle<Decoder>(),
+                            const SharedHandle<Decoder>& contentEncodingDecoder
+                            = SharedHandle<Decoder>());
 
   void updateLastModifiedTime(const Time& lastModified);
 
@@ -74,12 +74,12 @@ protected:
 
 public:
   HttpResponseCommand(int32_t cuid,
-		      const SharedHandle<Request>& req,
-		      const SharedHandle<FileEntry>& fileEntry,
-		      RequestGroup* requestGroup,
-		      const SharedHandle<HttpConnection>& httpConnection,
-		      DownloadEngine* e,
-		      const SharedHandle<SocketCore>& s);
+                      const SharedHandle<Request>& req,
+                      const SharedHandle<FileEntry>& fileEntry,
+                      RequestGroup* requestGroup,
+                      const SharedHandle<HttpConnection>& httpConnection,
+                      DownloadEngine* e,
+                      const SharedHandle<SocketCore>& s);
   ~HttpResponseCommand();
 };
 

@@ -68,7 +68,7 @@ void a2functionalTest::testAdopt2nd()
   GreetingHandle greeting(new JapaneseGreeting());
 
   CPPUNIT_ASSERT_EQUAL(std::string("A Japanese said:HAROO WAARUDO"),
-		       adopt2nd(std::plus<std::string>(), mem_fun_sh(&Greeting::sayGreeting))("A Japanese said:", greeting));
+                       adopt2nd(std::plus<std::string>(), mem_fun_sh(&Greeting::sayGreeting))("A Japanese said:", greeting));
 }
 
 void a2functionalTest::testStrjoin()
@@ -85,7 +85,7 @@ void a2functionalTest::testStrjoin()
   v.push_back("lonely");
 
   CPPUNIT_ASSERT_EQUAL(std::string("A hero is lonely"),
-		       strjoin(v.begin(), v.end(), " "));
+                       strjoin(v.begin(), v.end(), " "));
 }
 
 void a2functionalTest::testStrconcat()

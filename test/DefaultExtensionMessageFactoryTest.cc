@@ -149,7 +149,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
   SharedHandle<UTPexExtensionMessage> m =
     createMessage<UTPexExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL(_registry->getExtensionMessageID("ut_pex"),
-		       m->getExtensionMessageID());
+                       m->getExtensionMessageID());
 }
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataRequest()

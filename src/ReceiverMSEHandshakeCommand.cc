@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -95,14 +95,14 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       break;
     case MSEHandshake::HANDSHAKE_LEGACY: {
       if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-	throw DL_ABORT_EX("The legacy BitTorrent handshake is not acceptable by the preference.");
+        throw DL_ABORT_EX("The legacy BitTorrent handshake is not acceptable by the preference.");
       }
       SharedHandle<PeerConnection> peerConnection
-	(new PeerConnection(cuid, socket));
+        (new PeerConnection(cuid, socket));
       peerConnection->presetBuffer(_mseHandshake->getBuffer(),
-				   _mseHandshake->getBufferLength());
+                                   _mseHandshake->getBufferLength());
       Command* c = new PeerReceiveHandshakeCommand(cuid, peer, e, socket,
-						   peerConnection);
+                                                   peerConnection);
       e->commands.push_back(c);
       return true;
     }
@@ -114,10 +114,10 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
   case RECEIVER_WAIT_KEY: {
     if(_mseHandshake->receivePublicKey()) {
       if(_mseHandshake->sendPublicKey()) {
-	_sequence = RECEIVER_FIND_HASH_MARKER;
+        _sequence = RECEIVER_FIND_HASH_MARKER;
       } else {
-	setWriteCheckSocket(socket);
-	_sequence = RECEIVER_SEND_KEY_PENDING;
+        setWriteCheckSocket(socket);
+        _sequence = RECEIVER_SEND_KEY_PENDING;
       }
     }
     break;
@@ -158,11 +158,11 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
   case RECEIVER_RECEIVE_IA: {
     if(_mseHandshake->receiveReceiverIA()) {
       if(_mseHandshake->sendReceiverStep2()) {
-	createCommand();
-	return true;
+        createCommand();
+        return true;
       } else {
-	setWriteCheckSocket(socket);
-	_sequence = RECEIVER_SEND_STEP2_PENDING;
+        setWriteCheckSocket(socket);
+        _sequence = RECEIVER_SEND_STEP2_PENDING;
       }
     }
     break;
@@ -185,11 +185,11 @@ void ReceiverMSEHandshakeCommand::createCommand()
     (new PeerConnection(cuid, socket));
   if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
     peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
-				     _mseHandshake->getDecryptor());
+                                     _mseHandshake->getDecryptor());
   }
   if(_mseHandshake->getIALength() > 0) {
     peerConnection->presetBuffer(_mseHandshake->getIA(),
-				 _mseHandshake->getIALength());
+                                 _mseHandshake->getIALength());
   }
   // TODO add _mseHandshake->getInfoHash() to PeerReceiveHandshakeCommand
   // as a hint. If this info hash and one in BitTorrent Handshake does not

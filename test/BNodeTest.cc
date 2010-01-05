@@ -185,8 +185,8 @@ void BNodeTest::testFindClosestKNodes()
     }
     {
       for(size_t i = 0; i < 6; ++i) {
-	bucket4->getRandomNodeID(id);
-	bucket4->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
+        bucket4->getRandomNodeID(id);
+        bucket4->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
       }
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
@@ -194,7 +194,7 @@ void BNodeTest::testFindClosestKNodes()
       BNode::findClosestKNodes(nodes, bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       for(size_t i = 0; i < DHTBucket::K; ++i) {
-	CPPUNIT_ASSERT(bucket4->isInRange(nodes[i]));
+        CPPUNIT_ASSERT(bucket4->isInRange(nodes[i]));
       }
     }
     delete bp4;

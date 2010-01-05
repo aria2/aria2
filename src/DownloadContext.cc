@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -50,8 +50,8 @@ DownloadContext::DownloadContext():
   _downloadStopTime(_downloadStartTime) {}
 
 DownloadContext::DownloadContext(size_t pieceLength,
-				 uint64_t totalLength,
-				 const std::string& path):
+                                 uint64_t totalLength,
+                                 const std::string& path):
   _dir("."),
   _pieceLength(pieceLength),
   _knowsTotalLength(true),
@@ -111,7 +111,7 @@ void DownloadContext::setFilePathWithIndex
     _fileEntries[index-1]->setPath(path);
   } else {
     throw DL_ABORT_EX(StringFormat("No such file with index=%u",
-				   static_cast<unsigned int>(index)).str());
+                                   static_cast<unsigned int>(index)).str());
   }
 }
 
@@ -120,13 +120,13 @@ void DownloadContext::setFileFilter(IntSequence seq)
   std::deque<int32_t> fileIndexes = seq.flush();
   std::sort(fileIndexes.begin(), fileIndexes.end());
   fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
-		    fileIndexes.end());
+                    fileIndexes.end());
 
   bool selectAll = fileIndexes.empty() || _fileEntries.size() == 1;
     
   int32_t index = 1;
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-	_fileEntries.begin(); i != _fileEntries.end(); ++i, ++index) {
+        _fileEntries.begin(); i != _fileEntries.end(); ++i, ++index) {
     (*i)->setRequested
       (selectAll ||
        std::binary_search(fileIndexes.begin(), fileIndexes.end(), index));
@@ -168,7 +168,7 @@ bool DownloadContext::hasAttribute(const std::string& key) const
 void DownloadContext::releaseRuntimeResource()
 {
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-	_fileEntries.begin(); i != _fileEntries.end(); ++i) {
+        _fileEntries.begin(); i != _fileEntries.end(); ++i) {
     (*i)->releaseRuntimeResource();
   }
 }

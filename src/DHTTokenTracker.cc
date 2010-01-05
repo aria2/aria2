@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -60,14 +60,14 @@ DHTTokenTracker::DHTTokenTracker(const unsigned char* initialSecret)
 DHTTokenTracker::~DHTTokenTracker() {}
 
 std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
-					   const std::string& ipaddr, uint16_t port,
-					   const unsigned char* secret) const
+                                           const std::string& ipaddr, uint16_t port,
+                                           const unsigned char* secret) const
 {
   unsigned char src[DHT_ID_LENGTH+6+SECRET_SIZE];
   if(!bittorrent::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
     throw DL_ABORT_EX
       (StringFormat("Token generation failed: ipaddr=%s, port=%u",
-		    ipaddr.c_str(), port).str());
+                    ipaddr.c_str(), port).str());
   }
   memcpy(src, infoHash, DHT_ID_LENGTH);
   memcpy(src+DHT_ID_LENGTH+6, secret, SECRET_SIZE);
@@ -77,14 +77,14 @@ std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
 }
 
 std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
-					   const std::string& ipaddr, uint16_t port) const
+                                           const std::string& ipaddr, uint16_t port) const
 {
   return generateToken(infoHash, ipaddr, port, _secret[0]);
 }
 
 bool DHTTokenTracker::validateToken(const std::string& token,
-				    const unsigned char* infoHash,
-				    const std::string& ipaddr, uint16_t port) const
+                                    const unsigned char* infoHash,
+                                    const std::string& ipaddr, uint16_t port) const
 {
   for(int i = 0; i < 2; ++i) {
     if(generateToken(infoHash, ipaddr, port, _secret[i]) == token) {

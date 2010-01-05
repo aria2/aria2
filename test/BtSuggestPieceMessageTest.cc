@@ -68,7 +68,7 @@ void BtSuggestPieceMessageTest::testToString() {
   msg.setIndex(12345);
 
   CPPUNIT_ASSERT_EQUAL(std::string("suggest piece index=12345"),
-		       msg.toString());
+                       msg.toString());
 }
 
 } // namespace aria2

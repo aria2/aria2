@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -51,7 +51,7 @@
 namespace aria2 {
 
 HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
-				     const SharedHandle<SocketCore>& socket):
+                                     const SharedHandle<SocketCore>& socket):
   Command(cuid),
   _e(e),
   _socket(socket),
@@ -60,13 +60,13 @@ HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   _e->addSocketForReadCheck(_socket, this);
   _httpServer->setUsernamePassword(_e->option->get(PREF_XML_RPC_USER),
-				   _e->option->get(PREF_XML_RPC_PASSWD));
+                                   _e->option->get(PREF_XML_RPC_PASSWD));
 }
 
 HttpServerCommand::HttpServerCommand(int32_t cuid,
-				     const SharedHandle<HttpServer>& httpServer,
-				     DownloadEngine* e,
-				     const SharedHandle<SocketCore>& socket):
+                                     const SharedHandle<HttpServer>& httpServer,
+                                     DownloadEngine* e,
+                                     const SharedHandle<SocketCore>& socket):
   Command(cuid),
   _e(e),
   _socket(socket),
@@ -93,46 +93,46 @@ bool HttpServerCommand::execute()
       header = _httpServer->receiveRequest();
 
       if(header.isNull()) {
-	_e->commands.push_back(this);
-	return false;
+        _e->commands.push_back(this);
+        return false;
       }
       if(!_httpServer->authenticate()) {
-	_httpServer->disableKeepAlive();
-	_httpServer->feedResponse("401 Unauthorized",
-				  "WWW-Authenticate: Basic realm=\"aria2\"",
-				  "","text/html");
-	Command* command =
-	  new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
-	_e->commands.push_back(command);
-	_e->setNoWait(true);
-	return true;
+        _httpServer->disableKeepAlive();
+        _httpServer->feedResponse("401 Unauthorized",
+                                  "WWW-Authenticate: Basic realm=\"aria2\"",
+                                  "","text/html");
+        Command* command =
+          new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
+        _e->commands.push_back(command);
+        _e->setNoWait(true);
+        return true;
       }
       if(static_cast<uint64_t>
-	 (_e->option->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
-	 _httpServer->getContentLength()) {
-	logger->info("Request too long. ContentLength=%s."
-		     " See --xml-rpc-max-request-size option to loose"
-		     " this limitation.",
-		     util::uitos(_httpServer->getContentLength()).c_str());
-	return true;
+         (_e->option->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
+         _httpServer->getContentLength()) {
+        logger->info("Request too long. ContentLength=%s."
+                     " See --xml-rpc-max-request-size option to loose"
+                     " this limitation.",
+                     util::uitos(_httpServer->getContentLength()).c_str());
+        return true;
       }
       Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
-						   _socket);
+                                                   _socket);
       _e->commands.push_back(command);
       _e->setNoWait(true);
       return true;
     } else {
       if(_timeout.elapsed(30)) {
-	logger->info("HTTP request timeout.");
-	return true;
+        logger->info("HTTP request timeout.");
+        return true;
       } else {
-	_e->commands.push_back(this);
-	return false;
+        _e->commands.push_back(this);
+        return false;
       }
     }
   } catch(RecoverableException& e) {
     logger->info("CUID#%d - Error occurred while reading HTTP request",
-		 e, cuid);
+                 e, cuid);
     return true;
   }
 

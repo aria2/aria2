@@ -27,14 +27,14 @@ private:
   bool _allDownloadFinished;
 public:
   MockPieceStorage():totalLength(0),
-		     filteredTotalLength(0),
-		     completedLength(0),
-		     filteredCompletedLength(0),
-		     bitfieldMan(0),
-		     selectiveDownloadingMode(false),
-		     endGame(false),
-		     _downloadFinished(false),
-		     _allDownloadFinished(false) {}
+                     filteredTotalLength(0),
+                     completedLength(0),
+                     filteredCompletedLength(0),
+                     bitfieldMan(0),
+                     selectiveDownloadingMode(false),
+                     endGame(false),
+                     _downloadFinished(false),
+                     _allDownloadFinished(false) {}
 
   virtual ~MockPieceStorage() {}
 
@@ -164,7 +164,7 @@ public:
   }
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   size_t bitfieldLength) {
+                           size_t bitfieldLength) {
     bitfieldMan->setBitfield(bitfield, bitfieldLength);
   }
   
@@ -213,8 +213,8 @@ public:
   virtual void advertisePiece(int32_t cuid, size_t index) {}
 
   virtual void getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
-					 int32_t myCuid,
-					 const Time& lastCheckTime)
+                                         int32_t myCuid,
+                                         const Time& lastCheckTime)
   {}
 
   virtual void removeAdvertisedPiece(time_t elapsed) {}
@@ -239,14 +239,14 @@ public:
   virtual void addPieceStats(size_t index) {}
 
   virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength) {}
+                             size_t bitfieldLength) {}
 
   virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength) {}
+                                  size_t bitfieldLength) {}
 
   virtual void updatePieceStats(const unsigned char* newBitfield,
-				size_t newBitfieldLength,
-				const unsigned char* oldBitfield) {}
+                                size_t newBitfieldLength,
+                                const unsigned char* oldBitfield) {}
 };
 
 } // namespace aria2

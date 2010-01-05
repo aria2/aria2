@@ -110,12 +110,12 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
   CPPUNIT_ASSERT_EQUAL(std::string("200"), header->getResponseStatus());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
   CPPUNIT_ASSERT_EQUAL(std::string("Mon, 25 Jun 2007 16:04:59 GMT"),
-		       header->getFirst("Date"));
+                       header->getFirst("Date"));
   CPPUNIT_ASSERT_EQUAL(std::string("Apache/2.2.3 (Debian)"),
-		       header->getFirst("Server"));
+                       header->getFirst("Server"));
   CPPUNIT_ASSERT_EQUAL((uint64_t)9187ULL, header->getFirstAsULLInt("Content-Length"));
   CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"),
-		       header->getFirst("Content-Type"));
+                       header->getFirst("Content-Type"));
 }
 
 void HttpHeaderProcessorTest::testGetHttpResponseHeader_empty()
@@ -191,15 +191,15 @@ void HttpHeaderProcessorTest::testGetHeaderString()
   proc.update(hd);
 
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1 200 OK\r\n"
-			      "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
-			      "Server: Apache/2.2.3 (Debian)\r\n"
-			      "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
-			      "ETag: \"594065-23e3-50825cc0\"\r\n"
-			      "Accept-Ranges: bytes\r\n"
-			      "Content-Length: 9187\r\n"
-			      "Connection: close\r\n"
-			      "Content-Type: text/html; charset=UTF-8"),
-		       proc.getHeaderString());
+                                   "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
+                                   "Server: Apache/2.2.3 (Debian)\r\n"
+                                   "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
+                                   "ETag: \"594065-23e3-50825cc0\"\r\n"
+                                   "Accept-Ranges: bytes\r\n"
+                                   "Content-Length: 9187\r\n"
+                                   "Connection: close\r\n"
+                                   "Content-Type: text/html; charset=UTF-8"),
+                       proc.getHeaderString());
 }
 
 void HttpHeaderProcessorTest::testGetHttpRequestHeader()

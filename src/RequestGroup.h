@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -167,7 +167,7 @@ private:
   Logger* _logger;
 
   void validateFilename(const std::string& expectedFilename,
-			const std::string& actualFilename) const;
+                        const std::string& actualFilename) const;
 
   void initializePreDownloadHandler();
 
@@ -201,13 +201,13 @@ public:
   // If this is HTTP/FTP download and file size is unknown, only 1 command
   // (usually, HttpInitiateConnection or FtpInitiateConnection) will be created.
   void createInitialCommand(std::deque<Command*>& commands,
-			    DownloadEngine* e);
+                            DownloadEngine* e);
 
   void createNextCommandWithAdj(std::deque<Command*>& commands,
-				DownloadEngine* e, int numAdj);
+                                DownloadEngine* e, int numAdj);
 
   void createNextCommand(std::deque<Command*>& commands,
-			 DownloadEngine* e, unsigned int numCommand);
+                         DownloadEngine* e, unsigned int numCommand);
   
   bool downloadFinished() const;
 
@@ -229,7 +229,7 @@ public:
   void validateFilename(const std::string& actualFilename) const;
 
   void validateTotalLength(uint64_t expectedTotalLength,
-			   uint64_t actualTotalLength) const;
+                           uint64_t actualTotalLength) const;
 
   void validateTotalLength(uint64_t actualTotalLength) const;
 
@@ -356,8 +356,8 @@ public:
   void clearPreDownloadHandler();
 
   void processCheckIntegrityEntry(std::deque<Command*>& commands,
-				  const SharedHandle<CheckIntegrityEntry>& entry,
-				  DownloadEngine* e);
+                                  const SharedHandle<CheckIntegrityEntry>& entry,
+                                  DownloadEngine* e);
 
   void initPieceStorage();
 

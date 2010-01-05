@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -63,9 +63,9 @@ const std::string FtpConnection::A("A");
 const std::string FtpConnection::I("I");
 
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
-			     const RequestHandle& req,
-			     const SharedHandle<AuthConfig>& authConfig,
-			     const Option* op):
+                             const RequestHandle& req,
+                             const SharedHandle<AuthConfig>& authConfig,
+                             const Option* op):
   cuid(cuid), socket(socket), req(req),
   _authConfig(authConfig), option(op),
   logger(LogFactory::getInstance()),
@@ -134,7 +134,7 @@ bool FtpConnection::sendCwd()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     logger->info("CUID#%d - Using base working directory '%s'",
-		 cuid, _baseWorkingDir.c_str());
+                 cuid, _baseWorkingDir.c_str());
     std::string request = "CWD ";
     if(_baseWorkingDir != "/") {
       request += _baseWorkingDir;
@@ -201,7 +201,7 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
     socket->getAddrInfo(addrinfo);
     unsigned int ipaddr[4]; 
     sscanf(addrinfo.first.c_str(), "%u.%u.%u.%u",
-	   &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
+           &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
     serverSocket->getAddrInfo(addrinfo);
     std::string request = "PORT ";
     request += util::uitos(ipaddr[0]);
@@ -275,7 +275,7 @@ unsigned int FtpConnection::getStatus(const std::string& response) const
 // If the whole response has not been received, then returns std::string::npos.
 std::string::size_type
 FtpConnection::findEndOfResponse(unsigned int status,
-				 const std::string& buf) const
+                                 const std::string& buf) const
 {
   if(buf.size() <= 4) {
     return std::string::npos;
@@ -317,14 +317,14 @@ bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& re
     socket->readData(buf, size);
     if(size == 0) {
       if(socket->wantRead() || socket->wantWrite()) {
-	return false;
+        return false;
       }
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
     if(strbuf.size()+size > MAX_RECV_BUFFER) {
       throw DL_RETRY_EX
-	(StringFormat("Max FTP recv buffer reached. length=%lu",
-		      static_cast<unsigned long>(strbuf.size()+size)).str());
+        (StringFormat("Max FTP recv buffer reached. length=%lu",
+                      static_cast<unsigned long>(strbuf.size()+size)).str());
     }
     strbuf.append(&buf[0], &buf[size]);
   }
@@ -396,24 +396,24 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
       char buf[15]; // YYYYMMDDhhmmss+\0, milli second part is dropped.
       sscanf(response.second.c_str(), "%*u %14s", buf);
       if(strlen(buf) == 14) {
-	// We don't use Time::parse(buf,"%Y%m%d%H%M%S") here because Mac OS X
-	// and included strptime doesn't parse data for this format.
-	struct tm tm;
-	memset(&tm, 0, sizeof(tm));
-	tm.tm_sec = util::parseInt(&buf[12]);
-	buf[12] = '\0';
-	tm.tm_min = util::parseInt(&buf[10]);
-	buf[10] = '\0';
-	tm.tm_hour = util::parseInt(&buf[8]);
-	buf[8] = '\0';
-	tm.tm_mday = util::parseInt(&buf[6]);
-	buf[6] = '\0';
-	tm.tm_mon = util::parseInt(&buf[4])-1;
-	buf[4] = '\0';
-	tm.tm_year = util::parseInt(&buf[0])-1900;
-	time = Time(timegm(&tm));
+        // We don't use Time::parse(buf,"%Y%m%d%H%M%S") here because Mac OS X
+        // and included strptime doesn't parse data for this format.
+        struct tm tm;
+        memset(&tm, 0, sizeof(tm));
+        tm.tm_sec = util::parseInt(&buf[12]);
+        buf[12] = '\0';
+        tm.tm_min = util::parseInt(&buf[10]);
+        buf[10] = '\0';
+        tm.tm_hour = util::parseInt(&buf[8]);
+        buf[8] = '\0';
+        tm.tm_mday = util::parseInt(&buf[6]);
+        buf[6] = '\0';
+        tm.tm_mon = util::parseInt(&buf[4])-1;
+        buf[4] = '\0';
+        tm.tm_year = util::parseInt(&buf[0])-1900;
+        time = Time(timegm(&tm));
       } else {
-	time = Time::null();
+        time = Time::null();
       }
     }
     return response.first;
@@ -431,21 +431,21 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
       unsigned int h1, h2, h3, h4, p1, p2;
       std::string::size_type p = response.second.find("(");
       if(p >= 4) {
-	sscanf(response.second.substr(response.second.find("(")).c_str(),
-	       "(%u,%u,%u,%u,%u,%u).",
-	       &h1, &h2, &h3, &h4, &p1, &p2);
-	// ip address
- 	dest.first = util::uitos(h1);
- 	dest.first += ".";
-	dest.first += util::uitos(h2);
-	dest.first += ".";
-	dest.first += util::uitos(h3);
-	dest.first += ".";
-	dest.first += util::uitos(h4);
-	// port number
-	dest.second = 256*p1+p2;
+        sscanf(response.second.substr(response.second.find("(")).c_str(),
+               "(%u,%u,%u,%u,%u,%u).",
+               &h1, &h2, &h3, &h4, &p1, &p2);
+        // ip address
+        dest.first = util::uitos(h1);
+        dest.first += ".";
+        dest.first += util::uitos(h2);
+        dest.first += ".";
+        dest.first += util::uitos(h3);
+        dest.first += ".";
+        dest.first += util::uitos(h4);
+        // port number
+        dest.second = 256*p1+p2;
       } else {
-	throw DL_RETRY_EX(EX_INVALID_RESPONSE);
+        throw DL_RETRY_EX(EX_INVALID_RESPONSE);
       }
     }
     return response.first;
@@ -463,10 +463,10 @@ unsigned int FtpConnection::receivePwdResponse(std::string& pwd)
       std::string::size_type last;
 
       if((first = response.second.find("\"")) != std::string::npos &&
-	 (last = response.second.find("\"", ++first)) != std::string::npos) {
-	pwd = response.second.substr(first, last-first);
+         (last = response.second.find("\"", ++first)) != std::string::npos) {
+        pwd = response.second.substr(first, last-first);
       } else {
-	throw DL_ABORT_EX(EX_INVALID_RESPONSE);
+        throw DL_ABORT_EX(EX_INVALID_RESPONSE);
       }
     }
     return response.first;

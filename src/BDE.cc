@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -42,14 +42,14 @@ const BDE BDE::none;
 BDE::BDE():_type(TYPE_NONE), _bobject(new BObject()) {}
 
 BDE::BDE(Integer integer):_type(TYPE_INTEGER),
-			  _bobject(new BInteger(integer)) {}
+                          _bobject(new BInteger(integer)) {}
 
 
 BDE::BDE(const std::string& string):_type(TYPE_STRING),
-				    _bobject(new BString(std::string(string))) {}
+                                    _bobject(new BString(std::string(string))) {}
 
 BDE::BDE(const char* cstring):_type(TYPE_STRING),
-			      _bobject(new BString(std::string(cstring))) {}
+                              _bobject(new BString(std::string(cstring))) {}
 
 BDE::BDE(const char* data, size_t length):
   _type(TYPE_STRING),

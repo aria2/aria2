@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -66,8 +66,8 @@ extern void showVersion();
 extern void showUsage(const std::string& keyword, const OptionParser& oparser);
 
 static void overrideWithEnv(Option& op, const OptionParser& optionParser,
-			    const std::string& pref,
-			    const std::string& envName)
+                            const std::string& pref,
+                            const std::string& envName)
 {
   char* value = getenv(envName.c_str());
   if(value) {
@@ -75,15 +75,15 @@ static void overrideWithEnv(Option& op, const OptionParser& optionParser,
       optionParser.findByName(pref)->parse(op, value);
     } catch(Exception& e) {
       std::cerr << "Caught Error while parsing environment variable"
-		<< " '" << envName << "'"
-		<< "\n"
-		<< e.stackTrace();
+                << " '" << envName << "'"
+                << "\n"
+                << e.stackTrace();
     }
   }
 }
 
 void option_processing(Option& op, std::deque<std::string>& uris,
-		       int argc, char* const argv[])
+                       int argc, char* const argv[])
 {
   OptionParser oparser;
   oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
@@ -100,25 +100,25 @@ void option_processing(Option& op, std::deque<std::string>& uris,
       ucfname = op.get(PREF_CONF_PATH);
 
       if(op.defined("version")) {
-	showVersion();
-	exit(downloadresultcode::FINISHED);
+        showVersion();
+        exit(downloadresultcode::FINISHED);
       }
       if(op.defined("help")) {
-	std::string keyword;
-	if(op.get("help").empty()) {
-	  keyword = TAG_BASIC;
-	} else {
-	  keyword = op.get("help");
-	  if(util::startsWith(keyword, "--")) {
-	    keyword = keyword.substr(2);
-	  }
-	  std::string::size_type eqpos = keyword.find("=");
-	  if(eqpos != std::string::npos) {
-	    keyword = keyword.substr(0, eqpos);
-	  }
-	}
-	showUsage(keyword, oparser);
-	exit(downloadresultcode::FINISHED);
+        std::string keyword;
+        if(op.get("help").empty()) {
+          keyword = TAG_BASIC;
+        } else {
+          keyword = op.get("help");
+          if(util::startsWith(keyword, "--")) {
+            keyword = keyword.substr(2);
+          }
+          std::string::size_type eqpos = keyword.find("=");
+          if(eqpos != std::string::npos) {
+            keyword = keyword.substr(0, eqpos);
+          }
+        }
+        showUsage(keyword, oparser);
+        exit(downloadresultcode::FINISHED);
       }
     }
 
@@ -126,32 +126,32 @@ void option_processing(Option& op, std::deque<std::string>& uris,
 
     if(!noConf) {
       std::string cfname = 
-	ucfname.empty() ?
-	oparser.findByName(PREF_CONF_PATH)->getDefaultValue():
-	ucfname;
+        ucfname.empty() ?
+        oparser.findByName(PREF_CONF_PATH)->getDefaultValue():
+        ucfname;
 
       if(File(cfname).isFile()) {
-	std::ifstream cfstream(cfname.c_str(), std::ios::binary);
-	try {
-	  oparser.parse(op, cfstream);
-	} catch(OptionHandlerException& e) {
-	  std::cerr << "Parse error in " << cfname << "\n"
-		    << e.stackTrace() << "\n"
-		    << "Usage:" << "\n"
-		    << oparser.findByName(e.getOptionName())->getDescription()
-		    << std::endl;
-	  exit(downloadresultcode::UNKNOWN_ERROR);
-	} catch(Exception& e) {
-	  std::cerr << "Parse error in " << cfname << "\n"
-		    << e.stackTrace() << std::endl;
-	  exit(downloadresultcode::UNKNOWN_ERROR);
-	}
+        std::ifstream cfstream(cfname.c_str(), std::ios::binary);
+        try {
+          oparser.parse(op, cfstream);
+        } catch(OptionHandlerException& e) {
+          std::cerr << "Parse error in " << cfname << "\n"
+                    << e.stackTrace() << "\n"
+                    << "Usage:" << "\n"
+                    << oparser.findByName(e.getOptionName())->getDescription()
+                    << std::endl;
+          exit(downloadresultcode::UNKNOWN_ERROR);
+        } catch(Exception& e) {
+          std::cerr << "Parse error in " << cfname << "\n"
+                    << e.stackTrace() << std::endl;
+          exit(downloadresultcode::UNKNOWN_ERROR);
+        }
       } else if(!ucfname.empty()) {
-	std::cerr << StringFormat("Configuration file %s is not found.",
-				  cfname.c_str())
-		  << "\n";
-	showUsage(TAG_HELP, oparser);
-	exit(downloadresultcode::UNKNOWN_ERROR);
+        std::cerr << StringFormat("Configuration file %s is not found.",
+                                  cfname.c_str())
+                  << "\n";
+        showUsage(TAG_HELP, oparser);
+        exit(downloadresultcode::UNKNOWN_ERROR);
       }
     }
     // Override configuration with environment variables.
@@ -168,9 +168,9 @@ void option_processing(Option& op, std::deque<std::string>& uris,
     oparser.parse(op, cmdstream);
   } catch(OptionHandlerException& e) {
     std::cerr << e.stackTrace() << "\n"
-	      << "Usage:" << "\n"
-	      << oparser.findByName(e.getOptionName())
-	      << std::endl;
+              << "Usage:" << "\n"
+              << oparser.findByName(e.getOptionName())
+              << std::endl;
     exit(downloadresultcode::UNKNOWN_ERROR);
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;

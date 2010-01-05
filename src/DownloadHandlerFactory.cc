@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -75,9 +75,9 @@ DownloadHandlerFactory::getMetalinkPreDownloadHandler()
     RequestGroupCriteriaHandle criteria
       (new ContentTypeRequestGroupCriteria
        (DownloadHandlerConstants::getMetalinkContentTypes().begin(),
-	DownloadHandlerConstants::getMetalinkContentTypes().end(),
-	DownloadHandlerConstants::getMetalinkExtensions().begin(),
-	DownloadHandlerConstants::getMetalinkExtensions().end()));
+        DownloadHandlerConstants::getMetalinkContentTypes().end(),
+        DownloadHandlerConstants::getMetalinkExtensions().begin(),
+        DownloadHandlerConstants::getMetalinkExtensions().end()));
     _metalinkPreDownloadHandler->setCriteria(criteria);
   }
   return _metalinkPreDownloadHandler;
@@ -105,9 +105,9 @@ DownloadHandlerFactory::getBtPreDownloadHandler()
     RequestGroupCriteriaHandle criteria
       (new ContentTypeRequestGroupCriteria
        (DownloadHandlerConstants::getBtContentTypes().begin(),
-	DownloadHandlerConstants::getBtContentTypes().end(),
-	DownloadHandlerConstants::getBtExtensions().begin(),
-	DownloadHandlerConstants::getBtExtensions().end()));
+        DownloadHandlerConstants::getBtContentTypes().end(),
+        DownloadHandlerConstants::getBtExtensions().begin(),
+        DownloadHandlerConstants::getBtExtensions().end()));
     _btPreDownloadHandler->setCriteria(criteria);
   }
   return _btPreDownloadHandler;

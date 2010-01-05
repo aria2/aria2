@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -82,39 +82,39 @@ bool HttpServerBodyCommand::execute()
       _timeout.reset();
 
       if(_httpServer->receiveBody()) {
-	// Do something for requestpath and body
-	if(_httpServer->getRequestPath() == "/rpc") {
-	  xmlrpc::XmlRpcRequest req =
-	    xmlrpc::XmlRpcRequestProcessor().parseMemory(_httpServer->getBody());
-	  
-	  SharedHandle<xmlrpc::XmlRpcMethod> method =
-	    xmlrpc::XmlRpcMethodFactory::create(req._methodName);
-	  xmlrpc::XmlRpcResponse res = method->execute(req, _e);
-	  _httpServer->feedResponse(res.toXml(), "text/xml");
-	  Command* command =
-	    new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
-	  _e->commands.push_back(command);
-	  _e->setNoWait(true);
-	  return true;
-	} else {
-	  return true;
-	}
+        // Do something for requestpath and body
+        if(_httpServer->getRequestPath() == "/rpc") {
+          xmlrpc::XmlRpcRequest req =
+            xmlrpc::XmlRpcRequestProcessor().parseMemory(_httpServer->getBody());
+          
+          SharedHandle<xmlrpc::XmlRpcMethod> method =
+            xmlrpc::XmlRpcMethodFactory::create(req._methodName);
+          xmlrpc::XmlRpcResponse res = method->execute(req, _e);
+          _httpServer->feedResponse(res.toXml(), "text/xml");
+          Command* command =
+            new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
+          _e->commands.push_back(command);
+          _e->setNoWait(true);
+          return true;
+        } else {
+          return true;
+        }
       } else {
-	_e->commands.push_back(this);
-	return false;
-      }	
+        _e->commands.push_back(this);
+        return false;
+      } 
     } else {
       if(_timeout.elapsed(30)) {
-	logger->info("HTTP request body timeout.");
-	return true;
+        logger->info("HTTP request body timeout.");
+        return true;
       } else {
-	_e->commands.push_back(this);
-	return false;
+        _e->commands.push_back(this);
+        return false;
       }
     }
   } catch(RecoverableException& e) {
     logger->info("CUID#%d - Error occurred while reading HTTP request body",
-		 e, cuid);
+                 e, cuid);
     return true;
   }
 

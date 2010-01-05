@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -50,8 +50,8 @@
 namespace aria2 {
 
 DHTBucket::DHTBucket(size_t prefixLength,
-		     const unsigned char* max, const unsigned char* min,
-		     const SharedHandle<DHTNode>& localNode):
+                     const unsigned char* max, const unsigned char* min,
+                     const SharedHandle<DHTNode>& localNode):
   _prefixLength(prefixLength),
   _localNode(localNode),
   _logger(LogFactory::getInstance())
@@ -94,14 +94,14 @@ bool DHTBucket::isInRange(const unsigned char* nodeID) const
 
 // Returns true if nodeID is in [min, max] (inclusive).
 bool DHTBucket::isInRange(const unsigned char* nodeID,
-			  const unsigned char* max,
-			  const unsigned char* min) const
+                          const unsigned char* max,
+                          const unsigned char* min) const
 {
   return
     !std::lexicographical_compare(&nodeID[0], &nodeID[DHT_ID_LENGTH],
-				  &min[0], &min[DHT_ID_LENGTH]) &&
+                                  &min[0], &min[DHT_ID_LENGTH]) &&
     !std::lexicographical_compare(&max[0], &max[DHT_ID_LENGTH],
-				  &nodeID[0], &nodeID[DHT_ID_LENGTH]);
+                                  &nodeID[0], &nodeID[DHT_ID_LENGTH]);
 }
 
 bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
@@ -114,11 +114,11 @@ bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
       return true;
     } else {
       if(_nodes.front()->isBad()) {
-	_nodes.erase(_nodes.begin());
-	_nodes.push_back(node);
-	return true;
+        _nodes.erase(_nodes.begin());
+        _nodes.push_back(node);
+        return true;
       } else {
-	return false;
+        return false;
       }
     }
   } else {
@@ -188,7 +188,7 @@ SharedHandle<DHTBucket> DHTBucket::split()
 
   ++_prefixLength;
   SharedHandle<DHTBucket> rBucket(new DHTBucket(_prefixLength,
-						rMax, rMin, _localNode));
+                                                rMax, rMin, _localNode));
 
   std::deque<SharedHandle<DHTNode> > lNodes;
   for(std::deque<SharedHandle<DHTNode> >::iterator i = _nodes.begin();
@@ -202,13 +202,13 @@ SharedHandle<DHTBucket> DHTBucket::split()
   _nodes = lNodes;
   // TODO create toString() and use it.
   _logger->debug("New bucket. prefixLength=%u, Range:%s-%s",
-		 static_cast<unsigned int>(rBucket->getPrefixLength()),
- 		 util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
- 		 util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
+                 static_cast<unsigned int>(rBucket->getPrefixLength()),
+                 util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
+                 util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
   _logger->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
-		 static_cast<unsigned int>(_prefixLength),
-		 util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
-		 util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
+                 static_cast<unsigned int>(_prefixLength),
+                 util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
+                 util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
 
   return rBucket;
 }
@@ -217,7 +217,7 @@ void DHTBucket::getGoodNodes(std::deque<SharedHandle<DHTNode> >& goodNodes) cons
 {
   goodNodes = _nodes;
   goodNodes.erase(std::remove_if(goodNodes.begin(), goodNodes.end(),
-				 mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
+                                 mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
 }
 
 SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const

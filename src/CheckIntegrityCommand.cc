@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -66,13 +66,13 @@ bool CheckIntegrityCommand::executeInternal()
     _requestGroup->enableSaveControlFile();
     if(_requestGroup->downloadFinished()) {
       logger->notice(MSG_VERIFICATION_SUCCESSFUL,
-		     _requestGroup->getDownloadContext()->getBasePath().c_str());
+                     _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::deque<Command*> commands;
       _entry->onDownloadFinished(commands, _e);
       _e->addCommand(commands);
     } else {
       logger->error(MSG_VERIFICATION_FAILED,
-		    _requestGroup->getDownloadContext()->getBasePath().c_str());
+                    _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::deque<Command*> commands;
       _entry->onDownloadIncomplete(commands,_e);
       _e->addCommand(commands);
@@ -90,7 +90,7 @@ bool CheckIntegrityCommand::handleException(Exception& e)
   _e->_checkIntegrityMan->dropPickedEntry();
   logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE,
-		cuid, _requestGroup->getDownloadContext()->getBasePath().c_str());
+                cuid, _requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

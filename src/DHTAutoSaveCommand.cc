@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -88,13 +88,13 @@ void DHTAutoSaveCommand::save()
     if(!f.isFile()) {
       File dir(f.getDirname());
       if(!dir.exists()) {
-	if(!dir.mkdirs()) {
-	  logger->info(EX_MAKE_DIR, dir.getPath().c_str(), strerror(errno));
-	  return;
-	}
+        if(!dir.mkdirs()) {
+          logger->info(EX_MAKE_DIR, dir.getPath().c_str(), strerror(errno));
+          return;
+        }
       } else if(!dir.isDir()) {
-	logger->info(EX_NOT_DIRECTORY, dir.getPath().c_str());
-	return;
+        logger->info(EX_NOT_DIRECTORY, dir.getPath().c_str());
+        return;
       }
     }
   }
@@ -117,19 +117,19 @@ void DHTAutoSaveCommand::save()
     {
       std::ofstream o(tempFile.c_str(), std::ios::out|std::ios::binary);
       if(!o) {
-	throw DL_ABORT_EX
-	  (StringFormat("Failed to save DHT routing table to %s. cause:%s",
-			dhtFile.c_str(), strerror(errno)).str());
+        throw DL_ABORT_EX
+          (StringFormat("Failed to save DHT routing table to %s. cause:%s",
+                        dhtFile.c_str(), strerror(errno)).str());
       }
       serializer.serialize(o);
     }
     if(!File(tempFile).renameTo(dhtFile)) {
       logger->error("Cannot move file from %s to %s.",
-		    tempFile.c_str(), dhtFile.c_str());
+                    tempFile.c_str(), dhtFile.c_str());
     }
   } catch(RecoverableException& e) {
     logger->error("Exception caught while saving DHT routing table to %s",
-		  e, dhtFile.c_str());
+                  e, dhtFile.c_str());
   }
 }
 

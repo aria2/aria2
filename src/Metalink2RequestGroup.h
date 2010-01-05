@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -54,18 +54,18 @@ private:
 
   void
   createRequestGroup(std::deque<SharedHandle<RequestGroup> >& groups,
-		     std::deque<SharedHandle<MetalinkEntry> > entries,
-		     const SharedHandle<Option>& option);
+                     std::deque<SharedHandle<MetalinkEntry> > entries,
+                     const SharedHandle<Option>& option);
 public:
   Metalink2RequestGroup();
 
   void generate(std::deque<SharedHandle<RequestGroup> >& groups,
-		const std::string& metalinkFile,
-		const SharedHandle<Option>& option);
+                const std::string& metalinkFile,
+                const SharedHandle<Option>& option);
 
   void generate(std::deque<SharedHandle<RequestGroup> >& groups,
-		const SharedHandle<BinaryStream>& binaryStream,
-		const SharedHandle<Option>& option);
+                const SharedHandle<BinaryStream>& binaryStream,
+                const SharedHandle<Option>& option);
 };
 
 } // namespace aria2

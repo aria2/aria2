@@ -80,7 +80,7 @@ void NetrcAuthResolverTest::testResolveAuthConfig_ignoreDefault()
   SharedHandle<AuthConfig> defAuthConfig =
     _resolver->resolveAuthConfig("mirror");
   CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpasswd"),
-		       defAuthConfig->getAuthText());  
+                       defAuthConfig->getAuthText());  
 }
 
 } // namespace aria2

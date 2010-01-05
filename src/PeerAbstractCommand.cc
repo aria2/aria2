@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -47,9 +47,9 @@
 namespace aria2 {
 
 PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
-					 const PeerHandle& peer,
-					 DownloadEngine* e,
-					 const SocketHandle& s):
+                                         const PeerHandle& peer,
+                                         DownloadEngine* e,
+                                         const SocketHandle& s):
   Command(cuid),
   e(e),
   socket(s),
@@ -74,8 +74,8 @@ PeerAbstractCommand::~PeerAbstractCommand()
 bool PeerAbstractCommand::execute()
 {
   logger->debug("CUID#%d -"
-		" socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
-		cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent, noCheck);
+                " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
+                cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent, noCheck);
   if(exitBeforeExecute()) {
     onAbort();
     return true;
@@ -88,8 +88,8 @@ bool PeerAbstractCommand::execute()
       checkPoint.reset();
     } else if(_errorEvent) {
       throw DL_ABORT_EX
-	(StringFormat(MSG_NETWORK_PROBLEM,
-		      socket->getSocketError().c_str()).str());
+        (StringFormat(MSG_NETWORK_PROBLEM,
+                      socket->getSocketError().c_str()).str());
     }
     if(checkPoint.elapsed(timeout)) {
       throw DL_ABORT_EX(EX_TIME_OUT);
@@ -103,7 +103,7 @@ bool PeerAbstractCommand::execute()
   } catch(RecoverableException& err) {
     logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err, cuid);
     logger->debug(MSG_PEER_BANNED,
-		  cuid, peer->ipaddr.c_str(), peer->port);
+                  cuid, peer->ipaddr.c_str(), peer->port);
     onAbort();
     return prepareForNextPeer(0);
   }
@@ -131,9 +131,9 @@ void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket)
   } else {
     if(checkSocketIsReadable) {
       if(readCheckTarget != socket) {
-	e->deleteSocketForReadCheck(readCheckTarget, this);
-	e->addSocketForReadCheck(socket, this);
-	readCheckTarget = socket;
+        e->deleteSocketForReadCheck(readCheckTarget, this);
+        e->addSocketForReadCheck(socket, this);
+        readCheckTarget = socket;
       }
     } else {
       e->addSocketForReadCheck(socket, this);
@@ -159,9 +159,9 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket)
   } else {
     if(checkSocketIsWritable) {
       if(writeCheckTarget != socket) {
-	e->deleteSocketForWriteCheck(writeCheckTarget, this);
-	e->addSocketForWriteCheck(socket, this);
-	writeCheckTarget = socket;
+        e->deleteSocketForWriteCheck(writeCheckTarget, this);
+        e->addSocketForWriteCheck(socket, this);
+        writeCheckTarget = socket;
       }
     } else {
       e->addSocketForWriteCheck(socket, this);

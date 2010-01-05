@@ -59,7 +59,7 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   rg2->setDownloadContext(dctx2);
 
   RequestGroupMan gm(std::deque<SharedHandle<RequestGroup> >(), 1,
-		     _option.get());
+                     _option.get());
 
   gm.addRequestGroup(rg1);
   gm.addRequestGroup(rg2);
@@ -106,7 +106,7 @@ void RequestGroupManTest::testLoadServerStat()
   std::cerr << "testLoadServerStat" << std::endl;
   CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
   SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",
-							    "http");
+                                                            "http");
   CPPUNIT_ASSERT(!ss_localhost.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), ss_localhost->getHostname());
 }

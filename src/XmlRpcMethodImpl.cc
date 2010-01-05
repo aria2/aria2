@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -123,8 +123,8 @@ static BDE createGIDResponse(int32_t gid)
 }
 
 static BDE addRequestGroup(const SharedHandle<RequestGroup>& group,
-			   DownloadEngine* e,
-			   bool posGiven, int pos)
+                           DownloadEngine* e,
+                           bool posGiven, int pos)
 {
   if(posGiven) {
     e->_requestGroupMan->insertReservedGroup(pos, group);
@@ -140,7 +140,7 @@ static bool hasDictParam(const BDE& params, size_t index)
 }
 
 static void getPosParam(const BDE& params, size_t posParamIndex,
-			bool& posGiven, size_t& pos)
+                        bool& posGiven, size_t& pos)
 {
   if(params.size() > posParamIndex && params[posParamIndex].isInteger()) {
     if(params[posParamIndex].i() >= 0) {
@@ -179,8 +179,8 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 
   std::deque<SharedHandle<RequestGroup> > result;
   createRequestGroupForUri(result, requestOption, uris,
-			   /* ignoreForceSeq = */ true,
-			   /* ignoreLocalPath = */ true);
+                           /* ignoreForceSeq = */ true,
+                           /* ignoreLocalPath = */ true);
 
   if(!result.empty()) {
     return addRequestGroup(result.front(), e, posGiven, pos);
@@ -202,9 +202,9 @@ BDE AddTorrentXmlRpcMethod::process
   std::deque<std::string> uris;
   if(params.size() > 1 && params[1].isList()) {
     for(BDE::List::const_iterator i = params[1].listBegin();
-	i != params[1].listEnd(); ++i) {
+        i != params[1].listEnd(); ++i) {
       if((*i).isString()) {
-	uris.push_back((*i).s());
+        uris.push_back((*i).s());
       }
     }
   }
@@ -218,8 +218,8 @@ BDE AddTorrentXmlRpcMethod::process
 
   std::deque<SharedHandle<RequestGroup> > result;
   createRequestGroupForBitTorrent(result, requestOption,
-				  uris,
-				  params[0].s());
+                                  uris,
+                                  params[0].s());
 
   if(!result.empty()) {
     return addRequestGroup(result.front(), e, posGiven, pos);
@@ -257,7 +257,7 @@ BDE AddMetalinkXmlRpcMethod::process
     }
     BDE gids = BDE::list();
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-	  result.begin(); i != result.end(); ++i) {
+          result.begin(); i != result.end(); ++i) {
       gids << BDE(util::itos((*i)->getGID()));
     }
     return gids;
@@ -284,13 +284,13 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
     group = e->_requestGroupMan->findReservedGroup(gid);
     if(group.isNull()) {
       throw DL_ABORT_EX
-	(StringFormat("Active Download not found for GID#%d", gid).str());
+        (StringFormat("Active Download not found for GID#%d", gid).str());
     }
     if(group->isDependencyResolved()) {
       e->_requestGroupMan->removeReservedGroup(gid);
     } else {
       throw DL_ABORT_EX
-	(StringFormat("GID#%d cannot be removed now", gid).str());
+        (StringFormat("GID#%d cannot be removed now", gid).str());
     }
   } else {
     group->setHaltRequested(true, RequestGroup::USER_REQUEST);
@@ -316,7 +316,7 @@ void gatherProgressCommon
   if(!ps.isNull()) {
     if(ps->getBitfieldLength() > 0) {
       entryDict[KEY_BITFIELD] = util::toHex(ps->getBitfield(),
-					    ps->getBitfieldLength());
+                                            ps->getBitfieldLength());
     }
   }
   entryDict[KEY_PIECE_LENGTH] = 
@@ -327,7 +327,7 @@ void gatherProgressCommon
     BDE list = BDE::list();
     // The element is GID.
     for(std::vector<int32_t>::const_iterator i = group->followedBy().begin();
-	i != group->followedBy().end(); ++i) {
+        i != group->followedBy().end(); ++i) {
       list << util::itos(*i);
     }
     entryDict[KEY_FOLLOWED_BY] = list;
@@ -359,14 +359,14 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
   std::deque<SharedHandle<Peer> > activePeers;
   ps->getActivePeers(activePeers);
   for(std::deque<SharedHandle<Peer> >::const_iterator i =
-	activePeers.begin(); i != activePeers.end(); ++i) {
+        activePeers.begin(); i != activePeers.end(); ++i) {
     BDE peerEntry = BDE::dict();
     peerEntry[KEY_PEER_ID] = util::torrentUrlencode((*i)->getPeerId(),
-						PEER_ID_LENGTH);
+                                                    PEER_ID_LENGTH);
     peerEntry[KEY_IP] = (*i)->ipaddr;
     peerEntry[KEY_PORT] = util::uitos((*i)->port);
     peerEntry[KEY_BITFIELD] = util::toHex((*i)->getBitfield(),
-					(*i)->getBitfieldLength());
+                                          (*i)->getBitfieldLength());
     peerEntry[KEY_AM_CHOKING] = (*i)->amChoking()?BDE_TRUE:BDE_FALSE;
     peerEntry[KEY_PEER_CHOKING] = (*i)->peerChoking()?BDE_TRUE:BDE_FALSE;
     TransferStat stat = ps->getTransferStatFor(*i);
@@ -408,7 +408,7 @@ void gatherStoppedDownload
     BDE list = BDE::list();
     // The element is GID.
     for(std::vector<int32_t>::const_iterator i = ds->followedBy.begin();
-	i != ds->followedBy.end(); ++i) {
+        i != ds->followedBy.end(); ++i) {
       list << util::itos(*i);
     }
     entryDict[KEY_FOLLOWED_BY] = list;
@@ -462,14 +462,14 @@ BDE GetFilesXmlRpcMethod::process
       e->_requestGroupMan->findDownloadResult(gid);
     if(dr.isNull()) {
       throw DL_ABORT_EX
-	(StringFormat("No file data is available for GID#%d", gid).str());
+        (StringFormat("No file data is available for GID#%d", gid).str());
     } else {
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
     }
   } else {
     createFileEntry(files,
-		    group->getDownloadContext()->getFileEntries().begin(),
-		    group->getDownloadContext()->getFileEntries().end());
+                    group->getDownloadContext()->getFileEntries().begin(),
+                    group->getDownloadContext()->getFileEntries().end());
   }
   return files;
 }
@@ -497,7 +497,7 @@ BDE GetUrisXmlRpcMethod::process
   if(!group->getDownloadContext()->getFileEntries().empty()) {
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     for(std::deque<std::string>::const_iterator i = uris.begin();
-	i != uris.end(); ++i) {
+        i != uris.end(); ++i) {
       BDE entry = BDE::dict();
       entry[KEY_URI] = *i;
       uriList << entry;
@@ -553,10 +553,10 @@ BDE TellStatusXmlRpcMethod::process
     group = e->_requestGroupMan->findReservedGroup(gid);
     if(group.isNull()) {
       SharedHandle<DownloadResult> ds =
-	e->_requestGroupMan->findDownloadResult(gid);
+        e->_requestGroupMan->findDownloadResult(gid);
       if(ds.isNull()) {
-	throw DL_ABORT_EX
-	  (StringFormat("No such download for GID#%d", gid).str());
+        throw DL_ABORT_EX
+          (StringFormat("No such download for GID#%d", gid).str());
       }
       gatherStoppedDownload(entryDict, ds);
     } else {
@@ -577,7 +577,7 @@ BDE TellActiveXmlRpcMethod::process
   const std::deque<SharedHandle<RequestGroup> >& groups =
     e->_requestGroupMan->getRequestGroups();
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-	groups.begin(); i != groups.end(); ++i) {
+        groups.begin(); i != groups.end(); ++i) {
     BDE entryDict = BDE::dict();
     entryDict[KEY_STATUS] = BDE_ACTIVE;
     gatherProgress(entryDict, *i, e);
@@ -683,7 +683,7 @@ BDE ChangeOptionXmlRpcMethod::process
     applyChangeableOption(group->getOption().get(), option.get());
     if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
       group->setMaxDownloadSpeedLimit
-	(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+        (option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
     }
     if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
       group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
@@ -692,7 +692,7 @@ BDE ChangeOptionXmlRpcMethod::process
     BtObject btObject = e->getBtRegistry()->get(group->getGID());
     if(!btObject.isNull()) {
       if(option->defined(PREF_BT_MAX_PEERS)) {
-	btObject._btRuntime->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
+        btObject._btRuntime->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
       }
     }
 #endif // ENABLE_BITTORRENT
@@ -834,19 +834,19 @@ BDE SystemMulticallXmlRpcMethod::process
       i != methodSpecs.listEnd(); ++i) {
     if(!(*i).isDict()) {
       list << createErrorResponse
-	(DL_ABORT_EX("system.multicall expected struct."));
+        (DL_ABORT_EX("system.multicall expected struct."));
       continue;
     }
     if(!(*i).containsKey(KEY_METHOD_NAME) ||
        !(*i).containsKey(KEY_PARAMS)) {
       list << createErrorResponse
-	(DL_ABORT_EX("Missing methodName or params."));
+        (DL_ABORT_EX("Missing methodName or params."));
       continue;
     }
     const std::string& methodName = (*i)[KEY_METHOD_NAME].s();
     if(methodName == getMethodName()) {
       list << createErrorResponse
-	(DL_ABORT_EX("Recursive system.multicall forbidden."));
+        (DL_ABORT_EX("Recursive system.multicall forbidden."));
       continue;
     }
     SharedHandle<XmlRpcMethod> method = XmlRpcMethodFactory::create(methodName);

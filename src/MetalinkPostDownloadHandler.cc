@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -65,7 +65,7 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
  RequestGroup* requestGroup)
 {
   _logger->debug("Generating RequestGroups for Metalink file %s",
-		 requestGroup->getFirstFilePath().c_str());
+                 requestGroup->getFirstFilePath().c_str());
   SharedHandle<DiskAdaptor> diskAdaptor =
     requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
@@ -73,7 +73,7 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
     //requestOption.put(PREF_DIR, requestGroup->getDownloadContext()->getDir());
     std::deque<SharedHandle<RequestGroup> > newRgs;
     Metalink2RequestGroup().generate(newRgs, diskAdaptor,
-				     requestGroup->getOption());
+                                     requestGroup->getOption());
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
     diskAdaptor->closeFile();

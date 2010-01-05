@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -122,7 +122,7 @@ bool HttpSkipResponseCommand::executeInternal()
   if(_transferEncodingDecoder.isNull()) {
     if(bufSize == 0) {
       if(!socket->wantRead() && !socket->wantWrite()) {
-	return processResponse();
+        return processResponse();
       }
     } else {
       finished = (_totalLength == _receivedBytes);
@@ -160,16 +160,16 @@ bool HttpSkipResponseCommand::processResponse()
   } else if(_httpResponse->getResponseStatus() >= HttpHeader::S400) {
     if(_httpResponse->getResponseStatus() == HttpHeader::S401) {
       if(getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
-	 !_httpResponse->getHttpRequest()->authenticationUsed() &&
-	 e->getAuthConfigFactory()->activateBasicCred
-	 (req->getHost(), req->getDir(), getOption().get())) {
-	return prepareForRetry(0);
+         !_httpResponse->getHttpRequest()->authenticationUsed() &&
+         e->getAuthConfigFactory()->activateBasicCred
+         (req->getHost(), req->getDir(), getOption().get())) {
+        return prepareForRetry(0);
       } else {
-	throw DL_ABORT_EX(EX_AUTH_FAILED);
+        throw DL_ABORT_EX(EX_AUTH_FAILED);
       }
     }else if(_httpResponse->getResponseStatus() == HttpHeader::S404) {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
-			 downloadresultcode::RESOURCE_NOT_FOUND);
+                         downloadresultcode::RESOURCE_NOT_FOUND);
     } else {
       throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, util::parseUInt(_httpResponse->getResponseStatus())).str());
     }

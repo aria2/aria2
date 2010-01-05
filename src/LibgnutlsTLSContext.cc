@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -46,18 +46,18 @@
 namespace aria2 {
 
 TLSContext::TLSContext():_certCred(0),
-			 _peerVerificationEnabled(false),
-			 _logger(LogFactory::getInstance())
+                         _peerVerificationEnabled(false),
+                         _logger(LogFactory::getInstance())
 {
   int r = gnutls_certificate_allocate_credentials(&_certCred);
   if(r == GNUTLS_E_SUCCESS) {
     _good = true;
     gnutls_certificate_set_verify_flags(_certCred,
-					GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
+                                        GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
   } else {
     _good =false;
     _logger->error("gnutls_certificate_allocate_credentials() failed."
-		   " Cause: %s", gnutls_strerror(r));
+                   " Cause: %s", gnutls_strerror(r));
   }
 }
 
@@ -79,21 +79,21 @@ bool TLSContext::bad() const
 }
 
 bool TLSContext::addClientKeyFile(const std::string& certfile,
-				  const std::string& keyfile)
+                                  const std::string& keyfile)
 {
   int ret = gnutls_certificate_set_x509_key_file(_certCred,
-						 certfile.c_str(),
-						 keyfile.c_str(),
-						 GNUTLS_X509_FMT_PEM);
+                                                 certfile.c_str(),
+                                                 keyfile.c_str(),
+                                                 GNUTLS_X509_FMT_PEM);
   if(ret == GNUTLS_E_SUCCESS) {
     _logger->info("Client Key File(cert=%s, key=%s) were successfully added.",
-		  certfile.c_str(), keyfile.c_str());
+                  certfile.c_str(), keyfile.c_str());
     return true;
   } else {
     _logger->error("Failed to load client certificate from %s and"
-		   " private key from %s. Cause: %s",
-		   certfile.c_str(), keyfile.c_str(),
-		   gnutls_strerror(ret));
+                   " private key from %s. Cause: %s",
+                   certfile.c_str(), keyfile.c_str(),
+                   gnutls_strerror(ret));
     return false;
   }
 }
@@ -101,11 +101,11 @@ bool TLSContext::addClientKeyFile(const std::string& certfile,
 bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   int ret = gnutls_certificate_set_x509_trust_file(_certCred,
-						   certfile.c_str(),
-						   GNUTLS_X509_FMT_PEM);
+                                                   certfile.c_str(),
+                                                   GNUTLS_X509_FMT_PEM);
   if(ret < 0) {
     _logger->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
-		   certfile.c_str(), gnutls_strerror(ret));
+                   certfile.c_str(), gnutls_strerror(ret));
     return false;
   } else {
     _logger->info("%d certificate(s) were imported.", ret);

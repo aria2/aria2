@@ -17,7 +17,7 @@ public:
     SharedHandle<DHTMessageCallback> _callback;
 
     Entry(const SharedHandle<DHTMessage>& message, time_t timeout,
-	  const SharedHandle<DHTMessageCallback>& callback):
+          const SharedHandle<DHTMessageCallback>& callback):
       _message(message),
       _timeout(timeout),
       _callback(callback) {}
@@ -32,17 +32,17 @@ public:
 
   virtual void
   addMessageToQueue(const SharedHandle<DHTMessage>& message,
-		    time_t timeout,
-		    const SharedHandle<DHTMessageCallback>& callback =
-		    SharedHandle<DHTMessageCallback>())
+                    time_t timeout,
+                    const SharedHandle<DHTMessageCallback>& callback =
+                    SharedHandle<DHTMessageCallback>())
   {
     _messageQueue.push_back(Entry(message, timeout, callback));
   }
 
   virtual void
   addMessageToQueue(const SharedHandle<DHTMessage>& message,
-		    const SharedHandle<DHTMessageCallback>& callback =
-		    SharedHandle<DHTMessageCallback>())
+                    const SharedHandle<DHTMessageCallback>& callback =
+                    SharedHandle<DHTMessageCallback>())
   {
     _messageQueue.push_back(Entry(message, DHT_MESSAGE_TIMEOUT, callback));
   }

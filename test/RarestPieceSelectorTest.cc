@@ -38,13 +38,13 @@ void RarestPieceSelectorTest::testSelect()
   pieceStatMan->addPieceStats(0);
 
   CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(),
-				 bf.countBlock()));
+                                 bf.countBlock()));
   CPPUNIT_ASSERT_EQUAL((size_t)1, index);
 
   pieceStatMan->addPieceStats(1);
 
   CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(),
-				 bf.countBlock()));
+                                 bf.countBlock()));
   CPPUNIT_ASSERT_EQUAL((size_t)2, index);
 }
 

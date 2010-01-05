@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -118,7 +118,7 @@ int SelectEventPoll::SocketEntry::getEvents()
 {
   return
     std::accumulate(_commandEvents.begin(), _commandEvents.end(), 0,
-		    accumulateEvent);
+                    accumulateEvent);
 }
 
 #ifdef ENABLE_ASYNC_DNS
@@ -249,7 +249,7 @@ void SelectEventPoll::updateFdSet()
 }
 
 bool SelectEventPoll::addEvents(sock_t socket, Command* command,
-				EventPoll::EventType events)
+                                EventPoll::EventType events)
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
@@ -271,7 +271,7 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
 }
 
 bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
-				   EventPoll::EventType events)
+                                   EventPoll::EventType events)
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =

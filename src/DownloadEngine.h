@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -92,8 +92,8 @@ private:
     Time _registeredTime;
   public:
     SocketPoolEntry(const SharedHandle<SocketCore>& socket,
-		    const std::map<std::string, std::string>& option,
-		    time_t timeout);
+                    const std::map<std::string, std::string>& option,
+                    time_t timeout);
 
     ~SocketPoolEntry();
 
@@ -145,8 +145,8 @@ private:
   void afterEachIteration();
   
   void poolSocket(const std::string& ipaddr,
-		  uint16_t port,
-		  const SocketPoolEntry& entry);
+                  uint16_t port,
+                  const SocketPoolEntry& entry);
 
   std::multimap<std::string, SocketPoolEntry>::iterator
   findSocketPoolEntry(const std::string& ipaddr, uint16_t port);
@@ -166,20 +166,20 @@ public:
   void cleanQueue();
 
   bool addSocketForReadCheck(const SharedHandle<SocketCore>& socket,
-			     Command* command);
+                             Command* command);
   bool deleteSocketForReadCheck(const SharedHandle<SocketCore>& socket,
-				Command* command);
+                                Command* command);
   bool addSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
-			      Command* command);
+                              Command* command);
   bool deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
-				 Command* command);
+                                 Command* command);
 
 #ifdef ENABLE_ASYNC_DNS
 
   bool addNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver,
-			    Command* command);
+                            Command* command);
   bool deleteNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver,
-			       Command* command);
+                               Command* command);
 #endif // ENABLE_ASYNC_DNS
 
   void addCommand(const std::deque<Command*>& commands);
@@ -198,27 +198,27 @@ public:
   void addRoutineCommand(Command* command);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
-		  const SharedHandle<SocketCore>& sock,
-		  const std::map<std::string, std::string>& options,
-		  time_t timeout = 15);
+                  const SharedHandle<SocketCore>& sock,
+                  const std::map<std::string, std::string>& options,
+                  time_t timeout = 15);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
-		  const SharedHandle<SocketCore>& sock,
-		  time_t timeout = 15);
+                  const SharedHandle<SocketCore>& sock,
+                  time_t timeout = 15);
   
   void poolSocket(const SharedHandle<Request>& request,
-		  bool proxyDefined,
-		  const SharedHandle<SocketCore>& socket,
-		  const std::map<std::string, std::string>& options,
-		  time_t timeout = 15);
+                  bool proxyDefined,
+                  const SharedHandle<SocketCore>& socket,
+                  const std::map<std::string, std::string>& options,
+                  time_t timeout = 15);
     
   void poolSocket(const SharedHandle<Request>& request,
-		  bool proxyDefined,
-		  const SharedHandle<SocketCore>& socket,
-		  time_t timeout = 15);
+                  bool proxyDefined,
+                  const SharedHandle<SocketCore>& socket,
+                  time_t timeout = 15);
 
   SharedHandle<SocketCore> popPooledSocket(const std::string& ipaddr,
-					   uint16_t port);
+                                           uint16_t port);
 
   SharedHandle<SocketCore> popPooledSocket
   (std::map<std::string, std::string>& options,

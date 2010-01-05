@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -67,8 +67,8 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
   uint16_t remotePort;
   unsigned char data[64*1024];
   ssize_t length = _connection->receiveMessage(data, sizeof(data),
-					       remoteAddr,
-					       remotePort);
+                                               remoteAddr,
+                                               remotePort);
   if(length <= 0) {
     return SharedHandle<DHTMessage>();
   }
@@ -78,36 +78,36 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
     if(dict.isDict()) {
       const BDE& y = dict[DHTMessage::Y];
       if(y.isString()) {
-	if(y.s() == DHTResponseMessage::R || y.s() == DHTUnknownMessage::E) {
-	  isReply = true;
-	}
+        if(y.s() == DHTResponseMessage::R || y.s() == DHTUnknownMessage::E) {
+          isReply = true;
+        }
       } else {
-	_logger->info("Malformed DHT message. Missing 'y' key. From:%s:%u",
-		      remoteAddr.c_str(), remotePort);
-	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+        _logger->info("Malformed DHT message. Missing 'y' key. From:%s:%u",
+                      remoteAddr.c_str(), remotePort);
+        return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     } else {
       _logger->info("Malformed DHT message. This is not a bencoded directory."
-		    " From:%s:%u", remoteAddr.c_str(), remotePort);
+                    " From:%s:%u", remoteAddr.c_str(), remotePort);
       return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
     SharedHandle<DHTMessage> message;
     SharedHandle<DHTMessageCallback> callback;
     if(isReply) {
       std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
-	_tracker->messageArrived(dict, remoteAddr, remotePort);
+        _tracker->messageArrived(dict, remoteAddr, remotePort);
       message = p.first;
       callback = p.second;
       if(message.isNull()) {
-	// timeout or malicious? message
-	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+        // timeout or malicious? message
+        return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     } else {
       message = _factory->createQueryMessage(dict, remoteAddr, remotePort);
       if(message->getLocalNode() == message->getRemoteNode()) {
-	// drop message from localnode
-	_logger->info("Recieved DHT message from localnode.");
-	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+        // drop message from localnode
+        _logger->info("Recieved DHT message from localnode.");
+        return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     }
     _logger->info("Message received: %s", message->toString().c_str());
@@ -133,9 +133,9 @@ void DHTMessageReceiver::handleTimeout()
 
 SharedHandle<DHTMessage>
 DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
-					 size_t length,
-					 const std::string& remoteAddr,
-					 uint16_t remotePort)
+                                         size_t length,
+                                         const std::string& remoteAddr,
+                                         uint16_t remotePort)
 {
   SharedHandle<DHTMessage> m =
     _factory->createUnknownMessage(data, length, remoteAddr, remotePort);

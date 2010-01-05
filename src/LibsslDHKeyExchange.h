@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -64,15 +64,15 @@ private:
   {
     throw DL_ABORT_EX
       (StringFormat("Exception in libssl routine %s(DHKeyExchange class): %s",
-		    funName.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
+                    funName.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
   }
 public:
   DHKeyExchange():_bnCtx(0),
-		  _keyLength(0),
-		  _prime(0),
-		  _generator(0),
-		  _privateKey(0),
-		  _publicKey(0) {}
+                  _keyLength(0),
+                  _prime(0),
+                  _generator(0),
+                  _privateKey(0),
+                  _publicKey(0) {}
 
   ~DHKeyExchange()
   {
@@ -84,8 +84,8 @@ public:
   }
 
   void init(const unsigned char* prime, size_t primeBits,
-	    const unsigned char* generator,
-	    size_t privateKeyBits)
+            const unsigned char* generator,
+            size_t privateKeyBits)
   {
     BN_CTX_free(_bnCtx);
     _bnCtx = BN_CTX_new();
@@ -124,8 +124,8 @@ public:
   {
     if(outLength < _keyLength) {
       throw DL_ABORT_EX
-	(StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
-		      _keyLength, outLength).str());
+        (StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
+                      _keyLength, outLength).str());
     }
     memset(out, 0, outLength);
     size_t publicKeyBytes = BN_num_bytes(_publicKey);
@@ -133,7 +133,7 @@ public:
     size_t nwritten = BN_bn2bin(_publicKey, out+offset);
     if(nwritten != publicKeyBytes) {
       throw DL_ABORT_EX
-	(StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes).str());
+        (StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes).str());
     }
     return nwritten;
   }
@@ -146,13 +146,13 @@ public:
   }
 
   size_t computeSecret(unsigned char* out, size_t outLength,
-		       const unsigned char* peerPublicKeyData,
-		       size_t peerPublicKeyLength) const
+                       const unsigned char* peerPublicKeyData,
+                       size_t peerPublicKeyLength) const
   {
     if(outLength < _keyLength) {
       throw DL_ABORT_EX
-	(StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
-		      _keyLength, outLength).str());
+        (StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
+                      _keyLength, outLength).str());
     }
 
 
@@ -172,7 +172,7 @@ public:
     BN_free(secret);
     if(nwritten != secretBytes) {
       throw DL_ABORT_EX
-	(StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, secretBytes).str());
+        (StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, secretBytes).str());
     }
     return nwritten;
   }

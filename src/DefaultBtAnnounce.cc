@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -78,21 +78,21 @@ DefaultBtAnnounce::~DefaultBtAnnounce() {
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
   return (trackers == 0 &&
-	  prevAnnounceTime.elapsed(_userDefinedInterval==0?
-				   minInterval:_userDefinedInterval) &&
-	  !announceList.allTiersFailed());
+          prevAnnounceTime.elapsed(_userDefinedInterval==0?
+                                   minInterval:_userDefinedInterval) &&
+          !announceList.allTiersFailed());
 }
 
 bool DefaultBtAnnounce::isStoppedAnnounceReady() {
   return (trackers == 0 &&
-	  btRuntime->isHalt() &&
-	  announceList.countStoppedAllowedTier());
+          btRuntime->isHalt() &&
+          announceList.countStoppedAllowedTier());
 }
 
 bool DefaultBtAnnounce::isCompletedAnnounceReady() {
   return (trackers == 0 &&
-	  pieceStorage->allDownloadFinished() &&
-	  announceList.countCompletedAllowedTier());
+          pieceStorage->allDownloadFinished() &&
+          announceList.countCompletedAllowedTier());
 }
 
 bool DefaultBtAnnounce::isAnnounceReady() {
@@ -142,7 +142,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   url += uriHasQuery(url) ? "&" : "?";
   url += "info_hash=";
   url += util::torrentUrlencode(bittorrent::getInfoHash(_downloadContext),
-				INFO_HASH_LENGTH);
+                                INFO_HASH_LENGTH);
   url += "&peer_id=";
   url += util::torrentUrlencode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH);
   url += "&uploaded=";
@@ -209,7 +209,7 @@ void DefaultBtAnnounce::resetAnnounce() {
 
 void
 DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
-					   size_t trackerResponseLength)
+                                           size_t trackerResponseLength)
 {
   logger->debug("Now processing tracker response.");
   const BDE dict =
@@ -271,8 +271,8 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
 
 bool DefaultBtAnnounce::noMoreAnnounce() {
   return (trackers == 0 &&
-	  btRuntime->isHalt() &&
-	  !announceList.countStoppedAllowedTier());
+          btRuntime->isHalt() &&
+          !announceList.countStoppedAllowedTier());
 }
 
 void DefaultBtAnnounce::shuffleAnnounce() {

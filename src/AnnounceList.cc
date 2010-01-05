@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -63,22 +63,22 @@ void AnnounceList::reconfigure(const BDE& announceList)
 {
   if(announceList.isList()) {
     for(BDE::List::const_iterator itr = announceList.listBegin();
-	itr != announceList.listEnd(); ++itr) {
+        itr != announceList.listEnd(); ++itr) {
       const BDE& elemList = *itr;
       if(!elemList.isList()) {
-	continue;
+        continue;
       }
       std::deque<std::string> urls;
       for(BDE::List::const_iterator elemItr = elemList.listBegin();
-	  elemItr != elemList.listEnd(); ++elemItr) {
-	const BDE& data = *elemItr;
-	if(data.isString()) {
-	  urls.push_back(data.s());
-	}
+          elemItr != elemList.listEnd(); ++elemItr) {
+        const BDE& data = *elemItr;
+        if(data.isString()) {
+          urls.push_back(data.s());
+        }
       }
       if(!urls.empty()) {
-	AnnounceTierHandle tier(new AnnounceTier(urls));
-	tiers.push_back(tier);
+        AnnounceTierHandle tier(new AnnounceTier(urls));
+        tiers.push_back(tier);
       }
     }
     resetIterator();
@@ -129,9 +129,9 @@ void AnnounceList::announceFailure() {
       (*currentTier)->nextEventIfAfterStarted();
       ++currentTier;
       if(currentTier == tiers.end()) {
-	currentTrackerInitialized = false;
+        currentTrackerInitialized = false;
       } else {
-	currentTracker = (*currentTier)->urls.begin();
+        currentTracker = (*currentTier)->urls.begin();
       }
     }
   }
@@ -215,7 +215,7 @@ void AnnounceList::setCurrentTier(const AnnounceTiers::iterator& itr) {
 template<class InputIterator, class Predicate>
 InputIterator
 find_wrap_if(InputIterator first, InputIterator last,
-	     InputIterator current, Predicate pred) {
+             InputIterator current, Predicate pred) {
   InputIterator itr = std::find_if(current, last, pred);
   if(itr == last) {
     itr = std::find_if(first, current, pred);
@@ -225,15 +225,15 @@ find_wrap_if(InputIterator first, InputIterator last,
 
 void AnnounceList::moveToStoppedAllowedTier() {
   AnnounceTiers::iterator itr = find_wrap_if(tiers.begin(), tiers.end(),
-					     currentTier,
-					     FindStoppedAllowedTier());
+                                             currentTier,
+                                             FindStoppedAllowedTier());
   setCurrentTier(itr);
 }
 
 void AnnounceList::moveToCompletedAllowedTier() {
   AnnounceTiers::iterator itr = find_wrap_if(tiers.begin(), tiers.end(),
-					     currentTier,
-					     FindCompletedAllowedTier());
+                                             currentTier,
+                                             FindCompletedAllowedTier());
   setCurrentTier(itr);
 }
 
@@ -242,7 +242,7 @@ void AnnounceList::shuffle() {
       itr != tiers.end(); ++itr) {
     std::deque<std::string>& urls = (*itr)->urls;
     std::random_shuffle(urls.begin(), urls.end(),
-			*(SimpleRandomizer::getInstance().get()));
+                        *(SimpleRandomizer::getInstance().get()));
   }
 }
 

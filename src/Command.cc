@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -41,13 +41,13 @@ namespace aria2 {
 int32_t Command::uuidGen = 0;
 
 Command::Command(cuid_t cuid):uuid(uuidGen++),
-			      status(STATUS_INACTIVE),
-			      cuid(cuid),
-			      logger(LogFactory::getInstance()),
-			      _readEvent(false),
-			      _writeEvent(false),
-			      _errorEvent(false),
-			      _hupEvent(false) {}
+                              status(STATUS_INACTIVE),
+                              cuid(cuid),
+                              logger(LogFactory::getInstance()),
+                              _readEvent(false),
+                              _writeEvent(false),
+                              _errorEvent(false),
+                              _hupEvent(false) {}
 
 void Command::transitStatus()
 {

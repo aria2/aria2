@@ -30,12 +30,12 @@ public:
   public:
     virtual SharedHandle<DHTMessage>
     createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			   const unsigned char* remoteNodeID,
-			   const std::string& transactionID)
+                           const unsigned char* remoteNodeID,
+                           const std::string& transactionID)
     {
       return SharedHandle<DHTMessage>
-	(new MockDHTMessage(_localNode, remoteNode, "ping_reply",
-			    transactionID));
+        (new MockDHTMessage(_localNode, remoteNode, "ping_reply",
+                            transactionID));
     }
   };
 };

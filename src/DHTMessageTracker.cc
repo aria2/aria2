@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -70,17 +70,17 @@ void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, cons
 
 std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
 DHTMessageTracker::messageArrived(const BDE& dict,
-				  const std::string& ipaddr, uint16_t port)
+                                  const std::string& ipaddr, uint16_t port)
 {
   const BDE& tid = dict[DHTMessage::T];
   if(!tid.isString()) {
     throw DL_ABORT_EX(StringFormat("Malformed DHT message. From:%s:%u",
-				 ipaddr.c_str(), port).str());
+                                   ipaddr.c_str(), port).str());
   }
   _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
-		 util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
+                 util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
   for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
-	_entries.begin(); i != _entries.end(); ++i) {
+        _entries.begin(); i != _entries.end(); ++i) {
     if((*i)->match(tid.s(), ipaddr, port)) {
       SharedHandle<DHTMessageTrackerEntry> entry = *i;
       _entries.erase(i);
@@ -88,9 +88,9 @@ DHTMessageTracker::messageArrived(const BDE& dict,
       SharedHandle<DHTNode> targetNode = entry->getTargetNode();
 
       SharedHandle<DHTMessage> message =
-	_factory->createResponseMessage(entry->getMessageType(), dict,
-					targetNode->getIPAddress(),
-					targetNode->getPort());
+        _factory->createResponseMessage(entry->getMessageType(), dict,
+                                        targetNode->getIPAddress(),
+                                        targetNode->getPort());
 
       int64_t rtt = entry->getElapsedMillis();
       _logger->debug("RTT is %s", util::itos(rtt).c_str());
@@ -109,24 +109,24 @@ void DHTMessageTracker::handleTimeout()
       i != _entries.end();) {
     if((*i)->isTimeout()) {
       try {
-	SharedHandle<DHTMessageTrackerEntry> entry = *i;
-	i = _entries.erase(i);
-	SharedHandle<DHTNode> node = entry->getTargetNode();
-	_logger->debug("Message timeout: To:%s:%u",
-		       node->getIPAddress().c_str(), node->getPort());
-	node->updateRTT(entry->getElapsedMillis());
-	node->timeout();
-	if(node->isBad()) {
-	  _logger->debug("Marked bad: %s:%u",
-			 node->getIPAddress().c_str(), node->getPort());
-	  _routingTable->dropNode(node);
-	}
-	SharedHandle<DHTMessageCallback> callback = entry->getCallback();
-	if(!callback.isNull()) {
-	  callback->onTimeout(node);
-	}
+        SharedHandle<DHTMessageTrackerEntry> entry = *i;
+        i = _entries.erase(i);
+        SharedHandle<DHTNode> node = entry->getTargetNode();
+        _logger->debug("Message timeout: To:%s:%u",
+                       node->getIPAddress().c_str(), node->getPort());
+        node->updateRTT(entry->getElapsedMillis());
+        node->timeout();
+        if(node->isBad()) {
+          _logger->debug("Marked bad: %s:%u",
+                         node->getIPAddress().c_str(), node->getPort());
+          _routingTable->dropNode(node);
+        }
+        SharedHandle<DHTMessageCallback> callback = entry->getCallback();
+        if(!callback.isNull()) {
+          callback->onTimeout(node);
+        }
       } catch(RecoverableException& e) {
-	_logger->info("Exception thrown while handling timeouts.", e);
+        _logger->info("Exception thrown while handling timeouts.", e);
       }
     } else {
       ++i;

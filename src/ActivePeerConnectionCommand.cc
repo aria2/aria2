@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -86,7 +86,7 @@ bool ActivePeerConnectionCommand::execute() {
     if(_requestGroup->getDownloadContext()->
        getAttribute(bittorrent::BITTORRENT).containsKey(bittorrent::METADATA)) {
       thresholdSpeed =
-	_requestGroup->getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
+        _requestGroup->getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
     } else {
       thresholdSpeed = 0;
     }
@@ -95,31 +95,31 @@ bool ActivePeerConnectionCommand::execute() {
     }
     if(// for seeder state
        (_pieceStorage->downloadFinished() && _btRuntime->lessThanMaxPeers() &&
-	(maxUploadLimit == 0 || tstat.getUploadSpeed() < maxUploadLimit*0.8)) ||
+        (maxUploadLimit == 0 || tstat.getUploadSpeed() < maxUploadLimit*0.8)) ||
        // for leecher state
        (!_pieceStorage->downloadFinished() &&
-	(tstat.getDownloadSpeed() < thresholdSpeed ||
-	 _btRuntime->lessThanMinPeers()))) {
+        (tstat.getDownloadSpeed() < thresholdSpeed ||
+         _btRuntime->lessThanMinPeers()))) {
 
       unsigned int numConnection = 0;
       if(_pieceStorage->downloadFinished()) {
-	if(_btRuntime->getMaxPeers() > _btRuntime->getConnections()) {
-	  numConnection =
-	    std::min(_numNewConnection,
-		     _btRuntime->getMaxPeers()-_btRuntime->getConnections());
-	}
+        if(_btRuntime->getMaxPeers() > _btRuntime->getConnections()) {
+          numConnection =
+            std::min(_numNewConnection,
+                     _btRuntime->getMaxPeers()-_btRuntime->getConnections());
+        }
       } else {
-	numConnection = _numNewConnection;
+        numConnection = _numNewConnection;
       }
 
       for(unsigned int numAdd = numConnection;
-	  numAdd > 0 && _peerStorage->isPeerAvailable(); --numAdd) {
-	PeerHandle peer = _peerStorage->getUnusedPeer();
-	connectToPeer(peer);
+          numAdd > 0 && _peerStorage->isPeerAvailable(); --numAdd) {
+        PeerHandle peer = _peerStorage->getUnusedPeer();
+        connectToPeer(peer);
       }
       if(_btRuntime->getConnections() == 0 &&
-	 !_pieceStorage->downloadFinished()) {
-	_btAnnounce->overrideMinInterval(BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL);
+         !_pieceStorage->downloadFinished()) {
+        _btAnnounce->overrideMinInterval(BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL);
       }
     }
   }
@@ -135,12 +135,12 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   peer->usedBy(e->newCUID());
   PeerInitiateConnectionCommand* command =
     new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
-				      _btRuntime);
+                                      _btRuntime);
   command->setPeerStorage(_peerStorage);
   command->setPieceStorage(_pieceStorage);
   e->commands.push_back(command);
   logger->info(MSG_CONNECTING_TO_PEER,
-	       cuid, peer->ipaddr.c_str());
+               cuid, peer->ipaddr.c_str());
 }
 
 void ActivePeerConnectionCommand::setBtRuntime

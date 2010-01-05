@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -73,10 +73,10 @@ public:
   const std::string& getExtensionName(uint8_t id) const
   {
     for(Extensions::const_iterator itr = _extensions.begin();
-	itr != _extensions.end(); ++itr) {
+        itr != _extensions.end(); ++itr) {
       const Extensions::value_type& p = *itr;
       if(p.second == id) {
-	return p.first;
+        return p.first;
       }
     }
     return A2STR::NIL;

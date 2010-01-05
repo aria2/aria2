@@ -33,8 +33,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FileEntryTest );
 static SharedHandle<FileEntry> createFileEntry()
 {
   const char* uris[] = { "http://localhost/aria2.zip",
-			 "ftp://localhost/aria2.zip",
-			 "http://mirror/aria2.zip" };
+                         "ftp://localhost/aria2.zip",
+                         "http://mirror/aria2.zip" };
   SharedHandle<FileEntry> fileEntry(new FileEntry());
   fileEntry->setUris(std::deque<std::string>(&uris[0], &uris[3]));
   return fileEntry;
@@ -63,7 +63,7 @@ void FileEntryTest::testRemoveURIWhoseHostnameIs()
   fileEntry->removeURIWhoseHostnameIs("localhost");
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry->getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
-		       fileEntry->getRemainingUris()[0]);
+                       fileEntry->getRemainingUris()[0]);
 }
 
 
@@ -83,9 +83,9 @@ void FileEntryTest::testExtractURIResult()
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry.getURIResults().size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://finished/file"),
-		       fileEntry.getURIResults()[0].getURI());
+                       fileEntry.getURIResults()[0].getURI());
   CPPUNIT_ASSERT_EQUAL(std::string("http://unknownerror/file"),
-		       fileEntry.getURIResults()[1].getURI());
+                       fileEntry.getURIResults()[1].getURI());
 
   res.clear();
 
@@ -140,7 +140,7 @@ void FileEntryTest::testReuseUri()
   }
   CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry->getRemainingUris().size());
   fileEntry->addURIResult("http://localhost/aria2.zip",
-			  downloadresultcode::UNKNOWN_ERROR);
+                          downloadresultcode::UNKNOWN_ERROR);
   fileEntry->reuseUri(3);
   CPPUNIT_ASSERT_EQUAL((size_t)3, fileEntry->getRemainingUris().size());
   const std::deque<std::string>& uris = fileEntry->getRemainingUris();

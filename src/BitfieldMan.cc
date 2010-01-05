@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -153,8 +153,8 @@ BitfieldMan::getNthBitIndex(const unsigned char bitfield, size_t nth) const
     if(bitfield & mask) {
       nth--;
       if(nth == 0) {
-	index = 7-bs;
-	break;
+        index = 7-bs;
+        break;
       }
     }
   }
@@ -163,8 +163,8 @@ BitfieldMan::getNthBitIndex(const unsigned char bitfield, size_t nth) const
 
 template<typename Array>
 bool BitfieldMan::getMissingIndexRandomly(size_t& index,
-					  const Array& bitfield,
-					  size_t bitfieldLength) const
+                                          const Array& bitfield,
+                                          size_t bitfieldLength) const
 {
   size_t byte = randomizer->getRandomNumber(bitfieldLength);
   for(size_t i = 0; i < bitfieldLength; ++i) {
@@ -247,8 +247,8 @@ bool BitfieldMan::getFirstMissingIndex(size_t& index, const Array& bitfield, siz
     size_t tindex = i*8;
     for(size_t bi = 0; bi < 8 && tindex < blocks; ++bi, mask >>= 1, ++tindex) {
       if(bits & mask) {
-	index = tindex;
-	return true;
+        index = tindex;
+        return true;
       }
     }
   }
@@ -272,7 +272,7 @@ bool BitfieldMan::getFirstMissingIndex(size_t& index) const
 {
   if(filterEnabled) {
     return getFirstMissingIndex(index, ~array(bitfield)&array(filterBitfield),
-				bitfieldLength);
+                                bitfieldLength);
   } else {
     return getFirstMissingIndex(index, ~array(bitfield), bitfieldLength);
   }
@@ -332,14 +332,14 @@ static bool getSparseMissingUnusedIndex
     size_t nextIndex = 0;
     while(nextIndex < blocks) {
       currentRange.startIndex =
-	getStartIndex(nextIndex, bitfield, blocks);
+        getStartIndex(nextIndex, bitfield, blocks);
       if(currentRange.startIndex == blocks) {
-	break;
+        break;
       }
       currentRange.endIndex =
-	getEndIndex(currentRange.startIndex, bitfield, blocks);
+        getEndIndex(currentRange.startIndex, bitfield, blocks);
       if(maxRange < currentRange) {
-	maxRange = currentRange;
+        maxRange = currentRange;
       }
       nextIndex = currentRange.endIndex;
     }
@@ -401,8 +401,8 @@ bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len)
 }
 
 bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len,
-				       const unsigned char* peerBitfield,
-				       size_t peerBitfieldLength) const
+                                       const unsigned char* peerBitfield,
+                                       size_t peerBitfieldLength) const
 {
   assert(len == bitfieldLength);
   if(bitfieldLength != peerBitfieldLength) {
@@ -420,9 +420,9 @@ bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len,
 }
 
 bool BitfieldMan::getAllMissingUnusedIndexes(unsigned char* misbitfield,
-					     size_t len,
-					     const unsigned char* peerBitfield,
-					     size_t peerBitfieldLength) const
+                                             size_t len,
+                                             const unsigned char* peerBitfield,
+                                             size_t peerBitfieldLength) const
 {
   assert(len == bitfieldLength);
   if(bitfieldLength != peerBitfieldLength) {
@@ -502,7 +502,7 @@ bool BitfieldMan::isFilteredAllBitSet() const {
   if(filterEnabled) {
     for(size_t i = 0; i < bitfieldLength; ++i) {
       if((bitfield[i]&filterBitfield[i]) != filterBitfield[i]) {
-	return false;
+        return false;
       }
     }
     return true;
@@ -681,7 +681,7 @@ uint64_t BitfieldMan::getCompletedLength(bool useFilter) const {
     for(size_t i = 0; i < bitfieldLength; ++i) {
       temp[i] = bitfield[i];
       if(filterEnabled) {
-	temp[i] &= filterBitfield[i];
+        temp[i] &= filterBitfield[i];
       }
     }
   } else {

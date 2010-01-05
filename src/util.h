@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -87,7 +87,7 @@ inline uint64_t hton64(uint64_t x) { return byteswap64(x); }
 namespace util {
 
 void split(std::pair<std::string, std::string>& hp,
-	   const std::string& src, char delim);
+           const std::string& src, char delim);
 
 std::pair<std::string, std::string>
 split(const std::string& src, const std::string& delims);
@@ -140,10 +140,10 @@ int32_t difftvsec(struct timeval tv1, struct timeval tv2);
 extern const std::string DEFAULT_TRIM_CHARSET;
 
 std::string trim(const std::string& src,
-		 const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
+                 const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
 
 void trimSelf(std::string& str,
-	      const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
+              const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
 
 bool startsWith(const std::string& target, const std::string& part);
 
@@ -216,7 +216,7 @@ void parsePrioritizePieceRange
 std::string getContentDispositionFilename(const std::string& header);
 
 std::string randomAlpha(size_t length,
-			const SharedHandle<Randomizer>& randomizer);
+                        const SharedHandle<Randomizer>& randomizer);
   
 std::string toUpper(const std::string& src);
 
@@ -293,7 +293,7 @@ std::string joinPath(InputIterator first, InputIterator last)
   for(;first != last; ++first) {
     if(*first == "..") {
       if(!elements.empty()) {
-	elements.pop_back();
+        elements.pop_back();
       }
     } else if(*first == ".") {
       // do nothing
@@ -317,7 +317,7 @@ std::map<size_t, std::string> createIndexPathMap(std::istream& i);
  */
 template<typename OutputIterator>
 OutputIterator split(const std::string& src, OutputIterator out,
-		     const std::string& delims, bool doTrim = false)
+                     const std::string& delims, bool doTrim = false)
 {
   std::string::size_type p = 0;
   while(1) {
@@ -325,11 +325,11 @@ OutputIterator split(const std::string& src, OutputIterator out,
     if(np == std::string::npos) {
       std::string term = src.substr(p);
       if(doTrim) {
-	term = util::trim(term);
+        term = util::trim(term);
       }
       if(!term.empty()) {
-	*out = term;
-	++out;
+        *out = term;
+        ++out;
       }
       break;
     }

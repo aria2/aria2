@@ -82,23 +82,23 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(1, entry1->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
-			 entry1->checksum->getMessageDigest());
+                         entry1->checksum->getMessageDigest());
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), entry1->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(!entry1->getSignature().isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("pgp"), entry1->getSignature()->getType());
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2.sig"),
-			 entry1->getSignature()->getFile());
+                         entry1->getSignature()->getFile());
     // Note that last '\n' character is trimmed.
     CPPUNIT_ASSERT_EQUAL
       (std::string
        ("-----BEGIN PGP SIGNATURE-----\n"
-	"Version: GnuPG v1.4.9 (GNU/Linux)\n"
-	"\n"
-	"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n"
-	"ffffffffffffffffffffffff\n"
-	"fffff\n"
-	"-----END PGP SIGNATURE-----"),
+        "Version: GnuPG v1.4.9 (GNU/Linux)\n"
+        "\n"
+        "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n"
+        "ffffffffffffffffffffffff\n"
+        "fffff\n"
+        "-----END PGP SIGNATURE-----"),
        entry1->getSignature()->getBody());
 
     std::deque<SharedHandle<MetalinkResource> >::iterator resourceItr1 = entry1->resources.begin();
@@ -107,7 +107,7 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("JP"), resource1->location);
     CPPUNIT_ASSERT_EQUAL(100, resource1->preference);
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"),
-			 resource1->url);
+                         resource1->url);
     CPPUNIT_ASSERT_EQUAL(1, resource1->maxConnections);
 
     resourceItr1++;
@@ -116,7 +116,7 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("US"), resource2->location);
     CPPUNIT_ASSERT_EQUAL(100, resource2->preference);
     CPPUNIT_ASSERT_EQUAL(std::string("http://httphost/aria2-0.5.2.tar.bz2"),
-			 resource2->url);
+                         resource2->url);
     CPPUNIT_ASSERT_EQUAL(-1, resource2->maxConnections);
 
     entryItr++;
@@ -130,13 +130,13 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(-1, entry2->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
-			 entry2->checksum->getMessageDigest());
+                         entry2->checksum->getMessageDigest());
     CPPUNIT_ASSERT_EQUAL((size_t)2, entry2->chunkChecksum->countChecksum());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, entry2->chunkChecksum->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL(std::string("179463a88d79cbf0b1923991708aead914f26142"),
-			 entry2->chunkChecksum->getChecksum(0));
+                         entry2->chunkChecksum->getChecksum(0));
     CPPUNIT_ASSERT_EQUAL(std::string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),
-			 entry2->chunkChecksum->getChecksum(1));
+                         entry2->chunkChecksum->getChecksum(1));
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), entry2->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
     // See that signature is null
@@ -159,11 +159,11 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("UnsupportedVerificationHashTypeIncluded"), entry4->getPath());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"),
-			 entry4->checksum->getAlgo());
+                         entry4->checksum->getAlgo());
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
-			 entry4->checksum->getMessageDigest());
+                         entry4->checksum->getMessageDigest());
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"),
-			 entry4->chunkChecksum->getAlgo());
+                         entry4->chunkChecksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
 
 
@@ -222,15 +222,15 @@ void MetalinkProcessorTest::testBadSize()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2-0.5.2.tar.bz2\">"
-		"  <size>abc</size>"
-		"  <version>0.5.2</version>"
-		"  <language>en-US</language>"
-		"  <os>Linux-x86</os>"
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2-0.5.2.tar.bz2\">"
+                "  <size>abc</size>"
+                "  <version>0.5.2</version>"
+                "  <language>en-US</language>"
+                "  <os>Linux-x86</os>"
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -253,16 +253,16 @@ void MetalinkProcessorTest::testBadMaxConn()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2-0.5.2.tar.bz2\">"
-		"  <size>43743838</size>"
-		"  <version>0.5.2</version>"
-		"  <language>en-US</language>"
-		"  <os>Linux-x86</os>"
-		"  <resources maxconnections=\"abc\"/>"
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2-0.5.2.tar.bz2\">"
+                "  <size>43743838</size>"
+                "  <version>0.5.2</version>"
+                "  <language>en-US</language>"
+                "  <os>Linux-x86</os>"
+                "  <resources maxconnections=\"abc\"/>"
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -280,21 +280,21 @@ void MetalinkProcessorTest::testNoName()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file>"
-		"  <size>1024</size>"
-		"  <version>0.0.1</version>"
-		"  <language>GB</language>"
-		"  <os>Linux-x64</os>"
-		"</file>"
-		"<file name=\"aria2-0.5.2.tar.bz2\">"
-		"  <size>43743838</size>"
-		"  <version>0.5.2</version>"
-		"  <language>en-US</language>"
-		"  <os>Linux-x86</os>"
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file>"
+                "  <size>1024</size>"
+                "  <version>0.0.1</version>"
+                "  <language>GB</language>"
+                "  <os>Linux-x64</os>"
+                "</file>"
+                "<file name=\"aria2-0.5.2.tar.bz2\">"
+                "  <size>43743838</size>"
+                "  <version>0.5.2</version>"
+                "  <language>en-US</language>"
+                "  <os>Linux-x86</os>"
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -312,18 +312,18 @@ void MetalinkProcessorTest::testBadURLPrefs()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2-0.5.2.tar.bz2\">"
-		"  <size>43743838</size>"
-		"  <version>0.5.2</version>"
-		"  <language>en-US</language>"
-		"  <os>Linux-x86</os>"
-		"  <resources>"
-		"    <url type=\"ftp\" maxconnections=\"1\" preference=\"xyz\" location=\"JP\">ftp://mirror/</url>"
-		"  </resources>"		
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2-0.5.2.tar.bz2\">"
+                "  <size>43743838</size>"
+                "  <version>0.5.2</version>"
+                "  <language>en-US</language>"
+                "  <os>Linux-x86</os>"
+                "  <resources>"
+                "    <url type=\"ftp\" maxconnections=\"1\" preference=\"xyz\" location=\"JP\">ftp://mirror/</url>"
+                "  </resources>"                
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -343,18 +343,18 @@ void MetalinkProcessorTest::testBadURLMaxConn()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2-0.5.2.tar.bz2\">"
-		"  <size>43743838</size>"
-		"  <version>0.5.2</version>"
-		"  <language>en-US</language>"
-		"  <os>Linux-x86</os>"
-		"  <resources>"
-		"    <url maxconnections=\"xyz\" type=\"ftp\" preference=\"100\" location=\"JP\">ftp://mirror/</url>"
-		"  </resources>"		
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2-0.5.2.tar.bz2\">"
+                "  <size>43743838</size>"
+                "  <version>0.5.2</version>"
+                "  <language>en-US</language>"
+                "  <os>Linux-x86</os>"
+                "  <resources>"
+                "    <url maxconnections=\"xyz\" type=\"ftp\" preference=\"100\" location=\"JP\">ftp://mirror/</url>"
+                "  </resources>"                
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -375,20 +375,20 @@ void MetalinkProcessorTest::testUnsupportedType()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2-0.5.2.tar.bz2\">"
-		"  <size>43743838</size>"
-		"  <version>0.5.2</version>"
-		"  <language>en-US</language>"
-		"  <os>Linux-x86</os>"
-		"  <resources>"
-		"    <url type=\"ftp\">ftp://mirror/</url>"
-		"    <url type=\"magnet\">magnet:xt=XYZ</url>"
-		"    <url type=\"http\">http://mirror/</url>"
-		"  </resources>"		
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2-0.5.2.tar.bz2\">"
+                "  <size>43743838</size>"
+                "  <version>0.5.2</version>"
+                "  <language>en-US</language>"
+                "  <os>Linux-x86</os>"
+                "  <resources>"
+                "    <url type=\"ftp\">ftp://mirror/</url>"
+                "    <url type=\"magnet\">magnet:xt=XYZ</url>"
+                "    <url type=\"http\">http://mirror/</url>"
+                "  </resources>"                
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -410,17 +410,17 @@ void MetalinkProcessorTest::testMultiplePieces()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2.tar.bz2\">"
-		"  <verification>"
-		"    <pieces length=\"1024\" type=\"sha1\">"
-		"    </pieces>"
-		"    <pieces length=\"512\" type=\"md5\">"
-		"    </pieces>"
-		"  </verification>"
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2.tar.bz2\">"
+                "  <verification>"
+                "    <pieces length=\"1024\" type=\"sha1\">"
+                "    </pieces>"
+                "    <pieces length=\"512\" type=\"md5\">"
+                "    </pieces>"
+                "  </verification>"
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     // aria2 prefers sha1
@@ -440,20 +440,20 @@ void MetalinkProcessorTest::testBadPieceNo()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2.tar.bz2\">"
-		"  <verification>"
-		"    <pieces length=\"512\" type=\"sha1\">"
-		"      <hash piece=\"0\">abc</hash>"
-		"      <hash piece=\"xyz\">xyz</hash>"
-		"    </pieces>"
-		"    <pieces length=\"1024\" type=\"sha1\">"
-		"      <hash piece=\"0\">abc</hash>"
-		"    </pieces>"
-		"  </verification>"
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2.tar.bz2\">"
+                "  <verification>"
+                "    <pieces length=\"512\" type=\"sha1\">"
+                "      <hash piece=\"0\">abc</hash>"
+                "      <hash piece=\"xyz\">xyz</hash>"
+                "    </pieces>"
+                "    <pieces length=\"1024\" type=\"sha1\">"
+                "      <hash piece=\"0\">abc</hash>"
+                "    </pieces>"
+                "  </verification>"
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -473,28 +473,28 @@ void MetalinkProcessorTest::testBadPieceLength()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2.tar.bz2\">"
-		"  <verification>"
-		"    <pieces length=\"xyz\" type=\"sha1\">"
-		"      <hash piece=\"0\">abc</hash>"
-		"    </pieces>"
-		"    <pieces length=\"1024\" type=\"sha1\">"
-		"      <hash piece=\"0\">abc</hash>"
-		"    </pieces>"
-		"  </verification>"
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2.tar.bz2\">"
+                "  <verification>"
+                "    <pieces length=\"xyz\" type=\"sha1\">"
+                "      <hash piece=\"0\">abc</hash>"
+                "    </pieces>"
+                "    <pieces length=\"1024\" type=\"sha1\">"
+                "      <hash piece=\"0\">abc</hash>"
+                "    </pieces>"
+                "  </verification>"
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
-     SharedHandle<MetalinkEntry> e = m->entries[0];
-     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
-     CPPUNIT_ASSERT(!c.isNull());
-     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
-     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), c->getAlgo());
+    SharedHandle<MetalinkEntry> e = m->entries[0];
+    SharedHandle<ChunkChecksum> c = e->chunkChecksum;
+    CPPUNIT_ASSERT(!c.isNull());
+    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha1"), c->getAlgo());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -505,19 +505,19 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"aria2.tar.bz2\">"
-		"  <verification>"
-		"    <pieces length=\"512\" type=\"ARIA2\">"
-		"      <hash piece=\"0\">abc</hash>"
-		"    </pieces>"
-		"    <pieces length=\"1024\" type=\"sha1\">"
-		"      <hash piece=\"0\">abc</hash>"
-		"    </pieces>"
-		"  </verification>"
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"aria2.tar.bz2\">"
+                "  <verification>"
+                "    <pieces length=\"512\" type=\"ARIA2\">"
+                "      <hash piece=\"0\">abc</hash>"
+                "    </pieces>"
+                "    <pieces length=\"1024\" type=\"sha1\">"
+                "      <hash piece=\"0\">abc</hash>"
+                "    </pieces>"
+                "  </verification>"
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -538,15 +538,15 @@ void MetalinkProcessorTest::testLargeFileSize()
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
-		"<files>"
-		"<file name=\"dvd.iso\">"
-		"  <size>9223372036854775807</size>"
-		"  <resources>"
-		"    <url type=\"http\">ftp://mirror/</url>"
-		"  </resources>"		
-		"</file>"
-		"</files>"
-		"</metalink>");
+                "<files>"
+                "<file name=\"dvd.iso\">"
+                "  <size>9223372036854775807</size>"
+                "  <resources>"
+                "    <url type=\"http\">ftp://mirror/</url>"
+                "  </resources>"                
+                "</file>"
+                "</files>"
+                "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);

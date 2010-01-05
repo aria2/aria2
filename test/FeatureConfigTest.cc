@@ -29,25 +29,25 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FeatureConfigTest);
 
 void FeatureConfigTest::testGetDefaultPort() {
   CPPUNIT_ASSERT_EQUAL((uint16_t)80,
-		       FeatureConfig::getInstance()->getDefaultPort("http"));
+                       FeatureConfig::getInstance()->getDefaultPort("http"));
   CPPUNIT_ASSERT_EQUAL((uint16_t)443,
-		       FeatureConfig::getInstance()->getDefaultPort("https"));
+                       FeatureConfig::getInstance()->getDefaultPort("https"));
   CPPUNIT_ASSERT_EQUAL((uint16_t)21,
-		       FeatureConfig::getInstance()->getDefaultPort("ftp"));
+                       FeatureConfig::getInstance()->getDefaultPort("ftp"));
 }
 
 void FeatureConfigTest::testIsSupported() {
 #ifdef ENABLE_SSL
   CPPUNIT_ASSERT_EQUAL(true,
-		       FeatureConfig::getInstance()->isSupported
-		       (FeatureConfig::FEATURE_HTTPS));
+                       FeatureConfig::getInstance()->isSupported
+                       (FeatureConfig::FEATURE_HTTPS));
 #else
   CPPUNIT_ASSERT_EQUAL(false,
-		       FeatureConfig::getInstance()->isSupported
-		       (FeatureConfig::FEATURE_HTTPS));
+                       FeatureConfig::getInstance()->isSupported
+                       (FeatureConfig::FEATURE_HTTPS));
 #endif // ENABLE_SSL
   CPPUNIT_ASSERT_EQUAL(false,
-		       FeatureConfig::getInstance()->isSupported("FTPS"));
+                       FeatureConfig::getInstance()->isSupported("FTPS"));
 }
 
 void FeatureConfigTest::testFeatureSummary() {
@@ -90,12 +90,12 @@ void FeatureConfigTest::testFeatureSummary() {
   std::string featuresString;
   const std::string delim(", ");
   std::for_each(&features[0], &features[arrayLength(features)],
-		StringAppend(featuresString, delim));
+                StringAppend(featuresString, delim));
   // USE util::trimSelf(featureString);
   featuresString = util::trim(featuresString, delim);
   
   CPPUNIT_ASSERT_EQUAL(featuresString,
-		       FeatureConfig::getInstance()->featureSummary());
+                       FeatureConfig::getInstance()->featureSummary());
 }
 
 } // namespace aria2

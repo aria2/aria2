@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -143,18 +143,18 @@ static void showFiles
     try {
 #ifdef ENABLE_BITTORRENT
       if(dt.guessTorrentFile(*i)) {
-	showTorrentFile(*i);
+        showTorrentFile(*i);
       } else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-	if(dt.guessMetalinkFile(*i)) {
-	  showMetalinkFile(*i, op);
-	} else
+        if(dt.guessMetalinkFile(*i)) {
+          showMetalinkFile(*i, op);
+        } else
 #endif // ENABLE_METALINK
-	  {
-	    printf(MSG_NOT_TORRENT_METALINK);
-	    printf("\n\n");
-	  }
+          {
+            printf(MSG_NOT_TORRENT_METALINK);
+            printf("\n\n");
+          }
     } catch(RecoverableException& e) {
       std::cout << e.stackTrace() << std::endl;
     }
@@ -163,7 +163,7 @@ static void showFiles
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
 extern void option_processing(Option& option, std::deque<std::string>& uris,
-			      int argc, char* const argv[]);
+                              int argc, char* const argv[]);
 
 downloadresultcode::RESULT main(int argc, char* argv[])
 {
@@ -232,35 +232,35 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 #ifdef ENABLE_BITTORRENT
     if(!op->blank(PREF_TORRENT_FILE)) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	showTorrentFile(op->get(PREF_TORRENT_FILE));
-	return exitStatus;
+        showTorrentFile(op->get(PREF_TORRENT_FILE));
+        return exitStatus;
       } else {
-	createRequestGroupForBitTorrent(requestGroups, op, args);
+        createRequestGroupForBitTorrent(requestGroups, op, args);
       }
     }
     else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       if(!op->blank(PREF_METALINK_FILE)) {
-	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	  showMetalinkFile(op->get(PREF_METALINK_FILE), op);
-	  return exitStatus;
-	} else {
-	  createRequestGroupForMetalink(requestGroups, op);
-	}
+        if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+          showMetalinkFile(op->get(PREF_METALINK_FILE), op);
+          return exitStatus;
+        } else {
+          createRequestGroupForMetalink(requestGroups, op);
+        }
       }
       else
 #endif // ENABLE_METALINK
-	if(!op->blank(PREF_INPUT_FILE)) {
-	  createRequestGroupForUriList(requestGroups, op);
+        if(!op->blank(PREF_INPUT_FILE)) {
+          createRequestGroupForUriList(requestGroups, op);
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
-	} else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	  showFiles(args, op);
-	  return exitStatus;
+        } else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+          showFiles(args, op);
+          return exitStatus;
 #endif // ENABLE_METALINK || ENABLE_METALINK
-	} else {
-	  createRequestGroupForUri(requestGroups, op, args);
-	}
+        } else {
+          createRequestGroupForUri(requestGroups, op, args);
+        }
 
     // Remove option values which is only valid for URIs specified in
     // command-line. If they are left, because op is used as a
@@ -279,7 +279,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
       std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
     } else {
       exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
-				       getSummaryOut(op)).execute();
+                                       getSummaryOut(op)).execute();
     }
   } catch(Exception& ex) {
     std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;

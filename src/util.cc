@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -142,7 +142,7 @@ int64_t difftv(struct timeval tv1, struct timeval tv2) {
     return 0;
   }
   return ((int64_t)(tv1.tv_sec-tv2.tv_sec)*1000000+
-	  tv1.tv_usec-tv2.tv_usec);
+          tv1.tv_usec-tv2.tv_usec);
 }
 
 int32_t difftvsec(struct timeval tv1, struct timeval tv2) {
@@ -235,7 +235,7 @@ std::string urlencode(const unsigned char* target, size_t len) {
 std::string urlencode(const std::string& target)
 {
   return urlencode(reinterpret_cast<const unsigned char*>(target.c_str()),
-		   target.size());
+                   target.size());
 }
 
 std::string torrentUrlencode(const unsigned char* target, size_t len) {
@@ -264,11 +264,11 @@ std::string urldecode(const std::string& target) {
       itr != target.end(); ++itr) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
-	 isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
-	result += parseInt(std::string(itr+1, itr+3), 16);
-	itr += 2;
+         isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
+        result += parseInt(std::string(itr+1, itr+3), 16);
+        itr += 2;
       } else {
-	result += *itr;
+        result += *itr;
       }
     } else {
       result += *itr;
@@ -322,13 +322,13 @@ std::string fromHex(const std::string& src)
     return dest;
   }
   for(size_t i = 0; i < src.size(); i += 2) {
-      unsigned char high = hexCharToUInt(src[i]);
-      unsigned char low = hexCharToUInt(src[i+1]);
-      if(high == 255 || low == 255) {
-	dest.clear();
-	return dest;
-      }
-      dest += (high*16+low);
+    unsigned char high = hexCharToUInt(src[i]);
+    unsigned char low = hexCharToUInt(src[i+1]);
+    if(high == 255 || low == 255) {
+      dest.clear();
+      return dest;
+    }
+    dest += (high*16+low);
   }
   return dest;
 }
@@ -389,19 +389,19 @@ int32_t parseInt(const std::string& s, int32_t base)
   std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 "empty string").str());
+                                   "empty string").str());
   }
   char* stop;
   errno = 0;
   long int v = strtol(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   } else if((((v == LONG_MIN) || (v == LONG_MAX)) && (errno == ERANGE)) ||
-	    (v > INT32_MAX) ||
-	    (v < INT32_MIN)) {
+            (v > INT32_MAX) ||
+            (v < INT32_MIN)) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   }
   return v;
 }
@@ -411,22 +411,22 @@ uint32_t parseUInt(const std::string& s, int base)
   std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 "empty string").str());
+                                   "empty string").str());
   }
   // We don't allow negative number.
   if(trimed[0] == '-') {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   }
   char* stop;
   errno = 0;
   unsigned long int v = strtoul(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   }
   return v;
 }
@@ -458,17 +458,17 @@ int64_t parseLLInt(const std::string& s, int32_t base)
   std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 "empty string").str());
+                                   "empty string").str());
   }
   char* stop;
   errno = 0;
   int64_t v = strtoll(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   }
   return v;
 }
@@ -478,22 +478,22 @@ uint64_t parseULLInt(const std::string& s, int base)
   std::string trimed = trim(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 "empty string").str());
+                                   "empty string").str());
   }
   // We don't allow negative number.
   if(trimed[0] == '-') {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   }
   char* stop;
   errno = 0;
   uint64_t v = strtoull(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   } else if((v == ULLONG_MAX) && (errno == ERANGE)) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 trimed.c_str()).str());
+                                   trimed.c_str()).str());
   }
   return v;
 }
@@ -514,8 +514,8 @@ IntSequence parseIntRange(const std::string& src)
     } else {
       std::pair<std::string, std::string> vp = split(p.first.c_str(), "-");
       if(vp.first.empty() || vp.second.empty()) {
-	throw DL_ABORT_EX
-	  (StringFormat(MSG_INCOMPLETE_RANGE, p.first.c_str()).str());
+        throw DL_ABORT_EX
+          (StringFormat(MSG_INCOMPLETE_RANGE, p.first.c_str()).str());
       }
       int32_t v1 = parseInt(vp.first.c_str());
       int32_t v2 = parseInt(vp.second.c_str());
@@ -535,14 +535,14 @@ static void computeHeadPieces
     return;
   }
   for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
-	fileEntries.begin(); fi != fileEntries.end(); ++fi) {
+        fileEntries.begin(); fi != fileEntries.end(); ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
     }
     size_t lastIndex =
       ((*fi)->getOffset()+std::min(head, (*fi)->getLength())-1)/pieceLength;
     for(size_t index = (*fi)->getOffset()/pieceLength;
-	index <= lastIndex; ++index) {
+        index <= lastIndex; ++index) {
       indexes.push_back(index);
     }
   }
@@ -558,7 +558,7 @@ static void computeTailPieces
     return;
   }
   for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
-	fileEntries.begin(); fi != fileEntries.end(); ++fi) {
+        fileEntries.begin(); fi != fileEntries.end(); ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
     }
@@ -566,7 +566,7 @@ static void computeTailPieces
     size_t fromIndex =
       (endOffset-1-(std::min(tail, (*fi)->getLength())-1))/pieceLength;
     for(size_t index = fromIndex; index <= (endOffset-1)/pieceLength;
-	++index) {
+        ++index) {
       indexes.push_back(index);
     }
   }
@@ -587,19 +587,19 @@ void parsePrioritizePieceRange
       computeHeadPieces(indexes, fileEntries, pieceLength, defaultSize);
     } else if(util::startsWith(*i, "head=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
-					(*i).end());
+                                        (*i).end());
       computeHeadPieces(indexes, fileEntries, pieceLength,
-			std::max((int64_t)0, getRealSize(sizestr)));
+                        std::max((int64_t)0, getRealSize(sizestr)));
     } else if((*i) == "tail") {
       computeTailPieces(indexes, fileEntries, pieceLength, defaultSize);
     } else if(util::startsWith(*i, "tail=")) {
       std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
-					(*i).end());
+                                        (*i).end());
       computeTailPieces(indexes, fileEntries, pieceLength,
-			std::max((int64_t)0, getRealSize(sizestr)));
+                        std::max((int64_t)0, getRealSize(sizestr)));
     } else {
       throw DL_ABORT_EX
-	(StringFormat("Unrecognized token %s", (*i).c_str()).str());
+        (StringFormat("Unrecognized token %s", (*i).c_str()).str());
     }
   }
   std::sort(indexes.begin(), indexes.end());
@@ -631,7 +631,7 @@ std::string getContentDispositionFilename(const std::string& header) {
   static const std::string TRIMMED("\r\n '\"");
   std::string fn =
     File(trim(header.substr
-	      (filenamesp, filenameep-filenamesp), TRIMMED)).getBasename();
+              (filenamesp, filenameep-filenamesp), TRIMMED)).getBasename();
   if(fn == ".." || fn == ".") {
     return A2STR::NIL;
   } else {
@@ -714,7 +714,7 @@ int64_t getRealSize(const std::string& sizeWithUnit)
       (StringFormat("Negative value detected: %s", sizeWithUnit.c_str()).str());
   } else if(INT64_MAX/mult < v) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-				 "overflow/underflow").str());
+                                   "overflow/underflow").str());
   }
   return v*mult;
 }
@@ -758,33 +758,33 @@ void usleep(long microseconds) {
   ::usleep(microseconds);
 #elif defined(HAVE_WINSOCK2_H)
 
-	LARGE_INTEGER current, freq, end;
+  LARGE_INTEGER current, freq, end;
 
-	static enum {GET_FREQUENCY, GET_MICROSECONDS, SKIP_MICROSECONDS} state = GET_FREQUENCY;
+  static enum {GET_FREQUENCY, GET_MICROSECONDS, SKIP_MICROSECONDS} state = GET_FREQUENCY;
 
-	if (state == GET_FREQUENCY) {
-		if (QueryPerformanceFrequency(&freq))
-			state = GET_MICROSECONDS;
-		else
-			state = SKIP_MICROSECONDS;
-	}
-	
-	long msec = microseconds / 1000;
-	microseconds %= 1000;    
+  if (state == GET_FREQUENCY) {
+    if (QueryPerformanceFrequency(&freq))
+      state = GET_MICROSECONDS;
+    else
+      state = SKIP_MICROSECONDS;
+  }
+        
+  long msec = microseconds / 1000;
+  microseconds %= 1000;    
 
-	if (state == GET_MICROSECONDS && microseconds) {
-		QueryPerformanceCounter(&end);
+  if (state == GET_MICROSECONDS && microseconds) {
+    QueryPerformanceCounter(&end);
 
-		end.QuadPart += (freq.QuadPart * microseconds) / 1000000;
+    end.QuadPart += (freq.QuadPart * microseconds) / 1000000;
 
-		while (QueryPerformanceCounter(&current) && (current.QuadPart <= end.QuadPart))
-			/* noop */ ;
-	}
+    while (QueryPerformanceCounter(&current) && (current.QuadPart <= end.QuadPart))
+      /* noop */ ;
+  }
 
-	if (msec)
-		Sleep(msec);
+  if (msec)
+    Sleep(msec);
 #else
-	#error no usleep function is available (nanosleep?)
+#error no usleep function is available (nanosleep?)
 #endif
 }
 
@@ -857,11 +857,11 @@ void mkdirs(const std::string& dirpath)
   } else if(dir.exists()) {
     throw DL_ABORT_EX
       (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
-		    "File already exists.").str());
+                    "File already exists.").str());
   } else if(!dir.mkdirs()) {
     throw DL_ABORT_EX
       (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
-		    strerror(errno)).str());
+                    strerror(errno)).str());
   }
 }
 
@@ -870,7 +870,7 @@ void convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
   size_t numBlock = dest->countBlock();
   for(size_t index = 0; index < numBlock; ++index) {
     if(src->isBitSetOffsetRange((uint64_t)index*dest->getBlockLength(),
-				dest->getBlockLength())) {
+                                dest->getBlockLength())) {
       dest->setBit(index);
     }
   }
@@ -913,10 +913,10 @@ getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
   char host[NI_MAXHOST];
   char service[NI_MAXSERV];
   int s = getnameinfo(sockaddr, len, host, NI_MAXHOST, service, NI_MAXSERV,
-		      NI_NUMERICHOST|NI_NUMERICSERV);
+                      NI_NUMERICHOST|NI_NUMERICSERV);
   if(s != 0) {
     throw DL_ABORT_EX(StringFormat("Failed to get hostname and port. cause: %s",
-				 gai_strerror(s)).str());
+                                   gai_strerror(s)).str());
   }
   return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
 }
@@ -950,7 +950,7 @@ parseIndexPath(const std::string& line)
   size_t index = parseUInt(p.first);
   if(p.second.empty()) {
     throw DL_ABORT_EX(StringFormat("Path with index=%u is empty.",
-				 static_cast<unsigned int>(index)).str());
+                                   static_cast<unsigned int>(index)).str());
   }
   return std::map<size_t, std::string>::value_type(index, p.second);
 }

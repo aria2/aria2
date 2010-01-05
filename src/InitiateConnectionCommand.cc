@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -85,29 +85,29 @@ bool InitiateConnectionCommand::executeInternal() {
 #ifdef ENABLE_ASYNC_DNS
     if(getOption()->getAsBool(PREF_ASYNC_DNS)) {
       if(!isAsyncNameResolverInitialized()) {
-	initAsyncNameResolver(hostname);
+        initAsyncNameResolver(hostname);
       }
       if(asyncResolveHostname()) {
-	addrs = getResolvedAddresses();
+        addrs = getResolvedAddresses();
       } else {
-	e->commands.push_back(this);
-	return false;
+        e->commands.push_back(this);
+        return false;
       }
     } else
 #endif // ENABLE_ASYNC_DNS
       {
-	NameResolver res;
-	res.setSocktype(SOCK_STREAM);
-	if(e->option->getAsBool(PREF_DISABLE_IPV6)) {
-	  res.setFamily(AF_INET);
-	}
-	res.resolve(addrs, hostname);
+        NameResolver res;
+        res.setSocktype(SOCK_STREAM);
+        if(e->option->getAsBool(PREF_DISABLE_IPV6)) {
+          res.setFamily(AF_INET);
+        }
+        res.resolve(addrs, hostname);
       }
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
-		 hostname.c_str(),
-		 strjoin(addrs.begin(), addrs.end(), ",").c_str());
+                 hostname.c_str(),
+                 strjoin(addrs.begin(), addrs.end(), ",").c_str());
     for(std::deque<std::string>::const_iterator i = addrs.begin();
-	i != addrs.end(); ++i) {
+        i != addrs.end(); ++i) {
       e->cacheIPAddress(hostname, *i, port);
     }
     ipaddr = e->findCachedIPAddress(hostname, port);
@@ -117,7 +117,7 @@ bool InitiateConnectionCommand::executeInternal() {
   }
   try {
     Command* command = createNextCommand(hostname, ipaddr, port,
-				       addrs, proxyRequest);
+                                         addrs, proxyRequest);
     e->commands.push_back(command);
     return true;
   } catch(RecoverableException& ex) {
@@ -128,8 +128,8 @@ bool InitiateConnectionCommand::executeInternal() {
       logger->info(EX_EXCEPTION_CAUGHT, ex);
       logger->info(MSG_CONNECT_FAILED_AND_RETRY, cuid, ipaddr.c_str(), port);
       Command* command =
-	InitiateConnectionCommandFactory::createInitiateConnectionCommand
-	(cuid, req, _fileEntry, _requestGroup, e);
+        InitiateConnectionCommandFactory::createInitiateConnectionCommand
+        (cuid, req, _fileEntry, _requestGroup, e);
       e->setNoWait(true);
       e->commands.push_back(command);
       return true;

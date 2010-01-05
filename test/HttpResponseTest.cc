@@ -128,7 +128,7 @@ void HttpResponseTest::testGetContentType()
   httpResponse.setHttpHeader(httpHeader);
   // See paramter is ignored.
   CPPUNIT_ASSERT_EQUAL(std::string("application/metalink+xml"),
-		       httpResponse.getContentType());
+                       httpResponse.getContentType());
 }
 
 void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
@@ -144,7 +144,7 @@ void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
   httpResponse.setHttpRequest(httpRequest);
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
-		       httpResponse.determinFilename());
+                       httpResponse.determinFilename());
 }
 
 void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
@@ -162,7 +162,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
   httpResponse.setHttpRequest(httpRequest);
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
-		       httpResponse.determinFilename());
+                       httpResponse.determinFilename());
 }
 
 void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
@@ -170,7 +170,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("Content-Disposition",
-		  "attachment; filename=\"aria2-current.tar.bz2\"");
+                  "attachment; filename=\"aria2-current.tar.bz2\"");
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -180,7 +180,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
   httpResponse.setHttpRequest(httpRequest);
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-current.tar.bz2"),
-		       httpResponse.determinFilename());
+                       httpResponse.determinFilename());
 }
 
 void HttpResponseTest::testGetRedirectURI_without_Location()
@@ -191,7 +191,7 @@ void HttpResponseTest::testGetRedirectURI_without_Location()
   httpResponse.setHttpHeader(httpHeader);
 
   CPPUNIT_ASSERT_EQUAL(std::string(""),
-		       httpResponse.getRedirectURI());  
+                       httpResponse.getRedirectURI());  
 }
 
 void HttpResponseTest::testGetRedirectURI_with_Location()
@@ -248,7 +248,7 @@ void HttpResponseTest::testGetTransferEncoding()
   httpHeader->put("Transfer-Encoding", "chunked");
 
   CPPUNIT_ASSERT_EQUAL(std::string("chunked"),
-		       httpResponse.getTransferEncoding());
+                       httpResponse.getTransferEncoding());
 }
 
 void HttpResponseTest::testGetTransferEncodingDecoder()
@@ -486,9 +486,9 @@ void HttpResponseTest::testRetrieveCookie()
   httpResponse.setHttpRequest(httpRequest);
 
   httpHeader->put("Set-Cookie", "k1=v1; expires=Sun, 10-Jun-2007 11:00:00 GMT;"
-		  "path=/; domain=.aria2.org;");
+                  "path=/; domain=.aria2.org;");
   httpHeader->put("Set-Cookie", "k2=v2; expires=Sun, 01-Jan-38 00:00:00 GMT;"
-		  "path=/; domain=.aria2.org;");
+                  "path=/; domain=.aria2.org;");
   httpHeader->put("Set-Cookie", "k3=v3;");
 
   httpResponse.retrieveCookie();

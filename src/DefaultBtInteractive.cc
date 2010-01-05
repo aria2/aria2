@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -107,7 +107,7 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
     return SharedHandle<BtMessage>();
   }
   if(memcmp(message->getPeerId(), bittorrent::getStaticPeerId(),
-	    PEER_ID_LENGTH) == 0) {
+            PEER_ID_LENGTH) == 0) {
     throw DL_ABORT_EX
       (StringFormat
        ("CUID#%d - Drop connection from the same Peer ID", cuid).str());
@@ -131,8 +131,8 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
     logger->info(MSG_DHT_ENABLED_PEER, cuid);
   }
   logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-	       peer->ipaddr.c_str(), peer->port,
-	       message->toString().c_str());
+               peer->ipaddr.c_str(), peer->port,
+               message->toString().c_str());
   return message;
 }
 
@@ -202,13 +202,13 @@ void DefaultBtInteractive::addAllowedFastMessageToQueue() {
   if(peer->isFastExtensionEnabled()) {
     std::vector<size_t> fastSet;
     bittorrent::computeFastSet(fastSet, peer->ipaddr,
-			       _downloadContext->getNumPieces(),
-			       bittorrent::getInfoHash(_downloadContext),
-			       allowedFastSetSize);
+                               _downloadContext->getNumPieces(),
+                               bittorrent::getInfoHash(_downloadContext),
+                               allowedFastSetSize);
     for(std::vector<size_t>::const_iterator itr = fastSet.begin();
-	itr != fastSet.end(); ++itr) {
+        itr != fastSet.end(); ++itr) {
       dispatcher->addMessageToQueue
-	(messageFactory->createAllowedFastMessage(*itr));
+        (messageFactory->createAllowedFastMessage(*itr));
     }
   }
 }
@@ -237,7 +237,7 @@ void DefaultBtInteractive::checkHave() {
     }
   } else {
     for(std::deque<size_t>::iterator itr = indexes.begin();
-	itr != indexes.end(); ++itr) {
+        itr != indexes.end(); ++itr) {
       dispatcher->addMessageToQueue(messageFactory->createHaveMessage(*itr));
     }
   }
@@ -265,8 +265,8 @@ size_t DefaultBtInteractive::receiveMessages() {
     }
     ++msgcount;
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		 peer->ipaddr.c_str(), peer->port,
-		 message->toString().c_str());
+                 peer->ipaddr.c_str(), peer->port,
+                 message->toString().c_str());
     message->doReceivedAction();
 
     switch(message->getId()) {
@@ -275,12 +275,12 @@ size_t DefaultBtInteractive::receiveMessages() {
       break;
     case BtChokeMessage::ID:
       if(!peer->peerChoking()) {
-	floodingStat.incChokeUnchokeCount();
+        floodingStat.incChokeUnchokeCount();
       }
       break;
     case BtUnchokeMessage::ID:
       if(peer->peerChoking()) {
-	floodingStat.incChokeUnchokeCount();
+        floodingStat.incChokeUnchokeCount();
       }
       break;
     case BtPieceMessage::ID:
@@ -294,7 +294,7 @@ size_t DefaultBtInteractive::receiveMessages() {
   if(countOldOutstandingRequest > 0 &&
      dispatcher->countOutstandingRequest() == 0){
     _maxOutstandingRequest = std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
-				      _maxOutstandingRequest*2);
+                                      _maxOutstandingRequest*2);
   }
   return msgcount;
 }
@@ -304,13 +304,13 @@ void DefaultBtInteractive::decideInterest() {
     if(!peer->amInterested()) {
       logger->debug(MSG_PEER_INTERESTED, cuid);
       dispatcher->
-	addMessageToQueue(messageFactory->createInterestedMessage());
+        addMessageToQueue(messageFactory->createInterestedMessage());
     }
   } else {
     if(peer->amInterested()) {
       logger->debug(MSG_PEER_NOT_INTERESTED, cuid);
       dispatcher->
-	addMessageToQueue(messageFactory->createNotInterestedMessage());
+        addMessageToQueue(messageFactory->createNotInterestedMessage());
     }
   }
 }
@@ -322,33 +322,33 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
 
     if(peer->peerChoking()) {
       if(peer->isFastExtensionEnabled()) {
-	std::deque<size_t> excludedIndexes;
-	btRequestFactory->getTargetPieceIndexes(excludedIndexes);
-	while(numMissingBlock < maxMissingBlock) {
-	  SharedHandle<Piece> piece =
-	    _pieceStorage->getMissingFastPiece(peer, excludedIndexes);
-	  if(piece.isNull()) {
-	    break;
-	  } else {
-	    btRequestFactory->addTargetPiece(piece);
-	    numMissingBlock += piece->countMissingBlock();
-	    excludedIndexes.push_back(piece->getIndex());
-	  }
-	}
+        std::deque<size_t> excludedIndexes;
+        btRequestFactory->getTargetPieceIndexes(excludedIndexes);
+        while(numMissingBlock < maxMissingBlock) {
+          SharedHandle<Piece> piece =
+            _pieceStorage->getMissingFastPiece(peer, excludedIndexes);
+          if(piece.isNull()) {
+            break;
+          } else {
+            btRequestFactory->addTargetPiece(piece);
+            numMissingBlock += piece->countMissingBlock();
+            excludedIndexes.push_back(piece->getIndex());
+          }
+        }
       }
     } else {
       std::deque<size_t> excludedIndexes;
       btRequestFactory->getTargetPieceIndexes(excludedIndexes);
       while(numMissingBlock < maxMissingBlock) {
-	SharedHandle<Piece> piece =
-	  _pieceStorage->getMissingPiece(peer, excludedIndexes);
-	if(piece.isNull()) {
-	  break;
-	} else {
-	  btRequestFactory->addTargetPiece(piece);
-	  numMissingBlock += piece->countMissingBlock();
-	  excludedIndexes.push_back(piece->getIndex());
-	}
+        SharedHandle<Piece> piece =
+          _pieceStorage->getMissingPiece(peer, excludedIndexes);
+        if(piece.isNull()) {
+          break;
+        } else {
+          btRequestFactory->addTargetPiece(piece);
+          numMissingBlock += piece->countMissingBlock();
+          excludedIndexes.push_back(piece->getIndex());
+        }
       }
     }
   }
@@ -376,9 +376,9 @@ void DefaultBtInteractive::cancelAllPiece() {
     std::vector<size_t> metadataRequests =
       _utMetadataRequestTracker->getAllTrackedIndex();
     for(std::vector<size_t>::const_iterator i = metadataRequests.begin();
-	i != metadataRequests.end(); ++i) {
+        i != metadataRequests.end(); ++i) {
       logger->debug("Cancel metadata: piece=%lu",
-		    static_cast<unsigned long>(*i));
+                    static_cast<unsigned long>(*i));
       _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
     }
   }
@@ -410,8 +410,8 @@ void DefaultBtInteractive::checkActiveInteraction()
        inactiveCheckPoint.elapsed(interval)) {
       // TODO change the message
       throw DL_ABORT_EX
-	(StringFormat("Disconnect peer because we are not interested each other"
-		      " after %u second(s).", interval).str());
+        (StringFormat("Disconnect peer because we are not interested each other"
+                      " after %u second(s).", interval).str());
     }
   }
   // Since the peers which are *just* connected and do nothing to improve
@@ -421,7 +421,7 @@ void DefaultBtInteractive::checkActiveInteraction()
     const time_t interval = 60;
     if(inactiveCheckPoint.elapsed(interval)) {
       throw DL_ABORT_EX
-	(StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());
+        (StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());
     }
   }
 }
@@ -434,19 +434,19 @@ void DefaultBtInteractive::addPeerExchangeMessage()
     const Peers& peers = _peerStorage->getPeers();
     {
       for(std::deque<SharedHandle<Peer> >::const_iterator i =
-	    peers.begin(); i != peers.end() && !m->freshPeersAreFull(); ++i) {
-	if(peer->ipaddr != (*i)->ipaddr) {
-	  m->addFreshPeer(*i);
-	}
+            peers.begin(); i != peers.end() && !m->freshPeersAreFull(); ++i) {
+        if(peer->ipaddr != (*i)->ipaddr) {
+          m->addFreshPeer(*i);
+        }
       }
     }
     {
       for(std::deque<SharedHandle<Peer> >::const_reverse_iterator i =
-	    peers.rbegin(); i != peers.rend() && !m->droppedPeersAreFull();
-	  ++i) {
-	if(peer->ipaddr != (*i)->ipaddr) {
-	  m->addDroppedPeer(*i);
-	}
+            peers.rbegin(); i != peers.rend() && !m->droppedPeersAreFull();
+          ++i) {
+        if(peer->ipaddr != (*i)->ipaddr) {
+          m->addDroppedPeer(*i);
+        }
       }
     }
     BtMessageHandle msg = messageFactory->createBtExtendedMessage(m);
@@ -468,24 +468,24 @@ void DefaultBtInteractive::doInteractionProcessing() {
        _downloadContext->getTotalLength() > 0) {
       size_t num = _utMetadataRequestTracker->avail();
       if(num > 0) {
-	std::deque<SharedHandle<BtMessage> > requests;
-	_utMetadataRequestFactory->create(requests, num, _pieceStorage);
-	dispatcher->addMessageToQueue(requests);
+        std::deque<SharedHandle<BtMessage> > requests;
+        _utMetadataRequestFactory->create(requests, num, _pieceStorage);
+        dispatcher->addMessageToQueue(requests);
       }
       if(_perSecCheckPoint.elapsed(1)) {
-	_perSecCheckPoint.reset();
-	// Drop timeout request after queuing message to give a chance
-	// to other connection to request piece.
-	std::vector<size_t> indexes =
-	  _utMetadataRequestTracker->removeTimeoutEntry();
-	for(std::vector<size_t>::const_iterator i = indexes.begin();
-	    i != indexes.end(); ++i) {
-	  _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
-	}
+        _perSecCheckPoint.reset();
+        // Drop timeout request after queuing message to give a chance
+        // to other connection to request piece.
+        std::vector<size_t> indexes =
+          _utMetadataRequestTracker->removeTimeoutEntry();
+        for(std::vector<size_t>::const_iterator i = indexes.begin();
+            i != indexes.end(); ++i) {
+          _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
+        }
       }
       if(_pieceStorage->downloadFinished()) {
-	_downloadContext->getOwnerRequestGroup()->setForceHaltRequested
-	  (true, RequestGroup::NONE);
+        _downloadContext->getOwnerRequestGroup()->setForceHaltRequested
+          (true, RequestGroup::NONE);
       }
     }
   } else {

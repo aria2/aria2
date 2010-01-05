@@ -30,7 +30,7 @@ public:
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
     virtual SharedHandle<DHTMessage>
     createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-				   const std::string& transactionID)
+                                   const std::string& transactionID)
     {
       return SharedHandle<DHTMessage>(new MockDHTMessage(_localNode, remoteNode, "announce_peer", transactionID));
     }
@@ -71,7 +71,7 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
   dict["a"] = aDict;
 
   CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
-		       util::urlencode(msgbody));
+                       util::urlencode(msgbody));
 }
 
 void DHTAnnouncePeerMessageTest::testDoReceivedAction()
@@ -98,7 +98,7 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
 
   DHTAnnouncePeerMessage msg(localNode, remoteNode, infoHash, port, token, transactionID);
   msg.setPeerAnnounceStorage(WeakHandle<DHTPeerAnnounceStorage>
-			     (&peerAnnounceStorage));
+                             (&peerAnnounceStorage));
   msg.setMessageFactory(WeakHandle<DHTMessageFactory>(&factory));
   msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>(&dispatcher));
 

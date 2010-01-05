@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -126,15 +126,15 @@ void FileMetalinkParserState::beginElement
     int maxConnections;
     {
       std::map<std::string, std::string>::const_iterator itr =
-	attrs.find(MAXCONNECTIONS);
+        attrs.find(MAXCONNECTIONS);
       if(itr == attrs.end()) {
-	maxConnections = -1;
+        maxConnections = -1;
       } else {
-	try {
-	  maxConnections = util::parseInt((*itr).second);
-	} catch(RecoverableException& e) {
-	  maxConnections = -1;
-	}
+        try {
+          maxConnections = util::parseInt((*itr).second);
+        } catch(RecoverableException& e) {
+          maxConnections = -1;
+        }
       }
     }
     stm->setMaxConnectionsOfEntry(maxConnections);
@@ -240,23 +240,23 @@ void VerificationMetalinkParserState::beginElement
     try {
       size_t length;
       {
-	std::map<std::string, std::string>::const_iterator itr =
-	  attrs.find(LENGTH);
-	if(itr == attrs.end()) {
-	  return;
-	} else {
-	  length = util::parseInt((*itr).second);
-	}
+        std::map<std::string, std::string>::const_iterator itr =
+          attrs.find(LENGTH);
+        if(itr == attrs.end()) {
+          return;
+        } else {
+          length = util::parseInt((*itr).second);
+        }
       }
       std::string type;
       {
-	std::map<std::string, std::string>::const_iterator itr =
-	  attrs.find(TYPE);
-	if(itr == attrs.end()) {
-	  return;
-	} else {
-	  type = (*itr).second;
-	}
+        std::map<std::string, std::string>::const_iterator itr =
+          attrs.find(TYPE);
+        if(itr == attrs.end()) {
+          return;
+        } else {
+          type = (*itr).second;
+        }
       }
       stm->newChunkChecksumTransaction();
       stm->setLengthOfChunkChecksum(length);
@@ -266,23 +266,23 @@ void VerificationMetalinkParserState::beginElement
     }
   } else
 #endif // ENABLE_MESSAGE_DIGEST
-  if(name == SIGNATURE) {
-    stm->setSignatureState();
-    std::map<std::string, std::string>::const_iterator itr = attrs.find(TYPE);
-    if(itr == attrs.end()) {
-      return;
-    } else {
-      stm->newSignatureTransaction();
-      stm->setTypeOfSignature((*itr).second);
+    if(name == SIGNATURE) {
+      stm->setSignatureState();
+      std::map<std::string, std::string>::const_iterator itr = attrs.find(TYPE);
+      if(itr == attrs.end()) {
+        return;
+      } else {
+        stm->newSignatureTransaction();
+        stm->setTypeOfSignature((*itr).second);
 
-      std::map<std::string, std::string>::const_iterator itr = attrs.find(FILE);
-      if(itr != attrs.end()) {
-	stm->setFileOfSignature((*itr).second);
+        std::map<std::string, std::string>::const_iterator itr = attrs.find(FILE);
+        if(itr != attrs.end()) {
+          stm->setFileOfSignature((*itr).second);
+        }
       }
+    } else {
+      stm->setSkipTagState();
     }
-  } else {
-    stm->setSkipTagState();
-  }
 }
 
 void HashMetalinkParserState::beginElement
@@ -314,9 +314,9 @@ void PiecesMetalinkParserState::beginElement
       stm->cancelChunkChecksumTransaction();
     } else {
       try {
-	stm->createNewHashOfChunkChecksum(util::parseInt((*itr).second));
+        stm->createNewHashOfChunkChecksum(util::parseInt((*itr).second));
       } catch(RecoverableException& e) {
-	stm->cancelChunkChecksumTransaction();
+        stm->cancelChunkChecksumTransaction();
       }
     }
   } else {
@@ -377,45 +377,45 @@ void ResourcesMetalinkParserState::beginElement
     {
       std::map<std::string, std::string>::const_iterator itr = attrs.find(TYPE);
       if(itr == attrs.end()) {
-	return;
+        return;
       } else {
-	type = (*itr).second;
+        type = (*itr).second;
       }
     }
     std::string location;
     {
       std::map<std::string, std::string>::const_iterator itr =
-	attrs.find(LOCATION);
+        attrs.find(LOCATION);
       if(itr != attrs.end()) {
-	location = util::toUpper((*itr).second);
+        location = util::toUpper((*itr).second);
       }
     }
     int preference;
     {
       std::map<std::string, std::string>::const_iterator itr =
-	attrs.find(PREFERENCE);
+        attrs.find(PREFERENCE);
       if(itr == attrs.end()) {
-	preference = 0;
+        preference = 0;
       } else {
-	try {
-	  preference = util::parseInt((*itr).second);
-	} catch(RecoverableException& e) {
-	  preference = 0;
-	}
+        try {
+          preference = util::parseInt((*itr).second);
+        } catch(RecoverableException& e) {
+          preference = 0;
+        }
       }
     }
     int maxConnections;
     {
       std::map<std::string, std::string>::const_iterator itr =
-	attrs.find(MAXCONNECTIONS);
+        attrs.find(MAXCONNECTIONS);
       if(itr == attrs.end()) {
-	maxConnections = -1;
+        maxConnections = -1;
       } else {
-	try {
-	  maxConnections = util::parseInt((*itr).second);
-	} catch(RecoverableException& e) {
-	  maxConnections = -1;
-	}
+        try {
+          maxConnections = util::parseInt((*itr).second);
+        } catch(RecoverableException& e) {
+          maxConnections = -1;
+        }
       }
     }
     stm->newResourceTransaction();

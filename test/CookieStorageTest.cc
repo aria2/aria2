@@ -83,13 +83,13 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT(st.store(sessionScopedGoodCookie));
   CPPUNIT_ASSERT_EQUAL((size_t)3, st.size());
   CPPUNIT_ASSERT(std::find(st.begin(), st.end(),
-			   sessionScopedGoodCookie) != st.end());
+                           sessionScopedGoodCookie) != st.end());
 
   Cookie sessionScopedGoodCookie2("k2", "v3", "/", "localhost", false);
   CPPUNIT_ASSERT(st.store(sessionScopedGoodCookie2));
   CPPUNIT_ASSERT_EQUAL((size_t)4, st.size());
   CPPUNIT_ASSERT(std::find(st.begin(), st.end(),
-			   sessionScopedGoodCookie2) != st.end());
+                           sessionScopedGoodCookie2) != st.end());
 }
 
 void CookieStorageTest::testParseAndStore()
@@ -100,12 +100,12 @@ void CookieStorageTest::testParseAndStore()
     " expires=Fri, 2038-01-01 00:00:00 GMT; path=/; domain=localhost;";
   
   CPPUNIT_ASSERT(st.parseAndStore(localhostCookieStr,
-				  "localhost", "/downloads"));
+                                  "localhost", "/downloads"));
   CPPUNIT_ASSERT(!st.parseAndStore(localhostCookieStr,
-				   "mirror", "/downloads"));
+                                   "mirror", "/downloads"));
 
   CPPUNIT_ASSERT(!st.parseAndStore(localhostCookieStr,
-				   "127.0.0.1", "/downloads"));
+                                   "127.0.0.1", "/downloads"));
 
   std::string numericHostCookieStr = "k=v;"
     " expires=Fri, 2038-01-01 00:00:00 GMT; path=/; domain=192.168.1.1;";
@@ -119,7 +119,7 @@ void CookieStorageTest::testCriteriaFind()
 
   Cookie alpha("alpha", "ALPHA", "/", ".aria2.org", false);
   Cookie bravo("bravo", "BRAVO", Time().getTime()+60, "/foo", ".aria2.org",
-	       false);
+               false);
   Cookie charlie("charlie", "CHARLIE", "/", ".aria2.org", true);
   Cookie delta("delta", "DELTA", "/foo/bar", ".aria2.org", false);
   Cookie echo("echo", "ECHO", "/", "www.aria2.org", false);
@@ -135,37 +135,37 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT(st.store(golf));
   
   std::deque<Cookie> aria2Slash = st.criteriaFind("www.aria2.org", "/",
-						  0, false);
+                                                  0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, aria2Slash.size());
   CPPUNIT_ASSERT(std::find(aria2Slash.begin(), aria2Slash.end(), alpha)
-		 != aria2Slash.end());
+                 != aria2Slash.end());
   CPPUNIT_ASSERT(std::find(aria2Slash.begin(), aria2Slash.end(), echo)
-		 != aria2Slash.end());
+                 != aria2Slash.end());
 
   std::deque<Cookie> aria2SlashFoo = st.criteriaFind("www.aria2.org", "/foo",
-						     0, false);
+                                                     0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)3, aria2SlashFoo.size());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), aria2SlashFoo[0].getName());
   CPPUNIT_ASSERT(std::find(aria2SlashFoo.begin(), aria2SlashFoo.end(), alpha)
-		 != aria2SlashFoo.end());
+                 != aria2SlashFoo.end());
   CPPUNIT_ASSERT(std::find(aria2SlashFoo.begin(), aria2SlashFoo.end(), echo)
-		 != aria2SlashFoo.end());
+                 != aria2SlashFoo.end());
 
   std::deque<Cookie> aria2Expires = st.criteriaFind("www.aria2.org", "/foo",
-						    Time().getTime()+120,
-						    false);
+                                                    Time().getTime()+120,
+                                                    false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, aria2Expires.size());
   CPPUNIT_ASSERT(std::find(aria2Expires.begin(), aria2Expires.end(), alpha)
-		 != aria2Expires.end());
+                 != aria2Expires.end());
   CPPUNIT_ASSERT(std::find(aria2Expires.begin(), aria2Expires.end(), echo)
-		 != aria2Expires.end());
+                 != aria2Expires.end());
 
   std::deque<Cookie> dlAria2 = st.criteriaFind("dl.aria2.org", "/", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, dlAria2.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), dlAria2[0].getName());
 
   std::deque<Cookie> numericHostCookies = st.criteriaFind("192.168.1.1", "/", 0,
-							  false);
+                                                          false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, numericHostCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("golf"), numericHostCookies[0].getName());
 }

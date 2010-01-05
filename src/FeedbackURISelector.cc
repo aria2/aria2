@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -53,7 +53,7 @@ FeedbackURISelector::~FeedbackURISelector() {}
 class ServerStatFaster {
 public:
   bool operator()(const std::pair<SharedHandle<ServerStat>, std::string> lhs,
-		  const std::pair<SharedHandle<ServerStat>, std::string> rhs)
+                  const std::pair<SharedHandle<ServerStat>, std::string> rhs)
     const
   {
     return lhs.first->getDownloadSpeed() > rhs.first->getDownloadSpeed();
@@ -78,23 +78,23 @@ std::string FeedbackURISelector::select(FileEntry* fileEntry)
     Request r;
     r.setUrl(*i);
     SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),
-						       r.getProtocol());
+                                                       r.getProtocol());
     if(!ss.isNull() && ss->isOK() && ss->getDownloadSpeed() > SPEED_THRESHOLD) {
       cands.push_back(std::pair<SharedHandle<ServerStat>, std::string>(ss, *i));
     }
   }
   if(cands.empty()) {
     for(std::deque<std::string>::iterator i = uris.begin();
-	i != uris.end(); ++i) {
+        i != uris.end(); ++i) {
       Request r;
       r.setUrl(*i);
       SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),
-							 r.getProtocol());
+                                                         r.getProtocol());
       // Skip ERROR state URI
       if(ss.isNull() || ss->isOK()) {
-	std::string nextURI = *i;
-	uris.erase(uris.begin(), i+1);
-	return nextURI;
+        std::string nextURI = *i;
+        uris.erase(uris.begin(), i+1);
+        return nextURI;
       }
     }
     // All URIs are inspected but aria2 cannot find usable one.

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -102,8 +102,8 @@ public:
 
 void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
-				const std::string& metalinkFile,
-				const SharedHandle<Option>& option)
+                                const std::string& metalinkFile,
+                                const SharedHandle<Option>& option)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, metalinkFile, option.get());
@@ -112,8 +112,8 @@ Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
 
 void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
-				const SharedHandle<BinaryStream>& binaryStream,
-				const SharedHandle<Option>& option)
+                                const SharedHandle<BinaryStream>& binaryStream,
+                                const SharedHandle<Option>& option)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, binaryStream, option.get());
@@ -145,7 +145,7 @@ Metalink2RequestGroup::createRequestGroup
     if(option->defined(PREF_METALINK_LOCATION)) {
       std::deque<std::string> locations;
       util::split(option->get(PREF_METALINK_LOCATION),
-		  std::back_inserter(locations), ",", true);
+                  std::back_inserter(locations), ",", true);
       entry->setLocationPreference(locations, 100);
     }
     if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
@@ -153,8 +153,8 @@ Metalink2RequestGroup::createRequestGroup
     }
     if(useIndex) {
       if(std::find(selectIndexes.begin(), selectIndexes.end(), count+1) ==
-	 selectIndexes.end()) {
-	continue;
+         selectIndexes.end()) {
+        continue;
       }
     }
     entry->dropUnsupportedResource();
@@ -172,35 +172,35 @@ Metalink2RequestGroup::createRequestGroup
       std::deque<std::string> uris;
       uris.push_back((*itr)->url);
       {
-	std::deque<SharedHandle<RequestGroup> > result;
-	createRequestGroupForUri(result, option, uris,
-				 /* ignoreForceSequential = */true,
-				 /* ignoreLocalPath = */true);
-	if(!uris.empty()) {
-	  torrentRg = result[0];
-	}
+        std::deque<SharedHandle<RequestGroup> > result;
+        createRequestGroupForUri(result, option, uris,
+                                 /* ignoreForceSequential = */true,
+                                 /* ignoreLocalPath = */true);
+        if(!uris.empty()) {
+          torrentRg = result[0];
+        }
       }
       if(!torrentRg.isNull()) {
-	torrentRg->setNumConcurrentCommand(1);
-	torrentRg->clearPreDownloadHandler();
-	torrentRg->clearPostDownloadHandler();
-	// remove "metalink" from Accept Type list to avoid loop in
-	// tranparent metalink
-	torrentRg->removeAcceptType(RequestGroup::ACCEPT_METALINK);
-	// make it in-memory download
-	SharedHandle<PreDownloadHandler> preh
-	  (new MemoryBufferPreDownloadHandler());
-	SharedHandle<RequestGroupCriteria> cri(new TrueRequestGroupCriteria());
-	preh->setCriteria(cri);
-	torrentRg->addPreDownloadHandler(preh);
-	groups.push_back(torrentRg);
+        torrentRg->setNumConcurrentCommand(1);
+        torrentRg->clearPreDownloadHandler();
+        torrentRg->clearPostDownloadHandler();
+        // remove "metalink" from Accept Type list to avoid loop in
+        // tranparent metalink
+        torrentRg->removeAcceptType(RequestGroup::ACCEPT_METALINK);
+        // make it in-memory download
+        SharedHandle<PreDownloadHandler> preh
+          (new MemoryBufferPreDownloadHandler());
+        SharedHandle<RequestGroupCriteria> cri(new TrueRequestGroupCriteria());
+        preh->setCriteria(cri);
+        torrentRg->addPreDownloadHandler(preh);
+        groups.push_back(torrentRg);
       }
     }
 #endif // ENABLE_BITTORRENT
     entry->reorderResourcesByPreference();
     std::deque<std::string> uris;
     std::for_each(entry->resources.begin(), entry->resources.end(),
-		  AccumulateNonP2PUrl(uris));
+                  AccumulateNonP2PUrl(uris));
     SharedHandle<RequestGroup> rg(new RequestGroup(option));
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.
@@ -217,8 +217,8 @@ Metalink2RequestGroup::createRequestGroup
     SharedHandle<DownloadContext> dctx
       (new DownloadContext
        (pieceLength,
-	entry->getLength(),
-	strconcat(option->get(PREF_DIR), "/", entry->file->getPath())));
+        entry->getLength(),
+        strconcat(option->get(PREF_DIR), "/", entry->file->getPath())));
     dctx->setDir(option->get(PREF_DIR));
     dctx->getFirstFileEntry()->setUris(uris);
     if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
@@ -227,12 +227,12 @@ Metalink2RequestGroup::createRequestGroup
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       if(!entry->checksum.isNull()) {
-	dctx->setChecksum(entry->checksum->getMessageDigest());
-	dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
+        dctx->setChecksum(entry->checksum->getMessageDigest());
+        dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
       }
     } else {
       dctx->setPieceHashes(entry->chunkChecksum->getChecksums().begin(),
-			   entry->chunkChecksum->getChecksums().end());
+                           entry->chunkChecksum->getChecksums().end());
       dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
     }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -242,7 +242,7 @@ Metalink2RequestGroup::createRequestGroup
       (entry->maxConnections < 0 ?
        option->getAsInt(PREF_METALINK_SERVERS) :
        std::min(option->getAsInt(PREF_METALINK_SERVERS),
-		static_cast<int32_t>(entry->maxConnections)));
+                static_cast<int32_t>(entry->maxConnections)));
     // remove "metalink" from Accept Type list to avoid loop in tranparent
     // metalink
     rg->removeAcceptType(RequestGroup::ACCEPT_METALINK);

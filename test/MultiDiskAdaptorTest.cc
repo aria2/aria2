@@ -69,7 +69,7 @@ std::vector<SharedHandle<FileEntry> > createEntries() {
   //                            |file7
   //                            ** file8
   std::vector<SharedHandle<FileEntry> > entries(&array[0],
-						&array[arrayLength(array)]);
+                                                &array[arrayLength(array)]);
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i = entries.begin();
       i != entries.end(); ++i) {
     File((*i)->getPath()).remove();
@@ -388,9 +388,9 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
   adaptor.cutTrailingGarbage();
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)256,
-		       File(entries[0]->getPath()).size());
+                       File(entries[0]->getPath()).size());
   CPPUNIT_ASSERT_EQUAL((uint64_t)512,
-		       File(entries[1]->getPath()).size());
+                       File(entries[1]->getPath()).size());
 }
 
 void MultiDiskAdaptorTest::testSize()
@@ -445,13 +445,13 @@ void MultiDiskAdaptorTest::testUtime()
   CPPUNIT_ASSERT_EQUAL((size_t)2, adaptor.utime(Time(atime), Time(mtime)));
   
   CPPUNIT_ASSERT_EQUAL((time_t)mtime,
-		       File(entries[0]->getPath()).getModifiedTime().getTime());
+                       File(entries[0]->getPath()).getModifiedTime().getTime());
 
   CPPUNIT_ASSERT_EQUAL((time_t)mtime,
-		       File(entries[3]->getPath()).getModifiedTime().getTime());
+                       File(entries[3]->getPath()).getModifiedTime().getTime());
 
   CPPUNIT_ASSERT((time_t)mtime !=
-		 File(entries[2]->getPath()).getModifiedTime().getTime());
+                 File(entries[2]->getPath()).getModifiedTime().getTime());
 }
 
 } // namespace aria2

@@ -41,7 +41,7 @@ void bitfieldTest::testCountBit32()
 void bitfieldTest::testCountSetBit()
 {
   unsigned char bitfield[] = { 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xf9 };
+                               0xff, 0xff, 0xff, 0xf9 };
   // (nbits+7)/8 == 0 && nbits%32 == 0
   CPPUNIT_ASSERT_EQUAL((size_t)62, bitfield::countSetBit(bitfield, 64));
   // (nbits+7)/8 != 0 && nbits%32 != 0 && len%4 == 0
@@ -57,11 +57,11 @@ void bitfieldTest::testCountSetBit()
 void bitfieldTest::testLastByteMask()
 {
   CPPUNIT_ASSERT_EQUAL((unsigned int)128,
-		       (unsigned int)bitfield::lastByteMask(9));
+                       (unsigned int)bitfield::lastByteMask(9));
   CPPUNIT_ASSERT_EQUAL((unsigned int)240,
-		       (unsigned int)bitfield::lastByteMask(12));
+                       (unsigned int)bitfield::lastByteMask(12));
   CPPUNIT_ASSERT_EQUAL((unsigned int)255,
-		       (unsigned int)bitfield::lastByteMask(16));
+                       (unsigned int)bitfield::lastByteMask(16));
 }
 
 } // namespace aria2

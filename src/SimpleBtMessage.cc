@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -56,9 +56,9 @@ void SimpleBtMessage::send() {
     const unsigned char* msg = getMessage();
     size_t msgLength = getMessageLength();
     logger->info(MSG_SEND_PEER_MESSAGE,
-		 cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
+                 cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
     logger->debug("msglength = %lu bytes",
-		  static_cast<unsigned long>(msgLength));
+                  static_cast<unsigned long>(msgLength));
     peerConnection->sendMessage(msg, msgLength);
   } else {
     peerConnection->sendPendingData();

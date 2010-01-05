@@ -48,10 +48,10 @@ public:
     int32_t pieceLength = 256*1024;
     
     static const unsigned char infoHash[] = {  0x01, 0x23, 0x45, 0x67,
-					       0x89, 0xab, 0xcd, 0xef,
-					       0x01, 0x23, 0x45, 0x67,
-					       0x89, 0xab, 0xcd, 0xef,
-					       0x01, 0x23, 0x45, 0x67 };
+                                               0x89, 0xab, 0xcd, 0xef,
+                                               0x01, 0x23, 0x45, 0x67,
+                                               0x89, 0xab, 0xcd, 0xef,
+                                               0x01, 0x23, 0x45, 0x67 };
     
     std::string peerId = "-aria2-ultrafastdltl";
 
@@ -114,7 +114,7 @@ static BDE createAnnounceTier(const std::string& uri)
 }
 
 static void setAnnounceList(const SharedHandle<DownloadContext>& dctx,
-			    const BDE& announceList)
+                            const BDE& announceList)
 {
   dctx->getAttribute(bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST] =
     announceList;
@@ -215,11 +215,11 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
 
   CPPUNIT_ASSERT_EQUAL
     (std::string("http://localhost/announce?k=v&"
-		 "info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&"
-		 "peer_id=%2Daria2%2Dultrafastdltl&"
-		 "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
-		 "key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&"
-		 "supportcrypto=1"),
+                 "info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&"
+                 "peer_id=%2Daria2%2Dultrafastdltl&"
+                 "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
+                 "key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&"
+                 "supportcrypto=1"),
      btAnnounce.getAnnounceUrl());
 }
 
@@ -238,11 +238,11 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
 
   CPPUNIT_ASSERT_EQUAL
     (std::string("http://localhost/announce?"
-		 "info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&"
-		 "peer_id=%2Daria2%2Dultrafastdltl&"
-		 "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
-		 "key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&"
-		 "supportcrypto=1&ip=192.168.1.1"),
+                 "info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&"
+                 "peer_id=%2Daria2%2Dultrafastdltl&"
+                 "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
+                 "key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&"
+                 "supportcrypto=1&ip=192.168.1.1"),
      btAnnounce.getAnnounceUrl());
 }
 
@@ -279,7 +279,7 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
 void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
 {
   const char* urls[] = { "http://localhost1/announce",
-			 "http://localhost2/announce" };
+                         "http://localhost2/announce" };
 
   BDE announceList = BDE::list();
   announceList << createAnnounceTier(&urls[0], &urls[arrayLength(urls)]);
@@ -309,7 +309,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
 void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
 {
   const char* urls[] = { "http://localhost1/announce",
-			 "http://localhost2/announce" };
+                         "http://localhost2/announce" };
 
   BDE announceList = BDE::list();
   announceList << createAnnounceTier(&urls[0], &urls[arrayLength(urls)]);

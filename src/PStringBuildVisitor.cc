@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -68,7 +68,7 @@ void PStringBuildVisitor::visit(PStringNumLoop& s)
   unsigned int step = s.getStep();
   for(unsigned int i = start; i <= end; i += step) {
     PStringSegment(s.getNumberDecorator()->decorate(i),
-		   s.getNext()).accept(*this);
+                   s.getNext()).accept(*this);
   }
 }
 

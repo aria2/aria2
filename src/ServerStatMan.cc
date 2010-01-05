@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -51,7 +51,7 @@ ServerStatMan::ServerStatMan() {}
 ServerStatMan::~ServerStatMan() {}
 
 SharedHandle<ServerStat> ServerStatMan::find(const std::string& hostname,
-					     const std::string& protocol) const
+                                             const std::string& protocol) const
 {
   SharedHandle<ServerStat> ss(new ServerStat(hostname, protocol));
   std::deque<SharedHandle<ServerStat> >::const_iterator i =
@@ -80,7 +80,7 @@ bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
 bool ServerStatMan::save(std::ostream& out) const
 {
   std::copy(_serverStats.begin(), _serverStats.end(),
-	    std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
+            std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
   out.flush();
   return !out.bad();
 }
@@ -106,7 +106,7 @@ bool ServerStatMan::load(std::istream& in)
     util::split(line, std::back_inserter(items), ",");
     std::map<std::string, std::string> m;
     for(std::vector<std::string>::const_iterator i = items.begin();
-	i != items.end(); ++i) {
+        i != items.end(); ++i) {
       std::pair<std::string, std::string> p = util::split(*i, "=");
       util::trimSelf(p.first);
       util::trimSelf(p.second);
@@ -120,15 +120,15 @@ bool ServerStatMan::load(std::istream& in)
       sstat->setDownloadSpeed(util::parseUInt(m[S_DL_SPEED]));
       // Old serverstat file doesn't contains SC_AVG_SPEED
       if(m.find(S_SC_AVG_SPEED) != m.end()) {
-	sstat->setSingleConnectionAvgSpeed(util::parseUInt(m[S_SC_AVG_SPEED]));
+        sstat->setSingleConnectionAvgSpeed(util::parseUInt(m[S_SC_AVG_SPEED]));
       }
       // Old serverstat file doesn't contains MC_AVG_SPEED
       if(m.find(S_MC_AVG_SPEED) != m.end()) {
-	sstat->setMultiConnectionAvgSpeed(util::parseUInt(m[S_MC_AVG_SPEED]));
+        sstat->setMultiConnectionAvgSpeed(util::parseUInt(m[S_MC_AVG_SPEED]));
       }
       // Old serverstat file doesn't contains COUNTER_SPEED
       if(m.find(S_COUNTER) != m.end()) {
-	sstat->setCounter(util::parseUInt(m[S_COUNTER]));
+        sstat->setCounter(util::parseUInt(m[S_COUNTER]));
       }
       sstat->setLastUpdated(Time(util::parseInt(m[S_LAST_UPDATED])));
       sstat->setStatus(m[S_STATUS]);
@@ -155,8 +155,8 @@ public:
 void ServerStatMan::removeStaleServerStat(time_t timeout)
 {
   _serverStats.erase(std::remove_if(_serverStats.begin(), _serverStats.end(),
-				    FindStaleServerStat(timeout)),
-		     _serverStats.end());
+                                    FindStaleServerStat(timeout)),
+                     _serverStats.end());
 }
 
 } // namespace aria2

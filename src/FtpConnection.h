@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -72,7 +72,7 @@ private:
 
   unsigned int getStatus(const std::string& response) const;
   std::string::size_type findEndOfResponse(unsigned int status,
-					   const std::string& buf) const;
+                                           const std::string& buf) const;
   bool bulkReceiveResponse(std::pair<unsigned int, std::string>& response);
 
   static const std::string A;
@@ -83,9 +83,9 @@ private:
   static const size_t MAX_RECV_BUFFER = 65536;
 public:
   FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
-		const SharedHandle<Request>& req,
-		const SharedHandle<AuthConfig>& authConfig,
-		const Option* op);
+                const SharedHandle<Request>& req,
+                const SharedHandle<AuthConfig>& authConfig,
+                const Option* op);
   ~FtpConnection();
   bool sendUser();
   bool sendPass();

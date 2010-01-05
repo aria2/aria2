@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -67,14 +67,14 @@ private:
 
   template<typename Array>
   bool getMissingIndexRandomly(size_t& index, const Array& bitfield,
-			       size_t bitfieldLength) const;
+                               size_t bitfieldLength) const;
   template<typename Array>
   bool getFirstMissingIndex(size_t& index, const Array& bitfield, size_t bitfieldLength) const;
 
   template<typename Array>
   bool getAllMissingIndexes(std::deque<size_t>& indexes,
-			    const Array& bitfield,
-			    size_t bitfieldLength) const;
+                            const Array& bitfield,
+                            size_t bitfieldLength) const;
 
   bool setBitInternal(unsigned char* bitfield, size_t index, bool on);
   bool setFilterBit(size_t index);
@@ -94,7 +94,7 @@ public:
     size_t startIndex;
     size_t endIndex;
     Range(size_t startIndex = 0, size_t endIndex = 0):startIndex(startIndex),
-						      endIndex(endIndex) {}
+                                                      endIndex(endIndex) {}
   
     size_t getSize() const {
       return endIndex-startIndex;
@@ -177,13 +177,13 @@ public:
    * affected by filter
    */
   bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen,
-			    const unsigned char* bitfield, size_t len) const;
+                            const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
   bool getAllMissingUnusedIndexes(unsigned char* misbitfield, size_t mislen,
-				  const unsigned char* bitfield,
-				  size_t len) const;
+                                  const unsigned char* bitfield,
+                                  size_t len) const;
   /**
    * affected by filter
    */

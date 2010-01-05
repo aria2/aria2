@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -78,14 +78,14 @@ private:
 
   std::string
   formatDownloadResult(const std::string& status,
-		       const SharedHandle<DownloadResult>& downloadResult) const;
+                       const SharedHandle<DownloadResult>& downloadResult) const;
 
   void configureRequestGroup
   (const SharedHandle<RequestGroup>& requestGroup) const;
 public:
   RequestGroupMan(const std::deque<SharedHandle<RequestGroup> >& requestGroups,
-		  unsigned int maxSimultaneousDownloads,
-		  const Option* option);
+                  unsigned int maxSimultaneousDownloads,
+                  const Option* option);
 
   bool downloadFinished();
 
@@ -113,7 +113,7 @@ public:
   void insertReservedGroup(size_t pos, const SharedHandle<RequestGroup>& group);
 
   size_t countRequestGroup() const;
-		  
+                  
   SharedHandle<RequestGroup> getRequestGroup(size_t index) const;
   
   const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const
@@ -164,11 +164,11 @@ public:
     downloadresultcode::RESULT _lastErrorResult;
   public:
     DownloadStat(size_t completed,
-		 size_t error,
-		 size_t inProgress,
-		 size_t waiting,
-		 downloadresultcode::RESULT lastErrorResult =
-		 downloadresultcode::FINISHED):
+                 size_t error,
+                 size_t inProgress,
+                 size_t waiting,
+                 downloadresultcode::RESULT lastErrorResult =
+                 downloadresultcode::FINISHED):
       _completed(completed),
       _error(error),
       _inProgress(inProgress),
@@ -204,10 +204,10 @@ public:
   void purgeDownloadResult();
 
   SharedHandle<ServerStat> findServerStat(const std::string& hostname,
-					  const std::string& protocol) const;
+                                          const std::string& protocol) const;
 
   SharedHandle<ServerStat> getOrCreateServerStat(const std::string& hostname,
-						 const std::string& protocol);
+                                                 const std::string& protocol);
 
   bool addServerStat(const SharedHandle<ServerStat>& serverStat);
 

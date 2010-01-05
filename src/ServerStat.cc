@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -102,15 +102,15 @@ void ServerStat::updateSingleConnectionAvgSpeed(unsigned int downloadSpeed)
   }
   if(avgDownloadSpeed < (int)(0.80*_singleConnectionAvgSpeed)) {
     _logger->debug("ServerStat:%s: resetting counter since single connection"
-		   " speed dropped", getHostname().c_str());
+                   " speed dropped", getHostname().c_str());
     _counter = 0;
   }
   _logger->debug("ServerStat:%s: _singleConnectionAvgSpeed old:%.2fKB/s"
-		 " new:%.2fKB/s last:%.2fKB/s",
-		 getHostname().c_str(),
-		 (float) _singleConnectionAvgSpeed/1024,
-		 (float) avgDownloadSpeed/1024,
-		 (float) downloadSpeed / 1024);
+                 " new:%.2fKB/s last:%.2fKB/s",
+                 getHostname().c_str(),
+                 (float) _singleConnectionAvgSpeed/1024,
+                 (float) avgDownloadSpeed/1024,
+                 (float) downloadSpeed / 1024);
   _singleConnectionAvgSpeed = (int)avgDownloadSpeed;
 }
 
@@ -135,11 +135,11 @@ void ServerStat::updateMultiConnectionAvgSpeed(unsigned int downloadSpeed)
       ((1.0/5.0)*(float)downloadSpeed);
   }
   _logger->debug("ServerStat:%s: _multiConnectionAvgSpeed old:%.2fKB/s"
-		 " new:%.2fKB/s last:%.2fKB/s",
-		 getHostname().c_str(),
-		 (float) _multiConnectionAvgSpeed/1024,
-		 (float) avgDownloadSpeed/1024,
-		 (float) downloadSpeed / 1024);
+                 " new:%.2fKB/s last:%.2fKB/s",
+                 getHostname().c_str(),
+                 (float) _multiConnectionAvgSpeed/1024,
+                 (float) avgDownloadSpeed/1024,
+                 (float) downloadSpeed / 1024);
   _multiConnectionAvgSpeed = (int)avgDownloadSpeed;
 }
 
@@ -162,19 +162,19 @@ void ServerStat::setStatus(const std::string& status)
 {
   size_t len = arrayLength(STATUS_STRING);
   const std::string* p = std::find(&STATUS_STRING[0],
-				   &STATUS_STRING[len],
-				   status);
+                                   &STATUS_STRING[len],
+                                   status);
   if(p != &STATUS_STRING[len]) {
     _status = static_cast<STATUS>(ServerStat::OK+
-				  std::distance(&STATUS_STRING[0], p));
+                                  std::distance(&STATUS_STRING[0], p));
   }
 }
 
 void ServerStat::setStatusInternal(STATUS status)
 {
   _logger->debug("ServerStat: set status %s for %s (%s)",
-		 STATUS_STRING[status].c_str(),
-		 _hostname.c_str(), _protocol.c_str());
+                 STATUS_STRING[status].c_str(),
+                 _hostname.c_str(), _protocol.c_str());
   _status = status;
   _lastUpdated.reset();
 }

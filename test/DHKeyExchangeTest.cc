@@ -49,7 +49,7 @@ void DHKeyExchangeTest::testHandshake()
   dhB.computeSecret(secretB, sizeof(secretB), publicKeyA, sizeof(publicKeyA));
 
   CPPUNIT_ASSERT_EQUAL(util::toHex(secretA, sizeof(secretA)),
-		       util::toHex(secretB, sizeof(secretB)));
+                       util::toHex(secretB, sizeof(secretB)));
 }
 
 } // namespace aria2

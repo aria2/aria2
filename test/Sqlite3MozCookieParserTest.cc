@@ -55,7 +55,7 @@ void Sqlite3MozCookieParserTest::testParse()
 
   const Cookie& overflowTime = cookies[2];
   CPPUNIT_ASSERT_EQUAL(std::string(".overflow_time_t.local"),
-		       overflowTime.getDomain());
+                       overflowTime.getDomain());
   CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), overflowTime.getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), overflowTime.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("bar"), overflowTime.getValue());
@@ -72,7 +72,7 @@ void Sqlite3MozCookieParserTest::testParse_fileNotFound()
   } catch(RecoverableException& e) {
     // SUCCESS
     CPPUNIT_ASSERT(util::startsWith(e.what(),
-				    "Failed to open SQLite3 database:"));
+                                    "Failed to open SQLite3 database:"));
   }
 }
 

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -180,11 +180,11 @@ private:
 
   template<typename T1, typename T2>
   friend bool operator==(const SharedHandle<T1>& t1,
-			 const SharedHandle<T2>& t2);
+                         const SharedHandle<T2>& t2);
 
   template<typename T1, typename T2>
   friend bool operator!=(const SharedHandle<T1>& t1,
-			 const SharedHandle<T2>& t2);
+                         const SharedHandle<T2>& t2);
 
   template<typename T1, typename T2>
   friend bool operator<(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2);
@@ -298,11 +298,11 @@ private:
 
   template<typename T1, typename T2>
   friend bool operator==(const WeakHandle<T1>& t1,
-			 const WeakHandle<T2>& t2);
+                         const WeakHandle<T2>& t2);
 
   template<typename T1, typename T2>
   friend bool operator!=(const WeakHandle<T1>& t1,
-			 const WeakHandle<T2>& t2);
+                         const WeakHandle<T2>& t2);
 
   template<typename T1, typename T2>
   friend bool operator<(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2);

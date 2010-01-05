@@ -52,7 +52,7 @@ public:
     bittorrent::load("test.torrent", _dctx);
     peer.reset(new Peer("192.168.0.1", 6889));
     peer->allocateSessionResource(_dctx->getPieceLength(),
-				  _dctx->getTotalLength());
+                                  _dctx->getTotalLength());
     option = new Option();
     _pieceSelector.reset(new InOrderPieceSelector());
   }
@@ -96,13 +96,13 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
 
   SharedHandle<Piece> piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
-		       piece->toString());
+                       piece->toString());
   piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
-		       piece->toString());
+                       piece->toString());
   piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
-		       piece->toString());
+                       piece->toString());
   piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT(piece.isNull());
 }
@@ -120,11 +120,11 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 
   SharedHandle<Piece> piece = pss.getMissingPiece(peer, excludedIndexes);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
-		       piece->toString());
+                       piece->toString());
 
   piece = pss.getMissingPiece(peer, excludedIndexes);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
-		       piece->toString());
+                       piece->toString());
 
   piece = pss.getMissingPiece(peer, excludedIndexes);
   CPPUNIT_ASSERT(piece.isNull());
@@ -141,7 +141,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
 
   SharedHandle<Piece> piece = pss.getMissingFastPiece(peer);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
-		       piece->toString());
+                       piece->toString());
 
   CPPUNIT_ASSERT(pss.getMissingFastPiece(peer).isNull());
 }
@@ -162,7 +162,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
 
   SharedHandle<Piece> piece = pss.getMissingFastPiece(peer, excludedIndexes);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
-		       piece->toString());
+                       piece->toString());
   
   CPPUNIT_ASSERT(pss.getMissingFastPiece(peer, excludedIndexes).isNull());
 }
@@ -186,7 +186,7 @@ void DefaultPieceStorageTest::testCompletePiece() {
 
   SharedHandle<Piece> piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
-		       piece->toString());
+                       piece->toString());
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, pss.getCompletedLength());
 

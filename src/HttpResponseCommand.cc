@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -131,15 +131,15 @@ bool HttpResponseCommand::executeInternal()
     _fileEntry->setLength(totalLength);
     if(_fileEntry->getPath().empty()) {
       _fileEntry->setPath
-	(strconcat(getDownloadContext()->getDir(),
-		   "/", httpResponse->determinFilename()));
+        (strconcat(getDownloadContext()->getDir(),
+                   "/", httpResponse->determinFilename()));
     }
     _fileEntry->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
-	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-		      _requestGroup->getFirstFilePath().c_str()).str());
+        (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+                      _requestGroup->getFirstFilePath().c_str()).str());
     }
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
@@ -150,11 +150,11 @@ bool HttpResponseCommand::executeInternal()
       // we ignore content-length when inflate is required
       _fileEntry->setLength(0);
       if(req->getMethod() == Request::METHOD_GET &&
-	 (totalLength != 0 ||
-	  !httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH))){
-	// DownloadContext::knowsTotalLength() == true only when
-	// server says the size of file is 0 explicitly.
-	getDownloadContext()->markTotalLengthIsUnknown();
+         (totalLength != 0 ||
+          !httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH))){
+        // DownloadContext::knowsTotalLength() == true only when
+        // server says the size of file is 0 explicitly.
+        getDownloadContext()->markTotalLengthIsUnknown();
       }
       return handleOtherEncoding(httpResponse);
     } else {
@@ -163,7 +163,7 @@ bool HttpResponseCommand::executeInternal()
   } else {
     // validate totalsize
     _requestGroup->validateTotalLength(_fileEntry->getLength(),
-				       httpResponse->getEntityLength());
+                                       httpResponse->getEntityLength());
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
     if(_requestGroup->getTotalLength() == 0) {
@@ -173,12 +173,12 @@ bool HttpResponseCommand::executeInternal()
       // anyway.
       _requestGroup->getPieceStorage()->getDiskAdaptor()->truncate(0);
       e->commands.push_back
-	(createHttpDownloadCommand(httpResponse,
-				   getTransferEncodingDecoder(httpResponse),
-				   getContentEncodingDecoder(httpResponse)));
+        (createHttpDownloadCommand(httpResponse,
+                                   getTransferEncodingDecoder(httpResponse),
+                                   getContentEncodingDecoder(httpResponse)));
     } else {
       e->commands.push_back(createHttpDownloadCommand(httpResponse,
-						      getTransferEncodingDecoder(httpResponse)));
+                                                      getTransferEncodingDecoder(httpResponse)));
     }
     return true;
   }
@@ -217,9 +217,9 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
   _requestGroup->adjustFilename
     (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
-				      (_requestGroup->getDownloadContext(),
-				       SharedHandle<PieceStorage>(),
-				       getOption().get())));
+                                      (_requestGroup->getDownloadContext(),
+                                       SharedHandle<PieceStorage>(),
+                                       getOption().get())));
   _requestGroup->initPieceStorage();
 
   if(getOption()->getAsBool(PREF_DRY_RUN)) {
@@ -232,8 +232,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     _requestGroup->getPieceStorage()->markAllPiecesDone();
 
     logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-		   _requestGroup->getGID(),
-		   _requestGroup->getFirstFilePath().c_str());
+                   _requestGroup->getGID(),
+                   _requestGroup->getFirstFilePath().c_str());
 
     return true;
   }
@@ -277,8 +277,8 @@ static SharedHandle<Decoder> getTransferEncodingDecoder
     decoder = httpResponse->getTransferEncodingDecoder();
     if(decoder.isNull()) {
       throw DL_ABORT_EX
-	(StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
-		      httpResponse->getTransferEncoding().c_str()).str());
+        (StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
+                      httpResponse->getTransferEncoding().c_str()).str());
     }
     decoder->init();
   }
@@ -293,10 +293,10 @@ static SharedHandle<Decoder> getContentEncodingDecoder
     decoder = httpResponse->getContentEncodingDecoder();
     if(decoder.isNull()) {
       LogFactory::getInstance()->info
-	("Content-Encoding %s is specified, but the current implementation"
-	 "doesn't support it. The decoding process is skipped and the"
-	 "downloaded content will be still encoded.",
-	 httpResponse->getContentEncoding().c_str());
+        ("Content-Encoding %s is specified, but the current implementation"
+         "doesn't support it. The decoding process is skipped and the"
+         "downloaded content will be still encoded.",
+         httpResponse->getContentEncoding().c_str());
     } else {
       decoder->init();
     }
@@ -326,8 +326,8 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
     _requestGroup->getPieceStorage()->markAllPiecesDone();
 
     logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-		   _requestGroup->getGID(),
-		   _requestGroup->getFirstFilePath().c_str());
+                   _requestGroup->getGID(),
+                   _requestGroup->getFirstFilePath().c_str());
 
     poolConnection();
     return true;
@@ -346,8 +346,8 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   }
   e->commands.push_back
     (createHttpDownloadCommand(httpResponse,
-			       getTransferEncodingDecoder(httpResponse),
-			       getContentEncodingDecoder(httpResponse)));
+                               getTransferEncodingDecoder(httpResponse),
+                               getContentEncodingDecoder(httpResponse)));
   return true;
 }
 
@@ -385,7 +385,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 
   HttpDownloadCommand* command =
     new HttpDownloadCommand(cuid, req, _fileEntry, _requestGroup,
-			    httpResponse, httpConnection, e, socket);
+                            httpResponse, httpConnection, e, socket);
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit
     (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));

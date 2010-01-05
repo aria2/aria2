@@ -36,7 +36,7 @@ void DHTConnectionImplTest::testWriteAndReadData()
     std::string message1 = "hello world.";
     // hostname should be "localhost", not 127.0.0.1. Test failed on Mac OSX10.5
     con1.sendMessage(reinterpret_cast<const unsigned char*>(message1.c_str()),
-		     message1.size(), "localhost", con2port);
+                     message1.size(), "localhost", con2port);
 
     unsigned char readbuffer[100];
     std::string remoteHost;
@@ -46,7 +46,7 @@ void DHTConnectionImplTest::testWriteAndReadData()
       ssize_t rlength = con2.receiveMessage(readbuffer, sizeof(readbuffer), remoteHost, remotePort);
       CPPUNIT_ASSERT_EQUAL((ssize_t)message1.size(), rlength);
       CPPUNIT_ASSERT_EQUAL(message1,
-			   std::string(&readbuffer[0], &readbuffer[rlength]));
+                           std::string(&readbuffer[0], &readbuffer[rlength]));
     }
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());

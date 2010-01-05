@@ -32,7 +32,7 @@ void BencodeTest::testDecode()
     CPPUNIT_ASSERT(dict.isDict());
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"), dict["name"].s());
     CPPUNIT_ASSERT_EQUAL(static_cast<BDE::Integer>(12345678900LL),
-			 dict["size"].i());
+                         dict["size"].i());
     BDE list = dict["files"];
     CPPUNIT_ASSERT(list.isList());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), list.size());
@@ -47,7 +47,7 @@ void BencodeTest::testDecode()
     BDE dict = list[0];
     CPPUNIT_ASSERT(dict.isDict());
     CPPUNIT_ASSERT_EQUAL(static_cast<BDE::Integer>(123),
-			 dict["k"].i());
+                         dict["k"].i());
   }
   {
     // empty key is allowed
@@ -75,8 +75,8 @@ void BencodeTest::testDecode()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
-				       " Delimiter 'e' not found."),
-			   std::string(e.what()));
+                                       " Delimiter 'e' not found."),
+                           std::string(e.what()));
     }    
   }
   {
@@ -86,9 +86,9 @@ void BencodeTest::testDecode()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
-				       " Unexpected EOF in dict context."
-				       " 'e' expected."),
-			   std::string(e.what()));
+                                       " Unexpected EOF in dict context."
+                                       " 'e' expected."),
+                           std::string(e.what()));
     }          
   }
   {
@@ -98,9 +98,9 @@ void BencodeTest::testDecode()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
-				       " Unexpected EOF in list context."
-				       " 'e' expected."),
-			   std::string(e.what()));
+                                       " Unexpected EOF in list context."
+                                       " 'e' expected."),
+                           std::string(e.what()));
     }          
   }
   {
@@ -110,9 +110,9 @@ void BencodeTest::testDecode()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
-				       " Expected 3 bytes of data,"
-				       " but only 2 read."),
-			   std::string(e.what()));
+                                       " Expected 3 bytes of data,"
+                                       " but only 2 read."),
+                           std::string(e.what()));
     }
   }
   {
@@ -122,9 +122,9 @@ void BencodeTest::testDecode()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
-				       " A positive integer expected"
-				       " but none found."),
-			   std::string(e.what()));
+                                       " A positive integer expected"
+                                       " but none found."),
+                           std::string(e.what()));
     }
   }
   {
@@ -134,9 +134,9 @@ void BencodeTest::testDecode()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
-				       " A positive integer expected"
-				       " but none found."),
-			   std::string(e.what()));
+                                       " A positive integer expected"
+                                       " but none found."),
+                           std::string(e.what()));
     }
   }
   {
@@ -187,12 +187,12 @@ void BencodeTest::testEncode()
     dict["attrs"]["license"] = std::string("GPL");
 
     CPPUNIT_ASSERT_EQUAL(std::string("d"
-				     "5:attrsd7:license3:GPLe"
-				     "5:filesl6:aria2ce"
-				     "3:loci80000e"
-				     "4:name5:aria2"
-				     "e"),
-			 bencode::encode(dict));
+                                     "5:attrsd7:license3:GPLe"
+                                     "5:filesl6:aria2ce"
+                                     "3:loci80000e"
+                                     "4:name5:aria2"
+                                     "e"),
+                         bencode::encode(dict));
   }
 }
 

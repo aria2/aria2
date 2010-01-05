@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -180,7 +180,7 @@ public:
   virtual const unsigned char* getBitfield() = 0;
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   size_t bitfieldLength) = 0;
+                           size_t bitfieldLength) = 0;
   
   virtual size_t getBitfieldLength() = 0;
 
@@ -205,8 +205,8 @@ public:
    * command and newer than lastCheckTime.
    */
   virtual void getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
-					 int32_t myCuid,
-					 const Time& lastCheckTime) = 0;
+                                         int32_t myCuid,
+                                         const Time& lastCheckTime) = 0;
 
   /**
    * Removes have entry if specified seconds have elapsed since its
@@ -234,14 +234,14 @@ public:
   virtual void addPieceStats(size_t index) = 0;
 
   virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength) = 0;
+                             size_t bitfieldLength) = 0;
 
   virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength) = 0;
+                                  size_t bitfieldLength) = 0;
 
   virtual void updatePieceStats(const unsigned char* newBitfield,
-				size_t newBitfieldLength,
-				const unsigned char* oldBitfield) = 0;
+                                size_t newBitfieldLength,
+                                const unsigned char* oldBitfield) = 0;
 
 };
 

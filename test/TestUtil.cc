@@ -21,11 +21,11 @@ void createFile(const std::string& path, size_t length)
   int fd = creat(path.c_str(), OPEN_MODE);
   if(fd == -1) {
     throw FATAL_EXCEPTION(StringFormat("Could not create file=%s. cause:%s",
-				       path.c_str(), strerror(errno)).str());
+                                       path.c_str(), strerror(errno)).str());
   }
   if(-1 == ftruncate(fd, length)) {
     throw FATAL_EXCEPTION(StringFormat("ftruncate failed. cause:%s",
-				       strerror(errno)).str());
+                                       strerror(errno)).str());
   }
   close(fd);
 }

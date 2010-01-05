@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -81,7 +81,7 @@ DHTSetup::DHTSetup():_logger(LogFactory::getInstance()) {}
 DHTSetup::~DHTSetup() {}
 
 void DHTSetup::setup(std::deque<Command*>& commands,
-		     DownloadEngine* e, const Option* option)
+                     DownloadEngine* e, const Option* option)
 {
   if(_initialized) {
     return;
@@ -97,13 +97,13 @@ void DHTSetup::setup(std::deque<Command*>& commands,
     try {
       std::ifstream in(dhtFile.c_str(), std::ios::binary);
       if(!in) {
-	throw DL_ABORT_EX("Could not open file");
+        throw DL_ABORT_EX("Could not open file");
       }
       deserializer.deserialize(in);
       localNode = deserializer.getLocalNode();
     } catch(RecoverableException& e) {
       _logger->error("Exception caught while loading DHT routing table from %s",
-		     e, dhtFile.c_str());
+                     e, dhtFile.c_str());
     }
     if(localNode.isNull()) {
       localNode.reset(new DHTNode());
@@ -114,12 +114,12 @@ void DHTSetup::setup(std::deque<Command*>& commands,
       IntSequence seq = util::parseIntRange(option->get(PREF_DHT_LISTEN_PORT));
       uint16_t port;
       if(!connection->bind(port, seq)) {
-	throw DL_ABORT_EX("Error occurred while binding port for DHT");
+        throw DL_ABORT_EX("Error occurred while binding port for DHT");
       }
       localNode->setPort(port);
     }
     _logger->debug("Initialized local node ID=%s",
-		   util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
+                   util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
 
     SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
 
@@ -184,32 +184,32 @@ void DHTSetup::setup(std::deque<Command*>& commands,
     }
     if(!desnodes.empty() && deserializer.getSerializedTime().elapsed(DHT_BUCKET_REFRESH_INTERVAL)) {
       SharedHandle<DHTBucketRefreshTask> task
-	(dynamic_pointer_cast<DHTBucketRefreshTask>(taskFactory->createBucketRefreshTask()));
+        (dynamic_pointer_cast<DHTBucketRefreshTask>(taskFactory->createBucketRefreshTask()));
       task->setForceRefresh(true);
       taskQueue->addPeriodicTask1(task);
     }
 
     if(!option->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
       {
-	std::pair<std::string, uint16_t> addr(option->get(PREF_DHT_ENTRY_POINT_HOST),
-					      option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
-	std::deque<std::pair<std::string, uint16_t> > entryPoints;
-	entryPoints.push_back(addr);
-	DHTEntryPointNameResolveCommand* command =
-	  new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
-	command->setBootstrapEnabled(true);
-	command->setTaskQueue(taskQueue);
-	command->setTaskFactory(taskFactory);
-	command->setRoutingTable(routingTable);
-	command->setLocalNode(localNode);
-	tempCommands.push_back(command);
+        std::pair<std::string, uint16_t> addr(option->get(PREF_DHT_ENTRY_POINT_HOST),
+                                              option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
+        std::deque<std::pair<std::string, uint16_t> > entryPoints;
+        entryPoints.push_back(addr);
+        DHTEntryPointNameResolveCommand* command =
+          new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
+        command->setBootstrapEnabled(true);
+        command->setTaskQueue(taskQueue);
+        command->setTaskFactory(taskFactory);
+        command->setRoutingTable(routingTable);
+        command->setLocalNode(localNode);
+        tempCommands.push_back(command);
       }
     } else {
       _logger->info("No DHT entry point specified.");
     }
     {
       DHTInteractionCommand* command =
-	new DHTInteractionCommand(e->newCUID(), e);
+        new DHTInteractionCommand(e->newCUID(), e);
       command->setMessageDispatcher(dispatcher);
       command->setMessageReceiver(receiver);
       command->setTaskQueue(taskQueue);
@@ -218,14 +218,14 @@ void DHTSetup::setup(std::deque<Command*>& commands,
     }
     {
       DHTTokenUpdateCommand* command =
-	new DHTTokenUpdateCommand(e->newCUID(), e, DHT_TOKEN_UPDATE_INTERVAL);
+        new DHTTokenUpdateCommand(e->newCUID(), e, DHT_TOKEN_UPDATE_INTERVAL);
       command->setTokenTracker(tokenTracker);
       tempCommands.push_back(command);
     }
     {
       DHTBucketRefreshCommand* command =
-	new DHTBucketRefreshCommand(e->newCUID(), e,
-				    DHT_BUCKET_REFRESH_CHECK_INTERVAL);
+        new DHTBucketRefreshCommand(e->newCUID(), e,
+                                    DHT_BUCKET_REFRESH_CHECK_INTERVAL);
       command->setTaskQueue(taskQueue);
       command->setRoutingTable(routingTable);
       command->setTaskFactory(taskFactory);
@@ -233,14 +233,14 @@ void DHTSetup::setup(std::deque<Command*>& commands,
     }
     {
       DHTPeerAnnounceCommand* command =
-	new DHTPeerAnnounceCommand(e->newCUID(), e,
-				   DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
+        new DHTPeerAnnounceCommand(e->newCUID(), e,
+                                   DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
       command->setPeerAnnounceStorage(peerAnnounceStorage);
       tempCommands.push_back(command);
     }
     {
       DHTAutoSaveCommand* command =
-	new DHTAutoSaveCommand(e->newCUID(), e, 30*60);
+        new DHTAutoSaveCommand(e->newCUID(), e, 30*60);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable);
       tempCommands.push_back(command);

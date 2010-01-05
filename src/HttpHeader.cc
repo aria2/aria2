@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -142,9 +142,9 @@ RangeHandle HttpHeader::getRange() const
     } else {
       uint64_t contentLength = util::parseULLInt(contentLengthStr);
       if(contentLength == 0) {
-	return SharedHandle<Range>(new Range());
+        return SharedHandle<Range>(new Range());
       } else {
-	return SharedHandle<Range>(new Range(0, contentLength-1, contentLength));
+        return SharedHandle<Range>(new Range(0, contentLength-1, contentLength));
       }
     }
   }

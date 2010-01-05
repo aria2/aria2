@@ -32,8 +32,8 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( IteratableChunkChecksumValidatorTest );
 
 const char* IteratableChunkChecksumValidatorTest::csArray[] = { "29b0e7878271645fffb7eec7db4a7473a1c00bc1",
-						      "4df75a661cb7eb2733d9cdaa7f772eae3a4e2976",
-						      "0a4ea2f7dd7c52ddf2099a444ab2184b4d341bdb" };
+                                                                "4df75a661cb7eb2733d9cdaa7f772eae3a4e2976",
+                                                                "0a4ea2f7dd7c52ddf2099a444ab2184b4d341bdb" };
 
 void IteratableChunkChecksumValidatorTest::testValidate() {
   Option option;
@@ -95,9 +95,9 @@ void IteratableChunkChecksumValidatorTest::testValidate_readError() {
   CPPUNIT_ASSERT(ps->hasPiece(0));
   CPPUNIT_ASSERT(ps->hasPiece(1));
   CPPUNIT_ASSERT(!ps->hasPiece(2)); // #2 piece is not valid because
-				    // #program expects its size is
-				    // #100, but it reads only 50
-				    // #bytes and raises error.
+                                    // #program expects its size is
+                                    // #100, but it reads only 50
+                                    // #bytes and raises error.
   CPPUNIT_ASSERT(!ps->hasPiece(3));
   CPPUNIT_ASSERT(!ps->hasPiece(4));
 }

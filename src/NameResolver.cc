@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -47,14 +47,14 @@ namespace aria2 {
 NameResolver::NameResolver():_socktype(0), _family(AF_UNSPEC) {}
 
 void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
-			   const std::string& hostname)
+                           const std::string& hostname)
 {
   struct addrinfo* res;
   int s;
   s = callGetaddrinfo(&res, hostname.c_str(), 0, _family, _socktype, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
-				 hostname.c_str(), gai_strerror(s)).str());
+                                   hostname.c_str(), gai_strerror(s)).str());
   }
   auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;

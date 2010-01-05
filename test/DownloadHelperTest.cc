@@ -144,7 +144,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
       CPPUNIT_ASSERT_EQUAL(array[0], uris[0]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)2,
-			 alphaGroup->getNumConcurrentCommand());
+                         alphaGroup->getNumConcurrentCommand());
     SharedHandle<DownloadContext> alphaCtx = alphaGroup->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), alphaCtx->getDir());
     // See filename is not assigned yet
@@ -217,18 +217,18 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
-			 ctx->getBasePath());
+                         ctx->getBasePath());
 
     SharedHandle<RequestGroup> torrentGroup = result[1];
     std::deque<std::string> auxURIs;
     torrentGroup->getDownloadContext()->getFirstFileEntry()->getUris(auxURIs);
     CPPUNIT_ASSERT(auxURIs.empty());
     CPPUNIT_ASSERT_EQUAL((unsigned int)3,
-			 torrentGroup->getNumConcurrentCommand());
+                         torrentGroup->getNumConcurrentCommand());
     SharedHandle<DownloadContext> btctx = torrentGroup->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), btctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-test"),
-			 btctx->getBasePath());    
+                         btctx->getBasePath());    
   }
 }
 #endif // ENABLE_BITTORRENT
@@ -271,20 +271,20 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
-			 ctx->getBasePath());
+                         ctx->getBasePath());
 
     SharedHandle<RequestGroup> aria2052Group = result[1];
     CPPUNIT_ASSERT_EQUAL((unsigned int)1, // because of maxconnections attribute
-			 aria2052Group->getNumConcurrentCommand());
+                         aria2052Group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> aria2052Ctx =
       aria2052Group->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), aria2052Ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.5.2.tar.bz2"),
-			 aria2052Ctx->getBasePath());
+                         aria2052Ctx->getBasePath());
     
     SharedHandle<RequestGroup> aria2051Group = result[2];
     CPPUNIT_ASSERT_EQUAL((unsigned int)2,
-			 aria2051Group->getNumConcurrentCommand());
+                         aria2051Group->getNumConcurrentCommand());
   }
 }
 #endif // ENABLE_METALINK
@@ -312,13 +312,13 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
   SharedHandle<DownloadContext> fileCtx = fileGroup->getDownloadContext();
   CPPUNIT_ASSERT_EQUAL(std::string("/mydownloads"), fileCtx->getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("/mydownloads/myfile.out"),
-		       fileCtx->getBasePath());
+                       fileCtx->getBasePath());
 
   SharedHandle<RequestGroup> fileISOGroup = result[1];
   SharedHandle<DownloadContext> fileISOCtx = fileISOGroup->getDownloadContext();
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), fileISOCtx->getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
-		       fileISOCtx->getBasePath());
+                       fileISOCtx->getBasePath());
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -400,9 +400,9 @@ void DownloadHelperTest::testCreateRequestGroupForMetalink()
     std::sort(uris.begin(), uris.end());
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"),
-			 uris[0]);
+                         uris[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("http://httphost/aria2-0.5.2.tar.bz2"),
-			 uris[1]);
+                         uris[1]);
     // See numConcurrentCommand is 1 because of maxconnections attribute.
     CPPUNIT_ASSERT_EQUAL((unsigned int)1, group->getNumConcurrentCommand());
   }

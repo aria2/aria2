@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -79,7 +79,7 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
     SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
     _dispatcher->addMessageToQueue(msg);
   }else if(_index*METADATA_PIECE_SIZE <
-	   (size_t)attrs[bittorrent::METADATA_SIZE].i()){
+           (size_t)attrs[bittorrent::METADATA_SIZE].i()){
     SharedHandle<UTMetadataDataExtensionMessage> m
       (new UTMetadataDataExtensionMessage(id));
     m->setIndex(_index);

@@ -64,9 +64,9 @@ public:
 
     _serverSocket.reset(listenSocket->acceptConnection());
     _ftp.reset(new FtpConnection(1, _clientSocket, req,
-				 _authConfigFactory->createAuthConfig
-				 (req, _option.get()),
-				 _option.get()));
+                                 _authConfigFactory->createAuthConfig
+                                 (req, _option.get()),
+                                 _option.get()));
   }
 
   void tearDown() {}
@@ -105,7 +105,7 @@ void FtpConnectionTest::testReceiveResponse()
   CPPUNIT_ASSERT_EQUAL((unsigned int)100, _ftp->receiveResponse());
   // 2 responses in the buffer
   _serverSocket->writeData("101 single1\r\n"
-			   "102 single2\r\n");
+                           "102 single2\r\n");
   waitRead(_clientSocket);
   CPPUNIT_ASSERT_EQUAL((unsigned int)101, _ftp->receiveResponse());
   CPPUNIT_ASSERT_EQUAL((unsigned int)102, _ftp->receiveResponse());
@@ -127,9 +127,9 @@ void FtpConnectionTest::testReceiveResponse()
   CPPUNIT_ASSERT_EQUAL((unsigned int)103, _ftp->receiveResponse());
 
   _serverSocket->writeData("104-multi\r\n"
-			   "104 \r\n"
-			   "105-multi\r\n"
-			   "105 \r\n");
+                           "104 \r\n"
+                           "105-multi\r\n"
+                           "105 \r\n");
   waitRead(_clientSocket);
   CPPUNIT_ASSERT_EQUAL((unsigned int)104, _ftp->receiveResponse());
   CPPUNIT_ASSERT_EQUAL((unsigned int)105, _ftp->receiveResponse());

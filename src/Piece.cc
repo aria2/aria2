@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -47,13 +47,13 @@ namespace aria2 {
 
 Piece::Piece():index(0), length(0), _blockLength(BLOCK_LENGTH), bitfield(0)
 #ifdef ENABLE_MESSAGE_DIGEST
-	      , _nextBegin(0)
+              , _nextBegin(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
 Piece::Piece(size_t index, size_t length, size_t blockLength):index(index), length(length), _blockLength(blockLength)
 #ifdef ENABLE_MESSAGE_DIGEST
-							     , _nextBegin(0)
+                                                             , _nextBegin(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {
   bitfield =
@@ -196,7 +196,7 @@ bool Piece::getAllMissingBlockIndexes
 
 std::string Piece::toString() const {
   return strconcat("piece: index=", util::itos(index),
-		   ", length=", util::itos(length));
+                   ", length=", util::itos(length));
 }
 
 void Piece::reconfigure(size_t length)

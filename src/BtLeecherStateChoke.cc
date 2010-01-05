@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -56,7 +56,7 @@ BtLeecherStateChoke::PeerEntry::PeerEntry
   _peer(peer), _downloadSpeed(peer->calculateDownloadSpeed(now)),
   // peer must be interested to us and sent block in the last 30 seconds
   _regularUnchoker(peer->peerInterested() &&
-		   !peer->getLastDownloadUpdate().elapsed(30)) {}
+                   !peer->getLastDownloadUpdate().elapsed(30)) {}
 
 const SharedHandle<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
 {
@@ -123,14 +123,14 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke
 (std::deque<PeerEntry>& peerEntries)
 {
   std::for_each(peerEntries.begin(), peerEntries.end(),
-		std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
+                std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
   
   std::deque<PeerEntry>::iterator i =
     std::partition(peerEntries.begin(), peerEntries.end(),
-		   PeerFilter(true, true));
+                   PeerFilter(true, true));
   if(i != peerEntries.begin()) {
     std::random_shuffle(peerEntries.begin(), i,
-			*(SimpleRandomizer::getInstance().get()));
+                        *(SimpleRandomizer::getInstance().get()));
     (*peerEntries.begin()).enableOptUnchoking();
     _logger->info("POU: %s", (*peerEntries.begin()).getPeer()->ipaddr.c_str());
   }
@@ -140,7 +140,7 @@ void BtLeecherStateChoke::regularUnchoke(std::deque<PeerEntry>& peerEntries)
 {
   std::deque<PeerEntry>::iterator rest =
     std::partition(peerEntries.begin(), peerEntries.end(),
-		   std::mem_fun_ref(&PeerEntry::isRegularUnchoker));
+                   std::mem_fun_ref(&PeerEntry::isRegularUnchoker));
   
   struct timeval now;
   gettimeofday(&now, 0);
@@ -155,8 +155,8 @@ void BtLeecherStateChoke::regularUnchoke(std::deque<PeerEntry>& peerEntries)
   for(;peerIter != rest && count; ++peerIter, --count) {
     (*peerIter).disableChokingRequired();
     _logger->info("RU: %s, dlspd=%u",
-		  (*peerIter).getPeer()->ipaddr.c_str(),
-		  (*peerIter).getDownloadSpeed());
+                  (*peerIter).getPeer()->ipaddr.c_str(),
+                  (*peerIter).getDownloadSpeed());
     if((*peerIter).getPeer()->optUnchoking()) {
       fastOptUnchoker = true;
       (*peerIter).disableOptUnchoking();
@@ -164,16 +164,16 @@ void BtLeecherStateChoke::regularUnchoke(std::deque<PeerEntry>& peerEntries)
   }
   if(fastOptUnchoker) {
     std::random_shuffle(peerIter, peerEntries.end(),
-			*(SimpleRandomizer::getInstance().get()));
+                        *(SimpleRandomizer::getInstance().get()));
     for(std::deque<PeerEntry>::iterator i = peerIter; i != peerEntries.end();
-	++i) {
+        ++i) {
       if((*i).getPeer()->peerInterested()) {
-	(*i).enableOptUnchoking();
-	_logger->info("OU: %s", (*i).getPeer()->ipaddr.c_str());
-	break;
+        (*i).enableOptUnchoking();
+        _logger->info("OU: %s", (*i).getPeer()->ipaddr.c_str());
+        break;
       } else {
-	(*i).disableChokingRequired();
-	_logger->info("OU: %s", (*i).getPeer()->ipaddr.c_str());
+        (*i).disableChokingRequired();
+        _logger->info("OU: %s", (*i).getPeer()->ipaddr.c_str());
       }
     }
   }
@@ -203,15 +203,15 @@ BtLeecherStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet
 
   std::deque<PeerEntry> peerEntries;
   std::transform(peerSet.begin(), peerSet.end(),
-		 std::back_inserter(peerEntries),
-		 BtLeecherStateChokeGenPeerEntry());
+                 std::back_inserter(peerEntries),
+                 BtLeecherStateChokeGenPeerEntry());
 
   peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
-				   std::mem_fun_ref(&PeerEntry::isSnubbing)),
-		    peerEntries.end());
-	      
+                                   std::mem_fun_ref(&PeerEntry::isSnubbing)),
+                    peerEntries.end());
+              
   std::for_each(peerEntries.begin(), peerEntries.end(),
-		std::mem_fun_ref(&PeerEntry::enableChokingRequired));
+                std::mem_fun_ref(&PeerEntry::enableChokingRequired));
 
   // planned optimistic unchoke
   if(_round == 0) {

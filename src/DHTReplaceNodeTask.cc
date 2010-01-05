@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -44,7 +44,7 @@
 namespace aria2 {
 
 DHTReplaceNodeTask::DHTReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-				       const SharedHandle<DHTNode>& newNode):
+                                       const SharedHandle<DHTNode>& newNode):
   _bucket(bucket),
   _newNode(newNode),
   _numRetry(0),
@@ -74,7 +74,7 @@ void DHTReplaceNodeTask::sendMessage()
 void DHTReplaceNodeTask::onReceived(const SharedHandle<DHTMessage>& message)
 {
   _logger->info("ReplaceNode: Ping reply received from %s.",
-		message->getRemoteNode()->toString().c_str());
+                message->getRemoteNode()->toString().c_str());
   _finished = true;
 }
 
@@ -83,13 +83,13 @@ void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
   ++_numRetry;
   if(_numRetry >= MAX_RETRY) {
     _logger->info("ReplaceNode: Ping failed %u times. Replace %s with %s.",
-		  _numRetry, node->toString().c_str(), _newNode->toString().c_str());
+                  _numRetry, node->toString().c_str(), _newNode->toString().c_str());
     node->markBad();
     _bucket->addNode(_newNode);
     _finished = true;
   } else {
     _logger->info("ReplaceNode: Ping reply timeout from %s. Try once more.",
-		  node->toString().c_str());
+                  node->toString().c_str());
     sendMessage();
   }
 }

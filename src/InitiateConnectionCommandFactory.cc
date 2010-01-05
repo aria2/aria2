@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -74,8 +74,8 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand
   } else if(req->getProtocol() == Request::PROTO_FTP) {
     if(req->getFile().empty()) {
       throw DL_ABORT_EX
-	(StringFormat("FTP URL %s doesn't contain file path.",
-		      req->getUrl().c_str()).str());
+        (StringFormat("FTP URL %s doesn't contain file path.",
+                      req->getUrl().c_str()).str());
     }
     return
       new FtpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
@@ -83,7 +83,7 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand
     // these protocols are not supported yet
     throw DL_ABORT_EX
       (StringFormat("%s is not supported yet.",
-		    req->getProtocol().c_str()).str());
+                    req->getProtocol().c_str()).str());
   }
 }
 

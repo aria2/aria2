@@ -60,7 +60,7 @@ void UTMetadataDataExtensionMessageTest::testToString()
   UTMetadataDataExtensionMessage msg(1);
   msg.setIndex(100);
   CPPUNIT_ASSERT_EQUAL(std::string("ut_metadata data piece=100"),
-		       msg.toString());
+                       msg.toString());
 }
 
 void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
@@ -81,8 +81,8 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 
   unsigned char infoHash[INFO_HASH_LENGTH];
   MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
-			      MessageDigestContext::SHA1,
-			      metadata.data(), metadata.size());
+                              MessageDigestContext::SHA1,
+                              metadata.data(), metadata.size());
   attrs[bittorrent::INFO_HASH] = std::string(&infoHash[0], &infoHash[20]);
 
   dctx->setAttribute(bittorrent::BITTORRENT, attrs);

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -95,46 +95,46 @@ void Netrc::parse(const std::string& path)
     std::vector<std::string> tokens;
     util::split(line, std::back_inserter(tokens), " \t", true);
     for(std::vector<std::string>::const_iterator iter = tokens.begin();
-	iter != tokens.end(); ++iter) {
+        iter != tokens.end(); ++iter) {
       const std::string& token = *iter;
       if(state == GET_TOKEN) {
-	if(token == Netrc::MACHINE) {
-	  storeAuthenticator(authenticator);
-	  authenticator.reset(new Authenticator());
-	  state = SET_MACHINE;
-	} else if(token == Netrc::DEFAULT) {
-	  storeAuthenticator(authenticator);
-	  authenticator.reset(new DefaultAuthenticator());
-	} else {
-	  if(authenticator.isNull()) {
-	    throw DL_ABORT_EX
-	      (StringFormat("Netrc:parse error. %s encounterd where 'machine'"
-			    " or 'default' expected.", token.c_str()).str());
-	  }
-	  if(token == Netrc::LOGIN) {
-	    state = SET_LOGIN;
-	  } else if(token == Netrc::PASSWORD) {
-	    state = SET_PASSWORD;
-	  } else if(token == Netrc::ACCOUNT) {
-	    state = SET_ACCOUNT;
-	  } else if(token == Netrc::MACDEF) {
-	    state = SET_MACDEF;
-	  }
-	}
+        if(token == Netrc::MACHINE) {
+          storeAuthenticator(authenticator);
+          authenticator.reset(new Authenticator());
+          state = SET_MACHINE;
+        } else if(token == Netrc::DEFAULT) {
+          storeAuthenticator(authenticator);
+          authenticator.reset(new DefaultAuthenticator());
+        } else {
+          if(authenticator.isNull()) {
+            throw DL_ABORT_EX
+              (StringFormat("Netrc:parse error. %s encounterd where 'machine'"
+                            " or 'default' expected.", token.c_str()).str());
+          }
+          if(token == Netrc::LOGIN) {
+            state = SET_LOGIN;
+          } else if(token == Netrc::PASSWORD) {
+            state = SET_PASSWORD;
+          } else if(token == Netrc::ACCOUNT) {
+            state = SET_ACCOUNT;
+          } else if(token == Netrc::MACDEF) {
+            state = SET_MACDEF;
+          }
+        }
       } else {
-	if(state == SET_MACHINE) {
-	  authenticator->setMachine(token);
-	} else if(state == SET_LOGIN) {
-	  authenticator->setLogin(token);
-	} else if(state == SET_PASSWORD) {
-	  authenticator->setPassword(token);
-	} else if(state == SET_ACCOUNT) {
-	  authenticator->setAccount(token);
-	} else if(state == SET_MACDEF) {
-	  skipMacdef(f);
-	}
-	state = GET_TOKEN;
-      }	
+        if(state == SET_MACHINE) {
+          authenticator->setMachine(token);
+        } else if(state == SET_LOGIN) {
+          authenticator->setLogin(token);
+        } else if(state == SET_PASSWORD) {
+          authenticator->setPassword(token);
+        } else if(state == SET_ACCOUNT) {
+          authenticator->setAccount(token);
+        } else if(state == SET_MACDEF) {
+          skipMacdef(f);
+        }
+        state = GET_TOKEN;
+      } 
     }
   }
   if(state != GET_TOKEN) {
@@ -167,7 +167,7 @@ AuthenticatorHandle Netrc::findAuthenticator(const std::string& hostname) const
 {
   Authenticators::const_iterator itr =
     std::find_if(authenticators.begin(), authenticators.end(),
-		 AuthHostMatch(hostname));
+                 AuthHostMatch(hostname));
   if(itr == authenticators.end()) {
     return SharedHandle<Authenticator>();
   } else {

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -43,12 +43,12 @@ class InitialMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters) {}
+                          const std::string& name,
+                          const std::string& characters) {}
   
   virtual bool needsCharactersBuffering() const
   {
@@ -60,12 +60,12 @@ class MetalinkMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters) {}
+                          const std::string& name,
+                          const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const
   {
@@ -77,12 +77,12 @@ class FilesMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters) {}
+                          const std::string& name,
+                          const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const
   {
@@ -94,12 +94,12 @@ class FileMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -111,12 +111,12 @@ class SizeMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -128,12 +128,12 @@ class VersionMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -145,12 +145,12 @@ class LanguageMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -162,12 +162,12 @@ class OSMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -179,12 +179,12 @@ class VerificationMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters) {}
+                          const std::string& name,
+                          const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const
   {
@@ -196,12 +196,12 @@ class HashMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -213,12 +213,12 @@ class PiecesMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -230,12 +230,12 @@ class PieceHashMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -247,12 +247,12 @@ class SignatureMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name, const std::map<std::string,
-			    std::string>& attrs);
+                            const std::string& name, const std::map<std::string,
+                            std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -264,12 +264,12 @@ class ResourcesMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters) {}
+                          const std::string& name,
+                          const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const
   {
@@ -281,12 +281,12 @@ class URLMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters);
+                          const std::string& name,
+                          const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
   {
@@ -298,12 +298,12 @@ class SkipTagMetalinkParserState:public MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const std::string& name,
-			    const std::map<std::string, std::string>& attrs);
+                            const std::string& name,
+                            const std::map<std::string, std::string>& attrs);
 
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const std::string& name,
-			  const std::string& characters) {}
+                          const std::string& name,
+                          const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const
   {

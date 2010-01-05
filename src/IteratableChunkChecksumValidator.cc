@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -59,7 +59,7 @@ namespace aria2 {
 
 IteratableChunkChecksumValidator::
 IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
-				 const PieceStorageHandle& pieceStorage):
+                                 const PieceStorageHandle& pieceStorage):
   _dctx(dctx),
   _pieceStorage(pieceStorage),
   _bitfield(new BitfieldMan(_dctx->getPieceLength(), _dctx->getTotalLength())),
@@ -84,14 +84,14 @@ void IteratableChunkChecksumValidator::validateChunk()
     try {
       actualChecksum = calculateActualChecksum();
       if(actualChecksum == _dctx->getPieceHashes()[_currentIndex]) {
-	_bitfield->setBit(_currentIndex);
+        _bitfield->setBit(_currentIndex);
       } else {
-	_logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		      _currentIndex,
-		      util::itos(getCurrentOffset(), true).c_str(),
-		      _dctx->getPieceHashes()[_currentIndex].c_str(),
-		      actualChecksum.c_str());
-	_bitfield->unsetBit(_currentIndex);
+        _logger->info(EX_INVALID_CHUNK_CHECKSUM,
+                      _currentIndex,
+                      util::itos(getCurrentOffset(), true).c_str(),
+                      _dctx->getPieceHashes()[_currentIndex].c_str(),
+                      actualChecksum.c_str());
+        _bitfield->unsetBit(_currentIndex);
       }
     } catch(RecoverableException& ex) {
       _logger->debug("Caught exception while validating piece index=%d. Some part of file may be missing. Continue operation.", ex, _currentIndex);
@@ -151,11 +151,11 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
   }
   while(curoffset < max) {
     size_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
-							 curoffset);
+                                                         curoffset);
     if(r == 0 || r < static_cast<size_t>(woffset)) {
       throw DL_ABORT_EX
-	(StringFormat(EX_FILE_READ, _dctx->getBasePath().c_str(),
-		      strerror(errno)).str());
+        (StringFormat(EX_FILE_READ, _dctx->getBasePath().c_str(),
+                      strerror(errno)).str());
     }
     size_t wlength;
     if(max < static_cast<off_t>(curoffset+r)) {

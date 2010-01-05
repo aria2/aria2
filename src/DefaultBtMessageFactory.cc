@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -71,8 +71,8 @@
 namespace aria2 {
 
 DefaultBtMessageFactory::DefaultBtMessageFactory():cuid(0),
-						   _dhtEnabled(false),
-						   _metadataGetMode(false)
+                                                   _dhtEnabled(false),
+                                                   _metadataGetMode(false)
 {}
 
 DefaultBtMessageFactory::~DefaultBtMessageFactory() {}
@@ -95,52 +95,52 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       break;
     case BtInterestedMessage::ID:
       {
-	SharedHandle<BtInterestedMessage> m =
-	  BtInterestedMessage::create(data, dataLength);
-	m->setPeerStorage(_peerStorage);
-	msg = m;
+        SharedHandle<BtInterestedMessage> m =
+          BtInterestedMessage::create(data, dataLength);
+        m->setPeerStorage(_peerStorage);
+        msg = m;
       }
       break;
     case BtNotInterestedMessage::ID:
       {
-	SharedHandle<BtNotInterestedMessage> m =
-	  BtNotInterestedMessage::create(data, dataLength);
-	m->setPeerStorage(_peerStorage);
-	msg = m;
+        SharedHandle<BtNotInterestedMessage> m =
+          BtNotInterestedMessage::create(data, dataLength);
+        m->setPeerStorage(_peerStorage);
+        msg = m;
       }
       break;
     case BtHaveMessage::ID:
       msg = BtHaveMessage::create(data, dataLength);
       {
-	if(!_metadataGetMode) {
-	  SharedHandle<BtMessageValidator> v
-	    (new IndexBtMessageValidator(static_cast<BtHaveMessage*>(msg.get()),
-					 _downloadContext->getNumPieces()));
-	  msg->setBtMessageValidator(v);
-	}
+        if(!_metadataGetMode) {
+          SharedHandle<BtMessageValidator> v
+            (new IndexBtMessageValidator(static_cast<BtHaveMessage*>(msg.get()),
+                                         _downloadContext->getNumPieces()));
+          msg->setBtMessageValidator(v);
+        }
       }
       break;
     case BtBitfieldMessage::ID:
       msg = BtBitfieldMessage::create(data, dataLength);
       {
-	if(!_metadataGetMode) {
-	  SharedHandle<BtMessageValidator> v
-	    (new BtBitfieldMessageValidator
-	     (static_cast<BtBitfieldMessage*>(msg.get()),
-	      _downloadContext->getNumPieces()));
-	  msg->setBtMessageValidator(v);
-	}
+        if(!_metadataGetMode) {
+          SharedHandle<BtMessageValidator> v
+            (new BtBitfieldMessageValidator
+             (static_cast<BtBitfieldMessage*>(msg.get()),
+              _downloadContext->getNumPieces()));
+          msg->setBtMessageValidator(v);
+        }
       }
       break;
     case BtRequestMessage::ID: {
       BtRequestMessageHandle temp = BtRequestMessage::create(data, dataLength);
       if(!_metadataGetMode) {
-	SharedHandle<BtMessageValidator> validator
-	  (new RangeBtMessageValidator
-	   (temp.get(),
-	    _downloadContext->getNumPieces(),
-	    _pieceStorage->getPieceLength(temp->getIndex())));
-	temp->setBtMessageValidator(validator);
+        SharedHandle<BtMessageValidator> validator
+          (new RangeBtMessageValidator
+           (temp.get(),
+            _downloadContext->getNumPieces(),
+            _pieceStorage->getPieceLength(temp->getIndex())));
+        temp->setBtMessageValidator(validator);
       }
       msg = temp;
       break;
@@ -148,12 +148,12 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     case BtCancelMessage::ID: {
       BtCancelMessageHandle temp = BtCancelMessage::create(data, dataLength);
       if(!_metadataGetMode) {
-	SharedHandle<BtMessageValidator> validator
-	  (new RangeBtMessageValidator
-	   (temp.get(),
-	    _downloadContext->getNumPieces(),
-	    _pieceStorage->getPieceLength(temp->getIndex())));
-	temp->setBtMessageValidator(validator);
+        SharedHandle<BtMessageValidator> validator
+          (new RangeBtMessageValidator
+           (temp.get(),
+            _downloadContext->getNumPieces(),
+            _pieceStorage->getPieceLength(temp->getIndex())));
+        temp->setBtMessageValidator(validator);
       }
       msg = temp;
       break;
@@ -161,11 +161,11 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     case BtPieceMessage::ID: {
       BtPieceMessageHandle temp = BtPieceMessage::create(data, dataLength);
       if(!_metadataGetMode) {
-	BtMessageValidatorHandle validator
-	  (new BtPieceMessageValidator(temp.get(),
-				       _downloadContext->getNumPieces(),
-				       _pieceStorage->getPieceLength(temp->getIndex())));
-	temp->setBtMessageValidator(validator);
+        BtMessageValidatorHandle validator
+          (new BtPieceMessageValidator(temp.get(),
+                                       _downloadContext->getNumPieces(),
+                                       _pieceStorage->getPieceLength(temp->getIndex())));
+        temp->setBtMessageValidator(validator);
       }
       temp->setDownloadContext(_downloadContext);
       msg = temp;
@@ -180,12 +180,12 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     case BtRejectMessage::ID: {
       BtRejectMessageHandle temp = BtRejectMessage::create(data, dataLength);
       if(!_metadataGetMode) {
-	SharedHandle<BtMessageValidator> validator
-	  (new RangeBtMessageValidator
-	   (temp.get(),
-	    _downloadContext->getNumPieces(),
-	    _pieceStorage->getPieceLength(temp->getIndex())));
-	temp->setBtMessageValidator(validator);
+        SharedHandle<BtMessageValidator> validator
+          (new RangeBtMessageValidator
+           (temp.get(),
+            _downloadContext->getNumPieces(),
+            _pieceStorage->getPieceLength(temp->getIndex())));
+        temp->setBtMessageValidator(validator);
       }
       msg = temp;
       break;
@@ -193,10 +193,10 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     case BtSuggestPieceMessage::ID: {
       BtSuggestPieceMessageHandle temp = BtSuggestPieceMessage::create(data, dataLength);
       if(!_metadataGetMode) {
-	SharedHandle<BtMessageValidator> validator
-	  (new IndexBtMessageValidator(temp.get(),
-				       _downloadContext->getNumPieces()));
-	temp->setBtMessageValidator(validator);
+        SharedHandle<BtMessageValidator> validator
+          (new IndexBtMessageValidator(temp.get(),
+                                       _downloadContext->getNumPieces()));
+        temp->setBtMessageValidator(validator);
       }
       msg = temp;
       break;
@@ -204,10 +204,10 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     case BtAllowedFastMessage::ID: {
       BtAllowedFastMessageHandle temp = BtAllowedFastMessage::create(data, dataLength);
       if(!_metadataGetMode) {
-	SharedHandle<BtMessageValidator> validator
-	  (new IndexBtMessageValidator(temp.get(),
-				       _downloadContext->getNumPieces()));
-	temp->setBtMessageValidator(validator);
+        SharedHandle<BtMessageValidator> validator
+          (new IndexBtMessageValidator(temp.get(),
+                                       _downloadContext->getNumPieces()));
+        temp->setBtMessageValidator(validator);
       }
       msg = temp;
       break;
@@ -223,10 +223,10 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
     }
     case BtExtendedMessage::ID: {
       if(peer->isExtendedMessagingEnabled()) {
-	msg = BtExtendedMessage::create(_extensionMessageFactory,
-					peer, data, dataLength);
+        msg = BtExtendedMessage::create(_extensionMessageFactory,
+                                        peer, data, dataLength);
       } else {
-	throw DL_ABORT_EX("Received extended message from peer during a session with extended messaging disabled.");
+        throw DL_ABORT_EX("Received extended message from peer during a session with extended messaging disabled.");
       }
       break;
     }
@@ -265,7 +265,7 @@ DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* data, size_
 
 SharedHandle<BtHandshakeMessage>
 DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
-						const unsigned char* peerId)
+                                                const unsigned char* peerId)
 {
   SharedHandle<BtHandshakeMessage> msg(new BtHandshakeMessage(infoHash, peerId));
   BtMessageValidatorHandle validator
@@ -282,9 +282,9 @@ DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, size_t b
 {
   BtRequestMessageHandle msg
     (new BtRequestMessage(piece->getIndex(),
-			  blockIndex*piece->getBlockLength(),
-			  piece->getBlockLength(blockIndex),
-			  blockIndex));
+                          blockIndex*piece->getBlockLength(),
+                          piece->getBlockLength(blockIndex),
+                          blockIndex));
   SharedHandle<BtMessageValidator> validator
     (new RangeBtMessageValidator
      (msg.get(),
@@ -315,8 +315,8 @@ DefaultBtMessageFactory::createPieceMessage(size_t index, uint32_t begin, size_t
   BtPieceMessageHandle msg(new BtPieceMessage(index, begin, length));
   BtMessageValidatorHandle validator
     (new BtPieceMessageValidator(msg.get(),
-				_downloadContext->getNumPieces(),
-				_pieceStorage->getPieceLength(index)));
+                                 _downloadContext->getNumPieces(),
+                                 _pieceStorage->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   msg->setDownloadContext(_downloadContext);
   setCommonProperty(msg);
@@ -371,10 +371,10 @@ DefaultBtMessageFactory::createBitfieldMessage()
 {
   BtBitfieldMessageHandle msg
     (new BtBitfieldMessage(_pieceStorage->getBitfield(),
-			   _pieceStorage->getBitfieldLength()));
+                           _pieceStorage->getBitfieldLength()));
   SharedHandle<BtMessageValidator> v
     (new BtBitfieldMessageValidator(msg.get(),
-				    _downloadContext->getNumPieces()));
+                                    _downloadContext->getNumPieces()));
   msg->setBtMessageValidator(v);
   setCommonProperty(msg);
   return msg;

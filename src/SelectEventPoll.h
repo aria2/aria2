@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -139,12 +139,12 @@ private:
     
   public:
     AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
-			   Command* command);
+                           Command* command);
 
     bool operator==(const AsyncNameResolverEntry& entry)
     {
       return _nameResolver == entry._nameResolver &&
-	_command == entry._command;
+        _command == entry._command;
     }
 
     int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr);
@@ -179,14 +179,14 @@ public:
   virtual void poll(const struct timeval& tv);
 
   virtual bool addEvents(sock_t socket,
-			 Command* command, EventPoll::EventType events);
+                         Command* command, EventPoll::EventType events);
 
   virtual bool deleteEvents(sock_t socket,
-			    Command* command, EventPoll::EventType events);
+                            Command* command, EventPoll::EventType events);
 #ifdef ENABLE_ASYNC_DNS
 
   virtual bool addNameResolver(const SharedHandle<AsyncNameResolver>& resolver,
-			       Command* command);
+                               Command* command);
   virtual bool deleteNameResolver
   (const SharedHandle<AsyncNameResolver>& resolver, Command* command);
 #endif // ENABLE_ASYNC_DNS

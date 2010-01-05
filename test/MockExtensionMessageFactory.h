@@ -11,7 +11,7 @@ public:
   virtual ~MockExtensionMessageFactory() {}
 
   virtual SharedHandle<ExtensionMessage> createMessage(const unsigned char* data,
-						       size_t length)
+                                                       size_t length)
   {
     return SharedHandle<ExtensionMessage>
       (new MockExtensionMessage("a2_mock", *data, data+1, length-1));

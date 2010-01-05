@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -74,17 +74,17 @@ void IteratableChecksumValidator::validateChunk()
 {
   if(!finished()) {
     size_t length = _pieceStorage->getDiskAdaptor()->readData(_buffer,
-							      BUFSIZE,
-							      _currentOffset);
+                                                              BUFSIZE,
+                                                              _currentOffset);
     _ctx->digestUpdate(_buffer, length);
     _currentOffset += length;
     if(finished()) {
       std::string actualChecksum = util::toHex(_ctx->digestFinal());
       if(_dctx->getChecksum() == actualChecksum) {
-	_pieceStorage->markAllPiecesDone();
+        _pieceStorage->markAllPiecesDone();
       } else {
-	BitfieldMan bitfield(_dctx->getPieceLength(), _dctx->getTotalLength());
-	_pieceStorage->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
+        BitfieldMan bitfield(_dctx->getPieceLength(), _dctx->getTotalLength());
+        _pieceStorage->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
       }
     }
   }

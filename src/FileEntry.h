@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -77,7 +77,7 @@ public:
   FileEntry();
 
   FileEntry(const std::string& path, uint64_t length, off_t offset,
-	    const std::deque<std::string>& uris = std::deque<std::string>());
+            const std::deque<std::string>& uris = std::deque<std::string>());
 
   ~FileEntry();
 
@@ -290,19 +290,19 @@ void writeFilePath
       std::deque<std::string> uris;
       e->getUris(uris);
       if(uris.empty()) {
-	o << "n/a";
+        o << "n/a";
       } else {
-	o << uris.front();
+        o << uris.front();
       }
     } else {
       if(memory) {
-	o << "[MEMORY]" << File(e->getPath()).getBasename();
+        o << "[MEMORY]" << File(e->getPath()).getBasename();
       } else {
-	o << e->getPath();
+        o << e->getPath();
       }
       size_t count = countRequestedFileEntry(first, last);
       if(count > 1) {
-	o << " (" << count-1 << "more)";
+        o << " (" << count-1 << "more)";
       }
     }
   }

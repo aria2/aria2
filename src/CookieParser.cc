@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -88,9 +88,9 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
     }
   }
   return Cookie(nameValue.first, nameValue.second,
-		expiry,
-		values[C_PATH], values[C_DOMAIN],
-		values.find(C_SECURE) != values.end());
+                expiry,
+                values[C_PATH], values[C_DOMAIN],
+                values.find(C_SECURE) != values.end());
 }
 
 

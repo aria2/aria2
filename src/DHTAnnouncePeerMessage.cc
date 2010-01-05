@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -61,11 +61,11 @@ const std::string DHTAnnouncePeerMessage::PORT("port");
 const std::string DHTAnnouncePeerMessage::TOKEN("token");
 
 DHTAnnouncePeerMessage::DHTAnnouncePeerMessage(const SharedHandle<DHTNode>& localNode,
-					       const SharedHandle<DHTNode>& remoteNode,
-					       const unsigned char* infoHash,
-					       uint16_t tcpPort,
-					       const std::string& token,
-					       const std::string& transactionID):
+                                               const SharedHandle<DHTNode>& remoteNode,
+                                               const unsigned char* infoHash,
+                                               uint16_t tcpPort,
+                                               const std::string& token,
+                                               const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID),
   _token(token),
   _tcpPort(tcpPort)
@@ -78,7 +78,7 @@ DHTAnnouncePeerMessage::~DHTAnnouncePeerMessage() {}
 void DHTAnnouncePeerMessage::doReceivedAction()
 {
   _peerAnnounceStorage->addPeerAnnounce(_infoHash, _remoteNode->getIPAddress(),
-					_tcpPort);
+                                        _tcpPort);
 
   SharedHandle<DHTMessage> reply =
     _factory->createAnnouncePeerReplyMessage(_remoteNode, _transactionID);
@@ -103,13 +103,13 @@ std::string DHTAnnouncePeerMessage::getMessageType() const
 void DHTAnnouncePeerMessage::validate() const
 {
   if(!_tokenTracker->validateToken(_token, _infoHash,
-				   _remoteNode->getIPAddress(),
-				   _remoteNode->getPort())) {
+                                   _remoteNode->getIPAddress(),
+                                   _remoteNode->getPort())) {
     throw DL_ABORT_EX
       (StringFormat("Invalid token=%s from %s:%u",
-		    util::toHex(_token).c_str(),
-		    _remoteNode->getIPAddress().c_str(),
-		    _remoteNode->getPort()).str());
+                    util::toHex(_token).c_str(),
+                    _remoteNode->getIPAddress().c_str(),
+                    _remoteNode->getPort()).str());
   }
 }
 
@@ -126,8 +126,8 @@ void DHTAnnouncePeerMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& 
 std::string DHTAnnouncePeerMessage::toStringOptional() const
 {
   return strconcat("token=", util::toHex(_token),
-		   ", info_hash=", util::toHex(_infoHash, INFO_HASH_LENGTH),
-		   ", tcpPort=", util::uitos(_tcpPort));
+                   ", info_hash=", util::toHex(_infoHash, INFO_HASH_LENGTH),
+                   ", tcpPort=", util::uitos(_tcpPort));
 }
 
 } // namespace aria2

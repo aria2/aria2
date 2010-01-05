@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -91,7 +91,7 @@ static void printProgress
     o << "SEEDING" << "(" << "ratio:";
     if(rg->getCompletedLength() > 0) {
       o << std::fixed << std::setprecision(1)
-	<< ((stat.getAllTimeUploadLength()*10)/rg->getCompletedLength())/10.0;
+        << ((stat.getAllTimeUploadLength()*10)/rg->getCompletedLength())/10.0;
     } else {
       o << "--";
     }
@@ -100,15 +100,15 @@ static void printProgress
 #endif // ENABLE_BITTORRENT
     {
       o << "SIZE:"
-	<< util::abbrevSize(rg->getCompletedLength())
-	<< "B"
-	<< "/"
-	<< util::abbrevSize(rg->getTotalLength())
-	<< "B";
+        << util::abbrevSize(rg->getCompletedLength())
+        << "B"
+        << "/"
+        << util::abbrevSize(rg->getTotalLength())
+        << "B";
       if(rg->getTotalLength() > 0) {
-	o << "("
-	  << 100*rg->getCompletedLength()/rg->getTotalLength()
-	  << "%)";
+        o << "("
+          << 100*rg->getCompletedLength()/rg->getTotalLength()
+          << "%)";
       }
     }
   o << " "
@@ -159,11 +159,11 @@ public:
     const std::vector<SharedHandle<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
     std::cout << "\n"
-	      << "FILE: ";
+              << "FILE: ";
     writeFilePath(fileEntries.begin(), fileEntries.end(),
-		  std::cout, rg->inMemoryDownload());
+                  std::cout, rg->inMemoryDownload());
     std::cout << "\n"
-	      << std::setfill(SEP_CHAR) << std::setw(_cols) << SEP_CHAR << "\n";
+              << std::setfill(SEP_CHAR) << std::setw(_cols) << SEP_CHAR << "\n";
   }
 };
 
@@ -183,13 +183,13 @@ static void printProgressSummary
        asctime_r(staticNowtmPtr, buf) != 0) {
       char* lfptr = strchr(buf, '\n');
       if(lfptr) {
-	*lfptr = '\0';
+        *lfptr = '\0';
       }
       std::cout << " as of " << buf;
     }
   }
   std::cout << " *** " << "\n"
-	    << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
+            << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
   std::for_each(groups.begin(), groups.end(), PrintSummary(cols, e));
 }
 
@@ -218,8 +218,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       cols = size.ws_col;
 #ifdef __MINGW32__
       if(cols > 0) {
-	// Windows terminal cannot handle at the end of line properly.
-	--cols;
+        // Windows terminal cannot handle at the end of line properly.
+        --cols;
       }
 #endif // __MINGW32__
     }
@@ -241,8 +241,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 
     if(e->_requestGroupMan->countRequestGroup() > 1) {
       o << "("
-	<< e->_requestGroupMan->countRequestGroup()-1
-	<< "more...)";
+        << e->_requestGroupMan->countRequestGroup()-1
+        << "more...)";
     }
   }
 
@@ -258,25 +258,25 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     SharedHandle<FileAllocationEntry> entry=e->_fileAllocationMan->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
-	<< "[FileAlloc:"
-	<< "#" << entry->getRequestGroup()->getGID() << " "
-	<< util::abbrevSize(entry->getCurrentLength())
-	<< "B"
-	<< "/"
-	<< util::abbrevSize(entry->getTotalLength())
-	<< "B"
-	<< "(";
+        << "[FileAlloc:"
+        << "#" << entry->getRequestGroup()->getGID() << " "
+        << util::abbrevSize(entry->getCurrentLength())
+        << "B"
+        << "/"
+        << util::abbrevSize(entry->getTotalLength())
+        << "B"
+        << "(";
       if(entry->getTotalLength() > 0) {
-	o << 100*entry->getCurrentLength()/entry->getTotalLength();
+        o << 100*entry->getCurrentLength()/entry->getTotalLength();
       } else {
-	o << "--";
+        o << "--";
       }
       o << "%)"
-	<< "]";
+        << "]";
       if(e->_fileAllocationMan->hasNext()) {
-	o << "("
-	  << e->_fileAllocationMan->countEntryInQueue()
-	  << "waiting...)";
+        o << "("
+          << e->_fileAllocationMan->countEntryInQueue()
+          << "waiting...)";
       }
     }
   }
@@ -285,21 +285,21 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     CheckIntegrityEntryHandle entry = e->_checkIntegrityMan->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
-	<< "[Checksum:"
-	<< "#" << entry->getRequestGroup()->getGID() << " "
-	<< util::abbrevSize(entry->getCurrentLength())
-	<< "B"
-	<< "/"
-	<< util::abbrevSize(entry->getTotalLength())
-	<< "B"
-	<< "("
-	<< 100*entry->getCurrentLength()/entry->getTotalLength()
-	<< "%)"
-	<< "]";
+        << "[Checksum:"
+        << "#" << entry->getRequestGroup()->getGID() << " "
+        << util::abbrevSize(entry->getCurrentLength())
+        << "B"
+        << "/"
+        << util::abbrevSize(entry->getTotalLength())
+        << "B"
+        << "("
+        << 100*entry->getCurrentLength()/entry->getTotalLength()
+        << "%)"
+        << "]";
       if(e->_checkIntegrityMan->hasNext()) {
-	o << "("
-	  << e->_checkIntegrityMan->countEntryInQueue()
-	  << "waiting...)";
+        o << "("
+          << e->_checkIntegrityMan->countEntryInQueue()
+          << "waiting...)";
       }
     }
   }

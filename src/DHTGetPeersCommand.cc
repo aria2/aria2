@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -50,8 +50,8 @@
 namespace aria2 {
 
 DHTGetPeersCommand::DHTGetPeersCommand(int32_t cuid,
-				       RequestGroup* requestGroup,
-				       DownloadEngine* e):
+                                       RequestGroup* requestGroup,
+                                       DownloadEngine* e):
   Command(cuid),
   _requestGroup(requestGroup),
   _e(e),
@@ -75,7 +75,7 @@ bool DHTGetPeersCommand::execute()
      ((_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL)) ||
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
     logger->debug("Issuing PeerLookup for infoHash=%s",
-		  bittorrent::getInfoHashString(_requestGroup->getDownloadContext()).c_str());
+                  bittorrent::getInfoHashString(_requestGroup->getDownloadContext()).c_str());
     _task = _taskFactory->createPeerLookupTask
       (_requestGroup->getDownloadContext(), _btRuntime, _peerStorage);
     _taskQueue->addPeriodicTask2(_task);

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -61,7 +61,7 @@ private:
   SharedHandle<Piece> _piece;
 public:
   UnknownLengthPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
-			    const Option* option);
+                            const Option* option);
 
   virtual ~UnknownLengthPieceStorage();
 
@@ -194,7 +194,7 @@ public:
   }
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   size_t bitfieldLength) {}
+                           size_t bitfieldLength) {}
   
   virtual size_t getBitfieldLength()
   {
@@ -229,7 +229,7 @@ public:
    */
   virtual void
   getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
-			    int32_t myCuid, const Time& lastCheckTime)
+                            int32_t myCuid, const Time& lastCheckTime)
   {}
 
   /**
@@ -263,14 +263,14 @@ public:
   virtual void addPieceStats(size_t index) {}
 
   virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength) {}
+                             size_t bitfieldLength) {}
 
   virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength) {}
+                                  size_t bitfieldLength) {}
 
   virtual void updatePieceStats(const unsigned char* newBitfield,
-				size_t newBitfieldLength,
-				const unsigned char* oldBitfield) {}
+                                size_t newBitfieldLength,
+                                const unsigned char* oldBitfield) {}
 
 
   void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -56,63 +56,63 @@ public:
 
   virtual SharedHandle<DHTMessage>
   createQueryMessage(const BDE& dict,
-		     const std::string& ipaddr, uint16_t port) = 0;
+                     const std::string& ipaddr, uint16_t port) = 0;
 
   virtual SharedHandle<DHTMessage>
   createResponseMessage(const std::string& messageType,
-			const BDE& dict,
-			const std::string& ipaddr, uint16_t port) = 0;
+                        const BDE& dict,
+                        const std::string& ipaddr, uint16_t port) = 0;
 
   virtual SharedHandle<DHTMessage>
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,
-		    const std::string& transactionID = A2STR::NIL) = 0;
+                    const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			 const unsigned char* id,
-			 const std::string& transactionID) = 0;
+                         const unsigned char* id,
+                         const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
   createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
-			const unsigned char* targetNodeID,
-			const std::string& transactionID = A2STR::NIL) = 0;
+                        const unsigned char* targetNodeID,
+                        const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			     const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-			     const std::string& transactionID) = 0;
+                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+                             const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
   createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
-			const unsigned char* infoHash,
-			const std::string& transactionID = A2STR::NIL) = 0;
+                        const unsigned char* infoHash,
+                        const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			     const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-			     const std::string& token,
-			     const std::string& transactionID) = 0;
+                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+                             const std::string& token,
+                             const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
   createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			     const std::deque<SharedHandle<Peer> >& peers,
-			     const std::string& token,
-			     const std::string& transactionID) = 0;
+                             const std::deque<SharedHandle<Peer> >& peers,
+                             const std::string& token,
+                             const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
   createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
-			    const unsigned char* infoHash,
-			    uint16_t tcpPort,
-			    const std::string& token,
-			    const std::string& transactionID = A2STR::NIL) = 0;
+                            const unsigned char* infoHash,
+                            uint16_t tcpPort,
+                            const std::string& token,
+                            const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-				 const std::string& transactionID) = 0;
+                                 const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
   createUnknownMessage(const unsigned char* data, size_t length,
-		       const std::string& ipaddr, uint16_t port) = 0;
+                       const std::string& ipaddr, uint16_t port) = 0;
 };
 
 } // namespace aria2

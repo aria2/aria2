@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -47,22 +47,22 @@ protected:
   virtual SharedHandle<Exception> copy() const;
 public:
   OptionHandlerException(const char* file, int line,
-			 const std::string& optName);
+                         const std::string& optName);
 
   OptionHandlerException(const char* file, int line, const std::string& optName,
-			 const Exception& cause);
+                         const Exception& cause);
 
   OptionHandlerException(const char* file, int line,
-			 const OptionHandlerException& e);
+                         const OptionHandlerException& e);
 
   virtual ~OptionHandlerException() throw();
 
   const std::string& getOptionName() const throw();
 };
 
-#define OPTION_HANDLER_EXCEPTION(arg)\
+#define OPTION_HANDLER_EXCEPTION(arg)                   \
   OptionHandlerException(__FILE__, __LINE__, arg)
-#define OPTION_HANDLER_EXCEPTION2(arg1, arg2)\
+#define OPTION_HANDLER_EXCEPTION2(arg1, arg2)                   \
   OptionHandlerException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2

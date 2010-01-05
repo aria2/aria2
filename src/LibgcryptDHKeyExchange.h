@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -58,7 +58,7 @@ private:
   {
     throw DL_ABORT_EX
       (StringFormat("Exception in libgcrypt routine(DHKeyExchange class): %s",
-		    gcry_strerror(err)).str());
+                    gcry_strerror(err)).str());
   }
 public:
   DHKeyExchange():
@@ -77,24 +77,24 @@ public:
   }
 
   void init(const unsigned char* prime, size_t primeBits,
-	    const unsigned char* generator,
-	    size_t privateKeyBits)
+            const unsigned char* generator,
+            size_t privateKeyBits)
   {
     gcry_mpi_release(_prime);
     gcry_mpi_release(_generator);
     gcry_mpi_release(_privateKey);
     {
       gcry_error_t r = gcry_mpi_scan(&_prime, GCRYMPI_FMT_HEX,
-				     prime, 0, 0);
+                                     prime, 0, 0);
       if(r) {
-	handleError(r);
+        handleError(r);
       }
     }
     {
       gcry_error_t r = gcry_mpi_scan(&_generator, GCRYMPI_FMT_HEX,
-				     generator, 0, 0);
+                                     generator, 0, 0);
       if(r) {
-	handleError(r);
+        handleError(r);
       }
     }
     _privateKey = gcry_mpi_new(0);
@@ -113,15 +113,15 @@ public:
   {
     if(outLength < _keyLength) {
       throw DL_ABORT_EX
-	(StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
-		      _keyLength, outLength).str());
+        (StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
+                      _keyLength, outLength).str());
     }
     memset(out, 0, outLength);
     size_t publicKeyBytes = (gcry_mpi_get_nbits(_publicKey)+7)/8;
     size_t offset = _keyLength-publicKeyBytes;
     size_t nwritten;
     gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
-				    outLength-offset, &nwritten, _publicKey);
+                                    outLength-offset, &nwritten, _publicKey);
     if(r) {
       handleError(r);
     }
@@ -134,20 +134,20 @@ public:
   }
 
   size_t computeSecret(unsigned char* out, size_t outLength,
-		       const unsigned char* peerPublicKeyData,
-		       size_t peerPublicKeyLength) const
+                       const unsigned char* peerPublicKeyData,
+                       size_t peerPublicKeyLength) const
   {
     if(outLength < _keyLength) {
       throw DL_ABORT_EX
-	(StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
-		      _keyLength, outLength).str());
+        (StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
+                      _keyLength, outLength).str());
     }
     gcry_mpi_t peerPublicKey;
     {
       gcry_error_t r = gcry_mpi_scan(&peerPublicKey, GCRYMPI_FMT_USG, peerPublicKeyData,
-				     peerPublicKeyLength, 0);
+                                     peerPublicKeyLength, 0);
       if(r) {
-	handleError(r);
+        handleError(r);
       }
     }
     gcry_mpi_t secret = gcry_mpi_new(0);
@@ -160,10 +160,10 @@ public:
     size_t nwritten;
     {
       gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
-				      outLength-offset, &nwritten, secret);
+                                      outLength-offset, &nwritten, secret);
       gcry_mpi_release(secret);
       if(r) {
-	handleError(r);
+        handleError(r);
       }
     }
     return nwritten;

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -102,13 +102,13 @@ void EpollEventPoll::ADNSEvent::processEvents(int events)
   ares_socket_t readfd;
   ares_socket_t writefd;
   if(events&(EpollEventPoll::EVENT_READ|EpollEventPoll::EVENT_ERROR|
-	     EpollEventPoll::EVENT_HUP)) {
+             EpollEventPoll::EVENT_HUP)) {
     readfd = _socket;
   } else {
     readfd = ARES_SOCKET_BAD;
   }
   if(events&(EpollEventPoll::EVENT_WRITE|EpollEventPoll::EVENT_ERROR|
-	     EpollEventPoll::EVENT_HUP)) {
+             EpollEventPoll::EVENT_HUP)) {
     writefd = _socket;
   } else {
     writefd = ARES_SOCKET_BAD;
@@ -139,8 +139,8 @@ EpollEventPoll::SocketEntry::SocketEntry(sock_t socket):_socket(socket)
 void EpollEventPoll::SocketEntry::addCommandEvent(const CommandEvent& cev)
 {
   std::deque<CommandEvent>::iterator i = std::find(_commandEvents.begin(),
-						   _commandEvents.end(),
-						   cev);
+                                                   _commandEvents.end(),
+                                                   cev);
   if(i == _commandEvents.end()) {
     _commandEvents.push_back(cev);
   } else {
@@ -151,8 +151,8 @@ void EpollEventPoll::SocketEntry::addCommandEvent(const CommandEvent& cev)
 void EpollEventPoll::SocketEntry::removeCommandEvent(const CommandEvent& cev)
 {
   std::deque<CommandEvent>::iterator i = std::find(_commandEvents.begin(),
-						   _commandEvents.end(),
-						   cev);
+                                                   _commandEvents.end(),
+                                                   cev);
   if(i == _commandEvents.end()) {
     // not found
   } else {
@@ -168,8 +168,8 @@ void EpollEventPoll::SocketEntry::removeCommandEvent(const CommandEvent& cev)
 void EpollEventPoll::SocketEntry::addADNSEvent(const ADNSEvent& aev)
 {
   std::deque<ADNSEvent>::iterator i = std::find(_adnsEvents.begin(),
-						_adnsEvents.end(),
-						aev);
+                                                _adnsEvents.end(),
+                                                aev);
   if(i == _adnsEvents.end()) {
     _adnsEvents.push_back(aev);
   }
@@ -178,8 +178,8 @@ void EpollEventPoll::SocketEntry::addADNSEvent(const ADNSEvent& aev)
 void EpollEventPoll::SocketEntry::removeADNSEvent(const ADNSEvent& aev)
 {
   std::deque<ADNSEvent>::iterator i = std::find(_adnsEvents.begin(),
-						_adnsEvents.end(),
-						aev);
+                                                _adnsEvents.end(),
+                                                aev);
   if(i == _adnsEvents.end()) {
     // not found
   } else {
@@ -193,14 +193,14 @@ void EpollEventPoll::SocketEntry::processEvents(int events)
 {
   std::for_each(_commandEvents.begin(), _commandEvents.end(),
                 std::bind2nd(std::mem_fun_ref
-			     (&EpollEventPoll::CommandEvent::processEvents),
+                             (&EpollEventPoll::CommandEvent::processEvents),
                              events));
 #ifdef ENABLE_ASYNC_DNS
 
   std::for_each(_adnsEvents.begin(), _adnsEvents.end(),
-		std::bind2nd(std::mem_fun_ref
-			     (&EpollEventPoll::ADNSEvent::processEvents),
-			     events));
+                std::bind2nd(std::mem_fun_ref
+                             (&EpollEventPoll::ADNSEvent::processEvents),
+                             events));
 
 #endif // ENABLE_ASYNC_DNS
 
@@ -234,16 +234,16 @@ struct epoll_event& EpollEventPoll::SocketEntry::getEpEvent()
 
   _epEvent.events =
     std::accumulate(_adnsEvents.begin(),
-		    _adnsEvents.end(),
-		    std::accumulate(_commandEvents.begin(),
-				    _commandEvents.end(), 0, accumulateEvent),
-		    accumulateEvent);
+                    _adnsEvents.end(),
+                    std::accumulate(_commandEvents.begin(),
+                                    _commandEvents.end(), 0, accumulateEvent),
+                    accumulateEvent);
 
 #else // !ENABLE_ASYNC_DNS
 
   _epEvent.events =
     std::accumulate(_commandEvents.begin(), _commandEvents.end(), 0,
-		    accumulateEvent);
+                    accumulateEvent);
 
 #endif // !ENABLE_ASYNC_DNS
   return _epEvent;
@@ -308,8 +308,8 @@ EpollEventPoll::~EpollEventPoll()
     while((r = close(_epfd)) == -1 && errno == EINTR);
     if(r == -1) {
       _logger->error("Error occurred while closing epoll file descriptor"
-		     " %d: %s",
-		     _epfd, strerror(errno));
+                     " %d: %s",
+                     _epfd, strerror(errno));
     }
   }
   delete [] _epEvents;
@@ -327,7 +327,7 @@ void EpollEventPoll::poll(const struct timeval& tv)
 
   int res;
   while((res = epoll_wait(_epfd, _epEvents, EPOLL_EVENTS_MAX, timeout)) == -1 &&
-	errno == EINTR);
+        errno == EINTR);
 
   if(res > 0) {
     for(int i = 0; i < res; ++i) {
@@ -359,7 +359,7 @@ static int translateEvents(EventPoll::EventType events)
 }
 
 bool EpollEventPoll::addEvents(sock_t socket,
-			       const EpollEventPoll::Event& event)
+                               const EpollEventPoll::Event& event)
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
@@ -376,7 +376,7 @@ bool EpollEventPoll::addEvents(sock_t socket,
       // SocketEntries. In this case, EPOLL_CTL_MOD is failed with ENOENT.
 
       r = epoll_ctl(_epfd, EPOLL_CTL_ADD, (*i)->getSocket(),
-		    &(*i)->getEpEvent());
+                    &(*i)->getEpEvent());
     }
   } else {
     _socketEntries.insert(i, socketEntry);
@@ -384,7 +384,7 @@ bool EpollEventPoll::addEvents(sock_t socket,
     event.addSelf(socketEntry);
 
     r = epoll_ctl(_epfd, EPOLL_CTL_ADD, socketEntry->getSocket(),
-		  &socketEntry->getEpEvent());
+                  &socketEntry->getEpEvent());
   }
   if(r == -1) {
     _logger->debug("Failed to add socket event %d:%s", socket, strerror(errno));
@@ -395,7 +395,7 @@ bool EpollEventPoll::addEvents(sock_t socket,
 }
 
 bool EpollEventPoll::addEvents(sock_t socket, Command* command,
-			       EventPoll::EventType events)
+                               EventPoll::EventType events)
 {
   int epEvents = translateEvents(events);
   return addEvents(socket, CommandEvent(command, epEvents));
@@ -403,14 +403,14 @@ bool EpollEventPoll::addEvents(sock_t socket, Command* command,
 
 #ifdef ENABLE_ASYNC_DNS
 bool EpollEventPoll::addEvents(sock_t socket, Command* command, int events,
-			       const SharedHandle<AsyncNameResolver>& rs)
+                               const SharedHandle<AsyncNameResolver>& rs)
 {
   return addEvents(socket, ADNSEvent(rs, command, socket, events));
 }
 #endif // ENABLE_ASYNC_DNS
 
 bool EpollEventPoll::deleteEvents(sock_t socket,
-				  const EpollEventPoll::Event& event)
+                                  const EpollEventPoll::Event& event)
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
@@ -430,10 +430,10 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
       // If socket is closed, then it seems it is automatically removed from
       // epoll, so following EPOLL_CTL_MOD may fail.
       r = epoll_ctl(_epfd, EPOLL_CTL_MOD, (*i)->getSocket(),
-		    &(*i)->getEpEvent());
+                    &(*i)->getEpEvent());
       if(r == -1) {
-	_logger->debug("Failed to delete socket event, but may be ignored:%s",
-		       strerror(errno));
+        _logger->debug("Failed to delete socket event, but may be ignored:%s",
+                       strerror(errno));
       }
     }
     if(r == -1) {
@@ -450,14 +450,14 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
 
 #ifdef ENABLE_ASYNC_DNS
 bool EpollEventPoll::deleteEvents(sock_t socket, Command* command,
-				  const SharedHandle<AsyncNameResolver>& rs)
+                                  const SharedHandle<AsyncNameResolver>& rs)
 {
   return deleteEvents(socket, ADNSEvent(rs, command, socket, 0));
 }
 #endif // ENABLE_ASYNC_DNS
 
 bool EpollEventPoll::deleteEvents(sock_t socket, Command* command,
-				  EventPoll::EventType events)
+                                  EventPoll::EventType events)
 {
   int epEvents = translateEvents(events);
   return deleteEvents(socket, CommandEvent(command, epEvents));

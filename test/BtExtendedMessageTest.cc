@@ -46,8 +46,8 @@ void BtExtendedMessageTest::testCreate() {
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
   SharedHandle<BtExtendedMessage> pm = BtExtendedMessage::create(exmsgFactory,
-								 peer,
-								 &msg[4], 13);
+                                                                 peer,
+                                                                 &msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((uint8_t)20, pm->getId());
   
   // case: payload size is wrong

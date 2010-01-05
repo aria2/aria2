@@ -29,7 +29,7 @@ void Base32Test::testEncode()
   CPPUNIT_ASSERT_EQUAL(std::string("GEZDGNA="), base32::encode("1234"));
   CPPUNIT_ASSERT_EQUAL(std::string("GEZDGNBV"), base32::encode("12345"));
   CPPUNIT_ASSERT_EQUAL(std::string("ESGQUHGQQKCA===="),
-		       base32::encode(util::fromHex("248d0a1cd08284")));
+                       base32::encode(util::fromHex("248d0a1cd08284")));
 }
 
 void Base32Test::testDecode()

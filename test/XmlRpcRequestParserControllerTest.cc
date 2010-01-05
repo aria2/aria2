@@ -43,7 +43,7 @@ void XmlRpcRequestParserControllerTest::testPopStructFrame()
   const BDE& structValue = controller.getCurrentFrameValue();
   CPPUNIT_ASSERT_EQUAL((size_t)1, structValue.size());
   CPPUNIT_ASSERT_EQUAL(std::string("Hello, aria2"),
-		       structValue["greeting"].s());
+                       structValue["greeting"].s());
 }
 
 void XmlRpcRequestParserControllerTest::testPopStructFrame_noName()
@@ -147,7 +147,7 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame_compound()
 
   const BDE& result = controller.getCurrentFrameValue();
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sf.net/"),
-		       result[0]["uris"][1].s());
+                       result[0]["uris"][1].s());
   CPPUNIT_ASSERT_EQUAL((BDE::Integer)120, result[0]["options"]["timeout"].i());
   CPPUNIT_ASSERT_EQUAL(std::string("jp"), result[1][0].s());
 }

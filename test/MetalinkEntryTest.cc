@@ -80,16 +80,16 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   std::deque<SharedHandle<MetalinkResource> >::const_iterator itr =
     entry->resources.begin();
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
-		       (*itr++)->type);
+                       (*itr++)->type);
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP,
-		       (*itr++)->type);
+                       (*itr++)->type);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_BITTORRENT,
-		       (*itr++)->type);
+                       (*itr++)->type);
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_SSL
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTPS,
-		       (*itr++)->type);
+                       (*itr++)->type);
 #endif // ENABLE_SSL
 }
 

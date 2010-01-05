@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -62,7 +62,7 @@ static void mlStartElement(void* userData, const xmlChar* name, const xmlChar** 
       std::string name = reinterpret_cast<const char*>(*p);
       ++p;
       if(*p == 0) {
-	break;
+        break;
       }
       std::string value = util::trim(reinterpret_cast<const char*>(*p));
       ++p;
@@ -95,40 +95,40 @@ static void mlCharacters(void* userData, const xmlChar* ch, int len)
 }
 
 static xmlSAXHandler mySAXHandler =
-{
-  0, // internalSubsetSAXFunc
-  0, // isStandaloneSAXFunc
-  0, // hasInternalSubsetSAXFunc
-  0, // hasExternalSubsetSAXFunc
-  0, // resolveEntitySAXFunc
-  0, // getEntitySAXFunc
-  0, // entityDeclSAXFunc
-  0, // notationDeclSAXFunc
-  0, // attributeDeclSAXFunc
-  0, // elementDeclSAXFunc
-  0, //   unparsedEntityDeclSAXFunc
-  0, //   setDocumentLocatorSAXFunc
-  0, //   startDocumentSAXFunc
-  0, //   endDocumentSAXFunc
-  &mlStartElement, //   startElementSAXFunc
-  &mlEndElement, //   endElementSAXFunc
-  0, //   referenceSAXFunc
-  &mlCharacters, //   charactersSAXFunc
-  0, //   ignorableWhitespaceSAXFunc
-  0, //   processingInstructionSAXFunc
-  0, //   commentSAXFunc
-  0, //   warningSAXFunc
-  0, //   errorSAXFunc
-  0, //   fatalErrorSAXFunc
-  0, //   getParameterEntitySAXFunc
-  0, //   cdataBlockSAXFunc
-  0, //   externalSubsetSAXFunc
-  0, //   unsigned int	initialized
-  0, //   void *	_private
-  0, //   startElementNsSAX2Func
-  0, //   endElementNsSAX2Func
-  0, //   xmlStructuredErrorFunc
-};
+  {
+    0, // internalSubsetSAXFunc
+    0, // isStandaloneSAXFunc
+    0, // hasInternalSubsetSAXFunc
+    0, // hasExternalSubsetSAXFunc
+    0, // resolveEntitySAXFunc
+    0, // getEntitySAXFunc
+    0, // entityDeclSAXFunc
+    0, // notationDeclSAXFunc
+    0, // attributeDeclSAXFunc
+    0, // elementDeclSAXFunc
+    0, //   unparsedEntityDeclSAXFunc
+    0, //   setDocumentLocatorSAXFunc
+    0, //   startDocumentSAXFunc
+    0, //   endDocumentSAXFunc
+    &mlStartElement, //   startElementSAXFunc
+    &mlEndElement, //   endElementSAXFunc
+    0, //   referenceSAXFunc
+    &mlCharacters, //   charactersSAXFunc
+    0, //   ignorableWhitespaceSAXFunc
+    0, //   processingInstructionSAXFunc
+    0, //   commentSAXFunc
+    0, //   warningSAXFunc
+    0, //   errorSAXFunc
+    0, //   fatalErrorSAXFunc
+    0, //   getParameterEntitySAXFunc
+    0, //   cdataBlockSAXFunc
+    0, //   externalSubsetSAXFunc
+    0, //   unsigned int        initialized
+    0, //   void *      _private
+    0, //   startElementNsSAX2Func
+    0, //   endElementNsSAX2Func
+    0, //   xmlStructuredErrorFunc
+  };
 
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(const std::string& filename)
@@ -136,13 +136,13 @@ MetalinkProcessor::parseFile(const std::string& filename)
   _stm.reset(new MetalinkParserStateMachine());
   SharedHandle<SessionData> sessionData(new SessionData(_stm));
   int retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
-				   filename.c_str());
+                                   filename.c_str());
   if(retval != 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
   return _stm->getResult();
 }
-	 
+         
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
@@ -164,10 +164,10 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
     while(1) {
       ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
       if(res == 0) {
-	break;
+        break;
       }
       if(xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), res, 0) != 0) {
-	throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+        throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
       }
       readOffset += res;
     }

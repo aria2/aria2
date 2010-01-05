@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -69,7 +69,7 @@ private:
   SharedHandle<PeerStorage> peerStorage;
 public:
   DefaultBtAnnounce(const SharedHandle<DownloadContext>& downloadContext,
-		    const Option* option);
+                    const Option* option);
 
   virtual ~DefaultBtAnnounce();
 
@@ -115,7 +115,7 @@ public:
   virtual void resetAnnounce();
 
   virtual void processAnnounceResponse(const unsigned char* trackerResponse,
-				       size_t trackerResponseLength);
+                                       size_t trackerResponseLength);
 
   virtual bool noMoreAnnounce();
 

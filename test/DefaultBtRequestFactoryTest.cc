@@ -57,7 +57,7 @@ public:
     virtual SharedHandle<BtMessage>
     createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex) {
       return SharedHandle<BtMessage>
-	(new MockBtRequestMessage(piece->getIndex(), blockIndex));
+        (new MockBtRequestMessage(piece->getIndex(), blockIndex));
     }
   };
 
@@ -71,17 +71,17 @@ public:
   class SortMockBtRequestMessage {
   public:
     bool operator()(const SharedHandle<MockBtRequestMessage>& a,
-		    const SharedHandle<MockBtRequestMessage>& b) {
+                    const SharedHandle<MockBtRequestMessage>& b) {
       if(a->index < b->index) {
-	return true;
+        return true;
       } else if(b->index < a->index) {
-	return false;
+        return false;
       } else if(a->blockIndex < b->blockIndex) {
-	return true;
+        return true;
       } else if(b->blockIndex < a->blockIndex) {
-	return false;
+        return false;
       } else {
-	return true;
+        return true;
       }
     }
   };
@@ -132,7 +132,7 @@ void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
   _requestFactory->removeCompletedPiece();
   CPPUNIT_ASSERT_EQUAL((size_t)1, _requestFactory->countTargetPiece());
   CPPUNIT_ASSERT_EQUAL((size_t)0,
-		       _requestFactory->getTargetPieces().front()->getIndex());
+                       _requestFactory->getTargetPieces().front()->getIndex());
 }
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
@@ -211,16 +211,16 @@ void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {
   _requestFactory->addTargetPiece(piece1);
 
   CPPUNIT_ASSERT(std::find(_requestFactory->getTargetPieces().begin(),
-			   _requestFactory->getTargetPieces().end(),
-			   piece1) !=
-		 _requestFactory->getTargetPieces().end());
+                           _requestFactory->getTargetPieces().end(),
+                           piece1) !=
+                 _requestFactory->getTargetPieces().end());
 
   _requestFactory->removeTargetPiece(piece1);
 
   CPPUNIT_ASSERT(std::find(_requestFactory->getTargetPieces().begin(),
-			   _requestFactory->getTargetPieces().end(),
-			   piece1) ==
-		 _requestFactory->getTargetPieces().end());
+                           _requestFactory->getTargetPieces().end(),
+                           piece1) ==
+                 _requestFactory->getTargetPieces().end());
 }
 
 void DefaultBtRequestFactoryTest::testGetTargetPieceIndexes()

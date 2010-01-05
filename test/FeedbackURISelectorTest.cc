@@ -77,11 +77,11 @@ void FeedbackURISelectorTest::testSelect()
   ssm->add(alphaHTTP);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
-		       sel->select(&_fileEntry));
+                       sel->select(&_fileEntry));
   CPPUNIT_ASSERT_EQUAL((size_t)2, _fileEntry.getRemainingUris().size());
   
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
-		       sel->select(&_fileEntry));
+                       sel->select(&_fileEntry));
   CPPUNIT_ASSERT_EQUAL((size_t)1, _fileEntry.getRemainingUris().size());
 }
 
@@ -97,7 +97,7 @@ void FeedbackURISelectorTest::testSelect_skipErrorHost()
 
   // See error URIs are removed from URI List.
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
-		       sel->select(&_fileEntry));
+                       sel->select(&_fileEntry));
   CPPUNIT_ASSERT_EQUAL((size_t)0, _fileEntry.getRemainingUris().size());
 }
 

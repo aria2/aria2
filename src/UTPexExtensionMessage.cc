@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -88,7 +88,7 @@ UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
 std::string UTPexExtensionMessage::toString() const
 {
   return strconcat("ut_pex added=", util::uitos(_freshPeers.size()),
-		   ", dropped=", util::uitos(_droppedPeers.size()));
+                   ", dropped=", util::uitos(_droppedPeers.size()));
 }
 
 void UTPexExtensionMessage::doReceivedAction()
@@ -149,7 +149,7 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
     throw DL_ABORT_EX(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-				 EXTENSION_NAME.c_str(), len).str());
+                                   EXTENSION_NAME.c_str(), len).str());
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
 
@@ -163,7 +163,7 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
     const BDE& dropped = dict["dropped"];
     if(dropped.isString()) {
       proc.extractPeerFromCompact(dropped,
-				  std::back_inserter(msg->_droppedPeers));
+                                  std::back_inserter(msg->_droppedPeers));
     }
   }
   return msg;

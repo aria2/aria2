@@ -93,7 +93,7 @@ void UTMetadataRequestExtensionMessageTest::testToString()
   UTMetadataRequestExtensionMessage msg(1);
   msg.setIndex(100);
   CPPUNIT_ASSERT_EQUAL(std::string("ut_metadata request piece=100"),
-		       msg.toString());
+                       msg.toString());
 }
 
 void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_reject()

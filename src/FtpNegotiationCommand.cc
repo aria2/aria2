@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -79,9 +79,9 @@ FtpNegotiationCommand::FtpNegotiationCommand
  const std::string& baseWorkingDir):
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s), sequence(seq),
   ftp(new FtpConnection(cuid, socket, req,
-			e->getAuthConfigFactory()->createAuthConfig
-			(req, requestGroup->getOption().get()),
-			getOption().get()))
+                        e->getAuthConfigFactory()->createAuthConfig
+                        (req, requestGroup->getOption().get()),
+                        getOption().get()))
 {
   ftp->setBaseWorkingDir(baseWorkingDir);
   if(seq == SEQ_RECV_GREETING) {
@@ -270,7 +270,7 @@ bool FtpNegotiationCommand::recvCwd() {
     _requestGroup->increaseAndValidateFileNotFoundCount();
     if (status == 550)
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
-			 downloadresultcode::RESOURCE_NOT_FOUND);
+                         downloadresultcode::RESOURCE_NOT_FOUND);
     else
       throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
@@ -306,13 +306,13 @@ bool FtpNegotiationCommand::recvMdtm()
       time_t t = lastModifiedTime.getTime();
       struct tm* tms = gmtime(&t); // returned struct is statically allocated.
       if(tms) {
-	logger->debug("MDTM result was parsed as: %s GMT", asctime(tms));
+        logger->debug("MDTM result was parsed as: %s GMT", asctime(tms));
       } else {
-	logger->debug("gmtime() failed for MDTM result.");
+        logger->debug("gmtime() failed for MDTM result.");
       }
     } else {
       logger->debug("MDTM response was returned, but it seems not to be a time"
-		    " value as in specified in RFC3659.");
+                    " value as in specified in RFC3659.");
     }
   } else {
     logger->info("CUID#%d - MDTM command failed.", cuid);
@@ -337,13 +337,13 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   if(_fileEntry->getPath().empty()) {
     _fileEntry->setPath
       (strconcat(getDownloadContext()->getDir(),
-		 "/", util::urldecode(req->getFile())));
+                 "/", util::urldecode(req->getFile())));
   }
   _requestGroup->preDownloadProcessing();
   if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
     throw DOWNLOAD_FAILURE_EXCEPTION
       (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-		    _requestGroup->getFirstFilePath().c_str()).str());
+                    _requestGroup->getFirstFilePath().c_str()).str());
   }
   if(totalLength == 0) {
 
@@ -365,8 +365,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
 
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-		     _requestGroup->getGID(),
-		     _requestGroup->getFirstFilePath().c_str());
+                     _requestGroup->getGID(),
+                     _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();
 
@@ -387,9 +387,9 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   } else {
     _requestGroup->adjustFilename
       (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
-					(_requestGroup->getDownloadContext(),
-					 SharedHandle<PieceStorage>(),
-					 getOption().get())));
+                                        (_requestGroup->getDownloadContext(),
+                                         SharedHandle<PieceStorage>(),
+                                         getOption().get())));
     _requestGroup->initPieceStorage();
 
     if(getOption()->getAsBool(PREF_DRY_RUN)) {
@@ -404,8 +404,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-		     _requestGroup->getGID(),
-		     _requestGroup->getFirstFilePath().c_str());
+                     _requestGroup->getGID(),
+                     _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();
       
@@ -430,7 +430,7 @@ bool FtpNegotiationCommand::recvSize() {
 
     if(size > INT64_MAX) {
       throw DL_ABORT_EX
-	(StringFormat(EX_TOO_LARGE_FILE, util::uitos(size, true).c_str()).str());
+        (StringFormat(EX_TOO_LARGE_FILE, util::uitos(size, true).c_str()).str());
     }
     if(_requestGroup->getPieceStorage().isNull()) {
 
@@ -521,8 +521,8 @@ bool FtpNegotiationCommand::recvPasv() {
   }
   // make a data connection to the server.
   logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-	       dest.first.c_str(),
-	       dest.second);
+               dest.first.c_str(),
+               dest.second);
   dataSocket.reset(new SocketCore());
   dataSocket->establishConnection(dest.first, dest.second);
 
@@ -585,7 +585,7 @@ bool FtpNegotiationCommand::recvRetr() {
     _requestGroup->increaseAndValidateFileNotFoundCount();
     if (status == 550)
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
-			 downloadresultcode::RESOURCE_NOT_FOUND);
+                         downloadresultcode::RESOURCE_NOT_FOUND);
     else
       throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }

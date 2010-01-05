@@ -74,7 +74,7 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
 
   CPPUNIT_ASSERT(!btRegistry.getDownloadContext("hash1").isNull());
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1").get() ==
-		 btRegistry.getDownloadContext(1).get());
+                 btRegistry.getDownloadContext(1).get());
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("not exists").isNull());
 }
 

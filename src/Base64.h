@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -47,7 +47,7 @@ private:
    * Caller must delete nsrc.
    */
   static void removeNonBase64Chars(unsigned char*& nsrc, size_t& nlength,
-				   const unsigned char* src, size_t slength);
+                                   const unsigned char* src, size_t slength);
 
 public:
   /**
@@ -59,13 +59,13 @@ public:
    * A caller must deallocate the memory used by result.
    */
   static void encode(unsigned char*& result, size_t& rlength,
-		     const unsigned char* src, size_t slength);
+                     const unsigned char* src, size_t slength);
 
   static void encode(unsigned char*& result, size_t& rlength,
-		     const char* src, size_t slength)
+                     const char* src, size_t slength)
   {
     encode(result, rlength, reinterpret_cast<const unsigned char*>(src),
-	   slength);
+           slength);
   }
 
   static std::string encode(const std::string& s);
@@ -80,13 +80,13 @@ public:
    * A caller must deallocate the memory used by result.
    */
   static void decode(unsigned char*& result, size_t& rlength,
-		     const unsigned char* src, size_t slength);
+                     const unsigned char* src, size_t slength);
 
   static void decode(unsigned char*& result, size_t& rlength,
-		     const char* src, size_t slength)
+                     const char* src, size_t slength)
   {
     decode(result, rlength, reinterpret_cast<const unsigned char*>(src),
-	   slength);
+           slength);
   }
 
   static std::string decode(const std::string& s);

@@ -40,14 +40,14 @@ void DownloadContextTest::testFindFileEntryByOffset()
       SharedHandle<FileEntry>(new FileEntry("file6",0,6000))
     };
   ctx.setFileEntries(&fileEntries[0],
-		     &fileEntries[arrayLength(fileEntries)]);
+                     &fileEntries[arrayLength(fileEntries)]);
 
   CPPUNIT_ASSERT_EQUAL(std::string("file1"),
-		       ctx.findFileEntryByOffset(0)->getPath());
+                       ctx.findFileEntryByOffset(0)->getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("file4"),
-		       ctx.findFileEntryByOffset(1500)->getPath());
+                       ctx.findFileEntryByOffset(1500)->getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("file5"),
-		       ctx.findFileEntryByOffset(5999)->getPath());
+                       ctx.findFileEntryByOffset(5999)->getPath());
   CPPUNIT_ASSERT(ctx.findFileEntryByOffset(6000).isNull());
 }
 

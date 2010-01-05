@@ -42,20 +42,20 @@ public:
     }
 
     virtual RequestSlot getOutstandingRequest(size_t index, uint32_t begin,
-					      size_t length) {
+                                              size_t length) {
       if(slot.getIndex() == index && slot.getBegin() == begin &&
-	 slot.getLength() == length) {
-	return slot;
+         slot.getLength() == length) {
+        return slot;
       } else {
-	return RequestSlot::nullSlot;
+        return RequestSlot::nullSlot;
       }
     }
 
     virtual void removeOutstandingRequest(const RequestSlot& slot) {
       if(this->slot.getIndex() == slot.getIndex() &&
-	 this->slot.getBegin() == slot.getBegin() &&
-	 this->slot.getLength() == slot.getLength()) {
-	this->slot = RequestSlot::nullSlot;
+         this->slot.getBegin() == slot.getBegin() &&
+         this->slot.getLength() == slot.getLength()) {
+        this->slot = RequestSlot::nullSlot;
       }
     }
   };
@@ -171,7 +171,7 @@ void BtRejectMessageTest::testDoReceivedActionFastExtensionDisabled() {
 
 void BtRejectMessageTest::testToString() {
   CPPUNIT_ASSERT_EQUAL(std::string("reject index=1, begin=16, length=32"),
-		       msg->toString());
+                       msg->toString());
 }
 
 } // namespace aria2

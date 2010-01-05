@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -74,7 +74,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 
   std::deque<int32_t> randPorts = seq.flush();
   std::random_shuffle(randPorts.begin(), randPorts.end(),
-		      *SimpleRandomizer::getInstance().get());
+                      *SimpleRandomizer::getInstance().get());
   
   for(std::deque<int32_t>::const_iterator portItr = randPorts.begin();
       portItr != randPorts.end(); ++portItr) {
@@ -123,15 +123,15 @@ bool PeerListenCommand::execute() {
       PeerHandle peer(new Peer(peerInfo.first, peerInfo.second, true));
       int32_t cuid = e->newCUID();
       Command* command =
-	new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
+        new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
       e->commands.push_back(command);
       logger->debug("Accepted the connection from %s:%u.",
-		    peer->ipaddr.c_str(),
-		    peer->port);
+                    peer->ipaddr.c_str(),
+                    peer->port);
       logger->debug("Added CUID#%d to receive BitTorrent/MSE handshake.", cuid);
     } catch(RecoverableException& ex) {
       logger->debug(MSG_ACCEPT_FAILURE, ex, cuid);
-    }		    
+    }               
   }
   e->commands.push_back(this);
   return false;

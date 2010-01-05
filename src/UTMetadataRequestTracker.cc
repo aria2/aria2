@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -51,14 +51,14 @@ void UTMetadataRequestTracker::add(size_t index)
 bool UTMetadataRequestTracker::tracks(size_t index)
 {
   return std::find(_trackedRequests.begin(), _trackedRequests.end(),
-		   RequestEntry(index)) != _trackedRequests.end();
+                   RequestEntry(index)) != _trackedRequests.end();
 }
 
 void UTMetadataRequestTracker::remove(size_t index)
 {
   std::vector<RequestEntry>::iterator i =
     std::find(_trackedRequests.begin(), _trackedRequests.end(),
-	      RequestEntry(index));
+              RequestEntry(index));
   if(i != _trackedRequests.end()) {
     _trackedRequests.erase(i);
   }
@@ -72,8 +72,8 @@ std::vector<size_t> UTMetadataRequestTracker::removeTimeoutEntry()
       i != _trackedRequests.end();) {
     if((*i).elapsed(TIMEOUT)) {
       LogFactory::getInstance()->debug
-	("ut_metadata request timeout. index=%lu",
-	 static_cast<unsigned long>((*i)._index));
+        ("ut_metadata request timeout. index=%lu",
+         static_cast<unsigned long>((*i)._index));
       indexes.push_back((*i)._index);
       i = _trackedRequests.erase(i);
     } else {

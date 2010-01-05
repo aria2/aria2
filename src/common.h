@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -39,11 +39,11 @@
 # undef SIZE_MAX
 # ifndef _OFF_T_
 #  define _OFF_T_
-   typedef long long _off_t;
+typedef long long _off_t;
 #  ifndef _NO_OLDNAMES
-   typedef _off_t off_t;
+typedef _off_t off_t;
 #  endif // !_NO_OLDNAMES
-# endif	// !_OFF_T_
+# endif // !_OFF_T_
 #endif // __MINGW32__
 
 #ifdef HAVE_CONFIG_H
@@ -52,10 +52,10 @@
 
 #ifdef __MINGW32__
 #ifdef malloc
-#	undef malloc
+#       undef malloc
 #endif
 #ifdef realloc
-#	undef realloc
+#       undef realloc
 #endif
 #endif // __MINGW32__
 

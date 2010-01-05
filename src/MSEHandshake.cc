@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -65,8 +65,8 @@ const unsigned char* MSEHandshake::GENERATOR = reinterpret_cast<const unsigned c
 const unsigned char MSEHandshake::VC[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 MSEHandshake::MSEHandshake(int32_t cuid,
-			   const SocketHandle& socket,
-			   const Option* op):
+                           const SocketHandle& socket,
+                           const Option* op):
   _cuid(cuid),
   _socket(socket),
   _option(op),
@@ -133,7 +133,7 @@ bool MSEHandshake::sendPublicKey()
     size_t padLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
     _dh->generateNonce(buffer+KEY_LENGTH, padLength);
     _socketBuffer.feedSendBuffer(std::string(&buffer[0],
-					     &buffer[KEY_LENGTH+padLength]));
+                                             &buffer[KEY_LENGTH+padLength]));
   }
   _socketBuffer.send();
   return _socketBuffer.sendBufferIsEmpty();
@@ -164,16 +164,16 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   
   unsigned char localCipherKey[20];
   MessageDigestHelper::digest(localCipherKey, sizeof(localCipherKey),
-			      MessageDigestContext::SHA1,
-			      s, sizeof(s));
+                              MessageDigestContext::SHA1,
+                              s, sizeof(s));
   _encryptor.reset(new ARC4Encryptor());
   _encryptor->init(localCipherKey, sizeof(localCipherKey));
 
   unsigned char peerCipherKey[20];
   memcpy(s, _initiator?"keyB":"keyA", 4);
   MessageDigestHelper::digest(peerCipherKey, sizeof(peerCipherKey),
-			      MessageDigestContext::SHA1,
-			      s, sizeof(s));
+                              MessageDigestContext::SHA1,
+                              s, sizeof(s));
   _decryptor.reset(new ARC4Decryptor());
   _decryptor->init(peerCipherKey, sizeof(peerCipherKey));
 
@@ -188,7 +188,7 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
     enc.init(peerCipherKey, sizeof(peerCipherKey));
     // discard first 1024 bytes ARC4 output.
     enc.encrypt(to, 1024, from, 1024);
-    enc.encrypt(_initiatorVCMarker, sizeof(_initiatorVCMarker),	VC, sizeof(VC));
+    enc.encrypt(_initiatorVCMarker, sizeof(_initiatorVCMarker), VC, sizeof(VC));
   }
 }
 
@@ -213,7 +213,7 @@ void MSEHandshake::createReq1Hash(unsigned char* md) const
   memcpy(buffer, "req1", 4);
   memcpy(buffer+4, _secret, KEY_LENGTH);
   MessageDigestHelper::digest(md, 20, MessageDigestContext::SHA1,
-			      buffer, 4+KEY_LENGTH);
+                              buffer, 4+KEY_LENGTH);
 }
 
 void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoHash) const
@@ -223,14 +223,14 @@ void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoH
   memcpy(x+4, infoHash, INFO_HASH_LENGTH);
   unsigned char xh[20];
   MessageDigestHelper::digest(xh, sizeof(xh), MessageDigestContext::SHA1,
-			      x, sizeof(x));
+                              x, sizeof(x));
 
   unsigned char y[4+96];
   memcpy(y, "req3", 4);
   memcpy(y+4, _secret, KEY_LENGTH);
   unsigned char yh[20];
   MessageDigestHelper::digest(yh, sizeof(yh), MessageDigestContext::SHA1,
-			      y, sizeof(y));
+                              y, sizeof(y));
   
   for(size_t i = 0; i < 20; ++i) {
     md[i] = xh[i]^yh[i];
@@ -241,8 +241,8 @@ uint16_t MSEHandshake::decodeLength16(const unsigned char* buffer)
 {
   uint16_t be;
   _decryptor->decrypt(reinterpret_cast<unsigned char*>(&be),
-		       sizeof(be),
-		       buffer, sizeof(be));
+                      sizeof(be),
+                      buffer, sizeof(be));
   return ntohs(be);
 }
 
@@ -272,7 +272,7 @@ bool MSEHandshake::sendInitiatorStep2()
       unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
       memset(cryptoProvide, 0, sizeof(cryptoProvide));
       if(_option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-	cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
+        cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
       }
       cryptoProvide[3] |= CRYPTO_ARC4;
       memcpy(buffer+VC_LENGTH, cryptoProvide, sizeof(cryptoProvide));
@@ -280,9 +280,9 @@ bool MSEHandshake::sendInitiatorStep2()
       // len(padC)
       uint16_t padCLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
       {
-	uint16_t padCLengthBE = htons(padCLength);
-	memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padCLengthBE,
-	       sizeof(padCLengthBE));
+        uint16_t padCLengthBE = htons(padCLength);
+        memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padCLengthBE,
+               sizeof(padCLengthBE));
       }
       // padC
       memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padCLength);
@@ -290,12 +290,12 @@ bool MSEHandshake::sendInitiatorStep2()
       // currently, IA is zero-length.
       uint16_t iaLength = 0;
       {
-	uint16_t iaLengthBE = htons(iaLength);
-	memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength,
-	       &iaLengthBE,sizeof(iaLengthBE));
+        uint16_t iaLengthBE = htons(iaLength);
+        memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength,
+               &iaLengthBE,sizeof(iaLengthBE));
       }
       encryptAndSendData(buffer,
-			 VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength+2);
+                         VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength+2);
     }
   }
   _socketBuffer.send();
@@ -323,11 +323,11 @@ bool MSEHandshake::findInitiatorVCMarker()
     std::string vc(&_initiatorVCMarker[0], &_initiatorVCMarker[VC_LENGTH]);
     if((_markerIndex = buf.find(vc)) == std::string::npos) {
       if(616-KEY_LENGTH <= _rbufLength+r) {
-	throw DL_ABORT_EX("Failed to find VC marker.");
+        throw DL_ABORT_EX("Failed to find VC marker.");
       } else {
-	_socket->readData(_rbuf+_rbufLength, r);
-	_rbufLength += r;
-	return false;
+        _socket->readData(_rbuf+_rbufLength, r);
+        _rbufLength += r;
+        return false;
       }
     }
   }
@@ -354,7 +354,7 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
   {
     unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
     _decryptor->decrypt(cryptoSelect, sizeof(cryptoSelect),
-			 rbufptr, sizeof(cryptoSelect));
+                        rbufptr, sizeof(cryptoSelect));
     if(cryptoSelect[3]&CRYPTO_PLAIN_TEXT &&
        _option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
       _logger->debug("CUID#%d - peer prefers plaintext.", _cuid);
@@ -366,7 +366,7 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
     }
     if(_negotiatedCryptoType == CRYPTO_NONE) {
       throw DL_ABORT_EX
-	(StringFormat("CUID#%d - No supported crypto type selected.", _cuid).str());
+        (StringFormat("CUID#%d - No supported crypto type selected.", _cuid).str());
     }
   }
   // padD length
@@ -415,11 +415,11 @@ bool MSEHandshake::findReceiverHashMarker()
     std::string req1(&md[0], &md[sizeof(md)]);
     if((_markerIndex = buf.find(req1)) == std::string::npos) {
       if(628-KEY_LENGTH <= _rbufLength+r) {
-	throw DL_ABORT_EX("Failed to find hash marker.");
+        throw DL_ABORT_EX("Failed to find hash marker.");
       } else {
-	_socket->readData(_rbuf+_rbufLength, r);
-	_rbufLength += r;
-	return false;
+        _socket->readData(_rbuf+_rbufLength, r);
+        _rbufLength += r;
+        return false;
       }
     }
   }
@@ -447,13 +447,13 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   unsigned char* rbufptr = _rbuf;
   SharedHandle<DownloadContext> downloadContext;
   for(std::deque<SharedHandle<DownloadContext> >::const_iterator i =
-	downloadContexts.begin(); i != downloadContexts.end(); ++i) {
+        downloadContexts.begin(); i != downloadContexts.end(); ++i) {
     unsigned char md[20];
     const BDE& torrentAttrs = (*i)->getAttribute(bittorrent::BITTORRENT);
     createReq23Hash(md, torrentAttrs[bittorrent::INFO_HASH].uc());
     if(memcmp(md, rbufptr, sizeof(md)) == 0) {
       _logger->debug("CUID#%d - info hash found: %s", _cuid,
-		     util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str());
+                     util::toHex(torrentAttrs[bittorrent::INFO_HASH].s()).c_str());
       downloadContext = *i;
       break;
     }
@@ -470,7 +470,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   {
     unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
     _decryptor->decrypt(cryptoProvide, sizeof(cryptoProvide),
-			 rbufptr, sizeof(cryptoProvide));
+                        rbufptr, sizeof(cryptoProvide));
     // TODO choose the crypto type based on the preference.
     // For now, choose ARC4.
     if(cryptoProvide[3]&CRYPTO_PLAIN_TEXT &&
@@ -483,7 +483,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
     }
     if(_negotiatedCryptoType == CRYPTO_NONE) {
       throw DL_ABORT_EX
-	(StringFormat("CUID#%d - No supported crypto type provided.", _cuid).str());
+        (StringFormat("CUID#%d - No supported crypto type provided.", _cuid).str());
     }
   }
   // decrypt PadC length
@@ -547,7 +547,7 @@ bool MSEHandshake::sendReceiverStep2()
     {
       uint16_t padDLengthBE = htons(padDLength);
       memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padDLengthBE,
-	     sizeof(padDLengthBE));
+             sizeof(padDLengthBE));
     }
     // padD, all zeroed
     memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padDLength);

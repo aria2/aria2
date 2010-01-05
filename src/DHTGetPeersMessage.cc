@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -54,9 +54,9 @@ const std::string DHTGetPeersMessage::GET_PEERS("get_peers");
 const std::string DHTGetPeersMessage::INFO_HASH("info_hash");
 
 DHTGetPeersMessage::DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
-				       const SharedHandle<DHTNode>& remoteNode,
-				       const unsigned char* infoHash,
-				       const std::string& transactionID):
+                                       const SharedHandle<DHTNode>& remoteNode,
+                                       const unsigned char* infoHash,
+                                       const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID)
 {
   memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
@@ -67,8 +67,8 @@ DHTGetPeersMessage::~DHTGetPeersMessage() {}
 void DHTGetPeersMessage::doReceivedAction()
 {
   std::string token = _tokenTracker->generateToken(_infoHash,
-					      _remoteNode->getIPAddress(),
-					      _remoteNode->getPort());
+                                                   _remoteNode->getIPAddress(),
+                                                   _remoteNode->getPort());
   // Check to see localhost has the contents which has same infohash
   std::deque<SharedHandle<Peer> > peers;
   _peerAnnounceStorage->getPeers(peers, _infoHash);
@@ -78,11 +78,11 @@ void DHTGetPeersMessage::doReceivedAction()
     _routingTable->getClosestKNodes(nodes, _infoHash);
     reply =
       _factory->createGetPeersReplyMessage(_remoteNode, nodes, token,
-					   _transactionID);
+                                           _transactionID);
   } else {
     reply =
       _factory->createGetPeersReplyMessage(_remoteNode, peers, token,
-					   _transactionID);
+                                           _transactionID);
   }
   _dispatcher->addMessageToQueue(reply);
 }

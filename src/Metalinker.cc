@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -49,8 +49,8 @@ private:
   std::string os;
 public:
   EntryQuery(const std::string& version,
-	     const std::string& language,
-	     const std::string& os):
+             const std::string& language,
+             const std::string& os):
     version(version),
     language(language),
     os(os) {}
@@ -58,17 +58,17 @@ public:
   bool operator()(const SharedHandle<MetalinkEntry>& entry) const {
     if(!version.empty()) {
       if(version != entry->version) {
-	return false;
+        return false;
       }
     }
     if(!language.empty()) {
       if(language != entry->language) {
-	return false;
+        return false;
       }
     }
     if(!os.empty()) {
       if(os != entry->os) {
-	return false;
+        return false;
       }
     }
     return true;
@@ -82,8 +82,8 @@ void Metalinker::queryEntry
  const std::string& os) const
 {
   std::remove_copy_if(entries.begin(), entries.end(),
-		      std::back_inserter(queryResult),
-		      std::not1(EntryQuery(version, language, os)));
+                      std::back_inserter(queryResult),
+                      std::not1(EntryQuery(version, language, os)));
 }
 
 } // namespace aria2

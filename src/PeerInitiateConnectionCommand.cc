@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -76,13 +76,13 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 
 bool PeerInitiateConnectionCommand::executeInternal() {
   logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
-	       peer->port);
+               peer->port);
   socket.reset(new SocketCore());
   socket->establishConnection(peer->ipaddr, peer->port);
   if(_mseHandshakeEnabled) {
     InitiatorMSEHandshakeCommand* c =
       new InitiatorMSEHandshakeCommand(cuid, _requestGroup, peer, e,
-				       _btRuntime, socket);
+                                       _btRuntime, socket);
     c->setPeerStorage(_peerStorage);
     c->setPieceStorage(_pieceStorage);
     e->commands.push_back(c);
@@ -103,7 +103,7 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
     peer->usedBy(e->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
-					_btRuntime);
+                                        _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);

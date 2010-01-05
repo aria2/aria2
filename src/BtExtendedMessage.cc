@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -99,14 +99,14 @@ std::string BtExtendedMessage::toString() const {
 
 BtExtendedMessageHandle
 BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
-			  const PeerHandle& peer,
-			  const unsigned char* data, size_t dataLength)
+                          const PeerHandle& peer,
+                          const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthGreater(1, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   assert(!factory.isNull());
   ExtensionMessageHandle extmsg = factory->createMessage(data+1,
-							 dataLength-1);
+                                                         dataLength-1);
   BtExtendedMessageHandle message(new BtExtendedMessage(extmsg));
   return message;
 }

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -69,12 +69,12 @@ public:
   // Returns true if cookie is stored or updated existing cookie.
   // Otherwise, returns false.
   bool parseAndStore(const std::string& setCookieString,
-		     const std::string& requestHost,
-		     const std::string& requestPath);
+                     const std::string& requestHost,
+                     const std::string& requestPath);
 
   std::deque<Cookie> criteriaFind(const std::string& requestHost,
-				  const std::string& requestPath,
-				  time_t date, bool secure) const;
+                                  const std::string& requestPath,
+                                  time_t date, bool secure) const;
 
   // Loads Cookies from file denoted by filename.  If compiled with
   // libsqlite3, this method automatically detects the specified file

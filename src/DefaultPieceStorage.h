@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -87,21 +87,21 @@ private:
   SharedHandle<PieceSelector> _pieceSelector;
 
   bool getMissingPieceIndex(size_t& index,
-			    const unsigned char* bitfield, size_t length);
+                            const unsigned char* bitfield, size_t length);
 
   SharedHandle<Piece> getMissingPiece(const unsigned char* bitfield,
-				      size_t length);
+                                      size_t length);
 
   SharedHandle<Piece> getMissingPiece(const BitfieldMan& bitfield);
 
 #ifdef ENABLE_BITTORRENT
   void createFastIndexBitfield(BitfieldMan& bitfield,
-			       const SharedHandle<Peer>& peer);
+                               const SharedHandle<Peer>& peer);
 #endif // ENABLE_BITTORRENT
 
   SharedHandle<Piece> checkOutPiece(size_t index);
-//   size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
-//   void reduceUsedPieces(size_t upperBound);
+  //   size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
+  //   void reduceUsedPieces(size_t upperBound);
   void deleteUsedPiece(const SharedHandle<Piece>& piece);
   SharedHandle<Piece> findUsedPiece(size_t index) const;
 
@@ -113,8 +113,8 @@ public:
   // If it is set to false, a piece whose index is smallest has the highest
   // priority.
   DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
-		      const Option* option);
-		      
+                      const Option* option);
+                      
   virtual ~DefaultPieceStorage();
 
 #ifdef ENABLE_BITTORRENT
@@ -169,7 +169,7 @@ public:
   virtual bool allDownloadFinished();
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   size_t bitfieldLength);
+                           size_t bitfieldLength);
   
   virtual size_t getBitfieldLength();
 
@@ -195,7 +195,7 @@ public:
 
   virtual void
   getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
-			    int32_t myCuid, const Time& lastCheckTime);
+                            int32_t myCuid, const Time& lastCheckTime);
 
   virtual void removeAdvertisedPiece(time_t elapsed);
 
@@ -214,14 +214,14 @@ public:
   virtual void addPieceStats(size_t index);
 
   virtual void addPieceStats(const unsigned char* bitfield,
-			     size_t bitfieldLength);
+                             size_t bitfieldLength);
   
   virtual void subtractPieceStats(const unsigned char* bitfield,
-				  size_t bitfieldLength);
+                                  size_t bitfieldLength);
 
   virtual void updatePieceStats(const unsigned char* newBitfield,
-				size_t newBitfieldLength,
-				const unsigned char* oldBitfield);
+                                size_t newBitfieldLength,
+                                const unsigned char* oldBitfield);
 
   /**
    * This method is made private for test purpose only.

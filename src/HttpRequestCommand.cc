@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -76,14 +76,14 @@ HttpRequestCommand::~HttpRequestCommand() {}
 
 static SharedHandle<HttpRequest>
 createHttpRequest(const SharedHandle<Request>& req,
-		  const SharedHandle<FileEntry>& fileEntry,
-		  const SharedHandle<Segment>& segment,
-		  uint64_t totalLength,
-		  const SharedHandle<Option>& option,
-		  const RequestGroup* rg,
-		  const SharedHandle<CookieStorage>& cookieStorage,
-		  const SharedHandle<AuthConfigFactory>& authConfigFactory,
-		  const SharedHandle<Request>& proxyRequest)
+                  const SharedHandle<FileEntry>& fileEntry,
+                  const SharedHandle<Segment>& segment,
+                  uint64_t totalLength,
+                  const SharedHandle<Option>& option,
+                  const RequestGroup* rg,
+                  const SharedHandle<CookieStorage>& cookieStorage,
+                  const SharedHandle<AuthConfigFactory>& authConfigFactory,
+                  const SharedHandle<Request>& proxyRequest)
 {
   HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
@@ -95,7 +95,7 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setAuthConfigFactory(authConfigFactory, option.get());
   httpRequest->setProxyRequest(proxyRequest);
   httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
-			     rg->getAcceptTypes().end());
+                             rg->getAcceptTypes().end());
 
   return httpRequest;
 }
@@ -119,32 +119,32 @@ bool HttpRequestCommand::executeInternal() {
 
     if(_segments.empty()) {
       HttpRequestHandle httpRequest
-	(createHttpRequest(req,
-			   _fileEntry,
-			   SharedHandle<Segment>(),
-			   _requestGroup->getTotalLength(),
-			   getOption(),
-			   _requestGroup,
-			   e->getCookieStorage(),
-			   e->getAuthConfigFactory(),
-			   _proxyRequest));
+        (createHttpRequest(req,
+                           _fileEntry,
+                           SharedHandle<Segment>(),
+                           _requestGroup->getTotalLength(),
+                           getOption(),
+                           _requestGroup,
+                           e->getCookieStorage(),
+                           e->getAuthConfigFactory(),
+                           _proxyRequest));
       _httpConnection->sendRequest(httpRequest);
     } else {
       for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
-	const SegmentHandle& segment = *itr;
-	if(!_httpConnection->isIssued(segment)) {
-	  HttpRequestHandle httpRequest
-	    (createHttpRequest(req,
-			       _fileEntry,
-			       segment,
-			       _requestGroup->getTotalLength(),
-			       getOption(),
-			       _requestGroup,
-			       e->getCookieStorage(),
-			       e->getAuthConfigFactory(),
-			       _proxyRequest));
-	  _httpConnection->sendRequest(httpRequest);
-	}
+        const SegmentHandle& segment = *itr;
+        if(!_httpConnection->isIssued(segment)) {
+          HttpRequestHandle httpRequest
+            (createHttpRequest(req,
+                               _fileEntry,
+                               segment,
+                               _requestGroup->getTotalLength(),
+                               getOption(),
+                               _requestGroup,
+                               e->getCookieStorage(),
+                               e->getAuthConfigFactory(),
+                               _proxyRequest));
+          _httpConnection->sendRequest(httpRequest);
+        }
       }
     }
   } else {
@@ -152,8 +152,8 @@ bool HttpRequestCommand::executeInternal() {
   }
   if(_httpConnection->sendBufferIsEmpty()) {
     Command* command = new HttpResponseCommand(cuid, req, _fileEntry,
-					       _requestGroup,
-					       _httpConnection, e, socket);
+                                               _requestGroup,
+                                               _httpConnection, e, socket);
     e->commands.push_back(command);
     return true;
   } else {

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -46,13 +46,13 @@ class DownloadEngine;
 class FileAllocationEntry;
 
 class CheckIntegrityEntry : public RequestGroupEntry,
-			    public ProgressAwareEntry {
+                            public ProgressAwareEntry {
 protected:
   SharedHandle<IteratableValidator> _validator;
 
   void proceedFileAllocation(std::deque<Command*>& commands,
-			     const SharedHandle<FileAllocationEntry>& entry,
-			     DownloadEngine* e);
+                             const SharedHandle<FileAllocationEntry>& entry,
+                             DownloadEngine* e);
 public:
   CheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
@@ -71,10 +71,10 @@ public:
   virtual void initValidator() = 0;
 
   virtual void onDownloadFinished(std::deque<Command*>& commands,
-				  DownloadEngine* e) = 0;
+                                  DownloadEngine* e) = 0;
 
   virtual void onDownloadIncomplete(std::deque<Command*>& commands,
-				    DownloadEngine* e) = 0;
+                                    DownloadEngine* e) = 0;
 
   void cutTrailingGarbage();
 };

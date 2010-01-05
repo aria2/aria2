@@ -97,7 +97,7 @@ void DHTMessageFactoryImplTest::testCreatePingMessage()
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-		       util::toHex(m->getTransactionID()));
+                       util::toHex(m->getTransactionID()));
 }
 
 void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
@@ -116,13 +116,13 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
   SharedHandle<DHTPingReplyMessage> m
     (dynamic_pointer_cast<DHTPingReplyMessage>
      (factory->createResponseMessage("ping", dict,
-				     remoteNode->getIPAddress(),
-				     remoteNode->getPort())));
+                                     remoteNode->getIPAddress(),
+                                     remoteNode->getPort())));
 
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-		       util::toHex(m->getTransactionID()));
+                       util::toHex(m->getTransactionID()));
 }
 
 void DHTMessageFactoryImplTest::testCreateFindNodeMessage()
@@ -148,9 +148,9 @@ void DHTMessageFactoryImplTest::testCreateFindNodeMessage()
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-		       util::toHex(m->getTransactionID()));
+                       util::toHex(m->getTransactionID()));
   CPPUNIT_ASSERT_EQUAL(util::toHex(targetNodeID, DHT_ID_LENGTH),
-		       util::toHex(m->getTargetNodeID(), DHT_ID_LENGTH));
+                       util::toHex(m->getTargetNodeID(), DHT_ID_LENGTH));
 }
 
 void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
@@ -170,10 +170,10 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
 
       unsigned char buf[6];
       CPPUNIT_ASSERT(bittorrent::createcompact
-		     (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+                     (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
-	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-	std::string(&buf[0], &buf[sizeof(buf)]);
+        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
+        std::string(&buf[0], &buf[sizeof(buf)]);
     }
     rDict["nodes"] = compactNodeInfo;
     dict["r"] = rDict;
@@ -185,8 +185,8 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     SharedHandle<DHTFindNodeReplyMessage> m
       (dynamic_pointer_cast<DHTFindNodeReplyMessage>
        (factory->createResponseMessage("find_node", dict,
-				       remoteNode->getIPAddress(),
-				       remoteNode->getPort())));
+                                       remoteNode->getIPAddress(),
+                                       remoteNode->getPort())));
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -194,7 +194,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     CPPUNIT_ASSERT(nodes[0] == m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-			 util::toHex(m->getTransactionID()));
+                         util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -223,9 +223,9 @@ void DHTMessageFactoryImplTest::testCreateGetPeersMessage()
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-		       util::toHex(m->getTransactionID()));
+                       util::toHex(m->getTransactionID()));
   CPPUNIT_ASSERT_EQUAL(util::toHex(infoHash, DHT_ID_LENGTH),
-		       util::toHex(m->getInfoHash(), DHT_ID_LENGTH));
+                       util::toHex(m->getInfoHash(), DHT_ID_LENGTH));
 }
 
 void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
@@ -245,10 +245,10 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
 
       unsigned char buf[6];
       CPPUNIT_ASSERT(bittorrent::createcompact
-		     (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+                     (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
-	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-	std::string(&buf[0], &buf[sizeof(buf)]);
+        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
+        std::string(&buf[0], &buf[sizeof(buf)]);
     }
     rDict["nodes"] = compactNodeInfo;
     rDict["token"] = BDE("token");
@@ -261,8 +261,8 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
     SharedHandle<DHTGetPeersReplyMessage> m
       (dynamic_pointer_cast<DHTGetPeersReplyMessage>
        (factory->createResponseMessage("get_peers", dict,
-				       remoteNode->getIPAddress(),
-				       remoteNode->getPort())));
+                                       remoteNode->getIPAddress(),
+                                       remoteNode->getPort())));
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -271,7 +271,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
     CPPUNIT_ASSERT(nodes[0] == m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-			 util::toHex(m->getTransactionID()));
+                         util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -292,7 +292,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
       SharedHandle<Peer> peer(new Peer("192.168.0."+util::uitos(i+1), 6881+i));
       unsigned char buffer[6];
       CPPUNIT_ASSERT(bittorrent::createcompact
-		     (buffer, peer->ipaddr, peer->port));
+                     (buffer, peer->ipaddr, peer->port));
       valuesList << BDE(buffer, sizeof(buffer));
       peers.push_back(peer);
     }
@@ -307,8 +307,8 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
     SharedHandle<DHTGetPeersReplyMessage> m
       (dynamic_pointer_cast<DHTGetPeersReplyMessage>
        (factory->createResponseMessage("get_peers", dict,
-				       remoteNode->getIPAddress(),
-				       remoteNode->getPort())));
+                                       remoteNode->getIPAddress(),
+                                       remoteNode->getPort())));
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
@@ -317,7 +317,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
     CPPUNIT_ASSERT(peers[0] == m->getValues()[0]);
     CPPUNIT_ASSERT(peers[3] == m->getValues()[3]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-			 util::toHex(m->getTransactionID()));
+                         util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -352,9 +352,9 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(token, m->getToken());
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-			 util::toHex(m->getTransactionID()));
+                         util::toHex(m->getTransactionID()));
     CPPUNIT_ASSERT_EQUAL(util::toHex(infoHash, DHT_ID_LENGTH),
-			 util::toHex(m->getInfoHash(), DHT_ID_LENGTH));
+                         util::toHex(m->getInfoHash(), DHT_ID_LENGTH));
     CPPUNIT_ASSERT_EQUAL(port, m->getTCPPort());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -377,13 +377,13 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   SharedHandle<DHTAnnouncePeerReplyMessage> m
     (dynamic_pointer_cast<DHTAnnouncePeerReplyMessage>
      (factory->createResponseMessage("announce_peer", dict,
-				     remoteNode->getIPAddress(),
-				     remoteNode->getPort())));
+                                     remoteNode->getIPAddress(),
+                                     remoteNode->getPort())));
 
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
-		       util::toHex(m->getTransactionID()));
+                       util::toHex(m->getTransactionID()));
 }
 
 void DHTMessageFactoryImplTest::testReceivedErrorMessage()
@@ -402,8 +402,8 @@ void DHTMessageFactoryImplTest::testReceivedErrorMessage()
 
   try {
     factory->createResponseMessage("announce_peer", dict,
-				   remoteNode->getIPAddress(),
-				   remoteNode->getPort());
+                                   remoteNode->getIPAddress(),
+                                   remoteNode->getPort());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     std::cerr << e.stackTrace() << std::endl;

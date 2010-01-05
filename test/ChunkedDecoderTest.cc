@@ -34,7 +34,7 @@ void ChunkedDecoderTest::testDecode()
     std::basic_string<unsigned char> msg =
       reinterpret_cast<const unsigned char*>("a\r\n1234567890\r\n");
     CPPUNIT_ASSERT_EQUAL(std::string("1234567890"),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // Feed extension; see it is ignored.
   {
@@ -42,33 +42,33 @@ void ChunkedDecoderTest::testDecode()
       reinterpret_cast<const unsigned char*>
       ("3;extensionIgnored\r\n123\r\n");
     CPPUNIT_ASSERT_EQUAL(std::string("123"),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // Not all chunk size is available
   {
     std::basic_string<unsigned char> msg =
       reinterpret_cast<const unsigned char*>("1");
     CPPUNIT_ASSERT_EQUAL(std::string(),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   {
     std::basic_string<unsigned char> msg =
       reinterpret_cast<const unsigned char*>("0\r\n1234567890123456\r\n");
     CPPUNIT_ASSERT_EQUAL(std::string("1234567890123456"),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // Not all chunk data is available
   {
     std::basic_string<unsigned char> msg =
       reinterpret_cast<const unsigned char*>("10\r\n1234567890");
     CPPUNIT_ASSERT_EQUAL(std::string("1234567890"),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   {
     std::basic_string<unsigned char> msg =
       reinterpret_cast<const unsigned char*>("123456\r\n");
     CPPUNIT_ASSERT_EQUAL(std::string("123456"),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // no trailing CR LF.
   {
@@ -76,7 +76,7 @@ void ChunkedDecoderTest::testDecode()
       reinterpret_cast<const unsigned char*>
       ("10\r\n1234567890123456");
     CPPUNIT_ASSERT_EQUAL(std::string("1234567890123456"),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // feed only CR
   {
@@ -84,7 +84,7 @@ void ChunkedDecoderTest::testDecode()
       reinterpret_cast<const unsigned char*>
       ("\r");
     CPPUNIT_ASSERT_EQUAL(std::string(),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // feed next LF
   {
@@ -92,7 +92,7 @@ void ChunkedDecoderTest::testDecode()
       reinterpret_cast<const unsigned char*>
       ("\n");
     CPPUNIT_ASSERT_EQUAL(std::string(),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // feed 0 CR LF.
   {
@@ -100,7 +100,7 @@ void ChunkedDecoderTest::testDecode()
       reinterpret_cast<const unsigned char*>
       ("0\r\n");
     CPPUNIT_ASSERT_EQUAL(std::string(),
-			 decoder.decode(msg.c_str(), msg.size()));
+                         decoder.decode(msg.c_str(), msg.size()));
   }
   // input is over
   CPPUNIT_ASSERT(decoder.finished());

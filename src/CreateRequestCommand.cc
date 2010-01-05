@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -50,8 +50,8 @@
 namespace aria2 {
 
 CreateRequestCommand::CreateRequestCommand(int32_t cuid,
-					   RequestGroup* requestGroup,
-					   DownloadEngine* e):
+                                           RequestGroup* requestGroup,
+                                           DownloadEngine* e):
   AbstractCommand
   (cuid, SharedHandle<Request>(), SharedHandle<FileEntry>(), requestGroup, e)
 {
@@ -75,14 +75,14 @@ bool CreateRequestCommand::executeInternal()
     _fileEntry->reuseUri(_requestGroup->getNumConcurrentCommand());
   }
   req = _fileEntry->getRequest(_requestGroup->getURISelector(),
-			       getOption()->get(PREF_REFERER),
-			       // Don't use HEAD request when file
-			       // size is known.
-			       // Use HEAD for dry-run mode.
-			       (_fileEntry->getLength() == 0 &&
-				getOption()->getAsBool(PREF_USE_HEAD)) ||
-			       getOption()->getAsBool(PREF_DRY_RUN)?
-			       Request::METHOD_HEAD:Request::METHOD_GET);
+                               getOption()->get(PREF_REFERER),
+                               // Don't use HEAD request when file
+                               // size is known.
+                               // Use HEAD for dry-run mode.
+                               (_fileEntry->getLength() == 0 &&
+                                getOption()->getAsBool(PREF_USE_HEAD)) ||
+                               getOption()->getAsBool(PREF_DRY_RUN)?
+                               Request::METHOD_HEAD:Request::METHOD_GET);
   if(req.isNull()) {
     if(!_requestGroup->getSegmentMan().isNull()) {
       _requestGroup->getSegmentMan()->ignoreSegmentFor(_fileEntry);

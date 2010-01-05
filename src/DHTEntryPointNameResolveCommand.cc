@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -83,44 +83,44 @@ bool DHTEntryPointNameResolveCommand::execute()
 #ifdef ENABLE_ASYNC_DNS
     if(_e->option->getAsBool(PREF_ASYNC_DNS)) {
       while(_entryPoints.size()) {
-	std::string hostname = _entryPoints.front().first;
-	try {
-	  if(resolveHostname(hostname, _resolver)) {
-	    hostname = _resolver->getResolvedAddresses().front();
-	    std::pair<std::string, uint16_t> p(hostname,
-					       _entryPoints.front().second);
-	    _resolvedEntryPoints.push_back(p);
-	    addPingTask(p);
-	  } else {
-	    _e->commands.push_back(this);
-	    return false;
-	  }
-	} catch(RecoverableException& e) {
-	  logger->error(EX_EXCEPTION_CAUGHT, e);
-	}
-	_resolver->reset();
-	_entryPoints.erase(_entryPoints.begin());
+        std::string hostname = _entryPoints.front().first;
+        try {
+          if(resolveHostname(hostname, _resolver)) {
+            hostname = _resolver->getResolvedAddresses().front();
+            std::pair<std::string, uint16_t> p(hostname,
+                                               _entryPoints.front().second);
+            _resolvedEntryPoints.push_back(p);
+            addPingTask(p);
+          } else {
+            _e->commands.push_back(this);
+            return false;
+          }
+        } catch(RecoverableException& e) {
+          logger->error(EX_EXCEPTION_CAUGHT, e);
+        }
+        _resolver->reset();
+        _entryPoints.erase(_entryPoints.begin());
       }
     } else
 #endif // ENABLE_ASYNC_DNS
       {
-	NameResolver res;
-	res.setSocktype(SOCK_DGRAM);
-	while(_entryPoints.size()) {
-	  std::string hostname = _entryPoints.front().first;
-	  try {
-	    std::deque<std::string> addrs;
-	    res.resolve(addrs, hostname);
-	  
-	    std::pair<std::string, uint16_t> p(addrs.front(),
-					       _entryPoints.front().second);
-	    _resolvedEntryPoints.push_back(p);
-	    addPingTask(p);
-	  } catch(RecoverableException& e) {
-	    logger->error(EX_EXCEPTION_CAUGHT, e);
-	  }
-	  _entryPoints.erase(_entryPoints.begin());
-	}
+        NameResolver res;
+        res.setSocktype(SOCK_DGRAM);
+        while(_entryPoints.size()) {
+          std::string hostname = _entryPoints.front().first;
+          try {
+            std::deque<std::string> addrs;
+            res.resolve(addrs, hostname);
+          
+            std::pair<std::string, uint16_t> p(addrs.front(),
+                                               _entryPoints.front().second);
+            _resolvedEntryPoints.push_back(p);
+            addPingTask(p);
+          } catch(RecoverableException& e) {
+            logger->error(EX_EXCEPTION_CAUGHT, e);
+          }
+          _entryPoints.erase(_entryPoints.begin());
+        }
       }
     if(_bootstrapEnabled && _resolvedEntryPoints.size()) {
       _taskQueue->addPeriodicTask1(_taskFactory->createNodeLookupTask(_localNode->getID()));
@@ -155,15 +155,15 @@ bool DHTEntryPointNameResolveCommand::resolveHostname
     return false;
   case AsyncNameResolver::STATUS_SUCCESS:
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
-		 resolver->getHostname().c_str(),
-		 resolver->getResolvedAddresses().front().c_str());
+                 resolver->getHostname().c_str(),
+                 resolver->getResolvedAddresses().front().c_str());
     return true;
     break;
   case AsyncNameResolver::STATUS_ERROR:
     throw DL_ABORT_EX
       (StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
-		    hostname.c_str(),
-		    resolver->getError().c_str()).str());
+                    hostname.c_str(),
+                    resolver->getError().c_str()).str());
   default:
     return false;
   }

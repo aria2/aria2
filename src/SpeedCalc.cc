@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -91,7 +91,7 @@ unsigned int SpeedCalc::calculateSpeed(const struct timeval& now) {
 void SpeedCalc::update(size_t bytes) {
   accumulatedLength += bytes;
   std::transform(&lengthArray[0], &lengthArray[2], &lengthArray[0],
-		 std::bind1st(std::plus<uint64_t>(), (uint64_t)bytes));
+                 std::bind1st(std::plus<uint64_t>(), (uint64_t)bytes));
   if(isIntervalOver()) {
     changeSw();
   }

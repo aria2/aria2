@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -153,7 +153,7 @@ RequestGroup::~RequestGroup() {}
 const SegmentManHandle& RequestGroup::initSegmentMan()
 {
   _segmentMan = _segmentManFactory->createNewInstance(_downloadContext,
-						      _pieceStorage);
+                                                      _pieceStorage);
   return _segmentMan;
 }
 
@@ -182,9 +182,9 @@ downloadresultcode::RESULT RequestGroup::downloadResult() const
   else {
     if (_lastUriResult.isNull()) {
       if(_haltReason == RequestGroup::USER_REQUEST) {
-	return downloadresultcode::IN_PROGRESS;
+        return downloadresultcode::IN_PROGRESS;
       } else {
-	return downloadresultcode::UNKNOWN_ERROR;
+        return downloadresultcode::UNKNOWN_ERROR;
       }
     } else {
       return _lastUriResult->getResult();
@@ -206,174 +206,174 @@ void RequestGroup::createInitialCommand
   {
     if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
       const BDE& torrentAttrs =
-	_downloadContext->getAttribute(bittorrent::BITTORRENT);
+        _downloadContext->getAttribute(bittorrent::BITTORRENT);
       bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
       if(_option->getAsBool(PREF_DRY_RUN)) {
-	throw DOWNLOAD_FAILURE_EXCEPTION
-	  ("Cancel BitTorrent download in dry-run context.");
+        throw DOWNLOAD_FAILURE_EXCEPTION
+          ("Cancel BitTorrent download in dry-run context.");
       }
       SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
       if(!btRegistry->getDownloadContext
-	 (torrentAttrs[bittorrent::INFO_HASH].s()).isNull()) {
-	throw DOWNLOAD_FAILURE_EXCEPTION
-	  (StringFormat
-	   ("InfoHash %s is already registered.",
-	    bittorrent::getInfoHashString(_downloadContext).c_str()).str());
+         (torrentAttrs[bittorrent::INFO_HASH].s()).isNull()) {
+        throw DOWNLOAD_FAILURE_EXCEPTION
+          (StringFormat
+           ("InfoHash %s is already registered.",
+            bittorrent::getInfoHashString(_downloadContext).c_str()).str());
       }
       if(metadataGetMode) {
-	// Use UnknownLengthPieceStorage.
-	initPieceStorage();
+        // Use UnknownLengthPieceStorage.
+        initPieceStorage();
       } else {
-	if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
-	  throw DOWNLOAD_FAILURE_EXCEPTION
-	    (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-			  _downloadContext->getBasePath().c_str()).str());
-	}
-	initPieceStorage();
-	if(_downloadContext->getFileEntries().size() > 1) {
-	  _pieceStorage->setupFileFilter();
-	}
+        if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
+          throw DOWNLOAD_FAILURE_EXCEPTION
+            (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+                          _downloadContext->getBasePath().c_str()).str());
+        }
+        initPieceStorage();
+        if(_downloadContext->getFileEntries().size() > 1) {
+          _pieceStorage->setupFileFilter();
+        }
       }
       
       SharedHandle<DefaultBtProgressInfoFile> progressInfoFile;
       if(!metadataGetMode) {
-	progressInfoFile.reset(new DefaultBtProgressInfoFile(_downloadContext,
-							     _pieceStorage,
-							     _option.get()));
+        progressInfoFile.reset(new DefaultBtProgressInfoFile(_downloadContext,
+                                                             _pieceStorage,
+                                                             _option.get()));
       }
         
       BtRuntimeHandle btRuntime(new BtRuntime());
       btRuntime->setMaxPeers(_option->getAsInt(PREF_BT_MAX_PEERS));
       _btRuntime = btRuntime;
       if(!progressInfoFile.isNull()) {
-	progressInfoFile->setBtRuntime(btRuntime);
+        progressInfoFile->setBtRuntime(btRuntime);
       }
 
       SharedHandle<DefaultPeerStorage> peerStorage
-	(new DefaultPeerStorage(_option.get()));
+        (new DefaultPeerStorage(_option.get()));
       peerStorage->setBtRuntime(btRuntime);
       peerStorage->setPieceStorage(_pieceStorage);
       _peerStorage = peerStorage;
       if(!progressInfoFile.isNull()) {
-	progressInfoFile->setPeerStorage(peerStorage);
+        progressInfoFile->setPeerStorage(peerStorage);
       }
 
       SharedHandle<DefaultBtAnnounce> btAnnounce
-	(new DefaultBtAnnounce(_downloadContext, _option.get()));
+        (new DefaultBtAnnounce(_downloadContext, _option.get()));
       btAnnounce->setBtRuntime(btRuntime);
       btAnnounce->setPieceStorage(_pieceStorage);
       btAnnounce->setPeerStorage(peerStorage);
       btAnnounce->setUserDefinedInterval
-	(_option->getAsInt(PREF_BT_TRACKER_INTERVAL));
+        (_option->getAsInt(PREF_BT_TRACKER_INTERVAL));
       btAnnounce->shuffleAnnounce();
       
       btRegistry->put(_gid,
-		      BtObject(_downloadContext,
-			       _pieceStorage,
-			       peerStorage,
-			       btAnnounce,
-			       btRuntime,
-			       (progressInfoFile.isNull()?
-				_progressInfoFile:
-				SharedHandle<BtProgressInfoFile>
-				(progressInfoFile))));
+                      BtObject(_downloadContext,
+                               _pieceStorage,
+                               peerStorage,
+                               btAnnounce,
+                               btRuntime,
+                               (progressInfoFile.isNull()?
+                                _progressInfoFile:
+                                SharedHandle<BtProgressInfoFile>
+                                (progressInfoFile))));
       if(metadataGetMode) {
-	if(_option->getAsBool(PREF_ENABLE_DHT)) {
-	  std::deque<Command*> dhtCommands;
-	  DHTSetup().setup(dhtCommands, e, _option.get());
-	  e->addCommand(dhtCommands);
-	} else {
-	  _logger->notice("For BitTorrent Magnet URI, enabling DHT is strongly"
-			  " recommended. See --enable-dht option.");
-	}
+        if(_option->getAsBool(PREF_ENABLE_DHT)) {
+          std::deque<Command*> dhtCommands;
+          DHTSetup().setup(dhtCommands, e, _option.get());
+          e->addCommand(dhtCommands);
+        } else {
+          _logger->notice("For BitTorrent Magnet URI, enabling DHT is strongly"
+                          " recommended. See --enable-dht option.");
+        }
 
-	SharedHandle<CheckIntegrityEntry> entry
-	  (new BtCheckIntegrityEntry(this));
-	entry->onDownloadIncomplete(commands, e);
-	
-	return;
+        SharedHandle<CheckIntegrityEntry> entry
+          (new BtCheckIntegrityEntry(this));
+        entry->onDownloadIncomplete(commands, e);
+        
+        return;
       }
 
       // Remove the control file if download file doesn't exist
       if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
-	progressInfoFile->removeFile();
-	_logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
-			progressInfoFile->getFilename().c_str(),
-			_downloadContext->getBasePath().c_str());
+        progressInfoFile->removeFile();
+        _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
+                        progressInfoFile->getFilename().c_str(),
+                        _downloadContext->getBasePath().c_str());
       }
       {
-	uint64_t actualFileSize = _pieceStorage->getDiskAdaptor()->size();
-	if(actualFileSize == _downloadContext->getTotalLength()) {
-	  // First, make DiskAdaptor read-only mode to allow the
-	  // program to seed file in read-only media.
-	  _pieceStorage->getDiskAdaptor()->enableReadOnly();
-	} else {
-	  // Open file in writable mode to allow the program
-	  // truncate the file to _downloadContext->getTotalLength()
-	  _logger->debug("File size not match. File is opened in writable mode."
-			 " Expected:%s Actual:%s",
-			 util::uitos(_downloadContext->getTotalLength()).c_str(),
-			 util::uitos(actualFileSize).c_str());
-	}
+        uint64_t actualFileSize = _pieceStorage->getDiskAdaptor()->size();
+        if(actualFileSize == _downloadContext->getTotalLength()) {
+          // First, make DiskAdaptor read-only mode to allow the
+          // program to seed file in read-only media.
+          _pieceStorage->getDiskAdaptor()->enableReadOnly();
+        } else {
+          // Open file in writable mode to allow the program
+          // truncate the file to _downloadContext->getTotalLength()
+          _logger->debug("File size not match. File is opened in writable mode."
+                         " Expected:%s Actual:%s",
+                         util::uitos(_downloadContext->getTotalLength()).c_str(),
+                         util::uitos(actualFileSize).c_str());
+        }
       }
       // Call Load, Save and file allocation command here
       if(progressInfoFile->exists()) {
-	// load .aria2 file if it exists.
-	progressInfoFile->load();
-	_pieceStorage->getDiskAdaptor()->openFile();
+        // load .aria2 file if it exists.
+        progressInfoFile->load();
+        _pieceStorage->getDiskAdaptor()->openFile();
       } else {
-	if(_pieceStorage->getDiskAdaptor()->fileExists()) {
-	  if(!_option->getAsBool(PREF_CHECK_INTEGRITY) &&
-	     !_option->getAsBool(PREF_ALLOW_OVERWRITE) &&
-	     !_option->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
-	    // TODO we need this->haltRequested = true?
-	    throw DOWNLOAD_FAILURE_EXCEPTION
-	      (StringFormat
-	       (MSG_FILE_ALREADY_EXISTS,
-		_downloadContext->getBasePath().c_str()).str());
-	  } else {
-	    _pieceStorage->getDiskAdaptor()->openFile();
-	  }
-	  if(_option->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
-	    _pieceStorage->markAllPiecesDone();
-	  }
-	} else {
-	  _pieceStorage->getDiskAdaptor()->openFile();
-	}
+        if(_pieceStorage->getDiskAdaptor()->fileExists()) {
+          if(!_option->getAsBool(PREF_CHECK_INTEGRITY) &&
+             !_option->getAsBool(PREF_ALLOW_OVERWRITE) &&
+             !_option->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
+            // TODO we need this->haltRequested = true?
+            throw DOWNLOAD_FAILURE_EXCEPTION
+              (StringFormat
+               (MSG_FILE_ALREADY_EXISTS,
+                _downloadContext->getBasePath().c_str()).str());
+          } else {
+            _pieceStorage->getDiskAdaptor()->openFile();
+          }
+          if(_option->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
+            _pieceStorage->markAllPiecesDone();
+          }
+        } else {
+          _pieceStorage->getDiskAdaptor()->openFile();
+        }
       }
       _progressInfoFile = progressInfoFile;
 
       if(torrentAttrs[bittorrent::PRIVATE].i() == 0 &&
-	 _option->getAsBool(PREF_ENABLE_DHT)) {
-	std::deque<Command*> commands;
-	DHTSetup().setup(commands, e, _option.get());
-	e->addCommand(commands);
-	if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
-	  std::deque<std::pair<std::string, uint16_t> > entryPoints;
-	  const BDE& nodes = torrentAttrs[bittorrent::NODES];
-	  for(BDE::List::const_iterator i = nodes.listBegin();
-	      i != nodes.listEnd(); ++i) {
-	    std::pair<std::string, uint16_t> addr
-	      ((*i)[bittorrent::HOSTNAME].s(), (*i)[bittorrent::PORT].i());
-	    entryPoints.push_back(addr);
-	  }
-	  DHTEntryPointNameResolveCommand* command =
-	    new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
-	  command->setTaskQueue(DHTRegistry::_taskQueue);
-	  command->setTaskFactory(DHTRegistry::_taskFactory);
-	  command->setRoutingTable(DHTRegistry::_routingTable);
-	  command->setLocalNode(DHTRegistry::_localNode);
-	  e->commands.push_back(command);
-	}
+         _option->getAsBool(PREF_ENABLE_DHT)) {
+        std::deque<Command*> commands;
+        DHTSetup().setup(commands, e, _option.get());
+        e->addCommand(commands);
+        if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
+          std::deque<std::pair<std::string, uint16_t> > entryPoints;
+          const BDE& nodes = torrentAttrs[bittorrent::NODES];
+          for(BDE::List::const_iterator i = nodes.listBegin();
+              i != nodes.listEnd(); ++i) {
+            std::pair<std::string, uint16_t> addr
+              ((*i)[bittorrent::HOSTNAME].s(), (*i)[bittorrent::PORT].i());
+            entryPoints.push_back(addr);
+          }
+          DHTEntryPointNameResolveCommand* command =
+            new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
+          command->setTaskQueue(DHTRegistry::_taskQueue);
+          command->setTaskFactory(DHTRegistry::_taskFactory);
+          command->setRoutingTable(DHTRegistry::_routingTable);
+          command->setLocalNode(DHTRegistry::_localNode);
+          e->commands.push_back(command);
+        }
       }
       CheckIntegrityEntryHandle entry(new BtCheckIntegrityEntry(this));
       // --bt-seed-unverified=true is given and download has completed, skip
       // validation for piece hashes.
       if(_option->getAsBool(PREF_BT_SEED_UNVERIFIED) &&
-	 _pieceStorage->downloadFinished()) {
-	entry->onDownloadFinished(commands, e);
+         _pieceStorage->downloadFinished()) {
+        entry->onDownloadFinished(commands, e);
       } else {
-	processCheckIntegrityEntry(commands, entry, e);
+        processCheckIntegrityEntry(commands, entry, e);
       }
       return;
     }
@@ -393,34 +393,34 @@ void RequestGroup::createInitialCommand
   }else {
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
-	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-		      _downloadContext->getBasePath().c_str()).str());
+        (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+                      _downloadContext->getBasePath().c_str()).str());
     }
     adjustFilename
       (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
-					(_downloadContext,
-					 SharedHandle<PieceStorage>(),
-					 _option.get())));
+                                        (_downloadContext,
+                                         SharedHandle<PieceStorage>(),
+                                         _option.get())));
     initPieceStorage();
     BtProgressInfoFileHandle infoFile
       (new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage,
-				     _option.get()));
+                                     _option.get()));
     if(!infoFile->exists() && downloadFinishedByFileLength()) {
       _pieceStorage->markAllPiecesDone();
       _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-		      _gid, _downloadContext->getBasePath().c_str());
+                      _gid, _downloadContext->getBasePath().c_str());
     } else {
       loadAndOpenFile(infoFile);
       SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
-	(new StreamCheckIntegrityEntry(this));
+        (new StreamCheckIntegrityEntry(this));
       processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
     }
   }
 }
 
 void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
-					      const CheckIntegrityEntryHandle& entry,
-					      DownloadEngine* e)
+                                              const CheckIntegrityEntryHandle& entry,
+                                              DownloadEngine* e)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_option->getAsBool(PREF_CHECK_INTEGRITY) &&
@@ -450,29 +450,29 @@ void RequestGroup::initPieceStorage()
       (new DefaultPieceStorage(_downloadContext, _option.get()));
     if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
       if(isUriSuppliedForRequsetFileEntry
-	 (_downloadContext->getFileEntries().begin(),
-	  _downloadContext->getFileEntries().end())) {
-	// Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
-	// integrated downloads. Currently multi-file integrated
-	// download is not supported.
-	_logger->debug("Using LongestSequencePieceSelector");
-	ps->setPieceSelector
-	  (SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
+         (_downloadContext->getFileEntries().begin(),
+          _downloadContext->getFileEntries().end())) {
+        // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
+        // integrated downloads. Currently multi-file integrated
+        // download is not supported.
+        _logger->debug("Using LongestSequencePieceSelector");
+        ps->setPieceSelector
+          (SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
       }
       if(_option->defined(PREF_BT_PRIORITIZE_PIECE)) {
-	std::vector<size_t> result;
-	util::parsePrioritizePieceRange
-	  (result, _option->get(PREF_BT_PRIORITIZE_PIECE),
-	   _downloadContext->getFileEntries(),
-	   _downloadContext->getPieceLength());
-	if(!result.empty()) {
-	  std::random_shuffle(result.begin(), result.end(),
-			      *(SimpleRandomizer::getInstance().get()));
-	  SharedHandle<PriorityPieceSelector> priSelector
-	    (new PriorityPieceSelector(ps->getPieceSelector()));
-	  priSelector->setPriorityPiece(result.begin(), result.end());
-	  ps->setPieceSelector(priSelector);
-	}
+        std::vector<size_t> result;
+        util::parsePrioritizePieceRange
+          (result, _option->get(PREF_BT_PRIORITIZE_PIECE),
+           _downloadContext->getFileEntries(),
+           _downloadContext->getPieceLength());
+        if(!result.empty()) {
+          std::random_shuffle(result.begin(), result.end(),
+                              *(SimpleRandomizer::getInstance().get()));
+          SharedHandle<PriorityPieceSelector> priSelector
+            (new PriorityPieceSelector(ps->getPieceSelector()));
+          priSelector->setPriorityPiece(result.begin(), result.end());
+          ps->setPieceSelector(priSelector);
+        }
       }
     }
 #else // !ENABLE_BITTORRENT
@@ -532,10 +532,10 @@ void RequestGroup::adjustFilename
     } else {
 #ifdef ENABLE_MESSAGE_DIGEST
       if(outfile.exists() && _option->getAsBool(PREF_CHECK_INTEGRITY)) {
-	// check-integrity existing file
+        // check-integrity existing file
       } else {
 #endif // ENABLE_MESSAGE_DIGEST
-	shouldCancelDownloadForSafety();
+        shouldCancelDownloadForSafety();
 #ifdef ENABLE_MESSAGE_DIGEST
       }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -554,8 +554,8 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
     if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
       progressInfoFile->removeFile();
       _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
-		      progressInfoFile->getFilename().c_str(),
-		      _downloadContext->getBasePath().c_str());
+                      progressInfoFile->getFilename().c_str(),
+                      _downloadContext->getBasePath().c_str());
     }
 
     if(progressInfoFile->exists()) {
@@ -564,18 +564,18 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
     } else {
       File outfile(getFirstFilePath());    
       if(outfile.exists() && _option->getAsBool(PREF_CONTINUE) &&
-	 outfile.size() <= getTotalLength()) {
-	_pieceStorage->getDiskAdaptor()->openExistingFile();
-	_pieceStorage->markPiecesDone(outfile.size());
+         outfile.size() <= getTotalLength()) {
+        _pieceStorage->getDiskAdaptor()->openExistingFile();
+        _pieceStorage->markPiecesDone(outfile.size());
       } else {
 #ifdef ENABLE_MESSAGE_DIGEST
-	if(outfile.exists() && _option->getAsBool(PREF_CHECK_INTEGRITY)) {
-	  _pieceStorage->getDiskAdaptor()->openExistingFile();
-	} else {
+        if(outfile.exists() && _option->getAsBool(PREF_CHECK_INTEGRITY)) {
+          _pieceStorage->getDiskAdaptor()->openExistingFile();
+        } else {
 #endif // ENABLE_MESSAGE_DIGEST
-	  _pieceStorage->getDiskAdaptor()->initAndOpenFile();
+          _pieceStorage->getDiskAdaptor()->initAndOpenFile();
 #ifdef ENABLE_MESSAGE_DIGEST
-	}
+        }
 #endif // ENABLE_MESSAGE_DIGEST
       }
     }
@@ -596,16 +596,16 @@ void RequestGroup::shouldCancelDownloadForSafety()
   if(outfile.exists()) {
     if(_option->getAsBool(PREF_AUTO_FILE_RENAMING)) {
       if(tryAutoFileRenaming()) {
-	_logger->notice(MSG_FILE_RENAMED, getFirstFilePath().c_str());
+        _logger->notice(MSG_FILE_RENAMED, getFirstFilePath().c_str());
       } else {
-	throw DOWNLOAD_FAILURE_EXCEPTION
-	  (StringFormat("File renaming failed: %s",
-			getFirstFilePath().c_str()).str());
+        throw DOWNLOAD_FAILURE_EXCEPTION
+          (StringFormat("File renaming failed: %s",
+                        getFirstFilePath().c_str()).str());
       }
     } else {
       throw DOWNLOAD_FAILURE_EXCEPTION
-	(StringFormat(MSG_FILE_ALREADY_EXISTS,
-		      getFirstFilePath().c_str()).str());
+        (StringFormat(MSG_FILE_ALREADY_EXISTS,
+                      getFirstFilePath().c_str()).str());
     }
   }
 }
@@ -628,14 +628,14 @@ bool RequestGroup::tryAutoFileRenaming()
 }
 
 void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
-					    DownloadEngine* e, int numAdj)
+                                            DownloadEngine* e, int numAdj)
 {
   int numCommand;
   if(getTotalLength() == 0) {
     numCommand = 1+numAdj;
   } else {
     numCommand = std::min(_downloadContext->getNumPieces(),
-			  _numConcurrentCommand);
+                          _numConcurrentCommand);
     numCommand += numAdj;
   }
   if(numCommand > 0) {
@@ -644,8 +644,8 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
 }
 
 void RequestGroup::createNextCommand(std::deque<Command*>& commands,
-				     DownloadEngine* e,
-				     unsigned int numCommand)
+                                     DownloadEngine* e,
+                                     unsigned int numCommand)
 {
   for(; numCommand--; ) {
     Command* command = new CreateRequestCommand(e->newCUID(), this, e);
@@ -694,20 +694,20 @@ uint64_t RequestGroup::getCompletedLength() const
 }
 
 void RequestGroup::validateFilename(const std::string& expectedFilename,
-				    const std::string& actualFilename) const
+                                    const std::string& actualFilename) const
 {
   if(expectedFilename.empty()) {
     return;
   }
   if(expectedFilename != actualFilename) {
     throw DL_ABORT_EX(StringFormat(EX_FILENAME_MISMATCH,
-				 expectedFilename.c_str(),
-				 actualFilename.c_str()).str());
+                                   expectedFilename.c_str(),
+                                   actualFilename.c_str()).str());
   }
 }
 
 void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
-				       uint64_t actualTotalLength) const
+                                       uint64_t actualTotalLength) const
 {
   if(expectedTotalLength <= 0) {
     return;
@@ -715,8 +715,8 @@ void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
   if(expectedTotalLength != actualTotalLength) {
     throw DL_ABORT_EX
       (StringFormat(EX_SIZE_MISMATCH,
-		    util::itos(expectedTotalLength, true).c_str(),
-		    util::itos(actualTotalLength, true).c_str()).str());
+                    util::itos(expectedTotalLength, true).c_str(),
+                    util::itos(actualTotalLength, true).c_str()).str());
   }
 }
 
@@ -809,13 +809,13 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 void RequestGroup::preDownloadProcessing()
 {
   _logger->debug("Finding PreDownloadHandler for path %s.",
-		 getFirstFilePath().c_str());
+                 getFirstFilePath().c_str());
   try {
     for(PreDownloadHandlers::const_iterator itr = _preDownloadHandlers.begin();
-	itr != _preDownloadHandlers.end(); ++itr) {
+        itr != _preDownloadHandlers.end(); ++itr) {
       if((*itr)->canHandle(this)) {
-	(*itr)->execute(this);
-	return;
+        (*itr)->execute(this);
+        return;
       }
     }
   } catch(RecoverableException& ex) {
@@ -830,13 +830,13 @@ void RequestGroup::postDownloadProcessing
 (std::deque<SharedHandle<RequestGroup> >& groups)
 {
   _logger->debug("Finding PostDownloadHandler for path %s.",
-		 getFirstFilePath().c_str());
+                 getFirstFilePath().c_str());
   try {
     for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
-	itr != _postDownloadHandlers.end(); ++itr) {
+        itr != _postDownloadHandlers.end(); ++itr) {
       if((*itr)->canHandle(this)) {
-	(*itr)->getNextRequestGroups(groups, this);
-	return;
+        (*itr)->getNextRequestGroups(groups, this);
+        return;
       }
     }
   } catch(RecoverableException& ex) {
@@ -952,19 +952,19 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
   return
     SharedHandle<DownloadResult>
     (new DownloadResult(_gid,
-			_downloadContext->getFileEntries(),
-			_inMemoryDownload,
-			sessionDownloadLength,
-			_downloadContext->calculateSessionTime(),
-			downloadResult(),
-			_followedByGIDs,
-			_belongsToGID));
+                        _downloadContext->getFileEntries(),
+                        _inMemoryDownload,
+                        sessionDownloadLength,
+                        _downloadContext->calculateSessionTime(),
+                        downloadResult(),
+                        _followedByGIDs,
+                        _belongsToGID));
 }
   
 void RequestGroup::reportDownloadFinished()
 {
   _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
-		  _downloadContext->getBasePath().c_str());
+                  _downloadContext->getBasePath().c_str());
   _uriSelector->resetCounters();
 #ifdef ENABLE_BITTORRENT
   if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
@@ -974,9 +974,9 @@ void RequestGroup::reportDownloadFinished()
     const BDE& attrs = _downloadContext->getAttribute(bittorrent::BITTORRENT);
     if(attrs.containsKey(bittorrent::METADATA)) {
       _logger->notice(MSG_SHARE_RATIO_REPORT,
-		      shareRatio,
-		      util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
-		      util::abbrevSize(getCompletedLength()).c_str());
+                      shareRatio,
+                      util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
+                      util::abbrevSize(getCompletedLength()).c_str());
     }
   }
 #endif // ENABLE_BITTORRENT
@@ -992,7 +992,7 @@ void RequestGroup::addAcceptType(const std::string& type)
 void RequestGroup::removeAcceptType(const std::string& type)
 {
   _acceptTypes.erase(std::remove(_acceptTypes.begin(), _acceptTypes.end(), type),
-		     _acceptTypes.end());
+                     _acceptTypes.end());
 }
 
 void RequestGroup::setURISelector(const SharedHandle<URISelector>& uriSelector)
@@ -1005,11 +1005,11 @@ void RequestGroup::applyLastModifiedTimeToLocalFiles()
   if(!_pieceStorage.isNull() && _lastModifiedTime.good()) {
     time_t t = _lastModifiedTime.getTime();
     _logger->info("Applying Last-Modified time: %s in local time zone",
-		  ctime(&t));
+                  ctime(&t));
     size_t n =
       _pieceStorage->getDiskAdaptor()->utime(Time(), _lastModifiedTime);
     _logger->info("Last-Modified attrs of %lu files were updated.",
-		  static_cast<unsigned long>(n));
+                  static_cast<unsigned long>(n));
   }
 }
 

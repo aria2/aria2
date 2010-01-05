@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -54,7 +54,7 @@ PStringDatumHandle ParameterizedStringParser::parse(const std::string& src)
 }
 
 PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src,
-							  int& offset)
+                                                          int& offset)
 {
   if(src.size() == (size_t)offset) {
     return SharedHandle<PStringDatum>();
@@ -70,7 +70,7 @@ PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src
 }
 
 PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& src,
-							    int& offset)
+                                                            int& offset)
 {
   std::string::size_type nextDelimiterIndex = src.find_first_of("[{", offset);
   if(nextDelimiterIndex == std::string::npos) {
@@ -83,7 +83,7 @@ PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& s
 }
 
 PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& src,
-							   int& offset)
+                                                           int& offset)
 {
   ++offset;
   std::string::size_type rightParenIndex = src.find("}", offset);
@@ -92,7 +92,7 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
   }
   std::deque<std::string> values;
   util::split(src.substr(offset, rightParenIndex-offset),
-	      std::back_inserter(values), ",", true);
+              std::back_inserter(values), ",", true);
   if(values.empty()) {
     throw DL_ABORT_EX("Empty {} is not allowed.");
   }
@@ -102,7 +102,7 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
 }
 
 PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
-							 int& offset)
+                                                         int& offset)
 {
   ++offset;
   std::string::size_type rightParenIndex = src.find("]", offset);

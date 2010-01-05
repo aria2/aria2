@@ -31,11 +31,11 @@ public:
   public:
     virtual SharedHandle<DHTMessage>
     createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			       const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-			       const std::string& transactionID)
+                               const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+                               const std::string& transactionID)
     {
       SharedHandle<MockDHTMessage> m
-	(new MockDHTMessage(_localNode, remoteNode, "find_node", transactionID));
+        (new MockDHTMessage(_localNode, remoteNode, "find_node", transactionID));
       m->_nodes = closestKNodes;
       return m;
     }

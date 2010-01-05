@@ -70,19 +70,19 @@ void PieceTest::testUpdateHash()
   
   std::string spam("SPAM!");
   CPPUNIT_ASSERT(p.updateHash
-		 (0, reinterpret_cast<const unsigned char*>(spam.c_str()),
-		  spam.size()));
+                 (0, reinterpret_cast<const unsigned char*>(spam.c_str()),
+                  spam.size()));
   CPPUNIT_ASSERT(!p.isHashCalculated());
 
   std::string spamspam("SPAM!SPAM!!");
   CPPUNIT_ASSERT(p.updateHash
-		 (spam.size(),
-		  reinterpret_cast<const unsigned char*>(spamspam.c_str()),
-		  spamspam.size()));
+                 (spam.size(),
+                  reinterpret_cast<const unsigned char*>(spamspam.c_str()),
+                  spamspam.size()));
   CPPUNIT_ASSERT(p.isHashCalculated());
 
   CPPUNIT_ASSERT_EQUAL(std::string("d9189aff79e075a2e60271b9556a710dc1bc7de7"),
-		       p.getHashString());
+                       p.getHashString());
 }
 
 #endif // ENABLE_MESSAGE_DIGEST

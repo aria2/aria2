@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -47,16 +47,16 @@ public:
   XORCloser(const unsigned char* key, size_t length):_key(key), _length(length) {}
 
   bool operator()(const unsigned char* key1,
-		  const unsigned char* key2) const
+                  const unsigned char* key2) const
   {
     for(size_t i = 0; i < _length; ++i) {
       unsigned char c1 = _key[i]^key1[i];
       unsigned char c2 = _key[i]^key2[i];
 
       if(c1 < c2) {
-	return true;
+        return true;
       } else if(c1 > c2) {
-	return false;
+        return false;
       }
     }
     return true;

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -59,7 +59,7 @@ DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
-				   size_t numRetry)
+                                   size_t numRetry)
 {
   SharedHandle<DHTPingTask> task(new DHTPingTask(remoteNode, numRetry));
   setCommonProperty(task);
@@ -105,7 +105,7 @@ DHTTaskFactoryImpl::createPeerAnnounceTask(const unsigned char* infoHash)
 
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-					  const SharedHandle<DHTNode>& newNode)
+                                          const SharedHandle<DHTNode>& newNode)
 {
   SharedHandle<DHTReplaceNodeTask> task(new DHTReplaceNodeTask(bucket, newNode));
   setCommonProperty(task);

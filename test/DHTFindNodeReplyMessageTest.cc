@@ -47,7 +47,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
 
     unsigned char buf[6];
     CPPUNIT_ASSERT(bittorrent::createcompact
-		   (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+                   (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
     compactNodeInfo +=
       std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
       std::string(&buf[0], &buf[sizeof(buf)]);

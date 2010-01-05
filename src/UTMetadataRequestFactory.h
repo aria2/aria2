@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -71,7 +71,7 @@ public:
   // Creates at most num of ut_metadata request message and appends
   // them to msgs. pieceStorage is used to identify missing piece.
   void create(std::deque<SharedHandle<BtMessage> >& msgs, size_t num,
-	      const SharedHandle<PieceStorage>& pieceStorage);
+              const SharedHandle<PieceStorage>& pieceStorage);
 
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {

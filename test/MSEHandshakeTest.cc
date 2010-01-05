@@ -25,7 +25,7 @@ private:
   SharedHandle<DownloadContext> _dctx;
 
   void doHandshake(const SharedHandle<MSEHandshake>& initiator,
-		   const SharedHandle<MSEHandshake>& receiver);
+                   const SharedHandle<MSEHandshake>& receiver);
 
 public:
   void setUp()
@@ -46,7 +46,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(MSEHandshakeTest);
 
 static std::pair<SharedHandle<SocketCore>,
-		 SharedHandle<SocketCore> > createSocketPair()
+                 SharedHandle<SocketCore> > createSocketPair()
 {
   SharedHandle<SocketCore> initiatorSock(new SocketCore());
 
@@ -93,7 +93,7 @@ void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, 
 
 static SharedHandle<MSEHandshake>
 createMSEHandshake(SharedHandle<SocketCore> socket, bool initiator,
-		   const Option* option)
+                   const Option* option)
 {
   SharedHandle<MSEHandshake> h(new MSEHandshake(1, socket, option));
   h->initEncryptionFacility(initiator);

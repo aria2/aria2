@@ -37,8 +37,8 @@ public:
     size_t length;
   public:
     MockBtMessageDispatcher2():index(0),
-			       begin(0),
-			       length(0) {}
+                               begin(0),
+                               length(0) {}
 
     virtual void doCancelSendingPieceAction(size_t index, uint32_t begin, size_t length) {
       this->index = index;

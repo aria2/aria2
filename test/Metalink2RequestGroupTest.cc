@@ -59,7 +59,7 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), dctx->getChecksumHashAlgo());
     CPPUNIT_ASSERT_EQUAL
       (std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
-			 dctx->getChecksum());
+       dctx->getChecksum());
 #endif // ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(!dctx->getSignature().isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("pgp"), dctx->getSignature()->getType());

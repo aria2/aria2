@@ -150,7 +150,7 @@ void UtilTest::testSplit() {
 void UtilTest::testSplit_many() {
   std::deque<std::string> v1;
   util::split("name1=value1; name2=value2; name3=value3",std::back_inserter(v1),
-	      ";", true);
+              ";", true);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   std::deque<std::string>::iterator itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
@@ -160,7 +160,7 @@ void UtilTest::testSplit_many() {
   v1.clear();
 
   util::split("name1=value1; name2=value2; name3=value3",std::back_inserter(v1),
-	      ";", false);
+              ";", false);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
@@ -280,15 +280,15 @@ void UtilTest::testGetContentDispositionFilename() {
 
   std::string filenameWithDir = "attachment; filename=dir/file";
   CPPUNIT_ASSERT_EQUAL(std::string("file"),
-		       util::getContentDispositionFilename(filenameWithDir));
+                       util::getContentDispositionFilename(filenameWithDir));
 
   std::string parentDir = "attachment; filename=..";
   CPPUNIT_ASSERT_EQUAL(std::string(),
-		       util::getContentDispositionFilename(parentDir));
+                       util::getContentDispositionFilename(parentDir));
 
   std::string currentDir = "attachment; filename=.";
   CPPUNIT_ASSERT_EQUAL(std::string(),
-		       util::getContentDispositionFilename(currentDir));
+                       util::getContentDispositionFilename(currentDir));
 }
 
 class Printer {
@@ -322,7 +322,7 @@ void UtilTest::testToLower() {
 void UtilTest::testUrldecode() {
   std::string src = "http://aria2.sourceforge.net/aria2%200.7.0%20docs.html";
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sourceforge.net/aria2 0.7.0 docs.html"),
-		       util::urldecode(src));
+                       util::urldecode(src));
 
   std::string src2 = "aria2+aria2";
   CPPUNIT_ASSERT_EQUAL(std::string("aria2+aria2"), util::urldecode(src2));
@@ -397,16 +397,16 @@ void UtilTest::testToStream()
   entries.push_back(f2);
   util::toStream(entries.begin(), entries.end(), os);
   CPPUNIT_ASSERT_EQUAL(
-		       std::string("Files:\n"
-			      "idx|path/length\n"
-			      "===+===========================================================================\n"
-			      "  1|aria2.tar.bz2\n"
-			      "   |12.0KiB (12,300)\n"
-			      "---+---------------------------------------------------------------------------\n"
-			      "  2|aria2.txt\n"
-			      "   |556B (556)\n"
-			      "---+---------------------------------------------------------------------------\n"),
-		       os.str());
+                       std::string("Files:\n"
+                                   "idx|path/length\n"
+                                   "===+===========================================================================\n"
+                                   "  1|aria2.tar.bz2\n"
+                                   "   |12.0KiB (12,300)\n"
+                                   "---+---------------------------------------------------------------------------\n"
+                                   "  2|aria2.txt\n"
+                                   "   |556B (556)\n"
+                                   "---+---------------------------------------------------------------------------\n"),
+                       os.str());
 }
 
 void UtilTest::testIsNumber()
@@ -480,8 +480,8 @@ void UtilTest::testConvertBitfield()
   util::convertBitfield(&destBitfield, &srcBitfield);
   
   CPPUNIT_ASSERT_EQUAL(std::string("9fffffffffffffffffffffffffffffff80"),
-		       util::toHex(destBitfield.getBitfield(),
-				   destBitfield.getBitfieldLength()));
+                       util::toHex(destBitfield.getBitfield(),
+                                   destBitfield.getBitfieldLength()));
 }
 
 void UtilTest::testParseIntRange()
@@ -593,7 +593,7 @@ void UtilTest::testParseLLInt()
 {
   CPPUNIT_ASSERT_EQUAL((int64_t)-1LL, util::parseLLInt(" -1 "));
   CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
-		       util::parseLLInt("9223372036854775807"));
+                       util::parseLLInt("9223372036854775807"));
   try {
     util::parseLLInt("9223372036854775808");
     CPPUNIT_FAIL("exception must be thrown.");
@@ -623,7 +623,7 @@ void UtilTest::testParseLLInt()
 void UtilTest::testParseULLInt()
 {
   CPPUNIT_ASSERT_EQUAL((uint64_t)18446744073709551615ULL,
-		       util::parseULLInt("18446744073709551615"));
+                       util::parseULLInt("18446744073709551615"));
   try {
     util::parseUInt("-1");
     CPPUNIT_FAIL("exception must be thrown.");
@@ -726,7 +726,7 @@ void UtilTest::testUrlencode()
 void UtilTest::testHtmlEscape()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("aria2&lt;&gt;&quot;&#39;util"),
-		       util::htmlEscape("aria2<>\"'util"));
+                       util::htmlEscape("aria2<>\"'util"));
 }
 
 void UtilTest::testJoinPath()
@@ -735,32 +735,32 @@ void UtilTest::testJoinPath()
   CPPUNIT_ASSERT_EQUAL
     (std::string("dir1/dir2/file"),
      util::joinPath(&dir1dir2file[0],
-		    &dir1dir2file[arrayLength(dir1dir2file)]));
+                    &dir1dir2file[arrayLength(dir1dir2file)]));
 
   const std::string dirparentfile[] = { "dir", "..", "file" };
   CPPUNIT_ASSERT_EQUAL
     (std::string("file"),
      util::joinPath(&dirparentfile[0],
-		    &dirparentfile[arrayLength(dirparentfile)]));
+                    &dirparentfile[arrayLength(dirparentfile)]));
 
   const std::string dirparentparentfile[] = { "dir", "..", "..", "file" };
   CPPUNIT_ASSERT_EQUAL
     (std::string("file"),
      util::joinPath(&dirparentparentfile[0],
-		    &dirparentparentfile[arrayLength(dirparentparentfile)]));
+                    &dirparentparentfile[arrayLength(dirparentparentfile)]));
 
   const std::string dirdotfile[] = { "dir", ".", "file" };
   CPPUNIT_ASSERT_EQUAL(std::string("dir/file"),
-		       util::joinPath(&dirdotfile[0],
-				      &dirdotfile[arrayLength(dirdotfile)]));
+                       util::joinPath(&dirdotfile[0],
+                                      &dirdotfile[arrayLength(dirdotfile)]));
 
   const std::string empty[] = {};
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(&empty[0], &empty[0]));
 
   const std::string parentdot[] = { "..", "." };
   CPPUNIT_ASSERT_EQUAL(std::string(""),
-		       util::joinPath(&parentdot[0],
-				      &parentdot[arrayLength(parentdot)]));
+                       util::joinPath(&parentdot[0],
+                                      &parentdot[arrayLength(parentdot)]));
 }
 
 void UtilTest::testParseIndexPath()
@@ -890,7 +890,7 @@ void UtilTest::testParsePrioritizePieceRange()
   CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
   result.clear();
   util::parsePrioritizePieceRange(result, "head=300M,tail=300M",
-				  entries, pieceLength);
+                                  entries, pieceLength);
   CPPUNIT_ASSERT_EQUAL((size_t)7, result.size());
   for(size_t i = 0; i < 7; ++i) {
     CPPUNIT_ASSERT_EQUAL(i, result[i]);

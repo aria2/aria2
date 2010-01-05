@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -47,8 +47,8 @@ private:
   unsigned char _secret[2][SECRET_SIZE];
 
   std::string generateToken(const unsigned char* infoHash,
-			    const std::string& ipaddr, uint16_t port,
-			    const unsigned char* secret) const;
+                            const std::string& ipaddr, uint16_t port,
+                            const unsigned char* secret) const;
 public:
   DHTTokenTracker();
 
@@ -58,11 +58,11 @@ public:
 
   // TODO handle exception thrown by this function.
   std::string generateToken(const unsigned char* infoHash,
-			    const std::string& ipaddr, uint16_t port) const;
+                            const std::string& ipaddr, uint16_t port) const;
 
   bool validateToken(const std::string& token,
-		     const unsigned char* infoHash,
-		     const std::string& ipaddr, uint16_t port) const;
+                     const unsigned char* infoHash,
+                     const std::string& ipaddr, uint16_t port) const;
 
   void updateTokenSecret();
 };

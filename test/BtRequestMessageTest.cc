@@ -69,7 +69,7 @@ public:
     size_t length;
   public:
     MockBtMessage2(std::string type, size_t index, uint32_t begin,
-		   size_t length)
+                   size_t length)
       :
       type(type), index(index), begin(begin), length(length) {}
   };
@@ -81,14 +81,14 @@ public:
     virtual SharedHandle<BtMessage>
     createPieceMessage(size_t index, uint32_t begin, size_t length) {
       SharedHandle<MockBtMessage2> btMsg
-	(new MockBtMessage2("piece", index, begin, length));
+        (new MockBtMessage2("piece", index, begin, length));
       return btMsg;
     }
 
     virtual SharedHandle<BtMessage>
     createRejectMessage(size_t index, uint32_t begin, size_t length) {
       SharedHandle<MockBtMessage2> btMsg
-	(new MockBtMessage2("reject", index, begin, length));
+        (new MockBtMessage2("reject", index, begin, length));
       return btMsg;
     }
   };
@@ -261,7 +261,7 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_sendingInProgress() {
 
 void BtRequestMessageTest::testToString() {
   CPPUNIT_ASSERT_EQUAL(std::string("request index=1, begin=16, length=32"),
-		       msg->toString());
+                       msg->toString());
 }
 
 void BtRequestMessageTest::testValidate() {
@@ -285,7 +285,7 @@ void BtRequestMessageTest::testValidate_lengthTooLong() {
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(DlAbortEx& e) {
     CPPUNIT_ASSERT_EQUAL(std::string("Length too long: 16385 > 16KB"),
-			 std::string(e.what()));
+                         std::string(e.what()));
   }
 }
 

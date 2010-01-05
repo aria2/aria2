@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -67,7 +67,7 @@ PeerConnection::PeerConnection(int32_t cuid, const SocketHandle& socket)
 PeerConnection::~PeerConnection() {}
 
 ssize_t PeerConnection::sendMessage(const unsigned char* data,
-				    size_t dataLength)
+                                    size_t dataLength)
 {
   ssize_t writtenLength = sendData(data, dataLength, _encryptionEnabled);
   logger->debug("sent %d byte(s).", writtenLength);
@@ -85,11 +85,11 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
     readData(lenbuf+lenbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       if(socket->wantRead() || socket->wantWrite()) {
-	return false;
+        return false;
       }
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%lu",
-		    cuid, static_cast<unsigned long>(temp));
+                    cuid, static_cast<unsigned long>(temp));
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     lenbufLength += remaining;
@@ -115,14 +115,14 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
     readData(resbuf+resbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       if(socket->wantRead() || socket->wantWrite()) {
-	return false;
+        return false;
       }
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(),"
-		    " payloadlen=%lu, remaining=%lu",
-		    cuid,
-		    static_cast<unsigned long>(currentPayloadLength),
-		    static_cast<unsigned long>(temp));
+                    " payloadlen=%lu, remaining=%lu",
+                    cuid,
+                    static_cast<unsigned long>(currentPayloadLength),
+                    static_cast<unsigned long>(temp));
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     resbufLength += remaining;
@@ -140,7 +140,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
 }
 
 bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
-				      bool peek) {
+                                      bool peek) {
   assert(BtHandshakeMessage::MESSAGE_LENGTH >= resbufLength);
   bool retval = true;
   if(_prevPeek && !peek && resbufLength) {
@@ -163,18 +163,18 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
       size_t temp = remaining;
       readData(resbuf+resbufLength, remaining, _encryptionEnabled);
       if(remaining == 0) {
-	if(socket->wantRead() || socket->wantWrite()) {
-	  return false;
-	}
-	// we got EOF
-	logger->debug
-	  ("CUID#%d - In PeerConnection::receiveHandshake(), remain=%lu",
-	   cuid, static_cast<unsigned long>(temp));
-	throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+        if(socket->wantRead() || socket->wantWrite()) {
+          return false;
+        }
+        // we got EOF
+        logger->debug
+          ("CUID#%d - In PeerConnection::receiveHandshake(), remain=%lu",
+           cuid, static_cast<unsigned long>(temp));
+        throw DL_ABORT_EX(EX_EOF_FROM_PEER);
       }
       resbufLength += remaining;
       if(BtHandshakeMessage::MESSAGE_LENGTH > resbufLength) {
-	retval = false;
+        retval = false;
       }
     }
   }
@@ -200,7 +200,7 @@ void PeerConnection::readData(unsigned char* data, size_t& length, bool encrypti
 }
 
 ssize_t PeerConnection::sendData(const unsigned char* data,
-				 size_t length, bool encryption)
+                                 size_t length, bool encryption)
 {
   if(encryption) {
     unsigned char temp[4096];
@@ -220,7 +220,7 @@ ssize_t PeerConnection::sendData(const unsigned char* data,
 }
 
 void PeerConnection::enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,
-				      const SharedHandle<ARC4Decryptor>& decryptor)
+                                      const SharedHandle<ARC4Decryptor>& decryptor)
 {
   _encryptor = encryptor;
   _decryptor = decryptor;

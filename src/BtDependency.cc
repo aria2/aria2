@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -51,7 +51,7 @@
 namespace aria2 {
 
 BtDependency::BtDependency(const RequestGroupWeakHandle& dependant,
-			   const RequestGroupHandle& dependee):
+                           const RequestGroupHandle& dependee):
   _dependant(dependant),
   _dependee(dependee),
   _logger(LogFactory::getInstance()) {}
@@ -68,41 +68,41 @@ bool BtDependency::resolve()
     context->setDir(_dependant->getDownloadContext()->getDir());
     try {
       DiskAdaptorHandle diskAdaptor =
-	dependee->getPieceStorage()->getDiskAdaptor();
+        dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = util::toString(diskAdaptor);
       if(dependee->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
-	const BDE& attrs =
-	  dependee->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
-	bittorrent::loadFromMemory
-	  (bittorrent::metadata2Torrent(content, attrs), context, "default");
+        const BDE& attrs =
+          dependee->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
+        bittorrent::loadFromMemory
+          (bittorrent::metadata2Torrent(content, attrs), context, "default");
       } else {
-	bittorrent::loadFromMemory
-	  (content, context, File(dependee->getFirstFilePath()).getBasename());
+        bittorrent::loadFromMemory
+          (content, context, File(dependee->getFirstFilePath()).getBasename());
       }
       if(context->getFileEntries().size() !=
-	 _dependant->getDownloadContext()->getFileEntries().size()) {
-	throw DL_ABORT_EX("The number of file in torrent doesn't match to"
-			  " the dependent.");
+         _dependant->getDownloadContext()->getFileEntries().size()) {
+        throw DL_ABORT_EX("The number of file in torrent doesn't match to"
+                          " the dependent.");
       }
       // Copy file path in _dependant's FileEntries to newly created
       // context's FileEntries to endorse the path structure of
       // _dependant.  URIs and singleHostMultiConnection are also copied.
       for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
-	    _dependant->getDownloadContext()->getFileEntries().begin(),
-	    d = context->getFileEntries().begin();
-	  d != context->getFileEntries().end(); ++s, ++d) {
-	(*d)->setPath((*s)->getPath());
-	(*d)->addUris((*s)->getRemainingUris().begin(),
-		      (*s)->getRemainingUris().end());
-	if(!(*s)->isSingleHostMultiConnectionEnabled()) {
-	  (*d)->disableSingleHostMultiConnection();
-	}
+            _dependant->getDownloadContext()->getFileEntries().begin(),
+            d = context->getFileEntries().begin();
+          d != context->getFileEntries().end(); ++s, ++d) {
+        (*d)->setPath((*s)->getPath());
+        (*d)->addUris((*s)->getRemainingUris().begin(),
+                      (*s)->getRemainingUris().end());
+        if(!(*s)->isSingleHostMultiConnectionEnabled()) {
+          (*d)->disableSingleHostMultiConnection();
+        }
       }
     } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);
       _logger->info("BtDependency for GID#%d failed. Go without Bt.",
-		    _dependant->getGID());
+                    _dependant->getGID());
       return true;
     }
     _logger->debug("Dependency resolved for GID#%d", _dependant->getGID());
@@ -113,7 +113,7 @@ bool BtDependency::resolve()
     // cut reference here
     _dependee.reset();
     _logger->debug("BtDependency for GID#%d failed. Go without Bt.",
-		   _dependant->getGID());    
+                   _dependant->getGID());    
     return true;
   } else {
     return false;

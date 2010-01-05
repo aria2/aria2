@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -57,21 +57,21 @@ public:
    * If expires = 0 is given, then the cookie becomes session cookie.
    */
   Cookie(const std::string& name,
-	 const std::string& value,
-	 time_t  expires,
-	 const std::string& path,
-	 const std::string& domain,
-	 bool secure);
+         const std::string& value,
+         time_t  expires,
+         const std::string& path,
+         const std::string& domain,
+         bool secure);
 
   /*
    * Creates session cookie. This is equivalent to
    * Cookie(name, value, 0, path, domain, secure);
    */
   Cookie(const std::string& name,
-	 const std::string& value,
-	 const std::string& path,
-	 const std::string& domain,
-	 bool secure);
+         const std::string& value,
+         const std::string& path,
+         const std::string& domain,
+         bool secure);
 
   Cookie();
 
@@ -82,10 +82,10 @@ public:
   bool good() const;
 
   bool match(const std::string& requestHost, const std::string& requestPath,
-	     time_t date, bool secure) const;
+             time_t date, bool secure) const;
 
   bool validate(const std::string& requestHost,
-		const std::string& requestPath) const;
+                const std::string& requestPath) const;
 
   bool operator==(const Cookie& cookie) const;
 

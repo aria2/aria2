@@ -41,7 +41,7 @@ void BDETest::testString()
   unsigned char dataWithNull[] = { 0xf0, '\0', 0x0f };
   BDE sWithNull(dataWithNull, sizeof(dataWithNull));
   CPPUNIT_ASSERT(memcmp(dataWithNull, sWithNull.s().c_str(),
-			sizeof(dataWithNull)) == 0);
+                        sizeof(dataWithNull)) == 0);
 
   BDE zero("");
   CPPUNIT_ASSERT_EQUAL(std::string(""), zero.s());
@@ -49,7 +49,7 @@ void BDETest::testString()
   const unsigned char uc[] = { 0x08, 0x19, 0x2a, 0x3b };
   BDE data(uc, sizeof(uc));
   CPPUNIT_ASSERT_EQUAL(util::toHex(uc, sizeof(uc)),
-		       util::toHex(data.uc(), data.s().size()));
+                       util::toHex(data.uc(), data.s().size()));
 }
 
 void BDETest::testInteger()

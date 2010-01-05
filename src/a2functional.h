@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -91,8 +91,8 @@ mem_fun_sh(ReturnType (ClassType::*f)() const)
 // mem_fun1_t for SharedHandle
 template<typename ReturnType, typename ClassType, typename ArgType>
 class mem_fun1_sh_t:public std::binary_function<SharedHandle<ClassType>,
-						ArgType,
-						ReturnType>
+                                                ArgType,
+                                                ReturnType>
 {
 private:
   ReturnType (ClassType::*f)(ArgType);
@@ -115,8 +115,8 @@ mem_fun_sh(ReturnType (ClassType::*f)(ArgType))
 
 template<class BinaryOp, class UnaryOp>
 class adopt2nd_t:public std::binary_function<typename BinaryOp::first_argument_type,
-					     typename UnaryOp::argument_type,
-					     typename BinaryOp::result_type> {
+                                             typename UnaryOp::argument_type,
+                                             typename BinaryOp::result_type> {
 private:
   BinaryOp _binaryOp;
   UnaryOp _unaryOp;
@@ -126,7 +126,7 @@ public:
 
   typename BinaryOp::result_type
   operator()(const typename BinaryOp::first_argument_type& x,
-	     const typename UnaryOp::argument_type& y)
+             const typename UnaryOp::argument_type& y)
   {
     return _binaryOp(x, _unaryOp(y));
   }
@@ -206,7 +206,7 @@ public:
 
 template<typename InputIterator, typename DelimiterType>
 std::string strjoin(InputIterator first, InputIterator last,
-		    const DelimiterType& delim)
+                    const DelimiterType& delim)
 {
   std::string result;
   if(first == last) {
@@ -243,82 +243,82 @@ strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4)
 template<typename T1, typename T2, typename T3, typename T4, typename T5>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5)
+          const T5& a5)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; return s;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6>
+         typename T6>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5, const T6& a6)
+          const T5& a5, const T6& a6)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; s += a6; return s;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7>
+         typename T6, typename T7>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5, const T6& a6, const T7& a7)
+          const T5& a5, const T6& a6, const T7& a7)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; s += a6; s += a7;
   return s;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7, typename T8>
+         typename T6, typename T7, typename T8>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5, const T6& a6, const T7& a7, const T8& a8)
+          const T5& a5, const T6& a6, const T7& a7, const T8& a8)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; s += a6; s += a7;
   s += a8; return s;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7, typename T8, typename T9>
+         typename T6, typename T7, typename T8, typename T9>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
-	  const T9& a9)
+          const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+          const T9& a9)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; s += a6; s += a7;
   s += a8; s += a9; return s;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7, typename T8, typename T9, typename T10>
+         typename T6, typename T7, typename T8, typename T9, typename T10>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
-	  const T9& a9, const T10& a10)
+          const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+          const T9& a9, const T10& a10)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; s += a6; s += a7;
   s += a8; s += a9; s += a10; return s;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7, typename T8, typename T9, typename T10,
-	 typename T11>
+         typename T6, typename T7, typename T8, typename T9, typename T10,
+         typename T11>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
-	  const T9& a9, const T10& a10, const T11& a11)
+          const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+          const T9& a9, const T10& a10, const T11& a11)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; s += a6; s += a7;
   s += a8; s += a9; s += a10; s += a11; return s;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7, typename T8, typename T9, typename T10,
-	 typename T11, typename T12>
+         typename T6, typename T7, typename T8, typename T9, typename T10,
+         typename T11, typename T12>
 inline std::string
 strconcat(const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-	  const T5& a5, const T6& a6, const T7& a7, const T8& a8,
-	  const T9& a9, const T10& a10, const T11& a11,
-	  const T12& a12)
+          const T5& a5, const T6& a6, const T7& a7, const T8& a8,
+          const T9& a9, const T10& a10, const T11& a11,
+          const T12& a12)
 {
   std::string s(a1); s += a2; s += a3; s += a4; s += a5; s += a6; s += a7;
   s += a8; s += a9; s += a10; s += a11; s += a12; return s;
@@ -332,50 +332,50 @@ inline void strappend(std::string& base, const T1& a1, const T2& a2)
 
 template<typename T1, typename T2, typename T3>
 inline void strappend(std::string& base,
-		       const T1& a1, const T2& a2, const T3& a3)
+                      const T1& a1, const T2& a2, const T3& a3)
 {
   base += a1; base += a2; base += a3;
 }
 
 template<typename T1, typename T2, typename T3, typename T4>
 inline void strappend(std::string& base,
-		       const T1& a1, const T2& a2, const T3& a3, const T4& a4)
+                      const T1& a1, const T2& a2, const T3& a3, const T4& a4)
 {
   base += a1; base += a2; base += a3; base += a4;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5>
 inline void strappend(std::string& base,
-		       const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-		       const T5& a5)
+                      const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+                      const T5& a5)
 {
   base += a1; base += a2; base += a3; base += a4; base += a5;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6>
+         typename T6>
 inline void strappend(std::string& base,
-		       const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-		      const T5& a5, const T6& a6)
+                      const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+                      const T5& a5, const T6& a6)
 {
   base += a1; base += a2; base += a3; base += a4; base += a5; base += a6;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7>
+         typename T6, typename T7>
 inline void strappend(std::string& base,
-		       const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-		      const T5& a5, const T6& a6, const T7& a7)
+                      const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+                      const T5& a5, const T6& a6, const T7& a7)
 {
   base += a1; base += a2; base += a3; base += a4; base += a5; base += a6;
   base += a7;
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5,
-	 typename T6, typename T7, typename T8>
+         typename T6, typename T7, typename T8>
 inline void strappend(std::string& base,
-		      const T1& a1, const T2& a2, const T3& a3, const T4& a4,
-		      const T5& a5, const T6& a6, const T7& a7, const T8& a8)
+                      const T1& a1, const T2& a2, const T3& a3, const T4& a4,
+                      const T5& a5, const T6& a6, const T7& a7, const T8& a8)
 {
   base += a1; base += a2; base += a3; base += a4; base += a5; base += a6;
   base += a7; base += a8;

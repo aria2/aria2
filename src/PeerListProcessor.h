@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -61,18 +61,18 @@ public:
   void extractPeerFromList(const BDE& peerData, OutputIterator dest)
   {
     for(BDE::List::const_iterator itr = peerData.listBegin();
-	itr != peerData.listEnd(); ++itr) {
+        itr != peerData.listEnd(); ++itr) {
       const BDE& peerDict = *itr;
       if(!peerDict.isDict()) {
-	continue;
+        continue;
       }
       static const std::string IP = "ip";
       static const std::string PORT = "port";
       const BDE& ip = peerDict[IP];
       const BDE& port = peerDict[PORT];
       if(!ip.isString() || !port.isInteger() ||
-	 !(0 < port.i() && port.i() < 65536)) {
-	continue;
+         !(0 < port.i() && port.i() < 65536)) {
+        continue;
       }
       *dest = SharedHandle<Peer>(new Peer(ip.s(), port.i()));
       ++dest;
@@ -85,14 +85,14 @@ public:
     size_t length = peerData.s().size();
     if(length%6 == 0) {
       for(size_t i = 0; i < length; i += 6) {
-	struct in_addr in;
-	memcpy(&in.s_addr, peerData.s().c_str()+i, sizeof(uint32_t));
-	std::string ipaddr = inet_ntoa(in);
-	uint16_t port_nworder;
-	memcpy(&port_nworder, peerData.s().c_str()+i+4, sizeof(uint16_t));
-	uint16_t port = ntohs(port_nworder);
-	*dest = SharedHandle<Peer>(new Peer(ipaddr, port));
-	++dest;
+        struct in_addr in;
+        memcpy(&in.s_addr, peerData.s().c_str()+i, sizeof(uint32_t));
+        std::string ipaddr = inet_ntoa(in);
+        uint16_t port_nworder;
+        memcpy(&port_nworder, peerData.s().c_str()+i+4, sizeof(uint16_t));
+        uint16_t port = ntohs(port_nworder);
+        *dest = SharedHandle<Peer>(new Peer(ipaddr, port));
+        ++dest;
       }
     }
   }

@@ -106,13 +106,13 @@ void HttpRequestTest::testGetEndByte()
   httpRequest.setFileEntry(fileEntry);
 
   CPPUNIT_ASSERT_EQUAL((off_t)(segmentLength*index+length-1),
-		       httpRequest.getEndByte());
+                       httpRequest.getEndByte());
 
   // The end byte of FileEntry are placed inside segment
   fileEntry->setLength(segmentLength+100);
 
   CPPUNIT_ASSERT_EQUAL((off_t)(segmentLength*index+100-1),
-		       httpRequest.getEndByte());
+                       httpRequest.getEndByte());
 
   request->setPipeliningHint(false);
 
@@ -239,7 +239,7 @@ void HttpRequestTest::testCreateRequest()
   _option->put(PREF_HTTP_PASSWD, "aria2passwd");
 
   CPPUNIT_ASSERT(_authConfigFactory->activateBasicCred
-		 ("localhost", "/", _option.get()));
+                 ("localhost", "/", _option.get()));
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -256,7 +256,7 @@ void HttpRequestTest::testCreateRequest()
   // enable http proxy auth
   SharedHandle<Request> proxyRequest(new Request());
   CPPUNIT_ASSERT(proxyRequest->setUrl
-		 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
+                 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
   httpRequest.setProxyRequest(proxyRequest);
 
   expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -310,15 +310,15 @@ void HttpRequestTest::testCreateRequest()
 
 void HttpRequestTest::testCreateRequest_ftp()
 {
-   _option->put(PREF_FTP_USER, "aria2user");
-   _option->put(PREF_FTP_PASSWD, "aria2passwd");
+  _option->put(PREF_FTP_USER, "aria2user");
+  _option->put(PREF_FTP_PASSWD, "aria2passwd");
 
   SharedHandle<Request> request(new Request());
   request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   SharedHandle<Request> proxyRequest(new Request());
   CPPUNIT_ASSERT(proxyRequest->setUrl
-		 ("http://localhost:9000"));
+                 ("http://localhost:9000"));
 
   HttpRequest httpRequest;
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
@@ -350,7 +350,7 @@ void HttpRequestTest::testCreateRequest_ftp()
 
   // test proxy authorization
   CPPUNIT_ASSERT(proxyRequest->setUrl
-		 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
+                 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
 
   expectedText =
     "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
@@ -439,7 +439,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   request->setUrl("https://www.aria2.org/archives/download/"
-		  "aria2-1.0.0.tar.bz2");
+                  "aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -545,7 +545,7 @@ void HttpRequestTest::testCreateProxyRequest()
 
   // test proxy authorization
   CPPUNIT_ASSERT(proxyRequest->setUrl
-		 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
+                 ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
 
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -602,13 +602,13 @@ void HttpRequestTest::testIsRangeSatisfied()
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
   range.reset(new Range(segment->getPosition(),
-			segment->getPosition()+segment->getLength()-1,
-			entityLength));
+                        segment->getPosition()+segment->getLength()-1,
+                        entityLength));
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
   range.reset(new Range(0, segment->getPosition()+segment->getLength()-1,
-			entityLength));
+                        entityLength));
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 }
@@ -681,7 +681,7 @@ void HttpRequestTest::testAddHeader()
 void HttpRequestTest::testAddAcceptType()
 {
   std::string acceptTypes[] = { "cream/custard",
-				"muffin/chocolate" };
+                                "muffin/chocolate" };
 
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -691,7 +691,7 @@ void HttpRequestTest::testAddAcceptType()
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
   httpRequest.addAcceptType(&acceptTypes[0],
-			    &acceptTypes[arrayLength(acceptTypes)]);
+                            &acceptTypes[arrayLength(acceptTypes)]);
 
   std::string expectedText =
     "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -62,7 +62,7 @@ static void mlStartElement(void* userData, const char* name, const char** attrs)
     while(*p != 0) {
       std::string name = *p++;
       if(*p == 0) {
-	break;
+        break;
       }
       std::string value = util::trim(*p++);
       attrmap[name] = value;
@@ -101,7 +101,7 @@ MetalinkProcessor::parseFile(const std::string& filename)
 
   return parseFromBinaryStream(dw);
 }
-	 
+         
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
@@ -120,11 +120,11 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
     while(1) {
       ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
       if(res == 0) {
-	break;
+        break;
       }
       if(XML_Parse(parser, reinterpret_cast<const char*>(buf), res, 0) ==
-	 XML_STATUS_ERROR) {
-	throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+         XML_STATUS_ERROR) {
+        throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
       }
       readOffset += res;
     }

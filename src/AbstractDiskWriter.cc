@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -110,9 +110,9 @@ void AbstractDiskWriter::createFile(int addFlags)
   assert(!_filename.empty());
   util::mkdirs(File(_filename).getDirname());
   if((fd = open(_filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
-		OPEN_MODE)) < 0) {
+                OPEN_MODE)) < 0) {
     throw DL_ABORT_EX(StringFormat(EX_FILE_OPEN,
-				 _filename.c_str(), strerror(errno)).str());
+                                   _filename.c_str(), strerror(errno)).str());
   }  
 }
 
@@ -153,10 +153,10 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
     // DownloadFailureException and abort download instantly.
     if(errno == ENOSPC) {
       throw DOWNLOAD_FAILURE_EXCEPTION
-	(StringFormat(EX_FILE_WRITE, _filename.c_str(), strerror(errno)).str());
+        (StringFormat(EX_FILE_WRITE, _filename.c_str(), strerror(errno)).str());
     }
     throw DL_ABORT_EX(StringFormat(EX_FILE_WRITE,
-				 _filename.c_str(), strerror(errno)).str());
+                                   _filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -166,7 +166,7 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {
     throw DL_ABORT_EX(StringFormat(EX_FILE_READ,
-				 _filename.c_str(), strerror(errno)).str());
+                                   _filename.c_str(), strerror(errno)).str());
   }
   return ret;
 }
@@ -183,12 +183,12 @@ void AbstractDiskWriter::truncate(uint64_t length)
   seek(length);
   if(SetEndOfFile(handle) == 0) {
     throw DL_ABORT_EX(StringFormat("SetEndOfFile failed. cause: %s",
-				 GetLastError()).str());
+                                   GetLastError()).str());
   }
 #else
   if(ftruncate(fd, length) == -1) {
     throw DL_ABORT_EX(StringFormat("ftruncate failed. cause: %s",
-				 strerror(errno)).str());
+                                   strerror(errno)).str());
   }
 #endif
 }
@@ -202,7 +202,7 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
   int r = posix_fallocate(fd, offset, length);
   if(r != 0) {
     throw DL_ABORT_EX(StringFormat("posix_fallocate failed. cause: %s",
-				 strerror(r)).str());
+                                   strerror(r)).str());
   }
 }
 #endif // HAVE_POSIX_FALLOCATE

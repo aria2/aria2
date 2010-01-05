@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -45,7 +45,7 @@ CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
 (int32_t cuid,
  const SharedHandle<CheckIntegrityMan>& fileAllocMan,
  DownloadEngine* e):SequentialDispatcherCommand<CheckIntegrityEntry>
-		    (cuid, fileAllocMan, e)
+                    (cuid, fileAllocMan, e)
 {
   setStatusRealtime();
 }
@@ -55,7 +55,7 @@ Command* CheckIntegrityDispatcherCommand::createCommand
 {
   int32_t newCUID = _e->newCUID();
   logger->info("CUID#%d - Dispatching CheckIntegrityCommand CUID#%d.",
-	       cuid, newCUID);
+               cuid, newCUID);
   return new CheckIntegrityCommand
     (newCUID, entry->getRequestGroup(), _e, entry);
 }

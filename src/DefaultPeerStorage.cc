@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -112,7 +112,7 @@ void DefaultPeerStorage::addPeer(const Peers& peers) {
     const PeerHandle& peer = *itr;
     if(addPeer(peer)) {
       logger->debug(MSG_ADDING_PEER,
-		    peer->ipaddr.c_str(), peer->port);
+                    peer->ipaddr.c_str(), peer->port);
     }
   }  
 }
@@ -130,7 +130,7 @@ public:
 
 PeerHandle DefaultPeerStorage::getUnusedPeer() {
   Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
-					   FindFinePeer());
+                                           FindFinePeer());
   if(itr == peers.end()) {
     return SharedHandle<Peer>();
   } else {
@@ -151,9 +151,9 @@ public:
 };
 
 PeerHandle DefaultPeerStorage::getPeer(const std::string& ipaddr,
-				       uint16_t port) const {
+                                       uint16_t port) const {
   Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
-					   FindPeer(ipaddr, port));
+                                           FindPeer(ipaddr, port));
   if(itr == peers.end()) {
     return SharedHandle<Peer>();
   } else {
@@ -213,7 +213,7 @@ TransferStat DefaultPeerStorage::calculateStat()
     struct timeval now;
     gettimeofday(&now, 0);
     for(std::deque<SharedHandle<Peer> >::const_iterator i = activePeers.begin();
-	i != activePeers.end(); ++i) {
+        i != activePeers.end(); ++i) {
       TransferStat s;
       s.downloadSpeed = (*i)->calculateDownloadSpeed(now);
       s.uploadSpeed = (*i)->calculateUploadSpeed(now);
@@ -230,7 +230,7 @@ TransferStat DefaultPeerStorage::calculateStat()
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
   stat.setAllTimeUploadLength(_btRuntime->getUploadLengthAtStartup()+
-			      stat.getSessionUploadLength());
+                              stat.getSessionUploadLength());
   return stat;
 }
 

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -68,17 +68,17 @@ public:
   ~DHTMessageTracker();
 
   void addMessage(const SharedHandle<DHTMessage>& message,
-		  time_t timeout,
-		  const SharedHandle<DHTMessageCallback>& callback =
-		  SharedHandle<DHTMessageCallback>());
+                  time_t timeout,
+                  const SharedHandle<DHTMessageCallback>& callback =
+                  SharedHandle<DHTMessageCallback>());
 
   void addMessage(const SharedHandle<DHTMessage>& message,
-		  const SharedHandle<DHTMessageCallback>& callback =
-		  SharedHandle<DHTMessageCallback>());
+                  const SharedHandle<DHTMessageCallback>& callback =
+                  SharedHandle<DHTMessageCallback>());
 
   std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
   messageArrived(const BDE& dict,
-		 const std::string& ipaddr, uint16_t port);
+                 const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
 

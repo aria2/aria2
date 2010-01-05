@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -70,8 +70,8 @@ bool HttpDownloadCommand::prepareForNextSegment() {
   if(req->isPipeliningEnabled() && !downloadFinished) {
     HttpRequestCommand* command =
       new HttpRequestCommand(cuid, req, _fileEntry,
-			     _requestGroup, _httpConnection, e,
-			     socket);
+                             _requestGroup, _httpConnection, e,
+                             socket);
     // Set proxy request here. aria2 sends the HTTP request specialized for
     // proxy.
     if(resolveProxyMethod(req->getProtocol()) == V_GET) {
@@ -82,9 +82,9 @@ bool HttpDownloadCommand::prepareForNextSegment() {
   } else {
     if(req->isPipeliningEnabled() ||
        (req->isKeepAliveEnabled() &&
-	((!_transferEncodingDecoder.isNull() &&
-	  _requestGroup->downloadFinished()) ||
-	 _fileEntry->getLastOffset() == _segments.front()->getPositionToWrite()))) {
+        ((!_transferEncodingDecoder.isNull() &&
+          _requestGroup->downloadFinished()) ||
+         _fileEntry->getLastOffset() == _segments.front()->getPositionToWrite()))) {
       e->poolSocket(req, isProxyDefined(), socket);
     }
     // The request was sent assuming that server supported pipelining, but
@@ -97,12 +97,12 @@ bool HttpDownloadCommand::prepareForNextSegment() {
       const SharedHandle<Segment>& segment = _segments.front();
 
       off_t lastOffset =_fileEntry->gtoloff
-	(std::min(static_cast<off_t>(segment->getPosition()+segment->getLength()),
-		  _fileEntry->getLastOffset()));
+        (std::min(static_cast<off_t>(segment->getPosition()+segment->getLength()),
+                  _fileEntry->getLastOffset()));
       
       if(lastOffset ==
-	 _httpResponse->getHttpHeader()->getRange()->getEndByte()+1) {
-	return prepareForRetry(0);
+         _httpResponse->getHttpHeader()->getRange()->getEndByte()+1) {
+        return prepareForRetry(0);
       }
     }
     return DownloadCommand::prepareForNextSegment();

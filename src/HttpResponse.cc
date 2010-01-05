@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -61,7 +61,7 @@
 namespace aria2 {
 
 HttpResponse::HttpResponse():cuid(0),
-			     logger(LogFactory::getInstance())
+                             logger(LogFactory::getInstance())
 {}
 
 HttpResponse::~HttpResponse() {}
@@ -75,22 +75,22 @@ void HttpResponse::validateResponse() const
   if(status >= HttpHeader::S300) {
     if(!httpHeader->defined(HttpHeader::LOCATION)) {
       throw DL_ABORT_EX
-	(StringFormat(EX_LOCATION_HEADER_REQUIRED,
-		      util::parseUInt(status)).str());
+        (StringFormat(EX_LOCATION_HEADER_REQUIRED,
+                      util::parseUInt(status)).str());
     }
   } else if(!httpHeader->defined(HttpHeader::TRANSFER_ENCODING)) {
     // compare the received range against the requested range
     RangeHandle responseRange = httpHeader->getRange();
     if(!httpRequest->isRangeSatisfied(responseRange)) {
       throw DL_ABORT_EX
-	(StringFormat
-	 (EX_INVALID_RANGE_HEADER,
-	  util::itos(httpRequest->getStartByte(), true).c_str(),
-	  util::itos(httpRequest->getEndByte(), true).c_str(),
-	  util::uitos(httpRequest->getEntityLength(), true).c_str(),
-	  util::itos(responseRange->getStartByte(), true).c_str(),
-	  util::itos(responseRange->getEndByte(), true).c_str(),
-	  util::uitos(responseRange->getEntityLength(), true).c_str()).str());
+        (StringFormat
+         (EX_INVALID_RANGE_HEADER,
+          util::itos(httpRequest->getStartByte(), true).c_str(),
+          util::itos(httpRequest->getEndByte(), true).c_str(),
+          util::uitos(httpRequest->getEntityLength(), true).c_str(),
+          util::itos(responseRange->getStartByte(), true).c_str(),
+          util::itos(responseRange->getEndByte(), true).c_str(),
+          util::uitos(responseRange->getEntityLength(), true).c_str()).str());
     }
   }
 }
@@ -109,7 +109,7 @@ std::string HttpResponse::determinFilename() const
     }
   } else {
     logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
-		 cuid, contentDisposition.c_str());
+                 cuid, contentDisposition.c_str());
     return util::urldecode(contentDisposition);
   }
 }
@@ -120,8 +120,8 @@ void HttpResponse::retrieveCookie()
   for(std::deque<std::string>::const_iterator itr = v.begin(); itr != v.end();
       ++itr) {
     httpRequest->getCookieStorage()->parseAndStore(*itr,
-						   httpRequest->getHost(),
-						   httpRequest->getDir());
+                                                   httpRequest->getHost(),
+                                                   httpRequest->getDir());
   }
 }
 
@@ -137,12 +137,12 @@ void HttpResponse::processRedirect()
   
   if(httpRequest->getRequest()->redirectUrl(getRedirectURI())) {
     logger->info(MSG_REDIRECT, cuid,
-		 httpRequest->getRequest()->getCurrentUrl().c_str());
+                 httpRequest->getRequest()->getCurrentUrl().c_str());
   } else {
     throw DL_RETRY_EX
       (StringFormat("CUID#%d - Redirect to %s failed. It may not be a valid"
-		    " URI.", cuid,
-		    httpRequest->getRequest()->getCurrentUrl().c_str()).str());
+                    " URI.", cuid,
+                    httpRequest->getRequest()->getCurrentUrl().c_str()).str());
   }
 }
 

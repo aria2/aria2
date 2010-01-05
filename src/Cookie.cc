@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -69,11 +69,11 @@ static std::string normalizeDomain(const std::string& domain)
 }
 
 Cookie::Cookie(const std::string& name,
-	       const std::string& value,
-	       time_t  expiry,
-	       const std::string& path,
-	       const std::string& domain,
-	       bool secure):
+               const std::string& value,
+               time_t  expiry,
+               const std::string& path,
+               const std::string& domain,
+               bool secure):
   _name(name),
   _value(value),
   _expiry(expiry),
@@ -82,10 +82,10 @@ Cookie::Cookie(const std::string& name,
   _secure(secure) {}
 
 Cookie::Cookie(const std::string& name,
-	       const std::string& value,
-	       const std::string& path,
-	       const std::string& domain,
-	       bool secure):
+               const std::string& value,
+               const std::string& path,
+               const std::string& domain,
+               bool secure):
   _name(name),
   _value(value),
   _expiry(0),
@@ -117,14 +117,14 @@ static bool pathInclude(const std::string& requestPath, const std::string& path)
       return false;
     }
   } else if(*path.rbegin() != '/' || *requestPath.rbegin() == '/' ||
-	    !util::startsWith(requestPath+"/", path)) {
+            !util::startsWith(requestPath+"/", path)) {
     return false;
   }
   return true;
 }
 
 static bool domainMatch(const std::string& normReqHost,
-			const std::string& domain)
+                        const std::string& domain)
 {
   // RFC2965 stated that:
   //
@@ -139,8 +139,8 @@ static bool domainMatch(const std::string& normReqHost,
 }
 
 bool Cookie::match(const std::string& requestHost,
-		   const std::string& requestPath,
-		   time_t date, bool secure) const
+                   const std::string& requestPath,
+                   time_t date, bool secure) const
 {
   std::string normReqHost = normalizeDomain(requestHost);
   if((secure || (!_secure && !secure)) &&

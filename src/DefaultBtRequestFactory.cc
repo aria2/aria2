@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -85,15 +85,15 @@ public:
 
 void DefaultBtRequestFactory::removeCompletedPiece() {
   std::for_each(pieces.begin(), pieces.end(),
-		AbortCompletedPieceRequest(dispatcher));
+                AbortCompletedPieceRequest(dispatcher));
   pieces.erase(std::remove_if(pieces.begin(), pieces.end(),
-			      mem_fun_sh(&Piece::pieceComplete)),
-	       pieces.end());
+                              mem_fun_sh(&Piece::pieceComplete)),
+               pieces.end());
 }
 
 void DefaultBtRequestFactory::removeTargetPiece(const PieceHandle& piece) {
   pieces.erase(std::remove(pieces.begin(), pieces.end(), piece),
-	       pieces.end());
+               pieces.end());
   dispatcher->doAbortOutstandingRequestAction(piece);
   _pieceStorage->cancelPiece(piece);
 }
@@ -104,7 +104,7 @@ private:
   WeakHandle<PieceStorage> _pieceStorage;
 public:
   ProcessChokedPiece(const SharedHandle<Peer>& peer,
-		     const WeakHandle<PieceStorage>& pieceStorage):
+                     const WeakHandle<PieceStorage>& pieceStorage):
     _peer(peer),
     _pieceStorage(pieceStorage) {}
 
@@ -131,10 +131,10 @@ public:
 void DefaultBtRequestFactory::doChokedAction()
 {
   std::for_each(pieces.begin(), pieces.end(),
-		ProcessChokedPiece(peer, _pieceStorage));
+                ProcessChokedPiece(peer, _pieceStorage));
   pieces.erase(std::remove_if(pieces.begin(), pieces.end(),
-			      FindChokedPiece(peer)),
-	       pieces.end());
+                              FindChokedPiece(peer)),
+               pieces.end());
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
@@ -153,11 +153,11 @@ void DefaultBtRequestFactory::createRequestMessages
     PieceHandle& piece = *itr;
     size_t blockIndex;
     while(requests.size() < max &&
-	  piece->getMissingUnusedBlockIndex(blockIndex)) {
+          piece->getMissingUnusedBlockIndex(blockIndex)) {
       _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",
-		    piece->getIndex(),
-		    blockIndex*piece->getBlockLength(),
-		    blockIndex);
+                     piece->getIndex(),
+                     blockIndex*piece->getBlockLength(),
+                     blockIndex);
 
       requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
     }
@@ -181,23 +181,23 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
       unsigned char bits = misbitfield[i];
       unsigned char mask = 128;
       for(size_t bi = 0; bi < 8; ++bi, mask >>= 1, ++blockIndex) {
-	if(bits & mask) {
-	  missingBlockIndexes.push_back(blockIndex);
-	}
+        if(bits & mask) {
+          missingBlockIndexes.push_back(blockIndex);
+        }
       }
     }
     std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
-			*(SimpleRandomizer::getInstance().get()));
+                        *(SimpleRandomizer::getInstance().get()));
     for(std::deque<size_t>::const_iterator bitr = missingBlockIndexes.begin();
-	bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
+        bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
       const size_t& blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
-					   blockIndex)) {
-      _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",
-		    piece->getIndex(),
-		    blockIndex*piece->getBlockLength(),
-		    blockIndex);
-	requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
+                                           blockIndex)) {
+        _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",
+                       piece->getIndex(),
+                       blockIndex*piece->getBlockLength(),
+                       blockIndex);
+        requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
       }
     }
   }
@@ -224,14 +224,14 @@ public:
 size_t DefaultBtRequestFactory::countMissingBlock()
 {
   return std::for_each(pieces.begin(), pieces.end(),
-		       CountMissingBlock()).getNumMissingBlock();
+                       CountMissingBlock()).getNumMissingBlock();
 }
 
 void DefaultBtRequestFactory::getTargetPieceIndexes
 (std::deque<size_t>& indexes) const
 {
   std::transform(pieces.begin(), pieces.end(), std::back_inserter(indexes),
-		 mem_fun_sh(&Piece::getIndex));
+                 mem_fun_sh(&Piece::getIndex));
 }
 
 void DefaultBtRequestFactory::setPieceStorage

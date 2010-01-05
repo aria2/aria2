@@ -87,10 +87,10 @@ void BtBitfieldMessageTest::testDoReceivedAction() {
   msg.setBitfield(bitfield, sizeof(bitfield));
   
   CPPUNIT_ASSERT_EQUAL(std::string("0000"), util::toHex(peer->getBitfield(),
-							peer->getBitfieldLength()));
+                                                        peer->getBitfieldLength()));
   msg.doReceivedAction();
   CPPUNIT_ASSERT_EQUAL(std::string("ffff"), util::toHex(peer->getBitfield(),
-							peer->getBitfieldLength()));
+                                                        peer->getBitfieldLength()));
 }
 
 void BtBitfieldMessageTest::testDoReceivedAction_goodByeSeeder()

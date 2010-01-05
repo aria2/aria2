@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -67,13 +67,13 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
 
   size_t count = 0;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
-	newEntries.begin(); i != newEntries.end(); ++i) {
+        newEntries.begin(); i != newEntries.end(); ++i) {
     if(memcmp(_localNode->getID(), (*i)->_node->getID(), DHT_ID_LENGTH) != 0) {
       _entries.push_front(*i);
       ++count;
       _logger->debug("Received nodes: id=%s, ip=%s",
-		     util::toHex((*i)->_node->getID(), DHT_ID_LENGTH).c_str(),
-		     (*i)->_node->getIPAddress().c_str());
+                     util::toHex((*i)->_node->getID(), DHT_ID_LENGTH).c_str(),
+                     (*i)->_node->getIPAddress().c_str());
     }
   }
 
@@ -90,7 +90,7 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
 void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   _logger->debug("node lookup message timeout for node ID=%s",
-		 util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
+                 util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
   --_inFlightMessage;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i = _entries.begin(); i != _entries.end(); ++i) {
     if((*i)->_node == node) {
@@ -108,14 +108,14 @@ void DHTAbstractNodeLookupTask::sendMessageAndCheckFinish()
   }
   if(_inFlightMessage == 0) {
     _logger->debug("Finished node_lookup for node ID %s",
-		   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+                   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
     onFinish();
     updateBucket();
     _finished = true;
   } else {
     _logger->debug("%d in flight message for node ID %s",
-		   _inFlightMessage,
-		   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+                   _inFlightMessage,
+                   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
   }
 }
 

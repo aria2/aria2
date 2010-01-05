@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -94,10 +94,10 @@ MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
 void MultiUrlRequestInfo::printMessageForContinue()
 {
   _summaryOut << "\n"
-	      << _("aria2 will resume download if the transfer is restarted.")
-	      << "\n"
-	      << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
-	      << "\n";
+              << _("aria2 will resume download if the transfer is restarted.")
+              << "\n"
+              << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
+              << "\n";
 }
 
 downloadresultcode::RESULT MultiUrlRequestInfo::execute()
@@ -110,10 +110,10 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!_option->blank(PREF_LOAD_COOKIES)) {
       File cookieFile(_option->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile()) {
-	e->getCookieStorage()->load(_option->get(PREF_LOAD_COOKIES));
+        e->getCookieStorage()->load(_option->get(PREF_LOAD_COOKIES));
       } else {
-	_logger->error(MSG_LOADING_COOKIE_FAILED,
-		       _option->get(PREF_LOAD_COOKIES).c_str());
+        _logger->error(MSG_LOADING_COOKIE_FAILED,
+                       _option->get(PREF_LOAD_COOKIES).c_str());
       }
     }
 
@@ -122,12 +122,12 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!_option->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();
       if(mode&(S_IRWXG|S_IRWXO)) {
-	_logger->notice(MSG_INCORRECT_NETRC_PERMISSION,
-			_option->get(PREF_NETRC_PATH).c_str());
+        _logger->notice(MSG_INCORRECT_NETRC_PERMISSION,
+                        _option->get(PREF_NETRC_PATH).c_str());
       } else {
-	SharedHandle<Netrc> netrc(new Netrc());
-	netrc->parse(_option->get(PREF_NETRC_PATH));
-	authConfigFactory->setNetrc(netrc);
+        SharedHandle<Netrc> netrc(new Netrc());
+        netrc->parse(_option->get(PREF_NETRC_PATH));
+        authConfigFactory->setNetrc(netrc);
       }
     }
     e->setAuthConfigFactory(authConfigFactory);
@@ -137,11 +137,11 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!_option->blank(PREF_CERTIFICATE) &&
        !_option->blank(PREF_PRIVATE_KEY)) {
       tlsContext->addClientKeyFile(_option->get(PREF_CERTIFICATE),
-				   _option->get(PREF_PRIVATE_KEY));
+                                   _option->get(PREF_PRIVATE_KEY));
     }
     if(!_option->blank(PREF_CA_CERTIFICATE)) {
       if(!tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE))) {
-	_logger->warn(MSG_WARN_NO_CA_CERT);
+        _logger->warn(MSG_WARN_NO_CA_CERT);
       }
     } else if(_option->getAsBool(PREF_CHECK_CERTIFICATE)) {
       _logger->warn(MSG_WARN_NO_CA_CERT);
@@ -157,7 +157,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!serverStatIf.empty()) {
       e->_requestGroupMan->loadServerStat(serverStatIf);
       e->_requestGroupMan->removeStaleServerStat
-	(_option->getAsInt(PREF_SERVER_STAT_TIMEOUT));
+        (_option->getAsInt(PREF_SERVER_STAT_TIMEOUT));
     }
     e->setStatCalc(_statCalc);
 
@@ -182,10 +182,10 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!s.allCompleted()) {
       printMessageForContinue();
       if(s.getLastErrorResult() == downloadresultcode::FINISHED &&
-	 s.getInProgress() > 0) {
-	returnValue = downloadresultcode::IN_PROGRESS;
+         s.getInProgress() > 0) {
+        returnValue = downloadresultcode::IN_PROGRESS;
       } else {
-	returnValue = s.getLastErrorResult();
+        returnValue = s.getLastErrorResult();
       }
     }
   } catch(RecoverableException& e) {

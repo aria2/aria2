@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -59,11 +59,11 @@ struct BtObject {
   SharedHandle<BtProgressInfoFile> _btProgressInfoFile;
 
   BtObject(const SharedHandle<DownloadContext>& downloadContext,
-	   const SharedHandle<PieceStorage>& pieceStorage,
-	   const SharedHandle<PeerStorage>& peerStorage,
-	   const SharedHandle<BtAnnounce>& btAnnounce,
-	   const SharedHandle<BtRuntime>& btRuntime,
-	   const SharedHandle<BtProgressInfoFile>& btProgressInfoFile):
+           const SharedHandle<PieceStorage>& pieceStorage,
+           const SharedHandle<PeerStorage>& peerStorage,
+           const SharedHandle<BtAnnounce>& btAnnounce,
+           const SharedHandle<BtRuntime>& btRuntime,
+           const SharedHandle<BtProgressInfoFile>& btProgressInfoFile):
     _downloadContext(downloadContext),
     _pieceStorage(pieceStorage),
     _peerStorage(peerStorage),
@@ -102,7 +102,7 @@ public:
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
     for(std::map<int32_t, BtObject>::const_iterator i = _pool.begin();
-	i != _pool.end(); ++i) {
+        i != _pool.end(); ++i) {
       *dest++ = (*i).second._downloadContext;
     }
     return dest;

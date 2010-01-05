@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -114,12 +114,12 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   case INITIATOR_WAIT_KEY: {
     if(_mseHandshake->receivePublicKey()) {
       _mseHandshake->initCipher
-	(bittorrent::getInfoHash(_requestGroup->getDownloadContext()));;
+        (bittorrent::getInfoHash(_requestGroup->getDownloadContext()));;
       if(_mseHandshake->sendInitiatorStep2()) {
-	_sequence = INITIATOR_FIND_VC_MARKER;
+        _sequence = INITIATOR_FIND_VC_MARKER;
       } else {
-	setWriteCheckSocket(socket);
-	_sequence = INITIATOR_SEND_STEP2_PENDING;
+        setWriteCheckSocket(socket);
+        _sequence = INITIATOR_SEND_STEP2_PENDING;
       }
     }
     break;
@@ -145,17 +145,17 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   case INITIATOR_RECEIVE_PAD_D: {
     if(_mseHandshake->receivePad()) {
       SharedHandle<PeerConnection> peerConnection
-	(new PeerConnection(cuid, socket));
+        (new PeerConnection(cuid, socket));
       if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
-	peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
-					 _mseHandshake->getDecryptor());
+        peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
+                                         _mseHandshake->getDecryptor());
       }
       PeerInteractionCommand* c =
-	  new PeerInteractionCommand
-	(cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage, _peerStorage,
-	 socket,
-	 PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
-	 peerConnection);
+        new PeerInteractionCommand
+        (cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage, _peerStorage,
+         socket,
+         PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
+         peerConnection);
       e->commands.push_back(c);
       return true;
     }
@@ -174,8 +174,8 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
       SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
       peer->usedBy(e->newCUID());
       PeerInitiateConnectionCommand* command =
-	new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer,
-					  e, _btRuntime);
+        new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer,
+                                          e, _btRuntime);
       command->setPeerStorage(_peerStorage);
       command->setPieceStorage(_pieceStorage);
       e->commands.push_back(command);
@@ -186,7 +186,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     logger->info("CUID#%d - Retry using legacy BitTorrent handshake.", cuid);
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e,
-					_btRuntime, false);
+                                        _btRuntime, false);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);

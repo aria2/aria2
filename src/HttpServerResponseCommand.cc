@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -52,7 +52,7 @@ HttpServerResponseCommand::HttpServerResponseCommand
   Command(cuid),
   _e(e),
   _socket(socket),
- _httpServer(httpServer)
+  _httpServer(httpServer)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME); 
   _e->addSocketForWriteCheck(_socket, this);
@@ -72,7 +72,7 @@ bool HttpServerResponseCommand::execute()
     _httpServer->sendResponse();
   } catch(RecoverableException& e) {
     logger->info("CUID#%d - Error occurred while transmitting response body.",
-		 e, cuid);
+                 e, cuid);
     return true;
   }
   if(_httpServer->sendBufferIsEmpty()) {
@@ -80,13 +80,13 @@ bool HttpServerResponseCommand::execute()
     if(_httpServer->supportsPersistentConnection()) {
       logger->info("CUID#%d - Persist connection.", cuid);
       _e->commands.push_back
-	(new HttpServerCommand(cuid, _httpServer, _e, _socket));
+        (new HttpServerCommand(cuid, _httpServer, _e, _socket));
     }
     return true;
   } else {
     if(_timeout.elapsed(10)) {
       logger->info("CUID#%d - HttpServer: Timeout while trasmitting response.",
-		   cuid);
+                   cuid);
       return true;
     } else {
       _e->commands.push_back(this);

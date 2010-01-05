@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -66,9 +66,9 @@ namespace aria2 {
 BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
 
 void BtSetup::setup(std::deque<Command*>& commands,
-		    RequestGroup* requestGroup,
-		    DownloadEngine* e,
-		    const Option* option)
+                    RequestGroup* requestGroup,
+                    DownloadEngine* e,
+                    const Option* option)
 {
   if(!requestGroup->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)){
     return;
@@ -107,7 +107,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);
     c->setBtAnnounce(btAnnounce);
-	    
+            
     commands.push_back(c);
   }
 
@@ -125,24 +125,24 @@ void BtSetup::setup(std::deque<Command*>& commands,
     SharedHandle<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
     if(option->defined(PREF_SEED_TIME)) {
       SharedHandle<SeedCriteria> cri
-	(new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
+        (new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
       unionCri->addSeedCriteria(cri);
     }
     {
       double ratio = option->getAsDouble(PREF_SEED_RATIO);
       if(ratio > 0.0) {
-	SharedHandle<ShareRatioSeedCriteria> cri
-	  (new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
-				      requestGroup->getDownloadContext()));
-	cri->setPieceStorage(pieceStorage);
-	cri->setPeerStorage(peerStorage);
+        SharedHandle<ShareRatioSeedCriteria> cri
+          (new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
+                                      requestGroup->getDownloadContext()));
+        cri->setPieceStorage(pieceStorage);
+        cri->setPeerStorage(peerStorage);
 
-	unionCri->addSeedCriteria(cri);
+        unionCri->addSeedCriteria(cri);
       }
     }
     if(unionCri->getSeedCriterion().size() > 0) {
       SeedCheckCommand* c =
-	new SeedCheckCommand(e->newCUID(), requestGroup, e, unionCri);
+        new SeedCheckCommand(e->newCUID(), requestGroup, e, unionCri);
       c->setPieceStorage(pieceStorage);
       c->setBtRuntime(btRuntime);
       commands.push_back(c);

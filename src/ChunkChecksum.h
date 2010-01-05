@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -52,14 +52,14 @@ public:
   ChunkChecksum():_checksumLength(0) {}    
 
   ChunkChecksum(const std::string& algo,
-		const std::deque<std::string>& checksums,
-		size_t checksumLength):
+                const std::deque<std::string>& checksums,
+                size_t checksumLength):
     _algo(algo),
     _checksums(checksums),
     _checksumLength(checksumLength) {}
 
   bool validateChunk(const std::string& actualChecksum,
-		     size_t checksumIndex) const
+                     size_t checksumIndex) const
   {
     if(checksumIndex < _checksums.size()) {
       return actualChecksum == getChecksum(checksumIndex);

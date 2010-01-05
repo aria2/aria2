@@ -99,17 +99,17 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   SharedHandle<DownloadContext> newDctx = newRg->getDownloadContext();
   const BDE& newAttrs = newDctx->getAttribute(bittorrent::BITTORRENT);
   CPPUNIT_ASSERT_EQUAL(util::toHex(attrs[bittorrent::INFO_HASH].s()),
-		       util::toHex(newAttrs[bittorrent::INFO_HASH].s()));
+                       util::toHex(newAttrs[bittorrent::INFO_HASH].s()));
   CPPUNIT_ASSERT(newAttrs.containsKey(bittorrent::ANNOUNCE_LIST));
   CPPUNIT_ASSERT_EQUAL((size_t)1, newAttrs[bittorrent::ANNOUNCE_LIST].size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker"),
-		       newAttrs[bittorrent::ANNOUNCE_LIST][0][0].s());
+                       newAttrs[bittorrent::ANNOUNCE_LIST][0][0].s());
   CPPUNIT_ASSERT_EQUAL(_option->get("Hello"),
-		       newRg->getOption()->get("Hello"));
+                       newRg->getOption()->get("Hello"));
   CPPUNIT_ASSERT
     (std::find(_requestGroup->followedBy().begin(),
-	       _requestGroup->followedBy().end(),
-	       newRg->getGID()) != _requestGroup->followedBy().end());
+               _requestGroup->followedBy().end(),
+               newRg->getGID()) != _requestGroup->followedBy().end());
   CPPUNIT_ASSERT(!trfile.exists());
 
   results.clear();

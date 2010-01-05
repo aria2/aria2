@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -77,37 +77,37 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       socket->establishConnection(addr, port);
 
       if(proxyMethod == V_TUNNEL) {
-	HttpProxyRequestCommand* c =
-	  new HttpProxyRequestCommand(cuid, req, _fileEntry,
-				      _requestGroup, e,
-				      proxyRequest, socket);
-	c->setConnectedAddr(hostname, addr, port);
-	command = c;
+        HttpProxyRequestCommand* c =
+          new HttpProxyRequestCommand(cuid, req, _fileEntry,
+                                      _requestGroup, e,
+                                      proxyRequest, socket);
+        c->setConnectedAddr(hostname, addr, port);
+        command = c;
       } else if(proxyMethod == V_GET) {
-	SharedHandle<HttpConnection> httpConnection
-	  (new HttpConnection(cuid, socket, getOption().get()));
-	HttpRequestCommand* c = new HttpRequestCommand(cuid, req,
-						       _fileEntry,
-						       _requestGroup,
-						       httpConnection, e,
-						       socket);
-	c->setConnectedAddr(hostname, addr, port);
-	c->setProxyRequest(proxyRequest);
-	command = c;
+        SharedHandle<HttpConnection> httpConnection
+          (new HttpConnection(cuid, socket, getOption().get()));
+        HttpRequestCommand* c = new HttpRequestCommand(cuid, req,
+                                                       _fileEntry,
+                                                       _requestGroup,
+                                                       httpConnection, e,
+                                                       socket);
+        c->setConnectedAddr(hostname, addr, port);
+        c->setProxyRequest(proxyRequest);
+        command = c;
       } else {
-	// TODO
-	throw DL_ABORT_EX("ERROR");
+        // TODO
+        throw DL_ABORT_EX("ERROR");
       }
     } else {
       SharedHandle<HttpConnection> httpConnection
-	(new HttpConnection(cuid, pooledSocket, getOption().get()));
+        (new HttpConnection(cuid, pooledSocket, getOption().get()));
       HttpRequestCommand* c = new HttpRequestCommand(cuid, req,
-						     _fileEntry,
-						     _requestGroup,
-						     httpConnection, e,
-						     pooledSocket);
+                                                     _fileEntry,
+                                                     _requestGroup,
+                                                     httpConnection, e,
+                                                     pooledSocket);
       if(proxyMethod == V_GET) {
-	c->setProxyRequest(proxyRequest);
+        c->setProxyRequest(proxyRequest);
       }
       command = c;
     }
@@ -124,7 +124,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, getOption().get()));
     HttpRequestCommand* c =
       new HttpRequestCommand(cuid, req, _fileEntry, _requestGroup,
-			     httpConnection, e, socket);
+                             httpConnection, e, socket);
     if(pooledSocket.isNull()) {
       c->setConnectedAddr(hostname, addr, port);
     }

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -44,9 +44,9 @@
 namespace aria2 {
 
 FileEntry::FileEntry(const std::string& path,
-		     uint64_t length,
-		     off_t offset,
-		     const std::deque<std::string>& uris):
+                     uint64_t length,
+                     off_t offset,
+                     const std::deque<std::string>& uris):
   path(path), _uris(uris), length(length), offset(offset),
   extracted(false), requested(true),
   _singleHostMultiConnection(true),
@@ -105,7 +105,7 @@ std::string FileEntry::selectUri(const SharedHandle<URISelector>& uriSelector)
 
 template<typename InputIterator>
 static bool inFlightHost(InputIterator first, InputIterator last,
-			 const std::string& hostname)
+                         const std::string& hostname)
 {
   // TODO redirection should be considered here. We need to parse
   // original URI to get hostname.
@@ -129,25 +129,25 @@ FileEntry::getRequest
     while(1) {
       std::string uri = selector->select(this);
       if(uri.empty()) {
-	return req;
+        return req;
       }
       req.reset(new Request());
       if(req->setUrl(uri)) {
-	if(!_singleHostMultiConnection) {
-	  if(inFlightHost(_inFlightRequests.begin(), _inFlightRequests.end(),
-			  req->getHost())) {
-	    pending.push_back(uri);
-	    req.reset();
-	    continue;
-	  }
-	}
-	req->setReferer(referer);
-	req->setMethod(method);
-	_spentUris.push_back(uri);
-	_inFlightRequests.push_back(req);
-	break;
+        if(!_singleHostMultiConnection) {
+          if(inFlightHost(_inFlightRequests.begin(), _inFlightRequests.end(),
+                          req->getHost())) {
+            pending.push_back(uri);
+            req.reset();
+            continue;
+          }
+        }
+        req->setReferer(referer);
+        req->setMethod(method);
+        _spentUris.push_back(uri);
+        _inFlightRequests.push_back(req);
+        break;
       } else {
-	req.reset();
+        req.reset();
       }
     }
     _uris.insert(_uris.begin(), pending.begin(), pending.end());
@@ -187,7 +187,7 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
 class RequestFaster {
 public:
   bool operator()(const SharedHandle<Request>& lhs,
-		  const SharedHandle<Request>& rhs) const
+                  const SharedHandle<Request>& rhs) const
   {
     if(lhs->getPeerStat().isNull()) {
       return false;
@@ -210,7 +210,7 @@ void FileEntry::storePool(const SharedHandle<Request>& request)
   }
   std::deque<SharedHandle<Request> >::iterator i =
     std::lower_bound(_requestPool.begin(), _requestPool.end(), request,
-		     RequestFaster());
+                     RequestFaster());
   _requestPool.insert(i, request);
 }
 
@@ -223,7 +223,7 @@ void FileEntry::poolRequest(const SharedHandle<Request>& request)
 bool FileEntry::removeRequest(const SharedHandle<Request>& request)
 {
   for(std::deque<SharedHandle<Request> >::iterator i =
-	_inFlightRequests.begin(); i != _inFlightRequests.end(); ++i) {
+        _inFlightRequests.begin(); i != _inFlightRequests.end(); ++i) {
     if((*i).get() == request.get()) {
       _inFlightRequests.erase(i);
       return true;
@@ -243,7 +243,7 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
     }
   }
   _logger->debug("Removed %d duplicate hostname URIs for path=%s",
-		 _uris.size()-newURIs.size(), getPath().c_str());
+                 _uris.size()-newURIs.size(), getPath().c_str());
   _uris = newURIs;
 }
 
@@ -274,7 +274,7 @@ void FileEntry::extractURIResult
 {
   std::deque<URIResult>::iterator i =
     std::stable_partition(_uriResults.begin(), _uriResults.end(),
-			  FindURIResultByResult(r));
+                          FindURIResultByResult(r));
   std::copy(_uriResults.begin(), i, std::back_inserter(res));
   _uriResults.erase(_uriResults.begin(), i);
 }
@@ -287,30 +287,30 @@ void FileEntry::reuseUri(size_t num)
 
   std::deque<std::string> errorUris(_uriResults.size());
   std::transform(_uriResults.begin(), _uriResults.end(),
-		 errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
+                 errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
   std::sort(errorUris.begin(), errorUris.end());
   errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
-		  errorUris.end());
+                  errorUris.end());
      
   std::deque<std::string> reusableURIs;
   std::set_difference(uris.begin(), uris.end(),
-		      errorUris.begin(), errorUris.end(),
-		      std::back_inserter(reusableURIs));
+                      errorUris.begin(), errorUris.end(),
+                      std::back_inserter(reusableURIs));
   size_t ininum = reusableURIs.size();
   _logger->debug("Found %u reusable URIs",
-		 static_cast<unsigned int>(ininum));
+                 static_cast<unsigned int>(ininum));
   // Reuse at least num URIs here to avoid to
   // run this process repeatedly.
   if(ininum > 0 && ininum < num) {
     _logger->debug("fewer than num=%u",
-		   num);
+                   num);
     for(size_t i = 0; i < num/ininum; ++i) {
       _uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
     }
     _uris.insert(_uris.end(), reusableURIs.begin(),
-		 reusableURIs.begin()+(num%ininum));
+                 reusableURIs.begin()+(num%ininum));
     _logger->debug("Duplication complete: now %u URIs for reuse",
-		   static_cast<unsigned int>(_uris.size()));
+                   static_cast<unsigned int>(_uris.size()));
   }
 }
 

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -103,10 +103,10 @@ uint64_t MetalinkEntry::getLength() const
 }
 
 void MetalinkEntry::setLocationPreference(const std::deque<std::string>& locations,
-					  int preferenceToAdd)
+                                          int preferenceToAdd)
 {
   std::for_each(resources.begin(), resources.end(),
-		AddLocationPreference(locations, preferenceToAdd));
+                AddLocationPreference(locations, preferenceToAdd));
 }
 
 class AddProtocolPreference {
@@ -126,23 +126,23 @@ public:
 };
 
 void MetalinkEntry::setProtocolPreference(const std::string& protocol,
-					  int preferenceToAdd)
+                                          int preferenceToAdd)
 {
   std::for_each(resources.begin(), resources.end(),
-		AddProtocolPreference(protocol, preferenceToAdd));
+                AddProtocolPreference(protocol, preferenceToAdd));
 }
 
 class PrefOrder {
 public:
   bool operator()(const SharedHandle<MetalinkResource>& res1,
-		  const SharedHandle<MetalinkResource>& res2) {
+                  const SharedHandle<MetalinkResource>& res2) {
     return res1->preference > res2->preference;
   }
 };
 
 void MetalinkEntry::reorderResourcesByPreference() {
   std::random_shuffle(resources.begin(), resources.end(),
-		      *(SimpleRandomizer::getInstance().get()));
+                      *(SimpleRandomizer::getInstance().get()));
   std::sort(resources.begin(), resources.end(), PrefOrder());
 }
 
@@ -168,8 +168,8 @@ public:
 
 void MetalinkEntry::dropUnsupportedResource() {
   resources.erase(std::remove_if(resources.begin(), resources.end(),
-				 std::not1(Supported())),
-		  resources.end());
+                                 std::not1(Supported())),
+                  resources.end());
 }
 
 void MetalinkEntry::toFileEntry
@@ -177,8 +177,8 @@ void MetalinkEntry::toFileEntry
  const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries)
 {
   std::transform(metalinkEntries.begin(), metalinkEntries.end(),
-		 std::back_inserter(fileEntries),
-		 mem_fun_sh(&MetalinkEntry::getFile));
+                 std::back_inserter(fileEntries),
+                 mem_fun_sh(&MetalinkEntry::getFile));
 }
 
 void MetalinkEntry::setSignature(const SharedHandle<Signature>& signature)

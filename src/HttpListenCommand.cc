@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -71,10 +71,10 @@ bool HttpListenCommand::execute()
       socket->getPeerInfo(peerInfo);
 
       logger->info("XML-RPC: Accepted the connection from %s:%u.",
-		   peerInfo.first.c_str(), peerInfo.second);
+                   peerInfo.first.c_str(), peerInfo.second);
 
       HttpServerCommand* c =
-	new HttpServerCommand(_e->newCUID(), _e, socket);
+        new HttpServerCommand(_e->newCUID(), _e, socket);
       _e->setNoWait(true);
       _e->commands.push_back(c);
     }

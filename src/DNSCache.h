@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -72,10 +72,10 @@ private:
     std::vector<AddrEntry>::iterator find(const std::string& addr)
     {
       for(std::vector<AddrEntry>::iterator i = _addrEntries.begin();
-	  i != _addrEntries.end(); ++i) {
-	if((*i)._addr == addr) {
-	  return i;
-	}
+          i != _addrEntries.end(); ++i) {
+        if((*i)._addr == addr) {
+          return i;
+        }
       }
       return _addrEntries.end();
     }
@@ -83,10 +83,10 @@ private:
     std::vector<AddrEntry>::const_iterator find(const std::string& addr) const
     {
       for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
-	  i != _addrEntries.end(); ++i) {
-	if((*i)._addr == addr) {
-	  return i;
-	}
+          i != _addrEntries.end(); ++i) {
+        if((*i)._addr == addr) {
+          return i;
+        }
       }
       return _addrEntries.end();
     }
@@ -99,10 +99,10 @@ private:
     const std::string& getGoodAddr() const
     {
       for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
-	  i != _addrEntries.end(); ++i) {
-	if((*i)._good) {
-	  return (*i)._addr;
-	}
+          i != _addrEntries.end(); ++i) {
+        if((*i)._good) {
+          return (*i)._addr;
+        }
       }
       return A2STR::NIL;
     }
@@ -111,7 +111,7 @@ private:
     {
       std::vector<AddrEntry>::iterator i = find(addr);
       if(i != _addrEntries.end()) {
-	(*i)._good = false;
+        (*i)._good = false;
       }
     }
 
@@ -119,7 +119,7 @@ private:
     {
       int r = _hostname.compare(e._hostname);
       if(r != 0) {
-	return r < 0;
+        return r < 0;
       }
       return _port < e._port;
     }
@@ -155,7 +155,7 @@ public:
       _entries.insert(i, target);
     } else {
       if(!(*i).contains(ipaddr)) {
-	(*i).add(ipaddr);
+        (*i).add(ipaddr);
       }
     }
   }

@@ -13,8 +13,8 @@ public:
   {
     for(size_t i = 0; i < nbits; ++i) {
       if(bitfield::test(bitfield, nbits, i)) {
-	index = i;
-	return true;
+        index = i;
+        return true;
       }
     }
     return false;

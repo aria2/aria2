@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -52,7 +52,7 @@ private:
   {
     throw DL_ABORT_EX
       (StringFormat("Exception in libgcrypt routine(ARC4Context class): %s",
-		    gcry_strerror(err)).str());
+                    gcry_strerror(err)).str());
   }
 public:
   LibgcryptARC4Context():_cipherCtx(0) {}
@@ -77,19 +77,19 @@ public:
     {
       gcry_error_t r = gcry_cipher_open(&_cipherCtx, algo, mode, flags);
       if(r) {
-	handleError(r);
+        handleError(r);
       }
     }
     {
       gcry_error_t r = gcry_cipher_setkey(_cipherCtx, key, keyLength);
       if(r) {
-	handleError(r);
+        handleError(r);
       }
     }
     {
       gcry_error_t r = gcry_cipher_setiv(_cipherCtx, 0, 0);
       if(r) {
-	handleError(r);
+        handleError(r);
       }
     }
   }

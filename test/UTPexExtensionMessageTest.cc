@@ -95,7 +95,7 @@ void UTPexExtensionMessageTest::testGetBencodedData()
     "e";
   std::string bd = msg.getPayload();
   CPPUNIT_ASSERT_EQUAL(util::urlencode(expected),
-		       util::urlencode(bd));
+                       util::urlencode(bd));
 }
 
 void UTPexExtensionMessageTest::testToString()
@@ -174,19 +174,19 @@ void UTPexExtensionMessageTest::testCreate()
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
   CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getFreshPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
-		       msg->getFreshPeers()[0]->ipaddr);
+                       msg->getFreshPeers()[0]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, msg->getFreshPeers()[0]->port);
   CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"),
-		       msg->getFreshPeers()[1]->ipaddr);
+                       msg->getFreshPeers()[1]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)9999, msg->getFreshPeers()[1]->port);
   CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getDroppedPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"),
-		       msg->getDroppedPeers()[0]->ipaddr);
+                       msg->getDroppedPeers()[0]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)6882, msg->getDroppedPeers()[0]->port);
   CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.3"),
-		       msg->getDroppedPeers()[1]->ipaddr);
+                       msg->getDroppedPeers()[1]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)10000,
-		       msg->getDroppedPeers()[1]->port);
+                       msg->getDroppedPeers()[1]->port);
   try {
     // 0 length data
     std::string in = "";

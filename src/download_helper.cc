@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -163,9 +163,9 @@ static void unfoldURI
 }
 
 static void splitURI(std::deque<std::string>& result,
-		     std::deque<std::string>::const_iterator begin,
-		     std::deque<std::string>::const_iterator end,
-		     size_t numSplit)
+                     std::deque<std::string>::const_iterator begin,
+                     std::deque<std::string>::const_iterator end,
+                     size_t numSplit)
 {
   size_t numURIs = std::distance(begin, end);
   if(numURIs >= numSplit) {
@@ -200,9 +200,9 @@ static SharedHandle<RequestGroup> createRequestGroup
 static
 SharedHandle<RequestGroup>
 createBtRequestGroup(const std::string& torrentFilePath,
-		     const SharedHandle<Option>& option,
-		     const std::deque<std::string>& auxUris,
-		     const std::string& torrentData = "")
+                     const SharedHandle<Option>& option,
+                     const std::deque<std::string>& auxUris,
+                     const std::string& torrentData = "")
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
@@ -230,13 +230,13 @@ createBtRequestGroup(const std::string& torrentFilePath,
 static
 SharedHandle<RequestGroup>
 createBtMagnetRequestGroup(const std::string& magnetLink,
-			   const SharedHandle<Option>& option,
-			   const std::deque<std::string>& auxUris)
+                           const SharedHandle<Option>& option,
+                           const std::deque<std::string>& auxUris)
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0,
-			 A2STR::NIL));
+                         A2STR::NIL));
   dctx->setDir(A2STR::NIL);
   // We only know info hash. Total Length is unknown at this moment.
   dctx->markTotalLengthIsUnknown();
@@ -273,7 +273,7 @@ void createRequestGroupForBitTorrent
   splitURI(auxUris, nargs.begin(), nargs.end(), numSplit);
   SharedHandle<RequestGroup> rg =
     createBtRequestGroup(option->get(PREF_TORRENT_FILE), option, auxUris,
-			 torrentData);
+                         torrentData);
   rg->setNumConcurrentCommand(numSplit);
   result.push_back(rg);
 }
@@ -288,8 +288,8 @@ void createRequestGroupForMetalink
 {
   if(metalinkData.empty()) {
     Metalink2RequestGroup().generate(result,
-				     option->get(PREF_METALINK_FILE),
-				     option);
+                                     option->get(PREF_METALINK_FILE),
+                                     option);
   } else {
     SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
     dw->setString(metalinkData);
@@ -309,8 +309,8 @@ private:
   bool _ignoreLocalPath;
 public:
   AccRequestGroup(std::deque<SharedHandle<RequestGroup> >& requestGroups,
-		  const SharedHandle<Option>& option,
-		  bool ignoreLocalPath = false):
+                  const SharedHandle<Option>& option,
+                  bool ignoreLocalPath = false):
     _requestGroups(requestGroups), _option(option),
     _ignoreLocalPath(ignoreLocalPath) {}
 
@@ -321,43 +321,43 @@ public:
       std::deque<std::string> streamURIs;
       size_t numSplit = _option->getAsInt(PREF_SPLIT);
       for(size_t i = 0; i < numSplit; ++i) {
-	streamURIs.push_back(uri);
+        streamURIs.push_back(uri);
       }
       SharedHandle<RequestGroup> rg =
-	createRequestGroup(_option, streamURIs);
+        createRequestGroup(_option, streamURIs);
       rg->setNumConcurrentCommand(numSplit);
       _requestGroups.push_back(rg);
     }
 #ifdef ENABLE_BITTORRENT
     else if(_detector.guessTorrentMagnet(uri)) {
       try {
-	SharedHandle<RequestGroup> group =
-	  createBtMagnetRequestGroup(uri, _option, std::deque<std::string>());
-	_requestGroups.push_back(group);
+        SharedHandle<RequestGroup> group =
+          createBtMagnetRequestGroup(uri, _option, std::deque<std::string>());
+        _requestGroups.push_back(group);
       } catch(RecoverableException& e) {
-	// error occurred while parsing torrent file.
-	// We simply ignore it.	
-	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+        // error occurred while parsing torrent file.
+        // We simply ignore it. 
+        LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
       }
     } else if(!_ignoreLocalPath && _detector.guessTorrentFile(uri)) {
       try {
-	_requestGroups.push_back(createBtRequestGroup(uri, _option,
-						      std::deque<std::string>()));
+        _requestGroups.push_back(createBtRequestGroup(uri, _option,
+                                                      std::deque<std::string>()));
       } catch(RecoverableException& e) {
-	// error occurred while parsing torrent file.
-	// We simply ignore it.	
-	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+        // error occurred while parsing torrent file.
+        // We simply ignore it. 
+        LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
       }
     } 
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
     else if(!_ignoreLocalPath && _detector.guessMetalinkFile(uri)) {
       try {
-	Metalink2RequestGroup().generate(_requestGroups, uri, _option);
+        Metalink2RequestGroup().generate(_requestGroups, uri, _option);
       } catch(RecoverableException& e) {
-	// error occurred while parsing metalink file.
-	// We simply ignore it.
-	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+        // error occurred while parsing metalink file.
+        // We simply ignore it.
+        LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
       }
     }
 #endif // ENABLE_METALINK
@@ -391,7 +391,7 @@ void createRequestGroupForUri
   }
   if(!ignoreForceSequential && option->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
     std::for_each(nargs.begin(), nargs.end(),
-		  AccRequestGroup(result, option, ignoreLocalPath));
+                  AccRequestGroup(result, option, ignoreLocalPath));
   } else {
     std::deque<std::string>::iterator strmProtoEnd =
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
@@ -400,15 +400,15 @@ void createRequestGroupForUri
       size_t numSplit = option->getAsInt(PREF_SPLIT);
       std::deque<std::string> streamURIs;
       splitURI(streamURIs, nargs.begin(), strmProtoEnd,
-	       numSplit);
+               numSplit);
       SharedHandle<RequestGroup> rg =
-	createRequestGroup(option, streamURIs, true);
+        createRequestGroup(option, streamURIs, true);
       rg->setNumConcurrentCommand(numSplit);
       result.push_back(rg);
     }
     // process remaining URIs(local metalink, BitTorrent files)
     std::for_each(strmProtoEnd, nargs.end(),
-		  AccRequestGroup(result, option, ignoreLocalPath));
+                  AccRequestGroup(result, option, ignoreLocalPath));
   }
 }
 
@@ -428,9 +428,9 @@ static void createRequestGroupForUriList
 
     SharedHandle<Option> requestOption(new Option(*option.get()));
     for(std::set<std::string>::const_iterator i =
-	  listRequestOptions().begin(); i != listRequestOptions().end(); ++i) {
+          listRequestOptions().begin(); i != listRequestOptions().end(); ++i) {
       if(tempOption->defined(*i)) {
-	requestOption->put(*i, tempOption->get(*i));
+        requestOption->put(*i, tempOption->get(*i));
       }
     }
 
@@ -447,8 +447,8 @@ void createRequestGroupForUriList
   } else {
     if(!File(option->get(PREF_INPUT_FILE)).isFile()) {
       throw DL_ABORT_EX
-	(StringFormat(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
-		      "No such file").str());
+        (StringFormat(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
+                      "No such file").str());
     }
     std::ifstream f(option->get(PREF_INPUT_FILE).c_str(), std::ios::binary);
     createRequestGroupForUriList(result, option, f);

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -57,22 +57,22 @@ DHTRoutingTableDeserializer::DHTRoutingTableDeserializer() {}
 DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() {}
 
 static void readBytes(unsigned char* buf, size_t buflen,
-		      std::istream& in, size_t readlen)
+                      std::istream& in, size_t readlen)
 {
   assert(readlen <= buflen);
   in.read(reinterpret_cast<char*>(buf), readlen);
 }
 
-#define CHECK_STREAM(in, length)				\
-  if(in.gcount() != length) {					\
-  throw DL_ABORT_EX						\
-  (StringFormat("Failed to load DHT routing table. cause:%s",	\
-		"Unexpected EOF").str());			\
-  }								\
-  if(!in) {							\
-  throw DL_ABORT_EX						\
-  (StringFormat("Failed to load DHT routing table. cause:%s",	\
-		strerror(errno)).str());			\
+#define CHECK_STREAM(in, length)                                        \
+  if(in.gcount() != length) {                                           \
+    throw DL_ABORT_EX                                                   \
+      (StringFormat("Failed to load DHT routing table. cause:%s",       \
+                    "Unexpected EOF").str());                           \
+  }                                                                     \
+  if(!in) {                                                             \
+    throw DL_ABORT_EX                                                   \
+      (StringFormat("Failed to load DHT routing table. cause:%s",       \
+                    strerror(errno)).str());                            \
   }
 
 void DHTRoutingTableDeserializer::deserialize(std::istream& in)
@@ -118,7 +118,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
   } else {
     throw DL_ABORT_EX
       (StringFormat("Failed to load DHT routing table. cause:%s",
-		    "bad header").str());
+                    "bad header").str());
   }
 
   uint32_t temp32;

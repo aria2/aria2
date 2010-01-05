@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -74,17 +74,17 @@ protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e) = 0;
 
   void gatherRequestOption(const SharedHandle<Option>& option,
-			   const BDE& optionsDict);
+                           const BDE& optionsDict);
 
   void gatherChangeableOption(const SharedHandle<Option>& option,
-			      const BDE& optionDict);
+                              const BDE& optionDict);
 
   // Copy options which is changeable in XML-RPC changeOption command
   // to dest.
   void applyChangeableOption(Option* dest, Option* src) const;
 
   void gatherChangeableGlobalOption(const SharedHandle<Option>& option,
-				    const BDE& optionDict);
+                                    const BDE& optionDict);
 
   // Copy options which is changeable in XML-RPC changeGlobalOption
   // command to dest.

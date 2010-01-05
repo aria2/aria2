@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -110,7 +110,7 @@ void DefaultBtProgressInfoFile::save()
     std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
     if(!o) {
       throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-				     _filename.c_str(), strerror(errno)).str());
+                                     _filename.c_str(), strerror(errno)).str());
     }
 #ifdef ENABLE_BITTORRENT
     bool torrentDownload = isTorrentDownload();
@@ -138,7 +138,7 @@ void DefaultBtProgressInfoFile::save()
       const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
       uint32_t infoHashLengthNL = htonl(INFO_HASH_LENGTH);
       o.write(reinterpret_cast<const char*>(&infoHashLengthNL),
-	      sizeof(infoHashLengthNL));
+              sizeof(infoHashLengthNL));
       // infoHash:
       o.write(reinterpret_cast<const char*>(infoHash), INFO_HASH_LENGTH);
 #endif // ENABLE_BITTORRENT
@@ -147,16 +147,16 @@ void DefaultBtProgressInfoFile::save()
       // length: 32 bits
       uint32_t infoHashLength = 0;
       o.write(reinterpret_cast<const char*>(&infoHashLength),
-	      sizeof(infoHashLength));
+              sizeof(infoHashLength));
     }
     // pieceLength: 32 bits
     uint32_t pieceLengthNL = htonl(_dctx->getPieceLength());
     o.write(reinterpret_cast<const char*>(&pieceLengthNL),
-	    sizeof(pieceLengthNL));
+            sizeof(pieceLengthNL));
     // totalLength: 64 bits
     uint64_t totalLengthNL = hton64(_dctx->getTotalLength());
     o.write(reinterpret_cast<const char*>(&totalLengthNL),
-	    sizeof(totalLengthNL));
+            sizeof(totalLengthNL));
     // uploadLength: 64 bits
     uint64_t uploadLengthNL = 0;
 #ifdef ENABLE_BITTORRENT
@@ -166,54 +166,54 @@ void DefaultBtProgressInfoFile::save()
     }
 #endif // ENABLE_BITTORRENT
     o.write(reinterpret_cast<const char*>(&uploadLengthNL),
-	    sizeof(uploadLengthNL));
+            sizeof(uploadLengthNL));
     // bitfieldLength: 32 bits
     uint32_t bitfieldLengthNL = htonl(_pieceStorage->getBitfieldLength());
     o.write(reinterpret_cast<const char*>(&bitfieldLengthNL),
-	    sizeof(bitfieldLengthNL));
+            sizeof(bitfieldLengthNL));
     // bitfield
     o.write(reinterpret_cast<const char*>(_pieceStorage->getBitfield()),
-	    _pieceStorage->getBitfieldLength());
+            _pieceStorage->getBitfieldLength());
     // the number of in-flight piece: 32 bits
     // TODO implement this
     uint32_t numInFlightPieceNL = htonl(_pieceStorage->countInFlightPiece());
     o.write(reinterpret_cast<const char*>(&numInFlightPieceNL),
-	    sizeof(numInFlightPieceNL));
+            sizeof(numInFlightPieceNL));
     Pieces inFlightPieces;
     _pieceStorage->getInFlightPieces(inFlightPieces);
     for(Pieces::const_iterator itr = inFlightPieces.begin();
-	itr != inFlightPieces.end(); ++itr) {
+        itr != inFlightPieces.end(); ++itr) {
       uint32_t indexNL = htonl((*itr)->getIndex());
       o.write(reinterpret_cast<const char*>(&indexNL), sizeof(indexNL));
       uint32_t lengthNL = htonl((*itr)->getLength());
       o.write(reinterpret_cast<const char*>(&lengthNL), sizeof(lengthNL));
       uint32_t bitfieldLengthNL = htonl((*itr)->getBitfieldLength());
       o.write(reinterpret_cast<const char*>(&bitfieldLengthNL),
-	      sizeof(bitfieldLengthNL));
+              sizeof(bitfieldLengthNL));
       o.write(reinterpret_cast<const char*>((*itr)->getBitfield()),
-	      (*itr)->getBitfieldLength());
+              (*itr)->getBitfieldLength());
     }
     o.flush();
     if(!o) {
       throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-				     _filename.c_str(), strerror(errno)).str());
+                                     _filename.c_str(), strerror(errno)).str());
     }
     _logger->info(MSG_SAVED_SEGMENT_FILE);
   }
   if(!File(filenameTemp).renameTo(_filename)) {
     throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-				 _filename.c_str(), strerror(errno)).str());
+                                   _filename.c_str(), strerror(errno)).str());
   }
 }
 
-#define CHECK_STREAM(in, length)					\
-  if(in.gcount() != length) {						\
-    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,		\
-				   _filename.c_str(),"Unexpected EOF").str()); \
-  }									\
-  if(!in) {								\
-    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,		\
-				   _filename.c_str(), strerror(errno)).str()); \
+#define CHECK_STREAM(in, length)                                        \
+  if(in.gcount() != length) {                                           \
+    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
+                                   _filename.c_str(),"Unexpected EOF").str()); \
+  }                                                                     \
+  if(!in) {                                                             \
+    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
+                                   _filename.c_str(), strerror(errno)).str()); \
   }
 
 // It is assumed that integers are saved as:
@@ -223,9 +223,9 @@ void DefaultBtProgressInfoFile::load()
 {
   _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
   std::ifstream in(_filename.c_str(), std::ios::in|std::ios::binary);
-  if(!in) {								\
-    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,		\
-				   _filename.c_str(), strerror(errno)).str());
+  if(!in) {                                                             \
+    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
+                                   _filename.c_str(), strerror(errno)).str());
   }
   unsigned char versionBuf[2];
   in.read(reinterpret_cast<char*>(versionBuf), sizeof(versionBuf));
@@ -239,7 +239,7 @@ void DefaultBtProgressInfoFile::load()
   } else {
     throw DL_ABORT_EX
       (StringFormat("Unsupported ctrl file version: %s",
-		    versionHex.c_str()).str());
+                    versionHex.c_str()).str());
   }
   unsigned char extension[4];
   in.read(reinterpret_cast<char*>(extension), sizeof(extension));
@@ -264,18 +264,18 @@ void DefaultBtProgressInfoFile::load()
   if(infoHashLength > 0) {
     array_ptr<unsigned char> savedInfoHash(new unsigned char[infoHashLength]);
     in.read(reinterpret_cast<char*>
-	    (static_cast<unsigned char*>(savedInfoHash)), infoHashLength);
+            (static_cast<unsigned char*>(savedInfoHash)), infoHashLength);
     CHECK_STREAM(in, static_cast<int>(infoHashLength));
 #ifdef ENABLE_BITTORRENT
     if(infoHashCheckEnabled) {
       const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
       if(infoHashLength != INFO_HASH_LENGTH ||
-	 memcmp(savedInfoHash, infoHash, INFO_HASH_LENGTH) != 0) {
-	throw DL_ABORT_EX
-	  (StringFormat("info hash mismatch. expected: %s, actual: %s",
-			util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
-			util::toHex(savedInfoHash, infoHashLength).c_str()
-			).str());
+         memcmp(savedInfoHash, infoHash, INFO_HASH_LENGTH) != 0) {
+        throw DL_ABORT_EX
+          (StringFormat("info hash mismatch. expected: %s, actual: %s",
+                        util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
+                        util::toHex(savedInfoHash, infoHashLength).c_str()
+                        ).str());
       }
     }
 #endif // ENABLE_BITTORRENT
@@ -297,8 +297,8 @@ void DefaultBtProgressInfoFile::load()
   if(totalLength != _dctx->getTotalLength()) {
     throw DL_ABORT_EX
       (StringFormat("total length mismatch. expected: %s, actual: %s",
-		    util::itos(_dctx->getTotalLength()).c_str(),
-		    util::itos(totalLength).c_str()).str());
+                    util::itos(_dctx->getTotalLength()).c_str(),
+                    util::itos(totalLength).c_str()).str());
   }
   uint64_t uploadLength;
   in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
@@ -323,20 +323,20 @@ void DefaultBtProgressInfoFile::load()
   if(expectedBitfieldLength != bitfieldLength) {
     throw DL_ABORT_EX
       (StringFormat("bitfield length mismatch. expected: %d, actual: %d",
-		    expectedBitfieldLength,
-		    bitfieldLength).str());
+                    expectedBitfieldLength,
+                    bitfieldLength).str());
   }
 
   array_ptr<unsigned char> savedBitfield(new unsigned char[bitfieldLength]);
   in.read(reinterpret_cast<char*>
-	  (static_cast<unsigned char*>(savedBitfield)), bitfieldLength);
+          (static_cast<unsigned char*>(savedBitfield)), bitfieldLength);
   CHECK_STREAM(in, static_cast<int>(bitfieldLength));
   if(pieceLength == _dctx->getPieceLength()) {
     _pieceStorage->setBitfield(savedBitfield, bitfieldLength);
 
     uint32_t numInFlightPiece;
     in.read(reinterpret_cast<char*>(&numInFlightPiece),
-	    sizeof(numInFlightPiece));
+            sizeof(numInFlightPiece));
     CHECK_STREAM(in, sizeof(numInFlightPiece));
     if(version >= 1) {
       numInFlightPiece = ntohl(numInFlightPiece);
@@ -347,40 +347,40 @@ void DefaultBtProgressInfoFile::load()
       in.read(reinterpret_cast<char*>(&index), sizeof(index));
       CHECK_STREAM(in, sizeof(index));
       if(version >= 1) {
-	index = ntohl(index);
+        index = ntohl(index);
       }
       if(!(index < _dctx->getNumPieces())) {
-	throw DL_ABORT_EX
-	  (StringFormat("piece index out of range: %u", index).str());
+        throw DL_ABORT_EX
+          (StringFormat("piece index out of range: %u", index).str());
       }
       uint32_t length;
       in.read(reinterpret_cast<char*>(&length), sizeof(length));
       CHECK_STREAM(in, sizeof(length));
       if(version >= 1) {
-	length = ntohl(length);
+        length = ntohl(length);
       }
       if(!(length <=_dctx->getPieceLength())) {
-	throw DL_ABORT_EX
-	  (StringFormat("piece length out of range: %u", length).str());
+        throw DL_ABORT_EX
+          (StringFormat("piece length out of range: %u", length).str());
       }
       PieceHandle piece(new Piece(index, length));
       uint32_t bitfieldLength;
       in.read(reinterpret_cast<char*>(&bitfieldLength),
-	      sizeof(bitfieldLength));
+              sizeof(bitfieldLength));
       CHECK_STREAM(in, sizeof(bitfieldLength));
       if(version >= 1) {
-	bitfieldLength = ntohl(bitfieldLength);
+        bitfieldLength = ntohl(bitfieldLength);
       }
       if(piece->getBitfieldLength() != bitfieldLength) {
-	throw DL_ABORT_EX
-	  (StringFormat("piece bitfield length mismatch."
-			" expected: %u actual: %u",
-			piece->getBitfieldLength(), bitfieldLength).str());
+        throw DL_ABORT_EX
+          (StringFormat("piece bitfield length mismatch."
+                        " expected: %u actual: %u",
+                        piece->getBitfieldLength(), bitfieldLength).str());
       }
       array_ptr<unsigned char> pieceBitfield
-	(new unsigned char[bitfieldLength]);
+        (new unsigned char[bitfieldLength]);
       in.read(reinterpret_cast<char*>
-	      (static_cast<unsigned char*>(pieceBitfield)), bitfieldLength);
+              (static_cast<unsigned char*>(pieceBitfield)), bitfieldLength);
       CHECK_STREAM(in, static_cast<int>(bitfieldLength));
       piece->setBitfield(pieceBitfield, bitfieldLength);
 
@@ -389,14 +389,14 @@ void DefaultBtProgressInfoFile::load()
       piece->setHashAlgo(_dctx->getPieceHashAlgo());
 
 #endif // ENABLE_MESSAGE_DIGEST
-	
+        
       inFlightPieces.push_back(piece);
     }
     _pieceStorage->addInFlightPiece(inFlightPieces);
   } else {
     uint32_t numInFlightPiece;
     in.read(reinterpret_cast<char*>(&numInFlightPiece),
-	    sizeof(numInFlightPiece));
+            sizeof(numInFlightPiece));
     CHECK_STREAM(in, sizeof(numInFlightPiece));
     if(version >= 1) {
       numInFlightPiece = ntohl(numInFlightPiece);
@@ -406,9 +406,9 @@ void DefaultBtProgressInfoFile::load()
     if((src.getCompletedLength() || numInFlightPiece) &&
        !_option->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
-	("WARNING: Detected a change in piece length. You can proceed with"
-	 " --allow-piece-length-change=true, but you may lose some download"
-	 " progress.");
+        ("WARNING: Detected a change in piece length. You can proceed with"
+         " --allow-piece-length-change=true, but you may lose some download"
+         " progress.");
     }
     BitfieldMan dest(_dctx->getPieceLength(), totalLength);
     util::convertBitfield(&dest, &src);

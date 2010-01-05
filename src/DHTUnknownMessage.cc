@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -48,8 +48,8 @@ const std::string DHTUnknownMessage::E("e");
 const std::string DHTUnknownMessage::UNKNOWN("unknown");
 
 DHTUnknownMessage::DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
-				     const unsigned char* data, size_t length,
-				     const std::string& ipaddr, uint16_t port):
+                                     const unsigned char* data, size_t length,
+                                     const std::string& ipaddr, uint16_t port):
   DHTMessage(localNode, SharedHandle<DHTNode>()),
   _length(length),
   _ipaddr(ipaddr),
@@ -93,8 +93,8 @@ std::string DHTUnknownMessage::toString() const
   std::string sample(&_data[0], &_data[sampleLength]);
 
   return strconcat("dht unknown Remote:", _ipaddr, ":", util::uitos(_port),
-		   " length=", util::uitos(_length),
-		   ", first 8 bytes(hex)=", util::toHex(sample));
+                   " length=", util::uitos(_length),
+                   ", first 8 bytes(hex)=", util::toHex(sample));
 }
 
 } // namespace aria2

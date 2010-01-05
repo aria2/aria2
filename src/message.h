@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -89,7 +89,7 @@
 #define MSG_TRACKER_REQUEST_CREATION_FAILED _("CUID#%d - Cannot create tracker request.")
 #define MSG_CREATING_TRACKER_REQUEST _("CUID#%d - Creating new tracker request command #%d")
 #define MSG_DHT_ENABLED_PEER _("CUID#%d - The peer is DHT-enabled.")
-#define MSG_CONNECT_FAILED_AND_RETRY "CUID#%d - Could not to connect to %s:%u."\
+#define MSG_CONNECT_FAILED_AND_RETRY "CUID#%d - Could not to connect to %s:%u." \
   " Trying another address"
 
 #define MSG_UNRECOGNIZED_URI _("Unrecognized URI or unsupported protocol: %s")
@@ -141,45 +141,45 @@
 #define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
 #define MSG_WINSOCK_INIT_FAILD _("Windows socket library initialization failed")
 #define MSG_TIME_HAS_PASSED _("%d second(s) has passed. Stopping application.")
-#define MSG_SIGNATURE_SAVED _("Saved signature as %s. Please note that aria2"\
-			      " doesn't verify signatures.")
-#define MSG_SIGNATURE_NOT_SAVED _("Saving signature as %s failed. Maybe file"\
-				  " already exists.")
-#define MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED \
+#define MSG_SIGNATURE_SAVED _("Saved signature as %s. Please note that aria2" \
+                              " doesn't verify signatures.")
+#define MSG_SIGNATURE_NOT_SAVED _("Saving signature as %s failed. Maybe file" \
+                                  " already exists.")
+#define MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED    \
   _("Failed to open ServerStat file %s for read.")
 #define MSG_SERVER_STAT_LOADED _("ServerStat file %s loaded successfully.")
 #define MSG_READING_SERVER_STAT_FILE_FAILED _("Failed to read ServerStat from" \
-					      " %s.")
-#define MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED \
+                                              " %s.")
+#define MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED    \
   _("Failed to open ServerStat file %s for write.")
 #define MSG_SERVER_STAT_SAVED _("ServerStat file %s saved successfully.")
-#define MSG_WRITING_SERVER_STAT_FILE_FAILED _("Failed to write ServerStat to"\
-					      " %s.")
-#define MSG_ESTABLISHING_CONNECTION_FAILED \
+#define MSG_WRITING_SERVER_STAT_FILE_FAILED _("Failed to write ServerStat to" \
+                                              " %s.")
+#define MSG_ESTABLISHING_CONNECTION_FAILED              \
   _("Failed to establish connection, cause: %s")
 #define MSG_NETWORK_PROBLEM _("Network problem has occurred. cause:%s")
-#define MSG_LOADING_TRUSTED_CA_CERT_FAILED \
+#define MSG_LOADING_TRUSTED_CA_CERT_FAILED                              \
   _("Failed to load trusted CA certificates from %s. Cause: %s")
-#define MSG_CERT_VERIFICATION_FAILED \
+#define MSG_CERT_VERIFICATION_FAILED                    \
   _("Certificate verification failed. Cause: %s")
 #define MSG_NO_CERT_FOUND _("No certificate found.")
 #define MSG_HOSTNAME_NOT_MATCH _("Hostname not match.")
 #define MSG_NO_FILES_TO_DOWNLOAD _("No files to download.")
-#define MSG_WARN_NO_CA_CERT \
-  _("You may encounter the certificate verification error with HTTPS server."\
+#define MSG_WARN_NO_CA_CERT                                             \
+  _("You may encounter the certificate verification error with HTTPS server." \
     " See --ca-certificate and --check-certificate option.")
 #define MSG_SHOW_FILES _("Printing the contents of file '%s'...")
-#define MSG_NOT_TORRENT_METALINK _("This file is neither Torrent nor Metalink"\
-				   " file. Skipping.")
+#define MSG_NOT_TORRENT_METALINK _("This file is neither Torrent nor Metalink" \
+                                   " file. Skipping.")
 #define MSG_GID_NOT_PROVIDED "GID is not provided."
 #define MSG_CANNOT_PARSE_XML_RPC_REQUEST "Failed to parse xml-rpc request."
 #define MSG_GOOD_BYE_SEEDER "Client is in seed state: Good Bye Seeder;)"
 #define MSG_NOT_FILE _("Is '%s' a file?")
-#define MSG_INTERFACE_NOT_FOUND _("Failed to find given interface %s,"\
-				  " cause: %s")
+#define MSG_INTERFACE_NOT_FOUND _("Failed to find given interface %s,"  \
+                                  " cause: %s")
 #define MSG_METADATA_SAVED _("Saved metadata as %s.")
-#define MSG_METADATA_NOT_SAVED _("Saving metadata as %s failed. Maybe file"\
-				 " already exists.")
+#define MSG_METADATA_NOT_SAVED _("Saving metadata as %s failed. Maybe file" \
+                                 " already exists.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

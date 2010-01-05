@@ -78,8 +78,8 @@ public:
     std::string type;
   public:
     MockBtMessage2():onQueuedCalled(false),
-		     sendCalled(false),
-		     doCancelActionCalled(false)
+                     sendCalled(false),
+                     doCancelActionCalled(false)
     {}
 
     virtual ~MockBtMessage2() {}
@@ -153,7 +153,7 @@ public:
     _messageFactory.reset(new MockBtMessageFactory2());
 
     _rgman.reset(new RequestGroupMan(std::deque<SharedHandle<RequestGroup> >(),
-				     0, _option.get()));
+                                     0, _option.get()));
 
     btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
     btMessageDispatcher->setPeer(peer);
@@ -175,7 +175,7 @@ void DefaultBtMessageDispatcherTest::testAddMessage() {
   btMessageDispatcher->addMessageToQueue(msg);
   CPPUNIT_ASSERT_EQUAL(true, msg->isOnQueuedCalled());
   CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       btMessageDispatcher->getMessageQueue().size());
+                       btMessageDispatcher->getMessageQueue().size());
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages() {
@@ -246,7 +246,7 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
 //   CPPUNIT_ASSERT(msg3->isSendCalled());
 
 //   CPPUNIT_ASSERT_EQUAL((size_t)2,
-// 		       btMessageDispatcher->getMessageQueue().size());
+//                     btMessageDispatcher->getMessageQueue().size());
 // }
 
 void DefaultBtMessageDispatcherTest::testSendMessages_sendingInProgress() {
@@ -271,7 +271,7 @@ void DefaultBtMessageDispatcherTest::testSendMessages_sendingInProgress() {
   CPPUNIT_ASSERT(!msg3->isSendCalled());
 
   CPPUNIT_ASSERT_EQUAL((size_t)2,
-		       btMessageDispatcher->getMessageQueue().size());
+                       btMessageDispatcher->getMessageQueue().size());
 }
 
 void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction() {
@@ -307,9 +307,9 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
   CPPUNIT_ASSERT_EQUAL((size_t)0,
-		       btMessageDispatcher->getMessageQueue().size());
+                       btMessageDispatcher->getMessageQueue().size());
   CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       btMessageDispatcher->getRequestSlots().size());
+                       btMessageDispatcher->getRequestSlots().size());
 }
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_timeout() {
@@ -332,9 +332,9 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
   CPPUNIT_ASSERT_EQUAL((size_t)0,
-		       btMessageDispatcher->getMessageQueue().size());
+                       btMessageDispatcher->getMessageQueue().size());
   CPPUNIT_ASSERT_EQUAL((size_t)0,
-		       btMessageDispatcher->getRequestSlots().size());
+                       btMessageDispatcher->getRequestSlots().size());
   CPPUNIT_ASSERT_EQUAL(false, piece->isBlockUsed(0));
   CPPUNIT_ASSERT_EQUAL(true, peer->snubbing());
 }
@@ -355,9 +355,9 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       btMessageDispatcher->getMessageQueue().size());
+                       btMessageDispatcher->getMessageQueue().size());
   CPPUNIT_ASSERT_EQUAL((size_t)0,
-		       btMessageDispatcher->getRequestSlots().size());
+                       btMessageDispatcher->getRequestSlots().size());
 }
 
 void DefaultBtMessageDispatcherTest::testIsSendingInProgress() {
@@ -374,7 +374,7 @@ void DefaultBtMessageDispatcherTest::testCountOutstandingRequest() {
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
   btMessageDispatcher->addOutstandingRequest(slot);
   CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       btMessageDispatcher->countOutstandingRequest());
+                       btMessageDispatcher->countOutstandingRequest());
 }
 
 void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {

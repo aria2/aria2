@@ -86,7 +86,7 @@ public:
     _e->option = _option.get();
     _e->_requestGroupMan.reset
       (new RequestGroupMan(std::deque<SharedHandle<RequestGroup> >(),
-			   1, _option.get()));
+                           1, _option.get()));
   }
 
   void tearDown() {}
@@ -145,7 +145,7 @@ void XmlRpcMethodTest::testAddUri()
       _e->_requestGroupMan->getReservedGroups();
     CPPUNIT_ASSERT_EQUAL((size_t)1, rgs.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/"),
-			 rgs.front()->getDownloadContext()->getFirstFileEntry()->getRemainingUris().front());
+                         rgs.front()->getDownloadContext()->getFirstFileEntry()->getRemainingUris().front());
   }
   // with options
   BDE opt = BDE::dict();
@@ -155,8 +155,8 @@ void XmlRpcMethodTest::testAddUri()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink"),
-			 _e->_requestGroupMan->findReservedGroup(2)->
-			 getDownloadContext()->getDir());
+                         _e->_requestGroupMan->findReservedGroup(2)->
+                         getDownloadContext()->getDir());
   }
 }
 
@@ -242,10 +242,10 @@ void XmlRpcMethodTest::testAddTorrent()
     SharedHandle<RequestGroup> group = _e->_requestGroupMan->findReservedGroup(1);
     CPPUNIT_ASSERT(!group.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.8.2.tar.bz2"),
-			 group->getFirstFilePath());
+                         group->getFirstFilePath());
     CPPUNIT_ASSERT_EQUAL((size_t)1, group->getDownloadContext()->getFirstFileEntry()->getRemainingUris().size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/aria2-0.8.2.tar.bz2"),
-			 group->getDownloadContext()->getFirstFileEntry()->getRemainingUris()[0]);
+                         group->getDownloadContext()->getFirstFileEntry()->getRemainingUris()[0]);
   }
   // with options
   BDE opt = BDE::dict();
@@ -255,7 +255,7 @@ void XmlRpcMethodTest::testAddTorrent()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-0.8.2.tar.bz2"),
-			 _e->_requestGroupMan->findReservedGroup(2)->getFirstFilePath());
+                         _e->_requestGroupMan->findReservedGroup(2)->getFirstFilePath());
   }
 }
 
@@ -294,8 +294,8 @@ void XmlRpcMethodTest::testAddTorrent_withPosition()
   m.execute(req2, _e.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       _e->_requestGroupMan->getReservedGroups()[0]->
-		       getDownloadContext()->getFileEntries().size());
+                       _e->_requestGroupMan->getReservedGroups()[0]->
+                       getDownloadContext()->getFileEntries().size());
 }
 
 #endif // ENABLE_BITTORRENT
@@ -316,11 +316,11 @@ void XmlRpcMethodTest::testAddMetalink()
     SharedHandle<RequestGroup> tar = _e->_requestGroupMan->findReservedGroup(1);
     CPPUNIT_ASSERT(!tar.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
-			 tar->getFirstFilePath());
+                         tar->getFirstFilePath());
     SharedHandle<RequestGroup> deb = _e->_requestGroupMan->findReservedGroup(2);
     CPPUNIT_ASSERT(!deb.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.deb"),
-			 deb->getFirstFilePath());
+                         deb->getFirstFilePath());
   }
   // with options
   BDE opt = BDE::dict();
@@ -330,7 +330,7 @@ void XmlRpcMethodTest::testAddMetalink()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-5.0.0.tar.bz2"),
-			 _e->_requestGroupMan->findReservedGroup(3)->getFirstFilePath());
+                         _e->_requestGroupMan->findReservedGroup(3)->getFirstFilePath());
   }
 }
 
@@ -369,8 +369,8 @@ void XmlRpcMethodTest::testAddMetalink_withPosition()
   CPPUNIT_ASSERT_EQUAL(0, res2._code);
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
-		       _e->_requestGroupMan->getReservedGroups()[0]->
-		       getFirstFilePath());
+                       _e->_requestGroupMan->getReservedGroups()[0]->
+                       getFirstFilePath());
 }
 
 #endif // ENABLE_METALINK
@@ -401,20 +401,20 @@ void XmlRpcMethodTest::testChangeOption()
 
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
-		       group->getMaxDownloadSpeedLimit());
+                       group->getMaxDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
-		       option->get(PREF_MAX_DOWNLOAD_LIMIT));
+                       option->get(PREF_MAX_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL(std::string("307200"),
-		       option->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT));
+                       option->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT));
 
   CPPUNIT_ASSERT_EQUAL(std::string("100"), option->get(PREF_BT_MAX_PEERS));
   CPPUNIT_ASSERT_EQUAL((unsigned int)100, btObject._btRuntime->getMaxPeers());
 
   CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
-		       group->getMaxUploadSpeedLimit());
+                       group->getMaxUploadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
-		       option->get(PREF_MAX_UPLOAD_LIMIT));
+                       option->get(PREF_MAX_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
 }
 
@@ -470,14 +470,14 @@ void XmlRpcMethodTest::testChangeGlobalOption()
 
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
-		       _e->_requestGroupMan->getMaxOverallDownloadSpeedLimit());
+                       _e->_requestGroupMan->getMaxOverallDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
-		       _e->option->get(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
+                       _e->option->get(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
-		       _e->_requestGroupMan->getMaxOverallUploadSpeedLimit());
+                       _e->_requestGroupMan->getMaxOverallUploadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
-		       _e->option->get(PREF_MAX_OVERALL_UPLOAD_LIMIT));
+                       _e->option->get(PREF_MAX_OVERALL_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
 }
 
@@ -510,26 +510,26 @@ void XmlRpcMethodTest::testNoSuchMethod()
   XmlRpcResponse res = m.execute(req, 0);
   CPPUNIT_ASSERT_EQUAL(1, res._code);
   CPPUNIT_ASSERT_EQUAL(std::string("No such method: make.hamburger"),
-		       res._param["faultString"].s());
+                       res._param["faultString"].s());
   CPPUNIT_ASSERT_EQUAL
     (std::string("<?xml version=\"1.0\"?>"
-		 "<methodResponse>"
-		 "<fault>"
-		 "<value>"
-		 "<struct>"
-		 "<member>"
-		 "<name>faultCode</name><value><int>1</int></value>"
-		 "</member>"
-		 "<member>"
-		 "<name>faultString</name>"
-		 "<value>"
-		 "<string>No such method: make.hamburger</string>"
-		 "</value>"
-		 "</member>"
-		 "</struct>"
-		 "</value>"
-		 "</fault>"
-		 "</methodResponse>"),
+                 "<methodResponse>"
+                 "<fault>"
+                 "<value>"
+                 "<struct>"
+                 "<member>"
+                 "<name>faultCode</name><value><int>1</int></value>"
+                 "</member>"
+                 "<member>"
+                 "<name>faultString</name>"
+                 "<value>"
+                 "<string>No such method: make.hamburger</string>"
+                 "</value>"
+                 "</member>"
+                 "</struct>"
+                 "</value>"
+                 "</fault>"
+                 "</methodResponse>"),
      res.toXml());
 }
 
@@ -542,7 +542,7 @@ void XmlRpcMethodTest::testTellStatus_withoutGid()
 }
 
 static void addUri(const std::string& uri,
-		   const SharedHandle<DownloadEngine>& e)
+                   const SharedHandle<DownloadEngine>& e)
 {
   AddUriXmlRpcMethod m;
   XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
@@ -634,7 +634,7 @@ void XmlRpcMethodTest::testGetVersion()
   }
   
   CPPUNIT_ASSERT_EQUAL(FeatureConfig::getInstance()->featureSummary()+", ",
-		       features);
+                       features);
 }
 
 void XmlRpcMethodTest::testGatherStoppedDownload()
@@ -645,13 +645,13 @@ void XmlRpcMethodTest::testGatherStoppedDownload()
   followedBy.push_back(4);
   SharedHandle<DownloadResult> d
     (new DownloadResult(1,
-			fileEntries,
-			false,
-			UINT64_MAX,
-			1000,
-			downloadresultcode::FINISHED,
-			followedBy,
-			2));
+                        fileEntries,
+                        false,
+                        UINT64_MAX,
+                        1000,
+                        downloadresultcode::FINISHED,
+                        followedBy,
+                        2));
   BDE entry = BDE::dict();
   gatherStoppedDownload(entry, d);
 
@@ -678,9 +678,9 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   gatherProgressCommon(entry, group);
   
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[0]->getGID()),
-		       entry["followedBy"][0].s());
+                       entry["followedBy"][0].s());
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[1]->getGID()),
-		       entry["followedBy"][1].s());
+                       entry["followedBy"][1].s());
   CPPUNIT_ASSERT_EQUAL(std::string("2"), entry["belongsTo"].s());
 }
 

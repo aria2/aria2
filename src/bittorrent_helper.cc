@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -132,15 +132,15 @@ const std::string METADATA_SIZE("metadataSize");
 const std::string METADATA("metadata");
 
 static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
-			     const std::string& hashData,
-			     size_t hashLength,
-			     size_t numPieces)
+                             const std::string& hashData,
+                             size_t hashLength,
+                             size_t numPieces)
 {
   std::vector<std::string> pieceHashes;
   pieceHashes.reserve(numPieces);
   for(size_t i = 0; i < numPieces; ++i) {
     pieceHashes.push_back(util::toHex(hashData.data()+i*hashLength,
-				      hashLength));
+                                      hashLength));
   }
   ctx->setPieceHashes(pieceHashes.begin(), pieceHashes.end());
   ctx->setPieceHashAlgo(MessageDigestContext::SHA1);
@@ -151,9 +151,9 @@ static void extractUrlList
 {
   if(bde.isList()) {
     for(BDE::List::const_iterator itr = bde.listBegin();
-	itr != bde.listEnd(); ++itr) {
+        itr != bde.listEnd(); ++itr) {
       if((*itr).isString()) {
-	uris.push_back((*itr).s());
+        uris.push_back((*itr).s());
       }
     }
     torrent[URL_LIST] = bde;
@@ -223,32 +223,32 @@ static void extractFileEntries
     // multi-file mode
     torrent[MODE] = MULTI;
     for(BDE::List::const_iterator itr = filesList.listBegin();
-	itr != filesList.listEnd(); ++itr) {
+        itr != filesList.listEnd(); ++itr) {
       const BDE& fileDict = *itr;
       if(!fileDict.isDict()) {
-	continue;
+        continue;
       }
       const BDE& fileLengthData = fileDict[C_LENGTH];
       if(!fileLengthData.isInteger()) {
-	throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				       C_LENGTH.c_str()).str());
+        throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
+                                       C_LENGTH.c_str()).str());
       }
       length += fileLengthData.i();
 
       std::string pathKey;
       if(fileDict.containsKey(C_PATH_UTF8)) {
-	pathKey = C_PATH_UTF8;
+        pathKey = C_PATH_UTF8;
       } else {
-	pathKey = C_PATH;
+        pathKey = C_PATH;
       }
       const BDE& pathList = fileDict[pathKey];
       if(!pathList.isList() || pathList.empty()) {
-	throw DL_ABORT_EX("Path is empty.");
+        throw DL_ABORT_EX("Path is empty.");
       }
       
       std::vector<std::string> pathelem(pathList.size());
       std::transform(pathList.listBegin(), pathList.listEnd(), pathelem.begin(),
-		     std::mem_fun_ref(&BDE::s));
+                     std::mem_fun_ref(&BDE::s));
       std::string path = name;
       strappend(path, "/", util::joinPath(pathelem.begin(), pathelem.end()));
       // Split path with '/' again because each pathList element can
@@ -260,9 +260,9 @@ static void extractFileEntries
       std::deque<std::string> uris;
       createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
       SharedHandle<FileEntry> fileEntry
-	(new FileEntry(strconcat(ctx->getDir(), "/", path),
-		       fileLengthData.i(),
-		       offset, uris));
+        (new FileEntry(strconcat(ctx->getDir(), "/", path),
+                       fileLengthData.i(),
+                       offset, uris));
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
@@ -271,8 +271,8 @@ static void extractFileEntries
     torrent[MODE] = SINGLE;
     const BDE& lengthData = infoDict[C_LENGTH];
     if(!lengthData.isInteger()) {
-	throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				       C_LENGTH.c_str()).str());      
+      throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
+                                     C_LENGTH.c_str()).str());      
     }
     uint64_t totalLength = lengthData.i();
 
@@ -280,17 +280,17 @@ static void extractFileEntries
     // concatenate name to it. Specification just says so.
     std::deque<std::string> uris;
     for(std::vector<std::string>::const_iterator i = urlList.begin();
-	i != urlList.end(); ++i) {
+        i != urlList.end(); ++i) {
       if(util::endsWith(*i, "/")) {
-	uris.push_back((*i)+name);
+        uris.push_back((*i)+name);
       } else {
-	uris.push_back(*i);
+        uris.push_back(*i);
       }
     }
 
     SharedHandle<FileEntry> fileEntry
       (new FileEntry(strconcat(ctx->getDir(), "/", name),totalLength, 0,
-		     uris));
+                     uris));
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());
@@ -306,12 +306,12 @@ static void extractAnnounce(BDE& torrent, const BDE& rootDict)
     torrent[ANNOUNCE_LIST] = announceList;
     BDE& tiers = torrent[ANNOUNCE_LIST];
     for(BDE::List::iterator tieriter = tiers.listBegin();
-	tieriter != tiers.listEnd(); ++tieriter) {
+        tieriter != tiers.listEnd(); ++tieriter) {
       for(BDE::List::iterator uriiter = (*tieriter).listBegin();
-	  uriiter != (*tieriter).listEnd(); ++uriiter) {
-	if((*uriiter).isString()) {
-	  *uriiter = util::trim((*uriiter).s());
-	}
+          uriiter != (*tieriter).listEnd(); ++uriiter) {
+        if((*uriiter).isString()) {
+          *uriiter = util::trim((*uriiter).s());
+        }
       }
     }
   } else {
@@ -330,21 +330,21 @@ static void extractNodes(BDE& torrent, const BDE& nodesList)
   BDE nodes = BDE::list();
   if(nodesList.isList()) {
     for(BDE::List::const_iterator i = nodesList.listBegin();
-	i != nodesList.listEnd(); ++i) {
+        i != nodesList.listEnd(); ++i) {
       const BDE& addrPairList = (*i);
       if(!addrPairList.isList() || addrPairList.size() != 2) {
-	continue;
+        continue;
       }
       const BDE& hostname = addrPairList[0];
       if(!hostname.isString()) {
-	continue;
+        continue;
       }
       if(util::trim(hostname.s()).empty()) {
-	continue;
+        continue;
       }
       const BDE& port = addrPairList[1];
       if(!port.isInteger() || !(0 < port.i() && port.i() < 65536)) {
-	continue;
+        continue;
       }
       BDE node = BDE::dict();
       node[HOSTNAME] = hostname;
@@ -368,7 +368,7 @@ static void processRootDictionary
   const BDE& infoDict = rootDict[C_INFO];
   if(!infoDict.isDict()) {
     throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				   C_INFO.c_str()).str());
+                                   C_INFO.c_str()).str());
   }
   BDE torrent = BDE::dict();
 
@@ -376,9 +376,9 @@ static void processRootDictionary
   std::string encodedInfoDict = bencode::encode(infoDict);
   unsigned char infoHash[INFO_HASH_LENGTH];
   MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
-			      MessageDigestContext::SHA1,
-			      encodedInfoDict.data(),
-			      encodedInfoDict.size());
+                              MessageDigestContext::SHA1,
+                              encodedInfoDict.data(),
+                              encodedInfoDict.size());
   torrent[INFO_HASH] = std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]);
   torrent[METADATA] = encodedInfoDict;
   torrent[METADATA_SIZE] = encodedInfoDict.size();
@@ -387,7 +387,7 @@ static void processRootDictionary
   const BDE& piecesData = infoDict[C_PIECES];
   if(!piecesData.isString()) {
     throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				   C_PIECES.c_str()).str());
+                                   C_PIECES.c_str()).str());
   }
   // Commented out To download 0 length torrent.
   //   if(piecesData.s().empty()) {
@@ -402,7 +402,7 @@ static void processRootDictionary
   const BDE& pieceLengthData = infoDict[C_PIECE_LENGTH];
   if(!pieceLengthData.isInteger()) {
     throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-				   C_PIECE_LENGTH.c_str()).str());
+                                   C_PIECE_LENGTH.c_str()).str());
   }
   size_t pieceLength = pieceLengthData.i();
   ctx->setPieceLength(pieceLength);
@@ -458,59 +458,59 @@ static void processRootDictionary
 }
 
 void load(const std::string& torrentFile,
-	  const SharedHandle<DownloadContext>& ctx,
-	  const std::string& overrideName)
+          const SharedHandle<DownloadContext>& ctx,
+          const std::string& overrideName)
 {
   processRootDictionary(ctx,
-			bencode::decodeFromFile(torrentFile),
-			torrentFile,
-			overrideName,
-			std::deque<std::string>());
+                        bencode::decodeFromFile(torrentFile),
+                        torrentFile,
+                        overrideName,
+                        std::deque<std::string>());
 }
 
 void load(const std::string& torrentFile,
-	  const SharedHandle<DownloadContext>& ctx,
-	  const std::deque<std::string>& uris,
-	  const std::string& overrideName)
+          const SharedHandle<DownloadContext>& ctx,
+          const std::deque<std::string>& uris,
+          const std::string& overrideName)
 {
   processRootDictionary(ctx,
-			bencode::decodeFromFile(torrentFile),
-			torrentFile,
-			overrideName,
-			uris);
+                        bencode::decodeFromFile(torrentFile),
+                        torrentFile,
+                        overrideName,
+                        uris);
 }
 
 void loadFromMemory(const unsigned char* content,
-		    size_t length,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::string& defaultName,
-		    const std::string& overrideName)
+                    size_t length,
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::string& defaultName,
+                    const std::string& overrideName)
 {
   processRootDictionary(ctx,
-			bencode::decode(content, length),
-			defaultName,
-			overrideName,
-			std::deque<std::string>());
+                        bencode::decode(content, length),
+                        defaultName,
+                        overrideName,
+                        std::deque<std::string>());
 }
 
 void loadFromMemory(const unsigned char* content,
-		    size_t length,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::deque<std::string>& uris,
-		    const std::string& defaultName,
-		    const std::string& overrideName)
+                    size_t length,
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::deque<std::string>& uris,
+                    const std::string& defaultName,
+                    const std::string& overrideName)
 {
   processRootDictionary(ctx,
-			bencode::decode(content, length),
-			defaultName,
-			overrideName,
-			uris);
+                        bencode::decode(content, length),
+                        defaultName,
+                        overrideName,
+                        uris);
 }
 
 void loadFromMemory(const std::string& context,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::string& defaultName,
-		    const std::string& overrideName)
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::string& defaultName,
+                    const std::string& overrideName)
 {
   processRootDictionary
     (ctx,
@@ -520,10 +520,10 @@ void loadFromMemory(const std::string& context,
 }
 
 void loadFromMemory(const std::string& context,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::deque<std::string>& uris,
-		    const std::string& defaultName,
-		    const std::string& overrideName)
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::deque<std::string>& uris,
+                    const std::string& defaultName,
+                    const std::string& overrideName)
 {
   processRootDictionary
     (ctx,
@@ -573,7 +573,7 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
       continue;
     }
     for(BDE::List::const_iterator i = (*tieritr).listBegin();
-	i != (*tieritr).listEnd(); ++i) {
+        i != (*tieritr).listEnd(); ++i) {
       o << " " << (*i).s();
     }
     o << "\n";
@@ -587,7 +587,7 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
     const BDE& urlList = torrentAttrs[URL_LIST];
     o << "URL List: " << "\n";
     for(BDE::List::const_iterator i = urlList.listBegin();
-	i != urlList.listEnd(); ++i) {
+        i != urlList.listEnd(); ++i) {
       o << " " << (*i).s() << "\n";
     }
   }
@@ -626,7 +626,7 @@ void computeFastSet
       uint32_t y = ntohl(ny);
       size_t index = y%numPieces;
       if(std::find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
-	fastSet.push_back(index);
+        fastSet.push_back(index);
       }
     }
     unsigned char temp[20];
@@ -700,7 +700,7 @@ void checkIndex(size_t index, size_t pieces)
 {
   if(!(index < pieces)) {
     throw DL_ABORT_EX(StringFormat("Invalid index: %lu",
-				 static_cast<unsigned long>(index)).str());
+                                   static_cast<unsigned long>(index)).str());
   }
 }
 
@@ -716,13 +716,13 @@ void checkLength(size_t length)
   if(length > MAX_BLOCK_LENGTH) {
     throw DL_ABORT_EX
       (StringFormat("Length too long: %lu > %uKB",
-		    static_cast<unsigned long>(length),
-		    MAX_BLOCK_LENGTH/1024).str());
+                    static_cast<unsigned long>(length),
+                    MAX_BLOCK_LENGTH/1024).str());
   }
   if(length == 0) {
     throw DL_ABORT_EX
       (StringFormat("Invalid length: %lu",
-		    static_cast<unsigned long>(length)).str());
+                    static_cast<unsigned long>(length)).str());
   }
 }
 
@@ -731,15 +731,15 @@ void checkRange(uint32_t begin, size_t length, size_t pieceLength)
   if(!(0 < length)) {
     throw DL_ABORT_EX
       (StringFormat("Invalid range: begin=%u, length=%lu",
-		    begin,
-		    static_cast<unsigned long>(length)).str());
+                    begin,
+                    static_cast<unsigned long>(length)).str());
   }
   uint32_t end = begin+length;
   if(!(end <= pieceLength)) {
     throw DL_ABORT_EX
       (StringFormat("Invalid range: begin=%u, length=%lu",
-		    begin,
-		    static_cast<unsigned long>(length)).str());
+                    begin,
+                    static_cast<unsigned long>(length)).str());
   }
 }
 
@@ -749,11 +749,11 @@ void checkBitfield
   if(!(bitfieldLength == (pieces+7)/8)) {
     throw DL_ABORT_EX
       (StringFormat("Invalid bitfield length: %lu",
-		    static_cast<unsigned long>(bitfieldLength)).str());
+                    static_cast<unsigned long>(bitfieldLength)).str());
   }
   // Check if last byte contains garbage set bit.
   if(bitfield[bitfieldLength-1]&~bitfield::lastByteMask(pieces)) {
-      throw DL_ABORT_EX("Invalid bitfield");
+    throw DL_ABORT_EX("Invalid bitfield");
   }
 }
 
@@ -811,8 +811,8 @@ std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact)
   char host[NI_MAXHOST];
   int s;
   s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&in), sizeof(in),
-		  host, NI_MAXHOST, 0, NI_MAXSERV,
-		  NI_NUMERICHOST);
+                  host, NI_MAXHOST, 0, NI_MAXSERV,
+                  NI_NUMERICHOST);
   if(s) {
     return std::pair<std::string, uint16_t>();
   }
@@ -838,7 +838,7 @@ void assertPayloadLengthEqual
   if(expected != actual) {
     throw DL_ABORT_EX
       (StringFormat(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
-		    actual, expected).str());
+                    actual, expected).str());
   }
 }
 
@@ -849,7 +849,7 @@ void assertID
   if(expected != id) {
     throw DL_ABORT_EX
       (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
-		    expected).str());
+                    expected).str());
   }
 }
 
@@ -894,7 +894,7 @@ BDE parseMagnet(const std::string& magnet)
   if(r.containsKey("tr")) {
     const BDE& uris = r["tr"];
     for(BDE::List::const_iterator i = uris.listBegin(); i != uris.listEnd();
-	++i) {
+        ++i) {
       BDE tier = BDE::list();
       tier << *i;
       announceList << tier;
@@ -952,11 +952,11 @@ std::string torrent2Magnet(const BDE& attrs)
   if(attrs.containsKey(ANNOUNCE_LIST)) {
     const BDE& tiers = attrs[ANNOUNCE_LIST];
     for(BDE::List::const_iterator tieriter = tiers.listBegin();
-	tieriter != tiers.listEnd(); ++tieriter) {
+        tieriter != tiers.listEnd(); ++tieriter) {
       for(BDE::List::const_iterator uriiter = (*tieriter).listBegin();
-	  uriiter != (*tieriter).listEnd(); ++uriiter) {
-	uri += "&tr=";
-	uri += util::urlencode((*uriiter).s());
+          uriiter != (*tieriter).listEnd(); ++uriiter) {
+        uri += "&tr=";
+        uri += util::urlencode((*uriiter).s());
       }
     }
   }

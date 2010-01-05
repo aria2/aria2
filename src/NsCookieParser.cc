@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -65,11 +65,11 @@ static Cookie parseNsCookie(const std::string& nsCookieStr)
   }
 
   Cookie c(vs[5], // name
-	   vs.size() >= 7? vs[6]:A2STR::NIL, // value
-	   expireDate, // expires
-	   vs[2], // path
-	   vs[0], // domain
-	   vs[3] == C_TRUE ? true : false);
+           vs.size() >= 7? vs[6]:A2STR::NIL, // value
+           expireDate, // expires
+           vs[2], // path
+           vs[0], // domain
+           vs[3] == C_TRUE ? true : false);
 
   return c;
 }
@@ -90,7 +90,7 @@ std::deque<Cookie> NsCookieParser::parse(const std::string& filename)
     try {
       Cookie c = parseNsCookie(line);
       if(c.good()) {
-	cookies.push_back(c);
+        cookies.push_back(c);
       }
     } catch(RecoverableException& e) {
       // ignore malformed cookie entry

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -44,8 +44,8 @@
 namespace aria2 {
 
 TLSContext::TLSContext():_sslCtx(0),
-			 _peerVerificationEnabled(false),
-			 _logger(LogFactory::getInstance())
+                         _peerVerificationEnabled(false),
+                         _logger(LogFactory::getInstance())
 {
   _sslCtx = SSL_CTX_new(SSLv23_client_method());
   if(_sslCtx) {
@@ -53,7 +53,7 @@ TLSContext::TLSContext():_sslCtx(0),
   } else {
     _good = false;
     _logger->error("SSL_CTX_new() failed. Cause: %s",
-		   ERR_error_string(ERR_get_error(), 0));
+                   ERR_error_string(ERR_get_error(), 0));
   }
   SSL_CTX_set_mode(_sslCtx, SSL_MODE_AUTO_RETRY);
 }
@@ -74,21 +74,21 @@ bool TLSContext::bad() const
 }
 
 bool TLSContext::addClientKeyFile(const std::string& certfile,
-				  const std::string& keyfile)
+                                  const std::string& keyfile)
 {
   if(SSL_CTX_use_PrivateKey_file(_sslCtx, keyfile.c_str(),
-				 SSL_FILETYPE_PEM) != 1) {
+                                 SSL_FILETYPE_PEM) != 1) {
     _logger->error("Failed to load client private key from %s. Cause: %s",
-		   keyfile.c_str(), ERR_error_string(ERR_get_error(), 0));
+                   keyfile.c_str(), ERR_error_string(ERR_get_error(), 0));
     return false;
   }
   if(SSL_CTX_use_certificate_chain_file(_sslCtx, certfile.c_str()) != 1) {
     _logger->error("Failed to load client certificate from %s. Cause: %s",
-		   certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
+                   certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
     return false;
   }
   _logger->info("Client Key File(cert=%s, key=%s) were successfully added.",
-		certfile.c_str(), keyfile.c_str());
+                certfile.c_str(), keyfile.c_str());
   return true;
 }
 
@@ -96,7 +96,7 @@ bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   if(SSL_CTX_load_verify_locations(_sslCtx, certfile.c_str(), 0) != 1) {
     _logger->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
-		   certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
+                   certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
     return false;
   } else {
     _logger->info("Trusted CA certificates were successfully added.");

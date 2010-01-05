@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -167,7 +167,7 @@ std::string uitos(T value)
 }
 
 static sock_t bindInternal(int family, int socktype, int protocol,
-			   const struct sockaddr* addr, socklen_t addrlen)
+                           const struct sockaddr* addr, socklen_t addrlen)
 {
   sock_t fd = socket(family, socktype, protocol);
   if(fd == (sock_t) -1) {
@@ -175,7 +175,7 @@ static sock_t bindInternal(int family, int socktype, int protocol,
   }
   int sockopt = 1;
   if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt,
-		sizeof(sockopt)) < 0) {
+                sizeof(sockopt)) < 0) {
     CLOSE(fd);
     return -1;
   }
@@ -193,7 +193,7 @@ static sock_t bindTo
 {
   struct addrinfo* res;
   int s = callGetaddrinfo(&res, host, uitos(port).c_str(), family, sockType,
-			  getaddrinfoFlags, 0);  
+                          getaddrinfoFlags, 0);  
   if(s) {
     error = gai_strerror(s);
     return -1;
@@ -202,7 +202,7 @@ static sock_t bindTo
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = bindInternal(rp->ai_family, rp->ai_socktype, rp->ai_protocol,
-			     rp->ai_addr, rp->ai_addrlen);
+                             rp->ai_addr, rp->ai_addrlen);
     if(fd != (sock_t)-1) {
       return fd;
     }
@@ -222,21 +222,21 @@ void SocketCore::bind(uint16_t port, int flags)
     }
   } else {
     for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
-	  const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+          const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
       char host[NI_MAXHOST];
       int s;
       s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
-		      (*i).second,
-		      host, NI_MAXHOST, 0, NI_MAXSERV,
-		      NI_NUMERICHOST);
+                      (*i).second,
+                      host, NI_MAXHOST, 0, NI_MAXSERV,
+                      NI_NUMERICHOST);
       if(s) {
-	error = gai_strerror(s);
-	continue;
+        error = gai_strerror(s);
+        continue;
       }
       sock_t fd = bindTo(host, port, _protocolFamily, _sockType, flags, error);
       if(fd != (sock_t)-1) {
-	sockfd = fd;
-	break;
+        sockfd = fd;
+        break;
       }
     }
   }
@@ -305,10 +305,10 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   struct addrinfo* res;
   int s;
   s = callGetaddrinfo(&res, host.c_str(), uitos(port).c_str(), _protocolFamily,
-		      _sockType, 0, 0);
+                      _sockType, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
-				 host.c_str(), gai_strerror(s)).str());
+                                   host.c_str(), gai_strerror(s)).str());
   }
   auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
@@ -325,18 +325,18 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     if(!_bindAddrs.empty()) {
       bool bindSuccess = false;
       for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
-	    const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
-	if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
-		  (*i).second) == -1) {
-	  LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
-	} else {
-	  bindSuccess = true;
-	  break;
-	}
+            const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+        if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
+                  (*i).second) == -1) {
+          LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+        } else {
+          bindSuccess = true;
+          break;
+        }
       }
       if(!bindSuccess) {
-	CLOSE(fd);
-	continue;
+        CLOSE(fd);
+        continue;
       }
     }
 
@@ -355,7 +355,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   }
   if(sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
-				   strerror(errno)).str());
+                                   strerror(errno)).str());
   }
 }
 
@@ -470,16 +470,16 @@ bool SocketCore::isWritable(time_t timeout)
 
       int r = select(sockfd+1, NULL, &fds, NULL, &tv);
       if(r == 1) {
-	return true;
+        return true;
       } else if(r == 0) {
-	// time out
-	return false;
+        // time out
+        return false;
       } else {
-	if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
-	  return false;
-	} else {
-	  throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
-	}
+        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+          return false;
+        } else {
+          throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+        }
       }
     } else {
       abort();
@@ -523,16 +523,16 @@ bool SocketCore::isReadable(time_t timeout)
 
       int r = select(sockfd+1, &fds, NULL, NULL, &tv);
       if(r == 1) {
-	return true;
+        return true;
       } else if(r == 0) {
-	// time out
-	return false;
+        // time out
+        return false;
       } else {
-	if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
-	  return false;
-	} else {
-	  throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
-	}
+        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+          return false;
+        } else {
+          throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+        }
       }
     } else {
       abort();
@@ -577,10 +577,10 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
     while((ret = send(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == EINTR);
     if(ret == -1) {
       if(SOCKET_ERRNO == EAGAIN) {
-	_wantWrite = true;
-	ret = 0;
+        _wantWrite = true;
+        ret = 0;
       } else {
-	throw DL_RETRY_EX(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
+        throw DL_RETRY_EX(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
       }
     }
   } else {
@@ -588,21 +588,21 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
     ret = SSL_write(ssl, data, len);
     if(ret == 0) {
       throw DL_RETRY_EX
-	(StringFormat
-	 (EX_SOCKET_SEND, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
+        (StringFormat
+         (EX_SOCKET_SEND, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
       throw DL_RETRY_EX
-	(StringFormat
-	 (EX_SOCKET_SEND, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
+        (StringFormat
+         (EX_SOCKET_SEND, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
     while((ret = gnutls_record_send(sslSession, data, len)) ==
-	  GNUTLS_E_INTERRUPTED);
+          GNUTLS_E_INTERRUPTED);
     if(ret == GNUTLS_E_AGAIN) {
       gnutlsRecordCheckDirection();
       ret = 0;
@@ -626,29 +626,29 @@ void SocketCore::readData(char* data, size_t& len)
     
     if(ret == -1) {
       if(SOCKET_ERRNO == EAGAIN) {
-	_wantRead = true;
-	ret = 0;
+        _wantRead = true;
+        ret = 0;
       } else {
-	throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
+        throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
       }
     }
   } else {
 #ifdef HAVE_LIBSSL
-     // for SSL
-     // TODO handling len == 0 case required
+    // for SSL
+    // TODO handling len == 0 case required
     ret = SSL_read(ssl, data, len);
     if(ret == 0) {
       throw DL_RETRY_EX
-	(StringFormat
-	 (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
+        (StringFormat
+         (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
       throw DL_RETRY_EX
-	(StringFormat
-	 (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
+        (StringFormat
+         (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
@@ -658,7 +658,7 @@ void SocketCore::readData(char* data, size_t& len)
       ret = 0;
     } else if(ret < 0) {
       throw DL_RETRY_EX
-	(StringFormat(EX_SOCKET_RECV, gnutls_strerror(ret)).str());
+        (StringFormat(EX_SOCKET_RECV, gnutls_strerror(ret)).str());
     }
 #endif // HAVE_LIBGNUTLS
   }
@@ -676,29 +676,29 @@ void SocketCore::peekData(char* data, size_t& len)
     while((ret = recv(sockfd, data, len, MSG_PEEK)) == -1 && SOCKET_ERRNO == EINTR);
     if(ret == -1) {
       if(SOCKET_ERRNO == EAGAIN) {
-	_wantRead = true;
-	ret = 0;
+        _wantRead = true;
+        ret = 0;
       } else {
-	throw DL_RETRY_EX(StringFormat(EX_SOCKET_PEEK, errorMsg()).str());
+        throw DL_RETRY_EX(StringFormat(EX_SOCKET_PEEK, errorMsg()).str());
       }
     }
   } else {
 #ifdef HAVE_LIBSSL
-     // for SSL
-     // TODO handling len == 0 case required
+    // for SSL
+    // TODO handling len == 0 case required
     ret = SSL_peek(ssl, data, len);
     if(ret == 0) {
       throw DL_RETRY_EX
-	(StringFormat(EX_SOCKET_PEEK,
-		      ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
+        (StringFormat(EX_SOCKET_PEEK,
+                      ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
       throw DL_RETRY_EX
-	(StringFormat(EX_SOCKET_PEEK,
-		      ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
+        (StringFormat(EX_SOCKET_PEEK,
+                      ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
@@ -708,7 +708,7 @@ void SocketCore::peekData(char* data, size_t& len)
       ret = 0;
     } else if(ret < 0) {
       throw DL_RETRY_EX(StringFormat(EX_SOCKET_PEEK,
-				   gnutls_strerror(ret)).str());
+                                     gnutls_strerror(ret)).str());
     }
 #endif // HAVE_LIBGNUTLS
   }
@@ -754,7 +754,7 @@ static ssize_t GNUTLS_RECORD_RECV_NO_INTERRUPT
 {
   int ret;
   while((ret = gnutls_record_recv(sslSession, data, len)) ==
-	GNUTLS_E_INTERRUPTED);
+        GNUTLS_E_INTERRUPTED);
   if(ret < 0 && ret != GNUTLS_E_AGAIN) {
     throw DL_RETRY_EX
       (StringFormat(EX_SOCKET_RECV, gnutls_strerror(ret)).str());
@@ -803,13 +803,13 @@ void SocketCore::prepareSecureConnection()
     ssl = SSL_new(_tlsContext->getSSLCtx());
     if(!ssl) {
       throw DL_ABORT_EX
-	(StringFormat(EX_SSL_INIT_FAILURE,
-		      ERR_error_string(ERR_get_error(), 0)).str());
+        (StringFormat(EX_SSL_INIT_FAILURE,
+                      ERR_error_string(ERR_get_error(), 0)).str());
     }
     if(SSL_set_fd(ssl, sockfd) == 0) {
       throw DL_ABORT_EX
-	(StringFormat(EX_SSL_INIT_FAILURE,
-		      ERR_error_string(ERR_get_error(), 0)).str());
+        (StringFormat(EX_SSL_INIT_FAILURE,
+                      ERR_error_string(ERR_get_error(), 0)).str());
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
@@ -823,11 +823,11 @@ void SocketCore::prepareSecureConnection()
     r = gnutls_priority_set_direct(sslSession, "NORMAL:!VERS-TLS1.1", &err);
     if(r != GNUTLS_E_SUCCESS) {
       throw DL_ABORT_EX
-	(StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(r)).str());
+        (StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(r)).str());
     }
     // put the x509 credentials to the current session
     gnutls_credentials_set(sslSession, GNUTLS_CRD_CERTIFICATE,
-			   _tlsContext->getCertCred());
+                           _tlsContext->getCertCred());
     gnutls_transport_set_ptr(sslSession, (gnutls_transport_ptr_t)sockfd);
 #endif // HAVE_LIBGNUTLS
     secure = 1;
@@ -845,75 +845,75 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
     if (e <= 0) {
       int ssl_error = SSL_get_error(ssl, e);
       switch(ssl_error) {
-        case SSL_ERROR_NONE:
-          break;
+      case SSL_ERROR_NONE:
+        break;
 
-        case SSL_ERROR_WANT_READ:
-	  _wantRead = true;
-	  return false;
-        case SSL_ERROR_WANT_WRITE:
-	  _wantWrite = true;
-	  return false;
-        case SSL_ERROR_WANT_X509_LOOKUP:
-        case SSL_ERROR_ZERO_RETURN:
-          if (blocking) {
-            throw DL_ABORT_EX
-	      (StringFormat(EX_SSL_CONNECT_ERROR, ssl_error).str());
-          }
-          break;
-
-        case SSL_ERROR_SYSCALL:
-          throw DL_ABORT_EX(EX_SSL_IO_ERROR);
-
-        case SSL_ERROR_SSL:
-          throw DL_ABORT_EX(EX_SSL_PROTOCOL_ERROR);
-
-        default:
+      case SSL_ERROR_WANT_READ:
+        _wantRead = true;
+        return false;
+      case SSL_ERROR_WANT_WRITE:
+        _wantWrite = true;
+        return false;
+      case SSL_ERROR_WANT_X509_LOOKUP:
+      case SSL_ERROR_ZERO_RETURN:
+        if (blocking) {
           throw DL_ABORT_EX
-	    (StringFormat(EX_SSL_UNKNOWN_ERROR, ssl_error).str());
+            (StringFormat(EX_SSL_CONNECT_ERROR, ssl_error).str());
+        }
+        break;
+
+      case SSL_ERROR_SYSCALL:
+        throw DL_ABORT_EX(EX_SSL_IO_ERROR);
+
+      case SSL_ERROR_SSL:
+        throw DL_ABORT_EX(EX_SSL_PROTOCOL_ERROR);
+
+      default:
+        throw DL_ABORT_EX
+          (StringFormat(EX_SSL_UNKNOWN_ERROR, ssl_error).str());
       }
     }
     if(_tlsContext->peerVerificationEnabled()) {
       // verify peer
       X509* peerCert = SSL_get_peer_certificate(ssl);
       if(!peerCert) {
-	throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
+        throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
       }
       auto_delete<X509*> certDeleter(peerCert, X509_free);
 
       long verifyResult = SSL_get_verify_result(ssl);
       if(verifyResult != X509_V_OK) {
-	throw DL_ABORT_EX
-	  (StringFormat(MSG_CERT_VERIFICATION_FAILED,
-			X509_verify_cert_error_string(verifyResult)).str());
+        throw DL_ABORT_EX
+          (StringFormat(MSG_CERT_VERIFICATION_FAILED,
+                        X509_verify_cert_error_string(verifyResult)).str());
       }
       X509_NAME* name = X509_get_subject_name(peerCert);
       if(!name) {
-	throw DL_ABORT_EX("Could not get X509 name object from the certificate.");
+        throw DL_ABORT_EX("Could not get X509 name object from the certificate.");
       }
 
       bool hostnameOK = false;
       int lastpos = -1;
       while(true) {
-	lastpos = X509_NAME_get_index_by_NID(name, NID_commonName, lastpos);
-	if(lastpos == -1) {
-	  break;
-	}
-	X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, lastpos);
-	unsigned char* out;
-	int outlen = ASN1_STRING_to_UTF8(&out, X509_NAME_ENTRY_get_data(entry));
-	if(outlen < 0) {
-	  continue;
-	}
-	std::string commonName(&out[0], &out[outlen]);
-	OPENSSL_free(out);
-	if(commonName == hostname) {
-	  hostnameOK = true;
-	  break;
-	}
+        lastpos = X509_NAME_get_index_by_NID(name, NID_commonName, lastpos);
+        if(lastpos == -1) {
+          break;
+        }
+        X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, lastpos);
+        unsigned char* out;
+        int outlen = ASN1_STRING_to_UTF8(&out, X509_NAME_ENTRY_get_data(entry));
+        if(outlen < 0) {
+          continue;
+        }
+        std::string commonName(&out[0], &out[outlen]);
+        OPENSSL_free(out);
+        if(commonName == hostname) {
+          hostnameOK = true;
+          break;
+        }
       }
       if(!hostnameOK) {
-	throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
+        throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
       }
     }
 #endif // HAVE_LIBSSL
@@ -924,7 +924,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       return false;
     } else if(ret < 0) {
       throw DL_ABORT_EX
-	(StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(ret)).str());
+        (StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(ret)).str());
     }
 
     if(_tlsContext->peerVerificationEnabled()) {
@@ -932,73 +932,73 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       unsigned int status;
       ret = gnutls_certificate_verify_peers2(sslSession, &status);
       if(ret < 0) {
-	throw DL_ABORT_EX
-	  (StringFormat("gnutls_certificate_verify_peer2() failed. Cause: %s",
-			gnutls_strerror(ret)).str());
+        throw DL_ABORT_EX
+          (StringFormat("gnutls_certificate_verify_peer2() failed. Cause: %s",
+                        gnutls_strerror(ret)).str());
       }
       if(status) {
-	std::string errors;
-	if(status & GNUTLS_CERT_INVALID) {
-	  errors += " `not signed by known authorities or invalid'";
-	}
-	if(status & GNUTLS_CERT_REVOKED) {
-	  errors += " `revoked by its CA'";
-	}
-	if(status & GNUTLS_CERT_SIGNER_NOT_FOUND) {
-	  errors += " `issuer is not known'";
-	}
-	if(!errors.empty()) {
-	  throw DL_ABORT_EX
-	    (StringFormat(MSG_CERT_VERIFICATION_FAILED, errors.c_str()).str());
-	}
+        std::string errors;
+        if(status & GNUTLS_CERT_INVALID) {
+          errors += " `not signed by known authorities or invalid'";
+        }
+        if(status & GNUTLS_CERT_REVOKED) {
+          errors += " `revoked by its CA'";
+        }
+        if(status & GNUTLS_CERT_SIGNER_NOT_FOUND) {
+          errors += " `issuer is not known'";
+        }
+        if(!errors.empty()) {
+          throw DL_ABORT_EX
+            (StringFormat(MSG_CERT_VERIFICATION_FAILED, errors.c_str()).str());
+        }
       }
       // certificate type: only X509 is allowed.
       if(gnutls_certificate_type_get(sslSession) != GNUTLS_CRT_X509) {
-	throw DL_ABORT_EX("Certificate type is not X509.");
+        throw DL_ABORT_EX("Certificate type is not X509.");
       }
 
       unsigned int peerCertsLength;
       const gnutls_datum_t* peerCerts = gnutls_certificate_get_peers
-	(sslSession, &peerCertsLength);
+        (sslSession, &peerCertsLength);
       if(!peerCerts) {
-	throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
+        throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
       }
       Time now;
       for(unsigned int i = 0; i < peerCertsLength; ++i) {
-	gnutls_x509_crt_t cert;
-	ret = gnutls_x509_crt_init(&cert);
-	if(ret < 0) {
-	  throw DL_ABORT_EX
-	    (StringFormat("gnutls_x509_crt_init() failed. Cause: %s",
-			  gnutls_strerror(ret)).str());
-	}
-	auto_delete<gnutls_x509_crt_t> certDeleter
-	  (cert, gnutls_x509_crt_deinit);
-	ret = gnutls_x509_crt_import(cert, &peerCerts[i], GNUTLS_X509_FMT_DER);
-	if(ret < 0) {
-	  throw DL_ABORT_EX
-	    (StringFormat("gnutls_x509_crt_import() failed. Cause: %s",
-			  gnutls_strerror(ret)).str());
-	}
-	if(i == 0) {
-	  if(!gnutls_x509_crt_check_hostname(cert, hostname.c_str())) {
-	    throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
-	  }
-	}
-	time_t activationTime = gnutls_x509_crt_get_activation_time(cert);
-	if(activationTime == -1) {
-	  throw DL_ABORT_EX("Could not get activation time from certificate.");
-	}
-	if(now.getTime() < activationTime) {
-	  throw DL_ABORT_EX("Certificate is not activated yet.");
-	}
-	time_t expirationTime = gnutls_x509_crt_get_expiration_time(cert);
-	if(expirationTime == -1) {
-	  throw DL_ABORT_EX("Could not get expiration time from certificate.");
-	}
-	if(expirationTime < now.getTime()) {
-	  throw DL_ABORT_EX("Certificate has expired.");
-	}
+        gnutls_x509_crt_t cert;
+        ret = gnutls_x509_crt_init(&cert);
+        if(ret < 0) {
+          throw DL_ABORT_EX
+            (StringFormat("gnutls_x509_crt_init() failed. Cause: %s",
+                          gnutls_strerror(ret)).str());
+        }
+        auto_delete<gnutls_x509_crt_t> certDeleter
+          (cert, gnutls_x509_crt_deinit);
+        ret = gnutls_x509_crt_import(cert, &peerCerts[i], GNUTLS_X509_FMT_DER);
+        if(ret < 0) {
+          throw DL_ABORT_EX
+            (StringFormat("gnutls_x509_crt_import() failed. Cause: %s",
+                          gnutls_strerror(ret)).str());
+        }
+        if(i == 0) {
+          if(!gnutls_x509_crt_check_hostname(cert, hostname.c_str())) {
+            throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
+          }
+        }
+        time_t activationTime = gnutls_x509_crt_get_activation_time(cert);
+        if(activationTime == -1) {
+          throw DL_ABORT_EX("Could not get activation time from certificate.");
+        }
+        if(now.getTime() < activationTime) {
+          throw DL_ABORT_EX("Certificate is not activated yet.");
+        }
+        time_t expirationTime = gnutls_x509_crt_get_expiration_time(cert);
+        if(expirationTime == -1) {
+          throw DL_ABORT_EX("Could not get expiration time from certificate.");
+        }
+        if(expirationTime < now.getTime()) {
+          throw DL_ABORT_EX("Certificate has expired.");
+        }
       }
     }
     peekBuf = new char[peekBufMax];
@@ -1027,15 +1027,15 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
 #else
   static char buf[256];
   if (FormatMessage(
-    FORMAT_MESSAGE_FROM_SYSTEM |
-    FORMAT_MESSAGE_IGNORE_INSERTS,
-    NULL,
-    err,
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-    (LPTSTR) &buf,
-    sizeof(buf),
-    NULL
-  ) == 0) {
+                    FORMAT_MESSAGE_FROM_SYSTEM |
+                    FORMAT_MESSAGE_IGNORE_INSERTS,
+                    NULL,
+                    err,
+                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                    (LPTSTR) &buf,
+                    sizeof(buf),
+                    NULL
+                    ) == 0) {
     snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, err, err);
   }
   return buf;
@@ -1043,7 +1043,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
 }
 
 ssize_t SocketCore::writeData(const char* data, size_t len,
-			      const std::string& host, uint16_t port)
+                              const std::string& host, uint16_t port)
 {
   _wantRead = false;
   _wantWrite = false;
@@ -1051,7 +1051,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   struct addrinfo* res;
   int s;
   s = callGetaddrinfo(&res, host.c_str(), uitos(port).c_str(), _protocolFamily,
-		      _sockType, 0, 0);
+                      _sockType, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, gai_strerror(s)).str());
   }
@@ -1076,8 +1076,8 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
 }
 
 ssize_t SocketCore::readDataFrom(char* data, size_t len,
-				 std::pair<std::string /* numerichost */,
-				 uint16_t /* port */>& sender)
+                                 std::pair<std::string /* numerichost */,
+                                 uint16_t /* port */>& sender)
 {
   _wantRead = false;
   _wantWrite = false;
@@ -1086,7 +1086,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   ssize_t r;
   while((r = recvfrom(sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
-	EINTR == SOCKET_ERRNO);
+        EINTR == SOCKET_ERRNO);
   if(r == -1) {
     if(SOCKET_ERRNO == EAGAIN) {
       _wantRead = true;
@@ -1108,7 +1108,7 @@ std::string SocketCore::getSocketError() const
 
   if(getsockopt(sockfd, SOL_SOCKET, SO_ERROR, (a2_sockopt_t) &error, &optlen) == -1) {
     throw DL_ABORT_EX(StringFormat("Failed to get socket error: %s",
-				 errorMsg()).str());
+                                   errorMsg()).str());
   }
   if(error != 0) {
     return errorMsg(error);
@@ -1149,37 +1149,37 @@ void SocketCore::bindAddress(const std::string& interface)
   if(getifaddrs(&ifaddr) == -1) {
     throw DL_ABORT_EX
       (StringFormat(MSG_INTERFACE_NOT_FOUND,
-		    interface.c_str(), strerror(errno)).str());
+                    interface.c_str(), strerror(errno)).str());
   } else {
     auto_delete<struct ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
     for(struct ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
       if(!ifa->ifa_addr) {
-	continue;
+        continue;
       }
       int family = ifa->ifa_addr->sa_family;
       if(_protocolFamily == AF_UNSPEC) {
-	if(family != AF_INET && family != AF_INET6) {
-	  continue;
-	}
+        if(family != AF_INET && family != AF_INET6) {
+          continue;
+        }
       } else if(_protocolFamily == AF_INET) {
-	if(family != AF_INET) {
-	  continue;
-	}
+        if(family != AF_INET) {
+          continue;
+        }
       } else if(_protocolFamily == AF_INET6) {
-	if(family != AF_INET6) {
-	  continue;
-	}
+        if(family != AF_INET6) {
+          continue;
+        }
       } else {
-	continue;
+        continue;
       }
       if(std::string(ifa->ifa_name) == interface) {
-	socklen_t bindAddrLen =
-	  family == AF_INET?sizeof(struct sockaddr_in):
-	  sizeof(struct sockaddr_in6);
-	struct sockaddr_storage bindAddr;
-	memset(&bindAddr, 0, sizeof(bindAddr));
-	memcpy(&bindAddr, ifa->ifa_addr, bindAddrLen);
-	bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
+        socklen_t bindAddrLen =
+          family == AF_INET?sizeof(struct sockaddr_in):
+          sizeof(struct sockaddr_in6);
+        struct sockaddr_storage bindAddr;
+        memset(&bindAddr, 0, sizeof(bindAddr));
+        memcpy(&bindAddr, ifa->ifa_addr, bindAddrLen);
+        bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
       }
     }
   }
@@ -1188,48 +1188,48 @@ void SocketCore::bindAddress(const std::string& interface)
     struct addrinfo* res;
     int s;
     s = callGetaddrinfo(&res, interface.c_str(), 0, _protocolFamily,
-			SOCK_STREAM, 0, 0);
+                        SOCK_STREAM, 0, 0);
     if(s) {
       throw DL_ABORT_EX
-	(StringFormat(MSG_INTERFACE_NOT_FOUND,
-		      interface.c_str(), gai_strerror(s)).str());
+        (StringFormat(MSG_INTERFACE_NOT_FOUND,
+                      interface.c_str(), gai_strerror(s)).str());
     } else {
       auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
       struct addrinfo* rp;
       for(rp = res; rp; rp = rp->ai_next) {
-	socklen_t bindAddrLen = rp->ai_addrlen;
-	struct sockaddr_storage bindAddr;
-	memset(&bindAddr, 0, sizeof(bindAddr));
-	memcpy(&bindAddr, rp->ai_addr, rp->ai_addrlen);
-	// Try to bind socket with this address. If it fails, the
-	// address is not for this machine.
-	try {
-	  SocketCore socket;
-	  socket.bind
-	    (reinterpret_cast<const struct sockaddr*>(&bindAddr), bindAddrLen);
-	  bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
-	} catch(RecoverableException& e) {
-	  continue;
-	}
+        socklen_t bindAddrLen = rp->ai_addrlen;
+        struct sockaddr_storage bindAddr;
+        memset(&bindAddr, 0, sizeof(bindAddr));
+        memcpy(&bindAddr, rp->ai_addr, rp->ai_addrlen);
+        // Try to bind socket with this address. If it fails, the
+        // address is not for this machine.
+        try {
+          SocketCore socket;
+          socket.bind
+            (reinterpret_cast<const struct sockaddr*>(&bindAddr), bindAddrLen);
+          bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
+        } catch(RecoverableException& e) {
+          continue;
+        }
       }
     }
   }
   if(bindAddrs.empty()) {
-      throw DL_ABORT_EX
-	(StringFormat(MSG_INTERFACE_NOT_FOUND,
-		      interface.c_str(), "not available").str());
+    throw DL_ABORT_EX
+      (StringFormat(MSG_INTERFACE_NOT_FOUND,
+                    interface.c_str(), "not available").str());
   } else {
     _bindAddrs = bindAddrs;
     for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
-	  const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+          const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
       char host[NI_MAXHOST];
       int s;
       s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
-		      (*i).second,
-		      host, NI_MAXHOST, 0, NI_MAXSERV,
-		      NI_NUMERICHOST);
+                      (*i).second,
+                      host, NI_MAXHOST, 0, NI_MAXSERV,
+                      NI_NUMERICHOST);
       if(s == 0) {
-	LogFactory::getInstance()->debug("Sockets will bind to %s", host);
+        LogFactory::getInstance()->debug("Sockets will bind to %s", host);
       }
     }
   }

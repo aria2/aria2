@@ -46,7 +46,7 @@ void UTMetadataRejectExtensionMessageTest::testToString()
   UTMetadataRejectExtensionMessage msg(1);
   msg.setIndex(100);
   CPPUNIT_ASSERT_EQUAL(std::string("ut_metadata reject piece=100"),
-		       msg.toString());
+                       msg.toString());
 }
 
 void UTMetadataRejectExtensionMessageTest::testDoReceivedAction()

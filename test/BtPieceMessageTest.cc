@@ -65,8 +65,8 @@ public:
   public:
     virtual SharedHandle<BtMessage>
     createRejectMessage(size_t index,
-			uint32_t begin,
-			size_t length) {
+                        uint32_t begin,
+                        size_t length) {
       SharedHandle<MockBtMessage2> msg(new MockBtMessage2(index, begin, length));
       return msg;
     }
@@ -83,7 +83,7 @@ public:
 
     peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(_dctx->getPieceLength(),
-				  _dctx->getTotalLength());
+                                  _dctx->getTotalLength());
 
     btMessageDispatcher.reset(new MockBtMessageDispatcher());
     _btMessageFactory.reset(new MockBtMessageFactory2());
@@ -292,7 +292,7 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_sendingInProgress() {
 
 void BtPieceMessageTest::testToString() {
   CPPUNIT_ASSERT_EQUAL(std::string("piece index=1, begin=1024, length=16384"),
-		       msg->toString());
+                       msg->toString());
 }
 
 } // namespace aria2

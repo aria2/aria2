@@ -26,7 +26,7 @@ void HttpHeaderTest::testGetRange()
   {
     HttpHeader httpHeader;
     httpHeader.put("Content-Range",
-		   "9223372036854775800-9223372036854775801/9223372036854775807");
+                   "9223372036854775800-9223372036854775801/9223372036854775807");
     
     SharedHandle<Range> range = httpHeader.getRange();
 
@@ -37,7 +37,7 @@ void HttpHeaderTest::testGetRange()
   {
     HttpHeader httpHeader;
     httpHeader.put("Content-Range",
-		   "9223372036854775800-9223372036854775801/9223372036854775807");
+                   "9223372036854775800-9223372036854775801/9223372036854775807");
      
     SharedHandle<Range> range = httpHeader.getRange();
 

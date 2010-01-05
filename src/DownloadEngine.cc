@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -107,7 +107,7 @@ void DownloadEngine::cleanQueue() {
 }
 
 static void executeCommand(std::deque<Command*>& commands,
-			   Command::STATUS statusFilter)
+                           Command::STATUS statusFilter)
 {
   size_t max = commands.size();
   for(size_t i = 0; i < max; ++i) {
@@ -116,8 +116,8 @@ static void executeCommand(std::deque<Command*>& commands,
     if(com->statusMatch(statusFilter)) {
       com->transitStatus();
       if(com->execute()) {
-	delete com;
-	com = 0;
+        delete com;
+        com = 0;
       }
     } else {
       commands.push_back(com);
@@ -164,31 +164,31 @@ void DownloadEngine::waitData()
 }
 
 bool DownloadEngine::addSocketForReadCheck(const SocketHandle& socket,
-					   Command* command)
+                                           Command* command)
 {
   return _eventPoll->addEvents(socket->getSockfd(), command,
-			       EventPoll::EVENT_READ);
+                               EventPoll::EVENT_READ);
 }
 
 bool DownloadEngine::deleteSocketForReadCheck(const SocketHandle& socket,
-					      Command* command)
+                                              Command* command)
 {
   return _eventPoll->deleteEvents(socket->getSockfd(), command,
-				  EventPoll::EVENT_READ);
+                                  EventPoll::EVENT_READ);
 }
 
 bool DownloadEngine::addSocketForWriteCheck(const SocketHandle& socket,
-					    Command* command)
+                                            Command* command)
 {
   return _eventPoll->addEvents(socket->getSockfd(), command,
-			       EventPoll::EVENT_WRITE);
+                               EventPoll::EVENT_WRITE);
 }
 
 bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
-					       Command* command)
+                                               Command* command)
 {
   return _eventPoll->deleteEvents(socket->getSockfd(), command,
-				  EventPoll::EVENT_WRITE);
+                                  EventPoll::EVENT_WRITE);
 }
 
 void DownloadEngine::calculateStatistics()
@@ -264,8 +264,8 @@ void DownloadEngine::addRoutineCommand(Command* command)
 }
 
 void DownloadEngine::poolSocket(const std::string& ipaddr,
-				uint16_t port,
-				const SocketPoolEntry& entry)
+                                uint16_t port,
+                                const SocketPoolEntry& entry)
 {
   std::string addr = strconcat(ipaddr, ":", util::uitos(port));
   logger->info("Pool socket for %s", addr.c_str());
@@ -277,9 +277,9 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
     logger->debug("Scaning SocketPool and erasing timed out entry.");
     _lastSocketPoolScan.reset();
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
-	  _socketPool.begin(); i != _socketPool.end(); ++i) {
+          _socketPool.begin(); i != _socketPool.end(); ++i) {
       if(!(*i).second.isTimeout()) {
-	newPool.insert(*i);
+        newPool.insert(*i);
       }
     }
     logger->debug
@@ -311,9 +311,9 @@ void DownloadEngine::poolSocket
 }
 
 void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
-				bool proxyDefined,
-				const SharedHandle<SocketCore>& socket,
-				time_t timeout)
+                                bool proxyDefined,
+                                const SharedHandle<SocketCore>& socket,
+                                time_t timeout)
 {
   if(proxyDefined) {
     // If proxy is defined, then pool socket with its hostname.
@@ -329,7 +329,7 @@ void DownloadEngine::poolSocket
 (const SharedHandle<Request>& request,
  bool proxyDefined,
  const SharedHandle<SocketCore>& socket,
- const std::map<std::string, std::string>& options,				
+ const std::map<std::string, std::string>& options,                             
  time_t timeout)
 {
   if(proxyDefined) {
@@ -376,7 +376,7 @@ DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
 
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket(std::map<std::string, std::string>& options,
-				const std::string& ipaddr, uint16_t port)
+                                const std::string& ipaddr, uint16_t port)
 {
   SharedHandle<SocketCore> s;
   std::multimap<std::string, SocketPoolEntry>::iterator i =

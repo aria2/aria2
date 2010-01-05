@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -135,7 +135,7 @@ private:
   void mkdir() const;
 
   void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
-		 void (DiskWriterEntry::*f)());
+                 void (DiskWriterEntry::*f)());
  
   static const size_t DEFAULT_MAX_OPEN_FILES = 100;
 
@@ -153,7 +153,7 @@ public:
   virtual void closeFile();
 
   virtual void writeData(const unsigned char* data, size_t len,
-			 off_t offset);
+                         off_t offset);
 
   virtual ssize_t readData(unsigned char* data, size_t len, off_t offset);
 

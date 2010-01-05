@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -41,20 +41,20 @@ const std::string OptionHandlerException::MESSAGE
 ("We encountered a problem while processing the option '--%s'.");
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
-					       const std::string& optName):
+                                               const std::string& optName):
   RecoverableException
   (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str()),
   _optName(optName) {}
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
-					       const std::string& optName,
-					       const Exception& cause):
+                                               const std::string& optName,
+                                               const Exception& cause):
   RecoverableException
   (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str(), cause),
   _optName(optName) {}
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
-					       const OptionHandlerException& e):
+                                               const OptionHandlerException& e):
   RecoverableException(file, line, e), _optName(e._optName) {}
 
 OptionHandlerException::~OptionHandlerException() throw() {}

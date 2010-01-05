@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -81,8 +81,8 @@ void BtPieceMessage::doReceivedAction() {
     return;
   }
   RequestSlot slot = dispatcher->getOutstandingRequest(index,
-						       begin,
-						       blockLength);
+                                                       begin,
+                                                       blockLength);
   peer->updateDownloadLength(blockLength);
   if(!RequestSlot::isNull(slot)) {
     peer->snubbing(false);
@@ -90,24 +90,24 @@ void BtPieceMessage::doReceivedAction() {
     PieceHandle piece = pieceStorage->getPiece(index);
     off_t offset = (off_t)index*_downloadContext->getPieceLength()+begin;
     logger->debug(MSG_PIECE_RECEIVED,
-		  cuid, index, begin, blockLength, offset, slot.getBlockIndex());
+                  cuid, index, begin, blockLength, offset, slot.getBlockIndex());
     pieceStorage->getDiskAdaptor()->writeData(block, blockLength, offset);
     piece->completeBlock(slot.getBlockIndex());
     logger->debug(MSG_PIECE_BITFIELD, cuid,
-		  util::toHex(piece->getBitfield(),
-			      piece->getBitfieldLength()).c_str());
+                  util::toHex(piece->getBitfield(),
+                              piece->getBitfieldLength()).c_str());
     piece->updateHash(begin, block, blockLength);
     dispatcher->removeOutstandingRequest(slot);
     if(piece->pieceComplete()) {
       if(checkPieceHash(piece)) {
-	onNewPiece(piece);
+        onNewPiece(piece);
       } else {
-	onWrongPiece(piece);
+        onWrongPiece(piece);
       }
     }
   } else {
     logger->debug("CUID#%d - RequestSlot not found, index=%d, begin=%d",
-		  cuid, index, begin);
+                  cuid, index, begin);
   }
 }
 
@@ -124,7 +124,7 @@ const unsigned char* BtPieceMessage::getMessageHeader() {
      */
     msgHeader = new unsigned char[MESSAGE_HEADER_LENGTH];
     bittorrent::createPeerMessageString(msgHeader, MESSAGE_HEADER_LENGTH,
-					9+blockLength, ID);
+                                        9+blockLength, ID);
     bittorrent::setIntParam(&msgHeader[5], index);
     bittorrent::setIntParam(&msgHeader[9], begin);
   }
@@ -141,16 +141,16 @@ void BtPieceMessage::send() {
   }
   if(!sendingInProgress) {
     logger->info(MSG_SEND_PEER_MESSAGE,
-		 cuid, peer->ipaddr.c_str(), peer->port,
-		 toString().c_str());
+                 cuid, peer->ipaddr.c_str(), peer->port,
+                 toString().c_str());
     getMessageHeader();
     peerConnection->sendMessage(msgHeader, getMessageHeaderLength());
     off_t pieceDataOffset =
       (off_t)index*_downloadContext->getPieceLength()+begin;
     size_t writtenLength = sendPieceData(pieceDataOffset, blockLength);
     logger->debug("msglength = %lu bytes",
-		  static_cast<unsigned long>(getMessageHeaderLength()+
-					     blockLength));
+                  static_cast<unsigned long>(getMessageHeaderLength()+
+                                             blockLength));
     peer->updateUploadLength(writtenLength);
   } else {
     ssize_t writtenLength = peerConnection->sendPendingData();
@@ -172,13 +172,13 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
 
 std::string BtPieceMessage::toString() const {
   return strconcat(NAME, " index=", util::itos(index), ", begin=",
-		   util::itos(begin), ", length=", util::itos(blockLength));
+                   util::itos(begin), ", length=", util::itos(blockLength));
 }
 
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
   if(piece->isHashCalculated()) {
     logger->debug("Hash is available!! index=%lu",
-		  static_cast<unsigned long>(piece->getIndex()));
+                  static_cast<unsigned long>(piece->getIndex()));
     return
       piece->getHashString()==_downloadContext->getPieceHash(piece->getIndex());
   } else {
@@ -224,15 +224,15 @@ void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
      !sendingInProgress &&
      !peer->isInAmAllowedIndexSet(index)) {
     logger->debug(MSG_REJECT_PIECE_CHOKED,
-		  cuid,
-		  index,
-		  begin,
-		  blockLength);
+                  cuid,
+                  index,
+                  begin,
+                  blockLength);
 
     if(peer->isFastExtensionEnabled()) {
       BtMessageHandle rej = messageFactory->createRejectMessage(index,
-								begin,
-								blockLength);
+                                                                begin,
+                                                                blockLength);
       dispatcher->addMessageToQueue(rej);
     }
     invalidate = true;
@@ -248,11 +248,11 @@ void BtPieceMessage::onCancelSendingPieceEvent
      begin == event.getBegin() &&
      blockLength == event.getLength()) {
     logger->debug(MSG_REJECT_PIECE_CANCEL,
-		  cuid, index, begin, blockLength);
+                  cuid, index, begin, blockLength);
     if(peer->isFastExtensionEnabled()) {
       BtMessageHandle rej = messageFactory->createRejectMessage(index,
-								begin,
-								blockLength);
+                                                                begin,
+                                                                blockLength);
       dispatcher->addMessageToQueue(rej);
     }
     invalidate = true;

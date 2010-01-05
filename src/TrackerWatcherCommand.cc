@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -81,7 +81,7 @@ bool TrackerWatcherCommand::execute() {
     if(_trackerRequestGroup.isNull()) {
       return true;
     } else if(_trackerRequestGroup->getNumCommand() == 0 ||
-	      _trackerRequestGroup->downloadFinished()) {
+              _trackerRequestGroup->downloadFinished()) {
       return true;
     } else {
       _trackerRequestGroup->setForceHaltRequested(true);
@@ -112,7 +112,7 @@ bool TrackerWatcherCommand::execute() {
       logger->error(EX_EXCEPTION_CAUGHT, ex);      
       _btAnnounce->announceFailure();
       if(_btAnnounce->isAllAnnounceFailed()) {
-	_btAnnounce->resetAnnounce();
+        _btAnnounce->resetAnnounce();
       }
     }
     _trackerRequestGroup.reset();
@@ -151,7 +151,7 @@ void TrackerWatcherCommand::processTrackerResponse
 {
   _btAnnounce->processAnnounceResponse
     (reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
-				      trackerResponse.size());
+     trackerResponse.size());
   while(!_btRuntime->isHalt() && _btRuntime->lessThanMinPeers()) {
     PeerHandle peer = _peerStorage->getUnusedPeer();
     if(peer.isNull()) {
@@ -216,8 +216,8 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(getOption()->getAsInt(PREF_SEGMENT_SIZE),
-			 0,
-			 TRACKER_ANNOUNCE_FILE));
+                         0,
+                         TRACKER_ANNOUNCE_FILE));
   dctx->setDir(A2STR::NIL);
   dctx->getFileEntries().front()->setUris(uris);
   rg->setDownloadContext(dctx);

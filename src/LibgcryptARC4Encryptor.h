@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -53,7 +53,7 @@ private:
   {
     throw DL_ABORT_EX
       (StringFormat("Exception in libgcrypt routine(ARC4Encryptor class): %s",
-		    gcry_strerror(err)).str());
+                    gcry_strerror(err)).str());
   }
 public:
   ARC4Encryptor() {}
@@ -66,10 +66,10 @@ public:
   }
 
   void encrypt(unsigned char* out, size_t outLength,
-	       const unsigned char* in, size_t inLength)
+               const unsigned char* in, size_t inLength)
   {
     gcry_error_t r = gcry_cipher_encrypt(_ctx.getCipherContext(),
-					 out, outLength, in, inLength);
+                                         out, outLength, in, inLength);
     if(r) {
       handleError(r);
     }

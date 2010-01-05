@@ -56,7 +56,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   d.deserialize(ss);
 
   CPPUNIT_ASSERT(memcmp(localNode->getID(), d.getLocalNode()->getID(),
-			DHT_ID_LENGTH) == 0);
+                        DHT_ID_LENGTH) == 0);
 
   std::cout << d.getSerializedTime().getTime() << std::endl;
 

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -84,41 +84,41 @@ public:
 
   virtual ~Logger();
 
-#define WRITE_LOG(LEVEL, LEVEL_LABEL, MSG)				\
-  if(LEVEL >= _logLevel && _file.is_open()) {				\
-    va_list ap;								\
-    va_start(ap, MSG);							\
-    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);			\
-    va_end(ap);								\
-    _file << std::flush;						\
-  }									\
-  if(_stdoutField&LEVEL) {						\
-    std::cout << "\n";							\
-    va_list ap;								\
-    va_start(ap, MSG);							\
-    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);			\
-    va_end(ap);								\
-    std::cout << std::flush;						\
-  }									\
+#define WRITE_LOG(LEVEL, LEVEL_LABEL, MSG)              \
+  if(LEVEL >= _logLevel && _file.is_open()) {           \
+    va_list ap;                                         \
+    va_start(ap, MSG);                                  \
+    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
+    va_end(ap);                                         \
+    _file << std::flush;                                \
+  }                                                     \
+  if(_stdoutField&LEVEL) {                              \
+    std::cout << "\n";                                  \
+    va_list ap;                                         \
+    va_start(ap, MSG);                                  \
+    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
+    va_end(ap);                                         \
+    std::cout << std::flush;                            \
+  }                                                     \
 
-#define WRITE_LOG_EX(LEVEL, LEVEL_LABEL, MSG, EX)			\
-  if(LEVEL >= _logLevel && _file.is_open()) {				\
-    va_list ap;								\
-    va_start(ap, EX);							\
-    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);			\
-    va_end(ap);								\
-    writeStackTrace(_file, LEVEL, LEVEL_LABEL, EX);			\
-    _file << std::flush;						\
-  }									\
-  if(_stdoutField&LEVEL) {						\
-    std::cout << "\n";							\
-    va_list ap;								\
-    va_start(ap, EX);							\
-    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);			\
-    va_end(ap);								\
-    writeStackTrace(std::cout, LEVEL, LEVEL_LABEL, EX);			\
-    std::cout << std::flush;						\
-  }									\
+#define WRITE_LOG_EX(LEVEL, LEVEL_LABEL, MSG, EX)       \
+  if(LEVEL >= _logLevel && _file.is_open()) {           \
+    va_list ap;                                         \
+    va_start(ap, EX);                                   \
+    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
+    va_end(ap);                                         \
+    writeStackTrace(_file, LEVEL, LEVEL_LABEL, EX);     \
+    _file << std::flush;                                \
+  }                                                     \
+  if(_stdoutField&LEVEL) {                              \
+    std::cout << "\n";                                  \
+    va_list ap;                                         \
+    va_start(ap, EX);                                   \
+    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
+    va_end(ap);                                         \
+    writeStackTrace(std::cout, LEVEL, LEVEL_LABEL, EX); \
+    std::cout << std::flush;                            \
+  }                                                     \
 
   void debug(const char* msg, ...)
   {

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -89,35 +89,35 @@ extern const std::string METADATA_SIZE;
 extern const std::string METADATA;
 
 void load(const std::string& torrentFile,
-	  const SharedHandle<DownloadContext>& ctx,
-	  const std::string& overrideName = "");
+          const SharedHandle<DownloadContext>& ctx,
+          const std::string& overrideName = "");
 
 void load(const std::string& torrentFile,
-	  const SharedHandle<DownloadContext>& ctx,
-	  const std::deque<std::string>& uris,
-	  const std::string& overrideName = "");
+          const SharedHandle<DownloadContext>& ctx,
+          const std::deque<std::string>& uris,
+          const std::string& overrideName = "");
 
 void loadFromMemory(const unsigned char* content, size_t length,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::string& defaultName,
-		    const std::string& overrideName = "");
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::string& defaultName,
+                    const std::string& overrideName = "");
 
 void loadFromMemory(const unsigned char* content, size_t length,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::deque<std::string>& uris,
-		    const std::string& defaultName,
-		    const std::string& overrideName = "");
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::deque<std::string>& uris,
+                    const std::string& defaultName,
+                    const std::string& overrideName = "");
 
 void loadFromMemory(const std::string& context,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::string& defaultName,
-		    const std::string& overrideName = "");
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::string& defaultName,
+                    const std::string& overrideName = "");
 
 void loadFromMemory(const std::string& context,
-		    const SharedHandle<DownloadContext>& ctx,
-		    const std::deque<std::string>& uris,
-		    const std::string& defaultName,
-		    const std::string& overrideName = "");
+                    const SharedHandle<DownloadContext>& ctx,
+                    const std::deque<std::string>& uris,
+                    const std::string& defaultName,
+                    const std::string& overrideName = "");
 
 // Parses BitTorrent Magnet URI and returns BDE::dict() which includes
 // infoHash, name and announceList. If parsing operation failed, an

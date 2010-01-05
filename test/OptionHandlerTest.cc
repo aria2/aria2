@@ -74,7 +74,7 @@ void OptionHandlerTest::testBooleanOptionHandler()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("true,false"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testNumberOptionHandler()
@@ -86,7 +86,7 @@ void OptionHandlerTest::testNumberOptionHandler()
   handler.parse(option, "0");
   CPPUNIT_ASSERT_EQUAL(std::string("0"), option.get("foo"));
   CPPUNIT_ASSERT_EQUAL(std::string("*-*"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testNumberOptionHandler_min()
@@ -100,7 +100,7 @@ void OptionHandlerTest::testNumberOptionHandler_min()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("1-*"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testNumberOptionHandler_max()
@@ -114,7 +114,7 @@ void OptionHandlerTest::testNumberOptionHandler_max()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("*-100"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testNumberOptionHandler_min_max()
@@ -134,7 +134,7 @@ void OptionHandlerTest::testNumberOptionHandler_min_max()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("1-100"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testUnitNumberOptionHandler()
@@ -175,7 +175,7 @@ void OptionHandlerTest::testParameterOptionHandler_1argInit()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("value1"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testParameterOptionHandler_2argsInit()
@@ -193,7 +193,7 @@ void OptionHandlerTest::testParameterOptionHandler_2argsInit()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("value1,value2"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testParameterOptionHandler_listInit()
@@ -215,7 +215,7 @@ void OptionHandlerTest::testParameterOptionHandler_listInit()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("value1,value2"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testDefaultOptionHandler()
@@ -248,7 +248,7 @@ void OptionHandlerTest::testFloatNumberOptionHandler()
   handler.parse(option, "1.0");
   CPPUNIT_ASSERT_EQUAL(std::string("1.0"), option.get("foo"));
   CPPUNIT_ASSERT_EQUAL(std::string("*-*"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testFloatNumberOptionHandler_min()
@@ -262,7 +262,7 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("0.0-*"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testFloatNumberOptionHandler_max()
@@ -276,7 +276,7 @@ void OptionHandlerTest::testFloatNumberOptionHandler_max()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("*-10.0"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
@@ -296,7 +296,7 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("0.0-10.0"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 void OptionHandlerTest::testHttpProxyOptionHandler()
@@ -307,18 +307,18 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
   Option option;
   handler.parse(option, "proxy:65535");
   CPPUNIT_ASSERT_EQUAL(std::string("http://proxy:65535"),
-		       option.get(PREF_HTTP_PROXY));
+                       option.get(PREF_HTTP_PROXY));
 
   handler.parse(option, "http://proxy:8080");
   CPPUNIT_ASSERT_EQUAL(std::string("http://proxy:8080"),
-  		       option.get(PREF_HTTP_PROXY));
+                       option.get(PREF_HTTP_PROXY));
 
   try {
     handler.parse(option, "http://bar:65536");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
   CPPUNIT_ASSERT_EQUAL(std::string("[http://][USER:PASSWORD@]HOST[:PORT]"),
-		       handler.createPossibleValuesString());
+                       handler.createPossibleValuesString());
 }
 
 } // namespace aria2

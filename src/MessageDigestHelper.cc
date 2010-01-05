@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -61,17 +61,17 @@ void MessageDigestHelper::staticSHA1DigestFree()
 }
 
 std::string MessageDigestHelper::staticSHA1Digest(const BinaryStreamHandle& bs,
-						  off_t offset,
-						  uint64_t length)
+                                                  off_t offset,
+                                                  uint64_t length)
 {
   _sha1Ctx->digestReset();
   return digest(_sha1Ctx, bs, offset, length);
 }
 
 std::string MessageDigestHelper::digest(const std::string& algo,
-					const BinaryStreamHandle& bs,
-					off_t offset,
-					uint64_t length)
+                                        const BinaryStreamHandle& bs,
+                                        off_t offset,
+                                        uint64_t length)
 {
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);
@@ -80,8 +80,8 @@ std::string MessageDigestHelper::digest(const std::string& algo,
 }
 
 std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
-					const SharedHandle<BinaryStream>& bs,
-					off_t offset, uint64_t length)
+                                        const SharedHandle<BinaryStream>& bs,
+                                        off_t offset, uint64_t length)
 {
   size_t BUFSIZE = 4096;
   unsigned char BUF[BUFSIZE];
@@ -92,7 +92,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
     ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
     if((size_t)readLength != BUFSIZE) {
       throw DL_ABORT_EX
-	(StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
+        (StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
     }
     ctx->digestUpdate(BUF, readLength);
     offset += readLength;
@@ -101,7 +101,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
     ssize_t readLength = bs->readData(BUF, tail, offset);
     if((size_t)readLength != tail) {
       throw DL_ABORT_EX
-	(StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
+        (StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
     }
     ctx->digestUpdate(BUF, readLength);
   }
@@ -127,12 +127,12 @@ std::string MessageDigestHelper::digest(const std::string& algo, const void* dat
 }
 
 void MessageDigestHelper::digest(unsigned char* md, size_t mdLength,
-				 const std::string& algo, const void* data, size_t length)
+                                 const std::string& algo, const void* data, size_t length)
 {
   if(mdLength < MessageDigestContext::digestLength(algo)) {
     throw DL_ABORT_EX
       (StringFormat("Insufficient space for storing message digest: %d required, but only %d is allocated",
-		    MessageDigestContext::digestLength(algo), mdLength).str());
+                    MessageDigestContext::digestLength(algo), mdLength).str());
   }
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);

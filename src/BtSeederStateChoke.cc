@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -57,7 +57,7 @@ BtSeederStateChoke::PeerEntry::PeerEntry
   _lastAmUnchoking(peer->getLastAmUnchoking()),
   _recentUnchoking(!_lastAmUnchoking.elapsed(TIME_FRAME)),
   _uploadSpeed(peer->calculateUploadSpeed(now))
-  {}
+{}
 
 bool
 BtSeederStateChoke::PeerEntry::operator<(const PeerEntry& rhs) const
@@ -93,15 +93,15 @@ void BtSeederStateChoke::unchoke
   for(; r != peers.end() && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
     _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->ipaddr.c_str(),
-		  (*r).getUploadSpeed());
+                  (*r).getUploadSpeed());
   }
 
   if(_round < 2) {
     std::for_each(peers.begin(), peers.end(),
-		  std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
+                  std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
     if(r != peers.end()) {
       std::random_shuffle(r, peers.end(),
-			  *(SimpleRandomizer::getInstance().get()));
+                          *(SimpleRandomizer::getInstance().get()));
       (*r).getPeer()->optUnchoking(true);
       _logger->info("POU: %s", (*r).getPeer()->ipaddr.c_str());
     }
@@ -150,11 +150,11 @@ BtSeederStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet)
   std::for_each(peerSet.begin(), peerSet.end(), ChokingRequired());
 
   std::transform(peerSet.begin(), peerSet.end(),
-		 std::back_inserter(peerEntries), GenPeerEntry());
-	      
+                 std::back_inserter(peerEntries), GenPeerEntry());
+              
   peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
-				   NotInterestedPeer()),
-		    peerEntries.end());
+                                   NotInterestedPeer()),
+                    peerEntries.end());
 
   unchoke(peerEntries);
   

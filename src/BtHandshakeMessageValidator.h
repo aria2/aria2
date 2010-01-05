@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -51,7 +51,7 @@ private:
   unsigned char infoHash[20];
 public:
   BtHandshakeMessageValidator(const BtHandshakeMessage* message,
-			      const unsigned char* infoHash):
+                              const unsigned char* infoHash):
     message(message)
   {
     memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
@@ -61,18 +61,18 @@ public:
     // TODO
     if(message->getPstrlen() != 19) {
       throw DL_ABORT_EX(StringFormat("invalid handshake pstrlen=%u",
-				   message->getPstrlen()).str());
+                                     message->getPstrlen()).str());
     }
     if(memcmp(BtHandshakeMessage::BT_PSTR, message->getPstr(), 19) != 0) {
       throw DL_ABORT_EX
-	(StringFormat("invalid handshake pstr=%s",
-		      util::urlencode(message->getPstr(), 19).c_str()).str());
+        (StringFormat("invalid handshake pstr=%s",
+                      util::urlencode(message->getPstr(), 19).c_str()).str());
     }
     if(memcmp(infoHash, message->getInfoHash(), 20) != 0) {
       throw DL_ABORT_EX
-	(StringFormat("invalid handshake info hash: expected:%s, actual:%s",
-		      util::toHex(infoHash, 20).c_str(),
-		      util::toHex(message->getInfoHash(), 20).c_str()).str());
+        (StringFormat("invalid handshake info hash: expected:%s, actual:%s",
+                      util::toHex(infoHash, 20).c_str(),
+                      util::toHex(message->getInfoHash(), 20).c_str()).str());
     }
     return true;
   }

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -104,13 +104,13 @@ private:
   BitfieldMan _ignoreBitfield;
 
   SharedHandle<Segment> checkoutSegment(cuid_t cuid,
-					const SharedHandle<Piece>& piece);
+                                        const SharedHandle<Piece>& piece);
 
   void cancelSegment(const SharedHandle<Segment>& segment);
 public:
   SegmentMan(const Option* option,
-	     const SharedHandle<DownloadContext>& downloadContext,
-	     const SharedHandle<PieceStorage>& pieceStorage);
+             const SharedHandle<DownloadContext>& downloadContext,
+             const SharedHandle<PieceStorage>& pieceStorage);
 
   ~SegmentMan();
 
@@ -138,16 +138,16 @@ public:
    * This function doesn't clear passed segments.
    */
   void getInFlightSegment(std::deque<SharedHandle<Segment> >& segments,
-			  cuid_t cuid);
+                          cuid_t cuid);
 
   SharedHandle<Segment> getSegment(cuid_t cuid);
 
   // Checkouts segments in the range of fileEntry and push back to
   // segments until segments.size() < maxSegments holds false
   void getSegment(std::deque<SharedHandle<Segment> >& segments,
-		  cuid_t cuid,
-		  const SharedHandle<FileEntry>& fileEntry,
-		  size_t maxSegments);
+                  cuid_t cuid,
+                  const SharedHandle<FileEntry>& fileEntry,
+                  size_t maxSegments);
 
   /**
    * Returns a segment whose index is index. 

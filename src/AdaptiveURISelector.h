@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -61,11 +61,11 @@ private:
 
   std::string selectOne(const std::deque<std::string>& uris);
   void adjustLowestSpeedLimit(const std::deque<std::string>& uris,
-			      DownloadCommand* command) const;
+                              DownloadCommand* command) const;
   unsigned int getMaxDownloadSpeed(const std::deque<std::string>& uris) const;
   std::string getMaxDownloadSpeedUri(const std::deque<std::string>& uris) const;
   std::deque<std::string> getUrisBySpeed(const std::deque<std::string>& uris,
-					 unsigned int min) const;
+                                         unsigned int min) const;
   std::string selectRandomUri(const std::deque<std::string>& uris) const;
   std::string getFirstNotTestedUri(const std::deque<std::string>& uris) const;
   std::string getFirstToTestUri(const std::deque<std::string>& uris) const;
@@ -74,13 +74,13 @@ private:
   std::string getBestMirror(const std::deque<std::string>& uris) const;
 public:
   AdaptiveURISelector(const SharedHandle<ServerStatMan>& serverStatMan, 
-		      RequestGroup* requestGroup);
+                      RequestGroup* requestGroup);
 
   virtual ~AdaptiveURISelector();
 
   virtual std::string select(FileEntry* fileEntry);
   virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
-				   DownloadCommand* command);
+                                   DownloadCommand* command);
 
   virtual void resetCounters();
 };

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -115,7 +115,7 @@ SharedHandle<DHTBucket> BNode::findBucketFor(BNode* b, const unsigned char* key)
 
 
 void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
-			      BNode* b, const unsigned char* key)
+                              BNode* b, const unsigned char* key)
 {
   BNode* bnode = findBNodeFor(b, key);
   if(!bnode) {
@@ -149,11 +149,11 @@ void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
       bnode = bnode->getUp();
     } else {
       if(std::find(visited.begin(), visited.end(), firstfunc(bnode)) == visited.end()) {
-	bnode = firstfunc(bnode);
+        bnode = firstfunc(bnode);
       } else if(std::find(visited.begin(), visited.end(), secondfunc(bnode)) == visited.end()) {
-	bnode = secondfunc(bnode);
+        bnode = secondfunc(bnode);
       } else {
-	bnode = bnode->getUp();
+        bnode = bnode->getUp();
       }
     }
     if(!bnode) {
@@ -163,21 +163,21 @@ void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
     {
       SharedHandle<DHTBucket> bucket = bnode->getBucket();
       if(!bucket.isNull()) {
-	std::deque<SharedHandle<DHTNode> > goodNodes;
-	bucket->getGoodNodes(goodNodes);
-	size_t r = DHTBucket::K-nodes.size();
-	if(goodNodes.size() <= r) {
-	  nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
-	} else {
-	  nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.begin()+r);
-	}
+        std::deque<SharedHandle<DHTNode> > goodNodes;
+        bucket->getGoodNodes(goodNodes);
+        size_t r = DHTBucket::K-nodes.size();
+        if(goodNodes.size() <= r) {
+          nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
+        } else {
+          nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.begin()+r);
+        }
       }
     }
   }
 }
 
 void BNode::enumerateBucket(std::deque<SharedHandle<DHTBucket> >& buckets,
-			    const BNode* b)
+                            const BNode* b)
 {
   std::deque<const BNode*> visited;
   visited.push_back(b);

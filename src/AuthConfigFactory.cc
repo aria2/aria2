@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -64,51 +64,51 @@ AuthConfigFactory::createAuthConfig
 
     if(op->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
       if(!request->getUsername().empty()) {
-	updateBasicCred(BasicCred(request->getUsername(),
-				  request->getPassword(),
-				  request->getHost(), request->getDir(), true));
-	return createAuthConfig(request->getUsername(), request->getPassword());
+        updateBasicCred(BasicCred(request->getUsername(),
+                                  request->getPassword(),
+                                  request->getHost(), request->getDir(), true));
+        return createAuthConfig(request->getUsername(), request->getPassword());
       }
       std::deque<BasicCred>::const_iterator i =
-	findBasicCred(request->getHost(), request->getDir());
+        findBasicCred(request->getHost(), request->getDir());
       if(i == _basicCreds.end()) {
-	return SharedHandle<AuthConfig>();
+        return SharedHandle<AuthConfig>();
       } else {
-	return createAuthConfig((*i)._user, (*i)._password);
+        return createAuthConfig((*i)._user, (*i)._password);
       }
     } else {
       if(!request->getUsername().empty()) {
-	return createAuthConfig(request->getUsername(), request->getPassword());
+        return createAuthConfig(request->getUsername(), request->getPassword());
       } else {
-	return
-	  createHttpAuthResolver(op)->resolveAuthConfig(request->getHost());
+        return
+          createHttpAuthResolver(op)->resolveAuthConfig(request->getHost());
       }
     }
   } else if(request->getProtocol() == Request::PROTO_FTP) {
     if(!request->getUsername().empty()) {
       if(request->hasPassword()) {
-	return createAuthConfig(request->getUsername(), request->getPassword());
+        return createAuthConfig(request->getUsername(), request->getPassword());
       } else {
-	if(!op->getAsBool(PREF_NO_NETRC)) {
-	  // First, check we have password corresponding to host and
-	  // username
-	  NetrcAuthResolver authResolver;
-	  authResolver.setNetrc(_netrc);
+        if(!op->getAsBool(PREF_NO_NETRC)) {
+          // First, check we have password corresponding to host and
+          // username
+          NetrcAuthResolver authResolver;
+          authResolver.setNetrc(_netrc);
 
-	  SharedHandle<AuthConfig> ac =
-	    authResolver.resolveAuthConfig(request->getHost());
-	  if(!ac.isNull() && ac->getUser() == request->getUsername()) {
-	    return ac;
-	  }
-	}
-	// We don't have password for host and username. Return
-	// password specified by --ftp-passwd
-	return
-	  createAuthConfig(request->getUsername(), op->get(PREF_FTP_PASSWD));
+          SharedHandle<AuthConfig> ac =
+            authResolver.resolveAuthConfig(request->getHost());
+          if(!ac.isNull() && ac->getUser() == request->getUsername()) {
+            return ac;
+          }
+        }
+        // We don't have password for host and username. Return
+        // password specified by --ftp-passwd
+        return
+          createAuthConfig(request->getUsername(), op->get(PREF_FTP_PASSWD));
       }
     } else {
       return
-	createFtpAuthResolver(op)->resolveAuthConfig(request->getHost());
+        createFtpAuthResolver(op)->resolveAuthConfig(request->getHost());
     }
   } else {
     return SharedHandle<AuthConfig>();
@@ -157,7 +157,7 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
     (createAuthConfig(op->get(PREF_FTP_USER), op->get(PREF_FTP_PASSWD)));
   SharedHandle<AuthConfig> defaultAuthConfig
     (new AuthConfig(AuthConfigFactory::ANONYMOUS,
-		    AuthConfigFactory::ARIA2USER_AT));
+                    AuthConfigFactory::ARIA2USER_AT));
   resolver->setDefaultAuthConfig(defaultAuthConfig);
   return resolver;
 }
@@ -191,7 +191,7 @@ bool AuthConfigFactory::activateBasicCred
       return false;
     } else {
       BasicCred bc(authConfig->getUser(), authConfig->getPassword(),
-		   host, path, true);
+                   host, path, true);
       i = std::lower_bound(_basicCreds.begin(), _basicCreds.end(), bc);
       _basicCreds.insert(i, bc);
       return true;
@@ -241,7 +241,7 @@ bool AuthConfigFactory::BasicCred::operator<(const BasicCred& cred) const
 
 std::deque<AuthConfigFactory::BasicCred>::iterator
 AuthConfigFactory::findBasicCred(const std::string& host,
-				 const std::string& path)
+                                 const std::string& path)
 {
   BasicCred bc("", "", host, path);
   std::deque<BasicCred>::iterator i =

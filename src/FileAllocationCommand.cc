@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -60,8 +60,8 @@ bool FileAllocationCommand::executeInternal()
   _fileAllocationEntry->allocateChunk();
   if(_fileAllocationEntry->finished()) {
     logger->debug(MSG_ALLOCATION_COMPLETED,
-		  _timer.difference(),
-		  util::itos(_requestGroup->getTotalLength(), true).c_str());
+                  _timer.difference(),
+                  util::itos(_requestGroup->getTotalLength(), true).c_str());
     _e->_fileAllocationMan->dropPickedEntry();
     
     std::deque<Command*> commands;
@@ -80,7 +80,7 @@ bool FileAllocationCommand::handleException(Exception& e)
   _e->_fileAllocationMan->dropPickedEntry();
   logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid,
-		_requestGroup->getDownloadContext()->getBasePath().c_str());
+                _requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

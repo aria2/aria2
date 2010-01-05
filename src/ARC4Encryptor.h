@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -55,7 +55,7 @@ public:
   void init(const unsigned char* key, size_t keyLength) {}
 
   void encrypt(unsigned char* out, size_t outLength,
-	       const unsigned char* in, size_t inLength) {}
+               const unsigned char* in, size_t inLength) {}
 };
 
 } // namespace aria2

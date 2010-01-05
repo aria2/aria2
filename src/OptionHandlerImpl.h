@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -112,12 +112,12 @@ public:
 class BooleanOptionHandler : public NameMatchOptionHandler {
 public:
   BooleanOptionHandler(const std::string& optName,
-		       const std::string& description = NO_DESCRIPTION,
-		       const std::string& defaultValue = NO_DEFAULT_VALUE,
-		       OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
-		       char shortName = 0):
+                       const std::string& description = NO_DESCRIPTION,
+                       const std::string& defaultValue = NO_DEFAULT_VALUE,
+                       OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
+                       char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   argType, shortName) {}
+                           argType, shortName) {}
 
   virtual ~BooleanOptionHandler() {}
 
@@ -125,8 +125,8 @@ public:
   {
     if(optarg == "true" ||
        ((_argType == OptionHandler::OPT_ARG ||
-	 _argType == OptionHandler::NO_ARG)
-	&& optarg.empty())) {
+         _argType == OptionHandler::NO_ARG)
+        && optarg.empty())) {
       option.put(_optName, V_TRUE);
     } else if(optarg == "false") {
       option.put(_optName, V_FALSE);
@@ -149,12 +149,12 @@ private:
   int32_t _max;
 public:
   IntegerRangeOptionHandler(const std::string& optName,
-			    const std::string& description,
-			    const std::string& defaultValue,
-			    int32_t min, int32_t max,
-			    char shortName = 0):
+                            const std::string& description,
+                            const std::string& defaultValue,
+                            int32_t min, int32_t max,
+                            char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName),
+                           OptionHandler::REQ_ARG, shortName),
     _min(min), _max(max) {}
 
   virtual ~IntegerRangeOptionHandler() {}
@@ -165,11 +165,11 @@ public:
     while(seq.hasNext()) {
       int32_t v = seq.next();
       if(v < _min || _max < v) {
-	std::string msg = _optName;
-	strappend(msg, " ", _("must be between %s and %s."));
-	throw DL_ABORT_EX
-	  (StringFormat(msg.c_str(), util::itos(_min).c_str(),
-			util::itos(_max).c_str()).str());
+        std::string msg = _optName;
+        strappend(msg, " ", _("must be between %s and %s."));
+        throw DL_ABORT_EX
+          (StringFormat(msg.c_str(), util::itos(_min).c_str(),
+                        util::itos(_max).c_str()).str());
       }
       option.put(_optName, optarg);
     }
@@ -187,13 +187,13 @@ private:
   int64_t _max;
 public:
   NumberOptionHandler(const std::string& optName,
-		      const std::string& description = NO_DESCRIPTION,
-		      const std::string& defaultValue = NO_DEFAULT_VALUE,
-		      int64_t min = -1,
-		      int64_t max = -1,
-		      char shortName = 0):
+                      const std::string& description = NO_DESCRIPTION,
+                      const std::string& defaultValue = NO_DEFAULT_VALUE,
+                      int64_t min = -1,
+                      int64_t max = -1,
+                      char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName),
+                           OptionHandler::REQ_ARG, shortName),
     _min(min), _max(max) {}
 
   virtual ~NumberOptionHandler() {}
@@ -212,16 +212,16 @@ public:
       std::string msg = _optName;
       msg += " ";
       if(_min == -1 && _max != -1) {
-	msg += StringFormat(_("must be smaller than or equal to %s."),
-			    util::itos(_max).c_str()).str();
+        msg += StringFormat(_("must be smaller than or equal to %s."),
+                            util::itos(_max).c_str()).str();
       } else if(_min != -1 && _max != -1) {
-	msg += StringFormat(_("must be between %s and %s."),
-			    util::itos(_min).c_str(), util::itos(_max).c_str()).str();
+        msg += StringFormat(_("must be between %s and %s."),
+                            util::itos(_min).c_str(), util::itos(_max).c_str()).str();
       } else if(_min != -1 && _max == -1) {
-	msg += StringFormat(_("must be greater than or equal to %s."),
-			    util::itos(_min).c_str()).str();
+        msg += StringFormat(_("must be greater than or equal to %s."),
+                            util::itos(_min).c_str()).str();
       } else {
-	msg += _("must be a number.");
+        msg += _("must be a number.");
       }
       throw DL_ABORT_EX(msg);
     }
@@ -248,13 +248,13 @@ public:
 class UnitNumberOptionHandler : public NumberOptionHandler {
 public:
   UnitNumberOptionHandler(const std::string& optName,
-			  const std::string& description = NO_DESCRIPTION,
-			  const std::string& defaultValue = NO_DEFAULT_VALUE,
-			  int64_t min = -1,
-			  int64_t max = -1,
-			  char shortName = 0):
+                          const std::string& description = NO_DESCRIPTION,
+                          const std::string& defaultValue = NO_DEFAULT_VALUE,
+                          int64_t min = -1,
+                          int64_t max = -1,
+                          char shortName = 0):
     NumberOptionHandler(optName, description, defaultValue, min, max,
-			shortName) {}
+                        shortName) {}
 
   virtual ~UnitNumberOptionHandler() {}
 
@@ -271,12 +271,12 @@ private:
   double _max;
 public:
   FloatNumberOptionHandler(const std::string& optName,
-			   const std::string& description = NO_DESCRIPTION,
-			   const std::string& defaultValue = NO_DEFAULT_VALUE,
-			   double min = -1, double max = -1,
-			   char shortName = 0):
+                           const std::string& description = NO_DESCRIPTION,
+                           const std::string& defaultValue = NO_DEFAULT_VALUE,
+                           double min = -1, double max = -1,
+                           char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName),
+                           OptionHandler::REQ_ARG, shortName),
     _min(min), _max(max) {}
 
   virtual ~FloatNumberOptionHandler() {}
@@ -290,16 +290,16 @@ public:
       std::string msg = _optName;
       msg += " ";
       if(_min < 0 && _max >= 0) {
-	msg += StringFormat(_("must be smaller than or equal to %.1f."),
-			    _max).str();
+        msg += StringFormat(_("must be smaller than or equal to %.1f."),
+                            _max).str();
       } else if(_min >= 0 && _max >= 0) {
-	msg += StringFormat(_("must be between %.1f and %.1f."),
-			    _min, _max).str();
+        msg += StringFormat(_("must be between %.1f and %.1f."),
+                            _min, _max).str();
       } else if(_min >= 0 && _max < 0) {
-	msg += StringFormat(_("must be greater than or equal to %.1f."),
-			    _min).str();
+        msg += StringFormat(_("must be greater than or equal to %.1f."),
+                            _min).str();
       } else {
-	msg += _("must be a number.");
+        msg += _("must be a number.");
       }
       throw DL_ABORT_EX(msg);
     }
@@ -332,13 +332,13 @@ private:
   std::string _possibleValuesString;
 public:
   DefaultOptionHandler(const std::string& optName,
-		       const std::string& description = NO_DESCRIPTION,
-		       const std::string& defaultValue = NO_DEFAULT_VALUE,
-		       const std::string& possibleValuesString = A2STR::NIL,
-		       OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
-		       char shortName = 0):
+                       const std::string& description = NO_DESCRIPTION,
+                       const std::string& defaultValue = NO_DEFAULT_VALUE,
+                       const std::string& possibleValuesString = A2STR::NIL,
+                       OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
+                       char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue, argType,
-			   shortName),
+                           shortName),
     _possibleValuesString(possibleValuesString) {}
 
   virtual ~DefaultOptionHandler() {}
@@ -361,15 +361,15 @@ private:
   std::string _possibleValuesString;
 public:
   CumulativeOptionHandler(const std::string& optName,
-			  const std::string& description,
-			  const std::string& defaultValue,
-			  const std::string& delim,
-			  const std::string& possibleValuesString = A2STR::NIL,
-			  OptionHandler::ARG_TYPE argType =
-			  OptionHandler::REQ_ARG,
-			  char shortName = 0):
+                          const std::string& description,
+                          const std::string& defaultValue,
+                          const std::string& delim,
+                          const std::string& possibleValuesString = A2STR::NIL,
+                          OptionHandler::ARG_TYPE argType =
+                          OptionHandler::REQ_ARG,
+                          char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue, argType,
-			   shortName),
+                           shortName),
     _delim(delim),
     _possibleValuesString(possibleValuesString) {}
 
@@ -392,10 +392,10 @@ class IndexOutOptionHandler : public NameMatchOptionHandler {
 private:
 public:
   IndexOutOptionHandler(const std::string& optName,
-			const std::string& description,
-			char shortName = 0):
+                        const std::string& description,
+                        char shortName = 0):
     NameMatchOptionHandler(optName, description, NO_DEFAULT_VALUE,
-			   OptionHandler::REQ_ARG, shortName) {}
+                           OptionHandler::REQ_ARG, shortName) {}
 
   virtual ~IndexOutOptionHandler() {}
 
@@ -419,47 +419,47 @@ private:
   std::deque<std::string> _validParamValues;
 public:
   ParameterOptionHandler(const std::string& optName,
-			 const std::string& description,
-			 const std::string& defaultValue,
-			 const std::deque<std::string>& validParamValues,
-			 char shortName = 0):
+                         const std::string& description,
+                         const std::string& defaultValue,
+                         const std::deque<std::string>& validParamValues,
+                         char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName),
+                           OptionHandler::REQ_ARG, shortName),
     _validParamValues(validParamValues) {}
 
   ParameterOptionHandler(const std::string& optName,
-			 const std::string& description,
-			 const std::string& defaultValue,
-			 const std::string& validParamValue,
-			 char shortName = 0):
+                         const std::string& description,
+                         const std::string& defaultValue,
+                         const std::string& validParamValue,
+                         char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName)
+                           OptionHandler::REQ_ARG, shortName)
   {
     _validParamValues.push_back(validParamValue);
   }
 
   ParameterOptionHandler(const std::string& optName,
-			 const std::string& description,
-			 const std::string& defaultValue,
-			 const std::string& validParamValue1,
-			 const std::string& validParamValue2,
-			 char shortName = 0):
+                         const std::string& description,
+                         const std::string& defaultValue,
+                         const std::string& validParamValue1,
+                         const std::string& validParamValue2,
+                         char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName)
+                           OptionHandler::REQ_ARG, shortName)
   {
     _validParamValues.push_back(validParamValue1);
     _validParamValues.push_back(validParamValue2);
   }
 
   ParameterOptionHandler(const std::string& optName,
-			 const std::string& description,
-			 const std::string& defaultValue,
-			 const std::string& validParamValue1,
-			 const std::string& validParamValue2,
-			 const std::string& validParamValue3,
-			 char shortName = 0):
+                         const std::string& description,
+                         const std::string& defaultValue,
+                         const std::string& validParamValue1,
+                         const std::string& validParamValue2,
+                         const std::string& validParamValue3,
+                         char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName)
+                           OptionHandler::REQ_ARG, shortName)
   {
     _validParamValues.push_back(validParamValue1);
     _validParamValues.push_back(validParamValue2);
@@ -476,12 +476,12 @@ public:
       std::string msg = _optName;
       strappend(msg, " ", _("must be one of the following:"));
       if(_validParamValues.size() == 0) {
-	msg += "''";
+        msg += "''";
       } else {
-	for(std::deque<std::string>::const_iterator itr = _validParamValues.begin();
-	    itr != _validParamValues.end(); ++itr) {
-	  strappend(msg, "'", *itr, "' ");
-	}
+        for(std::deque<std::string>::const_iterator itr = _validParamValues.begin();
+            itr != _validParamValues.end(); ++itr) {
+          strappend(msg, "'", *itr, "' ");
+        }
       }
       throw DL_ABORT_EX(msg);
     } else {
@@ -493,7 +493,7 @@ public:
   {
     std::stringstream s;
     std::copy(_validParamValues.begin(), _validParamValues.end(),
-	      std::ostream_iterator<std::string>(s, ","));
+              std::ostream_iterator<std::string>(s, ","));
     return util::trim(s.str(), ", ");
   }
 };
@@ -505,13 +505,13 @@ private:
   std::string _portOptionName;
 public:
   HostPortOptionHandler(const std::string& optName,
-			const std::string& description,
-			const std::string& defaultValue,
-			const std::string& hostOptionName,
-			const std::string& portOptionName,
-			char shortName = 0):
+                        const std::string& description,
+                        const std::string& defaultValue,
+                        const std::string& hostOptionName,
+                        const std::string& portOptionName,
+                        char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName),
+                           OptionHandler::REQ_ARG, shortName),
     _hostOptionName(hostOptionName),
     _portOptionName(portOptionName) {}
 
@@ -544,12 +544,12 @@ public:
 class HttpProxyOptionHandler : public NameMatchOptionHandler {
 public:
   HttpProxyOptionHandler(const std::string& optName,
-			 const std::string& description,
-			 const std::string& defaultValue,
-			 char shortName = 0)
+                         const std::string& description,
+                         const std::string& defaultValue,
+                         char shortName = 0)
     :
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName)
+                           OptionHandler::REQ_ARG, shortName)
   {}
 
   virtual ~HttpProxyOptionHandler() {}
@@ -587,8 +587,8 @@ public:
    bool acceptStdin = false,
    char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG,
-			   shortName),
+                           OptionHandler::REQ_ARG,
+                           shortName),
     _acceptStdin(acceptStdin) {}
 
   virtual void parseArg(Option& option, const std::string& optarg)
@@ -598,8 +598,8 @@ public:
     } else {
       File f(optarg);
       if(!f.exists() || f.isDir()) {
-	throw DL_ABORT_EX
-	  (StringFormat(MSG_NOT_FILE, optarg.c_str()).str());
+        throw DL_ABORT_EX
+          (StringFormat(MSG_NOT_FILE, optarg.c_str()).str());
       }
       option.put(_optName, optarg);
     }
@@ -619,7 +619,7 @@ public:
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
-			   OptionHandler::REQ_ARG, shortName) {}
+                           OptionHandler::REQ_ARG, shortName) {}
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -53,7 +53,7 @@ private:
   {
     throw DL_ABORT_EX
       (StringFormat("Exception in libssl routine(ARC4Context class): %s",
-		    ERR_error_string(ERR_get_error(), 0)).str());
+                    ERR_error_string(ERR_get_error(), 0)).str());
   }
 public:
   LibsslARC4Context():_cipherCtx(0) {}

@@ -46,11 +46,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(InOrderURISelectorTest);
 void InOrderURISelectorTest::testSelect()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
-		       sel->select(&_fileEntry));
+                       sel->select(&_fileEntry));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
-		       sel->select(&_fileEntry));
+                       sel->select(&_fileEntry));
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
-		       sel->select(&_fileEntry));
+                       sel->select(&_fileEntry));
   CPPUNIT_ASSERT_EQUAL(std::string(""), sel->select(&_fileEntry));
 }
 

@@ -78,7 +78,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"),
-		       ps.getPeer("192.168.0.3", 6889)->ipaddr);
+                       ps.getPeer("192.168.0.3", 6889)->ipaddr);
 
   ps.addPeer(peer1);
   ps.addPeer(peer2);
@@ -90,7 +90,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   // peer2 has been in use, so it did't deleted.
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"),
-		       ps.getPeer("192.168.0.2", 6889)->ipaddr);
+                       ps.getPeer("192.168.0.2", 6889)->ipaddr);
   
 }
 
@@ -140,7 +140,7 @@ void DefaultPeerStorageTest::testGetUnusedPeer() {
   ps.addPeer(peer1);
 
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
-		       ps.getUnusedPeer()->ipaddr);
+                       ps.getUnusedPeer()->ipaddr);
 
   peer1->usedBy(1);
 
@@ -223,7 +223,7 @@ void DefaultPeerStorageTest::testReturnPeer()
   ps.returnPeer(peer2); // peer2 removed from the container
   CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getPeers().size());
   CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer2)
-		 == ps.getPeers().end());
+                 == ps.getPeers().end());
 
   ps.returnPeer(peer1); // peer1 is removed from the container
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getPeers().size());

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -41,7 +41,7 @@ namespace aria2 {
 
 template<typename InputIterator, typename OutputIterator>
 OutputIterator ncopy(InputIterator first, InputIterator last,
-		     size_t count, OutputIterator destination)
+                     size_t count, OutputIterator destination)
 {
   OutputIterator x = destination;
   while(count--) {
@@ -62,7 +62,7 @@ OutputIterator ncopy(InputIterator first, InputIterator last,
 // and the length 6.
 template<typename InputIterator>
 std::pair<InputIterator, size_t> max_sequence(InputIterator first,
-					      InputIterator last)
+                                              InputIterator last)
 {
   InputIterator maxfirst = last;
   size_t maxlen = 0;
@@ -85,9 +85,9 @@ std::pair<InputIterator, size_t> max_sequence(InputIterator first,
 }
 
 template<typename InputIterator, typename R, typename C, typename A,
-	 typename ACompat>
+         typename ACompat>
 static void forEachMemFunSH(InputIterator first, InputIterator last,
-			    R (C::*f)(A), ACompat arg)
+                            R (C::*f)(A), ACompat arg)
 {
   for(; first != last; ++first) {
     ((*first).get()->*f)(arg);

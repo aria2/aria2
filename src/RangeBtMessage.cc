@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -40,8 +40,8 @@
 namespace aria2 {
 
 RangeBtMessage::RangeBtMessage(uint8_t id,
-			       const std::string& name,
-			       size_t index, uint32_t begin, size_t length)
+                               const std::string& name,
+                               size_t index, uint32_t begin, size_t length)
   :SimpleBtMessage(id, name),
    _index(index),
    _begin(begin),
@@ -81,8 +81,8 @@ size_t RangeBtMessage::getMessageLength()
 std::string RangeBtMessage::toString() const
 {
   return strconcat(getName(), " index=", util::uitos(_index),
-		   ", begin=", util::uitos(_begin),
-		   ", length=", util::uitos(_length));
+                   ", begin=", util::uitos(_begin),
+                   ", length=", util::uitos(_length));
 }
 
 } // namespace aria2

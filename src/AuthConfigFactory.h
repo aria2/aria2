@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -56,7 +56,7 @@ private:
   SharedHandle<Netrc> _netrc;
   
   SharedHandle<AuthConfig> createAuthConfig(const std::string& user,
-					    const std::string& password) const;
+                                            const std::string& password) const;
 
   SharedHandle<AuthResolver> createHttpAuthResolver(const Option* op) const;
   
@@ -71,8 +71,8 @@ public:
     bool _activated;
 
     BasicCred(const std::string& user, const std::string& password,
-	      const std::string& host, const std::string& path,
-	      bool activated = false);
+              const std::string& host, const std::string& path,
+              bool activated = false);
 
     void activate();
 

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -59,7 +59,7 @@ class InfoHashLess
 {
 public:
   bool operator()(const SharedHandle<DHTPeerAnnounceEntry>& lhs,
-		  const SharedHandle<DHTPeerAnnounceEntry>& rhs)
+                  const SharedHandle<DHTPeerAnnounceEntry>& rhs)
   {
     return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
   }
@@ -84,10 +84,10 @@ DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
 
 void
 DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
-					const std::string& ipaddr, uint16_t port)
+                                        const std::string& ipaddr, uint16_t port)
 {
   _logger->debug("Adding %s:%u to peer announce list: infoHash=%s",
-		 ipaddr.c_str(), port, util::toHex(infoHash, DHT_ID_LENGTH).c_str());
+                 ipaddr.c_str(), port, util::toHex(infoHash, DHT_ID_LENGTH).c_str());
   getPeerAnnounceEntry(infoHash)->addPeerAddrEntry(PeerAddrEntry(ipaddr, port));
 }
 
@@ -99,7 +99,7 @@ bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
 }
 
 void DHTPeerAnnounceStorage::getPeers(std::deque<SharedHandle<Peer> >& peers,
-				      const unsigned char* infoHash)
+                                      const unsigned char* infoHash)
 {
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
@@ -124,14 +124,14 @@ public:
 void DHTPeerAnnounceStorage::handleTimeout()
 {
   _logger->debug("Now purge peer announces(%lu entries) which are timed out.",
-		 static_cast<unsigned long>(_entries.size()));
+                 static_cast<unsigned long>(_entries.size()));
 
   std::for_each(_entries.begin(), _entries.end(), RemoveStalePeerAddrEntry());
   _entries.erase(std::remove_if(_entries.begin(), _entries.end(),
-				mem_fun_sh(&DHTPeerAnnounceEntry::empty)),
-		 _entries.end());
+                                mem_fun_sh(&DHTPeerAnnounceEntry::empty)),
+                 _entries.end());
   _logger->debug("Currently %lu peer announce entries",
-		 static_cast<unsigned long>(_entries.size()));
+                 static_cast<unsigned long>(_entries.size()));
 }
 
 void DHTPeerAnnounceStorage::announcePeer()
@@ -143,7 +143,7 @@ void DHTPeerAnnounceStorage::announcePeer()
       SharedHandle<DHTTask> task = _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());
       _taskQueue->addPeriodicTask2(task);
       _logger->debug("Added 1 peer announce: infoHash=%s",
-		     util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
+                     util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
     }
   }
 }

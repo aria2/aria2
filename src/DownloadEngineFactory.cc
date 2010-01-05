@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -87,7 +87,7 @@ DownloadEngineFactory::newDownloadEngine
       eventPoll = ep;
     } else {
       throw DL_ABORT_EX("Initializing EpollEventPoll failed."
-			" Try --event-poll=select");
+                        " Try --event-poll=select");
     }
   } else
 #endif // HAVE_EPLL
@@ -101,7 +101,7 @@ DownloadEngineFactory::newDownloadEngine
 
   RequestGroupManHandle
     requestGroupMan(new RequestGroupMan(requestGroups, MAX_CONCURRENT_DOWNLOADS,
-					op));
+                                        op));
   e->_requestGroupMan = requestGroupMan;
   e->_fileAllocationMan.reset(new FileAllocationMan());
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -109,23 +109,23 @@ DownloadEngineFactory::newDownloadEngine
 #endif // ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get(), 1));
   e->addRoutineCommand(new FileAllocationDispatcherCommand
-		       (e->newCUID(), e->_fileAllocationMan, e.get()));
+                       (e->newCUID(), e->_fileAllocationMan, e.get()));
 #ifdef ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(new CheckIntegrityDispatcherCommand
-		       (e->newCUID(), e->_checkIntegrityMan, e.get()));
+                       (e->newCUID(), e->_checkIntegrityMan, e.get()));
 #endif // ENABLE_MESSAGE_DIGEST
 
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand
       (new AutoSaveCommand(e->newCUID(), e.get(),
-			   op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+                           op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
   }
   e->addRoutineCommand(new HaveEraseCommand(e->newCUID(), e.get(), 10));
   {
     time_t stopSec = op->getAsInt(PREF_STOP);
     if(stopSec > 0) {
       e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e.get(),
-						stopSec));
+                                                stopSec));
     }
   }
 #ifdef ENABLE_XML_RPC

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -61,7 +61,7 @@ bool CookieStorage::store(const Cookie& cookie)
     return false;
   }
   std::deque<Cookie>::iterator i = std::find(_cookies.begin(), _cookies.end(),
-					     cookie);
+                                             cookie);
   if(i == _cookies.end()) {
     if(cookie.isExpired()) {
       return false;
@@ -87,8 +87,8 @@ void CookieStorage::storeCookies(const std::deque<Cookie>& cookies)
 }
 
 bool CookieStorage::parseAndStore(const std::string& setCookieString,
-				  const std::string& requestHost,
-				  const std::string& requestPath)
+                                  const std::string& requestHost,
+                                  const std::string& requestPath)
 {
   Cookie cookie = _parser.parse(setCookieString, requestHost, requestPath);
   if(cookie.validate(requestHost, requestPath)) {
@@ -106,7 +106,7 @@ private:
   bool _secure;
 public:
   CriteriaMatch(const std::string& requestHost, const std::string& requestPath,
-		time_t date, bool secure):
+                time_t date, bool secure):
     _requestHost(requestHost),
     _requestPath(requestPath),
     _date(date),
@@ -127,12 +127,12 @@ public:
 };
 
 std::deque<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
-					       const std::string& requestPath,
-					       time_t date, bool secure) const
+                                               const std::string& requestPath,
+                                               time_t date, bool secure) const
 {
   std::deque<Cookie> res;
   std::remove_copy_if(_cookies.begin(), _cookies.end(), std::back_inserter(res),
-		      std::not1(CriteriaMatch(requestHost, requestPath, date, secure)));
+                      std::not1(CriteriaMatch(requestHost, requestPath, date, secure)));
   std::sort(res.begin(), res.end(), OrderByPathDesc());
   return res;
 }
@@ -153,7 +153,7 @@ bool CookieStorage::load(const std::string& filename)
   s.get(header, sizeof(header));
   if(!s) {
     _logger->error("Failed to read header of cookie file %s",
-		   filename.c_str());
+                   filename.c_str());
     return false;
   }
   try {
@@ -162,8 +162,8 @@ bool CookieStorage::load(const std::string& filename)
       storeCookies(Sqlite3MozCookieParser().parse(filename));
 #else // !HAVE_SQLITE3
       throw DL_ABORT_EX
-	("Cannot read SQLite3 database because SQLite3 support is disabled by"
-	 " configuration.");
+        ("Cannot read SQLite3 database because SQLite3 support is disabled by"
+         " configuration.");
 #endif // !HAVE_SQLITE3
     } else {
       storeCookies(NsCookieParser().parse(filename));
@@ -182,22 +182,22 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     std::ofstream o(tempfilename.c_str(), std::ios::binary);
     if(!o) {
       _logger->error("Cannot create cookie file %s, cause %s",
-		     filename.c_str(), strerror(errno));
+                     filename.c_str(), strerror(errno));
       return false;
     }
     for(std::deque<Cookie>::const_iterator i = _cookies.begin();
-	i != _cookies.end(); ++i) {
+        i != _cookies.end(); ++i) {
       o << (*i).toNsCookieFormat() << "\n";
       if(!o) {
-	_logger->error("Failed to save cookies to %s, cause %s",
-		       filename.c_str(), strerror(errno));
-	return false;
+        _logger->error("Failed to save cookies to %s, cause %s",
+                       filename.c_str(), strerror(errno));
+        return false;
       }
     }
     o.flush();
     if(!o) {
       _logger->error("Failed to save cookies to %s, cause %s",
-		     filename.c_str(), strerror(errno));
+                     filename.c_str(), strerror(errno));
       return false;
     }  
   }
@@ -205,7 +205,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     return true;
   } else {
     _logger->error("Could not rename file %s as %s",
-		   tempfilename.c_str(), filename.c_str());
+                   tempfilename.c_str(), filename.c_str());
     return false;
   }
 }

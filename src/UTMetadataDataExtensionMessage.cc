@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -51,7 +51,7 @@ namespace aria2 {
 
 UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
 (uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID),
-			     _logger(LogFactory::getInstance()) {}
+                             _logger(LogFactory::getInstance()) {}
 
 std::string UTMetadataDataExtensionMessage::getPayload()
 {
@@ -71,7 +71,7 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
 {
   if(_tracker->tracks(_index)) {
     _logger->debug("ut_metadata index=%lu found in tracking list",
-		  static_cast<unsigned long>(_index));
+                   static_cast<unsigned long>(_index));
     _tracker->remove(_index);
     _pieceStorage->getDiskAdaptor()->writeData
       (reinterpret_cast<const unsigned char*>(_data.c_str()), _data.size(),
@@ -81,22 +81,22 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
       std::string metadata = util::toString(_pieceStorage->getDiskAdaptor());
       unsigned char infoHash[INFO_HASH_LENGTH];
       MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
-				  MessageDigestContext::SHA1,
-				  metadata.data(), metadata.size());
+                                  MessageDigestContext::SHA1,
+                                  metadata.data(), metadata.size());
       const BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
       if(std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]) == 
-	 attrs[bittorrent::INFO_HASH].s()){
-	_logger->info("Got ut_metadata");
+         attrs[bittorrent::INFO_HASH].s()){
+        _logger->info("Got ut_metadata");
       } else {
-	_logger->info("Got wrong ut_metadata");
-	for(size_t i = 0; i < _dctx->getNumPieces(); ++i) {
-	  _pieceStorage->markPieceMissing(i);
-	}
+        _logger->info("Got wrong ut_metadata");
+        for(size_t i = 0; i < _dctx->getNumPieces(); ++i) {
+          _pieceStorage->markPieceMissing(i);
+        }
       }
     }
   } else {
     _logger->debug("ut_metadata index=%lu is not tracked",
-		  static_cast<unsigned long>(_index));
+                   static_cast<unsigned long>(_index));
   }
 }
 

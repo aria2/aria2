@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -97,8 +97,8 @@ bool PeerReceiveHandshakeCommand::executeInternal()
       e->getBtRegistry()->getDownloadContext(infoHash);
     if(downloadContext.isNull()) {
       throw DL_ABORT_EX
-	(StringFormat("Unknown info hash %s",
-		      util::toHex(infoHash).c_str()).str());
+        (StringFormat("Unknown info hash %s",
+                      util::toHex(infoHash).c_str()).str());
     }
     BtObject btObject = e->getBtRegistry()->get
       (downloadContext->getOwnerRequestGroup()->getGID());
@@ -107,8 +107,8 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
     if(!btRuntime->ready()) {
       throw DL_ABORT_EX
-	(StringFormat("Unknown info hash %s",
-		      util::toHex(infoHash).c_str()).str());
+        (StringFormat("Unknown info hash %s",
+                      util::toHex(infoHash).c_str()).str());
     }
 
     TransferStat tstat =
@@ -123,26 +123,26 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     }
 
     if((!pieceStorage->downloadFinished() &&
-	tstat.getDownloadSpeed() < thresholdSpeed) ||
+        tstat.getDownloadSpeed() < thresholdSpeed) ||
        btRuntime->lessThanMaxPeers()) {
       if(peerStorage->addPeer(peer)) {
 
-	peer->usedBy(cuid);
-	
-	PeerInteractionCommand* command =
-	  new PeerInteractionCommand
-	  (cuid,
-	   downloadContext->getOwnerRequestGroup(),
-	   peer,
-	   e,
-	   btRuntime,
-	   pieceStorage,
-	   peerStorage,
-	   socket,
-	   PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-	   _peerConnection);
-	e->commands.push_back(command);
-	logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
+        peer->usedBy(cuid);
+        
+        PeerInteractionCommand* command =
+          new PeerInteractionCommand
+          (cuid,
+           downloadContext->getOwnerRequestGroup(),
+           peer,
+           e,
+           btRuntime,
+           pieceStorage,
+           peerStorage,
+           socket,
+           PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
+           _peerConnection);
+        e->commands.push_back(command);
+        logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
       }
     }
     return true;

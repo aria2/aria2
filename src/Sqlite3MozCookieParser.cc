@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -62,7 +62,7 @@ static std::string toString(const char* str)
 }
 
 static int cookieRowMapper(void* data, int rowIndex,
-			   char** values, char** names)
+                           char** values, char** names)
 {
   try {
     int64_t expireDate = util::parseLLInt(toString(values[3]));
@@ -72,13 +72,13 @@ static int cookieRowMapper(void* data, int rowIndex,
     }
 
     Cookie c(toString(values[4]), // name
-	     toString(values[5]), // value
-	     expireDate, // expires
-	     toString(values[1]), // path
-	     toString(values[0]), // domain
-	     strcmp(toString(values[2]).c_str(), "1") == 0 ? true:false //secure
-	     );
-		      
+             toString(values[5]), // value
+             expireDate, // expires
+             toString(values[1]), // path
+             toString(values[0]), // domain
+             strcmp(toString(values[2]).c_str(), "1") == 0 ? true:false //secure
+             );
+                      
     if(c.good()) {
       reinterpret_cast<std::deque<Cookie>*>(data)->push_back(c);
     }
@@ -100,7 +100,7 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
   if(!File(filename).isFile()) {
     throw DL_ABORT_EX
       (StringFormat("Failed to open SQLite3 database: %s",
-		    filename.c_str()).str());
+                    filename.c_str()).str());
   }
   ret = sqlite3_open(filename.c_str(), &db);
 #endif // !HAVE_SQLITE3_OPEN_V2
@@ -109,7 +109,7 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
     sqlite3_close(db);
     throw DL_ABORT_EX
       (StringFormat("Failed to open SQLite3 database: %s",
-		    errMsg.c_str()).str());
+                    errMsg.c_str()).str());
   }
   std::deque<Cookie> cookies;
   char* sqlite3ErrMsg = 0;
@@ -125,7 +125,7 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
     sqlite3_close(db);
     throw DL_ABORT_EX
       (StringFormat("Failed to read SQLite3 database: %s",
-		    errMsg.c_str()).str());
+                    errMsg.c_str()).str());
   }
   sqlite3_close(db);
   return cookies;

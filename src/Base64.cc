@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -67,7 +67,7 @@ static const int INDEX_TABLE[] = {
 };
 
 void Base64::encode(unsigned char*& result, size_t& rlength,
-		    const unsigned char* src, size_t slength)
+                    const unsigned char* src, size_t slength)
 {
   if(slength == 0) {
     rlength = 0;
@@ -107,9 +107,9 @@ void Base64::encode(unsigned char*& result, size_t& rlength,
 }
 
 void Base64::removeNonBase64Chars(unsigned char*& nsrc,
-				  size_t& nlength,
-				  const unsigned char* src,
-				  size_t slength)
+                                  size_t& nlength,
+                                  const unsigned char* src,
+                                  size_t slength)
 {
   unsigned char* temp = new unsigned char[slength];
   const unsigned char* end = src+slength;
@@ -124,7 +124,7 @@ void Base64::removeNonBase64Chars(unsigned char*& nsrc,
 }
 
 void Base64::decode(unsigned char*& result, size_t& rlength,
-		    const unsigned char* src, size_t slength)
+                    const unsigned char* src, size_t slength)
 {
   if(slength == 0) {
     rlength = 0;

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -50,7 +50,7 @@
 namespace aria2 {
 
 HttpServer::HttpServer(const SharedHandle<SocketCore>& socket,
-		       DownloadEngine* e):
+                       DownloadEngine* e):
   _socket(socket),
   _socketBuffer(socket),
   _e(e),
@@ -81,7 +81,7 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
   SharedHandle<HttpHeader> header = _headerProcessor->getHttpRequestHeader();
   if(!header.isNull()) {
     _logger->info("HTTP Server received request\n%s",
-		  _headerProcessor->getHeaderString().c_str());
+                  _headerProcessor->getHeaderString().c_str());
     _lastRequestHeader = header;
     _lastBody.clear();
     _lastBody.str("");
@@ -101,8 +101,8 @@ bool HttpServer::receiveBody()
   const size_t BUFLEN = 4096;
   char buf[BUFLEN];
   size_t length = std::min(BUFLEN,
-			   static_cast<size_t>
-			   (_lastContentLength-_lastBody.tellg()));
+                           static_cast<size_t>
+                           (_lastContentLength-_lastBody.tellg()));
   _socket->readData(buf, length);
   if(length == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
     throw DL_ABORT_EX(EX_EOF_FROM_PEER);
@@ -141,14 +141,14 @@ void HttpServer::feedResponse(const std::string& text, const std::string& conten
 }
 
 void HttpServer::feedResponse(const std::string& status,
-			      const std::string& headers,
-			      const std::string& text,
-			      const std::string& contentType)
+                              const std::string& headers,
+                              const std::string& text,
+                              const std::string& contentType)
 {
   std::string header = "HTTP/1.1 ";
   strappend(header, status, "\r\n",
-	    "Content-Type: ", contentType, "\r\n",
-	    "Content-Length: ", util::uitos(text.size()), "\r\n");
+            "Content-Type: ", contentType, "\r\n",
+            "Content-Length: ", util::uitos(text.size()), "\r\n");
 
   if(!supportsPersistentConnection()) {
     header += "Connection: close\r\n";
@@ -163,7 +163,7 @@ void HttpServer::feedResponse(const std::string& status,
   header += "\r\n";
 
   _logger->debug("HTTP Server sends response:\n%s", header.c_str());
-		 
+                 
   _socketBuffer.feedSendBuffer(header);
   _socketBuffer.feedSendBuffer(text);
 }

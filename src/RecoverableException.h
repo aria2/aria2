@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -55,17 +55,17 @@ public:
     _code(downloadresultcode::UNKNOWN_ERROR) {}
 
   RecoverableException(const char* file, int line, const std::string& msg,
-		       const Exception& cause):
+                       const Exception& cause):
     Exception(file, line, msg, cause),
     _code(downloadresultcode::UNKNOWN_ERROR) {}
 
   RecoverableException(const char* file, int line,
-		       const RecoverableException& e):
+                       const RecoverableException& e):
     Exception(file, line, e),
     _code(downloadresultcode::UNKNOWN_ERROR) {}
   
   RecoverableException(const char* file, int line, const std::string& msg,
-		       downloadresultcode::RESULT result):
+                       downloadresultcode::RESULT result):
     Exception(file, line, msg), _code(result) {}
 
   downloadresultcode::RESULT getCode() const { return _code; }

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -54,8 +54,8 @@ DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
 
 void
 DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& message,
-					    time_t timeout,
-					    const SharedHandle<DHTMessageCallback>& callback)
+                                            time_t timeout,
+                                            const SharedHandle<DHTMessageCallback>& callback)
 {
   SharedHandle<DHTMessageEntry> e(new DHTMessageEntry(message, timeout, callback));
   _messageQueue.push_back(e);
@@ -63,7 +63,7 @@ DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& mess
 
 void
 DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& message,
-					    const SharedHandle<DHTMessageCallback>& callback)
+                                            const SharedHandle<DHTMessageCallback>& callback)
 {
   addMessageToQueue(message, DHT_MESSAGE_TIMEOUT, callback);
 }
@@ -74,7 +74,7 @@ DHTMessageDispatcherImpl::sendMessage(const SharedHandle<DHTMessageEntry>& entry
   try {
     if(entry->_message->send()) {
       if(!entry->_message->isReply()) {
-	_tracker->addMessage(entry->_message, entry->_timeout, entry->_callback);
+        _tracker->addMessage(entry->_message, entry->_timeout, entry->_callback);
       }
       _logger->info("Message sent: %s", entry->_message->toString().c_str());
     } else {
@@ -106,7 +106,7 @@ void DHTMessageDispatcherImpl::sendMessages()
   }
   _messageQueue.erase(_messageQueue.begin(), itr);
   _logger->debug("%lu dht messages remaining in the queue.",
-		 static_cast<unsigned long>(_messageQueue.size()));
+                 static_cast<unsigned long>(_messageQueue.size()));
 }
 
 size_t DHTMessageDispatcherImpl::countMessageInQueue() const

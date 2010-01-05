@@ -43,11 +43,11 @@ void DHTMessageTrackerEntryTest::testMatch()
     DHTMessageTrackerEntry entry(msg1, 30);
     
     CPPUNIT_ASSERT(entry.match(msg1->getTransactionID(),
-			       msg1->getRemoteNode()->getIPAddress(),
-			       msg1->getRemoteNode()->getPort()));
+                               msg1->getRemoteNode()->getIPAddress(),
+                               msg1->getRemoteNode()->getPort()));
     CPPUNIT_ASSERT(!entry.match(msg2->getTransactionID(),
-				msg2->getRemoteNode()->getIPAddress(),
-				msg2->getRemoteNode()->getPort()));
+                                msg2->getRemoteNode()->getIPAddress(),
+                                msg2->getRemoteNode()->getPort()));
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }

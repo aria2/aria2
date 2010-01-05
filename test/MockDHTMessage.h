@@ -23,9 +23,9 @@ public:
   std::string _token;
 public:
   MockDHTMessage(const SharedHandle<DHTNode>& localNode,
-		 const SharedHandle<DHTNode>& remoteNode,
-		 const std::string& messageType = "mock",
-		 const std::string& transactionID = ""):
+                 const SharedHandle<DHTNode>& remoteNode,
+                 const std::string& messageType = "mock",
+                 const std::string& transactionID = ""):
     DHTMessage(localNode, remoteNode, transactionID), _isReply(false), _messageType(messageType) {}
   
   virtual ~MockDHTMessage() {}

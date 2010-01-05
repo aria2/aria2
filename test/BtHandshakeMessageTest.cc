@@ -39,18 +39,18 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHandshakeMessageTest);
 void createHandshakeMessageData(unsigned char* msg) {
   msg[0] = 19;
   memcpy(&msg[1], BtHandshakeMessageTest::BTPSTR.c_str(),
-	 BtHandshakeMessageTest::BTPSTR.size());
+         BtHandshakeMessageTest::BTPSTR.size());
   unsigned char reserved[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x04 };
   memcpy(&msg[20], reserved, sizeof(reserved));
   unsigned char infoHash[] = { 0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff };
+                               0xff, 0xff, 0xff, 0xff, 0xff,
+                               0xff, 0xff, 0xff, 0xff, 0xff,
+                               0xff, 0xff, 0xff, 0xff, 0xff };
   memcpy(&msg[28], infoHash, sizeof(infoHash));
   unsigned char peerId[] = { 0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0 };
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0 };
   memcpy(&msg[48], peerId, sizeof(peerId));
 }
 
@@ -61,24 +61,24 @@ void BtHandshakeMessageTest::testCreate() {
   CPPUNIT_ASSERT_EQUAL((uint8_t)INT8_MAX, message->getId());
   CPPUNIT_ASSERT_EQUAL((uint8_t)19, message->getPstrlen());
   CPPUNIT_ASSERT_EQUAL(util::toHex((const unsigned char*)BTPSTR.c_str(), BTPSTR.size()),
-		       util::toHex(message->getPstr(), BtHandshakeMessage::PSTR_LENGTH));
+                       util::toHex(message->getPstr(), BtHandshakeMessage::PSTR_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("0000000000100004"),
-		       util::toHex(message->getReserved(), BtHandshakeMessage::RESERVED_LENGTH));
+                       util::toHex(message->getReserved(), BtHandshakeMessage::RESERVED_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("ffffffffffffffffffffffffffffffffffffffff"),
-		       util::toHex(message->getInfoHash(), INFO_HASH_LENGTH));
+                       util::toHex(message->getInfoHash(), INFO_HASH_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0"),
-		       util::toHex(message->getPeerId(), PEER_ID_LENGTH));
+                       util::toHex(message->getPeerId(), PEER_ID_LENGTH));
 }
 
 void BtHandshakeMessageTest::testGetMessage() {
   unsigned char infoHash[] = { 0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff };
+                               0xff, 0xff, 0xff, 0xff, 0xff,
+                               0xff, 0xff, 0xff, 0xff, 0xff,
+                               0xff, 0xff, 0xff, 0xff, 0xff };
   unsigned char peerId[] = { 0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0 };
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0 };
 
   SharedHandle<BtHandshakeMessage> msg(new BtHandshakeMessage());
   msg->setInfoHash(infoHash);
@@ -87,18 +87,18 @@ void BtHandshakeMessageTest::testGetMessage() {
   unsigned char data[68];
   createHandshakeMessageData(data);
   CPPUNIT_ASSERT_EQUAL(util::toHex((const unsigned char*)data, 68),
-		       util::toHex((const unsigned char*)msg->getMessage(), 68));
+                       util::toHex((const unsigned char*)msg->getMessage(), 68));
 }
 
 void BtHandshakeMessageTest::testToString() {
   unsigned char infoHash[] = { 0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff,
-			       0xff, 0xff, 0xff, 0xff, 0xff };
+                               0xff, 0xff, 0xff, 0xff, 0xff,
+                               0xff, 0xff, 0xff, 0xff, 0xff,
+                               0xff, 0xff, 0xff, 0xff, 0xff };
   unsigned char peerId[] = { 0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
-			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0 };
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
+                             0xf0, 0xf0, 0xf0, 0xf0, 0xf0 };
 
   BtHandshakeMessage msg;
   msg.setInfoHash(infoHash);

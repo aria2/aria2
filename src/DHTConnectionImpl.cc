@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -48,7 +48,7 @@
 namespace aria2 {
 
 DHTConnectionImpl::DHTConnectionImpl():_socket(new SocketCore(SOCK_DGRAM)),
-				       _logger(LogFactory::getInstance()) {}
+                                       _logger(LogFactory::getInstance()) {}
 
 DHTConnectionImpl::~DHTConnectionImpl() {}
 
@@ -56,7 +56,7 @@ bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
 {
   std::deque<int32_t> randPorts = ports.flush();
   std::random_shuffle(randPorts.begin(), randPorts.end(),
-		      *SimpleRandomizer::getInstance().get());
+                      *SimpleRandomizer::getInstance().get());
   
   for(std::deque<int32_t>::const_iterator portItr = randPorts.begin();
       portItr != randPorts.end(); ++portItr) {
@@ -88,7 +88,7 @@ bool DHTConnectionImpl::bind(uint16_t& port)
 }
 
 ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len,
-					  std::string& host, uint16_t& port)
+                                          std::string& host, uint16_t& port)
 {
   std::pair<std::string, uint16_t> remoteHost;
   ssize_t length = _socket->readDataFrom(data, len, remoteHost);
@@ -102,7 +102,7 @@ ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len,
 }
 
 ssize_t DHTConnectionImpl::sendMessage(const unsigned char* data, size_t len,
-				       const std::string& host, uint16_t port)
+                                       const std::string& host, uint16_t port)
 {
   return _socket->writeData(data, len, host, port);
 }

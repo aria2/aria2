@@ -31,9 +31,9 @@ public:
     virtual SharedHandle<Piece> getMissingPiece(size_t index)
     {
       if(missingIndexes.find(index) != missingIndexes.end()) {
-	return SharedHandle<Piece>(new Piece(index, 0));
+        return SharedHandle<Piece>(new Piece(index, 0));
       } else {
-	return SharedHandle<Piece>();
+        return SharedHandle<Piece>();
       }
     }
   };

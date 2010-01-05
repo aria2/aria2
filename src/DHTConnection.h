@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -45,10 +45,10 @@ public:
   virtual ~DHTConnection() {}
 
   virtual ssize_t receiveMessage(unsigned char* data, size_t len,
-				 std::string& host, uint16_t& port) = 0;
+                                 std::string& host, uint16_t& port) = 0;
 
   virtual ssize_t sendMessage(const unsigned char* data, size_t len,
-			      const std::string& host, uint16_t port) = 0;
+                              const std::string& host, uint16_t port) = 0;
 };
 
 } // namespace aria2

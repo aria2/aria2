@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -87,9 +87,9 @@ void DefaultBtMessageDispatcher::sendMessages() {
     messageQueue.pop_front();
     if(msg->isUploading() && !msg->isSendingInProgress()) {
       if(_requestGroupMan->doesOverallUploadSpeedExceed() ||
-	 _downloadContext->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
-	tempQueue.push_back(msg);
-	continue;
+         _downloadContext->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
+        tempQueue.push_back(msg);
+        continue;
       }
     }
     msg->send();
@@ -106,10 +106,10 @@ void DefaultBtMessageDispatcher::sendMessages() {
     // the same order as it is queued.
     if(!messageQueue.empty() && messageQueue.front()->isSendingInProgress()) {
       messageQueue.insert(messageQueue.begin()+1,
-			  tempQueue.begin(), tempQueue.end());
+                          tempQueue.begin(), tempQueue.end());
     } else {
       messageQueue.insert(messageQueue.begin(),
-			  tempQueue.begin(), tempQueue.end());
+                          tempQueue.begin(), tempQueue.end());
     }
   }
 }
@@ -121,8 +121,8 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32
 
   BtMessages tempQueue = messageQueue;
 
-   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
- 		&BtMessage::onCancelSendingPieceEvent, event);
+  forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
+                  &BtMessage::onCancelSendingPieceEvent, event);
 }
 
 // Cancel sending piece message to peer.
@@ -145,9 +145,9 @@ public:
   void operator()(const RequestSlot& slot) const
   {
     _logger->debug(MSG_DELETING_REQUEST_SLOT,
-		   _cuid,
-		   slot.getIndex(),
-		   slot.getBlockIndex());
+                   _cuid,
+                   slot.getIndex(),
+                   slot.getBlockIndex());
     _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
     _piece->cancelBlock(slot.getBlockIndex());
   }
@@ -170,7 +170,7 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction(const PieceHand
 
   BtMessages tempQueue = messageQueue;
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
-		  &BtMessage::onAbortOutstandingRequestEvent, event);
+                  &BtMessage::onAbortOutstandingRequestEvent, event);
 }
 
 class ProcessChokedRequestSlot {
@@ -181,8 +181,8 @@ private:
   Logger* _logger;
 public:
   ProcessChokedRequestSlot(int32_t cuid,
-			   const SharedHandle<Peer>& peer,
-			   const SharedHandle<PieceStorage>& pieceStorage):
+                           const SharedHandle<Peer>& peer,
+                           const SharedHandle<PieceStorage>& pieceStorage):
     _cuid(cuid),
     _peer(peer),
     _pieceStorage(pieceStorage),
@@ -192,9 +192,9 @@ public:
   {
     if(!_peer->isInPeerAllowedIndexSet(slot.getIndex())) {
       _logger->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
-		     _cuid,
-		     slot.getIndex(),
-		     slot.getBlockIndex());
+                     _cuid,
+                     slot.getIndex(),
+                     slot.getBlockIndex());
       _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       SharedHandle<Piece> piece = _pieceStorage->getPiece(slot.getIndex());
       piece->cancelBlock(slot.getBlockIndex());
@@ -220,11 +220,11 @@ public:
 void DefaultBtMessageDispatcher::doChokedAction()
 {
   std::for_each(requestSlots.begin(), requestSlots.end(),
-		ProcessChokedRequestSlot(cuid, peer, _pieceStorage));
+                ProcessChokedRequestSlot(cuid, peer, _pieceStorage));
 
   requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
-				    FindChokedRequestSlot(peer)),
-		     requestSlots.end());
+                                    FindChokedRequestSlot(peer)),
+                     requestSlots.end());
 }
 
 // localhost dispatched choke message to the peer.
@@ -234,7 +234,7 @@ void DefaultBtMessageDispatcher::doChokingAction()
 
   BtMessages tempQueue = messageQueue;
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
-		&BtMessage::onChokingEvent, event);
+                  &BtMessage::onChokingEvent, event);
 }
 
 class ProcessStaleRequestSlot {
@@ -249,11 +249,11 @@ private:
   Logger* _logger;
 public:
   ProcessStaleRequestSlot(int32_t cuid, const SharedHandle<Peer>& peer,
-			  const SharedHandle<PieceStorage>& pieceStorage,
-			  BtMessageDispatcher* dispatcher,
-			  const WeakHandle<BtMessageFactory>& factory,
-			  const struct timeval& now,
-			  time_t requestTimeout):
+                          const SharedHandle<PieceStorage>& pieceStorage,
+                          BtMessageDispatcher* dispatcher,
+                          const WeakHandle<BtMessageFactory>& factory,
+                          const struct timeval& now,
+                          time_t requestTimeout):
     _cuid(cuid),
     _peer(peer),
     _pieceStorage(pieceStorage),
@@ -267,20 +267,20 @@ public:
   {
     if(slot.isTimeout(_now, _requestTimeout)) {
       _logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
-		     _cuid,
-		     slot.getBlockIndex());
+                     _cuid,
+                     slot.getBlockIndex());
       _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       slot.getPiece()->cancelBlock(slot.getBlockIndex());
       _peer->snubbing(true);
     } else if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
       _logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
-		     _cuid,
-		     slot.getBlockIndex());
+                     _cuid,
+                     slot.getBlockIndex());
       _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       _messageDispatcher->addMessageToQueue
-	(_messageFactory->createCancelMessage(slot.getIndex(),
-					      slot.getBegin(),
-					      slot.getLength()));
+        (_messageFactory->createCancelMessage(slot.getIndex(),
+                                              slot.getBegin(),
+                                              slot.getLength()));
     }
   }
 };
@@ -292,8 +292,8 @@ private:
   time_t _requestTimeout;
 public:
   FindStaleRequestSlot(const SharedHandle<PieceStorage>& pieceStorage,
-		       const struct timeval& now,
-		       time_t requestTimeout):
+                       const struct timeval& now,
+                       time_t requestTimeout):
     _pieceStorage(pieceStorage),
     _now(now),
     _requestTimeout(requestTimeout) {}
@@ -304,9 +304,9 @@ public:
       return true;
     } else {
       if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
-	return true;
+        return true;
       } else {
-	return false;
+        return false;
       }
     }
   }
@@ -318,18 +318,18 @@ void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
   gettimeofday(&now, 0);
 
   std::for_each(requestSlots.begin(), requestSlots.end(),
-		ProcessStaleRequestSlot(cuid,
-					peer,
-					_pieceStorage,
-					this,
-					messageFactory,
-					now,
-					requestTimeout));
+                ProcessStaleRequestSlot(cuid,
+                                        peer,
+                                        _pieceStorage,
+                                        this,
+                                        messageFactory,
+                                        now,
+                                        requestTimeout));
   requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
-				    FindStaleRequestSlot(_pieceStorage,
-							 now,
-							 requestTimeout)),
-		     requestSlots.end());
+                                    FindStaleRequestSlot(_pieceStorage,
+                                                         now,
+                                                         requestTimeout)),
+                     requestSlots.end());
 }
 
 bool DefaultBtMessageDispatcher::isSendingInProgress()
@@ -404,7 +404,7 @@ void DefaultBtMessageDispatcher::addOutstandingRequest(const RequestSlot& slot)
 size_t DefaultBtMessageDispatcher::countOutstandingUpload()
 {
   return std::count_if(messageQueue.begin(), messageQueue.end(),
-		       mem_fun_sh(&BtMessage::isUploading));
+                       mem_fun_sh(&BtMessage::isUploading));
 }
 
 void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -67,11 +67,11 @@ namespace aria2 {
 static const size_t BUFSIZE = 16*1024;
 
 DownloadCommand::DownloadCommand(int cuid,
-				 const RequestHandle& req,
-				 const SharedHandle<FileEntry>& fileEntry,
-				 RequestGroup* requestGroup,
-				 DownloadEngine* e,
-				 const SocketHandle& s):
+                                 const RequestHandle& req,
+                                 const SharedHandle<FileEntry>& fileEntry,
+                                 RequestGroup* requestGroup,
+                                 DownloadEngine* e,
+                                 const SocketHandle& s):
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   _buf(new unsigned char[BUFSIZE])
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -83,11 +83,11 @@ DownloadCommand::DownloadCommand(int cuid,
     if(getOption()->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
       std::string algo = _requestGroup->getDownloadContext()->getPieceHashAlgo();
       if(MessageDigestContext::supports(algo)) {
-	_messageDigestContext.reset(new MessageDigestContext());
-	_messageDigestContext->trySetAlgo(algo);
-	_messageDigestContext->digestInit();
-	
-	_pieceHashValidationEnabled = true;
+        _messageDigestContext.reset(new MessageDigestContext());
+        _messageDigestContext->trySetAlgo(algo);
+        _messageDigestContext->digestInit();
+        
+        _pieceHashValidationEnabled = true;
       }
     }
   }
@@ -119,7 +119,7 @@ bool DownloadCommand::executeInternal() {
     if(static_cast<uint64_t>(segment->getPosition()+segment->getLength()) <=
        static_cast<uint64_t>(_fileEntry->getLastOffset())) {
       bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
-			 BUFSIZE);
+                         BUFSIZE);
     } else {
       bufSize = std::min(static_cast<size_t>(_fileEntry->getLastOffset()-segment->getPositionToWrite()), BUFSIZE);
     }
@@ -147,12 +147,12 @@ bool DownloadCommand::executeInternal() {
 
   if(_contentEncodingDecoder.isNull()) {
     diskAdaptor->writeData(bufFinal, bufSizeFinal,
-			   segment->getPositionToWrite());
+                           segment->getPositionToWrite());
   } else {
     std::string out = _contentEncodingDecoder->decode(bufFinal, bufSizeFinal);
     diskAdaptor->writeData(reinterpret_cast<const unsigned char*>(out.data()),
-			   out.size(),
-			   segment->getPositionToWrite());
+                           out.size(),
+                           segment->getPositionToWrite());
     bufSizeFinal = out.size();
   }
 
@@ -178,16 +178,16 @@ bool DownloadCommand::executeInternal() {
        segment->getPositionToWrite() == _fileEntry->getLastOffset()) {
       segmentPartComplete = true;
     } else if(segment->getLength() == 0 && bufSize == 0 &&
-	      !socket->wantRead() && !socket->wantWrite()) {
+              !socket->wantRead() && !socket->wantWrite()) {
       segmentPartComplete = true;
     }
   } else if(!_transferEncodingDecoder.isNull() &&
-	    (segment->complete() || segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
+            (segment->complete() || segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
     segmentPartComplete = true;
   } else if((_transferEncodingDecoder.isNull() ||
-	     _transferEncodingDecoder->finished()) &&
-	    (_contentEncodingDecoder.isNull() ||
-	     _contentEncodingDecoder->finished())) {
+             _transferEncodingDecoder->finished()) &&
+            (_contentEncodingDecoder.isNull() ||
+             _contentEncodingDecoder->finished())) {
     segmentPartComplete = true;
   }
 
@@ -205,25 +205,25 @@ bool DownloadCommand::executeInternal() {
 #ifdef ENABLE_MESSAGE_DIGEST
 
       {
-	std::string expectedPieceHash =
-	  _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
-	if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
-	  if(segment->isHashCalculated()) {
-	    logger->debug("Hash is available! index=%lu",
-			  static_cast<unsigned long>(segment->getIndex()));
-	    validatePieceHash(segment, expectedPieceHash, segment->getHashString());
-	  } else {
-	    _messageDigestContext->digestReset();
-	    validatePieceHash(segment, expectedPieceHash,
-			      MessageDigestHelper::digest
-			      (_messageDigestContext.get(),
-			       _requestGroup->getPieceStorage()->getDiskAdaptor(),
-			       segment->getPosition(),
-			       segment->getLength()));
-	  }
-	} else {
-	  _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
-	}
+        std::string expectedPieceHash =
+          _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
+        if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
+          if(segment->isHashCalculated()) {
+            logger->debug("Hash is available! index=%lu",
+                          static_cast<unsigned long>(segment->getIndex()));
+            validatePieceHash(segment, expectedPieceHash, segment->getHashString());
+          } else {
+            _messageDigestContext->digestReset();
+            validatePieceHash(segment, expectedPieceHash,
+                              MessageDigestHelper::digest
+                              (_messageDigestContext.get(),
+                               _requestGroup->getPieceStorage()->getDiskAdaptor(),
+                               segment->getPosition(),
+                               segment->getLength()));
+          }
+        } else {
+          _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+        }
       }
 
 #else // !ENABLE_MESSAGE_DIGEST
@@ -253,10 +253,10 @@ void DownloadCommand::checkLowestDownloadSpeed() const
     unsigned int nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
       throw DL_ABORT_EX2(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,
-				      nowSpeed,
-				      lowestDownloadSpeedLimit,
-				      req->getHost().c_str()).str(),
-			 downloadresultcode::TOO_SLOW_DOWNLOAD_SPEED);
+                                      nowSpeed,
+                                      lowestDownloadSpeedLimit,
+                                      req->getHost().c_str()).str(),
+                         downloadresultcode::TOO_SLOW_DOWNLOAD_SPEED);
     }
   }
 }
@@ -268,10 +268,10 @@ bool DownloadCommand::prepareForNextSegment() {
     // here.
     if(_requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
       const SharedHandle<FileEntry>& fileEntry =
-	_requestGroup->getDownloadContext()->getFirstFileEntry();
+        _requestGroup->getDownloadContext()->getFirstFileEntry();
       if(fileEntry->getLength() == 0) {
-	fileEntry->setLength
-	  (_requestGroup->getPieceStorage()->getCompletedLength());
+        fileEntry->setLength
+          (_requestGroup->getPieceStorage()->getCompletedLength());
       }
     }
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -291,16 +291,16 @@ bool DownloadCommand::prepareForNextSegment() {
     if(_segments.size() == 1) {
       SegmentHandle tempSegment = _segments.front();
       if(!tempSegment->complete()) {
-	return prepareForRetry(0);
+        return prepareForRetry(0);
       }
       SegmentHandle nextSegment =
-	_requestGroup->getSegmentMan()->getSegment(cuid,
-						   tempSegment->getIndex()+1);
+        _requestGroup->getSegmentMan()->getSegment(cuid,
+                                                   tempSegment->getIndex()+1);
       if(!nextSegment.isNull() && nextSegment->getWrittenLength() == 0) {
-	e->commands.push_back(this);
-	return false;
+        e->commands.push_back(this);
+        return false;
       } else {
-	return prepareForRetry(0);
+        return prepareForRetry(0);
       }
     } else {
       return prepareForRetry(0);
@@ -311,18 +311,18 @@ bool DownloadCommand::prepareForNextSegment() {
 #ifdef ENABLE_MESSAGE_DIGEST
 
 void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
-					const std::string& expectedPieceHash,
-					const std::string& actualPieceHash)
+                                        const std::string& expectedPieceHash,
+                                        const std::string& actualPieceHash)
 {
   if(actualPieceHash == expectedPieceHash) {
     logger->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
     _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
   } else {
     logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		 segment->getIndex(),
-		 util::itos(segment->getPosition(), true).c_str(),
-		 expectedPieceHash.c_str(),
-		 actualPieceHash.c_str());
+                 segment->getIndex(),
+                 util::itos(segment->getPosition(), true).c_str(),
+                 expectedPieceHash.c_str(),
+                 actualPieceHash.c_str());
     segment->clear();
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
     throw DL_RETRY_EX

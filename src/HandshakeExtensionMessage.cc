@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -121,7 +121,7 @@ void HandshakeExtensionMessage::doReceivedAction()
   if(_metadataSize > 0) {
     if(attrs.containsKey(bittorrent::METADATA_SIZE)) {
       if(_metadataSize != (size_t)attrs[bittorrent::METADATA_SIZE].i()) {
-	throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
+        throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
       }
     } else {
       attrs[bittorrent::METADATA_SIZE] = _metadataSize;
@@ -130,12 +130,12 @@ void HandshakeExtensionMessage::doReceivedAction()
       _dctx->getOwnerRequestGroup()->initPieceStorage();
       
       SharedHandle<PieceStorage> pieceStorage =
-	_dctx->getOwnerRequestGroup()->getPieceStorage();
+        _dctx->getOwnerRequestGroup()->getPieceStorage();
       pieceStorage->setEndGamePieceNum(0);
     }
   } else if(!attrs.containsKey(bittorrent::METADATA)) {
     throw DL_ABORT_EX("Peer didn't provide metadata_size."
-		      " It seems that it doesn't have whole metadata.");
+                      " It seems that it doesn't have whole metadata.");
   }
 }
 
@@ -160,11 +160,11 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   if(length < 1) {
     throw DL_ABORT_EX
       (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-		    EXTENSION_NAME.c_str(), length).str());
+                    EXTENSION_NAME.c_str(), length).str());
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
-		      util::urlencode(data, length).c_str());
+                      util::urlencode(data, length).c_str());
   const BDE dict = bencode::decode(data+1, length-1);
   if(!dict.isDict()) {
     throw DL_ABORT_EX("Unexpected payload format for extended message handshake");
@@ -180,9 +180,9 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   const BDE& extDict = dict["m"];
   if(extDict.isDict()) {
     for(BDE::Dict::const_iterator i = extDict.dictBegin();
-	i != extDict.dictEnd(); ++i) {
+        i != extDict.dictEnd(); ++i) {
       if((*i).second.isInteger()) {
-	msg->_extensions[(*i).first] = (*i).second.i();
+        msg->_extensions[(*i).first] = (*i).second.i();
       }
     }
   }

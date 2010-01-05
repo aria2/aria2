@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -50,14 +50,14 @@ public:
 
   virtual void
   addMessageToQueue(const SharedHandle<DHTMessage>& message,
-		    time_t timeout,
-		    const SharedHandle<DHTMessageCallback>& callback =
-		    SharedHandle<DHTMessageCallback>()) = 0;
+                    time_t timeout,
+                    const SharedHandle<DHTMessageCallback>& callback =
+                    SharedHandle<DHTMessageCallback>()) = 0;
 
   virtual void
   addMessageToQueue(const SharedHandle<DHTMessage>& message,
-		    const SharedHandle<DHTMessageCallback>& callback =
-		    SharedHandle<DHTMessageCallback>()) = 0;
+                    const SharedHandle<DHTMessageCallback>& callback =
+                    SharedHandle<DHTMessageCallback>()) = 0;
 
   virtual void sendMessages() = 0;
 

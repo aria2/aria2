@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -42,7 +42,7 @@ namespace aria2 {
 #ifdef HAVE_LIBCARES1_5
 void callback(void* arg, int status, int timeouts, struct hostent* host)
 #else
-void callback(void* arg, int status, struct hostent* host)
+  void callback(void* arg, int status, struct hostent* host)
 #endif // HAVE_LIBCARES1_5
 {
   AsyncNameResolver* resolverPtr = reinterpret_cast<AsyncNameResolver*>(arg);
@@ -98,7 +98,7 @@ int AsyncNameResolver::getsock(sock_t* sockets) const
 {
   // TODO cast to int* might cause problem with Windows SOCKET?
   return ares_getsock(channel, reinterpret_cast<int*>(sockets),
-		      ARES_GETSOCK_MAXNUM);
+                      ARES_GETSOCK_MAXNUM);
 }
 
 void AsyncNameResolver::process(ares_socket_t readfd, ares_socket_t writefd)

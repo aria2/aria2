@@ -94,7 +94,7 @@ void BtDependencyTest::testResolve()
   const SharedHandle<FileEntry>& firstFileEntry =
     dependant->getDownloadContext()->getFirstFileEntry();
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-		       firstFileEntry->getPath());
+                       firstFileEntry->getPath());
   CPPUNIT_ASSERT_EQUAL((size_t)1, firstFileEntry->getRemainingUris().size());
 }
 
@@ -139,7 +139,7 @@ void BtDependencyTest::testResolve_loadError()
   CPPUNIT_ASSERT
     (!dependant->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT));
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-		       dependant->getFirstFilePath());
+                       dependant->getFirstFilePath());
 }
 
 void BtDependencyTest::testResolve_dependeeFailure()
@@ -153,7 +153,7 @@ void BtDependencyTest::testResolve_dependeeFailure()
   CPPUNIT_ASSERT
     (!dependant->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT));
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-		       dependant->getFirstFilePath());
+                       dependant->getFirstFilePath());
 }
 
 void BtDependencyTest::testResolve_dependeeInProgress()
@@ -167,7 +167,7 @@ void BtDependencyTest::testResolve_dependeeInProgress()
   BtDependency dep(dependant, dependee);
   CPPUNIT_ASSERT(!dep.resolve());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
-		       dependant->getFirstFilePath());
+                       dependant->getFirstFilePath());
 }
 
 } // namespace aria2

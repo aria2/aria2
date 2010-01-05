@@ -13,16 +13,16 @@ public:
   bool _doReceivedActionCalled;
 public:
   MockExtensionMessage(const std::string& extensionName,
-		       uint8_t extensionMessageID,
-		       const unsigned char* data,
-		       size_t length):_extensionName(extensionName),
-				      _extensionMessageID(extensionMessageID),
-				      _data(&data[0], &data[length]),
-				      _doReceivedActionCalled(false) {}
+                       uint8_t extensionMessageID,
+                       const unsigned char* data,
+                       size_t length):_extensionName(extensionName),
+                                      _extensionMessageID(extensionMessageID),
+                                      _data(&data[0], &data[length]),
+                                      _doReceivedActionCalled(false) {}
 
   MockExtensionMessage(const std::string& extensionName,
-		       uint8_t extensionMessageID,
-		       const std::string& data):
+                       uint8_t extensionMessageID,
+                       const std::string& data):
     _extensionName(extensionName),
     _extensionMessageID(extensionMessageID),
     _data(data),

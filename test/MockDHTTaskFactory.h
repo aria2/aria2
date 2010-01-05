@@ -11,14 +11,14 @@ public:
 
   virtual SharedHandle<DHTTask>
   createPingTask(const SharedHandle<DHTNode>& remoteNode,
-		 size_t numRetry = 0)
+                 size_t numRetry = 0)
   {
     return SharedHandle<DHTTask>();
   }
 
   virtual SharedHandle<DHTTask>
   createGetIDTask(const SharedHandle<DHTNode>& remoteNode,
-		  size_t numRetry = 0)
+                  size_t numRetry = 0)
   {
     return SharedHandle<DHTTask>();
   }
@@ -36,8 +36,8 @@ public:
 
   virtual SharedHandle<DHTTask>
   createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
-		       const SharedHandle<BtRuntime>& btRuntime,
-		       const SharedHandle<PeerStorage>& peerStorage)
+                       const SharedHandle<BtRuntime>& btRuntime,
+                       const SharedHandle<PeerStorage>& peerStorage)
   {
     return SharedHandle<DHTTask>();
   }
@@ -50,7 +50,7 @@ public:
 
   virtual SharedHandle<DHTTask>
   createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-			const SharedHandle<DHTNode>& newNode)
+                        const SharedHandle<DHTNode>& newNode)
   {
     return SharedHandle<DHTTask>();
   }

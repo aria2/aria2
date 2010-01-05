@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -65,7 +65,7 @@ void SimpleLogger::writeLog
     strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)20);
   snprintf(datestr+dateLength, sizeof(datestr)-dateLength,
-	   ".%06ld", tv.tv_usec);
+           ".%06ld", tv.tv_usec);
   writeHeader(o, datestr, logLevelLabel);
   {
     char buf[1024];

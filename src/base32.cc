@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -58,8 +58,8 @@ std::string encode(const std::string& src)
     if(count == 5) {
       char temp[8];
       for(size_t j = 0; j < 8; ++j) {
-	temp[7-j] = B32TABLE[buf&0x1f];
-	buf >>= 5;
+        temp[7-j] = B32TABLE[buf&0x1f];
+        buf >>= 5;
       }
       ret += std::string(&temp[0], &temp[8]);
       count = 0;
@@ -106,15 +106,15 @@ std::string decode(const std::string& src)
       char ch = src[i+j];
       unsigned char value;
       if('A' <= ch && ch <= 'Z') {
-	value = ch-'A';
+        value = ch-'A';
       } else if('2' <= ch && ch <= '7') {
-	value = ch-'2'+26;
+        value = ch-'2'+26;
       } else if(ch == '=') {
-	done = true;
-	break;
+        done = true;
+        break;
       } else {
-	ret.clear();
-	return ret;
+        ret.clear();
+        return ret;
       }
       buf <<= 5;
       buf += value;

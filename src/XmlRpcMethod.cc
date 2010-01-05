@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -86,29 +86,29 @@ static void gatherOption
     const std::string& optionName = (*first).first;
     if(changeableOptions.count(optionName) == 0) {
       throw DL_ABORT_EX
-	(StringFormat
-	 ("%s cannot be changed or unknown option.", optionName.c_str()).str());
+        (StringFormat
+         ("%s cannot be changed or unknown option.", optionName.c_str()).str());
     } else {
       SharedHandle<OptionHandler> optionHandler =
-	optionParser->findByName(optionName);
+        optionParser->findByName(optionName);
       if(optionHandler.isNull()) {
-	throw DL_ABORT_EX
-	  (StringFormat
-	   ("We don't know how to deal with %s option",
-	    optionName.c_str()).str());
+        throw DL_ABORT_EX
+          (StringFormat
+           ("We don't know how to deal with %s option",
+            optionName.c_str()).str());
       }
       // header and index-out option can take array as value
       const BDE& value = (*first).second;
       if((optionName == PREF_HEADER || optionName == PREF_INDEX_OUT) &&
-	 value.isList()){
-	for(BDE::List::const_iterator argiter = value.listBegin();
-	    argiter != value.listEnd(); ++argiter) {
-	  if((*argiter).isString()) {
-	    optionHandler->parse(*option.get(), (*argiter).s());
-	  }
-	}
+         value.isList()){
+        for(BDE::List::const_iterator argiter = value.listBegin();
+            argiter != value.listEnd(); ++argiter) {
+          if((*argiter).isString()) {
+            optionHandler->parse(*option.get(), (*argiter).s());
+          }
+        }
       } else if(value.isString()) {
-	optionHandler->parse(*option.get(), value.s());
+        optionHandler->parse(*option.get(), value.s());
       }
     }
   }  
@@ -118,17 +118,17 @@ void XmlRpcMethod::gatherRequestOption
 (const SharedHandle<Option>& option, const BDE& optionsDict)
 {
   gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
-	       listRequestOptions(),
-	       option, _optionParser);
+               listRequestOptions(),
+               option, _optionParser);
 }
 
 // Copy option in the range [optNameFirst, optNameLast) from src to
 // dest.
 template<typename InputIterator>
 static void applyOption(InputIterator optNameFirst,
-			InputIterator optNameLast,
-			Option* dest,
-			Option* src)
+                        InputIterator optNameLast,
+                        Option* dest,
+                        Option* src)
 {
   for(; optNameFirst != optNameLast; ++optNameFirst) {
     if(src->defined(*optNameFirst)) {
@@ -154,14 +154,14 @@ void XmlRpcMethod::gatherChangeableOption
 (const SharedHandle<Option>& option, const BDE& optionsDict)
 {
   gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
-	       listChangeableOptions(),
-	       option, _optionParser);
+               listChangeableOptions(),
+               option, _optionParser);
 }
 
 void XmlRpcMethod::applyChangeableOption(Option* dest, Option* src) const
 {
   applyOption(listChangeableOptions().begin(), listChangeableOptions().end(),
-	      dest, src);
+              dest, src);
 }
 
 const std::set<std::string>& listChangeableGlobalOptions()
@@ -180,15 +180,15 @@ void XmlRpcMethod::gatherChangeableGlobalOption
 (const SharedHandle<Option>& option, const BDE& optionsDict)
 {
   gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
-	       listChangeableGlobalOptions(),
-	       option, _optionParser);
+               listChangeableGlobalOptions(),
+               option, _optionParser);
 }
 
 void XmlRpcMethod::applyChangeableGlobalOption(Option* dest, Option* src) const
 {
   applyOption(listChangeableGlobalOptions().begin(),
-	      listChangeableGlobalOptions().end(),
-	      dest, src);
+              listChangeableGlobalOptions().end(),
+              dest, src);
 }
 
 } // namespace xmlrpc

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -53,8 +53,8 @@ const std::string DHTFindNodeReplyMessage::FIND_NODE("find_node");
 const std::string DHTFindNodeReplyMessage::NODES("nodes");
 
 DHTFindNodeReplyMessage::DHTFindNodeReplyMessage(const SharedHandle<DHTNode>& localNode,
-						 const SharedHandle<DHTNode>& remoteNode,
-						 const std::string& transactionID):
+                                                 const SharedHandle<DHTNode>& remoteNode,
+                                                 const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID) {}
 
 DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
@@ -76,12 +76,12 @@ BDE DHTFindNodeReplyMessage::getResponse()
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
   for(std::deque<SharedHandle<DHTNode> >::const_iterator i =
-	_closestKNodes.begin();
+        _closestKNodes.begin();
       i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
     SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
     if(bittorrent::createcompact(buffer+20+offset, node->getIPAddress(),
-				 node->getPort())) {
+                                 node->getPort())) {
       offset += 26;
     }
   }

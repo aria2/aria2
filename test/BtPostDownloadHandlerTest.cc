@@ -78,7 +78,7 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
     (std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
      bittorrent::getInfoHashString(groups.front()->getDownloadContext()));
   CPPUNIT_ASSERT(std::find(rg.followedBy().begin(), rg.followedBy().end(),
-			   groups.front()->getGID()) != rg.followedBy().end());
+                           groups.front()->getGID()) != rg.followedBy().end());
 }
 
 } // namespace aria2

@@ -33,12 +33,12 @@ public:
   public:
     virtual SharedHandle<DHTMessage>
     createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			       const std::deque<SharedHandle<Peer> >& peers,
-			       const std::string& token,
-			       const std::string& transactionID)
+                               const std::deque<SharedHandle<Peer> >& peers,
+                               const std::string& token,
+                               const std::string& transactionID)
     {
       SharedHandle<MockDHTMessage> m
-	(new MockDHTMessage(_localNode, remoteNode, "get_peers", transactionID));
+        (new MockDHTMessage(_localNode, remoteNode, "get_peers", transactionID));
       m->_peers = peers;
       m->_token = token;
       return m;
@@ -46,12 +46,12 @@ public:
 
     virtual SharedHandle<DHTMessage>
     createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-			       const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-			       const std::string& token,
-			       const std::string& transactionID)
+                               const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+                               const std::string& token,
+                               const std::string& transactionID)
     {
       SharedHandle<MockDHTMessage> m
-	(new MockDHTMessage(_localNode, remoteNode, "get_peers", transactionID));
+        (new MockDHTMessage(_localNode, remoteNode, "get_peers", transactionID));
       m->_nodes = closestKNodes;
       m->_token = token;
       return m;
@@ -89,7 +89,7 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
   dict["a"] = aDict;
 
   CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
-		       util::urlencode(msgbody));
+                       util::urlencode(msgbody));
 }
 
 void DHTGetPeersMessageTest::testDoReceivedAction()
@@ -113,11 +113,11 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
 
   DHTGetPeersMessage msg(localNode, remoteNode, infoHash, transactionID);
   msg.setTokenTracker(WeakHandle<DHTTokenTracker>
-		      (&tokenTracker));
+                      (&tokenTracker));
   msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>
-			   (&dispatcher));
+                           (&dispatcher));
   msg.setMessageFactory(WeakHandle<DHTMessageFactory>
-			(&factory));
+                        (&factory));
   {
     // localhost has peer contact information for that infohash.
     DHTPeerAnnounceStorage peerAnnounceStorage;
@@ -125,7 +125,7 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     peerAnnounceStorage.addPeerAnnounce(infoHash, "192.168.0.101", 6889);
 
     msg.setPeerAnnounceStorage(WeakHandle<DHTPeerAnnounceStorage>
-			       (&peerAnnounceStorage));
+                               (&peerAnnounceStorage));
   
     msg.doReceivedAction();
 
@@ -159,9 +159,9 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     routingTable.addNode(returnNode1);
 
     msg.setPeerAnnounceStorage(WeakHandle<DHTPeerAnnounceStorage>
-			       (&peerAnnounceStorage));
+                               (&peerAnnounceStorage));
     msg.setRoutingTable(WeakHandle<DHTRoutingTable>
-			(&routingTable));
+                        (&routingTable));
 
     msg.doReceivedAction();
 

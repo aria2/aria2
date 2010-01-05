@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -48,8 +48,8 @@ private:
   size_t pieceLength;
 public:
   BtPieceMessageValidator(const BtPieceMessage* message,
-			  size_t numPiece,
-			  size_t pieceLength):
+                          size_t numPiece,
+                          size_t pieceLength):
     message(message),
     numPiece(numPiece),
     pieceLength(pieceLength) {}

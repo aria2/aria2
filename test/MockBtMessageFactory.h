@@ -25,7 +25,7 @@ public:
 
   virtual SharedHandle<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
-			 const unsigned char* peerId) {
+                         const unsigned char* peerId) {
     return SharedHandle<BtHandshakeMessage>();
   }
 

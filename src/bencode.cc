@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -52,7 +52,7 @@ static void checkdelim(std::istream& ss, const char delim = ':')
   if(!(ss.get(d) && d == delim)) {
     throw DL_ABORT_EX
       (StringFormat("Bencode decoding failed: Delimiter '%c' not found.",
-		    delim).str());
+                    delim).str());
   }
 }
 
@@ -62,7 +62,7 @@ static std::string decoderawstring(std::istream& ss)
   ss >> length;
   if(!ss || length < 0) {
     throw DL_ABORT_EX("Bencode decoding failed:"
-		      " A positive integer expected but none found.");
+                      " A positive integer expected but none found.");
   }
   // TODO check length, it must be less than or equal to INT_MAX
   checkdelim(ss);
@@ -73,8 +73,8 @@ static std::string decoderawstring(std::istream& ss)
   if(ss.gcount() != static_cast<int>(length)) {
     throw DL_ABORT_EX
       (StringFormat("Bencode decoding failed:"
-		    " Expected %lu bytes of data, but only %d read.",
-		    static_cast<unsigned long>(length), ss.gcount()).str());
+                    " Expected %lu bytes of data, but only %d read.",
+                    static_cast<unsigned long>(length), ss.gcount()).str());
   }
   return str;
 }
@@ -90,7 +90,7 @@ static BDE decodeinteger(std::istream& ss)
   ss >> integer;
   if(!ss) {
     throw DL_ABORT_EX("Bencode decoding failed:"
-		      " Integer expected but none found");
+                      " Integer expected but none found");
   }
   checkdelim(ss, 'e');
   return BDE(integer);
@@ -110,7 +110,7 @@ static BDE decodedict(std::istream& ss, size_t depth)
     }
   }
   throw DL_ABORT_EX("Bencode decoding failed:"
-		    " Unexpected EOF in dict context. 'e' expected.");
+                    " Unexpected EOF in dict context. 'e' expected.");
 }
 
 static BDE decodelist(std::istream& ss, size_t depth)
@@ -126,7 +126,7 @@ static BDE decodelist(std::istream& ss, size_t depth)
     }
   }
   throw DL_ABORT_EX("Bencode decoding failed:"
-		    " Unexpected EOF in list context. 'e' expected.");
+                    " Unexpected EOF in list context. 'e' expected.");
 }
 
 static void checkDepth(size_t depth)
@@ -142,8 +142,8 @@ static BDE decodeiter(std::istream& ss, size_t depth)
   char c;
   if(!ss.get(c)) {
     throw DL_ABORT_EX("Bencode decoding failed:"
-		      " Unexpected EOF in term context."
-		      " 'd', 'l', 'i' or digit is expected.");
+                      " Unexpected EOF in term context."
+                      " 'd', 'l', 'i' or digit is expected.");
   }
   if(c == 'd') {
     return decodedict(ss, depth+1);
@@ -198,7 +198,7 @@ BDE decodeFromFile(const std::string& filename)
   } else {
     throw DL_ABORT_EX
       (StringFormat("Bencode decoding failed:"
-		    " Cannot open file '%s'.", filename.c_str()).str());
+                    " Cannot open file '%s'.", filename.c_str()).str());
   }
 }
 

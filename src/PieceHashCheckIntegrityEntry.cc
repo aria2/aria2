@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -41,7 +41,7 @@
 namespace aria2 {
 
 PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry(RequestGroup* requestGroup,
-							   Command* nextCommand):
+                                                           Command* nextCommand):
   CheckIntegrityEntry(requestGroup, nextCommand) {}
 
 PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
@@ -60,7 +60,7 @@ void PieceHashCheckIntegrityEntry::initValidator()
 #ifdef ENABLE_MESSAGE_DIGEST
   IteratableChunkChecksumValidatorHandle validator
     (new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
-					  _requestGroup->getPieceStorage()));
+                                          _requestGroup->getPieceStorage()));
   validator->init();
   _validator = validator;
 #endif // ENABLE_MESSAGE_DIGEST

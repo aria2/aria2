@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -55,7 +55,7 @@ namespace aria2 {
 const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():_contentEncodingEnabled(true),
-			   userAgent(USER_AGENT)
+                           userAgent(USER_AGENT)
 {}
 
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
@@ -98,7 +98,7 @@ RangeHandle HttpRequest::getRange() const
     return SharedHandle<Range>(new Range());
   } else {
     return SharedHandle<Range>(new Range(getStartByte(), getEndByte(),
-					 _fileEntry->getLength()));
+                                         _fileEntry->getLength()));
   }
 }
 
@@ -202,7 +202,7 @@ std::string HttpRequest::createRequest()
   }
   if(!_authConfig.isNull()) {
     strappend(requestLine, "Authorization: Basic ",
-	      Base64::encode(_authConfig->getAuthText()), "\r\n");
+              Base64::encode(_authConfig->getAuthText()), "\r\n");
   }
   if(getPreviousURI().size()) {
     strappend(requestLine, "Referer: ", getPreviousURI(), "\r\n");
@@ -211,12 +211,12 @@ std::string HttpRequest::createRequest()
     std::string cookiesValue;
     std::deque<Cookie> cookies =
       _cookieStorage->criteriaFind(getHost(),
-				   getDir(),
-				   Time().getTime(),
-				   getProtocol() == Request::PROTO_HTTPS ?
-				   true : false);
+                                   getDir(),
+                                   Time().getTime(),
+                                   getProtocol() == Request::PROTO_HTTPS ?
+                                   true : false);
     for(std::deque<Cookie>::const_iterator itr = cookies.begin();
-	itr != cookies.end(); ++itr) {
+        itr != cookies.end(); ++itr) {
       strappend(cookiesValue, (*itr).toString(), ";");
     }
     if(!cookiesValue.empty()) {
@@ -244,11 +244,11 @@ std::string HttpRequest::createProxyRequest() const
   strappend(requestLine, "User-Agent: ", userAgent, "\r\n");
   strappend(requestLine, "Host: ", hostport, "\r\n");
   // TODO Is "Proxy-Connection" needed here?
-//   if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
-//     requestLine += "Proxy-Connection: Keep-Alive\r\n";
-//   }else {
-//     requestLine += "Proxy-Connection: close\r\n";
-//   }
+  //   if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
+  //     requestLine += "Proxy-Connection: Keep-Alive\r\n";
+  //   }else {
+  //     requestLine += "Proxy-Connection: close\r\n";
+  //   }
   if(!_proxyRequest->getUsername().empty()) {
     requestLine += getProxyAuthString();
   }
@@ -259,10 +259,10 @@ std::string HttpRequest::createProxyRequest() const
 std::string HttpRequest::getProxyAuthString() const
 {
   return strconcat("Proxy-Authorization: Basic ",
-		   Base64::encode(strconcat(_proxyRequest->getUsername(),
-					    ":",
-					    _proxyRequest->getPassword())),
-		   "\r\n");
+                   Base64::encode(strconcat(_proxyRequest->getUsername(),
+                                            ":",
+                                            _proxyRequest->getPassword())),
+                   "\r\n");
 }
 
 void HttpRequest::enableContentEncoding()

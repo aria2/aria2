@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -94,11 +94,11 @@ static std::string urlencode(const std::string& src)
     // '/' is not urlencoded because src is expected to be a path.
     if(!util::inRFC3986ReservedChars(c) && !util::inRFC3986UnreservedChars(c)) {
       if(c == '%') {
-	if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
-	  result.replace(index, 1, "%25");
-	}
+        if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
+          result.replace(index, 1, "%25");
+        }
       } else {
-	result.replace(index, 1, StringFormat("%%%02X", c).str());
+        result.replace(index, 1, StringFormat("%%%02X", c).str());
       }
     }
   }
@@ -201,11 +201,11 @@ bool Request::parseUrl(const std::string& url) {
       ++hostPortFirst;
       std::string::const_iterator userLast = authorityFirst;
       for(; userLast != userInfoLast; ++userLast) {
-	if(*userLast == ':') {
-	  _password = util::urldecode(std::string(userLast+1, userInfoLast));
-	  _hasPassword = true;
-	  break;
-	}
+        if(*userLast == ':') {
+          _password = util::urldecode(std::string(userLast+1, userInfoLast));
+          _hasPassword = true;
+          break;
+        }
       }
       _username = util::urldecode(std::string(authorityFirst, userLast));
       break;
@@ -217,17 +217,17 @@ bool Request::parseUrl(const std::string& url) {
     // Detected IPv6 literal address in square brackets
     for(; hostLast != authorityLast; ++hostLast) {
       if(*hostLast == ']') {
-	++hostLast;
-	if(hostLast == authorityLast) {
-	  _ipv6LiteralAddress = true;
-	} else {
-	  if(*hostLast == ':') {
-	    portFirst = hostLast;
-	    ++portFirst;
-	    _ipv6LiteralAddress = true;
-	  }
-	}
-	break;
+        ++hostLast;
+        if(hostLast == authorityLast) {
+          _ipv6LiteralAddress = true;
+        } else {
+          if(*hostLast == ':') {
+            portFirst = hostLast;
+            ++portFirst;
+            _ipv6LiteralAddress = true;
+          }
+        }
+        break;
       }
     }
     if(!_ipv6LiteralAddress) {
@@ -236,9 +236,9 @@ bool Request::parseUrl(const std::string& url) {
   } else {
     for(; hostLast != authorityLast; ++hostLast) {
       if(*hostLast == ':') {
-	portFirst = hostLast;
-	++portFirst;
-	break;
+        portFirst = hostLast;
+        ++portFirst;
+        break;
       }
     }
   }
@@ -254,7 +254,7 @@ bool Request::parseUrl(const std::string& url) {
     uint32_t tempPort;
     if(util::parseUIntNoThrow(tempPort, std::string(portFirst, authorityLast))){
       if(65535 < tempPort) {
-	return false;
+        return false;
       }
       _port = tempPort;      
     } else {

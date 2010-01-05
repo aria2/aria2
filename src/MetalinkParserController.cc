@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -370,7 +370,7 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), Ascend1st<std::pair<size_t, std::string> >());
     std::deque<std::string> checksums;
     std::transform(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
-		   std::back_inserter(checksums), select2nd<std::pair<size_t, std::string> >());
+                   std::back_inserter(checksums), select2nd<std::pair<size_t, std::string> >());
     _tChunkChecksum->setChecksums(checksums);
     _tEntry->chunkChecksum = _tChunkChecksum;
   }

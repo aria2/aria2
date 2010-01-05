@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -66,7 +66,7 @@ private:
 public:
 
   PeerStat(cuid_t cuid, const std::string& hostname,
-	   const::std::string& protocol):
+           const::std::string& protocol):
     cuid(cuid),
     _hostname(hostname),
     _protocol(protocol),
@@ -77,10 +77,10 @@ public:
     _sessionUploadLength(0) {}
 
   PeerStat(cuid_t cuid = 0):cuid(cuid), status(PeerStat::IDLE),
-			    _avgDownloadSpeed(0),
-			    _avgUploadSpeed(0),
-			    _sessionDownloadLength(0),
-			    _sessionUploadLength(0) {}
+                            _avgDownloadSpeed(0),
+                            _avgUploadSpeed(0),
+                            _sessionDownloadLength(0),
+                            _sessionUploadLength(0) {}
 
   ~PeerStat() {}
 

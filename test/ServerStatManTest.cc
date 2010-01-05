@@ -106,7 +106,7 @@ void ServerStatManTest::testSave()
       " last_updated=1210000002,"
       " counter=0,"
       " status=ERROR\n"),
-     out);			   
+     out);                         
 }
 
 void ServerStatManTest::testLoad()
@@ -126,15 +126,15 @@ void ServerStatManTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), localhost_http->getHostname());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), localhost_http->getProtocol());
   CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(25000),
-		       localhost_http->getDownloadSpeed());
+                       localhost_http->getDownloadSpeed());
   CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(101),
-		       localhost_http->getSingleConnectionAvgSpeed());
+                       localhost_http->getSingleConnectionAvgSpeed());
   CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(102),
-		       localhost_http->getMultiConnectionAvgSpeed());
+                       localhost_http->getMultiConnectionAvgSpeed());
   CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(6),
-		       localhost_http->getCounter());
+                       localhost_http->getCounter());
   CPPUNIT_ASSERT_EQUAL(static_cast<time_t>(1210000000),
-		       localhost_http->getLastUpdated().getTime());
+                       localhost_http->getLastUpdated().getTime());
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, localhost_http->getStatus());
 
   SharedHandle<ServerStat> mirror = ssm.find("mirror", "http");

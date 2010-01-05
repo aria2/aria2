@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -77,12 +77,12 @@ PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
   // we need some randomness in ordering.
   if(randomShuffle) {
     std::random_shuffle(sortedPieceStats.begin(), sortedPieceStats.end(),
-			*(SimpleRandomizer::getInstance().get()));
+                        *(SimpleRandomizer::getInstance().get()));
   }
   {
     size_t order = 0;
     for(std::vector<SharedHandle<PieceStat> >::iterator i =
-	  sortedPieceStats.begin(); i != sortedPieceStats.end(); ++i) {
+          sortedPieceStats.begin(); i != sortedPieceStats.end(); ++i) {
       _sortedPieceStatIndexes[order] = (*i)->getIndex();
       (*i)->setOrder(order++);
     }
@@ -103,7 +103,7 @@ public:
 };
 
 void PieceStatMan::addPieceStats(const unsigned char* bitfield,
-					size_t bitfieldLength)
+                                 size_t bitfieldLength)
 {
   size_t index = 0;
   for(size_t bi = 0; bi < bitfieldLength; ++bi) {
@@ -111,17 +111,17 @@ void PieceStatMan::addPieceStats(const unsigned char* bitfield,
     for(size_t i = 0; i < 8; ++i, ++index) {
       unsigned char mask = 128 >> i;
       if(bitfield[bi]&mask) {
-	_pieceStats[index]->addCount();
+        _pieceStats[index]->addCount();
       }
     }
 
   }
   std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
-	    PieceStatRarer(_pieceStats));
+            PieceStatRarer(_pieceStats));
 }
 
 void PieceStatMan::subtractPieceStats(const unsigned char* bitfield,
-					     size_t bitfieldLength)
+                                      size_t bitfieldLength)
 {
   size_t index = 0;
   for(size_t bi = 0; bi < bitfieldLength; ++bi) {
@@ -129,18 +129,18 @@ void PieceStatMan::subtractPieceStats(const unsigned char* bitfield,
     for(size_t i = 0; i < 8; ++i, ++index) {
       unsigned char mask = 128 >> i;
       if(bitfield[bi]&mask) {
-	_pieceStats[index]->subCount();
+        _pieceStats[index]->subCount();
       }
     }
 
   }
   std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
-	    PieceStatRarer(_pieceStats));
+            PieceStatRarer(_pieceStats));
 }
 
 void PieceStatMan::updatePieceStats(const unsigned char* newBitfield,
-					   size_t newBitfieldLength,
-					   const unsigned char* oldBitfield)
+                                    size_t newBitfieldLength,
+                                    const unsigned char* oldBitfield)
 {
   size_t index = 0;
   for(size_t bi = 0; bi < newBitfieldLength; ++bi) {
@@ -148,29 +148,29 @@ void PieceStatMan::updatePieceStats(const unsigned char* newBitfield,
     for(size_t i = 0; i < 8; ++i, ++index) {
       unsigned char mask = 128 >> i;
       if((newBitfield[bi]&mask) && !(oldBitfield[bi]&mask)) {
-	_pieceStats[index]->addCount();
+        _pieceStats[index]->addCount();
       } else if(!(newBitfield[bi]&mask) && (oldBitfield[bi]&mask)) {
-	_pieceStats[index]->subCount();
+        _pieceStats[index]->subCount();
       }
     }
 
   }
   std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
-	    PieceStatRarer(_pieceStats));
+            PieceStatRarer(_pieceStats));
 }
 
 void PieceStatMan::addPieceStats(size_t index)
 {
   std::vector<size_t>::iterator cur =
     std::lower_bound(_sortedPieceStatIndexes.begin(),
-		     _sortedPieceStatIndexes.end(),
-		     index, PieceStatRarer(_pieceStats));
+                     _sortedPieceStatIndexes.end(),
+                     index, PieceStatRarer(_pieceStats));
 
   _pieceStats[index]->addCount();
 
   std::vector<size_t>::iterator to =
     std::upper_bound(cur+1, _sortedPieceStatIndexes.end(),
-		     index, PieceStatRarer(_pieceStats));
+                     index, PieceStatRarer(_pieceStats));
   
   std::rotate(cur, cur+1, to);
 }

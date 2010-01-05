@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -59,9 +59,9 @@ const std::string DHTGetPeersReplyMessage::VALUES("values");
 const std::string DHTGetPeersReplyMessage::NODES("nodes");
 
 DHTGetPeersReplyMessage::DHTGetPeersReplyMessage(const SharedHandle<DHTNode>& localNode,
-						 const SharedHandle<DHTNode>& remoteNode,
-						 const std::string& token,
-						 const std::string& transactionID):
+                                                 const SharedHandle<DHTNode>& remoteNode,
+                                                 const std::string& token,
+                                                 const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID),
   _token(token) {}
 
@@ -81,13 +81,13 @@ BDE DHTGetPeersReplyMessage::getResponse()
     size_t offset = 0;
     unsigned char buffer[DHTBucket::K*26];
     for(std::deque<SharedHandle<DHTNode> >::const_iterator i =
-	  _closestKNodes.begin();
-	i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
+          _closestKNodes.begin();
+        i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
       if(bittorrent::createcompact
-	 (buffer+20+offset, node->getIPAddress(), node->getPort())) {
-	offset += 26;
+         (buffer+20+offset, node->getIPAddress(), node->getPort())) {
+        offset += 26;
       }
     }
     rDict[NODES] = BDE(buffer, offset);
@@ -114,11 +114,11 @@ BDE DHTGetPeersReplyMessage::getResponse()
     static const size_t MAX_VALUES_SIZE = 100;
     BDE valuesList = BDE::list();
     for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin();
-	i != _values.end() && valuesList.size() < MAX_VALUES_SIZE; ++i) {
+        i != _values.end() && valuesList.size() < MAX_VALUES_SIZE; ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
       if(bittorrent::createcompact(buffer, peer->ipaddr, peer->port)) {
-	valuesList << BDE(buffer, sizeof(buffer));
+        valuesList << BDE(buffer, sizeof(buffer));
       }
     }
     rDict[VALUES] = valuesList;
@@ -146,8 +146,8 @@ void DHTGetPeersReplyMessage::setValues(const std::deque<SharedHandle<Peer> >& p
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {
   return strconcat("token=", util::toHex(_token),
-		   ", values=", util::uitos(_values.size()),
-		   ", nodes=", util::uitos(_closestKNodes.size()));
+                   ", values=", util::uitos(_values.size()),
+                   ", nodes=", util::uitos(_closestKNodes.size()));
 }
 
 } // namespace aria2

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
@@ -67,7 +67,7 @@ void BtPostDownloadHandler::getNextRequestGroups
  RequestGroup* requestGroup)
 {
   _logger->debug("Generating RequestGroups for Torrent file %s",
-		 requestGroup->getFirstFilePath().c_str());
+                 requestGroup->getFirstFilePath().c_str());
   std::string content;
   try {
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
@@ -79,8 +79,8 @@ void BtPostDownloadHandler::getNextRequestGroups
   }
   std::deque<SharedHandle<RequestGroup> > newRgs;
   createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-				  std::deque<std::string>(),
-				  content);
+                                  std::deque<std::string>(),
+                                  content);
   requestGroup->followedBy(newRgs.begin(), newRgs.end());
   groups.insert(groups.end(), newRgs.begin(), newRgs.end());
 }
