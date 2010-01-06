@@ -1,5 +1,11 @@
 2010-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Pool connection if _contentEncodingDecoder is used and server
+	supports persistent connection.
+	* src/HttpDownloadCommand.cc
+
+2010-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc.
 	* src/DownloadCommand.cc
 

@@ -47,6 +47,7 @@
 #include "HttpHeader.h"
 #include "Range.h"
 #include "DownloadContext.h"
+#include "Decoder.h"
 
 namespace aria2 {
 
@@ -82,9 +83,21 @@ bool HttpDownloadCommand::prepareForNextSegment() {
   } else {
     if(req->isPipeliningEnabled() ||
        (req->isKeepAliveEnabled() &&
-        ((!_transferEncodingDecoder.isNull() &&
-          _requestGroup->downloadFinished()) ||
-         _fileEntry->getLastOffset() == _segments.front()->getPositionToWrite()))) {
+        (
+         ((!_transferEncodingDecoder.isNull() &&
+           _transferEncodingDecoder->finished()) ||
+          (!_contentEncodingDecoder.isNull() &&
+           _contentEncodingDecoder->finished())) ||
+         _fileEntry->getLastOffset() ==
+         _segments.front()->getPositionToWrite()
+         )
+        )
+       ) {
+      // TODO What if server sends EOF when _contentEncodingDecoder is
+      // used and server didn't send Connection: close? We end up to
+      // pool terminated socket.  In HTTP/1.1, keep-alive is default,
+      // so closing connection without Connection: close header means
+      // that server is broken or not configured properly.
       e->poolSocket(req, isProxyDefined(), socket);
     }
     // The request was sent assuming that server supported pipelining, but
