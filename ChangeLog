@@ -1,5 +1,17 @@
 2010-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated autoconf/automake auxiliary files.
+	* INSTALL
+	* config.guess
+	* config.sub
+	* depcomp
+	* install-sh
+	* m4/intldir.m4
+	* missing
+	* mkinstalldirs
+
+2010-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused function.
 	* src/SharedHandle.h
 
