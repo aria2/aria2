@@ -234,8 +234,6 @@ public:
     return *this;
   }
 
-  T* operator->() { return obj; }
-
   T* operator->() const { return obj; }
 
   T* get() const {
