@@ -183,6 +183,8 @@ bool DownloadCommand::executeInternal() {
     }
   } else if(!_transferEncodingDecoder.isNull() &&
             (segment->complete() || segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
+    // In this case, transferEncodingDecoder is used and
+    // Content-Length is known.
     segmentPartComplete = true;
   } else if((_transferEncodingDecoder.isNull() ||
              _transferEncodingDecoder->finished()) &&
@@ -230,7 +232,7 @@ bool DownloadCommand::executeInternal() {
       _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
 #endif // !ENABLE_MESSAGE_DIGEST
     } else {
-      // If segment is not cacnel here, in the next pipelining
+      // If segment is not canceled here, in the next pipelining
       // request, aria2 requests bad range
       // [FileEntry->getLastOffset(), FileEntry->getLastOffset())
       _requestGroup->getSegmentMan()->cancelSegment(cuid, segment);
