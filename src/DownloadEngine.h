@@ -51,6 +51,7 @@
 #include "CUIDCounter.h"
 #include "FileAllocationMan.h"
 #include "CheckIntegrityMan.h"
+#include "DNSCache.h"
 
 namespace aria2 {
 
@@ -60,7 +61,6 @@ class RequestGroupMan;
 class StatCalc;
 class SocketCore;
 class CookieStorage;
-class DNSCache;
 class AuthConfigFactory;
 class Request;
 class EventPoll;
@@ -250,6 +250,13 @@ public:
 
   const std::string& findCachedIPAddress
   (const std::string& hostname, uint16_t port) const;
+
+  template<typename OutputIterator>
+  void findAllCachedIPAddresses
+  (OutputIterator out, const std::string& hostname, uint16_t port) const
+  {
+    _dnsCache->findAll(out, hostname, port);
+  }
 
   void cacheIPAddress
   (const std::string& hostname, const std::string& ipaddr, uint16_t port);

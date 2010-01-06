@@ -57,7 +57,6 @@
 #include "ServerStatMan.h"
 #include "CookieStorage.h"
 #include "A2STR.h"
-#include "DNSCache.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "Request.h"

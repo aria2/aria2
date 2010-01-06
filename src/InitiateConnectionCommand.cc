@@ -80,8 +80,9 @@ bool InitiateConnectionCommand::executeInternal() {
     port = proxyRequest->getPort();
   }
   std::deque<std::string> addrs;
-  std::string ipaddr = e->findCachedIPAddress(hostname, port);
-  if(ipaddr.empty()) {
+  e->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
+  std::string ipaddr;
+  if(addrs.empty()) {
 #ifdef ENABLE_ASYNC_DNS
     if(getOption()->getAsBool(PREF_ASYNC_DNS)) {
       if(!isAsyncNameResolverInitialized()) {
@@ -105,15 +106,16 @@ bool InitiateConnectionCommand::executeInternal() {
       }
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
                  hostname.c_str(),
-                 strjoin(addrs.begin(), addrs.end(), ",").c_str());
+                 strjoin(addrs.begin(), addrs.end(), ", ").c_str());
     for(std::deque<std::string>::const_iterator i = addrs.begin();
         i != addrs.end(); ++i) {
       e->cacheIPAddress(hostname, *i, port);
     }
     ipaddr = e->findCachedIPAddress(hostname, port);
   } else {
-    logger->info(MSG_DNS_CACHE_HIT, cuid, hostname.c_str(), ipaddr.c_str());
-    addrs.push_back(ipaddr);
+    ipaddr = addrs.front();
+    logger->info(MSG_DNS_CACHE_HIT, cuid, hostname.c_str(),
+                 strjoin(addrs.begin(), addrs.end(), ", ").c_str());
   }
   try {
     Command* command = createNextCommand(hostname, ipaddr, port,
@@ -123,6 +125,8 @@ bool InitiateConnectionCommand::executeInternal() {
   } catch(RecoverableException& ex) {
     // Catch exception and retry another address.
     // See also AbstractCommand::checkIfConnectionEstablished
+
+    // TODO ipaddr might not be used if pooled sockt was found.
     e->markBadIPAddress(hostname, ipaddr, port);
     if(!e->findCachedIPAddress(hostname, port).empty()) {
       logger->info(EX_EXCEPTION_CAUGHT, ex);

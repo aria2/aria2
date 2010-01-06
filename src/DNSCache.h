@@ -107,6 +107,17 @@ private:
       return A2STR::NIL;
     }
 
+    template<typename OutputIterator>
+    void getAllGoodAddrs(OutputIterator out) const
+    {
+      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
+          i != _addrEntries.end(); ++i) {
+        if((*i)._good) {
+          *out++ = (*i)._addr;
+        }
+      }      
+    }
+
     void markBad(const std::string& addr)
     {
       std::vector<AddrEntry>::iterator i = find(addr);
@@ -142,6 +153,18 @@ public:
       return (*i).getGoodAddr();
     }
     return A2STR::NIL;
+  }
+  
+  template<typename OutputIterator>
+  void findAll
+  (OutputIterator out, const std::string& hostname, uint16_t port) const
+  {
+    CacheEntry target(hostname, port);
+    std::deque<CacheEntry>::const_iterator i =
+      std::lower_bound(_entries.begin(), _entries.end(), target);
+    if(i != _entries.end() && (*i) == target) {
+      (*i).getAllGoodAddrs(out);
+    }
   }
 
   void put

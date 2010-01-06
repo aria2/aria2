@@ -1,5 +1,13 @@
 2010-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Find pooled socket using all cached addresses.
+	* src/DNSCache.h
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/InitiateConnectionCommand.cc
+
+2010-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated copyright year.
 	* src/version_usage.cc
 
