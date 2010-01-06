@@ -55,7 +55,7 @@ namespace aria2 {
 
 void showVersion() {
   std::cout << PACKAGE << _(" version ") << PACKAGE_VERSION << "\n"
-            << "Copyright (C) 2006, 2009 Tatsuhiro Tsujikawa" << "\n"
+            << "Copyright (C) 2006, 2010 Tatsuhiro Tsujikawa" << "\n"
             << "\n"
             <<
     "This program is free software; you can redistribute it and/or modify\n"
