@@ -1,3 +1,8 @@
+2010-01-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Ignore port message with port=0.
+	* src/BtPortMessage.cc
+
 2010-01-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Run autoupdate

@@ -71,6 +71,10 @@ SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, siz
 void BtPortMessage::doReceivedAction()
 {
   if(!_taskFactory.isNull() && !_taskQueue.isNull()) {
+    if(_port == 0) {
+      logger->debug("Ignored port 0.");
+      return;
+    }
     // node id is random at this point. When ping reply received, new DHTNode
     // instance created with proper node ID and is added to a routing table.
     SharedHandle<DHTNode> node(new DHTNode());
