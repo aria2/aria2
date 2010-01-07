@@ -1015,7 +1015,7 @@ of URIs. These optional lines must start with white space(s).
 * max-download-limit
 * no-file-allocation-limit
 * parameterized-uri
-* realtime-chunk-checksum 
+* realtime-chunk-checksum
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
