@@ -106,7 +106,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       message = _factory->createQueryMessage(dict, remoteAddr, remotePort);
       if(message->getLocalNode() == message->getRemoteNode()) {
         // drop message from localnode
-        _logger->info("Recieved DHT message from localnode.");
+        _logger->info("Received DHT message from localnode.");
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     }

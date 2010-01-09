@@ -1,5 +1,10 @@
 2010-01-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed typo.
+	* src/DHTMessageReceiver.cc
+
+2010-01-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that causes segmentation fault if unknown option is
 	put in aria2.conf file. BUG#2928303
 	* src/OptionParser.cc
