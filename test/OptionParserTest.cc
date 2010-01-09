@@ -24,6 +24,7 @@ class OptionParserTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFindByID);
   CPPUNIT_TEST(testParseDefaultValues);
   CPPUNIT_TEST(testParseArg);
+  CPPUNIT_TEST(testParse);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<OptionParser> _oparser;
@@ -67,6 +68,7 @@ public:
   void testFindByID();
   void testParseDefaultValues();
   void testParseArg();
+  void testParse();
 };
 
 
@@ -172,6 +174,20 @@ void OptionParserTest::testParseArg()
   CPPUNIT_ASSERT_EQUAL((size_t)2, nonopts.size());
   CPPUNIT_ASSERT_EQUAL(std::string("nonopt1"), nonopts[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("nonopt2"), nonopts[1]);
+}
+
+void OptionParserTest::testParse()
+{
+  Option option;
+  std::istringstream in("alpha=Hello\n"
+                        "UNKNOWN=x\n"
+                        "\n"
+                        "bravo=World");
+  _oparser->parse(option, in);
+  CPPUNIT_ASSERT_EQUAL
+    ((ptrdiff_t)2, std::distance(option.begin(), option.end()));
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get("alpha"));
+  CPPUNIT_ASSERT_EQUAL(std::string("World"), option.get("bravo"));
 }
 
 } // namespace aria2

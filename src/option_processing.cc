@@ -136,10 +136,13 @@ void option_processing(Option& op, std::deque<std::string>& uris,
           oparser.parse(op, cfstream);
         } catch(OptionHandlerException& e) {
           std::cerr << "Parse error in " << cfname << "\n"
-                    << e.stackTrace() << "\n"
-                    << "Usage:" << "\n"
-                    << oparser.findByName(e.getOptionName())->getDescription()
-                    << std::endl;
+                    << e.stackTrace() << std::endl;
+          SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());
+          if(!h.isNull()) {
+            std::cerr << "Usage:" << "\n"
+                      << oparser.findByName(e.getOptionName())->getDescription()
+                      << std::endl;
+          }
           exit(downloadresultcode::UNKNOWN_ERROR);
         } catch(Exception& e) {
           std::cerr << "Parse error in " << cfname << "\n"

@@ -48,10 +48,15 @@
 #include "a2functional.h"
 #include "array_fun.h"
 #include "OptionHandlerFactory.h"
+#include "Logger.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
-OptionParser::OptionParser():_idCounter(0) {}
+OptionParser::OptionParser():
+  _idCounter(0),
+  _logger(LogFactory::getInstance())
+{}
 
 template<typename InputIterator>
 static size_t countPublicOption(InputIterator first, InputIterator last)
@@ -167,6 +172,9 @@ void OptionParser::parse(Option& option, std::istream& is)
       continue;
     }
     std::pair<std::string, std::string> nv = util::split(line, A2STR::EQUAL_C);
+    if(nv.first.empty()) {
+      continue;
+    }
     OptionHandlerHandle handler = getOptionHandlerByName(nv.first);
     handler->parse(option, nv.second);
   }
@@ -191,10 +199,11 @@ OptionHandlerHandle OptionParser::getOptionHandlerByName
   std::vector<SharedHandle<OptionHandler> >::const_iterator i =
     std::lower_bound(_optionHandlers.begin(), _optionHandlers.end(),
                      handler, OptionHandlerNameLesser());
-  if(i == _optionHandlers.end()) {
-    handler.reset(new NullOptionHandler());
-  } else {
+  if(i != _optionHandlers.end() && (*i)->canHandle(optName)) {
     handler = *i;
+  } else {
+    handler.reset(new NullOptionHandler());
+    _logger->warn("Skipped unknown option --%s.", optName.c_str());
   }
   return handler;
 }
