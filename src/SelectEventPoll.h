@@ -155,7 +155,7 @@ private:
 
   fd_set _rfdset;
   fd_set _wfdset;
-  int _fdmax;
+  sock_t _fdmax;
 
   std::deque<SharedHandle<SocketEntry> > _socketEntries;
 #ifdef ENABLE_ASYNC_DNS

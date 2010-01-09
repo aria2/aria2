@@ -216,8 +216,8 @@ downloadresultcode::RESULT main(int argc, char* argv[])
     }
     // Bind interface
     if(!op->get(PREF_INTERFACE).empty()) {
-      std::string interface = op->get(PREF_INTERFACE);
-      SocketCore::bindAddress(interface);
+      std::string iface = op->get(PREF_INTERFACE);
+      SocketCore::bindAddress(iface);
     }
 
 #ifdef SIGPIPE

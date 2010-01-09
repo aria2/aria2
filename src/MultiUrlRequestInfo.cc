@@ -160,8 +160,9 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
         (_option->getAsInt(PREF_SERVER_STAT_TIMEOUT));
     }
     e->setStatCalc(_statCalc);
-
+#ifdef SIGHUP
     util::setGlobalSignalHandler(SIGHUP, handler, 0);
+#endif // SIGHUP
     util::setGlobalSignalHandler(SIGINT, handler, 0);
     util::setGlobalSignalHandler(SIGTERM, handler, 0);
     
@@ -191,7 +192,9 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
   } catch(RecoverableException& e) {
     _logger->error(EX_EXCEPTION_CAUGHT, e);
   }
+#ifdef SIGHUP
   util::setGlobalSignalHandler(SIGHUP, SIG_DFL, 0);
+#endif // SIGHUP
   util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
   util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
   return returnValue;

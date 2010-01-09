@@ -198,7 +198,7 @@ static sock_t bindTo
     error = gai_strerror(s);
     return -1;
   }
-  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = bindInternal(rp->ai_family, rp->ai_socktype, rp->ai_protocol,
@@ -310,7 +310,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
                                    host.c_str(), gai_strerror(s)).str());
   }
-  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
@@ -1055,7 +1055,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, gai_strerror(s)).str());
   }
-  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   ssize_t r = -1;
   for(rp = res; rp; rp = rp->ai_next) {
@@ -1139,17 +1139,17 @@ void SocketCore::useSelect()
   _pollMethod = SocketCore::POLL_METHOD_SELECT;
 }
 
-void SocketCore::bindAddress(const std::string& interface)
+void SocketCore::bindAddress(const std::string& iface)
 {
   std::vector<std::pair<struct sockaddr_storage, socklen_t> > bindAddrs;
-  LogFactory::getInstance()->debug("Finding interface %s", interface.c_str());
+  LogFactory::getInstance()->debug("Finding interface %s", iface.c_str());
 #ifdef HAVE_GETIFADDRS
   // First find interface in interface addresses
   struct ifaddrs* ifaddr = 0;
   if(getifaddrs(&ifaddr) == -1) {
     throw DL_ABORT_EX
       (StringFormat(MSG_INTERFACE_NOT_FOUND,
-                    interface.c_str(), strerror(errno)).str());
+                    iface.c_str(), strerror(errno)).str());
   } else {
     auto_delete<struct ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
     for(struct ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
@@ -1172,7 +1172,7 @@ void SocketCore::bindAddress(const std::string& interface)
       } else {
         continue;
       }
-      if(std::string(ifa->ifa_name) == interface) {
+      if(std::string(ifa->ifa_name) == iface) {
         socklen_t bindAddrLen =
           family == AF_INET?sizeof(struct sockaddr_in):
           sizeof(struct sockaddr_in6);
@@ -1187,14 +1187,14 @@ void SocketCore::bindAddress(const std::string& interface)
   if(bindAddrs.empty()) {
     struct addrinfo* res;
     int s;
-    s = callGetaddrinfo(&res, interface.c_str(), 0, _protocolFamily,
+    s = callGetaddrinfo(&res, iface.c_str(), 0, _protocolFamily,
                         SOCK_STREAM, 0, 0);
     if(s) {
       throw DL_ABORT_EX
         (StringFormat(MSG_INTERFACE_NOT_FOUND,
-                      interface.c_str(), gai_strerror(s)).str());
+                      iface.c_str(), gai_strerror(s)).str());
     } else {
-      auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
+      WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
       struct addrinfo* rp;
       for(rp = res; rp; rp = rp->ai_next) {
         socklen_t bindAddrLen = rp->ai_addrlen;
@@ -1217,7 +1217,7 @@ void SocketCore::bindAddress(const std::string& interface)
   if(bindAddrs.empty()) {
     throw DL_ABORT_EX
       (StringFormat(MSG_INTERFACE_NOT_FOUND,
-                    interface.c_str(), "not available").str());
+                    iface.c_str(), "not available").str());
   } else {
     _bindAddrs = bindAddrs;
     for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::

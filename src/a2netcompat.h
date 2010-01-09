@@ -103,4 +103,24 @@
 # define DEFAULT_AI_FLAGS 0
 #endif // !AI_ADDRCONFIG
 
+#ifdef __MINGW32__
+template<typename T>
+class wsaapi_auto_delete {
+private:
+  T _obj;
+  void (WSAAPI*_deleter)(T);
+public:
+  wsaapi_auto_delete(T obj, void (WSAAPI*deleter)(T)):
+    _obj(obj), _deleter(deleter) {}
+
+  ~wsaapi_auto_delete()
+  {
+    _deleter(_obj);
+  }
+};
+# define WSAAPI_AUTO_DELETE wsaapi_auto_delete
+#else // !__MINGW32__
+# define WSAAPI_AUTO_DELETE auto_delete
+#endif // !__MINGW32__
+
 #endif // _D_A2NETCOMPAT_H_

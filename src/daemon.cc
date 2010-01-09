@@ -42,8 +42,8 @@ namespace aria2 {
 
 int daemon(int nochdir, int noclose)
 {
-  pid_t pid;
 #ifdef HAVE_WORKING_FORK
+  pid_t pid;
   pid = fork();
   if(pid == -1) {
     return -1;

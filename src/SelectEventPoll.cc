@@ -153,7 +153,7 @@ SelectEventPoll::SelectEventPoll():_logger(LogFactory::getInstance())
 {
 #ifdef __MINGW32__
   _dummySocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  assert(_dummySocket != -1);
+  assert(_dummySocket != (sock_t)-1);
 #endif // __MINGW32__
   updateFdSet();
 }

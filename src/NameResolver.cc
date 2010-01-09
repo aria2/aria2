@@ -56,7 +56,7 @@ void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
                                    hostname.c_str(), gai_strerror(s)).str());
   }
-  auto_delete<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     std::pair<std::string, uint16_t> addressPort

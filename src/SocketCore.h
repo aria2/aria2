@@ -360,7 +360,10 @@ public:
   // interface is not found or binding socket is failed, exception
   // will be thrown.  Set _protocolFamily before calling this function
   // if you limit protocol family.
-  static void bindAddress(const std::string& interface);
+  //
+  // We cannot use interface as an argument because it is a reserved
+  // keyword in MSVC.
+  static void bindAddress(const std::string& iface);
 };
 
 // Set default ai_flags. hints.ai_flags is initialized with this

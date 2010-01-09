@@ -1,5 +1,19 @@
 2010-01-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error with i586-mingw32msvc-gcc 4.4.2, without any
+	additional libraries.
+	* src/MultiUrlRequestInfo.cc
+	* src/NameResolver.cc
+	* src/SelectEventPoll.cc
+	* src/SelectEventPoll.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/a2netcompat.h
+	* src/daemon.cc
+	* src/main.cc
+
+2010-01-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo.
 	* src/DHTMessageReceiver.cc
 
