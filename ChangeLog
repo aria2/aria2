@@ -1,5 +1,10 @@
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --http-no-cache option in man page.
+	* doc/aria2c.1.txt
+
+2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --http-no-cache option.  When true is given, aria2 sends
 	Cache-Control: no-cache and Pragma: no-cache header to avoid
 	cached content.  If false is given , these headers are not sent

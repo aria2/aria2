@@ -213,6 +213,13 @@ HTTP Specific Options
   embedded in URI, authorization header is always sent to the server
   regardless of this option.  Default: 'false'
 
+*--http-no-cache*[='true'|'false']::
+
+   Send Cache-Control: no-cache and Pragma: no-cache header to avoid
+   cached content.  If 'false' is given , these headers are not sent
+   and you can add Cache-Control header with a directive you like
+   using *--header* option. Default: 'true'
+
 *--http-user*=USER::
   Set HTTP user. This affects all URLs.
 
@@ -966,6 +973,7 @@ of URIs. These optional lines must start with white space(s).
 * split
 * timeout
 * http-auth-challenge
+* http-no-cache
 * http-user
 * http-passwd
 * http-proxy

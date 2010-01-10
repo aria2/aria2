@@ -306,6 +306,16 @@ is set, then authorization header is always sent to the server\&. There is an ex
 \fIfalse\fR
 .RE
 .PP
+\fB\-\-http\-no\-cache\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Send Cache\-Control: no\-cache and Pragma: no\-cache header to avoid cached content\&. If
+\fIfalse\fR
+is given , these headers are not sent and you can add Cache\-Control header with a directive you like using
+\fB\-\-header\fR
+option\&. Default:
+\fItrue\fR
+.RE
+.PP
 \fB\-\-http\-user\fR=USER
 .RS 4
 Set HTTP user\&. This affects all URLs\&.
@@ -1466,6 +1476,17 @@ timeout
 .IP \(bu 2.3
 .\}
 http\-auth\-challenge
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+http\-no\-cache
 .RE
 .sp
 .RS 4

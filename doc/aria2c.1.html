@@ -924,6 +924,17 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--http-no-cache</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+   Send Cache-Control: no-cache and Pragma: no-cache header to avoid
+   cached content.  If <em>false</em> is given , these headers are not sent
+   and you can add Cache-Control header with a directive you like
+   using <strong>--header</strong> option. Default: <em>true</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--http-user</strong>=USER
 </dt>
 <dd>
@@ -2273,6 +2284,11 @@ http-auth-challenge
 </li>
 <li>
 <p>
+http-no-cache
+</p>
+</li>
+<li>
+<p>
 http-user
 </p>
 </li>
@@ -3546,7 +3562,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-01-10 15:53:40 JST
+Last updated 2010-01-10 16:34:37 JST
 </div>
 </div>
 </body>
