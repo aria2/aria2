@@ -1,5 +1,13 @@
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Reset GID to 1 when they reach maximum value. Rewritten
+	CUIDCounter::newID()
+	* src/CUIDCounter.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+
+2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --http-no-cache option in man page.
 	* doc/aria2c.1.txt
 

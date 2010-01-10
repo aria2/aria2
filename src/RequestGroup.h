@@ -483,6 +483,8 @@ public:
   }
 
   static void resetGIDCounter() { _gidCounter = 0; }
+
+  static int32_t newGID();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

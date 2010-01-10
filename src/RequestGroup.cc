@@ -114,7 +114,7 @@ int32_t RequestGroup::_gidCounter = 0;
 const std::string RequestGroup::ACCEPT_METALINK = "application/metalink+xml";
 
 RequestGroup::RequestGroup(const SharedHandle<Option>& option):
-  _gid(++_gidCounter),
+  _gid(newGID()),
   _option(new Option(*option.get())),
   _numConcurrentCommand(option->getAsInt(PREF_SPLIT)),
   _numStreamConnection(0),
@@ -267,6 +267,7 @@ void RequestGroup::createInitialCommand
         (_option->getAsInt(PREF_BT_TRACKER_INTERVAL));
       btAnnounce->shuffleAnnounce();
       
+      assert(btRegistry->get(_gid).isNull());
       btRegistry->put(_gid,
                       BtObject(_downloadContext,
                                _pieceStorage,
@@ -1079,6 +1080,14 @@ void RequestGroup::setDownloadContext
   if(!_downloadContext.isNull()) {
     _downloadContext->setOwnerRequestGroup(this);
   }
+}
+
+int32_t RequestGroup::newGID()
+{
+  if(_gidCounter == INT32_MAX) {
+    _gidCounter = 0;
+  }
+  return ++_gidCounter;
 }
 
 } // namespace aria2

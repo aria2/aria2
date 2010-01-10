@@ -50,11 +50,10 @@ public:
 
   cuid_t newID()
   {
-    cuid_t id = ++_count;
-    if(id == INT32_MAX) {
+    if(_count == INT32_MAX) {
       _count = 0;
     }
-    return id;
+    return ++_count;
   }
 };
 
