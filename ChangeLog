@@ -1,5 +1,12 @@
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added following sentance to the help message of --out option:
+	--out option is ignored when -Z is used.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
+2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-save-metadata option to -i list options.
 	* doc/aria2c.1.txt
 	* src/download_helper.cc

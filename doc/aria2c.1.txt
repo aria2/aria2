@@ -121,7 +121,9 @@ HTTP/FTP Options
   used.
 
 *-o*, *--out*=FILE::
-  The file name of the downloaded file.
+
+  The file name of the downloaded file. When *-Z* option is used, this
+  option is ignored.
 
 [NOTE]
 In Metalink or BitTorrent download you cannot specify file name.
