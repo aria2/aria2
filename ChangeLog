@@ -1,5 +1,10 @@
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code clean up.
+	* src/main.cc
+
+2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reset GID to 1 when they reach maximum value. Rewritten
 	CUIDCounter::newID()
 	* src/CUIDCounter.h

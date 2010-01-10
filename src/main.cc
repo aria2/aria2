@@ -178,10 +178,10 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 #endif // ENABLE_BITTORRENT
   if(op->get(PREF_LOG) == "-") {
     LogFactory::setLogFile(DEV_STDOUT);
-  } else if(!op->get(PREF_LOG).empty()) {
-    LogFactory::setLogFile(op->get(PREF_LOG));
-  } else {
+  } else if(op->blank(PREF_LOG)) {
     LogFactory::setLogFile(DEV_NULL);
+  } else {
+    LogFactory::setLogFile(op->get(PREF_LOG));
   }
   LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
   if(op->getAsBool(PREF_QUIET)) {
