@@ -990,6 +990,7 @@ of URIs. These optional lines must start with white space(s).
 * bt-prioritize-piece
 * bt-require-crypto
 * bt-request-peer-speed-limit
+* bt-save-metadata
 * bt-seed-unverified
 * bt-stop-timeout
 * bt-tracker-interval
