@@ -1,5 +1,21 @@
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --http-no-cache option.  When true is given, aria2 sends
+	Cache-Control: no-cache and Pragma: no-cache header to avoid
+	cached content.  If false is given , these headers are not sent
+	and you can add Cache-Control header with a directive you like
+	using --header option.
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpRequestCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/download_helper.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed Logger from OptionParser. When OptionParser is used to
 	parse options at bootstrap, LogFactory is not configured yet
 	properly. When LogFactory is used in OptionParser, it initializes

@@ -83,6 +83,8 @@ private:
 
   SharedHandle<Request> _proxyRequest;
 
+  bool _noCache;
+
   std::string getProxyAuthString() const;
 public:
   HttpRequest();
@@ -242,6 +244,16 @@ public:
   const SharedHandle<FileEntry>& getFileEntry() const
   {
     return _fileEntry;
+  }
+
+  void enableNoCache()
+  {
+    _noCache = true;
+  }
+
+  void disableNoCache()
+  {
+    _noCache = false;
   }
 };
 

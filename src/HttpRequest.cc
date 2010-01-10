@@ -55,7 +55,8 @@ namespace aria2 {
 const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():_contentEncodingEnabled(true),
-                           userAgent(USER_AGENT)
+                           userAgent(USER_AGENT),
+                           _noCache(true)
 {}
 
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
@@ -174,9 +175,10 @@ std::string HttpRequest::createRequest()
   }
 
   strappend(requestLine, "Host: ", getHostText(getURIHost(), getPort()), "\r\n");
-  requestLine += "Pragma: no-cache\r\n";
-  requestLine += "Cache-Control: no-cache\r\n";
-
+  if(_noCache) {
+    requestLine += "Pragma: no-cache\r\n";
+    requestLine += "Cache-Control: no-cache\r\n";
+  }
   if(!request->isKeepAliveEnabled() && !request->isPipeliningEnabled()) {
     requestLine += "Connection: close\r\n";
   }

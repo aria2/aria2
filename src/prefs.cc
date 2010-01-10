@@ -222,6 +222,8 @@ const std::string PREF_CHECK_CERTIFICATE("check-certificate");
 const std::string PREF_USE_HEAD("use-head");
 // value: true | false
 const std::string PREF_HTTP_AUTH_CHALLENGE("http-auth-challenge");
+// value: true | false
+const std::string PREF_HTTP_NO_CACHE("http-no-cache");
 
 /** 
  * Proxy related preferences

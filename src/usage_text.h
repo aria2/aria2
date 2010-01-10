@@ -590,3 +590,9 @@
     "                              .torrent. The directory to be saved is the same\n" \
     "                              directory where download file is saved. If the\n" \
     "                              same file already exists, metadata is not saved.")
+#define TEXT_HTTP_NO_CACHE                      \
+  _(" --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-cache\n" \
+    "                              header to avoid cached content.  If false is given\n" \
+    "                              , these headers are not sent and you can add\n" \
+    "                              Cache-Control header with a directive you like\n" \
+    "                              using --header option.")

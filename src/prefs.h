@@ -226,6 +226,8 @@ extern const std::string PREF_CHECK_CERTIFICATE;
 extern const std::string PREF_USE_HEAD;
 // value: true | false
 extern const std::string PREF_HTTP_AUTH_CHALLENGE;
+// value: true | false
+extern const std::string PREF_HTTP_NO_CACHE;
 
 /**;
  * Proxy related preferences

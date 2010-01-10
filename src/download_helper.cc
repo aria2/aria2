@@ -89,6 +89,7 @@ const std::set<std::string>& listRequestOptions()
     PREF_SPLIT,
     PREF_TIMEOUT,
     PREF_HTTP_AUTH_CHALLENGE,
+    PREF_HTTP_NO_CACHE,
     PREF_HTTP_USER,
     PREF_HTTP_PASSWD,
     PREF_HTTP_PROXY,

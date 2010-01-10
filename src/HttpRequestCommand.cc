@@ -96,7 +96,11 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setProxyRequest(proxyRequest);
   httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
                              rg->getAcceptTypes().end());
-
+  if(option->getAsBool(PREF_HTTP_NO_CACHE)) {
+    httpRequest->enableNoCache();
+  } else {
+    httpRequest->disableNoCache();
+  }
   return httpRequest;
 }
 

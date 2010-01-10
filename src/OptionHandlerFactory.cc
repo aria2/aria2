@@ -708,6 +708,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_HTTP_NO_CACHE,
+                                    TEXT_HTTP_NO_CACHE,
+                                    V_TRUE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_HTTP_PASSWD,
                                     TEXT_HTTP_PASSWD));
