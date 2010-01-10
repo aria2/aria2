@@ -48,13 +48,10 @@ namespace aria2 {
 
 class Option;
 class OptionHandler;
-class Logger;
 
 class OptionParser {
 private:
   int _idCounter;
-
-  Logger* _logger;
 
   // _optionHandlers is sorted by OptionHandler::getName() in
   // ascending order.

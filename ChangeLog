@@ -1,5 +1,15 @@
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed Logger from OptionParser. When OptionParser is used to
+	parse options at bootstrap, LogFactory is not configured yet
+	properly. When LogFactory is used in OptionParser, it initializes
+	itself to return a logger which has no ability to write log to the
+	disk.
+	* src/OptionParser.cc
+	* src/OptionParser.h
+
+2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added following sentance to the help message of --out option:
 	--out option is ignored when -Z is used.
 	* doc/aria2c.1.txt

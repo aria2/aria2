@@ -48,14 +48,11 @@
 #include "a2functional.h"
 #include "array_fun.h"
 #include "OptionHandlerFactory.h"
-#include "Logger.h"
-#include "LogFactory.h"
 
 namespace aria2 {
 
 OptionParser::OptionParser():
-  _idCounter(0),
-  _logger(LogFactory::getInstance())
+  _idCounter(0)
 {}
 
 template<typename InputIterator>
@@ -203,7 +200,6 @@ OptionHandlerHandle OptionParser::getOptionHandlerByName
     handler = *i;
   } else {
     handler.reset(new NullOptionHandler());
-    _logger->warn("Skipped unknown option --%s.", optName.c_str());
   }
   return handler;
 }
