@@ -218,7 +218,7 @@ Metalink2RequestGroup::createRequestGroup
       (new DownloadContext
        (pieceLength,
         entry->getLength(),
-        strconcat(option->get(PREF_DIR), "/", entry->file->getPath())));
+        util::applyDir(option->get(PREF_DIR), entry->file->getPath())));
     dctx->setDir(option->get(PREF_DIR));
     dctx->getFirstFileEntry()->setUris(uris);
     if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {

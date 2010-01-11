@@ -82,23 +82,22 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
     util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
   std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);
 
-  std::deque<SharedHandle<RequestGroup> > newRgs;
-  createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                  std::deque<std::string>(), torrent);
-  requestGroup->followedBy(newRgs.begin(), newRgs.end());
-  groups.insert(groups.end(), newRgs.begin(), newRgs.end());
-
   if(requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
-    std::string filename = requestGroup->getOption()->get(PREF_DIR);
-    filename += A2STR::SLASH_C;
-    filename += util::toHex(attrs[bittorrent::INFO_HASH].s());
-    filename += ".torrent";
+    std::string filename =
+      util::applyDir(requestGroup->getOption()->get(PREF_DIR),
+                     util::toHex(attrs[bittorrent::INFO_HASH].s())+".torrent");
     if(util::saveAs(filename, torrent)) {
       _logger->notice(MSG_METADATA_SAVED, filename.c_str());
     } else {
       _logger->notice(MSG_METADATA_NOT_SAVED, filename.c_str());
     }
   }
+  std::deque<SharedHandle<RequestGroup> > newRgs;
+  createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
+                                  std::deque<std::string>(), torrent);
+  
+  requestGroup->followedBy(newRgs.begin(), newRgs.end());
+  groups.insert(groups.end(), newRgs.begin(), newRgs.end());
 }
 
 } // namespace aria2

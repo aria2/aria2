@@ -1,3 +1,16 @@
+2010-01-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Treat --dir="" as --dir="."
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/Metalink2RequestGroup.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/bittorrent_helper.cc
+	* src/download_helper.cc
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code clean up.

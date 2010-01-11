@@ -1000,6 +1000,17 @@ bool saveAs
   return File(tempFilename).renameTo(filename);
 }
 
+std::string applyDir(const std::string& dir, const std::string& relPath)
+{
+  if(dir.empty()) {
+    return strconcat(A2STR::DOT_C, A2STR::SLASH_C, relPath);
+  } else if(dir == A2STR::SLASH_C) {
+    return strconcat(A2STR::SLASH_C, relPath);
+  } else {
+    return strconcat(dir, A2STR::SLASH_C, relPath);
+  }
+}
+
 } // namespace util
 
 } // namespace aria2

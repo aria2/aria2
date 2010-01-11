@@ -190,7 +190,7 @@ static SharedHandle<RequestGroup> createRequestGroup
      (option->getAsInt(PREF_SEGMENT_SIZE),
       0,
       useOutOption&&!option->blank(PREF_OUT)?
-      strconcat(option->get(PREF_DIR), "/", option->get(PREF_OUT)):A2STR::NIL));
+      util::applyDir(option->get(PREF_DIR), option->get(PREF_OUT)):A2STR::NIL));
   dctx->setDir(option->get(PREF_DIR));
   dctx->getFirstFileEntry()->setUris(uris);
   rg->setDownloadContext(dctx);
@@ -223,7 +223,7 @@ createBtRequestGroup(const std::string& torrentFilePath,
   for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
       i != indexPathMap.end(); ++i) {
     dctx->setFilePathWithIndex
-      ((*i).first, strconcat(dctx->getDir(), "/", (*i).second));
+      ((*i).first, util::applyDir(dctx->getDir(), (*i).second));
   }
   rg->setDownloadContext(dctx);
   return rg;

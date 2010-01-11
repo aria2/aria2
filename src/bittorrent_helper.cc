@@ -260,7 +260,7 @@ static void extractFileEntries
       std::deque<std::string> uris;
       createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
       SharedHandle<FileEntry> fileEntry
-        (new FileEntry(strconcat(ctx->getDir(), "/", path),
+        (new FileEntry(util::applyDir(ctx->getDir(), path),
                        fileLengthData.i(),
                        offset, uris));
       fileEntries.push_back(fileEntry);
@@ -289,13 +289,13 @@ static void extractFileEntries
     }
 
     SharedHandle<FileEntry> fileEntry
-      (new FileEntry(strconcat(ctx->getDir(), "/", name),totalLength, 0,
+      (new FileEntry(util::applyDir(ctx->getDir(), name),totalLength, 0,
                      uris));
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());
   if(torrent[MODE].s() == MULTI) {
-    ctx->setBasePath(strconcat(ctx->getDir(), "/", name));
+    ctx->setBasePath(util::applyDir(ctx->getDir(), name));
   }
 }
 

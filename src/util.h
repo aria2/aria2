@@ -355,6 +355,13 @@ void generateRandomData(unsigned char* data, size_t length);
 bool saveAs
 (const std::string& filename, const std::string& data, bool overwrite=false);
 
+// Prepend dir to relPath. If dir is empty, it prepends "." to relPath.
+//
+// dir = "/dir", relPath = "foo" => "/dir/foo"
+// dir = "",     relPath = "foo" => "./foo"
+// dir = "/",    relPath = "foo" => "/foo"
+std::string applyDir(const std::string& dir, const std::string& relPath);
+
 } // namespace util
 
 } // namespace aria2

@@ -58,6 +58,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGenerateRandomData);
   CPPUNIT_TEST(testFromHex);
   CPPUNIT_TEST(testParsePrioritizePieceRange);
+  CPPUNIT_TEST(testApplyDir);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -104,6 +105,7 @@ public:
   void testGenerateRandomData();
   void testFromHex();
   void testParsePrioritizePieceRange();
+  void testApplyDir();
 };
 
 
@@ -898,6 +900,14 @@ void UtilTest::testParsePrioritizePieceRange()
   result.clear();
   util::parsePrioritizePieceRange(result, "", entries, pieceLength);
   CPPUNIT_ASSERT(result.empty());
+}
+
+void UtilTest::testApplyDir()
+{
+  CPPUNIT_ASSERT_EQUAL(std::string("./pred"), util::applyDir("", "pred"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/pred"), util::applyDir("/", "pred"));
+  CPPUNIT_ASSERT_EQUAL(std::string("./pred"), util::applyDir(".", "pred"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/dl/pred"), util::applyDir("/dl", "pred"));
 }
 
 } // namespace aria2
