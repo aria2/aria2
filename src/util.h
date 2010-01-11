@@ -362,6 +362,15 @@ bool saveAs
 // dir = "/",    relPath = "foo" => "/foo"
 std::string applyDir(const std::string& dir, const std::string& relPath);
 
+// In HTTP/FTP, file name is file component in URI. In HTTP, filename
+// may be a value of Content-Disposition header.  They are likely
+// percent encoded. If they contains, for example, %2F, when decoded,
+// basename contains dir component. This should be avoided.  This
+// function is created to fix these issues.  This function expects src
+// should be non-percent-encoded basename.  Currently, this function
+// replaces '/' and '\' with '_'.
+std::string fixTaintedBasename(const std::string& src);
+
 } // namespace util
 
 } // namespace aria2

@@ -56,4 +56,8 @@ const std::string A2STR::SEMICOLON_C(";");
 
 const std::string A2STR::EQUAL_C("=");
 
+const std::string A2STR::UNDERSCORE_C("_");
+
+const std::string A2STR::BACK_SLASH_C("\\");
+
 } // namespace aria2

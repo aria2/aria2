@@ -1,5 +1,16 @@
 2010-01-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced '/' and '_' with '_' in HTTP/FTP filename.
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
+2010-01-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Treat --dir="" as --dir="."
 	* src/FtpNegotiationCommand.cc
 	* src/HttpResponseCommand.cc

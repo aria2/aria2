@@ -132,7 +132,8 @@ bool HttpResponseCommand::executeInternal()
     if(_fileEntry->getPath().empty()) {
       _fileEntry->setPath
         (util::applyDir
-         (getDownloadContext()->getDir(), httpResponse->determinFilename()));
+         (getDownloadContext()->getDir(),
+          util::fixTaintedBasename(httpResponse->determinFilename())));
     }
     _fileEntry->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();

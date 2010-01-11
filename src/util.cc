@@ -1011,6 +1011,12 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
   }
 }
 
+std::string fixTaintedBasename(const std::string& src)
+{
+  return replace(replace(src, A2STR::SLASH_C, A2STR::UNDERSCORE_C),
+                 A2STR::BACK_SLASH_C, A2STR::UNDERSCORE_C);
+}
+
 } // namespace util
 
 } // namespace aria2

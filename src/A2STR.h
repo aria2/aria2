@@ -62,6 +62,10 @@ public:
   static const std::string SEMICOLON_C;
 
   static const std::string EQUAL_C;
+
+  static const std::string UNDERSCORE_C;
+
+  static const std::string BACK_SLASH_C;
 };
 } // namespace aria2
 

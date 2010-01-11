@@ -337,7 +337,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   if(_fileEntry->getPath().empty()) {
     _fileEntry->setPath
       (util::applyDir
-       (getDownloadContext()->getDir(), util::urldecode(req->getFile())));
+       (getDownloadContext()->getDir(),
+        util::fixTaintedBasename(util::urldecode(req->getFile()))));
   }
   _requestGroup->preDownloadProcessing();
   if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
