@@ -530,8 +530,12 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
     (new StreamCheckIntegrityEntry(_requestGroup, nextCommand));
 
   std::deque<Command*> commands;
-  _requestGroup->processCheckIntegrityEntry(commands, entry, e);
-
+  try {
+    _requestGroup->processCheckIntegrityEntry(commands, entry, e);
+  } catch(RecoverableException& e) {
+    std::for_each(commands.begin(), commands.end(), Deleter());
+    throw;
+  }
   e->addCommand(commands);
   e->setNoWait(true);
 }

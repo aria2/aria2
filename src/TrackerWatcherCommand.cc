@@ -59,6 +59,7 @@
 #include "AnnounceTier.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -97,7 +98,13 @@ bool TrackerWatcherCommand::execute() {
     _trackerRequestGroup = createAnnounce();
     if(!_trackerRequestGroup.isNull()) {
       std::deque<Command*> commands;
-      _trackerRequestGroup->createInitialCommand(commands, e);
+      try {
+        _trackerRequestGroup->createInitialCommand(commands, e);
+      } catch(RecoverableException& ex) {
+        logger->error(EX_EXCEPTION_CAUGHT, ex);
+        std::for_each(commands.begin(), commands.end(), Deleter());
+        commands.clear();
+      }
       e->addCommand(commands);
       logger->debug("added tracker request command");
     }

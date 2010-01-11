@@ -1,3 +1,15 @@
+2010-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed memory leak. Commands stored in std::deque<Command*> are not
+	deleted when exception is thrown. Make sure that when passing
+	std::deque<Command*> to function to store Commands, handle
+	exception and delete these Commands.
+	* src/AbstractCommand.cc
+	* src/CheckIntegrityCommand.cc
+	* src/FileAllocationCommand.cc
+	* src/RequestGroup.cc
+	* src/TrackerWatcherCommand.cc
+
 2010-01-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Replaced '/' and '_' with '_' in HTTP/FTP filename.

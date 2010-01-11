@@ -40,6 +40,8 @@
 #include "message.h"
 #include "prefs.h"
 #include "DownloadContext.h"
+#include "a2functional.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -68,13 +70,23 @@ bool CheckIntegrityCommand::executeInternal()
       logger->notice(MSG_VERIFICATION_SUCCESSFUL,
                      _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::deque<Command*> commands;
-      _entry->onDownloadFinished(commands, _e);
+      try {
+        _entry->onDownloadFinished(commands, _e);
+      } catch(RecoverableException& e) {
+        std::for_each(commands.begin(), commands.end(), Deleter());
+        throw;
+      }
       _e->addCommand(commands);
     } else {
       logger->error(MSG_VERIFICATION_FAILED,
                     _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::deque<Command*> commands;
-      _entry->onDownloadIncomplete(commands,_e);
+      try {
+        _entry->onDownloadIncomplete(commands,_e);
+      } catch(RecoverableException& e) {
+        std::for_each(commands.begin(), commands.end(), Deleter());
+        throw;
+      }
       _e->addCommand(commands);
     }
     _e->setNoWait(true);

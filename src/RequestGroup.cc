@@ -346,9 +346,9 @@ void RequestGroup::createInitialCommand
 
       if(torrentAttrs[bittorrent::PRIVATE].i() == 0 &&
          _option->getAsBool(PREF_ENABLE_DHT)) {
-        std::deque<Command*> commands;
-        DHTSetup().setup(commands, e, _option.get());
-        e->addCommand(commands);
+        std::deque<Command*> dhtCommands;
+        DHTSetup().setup(dhtCommands, e, _option.get());
+        e->addCommand(dhtCommands);
         if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
           std::deque<std::pair<std::string, uint16_t> > entryPoints;
           const BDE& nodes = torrentAttrs[bittorrent::NODES];

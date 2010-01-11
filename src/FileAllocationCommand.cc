@@ -43,6 +43,8 @@
 #include "util.h"
 #include "DownloadEngine.h"
 #include "DownloadContext.h"
+#include "a2functional.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -65,7 +67,12 @@ bool FileAllocationCommand::executeInternal()
     _e->_fileAllocationMan->dropPickedEntry();
     
     std::deque<Command*> commands;
-    _fileAllocationEntry->prepareForNextAction(commands, _e);
+    try {
+      _fileAllocationEntry->prepareForNextAction(commands, _e);
+    } catch(RecoverableException& e) {
+      std::for_each(commands.begin(), commands.end(), Deleter());
+      throw;
+    }
     _e->addCommand(commands);
     _e->setNoWait(true);
     return true;
