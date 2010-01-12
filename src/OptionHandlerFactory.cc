@@ -980,6 +980,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_BT_METADATA_ONLY,
+                                    TEXT_BT_METADATA_ONLY,
+                                    V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
                                    (PREF_BT_MIN_CRYPTO_LEVEL,
                                     TEXT_BT_MIN_CRYPTO_LEVEL,

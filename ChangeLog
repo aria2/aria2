@@ -1,5 +1,19 @@
 2010-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-metadata-only option.  If true is given to this option,
+	aria2 downloads metadata only. The file(s) described in metadata
+	will not be downloaded. This option has effect only when
+	BitTorrent Magnet URI is used. See also --bt-save-metadata option.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/download_helper.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2010-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed memory leak. Commands stored in std::deque<Command*> are not
 	deleted when exception is thrown. Make sure that when passing
 	std::deque<Command*> to function to store Commands, handle

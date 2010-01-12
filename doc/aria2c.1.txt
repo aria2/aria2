@@ -216,7 +216,7 @@ HTTP Specific Options
 *--http-no-cache*[='true'|'false']::
 
    Send Cache-Control: no-cache and Pragma: no-cache header to avoid
-   cached content.  If 'false' is given , these headers are not sent
+   cached content.  If 'false' is given, these headers are not sent
    and you can add Cache-Control header with a directive you like
    using *--header* option. Default: 'true'
 
@@ -358,6 +358,12 @@ BitTorrent Specific Options
   unlimited.  See also *--bt-request-peer-speed-limit* option.
   Default: '55'
 
+*--bt-metadata-only*[='true'|'false']::
+
+  Download metadata only. The file(s) described in metadata will not
+  be downloaded. This option has effect only when BitTorrent Magnet
+  URI is used. See also *--bt-save-metadata* option.  Default: 'false'
+
 *--bt-min-crypto-level*='plain'|'arc4'::
   Set minimum level of encryption method.
   If several encryption methods are provided by a peer, aria2 chooses the lowest
@@ -395,7 +401,8 @@ BitTorrent Specific Options
   BitTorrent Magnet URI is used.  The filename is hex encoded info
   hash with suffix .torrent. The directory to be saved is the same
   directory where download file is saved. If the same file already
-  exists, metadata is not saved. Default: 'false'
+  exists, metadata is not saved. See also *--bt-metadata-only*
+  option. Default: 'false'
 
 *--bt-seed-unverified*[='true'|'false']::
   Seed previously downloaded files without verifying piece hashes.
@@ -996,6 +1003,7 @@ of URIs. These optional lines must start with white space(s).
 * bt-hash-check-seed
 * bt-max-open-files
 * bt-max-peers
+* bt-metadata-only
 * bt-min-crypto-level
 * bt-prioritize-piece
 * bt-require-crypto

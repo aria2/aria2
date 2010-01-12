@@ -316,6 +316,8 @@ extern const std::string PREF_BT_STOP_TIMEOUT;
 extern const std::string PREF_BT_PRIORITIZE_PIECE;
 // values: true | false
 extern const std::string PREF_BT_SAVE_METADATA;
+// values: true | false
+extern const std::string PREF_BT_METADATA_ONLY;
 
 /**
  * Metalink related preferences

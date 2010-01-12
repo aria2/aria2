@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 01/10/2010
+.\"      Date: 01/12/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "01/10/2010" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "01/12/2010" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -310,7 +310,7 @@ is set, then authorization header is always sent to the server\&. There is an ex
 .RS 4
 Send Cache\-Control: no\-cache and Pragma: no\-cache header to avoid cached content\&. If
 \fIfalse\fR
-is given , these headers are not sent and you can add Cache\-Control header with a directive you like using
+is given, these headers are not sent and you can add Cache\-Control header with a directive you like using
 \fB\-\-header\fR
 option\&. Default:
 \fItrue\fR
@@ -519,6 +519,14 @@ option\&. Default:
 \fI55\fR
 .RE
 .PP
+\fB\-\-bt\-metadata\-only\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Download metadata only\&. The file(s) described in metadata will not be downloaded\&. This option has effect only when BitTorrent Magnet URI is used\&. See also
+\fB\-\-bt\-save\-metadata\fR
+option\&. Default:
+\fIfalse\fR
+.RE
+.PP
 \fB\-\-bt\-min\-crypto\-level\fR=\fIplain\fR|\fIarc4\fR
 .RS 4
 Set minimum level of encryption method\&. If several encryption methods are provided by a peer, aria2 chooses the lowest one which satisfies the given level\&. Default:
@@ -555,7 +563,9 @@ or
 .PP
 \fB\-\-bt\-save\-metadata\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
-Save metadata as \&.torrent file\&. This option has effect only when BitTorrent Magnet URI is used\&. The filename is hex encoded info hash with suffix \&.torrent\&. The directory to be saved is the same directory where download file is saved\&. If the same file already exists, metadata is not saved\&. Default:
+Save metadata as \&.torrent file\&. This option has effect only when BitTorrent Magnet URI is used\&. The filename is hex encoded info hash with suffix \&.torrent\&. The directory to be saved is the same directory where download file is saved\&. If the same file already exists, metadata is not saved\&. See also
+\fB\-\-bt\-metadata\-only\fR
+option\&. Default:
 \fIfalse\fR
 .RE
 .PP
@@ -1729,6 +1739,17 @@ bt\-max\-open\-files
 .IP \(bu 2.3
 .\}
 bt\-max\-peers
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+bt\-metadata\-only
 .RE
 .sp
 .RS 4

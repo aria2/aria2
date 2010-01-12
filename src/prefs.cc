@@ -312,6 +312,8 @@ const std::string PREF_BT_STOP_TIMEOUT("bt-stop-timeout");
 const std::string PREF_BT_PRIORITIZE_PIECE("bt-prioritize-piece");
 // values: true | false
 const std::string PREF_BT_SAVE_METADATA("bt-save-metadata");
+// values: true | false
+const std::string PREF_BT_METADATA_ONLY("bt-metadata-only");
 
 /**
  * Metalink related preferences

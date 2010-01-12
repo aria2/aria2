@@ -589,10 +589,16 @@
     "                              The filename is hex encoded info hash with suffix\n" \
     "                              .torrent. The directory to be saved is the same\n" \
     "                              directory where download file is saved. If the\n" \
-    "                              same file already exists, metadata is not saved.")
+    "                              same file already exists, metadata is not saved.\n" \
+    "                              See also --bt-metadata-only option.")
 #define TEXT_HTTP_NO_CACHE                      \
   _(" --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-cache\n" \
-    "                              header to avoid cached content.  If false is given\n" \
-    "                              , these headers are not sent and you can add\n" \
+    "                              header to avoid cached content.  If false is\n" \
+    "                              given, these headers are not sent and you can add\n" \
     "                              Cache-Control header with a directive you like\n" \
     "                              using --header option.")
+#define TEXT_BT_METADATA_ONLY                   \
+  _(" --bt-metadata-only[=true|false] Download metadata only. The file(s) described\n" \
+    "                              in metadata will not be downloaded. This option\n" \
+    "                              has effect only when BitTorrent Magnet URI is\n" \
+    "                              used. See also --bt-save-metadata option.")

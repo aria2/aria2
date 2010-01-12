@@ -92,12 +92,14 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
       _logger->notice(MSG_METADATA_NOT_SAVED, filename.c_str());
     }
   }
-  std::deque<SharedHandle<RequestGroup> > newRgs;
-  createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                  std::deque<std::string>(), torrent);
+  if(!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {
+    std::deque<SharedHandle<RequestGroup> > newRgs;
+    createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
+                                    std::deque<std::string>(), torrent);
   
-  requestGroup->followedBy(newRgs.begin(), newRgs.end());
-  groups.insert(groups.end(), newRgs.begin(), newRgs.end());
+    requestGroup->followedBy(newRgs.begin(), newRgs.end());
+    groups.insert(groups.end(), newRgs.begin(), newRgs.end());
+  }
 }
 
 } // namespace aria2
