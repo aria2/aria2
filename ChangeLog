@@ -1,3 +1,8 @@
+2010-01-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Code cleanup for proxy URI handling.
+	* src/AbstractCommand.cc
+
 2010-01-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --bt-metadata-only option.  If true is given to this option,

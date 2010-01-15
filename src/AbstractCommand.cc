@@ -365,8 +365,9 @@ void AbstractCommand::setWriteCheckSocketIf
   }
 }
 
-static const std::string& getProxyStringFor(const std::string& proxyPref,
-                                            const SharedHandle<Option>& option)
+// Returns proxy option value for the given protocol.
+static const std::string& getProxyOptionFor
+(const std::string& proxyPref, const SharedHandle<Option>& option)
 {
   if(option->defined(proxyPref)) {
     return option->get(proxyPref);
@@ -375,24 +376,29 @@ static const std::string& getProxyStringFor(const std::string& proxyPref,
   }
 }
 
-static bool isProxyUsed(const std::string& proxyPref,
-                        const SharedHandle<Option>& option)
+// Returns proxy URI for given protocol.  If no proxy URI is defined,
+// then returns an empty string.
+static const std::string& getProxyUri
+(const std::string& protocol, const SharedHandle<Option>& option)
 {
-  std::string proxy = getProxyStringFor(proxyPref, option);
-  if(proxy.empty()) {
-    return false;
+  if(protocol == Request::PROTO_HTTP) {
+    return getProxyOptionFor(PREF_HTTP_PROXY, option);
+  } else if(protocol == Request::PROTO_HTTPS) {
+    return getProxyOptionFor(PREF_HTTPS_PROXY, option);
+  } else if(protocol == Request::PROTO_FTP) {
+    return getProxyOptionFor(PREF_FTP_PROXY, option);
   } else {
-    return Request().setUrl(proxy);
+    return A2STR::NIL;
   }
 }
 
-static bool isProxyRequest(const std::string& protocol,
-                           const SharedHandle<Option>& option)
+// Returns true if proxy is defined for the given protocol. Otherwise
+// returns false.
+static bool isProxyRequest
+(const std::string& protocol, const SharedHandle<Option>& option)
 {
-  return
-    (protocol == Request::PROTO_HTTP && isProxyUsed(PREF_HTTP_PROXY, option)) ||
-    (protocol == Request::PROTO_HTTPS && isProxyUsed(PREF_HTTPS_PROXY,option))||
-    (protocol == Request::PROTO_FTP && isProxyUsed(PREF_FTP_PROXY, option));
+  const std::string& proxyUri = getProxyUri(protocol, option);
+  return !proxyUri.empty() && Request().setUrl(proxyUri);
 }
 
 class DomainMatch {
@@ -430,27 +436,13 @@ bool AbstractCommand::isProxyDefined() const
     !inNoProxy(req, getOption()->get(PREF_NO_PROXY));
 }
 
-static const std::string& getProxyString(const SharedHandle<Request>& req,
-                                         const SharedHandle<Option>& option)
-{
-  if(req->getProtocol() == Request::PROTO_HTTP) {
-    return getProxyStringFor(PREF_HTTP_PROXY, option);
-  } else if(req->getProtocol() == Request::PROTO_HTTPS) {
-    return getProxyStringFor(PREF_HTTPS_PROXY, option);
-  } else if(req->getProtocol() == Request::PROTO_FTP) {
-    return getProxyStringFor(PREF_FTP_PROXY, option);
-  } else {
-    return A2STR::NIL;
-  }
-}
-
 SharedHandle<Request> AbstractCommand::createProxyRequest() const
 {
   SharedHandle<Request> proxyRequest;
   if(inNoProxy(req, getOption()->get(PREF_NO_PROXY))) {
     return proxyRequest;
   }
-  std::string proxy = getProxyString(req, getOption());
+  std::string proxy = getProxyUri(req->getProtocol(), getOption());
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
     if(proxyRequest->setUrl(proxy)) {
