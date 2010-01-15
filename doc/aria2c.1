@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 01/12/2010
+.\"      Date: 01/15/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "01/12/2010" "Aria2" "Aria2 Manual"
+.TH "ARIA2C" "1" "01/15/2010" "Aria2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -107,7 +107,7 @@ Default:
 .PP
 \fB\-\-all\-proxy\fR=PROXY
 .RS 4
-Use this proxy server for all protocols\&. You can override this setting and specify a proxy server for a particular protocol using
+Use this proxy server for all protocols\&. To erase previously defined proxy, use ""\&. You can override this setting and specify a proxy server for a particular protocol using
 \fB\-\-http\-proxy\fR,
 \fB\-\-https\-proxy\fR
 and
@@ -328,14 +328,14 @@ Set HTTP password\&. This affects all URLs\&.
 .PP
 \fB\-\-http\-proxy\fR=PROXY
 .RS 4
-Use this proxy server for HTTP\&. See also
+Use this proxy server for HTTP\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
 option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-https\-proxy\fR=PROXY
 .RS 4
-Use this proxy server for HTTPS\&. See also
+Use this proxy server for HTTPS\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
 option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
@@ -433,7 +433,7 @@ is given, the active mode will be used\&. Default:
 .PP
 \fB\-\-ftp\-proxy\fR=PROXY
 .RS 4
-Use this proxy server for FTP\&. See also
+Use this proxy server for FTP\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
 option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE

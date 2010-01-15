@@ -1,5 +1,15 @@
 2010-01-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Now --all-proxy, --http-proxy, --https-proxy and --ftp-proxy
+	option accepts empty string "".  When "" is given, it erases
+	previously defined proxy.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerImpl.h
+	* src/usage_text.h
+	* test/OptionHandlerTest.cc
+
+2010-01-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup for proxy URI handling.
 	* src/AbstractCommand.cc
 

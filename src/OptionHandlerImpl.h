@@ -556,17 +556,21 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    Request req;
-    std::string url;
-    if(util::startsWith(optarg, "http://")) {
-      url = optarg;
+    if(optarg.empty()) {
+      option.put(_optName, optarg);
     } else {
-      url = "http://"+optarg;
-    }
-    if(req.setUrl(url)) {
-      option.put(_optName, url);
-    } else {
-      throw DL_ABORT_EX(_("unrecognized proxy format"));
+      Request req;
+      std::string url;
+      if(util::startsWith(optarg, "http://")) {
+        url = optarg;
+      } else {
+        url = "http://"+optarg;
+      }
+      if(req.setUrl(url)) {
+        option.put(_optName, url);
+      } else {
+        throw DL_ABORT_EX(_("unrecognized proxy format"));
+      }
     }
   }
 

@@ -76,10 +76,11 @@ Basic Options
 HTTP/FTP Options
 ~~~~~~~~~~~~~~~~
 *--all-proxy*=PROXY::
-  Use this proxy server for all protocols.
-  You can override this setting and specify a proxy server for a particular
-  protocol using *--http-proxy*, *--https-proxy* and *--ftp-proxy* options.
-  This affects all URLs.
+
+  Use this proxy server for all protocols.  To erase previously
+  defined proxy, use "".  You can override this setting and specify a
+  proxy server for a particular protocol using *--http-proxy*,
+  *--https-proxy* and *--ftp-proxy* options.  This affects all URLs.
   The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
 
 *--connect-timeout*=SEC::
@@ -227,14 +228,16 @@ HTTP Specific Options
   Set HTTP password. This affects all URLs.
 
 *--http-proxy*=PROXY::
-  Use this proxy server for HTTP. See also *--all-proxy* option.
-  This affects all URLs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+
+  Use this proxy server for HTTP.  To erase previously defined proxy,
+  use "".  See also *--all-proxy* option.  This affects all URLs.  The
+  format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
 
 *--https-proxy*=PROXY::
-  Use this proxy server for HTTPS. See also *--all-proxy* option.
-  This affects all URLs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+
+  Use this proxy server for HTTPS. To erase previously defined proxy,
+  use "". See also *--all-proxy* option.  This affects all URLs.  The
+  format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
 
 *--private-key*=FILE::
   Use the private key in FILE.
@@ -301,9 +304,10 @@ FTP Specific Options
   Default: 'true'
 
 *--ftp-proxy*=PROXY::
-  Use this proxy server for FTP. See also *--all-proxy* option.
-  This affects all URLs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+
+  Use this proxy server for FTP.  To erase previously defined proxy,
+  use "".  See also *--all-proxy* option.  This affects all URLs.  The
+  format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
 
 *--ftp-type*=TYPE::
   Set FTP transfer type. TYPE is either 'binary' or 'ascii'.

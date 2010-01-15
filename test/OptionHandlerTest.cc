@@ -313,6 +313,10 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
   CPPUNIT_ASSERT_EQUAL(std::string("http://proxy:8080"),
                        option.get(PREF_HTTP_PROXY));
 
+  handler.parse(option, "");
+  CPPUNIT_ASSERT(option.defined(PREF_HTTP_PROXY));
+  CPPUNIT_ASSERT(option.blank(PREF_HTTP_PROXY));
+
   try {
     handler.parse(option, "http://bar:65536");
     CPPUNIT_FAIL("exception must be thrown.");

@@ -63,19 +63,23 @@
 #define TEXT_MAX_TRIES                                                  \
   _(" -m, --max-tries=N            Set number of tries. 0 means unlimited.")
 #define TEXT_HTTP_PROXY                                                 \
-  _(" --http-proxy=PROXY           Use this proxy server for HTTP.\n"   \
+  _(" --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"\
+    "                              previously defined proxy, use \"\".\n"   \
     "                              See also  --all-proxy option.\n"     \
     "                              This affects all URLs.")
 #define TEXT_HTTPS_PROXY                                                \
-  _(" --https-proxy=PROXY          Use this proxy server for HTTPS.\n"  \
+  _(" --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"  \
+    "                              previously defined proxy, use \"\".\n" \
     "                              See also  --all-proxy option.\n"     \
     "                              This affects all URLs.")
 #define TEXT_FTP_PROXY                                                  \
-  _(" --ftp-proxy=PROXY            Use this proxy server for FTP.\n"    \
+  _(" --ftp-proxy=PROXY            Use this proxy server for FTP. To erase previously\n"    \
+    "                              defined proxy, use \"\".\n" \
     "                              See also  --all-proxy option.\n"     \
     "                              This affects all URLs.")
 #define TEXT_ALL_PROXY                                                  \
-  _(" --all-proxy=PROXY            Use this proxy server for all protocols.\n" \
+  _(" --all-proxy=PROXY            Use this proxy server for all protocols. To erase\n" \
+    "                              previously defined proxy, use \"\".\n" \
     "                              You can override this setting and specify a\n" \
     "                              proxy server for a particular protocol using\n" \
     "                              --http-proxy, --https-proxy and --ftp-proxy\n" \
