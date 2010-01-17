@@ -371,6 +371,10 @@ std::string applyDir(const std::string& dir, const std::string& relPath);
 // replaces '/' and '\' with '_'.
 std::string fixTaintedBasename(const std::string& src);
 
+// Generates 20 bytes random key and store it to the address pointed
+// by key.  Caller must allocate at least 20 bytes for generated key.
+void generateRandomKey(unsigned char* key);
+
 } // namespace util
 
 } // namespace aria2

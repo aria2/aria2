@@ -853,13 +853,6 @@ void assertID
   }
 }
 
-void generateRandomKey(unsigned char* key)
-{
-  unsigned char bytes[40];
-  util::generateRandomData(bytes, sizeof(bytes));
-  MessageDigestHelper::digest(key, 20, MessageDigestContext::SHA1, bytes, sizeof(bytes));
-}
-
 BDE parseMagnet(const std::string& magnet)
 {
   BDE result;

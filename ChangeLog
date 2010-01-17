@@ -1,5 +1,15 @@
 2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved generateRandomKey() from bittorrent_helper to util.
+	* src/DHTBucket.cc
+	* src/DHTNode.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/util.cc
+	* src/util.h
+
+2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc about GID.
 	* doc/aria2c.1.txt
 

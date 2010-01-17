@@ -228,8 +228,6 @@ void assertPayloadLengthEqual
 void assertID
 (uint8_t expected, const unsigned char* data, const std::string& msgName);
 
-void generateRandomKey(unsigned char* key);
-
 // Converts attrs into torrent data. attrs must be a BDE::dict.  This
 // function does not guarantee the returned string is valid torrent
 // data.

@@ -74,10 +74,10 @@ DHTBucket::~DHTBucket() {}
 void DHTBucket::getRandomNodeID(unsigned char* nodeID) const
 {
   if(_prefixLength == 0) {
-    bittorrent::generateRandomKey(nodeID);
+    util::generateRandomKey(nodeID);
   } else {
     size_t lastByteIndex = (_prefixLength-1)/8;
-    bittorrent::generateRandomKey(nodeID);
+    util::generateRandomKey(nodeID);
     memcpy(nodeID, _min, lastByteIndex+1);
   }
 }

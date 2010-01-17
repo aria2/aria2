@@ -54,7 +54,7 @@ DHTNode::DHTNode(const unsigned char* id):_port(0), _rtt(0), _condition(1), _las
 
 void DHTNode::generateID()
 {
-  bittorrent::generateRandomKey(_id);
+  util::generateRandomKey(_id);
 }
 
 bool DHTNode::operator==(const DHTNode& node) const
