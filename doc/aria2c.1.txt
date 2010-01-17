@@ -1127,7 +1127,8 @@ GID::
   GID(or gid) is the key to manage each download. Each download has an
   unique GID. Currently GID looks like an integer, but don't treat it
   as integer because it may be changed to another type in the future
-  release.
+  release. Please note that GID is session local and not persisted
+  when aria2 exits.
 
 Methods
 ~~~~~~~

@@ -2182,7 +2182,7 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
 .PP
 GID
 .RS 4
-GID(or gid) is the key to manage each download\&. Each download has an unique GID\&. Currently GID looks like an integer, but don\(cqt treat it as integer because it may be changed to another type in the future release\&.
+GID(or gid) is the key to manage each download\&. Each download has an unique GID\&. Currently GID looks like an integer, but don\(cqt treat it as integer because it may be changed to another type in the future release\&. Please note that GID is session local and not persisted when aria2 exits\&.
 .RE
 .SS "Methods"
 .sp
