@@ -1,5 +1,11 @@
 2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added version number to man page. Updated copyright year in man
+	page.
+	* doc/aria2c.1.txt
+
+2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten toTagString
 	* src/NameMatchOptionHandler.cc
 	* test/OptionHandlerTest.cc
