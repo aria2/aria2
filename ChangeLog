@@ -1,3 +1,21 @@
+2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --human-readable option.  This option, when true is given,
+	prints sizes and speed in human readable format(e.g., 1.2Ki,
+	3.4Mi) in the console readout. The default value is true and it
+	looks exactly the same as aria2-1.8.0.  So the 'new feature'
+	appears when false is given.  In this case, sizes and speed are
+	printed without in bytes. No Ki, Mi units conversion is used.
+	This may be useful for a program to parse the output of aria2.
+	* doc/aria2c.1.txt
+	* src/ConsoleStatCalc.cc
+	* src/ConsoleStatCalc.h
+	* src/OptionHandlerFactory.cc
+	* src/main.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2010-01-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Now --all-proxy, --http-proxy, --https-proxy and --ftp-proxy

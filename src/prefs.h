@@ -180,6 +180,8 @@ extern const std::string PREF_XML_RPC_LISTEN_ALL;
 extern const std::string PREF_INTERFACE;
 // value: true | false
 extern const std::string PREF_DISABLE_IPV6;
+// value: true | false
+extern const std::string PREF_HUMAN_READABLE;
 
 /**
  * FTP related preferences

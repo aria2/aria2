@@ -176,6 +176,8 @@ const std::string PREF_XML_RPC_LISTEN_ALL("xml-rpc-listen-all");
 const std::string PREF_INTERFACE("interface");
 // value: true | false
 const std::string PREF_DISABLE_IPV6("disable-ipv6");
+// value: true | false
+const std::string PREF_HUMAN_READABLE("human-readable");
 
 /**
  * FTP related preferences

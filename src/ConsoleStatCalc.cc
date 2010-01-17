@@ -72,7 +72,8 @@
 namespace aria2 {
 
 static void printProgress
-(std::ostream& o, const SharedHandle<RequestGroup>& rg, const DownloadEngine* e)
+(std::ostream& o, const SharedHandle<RequestGroup>& rg, const DownloadEngine* e,
+ const SizeFormatter& sizeFormatter)
 {
   TransferStat stat = rg->calculateStat();
   unsigned int eta = 0;
@@ -100,10 +101,10 @@ static void printProgress
 #endif // ENABLE_BITTORRENT
     {
       o << "SIZE:"
-        << util::abbrevSize(rg->getCompletedLength())
+        << sizeFormatter(rg->getCompletedLength())
         << "B"
         << "/"
-        << util::abbrevSize(rg->getTotalLength())
+        << sizeFormatter(rg->getTotalLength())
         << "B";
       if(rg->getTotalLength() > 0) {
         o << "("
@@ -128,13 +129,13 @@ static void printProgress
   if(!rg->downloadFinished()) {
     o << " "
       << "SPD:"
-      << util::abbrevSize(stat.getDownloadSpeed()) << "Bs";
+      << sizeFormatter(stat.getDownloadSpeed()) << "Bs";
   }
   if(stat.getSessionUploadLength() > 0) {
     o << " "
       << "UP:"
-      << util::abbrevSize(stat.getUploadSpeed()) << "Bs"
-      << "(" << util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
+      << sizeFormatter(stat.getUploadSpeed()) << "Bs"
+      << "(" << sizeFormatter(stat.getAllTimeUploadLength()) << "B)";
   }
   if(eta > 0) {
     o << " "
@@ -149,13 +150,17 @@ class PrintSummary
 private:
   size_t _cols;
   const DownloadEngine* _e;
+  const SizeFormatter& _sizeFormatter;
 public:
-  PrintSummary(size_t cols, const DownloadEngine* e):_cols(cols), _e(e) {}
+  PrintSummary
+  (size_t cols, const DownloadEngine* e,
+   const SizeFormatter& sizeFormatter):
+    _cols(cols), _e(e), _sizeFormatter(sizeFormatter) {}
 
   void operator()(const SharedHandle<RequestGroup>& rg)
   {
     const char SEP_CHAR = '-';
-    printProgress(std::cout, rg, _e);
+    printProgress(std::cout, rg, _e, _sizeFormatter);
     const std::vector<SharedHandle<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
     std::cout << "\n"
@@ -169,7 +174,8 @@ public:
 
 static void printProgressSummary
 (const std::deque<SharedHandle<RequestGroup> >& groups, size_t cols,
- const DownloadEngine* e)
+ const DownloadEngine* e,
+ const SizeFormatter& sizeFormatter)
 {
   const char SEP_CHAR = '=';
   time_t now;
@@ -190,12 +196,19 @@ static void printProgressSummary
   }
   std::cout << " *** " << "\n"
             << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
-  std::for_each(groups.begin(), groups.end(), PrintSummary(cols, e));
+  std::for_each(groups.begin(), groups.end(),
+                PrintSummary(cols, e, sizeFormatter));
 }
 
-ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval):
+ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
   _summaryInterval(summaryInterval)
-{}
+{
+  if(humanReadable) {
+    _sizeFormatter.reset(new AbbrevSizeFormatter());
+  } else {
+    _sizeFormatter.reset(new PlainSizeFormatter());
+  }
+}
 
 void
 ConsoleStatCalc::calculateStat(const DownloadEngine* e)
@@ -204,7 +217,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     return;
   }
   _cp.reset();
-
+  const SizeFormatter& sizeFormatter = *_sizeFormatter.get();
   bool isTTY = isatty(STDOUT_FILENO) == 1;
   unsigned short int cols = 80;
 #ifdef __MINGW32__
@@ -231,13 +244,14 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     if((_summaryInterval > 0) &&
        _lastSummaryNotified.elapsed(_summaryInterval)) {
       _lastSummaryNotified.reset();
-      printProgressSummary(e->_requestGroupMan->getRequestGroups(), cols, e);
+      printProgressSummary(e->_requestGroupMan->getRequestGroups(), cols, e,
+                           sizeFormatter);
       std::cout << "\n";
     }
 
     RequestGroupHandle firstRequestGroup = e->_requestGroupMan->getRequestGroup(0);
 
-    printProgress(o, firstRequestGroup, e);
+    printProgress(o, firstRequestGroup, e, sizeFormatter);
 
     if(e->_requestGroupMan->countRequestGroup() > 1) {
       o << "("
@@ -251,7 +265,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     TransferStat stat = e->_requestGroupMan->calculateStat();
     o << " "
       << "[TOTAL SPD:"
-      << util::abbrevSize(stat.getDownloadSpeed()) << "Bs" << "]";
+      << sizeFormatter(stat.getDownloadSpeed()) << "Bs" << "]";
   }
 
   {
@@ -260,10 +274,10 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       o << " "
         << "[FileAlloc:"
         << "#" << entry->getRequestGroup()->getGID() << " "
-        << util::abbrevSize(entry->getCurrentLength())
+        << sizeFormatter(entry->getCurrentLength())
         << "B"
         << "/"
-        << util::abbrevSize(entry->getTotalLength())
+        << sizeFormatter(entry->getTotalLength())
         << "B"
         << "(";
       if(entry->getTotalLength() > 0) {
@@ -287,10 +301,10 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       o << " "
         << "[Checksum:"
         << "#" << entry->getRequestGroup()->getGID() << " "
-        << util::abbrevSize(entry->getCurrentLength())
+        << sizeFormatter(entry->getCurrentLength())
         << "B"
         << "/"
-        << util::abbrevSize(entry->getTotalLength())
+        << sizeFormatter(entry->getTotalLength())
         << "B"
         << "("
         << 100*entry->getCurrentLength()/entry->getTotalLength()

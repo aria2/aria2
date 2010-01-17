@@ -37,8 +37,37 @@
 
 #include "StatCalc.h"
 #include "TimeA2.h"
+#include "util.h"
 
 namespace aria2 {
+
+class SizeFormatter:public std::unary_function<int64_t, std::string> {
+protected:
+  virtual std::string format(int64_t size) const = 0;
+public:
+  virtual ~SizeFormatter() {}
+
+  std::string operator()(int64_t size) const
+  {
+    return format(size);
+  }
+};
+
+class AbbrevSizeFormatter:public SizeFormatter {
+protected:
+  virtual std::string format(int64_t size) const
+  {
+    return util::abbrevSize(size);
+  }
+};
+
+class PlainSizeFormatter:public SizeFormatter {
+protected:
+  virtual std::string format(int64_t size) const
+  {
+    return util::itos(size);
+  }
+};
 
 class ConsoleStatCalc:public StatCalc
 {
@@ -48,8 +77,10 @@ private:
   Time _lastSummaryNotified;
 
   time_t _summaryInterval;
+
+  SharedHandle<SizeFormatter> _sizeFormatter;
 public:
-  ConsoleStatCalc(time_t summaryInterval);
+  ConsoleStatCalc(time_t summaryInterval, bool humanReadable = true);
 
   virtual ~ConsoleStatCalc() {}
 

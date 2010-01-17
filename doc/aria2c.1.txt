@@ -673,6 +673,11 @@ Advanced Options
   Possible Values: 'none', 'prealloc', 'falloc'
   Default: 'prealloc'
 
+*--human-readable*[='true'|'false']::
+
+  Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi)
+  in the console readout. Default: 'true'
+
 *--interface*=INTERFACE::
 
   Bind sockets to given interface. You can specify interface name, IP

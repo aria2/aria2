@@ -239,6 +239,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_HUMAN_READABLE,
+                                    TEXT_HUMAN_READABLE,
+                                    V_TRUE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_INPUT_FILE,
                                     TEXT_INPUT_FILE,

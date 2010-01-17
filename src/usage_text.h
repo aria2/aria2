@@ -606,3 +606,6 @@
     "                              in metadata will not be downloaded. This option\n" \
     "                              has effect only when BitTorrent Magnet URI is\n" \
     "                              used. See also --bt-save-metadata option.")
+#define TEXT_HUMAN_READABLE                     \
+  _(" --human-readable[=true|false] Print sizes and speed in human readable format\n" \
+    "                              (e.g., 1.2Ki, 3.4Mi) in the console readout.")
