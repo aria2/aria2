@@ -3031,25 +3031,34 @@ seeder
 </dd>
 </dl></div>
 <div class="paragraph"><p><strong>aria2.tellActive</strong></p></div>
-<div class="paragraph"><p>This method returns the list of active downloads.  The respose is of
+<div class="paragraph"><p>This method returns the list of active downloads.  The response is of
 type array and its element is the same struct returned by
 <strong>aria2.tellStatus</strong> method.</p></div>
 <div class="paragraph"><p><strong>aria2.tellWaiting</strong> <em>offset, num</em></p></div>
-<div class="paragraph"><p>This method returns the list of waiting download in the range of
-[<em>offset</em>, <em>offset</em>+<em>num</em>). <em>offset</em> is of type integer and specifies
-the offset from the download waiting at the front. <em>num</em> is of type
-integer and specifies the number of downloads to be returned. For
-example, imagine that three downloads "A","B" and "C" are waiting in
-this order. aria2.tellWaiting(0, 1) returns "A". aria2.tellWaiting(1,
-2) returns "B" and "C".  The respose is of type array and its element
-is the same struct returned by <strong>aria2.tellStatus</strong> method.</p></div>
+<div class="paragraph"><p>This method returns the list of waiting download.  <em>offset</em> is of type
+integer and specifies the offset from the download waiting at the
+front. <em>num</em> is of type integer and specifies the number of downloads
+to be returned.</p></div>
+<div class="paragraph"><p>If offset is a positive integer, this method returns downloads in the
+range of [<em>offset</em>, <em>offset</em>+<em>num</em>).</p></div>
+<div class="paragraph"><p><em>offset</em> can be a negative integer. <em>offset</em> == -1 points last
+download in the waiting queue and <em>offset</em> == -2 points the download
+before the last download, and so on. The downloads in the response are
+in reversed order.</p></div>
+<div class="paragraph"><p>For example, imagine that three downloads "A","B" and "C" are waiting
+in this order. aria2.tellWaiting(0, 1) returns
+["A"]. aria2.tellWaiting(1, 2) returns ["B", "C"].
+aria2.tellWaiting(-1, 2) returns ["C", "B"].</p></div>
+<div class="paragraph"><p>The response is of type array and its element is the same struct
+returned by <strong>aria2.tellStatus</strong> method.</p></div>
 <div class="paragraph"><p><strong>aria2.tellStopped</strong> <em>offset, num</em></p></div>
-<div class="paragraph"><p>This method returns the list of stopped download in the range of
-[<em>offset</em>, <em>offset</em>+<em>num</em>). <em>offset</em> is of type integer and specifies
-the offset from the oldest download. <em>num</em> is of type integer and
-specifies the number of downloads to be returned.  The respose is of
-type array and its element is the same struct returned by
-<strong>aria2.tellStatus</strong> method.</p></div>
+<div class="paragraph"><p>This method returns the list of stopped download.  <em>offset</em> is of type
+integer and specifies the offset from the oldest download. <em>num</em> is of
+type integer and specifies the number of downloads to be returned.</p></div>
+<div class="paragraph"><p><em>offset</em> and <em>num</em> have the same semantics as <strong>aria2.tellWaiting</strong>
+method.</p></div>
+<div class="paragraph"><p>The response is of type array and its element is the same struct
+returned by <strong>aria2.tellStatus</strong> method.</p></div>
 <div class="paragraph"><p><strong>aria2.changePosition</strong> <em>gid, pos, how</em></p></div>
 <div class="paragraph"><p>This method changes the position of the download denoted by
 <em>gid</em>. <em>pos</em> is of type integer. <em>how</em> is of type string. If <em>how</em> is
@@ -3587,7 +3596,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-01-17 16:21:53 JST
+Last updated 2010-01-17 18:47:03 JST
 </div>
 </div>
 </body>

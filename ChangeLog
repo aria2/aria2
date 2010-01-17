@@ -1,5 +1,17 @@
 2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Now offset argument in aria2.tellWaiting and aria2.tellStopped
+	accepts a negative integer.  'offset' == -1 points last download
+	in the waiting queue and 'offset' == -2 points the download before
+	the last download, and so on. The downloads in the response are in
+	reversed order.
+	* doc/aria2c.1.txt
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* test/XmlRpcMethodTest.cc
+
+2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --human-readable option.  This option, when true is given,
 	prints sizes and speed in human readable format(e.g., 1.2Ki,
 	3.4Mi) in the console readout. The default value is true and it

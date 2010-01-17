@@ -586,73 +586,43 @@ BDE TellActiveXmlRpcMethod::process
   return list;
 }
 
-template<typename InputIterator>
-static std::pair<InputIterator, InputIterator>
-getPaginationRange
-(const XmlRpcRequest& req, InputIterator first, InputIterator last)
+template<typename T>
+void AbstractPaginationXmlRpcMethod<T>::checkPaginationParams
+(const BDE& params) const
 {
-  const BDE& params = req._params;
   assert(params.isList());
-
   if(params.size() != 2 ||
      !params[0].isInteger() || !params[1].isInteger() ||
-     params[0].i() < 0 || params[1].i() < 0) {
+     params[1].i() < 0) {
     throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
   }
-
-  size_t offset = params[0].i();
-  size_t num = params[1].i();
-
-  BDE list = BDE::list();
-  size_t size = std::distance(first, last);
-  if(size <= offset) {
-    return std::make_pair(last, last);
-  }
-  size_t lastDistance;
-  if(size < offset+num) {
-    lastDistance = size;
-  } else {
-    lastDistance = offset+num;
-  }
-  last = first;
-  std::advance(first, offset);
-  std::advance(last, lastDistance);
-  return std::make_pair(first, last);
 }
 
-BDE TellWaitingXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+const std::deque<SharedHandle<RequestGroup> >&
+TellWaitingXmlRpcMethod::getItems(DownloadEngine* e) const
 {
-  const std::deque<SharedHandle<RequestGroup> >& waitings =
-    e->_requestGroupMan->getReservedGroups();
-  std::pair<std::deque<SharedHandle<RequestGroup> >::const_iterator,
-    std::deque<SharedHandle<RequestGroup> >::const_iterator> range =
-    getPaginationRange(req, waitings.begin(), waitings.end());
-  BDE list = BDE::list();
-  for(; range.first != range.second; ++range.first) {
-    BDE entryDict = BDE::dict();
-    entryDict[KEY_STATUS] = BDE_WAITING;
-    gatherProgress(entryDict, *range.first, e);
-    list << entryDict;
-  }
-  return list;
+  return e->_requestGroupMan->getReservedGroups();
 }
 
-BDE TellStoppedXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+void TellWaitingXmlRpcMethod::createEntry
+(BDE& entryDict, const SharedHandle<RequestGroup>& item,
+ DownloadEngine* e) const
 {
-  const std::deque<SharedHandle<DownloadResult> >& stopped =
-    e->_requestGroupMan->getDownloadResults();
-  std::pair<std::deque<SharedHandle<DownloadResult> >::const_iterator,
-    std::deque<SharedHandle<DownloadResult> >::const_iterator> range =
-    getPaginationRange(req, stopped.begin(), stopped.end());
-  BDE list = BDE::list();
-  for(; range.first != range.second; ++range.first) {
-    BDE entryDict = BDE::dict();
-    gatherStoppedDownload(entryDict, *range.first);
-    list << entryDict;
-  }
-  return list;
+  entryDict[KEY_STATUS] = BDE_WAITING;
+  gatherProgress(entryDict, item, e);
+}
+
+const std::deque<SharedHandle<DownloadResult> >&
+TellStoppedXmlRpcMethod::getItems(DownloadEngine* e) const
+{
+  return e->_requestGroupMan->getDownloadResults();
+}
+
+void TellStoppedXmlRpcMethod::createEntry
+(BDE& entryDict, const SharedHandle<DownloadResult>& item,
+ DownloadEngine* e) const
+{
+  gatherStoppedDownload(entryDict, item);
 }
 
 BDE PurgeDownloadResultXmlRpcMethod::process

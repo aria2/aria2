@@ -608,6 +608,39 @@ void XmlRpcMethodTest::testTellWaiting()
 #else //!ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)2, res._param.size());
 #endif // !ENABLE_BITTORRENT
+  // negative offset
+  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
+  req._params << BDE((int64_t)-1);
+  req._params << BDE((int64_t)2);
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, res._param.size());
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL(std::string("4"), res._param[0]["gid"].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("3"), res._param[1]["gid"].s());
+#else // !ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL(std::string("3"), res._param[0]["gid"].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"), res._param[1]["gid"].s());
+#endif // !ENABLE_BITTORRENT
+  // negative offset and size < num
+  req._params[1] = BDE((int64_t)100);
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)4, res._param.size());
+#else // !ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)3, res._param.size());
+#endif // !ENABLE_BITTORRENT
+  // nagative offset and normalized offset < 0
+  req._params[0] = BDE((int64_t)-5);
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, res._param.size());
+  // nagative offset and normalized offset == 0
+  req._params[0] = BDE((int64_t)-4);
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, res._param.size());
 }
 
 void XmlRpcMethodTest::testTellWaiting_fail()

@@ -37,6 +37,12 @@
 
 #include "XmlRpcMethod.h"
 
+#include <deque>
+#include <algorithm>
+
+#include "BDE.h"
+#include "XmlRpcRequest.h"
+
 namespace aria2 {
 
 class DownloadResult;
@@ -160,9 +166,81 @@ public:
   }
 };
 
-class TellWaitingXmlRpcMethod:public XmlRpcMethod {
+template<typename T>
+class AbstractPaginationXmlRpcMethod:public XmlRpcMethod {
+private:
+  template<typename InputIterator>
+  std::pair<InputIterator, InputIterator>
+  getPaginationRange
+  (ssize_t offset, size_t num, InputIterator first, InputIterator last)
+  {
+    size_t size = std::distance(first, last);
+    if(offset < 0) {
+      ssize_t tempoffset = offset+size;
+      if(tempoffset < 0) {
+        return std::make_pair(last, last);
+      }
+      offset = tempoffset-(num-1);
+      if(offset < 0) {
+        offset = 0;
+        num = tempoffset+1;
+      }
+    } else if(size <= (size_t)offset) {
+      return std::make_pair(last, last);
+    }
+    BDE list = BDE::list();
+    size_t lastDistance;
+    if(size < offset+num) {
+      lastDistance = size;
+    } else {
+      lastDistance = offset+num;
+    }
+    last = first;
+    std::advance(first, offset);
+    std::advance(last, lastDistance);
+    return std::make_pair(first, last);
+  }
+
+  void checkPaginationParams(const BDE& params) const;
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e)
+  {
+    const BDE& params = req._params;
+    checkPaginationParams(params);
+    ssize_t offset = params[0].i();
+    size_t num = params[1].i();
+    const std::deque<SharedHandle<T> >& items = getItems(e);
+    std::pair<typename std::deque<SharedHandle<T> >::const_iterator,
+      typename std::deque<SharedHandle<T> >::const_iterator> range =
+      getPaginationRange(offset, num, items.begin(), items.end());
+    BDE list = BDE::list();
+    for(; range.first != range.second; ++range.first) {
+      BDE entryDict = BDE::dict();
+      createEntry(entryDict, *range.first, e);
+      list << entryDict;
+    }
+    if(offset < 0) {
+      std::reverse(list.listBegin(), list.listEnd());
+    }
+    return list;
+  }
+
+  virtual const std::deque<SharedHandle<T> >&
+  getItems(DownloadEngine* e) const = 0;
+
+  virtual void createEntry
+  (BDE& entryDict, const SharedHandle<T>& item, DownloadEngine* e) const = 0;
+};
+
+class TellWaitingXmlRpcMethod:
+    public AbstractPaginationXmlRpcMethod<RequestGroup> {
+protected:
+  virtual const std::deque<SharedHandle<RequestGroup> >&
+  getItems(DownloadEngine* e) const;
+
+  virtual void createEntry
+  (BDE& entryDict, const SharedHandle<RequestGroup>& item,
+   DownloadEngine* e) const;
 public:
   static const std::string& getMethodName()
   {
@@ -171,9 +249,15 @@ public:
   }
 };
 
-class TellStoppedXmlRpcMethod:public XmlRpcMethod {
+class TellStoppedXmlRpcMethod:
+    public AbstractPaginationXmlRpcMethod<DownloadResult> {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+   virtual const std::deque<SharedHandle<DownloadResult> >&
+   getItems(DownloadEngine* e) const;
+
+  virtual void createEntry
+  (BDE& entryDict, const SharedHandle<DownloadResult>& item,
+   DownloadEngine* e) const;
 public:
   static const std::string& getMethodName()
   {
