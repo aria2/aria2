@@ -233,7 +233,7 @@ void OptionHandlerTest::testDefaultOptionHandler()
   handler.addTag("apple");
   CPPUNIT_ASSERT_EQUAL(std::string("apple"), handler.toTagString());
   handler.addTag("orange");
-  CPPUNIT_ASSERT_EQUAL(std::string("apple,orange"), handler.toTagString());
+  CPPUNIT_ASSERT_EQUAL(std::string("apple, orange"), handler.toTagString());
   CPPUNIT_ASSERT(handler.hasTag("apple"));
   CPPUNIT_ASSERT(handler.hasTag("orange"));
   CPPUNIT_ASSERT(!handler.hasTag("pineapple"));

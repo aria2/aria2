@@ -46,6 +46,7 @@
 #include "A2STR.h"
 #include "util.h"
 #include "OptionHandlerException.h"
+#include "a2functional.h"
 
 #define NO_DESCRIPTION A2STR::NIL
 #define NO_DEFAULT_VALUE A2STR::NIL
@@ -115,10 +116,7 @@ public:
 
   virtual std::string toTagString() const
   {
-    std::stringstream s;
-    std::copy(_tags.begin(), _tags.end(),
-              std::ostream_iterator<std::string>(s, ","));
-    return util::trim(s.str(), ", ");
+    return strjoin(_tags.begin(), _tags.end(), ", ");
   }
 
   virtual const std::string& getName() const

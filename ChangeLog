@@ -1,5 +1,11 @@
 2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten toTagString
+	* src/NameMatchOptionHandler.cc
+	* test/OptionHandlerTest.cc
+
+2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added dir and files key to the response struct of aria2.tellStatus
 	XML-RPC method.  The value associated with files key is the list
 	of files. Its element is the same struct used in aria2.getFiles
