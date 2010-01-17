@@ -2287,6 +2287,18 @@ belongsTo
 .RS 4
 GID of a parent download\&. Some downloads are a part of another download\&. For example, if a file in Metalink has BitTorrent resource, the download of \&.torrent is a part of that file\&. If this download has no parent, this key will not be included in the response\&.
 .RE
+.PP
+dir
+.RS 4
+Directory to save files\&. This key is not available for stopped downloads\&.
+.RE
+.PP
+files
+.RS 4
+Returns the list of files\&. The element of list is the same struct used in
+\fBaria2\&.getFiles\fR
+method\&.
+.RE
 .sp
 \fBaria2\&.getUris\fR \fIgid\fR
 .sp
@@ -2323,6 +2335,13 @@ selected
 option\&. If
 \fB\-\-select\-file\fR
 is not specified or this is single torrent or no torrent download, this value is always "true"\&. Otherwise "false"\&.
+.RE
+.PP
+uris
+.RS 4
+Returns the list of URI for this file\&. The element of list is the same struct used in
+\fBaria2\&.getUris\fR
+method\&.
 .RE
 .sp
 \fBaria2\&.getPeers\fR \fIgid\fR

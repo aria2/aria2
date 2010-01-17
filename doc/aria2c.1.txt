@@ -1269,6 +1269,16 @@ belongsTo::
   download has no parent, this key will not be included in the
   response.
 
+dir::
+
+  Directory to save files. This key is not available for stopped
+  downloads.
+
+files::
+
+  Returns the list of files. The element of list is the same struct
+  used in *aria2.getFiles* method.
+
 *aria2.getUris* 'gid'
 
 This method returns URIs used in the download denoted by 'gid'.  'gid'
@@ -1304,6 +1314,10 @@ selected::
   *--select-file* is not specified or this is single torrent or no
   torrent download, this value is always "true". Otherwise "false".
 
+uris::
+
+  Returns the list of URI for this file. The element of list is the
+  same struct used in *aria2.getUris* method.
 
 *aria2.getPeers* 'gid'
 

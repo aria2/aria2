@@ -2893,6 +2893,24 @@ belongsTo
   response.
 </p>
 </dd>
+<dt class="hdlist1">
+dir
+</dt>
+<dd>
+<p>
+  Directory to save files. This key is not available for stopped
+  downloads.
+</p>
+</dd>
+<dt class="hdlist1">
+files
+</dt>
+<dd>
+<p>
+  Returns the list of files. The element of list is the same struct
+  used in <strong>aria2.getFiles</strong> method.
+</p>
+</dd>
 </dl></div>
 <div class="paragraph"><p><strong>aria2.getUris</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method returns URIs used in the download denoted by <em>gid</em>.  <em>gid</em>
@@ -2946,6 +2964,15 @@ selected
   "true" if this file is selected by <strong>--select-file</strong> option. If
   <strong>--select-file</strong> is not specified or this is single torrent or no
   torrent download, this value is always "true". Otherwise "false".
+</p>
+</dd>
+<dt class="hdlist1">
+uris
+</dt>
+<dd>
+<p>
+  Returns the list of URI for this file. The element of list is the
+  same struct used in <strong>aria2.getUris</strong> method.
 </p>
 </dd>
 </dl></div>
@@ -3610,7 +3637,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-01-17 20:50:31 JST
+Last updated 2010-01-17 22:45:25 JST
 </div>
 </div>
 </body>

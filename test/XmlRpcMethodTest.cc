@@ -19,6 +19,7 @@
 #include "DownloadContext.h"
 #include "FeatureConfig.h"
 #include "util.h"
+#include "array_fun.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 # include "BtRuntime.h"
@@ -697,7 +698,9 @@ void XmlRpcMethodTest::testGatherStoppedDownload()
 
 void XmlRpcMethodTest::testGatherProgressCommon()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0,"aria2.tar.bz2"));
+  std::string uris[] = { "http://localhost/aria2.tar.bz2" };
+  dctx->getFirstFileEntry()->addUris(&uris[0], &uris[arrayLength(uris)]);
 
   SharedHandle<RequestGroup> group(new RequestGroup(_option));
   group->setDownloadContext(dctx);
@@ -717,6 +720,11 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[1]->getGID()),
                        entry["followedBy"][1].s());
   CPPUNIT_ASSERT_EQUAL(std::string("2"), entry["belongsTo"].s());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, entry["files"].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
+                       entry["files"][0]["path"].s());
+  CPPUNIT_ASSERT_EQUAL(uris[0], entry["files"][0]["uris"][0]["uri"].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), entry["dir"].s());
 }
 
 void XmlRpcMethodTest::testChangePosition()

@@ -1,5 +1,18 @@
 2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added dir and files key to the response struct of aria2.tellStatus
+	XML-RPC method.  The value associated with files key is the list
+	of files. Its element is the same struct used in aria2.getFiles
+	XML-RPC method.  Added uris key to the response struct of
+	aria2.getFiles XML-RPC method.  The value associated with uris key
+	is the list of URIs. Its element is the same struct used in
+	aria2.getUris XML-RPC method.
+	* doc/aria2c.1.txt
+	* src/XmlRpcMethodImpl.cc
+	* test/XmlRpcMethodTest.cc
+
+2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added aria2.getSessionInfo XML-RPC method.  This method returns a
 	struct containing Session ID, which is generated each time when
 	aria2 is invoked.

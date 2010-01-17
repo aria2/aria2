@@ -116,6 +116,9 @@ const std::string KEY_ENABLED_FEATURES = "enabledFeatures";
 const std::string KEY_METHOD_NAME = "methodName";
 const std::string KEY_PARAMS = "params";
 const std::string KEY_SESSION_ID = "sessionId";
+const std::string KEY_FILES = "files";
+const std::string KEY_DIR = "dir";
+const std::string KEY_URIS = "uris";
 }
 
 static BDE createGIDResponse(int32_t gid)
@@ -300,6 +303,31 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   return createGIDResponse(gid);
 }
 
+template<typename InputIterator>
+static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
+{
+  size_t index = 1;
+  for(; first != last; ++first, ++index) {
+    BDE entry = BDE::dict();
+    entry[KEY_INDEX] = util::uitos(index);
+    entry[KEY_PATH] = (*first)->getPath();
+    entry[KEY_SELECTED] = (*first)->isRequested()?BDE_TRUE:BDE_FALSE;
+    entry[KEY_LENGTH] = util::uitos((*first)->getLength());
+
+    BDE uriList = BDE::list();
+    std::deque<std::string> uris;
+    (*first)->getUris(uris);
+    for(std::deque<std::string>::const_iterator i = uris.begin();
+        i != uris.end(); ++i) {
+      BDE uriEntry = BDE::dict();
+      uriEntry[KEY_URI] = *i;
+      uriList << uriEntry;
+    }
+    entry[KEY_URIS] = uriList;
+    files << entry;
+  }
+}
+
 void gatherProgressCommon
 (BDE& entryDict, const SharedHandle<RequestGroup>& group)
 {
@@ -320,10 +348,9 @@ void gatherProgressCommon
                                             ps->getBitfieldLength());
     }
   }
-  entryDict[KEY_PIECE_LENGTH] = 
-    util::uitos(group->getDownloadContext()->getPieceLength());
-  entryDict[KEY_NUM_PIECES] =
-    util::uitos(group->getDownloadContext()->getNumPieces());
+  const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+  entryDict[KEY_PIECE_LENGTH] = util::uitos(dctx->getPieceLength());
+  entryDict[KEY_NUM_PIECES] = util::uitos(dctx->getNumPieces());
   if(!group->followedBy().empty()) {
     BDE list = BDE::list();
     // The element is GID.
@@ -336,6 +363,11 @@ void gatherProgressCommon
   if(group->belongsTo()) {
     entryDict[KEY_BELONGS_TO] = util::itos(group->belongsTo());
   }
+  BDE files = BDE::list();
+  createFileEntry
+    (files, dctx->getFileEntries().begin(), dctx->getFileEntries().end());
+  entryDict[KEY_FILES] = files;
+  entryDict[KEY_DIR] = group->getOption()->get(PREF_DIR);
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -417,6 +449,9 @@ void gatherStoppedDownload
   if(ds->belongsTo) {
     entryDict[KEY_BELONGS_TO] = util::itos(ds->belongsTo);
   }
+  BDE files = BDE::list();
+  createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end());
+  entryDict[KEY_FILES] = files;
 }
 
 static
@@ -428,20 +463,6 @@ findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, int32_t gid)
     group = rgman->findReservedGroup(gid);
   }
   return group;
-}
-
-template<typename InputIterator>
-static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
-{
-  size_t index = 1;
-  for(; first != last; ++first, ++index) {
-    BDE entry = BDE::dict();
-    entry[KEY_INDEX] = util::uitos(index);
-    entry[KEY_PATH] = (*first)->getPath();
-    entry[KEY_SELECTED] = (*first)->isRequested()?BDE_TRUE:BDE_FALSE;
-    entry[KEY_LENGTH] = util::uitos((*first)->getLength());
-    files << entry;
-  }
 }
 
 BDE GetFilesXmlRpcMethod::process
@@ -493,9 +514,9 @@ BDE GetUrisXmlRpcMethod::process
       (StringFormat("No URI data is available for GID#%d", gid).str());
   }
   BDE uriList = BDE::list();
-  std::deque<std::string> uris;
   // TODO Current implementation just returns first FileEntry's URIs.
   if(!group->getDownloadContext()->getFileEntries().empty()) {
+    std::deque<std::string> uris;
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     for(std::deque<std::string>::const_iterator i = uris.begin();
         i != uris.end(); ++i) {
