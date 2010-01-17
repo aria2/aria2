@@ -89,6 +89,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new PurgeDownloadResultXmlRpcMethod());
   } else if(methodName == GetVersionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetVersionXmlRpcMethod());
+  } else if(methodName == GetSessionInfoXmlRpcMethod::getMethodName()) {
+    return SharedHandle<XmlRpcMethod>(new GetSessionInfoXmlRpcMethod());
   } else if(methodName == SystemMulticallXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new SystemMulticallXmlRpcMethod());
   } else {

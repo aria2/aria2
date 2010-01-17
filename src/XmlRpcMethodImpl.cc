@@ -115,6 +115,7 @@ const std::string KEY_VERSION = "version";
 const std::string KEY_ENABLED_FEATURES = "enabledFeatures";
 const std::string KEY_METHOD_NAME = "methodName";
 const std::string KEY_PARAMS = "params";
+const std::string KEY_SESSION_ID = "sessionId";
 }
 
 static BDE createGIDResponse(int32_t gid)
@@ -786,6 +787,14 @@ BDE ChangePositionXmlRpcMethod::process
   size_t destPos =
     e->_requestGroupMan->changeReservedGroupPosition(gid, pos, how);
   BDE result(destPos);
+  return result;
+}
+
+BDE GetSessionInfoXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  BDE result = BDE::dict();
+  result[KEY_SESSION_ID] = util::toHex(e->getSessionId());
   return result;
 }
 

@@ -191,6 +191,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} changeOption GID [options]
        #{program_name} changeGlobalOption [options]
        #{program_name} getVersion [options]
+       #{program_name} getSessionInfo [options]
 Options:
 EOS
   
@@ -269,6 +270,8 @@ elsif command == "changeOption" then
 elsif command == "changeGlobalOption" then
   result=client.call("aria2."+command, options)
 elsif command == "getVersion" then
+  result=client.call("aria2."+command)
+elsif command == "getSessionInfo" then
   result=client.call("aria2."+command)
 else
   puts "Command not recognized"

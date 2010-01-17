@@ -1457,6 +1457,15 @@ enabledFeatures::
 
   List of enabled features. Each feature name is of type string.
 
+*aria2.getSessionInfo*
+
+This method returns session information.
+The response is of type struct and contains following key.
+
+sessionId::
+
+  Session ID, which is generated each time when aria2 is invoked.
+
 *system.multicall* 'methods'
 
 This methods encapsulates multiple method calls in a single request.

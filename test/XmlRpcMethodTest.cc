@@ -69,6 +69,7 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGatherProgressCommon);
   CPPUNIT_TEST(testChangePosition);
   CPPUNIT_TEST(testChangePosition_fail);
+  CPPUNIT_TEST(testGetSessionInfo);
   CPPUNIT_TEST(testSystemMulticall);
   CPPUNIT_TEST(testSystemMulticall_fail);
   CPPUNIT_TEST_SUITE_END();
@@ -125,6 +126,7 @@ public:
   void testGatherProgressCommon();
   void testChangePosition();
   void testChangePosition_fail();
+  void testGetSessionInfo();
   void testSystemMulticall();
   void testSystemMulticall_fail();
 };
@@ -747,6 +749,16 @@ void XmlRpcMethodTest::testChangePosition_fail()
   req._params << BDE((int64_t)2);
   req._params << std::string("bad keyword");
   CPPUNIT_ASSERT_EQUAL(1, res._code);
+}
+
+void XmlRpcMethodTest::testGetSessionInfo()
+{
+  GetSessionInfoXmlRpcMethod m;
+  XmlRpcRequest req(GetSessionInfoXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL(util::toHex(_e->getSessionId()),
+                       res._param["sessionId"].s());
 }
 
 void XmlRpcMethodTest::testSystemMulticall()

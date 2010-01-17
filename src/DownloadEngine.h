@@ -73,6 +73,8 @@ class DownloadEngine {
 private:
   void waitData();
 
+  std::string _sessionId;
+
   SharedHandle<EventPoll> _eventPoll;
 
   Logger* logger;
@@ -274,6 +276,11 @@ public:
   }
 
   void setRefreshInterval(time_t interval);
+
+  const std::string getSessionId() const
+  {
+    return _sessionId;
+  }
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

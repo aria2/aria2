@@ -94,7 +94,11 @@ DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll):
   _btRegistry(new BtRegistry()),
 #endif // ENABLE_BITTORRENT
   _dnsCache(new DNSCache())
-{}
+{
+  unsigned char sessionId[20];
+  util::generateRandomKey(sessionId);
+  _sessionId = std::string(&sessionId[0], & sessionId[sizeof(sessionId)]);
+}
 
 DownloadEngine::~DownloadEngine() {
   cleanQueue();
