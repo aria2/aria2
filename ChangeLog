@@ -1,3 +1,8 @@
+2010-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added XML-RPC client sample code in Python.
+	* doc/aria2c.1.txt
+
 2010-01-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated po templates.

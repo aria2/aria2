@@ -3229,6 +3229,17 @@ result=client.call("aria2.addUri", [ "http://localhost/aria2.tar.bz2" ], options
 
 pp result</tt></pre>
 </div></div>
+<div class="paragraph"><p>If you are a Python lover, you can use xmlrpclib(for Python3.x, use
+xmlrpc.client instead) to interact with aria2.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>import xmlrpclib
+from pprint import pprint
+
+s = xmlrpclib.ServerProxy("http://localhost:6800/rpc")
+r = s.aria2.addUri(["http://localhost/aria2.tar.bz2"], {"dir":"/downloads"})
+pprint(r)</tt></pre>
+</div></div>
 </div>
 <h2 id="_example">EXAMPLE</h2>
 <div class="sectionbody">
@@ -3637,7 +3648,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-01-17 23:01:25 JST
+Last updated 2010-01-18 23:42:25 JST
 </div>
 </div>
 </body>

@@ -1563,6 +1563,18 @@ result=client.call("aria2.addUri", [ "http://localhost/aria2.tar.bz2" ], options
 pp result
 ----------------------------------------------
 
+If you are a Python lover, you can use xmlrpclib(for Python3.x, use
+xmlrpc.client instead) to interact with aria2.
+
+----------------------------------------------
+import xmlrpclib
+from pprint import pprint
+
+s = xmlrpclib.ServerProxy("http://localhost:6800/rpc")
+r = s.aria2.addUri(["http://localhost/aria2.tar.bz2"], {"dir":"/downloads"})
+pprint(r)
+----------------------------------------------
+
 EXAMPLE
 -------
 
