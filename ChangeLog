@@ -1,3 +1,23 @@
+2010-01-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	aria2 now returns gzip compressed XML-RPC response if XML-RPC
+	client accepts gzip content encoding.
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/GZipEncoder.cc
+	* src/GZipEncoder.h
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpServer.cc
+	* src/HttpServer.h
+	* src/HttpServerBodyCommand.cc
+	* src/HttpServerCommand.cc
+	* src/Makefile.am
+	* src/XmlRpcResponse.cc
+	* src/XmlRpcResponse.h
+	* test/GZipEncoderTest.cc
+	* test/Makefile.am
+
 2010-01-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added XML-RPC client sample code in Python.

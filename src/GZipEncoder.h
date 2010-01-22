@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,43 +32,65 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_A2_STR_H_
-#define _D_A2_STR_H_
+#ifndef _D_GZIP_ENCODER_H_
+#define _D_GZIP_ENCODER_H_
 
 #include <string>
 
+#include <zlib.h>
+
 namespace aria2 {
 
-class A2STR {
+class GZipEncoder {
 private:
-  A2STR();
+  z_stream* _strm;
+
+  bool _finished;
+
+  // Internal buffer for deflated data.
+  std::string _internalBuf;
+
+  std::string encode(const unsigned char* in, size_t length, int flush);
 public:
-  static const std::string NIL;
+  GZipEncoder();
 
-  static const std::string SHARP_C;
+  ~GZipEncoder();
 
-  static const std::string CR_C;
+  // Initializes deflator.
+  void init();
 
-  static const std::string LF_C;
+  // Feeds NULL-terminated c-string s to deflater.  The deflated
+  // result is kept in this class.
+  GZipEncoder& operator<<(const char* s);
 
-  static const std::string CRLF;
+  // Feeds binary data in s to deflater.  The deflated result is kept
+  // in this class.
+  GZipEncoder& operator<<(const std::string& s);
 
-  static const std::string SLASH_C;
+  // Feeds integer to deflator. Before passed to deflator, i is
+  // converted to std::string using util::itos().  The deflated result
+  // is kept in this class.
+  GZipEncoder& operator<<(int64_t i);
 
-  static const std::string DOT_C;
+  // Feeds binary data pointed by in with size length to deflator and
+  // returns compressed output available so far.  Don't use this
+  // method with operator<< methods.
+  std::string encode(const unsigned char* in, size_t length)
+  {
+    return encode(in, length, Z_NO_FLUSH);
+  }
 
-  static const std::string COLON_C;
+  // Returns true if deflator finished.
+  bool finished();
 
-  static const std::string SEMICOLON_C;
+  // Releases allocated resources.
+  void release();
 
-  static const std::string EQUAL_C;
-
-  static const std::string UNDERSCORE_C;
-
-  static const std::string BACK_SLASH_C;
-
-  static const std::string COMMA_C;
+  // Returns deflated result kept internally. After this function
+  // call, further calls to operator<<() and encode() are not allowed.
+  std::string str();
 };
+
 } // namespace aria2
 
-#endif // _D_A2_STR_H_
+#endif // _D_GZIP_ENCODER_H_

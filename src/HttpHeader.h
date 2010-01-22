@@ -140,6 +140,8 @@ public:
 
   static const std::string LAST_MODIFIED;
 
+  static const std::string ACCEPT_ENCODING;
+
   static const std::string HTTP_1_1;
 
   static const std::string S200;

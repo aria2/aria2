@@ -252,7 +252,8 @@ SRCS += LibsslTLSContext.cc LibsslTLSContext.h
 endif # HAVE_LIBSSL
 
 if HAVE_LIBZ
-SRCS += GZipDecoder.cc GZipDecoder.h
+SRCS += GZipDecoder.cc GZipDecoder.h\
+	GZipEncoder.cc GZipEncoder.h
 endif # HAVE_LIBZ
 
 if HAVE_SQLITE3

@@ -60,4 +60,6 @@ const std::string A2STR::UNDERSCORE_C("_");
 
 const std::string A2STR::BACK_SLASH_C("\\");
 
+const std::string A2STR::COMMA_C(",");
+
 } // namespace aria2

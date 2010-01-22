@@ -61,6 +61,11 @@ HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
   _e->addSocketForReadCheck(_socket, this);
   _httpServer->setUsernamePassword(_e->option->get(PREF_XML_RPC_USER),
                                    _e->option->get(PREF_XML_RPC_PASSWD));
+#ifdef HAVE_LIBZ
+  _httpServer->enableGZip();
+#else // !HAVE_LIBZ
+  _httpServer->disableGZip();
+#endif // !HAVE_LIBZ
 }
 
 HttpServerCommand::HttpServerCommand(int32_t cuid,

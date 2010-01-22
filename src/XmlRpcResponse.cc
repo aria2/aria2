@@ -38,16 +38,20 @@
 #include <sstream>
 
 #include "util.h"
+#ifdef HAVE_LIBZ
+# include "GZipEncoder.h"
+#endif // HAVE_LIBZ
 
 namespace aria2 {
 
 namespace xmlrpc {
 
-static void encodeValue(const BDE& value, std::ostream& o);
+template<typename OutputStream>
+static void encodeValue(const BDE& value, OutputStream& o);
 
-template<typename InputIterator>
+template<typename InputIterator, typename OutputStream>
 static void encodeArray
-(InputIterator first, InputIterator last, std::ostream& o)
+(InputIterator first, InputIterator last, OutputStream& o)
 {
   o << "<array>" << "<data>";
   for(; first != last; ++first) {
@@ -56,9 +60,9 @@ static void encodeArray
   o << "</data>" << "</array>";
 }
 
-template<typename InputIterator>
+template<typename InputIterator, typename OutputStream>
 static void encodeStruct
-(InputIterator first, InputIterator last, std::ostream& o)
+(InputIterator first, InputIterator last, OutputStream& o)
 {
   o << "<struct>";
   for(; first != last; ++first) {
@@ -70,7 +74,8 @@ static void encodeStruct
   o << "</struct>";
 }
 
-static void encodeValue(const BDE& value, std::ostream& o)
+template<typename OutputStream>
+static void encodeValue(const BDE& value, OutputStream& o)
 {
   o << "<value>";
   if(value.isString()) {
@@ -85,21 +90,37 @@ static void encodeValue(const BDE& value, std::ostream& o)
   o << "</value>";
 }
 
-std::string XmlRpcResponse::toXml() const
+template<typename OutputStream>
+std::string encodeAll(OutputStream& o, int code, const BDE& param)
 {
-  std::stringstream o;
   o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
-  if(_code == 0) {
+  if(code == 0) {
     o << "<params>" << "<param>";
-    encodeValue(_param, o);
+    encodeValue(param, o);
     o << "</param>" << "</params>";
   } else {
     o << "<fault>";
-    encodeValue(_param, o);
+    encodeValue(param, o);
     o << "</fault>";
   }
   o << "</methodResponse>";
   return o.str();
+}
+
+std::string XmlRpcResponse::toXml(bool gzip) const
+{
+  if(gzip) {
+#ifdef HAVE_LIBZ
+    GZipEncoder o;
+    o.init();
+    return encodeAll(o, _code, _param);
+#else // !HAVE_LIBZ
+    abort();
+#endif // !HAVE_LIBZ
+  } else {
+    std::stringstream o;
+    return encodeAll(o, _code, _param);
+  }
 }
 
 } // namespace xmlrpc

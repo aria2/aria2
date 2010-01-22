@@ -39,6 +39,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "SocketBuffer.h"
@@ -62,8 +63,11 @@ private:
   uint64_t _lastContentLength;
   std::stringstream _lastBody;
   bool _keepAlive;
+  bool _gzip;
   std::string _username;
   std::string _password;
+  bool _acceptsPersistentConnection;
+  bool _acceptsGZip;
 public:
   HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
 
@@ -97,11 +101,23 @@ public:
 
   bool sendBufferIsEmpty() const;
 
-  bool supportsPersistentConnection() const;
+  bool supportsPersistentConnection() const
+  {
+    return _keepAlive && _acceptsPersistentConnection;
+  }
+
+  bool supportsGZip() const
+  {
+    return _gzip && _acceptsGZip;
+  }
 
   void enableKeepAlive() { _keepAlive = true; }
 
   void disableKeepAlive() { _keepAlive = false; }
+
+  void enableGZip() { _gzip = true; }
+
+  void disableGZip() { _gzip = false; }
 
   uint64_t getContentLength() const { return _lastContentLength; }
 };

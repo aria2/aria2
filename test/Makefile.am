@@ -84,7 +84,8 @@ aria2c_SOURCES += FallocFileAllocationIteratorTest.cc
 endif  # HAVE_POSIX_FALLOCATE
 
 if HAVE_LIBZ
-aria2c_SOURCES += GZipDecoderTest.cc
+aria2c_SOURCES += GZipDecoderTest.cc\
+	GZipEncoderTest.cc
 endif # HAVE_LIBZ
 
 if HAVE_SQLITE3

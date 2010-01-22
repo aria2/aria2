@@ -61,7 +61,9 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_SSL_TRUE@am__append_6 = TLSContext.h
 @HAVE_LIBGNUTLS_TRUE@am__append_7 = LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
 @HAVE_LIBSSL_TRUE@am__append_8 = LibsslTLSContext.cc LibsslTLSContext.h
-@HAVE_LIBZ_TRUE@am__append_9 = GZipDecoder.cc GZipDecoder.h
+@HAVE_LIBZ_TRUE@am__append_9 = GZipDecoder.cc GZipDecoder.h\
+@HAVE_LIBZ_TRUE@	GZipEncoder.cc GZipEncoder.h
+
 @HAVE_SQLITE3_TRUE@am__append_10 = Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h
 @ENABLE_ASYNC_DNS_TRUE@am__append_11 = AsyncNameResolver.cc AsyncNameResolver.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_12 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
@@ -441,9 +443,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
 	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
 	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
-	GZipDecoder.h Sqlite3MozCookieParser.cc \
-	Sqlite3MozCookieParser.h AsyncNameResolver.cc \
-	AsyncNameResolver.h IteratableChunkChecksumValidator.cc \
+	GZipDecoder.h GZipEncoder.cc GZipEncoder.h \
+	Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h \
+	AsyncNameResolver.cc AsyncNameResolver.h \
+	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	CheckIntegrityDispatcherCommand.cc \
@@ -607,7 +610,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 am__objects_6 =
 @HAVE_LIBGNUTLS_TRUE@am__objects_7 = LibgnutlsTLSContext.$(OBJEXT)
 @HAVE_LIBSSL_TRUE@am__objects_8 = LibsslTLSContext.$(OBJEXT)
-@HAVE_LIBZ_TRUE@am__objects_9 = GZipDecoder.$(OBJEXT)
+@HAVE_LIBZ_TRUE@am__objects_9 = GZipDecoder.$(OBJEXT) \
+@HAVE_LIBZ_TRUE@	GZipEncoder.$(OBJEXT)
 @HAVE_SQLITE3_TRUE@am__objects_10 = Sqlite3MozCookieParser.$(OBJEXT)
 @ENABLE_ASYNC_DNS_TRUE@am__objects_11 = AsyncNameResolver.$(OBJEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_12 = IteratableChunkChecksumValidator.$(OBJEXT) \
@@ -1437,6 +1441,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipEncoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveEraseCommand.Po@am__quote@

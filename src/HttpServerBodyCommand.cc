@@ -90,7 +90,9 @@ bool HttpServerBodyCommand::execute()
           SharedHandle<xmlrpc::XmlRpcMethod> method =
             xmlrpc::XmlRpcMethodFactory::create(req._methodName);
           xmlrpc::XmlRpcResponse res = method->execute(req, _e);
-          _httpServer->feedResponse(res.toXml(), "text/xml");
+          bool gzip = _httpServer->supportsGZip();
+          std::string responseData = res.toXml(gzip);
+          _httpServer->feedResponse(responseData, "text/xml");
           Command* command =
             new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
           _e->commands.push_back(command);

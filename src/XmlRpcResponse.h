@@ -53,7 +53,7 @@ struct XmlRpcResponse {
 
   XmlRpcResponse(int code, const BDE& param):_code(code), _param(param) {}
 
-  std::string toXml() const;
+  std::string toXml(bool gzip = false) const;
 };
 
 } // namespace xmlrpc

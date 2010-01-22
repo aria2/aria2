@@ -56,7 +56,10 @@ HttpServer::HttpServer(const SharedHandle<SocketCore>& socket,
   _e(e),
   _headerProcessor(new HttpHeaderProcessor()),
   _logger(LogFactory::getInstance()),
-  _keepAlive(true)
+  _keepAlive(true),
+  _gzip(false),
+  _acceptsPersistentConnection(true),
+  _acceptsGZip(false)
 {}
 
 HttpServer::~HttpServer() {}
@@ -88,8 +91,21 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     _lastContentLength =
       _lastRequestHeader->getFirstAsUInt(HttpHeader::CONTENT_LENGTH);
     _headerProcessor->clear();
-  }
 
+    std::string connection =
+      util::toLower(_lastRequestHeader->getFirst(HttpHeader::CONNECTION));
+    _acceptsPersistentConnection =
+      connection.find(HttpHeader::CLOSE) == std::string::npos &&
+      (_lastRequestHeader->getVersion() == HttpHeader::HTTP_1_1 ||
+       connection.find("keep-alive") != std::string::npos);
+
+    std::vector<std::string> acceptEncodings;
+    util::split(_lastRequestHeader->getFirst(HttpHeader::ACCEPT_ENCODING),
+                std::back_inserter(acceptEncodings), A2STR::COMMA_C, true);
+    _acceptsGZip =
+      std::find(acceptEncodings.begin(), acceptEncodings.end(), "gzip")
+      != acceptEncodings.end();
+  }
   return header;
 }
 
@@ -121,20 +137,6 @@ const std::string& HttpServer::getRequestPath() const
   return _lastRequestHeader->getRequestPath();
 }
 
-bool HttpServer::supportsPersistentConnection() const
-{
-  if(!_keepAlive) {
-    return false;
-  }
-
-  std::string connection =
-    util::toLower(_lastRequestHeader->getFirst(HttpHeader::CONNECTION));
-
-  return connection.find(HttpHeader::CLOSE) == std::string::npos &&
-    (_lastRequestHeader->getVersion() == HttpHeader::HTTP_1_1 ||
-     connection.find("keep-alive") != std::string::npos);
-}
-
 void HttpServer::feedResponse(const std::string& text, const std::string& contentType)
 {
   feedResponse("200 OK", "", text, contentType);
@@ -149,7 +151,9 @@ void HttpServer::feedResponse(const std::string& status,
   strappend(header, status, "\r\n",
             "Content-Type: ", contentType, "\r\n",
             "Content-Length: ", util::uitos(text.size()), "\r\n");
-
+  if(supportsGZip()) {
+    header += "Content-Encoding: gzip\r\n";
+  }
   if(!supportsPersistentConnection()) {
     header += "Connection: close\r\n";
   }

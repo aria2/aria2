@@ -41,7 +41,9 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodTest.cc
 
 @HAVE_POSIX_FALLOCATE_TRUE@am__append_2 = FallocFileAllocationIteratorTest.cc
-@HAVE_LIBZ_TRUE@am__append_3 = GZipDecoderTest.cc
+@HAVE_LIBZ_TRUE@am__append_3 = GZipDecoderTest.cc\
+@HAVE_LIBZ_TRUE@	GZipEncoderTest.cc
+
 @HAVE_SQLITE3_TRUE@am__append_4 = Sqlite3MozCookieParserTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_5 = MessageDigestHelperTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.cc\
@@ -212,7 +214,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DownloadContextTest.cc XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
-	Sqlite3MozCookieParserTest.cc MessageDigestHelperTest.cc \
+	GZipEncoderTest.cc Sqlite3MozCookieParserTest.cc \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -271,7 +274,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestProcessorTest.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodTest.$(OBJEXT)
 @HAVE_POSIX_FALLOCATE_TRUE@am__objects_2 = FallocFileAllocationIteratorTest.$(OBJEXT)
-@HAVE_LIBZ_TRUE@am__objects_3 = GZipDecoderTest.$(OBJEXT)
+@HAVE_LIBZ_TRUE@am__objects_3 = GZipDecoderTest.$(OBJEXT) \
+@HAVE_LIBZ_TRUE@	GZipEncoderTest.$(OBJEXT)
 @HAVE_SQLITE3_TRUE@am__objects_4 =  \
 @HAVE_SQLITE3_TRUE@	Sqlite3MozCookieParserTest.$(OBJEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_5 =  \
@@ -810,6 +814,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnectionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoderTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipEncoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderProcessorTest.Po@am__quote@
