@@ -1,5 +1,10 @@
 2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed test error without BitTorrent support.
+	* test/XmlRpcMethodTest.cc
+
+2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error without GNUTLS/OpenSSL.
 	* src/util.cc
 
