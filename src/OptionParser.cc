@@ -315,10 +315,11 @@ OptionParser::findByName(const std::string& name) const
   std::vector<SharedHandle<OptionHandler> >::const_iterator i =
     std::lower_bound(_optionHandlers.begin(), _optionHandlers.end(),
                      handler, OptionHandlerNameLesser());
-  if(i == _optionHandlers.end() || (*i)->isHidden()) {
-    handler.reset();
-  } else {
+  if(i != _optionHandlers.end() && (*i)->getName() == name &&
+     !(*i)->isHidden()) {
     handler = *i;
+  } else {
+    handler.reset();
   }
   return handler;
 }

@@ -1,5 +1,11 @@
 2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed broken OptionParser::findByName().
+	* src/OptionParser.cc
+	* test/OptionParserTest.cc
+
+2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed test error without BitTorrent support.
 	* test/XmlRpcMethodTest.cc
 

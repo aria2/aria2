@@ -109,6 +109,9 @@ void OptionParserTest::testFindByName()
 
   SharedHandle<OptionHandler> charlie = _oparser->findByName("charlie");
   CPPUNIT_ASSERT(charlie.isNull());
+
+  SharedHandle<OptionHandler> alpha2 = _oparser->findByName("alpha2");
+  CPPUNIT_ASSERT(alpha2.isNull());
 }
 
 void OptionParserTest::testFindByShortName()
