@@ -54,6 +54,9 @@ OptionParser.new do |opt|
   opt.on("--http-auth-challenge [BOOL]",["true","false"]){|val|
     options["http-auth-challenge"]=val||"true"
   }
+  opt.on("--http-no-cache [BOOL]",["true","false"]){|val|
+    options["http-no-cache"]=val||"true"
+  }
   opt.on("--http-user USER"){|val| options["http-user"]=val}
   opt.on("--http-passwd PASSWD"){|val| options["http-passwd"]=val}
   opt.on("--http-proxy PROXY"){|val| options["http-proxy"]=val}
@@ -93,6 +96,9 @@ OptionParser.new do |opt|
   }
   opt.on("--bt-max-open-files NUM"){|val| options["bt-max-open-files"]=val}
   opt.on("--bt-max-peers NUM"){|val| options["bt-max-peers"]=val}
+  opt.on("--bt-metadata-only [BOOL]",["true","false"]){|val|
+    options["bt-metadata-only"]=val||"true"
+  }
   opt.on("--bt-min-crypto-level LEVEL",["plain","arc4"]){|val|
     options["bt-min-crypto-level"]=val
   }
@@ -104,6 +110,9 @@ OptionParser.new do |opt|
   }
   opt.on("--bt-request-peer-speed-limit SPEED"){|val|
     options["bt-request-peer-speed-limit"]=val
+  }
+  opt.on("--bt-save-metadata [BOOL]",["true","false"]){|val|
+    options["bt-save-metadata"]=val||"true"
   }
   opt.on("--bt-seed-unverified [BOOL]",["true","false"]){|val|
     options["bt-seed-unverified"]=val||"true"

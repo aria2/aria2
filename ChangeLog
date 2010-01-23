@@ -1,3 +1,9 @@
+2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added missing command line options: --http-no-cache,
+	--bt-save-metadata and --bt-metadata-only.
+	* doc/xmlrpc/aria2rpc
+
 2010-01-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	aria2 now returns gzip compressed XML-RPC response if XML-RPC
