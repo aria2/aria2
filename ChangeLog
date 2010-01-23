@@ -1,5 +1,10 @@
 2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed compression level to Z_DEFAULT_COMPRESSION.
+	* src/GZipEncoder.cc
+
+2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added missing command line options: --http-no-cache,
 	--bt-save-metadata and --bt-metadata-only.
 	* doc/xmlrpc/aria2rpc
