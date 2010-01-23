@@ -1,5 +1,13 @@
 2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Swedish, Russian and Italian translations. Thanks to all
+	translators.
+	* po/it.po
+	* po/ru.po
+	* po/sv.po
+
+2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed broken OptionParser::findByName().
 	* src/OptionParser.cc
 	* test/OptionParserTest.cc

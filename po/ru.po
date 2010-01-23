@@ -11,13 +11,13 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-01-17 23:16+0900\n"
-"PO-Revision-Date: 2009-11-18 12:07+0000\n"
-"Last-Translator: Lester <lester.dev@gmail.com>\n"
+"PO-Revision-Date: 2010-01-14 08:01+0000\n"
+"Last-Translator: Andrew Zhuravlev <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-12-06 08:32+0000\n"
+"X-Launchpad-Export-Date: 2010-01-23 09:29+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:215
@@ -114,13 +114,10 @@ msgid ""
 msgstr " -d, --dir=DIR                Каталог для сохранения скачанных файлов."
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG                Имя файла для логов. Если указано \"-\",\n"
-"                              логи будут выведены в stdout."
 
 #: src/usage_text.h:42
 msgid ""
@@ -197,31 +194,22 @@ msgstr ""
 "'неограниченно'."
 
 #: src/usage_text.h:66
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy=PROXY Использовать этот прокси-сервер для HTTP.\n"
-"                              Смотрите также параметр --all-proxy.\n"
-"                              Это применяется для всех URL."
 
 #: src/usage_text.h:71
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY Использовать этот прокси-сервер для HTTPS.\n"
-"                              Смотрите также параметр --all-proxy.\n"
-"                              Это применяется для всех URL."
 
 #: src/usage_text.h:76
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
 "previously\n"
@@ -229,12 +217,8 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-proxy=PROXY Использовать этот прокси-сервер для FTP.\n"
-"                              Смотрите также параметр --all-proxy.\n"
-"                              Это применяется для всех URL."
 
 #: src/usage_text.h:81
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
 "erase\n"
@@ -245,13 +229,6 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" --all-proxy=PROXY Использовать этот прокси-сервер для всех протоколов.\n"
-"                              Вы можете отбросить эту настройку и указать\n"
-"                              прокси-сервер для отдельного протокола, "
-"используя\n"
-"                              --http-proxy, --https-proxy и --ftp-proxy\n"
-"                              параметры.\n"
-"                              Это влияет на все URL."
 
 #: src/usage_text.h:89
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -867,6 +844,14 @@ msgid ""
 "                              byte data are added to make its length 20 "
 "bytes."
 msgstr ""
+" --peer-id-prefix=PEER_ID_PREFIX Задать префикс для ID узла. ID узла в "
+"BitTorrent\n"
+"                              имеет размер 20 байт. Если более 20 байт будет "
+"указано,\n"
+"                              только первые 20 будут использоваться, если "
+"будет указано\n"
+"                              меньше 20, то они будут дополнены случайными "
+"данными до 20 байт."
 
 #: src/usage_text.h:296
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -994,12 +979,14 @@ msgstr ""
 "speed-limit."
 
 #: src/usage_text.h:339
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
 "Reads\n"
 "                              input from stdin when '-' is specified."
-msgstr " -M, --metalink-file=METALINK_FILE Путь к .metalink-файлу."
+msgstr ""
+" -M, --metalink-file=METALINK_FILE Путь к файлу .metalink. Читает\n"
+"                              ввод из stdin, если в качестве имени файла "
+"указано '-'."
 
 #: src/usage_text.h:342
 msgid ""
@@ -1075,6 +1062,18 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-metalink=true|false|mem Если указано 'true' или 'mem' , когда "
+"загруженный файл\n"
+"                              имеет расширение .metalink или mime-тип \n"
+"                              application/metalink+xml, aria2 считает \n"
+"                              его файлом metalink и загружает описанные\n"
+"                              в нем файлы.\n"
+"                              Если указано 'mem', то metalink-файл не "
+"сохраняется \n"
+"                              на диск, а просто хранится в памяти.\n"
+"                              Если указано 'false' то вышеприведенная "
+"операция \n"
+"                              не производится."
 
 #: src/usage_text.h:374
 msgid ""
@@ -1109,6 +1108,17 @@ msgid ""
 "usage\n"
 "                              for the options whose name includes that word."
 msgstr ""
+" -h, --help[=TAG|KEYWORD] Вывести справку по использованию и выйти.\n"
+"                              Справочное сообщение определяется метками "
+"(TAG).\n"
+"                              Метки начинаются с \"#\". Например, \"--"
+"help=#http\"\n"
+"                              выведет справку по опциям, помеченным меткой "
+"\"#http\". \n"
+"                              Если задать слово, не являющееся меткой, то "
+"будет \n"
+"                              выведена справка по опциям, содержащим это "
+"слово."
 
 #: src/usage_text.h:389
 msgid " --no-conf                    Disable loading aria2.conf file."
@@ -1639,6 +1649,18 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
+" --on-download-stop=COMMAND Указать команду, которая будет выполняться при "
+"остановке загрузки.\n"
+"                              Вы можете переопределить команду для "
+"конкретных причин остановки\n"
+"                              используя опции --on-download-complete (по "
+"завершении загрузки) и --on-download-error\n"
+"                              (остановка по ошибке). Если эти опции заданы, "
+"то команда, указанная в этой опции,\n"
+"                              не выполняется.\n"
+"                              Смотрите справку по опции --on-download-start, "
+"чтобы узнать требования\n"
+"                              к команде COMMAND"
 
 #: src/usage_text.h:566
 msgid ""
@@ -1647,6 +1669,11 @@ msgid ""
 "                              consecutive SEC seconds. If 0 is given, this\n"
 "                              feature is disabled."
 msgstr ""
+" --bt-stop-timeout=SEC Остановить закачку BitTorrent'а, если скорость "
+"загрузки равна 0\n"
+"                              на протяжении SEC секунд. Если задать 0, то "
+"эта возможность \n"
+"                              не будет использоваться."
 
 #: src/usage_text.h:570
 msgid ""
@@ -1655,6 +1682,10 @@ msgid ""
 "only\n"
 "                              on local loopback interface."
 msgstr ""
+" --xml-rpc-listen-all[=true|false] Ожидать входящие XML-RPC запросы на всех\n"
+"                              сетевых интерфейсах. Если указано false, "
+"слушать только на\n"
+"                              локальном петлевом интерфейсе (loopback)."
 
 #: src/usage_text.h:574
 msgid ""
@@ -1684,13 +1715,15 @@ msgid ""
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
+" --interface=INTERFACE        Привязать сокеты к данному интерфейсу. Вы "
+"можете указать\n"
+"                              имя интерфейса, IP-адрес и имя хоста."
 
 #: src/usage_text.h:589
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
-msgstr ""
+msgstr " --disable-ipv6[=true|false]  Отключить IPv6."
 
 #: src/usage_text.h:591
-#, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1706,17 +1739,6 @@ msgid ""
 "saved.\n"
 "                              See also --bt-metadata-only option."
 msgstr ""
-" --bt-hash-check-seed[=true|false] Если задано true (да), то после проверки "
-"хеша с использованием\n"
-"                              параметра --check-integrity , когда файл "
-"целостен,\n"
-"                              продолжается сидирование файла. Если Вы "
-"желаете проверить файл\n"
-"                              и загрузить его только ежели он поврежден или\n"
-"                              неполный, то установите в этом параметре false "
-"(нет).\n"
-"                              Этот параметр влияет лишь на BitTorrent\n"
-"                              загрузки."
 
 #: src/usage_text.h:599
 msgid ""
@@ -1731,7 +1753,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:605
-#, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
 "described\n"
@@ -1740,12 +1761,6 @@ msgid ""
 "                              has effect only when BitTorrent Magnet URI is\n"
 "                              used. See also --bt-save-metadata option."
 msgstr ""
-" --server-stat-if=FILE Указать имя файла для загрузки профиля настроек\n"
-"                              сервера. Загруженные данные будут использованы "
-"в\n"
-"                              некоторых URI селекторах, таких как "
-"'feedback'.\n"
-"                              Смотрите также параметр --uri-selector"
 
 #: src/usage_text.h:610
 msgid ""
@@ -1764,10 +1779,11 @@ msgid "Report bugs to %s"
 msgstr "Сообщения об ошибках направляйте на адрес %s"
 
 #: src/version_usage.cc:85
-#, fuzzy
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
-msgstr "Использование: aria2c [ОПЦИИ] [URL | TORRENT_FILE | METALINK_FILE]..."
+msgstr ""
+"Использование: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | "
+"METALINK_FILE]..."
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -1798,26 +1814,25 @@ msgid "No option matching with '%s'."
 msgstr "Нет подходящей опции к '%s'."
 
 #: src/version_usage.cc:128
-#, fuzzy
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
 " URIs must point to the same file or downloading will fail."
 msgstr ""
-" Вы можете указать несколько URL'ов. Если не указана опция '-Z', все URL'ы "
-"должны\n"
-" указывать на идентичные файлы, иначе загрузка не получится."
+" Вы можете указать несколько URI для HTTP(S)/FTP. Если опция -Z не "
+"обозначена, все\n"
+" URI должны указывать на один и тот же файл, в ином случае загрузка "
+"завершится неудачей."
 
 #: src/version_usage.cc:130
-#, fuzzy
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
 " treated as a separate download."
 msgstr ""
-" Вы можете также указать любое количество torrent- и metalink- файлов\n"
-" сохранённых на локальном диске. Однако они всегда будут обрабатываться\n"
-" как отдельные загрузки."
+" Также вы можете указать произвольное количество BitTorrent Magnet URI, "
+"файлов torrent/metalink, хранящихся на диске. Учитывайте, что они всегда "
+"рассматриваются как отдельные загрузки."
 
 #: src/version_usage.cc:135
 msgid ""
@@ -1834,14 +1849,14 @@ msgid ""
 msgstr ""
 
 #: src/version_usage.cc:142
-#, fuzzy
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
-" Убедитесь что URL заключён в одинарные (') или двойные(\") кавычки\n"
-" если он содержит \"&\" или любой другой символ имеющий специальное\n"
-" значение в shell."
+" Убедитесь, что URI заключён в одиночные (') либо двойные (\") кавычки, если "
+"он\n"
+" содержит \"&\" или любое другой символ считающийся специальным в "
+"интерпретаторе команд."
 
 #: src/version_usage.cc:146
 msgid "Refer to man page for more information."
@@ -2455,17 +2470,18 @@ msgstr "'%s' является файлом?"
 #: src/message.h:178
 #, c-format
 msgid "Failed to find given interface %s, cause: %s"
-msgstr ""
+msgstr "Поиск  интерфейса %s не удался по следующей причине: %s"
 
 #: src/message.h:180
 #, c-format
 msgid "Saved metadata as %s."
-msgstr ""
+msgstr "Метаданные сохранены как %s."
 
 #: src/message.h:181
-#, fuzzy, c-format
+#, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
-msgstr "Сохраниение подписи как %s не удалось. Может быть файл уже существует."
+msgstr ""
+"Сохранение метаданных как %s не удалось. Вероятно, файл уже существует."
 
 #: src/message.h:184
 msgid "Timeout."
@@ -2760,7 +2776,7 @@ msgstr "Трекер вернул информацию про сбой, прич
 
 #: src/message.h:246
 msgid "Flooding detected."
-msgstr "Обнаружено флудинг."
+msgstr "Обнаружен флудинг."
 
 #: src/message.h:247
 #, c-format
@@ -2826,11 +2842,15 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=FILE               Имя файла для скачанного файла."
-
 #~ msgid "Files:"
 #~ msgstr "Файлы:"
 
+#~ msgid " -o, --out=FILE               The file name of the downloaded file."
+#~ msgstr " -o, --out=FILE               Имя файла для скачанного файла."
+
 #~ msgid " -D, --daemon                 Run as daemon."
 #~ msgstr " -D, --daemon                 Запустить в качестве демона."
+
+#~ msgid ""
+#~ " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
+#~ msgstr " -M, --metalink-file=METALINK_FILE Путь к .metalink-файлу."

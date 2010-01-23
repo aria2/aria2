@@ -8,23 +8,23 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-01-17 23:16+0900\n"
-"PO-Revision-Date: 2007-12-09 00:07+0900\n"
-"Last-Translator: Hampus Wessman <hw@vox.nu>\n"
+"PO-Revision-Date: 2010-01-23 21:17+0900\n"
+"Last-Translator: Swedie <Unknown>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Launchpad-Export-Date: 2010-01-23 09:28+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:215
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr ""
+msgstr "Avslut påbörjat... Tryck ner Ctrl-C igen för att tvinga fram avslut."
 
 #: src/DownloadEngine.cc:221
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Avslut tvingas..."
 
 #: src/MultiUrlRequestInfo.cc:97
 msgid "aria2 will resume download if the transfer is restarted."
@@ -38,15 +38,15 @@ msgstr ""
 
 #: src/RequestGroupMan.cc:578
 msgid "Download Results:"
-msgstr ""
+msgstr "Nedladdningsresultat:"
 
 #: src/RequestGroupMan.cc:622
 msgid "Status Legend:"
-msgstr ""
+msgstr "Statusförklaring:"
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
-msgstr ""
+msgstr "                              Standard: "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
@@ -63,66 +63,61 @@ msgstr ""
 #: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
 #, c-format
 msgid "must be between %s and %s."
-msgstr ""
+msgstr "måste vara mellan %s och %s."
 
 #: src/OptionHandlerImpl.h:215
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr ""
+msgstr "måste vara mindre än eller lika med %s."
 
 #: src/OptionHandlerImpl.h:221
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr ""
+msgstr "måste vara större än eller lika med %s."
 
 #: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
 msgid "must be a number."
-msgstr ""
+msgstr "måste vara ett numeriskt värde."
 
 #: src/OptionHandlerImpl.h:293
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr ""
+msgstr "måste vara mindre än eller lika med %.1f."
 
 #: src/OptionHandlerImpl.h:296
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr ""
+msgstr "måste vara mellan %.1f och %.1f."
 
 #: src/OptionHandlerImpl.h:299
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr ""
+msgstr "måste vara större än eller lika med %.1f."
 
 #: src/OptionHandlerImpl.h:477
 msgid "must be one of the following:"
-msgstr ""
+msgstr "måste vara ett av följande:"
 
 #: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:572
 msgid "unrecognized proxy format"
-msgstr ""
+msgstr "Okänt format för proxy."
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=DIR                Katalogen som filen ska laddas ner till."
+msgstr ""
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG               Loggfilens filnamn. Om du anger '-'\n"
-"                              kommer loggen att skrivas till stdout."
 
 #: src/usage_text.h:42
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG               Loggfilens filnamn. Om du anger '-'\n"
-"                              kommer loggen att skrivas till stdout."
 
 #: src/usage_text.h:45
 msgid ""
@@ -136,7 +131,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -150,75 +144,41 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N                Ladda ner en fil med N uppkopplingar. N måste "
-"vara\n"
-"                              mellan 1 och 5. Den här inställningen påverkar "
-"alla\n"
-"                               URLer. Aria2 gör alltså N uppkopplingar till "
-"varje URL.\n"
-"                              Förvalt: 1"
 
 #: src/usage_text.h:59
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
 msgstr ""
-" -m, --max-tries=N            Ange antalet försök. 0 innebär obegränsat.\n"
-"                              Förvalt: 5"
+" --retry-wait=SEC Anger väntetid i sekunder efter att ett fel \n"
+"                              har inträffat."
 
 #: src/usage_text.h:62
 msgid " -t, --timeout=SEC            Set timeout in seconds."
 msgstr ""
 
 #: src/usage_text.h:64
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
-" -m, --max-tries=N            Ange antalet försök. 0 innebär obegränsat.\n"
-"                              Förvalt: 5"
 
 #: src/usage_text.h:66
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:71
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:76
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
 "previously\n"
@@ -226,19 +186,8 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:81
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
 "erase\n"
@@ -249,49 +198,42 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:89
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
+" --http-user=USER Anger HTTP-användare. Angivet värde påverkar \n"
+"                              alla URL:er."
 
 #: src/usage_text.h:91
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
+" --http-passwd=PASSWD Anger HTTP-lösenordet. Angivet värde påverkar\n"
+"                              alla URL:er."
 
 #: src/usage_text.h:93
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
-msgstr ""
+msgstr " --proxy-method=METHOD Anger metod vid förfrågan till proxy-server."
 
 #: src/usage_text.h:95
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
-" --referer=REFERER            Ange Referer. Detta påverkar allal URLer."
+" --referer=REFERER Anger varifrån en förfrågan kommer. Angivet värde "
+"påverkar alla URL:er."
 
 #: src/usage_text.h:97
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
-" --referer=REFERER            Ange Referer. Detta påverkar allal URLer."
+" --ftp-user=USER Anger FTP-användare. Angivet värde påverkar alla URL:er."
 
 #: src/usage_text.h:99
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
-" --referer=REFERER            Ange Referer. Detta påverkar allal URLer."
+" --ftp-passwd=PASSWD Anger FTP-lösenord. Angivet värde påverkar alla URL:er."
 
 #: src/usage_text.h:101
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr ""
+msgstr " --ftp-type=TYPE Anger överföringstyp."
 
 #: src/usage_text.h:103
 msgid ""
@@ -299,6 +241,10 @@ msgid ""
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
+" -p, --ftp-pasv[=true|false] Anger om FTP-anslutningen ska vara i passivt \n"
+"                              läge eller ej. Värdet false innebär att "
+"aktivt \n"
+"                              läge används."
 
 #: src/usage_text.h:106
 msgid ""
@@ -311,6 +257,15 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
+" --lowest-speed-limit=SPEED Stäng anslutningen om nedladdningshastigheten \n"
+"                              är lägre än eller lika med detta värde "
+"(antal \n"
+"                              bytes per sekund). Värdet 0 innebär att "
+"aria2 \n"
+"                              inte har någon lägsta nedladdningshastighet. \n"
+"                              Du kan avsluta värdet med ett K eller M \n"
+"                              (1K = 1024 bytes, 1M = 1024K). Detta värde \n"
+"                              påverkar inte BitTorrent-nedladdningar."
 
 #: src/usage_text.h:112
 msgid ""
@@ -321,6 +276,16 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
+" --max-overall-download-limit=SPEED Anger den högsta tillåtna \n"
+"                              nedladdningshastigheten överlag i antal bytes "
+"per \n"
+"                              sekund. Värdet 0 är detsamma som obegränsad \n"
+"                              hastighet. Du kan avsluta med ett K eller M \n"
+"                              (1K = 1024 bytes, 1M = 1024K). För att "
+"begränsa \n"
+"                              nedladdningshastigheten per nedladdning, "
+"använd \n"
+"                              alternativet: --max-download-limit."
 
 #: src/usage_text.h:118
 msgid ""
@@ -330,6 +295,14 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
+" --max-download-limit=SPEED Anger högsta tillåtna nedladdningshastighet \n"
+"                              per nedladdning i bytes per sekund. Värdet 0 \n"
+"                              innebär en obegränsad hastighet. Du kan "
+"avsluta \n"
+"                              med antingen ett K eller M (1K = 1024 bytes, \n"
+"                              1M = 1024K). För att begränsa hastigheten \n"
+"                              överlag, använd alternativet: \n"
+"                              --max-overall-download-limit."
 
 #: src/usage_text.h:124
 msgid ""
@@ -357,6 +330,24 @@ msgid ""
 "                              not be available if your system doesn't have\n"
 "                              posix_fallocate() function."
 msgstr ""
+" --file-allocation=METHOD Anger filallokeringsmetod. Värdet 'none' \n"
+"                              innebär att inget utrymme allokeras innan \n"
+"                              nedladdning. 'pre-alloc' innebär att utrymme \n"
+"                              allokeras innan nedladdningen inleds, vilket \n"
+"                              kan ta tid beroende på nedladdningsfilens \n"
+"                              storlek. 'falloc' är det bästa alternativet "
+"om \n"
+"                              du använder ett filsystem som ext4 (som har \n"
+"                              stöd för extents), btrfs eller xfs, eftersom \n"
+"                              det allokerar stora filer (några GiB) nästan \n"
+"                              omedelbart. Använd aldrig 'falloc' med äldre \n"
+"                              filsystem som ext3 eftersom det tar nästan "
+"lika \n"
+"                              lång tid som 'prealloc', vilket blockerar "
+"aria2 \n"
+"                              under hela förallokeringsprocessen. Det kan \n"
+"                              hända att 'falloc' inte kan användas om ditt \n"
+"                              system inte har funktionen: posix_fallocate()."
 
 #: src/usage_text.h:139
 msgid ""
@@ -364,6 +355,11 @@ msgid ""
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --no-file-allocation-limit=SIZE Ingen filallokering görs för filer mindre "
+"än \n"
+"                              SIZE. Du kan avsluta med K eller M (1K = "
+"1024 \n"
+"                              bytes, 1M = 1024K)."
 
 #: src/usage_text.h:143
 msgid ""
@@ -372,6 +368,12 @@ msgid ""
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
+" --enable-direct-io[=true|false] Aktiverar direktöverföring, vilket "
+"minskar \n"
+"                              användningen av processorn när filer "
+"allokeras. \n"
+"                              Använd 'false' om du får problem med \n"
+"                              nedladdningen."
 
 #: src/usage_text.h:147
 msgid ""
@@ -383,6 +385,13 @@ msgid ""
 "download\n"
 "                              the file. See also --auto-file-renaming option."
 msgstr ""
+" --allow-overwrite[=true|false] Om 'false' används och filen redan "
+"existerar \n"
+"                              men tillhörande kontrollfil (filenamn.aria2) \n"
+"                              fattas kommer inte aria2 att ladda ner filen "
+"på \n"
+"                              nytt. Se även alternativet: \n"
+"                              --auto-file-renaming."
 
 #: src/usage_text.h:152
 msgid ""
@@ -402,6 +411,12 @@ msgid ""
 "like\n"
 "                              the usual command-line download utilities."
 msgstr ""
+" -Z, --force-sequential[=true|false] Hämtar URI:er från kommandoraden i "
+"sekvenser \n"
+"                              och laddar ner varje URI i en separat "
+"session, \n"
+"                              som är det vanliga beteendet för kommadorads-\n"
+"                              program."
 
 #: src/usage_text.h:161
 msgid ""
@@ -413,6 +428,13 @@ msgid ""
 "(1..9999)\n"
 "                              appended."
 msgstr ""
+" --auto-file-renaming[=true|false] Döper om filen om en fil med samma namn "
+"redan \n"
+"                              finns. Detta alternativ fungerar endast för \n"
+"                              http(s)/ftp-nedladdningar. Det nya filnamnet \n"
+"                              kommer att avslutas med en punkt och en "
+"siffra \n"
+"                              (1..9999)."
 
 #: src/usage_text.h:167
 msgid ""
@@ -438,6 +460,8 @@ msgstr ""
 #: src/usage_text.h:180
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
+" --enable-http-pipelining[=true|false] Aktivera stöd för samtidiga "
+"förfrågningar med HTTP/1.1."
 
 #: src/usage_text.h:182
 msgid ""
@@ -451,9 +475,20 @@ msgid ""
 "                              of a file. See also --bt-hash-check-seed "
 "option."
 msgstr ""
+" -V, --check-integrity[=true|false] Bekräftar filintegriteten genom att "
+"validera \n"
+"                              nedladdade delar med motsvarande "
+"hashnycklar. \n"
+"                              Detta alternativ fungerar endast med "
+"BitTorrent \n"
+"                              och Metalink nedladdningar som använder \n"
+"                              checksummor för varje del. Använd detta \n"
+"                              alternativ för att ladda ner en skadad del "
+"av \n"
+"                              filen på nytt. Se även alternativet: \n"
+"                              --bt-hash-check-seed."
 
 #: src/usage_text.h:188
-#, fuzzy
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -465,31 +500,29 @@ msgid ""
 "                              This option has effect only on BitTorrent\n"
 "                              download."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
+" --bt-hash-check-seed[=true|false] Om 'true' används kommer filen att ligga "
+"öppen \n"
+"                              även efter att hashnycklar verifierats med \n"
+"                              alternativet --check-integrity och filen "
+"laddats \n"
+"                              ner i sin helhet. Om du endast vill "
+"verifiera \n"
+"                              och ladda ner filen om den är skadad eller \n"
+"                              ofullständig ska du använda värdet 'false'. \n"
+"                              Detta alternativ används bara vid BitTorrent-\n"
+"                              nedladdningar."
 
 #: src/usage_text.h:196
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
-" --realtime-chunk-checksum=true|false  Kontrollera delkontrollsummor när\n"
-"                              en fil laddas ner i Metalänkläge. Den här "
-"inställningen\n"
-"                              påverkar bara Metalänkläge med "
-"delkontrollsummor.\n"
-"                              Förvalt: true"
+" --realtime-chunk-checksum[=true|false] Validera datadelar genom att "
+"beräkna \n"
+"                              checksumman under nedladdningen om \n"
+"                              delchecksumman är tillgänglig."
 
 #: src/usage_text.h:200
 msgid ""
@@ -500,27 +533,27 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
+" -c, --continue Fortsätter nedladdningen av en delvis hämtad \n"
+"                              fil. Använd det här alternativet om du vill \n"
+"                              fortsätta en nedladdning startad av en \n"
+"                              webbläsare eller annat program som laddar "
+"ner \n"
+"                              filer i sekvenser från filens början. För \n"
+"                              tillfället används detta alternativ endast "
+"vid \n"
+"                              http(s)/ftp-hämtningar."
 
 #: src/usage_text.h:207
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
-msgstr " -U, --user-agent=USER_AGENT  Ange \"user agent\" för http(s)."
+msgstr ""
+" -U, --user-agent=USER_AGENT Anger vilken användarklient som ska användas \n"
+"                              för http(s)-nedladdningar."
 
 #: src/usage_text.h:209
 msgid " -n, --no-netrc               Disables netrc support."
-msgstr " -n, --no-netrc               Avaktiverar stöd för netrc."
+msgstr ""
 
 #: src/usage_text.h:211
-#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -534,13 +567,8 @@ msgid ""
 "INPUT\n"
 "                              FILE section of man page for details."
 msgstr ""
-" -i, --input-file=FIL         Laddar ner URIer funna i FIL. Du kan ange\n"
-"                              flera URIer för en specifik fil: separera\n"
-"                              URIerna på en rad med TAB-tecken.\n"
-"                              Läser datan från stdin om '-' anges."
 
 #: src/usage_text.h:220
-#, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
@@ -548,20 +576,18 @@ msgid ""
 "metalink.\n"
 "                              See also -s and -C options."
 msgstr ""
-" -j, --max-concurrent-downloads=N Ange det maximala antalet samtidiga "
-"nedladdningar.\n"
-"                             Används tillsammans med inställningen -i.\n"
-"                              Förvalt: 5"
+" -j, --max-concurrent-downloads=N Anger högsta tillåtna antal samtidiga \n"
+"                              hämtningar för varje statisk (HTTP/FTP) URL, \n"
+"                              torrent och metalink. Se även alternativen: -"
+"s \n"
+"                              och -C."
 
 #: src/usage_text.h:224
-#, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
-" --load-cookies=FIL          Ladda kakor från FIL. Filformatet är\n"
-"                              samma som Netscapes and Mozillas."
 
 #: src/usage_text.h:227
 msgid ""
@@ -573,6 +599,11 @@ msgid ""
 "and\n"
 "                              their expiry values are treated as 0."
 msgstr ""
+" --save-cookies=FILE Spara kakor till filen FILE i formatet \n"
+"                              Mozilla/Firefox(1.x/2.x)/Netscape. Om filen \n"
+"                              redan finns, skrivs den över. Sessionskakor \n"
+"                              sparas också och deras utgångsdatum hanteras \n"
+"                              som 0 (=aldrig)."
 
 #: src/usage_text.h:232
 msgid ""
@@ -584,7 +615,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:236
-#, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -597,13 +627,19 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
-" -s, --split=N                Ladda ner en fil med N uppkopplingar. N måste "
-"vara\n"
-"                              mellan 1 och 5. Den här inställningen påverkar "
-"alla\n"
-"                               URLer. Aria2 gör alltså N uppkopplingar till "
-"varje URL.\n"
-"                              Förvalt: 1"
+" --select-file=INDEX Anger index för den fil som ska laddas ner. Du \n"
+"                              kan hitta filens index med alternativet: \n"
+"                              --show-files. Flera index kan ges genom att \n"
+"                              använda kommatecknet ',' som avskiljare. Ett \n"
+"                              exempel: \"3,6\". Du kan också ange ett "
+"interval \n"
+"                              genom att använda bindestrecket '-' som \n"
+"                              avskiljare: \"1-5\". ',' och '-' kan användas "
+"på \n"
+"                              en och samma gång. När alternativet -M är \n"
+"                              angivet kan index variera beroende på "
+"sökningen \n"
+"                              (se alternativen: --metalink-*)"
 
 #: src/usage_text.h:245
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
@@ -668,7 +704,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:281
-#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -682,13 +717,6 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
-" -s, --split=N                Ladda ner en fil med N uppkopplingar. N måste "
-"vara\n"
-"                              mellan 1 och 5. Den här inställningen påverkar "
-"alla\n"
-"                               URLer. Aria2 gör alltså N uppkopplingar till "
-"varje URL.\n"
-"                              Förvalt: 1"
 
 #: src/usage_text.h:290
 msgid ""
@@ -764,14 +792,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:329
-#, fuzzy
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
 "                              BitTorrent download."
 msgstr ""
-" -m, --max-tries=N            Ange antalet försök. 0 innebär obegränsat.\n"
-"                              Förvalt: 5"
 
 #: src/usage_text.h:332
 msgid ""
@@ -780,28 +805,21 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:335
-#, fuzzy
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
-" -j, --max-concurrent-downloads=N Ange det maximala antalet samtidiga "
-"nedladdningar.\n"
-"                             Används tillsammans med inställningen -i.\n"
-"                              Förvalt: 5"
 
 #: src/usage_text.h:339
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
 "Reads\n"
 "                              input from stdin when '-' is specified."
-msgstr " -M, --metalink-file=METALÄNKFIL Sökvägen till .metlink-filen."
+msgstr ""
 
 #: src/usage_text.h:342
-#, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -814,24 +832,19 @@ msgid ""
 "NUM_SERVERS.\n"
 "                              See also -s and -j options."
 msgstr ""
-" -i, --input-file=FIL         Laddar ner URIer funna i FIL. Du kan ange\n"
-"                              flera URIer för en specifik fil: separera\n"
-"                              URIerna på en rad med TAB-tecken.\n"
-"                              Läser datan från stdin om '-' anges."
 
 #: src/usage_text.h:351
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr " --metalink-version=VERSION   Versionen av filen som ska laddas ner."
+msgstr ""
 
 #: src/usage_text.h:353
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr " --metalink-language=SPRÅK Språket för filen som ska laddas ner."
+msgstr ""
 
 #: src/usage_text.h:355
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
-" --metalink-os=OS             Operativsystemet för filen som ska laddas ner."
 
 #: src/usage_text.h:357
 msgid ""
@@ -848,7 +861,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:364
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metalink or content type of\n"
@@ -863,13 +875,6 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" -s, --split=N                Ladda ner en fil med N uppkopplingar. N måste "
-"vara\n"
-"                              mellan 1 och 5. Den här inställningen påverkar "
-"alla\n"
-"                               URLer. Aria2 gör alltså N uppkopplingar till "
-"varje URL.\n"
-"                              Förvalt: 1"
 
 #: src/usage_text.h:374
 msgid ""
@@ -883,10 +888,9 @@ msgstr ""
 
 #: src/usage_text.h:380
 msgid " -v, --version                Print the version number and exit."
-msgstr " -v, --version                Skriv ut versionsnumret och avsluta."
+msgstr ""
 
 #: src/usage_text.h:382
-#, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -898,21 +902,10 @@ msgid ""
 "usage\n"
 "                              for the options whose name includes that word."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:389
-#, fuzzy
 msgid " --no-conf                    Disable loading aria2.conf file."
-msgstr " -n, --no-netrc               Avaktiverar stöd för netrc."
+msgstr ""
 
 #: src/usage_text.h:391
 msgid ""
@@ -982,7 +975,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:422
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -994,16 +986,6 @@ msgid ""
 "                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:429
 msgid ""
@@ -1127,14 +1109,11 @@ msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
 #: src/usage_text.h:492
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
-" -m, --max-tries=N            Ange antalet försök. 0 innebär obegränsat.\n"
-"                              Förvalt: 5"
 
 #: src/usage_text.h:495
 msgid ""
@@ -1155,16 +1134,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:504
-#, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
-" --referer=REFERER            Ange Referer. Detta påverkar allal URLer."
 
 #: src/usage_text.h:506
-#, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr ""
-" --referer=REFERER            Ange Referer. Detta påverkar allal URLer."
 
 #: src/usage_text.h:508
 msgid ""
@@ -1177,7 +1152,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:513
-#, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1191,16 +1165,6 @@ msgid ""
 "                              always sent to the server regardless of this\n"
 "                              option."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:521
 msgid ""
@@ -1227,7 +1191,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:533
-#, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1242,16 +1205,6 @@ msgid ""
 "download\n"
 "                              progress."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:541
 msgid ""
@@ -1281,7 +1234,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:557
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1294,13 +1246,6 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" -s, --split=N                Ladda ner en fil med N uppkopplingar. N måste "
-"vara\n"
-"                              mellan 1 och 5. Den här inställningen påverkar "
-"alla\n"
-"                               URLer. Aria2 gör alltså N uppkopplingar till "
-"varje URL.\n"
-"                              Förvalt: 1"
 
 #: src/usage_text.h:566
 msgid ""
@@ -1352,7 +1297,6 @@ msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
 #: src/usage_text.h:591
-#, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1368,16 +1312,6 @@ msgid ""
 "saved.\n"
 "                              See also --bt-metadata-only option."
 msgstr ""
-" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
-"                              fil. Använd den här inställningen för att "
-"fortsätta en\n"
-"                              nedladdning startad av en webbläsare eller "
-"annat\n"
-"                              program som laddar ner filer kontinuerligt "
-"från\n"
-"                              början av filen. För tillfället är "
-"inställningen bara\n"
-"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/usage_text.h:599
 msgid ""
@@ -1410,18 +1344,17 @@ msgstr ""
 
 #: src/version_usage.cc:57
 msgid " version "
-msgstr " version "
+msgstr ""
 
 #: src/version_usage.cc:80
 #, c-format
 msgid "Report bugs to %s"
-msgstr "Rapportera buggar till %s"
+msgstr ""
 
 #: src/version_usage.cc:85
-#, fuzzy
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
-msgstr "Användning: %s [inställningar] URL ...\n"
+msgstr ""
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -1439,7 +1372,7 @@ msgstr ""
 
 #: src/version_usage.cc:103 src/version_usage.cc:115
 msgid "Options:"
-msgstr "Inställningar:"
+msgstr ""
 
 #: src/version_usage.cc:112
 #, c-format
@@ -1492,17 +1425,17 @@ msgstr ""
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - Nedladdningen av ett segment slutfördes framgångsrikt."
+msgstr ""
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - Inget segment tillgängligt."
+msgstr ""
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - Ansluter till %s:%d"
+msgstr ""
 
 #: src/message.h:43
 #, c-format
@@ -1510,13 +1443,11 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - Segmentet förändrades. Vi sänder förfrågningen igen med ny Range "
-"header."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - Dirigerar om till %s"
+msgstr ""
 
 #: src/message.h:45
 #, c-format
@@ -1524,8 +1455,6 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - Begär:\n"
-"%s"
 
 #: src/message.h:46
 #, c-format
@@ -1533,8 +1462,6 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - Svar mottaget:\n"
-"%s"
 
 #: src/message.h:47
 #, c-format
@@ -1742,51 +1669,51 @@ msgid "CUID#%d - Creating new tracker request command #%d"
 msgstr ""
 
 #: src/message.h:91
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
-msgstr "CUID#%d - Inget segment tillgängligt."
+msgstr ""
 
 #: src/message.h:95
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr "Felaktig URI eller protokoll som inte stöds: %s"
+msgstr ""
 
 #: src/message.h:96
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr "Tracker returnerade varningsmeddelande: %s"
+msgstr ""
 
 #: src/message.h:97
 #, c-format
 msgid "The segment file %s exists."
-msgstr "Segmentsfilen %s existerar."
+msgstr ""
 
 #: src/message.h:98
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr "Segmentsfilen %s existerar inte."
+msgstr ""
 
 #: src/message.h:99
 #, c-format
 msgid "Saving the segment file %s"
-msgstr "Sparar segmentsfilen %s"
+msgstr ""
 
 #: src/message.h:100
 msgid "The segment file was saved successfully."
-msgstr "Segmentsfilen sparades."
+msgstr ""
 
 #: src/message.h:101
 #, c-format
 msgid "Loading the segment file %s."
-msgstr "Laddar segmentsfilen %s."
+msgstr ""
 
 #: src/message.h:102
 msgid "The segment file was loaded successfully."
-msgstr "Segmentsfilen är laddad."
+msgstr ""
 
 #: src/message.h:103
 msgid "No URI to download. Download aborted."
-msgstr "Ingen URI att ladda ner. Nedladdning misslyckades."
+msgstr ""
 
 #: src/message.h:104
 #, c-format
@@ -1800,100 +1727,100 @@ msgstr ""
 #: src/message.h:105
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr "Allokerar filen %s, %s bytes"
+msgstr ""
 
 #: src/message.h:106
 msgid "File not found"
-msgstr "Filen hittades ej"
+msgstr ""
 
 #: src/message.h:107
 msgid "Not a directory"
-msgstr "Inte en katalog"
+msgstr ""
 
 #: src/message.h:108
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr "Otillräckliga kontrollsummor. checksumLength=%d, numChecksum=%d"
+msgstr ""
 
 #: src/message.h:109
 #, c-format
 msgid "Writing file %s"
-msgstr "Skriver fil %s"
+msgstr ""
 
 #: src/message.h:110
 msgid "No peer list received."
-msgstr "Ingen lista med peers togs emot."
+msgstr ""
 
 #: src/message.h:111
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr "Lägger till peer %s:%d"
+msgstr ""
 
 #: src/message.h:112
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr "Raderar använd del index=%d, fillRate(%%)=%d<=%d"
+msgstr ""
 
 #: src/message.h:113
 msgid "Download of selected files was complete."
-msgstr "Nedladdningen av de valda filerna slutfördes."
+msgstr ""
 
 #: src/message.h:114
 msgid "The download was complete."
-msgstr "Nedladdningen slutfördes."
+msgstr ""
 
 #: src/message.h:115
 #, c-format
 msgid "Removed %d have entries."
-msgstr "Raderade %d har-poster"
+msgstr ""
 
 #: src/message.h:116
 #, c-format
 msgid "Validating file %s"
-msgstr "Validerar filen %s"
+msgstr ""
 
 #: src/message.h:117
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr "%d sekunder för att allokera %s byte(s)"
+msgstr ""
 
 #: src/message.h:118
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr "Delegerar FileAllocationCommand för CUID#%d."
+msgstr ""
 
 #: src/message.h:119
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr "Metalänk: Lägger %s i kö för nedladdning."
+msgstr ""
 
 #: src/message.h:120
 #, c-format
 msgid "Download complete: %s"
-msgstr "Nedladdning slutförd: %s"
+msgstr ""
 
 #: src/message.h:121
 msgid "Seeding is over."
-msgstr "Seeding är över."
+msgstr ""
 
 #: src/message.h:122
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-msgstr "CUID#%d avbryter segment index=%d. CUID#%d tar över det istället."
+msgstr ""
 
 #: src/message.h:123
 msgid "No chunk to verify."
-msgstr "Inge del att verifiera."
+msgstr ""
 
 #: src/message.h:124
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr "Bra delkontrollsumma. hash=%s"
+msgstr ""
 
 #: src/message.h:125
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr "Misslyckades med att ladda kakor från %s"
+msgstr ""
 
 #: src/message.h:126
 #, c-format
@@ -1904,15 +1831,15 @@ msgstr ""
 
 #: src/message.h:127
 msgid "Logging started."
-msgstr "Loggning startad."
+msgstr ""
 
 #: src/message.h:128
 msgid "Specify at least one URL."
-msgstr "Ange minst en URL."
+msgstr ""
 
 #: src/message.h:129
 msgid "daemon failed."
-msgstr "demonen misslyckades."
+msgstr ""
 
 #: src/message.h:130
 #, c-format
@@ -1970,9 +1897,8 @@ msgid "Missing %s in torrent metainfo."
 msgstr ""
 
 #: src/message.h:141
-#, fuzzy
 msgid "Tracker returned null data."
-msgstr "Tracker returnerade varningsmeddelande: %s"
+msgstr ""
 
 #: src/message.h:142
 msgid "Windows socket library initialization failed"
@@ -2000,14 +1926,14 @@ msgid "Failed to open ServerStat file %s for read."
 msgstr ""
 
 #: src/message.h:150
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s loaded successfully."
-msgstr "Segmentsfilen är laddad."
+msgstr ""
 
 #: src/message.h:151
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read ServerStat from %s."
-msgstr "Misslyckades med att ladda kakor från %s"
+msgstr ""
 
 #: src/message.h:154
 #, c-format
@@ -2015,9 +1941,9 @@ msgid "Failed to open ServerStat file %s for write."
 msgstr ""
 
 #: src/message.h:155
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s saved successfully."
-msgstr "Segmentsfilen sparades."
+msgstr ""
 
 #: src/message.h:156
 #, c-format
@@ -2035,9 +1961,9 @@ msgid "Network problem has occurred. cause:%s"
 msgstr ""
 
 #: src/message.h:162
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
-msgstr "Misslyckades med att ladda kakor från %s"
+msgstr ""
 
 #: src/message.h:164
 #, c-format
@@ -2045,9 +1971,8 @@ msgid "Certificate verification failed. Cause: %s"
 msgstr ""
 
 #: src/message.h:165
-#, fuzzy
 msgid "No certificate found."
-msgstr "Ingen header funnen."
+msgstr ""
 
 #: src/message.h:166
 msgid "Hostname not match."
@@ -2064,9 +1989,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:171
-#, fuzzy, c-format
+#, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr "Laddar segmentsfilen %s."
+msgstr ""
 
 #: src/message.h:172
 msgid "This file is neither Torrent nor Metalink file. Skipping."
@@ -2078,9 +2003,9 @@ msgid "Is '%s' a file?"
 msgstr ""
 
 #: src/message.h:178
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find given interface %s, cause: %s"
-msgstr "Misslyckades med att ladda kakor från %s"
+msgstr ""
 
 #: src/message.h:180
 #, c-format
@@ -2094,40 +2019,40 @@ msgstr ""
 
 #: src/message.h:184
 msgid "Timeout."
-msgstr "Timeout."
+msgstr ""
 
 #: src/message.h:185
 msgid "Invalid chunk size."
-msgstr "Ogiltig delstorlek."
+msgstr ""
 
 #: src/message.h:186
 #, c-format
 msgid "Too large chunk. size=%d"
-msgstr "För stor del. storlek=%d"
+msgstr ""
 
 #: src/message.h:187
 msgid "Invalid header."
-msgstr "Ogiltig header."
+msgstr ""
 
 #: src/message.h:188
 msgid "Invalid response."
-msgstr "Ogiltig respons."
+msgstr ""
 
 #: src/message.h:189
 msgid "No header found."
-msgstr "Ingen header funnen."
+msgstr ""
 
 #: src/message.h:190
 msgid "No status header."
-msgstr "Ingen statusheader."
+msgstr ""
 
 #: src/message.h:191
 msgid "Proxy connection failed."
-msgstr "Misslyckades med uppkoppling till proxy."
+msgstr ""
 
 #: src/message.h:192
 msgid "Connection failed."
-msgstr "Uppkoppling misslyckades."
+msgstr ""
 
 #: src/message.h:193
 #, c-format
@@ -2135,23 +2060,21 @@ msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
-"Det begärda filnamnet och det tidigare registrerade överrensstämmer inte. "
-"Förväntat:%s Faktisktl:%s"
 
 #: src/message.h:194
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr "Förfrågan misslyckades. status=%d"
+msgstr ""
 
 #: src/message.h:195
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr "För stor filstorlek. size=%s"
+msgstr ""
 
 #: src/message.h:196
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr "Överföringskodning %s stöds ej."
+msgstr ""
 
 #: src/message.h:197
 #, c-format
@@ -2195,7 +2118,7 @@ msgstr ""
 
 #: src/message.h:206
 msgid "Malformed meta info."
-msgstr "Felformaterad metainfo."
+msgstr ""
 
 #: src/message.h:208
 #, c-format
@@ -2234,7 +2157,7 @@ msgstr ""
 #: src/message.h:215
 #, c-format
 msgid "%s is not a directory."
-msgstr "%s är inte en katalog."
+msgstr ""
 
 #: src/message.h:216
 #, c-format
@@ -2374,7 +2297,7 @@ msgstr ""
 
 #: src/message.h:244
 msgid "Insufficient checksums."
-msgstr "Otillräckliga kontrollsummor."
+msgstr ""
 
 #: src/message.h:245
 #, c-format
@@ -2426,7 +2349,7 @@ msgstr ""
 
 #: src/message.h:255
 msgid "Exception caught"
-msgstr "Undantag fångat"
+msgstr ""
 
 #: src/message.h:256
 #, c-format
@@ -2440,64 +2363,4 @@ msgstr ""
 
 #: src/BtSetup.cc:161
 msgid "Errors occurred while binding port.\n"
-msgstr ""
-
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=FILE               Filnamnet för den nedladdade filen."
-
-#~ msgid " -D, --daemon                 Run as daemon."
-#~ msgstr " -D, --daemon                 Kör som demon."
-
-#~ msgid " -p, --ftp-pasv               Use passive mode in FTP."
-#~ msgstr " -p, --ftp-pasv               Använd passivt läge för FTP."
-
-#, fuzzy
-#~ msgid ""
-#~ " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-#~ "                              simultaneously."
-#~ msgstr ""
-#~ " -C, --metalink-servers=ANTAL_SERVRAR Antalet servrar att koppla upp "
-#~ "till\n"
-#~ "                              samtidigt.\n"
-#~ "                              Förvalt: 5"
-
-#~ msgid "       %s [options] -M METALINK_FILE\n"
-#~ msgstr "       %s [inställningar] -M METALÄNK_FIL\n"
-
-#~ msgid ""
-#~ "This program is free software; you can redistribute it and/or modify\n"
-#~ "it under the terms of the GNU General Public License as published by\n"
-#~ "the Free Software Foundation; either version 2 of the License, or\n"
-#~ "(at your option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful,\n"
-#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-#~ "GNU General Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License\n"
-#~ "along with this program; if not, write to the Free Software\n"
-#~ "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-"
-#~ "1301  USA\n"
-#~ msgstr ""
-#~ "This program is free software; you can redistribute it and/or modify\n"
-#~ "it under the terms of the GNU General Public License as published by\n"
-#~ "the Free Software Foundation; either version 2 of the License, or\n"
-#~ "(at your option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful,\n"
-#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-#~ "GNU General Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License\n"
-#~ "along with this program; if not, write to the Free Software\n"
-#~ "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-"
-#~ "1301  USA\n"
-
-#~ msgid "Contact Info:"
-#~ msgstr "Kontaktinfo:"
-
-#~ msgid " -h, --help                   Print this message and exit."
-#~ msgstr ""
-#~ " -h, --help                   Skriv ut detta meddelande och avsluta."
+msgstr "Ett fel inträffade vid anslutning till port.\n"

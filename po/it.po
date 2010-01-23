@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-01-17 23:16+0900\n"
-"PO-Revision-Date: 2009-10-28 13:02+0000\n"
-"Last-Translator: Davide Bagarotti <Unknown>\n"
+"PO-Revision-Date: 2010-01-20 09:08+0000\n"
+"Last-Translator: Edoardo Maria Elidoro <edoardo.elidoro@gmail.com>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-11-01 09:48+0000\n"
+"X-Launchpad-Export-Date: 2010-01-23 09:28+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 "X-Poedit-Bookmarks: 81,324,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
@@ -114,13 +114,12 @@ msgstr ""
 " -d, --dir=DIR                Il percorso in cui salvare il file scaricato."
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG                Il nome del file di log. Se si specifica '-'\n"
-"                              il log viene riportato sullo stdout."
+" -o, --out=FILE               Il nome del file scaricato. Quando l'opzione\n"
+"                             -Z viene usata, questa viene ignorata."
 
 #: src/usage_text.h:42
 msgid ""
@@ -201,31 +200,34 @@ msgstr ""
 "illimitati."
 
 #: src/usage_text.h:66
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy=PROXY           Usa questo server proxy per l'HTTP.\n"
-"                              Vedi anche l'opzione --all-proxy.\n"
-"                              Questo riguarda tutti gli URL."
+" --http-proxy=PROXY           Usa questo server proxy per l'HTTP. Per "
+"cancellare\n"
+"                              i proxye definiti precedentemente, usare "
+"\"\".\n"
+"                              Vedere anche l'opzione  --all-proxy.\n"
+"                              Il proxy ha effetto su tutti gli URL."
 
 #: src/usage_text.h:71
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY          Usa questo server proxy per l'HTTPS.\n"
-"                              Vedi anche l'opzione --all-proxy.\n"
-"                              Questo riguarda tutti gli URL."
+" --https-proxy=PROXY           Usa questo server proxy per l'HTTPS. Per "
+"cancellare\n"
+"                              i proxye definiti precedentemente, usare "
+"\"\".\n"
+"                              Vedere anche l'opzione  --all-proxy.\n"
+"                              Il proxy ha effetto su tutti gli URL."
 
 #: src/usage_text.h:76
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
 "previously\n"
@@ -233,12 +235,14 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-proxy=PROXY            Usa questo server proxy per l'FTP.\n"
-"                              Vedi anche l'opzione --all-proxy.\n"
-"                              Questo riguarda tutti gli URL."
+" --ftp-proxy=PROXY           Usa questo server proxy per l'FTP. Per "
+"cancellare\n"
+"                              i proxye definiti precedentemente, usare "
+"\"\".\n"
+"                              Vedere anche l'opzione  --all-proxy.\n"
+"                              Il proxy ha effetto su tutti gli URL."
 
 #: src/usage_text.h:81
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
 "erase\n"
@@ -249,13 +253,17 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" --all-proxy=PROXY            Usa questo server proxy per ciascun "
-"protocollo.\n"
-"                              Si può negare questa impostazione\n"
-"                              indicando un diverso server proxy per ogni\n"
-"                              protocollo particolare con le opzioni\n"
-"                              --http-proxy, --https-proxy e --ftp-proxy.\n"
-"                              Questo riguarda tutti gli URL."
+" --all-proxy=PROXY           Usa questo server proxy per tutti i protocolli. "
+"Per cancellare\n"
+"                              i proxye definiti precedentemente, usare "
+"\"\".\n"
+"                              È posibile eludere questa opzione e "
+"specificare un\n"
+"                              server proxy per un particolare protocollo "
+"utilizzando\n"
+"                              le opzioni --http-proxy, --https-proxy and --"
+"ftp-proxy.\n"
+"                              Il proxy ha effetto su tutti gli URL."
 
 #: src/usage_text.h:89
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -1059,14 +1067,11 @@ msgstr ""
 "limit."
 
 #: src/usage_text.h:339
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
 "Reads\n"
 "                              input from stdin when '-' is specified."
 msgstr ""
-" -M, --metalink-file=FILE_METALINK\n"
-"                              Il percorso per il file .metalink."
 
 #: src/usage_text.h:342
 msgid ""
@@ -1836,10 +1841,9 @@ msgstr ""
 
 #: src/usage_text.h:589
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
-msgstr ""
+msgstr " --disable-ipv6[=true|false]  Disabilita IPv6."
 
 #: src/usage_text.h:591
-#, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1855,17 +1859,6 @@ msgid ""
 "saved.\n"
 "                              See also --bt-metadata-only option."
 msgstr ""
-" --bt-hash-check-seed[=true|false]\n"
-"                              Se impostato true, dopo il controllo hash,\n"
-"                              con l'opzione --check-integrity e il file è "
-"completo,\n"
-"                              continua a ridistribuire (seed) il file. Se si "
-"vuole verificare il\n"
-"                              file e scaricarlo sol se corrotto o "
-"incompleto, impostare\n"
-"                              questa opzione come false.\n"
-"                              Questa opzione riguarda solo gli scaricamenti\n"
-"                              di BitTorrent."
 
 #: src/usage_text.h:599
 msgid ""
@@ -1880,7 +1873,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:605
-#, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
 "described\n"
@@ -1889,12 +1881,6 @@ msgid ""
 "                              has effect only when BitTorrent Magnet URI is\n"
 "                              used. See also --bt-save-metadata option."
 msgstr ""
-" --server-stat-if=FILE        Configura il nome del file da cui caricare\n"
-"                              il profilo di prestazioni dei server. I dati "
-"contenuti verranno\n"
-"                              utilizzati da qualche selettore di URI, p.es. "
-"'feedback'.\n"
-"                              Vedere anche l'opzione --uri-selector"
 
 #: src/usage_text.h:610
 msgid ""
@@ -1913,10 +1899,9 @@ msgid "Report bugs to %s"
 msgstr "Segnala i bachi (bug) a %s"
 
 #: src/version_usage.cc:85
-#, fuzzy
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
-msgstr "Utilizzo: aria2c [OPZIONI] [URL | FILE_TORRENT | FILE_METALINK]..."
+msgstr ""
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -1947,28 +1932,20 @@ msgid "No option matching with '%s'."
 msgstr "Nessuna opzione corrispondente con '%s'."
 
 #: src/version_usage.cc:128
-#, fuzzy
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
 " URIs must point to the same file or downloading will fail."
 msgstr ""
-" Puoi specificare molte URL. A meno che sia specificata l'opzione -Z, tutte "
-"le URL\n"
-" devono puntare allo stesso file, altrimenti lo scaricamento fallirà."
 
 #: src/version_usage.cc:130
-#, fuzzy
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
 " treated as a separate download."
 msgstr ""
-" Si può anche indicare un numero qualsiasi di file torrent e metalink\n"
-" contenuti su un disco locale. Ciascuno verrà trattato separatamente."
 
 #: src/version_usage.cc:135
-#, fuzzy
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
 " download a file from both torrent swarm and HTTP/FTP server at the same "
@@ -1981,26 +1958,12 @@ msgid ""
 "and\n"
 " 'path' in torrent are added to form a URI for each file."
 msgstr ""
-" Puoi specificare entrambi i file torrent con -T opzioni e URL. In questo "
-"modo,\n"
-" scarichi un file da entrambi gli sciami torrent e server http/ftp allo "
-"stesso tempo,\n"
-" mentre i dati da http/ftp sono caricati dallo sciame torrent.  Per i "
-"singoli file\n"
-" torrents, URL può essere un URL completo che punta alla risorsa o se l'URL "
-"termina\n"
-" con '/', il 'nome' nel file torrent è aggiunto. Per i multi-file torrents, "
-"'nome' e\n"
-" 'percorso' in torrent sono aggiunti a formare un URL per ogni file."
 
 #: src/version_usage.cc:142
-#, fuzzy
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
-" Accertati che l'URL sia racchiuso tra apici singoli(') o doppi(\") se\n"
-" contiene \"&\" o altri caratteri riservati per la shell."
 
 #: src/version_usage.cc:146
 msgid "Refer to man page for more information."
@@ -2628,9 +2591,9 @@ msgid "Is '%s' a file?"
 msgstr "E' '%s' un file?"
 
 #: src/message.h:178
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find given interface %s, cause: %s"
-msgstr "Impossibile aprire il file %s, causa: %s"
+msgstr ""
 
 #: src/message.h:180
 #, c-format
@@ -2638,9 +2601,9 @@ msgid "Saved metadata as %s."
 msgstr ""
 
 #: src/message.h:181
-#, fuzzy, c-format
+#, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
-msgstr "Fallito salvataggio firma come %s. Il file potrebbe esistere già."
+msgstr ""
 
 #: src/message.h:184
 msgid "Timeout."
@@ -3001,15 +2964,3 @@ msgstr ""
 #: src/BtSetup.cc:161
 msgid "Errors occurred while binding port.\n"
 msgstr "Ci sono stati degli errori durante il binding della porta.\n"
-
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=FILE               Il nome del file da scaricare."
-
-#~ msgid ""
-#~ " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
-#~ "basic\n"
-#~ "                              is the only supported scheme."
-#~ msgstr ""
-#~ " --http-auth-scheme=SCHEME    Configura lo schema di autenticazione per "
-#~ "l'HTTP. Al momento\n"
-#~ "                              l'unico schema supportato è 'basic'."
