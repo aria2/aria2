@@ -1,5 +1,10 @@
 2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error without GNUTLS/OpenSSL.
+	* src/util.cc
+
+2010-01-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed compression level to Z_DEFAULT_COMPRESSION.
 	* src/GZipEncoder.cc
 

@@ -75,7 +75,9 @@
 #include "A2STR.h"
 #include "array_fun.h"
 #include "a2functional.h"
-#include "MessageDigestHelper.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigestHelper.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 // For libc6 which doesn't define ULLONG_MAX properly because of broken limits.h
 #ifndef ULLONG_MAX
@@ -1020,10 +1022,14 @@ std::string fixTaintedBasename(const std::string& src)
 
 void generateRandomKey(unsigned char* key)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   unsigned char bytes[40];
   generateRandomData(bytes, sizeof(bytes));
   MessageDigestHelper::digest
     (key, 20, MessageDigestContext::SHA1, bytes, sizeof(bytes));
+#else // !ENABLE_MESSAGE_DIGEST
+  generateRandomData(key, 20);
+#endif // !ENABLE_MESSAGE_DIGEST
 }
 
 } // namespace util
