@@ -37,6 +37,7 @@
 
 #include "XmlRpcMethod.h"
 
+#include <cassert>
 #include <deque>
 #include <algorithm>
 
@@ -201,7 +202,15 @@ private:
     return std::make_pair(first, last);
   }
 
-  void checkPaginationParams(const BDE& params) const;
+  void checkPaginationParams(const BDE& params) const
+  {
+    assert(params.isList());
+    if(params.size() != 2 ||
+       !params[0].isInteger() || !params[1].isInteger() ||
+       params[1].i() < 0) {
+      throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
+    }
+  }
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e)
   {

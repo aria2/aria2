@@ -608,18 +608,6 @@ BDE TellActiveXmlRpcMethod::process
   return list;
 }
 
-template<typename T>
-void AbstractPaginationXmlRpcMethod<T>::checkPaginationParams
-(const BDE& params) const
-{
-  assert(params.isList());
-  if(params.size() != 2 ||
-     !params[0].isInteger() || !params[1].isInteger() ||
-     params[1].i() < 0) {
-    throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
-  }
-}
-
 const std::deque<SharedHandle<RequestGroup> >&
 TellWaitingXmlRpcMethod::getItems(DownloadEngine* e) const
 {
