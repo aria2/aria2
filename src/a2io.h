@@ -113,22 +113,27 @@
 #endif // HAVE_WINSOCK2_H
 
 #ifdef __MINGW32__
-# define lseek(fd, offset, origin) _lseeki64(fd, offset, origin)
-# define fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
-# define fstat(fd, buf) _fstati64(fd, buf)
-# define ftell(fd) _ftelli64(fd)
-# define wstat(path, buf) _wstati64(path, buf)
+# define a2lseek(fd, offset, origin) _lseeki64(fd, offset, origin)
+# define a2fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
+# define a2fstat(fd, buf) _fstati64(fd, buf)
+# define a2ftell(fd) _ftelli64(fd)
+# define a2wstat(path, buf) _wstati64(path, buf)
 # ifdef stat
 #  undef stat
 # endif // stat
 # define a2_struct_stat struct _stati64
-# define stat(path, buf)  _stati64(path, buf)
-# define tell(handle) _telli64(handle)
+# define a2stat(path, buf)  _stati64(path, buf)
+# define a2tell(handle) _telli64(handle)
 # define a2mkdir(path, openMode) mkdir(path)
-#else
+#else // !__MINGW32__
+# define a2lseek(fd, offset, origin) lseek(fd, offset, origin)
+# define a2fseek(fp, offset, origin) fseek(fp, offset, origin)
+# define a2fstat(fp, buf) fstat(fp, buf)
+# define a2ftell(fp) ftell(fp)
 # define a2_struct_stat struct stat
+# define a2stat(path, buf) stat(path, buf)
 # define a2mkdir(path, openMode) mkdir(path, openMode)
-#endif // __MINGW32__
+#endif // !__MINGW32__
 
 #if defined HAVE_POSIX_MEMALIGN && defined O_DIRECT
 # define ENABLE_DIRECT_IO 1

@@ -59,7 +59,7 @@ File::File(const std::string& name):name(name) {}
 File::~File() {}
 
 int File::fillStat(a2_struct_stat& fstat) {
-  return stat(name.c_str(), &fstat);
+  return a2stat(name.c_str(), &fstat);
 }
 
 bool File::exists() {

@@ -66,13 +66,13 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
   std::string remoteAddr;
   uint16_t remotePort;
   unsigned char data[64*1024];
-  ssize_t length = _connection->receiveMessage(data, sizeof(data),
-                                               remoteAddr,
-                                               remotePort);
-  if(length <= 0) {
-    return SharedHandle<DHTMessage>();
-  }
   try {
+    ssize_t length = _connection->receiveMessage(data, sizeof(data),
+                                                 remoteAddr,
+                                                 remotePort);
+    if(length <= 0) {
+      return SharedHandle<DHTMessage>();
+    }
     bool isReply = false;
     const BDE dict = bencode::decode(data, length);
     if(dict.isDict()) {

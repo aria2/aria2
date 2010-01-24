@@ -42,6 +42,7 @@
 #endif // HAVE_SYS_IOCTL_H
 #include <unistd.h>
 
+#include <cstdio>
 #include <iomanip>
 #include <iostream>
 #include <algorithm>
@@ -218,25 +219,25 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   _cp.reset();
   const SizeFormatter& sizeFormatter = *_sizeFormatter.get();
+
+#ifdef __MINGW32__
+  bool isTTY = true;
+  // Windows terminal cannot handle at the end of line properly.
+  unsigned short int cols = 79;
+#else // !__MINGW32__
   bool isTTY = isatty(STDOUT_FILENO) == 1;
   unsigned short int cols = 80;
-#ifdef __MINGW32__
-  // Windows terminal cannot handle at the end of line properly.
-  --cols;
-#endif // __MINGW32__
+#endif // !__MINGW32__
+
   if(isTTY) {
+#ifndef __MINGW32__
 #ifdef HAVE_TERMIOS_H
     struct winsize size;
     if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
       cols = size.ws_col;
-#ifdef __MINGW32__
-      if(cols > 0) {
-        // Windows terminal cannot handle at the end of line properly.
-        --cols;
-      }
-#endif // __MINGW32__
     }
 #endif // HAVE_TERMIOS_H
+#endif // !__MINGW32__
     std::cout << '\r' << std::setfill(' ') << std::setw(cols) << ' ' << '\r';
   }
   std::ostringstream o;

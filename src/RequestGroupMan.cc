@@ -577,8 +577,13 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   o << "\n"
     <<_("Download Results:") << "\n"
     << "gid|stat|avg speed  |path/URI" << "\n"
-    << "===+====+===========+===========================================================" << "\n";
-
+    << "===+====+===========+";
+#ifdef __MINGW32__
+  int pathRowSize = 58;
+#else // !__MINGW32__
+  int pathRowSize = 59;
+#endif // !__MINGW32__
+  o << std::setfill('=') << std::setw(pathRowSize) << '=' << "\n";
   int ok = 0;
   int err = 0;
   int inpr = 0;

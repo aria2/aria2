@@ -222,7 +222,7 @@ void FileTest::testUtime()
   CPPUNIT_ASSERT(f.utime(Time(atime), Time(mtime)));
   
   a2_struct_stat buf;
-  CPPUNIT_ASSERT(0 == stat(f.getPath().c_str(), &buf));
+  CPPUNIT_ASSERT(0 == a2stat(f.getPath().c_str(), &buf));
   CPPUNIT_ASSERT_EQUAL((time_t)atime, buf.st_atime);
   CPPUNIT_ASSERT_EQUAL((time_t)mtime, f.getModifiedTime().getTime());
 

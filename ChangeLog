@@ -1,5 +1,18 @@
 2010-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error with i586-mingw32msvc-g++.  Always Cut console
+	readout by 80 characters in mingw32 build.  Catch exception in
+	DHTMessageReceiver::receiveMessage().
+	* src/AbstractDiskWriter.cc
+	* src/ConsoleStatCalc.cc
+	* src/DHTMessageReceiver.cc
+	* src/File.cc
+	* src/RequestGroupMan.cc
+	* src/a2io.h
+	* test/FileTest.cc
+
+2010-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error with intel compiler
 	* src/XmlRpcMethodImpl.cc
 	* src/XmlRpcMethodImpl.h
