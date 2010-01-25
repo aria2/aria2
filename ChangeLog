@@ -1,3 +1,10 @@
+2010-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that causes segmentaiton fault when aria2 sees '404
+	not found' in the N times(N is where --max-file-not-found=N, N>0)
+	in a row without single '200 OK' response.
+	* src/RequestGroup.cc.
+
 2010-01-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compile error with i586-mingw32msvc-g++.  Always Cut console

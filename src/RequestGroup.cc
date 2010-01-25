@@ -1026,7 +1026,8 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
   ++_fileNotFoundCount;
   const unsigned int maxCount = _option->getAsInt(PREF_MAX_FILE_NOT_FOUND);
   if(maxCount > 0 && _fileNotFoundCount >= maxCount &&
-     _segmentMan->calculateSessionDownloadLength() == 0) {
+     (_segmentMan.isNull() ||
+      _segmentMan->calculateSessionDownloadLength() == 0)) {
     throw DOWNLOAD_FAILURE_EXCEPTION2
       (StringFormat("Reached max-file-not-found count=%u", maxCount).str(),
        downloadresultcode::MAX_FILE_NOT_FOUND);
