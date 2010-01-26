@@ -1,3 +1,9 @@
+2010-01-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Handle redirected URI which is not properly percent encoded.
+	* src/Request.cc
+	* test/RequestTest.cc
+
 2010-01-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that causes segmentaiton fault when aria2 sees '404

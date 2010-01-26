@@ -127,19 +127,21 @@ bool Request::redirectUrl(const std::string& url) {
   _previousUrl = A2STR::NIL;
   _supportsPersistentConnection = true;
   ++_redirectCount;
+  std::string redirectedUrl;
   if(url.find("://") == std::string::npos) {
     // rfc2616 requires absolute URI should be provided by Location header
     // field, but some servers don't obey this rule.
     if(util::startsWith(url, "/")) {
       // abosulute path
-      return parseUrl(strconcat(_protocol, "://", _host, url));
+      redirectedUrl = strconcat(_protocol, "://", _host, url);
     } else {
       // relative path
-      return parseUrl(strconcat(_protocol, "://", _host, _dir, "/", url));
+      redirectedUrl = strconcat(_protocol, "://", _host, _dir, "/", url);
     }
   } else {
-    return parseUrl(url);
+    redirectedUrl = url;
   }
+  return parseUrl(urlencode(redirectedUrl));
 }
 
 bool Request::parseUrl(const std::string& url) {

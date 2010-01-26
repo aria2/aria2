@@ -362,6 +362,11 @@ void RequestTest::testRedirectUrl() {
                                    "relativepath/to/file"),
                        req.getCurrentUrl());
   CPPUNIT_ASSERT_EQUAL((unsigned int)3, req.getRedirectCount());
+
+  // White space in path
+  CPPUNIT_ASSERT(req.redirectUrl("http://example.org/white space"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/white%20space"),
+                       req.getCurrentUrl());
 }
 
 void RequestTest::testRedirectUrl2() {
