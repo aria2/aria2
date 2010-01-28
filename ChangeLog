@@ -1,3 +1,8 @@
+2010-01-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Bump up version number to 1.8.2
+	* configure.ac
+
 2010-01-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Replaced "." with A2STR::DOT_C
