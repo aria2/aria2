@@ -1,5 +1,15 @@
 2010-01-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced "." with A2STR::DOT_C
+	* src/AbstractCommand.cc
+	* src/Cookie.cc
+	* src/DownloadContext.cc
+	* src/FtpConnection.cc
+	* src/RequestGroup.cc
+	* src/util.cc
+
+2010-01-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced isNumberAndDotsNotation() with isNumericHost().
 	isNumericHost() can handle IPv6 address.
 	* src/Cookie.cc

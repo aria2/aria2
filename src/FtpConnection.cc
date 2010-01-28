@@ -436,11 +436,11 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
                &h1, &h2, &h3, &h4, &p1, &p2);
         // ip address
         dest.first = util::uitos(h1);
-        dest.first += ".";
+        dest.first += A2STR::DOT_C;
         dest.first += util::uitos(h2);
-        dest.first += ".";
+        dest.first += A2STR::DOT_C;
         dest.first += util::uitos(h3);
-        dest.first += ".";
+        dest.first += A2STR::DOT_C;
         dest.first += util::uitos(h4);
         // port number
         dest.second = 256*p1+p2;

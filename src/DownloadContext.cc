@@ -42,7 +42,7 @@
 namespace aria2 {
 
 DownloadContext::DownloadContext():
-  _dir("."),
+  _dir(A2STR::DOT_C),
   _pieceLength(0),
   _knowsTotalLength(true),
   _ownerRequestGroup(0),
@@ -52,7 +52,7 @@ DownloadContext::DownloadContext():
 DownloadContext::DownloadContext(size_t pieceLength,
                                  uint64_t totalLength,
                                  const std::string& path):
-  _dir("."),
+  _dir(A2STR::DOT_C),
   _pieceLength(pieceLength),
   _knowsTotalLength(true),
   _ownerRequestGroup(0),

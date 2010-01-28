@@ -635,7 +635,7 @@ std::string getContentDispositionFilename(const std::string& header) {
   std::string fn =
     File(trim(header.substr
               (filenamesp, filenameep-filenamesp), TRIMMED)).getBasename();
-  if(fn == ".." || fn == ".") {
+  if(fn == ".." || fn == A2STR::DOT_C) {
     return A2STR::NIL;
   } else {
     return fn;
@@ -742,7 +742,7 @@ std::string abbrevSize(int64_t size)
     size >>= 10;
   }
   std::string result = itos(size, true);
-  result += ".";
+  result += A2STR::DOT_C;
   result += itos(r*10/1024);
   result += units[i];
   result += "i";

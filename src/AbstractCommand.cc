@@ -409,10 +409,10 @@ public:
 
   bool operator()(const std::string& domain) const
   {
-    if(util::startsWith(domain, ".")) {
+    if(util::startsWith(domain, A2STR::DOT_C)) {
       return util::endsWith(_hostname, domain);
     } else {
-      return util::endsWith(_hostname, "."+domain);
+      return util::endsWith(_hostname, A2STR::DOT_C+domain);
     }
   }
 };
@@ -427,7 +427,7 @@ static bool inNoProxy(const SharedHandle<Request>& req,
   }
   return
     std::find_if(entries.begin(), entries.end(),
-                 DomainMatch("."+req->getHost())) != entries.end();
+                 DomainMatch(A2STR::DOT_C+req->getHost())) != entries.end();
 }
 
 bool AbstractCommand::isProxyDefined() const

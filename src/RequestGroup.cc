@@ -618,7 +618,7 @@ bool RequestGroup::tryAutoFileRenaming()
     return false;
   }
   for(unsigned int i = 1; i < 10000; ++i) {
-    File newfile(strconcat(filepath, ".", util::uitos(i)));
+    File newfile(strconcat(filepath, A2STR::DOT_C, util::uitos(i)));
     File ctrlfile(newfile.getPath()+DefaultBtProgressInfoFile::getSuffix());
     if(!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
       _downloadContext->getFirstFileEntry()->setPath(newfile.getPath());

@@ -51,7 +51,7 @@ static std::string prependDotIfNotExists(const std::string& domain)
   //   OPTIONAL.  The value of the Domain attribute specifies the domain
   //   for which the cookie is valid.  If an explicitly specified value
   //   does not start with a dot, the user agent supplies a leading dot.
-  return (!domain.empty() && domain[0] != '.') ? "."+domain : domain;
+  return (!domain.empty() && domain[0] != '.') ? A2STR::DOT_C+domain : domain;
 }
 
 std::string Cookie::normalizeDomain(const std::string& domain)
@@ -61,7 +61,7 @@ std::string Cookie::normalizeDomain(const std::string& domain)
   }
   std::string md = prependDotIfNotExists(domain);
   // TODO use util::split to strict verification
-  std::string::size_type p = md.find_last_of(".");
+  std::string::size_type p = md.find_last_of(A2STR::DOT_C);
   if(p == 0 || p == std::string::npos) {
     md += ".local";
   }
@@ -174,7 +174,8 @@ bool Cookie::validate(const std::string& requestHost,
         return false;
       }
       // domain must include at least one embeded '.'
-      if(_domain.size() < 4 || _domain.find(".", 1) == std::string::npos) {
+      if(_domain.size() < 4 ||
+         _domain.find(A2STR::DOT_C, 1) == std::string::npos) {
         return false;
       }
       if(!util::endsWith(normReqHost, _domain)) {
@@ -217,7 +218,7 @@ std::string Cookie::toNsCookieFormat() const
 {
   std::stringstream ss;
   ss << _domain << "\t";
-  if(util::startsWith(_domain, ".")) {
+  if(util::startsWith(_domain, A2STR::DOT_C)) {
     ss << "TRUE";
   } else {
     ss << "FALSE";
