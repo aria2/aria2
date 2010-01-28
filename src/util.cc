@@ -664,13 +664,18 @@ std::string toLower(const std::string& src) {
   return temp;
 }
 
-bool isNumbersAndDotsNotation(const std::string& name) {
-  struct sockaddr_in sockaddr;
-  if(inet_aton(name.c_str(), &sockaddr.sin_addr)) {
-    return true;
-  } else {
+bool isNumericHost(const std::string& name)
+{
+  struct addrinfo hints;
+  struct addrinfo* res;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_flags = AI_NUMERICHOST;
+  if(getaddrinfo(name.c_str(), 0, &hints, &res)) {
     return false;
   }
+  freeaddrinfo(res);
+  return true;
 }
 
 void setGlobalSignalHandler(int sig, void (*handler)(int), int flags) {

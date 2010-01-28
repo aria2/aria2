@@ -56,7 +56,7 @@ static std::string prependDotIfNotExists(const std::string& domain)
 
 std::string Cookie::normalizeDomain(const std::string& domain)
 {
-  if(domain.empty() || util::isNumbersAndDotsNotation(domain)) {
+  if(domain.empty() || util::isNumericHost(domain)) {
     return domain;
   }
   std::string md = prependDotIfNotExists(domain);

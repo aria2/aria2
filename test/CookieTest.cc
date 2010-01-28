@@ -178,6 +178,8 @@ void CookieTest::testNormalizeDomain()
   CPPUNIT_ASSERT_EQUAL(std::string("..local"), dot.getDomain());
   Cookie ip("k", "v", "/", "192.168.1.1", false);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.1.1"), ip.getDomain());
+  Cookie ipv6("k", "v", "/", "::1", false);
+  CPPUNIT_ASSERT_EQUAL(std::string("::1"), ipv6.getDomain());  
 }
 
 void CookieTest::testToNsCookieFormat()

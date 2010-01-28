@@ -245,7 +245,7 @@ std::deque<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
                                                time_t date, bool secure)
 {
   std::deque<Cookie> res;
-  bool numericHost = util::isNumbersAndDotsNotation(requestHost);
+  bool numericHost = util::isNumericHost(requestHost);
   searchCookieByDomainSuffix
     ((!numericHost && requestHost.find(A2STR::DOT_C) == std::string::npos)?
      requestHost+".local":requestHost,

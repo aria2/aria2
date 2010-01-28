@@ -60,6 +60,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParsePrioritizePieceRange);
   CPPUNIT_TEST(testApplyDir);
   CPPUNIT_TEST(testFixTaintedBasename);
+  CPPUNIT_TEST(testIsNumericHost);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -108,6 +109,7 @@ public:
   void testParsePrioritizePieceRange();
   void testApplyDir();
   void testFixTaintedBasename();
+  void testIsNumericHost();
 };
 
 
@@ -917,6 +919,13 @@ void UtilTest::testFixTaintedBasename()
   CPPUNIT_ASSERT_EQUAL(std::string("a_b"), util::fixTaintedBasename("a/b"));
   CPPUNIT_ASSERT_EQUAL(std::string("a_b"), util::fixTaintedBasename("a\\b"));
   CPPUNIT_ASSERT_EQUAL(std::string("a__b"), util::fixTaintedBasename("a\\/b"));
+}
+
+void UtilTest::testIsNumericHost()
+{
+  CPPUNIT_ASSERT(util::isNumericHost("192.168.0.1"));
+  CPPUNIT_ASSERT(!util::isNumericHost("aria2.sf.net"));
+  CPPUNIT_ASSERT(util::isNumericHost("::1"));
 }
 
 } // namespace aria2
