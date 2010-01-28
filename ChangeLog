@@ -1,5 +1,10 @@
 2010-01-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Included A2STR.h
+	* src/CookieStorage.cc
+
+2010-01-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten Cookie storage.
 	* src/Cookie.cc
 	* src/Cookie.h

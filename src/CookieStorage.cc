@@ -46,6 +46,7 @@
 #include "NsCookieParser.h"
 #include "File.h"
 #include "a2functional.h"
+#include "A2STR.h"
 #ifdef HAVE_SQLITE3
 # include "Sqlite3MozCookieParser.h"
 #endif // HAVE_SQLITE3
