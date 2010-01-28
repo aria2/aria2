@@ -19,6 +19,7 @@ class CookieTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsExpired);
   CPPUNIT_TEST(testNormalizeDomain);
   CPPUNIT_TEST(testToNsCookieFormat);
+  CPPUNIT_TEST(testMarkOriginServerOnly);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -31,6 +32,7 @@ public:
   void testIsExpired();
   void testNormalizeDomain();
   void testToNsCookieFormat();
+  void testMarkOriginServerOnly();
 };
 
 
@@ -187,6 +189,16 @@ void CookieTest::testToNsCookieFormat()
   CPPUNIT_ASSERT_EQUAL
     (std::string(".domain.org\tTRUE\t/\tTRUE\t0\thello\tworld"),
      Cookie("hello","world","/","domain.org",true).toNsCookieFormat());
+}
+
+void CookieTest::testMarkOriginServerOnly()
+{
+  Cookie c("k", "v", "/", "aria2.sf.net", false);
+  c.markOriginServerOnly();
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.sf.net"), c.getDomain());
+  Cookie ip("k", "v", "/", "192.168.0.1", false);
+  ip.markOriginServerOnly();
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), ip.getDomain());
 }
 
 } // namespace aria2

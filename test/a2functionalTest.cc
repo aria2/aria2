@@ -1,9 +1,10 @@
 #include "a2functional.h"
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <string>
 #include <numeric>
+#include <algorithm>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -15,6 +16,7 @@ class a2functionalTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testStrjoin);
   CPPUNIT_TEST(testStrconcat);
   CPPUNIT_TEST(testStrappend);
+  CPPUNIT_TEST(testLeastRecentAccess);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testMemFunSh();
@@ -22,7 +24,8 @@ public:
   void testStrjoin();
   void testStrconcat();
   void testStrappend();
-  
+  void testLeastRecentAccess();
+
   class Greeting {
   public:
     virtual ~Greeting() {}
@@ -48,6 +51,15 @@ public:
 
   };
 
+  struct LastAccess {
+    time_t _lastAccess;
+    LastAccess(time_t lastAccess):_lastAccess(lastAccess) {}
+
+    time_t getLastAccess() const
+    {
+      return _lastAccess;
+    }
+  };
 };
 
 
@@ -98,6 +110,18 @@ void a2functionalTest::testStrappend()
   std::string str = "X=";
   strappend(str, "3", ",Y=", "5");
   CPPUNIT_ASSERT_EQUAL(std::string("X=3,Y=5"), str);
+}
+
+void a2functionalTest::testLeastRecentAccess()
+{
+  std::vector<LastAccess> v;
+  for(int i = 99; i >= 0; --i) {
+    v.push_back(LastAccess(i));
+  }
+  std::sort(v.begin(), v.end(), LeastRecentAccess<LastAccess>());
+  for(int i = 0; i < 100; ++i) {
+    CPPUNIT_ASSERT_EQUAL((time_t)i, v[i]._lastAccess);
+  }
 }
 
 } // namespace aria2

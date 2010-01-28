@@ -52,6 +52,8 @@ private:
   std::string _path;
   std::string _domain;
   bool _secure;
+  time_t _creationTime;
+  time_t _lastAccess;
 public:
   /*
    * If expires = 0 is given, then the cookie becomes session cookie.
@@ -127,6 +129,24 @@ public:
   }
 
   std::string toNsCookieFormat() const;
+
+  // Makes this Cookie only sent to the origin server.  This function
+  // removes first "." from _domain if _domain starts with ".".
+  void markOriginServerOnly();
+
+  time_t getCreationTime() const
+  {
+    return _creationTime;
+  }
+
+  void updateLastAccess();
+
+  time_t getLastAccess() const
+  {
+    return _lastAccess;
+  }
+
+  static std::string normalizeDomain(const std::string& domain);
 };
 
 typedef std::deque<Cookie> Cookies;

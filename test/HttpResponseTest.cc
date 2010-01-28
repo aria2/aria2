@@ -495,9 +495,10 @@ void HttpResponseTest::testRetrieveCookie()
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, st->size());
 
-  std::deque<Cookie>::const_iterator citer = st->begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("k2=v2"), (*(st->begin())).toString());
-  CPPUNIT_ASSERT_EQUAL(std::string("k3=v3"), (*(st->begin()+1)).toString());
+  std::vector<Cookie> cookies;
+  st->dumpCookie(std::back_inserter(cookies));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2=v2"), cookies[0].toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("k3=v3"), cookies[1].toString());
 }
 
 void HttpResponseTest::testSupportsPersistentConnection()

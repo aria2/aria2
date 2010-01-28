@@ -54,7 +54,7 @@ static std::string prependDotIfNotExists(const std::string& domain)
   return (!domain.empty() && domain[0] != '.') ? "."+domain : domain;
 }
 
-static std::string normalizeDomain(const std::string& domain)
+std::string Cookie::normalizeDomain(const std::string& domain)
 {
   if(domain.empty() || util::isNumbersAndDotsNotation(domain)) {
     return domain;
@@ -79,7 +79,9 @@ Cookie::Cookie(const std::string& name,
   _expiry(expiry),
   _path(path),
   _domain(normalizeDomain(domain)),
-  _secure(secure) {}
+  _secure(secure),
+  _creationTime(time(0)),
+  _lastAccess(_creationTime) {}
 
 Cookie::Cookie(const std::string& name,
                const std::string& value,
@@ -91,9 +93,11 @@ Cookie::Cookie(const std::string& name,
   _expiry(0),
   _path(path),
   _domain(normalizeDomain(domain)),
-  _secure(secure) {}
+  _secure(secure),
+  _creationTime(time(0)),
+  _lastAccess(_creationTime) {}
 
-Cookie::Cookie():_expiry(0), _secure(false) {}
+Cookie::Cookie():_expiry(0), _secure(false), _lastAccess(time(0)) {}
 
 Cookie::~Cookie() {}
 
@@ -142,9 +146,9 @@ bool Cookie::match(const std::string& requestHost,
                    const std::string& requestPath,
                    time_t date, bool secure) const
 {
-  std::string normReqHost = normalizeDomain(requestHost);
   if((secure || (!_secure && !secure)) &&
-     domainMatch(normReqHost, _domain) &&
+     (requestHost == _domain || // For default domain or IP address
+      domainMatch(normalizeDomain(requestHost), _domain)) &&
      pathInclude(requestPath, _path) &&
      (isSessionCookie() || (date < _expiry))) {
     return true;
@@ -156,35 +160,37 @@ bool Cookie::match(const std::string& requestHost,
 bool Cookie::validate(const std::string& requestHost,
                       const std::string& requestPath) const
 {
-  std::string normReqHost = normalizeDomain(requestHost);
-  // If _domain is IP address, then it should be matched to requestHost.
-  // In other words, _domain == normReqHost
-  if(normReqHost != _domain) {
-    // domain must start with '.'
-    if(*_domain.begin() != '.') {
-      return false;
+  // If _domain doesn't start with "." or it is IP address, then it
+  // must equal to requestHost. Otherwise, do domain tail match.
+  if(requestHost != _domain) {
+    std::string normReqHost = normalizeDomain(requestHost);
+    if(normReqHost != _domain) {
+      // domain must start with '.'
+      if(*_domain.begin() != '.') {
+        return false;
+      }
+      // domain must not end with '.'
+      if(*_domain.rbegin() == '.') {
+        return false;
+      }
+      // domain must include at least one embeded '.'
+      if(_domain.size() < 4 || _domain.find(".", 1) == std::string::npos) {
+        return false;
+      }
+      if(!util::endsWith(normReqHost, _domain)) {
+        return false;
+      }
+      // From RFC2965 3.3.2 Rejecting Cookies
+      // * The request-host is a HDN (not IP address) and has the form HD,
+      //   where D is the value of the Domain attribute, and H is a string
+      //   that contains one or more dots.
+      size_t dotCount = std::count(normReqHost.begin(),
+                                   normReqHost.begin()+
+                                   (normReqHost.size()-_domain.size()), '.');
+      if(dotCount > 1 || (dotCount == 1 && normReqHost[0] != '.')) {
+        return false;
+      } 
     }
-    // domain must not end with '.'
-    if(*_domain.rbegin() == '.') {
-      return false;
-    }
-    // domain must include at least one embeded '.'
-    if(_domain.size() < 4 || _domain.find(".", 1) == std::string::npos) {
-      return false;
-    }
-    if(!util::endsWith(normReqHost, _domain)) {
-      return false;
-    }
-    // From RFC2965 3.3.2 Rejecting Cookies
-    // * The request-host is a HDN (not IP address) and has the form HD,
-    //   where D is the value of the Domain attribute, and H is a string
-    //   that contains one or more dots.
-    size_t dotCount = std::count(normReqHost.begin(),
-                                 normReqHost.begin()+
-                                 (normReqHost.size()-_domain.size()), '.');
-    if(dotCount > 1 || (dotCount == 1 && normReqHost[0] != '.')) {
-      return false;
-    } 
   }
   if(requestPath != _path) {
     // From RFC2965 3.3.2 Rejecting Cookies
@@ -228,6 +234,18 @@ std::string Cookie::toNsCookieFormat() const
   ss << _name << "\t";
   ss << _value;
   return ss.str();
+}
+
+void Cookie::markOriginServerOnly()
+{
+  if(util::startsWith(_domain, A2STR::DOT_C)) {
+    _domain.erase(_domain.begin(), _domain.begin()+1);
+  }
+}
+
+void Cookie::updateLastAccess()
+{
+  _lastAccess = time(0);
 }
 
 } // namespace aria2

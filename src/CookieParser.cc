@@ -71,26 +71,38 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
   util::split(nameValue, terms.front(), '=');
 
   std::map<std::string, std::string> values;
-  values[C_DOMAIN] = defaultDomain;
-  values[C_PATH] = defaultPath;
-  
   for(std::vector<std::string>::iterator itr = terms.begin()+1;
       itr != terms.end(); ++itr) {
     std::pair<std::string, std::string> nv;
     util::split(nv, *itr, '=');
     values[nv.first] = nv.second;
   }
+  bool useDefaultDomain = false;
+  std::map<std::string, std::string>::iterator mitr;
+  mitr = values.find(C_DOMAIN);
+  if(mitr == values.end() || (*mitr).second.empty()) {
+    useDefaultDomain = true;
+    values[C_DOMAIN] = defaultDomain;
+  }
+  mitr = values.find(C_PATH);
+  if(mitr == values.end() || (*mitr).second.empty()) {
+    values[C_PATH] = defaultPath;
+  }
   time_t expiry = 0;
-  if(values.find(C_EXPIRES) != values.end()) {
+  if(values.count(C_EXPIRES)) {
     Time expiryTime = Time::parseHTTPDate(values[C_EXPIRES]);
     if(expiryTime.good()) {
       expiry = expiryTime.getTime();
     }
   }
-  return Cookie(nameValue.first, nameValue.second,
+  Cookie cookie(nameValue.first, nameValue.second,
                 expiry,
                 values[C_PATH], values[C_DOMAIN],
                 values.find(C_SECURE) != values.end());
+  if(useDefaultDomain) {
+    cookie.markOriginServerOnly();
+  }
+  return cookie;
 }
 
 

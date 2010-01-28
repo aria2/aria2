@@ -381,6 +381,15 @@ inline void strappend(std::string& base,
   base += a7; base += a8;
 }
 
+template<typename T>
+class LeastRecentAccess:public std::binary_function<T, T, bool> {
+public:
+  bool operator()(const T& lhs, const T& rhs) const
+  {
+    return lhs.getLastAccess() < rhs.getLastAccess();
+  }
+};
+
 } // namespace aria2
 
 #endif // _D_A2_FUNCTIONAL_H_

@@ -1,3 +1,19 @@
+2010-01-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten Cookie storage.
+	* src/Cookie.cc
+	* src/Cookie.h
+	* src/CookieParser.cc
+	* src/CookieStorage.cc
+	* src/CookieStorage.h
+	* src/a2functional.h
+	* test/CookieParserTest.cc
+	* test/CookieStorageTest.cc
+	* test/CookieTest.cc
+	* test/HttpResponseTest.cc
+	* test/TestUtil.h
+	* test/a2functionalTest.cc
+
 2010-01-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Handle redirected URI which is not properly percent encoded.
