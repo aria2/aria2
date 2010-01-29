@@ -65,12 +65,12 @@ static int cookieRowMapper(void* data, int rowIndex,
                            char** values, char** names)
 {
   try {
+    std::deque<Cookie>& cookies = *reinterpret_cast<std::deque<Cookie>*>(data);
     int64_t expireDate = util::parseLLInt(toString(values[3]));
     // TODO assuming time_t is int32_t...
     if(expireDate > INT32_MAX) {
       expireDate = INT32_MAX;
     }
-
     Cookie c(toString(values[4]), // name
              toString(values[5]), // value
              expireDate, // expires
@@ -78,9 +78,11 @@ static int cookieRowMapper(void* data, int rowIndex,
              toString(values[0]), // domain
              strcmp(toString(values[2]).c_str(), "1") == 0 ? true:false //secure
              );
-                      
+    if(!util::startsWith(values[0], A2STR::DOT_C)) {
+      c.markOriginServerOnly();
+    }
     if(c.good()) {
-      reinterpret_cast<std::deque<Cookie>*>(data)->push_back(c);
+      cookies.push_back(c);
     }
   } catch(RecoverableException& e) {
     //failed to parse expiry.

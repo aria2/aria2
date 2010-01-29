@@ -57,6 +57,9 @@ private:
 public:
   /*
    * If expires = 0 is given, then the cookie becomes session cookie.
+   * domain is normalized using normalizeDomain() function and
+   * assigned to _domain.  If domain is not specified in cookie, call
+   * markOriginServerOnly() after construction.
    */
   Cookie(const std::string& name,
          const std::string& value,
@@ -66,8 +69,11 @@ public:
          bool secure);
 
   /*
-   * Creates session cookie. This is equivalent to
-   * Cookie(name, value, 0, path, domain, secure);
+   * Creates session cookie. This is equivalent to Cookie(name, value,
+   * 0, path, domain, secure); domain is normalized using
+   * normalizeDomain() function and assigned to _domain.  If domain is
+   * not specified in cookie, call markOriginServerOnly() after
+   * construction.
    */
   Cookie(const std::string& name,
          const std::string& value,

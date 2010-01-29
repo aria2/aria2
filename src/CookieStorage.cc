@@ -266,13 +266,9 @@ std::deque<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
     for(std::vector<std::string>::const_iterator di =
           domainComponents.begin()+1; di != domainComponents.end(); ++di) {
       domain = strconcat(A2STR::DOT_C, *di, domain);
-      const size_t prenum = res.size();
       searchCookieByDomainSuffix(domain, _domains.begin(), _domains.end(),
                                  std::back_inserter(res),
                                  normRequestHost, requestPath, date, secure);
-      if(prenum == res.size()) {
-        break;
-      } 
     }
   }
   std::vector<CookiePathDivider> divs;

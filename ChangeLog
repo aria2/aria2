@@ -1,5 +1,21 @@
 2010-01-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that cookie for domain a.b.c is not sent to the host
+	a.b.c if no other cookies are stored.  Fixed the bug that
+	Cookie::markOriginServerOnly() is not called when cookies are
+	loaded from file/sqlite3 database.
+	* src/Cookie.h
+	* src/CookieStorage.cc
+	* src/NsCookieParser.cc
+	* src/Sqlite3MozCookieParser.cc
+	* test/CookieStorageTest.cc
+	* test/NsCookieParserTest.cc
+	* test/Sqlite3MozCookieParserTest.cc
+	* test/cookies.sqlite
+	* test/nscookietest.txt
+
+2010-01-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed RequestGroup::initSegmentMan(). Guaranteed that either
 	both _pieceStorage and _segmentMan are initialized or they are
 	not.

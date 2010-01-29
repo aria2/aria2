@@ -138,7 +138,7 @@ void CookieStorageTest::testCriteriaFind()
                false);
   Cookie charlie("charlie", "CHARLIE", "/", ".aria2.org", true);
   Cookie delta("delta", "DELTA", "/foo/bar", ".aria2.org", false);
-  Cookie echo("echo", "ECHO", "/", "www.aria2.org", false);
+  Cookie echo("echo", "ECHO", "/", "www.dl.aria2.org", false);
   Cookie foxtrot("foxtrot", "FOXTROT", "/", ".sf.net", false);
   Cookie golf("golf", "GOLF", "/", "192.168.1.1", false);
   Cookie hotel1("hotel", "HOTEL1", "/", "samename.x", false);
@@ -168,7 +168,7 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT(st.store(juliet1));
   CPPUNIT_ASSERT(st.store(juliet2));
 
-  std::deque<Cookie> aria2Slash = st.criteriaFind("www.aria2.org", "/",
+  std::deque<Cookie> aria2Slash = st.criteriaFind("www.dl.aria2.org", "/",
                                                   0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, aria2Slash.size());
   CPPUNIT_ASSERT(std::find(aria2Slash.begin(), aria2Slash.end(), alpha)
@@ -176,7 +176,7 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT(std::find(aria2Slash.begin(), aria2Slash.end(), echo)
                  != aria2Slash.end());
 
-  std::deque<Cookie> aria2SlashFoo = st.criteriaFind("www.aria2.org", "/foo",
+  std::deque<Cookie> aria2SlashFoo = st.criteriaFind("www.dl.aria2.org", "/foo",
                                                      0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)3, aria2SlashFoo.size());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), aria2SlashFoo[0].getName());
@@ -185,7 +185,7 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT(std::find(aria2SlashFoo.begin(), aria2SlashFoo.end(), echo)
                  != aria2SlashFoo.end());
 
-  std::deque<Cookie> aria2Expires = st.criteriaFind("www.aria2.org", "/foo",
+  std::deque<Cookie> aria2Expires = st.criteriaFind("www.dl.aria2.org", "/foo",
                                                     Time().getTime()+120,
                                                     false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, aria2Expires.size());
@@ -217,6 +217,10 @@ void CookieStorageTest::testCriteriaFind()
                        defaultDomainCookies[0].getValue());
   CPPUNIT_ASSERT_EQUAL(std::string("INDIA2"),
                        defaultDomainCookies[1].getValue());
+  defaultDomainCookies =
+    st.criteriaFind("sub.default.domain", "/foo", 0, false);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, defaultDomainCookies.size());
+
 
   // localhost.local case
   std::deque<Cookie> localDomainCookies =
@@ -240,27 +244,27 @@ void CookieStorageTest::testLoad()
   dumpCookie(cookies, st);
 
   Cookie c = cookies[0];
-  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
-  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
-  CPPUNIT_ASSERT(c.isSecureCookie());
-
-  c = cookies[1];
   CPPUNIT_ASSERT_EQUAL(std::string("novalue"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string(""), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".example.org"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
+
+  c = cookies[1];
+  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost.local"), c.getDomain());
+  CPPUNIT_ASSERT(c.isSecureCookie());
 
   c = cookies[2];
   CPPUNIT_ASSERT_EQUAL(std::string("passwd"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("secret"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/cgi-bin"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost.local"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
 
   c = cookies[3];
@@ -268,7 +272,7 @@ void CookieStorageTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(std::string("1000"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string(".overflow.local"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string("overflow.local"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
 }
 
@@ -281,30 +285,30 @@ void CookieStorageTest::testLoad_sqlite3()
   std::vector<Cookie> cookies;
   dumpCookie(cookies, st);
   Cookie c = cookies[0];
-  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
-  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string(".localhost.local"), c.getDomain());
-  CPPUNIT_ASSERT(c.isSecureCookie());
-  CPPUNIT_ASSERT(!c.isSessionCookie());
-
-  c = cookies[1];
   CPPUNIT_ASSERT_EQUAL(std::string("uid"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string(""), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)0, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string(".null_value.local"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".null_value.com"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
   CPPUNIT_ASSERT(c.isSessionCookie());
 
-  c = cookies[2];
+  c = cookies[1];
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("bar"), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
   CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c.getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string(".overflow_time_t.local"), c.getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string(".overflow.time_t.org"), c.getDomain());
   CPPUNIT_ASSERT(!c.isSecureCookie());
+  CPPUNIT_ASSERT(!c.isSessionCookie());
+
+  c = cookies[2];
+  CPPUNIT_ASSERT_EQUAL(std::string("JSESSIONID"), c.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789"), c.getValue());
+  CPPUNIT_ASSERT_EQUAL((time_t)2147483647, c.getExpiry());
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost.local"), c.getDomain());
+  CPPUNIT_ASSERT(c.isSecureCookie());
   CPPUNIT_ASSERT(!c.isSessionCookie());
     
 #else // !HAVE_SQLITE3

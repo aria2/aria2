@@ -70,7 +70,9 @@ static Cookie parseNsCookie(const std::string& nsCookieStr)
            vs[2], // path
            vs[0], // domain
            vs[3] == C_TRUE ? true : false);
-
+  if(!util::startsWith(vs[0], A2STR::DOT_C)) {
+    c.markOriginServerOnly();
+  }
   return c;
 }
 
