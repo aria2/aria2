@@ -53,10 +53,7 @@ class BtDependencyTest:public CppUnit::TestFixture {
       (new DownloadContext(1024*1024, length, torrentFile));
     dctx->setDir(".");
     dependee->setDownloadContext(dctx);
-    DefaultPieceStorageHandle ps(new DefaultPieceStorage(dctx, option.get()));
-    dependee->setPieceStorage(ps);
-    ps->initStorage();
-    dependee->initSegmentMan();
+    dependee->initPieceStorage();
     return dependee;
   }
 

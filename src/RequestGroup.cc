@@ -150,13 +150,6 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
 
 RequestGroup::~RequestGroup() {}
 
-const SegmentManHandle& RequestGroup::initSegmentMan()
-{
-  _segmentMan = _segmentManFactory->createNewInstance(_downloadContext,
-                                                      _pieceStorage);
-  return _segmentMan;
-}
-
 bool RequestGroup::downloadFinished() const
 {
   if(_pieceStorage.isNull()) {
@@ -445,6 +438,7 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
 
 void RequestGroup::initPieceStorage()
 {
+  SharedHandle<PieceStorage> tempPieceStorage;
   if(_downloadContext->knowsTotalLength()) {
 #ifdef ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps
@@ -483,17 +477,21 @@ void RequestGroup::initPieceStorage()
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }
-    _pieceStorage = ps;
+    tempPieceStorage = ps;
   } else {
     UnknownLengthPieceStorageHandle ps
       (new UnknownLengthPieceStorage(_downloadContext, _option.get()));
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }
-    _pieceStorage = ps;
+    tempPieceStorage = ps;
   }
-  _pieceStorage->initStorage();
-  initSegmentMan();
+  tempPieceStorage->initStorage();
+  SharedHandle<SegmentMan> tempSegmentMan =
+    _segmentManFactory->createNewInstance(_downloadContext, tempPieceStorage);
+
+  _pieceStorage = tempPieceStorage;
+  _segmentMan = tempSegmentMan;
 }
 
 bool RequestGroup::downloadFinishedByFileLength()

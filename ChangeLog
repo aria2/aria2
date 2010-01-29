@@ -1,5 +1,14 @@
 2010-01-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed RequestGroup::initSegmentMan(). Guaranteed that either
+	both _pieceStorage and _segmentMan are initialized or they are
+	not.
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* test/BtDependencyTest.cc
+
+2010-01-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.8.2
 	* configure.ac
 

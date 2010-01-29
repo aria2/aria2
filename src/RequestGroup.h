@@ -186,11 +186,6 @@ public:
   RequestGroup(const SharedHandle<Option>& option);
 
   ~RequestGroup();
-  /**
-   * Reinitializes SegmentMan based on current property values and
-   * returns new one.
-   */
-  const SharedHandle<SegmentMan>& initSegmentMan();
 
   const SharedHandle<SegmentMan>& getSegmentMan() const
   {
@@ -359,6 +354,9 @@ public:
                                   const SharedHandle<CheckIntegrityEntry>& entry,
                                   DownloadEngine* e);
 
+  // Initializes _pieceStorage and _segmentMan.  We guarantee that
+  // either both of _pieceStorage and _segmentMan are initialized or
+  // they are not.
   void initPieceStorage();
 
   bool downloadFinishedByFileLength();
