@@ -1,5 +1,14 @@
 2010-01-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed parse(std::istream&) and parse(const std::string&) from
+	CookieParser.
+	* src/CookieParser.cc
+	* src/CookieParser.h
+	* test/CookieParserTest.cc
+	* test/cookietest.txt: Removed
+
+2010-01-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that cookie for domain a.b.c is not sent to the host
 	a.b.c if no other cookies are stored.  Fixed the bug that
 	Cookie::markOriginServerOnly() is not called when cookies are

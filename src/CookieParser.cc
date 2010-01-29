@@ -55,11 +55,6 @@ const std::string CookieParser::C_PATH("path");
 
 const std::string CookieParser::C_EXPIRES("expires");
 
-Cookie CookieParser::parse(const std::string& cookieStr) const
-{
-  return parse(cookieStr, A2STR::NIL, A2STR::NIL);
-}
-
 Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const
 {
   std::vector<std::string> terms;
@@ -103,23 +98,6 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
     cookie.markOriginServerOnly();
   }
   return cookie;
-}
-
-
-Cookies CookieParser::parse(std::istream& s) const
-{
-  Cookies cookies;
-  std::string line;
-  while(getline(s, line)) {
-    if(util::trim(line).empty() || util::startsWith(line, A2STR::SHARP_C)) {
-      continue;
-    }
-    Cookie cookie = parse(line);
-    if(cookie.good()) {
-      cookies.push_back(cookie);
-    }
-  }
-  return cookies;
 }
 
 } // namespace aria2

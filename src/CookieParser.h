@@ -36,26 +36,18 @@
 #define _D_COOKIE_PARSER_H_
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 #include "Cookie.h"
-#include <string>
-#include <iosfwd>
 
 namespace aria2 {
 
 class CookieParser {
 public:
-  CookieParser() {}
-
-  ~CookieParser() {}
-
   Cookie parse(const std::string& cookieStr, const std::string& defaultDomain,
                const std::string& defaultPath) const;
-
-  Cookie parse(const std::string& cookieStr) const;
-
-  Cookies parse(std::istream& s) const;
-
 private:
   static const std::string C_SECURE;
   

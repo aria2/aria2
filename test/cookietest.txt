@@ -1,6 +1,0 @@
-JSESSIONID=123456789; expires=Sun, 2007-06-10 11:00:00 GMT; path=/; domain=localhost; secure
-# name=this is a omment line;
-
-user=me;
-
-passwd=secret
