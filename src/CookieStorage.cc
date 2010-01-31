@@ -121,7 +121,7 @@ bool CookieStorage::store(const Cookie& cookie)
   if(_domains.size() >= DOMAIN_EVICTION_TRIGGER) {
     std::sort(_domains.begin(), _domains.end(),
               LeastRecentAccess<DomainEntry>());
-    size_t delnum = _domains.size()*DOMAIN_EVICTION_RATE;
+    size_t delnum = (size_t)(_domains.size()*DOMAIN_EVICTION_RATE);
     _domains.erase(_domains.begin(), _domains.begin()+delnum);
     std::sort(_domains.begin(), _domains.end());
   }
