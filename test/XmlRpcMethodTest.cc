@@ -27,6 +27,7 @@
 # include "PeerStorage.h"
 # include "BtProgressInfoFile.h"
 # include "BtAnnounce.h"
+# include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -68,6 +69,9 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST(testGatherStoppedDownload);
   CPPUNIT_TEST(testGatherProgressCommon);
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_TEST(testGatherBitTorrentMetadata);
+#endif // ENABLE_BITTORRENT
   CPPUNIT_TEST(testChangePosition);
   CPPUNIT_TEST(testChangePosition_fail);
   CPPUNIT_TEST(testGetSessionInfo);
@@ -125,6 +129,9 @@ public:
   void testNoSuchMethod();
   void testGatherStoppedDownload();
   void testGatherProgressCommon();
+#ifdef ENABLE_BITTORRENT
+  void testGatherBitTorrentMetadata();
+#endif // ENABLE_BITTORRENT
   void testChangePosition();
   void testChangePosition_fail();
   void testGetSessionInfo();
@@ -707,6 +714,38 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   CPPUNIT_ASSERT_EQUAL(uris[0], entry["files"][0]["uris"][0]["uri"].s());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), entry["dir"].s());
 }
+
+#ifdef ENABLE_BITTORRENT
+void XmlRpcMethodTest::testGatherBitTorrentMetadata()
+{
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  bittorrent::load("test.torrent", dctx);
+  BDE btDict = BDE::dict();
+  gatherBitTorrentMetadata(btDict, dctx->getAttribute(bittorrent::BITTORRENT));
+  CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"), btDict["comment"].s());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1123456789, btDict["creationDate"].i());
+  CPPUNIT_ASSERT_EQUAL(std::string("multi"), btDict["mode"].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"), btDict["info"]["name"].s());
+  const BDE& announceList = btDict["announceList"];
+  CPPUNIT_ASSERT_EQUAL((size_t)3, announceList.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"), announceList[0][0].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"), announceList[1][0].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"), announceList[2][0].s());
+  // Remove some keys
+  BDE modBtAttrs = dctx->getAttribute(bittorrent::BITTORRENT);
+  modBtAttrs.removeKey(bittorrent::COMMENT);
+  modBtAttrs.removeKey(bittorrent::CREATION_DATE);
+  modBtAttrs.removeKey(bittorrent::MODE);
+  modBtAttrs.removeKey(bittorrent::METADATA);
+  btDict = BDE::dict();
+  gatherBitTorrentMetadata(btDict, modBtAttrs);
+  CPPUNIT_ASSERT(!btDict.containsKey("comment"));
+  CPPUNIT_ASSERT(!btDict.containsKey("creationDate"));
+  CPPUNIT_ASSERT(!btDict.containsKey("mode"));
+  CPPUNIT_ASSERT(!btDict.containsKey("info"));
+  CPPUNIT_ASSERT(btDict.containsKey("announceList"));
+}
+#endif // ENABLE_BITTORRENT
 
 void XmlRpcMethodTest::testChangePosition()
 {

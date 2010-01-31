@@ -2661,7 +2661,7 @@ last_updated
 <dd>
 <p>
   Last contact time in GMT with this server, specified in the seconds
-  from the Epoch. Required.
+  since the Epoch(00:00:00 on January 1, 1970, UTC). Required.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2910,6 +2910,71 @@ files
   Returns the list of files. The element of list is the same struct
   used in <strong>aria2.getFiles</strong> method.
 </p>
+</dd>
+<dt class="hdlist1">
+bittorrent
+</dt>
+<dd>
+<p>
+  Struct which contains information retrieved from .torrent
+  file. BitTorrent only. It contains following keys.
+</p>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+announceList
+</dt>
+<dd>
+<p>
+    List of lists of announce URI. If .torrent file contains announce
+    and no announce-list, announce is converted to announce-list
+    format.
+</p>
+</dd>
+<dt class="hdlist1">
+comment
+</dt>
+<dd>
+<p>
+    The comment for the torrent. comment.utf-8 is used if available.
+</p>
+</dd>
+<dt class="hdlist1">
+creationDate
+</dt>
+<dd>
+<p>
+    The creation time of the torrent. The value is an integer since
+    the Epoch, measured in seconds.
+</p>
+</dd>
+<dt class="hdlist1">
+mode
+</dt>
+<dd>
+<p>
+    File mode of the torrent. The value is either <em>single</em> or <em>multi</em>.
+</p>
+</dd>
+<dt class="hdlist1">
+info
+</dt>
+<dd>
+<p>
+    Struct which contains data from Info dictionary. It contains
+    following keys.
+</p>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+name
+</dt>
+<dd>
+<p>
+      name in info dictionary. name.utf-8 is used if available.
+</p>
+</dd>
+</dl></div>
+</dd>
+</dl></div>
 </dd>
 </dl></div>
 <div class="paragraph"><p><strong>aria2.getUris</strong> <em>gid</em></p></div>
@@ -3648,7 +3713,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-01-18 23:42:25 JST
+Last updated 2010-01-31 17:04:00 JST
 </div>
 </div>
 </body>

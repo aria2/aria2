@@ -378,6 +378,12 @@ void gatherStoppedDownload
 void gatherProgressCommon
 (BDE& entryDict, const SharedHandle<RequestGroup>& group);
 
+#ifdef ENABLE_BITTORRENT
+// Helper function to store BitTorrent metadata from torrentAttrs in
+// btDict. btDict must be an BDE::Dict.
+void gatherBitTorrentMetadata(BDE& btDict, const BDE& torrentAttrs);
+#endif // ENABLE_BITTORRENT
+
 } // namespace xmlrpc
 
 } // namespace aria2

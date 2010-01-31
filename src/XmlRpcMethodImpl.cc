@@ -119,6 +119,13 @@ const std::string KEY_SESSION_ID = "sessionId";
 const std::string KEY_FILES = "files";
 const std::string KEY_DIR = "dir";
 const std::string KEY_URIS = "uris";
+const std::string KEY_BITTORRENT = "bittorrent";
+const std::string KEY_INFO = "info";
+const std::string KEY_NAME = "name";
+const std::string KEY_ANNOUNCE_LIST = "announceList";
+const std::string KEY_COMMENT = "comment";
+const std::string KEY_CREATION_DATE = "creationDate";
+const std::string KEY_MODE = "mode";
 }
 
 static BDE createGIDResponse(int32_t gid)
@@ -371,12 +378,47 @@ void gatherProgressCommon
 }
 
 #ifdef ENABLE_BITTORRENT
+void gatherBitTorrentMetadata(BDE& btDict, const BDE& torrentAttrs)
+{
+  if(torrentAttrs.containsKey(bittorrent::COMMENT)) {
+    btDict[KEY_COMMENT] = torrentAttrs[bittorrent::COMMENT];
+  }
+  if(torrentAttrs.containsKey(bittorrent::CREATION_DATE)) {
+    btDict[KEY_CREATION_DATE] = torrentAttrs[bittorrent::CREATION_DATE];
+  }
+  if(torrentAttrs.containsKey(bittorrent::MODE)) {
+    btDict[KEY_MODE] = torrentAttrs[bittorrent::MODE];
+  }
+  // Copy announceList to avoid modification on entyDict to be
+  // affected original announceList.
+  // TODO Would it be good to add copy() method in BDE?
+  const BDE& announceList = torrentAttrs[bittorrent::ANNOUNCE_LIST];
+  BDE destAnnounceList = BDE::list();
+  for(BDE::List::const_iterator l = announceList.listBegin();
+      l != announceList.listEnd(); ++l) {
+    BDE destAnnounceTier = BDE::list();
+    for(BDE::List::const_iterator t = (*l).listBegin();
+        t != (*l).listEnd(); ++t) {
+      destAnnounceTier <<  (*t);
+    }
+    destAnnounceList << destAnnounceTier;
+  }
+  btDict[KEY_ANNOUNCE_LIST] = destAnnounceList;
+  if(torrentAttrs.containsKey(bittorrent::METADATA)) {
+    BDE infoDict = BDE::dict();
+    infoDict[KEY_NAME] = torrentAttrs[bittorrent::NAME];
+    btDict[KEY_INFO] = infoDict;
+  }
+}
+
 static void gatherProgressBitTorrent
 (BDE& entryDict, const BDE& torrentAttrs, const BtObject& btObject)
 {
   const std::string& infoHash = torrentAttrs[bittorrent::INFO_HASH].s();
   entryDict[KEY_INFO_HASH] = util::toHex(infoHash);
-
+  BDE btDict = BDE::dict();
+  gatherBitTorrentMetadata(btDict, torrentAttrs);
+  entryDict[KEY_BITTORRENT] = btDict;
   if(!btObject.isNull()) {
     SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
     assert(!peerStorage.isNull());

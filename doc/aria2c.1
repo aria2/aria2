@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 01/18/2010
+.\"      Date: 01/31/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.8.1
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "01/18/2010" "Aria2 1\&.8\&.1" "Aria2 Manual"
+.TH "ARIA2C" "1" "01/31/2010" "Aria2 1\&.8\&.1" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -2155,7 +2155,7 @@ How many times the server is used\&. Currently this value is only used by Adapti
 .PP
 last_updated
 .RS 4
-Last contact time in GMT with this server, specified in the seconds from the Epoch\&. Required\&.
+Last contact time in GMT with this server, specified in the seconds since the Epoch(00:00:00 on January 1, 1970, UTC)\&. Required\&.
 .RE
 .PP
 status
@@ -2298,6 +2298,44 @@ files
 Returns the list of files\&. The element of list is the same struct used in
 \fBaria2\&.getFiles\fR
 method\&.
+.RE
+.PP
+bittorrent
+.RS 4
+Struct which contains information retrieved from \&.torrent file\&. BitTorrent only\&. It contains following keys\&.
+.PP
+announceList
+.RS 4
+List of lists of announce URI\&. If \&.torrent file contains announce and no announce\-list, announce is converted to announce\-list format\&.
+.RE
+.PP
+comment
+.RS 4
+The comment for the torrent\&. comment\&.utf\-8 is used if available\&.
+.RE
+.PP
+creationDate
+.RS 4
+The creation time of the torrent\&. The value is an integer since the Epoch, measured in seconds\&.
+.RE
+.PP
+mode
+.RS 4
+File mode of the torrent\&. The value is either
+\fIsingle\fR
+or
+\fImulti\fR\&.
+.RE
+.PP
+info
+.RS 4
+Struct which contains data from Info dictionary\&. It contains following keys\&.
+.PP
+name
+.RS 4
+name in info dictionary\&. name\&.utf\-8 is used if available\&.
+.RE
+.RE
 .RE
 .sp
 \fBaria2\&.getUris\fR \fIgid\fR
