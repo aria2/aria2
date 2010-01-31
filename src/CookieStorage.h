@@ -54,32 +54,6 @@ public:
 
   static const size_t MAX_COOKIE_PER_DOMAIN = 50;
 
-  class FindCookie:public std::unary_function<Cookie&, bool> {
-  private:
-    std::string _requestHost;
-    std::string _requestPath;
-    time_t _date;
-    bool _secure;
-  public:
-    FindCookie(const std::string& requestHost,
-               const std::string& requestPath,
-               time_t date, bool secure):
-      _requestHost(requestHost),
-      _requestPath(requestPath),
-      _date(date),
-      _secure(secure) {}
-
-    bool operator()(Cookie& cookie) const
-    {
-      if(cookie.match(_requestHost, _requestPath, _date, _secure)) {
-        cookie.updateLastAccess();
-        return true;
-      } else {
-        return false;
-      }
-    }
-  };
-
   class DomainEntry {
   private:
     std::string _key;
@@ -102,11 +76,14 @@ public:
      const std::string& requestPath,
      time_t date, bool secure)
     {
-      OutputIterator last =
-        std::remove_copy_if
-        (_cookies.begin(), _cookies.end(), out,
-         std::not1(FindCookie(requestHost, requestPath, date, secure)));
-      return last;
+      for(std::deque<Cookie>::iterator i = _cookies.begin();
+          i != _cookies.end(); ++i) {
+        if((*i).match(requestHost, requestPath, date, secure)) {
+          (*i).updateLastAccess();
+          out++ = *i;
+        }
+      }
+      return out;
     }
 
     size_t countCookie() const

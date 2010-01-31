@@ -1,5 +1,10 @@
 2010-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error on Mac OS X.
+	* src/CookieStorage.h
+
+2010-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed cookietest.txt from Makefile.am
 	* test/Makefile.am
 
