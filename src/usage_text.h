@@ -144,10 +144,9 @@
     "                              allocating files.\n"                 \
     "                              Turn off if you encounter any error")
 #define TEXT_ALLOW_OVERWRITE                                            \
-  _(" --allow-overwrite=true|false If false is given, and a file already exists but\n" \
-    "                              the corresponding control file (filename.aria2)\n" \
-    "                              doesn't exist, then aria2 will not re-download\n" \
-    "                              the file. See also --auto-file-renaming option.")
+  _(" --allow-overwrite=true|false Restart download from scratch if the\n" \
+    "                              corresponding control file doesn't exist.  See\n" \
+    "                              also --auto-file-renaming option.")
 #define TEXT_ALLOW_PIECE_LENGTH_CHANGE                                  \
   _(" --allow-piece-length-change=true|false If false is given, aria2 aborts download\n" \
     "                              when a piece length is different from one in\n" \

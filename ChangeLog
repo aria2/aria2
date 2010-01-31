@@ -1,5 +1,11 @@
 2010-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten help message for --allow-overwrite option.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
+2010-01-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added bittorrent key to the response of tellStatus XML-RPC method.
 	The associated value of the key is a struct and contains data
 	retrieved from .torrent file, such as name, announce-list,
