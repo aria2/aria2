@@ -216,6 +216,10 @@ private:
     void addSocketEvents(EpollEventPoll* socketPoll);
     
     void removeSocketEvents(EpollEventPoll* socketPoll);
+
+    // Calls AsyncNameResolver::process(ARES_SOCKET_BAD,
+    // ARES_SOCKET_BAD).
+    void processTimeout();
   };
 
 #endif // ENABLE_ASYNC_DNS

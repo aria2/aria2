@@ -292,6 +292,11 @@ void EpollEventPoll::AsyncNameResolverEntry::removeSocketEvents
   }
 }
 
+void EpollEventPoll::AsyncNameResolverEntry::processTimeout()
+{
+  _nameResolver->process(ARES_SOCKET_BAD, ARES_SOCKET_BAD);
+}
+
 #endif // ENABLE_ASYNC_DNS
 
 EpollEventPoll::EpollEventPoll():_logger(LogFactory::getInstance())
@@ -335,6 +340,19 @@ void EpollEventPoll::poll(const struct timeval& tv)
       p->processEvents(_epEvents[i].events);
     }
   }
+
+#ifdef ENABLE_ASYNC_DNS
+  // It turns out that we have to call ares_process_fd before ares's
+  // own timeout and ares may create new sockets or closes socket in
+  // their API. So we call ares_process_fd for all ares_channel and
+  // re-register their sockets.
+  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator i =
+        _nameResolverEntries.begin(); i != _nameResolverEntries.end(); ++i) {
+    (*i)->processTimeout();
+    (*i)->removeSocketEvents(this);
+    (*i)->addSocketEvents(this);
+  }
+#endif // ENABLE_ASYNC_DNS
 
   // TODO timeout of name resolver is determined in Command(AbstractCommand,
   // DHTEntryPoint...Command)
