@@ -1,5 +1,11 @@
 2010-02-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Drop legacy ifdef for ares support and code cleanup.
+	* src/AsyncNameResolver.cc
+	* src/AsyncNameResolver.h
+
+2010-02-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call ares_library_init and ares_library_cleanup if they are
 	available. Some code cleanups.
 	* src/Platform.cc

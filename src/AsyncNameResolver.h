@@ -36,18 +36,14 @@
 #define _D_ASYNC_NAME_RESOLVER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "a2netcompat.h"
+
 #include <string>
 #include <deque>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 #include <ares.h>
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
+
+#include "SharedHandle.h"
+#include "a2netcompat.h"
 
 namespace aria2 {
 

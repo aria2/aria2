@@ -33,9 +33,10 @@
  */
 /* copyright --> */
 #include "AsyncNameResolver.h"
-#include "util.h"
-#include "A2STR.h"
+
 #include <cstring>
+
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -47,11 +48,7 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
 {
   AsyncNameResolver* resolverPtr = reinterpret_cast<AsyncNameResolver*>(arg);
   if(status != ARES_SUCCESS) {
-#ifdef HAVE_LIBCARES
     resolverPtr->error = ares_strerror(status);
-#else
-    resolverPtr->error = ares_strerror(status, 0);
-#endif // HAVE_LIBCARES
     resolverPtr->status = AsyncNameResolver::STATUS_ERROR;
     return;
   }
