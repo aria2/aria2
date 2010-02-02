@@ -1,5 +1,11 @@
 2010-02-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Call ares_library_init and ares_library_cleanup if they are
+	available. Some code cleanups.
+	* src/Platform.cc
+
+2010-02-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call ares_process_fd() each time after epoll to handle timeout.
 	* src/EpollEventPoll.cc
 	* src/EpollEventPoll.h

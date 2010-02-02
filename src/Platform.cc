@@ -34,13 +34,12 @@
 /* copyright --> */
 #include "Platform.h"
 
-#ifdef HAVE_LIBSSL
-# include <openssl/err.h>
-# include <openssl/ssl.h>
-#endif // HAVE_LIBSSL
-#ifdef HAVE_LIBGNUTLS
-# include <gnutls/gnutls.h>
-#endif // HAVE_LIBGNUTLS
+#include <stdlib.h> /* _fmode */
+#include <fcntl.h> /*  _O_BINARY */
+
+#include <locale.h> // For setlocale, LC_*
+
+#include <iostream>
 
 #ifdef HAVE_WINSOCK2_H
 
@@ -55,11 +54,20 @@
 
 #endif // HAVE_WINSOCK2_H
 
+#ifdef HAVE_LIBSSL
+# include <openssl/err.h>
+# include <openssl/ssl.h>
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/gnutls.h>
+#endif // HAVE_LIBGNUTLS
+
+#ifdef ENABLE_ASYNC_DNS
+# include <ares.h>
+#endif // ENABLE_ASYNC_DNS
+
 #include "DlAbortEx.h"
 #include "message.h"
-#include <stdlib.h> /* _fmode */
-#include <fcntl.h> /*  _O_BINARY */
-#include <locale.h> // For setlocale, LC_*
 
 namespace aria2 {
 
@@ -97,7 +105,16 @@ bool Platform::setUp()
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_init();
 #endif // HAVE_LIBGNUTLS
-  
+
+#ifdef CARES_HAVE_ARES_LIBRARY_INIT
+  int aresErrorCode;
+  if((aresErrorCode = ares_library_init(ARES_LIB_INIT_ALL)) != 0) {
+    std::cerr << "ares_library_init() failed:"
+              << ares_strerror(aresErrorCode)
+              << std::endl;
+  }
+#endif // CARES_HAVE_ARES_LIBRARY_INIT
+
 #ifdef HAVE_WINSOCK2_H
   WSADATA wsaData;
   memset(reinterpret_cast<char*>(&wsaData), 0, sizeof(wsaData));
@@ -123,6 +140,10 @@ bool Platform::tearDown()
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
 #endif // HAVE_LIBGNUTLS
+
+#ifdef CARES_HAVE_ARES_LIBRARY_CLEANUP
+  ares_library_cleanup();
+#endif // CARES_HAVE_ARES_LIBRARY_CLEANUP
 
 #ifdef HAVE_WINSOCK2_H
   WSACleanup();
