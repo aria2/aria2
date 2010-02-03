@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-01-17 23:16+0900\n"
+"POT-Creation-Date: 2010-02-03 21:54+0900\n"
 "PO-Revision-Date: 2009-09-30 14:01+0000\n"
 "Last-Translator: aerowolf <aerowolf@tom.com>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
@@ -42,7 +42,7 @@ msgstr ""
 msgid "Download Results:"
 msgstr "下载结果："
 
-#: src/RequestGroupMan.cc:622
+#: src/RequestGroupMan.cc:627
 msgid "Status Legend:"
 msgstr "状态标识："
 
@@ -361,16 +361,13 @@ msgstr ""
 
 #: src/usage_text.h:147
 msgid ""
-" --allow-overwrite=true|false If false is given, and a file already exists "
-"but\n"
-"                              the corresponding control file (filename."
-"aria2)\n"
-"                              doesn't exist, then aria2 will not re-"
-"download\n"
-"                              the file. See also --auto-file-renaming option."
+" --allow-overwrite=true|false Restart download from scratch if the\n"
+"                              corresponding control file doesn't exist.  "
+"See\n"
+"                              also --auto-file-renaming option."
 msgstr ""
 
-#: src/usage_text.h:152
+#: src/usage_text.h:151
 msgid ""
 " --allow-piece-length-change=true|false If false is given, aria2 aborts "
 "download\n"
@@ -384,7 +381,7 @@ msgstr ""
 "                              载。如果选择true，您可以继续进行下\n"
 "                              载，但某些下载进度会丢失。"
 
-#: src/usage_text.h:157
+#: src/usage_text.h:156
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -396,7 +393,7 @@ msgstr ""
 "                              并以单独的会话下载每个链接，\n"
 "                              如同常见的命令行下载工具。"
 
-#: src/usage_text.h:161
+#: src/usage_text.h:160
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -412,7 +409,7 @@ msgstr ""
 "                              新的文件名将被附加一个点和数字\n"
 "                              （1至9999）。"
 
-#: src/usage_text.h:167
+#: src/usage_text.h:166
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -438,16 +435,16 @@ msgstr ""
 "                              就像上面第二个例子一样，则需要-Z\n"
 "                              选项。"
 
-#: src/usage_text.h:178
+#: src/usage_text.h:177
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr " --enable-http-keep-alive[=true|false] 启用HTTP/1.1持续连接。"
 
-#: src/usage_text.h:180
+#: src/usage_text.h:179
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr " --enable-http-pipelining[=true|false] 启用HTTP/1.1流水线。"
 
-#: src/usage_text.h:182
+#: src/usage_text.h:181
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -465,7 +462,7 @@ msgstr ""
 "                              使用此选项可以重新下载文件的受损\n"
 "                              坏部分。也可以参阅--bt-hash-check-seed选项。"
 
-#: src/usage_text.h:188
+#: src/usage_text.h:187
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -484,7 +481,7 @@ msgstr ""
 "                              请设置此选项为false。\n"
 "                              此设置仅对BT下载有效。"
 
-#: src/usage_text.h:196
+#: src/usage_text.h:195
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk of data by "
 "calculating\n"
@@ -495,7 +492,7 @@ msgstr ""
 "                              文件时以计算检验和的方式\n"
 "                              校验数据块。"
 
-#: src/usage_text.h:200
+#: src/usage_text.h:199
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -510,15 +507,15 @@ msgstr ""
 "                              览器由其它启动。目前，此选项只对\n"
 "                              http(s)/ftp下载有效。"
 
-#: src/usage_text.h:207
+#: src/usage_text.h:206
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr " -U, --user-agent=USER_AGENT 为http(s)下载设置用户代理。"
 
-#: src/usage_text.h:209
+#: src/usage_text.h:208
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc 禁止netrc支持。"
 
-#: src/usage_text.h:211
+#: src/usage_text.h:210
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -541,7 +538,7 @@ msgstr ""
 "                              阅man页面的INPUT FILE小节可以了\n"
 "                              解详细信息。"
 
-#: src/usage_text.h:220
+#: src/usage_text.h:219
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
@@ -553,7 +550,7 @@ msgstr ""
 "                              和metalink设置并行下载最大数目。\n"
 "                              也可以参阅-s和-C选项。"
 
-#: src/usage_text.h:224
+#: src/usage_text.h:223
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
@@ -562,7 +559,7 @@ msgstr ""
 " --load-cookies=FILE 从FILE中载入Cookies，这些FILE通常使用Firefox3格式\n"
 "                              和Mozilla/Firefox(1.x/2.x)/Netscape格式。"
 
-#: src/usage_text.h:227
+#: src/usage_text.h:226
 msgid ""
 " --save-cookies=FILE          Save Cookies to FILE in Mozilla/Firefox(1.x/2."
 "x)/\n"
@@ -573,7 +570,7 @@ msgid ""
 "                              their expiry values are treated as 0."
 msgstr ""
 
-#: src/usage_text.h:232
+#: src/usage_text.h:231
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -585,7 +582,7 @@ msgstr ""
 "                              更多详细信息将在torrent文件\n"
 "                              的实例中列出。"
 
-#: src/usage_text.h:236
+#: src/usage_text.h:235
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -607,11 +604,11 @@ msgstr ""
 "                              选项时，索引可以由查询改变\n"
 "                              (参阅--metalink-*选项)。"
 
-#: src/usage_text.h:245
+#: src/usage_text.h:244
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE 指定.torrent文件的路径。"
 
-#: src/usage_text.h:247
+#: src/usage_text.h:246
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -636,7 +633,7 @@ msgstr ""
 "                              如果指定false，上面提到的动作\n"
 "                              将不会被采取。"
 
-#: src/usage_text.h:257
+#: src/usage_text.h:256
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
@@ -644,7 +641,7 @@ msgstr ""
 " --direct-file-mapping=true|false 直接读写.torrent文件中\n"
 "                              提及的每个文件。"
 
-#: src/usage_text.h:260
+#: src/usage_text.h:259
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -660,7 +657,7 @@ msgstr ""
 "                              指定一个范围：\"6881-6999\"。','\n"
 "                              和'-'可以一起使用。"
 
-#: src/usage_text.h:266
+#: src/usage_text.h:265
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
@@ -670,7 +667,7 @@ msgid ""
 "                              --max-upload-limit option."
 msgstr ""
 
-#: src/usage_text.h:272
+#: src/usage_text.h:271
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -684,7 +681,7 @@ msgstr ""
 "                              要限制总体上传速度，使用\n"
 "                              --max-overall-upload-limit option.选项。"
 
-#: src/usage_text.h:278
+#: src/usage_text.h:277
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -692,7 +689,7 @@ msgstr ""
 " --seed-time=MINUTES 指定做种时间（以分钟计）。也可以\n"
 "                              参阅--seed-ratio选项。"
 
-#: src/usage_text.h:281
+#: src/usage_text.h:280
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -715,7 +712,7 @@ msgstr ""
 "                              选项，在链接中至少有一个被\n"
 "                              满足时，做种结束。"
 
-#: src/usage_text.h:290
+#: src/usage_text.h:289
 msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -727,15 +724,15 @@ msgid ""
 "bytes."
 msgstr ""
 
-#: src/usage_text.h:296
+#: src/usage_text.h:295
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr " --enable-peer-exchange[=true|false] 启用Peer交换扩展。"
 
-#: src/usage_text.h:298
+#: src/usage_text.h:297
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr " --enable-dht[=true|false] 启用DHT功能。"
 
-#: src/usage_text.h:300
+#: src/usage_text.h:299
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -751,7 +748,7 @@ msgstr ""
 "                              用'-'指定一个范围：\"6881-6999\"。\n"
 "                              ','和'-'可以一起使用。"
 
-#: src/usage_text.h:306
+#: src/usage_text.h:305
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
@@ -759,12 +756,12 @@ msgstr ""
 " --dht-entry-point=HOST:PORT 设置主机和端口作为进入DHT网络的进入点。\n"
 "                              网络的进入点。"
 
-#: src/usage_text.h:309
+#: src/usage_text.h:308
 msgid ""
 " --dht-file-path=PATH         Change the DHT routing table file to PATH."
 msgstr " --dht-file-path=PATH 修改DHT路由表文件，保存到PATH。"
 
-#: src/usage_text.h:311
+#: src/usage_text.h:310
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -778,7 +775,7 @@ msgstr ""
 "                              aria2会选择满足给定级别中最低\n"
 "                              的一个。"
 
-#: src/usage_text.h:316
+#: src/usage_text.h:315
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
@@ -790,7 +787,7 @@ msgstr ""
 "                              连接。因此aria2问题使用\n"
 "                              模糊握手。"
 
-#: src/usage_text.h:321
+#: src/usage_text.h:320
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
 "                              torrent is lower than SPEED, aria2 "
@@ -810,7 +807,7 @@ msgstr ""
 "                              \n"
 "                              您可以附加K或M（1K=1024，1M=1024K）。"
 
-#: src/usage_text.h:329
+#: src/usage_text.h:328
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -819,7 +816,7 @@ msgstr ""
 " --bt-max-open-files=NUM 指定每个BT下载可以打开的\n"
 "                              文件的最多数目。"
 
-#: src/usage_text.h:332
+#: src/usage_text.h:331
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
@@ -827,7 +824,7 @@ msgstr ""
 " --bt-seed-unverified[=true|false] 不验证片段的哈希值，直接以上\n"
 "                              一个下载文件做种子。"
 
-#: src/usage_text.h:335
+#: src/usage_text.h:334
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
@@ -838,7 +835,7 @@ msgstr ""
 "                              0意味着不限制。\n"
 "                              也可以参阅--bt-request-peer-speed-limit选项。"
 
-#: src/usage_text.h:339
+#: src/usage_text.h:338
 #, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
@@ -846,7 +843,7 @@ msgid ""
 "                              input from stdin when '-' is specified."
 msgstr " -M, --metalink-file=METALINK_FILE 到.metalink文件的文件路径。"
 
-#: src/usage_text.h:342
+#: src/usage_text.h:341
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -868,20 +865,20 @@ msgstr ""
 "                              替NUM_SERVERS。\n"
 "                              也可以参阅-s和-j选项。"
 
-#: src/usage_text.h:351
+#: src/usage_text.h:350
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION 要下载的文件的版本。"
 
-#: src/usage_text.h:353
+#: src/usage_text.h:352
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE 要下载的文件的语言。"
 
-#: src/usage_text.h:355
+#: src/usage_text.h:354
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS 要下载的文件的操作系统。"
 
-#: src/usage_text.h:357
+#: src/usage_text.h:356
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
@@ -891,7 +888,7 @@ msgstr ""
 "                              可以使用以英文逗号分隔\n"
 "                              位置的列表。"
 
-#: src/usage_text.h:361
+#: src/usage_text.h:360
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
@@ -900,7 +897,7 @@ msgstr ""
 " --metalink-preferred-protocol=PROTO 指定首选的协议。如果没\n"
 "                              有首选协议，请指定'none'。"
 
-#: src/usage_text.h:364
+#: src/usage_text.h:363
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
@@ -926,7 +923,7 @@ msgstr ""
 "                              如果指定false，将不会采取上述提及\n"
 "                              的动作。"
 
-#: src/usage_text.h:374
+#: src/usage_text.h:373
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -942,11 +939,11 @@ msgstr ""
 "                              使用--metalink-preferred-protocol选项可\n"
 "                              以指定协议的首选项。"
 
-#: src/usage_text.h:380
+#: src/usage_text.h:379
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version 打印版本号并退出。"
 
-#: src/usage_text.h:382
+#: src/usage_text.h:381
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -959,16 +956,16 @@ msgid ""
 "                              for the options whose name includes that word."
 msgstr ""
 
-#: src/usage_text.h:389
+#: src/usage_text.h:388
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf 禁止加载aria2.conf文件。"
 
-#: src/usage_text.h:391
+#: src/usage_text.h:390
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=PATH 将配置文件的路径修改为PATH的值。"
 
-#: src/usage_text.h:393
+#: src/usage_text.h:392
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -977,7 +974,7 @@ msgstr ""
 " --stop=SEC 在经过SEC秒之后停止程序。\n"
 "                              如果给定的值是0，此功能将被禁止。"
 
-#: src/usage_text.h:396
+#: src/usage_text.h:395
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -995,19 +992,19 @@ msgstr ""
 "9J1\"\n"
 "                              http://host/file"
 
-#: src/usage_text.h:402
+#: src/usage_text.h:401
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr " -q, --quiet[=true|false] 使aria2安静（即不在控制台输出）。"
 
-#: src/usage_text.h:404
+#: src/usage_text.h:403
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false] 启用异步DNS。"
 
-#: src/usage_text.h:406
+#: src/usage_text.h:405
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr " --ftp-reuse-connection[=true|false] 重新使用FTP中的链接。"
 
-#: src/usage_text.h:408
+#: src/usage_text.h:407
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1016,11 +1013,11 @@ msgstr ""
 " --summary-interval=SEC 设置下载过程摘要的输出间隔。\n"
 "                              设置0会禁止输出。"
 
-#: src/usage_text.h:411
+#: src/usage_text.h:410
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL 设置输出的日志级别。"
 
-#: src/usage_text.h:413
+#: src/usage_text.h:412
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1032,7 +1029,7 @@ msgstr ""
 "                              文件的时间戳以及其是否有效，将\n"
 "                              之应用到本地文件。"
 
-#: src/usage_text.h:417
+#: src/usage_text.h:416
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1047,7 +1044,7 @@ msgstr ""
 "                              接建立之后，此选项将失效\n"
 "                              并以--timeout选项替代。"
 
-#: src/usage_text.h:422
+#: src/usage_text.h:421
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1066,7 +1063,7 @@ msgstr ""
 "                              此选项仅在使用HTTP/FTP服务器\n"
 "                              时有效。"
 
-#: src/usage_text.h:429
+#: src/usage_text.h:428
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1114,7 +1111,7 @@ msgstr ""
 "                              就像'feedback'，将使用服务器的\n"
 "                              性能配置文件。"
 
-#: src/usage_text.h:448
+#: src/usage_text.h:447
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1126,7 +1123,7 @@ msgstr ""
 "                              您也可以使用--server-stat-if\n"
 "                              选项加载保存的数据。"
 
-#: src/usage_text.h:452
+#: src/usage_text.h:451
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1140,7 +1137,7 @@ msgstr ""
 "                              某些URI选择器之中，比如'feedback'。\n"
 "                              也可以参阅--uri-selector选项"
 
-#: src/usage_text.h:457
+#: src/usage_text.h:456
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1151,7 +1148,7 @@ msgstr ""
 "                              来，废止性能配置文件\n"
 "                              的超时（以秒计）。"
 
-#: src/usage_text.h:461
+#: src/usage_text.h:460
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1162,7 +1159,7 @@ msgid ""
 "                              regardless of the value."
 msgstr ""
 
-#: src/usage_text.h:466
+#: src/usage_text.h:465
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1171,14 +1168,14 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:471
+#: src/usage_text.h:470
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
 
-#: src/usage_text.h:475
+#: src/usage_text.h:474
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1190,39 +1187,39 @@ msgid ""
 "                              verification."
 msgstr ""
 
-#: src/usage_text.h:481
+#: src/usage_text.h:480
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:484
+#: src/usage_text.h:483
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
 
-#: src/usage_text.h:487
+#: src/usage_text.h:486
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
 "                              server."
 msgstr ""
 
-#: src/usage_text.h:490
+#: src/usage_text.h:489
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:492
+#: src/usage_text.h:491
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
 
-#: src/usage_text.h:495
+#: src/usage_text.h:494
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1232,7 +1229,7 @@ msgid ""
 "                              option. See also --xml-rpc-listen-port option."
 msgstr ""
 
-#: src/usage_text.h:500
+#: src/usage_text.h:499
 msgid ""
 " --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"
 "                              detects the request is more than SIZE bytes, "
@@ -1240,15 +1237,15 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:504
+#: src/usage_text.h:503
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
 
-#: src/usage_text.h:506
+#: src/usage_text.h:505
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr ""
 
-#: src/usage_text.h:508
+#: src/usage_text.h:507
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1258,7 +1255,7 @@ msgid ""
 "                              addresses."
 msgstr ""
 
-#: src/usage_text.h:513
+#: src/usage_text.h:512
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1273,7 +1270,7 @@ msgid ""
 "                              option."
 msgstr ""
 
-#: src/usage_text.h:521
+#: src/usage_text.h:520
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1286,7 +1283,7 @@ msgid ""
 "                              times."
 msgstr ""
 
-#: src/usage_text.h:527
+#: src/usage_text.h:526
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1297,7 +1294,7 @@ msgid ""
 "                              specified."
 msgstr ""
 
-#: src/usage_text.h:533
+#: src/usage_text.h:532
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1313,7 +1310,7 @@ msgid ""
 "                              progress."
 msgstr ""
 
-#: src/usage_text.h:541
+#: src/usage_text.h:540
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1323,7 +1320,7 @@ msgid ""
 "                              See also --on-download-stop option."
 msgstr ""
 
-#: src/usage_text.h:547
+#: src/usage_text.h:546
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed when download\n"
 "                              starts up. COMMAND must take just one argument "
@@ -1331,7 +1328,7 @@ msgid ""
 "                              GID is passed to COMMAND as a first argument."
 msgstr ""
 
-#: src/usage_text.h:551
+#: src/usage_text.h:550
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1340,7 +1337,7 @@ msgid ""
 "                              See also --on-download-stop option."
 msgstr ""
 
-#: src/usage_text.h:557
+#: src/usage_text.h:556
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1354,7 +1351,7 @@ msgid ""
 "                              requirement of COMMAND."
 msgstr ""
 
-#: src/usage_text.h:566
+#: src/usage_text.h:565
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1362,7 +1359,7 @@ msgid ""
 "                              feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:570
+#: src/usage_text.h:569
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
@@ -1370,7 +1367,7 @@ msgid ""
 "                              on local loopback interface."
 msgstr ""
 
-#: src/usage_text.h:574
+#: src/usage_text.h:573
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1392,18 +1389,18 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:586
+#: src/usage_text.h:585
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:589
+#: src/usage_text.h:588
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
-#: src/usage_text.h:591
+#: src/usage_text.h:590
 #, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
@@ -1427,7 +1424,7 @@ msgstr ""
 "                              请设置此选项为false。\n"
 "                              此设置仅对BT下载有效。"
 
-#: src/usage_text.h:599
+#: src/usage_text.h:598
 msgid ""
 " --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
 "cache\n"
@@ -1439,7 +1436,7 @@ msgid ""
 "                              using --header option."
 msgstr ""
 
-#: src/usage_text.h:605
+#: src/usage_text.h:604
 #, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
@@ -1454,7 +1451,7 @@ msgstr ""
 "                              某些URI选择器之中，比如'feedback'。\n"
 "                              也可以参阅--uri-selector选项"
 
-#: src/usage_text.h:610
+#: src/usage_text.h:609
 msgid ""
 " --human-readable[=true|false] Print sizes and speed in human readable "
 "format\n"
