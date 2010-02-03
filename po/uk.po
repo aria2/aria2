@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-02-03 21:54+0900\n"
-"PO-Revision-Date: 2009-11-23 13:42+0000\n"
+"PO-Revision-Date: 2010-01-27 08:21+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-12-06 08:32+0000\n"
+"X-Launchpad-Export-Date: 2010-02-03 13:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:215
@@ -112,14 +112,12 @@ msgid ""
 msgstr " -d, --dir=DIR Каталог для збереження завантажених файлів."
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG Ім'я файла для log файлу. Якщо вказано  '-',\n"
-"                              log буде вписано до stdout (стандартного "
-"потоку виводу)."
+" -o, --out=FILE Ім'я файлу, який завантажено. Коли використовується\n"
+"                               параметр  -Z, то ця опція ігнорується."
 
 #: src/usage_text.h:42
 msgid ""
@@ -193,31 +191,22 @@ msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr " -m, --max-tries=N Задає кількість спроб. 0 має на увазі необмежена."
 
 #: src/usage_text.h:66
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy=PROXY Використовувати цей проксі-сервер для HTTP.\n"
-"                              Дивіться також параметр --all-proxy.\n"
-"                              Це застосовується для усіх URL."
 
 #: src/usage_text.h:71
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY Використовувати цей проксі-сервер для HTTPS.\n"
-"                              Дивіться також параметр --all-proxy.\n"
-"                              Це застосовується для усіх URL."
 
 #: src/usage_text.h:76
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
 "previously\n"
@@ -225,12 +214,8 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-proxy=PROXY Використовувати цей проксі-сервер для FTP.\n"
-"                              Дивіться також параметр --all-proxy.\n"
-"                              Це застосовується для усіх URL."
 
 #: src/usage_text.h:81
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
 "erase\n"
@@ -241,14 +226,6 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" --all-proxy=PROXY Використовувати цей проксі-сервер для усіх протоколів.\n"
-"                              Ви можете відкинути це налаштування та "
-"вказати\n"
-"                              проксі-сервер для окремого протоколу "
-"використовуючи\n"
-"                              --http-proxy, --https-proxy та --ftp-proxy\n"
-"                              параметри.\n"
-"                              Це впливає на всі URL."
 
 #: src/usage_text.h:89
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -994,12 +971,11 @@ msgstr ""
 "speed-limit."
 
 #: src/usage_text.h:338
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
 "Reads\n"
 "                              input from stdin when '-' is specified."
-msgstr " -M, --metalink-file=METALINK_FILE Шлях до .metalink-файлу."
+msgstr ""
 
 #: src/usage_text.h:341
 msgid ""
@@ -1723,7 +1699,6 @@ msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
 #: src/usage_text.h:590
-#, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1739,18 +1714,6 @@ msgid ""
 "saved.\n"
 "                              See also --bt-metadata-only option."
 msgstr ""
-" --bt-hash-check-seed[=true|false] Якщо надано true (так), то після "
-"перевірки хешу з використанням\n"
-"                              параметру --check-integrity  коли файл є "
-"повним,\n"
-"                              триває сідування файлу. Якщо ж Ви бажаєте "
-"перевірити файл\n"
-"                              та завантажити його тільки якщо він ушкоджений "
-"або\n"
-"                              неповний, то встановіть у цьому параметрі "
-"false (ні).\n"
-"                              Цей параметр впливає лише на BitTorrent\n"
-"                              завантаження."
 
 #: src/usage_text.h:598
 msgid ""
@@ -1765,7 +1728,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:604
-#, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
 "described\n"
@@ -1774,12 +1736,6 @@ msgid ""
 "                              has effect only when BitTorrent Magnet URI is\n"
 "                              used. See also --bt-save-metadata option."
 msgstr ""
-" --server-stat-if=FILE Вказати ім'я файлу для завантаження профілю "
-"налаштувань\n"
-"                              серверу. Завантажені дані будуть використані "
-"у\n"
-"                              деяких URI селекторах, таких як 'feedback'.\n"
-"                              Дивіться також параметр --uri-selector"
 
 #: src/usage_text.h:609
 msgid ""
@@ -1798,10 +1754,9 @@ msgid "Report bugs to %s"
 msgstr "Повідомляйте про помилки за адресою %s"
 
 #: src/version_usage.cc:85
-#, fuzzy
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
-msgstr "Вживання: aria2c [ПАРАМЕТРИ] [URL | ФАЙЛ_ТРЕНТУ| METALINK_ФАЙЛ]..."
+msgstr ""
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -1833,29 +1788,20 @@ msgid "No option matching with '%s'."
 msgstr "Жодна опція не відповідає '%s'."
 
 #: src/version_usage.cc:128
-#, fuzzy
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
 " URIs must point to the same file or downloading will fail."
 msgstr ""
-" Ви маєте можливість вказати декілька URL. Якщо тільки Ви не обрали параметр "
-"-Z, усі URL мають\n"
-" посилатись на той самий файл, бо інакше завантаження буде припинено."
 
 #: src/version_usage.cc:130
-#, fuzzy
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
 " treated as a separate download."
 msgstr ""
-" Ви також можете вказати будь-яку кількість  torrent- та metalink- файлів,\n"
-" збережених на локальному диску. Проте вони завжди будуть оброблятись\n"
-" як окремі завантаження."
 
 #: src/version_usage.cc:135
-#, fuzzy
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
 " download a file from both torrent swarm and HTTP/FTP server at the same "
@@ -1868,27 +1814,12 @@ msgid ""
 "and\n"
 " 'path' in torrent are added to form a URI for each file."
 msgstr ""
-" Ви можете вказати разом файл торенту із параметром -T та URL. У такому "
-"випадку,\n"
-" завантаження файлу відбувається одночасно із купи толренту та http/ftp "
-"серверу,\n"
-" тим часом дані з http/ftp відвантажуються до купи торенту. Для одного "
-"файлу\n"
-" торенту, URL може бути закінчено URL вказування на ресурс або, якщо URL "
-"закінчується\n"
-" на '/', 'ім'я', то додано в торент файл. Для багатофайлового торенту, "
-"'ім'я' \n"
-" 'шлях' в торенті додано з URL для кожного файлу."
 
 #: src/version_usage.cc:142
-#, fuzzy
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
-" Переконайтесь, що URL вказано із одинарними (') або подвійними (\") лапками "
-"якщо воно\n"
-" вміщує \"&\" або якийсь інший символ, що має особливе значення в shell."
 
 #: src/version_usage.cc:146
 msgid "Refer to man page for more information."
@@ -2513,9 +2444,9 @@ msgid "Saved metadata as %s."
 msgstr ""
 
 #: src/message.h:181
-#, fuzzy, c-format
+#, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
-msgstr "Запис сигнатури як %s не відбувся. Можливо, файл вже існує."
+msgstr ""
 
 #: src/message.h:184
 msgid "Timeout."
@@ -2875,6 +2806,3 @@ msgstr ""
 #: src/BtSetup.cc:161
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"
-
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=FILE Ім'я файла для завантаженого файлу."
