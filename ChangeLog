@@ -1,5 +1,14 @@
 2010-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added Portuguese translation. Updated Ukrainian and Spanish
+	translation. Thanks to all translators.
+	* po/LINGUAS
+	* po/es.po
+	* po/pt.po
+	* po/uk.po
+
+2010-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Remove fragment from redirected URI.
 	* src/Request.cc
 	* test/RequestTest.cc
