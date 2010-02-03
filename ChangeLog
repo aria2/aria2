@@ -1,5 +1,11 @@
 2010-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Remove fragment from redirected URI.
+	* src/Request.cc
+	* test/RequestTest.cc
+
+2010-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated po templates.
 	* po/aria2.pot
 

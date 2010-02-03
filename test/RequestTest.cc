@@ -363,8 +363,8 @@ void RequestTest::testRedirectUrl() {
                        req.getCurrentUrl());
   CPPUNIT_ASSERT_EQUAL((unsigned int)3, req.getRedirectCount());
 
-  // White space in path
-  CPPUNIT_ASSERT(req.redirectUrl("http://example.org/white space"));
+  // White space in path and fragment is appended.
+  CPPUNIT_ASSERT(req.redirectUrl("http://example.org/white space#aria2"));
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/white%20space"),
                        req.getCurrentUrl());
 }

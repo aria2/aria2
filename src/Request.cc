@@ -141,7 +141,7 @@ bool Request::redirectUrl(const std::string& url) {
   } else {
     redirectedUrl = url;
   }
-  return parseUrl(urlencode(redirectedUrl));
+  return parseUrl(urlencode(removeFragment(redirectedUrl)));
 }
 
 bool Request::parseUrl(const std::string& url) {
