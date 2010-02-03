@@ -1,3 +1,48 @@
+aria2 1.8.2
+===========
+
+Release Note
+------------
+
+This release fixes the bug that causes segmentation fault with
+--max-file-not-found option involved. Now aria2 can handle redirected
+URI which is not properly percent encoded. In MinGW32 build, console
+readout is now always cut by 80 characters. 'bittorrent' key is added
+to the response of tellStatus XML-RPC method. The associated value of
+the key is a struct and contains data retrieved from .torrent file,
+such as name, announce-list, comment, etc.
+
+Changes
+-------
+
+ * Added Portuguese translation. Updated Ukrainian and Spanish
+   translation. Thanks to all translators.
+
+ * Call ares_library_init and ares_library_cleanup if they are
+   available. Some code cleanups.
+
+ * Call ares_process_fd() each time after epoll to handle timeout.
+
+ * Added bittorrent key to the response of tellStatus XML-RPC method.
+   The associated value of the key is a struct and contains data
+   retrieved from .torrent file, such as name, announce-list, comment,
+   etc.
+
+ * Rewritten Cookie storage.
+
+ * Handle redirected URI which is not properly percent encoded.
+
+ * Fixed the bug that causes segmentaiton fault when aria2 sees '404
+   not found' in the N times(N is where --max-file-not-found=N, N>0)
+   in a row without single '200 OK' response.
+
+ * Fixed compile error with i586-mingw32msvc-g++.  Always Cut console
+   readout by 80 characters in mingw32 build.
+
+ * Fixed compile error with intel compiler
+
+
+
 aria2 1.8.1
 ===========
 
