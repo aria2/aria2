@@ -97,13 +97,13 @@ FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
 #ifdef HAVE_POSIX_FALLOCATE
   if(_fallocate) {
     SharedHandle<FallocFileAllocationIterator> h
-      (new FallocFileAllocationIterator(this, size(), totalLength));
+      (new FallocFileAllocationIterator(diskWriter.get(), size(), totalLength));
     return h;
   } else
 #endif // HAVE_POSIX_FALLOCATE
     {
       SingleFileAllocationIteratorHandle h
-        (new SingleFileAllocationIterator(this, size(), totalLength));
+        (new SingleFileAllocationIterator(diskWriter.get(),size(),totalLength));
       h->init();
       return h;
     }

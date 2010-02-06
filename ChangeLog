@@ -1,3 +1,9 @@
+2010-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that --file-allocation=falloc doesn't work with
+	single file download.
+	* src/AbstractSingleDiskAdaptor.cc
+
 2010-02-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.8.2
