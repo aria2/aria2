@@ -105,15 +105,15 @@ bool BtDependency::resolve()
                     _dependant->getGID());
       return true;
     }
-    _logger->debug("Dependency resolved for GID#%d", _dependant->getGID());
+    _logger->info("Dependency resolved for GID#%d", _dependant->getGID());
     _dependant->setDownloadContext(context);
     return true;
   } else if(_dependee->getNumCommand() == 0) {
     // _dependee's download failed.
     // cut reference here
     _dependee.reset();
-    _logger->debug("BtDependency for GID#%d failed. Go without Bt.",
-                   _dependant->getGID());    
+    _logger->info("BtDependency for GID#%d failed. Go without Bt.",
+                  _dependant->getGID());    
     return true;
   } else {
     return false;

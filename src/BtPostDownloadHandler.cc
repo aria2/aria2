@@ -66,8 +66,8 @@ void BtPostDownloadHandler::getNextRequestGroups
 (std::deque<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
-  _logger->debug("Generating RequestGroups for Torrent file %s",
-                 requestGroup->getFirstFilePath().c_str());
+  _logger->info("Generating RequestGroups for Torrent file %s",
+                requestGroup->getFirstFilePath().c_str());
   std::string content;
   try {
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
