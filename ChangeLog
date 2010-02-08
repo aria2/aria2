@@ -1,5 +1,11 @@
 2010-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed log level from debug to info
+	* src/BtDependency.cc
+	* src/BtPostDownloadHandler.cc
+
+2010-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused PeerSessionResource::_latency.
 	* src/BtConstants.h
 	* src/BtPieceMessage.cc
