@@ -74,7 +74,6 @@ private:
   Extensions _extensions;
   bool _dhtEnabled;
   PeerStat _peerStat;
-  unsigned int _latency;
 
   Time _lastDownloadUpdate;
 
@@ -206,13 +205,6 @@ public:
   {
     return _peerStat;
   }
-
-  unsigned int latency() const
-  {
-    return _latency;
-  }
-
-  void updateLatency(unsigned int latency);
 
   uint64_t uploadLength() const;
 

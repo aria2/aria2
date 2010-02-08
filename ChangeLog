@@ -1,3 +1,14 @@
+2010-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed unused PeerSessionResource::_latency.
+	* src/BtConstants.h
+	* src/BtPieceMessage.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerSessionResource.cc
+	* src/PeerSessionResource.h
+	* test/PeerSessionResourceTest.cc
+
 2010-02-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that --file-allocation=falloc doesn't work with

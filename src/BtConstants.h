@@ -49,8 +49,6 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define INFO_HASH_LENGTH 20
 
-#define DEFAULT_LATENCY 1500
-
 #define MAX_BLOCK_LENGTH (16*1024)
 
 #define DEFAULT_MAX_OUTSTANDING_REQUEST 6

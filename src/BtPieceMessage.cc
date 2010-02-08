@@ -86,7 +86,6 @@ void BtPieceMessage::doReceivedAction() {
   peer->updateDownloadLength(blockLength);
   if(!RequestSlot::isNull(slot)) {
     peer->snubbing(false);
-    peer->updateLatency(slot.getLatencyInMillis());
     PieceHandle piece = pieceStorage->getPiece(index);
     off_t offset = (off_t)index*_downloadContext->getPieceLength()+begin;
     logger->debug(MSG_PIECE_RECEIVED,

@@ -56,7 +56,6 @@ PeerSessionResource::PeerSessionResource(size_t pieceLength, uint64_t totalLengt
   _fastExtensionEnabled(false),
   _extendedMessagingEnabled(false),
   _dhtEnabled(false),
-  _latency(DEFAULT_LATENCY),
   _lastDownloadUpdate(0),
   _lastAmUnchoking(0)
 {}
@@ -233,11 +232,6 @@ void PeerSessionResource::addExtension(const std::string& name, uint8_t id)
 void PeerSessionResource::dhtEnabled(bool b)
 {
   _dhtEnabled = b;
-}
-
-void PeerSessionResource::updateLatency(unsigned int latency)
-{
-  _latency = static_cast<unsigned int>(_latency*0.2+latency*0.8);
 }
 
 uint64_t PeerSessionResource::uploadLength() const

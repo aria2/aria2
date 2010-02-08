@@ -335,18 +335,6 @@ void Peer::setAllBitfield() {
   _seeder = true;
 }
 
-void Peer::updateLatency(unsigned int latency)
-{
-  assert(_res);
-  _res->updateLatency(latency);
-}
-
-unsigned int Peer::getLatency() const
-{
-  assert(_res);
-  return _res->latency();
-}
-
 void Peer::startBadCondition()
 {
   _badConditionStartTime.reset();

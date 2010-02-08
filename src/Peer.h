@@ -263,10 +263,6 @@ public:
 
   bool hasPiece(size_t index) const;
 
-  void updateLatency(unsigned int latency);
-
-  unsigned int getLatency() const;
-
   uint8_t getExtensionMessageID(const std::string& name) const;
 
   std::string getExtensionName(uint8_t id) const;

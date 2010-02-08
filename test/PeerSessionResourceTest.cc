@@ -17,7 +17,6 @@ class PeerSessionResourceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHasPiece);
   CPPUNIT_TEST(testUpdateUploadLength);
   CPPUNIT_TEST(testUpdateDownloadLength);
-  CPPUNIT_TEST(testUpdateLatency);
   CPPUNIT_TEST(testExtendedMessageEnabled);
   CPPUNIT_TEST(testGetExtensionMessageID);
   CPPUNIT_TEST(testFastExtensionEnabled);
@@ -42,7 +41,6 @@ public:
   void testHasPiece();
   void testUpdateUploadLength();
   void testUpdateDownloadLength();
-  void testUpdateLatency();
   void testExtendedMessageEnabled();
   void testGetExtensionMessageID();
   void testFastExtensionEnabled();
@@ -122,15 +120,6 @@ void PeerSessionResourceTest::testUpdateDownloadLength()
   res.updateDownloadLength(100);
   res.updateDownloadLength(200);
   CPPUNIT_ASSERT_EQUAL((uint64_t)300ULL, res.downloadLength());
-}
-
-void PeerSessionResourceTest::testUpdateLatency()
-{
-  PeerSessionResource res(1024, 1024*1024);
-
-  CPPUNIT_ASSERT_EQUAL((unsigned int)1500, res.latency());
-  res.updateLatency(1000);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)1100, res.latency());
 }
 
 void PeerSessionResourceTest::testExtendedMessageEnabled()
