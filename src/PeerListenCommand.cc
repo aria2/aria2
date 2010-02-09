@@ -125,10 +125,13 @@ bool PeerListenCommand::execute() {
       Command* command =
         new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
       e->commands.push_back(command);
-      logger->debug("Accepted the connection from %s:%u.",
-                    peer->ipaddr.c_str(),
-                    peer->port);
-      logger->debug("Added CUID#%d to receive BitTorrent/MSE handshake.", cuid);
+      if(logger->debug()) {
+        logger->debug("Accepted the connection from %s:%u.",
+                      peer->ipaddr.c_str(),
+                      peer->port);
+        logger->debug("Added CUID#%d to receive BitTorrent/MSE handshake.",
+                      cuid);
+      }
     } catch(RecoverableException& ex) {
       logger->debug(MSG_ACCEPT_FAILURE, ex, cuid);
     }               

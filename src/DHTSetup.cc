@@ -118,9 +118,10 @@ void DHTSetup::setup(std::deque<Command*>& commands,
       }
       localNode->setPort(port);
     }
-    _logger->debug("Initialized local node ID=%s",
-                   util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
-
+    if(_logger->debug()) {
+      _logger->debug("Initialized local node ID=%s",
+                     util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
+    }
     SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
 
     SharedHandle<DHTMessageFactoryImpl> factory(new DHTMessageFactoryImpl());

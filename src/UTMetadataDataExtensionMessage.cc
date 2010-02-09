@@ -70,8 +70,10 @@ std::string UTMetadataDataExtensionMessage::toString() const
 void UTMetadataDataExtensionMessage::doReceivedAction()
 {
   if(_tracker->tracks(_index)) {
-    _logger->debug("ut_metadata index=%lu found in tracking list",
-                   static_cast<unsigned long>(_index));
+    if(_logger->debug()) {
+      _logger->debug("ut_metadata index=%lu found in tracking list",
+                     static_cast<unsigned long>(_index));
+    }
     _tracker->remove(_index);
     _pieceStorage->getDiskAdaptor()->writeData
       (reinterpret_cast<const unsigned char*>(_data.c_str()), _data.size(),
@@ -95,8 +97,10 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
       }
     }
   } else {
-    _logger->debug("ut_metadata index=%lu is not tracked",
-                   static_cast<unsigned long>(_index));
+    if(_logger->debug()) {
+      _logger->debug("ut_metadata index=%lu is not tracked",
+                     static_cast<unsigned long>(_index));
+    }
   }
 }
 

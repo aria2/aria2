@@ -405,7 +405,10 @@ bool EpollEventPoll::addEvents(sock_t socket,
                   &socketEntry->getEpEvent());
   }
   if(r == -1) {
-    _logger->debug("Failed to add socket event %d:%s", socket, strerror(errno));
+    if(_logger->debug()) {
+      _logger->debug("Failed to add socket event %d:%s",
+                     socket, strerror(errno));
+    }
     return false;
   } else {
     return true;
@@ -450,18 +453,24 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
       r = epoll_ctl(_epfd, EPOLL_CTL_MOD, (*i)->getSocket(),
                     &(*i)->getEpEvent());
       if(r == -1) {
-        _logger->debug("Failed to delete socket event, but may be ignored:%s",
-                       strerror(errno));
+        if(_logger->debug()) {
+          _logger->debug("Failed to delete socket event, but may be ignored:%s",
+                         strerror(errno));
+        }
       }
     }
     if(r == -1) {
-      _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      if(_logger->debug()) {
+        _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      }
       return false;
     } else {
       return true;
     }
   } else {
-    _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    if(_logger->debug()) {
+      _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    }
     return false;
   }
 }

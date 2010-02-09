@@ -163,8 +163,11 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
                     EXTENSION_NAME.c_str(), length).str());
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
-  msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
-                      util::urlencode(data, length).c_str());
+  if(LogFactory::getInstance()->debug()) {
+    LogFactory::getInstance()->debug
+      ("Creating HandshakeExtensionMessage from %s",
+       util::urlencode(data, length).c_str());
+  }
   const BDE dict = bencode::decode(data+1, length-1);
   if(!dict.isDict()) {
     throw DL_ABORT_EX("Unexpected payload format for extended message handshake");

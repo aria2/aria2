@@ -94,7 +94,11 @@ void IteratableChunkChecksumValidator::validateChunk()
         _bitfield->unsetBit(_currentIndex);
       }
     } catch(RecoverableException& ex) {
-      _logger->debug("Caught exception while validating piece index=%d. Some part of file may be missing. Continue operation.", ex, _currentIndex);
+      if(_logger->debug()) {
+        _logger->debug("Caught exception while validating piece index=%d."
+                       " Some part of file may be missing. Continue operation.",
+                       ex, _currentIndex);
+      }
       _bitfield->unsetBit(_currentIndex);
     }
 

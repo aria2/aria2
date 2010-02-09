@@ -1,3 +1,60 @@
+2010-02-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Wrapped logger->debug(...) with if(logger->debug()) { ... }
+	* src/AbstractCommand.cc
+	* src/AdaptiveURISelector.cc
+	* src/BtPieceMessage.cc
+	* src/BtPortMessage.cc
+	* src/CreateRequestCommand.cc
+	* src/DHTAbstractNodeLookupTask.cc
+	* src/DHTBucket.cc
+	* src/DHTGetPeersCommand.cc
+	* src/DHTMessageDispatcherImpl.cc
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTMessageTracker.cc
+	* src/DHTPeerAnnounceStorage.cc
+	* src/DHTRoutingTable.cc
+	* src/DHTSetup.cc
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtMessageReceiver.cc
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/EpollEventPoll.cc
+	* src/FileAllocationCommand.cc
+	* src/FileEntry.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HandshakeExtensionMessage.cc
+	* src/HttpListenCommand.cc
+	* src/HttpServer.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/IteratableChunkChecksumValidator.cc
+	* src/Logger.h
+	* src/MSEHandshake.cc
+	* src/MetalinkPostDownloadHandler.cc
+	* src/MultiDiskAdaptor.cc
+	* src/PeerAbstractCommand.cc
+	* src/PeerConnection.cc
+	* src/PeerListenCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/SegmentMan.cc
+	* src/SelectEventPoll.cc
+	* src/ServerStat.cc
+	* src/SimpleBtMessage.cc
+	* src/SocketCore.cc
+	* src/TrackerWatcherCommand.cc
+	* src/UTMetadataDataExtensionMessage.cc
+	* src/UTMetadataRequestFactory.cc
+	* src/UTMetadataRequestTracker.cc
+	* src/XmlRpcMethod.cc
+
 2010-02-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Changed log level from debug to info

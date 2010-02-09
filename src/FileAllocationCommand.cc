@@ -61,9 +61,11 @@ bool FileAllocationCommand::executeInternal()
   }
   _fileAllocationEntry->allocateChunk();
   if(_fileAllocationEntry->finished()) {
-    logger->debug(MSG_ALLOCATION_COMPLETED,
-                  _timer.difference(),
-                  util::itos(_requestGroup->getTotalLength(), true).c_str());
+    if(logger->debug()) {
+      logger->debug(MSG_ALLOCATION_COMPLETED,
+                    _timer.difference(),
+                    util::itos(_requestGroup->getTotalLength(), true).c_str());
+    }
     _e->_fileAllocationMan->dropPickedEntry();
     
     std::deque<Command*> commands;

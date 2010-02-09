@@ -111,7 +111,9 @@ bool CreateRequestCommand::prepareForRetry(time_t wait)
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
-  logger->debug("CUID#%d - Reusing CreateRequestCommand", cuid);
+  if(logger->debug()) {
+    logger->debug("CUID#%d - Reusing CreateRequestCommand", cuid);
+  }
   SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup, this, wait);
   e->commands.push_back(scom);
   return false;

@@ -97,8 +97,10 @@ AbstractCommand::~AbstractCommand() {
 }
 
 bool AbstractCommand::execute() {
-  logger->debug("CUID#%d - socket: read:%d, write:%d, hup:%d, err:%d",
-                cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent);
+  if(logger->debug()) {
+    logger->debug("CUID#%d - socket: read:%d, write:%d, hup:%d, err:%d",
+                  cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent);
+  }
   try {
     if(_requestGroup->downloadFinished() || _requestGroup->isHaltRequested()) {
       //logger->debug("CUID#%d - finished.", cuid);
@@ -188,7 +190,9 @@ bool AbstractCommand::execute() {
     }
   } catch(DlAbortEx& err) {
     if(req.isNull()) {
-      logger->debug(EX_EXCEPTION_CAUGHT, err);
+      if(logger->debug()) {
+        logger->debug(EX_EXCEPTION_CAUGHT, err);
+      }
     } else {
       logger->error(MSG_DOWNLOAD_ABORTED,
                     DL_ABORT_EX2(StringFormat
@@ -240,13 +244,17 @@ void AbstractCommand::tryReserved() {
     // and there are no URI left. Because file length is unknown, we
     // can assume that there are no in-flight request object.
     if(entry->getLength() == 0 && entry->getRemainingUris().empty()) {
-      logger->debug("CUID#%d - Not trying next request."
-                    " No reserved/pooled request is remaining and"
-                    " total length is still unknown.", cuid);
+      if(logger->debug()) {
+        logger->debug("CUID#%d - Not trying next request."
+                      " No reserved/pooled request is remaining and"
+                      " total length is still unknown.", cuid);
+      }
       return;
     }
   }
-  logger->debug("CUID#%d - Trying reserved/pooled request.", cuid);
+  if(logger->debug()) {
+    logger->debug("CUID#%d - Trying reserved/pooled request.", cuid);
+  }
   Commands commands;
   _requestGroup->createNextCommand(commands, e, 1);
   e->setNoWait(true);
@@ -259,8 +267,10 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
   }
   if(!req.isNull()) {
     _fileEntry->poolRequest(req);
-    logger->debug("CUID#%d - Pooling request URI=%s",
-                  cuid, req->getUrl().c_str());
+    if(logger->debug()) {
+      logger->debug("CUID#%d - Pooling request URI=%s",
+                    cuid, req->getUrl().c_str());
+    }
     if(!_requestGroup->getSegmentMan().isNull()) {
       _requestGroup->getSegmentMan()->recognizeSegmentFor(_fileEntry);
     }
@@ -286,8 +296,9 @@ void AbstractCommand::onAbort() {
     _fileEntry->removeIdenticalURI(req->getUrl());
     _fileEntry->removeRequest(req);
   }
-
-  logger->debug("CUID#%d - Aborting download", cuid);
+  if(logger->debug()) {
+    logger->debug("CUID#%d - Aborting download", cuid);
+  }
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
@@ -446,9 +457,13 @@ SharedHandle<Request> AbstractCommand::createProxyRequest() const
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
     if(proxyRequest->setUrl(proxy)) {
-      logger->debug("CUID#%d - Using proxy", cuid);      
+      if(logger->debug()) {
+        logger->debug("CUID#%d - Using proxy", cuid);
+      }
     } else {
-      logger->debug("CUID#%d - Failed to parse proxy string", cuid);
+      if(logger->debug()) {
+        logger->debug("CUID#%d - Failed to parse proxy string", cuid);
+      }
       proxyRequest.reset();
     }
   }

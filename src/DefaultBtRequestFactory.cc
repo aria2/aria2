@@ -54,12 +54,16 @@ DefaultBtRequestFactory::DefaultBtRequestFactory():
   cuid(0),
   _logger(LogFactory::getInstance())
 {
-  LogFactory::getInstance()->debug("DefaultBtRequestFactory::instantiated");
+  if(_logger->debug()) {
+    _logger->debug("DefaultBtRequestFactory::instantiated");
+  }
 }
 
 DefaultBtRequestFactory::~DefaultBtRequestFactory()
 {
-  LogFactory::getInstance()->debug("DefaultBtRequestFactory::deleted");
+  if(_logger->debug()) {
+    _logger->debug("DefaultBtRequestFactory::deleted");
+  }
 }
 
 void DefaultBtRequestFactory::addTargetPiece(const PieceHandle& piece)
@@ -154,11 +158,13 @@ void DefaultBtRequestFactory::createRequestMessages
     size_t blockIndex;
     while(requests.size() < max &&
           piece->getMissingUnusedBlockIndex(blockIndex)) {
-      _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",
-                     piece->getIndex(),
-                     blockIndex*piece->getBlockLength(),
-                     blockIndex);
-
+      if(_logger->debug()) {
+        _logger->debug("Creating RequestMessage index=%u, begin=%u,"
+                       " blockIndex=%u",
+                       piece->getIndex(),
+                       blockIndex*piece->getBlockLength(),
+                       blockIndex);
+      }
       requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
     }
   }
@@ -193,10 +199,13 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
       const size_t& blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
                                            blockIndex)) {
-        _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",
-                       piece->getIndex(),
-                       blockIndex*piece->getBlockLength(),
-                       blockIndex);
+        if(_logger->debug()) {
+          _logger->debug("Creating RequestMessage index=%u, begin=%u,"
+                         " blockIndex=%u",
+                         piece->getIndex(),
+                         blockIndex*piece->getBlockLength(),
+                         blockIndex);
+        }
         requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
       }
     }

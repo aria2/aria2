@@ -263,7 +263,10 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
   }
   updateFdSet();
   if(r == -1) {
-    _logger->debug("Failed to add socket event %d:%s", socket, strerror(errno));
+    if(_logger->debug()) {
+      _logger->debug("Failed to add socket event %d:%s",
+                     socket, strerror(errno));
+    }
     return false;
   } else {
     return true;
@@ -284,13 +287,17 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
     }
     updateFdSet();
     if(r == -1) {
-      _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      if(_logger->debug()) {
+        _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      }
       return false;
     } else {
       return true;
     }
   } else {
-    _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    if(_logger->debug()) {
+      _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    }
     return false;
   }
 }

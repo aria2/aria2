@@ -211,8 +211,10 @@ bool DownloadCommand::executeInternal() {
           _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
         if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
           if(segment->isHashCalculated()) {
-            logger->debug("Hash is available! index=%lu",
-                          static_cast<unsigned long>(segment->getIndex()));
+            if(logger->debug()) {
+              logger->debug("Hash is available! index=%lu",
+                            static_cast<unsigned long>(segment->getIndex()));
+            }
             validatePieceHash(segment, expectedPieceHash, segment->getHashString());
           } else {
             _messageDigestContext->digestReset();

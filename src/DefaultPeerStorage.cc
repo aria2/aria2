@@ -95,7 +95,10 @@ static size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
 
 bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
   if(isPeerAlreadyAdded(peer)) {
-    logger->debug("Adding %s:%u is rejected because it has been already added.", peer->ipaddr.c_str(), peer->port);
+    if(logger->debug()) {
+      logger->debug("Adding %s:%u is rejected because it has been already"
+                    " added.", peer->ipaddr.c_str(), peer->port);
+    }
     return false;
   }
   size_t maxPeerListSize = calculateMaxPeerListSize(_btRuntime);
@@ -111,8 +114,9 @@ void DefaultPeerStorage::addPeer(const Peers& peers) {
       itr != peers.end(); ++itr) {
     const PeerHandle& peer = *itr;
     if(addPeer(peer)) {
-      logger->debug(MSG_ADDING_PEER,
-                    peer->ipaddr.c_str(), peer->port);
+      if(logger->debug()) {
+        logger->debug(MSG_ADDING_PEER, peer->ipaddr.c_str(), peer->port);
+      }
     }
   }  
 }
@@ -205,7 +209,9 @@ TransferStat DefaultPeerStorage::calculateStat()
 {
   TransferStat stat;
   if(_lastTransferStatMapUpdated.elapsedInMillis(250)) {
-    logger->debug("Updating TransferStat of PeerStorage");
+    if(logger->debug()) {
+      logger->debug("Updating TransferStat of PeerStorage");
+    }
     _lastTransferStatMapUpdated.reset();
     _peerTransferStatMap.clear();
     std::deque<SharedHandle<Peer> > activePeers;
@@ -236,7 +242,9 @@ TransferStat DefaultPeerStorage::calculateStat()
 
 void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
 {
-  logger->debug("Updating TransferStat for peer %s", peer->getID().c_str());
+  if(logger->debug()) {
+    logger->debug("Updating TransferStat for peer %s", peer->getID().c_str());
+  }
   _cachedTransferStat -= _peerTransferStatMap[peer->getID()];
   TransferStat s = calculateStatFor(peer);
   _cachedTransferStat += s;
@@ -286,7 +294,10 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
 {
   Peers::iterator itr = std::find(peers.begin(), peers.end(), peer);
   if(itr == peers.end()) {
-    logger->debug("Cannot find peer %s:%u in PeerStorage.", peer->ipaddr.c_str(), peer->port);
+    if(logger->debug()) {
+      logger->debug("Cannot find peer %s:%u in PeerStorage.",
+                    peer->ipaddr.c_str(), peer->port);
+    }
   } else {
     peers.erase(itr);
 

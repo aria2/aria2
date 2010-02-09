@@ -116,8 +116,9 @@ SegmentHandle SegmentMan::checkoutSegment(cuid_t cuid,
   if(piece.isNull()) {
     return SharedHandle<Segment>();
   }
-  logger->debug("Attach segment#%d to CUID#%d.", piece->getIndex(), cuid);
-
+  if(logger->debug()) {
+    logger->debug("Attach segment#%d to CUID#%d.", piece->getIndex(), cuid);
+  }
   SegmentHandle segment;
   if(piece->getLength() == 0) {
     segment.reset(new GrowSegment(piece));
@@ -126,19 +127,22 @@ SegmentHandle SegmentMan::checkoutSegment(cuid_t cuid,
   }
   SegmentEntryHandle entry(new SegmentEntry(cuid, segment));
   usedSegmentEntries.push_back(entry);
-
-  logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
-                segment->getIndex(),
-                segment->getLength(),
-                segment->getSegmentLength(),
-                segment->getWrittenLength());
+  if(logger->debug()) {
+    logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
+                  segment->getIndex(),
+                  segment->getLength(),
+                  segment->getSegmentLength(),
+                  segment->getWrittenLength());
+  }
   if(piece->getLength() > 0) {
     std::map<size_t, size_t>::iterator positr =
       _segmentWrittenLengthMemo.find(segment->getIndex());
     if(positr != _segmentWrittenLengthMemo.end()) {
       const size_t writtenLength = (*positr).second;
-      logger->debug("writtenLength(in memo)=%d, writtenLength=%d",
-                    writtenLength, segment->getWrittenLength());
+      if(logger->debug()) {
+        logger->debug("writtenLength(in memo)=%d, writtenLength=%d",
+                      writtenLength, segment->getWrittenLength());
+      }
       //  If the difference between cached writtenLength and segment's
       //  writtenLength is less than one block, we assume that these
       //  missing bytes are already downloaded.
@@ -211,8 +215,10 @@ void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
 {
   _pieceStorage->cancelPiece(segment->getPiece());
   _segmentWrittenLengthMemo[segment->getIndex()] = segment->getWrittenLength();
-  logger->debug("Memorized segment index=%u, writtenLength=%u",
-                segment->getIndex(), segment->getWrittenLength());
+  if(logger->debug()) {
+    logger->debug("Memorized segment index=%u, writtenLength=%u",
+                  segment->getIndex(), segment->getWrittenLength());
+  }
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {

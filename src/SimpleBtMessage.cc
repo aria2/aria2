@@ -57,8 +57,10 @@ void SimpleBtMessage::send() {
     size_t msgLength = getMessageLength();
     logger->info(MSG_SEND_PEER_MESSAGE,
                  cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
-    logger->debug("msglength = %lu bytes",
-                  static_cast<unsigned long>(msgLength));
+    if(logger->debug()) {
+      logger->debug("msglength = %lu bytes",
+                    static_cast<unsigned long>(msgLength));
+    }
     peerConnection->sendMessage(msg, msgLength);
   } else {
     peerConnection->sendPendingData();

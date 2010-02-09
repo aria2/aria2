@@ -302,13 +302,17 @@ size_t DefaultBtInteractive::receiveMessages() {
 void DefaultBtInteractive::decideInterest() {
   if(_pieceStorage->hasMissingPiece(peer)) {
     if(!peer->amInterested()) {
-      logger->debug(MSG_PEER_INTERESTED, cuid);
+      if(logger->debug()) {
+        logger->debug(MSG_PEER_INTERESTED, cuid);
+      }
       dispatcher->
         addMessageToQueue(messageFactory->createInterestedMessage());
     }
   } else {
     if(peer->amInterested()) {
-      logger->debug(MSG_PEER_NOT_INTERESTED, cuid);
+      if(logger->debug()) {
+        logger->debug(MSG_PEER_NOT_INTERESTED, cuid);
+      }
       dispatcher->
         addMessageToQueue(messageFactory->createNotInterestedMessage());
     }
@@ -377,8 +381,10 @@ void DefaultBtInteractive::cancelAllPiece() {
       _utMetadataRequestTracker->getAllTrackedIndex();
     for(std::vector<size_t>::const_iterator i = metadataRequests.begin();
         i != metadataRequests.end(); ++i) {
-      logger->debug("Cancel metadata: piece=%lu",
-                    static_cast<unsigned long>(*i));
+      if(logger->debug()) {
+        logger->debug("Cancel metadata: piece=%lu",
+                      static_cast<unsigned long>(*i));
+      }
       _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
     }
   }

@@ -64,7 +64,9 @@ DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
 
 DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
 {
-  logger->debug("DefaultBtMessageDispatcher::deleted");
+  if(logger->debug()) {
+    logger->debug("DefaultBtMessageDispatcher::deleted");
+  }
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessageHandle& btMessage)
@@ -144,11 +146,13 @@ public:
 
   void operator()(const RequestSlot& slot) const
   {
-    _logger->debug(MSG_DELETING_REQUEST_SLOT,
-                   _cuid,
-                   slot.getIndex(),
-                   slot.getBlockIndex());
-    _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+    if(_logger->debug()) {
+      _logger->debug(MSG_DELETING_REQUEST_SLOT,
+                     _cuid,
+                     slot.getIndex(),
+                     slot.getBlockIndex());
+      _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+    }
     _piece->cancelBlock(slot.getBlockIndex());
   }
 };
@@ -191,11 +195,13 @@ public:
   void operator()(const RequestSlot& slot) const
   {
     if(!_peer->isInPeerAllowedIndexSet(slot.getIndex())) {
-      _logger->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
-                     _cuid,
-                     slot.getIndex(),
-                     slot.getBlockIndex());
-      _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+      if(_logger->debug()) {
+        _logger->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
+                       _cuid,
+                       slot.getIndex(),
+                       slot.getBlockIndex());
+        _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+      }
       SharedHandle<Piece> piece = _pieceStorage->getPiece(slot.getIndex());
       piece->cancelBlock(slot.getBlockIndex());
     }
@@ -266,17 +272,21 @@ public:
   void operator()(const RequestSlot& slot)
   {
     if(slot.isTimeout(_now, _requestTimeout)) {
-      _logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
-                     _cuid,
-                     slot.getBlockIndex());
-      _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+      if(_logger->debug()) {
+        _logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
+                       _cuid,
+                       slot.getBlockIndex());
+        _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+      }
       slot.getPiece()->cancelBlock(slot.getBlockIndex());
       _peer->snubbing(true);
     } else if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
-      _logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
-                     _cuid,
-                     slot.getBlockIndex());
-      _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+      if(_logger->debug()) {
+        _logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
+                       _cuid,
+                       slot.getBlockIndex());
+        _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+      }
       _messageDispatcher->addMessageToQueue
         (_messageFactory->createCancelMessage(slot.getIndex(),
                                               slot.getBegin(),

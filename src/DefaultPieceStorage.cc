@@ -152,8 +152,10 @@ void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece)
   std::deque<SharedHandle<Piece> >::iterator i =
     std::lower_bound(usedPieces.begin(), usedPieces.end(), piece);
   usedPieces.insert(i, piece);
-  logger->debug("usedPieces.size()=%lu",
-                static_cast<unsigned long>(usedPieces.size()));
+  if(logger->debug()) {
+    logger->debug("usedPieces.size()=%lu",
+                  static_cast<unsigned long>(usedPieces.size()));
+  }
 }
 
 PieceHandle DefaultPieceStorage::findUsedPiece(size_t index) const
@@ -471,7 +473,9 @@ bool DefaultPieceStorage::allDownloadFinished()
 void DefaultPieceStorage::initStorage()
 {
   if(downloadContext->getFileEntries().size() == 1) {
-    logger->debug("Instantiating DirectDiskAdaptor");
+    if(logger->debug()) {
+      logger->debug("Instantiating DirectDiskAdaptor");
+    }
     DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
     directDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
     directDiskAdaptor->setFileEntries(downloadContext->getFileEntries().begin(),
@@ -486,7 +490,9 @@ void DefaultPieceStorage::initStorage()
     directDiskAdaptor->setDiskWriter(writer);
     this->diskAdaptor = directDiskAdaptor;
   } else {
-    logger->debug("Instantiating MultiDiskAdaptor");
+    if(logger->debug()) {
+      logger->debug("Instantiating MultiDiskAdaptor");
+    }
     MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
     multiDiskAdaptor->setFileEntries(downloadContext->getFileEntries().begin(),
                                      downloadContext->getFileEntries().end());
@@ -574,7 +580,9 @@ void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
   Haves::iterator itr =
     std::find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
   if(itr != haves.end()) {
-    logger->debug(MSG_REMOVED_HAVE_ENTRY, haves.end()-itr);
+    if(logger->debug()) {
+      logger->debug(MSG_REMOVED_HAVE_ENTRY, haves.end()-itr);
+    }
     haves.erase(itr, haves.end());
   }
 }

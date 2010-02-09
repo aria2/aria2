@@ -73,9 +73,12 @@ PeerAbstractCommand::~PeerAbstractCommand()
 
 bool PeerAbstractCommand::execute()
 {
-  logger->debug("CUID#%d -"
-                " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
-                cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent, noCheck);
+  if(logger->debug()) {
+    logger->debug("CUID#%d -"
+                  " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
+                  cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent,
+                  noCheck);
+  }
   if(exitBeforeExecute()) {
     onAbort();
     return true;
@@ -101,9 +104,11 @@ bool PeerAbstractCommand::execute()
     onFailure();
     return true;
   } catch(RecoverableException& err) {
-    logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err, cuid);
-    logger->debug(MSG_PEER_BANNED,
-                  cuid, peer->ipaddr.c_str(), peer->port);
+    if(logger->debug()) {
+      logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err, cuid);
+      logger->debug(MSG_PEER_BANNED,
+                    cuid, peer->ipaddr.c_str(), peer->port);
+    }
     onAbort();
     return prepareForNextPeer(0);
   }

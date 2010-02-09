@@ -114,7 +114,9 @@ bool HttpSkipResponseCommand::executeInternal()
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   } catch(RecoverableException& e) {
-    logger->debug(EX_EXCEPTION_CAUGHT, e);
+    if(logger->debug()) {
+      logger->debug(EX_EXCEPTION_CAUGHT, e);
+    }
     return processResponse();
   }
 

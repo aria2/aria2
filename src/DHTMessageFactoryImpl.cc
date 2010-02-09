@@ -236,7 +236,9 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
                     util::itos(getInteger(e, 0).i()).c_str(),
                     util::urlencode(getString(e, 1).s()).c_str());
     } else {
-      _logger->debug("e doesn't have 2 elements.");
+      if(_logger->debug()) {
+        _logger->debug("e doesn't have 2 elements.");
+      }
     }
     throw DL_ABORT_EX("Received Error DHT message.");
   } else if(y.s() != DHTResponseMessage::R) {

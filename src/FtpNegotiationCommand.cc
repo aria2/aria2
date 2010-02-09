@@ -306,13 +306,19 @@ bool FtpNegotiationCommand::recvMdtm()
       time_t t = lastModifiedTime.getTime();
       struct tm* tms = gmtime(&t); // returned struct is statically allocated.
       if(tms) {
-        logger->debug("MDTM result was parsed as: %s GMT", asctime(tms));
+        if(logger->debug()) {
+          logger->debug("MDTM result was parsed as: %s GMT", asctime(tms));
+        }
       } else {
-        logger->debug("gmtime() failed for MDTM result.");
+        if(logger->debug()) {
+          logger->debug("gmtime() failed for MDTM result.");
+        }
       }
     } else {
-      logger->debug("MDTM response was returned, but it seems not to be a time"
-                    " value as in specified in RFC3659.");
+      if(logger->debug()) {
+        logger->debug("MDTM response was returned, but it seems not to be a"
+                      " time value as in specified in RFC3659.");
+      }
     }
   } else {
     logger->info("CUID#%d - MDTM command failed.", cuid);

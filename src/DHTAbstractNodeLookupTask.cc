@@ -71,16 +71,21 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
     if(memcmp(_localNode->getID(), (*i)->_node->getID(), DHT_ID_LENGTH) != 0) {
       _entries.push_front(*i);
       ++count;
-      _logger->debug("Received nodes: id=%s, ip=%s",
-                     util::toHex((*i)->_node->getID(), DHT_ID_LENGTH).c_str(),
-                     (*i)->_node->getIPAddress().c_str());
+      if(_logger->debug()) {
+        _logger->debug("Received nodes: id=%s, ip=%s",
+                       util::toHex((*i)->_node->getID(), DHT_ID_LENGTH).c_str(),
+                       (*i)->_node->getIPAddress().c_str());
+      }
     }
   }
-
-  _logger->debug("%u node lookup entries added.", count);
+  if(_logger->debug()) {
+    _logger->debug("%u node lookup entries added.", count);
+  }
   std::stable_sort(_entries.begin(), _entries.end(), DHTIDCloser(_targetID));
   _entries.erase(std::unique(_entries.begin(), _entries.end()), _entries.end());
-  _logger->debug("%u node lookup entries are unique.", _entries.size());
+  if(_logger->debug()) {
+    _logger->debug("%u node lookup entries are unique.", _entries.size());
+  }
   if(_entries.size() > DHTBucket::K) {
     _entries.erase(_entries.begin()+DHTBucket::K, _entries.end());
   }
@@ -89,8 +94,10 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
 
 void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
-  _logger->debug("node lookup message timeout for node ID=%s",
-                 util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
+  if(_logger->debug()) {
+    _logger->debug("node lookup message timeout for node ID=%s",
+                   util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
+  }
   --_inFlightMessage;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i = _entries.begin(); i != _entries.end(); ++i) {
     if((*i)->_node == node) {
@@ -107,15 +114,19 @@ void DHTAbstractNodeLookupTask::sendMessageAndCheckFinish()
     sendMessage();
   }
   if(_inFlightMessage == 0) {
-    _logger->debug("Finished node_lookup for node ID %s",
-                   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+    if(_logger->debug()) {
+      _logger->debug("Finished node_lookup for node ID %s",
+                     util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+    }
     onFinish();
     updateBucket();
     _finished = true;
   } else {
-    _logger->debug("%d in flight message for node ID %s",
-                   _inFlightMessage,
-                   util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+    if(_logger->debug()) {
+      _logger->debug("%d in flight message for node ID %s",
+                     _inFlightMessage,
+                     util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+    }
   }
 }
 
@@ -151,7 +162,9 @@ void DHTAbstractNodeLookupTask::startup()
     _inFlightMessage = 0;
     sendMessage();
     if(_inFlightMessage == 0) {
-      _logger->debug("No message was sent in this lookup stage. Finished.");
+      if(_logger->debug()) {
+        _logger->debug("No message was sent in this lookup stage. Finished.");
+      }
       _finished = true;
     }
   }

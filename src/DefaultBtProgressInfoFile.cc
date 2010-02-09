@@ -247,7 +247,9 @@ void DefaultBtProgressInfoFile::load()
   bool infoHashCheckEnabled = false;
   if(extension[3]&1 && isTorrentDownload()) {
     infoHashCheckEnabled = true;
-    _logger->debug("InfoHash checking enabled.");
+    if(_logger->debug()) {
+      _logger->debug("InfoHash checking enabled.");
+    }
   }
 
   uint32_t infoHashLength;

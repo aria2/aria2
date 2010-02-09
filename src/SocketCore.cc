@@ -180,7 +180,9 @@ static sock_t bindInternal(int family, int socktype, int protocol,
     return -1;
   }
   if(::bind(fd, addr, addrlen) == -1) {
-    LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+    if(LogFactory::getInstance()->debug()) {
+      LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+    }
     CLOSE(fd);
     return -1;
   }
@@ -328,7 +330,9 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
             const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
         if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
                   (*i).second) == -1) {
-          LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+          if(LogFactory::getInstance()->debug()) {
+            LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+          }
         } else {
           bindSuccess = true;
           break;
@@ -1142,7 +1146,9 @@ void SocketCore::useSelect()
 void SocketCore::bindAddress(const std::string& iface)
 {
   std::vector<std::pair<struct sockaddr_storage, socklen_t> > bindAddrs;
-  LogFactory::getInstance()->debug("Finding interface %s", iface.c_str());
+  if(LogFactory::getInstance()->debug()) {
+    LogFactory::getInstance()->debug("Finding interface %s", iface.c_str());
+  }
 #ifdef HAVE_GETIFADDRS
   // First find interface in interface addresses
   struct ifaddrs* ifaddr = 0;
@@ -1229,7 +1235,9 @@ void SocketCore::bindAddress(const std::string& iface)
                       host, NI_MAXHOST, 0, NI_MAXSERV,
                       NI_NUMERICHOST);
       if(s == 0) {
-        LogFactory::getInstance()->debug("Sockets will bind to %s", host);
+        if(LogFactory::getInstance()->debug()) {
+          LogFactory::getInstance()->debug("Sockets will bind to %s", host);
+        }
       }
     }
   }

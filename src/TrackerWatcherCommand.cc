@@ -91,7 +91,9 @@ bool TrackerWatcherCommand::execute() {
     }
   }
   if(_btAnnounce->noMoreAnnounce()) {
-    logger->debug("no more announce");
+    if(logger->debug()) {
+      logger->debug("no more announce");
+    }
     return true;
   }
   if(_trackerRequestGroup.isNull()) {
@@ -106,7 +108,9 @@ bool TrackerWatcherCommand::execute() {
         commands.clear();
       }
       e->addCommand(commands);
-      logger->debug("added tracker request command");
+      if(logger->debug()) {
+        logger->debug("added tracker request command");
+      }
     }
   } else if(_trackerRequestGroup->downloadFinished()){
     try {
@@ -171,7 +175,10 @@ void TrackerWatcherCommand::processTrackerResponse
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);
-    logger->debug("CUID#%d - Adding new command CUID#%d", cuid, peer->usedBy());
+    if(logger->debug()) {
+      logger->debug("CUID#%d - Adding new command CUID#%d",
+                    cuid, peer->usedBy());
+    }
   }
 }
 
@@ -211,9 +218,13 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   // If backup tracker is available, only try 2 times for each tracker
   // and if they all fails, then try next one.
   if(backupTrackerIsAvailable(_requestGroup->getDownloadContext())) {
-    logger->debug("This is multi-tracker announce.");
+    if(logger->debug()) {
+      logger->debug("This is multi-tracker announce.");
+    }
   } else {
-    logger->debug("This is single-tracker announce.");
+    if(logger->debug()) {
+      logger->debug("This is single-tracker announce.");
+    }
   }
   rg->getOption()->put(PREF_MAX_TRIES, "2");
   // TODO When dry-run mode becomes available in BitTorrent, set

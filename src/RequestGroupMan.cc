@@ -345,9 +345,11 @@ public:
           RequestGroups nextGroups;
           group->postDownloadProcessing(nextGroups);
           if(!nextGroups.empty()) {
-            _logger->debug
-              ("Adding %lu RequestGroups as a result of PostDownloadHandler.",
-               static_cast<unsigned long>(nextGroups.size()));
+            if(_logger->debug()) {
+              _logger->debug
+                ("Adding %lu RequestGroups as a result of PostDownloadHandler.",
+                 static_cast<unsigned long>(nextGroups.size()));
+            }
             _reservedGroups.insert(_reservedGroups.begin(),
                                    nextGroups.begin(), nextGroups.end());
           }
@@ -440,8 +442,10 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 
   size_t numRemoved = numPrev-_requestGroups.size();
   if(numRemoved > 0) {
-    _logger->debug("%lu RequestGroup(s) deleted.",
-                   static_cast<unsigned long>(numRemoved));
+    if(_logger->debug()) {
+      _logger->debug("%lu RequestGroup(s) deleted.",
+                     static_cast<unsigned long>(numRemoved));
+    }
   }
 }
 
@@ -496,10 +500,14 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       executeStartHook(groupToAdd, e->option);
     } catch(RecoverableException& ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
-      _logger->debug("Deleting temporal commands.");
+      if(_logger->debug()) {
+        _logger->debug("Deleting temporal commands.");
+      }
       std::for_each(commands.begin(), commands.end(), Deleter());
       commands.clear();
-      _logger->debug("Commands deleted");
+      if(_logger->debug()) {
+        _logger->debug("Commands deleted");
+      }
       groupToAdd->releaseRuntimeResource(e);
       _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
@@ -509,7 +517,9 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
   if(count > 0) {
     e->setNoWait(true);
-    _logger->debug("%d RequestGroup(s) added.", count);
+    if(_logger->debug()) {
+      _logger->debug("%d RequestGroup(s) added.", count);
+    }
   }
 }
 

@@ -54,12 +54,16 @@ DefaultBtMessageReceiver::DefaultBtMessageReceiver():
   handshakeSent(false),
   logger(LogFactory::getInstance())
 {
-  logger->debug("DefaultBtMessageReceiver::instantiated");
+  if(logger->debug()) {
+    logger->debug("DefaultBtMessageReceiver::instantiated");
+  }
 }
 
 DefaultBtMessageReceiver::~DefaultBtMessageReceiver()
 {
-  logger->debug("DefaultBtMessageReceiver::deleted");
+  if(logger->debug()) {
+    logger->debug("DefaultBtMessageReceiver::deleted");
+  }
 }
 
 SharedHandle<BtHandshakeMessage>

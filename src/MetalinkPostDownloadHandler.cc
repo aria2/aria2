@@ -64,8 +64,10 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
 (std::deque<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
-  _logger->debug("Generating RequestGroups for Metalink file %s",
-                 requestGroup->getFirstFilePath().c_str());
+  if(_logger->debug()) {
+    _logger->debug("Generating RequestGroups for Metalink file %s",
+                   requestGroup->getFirstFilePath().c_str());
+  }
   SharedHandle<DiskAdaptor> diskAdaptor =
     requestGroup->getPieceStorage()->getDiskAdaptor();
   try {

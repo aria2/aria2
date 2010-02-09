@@ -74,8 +74,11 @@ bool DHTGetPeersCommand::execute()
   if(_task.isNull() &&
      ((_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL)) ||
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
-    logger->debug("Issuing PeerLookup for infoHash=%s",
-                  bittorrent::getInfoHashString(_requestGroup->getDownloadContext()).c_str());
+    if(logger->debug()) {
+      logger->debug("Issuing PeerLookup for infoHash=%s",
+                    bittorrent::getInfoHashString
+                    (_requestGroup->getDownloadContext()).c_str());
+    }
     _task = _taskFactory->createPeerLookupTask
       (_requestGroup->getDownloadContext(), _btRuntime, _peerStorage);
     _taskQueue->addPeriodicTask2(_task);

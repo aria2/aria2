@@ -77,14 +77,18 @@ DHTMessageTracker::messageArrived(const BDE& dict,
     throw DL_ABORT_EX(StringFormat("Malformed DHT message. From:%s:%u",
                                    ipaddr.c_str(), port).str());
   }
-  _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
-                 util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
+  if(_logger->debug()) {
+    _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
+                   util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
+  }
   for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
         _entries.begin(); i != _entries.end(); ++i) {
     if((*i)->match(tid.s(), ipaddr, port)) {
       SharedHandle<DHTMessageTrackerEntry> entry = *i;
       _entries.erase(i);
-      _logger->debug("Tracker entry found.");
+      if(_logger->debug()) {
+        _logger->debug("Tracker entry found.");
+      }
       SharedHandle<DHTNode> targetNode = entry->getTargetNode();
 
       SharedHandle<DHTMessage> message =
@@ -93,13 +97,17 @@ DHTMessageTracker::messageArrived(const BDE& dict,
                                         targetNode->getPort());
 
       int64_t rtt = entry->getElapsedMillis();
-      _logger->debug("RTT is %s", util::itos(rtt).c_str());
+      if(_logger->debug()) {
+        _logger->debug("RTT is %s", util::itos(rtt).c_str());
+      }
       message->getRemoteNode()->updateRTT(rtt);
       SharedHandle<DHTMessageCallback> callback = entry->getCallback();
       return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >(message, callback);
     }
   }
-  _logger->debug("Tracker entry not found.");
+  if(_logger->debug()) {
+    _logger->debug("Tracker entry not found.");
+  }
   return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >();
 }
 
@@ -112,13 +120,17 @@ void DHTMessageTracker::handleTimeout()
         SharedHandle<DHTMessageTrackerEntry> entry = *i;
         i = _entries.erase(i);
         SharedHandle<DHTNode> node = entry->getTargetNode();
-        _logger->debug("Message timeout: To:%s:%u",
-                       node->getIPAddress().c_str(), node->getPort());
+        if(_logger->debug()) {
+          _logger->debug("Message timeout: To:%s:%u",
+                         node->getIPAddress().c_str(), node->getPort());
+        }
         node->updateRTT(entry->getElapsedMillis());
         node->timeout();
         if(node->isBad()) {
-          _logger->debug("Marked bad: %s:%u",
-                         node->getIPAddress().c_str(), node->getPort());
+          if(_logger->debug()) {
+            _logger->debug("Marked bad: %s:%u",
+                           node->getIPAddress().c_str(), node->getPort());
+          }
           _routingTable->dropNode(node);
         }
         SharedHandle<DHTMessageCallback> callback = entry->getCallback();

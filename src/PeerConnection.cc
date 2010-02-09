@@ -70,7 +70,9 @@ ssize_t PeerConnection::sendMessage(const unsigned char* data,
                                     size_t dataLength)
 {
   ssize_t writtenLength = sendData(data, dataLength, _encryptionEnabled);
-  logger->debug("sent %d byte(s).", writtenLength);
+  if(logger->debug()) {
+    logger->debug("sent %d byte(s).", writtenLength);
+  }
   return writtenLength;
 }
 
@@ -88,8 +90,11 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
         return false;
       }
       // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%lu",
-                    cuid, static_cast<unsigned long>(temp));
+      if(logger->debug()) {
+        logger->debug("CUID#%d - In PeerConnection::receiveMessage(),"
+                      " remain=%lu",
+                      cuid, static_cast<unsigned long>(temp));
+      }
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     lenbufLength += remaining;
@@ -118,11 +123,13 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
         return false;
       }
       // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveMessage(),"
-                    " payloadlen=%lu, remaining=%lu",
-                    cuid,
-                    static_cast<unsigned long>(currentPayloadLength),
-                    static_cast<unsigned long>(temp));
+      if(logger->debug()) {
+        logger->debug("CUID#%d - In PeerConnection::receiveMessage(),"
+                      " payloadlen=%lu, remaining=%lu",
+                      cuid,
+                      static_cast<unsigned long>(currentPayloadLength),
+                      static_cast<unsigned long>(temp));
+      }
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     resbufLength += remaining;
@@ -167,9 +174,11 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
           return false;
         }
         // we got EOF
-        logger->debug
-          ("CUID#%d - In PeerConnection::receiveHandshake(), remain=%lu",
-           cuid, static_cast<unsigned long>(temp));
+        if(logger->debug()) {
+          logger->debug
+            ("CUID#%d - In PeerConnection::receiveHandshake(), remain=%lu",
+             cuid, static_cast<unsigned long>(temp));
+        }
         throw DL_ABORT_EX(EX_EOF_FROM_PEER);
       }
       resbufLength += remaining;
@@ -243,7 +252,9 @@ bool PeerConnection::sendBufferIsEmpty() const
 ssize_t PeerConnection::sendPendingData()
 {
   ssize_t writtenLength = _socketBuffer.send();
-  logger->debug("sent %d byte(s).", writtenLength);
+  if(logger->debug()) {
+    logger->debug("sent %d byte(s).", writtenLength);
+  }
   return writtenLength;
 }
 

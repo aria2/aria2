@@ -304,10 +304,12 @@ void RequestGroup::createInitialCommand
         } else {
           // Open file in writable mode to allow the program
           // truncate the file to _downloadContext->getTotalLength()
-          _logger->debug("File size not match. File is opened in writable mode."
-                         " Expected:%s Actual:%s",
-                         util::uitos(_downloadContext->getTotalLength()).c_str(),
-                         util::uitos(actualFileSize).c_str());
+          if(_logger->debug()) {
+            _logger->debug("File size not match. File is opened in writable"
+                           " mode. Expected:%s Actual:%s",
+                           util::uitos(_downloadContext->getTotalLength()).c_str(),
+                           util::uitos(actualFileSize).c_str());
+          }
         }
       }
       // Call Load, Save and file allocation command here
@@ -450,7 +452,9 @@ void RequestGroup::initPieceStorage()
         // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
         // integrated downloads. Currently multi-file integrated
         // download is not supported.
-        _logger->debug("Using LongestSequencePieceSelector");
+        if(_logger->debug()) {
+          _logger->debug("Using LongestSequencePieceSelector");
+        }
         ps->setPieceSelector
           (SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
       }
@@ -807,8 +811,10 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 
 void RequestGroup::preDownloadProcessing()
 {
-  _logger->debug("Finding PreDownloadHandler for path %s.",
-                 getFirstFilePath().c_str());
+  if(_logger->debug()) {
+    _logger->debug("Finding PreDownloadHandler for path %s.",
+                   getFirstFilePath().c_str());
+  }
   try {
     for(PreDownloadHandlers::const_iterator itr = _preDownloadHandlers.begin();
         itr != _preDownloadHandlers.end(); ++itr) {
@@ -821,15 +827,19 @@ void RequestGroup::preDownloadProcessing()
     _logger->error(EX_EXCEPTION_CAUGHT, ex);
     return;
   }
-  _logger->debug("No PreDownloadHandler found.");
+  if(_logger->debug()) {
+    _logger->debug("No PreDownloadHandler found.");
+  }
   return;
 }
 
 void RequestGroup::postDownloadProcessing
 (std::deque<SharedHandle<RequestGroup> >& groups)
 {
-  _logger->debug("Finding PostDownloadHandler for path %s.",
-                 getFirstFilePath().c_str());
+  if(_logger->debug()) {
+    _logger->debug("Finding PostDownloadHandler for path %s.",
+                   getFirstFilePath().c_str());
+  }
   try {
     for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
         itr != _postDownloadHandlers.end(); ++itr) {
@@ -841,7 +851,9 @@ void RequestGroup::postDownloadProcessing
   } catch(RecoverableException& ex) {
     _logger->error(EX_EXCEPTION_CAUGHT, ex);
   }
-  _logger->debug("No PostDownloadHandler found.");
+  if(_logger->debug()) {
+    _logger->debug("No PostDownloadHandler found.");
+  }
 }
 
 void RequestGroup::initializePreDownloadHandler()

@@ -70,7 +70,9 @@ XmlRpcResponse XmlRpcMethod::execute
   try {
     return XmlRpcResponse(0, process(req, e));
   } catch(RecoverableException& e) {
-    _logger->debug(EX_EXCEPTION_CAUGHT, e);
+    if(_logger->debug()) {
+      _logger->debug(EX_EXCEPTION_CAUGHT, e);
+    }
     return XmlRpcResponse(1, createErrorResponse(e));
   }
 }

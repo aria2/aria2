@@ -242,8 +242,10 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
       newURIs.push_back(*itr);
     }
   }
-  _logger->debug("Removed %d duplicate hostname URIs for path=%s",
-                 _uris.size()-newURIs.size(), getPath().c_str());
+  if(_logger->debug()) {
+    _logger->debug("Removed %d duplicate hostname URIs for path=%s",
+                   _uris.size()-newURIs.size(), getPath().c_str());
+  }
   _uris = newURIs;
 }
 
@@ -297,20 +299,24 @@ void FileEntry::reuseUri(size_t num)
                       errorUris.begin(), errorUris.end(),
                       std::back_inserter(reusableURIs));
   size_t ininum = reusableURIs.size();
-  _logger->debug("Found %u reusable URIs",
-                 static_cast<unsigned int>(ininum));
+  if(_logger->debug()) {
+    _logger->debug("Found %u reusable URIs", static_cast<unsigned int>(ininum));
+  }
   // Reuse at least num URIs here to avoid to
   // run this process repeatedly.
   if(ininum > 0 && ininum < num) {
-    _logger->debug("fewer than num=%u",
-                   num);
+    if(_logger->debug()) {
+      _logger->debug("fewer than num=%u", num);
+    }
     for(size_t i = 0; i < num/ininum; ++i) {
       _uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
     }
     _uris.insert(_uris.end(), reusableURIs.begin(),
                  reusableURIs.begin()+(num%ininum));
-    _logger->debug("Duplication complete: now %u URIs for reuse",
-                   static_cast<unsigned int>(_uris.size()));
+    if(_logger->debug()) {
+      _logger->debug("Duplication complete: now %u URIs for reuse",
+                     static_cast<unsigned int>(_uris.size()));
+    }
   }
 }
 

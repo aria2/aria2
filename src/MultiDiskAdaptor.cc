@@ -208,25 +208,29 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       if(fileEntry->getLength() > 0) {
         off_t lastPieceStartOffset =
           (fileEntry->getOffset()+fileEntry->getLength()-1)/pieceLength*pieceLength;
-        logger->debug("Checking adjacent backward file to %s"
-                      " whose lastPieceStartOffset+pieceLength=%lld",
-                      fileEntry->getPath().c_str(),
-                      lastPieceStartOffset+pieceLength);
-
+        if(logger->debug()) {
+          logger->debug("Checking adjacent backward file to %s"
+                        " whose lastPieceStartOffset+pieceLength=%lld",
+                        fileEntry->getPath().c_str(),
+                        lastPieceStartOffset+pieceLength);
+        }
         ++itr;
         // adjacent backward files are not needed to be allocated. They
         // just requre DiskWriter
         for(; itr != diskWriterEntries.end() &&
               (!(*itr)->getFileEntry()->isRequested() ||
                (*itr)->getFileEntry()->getLength() == 0); ++itr) {
-          logger->debug("file=%s, offset=%lld",
-                        (*itr)->getFileEntry()->getPath().c_str(),
-                        (*itr)->getFileEntry()->getOffset());
-
+          if(logger->debug()) {
+            logger->debug("file=%s, offset=%lld",
+                          (*itr)->getFileEntry()->getPath().c_str(),
+                          (*itr)->getFileEntry()->getOffset());
+          }
           if((*itr)->getFileEntry()->getOffset() <
              static_cast<off_t>(lastPieceStartOffset+pieceLength)) {
-            logger->debug("%s needs diskwriter",
-                          (*itr)->getFileEntry()->getPath().c_str());
+            if(logger->debug()) {
+              logger->debug("%s needs diskwriter",
+                            (*itr)->getFileEntry()->getPath().c_str());
+            }
             dwreq[(*itr)->getFileEntry()->getPath()] = true;
           } else {
             break;
@@ -245,8 +249,10 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
     if((*i)->needsFileAllocation() ||
        dwreq.find((*i)->getFileEntry()->getPath()) != dwreq.end() ||
        (*i)->fileExists()) {
-      logger->debug("Creating DiskWriter for filename=%s",
-                    (*i)->getFilePath().c_str());
+      if(logger->debug()) {
+        logger->debug("Creating DiskWriter for filename=%s",
+                      (*i)->getFilePath().c_str());
+      }
       (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
       if(_directIOAllowed) {
         (*i)->getDiskWriter()->allowDirectIO();

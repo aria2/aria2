@@ -105,8 +105,10 @@ void DHTMessageDispatcherImpl::sendMessages()
     }
   }
   _messageQueue.erase(_messageQueue.begin(), itr);
-  _logger->debug("%lu dht messages remaining in the queue.",
-                 static_cast<unsigned long>(_messageQueue.size()));
+  if(_logger->debug()) {
+    _logger->debug("%lu dht messages remaining in the queue.",
+                   static_cast<unsigned long>(_messageQueue.size()));
+  }
 }
 
 size_t DHTMessageDispatcherImpl::countMessageInQueue() const

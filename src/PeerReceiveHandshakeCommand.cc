@@ -142,7 +142,9 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
            _peerConnection);
         e->commands.push_back(command);
-        logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
+        if(logger->debug()) {
+          logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
+        }
       }
     }
     return true;

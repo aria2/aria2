@@ -277,7 +277,9 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
 
   if(_lastSocketPoolScan.elapsed(60)) {
     std::multimap<std::string, SocketPoolEntry> newPool;
-    logger->debug("Scaning SocketPool and erasing timed out entry.");
+    if(logger->debug()) {
+      logger->debug("Scaning SocketPool and erasing timed out entry.");
+    }
     _lastSocketPoolScan.reset();
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
           _socketPool.begin(); i != _socketPool.end(); ++i) {
@@ -285,9 +287,11 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
         newPool.insert(*i);
       }
     }
-    logger->debug
-      ("%lu entries removed.",
-       static_cast<unsigned long>(_socketPool.size()-newPool.size()));
+    if(logger->debug()) {
+      logger->debug
+        ("%lu entries removed.",
+         static_cast<unsigned long>(_socketPool.size()-newPool.size()));
+    }
     _socketPool = newPool;
   }
 }

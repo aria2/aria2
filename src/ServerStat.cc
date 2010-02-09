@@ -101,16 +101,20 @@ void ServerStat::updateSingleConnectionAvgSpeed(unsigned int downloadSpeed)
       ((1.0/5.0)*(float)downloadSpeed);
   }
   if(avgDownloadSpeed < (int)(0.80*_singleConnectionAvgSpeed)) {
-    _logger->debug("ServerStat:%s: resetting counter since single connection"
-                   " speed dropped", getHostname().c_str());
+    if(_logger->debug()) {
+      _logger->debug("ServerStat:%s: resetting counter since single connection"
+                     " speed dropped", getHostname().c_str());
+    }
     _counter = 0;
   }
-  _logger->debug("ServerStat:%s: _singleConnectionAvgSpeed old:%.2fKB/s"
-                 " new:%.2fKB/s last:%.2fKB/s",
-                 getHostname().c_str(),
-                 (float) _singleConnectionAvgSpeed/1024,
-                 (float) avgDownloadSpeed/1024,
-                 (float) downloadSpeed / 1024);
+  if(_logger->debug()) {
+    _logger->debug("ServerStat:%s: _singleConnectionAvgSpeed old:%.2fKB/s"
+                   " new:%.2fKB/s last:%.2fKB/s",
+                   getHostname().c_str(),
+                   (float) _singleConnectionAvgSpeed/1024,
+                   (float) avgDownloadSpeed/1024,
+                   (float) downloadSpeed / 1024);
+  }
   _singleConnectionAvgSpeed = (int)avgDownloadSpeed;
 }
 
@@ -134,12 +138,14 @@ void ServerStat::updateMultiConnectionAvgSpeed(unsigned int downloadSpeed)
     avgDownloadSpeed = ((4.0/5.0)*(float)_multiConnectionAvgSpeed) +
       ((1.0/5.0)*(float)downloadSpeed);
   }
-  _logger->debug("ServerStat:%s: _multiConnectionAvgSpeed old:%.2fKB/s"
-                 " new:%.2fKB/s last:%.2fKB/s",
-                 getHostname().c_str(),
-                 (float) _multiConnectionAvgSpeed/1024,
-                 (float) avgDownloadSpeed/1024,
-                 (float) downloadSpeed / 1024);
+  if(_logger->debug()) {
+    _logger->debug("ServerStat:%s: _multiConnectionAvgSpeed old:%.2fKB/s"
+                   " new:%.2fKB/s last:%.2fKB/s",
+                   getHostname().c_str(),
+                   (float) _multiConnectionAvgSpeed/1024,
+                   (float) avgDownloadSpeed/1024,
+                   (float) downloadSpeed / 1024);
+  }
   _multiConnectionAvgSpeed = (int)avgDownloadSpeed;
 }
 
@@ -172,9 +178,11 @@ void ServerStat::setStatus(const std::string& status)
 
 void ServerStat::setStatusInternal(STATUS status)
 {
-  _logger->debug("ServerStat: set status %s for %s (%s)",
-                 STATUS_STRING[status].c_str(),
-                 _hostname.c_str(), _protocol.c_str());
+  if(_logger->debug()) {
+    _logger->debug("ServerStat: set status %s for %s (%s)",
+                   STATUS_STRING[status].c_str(),
+                   _hostname.c_str(), _protocol.c_str());
+  }
   _status = status;
   _lastUpdated.reset();
 }

@@ -187,6 +187,13 @@ public:
       _stdoutField &= ~level;
     }
   }
+
+  // Returns true if this logger actually writes debug log message to
+  // either file or stdout.
+  bool debug() const
+  {
+    return (DEBUG >= _logLevel && _file.is_open()) || _stdoutField&DEBUG;
+  }
 };
 
 } // namespace aria2

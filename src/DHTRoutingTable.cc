@@ -74,22 +74,30 @@ bool DHTRoutingTable::addGoodNode(const SharedHandle<DHTNode>& node)
 
 bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
 {
-  _logger->debug("Trying to add node:%s", node->toString().c_str());
+  if(_logger->debug()) {
+    _logger->debug("Trying to add node:%s", node->toString().c_str());
+  }
   if(_localNode == node) {
-    _logger->debug("Adding node with the same ID with localnode is not"
-                   " allowed.");
+    if(_logger->debug()) {
+      _logger->debug("Adding node with the same ID with localnode is not"
+                     " allowed.");
+    }
     return false;
   }
   BNode* bnode = BNode::findBNodeFor(_root, node->getID());
   SharedHandle<DHTBucket> bucket = bnode->getBucket();
   while(1) {
     if(bucket->addNode(node)) {
-      _logger->debug("Added DHTNode.");
+      if(_logger->debug()) {
+        _logger->debug("Added DHTNode.");
+      }
       return true;
     } else if(bucket->splitAllowed()) {
-      _logger->debug("Splitting bucket. Range:%s-%s",
-                     util::toHex(bucket->getMinID(), DHT_ID_LENGTH).c_str(),
-                     util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
+      if(_logger->debug()) {
+        _logger->debug("Splitting bucket. Range:%s-%s",
+                       util::toHex(bucket->getMinID(), DHT_ID_LENGTH).c_str(),
+                       util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
+      }
       SharedHandle<DHTBucket> r = bucket->split();
 
       bnode->setBucket(SharedHandle<DHTBucket>());
@@ -108,7 +116,9 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
     } else {
       if(good) {
         bucket->cacheNode(node);
-        _logger->debug("Cached node=%s", node->toString().c_str());
+        if(_logger->debug()) {
+          _logger->debug("Cached node=%s", node->toString().c_str());
+        }
       }
       return false;
     }

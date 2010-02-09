@@ -72,7 +72,9 @@ void BtPortMessage::doReceivedAction()
 {
   if(!_taskFactory.isNull() && !_taskQueue.isNull()) {
     if(_port == 0) {
-      logger->debug("Ignored port 0.");
+      if(logger->debug()) {
+        logger->debug("Ignored port 0.");
+      }
       return;
     }
     // node id is random at this point. When ping reply received, new DHTNode

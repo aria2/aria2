@@ -86,8 +86,11 @@ void
 DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
                                         const std::string& ipaddr, uint16_t port)
 {
-  _logger->debug("Adding %s:%u to peer announce list: infoHash=%s",
-                 ipaddr.c_str(), port, util::toHex(infoHash, DHT_ID_LENGTH).c_str());
+  if(_logger->debug()) {
+    _logger->debug("Adding %s:%u to peer announce list: infoHash=%s",
+                   ipaddr.c_str(), port,
+                   util::toHex(infoHash, DHT_ID_LENGTH).c_str());
+  }
   getPeerAnnounceEntry(infoHash)->addPeerAddrEntry(PeerAddrEntry(ipaddr, port));
 }
 
@@ -123,27 +126,34 @@ public:
 
 void DHTPeerAnnounceStorage::handleTimeout()
 {
-  _logger->debug("Now purge peer announces(%lu entries) which are timed out.",
-                 static_cast<unsigned long>(_entries.size()));
-
+  if(_logger->debug()) {
+    _logger->debug("Now purge peer announces(%lu entries) which are timed out.",
+                   static_cast<unsigned long>(_entries.size()));
+  }
   std::for_each(_entries.begin(), _entries.end(), RemoveStalePeerAddrEntry());
   _entries.erase(std::remove_if(_entries.begin(), _entries.end(),
                                 mem_fun_sh(&DHTPeerAnnounceEntry::empty)),
                  _entries.end());
-  _logger->debug("Currently %lu peer announce entries",
-                 static_cast<unsigned long>(_entries.size()));
+  if(_logger->debug()) {
+    _logger->debug("Currently %lu peer announce entries",
+                   static_cast<unsigned long>(_entries.size()));
+  }
 }
 
 void DHTPeerAnnounceStorage::announcePeer()
 {
-  _logger->debug("Now announcing peer.");
+  if(_logger->debug()) {
+    _logger->debug("Now announcing peer.");
+  }
   for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = _entries.begin(); i != _entries.end(); ++i) {
     if((*i)->getLastUpdated().elapsed(DHT_PEER_ANNOUNCE_INTERVAL)) {
       (*i)->notifyUpdate();
       SharedHandle<DHTTask> task = _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());
       _taskQueue->addPeriodicTask2(task);
-      _logger->debug("Added 1 peer announce: infoHash=%s",
-                     util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
+      if(_logger->debug()) {
+        _logger->debug("Added 1 peer announce: infoHash=%s",
+                       util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
+      }
     }
   }
 }

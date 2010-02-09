@@ -201,15 +201,16 @@ SharedHandle<DHTBucket> DHTBucket::split()
   }
   _nodes = lNodes;
   // TODO create toString() and use it.
-  _logger->debug("New bucket. prefixLength=%u, Range:%s-%s",
-                 static_cast<unsigned int>(rBucket->getPrefixLength()),
-                 util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
-                 util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
-  _logger->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
-                 static_cast<unsigned int>(_prefixLength),
-                 util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
-                 util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
-
+  if(_logger->debug()) {
+    _logger->debug("New bucket. prefixLength=%u, Range:%s-%s",
+                   static_cast<unsigned int>(rBucket->getPrefixLength()),
+                   util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
+                   util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
+    _logger->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
+                   static_cast<unsigned int>(_prefixLength),
+                   util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
+                   util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
+  }
   return rBucket;
 }
 

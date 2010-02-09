@@ -74,8 +74,10 @@ AdaptiveURISelector::~AdaptiveURISelector() {}
 
 std::string AdaptiveURISelector::select(FileEntry* fileEntry)
 {
-  _logger->debug("AdaptiveURISelector: called %d",
-                 _requestGroup->getNumConnection());
+  if(_logger->debug()) {
+    _logger->debug("AdaptiveURISelector: called %d",
+                   _requestGroup->getNumConnection());
+  }
   std::deque<std::string>& uris = fileEntry->getRemainingUris();
   if (uris.empty() && _requestGroup->getNumConnection() <= 1) {
     // here we know the download will fail, trying to find previously
@@ -103,11 +105,13 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
   std::transform(timeouts.begin(), timeouts.end(), std::back_inserter(uris),
                  std::mem_fun_ref(&URIResult::getURI));
 
-  for(std::deque<std::string>::const_iterator i = uris.begin(); i != uris.end();
-      ++i) {
-    _logger->debug("AdaptiveURISelector: will retry server with increased"
-                   " timeout (%d s): %s",
-                   _requestGroup->getTimeout(), (*i).c_str());
+  if(_logger->debug()) {
+    for(std::deque<std::string>::const_iterator i = uris.begin();
+        i != uris.end(); ++i) {
+      _logger->debug("AdaptiveURISelector: will retry server with increased"
+                     " timeout (%d s): %s",
+                     _requestGroup->getTimeout(), (*i).c_str());
+    }
   }
 }
 
@@ -132,8 +136,10 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
     if(getNbTestedServers(uris) < 3) {
       std::string notTested = getFirstNotTestedUri(uris);
       if(notTested != A2STR::NIL) {
-        _logger->debug("AdaptiveURISelector: choosing the first non tested"
-                       " mirror: %s", notTested.c_str());
+        if(_logger->debug()) {
+          _logger->debug("AdaptiveURISelector: choosing the first non tested"
+                         " mirror: %s", notTested.c_str());
+        }
         --_nbServerToEvaluate;
         return notTested;
       }
@@ -144,16 +150,21 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
       std::string notTested = getFirstNotTestedUri(uris);
       if(notTested != A2STR::NIL) {
         /* Here we return the first untested mirror */
-        _logger->debug("AdaptiveURISelector: choosing non tested mirror %s for"
-                       " connection #%d", notTested.c_str(), _nbConnections);
+        if(_logger->debug()) {
+          _logger->debug("AdaptiveURISelector: choosing non tested mirror %s"
+                         " for connection #%d",
+                         notTested.c_str(), _nbConnections);
+        }
         return notTested;
       } else {
         /* Here we return a mirror which need to be tested again */
         std::string toReTest = getFirstToTestUri(uris);
         if(toReTest != A2STR::NIL) {
-          _logger->debug("AdaptiveURISelector: choosing mirror %s which has not"
-                         " been tested recently for connection #%d",
-                         toReTest.c_str(), _nbConnections);
+          if(_logger->debug()) {
+            _logger->debug("AdaptiveURISelector: choosing mirror %s which has"
+                           " not been tested recently for connection #%d",
+                           toReTest.c_str(), _nbConnections);
+          }
           return toReTest;
         } else {
           return getBestMirror(uris);
@@ -176,15 +187,19 @@ std::string AdaptiveURISelector::getBestMirror
   
   if (bests.size() < 2) {
     std::string uri = getMaxDownloadSpeedUri(uris);
-    _logger->debug("AdaptiveURISelector: choosing the best mirror :"
-                   " %.2fKB/s %s (other mirrors are at least 25%% slower)",
-                   (float) max/1024, uri.c_str());
+    if(_logger->debug()) {
+      _logger->debug("AdaptiveURISelector: choosing the best mirror :"
+                     " %.2fKB/s %s (other mirrors are at least 25%% slower)",
+                     (float) max/1024, uri.c_str());
+    }
     return uri;
   } else {
     std::string uri = selectRandomUri(bests);
-    _logger->debug("AdaptiveURISelector: choosing randomly one of the best"
-                   " mirrors (range [%.2fKB/s, %.2fKB/s]): %s",
-                   (float) min/1024, (float) max/1024, uri.c_str());
+    if(_logger->debug()) {
+      _logger->debug("AdaptiveURISelector: choosing randomly one of the best"
+                     " mirrors (range [%.2fKB/s, %.2fKB/s]): %s",
+                     (float) min/1024, (float) max/1024, uri.c_str());
+    }
     return uri;
   }
 }

@@ -211,7 +211,9 @@ void
 DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
                                            size_t trackerResponseLength)
 {
-  logger->debug("Now processing tracker response.");
+  if(logger->debug()) {
+    logger->debug("Now processing tracker response.");
+  }
   const BDE dict =
     bencode::decode(trackerResponse, trackerResponseLength);
   if(!dict.isDict()) {
@@ -229,17 +231,23 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   const BDE& tid = dict[BtAnnounce::TRACKER_ID];
   if(tid.isString()) {
     trackerId = tid.s();
-    logger->debug("Tracker ID:%s", trackerId.c_str());
+    if(logger->debug()) {
+      logger->debug("Tracker ID:%s", trackerId.c_str());
+    }
   }
   const BDE& ival = dict[BtAnnounce::INTERVAL];
   if(ival.isInteger() && ival.i() > 0) {
     interval = ival.i();
-    logger->debug("Interval:%d", interval);
+    if(logger->debug()) {
+      logger->debug("Interval:%d", interval);
+    }
   }
   const BDE& mival = dict[BtAnnounce::MIN_INTERVAL];
   if(mival.isInteger() && mival.i() > 0) {
     minInterval = mival.i();
-    logger->debug("Min interval:%d", minInterval);
+    if(logger->debug()) {
+      logger->debug("Min interval:%d", minInterval);
+    }
     if(minInterval > interval) {
       minInterval = interval;
     }
@@ -250,12 +258,16 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   const BDE& comp = dict[BtAnnounce::COMPLETE];
   if(comp.isInteger()) {
     complete = comp.i();
-    logger->debug("Complete:%d", complete);
+    if(logger->debug()) {
+      logger->debug("Complete:%d", complete);
+    }
   }
   const BDE& incomp = dict[BtAnnounce::INCOMPLETE];
   if(incomp.isInteger()) {
     incomplete = incomp.i();
-    logger->debug("Incomplete:%d", incomplete);
+    if(logger->debug()) {
+      logger->debug("Incomplete:%d", incomplete);
+    }
   }
   const BDE& peerData = dict[BtAnnounce::PEERS];
   if(peerData.isNone()) {

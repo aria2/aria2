@@ -55,12 +55,16 @@ void UTMetadataRequestFactory::create
   for(size_t index = 0; index < _dctx->getNumPieces() && num; ++index) {
     SharedHandle<Piece> p = pieceStorage->getMissingPiece(index);
     if(p.isNull()) {
-      _logger->debug("ut_metadata piece %lu is used or already acquired.");
+      if(_logger->debug()) {
+        _logger->debug("ut_metadata piece %lu is used or already acquired.");
+      }
       continue;
     }
     --num;
-    _logger->debug("Creating ut_metadata request index=%lu",
-                   static_cast<unsigned long>(index));
+    if(_logger->debug()) {
+      _logger->debug("Creating ut_metadata request index=%lu",
+                     static_cast<unsigned long>(index));
+    }
     SharedHandle<UTMetadataRequestExtensionMessage> m
       (new UTMetadataRequestExtensionMessage
        (_peer->getExtensionMessageID("ut_metadata")));
