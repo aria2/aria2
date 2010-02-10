@@ -819,7 +819,7 @@ std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact)
   uint16_t port_nworder;
   memcpy(&port_nworder, compact+sizeof(uint32_t), sizeof(uint16_t));
   uint16_t port = ntohs(port_nworder);
-  return std::pair<std::string, uint16_t>(host, port);
+  return std::make_pair(host, port);
 }
 
 
