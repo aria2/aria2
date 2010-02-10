@@ -1,5 +1,10 @@
 2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added more tests.
+	* test/BitfieldManTest.cc
+
+2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added BitfieldMan::getFirstNMissingUnusedIndex() to get multiple
 	unused block indexes at once instead of calling
 	getFirstMissingUnusedIndex() multiple times. Made use of it in
