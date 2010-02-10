@@ -1,3 +1,8 @@
+2010-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	urlencode(removeFragment(...)) in parseUrl(...)
+	* src/Request.cc
+
 2010-02-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Wrapped logger->debug(...) with if(logger->debug()) { ... }

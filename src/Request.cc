@@ -109,13 +109,13 @@ static std::string urlencode(const std::string& src)
 bool Request::setUrl(const std::string& url) {
   _supportsPersistentConnection = true;
   _url = url;
-  return parseUrl(urlencode(removeFragment(_url)));
+  return parseUrl(_url);
 }
 
 bool Request::resetUrl() {
   _previousUrl = _referer;
   _supportsPersistentConnection = true;
-  return parseUrl(urlencode(removeFragment(_url)));
+  return parseUrl(_url);
 }
 
 void Request::setReferer(const std::string& url)
@@ -141,10 +141,11 @@ bool Request::redirectUrl(const std::string& url) {
   } else {
     redirectedUrl = url;
   }
-  return parseUrl(urlencode(removeFragment(redirectedUrl)));
+  return parseUrl(redirectedUrl);
 }
 
-bool Request::parseUrl(const std::string& url) {
+bool Request::parseUrl(const std::string& srcUrl) {
+  const std::string url = urlencode(removeFragment(srcUrl));
   _currentUrl = url;
   _host = A2STR::NIL;
   _port = 0;
