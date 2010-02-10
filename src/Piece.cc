@@ -173,10 +173,14 @@ bool Piece::getMissingUnusedBlockIndex(size_t& index) const
   }
 }
 
-bool Piece::getMissingBlockIndex(size_t& index) const
+bool Piece::getMissingUnusedBlockIndex
+(std::vector<size_t>& indexes, size_t n) const
 {
-  if(bitfield->getMissingIndex(index)) {
-    bitfield->setUseBit(index);
+  if(bitfield->getFirstNMissingUnusedIndex(indexes, n)) {
+    for(std::vector<size_t>::const_iterator i = indexes.begin();
+        i != indexes.end(); ++i) {
+      bitfield->setUseBit(*i);
+    }
     return true;
   } else {
     return false;

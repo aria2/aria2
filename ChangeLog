@@ -1,3 +1,16 @@
+2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added BitfieldMan::getFirstNMissingUnusedIndex() to get multiple
+	unused block indexes at once instead of calling
+	getFirstMissingUnusedIndex() multiple times. Made use of it in
+	Piece class and DefaultBtRequestFactory class via Piece class.
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/DefaultBtRequestFactory.cc
+	* src/Piece.cc
+	* src/Piece.h
+	* test/BitfieldManTest.cc
+
 2010-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use std::make_pair(...)

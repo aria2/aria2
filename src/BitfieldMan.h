@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include <deque>
+#include <vector>
 
 namespace aria2 {
 
@@ -144,11 +145,14 @@ public:
   /**
    * affected by filter
    */
-  bool getFirstMissingUnusedIndex(size_t& index, const unsigned char* bitfield, size_t len) const;
+  bool getFirstMissingUnusedIndex(size_t& index) const;
   /**
+   * Stores at most n missing unused index in out. This function
+   * doesn't delete existing elements in out.
+   *
    * affected by filter
    */
-  bool getFirstMissingUnusedIndex(size_t& index) const;
+  bool getFirstNMissingUnusedIndex(std::vector<size_t>& out, size_t n) const;
   /**
    * affected by filter
    */

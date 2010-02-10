@@ -268,6 +268,47 @@ bool BitfieldMan::getFirstMissingUnusedIndex(size_t& index) const
   }
 }
 
+template<typename Array, typename OutputIterator>
+static bool getFirstNMissingIndex
+(OutputIterator out, size_t n,
+ const Array& bitfield, size_t bitfieldLength, size_t blocks)
+{
+  if(n == 0) {
+    return false;
+  }
+  const size_t origN = n;
+  for(size_t i = 0; i < bitfieldLength; ++i) {
+    unsigned char bits = bitfield[i];
+    unsigned char mask = 128;
+    size_t tindex = i*8;
+    for(size_t bi = 0; bi < 8 && tindex < blocks; ++bi, mask >>= 1, ++tindex) {
+      if(bits & mask) {
+        *out++ = tindex;
+        if(--n == 0) {
+          return true;
+        }
+      }
+    }
+  }
+  return origN > n;
+}
+
+bool BitfieldMan::getFirstNMissingUnusedIndex
+(std::vector<size_t>& out, size_t n) const
+{
+  if(filterEnabled) {
+    return getFirstNMissingIndex
+      (std::back_inserter(out), n,
+       ~array(bitfield)&~array(useBitfield)&array(filterBitfield),
+       bitfieldLength, blocks);
+  } else {
+    return getFirstNMissingIndex
+      (std::back_inserter(out), n,
+       ~array(bitfield)&~array(useBitfield),
+       bitfieldLength, blocks);
+  }
+}
+
 bool BitfieldMan::getFirstMissingIndex(size_t& index) const
 {
   if(filterEnabled) {

@@ -152,20 +152,30 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
 void DefaultBtRequestFactory::createRequestMessages
 (std::deque<SharedHandle<BtMessage> >& requests, size_t max)
 {
+  if(requests.size() >= max) {
+    return;
+  }
+  size_t getnum = max-requests.size();
+  std::vector<size_t> blockIndexes;
+  blockIndexes.reserve(getnum);
   for(Pieces::iterator itr = pieces.begin();
-      itr != pieces.end() && requests.size() < max; ++itr) {
-    PieceHandle& piece = *itr;
-    size_t blockIndex;
-    while(requests.size() < max &&
-          piece->getMissingUnusedBlockIndex(blockIndex)) {
-      if(_logger->debug()) {
-        _logger->debug("Creating RequestMessage index=%u, begin=%u,"
-                       " blockIndex=%u",
-                       piece->getIndex(),
-                       blockIndex*piece->getBlockLength(),
-                       blockIndex);
+      itr != pieces.end() && getnum; ++itr) {
+    SharedHandle<Piece>& piece = *itr;
+    if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
+      getnum -= blockIndexes.size();
+      for(std::vector<size_t>::const_iterator i = blockIndexes.begin();
+          i != blockIndexes.end(); ++i) {
+        if(_logger->debug()) {
+          _logger->debug("Creating RequestMessage index=%u, begin=%u,"
+                         " blockIndex=%u",
+                         piece->getIndex(),
+                         (*i)*piece->getBlockLength(),
+                         (*i));
+        }
+        requests.push_back
+          (messageFactory->createRequestMessage(piece, *i));
       }
-      requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
+      blockIndexes.clear();
     }
   }
 }
