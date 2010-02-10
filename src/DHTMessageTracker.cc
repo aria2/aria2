@@ -102,7 +102,7 @@ DHTMessageTracker::messageArrived(const BDE& dict,
       }
       message->getRemoteNode()->updateRTT(rtt);
       SharedHandle<DHTMessageCallback> callback = entry->getCallback();
-      return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >(message, callback);
+      return std::make_pair(message, callback);
     }
   }
   if(_logger->debug()) {

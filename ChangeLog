@@ -1,6 +1,11 @@
 2010-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use std::make_pair(...)
+	* src/DHTMessageTracker.cc
+
+2010-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use std::make_pair(...)
 	* src/bittorrent_helper.cc
 
 2010-02-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
