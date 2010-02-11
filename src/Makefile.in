@@ -337,8 +337,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
 	FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
-	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
+	BitfieldMan.cc BitfieldMan.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
 	HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
@@ -782,9 +781,8 @@ am__objects_27 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	base32.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
 	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
 	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
-	BitfieldManFactory.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
-	HttpResponse.$(OBJEXT) HttpRequest.$(OBJEXT) \
-	AbstractProxyRequestCommand.$(OBJEXT) \
+	SimpleRandomizer.$(OBJEXT) HttpResponse.$(OBJEXT) \
+	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
 	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) AbstractAuthResolver.$(OBJEXT) \
 	DefaultAuthResolver.$(OBJEXT) NetrcAuthResolver.$(OBJEXT) \
@@ -1087,8 +1085,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
 	FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
-	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
+	BitfieldMan.cc BitfieldMan.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
 	HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
@@ -1306,7 +1303,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAnnounce.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtBitfieldMessage.Po@am__quote@

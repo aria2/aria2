@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "Piece.h"
 #include "util.h"
-#include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
 #include "A2STR.h"
 #include "util.h"
@@ -51,14 +50,13 @@ Piece::Piece():index(0), length(0), _blockLength(BLOCK_LENGTH), bitfield(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
-Piece::Piece(size_t index, size_t length, size_t blockLength):index(index), length(length), _blockLength(blockLength)
+Piece::Piece(size_t index, size_t length, size_t blockLength):
+  index(index), length(length), _blockLength(blockLength),
+  bitfield(new BitfieldMan(_blockLength, length))
 #ifdef ENABLE_MESSAGE_DIGEST
                                                              , _nextBegin(0)
 #endif // ENABLE_MESSAGE_DIGEST
-{
-  bitfield =
-    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(_blockLength, length);
-}
+{}
 
 Piece::Piece(const Piece& piece) {
   index = piece.index;
@@ -206,8 +204,7 @@ void Piece::reconfigure(size_t length)
 {
   delete bitfield;
   this->length = length;
-  bitfield =
-    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(_blockLength, length);
+  bitfield = new BitfieldMan(_blockLength, length);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, size_t len)

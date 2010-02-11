@@ -46,7 +46,6 @@
 #include "DirectDiskAdaptor.h"
 #include "MultiDiskAdaptor.h"
 #include "DiskWriter.h"
-#include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
 #include "message.h"
 #include "DefaultDiskWriterFactory.h"
@@ -65,9 +64,8 @@ namespace aria2 {
 DefaultPieceStorage::DefaultPieceStorage
 (const SharedHandle<DownloadContext>& downloadContext, const Option* option):
   downloadContext(downloadContext),
-  bitfieldMan(BitfieldManFactory::getFactoryInstance()->
-              createBitfieldMan(downloadContext->getPieceLength(),
-                                downloadContext->getTotalLength())),
+  bitfieldMan(new BitfieldMan(downloadContext->getPieceLength(),
+                              downloadContext->getTotalLength())),
   _diskWriterFactory(new DefaultDiskWriterFactory()),
   endGamePieceNum(END_GAME_PIECE_NUM),
   logger(LogFactory::getInstance()),

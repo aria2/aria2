@@ -60,7 +60,6 @@ SRCS =  Socket.h\
 	SpeedCalc.cc SpeedCalc.h\
 	PeerStat.h\
 	BitfieldMan.cc BitfieldMan.h\
-	BitfieldManFactory.cc BitfieldManFactory.h\
 	Randomizer.h\
 	SimpleRandomizer.cc SimpleRandomizer.h\
 	HttpResponse.cc HttpResponse.h\

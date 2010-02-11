@@ -4,7 +4,6 @@
 
 #include "util.h"
 #include "Exception.h"
-#include "BitfieldManFactory.h"
 #include "Piece.h"
 #include "Peer.h"
 #include "Option.h"

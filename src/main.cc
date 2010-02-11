@@ -47,7 +47,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "util.h"
-#include "BitfieldManFactory.h"
 #include "FeatureConfig.h"
 #include "MultiUrlRequestInfo.h"
 #include "SimpleRandomizer.h"

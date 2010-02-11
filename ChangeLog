@@ -1,5 +1,17 @@
 2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed BitfieldManFactory class.
+	* src/BitfieldManFactory.cc
+	* src/BitfieldManFactory.h
+	* src/DefaultPieceStorage.cc
+	* src/Makefile.am
+	* src/PeerSessionResource.cc
+	* src/Piece.cc
+	* src/main.cc
+	* test/DefaultPieceStorageTest.cc
+
+2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused methods from BitfieldMan class.  Moved
 	getFirstMissingIndex to bitfield.h. Updated doc for BitfieldMan
 	class.

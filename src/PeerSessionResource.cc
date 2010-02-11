@@ -37,7 +37,6 @@
 #include <cassert>
 #include <algorithm>
 
-#include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
 #include "A2STR.h"
 #include "BtMessageDispatcher.h"
@@ -52,7 +51,7 @@ PeerSessionResource::PeerSessionResource(size_t pieceLength, uint64_t totalLengt
   _chokingRequired(true),
   _optUnchoking(false),
   _snubbing(false),
-  _bitfieldMan(BitfieldManFactory::getFactoryInstance()->createBitfieldMan(pieceLength, totalLength)),
+  _bitfieldMan(new BitfieldMan(pieceLength, totalLength)),
   _fastExtensionEnabled(false),
   _extendedMessagingEnabled(false),
   _dhtEnabled(false),
