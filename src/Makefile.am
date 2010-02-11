@@ -90,9 +90,6 @@ SRCS =  Socket.h\
 	StreamFileAllocationEntry.cc StreamFileAllocationEntry.h\
 	MultiUrlRequestInfo.cc MultiUrlRequestInfo.h\
 	UriListParser.cc UriListParser.h\
-	SegmentManFactory.h\
-	AbstractSegmentManFactory.h\
-	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h\
 	RealtimeCommand.cc RealtimeCommand.h\
 	ProgressAwareEntry.h\
 	RequestGroupEntry.cc RequestGroupEntry.h\

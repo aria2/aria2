@@ -358,8 +358,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FileAllocationEntry.h StreamFileAllocationEntry.cc \
 	StreamFileAllocationEntry.h MultiUrlRequestInfo.cc \
 	MultiUrlRequestInfo.h UriListParser.cc UriListParser.h \
-	SegmentManFactory.h AbstractSegmentManFactory.h \
-	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h HttpHeaderProcessor.cc \
@@ -795,11 +793,11 @@ am__objects_27 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FileAllocationEntry.$(OBJEXT) \
 	StreamFileAllocationEntry.$(OBJEXT) \
 	MultiUrlRequestInfo.$(OBJEXT) UriListParser.$(OBJEXT) \
-	DefaultSegmentManFactory.$(OBJEXT) RealtimeCommand.$(OBJEXT) \
-	RequestGroupEntry.$(OBJEXT) Cookie.$(OBJEXT) \
-	CookieParser.$(OBJEXT) HttpHeaderProcessor.$(OBJEXT) \
-	FileEntry.$(OBJEXT) Platform.$(OBJEXT) \
-	PStringSegment.$(OBJEXT) PStringBuildVisitor.$(OBJEXT) \
+	RealtimeCommand.$(OBJEXT) RequestGroupEntry.$(OBJEXT) \
+	Cookie.$(OBJEXT) CookieParser.$(OBJEXT) \
+	HttpHeaderProcessor.$(OBJEXT) FileEntry.$(OBJEXT) \
+	Platform.$(OBJEXT) PStringSegment.$(OBJEXT) \
+	PStringBuildVisitor.$(OBJEXT) \
 	ParameterizedStringParser.$(OBJEXT) TimeBasedCommand.$(OBJEXT) \
 	AutoSaveCommand.$(OBJEXT) DefaultPieceStorage.$(OBJEXT) \
 	UnknownLengthPieceStorage.$(OBJEXT) PieceStatMan.$(OBJEXT) \
@@ -1106,8 +1104,6 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	FileAllocationEntry.h StreamFileAllocationEntry.cc \
 	StreamFileAllocationEntry.h MultiUrlRequestInfo.cc \
 	MultiUrlRequestInfo.h UriListParser.cc UriListParser.h \
-	SegmentManFactory.h AbstractSegmentManFactory.h \
-	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h HttpHeaderProcessor.cc \
@@ -1406,7 +1402,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultExtensionMessageFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultSegmentManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@

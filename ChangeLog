@@ -1,5 +1,16 @@
 2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed SegmentManFactory class.
+	* src/AbstractSegmentManFactory.h
+	* src/DefaultSegmentManFactory.cc
+	* src/DefaultSegmentManFactory.h
+	* src/Makefile.am
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/SegmentManFactory.h
+
+2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Destroyed digest context after getting calculated hash.
 	* src/Piece.cc
 	* src/Piece.h

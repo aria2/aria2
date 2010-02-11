@@ -51,7 +51,6 @@ namespace aria2 {
 
 class DownloadEngine;
 class SegmentMan;
-class SegmentManFactory;
 class Command;
 class DownloadCommand;
 class DownloadContext;
@@ -97,7 +96,6 @@ private:
   unsigned int _numCommand;
 
   SharedHandle<SegmentMan> _segmentMan;
-  SharedHandle<SegmentManFactory> _segmentManFactory;
 
   SharedHandle<DownloadContext> _downloadContext;
 
@@ -227,8 +225,6 @@ public:
                            uint64_t actualTotalLength) const;
 
   void validateTotalLength(uint64_t actualTotalLength) const;
-
-  void setSegmentManFactory(const SharedHandle<SegmentManFactory>& segmentManFactory);
 
   void setNumConcurrentCommand(unsigned int num)
   {

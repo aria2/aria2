@@ -39,7 +39,6 @@
 
 #include "PostDownloadHandler.h"
 #include "DownloadEngine.h"
-#include "DefaultSegmentManFactory.h"
 #include "SegmentMan.h"
 #include "NullProgressInfoFile.h"
 #include "Dependency.h"
@@ -119,7 +118,6 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _numConcurrentCommand(option->getAsInt(PREF_SPLIT)),
   _numStreamConnection(0),
   _numCommand(0),
-  _segmentManFactory(new DefaultSegmentManFactory(_option.get())),
   _saveControlFile(true),
   _progressInfoFile(new NullProgressInfoFile()),
   _preLocalFileCheckEnabled(true),
@@ -491,8 +489,8 @@ void RequestGroup::initPieceStorage()
     tempPieceStorage = ps;
   }
   tempPieceStorage->initStorage();
-  SharedHandle<SegmentMan> tempSegmentMan =
-    _segmentManFactory->createNewInstance(_downloadContext, tempPieceStorage);
+  SharedHandle<SegmentMan> tempSegmentMan
+    (new SegmentMan(_option.get(), _downloadContext, tempPieceStorage));
 
   _pieceStorage = tempPieceStorage;
   _segmentMan = tempSegmentMan;
@@ -892,11 +890,6 @@ bool RequestGroup::isDependencyResolved()
     return true;
   }
   return _dependency->resolve();
-}
-
-void RequestGroup::setSegmentManFactory(const SegmentManFactoryHandle& segmentManFactory)
-{
-  _segmentManFactory = segmentManFactory;
 }
 
 void RequestGroup::dependsOn(const DependencyHandle& dep)
