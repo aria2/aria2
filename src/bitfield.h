@@ -118,6 +118,27 @@ inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
 
 void flipBit(unsigned char* data, size_t length, size_t bitIndex);
 
+// Stores first missing bit index of bitfield to index.  bitfield
+// contains nbits. Returns true if missing bit index is
+// found. Otherwise returns false.
+template<typename Array>
+bool getFirstMissingIndex
+(size_t& index, const Array& bitfield, size_t nbits)
+{
+  const size_t bitfieldLength = (nbits+7)/8;
+  for(size_t i = 0; i < bitfieldLength; ++i) {
+    unsigned char mask = 128;
+    size_t tindex = i*8;
+    for(size_t bi = 0; bi < 8 && tindex < nbits; ++bi, mask >>= 1, ++tindex) {
+      if(bitfield[i] & mask) {
+        index = tindex;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 // Appends first at most n set bit index in bitfield to out.  bitfield
 // contains nbits bits.  Returns the number of appended bit indexes.
 template<typename Array, typename OutputIterator>

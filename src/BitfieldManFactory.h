@@ -47,8 +47,6 @@ class BitfieldManFactory {
 private:
   static SharedHandle<BitfieldManFactory> factory;
 
-  SharedHandle<Randomizer> randomizer;
-
   BitfieldManFactory();
 public:
   ~BitfieldManFactory();
@@ -56,14 +54,6 @@ public:
   static SharedHandle<BitfieldManFactory> getFactoryInstance();
 
   BitfieldMan* createBitfieldMan(size_t blockLength, uint64_t totalLength);
-
-  static void setDefaultRandomizer(const SharedHandle<Randomizer>& randomizer);
-
-  static SharedHandle<Randomizer> getDefaultRandomizer();
-
-  void setRandomizer(const SharedHandle<Randomizer>& randomizer);
-
-  SharedHandle<Randomizer> getRandomizer() const;
 };
 
 typedef SharedHandle<BitfieldManFactory> BitfieldManFactoryHandle;

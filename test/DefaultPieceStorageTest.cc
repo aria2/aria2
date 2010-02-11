@@ -4,7 +4,6 @@
 
 #include "util.h"
 #include "Exception.h"
-#include "FixedNumberRandomizer.h"
 #include "BitfieldManFactory.h"
 #include "Piece.h"
 #include "Peer.h"
@@ -40,13 +39,6 @@ private:
   Option* option;
   SharedHandle<PieceSelector> _pieceSelector;
 public:
-  DefaultPieceStorageTest() {
-    SharedHandle<FixedNumberRandomizer> randomizer
-      (new FixedNumberRandomizer());
-    randomizer->setFixedNumber(0);
-    BitfieldManFactory::setDefaultRandomizer(randomizer);
-  }
-
   void setUp() {
     _dctx.reset(new DownloadContext());
     bittorrent::load("test.torrent", _dctx);

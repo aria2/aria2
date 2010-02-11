@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
-#include "Randomizer.h"
 
 namespace aria2 {
 
@@ -56,28 +55,7 @@ BitfieldMan*
 BitfieldManFactory::createBitfieldMan(size_t blockLength, uint64_t totalLength)
 {
   BitfieldMan* bitfieldMan = new BitfieldMan(blockLength, totalLength);
-  bitfieldMan->setRandomizer(randomizer);
   return bitfieldMan;
-}
-
-void BitfieldManFactory::setDefaultRandomizer(const RandomizerHandle& randomizer) {
-  BitfieldManFactoryHandle factory = getFactoryInstance();
-  factory->setRandomizer(randomizer);
-}
-
-RandomizerHandle BitfieldManFactory::getDefaultRandomizer()
-{
-  return getFactoryInstance()->getRandomizer();
-}
-
-void BitfieldManFactory::setRandomizer(const RandomizerHandle& randomizer)
-{
-  this->randomizer = randomizer;
-}
-
-RandomizerHandle BitfieldManFactory::getRandomizer() const
-{
-  return randomizer;
 }
 
 } // namespace aria2

@@ -173,7 +173,6 @@ downloadresultcode::RESULT main(int argc, char* argv[])
   option_processing(*op.get(), args, argc, argv);
 
   SimpleRandomizer::init();
-  BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
 #ifdef ENABLE_BITTORRENT
   bittorrent::generateStaticPeerId(op->get(PREF_PEER_ID_PREFIX));
 #endif // ENABLE_BITTORRENT

@@ -37,7 +37,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Randomizer.h"
 #include "util.h"
 #include "array_fun.h"
 #include "bitfield.h"
@@ -81,7 +80,6 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
    bitfield(new unsigned char[bitfieldLength]),
    useBitfield(new unsigned char[bitfieldLength]),
    filterBitfield(0),
-   randomizer(bitfieldMan.randomizer),
    cachedNumMissingBlock(0),
    cachedNumFilteredBlock(0),
    cachedCompletedLength(0),
@@ -144,51 +142,9 @@ size_t BitfieldMan::getBlockLength(size_t index) const
   }
 }
 
-size_t
-BitfieldMan::getNthBitIndex(const unsigned char bitfield, size_t nth) const
+bool BitfieldMan::hasMissingPiece
+(const unsigned char* peerBitfield, size_t length) const
 {
-  size_t index = 0;
-  for(int bs = 7; bs >= 0; --bs) {
-    unsigned char mask = 1 << bs;
-    if(bitfield & mask) {
-      nth--;
-      if(nth == 0) {
-        index = 7-bs;
-        break;
-      }
-    }
-  }
-  return index;
-}
-
-template<typename Array>
-bool BitfieldMan::getMissingIndexRandomly(size_t& index,
-                                          const Array& bitfield,
-                                          size_t bitfieldLength) const
-{
-  size_t byte = randomizer->getRandomNumber(bitfieldLength);
-  for(size_t i = 0; i < bitfieldLength; ++i) {
-    unsigned char mask;
-    if(byte == bitfieldLength-1) {
-      mask = bitfield::lastByteMask(blocks);
-    } else {
-      mask = 0xff;
-    }
-    unsigned char bits = bitfield[byte];
-
-    if(bits&mask) {
-      index = byte*8+getNthBitIndex(bits, 1);
-      return true;
-    }
-    ++byte;
-    if(byte == bitfieldLength) {
-      byte = 0;
-    }
-  }
-  return false;
-}
-
-bool BitfieldMan::hasMissingPiece(const unsigned char* peerBitfield, size_t length) const {
   if(bitfieldLength != length) {
     return false;
   }
@@ -206,65 +162,15 @@ bool BitfieldMan::hasMissingPiece(const unsigned char* peerBitfield, size_t leng
   return retval;
 }
 
-bool BitfieldMan::getMissingIndex(size_t& index, const unsigned char* peerBitfield, size_t length) const {
-  if(bitfieldLength != length) {
-    return false;
-  }
-  if(filterEnabled) {
-    return getMissingIndexRandomly
-      (index,
-       ~array(bitfield)&array(peerBitfield)&array(filterBitfield),
-       bitfieldLength);
-  } else {
-    return getMissingIndexRandomly
-      (index, ~array(bitfield)&array(peerBitfield), bitfieldLength);
-  }
-}
-
-bool BitfieldMan::getMissingUnusedIndex(size_t& index, const unsigned char* peerBitfield, size_t length) const {
-  if(bitfieldLength != length) {
-    return false;
-  }
-  if(filterEnabled) {
-    return getMissingIndexRandomly
-      (index,
-       ~array(bitfield)&~array(useBitfield)&array(peerBitfield)&array(filterBitfield),
-       bitfieldLength);
-  } else {
-    return getMissingIndexRandomly
-      (index,
-       ~array(bitfield)&~array(useBitfield)&array(peerBitfield),
-       bitfieldLength);
-  }
-}
-
-template<typename Array>
-bool BitfieldMan::getFirstMissingIndex(size_t& index, const Array& bitfield, size_t bitfieldLength) const
-{
-  for(size_t i = 0; i < bitfieldLength; ++i) {
-    unsigned char bits = bitfield[i];
-    unsigned char mask = 128;
-    size_t tindex = i*8;
-    for(size_t bi = 0; bi < 8 && tindex < blocks; ++bi, mask >>= 1, ++tindex) {
-      if(bits & mask) {
-        index = tindex;
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
 bool BitfieldMan::getFirstMissingUnusedIndex(size_t& index) const
 {
   if(filterEnabled) {
-    return getFirstMissingIndex
+    return bitfield::getFirstMissingIndex
       (index, ~array(bitfield)&~array(useBitfield)&array(filterBitfield),
-       bitfieldLength);
+       blocks);
   } else {
-    return getFirstMissingIndex
-      (index, ~array(bitfield)&~array(useBitfield),
-       bitfieldLength);
+    return bitfield::getFirstMissingIndex
+      (index, ~array(bitfield)&~array(useBitfield), blocks);
   }
 }
 
@@ -285,31 +191,10 @@ size_t BitfieldMan::getFirstNMissingUnusedIndex
 bool BitfieldMan::getFirstMissingIndex(size_t& index) const
 {
   if(filterEnabled) {
-    return getFirstMissingIndex(index, ~array(bitfield)&array(filterBitfield),
-                                bitfieldLength);
+    return bitfield::getFirstMissingIndex
+      (index, ~array(bitfield)&array(filterBitfield), blocks);
   } else {
-    return getFirstMissingIndex(index, ~array(bitfield), bitfieldLength);
-  }
-}
-
-bool BitfieldMan::getMissingIndex(size_t& index) const {
-  if(filterEnabled) {
-    return getMissingIndexRandomly
-      (index, ~array(bitfield)&array(filterBitfield), bitfieldLength);
-  } else {
-    return getMissingIndexRandomly(index, ~array(bitfield), bitfieldLength);
-  }
-}
-
-bool BitfieldMan::getMissingUnusedIndex(size_t& index) const
-{
-  if(filterEnabled) {
-    return getMissingIndexRandomly
-      (index, ~array(bitfield)&~array(useBitfield)&array(filterBitfield),
-       bitfieldLength);
-  } else {
-    return getMissingIndexRandomly
-      (index, ~array(bitfield)&~array(useBitfield), bitfieldLength);
+    return bitfield::getFirstMissingIndex(index, ~array(bitfield), blocks);
   }
 }
 
@@ -795,11 +680,6 @@ uint64_t BitfieldMan::getMissingUnusedLength(size_t startingIndex) const
     length += getBlockLength(i);
   }
   return length;
-}
-
-void BitfieldMan::setRandomizer(const SharedHandle<Randomizer>& randomizer)
-{
-  this->randomizer = randomizer;
 }
 
 } // namespace aria2

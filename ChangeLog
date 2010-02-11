@@ -1,5 +1,19 @@
 2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused methods from BitfieldMan class.  Moved
+	getFirstMissingIndex to bitfield.h. Updated doc for BitfieldMan
+	class.
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/BitfieldManFactory.cc
+	* src/BitfieldManFactory.h
+	* src/bitfield.h
+	* src/main.cc
+	* test/BitfieldManTest.cc
+	* test/DefaultPieceStorageTest.cc
+
+2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Moved getFirstNMissingIndex to bitfield.h and made it return the
 	number of appended indexes.
 	* src/BitfieldMan.cc
