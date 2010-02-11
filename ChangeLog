@@ -1,5 +1,11 @@
 2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Destroyed digest context after getting calculated hash.
+	* src/Piece.cc
+	* src/Piece.h
+
+2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed BitfieldManFactory class.
 	* src/BitfieldManFactory.cc
 	* src/BitfieldManFactory.h

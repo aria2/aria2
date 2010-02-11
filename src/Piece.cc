@@ -250,13 +250,14 @@ bool Piece::isHashCalculated() const
   return !_mdctx.isNull() && _nextBegin == length;
 }
 
-// TODO should be getHashString()
 std::string Piece::getHashString()
 {
   if(_mdctx.isNull()) {
     return A2STR::NIL;
   } else {
-    return util::toHex(_mdctx->digestFinal());
+    std::string hash = util::toHex(_mdctx->digestFinal());
+    destroyHashContext();
+    return hash;
   }
 }
 

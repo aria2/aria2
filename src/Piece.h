@@ -164,8 +164,10 @@ public:
 
   bool isHashCalculated() const;
 
-  // Returns hash value in ASCII hexadecimal form.
-  // WARN: This function must be called only once.
+  // Returns hash value in ASCII hexadecimal form, which is calculated
+  // by updateHash().  Please note that this function returns hash
+  // value only once. Second invocation without updateHash() returns
+  // empty string.
   std::string getHashString();
 
   void destroyHashContext();
