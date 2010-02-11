@@ -98,11 +98,12 @@ public:
   // TODO This function only used by unit tests
   bool getMissingUnusedBlockIndex(size_t& index) const;
 
-  // Stores at most n missing unused block index to indexes. For all i
-  // in indexes, call bitfield->setUseBit(i). This function just add
-  // index to indexes and it doesn't remove anything from
-  // it. Therefore Caller must pass empty indexes.
-  bool getMissingUnusedBlockIndex(std::vector<size_t>& indexes, size_t n) const;
+  // Appends at most n missing unused block index to indexes. For all
+  // i in retrieved indexes, call bitfield->setUseBit(i). This
+  // function just append index to indexes and it doesn't remove
+  // anything from it. Returns the number of indexes to retrieved.
+  size_t getMissingUnusedBlockIndex
+  (std::vector<size_t>& indexes, size_t n) const;
 
   bool getFirstMissingBlockIndexWithoutLock(size_t& index) const;
   bool getAllMissingBlockIndexes(unsigned char* misbitfield,

@@ -1,5 +1,16 @@
 2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved getFirstNMissingIndex to bitfield.h and made it return the
+	number of appended indexes.
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/Piece.cc
+	* src/Piece.h
+	* src/bitfield.h
+	* test/BitfieldManTest.cc
+
+2010-02-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added more tests.
 	* test/BitfieldManTest.cc
 

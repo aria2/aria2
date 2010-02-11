@@ -147,12 +147,13 @@ public:
    */
   bool getFirstMissingUnusedIndex(size_t& index) const;
   /**
-   * Stores at most n missing unused index in out. This function
-   * doesn't delete existing elements in out.
+   * Appends at most n missing unused index to out. This function
+   * doesn't delete existing elements in out.  Returns the number of
+   * appended elements.
    *
    * affected by filter
    */
-  bool getFirstNMissingUnusedIndex(std::vector<size_t>& out, size_t n) const;
+  size_t getFirstNMissingUnusedIndex(std::vector<size_t>& out, size_t n) const;
   /**
    * affected by filter
    */
