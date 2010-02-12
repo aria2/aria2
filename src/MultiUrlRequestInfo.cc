@@ -190,6 +190,9 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
       }
     }
   } catch(RecoverableException& e) {
+    if(returnValue == downloadresultcode::FINISHED) {
+      returnValue = downloadresultcode::UNKNOWN_ERROR;
+    }
     _logger->error(EX_EXCEPTION_CAUGHT, e);
   }
 #ifdef SIGHUP

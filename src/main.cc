@@ -195,105 +195,105 @@ downloadresultcode::RESULT main(int argc, char* argv[])
       SocketCore::useSelect();
     }
   downloadresultcode::RESULT exitStatus = downloadresultcode::FINISHED;
-  try {
-    Logger* logger = LogFactory::getInstance();
-    logger->info("<<--- --- --- ---");
-    logger->info("  --- --- --- ---");
-    logger->info("  --- --- --- --->>");
-    logger->info("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET);
-    logger->info(MSG_LOGGING_STARTED);
+
+  Logger* logger = LogFactory::getInstance();
+  logger->info("<<--- --- --- ---");
+  logger->info("  --- --- --- ---");
+  logger->info("  --- --- --- --->>");
+  logger->info("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET);
+  logger->info(MSG_LOGGING_STARTED);
 
 #ifdef ENABLE_MESSAGE_DIGEST
-    MessageDigestHelper::staticSHA1DigestInit();
+  MessageDigestHelper::staticSHA1DigestInit();
 #endif // ENABLE_MESSAGE_DIGEST
 
-    if(op->getAsBool(PREF_DISABLE_IPV6)) {
-      SocketCore::setProtocolFamily(AF_INET);
-      // Get rid of AI_ADDRCONFIG. It causes name resolution error
-      // when none of network interface has IPv4 address.
-      setDefaultAIFlags(0);
-    }
-    // Bind interface
-    if(!op->get(PREF_INTERFACE).empty()) {
-      std::string iface = op->get(PREF_INTERFACE);
-      SocketCore::bindAddress(iface);
-    }
+  if(op->getAsBool(PREF_DISABLE_IPV6)) {
+    SocketCore::setProtocolFamily(AF_INET);
+    // Get rid of AI_ADDRCONFIG. It causes name resolution error
+    // when none of network interface has IPv4 address.
+    setDefaultAIFlags(0);
+  }
+  // Bind interface
+  if(!op->get(PREF_INTERFACE).empty()) {
+    std::string iface = op->get(PREF_INTERFACE);
+    SocketCore::bindAddress(iface);
+  }
 
 #ifdef SIGPIPE
-    util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
+  util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
 #ifdef SIGCHLD
-    // Avoid to create zombie process when forked child processes are
-    // died.
-    util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
+  // Avoid to create zombie process when forked child processes are
+  // died.
+  util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
 #endif // SIGCHILD
-    std::deque<SharedHandle<RequestGroup> > requestGroups;
+  std::deque<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT
-    if(!op->blank(PREF_TORRENT_FILE)) {
+  if(!op->blank(PREF_TORRENT_FILE)) {
+    if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+      showTorrentFile(op->get(PREF_TORRENT_FILE));
+      return exitStatus;
+    } else {
+      createRequestGroupForBitTorrent(requestGroups, op, args);
+    }
+  }
+  else
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+    if(!op->blank(PREF_METALINK_FILE)) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-        showTorrentFile(op->get(PREF_TORRENT_FILE));
+        showMetalinkFile(op->get(PREF_METALINK_FILE), op);
         return exitStatus;
       } else {
-        createRequestGroupForBitTorrent(requestGroups, op, args);
+        createRequestGroupForMetalink(requestGroups, op);
       }
     }
     else
-#endif // ENABLE_BITTORRENT
-#ifdef ENABLE_METALINK
-      if(!op->blank(PREF_METALINK_FILE)) {
-        if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-          showMetalinkFile(op->get(PREF_METALINK_FILE), op);
-          return exitStatus;
-        } else {
-          createRequestGroupForMetalink(requestGroups, op);
-        }
-      }
-      else
 #endif // ENABLE_METALINK
-        if(!op->blank(PREF_INPUT_FILE)) {
-          createRequestGroupForUriList(requestGroups, op);
+      if(!op->blank(PREF_INPUT_FILE)) {
+        createRequestGroupForUriList(requestGroups, op);
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
-        } else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-          showFiles(args, op);
-          return exitStatus;
+      } else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+        showFiles(args, op);
+        return exitStatus;
 #endif // ENABLE_METALINK || ENABLE_METALINK
-        } else {
-          createRequestGroupForUri(requestGroups, op, args);
-        }
+      } else {
+        createRequestGroupForUri(requestGroups, op, args);
+      }
 
-    // Remove option values which is only valid for URIs specified in
-    // command-line. If they are left, because op is used as a
-    // template for new RequestGroup(such as created in XML-RPC
-    // command), they causes unintentional effect.
-    op->remove(PREF_OUT);
-    op->remove(PREF_FORCE_SEQUENTIAL);
-    op->remove(PREF_INPUT_FILE);
-    op->remove(PREF_INDEX_OUT);
-    op->remove(PREF_SELECT_FILE);
-    if(
+  // Remove option values which is only valid for URIs specified in
+  // command-line. If they are left, because op is used as a
+  // template for new RequestGroup(such as created in XML-RPC
+  // command), they causes unintentional effect.
+  op->remove(PREF_OUT);
+  op->remove(PREF_FORCE_SEQUENTIAL);
+  op->remove(PREF_INPUT_FILE);
+  op->remove(PREF_INDEX_OUT);
+  op->remove(PREF_SELECT_FILE);
+  if(
 #ifdef ENABLE_XML_RPC
-       !op->getAsBool(PREF_ENABLE_XML_RPC) &&
+     !op->getAsBool(PREF_ENABLE_XML_RPC) &&
 #endif // ENABLE_XML_RPC
-       requestGroups.empty()) {
-      std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
-    } else {
-      exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
-                                       getSummaryOut(op)).execute();
-    }
-  } catch(Exception& ex) {
-    std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
-    exitStatus = downloadresultcode::UNKNOWN_ERROR;
+     requestGroups.empty()) {
+    std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
+  } else {
+    exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
+                                     getSummaryOut(op)).execute();
   }
-  LogFactory::release();
   return exitStatus;
 }
 
 } // namespace aria2
 
-int main(int argc, char* argv[]) {
-  aria2::Platform platform;
-
-  aria2::downloadresultcode::RESULT r = aria2::main(argc, argv);
-
+int main(int argc, char* argv[])
+{
+  aria2::downloadresultcode::RESULT r;
+  try {
+    aria2::Platform platform;
+    r = aria2::main(argc, argv);
+  } catch(aria2::Exception& ex) {
+    std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
+    r = aria2::downloadresultcode::UNKNOWN_ERROR;
+  }
   return r;
 }
