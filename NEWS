@@ -1,3 +1,24 @@
+aria2 1.8.3
+===========
+
+Release Note
+------------
+
+This release fixes the bug that --file-allocation=falloc doesn't work
+with single file download. It also fixes the bug that the return value
+of aria2 is unreliable if error occurs before download begins.
+
+Changes
+-------
+
+ * Fixed the bug that aria2 doesn't handle return value if error
+   occurred before download begins.
+
+ * Fixed the bug that --file-allocation=falloc doesn't work with
+   single file download.
+
+
+
 aria2 1.8.2
 ===========
 
