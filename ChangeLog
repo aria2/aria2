@@ -1,3 +1,9 @@
+2010-02-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Bump up version number to 1.8.3
+	* configure.ac
+	* doc/aria2c.1.txt
+
 2010-02-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that aria2 doesn't handle return value if error
