@@ -1,5 +1,10 @@
 2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed test file
+	* test/CookieStorageTest.cc
+
+2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Check both EAGAIN and EWOULDBLOCK
 	* src/SocketCore.cc
 
