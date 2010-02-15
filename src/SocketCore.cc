@@ -71,6 +71,7 @@ namespace aria2 {
 # define A2_EINPROGRESS WSAEWOULDBLOCK
 # define A2_EWOULDBLOCK WSAEWOULDBLOCK
 # define A2_EINTR WSAEINTR
+# define A2_WOULDBLOCK(e) (e == WSAEWOULDBLOCK)
 #else // !__MINGW32__
 # define A2_EINPROGRESS EINPROGRESS
 # ifndef EWOULDBLOCK
@@ -78,6 +79,7 @@ namespace aria2 {
 # endif // EWOULDBLOCK
 # define A2_EWOULDBLOCK EWOULDBLOCK
 # define A2_EINTR EINTR
+# define A2_WOULDBLOCK(e) (e == EWOULDBLOCK || e == EAGAIN)
 #endif // !__MINGW32__
 
 #ifdef __MINGW32__
@@ -614,7 +616,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
   if(!secure) {
     while((ret = send(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
     if(ret == -1) {
-      if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
+      if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
         _wantWrite = true;
         ret = 0;
       } else {
@@ -658,7 +660,7 @@ void SocketCore::readData(char* data, size_t& len)
     while((ret = recv(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
     
     if(ret == -1) {
-      if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
+      if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
         _wantRead = true;
         ret = 0;
       } else {
@@ -704,7 +706,7 @@ void SocketCore::peekData(char* data, size_t& len)
     while((ret = recv(sockfd, data, len, MSG_PEEK)) == -1 &&
           SOCKET_ERRNO == A2_EINTR);
     if(ret == -1) {
-      if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
+      if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
         _wantRead = true;
         ret = 0;
       } else {
@@ -1056,7 +1058,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
     if(r == static_cast<ssize_t>(len)) {
       break;
     }
-    if(r == -1 && SOCKET_ERRNO == A2_EWOULDBLOCK) {
+    if(r == -1 && A2_WOULDBLOCK(SOCKET_ERRNO)) {
       _wantWrite = true;
       r = 0;
       break;
@@ -1081,7 +1083,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   while((r = recvfrom(sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
         A2_EINTR == SOCKET_ERRNO);
   if(r == -1) {
-    if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
+    if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
       _wantRead = true;
       r = 0;
     } else {
