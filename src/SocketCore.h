@@ -136,10 +136,6 @@ private:
 #endif // HAVE_EPOLL
 
   SocketCore(sock_t sockfd, int sockType);
-
-  static int error();
-  static const char *errorMsg();
-  static const char *errorMsg(const int err);
 public:
   SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();

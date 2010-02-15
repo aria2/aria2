@@ -1,3 +1,29 @@
+2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed test file
+	* test/CookieStorageTest.cc
+
+2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Check both EAGAIN and EWOULDBLOCK
+	* src/SocketCore.cc
+
+2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed ret == 0 checking for SSL_read(), SSL_write() and
+	SSL_peek() because the checks are done in the caller.  In
+	SocketBuffer::send(), throw exception if nothing could be written
+	and socket error was not EWOULDBLOCK
+	* src/SocketBuffer.cc
+	* src/SocketCore.cc
+
+2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed error code handling so that it can handle Winsock2 error
+	code.
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
 2010-02-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Bump up version number to 1.8.3

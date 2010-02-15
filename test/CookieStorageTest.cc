@@ -348,9 +348,9 @@ void CookieStorageTest::testSaveNsFormat_fail()
 {
   std::string filename = "/tmp/aria2_CookieStorageTest_testSaveNsFormat_fail";
   File f(filename);
-  if(!f.exists()) {
-    f.mkdirs();
-  }
+  f.remove();
+  f.mkdirs();
+  CPPUNIT_ASSERT(f.isDir());
   CookieStorage st;
   CPPUNIT_ASSERT(!st.saveNsFormat(filename));
 }
