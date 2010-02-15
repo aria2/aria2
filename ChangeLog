@@ -1,3 +1,10 @@
+2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed error code handling so that it can handle Winsock2 error
+	code.
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
 2010-02-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Bump up version number to 1.9.0a

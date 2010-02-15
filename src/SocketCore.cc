@@ -59,6 +59,8 @@
 # include "TLSContext.h"
 #endif // ENABLE_SSL
 
+namespace aria2 {
+
 #ifndef __MINGW32__
 # define SOCKET_ERRNO (errno)
 #else
@@ -67,9 +69,16 @@
 
 #ifdef __MINGW32__
 # define A2_EINPROGRESS WSAEWOULDBLOCK
-#else
+# define A2_EWOULDBLOCK WSAEWOULDBLOCK
+# define A2_EINTR WSAEINTR
+#else // !__MINGW32__
 # define A2_EINPROGRESS EINPROGRESS
-#endif // __MINGW32__
+# ifndef EWOULDBLOCK
+#  define EWOULDBLOCK EAGAIN
+# endif // EWOULDBLOCK
+# define A2_EWOULDBLOCK EWOULDBLOCK
+# define A2_EINTR EINTR
+#endif // !__MINGW32__
 
 #ifdef __MINGW32__
 # define CLOSE(X) ::closesocket(X)
@@ -77,7 +86,32 @@
 # define CLOSE(X) while(close(X) == -1 && errno == EINTR)
 #endif // __MINGW32__
 
-namespace aria2 {
+static const char *errorMsg(const int err)
+{
+#ifndef __MINGW32__
+  return strerror(err);
+#else
+  static char buf[256];
+  if (FormatMessage(
+                    FORMAT_MESSAGE_FROM_SYSTEM |
+                    FORMAT_MESSAGE_IGNORE_INSERTS,
+                    NULL,
+                    err,
+                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                    (LPTSTR) &buf,
+                    sizeof(buf),
+                    NULL
+                    ) == 0) {
+    snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, err, err);
+  }
+  return buf;
+#endif // __MINGW32__
+}
+
+static const char *errorMsg()
+{
+  return errorMsg(SOCKET_ERRNO);
+}
 
 #ifdef HAVE_EPOLL
 SocketCore::PollMethod SocketCore::_pollMethod = SocketCore::POLL_METHOD_EPOLL;
@@ -181,7 +215,7 @@ static sock_t bindInternal(int family, int socktype, int protocol,
   }
   if(::bind(fd, addr, addrlen) == -1) {
     if(LogFactory::getInstance()->debug()) {
-      LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+      LogFactory::getInstance()->debug(EX_SOCKET_BIND, errorMsg());
     }
     CLOSE(fd);
     return -1;
@@ -209,7 +243,7 @@ static sock_t bindTo
       return fd;
     }
   }
-  error = strerror(errno);
+  error = errorMsg();
   return -1;
 }
 
@@ -255,7 +289,7 @@ void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
   if(fd != (sock_t)-1) {
     sockfd = fd;
   } else {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, strerror(errno)).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, errorMsg()).str());
   }
 }
 
@@ -271,7 +305,7 @@ SocketCore* SocketCore::acceptConnection() const
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
   sock_t fd;
-  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == (sock_t) -1 && SOCKET_ERRNO == EINTR);
+  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == (sock_t) -1 && SOCKET_ERRNO == A2_EINTR);
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
   }
@@ -331,7 +365,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
         if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
                   (*i).second) == -1) {
           if(LogFactory::getInstance()->debug()) {
-            LogFactory::getInstance()->debug(EX_SOCKET_BIND, strerror(errno));
+            LogFactory::getInstance()->debug(EX_SOCKET_BIND, errorMsg());
           }
         } else {
           bindSuccess = true;
@@ -359,7 +393,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   }
   if(sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
-                                   strerror(errno)).str());
+                                   errorMsg()).str());
   }
 }
 
@@ -479,7 +513,7 @@ bool SocketCore::isWritable(time_t timeout)
         // time out
         return false;
       } else {
-        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
           return false;
         } else {
           throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
@@ -532,7 +566,7 @@ bool SocketCore::isReadable(time_t timeout)
         // time out
         return false;
       } else {
-        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == EINTR) {
+        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
           return false;
         } else {
           throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
@@ -578,9 +612,9 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
   _wantWrite = false;
 
   if(!secure) {
-    while((ret = send(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == EINTR);
+    while((ret = send(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
     if(ret == -1) {
-      if(SOCKET_ERRNO == EAGAIN) {
+      if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
         _wantWrite = true;
         ret = 0;
       } else {
@@ -626,10 +660,10 @@ void SocketCore::readData(char* data, size_t& len)
   _wantWrite = false;
 
   if(!secure) {    
-    while((ret = recv(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == EINTR);
+    while((ret = recv(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
     
     if(ret == -1) {
-      if(SOCKET_ERRNO == EAGAIN) {
+      if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
         _wantRead = true;
         ret = 0;
       } else {
@@ -642,6 +676,8 @@ void SocketCore::readData(char* data, size_t& len)
     // TODO handling len == 0 case required
     ret = SSL_read(ssl, data, len);
     if(ret == 0) {
+      // TODO Check this is really an error with SSL_get_error().
+      // Or not throw exception and just return 0
       throw DL_RETRY_EX
         (StringFormat
          (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
@@ -677,9 +713,10 @@ void SocketCore::peekData(char* data, size_t& len)
   _wantWrite = false;
 
   if(!secure) {
-    while((ret = recv(sockfd, data, len, MSG_PEEK)) == -1 && SOCKET_ERRNO == EINTR);
+    while((ret = recv(sockfd, data, len, MSG_PEEK)) == -1 &&
+          SOCKET_ERRNO == A2_EINTR);
     if(ret == -1) {
-      if(SOCKET_ERRNO == EAGAIN) {
+      if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
         _wantRead = true;
         ret = 0;
       } else {
@@ -1014,38 +1051,6 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
   }
 }
 
-/* static */ int SocketCore::error()
-{
-  return SOCKET_ERRNO;
-}
-
-/* static */ const char *SocketCore::errorMsg()
-{
-  return errorMsg(SOCKET_ERRNO);
-}
-
-/* static */ const char *SocketCore::errorMsg(const int err)
-{
-#ifndef __MINGW32__
-  return strerror(err);
-#else
-  static char buf[256];
-  if (FormatMessage(
-                    FORMAT_MESSAGE_FROM_SYSTEM |
-                    FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL,
-                    err,
-                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                    (LPTSTR) &buf,
-                    sizeof(buf),
-                    NULL
-                    ) == 0) {
-    snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, err, err);
-  }
-  return buf;
-#endif // __MINGW32__
-}
-
 ssize_t SocketCore::writeData(const char* data, size_t len,
                               const std::string& host, uint16_t port)
 {
@@ -1063,11 +1068,12 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   struct addrinfo* rp;
   ssize_t r = -1;
   for(rp = res; rp; rp = rp->ai_next) {
-    while((r = sendto(sockfd, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1 && EINTR == SOCKET_ERRNO);
+    while((r = sendto(sockfd, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1
+          && A2_EINTR == SOCKET_ERRNO);
     if(r == static_cast<ssize_t>(len)) {
       break;
     }
-    if(r == -1 && SOCKET_ERRNO == EAGAIN) {
+    if(r == -1 && SOCKET_ERRNO == A2_EWOULDBLOCK) {
       _wantWrite = true;
       r = 0;
       break;
@@ -1090,9 +1096,9 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   ssize_t r;
   while((r = recvfrom(sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
-        EINTR == SOCKET_ERRNO);
+        A2_EINTR == SOCKET_ERRNO);
   if(r == -1) {
-    if(SOCKET_ERRNO == EAGAIN) {
+    if(SOCKET_ERRNO == A2_EWOULDBLOCK) {
       _wantRead = true;
       r = 0;
     } else {
@@ -1155,7 +1161,7 @@ void SocketCore::bindAddress(const std::string& iface)
   if(getifaddrs(&ifaddr) == -1) {
     throw DL_ABORT_EX
       (StringFormat(MSG_INTERFACE_NOT_FOUND,
-                    iface.c_str(), strerror(errno)).str());
+                    iface.c_str(), errorMsg()).str());
   } else {
     auto_delete<struct ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
     for(struct ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
