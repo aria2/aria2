@@ -624,11 +624,6 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
   } else {
 #ifdef HAVE_LIBSSL
     ret = SSL_write(ssl, data, len);
-    if(ret == 0) {
-      throw DL_RETRY_EX
-        (StringFormat
-         (EX_SOCKET_SEND, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
-    }
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }
@@ -675,13 +670,6 @@ void SocketCore::readData(char* data, size_t& len)
     // for SSL
     // TODO handling len == 0 case required
     ret = SSL_read(ssl, data, len);
-    if(ret == 0) {
-      // TODO Check this is really an error with SSL_get_error().
-      // Or not throw exception and just return 0
-      throw DL_RETRY_EX
-        (StringFormat
-         (EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
-    }
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }
@@ -728,11 +716,6 @@ void SocketCore::peekData(char* data, size_t& len)
     // for SSL
     // TODO handling len == 0 case required
     ret = SSL_peek(ssl, data, len);
-    if(ret == 0) {
-      throw DL_RETRY_EX
-        (StringFormat(EX_SOCKET_PEEK,
-                      ERR_error_string(SSL_get_error(ssl, ret), 0)).str());
-    }
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }

@@ -1,5 +1,14 @@
 2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed ret == 0 checking for SSL_read(), SSL_write() and
+	SSL_peek() because the checks are done in the caller.  In
+	SocketBuffer::send(), throw exception if nothing could be written
+	and socket error was not EWOULDBLOCK
+	* src/SocketBuffer.cc
+	* src/SocketCore.cc
+
+2010-02-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed error code handling so that it can handle Winsock2 error
 	code.
 	* src/SocketCore.cc

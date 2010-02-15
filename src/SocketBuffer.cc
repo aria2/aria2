@@ -33,8 +33,13 @@
  */
 /* copyright --> */
 #include "SocketBuffer.h"
-#include "SocketCore.h"
+
 #include <cassert>
+
+#include "SocketCore.h"
+#include "DlAbortEx.h"
+#include "message.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -61,6 +66,9 @@ ssize_t SocketBuffer::send()
   }
   ssize_t len = _socket->writeData(_sendbuf.c_str(),
                                    _sendbuf.size());
+  if(len == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, "Connection closed.").str());
+  }
   _sendbuf.erase(0, len);
   return len;
 }
