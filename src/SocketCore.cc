@@ -79,7 +79,11 @@ namespace aria2 {
 # endif // EWOULDBLOCK
 # define A2_EWOULDBLOCK EWOULDBLOCK
 # define A2_EINTR EINTR
-# define A2_WOULDBLOCK(e) (e == EWOULDBLOCK || e == EAGAIN)
+# if EWOULDBLOCK == EAGAIN
+#  define A2_WOULDBLOCK(e) (e == EWOULDBLOCK)
+# else // EWOULDBLOCK != EAGAIN
+#  define A2_WOULDBLOCK(e) (e == EWOULDBLOCK || e == EAGAIN)
+# endif // EWOULDBLOCK != EAGAIN
 #endif // !__MINGW32__
 
 #ifdef __MINGW32__
