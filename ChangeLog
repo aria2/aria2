@@ -1,5 +1,10 @@
 2010-02-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Print CXXFLAGS
+	* configure.ac
+
+2010-02-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Small optimization for A2_WOULDBLOCK(e)
 	* src/SocketCore.cc
 
