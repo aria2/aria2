@@ -115,7 +115,7 @@ void split(std::pair<std::string, std::string>& hp, const std::string& src, char
   hp.second = A2STR::NIL;
   std::string::size_type p = src.find(delim);
   if(p == std::string::npos) {
-    hp.first = src;
+    hp.first = trim(src);
     hp.second = A2STR::NIL;
   } else {
     hp.first = trim(src.substr(0, p));
@@ -130,7 +130,7 @@ std::pair<std::string, std::string> split(const std::string& src, const std::str
   hp.second = A2STR::NIL;
   std::string::size_type p = src.find_first_of(delims);
   if(p == std::string::npos) {
-    hp.first = src;
+    hp.first = trim(src);
     hp.second = A2STR::NIL;
   } else {
     hp.first = trim(src.substr(0, p));
@@ -610,36 +610,100 @@ void parsePrioritizePieceRange
   result.insert(result.end(), indexes.begin(), indexes.end());
 }
 
-std::string getContentDispositionFilename(const std::string& header) {
-  static const std::string keyName = "filename=";
-  std::string::size_type attributesp = header.find(keyName);
-  if(attributesp == std::string::npos) {
-    return A2STR::NIL;
-  }
-  std::string::size_type filenamesp = attributesp+keyName.size();
-  std::string::size_type filenameep;
-  if(filenamesp == header.size()) {
-    return A2STR::NIL;
-  }
-  
-  if(header[filenamesp] == '\'' || header[filenamesp] == '"') {
-    char quoteChar = header[filenamesp];
-    filenameep = header.find(quoteChar, filenamesp+1);
-  } else {
-    filenameep = header.find(';', filenamesp);
-  }
-  if(filenameep == std::string::npos) {
-    filenameep = header.size();
-  }
-  static const std::string TRIMMED("\r\n '\"");
-  std::string fn =
-    File(trim(header.substr
-              (filenamesp, filenameep-filenamesp), TRIMMED)).getBasename();
+static std::string trimBasename(const std::string& src)
+{
+  static const std::string TRIMMED("\r\n\t '\"");
+  std::string fn = File(trim(src, TRIMMED)).getBasename();
   if(fn == ".." || fn == A2STR::DOT_C) {
-    return A2STR::NIL;
-  } else {
-    return fn;
+    fn = A2STR::NIL;
   }
+  return fn;
+}
+
+std::string iso8859ToUtf8(const std::string& src)
+{
+  std::string dest;
+  for(std::string::const_iterator itr = src.begin(); itr != src.end(); ++itr) {
+    unsigned char c = *itr;
+    if(0xa0 <= c && c <= 0xff) {
+      if(c <= 0xbf) {
+        dest += 0xc2;
+      } else {
+        dest += 0xc3;
+      }
+      dest += c&(~0x40);
+    } else {
+      dest += c;
+    }
+  }
+  return dest;
+}
+
+std::string getContentDispositionFilename(const std::string& header)
+{
+  std::string filename;
+  std::vector<std::string> params;
+  split(header, std::back_inserter(params), A2STR::SEMICOLON_C, true);
+  for(std::vector<std::string>::iterator i = params.begin();
+      i != params.end(); ++i) {
+    std::string& param = *i;
+    static const std::string keyName = "filename";
+    if(!startsWith(param, keyName)) {
+      continue;
+    }
+    std::string::iterator markeritr = param.begin()+keyName.size();
+    for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
+    if(markeritr == param.end()) {
+      continue;
+    }
+    if(*markeritr == '=') {
+      std::pair<std::string, std::string> paramPair;
+      split(paramPair, param, '=');
+      std::string value = paramPair.second;
+      if(value.empty()) {
+        continue;
+      }
+      std::string::iterator filenameLast;
+      if(*value.begin() == '\'' || *value.begin() == '"') {
+        char qc = *value.begin();
+        for(filenameLast = value.begin()+1;
+            filenameLast != value.end() && *filenameLast != qc;
+            ++filenameLast);
+      } else {
+        filenameLast = value.end();
+      }
+      value = trimBasename(std::string(value.begin(), filenameLast));
+      if(value.empty()) {
+        continue;
+      }
+      filename = urldecode(value);
+      // continue because there is a chance we can find filename*=...
+    } else if(*markeritr == '*') {
+      // See RFC2231 Section4 and draft-reschke-rfc2231-in-http.
+      // Please note that this function doesn't do charset conversion
+      // except that if iso-8859-1 is specified, it is converted to
+      // utf-8.
+      std::pair<std::string, std::string> paramPair;
+      split(paramPair, param, '=');
+      std::string value = paramPair.second;
+      std::vector<std::string> extValues;
+      split(value, std::back_inserter(extValues), "'", false, true);
+      if(extValues.size() != 3) {
+        continue;
+      }
+      value = trimBasename(extValues[2]);
+      if(value.empty()) {
+        continue;
+      }
+      value = urldecode(value);
+      if(extValues[0] == "iso-8859-1") {
+        value = iso8859ToUtf8(value);
+      }
+      filename = value;
+      break;
+    }
+  }
+  return filename;
 }
 
 std::string randomAlpha(size_t length, const RandomizerHandle& randomizer) {

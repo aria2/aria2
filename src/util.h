@@ -212,7 +212,9 @@ void parsePrioritizePieceRange
  size_t pieceLength,
  uint64_t defaultSize = 1048576 /* 1MiB */);
 
-// this function temporarily put here
+// Converts ISO/IEC 8859-1 string src to utf-8.
+std::string iso8859ToUtf8(const std::string& src);
+
 std::string getContentDispositionFilename(const std::string& header);
 
 std::string randomAlpha(size_t length,
@@ -317,7 +319,8 @@ std::map<size_t, std::string> createIndexPathMap(std::istream& i);
  */
 template<typename OutputIterator>
 OutputIterator split(const std::string& src, OutputIterator out,
-                     const std::string& delims, bool doTrim = false)
+                     const std::string& delims, bool doTrim = false,
+                     bool allowEmpty = false)
 {
   std::string::size_type p = 0;
   while(1) {
@@ -327,7 +330,7 @@ OutputIterator split(const std::string& src, OutputIterator out,
       if(doTrim) {
         term = util::trim(term);
       }
-      if(!term.empty()) {
+      if(allowEmpty || !term.empty()) {
         *out = term;
         ++out;
       }
@@ -338,7 +341,7 @@ OutputIterator split(const std::string& src, OutputIterator out,
       term = util::trim(term);
     }
     p = np+1;
-    if(!term.empty()) {
+    if(allowEmpty || !term.empty()) {
       *out = term;
       ++out;
     }

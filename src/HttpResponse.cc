@@ -110,7 +110,7 @@ std::string HttpResponse::determinFilename() const
   } else {
     logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
                  cuid, contentDisposition.c_str());
-    return util::urldecode(contentDisposition);
+    return contentDisposition;
   }
 }
 
