@@ -1,5 +1,11 @@
 2010-02-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed setlocale() for LC_CTYPE. It may affect isxdigit in
+	util.cc
+	* src/Platform.cc
+
+2010-02-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Support RFC2231 "Parameter Value Character Set and Language
 	Information" in Content-Disposition header.
 	* src/HttpResponse.cc
