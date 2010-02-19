@@ -91,6 +91,7 @@ bool Platform::setUp()
   _initialized = true;
 
 #ifdef ENABLE_NLS
+  setlocale (LC_CTYPE, "");
   setlocale (LC_MESSAGES, "");
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);

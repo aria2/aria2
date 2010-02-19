@@ -1,5 +1,12 @@
 2010-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Reverted changes in r1893. setlocale(LC_CTYPE, "") is needed
+	because without it localized error messages are not printed
+	correctly.
+	* src/Platform.cc
+
+2010-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added unit tests for util::getContentDispositionFilename() from
 	http://greenbytes.de/tech/tc2231/ Fixed the function so that added
 	tests are passed.
