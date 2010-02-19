@@ -936,8 +936,8 @@ bool isNumber(const std::string& what)
   if(what.empty()) {
     return false;
   }
-  for(uint32_t i = 0; i < what.size(); ++i) {
-    if(!isdigit(what[i])) {
+  for(std::string::const_iterator i = what.begin(); i != what.end(); ++i) {
+    if(!isDigit(*i)) {
       return false;
     }
   }
