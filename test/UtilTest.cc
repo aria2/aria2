@@ -314,9 +314,6 @@ void UtilTest::testGetContentDispositionFilename() {
   CPPUNIT_ASSERT_EQUAL(std::string(),
                        util::getContentDispositionFilename(currentDir));
   // RFC2231 Section4
-  std::string extparam1 = "attachment; filename * = UTF-8'ja'filename";
-  CPPUNIT_ASSERT_EQUAL(std::string("filename"),
-                       util::getContentDispositionFilename(extparam1));
   std::string extparam2 = "filename*=''aria2";
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
                        util::getContentDispositionFilename(extparam2));
@@ -338,12 +335,53 @@ void UtilTest::testGetContentDispositionFilename() {
   std::string extparam8 = "filename=aria2;filename*=UTF-8''hello%20world";
   CPPUNIT_ASSERT_EQUAL(std::string("hello world"),
                        util::getContentDispositionFilename(extparam8));
-  std::string extparam9 = "filename*=iso-8859-1''%A3";
+  std::string extparam9 = "filename*=ISO-8859-1''%A3";
   std::string extparam9ans;
   extparam9ans += 0xc2;
   extparam9ans += 0xa3;
   CPPUNIT_ASSERT_EQUAL(extparam9ans,
                        util::getContentDispositionFilename(extparam9));
+
+  // Tests from http://greenbytes.de/tech/tc2231/
+  // attwithasciifnescapedchar
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo.html"),
+     util::getContentDispositionFilename("filename=\"f\\oo.html\""));
+  // attwithasciifilenameucase
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo.html"),
+     util::getContentDispositionFilename("FILENAME=\"foo.html\""));
+  // attwithisofn2231iso
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä.html"),
+     util::getContentDispositionFilename("filename*=iso-8859-1''foo-%E4.html"));
+  // attwithfn2231utf8
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä-€.html"),
+     util::getContentDispositionFilename
+     ("filename*=UTF-8''foo-%c3%a4-%e2%82%ac.html"));
+  // attwithfn2231utf8-bad
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename
+     ("filename*=iso-8859-1''foo-%c3%a4-%e2%82%ac.html"));
+  // attwithfn2231ws1
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename("filename *=UTF-8''foo-%c3%a4.html"));
+  // attwithfn2231ws2
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä.html"),
+     util::getContentDispositionFilename("filename*= UTF-8''foo-%c3%a4.html"));
+  // attwithfn2231ws3
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä.html"),
+     util::getContentDispositionFilename("filename* =UTF-8''foo-%c3%a4.html"));
+  // attwithfn2231quot
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename
+     ("filename*=\"UTF-8''foo-%c3%a4.html\""));
 }
 
 class Printer {

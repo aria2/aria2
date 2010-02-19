@@ -1,3 +1,11 @@
+2010-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added unit tests for util::getContentDispositionFilename() from
+	http://greenbytes.de/tech/tc2231/ Fixed the function so that added
+	tests are passed.
+	* src/util.cc
+	* test/UtilTest.cc
+
 2010-02-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed setlocale() for LC_CTYPE. It may affect isxdigit in

@@ -201,6 +201,21 @@ std::string replace(const std::string& target, const std::string& oldstr, const 
   return result;
 }
 
+bool isAlpha(const char c)
+{
+  return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+}
+
+bool isDigit(const char c)
+{
+  return '0' <= c && c <= '9';
+}
+
+bool isHexDigit(const char c)
+{
+  return isDigit(c) || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f');
+}
+
 bool inRFC3986ReservedChars(const char c)
 {
   static const char reserved[] = {
@@ -214,13 +229,32 @@ bool inRFC3986ReservedChars(const char c)
 bool inRFC3986UnreservedChars(const char c)
 {
   static const char unreserved[] = { '-', '.', '_', '~' };
-  return
-    // ALPHA
-    ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') ||
-    // DIGIT
-    ('0' <= c && c <= '9') ||
+  return isAlpha(c) || isDigit(c) ||
     std::find(&unreserved[0], &unreserved[arrayLength(unreserved)], c) !=
     &unreserved[arrayLength(unreserved)];
+}
+
+bool inRFC2978MIMECharset(const char c)
+{
+  static const char chars[] = {
+    '!', '#', '$', '%', '&',
+    '\'', '+', '-', '^', '_',
+    '`', '{', '}', '~'
+  };
+  return isAlpha(c) || isDigit(c) ||
+    std::find(&chars[0], &chars[arrayLength(chars)], c) !=
+    &chars[arrayLength(chars)];
+}
+
+bool inRFC2616HttpToken(const char c)
+{
+  static const char chars[] = {
+    '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.',
+    '^', '_', '`', '|', '~'
+  };
+  return isAlpha(c) || isDigit(c) ||
+    std::find(&chars[0], &chars[arrayLength(chars)], c) !=
+    &chars[arrayLength(chars)];
 }
 
 std::string urlencode(const unsigned char* target, size_t len) {
@@ -244,9 +278,7 @@ std::string urlencode(const std::string& target)
 std::string torrentUrlencode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; ++i) {
-    if(('0' <= target[i] && target[i] <= '9') ||
-       ('A' <= target[i] && target[i] <= 'Z') ||
-       ('a' <= target[i] && target[i] <= 'z')) {
+    if(isAlpha(target[i]) || isDigit(target[i])) {
       dest += target[i];
     } else {
       dest.append(StringFormat("%%%02X", target[i]).str());
@@ -267,7 +299,7 @@ std::string urldecode(const std::string& target) {
       itr != target.end(); ++itr) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
-         isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
+         isHexDigit(*(itr+1)) && isHexDigit(*(itr+2))) {
         result += parseInt(std::string(itr+1, itr+3), 16);
         itr += 2;
       } else {
@@ -614,12 +646,16 @@ static std::string trimBasename(const std::string& src)
 {
   static const std::string TRIMMED("\r\n\t '\"");
   std::string fn = File(trim(src, TRIMMED)).getBasename();
+  std::string::iterator enditer = std::remove(fn.begin(), fn.end(), '\\');
+  fn = std::string(fn.begin(), enditer);
   if(fn == ".." || fn == A2STR::DOT_C) {
     fn = A2STR::NIL;
   }
   return fn;
 }
 
+// Converts ISO/IEC 8859-1 string to UTF-8 string.  If there is a
+// character not in ISO/IEC 8859-1, returns empty string.
 std::string iso8859ToUtf8(const std::string& src)
 {
   std::string dest;
@@ -632,6 +668,8 @@ std::string iso8859ToUtf8(const std::string& src)
         dest += 0xc3;
       }
       dest += c&(~0x40);
+    } else if(0x80 <= c && c <= 0x9f) {
+      return A2STR::NIL;
     } else {
       dest += c;
     }
@@ -648,15 +686,74 @@ std::string getContentDispositionFilename(const std::string& header)
       i != params.end(); ++i) {
     std::string& param = *i;
     static const std::string keyName = "filename";
-    if(!startsWith(param, keyName)) {
+    if(!startsWith(toLower(param), keyName) || param.size() == keyName.size()) {
       continue;
     }
     std::string::iterator markeritr = param.begin()+keyName.size();
-    for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
-    if(markeritr == param.end()) {
-      continue;
-    }
-    if(*markeritr == '=') {
+    if(*markeritr == '*') {
+      // See RFC2231 Section4 and draft-reschke-rfc2231-in-http.
+      // Please note that this function doesn't do charset conversion
+      // except that if iso-8859-1 is specified, it is converted to
+      // utf-8.
+      ++markeritr;
+      for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
+      if(markeritr == param.end() || *markeritr != '=') {
+        continue;
+      }
+      std::pair<std::string, std::string> paramPair;
+      split(paramPair, param, '=');
+      std::string value = paramPair.second;
+      std::vector<std::string> extValues;
+      split(value, std::back_inserter(extValues), "'", false, true);
+      if(extValues.size() != 3) {
+        continue;
+      }
+      bool bad = false;
+      const std::string& charset = extValues[0];
+      for(std::string::const_iterator j = charset.begin(); j != charset.end();
+          ++j) {
+        // Since we first split parameter by ', we can safely assume
+        // that ' is not included in charset.
+        if(!inRFC2978MIMECharset(*j)) {
+          bad = true;
+          break;
+        }
+      }
+      if(bad) {
+        continue;
+      }
+      bad = false;
+      value = extValues[2];
+      for(std::string::const_iterator j = value.begin(); j != value.end(); ++j){
+        if(*j == '%') {
+          if(j+1 != value.end() && isHexDigit(*(j+1)) &&
+             j+2 != value.end() && isHexDigit(*(j+2))) {
+            j += 2;
+          } else {
+            bad = true;
+            break;
+          }
+        } else {
+          if(*j == '*' || *j == '\'' || !inRFC2616HttpToken(*j)) {
+            bad = true;
+            break;
+          }
+        }
+      }
+      if(bad) {
+        continue;
+      }
+      value = trimBasename(urldecode(value));
+      if(toLower(extValues[0]) == "iso-8859-1") {
+        value = iso8859ToUtf8(value);
+      }
+      filename = value;
+      break;
+    } else {
+      for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
+      if(markeritr == param.end() || *markeritr != '=') {
+        continue;
+      }
       std::pair<std::string, std::string> paramPair;
       split(paramPair, param, '=');
       std::string value = paramPair.second;
@@ -672,35 +769,9 @@ std::string getContentDispositionFilename(const std::string& header)
       } else {
         filenameLast = value.end();
       }
-      value = trimBasename(std::string(value.begin(), filenameLast));
-      if(value.empty()) {
-        continue;
-      }
-      filename = urldecode(value);
-      // continue because there is a chance we can find filename*=...
-    } else if(*markeritr == '*') {
-      // See RFC2231 Section4 and draft-reschke-rfc2231-in-http.
-      // Please note that this function doesn't do charset conversion
-      // except that if iso-8859-1 is specified, it is converted to
-      // utf-8.
-      std::pair<std::string, std::string> paramPair;
-      split(paramPair, param, '=');
-      std::string value = paramPair.second;
-      std::vector<std::string> extValues;
-      split(value, std::back_inserter(extValues), "'", false, true);
-      if(extValues.size() != 3) {
-        continue;
-      }
-      value = trimBasename(extValues[2]);
-      if(value.empty()) {
-        continue;
-      }
-      value = urldecode(value);
-      if(extValues[0] == "iso-8859-1") {
-        value = iso8859ToUtf8(value);
-      }
+      value = trimBasename(urldecode(std::string(value.begin(), filenameLast)));
       filename = value;
-      break;
+      // continue because there is a chance we can find filename*=...
     }
   }
   return filename;
