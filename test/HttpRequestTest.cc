@@ -663,16 +663,16 @@ void HttpRequestTest::testAddHeader()
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
   httpRequest.addHeader("X-ARIA2: v0.13\nX-ARIA2-DISTRIBUTE: enabled\n");
-
+  httpRequest.addHeader("Accept: text/html");
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
-    "Accept: */*\r\n"
     "Host: localhost\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
     "X-ARIA2: v0.13\r\n"
     "X-ARIA2-DISTRIBUTE: enabled\r\n"
+    "Accept: text/html\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());

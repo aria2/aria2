@@ -40,6 +40,7 @@
 #include <cassert>
 #include <string>
 #include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "Request.h"
@@ -69,7 +70,7 @@ private:
 
   std::string userAgent;
 
-  std::deque<std::string> _headers;
+  std::vector<std::string> _headers;
 
   std::deque<std::string> _acceptTypes;
 
@@ -85,7 +86,7 @@ private:
 
   bool _noCache;
 
-  std::string getProxyAuthString() const;
+  std::pair<std::string, std::string> getProxyAuthString() const;
 public:
   HttpRequest();
 

@@ -49,6 +49,7 @@
 #include "AuthConfig.h"
 #include "a2functional.h"
 #include "TimeA2.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -155,59 +156,63 @@ std::string HttpRequest::createRequest()
     requestLine += getQuery();
   }
   requestLine += " HTTP/1.1\r\n";
-  strappend(requestLine, "User-Agent: ", userAgent, "\r\n");
-  
-  requestLine += "Accept: */*"; /* */
-  for(std::deque<std::string>::const_iterator i = _acceptTypes.begin();
-      i != _acceptTypes.end(); ++i) {
-    strappend(requestLine, ",", (*i));
-  }
-  requestLine += "\r\n";
 
+  std::vector<std::pair<std::string, std::string> > builtinHds;
+  builtinHds.reserve(20);
+  builtinHds.push_back(std::make_pair("User-Agent:", userAgent));
+  std::string acceptTypes = "*/*";
+  for(std::deque<std::string>::const_iterator i = _acceptTypes.begin(),
+        end = _acceptTypes.end(); i != end; ++i) {
+    strappend(acceptTypes, ",", (*i));
+  }
+  builtinHds.push_back(std::make_pair("Accept:", acceptTypes));
   if(_contentEncodingEnabled) {
     std::string acceptableEncodings;
 #ifdef HAVE_LIBZ
     acceptableEncodings += "deflate, gzip";
 #endif // HAVE_LIBZ
     if(!acceptableEncodings.empty()) {
-      strappend(requestLine, "Accept-Encoding: ", acceptableEncodings, "\r\n");
+      builtinHds.push_back
+        (std::make_pair("Accept-Encoding:", acceptableEncodings));
     }
   }
-
-  strappend(requestLine, "Host: ", getHostText(getURIHost(), getPort()), "\r\n");
+  builtinHds.push_back
+    (std::make_pair("Host:", getHostText(getURIHost(), getPort())));
   if(_noCache) {
-    requestLine += "Pragma: no-cache\r\n";
-    requestLine += "Cache-Control: no-cache\r\n";
+    builtinHds.push_back(std::make_pair("Pragma:", "no-cache"));
+    builtinHds.push_back(std::make_pair("Cache-Control:", "no-cache"));
   }
   if(!request->isKeepAliveEnabled() && !request->isPipeliningEnabled()) {
-    requestLine += "Connection: close\r\n";
+    builtinHds.push_back(std::make_pair("Connection:", "close"));
   }
   if(!segment.isNull() && segment->getLength() > 0 && 
      (request->isPipeliningEnabled() || getStartByte() > 0)) {
-    requestLine += "Range: bytes=";
-    requestLine += util::itos(getStartByte());
-    requestLine += "-";
+    std::string rangeHeader = "bytes=";
+    rangeHeader += util::itos(getStartByte());
+    rangeHeader += "-";
     if(request->isPipeliningEnabled()) {
-      requestLine += util::itos(getEndByte());
+      rangeHeader += util::itos(getEndByte());
     }
-    requestLine += "\r\n";
+    builtinHds.push_back(std::make_pair("Range:", rangeHeader));
   }
   if(!_proxyRequest.isNull()) {
     if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
-      requestLine += "Proxy-Connection: Keep-Alive\r\n";
+      builtinHds.push_back(std::make_pair("Proxy-Connection:", "Keep-Alive"));
     } else {
-      requestLine += "Proxy-Connection: close\r\n";
+      builtinHds.push_back(std::make_pair("Proxy-Connection:", "close"));
     }
   }
   if(!_proxyRequest.isNull() && !_proxyRequest->getUsername().empty()) {
-    requestLine += getProxyAuthString();
+    builtinHds.push_back(getProxyAuthString());
   }
   if(!_authConfig.isNull()) {
-    strappend(requestLine, "Authorization: Basic ",
-              Base64::encode(_authConfig->getAuthText()), "\r\n");
+    builtinHds.push_back
+      (std::make_pair("Authorization:",
+                      strconcat("Basic ",
+                                Base64::encode(_authConfig->getAuthText()))));
   }
   if(getPreviousURI().size()) {
-    strappend(requestLine, "Referer: ", getPreviousURI(), "\r\n");
+    builtinHds.push_back(std::make_pair("Referer:", getPreviousURI()));
   }
   if(!_cookieStorage.isNull()) {
     std::string cookiesValue;
@@ -217,21 +222,33 @@ std::string HttpRequest::createRequest()
                                    Time().getTime(),
                                    getProtocol() == Request::PROTO_HTTPS ?
                                    true : false);
-    for(std::deque<Cookie>::const_iterator itr = cookies.begin();
-        itr != cookies.end(); ++itr) {
+    for(std::deque<Cookie>::const_iterator itr = cookies.begin(),
+          end = cookies.end(); itr != end; ++itr) {
       strappend(cookiesValue, (*itr).toString(), ";");
     }
     if(!cookiesValue.empty()) {
-      strappend(requestLine, "Cookie: ", cookiesValue, "\r\n");
+      builtinHds.push_back(std::make_pair("Cookie:", cookiesValue));
+    }
+  }
+  for(std::vector<std::pair<std::string, std::string> >::iterator i =
+        builtinHds.begin(); i != builtinHds.end(); ++i) {
+    std::vector<std::string>::const_iterator j = _headers.begin();
+    std::vector<std::string>::const_iterator jend = _headers.end();
+    for(; j != jend; ++j) {
+      if(util::startsWith(*j, (*i).first)) {
+        break;
+      }
+    }
+    if(j == jend) {
+      strappend(requestLine, (*i).first, " ", (*i).second, A2STR::CRLF);
     }
   }
   // append additional headers given by user.
-  for(std::deque<std::string>::const_iterator i = _headers.begin();
-      i != _headers.end(); ++i) {
-    strappend(requestLine, (*i), "\r\n");
+  for(std::vector<std::string>::const_iterator i = _headers.begin(),
+        end = _headers.end(); i != end; ++i) {
+    strappend(requestLine, (*i), A2STR::CRLF);
   }
-
-  requestLine += "\r\n";
+  requestLine += A2STR::CRLF;
   return requestLine;
 }
 
@@ -252,19 +269,21 @@ std::string HttpRequest::createProxyRequest() const
   //     requestLine += "Proxy-Connection: close\r\n";
   //   }
   if(!_proxyRequest->getUsername().empty()) {
-    requestLine += getProxyAuthString();
+    std::pair<std::string, std::string> auth = getProxyAuthString();
+    strappend(requestLine, auth.first, " ", auth.second, A2STR::CRLF);
   }
-  requestLine += "\r\n";
+  requestLine += A2STR::CRLF;
   return requestLine;
 }
 
-std::string HttpRequest::getProxyAuthString() const
+std::pair<std::string, std::string> HttpRequest::getProxyAuthString() const
 {
-  return strconcat("Proxy-Authorization: Basic ",
-                   Base64::encode(strconcat(_proxyRequest->getUsername(),
-                                            ":",
-                                            _proxyRequest->getPassword())),
-                   "\r\n");
+  return std::make_pair
+    ("Proxy-Authorization:",
+     strconcat("Basic ",
+               Base64::encode(strconcat(_proxyRequest->getUsername(),
+                                        ":",
+                                        _proxyRequest->getPassword()))));
 }
 
 void HttpRequest::enableContentEncoding()

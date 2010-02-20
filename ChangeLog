@@ -1,3 +1,11 @@
+2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	User-defined custom request headers specified by --header option
+	now override builtin headers if they have same name.
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* test/HttpRequestTest.cc
+
 2010-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewirtten util::isNumber()
