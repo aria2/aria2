@@ -1,5 +1,10 @@
 2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed 'always true' condition
+	* src/util.cc
+
+2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --bt-enable-lpd option in man page.
 	* doc/aria2c.1.txt
 

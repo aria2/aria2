@@ -661,7 +661,7 @@ std::string iso8859ToUtf8(const std::string& src)
   std::string dest;
   for(std::string::const_iterator itr = src.begin(); itr != src.end(); ++itr) {
     unsigned char c = *itr;
-    if(0xa0 <= c && c <= 0xff) {
+    if(0xa0 <= c) {
       if(c <= 0xbf) {
         dest += 0xc2;
       } else {
