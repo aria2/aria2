@@ -1,0 +1,75 @@
+#include "LpdMessageReceiver.h"
+
+#include <cstring>
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "Exception.h"
+#include "util.h"
+#include "LpdMessageReceiver.h"
+#include "SocketCore.h"
+#include "BtConstants.h"
+#include "LpdMessage.h"
+#include "LpdMessageDispatcher.h"
+
+namespace aria2 {
+
+class LpdMessageReceiverTest:public CppUnit::TestFixture {
+
+  CPPUNIT_TEST_SUITE(LpdMessageReceiverTest);
+  CPPUNIT_TEST(testReceiveMessage);
+  CPPUNIT_TEST_SUITE_END();
+public:
+  void testReceiveMessage();
+};
+
+
+CPPUNIT_TEST_SUITE_REGISTRATION(LpdMessageReceiverTest);
+
+void LpdMessageReceiverTest::testReceiveMessage()
+{
+  LpdMessageReceiver rcv(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+  CPPUNIT_ASSERT(rcv.init());
+
+  SharedHandle<SocketCore> sendsock = rcv.getSocket();
+  sendsock->setMulticastTtl(0);
+
+  std::string infoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ceaf";
+  std::string infoHash = util::fromHex(infoHashString);
+  std::string request =
+    bittorrent::createLpdRequest(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
+                                 infoHash,
+                                 6000);
+
+  sendsock->writeData(request.c_str(), request.size(),
+                     LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+
+  SharedHandle<LpdMessage> msg = rcv.receiveMessage();
+  CPPUNIT_ASSERT(!msg.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
+                       util::toHex(msg->getInfoHash()));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6000, msg->getPeer()->port);
+
+  // Bad infohash
+  std::string badInfoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ce";
+  request =
+    bittorrent::createLpdRequest(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
+                                 util::fromHex(badInfoHashString),
+                                 6000);
+  sendsock->writeData(request.c_str(), request.size(),
+                     LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+
+  CPPUNIT_ASSERT(rcv.receiveMessage().isNull());
+
+  // Bad port
+  request =
+    bittorrent::createLpdRequest(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
+                                 infoHash,
+                                 0);
+  sendsock->writeData(request.c_str(), request.size(),
+                     LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+
+  CPPUNIT_ASSERT(rcv.receiveMessage().isNull());
+}
+
+} // namespace aria2

@@ -320,6 +320,8 @@ extern const std::string PREF_BT_PRIORITIZE_PIECE;
 extern const std::string PREF_BT_SAVE_METADATA;
 // values: true | false
 extern const std::string PREF_BT_METADATA_ONLY;
+// values: true | false
+extern const std::string PREF_BT_ENABLE_LPD;
 
 /**
  * Metalink related preferences

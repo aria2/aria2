@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,34 +32,38 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CONSTANTS_
-#define _D_BT_CONSTANTS_
+#ifndef _D_LPD_DISPATCH_MESSAGE_COMMAND_H_
+#define _D_LPD_DISPATCH_MESSAGE_COMMAND_H_
 
-#include "common.h"
-#include <map>
-#include <string>
+#include "Command.h"
+#include "SharedHandle.h"
 
-typedef std::map<std::string, uint8_t> Extensions;
+namespace aria2 {
 
-#define INFO_HASH_LENGTH 20
+class LpdMessageDispatcher;
+class DownloadEngine;
+class BtRuntime;
 
-#define PIECE_HASH_LENGTH 20
+class LpdDispatchMessageCommand:public Command {
+private:
+  SharedHandle<LpdMessageDispatcher> _dispatcher;
+  DownloadEngine* _e;
+  unsigned int _tryCount;
+  SharedHandle<BtRuntime> _btRuntime;
+public:
+  LpdDispatchMessageCommand
+  (int cuid,
+   const SharedHandle<LpdMessageDispatcher>& dispatcher,
+   DownloadEngine* e);
 
-#define PEER_ID_LENGTH 20
+  virtual bool execute();
 
-#define INFO_HASH_LENGTH 20
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+  {
+    _btRuntime = btRuntime;
+  }
+};
 
-#define MAX_BLOCK_LENGTH (16*1024)
+} // namespace aria2
 
-#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
-
-// Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 24
-
-#define METADATA_PIECE_SIZE (16*1024)
-
-#define LPD_MULTICAST_ADDR "239.192.152.143"
-
-#define LPD_MULTICAST_PORT 6771
-
-#endif // _D_BT_CONSTANTS_
+#endif // _D_LPD_DISPATCH_MESSAGE_COMMAND_H_

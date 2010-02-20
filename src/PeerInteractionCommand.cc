@@ -189,7 +189,8 @@ PeerInteractionCommand::PeerInteractionCommand
     (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setRequestGroupMan(e->_requestGroupMan);
   btInteractive->setBtMessageFactory(factory);
-  if(metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0) {
+  if((metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0) &&
+     !peer->isLocalPeer()) {
     if(getOption()->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
       btInteractive->setUTPexEnabled(true);
     }

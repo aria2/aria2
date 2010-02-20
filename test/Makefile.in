@@ -141,7 +141,9 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.cc\
 @ENABLE_BITTORRENT_TRUE@	PriorityPieceSelectorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	MockPieceSelector.h\
-@ENABLE_BITTORRENT_TRUE@	extension_message_test_helper.h
+@ENABLE_BITTORRENT_TRUE@	extension_message_test_helper.h\
+@ENABLE_BITTORRENT_TRUE@	LpdMessageDispatcherTest.cc\
+@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiverTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_7 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -266,7 +268,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	MockExtensionMessage.h MockExtensionMessageFactory.h \
 	MockPieceStorage.h BencodeTest.cc BittorrentHelperTest.cc \
 	PriorityPieceSelectorTest.cc MockPieceSelector.h \
-	extension_message_test_helper.h MetalinkerTest.cc \
+	extension_message_test_helper.h LpdMessageDispatcherTest.cc \
+	LpdMessageReceiverTest.cc MetalinkerTest.cc \
 	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
@@ -356,7 +359,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BencodeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelectorTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelectorTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	LpdMessageDispatcherTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiverTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_7 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -824,6 +829,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChecksumValidatorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidatorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LongestSequencePieceSelectorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LpdMessageDispatcherTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LpdMessageReceiverTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshakeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MagnetTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelperTest.Po@am__quote@

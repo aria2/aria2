@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,34 +32,53 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CONSTANTS_
-#define _D_BT_CONSTANTS_
+#ifndef _D_LPD_RECEIVE_MESSAGE_COMMAND_H_
+#define _D_LPD_RECEIVE_MESSAGE_COMMAND_H_
 
-#include "common.h"
-#include <map>
-#include <string>
+#include "Command.h"
+#include "SharedHandle.h"
 
-typedef std::map<std::string, uint8_t> Extensions;
+namespace aria2 {
 
-#define INFO_HASH_LENGTH 20
+class LpdMessageReceiver;
+class DownloadEngine;
+class SocketCore;
 
-#define PIECE_HASH_LENGTH 20
+class LpdReceiveMessageCommand:public Command {
+private:
+  SharedHandle<LpdMessageReceiver> _receiver;
 
-#define PEER_ID_LENGTH 20
+  static unsigned int __numInstance;
 
-#define INFO_HASH_LENGTH 20
+  static LpdReceiveMessageCommand* __instance;
 
-#define MAX_BLOCK_LENGTH (16*1024)
+  LpdReceiveMessageCommand
+  (int32_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
+   DownloadEngine* e);
+protected:
+  DownloadEngine* _e;
 
-#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
+public:
+  virtual ~LpdReceiveMessageCommand();
 
-// Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 24
+  virtual bool execute();
 
-#define METADATA_PIECE_SIZE (16*1024)
+  SharedHandle<SocketCore> getReceiverSocket() const;
 
-#define LPD_MULTICAST_ADDR "239.192.152.143"
+  static LpdReceiveMessageCommand*
+  getInstance
+  (DownloadEngine* e, const SharedHandle<LpdMessageReceiver>& receiver);
 
-#define LPD_MULTICAST_PORT 6771
+  // If __numInstance is 0, then return 0. If __numInstance > 0, it
+  // returns __instance
+  static LpdReceiveMessageCommand* getInstance();
 
-#endif // _D_BT_CONSTANTS_
+  static unsigned int getNumInstance()
+  {
+    return __numInstance;
+  }
+};
+
+} // namespace aria2
+
+#endif // _D_LPD_RECEIVE_MESSAGE_COMMAND_H_

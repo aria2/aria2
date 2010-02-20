@@ -1,8 +1,7 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,35 +30,36 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
-/* copyright --> */
-#ifndef _D_BT_CONSTANTS_
-#define _D_BT_CONSTANTS_
+#ifndef _D_LPD_MESSAGE_H_
+#define _D_LPD_MESSAGE_H_
 
 #include "common.h"
-#include <map>
+
 #include <string>
 
-typedef std::map<std::string, uint8_t> Extensions;
+#include "Peer.h"
 
-#define INFO_HASH_LENGTH 20
+namespace aria2 {
 
-#define PIECE_HASH_LENGTH 20
+class LpdMessage {
+private:
+  SharedHandle<Peer> _peer;
+  std::string _infoHash;
+public:
+  LpdMessage(const SharedHandle<Peer>& peer, const std::string& infoHash):
+    _peer(peer), _infoHash(infoHash) {}
 
-#define PEER_ID_LENGTH 20
+  const SharedHandle<Peer>& getPeer() const
+  {
+    return _peer;
+  }
 
-#define INFO_HASH_LENGTH 20
+  const std::string& getInfoHash() const
+  {
+    return _infoHash;
+  }
+};
 
-#define MAX_BLOCK_LENGTH (16*1024)
+} // namespace aria2
 
-#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
-
-// Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 24
-
-#define METADATA_PIECE_SIZE (16*1024)
-
-#define LPD_MULTICAST_ADDR "239.192.152.143"
-
-#define LPD_MULTICAST_PORT 6771
-
-#endif // _D_BT_CONSTANTS_
+#endif // _D_LPD_MESSAGE_H_

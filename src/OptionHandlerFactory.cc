@@ -943,6 +943,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   // BitTorrent Specific Options
 #ifdef ENABLE_BITTORRENT
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_BT_ENABLE_LPD,
+                                    TEXT_BT_ENABLE_LPD,
+                                    V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_BT_EXTERNAL_IP,
                                     TEXT_BT_EXTERNAL_IP,

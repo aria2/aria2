@@ -253,6 +253,18 @@ static sock_t bindTo
   return -1;
 }
 
+void SocketCore::bindWithFamily(uint16_t port, int family, int flags)
+{
+  closeConnection();
+  std::string error;
+  sock_t fd = bindTo(0, port, family, _sockType, flags, error);
+  if(fd == (sock_t) -1) {
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
+  } else {
+    sockfd = fd;
+  }
+}
+
 void SocketCore::bind(uint16_t port, int flags)
 {
   closeConnection();
@@ -401,6 +413,28 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
                                    errorMsg()).str());
   }
+}
+
+void SocketCore::setSockOpt
+(int level, int optname, void* optval, socklen_t optlen)
+{
+  if(setsockopt(sockfd, level, optname, optval, optlen) < 0) {
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SET_OPT, errorMsg()).str());
+  }
+}   
+
+void SocketCore::setMulticastTtl(unsigned char ttl)
+{
+  setSockOpt(IPPROTO_IP, IP_MULTICAST_TTL, (a2_sockopt_t)&ttl, sizeof(ttl));
+}
+
+void SocketCore::joinMulticastGroup(const std::string& ipaddr, uint16_t port)
+{
+  struct ip_mreq mreq;
+  memset(&mreq, 0, sizeof(mreq));
+  mreq.imr_multiaddr.s_addr = inet_addr(ipaddr.c_str());
+  mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+  setSockOpt(IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
 }
 
 void SocketCore::setNonBlockingMode()

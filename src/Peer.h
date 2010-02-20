@@ -78,6 +78,9 @@ private:
   // If true, port is assumed not to be a listening port.
   bool _incoming;
 
+  // If true, this peer is from local network.
+  bool _localPeer;
+
   // Before calling updateSeeder(),  make sure that
   // allocateSessionResource() is called and _res is created.
   // Otherwise assertion fails.
@@ -281,6 +284,16 @@ public:
   }
 
   void setIncomingPeer(bool incoming);
+
+  bool isLocalPeer() const
+  {
+    return _localPeer;
+  }
+
+  void setLocalPeer(bool flag)
+  {
+    _localPeer = flag;
+  }
 
   void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt);
 

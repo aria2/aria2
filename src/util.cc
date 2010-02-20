@@ -1172,6 +1172,28 @@ void generateRandomKey(unsigned char* key)
 #endif // !ENABLE_MESSAGE_DIGEST
 }
 
+// Returns true is given numeric ipv4addr is in Private Address Space.
+//
+// From Section.3 RFC1918
+// 10.0.0.0        -   10.255.255.255  (10/8 prefix)
+// 172.16.0.0      -   172.31.255.255  (172.16/12 prefix)
+// 192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
+bool inPrivateAddress(const std::string& ipv4addr)
+{
+  if(util::startsWith(ipv4addr, "10.") ||
+     util::startsWith(ipv4addr, "192.168.")) {
+    return true;
+  }
+  if(util::startsWith(ipv4addr, "172.")) {
+    for(int i = 16; i <= 31; ++i) {
+      if(util::startsWith(ipv4addr, "172."+util::itos(i)+".")) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 } // namespace util
 
 } // namespace aria2

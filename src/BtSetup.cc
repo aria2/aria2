@@ -60,6 +60,12 @@
 #include "BtRuntime.h"
 #include "bittorrent_helper.h"
 #include "BtStopDownloadCommand.h"
+#include "LpdReceiveMessageCommand.h"
+#include "LpdDispatchMessageCommand.h"
+#include "LpdMessageReceiver.h"
+#include "LpdMessageDispatcher.h"
+#include "message.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 
@@ -163,6 +169,39 @@ void BtSetup::setup(std::deque<Command*>& commands,
   } else {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
     btRuntime->setListenPort(listenCommand->getPort());
+  }
+  if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
+     (metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0)) {
+    if(LpdReceiveMessageCommand::getNumInstance() == 0) {
+      SharedHandle<LpdMessageReceiver> receiver
+        (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
+      try {
+        receiver->init();
+        receiver->getSocket()->setMulticastTtl(1);
+      } catch(RecoverableException& e) {
+        _logger->info(EX_EXCEPTION_CAUGHT, e);
+        receiver.reset();
+      }
+      if(!receiver.isNull()) {
+        LpdReceiveMessageCommand* cmd =
+          LpdReceiveMessageCommand::getInstance(e, receiver);
+        e->commands.push_back(cmd);
+      }
+    }
+    if(LpdReceiveMessageCommand::getNumInstance()) {
+      const unsigned char* infoHash =
+        bittorrent::getInfoHash(requestGroup->getDownloadContext());
+      SharedHandle<LpdMessageDispatcher> dispatcher
+        (new LpdMessageDispatcher
+         (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
+          btRuntime->getListenPort(),
+          LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
+          LpdReceiveMessageCommand::getInstance()->getReceiverSocket()));
+      LpdDispatchMessageCommand* cmd =
+        new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
+      cmd->setBtRuntime(btRuntime);
+      e->commands.push_back(cmd);
+    }
   }
   time_t btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
   if(btStopTimeout > 0) {

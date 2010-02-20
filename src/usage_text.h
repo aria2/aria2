@@ -608,3 +608,5 @@
 #define TEXT_HUMAN_READABLE                     \
   _(" --human-readable[=true|false] Print sizes and speed in human readable format\n" \
     "                              (e.g., 1.2Ki, 3.4Mi) in the console readout.")
+#define TEXT_BT_ENABLE_LPD                      \
+  _(" --bt-enable-lpd[=true|false] Enable Local Peer Discovery.")

@@ -378,6 +378,9 @@ std::string fixTaintedBasename(const std::string& src);
 // by key.  Caller must allocate at least 20 bytes for generated key.
 void generateRandomKey(unsigned char* key);
 
+// Returns true is given numeric ipv4addr is in Private Address Space.
+bool inPrivateAddress(const std::string& ipv4addr);
+
 } // namespace util
 
 } // namespace aria2

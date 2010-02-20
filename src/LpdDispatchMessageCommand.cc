@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,34 +32,57 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CONSTANTS_
-#define _D_BT_CONSTANTS_
+#include "LpdDispatchMessageCommand.h"
+#include "LpdMessageDispatcher.h"
+#include "DownloadEngine.h"
+#include "BtRuntime.h"
+#include "Logger.h"
+#include "RecoverableException.h"
+#include "SocketCore.h"
+#include "util.h"
 
-#include "common.h"
-#include <map>
-#include <string>
+namespace aria2 {
 
-typedef std::map<std::string, uint8_t> Extensions;
+LpdDispatchMessageCommand::LpdDispatchMessageCommand
+(int cuid,
+ const SharedHandle<LpdMessageDispatcher>& dispatcher,
+ DownloadEngine* e):
+  Command(cuid),
+  _dispatcher(dispatcher),
+  _e(e),
+  _tryCount(0) {}
 
-#define INFO_HASH_LENGTH 20
+bool LpdDispatchMessageCommand::execute()
+{
+  if(_btRuntime->isHalt()) {
+    return true;
+  }
+  if(_dispatcher->isAnnounceReady()) {
+    try {
+      logger->info("Dispatching LPD message for infohash=%s",
+                   util::toHex(_dispatcher->getInfoHash()).c_str());
+      if(_dispatcher->sendMessage()) {
+        logger->info("Sending LPD message is complete.");
+        _dispatcher->resetAnnounceTimer();
+        _tryCount = 0;
+      } else {
+        ++_tryCount;
+        if(_tryCount >= 5) {
+          logger->info("Sending LPD message %u times but all failed.");
+          _dispatcher->resetAnnounceTimer();
+          _tryCount = 0;
+        } else {
+          logger->info("Could not send LPD message, retry shortly.");
+        }
+      }
+    } catch(RecoverableException& e) {
+      logger->info("Failed to send LPD message.", e);
+      _dispatcher->resetAnnounceTimer();
+      _tryCount = 0;
+    }
+  }
+  _e->commands.push_back(this);
+  return false;
+}
 
-#define PIECE_HASH_LENGTH 20
-
-#define PEER_ID_LENGTH 20
-
-#define INFO_HASH_LENGTH 20
-
-#define MAX_BLOCK_LENGTH (16*1024)
-
-#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
-
-// Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 24
-
-#define METADATA_PIECE_SIZE (16*1024)
-
-#define LPD_MULTICAST_ADDR "239.192.152.143"
-
-#define LPD_MULTICAST_PORT 6771
-
-#endif // _D_BT_CONSTANTS_
+} // namespace aria2

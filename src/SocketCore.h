@@ -135,6 +135,8 @@ private:
 
 #endif // HAVE_EPOLL
 
+  void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
+
   SocketCore(sock_t sockfd, int sockType);
 public:
   SocketCore(int sockType = SOCK_STREAM);
@@ -143,6 +145,12 @@ public:
   sock_t getSockfd() const { return sockfd; }
 
   bool isOpen() const { return sockfd != (sock_t) -1; }
+
+  void setMulticastTtl(unsigned char ttl);
+
+  void joinMulticastGroup(const std::string& ipaddr, uint16_t port);
+  
+  void bindWithFamily(uint16_t port, int family, int flags = AI_PASSIVE);
 
   /**
    * Creates a socket and bind it with locahost's address and port.

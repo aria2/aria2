@@ -1,8 +1,7 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,35 +30,45 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
-/* copyright --> */
-#ifndef _D_BT_CONSTANTS_
-#define _D_BT_CONSTANTS_
+#ifndef _LPD_MESSAGE_RECEIVER_H_
+#define _LPD_MESSAGE_RECEIVER_H_
 
 #include "common.h"
-#include <map>
+
 #include <string>
 
-typedef std::map<std::string, uint8_t> Extensions;
+#include "SharedHandle.h"
 
-#define INFO_HASH_LENGTH 20
+namespace aria2 {
 
-#define PIECE_HASH_LENGTH 20
+class SocketCore;
+class Logger;
+class LpdMessage;
 
-#define PEER_ID_LENGTH 20
+class LpdMessageReceiver {
+private:
+  SharedHandle<SocketCore> _socket;
+  std::string _multicastAddress;
+  uint16_t _multicastPort;
+  Logger* _logger;
+public:
+  // Currently only IPv4 multicastAddresses are supported.
+  LpdMessageReceiver
+  (const std::string& multicastAddress, uint16_t multicastPort);
 
-#define INFO_HASH_LENGTH 20
+  // No throw.
+  bool init();
 
-#define MAX_BLOCK_LENGTH (16*1024)
+  // Receives LPD message and process it.  Returns false if message is
+  // not available.
+  SharedHandle<LpdMessage> receiveMessage();
 
-#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
+  SharedHandle<SocketCore> getSocket() const
+  {
+    return _socket;
+  }
+};
 
-// Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 24
+} // namespace aria2
 
-#define METADATA_PIECE_SIZE (16*1024)
-
-#define LPD_MULTICAST_ADDR "239.192.152.143"
-
-#define LPD_MULTICAST_PORT 6771
-
-#endif // _D_BT_CONSTANTS_
+#endif // _LPD_MESSAGE_RECEIVER_H_

@@ -243,7 +243,12 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	bencode.cc bencode.h\
 @ENABLE_BITTORRENT_TRUE@	bittorrent_helper.cc bittorrent_helper.h\
 @ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.cc BtStopDownloadCommand.h\
-@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelector.cc PriorityPieceSelector.h
+@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelector.cc PriorityPieceSelector.h\
+@ENABLE_BITTORRENT_TRUE@	LpdMessageDispatcher.cc LpdMessageDispatcher.h\
+@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiver.cc LpdMessageReceiver.h\
+@ENABLE_BITTORRENT_TRUE@	LpdMessage.h\
+@ENABLE_BITTORRENT_TRUE@	LpdReceiveMessageCommand.cc LpdReceiveMessageCommand.h\
+@ENABLE_BITTORRENT_TRUE@	LpdDispatchMessageCommand.cc LpdDispatchMessageCommand.h
 
 @ENABLE_METALINK_TRUE@am__append_14 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -570,8 +575,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	IndexBtMessageValidator.h ExtensionMessageRegistry.h \
 	bencode.cc bencode.h bittorrent_helper.cc bittorrent_helper.h \
 	BtStopDownloadCommand.cc BtStopDownloadCommand.h \
-	PriorityPieceSelector.cc PriorityPieceSelector.h Metalinker.cc \
-	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	PriorityPieceSelector.cc PriorityPieceSelector.h \
+	LpdMessageDispatcher.cc LpdMessageDispatcher.h \
+	LpdMessageReceiver.cc LpdMessageReceiver.h LpdMessage.h \
+	LpdReceiveMessageCommand.cc LpdReceiveMessageCommand.h \
+	LpdDispatchMessageCommand.cc LpdDispatchMessageCommand.h \
+	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \
@@ -734,7 +743,11 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	bencode.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	bittorrent_helper.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtStopDownloadCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelector.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	PriorityPieceSelector.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	LpdMessageDispatcher.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiver.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	LpdReceiveMessageCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	LpdDispatchMessageCommand.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_14 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -1465,6 +1478,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Logger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LongestSequencePieceSelector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LpdDispatchMessageCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LpdMessageDispatcher.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LpdMessageReceiver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LpdReceiveMessageCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshake.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MemoryBufferPreDownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelper.Po@am__quote@

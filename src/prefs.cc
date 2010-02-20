@@ -316,6 +316,8 @@ const std::string PREF_BT_PRIORITIZE_PIECE("bt-prioritize-piece");
 const std::string PREF_BT_SAVE_METADATA("bt-save-metadata");
 // values: true | false
 const std::string PREF_BT_METADATA_ONLY("bt-metadata-only");
+// values: true | false
+const std::string PREF_BT_ENABLE_LPD("bt-enable-lpd");
 
 /**
  * Metalink related preferences

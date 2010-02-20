@@ -55,7 +55,8 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   _badConditionStartTime(0),
   _seeder(false),
   _res(0),
-  _incoming(incoming)
+  _incoming(incoming),
+  _localPeer(false)
 {
   memset(_peerId, 0, PEER_ID_LENGTH);
   resetStatus();

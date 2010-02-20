@@ -1,8 +1,7 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,35 +30,69 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
-/* copyright --> */
-#ifndef _D_BT_CONSTANTS_
-#define _D_BT_CONSTANTS_
+#ifndef _D_LPD_MESSAGE_DISPATCHER_H_
+#define _D_LPD_MESSAGE_DISPATCHER_H_
 
 #include "common.h"
-#include <map>
+
 #include <string>
 
-typedef std::map<std::string, uint8_t> Extensions;
+#include "SharedHandle.h"
+#include "TimeA2.h"
 
-#define INFO_HASH_LENGTH 20
+namespace aria2 {
 
-#define PIECE_HASH_LENGTH 20
+class SocketCore;
+class Logger;
 
-#define PEER_ID_LENGTH 20
+class LpdMessageDispatcher {
+private:
+  std::string _infoHash;
+  uint16_t _port;
+  SharedHandle<SocketCore> _socket;
+  std::string _multicastAddress;
+  uint16_t _multicastPort;
+  Time _timer;
+  time_t _interval;
+  std::string _request;
+  Logger* _logger;
+public:
+  LpdMessageDispatcher
+  (const std::string& infoHash, uint16_t port,
+   const std::string& multicastAddr, uint16_t multicastPort,
+   const SharedHandle<SocketCore>& socket,
+   time_t interval = 5*60);
 
-#define INFO_HASH_LENGTH 20
+  // Returns true if _timer reached announce interval, which is by
+  // default 5mins.
+  bool isAnnounceReady() const;
 
-#define MAX_BLOCK_LENGTH (16*1024)
+  // Sends LPD message. If message is sent returns true. Otherwise
+  // returns false.
+  bool sendMessage();
 
-#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
+  // Reset _timer to the current time.
+  void resetAnnounceTimer();
 
-// Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 24
+  const std::string& getInfoHash() const
+  {
+    return _infoHash;
+  }
 
-#define METADATA_PIECE_SIZE (16*1024)
+  uint16_t getPort() const
+  {
+    return _port;
+  }
+};
 
-#define LPD_MULTICAST_ADDR "239.192.152.143"
+namespace bittorrent {
 
-#define LPD_MULTICAST_PORT 6771
+std::string createLpdRequest
+(const std::string& multicastAddress, uint16_t multicastPort,
+ const std::string& infoHash, uint16_t port);
 
-#endif // _D_BT_CONSTANTS_
+} // namespace bittorrent
+
+} // namespace aria2
+
+#endif // _D_LPD_MESSAGE_DISPATCHER_H_

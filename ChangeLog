@@ -1,5 +1,36 @@
 2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added Local Peer Discovery. It is disabled by default. Use
+	--bt-enable-lpd to enable the function.
+	* src/BtConstants.h
+	* src/BtSetup.cc
+	* src/LpdDispatchMessageCommand.cc
+	* src/LpdDispatchMessageCommand.h
+	* src/LpdMessage.h
+	* src/LpdMessageDispatcher.cc
+	* src/LpdMessageDispatcher.h
+	* src/LpdMessageReceiver.cc
+	* src/LpdMessageReceiver.h
+	* src/LpdReceiveMessageCommand.cc
+	* src/LpdReceiveMessageCommand.h
+	* src/Makefile.am
+	* src/OptionHandlerFactory.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerInteractionCommand.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* src/util.cc
+	* src/util.h
+	* test/LpdMessageDispatcherTest.cc
+	* test/LpdMessageReceiverTest.cc
+	* test/Makefile.am
+
+2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	User-defined custom request headers specified by --header option
 	now override builtin headers if they have same name.
 	* src/HttpRequest.cc
