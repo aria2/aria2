@@ -1,5 +1,10 @@
 2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed 'always true' condition
+	* src/util.cc
+
+2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	User-defined custom request headers specified by --header option
 	now override builtin headers if they have same name.
 	* src/HttpRequest.cc
