@@ -154,11 +154,11 @@ void UtilTest::testSplit() {
 }
 
 void UtilTest::testSplit_many() {
-  std::deque<std::string> v1;
+  std::vector<std::string> v1;
   util::split("name1=value1; name2=value2; name3=value3",std::back_inserter(v1),
               ";", true);
-  CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
-  std::deque<std::string>::iterator itr = v1.begin();
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v1.size());
+  std::vector<std::string>::iterator itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
   CPPUNIT_ASSERT_EQUAL(std::string("name2=value2"), *itr++);
   CPPUNIT_ASSERT_EQUAL(std::string("name3=value3"), *itr++);
@@ -167,11 +167,28 @@ void UtilTest::testSplit_many() {
 
   util::split("name1=value1; name2=value2; name3=value3",std::back_inserter(v1),
               ";", false);
-  CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v1.size());
   itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
   CPPUNIT_ASSERT_EQUAL(std::string(" name2=value2"), *itr++);
   CPPUNIT_ASSERT_EQUAL(std::string(" name3=value3"), *itr++);
+
+  v1.clear();
+
+  util::split("k=v", std::back_inserter(v1), ";", false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v1.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k=v"), v1[0]);
+
+  v1.clear();
+
+  util::split(" ", std::back_inserter(v1), ";", true, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v1.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), v1[0]);
+
+  v1.clear();
+
+  util::split(" ", std::back_inserter(v1), ";", true);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, v1.size());
 }
 
 void UtilTest::testEndsWith() {
@@ -276,7 +293,8 @@ void UtilTest::testGetContentDispositionFilename() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), util::getContentDispositionFilename(h8));
 
   std::string h9 = "attachment; filename=\"aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT\"";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT"), util::getContentDispositionFilename(h9));
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
+                       util::getContentDispositionFilename(h9));
 
   std::string h10 = "attachment; filename=";
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h10));
@@ -295,6 +313,75 @@ void UtilTest::testGetContentDispositionFilename() {
   std::string currentDir = "attachment; filename=.";
   CPPUNIT_ASSERT_EQUAL(std::string(),
                        util::getContentDispositionFilename(currentDir));
+  // RFC2231 Section4
+  std::string extparam2 = "filename*=''aria2";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
+                       util::getContentDispositionFilename(extparam2));
+  std::string extparam3 = "filename*='''";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(extparam3));
+  std::string extparam4 = "filename*='aria2";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(extparam4));
+  std::string extparam5 = "filename*='''aria2";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(extparam5));
+  std::string extparam6 = "filename*";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(extparam6));
+  std::string extparam7 = "filename*=UTF-8''aria2;filename=hello%20world";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
+                       util::getContentDispositionFilename(extparam7));
+  std::string extparam8 = "filename=aria2;filename*=UTF-8''hello%20world";
+  CPPUNIT_ASSERT_EQUAL(std::string("hello world"),
+                       util::getContentDispositionFilename(extparam8));
+  std::string extparam9 = "filename*=ISO-8859-1''%A3";
+  std::string extparam9ans;
+  extparam9ans += 0xc2;
+  extparam9ans += 0xa3;
+  CPPUNIT_ASSERT_EQUAL(extparam9ans,
+                       util::getContentDispositionFilename(extparam9));
+
+  // Tests from http://greenbytes.de/tech/tc2231/
+  // attwithasciifnescapedchar
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo.html"),
+     util::getContentDispositionFilename("filename=\"f\\oo.html\""));
+  // attwithasciifilenameucase
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo.html"),
+     util::getContentDispositionFilename("FILENAME=\"foo.html\""));
+  // attwithisofn2231iso
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä.html"),
+     util::getContentDispositionFilename("filename*=iso-8859-1''foo-%E4.html"));
+  // attwithfn2231utf8
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä-€.html"),
+     util::getContentDispositionFilename
+     ("filename*=UTF-8''foo-%c3%a4-%e2%82%ac.html"));
+  // attwithfn2231utf8-bad
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename
+     ("filename*=iso-8859-1''foo-%c3%a4-%e2%82%ac.html"));
+  // attwithfn2231ws1
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename("filename *=UTF-8''foo-%c3%a4.html"));
+  // attwithfn2231ws2
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä.html"),
+     util::getContentDispositionFilename("filename*= UTF-8''foo-%c3%a4.html"));
+  // attwithfn2231ws3
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo-ä.html"),
+     util::getContentDispositionFilename("filename* =UTF-8''foo-%c3%a4.html"));
+  // attwithfn2231quot
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename
+     ("filename*=\"UTF-8''foo-%c3%a4.html\""));
 }
 
 class Printer {

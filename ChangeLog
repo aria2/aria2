@@ -1,3 +1,46 @@
+2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	User-defined custom request headers specified by --header option
+	now override builtin headers if they have same name.
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* test/HttpRequestTest.cc
+
+2010-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewirtten util::isNumber()
+	* src/util.cc
+
+2010-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Reverted changes in r1893. setlocale(LC_CTYPE, "") is needed
+	because without it localized error messages are not printed
+	correctly.
+	* src/Platform.cc
+
+2010-02-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added unit tests for util::getContentDispositionFilename() from
+	http://greenbytes.de/tech/tc2231/ Fixed the function so that added
+	tests are passed.
+	* src/util.cc
+	* test/UtilTest.cc
+
+2010-02-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed setlocale() for LC_CTYPE. It may affect isxdigit in
+	util.cc
+	* src/Platform.cc
+
+2010-02-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Support RFC2231 "Parameter Value Character Set and Language
+	Information" in Content-Disposition header.
+	* src/HttpResponse.cc
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
 2010-02-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Print CXXFLAGS
