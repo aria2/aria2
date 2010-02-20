@@ -1,5 +1,10 @@
 2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --bt-enable-lpd option in man page.
+	* doc/aria2c.1.txt
+
+2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added Local Peer Discovery. It is disabled by default. Use
 	--bt-enable-lpd to enable the function.
 	* src/BtConstants.h

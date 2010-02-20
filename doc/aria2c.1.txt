@@ -342,6 +342,13 @@ writes the piece to the appropriate files.
 
 BitTorrent Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*--bt-enable-lpd*[='true'|'false']::
+
+  Enable Local Peer Discovery.  If a private flag is set in a torrent,
+  aria2 doesn't use this feature for that download even if 'true' is
+  given.  Default: 'false'
+
 *--bt-external-ip*=IPADDRESS::
   Specify the external IP address to report to a BitTorrent
   tracker. Although this function is named "external", it can accept
