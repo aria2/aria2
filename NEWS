@@ -13,6 +13,8 @@ built-in headers if they have same name.
 Changes
 -------
 
+ * Updated Chinese(Simplified) translation.
+
  * User-defined custom request headers specified by --header option
    now override builtin headers if they have same name.
 
