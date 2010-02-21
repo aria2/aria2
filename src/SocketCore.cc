@@ -1175,6 +1175,34 @@ void SocketCore::useSelect()
 void SocketCore::bindAddress(const std::string& iface)
 {
   std::vector<std::pair<struct sockaddr_storage, socklen_t> > bindAddrs;
+  getInterfaceAddress(bindAddrs, iface, _protocolFamily);
+  if(bindAddrs.empty()) {
+    throw DL_ABORT_EX
+      (StringFormat(MSG_INTERFACE_NOT_FOUND,
+                    iface.c_str(), "not available").str());
+  } else {
+    _bindAddrs = bindAddrs;
+    for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
+          const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+      char host[NI_MAXHOST];
+      int s;
+      s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
+                      (*i).second,
+                      host, NI_MAXHOST, 0, NI_MAXSERV,
+                      NI_NUMERICHOST);
+      if(s == 0) {
+        if(LogFactory::getInstance()->debug()) {
+          LogFactory::getInstance()->debug("Sockets will bind to %s", host);
+        }
+      }
+    }
+  }
+}
+
+void getInterfaceAddress
+(std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
+ const std::string& iface, int family)
+{
   if(LogFactory::getInstance()->debug()) {
     LogFactory::getInstance()->debug("Finding interface %s", iface.c_str());
   }
@@ -1191,38 +1219,37 @@ void SocketCore::bindAddress(const std::string& iface)
       if(!ifa->ifa_addr) {
         continue;
       }
-      int family = ifa->ifa_addr->sa_family;
-      if(_protocolFamily == AF_UNSPEC) {
-        if(family != AF_INET && family != AF_INET6) {
+      int iffamily = ifa->ifa_addr->sa_family;
+      if(family == AF_UNSPEC) {
+        if(iffamily != AF_INET && iffamily != AF_INET6) {
           continue;
         }
-      } else if(_protocolFamily == AF_INET) {
-        if(family != AF_INET) {
+      } else if(family == AF_INET) {
+        if(iffamily != AF_INET) {
           continue;
         }
-      } else if(_protocolFamily == AF_INET6) {
-        if(family != AF_INET6) {
+      } else if(family == AF_INET6) {
+        if(iffamily != AF_INET6) {
           continue;
         }
       } else {
         continue;
       }
       if(std::string(ifa->ifa_name) == iface) {
-        socklen_t bindAddrLen =
-          family == AF_INET?sizeof(struct sockaddr_in):
+        socklen_t bindAddrLen = iffamily == AF_INET?sizeof(struct sockaddr_in):
           sizeof(struct sockaddr_in6);
         struct sockaddr_storage bindAddr;
         memset(&bindAddr, 0, sizeof(bindAddr));
         memcpy(&bindAddr, ifa->ifa_addr, bindAddrLen);
-        bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
+        ifAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
       }
     }
   }
 #endif // HAVE_GETIFADDRS
-  if(bindAddrs.empty()) {
+  if(ifAddrs.empty()) {
     struct addrinfo* res;
     int s;
-    s = callGetaddrinfo(&res, iface.c_str(), 0, _protocolFamily,
+    s = callGetaddrinfo(&res, iface.c_str(), 0, family,
                         SOCK_STREAM, 0, 0);
     if(s) {
       throw DL_ABORT_EX
@@ -1242,30 +1269,9 @@ void SocketCore::bindAddress(const std::string& iface)
           SocketCore socket;
           socket.bind
             (reinterpret_cast<const struct sockaddr*>(&bindAddr), bindAddrLen);
-          bindAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
+          ifAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
         } catch(RecoverableException& e) {
           continue;
-        }
-      }
-    }
-  }
-  if(bindAddrs.empty()) {
-    throw DL_ABORT_EX
-      (StringFormat(MSG_INTERFACE_NOT_FOUND,
-                    iface.c_str(), "not available").str());
-  } else {
-    _bindAddrs = bindAddrs;
-    for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
-          const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
-      char host[NI_MAXHOST];
-      int s;
-      s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
-                      (*i).second,
-                      host, NI_MAXHOST, 0, NI_MAXSERV,
-                      NI_NUMERICHOST);
-      if(s == 0) {
-        if(LogFactory::getInstance()->debug()) {
-          LogFactory::getInstance()->debug("Sockets will bind to %s", host);
         }
       }
     }

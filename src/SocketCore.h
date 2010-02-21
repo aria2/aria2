@@ -368,6 +368,10 @@ public:
   // We cannot use interface as an argument because it is a reserved
   // keyword in MSVC.
   static void bindAddress(const std::string& iface);
+
+  friend void getInterfaceAddress
+  (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
+   const std::string& iface, int family);
 };
 
 // Set default ai_flags. hints.ai_flags is initialized with this
@@ -381,6 +385,14 @@ void setDefaultAIFlags(int flags);
 int callGetaddrinfo
 (struct addrinfo** resPtr, const char* host, const char* service, int family,
  int sockType, int flags, int protocol);
+
+// Collects IP addresses of given inteface iface and stores in
+// ifAddres. iface may be specified as a hostname, IP address or
+// interface name like eth0. You can limit the family of IP addresses
+// to collect using family argument.
+void getInterfaceAddress
+(std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
+ const std::string& iface, int family = AF_UNSPEC);
 
 } // namespace aria2
 

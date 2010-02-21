@@ -1,5 +1,12 @@
 2010-02-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Put the portion of code to get interface addresses in
+	SocketCore::bindAddress() into newly added getInterfaceAddress().
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
+2010-02-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten util::parseInt() and parseUInt()
 	* src/util.cc
 
