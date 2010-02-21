@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-02-21 23:23+0900\n"
 "PO-Revision-Date: 2010-01-25 12:49+0000\n"
 "Last-Translator: Sérgio Marques <Unknown>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -38,11 +38,11 @@ msgstr ""
 "Se ocorrerem erros, veja o ficheiro de registo. Veja a opção '-l'  na página "
 "help/man para detalhes."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:588
 msgid "Download Results:"
 msgstr "Resultados de Transferência"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:637
 msgid "Status Legend:"
 msgstr "Legenda de Estado:"
 

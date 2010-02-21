@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-02-21 23:23+0900\n"
 "PO-Revision-Date: 2009-03-17 21:14+0000\n"
 "Last-Translator: Tor Christian Tovslid <tctovsli@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <nn@li.org>\n"
@@ -38,11 +38,11 @@ msgstr ""
 "Dersom det er nokon feil, sjå loggfila. Sjå '-l' val i hjelp/manual for "
 "detaljar."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:588
 msgid "Download Results:"
 msgstr "Nedlastingsresultat:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:637
 msgid "Status Legend:"
 msgstr "Statusforklaring:"
 

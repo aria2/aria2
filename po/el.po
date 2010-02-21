@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-02-21 23:23+0900\n"
 "PO-Revision-Date: 2008-08-16 00:00+0900\n"
 "Last-Translator: jimmyz <Unknown>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -40,11 +40,11 @@ msgstr ""
 "Αν υπάρχουν σφάλματα, δείτε το αρχείο καταγραφών (log). Δώστε την παράμετρο -"
 "l στη σελίδα help/man για περαιτέρω λεπτομέρειες."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:588
 msgid "Download Results:"
 msgstr "Αποτελέσματα μεταφορτώσεων:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:637
 #, fuzzy
 msgid "Status Legend:"
 msgstr "Ιστορικό κατάστασης:"

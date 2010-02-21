@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-02-21 23:23+0900\n"
 "PO-Revision-Date: 2009-09-05 14:29+0000\n"
 "Last-Translator: minkob <minkobasa@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -39,11 +39,11 @@ msgstr ""
 "Ak máte nejaké chybové hlášky, pozrite si log súbor. Pozrite možnosť '-l' v "
 "help/man stránkach kvôli detailom."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:588
 msgid "Download Results:"
 msgstr "Výsledky sťahovania:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:637
 msgid "Status Legend:"
 msgstr "Stavová legenda:"
 

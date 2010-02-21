@@ -1,3 +1,10 @@
+2010-02-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated Chinese(Simplified) translation. Thanks to all
+	translators. Updated po templates.
+	* po/zh_CN.po
+	* po/aria2.pot
+
 2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed 'always true' condition
