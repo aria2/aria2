@@ -1,3 +1,8 @@
+2010-02-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten util::parseInt() and parseUInt()
+	* src/util.cc
+
 2010-02-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compile error with mingw32 cross compiler. Defined

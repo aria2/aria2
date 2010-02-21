@@ -421,47 +421,20 @@ int getNum(const char* buf, int offset, size_t length) {
 
 int32_t parseInt(const std::string& s, int32_t base)
 {
-  std::string trimed = trim(s);
-  if(trimed.empty()) {
+  int64_t v = parseLLInt(s, base);
+  if(v < INT32_MIN || INT32_MAX < v) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   "empty string").str());
-  }
-  char* stop;
-  errno = 0;
-  long int v = strtol(trimed.c_str(), &stop, base);
-  if(*stop != '\0') {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
-  } else if((((v == LONG_MIN) || (v == LONG_MAX)) && (errno == ERANGE)) ||
-            (v > INT32_MAX) ||
-            (v < INT32_MIN)) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
+                                   s.c_str()).str());
   }
   return v;
 }
 
 uint32_t parseUInt(const std::string& s, int base)
 {
-  std::string trimed = trim(s);
-  if(trimed.empty()) {
+  uint64_t v = parseULLInt(s, base);
+  if(UINT32_MAX < v) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   "empty string").str());
-  }
-  // We don't allow negative number.
-  if(trimed[0] == '-') {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
-  }
-  char* stop;
-  errno = 0;
-  unsigned long int v = strtoul(trimed.c_str(), &stop, base);
-  if(*stop != '\0') {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
-  } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
+                                   s.c_str()).str());
   }
   return v;
 }
