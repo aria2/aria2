@@ -418,14 +418,14 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
 void SocketCore::setSockOpt
 (int level, int optname, void* optval, socklen_t optlen)
 {
-  if(setsockopt(sockfd, level, optname, optval, optlen) < 0) {
+  if(setsockopt(sockfd, level, optname, (a2_sockopt_t)optval, optlen) < 0) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_SET_OPT, errorMsg()).str());
   }
 }   
 
 void SocketCore::setMulticastTtl(unsigned char ttl)
 {
-  setSockOpt(IPPROTO_IP, IP_MULTICAST_TTL, (a2_sockopt_t)&ttl, sizeof(ttl));
+  setSockOpt(IPPROTO_IP, IP_MULTICAST_TTL, &ttl, sizeof(ttl));
 }
 
 void SocketCore::joinMulticastGroup(const std::string& ipaddr, uint16_t port)

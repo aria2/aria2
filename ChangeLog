@@ -1,3 +1,10 @@
+2010-02-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error with mingw32 cross compiler. Defined
+	a2_sockopt_t as void* for the target systems other than mingw32.
+	* src/SocketCore.cc
+	* src/a2netcompat.h
+
 2010-02-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed 'always true' condition

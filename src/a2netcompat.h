@@ -55,7 +55,7 @@
 # undef HAVE_GAI_STRERROR
 # undef gai_strerror
 #else
-# define a2_sockopt_t int *
+# define a2_sockopt_t void *
 #endif // __MINGW32__
 
 #ifdef HAVE_NETDB_H
