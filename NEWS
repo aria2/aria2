@@ -6,10 +6,18 @@ Release Note
 
 This release fixes the bug that --file-allocation=falloc doesn't work
 with single file download. It also fixes the bug that the return value
-of aria2 is unreliable if error occurs before download begins.
+of aria2 is unreliable if error occurs before download begins.  When
+custom request headers specified by --header option now override
+built-in headers if they have same name.
 
 Changes
 -------
+
+ * User-defined custom request headers specified by --header option
+   now override builtin headers if they have same name.
+
+ * Support RFC2231 "Parameter Value Character Set and Language
+   Information" in Content-Disposition header.
 
  * Fixed the bug that aria2 doesn't handle return value if error
    occurred before download begins.
