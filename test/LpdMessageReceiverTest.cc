@@ -60,7 +60,10 @@ void LpdMessageReceiverTest::testReceiveMessage()
   sendsock->writeData(request.c_str(), request.size(),
                      LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
-  CPPUNIT_ASSERT(rcv.receiveMessage().isNull());
+  msg = rcv.receiveMessage();
+  CPPUNIT_ASSERT(!msg.isNull());
+  CPPUNIT_ASSERT(msg->getPeer().isNull());
+  CPPUNIT_ASSERT(msg->getInfoHash().empty());
 
   // Bad port
   request =
@@ -70,7 +73,14 @@ void LpdMessageReceiverTest::testReceiveMessage()
   sendsock->writeData(request.c_str(), request.size(),
                      LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
-  CPPUNIT_ASSERT(rcv.receiveMessage().isNull());
+  msg = rcv.receiveMessage();
+  CPPUNIT_ASSERT(!msg.isNull());
+  CPPUNIT_ASSERT(msg->getPeer().isNull());
+  CPPUNIT_ASSERT(msg->getInfoHash().empty());
+
+  // No data available
+  msg = rcv.receiveMessage();
+  CPPUNIT_ASSERT(msg.isNull());
 }
 
 } // namespace aria2

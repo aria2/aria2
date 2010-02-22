@@ -83,6 +83,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
     HttpHeaderProcessor proc;
     proc.update(buf, length);
     if(!proc.eoh()) {
+      msg.reset(new LpdMessage());
       return msg;
     }
     SharedHandle<HttpHeader> header = proc.getHttpRequestHeader();
@@ -95,6 +96,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
        (infoHash = util::fromHex(infoHashString)).empty() ||
        port == 0) {
       _logger->info("LPD bad request. infohash=%s", infoHashString.c_str());
+      msg.reset(new LpdMessage());
       return msg;
     }
     SharedHandle<Peer> peer(new Peer(peerAddr.first, port, false));
@@ -102,10 +104,12 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
       peer->setLocalPeer(true);
     }
     msg.reset(new LpdMessage(peer, infoHash));
+    return msg;
   } catch(RecoverableException& e) {
     _logger->info("Failed to receive LPD message.", e);
+    msg.reset(new LpdMessage());
+    return msg;
   }
-  return msg;
 }
 
 } // namespace aria2

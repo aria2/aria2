@@ -46,6 +46,8 @@ private:
   SharedHandle<Peer> _peer;
   std::string _infoHash;
 public:
+  LpdMessage() {}
+
   LpdMessage(const SharedHandle<Peer>& peer, const std::string& infoHash):
     _peer(peer), _infoHash(infoHash) {}
 

@@ -83,6 +83,10 @@ bool LpdReceiveMessageCommand::execute()
     if(m.isNull()) {
       break;
     }
+    if(m->getPeer().isNull()) {
+      // bad message
+      continue;
+    }
     SharedHandle<BtRegistry> reg = _e->getBtRegistry();
     SharedHandle<DownloadContext> dctx =
       reg->getDownloadContext(m->getInfoHash());

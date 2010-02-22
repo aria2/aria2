@@ -1,5 +1,15 @@
 2010-02-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Return SharedHandle<LpdMessage>(new LpdMessage()) if received data
+	is bad in LpdMessageReceiver.
+	* src/LpdMessage.h
+	* src/LpdMessageReceiver.cc
+	* src/LpdMessageReceiver.h
+	* src/LpdReceiveMessageCommand.cc
+	* test/LpdMessageReceiverTest.cc
+
+2010-02-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-lpd-interface option to specify the interface to use
 	for Local Peer Discovery. LpdMessageDispatcher object now has its
 	own socket. LpdMessageReceiver's socket is binded to multicast

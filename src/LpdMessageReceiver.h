@@ -60,8 +60,10 @@ public:
   // No throw.
   bool init(const std::string& localAddr);
 
-  // Receives LPD message and process it.  Returns false if message is
-  // not available.
+  // Receives LPD message and returns LpdMessage which contains
+  // sender(peer) and infohash. If no data is available on socket,
+  // returns SharedHandle<LpdMessage>().  If received data is bad,
+  // then returns SharedHandle<LpdMessage>(new LpdMessage())
   SharedHandle<LpdMessage> receiveMessage();
 
   SharedHandle<SocketCore> getSocket() const
