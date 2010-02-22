@@ -43,12 +43,12 @@ void LpdMessageDispatcherTest::testCreateLpdRequest()
 void LpdMessageDispatcherTest::testSendMessage()
 {
   SharedHandle<SocketCore> recvsock(new SocketCore(SOCK_DGRAM));
-  recvsock->bind(LPD_MULTICAST_PORT);
-  recvsock->joinMulticastGroup(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
-  recvsock->setMulticastTtl(0);
+  recvsock->bind(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+  recvsock->joinMulticastGroup(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT, "");
+  
   LpdMessageDispatcher d("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf", 6000,
-                         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
-                         recvsock);
+                         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+  d.init("", 0, 1);
 
   CPPUNIT_ASSERT(d.sendMessage());
 

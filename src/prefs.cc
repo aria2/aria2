@@ -318,6 +318,8 @@ const std::string PREF_BT_SAVE_METADATA("bt-save-metadata");
 const std::string PREF_BT_METADATA_ONLY("bt-metadata-only");
 // values: true | false
 const std::string PREF_BT_ENABLE_LPD("bt-enable-lpd");
+// values: string
+const std::string PREF_BT_LPD_INTERFACE("bt-lpd-interface");
 
 /**
  * Metalink related preferences

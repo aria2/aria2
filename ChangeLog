@@ -1,3 +1,25 @@
+2010-02-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --bt-lpd-interface option to specify the interface to use
+	for Local Peer Discovery. LpdMessageDispatcher object now has its
+	own socket. LpdMessageReceiver's socket is binded to multicast
+	address to only receive multicast packets.
+	* src/BtSetup.cc
+	* src/LpdMessageDispatcher.cc
+	* src/LpdMessageDispatcher.h
+	* src/LpdMessageReceiver.cc
+	* src/LpdMessageReceiver.h
+	* src/LpdReceiveMessageCommand.cc
+	* src/LpdReceiveMessageCommand.h
+	* src/OptionHandlerFactory.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/LpdMessageDispatcherTest.cc
+	* test/LpdMessageReceiverTest.cc
+
 2010-02-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Put the portion of code to get interface addresses in

@@ -146,11 +146,21 @@ public:
 
   bool isOpen() const { return sockfd != (sock_t) -1; }
 
+  void setMulticastInterface(const std::string& localAddr);
+
   void setMulticastTtl(unsigned char ttl);
 
-  void joinMulticastGroup(const std::string& ipaddr, uint16_t port);
+  void setMulticastLoop(unsigned char loop);
+
+  void joinMulticastGroup
+  (const std::string& multicastAddr, uint16_t multicastPort,
+   const std::string& localAddr);
   
+  void create(int family, int protocol = 0);
+
   void bindWithFamily(uint16_t port, int family, int flags = AI_PASSIVE);
+
+  void bind(const std::string& addr, uint16_t port, int flags = AI_PASSIVE);
 
   /**
    * Creates a socket and bind it with locahost's address and port.
@@ -389,7 +399,7 @@ int callGetaddrinfo
 // Collects IP addresses of given inteface iface and stores in
 // ifAddres. iface may be specified as a hostname, IP address or
 // interface name like eth0. You can limit the family of IP addresses
-// to collect using family argument.
+// to collect using family argument. No throw.
 void getInterfaceAddress
 (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
  const std::string& iface, int family = AF_UNSPEC);

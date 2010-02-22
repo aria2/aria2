@@ -29,9 +29,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(LpdMessageReceiverTest);
 void LpdMessageReceiverTest::testReceiveMessage()
 {
   LpdMessageReceiver rcv(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
-  CPPUNIT_ASSERT(rcv.init());
+  CPPUNIT_ASSERT(rcv.init(""));
 
-  SharedHandle<SocketCore> sendsock = rcv.getSocket();
+  SharedHandle<SocketCore> sendsock(new SocketCore(SOCK_DGRAM));
+  sendsock->create(AF_INET);
   sendsock->setMulticastTtl(0);
 
   std::string infoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ceaf";
@@ -42,7 +43,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
                                  6000);
 
   sendsock->writeData(request.c_str(), request.size(),
-                     LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+                      LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
   SharedHandle<LpdMessage> msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(!msg.isNull());

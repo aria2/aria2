@@ -206,6 +206,24 @@ std::string uitos(T value)
   return str;
 }
 
+void SocketCore::create(int family, int protocol)
+{
+  closeConnection();
+  sock_t fd = socket(family, _sockType, protocol);
+  if(fd == (sock_t) -1) {
+    throw DL_ABORT_EX
+      (StringFormat("Failed to create socket. Cause:%s", errorMsg()).str());
+  }
+  int sockopt = 1;
+  if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR,
+                (a2_sockopt_t) &sockopt, sizeof(sockopt)) < 0) {
+    CLOSE(fd);
+    throw DL_ABORT_EX
+      (StringFormat("Failed to create socket. Cause:%s", errorMsg()).str());
+  }
+  sockfd = fd;
+}
+
 static sock_t bindInternal(int family, int socktype, int protocol,
                            const struct sockaddr* addr, socklen_t addrlen)
 {
@@ -259,6 +277,19 @@ void SocketCore::bindWithFamily(uint16_t port, int family, int flags)
   std::string error;
   sock_t fd = bindTo(0, port, family, _sockType, flags, error);
   if(fd == (sock_t) -1) {
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
+  } else {
+    sockfd = fd;
+  }
+}
+
+void SocketCore::bind(const std::string& addr, uint16_t port, int flags)
+{
+  closeConnection();
+  std::string error;
+  sock_t fd =
+    bindTo(addr.c_str(), port, _protocolFamily, _sockType, flags, error);
+  if(fd == (sock_t)-1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   } else {
     sockfd = fd;
@@ -423,17 +454,52 @@ void SocketCore::setSockOpt
   }
 }   
 
+void SocketCore::setMulticastInterface(const std::string& localAddr)
+{
+  in_addr addr;
+  if(localAddr.empty()) {
+    addr.s_addr = htonl(INADDR_ANY);
+  } else {
+    if(inet_aton(localAddr.c_str(), &addr) == 0) {
+      throw DL_ABORT_EX
+        (StringFormat("inet_aton failed for %s", localAddr.c_str()).str());
+    }
+  }
+  setSockOpt(IPPROTO_IP, IP_MULTICAST_IF, &addr, sizeof(addr));
+}
+
 void SocketCore::setMulticastTtl(unsigned char ttl)
 {
   setSockOpt(IPPROTO_IP, IP_MULTICAST_TTL, &ttl, sizeof(ttl));
 }
 
-void SocketCore::joinMulticastGroup(const std::string& ipaddr, uint16_t port)
+void SocketCore::setMulticastLoop(unsigned char loop)
 {
+  setSockOpt(IPPROTO_IP, IP_MULTICAST_LOOP, &loop, sizeof(loop));
+}
+
+void SocketCore::joinMulticastGroup
+(const std::string& multicastAddr, uint16_t multicastPort,
+ const std::string& localAddr)
+{
+  in_addr multiAddr;
+  if(inet_aton(multicastAddr.c_str(), &multiAddr) == 0) {
+    throw DL_ABORT_EX
+      (StringFormat("inet_aton failed for %s", multicastAddr.c_str()).str());
+  }
+  in_addr ifAddr;
+  if(localAddr.empty()) {
+    ifAddr.s_addr = htonl(INADDR_ANY);
+  } else {
+    if(inet_aton(localAddr.c_str(), &ifAddr) == 0) {
+      throw DL_ABORT_EX
+        (StringFormat("inet_aton failed for %s", localAddr.c_str()).str());
+    }
+  }
   struct ip_mreq mreq;
   memset(&mreq, 0, sizeof(mreq));
-  mreq.imr_multiaddr.s_addr = inet_addr(ipaddr.c_str());
-  mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+  mreq.imr_multiaddr = multiAddr;
+  mreq.imr_interface = ifAddr;
   setSockOpt(IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
 }
 
@@ -1203,16 +1269,15 @@ void getInterfaceAddress
 (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
  const std::string& iface, int family)
 {
-  if(LogFactory::getInstance()->debug()) {
-    LogFactory::getInstance()->debug("Finding interface %s", iface.c_str());
+  Logger* logger = LogFactory::getInstance();
+  if(logger->debug()) {
+    logger->debug("Finding interface %s", iface.c_str());
   }
 #ifdef HAVE_GETIFADDRS
   // First find interface in interface addresses
   struct ifaddrs* ifaddr = 0;
   if(getifaddrs(&ifaddr) == -1) {
-    throw DL_ABORT_EX
-      (StringFormat(MSG_INTERFACE_NOT_FOUND,
-                    iface.c_str(), errorMsg()).str());
+    logger->info(MSG_INTERFACE_NOT_FOUND, iface.c_str(), errorMsg());
   } else {
     auto_delete<struct ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
     for(struct ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
@@ -1252,9 +1317,8 @@ void getInterfaceAddress
     s = callGetaddrinfo(&res, iface.c_str(), 0, family,
                         SOCK_STREAM, 0, 0);
     if(s) {
-      throw DL_ABORT_EX
-        (StringFormat(MSG_INTERFACE_NOT_FOUND,
-                      iface.c_str(), gai_strerror(s)).str());
+      logger->info(MSG_INTERFACE_NOT_FOUND,
+                   iface.c_str(), gai_strerror(s));
     } else {
       WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
       struct addrinfo* rp;

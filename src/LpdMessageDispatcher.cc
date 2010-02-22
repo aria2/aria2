@@ -44,11 +44,9 @@ namespace aria2 {
 LpdMessageDispatcher::LpdMessageDispatcher
 (const std::string& infoHash, uint16_t port,
  const std::string& multicastAddress, uint16_t multicastPort,
- const SharedHandle<SocketCore>& socket,
  time_t interval):
   _infoHash(infoHash),
   _port(port),
-  _socket(socket),
   _multicastAddress(multicastAddress),
   _multicastPort(multicastPort),
   _timer(0),
@@ -56,6 +54,33 @@ LpdMessageDispatcher::LpdMessageDispatcher
   _request(bittorrent::createLpdRequest(_multicastAddress, _multicastPort,
                                         _infoHash, _port)),
   _logger(LogFactory::getInstance()) {}
+
+bool LpdMessageDispatcher::init(const std::string& localAddr,
+                                unsigned char ttl, unsigned char loop)
+{
+  try {
+    _socket.reset(new SocketCore(SOCK_DGRAM));
+    _socket->create(AF_INET);
+    if(_logger->debug()) {
+      _logger->debug("Setting multicast outgoing interface=%s",
+                     localAddr.c_str());
+    }
+    _socket->setMulticastInterface(localAddr);
+    if(_logger->debug()) {
+      _logger->debug("Setting multicast ttl=%u",static_cast<unsigned int>(ttl));
+    }
+    _socket->setMulticastTtl(ttl);
+    if(_logger->debug()) {
+      _logger->debug("Setting multicast loop=%u",
+                     static_cast<unsigned int>(loop));
+    }
+    _socket->setMulticastLoop(loop);
+    return true;
+  } catch(RecoverableException& e) {
+    _logger->error("Failed to initialize LpdMessageDispatcher.", e);
+  }
+  return false;
+}
 
 bool LpdMessageDispatcher::sendMessage()
 {

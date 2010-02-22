@@ -63,7 +63,10 @@ public:
 
   virtual bool execute();
 
-  SharedHandle<SocketCore> getReceiverSocket() const;
+  SharedHandle<LpdMessageReceiver> getLpdMessageReceiver() const
+  {
+    return _receiver;
+  }
 
   static LpdReceiveMessageCommand*
   getInstance

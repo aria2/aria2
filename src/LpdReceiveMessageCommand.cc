@@ -127,11 +127,6 @@ bool LpdReceiveMessageCommand::execute()
   return false;
 }
 
-SharedHandle<SocketCore> LpdReceiveMessageCommand::getReceiverSocket() const
-{
-  return _receiver->getSocket();
-}
-
 LpdReceiveMessageCommand*
 LpdReceiveMessageCommand::getInstance
 (DownloadEngine* e, const SharedHandle<LpdMessageReceiver>& receiver)

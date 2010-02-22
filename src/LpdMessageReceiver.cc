@@ -48,15 +48,19 @@ LpdMessageReceiver::LpdMessageReceiver
   _multicastPort(multicastPort),
   _logger(LogFactory::getInstance()) {}
 
-bool LpdMessageReceiver::init()
+bool LpdMessageReceiver::init(const std::string& localAddr)
 {
   try {
     _socket.reset(new SocketCore(SOCK_DGRAM));
-    // SocketCore::bind(port, flags) cannot be used here, because it
-    // is affected by --interface option.
-    _socket->bindWithFamily(_multicastPort, AF_INET);
-    _socket->joinMulticastGroup(_multicastAddress, _multicastPort);
+    _socket->bind(_multicastAddress, _multicastPort);
+    if(_logger->debug()) {
+      _logger->debug("Joining multicast group. %s:%u, localAddr=%s",
+                     _multicastAddress.c_str(), _multicastPort,
+                     localAddr.c_str());
+    }
+    _socket->joinMulticastGroup(_multicastAddress, _multicastPort, localAddr);
     _socket->setNonBlockingMode();
+    _localAddress = localAddr;
     _logger->info("Listening multicast group (%s:%u) packet",
                   _multicastAddress.c_str(), _multicastPort);
     return true;

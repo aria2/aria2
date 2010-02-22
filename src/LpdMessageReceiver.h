@@ -50,6 +50,7 @@ private:
   SharedHandle<SocketCore> _socket;
   std::string _multicastAddress;
   uint16_t _multicastPort;
+  std::string _localAddress;
   Logger* _logger;
 public:
   // Currently only IPv4 multicastAddresses are supported.
@@ -57,7 +58,7 @@ public:
   (const std::string& multicastAddress, uint16_t multicastPort);
 
   // No throw.
-  bool init();
+  bool init(const std::string& localAddr);
 
   // Receives LPD message and process it.  Returns false if message is
   // not available.
@@ -66,6 +67,11 @@ public:
   SharedHandle<SocketCore> getSocket() const
   {
     return _socket;
+  }
+
+  const std::string& getLocalAddress() const
+  {
+    return _localAddress;
   }
 };
 

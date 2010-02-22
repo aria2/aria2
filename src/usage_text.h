@@ -610,3 +610,8 @@
     "                              (e.g., 1.2Ki, 3.4Mi) in the console readout.")
 #define TEXT_BT_ENABLE_LPD                      \
   _(" --bt-enable-lpd[=true|false] Enable Local Peer Discovery.")
+#define TEXT_BT_LPD_INTERFACE                                           \
+  _(" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. If\n" \
+    "                              this option is not specified, the default\n" \
+    "                              interface is chosen. You can specify interface\n" \
+    "                              name and IP address.")

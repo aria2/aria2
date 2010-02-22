@@ -47,9 +47,9 @@ class Logger;
 
 class LpdMessageDispatcher {
 private:
+  SharedHandle<SocketCore> _socket;
   std::string _infoHash;
   uint16_t _port;
-  SharedHandle<SocketCore> _socket;
   std::string _multicastAddress;
   uint16_t _multicastPort;
   Time _timer;
@@ -60,8 +60,10 @@ public:
   LpdMessageDispatcher
   (const std::string& infoHash, uint16_t port,
    const std::string& multicastAddr, uint16_t multicastPort,
-   const SharedHandle<SocketCore>& socket,
    time_t interval = 5*60);
+
+  // No throw
+  bool init(const std::string& localAddr, unsigned char ttl,unsigned char loop);
 
   // Returns true if _timer reached announce interval, which is by
   // default 5mins.

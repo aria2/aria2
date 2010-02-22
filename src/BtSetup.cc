@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "BtSetup.h"
+
+#include <cstring>
+
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "Option.h"
@@ -172,35 +175,62 @@ void BtSetup::setup(std::deque<Command*>& commands,
   }
   if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
      (metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0)) {
+    
     if(LpdReceiveMessageCommand::getNumInstance() == 0) {
+      _logger->info("Initializing LpdMessageReceiver.");
       SharedHandle<LpdMessageReceiver> receiver
         (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
-      try {
-        receiver->init();
-        receiver->getSocket()->setMulticastTtl(1);
-      } catch(RecoverableException& e) {
-        _logger->info(EX_EXCEPTION_CAUGHT, e);
-        receiver.reset();
+      bool initialized = false;
+      const std::string& lpdInterface = option->get(PREF_BT_LPD_INTERFACE);
+      if(lpdInterface.empty()) {
+        if(receiver->init("")) {
+          initialized = true;
+        }
+      } else {
+        std::vector<std::pair<sockaddr_storage, socklen_t> > ifAddrs;
+        getInterfaceAddress(ifAddrs, lpdInterface, AF_INET);
+        for(std::vector<std::pair<sockaddr_storage, socklen_t> >::const_iterator
+              i = ifAddrs.begin(); i != ifAddrs.end(); ++i) {
+          sockaddr_in addr;
+          memcpy(&addr, &(*i).first, (*i).second);
+          if(receiver->init(inet_ntoa(addr.sin_addr))) {
+            initialized = true;
+            break;
+          }
+        }
       }
-      if(!receiver.isNull()) {
+      if(initialized) {
+        _logger->info("LpdMessageReceiver initialized. multicastAddr=%s:%u,"
+                      " localAddr=%s",
+                      LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
+                      receiver->getLocalAddress().c_str());
         LpdReceiveMessageCommand* cmd =
           LpdReceiveMessageCommand::getInstance(e, receiver);
         e->commands.push_back(cmd);
+      } else {
+        _logger->info("LpdMessageReceiver not initialized.");
       }
     }
     if(LpdReceiveMessageCommand::getNumInstance()) {
       const unsigned char* infoHash =
         bittorrent::getInfoHash(requestGroup->getDownloadContext());
+      SharedHandle<LpdMessageReceiver> receiver =
+        LpdReceiveMessageCommand::getInstance()->getLpdMessageReceiver();
+      _logger->info("Initializing LpdMessageDispatcher.");      
       SharedHandle<LpdMessageDispatcher> dispatcher
         (new LpdMessageDispatcher
          (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
           btRuntime->getListenPort(),
-          LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
-          LpdReceiveMessageCommand::getInstance()->getReceiverSocket()));
-      LpdDispatchMessageCommand* cmd =
-        new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
-      cmd->setBtRuntime(btRuntime);
-      e->commands.push_back(cmd);
+          LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
+      if(dispatcher->init(receiver->getLocalAddress(), /*ttl*/1, /*loop*/0)) {
+        _logger->info("LpdMessageDispatcher initialized.");      
+        LpdDispatchMessageCommand* cmd =
+          new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
+        cmd->setBtRuntime(btRuntime);
+        e->commands.push_back(cmd);
+      } else {
+        _logger->info("LpdMessageDispatcher not initialized.");
+      }
     }
   }
   time_t btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);

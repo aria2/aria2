@@ -979,6 +979,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_BT_LPD_INTERFACE,
+                                    TEXT_BT_LPD_INTERFACE,
+                                    NO_DEFAULT_VALUE,
+                                    "interface, IP address",
+                                    OptionHandler::REQ_ARG));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_BT_MAX_OPEN_FILES,
                                     TEXT_BT_MAX_OPEN_FILES,

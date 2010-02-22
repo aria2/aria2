@@ -322,6 +322,8 @@ extern const std::string PREF_BT_SAVE_METADATA;
 extern const std::string PREF_BT_METADATA_ONLY;
 // values: true | false
 extern const std::string PREF_BT_ENABLE_LPD;
+// values: string
+extern const std::string PREF_BT_LPD_INTERFACE;
 
 /**
  * Metalink related preferences
