@@ -1,5 +1,14 @@
 2010-02-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added aiFlags argument to getInterfaceAddress(). Use
+	AI_NUMERICHOST to find interface specified using
+	--bt-lpd-interface option to avoid time-consuming address lookup.
+	* src/BtSetup.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
+2010-02-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Return SharedHandle<LpdMessage>(new LpdMessage()) if received data
 	is bad in LpdMessageReceiver.
 	* src/LpdMessage.h

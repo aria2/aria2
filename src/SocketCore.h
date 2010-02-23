@@ -381,7 +381,7 @@ public:
 
   friend void getInterfaceAddress
   (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
-   const std::string& iface, int family);
+   const std::string& iface, int family, int aiFlags);
 };
 
 // Set default ai_flags. hints.ai_flags is initialized with this
@@ -399,10 +399,11 @@ int callGetaddrinfo
 // Collects IP addresses of given inteface iface and stores in
 // ifAddres. iface may be specified as a hostname, IP address or
 // interface name like eth0. You can limit the family of IP addresses
-// to collect using family argument. No throw.
+// to collect using family argument. aiFlags is passed to
+// getaddrinfo() as hints.ai_flags. No throw.
 void getInterfaceAddress
 (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
- const std::string& iface, int family = AF_UNSPEC);
+ const std::string& iface, int family = AF_UNSPEC, int aiFlags = 0);
 
 } // namespace aria2
 

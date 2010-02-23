@@ -1267,7 +1267,7 @@ void SocketCore::bindAddress(const std::string& iface)
 
 void getInterfaceAddress
 (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
- const std::string& iface, int family)
+ const std::string& iface, int family, int aiFlags)
 {
   Logger* logger = LogFactory::getInstance();
   if(logger->debug()) {
@@ -1314,11 +1314,9 @@ void getInterfaceAddress
   if(ifAddrs.empty()) {
     struct addrinfo* res;
     int s;
-    s = callGetaddrinfo(&res, iface.c_str(), 0, family,
-                        SOCK_STREAM, 0, 0);
+    s = callGetaddrinfo(&res, iface.c_str(), 0, family, SOCK_STREAM, aiFlags,0);
     if(s) {
-      logger->info(MSG_INTERFACE_NOT_FOUND,
-                   iface.c_str(), gai_strerror(s));
+      logger->info(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerror(s));
     } else {
       WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
       struct addrinfo* rp;

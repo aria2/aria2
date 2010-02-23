@@ -188,7 +188,7 @@ void BtSetup::setup(std::deque<Command*>& commands,
         }
       } else {
         std::vector<std::pair<sockaddr_storage, socklen_t> > ifAddrs;
-        getInterfaceAddress(ifAddrs, lpdInterface, AF_INET);
+        getInterfaceAddress(ifAddrs, lpdInterface, AF_INET, AI_NUMERICHOST);
         for(std::vector<std::pair<sockaddr_storage, socklen_t> >::const_iterator
               i = ifAddrs.begin(); i != ifAddrs.end(); ++i) {
           sockaddr_in addr;
