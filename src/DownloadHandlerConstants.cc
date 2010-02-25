@@ -37,10 +37,14 @@
 
 namespace aria2 {
 
-const char* DownloadHandlerConstants::METALINK_EXTENSIONS[] = { ".metalink" };
+const char* DownloadHandlerConstants::METALINK_EXTENSIONS[] = {
+  ".metalink", // Metalink3Spec
+  ".meta4" // Metalink4Spec
+};
 
 const char* DownloadHandlerConstants::METALINK_CONTENT_TYPES[] = {
-  "application/metalink+xml"
+  "application/metalink4+xml", // Metalink4Spec
+  "application/metalink+xml" // Metalink3Spec
 };
 
 const char* DownloadHandlerConstants::BT_EXTENSIONS[] = { ".torrent" };

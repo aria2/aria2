@@ -457,6 +457,8 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
 	MetalinkParserState.h\
 	MetalinkParserStateImpl.cc MetalinkParserStateImpl.h\
+	MetalinkParserStateV3Impl.cc MetalinkParserStateV3Impl.h\
+	MetalinkParserStateV4Impl.cc MetalinkParserStateV4Impl.h\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 	MetalinkHelper.cc MetalinkHelper.h

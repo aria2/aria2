@@ -62,12 +62,12 @@ public:
       }
     }
     if(!language.empty()) {
-      if(language != entry->language) {
+      if(!entry->containsLanguage(language)) {
         return false;
       }
     }
     if(!os.empty()) {
-      if(os != entry->os) {
+      if(!entry->containsOS(os)) {
         return false;
       }
     }

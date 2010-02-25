@@ -47,7 +47,8 @@ public:
     TYPE_HTTP,
     TYPE_HTTPS,
     TYPE_BITTORRENT,
-    TYPE_NOT_SUPPORTED
+    TYPE_NOT_SUPPORTED,
+    TYPE_UNKNOWN
   };
 
   static std::string type2String[];
@@ -60,12 +61,14 @@ public:
 
   static const std::string BITTORRENT;
 
+  static const std::string TORRENT; // Metalink4Spec
+
 public:
   std::string url;
   TYPE type;
   std::string location;
-  int preference;
-  int maxConnections;
+  int priority;
+  int maxConnections; // Metalink3Spec
 public:
   MetalinkResource();
   ~MetalinkResource();
@@ -75,7 +78,7 @@ public:
       this->url = metalinkResource.url;
       this->type = metalinkResource.type;
       this->location = metalinkResource.location;
-      this->preference = metalinkResource.preference;
+      this->priority = metalinkResource.priority;
       this->maxConnections = metalinkResource.maxConnections;
     }
     return *this;
@@ -84,6 +87,11 @@ public:
   static const std::string& getTypeString(TYPE type)
   {
     return type2String[type];
+  }
+
+  static int getLowestPriority()
+  {
+    return 999999;
   }
 };
 

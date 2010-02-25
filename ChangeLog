@@ -1,3 +1,45 @@
+2010-02-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added Metalink4 support. Currently, name attribute of
+	metalink::metaurl is ignored and multi-file torrent cannot be used
+	with Metalink4.
+	* doc/aria2c.1.txt
+	* src/DownloadHandlerConstants.cc
+	* src/ExpatMetalinkProcessor.cc
+	* src/Makefile.am
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkEntry.cc
+	* src/MetalinkEntry.h
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserController.h
+	* src/MetalinkParserState.h
+	* src/MetalinkParserStateImpl.cc
+	* src/MetalinkParserStateImpl.h
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+	* src/MetalinkParserStateV3Impl.cc
+	* src/MetalinkParserStateV3Impl.h
+	* src/MetalinkParserStateV4Impl.cc
+	* src/MetalinkParserStateV4Impl.h
+	* src/MetalinkResource.cc
+	* src/MetalinkResource.h
+	* src/Metalinker.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/XML2SAXMetalinkProcessor.cc
+	* src/messageDigest.cc
+	* src/util.cc
+	* src/util.h
+	* test/Makefile.am
+	* test/MetalinkEntryTest.cc
+	* test/MetalinkParserControllerTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/MetalinkerTest.cc
+	* test/UtilTest.cc
+	* test/metalink4-attrs.xml
+	* test/metalink4-dirtraversal.xml
+	* test/metalink4.xml
+
 2010-02-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added aiFlags argument to getInterfaceAddress(). Use

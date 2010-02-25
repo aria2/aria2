@@ -1,6 +1,8 @@
 #include "MetalinkEntry.h"
-#include "MetalinkResource.h"
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "MetalinkResource.h"
 
 namespace aria2 {
 
@@ -8,9 +10,9 @@ class MetalinkEntryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkEntryTest);
   CPPUNIT_TEST(testDropUnsupportedResource);
-  CPPUNIT_TEST(testReorderResourcesByPreference);
-  CPPUNIT_TEST(testSetLocationPreference);
-  CPPUNIT_TEST(testSetProtocolPreference);
+  CPPUNIT_TEST(testReorderResourcesByPriority);
+  CPPUNIT_TEST(testSetLocationPriority);
+  CPPUNIT_TEST(testSetProtocolPriority);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -21,9 +23,9 @@ public:
   }
 
   void testDropUnsupportedResource();
-  void testReorderResourcesByPreference();
-  void testSetLocationPreference();
-  void testSetProtocolPreference();
+  void testReorderResourcesByPriority();
+  void testSetLocationPriority();
+  void testSetProtocolPriority();
 };
 
 
@@ -34,28 +36,28 @@ SharedHandle<MetalinkEntry> createTestEntry() {
   SharedHandle<MetalinkResource> res1(new MetalinkResource());
   res1->url = "ftp://myhost/aria2.tar.bz2";
   res1->type = MetalinkResource::TYPE_FTP;
-  res1->location = "RO";
-  res1->preference = 50;
+  res1->location = "ro";
+  res1->priority = 50;
   SharedHandle<MetalinkResource> res2(new MetalinkResource());
   res2->url = "http://myhost/aria2.tar.bz2";
   res2->type = MetalinkResource::TYPE_HTTP;
-  res2->location = "AT";
-  res2->preference = 100;
+  res2->location = "at";
+  res2->priority = 1;
   SharedHandle<MetalinkResource> res3(new MetalinkResource());
   res3->url = "http://myhost/aria2.torrent";
   res3->type = MetalinkResource::TYPE_BITTORRENT;
-  res3->location = "AL";
-  res3->preference = 60;
+  res3->location = "al";
+  res3->priority = 40;
   SharedHandle<MetalinkResource> res4(new MetalinkResource());
   res4->url = "http://myhost/aria2.ext";
   res4->type = MetalinkResource::TYPE_NOT_SUPPORTED;
-  res4->location = "AD";
-  res4->preference = 10;
+  res4->location = "ad";
+  res4->priority = 90;
   SharedHandle<MetalinkResource> res5(new MetalinkResource());
   res5->url = "https://myhost/aria2.tar.bz2";
   res5->type = MetalinkResource::TYPE_HTTPS;
-  res5->location = "JP";
-  res5->preference = 90;
+  res5->location = "jp";
+  res5->priority = 10;
 
   entry->resources.push_back(res1);
   entry->resources.push_back(res2);
@@ -93,49 +95,49 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 #endif // ENABLE_SSL
 }
 
-void MetalinkEntryTest::testReorderResourcesByPreference() {
+void MetalinkEntryTest::testReorderResourcesByPriority() {
   SharedHandle<MetalinkEntry> entry(createTestEntry());
   
-  entry->reorderResourcesByPreference();
+  entry->reorderResourcesByPriority();
 
-  CPPUNIT_ASSERT_EQUAL(100, entry->resources.at(0)->preference);
-  CPPUNIT_ASSERT_EQUAL(90, entry->resources.at(1)->preference);
-  CPPUNIT_ASSERT_EQUAL(60, entry->resources.at(2)->preference);
-  CPPUNIT_ASSERT_EQUAL(50, entry->resources.at(3)->preference);
-  CPPUNIT_ASSERT_EQUAL(10, entry->resources.at(4)->preference);
+  CPPUNIT_ASSERT_EQUAL(1, entry->resources.at(0)->priority);
+  CPPUNIT_ASSERT_EQUAL(10, entry->resources.at(1)->priority);
+  CPPUNIT_ASSERT_EQUAL(40, entry->resources.at(2)->priority);
+  CPPUNIT_ASSERT_EQUAL(50, entry->resources.at(3)->priority);
+  CPPUNIT_ASSERT_EQUAL(90, entry->resources.at(4)->priority);
 }
 
-void MetalinkEntryTest::testSetLocationPreference()
+void MetalinkEntryTest::testSetLocationPriority()
 {
   SharedHandle<MetalinkEntry> entry(createTestEntry());
 
-  const char* locationsSrc[] = { "jp", "al", "RO" };
+  const char* locationsSrc[] = { "jp", "al", "ro" };
 
   std::deque<std::string> locations(&locationsSrc[0], &locationsSrc[3]);
 
-  entry->setLocationPreference(locations, 100);
+  entry->setLocationPriority(locations, -100);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("RO"), entry->resources[0]->location);
-  CPPUNIT_ASSERT_EQUAL(150, entry->resources[0]->preference);
-  CPPUNIT_ASSERT_EQUAL(std::string("AT"), entry->resources[1]->location);
-  CPPUNIT_ASSERT_EQUAL(100, entry->resources[1]->preference);
-  CPPUNIT_ASSERT_EQUAL(std::string("AL"), entry->resources[2]->location);
-  CPPUNIT_ASSERT_EQUAL(160, entry->resources[2]->preference);
-  CPPUNIT_ASSERT_EQUAL(std::string("AD"), entry->resources[3]->location);
-  CPPUNIT_ASSERT_EQUAL(10, entry->resources[3]->preference);
-  CPPUNIT_ASSERT_EQUAL(std::string("JP"), entry->resources[4]->location);
-  CPPUNIT_ASSERT_EQUAL(190, entry->resources[4]->preference);
+  CPPUNIT_ASSERT_EQUAL(std::string("ro"), entry->resources[0]->location);
+  CPPUNIT_ASSERT_EQUAL(-50, entry->resources[0]->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("at"), entry->resources[1]->location);
+  CPPUNIT_ASSERT_EQUAL(1, entry->resources[1]->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("al"), entry->resources[2]->location);
+  CPPUNIT_ASSERT_EQUAL(-60, entry->resources[2]->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("ad"), entry->resources[3]->location);
+  CPPUNIT_ASSERT_EQUAL(90, entry->resources[3]->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("jp"), entry->resources[4]->location);
+  CPPUNIT_ASSERT_EQUAL(-90, entry->resources[4]->priority);
 }
 
-void MetalinkEntryTest::testSetProtocolPreference()
+void MetalinkEntryTest::testSetProtocolPriority()
 {
   SharedHandle<MetalinkEntry> entry(createTestEntry());
-  entry->setProtocolPreference("http", 1);
-  CPPUNIT_ASSERT_EQUAL(50, entry->resources[0]->preference); // ftp
-  CPPUNIT_ASSERT_EQUAL(101, entry->resources[1]->preference); // http, +1
-  CPPUNIT_ASSERT_EQUAL(60, entry->resources[2]->preference); // bittorrent
-  CPPUNIT_ASSERT_EQUAL(10, entry->resources[3]->preference); // not supported
-  CPPUNIT_ASSERT_EQUAL(90, entry->resources[4]->preference); // https
+  entry->setProtocolPriority("http", -1);
+  CPPUNIT_ASSERT_EQUAL(50, entry->resources[0]->priority); // ftp
+  CPPUNIT_ASSERT_EQUAL(0, entry->resources[1]->priority); // http, -1
+  CPPUNIT_ASSERT_EQUAL(40, entry->resources[2]->priority); // bittorrent
+  CPPUNIT_ASSERT_EQUAL(90, entry->resources[3]->priority); // not supported
+  CPPUNIT_ASSERT_EQUAL(10, entry->resources[4]->priority); // https
 }
 
 } // namespace aria2

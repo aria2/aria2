@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "XML2SAXMetalinkProcessor.h"
+
+#include <cassert>
+
 #include "BinaryStream.h"
 #include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
@@ -40,6 +43,7 @@
 #include "util.h"
 #include "message.h"
 #include "DlAbortEx.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -52,38 +56,73 @@ public:
   SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):_stm(stm) {}
 };
 
-static void mlStartElement(void* userData, const xmlChar* name, const xmlChar** attrs)
+static void mlStartElement
+(void* userData,
+ const xmlChar* srcLocalname,
+ const xmlChar* srcPrefix,
+ const xmlChar* srcNsUri,
+ int numNamespaces,
+ const xmlChar **namespaces,
+ int numAttrs,
+ int numDefaulted,
+ const xmlChar **attrs)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  std::map<std::string, std::string> attrmap;
-  if(attrs) {
-    const xmlChar** p = attrs;
-    while(*p != 0) {
-      std::string name = reinterpret_cast<const char*>(*p);
-      ++p;
-      if(*p == 0) {
-        break;
-      }
-      std::string value = util::trim(reinterpret_cast<const char*>(*p));
-      ++p;
-      attrmap[name] = value;
+  std::vector<XmlAttr> xmlAttrs;
+  size_t index = 0;
+  for(int attrIndex = 0; attrIndex < numAttrs; ++attrIndex, index += 5) {
+    XmlAttr xmlAttr;
+    assert(attrs[index]);
+    xmlAttr.localname = reinterpret_cast<const char*>(attrs[index]);
+    if(attrs[index+1]) {
+      xmlAttr.prefix = reinterpret_cast<const char*>(attrs[index+1]);
     }
+    if(attrs[index+2]) {
+      xmlAttr.nsUri = reinterpret_cast<const char*>(attrs[index+2]);
+    }
+    const char* valueBegin = reinterpret_cast<const char*>(attrs[index+3]);
+    const char* valueEnd = reinterpret_cast<const char*>(attrs[index+4]);
+    xmlAttr.value = std::string(valueBegin, valueEnd);
+    xmlAttrs.push_back(xmlAttr);
   }
-  sd->_stm->beginElement(reinterpret_cast<const char*>(name), attrmap);
+  assert(srcLocalname);
+  std::string localname = reinterpret_cast<const char*>(srcLocalname);
+  std::string prefix;
+  std::string nsUri;
+  if(srcPrefix) {
+    prefix = reinterpret_cast<const char*>(srcPrefix);
+  }
+  if(srcNsUri) {
+    nsUri = reinterpret_cast<const char*>(srcNsUri);
+  }
+  sd->_stm->beginElement(localname, prefix, nsUri, xmlAttrs);
   if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.push_front(std::string());
+    sd->_charactersStack.push_front(A2STR::NIL);
   }
 }
 
-static void mlEndElement(void* userData, const xmlChar* name)
+static void mlEndElement
+(void* userData,
+ const xmlChar* srcLocalname,
+ const xmlChar* srcPrefix,
+ const xmlChar* srcNsUri)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
   if(sd->_stm->needsCharactersBuffering()) {
-    characters = util::trim(sd->_charactersStack.front());
+    characters = sd->_charactersStack.front();
     sd->_charactersStack.pop_front();
   }
-  sd->_stm->endElement(reinterpret_cast<const char*>(name), characters);
+  std::string localname = reinterpret_cast<const char*>(srcLocalname);
+  std::string prefix;
+  std::string nsUri;
+  if(srcPrefix) {
+    prefix = reinterpret_cast<const char*>(srcPrefix);
+  }
+  if(srcNsUri) {
+    nsUri = reinterpret_cast<const char*>(srcNsUri);
+  }
+  sd->_stm->endElement(localname, prefix, nsUri, characters);
 }
 
 static void mlCharacters(void* userData, const xmlChar* ch, int len)
@@ -110,8 +149,8 @@ static xmlSAXHandler mySAXHandler =
     0, //   setDocumentLocatorSAXFunc
     0, //   startDocumentSAXFunc
     0, //   endDocumentSAXFunc
-    &mlStartElement, //   startElementSAXFunc
-    &mlEndElement, //   endElementSAXFunc
+    0, //   startElementSAXFunc
+    0, //   endElementSAXFunc
     0, //   referenceSAXFunc
     &mlCharacters, //   charactersSAXFunc
     0, //   ignorableWhitespaceSAXFunc
@@ -123,10 +162,10 @@ static xmlSAXHandler mySAXHandler =
     0, //   getParameterEntitySAXFunc
     0, //   cdataBlockSAXFunc
     0, //   externalSubsetSAXFunc
-    0, //   unsigned int        initialized
+    XML_SAX2_MAGIC, //   unsigned int        initialized
     0, //   void *      _private
-    0, //   startElementNsSAX2Func
-    0, //   endElementNsSAX2Func
+    &mlStartElement, //   startElementNsSAX2Func
+    &mlEndElement, //   endElementNsSAX2Func
     0, //   xmlStructuredErrorFunc
   };
 

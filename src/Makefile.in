@@ -258,6 +258,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
 @ENABLE_METALINK_TRUE@	MetalinkParserState.h\
 @ENABLE_METALINK_TRUE@	MetalinkParserStateImpl.cc MetalinkParserStateImpl.h\
+@ENABLE_METALINK_TRUE@	MetalinkParserStateV3Impl.cc MetalinkParserStateV3Impl.h\
+@ENABLE_METALINK_TRUE@	MetalinkParserStateV4Impl.cc MetalinkParserStateV4Impl.h\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 @ENABLE_METALINK_TRUE@	MetalinkHelper.cc MetalinkHelper.h
@@ -585,7 +587,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MetalinkParserController.cc MetalinkParserController.h \
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h \
 	MetalinkParserState.h MetalinkParserStateImpl.cc \
-	MetalinkParserStateImpl.h Metalink2RequestGroup.cc \
+	MetalinkParserStateImpl.h MetalinkParserStateV3Impl.cc \
+	MetalinkParserStateV3Impl.h MetalinkParserStateV4Impl.cc \
+	MetalinkParserStateV4Impl.h Metalink2RequestGroup.cc \
 	Metalink2RequestGroup.h MetalinkPostDownloadHandler.cc \
 	MetalinkPostDownloadHandler.h MetalinkHelper.cc \
 	MetalinkHelper.h XML2SAXMetalinkProcessor.cc \
@@ -754,6 +758,8 @@ am__objects_6 =
 @ENABLE_METALINK_TRUE@	MetalinkParserController.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserStateImpl.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkParserStateV3Impl.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkParserStateV4Impl.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkHelper.$(OBJEXT)
@@ -1491,6 +1497,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserController.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserStateImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserStateMachine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserStateV3Impl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserStateV4Impl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkPostDownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@

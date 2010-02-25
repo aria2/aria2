@@ -37,7 +37,7 @@
 namespace aria2 {
 
 std::string MetalinkResource::type2String[] = {
-  "ftp", "http", "https", "bittorrent", "not_supported"
+  "ftp", "http", "https", "bittorrent", "not_supported", "unknown"
 };
 
 const std::string MetalinkResource::HTTP("http");
@@ -48,7 +48,11 @@ const std::string MetalinkResource::FTP("ftp");
 
 const std::string MetalinkResource::BITTORRENT("bittorrent");
 
+const std::string MetalinkResource::TORRENT("torrent");
+
 MetalinkResource::MetalinkResource():
+  type(TYPE_UNKNOWN),
+  priority(getLowestPriority()),
   maxConnections(-1)
 {}
 

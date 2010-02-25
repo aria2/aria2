@@ -53,7 +53,7 @@
 
 namespace aria2 {
 
-const std::string MetalinkParserController::SHA1("sha1");
+const std::string MetalinkParserController::SHA1("sha1");// Metalink3Spec
 
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker())
@@ -67,6 +67,7 @@ void MetalinkParserController::newEntryTransaction()
   _tResource.reset();
 #ifdef ENABLE_MESSAGE_DIGEST
   _tChecksum.reset();
+  _tChunkChecksumV4.reset();
   _tChunkChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
 }
@@ -112,7 +113,7 @@ void MetalinkParserController::setLanguageOfEntry(const std::string& language)
   if(_tEntry.isNull()) {
     return;
   }
-  _tEntry->language = language;
+  _tEntry->languages.push_back(language);
 }
 
 void MetalinkParserController::setOSOfEntry(const std::string& os)
@@ -120,7 +121,7 @@ void MetalinkParserController::setOSOfEntry(const std::string& os)
   if(_tEntry.isNull()) {
     return;
   }
-  _tEntry->os = os;
+  _tEntry->oses.push_back(os);
 }
 
 void MetalinkParserController::setMaxConnectionsOfEntry(int maxConnections)
@@ -138,6 +139,7 @@ void MetalinkParserController::commitEntryTransaction()
   }
   commitResourceTransaction();
   commitChecksumTransaction();
+  commitChunkChecksumTransactionV4();
   commitChunkChecksumTransaction();
   commitSignatureTransaction();
   _metalinker->entries.push_back(_tEntry);
@@ -148,6 +150,7 @@ void MetalinkParserController::cancelEntryTransaction()
 {
   cancelResourceTransaction();
   cancelChecksumTransaction();
+  cancelChunkChecksumTransactionV4();
   cancelChunkChecksumTransaction();
   cancelSignatureTransaction();
   _tEntry.reset();
@@ -167,6 +170,14 @@ void MetalinkParserController::setURLOfResource(const std::string& url)
     return;
   }
   _tResource->url = url;
+  // Metalink4Spec
+  if(_tResource->type == MetalinkResource::TYPE_UNKNOWN) {
+    // guess from URI sheme
+    std::string::size_type pos = url.find("://");
+    if(pos != std::string::npos) {
+      setTypeOfResource(url.substr(0, pos));
+    }
+  }
 }
 
 void MetalinkParserController::setTypeOfResource(const std::string& type)
@@ -182,6 +193,8 @@ void MetalinkParserController::setTypeOfResource(const std::string& type)
     _tResource->type = MetalinkResource::TYPE_HTTPS;
   } else if(type == MetalinkResource::BITTORRENT) {
     _tResource->type = MetalinkResource::TYPE_BITTORRENT;
+  } else if(type == MetalinkResource::TORRENT) { // Metalink4Spec
+    _tResource->type = MetalinkResource::TYPE_BITTORRENT;
   } else {
     _tResource->type = MetalinkResource::TYPE_NOT_SUPPORTED;
   }
@@ -195,12 +208,12 @@ void MetalinkParserController::setLocationOfResource(const std::string& location
   _tResource->location = location;
 }
 
-void MetalinkParserController::setPreferenceOfResource(int preference)
+void MetalinkParserController::setPriorityOfResource(int priority)
 {
   if(_tResource.isNull()) {
     return;
   }
-  _tResource->preference = preference;
+  _tResource->priority = priority;
 }
 
 void MetalinkParserController::setMaxConnectionsOfResource(int maxConnections)
@@ -266,7 +279,10 @@ void MetalinkParserController::commitChecksumTransaction()
     return;
   }
   if(_tEntry->checksum.isNull() ||
-     _tEntry->checksum->getAlgo() != MetalinkParserController::SHA1) {
+     // Metalink3Spec
+     (_tEntry->checksum->getAlgo() != MetalinkParserController::SHA1 &&
+      // Metalink4Spec
+      _tEntry->checksum->getAlgo() != MessageDigestContext::SHA1)) {
     _tEntry->checksum = _tChecksum;
   }
   _tChecksum.reset();
@@ -279,7 +295,80 @@ void MetalinkParserController::cancelChecksumTransaction()
   _tChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
 }
-  
+
+void MetalinkParserController::newChunkChecksumTransactionV4()
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(_tEntry.isNull()) {
+    return;
+  }
+  _tChunkChecksumV4.reset(new ChunkChecksum());
+  _tempChunkChecksumsV4.clear();
+#endif // ENABLE_MESSAGE_DIGEST
+}
+
+void MetalinkParserController::setTypeOfChunkChecksumV4(const std::string& type)
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(_tChunkChecksumV4.isNull()) {
+    return;
+  }
+  if(MessageDigestContext::supports(type)) {
+    _tChunkChecksumV4->setAlgo(type);
+  } else {
+    cancelChunkChecksumTransactionV4();
+  }
+#endif // ENABLE_MESSAGE_DIGEST
+}
+
+void MetalinkParserController::setLengthOfChunkChecksumV4(size_t length)
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(_tChunkChecksumV4.isNull()) {
+    return;
+  }
+  if(length > 0) {
+    _tChunkChecksumV4->setChecksumLength(length);
+  } else {
+    cancelChunkChecksumTransactionV4();
+  }
+#endif // ENABLE_MESSAGE_DIGEST
+}
+
+void MetalinkParserController::addHashOfChunkChecksumV4(const std::string& md)
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(_tChunkChecksumV4.isNull()) {
+    return;
+  }
+  _tempChunkChecksumsV4.push_back(md);
+#endif // ENABLE_MESSAGE_DIGEST  
+}
+
+void MetalinkParserController::commitChunkChecksumTransactionV4()
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(_tChunkChecksumV4.isNull()) {
+    return;
+  }
+  if(_tEntry->chunkChecksum.isNull() ||
+     _tEntry->chunkChecksum->getAlgo() != MessageDigestContext::SHA1) {
+    std::deque<std::string> checksums(_tempChunkChecksumsV4.begin(),
+				      _tempChunkChecksumsV4.end());
+    _tChunkChecksumV4->setChecksums(checksums);
+    _tEntry->chunkChecksum = _tChunkChecksumV4;
+  }
+  _tChunkChecksumV4.reset();
+#endif // ENABLE_MESSAGE_DIGEST
+}
+
+void MetalinkParserController::cancelChunkChecksumTransactionV4()
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  _tChunkChecksumV4.reset();
+#endif // ENABLE_MESSAGE_DIGEST
+}
+
 void MetalinkParserController::newChunkChecksumTransaction()
 {
 #ifdef ENABLE_MESSAGE_DIGEST

@@ -36,10 +36,12 @@
 #define _D_METALINK_PARSER_CONTROLLER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <utility>
 #include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -64,11 +66,16 @@ private:
 #ifdef ENABLE_MESSAGE_DIGEST
   SharedHandle<Checksum> _tChecksum;
 
-  SharedHandle<ChunkChecksum> _tChunkChecksum;
+  SharedHandle<ChunkChecksum> _tChunkChecksumV4; // Metalink4Spec
 
-  std::deque<std::pair<size_t, std::string> > _tempChunkChecksums;
-  
-  std::pair<size_t, std::string> _tempHashPair;
+  std::deque<std::string> _tempChunkChecksumsV4; // Metalink4Spec
+
+  SharedHandle<ChunkChecksum> _tChunkChecksum; // Metalink3Spec
+
+  std::deque<std::pair<size_t, std::string> > _tempChunkChecksums;//Metalink3Spec
+
+  std::pair<size_t, std::string> _tempHashPair; // Metalink3Spec
+
 #endif // ENABLE_MESSAGE_DIGEST
 
   SharedHandle<Signature> _tSignature;
@@ -110,7 +117,7 @@ public:
 
   void setLocationOfResource(const std::string& location);
 
-  void setPreferenceOfResource(int preference);
+  void setPriorityOfResource(int priority);
 
   void setMaxConnectionsOfResource(int maxConnections);
 
@@ -127,24 +134,36 @@ public:
   void commitChecksumTransaction();
 
   void cancelChecksumTransaction();
-  
-  void newChunkChecksumTransaction();
 
-  void setTypeOfChunkChecksum(const std::string& type);
+  void newChunkChecksumTransactionV4(); // Metalink4Spec
 
-  void setLengthOfChunkChecksum(size_t length);
+  void setTypeOfChunkChecksumV4(const std::string& type); // Metalink4Spec
 
-  void addHashOfChunkChecksum(size_t order, const std::string& md);
+  void setLengthOfChunkChecksumV4(size_t length); // Metalink4Spec
 
-  void createNewHashOfChunkChecksum(size_t order);
+  void addHashOfChunkChecksumV4(const std::string& md); // Metalink4Spec
 
-  void setMessageDigestOfChunkChecksum(const std::string& md);
+  void commitChunkChecksumTransactionV4(); // Metalink4Spec
 
-  void addHashOfChunkChecksum();
+  void cancelChunkChecksumTransactionV4(); // Metalink4Spec
 
-  void commitChunkChecksumTransaction();
+  void newChunkChecksumTransaction(); // Metalink3Spec
 
-  void cancelChunkChecksumTransaction();
+  void setTypeOfChunkChecksum(const std::string& type); // Metalink3Spec
+
+  void setLengthOfChunkChecksum(size_t length); // Metalink3Spec
+
+  void addHashOfChunkChecksum(size_t order, const std::string& md);// Metalink3Spec
+
+  void createNewHashOfChunkChecksum(size_t order); // Metalink3Spec
+
+  void setMessageDigestOfChunkChecksum(const std::string& md); // Metalink3Spec
+
+  void addHashOfChunkChecksum(); // Metalink3Spec
+
+  void commitChunkChecksumTransaction(); // Metalink3Spec
+
+  void cancelChunkChecksumTransaction(); // Metalink3Spec
 
   void newSignatureTransaction();
 

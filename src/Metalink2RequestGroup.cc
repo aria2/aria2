@@ -53,6 +53,7 @@
 #include "FileEntry.h"
 #include "A2STR.h"
 #include "a2functional.h"
+#include "DownloadHandlerConstants.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 # include "download_helper.h"
@@ -120,6 +121,17 @@ Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
   createRequestGroup(groups, entries, option);
 }
 
+namespace {
+void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
+{
+  for(std::vector<std::string>::const_iterator i =
+	DownloadHandlerConstants::getMetalinkContentTypes().begin();
+      i != DownloadHandlerConstants::getMetalinkContentTypes().end(); ++i) {
+    group->removeAcceptType(*i);
+  }
+}
+}
+
 void
 Metalink2RequestGroup::createRequestGroup
 (std::deque<SharedHandle<RequestGroup> >& groups,
@@ -146,10 +158,15 @@ Metalink2RequestGroup::createRequestGroup
       std::deque<std::string> locations;
       util::split(option->get(PREF_METALINK_LOCATION),
                   std::back_inserter(locations), ",", true);
-      entry->setLocationPreference(locations, 100);
+      std::transform
+        (locations.begin(), locations.end(), locations.begin(), util::toLower);
+      entry->setLocationPriority
+        (locations, -MetalinkResource::getLowestPriority());
     }
     if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
-      entry->setProtocolPreference(option->get(PREF_METALINK_PREFERRED_PROTOCOL), 100);
+      entry->setProtocolPriority
+        (option->get(PREF_METALINK_PREFERRED_PROTOCOL),
+         -MetalinkResource::getLowestPriority());
     }
     if(useIndex) {
       if(std::find(selectIndexes.begin(), selectIndexes.end(), count+1) ==
@@ -186,7 +203,7 @@ Metalink2RequestGroup::createRequestGroup
         torrentRg->clearPostDownloadHandler();
         // remove "metalink" from Accept Type list to avoid loop in
         // tranparent metalink
-        torrentRg->removeAcceptType(RequestGroup::ACCEPT_METALINK);
+        removeMetalinkContentTypes(torrentRg);
         // make it in-memory download
         SharedHandle<PreDownloadHandler> preh
           (new MemoryBufferPreDownloadHandler());
@@ -197,7 +214,7 @@ Metalink2RequestGroup::createRequestGroup
       }
     }
 #endif // ENABLE_BITTORRENT
-    entry->reorderResourcesByPreference();
+    entry->reorderResourcesByPriority();
     std::deque<std::string> uris;
     std::for_each(entry->resources.begin(), entry->resources.end(),
                   AccumulateNonP2PUrl(uris));
@@ -245,7 +262,7 @@ Metalink2RequestGroup::createRequestGroup
                 static_cast<int32_t>(entry->maxConnections)));
     // remove "metalink" from Accept Type list to avoid loop in tranparent
     // metalink
-    rg->removeAcceptType(RequestGroup::ACCEPT_METALINK);
+    removeMetalinkContentTypes(rg);
 
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false

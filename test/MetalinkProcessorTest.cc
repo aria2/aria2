@@ -22,6 +22,9 @@ namespace aria2 {
 class MetalinkProcessorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkProcessorTest);
+  CPPUNIT_TEST(testParseFileV4);
+  CPPUNIT_TEST(testParseFileV4_dirtraversal);
+  CPPUNIT_TEST(testParseFileV4_attrs);
   CPPUNIT_TEST(testParseFile);
   CPPUNIT_TEST(testParseFromBinaryStream);
   CPPUNIT_TEST(testMalformedXML);
@@ -39,10 +42,14 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testUnsupportedType_piece);
 #endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testLargeFileSize);
+  CPPUNIT_TEST(testXmlPrefixV3);
   CPPUNIT_TEST_SUITE_END();
 private:
 
 public:
+  void testParseFileV4();
+  void testParseFileV4_dirtraversal();
+  void testParseFileV4_attrs();
   void testParseFile();
   void testParseFromBinaryStream();
   void testMalformedXML();
@@ -60,10 +67,88 @@ public:
   void testUnsupportedType_piece();
 #endif // ENABLE_MESSAGE_DIGEST
   void testLargeFileSize();
+  void testXmlPrefixV3();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkProcessorTest );
+
+void MetalinkProcessorTest::testParseFileV4()
+{
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> m = proc.parseFile("metalink4.xml");
+
+  SharedHandle<MetalinkEntry> e;
+  SharedHandle<MetalinkResource> r;
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+  e = m->entries[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("example.ext"), e->getPath());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)786430LL, e->getLength());
+  CPPUNIT_ASSERT_EQUAL(-1, e->maxConnections);
+#ifdef ENABLE_MESSAGE_DIGEST
+  CPPUNIT_ASSERT_EQUAL(std::string("80bc95fd391772fa61c91ed68567f0980bb45fd9"),
+		       e->checksum->getMessageDigest());
+  CPPUNIT_ASSERT(!e->checksum.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getAlgo());
+  CPPUNIT_ASSERT(!e->chunkChecksum.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->chunkChecksum->getAlgo());
+  CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
+  CPPUNIT_ASSERT_EQUAL(std::string("metalinkhash1"),
+		       e->chunkChecksum->getChecksum(0));
+  CPPUNIT_ASSERT_EQUAL(std::string("metalinkhash2"),
+		       e->chunkChecksum->getChecksum(1));
+  CPPUNIT_ASSERT_EQUAL(std::string("metalinkhash3"),
+		       e->chunkChecksum->getChecksum(2));
+#endif // ENABLE_MESSAGE_DIGEST
+  CPPUNIT_ASSERT(!e->getSignature().isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("application/pgp-signature"),
+                       e->getSignature()->getType());
+  CPPUNIT_ASSERT_EQUAL(std::string("a signature"),
+		       e->getSignature()->getBody());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)3, e->resources.size());
+  r = e->resources[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftp.example.com/example.ext"),
+		       r->url);
+  CPPUNIT_ASSERT_EQUAL(std::string("de"), r->location);
+  CPPUNIT_ASSERT_EQUAL(1, r->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp"),
+		       MetalinkResource::getTypeString(r->type));
+  CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
+
+  r = e->resources[2];
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.com/example.ext.torrent"),
+		       r->url);
+  CPPUNIT_ASSERT_EQUAL(2, r->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("bittorrent"),
+		       MetalinkResource::getTypeString(r->type));
+  CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
+}
+
+void MetalinkProcessorTest::testParseFileV4_dirtraversal()
+{
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> m = proc.parseFile("metalink4-dirtraversal.xml");
+  CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries.size());
+}
+
+void MetalinkProcessorTest::testParseFileV4_attrs()
+{
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> m = proc.parseFile("metalink4-attrs.xml");
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)6, m->entries[0]->resources.size());
+  std::deque<SharedHandle<MetalinkResource> > resources =
+    m->entries[0]->resources;
+  CPPUNIT_ASSERT_EQUAL(999999, resources[0]->priority);
+  CPPUNIT_ASSERT_EQUAL(999999, resources[1]->priority);
+  CPPUNIT_ASSERT_EQUAL(999999, resources[2]->priority);
+  CPPUNIT_ASSERT_EQUAL(999999, resources[3]->priority);
+  CPPUNIT_ASSERT_EQUAL(999999, resources[4]->priority);
+  CPPUNIT_ASSERT_EQUAL(999999, resources[5]->priority);
+}
 
 void MetalinkProcessorTest::testParseFile()
 {
@@ -77,8 +162,8 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, entry1->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), entry1->version);
-    CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entry1->language);
-    CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entry1->os);
+    CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entry1->languages[0]);
+    CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entry1->oses[0]);
     CPPUNIT_ASSERT_EQUAL(1, entry1->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
@@ -104,8 +189,8 @@ void MetalinkProcessorTest::testParseFile()
     std::deque<SharedHandle<MetalinkResource> >::iterator resourceItr1 = entry1->resources.begin();
     SharedHandle<MetalinkResource> resource1 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, resource1->type);
-    CPPUNIT_ASSERT_EQUAL(std::string("JP"), resource1->location);
-    CPPUNIT_ASSERT_EQUAL(100, resource1->preference);
+    CPPUNIT_ASSERT_EQUAL(std::string("jp"), resource1->location);
+    CPPUNIT_ASSERT_EQUAL(1, resource1->priority);
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"),
                          resource1->url);
     CPPUNIT_ASSERT_EQUAL(1, resource1->maxConnections);
@@ -113,8 +198,8 @@ void MetalinkProcessorTest::testParseFile()
     resourceItr1++;
     SharedHandle<MetalinkResource> resource2 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, resource2->type);
-    CPPUNIT_ASSERT_EQUAL(std::string("US"), resource2->location);
-    CPPUNIT_ASSERT_EQUAL(100, resource2->preference);
+    CPPUNIT_ASSERT_EQUAL(std::string("us"), resource2->location);
+    CPPUNIT_ASSERT_EQUAL(1, resource2->priority);
     CPPUNIT_ASSERT_EQUAL(std::string("http://httphost/aria2-0.5.2.tar.bz2"),
                          resource2->url);
     CPPUNIT_ASSERT_EQUAL(-1, resource2->maxConnections);
@@ -125,8 +210,8 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry2->getPath());
     CPPUNIT_ASSERT_EQUAL((uint64_t)345689ULL, entry2->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), entry2->version);
-    CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entry2->language);
-    CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entry2->os);
+    CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entry2->languages[0]);
+    CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entry2->oses[0]);
     CPPUNIT_ASSERT_EQUAL(-1, entry2->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
@@ -193,7 +278,7 @@ void MetalinkProcessorTest::testMalformedXML()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink><files></file></metalink>");
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></file></metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -207,7 +292,7 @@ void MetalinkProcessorTest::testMalformedXML2()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink><files></files>");
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></files>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -221,7 +306,7 @@ void MetalinkProcessorTest::testBadSize()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>abc</size>"
@@ -240,8 +325,8 @@ void MetalinkProcessorTest::testBadSize()
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, e->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), e->version);
-    CPPUNIT_ASSERT_EQUAL(std::string("en-US"), e->language);
-    CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), e->os);
+    CPPUNIT_ASSERT_EQUAL(std::string("en-US"), e->languages[0]);
+    CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), e->oses[0]);
 
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -252,7 +337,7 @@ void MetalinkProcessorTest::testBadMaxConn()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -279,7 +364,7 @@ void MetalinkProcessorTest::testNoName()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file>"
                 "  <size>1024</size>"
@@ -311,7 +396,7 @@ void MetalinkProcessorTest::testBadURLPrefs()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -319,7 +404,8 @@ void MetalinkProcessorTest::testBadURLPrefs()
                 "  <language>en-US</language>"
                 "  <os>Linux-x86</os>"
                 "  <resources>"
-                "    <url type=\"ftp\" maxconnections=\"1\" preference=\"xyz\" location=\"JP\">ftp://mirror/</url>"
+                "    <url type=\"ftp\" maxconnections=\"1\" preference=\"xyz\""
+                "         location=\"jp\">ftp://mirror/</url>"
                 "  </resources>"                
                 "</file>"
                 "</files>"
@@ -330,9 +416,9 @@ void MetalinkProcessorTest::testBadURLPrefs()
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
-    CPPUNIT_ASSERT_EQUAL(0, r->preference);
+    CPPUNIT_ASSERT_EQUAL(MetalinkResource::getLowestPriority(), r->priority);
     CPPUNIT_ASSERT_EQUAL(1, r->maxConnections);
-    CPPUNIT_ASSERT_EQUAL(std::string("JP"), r->location);
+    CPPUNIT_ASSERT_EQUAL(std::string("jp"), r->location);
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -342,7 +428,7 @@ void MetalinkProcessorTest::testBadURLMaxConn()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -350,7 +436,9 @@ void MetalinkProcessorTest::testBadURLMaxConn()
                 "  <language>en-US</language>"
                 "  <os>Linux-x86</os>"
                 "  <resources>"
-                "    <url maxconnections=\"xyz\" type=\"ftp\" preference=\"100\" location=\"JP\">ftp://mirror/</url>"
+                "    <url maxconnections=\"xyz\" type=\"ftp\""
+                "         preference=\"100\""
+                "         location=\"jp\">ftp://mirror/</url>"
                 "  </resources>"                
                 "</file>"
                 "</files>"
@@ -361,9 +449,9 @@ void MetalinkProcessorTest::testBadURLMaxConn()
     SharedHandle<MetalinkEntry> e = m->entries[0];
     SharedHandle<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
-    CPPUNIT_ASSERT_EQUAL(100, r->preference);
+    CPPUNIT_ASSERT_EQUAL(1, r->priority);
     CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
-    CPPUNIT_ASSERT_EQUAL(std::string("JP"), r->location);
+    CPPUNIT_ASSERT_EQUAL(std::string("jp"), r->location);
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -374,7 +462,7 @@ void MetalinkProcessorTest::testUnsupportedType()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -409,7 +497,7 @@ void MetalinkProcessorTest::testMultiplePieces()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2.tar.bz2\">"
                 "  <verification>"
@@ -439,7 +527,7 @@ void MetalinkProcessorTest::testBadPieceNo()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2.tar.bz2\">"
                 "  <verification>"
@@ -472,7 +560,7 @@ void MetalinkProcessorTest::testBadPieceLength()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2.tar.bz2\">"
                 "  <verification>"
@@ -504,7 +592,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2.tar.bz2\">"
                 "  <verification>"
@@ -537,7 +625,7 @@ void MetalinkProcessorTest::testLargeFileSize()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink>"
+  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"dvd.iso\">"
                 "  <size>9223372036854775807</size>"
@@ -550,6 +638,31 @@ void MetalinkProcessorTest::testLargeFileSize()
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<MetalinkEntry> e = m->entries[0];
+    CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, e->getLength());
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+}
+
+void MetalinkProcessorTest::testXmlPrefixV3()
+{
+  MetalinkProcessor proc;
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
+  dw->setString("<m:metalink version=\"3.0\" xmlns:m=\"http://www.metalinker.org/\">"
+                "<m:files>"
+                "<m:file name=\"dvd.iso\">"
+                "  <m:size>9223372036854775807</m:size>"
+                "  <m:resources>"
+                "    <m:url type=\"http\">ftp://mirror/</m:url>"
+                "  </m:resources>"                
+                "</m:file>"
+                "</m:files>"
+                "</m:metalink>");
+
+  try {
+    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
     SharedHandle<MetalinkEntry> e = m->entries[0];
     CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, e->getLength());
   } catch(Exception& e) {

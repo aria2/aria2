@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="/example1.ext">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+  <file name="./example2.ext">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+  <file name="../example3.ext">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+  <file name="dir/../example4.ext">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+  <file name="example5.ext/..">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+  <file name=".">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+  <file name="..">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+</metalink>

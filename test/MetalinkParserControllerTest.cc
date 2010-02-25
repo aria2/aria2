@@ -1,4 +1,7 @@
 #include "MetalinkParserController.h"
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
@@ -8,7 +11,6 @@
 # include "ChunkChecksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -20,6 +22,7 @@ class MetalinkParserControllerTest:public CppUnit::TestFixture {
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testChecksumTransaction);
   CPPUNIT_TEST(testChunkChecksumTransaction);
+  CPPUNIT_TEST(testChunkChecksumTransactionV4);
 #endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testSignatureTransaction);
 
@@ -36,6 +39,7 @@ public:
 #ifdef ENABLE_MESSAGE_DIGEST
   void testChecksumTransaction();
   void testChunkChecksumTransaction();
+  void testChunkChecksumTransactionV4();
 #endif // ENABLE_MESSAGE_DIGEST
   void testSignatureTransaction();
 };
@@ -62,8 +66,8 @@ void MetalinkParserControllerTest::testEntryTransaction()
     CPPUNIT_ASSERT_EQUAL((uint64_t)(1024*1024ULL), e->file->getLength());
     CPPUNIT_ASSERT_EQUAL((off_t)0, e->file->getOffset());
     CPPUNIT_ASSERT_EQUAL(std::string("1.0"), e->version);
-    CPPUNIT_ASSERT_EQUAL(std::string("ja_JP"), e->language);
-    CPPUNIT_ASSERT_EQUAL(std::string("Linux"), e->os);
+    CPPUNIT_ASSERT_EQUAL(std::string("ja_JP"), e->languages[0]);
+    CPPUNIT_ASSERT_EQUAL(std::string("Linux"), e->oses[0]);
   }
   ctrl.newEntryTransaction();
   ctrl.cancelEntryTransaction();
@@ -78,7 +82,7 @@ void MetalinkParserControllerTest::testResourceTransaction()
   ctrl.setURLOfResource("http://mirror/aria2.tar.bz2");
   ctrl.setTypeOfResource("http");
   ctrl.setLocationOfResource("US");
-  ctrl.setPreferenceOfResource(100);
+  ctrl.setPriorityOfResource(100);
   ctrl.setMaxConnectionsOfResource(1);
   ctrl.commitEntryTransaction();
   {
@@ -88,7 +92,7 @@ void MetalinkParserControllerTest::testResourceTransaction()
     CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.tar.bz2"), res->url);
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, res->type);
     CPPUNIT_ASSERT_EQUAL(std::string("US"), res->location);
-    CPPUNIT_ASSERT_EQUAL(100, res->preference);
+    CPPUNIT_ASSERT_EQUAL(100, res->priority);
     CPPUNIT_ASSERT_EQUAL(1, res->maxConnections);
   }
   ctrl.newEntryTransaction();
@@ -148,6 +152,34 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransaction();
   ctrl.cancelChunkChecksumTransaction();
+  ctrl.commitEntryTransaction();
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
+}
+
+void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
+{
+  MetalinkParserController ctrl;
+  ctrl.newEntryTransaction();
+  ctrl.newChunkChecksumTransactionV4();
+  ctrl.setTypeOfChunkChecksumV4("md5");
+  ctrl.setLengthOfChunkChecksumV4(256*1024);
+  ctrl.addHashOfChunkChecksumV4("hash1");
+  ctrl.addHashOfChunkChecksumV4("hash2");
+  ctrl.addHashOfChunkChecksumV4("hash3");
+  ctrl.commitEntryTransaction();
+  {
+    SharedHandle<Metalinker> m = ctrl.getResult();
+    SharedHandle<ChunkChecksum> md = m->entries.front()->chunkChecksum;
+    CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getAlgo());
+    CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, md->countChecksum());
+    CPPUNIT_ASSERT_EQUAL(std::string("hash1"), md->getChecksums()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::string("hash2"), md->getChecksums()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::string("hash3"), md->getChecksums()[2]);
+  }
+  ctrl.newEntryTransaction();
+  ctrl.newChunkChecksumTransactionV4();
+  ctrl.cancelChunkChecksumTransactionV4();
   ctrl.commitEntryTransaction();
   CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
 }

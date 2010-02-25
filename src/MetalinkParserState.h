@@ -36,12 +36,20 @@
 #define _D_METALINK_PARSER_STATE_H_
 
 #include "common.h"
-#include <map>
+
+#include <vector>
 #include <string>
 
 namespace aria2 {
 
 class MetalinkParserStateMachine;
+
+struct XmlAttr {
+  std::string localname;
+  std::string prefix;
+  std::string nsUri;
+  std::string value;
+};
 
 class MetalinkParserState
 {
@@ -50,14 +58,22 @@ public:
 
   virtual void beginElement
   (MetalinkParserStateMachine* stm,
-   const std::string& name,
-   const std::map<std::string, std::string>& attrs) = 0;
+   const std::string& localname,
+   const std::string& prefix,
+   const std::string& nsUri,
+   const std::vector<XmlAttr>& attrs) {}
   
   virtual void endElement
   (MetalinkParserStateMachine* stm,
-   const std::string& name, const std::string& characters) = 0;
+   const std::string& localname,
+   const std::string& prefix,
+   const std::string& nsUri,
+   const std::string& characters) {}
 
-  virtual bool needsCharactersBuffering() const = 0;
+  virtual bool needsCharactersBuffering() const
+  {
+    return false;
+  }
 };
 
 } // namespace aria2

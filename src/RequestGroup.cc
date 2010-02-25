@@ -110,8 +110,6 @@ namespace aria2 {
 
 int32_t RequestGroup::_gidCounter = 0;
 
-const std::string RequestGroup::ACCEPT_METALINK = "application/metalink+xml";
-
 RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _gid(newGID()),
   _option(new Option(*option.get())),
@@ -138,8 +136,9 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   // Add types to be sent as a Accept header value here.
   // It would be good to put this value in Option so that user can tweak
   // and add this list.
-  // ACCEPT_METALINK is used for `transparent metalink'.
-  addAcceptType(ACCEPT_METALINK);
+  // The mime types of Metalink is used for `transparent metalink'.
+  addAcceptType(DownloadHandlerConstants::getMetalinkContentTypes().begin(),
+		DownloadHandlerConstants::getMetalinkContentTypes().end());
   if(!_option->getAsBool(PREF_DRY_RUN)) {
     initializePreDownloadHandler();
     initializePostDownloadHandler();

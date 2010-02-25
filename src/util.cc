@@ -1167,6 +1167,20 @@ bool inPrivateAddress(const std::string& ipv4addr)
   return false;
 }
 
+bool detectDirTraversal(const std::string& s)
+{
+  return s == A2STR::DOT_C ||
+    s == ".." ||
+    util::startsWith(s, A2STR::SLASH_C) ||
+    util::startsWith(s, "./") ||
+    util::startsWith(s, "../") ||
+    s.find("/../") != std::string::npos ||
+    s.find("/./") != std::string::npos ||
+    util::endsWith(s, "/") ||
+    util::endsWith(s, "/.") ||
+    util::endsWith(s, "/..");
+}
+
 } // namespace util
 
 } // namespace aria2

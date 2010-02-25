@@ -40,6 +40,8 @@
 #include "util.h"
 #include "message.h"
 #include "DlAbortEx.h"
+#include "MetalinkParserState.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -52,37 +54,71 @@ public:
   SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):_stm(stm) {}
 };
 
-static void mlStartElement(void* userData, const char* name, const char** attrs)
+static void splitNsName
+(std::string& localname, std::string& prefix, std::string& nsUri,
+ const std::string& nsName)
 {
-  SessionData* sd = reinterpret_cast<SessionData*>(userData);
-
-  std::map<std::string, std::string> attrmap;
-  if(attrs) {
-    const char** p = attrs;
-    while(*p != 0) {
-      std::string name = *p++;
-      if(*p == 0) {
-        break;
-      }
-      std::string value = util::trim(*p++);
-      attrmap[name] = value;
-    }
-  }
-  sd->_stm->beginElement(name, attrmap);
-  if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.push_front(std::string());
+  std::pair<std::string, std::string> nsNamePair;
+  util::split(nsNamePair, nsName, '\t');
+  if(nsNamePair.second.empty()) {
+    localname = nsNamePair.first;
+  } else {
+    nsUri = nsNamePair.first;
+    localname = nsNamePair.second;
   }
 }
 
-static void mlEndElement(void* userData, const char* name)
+static void mlStartElement(void* userData, const char* nsName, const char** attrs)
 {
+  SessionData* sd = reinterpret_cast<SessionData*>(userData);
+
+  std::vector<XmlAttr> xmlAttrs;
+  if(attrs) {
+    const char** p = attrs;
+    while(*p != 0) {
+      std::string attrNsName = *p++;
+      if(*p == 0) {
+        break;
+      }
+      std::string value = *p++;
+      std::pair<std::string, std::string> nsNamePair;
+      util::split(nsNamePair, attrNsName, '\t');
+      XmlAttr xa;
+      if(nsNamePair.second.empty()) {
+        xa.localname = nsNamePair.first;
+      } else {
+        xa.nsUri = nsNamePair.first;
+        xa.localname = nsNamePair.second;
+      }
+      xa.value = value;
+      xmlAttrs.push_back(xa);
+    }
+  }
+  std::string localname;
+  std::string prefix;
+  std::string nsUri;
+  splitNsName(localname, prefix, nsUri, nsName);
+  
+  sd->_stm->beginElement(localname, prefix, nsUri, xmlAttrs);
+  if(sd->_stm->needsCharactersBuffering()) {
+    sd->_charactersStack.push_front(A2STR::NIL);
+  }
+}
+
+static void mlEndElement(void* userData, const char* nsName)
+{
+  std::string localname;
+  std::string prefix;
+  std::string nsUri;
+  splitNsName(localname, prefix, nsUri, nsName);
+
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
   if(sd->_stm->needsCharactersBuffering()) {
-    characters = util::trim(sd->_charactersStack.front());
+    characters = sd->_charactersStack.front();
     sd->_charactersStack.pop_front();
   }
-  sd->_stm->endElement(name, characters);
+  sd->_stm->endElement(localname, prefix, nsUri, characters);
 }
 
 static void mlCharacters(void* userData, const char* ch, int len)
@@ -110,7 +146,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
   unsigned char buf[bufSize];
 
   SharedHandle<SessionData> sessionData(new SessionData(_stm));
-  XML_Parser parser = XML_ParserCreate(0);
+  XML_Parser parser = XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'));
   try {
     XML_SetUserData(parser, sessionData.get());
     XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);

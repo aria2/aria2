@@ -37,22 +37,26 @@
 
 namespace aria2 {
 
-const std::string MessageDigestContext::SHA1("sha1");
+const std::string MessageDigestContext::SHA1("sha-1");
 
-const std::string MessageDigestContext::SHA256("sha256");
+const std::string MessageDigestContext::SHA256("sha-256");
 
-const std::string MessageDigestContext::MD5("md5");
+const std::string MessageDigestContext::MD5("md-5");
 
 static MessageDigestContext::DigestAlgoMap::value_type digests[] = {
 #ifdef HAVE_LIBSSL
   MessageDigestContext::DigestAlgoMap::value_type("md5", EVP_md5()),
+  MessageDigestContext::DigestAlgoMap::value_type("sha-1", EVP_sha1()),
   MessageDigestContext::DigestAlgoMap::value_type("sha1", EVP_sha1()),
 # ifdef HAVE_EVP_SHA256
+  MessageDigestContext::DigestAlgoMap::value_type("sha-256", EVP_sha256()),
   MessageDigestContext::DigestAlgoMap::value_type("sha256", EVP_sha256()),
 # endif // HAVE_EVP_SHA256
 #elif HAVE_LIBGCRYPT
   MessageDigestContext::DigestAlgoMap::value_type("md5", GCRY_MD_MD5),
+  MessageDigestContext::DigestAlgoMap::value_type("sha-1", GCRY_MD_SHA1),
   MessageDigestContext::DigestAlgoMap::value_type("sha1", GCRY_MD_SHA1),
+  MessageDigestContext::DigestAlgoMap::value_type("sha-256", GCRY_MD_SHA256),
   MessageDigestContext::DigestAlgoMap::value_type("sha256", GCRY_MD_SHA256),
 #endif // HAVE_LIBGCRYPT
 };

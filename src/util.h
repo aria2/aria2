@@ -381,6 +381,10 @@ void generateRandomKey(unsigned char* key);
 // Returns true is given numeric ipv4addr is in Private Address Space.
 bool inPrivateAddress(const std::string& ipv4addr);
 
+// Returns true if s contains directory traversal path component such
+// as '..'.
+bool detectDirTraversal(const std::string& s);
+
 } // namespace util
 
 } // namespace aria2

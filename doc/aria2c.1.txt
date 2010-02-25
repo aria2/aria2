@@ -557,7 +557,7 @@ Metalink Specific Options
 
 *--metalink-location*=LOCATION[,...]::
   The location of the preferred server.
-  A comma-delimited list of locations is acceptable, for example, 'JP,US'.
+  A comma-delimited list of locations is acceptable, for example, 'jp,us'.
 
 *--metalink-os*=OS::
   The operating system of the file to download.
@@ -1717,7 +1717,7 @@ The index is printed to the console using -S option.
 Download a file using a local .metalink file with user preference
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------------------------------------------
-aria2c --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US file.metalink
+aria2c --metalink-location=jp,us --metalink-version=1.1 --metalink-language=en-US file.metalink
 ------------------------------------------------------------------------------
 
 BitTorrent Download

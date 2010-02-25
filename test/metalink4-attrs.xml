@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="priority/example.ext">
+    <url location="de" priority="0">ftp://ftp.example.com/example.ext</url>
+    <url location="fr" priority="">http://example.com/example.ext</url>
+    <url location="jp" priority="1000000">http://example.org/example.ext</url>
+    <metaurl mediatype="torrent" priority="0">http://example.com/example.ext.torrent</metaurl>
+    <metaurl mediatype="torrent" priority="">http://example.org/example.ext.torrent</metaurl>
+    <metaurl mediatype="torrent" priority="1000000">http://example.net/example.ext.torrent</metaurl>
+  </file>
+</metalink>

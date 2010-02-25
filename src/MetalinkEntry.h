@@ -39,6 +39,8 @@
 
 #include <string>
 #include <deque>
+#include <vector>
+#include <algorithm>
 
 #include "SharedHandle.h"
 
@@ -56,10 +58,10 @@ class MetalinkEntry {
 public:
   SharedHandle<FileEntry> file;
   std::string version;
-  std::string language;
-  std::string os;
+  std::vector<std::string> languages;
+  std::vector<std::string> oses;
   std::deque<SharedHandle<MetalinkResource> > resources;
-  int maxConnections;
+  int maxConnections; // Metalink3Spec
 #ifdef ENABLE_MESSAGE_DIGEST
   SharedHandle<Checksum> checksum;
   SharedHandle<ChunkChecksum> chunkChecksum;
@@ -84,10 +86,23 @@ public:
 
   void dropUnsupportedResource();
 
-  void reorderResourcesByPreference();
+  void reorderResourcesByPriority();
   
-  void setLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd);
-  void setProtocolPreference(const std::string& protocol, int preferenceToAdd);
+  bool containsLanguage(const std::string& lang) const
+  {
+    return
+      std::find(languages.begin(), languages.end(), lang) != languages.end();
+  }
+
+  bool containsOS(const std::string& os) const
+  {
+    return std::find(oses.begin(), oses.end(), os) != oses.end();
+  }
+
+  void setLocationPriority
+  (const std::deque<std::string>& locations, int priorityToAdd);
+
+  void setProtocolPriority(const std::string& protocol, int priorityToAdd);
 
   static void toFileEntry
   (std::deque<SharedHandle<FileEntry> >& fileEntries,
@@ -99,7 +114,6 @@ public:
   {
     return _signature;
   }
-
 };
 
 } // namespace aria2

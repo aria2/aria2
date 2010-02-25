@@ -39,6 +39,7 @@
 
 #include <string>
 #include <deque>
+#include <algorithm>
 #include <vector>
 
 #include "SharedHandle.h"
@@ -379,9 +380,18 @@ public:
 
   void addAcceptType(const std::string& type);
 
-  void removeAcceptType(const std::string& type);
+  template<typename InputIterator>
+  void addAcceptType(InputIterator first, InputIterator last)
+  {
+    for(; first != last; ++first) {
+      if(std::find(_acceptTypes.begin(), _acceptTypes.end(), *first) ==
+	 _acceptTypes.end()) {
+	_acceptTypes.push_back(*first);
+      }
+    }
+  }
 
-  static const std::string ACCEPT_METALINK;
+  void removeAcceptType(const std::string& type);
 
   void setURISelector(const SharedHandle<URISelector>& uriSelector);
 

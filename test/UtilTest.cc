@@ -61,6 +61,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testApplyDir);
   CPPUNIT_TEST(testFixTaintedBasename);
   CPPUNIT_TEST(testIsNumericHost);
+  CPPUNIT_TEST(testDetectDirTraversal);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -110,6 +111,7 @@ public:
   void testApplyDir();
   void testFixTaintedBasename();
   void testIsNumericHost();
+  void testDetectDirTraversal();
 };
 
 
@@ -1013,6 +1015,23 @@ void UtilTest::testIsNumericHost()
   CPPUNIT_ASSERT(util::isNumericHost("192.168.0.1"));
   CPPUNIT_ASSERT(!util::isNumericHost("aria2.sf.net"));
   CPPUNIT_ASSERT(util::isNumericHost("::1"));
+}
+
+void UtilTest::testDetectDirTraversal()
+{
+  CPPUNIT_ASSERT(util::detectDirTraversal("/foo"));
+  CPPUNIT_ASSERT(util::detectDirTraversal("./foo"));
+  CPPUNIT_ASSERT(util::detectDirTraversal("../foo"));
+  CPPUNIT_ASSERT(util::detectDirTraversal("foo/../bar"));
+  CPPUNIT_ASSERT(util::detectDirTraversal("foo/./bar"));
+  CPPUNIT_ASSERT(util::detectDirTraversal("foo/."));
+  CPPUNIT_ASSERT(util::detectDirTraversal("foo/.."));
+  CPPUNIT_ASSERT(util::detectDirTraversal("."));
+  CPPUNIT_ASSERT(util::detectDirTraversal(".."));
+  CPPUNIT_ASSERT(util::detectDirTraversal("/"));
+  CPPUNIT_ASSERT(util::detectDirTraversal("foo/"));
+  CPPUNIT_ASSERT(!util::detectDirTraversal("foo/bar"));
+  CPPUNIT_ASSERT(!util::detectDirTraversal("foo"));
 }
 
 } // namespace aria2

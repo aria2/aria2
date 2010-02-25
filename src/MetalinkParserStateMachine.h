@@ -37,15 +37,15 @@
 
 #include "common.h"
 #include <string>
-#include <map>
+#include <vector>
 #include <stack>
 
 #include "SharedHandle.h"
 #include "MetalinkParserController.h"
+#include "MetalinkParserState.h"
 
 namespace aria2 {
 
-class MetalinkParserState;
 class Metalinker;
 
 class MetalinkParserStateMachine {
@@ -55,27 +55,44 @@ private:
   std::stack<MetalinkParserState*> _stateStack;
 
   static MetalinkParserState* _initialState;
+  static MetalinkParserState* _skipTagState;
+  
+  // Metalink3
   static MetalinkParserState* _metalinkState;
-  static MetalinkParserState* _filesState;
+  static MetalinkParserState* _filesState; // Metalink3Spec
   static MetalinkParserState* _fileState;
   static MetalinkParserState* _sizeState;
   static MetalinkParserState* _versionState;
   static MetalinkParserState* _languageState;
   static MetalinkParserState* _osState;
-  static MetalinkParserState* _verificationState;
+  static MetalinkParserState* _verificationState; // Metalink3Spec
   static MetalinkParserState* _hashState;
-  static MetalinkParserState* _piecesState;
-  static MetalinkParserState* _pieceHashState;
+  static MetalinkParserState* _piecesState; // Metalink3Spec
+  static MetalinkParserState* _pieceHashState; // Metalink3Spec
   static MetalinkParserState* _signatureState;
-  static MetalinkParserState* _resourcesState;
+  static MetalinkParserState* _resourcesState; // Metalink3Spec
   static MetalinkParserState* _urlState;
-  static MetalinkParserState* _skipTagState;
+
+  // Metalink4
+  static MetalinkParserState* _metalinkStateV4;
+  static MetalinkParserState* _fileStateV4;
+  static MetalinkParserState* _sizeStateV4;
+  static MetalinkParserState* _versionStateV4;
+  static MetalinkParserState* _languageStateV4;
+  static MetalinkParserState* _osStateV4;
+  static MetalinkParserState* _hashStateV4;
+  static MetalinkParserState* _piecesStateV4; // Metalink4Spec
+  static MetalinkParserState* _pieceHashStateV4; // Metalink4Spec
+  static MetalinkParserState* _signatureStateV4;
+  static MetalinkParserState* _urlStateV4;
 public:
   MetalinkParserStateMachine();
 
+  void setSkipTagState();
+
   void setMetalinkState();
 
-  void setFilesState();
+  void setFilesState(); // Metalink3Spec
 
   void setFileState();
 
@@ -87,28 +104,46 @@ public:
   
   void setOSState();
 
-  void setVerificationState();
+  void setVerificationState(); // Metalink3Spec
 
   void setHashState();
 
-  void setPiecesState();
+  void setPiecesState(); // Metalink3Spec
 
-  void setPieceHashState();
+  void setPieceHashState(); // Metalink3Spec
 
   void setSignatureState();
 
-  void setResourcesState();
+  void setResourcesState(); // Metalink3Spec
 
   void setURLState();
 
-  void setSkipTagState();
+  // Metalink4
+  void setMetalinkStateV4();
+  void setFileStateV4();
+  void setSizeStateV4();
+  void setVersionStateV4();
+  void setLanguageStateV4();
+  void setOSStateV4();
+  void setHashStateV4();
+  void setPiecesStateV4(); // Metalink4Spec
+  void setPieceHashStateV4(); // Metalink4Spec
+  void setSignatureStateV4();
+  void setURLStateV4();
 
   bool finished() const;
 
   void beginElement
-  (const std::string& name, const std::map<std::string, std::string>& attrs);
+  (const std::string& localname,
+   const std::string& prefix,
+   const std::string& nsUri,
+   const std::vector<XmlAttr>& attrs);
   
-  void endElement(const std::string& name, const std::string& characters);
+  void endElement
+  (const std::string& localname,
+   const std::string& prefix,
+   const std::string& nsUri,
+   const std::string& characters);
 
   void newEntryTransaction();
 
@@ -122,7 +157,7 @@ public:
 
   void setOSOfEntry(const std::string& os);
 
-  void setMaxConnectionsOfEntry(int maxConnections);
+  void setMaxConnectionsOfEntry(int maxConnections); // Metalink3Spec
 
   void commitEntryTransaction();
 
@@ -134,9 +169,9 @@ public:
 
   void setLocationOfResource(const std::string& location);
 
-  void setPreferenceOfResource(int preference);
+  void setPriorityOfResource(int priority);
 
-  void setMaxConnectionsOfResource(int maxConnections);
+  void setMaxConnectionsOfResource(int maxConnections); // Metalink3Spec
 
   void commitResourceTransaction();
 
@@ -152,21 +187,33 @@ public:
 
   void cancelChecksumTransaction();
 
-  void newChunkChecksumTransaction();
+  void newChunkChecksumTransactionV4(); // Metalink4Spec
 
-  void setLengthOfChunkChecksum(size_t length);
+  void setLengthOfChunkChecksumV4(size_t length); // Metalink4Spec
 
-  void setTypeOfChunkChecksum(const std::string& type);
+  void setTypeOfChunkChecksumV4(const std::string& type); // Metalink4Spec
 
-  void createNewHashOfChunkChecksum(size_t order);
+  void addHashOfChunkChecksumV4(const std::string& md); // Metalink4Spec
 
-  void setMessageDigestOfChunkChecksum(const std::string& md);
+  void commitChunkChecksumTransactionV4(); // Metalink4Spec
 
-  void addHashOfChunkChecksum();
+  void cancelChunkChecksumTransactionV4(); // Metalink4Spec
 
-  void commitChunkChecksumTransaction();
+  void newChunkChecksumTransaction(); // Metalink3Spec
 
-  void cancelChunkChecksumTransaction();
+  void setLengthOfChunkChecksum(size_t length); // Metalink3Spec
+
+  void setTypeOfChunkChecksum(const std::string& type); // Metalink3Spec
+
+  void createNewHashOfChunkChecksum(size_t order); // Metalink3Spec
+
+  void setMessageDigestOfChunkChecksum(const std::string& md); // Metalink3Spec
+
+  void addHashOfChunkChecksum(); // Metalink3Spec
+
+  void commitChunkChecksumTransaction(); // Metalink3Spec
+
+  void cancelChunkChecksumTransaction(); // Metalink3Spec
 
   void newSignatureTransaction();
 

@@ -247,4 +247,7 @@ EXTRA_DIST = 4096chunk.txt\
 	url-list-singleFileEndsWithSlash.torrent\
 	input_uris.txt\
 	2files.metalink\
-	utf8.torrent
+	utf8.torrent\
+	metalink4.xml\
+	metalink4-attrs.xml\
+	metalink4-dirtraversal.xml

@@ -56,21 +56,22 @@ MetalinkEntry::MetalinkEntry():
 
 MetalinkEntry::~MetalinkEntry() {}
 
-class AddLocationPreference {
+class AddLocationPriority {
 private:
   std::deque<std::string> _locations;
-  int _preferenceToAdd;
+  int _priorityToAdd;
 public:
-  AddLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd):
-    _locations(locations), _preferenceToAdd(preferenceToAdd)
+  AddLocationPriority
+  (const std::deque<std::string>& locations, int priorityToAdd):
+    _locations(locations), _priorityToAdd(priorityToAdd)
   {
-    std::transform(_locations.begin(), _locations.end(), _locations.begin(), util::toUpper);
     std::sort(_locations.begin(), _locations.end());
   }
 
   void operator()(SharedHandle<MetalinkResource>& res) {
-    if(std::binary_search(_locations.begin(), _locations.end(), res->location)) {
-      res->preference += _preferenceToAdd;
+    if(std::binary_search
+       (_locations.begin(), _locations.end(), res->location)) {
+      res->priority += _priorityToAdd;
     }
   }
 };
@@ -80,8 +81,8 @@ MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
   if(this != &metalinkEntry) {
     this->file = metalinkEntry.file;
     this->version = metalinkEntry.version;
-    this->language = metalinkEntry.language;
-    this->os = metalinkEntry.os;
+    this->languages = metalinkEntry.languages;
+    this->oses = metalinkEntry.oses;
     this->maxConnections = metalinkEntry.maxConnections;
 #ifdef ENABLE_MESSAGE_DIGEST
     this->checksum = metalinkEntry.checksum;
@@ -102,45 +103,46 @@ uint64_t MetalinkEntry::getLength() const
   return file->getLength();
 }
 
-void MetalinkEntry::setLocationPreference(const std::deque<std::string>& locations,
-                                          int preferenceToAdd)
+void MetalinkEntry::setLocationPriority
+(const std::deque<std::string>& locations, int priorityToAdd)
 {
   std::for_each(resources.begin(), resources.end(),
-                AddLocationPreference(locations, preferenceToAdd));
+                AddLocationPriority(locations, priorityToAdd));
 }
 
-class AddProtocolPreference {
+class AddProtocolPriority {
 private:
   std::string _protocol;
-  int _preferenceToAdd;
+  int _priorityToAdd;
 public:
-  AddProtocolPreference(const std::string& protocol, int prefToAdd):
-    _protocol(protocol), _preferenceToAdd(prefToAdd) {}
+  AddProtocolPriority(const std::string& protocol, int prefToAdd):
+    _protocol(protocol), _priorityToAdd(prefToAdd) {}
 
   void operator()(const SharedHandle<MetalinkResource>& res) const
   {
     if(_protocol == MetalinkResource::getTypeString(res->type)) {
-      res->preference += _preferenceToAdd;
+      res->priority += _priorityToAdd;
     }
   }
 };
 
-void MetalinkEntry::setProtocolPreference(const std::string& protocol,
-                                          int preferenceToAdd)
+void MetalinkEntry::setProtocolPriority(const std::string& protocol,
+                                          int priorityToAdd)
 {
   std::for_each(resources.begin(), resources.end(),
-                AddProtocolPreference(protocol, preferenceToAdd));
+                AddProtocolPriority(protocol, priorityToAdd));
 }
 
 class PrefOrder {
 public:
   bool operator()(const SharedHandle<MetalinkResource>& res1,
-                  const SharedHandle<MetalinkResource>& res2) {
-    return res1->preference > res2->preference;
+                  const SharedHandle<MetalinkResource>& res2)
+  {
+    return res1->priority < res2->priority;
   }
 };
 
-void MetalinkEntry::reorderResourcesByPreference() {
+void MetalinkEntry::reorderResourcesByPriority() {
   std::random_shuffle(resources.begin(), resources.end(),
                       *(SimpleRandomizer::getInstance().get()));
   std::sort(resources.begin(), resources.end(), PrefOrder());
