@@ -48,6 +48,7 @@ namespace aria2 {
 class Metalinker;
 class MetalinkEntry;
 class MetalinkResource;
+class MetalinkMetaurl;
 class Signature;
 
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -63,6 +64,7 @@ private:
 
   SharedHandle<MetalinkResource> _tResource;
 
+  SharedHandle<MetalinkMetaurl> _tMetaurl;
 #ifdef ENABLE_MESSAGE_DIGEST
   SharedHandle<Checksum> _tChecksum;
 
@@ -176,6 +178,18 @@ public:
   void commitSignatureTransaction();
 
   void cancelSignatureTransaction();
+
+  void newMetaurlTransaction();
+
+  void setURLOfMetaurl(const std::string& url);
+
+  void setMediatypeOfMetaurl(const std::string& mediatype);
+
+  void setPriorityOfMetaurl(int priority);
+
+  void commitMetaurlTransaction();
+
+  void cancelMetaurlTransaction();
 };
 
 } // namespace aria2

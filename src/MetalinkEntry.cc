@@ -37,6 +37,7 @@
 #include <algorithm>
 
 #include "MetalinkResource.h"
+#include "MetalinkMetaurl.h"
 #include "FileEntry.h"
 #include "util.h"
 #include "a2functional.h"
@@ -133,10 +134,11 @@ void MetalinkEntry::setProtocolPriority(const std::string& protocol,
                 AddProtocolPriority(protocol, priorityToAdd));
 }
 
-class PrefOrder {
+template<typename T>
+class PriorityHigher {
 public:
-  bool operator()(const SharedHandle<MetalinkResource>& res1,
-                  const SharedHandle<MetalinkResource>& res2)
+  bool operator()(const SharedHandle<T>& res1,
+                  const SharedHandle<T>& res2)
   {
     return res1->priority < res2->priority;
   }
@@ -145,7 +147,13 @@ public:
 void MetalinkEntry::reorderResourcesByPriority() {
   std::random_shuffle(resources.begin(), resources.end(),
                       *(SimpleRandomizer::getInstance().get()));
-  std::sort(resources.begin(), resources.end(), PrefOrder());
+  std::sort(resources.begin(), resources.end(),
+            PriorityHigher<MetalinkResource>());
+}
+
+void MetalinkEntry::reorderMetaurlsByPriority()
+{
+  std::sort(metaurls.begin(), metaurls.end(),PriorityHigher<MetalinkMetaurl>());
 }
 
 class Supported:public std::unary_function<SharedHandle<MetalinkResource>, bool> {

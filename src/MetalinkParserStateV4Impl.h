@@ -214,6 +214,21 @@ public:
   }
 };
 
+class MetaurlMetalinkParserStateV4:public SkipTagMetalinkParserState
+{
+public:
+  virtual void endElement(MetalinkParserStateMachine* stm,
+                          const std::string& localname,
+                          const std::string& prefix,
+                          const std::string& nsUri,
+                          const std::string& characters);
+
+  virtual bool needsCharactersBuffering() const
+  {
+    return true;
+  }
+};
+
 } // namespace aria2
 
 #endif // _D_METALINK_PARSER_STATE_IMPL_H_

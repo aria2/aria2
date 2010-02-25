@@ -40,6 +40,7 @@
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
+#include "MetalinkMetaurl.h"
 #include "FileEntry.h"
 #include "a2functional.h"
 #include "A2STR.h"
@@ -65,6 +66,7 @@ void MetalinkParserController::newEntryTransaction()
 {
   _tEntry.reset(new MetalinkEntry());
   _tResource.reset();
+  _tMetaurl.reset();
 #ifdef ENABLE_MESSAGE_DIGEST
   _tChecksum.reset();
   _tChunkChecksumV4.reset();
@@ -229,7 +231,19 @@ void MetalinkParserController::commitResourceTransaction()
   if(_tResource.isNull()) {
     return;
   }
+#ifdef ENABLE_BITTORRENT
+  if(_tResource->type == MetalinkResource::TYPE_BITTORRENT) {
+    SharedHandle<MetalinkMetaurl> metaurl(new MetalinkMetaurl());
+    metaurl->url = _tResource->url;
+    metaurl->priority = _tResource->priority;
+    metaurl->mediatype = MetalinkMetaurl::MEDIATYPE_TORRENT;
+    _tEntry->metaurls.push_back(metaurl);
+  } else {
+    _tEntry->resources.push_back(_tResource);
+  }
+#else // !ENABLE_BITTORRENT
   _tEntry->resources.push_back(_tResource);
+#endif // !ENABLE_BITTORRENT
   _tResource.reset();
 }
 
@@ -518,6 +532,57 @@ void MetalinkParserController::commitSignatureTransaction()
 void MetalinkParserController::cancelSignatureTransaction()
 {
   _tSignature.reset();
+}
+
+void MetalinkParserController::newMetaurlTransaction()
+{
+  if(_tEntry.isNull()) {
+    return;
+  }
+  _tMetaurl.reset(new MetalinkMetaurl());
+}
+
+void MetalinkParserController::setURLOfMetaurl(const std::string& url)
+{
+  if(_tMetaurl.isNull()) {
+    return;
+  }
+  _tMetaurl->url = url;
+}
+
+void MetalinkParserController::setMediatypeOfMetaurl
+(const std::string& mediatype)
+{
+  if(_tMetaurl.isNull()) {
+    return;
+  }
+  _tMetaurl->mediatype = mediatype;
+}
+
+void MetalinkParserController::setPriorityOfMetaurl(int priority)
+{
+  if(_tMetaurl.isNull()) {
+    return;
+  }
+  _tMetaurl->priority = priority;
+}
+
+void MetalinkParserController::commitMetaurlTransaction()
+{
+  if(_tMetaurl.isNull()) {
+    return;
+  }
+#ifdef ENABLE_BITTORRENT
+  if(_tMetaurl->mediatype == MetalinkMetaurl::MEDIATYPE_TORRENT) {
+    _tEntry->metaurls.push_back(_tMetaurl);
+  }
+#endif // ENABLE_BITTORRENT
+  _tMetaurl.reset();
+}
+
+void MetalinkParserController::cancelMetaurlTransaction()
+{
+  _tMetaurl.reset();
 }
 
 } // namespace aria2

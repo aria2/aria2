@@ -11,6 +11,7 @@
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
+#include "MetalinkMetaurl.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "ChunkChecksum.h"
 # include "Checksum.h"
@@ -80,6 +81,7 @@ void MetalinkProcessorTest::testParseFileV4()
 
   SharedHandle<MetalinkEntry> e;
   SharedHandle<MetalinkResource> r;
+  SharedHandle<MetalinkMetaurl> mu;
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
   e = m->entries[0];
@@ -108,7 +110,7 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL(std::string("a signature"),
 		       e->getSignature()->getBody());
 
-  CPPUNIT_ASSERT_EQUAL((size_t)3, e->resources.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, e->resources.size());
   r = e->resources[0];
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftp.example.com/example.ext"),
 		       r->url);
@@ -117,14 +119,16 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"),
 		       MetalinkResource::getTypeString(r->type));
   CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
-
-  r = e->resources[2];
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)1, e->metaurls.size());
+  mu = e->metaurls[0];
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.com/example.ext.torrent"),
-		       r->url);
-  CPPUNIT_ASSERT_EQUAL(2, r->priority);
-  CPPUNIT_ASSERT_EQUAL(std::string("bittorrent"),
-		       MetalinkResource::getTypeString(r->type));
-  CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
+		       mu->url);
+  CPPUNIT_ASSERT_EQUAL(2, mu->priority);
+  CPPUNIT_ASSERT_EQUAL(std::string("torrent"), mu->mediatype);
+#else // !ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)0, e->metaurls.size());  
+#endif // !ENABLE_BITTORRENT
 }
 
 void MetalinkProcessorTest::testParseFileV4_dirtraversal()
@@ -139,15 +143,23 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
   MetalinkProcessor proc;
   SharedHandle<Metalinker> m = proc.parseFile("metalink4-attrs.xml");
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
-  CPPUNIT_ASSERT_EQUAL((size_t)6, m->entries[0]->resources.size());
   std::deque<SharedHandle<MetalinkResource> > resources =
     m->entries[0]->resources;
+  CPPUNIT_ASSERT_EQUAL((size_t)3, resources.size());
   CPPUNIT_ASSERT_EQUAL(999999, resources[0]->priority);
   CPPUNIT_ASSERT_EQUAL(999999, resources[1]->priority);
   CPPUNIT_ASSERT_EQUAL(999999, resources[2]->priority);
-  CPPUNIT_ASSERT_EQUAL(999999, resources[3]->priority);
-  CPPUNIT_ASSERT_EQUAL(999999, resources[4]->priority);
-  CPPUNIT_ASSERT_EQUAL(999999, resources[5]->priority);
+
+  std::vector<SharedHandle<MetalinkMetaurl> > metaurls =
+    m->entries[0]->metaurls;
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)3, metaurls.size());
+  CPPUNIT_ASSERT_EQUAL(999999, metaurls[0]->priority);
+  CPPUNIT_ASSERT_EQUAL(999999, metaurls[1]->priority);
+  CPPUNIT_ASSERT_EQUAL(999999, metaurls[2]->priority);
+#else // !ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL((size_t)0, metaurls.size());
+#endif // !ENABLE_BITTORRENT
 }
 
 void MetalinkProcessorTest::testParseFile()

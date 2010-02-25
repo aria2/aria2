@@ -85,6 +85,7 @@ private:
   static MetalinkParserState* _pieceHashStateV4; // Metalink4Spec
   static MetalinkParserState* _signatureStateV4;
   static MetalinkParserState* _urlStateV4;
+  static MetalinkParserState* _metaurlStateV4;
 public:
   MetalinkParserStateMachine();
 
@@ -130,6 +131,7 @@ public:
   void setPieceHashStateV4(); // Metalink4Spec
   void setSignatureStateV4();
   void setURLStateV4();
+  void setMetaurlStateV4();
 
   bool finished() const;
 
@@ -226,6 +228,18 @@ public:
   void commitSignatureTransaction();
 
   void cancelSignatureTransaction();
+
+  void newMetaurlTransaction();
+
+  void setURLOfMetaurl(const std::string& url);
+
+  void setMediatypeOfMetaurl(const std::string& mediatype);
+
+  void setPriorityOfMetaurl(int priority);
+
+  void commitMetaurlTransaction();
+
+  void cancelMetaurlTransaction();
 
   bool needsCharactersBuffering() const;
 

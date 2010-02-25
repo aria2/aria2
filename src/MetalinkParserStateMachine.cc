@@ -97,6 +97,8 @@ MetalinkParserState* MetalinkParserStateMachine::_signatureStateV4 =
   new SignatureMetalinkParserStateV4();
 MetalinkParserState* MetalinkParserStateMachine::_urlStateV4 =
   new URLMetalinkParserStateV4();
+MetalinkParserState* MetalinkParserStateMachine::_metaurlStateV4 =
+  new MetaurlMetalinkParserStateV4();
 
 MetalinkParserStateMachine::MetalinkParserStateMachine():
   _ctrl(new MetalinkParserController())
@@ -227,6 +229,11 @@ void MetalinkParserStateMachine::setSignatureStateV4()
 void MetalinkParserStateMachine::setURLStateV4()
 {
   _stateStack.push(_urlStateV4);
+}
+
+void MetalinkParserStateMachine::setMetaurlStateV4()
+{
+  _stateStack.push(_metaurlStateV4);
 }
 
 void MetalinkParserStateMachine::setSkipTagState()
@@ -445,6 +452,37 @@ void MetalinkParserStateMachine::commitSignatureTransaction()
 void MetalinkParserStateMachine::cancelSignatureTransaction()
 {
   _ctrl->cancelSignatureTransaction();
+}
+
+void MetalinkParserStateMachine::newMetaurlTransaction()
+{
+  _ctrl->newMetaurlTransaction();
+}
+
+void MetalinkParserStateMachine::setURLOfMetaurl(const std::string& url)
+{
+  _ctrl->setURLOfMetaurl(url);
+}
+
+void MetalinkParserStateMachine::setMediatypeOfMetaurl
+(const std::string& mediatype)
+{
+  _ctrl->setMediatypeOfMetaurl(mediatype);
+}
+
+void MetalinkParserStateMachine::setPriorityOfMetaurl(int priority)
+{
+  _ctrl->setPriorityOfMetaurl(priority);
+}
+
+void MetalinkParserStateMachine::commitMetaurlTransaction()
+{
+  _ctrl->commitMetaurlTransaction();
+}
+
+void MetalinkParserStateMachine::cancelMetaurlTransaction()
+{
+  _ctrl->cancelMetaurlTransaction();
 }
 
 void MetalinkParserStateMachine::beginElement

@@ -452,6 +452,7 @@ if ENABLE_METALINK
 SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
+	MetalinkMetaurl.cc MetalinkMetaurl.h\
 	MetalinkProcessor.h\
 	MetalinkParserController.cc MetalinkParserController.h\
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\

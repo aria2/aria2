@@ -129,7 +129,7 @@ void FileMetalinkParserStateV4::beginElement
   } else if(localname == OS) {
     stm->setOSStateV4();
   } else if(localname == METAURL) {
-    stm->setURLStateV4();
+    stm->setMetaurlStateV4();
     // TODO currently NAME is ignored
     int priority;
     {
@@ -156,9 +156,9 @@ void FileMetalinkParserStateV4::beginElement
         mediatype = (*itr).value;
       }
     }
-    stm->newResourceTransaction();
-    stm->setPriorityOfResource(priority);
-    stm->setTypeOfResource(mediatype);
+    stm->newMetaurlTransaction();
+    stm->setPriorityOfMetaurl(priority);
+    stm->setMediatypeOfMetaurl(mediatype);
   } else if(localname == URL) {
     stm->setURLStateV4();
     std::string location;
@@ -361,6 +361,17 @@ void URLMetalinkParserStateV4::endElement
 {
   stm->setURLOfResource(characters);
   stm->commitResourceTransaction();
+}
+
+void MetaurlMetalinkParserStateV4::endElement
+(MetalinkParserStateMachine* stm,
+ const std::string& localname,
+ const std::string& prefix,
+ const std::string& nsUri,
+ const std::string& characters)
+{
+  stm->setURLOfMetaurl(characters);
+  stm->commitMetaurlTransaction();
 }
 
 } // namespace aria2

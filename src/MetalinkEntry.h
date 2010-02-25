@@ -47,6 +47,7 @@
 namespace aria2 {
 
 class MetalinkResource;
+class MetalinkMetaurl;
 class FileEntry;
 #ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
@@ -61,6 +62,7 @@ public:
   std::vector<std::string> languages;
   std::vector<std::string> oses;
   std::deque<SharedHandle<MetalinkResource> > resources;
+  std::vector<SharedHandle<MetalinkMetaurl> > metaurls;
   int maxConnections; // Metalink3Spec
 #ifdef ENABLE_MESSAGE_DIGEST
   SharedHandle<Checksum> checksum;
@@ -87,6 +89,8 @@ public:
   void dropUnsupportedResource();
 
   void reorderResourcesByPriority();
+
+  void reorderMetaurlsByPriority();
   
   bool containsLanguage(const std::string& lang) const
   {

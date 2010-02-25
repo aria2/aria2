@@ -1,3 +1,21 @@
+2010-02-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added MetalinkMetaurl class. It corresponds to metalink:metaurl
+	element.
+	* src/Makefile.am
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkEntry.cc
+	* src/MetalinkEntry.h
+	* src/MetalinkMetaurl.cc
+	* src/MetalinkMetaurl.h
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserController.h
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+	* src/MetalinkParserStateV4Impl.cc
+	* src/MetalinkParserStateV4Impl.h
+	* test/MetalinkProcessorTest.cc
+
 2010-02-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added Metalink4 support. Currently, name attribute of

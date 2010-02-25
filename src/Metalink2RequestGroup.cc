@@ -50,6 +50,7 @@
 #include "TrueRequestGroupCriteria.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
+#include "MetalinkMetaurl.h"
 #include "FileEntry.h"
 #include "A2STR.h"
 #include "a2functional.h"
@@ -175,19 +176,17 @@ Metalink2RequestGroup::createRequestGroup
       }
     }
     entry->dropUnsupportedResource();
-    if(entry->resources.size() == 0) {
+    if(entry->resources.empty() && entry->metaurls.empty()) {
       continue;
     }
     _logger->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
-    std::deque<SharedHandle<MetalinkResource> >::iterator itr =
-      std::find_if(entry->resources.begin(), entry->resources.end(), FindBitTorrentUrl());
-
 #ifdef ENABLE_BITTORRENT
     SharedHandle<RequestGroup> torrentRg;
-    // there is torrent entry
-    if(itr != entry->resources.end()) {
+    if(!entry->metaurls.empty()) {
+      entry->reorderMetaurlsByPriority();
+      // there is torrent entry
       std::deque<std::string> uris;
-      uris.push_back((*itr)->url);
+      uris.push_back(entry->metaurls[0]->url);
       {
         std::deque<SharedHandle<RequestGroup> > result;
         createRequestGroupForUri(result, option, uris,
