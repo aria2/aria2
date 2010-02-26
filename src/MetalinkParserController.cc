@@ -567,6 +567,14 @@ void MetalinkParserController::setPriorityOfMetaurl(int priority)
   _tMetaurl->priority = priority;
 }
 
+void MetalinkParserController::setNameOfMetaurl(const std::string& name)
+{
+  if(_tMetaurl.isNull()) {
+    return;
+  }
+  _tMetaurl->name = name;
+}
+
 void MetalinkParserController::commitMetaurlTransaction()
 {
   if(_tMetaurl.isNull()) {

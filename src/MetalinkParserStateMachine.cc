@@ -475,6 +475,11 @@ void MetalinkParserStateMachine::setPriorityOfMetaurl(int priority)
   _ctrl->setPriorityOfMetaurl(priority);
 }
 
+void MetalinkParserStateMachine::setNameOfMetaurl(const std::string& name)
+{
+  _ctrl->setNameOfMetaurl(name);
+}
+
 void MetalinkParserStateMachine::commitMetaurlTransaction()
 {
   _ctrl->commitMetaurlTransaction();

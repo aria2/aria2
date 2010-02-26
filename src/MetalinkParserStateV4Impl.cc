@@ -130,6 +130,16 @@ void FileMetalinkParserStateV4::beginElement
     stm->setOSStateV4();
   } else if(localname == METAURL) {
     stm->setMetaurlStateV4();
+    std::string name;
+    {
+      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
+      if(itr != attrs.end()) {
+        name = (*itr).value;
+        if(util::detectDirTraversal(name)) {
+          return;
+        }
+      }
+    }
     // TODO currently NAME is ignored
     int priority;
     {
@@ -159,6 +169,7 @@ void FileMetalinkParserStateV4::beginElement
     stm->newMetaurlTransaction();
     stm->setPriorityOfMetaurl(priority);
     stm->setMediatypeOfMetaurl(mediatype);
+    stm->setNameOfMetaurl(name);
   } else if(localname == URL) {
     stm->setURLStateV4();
     std::string location;

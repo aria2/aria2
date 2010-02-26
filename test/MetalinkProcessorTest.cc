@@ -135,7 +135,9 @@ void MetalinkProcessorTest::testParseFileV4_dirtraversal()
 {
   MetalinkProcessor proc;
   SharedHandle<Metalinker> m = proc.parseFile("metalink4-dirtraversal.xml");
-  CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[0]->resources.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[0]->metaurls.size());
 }
 
 void MetalinkProcessorTest::testParseFileV4_attrs()

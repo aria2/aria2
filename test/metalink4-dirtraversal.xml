@@ -21,4 +21,7 @@
   <file name="..">
     <url location="fr" priority="1">http://example.com/example.ext</url>
   </file>
+  <file name="foo">
+    <metaurl name="../foo" mediatype="torrent">http://example.com/example.torrent</metaurl>
+  </file>
 </metalink>

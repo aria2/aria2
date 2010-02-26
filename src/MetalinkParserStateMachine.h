@@ -237,6 +237,8 @@ public:
 
   void setPriorityOfMetaurl(int priority);
 
+  void setNameOfMetaurl(const std::string& name);
+
   void commitMetaurlTransaction();
 
   void cancelMetaurlTransaction();

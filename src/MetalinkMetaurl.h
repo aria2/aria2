@@ -46,6 +46,7 @@ public:
   std::string url;
   std::string mediatype;
   int priority;
+  std::string name;
 
   MetalinkMetaurl();
 
