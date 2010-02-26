@@ -1,3 +1,26 @@
+2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Supported name attribute of metalink::metaurl element and
+	multi-file torrent with Metalink4.  Files with same metaurl are
+	grouped and downloaded in one RequestGroup.
+	* src/BtDependency.cc
+	* src/FileEntry.h
+	* src/Metalink2RequestGroup.cc
+	* src/Metalink2RequestGroup.h
+	* src/MetalinkEntry.cc
+	* src/MetalinkEntry.h
+	* src/MetalinkHelper.cc
+	* src/MetalinkHelper.h
+	* src/MetalinkMetaurl.cc
+	* src/MetalinkMetaurl.h
+	* src/MetalinkParserController.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/bittorrent_helper.cc
+	* test/BittorrentHelperTest.cc
+	* test/BtDependencyTest.cc
+	* test/MetalinkHelperTest.cc
+
 2010-02-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Store name attribute of metalink:metaurl element in MetalinkMetaurl.

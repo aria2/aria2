@@ -136,57 +136,66 @@ void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
 void
 Metalink2RequestGroup::createRequestGroup
 (std::deque<SharedHandle<RequestGroup> >& groups,
- std::deque<SharedHandle<MetalinkEntry> > entries,
+ const std::deque<SharedHandle<MetalinkEntry> >& entries,
  const SharedHandle<Option>& option)
 {
-  if(entries.size() == 0) {
+  if(entries.empty()) {
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
   std::deque<int32_t> selectIndexes =
     util::parseIntRange(option->get(PREF_SELECT_FILE)).flush();
-  bool useIndex;
-  if(selectIndexes.size()) {
-    useIndex = true;
-  } else {
-    useIndex = false;
+  std::sort(selectIndexes.begin(), selectIndexes.end());
+  std::vector<SharedHandle<MetalinkEntry> > selectedEntries;
+  selectedEntries.reserve(entries.size());
+
+  std::deque<std::string> locations;
+  if(option->defined(PREF_METALINK_LOCATION)) {
+    util::split(option->get(PREF_METALINK_LOCATION),
+                std::back_inserter(locations), ",", true);
+    std::transform
+      (locations.begin(), locations.end(), locations.begin(), util::toLower);
   }
-  int32_t count = 0;
-  for(std::deque<SharedHandle<MetalinkEntry> >::iterator itr = entries.begin(); itr != entries.end();
-      ++itr, ++count) {
-    SharedHandle<MetalinkEntry>& entry = *itr;
-    if(option->defined(PREF_METALINK_LOCATION)) {
-      std::deque<std::string> locations;
-      util::split(option->get(PREF_METALINK_LOCATION),
-                  std::back_inserter(locations), ",", true);
-      std::transform
-        (locations.begin(), locations.end(), locations.begin(), util::toLower);
-      entry->setLocationPriority
-        (locations, -MetalinkResource::getLowestPriority());
-    }
-    if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
-      entry->setProtocolPriority
-        (option->get(PREF_METALINK_PREFERRED_PROTOCOL),
-         -MetalinkResource::getLowestPriority());
-    }
-    if(useIndex) {
-      if(std::find(selectIndexes.begin(), selectIndexes.end(), count+1) ==
-         selectIndexes.end()) {
+  std::string preferredProtocol;
+  if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
+    preferredProtocol = option->get(PREF_METALINK_PREFERRED_PROTOCOL);
+  }
+  {
+    int32_t count = 1;
+    for(std::deque<SharedHandle<MetalinkEntry> >::const_iterator i =
+          entries.begin(); i != entries.end(); ++i, ++count) {
+      (*i)->dropUnsupportedResource();
+      if((*i)->resources.empty() && (*i)->metaurls.empty()) {
         continue;
       }
+      (*i)->setLocationPriority
+        (locations, -MetalinkResource::getLowestPriority());
+      if(!preferredProtocol.empty()) {
+        (*i)->setProtocolPriority
+          (preferredProtocol, -MetalinkResource::getLowestPriority());
+      }
+      if(selectIndexes.empty() ||
+         std::binary_search(selectIndexes.begin(), selectIndexes.end(), count)){
+        selectedEntries.push_back(*i);
+      }
     }
-    entry->dropUnsupportedResource();
-    if(entry->resources.empty() && entry->metaurls.empty()) {
-      continue;
-    }
-    _logger->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
+  }
+  std::for_each(entries.begin(), entries.end(),
+                mem_fun_sh(&MetalinkEntry::reorderMetaurlsByPriority));
+  std::vector<std::pair<std::string,
+    std::vector<SharedHandle<MetalinkEntry> > > > entryGroups;
+  MetalinkHelper::groupEntryByMetaurlName(entryGroups, selectedEntries);
+  for(std::vector<std::pair<std::string,
+        std::vector<SharedHandle<MetalinkEntry> > > >::const_iterator itr =
+        entryGroups.begin(); itr != entryGroups.end(); ++itr) {
+    const std::string& metaurl = (*itr).first;
+    const std::vector<SharedHandle<MetalinkEntry> >& mes = (*itr).second;
+    _logger->info("Processing metaurl group metaurl=%s", metaurl.c_str());
 #ifdef ENABLE_BITTORRENT
     SharedHandle<RequestGroup> torrentRg;
-    if(!entry->metaurls.empty()) {
-      entry->reorderMetaurlsByPriority();
-      // there is torrent entry
+    if(!metaurl.empty()) {
       std::deque<std::string> uris;
-      uris.push_back(entry->metaurls[0]->url);
+      uris.push_back(metaurl);
       {
         std::deque<SharedHandle<RequestGroup> > result;
         createRequestGroupForUri(result, option, uris,
@@ -213,62 +222,94 @@ Metalink2RequestGroup::createRequestGroup
       }
     }
 #endif // ENABLE_BITTORRENT
-    entry->reorderResourcesByPriority();
-    std::deque<std::string> uris;
-    std::for_each(entry->resources.begin(), entry->resources.end(),
-                  AccumulateNonP2PUrl(uris));
     SharedHandle<RequestGroup> rg(new RequestGroup(option));
-    // If piece hash is specified in the metalink,
-    // make segment size equal to piece hash size.
-    size_t pieceLength;
+    SharedHandle<DownloadContext> dctx;
+    if(mes.size() == 1) {
+      SharedHandle<MetalinkEntry> entry = mes[0];
+      _logger->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
+      entry->reorderResourcesByPriority();
+      std::deque<std::string> uris;
+      std::for_each(entry->resources.begin(), entry->resources.end(),
+                    AccumulateNonP2PUrl(uris));
+      // If piece hash is specified in the metalink,
+      // make segment size equal to piece hash size.
+      size_t pieceLength;
 #ifdef ENABLE_MESSAGE_DIGEST
-    if(entry->chunkChecksum.isNull()) {
-      pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
-    } else {
-      pieceLength = entry->chunkChecksum->getChecksumLength();
-    }
-#else
-    pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
-#endif // ENABLE_MESSAGE_DIGEST
-    SharedHandle<DownloadContext> dctx
-      (new DownloadContext
-       (pieceLength,
-        entry->getLength(),
-        util::applyDir(option->get(PREF_DIR), entry->file->getPath())));
-    dctx->setDir(option->get(PREF_DIR));
-    dctx->getFirstFileEntry()->setUris(uris);
-    if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
-      dctx->getFirstFileEntry()->disableSingleHostMultiConnection();
-    }
-#ifdef ENABLE_MESSAGE_DIGEST
-    if(entry->chunkChecksum.isNull()) {
-      if(!entry->checksum.isNull()) {
-        dctx->setChecksum(entry->checksum->getMessageDigest());
-        dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
+      if(entry->chunkChecksum.isNull()) {
+        pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
+      } else {
+        pieceLength = entry->chunkChecksum->getChecksumLength();
       }
-    } else {
-      dctx->setPieceHashes(entry->chunkChecksum->getChecksums().begin(),
-                           entry->chunkChecksum->getChecksums().end());
-      dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
-    }
+#else
+      pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
 #endif // ENABLE_MESSAGE_DIGEST
-    dctx->setSignature(entry->getSignature());
+      dctx.reset(new DownloadContext
+                 (pieceLength,
+                  entry->getLength(),
+                  util::applyDir(option->get(PREF_DIR),
+                                 entry->file->getPath())));
+      dctx->getFirstFileEntry()->setUris(uris);
+      if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
+        dctx->getFirstFileEntry()->disableSingleHostMultiConnection();
+      }
+#ifdef ENABLE_MESSAGE_DIGEST
+      if(entry->chunkChecksum.isNull()) {
+        if(!entry->checksum.isNull()) {
+          dctx->setChecksum(entry->checksum->getMessageDigest());
+          dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
+        }
+      } else {
+        dctx->setPieceHashes(entry->chunkChecksum->getChecksums().begin(),
+                             entry->chunkChecksum->getChecksums().end());
+        dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
+      }
+#endif // ENABLE_MESSAGE_DIGEST
+      dctx->setSignature(entry->getSignature());
+      rg->setNumConcurrentCommand
+        (entry->maxConnections < 0 ?
+         option->getAsInt(PREF_METALINK_SERVERS) :
+         std::min(option->getAsInt(PREF_METALINK_SERVERS),
+                  static_cast<int32_t>(entry->maxConnections)));
+    } else {
+      dctx.reset(new DownloadContext());
+      // piece length is overridden by the one in torrent file.
+      dctx->setPieceLength(option->getAsInt(PREF_SEGMENT_SIZE));
+      std::vector<SharedHandle<FileEntry> > fileEntries;
+      off_t offset = 0;
+      for(std::deque<SharedHandle<MetalinkEntry> >::const_iterator i =
+            entries.begin(); i != entries.end(); ++i) {
+        _logger->info("Metalink: Queueing %s for download as a member.",
+                      (*i)->getPath().c_str());
+        _logger->debug("originalName = %s", (*i)->metaurls[0]->name.c_str());
+        (*i)->reorderResourcesByPriority();
+        std::deque<std::string> uris;
+        std::for_each((*i)->resources.begin(), (*i)->resources.end(),
+                      AccumulateNonP2PUrl(uris));
+        SharedHandle<FileEntry> fe
+          (new FileEntry
+           (util::applyDir(option->get(PREF_DIR), (*i)->file->getPath()),
+            (*i)->file->getLength(), offset, uris));
+        if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
+          fe->disableSingleHostMultiConnection();
+        }
+        fe->setOriginalName((*i)->metaurls[0]->name);
+        fileEntries.push_back(fe);
+        offset += (*i)->file->getLength();
+      }
+      dctx->setFileEntries(fileEntries.begin(), fileEntries.end());
+      rg->setNumConcurrentCommand(option->getAsInt(PREF_METALINK_SERVERS));
+    }
+    dctx->setDir(option->get(PREF_DIR));
     rg->setDownloadContext(dctx);
-    rg->setNumConcurrentCommand
-      (entry->maxConnections < 0 ?
-       option->getAsInt(PREF_METALINK_SERVERS) :
-       std::min(option->getAsInt(PREF_METALINK_SERVERS),
-                static_cast<int32_t>(entry->maxConnections)));
-    // remove "metalink" from Accept Type list to avoid loop in tranparent
-    // metalink
+    // remove "metalink" from Accept Type list to avoid loop in
+    // tranparent metalink
     removeMetalinkContentTypes(rg);
-
 #ifdef ENABLE_BITTORRENT
-    // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
+    // Inject depenency between rg and torrentRg here if
+    // torrentRg.isNull() == false
     if(!torrentRg.isNull()) {
       SharedHandle<Dependency> dep(new BtDependency(rg, torrentRg));
       rg->dependsOn(dep);
-
       torrentRg->belongsTo(rg->getGID());
     }
 #endif // ENABLE_BITTORRENT

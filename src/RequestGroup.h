@@ -180,6 +180,9 @@ private:
   // _uriResults, then last result code is returned.  Otherwise
   // returns downloadresultcode::UNKNOWN_ERROR.
   downloadresultcode::RESULT downloadResult() const;
+
+  void removeDefunctControlFile
+  (const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 public:
   // The copy of option is stored in RequestGroup object.
   RequestGroup(const SharedHandle<Option>& option);

@@ -45,10 +45,13 @@ class MetalinkMetaurl {
 public:
   std::string url;
   std::string mediatype;
-  int priority;
   std::string name;
+  int priority;
 
   MetalinkMetaurl();
+
+  MetalinkMetaurl(const std::string& url, const std::string& mediatype,
+                  const std::string& name, int priority);
 
   static const std::string MEDIATYPE_TORRENT;
 };

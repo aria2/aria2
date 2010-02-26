@@ -41,6 +41,7 @@
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "BinaryStream.h"
+#include "MetalinkMetaurl.h"
 
 namespace aria2 {
 
@@ -77,6 +78,43 @@ void MetalinkHelper::query
                          option->get(PREF_METALINK_VERSION),
                          option->get(PREF_METALINK_LANGUAGE),
                          option->get(PREF_METALINK_OS));
+}
+
+void MetalinkHelper::groupEntryByMetaurlName
+(std::vector<
+ std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
+ const std::vector<SharedHandle<MetalinkEntry> >& entries)
+{
+  for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator eiter =
+        entries.begin(); eiter != entries.end(); ++eiter) {
+    if((*eiter)->metaurls.empty()) {
+      std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > p;
+      p.second.push_back(*eiter);
+      result.push_back(p);
+    } else {
+      std::vector<
+      std::pair<std::string,
+        std::vector<SharedHandle<MetalinkEntry> > > >::iterator i =
+        result.begin();
+      if((*eiter)->metaurls[0]->name.empty() ||
+         !(*eiter)->sizeKnown) {
+        i = result.end();
+      }
+      for(; i != result.end(); ++i) {
+        if((*i).first == (*eiter)->metaurls[0]->url &&
+           !(*i).second[0]->metaurls[0]->name.empty()) {
+          (*i).second.push_back(*eiter);
+          break;
+        }
+      }
+      if(i == result.end()) {
+        std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > p;
+        p.first = (*eiter)->metaurls[0]->url;
+        p.second.push_back(*eiter);
+        result.push_back(p);
+      }
+    }
+  }
 }
 
 } // namespace aria2

@@ -168,6 +168,8 @@ void BittorrentHelperTest::testGetFileEntries() {
   SharedHandle<FileEntry> fileEntry1 = *itr;
   CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2/src/aria2c"),
                        fileEntry1->getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2/src/aria2c"),
+                       fileEntry1->getOriginalName());
   itr++;
   SharedHandle<FileEntry> fileEntry2 = *itr;
   CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2-0.2.2.tar.bz2"),
@@ -186,6 +188,8 @@ void BittorrentHelperTest::testGetFileEntriesSingle() {
   SharedHandle<FileEntry> fileEntry1 = *itr;
   CPPUNIT_ASSERT_EQUAL(std::string("./aria2-0.8.2.tar.bz2"),
                        fileEntry1->getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
+                       fileEntry1->getOriginalName());
 }
 
 void BittorrentHelperTest::testGetTotalLength() {

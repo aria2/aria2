@@ -47,6 +47,7 @@
 #include "File.h"
 #include "bittorrent_helper.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -57,6 +58,18 @@ BtDependency::BtDependency(const RequestGroupWeakHandle& dependant,
   _logger(LogFactory::getInstance()) {}
 
 BtDependency::~BtDependency() {}
+
+static void copyValues(const SharedHandle<FileEntry>& d,
+                       const SharedHandle<FileEntry>& s)
+{
+  d->setRequested(true);
+  d->setPath(s->getPath());
+  d->addUris(s->getRemainingUris().begin(),
+             s->getRemainingUris().end());
+  if(!s->isSingleHostMultiConnectionEnabled()) {
+    d->disableSingleHostMultiConnection();
+  }
+}
 
 bool BtDependency::resolve()
 {
@@ -80,23 +93,38 @@ bool BtDependency::resolve()
         bittorrent::loadFromMemory
           (content, context, File(dependee->getFirstFilePath()).getBasename());
       }
-      if(context->getFileEntries().size() !=
-         _dependant->getDownloadContext()->getFileEntries().size()) {
-        throw DL_ABORT_EX("The number of file in torrent doesn't match to"
-                          " the dependent.");
-      }
-      // Copy file path in _dependant's FileEntries to newly created
-      // context's FileEntries to endorse the path structure of
-      // _dependant.  URIs and singleHostMultiConnection are also copied.
-      for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
-            _dependant->getDownloadContext()->getFileEntries().begin(),
-            d = context->getFileEntries().begin();
-          d != context->getFileEntries().end(); ++s, ++d) {
-        (*d)->setPath((*s)->getPath());
-        (*d)->addUris((*s)->getRemainingUris().begin(),
-                      (*s)->getRemainingUris().end());
-        if(!(*s)->isSingleHostMultiConnectionEnabled()) {
-          (*d)->disableSingleHostMultiConnection();
+      const std::vector<SharedHandle<FileEntry> >& fileEntries =
+        context->getFileEntries();
+      const std::vector<SharedHandle<FileEntry> >& dependantFileEntries =
+        _dependant->getDownloadContext()->getFileEntries();
+      // If dependant's FileEntry::getOriginalName() is empty, we
+      // assume that torrent is single file. In Metalink3, this is
+      // always assumed.
+      if(fileEntries.size() == 1 && dependantFileEntries.size() == 1 &&
+         dependantFileEntries[0]->getOriginalName().empty()) {
+        copyValues(fileEntries[0], dependantFileEntries[0]);
+      } else {
+        std::for_each(fileEntries.begin(), fileEntries.end(),
+                      std::bind2nd(mem_fun_sh(&FileEntry::setRequested),false));
+        // Copy file path in _dependant's FileEntries to newly created
+        // context's FileEntries to endorse the path structure of
+        // _dependant.  URIs and singleHostMultiConnection are also copied.
+        for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
+              dependantFileEntries.begin(); s != dependantFileEntries.end();
+            ++s){
+          std::vector<SharedHandle<FileEntry> >::const_iterator d =
+            context->getFileEntries().begin();
+          for(; d != context->getFileEntries().end(); ++d) {
+            if((*d)->getOriginalName() == (*s)->getOriginalName()) {
+              break;
+            }
+          }
+          if(d == context->getFileEntries().end()) {
+            throw DL_ABORT_EX
+              (StringFormat("No entry %s in torrent file",
+                            (*s)->getOriginalName().c_str()).str());
+          }
+          copyValues(*d, *s);
         }
       }
     } catch(RecoverableException& e) {

@@ -61,6 +61,8 @@ public:
   std::string version;
   std::vector<std::string> languages;
   std::vector<std::string> oses;
+  // True if size is specified in Metalink document.
+  bool sizeKnown;
   std::deque<SharedHandle<MetalinkResource> > resources;
   std::vector<SharedHandle<MetalinkMetaurl> > metaurls;
   int maxConnections; // Metalink3Spec
@@ -77,7 +79,7 @@ public:
 
   MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry);
 
-  std::string getPath() const;
+  const std::string& getPath() const;
 
   uint64_t getLength() const;
 

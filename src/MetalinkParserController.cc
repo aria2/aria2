@@ -100,6 +100,7 @@ void MetalinkParserController::setFileLengthOfEntry(uint64_t length)
   } else {
     _tEntry->file->setLength(length);
   }
+  _tEntry->sizeKnown = true;
 }
 
 void MetalinkParserController::setVersionOfEntry(const std::string& version)

@@ -54,7 +54,7 @@ private:
 
   void
   createRequestGroup(std::deque<SharedHandle<RequestGroup> >& groups,
-                     std::deque<SharedHandle<MetalinkEntry> > entries,
+                     const std::deque<SharedHandle<MetalinkEntry> >& entries,
                      const SharedHandle<Option>& option);
 public:
   Metalink2RequestGroup();

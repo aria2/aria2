@@ -36,9 +36,12 @@
 #define _D_METALINK_HELPER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
+#include <vector>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -65,6 +68,11 @@ public:
   static void parseAndQuery
   (std::deque<SharedHandle<MetalinkEntry> >& result,
    const SharedHandle<BinaryStream>& binaryStream, const Option* option);
+
+  static void groupEntryByMetaurlName
+  (std::vector<
+   std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
+   const std::vector<SharedHandle<MetalinkEntry> >& entries);
 };
 
 } // namespace aria2

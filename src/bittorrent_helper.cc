@@ -263,6 +263,7 @@ static void extractFileEntries
         (new FileEntry(util::applyDir(ctx->getDir(), path),
                        fileLengthData.i(),
                        offset, uris));
+      fileEntry->setOriginalName(path);
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
@@ -291,6 +292,7 @@ static void extractFileEntries
     SharedHandle<FileEntry> fileEntry
       (new FileEntry(util::applyDir(ctx->getDir(), name),totalLength, 0,
                      uris));
+    fileEntry->setOriginalName(name);
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());

@@ -205,6 +205,8 @@ void RequestGroup::createInitialCommand
       SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
       if(!btRegistry->getDownloadContext
          (torrentAttrs[bittorrent::INFO_HASH].s()).isNull()) {
+        // TODO If metadataGetMode == false and each FileEntry has
+        // URI, then go without BT.
         throw DOWNLOAD_FAILURE_EXCEPTION
           (StringFormat
            ("InfoHash %s is already registered.",
@@ -284,14 +286,7 @@ void RequestGroup::createInitialCommand
         
         return;
       }
-
-      // Remove the control file if download file doesn't exist
-      if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
-        progressInfoFile->removeFile();
-        _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
-                        progressInfoFile->getFilename().c_str(),
-                        _downloadContext->getBasePath().c_str());
-      }
+      removeDefunctControlFile(progressInfoFile);
       {
         uint64_t actualFileSize = _pieceStorage->getDiskAdaptor()->size();
         if(actualFileSize == _downloadContext->getTotalLength()) {
@@ -372,42 +367,80 @@ void RequestGroup::createInitialCommand
     }
   }
 #endif // ENABLE_BITTORRENT
-  // TODO Currently, BitTorrent+WEB-Seeding is only way to download
-  // multiple files in one RequestGroup. In this context, we don't
-  // have BitTorrent, so add assertion here. This situation will be
-  // changed if Metalink spec is formalized to support multi-file
-  // torrent.
-  assert(_downloadContext->getFileEntries().size() == 1);
-  // TODO I assume here when totallength is set to DownloadContext and it is
-  // not 0, then filepath is also set DownloadContext correctly....
-  if(_option->getAsBool(PREF_DRY_RUN) ||
-     _downloadContext->getTotalLength() == 0) {
-    createNextCommand(commands, e, 1);
-  }else {
+  if(_downloadContext->getFileEntries().size() == 1) {
+    // TODO I assume here when totallength is set to DownloadContext and it is
+    // not 0, then filepath is also set DownloadContext correctly....
+    if(_option->getAsBool(PREF_DRY_RUN) ||
+       _downloadContext->getTotalLength() == 0) {
+      createNextCommand(commands, e, 1);
+    }else {
+      if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
+        throw DOWNLOAD_FAILURE_EXCEPTION
+          (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+                        _downloadContext->getBasePath().c_str()).str());
+      }
+      adjustFilename
+        (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
+                                          (_downloadContext,
+                                           SharedHandle<PieceStorage>(),
+                                           _option.get())));
+      initPieceStorage();
+      BtProgressInfoFileHandle infoFile
+        (new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage,
+                                       _option.get()));
+      if(!infoFile->exists() && downloadFinishedByFileLength()) {
+        _pieceStorage->markAllPiecesDone();
+        _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                        _gid, _downloadContext->getBasePath().c_str());
+      } else {
+        loadAndOpenFile(infoFile);
+        SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
+          (new StreamCheckIntegrityEntry(this));
+        processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
+      }
+    }
+  } else {
+    // In this context, multiple FileEntry objects are in
+    // DownloadContext.
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
         (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
                       _downloadContext->getBasePath().c_str()).str());
     }
-    adjustFilename
-      (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
-                                        (_downloadContext,
-                                         SharedHandle<PieceStorage>(),
-                                         _option.get())));
     initPieceStorage();
-    BtProgressInfoFileHandle infoFile
-      (new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage,
-                                     _option.get()));
-    if(!infoFile->exists() && downloadFinishedByFileLength()) {
-      _pieceStorage->markAllPiecesDone();
-      _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                      _gid, _downloadContext->getBasePath().c_str());
-    } else {
-      loadAndOpenFile(infoFile);
-      SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
-        (new StreamCheckIntegrityEntry(this));
-      processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
+    if(_downloadContext->getFileEntries().size() > 1) {
+      _pieceStorage->setupFileFilter();
     }
+    SharedHandle<DefaultBtProgressInfoFile> progressInfoFile
+      (new DefaultBtProgressInfoFile(_downloadContext,
+                                     _pieceStorage,
+                                     _option.get()));
+    removeDefunctControlFile(progressInfoFile);
+    // Call Load, Save and file allocation command here
+    if(progressInfoFile->exists()) {
+      // load .aria2 file if it exists.
+      progressInfoFile->load();
+      _pieceStorage->getDiskAdaptor()->openFile();
+    } else {
+      if(_pieceStorage->getDiskAdaptor()->fileExists()) {
+        if(!_option->getAsBool(PREF_CHECK_INTEGRITY) &&
+           !_option->getAsBool(PREF_ALLOW_OVERWRITE)) {
+          // TODO we need this->haltRequested = true?
+          throw DOWNLOAD_FAILURE_EXCEPTION
+            (StringFormat
+             (MSG_FILE_ALREADY_EXISTS,
+              _downloadContext->getBasePath().c_str()).str());
+        } else {
+          _pieceStorage->getDiskAdaptor()->openFile();
+        }
+      } else {
+        _pieceStorage->getDiskAdaptor()->openFile();
+      }
+    }
+    _progressInfoFile = progressInfoFile;
+    SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
+      (new StreamCheckIntegrityEntry(this));
+    processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
   }
 }
 
@@ -543,6 +576,19 @@ void RequestGroup::adjustFilename
   }
 }
 
+void RequestGroup::removeDefunctControlFile
+(const SharedHandle<BtProgressInfoFile>& progressInfoFile)
+{
+  // Remove the control file if download file doesn't exist
+  if(progressInfoFile->exists() &&
+     !_pieceStorage->getDiskAdaptor()->fileExists()) {
+    progressInfoFile->removeFile();
+    _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
+                    progressInfoFile->getFilename().c_str(),
+                    _downloadContext->getBasePath().c_str());
+  }
+}
+
 void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile)
 {
   try {
@@ -550,14 +596,7 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
       _pieceStorage->getDiskAdaptor()->initAndOpenFile();
       return;
     }
-    // Remove the control file if download file doesn't exist
-    if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
-      progressInfoFile->removeFile();
-      _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
-                      progressInfoFile->getFilename().c_str(),
-                      _downloadContext->getBasePath().c_str());
-    }
-
+    removeDefunctControlFile(progressInfoFile);
     if(progressInfoFile->exists()) {
       progressInfoFile->load();
       _pieceStorage->getDiskAdaptor()->openExistingFile();

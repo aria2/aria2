@@ -70,6 +70,7 @@ private:
   // available.
   std::deque<URIResult> _uriResults;
   bool _singleHostMultiConnection;
+  std::string _originalName;
   Logger* _logger;
 
   void storePool(const SharedHandle<Request>& request);
@@ -227,6 +228,16 @@ public:
   void reuseUri(size_t num);
 
   void releaseRuntimeResource();
+
+  void setOriginalName(const std::string& originalName)
+  {
+    _originalName = originalName;
+  }
+
+  const std::string& getOriginalName() const
+  {
+    return _originalName;
+  }
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

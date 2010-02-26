@@ -51,7 +51,7 @@
 namespace aria2 {
 
 MetalinkEntry::MetalinkEntry():
-  file(0),
+  sizeKnown(false),
   maxConnections(-1)
 {}
 
@@ -94,7 +94,7 @@ MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
   return *this;
 }
 
-std::string MetalinkEntry::getPath() const
+const std::string& MetalinkEntry::getPath() const
 {
   return file->getPath();
 }

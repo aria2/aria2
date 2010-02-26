@@ -23,6 +23,9 @@ class BtDependencyTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtDependencyTest);
   CPPUNIT_TEST(testResolve);
+  CPPUNIT_TEST(testResolve_originalNameNoMatch);
+  CPPUNIT_TEST(testResolve_singleFileWithoutOriginalName);
+  CPPUNIT_TEST(testResolve_multiFile);
   CPPUNIT_TEST(testResolve_metadata);
   CPPUNIT_TEST(testResolve_loadError);
   CPPUNIT_TEST(testResolve_dependeeFailure);
@@ -37,7 +40,9 @@ class BtDependencyTest:public CppUnit::TestFixture {
     dctx->setDir("/tmp");
     std::deque<std::string> uris;
     uris.push_back("http://localhost/outfile.path");
-    dctx->getFirstFileEntry()->setUris(uris);
+    SharedHandle<FileEntry> fileEntry = dctx->getFirstFileEntry();
+    fileEntry->setUris(uris);
+    fileEntry->setOriginalName("aria2-0.8.2.tar.bz2");
     dependant->setDownloadContext(dctx);
     return dependant;
   }
@@ -65,6 +70,9 @@ public:
   }
 
   void testResolve();
+  void testResolve_originalNameNoMatch();
+  void testResolve_singleFileWithoutOriginalName();
+  void testResolve_multiFile();
   void testResolve_metadata();
   void testResolve_loadError();
   void testResolve_dependeeFailure();
@@ -93,6 +101,64 @@ void BtDependencyTest::testResolve()
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
                        firstFileEntry->getPath());
   CPPUNIT_ASSERT_EQUAL((size_t)1, firstFileEntry->getRemainingUris().size());
+  CPPUNIT_ASSERT(firstFileEntry->isRequested());
+}
+
+void BtDependencyTest::testResolve_originalNameNoMatch()
+{
+  std::string filename = "single.torrent";
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName
+    ("aria2-1.1.0.tar.bz2");
+  SharedHandle<RequestGroup> dependee =
+    createDependee(_option, filename, File(filename).size());
+  dependee->getPieceStorage()->markAllPiecesDone();
+  
+  BtDependency dep(dependant, dependee);
+  CPPUNIT_ASSERT(dep.resolve());
+
+  CPPUNIT_ASSERT(!dependant->getDownloadContext()->hasAttribute
+                 (bittorrent::BITTORRENT));
+}
+
+void BtDependencyTest::testResolve_singleFileWithoutOriginalName()
+{
+  std::string filename = "single.torrent";
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName("");
+  SharedHandle<RequestGroup> dependee =
+    createDependee(_option, filename, File(filename).size());
+  dependee->getPieceStorage()->markAllPiecesDone();
+  BtDependency dep(dependant, dependee);
+  CPPUNIT_ASSERT(dep.resolve());
+  CPPUNIT_ASSERT(dependant->getDownloadContext()->hasAttribute
+                 (bittorrent::BITTORRENT));
+}
+
+void BtDependencyTest::testResolve_multiFile()
+{
+  std::string filename = "test.torrent";
+  SharedHandle<RequestGroup> dependant = createDependant(_option);
+  dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName
+    ("aria2-test/aria2/src/aria2c");
+  SharedHandle<RequestGroup> dependee =
+    createDependee(_option, filename, File(filename).size());
+  dependee->getPieceStorage()->markAllPiecesDone();
+  
+  BtDependency dep(dependant, dependee);
+  CPPUNIT_ASSERT(dep.resolve());
+
+  CPPUNIT_ASSERT(dependant->getDownloadContext()->hasAttribute
+                 (bittorrent::BITTORRENT));
+
+  const std::vector<SharedHandle<FileEntry> >& fileEntries =
+    dependant->getDownloadContext()->getFileEntries();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
+                       fileEntries[0]->getPath());
+  CPPUNIT_ASSERT(fileEntries[0]->isRequested());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-test/aria2-0.2.2.tar.bz2"),
+                       fileEntries[1]->getPath());
+  CPPUNIT_ASSERT(!fileEntries[1]->isRequested());
 }
 
 void BtDependencyTest::testResolve_metadata()
@@ -121,6 +187,8 @@ void BtDependencyTest::testResolve_metadata()
   CPPUNIT_ASSERT_EQUAL
     (std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
      bittorrent::getInfoHashString(dependant->getDownloadContext()));
+  CPPUNIT_ASSERT
+    (dependant->getDownloadContext()->getFirstFileEntry()->isRequested());
 }
 
 void BtDependencyTest::testResolve_loadError()

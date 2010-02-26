@@ -42,4 +42,9 @@ const std::string MetalinkMetaurl::MEDIATYPE_TORRENT("torrent");
 MetalinkMetaurl::MetalinkMetaurl():
   priority(MetalinkResource::getLowestPriority()) {}
 
+MetalinkMetaurl::MetalinkMetaurl
+(const std::string& url, const std::string& mediatype,
+ const std::string& name, int priority):
+  url(url), mediatype(mediatype), name(name), priority(priority) {}
+
 } // namespace aria2
