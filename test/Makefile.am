@@ -251,4 +251,5 @@ EXTRA_DIST = 4096chunk.txt\
 	metalink4.xml\
 	metalink4-attrs.xml\
 	metalink4-dirtraversal.xml\
-	metalink3-dirtraversal.xml
+	metalink3-dirtraversal.xm\
+	metalink4-groupbymetaurl.xml

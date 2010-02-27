@@ -1,5 +1,10 @@
 2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added metalink4-groupbymetaurl.xml to EXTRA_DIST
+	* test/Makefile.am
+
+2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Small optimization: In updateTransferStatFor(), don't search peer
 	ID twice.
 	* src/DefaultPeerStorage.cc
