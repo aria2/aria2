@@ -62,6 +62,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFixTaintedBasename);
   CPPUNIT_TEST(testIsNumericHost);
   CPPUNIT_TEST(testDetectDirTraversal);
+  CPPUNIT_TEST(testEscapePath);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -112,6 +113,7 @@ public:
   void testFixTaintedBasename();
   void testIsNumericHost();
   void testDetectDirTraversal();
+  void testEscapePath();
 };
 
 
@@ -1006,8 +1008,11 @@ void UtilTest::testApplyDir()
 void UtilTest::testFixTaintedBasename()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("a_b"), util::fixTaintedBasename("a/b"));
+#ifdef __MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("a_b"), util::fixTaintedBasename("a\\b"));
-  CPPUNIT_ASSERT_EQUAL(std::string("a__b"), util::fixTaintedBasename("a\\/b"));
+#else // !__MINGW32__
+  CPPUNIT_ASSERT_EQUAL(std::string("a\\b"), util::fixTaintedBasename("a\\b"));
+#endif // !__MINGW32__
 }
 
 void UtilTest::testIsNumericHost()
@@ -1030,8 +1035,22 @@ void UtilTest::testDetectDirTraversal()
   CPPUNIT_ASSERT(util::detectDirTraversal(".."));
   CPPUNIT_ASSERT(util::detectDirTraversal("/"));
   CPPUNIT_ASSERT(util::detectDirTraversal("foo/"));
+  CPPUNIT_ASSERT(util::detectDirTraversal("\t"));
   CPPUNIT_ASSERT(!util::detectDirTraversal("foo/bar"));
   CPPUNIT_ASSERT(!util::detectDirTraversal("foo"));
+}
+
+void UtilTest::testEscapePath()
+{
+  CPPUNIT_ASSERT_EQUAL(std::string("foo_bar__"),
+                       util::escapePath(std::string("foo")+(char)0x00+
+                                        std::string("bar")+(char)0x00+
+                                        (char)0x01));
+#ifdef __MINGW32__
+  CPPUNIT_ASSERT_EQUAL(std::string("foo_bar"), util::escapePath("foo\\bar"));
+#else // !__MINGW32__
+  CPPUNIT_ASSERT_EQUAL(std::string("foo\\bar"), util::escapePath("foo\\bar"));
+#endif // !__MINGW32__
 }
 
 } // namespace aria2

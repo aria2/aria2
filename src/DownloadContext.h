@@ -216,10 +216,11 @@ public:
 
   void setFileFilter(IntSequence seq);
 
-  // Sets file path for specified index. index starts from 1. The index
-  // is the same used in setFileFilter().  Please note that path is
-  // not the actual file path. The actual file path is
-  // getDir()+"/"+path.
+  // Sets file path for specified index. index starts from 1. The
+  // index is the same used in setFileFilter().  Please note that path
+  // is not the actual file path. The actual file path is
+  // getDir()+"/"+path. path is not escaped by util::escapePath() in
+  // this function.
   void setFilePathWithIndex(size_t index, const std::string& path);
 
   void setAttribute(const std::string& key, const BDE& value);

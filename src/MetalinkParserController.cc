@@ -86,7 +86,7 @@ void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
   if(_tEntry->file.isNull()) {
     _tEntry->file.reset(new FileEntry(path, 0, 0));
   } else {
-    _tEntry->file->setPath(path);
+    _tEntry->file->setPath(util::escapePath(path));
   }
 }
 

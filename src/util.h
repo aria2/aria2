@@ -371,7 +371,8 @@ std::string applyDir(const std::string& dir, const std::string& relPath);
 // basename contains dir component. This should be avoided.  This
 // function is created to fix these issues.  This function expects src
 // should be non-percent-encoded basename.  Currently, this function
-// replaces '/' and '\' with '_'.
+// replaces '/' with '_' and result string is passed to escapePath()
+// function and its result is returned.
 std::string fixTaintedBasename(const std::string& src);
 
 // Generates 20 bytes random key and store it to the address pointed
@@ -382,8 +383,14 @@ void generateRandomKey(unsigned char* key);
 bool inPrivateAddress(const std::string& ipv4addr);
 
 // Returns true if s contains directory traversal path component such
-// as '..'.
+// as '..' or it contains null or control character which may fool
+// user.
 bool detectDirTraversal(const std::string& s);
+
+// Replaces null(0x00) and control character(0x01-0x1f) with '_'. If
+// __MINGW32__ is defined, following characters are also replaced with
+// '_': '"', '*', ':', '<', '>', '?', '\', '|'.
+std::string escapePath(const std::string& s);
 
 } // namespace util
 

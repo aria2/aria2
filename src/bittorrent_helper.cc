@@ -257,7 +257,7 @@ static void extractFileEntries
       std::deque<std::string> uris;
       createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
       SharedHandle<FileEntry> fileEntry
-        (new FileEntry(util::applyDir(ctx->getDir(), path),
+        (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(path)),
                        fileLengthData.i(),
                        offset, uris));
       fileEntry->setOriginalName(path);
@@ -287,7 +287,8 @@ static void extractFileEntries
     }
 
     SharedHandle<FileEntry> fileEntry
-      (new FileEntry(util::applyDir(ctx->getDir(), name),totalLength, 0,
+      (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(name)),
+                     totalLength, 0,
                      uris));
     fileEntry->setOriginalName(name);
     fileEntries.push_back(fileEntry);

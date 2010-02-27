@@ -287,7 +287,8 @@ Metalink2RequestGroup::createRequestGroup
                       AccumulateNonP2PUrl(uris));
         SharedHandle<FileEntry> fe
           (new FileEntry
-           (util::applyDir(option->get(PREF_DIR), (*i)->file->getPath()),
+           (util::applyDir(option->get(PREF_DIR),
+                           util::escapePath((*i)->file->getPath())),
             (*i)->file->getLength(), offset, uris));
         if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
           fe->disableSingleHostMultiConnection();

@@ -38,6 +38,7 @@
 
 #include "FileEntry.h"
 #include "StringFormat.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -59,7 +60,8 @@ DownloadContext::DownloadContext(size_t pieceLength,
   _downloadStartTime(0),
   _downloadStopTime(_downloadStartTime)
 {
-  SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
+  SharedHandle<FileEntry> fileEntry
+    (new FileEntry(util::escapePath(path), totalLength, 0));
   _fileEntries.push_back(fileEntry);
 }
 
@@ -108,6 +110,7 @@ void DownloadContext::setFilePathWithIndex
 (size_t index, const std::string& path)
 {
   if(0 < index && index <= _fileEntries.size()) {
+    // We don't escape path because path may come from users.
     _fileEntries[index-1]->setPath(path);
   } else {
     throw DL_ABORT_EX(StringFormat("No such file with index=%u",

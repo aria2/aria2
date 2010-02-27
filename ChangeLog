@@ -1,5 +1,20 @@
 2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced null or control characters in file path with '_'.  For
+	MinGW32 build, additional characters which is not allowed in
+	Windows kernel are also replaced. util::detectDirTraversal() now
+	returns true if given string contains null or control characters.
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkParserController.cc
+	* src/bittorrent_helper.cc
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
+2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Discard metalink:file if its name attribute is empty string.
 	Removed FileEntry instantiation in
 	MetalinkParserController::setFileLengthOfEntry()

@@ -1129,8 +1129,7 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
 
 std::string fixTaintedBasename(const std::string& src)
 {
-  return replace(replace(src, A2STR::SLASH_C, A2STR::UNDERSCORE_C),
-                 A2STR::BACK_SLASH_C, A2STR::UNDERSCORE_C);
+  return escapePath(replace(src, A2STR::SLASH_C, A2STR::UNDERSCORE_C));
 }
 
 void generateRandomKey(unsigned char* key)
@@ -1169,6 +1168,11 @@ bool inPrivateAddress(const std::string& ipv4addr)
 
 bool detectDirTraversal(const std::string& s)
 {
+  for(std::string::const_iterator i = s.begin(); i != s.end(); ++i) {
+    if(0x00 <= (*i) && (*i) <= 0x1f) {
+      return true;
+    }
+  }
   return s == A2STR::DOT_C ||
     s == ".." ||
     util::startsWith(s, A2STR::SLASH_C) ||
@@ -1179,6 +1183,40 @@ bool detectDirTraversal(const std::string& s)
     util::endsWith(s, "/") ||
     util::endsWith(s, "/.") ||
     util::endsWith(s, "/..");
+}
+
+namespace {
+class EscapePath {
+private:
+  char _repChar;
+public:
+  EscapePath(const char& repChar):_repChar(repChar) {}
+
+  char operator()(const char& c) {
+    if(0x00 <= c && c <=0x1f) {
+      return _repChar;
+    }
+#ifdef __MINGW32__
+    // We don't escape '/' because we use it as a path separator.
+    static const char WIN_INVALID_PATH_CHARS[] =
+      { '"', '*', ':', '<', '>', '?', '\\', '|' };
+    if(std::find(&WIN_INVALID_PATH_CHARS[0],
+                 &WIN_INVALID_PATH_CHARS[arrayLength(WIN_INVALID_PATH_CHARS)],
+                 c) !=
+       &WIN_INVALID_PATH_CHARS[arrayLength(WIN_INVALID_PATH_CHARS)]) {
+      return _repChar;
+    }
+#endif // __MINGW32__
+    return c;
+  }
+};
+}
+
+std::string escapePath(const std::string& s)
+{
+  std::string d = s;
+  std::transform(d.begin(), d.end(), d.begin(), EscapePath('_'));
+  return d;
 }
 
 } // namespace util
