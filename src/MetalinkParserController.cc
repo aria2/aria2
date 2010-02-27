@@ -35,7 +35,6 @@
 #include "MetalinkParserController.h"
 
 #include <algorithm>
-#include <vector>
 
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
@@ -364,7 +363,7 @@ void MetalinkParserController::commitChunkChecksumTransactionV4()
   if(_tEntry->chunkChecksum.isNull() ||
      MessageDigestContext::isStronger(_tChunkChecksumV4->getAlgo(),
                                       _tEntry->chunkChecksum->getAlgo())) {
-    std::deque<std::string> checksums(_tempChunkChecksumsV4.begin(),
+    std::vector<std::string> checksums(_tempChunkChecksumsV4.begin(),
 				      _tempChunkChecksumsV4.end());
     _tChunkChecksumV4->setChecksums(checksums);
     _tEntry->chunkChecksum = _tChunkChecksumV4;
@@ -470,7 +469,7 @@ void MetalinkParserController::commitChunkChecksumTransaction()
                                       _tEntry->chunkChecksum->getAlgo())) {
     std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
               Ascend1st<std::pair<size_t, std::string> >());
-    std::deque<std::string> checksums;
+    std::vector<std::string> checksums;
     std::transform(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
                    std::back_inserter(checksums),
                    select2nd<std::pair<size_t, std::string> >());

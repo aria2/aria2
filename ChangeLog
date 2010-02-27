@@ -1,5 +1,12 @@
 2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use vector instead of deque for ChunkChecksum.
+	* src/ChunkChecksum.h
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserController.h
+
+2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added MessageDigest::isStronger(). Now aria2 selects stronger hash
 	algorithm in Metalink properly
 	* src/MetalinkParserController.cc

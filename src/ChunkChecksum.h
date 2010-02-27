@@ -36,23 +36,25 @@
 #define _D_CHUNK_CHECKSUM_H_
 
 #include "common.h"
+
+#include <string>
+#include <vector>
+
 #include "SharedHandle.h"
 #include "A2STR.h"
-#include <string>
-#include <deque>
 
 namespace aria2 {
 
 class ChunkChecksum {
 private:
   std::string _algo;
-  std::deque<std::string> _checksums;
+  std::vector<std::string> _checksums;
   size_t _checksumLength;
 public:
   ChunkChecksum():_checksumLength(0) {}    
 
   ChunkChecksum(const std::string& algo,
-                const std::deque<std::string>& checksums,
+                const std::vector<std::string>& checksums,
                 size_t checksumLength):
     _algo(algo),
     _checksums(checksums),
@@ -87,7 +89,7 @@ public:
     }
   }
   
-  const std::deque<std::string>& getChecksums() const
+  const std::vector<std::string>& getChecksums() const
   {
     return _checksums;
   }
@@ -112,7 +114,7 @@ public:
     _checksumLength = length;
   }
 
-  void setChecksums(const std::deque<std::string>& mds)
+  void setChecksums(const std::vector<std::string>& mds)
   {
     _checksums = mds;
   }

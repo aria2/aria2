@@ -39,7 +39,7 @@
 
 #include <string>
 #include <utility>
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 
@@ -70,11 +70,11 @@ private:
 
   SharedHandle<ChunkChecksum> _tChunkChecksumV4; // Metalink4Spec
 
-  std::deque<std::string> _tempChunkChecksumsV4; // Metalink4Spec
+  std::vector<std::string> _tempChunkChecksumsV4; // Metalink4Spec
 
   SharedHandle<ChunkChecksum> _tChunkChecksum; // Metalink3Spec
 
-  std::deque<std::pair<size_t, std::string> > _tempChunkChecksums;//Metalink3Spec
+  std::vector<std::pair<size_t, std::string> > _tempChunkChecksums;//Metalink3Spec
 
   std::pair<size_t, std::string> _tempHashPair; // Metalink3Spec
 
