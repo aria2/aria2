@@ -62,7 +62,6 @@ public:
 #ifdef HAVE_LIBGCRYPT
   typedef int DigestAlgo;
 #endif // HAVE_LIBGCRYPT
-  typedef std::map<std::string, MessageDigestContext::DigestAlgo> DigestAlgoMap;
 
   static const std::string SHA1;
 
@@ -77,8 +76,6 @@ private:
   gcry_md_hd_t ctx;
 #endif // HAVE_LIBGCRYPT  
   DigestAlgo algo;
-
-  static DigestAlgoMap digestAlgos;
 public:
   MessageDigestContext():algo(getDigestAlgo(MessageDigestContext::SHA1))
   {}
@@ -93,26 +90,9 @@ public:
     algo = getDigestAlgo(algostring);
   }
 
-  static bool supports(const std::string& algostring)
-  {
-    DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
-    if(itr == digestAlgos.end()) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  static bool supports(const std::string& algostring);
 
-  static DigestAlgo getDigestAlgo(const std::string& algostring)
-  {
-    DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
-    if(itr == digestAlgos.end()) {
-      throw DL_ABORT_EX
-        (StringFormat("Digest algorithm %s is not supported.",
-                      algostring.c_str()).str());
-    }
-    return (*itr).second;
-  }
+  static DigestAlgo getDigestAlgo(const std::string& algostring);
 
   static std::string getSupportedAlgoString();
 
@@ -120,6 +100,11 @@ public:
   {
     return digestLength(getDigestAlgo(algostring));
   }
+
+  // Returns true if hash algorithm specified by lhs is stronger than
+  // the one specified by rhs. If either lhs or rhs is not supported
+  // or both are not supported, returns false.
+  static bool isStronger(const std::string& lhs, const std::string& rhs);
 
   std::string digestFinal();
 

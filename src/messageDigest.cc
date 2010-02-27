@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "messageDigest.h"
 #include "util.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -43,27 +44,55 @@ const std::string MessageDigestContext::SHA256("sha-256");
 
 const std::string MessageDigestContext::MD5("md-5");
 
-static MessageDigestContext::DigestAlgoMap::value_type digests[] = {
+namespace {
+struct DigestAlgoEntry {
+  MessageDigestContext::DigestAlgo algo;
+  int strength;
+  DigestAlgoEntry(const MessageDigestContext::DigestAlgo& algo, int strength):
+    algo(algo), strength(strength) {}
+};
+}
+
+typedef std::map<std::string, DigestAlgoEntry>
+DigestAlgoMap;
+
+static const DigestAlgoMap& getDigestAlgos()
+{
+  enum AlgoStrength {
+    STRENGTH_MD5 = 0,
+    STRENGTH_SHA_1 = 1,
+    STRENGTH_SHA_256 = 2
+  };
+  static const DigestAlgoMap::value_type digests[] = {
 #ifdef HAVE_LIBSSL
-  MessageDigestContext::DigestAlgoMap::value_type("md5", EVP_md5()),
-  MessageDigestContext::DigestAlgoMap::value_type("sha-1", EVP_sha1()),
-  MessageDigestContext::DigestAlgoMap::value_type("sha1", EVP_sha1()),
+    DigestAlgoMap::value_type("md5", DigestAlgoEntry(EVP_md5(), STRENGTH_MD5)),
+    DigestAlgoMap::value_type
+    ("sha-1", DigestAlgoEntry(EVP_sha1(), STRENGTH_SHA_1)),
+    DigestAlgoMap::value_type
+    ("sha1", DigestAlgoEntry(EVP_sha1(), STRENGTH_SHA_1)),
 # ifdef HAVE_EVP_SHA256
-  MessageDigestContext::DigestAlgoMap::value_type("sha-256", EVP_sha256()),
-  MessageDigestContext::DigestAlgoMap::value_type("sha256", EVP_sha256()),
+    DigestAlgoMap::value_type
+    ("sha-256", DigestAlgoEntry(EVP_sha256(), STRENGTH_SHA_256)),
+    DigestAlgoMap::value_type
+    ("sha256", DigestAlgoEntry(EVP_sha256(), STRENGTH_SHA_256)),
 # endif // HAVE_EVP_SHA256
 #elif HAVE_LIBGCRYPT
-  MessageDigestContext::DigestAlgoMap::value_type("md5", GCRY_MD_MD5),
-  MessageDigestContext::DigestAlgoMap::value_type("sha-1", GCRY_MD_SHA1),
-  MessageDigestContext::DigestAlgoMap::value_type("sha1", GCRY_MD_SHA1),
-  MessageDigestContext::DigestAlgoMap::value_type("sha-256", GCRY_MD_SHA256),
-  MessageDigestContext::DigestAlgoMap::value_type("sha256", GCRY_MD_SHA256),
+    DigestAlgoMap::value_type
+    ("md5", DigestAlgoEntry(GCRY_MD_MD5, STRENGTH_MD5)),
+    DigestAlgoMap::value_type
+    ("sha-1", DigestAlgoEntry(GCRY_MD_SHA1, STRENGTH_SHA_1)),
+    DigestAlgoMap::value_type
+    ("sha1", DigestAlgoEntry(GCRY_MD_SHA1, STRENGTH_SHA_1)),
+    DigestAlgoMap::value_type
+    ("sha-256", DigestAlgoEntry(GCRY_MD_SHA256, STRENGTH_SHA_256)),
+    DigestAlgoMap::value_type
+    ("sha256", DigestAlgoEntry(GCRY_MD_SHA256, STRENGTH_SHA_256)),
 #endif // HAVE_LIBGCRYPT
-};
-
-MessageDigestContext::DigestAlgoMap
-MessageDigestContext::digestAlgos(&digests[0],
-                                  &digests[sizeof(digests)/sizeof(DigestAlgoMap::value_type)]);
+  };
+  static const DigestAlgoMap algomap
+    (&digests[0], &digests[arrayLength(digests)]);  
+  return algomap;
+}
 
 std::string MessageDigestContext::digestFinal()
 {
@@ -75,15 +104,52 @@ std::string MessageDigestContext::digestFinal()
   return rawMDString;
 }
 
+bool MessageDigestContext::supports(const std::string& algostring)
+{
+  const DigestAlgoMap& allAlgos = getDigestAlgos();
+  DigestAlgoMap::const_iterator itr = allAlgos.find(algostring);
+  if(itr == allAlgos.end()) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+MessageDigestContext::DigestAlgo
+MessageDigestContext::getDigestAlgo(const std::string& algostring)
+{
+  const DigestAlgoMap& allAlgos = getDigestAlgos();
+  DigestAlgoMap::const_iterator itr = allAlgos.find(algostring);
+  if(itr == allAlgos.end()) {
+    throw DL_ABORT_EX
+      (StringFormat("Digest algorithm %s is not supported.",
+                    algostring.c_str()).str());
+  }
+  return (*itr).second.algo;
+}
+
 std::string MessageDigestContext::getSupportedAlgoString()
 {
+  const DigestAlgoMap& allAlgos = getDigestAlgos();
   std::string algos;
-  for(DigestAlgoMap::const_iterator itr = digestAlgos.begin();
-      itr != digestAlgos.end(); ++itr) {
+  for(DigestAlgoMap::const_iterator itr = allAlgos.begin();
+      itr != allAlgos.end(); ++itr) {
     algos += (*itr).first;
     algos += ", ";
   }
   return util::trim(algos, ", ");
+}
+
+bool MessageDigestContext::isStronger
+(const std::string& lhs, const std::string& rhs)
+{
+  const DigestAlgoMap& allAlgos = getDigestAlgos();
+  DigestAlgoMap::const_iterator lhsitr = allAlgos.find(lhs);
+  DigestAlgoMap::const_iterator rhsitr = allAlgos.find(rhs);
+  if(lhsitr == allAlgos.end() || rhsitr == allAlgos.end()) {
+    return false;
+  }
+  return (*lhsitr).second.strength > (*rhsitr).second.strength;
 }
 
 } // namespace aria2

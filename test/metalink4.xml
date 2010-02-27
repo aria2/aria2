@@ -7,8 +7,14 @@
     <version>1.0</version>
     <language>en</language>
     <description>A description of the example file for download.</description>
+    <hash type="md5">80bc95fd391772fa61c91ed68567f0980bb45fd9</hash>
     <hash type="sha-1">80bc95fd391772fa61c91ed68567f0980bb45fd9</hash>
     <pieces length="262144" type="sha-1">
+      <hash>metalinkhash1</hash>
+      <hash>metalinkhash2</hash>
+      <hash>metalinkhash3</hash>
+    </pieces>
+    <pieces length="262144" type="sha-256">
       <hash>metalinkhash1</hash>
       <hash>metalinkhash2</hash>
       <hash>metalinkhash3</hash>

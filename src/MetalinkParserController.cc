@@ -54,8 +54,6 @@
 
 namespace aria2 {
 
-const std::string MetalinkParserController::SHA1("sha1");// Metalink3Spec
-
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker())
 {}
@@ -293,10 +291,8 @@ void MetalinkParserController::commitChecksumTransaction()
     return;
   }
   if(_tEntry->checksum.isNull() ||
-     // Metalink3Spec
-     (_tEntry->checksum->getAlgo() != MetalinkParserController::SHA1 &&
-      // Metalink4Spec
-      _tEntry->checksum->getAlgo() != MessageDigestContext::SHA1)) {
+     MessageDigestContext::isStronger(_tChecksum->getAlgo(),
+                                      _tEntry->checksum->getAlgo())) {
     _tEntry->checksum = _tChecksum;
   }
   _tChecksum.reset();
@@ -366,7 +362,8 @@ void MetalinkParserController::commitChunkChecksumTransactionV4()
     return;
   }
   if(_tEntry->chunkChecksum.isNull() ||
-     _tEntry->chunkChecksum->getAlgo() != MessageDigestContext::SHA1) {
+     MessageDigestContext::isStronger(_tChunkChecksumV4->getAlgo(),
+                                      _tEntry->chunkChecksum->getAlgo())) {
     std::deque<std::string> checksums(_tempChunkChecksumsV4.begin(),
 				      _tempChunkChecksumsV4.end());
     _tChunkChecksumV4->setChecksums(checksums);
@@ -469,11 +466,14 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     return;
   }
   if(_tEntry->chunkChecksum.isNull() ||
-     _tEntry->chunkChecksum->getAlgo() != MetalinkParserController::SHA1) {
-    std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), Ascend1st<std::pair<size_t, std::string> >());
+     MessageDigestContext::isStronger(_tChunkChecksum->getAlgo(),
+                                      _tEntry->chunkChecksum->getAlgo())) {
+    std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
+              Ascend1st<std::pair<size_t, std::string> >());
     std::deque<std::string> checksums;
     std::transform(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
-                   std::back_inserter(checksums), select2nd<std::pair<size_t, std::string> >());
+                   std::back_inserter(checksums),
+                   select2nd<std::pair<size_t, std::string> >());
     _tChunkChecksum->setChecksums(checksums);
     _tEntry->chunkChecksum = _tChunkChecksum;
   }

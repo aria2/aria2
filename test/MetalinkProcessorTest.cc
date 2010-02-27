@@ -96,7 +96,7 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT(!e->checksum.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getAlgo());
   CPPUNIT_ASSERT(!e->chunkChecksum.isNull());
-  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->chunkChecksum->getAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), e->chunkChecksum->getAlgo());
   CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
   CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
   CPPUNIT_ASSERT_EQUAL(std::string("metalinkhash1"),

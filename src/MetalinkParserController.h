@@ -81,8 +81,6 @@ private:
 #endif // ENABLE_MESSAGE_DIGEST
 
   SharedHandle<Signature> _tSignature;
-
-  static const std::string SHA1;
 public:
   MetalinkParserController();
 

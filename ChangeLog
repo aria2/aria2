@@ -1,5 +1,16 @@
 2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added MessageDigest::isStronger(). Now aria2 selects stronger hash
+	algorithm in Metalink properly
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserController.h
+	* src/messageDigest.cc
+	* src/messageDigest.h
+	* test/MetalinkProcessorTest.cc
+	* test/metalink4.xml
+
+2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced null or control characters in file path with '_'.  For
 	MinGW32 build, additional characters which is not allowed in
 	Windows kernel are also replaced. util::detectDirTraversal() now
