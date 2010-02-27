@@ -97,7 +97,6 @@ void MetalinkMetalinkParserStateV4::beginElement
   if(nsUri == METALINK4_NAMESPACE_URI && localname == FILE) {
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
     if(itr != attrs.end()) {
-      // TODO Windows path separator support.
       if(util::detectDirTraversal((*itr).value)) {
         stm->setSkipTagState();
       } else {
@@ -140,7 +139,6 @@ void FileMetalinkParserStateV4::beginElement
         }
       }
     }
-    // TODO currently NAME is ignored
     int priority;
     {
       std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, PRIORITY);

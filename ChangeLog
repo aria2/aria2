@@ -1,5 +1,10 @@
 2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed useless comment
+	* src/MetalinkParserStateV4Impl.cc
+
+2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Supported name attribute of metalink::metaurl element and
 	multi-file torrent with Metalink4.  Files with same metaurl are
 	grouped and downloaded in one RequestGroup.
