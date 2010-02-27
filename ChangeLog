@@ -1,5 +1,11 @@
 2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Small optimization: In updateTransferStatFor(), don't search peer
+	ID twice.
+	* src/DefaultPeerStorage.cc
+
+2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use vector instead of deque for MetalinkEntry and MetalinkResource
 	objects.
 	* src/Metalink2RequestGroup.cc
