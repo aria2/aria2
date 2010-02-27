@@ -180,6 +180,7 @@
 #define MSG_METADATA_SAVED _("Saved metadata as %s.")
 #define MSG_METADATA_NOT_SAVED _("Saving metadata as %s failed. Maybe file" \
                                  " already exists.")
+#define MSG_DIR_TRAVERSAL_DETECTED _("Detected directory traversal directive in %s")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

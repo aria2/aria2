@@ -48,8 +48,8 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoadFromMemory);
   CPPUNIT_TEST(testLoadFromMemory_somethingMissing);
   CPPUNIT_TEST(testLoadFromMemory_overrideName);
-  CPPUNIT_TEST(testLoadFromMemory_joinPathMulti);
-  CPPUNIT_TEST(testLoadFromMemory_joinPathSingle);
+  CPPUNIT_TEST(testLoadFromMemory_multiFileDirTraversal);
+  CPPUNIT_TEST(testLoadFromMemory_singleFileDirTraversal);
   CPPUNIT_TEST(testGetNodes);
   CPPUNIT_TEST(testGetBasePath);
   CPPUNIT_TEST(testSetFileFilter_single);
@@ -91,8 +91,8 @@ public:
   void testLoadFromMemory();
   void testLoadFromMemory_somethingMissing();
   void testLoadFromMemory_overrideName();
-  void testLoadFromMemory_joinPathMulti();
-  void testLoadFromMemory_joinPathSingle();
+  void testLoadFromMemory_multiFileDirTraversal();
+  void testLoadFromMemory_singleFileDirTraversal();
   void testGetNodes();
   void testGetBasePath();
   void testSetFileFilter_single();
@@ -443,33 +443,33 @@ void BittorrentHelperTest::testLoadFromMemory_overrideName()
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"), getName(dctx));
 }
 
-void BittorrentHelperTest::testLoadFromMemory_joinPathMulti()
+void BittorrentHelperTest::testLoadFromMemory_multiFileDirTraversal()
 {
   std::string memory =
     "d8:announce27:http://example.com/announce4:infod5:filesld6:lengthi262144e4:pathl7:../dir14:dir28:file.imgeee4:name14:../name1/name212:piece lengthi262144e6:pieces20:00000000000000000000ee";
 
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   dctx->setDir("/tmp");
-  loadFromMemory(memory, dctx, "default");
-
-  // remove ".." element
-  CPPUNIT_ASSERT_EQUAL(std::string("../name1/name2"), getName(dctx));
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/name1/dir1/dir2/file.img"),
-                       dctx->getFirstFileEntry()->getPath());
+  try {
+    loadFromMemory(memory, dctx, "default");
+    CPPUNIT_FAIL("Exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
 }
 
-void BittorrentHelperTest::testLoadFromMemory_joinPathSingle()
+void BittorrentHelperTest::testLoadFromMemory_singleFileDirTraversal()
 {
   std::string memory =
     "d8:announce27:http://example.com/announce4:infod4:name14:../name1/name26:lengthi262144e12:piece lengthi262144e6:pieces20:00000000000000000000ee";
 
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   dctx->setDir("/tmp");
-  loadFromMemory(memory, dctx, "default");
-
-  CPPUNIT_ASSERT_EQUAL(std::string("../name1/name2"), getName(dctx));
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/name1/name2"),
-                       dctx->getFirstFileEntry()->getPath());
+  try {
+    loadFromMemory(memory, dctx, "default");
+  } catch(RecoverableException& e) {
+    // success
+  }
 }
 
 void BittorrentHelperTest::testGetNodes()

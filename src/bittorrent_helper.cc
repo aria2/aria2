@@ -200,19 +200,18 @@ static void extractFileEntries
     }
     const BDE& nameData = infoDict[nameKey];
     if(nameData.isString()) {
-      // Split path by '/' just in case nasty ".." is included in name
-      std::vector<std::string> pathelems;
-      util::split(nameData.s(), std::back_inserter(pathelems), "/");
-      name = util::joinPath(pathelems.begin(), pathelems.end());
-      torrent[NAME] = nameData.s();
+      if(util::detectDirTraversal(nameData.s())) {
+        throw DL_ABORT_EX
+          (StringFormat(MSG_DIR_TRAVERSAL_DETECTED,nameData.s().c_str()).str());
+      }
+      name = nameData.s();
     } else {
       name = strconcat(File(defaultName).getBasename(), ".file");
-      torrent[NAME] = name;
     }
   } else {
     name = overrideName;
-    torrent[NAME] = name;
   }
+  torrent[NAME] = name;
 
   const BDE& filesList = infoDict[C_FILES];
   std::vector<SharedHandle<FileEntry> > fileEntries;
@@ -246,17 +245,15 @@ static void extractFileEntries
         throw DL_ABORT_EX("Path is empty.");
       }
       
-      std::vector<std::string> pathelem(pathList.size());
-      std::transform(pathList.listBegin(), pathList.listEnd(), pathelem.begin(),
-                     std::mem_fun_ref(&BDE::s));
-      std::string path = name;
-      strappend(path, "/", util::joinPath(pathelem.begin(), pathelem.end()));
-      // Split path with '/' again because each pathList element can
-      // contain "/" inside.
-      std::vector<std::string> elements;
-      util::split(path, std::back_inserter(elements), "/");
-      path = util::joinPath(elements.begin(), elements.end());
-
+      std::vector<std::string> pathelem(pathList.size()+1);
+      pathelem[0] = name;
+      std::transform(pathList.listBegin(), pathList.listEnd(),
+                     pathelem.begin()+1, std::mem_fun_ref(&BDE::s));
+      std::string path = strjoin(pathelem.begin(), pathelem.end(), '/');
+      if(util::detectDirTraversal(path)) {
+        throw DL_ABORT_EX
+          (StringFormat(MSG_DIR_TRAVERSAL_DETECTED, path.c_str()).str());
+      }
       std::deque<std::string> uris;
       createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
       SharedHandle<FileEntry> fileEntry
@@ -282,7 +279,7 @@ static void extractFileEntries
     std::deque<std::string> uris;
     for(std::vector<std::string>::const_iterator i = urlList.begin();
         i != urlList.end(); ++i) {
-      if(util::endsWith(*i, "/")) {
+      if(util::endsWith(*i, A2STR::SLASH_C)) {
         uris.push_back((*i)+name);
       } else {
         uris.push_back(*i);

@@ -1,5 +1,21 @@
 2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Discard torrent file if path data in it contains directory
+	traversal directives.  Discard metalink:file element in Metalink3
+	format if its name attribute contains directory traversal
+	directives.  Ignore name attribute of metalink:signature element
+	in Metalink3 format if it contains directory traversal directives.
+	* src/MetalinkParserStateV3Impl.cc
+	* src/bittorrent_helper.cc
+	* src/message.h
+	* test/BittorrentHelperTest.cc
+	* test/Makefile.am
+	* test/MetalinkProcessorTest.cc
+	* test/metalink3-dirtraversal.xml
+	* test/test.xml
+
+2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed useless comment
 	* src/MetalinkParserStateV4Impl.cc
 

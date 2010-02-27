@@ -28,7 +28,7 @@ fffff
         <url type="http" location="us" preference="100">http://httphost/aria2-0.5.2.tar.bz2</url>
       </resources>
     </file>
-    <file name="dir/../aria2-0.5.1.tar.bz2">
+    <file name="aria2-0.5.1.tar.bz2">
       <size>345689</size>
       <version>0.5.1</version>
       <language>ja-JP</language>

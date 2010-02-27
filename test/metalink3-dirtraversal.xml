@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metalink version="3.0" xmlns="http://www.metalinker.org/">
+  <files>
+    <file name="../aria2-0.5.2.tar.bz2">
+      <verification>
+	<signature type="pgp" file="aria2-0.5.2.tar.bz2.sig">
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffff
+fffff
+-----END PGP SIGNATURE-----
+	</signature>
+      </verification>
+      <resources>
+        <url type="http">http://example.org/aria2-0.5.2.tar.bz2</url>
+      </resources>
+    </file>
+    <file name="aria2-0.5.3.tar.bz2">
+      <verification>
+	<signature type="pgp" file="../aria2-0.5.3.tar.bz2.sig">
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffff
+fffff
+-----END PGP SIGNATURE-----
+	</signature>
+      </verification>
+      <resources>
+        <url type="http">http://example.org/aria2-0.5.3.tar.bz2</url>
+      </resources>
+    </file>
+  </files>
+</metalink>

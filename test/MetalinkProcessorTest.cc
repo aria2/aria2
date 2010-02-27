@@ -27,6 +27,7 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseFileV4_dirtraversal);
   CPPUNIT_TEST(testParseFileV4_attrs);
   CPPUNIT_TEST(testParseFile);
+  CPPUNIT_TEST(testParseFile_dirtraversal);
   CPPUNIT_TEST(testParseFromBinaryStream);
   CPPUNIT_TEST(testMalformedXML);
   CPPUNIT_TEST(testMalformedXML2);
@@ -52,6 +53,7 @@ public:
   void testParseFileV4_dirtraversal();
   void testParseFileV4_attrs();
   void testParseFile();
+  void testParseFile_dirtraversal();
   void testParseFromBinaryStream();
   void testMalformedXML();
   void testMalformedXML2();
@@ -269,6 +271,18 @@ void MetalinkProcessorTest::testParseFile()
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
+}
+
+void MetalinkProcessorTest::testParseFile_dirtraversal()
+{
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> metalinker =
+    proc.parseFile("metalink3-dirtraversal.xml");
+  CPPUNIT_ASSERT_EQUAL((size_t)1, metalinker->entries.size());
+  SharedHandle<MetalinkEntry> e = metalinker->entries[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.3.tar.bz2"), e->getPath());
+  CPPUNIT_ASSERT(!e->getSignature().isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), e->getSignature()->getFile());
 }
 
 void MetalinkProcessorTest::testParseFromBinaryStream()

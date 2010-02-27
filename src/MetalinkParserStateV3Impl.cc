@@ -113,8 +113,12 @@ void FilesMetalinkParserState::beginElement
     stm->setFileState();
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
     if(itr != attrs.end()) {
+      std::string name = util::trim((*itr).value);
+      if(util::detectDirTraversal(name)) {
+        return;
+      }
       stm->newEntryTransaction();
-      stm->setFileNameOfEntry(util::trim((*itr).value));
+      stm->setFileNameOfEntry(name);
     }
   } else {
     stm->setSkipTagState();
@@ -275,7 +279,10 @@ void VerificationMetalinkParserState::beginElement
         stm->setTypeOfSignature(util::trim((*itr).value));
         std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, FILE);
         if(itr != attrs.end()) {
-          stm->setFileOfSignature(util::trim((*itr).value));
+          std::string file = util::trim((*itr).value);
+          if(!util::detectDirTraversal(file)) {
+            stm->setFileOfSignature(file);
+          }
         }
       }
     } else {

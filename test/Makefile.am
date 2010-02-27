@@ -250,4 +250,5 @@ EXTRA_DIST = 4096chunk.txt\
 	utf8.torrent\
 	metalink4.xml\
 	metalink4-attrs.xml\
-	metalink4-dirtraversal.xml
+	metalink4-dirtraversal.xml\
+	metalink3-dirtraversal.xml
