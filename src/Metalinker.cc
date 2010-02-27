@@ -76,7 +76,7 @@ public:
 };
 
 void Metalinker::queryEntry
-(std::deque<SharedHandle<MetalinkEntry> >& queryResult,
+(std::vector<SharedHandle<MetalinkEntry> >& queryResult,
  const std::string& version,
  const std::string& language,
  const std::string& os) const

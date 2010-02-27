@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
 #include <vector>
 
 #include "SharedHandle.h"
@@ -57,16 +56,16 @@ private:
   ~MetalinkHelper();
 
   static void query
-  (std::deque<SharedHandle<MetalinkEntry> >& result,
+  (std::vector<SharedHandle<MetalinkEntry> >& result,
    const SharedHandle<Metalinker>& metalinker, const Option* option);
 
 public:
   static void parseAndQuery
-  (std::deque<SharedHandle<MetalinkEntry> >& result,
+  (std::vector<SharedHandle<MetalinkEntry> >& result,
    const std::string& filename, const Option* option);
 
   static void parseAndQuery
-  (std::deque<SharedHandle<MetalinkEntry> >& result,
+  (std::vector<SharedHandle<MetalinkEntry> >& result,
    const SharedHandle<BinaryStream>& binaryStream, const Option* option);
 
   static void groupEntryByMetaurlName

@@ -50,7 +50,7 @@ MetalinkHelper::MetalinkHelper() {}
 MetalinkHelper::~MetalinkHelper() {}
 
 void MetalinkHelper::parseAndQuery
-(std::deque<SharedHandle<MetalinkEntry> >& result,
+(std::vector<SharedHandle<MetalinkEntry> >& result,
  const std::string& filename, const Option* option)
 {
   MetalinkProcessor proc;
@@ -59,7 +59,7 @@ void MetalinkHelper::parseAndQuery
 }
 
 void MetalinkHelper::parseAndQuery
-(std::deque<SharedHandle<MetalinkEntry> >& result,
+(std::vector<SharedHandle<MetalinkEntry> >& result,
  const SharedHandle<BinaryStream>& binaryStream, const Option* option)
 {
   MetalinkProcessor proc;
@@ -68,7 +68,7 @@ void MetalinkHelper::parseAndQuery
 }
 
 void MetalinkHelper::query
-(std::deque<SharedHandle<MetalinkEntry> >& result,
+(std::vector<SharedHandle<MetalinkEntry> >& result,
  const SharedHandle<Metalinker>& metalinker, const Option* option)
 {
   if(metalinker->entries.empty()) {

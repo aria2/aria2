@@ -147,7 +147,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
   MetalinkProcessor proc;
   SharedHandle<Metalinker> m = proc.parseFile("metalink4-attrs.xml");
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
-  std::deque<SharedHandle<MetalinkResource> > resources =
+  std::vector<SharedHandle<MetalinkResource> > resources =
     m->entries[0]->resources;
   CPPUNIT_ASSERT_EQUAL((size_t)3, resources.size());
   CPPUNIT_ASSERT_EQUAL(999999, resources[0]->priority);
@@ -172,7 +172,8 @@ void MetalinkProcessorTest::testParseFile()
   try {
     SharedHandle<Metalinker> metalinker = proc.parseFile("test.xml");
 
-    std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = metalinker->entries.begin();
+    std::vector<SharedHandle<MetalinkEntry> >::iterator entryItr =
+      metalinker->entries.begin();
 
     SharedHandle<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
@@ -202,7 +203,8 @@ void MetalinkProcessorTest::testParseFile()
         "-----END PGP SIGNATURE-----"),
        entry1->getSignature()->getBody());
 
-    std::deque<SharedHandle<MetalinkResource> >::iterator resourceItr1 = entry1->resources.begin();
+    std::vector<SharedHandle<MetalinkResource> >::iterator resourceItr1 =
+      entry1->resources.begin();
     SharedHandle<MetalinkResource> resource1 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, resource1->type);
     CPPUNIT_ASSERT_EQUAL(std::string("jp"), resource1->location);
@@ -294,7 +296,8 @@ void MetalinkProcessorTest::testParseFromBinaryStream()
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
 
-    std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
+    std::vector<SharedHandle<MetalinkEntry> >::iterator entryItr =
+      m->entries.begin();
     SharedHandle<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
   } catch(Exception& e) {
@@ -348,7 +351,8 @@ void MetalinkProcessorTest::testBadSize()
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
 
-    std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
+    std::vector<SharedHandle<MetalinkEntry> >::iterator entryItr =
+      m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, e->getLength());
@@ -380,7 +384,8 @@ void MetalinkProcessorTest::testBadMaxConn()
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
 
-    std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
+    std::vector<SharedHandle<MetalinkEntry> >::iterator entryItr =
+      m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL((uint64_t)43743838ULL, e->getLength());
   } catch(Exception& e) {
@@ -412,7 +417,8 @@ void MetalinkProcessorTest::testNoName()
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
-    std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
+    std::vector<SharedHandle<MetalinkEntry> >::iterator entryItr =
+      m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
   } catch(Exception& e) {

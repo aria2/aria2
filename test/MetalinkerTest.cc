@@ -1,6 +1,8 @@
 #include "Metalinker.h"
-#include "MetalinkEntry.h"
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "MetalinkEntry.h"
 
 namespace aria2 {
 
@@ -44,7 +46,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "ja-JP";
   os = "Linux-m68k";
   {
-    std::deque<SharedHandle<MetalinkEntry> > result;
+    std::vector<SharedHandle<MetalinkEntry> > result;
     metalinker->queryEntry(result, version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), result.at(0)->version);
@@ -55,7 +57,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "";
   os = "";
   {
-    std::deque<SharedHandle<MetalinkEntry> > result;
+    std::vector<SharedHandle<MetalinkEntry> > result;
     metalinker->queryEntry(result, version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)0, result.size());
   }
@@ -64,7 +66,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "";
   os = "";
   {
-    std::deque<SharedHandle<MetalinkEntry> > result;
+    std::vector<SharedHandle<MetalinkEntry> > result;
     metalinker->queryEntry(result, version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), result.at(0)->version);

@@ -39,6 +39,7 @@
 #include "SharedHandle.h"
 #include <string>
 #include <deque>
+#include <vector>
 
 namespace aria2 {
 
@@ -54,7 +55,7 @@ private:
 
   void
   createRequestGroup(std::deque<SharedHandle<RequestGroup> >& groups,
-                     const std::deque<SharedHandle<MetalinkEntry> >& entries,
+                     const std::vector<SharedHandle<MetalinkEntry> >& entries,
                      const SharedHandle<Option>& option);
 public:
   Metalink2RequestGroup();

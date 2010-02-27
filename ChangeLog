@@ -1,5 +1,23 @@
 2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use vector instead of deque for MetalinkEntry and MetalinkResource
+	objects.
+	* src/Metalink2RequestGroup.cc
+	* src/Metalink2RequestGroup.h
+	* src/MetalinkEntry.cc
+	* src/MetalinkEntry.h
+	* src/MetalinkHelper.cc
+	* src/MetalinkHelper.h
+	* src/Metalinker.cc
+	* src/Metalinker.h
+	* src/main.cc
+	* test/MetalinkEntryTest.cc
+	* test/MetalinkHelperTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/MetalinkerTest.cc
+
+2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that grouped FileEntry objects are not used but
 	instead all FileEntry objects are used for each metaurl group.
 	* src/Metalink2RequestGroup.cc

@@ -121,9 +121,9 @@ static void showTorrentFile(const std::string& uri)
 static void showMetalinkFile
 (const std::string& uri, const SharedHandle<Option>& op)
 {
-  std::deque<SharedHandle<MetalinkEntry> > metalinkEntries;
+  std::vector<SharedHandle<MetalinkEntry> > metalinkEntries;
   MetalinkHelper::parseAndQuery(metalinkEntries, uri, op.get());
-  std::deque<SharedHandle<FileEntry> > fileEntries;
+  std::vector<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
   util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);
   std::cout << std::endl;

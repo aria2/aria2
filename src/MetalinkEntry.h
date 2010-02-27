@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
 #include <vector>
 #include <algorithm>
 
@@ -63,7 +62,7 @@ public:
   std::vector<std::string> oses;
   // True if size is specified in Metalink document.
   bool sizeKnown;
-  std::deque<SharedHandle<MetalinkResource> > resources;
+  std::vector<SharedHandle<MetalinkResource> > resources;
   std::vector<SharedHandle<MetalinkMetaurl> > metaurls;
   int maxConnections; // Metalink3Spec
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -106,13 +105,13 @@ public:
   }
 
   void setLocationPriority
-  (const std::deque<std::string>& locations, int priorityToAdd);
+  (const std::vector<std::string>& locations, int priorityToAdd);
 
   void setProtocolPriority(const std::string& protocol, int priorityToAdd);
 
   static void toFileEntry
-  (std::deque<SharedHandle<FileEntry> >& fileEntries,
-   const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);
+  (std::vector<SharedHandle<FileEntry> >& fileEntries,
+   const std::vector<SharedHandle<MetalinkEntry> >& metalinkEntries);
 
   void setSignature(const SharedHandle<Signature>& signature);
 

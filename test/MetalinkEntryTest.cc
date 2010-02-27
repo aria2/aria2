@@ -79,7 +79,7 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
 #endif // ENABLE_MESSAGE_DIGEST
   
-  std::deque<SharedHandle<MetalinkResource> >::const_iterator itr =
+  std::vector<SharedHandle<MetalinkResource> >::const_iterator itr =
     entry->resources.begin();
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
                        (*itr++)->type);
@@ -113,7 +113,7 @@ void MetalinkEntryTest::testSetLocationPriority()
 
   const char* locationsSrc[] = { "jp", "al", "ro" };
 
-  std::deque<std::string> locations(&locationsSrc[0], &locationsSrc[3]);
+  std::vector<std::string> locations(&locationsSrc[0], &locationsSrc[3]);
 
   entry->setLocationPriority(locations, -100);
 

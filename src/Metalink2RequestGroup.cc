@@ -107,7 +107,7 @@ Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
                                 const std::string& metalinkFile,
                                 const SharedHandle<Option>& option)
 {
-  std::deque<SharedHandle<MetalinkEntry> > entries;
+  std::vector<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, metalinkFile, option.get());
   createRequestGroup(groups, entries, option);
 }
@@ -117,7 +117,7 @@ Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
                                 const SharedHandle<BinaryStream>& binaryStream,
                                 const SharedHandle<Option>& option)
 {
-  std::deque<SharedHandle<MetalinkEntry> > entries;
+  std::vector<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, binaryStream, option.get());
   createRequestGroup(groups, entries, option);
 }
@@ -136,7 +136,7 @@ void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
 void
 Metalink2RequestGroup::createRequestGroup
 (std::deque<SharedHandle<RequestGroup> >& groups,
- const std::deque<SharedHandle<MetalinkEntry> >& entries,
+ const std::vector<SharedHandle<MetalinkEntry> >& entries,
  const SharedHandle<Option>& option)
 {
   if(entries.empty()) {
@@ -149,7 +149,7 @@ Metalink2RequestGroup::createRequestGroup
   std::vector<SharedHandle<MetalinkEntry> > selectedEntries;
   selectedEntries.reserve(entries.size());
 
-  std::deque<std::string> locations;
+  std::vector<std::string> locations;
   if(option->defined(PREF_METALINK_LOCATION)) {
     util::split(option->get(PREF_METALINK_LOCATION),
                 std::back_inserter(locations), ",", true);
@@ -162,7 +162,7 @@ Metalink2RequestGroup::createRequestGroup
   }
   {
     int32_t count = 1;
-    for(std::deque<SharedHandle<MetalinkEntry> >::const_iterator i =
+    for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
           entries.begin(); i != entries.end(); ++i, ++count) {
       (*i)->dropUnsupportedResource();
       if((*i)->resources.empty() && (*i)->metaurls.empty()) {

@@ -59,11 +59,11 @@ MetalinkEntry::~MetalinkEntry() {}
 
 class AddLocationPriority {
 private:
-  std::deque<std::string> _locations;
+  std::vector<std::string> _locations;
   int _priorityToAdd;
 public:
   AddLocationPriority
-  (const std::deque<std::string>& locations, int priorityToAdd):
+  (const std::vector<std::string>& locations, int priorityToAdd):
     _locations(locations), _priorityToAdd(priorityToAdd)
   {
     std::sort(_locations.begin(), _locations.end());
@@ -105,7 +105,7 @@ uint64_t MetalinkEntry::getLength() const
 }
 
 void MetalinkEntry::setLocationPriority
-(const std::deque<std::string>& locations, int priorityToAdd)
+(const std::vector<std::string>& locations, int priorityToAdd)
 {
   std::for_each(resources.begin(), resources.end(),
                 AddLocationPriority(locations, priorityToAdd));
@@ -183,8 +183,8 @@ void MetalinkEntry::dropUnsupportedResource() {
 }
 
 void MetalinkEntry::toFileEntry
-(std::deque<SharedHandle<FileEntry> >& fileEntries,
- const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries)
+(std::vector<SharedHandle<FileEntry> >& fileEntries,
+ const std::vector<SharedHandle<MetalinkEntry> >& metalinkEntries)
 {
   std::transform(metalinkEntries.begin(), metalinkEntries.end(),
                  std::back_inserter(fileEntries),
