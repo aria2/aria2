@@ -180,7 +180,7 @@ Metalink2RequestGroup::createRequestGroup
       }
     }
   }
-  std::for_each(entries.begin(), entries.end(),
+  std::for_each(selectedEntries.begin(), selectedEntries.end(),
                 mem_fun_sh(&MetalinkEntry::reorderMetaurlsByPriority));
   std::vector<std::pair<std::string,
     std::vector<SharedHandle<MetalinkEntry> > > > entryGroups;
@@ -276,8 +276,8 @@ Metalink2RequestGroup::createRequestGroup
       dctx->setPieceLength(option->getAsInt(PREF_SEGMENT_SIZE));
       std::vector<SharedHandle<FileEntry> > fileEntries;
       off_t offset = 0;
-      for(std::deque<SharedHandle<MetalinkEntry> >::const_iterator i =
-            entries.begin(); i != entries.end(); ++i) {
+      for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
+            mes.begin(); i != mes.end(); ++i) {
         _logger->info("Metalink: Queueing %s for download as a member.",
                       (*i)->getPath().c_str());
         _logger->debug("originalName = %s", (*i)->metaurls[0]->name.c_str());

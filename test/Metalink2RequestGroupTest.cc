@@ -16,6 +16,7 @@ class Metalink2RequestGroupTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Metalink2RequestGroupTest);
   CPPUNIT_TEST(testGenerate);
+  CPPUNIT_TEST(testGenerate_groupByMetaurl);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Option> _option;
@@ -28,6 +29,7 @@ public:
   }
 
   void testGenerate();
+  void testGenerate_groupByMetaurl();
 };
 
 
@@ -118,6 +120,52 @@ void Metalink2RequestGroupTest::testGenerate()
 
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
+  }
+}
+
+void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
+{
+  std::deque<SharedHandle<RequestGroup> > groups;
+  Metalink2RequestGroup().generate(groups, "metalink4-groupbymetaurl.xml",
+                                   _option);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
+  // first RequestGroup is torrent for second RequestGroup
+  {
+    SharedHandle<RequestGroup> rg = groups[0];
+    std::deque<std::string> uris;
+    rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("http://torrent"), uris[0]);
+  }
+  // second
+  {
+    SharedHandle<RequestGroup> rg = groups[1];
+    SharedHandle<DownloadContext> dctx = rg->getDownloadContext();
+    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+      dctx->getFileEntries();
+    CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntries.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("./file1"), fileEntries[0]->getPath());
+    CPPUNIT_ASSERT_EQUAL(std::string("file1"), fileEntries[0]->getOriginalName());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries[0]->getRemainingUris().size());
+    CPPUNIT_ASSERT_EQUAL(std::string("http://file1p1"),
+                         fileEntries[0]->getRemainingUris()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::string("./file3"), fileEntries[1]->getPath());
+    CPPUNIT_ASSERT_EQUAL(std::string("file3"), fileEntries[1]->getOriginalName());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries[1]->getRemainingUris().size());
+    CPPUNIT_ASSERT_EQUAL(std::string("http://file3p1"),
+                         fileEntries[1]->getRemainingUris()[0]);
+  }
+  // third
+  {
+    SharedHandle<RequestGroup> rg = groups[2];
+    SharedHandle<DownloadContext> dctx = rg->getDownloadContext();
+    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+      dctx->getFileEntries();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("./file2"), fileEntries[0]->getPath());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries[0]->getRemainingUris().size());
+    CPPUNIT_ASSERT_EQUAL(std::string("http://file2p1"),
+                         fileEntries[0]->getRemainingUris()[0]);
   }
 }
 

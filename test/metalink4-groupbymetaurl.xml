@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="file1">
+    <size>1000</size>
+    <url priority="1">http://file1p1</url>
+    <metaurl mediatype="torrent" priority="1" name="file1">http://torrent</metaurl>
+  </file>
+  <file name="file2">
+    <size>2000</size>
+    <url priority="1">http://file2p1</url>
+  </file>
+  <file name="file3">
+    <size>3000</size>
+    <url priority="1">http://file3p1</url>
+    <metaurl mediatype="torrent" priority="1" name="file3">http://torrent</metaurl>
+  </file>
+</metalink>

@@ -1,3 +1,11 @@
+2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that grouped FileEntry objects are not used but
+	instead all FileEntry objects are used for each metaurl group.
+	* src/Metalink2RequestGroup.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/metalink4-groupbymetaurl.xml
+
 2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use vector instead of deque for ChunkChecksum.
