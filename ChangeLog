@@ -1,5 +1,14 @@
 2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Discard metalink:file if its name attribute is empty string.
+	Removed FileEntry instantiation in
+	MetalinkParserController::setFileLengthOfEntry()
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserStateV3Impl.cc
+	* src/MetalinkParserStateV4Impl.cc
+
+2010-02-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Discard torrent file if path data in it contains directory
 	traversal directives.  Discard metalink:file element in Metalink3
 	format if its name attribute contains directory traversal

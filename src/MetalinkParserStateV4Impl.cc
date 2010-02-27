@@ -97,7 +97,7 @@ void MetalinkMetalinkParserStateV4::beginElement
   if(nsUri == METALINK4_NAMESPACE_URI && localname == FILE) {
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
     if(itr != attrs.end()) {
-      if(util::detectDirTraversal((*itr).value)) {
+      if((*itr).value.empty() || util::detectDirTraversal((*itr).value)) {
         stm->setSkipTagState();
       } else {
         stm->setFileStateV4();

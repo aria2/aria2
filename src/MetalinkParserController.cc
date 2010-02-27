@@ -96,10 +96,9 @@ void MetalinkParserController::setFileLengthOfEntry(uint64_t length)
     return;
   }
   if(_tEntry->file.isNull()) {
-    _tEntry->file.reset(new FileEntry(A2STR::NIL, length, 0));
-  } else {
-    _tEntry->file->setLength(length);
+    return;
   }
+  _tEntry->file->setLength(length);
   _tEntry->sizeKnown = true;
 }
 

@@ -114,7 +114,7 @@ void FilesMetalinkParserState::beginElement
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
     if(itr != attrs.end()) {
       std::string name = util::trim((*itr).value);
-      if(util::detectDirTraversal(name)) {
+      if(name.empty() || util::detectDirTraversal(name)) {
         return;
       }
       stm->newEntryTransaction();
