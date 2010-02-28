@@ -107,8 +107,8 @@ bool InitiateConnectionCommand::executeInternal() {
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
                  hostname.c_str(),
                  strjoin(addrs.begin(), addrs.end(), ", ").c_str());
-    for(std::vector<std::string>::const_iterator i = addrs.begin();
-        i != addrs.end(); ++i) {
+    for(std::vector<std::string>::const_iterator i = addrs.begin(),
+          eoi = addrs.end(); i != eoi; ++i) {
       e->cacheIPAddress(hostname, *i, port);
     }
     ipaddr = e->findCachedIPAddress(hostname, port);

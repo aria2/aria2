@@ -61,8 +61,8 @@ protected:
   void toEntries
   (Container& entries, const std::vector<SharedHandle<DHTNode> >& nodes) const
   {
-    for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes.begin();
-        i != nodes.end(); ++i) {
+    for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes.begin(),
+          eoi = nodes.end(); i != eoi; ++i) {
       SharedHandle<DHTNodeLookupEntry> e(new DHTNodeLookupEntry(*i));
       entries.push_back(e);
     }

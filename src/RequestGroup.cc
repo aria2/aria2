@@ -339,8 +339,8 @@ void RequestGroup::createInitialCommand
         if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
           std::vector<std::pair<std::string, uint16_t> > entryPoints;
           const BDE& nodes = torrentAttrs[bittorrent::NODES];
-          for(BDE::List::const_iterator i = nodes.listBegin();
-              i != nodes.listEnd(); ++i) {
+          for(BDE::List::const_iterator i = nodes.listBegin(),
+                eoi = nodes.listEnd(); i != eoi; ++i) {
             std::pair<std::string, uint16_t> addr
               ((*i)[bittorrent::HOSTNAME].s(), (*i)[bittorrent::PORT].i());
             entryPoints.push_back(addr);
@@ -854,8 +854,8 @@ void RequestGroup::preDownloadProcessing()
   }
   try {
     for(std::vector<SharedHandle<PreDownloadHandler> >::const_iterator itr =
-          _preDownloadHandlers.begin();
-        itr != _preDownloadHandlers.end(); ++itr) {
+          _preDownloadHandlers.begin(), eoi = _preDownloadHandlers.end();
+        itr != eoi; ++itr) {
       if((*itr)->canHandle(this)) {
         (*itr)->execute(this);
         return;
@@ -880,8 +880,8 @@ void RequestGroup::postDownloadProcessing
   }
   try {
     for(std::vector<SharedHandle<PostDownloadHandler> >::const_iterator itr =
-          _postDownloadHandlers.begin();
-        itr != _postDownloadHandlers.end(); ++itr) {
+          _postDownloadHandlers.begin(), eoi = _postDownloadHandlers.end();
+        itr != eoi; ++itr) {
       if((*itr)->canHandle(this)) {
         (*itr)->getNextRequestGroups(groups, this);
         return;

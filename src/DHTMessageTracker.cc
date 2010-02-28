@@ -82,7 +82,7 @@ DHTMessageTracker::messageArrived(const BDE& dict,
                    util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
   }
   for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
-        _entries.begin(); i != _entries.end(); ++i) {
+        _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
     if((*i)->match(tid.s(), ipaddr, port)) {
       SharedHandle<DHTMessageTrackerEntry> entry = *i;
       _entries.erase(i);
@@ -113,12 +113,13 @@ DHTMessageTracker::messageArrived(const BDE& dict,
 
 void DHTMessageTracker::handleTimeout()
 {
-  for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i = _entries.begin();
-      i != _entries.end();) {
+  for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
+        _entries.begin(), eoi = _entries.end(); i != eoi;) {
     if((*i)->isTimeout()) {
       try {
         SharedHandle<DHTMessageTrackerEntry> entry = *i;
         i = _entries.erase(i);
+        eoi = _entries.end();
         SharedHandle<DHTNode> node = entry->getTargetNode();
         if(_logger->debug()) {
           _logger->debug("Message timeout: To:%s:%u",
@@ -149,9 +150,11 @@ void DHTMessageTracker::handleTimeout()
 SharedHandle<DHTMessageTrackerEntry>
 DHTMessageTracker::getEntryFor(const SharedHandle<DHTMessage>& message) const
 {
-  for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::const_iterator i = _entries.begin();
-      i != _entries.end(); ++i) {
-    if((*i)->match(message->getTransactionID(), message->getRemoteNode()->getIPAddress(), message->getRemoteNode()->getPort())) {
+  for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::const_iterator i =
+        _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
+    if((*i)->match(message->getTransactionID(),
+                   message->getRemoteNode()->getIPAddress(),
+                   message->getRemoteNode()->getPort())) {
       return *i;
     }
   }

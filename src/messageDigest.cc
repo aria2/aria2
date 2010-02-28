@@ -132,8 +132,8 @@ std::string MessageDigestContext::getSupportedAlgoString()
 {
   const DigestAlgoMap& allAlgos = getDigestAlgos();
   std::string algos;
-  for(DigestAlgoMap::const_iterator itr = allAlgos.begin();
-      itr != allAlgos.end(); ++itr) {
+  for(DigestAlgoMap::const_iterator itr = allAlgos.begin(),
+        eoi = allAlgos.end(); itr != eoi; ++itr) {
     algos += (*itr).first;
     algos += ", ";
   }

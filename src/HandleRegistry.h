@@ -72,8 +72,8 @@ public:
   std::vector<SharedHandle<T> > getAll()
   {
     std::vector<SharedHandle<T> > l;
-    for(typename HandleMap::const_iterator itr = handleMap.begin();
-        itr != handleMap.end(); ++itr) {
+    for(typename HandleMap::const_iterator itr = handleMap.begin(),
+          eoi = handleMap.end(); itr != eoi; ++itr) {
       const typename HandleMap::value_type& p = *itr;
       l.push_back(p.second);
     }

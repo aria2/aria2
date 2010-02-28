@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "DHTAbstractNodeLookupTask.h"
+
+#include <cstring>
+#include <algorithm>
+
 #include "DHTRoutingTable.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
@@ -44,8 +48,6 @@
 #include "Logger.h"
 #include "util.h"
 #include "DHTIDCloser.h"
-#include <cstring>
-#include <algorithm>
 
 namespace aria2 {
 
@@ -66,7 +68,7 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
 
   size_t count = 0;
   for(std::vector<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
-        newEntries.begin(); i != newEntries.end(); ++i) {
+        newEntries.begin(), eoi = newEntries.end(); i != eoi; ++i) {
     if(memcmp(_localNode->getID(), (*i)->_node->getID(), DHT_ID_LENGTH) != 0) {
       _entries.push_front(*i);
       ++count;
@@ -98,7 +100,8 @@ void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
                    util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
   }
   --_inFlightMessage;
-  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i = _entries.begin(); i != _entries.end(); ++i) {
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
+        _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
     if((*i)->_node == node) {
       _entries.erase(i);
       break;
@@ -132,8 +135,8 @@ void DHTAbstractNodeLookupTask::sendMessageAndCheckFinish()
 void DHTAbstractNodeLookupTask::sendMessage()
 {
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
-        _entries.begin();
-      i != _entries.end() && _inFlightMessage < ALPHA; ++i) {
+        _entries.begin(), eoi = _entries.end();
+      i != eoi && _inFlightMessage < ALPHA; ++i) {
     if((*i)->_used == false) {
       ++_inFlightMessage;
       (*i)->_used = true;

@@ -176,8 +176,8 @@ size_t Piece::getMissingUnusedBlockIndex
 {
   size_t num = bitfield->getFirstNMissingUnusedIndex(indexes, n);
   if(num) {
-    for(std::vector<size_t>::const_iterator i = indexes.end()-num;
-        i != indexes.end(); ++i) {
+    for(std::vector<size_t>::const_iterator i = indexes.end()-num,
+          eoi = indexes.end(); i != eoi; ++i) {
       bitfield->setUseBit(*i);
     }
   }

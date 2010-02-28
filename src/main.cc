@@ -135,8 +135,8 @@ static void showFiles
 (const std::vector<std::string>& uris, const SharedHandle<Option>& op)
 {
   ProtocolDetector dt;
-  for(std::vector<std::string>::const_iterator i = uris.begin();
-      i != uris.end(); ++i) {
+  for(std::vector<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
     printf(">>> ");
     printf(MSG_SHOW_FILES, (*i).c_str());
     printf("\n");

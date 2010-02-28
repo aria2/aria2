@@ -115,8 +115,8 @@ bool File::mkdirs() {
   if(util::startsWith(name, A2STR::SLASH_C)) {
     accDir = A2STR::SLASH_C;
   }
-  for(std::vector<std::string>::const_iterator itr = dirs.begin();
-      itr != dirs.end(); ++itr, accDir += A2STR::SLASH_C) {
+  for(std::vector<std::string>::const_iterator itr = dirs.begin(),
+        eoi = dirs.end(); itr != eoi; ++itr, accDir += A2STR::SLASH_C) {
     accDir += *itr;
     if(File(accDir).isDir()) {
       continue;

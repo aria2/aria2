@@ -98,8 +98,8 @@ bool CookieStorage::DomainEntry::contains(const Cookie& cookie) const
 
 void CookieStorage::DomainEntry::writeCookie(std::ostream& o) const
 {
-  for(std::deque<Cookie>::const_iterator i = _cookies.begin();
-      i != _cookies.end(); ++i) {
+  for(std::deque<Cookie>::const_iterator i = _cookies.begin(),
+        eoi = _cookies.end(); i != eoi; ++i) {
     o << (*i).toNsCookieFormat() << "\n";
   }
 }
@@ -256,7 +256,8 @@ std::vector<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
     std::string domain = A2STR::DOT_C;
     domain += domainComponents[0];
     for(std::vector<std::string>::const_iterator di =
-          domainComponents.begin()+1; di != domainComponents.end(); ++di) {
+          domainComponents.begin()+1, eoi = domainComponents.end();
+        di != eoi; ++di) {
       domain = strconcat(A2STR::DOT_C, *di, domain);
       searchCookieByDomainSuffix(domain, _domains.begin(), _domains.end(),
                                  std::back_inserter(res),
@@ -275,8 +276,8 @@ std::vector<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
 size_t CookieStorage::size() const
 {
   size_t numCookie = 0;
-  for(std::deque<DomainEntry>::const_iterator i = _domains.begin();
-      i != _domains.end(); ++i) {
+  for(std::deque<DomainEntry>::const_iterator i = _domains.begin(),
+        eoi = _domains.end(); i != eoi; ++i) {
     numCookie += (*i).countCookie();
   }
   return numCookie;
@@ -327,8 +328,8 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
                      filename.c_str(), strerror(errno));
       return false;
     }
-    for(std::deque<DomainEntry>::const_iterator i = _domains.begin();
-        i != _domains.end(); ++i) {
+    for(std::deque<DomainEntry>::const_iterator i = _domains.begin(),
+          eoi = _domains.end(); i != eoi; ++i) {
       (*i).writeCookie(o);
     }
     o.flush();

@@ -158,8 +158,8 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
 void SegmentMan::getInFlightSegment
 (std::vector<SharedHandle<Segment> >& segments, cuid_t cuid)
 {
-  for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end(); ++itr) {
+  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin(),
+        eoi = usedSegmentEntries.end(); itr != eoi; ++itr) {
     const SegmentEntryHandle& segmentEntry = *itr;
     if(segmentEntry->cuid == cuid) {
       segments.push_back(segmentEntry->segment);
@@ -199,8 +199,8 @@ void SegmentMan::getSegment
       segments.push_back(segment);
     }
   }
-  for(std::vector<SharedHandle<Segment> >::const_iterator i = pending.begin();
-      i != pending.end(); ++i) {
+  for(std::vector<SharedHandle<Segment> >::const_iterator i = pending.begin(),
+        eoi = pending.end(); i != eoi; ++i) {
     cancelSegment(cuid, *i);
   }
 }
@@ -223,11 +223,12 @@ void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {
-  for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end();) {
+  for(SegmentEntries::iterator itr = usedSegmentEntries.begin(),
+        eoi = usedSegmentEntries.end(); itr != eoi;) {
     if((*itr)->cuid == cuid) {
       cancelSegment((*itr)->segment);
       itr = usedSegmentEntries.erase(itr);
+      eoi = usedSegmentEntries.end();
     } else {
       ++itr;
     }
@@ -237,11 +238,12 @@ void SegmentMan::cancelSegment(cuid_t cuid) {
 void SegmentMan::cancelSegment
 (cuid_t cuid, const SharedHandle<Segment>& segment)
 {
-  for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end();) {
+  for(SegmentEntries::iterator itr = usedSegmentEntries.begin(),
+        eoi = usedSegmentEntries.end(); itr != eoi;) {
     if((*itr)->cuid == cuid && (*itr)->segment == segment) {
       cancelSegment((*itr)->segment);
       itr = usedSegmentEntries.erase(itr);
+      //eoi = usedSegmentEntries.end();
       break;
     } else {
       ++itr;
@@ -290,8 +292,8 @@ uint64_t SegmentMan::getDownloadLength() const {
 
 void SegmentMan::registerPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
-  for(std::vector<SharedHandle<PeerStat> >::iterator i = peerStats.begin();
-      i != peerStats.end(); ++i) {
+  for(std::vector<SharedHandle<PeerStat> >::iterator i = peerStats.begin(),
+        eoi = peerStats.end(); i != eoi; ++i) {
     if((*i)->getStatus() == PeerStat::IDLE) {
       *i = peerStat;
       return;
@@ -338,7 +340,7 @@ unsigned int SegmentMan::calculateDownloadSpeed()
     _lastPeerStatDlspdMapUpdated.reset();
     _peerStatDlspdMap.clear();
     for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
-          peerStats.begin(); i != peerStats.end(); ++i) {
+          peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
       if((*i)->getStatus() == PeerStat::ACTIVE) {
         unsigned int s = (*i)->calculateDownloadSpeed();
         _peerStatDlspdMap[(*i)->getCuid()] = s;

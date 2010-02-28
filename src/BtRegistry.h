@@ -101,8 +101,8 @@ public:
   template<typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<int32_t, BtObject>::const_iterator i = _pool.begin();
-        i != _pool.end(); ++i) {
+    for(std::map<int32_t, BtObject>::const_iterator i = _pool.begin(),
+          eoi = _pool.end(); i != eoi; ++i) {
       *dest++ = (*i).second._downloadContext;
     }
     return dest;

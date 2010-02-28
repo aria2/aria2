@@ -223,7 +223,8 @@ void FileEntry::poolRequest(const SharedHandle<Request>& request)
 bool FileEntry::removeRequest(const SharedHandle<Request>& request)
 {
   for(std::deque<SharedHandle<Request> >::iterator i =
-        _inFlightRequests.begin(); i != _inFlightRequests.end(); ++i) {
+        _inFlightRequests.begin(), eoi = _inFlightRequests.end();
+      i != eoi; ++i) {
     if((*i).get() == request.get()) {
       _inFlightRequests.erase(i);
       return true;
@@ -236,7 +237,8 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
 {
   std::deque<std::string> newURIs;
   Request req;
-  for(std::deque<std::string>::const_iterator itr = _uris.begin(); itr != _uris.end(); ++itr) {
+  for(std::deque<std::string>::const_iterator itr = _uris.begin(),
+        eoi = _uris.end(); itr != eoi; ++itr) {
     if(((*itr).find(hostname) == std::string::npos) ||
        (req.setUrl(*itr) && (req.getHost() != hostname))) {
       newURIs.push_back(*itr);

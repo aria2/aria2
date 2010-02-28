@@ -416,8 +416,8 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues
   const BDE& valuesList = getList(rDict,
                                   DHTGetPeersReplyMessage::VALUES);
   std::vector<SharedHandle<Peer> > peers;
-  for(BDE::List::const_iterator i = valuesList.listBegin();
-      i != valuesList.listEnd(); ++i) {
+  for(BDE::List::const_iterator i = valuesList.listBegin(),
+        eoi = valuesList.listEnd(); i != eoi; ++i) {
     const BDE& data = *i;
     if(data.isString() && data.s().size() == 6) {
       std::pair<std::string, uint16_t> addr =

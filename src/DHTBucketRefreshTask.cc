@@ -53,8 +53,8 @@ void DHTBucketRefreshTask::startup()
 {
   std::vector<SharedHandle<DHTBucket> > buckets;
   _routingTable->getBuckets(buckets);
-  for(std::vector<SharedHandle<DHTBucket> >::iterator i = buckets.begin();
-      i != buckets.end(); ++i) {
+  for(std::vector<SharedHandle<DHTBucket> >::iterator i = buckets.begin(),
+        eoi = buckets.end(); i != eoi; ++i) {
     if(_forceRefresh || (*i)->needsRefresh()) {
       (*i)->notifyUpdate();
       unsigned char targetID[DHT_ID_LENGTH];

@@ -347,7 +347,8 @@ void EpollEventPoll::poll(const struct timeval& tv)
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
   for(std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator i =
-        _nameResolverEntries.begin(); i != _nameResolverEntries.end(); ++i) {
+        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+      i != eoi; ++i) {
     (*i)->processTimeout();
     (*i)->removeSocketEvents(this);
     (*i)->addSocketEvents(this);

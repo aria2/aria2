@@ -206,8 +206,8 @@ void DefaultPieceStorage::createFastIndexBitfield
 (BitfieldMan& bitfield, const SharedHandle<Peer>& peer)
 {
   for(std::vector<size_t>::const_iterator itr =
-        peer->getPeerAllowedIndexSet().begin();
-      itr != peer->getPeerAllowedIndexSet().end(); ++itr) {
+        peer->getPeerAllowedIndexSet().begin(),
+        eoi = peer->getPeerAllowedIndexSet().end(); itr != eoi; ++itr) {
     if(!bitfieldMan->isBitSet(*itr) && peer->hasPiece(*itr)) {
       bitfield.setBit(*itr);
     }
@@ -429,7 +429,8 @@ void DefaultPieceStorage::setupFileFilter()
     downloadContext->getFileEntries();
   bool allSelected = true;
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-        fileEntries.begin(); i != fileEntries.end(); ++i) {
+        fileEntries.begin(), eoi = fileEntries.end();
+      i != eoi; ++i) {
     if(!(*i)->isRequested()) {
       allSelected = false;
       break;
@@ -439,7 +440,7 @@ void DefaultPieceStorage::setupFileFilter()
     return;
   }
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-        fileEntries.begin(); i != fileEntries.end(); ++i) {
+        fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
     if((*i)->isRequested()) {
       bitfieldMan->addFilter((*i)->getOffset(), (*i)->getLength());
     }
@@ -544,8 +545,8 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                                int32_t myCuid,
                                                const Time& lastCheckTime)
 {
-  for(std::deque<HaveEntry>::const_iterator itr = haves.begin();
-      itr != haves.end(); ++itr) {
+  for(std::deque<HaveEntry>::const_iterator itr = haves.begin(),
+        eoi = haves.end(); itr != eoi; ++itr) {
     const HaveEntry& have = *itr;
     if(have.getCuid() == myCuid) {
       continue;

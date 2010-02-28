@@ -44,8 +44,8 @@ PriorityPieceSelector::PriorityPieceSelector
 bool PriorityPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const
 {
-  for(std::vector<size_t>::const_iterator i = _prioritizedPieces.begin();
-      i != _prioritizedPieces.end(); ++i) {
+  for(std::vector<size_t>::const_iterator i = _prioritizedPieces.begin(),
+        eoi = _prioritizedPieces.end(); i != eoi; ++i) {
     if(bitfield::test(bitfield, nbits, *i)) {
       index = *i;
       return true;

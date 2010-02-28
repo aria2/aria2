@@ -112,8 +112,8 @@ bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
 
 void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
 {
-  for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin();
-      itr != peers.end(); ++itr) {
+  for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
+        eoi = peers.end(); itr != eoi; ++itr) {
     const SharedHandle<Peer>& peer = *itr;
     if(addPeer(peer)) {
       if(logger->debug()) {
@@ -224,7 +224,7 @@ TransferStat DefaultPeerStorage::calculateStat()
     struct timeval now;
     gettimeofday(&now, 0);
     for(std::vector<SharedHandle<Peer> >::const_iterator i =
-          activePeers.begin(); i != activePeers.end(); ++i) {
+          activePeers.begin(), eoi = activePeers.end(); i != eoi; ++i) {
       TransferStat s;
       s.downloadSpeed = (*i)->calculateDownloadSpeed(now);
       s.uploadSpeed = (*i)->calculateUploadSpeed(now);
@@ -267,8 +267,8 @@ TransferStat DefaultPeerStorage::getTransferStatFor
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
   std::deque<SharedHandle<Peer> > temp;
-  for(std::deque<SharedHandle<Peer> >::reverse_iterator itr = peers.rbegin();
-      itr != peers.rend(); ++itr) {
+  for(std::deque<SharedHandle<Peer> >::const_reverse_iterator itr =
+        peers.rbegin(), eoi = peers.rend(); itr != eoi; ++itr) {
     const SharedHandle<Peer>& p = *itr;
     if(p->unused() && delSize > 0) {
       onErasingPeer(p);

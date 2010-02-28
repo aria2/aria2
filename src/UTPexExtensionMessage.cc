@@ -76,8 +76,8 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
 {
   std::string addrstring;
   std::string flagstring;
-  for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin();
-      itr != peers.end(); ++itr) {
+  for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
+        eoi = peers.end(); itr != eoi; ++itr) {
     unsigned char compact[6];
     if(bittorrent::createcompact(compact, (*itr)->ipaddr, (*itr)->port)) {
       addrstring.append(&compact[0], &compact[6]);

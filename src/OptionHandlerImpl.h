@@ -480,8 +480,8 @@ public:
         msg += "''";
       } else {
         for(std::vector<std::string>::const_iterator itr =
-              _validParamValues.begin();
-            itr != _validParamValues.end(); ++itr) {
+              _validParamValues.begin(), eoi = _validParamValues.end();
+            itr != eoi; ++itr) {
           strappend(msg, "'", *itr, "' ");
         }
       }

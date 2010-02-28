@@ -68,8 +68,8 @@ std::vector<size_t> UTMetadataRequestTracker::removeTimeoutEntry()
 {
   std::vector<size_t> indexes;
   const time_t TIMEOUT = 20;
-  for(std::vector<RequestEntry>::iterator i = _trackedRequests.begin();
-      i != _trackedRequests.end();) {
+  for(std::vector<RequestEntry>::iterator i = _trackedRequests.begin(),
+        eoi = _trackedRequests.end(); i != eoi;) {
     if((*i).elapsed(TIMEOUT)) {
       if(_logger->debug()) {
         _logger->debug("ut_metadata request timeout. index=%lu",
@@ -77,6 +77,7 @@ std::vector<size_t> UTMetadataRequestTracker::removeTimeoutEntry()
       }
       indexes.push_back((*i)._index);
       i = _trackedRequests.erase(i);
+      eoi = _trackedRequests.end();
     } else {
       ++i;
     }
@@ -97,8 +98,8 @@ size_t UTMetadataRequestTracker::avail() const
 std::vector<size_t> UTMetadataRequestTracker::getAllTrackedIndex() const
 {
   std::vector<size_t> indexes;
-  for(std::vector<RequestEntry>::const_iterator i = _trackedRequests.begin();
-      i != _trackedRequests.end(); ++i) {
+  for(std::vector<RequestEntry>::const_iterator i = _trackedRequests.begin(),
+        eoi = _trackedRequests.end(); i != eoi; ++i) {
     indexes.push_back((*i)._index);
   }
   return indexes;

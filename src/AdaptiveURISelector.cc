@@ -106,8 +106,8 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
                  std::mem_fun_ref(&URIResult::getURI));
 
   if(_logger->debug()) {
-    for(std::deque<std::string>::const_iterator i = uris.begin();
-        i != uris.end(); ++i) {
+    for(std::deque<std::string>::const_iterator i = uris.begin(),
+          eoi = uris.end(); i != eoi; ++i) {
       _logger->debug("AdaptiveURISelector: will retry server with increased"
                      " timeout (%d s): %s",
                      _requestGroup->getTimeout(), (*i).c_str());
@@ -257,8 +257,8 @@ std::string AdaptiveURISelector::getMaxDownloadSpeedUri
 {
   int max = -1;
   std::string uri = A2STR::NIL;
-  for(std::deque<std::string>::const_iterator i = uris.begin();
-      i != uris.end(); ++i) {
+  for(std::deque<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
     if(ss.isNull())
       continue;
@@ -279,8 +279,8 @@ std::deque<std::string> AdaptiveURISelector::getUrisBySpeed
 (const std::deque<std::string>& uris, unsigned int min) const
 {
   std::deque<std::string> bests;
-  for(std::deque<std::string>::const_iterator i = uris.begin();
-      i != uris.end(); ++i) {
+  for(std::deque<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
     if(ss.isNull())
       continue;
@@ -304,8 +304,8 @@ std::string AdaptiveURISelector::selectRandomUri
 std::string AdaptiveURISelector::getFirstNotTestedUri
 (const std::deque<std::string>& uris) const
 {
-  for(std::deque<std::string>::const_iterator i = uris.begin(); 
-      i != uris.end(); ++i) {
+  for(std::deque<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
     if(ss.isNull())
       return *i;
@@ -318,8 +318,8 @@ std::string AdaptiveURISelector::getFirstToTestUri
 {
   unsigned int counter;
   int power;
-  for(std::deque<std::string>::const_iterator i = uris.begin();
-      i != uris.end(); ++i) {
+  for(std::deque<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
     if(ss.isNull())
       continue;
@@ -348,8 +348,8 @@ unsigned int AdaptiveURISelector::getNbTestedServers
 (const std::deque<std::string>& uris) const
 {
   unsigned int counter = 0;
-  for(std::deque<std::string>::const_iterator i = uris.begin();
-      i != uris.end(); ++i) {
+  for(std::deque<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
     if(ss.isNull())
       ++counter;

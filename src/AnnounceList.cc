@@ -63,15 +63,15 @@ AnnounceList::AnnounceList
 void AnnounceList::reconfigure(const BDE& announceList)
 {
   if(announceList.isList()) {
-    for(BDE::List::const_iterator itr = announceList.listBegin();
-        itr != announceList.listEnd(); ++itr) {
+    for(BDE::List::const_iterator itr = announceList.listBegin(),
+          eoi = announceList.listEnd(); itr != eoi; ++itr) {
       const BDE& elemList = *itr;
       if(!elemList.isList()) {
         continue;
       }
       std::deque<std::string> urls;
-      for(BDE::List::const_iterator elemItr = elemList.listBegin();
-          elemItr != elemList.listEnd(); ++elemItr) {
+      for(BDE::List::const_iterator elemItr = elemList.listBegin(),
+            eoi2 = elemList.listEnd(); elemItr != eoi2; ++elemItr) {
         const BDE& data = *elemItr;
         if(data.isString()) {
           urls.push_back(data.s());
@@ -242,8 +242,8 @@ void AnnounceList::moveToCompletedAllowedTier() {
 }
 
 void AnnounceList::shuffle() {
-  for(std::deque<SharedHandle<AnnounceTier> >::iterator itr = tiers.begin();
-      itr != tiers.end(); ++itr) {
+  for(std::deque<SharedHandle<AnnounceTier> >::const_iterator itr =
+        tiers.begin(), eoi = tiers.end(); itr != eoi; ++itr) {
     std::deque<std::string>& urls = (*itr)->urls;
     std::random_shuffle(urls.begin(), urls.end(),
                         *(SimpleRandomizer::getInstance().get()));

@@ -295,8 +295,8 @@ std::string torrentUrlencode(const std::string& target)
 
 std::string urldecode(const std::string& target) {
   std::string result;
-  for(std::string::const_iterator itr = target.begin();
-      itr != target.end(); ++itr) {
+  for(std::string::const_iterator itr = target.begin(), eoi = target.end();
+      itr != eoi; ++itr) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
          isHexDigit(*(itr+1)) && isHexDigit(*(itr+2))) {
@@ -543,7 +543,7 @@ static void computeHeadPieces
     return;
   }
   for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
-        fileEntries.begin(); fi != fileEntries.end(); ++fi) {
+        fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
     }
@@ -566,7 +566,7 @@ static void computeTailPieces
     return;
   }
   for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
-        fileEntries.begin(); fi != fileEntries.end(); ++fi) {
+        fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
     }
@@ -589,8 +589,8 @@ void parsePrioritizePieceRange
   std::vector<size_t> indexes;
   std::vector<std::string> parts;
   split(src, std::back_inserter(parts), ",", true);
-  for(std::vector<std::string>::const_iterator i = parts.begin();
-      i != parts.end(); ++i) {
+  for(std::vector<std::string>::const_iterator i = parts.begin(),
+        eoi = parts.end(); i != eoi; ++i) {
     if((*i) == "head") {
       computeHeadPieces(indexes, fileEntries, pieceLength, defaultSize);
     } else if(util::startsWith(*i, "head=")) {
@@ -632,7 +632,8 @@ static std::string trimBasename(const std::string& src)
 std::string iso8859ToUtf8(const std::string& src)
 {
   std::string dest;
-  for(std::string::const_iterator itr = src.begin(); itr != src.end(); ++itr) {
+  for(std::string::const_iterator itr = src.begin(), eoi = src.end();
+      itr != eoi; ++itr) {
     unsigned char c = *itr;
     if(0xa0 <= c) {
       if(c <= 0xbf) {
@@ -655,14 +656,14 @@ std::string getContentDispositionFilename(const std::string& header)
   std::string filename;
   std::vector<std::string> params;
   split(header, std::back_inserter(params), A2STR::SEMICOLON_C, true);
-  for(std::vector<std::string>::iterator i = params.begin();
-      i != params.end(); ++i) {
-    std::string& param = *i;
+  for(std::vector<std::string>::const_iterator i = params.begin(),
+        eoi = params.end(); i != eoi; ++i) {
+    const std::string& param = *i;
     static const std::string keyName = "filename";
     if(!startsWith(toLower(param), keyName) || param.size() == keyName.size()) {
       continue;
     }
-    std::string::iterator markeritr = param.begin()+keyName.size();
+    std::string::const_iterator markeritr = param.begin()+keyName.size();
     if(*markeritr == '*') {
       // See RFC2231 Section4 and draft-reschke-rfc2231-in-http.
       // Please note that this function doesn't do charset conversion
@@ -683,8 +684,8 @@ std::string getContentDispositionFilename(const std::string& header)
       }
       bool bad = false;
       const std::string& charset = extValues[0];
-      for(std::string::const_iterator j = charset.begin(); j != charset.end();
-          ++j) {
+      for(std::string::const_iterator j = charset.begin(), eoi = charset.end();
+          j != eoi; ++j) {
         // Since we first split parameter by ', we can safely assume
         // that ' is not included in charset.
         if(!inRFC2978MIMECharset(*j)) {
@@ -697,7 +698,8 @@ std::string getContentDispositionFilename(const std::string& header)
       }
       bad = false;
       value = extValues[2];
-      for(std::string::const_iterator j = value.begin(); j != value.end(); ++j){
+      for(std::string::const_iterator j = value.begin(), eoi = value.end();
+          j != eoi; ++j){
         if(*j == '%') {
           if(j+1 != value.end() && isHexDigit(*(j+1)) &&
              j+2 != value.end() && isHexDigit(*(j+2))) {
@@ -909,7 +911,8 @@ bool isNumber(const std::string& what)
   if(what.empty()) {
     return false;
   }
-  for(std::string::const_iterator i = what.begin(); i != what.end(); ++i) {
+  for(std::string::const_iterator i = what.begin(), eoi = what.end();
+      i != eoi; ++i) {
     if(!isDigit(*i)) {
       return false;
     }
@@ -1040,7 +1043,8 @@ getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
 std::string htmlEscape(const std::string& src)
 {
   std::string dest;
-  for(std::string::const_iterator i = src.begin(); i != src.end(); ++i) {
+  for(std::string::const_iterator i = src.begin(), eoi = src.end();
+      i != eoi; ++i) {
     char ch = *i;
     if(ch == '<') {
       dest += "&lt;";
@@ -1168,7 +1172,7 @@ bool inPrivateAddress(const std::string& ipv4addr)
 
 bool detectDirTraversal(const std::string& s)
 {
-  for(std::string::const_iterator i = s.begin(); i != s.end(); ++i) {
+  for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
     if(0x00 <= (*i) && (*i) <= 0x1f) {
       return true;
     }

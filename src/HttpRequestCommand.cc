@@ -134,8 +134,8 @@ bool HttpRequestCommand::executeInternal() {
                            _proxyRequest));
       _httpConnection->sendRequest(httpRequest);
     } else {
-      for(std::vector<SharedHandle<Segment> >::iterator itr = _segments.begin();
-          itr != _segments.end(); ++itr) {
+      for(std::vector<SharedHandle<Segment> >::const_iterator itr =
+            _segments.begin(), eoi = _segments.end(); itr != eoi; ++itr) {
         const SharedHandle<Segment>& segment = *itr;
         if(!_httpConnection->isIssued(segment)) {
           SharedHandle<HttpRequest> httpRequest

@@ -114,8 +114,8 @@ std::string HttpResponse::determinFilename() const
 void HttpResponse::retrieveCookie()
 {
   std::vector<std::string> v = httpHeader->get(HttpHeader::SET_COOKIE);
-  for(std::vector<std::string>::const_iterator itr = v.begin(); itr != v.end();
-      ++itr) {
+  for(std::vector<std::string>::const_iterator itr = v.begin(), eoi = v.end();
+      itr != eoi; ++itr) {
     httpRequest->getCookieStorage()->parseAndStore(*itr,
                                                    httpRequest->getHost(),
                                                    httpRequest->getDir());

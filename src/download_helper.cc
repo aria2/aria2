@@ -156,8 +156,8 @@ static void unfoldURI
 {
   ParameterizedStringParser p;
   PStringBuildVisitor v;
-  for(std::vector<std::string>::const_iterator itr = args.begin();
-      itr != args.end(); ++itr) {
+  for(std::vector<std::string>::const_iterator itr = args.begin(),
+        eoi = args.end(); itr != eoi; ++itr) {
     v.reset();
     p.parse(*itr)->accept(v);
     result.insert(result.end(), v.getURIs().begin(), v.getURIs().end()); 
@@ -221,8 +221,8 @@ createBtRequestGroup(const std::string& torrentFilePath,
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
   std::map<size_t, std::string> indexPathMap =
     util::createIndexPathMap(indexOutIn);
-  for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin();
-      i != indexPathMap.end(); ++i) {
+  for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin(),
+        eoi = indexPathMap.end(); i != eoi; ++i) {
     dctx->setFilePathWithIndex
       ((*i).first, util::applyDir(dctx->getDir(), (*i).second));
   }
@@ -431,7 +431,8 @@ static void createRequestGroupForUriList
 
     SharedHandle<Option> requestOption(new Option(*option.get()));
     for(std::set<std::string>::const_iterator i =
-          listRequestOptions().begin(); i != listRequestOptions().end(); ++i) {
+          listRequestOptions().begin(), eoi = listRequestOptions().end();
+        i != eoi; ++i) {
       if(tempOption->defined(*i)) {
         requestOption->put(*i, tempOption->get(*i));
       }

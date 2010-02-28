@@ -75,8 +75,8 @@ void PStringBuildVisitor::visit(PStringNumLoop& s)
 void PStringBuildVisitor::visit(PStringSelect& s)
 {
   const std::vector<std::string>& values = s.getValues();
-  for(std::vector<std::string>::const_iterator i = values.begin();
-      i != values.end(); ++i) {
+  for(std::vector<std::string>::const_iterator i = values.begin(),
+        eoi = values.end(); i != eoi; ++i) {
     PStringSegment(*i, s.getNext()).accept(*this);
   }
 }

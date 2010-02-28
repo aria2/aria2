@@ -61,8 +61,8 @@ DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
 
 void DHTFindNodeReplyMessage::doReceivedAction()
 {
-  for(std::vector<SharedHandle<DHTNode> >::iterator i = _closestKNodes.begin();
-      i != _closestKNodes.end(); ++i) {
+  for(std::vector<SharedHandle<DHTNode> >::iterator i = _closestKNodes.begin(),
+        eoi = _closestKNodes.end(); i != eoi; ++i) {
     if(memcmp((*i)->getID(), _localNode->getID(), DHT_ID_LENGTH) != 0) {
       _routingTable->addNode(*i);
     }
@@ -77,8 +77,8 @@ BDE DHTFindNodeReplyMessage::getResponse()
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
   for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
-        _closestKNodes.begin();
-      i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
+        _closestKNodes.begin(), eoi = _closestKNodes.end();
+      i != eoi && offset < DHTBucket::K*26; ++i) {
     SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
     if(bittorrent::createcompact(buffer+20+offset, node->getIPAddress(),

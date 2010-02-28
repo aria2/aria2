@@ -190,7 +190,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
         std::vector<std::pair<sockaddr_storage, socklen_t> > ifAddrs;
         getInterfaceAddress(ifAddrs, lpdInterface, AF_INET, AI_NUMERICHOST);
         for(std::vector<std::pair<sockaddr_storage, socklen_t> >::const_iterator
-              i = ifAddrs.begin(); i != ifAddrs.end(); ++i) {
+              i = ifAddrs.begin(), eoi = ifAddrs.end(); i != eoi; ++i) {
           sockaddr_in addr;
           memcpy(&addr, &(*i).first, (*i).second);
           if(receiver->init(inet_ntoa(addr.sin_addr))) {

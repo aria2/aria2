@@ -209,8 +209,9 @@ void OptionParser::setOptionHandlers
 (const std::vector<SharedHandle<OptionHandler> >& optionHandlers)
 {
   _optionHandlers = optionHandlers;
-  for(std::vector<SharedHandle<OptionHandler> >::iterator i =
-        _optionHandlers.begin(); i != _optionHandlers.end(); ++i) {
+  for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+        _optionHandlers.begin(), eoi = _optionHandlers.end();
+      i != eoi; ++i) {
     (*i)->setOptionID(++_idCounter);
   }
   std::sort(_optionHandlers.begin(), _optionHandlers.end(),
@@ -230,7 +231,8 @@ void OptionParser::addOptionHandler
 void OptionParser::parseDefaultValues(Option& option) const
 {
   for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
-        _optionHandlers.begin(); i != _optionHandlers.end(); ++i) {
+        _optionHandlers.begin(), eoi = _optionHandlers.end();
+      i != eoi; ++i) {
     if(!(*i)->getDefaultValue().empty()) {
       (*i)->parse(option, (*i)->getDefaultValue());
     }

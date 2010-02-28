@@ -101,8 +101,8 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   o.write(zero, 4);
 
   // nodes
-  for(std::vector<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin();
-      i != _nodes.end(); ++i) {
+  for(std::vector<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin(),
+        eoi = _nodes.end(); i != eoi; ++i) {
     const SharedHandle<DHTNode>& node = *i;
     // Currently, only IPv4 address and IPv4-mapped address are saved.
     // 6bytes: write IP address + port in Compact IP-address/port info form.

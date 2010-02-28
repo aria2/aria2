@@ -162,7 +162,7 @@ std::string HttpRequest::createRequest()
   builtinHds.push_back(std::make_pair("User-Agent:", userAgent));
   std::string acceptTypes = "*/*";
   for(std::vector<std::string>::const_iterator i = _acceptTypes.begin(),
-        end = _acceptTypes.end(); i != end; ++i) {
+        eoi = _acceptTypes.end(); i != eoi; ++i) {
     strappend(acceptTypes, ",", (*i));
   }
   builtinHds.push_back(std::make_pair("Accept:", acceptTypes));
@@ -223,15 +223,15 @@ std::string HttpRequest::createRequest()
                                    getProtocol() == Request::PROTO_HTTPS ?
                                    true : false);
     for(std::vector<Cookie>::const_iterator itr = cookies.begin(),
-          end = cookies.end(); itr != end; ++itr) {
+          eoi = cookies.end(); itr != eoi; ++itr) {
       strappend(cookiesValue, (*itr).toString(), ";");
     }
     if(!cookiesValue.empty()) {
       builtinHds.push_back(std::make_pair("Cookie:", cookiesValue));
     }
   }
-  for(std::vector<std::pair<std::string, std::string> >::iterator i =
-        builtinHds.begin(); i != builtinHds.end(); ++i) {
+  for(std::vector<std::pair<std::string, std::string> >::const_iterator i =
+        builtinHds.begin(), eoi = builtinHds.end(); i != eoi; ++i) {
     std::vector<std::string>::const_iterator j = _headers.begin();
     std::vector<std::string>::const_iterator jend = _headers.end();
     for(; j != jend; ++j) {
@@ -245,7 +245,7 @@ std::string HttpRequest::createRequest()
   }
   // append additional headers given by user.
   for(std::vector<std::string>::const_iterator i = _headers.begin(),
-        end = _headers.end(); i != end; ++i) {
+        eoi = _headers.end(); i != eoi; ++i) {
     strappend(requestLine, (*i), A2STR::CRLF);
   }
   requestLine += A2STR::CRLF;

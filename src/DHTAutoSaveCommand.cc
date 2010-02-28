@@ -101,8 +101,8 @@ void DHTAutoSaveCommand::save()
   std::vector<SharedHandle<DHTNode> > nodes;
   std::vector<SharedHandle<DHTBucket> > buckets;
   _routingTable->getBuckets(buckets);
-  for(std::vector<SharedHandle<DHTBucket> >::const_iterator i = buckets.begin();
-      i != buckets.end(); ++i) {
+  for(std::vector<SharedHandle<DHTBucket> >::const_iterator i = buckets.begin(),
+        eoi = buckets.end(); i != eoi; ++i) {
     const SharedHandle<DHTBucket>& bucket = *i;
     std::vector<SharedHandle<DHTNode> > goodNodes;
     bucket->getGoodNodes(goodNodes);

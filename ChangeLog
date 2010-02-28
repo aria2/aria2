@@ -1,3 +1,9 @@
+2010-03-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Avoid to calculate end() iterator in each loop. std::deque is
+	particularly slow. Make sure that recalculate end iterator if
+	element is erased during loop.
+
 2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use vector instead of deque for containers which is used for

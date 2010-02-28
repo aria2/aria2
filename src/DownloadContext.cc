@@ -129,7 +129,8 @@ void DownloadContext::setFileFilter(IntSequence seq)
     
   int32_t index = 1;
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-        _fileEntries.begin(); i != _fileEntries.end(); ++i, ++index) {
+        _fileEntries.begin(), eoi = _fileEntries.end();
+      i != eoi; ++i, ++index) {
     (*i)->setRequested
       (selectAll ||
        std::binary_search(fileIndexes.begin(), fileIndexes.end(), index));
@@ -171,7 +172,7 @@ bool DownloadContext::hasAttribute(const std::string& key) const
 void DownloadContext::releaseRuntimeResource()
 {
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-        _fileEntries.begin(); i != _fileEntries.end(); ++i) {
+        _fileEntries.begin(), eoi = _fileEntries.end(); i != eoi; ++i) {
     (*i)->releaseRuntimeResource();
   }
 }

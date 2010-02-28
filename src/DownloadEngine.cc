@@ -282,7 +282,7 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
     }
     _lastSocketPoolScan.reset();
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
-          _socketPool.begin(); i != _socketPool.end(); ++i) {
+          _socketPool.begin(), eoi = _socketPool.end(); i != eoi; ++i) {
       if(!(*i).second.isTimeout()) {
         newPool.insert(*i);
       }
@@ -357,8 +357,8 @@ DownloadEngine::findSocketPoolEntry(const std::string& ipaddr, uint16_t port)
   std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
     std::multimap<std::string, SocketPoolEntry>::iterator> range =
     _socketPool.equal_range(addr);
-  for(std::multimap<std::string, SocketPoolEntry>::iterator i = range.first;
-      i != range.second; ++i) {
+  for(std::multimap<std::string, SocketPoolEntry>::iterator i =
+        range.first, eoi = range.second; i != eoi; ++i) {
     const SocketPoolEntry& e = (*i).second;
     if(!e.isTimeout()) {
       logger->info("Found socket for %s", addr.c_str());
@@ -401,8 +401,8 @@ DownloadEngine::popPooledSocket
 (const std::vector<std::string>& ipaddrs, uint16_t port)
 {
   SharedHandle<SocketCore> s;
-  for(std::vector<std::string>::const_iterator i = ipaddrs.begin();
-      i != ipaddrs.end(); ++i) {
+  for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
+        eoi = ipaddrs.end(); i != eoi; ++i) {
     s = popPooledSocket(*i, port);
     if(!s.isNull()) {
       break;
@@ -417,8 +417,8 @@ DownloadEngine::popPooledSocket
  const std::vector<std::string>& ipaddrs, uint16_t port)
 {
   SharedHandle<SocketCore> s;
-  for(std::vector<std::string>::const_iterator i = ipaddrs.begin();
-      i != ipaddrs.end(); ++i) {
+  for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
+        eoi = ipaddrs.end(); i != eoi; ++i) {
     s = popPooledSocket(options, *i, port);
     if(!s.isNull()) {
       break;

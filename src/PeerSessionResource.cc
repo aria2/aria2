@@ -213,8 +213,8 @@ PeerSessionResource::getExtensionMessageID(const std::string& name) const
 
 std::string PeerSessionResource::getExtensionName(uint8_t id) const
 {
-  for(Extensions::const_iterator itr = _extensions.begin();
-      itr != _extensions.end(); ++itr) {
+  for(Extensions::const_iterator itr = _extensions.begin(),
+        eoi = _extensions.end(); itr != eoi; ++itr) {
     const Extensions::value_type& p = *itr;
     if(p.second == id) {
       return p.first;

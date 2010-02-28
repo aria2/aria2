@@ -109,17 +109,19 @@ bool BtDependency::resolve()
         // Copy file path in _dependant's FileEntries to newly created
         // context's FileEntries to endorse the path structure of
         // _dependant.  URIs and singleHostMultiConnection are also copied.
+        std::vector<SharedHandle<FileEntry> >::const_iterator ctxFilesEnd =
+          fileEntries.end();
         for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
-              dependantFileEntries.begin(); s != dependantFileEntries.end();
-            ++s){
+              dependantFileEntries.begin(), eoi = dependantFileEntries.end();
+            s != eoi; ++s){
           std::vector<SharedHandle<FileEntry> >::const_iterator d =
-            context->getFileEntries().begin();
-          for(; d != context->getFileEntries().end(); ++d) {
+            fileEntries.begin();
+          for(; d != ctxFilesEnd; ++d) {
             if((*d)->getOriginalName() == (*s)->getOriginalName()) {
               break;
             }
           }
-          if(d == context->getFileEntries().end()) {
+          if(d == ctxFilesEnd) {
             throw DL_ABORT_EX
               (StringFormat("No entry %s in torrent file",
                             (*s)->getOriginalName().c_str()).str());

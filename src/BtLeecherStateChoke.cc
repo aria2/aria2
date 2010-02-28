@@ -165,8 +165,8 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
   if(fastOptUnchoker) {
     std::random_shuffle(peerIter, peerEntries.end(),
                         *(SimpleRandomizer::getInstance().get()));
-    for(std::vector<PeerEntry>::iterator i = peerIter; i != peerEntries.end();
-        ++i) {
+    for(std::vector<PeerEntry>::iterator i = peerIter,
+          eoi = peerEntries.end(); i != eoi; ++i) {
       if((*i).getPeer()->peerInterested()) {
         (*i).enableOptUnchoking();
         _logger->info("OU: %s", (*i).getPeer()->ipaddr.c_str());

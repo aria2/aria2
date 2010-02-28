@@ -168,8 +168,8 @@ static void getPosParam(const BDE& params, size_t posParamIndex,
 template<typename OutputIterator>
 static void extractUris(OutputIterator out, const BDE& src)
 {
-  for(BDE::List::const_iterator i = src.listBegin(), end = src.listEnd();
-      i != end; ++i) {
+  for(BDE::List::const_iterator i = src.listBegin(), eoi = src.listEnd();
+      i != eoi; ++i) {
     if((*i).isString()) {
       out++ = (*i).s();
     }
@@ -269,7 +269,7 @@ BDE AddMetalinkXmlRpcMethod::process
     }
     BDE gids = BDE::list();
     for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
-          result.begin(); i != result.end(); ++i) {
+          result.begin(), eoi = result.end(); i != eoi; ++i) {
       gids << BDE(util::itos((*i)->getGID()));
     }
     return gids;
@@ -325,8 +325,8 @@ static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
     BDE uriList = BDE::list();
     std::vector<std::string> uris;
     (*first)->getUris(uris);
-    for(std::vector<std::string>::const_iterator i = uris.begin();
-        i != uris.end(); ++i) {
+    for(std::vector<std::string>::const_iterator i = uris.begin(),
+          eoi = uris.end(); i != eoi; ++i) {
       BDE uriEntry = BDE::dict();
       uriEntry[KEY_URI] = *i;
       uriList << uriEntry;
@@ -362,8 +362,8 @@ void gatherProgressCommon
   if(!group->followedBy().empty()) {
     BDE list = BDE::list();
     // The element is GID.
-    for(std::vector<int32_t>::const_iterator i = group->followedBy().begin();
-        i != group->followedBy().end(); ++i) {
+    for(std::vector<int32_t>::const_iterator i = group->followedBy().begin(),
+          eoi = group->followedBy().end(); i != eoi; ++i) {
       list << util::itos(*i);
     }
     entryDict[KEY_FOLLOWED_BY] = list;
@@ -395,11 +395,11 @@ void gatherBitTorrentMetadata(BDE& btDict, const BDE& torrentAttrs)
   // TODO Would it be good to add copy() method in BDE?
   const BDE& announceList = torrentAttrs[bittorrent::ANNOUNCE_LIST];
   BDE destAnnounceList = BDE::list();
-  for(BDE::List::const_iterator l = announceList.listBegin();
-      l != announceList.listEnd(); ++l) {
+  for(BDE::List::const_iterator l = announceList.listBegin(),
+        eoi = announceList.listEnd(); l != eoi; ++l) {
     BDE destAnnounceTier = BDE::list();
-    for(BDE::List::const_iterator t = (*l).listBegin();
-        t != (*l).listEnd(); ++t) {
+    for(BDE::List::const_iterator t = (*l).listBegin(),
+          eoi2 = (*l).listEnd(); t != eoi2; ++t) {
       destAnnounceTier <<  (*t);
     }
     destAnnounceList << destAnnounceTier;
@@ -435,7 +435,7 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
   std::vector<SharedHandle<Peer> > activePeers;
   ps->getActivePeers(activePeers);
   for(std::vector<SharedHandle<Peer> >::const_iterator i =
-        activePeers.begin(); i != activePeers.end(); ++i) {
+        activePeers.begin(), eoi = activePeers.end(); i != eoi; ++i) {
     BDE peerEntry = BDE::dict();
     peerEntry[KEY_PEER_ID] = util::torrentUrlencode((*i)->getPeerId(),
                                                     PEER_ID_LENGTH);
@@ -483,8 +483,8 @@ void gatherStoppedDownload
   if(!ds->followedBy.empty()) {
     BDE list = BDE::list();
     // The element is GID.
-    for(std::vector<int32_t>::const_iterator i = ds->followedBy.begin();
-        i != ds->followedBy.end(); ++i) {
+    for(std::vector<int32_t>::const_iterator i = ds->followedBy.begin(),
+          eoi = ds->followedBy.end(); i != eoi; ++i) {
       list << util::itos(*i);
     }
     entryDict[KEY_FOLLOWED_BY] = list;
@@ -561,8 +561,8 @@ BDE GetUrisXmlRpcMethod::process
   if(!group->getDownloadContext()->getFileEntries().empty()) {
     std::vector<std::string> uris;
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    for(std::vector<std::string>::const_iterator i = uris.begin();
-        i != uris.end(); ++i) {
+    for(std::vector<std::string>::const_iterator i = uris.begin(),
+          eoi = uris.end(); i != eoi; ++i) {
       BDE entry = BDE::dict();
       entry[KEY_URI] = *i;
       uriList << entry;
@@ -642,7 +642,7 @@ BDE TellActiveXmlRpcMethod::process
   const std::deque<SharedHandle<RequestGroup> >& groups =
     e->_requestGroupMan->getRequestGroups();
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-        groups.begin(); i != groups.end(); ++i) {
+        groups.begin(), eoi = groups.end(); i != eoi; ++i) {
     BDE entryDict = BDE::dict();
     entryDict[KEY_STATUS] = BDE_ACTIVE;
     gatherProgress(entryDict, *i, e);
@@ -757,7 +757,8 @@ BDE GetVersionXmlRpcMethod::process
   result[KEY_VERSION] = std::string(PACKAGE_VERSION);
   BDE featureList = BDE::list();
   const FeatureMap& features = FeatureConfig::getInstance()->getFeatures();
-  for(FeatureMap::const_iterator i = features.begin(); i != features.end();++i){
+  for(FeatureMap::const_iterator i = features.begin(), eoi = features.end();
+      i != eoi;++i){
     if((*i).second) {
       featureList << (*i).first;
     }
@@ -803,8 +804,8 @@ BDE GetGlobalOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   BDE result = BDE::dict();
-  for(std::map<std::string, std::string>::const_iterator i = e->option->begin();
-      i != e->option->end(); ++i) {
+  for(std::map<std::string, std::string>::const_iterator i = e->option->begin(),
+        eoi = e->option->end(); i != eoi; ++i) {
     SharedHandle<OptionHandler> h = _optionParser->findByName((*i).first);
     if(!h.isNull() && !h->isHidden()) {
       result[(*i).first] = (*i).second;
@@ -861,8 +862,8 @@ BDE SystemMulticallXmlRpcMethod::process
   }
   const BDE& methodSpecs = params[0];
   BDE list = BDE::list();
-  for(BDE::List::const_iterator i = methodSpecs.listBegin();
-      i != methodSpecs.listEnd(); ++i) {
+  for(BDE::List::const_iterator i = methodSpecs.listBegin(),
+        eoi = methodSpecs.listEnd(); i != eoi; ++i) {
     if(!(*i).isDict()) {
       list << createErrorResponse
         (DL_ABORT_EX("system.multicall expected struct."));

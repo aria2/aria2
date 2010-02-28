@@ -103,8 +103,8 @@ static void gatherOption
       const BDE& value = (*first).second;
       if((optionName == PREF_HEADER || optionName == PREF_INDEX_OUT) &&
          value.isList()){
-        for(BDE::List::const_iterator argiter = value.listBegin();
-            argiter != value.listEnd(); ++argiter) {
+        for(BDE::List::const_iterator argiter = value.listBegin(),
+              eoi = value.listEnd(); argiter != eoi; ++argiter) {
           if((*argiter).isString()) {
             optionHandler->parse(*option.get(), (*argiter).s());
           }

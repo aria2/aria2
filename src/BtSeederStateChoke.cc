@@ -90,7 +90,8 @@ void BtSeederStateChoke::unchoke
   std::sort(peers.begin(), peers.end());
 
   std::vector<PeerEntry>::iterator r = peers.begin();
-  for(; r != peers.end() && count; ++r, --count) {
+  for(std::vector<PeerEntry>::iterator eoi = peers.end();
+      r != eoi && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
     _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->ipaddr.c_str(),
                   (*r).getUploadSpeed());

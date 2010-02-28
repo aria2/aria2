@@ -71,8 +71,8 @@ private:
 
     std::vector<AddrEntry>::iterator find(const std::string& addr)
     {
-      for(std::vector<AddrEntry>::iterator i = _addrEntries.begin();
-          i != _addrEntries.end(); ++i) {
+      for(std::vector<AddrEntry>::iterator i = _addrEntries.begin(),
+            eoi = _addrEntries.end(); i != eoi; ++i) {
         if((*i)._addr == addr) {
           return i;
         }
@@ -82,8 +82,8 @@ private:
 
     std::vector<AddrEntry>::const_iterator find(const std::string& addr) const
     {
-      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
-          i != _addrEntries.end(); ++i) {
+      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin(),
+            eoi = _addrEntries.end(); i != eoi; ++i) {
         if((*i)._addr == addr) {
           return i;
         }
@@ -98,8 +98,8 @@ private:
 
     const std::string& getGoodAddr() const
     {
-      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
-          i != _addrEntries.end(); ++i) {
+      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin(),
+            eoi = _addrEntries.end(); i != eoi; ++i) {
         if((*i)._good) {
           return (*i)._addr;
         }
@@ -110,8 +110,8 @@ private:
     template<typename OutputIterator>
     void getAllGoodAddrs(OutputIterator out) const
     {
-      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin();
-          i != _addrEntries.end(); ++i) {
+      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin(),
+            eoi = _addrEntries.end(); i != eoi; ++i) {
         if((*i)._good) {
           *out++ = (*i)._addr;
         }

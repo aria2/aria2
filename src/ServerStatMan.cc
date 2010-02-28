@@ -105,8 +105,8 @@ bool ServerStatMan::load(std::istream& in)
     std::vector<std::string> items;
     util::split(line, std::back_inserter(items), ",");
     std::map<std::string, std::string> m;
-    for(std::vector<std::string>::const_iterator i = items.begin();
-        i != items.end(); ++i) {
+    for(std::vector<std::string>::const_iterator i = items.begin(),
+          eoi = items.end(); i != eoi; ++i) {
       std::pair<std::string, std::string> p = util::split(*i, "=");
       util::trimSelf(p.first);
       util::trimSelf(p.second);

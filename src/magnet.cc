@@ -49,8 +49,8 @@ BDE parse(const std::string& magnet)
   util::split(std::string(magnet.begin()+8, magnet.end()),
               std::back_inserter(queries), "&");
   BDE dict = BDE::dict();
-  for(std::vector<std::string>::const_iterator i = queries.begin();
-      i != queries.end(); ++i) {
+  for(std::vector<std::string>::const_iterator i = queries.begin(),
+        eoi = queries.end(); i != eoi; ++i) {
     std::pair<std::string, std::string> kv;
     util::split(kv, *i, '=');
     std::string value = util::urldecode(kv.second);

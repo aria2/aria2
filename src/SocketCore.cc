@@ -307,7 +307,8 @@ void SocketCore::bind(uint16_t port, int flags)
     }
   } else {
     for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
-          const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+          const_iterator i = _bindAddrs.begin(), eoi = _bindAddrs.end();
+        i != eoi; ++i) {
       char host[NI_MAXHOST];
       int s;
       s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
@@ -410,7 +411,8 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     if(!_bindAddrs.empty()) {
       bool bindSuccess = false;
       for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
-            const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+            const_iterator i = _bindAddrs.begin(), eoi = _bindAddrs.end();
+          i != eoi; ++i) {
         if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
                   (*i).second) == -1) {
           if(LogFactory::getInstance()->debug()) {
@@ -1249,7 +1251,8 @@ void SocketCore::bindAddress(const std::string& iface)
   } else {
     _bindAddrs = bindAddrs;
     for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
-          const_iterator i = _bindAddrs.begin(); i != _bindAddrs.end(); ++i) {
+          const_iterator i = _bindAddrs.begin(), eoi = _bindAddrs.end();
+        i != eoi; ++i) {
       char host[NI_MAXHOST];
       int s;
       s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),

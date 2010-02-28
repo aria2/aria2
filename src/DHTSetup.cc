@@ -182,7 +182,7 @@ void DHTSetup::setup(std::vector<Command*>& commands,
     const std::vector<SharedHandle<DHTNode> >& desnodes =
       deserializer.getNodes();
     for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
-          desnodes.begin(); i != desnodes.end(); ++i) {
+          desnodes.begin(), eoi = desnodes.end(); i != eoi; ++i) {
       routingTable->addNode(*i);
     }
     if(!desnodes.empty() && deserializer.getSerializedTime().elapsed(DHT_BUCKET_REFRESH_INTERVAL)) {

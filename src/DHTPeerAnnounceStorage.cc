@@ -145,10 +145,12 @@ void DHTPeerAnnounceStorage::announcePeer()
   if(_logger->debug()) {
     _logger->debug("Now announcing peer.");
   }
-  for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = _entries.begin(); i != _entries.end(); ++i) {
+  for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i =
+        _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
     if((*i)->getLastUpdated().elapsed(DHT_PEER_ANNOUNCE_INTERVAL)) {
       (*i)->notifyUpdate();
-      SharedHandle<DHTTask> task = _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());
+      SharedHandle<DHTTask> task =
+        _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());
       _taskQueue->addPeriodicTask2(task);
       if(_logger->debug()) {
         _logger->debug("Added 1 peer announce: infoHash=%s",

@@ -86,7 +86,7 @@ void MetalinkHelper::groupEntryByMetaurlName
  const std::vector<SharedHandle<MetalinkEntry> >& entries)
 {
   for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator eiter =
-        entries.begin(); eiter != entries.end(); ++eiter) {
+        entries.begin(), eoi = entries.end(); eiter != eoi; ++eiter) {
     if((*eiter)->metaurls.empty()) {
       std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > p;
       p.second.push_back(*eiter);

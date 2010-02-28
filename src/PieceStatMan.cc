@@ -81,8 +81,9 @@ PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
   }
   {
     size_t order = 0;
-    for(std::vector<SharedHandle<PieceStat> >::iterator i =
-          sortedPieceStats.begin(); i != sortedPieceStats.end(); ++i) {
+    for(std::vector<SharedHandle<PieceStat> >::const_iterator i =
+          sortedPieceStats.begin(), eoi = sortedPieceStats.end();
+        i != eoi; ++i) {
       _sortedPieceStatIndexes[order] = (*i)->getIndex();
       (*i)->setOrder(order++);
     }

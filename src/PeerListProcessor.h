@@ -60,8 +60,8 @@ public:
   template<typename OutputIterator>
   void extractPeerFromList(const BDE& peerData, OutputIterator dest)
   {
-    for(BDE::List::const_iterator itr = peerData.listBegin();
-        itr != peerData.listEnd(); ++itr) {
+    for(BDE::List::const_iterator itr = peerData.listBegin(),
+          eoi = peerData.listEnd(); itr != eoi; ++itr) {
       const BDE& peerDict = *itr;
       if(!peerDict.isDict()) {
         continue;

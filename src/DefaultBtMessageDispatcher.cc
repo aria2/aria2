@@ -79,7 +79,7 @@ void DefaultBtMessageDispatcher::addMessageToQueue
 (const std::vector<SharedHandle<BtMessage> >& btMessages)
 {
   for(std::vector<SharedHandle<BtMessage> >::const_iterator itr =
-        btMessages.begin(); itr != btMessages.end(); ++itr) {
+        btMessages.begin(), eoi = btMessages.end(); itr != eoi; ++itr) {
     addMessageToQueue(*itr);
   }
 }

@@ -152,8 +152,8 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
 
 bool HttpConnection::isIssued(const SharedHandle<Segment>& segment) const
 {
-  for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests.begin();
-      itr != outstandingHttpRequests.end(); ++itr) {
+  for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests.begin(),
+        eoi = outstandingHttpRequests.end(); itr != eoi; ++itr) {
     SharedHandle<HttpRequest> httpRequest = (*itr)->getHttpRequest();
     if(httpRequest->getSegment() == segment) {
       return true;

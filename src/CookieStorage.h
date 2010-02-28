@@ -173,8 +173,8 @@ public:
   template<typename OutputIterator>
   OutputIterator dumpCookie(OutputIterator out) const
   {
-    for(std::deque<DomainEntry>::const_iterator i = _domains.begin();
-        i != _domains.end(); ++i) {
+    for(std::deque<DomainEntry>::const_iterator i = _domains.begin(),
+          eoi = _domains.end(); i != eoi; ++i) {
       out = (*i).dumpCookie(out);
     }
     return out;

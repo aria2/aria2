@@ -66,8 +66,8 @@ Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defa
   util::split(nameValue, terms.front(), '=');
 
   std::map<std::string, std::string> values;
-  for(std::vector<std::string>::iterator itr = terms.begin()+1;
-      itr != terms.end(); ++itr) {
+  for(std::vector<std::string>::iterator itr = terms.begin()+1,
+        eoi = terms.end(); itr != eoi; ++itr) {
     std::pair<std::string, std::string> nv;
     util::split(nv, *itr, '=');
     values[nv.first] = nv.second;

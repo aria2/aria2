@@ -206,8 +206,8 @@ void DefaultBtInteractive::addAllowedFastMessageToQueue() {
                                _downloadContext->getNumPieces(),
                                bittorrent::getInfoHash(_downloadContext),
                                allowedFastSetSize);
-    for(std::vector<size_t>::const_iterator itr = fastSet.begin();
-        itr != fastSet.end(); ++itr) {
+    for(std::vector<size_t>::const_iterator itr = fastSet.begin(),
+          eoi = fastSet.end(); itr != eoi; ++itr) {
       dispatcher->addMessageToQueue
         (messageFactory->createAllowedFastMessage(*itr));
     }
@@ -237,8 +237,8 @@ void DefaultBtInteractive::checkHave() {
       dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
     }
   } else {
-    for(std::vector<size_t>::iterator itr = indexes.begin();
-        itr != indexes.end(); ++itr) {
+    for(std::vector<size_t>::const_iterator itr = indexes.begin(),
+          eoi = indexes.end(); itr != eoi; ++itr) {
       dispatcher->addMessageToQueue(messageFactory->createHaveMessage(*itr));
     }
   }
@@ -380,8 +380,8 @@ void DefaultBtInteractive::cancelAllPiece() {
   if(_metadataGetMode && _downloadContext->getTotalLength() > 0) {
     std::vector<size_t> metadataRequests =
       _utMetadataRequestTracker->getAllTrackedIndex();
-    for(std::vector<size_t>::const_iterator i = metadataRequests.begin();
-        i != metadataRequests.end(); ++i) {
+    for(std::vector<size_t>::const_iterator i = metadataRequests.begin(),
+          eoi = metadataRequests.end(); i != eoi; ++i) {
       if(logger->debug()) {
         logger->debug("Cancel metadata: piece=%lu",
                       static_cast<unsigned long>(*i));
@@ -441,7 +441,8 @@ void DefaultBtInteractive::addPeerExchangeMessage()
     const std::deque<SharedHandle<Peer> >& peers = _peerStorage->getPeers();
     {
       for(std::deque<SharedHandle<Peer> >::const_iterator i =
-            peers.begin(); i != peers.end() && !m->freshPeersAreFull(); ++i) {
+            peers.begin(), eoi = peers.end();
+          i != eoi && !m->freshPeersAreFull(); ++i) {
         if(peer->ipaddr != (*i)->ipaddr) {
           m->addFreshPeer(*i);
         }
@@ -449,7 +450,8 @@ void DefaultBtInteractive::addPeerExchangeMessage()
     }
     {
       for(std::deque<SharedHandle<Peer> >::const_reverse_iterator i =
-            peers.rbegin(); i != peers.rend() && !m->droppedPeersAreFull();
+            peers.rbegin(), eoi = peers.rend();
+          i != eoi && !m->droppedPeersAreFull();
           ++i) {
         if(peer->ipaddr != (*i)->ipaddr) {
           m->addDroppedPeer(*i);
@@ -485,8 +487,8 @@ void DefaultBtInteractive::doInteractionProcessing() {
         // to other connection to request piece.
         std::vector<size_t> indexes =
           _utMetadataRequestTracker->removeTimeoutEntry();
-        for(std::vector<size_t>::const_iterator i = indexes.begin();
-            i != indexes.end(); ++i) {
+        for(std::vector<size_t>::const_iterator i = indexes.begin(),
+              eoi = indexes.end(); i != eoi; ++i) {
           _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
         }
       }

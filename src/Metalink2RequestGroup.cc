@@ -128,8 +128,9 @@ namespace {
 void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
 {
   for(std::vector<std::string>::const_iterator i =
-	DownloadHandlerConstants::getMetalinkContentTypes().begin();
-      i != DownloadHandlerConstants::getMetalinkContentTypes().end(); ++i) {
+	DownloadHandlerConstants::getMetalinkContentTypes().begin(),
+        eoi = DownloadHandlerConstants::getMetalinkContentTypes().end();
+      i != eoi; ++i) {
     group->removeAcceptType(*i);
   }
 }
@@ -148,9 +149,6 @@ Metalink2RequestGroup::createRequestGroup
   std::vector<int32_t> selectIndexes =
     util::parseIntRange(option->get(PREF_SELECT_FILE)).flush();
   std::sort(selectIndexes.begin(), selectIndexes.end());
-  std::vector<SharedHandle<MetalinkEntry> > selectedEntries;
-  selectedEntries.reserve(entries.size());
-
   std::vector<std::string> locations;
   if(option->defined(PREF_METALINK_LOCATION)) {
     util::split(option->get(PREF_METALINK_LOCATION),
@@ -162,10 +160,12 @@ Metalink2RequestGroup::createRequestGroup
   if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
     preferredProtocol = option->get(PREF_METALINK_PREFERRED_PROTOCOL);
   }
+  std::vector<SharedHandle<MetalinkEntry> > selectedEntries;
+  selectedEntries.reserve(entries.size());
   {
     int32_t count = 1;
     for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
-          entries.begin(); i != entries.end(); ++i, ++count) {
+          entries.begin(), eoi = entries.end(); i != eoi; ++i, ++count) {
       (*i)->dropUnsupportedResource();
       if((*i)->resources.empty() && (*i)->metaurls.empty()) {
         continue;
@@ -189,7 +189,7 @@ Metalink2RequestGroup::createRequestGroup
   MetalinkHelper::groupEntryByMetaurlName(entryGroups, selectedEntries);
   for(std::vector<std::pair<std::string,
         std::vector<SharedHandle<MetalinkEntry> > > >::const_iterator itr =
-        entryGroups.begin(); itr != entryGroups.end(); ++itr) {
+        entryGroups.begin(), eoi = entryGroups.end(); itr != eoi; ++itr) {
     const std::string& metaurl = (*itr).first;
     const std::vector<SharedHandle<MetalinkEntry> >& mes = (*itr).second;
     _logger->info("Processing metaurl group metaurl=%s", metaurl.c_str());
@@ -279,7 +279,7 @@ Metalink2RequestGroup::createRequestGroup
       std::vector<SharedHandle<FileEntry> > fileEntries;
       off_t offset = 0;
       for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
-            mes.begin(); i != mes.end(); ++i) {
+            mes.begin(), eoi = mes.end(); i != eoi; ++i) {
         _logger->info("Metalink: Queueing %s for download as a member.",
                       (*i)->getPath().c_str());
         _logger->debug("originalName = %s", (*i)->metaurls[0]->name.c_str());

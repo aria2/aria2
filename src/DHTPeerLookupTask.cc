@@ -89,8 +89,9 @@ void DHTPeerLookupTask::onFinish()
 {
   // send announce_peer message to K closest nodes
   size_t num = DHTBucket::K;
-  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i = _entries.begin();
-      i != _entries.end() && num > 0; ++i, --num) {
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
+        _entries.begin(), eoi = _entries.end(); i != eoi && num > 0; ++i,
+        --num) {
     if((*i)->_used) {
       const SharedHandle<DHTNode>& node = (*i)->_node;
       SharedHandle<DHTMessage> m = 

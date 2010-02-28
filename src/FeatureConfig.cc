@@ -151,8 +151,8 @@ bool FeatureConfig::isSupported(const std::string& feature) const
 std::string FeatureConfig::featureSummary() const
 {
   std::string s;
-  for(FeatureMap::const_iterator i = _features.begin();
-      i != _features.end(); ++i) {
+  for(FeatureMap::const_iterator i = _features.begin(), eoi = _features.end();
+      i != eoi; ++i) {
     if((*i).second) {
       s += (*i).first;
       s += ", ";

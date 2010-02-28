@@ -67,8 +67,8 @@ std::string HandshakeExtensionMessage::getPayload()
     dict["p"] = _tcpPort;
   }
   BDE extDict = BDE::dict();
-  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
-      itr != _extensions.end(); ++itr) {
+  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin(),
+        eoi = _extensions.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     extDict[vt.first] = vt.second;
   }
@@ -91,8 +91,8 @@ std::string HandshakeExtensionMessage::toString() const
   if(_metadataSize) {
     strappend(s, ", metadataSize=", util::uitos(_metadataSize));
   }
-  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
-      itr != _extensions.end(); ++itr) {
+  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin(),
+        eoi = _extensions.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     strappend(s, ", ", vt.first, "=", util::uitos(vt.second));
   }
@@ -105,8 +105,8 @@ void HandshakeExtensionMessage::doReceivedAction()
     _peer->port = _tcpPort;
     _peer->setIncomingPeer(false);
   }
-  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
-      itr != _extensions.end(); ++itr) {
+  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin(),
+        eoi = _extensions.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     _peer->setExtension(vt.first, vt.second);
   }
@@ -182,8 +182,8 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   }
   const BDE& extDict = dict["m"];
   if(extDict.isDict()) {
-    for(BDE::Dict::const_iterator i = extDict.dictBegin();
-        i != extDict.dictEnd(); ++i) {
+    for(BDE::Dict::const_iterator i = extDict.dictBegin(),
+          eoi = extDict.dictEnd(); i != eoi; ++i) {
       if((*i).second.isInteger()) {
         msg->_extensions[(*i).first] = (*i).second.i();
       }

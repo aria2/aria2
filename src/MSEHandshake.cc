@@ -465,7 +465,8 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   unsigned char* rbufptr = _rbuf;
   SharedHandle<DownloadContext> downloadContext;
   for(std::vector<SharedHandle<DownloadContext> >::const_iterator i =
-        downloadContexts.begin(); i != downloadContexts.end(); ++i) {
+        downloadContexts.begin(), eoi = downloadContexts.end();
+      i != eoi; ++i) {
     unsigned char md[20];
     const BDE& torrentAttrs = (*i)->getAttribute(bittorrent::BITTORRENT);
     createReq23Hash(md, torrentAttrs[bittorrent::INFO_HASH].uc());

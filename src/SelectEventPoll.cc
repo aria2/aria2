@@ -179,10 +179,10 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
-  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
-        _nameResolverEntries.begin(); itr != _nameResolverEntries.end();
-      ++itr) {
-    SharedHandle<AsyncNameResolverEntry>& entry = *itr;
+  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::const_iterator itr =
+        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+      itr != eoi; ++itr) {
+    const SharedHandle<AsyncNameResolverEntry>& entry = *itr;
     int fd = entry->getFds(&rfds, &wfds);
     // TODO force error if fd == 0
     if(_fdmax < fd) {
@@ -201,8 +201,8 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // !__MINGW32__
   } while(retval == -1 && errno == EINTR);
   if(retval > 0) {
-    for(std::deque<SharedHandle<SocketEntry> >::iterator i =
-          _socketEntries.begin(); i != _socketEntries.end(); ++i) {
+    for(std::deque<SharedHandle<SocketEntry> >::const_iterator i =
+          _socketEntries.begin(), eoi = _socketEntries.end(); i != eoi; ++i) {
       int events = 0;
       if(FD_ISSET((*i)->getSocket(), &rfds)) {
         events |= EventPoll::EVENT_READ;
@@ -215,8 +215,9 @@ void SelectEventPoll::poll(const struct timeval& tv)
   }
 #ifdef ENABLE_ASYNC_DNS
 
-  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator i =
-        _nameResolverEntries.begin(); i != _nameResolverEntries.end(); ++i) {
+  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::const_iterator i =
+        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+      i != eoi; ++i) {
     (*i)->process(&rfds, &wfds);
   }
 
@@ -232,8 +233,8 @@ void SelectEventPoll::updateFdSet()
 #endif // !__MINGW32__
   FD_ZERO(&_rfdset);
   FD_ZERO(&_wfdset);
-  for(std::deque<SharedHandle<SocketEntry> >::iterator i =
-        _socketEntries.begin(); i != _socketEntries.end(); ++i) {
+  for(std::deque<SharedHandle<SocketEntry> >::const_iterator i =
+        _socketEntries.begin(), eoi = _socketEntries.end(); i != eoi; ++i) {
     sock_t fd = (*i)->getSocket();
     int events = (*i)->getEvents();
     if(events&EventPoll::EVENT_READ) {

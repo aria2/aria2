@@ -73,8 +73,8 @@ std::string FeedbackURISelector::select(FileEntry* fileEntry)
   size_t max = std::min(uris.size(), static_cast<size_t>(NUM_URI));
   std::deque<std::string>::iterator urisLast = uris.begin()+max;
   std::deque<std::pair<SharedHandle<ServerStat>, std::string> > cands;
-  for(std::deque<std::string>::iterator i = uris.begin();
-      i != urisLast; ++i) {
+  for(std::deque<std::string>::iterator i = uris.begin(), eoi = urisLast;
+      i != eoi; ++i) {
     Request r;
     r.setUrl(*i);
     SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),
@@ -84,8 +84,8 @@ std::string FeedbackURISelector::select(FileEntry* fileEntry)
     }
   }
   if(cands.empty()) {
-    for(std::deque<std::string>::iterator i = uris.begin();
-        i != uris.end(); ++i) {
+    for(std::deque<std::string>::iterator i = uris.begin(), eoi = uris.end();
+        i != eoi; ++i) {
       Request r;
       r.setUrl(*i);
       SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),

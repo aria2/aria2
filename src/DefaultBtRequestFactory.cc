@@ -142,8 +142,8 @@ void DefaultBtRequestFactory::doChokedAction()
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin();
-      itr != pieces.end(); ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin(),
+        eoi = pieces.end(); itr != eoi; ++itr) {
     dispatcher->doAbortOutstandingRequestAction(*itr);
     _pieceStorage->cancelPiece(*itr);
   }
@@ -159,13 +159,13 @@ void DefaultBtRequestFactory::createRequestMessages
   size_t getnum = max-requests.size();
   std::vector<size_t> blockIndexes;
   blockIndexes.reserve(getnum);
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin();
-      itr != pieces.end() && getnum; ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin(),
+        eoi = pieces.end(); itr != eoi && getnum; ++itr) {
     SharedHandle<Piece>& piece = *itr;
     if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
       getnum -= blockIndexes.size();
-      for(std::vector<size_t>::const_iterator i = blockIndexes.begin();
-          i != blockIndexes.end(); ++i) {
+      for(std::vector<size_t>::const_iterator i = blockIndexes.begin(),
+            eoi2 = blockIndexes.end(); i != eoi2; ++i) {
         if(_logger->debug()) {
           _logger->debug("Creating RequestMessage index=%u, begin=%u,"
                          " blockIndex=%u",
@@ -184,8 +184,8 @@ void DefaultBtRequestFactory::createRequestMessages
 void DefaultBtRequestFactory::createRequestMessagesOnEndGame
 (std::vector<SharedHandle<BtMessage> >& requests, size_t max)
 {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin();
-      itr != pieces.end() && requests.size() < max; ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin(),
+        eoi = pieces.end(); itr != eoi && requests.size() < max; ++itr) {
     SharedHandle<Piece>& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
     array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
@@ -205,8 +205,9 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
     }
     std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
                         *(SimpleRandomizer::getInstance().get()));
-    for(std::vector<size_t>::const_iterator bitr = missingBlockIndexes.begin();
-        bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
+    for(std::vector<size_t>::const_iterator bitr = missingBlockIndexes.begin(),
+          eoi2 = missingBlockIndexes.end();
+        bitr != eoi2 && requests.size() < max; ++bitr) {
       const size_t& blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
                                            blockIndex)) {

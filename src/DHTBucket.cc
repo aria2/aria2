@@ -107,7 +107,8 @@ bool DHTBucket::isInRange(const unsigned char* nodeID,
 bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
 {
   notifyUpdate();
-  std::deque<SharedHandle<DHTNode> >::iterator itr = std::find(_nodes.begin(), _nodes.end(), node);
+  std::deque<SharedHandle<DHTNode> >::iterator itr =
+    std::find(_nodes.begin(), _nodes.end(), node);
   if(itr == _nodes.end()) {
     if(_nodes.size() < K) {
       _nodes.push_back(node);
@@ -140,7 +141,8 @@ void DHTBucket::cacheNode(const SharedHandle<DHTNode>& node)
 void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 {
   if(_cachedNodes.size()) {
-    std::deque<SharedHandle<DHTNode> >::iterator itr = find(_nodes.begin(), _nodes.end(), node);
+    std::deque<SharedHandle<DHTNode> >::iterator itr =
+      find(_nodes.begin(), _nodes.end(), node);
     if(itr != _nodes.end()) {
       _nodes.erase(itr);
       _nodes.push_back(_cachedNodes.front());
@@ -191,8 +193,8 @@ SharedHandle<DHTBucket> DHTBucket::split()
                                                 rMax, rMin, _localNode));
 
   std::deque<SharedHandle<DHTNode> > lNodes;
-  for(std::deque<SharedHandle<DHTNode> >::iterator i = _nodes.begin();
-      i != _nodes.end(); ++i) {
+  for(std::deque<SharedHandle<DHTNode> >::iterator i = _nodes.begin(),
+        eoi = _nodes.end(); i != eoi; ++i) {
     if(rBucket->isInRange(*i)) {
       assert(rBucket->addNode(*i));
     } else {

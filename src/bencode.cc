@@ -212,7 +212,8 @@ static void encodeIter(std::ostream& o, const BDE& bde)
     o.write(s.data(), s.size());
   } else if(bde.isDict()) {
     o << "d";
-    for(BDE::Dict::const_iterator i = bde.dictBegin(); i != bde.dictEnd(); ++i){
+    for(BDE::Dict::const_iterator i = bde.dictBegin(), eoi = bde.dictEnd();
+        i != eoi; ++i){
       const std::string& key = (*i).first;
       o << key.size() << ":";
       o.write(key.data(), key.size());
@@ -221,7 +222,8 @@ static void encodeIter(std::ostream& o, const BDE& bde)
     o << "e";
   } else if(bde.isList()) {
     o << "l";
-    for(BDE::List::const_iterator i = bde.listBegin(); i != bde.listEnd(); ++i){
+    for(BDE::List::const_iterator i = bde.listBegin(), eoi = bde.listEnd();
+        i != eoi; ++i){
       encodeIter(o, *i);
     }
     o << "e";

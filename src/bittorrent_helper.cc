@@ -150,8 +150,8 @@ static void extractUrlList
 (BDE& torrent, std::vector<std::string>& uris, const BDE& bde)
 {
   if(bde.isList()) {
-    for(BDE::List::const_iterator itr = bde.listBegin();
-        itr != bde.listEnd(); ++itr) {
+    for(BDE::List::const_iterator itr = bde.listBegin(), eoi = bde.listEnd();
+        itr != eoi; ++itr) {
       if((*itr).isString()) {
         uris.push_back((*itr).s());
       }
@@ -221,8 +221,8 @@ static void extractFileEntries
     off_t offset = 0;
     // multi-file mode
     torrent[MODE] = MULTI;
-    for(BDE::List::const_iterator itr = filesList.listBegin();
-        itr != filesList.listEnd(); ++itr) {
+    for(BDE::List::const_iterator itr = filesList.listBegin(),
+          eoi = filesList.listEnd(); itr != eoi; ++itr) {
       const BDE& fileDict = *itr;
       if(!fileDict.isDict()) {
         continue;
@@ -277,8 +277,8 @@ static void extractFileEntries
     // For each uri in urlList, if it ends with '/', then
     // concatenate name to it. Specification just says so.
     std::vector<std::string> uris;
-    for(std::vector<std::string>::const_iterator i = urlList.begin();
-        i != urlList.end(); ++i) {
+    for(std::vector<std::string>::const_iterator i = urlList.begin(),
+          eoi = urlList.end(); i != eoi; ++i) {
       if(util::endsWith(*i, A2STR::SLASH_C)) {
         uris.push_back((*i)+name);
       } else {
@@ -305,10 +305,10 @@ static void extractAnnounce(BDE& torrent, const BDE& rootDict)
   if(announceList.isList()) {
     torrent[ANNOUNCE_LIST] = announceList;
     BDE& tiers = torrent[ANNOUNCE_LIST];
-    for(BDE::List::iterator tieriter = tiers.listBegin();
-        tieriter != tiers.listEnd(); ++tieriter) {
-      for(BDE::List::iterator uriiter = (*tieriter).listBegin();
-          uriiter != (*tieriter).listEnd(); ++uriiter) {
+    for(BDE::List::iterator tieriter = tiers.listBegin(),
+          eoi = tiers.listEnd(); tieriter != eoi; ++tieriter) {
+      for(BDE::List::iterator uriiter = (*tieriter).listBegin(),
+            eoi2 = (*tieriter).listEnd(); uriiter != eoi2; ++uriiter) {
         if((*uriiter).isString()) {
           *uriiter = util::trim((*uriiter).s());
         }
@@ -329,8 +329,8 @@ static void extractNodes(BDE& torrent, const BDE& nodesList)
 {
   BDE nodes = BDE::list();
   if(nodesList.isList()) {
-    for(BDE::List::const_iterator i = nodesList.listBegin();
-        i != nodesList.listEnd(); ++i) {
+    for(BDE::List::const_iterator i = nodesList.listBegin(),
+          eoi = nodesList.listEnd(); i != eoi; ++i) {
       const BDE& addrPairList = (*i);
       if(!addrPairList.isList() || addrPairList.size() != 2) {
         continue;
@@ -567,13 +567,13 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
   o << "Mode: " << torrentAttrs[MODE].s() << "\n";
   o << "Announce:" << "\n";
   const BDE& announceList = torrentAttrs[ANNOUNCE_LIST];
-  for(BDE::List::const_iterator tieritr = announceList.listBegin();
-      tieritr != announceList.listEnd(); ++tieritr) {
+  for(BDE::List::const_iterator tieritr = announceList.listBegin(),
+        eoi = announceList.listEnd(); tieritr != eoi; ++tieritr) {
     if(!(*tieritr).isList()) {
       continue;
     }
-    for(BDE::List::const_iterator i = (*tieritr).listBegin();
-        i != (*tieritr).listEnd(); ++i) {
+    for(BDE::List::const_iterator i = (*tieritr).listBegin(),
+          eoi2 = (*tieritr).listEnd(); i != eoi2; ++i) {
       o << " " << (*i).s();
     }
     o << "\n";
@@ -586,8 +586,8 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
   if(!torrentAttrs[URL_LIST].empty()) {
     const BDE& urlList = torrentAttrs[URL_LIST];
     o << "URL List: " << "\n";
-    for(BDE::List::const_iterator i = urlList.listBegin();
-        i != urlList.listEnd(); ++i) {
+    for(BDE::List::const_iterator i = urlList.listBegin(),
+          eoi = urlList.listEnd(); i != eoi; ++i) {
       o << " " << (*i).s() << "\n";
     }
   }
@@ -886,8 +886,8 @@ BDE parseMagnet(const std::string& magnet)
   BDE announceList = BDE::list();
   if(r.containsKey("tr")) {
     const BDE& uris = r["tr"];
-    for(BDE::List::const_iterator i = uris.listBegin(); i != uris.listEnd();
-        ++i) {
+    for(BDE::List::const_iterator i = uris.listBegin(), eoi = uris.listEnd();
+        i != eoi; ++i) {
       BDE tier = BDE::list();
       tier << *i;
       announceList << tier;
@@ -944,10 +944,10 @@ std::string torrent2Magnet(const BDE& attrs)
   }
   if(attrs.containsKey(ANNOUNCE_LIST)) {
     const BDE& tiers = attrs[ANNOUNCE_LIST];
-    for(BDE::List::const_iterator tieriter = tiers.listBegin();
-        tieriter != tiers.listEnd(); ++tieriter) {
-      for(BDE::List::const_iterator uriiter = (*tieriter).listBegin();
-          uriiter != (*tieriter).listEnd(); ++uriiter) {
+    for(BDE::List::const_iterator tieriter = tiers.listBegin(),
+          eoi = tiers.listEnd(); tieriter != eoi; ++tieriter) {
+      for(BDE::List::const_iterator uriiter = (*tieriter).listBegin(),
+            eoi2 = (*tieriter).listEnd(); uriiter != eoi2; ++uriiter) {
         uri += "&tr=";
         uri += util::urlencode((*uriiter).s());
       }

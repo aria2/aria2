@@ -93,8 +93,8 @@ void Netrc::parse(const std::string& path)
     }
     std::vector<std::string> tokens;
     util::split(line, std::back_inserter(tokens), " \t", true);
-    for(std::vector<std::string>::const_iterator iter = tokens.begin();
-        iter != tokens.end(); ++iter) {
+    for(std::vector<std::string>::const_iterator iter = tokens.begin(),
+          eoi = tokens.end(); iter != eoi; ++iter) {
       const std::string& token = *iter;
       if(state == GET_TOKEN) {
         if(token == Netrc::MACHINE) {

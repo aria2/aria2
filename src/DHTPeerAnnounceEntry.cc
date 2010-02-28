@@ -95,8 +95,8 @@ bool DHTPeerAnnounceEntry::empty() const
 void DHTPeerAnnounceEntry::getPeers
 (std::vector<SharedHandle<Peer> >& peers) const
 {
-  for(std::vector<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin();
-      i != _peerAddrEntries.end(); ++i) {
+  for(std::vector<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin(),
+        eoi = _peerAddrEntries.end(); i != eoi; ++i) {
     SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
     peers.push_back(peer);
   }

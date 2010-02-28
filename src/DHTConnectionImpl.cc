@@ -57,8 +57,8 @@ bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
   std::random_shuffle(randPorts.begin(), randPorts.end(),
                       *SimpleRandomizer::getInstance().get());
   
-  for(std::vector<int32_t>::const_iterator portItr = randPorts.begin();
-      portItr != randPorts.end(); ++portItr) {
+  for(std::vector<int32_t>::const_iterator portItr = randPorts.begin(),
+        eoi = randPorts.end(); portItr != eoi; ++portItr) {
     if(!(0 < (*portItr) && (*portItr) <= 65535)) {
       continue;
     }

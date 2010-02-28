@@ -82,8 +82,8 @@ BDE DHTGetPeersReplyMessage::getResponse()
     size_t offset = 0;
     unsigned char buffer[DHTBucket::K*26];
     for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
-          _closestKNodes.begin();
-        i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
+          _closestKNodes.begin(), eoi = _closestKNodes.end();
+        i != eoi && offset < DHTBucket::K*26; ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
       if(bittorrent::createcompact
@@ -114,8 +114,9 @@ BDE DHTGetPeersReplyMessage::getResponse()
     // number of peer info that a message can carry.
     static const size_t MAX_VALUES_SIZE = 100;
     BDE valuesList = BDE::list();
-    for(std::vector<SharedHandle<Peer> >::const_iterator i = _values.begin();
-        i != _values.end() && valuesList.size() < MAX_VALUES_SIZE; ++i) {
+    for(std::vector<SharedHandle<Peer> >::const_iterator i = _values.begin(),
+          eoi = _values.end(); i != eoi && valuesList.size() < MAX_VALUES_SIZE;
+        ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
       if(bittorrent::createcompact(buffer, peer->ipaddr, peer->port)) {

@@ -96,7 +96,8 @@ bool HttpHeader::defined(const std::string& name) const {
 }
 
 const std::string& HttpHeader::getFirst(const std::string& name) const {
-  std::multimap<std::string, std::string>::const_iterator itr = table.find(util::toLower(name));
+  std::multimap<std::string, std::string>::const_iterator itr =
+    table.find(util::toLower(name));
   if(itr == table.end()) {
     return A2STR::NIL;
   } else {
