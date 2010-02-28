@@ -49,8 +49,8 @@ BtFileAllocationEntry::BtFileAllocationEntry(RequestGroup* requestGroup):
 
 BtFileAllocationEntry::~BtFileAllocationEntry() {}
 
-void BtFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
-                                                 DownloadEngine* e)
+void BtFileAllocationEntry::prepareForNextAction
+(std::vector<Command*>& commands, DownloadEngine* e)
 {
   BtSetup().setup(commands, _requestGroup, e, _requestGroup->getOption().get());
   if(!_requestGroup->downloadFinished()) {

@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <deque>
+#include <vector>
 #include <map>
 
 #include "SharedHandle.h"
@@ -89,10 +90,10 @@ private:
   std::map<size_t, size_t> _segmentWrittenLengthMemo;
 
   // Used for calculating download speed.
-  std::deque<SharedHandle<PeerStat> > peerStats;
+  std::vector<SharedHandle<PeerStat> > peerStats;
 
   // Keep track of fastest PeerStat for each server
-  std::deque<SharedHandle<PeerStat> > _fastestPeerStats;
+  std::vector<SharedHandle<PeerStat> > _fastestPeerStats;
 
   // key: PeerStat's cuid, value: its download speed
   std::map<cuid_t, unsigned int> _peerStatDlspdMap;
@@ -137,14 +138,14 @@ public:
    * Fill segments which are assigned to the command whose CUID is cuid.
    * This function doesn't clear passed segments.
    */
-  void getInFlightSegment(std::deque<SharedHandle<Segment> >& segments,
+  void getInFlightSegment(std::vector<SharedHandle<Segment> >& segments,
                           cuid_t cuid);
 
   SharedHandle<Segment> getSegment(cuid_t cuid);
 
   // Checkouts segments in the range of fileEntry and push back to
   // segments until segments.size() < maxSegments holds false
-  void getSegment(std::deque<SharedHandle<Segment> >& segments,
+  void getSegment(std::vector<SharedHandle<Segment> >& segments,
                   cuid_t cuid,
                   const SharedHandle<FileEntry>& fileEntry,
                   size_t maxSegments);
@@ -198,7 +199,7 @@ public:
   // inserted.
   void registerPeerStat(const SharedHandle<PeerStat>& peerStat);
 
-  const std::deque<SharedHandle<PeerStat> >& getPeerStats() const
+  const std::vector<SharedHandle<PeerStat> >& getPeerStats() const
   {
     return peerStats;
   }
@@ -209,7 +210,7 @@ public:
   // and protocol with given peerStat, given peerStat is inserted.
   void updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat);
 
-  const std::deque<SharedHandle<PeerStat> >& getFastestPeerStats() const
+  const std::vector<SharedHandle<PeerStat> >& getFastestPeerStats() const
   {
     return _fastestPeerStats;
   }
@@ -236,8 +237,6 @@ public:
 
   bool allSegmentsIgnored() const;
 };
-
-typedef SharedHandle<SegmentMan> SegmentManHandle;
 
 } // namespace aria2
 

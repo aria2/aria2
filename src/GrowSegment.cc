@@ -38,7 +38,7 @@
 
 namespace aria2 {
 
-GrowSegment::GrowSegment(const PieceHandle& piece):
+GrowSegment::GrowSegment(const SharedHandle<Piece>& piece):
   _piece(piece), _writtenLength(0) {}
 
 GrowSegment::~GrowSegment() {}
@@ -65,7 +65,7 @@ void GrowSegment::clear()
   _piece->clearAllBlock();
 }
 
-PieceHandle GrowSegment::getPiece() const
+SharedHandle<Piece> GrowSegment::getPiece() const
 {
   return _piece;
 }

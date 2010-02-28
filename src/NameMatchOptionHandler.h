@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iterator>
+#include <vector>
 
 #include "A2STR.h"
 #include "util.h"
@@ -63,7 +64,7 @@ protected:
 
   std::string _defaultValue;
 
-  std::deque<std::string> _tags;
+  std::vector<std::string> _tags;
 
   int _id;
 

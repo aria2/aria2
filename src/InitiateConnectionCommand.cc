@@ -53,7 +53,7 @@ namespace aria2 {
 
 InitiateConnectionCommand::InitiateConnectionCommand
 (int cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e):
@@ -79,7 +79,7 @@ bool InitiateConnectionCommand::executeInternal() {
     hostname = proxyRequest->getHost();
     port = proxyRequest->getPort();
   }
-  std::deque<std::string> addrs;
+  std::vector<std::string> addrs;
   e->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
   std::string ipaddr;
   if(addrs.empty()) {
@@ -107,7 +107,7 @@ bool InitiateConnectionCommand::executeInternal() {
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
                  hostname.c_str(),
                  strjoin(addrs.begin(), addrs.end(), ", ").c_str());
-    for(std::deque<std::string>::const_iterator i = addrs.begin();
+    for(std::vector<std::string>::const_iterator i = addrs.begin();
         i != addrs.end(); ++i) {
       e->cacheIPAddress(hostname, *i, port);
     }

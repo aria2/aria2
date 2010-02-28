@@ -140,14 +140,6 @@ bool CookieStorage::store(const Cookie& cookie)
   return added;
 }
 
-void CookieStorage::storeCookies(const std::deque<Cookie>& cookies)
-{
-  for(std::deque<Cookie>::const_iterator i = cookies.begin();
-      i != cookies.end(); ++i) {
-    store(*i);
-  }
-}
-
 bool CookieStorage::parseAndStore(const std::string& setCookieString,
                                   const std::string& requestHost,
                                   const std::string& requestPath)
@@ -240,11 +232,11 @@ bool CookieStorage::contains(const Cookie& cookie) const
   }
 }
 
-std::deque<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
+std::vector<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
                                                const std::string& requestPath,
                                                time_t date, bool secure)
 {
-  std::deque<Cookie> res;
+  std::vector<Cookie> res;
   bool numericHost = util::isNumericHost(requestHost);
   searchCookieByDomainSuffix
     ((!numericHost && requestHost.find(A2STR::DOT_C) == std::string::npos)?
@@ -307,14 +299,16 @@ bool CookieStorage::load(const std::string& filename)
   try {
     if(std::string(header) == "SQLite format 3") {
 #ifdef HAVE_SQLITE3
-      storeCookies(Sqlite3MozCookieParser().parse(filename));
+      std::vector<Cookie> cookies = Sqlite3MozCookieParser().parse(filename);
+      storeCookies(cookies.begin(), cookies.end());
 #else // !HAVE_SQLITE3
       throw DL_ABORT_EX
         ("Cannot read SQLite3 database because SQLite3 support is disabled by"
          " configuration.");
 #endif // !HAVE_SQLITE3
     } else {
-      storeCookies(NsCookieParser().parse(filename));
+      std::vector<Cookie> cookies = NsCookieParser().parse(filename);
+      storeCookies(cookies.begin(), cookies.end());
     }
     return true;
   } catch(RecoverableException& e) {

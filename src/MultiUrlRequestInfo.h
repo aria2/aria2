@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#include <deque>
+#include <vector>
 #include <iosfwd>
 
 #include "SharedHandle.h"
@@ -52,7 +52,7 @@ class StatCalc;
 
 class MultiUrlRequestInfo {
 private:
-  std::deque<SharedHandle<RequestGroup> > _requestGroups;
+  std::vector<SharedHandle<RequestGroup> > _requestGroups;
 
   SharedHandle<Option> _option;
 
@@ -66,7 +66,7 @@ private:
 
 public:
   MultiUrlRequestInfo
-  (const std::deque<SharedHandle<RequestGroup> >& requestGroups,
+  (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
    const SharedHandle<Option>& op,
    const SharedHandle<StatCalc>& statCalc,
    std::ostream& summaryOut);

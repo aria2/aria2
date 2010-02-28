@@ -58,7 +58,7 @@ namespace aria2 {
 
 HttpRequestCommand::HttpRequestCommand
 (int cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const HttpConnectionHandle& httpConnection,
@@ -85,7 +85,7 @@ createHttpRequest(const SharedHandle<Request>& req,
                   const SharedHandle<AuthConfigFactory>& authConfigFactory,
                   const SharedHandle<Request>& proxyRequest)
 {
-  HttpRequestHandle httpRequest(new HttpRequest());
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setFileEntry(fileEntry);
@@ -122,7 +122,7 @@ bool HttpRequestCommand::executeInternal() {
     }
 
     if(_segments.empty()) {
-      HttpRequestHandle httpRequest
+      SharedHandle<HttpRequest> httpRequest
         (createHttpRequest(req,
                            _fileEntry,
                            SharedHandle<Segment>(),
@@ -134,10 +134,11 @@ bool HttpRequestCommand::executeInternal() {
                            _proxyRequest));
       _httpConnection->sendRequest(httpRequest);
     } else {
-      for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
-        const SegmentHandle& segment = *itr;
+      for(std::vector<SharedHandle<Segment> >::iterator itr = _segments.begin();
+          itr != _segments.end(); ++itr) {
+        const SharedHandle<Segment>& segment = *itr;
         if(!_httpConnection->isIssued(segment)) {
-          HttpRequestHandle httpRequest
+          SharedHandle<HttpRequest> httpRequest
             (createHttpRequest(req,
                                _fileEntry,
                                segment,

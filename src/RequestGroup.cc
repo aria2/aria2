@@ -190,7 +190,7 @@ void RequestGroup::closeFile()
 }
 
 void RequestGroup::createInitialCommand
-(std::deque<Command*>& commands, DownloadEngine* e)
+(std::vector<Command*>& commands, DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   {
@@ -272,7 +272,7 @@ void RequestGroup::createInitialCommand
                                 (progressInfoFile))));
       if(metadataGetMode) {
         if(_option->getAsBool(PREF_ENABLE_DHT)) {
-          std::deque<Command*> dhtCommands;
+          std::vector<Command*> dhtCommands;
           DHTSetup().setup(dhtCommands, e, _option.get());
           e->addCommand(dhtCommands);
         } else {
@@ -333,11 +333,11 @@ void RequestGroup::createInitialCommand
 
       if(torrentAttrs[bittorrent::PRIVATE].i() == 0 &&
          _option->getAsBool(PREF_ENABLE_DHT)) {
-        std::deque<Command*> dhtCommands;
+        std::vector<Command*> dhtCommands;
         DHTSetup().setup(dhtCommands, e, _option.get());
         e->addCommand(dhtCommands);
         if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
-          std::deque<std::pair<std::string, uint16_t> > entryPoints;
+          std::vector<std::pair<std::string, uint16_t> > entryPoints;
           const BDE& nodes = torrentAttrs[bittorrent::NODES];
           for(BDE::List::const_iterator i = nodes.listBegin();
               i != nodes.listEnd(); ++i) {
@@ -354,7 +354,7 @@ void RequestGroup::createInitialCommand
           e->commands.push_back(command);
         }
       }
-      CheckIntegrityEntryHandle entry(new BtCheckIntegrityEntry(this));
+      SharedHandle<CheckIntegrityEntry> entry(new BtCheckIntegrityEntry(this));
       // --bt-seed-unverified=true is given and download has completed, skip
       // validation for piece hashes.
       if(_option->getAsBool(PREF_BT_SEED_UNVERIFIED) &&
@@ -444,9 +444,10 @@ void RequestGroup::createInitialCommand
   }
 }
 
-void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
-                                              const CheckIntegrityEntryHandle& entry,
-                                              DownloadEngine* e)
+void RequestGroup::processCheckIntegrityEntry
+(std::vector<Command*>& commands,
+ const SharedHandle<CheckIntegrityEntry>& entry,
+ DownloadEngine* e)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_option->getAsBool(PREF_CHECK_INTEGRITY) &&
@@ -666,7 +667,7 @@ bool RequestGroup::tryAutoFileRenaming()
   return false;
 }
 
-void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
+void RequestGroup::createNextCommandWithAdj(std::vector<Command*>& commands,
                                             DownloadEngine* e, int numAdj)
 {
   int numCommand;
@@ -682,7 +683,7 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
   }
 }
 
-void RequestGroup::createNextCommand(std::deque<Command*>& commands,
+void RequestGroup::createNextCommand(std::vector<Command*>& commands,
                                      DownloadEngine* e,
                                      unsigned int numCommand)
 {
@@ -852,7 +853,8 @@ void RequestGroup::preDownloadProcessing()
                    getFirstFilePath().c_str());
   }
   try {
-    for(PreDownloadHandlers::const_iterator itr = _preDownloadHandlers.begin();
+    for(std::vector<SharedHandle<PreDownloadHandler> >::const_iterator itr =
+          _preDownloadHandlers.begin();
         itr != _preDownloadHandlers.end(); ++itr) {
       if((*itr)->canHandle(this)) {
         (*itr)->execute(this);
@@ -870,14 +872,15 @@ void RequestGroup::preDownloadProcessing()
 }
 
 void RequestGroup::postDownloadProcessing
-(std::deque<SharedHandle<RequestGroup> >& groups)
+(std::vector<SharedHandle<RequestGroup> >& groups)
 {
   if(_logger->debug()) {
     _logger->debug("Finding PostDownloadHandler for path %s.",
                    getFirstFilePath().c_str());
   }
   try {
-    for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
+    for(std::vector<SharedHandle<PostDownloadHandler> >::const_iterator itr =
+          _postDownloadHandlers.begin();
         itr != _postDownloadHandlers.end(); ++itr) {
       if((*itr)->canHandle(this)) {
         (*itr)->getNextRequestGroups(groups, this);
@@ -940,12 +943,14 @@ void RequestGroup::setDiskWriterFactory(const DiskWriterFactoryHandle& diskWrite
   _diskWriterFactory = diskWriterFactory;
 }
 
-void RequestGroup::addPostDownloadHandler(const PostDownloadHandlerHandle& handler)
+void RequestGroup::addPostDownloadHandler
+(const SharedHandle<PostDownloadHandler>& handler)
 {
   _postDownloadHandlers.push_back(handler);
 }
 
-void RequestGroup::addPreDownloadHandler(const PreDownloadHandlerHandle& handler)
+void RequestGroup::addPreDownloadHandler
+(const SharedHandle<PreDownloadHandler>& handler)
 {
   _preDownloadHandlers.push_back(handler);
 }

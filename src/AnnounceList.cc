@@ -54,7 +54,8 @@ AnnounceList::AnnounceList(const BDE& announceList):
   reconfigure(announceList);
 }
 
-AnnounceList::AnnounceList(const AnnounceTiers& announceTiers):
+AnnounceList::AnnounceList
+(const std::deque<SharedHandle<AnnounceTier> >& announceTiers):
   tiers(announceTiers), currentTrackerInitialized(false)  {
   resetIterator();
 }
@@ -77,7 +78,7 @@ void AnnounceList::reconfigure(const BDE& announceList)
         }
       }
       if(!urls.empty()) {
-        AnnounceTierHandle tier(new AnnounceTier(urls));
+        SharedHandle<AnnounceTier> tier(new AnnounceTier(urls));
         tiers.push_back(tier);
       }
     }
@@ -88,7 +89,7 @@ void AnnounceList::reconfigure(const BDE& announceList)
 void AnnounceList::reconfigure(const std::string& url) {
   std::deque<std::string> urls;
   urls.push_back(url);
-  tiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
+  tiers.push_back(SharedHandle<AnnounceTier>(new AnnounceTier(urls)));
   resetIterator();
 }
 
@@ -171,7 +172,7 @@ std::string AnnounceList::getEventString() const {
 
 class FindStoppedAllowedTier {
 public:
-  bool operator()(const AnnounceTierHandle& tier) const {
+  bool operator()(const SharedHandle<AnnounceTier>& tier) const {
     switch(tier->event) {
     case AnnounceTier::DOWNLOADING:
     case AnnounceTier::STOPPED:
@@ -186,7 +187,7 @@ public:
 
 class FindCompletedAllowedTier {
 public:
-  bool operator()(const AnnounceTierHandle& tier) const {
+  bool operator()(const SharedHandle<AnnounceTier>& tier) const {
     switch(tier->event) {
     case AnnounceTier::DOWNLOADING:
     case AnnounceTier::COMPLETED:
@@ -205,7 +206,8 @@ size_t AnnounceList::countCompletedAllowedTier() const {
   return count_if(tiers.begin(), tiers.end(), FindCompletedAllowedTier());
 }
 
-void AnnounceList::setCurrentTier(const AnnounceTiers::iterator& itr) {
+void AnnounceList::setCurrentTier
+(const std::deque<SharedHandle<AnnounceTier> >::iterator& itr) {
   if(itr != tiers.end()) {
     currentTier = itr;
     currentTracker = (*currentTier)->urls.begin();
@@ -224,21 +226,23 @@ find_wrap_if(InputIterator first, InputIterator last,
 }
 
 void AnnounceList::moveToStoppedAllowedTier() {
-  AnnounceTiers::iterator itr = find_wrap_if(tiers.begin(), tiers.end(),
-                                             currentTier,
-                                             FindStoppedAllowedTier());
+  std::deque<SharedHandle<AnnounceTier> >::iterator itr =
+    find_wrap_if(tiers.begin(), tiers.end(),
+                 currentTier,
+                 FindStoppedAllowedTier());
   setCurrentTier(itr);
 }
 
 void AnnounceList::moveToCompletedAllowedTier() {
-  AnnounceTiers::iterator itr = find_wrap_if(tiers.begin(), tiers.end(),
-                                             currentTier,
-                                             FindCompletedAllowedTier());
+  std::deque<SharedHandle<AnnounceTier> >::iterator itr =
+    find_wrap_if(tiers.begin(), tiers.end(),
+                 currentTier,
+                 FindCompletedAllowedTier());
   setCurrentTier(itr);
 }
 
 void AnnounceList::shuffle() {
-  for(AnnounceTiers::iterator itr = tiers.begin();
+  for(std::deque<SharedHandle<AnnounceTier> >::iterator itr = tiers.begin();
       itr != tiers.end(); ++itr) {
     std::deque<std::string>& urls = (*itr)->urls;
     std::random_shuffle(urls.begin(), urls.end(),

@@ -126,8 +126,9 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
   return false;
 }
 
-void DHTRoutingTable::getClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
-                                       const unsigned char* key) const
+void DHTRoutingTable::getClosestKNodes
+(std::vector<SharedHandle<DHTNode> >& nodes,
+ const unsigned char* key) const
 {
   BNode::findClosestKNodes(nodes, _root, key);
 }
@@ -177,7 +178,8 @@ void DHTRoutingTable::moveBucketTail(const SharedHandle<DHTNode>& node)
   getBucketFor(node)->moveToTail(node);
 }
 
-void DHTRoutingTable::getBuckets(std::deque<SharedHandle<DHTBucket> >& buckets) const
+void DHTRoutingTable::getBuckets
+(std::vector<SharedHandle<DHTBucket> >& buckets) const
 {
   BNode::enumerateBucket(buckets, _root);
 }

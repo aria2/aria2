@@ -55,10 +55,12 @@
 
 namespace aria2 {
 
-DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e, const std::deque<std::pair<std::string, uint16_t> >& entryPoints):
+DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand
+(int32_t cuid, DownloadEngine* e,
+ const std::vector<std::pair<std::string, uint16_t> >& entryPoints):
   Command(cuid),
   _e(e),
-  _entryPoints(entryPoints),
+  _entryPoints(entryPoints.begin(), entryPoints.end()),
   _bootstrapEnabled(false)
 {}
 
@@ -82,7 +84,7 @@ bool DHTEntryPointNameResolveCommand::execute()
   try {
 #ifdef ENABLE_ASYNC_DNS
     if(_e->option->getAsBool(PREF_ASYNC_DNS)) {
-      while(_entryPoints.size()) {
+      while(!_entryPoints.empty()) {
         std::string hostname = _entryPoints.front().first;
         try {
           if(resolveHostname(hostname, _resolver)) {
@@ -99,17 +101,17 @@ bool DHTEntryPointNameResolveCommand::execute()
           logger->error(EX_EXCEPTION_CAUGHT, e);
         }
         _resolver->reset();
-        _entryPoints.erase(_entryPoints.begin());
+        _entryPoints.pop_front();
       }
     } else
 #endif // ENABLE_ASYNC_DNS
       {
         NameResolver res;
         res.setSocktype(SOCK_DGRAM);
-        while(_entryPoints.size()) {
+        while(!_entryPoints.empty()) {
           std::string hostname = _entryPoints.front().first;
           try {
-            std::deque<std::string> addrs;
+            std::vector<std::string> addrs;
             res.resolve(addrs, hostname);
           
             std::pair<std::string, uint16_t> p(addrs.front(),
@@ -119,7 +121,7 @@ bool DHTEntryPointNameResolveCommand::execute()
           } catch(RecoverableException& e) {
             logger->error(EX_EXCEPTION_CAUGHT, e);
           }
-          _entryPoints.erase(_entryPoints.begin());
+          _entryPoints.pop_front();
         }
       }
     if(_bootstrapEnabled && _resolvedEntryPoints.size()) {

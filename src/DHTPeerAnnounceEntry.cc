@@ -50,7 +50,8 @@ DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() {}
 
 void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
 {
-  std::deque<PeerAddrEntry>::iterator i = std::find(_peerAddrEntries.begin(), _peerAddrEntries.end(), entry);
+  std::vector<PeerAddrEntry>::iterator i =
+    std::find(_peerAddrEntries.begin(), _peerAddrEntries.end(), entry);
   if(i == _peerAddrEntries.end()) {
     _peerAddrEntries.push_back(entry);
   } else {
@@ -91,9 +92,10 @@ bool DHTPeerAnnounceEntry::empty() const
   return _peerAddrEntries.empty();
 }
 
-void DHTPeerAnnounceEntry::getPeers(std::deque<SharedHandle<Peer> >& peers) const
+void DHTPeerAnnounceEntry::getPeers
+(std::vector<SharedHandle<Peer> >& peers) const
 {
-  for(std::deque<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin();
+  for(std::vector<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin();
       i != _peerAddrEntries.end(); ++i) {
     SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
     peers.push_back(peer);

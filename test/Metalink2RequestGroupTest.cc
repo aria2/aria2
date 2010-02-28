@@ -37,13 +37,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Metalink2RequestGroupTest );
 
 void Metalink2RequestGroupTest::testGenerate()
 {
-  std::deque<SharedHandle<RequestGroup> > groups;
+  std::vector<SharedHandle<RequestGroup> > groups;
   _option->put(PREF_DIR, "/tmp");
   Metalink2RequestGroup().generate(groups, "test.xml", _option);
   // first file
   {
     SharedHandle<RequestGroup> rg = groups[0];
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     std::sort(uris.begin(), uris.end());
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
@@ -69,7 +69,7 @@ void Metalink2RequestGroupTest::testGenerate()
   // second file
   {
     SharedHandle<RequestGroup> rg = groups[1];
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
 
@@ -91,7 +91,7 @@ void Metalink2RequestGroupTest::testGenerate()
   // fifth file <- downloading .torrent file
   {
     SharedHandle<RequestGroup> rg = groups[4];
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL
@@ -110,7 +110,7 @@ void Metalink2RequestGroupTest::testGenerate()
 #else
     SharedHandle<RequestGroup> rg = groups[4];
 #endif // ENABLE_BITTORRENT
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL
@@ -125,14 +125,14 @@ void Metalink2RequestGroupTest::testGenerate()
 
 void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
 {
-  std::deque<SharedHandle<RequestGroup> > groups;
+  std::vector<SharedHandle<RequestGroup> > groups;
   Metalink2RequestGroup().generate(groups, "metalink4-groupbymetaurl.xml",
                                    _option);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
   // first RequestGroup is torrent for second RequestGroup
   {
     SharedHandle<RequestGroup> rg = groups[0];
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://torrent"), uris[0]);

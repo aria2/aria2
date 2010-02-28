@@ -63,7 +63,7 @@ BtPostDownloadHandler::BtPostDownloadHandler()
 BtPostDownloadHandler::~BtPostDownloadHandler() {}
 
 void BtPostDownloadHandler::getNextRequestGroups
-(std::deque<SharedHandle<RequestGroup> >& groups,
+(std::vector<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
   _logger->info("Generating RequestGroups for Torrent file %s",
@@ -77,9 +77,9 @@ void BtPostDownloadHandler::getNextRequestGroups
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
     throw;
   }
-  std::deque<SharedHandle<RequestGroup> > newRgs;
+  std::vector<SharedHandle<RequestGroup> > newRgs;
   createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                  std::deque<std::string>(),
+                                  std::vector<std::string>(),
                                   content);
   requestGroup->followedBy(newRgs.begin(), newRgs.end());
   groups.insert(groups.end(), newRgs.begin(), newRgs.end());

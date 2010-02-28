@@ -44,10 +44,11 @@
 
 namespace aria2 {
 
-SeedCheckCommand::SeedCheckCommand(int cuid,
-                                   RequestGroup* requestGroup,
-                                   DownloadEngine* e,
-                                   const SeedCriteriaHandle& seedCriteria)
+SeedCheckCommand::SeedCheckCommand
+(int cuid,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const SharedHandle<SeedCriteria>& seedCriteria)
   :Command(cuid),
    _requestGroup(requestGroup),
    e(e),

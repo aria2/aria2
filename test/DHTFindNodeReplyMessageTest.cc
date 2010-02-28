@@ -52,7 +52,8 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
       std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
       std::string(&buf[0], &buf[sizeof(buf)]);
   }
-  msg.setClosestKNodes(std::deque<SharedHandle<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
+  msg.setClosestKNodes
+    (std::vector<SharedHandle<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
 
   std::string msgbody = msg.getBencodedMessage();
 

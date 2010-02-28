@@ -84,7 +84,7 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(const SharedHandl
 }
 
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
 {
   abort();
 }
@@ -95,7 +95,7 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece(const SharedH
 }
 
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
 {
   abort();
 }
@@ -121,7 +121,7 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getSparseMissingUnusedPiece
   }
 }
 
-PieceHandle UnknownLengthPieceStorage::getMissingPiece(size_t index)
+SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(size_t index)
 {
   if(index == 0) {
     return getSparseMissingUnusedPiece(0, 0);
@@ -130,7 +130,7 @@ PieceHandle UnknownLengthPieceStorage::getMissingPiece(size_t index)
   }
 }
 
-PieceHandle UnknownLengthPieceStorage::getPiece(size_t index)
+SharedHandle<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
 {
   if(index == 0) {
     if(_piece.isNull()) {
@@ -143,7 +143,7 @@ PieceHandle UnknownLengthPieceStorage::getPiece(size_t index)
   }
 }
 
-void UnknownLengthPieceStorage::completePiece(const PieceHandle& piece)
+void UnknownLengthPieceStorage::completePiece(const SharedHandle<Piece>& piece)
 {
   if(_piece == piece) {
     _downloadFinished = true;
@@ -153,7 +153,7 @@ void UnknownLengthPieceStorage::completePiece(const PieceHandle& piece)
   }
 }
 
-void UnknownLengthPieceStorage::cancelPiece(const PieceHandle& piece)
+void UnknownLengthPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
 {
   if(_piece == piece) {
     _piece.reset();
@@ -213,10 +213,12 @@ void UnknownLengthPieceStorage::markPieceMissing(size_t index)
   abort();
 }
 
-void UnknownLengthPieceStorage::getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces)
+void UnknownLengthPieceStorage::getInFlightPieces
+(std::vector<SharedHandle<Piece> >& pieces)
 {}
 
-void UnknownLengthPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory)
+void UnknownLengthPieceStorage::setDiskWriterFactory
+(const DiskWriterFactoryHandle& diskWriterFactory)
 {
   _diskWriterFactory = diskWriterFactory;
 }

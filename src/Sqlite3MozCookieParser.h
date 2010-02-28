@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "Cookie.h"
 
@@ -50,7 +50,7 @@ public:
 
   ~Sqlite3MozCookieParser();
 
-  std::deque<Cookie> parse(const std::string& filename) const;
+  std::vector<Cookie> parse(const std::string& filename) const;
 };
 
 } // namespace aria2

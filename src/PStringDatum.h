@@ -49,8 +49,6 @@ public:
   virtual void accept(PStringVisitor& visitor) = 0;
 };
 
-typedef SharedHandle<PStringDatum> PStringDatumHandle;
-
 } // namespace aria2
 
 #endif // _D_P_STRING_DATUM_H_

@@ -39,6 +39,7 @@
 
 #include <string>
 #include <deque>
+#include <vector>
 #include <algorithm>
 
 #include "a2time.h"
@@ -122,7 +123,13 @@ private:
 
   Logger* _logger;
 
-  void storeCookies(const std::deque<Cookie>& cookies);
+  template<typename InputIterator>
+  void storeCookies(InputIterator first, InputIterator last)
+  {
+    for(; first != last; ++first) {
+      store(*first);
+    }
+  }
 public:
   CookieStorage();
 
@@ -140,9 +147,9 @@ public:
 
   // Finds cookies matched with given criteria and returns them.
   // Matched cookies' _lastAccess property is updated.
-  std::deque<Cookie> criteriaFind(const std::string& requestHost,
-                                  const std::string& requestPath,
-                                  time_t date, bool secure);
+  std::vector<Cookie> criteriaFind(const std::string& requestHost,
+                                   const std::string& requestPath,
+                                   time_t date, bool secure);
 
   // Loads Cookies from file denoted by filename.  If compiled with
   // libsqlite3, this method automatically detects the specified file

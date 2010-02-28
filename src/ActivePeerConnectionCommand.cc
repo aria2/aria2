@@ -114,7 +114,7 @@ bool ActivePeerConnectionCommand::execute() {
 
       for(unsigned int numAdd = numConnection;
           numAdd > 0 && _peerStorage->isPeerAvailable(); --numAdd) {
-        PeerHandle peer = _peerStorage->getUnusedPeer();
+        SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
         connectToPeer(peer);
       }
       if(_btRuntime->getConnections() == 0 &&
@@ -127,7 +127,7 @@ bool ActivePeerConnectionCommand::execute() {
   return false;
 }
 
-void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
+void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
 {
   if(peer.isNull()) {
     return;

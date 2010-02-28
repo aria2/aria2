@@ -36,8 +36,10 @@
 #define _D_DOWNLOAD_ENGINE_FACTORY_H_
 
 #include "common.h"
+
+#include <vector>
+
 #include "SharedHandle.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -53,8 +55,8 @@ public:
   DownloadEngineFactory();
 
   SharedHandle<DownloadEngine>
-  newDownloadEngine(Option* op,
-                    const std::deque<SharedHandle<RequestGroup> >& requestGroups);
+  newDownloadEngine
+  (Option* op, const std::vector<SharedHandle<RequestGroup> >& requestGroups);
 };
 
 } // namespace aria2

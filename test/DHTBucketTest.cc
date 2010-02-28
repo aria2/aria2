@@ -373,7 +373,7 @@ void DHTBucketTest::testGetGoodNodes()
   }
   nodes[3]->markBad();
   nodes[5]->markBad();
-  std::deque<SharedHandle<DHTNode> > goodNodes;
+  std::vector<SharedHandle<DHTNode> > goodNodes;
   bucket.getGoodNodes(goodNodes);
   CPPUNIT_ASSERT_EQUAL((size_t)6, goodNodes.size());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, goodNodes[0]->getPort());

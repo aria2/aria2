@@ -70,7 +70,7 @@ namespace aria2 {
 
 FtpNegotiationCommand::FtpNegotiationCommand
 (int32_t cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
@@ -540,14 +540,14 @@ bool FtpNegotiationCommand::recvPasv() {
   return false;
 }
 
-bool FtpNegotiationCommand::sendRestPasv(const SegmentHandle& segment) {
+bool FtpNegotiationCommand::sendRestPasv(const SharedHandle<Segment>& segment) {
   //dataSocket->setBlockingMode();
   setReadCheckSocket(socket);
   disableWriteCheckSocket();
   return sendRest(segment);
 }
 
-bool FtpNegotiationCommand::sendRest(const SegmentHandle& segment) {
+bool FtpNegotiationCommand::sendRest(const SharedHandle<Segment>& segment) {
   if(ftp->sendRest(segment)) {
     disableWriteCheckSocket();
     sequence = SEQ_RECV_REST;
@@ -617,7 +617,8 @@ bool FtpNegotiationCommand::waitConnection()
   return false;
 }
 
-bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
+bool FtpNegotiationCommand::processSequence
+(const SharedHandle<Segment>& segment) {
   bool doNextSequence = true;
   switch(sequence) {
   case SEQ_RECV_GREETING:

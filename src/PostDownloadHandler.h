@@ -37,6 +37,8 @@
 
 #include "DownloadHandler.h"
 
+#include <vector>
+
 namespace aria2 {
 
 class PostDownloadHandler:public DownloadHandler
@@ -47,12 +49,9 @@ public:
   virtual ~PostDownloadHandler() {}
 
   virtual void
-  getNextRequestGroups(std::deque<SharedHandle<RequestGroup> >& groups,
+  getNextRequestGroups(std::vector<SharedHandle<RequestGroup> >& groups,
                        RequestGroup* requestGroup) = 0;
 };
-
-typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;
-typedef std::deque<PostDownloadHandlerHandle> PostDownloadHandlers;
 
 } // namespace aria2
 

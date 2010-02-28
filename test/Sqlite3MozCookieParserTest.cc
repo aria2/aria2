@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Sqlite3MozCookieParserTest);
 void Sqlite3MozCookieParserTest::testParse()
 {
   Sqlite3MozCookieParser parser;
-  std::deque<Cookie> cookies = parser.parse("cookies.sqlite");
+  std::vector<Cookie> cookies = parser.parse("cookies.sqlite");
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
 
   const Cookie& localhost = cookies[0];

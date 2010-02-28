@@ -157,7 +157,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
   readBytes(buf, buf.size(), in, 4);
   CHECK_STREAM(in, 4);
 
-  std::deque<SharedHandle<DHTNode> > nodes;
+  std::vector<SharedHandle<DHTNode> > nodes;
   // nodes
   for(size_t i = 0; i < numNodes; ++i) {
     // Currently, only IPv4 addresses are supported.

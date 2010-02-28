@@ -45,17 +45,17 @@ class PStringSelect : public PStringDatum
 {
 private:
   
-  std::deque<std::string> _values;
+  std::vector<std::string> _values;
 
-  PStringDatumHandle _next;
+  SharedHandle<PStringDatum> _next;
 
 public:
-  PStringSelect(const std::deque<std::string>& values,
-                const PStringDatumHandle& next):
+  PStringSelect(const std::vector<std::string>& values,
+                const SharedHandle<PStringDatum>& next):
     _values(values),
     _next(next) {}
 
-  PStringSelect(const std::deque<std::string>& values):
+  PStringSelect(const std::vector<std::string>& values):
     _values(values) {}
 
   virtual ~PStringSelect() {}
@@ -65,18 +65,16 @@ public:
     visitor.visit(*this);
   }
 
-  const std::deque<std::string>& getValues() const
+  const std::vector<std::string>& getValues() const
   {
     return _values;
   }
 
-  PStringDatumHandle getNext() const
+  SharedHandle<PStringDatum> getNext() const
   {
     return _next;
   }
 };
-
-typedef SharedHandle<PStringSelect> PStringSelectHandle;
 
 } // namespace aria2
 

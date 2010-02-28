@@ -36,8 +36,10 @@
 #define _D_BNODE_H_
 
 #include "common.h"
+
+#include <vector>
+
 #include "SharedHandle.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -93,10 +95,10 @@ public:
 
   static SharedHandle<DHTBucket> findBucketFor(BNode* b, const unsigned char* key);
 
-  static void findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
+  static void findClosestKNodes(std::vector<SharedHandle<DHTNode> >& nodes,
                                 BNode* b, const unsigned char* key);
 
-  static void enumerateBucket(std::deque<SharedHandle<DHTBucket> >& buckets,
+  static void enumerateBucket(std::vector<SharedHandle<DHTBucket> >& buckets,
                               const BNode* b);
 };
 

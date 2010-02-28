@@ -54,11 +54,10 @@ public:
     numPiece(numPiece),
     pieceLength(pieceLength) {}
 
-  virtual bool validate(Errors& error) {
-    // TODO
+  virtual void validate()
+  {
     bittorrent::checkIndex(message->getIndex(), numPiece);
     bittorrent::checkBegin(message->getBegin(), pieceLength);
-    return true;
   }
 };
 

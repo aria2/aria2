@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <vector>
 
 #include <ares.h>
 
@@ -65,7 +65,7 @@ private:
   STATUS status;
   ares_channel channel;
 
-  std::deque<std::string> _resolvedAddresses;
+  std::vector<std::string> _resolvedAddresses;
   std::string error;
   std::string _hostname;
 public:
@@ -75,7 +75,7 @@ public:
 
   void resolve(const std::string& name);
 
-  const std::deque<std::string>& getResolvedAddresses() const
+  const std::vector<std::string>& getResolvedAddresses() const
   {
     return _resolvedAddresses;
   }

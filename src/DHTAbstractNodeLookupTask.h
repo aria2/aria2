@@ -36,14 +36,17 @@
 #define _D_DHT_ABSTRACT_NODE_LOOKUP_TASK_H_
 
 #include "DHTAbstractTask.h"
+
+#include <deque>
+#include <vector>
+
 #include "DHTMessageCallbackListener.h"
 #include "DHTConstants.h"
-#include <deque>
+#include "DHTNodeLookupEntry.h"
 
 namespace aria2 {
 
 class DHTNode;
-class DHTNodeLookupEntry;
 class DHTMessage;
 
 class DHTAbstractNodeLookupTask:public DHTAbstractTask, public DHTMessageCallbackListener {
@@ -54,8 +57,16 @@ protected:
   
   size_t _inFlightMessage;
   
-  void toEntries(std::deque<SharedHandle<DHTNodeLookupEntry> >& entries,
-                 const std::deque<SharedHandle<DHTNode> >& nodes) const;
+  template<typename Container>
+  void toEntries
+  (Container& entries, const std::vector<SharedHandle<DHTNode> >& nodes) const
+  {
+    for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes.begin();
+        i != nodes.end(); ++i) {
+      SharedHandle<DHTNodeLookupEntry> e(new DHTNodeLookupEntry(*i));
+      entries.push_back(e);
+    }
+  }
 
   void sendMessage();
 
@@ -73,7 +84,7 @@ public:
 
   virtual void onTimeout(const SharedHandle<DHTNode>& node);
 
-  virtual void getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
+  virtual void getNodesFromMessage(std::vector<SharedHandle<DHTNode> >& nodes,
                                    const SharedHandle<DHTMessage>& message) = 0;
   
   virtual void onReceivedInternal(const SharedHandle<DHTMessage>& message) {}

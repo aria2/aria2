@@ -99,7 +99,7 @@ bool TrackerWatcherCommand::execute() {
   if(_trackerRequestGroup.isNull()) {
     _trackerRequestGroup = createAnnounce();
     if(!_trackerRequestGroup.isNull()) {
-      std::deque<Command*> commands;
+      std::vector<Command*> commands;
       try {
         _trackerRequestGroup->createInitialCommand(commands, e);
       } catch(RecoverableException& ex) {
@@ -140,7 +140,7 @@ bool TrackerWatcherCommand::execute() {
 }
 
 std::string TrackerWatcherCommand::getTrackerResponse
-(const RequestGroupHandle& requestGroup)
+(const SharedHandle<RequestGroup>& requestGroup)
 {
   std::stringstream strm;
   unsigned char data[2048];
@@ -164,7 +164,7 @@ void TrackerWatcherCommand::processTrackerResponse
     (reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
      trackerResponse.size());
   while(!_btRuntime->isHalt() && _btRuntime->lessThanMinPeers()) {
-    PeerHandle peer = _peerStorage->getUnusedPeer();
+    SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
     if(peer.isNull()) {
       break;
     }
@@ -182,8 +182,8 @@ void TrackerWatcherCommand::processTrackerResponse
   }
 }
 
-RequestGroupHandle TrackerWatcherCommand::createAnnounce() {
-  RequestGroupHandle rg;
+SharedHandle<RequestGroup> TrackerWatcherCommand::createAnnounce() {
+  SharedHandle<RequestGroup> rg;
   if(_btAnnounce->isAnnounceReady()) {
     rg = createRequestGroup(_btAnnounce->getAnnounceUrl());
     _btAnnounce->announceStart(); // inside it, trackers++.
@@ -209,12 +209,12 @@ static bool backupTrackerIsAvailable
   }
 }
 
-RequestGroupHandle
+SharedHandle<RequestGroup>
 TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 {
-  std::deque<std::string> uris;
+  std::vector<std::string> uris;
   uris.push_back(uri);
-  RequestGroupHandle rg(new RequestGroup(getOption()));
+  SharedHandle<RequestGroup> rg(new RequestGroup(getOption()));
   // If backup tracker is available, only try 2 times for each tracker
   // and if they all fails, then try next one.
   if(backupTrackerIsAvailable(_requestGroup->getDownloadContext())) {

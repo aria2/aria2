@@ -36,11 +36,13 @@
 #define _D_PEER_SESSION_RESOURCE_H_
 
 #include "common.h"
+
+#include <string>
+#include <vector>
+
 #include "BtConstants.h"
 #include "PeerStat.h"
 #include "TimeA2.h"
-#include <string>
-#include <deque>
 
 namespace aria2 {
 
@@ -67,9 +69,9 @@ private:
   BitfieldMan* _bitfieldMan;
   bool _fastExtensionEnabled;
   // fast index set which a peer has sent to localhost.
-  std::deque<size_t> _peerAllowedIndexSet;
+  std::vector<size_t> _peerAllowedIndexSet;
   // fast index set which localhost has sent to a peer.
-  std::deque<size_t> _amAllowedIndexSet;
+  std::vector<size_t> _amAllowedIndexSet;
   bool _extendedMessagingEnabled;
   Extensions _extensions;
   bool _dhtEnabled;
@@ -165,14 +167,14 @@ public:
   void fastExtensionEnabled(bool b);
 
   // fast index set which a peer has sent to localhost.
-  const std::deque<size_t>& peerAllowedIndexSet() const;
+  const std::vector<size_t>& peerAllowedIndexSet() const;
 
   void addPeerAllowedIndex(size_t index);
 
   bool peerAllowedIndexSetContains(size_t index) const;
 
   // fast index set which localhost has sent to a peer.
-  const std::deque<size_t>& amAllowedIndexSet() const
+  const std::vector<size_t>& amAllowedIndexSet() const
   {
     return _amAllowedIndexSet;
   }

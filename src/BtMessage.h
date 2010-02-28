@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
 
 #include "SharedHandle.h"
 #include "BtAbortOutstandingRequestEvent.h"
@@ -69,7 +68,7 @@ public:
 
   virtual void send() = 0;
 
-  virtual bool validate(std::deque<std::string>& errors) = 0;
+  virtual void validate() = 0;
 
   virtual void onAbortOutstandingRequestEvent
   (const BtAbortOutstandingRequestEvent& event) = 0;
@@ -86,7 +85,6 @@ public:
 };
 
 typedef SharedHandle<BtMessage> BtMessageHandle;
-typedef std::deque<BtMessageHandle> BtMessages;
 
 } // namespace aria2
 

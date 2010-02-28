@@ -70,10 +70,11 @@
 
 namespace aria2 {
 
-RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
-                                 unsigned int maxSimultaneousDownloads,
-                                 const Option* option):
-  _reservedGroups(requestGroups),
+RequestGroupMan::RequestGroupMan
+(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
+ unsigned int maxSimultaneousDownloads,
+ const Option* option):
+  _reservedGroups(requestGroups.begin(), requestGroups.end()),
   _logger(LogFactory::getInstance()),
   _maxSimultaneousDownloads(maxSimultaneousDownloads),
   _gidCounter(0),
@@ -95,23 +96,26 @@ bool RequestGroupMan::downloadFinished()
   return _requestGroups.empty() && _reservedGroups.empty();
 }
 
-void RequestGroupMan::addRequestGroup(const RequestGroupHandle& group)
+void RequestGroupMan::addRequestGroup
+(const SharedHandle<RequestGroup>& group)
 {
   _requestGroups.push_back(group);
 }
 
-void RequestGroupMan::addReservedGroup(const RequestGroups& groups)
+void RequestGroupMan::addReservedGroup
+(const std::vector<SharedHandle<RequestGroup> >& groups)
 {
   _reservedGroups.insert(_reservedGroups.end(), groups.begin(), groups.end());
 }
 
-void RequestGroupMan::addReservedGroup(const SharedHandle<RequestGroup>& group)
+void RequestGroupMan::addReservedGroup
+(const SharedHandle<RequestGroup>& group)
 {
   _reservedGroups.push_back(group);
 }
 
 void RequestGroupMan::insertReservedGroup
-(size_t pos, const std::deque<SharedHandle<RequestGroup> >& groups)
+(size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups)
 {
   _reservedGroups.insert
     (_reservedGroups.begin()+std::min(_reservedGroups.size(), pos),
@@ -130,7 +134,7 @@ size_t RequestGroupMan::countRequestGroup() const
   return _requestGroups.size();
 }
 
-RequestGroupHandle RequestGroupMan::getRequestGroup(size_t index) const
+SharedHandle<RequestGroup> RequestGroupMan::getRequestGroup(size_t index) const
 {
   if(index < _requestGroups.size()) {
     return _requestGroups[index];
@@ -342,7 +346,7 @@ public:
           } else {
             group->saveControlFile();
           }
-          RequestGroups nextGroups;
+          std::vector<SharedHandle<RequestGroup> > nextGroups;
           group->postDownloadProcessing(nextGroups);
           if(!nextGroups.empty()) {
             if(_logger->debug()) {
@@ -382,9 +386,9 @@ public:
       if(!group->getSegmentMan().isNull()) {
         bool singleConnection =
           group->getSegmentMan()->getPeerStats().size() == 1;
-        const std::deque<SharedHandle<PeerStat> >& peerStats =
+        const std::vector<SharedHandle<PeerStat> >& peerStats =
           group->getSegmentMan()->getFastestPeerStats();
-        for(std::deque<SharedHandle<PeerStat> >::const_iterator i =
+        for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
               peerStats.begin(); i != peerStats.end(); ++i) {
           if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
             continue;
@@ -467,7 +471,7 @@ void RequestGroupMan::configureRequestGroup
 }
 
 static void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
-                                 std::deque<Command*>& commands,
+                                 std::vector<Command*>& commands,
                                  DownloadEngine* e)
 {
   requestGroup->createInitialCommand(commands, e);
@@ -479,13 +483,13 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   if(_maxSimultaneousDownloads <= _requestGroups.size()) {
     return;
   }
-  RequestGroups temp;
+  std::vector<SharedHandle<RequestGroup> > temp;
   unsigned int count = 0;
   size_t num = _maxSimultaneousDownloads-_requestGroups.size();
   while(count < num && !_reservedGroups.empty()) {
-    RequestGroupHandle groupToAdd = _reservedGroups.front();
+    SharedHandle<RequestGroup> groupToAdd = _reservedGroups.front();
     _reservedGroups.pop_front();
-    Commands commands;
+    std::vector<Command*> commands;
     try {
       if(!groupToAdd->isDependencyResolved()) {
         temp.push_back(groupToAdd);
@@ -525,8 +529,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 
 void RequestGroupMan::save()
 {
-  for(RequestGroups::iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
+  for(std::deque<SharedHandle<RequestGroup> >::iterator itr =
+        _requestGroups.begin(); itr != _requestGroups.end(); ++itr) {
     if((*itr)->allDownloadFinished()) {
       (*itr)->removeControlFile();
     } else {
@@ -541,8 +545,8 @@ void RequestGroupMan::save()
 
 void RequestGroupMan::closeFile()
 {
-  for(RequestGroups::iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
+  for(std::deque<SharedHandle<RequestGroup> >::iterator itr =
+        _requestGroups.begin(); itr != _requestGroups.end(); ++itr) {
     (*itr)->closeFile();
   }
 }
@@ -553,8 +557,8 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   size_t error = 0;
   size_t inprogress = 0;
   downloadresultcode::RESULT lastError = downloadresultcode::FINISHED;
-  for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
-      itr != _downloadResults.end(); ++itr) {
+  for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
+        _downloadResults.begin(); itr != _downloadResults.end(); ++itr) {
     if((*itr)->result == downloadresultcode::FINISHED) {
       ++finished;
     } else {
@@ -562,8 +566,8 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
       lastError = (*itr)->result;
     }
   }
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
+        _requestGroups.begin(); itr != _requestGroups.end(); ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
     if(result->result == downloadresultcode::FINISHED) {
       ++finished;
@@ -613,8 +617,8 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
     }
     o << formatDownloadResult(status, *itr) << "\n";
   }
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
+        _requestGroups.begin(); itr != _requestGroups.end(); ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
     std::string status;
     if(result->result == downloadresultcode::FINISHED) {
@@ -691,9 +695,9 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
   if(!requestGroup->isPreLocalFileCheckEnabled()) {
     return false;
   }
-  std::deque<std::string> files;
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
+  std::vector<std::string> files;
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
+        _requestGroups.begin(); itr != _requestGroups.end(); ++itr) {
     if((*itr).get() != requestGroup) {
       const std::vector<SharedHandle<FileEntry> >& entries =
         (*itr)->getDownloadContext()->getFileEntries();
@@ -711,16 +715,16 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
 
 void RequestGroupMan::halt()
 {
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
+        _requestGroups.begin(); itr != _requestGroups.end(); ++itr) {
     (*itr)->setHaltRequested(true);
   }
 }
 
 void RequestGroupMan::forceHalt()
 {
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
+        _requestGroups.begin(); itr != _requestGroups.end(); ++itr) {
     (*itr)->setForceHaltRequested(true);
   }
 }

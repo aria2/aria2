@@ -36,11 +36,12 @@
 #define _D_SEGMENT_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <unistd.h>
 #include <stdint.h>
-#include <deque>
 #include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -89,9 +90,6 @@ public:
     return getIndex() == segment.getIndex();
   }
 };
-
-typedef SharedHandle<Segment> SegmentHandle;
-typedef std::deque<SegmentHandle> Segments;
 
 } // namespace aria2
 

@@ -120,7 +120,7 @@ static void printProgress
   SharedHandle<PeerStorage> ps =
     e->getBtRegistry()->get(rg->getGID())._peerStorage;
   if(!ps.isNull()) {
-    std::deque<SharedHandle<Peer> > peers;
+    std::vector<SharedHandle<Peer> > peers;
     ps->getActivePeers(peers);
     o << " " << "SEED:"
       << countSeeder(peers.begin(), peers.end());
@@ -250,7 +250,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       std::cout << "\n";
     }
 
-    RequestGroupHandle firstRequestGroup = e->_requestGroupMan->getRequestGroup(0);
+    SharedHandle<RequestGroup> firstRequestGroup =
+      e->_requestGroupMan->getRequestGroup(0);
 
     printProgress(o, firstRequestGroup, e, sizeFormatter);
 
@@ -297,7 +298,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    CheckIntegrityEntryHandle entry = e->_checkIntegrityMan->getPickedEntry();
+    SharedHandle<CheckIntegrityEntry> entry =
+      e->_checkIntegrityMan->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
         << "[Checksum:"

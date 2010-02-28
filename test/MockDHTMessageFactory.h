@@ -62,9 +62,10 @@ public:
   }
 
   virtual SharedHandle<DHTMessage>
-  createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                             const std::string& transactionID)
+  createFindNodeReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+   const std::string& transactionID)
   {
     return SharedHandle<DHTMessage>();
   }
@@ -78,8 +79,9 @@ public:
   }
 
   virtual SharedHandle<DHTMessage>
-  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+  createGetPeersReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
                              const std::string& token,
                              const std::string& transactionID)
   {
@@ -89,7 +91,7 @@ public:
 
   virtual SharedHandle<DHTMessage>
   createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<Peer> >& peers,
+                             const std::vector<SharedHandle<Peer> >& peers,
                              const std::string& token,
                              const std::string& transactionID)
   {

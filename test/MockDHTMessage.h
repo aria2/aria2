@@ -16,9 +16,9 @@ public:
 
   std::string _messageType;
 
-  std::deque<SharedHandle<DHTNode> > _nodes;
+  std::vector<SharedHandle<DHTNode> > _nodes;
 
-  std::deque<SharedHandle<Peer> > _peers;
+  std::vector<SharedHandle<Peer> > _peers;
 
   std::string _token;
 public:

@@ -45,7 +45,7 @@ namespace aria2 {
 
 FtpTunnelResponseCommand::FtpTunnelResponseCommand
 (int cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const HttpConnectionHandle& httpConnection,

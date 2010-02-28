@@ -39,7 +39,6 @@
 
 #include <string>
 #include <vector>
-#include <deque>
 #include <utility>
 
 #include "SharedHandle.h"
@@ -94,7 +93,7 @@ void load(const std::string& torrentFile,
 
 void load(const std::string& torrentFile,
           const SharedHandle<DownloadContext>& ctx,
-          const std::deque<std::string>& uris,
+          const std::vector<std::string>& uris,
           const std::string& overrideName = "");
 
 void loadFromMemory(const unsigned char* content, size_t length,
@@ -104,7 +103,7 @@ void loadFromMemory(const unsigned char* content, size_t length,
 
 void loadFromMemory(const unsigned char* content, size_t length,
                     const SharedHandle<DownloadContext>& ctx,
-                    const std::deque<std::string>& uris,
+                    const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName = "");
 
@@ -115,7 +114,7 @@ void loadFromMemory(const std::string& context,
 
 void loadFromMemory(const std::string& context,
                     const SharedHandle<DownloadContext>& ctx,
-                    const std::deque<std::string>& uris,
+                    const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName = "");
 

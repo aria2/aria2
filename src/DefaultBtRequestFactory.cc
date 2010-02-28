@@ -66,7 +66,7 @@ DefaultBtRequestFactory::~DefaultBtRequestFactory()
   }
 }
 
-void DefaultBtRequestFactory::addTargetPiece(const PieceHandle& piece)
+void DefaultBtRequestFactory::addTargetPiece(const SharedHandle<Piece>& piece)
 {
   pieces.push_back(piece);
 }
@@ -95,7 +95,7 @@ void DefaultBtRequestFactory::removeCompletedPiece() {
                pieces.end());
 }
 
-void DefaultBtRequestFactory::removeTargetPiece(const PieceHandle& piece) {
+void DefaultBtRequestFactory::removeTargetPiece(const SharedHandle<Piece>& piece) {
   pieces.erase(std::remove(pieces.begin(), pieces.end(), piece),
                pieces.end());
   dispatcher->doAbortOutstandingRequestAction(piece);
@@ -142,7 +142,8 @@ void DefaultBtRequestFactory::doChokedAction()
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin();
+      itr != pieces.end(); ++itr) {
     dispatcher->doAbortOutstandingRequestAction(*itr);
     _pieceStorage->cancelPiece(*itr);
   }
@@ -150,7 +151,7 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
 }
 
 void DefaultBtRequestFactory::createRequestMessages
-(std::deque<SharedHandle<BtMessage> >& requests, size_t max)
+(std::vector<SharedHandle<BtMessage> >& requests, size_t max)
 {
   if(requests.size() >= max) {
     return;
@@ -158,7 +159,7 @@ void DefaultBtRequestFactory::createRequestMessages
   size_t getnum = max-requests.size();
   std::vector<size_t> blockIndexes;
   blockIndexes.reserve(getnum);
-  for(Pieces::iterator itr = pieces.begin();
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin();
       itr != pieces.end() && getnum; ++itr) {
     SharedHandle<Piece>& piece = *itr;
     if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
@@ -181,17 +182,17 @@ void DefaultBtRequestFactory::createRequestMessages
 }
 
 void DefaultBtRequestFactory::createRequestMessagesOnEndGame
-(std::deque<SharedHandle<BtMessage> >& requests, size_t max)
+(std::vector<SharedHandle<BtMessage> >& requests, size_t max)
 {
-  for(Pieces::iterator itr = pieces.begin();
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < max; ++itr) {
-    PieceHandle& piece = *itr;
+    SharedHandle<Piece>& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
     array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
 
     piece->getAllMissingBlockIndexes(misbitfield, mislen);
 
-    std::deque<size_t> missingBlockIndexes;
+    std::vector<size_t> missingBlockIndexes;
     size_t blockIndex = 0;
     for(size_t i = 0; i < mislen; ++i) {
       unsigned char bits = misbitfield[i];
@@ -204,7 +205,7 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
     }
     std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
                         *(SimpleRandomizer::getInstance().get()));
-    for(std::deque<size_t>::const_iterator bitr = missingBlockIndexes.begin();
+    for(std::vector<size_t>::const_iterator bitr = missingBlockIndexes.begin();
         bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
       const size_t& blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
@@ -247,7 +248,7 @@ size_t DefaultBtRequestFactory::countMissingBlock()
 }
 
 void DefaultBtRequestFactory::getTargetPieceIndexes
-(std::deque<size_t>& indexes) const
+(std::vector<size_t>& indexes) const
 {
   std::transform(pieces.begin(), pieces.end(), std::back_inserter(indexes),
                  mem_fun_sh(&Piece::getIndex));

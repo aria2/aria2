@@ -98,13 +98,13 @@ void DHTAutoSaveCommand::save()
       }
     }
   }
-  std::deque<SharedHandle<DHTNode> > nodes;
-  std::deque<SharedHandle<DHTBucket> > buckets;
+  std::vector<SharedHandle<DHTNode> > nodes;
+  std::vector<SharedHandle<DHTBucket> > buckets;
   _routingTable->getBuckets(buckets);
-  for(std::deque<SharedHandle<DHTBucket> >::const_iterator i = buckets.begin(); i != buckets.end(); ++i) {
-
+  for(std::vector<SharedHandle<DHTBucket> >::const_iterator i = buckets.begin();
+      i != buckets.end(); ++i) {
     const SharedHandle<DHTBucket>& bucket = *i;
-    std::deque<SharedHandle<DHTNode> > goodNodes;
+    std::vector<SharedHandle<DHTNode> > goodNodes;
     bucket->getGoodNodes(goodNodes);
     nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
   }

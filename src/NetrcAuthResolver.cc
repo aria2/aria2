@@ -40,7 +40,8 @@ namespace aria2 {
 
 NetrcAuthResolver::NetrcAuthResolver():_ignoreDefault(false) {}
 
-AuthConfigHandle NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
+SharedHandle<AuthConfig>
+NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
   if(_userDefinedAuthConfig.isNull()) {
     return findNetrcAuthenticator(hostname);
@@ -49,12 +50,13 @@ AuthConfigHandle NetrcAuthResolver::resolveAuthConfig(const std::string& hostnam
   }
 }
 
-AuthConfigHandle NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
+SharedHandle<AuthConfig>
+NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 {
   if(_netrc.isNull()) {
     return _defaultAuthConfig;
   } else {
-    AuthenticatorHandle auth = _netrc->findAuthenticator(hostname);
+    SharedHandle<Authenticator> auth = _netrc->findAuthenticator(hostname);
     if(auth.isNull()) {
       return _defaultAuthConfig;
     } else {
@@ -68,7 +70,7 @@ AuthConfigHandle NetrcAuthResolver::findNetrcAuthenticator(const std::string& ho
   }
 }
 
-void NetrcAuthResolver::setNetrc(const NetrcHandle& netrc)
+void NetrcAuthResolver::setNetrc(const SharedHandle<Netrc>& netrc)
 {
   _netrc = netrc;
 }

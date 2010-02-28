@@ -39,7 +39,7 @@
 
 #include <cassert>
 #include <string>
-#include <deque>
+#include <vector>
 #include <algorithm>
 
 #include "SharedHandle.h"
@@ -248,7 +248,7 @@ public:
 
   size_t countPeerAllowedIndexSet() const;
 
-  const std::deque<size_t>& getPeerAllowedIndexSet() const;
+  const std::vector<size_t>& getPeerAllowedIndexSet() const;
 
   void addAmAllowedIndex(size_t index);
 
@@ -305,9 +305,6 @@ size_t countSeeder(InputIterator first, InputIterator last)
 {
   return std::count_if(first, last, mem_fun_sh(&Peer::isSeeder));
 }
-
-typedef SharedHandle<Peer> PeerHandle;
-typedef std::deque<PeerHandle> Peers;
 
 } // namespace aria2
 

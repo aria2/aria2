@@ -51,7 +51,7 @@ namespace aria2 {
 
 AbstractProxyResponseCommand::AbstractProxyResponseCommand
 (int cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const HttpConnectionHandle& httpConnection,
@@ -63,7 +63,7 @@ AbstractProxyResponseCommand::AbstractProxyResponseCommand
 AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
 
 bool AbstractProxyResponseCommand::executeInternal() {
-  HttpResponseHandle httpResponse = httpConnection->receiveResponse();
+  SharedHandle<HttpResponse> httpResponse = httpConnection->receiveResponse();
   if(httpResponse.isNull()) {
     // the server has not responded our request yet.
     e->commands.push_back(this);

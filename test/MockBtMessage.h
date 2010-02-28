@@ -80,9 +80,7 @@ public:
 
   virtual void send() {}
 
-  virtual bool validate(std::deque<std::string>& errors) {
-    return false;
-  }
+  virtual void validate() {}
 
   virtual void onAbortOutstandingRequestEvent
   (const BtAbortOutstandingRequestEvent& event) {}

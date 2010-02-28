@@ -179,7 +179,7 @@ void DefaultPeerStorageTest::testActivatePeer() {
   DefaultPeerStorage ps(option);
 
   {
-    std::deque<SharedHandle<Peer> > peers;
+    std::vector<SharedHandle<Peer> > peers;
     ps.getActivePeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
   }
@@ -189,7 +189,7 @@ void DefaultPeerStorageTest::testActivatePeer() {
   ps.addPeer(peer1);
 
   {
-    std::deque<SharedHandle<Peer> > activePeers;
+    std::vector<SharedHandle<Peer> > activePeers;
     ps.getActivePeers(activePeers);
 
     CPPUNIT_ASSERT_EQUAL((size_t)0, activePeers.size());
@@ -197,7 +197,7 @@ void DefaultPeerStorageTest::testActivatePeer() {
   {
     peer1->allocateSessionResource(1024*1024, 1024*1024*10);
 
-    std::deque<SharedHandle<Peer> > activePeers;
+    std::vector<SharedHandle<Peer> > activePeers;
     ps.getActivePeers(activePeers);
     
     CPPUNIT_ASSERT_EQUAL((size_t)1, activePeers.size());

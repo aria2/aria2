@@ -214,9 +214,10 @@ SharedHandle<DHTBucket> DHTBucket::split()
   return rBucket;
 }
 
-void DHTBucket::getGoodNodes(std::deque<SharedHandle<DHTNode> >& goodNodes) const
+void DHTBucket::getGoodNodes
+(std::vector<SharedHandle<DHTNode> >& goodNodes) const
 {
-  goodNodes = _nodes;
+  goodNodes.insert(goodNodes.end(), _nodes.begin(), _nodes.end());  
   goodNodes.erase(std::remove_if(goodNodes.begin(), goodNodes.end(),
                                  mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
 }

@@ -36,9 +36,11 @@
 #define _D_HANDLE_REGISTRY_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <map>
-#include <deque>
+#include <vector>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -67,10 +69,11 @@ public:
     }
   }
 
-  std::deque<SharedHandle<T> > getAll()
+  std::vector<SharedHandle<T> > getAll()
   {
-    std::deque<SharedHandle<T> > l;
-    for(typename HandleMap::const_iterator itr = handleMap.begin(); itr != handleMap.end(); ++itr) {
+    std::vector<SharedHandle<T> > l;
+    for(typename HandleMap::const_iterator itr = handleMap.begin();
+        itr != handleMap.end(); ++itr) {
       const typename HandleMap::value_type& p = *itr;
       l.push_back(p.second);
     }

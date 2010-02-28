@@ -99,7 +99,7 @@ std::string BtExtendedMessage::toString() const {
 
 BtExtendedMessageHandle
 BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
-                          const PeerHandle& peer,
+                          const SharedHandle<Peer>& peer,
                           const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthGreater(1, dataLength, NAME);

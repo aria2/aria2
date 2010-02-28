@@ -83,13 +83,13 @@ void BtSeederStateChoke::PeerEntry::disableOptUnchoking()
 }
 
 void BtSeederStateChoke::unchoke
-(std::deque<BtSeederStateChoke::PeerEntry>& peers)
+(std::vector<BtSeederStateChoke::PeerEntry>& peers)
 {
   int count = (_round == 2) ? 4 : 3;
 
   std::sort(peers.begin(), peers.end());
 
-  std::deque<PeerEntry>::iterator r = peers.begin();
+  std::vector<PeerEntry>::iterator r = peers.begin();
   for(; r != peers.end() && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
     _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->ipaddr.c_str(),
@@ -140,12 +140,13 @@ public:
 };
 
 void
-BtSeederStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet)
+BtSeederStateChoke::executeChoke
+(const std::vector<SharedHandle<Peer> >& peerSet)
 {
   _logger->info("Seeder state, %d choke round started", _round);
   _lastRound.reset();
 
-  std::deque<PeerEntry> peerEntries;
+  std::vector<PeerEntry> peerEntries;
 
   std::for_each(peerSet.begin(), peerSet.end(), ChokingRequired());
 

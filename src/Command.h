@@ -37,7 +37,6 @@
 
 #include "common.h"
 #include <stdint.h>
-#include <deque>
 
 namespace aria2 {
 
@@ -104,8 +103,6 @@ public:
 
   void clearIOEvents();
 };
-
-typedef std::deque<Command*> Commands;
 
 } // namespace aria2
 

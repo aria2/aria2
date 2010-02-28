@@ -82,7 +82,7 @@ static void overrideWithEnv(Option& op, const OptionParser& optionParser,
   }
 }
 
-void option_processing(Option& op, std::deque<std::string>& uris,
+void option_processing(Option& op, std::vector<std::string>& uris,
                        int argc, char* const argv[])
 {
   OptionParser oparser;

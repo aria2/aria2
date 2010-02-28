@@ -274,7 +274,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     logger->info(MSG_NO_PEER_LIST_RECEIVED);
   } else {
     if(!btRuntime->isHalt() && btRuntime->lessThanMinPeers()) {
-      std::deque<SharedHandle<Peer> > peers;
+      std::vector<SharedHandle<Peer> > peers;
       PeerListProcessor().extractPeer(peerData, std::back_inserter(peers));
       peerStorage->addPeer(peers);
     }

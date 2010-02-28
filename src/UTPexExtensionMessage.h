@@ -38,7 +38,7 @@
 #include "ExtensionMessage.h"
 
 #include <utility>
-#include <deque>
+#include <vector>
 
 #include "a2time.h"
 
@@ -53,9 +53,9 @@ class UTPexExtensionMessage:public ExtensionMessage {
 private:
   uint8_t _extensionMessageID;
 
-  std::deque<SharedHandle<Peer> > _freshPeers;
+  std::vector<SharedHandle<Peer> > _freshPeers;
 
-  std::deque<SharedHandle<Peer> > _droppedPeers;
+  std::vector<SharedHandle<Peer> > _droppedPeers;
 
   SharedHandle<PeerStorage> _peerStorage;
 
@@ -66,7 +66,7 @@ private:
   size_t _maxDroppedPeer;
 
   std::pair<std::string, std::string>
-  createCompactPeerListAndFlag(const std::deque<SharedHandle<Peer> >& peers);
+  createCompactPeerListAndFlag(const std::vector<SharedHandle<Peer> >& peers);
 
 public:
   UTPexExtensionMessage(uint8_t extensionMessageID);
@@ -93,7 +93,7 @@ public:
 
   bool addFreshPeer(const SharedHandle<Peer>& peer);
 
-  const std::deque<SharedHandle<Peer> >& getFreshPeers() const
+  const std::vector<SharedHandle<Peer> >& getFreshPeers() const
   {
     return _freshPeers;
   }
@@ -102,7 +102,7 @@ public:
 
   bool addDroppedPeer(const SharedHandle<Peer>& peer);
 
-  const std::deque<SharedHandle<Peer> >& getDroppedPeers() const
+  const std::vector<SharedHandle<Peer> >& getDroppedPeers() const
   {
     return _droppedPeers;
   }

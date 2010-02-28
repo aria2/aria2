@@ -64,7 +64,7 @@ void UriListParser::getOptions(Option& op)
   _optparser.parse(op, ss);
 }
 
-void UriListParser::parseNext(std::deque<std::string>& uris, Option& op)
+void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 {
   if(_line.empty()) {
     getline(_in, _line);

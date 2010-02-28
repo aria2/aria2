@@ -40,6 +40,7 @@
 #include <string>
 #include <deque>
 #include <map>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "a2netcompat.h"
@@ -184,7 +185,7 @@ public:
                                Command* command);
 #endif // ENABLE_ASYNC_DNS
 
-  void addCommand(const std::deque<Command*>& commands);
+  void addCommand(const std::vector<Command*>& commands);
 
   void setStatCalc(const SharedHandle<StatCalc>& statCalc);
 
@@ -228,12 +229,12 @@ public:
    uint16_t port);
 
   SharedHandle<SocketCore>
-  popPooledSocket(const std::deque<std::string>& ipaddrs, uint16_t port);
+  popPooledSocket(const std::vector<std::string>& ipaddrs, uint16_t port);
 
   SharedHandle<SocketCore>
   popPooledSocket
   (std::map<std::string, std::string>& options,
-   const std::deque<std::string>& ipaddrs,
+   const std::vector<std::string>& ipaddrs,
    uint16_t port);
 
   const SharedHandle<CookieStorage>& getCookieStorage() const

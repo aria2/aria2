@@ -33,10 +33,12 @@
  */
 /* copyright --> */
 #include "BNode.h"
-#include "DHTBucket.h"
-#include "DHTNode.h"
+
 #include <functional>
 #include <algorithm>
+
+#include "DHTBucket.h"
+#include "DHTNode.h"
 
 namespace aria2 {
 
@@ -114,7 +116,7 @@ SharedHandle<DHTBucket> BNode::findBucketFor(BNode* b, const unsigned char* key)
 }
 
 
-void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
+void BNode::findClosestKNodes(std::vector<SharedHandle<DHTNode> >& nodes,
                               BNode* b, const unsigned char* key)
 {
   BNode* bnode = findBNodeFor(b, key);
@@ -128,7 +130,7 @@ void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
   if(nodes.size() >= DHTBucket::K) {
     return;
   }
-  std::deque<const BNode*> visited;
+  std::vector<const BNode*> visited;
   visited.push_back(bnode);
 
   BNode* up = bnode->getUp();
@@ -163,7 +165,7 @@ void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
     {
       SharedHandle<DHTBucket> bucket = bnode->getBucket();
       if(!bucket.isNull()) {
-        std::deque<SharedHandle<DHTNode> > goodNodes;
+        std::vector<SharedHandle<DHTNode> > goodNodes;
         bucket->getGoodNodes(goodNodes);
         size_t r = DHTBucket::K-nodes.size();
         if(goodNodes.size() <= r) {
@@ -176,10 +178,10 @@ void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
   }
 }
 
-void BNode::enumerateBucket(std::deque<SharedHandle<DHTBucket> >& buckets,
+void BNode::enumerateBucket(std::vector<SharedHandle<DHTBucket> >& buckets,
                             const BNode* b)
 {
-  std::deque<const BNode*> visited;
+  std::vector<const BNode*> visited;
   visited.push_back(b);
   while(1) {
     if(!b) {

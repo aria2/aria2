@@ -77,7 +77,7 @@ static SharedHandle<Decoder> getContentEncodingDecoder
 
 HttpResponseCommand::HttpResponseCommand
 (int32_t cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const HttpConnectionHandle& httpConnection,
@@ -91,8 +91,8 @@ HttpResponseCommand::~HttpResponseCommand() {}
 
 bool HttpResponseCommand::executeInternal()
 {
-  HttpRequestHandle httpRequest = httpConnection->getFirstHttpRequest();
-  HttpResponseHandle httpResponse = httpConnection->receiveResponse();
+  SharedHandle<HttpRequest> httpRequest = httpConnection->getFirstHttpRequest();
+  SharedHandle<HttpResponse> httpResponse = httpConnection->receiveResponse();
   if(httpResponse.isNull()) {
     // The server has not responded to our request yet.
     // For socket->wantRead() == true, setReadCheckSocket(socket) is already
@@ -213,9 +213,10 @@ bool HttpResponseCommand::shouldInflateContentEncoding
     !fileIsGzipped(httpResponse);
 }
 
-bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpResponse)
+bool HttpResponseCommand::handleDefaultEncoding
+(const SharedHandle<HttpResponse>& httpResponse)
 {
-  HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
+  SharedHandle<HttpRequest> httpRequest = httpResponse->getHttpRequest();
   _requestGroup->adjustFilename
     (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
                                       (_requestGroup->getDownloadContext(),
@@ -244,7 +245,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     _requestGroup->loadAndOpenFile(infoFile);
     File file(_requestGroup->getFirstFilePath());
 
-    SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+    SharedHandle<Segment> segment =
+      _requestGroup->getSegmentMan()->getSegment(cuid, 0);
     // pipelining requires implicit range specified. But the request for
     // this response most likely dones't contains range header. This means
     // we can't continue to use this socket because server sends all entity
@@ -305,9 +307,10 @@ static SharedHandle<Decoder> getContentEncodingDecoder
   return decoder;
 }
 
-bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
+bool HttpResponseCommand::handleOtherEncoding
+(const SharedHandle<HttpResponse>& httpResponse) {
   // We assume that RequestGroup::getTotalLength() == 0 here
-  HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
+  SharedHandle<HttpRequest> httpRequest = httpResponse->getHttpRequest();
 
   if(getOption()->getAsBool(PREF_DRY_RUN)) {
     _requestGroup->initPieceStorage();
@@ -379,7 +382,7 @@ bool HttpResponseCommand::skipResponseBody
 }
 
 HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
-(const HttpResponseHandle& httpResponse,
+(const SharedHandle<HttpResponse>& httpResponse,
  const SharedHandle<Decoder>& transferEncodingDecoder,
  const SharedHandle<Decoder>& contentEncodingDecoder)
 {

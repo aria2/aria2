@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "TimeA2.h"
@@ -76,7 +76,7 @@ private:
     void disableOptUnchoking();
   };
 
-  void unchoke(std::deque<PeerEntry>& peers);
+  void unchoke(std::vector<PeerEntry>& peers);
 
   friend class GenPeerEntry;
   friend class NotInterestedPeer;
@@ -85,7 +85,7 @@ public:
 
   ~BtSeederStateChoke();
 
-  void executeChoke(const std::deque<SharedHandle<Peer> >& peerSet);
+  void executeChoke(const std::vector<SharedHandle<Peer> >& peerSet);
 
   const Time& getLastRound() const { return _lastRound; }
 };

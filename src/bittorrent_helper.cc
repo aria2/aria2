@@ -254,7 +254,7 @@ static void extractFileEntries
         throw DL_ABORT_EX
           (StringFormat(MSG_DIR_TRAVERSAL_DETECTED, path.c_str()).str());
       }
-      std::deque<std::string> uris;
+      std::vector<std::string> uris;
       createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
       SharedHandle<FileEntry> fileEntry
         (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(path)),
@@ -276,7 +276,7 @@ static void extractFileEntries
 
     // For each uri in urlList, if it ends with '/', then
     // concatenate name to it. Specification just says so.
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     for(std::vector<std::string>::const_iterator i = urlList.begin();
         i != urlList.end(); ++i) {
       if(util::endsWith(*i, A2STR::SLASH_C)) {
@@ -360,7 +360,7 @@ static void processRootDictionary
  const BDE& rootDict,
  const std::string& defaultName,
  const std::string& overrideName,
- const std::deque<std::string>& uris)
+ const std::vector<std::string>& uris)
 {
   if(!rootDict.isDict()) {
     throw DL_ABORT_EX("torrent file does not contain a root dictionary.");
@@ -465,12 +465,12 @@ void load(const std::string& torrentFile,
                         bencode::decodeFromFile(torrentFile),
                         torrentFile,
                         overrideName,
-                        std::deque<std::string>());
+                        std::vector<std::string>());
 }
 
 void load(const std::string& torrentFile,
           const SharedHandle<DownloadContext>& ctx,
-          const std::deque<std::string>& uris,
+          const std::vector<std::string>& uris,
           const std::string& overrideName)
 {
   processRootDictionary(ctx,
@@ -490,13 +490,13 @@ void loadFromMemory(const unsigned char* content,
                         bencode::decode(content, length),
                         defaultName,
                         overrideName,
-                        std::deque<std::string>());
+                        std::vector<std::string>());
 }
 
 void loadFromMemory(const unsigned char* content,
                     size_t length,
                     const SharedHandle<DownloadContext>& ctx,
-                    const std::deque<std::string>& uris,
+                    const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
@@ -516,12 +516,12 @@ void loadFromMemory(const std::string& context,
     (ctx,
      bencode::decode(context),
      defaultName, overrideName,
-     std::deque<std::string>());
+     std::vector<std::string>());
 }
 
 void loadFromMemory(const std::string& context,
                     const SharedHandle<DownloadContext>& ctx,
-                    const std::deque<std::string>& uris,
+                    const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {

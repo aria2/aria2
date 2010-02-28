@@ -71,7 +71,7 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
   rg.initPieceStorage();
 
   BtPostDownloadHandler handler;
-  std::deque<SharedHandle<RequestGroup> > groups;
+  std::vector<SharedHandle<RequestGroup> > groups;
   handler.getNextRequestGroups(groups, &rg);
   CPPUNIT_ASSERT_EQUAL((size_t)1, groups.size());
   CPPUNIT_ASSERT_EQUAL

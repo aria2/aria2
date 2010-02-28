@@ -120,7 +120,7 @@ void DownloadContext::setFilePathWithIndex
 
 void DownloadContext::setFileFilter(IntSequence seq)
 {
-  std::deque<int32_t> fileIndexes = seq.flush();
+  std::vector<int32_t> fileIndexes = seq.flush();
   std::sort(fileIndexes.begin(), fileIndexes.end());
   fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
                     fileIndexes.end());

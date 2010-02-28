@@ -50,10 +50,10 @@ public:
 
   virtual void initValidator();
 
-  virtual void onDownloadFinished(std::deque<Command*>& commands,
+  virtual void onDownloadFinished(std::vector<Command*>& commands,
                                   DownloadEngine* e);
 
-  virtual void onDownloadIncomplete(std::deque<Command*>& commands,
+  virtual void onDownloadIncomplete(std::vector<Command*>& commands,
                                     DownloadEngine* e);
 };
 

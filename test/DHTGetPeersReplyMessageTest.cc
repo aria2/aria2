@@ -64,7 +64,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
         std::string(&buf[0], &buf[sizeof(buf)]);
     }
     msg.setClosestKNodes
-      (std::deque<SharedHandle<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
+      (std::vector<SharedHandle<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
 
     std::string msgbody = msg.getBencodedMessage();
 
@@ -75,7 +75,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
   }
   rDict.removeKey("nodes");
   {
-    std::deque<SharedHandle<Peer> > peers;
+    std::vector<SharedHandle<Peer> > peers;
     BDE valuesList = BDE::list();
     for(size_t i = 0; i < 4; ++i) {
       SharedHandle<Peer> peer(new Peer("192.168.0."+util::uitos(i+1), 6881+i));

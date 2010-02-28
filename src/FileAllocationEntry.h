@@ -37,7 +37,8 @@
 
 #include "RequestGroupEntry.h"
 #include "ProgressAwareEntry.h"
-#include <deque>
+
+#include <vector>
 
 namespace aria2 {
 
@@ -61,14 +62,11 @@ public:
 
   void allocateChunk();
 
-  virtual void prepareForNextAction(std::deque<Command*>& commands,
+  virtual void prepareForNextAction(std::vector<Command*>& commands,
                                     DownloadEngine* e) = 0;
 
   void disableDirectIO();
 };
-
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef std::deque<FileAllocationEntryHandle> FileAllocationEntries;
 
 } // namespace aria2
 

@@ -24,12 +24,12 @@ public:
   virtual void doChokedAction() {}
 
   virtual void createRequestMessages
-  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) {}
+  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) {}
 
   virtual void createRequestMessagesOnEndGame
-  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) {}
+  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) {}
 
-  virtual void getTargetPieceIndexes(std::deque<size_t>& indexes) const {}
+  virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const {}
 };
 
 } // namespace aria2

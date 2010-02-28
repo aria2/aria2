@@ -91,7 +91,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
      0);
 
   UTMetadataPostDownloadHandler handler;
-  std::deque<SharedHandle<RequestGroup> > results;
+  std::vector<SharedHandle<RequestGroup> > results;
   handler.getNextRequestGroups(results, _requestGroup.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, results.size());

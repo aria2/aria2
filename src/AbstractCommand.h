@@ -63,7 +63,7 @@ protected:
   SharedHandle<FileEntry> _fileEntry;
   DownloadEngine* e;
   SharedHandle<SocketCore> socket;
-  std::deque<SharedHandle<Segment> > _segments;
+  std::vector<SharedHandle<Segment> > _segments;
 
 #ifdef ENABLE_ASYNC_DNS
   SharedHandle<AsyncNameResolver> _asyncNameResolver;
@@ -74,7 +74,7 @@ protected:
 
   bool asyncResolveHostname();
 
-  const std::deque<std::string>& getResolvedAddresses();
+  const std::vector<std::string>& getResolvedAddresses();
 #endif // ENABLE_ASYNC_DNS
 
   void tryReserved();

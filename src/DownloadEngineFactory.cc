@@ -75,7 +75,7 @@ DownloadEngineFactory::DownloadEngineFactory():
 
 DownloadEngineHandle
 DownloadEngineFactory::newDownloadEngine
-(Option* op, const RequestGroups& requestGroups)
+(Option* op, const std::vector<SharedHandle<RequestGroup> >& requestGroups)
 {
   const size_t MAX_CONCURRENT_DOWNLOADS =
     op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);

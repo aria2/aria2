@@ -51,8 +51,8 @@
 
 namespace aria2 {
 
-BtDependency::BtDependency(const RequestGroupWeakHandle& dependant,
-                           const RequestGroupHandle& dependee):
+BtDependency::BtDependency(const WeakHandle<RequestGroup>& dependant,
+                           const SharedHandle<RequestGroup>& dependee):
   _dependant(dependant),
   _dependee(dependee),
   _logger(LogFactory::getInstance()) {}
@@ -74,13 +74,13 @@ static void copyValues(const SharedHandle<FileEntry>& d,
 bool BtDependency::resolve()
 {
   if(_dependee->getNumCommand() == 0 && _dependee->downloadFinished()) {
-    RequestGroupHandle dependee = _dependee;
+    SharedHandle<RequestGroup> dependee = _dependee;
     // cut reference here
     _dependee.reset();
     SharedHandle<DownloadContext> context(new DownloadContext());
     context->setDir(_dependant->getDownloadContext()->getDir());
     try {
-      DiskAdaptorHandle diskAdaptor =
+      SharedHandle<DiskAdaptor> diskAdaptor =
         dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = util::toString(diskAdaptor);

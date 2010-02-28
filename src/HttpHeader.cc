@@ -104,17 +104,15 @@ const std::string& HttpHeader::getFirst(const std::string& name) const {
   }
 }
 
-std::deque<std::string> HttpHeader::get(const std::string& name) const {
-  std::deque<std::string> v;
-
+std::vector<std::string> HttpHeader::get(const std::string& name) const
+{
+  std::vector<std::string> v;
   std::string n(util::toLower(name));
-
-  std::multimap<std::string, std::string>::const_iterator first =
-    table.lower_bound(n);
-  std::multimap<std::string, std::string>::const_iterator last =
-    table.upper_bound(n);
-
-  while(first != last) {
+  std::pair<std::multimap<std::string, std::string>::const_iterator,
+    std::multimap<std::string, std::string>::const_iterator> itrpair =
+    table.equal_range(n);
+  std::multimap<std::string, std::string>::const_iterator first = itrpair.first;
+  while(first != itrpair.second) {
     v.push_back((*first).second);
     ++first;
   }

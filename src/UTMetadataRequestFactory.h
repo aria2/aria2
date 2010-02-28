@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 
@@ -70,7 +70,7 @@ public:
 
   // Creates at most num of ut_metadata request message and appends
   // them to msgs. pieceStorage is used to identify missing piece.
-  void create(std::deque<SharedHandle<BtMessage> >& msgs, size_t num,
+  void create(std::vector<SharedHandle<BtMessage> >& msgs, size_t num,
               const SharedHandle<PieceStorage>& pieceStorage);
 
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)

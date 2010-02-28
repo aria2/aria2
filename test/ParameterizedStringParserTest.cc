@@ -1,7 +1,6 @@
 #include "ParameterizedStringParser.h"
 
 #include <iostream>
-#include <deque>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -61,7 +60,7 @@ void ParameterizedStringParserTest::testParse_select()
   SharedHandle<PStringSelect> select(dynamic_pointer_cast<PStringSelect>(ls));
   CPPUNIT_ASSERT(!select.isNull());
 
-  std::deque<std::string> values = select->getValues();
+  std::vector<std::string> values = select->getValues();
   CPPUNIT_ASSERT_EQUAL((size_t)3, values.size());
 
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), values[0]);
@@ -113,7 +112,7 @@ void ParameterizedStringParserTest::testParse_segment_select()
   SharedHandle<PStringSelect> select1
     (dynamic_pointer_cast<PStringSelect>(segment1->getNext()));
   CPPUNIT_ASSERT(!select1.isNull());
-  std::deque<std::string> selectValues = select1->getValues();
+  std::vector<std::string> selectValues = select1->getValues();
   CPPUNIT_ASSERT_EQUAL((size_t)3, selectValues.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), selectValues[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), selectValues[1]);

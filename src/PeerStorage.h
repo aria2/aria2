@@ -36,9 +36,12 @@
 #define _D_PEER_STORAGE_H_
 
 #include "common.h"
+
+#include <deque>
+#include <vector>
+
 #include "SharedHandle.h"
 #include "TransferStat.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -57,7 +60,7 @@ public:
   /**
    * Adds all peers in peers to internal peer list.
    */
-  virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers) = 0;
+  virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers) = 0;
 
   /**
    * Returns internal peer list.
@@ -78,7 +81,7 @@ public:
   /**
    * Returns the list of peers which are currently connected from localhost.
    */
-  virtual void getActivePeers(std::deque<SharedHandle<Peer> >& peers) = 0;
+  virtual void getActivePeers(std::vector<SharedHandle<Peer> >& peers) = 0;
 
   /**
    * Calculates current download/upload statistics.

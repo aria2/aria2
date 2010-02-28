@@ -51,7 +51,7 @@ namespace aria2 {
 
 AbstractProxyRequestCommand::AbstractProxyRequestCommand
 (int cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
@@ -76,7 +76,7 @@ bool AbstractProxyRequestCommand::executeInternal() {
        (socket, _connectedHostname, _connectedAddr, _connectedPort)) {
       return true;
     }
-    HttpRequestHandle httpRequest(new HttpRequest());
+    SharedHandle<HttpRequest> httpRequest(new HttpRequest());
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(req);
     httpRequest->setProxyRequest(_proxyRequest);

@@ -59,12 +59,10 @@ void AbstractBtMessage::setPeer(const SharedHandle<Peer>& peer)
   this->peer = peer;
 }
 
-bool AbstractBtMessage::validate(std::deque<std::string>& errors)
+void AbstractBtMessage::validate()
 {
   if(validator.get()) {
-    return validator->validate(errors);
-  } else {
-    return true;
+    validator->validate();
   }
 }
 

@@ -54,12 +54,14 @@ DHTPeerLookupTask::DHTPeerLookupTask
   DHTAbstractNodeLookupTask(bittorrent::getInfoHash(downloadContext)) {}
 
 void
-DHTPeerLookupTask::getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
-                                       const SharedHandle<DHTMessage>& message)
+DHTPeerLookupTask::getNodesFromMessage
+(std::vector<SharedHandle<DHTNode> >& nodes,
+ const SharedHandle<DHTMessage>& message)
 {
-  SharedHandle<DHTGetPeersReplyMessage> m(dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
+  SharedHandle<DHTGetPeersReplyMessage> m
+    (dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
   if(!m.isNull()) {
-    const std::deque<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
+    const std::vector<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
     nodes.insert(nodes.end(), knodes.begin(), knodes.end());
   }
 }

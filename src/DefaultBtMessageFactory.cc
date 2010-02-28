@@ -278,7 +278,8 @@ DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, size_t blockIndex)
+DefaultBtMessageFactory::createRequestMessage
+(const SharedHandle<Piece>& piece, size_t blockIndex)
 {
   BtRequestMessageHandle msg
     (new BtRequestMessage(piece->getIndex(),

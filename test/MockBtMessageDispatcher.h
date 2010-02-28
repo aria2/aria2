@@ -12,7 +12,7 @@ namespace aria2 {
 
 class MockBtMessageDispatcher : public BtMessageDispatcher {
 public:
-  BtMessages messageQueue;
+  std::deque<SharedHandle<BtMessage> > messageQueue;
 
   virtual ~MockBtMessageDispatcher() {}
 
@@ -20,7 +20,9 @@ public:
     messageQueue.push_back(btMessage);
   }
 
-  virtual void addMessageToQueue(const std::deque<SharedHandle<BtMessage> >& btMessages) {
+  virtual void addMessageToQueue
+  (const std::vector<SharedHandle<BtMessage> >& btMessages)
+  {
     std::copy(btMessages.begin(), btMessages.end(), back_inserter(messageQueue));
   }
 

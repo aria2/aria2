@@ -35,7 +35,6 @@
 #include "DHTConnectionImpl.h"
 
 #include <utility>
-#include <deque>
 #include <algorithm>
 
 #include "LogFactory.h"
@@ -54,11 +53,11 @@ DHTConnectionImpl::~DHTConnectionImpl() {}
 
 bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
 {
-  std::deque<int32_t> randPorts = ports.flush();
+  std::vector<int32_t> randPorts = ports.flush();
   std::random_shuffle(randPorts.begin(), randPorts.end(),
                       *SimpleRandomizer::getInstance().get());
   
-  for(std::deque<int32_t>::const_iterator portItr = randPorts.begin();
+  for(std::vector<int32_t>::const_iterator portItr = randPorts.begin();
       portItr != randPorts.end(); ++portItr) {
     if(!(0 < (*portItr) && (*portItr) <= 65535)) {
       continue;

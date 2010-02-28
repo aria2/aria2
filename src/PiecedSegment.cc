@@ -38,7 +38,8 @@
 
 namespace aria2 {
 
-PiecedSegment::PiecedSegment(size_t pieceLength, const PieceHandle& piece):
+PiecedSegment::PiecedSegment
+(size_t pieceLength, const SharedHandle<Piece>& piece):
   _pieceLength(pieceLength), _overflowLength(0), _piece(piece)
 {
   size_t index;
@@ -123,7 +124,7 @@ void PiecedSegment::clear()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-PieceHandle PiecedSegment::getPiece() const
+SharedHandle<Piece> PiecedSegment::getPiece() const
 {
   return _piece;
 }

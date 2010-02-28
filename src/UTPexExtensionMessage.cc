@@ -71,11 +71,13 @@ std::string UTPexExtensionMessage::getPayload()
 }
 
 std::pair<std::string, std::string>
-UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
+UTPexExtensionMessage::createCompactPeerListAndFlag
+(const std::vector<SharedHandle<Peer> >& peers)
 {
   std::string addrstring;
   std::string flagstring;
-  for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); ++itr) {
+  for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin();
+      itr != peers.end(); ++itr) {
     unsigned char compact[6];
     if(bittorrent::createcompact(compact, (*itr)->ipaddr, (*itr)->port)) {
       addrstring.append(&compact[0], &compact[6]);
@@ -96,7 +98,7 @@ void UTPexExtensionMessage::doReceivedAction()
   _peerStorage->addPeer(_freshPeers);
 }
 
-bool UTPexExtensionMessage::addFreshPeer(const PeerHandle& peer)
+bool UTPexExtensionMessage::addFreshPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
      !peer->getFirstContactTime().elapsed(_interval)) {
@@ -112,7 +114,7 @@ bool UTPexExtensionMessage::freshPeersAreFull() const
   return _freshPeers.size() >= _maxFreshPeer;
 }
 
-bool UTPexExtensionMessage::addDroppedPeer(const PeerHandle& peer)
+bool UTPexExtensionMessage::addDroppedPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
      !peer->getBadConditionStartTime().elapsed(_interval)) {

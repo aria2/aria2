@@ -54,16 +54,14 @@ public:
     _numPiece(numPiece),
     _pieceLength(pieceLength) {}
 
-  virtual bool validate(Errors& errors)
+  virtual void validate()
   {
-    // TODO
     bittorrent::checkIndex(_message->getIndex(), _numPiece);
     bittorrent::checkBegin(_message->getBegin(), _pieceLength);
     bittorrent::checkLength(_message->getLength());
     bittorrent::checkRange(_message->getBegin(),
                            _message->getLength(),
                            _pieceLength);
-    return true;
   }
 };
 

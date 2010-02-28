@@ -36,7 +36,7 @@
 #define _D_DHT_SETUP_H_
 
 #include "common.h"
-#include <deque>
+#include <vector>
 
 namespace aria2 {
 class Logger;
@@ -55,7 +55,7 @@ public:
 
   ~DHTSetup();
 
-  void setup(std::deque<Command*>& commands,
+  void setup(std::vector<Command*>& commands,
              DownloadEngine* e, const Option* option);
 
   static bool initialized();

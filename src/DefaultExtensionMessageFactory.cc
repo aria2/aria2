@@ -60,7 +60,7 @@ DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
   _logger(LogFactory::getInstance()) {}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
-(const PeerHandle& peer,
+(const SharedHandle<Peer>& peer,
  const SharedHandle<ExtensionMessageRegistry>& registry):
   _peer(peer),
   _registry(registry),
@@ -163,7 +163,7 @@ void DefaultExtensionMessageFactory::setPeerStorage
   _peerStorage = peerStorage;
 }
 
-void DefaultExtensionMessageFactory::setPeer(const PeerHandle& peer)
+void DefaultExtensionMessageFactory::setPeer(const SharedHandle<Peer>& peer)
 {
   _peer = peer;
 }

@@ -36,8 +36,10 @@
 #define _D_NUMBER_DECORATOR_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -47,8 +49,6 @@ public:
 
   virtual std::string decorate(unsigned int number) = 0;
 };
-
-typedef SharedHandle<NumberDecorator> NumberDecoratorHandle;
 
 } // namespace aria2;
 

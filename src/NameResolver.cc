@@ -46,7 +46,7 @@ namespace aria2 {
 
 NameResolver::NameResolver():_socktype(0), _family(AF_UNSPEC) {}
 
-void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
+void NameResolver::resolve(std::vector<std::string>& resolvedAddresses,
                            const std::string& hostname)
 {
   struct addrinfo* res;

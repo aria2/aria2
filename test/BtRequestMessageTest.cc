@@ -269,9 +269,7 @@ void BtRequestMessageTest::testValidate() {
   msg.setBtMessageValidator
     (SharedHandle<BtMessageValidator>
      (new RangeBtMessageValidator(&msg, 1024, 256*1024)));
-  std::deque<std::string> errors;
-
-  msg.validate(errors);
+  msg.validate();
 }
 
 void BtRequestMessageTest::testValidate_lengthTooLong() {
@@ -279,9 +277,8 @@ void BtRequestMessageTest::testValidate_lengthTooLong() {
   msg.setBtMessageValidator
     (SharedHandle<BtMessageValidator>
      (new RangeBtMessageValidator(&msg, 1024, 256*1024)));
-  std::deque<std::string> errors;
   try {
-    msg.validate(errors);
+    msg.validate();
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(DlAbortEx& e) {
     CPPUNIT_ASSERT_EQUAL(std::string("Length too long: 16385 > 16KB"),

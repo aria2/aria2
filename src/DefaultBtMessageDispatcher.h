@@ -36,6 +36,9 @@
 #define _D_DEFAULT_BT_MESSAGE_DISPATCHER_H_
 
 #include "BtMessageDispatcher.h"
+
+#include <deque>
+
 #include "a2time.h"
 
 namespace aria2 {
@@ -70,7 +73,8 @@ public:
   
   virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage);
 
-  virtual void addMessageToQueue(const std::deque<SharedHandle<BtMessage> >& btMessages);
+  virtual void addMessageToQueue
+  (const std::vector<SharedHandle<BtMessage> >& btMessages);
 
   virtual void sendMessages();
 
@@ -92,8 +96,11 @@ public:
     return messageQueue.size();
   }
 
-  virtual size_t countOutstandingRequest();
-
+  virtual size_t countOutstandingRequest()
+  {
+    return requestSlots.size();
+  }
+  
   virtual bool isOutstandingRequest(size_t index, size_t blockIndex);
 
   virtual RequestSlot getOutstandingRequest(size_t index, uint32_t begin, size_t length);
@@ -109,7 +116,7 @@ public:
     return messageQueue;
   }
 
-  const RequestSlots& getRequestSlots() const
+  const std::deque<RequestSlot>& getRequestSlots() const
   {
     return requestSlots;
   }

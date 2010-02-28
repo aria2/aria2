@@ -39,6 +39,7 @@
 
 #include <string>
 #include <deque>
+#include <vector>
 #include <ostream>
 
 #include "SharedHandle.h"
@@ -78,7 +79,7 @@ public:
   FileEntry();
 
   FileEntry(const std::string& path, uint64_t length, off_t offset,
-            const std::deque<std::string>& uris = std::deque<std::string>());
+            const std::vector<std::string>& uris = std::vector<std::string>());
 
   ~FileEntry();
 
@@ -133,9 +134,9 @@ public:
     return _spentUris;
   }
 
-  void setUris(const std::deque<std::string>& uris)
+  void setUris(const std::vector<std::string>& uris)
   {
-    _uris = uris;
+    _uris = std::deque<std::string>(uris.begin(), uris.end());
   }
 
   template<typename InputIterator>
@@ -145,7 +146,7 @@ public:
   }
 
   // Inserts _uris and _spentUris into uris.
-  void getUris(std::deque<std::string>& uris) const;
+  void getUris(std::vector<std::string>& uris) const;
 
   void setContentType(const std::string& contentType)
   {
@@ -240,9 +241,6 @@ public:
   }
 };
 
-typedef SharedHandle<FileEntry> FileEntryHandle;
-typedef std::deque<FileEntryHandle> FileEntries;
-
 // Returns the first FileEntry which isRequested() method returns
 // true.  If no such FileEntry exists, then returns
 // SharedHandle<FileEntry>().
@@ -298,7 +296,7 @@ void writeFilePath
     o << "n/a";
   } else {
     if(e->getPath().empty()) {
-      std::deque<std::string> uris;
+      std::vector<std::string> uris;
       e->getUris(uris);
       if(uris.empty()) {
         o << "n/a";

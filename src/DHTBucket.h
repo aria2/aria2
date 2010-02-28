@@ -36,11 +36,14 @@
 #define _D_DHT_BUCKET_H_
 
 #include "common.h"
+
+#include <string>
+#include <deque>
+#include <vector>
+
 #include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "TimeA2.h"
-#include <string>
-#include <deque>
 
 namespace aria2 {
 
@@ -123,7 +126,7 @@ public:
     return _nodes;
   }
 
-  void getGoodNodes(std::deque<SharedHandle<DHTNode> >& nodes) const;
+  void getGoodNodes(std::vector<SharedHandle<DHTNode> >& nodes) const;
 
   void dropNode(const SharedHandle<DHTNode>& node);
 

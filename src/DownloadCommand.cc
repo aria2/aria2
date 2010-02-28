@@ -67,7 +67,7 @@ namespace aria2 {
 static const size_t BUFSIZE = 16*1024;
 
 DownloadCommand::DownloadCommand(int cuid,
-                                 const RequestHandle& req,
+                                 const SharedHandle<Request>& req,
                                  const SharedHandle<FileEntry>& fileEntry,
                                  RequestGroup* requestGroup,
                                  DownloadEngine* e,
@@ -112,7 +112,7 @@ bool DownloadCommand::executeInternal() {
     return false;
   }
   setReadCheckSocket(socket);
-  SegmentHandle segment = _segments.front();
+  SharedHandle<Segment> segment = _segments.front();
 
   size_t bufSize;
   if(segment->getLength() > 0) {
@@ -279,7 +279,8 @@ bool DownloadCommand::prepareForNextSegment() {
       }
     }
 #ifdef ENABLE_MESSAGE_DIGEST
-    CheckIntegrityEntryHandle entry(new ChecksumCheckIntegrityEntry(_requestGroup));
+    SharedHandle<CheckIntegrityEntry> entry
+      (new ChecksumCheckIntegrityEntry(_requestGroup));
     if(entry->isValidationReady()) {
       entry->initValidator();
       // TODO do we need cuttrailinggarbage here?
@@ -293,11 +294,11 @@ bool DownloadCommand::prepareForNextSegment() {
     // The number of segments should be 1 in order to pass through the next
     // segment.
     if(_segments.size() == 1) {
-      SegmentHandle tempSegment = _segments.front();
+      SharedHandle<Segment> tempSegment = _segments.front();
       if(!tempSegment->complete()) {
         return prepareForRetry(0);
       }
-      SegmentHandle nextSegment =
+      SharedHandle<Segment> nextSegment =
         _requestGroup->getSegmentMan()->getSegment(cuid,
                                                    tempSegment->getIndex()+1);
       if(!nextSegment.isNull() && nextSegment->getWrittenLength() == 0) {

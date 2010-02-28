@@ -36,10 +36,12 @@
 #define _D_DHT_ROUTING_TABLE_DESERIALIZER_H_
 
 #include "common.h"
+
+#include <vector>
+#include <iosfwd>
+
 #include "SharedHandle.h"
 #include "TimeA2.h"
-#include <deque>
-#include <iosfwd>
 
 namespace aria2 {
 
@@ -49,7 +51,7 @@ class DHTRoutingTableDeserializer {
 private:
   SharedHandle<DHTNode> _localNode;
 
-  std::deque<SharedHandle<DHTNode> > _nodes;
+  std::vector<SharedHandle<DHTNode> > _nodes;
 
   Time _serializedTime;
 public:
@@ -62,7 +64,7 @@ public:
     return _localNode;
   }
 
-  const std::deque<SharedHandle<DHTNode> >& getNodes() const
+  const std::vector<SharedHandle<DHTNode> >& getNodes() const
   {
     return _nodes;
   }

@@ -68,19 +68,20 @@ DefaultPeerStorage::~DefaultPeerStorage()
 
 class FindIdenticalPeer {
 private:
-  PeerHandle _peer;
+  SharedHandle<Peer> _peer;
 public:
-  FindIdenticalPeer(const PeerHandle& peer):_peer(peer) {}
+  FindIdenticalPeer(const SharedHandle<Peer>& peer):_peer(peer) {}
 
-  bool operator()(const PeerHandle& peer) const {
+  bool operator()(const SharedHandle<Peer>& peer) const {
     return (_peer == peer) ||
       ((_peer->ipaddr == peer->ipaddr) && (_peer->port == peer->port));
   }
 };
 
-bool DefaultPeerStorage::isPeerAlreadyAdded(const PeerHandle& peer)
+bool DefaultPeerStorage::isPeerAlreadyAdded(const SharedHandle<Peer>& peer)
 {
-  return std::find_if(peers.begin(), peers.end(), FindIdenticalPeer(peer)) != peers.end();
+  return std::find_if(peers.begin(), peers.end(),
+                      FindIdenticalPeer(peer)) != peers.end();
 }
 
 static size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
@@ -93,7 +94,7 @@ static size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
     btRuntime->getMaxPeers()+(btRuntime->getMaxPeers() >> 2);
 }
 
-bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
+bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
   if(isPeerAlreadyAdded(peer)) {
     if(logger->debug()) {
       logger->debug("Adding %s:%u is rejected because it has been already"
@@ -109,10 +110,11 @@ bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
   return true;
 }
 
-void DefaultPeerStorage::addPeer(const Peers& peers) {
-  for(Peers::const_iterator itr = peers.begin();
+void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
+{
+  for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin();
       itr != peers.end(); ++itr) {
-    const PeerHandle& peer = *itr;
+    const SharedHandle<Peer>& peer = *itr;
     if(addPeer(peer)) {
       if(logger->debug()) {
         logger->debug(MSG_ADDING_PEER, peer->ipaddr.c_str(), peer->port);
@@ -121,20 +123,21 @@ void DefaultPeerStorage::addPeer(const Peers& peers) {
   }  
 }
 
-const Peers& DefaultPeerStorage::getPeers() {
+const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getPeers()
+{
   return peers;
 }
 
 class FindFinePeer {
 public:
-  bool operator()(const PeerHandle& peer) const {
+  bool operator()(const SharedHandle<Peer>& peer) const {
     return peer->unused() && peer->isGood();
   }
 };
 
-PeerHandle DefaultPeerStorage::getUnusedPeer() {
-  Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
-                                           FindFinePeer());
+SharedHandle<Peer> DefaultPeerStorage::getUnusedPeer() {
+  std::deque<SharedHandle<Peer> >::const_iterator itr =
+    std::find_if(peers.begin(), peers.end(), FindFinePeer());
   if(itr == peers.end()) {
     return SharedHandle<Peer>();
   } else {
@@ -147,17 +150,18 @@ private:
   std::string ipaddr;
   uint16_t port;
 public:
-  FindPeer(const std::string& ipaddr, uint16_t port):ipaddr(ipaddr), port(port) {}
+  FindPeer(const std::string& ipaddr, uint16_t port):
+    ipaddr(ipaddr), port(port) {}
 
-  bool operator()(const PeerHandle& peer) const {
+  bool operator()(const SharedHandle<Peer>& peer) const {
     return ipaddr == peer->ipaddr && port == peer->port;
   }
 };
 
-PeerHandle DefaultPeerStorage::getPeer(const std::string& ipaddr,
-                                       uint16_t port) const {
-  Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
-                                           FindPeer(ipaddr, port));
+SharedHandle<Peer> DefaultPeerStorage::getPeer(const std::string& ipaddr,
+                                               uint16_t port) const {
+  std::deque<SharedHandle<Peer> >::const_iterator itr =
+    std::find_if(peers.begin(), peers.end(), FindPeer(ipaddr, port));
   if(itr == peers.end()) {
     return SharedHandle<Peer>();
   } else {
@@ -175,9 +179,9 @@ bool DefaultPeerStorage::isPeerAvailable() {
 
 class CollectActivePeer {
 private:
-  std::deque<SharedHandle<Peer> >& _activePeers;
+  std::vector<SharedHandle<Peer> >& _activePeers;
 public:
-  CollectActivePeer(std::deque<SharedHandle<Peer> >& activePeers):
+  CollectActivePeer(std::vector<SharedHandle<Peer> >& activePeers):
     _activePeers(activePeers) {}
 
   void operator()(const SharedHandle<Peer>& peer)
@@ -188,7 +192,8 @@ public:
   }
 };
 
-void DefaultPeerStorage::getActivePeers(std::deque<SharedHandle<Peer> >& activePeers)
+void DefaultPeerStorage::getActivePeers
+(std::vector<SharedHandle<Peer> >& activePeers)
 {
   std::for_each(peers.begin(), peers.end(), CollectActivePeer(activePeers));
 }
@@ -214,12 +219,12 @@ TransferStat DefaultPeerStorage::calculateStat()
     }
     _lastTransferStatMapUpdated.reset();
     _peerTransferStatMap.clear();
-    std::deque<SharedHandle<Peer> > activePeers;
+    std::vector<SharedHandle<Peer> > activePeers;
     getActivePeers(activePeers);
     struct timeval now;
     gettimeofday(&now, 0);
-    for(std::deque<SharedHandle<Peer> >::const_iterator i = activePeers.begin();
-        i != activePeers.end(); ++i) {
+    for(std::vector<SharedHandle<Peer> >::const_iterator i =
+          activePeers.begin(); i != activePeers.end(); ++i) {
       TransferStat s;
       s.downloadSpeed = (*i)->calculateDownloadSpeed(now);
       s.uploadSpeed = (*i)->calculateUploadSpeed(now);
@@ -261,10 +266,10 @@ TransferStat DefaultPeerStorage::getTransferStatFor
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
-  Peers temp;
-  for(Peers::reverse_iterator itr = peers.rbegin();
+  std::deque<SharedHandle<Peer> > temp;
+  for(std::deque<SharedHandle<Peer> >::reverse_iterator itr = peers.rbegin();
       itr != peers.rend(); ++itr) {
-    const PeerHandle& p = *itr;
+    const SharedHandle<Peer>& p = *itr;
     if(p->unused() && delSize > 0) {
       onErasingPeer(p);
       delSize--;
@@ -293,9 +298,10 @@ void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
   }
 }
 
-void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
+void DefaultPeerStorage::returnPeer(const SharedHandle<Peer>& peer)
 {
-  Peers::iterator itr = std::find(peers.begin(), peers.end(), peer);
+  std::deque<SharedHandle<Peer> >::iterator itr =
+    std::find(peers.begin(), peers.end(), peer);
   if(itr == peers.end()) {
     if(logger->debug()) {
       logger->debug("Cannot find peer %s:%u in PeerStorage.",
@@ -321,7 +327,7 @@ bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 
 void DefaultPeerStorage::executeChoke()
 {
-  std::deque<SharedHandle<Peer> > activePeers;
+  std::vector<SharedHandle<Peer> > activePeers;
   getActivePeers(activePeers);
   if(_pieceStorage->downloadFinished()) {
     return _seederStateChoke->executeChoke(activePeers);

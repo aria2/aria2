@@ -45,7 +45,7 @@ public:
 
   virtual ~BtFileAllocationEntry();
 
-  virtual void prepareForNextAction(std::deque<Command*>& commands,
+  virtual void prepareForNextAction(std::vector<Command*>& commands,
                                     DownloadEngine* e);
 };
 

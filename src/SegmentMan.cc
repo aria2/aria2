@@ -54,7 +54,7 @@
 
 namespace aria2 {
 
-SegmentEntry::SegmentEntry(cuid_t cuid, const SegmentHandle& segment):
+SegmentEntry::SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment):
   cuid(cuid), segment(segment) {}
 
 SegmentEntry::~SegmentEntry() {}
@@ -110,8 +110,8 @@ void SegmentMan::setDownloadContext
   _downloadContext = downloadContext;
 }
 
-SegmentHandle SegmentMan::checkoutSegment(cuid_t cuid,
-                                          const PieceHandle& piece)
+SharedHandle<Segment> SegmentMan::checkoutSegment
+(cuid_t cuid, const SharedHandle<Piece>& piece)
 {
   if(piece.isNull()) {
     return SharedHandle<Segment>();
@@ -119,7 +119,7 @@ SegmentHandle SegmentMan::checkoutSegment(cuid_t cuid,
   if(logger->debug()) {
     logger->debug("Attach segment#%d to CUID#%d.", piece->getIndex(), cuid);
   }
-  SegmentHandle segment;
+  SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {
     segment.reset(new GrowSegment(piece));
   } else {
@@ -155,8 +155,8 @@ SegmentHandle SegmentMan::checkoutSegment(cuid_t cuid,
   return segment;
 }
 
-void SegmentMan::getInFlightSegment(std::deque<SharedHandle<Segment> >& segments,
-                                    cuid_t cuid)
+void SegmentMan::getInFlightSegment
+(std::vector<SharedHandle<Segment> >& segments, cuid_t cuid)
 {
   for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end(); ++itr) {
@@ -167,22 +167,23 @@ void SegmentMan::getInFlightSegment(std::deque<SharedHandle<Segment> >& segments
   }
 }
 
-SegmentHandle SegmentMan::getSegment(cuid_t cuid) {
-  PieceHandle piece =
+SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid) {
+  SharedHandle<Piece> piece =
     _pieceStorage->getSparseMissingUnusedPiece
     (_ignoreBitfield.getFilterBitfield(),_ignoreBitfield.getBitfieldLength());
   return checkoutSegment(cuid, piece);
 }
 
-void SegmentMan::getSegment(std::deque<SharedHandle<Segment> >& segments,
-                            cuid_t cuid,
-                            const SharedHandle<FileEntry>& fileEntry,
-                            size_t maxSegments)
+void SegmentMan::getSegment
+(std::vector<SharedHandle<Segment> >& segments,
+ cuid_t cuid,
+ const SharedHandle<FileEntry>& fileEntry,
+ size_t maxSegments)
 {
   BitfieldMan filter(_ignoreBitfield);
   filter.enableFilter();
   filter.addNotFilter(fileEntry->getOffset(), fileEntry->getLength());
-  std::deque<SharedHandle<Segment> > pending;
+  std::vector<SharedHandle<Segment> > pending;
   while(segments.size() < maxSegments) {
     SharedHandle<Segment> segment =
       checkoutSegment(cuid,
@@ -198,13 +199,13 @@ void SegmentMan::getSegment(std::deque<SharedHandle<Segment> >& segments,
       segments.push_back(segment);
     }
   }
-  for(std::deque<SharedHandle<Segment> >::const_iterator i = pending.begin();
+  for(std::vector<SharedHandle<Segment> >::const_iterator i = pending.begin();
       i != pending.end(); ++i) {
     cancelSegment(cuid, *i);
   }
 }
 
-SegmentHandle SegmentMan::getSegment(cuid_t cuid, size_t index) {
+SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid, size_t index) {
   if(_downloadContext->getNumPieces() <= index) {
     return SharedHandle<Segment>();
   }
@@ -250,9 +251,9 @@ void SegmentMan::cancelSegment
 
 class FindSegmentEntry {
 private:
-  SegmentHandle _segment;
+  SharedHandle<Segment> _segment;
 public:
-  FindSegmentEntry(const SegmentHandle& segment):_segment(segment) {}
+  FindSegmentEntry(const SharedHandle<Segment>& segment):_segment(segment) {}
 
   bool operator()(const SegmentEntryHandle& segmentEntry) const
   {
@@ -260,7 +261,8 @@ public:
   }
 };
 
-bool SegmentMan::completeSegment(cuid_t cuid, const SegmentHandle& segment) {
+bool SegmentMan::completeSegment
+(cuid_t cuid, const SharedHandle<Segment>& segment) {
   _pieceStorage->completePiece(segment->getPiece());
   _pieceStorage->advertisePiece(cuid, segment->getPiece()->getIndex());
   SegmentEntries::iterator itr = std::find_if(usedSegmentEntries.begin(),
@@ -288,7 +290,7 @@ uint64_t SegmentMan::getDownloadLength() const {
 
 void SegmentMan::registerPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
-  for(std::deque<SharedHandle<PeerStat> >::iterator i = peerStats.begin();
+  for(std::vector<SharedHandle<PeerStat> >::iterator i = peerStats.begin();
       i != peerStats.end(); ++i) {
     if((*i)->getStatus() == PeerStat::IDLE) {
       *i = peerStat;
@@ -314,7 +316,7 @@ public:
 
 void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
-  std::deque<SharedHandle<PeerStat> >::iterator i =
+  std::vector<SharedHandle<PeerStat> >::iterator i =
     std::find_if(_fastestPeerStats.begin(), _fastestPeerStats.end(),
                  PeerStatHostProtoEqual(peerStat));
   if(i == _fastestPeerStats.end()) {
@@ -335,7 +337,7 @@ unsigned int SegmentMan::calculateDownloadSpeed()
   if(_lastPeerStatDlspdMapUpdated.elapsedInMillis(250)) {
     _lastPeerStatDlspdMapUpdated.reset();
     _peerStatDlspdMap.clear();
-    for(std::deque<SharedHandle<PeerStat> >::const_iterator i =
+    for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
           peerStats.begin(); i != peerStats.end(); ++i) {
       if((*i)->getStatus() == PeerStat::ACTIVE) {
         unsigned int s = (*i)->calculateDownloadSpeed();

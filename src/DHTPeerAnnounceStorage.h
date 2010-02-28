@@ -36,8 +36,11 @@
 #define _D_DHT_PEER_ANNOUNCE_STORAGE_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <deque>
+#include <vector>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -68,7 +71,7 @@ public:
 
   bool contains(const unsigned char* infoHash) const;
 
-  void getPeers(std::deque<SharedHandle<Peer> >& peers,
+  void getPeers(std::vector<SharedHandle<Peer> >& peers,
                 const unsigned char* infoHash);
 
   // drop peer announce entry which is not updated in the past

@@ -36,7 +36,7 @@
 #define _D_BT_SETUP_H_
 
 #include "common.h"
-#include <deque>
+#include <vector>
 
 namespace aria2 {
 
@@ -52,7 +52,7 @@ private:
 public:
   BtSetup();
 
-  void setup(std::deque<Command*>& commands,
+  void setup(std::vector<Command*>& commands,
              RequestGroup* requestGroup,
              DownloadEngine* e,
              const Option* option);

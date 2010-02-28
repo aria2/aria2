@@ -13,7 +13,7 @@ class MockPeerStorage : public PeerStorage {
 private:
   TransferStat stat;
   std::deque<SharedHandle<Peer> > peers;
-  std::deque<SharedHandle<Peer> > activePeers;
+  std::vector<SharedHandle<Peer> > activePeers;
   int _numChokeExecuted;
 public:
   MockPeerStorage():_numChokeExecuted(0) {}
@@ -24,7 +24,7 @@ public:
     return true;
   }
 
-  virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers) {
+  virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers) {
     std::copy(peers.begin(), peers.end(), back_inserter(this->peers));
   }
 
@@ -40,12 +40,12 @@ public:
     return false;
   }
   
-  void setActivePeers(const std::deque<SharedHandle<Peer> >& activePeers)
+  void setActivePeers(const std::vector<SharedHandle<Peer> >& activePeers)
   {
     this->activePeers = activePeers;
   }
 
-  virtual void getActivePeers(std::deque<SharedHandle<Peer> >& peers) {
+  virtual void getActivePeers(std::vector<SharedHandle<Peer> >& peers) {
     peers.insert(peers.end(), activePeers.begin(), activePeers.end());
   }
 

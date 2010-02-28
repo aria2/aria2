@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <vector>
 #include <set>
 
 #include "SharedHandle.h"
@@ -56,9 +56,9 @@ const std::set<std::string>& listRequestOptions();
 // it is used as a content of torrent file instead. In this function,
 // force-sequential is ignored.
 void createRequestGroupForBitTorrent
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
- const std::deque<std::string>& uris,
+ const std::vector<std::string>& uris,
  const std::string& torrentData = "");
 #endif // ENABLE_BITTORRENT
 
@@ -67,7 +67,7 @@ void createRequestGroupForBitTorrent
 // metalink-file option. If non-empty metalinkData is specified, it is
 // used as a content of metalink file instead.
 void createRequestGroupForMetalink
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::string& metalinkData = "");
 #endif // ENABLE_METALINK
@@ -78,15 +78,15 @@ void createRequestGroupForMetalink
 // The additional out and dir options can be specified after each line of URIs.
 // This optional line must start with white space(s).
 void createRequestGroupForUriList
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option);
 
 // Create RequestGroup object using provided uris.  If ignoreLocalPath
 // is true, a path to torrent file abd metalink file are ignored.
 void createRequestGroupForUri
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
- const std::deque<std::string>& uris,
+ const std::vector<std::string>& uris,
  bool ignoreForceSequential = false,
  bool ignoreLocalPath = false);
 

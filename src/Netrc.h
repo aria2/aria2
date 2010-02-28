@@ -36,11 +36,13 @@
 #define _D_NETRC_H_
 
 #include "common.h"
+
+#include <string>
+#include <vector>
+#include <iosfwd>
+
 #include "SharedHandle.h"
 #include "A2STR.h"
-#include <string>
-#include <deque>
-#include <iosfwd>
 
 namespace aria2 {
 
@@ -50,8 +52,6 @@ public:
 
   virtual bool match(const std::string& hostname) const = 0;
 };
-
-typedef SharedHandle<Authenticatable> AuthenticatableHandle;
 
 class Authenticator : public Authenticatable {
 private:
@@ -107,9 +107,6 @@ public:
   void setAccount(const std::string& account) { this->account = account; }
 };
 
-typedef SharedHandle<Authenticator> AuthenticatorHandle;
-typedef std::deque<AuthenticatorHandle> Authenticators;
-
 class DefaultAuthenticator : public Authenticator {
 public:
   DefaultAuthenticator() {}
@@ -127,13 +124,11 @@ public:
   }
 };
 
-typedef SharedHandle<DefaultAuthenticator> DefaultAuthenticatorHandle;
-
 class Netrc {
 private:
-  Authenticators authenticators;
+  std::vector<SharedHandle<Authenticator> > authenticators;
 
-  void storeAuthenticator(const AuthenticatorHandle& authenticator);
+  void storeAuthenticator(const SharedHandle<Authenticator>& authenticator);
 
   std::string getRequiredNextToken(std::ifstream& f) const;
   
@@ -143,14 +138,15 @@ public:
 
   void parse(const std::string& path);
 
-  AuthenticatorHandle findAuthenticator(const std::string& hostname) const;
+  SharedHandle<Authenticator> findAuthenticator
+  (const std::string& hostname) const;
 
-  const Authenticators& getAuthenticators() const
+  const std::vector<SharedHandle<Authenticator> >& getAuthenticators() const
   {
     return authenticators;
   }
 
-  void addAuthenticator(const AuthenticatorHandle& authenticator)
+  void addAuthenticator(const SharedHandle<Authenticator>& authenticator)
   {
     authenticators.push_back(authenticator);
   }
@@ -167,8 +163,6 @@ public:
 
   static const std::string MACDEF;
 };
-
-typedef SharedHandle<Netrc> NetrcHandle;
 
 } // namespace aria2
 

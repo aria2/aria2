@@ -52,15 +52,15 @@ private:
 
   unsigned int _step;
 
-  NumberDecoratorHandle _numberDecorator;
+  SharedHandle<NumberDecorator> _numberDecorator;
 
-  PStringDatumHandle _next;
+  SharedHandle<PStringDatum> _next;
 
 public:
   PStringNumLoop(unsigned int startValue, unsigned int endValue,
                  unsigned int step,
-                 const NumberDecoratorHandle& nd,
-                 const PStringDatumHandle& next):
+                 const SharedHandle<NumberDecorator>& nd,
+                 const SharedHandle<PStringDatum>& next):
     _startValue(startValue),
     _endValue(endValue),
     _step(step),
@@ -69,7 +69,7 @@ public:
 
   PStringNumLoop(unsigned int startValue, unsigned int endValue,
                  unsigned int step,
-                 const NumberDecoratorHandle& nd):
+                 const SharedHandle<NumberDecorator>& nd):
     _startValue(startValue),
     _endValue(endValue),
     _step(step),
@@ -82,12 +82,12 @@ public:
     visitor.visit(*this);
   }
 
-  const NumberDecoratorHandle& getNumberDecorator() const
+  const SharedHandle<NumberDecorator>& getNumberDecorator() const
   {
     return _numberDecorator;
   }
 
-  PStringDatumHandle getNext() const
+  SharedHandle<PStringDatum> getNext() const
   {
     return _next;
   }
@@ -108,8 +108,6 @@ public:
   }
 
 };
-
-typedef SharedHandle<PStringNumLoop> PStringNumLoopHandle;
 
 } // namespace aria2
 

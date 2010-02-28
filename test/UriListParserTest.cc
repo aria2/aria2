@@ -21,7 +21,7 @@ class UriListParserTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testHasNext);
   CPPUNIT_TEST_SUITE_END();
 private:
-  std::string list2String(const std::deque<std::string>& src);
+  std::string list2String(const std::vector<std::string>& src);
 public:
   void setUp() {
   }
@@ -32,7 +32,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( UriListParserTest );
 
-std::string UriListParserTest::list2String(const std::deque<std::string>& src)
+std::string UriListParserTest::list2String(const std::vector<std::string>& src)
 {
   std::ostringstream strm;
   std::copy(src.begin(), src.end(), std::ostream_iterator<std::string>(strm, " "));
@@ -45,7 +45,7 @@ void UriListParserTest::testHasNext()
 
   UriListParser flp(in);
 
-  std::deque<std::string> uris;
+  std::vector<std::string> uris;
   Option reqOp;
 
   CPPUNIT_ASSERT(flp.hasNext());

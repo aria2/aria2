@@ -57,8 +57,8 @@ public:
     memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
   }
 
-  virtual bool validate(Errors& error) {
-    // TODO
+  virtual void validate()
+  {
     if(message->getPstrlen() != 19) {
       throw DL_ABORT_EX(StringFormat("invalid handshake pstrlen=%u",
                                      message->getPstrlen()).str());
@@ -74,7 +74,6 @@ public:
                       util::toHex(infoHash, 20).c_str(),
                       util::toHex(message->getInfoHash(), 20).c_str()).str());
     }
-    return true;
   }
 };
 

@@ -37,7 +37,7 @@
 
 #include "DHTResponseMessage.h"
 
-#include <deque>
+#include <vector>
 
 #include "DHTConstants.h"
 
@@ -49,9 +49,9 @@ class DHTGetPeersReplyMessage:public DHTResponseMessage {
 private:
   std::string _token;
 
-  std::deque<SharedHandle<DHTNode> > _closestKNodes;
+  std::vector<SharedHandle<DHTNode> > _closestKNodes;
 
-  std::deque<SharedHandle<Peer> > _values;
+  std::vector<SharedHandle<Peer> > _values;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -70,19 +70,26 @@ public:
 
   virtual void validate() const;
 
-  const std::deque<SharedHandle<DHTNode> >& getClosestKNodes() const
+  const std::vector<SharedHandle<DHTNode> >& getClosestKNodes() const
   {
     return _closestKNodes;
   }
 
-  const std::deque<SharedHandle<Peer> >& getValues() const
+  const std::vector<SharedHandle<Peer> >& getValues() const
   {
     return _values;
   }
 
-  void setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes);
+  void setClosestKNodes
+  (const std::vector<SharedHandle<DHTNode> >& closestKNodes)
+  {
+    _closestKNodes = closestKNodes;
+  }
 
-  void setValues(const std::deque<SharedHandle<Peer> >& peers);
+  void setValues(const std::vector<SharedHandle<Peer> >& peers)
+  {
+    _values = peers;
+  }
   
   const std::string& getToken() const
   {

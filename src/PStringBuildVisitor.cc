@@ -74,14 +74,14 @@ void PStringBuildVisitor::visit(PStringNumLoop& s)
 
 void PStringBuildVisitor::visit(PStringSelect& s)
 {
-  const std::deque<std::string>& values = s.getValues();
-  for(std::deque<std::string>::const_iterator i = values.begin();
+  const std::vector<std::string>& values = s.getValues();
+  for(std::vector<std::string>::const_iterator i = values.begin();
       i != values.end(); ++i) {
     PStringSegment(*i, s.getNext()).accept(*this);
   }
 }
 
-const std::deque<std::string>& PStringBuildVisitor::getURIs() const
+const std::vector<std::string>& PStringBuildVisitor::getURIs() const
 {
   return _uris;
 }

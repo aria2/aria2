@@ -72,7 +72,8 @@ private:
 
   void validatePort(const BDE& i) const;
 
-  std::deque<SharedHandle<DHTNode> > extractNodes(const unsigned char* src, size_t length);
+  std::vector<SharedHandle<DHTNode> >
+  extractNodes(const unsigned char* src, size_t length);
 
   void setCommonProperty(const SharedHandle<DHTAbstractMessage>& m);
 
@@ -111,9 +112,10 @@ public:
 
 
   virtual SharedHandle<DHTMessage>
-  createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                             const std::string& transactionID);
+  createFindNodeReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+   const std::string& transactionID);
 
   virtual SharedHandle<DHTMessage>
   createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -121,10 +123,11 @@ public:
                         const std::string& transactionID = A2STR::NIL);
 
   virtual SharedHandle<DHTMessage>
-  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                             const std::string& token,
-                             const std::string& transactionID);
+  createGetPeersReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+   const std::string& token,
+   const std::string& transactionID);
 
   SharedHandle<DHTMessage>
   createGetPeersReplyMessageWithNodes(const SharedHandle<DHTNode>& remoteNode,
@@ -132,10 +135,11 @@ public:
                                       const std::string& transactionID);
 
   virtual SharedHandle<DHTMessage>
-  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<Peer> >& peers,
-                             const std::string& token,
-                             const std::string& transactionID);
+  createGetPeersReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<Peer> >& peers,
+   const std::string& token,
+   const std::string& transactionID);
 
   SharedHandle<DHTMessage>
   createGetPeersReplyMessageWithValues(const SharedHandle<DHTNode>& remoteNode,

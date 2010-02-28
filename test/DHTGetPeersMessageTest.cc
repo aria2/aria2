@@ -33,7 +33,7 @@ public:
   public:
     virtual SharedHandle<DHTMessage>
     createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                               const std::deque<SharedHandle<Peer> >& peers,
+                               const std::vector<SharedHandle<Peer> >& peers,
                                const std::string& token,
                                const std::string& transactionID)
     {
@@ -45,10 +45,11 @@ public:
     }
 
     virtual SharedHandle<DHTMessage>
-    createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                               const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                               const std::string& token,
-                               const std::string& transactionID)
+    createGetPeersReplyMessage
+    (const SharedHandle<DHTNode>& remoteNode,
+     const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+     const std::string& token,
+     const std::string& transactionID)
     {
       SharedHandle<MockDHTMessage> m
         (new MockDHTMessage(_localNode, remoteNode, "get_peers", transactionID));

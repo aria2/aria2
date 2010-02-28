@@ -1,7 +1,6 @@
 #include "UTMetadataRequestFactory.h"
 
 #include <vector>
-#include <deque>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -61,7 +60,7 @@ void UTMetadataRequestFactoryTest::testCreate()
     (new UTMetadataRequestTracker());
   factory.setUTMetadataRequestTracker(tracker);
 
-  std::deque<SharedHandle<BtMessage> > msgs;
+  std::vector<SharedHandle<BtMessage> > msgs;
 
   factory.create(msgs, 1, ps);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());

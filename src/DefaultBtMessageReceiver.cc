@@ -85,8 +85,7 @@ DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
     return SharedHandle<BtHandshakeMessage>();
   }
   SharedHandle<BtHandshakeMessage> msg = messageFactory->createHandshakeMessage(data, dataLength);
-  std::deque<std::string> errors;
-  msg->validate(errors);
+  msg->validate();
   return msg;
 }
 
@@ -111,13 +110,8 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
     return SharedHandle<BtMessage>();
   }
   BtMessageHandle msg = messageFactory->createBtMessage(data, dataLength);
-  std::deque<std::string> errors;
-  if(msg->validate(errors)) {
-    return msg;
-  } else {
-    // TODO throw exception here based on errors;
-    return SharedHandle<BtMessage>();
-  }
+  msg->validate();
+  return msg;
 }
 
 void DefaultBtMessageReceiver::setDownloadContext

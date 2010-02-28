@@ -36,8 +36,10 @@
 #define _D_BT_REQUEST_FACTORY_H_
 
 #include "common.h"
+
+#include <vector>
+
 #include "SharedHandle.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -68,20 +70,20 @@ public:
    * The number of objects returned is capped by max.
    */
   virtual void createRequestMessages
-  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) = 0;
+  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) = 0;
 
   /**
    * Use this method in end game mode.
    *
    */
   virtual void createRequestMessagesOnEndGame
-  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) = 0;
+  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) = 0;
 
   /**
    * Stores the list of index of pieces added using addTargetPiece() into
    * indexes.
    */
-  virtual void getTargetPieceIndexes(std::deque<size_t>& indexes) const = 0;
+  virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const = 0;
 
 };
 

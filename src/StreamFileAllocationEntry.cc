@@ -52,8 +52,9 @@ StreamFileAllocationEntry::StreamFileAllocationEntry(RequestGroup* requestGroup,
 
 StreamFileAllocationEntry::~StreamFileAllocationEntry() {}
 
-void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
-                                                     DownloadEngine* e)
+void StreamFileAllocationEntry::prepareForNextAction
+(std::vector<Command*>& commands,
+ DownloadEngine* e)
 {
   _requestGroup->getDownloadContext()->resetDownloadStartTime();
   if(_nextCommand) {

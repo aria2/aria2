@@ -36,9 +36,11 @@
 #define _D_BT_MESSAGE_DISPATCHER_H_
 
 #include "common.h"
+
+#include <vector>
+
 #include "SharedHandle.h"
 #include "RequestSlot.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -52,7 +54,7 @@ public:
   virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage) = 0;
 
   virtual void
-  addMessageToQueue(const std::deque<SharedHandle<BtMessage> >& btMessages) = 0;
+  addMessageToQueue(const std::vector<SharedHandle<BtMessage> >& btMessages) =0;
 
   virtual void sendMessages() = 0;
 

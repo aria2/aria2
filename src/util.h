@@ -41,7 +41,6 @@
 
 #include <string>
 #include <utility>
-#include <deque>
 #include <iosfwd>
 #include <ostream>
 #include <numeric>
@@ -291,7 +290,7 @@ std::string htmlEscape(const std::string& src);
 template<typename InputIterator>
 std::string joinPath(InputIterator first, InputIterator last)
 {
-  std::deque<std::string> elements;
+  std::vector<std::string> elements;
   for(;first != last; ++first) {
     if(*first == "..") {
       if(!elements.empty()) {

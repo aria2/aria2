@@ -255,7 +255,7 @@ void AbstractCommand::tryReserved() {
   if(logger->debug()) {
     logger->debug("CUID#%d - Trying reserved/pooled request.", cuid);
   }
-  Commands commands;
+  std::vector<Command*> commands;
   _requestGroup->createNextCommand(commands, e, 1);
   e->setNoWait(true);
   e->addCommand(commands);
@@ -503,7 +503,7 @@ bool AbstractCommand::asyncResolveHostname()
   }
 }
 
-const std::deque<std::string>& AbstractCommand::getResolvedAddresses()
+const std::vector<std::string>& AbstractCommand::getResolvedAddresses()
 {
   return _asyncNameResolver->getResolvedAddresses();
 }
@@ -533,10 +533,10 @@ bool AbstractCommand::nameResolveFinished() const {
 
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
-  CheckIntegrityEntryHandle entry
+  SharedHandle<CheckIntegrityEntry> entry
     (new StreamCheckIntegrityEntry(_requestGroup, nextCommand));
 
-  std::deque<Command*> commands;
+  std::vector<Command*> commands;
   try {
     _requestGroup->processCheckIntegrityEntry(commands, entry, e);
   } catch(RecoverableException& e) {

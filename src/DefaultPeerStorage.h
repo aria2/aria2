@@ -83,13 +83,13 @@ public:
 
   SharedHandle<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
 
-  virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers);
+  virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers);
 
   virtual const std::deque<SharedHandle<Peer> >& getPeers();
 
   virtual bool isPeerAvailable();
 
-  virtual void getActivePeers(std::deque<SharedHandle<Peer> >& peers);
+  virtual void getActivePeers(std::vector<SharedHandle<Peer> >& peers);
 
   virtual TransferStat calculateStat();
 

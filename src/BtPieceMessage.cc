@@ -86,7 +86,7 @@ void BtPieceMessage::doReceivedAction() {
   peer->updateDownloadLength(blockLength);
   if(!RequestSlot::isNull(slot)) {
     peer->snubbing(false);
-    PieceHandle piece = pieceStorage->getPiece(index);
+    SharedHandle<Piece> piece = pieceStorage->getPiece(index);
     off_t offset = (off_t)index*_downloadContext->getPieceLength()+begin;
     if(logger->debug()) {
       logger->debug(MSG_PIECE_RECEIVED,
@@ -183,7 +183,7 @@ std::string BtPieceMessage::toString() const {
                    util::itos(begin), ", length=", util::itos(blockLength));
 }
 
-bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
+bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece) {
   if(piece->isHashCalculated()) {
     if(logger->debug()) {
       logger->debug("Hash is available!! index=%lu",
@@ -199,13 +199,13 @@ bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
   }
 }
 
-void BtPieceMessage::onNewPiece(const PieceHandle& piece) {
+void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece) {
   logger->info(MSG_GOT_NEW_PIECE, cuid, piece->getIndex());
   pieceStorage->completePiece(piece);
   pieceStorage->advertisePiece(cuid, piece->getIndex());
 }
 
-void BtPieceMessage::onWrongPiece(const PieceHandle& piece) {
+void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece) {
   logger->info(MSG_GOT_WRONG_PIECE, cuid, piece->getIndex());
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
@@ -213,7 +213,7 @@ void BtPieceMessage::onWrongPiece(const PieceHandle& piece) {
   requestFactory->removeTargetPiece(piece);
 }
 
-void BtPieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
+void BtPieceMessage::erasePieceOnDisk(const SharedHandle<Piece>& piece) {
   size_t BUFSIZE = 4096;
   unsigned char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);

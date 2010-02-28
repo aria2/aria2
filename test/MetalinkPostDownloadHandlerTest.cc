@@ -71,7 +71,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
   rg.initPieceStorage();
 
   MetalinkPostDownloadHandler handler;
-  RequestGroups groups;
+  std::vector<SharedHandle<RequestGroup> > groups;
   handler.getNextRequestGroups(groups, &rg);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)6/* 5 + 1 torrent file download */, groups.size());

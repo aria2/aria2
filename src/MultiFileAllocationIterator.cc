@@ -58,9 +58,9 @@ void MultiFileAllocationIterator::allocateChunk()
     if(_entries.empty()) {
       break;
     }
-    DiskWriterEntryHandle entry = _entries.front();
+    SharedHandle<DiskWriterEntry> entry = _entries.front();
     _entries.pop_front();
-    FileEntryHandle fileEntry = entry->getFileEntry();
+    SharedHandle<FileEntry> fileEntry = entry->getFileEntry();
     // Open file before calling DiskWriterEntry::size()
     _diskAdaptor->openIfNot(entry, &DiskWriterEntry::openFile);
     if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {

@@ -36,7 +36,6 @@
 
 #include <fstream>
 #include <algorithm>
-#include <vector>
 
 #include "DlAbortEx.h"
 #include "StringFormat.h"
@@ -85,7 +84,7 @@ void Netrc::parse(const std::string& path)
     SET_ACCOUNT,
     SET_MACDEF
   };
-  AuthenticatorHandle authenticator;
+  SharedHandle<Authenticator> authenticator;
   std::string line;
   STATE state = GET_TOKEN;
   while(getline(f, line)) {
@@ -144,7 +143,7 @@ void Netrc::parse(const std::string& path)
   storeAuthenticator(authenticator);
 }
 
-void Netrc::storeAuthenticator(const AuthenticatorHandle& authenticator)
+void Netrc::storeAuthenticator(const SharedHandle<Authenticator>& authenticator)
 {
   if(!authenticator.isNull()) {
     authenticators.push_back(authenticator);
@@ -157,22 +156,23 @@ private:
 public:
   AuthHostMatch(const std::string& hostname):hostname(hostname) {}
 
-  bool operator()(const AuthenticatorHandle& authenticator)
+  bool operator()(const SharedHandle<Authenticator>& authenticator)
   {
     return authenticator->match(hostname);
   }
 };
 
-AuthenticatorHandle Netrc::findAuthenticator(const std::string& hostname) const
+SharedHandle<Authenticator>
+Netrc::findAuthenticator(const std::string& hostname) const
 {
-  Authenticators::const_iterator itr =
+  SharedHandle<Authenticator> res;
+  std::vector<SharedHandle<Authenticator> >::const_iterator itr =
     std::find_if(authenticators.begin(), authenticators.end(),
                  AuthHostMatch(hostname));
-  if(itr == authenticators.end()) {
-    return SharedHandle<Authenticator>();
-  } else {
-    return *itr;
+  if(itr != authenticators.end()) {
+    res = *itr;
   }
+  return res;
 }
 
 } // namespace aria2

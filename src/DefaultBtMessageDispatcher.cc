@@ -75,15 +75,17 @@ void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessageHandle& btMess
   messageQueue.push_back(btMessage);
 }
 
-void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessages& btMessages)
+void DefaultBtMessageDispatcher::addMessageToQueue
+(const std::vector<SharedHandle<BtMessage> >& btMessages)
 {
-  for(BtMessages::const_iterator itr = btMessages.begin(); itr != btMessages.end(); itr++) {
+  for(std::vector<SharedHandle<BtMessage> >::const_iterator itr =
+        btMessages.begin(); itr != btMessages.end(); ++itr) {
     addMessageToQueue(*itr);
   }
 }
 
 void DefaultBtMessageDispatcher::sendMessages() {
-  BtMessages tempQueue;
+  std::vector<SharedHandle<BtMessage> > tempQueue;
   while(!messageQueue.empty()) {
     BtMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
@@ -121,7 +123,8 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32
 {
   BtCancelSendingPieceEvent event(index, begin, length);
 
-  BtMessages tempQueue = messageQueue;
+  std::vector<SharedHandle<BtMessage> > tempQueue
+    (messageQueue.begin(), messageQueue.end());
 
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onCancelSendingPieceEvent, event);
@@ -129,7 +132,8 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32
 
 // Cancel sending piece message to peer.
 // TODO Is this method really necessary?
-void DefaultBtMessageDispatcher::doCancelSendingPieceAction(const PieceHandle& piece)
+void DefaultBtMessageDispatcher::doCancelSendingPieceAction
+(const SharedHandle<Piece>& piece)
 {
 }
 
@@ -158,7 +162,8 @@ public:
 };
 
 // localhost cancels outstanding download requests to the peer.
-void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction(const PieceHandle& piece) {
+void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
+(const SharedHandle<Piece>& piece) {
   RequestSlot rs(piece->getIndex(), 0, 0, 0);
   std::deque<RequestSlot>::iterator first =
     std::lower_bound(requestSlots.begin(), requestSlots.end(), rs);
@@ -172,7 +177,8 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction(const PieceHand
 
   BtAbortOutstandingRequestEvent event(piece);
 
-  BtMessages tempQueue = messageQueue;
+  std::vector<SharedHandle<BtMessage> > tempQueue
+    (messageQueue.begin(), messageQueue.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onAbortOutstandingRequestEvent, event);
 }
@@ -238,7 +244,8 @@ void DefaultBtMessageDispatcher::doChokingAction()
 {
   BtChokingEvent event;
 
-  BtMessages tempQueue = messageQueue;
+  std::vector<SharedHandle<BtMessage> > tempQueue
+    (messageQueue.begin(), messageQueue.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onChokingEvent, event);
 }
@@ -349,11 +356,6 @@ bool DefaultBtMessageDispatcher::isSendingInProgress()
   } else {
     return false;
   }
-}
-
-size_t DefaultBtMessageDispatcher::countOutstandingRequest()
-{
-  return requestSlots.size();
 }
 
 class BlockIndexLess {

@@ -35,7 +35,7 @@
 #ifndef _D_SEQUENCE_H_
 #define _D_SEQUENCE_H_
 
-#include <deque>
+#include <vector>
 
 namespace aria2 {
 
@@ -62,35 +62,36 @@ public:
     }
   };
 
-  typedef std::deque<Value> Values;
+  typedef std::vector<Value> Values;
 private:
   Values _values;
+  typename Values::iterator _cur;
 public:
   Sequence(const Values& values):
-    _values(values) {}
+    _values(values), _cur(_values.begin())  {}
 
   Sequence() {}
 
   T next()
   {
-    if(_values.empty()) {
+    if(_cur == _values.end()) {
       return T();
     }
-    T t = _values.front().next();
-    if(!_values.front().hasNext()) {
-      _values.pop_front();
+    T t = (*_cur).next();
+    if(!(*_cur).hasNext()) {
+      ++_cur;
     }
     return t;
   }
 
   bool hasNext()
   {
-    return !_values.empty();
+    return _cur != _values.end();
   }
 
-  std::deque<T> flush()
+  std::vector<T> flush()
   {
-    std::deque<T> r;
+    std::vector<T> r;
     while(hasNext()) {
       r.push_back(next());
     }

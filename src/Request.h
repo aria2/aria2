@@ -37,7 +37,6 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
 
 #include "SharedHandle.h"
 #include "PeerStat.h"
@@ -217,10 +216,6 @@ public:
   static const unsigned int MAX_REDIRECT = 20;
 
 };
-
-typedef SharedHandle<Request> RequestHandle;
-typedef WeakHandle<Request> RequestWeakHandle;
-typedef std::deque<RequestHandle> Requests;
 
 } // namespace aria2
 

@@ -43,7 +43,8 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
     nodesSrc[i]->setPort(6881+i);
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::deque<SharedHandle<DHTNode> > nodes(&nodesSrc[0], &nodesSrc[arrayLength(nodesSrc)]);
+  std::vector<SharedHandle<DHTNode> > nodes
+    (&nodesSrc[0], &nodesSrc[arrayLength(nodesSrc)]);
   
   DHTRoutingTableSerializer s;
   s.setLocalNode(localNode);
@@ -61,7 +62,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   std::cout << d.getSerializedTime().getTime() << std::endl;
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, d.getNodes().size());
-  const std::deque<SharedHandle<DHTNode> >& dsnodes = d.getNodes();
+  const std::vector<SharedHandle<DHTNode> >& dsnodes = d.getNodes();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), dsnodes[0]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, dsnodes[0]->getPort());
   CPPUNIT_ASSERT(memcmp(nodes[0]->getID(), dsnodes[0]->getID(), DHT_ID_LENGTH) == 0);

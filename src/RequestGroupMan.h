@@ -40,6 +40,7 @@
 #include <string>
 #include <deque>
 #include <iosfwd>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "DownloadResult.h"
@@ -83,7 +84,7 @@ private:
   void configureRequestGroup
   (const SharedHandle<RequestGroup>& requestGroup) const;
 public:
-  RequestGroupMan(const std::deque<SharedHandle<RequestGroup> >& requestGroups,
+  RequestGroupMan(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
                   unsigned int maxSimultaneousDownloads,
                   const Option* option);
 
@@ -103,12 +104,12 @@ public:
 
   void addRequestGroup(const SharedHandle<RequestGroup>& group);
 
-  void addReservedGroup(const std::deque<SharedHandle<RequestGroup> >& groups);
+  void addReservedGroup(const std::vector<SharedHandle<RequestGroup> >& groups);
 
   void addReservedGroup(const SharedHandle<RequestGroup>& group);
 
   void insertReservedGroup
-  (size_t pos, const std::deque<SharedHandle<RequestGroup> >& groups);
+  (size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups);
 
   void insertReservedGroup(size_t pos, const SharedHandle<RequestGroup>& group);
 

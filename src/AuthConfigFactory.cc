@@ -162,7 +162,7 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
   return resolver;
 }
 
-void AuthConfigFactory::setNetrc(const NetrcHandle& netrc)
+void AuthConfigFactory::setNetrc(const SharedHandle<Netrc>& netrc)
 {
   _netrc = netrc;
 }

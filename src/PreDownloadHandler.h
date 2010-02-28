@@ -49,9 +49,6 @@ public:
   virtual void execute(RequestGroup* requestGroup) = 0;
 };
 
-typedef SharedHandle<PreDownloadHandler> PreDownloadHandlerHandle;
-typedef std::deque<PreDownloadHandlerHandle> PreDownloadHandlers;
-
 } // namespace aria2
 
 #endif // _D_PRE_DOWNLOAD_HANDLER_H_

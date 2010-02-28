@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <map>
-#include <deque>
+#include <vector>
 #include <string>
 #include <iosfwd>
 
@@ -71,7 +71,7 @@ public:
   void put(const std::string& name, const std::string& value);
   bool defined(const std::string& name) const;
   const std::string& getFirst(const std::string& name) const;
-  std::deque<std::string> get(const std::string& name) const;
+  std::vector<std::string> get(const std::string& name) const;
   unsigned int getFirstAsUInt(const std::string& name) const;
   uint64_t getFirstAsULLInt(const std::string& name) const;
 

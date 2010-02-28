@@ -63,7 +63,7 @@ const std::string FtpConnection::A("A");
 const std::string FtpConnection::I("I");
 
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
-                             const RequestHandle& req,
+                             const SharedHandle<Request>& req,
                              const SharedHandle<AuthConfig>& authConfig,
                              const Option* op):
   cuid(cuid), socket(socket), req(req),
@@ -223,7 +223,7 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
   return _socketBuffer.sendBufferIsEmpty();
 }
 
-bool FtpConnection::sendRest(const SegmentHandle& segment)
+bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "REST ";

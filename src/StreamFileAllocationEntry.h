@@ -49,12 +49,9 @@ public:
 
   virtual ~StreamFileAllocationEntry();
 
-  virtual void prepareForNextAction(std::deque<Command*>& commands,
+  virtual void prepareForNextAction(std::vector<Command*>& commands,
                                     DownloadEngine* e);
 };
-
-typedef SharedHandle<StreamFileAllocationEntry> StreamFileAllocationEntryHandle;
-typedef std::deque<StreamFileAllocationEntryHandle> StreamFileAllocationEntries;
 
 } // namespace aria2
 

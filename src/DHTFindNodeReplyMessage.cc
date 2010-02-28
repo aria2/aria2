@@ -61,7 +61,8 @@ DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
 
 void DHTFindNodeReplyMessage::doReceivedAction()
 {
-  for(std::deque<SharedHandle<DHTNode> >::iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
+  for(std::vector<SharedHandle<DHTNode> >::iterator i = _closestKNodes.begin();
+      i != _closestKNodes.end(); ++i) {
     if(memcmp((*i)->getID(), _localNode->getID(), DHT_ID_LENGTH) != 0) {
       _routingTable->addNode(*i);
     }
@@ -75,7 +76,7 @@ BDE DHTFindNodeReplyMessage::getResponse()
   size_t offset = 0;
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
-  for(std::deque<SharedHandle<DHTNode> >::const_iterator i =
+  for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
         _closestKNodes.begin();
       i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
     SharedHandle<DHTNode> node = *i;
@@ -96,7 +97,8 @@ std::string DHTFindNodeReplyMessage::getMessageType() const
 
 void DHTFindNodeReplyMessage::validate() const {}
 
-void DHTFindNodeReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes)
+void DHTFindNodeReplyMessage::setClosestKNodes
+(const std::vector<SharedHandle<DHTNode> >& closestKNodes)
 {
   _closestKNodes = closestKNodes;
 }

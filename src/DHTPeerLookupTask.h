@@ -49,7 +49,7 @@ class DHTPeerLookupTask:public DHTAbstractNodeLookupTask {
 private:
   std::map<std::string, std::string> _tokenStorage;
 
-  std::deque<SharedHandle<Peer> > _peers;
+  std::vector<SharedHandle<Peer> > _peers;
 
   SharedHandle<PeerStorage> _peerStorage;
 
@@ -57,7 +57,7 @@ private:
 public:
   DHTPeerLookupTask(const SharedHandle<DownloadContext>& downloadContext);
 
-  virtual void getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
+  virtual void getNodesFromMessage(std::vector<SharedHandle<DHTNode> >& nodes,
                                    const SharedHandle<DHTMessage>& message);
   
   virtual void onReceivedInternal(const SharedHandle<DHTMessage>& message);
@@ -66,7 +66,7 @@ public:
 
   virtual void onFinish();
   
-  const std::deque<SharedHandle<Peer> >& getPeers() const
+  const std::vector<SharedHandle<Peer> >& getPeers() const
   {
     return _peers;
   }

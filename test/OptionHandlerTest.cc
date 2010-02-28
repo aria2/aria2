@@ -198,7 +198,7 @@ void OptionHandlerTest::testParameterOptionHandler_2argsInit()
 
 void OptionHandlerTest::testParameterOptionHandler_listInit()
 {
-  std::deque<std::string> validValues;
+  std::vector<std::string> validValues;
   validValues.push_back("value1");
   validValues.push_back("value2");
 

@@ -56,7 +56,7 @@ namespace aria2 {
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
 (int cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e)
@@ -66,7 +66,7 @@ FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
 
 Command* FtpInitiateConnectionCommand::createNextCommand
 (const std::string& hostname, const std::string& addr, uint16_t port,
- const std::deque<std::string>& resolvedAddresses,
+ const std::vector<std::string>& resolvedAddresses,
  const SharedHandle<Request>& proxyRequest)
 {
   Command* command;

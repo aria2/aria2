@@ -56,7 +56,7 @@ public:
   UTMetadataPostDownloadHandler();
 
   virtual void
-  getNextRequestGroups(std::deque<SharedHandle<RequestGroup> >& groups,
+  getNextRequestGroups(std::vector<SharedHandle<RequestGroup> >& groups,
                        RequestGroup* requestGroup);
 };
 

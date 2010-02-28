@@ -30,7 +30,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(NsCookieParserTest);
 void NsCookieParserTest::testParse()
 {
   NsCookieParser parser;
-  std::deque<Cookie> cookies = parser.parse("nscookietest.txt");
+  std::vector<Cookie> cookies = parser.parse("nscookietest.txt");
   CPPUNIT_ASSERT_EQUAL((size_t)5, cookies.size());
 
   Cookie c = cookies[0];

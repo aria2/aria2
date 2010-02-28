@@ -51,11 +51,9 @@ public:
     _message(message),
     _numPiece(numPiece) {}
 
-  virtual bool validate(Errors& errors)
+  virtual void validate()
   {
-    // TODO
     bittorrent::checkIndex(_message->getIndex(), _numPiece);
-    return true;
   }
 
 };

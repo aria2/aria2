@@ -27,7 +27,7 @@ public:
       "ftp://alpha/file",
       "http://bravo/file"
     };
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     uris.assign(&urisSrc[0], &urisSrc[arrayLength(urisSrc)]);
     
     _fileEntry.setUris(uris);

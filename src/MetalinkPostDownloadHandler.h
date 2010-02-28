@@ -47,11 +47,9 @@ public:
   virtual ~MetalinkPostDownloadHandler();
 
   virtual void
-  getNextRequestGroups(std::deque<SharedHandle<RequestGroup> >& groups,
+  getNextRequestGroups(std::vector<SharedHandle<RequestGroup> >& groups,
                        RequestGroup* requestGroup);
 };
-
-typedef SharedHandle<MetalinkPostDownloadHandler> MetalinkPostDownloadHandlerHandle;
 
 } // namespace aria2
 

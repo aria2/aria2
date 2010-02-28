@@ -120,12 +120,12 @@ public:
 };
 
 void BtLeecherStateChoke::plannedOptimisticUnchoke
-(std::deque<PeerEntry>& peerEntries)
+(std::vector<PeerEntry>& peerEntries)
 {
   std::for_each(peerEntries.begin(), peerEntries.end(),
                 std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
   
-  std::deque<PeerEntry>::iterator i =
+  std::vector<PeerEntry>::iterator i =
     std::partition(peerEntries.begin(), peerEntries.end(),
                    PeerFilter(true, true));
   if(i != peerEntries.begin()) {
@@ -136,9 +136,9 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke
   }
 }
 
-void BtLeecherStateChoke::regularUnchoke(std::deque<PeerEntry>& peerEntries)
+void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
 {
-  std::deque<PeerEntry>::iterator rest =
+  std::vector<PeerEntry>::iterator rest =
     std::partition(peerEntries.begin(), peerEntries.end(),
                    std::mem_fun_ref(&PeerEntry::isRegularUnchoker));
   
@@ -151,7 +151,7 @@ void BtLeecherStateChoke::regularUnchoke(std::deque<PeerEntry>& peerEntries)
   int count = 3;
 
   bool fastOptUnchoker = false;
-  std::deque<PeerEntry>::iterator peerIter = peerEntries.begin();
+  std::vector<PeerEntry>::iterator peerIter = peerEntries.begin();
   for(;peerIter != rest && count; ++peerIter, --count) {
     (*peerIter).disableChokingRequired();
     _logger->info("RU: %s, dlspd=%u",
@@ -165,7 +165,7 @@ void BtLeecherStateChoke::regularUnchoke(std::deque<PeerEntry>& peerEntries)
   if(fastOptUnchoker) {
     std::random_shuffle(peerIter, peerEntries.end(),
                         *(SimpleRandomizer::getInstance().get()));
-    for(std::deque<PeerEntry>::iterator i = peerIter; i != peerEntries.end();
+    for(std::vector<PeerEntry>::iterator i = peerIter; i != peerEntries.end();
         ++i) {
       if((*i).getPeer()->peerInterested()) {
         (*i).enableOptUnchoking();
@@ -196,12 +196,13 @@ public:
 };
 
 void
-BtLeecherStateChoke::executeChoke(const std::deque<SharedHandle<Peer> >& peerSet)
+BtLeecherStateChoke::executeChoke
+(const std::vector<SharedHandle<Peer> >& peerSet)
 {
   _logger->info("Leecher state, %d choke round started", _round);
   _lastRound.reset();
 
-  std::deque<PeerEntry> peerEntries;
+  std::vector<PeerEntry> peerEntries;
   std::transform(peerSet.begin(), peerSet.end(),
                  std::back_inserter(peerEntries),
                  BtLeecherStateChokeGenPeerEntry());

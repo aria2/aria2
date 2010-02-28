@@ -39,7 +39,6 @@
 #include "DHTNodeLookupEntry.h"
 #include "LogFactory.h"
 #include "util.h"
-#include <cassert>
 
 namespace aria2 {
 
@@ -48,13 +47,14 @@ DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID):
 {}
 
 void
-DHTNodeLookupTask::getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
-                                       const SharedHandle<DHTMessage>& message)
+DHTNodeLookupTask::getNodesFromMessage
+(std::vector<SharedHandle<DHTNode> >& nodes,
+ const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTFindNodeReplyMessage> m
     (dynamic_pointer_cast<DHTFindNodeReplyMessage>(message));
   if(!m.isNull()) {
-    const std::deque<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
+    const std::vector<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
     nodes.insert(nodes.end(), knodes.begin(), knodes.end());
   }
 }

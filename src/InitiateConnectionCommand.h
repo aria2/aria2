@@ -57,7 +57,7 @@ protected:
   // server.
   virtual Command* createNextCommand
   (const std::string& hostname, const std::string& addr, uint16_t port,
-   const std::deque<std::string>& resolvedAddresses,
+   const std::vector<std::string>& resolvedAddresses,
    const SharedHandle<Request>& proxyRequest) = 0;
 public:
   InitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,

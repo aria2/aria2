@@ -158,14 +158,14 @@ void PeerSessionResource::fastExtensionEnabled(bool b)
   _fastExtensionEnabled = b;
 }
 
-const std::deque<size_t>& PeerSessionResource::peerAllowedIndexSet() const
+const std::vector<size_t>& PeerSessionResource::peerAllowedIndexSet() const
 {
   return _peerAllowedIndexSet;
 }
 
-static void updateIndexSet(std::deque<size_t>& c, size_t index)
+static void updateIndexSet(std::vector<size_t>& c, size_t index)
 {
-  std::deque<size_t>::iterator i = std::lower_bound(c.begin(), c.end(), index);
+  std::vector<size_t>::iterator i = std::lower_bound(c.begin(), c.end(), index);
   if(i == c.end() || (*i) != index) {
     c.insert(i, index);
   } 

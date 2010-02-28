@@ -49,10 +49,11 @@ UTMetadataRequestFactory::UTMetadataRequestFactory():
   _logger(LogFactory::getInstance()) {}
 
 void UTMetadataRequestFactory::create
-(std::deque<SharedHandle<BtMessage> >& msgs, size_t num,
+(std::vector<SharedHandle<BtMessage> >& msgs, size_t num,
  const SharedHandle<PieceStorage>& pieceStorage)
 {
-  for(size_t index = 0; index < _dctx->getNumPieces() && num; ++index) {
+  for(size_t index = 0, numPieces = _dctx->getNumPieces();
+      index < numPieces && num; ++index) {
     SharedHandle<Piece> p = pieceStorage->getMissingPiece(index);
     if(p.isNull()) {
       if(_logger->debug()) {

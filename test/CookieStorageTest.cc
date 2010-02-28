@@ -168,16 +168,16 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT(st.store(juliet1));
   CPPUNIT_ASSERT(st.store(juliet2));
 
-  std::deque<Cookie> aria2Slash = st.criteriaFind("www.dl.aria2.org", "/",
-                                                  0, false);
+  std::vector<Cookie> aria2Slash = st.criteriaFind("www.dl.aria2.org", "/",
+                                                   0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, aria2Slash.size());
   CPPUNIT_ASSERT(std::find(aria2Slash.begin(), aria2Slash.end(), alpha)
                  != aria2Slash.end());
   CPPUNIT_ASSERT(std::find(aria2Slash.begin(), aria2Slash.end(), echo)
                  != aria2Slash.end());
 
-  std::deque<Cookie> aria2SlashFoo = st.criteriaFind("www.dl.aria2.org", "/foo",
-                                                     0, false);
+  std::vector<Cookie> aria2SlashFoo = st.criteriaFind("www.dl.aria2.org","/foo",
+                                                      0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)3, aria2SlashFoo.size());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), aria2SlashFoo[0].getName());
   CPPUNIT_ASSERT(std::find(aria2SlashFoo.begin(), aria2SlashFoo.end(), alpha)
@@ -185,32 +185,32 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT(std::find(aria2SlashFoo.begin(), aria2SlashFoo.end(), echo)
                  != aria2SlashFoo.end());
 
-  std::deque<Cookie> aria2Expires = st.criteriaFind("www.dl.aria2.org", "/foo",
-                                                    Time().getTime()+120,
-                                                    false);
+  std::vector<Cookie> aria2Expires = st.criteriaFind("www.dl.aria2.org", "/foo",
+                                                     Time().getTime()+120,
+                                                     false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, aria2Expires.size());
   CPPUNIT_ASSERT(std::find(aria2Expires.begin(), aria2Expires.end(), alpha)
                  != aria2Expires.end());
   CPPUNIT_ASSERT(std::find(aria2Expires.begin(), aria2Expires.end(), echo)
                  != aria2Expires.end());
 
-  std::deque<Cookie> dlAria2 = st.criteriaFind("dl.aria2.org", "/", 0, false);
+  std::vector<Cookie> dlAria2 = st.criteriaFind("dl.aria2.org", "/", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, dlAria2.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), dlAria2[0].getName());
 
-  std::deque<Cookie> numericHostCookies = st.criteriaFind("192.168.1.1", "/", 0,
-                                                          false);
+  std::vector<Cookie> numericHostCookies = st.criteriaFind("192.168.1.1", "/",0,
+                                                           false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, numericHostCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("golf"), numericHostCookies[0].getName());
 
-  std::deque<Cookie> sameNameCookies =
+  std::vector<Cookie> sameNameCookies =
     st.criteriaFind("samename.x", "/bar/wine", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)3, sameNameCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("HOTEL3"), sameNameCookies[0].getValue());
   CPPUNIT_ASSERT_EQUAL(std::string("HOTEL4"), sameNameCookies[1].getValue());
   CPPUNIT_ASSERT_EQUAL(std::string("HOTEL1"), sameNameCookies[2].getValue());
 
-  std::deque<Cookie> defaultDomainCookies =
+  std::vector<Cookie> defaultDomainCookies =
     st.criteriaFind("default.domain", "/foo", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, defaultDomainCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("INDIA1"),
@@ -223,7 +223,7 @@ void CookieStorageTest::testCriteriaFind()
 
 
   // localhost.local case
-  std::deque<Cookie> localDomainCookies =
+  std::vector<Cookie> localDomainCookies =
     st.criteriaFind("localhost", "/foo", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, localDomainCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("JULIET1"),

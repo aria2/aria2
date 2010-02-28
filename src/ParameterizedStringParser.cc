@@ -47,14 +47,15 @@
 
 namespace aria2 {
 
-PStringDatumHandle ParameterizedStringParser::parse(const std::string& src)
+SharedHandle<PStringDatum>
+ParameterizedStringParser::parse(const std::string& src)
 {
   int offset = 0;
   return diggPString(src, offset);
 }
 
-PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src,
-                                                          int& offset)
+SharedHandle<PStringDatum>
+ParameterizedStringParser::diggPString(const std::string& src, int& offset)
 {
   if(src.size() == (size_t)offset) {
     return SharedHandle<PStringDatum>();
@@ -69,8 +70,8 @@ PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src
   } 
 }
 
-PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& src,
-                                                            int& offset)
+SharedHandle<PStringDatum>
+ParameterizedStringParser::createSegment(const std::string& src, int& offset)
 {
   std::string::size_type nextDelimiterIndex = src.find_first_of("[{", offset);
   if(nextDelimiterIndex == std::string::npos) {
@@ -78,31 +79,31 @@ PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& s
   }
   std::string value = src.substr(offset, nextDelimiterIndex-offset);
   offset = nextDelimiterIndex;
-  PStringDatumHandle next = diggPString(src, offset);
+  SharedHandle<PStringDatum> next = diggPString(src, offset);
   return SharedHandle<PStringDatum>(new PStringSegment(value, next));
 }
 
-PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& src,
-                                                           int& offset)
+SharedHandle<PStringDatum>
+ParameterizedStringParser::createSelect(const std::string& src, int& offset)
 {
   ++offset;
   std::string::size_type rightParenIndex = src.find("}", offset);
   if(rightParenIndex == std::string::npos) {
     throw DL_ABORT_EX("Missing '}' in the parameterized string.");
   }
-  std::deque<std::string> values;
+  std::vector<std::string> values;
   util::split(src.substr(offset, rightParenIndex-offset),
               std::back_inserter(values), ",", true);
   if(values.empty()) {
     throw DL_ABORT_EX("Empty {} is not allowed.");
   }
   offset = rightParenIndex+1;
-  PStringDatumHandle next = diggPString(src, offset);
+  SharedHandle<PStringDatum> next = diggPString(src, offset);
   return SharedHandle<PStringDatum>(new PStringSelect(values, next));
 }
 
-PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
-                                                         int& offset)
+SharedHandle<PStringDatum>
+ParameterizedStringParser::createLoop(const std::string& src, int& offset)
 {
   ++offset;
   std::string::size_type rightParenIndex = src.find("]", offset);
@@ -127,7 +128,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   if(range.first.empty() || range.second.empty()) {
     throw DL_ABORT_EX("Loop range missing.");
   }
-  NumberDecoratorHandle nd;
+  SharedHandle<NumberDecorator> nd;
   unsigned int start;
   unsigned int end;
   if(util::isNumber(range.first) && util::isNumber(range.second)) {
@@ -146,7 +147,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     throw DL_ABORT_EX("Invalid loop range.");
   }
 
-  PStringDatumHandle next(diggPString(src, offset));
+  SharedHandle<PStringDatum> next(diggPString(src, offset));
   return SharedHandle<PStringDatum>(new PStringNumLoop(start, end, step, nd, next));
 }
 

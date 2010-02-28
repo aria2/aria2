@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <stdint.h>
-#include <deque>
 #include <vector>
 #include <string>
 
@@ -179,9 +178,6 @@ public:
    */
   void reconfigure(size_t length);
 };
-
-typedef SharedHandle<Piece> PieceHandle;
-typedef std::deque<PieceHandle> Pieces;
 
 } // namespace aria2
 

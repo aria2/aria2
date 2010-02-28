@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
 #include <algorithm>
 #include <vector>
 
@@ -120,11 +119,11 @@ private:
 
   HaltReason _haltReason;
 
-  std::deque<SharedHandle<PreDownloadHandler> > _preDownloadHandlers;
+  std::vector<SharedHandle<PreDownloadHandler> > _preDownloadHandlers;
 
-  std::deque<SharedHandle<PostDownloadHandler> > _postDownloadHandlers;
+  std::vector<SharedHandle<PostDownloadHandler> > _postDownloadHandlers;
 
-  std::deque<std::string> _acceptTypes;
+  std::vector<std::string> _acceptTypes;
 
   SharedHandle<URISelector> _uriSelector;
 
@@ -197,13 +196,13 @@ public:
   // Returns first bootstrap commands to initiate a download.
   // If this is HTTP/FTP download and file size is unknown, only 1 command
   // (usually, HttpInitiateConnection or FtpInitiateConnection) will be created.
-  void createInitialCommand(std::deque<Command*>& commands,
+  void createInitialCommand(std::vector<Command*>& commands,
                             DownloadEngine* e);
 
-  void createNextCommandWithAdj(std::deque<Command*>& commands,
+  void createNextCommandWithAdj(std::vector<Command*>& commands,
                                 DownloadEngine* e, int numAdj);
 
-  void createNextCommand(std::deque<Command*>& commands,
+  void createNextCommand(std::vector<Command*>& commands,
                          DownloadEngine* e, unsigned int numCommand);
   
   bool downloadFinished() const;
@@ -338,7 +337,7 @@ public:
 
   void releaseRuntimeResource(DownloadEngine* e);
 
-  void postDownloadProcessing(std::deque<SharedHandle<RequestGroup> >& groups);
+  void postDownloadProcessing(std::vector<SharedHandle<RequestGroup> >& groups);
 
   void addPostDownloadHandler(const SharedHandle<PostDownloadHandler>& handler);
 
@@ -350,7 +349,7 @@ public:
 
   void clearPreDownloadHandler();
 
-  void processCheckIntegrityEntry(std::deque<Command*>& commands,
+  void processCheckIntegrityEntry(std::vector<Command*>& commands,
                                   const SharedHandle<CheckIntegrityEntry>& entry,
                                   DownloadEngine* e);
 
@@ -376,7 +375,7 @@ public:
 
   void reportDownloadFinished();
 
-  const std::deque<std::string>& getAcceptTypes() const
+  const std::vector<std::string>& getAcceptTypes() const
   {
     return _acceptTypes;
   }
@@ -493,10 +492,6 @@ public:
 
   static int32_t newGID();
 };
-
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
-typedef WeakHandle<RequestGroup> RequestGroupWeakHandle;
-typedef std::deque<RequestGroupHandle> RequestGroups;
 
 } // namespace aria2
 

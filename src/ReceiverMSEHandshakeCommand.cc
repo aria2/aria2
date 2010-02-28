@@ -135,7 +135,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     break;
   }
   case RECEIVER_RECEIVE_PAD_C_LENGTH: {
-    std::deque<SharedHandle<DownloadContext> > downloadContexts;
+    std::vector<SharedHandle<DownloadContext> > downloadContexts;
     e->getBtRegistry()->getAllDownloadContext
       (std::back_inserter(downloadContexts));
     if(_mseHandshake->receiveReceiverHashAndPadCLength(downloadContexts)) {

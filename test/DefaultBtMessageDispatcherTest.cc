@@ -152,7 +152,7 @@ public:
 
     _messageFactory.reset(new MockBtMessageFactory2());
 
-    _rgman.reset(new RequestGroupMan(std::deque<SharedHandle<RequestGroup> >(),
+    _rgman.reset(new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
                                      0, _option.get()));
 
     btMessageDispatcher.reset(new DefaultBtMessageDispatcher());

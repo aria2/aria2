@@ -42,7 +42,7 @@ namespace aria2 {
 
 HttpProxyRequestCommand::HttpProxyRequestCommand
 (int cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,

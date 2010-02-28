@@ -36,7 +36,7 @@ static SharedHandle<FileEntry> createFileEntry()
                          "ftp://localhost/aria2.zip",
                          "http://mirror/aria2.zip" };
   SharedHandle<FileEntry> fileEntry(new FileEntry());
-  fileEntry->setUris(std::deque<std::string>(&uris[0], &uris[3]));
+  fileEntry->setUris(std::vector<std::string>(&uris[0], &uris[3]));
   return fileEntry;
 }
 

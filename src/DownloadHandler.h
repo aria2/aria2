@@ -36,9 +36,10 @@
 #define _D_DOWNLOAD_HANDLER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
-#include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 

@@ -99,8 +99,6 @@ public:
   virtual SharedHandle<Piece> getPiece() const;
 };
 
-typedef SharedHandle<PiecedSegment> PiecedSegmentHandle;
-
 } // namespace aria2
 
 #endif // _D_PIECED_SEGMENT_H_

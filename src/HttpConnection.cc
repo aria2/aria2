@@ -58,7 +58,8 @@
 
 namespace aria2 {
 
-HttpRequestEntry::HttpRequestEntry(const HttpRequestHandle& httpRequest):
+HttpRequestEntry::HttpRequestEntry
+(const SharedHandle<HttpRequest>& httpRequest):
   _httpRequest(httpRequest),
   _proc(new HttpHeaderProcessor()) {}
 
@@ -91,7 +92,7 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
   return result;
 }
 
-void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
+void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
@@ -100,7 +101,8 @@ void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
   outstandingHttpRequests.push_back(entry);
 }
 
-void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
+void HttpConnection::sendProxyRequest
+(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
@@ -109,7 +111,7 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
   outstandingHttpRequests.push_back(entry);
 }
 
-HttpResponseHandle HttpConnection::receiveResponse()
+SharedHandle<HttpResponse> HttpConnection::receiveResponse()
 {
   if(outstandingHttpRequests.empty()) {
     throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
@@ -138,7 +140,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
 
   logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
-  HttpResponseHandle httpResponse(new HttpResponse());
+  SharedHandle<HttpResponse> httpResponse(new HttpResponse());
   httpResponse->setCuid(cuid);
   httpResponse->setHttpHeader(httpHeader);
   httpResponse->setHttpRequest(entry->getHttpRequest());
@@ -148,11 +150,11 @@ HttpResponseHandle HttpConnection::receiveResponse()
   return httpResponse;
 }
 
-bool HttpConnection::isIssued(const SegmentHandle& segment) const
+bool HttpConnection::isIssued(const SharedHandle<Segment>& segment) const
 {
   for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests.begin();
       itr != outstandingHttpRequests.end(); ++itr) {
-    HttpRequestHandle httpRequest = (*itr)->getHttpRequest();
+    SharedHandle<HttpRequest> httpRequest = (*itr)->getHttpRequest();
     if(httpRequest->getSegment() == segment) {
       return true;
     }

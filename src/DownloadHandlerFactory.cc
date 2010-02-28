@@ -44,20 +44,20 @@ namespace aria2 {
 
 #ifdef ENABLE_METALINK
 
-MemoryBufferPreDownloadHandlerHandle
+SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::_metalinkPreDownloadHandler;
 
-MetalinkPostDownloadHandlerHandle
+SharedHandle<MetalinkPostDownloadHandler>
 DownloadHandlerFactory::_metalinkPostDownloadHandler;
 
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
 
-MemoryBufferPreDownloadHandlerHandle
+SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::_btPreDownloadHandler;
 
-BtPostDownloadHandlerHandle
+SharedHandle<BtPostDownloadHandler>
 DownloadHandlerFactory::_btPostDownloadHandler;
 
 SharedHandle<UTMetadataPostDownloadHandler>
@@ -66,7 +66,7 @@ DownloadHandlerFactory::_btMetadataPostDownloadHandler;
 
 #ifdef ENABLE_METALINK
 
-MemoryBufferPreDownloadHandlerHandle
+SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 {
   if(_metalinkPreDownloadHandler.isNull()) {
@@ -83,7 +83,7 @@ DownloadHandlerFactory::getMetalinkPreDownloadHandler()
   return _metalinkPreDownloadHandler;
 }
 
-MetalinkPostDownloadHandlerHandle
+SharedHandle<MetalinkPostDownloadHandler>
 DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 {
   if(_metalinkPostDownloadHandler.isNull()) {
@@ -96,7 +96,7 @@ DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 
 #ifdef ENABLE_BITTORRENT
 
-MemoryBufferPreDownloadHandlerHandle
+SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::getBtPreDownloadHandler()
 {
   if(_btPreDownloadHandler.isNull()) {
@@ -113,7 +113,8 @@ DownloadHandlerFactory::getBtPreDownloadHandler()
   return _btPreDownloadHandler;
 }
 
-BtPostDownloadHandlerHandle DownloadHandlerFactory::getBtPostDownloadHandler()
+SharedHandle<BtPostDownloadHandler>
+DownloadHandlerFactory::getBtPostDownloadHandler()
 {
   if(_btPostDownloadHandler.isNull()) {
     _btPostDownloadHandler.reset(new BtPostDownloadHandler());

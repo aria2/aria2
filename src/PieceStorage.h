@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "TimeA2.h"
@@ -77,7 +77,7 @@ public:
    */
   virtual SharedHandle<Piece> getMissingPiece
   (const SharedHandle<Peer>& peer,
-   const std::deque<size_t>& excludedIndexes) = 0;
+   const std::vector<size_t>& excludedIndexes) = 0;
 
   /**
    * Returns a piece that the peer has but localhost doesn't.
@@ -95,7 +95,7 @@ public:
    */
   virtual SharedHandle<Piece> getMissingFastPiece
   (const SharedHandle<Peer>& peer,
-   const std::deque<size_t>& excludedIndexes) = 0;
+   const std::vector<size_t>& excludedIndexes) = 0;
 
 #endif // ENABLE_BITTORRENT
 
@@ -204,7 +204,7 @@ public:
    * indexes is filled with piece index which is not advertised by the caller
    * command and newer than lastCheckTime.
    */
-  virtual void getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+  virtual void getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                          int32_t myCuid,
                                          const Time& lastCheckTime) = 0;
 
@@ -225,11 +225,11 @@ public:
   virtual void markPiecesDone(uint64_t length) = 0;
 
   virtual void
-  addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces) = 0;
+  addInFlightPiece(const std::vector<SharedHandle<Piece> >& pieces) = 0;
 
   virtual size_t countInFlightPiece() = 0;
 
-  virtual void getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces) = 0;
+  virtual void getInFlightPieces(std::vector<SharedHandle<Piece> >& pieces) = 0;
 
   virtual void addPieceStats(size_t index) = 0;
 

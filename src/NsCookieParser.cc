@@ -35,7 +35,6 @@
 #include "NsCookieParser.h"
 
 #include <fstream>
-#include <vector>
 
 #include "util.h"
 #include "A2STR.h"
@@ -76,7 +75,7 @@ static Cookie parseNsCookie(const std::string& nsCookieStr)
   return c;
 }
 
-std::deque<Cookie> NsCookieParser::parse(const std::string& filename)
+std::vector<Cookie> NsCookieParser::parse(const std::string& filename)
 {
   std::ifstream s(filename.c_str(), std::ios::binary);
   if(!s) {
@@ -84,7 +83,7 @@ std::deque<Cookie> NsCookieParser::parse(const std::string& filename)
       (StringFormat("Failed to open file %s", filename.c_str()).str());
   }
   std::string line;
-  std::deque<Cookie> cookies;
+  std::vector<Cookie> cookies;
   while(getline(s, line)) {
     if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;

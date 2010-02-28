@@ -38,7 +38,6 @@
 #include "Command.h"
 #include "SharedHandle.h"
 #include "TimeA2.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -47,7 +46,6 @@ class DownloadEngine;
 
 class FillRequestGroupCommand : public Command {
 private:
-  std::deque<SharedHandle<RequestGroup> > _reservedRequestGroups;
   DownloadEngine* _e;
   time_t _interval;
   Time _checkPoint;

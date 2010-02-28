@@ -37,7 +37,8 @@ void PStringBuildVisitorTest::testVisit_select()
   const char* select1data[] = { "alpha", "bravo", "charlie" };
   
   SharedHandle<PStringSelect> select1
-    (new PStringSelect(std::deque<std::string>(&select1data[0], &select1data[3]), segment1));
+    (new PStringSelect
+     (std::vector<std::string>(&select1data[0], &select1data[3]), segment1));
 
   PStringBuildVisitor v;
 
@@ -74,7 +75,8 @@ void PStringBuildVisitorTest::testVisit_select_numLoop()
   const char* select1data[] = { "alpha", "bravo", "charlie" };
   
   SharedHandle<PStringSelect> select1
-    (new PStringSelect(std::deque<std::string>(&select1data[0], &select1data[3]), segment1));
+    (new PStringSelect
+     (std::vector<std::string>(&select1data[0], &select1data[3]), segment1));
 
   SharedHandle<NumberDecorator> decorator(new FixedWidthNumberDecorator(2));
   SharedHandle<PStringNumLoop> loop1

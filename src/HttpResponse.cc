@@ -33,9 +33,6 @@
  */
 /* copyright --> */
 #include "HttpResponse.h"
-
-#include <deque>
-
 #include "Request.h"
 #include "Segment.h"
 #include "HttpRequest.h"
@@ -116,8 +113,8 @@ std::string HttpResponse::determinFilename() const
 
 void HttpResponse::retrieveCookie()
 {
-  std::deque<std::string> v = httpHeader->get(HttpHeader::SET_COOKIE);
-  for(std::deque<std::string>::const_iterator itr = v.begin(); itr != v.end();
+  std::vector<std::string> v = httpHeader->get(HttpHeader::SET_COOKIE);
+  for(std::vector<std::string>::const_iterator itr = v.begin(); itr != v.end();
       ++itr) {
     httpRequest->getCookieStorage()->parseAndStore(*itr,
                                                    httpRequest->getHost(),

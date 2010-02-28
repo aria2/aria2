@@ -36,19 +36,19 @@
 #define _D_BT_MESSAGE_VALIDATOR_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
-#include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
-
-typedef std::deque<std::string> Errors;
 
 class BtMessageValidator {
 public:
   virtual ~BtMessageValidator() {}
 
-  virtual bool validate(Errors& errors) = 0;
+  // Throws RecoverableException on error.
+  virtual void validate() = 0;
 };
 
 typedef SharedHandle<BtMessageValidator> BtMessageValidatorHandle;

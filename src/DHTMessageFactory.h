@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "A2STR.h"
@@ -78,9 +78,10 @@ public:
                         const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
-  createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                             const std::string& transactionID) = 0;
+  createFindNodeReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+   const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
   createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -88,16 +89,18 @@ public:
                         const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
-  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                             const std::string& token,
-                             const std::string& transactionID) = 0;
+  createGetPeersReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+   const std::string& token,
+   const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
-  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::deque<SharedHandle<Peer> >& peers,
-                             const std::string& token,
-                             const std::string& transactionID) = 0;
+  createGetPeersReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const std::vector<SharedHandle<Peer> >& peers,
+   const std::string& token,
+   const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
   createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,

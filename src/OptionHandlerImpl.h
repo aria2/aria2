@@ -43,6 +43,7 @@
 #include <numeric>
 #include <sstream>
 #include <iterator>
+#include <vector>
 
 #include "NameMatchOptionHandler.h"
 #include "util.h"
@@ -416,12 +417,12 @@ public:
 
 class ParameterOptionHandler : public NameMatchOptionHandler {
 private:
-  std::deque<std::string> _validParamValues;
+  std::vector<std::string> _validParamValues;
 public:
   ParameterOptionHandler(const std::string& optName,
                          const std::string& description,
                          const std::string& defaultValue,
-                         const std::deque<std::string>& validParamValues,
+                         const std::vector<std::string>& validParamValues,
                          char shortName = 0):
     NameMatchOptionHandler(optName, description, defaultValue,
                            OptionHandler::REQ_ARG, shortName),
@@ -470,7 +471,7 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    std::deque<std::string>::const_iterator itr =
+    std::vector<std::string>::const_iterator itr =
       std::find(_validParamValues.begin(), _validParamValues.end(), optarg);
     if(itr == _validParamValues.end()) {
       std::string msg = _optName;
@@ -478,7 +479,8 @@ public:
       if(_validParamValues.size() == 0) {
         msg += "''";
       } else {
-        for(std::deque<std::string>::const_iterator itr = _validParamValues.begin();
+        for(std::vector<std::string>::const_iterator itr =
+              _validParamValues.begin();
             itr != _validParamValues.end(); ++itr) {
           strappend(msg, "'", *itr, "' ");
         }

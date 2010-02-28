@@ -454,7 +454,7 @@ bool MSEHandshake::findReceiverHashMarker()
 }
 
 bool MSEHandshake::receiveReceiverHashAndPadCLength
-(const std::deque<SharedHandle<DownloadContext> >& downloadContexts)
+(const std::vector<SharedHandle<DownloadContext> >& downloadContexts)
 {
   size_t r = 20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/-_rbufLength;
   if(r > receiveNBytes(r)) {
@@ -464,7 +464,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   // pointing to the position of HASH('req2', SKEY) xor HASH('req3', S)
   unsigned char* rbufptr = _rbuf;
   SharedHandle<DownloadContext> downloadContext;
-  for(std::deque<SharedHandle<DownloadContext> >::const_iterator i =
+  for(std::vector<SharedHandle<DownloadContext> >::const_iterator i =
         downloadContexts.begin(); i != downloadContexts.end(); ++i) {
     unsigned char md[20];
     const BDE& torrentAttrs = (*i)->getAttribute(bittorrent::BITTORRENT);

@@ -45,11 +45,11 @@ BDE parse(const std::string& magnet)
   if(!util::startsWith(magnet, "magnet:?")) {
     return result;
   }
-  std::deque<std::string> queries;
+  std::vector<std::string> queries;
   util::split(std::string(magnet.begin()+8, magnet.end()),
               std::back_inserter(queries), "&");
   BDE dict = BDE::dict();
-  for(std::deque<std::string>::const_iterator i = queries.begin();
+  for(std::vector<std::string>::const_iterator i = queries.begin();
       i != queries.end(); ++i) {
     std::pair<std::string, std::string> kv;
     util::split(kv, *i, '=');

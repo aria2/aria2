@@ -36,9 +36,12 @@
 #define _D_DHT_ENTRY_POINT_NAME_RESOVE_COMMAND_H_
 
 #include "Command.h"
-#include "SharedHandle.h"
+
 #include <utility>
+#include <vector>
 #include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -69,7 +72,7 @@ private:
 
   std::deque<std::pair<std::string, uint16_t> > _entryPoints;
 
-  std::deque<std::pair<std::string, uint16_t> > _resolvedEntryPoints;
+  std::vector<std::pair<std::string, uint16_t> > _resolvedEntryPoints;
 
   bool _bootstrapEnabled;
 
@@ -85,8 +88,9 @@ private:
 #endif // ENABLE_ASYNC_DNS
 
 public:
-  DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e,
-                                  const std::deque<std::pair<std:: string, uint16_t> >& entryPoints);
+  DHTEntryPointNameResolveCommand
+  (int32_t cuid, DownloadEngine* e,
+   const std::vector<std::pair<std:: string, uint16_t> >& entryPoints);
 
   virtual ~DHTEntryPointNameResolveCommand();
 

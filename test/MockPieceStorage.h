@@ -49,7 +49,7 @@ public:
   }
 
   virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
   {
     return SharedHandle<Piece>(new Piece());
   }
@@ -59,7 +59,7 @@ public:
   }
 
   virtual SharedHandle<Piece> getMissingFastPiece
-  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
   {
     return SharedHandle<Piece>(new Piece());
   }
@@ -212,7 +212,7 @@ public:
 
   virtual void advertisePiece(int32_t cuid, size_t index) {}
 
-  virtual void getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+  virtual void getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                          int32_t myCuid,
                                          const Time& lastCheckTime)
   {}
@@ -221,7 +221,7 @@ public:
 
   virtual void markAllPiecesDone() {}
 
-  virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces)
+  virtual void addInFlightPiece(const std::vector<SharedHandle<Piece> >& pieces)
   {
     std::copy(pieces.begin(), pieces.end(), back_inserter(inFlightPieces));
   }
@@ -231,7 +231,7 @@ public:
     return inFlightPieces.size();
   }
 
-  virtual void getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces)
+  virtual void getInFlightPieces(std::vector<SharedHandle<Piece> >& pieces)
   {
     pieces.insert(pieces.end(), inFlightPieces.begin(), inFlightPieces.end());
   }

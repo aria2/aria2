@@ -130,8 +130,6 @@ public:
   bool supportsPersistentConnection() const;
 };
 
-typedef SharedHandle<HttpResponse> HttpResponseHandle;
-
 } // namespace aria2
 
 #endif // _D_HTTP_RESPONSE_H_

@@ -38,10 +38,10 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include <deque>
 #include <fstream>
 #include <iostream>
 #include <numeric>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "LogFactory.h"
@@ -132,10 +132,10 @@ static void showMetalinkFile
 
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
 static void showFiles
-(const std::deque<std::string>& uris, const SharedHandle<Option>& op)
+(const std::vector<std::string>& uris, const SharedHandle<Option>& op)
 {
   ProtocolDetector dt;
-  for(std::deque<std::string>::const_iterator i = uris.begin();
+  for(std::vector<std::string>::const_iterator i = uris.begin();
       i != uris.end(); ++i) {
     printf(">>> ");
     printf(MSG_SHOW_FILES, (*i).c_str());
@@ -162,12 +162,12 @@ static void showFiles
 }
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
-extern void option_processing(Option& option, std::deque<std::string>& uris,
+extern void option_processing(Option& option, std::vector<std::string>& uris,
                               int argc, char* const argv[]);
 
 downloadresultcode::RESULT main(int argc, char* argv[])
 {
-  std::deque<std::string> args;
+  std::vector<std::string> args;
   SharedHandle<Option> op(new Option());
   option_processing(*op.get(), args, argc, argv);
 
@@ -227,7 +227,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
   // died.
   util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
 #endif // SIGCHILD
-  std::deque<SharedHandle<RequestGroup> > requestGroups;
+  std::vector<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT
   if(!op->blank(PREF_TORRENT_FILE)) {
     if(op->get(PREF_SHOW_FILES) == V_TRUE) {

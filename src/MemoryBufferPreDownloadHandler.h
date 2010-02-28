@@ -49,8 +49,6 @@ public:
   virtual void execute(RequestGroup* requestGroup);
 };
 
-typedef SharedHandle<MemoryBufferPreDownloadHandler> MemoryBufferPreDownloadHandlerHandle;
-
 } // namespace aria2
 
 #endif // _D_MEMORY_BUFFER_PRE_DOWNLOAD_HANDLER_H_

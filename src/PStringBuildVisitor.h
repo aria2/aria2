@@ -38,6 +38,7 @@
 #include "PStringVisitor.h"
 
 #include <deque>
+#include <vector>
 #include <string>
 
 #include "SharedHandle.h"
@@ -50,7 +51,7 @@ private:
 
   std::deque<std::string> _buildQueue;
 
-  std::deque<std::string> _uris;
+  std::vector<std::string> _uris;
 public:
   
   virtual void visit(PStringSegment& s);
@@ -59,7 +60,7 @@ public:
 
   virtual void visit(PStringSelect& s);
 
-  const std::deque<std::string>& getURIs() const;
+  const std::vector<std::string>& getURIs() const;
 
   void reset();
 };

@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
 
 #include "a2time.h"
 
@@ -154,8 +153,6 @@ public:
 
   static std::string normalizeDomain(const std::string& domain);
 };
-
-typedef std::deque<Cookie> Cookies;
 
 } // namespace aria2
 

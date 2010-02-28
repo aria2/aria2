@@ -35,7 +35,6 @@
 #include "PeerListenCommand.h"
 
 #include <utility>
-#include <deque>
 #include <algorithm>
 
 #include "DownloadEngine.h"
@@ -72,11 +71,11 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
   socket.reset(new SocketCore());
 
-  std::deque<int32_t> randPorts = seq.flush();
+  std::vector<int32_t> randPorts = seq.flush();
   std::random_shuffle(randPorts.begin(), randPorts.end(),
                       *SimpleRandomizer::getInstance().get());
   
-  for(std::deque<int32_t>::const_iterator portItr = randPorts.begin();
+  for(std::vector<int32_t>::const_iterator portItr = randPorts.begin();
       portItr != randPorts.end(); ++portItr) {
     if(!(0 < (*portItr) && (*portItr) <= 65535)) {
       continue;
@@ -120,7 +119,7 @@ bool PeerListenCommand::execute() {
 
       peerSocket->setNonBlockingMode();
 
-      PeerHandle peer(new Peer(peerInfo.first, peerInfo.second, true));
+      SharedHandle<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
       int32_t cuid = e->newCUID();
       Command* command =
         new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);

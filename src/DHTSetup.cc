@@ -80,13 +80,13 @@ DHTSetup::DHTSetup():_logger(LogFactory::getInstance()) {}
 
 DHTSetup::~DHTSetup() {}
 
-void DHTSetup::setup(std::deque<Command*>& commands,
+void DHTSetup::setup(std::vector<Command*>& commands,
                      DownloadEngine* e, const Option* option)
 {
   if(_initialized) {
     return;
   }
-  std::deque<Command*> tempCommands;
+  std::vector<Command*> tempCommands;
   try {
     // load routing table and localnode id here
 
@@ -179,8 +179,10 @@ void DHTSetup::setup(std::deque<Command*>& commands,
     DHTRegistry::_messageFactory = factory;
 
     // add deserialized nodes to routing table
-    const std::deque<SharedHandle<DHTNode> >& desnodes = deserializer.getNodes();
-    for(std::deque<SharedHandle<DHTNode> >::const_iterator i = desnodes.begin(); i != desnodes.end(); ++i) {
+    const std::vector<SharedHandle<DHTNode> >& desnodes =
+      deserializer.getNodes();
+    for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
+          desnodes.begin(); i != desnodes.end(); ++i) {
       routingTable->addNode(*i);
     }
     if(!desnodes.empty() && deserializer.getSerializedTime().elapsed(DHT_BUCKET_REFRESH_INTERVAL)) {
@@ -194,7 +196,7 @@ void DHTSetup::setup(std::deque<Command*>& commands,
       {
         std::pair<std::string, uint16_t> addr(option->get(PREF_DHT_ENTRY_POINT_HOST),
                                               option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
-        std::deque<std::pair<std::string, uint16_t> > entryPoints;
+        std::vector<std::pair<std::string, uint16_t> > entryPoints;
         entryPoints.push_back(addr);
         DHTEntryPointNameResolveCommand* command =
           new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);

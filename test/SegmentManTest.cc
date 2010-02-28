@@ -77,7 +77,7 @@ void SegmentManTest::testCompleteSegment()
   seg->updateWrittenLength(pieceLength);
   segmentMan.completeSegment(1, seg);
   
-  std::deque<SharedHandle<Segment> > segments;
+  std::vector<SharedHandle<Segment> > segments;
   segmentMan.getInFlightSegment(segments, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segments[0]->getIndex());
@@ -98,7 +98,7 @@ void SegmentManTest::testGetSegment_sameFileEntry()
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
   SegmentMan segman(&op, dctx, ps);
 
-  std::deque<SharedHandle<Segment> > segments;
+  std::vector<SharedHandle<Segment> > segments;
   segman.getSegment(segments, 1, fileEntries[1], 4);
   // See 3 segments are returned, not 4 because the part of file1 is
   // not filled in segment#1

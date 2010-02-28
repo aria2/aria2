@@ -101,7 +101,7 @@ bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
     std::binary_search(_entries.begin(), _entries.end(), entry, InfoHashLess());
 }
 
-void DHTPeerAnnounceStorage::getPeers(std::deque<SharedHandle<Peer> >& peers,
+void DHTPeerAnnounceStorage::getPeers(std::vector<SharedHandle<Peer> >& peers,
                                       const unsigned char* infoHash)
 {
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));

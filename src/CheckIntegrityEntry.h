@@ -37,7 +37,8 @@
 
 #include "RequestGroupEntry.h"
 #include "ProgressAwareEntry.h"
-#include <deque>
+
+#include <vector>
 
 namespace aria2 {
 
@@ -50,7 +51,7 @@ class CheckIntegrityEntry : public RequestGroupEntry,
 protected:
   SharedHandle<IteratableValidator> _validator;
 
-  void proceedFileAllocation(std::deque<Command*>& commands,
+  void proceedFileAllocation(std::vector<Command*>& commands,
                              const SharedHandle<FileAllocationEntry>& entry,
                              DownloadEngine* e);
 public:
@@ -70,17 +71,14 @@ public:
 
   virtual void initValidator() = 0;
 
-  virtual void onDownloadFinished(std::deque<Command*>& commands,
+  virtual void onDownloadFinished(std::vector<Command*>& commands,
                                   DownloadEngine* e) = 0;
 
-  virtual void onDownloadIncomplete(std::deque<Command*>& commands,
+  virtual void onDownloadIncomplete(std::vector<Command*>& commands,
                                     DownloadEngine* e) = 0;
 
   void cutTrailingGarbage();
 };
-
-typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
-typedef std::deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
 
 } // namespace aria2
 

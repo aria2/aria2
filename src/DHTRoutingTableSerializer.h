@@ -36,9 +36,11 @@
 #define _D_DHT_ROUTING_TABLE_SERIALIZER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include <deque>
+
+#include <vector>
 #include <iosfwd>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -48,7 +50,7 @@ class DHTRoutingTableSerializer {
 private:
   SharedHandle<DHTNode> _localNode;
 
-  std::deque<SharedHandle<DHTNode> > _nodes;
+  std::vector<SharedHandle<DHTNode> > _nodes;
 public:
   DHTRoutingTableSerializer();
 
@@ -56,7 +58,7 @@ public:
 
   void setLocalNode(const SharedHandle<DHTNode>& localNode);
 
-  void setNodes(const std::deque<SharedHandle<DHTNode> >& nodes);
+  void setNodes(const std::vector<SharedHandle<DHTNode> >& nodes);
 
   void serialize(std::ostream& o);
 };

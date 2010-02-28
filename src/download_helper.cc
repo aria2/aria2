@@ -38,7 +38,6 @@
 #include <fstream>
 #include <algorithm>
 #include <sstream>
-#include <vector>
 
 #include "RequestGroup.h"
 #include "Option.h"
@@ -153,11 +152,11 @@ const std::set<std::string>& listRequestOptions()
 }
 
 static void unfoldURI
-(std::deque<std::string>& result, const std::deque<std::string>& args)
+(std::vector<std::string>& result, const std::vector<std::string>& args)
 {
   ParameterizedStringParser p;
   PStringBuildVisitor v;
-  for(std::deque<std::string>::const_iterator itr = args.begin();
+  for(std::vector<std::string>::const_iterator itr = args.begin();
       itr != args.end(); ++itr) {
     v.reset();
     p.parse(*itr)->accept(v);
@@ -165,9 +164,10 @@ static void unfoldURI
   }
 }
 
-static void splitURI(std::deque<std::string>& result,
-                     std::deque<std::string>::const_iterator begin,
-                     std::deque<std::string>::const_iterator end,
+template<typename InputIterator>
+static void splitURI(std::vector<std::string>& result,
+                     InputIterator begin,
+                     InputIterator end,
                      size_t numSplit)
 {
   size_t numURIs = std::distance(begin, end);
@@ -182,7 +182,7 @@ static void splitURI(std::deque<std::string>& result,
 }
 
 static SharedHandle<RequestGroup> createRequestGroup
-(const SharedHandle<Option>& option, const std::deque<std::string>& uris,
+(const SharedHandle<Option>& option, const std::vector<std::string>& uris,
  bool useOutOption = false)
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
@@ -204,7 +204,7 @@ static
 SharedHandle<RequestGroup>
 createBtRequestGroup(const std::string& torrentFilePath,
                      const SharedHandle<Option>& option,
-                     const std::deque<std::string>& auxUris,
+                     const std::vector<std::string>& auxUris,
                      const std::string& torrentData = "")
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
@@ -234,7 +234,7 @@ static
 SharedHandle<RequestGroup>
 createBtMagnetRequestGroup(const std::string& magnetLink,
                            const SharedHandle<Option>& option,
-                           const std::deque<std::string>& auxUris)
+                           const std::vector<std::string>& auxUris)
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx
@@ -259,12 +259,12 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
 }
 
 void createRequestGroupForBitTorrent
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
- const std::deque<std::string>& uris,
+ const std::vector<std::string>& uris,
  const std::string& torrentData)
 {
-  std::deque<std::string> nargs;
+  std::vector<std::string> nargs;
   if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
     unfoldURI(nargs, uris);
   } else {
@@ -272,7 +272,7 @@ void createRequestGroupForBitTorrent
   }
   // we ignore -Z option here
   size_t numSplit = option->getAsInt(PREF_SPLIT);
-  std::deque<std::string> auxUris;
+  std::vector<std::string> auxUris;
   splitURI(auxUris, nargs.begin(), nargs.end(), numSplit);
   SharedHandle<RequestGroup> rg =
     createBtRequestGroup(option->get(PREF_TORRENT_FILE), option, auxUris,
@@ -285,7 +285,7 @@ void createRequestGroupForBitTorrent
 
 #ifdef ENABLE_METALINK
 void createRequestGroupForMetalink
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::string& metalinkData)
 {
@@ -306,12 +306,12 @@ void createRequestGroupForMetalink
 
 class AccRequestGroup {
 private:
-  std::deque<SharedHandle<RequestGroup> >& _requestGroups;
+  std::vector<SharedHandle<RequestGroup> >& _requestGroups;
   ProtocolDetector _detector;
   SharedHandle<Option> _option;
   bool _ignoreLocalPath;
 public:
-  AccRequestGroup(std::deque<SharedHandle<RequestGroup> >& requestGroups,
+  AccRequestGroup(std::vector<SharedHandle<RequestGroup> >& requestGroups,
                   const SharedHandle<Option>& option,
                   bool ignoreLocalPath = false):
     _requestGroups(requestGroups), _option(option),
@@ -321,7 +321,7 @@ public:
   operator()(const std::string& uri)
   {
     if(_detector.isStreamProtocol(uri)) {
-      std::deque<std::string> streamURIs;
+      std::vector<std::string> streamURIs;
       size_t numSplit = _option->getAsInt(PREF_SPLIT);
       for(size_t i = 0; i < numSplit; ++i) {
         streamURIs.push_back(uri);
@@ -335,7 +335,7 @@ public:
     else if(_detector.guessTorrentMagnet(uri)) {
       try {
         SharedHandle<RequestGroup> group =
-          createBtMagnetRequestGroup(uri, _option, std::deque<std::string>());
+          createBtMagnetRequestGroup(uri, _option, std::vector<std::string>());
         _requestGroups.push_back(group);
       } catch(RecoverableException& e) {
         // error occurred while parsing torrent file.
@@ -344,8 +344,8 @@ public:
       }
     } else if(!_ignoreLocalPath && _detector.guessTorrentFile(uri)) {
       try {
-        _requestGroups.push_back(createBtRequestGroup(uri, _option,
-                                                      std::deque<std::string>()));
+        _requestGroups.push_back
+          (createBtRequestGroup(uri, _option, std::vector<std::string>()));
       } catch(RecoverableException& e) {
         // error occurred while parsing torrent file.
         // We simply ignore it. 
@@ -380,13 +380,13 @@ public:
 };
 
 void createRequestGroupForUri
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
- const std::deque<std::string>& uris,
+ const std::vector<std::string>& uris,
  bool ignoreForceSequential,
  bool ignoreLocalPath)
 {
-  std::deque<std::string> nargs;
+  std::vector<std::string> nargs;
   if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
     unfoldURI(nargs, uris);
   } else {
@@ -396,12 +396,12 @@ void createRequestGroupForUri
     std::for_each(nargs.begin(), nargs.end(),
                   AccRequestGroup(result, option, ignoreLocalPath));
   } else {
-    std::deque<std::string>::iterator strmProtoEnd =
+    std::vector<std::string>::iterator strmProtoEnd =
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
     // let's process http/ftp protocols first.
     if(nargs.begin() != strmProtoEnd) {
       size_t numSplit = option->getAsInt(PREF_SPLIT);
-      std::deque<std::string> streamURIs;
+      std::vector<std::string> streamURIs;
       splitURI(streamURIs, nargs.begin(), strmProtoEnd,
                numSplit);
       SharedHandle<RequestGroup> rg =
@@ -416,13 +416,13 @@ void createRequestGroupForUri
 }
 
 static void createRequestGroupForUriList
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  std::istream& in)
 {
   UriListParser p(in);
   while(p.hasNext()) {
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     SharedHandle<Option> tempOption(new Option());
     p.parseNext(uris, *tempOption.get());
     if(uris.empty()) {
@@ -442,7 +442,7 @@ static void createRequestGroupForUriList
 }
 
 void createRequestGroupForUriList
-(std::deque<SharedHandle<RequestGroup> >& result,
+(std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option)
 {
   if(option->get(PREF_INPUT_FILE) == "-") {

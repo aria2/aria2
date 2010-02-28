@@ -36,9 +36,11 @@
 #define _D_NS_COOKIE_PARSER_H_
 
 #include "common.h"
-#include "Cookie.h"
+
 #include <string>
-#include <deque>
+#include <vector>
+
+#include "Cookie.h"
 
 namespace aria2 {
 
@@ -48,7 +50,7 @@ public:
 
   ~NsCookieParser();
 
-  std::deque<Cookie> parse(const std::string& filename);
+  std::vector<Cookie> parse(const std::string& filename);
 };
 
 } // namespace aria2

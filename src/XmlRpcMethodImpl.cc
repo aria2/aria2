@@ -165,6 +165,17 @@ static void getPosParam(const BDE& params, size_t posParamIndex,
   }
 } 
 
+template<typename OutputIterator>
+static void extractUris(OutputIterator out, const BDE& src)
+{
+  for(BDE::List::const_iterator i = src.listBegin(), end = src.listEnd();
+      i != end; ++i) {
+    if((*i).isString()) {
+      out++ = (*i).s();
+    }
+  }
+}
+
 BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   const BDE& params = req._params;
@@ -172,13 +183,8 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   if(params.empty() || !params[0].isList() || params[0].empty()) {
     throw DL_ABORT_EX("URI is not provided.");
   }
-  std::deque<std::string> uris;
-  for(BDE::List::const_iterator i = params[0].listBegin();
-      i != params[0].listEnd(); ++i) {
-    if((*i).isString()) {
-      uris.push_back((*i).s());
-    }
-  }
+  std::vector<std::string> uris;
+  extractUris(std::back_inserter(uris), params[0]);
 
   SharedHandle<Option> requestOption(new Option(*e->option));
   if(hasDictParam(params, 1)) {
@@ -188,7 +194,7 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   bool posGiven = false;
   getPosParam(params, 2, posGiven, pos);
 
-  std::deque<SharedHandle<RequestGroup> > result;
+  std::vector<SharedHandle<RequestGroup> > result;
   createRequestGroupForUri(result, requestOption, uris,
                            /* ignoreForceSeq = */ true,
                            /* ignoreLocalPath = */ true);
@@ -210,14 +216,9 @@ BDE AddTorrentXmlRpcMethod::process
     throw DL_ABORT_EX("Torrent data is not provided.");
   }
   
-  std::deque<std::string> uris;
+  std::vector<std::string> uris;
   if(params.size() > 1 && params[1].isList()) {
-    for(BDE::List::const_iterator i = params[1].listBegin();
-        i != params[1].listEnd(); ++i) {
-      if((*i).isString()) {
-        uris.push_back((*i).s());
-      }
-    }
+    extractUris(std::back_inserter(uris), params[1]);
   }
   SharedHandle<Option> requestOption(new Option(*e->option));
   if(hasDictParam(params, 2)) {
@@ -227,7 +228,7 @@ BDE AddTorrentXmlRpcMethod::process
   bool posGiven = false;
   getPosParam(params, 3, posGiven, pos);
 
-  std::deque<SharedHandle<RequestGroup> > result;
+  std::vector<SharedHandle<RequestGroup> > result;
   createRequestGroupForBitTorrent(result, requestOption,
                                   uris,
                                   params[0].s());
@@ -258,7 +259,7 @@ BDE AddMetalinkXmlRpcMethod::process
   bool posGiven = false;
   getPosParam(params, 2, posGiven, pos);
 
-  std::deque<SharedHandle<RequestGroup> > result;
+  std::vector<SharedHandle<RequestGroup> > result;
   createRequestGroupForMetalink(result, requestOption, params[0].s());
   if(!result.empty()) {
     if(posGiven) {
@@ -267,7 +268,7 @@ BDE AddMetalinkXmlRpcMethod::process
       e->_requestGroupMan->addReservedGroup(result);
     }
     BDE gids = BDE::list();
-    for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+    for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
           result.begin(); i != result.end(); ++i) {
       gids << BDE(util::itos((*i)->getGID()));
     }
@@ -322,9 +323,9 @@ static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
     entry[KEY_LENGTH] = util::uitos((*first)->getLength());
 
     BDE uriList = BDE::list();
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     (*first)->getUris(uris);
-    for(std::deque<std::string>::const_iterator i = uris.begin();
+    for(std::vector<std::string>::const_iterator i = uris.begin();
         i != uris.end(); ++i) {
       BDE uriEntry = BDE::dict();
       uriEntry[KEY_URI] = *i;
@@ -423,7 +424,7 @@ static void gatherProgressBitTorrent
     SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
     assert(!peerStorage.isNull());
 
-    std::deque<SharedHandle<Peer> > peers;
+    std::vector<SharedHandle<Peer> > peers;
     peerStorage->getActivePeers(peers);
     entryDict[KEY_NUM_SEEDERS] = countSeeder(peers.begin(), peers.end());
   }
@@ -431,9 +432,9 @@ static void gatherProgressBitTorrent
 
 static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
 {
-  std::deque<SharedHandle<Peer> > activePeers;
+  std::vector<SharedHandle<Peer> > activePeers;
   ps->getActivePeers(activePeers);
-  for(std::deque<SharedHandle<Peer> >::const_iterator i =
+  for(std::vector<SharedHandle<Peer> >::const_iterator i =
         activePeers.begin(); i != activePeers.end(); ++i) {
     BDE peerEntry = BDE::dict();
     peerEntry[KEY_PEER_ID] = util::torrentUrlencode((*i)->getPeerId(),
@@ -558,9 +559,9 @@ BDE GetUrisXmlRpcMethod::process
   BDE uriList = BDE::list();
   // TODO Current implementation just returns first FileEntry's URIs.
   if(!group->getDownloadContext()->getFileEntries().empty()) {
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    for(std::deque<std::string>::const_iterator i = uris.begin();
+    for(std::vector<std::string>::const_iterator i = uris.begin();
         i != uris.end(); ++i) {
       BDE entry = BDE::dict();
       entry[KEY_URI] = *i;

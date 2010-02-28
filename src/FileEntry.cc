@@ -46,8 +46,8 @@ namespace aria2 {
 FileEntry::FileEntry(const std::string& path,
                      uint64_t length,
                      off_t offset,
-                     const std::deque<std::string>& uris):
-  path(path), _uris(uris), length(length), offset(offset),
+                     const std::vector<std::string>& uris):
+  path(path), _uris(uris.begin(), uris.end()), length(length), offset(offset),
   extracted(false), requested(true),
   _singleHostMultiConnection(true),
   _logger(LogFactory::getInstance()) {}
@@ -92,7 +92,7 @@ off_t FileEntry::gtoloff(off_t goff) const
   return goff-offset;
 }
 
-void FileEntry::getUris(std::deque<std::string>& uris) const
+void FileEntry::getUris(std::vector<std::string>& uris) const
 {
   uris.insert(uris.end(), _spentUris.begin(), _spentUris.end());
   uris.insert(uris.end(), _uris.begin(), _uris.end());
@@ -125,7 +125,7 @@ FileEntry::getRequest
 {
   SharedHandle<Request> req;
   if(_requestPool.empty()) {
-    std::deque<std::string> pending;
+    std::vector<std::string> pending;
     while(1) {
       std::string uri = selector->select(this);
       if(uri.empty()) {
@@ -287,14 +287,14 @@ void FileEntry::reuseUri(size_t num)
   std::sort(uris.begin(), uris.end());
   uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
 
-  std::deque<std::string> errorUris(_uriResults.size());
+  std::vector<std::string> errorUris(_uriResults.size());
   std::transform(_uriResults.begin(), _uriResults.end(),
                  errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
   std::sort(errorUris.begin(), errorUris.end());
   errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
                   errorUris.end());
      
-  std::deque<std::string> reusableURIs;
+  std::vector<std::string> reusableURIs;
   std::set_difference(uris.begin(), uris.end(),
                       errorUris.begin(), errorUris.end(),
                       std::back_inserter(reusableURIs));

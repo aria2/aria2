@@ -237,7 +237,7 @@ void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
   _statCalc = statCalc;
 }
 
-void DownloadEngine::addCommand(const Commands& commands)
+void DownloadEngine::addCommand(const std::vector<Command*>& commands)
 {
   this->commands.insert(this->commands.end(), commands.begin(), commands.end());
 }
@@ -398,10 +398,10 @@ DownloadEngine::popPooledSocket(std::map<std::string, std::string>& options,
 
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket
-(const std::deque<std::string>& ipaddrs, uint16_t port)
+(const std::vector<std::string>& ipaddrs, uint16_t port)
 {
   SharedHandle<SocketCore> s;
-  for(std::deque<std::string>::const_iterator i = ipaddrs.begin();
+  for(std::vector<std::string>::const_iterator i = ipaddrs.begin();
       i != ipaddrs.end(); ++i) {
     s = popPooledSocket(*i, port);
     if(!s.isNull()) {
@@ -414,10 +414,10 @@ DownloadEngine::popPooledSocket
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket
 (std::map<std::string, std::string>& options,
- const std::deque<std::string>& ipaddrs, uint16_t port)
+ const std::vector<std::string>& ipaddrs, uint16_t port)
 {
   SharedHandle<SocketCore> s;
-  for(std::deque<std::string>::const_iterator i = ipaddrs.begin();
+  for(std::vector<std::string>::const_iterator i = ipaddrs.begin();
       i != ipaddrs.end(); ++i) {
     s = popPooledSocket(options, *i, port);
     if(!s.isNull()) {

@@ -53,12 +53,14 @@ DHTRoutingTableSerializer::DHTRoutingTableSerializer() {}
 
 DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
 
-void DHTRoutingTableSerializer::setLocalNode(const SharedHandle<DHTNode>& localNode)
+void DHTRoutingTableSerializer::setLocalNode
+(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }
 
-void DHTRoutingTableSerializer::setNodes(const std::deque<SharedHandle<DHTNode> >& nodes)
+void DHTRoutingTableSerializer::setNodes
+(const std::vector<SharedHandle<DHTNode> >& nodes)
 {
   _nodes = nodes;
 }
@@ -99,7 +101,8 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   o.write(zero, 4);
 
   // nodes
-  for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin(); i != _nodes.end(); ++i) {
+  for(std::vector<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin();
+      i != _nodes.end(); ++i) {
     const SharedHandle<DHTNode>& node = *i;
     // Currently, only IPv4 address and IPv4-mapped address are saved.
     // 6bytes: write IP address + port in Compact IP-address/port info form.

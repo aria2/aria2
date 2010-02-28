@@ -60,7 +60,7 @@ public:
 
   ~UriListParser();
 
-  void parseNext(std::deque<std::string>& uris, Option& op);
+  void parseNext(std::vector<std::string>& uris, Option& op);
 
   bool hasNext() const;
 };

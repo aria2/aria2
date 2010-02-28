@@ -106,7 +106,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 
   peer->setAllBitfield();
 
-  std::deque<size_t> excludedIndexes;
+  std::vector<size_t> excludedIndexes;
   excludedIndexes.push_back(1);
 
   SharedHandle<Piece> piece = pss.getMissingPiece(peer, excludedIndexes);
@@ -148,7 +148,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
   peer->addPeerAllowedIndex(1);
   peer->addPeerAllowedIndex(2);
 
-  std::deque<size_t> excludedIndexes;
+  std::vector<size_t> excludedIndexes;
   excludedIndexes.push_back(2);
 
   SharedHandle<Piece> piece = pss.getMissingFastPiece(peer, excludedIndexes);
@@ -281,7 +281,7 @@ void DefaultPieceStorageTest::testGetCompletedLength()
   ps.markPiecesDone(250*1024*1024);
   CPPUNIT_ASSERT_EQUAL((uint64_t)250*1024*1024, ps.getCompletedLength());
 
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::vector<SharedHandle<Piece> > inFlightPieces;
   for(int i = 0; i < 2; ++i) {
     SharedHandle<Piece> p(new Piece(250+i, 1024*1024));
     for(int j = 0; j < 32; ++j) {

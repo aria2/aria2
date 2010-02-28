@@ -156,7 +156,7 @@ void BNodeTest::testFindClosestKNodes()
     {
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
-      std::deque<SharedHandle<DHTNode> > nodes;
+      std::vector<SharedHandle<DHTNode> > nodes;
       BNode::findClosestKNodes(nodes, bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket4->isInRange(nodes[0]));
@@ -171,7 +171,7 @@ void BNodeTest::testFindClosestKNodes()
     {
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0xf0, DHT_ID_LENGTH);
-      std::deque<SharedHandle<DHTNode> > nodes;
+      std::vector<SharedHandle<DHTNode> > nodes;
       BNode::findClosestKNodes(nodes, bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket1->isInRange(nodes[0]));
@@ -190,7 +190,7 @@ void BNodeTest::testFindClosestKNodes()
       }
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
-      std::deque<SharedHandle<DHTNode> > nodes;
+      std::vector<SharedHandle<DHTNode> > nodes;
       BNode::findClosestKNodes(nodes, bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       for(size_t i = 0; i < DHTBucket::K; ++i) {
@@ -217,7 +217,7 @@ void BNodeTest::testEnumerateBucket()
 
   {
     BNode b(bucket1);
-    std::deque<SharedHandle<DHTBucket> > buckets;
+    std::vector<SharedHandle<DHTBucket> > buckets;
     BNode::enumerateBucket(buckets, &b);
     CPPUNIT_ASSERT_EQUAL((size_t)1, buckets.size());
     CPPUNIT_ASSERT(bucket1 == buckets[0]);
@@ -245,7 +245,7 @@ void BNodeTest::testEnumerateBucket()
     bp4->setLeft(bp3);
     bp4->setRight(b2);
 
-    std::deque<SharedHandle<DHTBucket> > buckets;
+    std::vector<SharedHandle<DHTBucket> > buckets;
     BNode::enumerateBucket(buckets, bp4);
     CPPUNIT_ASSERT_EQUAL((size_t)5, buckets.size());
     CPPUNIT_ASSERT(bucket1 == buckets[0]);

@@ -51,12 +51,11 @@ public:
     message(message),
     numPiece(numPiece) {}
 
-  virtual bool validate(Errors& error) {
-    // TODO
+  virtual void validate()
+  {
     bittorrent::checkBitfield(message->getBitfield(),
                               message->getBitfieldLength(),
                               numPiece);
-    return true;
   }
 };
 

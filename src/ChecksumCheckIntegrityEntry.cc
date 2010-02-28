@@ -62,13 +62,13 @@ void ChecksumCheckIntegrityEntry::initValidator()
 }
 
 void
-ChecksumCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
-                                                DownloadEngine* e)
+ChecksumCheckIntegrityEntry::onDownloadFinished
+(std::vector<Command*>& commands, DownloadEngine* e)
 {}
 
 void
-ChecksumCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
-                                                  DownloadEngine* e)
+ChecksumCheckIntegrityEntry::onDownloadIncomplete
+(std::vector<Command*>& commands, DownloadEngine* e)
 {}
 
 } // namespace aria2

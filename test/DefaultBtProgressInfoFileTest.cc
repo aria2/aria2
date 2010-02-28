@@ -143,7 +143,7 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
                        _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::vector<SharedHandle<Piece> > inFlightPieces;
   _pieceStorage->getInFlightPieces(inFlightPieces);
 
   SharedHandle<Piece> piece1 = inFlightPieces[0];
@@ -192,7 +192,7 @@ void DefaultBtProgressInfoFileTest::testLoad()
                        _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::vector<SharedHandle<Piece> > inFlightPieces;
   _pieceStorage->getInFlightPieces(inFlightPieces);
 
   SharedHandle<Piece> piece1 = inFlightPieces[0];
@@ -222,7 +222,7 @@ void DefaultBtProgressInfoFileTest::testSave()
 
   SharedHandle<Piece> p1(new Piece(1, 1024));
   SharedHandle<Piece> p2(new Piece(2, 512));
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::vector<SharedHandle<Piece> > inFlightPieces;
   inFlightPieces.push_back(p1);
   inFlightPieces.push_back(p2);
   _pieceStorage->addInFlightPiece(inFlightPieces);
@@ -357,7 +357,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
                        _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::vector<SharedHandle<Piece> > inFlightPieces;
   _pieceStorage->getInFlightPieces(inFlightPieces);
 
   SharedHandle<Piece> piece1 = inFlightPieces[0];
@@ -402,7 +402,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
                        _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::vector<SharedHandle<Piece> > inFlightPieces;
   _pieceStorage->getInFlightPieces(inFlightPieces);
 
   SharedHandle<Piece> piece1 = inFlightPieces[0];
@@ -457,7 +457,7 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 
   SharedHandle<Piece> p1(new Piece(1, 1024));
   SharedHandle<Piece> p2(new Piece(2, 512));
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::vector<SharedHandle<Piece> > inFlightPieces;
   inFlightPieces.push_back(p1);
   inFlightPieces.push_back(p2);
   _pieceStorage->addInFlightPiece(inFlightPieces);

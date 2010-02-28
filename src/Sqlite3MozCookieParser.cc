@@ -65,7 +65,8 @@ static int cookieRowMapper(void* data, int rowIndex,
                            char** values, char** names)
 {
   try {
-    std::deque<Cookie>& cookies = *reinterpret_cast<std::deque<Cookie>*>(data);
+    std::vector<Cookie>& cookies =
+      *reinterpret_cast<std::vector<Cookie>*>(data);
     int64_t expireDate = util::parseLLInt(toString(values[3]));
     // TODO assuming time_t is int32_t...
     if(expireDate > INT32_MAX) {
@@ -90,7 +91,7 @@ static int cookieRowMapper(void* data, int rowIndex,
   return 0;
 }
 
-std::deque<Cookie>
+std::vector<Cookie>
 Sqlite3MozCookieParser::parse(const std::string& filename) const
 {
   sqlite3* db = 0;
@@ -113,7 +114,7 @@ Sqlite3MozCookieParser::parse(const std::string& filename) const
       (StringFormat("Failed to open SQLite3 database: %s",
                     errMsg.c_str()).str());
   }
-  std::deque<Cookie> cookies;
+  std::vector<Cookie> cookies;
   char* sqlite3ErrMsg = 0;
   static const char* QUERY =
     "SELECT host, path, isSecure, expiry, name, value FROM moz_cookies";

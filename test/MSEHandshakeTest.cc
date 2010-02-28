@@ -78,7 +78,7 @@ void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, 
   initiator->sendInitiatorStep2();
 
   while(!receiver->findReceiverHashMarker());
-  std::deque<SharedHandle<DownloadContext> > contexts;
+  std::vector<SharedHandle<DownloadContext> > contexts;
   contexts.push_back(_dctx);
   while(!receiver->receiveReceiverHashAndPadCLength(contexts));
   while(!receiver->receivePad());

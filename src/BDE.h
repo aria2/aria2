@@ -39,7 +39,7 @@
 
 #include <map>
 #include <string>
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "DlAbortEx.h"
@@ -51,7 +51,7 @@ class BDE;
 class BDE {
 public:
   typedef std::map<std::string, BDE> Dict;
-  typedef std::deque<BDE> List;
+  typedef std::vector<BDE> List;
   typedef int64_t Integer;
 private:
   enum TYPE{

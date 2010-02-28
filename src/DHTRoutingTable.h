@@ -36,9 +36,11 @@
 #define _D_DHT_ROUTING_TABLE_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
-#include <deque>
+#include <vector>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -73,7 +75,7 @@ public:
 
   bool addGoodNode(const SharedHandle<DHTNode>& node);
 
-  void getClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
+  void getClosestKNodes(std::vector<SharedHandle<DHTNode> >& nodes,
                         const unsigned char* key) const;
 
   size_t countBucket() const;
@@ -92,7 +94,7 @@ public:
 
   SharedHandle<DHTNode> getNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
   
-  void getBuckets(std::deque<SharedHandle<DHTBucket> >& buckets) const;
+  void getBuckets(std::vector<SharedHandle<DHTBucket> >& buckets) const;
 
   void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 

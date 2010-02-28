@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "BtConstants.h"
@@ -158,7 +158,7 @@ public:
   bool findReceiverHashMarker();
 
   bool receiveReceiverHashAndPadCLength
-  (const std::deque<SharedHandle<DownloadContext> >& downloadContexts);
+  (const std::vector<SharedHandle<DownloadContext> >& downloadContexts);
 
   bool receiveReceiverIALength();
 

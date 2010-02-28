@@ -54,7 +54,7 @@ void HttpHeaderTest::testGet()
   h.put("a", "101");
   h.put("B", "200");
   
-  std::deque<std::string> r(h.get("A"));
+  std::vector<std::string> r(h.get("A"));
   CPPUNIT_ASSERT_EQUAL((size_t)2, r.size());
   CPPUNIT_ASSERT_EQUAL(std::string("100"), r[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("101"), r[1]);

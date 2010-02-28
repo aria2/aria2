@@ -39,7 +39,6 @@
 
 #include <cassert>
 #include <string>
-#include <deque>
 #include <vector>
 
 #include "SharedHandle.h"
@@ -72,7 +71,7 @@ private:
 
   std::vector<std::string> _headers;
 
-  std::deque<std::string> _acceptTypes;
+  std::vector<std::string> _acceptTypes;
 
   SharedHandle<CookieStorage> _cookieStorage;
 
@@ -257,9 +256,6 @@ public:
     _noCache = false;
   }
 };
-
-typedef SharedHandle<HttpRequest> HttpRequestHandle;
-typedef std::deque<HttpRequestHandle> HttpRequests;
 
 } // namespace aria2
 

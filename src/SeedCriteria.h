@@ -37,7 +37,6 @@
 
 #include "common.h"
 #include "SharedHandle.h"
-#include <deque>
 
 namespace aria2 {
 
@@ -55,10 +54,6 @@ public:
    */
   virtual void reset() = 0;
 };
-
-typedef SharedHandle<SeedCriteria> SeedCriteriaHandle;
-
-typedef std::deque<SeedCriteriaHandle> SeedCriterion;
 
 } // namespace aria2
 

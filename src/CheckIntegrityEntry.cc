@@ -86,7 +86,7 @@ void CheckIntegrityEntry::cutTrailingGarbage()
 }
 
 void CheckIntegrityEntry::proceedFileAllocation
-(std::deque<Command*>& commands,
+(std::vector<Command*>& commands,
  const SharedHandle<FileAllocationEntry>& entry,
  DownloadEngine* e)
 {

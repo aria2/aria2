@@ -30,9 +30,10 @@ public:
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
     virtual SharedHandle<DHTMessage>
-    createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                               const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                               const std::string& transactionID)
+    createFindNodeReplyMessage
+    (const SharedHandle<DHTNode>& remoteNode,
+     const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+     const std::string& transactionID)
     {
       SharedHandle<MockDHTMessage> m
         (new MockDHTMessage(_localNode, remoteNode, "find_node", transactionID));

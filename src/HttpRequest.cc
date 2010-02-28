@@ -161,7 +161,7 @@ std::string HttpRequest::createRequest()
   builtinHds.reserve(20);
   builtinHds.push_back(std::make_pair("User-Agent:", userAgent));
   std::string acceptTypes = "*/*";
-  for(std::deque<std::string>::const_iterator i = _acceptTypes.begin(),
+  for(std::vector<std::string>::const_iterator i = _acceptTypes.begin(),
         end = _acceptTypes.end(); i != end; ++i) {
     strappend(acceptTypes, ",", (*i));
   }
@@ -216,13 +216,13 @@ std::string HttpRequest::createRequest()
   }
   if(!_cookieStorage.isNull()) {
     std::string cookiesValue;
-    std::deque<Cookie> cookies =
+    std::vector<Cookie> cookies =
       _cookieStorage->criteriaFind(getHost(),
                                    getDir(),
                                    Time().getTime(),
                                    getProtocol() == Request::PROTO_HTTPS ?
                                    true : false);
-    for(std::deque<Cookie>::const_iterator itr = cookies.begin(),
+    for(std::vector<Cookie>::const_iterator itr = cookies.begin(),
           end = cookies.end(); itr != end; ++itr) {
       strappend(cookiesValue, (*itr).toString(), ";");
     }

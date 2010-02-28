@@ -38,7 +38,6 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessage.h"
 #include "DHTNode.h"
-#include "DHTNodeLookupEntry.h"
 #include "DHTMessageCallbackImpl.h"
 #include "DHTBucket.h"
 #include "LogFactory.h"
@@ -60,13 +59,13 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
 {
   --_inFlightMessage;
   onReceivedInternal(message);
-  std::deque<SharedHandle<DHTNode> > nodes;
+  std::vector<SharedHandle<DHTNode> > nodes;
   getNodesFromMessage(nodes, message);
-  std::deque<SharedHandle<DHTNodeLookupEntry> > newEntries;
+  std::vector<SharedHandle<DHTNodeLookupEntry> > newEntries;
   toEntries(newEntries, nodes);
 
   size_t count = 0;
-  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
+  for(std::vector<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
         newEntries.begin(); i != newEntries.end(); ++i) {
     if(memcmp(_localNode->getID(), (*i)->_node->getID(), DHT_ID_LENGTH) != 0) {
       _entries.push_front(*i);
@@ -132,7 +131,9 @@ void DHTAbstractNodeLookupTask::sendMessageAndCheckFinish()
 
 void DHTAbstractNodeLookupTask::sendMessage()
 {
-  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i = _entries.begin(); i != _entries.end() && _inFlightMessage < ALPHA; ++i) {
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
+        _entries.begin();
+      i != _entries.end() && _inFlightMessage < ALPHA; ++i) {
     if((*i)->_used == false) {
       ++_inFlightMessage;
       (*i)->_used = true;
@@ -151,7 +152,7 @@ void DHTAbstractNodeLookupTask::updateBucket()
 
 void DHTAbstractNodeLookupTask::startup()
 {
-  std::deque<SharedHandle<DHTNode> > nodes;
+  std::vector<SharedHandle<DHTNode> > nodes;
   _routingTable->getClosestKNodes(nodes, _targetID);
   _entries.clear();
   toEntries(_entries, nodes);
@@ -167,16 +168,6 @@ void DHTAbstractNodeLookupTask::startup()
       }
       _finished = true;
     }
-  }
-}
-
-void DHTAbstractNodeLookupTask::toEntries
-(std::deque<SharedHandle<DHTNodeLookupEntry> >& entries,
- const std::deque<SharedHandle<DHTNode> >& nodes) const
-{
-  for(std::deque<SharedHandle<DHTNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
-    SharedHandle<DHTNodeLookupEntry> e(new DHTNodeLookupEntry(*i));
-    entries.push_back(e);
   }
 }
 

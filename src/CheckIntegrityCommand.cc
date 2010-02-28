@@ -47,7 +47,7 @@ namespace aria2 {
 
 CheckIntegrityCommand::CheckIntegrityCommand
 (int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- const CheckIntegrityEntryHandle& entry):
+ const SharedHandle<CheckIntegrityEntry>& entry):
   RealtimeCommand(cuid, requestGroup, e),
   _entry(entry)
 {}
@@ -69,7 +69,7 @@ bool CheckIntegrityCommand::executeInternal()
     if(_requestGroup->downloadFinished()) {
       logger->notice(MSG_VERIFICATION_SUCCESSFUL,
                      _requestGroup->getDownloadContext()->getBasePath().c_str());
-      std::deque<Command*> commands;
+      std::vector<Command*> commands;
       try {
         _entry->onDownloadFinished(commands, _e);
       } catch(RecoverableException& e) {
@@ -80,7 +80,7 @@ bool CheckIntegrityCommand::executeInternal()
     } else {
       logger->error(MSG_VERIFICATION_FAILED,
                     _requestGroup->getDownloadContext()->getBasePath().c_str());
-      std::deque<Command*> commands;
+      std::vector<Command*> commands;
       try {
         _entry->onDownloadIncomplete(commands,_e);
       } catch(RecoverableException& e) {

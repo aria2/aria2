@@ -74,7 +74,7 @@ namespace aria2 {
 
 BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
 
-void BtSetup::setup(std::deque<Command*>& commands,
+void BtSetup::setup(std::vector<Command*>& commands,
                     RequestGroup* requestGroup,
                     DownloadEngine* e,
                     const Option* option)

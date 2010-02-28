@@ -93,9 +93,6 @@ public:
   }
 };
 
-typedef SharedHandle<AnnounceTier> AnnounceTierHandle;
-typedef std::deque<AnnounceTierHandle> AnnounceTiers;
-
 } // namespace aria2
 
 #endif // _D_ANNOUNCE_TIER_H_

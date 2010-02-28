@@ -58,10 +58,11 @@ const std::string DHTGetPeersReplyMessage::VALUES("values");
 
 const std::string DHTGetPeersReplyMessage::NODES("nodes");
 
-DHTGetPeersReplyMessage::DHTGetPeersReplyMessage(const SharedHandle<DHTNode>& localNode,
-                                                 const SharedHandle<DHTNode>& remoteNode,
-                                                 const std::string& token,
-                                                 const std::string& transactionID):
+DHTGetPeersReplyMessage::DHTGetPeersReplyMessage
+(const SharedHandle<DHTNode>& localNode,
+ const SharedHandle<DHTNode>& remoteNode,
+ const std::string& token,
+ const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID),
   _token(token) {}
 
@@ -80,7 +81,7 @@ BDE DHTGetPeersReplyMessage::getResponse()
   if(_values.empty()) {
     size_t offset = 0;
     unsigned char buffer[DHTBucket::K*26];
-    for(std::deque<SharedHandle<DHTNode> >::const_iterator i =
+    for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
           _closestKNodes.begin();
         i != _closestKNodes.end() && offset < DHTBucket::K*26; ++i) {
       SharedHandle<DHTNode> node = *i;
@@ -113,7 +114,7 @@ BDE DHTGetPeersReplyMessage::getResponse()
     // number of peer info that a message can carry.
     static const size_t MAX_VALUES_SIZE = 100;
     BDE valuesList = BDE::list();
-    for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin();
+    for(std::vector<SharedHandle<Peer> >::const_iterator i = _values.begin();
         i != _values.end() && valuesList.size() < MAX_VALUES_SIZE; ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
@@ -132,16 +133,6 @@ std::string DHTGetPeersReplyMessage::getMessageType() const
 }
 
 void DHTGetPeersReplyMessage::validate() const {}
-
-void DHTGetPeersReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes)
-{
-  _closestKNodes = closestKNodes;
-}
-
-void DHTGetPeersReplyMessage::setValues(const std::deque<SharedHandle<Peer> >& peers)
-{
-  _values = peers;
-}
 
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {

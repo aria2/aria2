@@ -91,7 +91,7 @@ public:
     _e.reset(new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
     _e->option = _option.get();
     _e->_requestGroupMan.reset
-      (new RequestGroupMan(std::deque<SharedHandle<RequestGroup> >(),
+      (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
                            1, _option.get()));
   }
 

@@ -50,7 +50,7 @@ namespace aria2 {
 Command*
 InitiateConnectionCommandFactory::createInitiateConnectionCommand
 (int32_t cuid,
- const RequestHandle& req,
+ const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e)

@@ -37,8 +37,6 @@
 
 #include "DiskAdaptor.h"
 
-#include <deque>
-
 namespace aria2 {
 
 class MultiFileAllocationIterator;

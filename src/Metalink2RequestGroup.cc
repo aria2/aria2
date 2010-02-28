@@ -71,9 +71,9 @@ Metalink2RequestGroup::Metalink2RequestGroup():
 
 class AccumulateNonP2PUrl {
 private:
-  std::deque<std::string>& urlsPtr;
+  std::vector<std::string>& urlsPtr;
 public:
-  AccumulateNonP2PUrl(std::deque<std::string>& urlsPtr)
+  AccumulateNonP2PUrl(std::vector<std::string>& urlsPtr)
     :urlsPtr(urlsPtr) {}
 
   void operator()(const SharedHandle<MetalinkResource>& resource) {
@@ -103,9 +103,10 @@ public:
 };
 
 void
-Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
-                                const std::string& metalinkFile,
-                                const SharedHandle<Option>& option)
+Metalink2RequestGroup::generate
+(std::vector<SharedHandle<RequestGroup> >& groups,
+ const std::string& metalinkFile,
+ const SharedHandle<Option>& option)
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, metalinkFile, option.get());
@@ -113,9 +114,10 @@ Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
 }
 
 void
-Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
-                                const SharedHandle<BinaryStream>& binaryStream,
-                                const SharedHandle<Option>& option)
+Metalink2RequestGroup::generate
+(std::vector<SharedHandle<RequestGroup> >& groups,
+ const SharedHandle<BinaryStream>& binaryStream,
+ const SharedHandle<Option>& option)
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, binaryStream, option.get());
@@ -135,7 +137,7 @@ void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
 
 void
 Metalink2RequestGroup::createRequestGroup
-(std::deque<SharedHandle<RequestGroup> >& groups,
+(std::vector<SharedHandle<RequestGroup> >& groups,
  const std::vector<SharedHandle<MetalinkEntry> >& entries,
  const SharedHandle<Option>& option)
 {
@@ -143,7 +145,7 @@ Metalink2RequestGroup::createRequestGroup
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
-  std::deque<int32_t> selectIndexes =
+  std::vector<int32_t> selectIndexes =
     util::parseIntRange(option->get(PREF_SELECT_FILE)).flush();
   std::sort(selectIndexes.begin(), selectIndexes.end());
   std::vector<SharedHandle<MetalinkEntry> > selectedEntries;
@@ -194,10 +196,10 @@ Metalink2RequestGroup::createRequestGroup
 #ifdef ENABLE_BITTORRENT
     SharedHandle<RequestGroup> torrentRg;
     if(!metaurl.empty()) {
-      std::deque<std::string> uris;
+      std::vector<std::string> uris;
       uris.push_back(metaurl);
       {
-        std::deque<SharedHandle<RequestGroup> > result;
+        std::vector<SharedHandle<RequestGroup> > result;
         createRequestGroupForUri(result, option, uris,
                                  /* ignoreForceSequential = */true,
                                  /* ignoreLocalPath = */true);
@@ -228,7 +230,7 @@ Metalink2RequestGroup::createRequestGroup
       SharedHandle<MetalinkEntry> entry = mes[0];
       _logger->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
       entry->reorderResourcesByPriority();
-      std::deque<std::string> uris;
+      std::vector<std::string> uris;
       std::for_each(entry->resources.begin(), entry->resources.end(),
                     AccumulateNonP2PUrl(uris));
       // If piece hash is specified in the metalink,
@@ -282,7 +284,7 @@ Metalink2RequestGroup::createRequestGroup
                       (*i)->getPath().c_str());
         _logger->debug("originalName = %s", (*i)->metaurls[0]->name.c_str());
         (*i)->reorderResourcesByPriority();
-        std::deque<std::string> uris;
+        std::vector<std::string> uris;
         std::for_each((*i)->resources.begin(), (*i)->resources.end(),
                       AccumulateNonP2PUrl(uris));
         SharedHandle<FileEntry> fe

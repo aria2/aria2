@@ -139,7 +139,7 @@ void HandshakeExtensionMessage::doReceivedAction()
   }
 }
 
-void HandshakeExtensionMessage::setPeer(const PeerHandle& peer)
+void HandshakeExtensionMessage::setPeer(const SharedHandle<Peer>& peer)
 {
   _peer = peer;
 }

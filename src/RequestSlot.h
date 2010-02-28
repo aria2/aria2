@@ -36,9 +36,6 @@
 #define _D_REQUEST_SLOT_H_
 
 #include "common.h"
-
-#include <deque>
-
 #include "TimeA2.h"
 #include "Piece.h"
 
@@ -140,8 +137,6 @@ public:
 
   static bool isNull(const RequestSlot& requestSlot);
 };
-
-typedef std::deque<RequestSlot> RequestSlots;
 
 } // namespace aria2
 

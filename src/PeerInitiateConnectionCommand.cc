@@ -54,7 +54,7 @@ namespace aria2 {
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand
 (int cuid,
  RequestGroup* requestGroup,
- const PeerHandle& peer,
+ const SharedHandle<Peer>& peer,
  DownloadEngine* e,
  const SharedHandle<BtRuntime>& btRuntime,
  bool mseHandshakeEnabled)
@@ -99,7 +99,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
   if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
-    PeerHandle peer = _peerStorage->getUnusedPeer();
+    SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
     peer->usedBy(e->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,

@@ -37,6 +37,8 @@
 
 #include "PieceStorage.h"
 
+#include <deque>
+
 namespace aria2 {
 
 class DownloadContext;
@@ -67,8 +69,6 @@ public:
   const Time& getRegisteredTime() const { return registeredTime; }
 };
 
-typedef std::deque<HaveEntry> Haves;
-
 class DefaultPieceStorage : public PieceStorage {
 private:
   SharedHandle<DownloadContext> downloadContext;
@@ -80,7 +80,7 @@ private:
   size_t endGamePieceNum;
   Logger* logger;
   const Option* option;
-  Haves haves;
+  std::deque<HaveEntry> haves;
 
   SharedHandle<PieceStatMan> _pieceStatMan;
 
@@ -126,10 +126,10 @@ public:
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
 
   virtual SharedHandle<Piece> getMissingFastPiece
-  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
 
 #endif // ENABLE_BITTORRENT
 
@@ -194,7 +194,7 @@ public:
   virtual void advertisePiece(int32_t cuid, size_t index);
 
   virtual void
-  getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+  getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                             int32_t myCuid, const Time& lastCheckTime);
 
   virtual void removeAdvertisedPiece(time_t elapsed);
@@ -205,11 +205,13 @@ public:
 
   virtual void markPieceMissing(size_t index);
 
-  virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces);
+  virtual void addInFlightPiece
+  (const std::vector<SharedHandle<Piece> >& pieces);
 
   virtual size_t countInFlightPiece();
 
-  virtual void getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces);
+  virtual void getInFlightPieces
+  (std::vector<SharedHandle<Piece> >& pieces);
 
   virtual void addPieceStats(size_t index);
 

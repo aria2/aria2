@@ -37,7 +37,7 @@
 
 #include "common.h"
 #include <string>
-#include <deque>
+#include <vector>
 
 namespace aria2 {
 
@@ -51,7 +51,7 @@ public:
   /**
    * Reolved addresses are pushed into addresses.
    */
-  void resolve(std::deque<std::string>& resolvedAddresses,
+  void resolve(std::vector<std::string>& resolvedAddresses,
                const std::string& hostname);
 
   // specify SOCK_STREAM or SOCK_DGRAM

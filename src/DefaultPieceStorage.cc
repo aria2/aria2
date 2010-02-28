@@ -105,11 +105,11 @@ bool DefaultPieceStorage::getMissingPieceIndex(size_t& index,
   }
 }
 
-PieceHandle DefaultPieceStorage::checkOutPiece(size_t index)
+SharedHandle<Piece> DefaultPieceStorage::checkOutPiece(size_t index)
 {
   bitfieldMan->setUseBit(index);
 
-  PieceHandle piece = findUsedPiece(index);
+  SharedHandle<Piece> piece = findUsedPiece(index);
   if(piece.isNull()) {
     piece.reset(new Piece(index, bitfieldMan->getBlockLength(index)));
 
@@ -130,9 +130,9 @@ PieceHandle DefaultPieceStorage::checkOutPiece(size_t index)
  * Newly instantiated piece is not added to usedPieces.
  * Because it is waste of memory and there is no chance to use them later.
  */
-PieceHandle DefaultPieceStorage::getPiece(size_t index)
+SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
 {
-  PieceHandle piece;
+  SharedHandle<Piece> piece;
   if(0 <= index && index <= bitfieldMan->getMaxIndex()) {
     piece = findUsedPiece(index);
     if(piece.isNull()) {
@@ -145,7 +145,7 @@ PieceHandle DefaultPieceStorage::getPiece(size_t index)
   return piece;
 }
 
-void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece)
+void DefaultPieceStorage::addUsedPiece(const SharedHandle<Piece>& piece)
 {
   std::deque<SharedHandle<Piece> >::iterator i =
     std::lower_bound(usedPieces.begin(), usedPieces.end(), piece);
@@ -156,7 +156,7 @@ void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece)
   }
 }
 
-PieceHandle DefaultPieceStorage::findUsedPiece(size_t index) const
+SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
 {
   SharedHandle<Piece> p(new Piece());
   p->setIndex(index);
@@ -190,13 +190,14 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
 
 #ifdef ENABLE_BITTORRENT
 
-bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer)
+bool DefaultPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
 {
   return bitfieldMan->hasMissingPiece(peer->getBitfield(),
                                       peer->getBitfieldLength());
 }
 
-PieceHandle DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
+SharedHandle<Piece>
+DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 {
   return getMissingPiece(peer->getBitfield(), peer->getBitfieldLength());
 }
@@ -204,7 +205,7 @@ PieceHandle DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 void DefaultPieceStorage::createFastIndexBitfield
 (BitfieldMan& bitfield, const SharedHandle<Peer>& peer)
 {
-  for(std::deque<size_t>::const_iterator itr =
+  for(std::vector<size_t>::const_iterator itr =
         peer->getPeerAllowedIndexSet().begin();
       itr != peer->getPeerAllowedIndexSet().end(); ++itr) {
     if(!bitfieldMan->isBitSet(*itr) && peer->hasPiece(*itr)) {
@@ -213,7 +214,7 @@ void DefaultPieceStorage::createFastIndexBitfield
   }
 }
 
-PieceHandle DefaultPieceStorage::getMissingFastPiece
+SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
 (const SharedHandle<Peer>& peer)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
@@ -227,16 +228,14 @@ PieceHandle DefaultPieceStorage::getMissingFastPiece
 }
 
 static void unsetExcludedIndexes(BitfieldMan& bitfield,
-                                 const std::deque<size_t>& excludedIndexes)
+                                 const std::vector<size_t>& excludedIndexes)
 {
-  for(std::deque<size_t>::const_iterator i = excludedIndexes.begin();
-      i != excludedIndexes.end(); ++i) {
-    bitfield.unsetBit(*i);
-  }
+  std::for_each(excludedIndexes.begin(), excludedIndexes.end(),
+                std::bind1st(std::mem_fun(&BitfieldMan::unsetBit), &bitfield));
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
 {
   BitfieldMan tempBitfield(bitfieldMan->getBlockLength(),
                            bitfieldMan->getTotalLength());
@@ -246,7 +245,7 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes)
+(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan->getBlockLength(),
@@ -267,7 +266,7 @@ bool DefaultPieceStorage::hasMissingUnusedPiece()
   return bitfieldMan->getFirstMissingUnusedIndex(index);
 }
 
-PieceHandle DefaultPieceStorage::getSparseMissingUnusedPiece
+SharedHandle<Piece> DefaultPieceStorage::getSparseMissingUnusedPiece
 (const unsigned char* ignoreBitfield, size_t length)
 {
   size_t index;
@@ -278,7 +277,7 @@ PieceHandle DefaultPieceStorage::getSparseMissingUnusedPiece
   }
 }
 
-PieceHandle DefaultPieceStorage::getMissingPiece(size_t index)
+SharedHandle<Piece> DefaultPieceStorage::getMissingPiece(size_t index)
 {
   if(hasPiece(index) || isPieceUsed(index)) {
     return SharedHandle<Piece>();
@@ -287,7 +286,7 @@ PieceHandle DefaultPieceStorage::getMissingPiece(size_t index)
   }
 }
 
-void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece)
+void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
 {
   if(piece.isNull()) {
     return;
@@ -319,7 +318,7 @@ void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece)
 //   size_t deleted = 0;
 //   for(Pieces::iterator itr = usedPieces.begin();
 //       itr != usedPieces.end() && deleted < delNum;) {
-//     PieceHandle& piece = *itr;
+//     SharedHandle<Piece>& piece = *itr;
 //     if(!bitfieldMan->isUseBitSet(piece->getIndex()) &&
 //        piece->countCompleteBlock() <= piece->countBlock()*(fillRate/100.0)) {
 //       logger->info(MSG_DELETING_USED_PIECE,
@@ -335,7 +334,7 @@ void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece)
 //   return deleted;
 // }
 
-void DefaultPieceStorage::completePiece(const PieceHandle& piece)
+void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
 {
   if(piece.isNull()) {
     return;
@@ -369,7 +368,7 @@ bool DefaultPieceStorage::isSelectiveDownloadingMode()
 }
 
 // not unittested
-void DefaultPieceStorage::cancelPiece(const PieceHandle& piece)
+void DefaultPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
 {
   if(piece.isNull()) {
     return;
@@ -541,12 +540,13 @@ void DefaultPieceStorage::advertisePiece(int32_t cuid, size_t index)
 }
 
 void
-DefaultPieceStorage::getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                                int32_t myCuid,
                                                const Time& lastCheckTime)
 {
-  for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
-    const Haves::value_type& have = *itr;
+  for(std::deque<HaveEntry>::const_iterator itr = haves.begin();
+      itr != haves.end(); ++itr) {
+    const HaveEntry& have = *itr;
     if(have.getCuid() == myCuid) {
       continue;
     }
@@ -575,7 +575,7 @@ public:
   
 void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
 {
-  Haves::iterator itr =
+  std::deque<HaveEntry>::iterator itr =
     std::find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
   if(itr != haves.end()) {
     if(logger->debug()) {
@@ -601,7 +601,8 @@ void DefaultPieceStorage::markPiecesDone(uint64_t length)
     }
     size_t r = (length%bitfieldMan->getBlockLength())/Piece::BLOCK_LENGTH;
     if(r > 0) {
-      PieceHandle p(new Piece(numPiece, bitfieldMan->getBlockLength(numPiece)));
+      SharedHandle<Piece> p
+        (new Piece(numPiece, bitfieldMan->getBlockLength(numPiece)));
       
       for(size_t i = 0; i < r; ++i) {
         p->completeBlock(i);
@@ -623,7 +624,8 @@ void DefaultPieceStorage::markPieceMissing(size_t index)
   bitfieldMan->unsetBit(index);
 }
 
-void DefaultPieceStorage::addInFlightPiece(const Pieces& pieces)
+void DefaultPieceStorage::addInFlightPiece
+(const std::vector<SharedHandle<Piece> >& pieces)
 {
   usedPieces.insert(usedPieces.end(), pieces.begin(), pieces.end());
   std::sort(usedPieces.begin(), usedPieces.end());
@@ -634,7 +636,8 @@ size_t DefaultPieceStorage::countInFlightPiece()
   return usedPieces.size();
 }
 
-void DefaultPieceStorage::getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces)
+void DefaultPieceStorage::getInFlightPieces
+(std::vector<SharedHandle<Piece> >& pieces)
 {
   pieces.insert(pieces.end(), usedPieces.begin(), usedPieces.end());
 }

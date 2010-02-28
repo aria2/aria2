@@ -38,7 +38,7 @@ class BtDependencyTest:public CppUnit::TestFixture {
     SharedHandle<DownloadContext> dctx
       (new DownloadContext(0, 0, "/tmp/outfile.path"));
     dctx->setDir("/tmp");
-    std::deque<std::string> uris;
+    std::vector<std::string> uris;
     uris.push_back("http://localhost/outfile.path");
     SharedHandle<FileEntry> fileEntry = dctx->getFirstFileEntry();
     fileEntry->setUris(uris);

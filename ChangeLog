@@ -1,5 +1,10 @@
 2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use vector instead of deque for containers which is used for
+	mostly read-only purpose.
+
+2010-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed typo
 	* test/Makefile.am
 

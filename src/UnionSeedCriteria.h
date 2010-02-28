@@ -37,23 +37,26 @@
 
 #include "SeedCriteria.h"
 #include <algorithm>
+#include <vector>
 
 namespace aria2 {
 
 class UnionSeedCriteria : public SeedCriteria {
 private:
-  SeedCriterion criterion;
+  std::vector<SharedHandle<SeedCriteria> > _criterion;
 
   class Reset {
   public:
-    void operator()(SeedCriteriaHandle cri) {
+    void operator()(SharedHandle<SeedCriteria> cri)
+    {
       cri->reset();
     }
   };
 
   class Eval {
   public:
-    bool operator()(SeedCriteriaHandle cri) {
+    bool operator()(SharedHandle<SeedCriteria> cri)
+    {
       return cri->evaluate();
     }
   };
@@ -62,23 +65,26 @@ public:
   virtual ~UnionSeedCriteria() {}
 
     
-  virtual void reset() {
-    std::for_each(criterion.begin(), criterion.end(), Reset());
+  virtual void reset()
+  {
+    std::for_each(_criterion.begin(), _criterion.end(), Reset());
   }
 
-  virtual bool evaluate() {
-    SeedCriterion::iterator itr = std::find_if(criterion.begin(),
-                                               criterion.end(),
-                                               Eval());
-    return itr != criterion.end();
+  virtual bool evaluate()
+  {
+    std::vector<SharedHandle<SeedCriteria> >::iterator itr =
+      std::find_if(_criterion.begin(), _criterion.end(), Eval());
+    return itr != _criterion.end();
   }
 
-  void addSeedCriteria(SeedCriteriaHandle cri) {
-    criterion.push_back(cri);
+  void addSeedCriteria(const SharedHandle<SeedCriteria>& cri)
+  {
+    _criterion.push_back(cri);
   }
 
-  const SeedCriterion& getSeedCriterion() const {
-    return criterion;
+  const std::vector<SharedHandle<SeedCriteria> >& getSeedCriterion() const
+  {
+    return _criterion;
   }
 };
 

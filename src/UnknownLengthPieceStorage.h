@@ -82,7 +82,7 @@ public:
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
 
   /**
    * Returns a piece that the peer has but localhost doesn't.
@@ -94,7 +94,7 @@ public:
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingFastPiece
-  (const SharedHandle<Peer>& peer, const std::deque<size_t>& excludedIndexes);
+  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
 
 #endif // ENABLE_BITTORRENT
 
@@ -228,7 +228,7 @@ public:
    * newer than lastCheckTime.
    */
   virtual void
-  getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+  getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                             int32_t myCuid, const Time& lastCheckTime)
   {}
 
@@ -251,14 +251,15 @@ public:
    * Do nothing because loading in-flight piece is not supported for this
    * class.
    */
-  virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces) {}
+  virtual void addInFlightPiece
+  (const std::vector<SharedHandle<Piece> >& pieces) {}
 
   virtual size_t countInFlightPiece()
   {
     return 0;
   }
 
-  virtual void getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces);
+  virtual void getInFlightPieces(std::vector<SharedHandle<Piece> >& pieces);
 
   virtual void addPieceStats(size_t index) {}
 

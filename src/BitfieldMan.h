@@ -36,9 +36,10 @@
 #define _D_BITFIELD_MAN_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include <deque>
+
 #include <vector>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 

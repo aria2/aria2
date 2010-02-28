@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#include <deque>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "DHTConstants.h"
@@ -52,7 +52,7 @@ class DHTPeerAnnounceEntry {
 private:
   unsigned char _infoHash[DHT_ID_LENGTH];
 
-  std::deque<PeerAddrEntry> _peerAddrEntries;
+  std::vector<PeerAddrEntry> _peerAddrEntries;
 
   Time _lastUpdated;
 public:
@@ -66,7 +66,7 @@ public:
 
   size_t countPeerAddrEntry() const;
 
-  const std::deque<PeerAddrEntry>& getPeerAddrEntries() const
+  const std::vector<PeerAddrEntry>& getPeerAddrEntries() const
   {
     return _peerAddrEntries;
   }
@@ -87,7 +87,7 @@ public:
     return _infoHash;
   }
 
-  void getPeers(std::deque<SharedHandle<Peer> >& peers) const;
+  void getPeers(std::vector<SharedHandle<Peer> >& peers) const;
 
 };
 

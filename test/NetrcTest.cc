@@ -59,7 +59,8 @@ void NetrcTest::testParse()
 {
   Netrc netrc;
   netrc.parse("sample.netrc");
-  std::deque<SharedHandle<Authenticator> >::const_iterator itr = netrc.getAuthenticators().begin();
+  std::vector<SharedHandle<Authenticator> >::const_iterator itr =
+    netrc.getAuthenticators().begin();
 
   SharedHandle<Authenticator> tujikawaauth = *itr;
   CPPUNIT_ASSERT(!tujikawaauth.isNull());

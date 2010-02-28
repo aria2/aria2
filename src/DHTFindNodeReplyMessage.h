@@ -36,13 +36,13 @@
 #define _D_DHT_FIND_NODE_REPLY_MESSAGE_H_
 
 #include "DHTResponseMessage.h"
-#include <deque>
+#include <vector>
 
 namespace aria2 {
 
 class DHTFindNodeReplyMessage:public DHTResponseMessage {
 private:
-  std::deque<SharedHandle<DHTNode> > _closestKNodes;
+  std::vector<SharedHandle<DHTNode> > _closestKNodes;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -60,12 +60,13 @@ public:
 
   virtual void validate() const;
 
-  const std::deque<SharedHandle<DHTNode> >& getClosestKNodes() const
+  const std::vector<SharedHandle<DHTNode> >& getClosestKNodes() const
   {
     return _closestKNodes;
   }
 
-  void setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes);
+  void setClosestKNodes
+  (const std::vector<SharedHandle<DHTNode> >& closestKNodes);
 
   static const std::string FIND_NODE;
   

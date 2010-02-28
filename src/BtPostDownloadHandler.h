@@ -47,11 +47,9 @@ public:
   virtual ~BtPostDownloadHandler();
 
   virtual void
-  getNextRequestGroups(std::deque<SharedHandle<RequestGroup> >& groups,
+  getNextRequestGroups(std::vector<SharedHandle<RequestGroup> >& groups,
                        RequestGroup* requestGroup);
 };
-
-typedef SharedHandle<BtPostDownloadHandler> BtPostDownloadHandlerHandle;
 
 } // namespace aria2
 

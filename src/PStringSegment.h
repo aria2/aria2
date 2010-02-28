@@ -65,8 +65,6 @@ public:
   SharedHandle<PStringDatum> getNext() const;
 };
 
-typedef SharedHandle<PStringSegment> PStringSegmentHandle;
-
 } // namespace aria2
 
 #endif // _D_P_STRING_SEGMENT_H_

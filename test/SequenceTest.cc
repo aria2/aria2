@@ -1,5 +1,4 @@
 #include "Sequence.h"
-#include <deque>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -72,7 +71,7 @@ void SequenceTest::testFlush()
     IntSequence::Value(10, 11),
   };
   IntSequence seq = IntSequence(IntSequence::Values(&params[0], &params[3]));
-  std::deque<int> r = seq.flush();
+  std::vector<int> r = seq.flush();
 
   int answers[] = { 1, 3, 4, 5, 6, 7, 8, 10 };
 

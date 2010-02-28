@@ -314,23 +314,25 @@ DHTMessageFactoryImpl::createFindNodeMessage(const SharedHandle<DHTNode>& remote
 }
 
 SharedHandle<DHTMessage>
-DHTMessageFactoryImpl::createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                                                  const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                                                  const std::string& transactionID)
+DHTMessageFactoryImpl::createFindNodeReplyMessage
+(const SharedHandle<DHTNode>& remoteNode,
+ const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+ const std::string& transactionID)
 {
-  SharedHandle<DHTFindNodeReplyMessage> m(new DHTFindNodeReplyMessage(_localNode, remoteNode, transactionID));
+  SharedHandle<DHTFindNodeReplyMessage> m
+    (new DHTFindNodeReplyMessage(_localNode, remoteNode, transactionID));
   m->setClosestKNodes(closestKNodes);
   setCommonProperty(m);
   return m;
 }
 
-std::deque<SharedHandle<DHTNode> >
+std::vector<SharedHandle<DHTNode> >
 DHTMessageFactoryImpl::extractNodes(const unsigned char* src, size_t length)
 {
   if(length%26 != 0) {
     throw DL_ABORT_EX("Nodes length is not multiple of 26");
   }
-  std::deque<SharedHandle<DHTNode> > nodes;
+  std::vector<SharedHandle<DHTNode> > nodes;
   for(size_t offset = 0; offset < length; offset += 26) {
     SharedHandle<DHTNode> node(new DHTNode(src+offset));
     std::pair<std::string, uint16_t> addr =
@@ -354,8 +356,8 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage
   const BDE& nodesData =
     getString(getDictionary(dict, DHTResponseMessage::R),
               DHTFindNodeReplyMessage::NODES);
-  std::deque<SharedHandle<DHTNode> > nodes = extractNodes(nodesData.uc(),
-                                                          nodesData.s().size());
+  std::vector<SharedHandle<DHTNode> > nodes =
+    extractNodes(nodesData.uc(), nodesData.s().size());
   return createFindNodeReplyMessage(remoteNode, nodes, transactionID);
 }
 
@@ -383,18 +385,19 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithNodes
   const BDE& rDict = getDictionary(dict, DHTResponseMessage::R);
   const BDE& nodesData = getString(rDict,
                                    DHTGetPeersReplyMessage::NODES);
-  std::deque<SharedHandle<DHTNode> > nodes = extractNodes(nodesData.uc(),
-                                                          nodesData.s().size());
+  std::vector<SharedHandle<DHTNode> > nodes =
+    extractNodes(nodesData.uc(), nodesData.s().size());
   const BDE& token = getString(rDict, DHTGetPeersReplyMessage::TOKEN);
   return createGetPeersReplyMessage(remoteNode, nodes, token.s(),
                                     transactionID);
 }
 
 SharedHandle<DHTMessage>
-DHTMessageFactoryImpl::createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                                                  const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-                                                  const std::string& token,
-                                                  const std::string& transactionID)
+DHTMessageFactoryImpl::createGetPeersReplyMessage
+(const SharedHandle<DHTNode>& remoteNode,
+ const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+ const std::string& token,
+ const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersReplyMessage> m
     (new DHTGetPeersReplyMessage(_localNode, remoteNode, token, transactionID));
@@ -412,14 +415,14 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues
   const BDE& rDict = getDictionary(dict, DHTResponseMessage::R);
   const BDE& valuesList = getList(rDict,
                                   DHTGetPeersReplyMessage::VALUES);
-  std::deque<SharedHandle<Peer> > peers;
+  std::vector<SharedHandle<Peer> > peers;
   for(BDE::List::const_iterator i = valuesList.listBegin();
       i != valuesList.listEnd(); ++i) {
     const BDE& data = *i;
     if(data.isString() && data.s().size() == 6) {
       std::pair<std::string, uint16_t> addr =
         bittorrent::unpackcompact(data.uc());
-      PeerHandle peer(new Peer(addr.first, addr.second));
+      SharedHandle<Peer> peer(new Peer(addr.first, addr.second));
       peers.push_back(peer);
     }
   }
@@ -429,10 +432,11 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues
 }
 
 SharedHandle<DHTMessage>
-DHTMessageFactoryImpl::createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                                                  const std::deque<SharedHandle<Peer> >& values,
-                                                  const std::string& token,
-                                                  const std::string& transactionID)
+DHTMessageFactoryImpl::createGetPeersReplyMessage
+(const SharedHandle<DHTNode>& remoteNode,
+ const std::vector<SharedHandle<Peer> >& values,
+ const std::string& token,
+ const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersReplyMessage> m(new DHTGetPeersReplyMessage(_localNode, remoteNode, token, transactionID));
   m->setValues(values);

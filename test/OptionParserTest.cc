@@ -167,7 +167,7 @@ void OptionParserTest::testParseArg()
   int argc = arrayLength(argv);
 
   std::stringstream s;
-  std::deque<std::string> nonopts;
+  std::vector<std::string> nonopts;
 
   _oparser->parseArg(s, nonopts, argc, argv);
 

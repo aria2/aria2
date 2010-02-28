@@ -179,9 +179,10 @@ void DefaultBtProgressInfoFile::save()
     uint32_t numInFlightPieceNL = htonl(_pieceStorage->countInFlightPiece());
     o.write(reinterpret_cast<const char*>(&numInFlightPieceNL),
             sizeof(numInFlightPieceNL));
-    Pieces inFlightPieces;
+    std::vector<SharedHandle<Piece> > inFlightPieces;
     _pieceStorage->getInFlightPieces(inFlightPieces);
-    for(Pieces::const_iterator itr = inFlightPieces.begin();
+    for(std::vector<SharedHandle<Piece> >::const_iterator itr =
+          inFlightPieces.begin();
         itr != inFlightPieces.end(); ++itr) {
       uint32_t indexNL = htonl((*itr)->getIndex());
       o.write(reinterpret_cast<const char*>(&indexNL), sizeof(indexNL));
@@ -343,7 +344,7 @@ void DefaultBtProgressInfoFile::load()
     if(version >= 1) {
       numInFlightPiece = ntohl(numInFlightPiece);
     }
-    Pieces inFlightPieces;
+    std::vector<SharedHandle<Piece> > inFlightPieces;
     while(numInFlightPiece--) {
       uint32_t index;
       in.read(reinterpret_cast<char*>(&index), sizeof(index));
@@ -365,7 +366,7 @@ void DefaultBtProgressInfoFile::load()
         throw DL_ABORT_EX
           (StringFormat("piece length out of range: %u", length).str());
       }
-      PieceHandle piece(new Piece(index, length));
+      SharedHandle<Piece> piece(new Piece(index, length));
       uint32_t bitfieldLength;
       in.read(reinterpret_cast<char*>(&bitfieldLength),
               sizeof(bitfieldLength));

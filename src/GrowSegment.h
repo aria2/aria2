@@ -112,8 +112,6 @@ public:
   virtual SharedHandle<Piece> getPiece() const;
 };
 
-typedef SharedHandle<GrowSegment> GrowSegmentHandle;
-
 } // namespace aria2
 
 #endif // _D_GROW_SEGMENT_H_

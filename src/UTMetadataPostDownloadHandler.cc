@@ -74,7 +74,7 @@ UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler():
 }
 
 void UTMetadataPostDownloadHandler::getNextRequestGroups
-(std::deque<SharedHandle<RequestGroup> >& groups, RequestGroup* requestGroup)
+(std::vector<SharedHandle<RequestGroup> >& groups, RequestGroup* requestGroup)
 {
   SharedHandle<DownloadContext> dctx = requestGroup->getDownloadContext();
   const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
@@ -93,9 +93,9 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
     }
   }
   if(!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {
-    std::deque<SharedHandle<RequestGroup> > newRgs;
+    std::vector<SharedHandle<RequestGroup> > newRgs;
     createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                    std::deque<std::string>(), torrent);
+                                    std::vector<std::string>(), torrent);
   
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());

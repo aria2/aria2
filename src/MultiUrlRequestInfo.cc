@@ -77,7 +77,7 @@ static void handler(int signal) {
 }
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
-(const RequestGroups& requestGroups,
+(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
  const SharedHandle<Option>& op,
  const SharedHandle<StatCalc>& statCalc,
  std::ostream& summaryOut)

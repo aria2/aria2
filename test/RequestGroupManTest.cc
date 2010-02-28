@@ -58,7 +58,7 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   rg1->setDownloadContext(dctx1);
   rg2->setDownloadContext(dctx2);
 
-  RequestGroupMan gm(std::deque<SharedHandle<RequestGroup> >(), 1,
+  RequestGroupMan gm(std::vector<SharedHandle<RequestGroup> >(), 1,
                      _option.get());
 
   gm.addRequestGroup(rg1);
@@ -79,7 +79,8 @@ void RequestGroupManTest::testGetInitialCommands()
 
 void RequestGroupManTest::testSaveServerStat()
 {
-  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(),0,_option.get());
+  RequestGroupMan rm
+    (std::vector<SharedHandle<RequestGroup> >(),0,_option.get());
   SharedHandle<ServerStat> ss_localhost(new ServerStat("localhost", "http"));
   rm.addServerStat(ss_localhost);
   File f("/tmp/aria2_RequestGroupManTest_testSaveServerStat");
@@ -102,7 +103,8 @@ void RequestGroupManTest::testLoadServerStat()
     << "status=OK";
   o.close();
 
-  RequestGroupMan rm(std::deque<SharedHandle<RequestGroup> >(),0,_option.get());
+  RequestGroupMan rm
+    (std::vector<SharedHandle<RequestGroup> >(),0,_option.get());
   std::cerr << "testLoadServerStat" << std::endl;
   CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
   SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",
@@ -119,7 +121,7 @@ void RequestGroupManTest::testChangeReservedGroupPosition()
     SharedHandle<RequestGroup>(new RequestGroup(_option)),
     SharedHandle<RequestGroup>(new RequestGroup(_option))
   };
-  std::deque<SharedHandle<RequestGroup> > groups(&gs[0], &gs[arrayLength(gs)]);
+  std::vector<SharedHandle<RequestGroup> > groups(&gs[0], &gs[arrayLength(gs)]);
   RequestGroupMan rm(groups, 0, _option.get());
 
   CPPUNIT_ASSERT_EQUAL

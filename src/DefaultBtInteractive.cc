@@ -35,6 +35,7 @@
 #include "DefaultBtInteractive.h"
 
 #include <cstring>
+#include <vector>
 
 #include "prefs.h"
 #include "message.h"
@@ -226,7 +227,7 @@ void DefaultBtInteractive::decideChoking() {
 }
 
 void DefaultBtInteractive::checkHave() {
-  std::deque<size_t> indexes;
+  std::vector<size_t> indexes;
   _pieceStorage->getAdvertisedPieceIndexes(indexes, cuid, haveCheckPoint);
   haveCheckPoint.reset();
   if(indexes.size() >= 20) {
@@ -236,7 +237,7 @@ void DefaultBtInteractive::checkHave() {
       dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
     }
   } else {
-    for(std::deque<size_t>::iterator itr = indexes.begin();
+    for(std::vector<size_t>::iterator itr = indexes.begin();
         itr != indexes.end(); ++itr) {
       dispatcher->addMessageToQueue(messageFactory->createHaveMessage(*itr));
     }
@@ -326,7 +327,7 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
 
     if(peer->peerChoking()) {
       if(peer->isFastExtensionEnabled()) {
-        std::deque<size_t> excludedIndexes;
+        std::vector<size_t> excludedIndexes;
         btRequestFactory->getTargetPieceIndexes(excludedIndexes);
         while(numMissingBlock < maxMissingBlock) {
           SharedHandle<Piece> piece =
@@ -341,7 +342,7 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
         }
       }
     } else {
-      std::deque<size_t> excludedIndexes;
+      std::vector<size_t> excludedIndexes;
       btRequestFactory->getTargetPieceIndexes(excludedIndexes);
       while(numMissingBlock < maxMissingBlock) {
         SharedHandle<Piece> piece =
@@ -364,7 +365,7 @@ void DefaultBtInteractive::addRequests() {
     _maxOutstandingRequest <= dispatcher->countOutstandingRequest() ?
     0 : _maxOutstandingRequest-dispatcher->countOutstandingRequest();
   if(reqNumToCreate > 0) {
-    BtMessages requests;
+    std::vector<SharedHandle<BtMessage> > requests;
     if(_pieceStorage->isEndGame()) {
       btRequestFactory->createRequestMessagesOnEndGame(requests,reqNumToCreate);
     } else {
@@ -437,7 +438,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
   if(_pexCheckPoint.elapsed(UTPexExtensionMessage::DEFAULT_INTERVAL)) {
     UTPexExtensionMessageHandle m
       (new UTPexExtensionMessage(peer->getExtensionMessageID("ut_pex")));
-    const Peers& peers = _peerStorage->getPeers();
+    const std::deque<SharedHandle<Peer> >& peers = _peerStorage->getPeers();
     {
       for(std::deque<SharedHandle<Peer> >::const_iterator i =
             peers.begin(); i != peers.end() && !m->freshPeersAreFull(); ++i) {
@@ -474,7 +475,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
        _downloadContext->getTotalLength() > 0) {
       size_t num = _utMetadataRequestTracker->avail();
       if(num > 0) {
-        std::deque<SharedHandle<BtMessage> > requests;
+        std::vector<SharedHandle<BtMessage> > requests;
         _utMetadataRequestFactory->create(requests, num, _pieceStorage);
         dispatcher->addMessageToQueue(requests);
       }

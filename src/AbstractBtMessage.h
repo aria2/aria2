@@ -37,8 +37,6 @@
 
 #include "BtMessage.h"
 
-#include <deque>
-
 namespace aria2 {
 
 class PieceStorage;
@@ -122,7 +120,7 @@ public:
 
   virtual void doReceivedAction() {}
 
-  virtual bool validate(std::deque<std::string>& errors);
+  virtual void validate();
   
   virtual void onQueued() {}
 
