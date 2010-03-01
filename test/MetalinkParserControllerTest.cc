@@ -5,6 +5,7 @@
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
+#include "MetalinkMetaurl.h"
 #include "FileEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"
@@ -19,6 +20,7 @@ class MetalinkParserControllerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MetalinkParserControllerTest);
   CPPUNIT_TEST(testEntryTransaction);
   CPPUNIT_TEST(testResourceTransaction);
+  CPPUNIT_TEST(testMetaurlTransaction);
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testChecksumTransaction);
   CPPUNIT_TEST(testChunkChecksumTransaction);
@@ -36,6 +38,7 @@ public:
 
   void testEntryTransaction();
   void testResourceTransaction();
+  void testMetaurlTransaction();
 #ifdef ENABLE_MESSAGE_DIGEST
   void testChecksumTransaction();
   void testChunkChecksumTransaction();
@@ -99,7 +102,45 @@ void MetalinkParserControllerTest::testResourceTransaction()
   ctrl.newResourceTransaction();
   ctrl.cancelResourceTransaction();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT_EQUAL((size_t)1, ctrl.getResult()->entries.front()->resources.size());
+  {
+    SharedHandle<Metalinker> m = ctrl.getResult();
+    CPPUNIT_ASSERT_EQUAL((size_t)2, m->entries.size());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries[0]->resources.size());
+    CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[1]->resources.size());
+  }
+}
+
+void MetalinkParserControllerTest::testMetaurlTransaction()
+{
+  MetalinkParserController ctrl;
+  ctrl.newEntryTransaction();
+  ctrl.newMetaurlTransaction();
+  ctrl.setURLOfMetaurl("http://example.org/chocolate.torrent");
+  ctrl.setMediatypeOfMetaurl("torrent");
+  ctrl.setPriorityOfMetaurl(999);
+  ctrl.setNameOfMetaurl("mybirthdaycake");
+  ctrl.commitEntryTransaction();
+  {
+    SharedHandle<Metalinker> m = ctrl.getResult();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries[0]->metaurls.size());
+    SharedHandle<MetalinkMetaurl> metaurl = m->entries[0]->metaurls[0];
+    CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/chocolate.torrent"),
+                         metaurl->url);
+    CPPUNIT_ASSERT_EQUAL(std::string("torrent"), metaurl->mediatype);
+    CPPUNIT_ASSERT_EQUAL(std::string("mybirthdaycake"), metaurl->name);
+    CPPUNIT_ASSERT_EQUAL(999, metaurl->priority);
+  }
+  ctrl.newEntryTransaction();
+  ctrl.newMetaurlTransaction();
+  ctrl.cancelMetaurlTransaction();
+  ctrl.commitEntryTransaction();
+  {
+    SharedHandle<Metalinker> m = ctrl.getResult();
+    CPPUNIT_ASSERT_EQUAL((size_t)2, ctrl.getResult()->entries.size());
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries[0]->metaurls.size());
+    CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[1]->metaurls.size());
+  }
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST

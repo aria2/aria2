@@ -1,5 +1,11 @@
 2010-03-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added test for Metaurl transaction.
+	* src/MetalinkParserController.cc
+	* test/MetalinkParserControllerTest.cc
+
+2010-03-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Avoid costly BtMessage::toString() if info level log is not
 	required.
 	* src/DefaultBtInteractive.cc

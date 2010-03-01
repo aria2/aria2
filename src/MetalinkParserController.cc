@@ -137,6 +137,7 @@ void MetalinkParserController::commitEntryTransaction()
     return;
   }
   commitResourceTransaction();
+  commitMetaurlTransaction();
   commitChecksumTransaction();
   commitChunkChecksumTransactionV4();
   commitChunkChecksumTransaction();
@@ -148,6 +149,7 @@ void MetalinkParserController::commitEntryTransaction()
 void MetalinkParserController::cancelEntryTransaction()
 {
   cancelResourceTransaction();
+  cancelMetaurlTransaction();
   cancelChecksumTransaction();
   cancelChunkChecksumTransactionV4();
   cancelChunkChecksumTransaction();
