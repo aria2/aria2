@@ -180,6 +180,7 @@ void DefaultBtProgressInfoFile::save()
     o.write(reinterpret_cast<const char*>(&numInFlightPieceNL),
             sizeof(numInFlightPieceNL));
     std::vector<SharedHandle<Piece> > inFlightPieces;
+    inFlightPieces.reserve(_pieceStorage->countInFlightPiece());
     _pieceStorage->getInFlightPieces(inFlightPieces);
     for(std::vector<SharedHandle<Piece> >::const_iterator itr =
           inFlightPieces.begin(), eoi = inFlightPieces.end();
@@ -345,6 +346,7 @@ void DefaultBtProgressInfoFile::load()
       numInFlightPiece = ntohl(numInFlightPiece);
     }
     std::vector<SharedHandle<Piece> > inFlightPieces;
+    inFlightPieces.reserve(numInFlightPiece);
     while(numInFlightPiece--) {
       uint32_t index;
       in.read(reinterpret_cast<char*>(&index), sizeof(index));

@@ -328,6 +328,7 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
     if(peer->peerChoking()) {
       if(peer->isFastExtensionEnabled()) {
         std::vector<size_t> excludedIndexes;
+        excludedIndexes.reserve(btRequestFactory->countTargetPiece());
         btRequestFactory->getTargetPieceIndexes(excludedIndexes);
         while(numMissingBlock < maxMissingBlock) {
           SharedHandle<Piece> piece =
@@ -343,6 +344,7 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
       }
     } else {
       std::vector<size_t> excludedIndexes;
+      excludedIndexes.reserve(btRequestFactory->countTargetPiece());
       btRequestFactory->getTargetPieceIndexes(excludedIndexes);
       while(numMissingBlock < maxMissingBlock) {
         SharedHandle<Piece> piece =
@@ -366,6 +368,7 @@ void DefaultBtInteractive::addRequests() {
     0 : _maxOutstandingRequest-dispatcher->countOutstandingRequest();
   if(reqNumToCreate > 0) {
     std::vector<SharedHandle<BtMessage> > requests;
+    requests.reserve(reqNumToCreate);
     if(_pieceStorage->isEndGame()) {
       btRequestFactory->createRequestMessagesOnEndGame(requests,reqNumToCreate);
     } else {
