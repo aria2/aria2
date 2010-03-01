@@ -71,6 +71,11 @@ private:
   std::ofstream _file;
 
   int _stdoutField;
+  
+  inline bool levelEnabled(LEVEL level) const
+  {
+    return (level >= _logLevel && _file.is_open()) || _stdoutField&level;
+  }
 protected:
   virtual void writeLog
   (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
@@ -192,7 +197,12 @@ public:
   // either file or stdout.
   bool debug() const
   {
-    return (DEBUG >= _logLevel && _file.is_open()) || _stdoutField&DEBUG;
+    return levelEnabled(DEBUG);
+  }
+
+  bool info() const
+  {
+    return levelEnabled(INFO);
   }
 };
 

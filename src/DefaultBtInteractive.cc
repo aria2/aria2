@@ -265,9 +265,11 @@ size_t DefaultBtInteractive::receiveMessages() {
       break;
     }
     ++msgcount;
-    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-                 peer->ipaddr.c_str(), peer->port,
-                 message->toString().c_str());
+    if(logger->info()) {
+      logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
+                   peer->ipaddr.c_str(), peer->port,
+                   message->toString().c_str());
+    }
     message->doReceivedAction();
 
     switch(message->getId()) {

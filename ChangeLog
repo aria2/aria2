@@ -1,5 +1,13 @@
 2010-03-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Avoid costly BtMessage::toString() if info level log is not
+	required.
+	* src/DefaultBtInteractive.cc
+	* src/Logger.h
+	* src/SimpleBtMessage.cc
+
+2010-03-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reserved vector elements based on profiler results.
 	* src/DefaultBtInteractive.cc
 	* src/DefaultBtProgressInfoFile.cc

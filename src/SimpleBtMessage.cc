@@ -55,8 +55,10 @@ void SimpleBtMessage::send() {
   if(!sendingInProgress) {
     const unsigned char* msg = getMessage();
     size_t msgLength = getMessageLength();
-    logger->info(MSG_SEND_PEER_MESSAGE,
-                 cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
+    if(logger->info()) {
+      logger->info(MSG_SEND_PEER_MESSAGE,
+                   cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
+    }
     if(logger->debug()) {
       logger->debug("msglength = %lu bytes",
                     static_cast<unsigned long>(msgLength));
