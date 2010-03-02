@@ -95,16 +95,17 @@ void MetalinkMetalinkParserStateV4::beginElement
  const std::vector<XmlAttr>& attrs)
 {
   if(nsUri == METALINK4_NAMESPACE_URI && localname == FILE) {
+    stm->setFileStateV4();
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
-    if(itr != attrs.end()) {
-      if((*itr).value.empty() || util::detectDirTraversal((*itr).value)) {
-        stm->setSkipTagState();
-      } else {
-        stm->setFileStateV4();
-        stm->newEntryTransaction();
-        stm->setFileNameOfEntry((*itr).value);
-      }
+    if(itr == attrs.end() || (*itr).value.empty()) {
+      stm->logError("Missing file@name");
+      return;
+    } else if(util::detectDirTraversal((*itr).value)) {
+      stm->logError("Bad file@name");
+      return;
     }
+    stm->newEntryTransaction();
+    stm->setFileNameOfEntry((*itr).value);
   } else {
     stm->setSkipTagState();
   }
@@ -133,9 +134,11 @@ void FileMetalinkParserStateV4::beginElement
     {
       std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
       if(itr != attrs.end()) {
-        name = (*itr).value;
-        if(util::detectDirTraversal(name)) {
+        if((*itr).value.empty() || util::detectDirTraversal((*itr).value)) {
+          stm->logError("Bad metaurl@name");
           return;
+        } else {
+          name = (*itr).value;
         }
       }
     }
@@ -148,17 +151,20 @@ void FileMetalinkParserStateV4::beginElement
         try {
           priority = util::parseInt((*itr).value);
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
-            priority = MetalinkResource::getLowestPriority();
+            stm->logError("metaurl@priority is out of range");
+            return;
           }
         } catch(RecoverableException& e) {
-          priority = MetalinkResource::getLowestPriority();
+          stm->logError("Bad metaurl@priority");
+          return;
         }
       }
     }
     std::string mediatype;
     {
       std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, MEDIATYPE);
-      if(itr == attrs.end()) {
+      if(itr == attrs.end() || (*itr).value.empty()) {
+        stm->logError("Missing metaurl@mediatype");
         return;
       } else {
         mediatype = (*itr).value;
@@ -186,10 +192,12 @@ void FileMetalinkParserStateV4::beginElement
         try {
           priority = util::parseInt((*itr).value);
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
-            priority = MetalinkResource::getLowestPriority();
+            stm->logError("url@priority is out of range");
+            return;
           }
         } catch(RecoverableException& e) {
-          priority = MetalinkResource::getLowestPriority();
+          stm->logError("Bad url@priority");
+          return;
         }
       }
     }
@@ -201,7 +209,8 @@ void FileMetalinkParserStateV4::beginElement
   else if(localname == HASH) {
     stm->setHashStateV4();
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, TYPE);
-    if(itr == attrs.end()) {
+    if(itr == attrs.end() || (*itr).value.empty()) {
+      stm->logError("Missing hash@type");
       return;
     } else {
       std::string type = (*itr).value;
@@ -210,42 +219,45 @@ void FileMetalinkParserStateV4::beginElement
     }
   } else if(localname == PIECES) {
     stm->setPiecesStateV4();
-    try {
-      size_t length;
-      {
-	std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, LENGTH);
-	if(itr == attrs.end()) {
-	  return;
-	} else {
-	  length = util::parseInt((*itr).value);
-	}
+    size_t length;
+    {
+      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, LENGTH);
+      if(itr == attrs.end() || (*itr).value.empty()) {
+        stm->logError("Missing pieces@length");
+        return;
+      } else {
+        try {
+          length = util::parseInt((*itr).value);
+        } catch(RecoverableException& e) {
+          stm->logError("Bad pieces@length");
+          return;
+        }
       }
-      std::string type;
-      {
-	std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, TYPE);
-	if(itr == attrs.end()) {
-	  return;
-	} else {
-	  type = (*itr).value;
-	}
-      }
-      stm->newChunkChecksumTransactionV4();
-      stm->setLengthOfChunkChecksumV4(length);
-      stm->setTypeOfChunkChecksumV4(type);
-    } catch(RecoverableException& e) {
-      stm->cancelChunkChecksumTransactionV4();
     }
+    std::string type;
+    {
+      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, TYPE);
+      if(itr == attrs.end() || (*itr).value.empty()) {
+        stm->logError("Missing pieces@type");
+        return;
+      } else {
+        type = (*itr).value;
+      }
+    }
+    stm->newChunkChecksumTransactionV4();
+    stm->setLengthOfChunkChecksumV4(length);
+    stm->setTypeOfChunkChecksumV4(type);
   }
 #endif // ENABLE_MESSAGE_DIGEST
   else if(localname == SIGNATURE) {
     stm->setSignatureStateV4();
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, MEDIATYPE);
-    if(itr == attrs.end()) {
+    if(itr == attrs.end() || (*itr).value.empty()) {
+      stm->logError("Missing signature@mediatype");
       return;
-    } else {
-      stm->newSignatureTransaction();
-      stm->setTypeOfSignature((*itr).value);
     }
+    stm->newSignatureTransaction();
+    stm->setTypeOfSignature((*itr).value);
   } else {
     stm->setSkipTagState();
   }

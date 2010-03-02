@@ -54,6 +54,9 @@ private:
 
   std::stack<MetalinkParserState*> _stateStack;
 
+  // Error messages encountered while parsing document.
+  std::vector<std::string> _errors;
+
   static MetalinkParserState* _initialState;
   static MetalinkParserState* _skipTagState;
   
@@ -244,6 +247,16 @@ public:
   void cancelMetaurlTransaction();
 
   bool needsCharactersBuffering() const;
+
+  // Only stores first 10 errors.
+  void logError(const std::string& log);
+
+  const std::vector<std::string>& getErrors() const
+  {
+    return _errors;
+  }
+
+  std::string getErrorString() const;
 
   const SharedHandle<Metalinker>& getResult() const
   {

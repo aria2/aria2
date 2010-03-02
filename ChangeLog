@@ -1,5 +1,19 @@
 2010-03-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added strict attribute validation for metalink4. When
+	specification violation is found, discard the whole document.
+	* src/ExpatMetalinkProcessor.cc
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+	* src/MetalinkParserStateV4Impl.cc
+	* src/XML2SAXMetalinkProcessor.cc
+	* test/Makefile.am
+	* test/MetalinkProcessorTest.cc
+	* test/metalink4-attrs.xml: Removed
+	* test/metalink4-dirtraversal.xml: Removed
+
+2010-03-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added test for Metaurl transaction.
 	* src/MetalinkParserController.cc
 	* test/MetalinkParserControllerTest.cc

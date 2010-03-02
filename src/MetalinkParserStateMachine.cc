@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "MetalinkParserStateMachine.h"
+
+#include <sstream>
+#include <iterator>
+
 #include "MetalinkParserStateImpl.h"
 #include "MetalinkParserStateV3Impl.h"
 #include "MetalinkParserStateV4Impl.h"
@@ -513,5 +517,22 @@ bool MetalinkParserStateMachine::needsCharactersBuffering() const
 {
   return _stateStack.top()->needsCharactersBuffering();
 }
+
+void MetalinkParserStateMachine::logError(const std::string& log)
+{
+  if(_errors.size() < 10) {
+    _errors.push_back(log);
+  }
+}
+
+std::string MetalinkParserStateMachine::getErrorString() const
+{
+  std::stringstream error;
+  error << "Specification violation: ";
+  std::copy(_errors.begin(), _errors.end(),
+            std::ostream_iterator<std::string>(error, ", "));
+  return error.str();
+}
+
 
 } // namespace aria2

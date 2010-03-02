@@ -179,6 +179,12 @@ MetalinkProcessor::parseFile(const std::string& filename)
   if(retval != 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
+  if(!_stm->finished()) {
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+  }
+  if(!_stm->getErrors().empty()) {
+    throw DL_ABORT_EX(_stm->getErrorString());
+  }
   return _stm->getResult();
 }
          
@@ -198,27 +204,26 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
   xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt
     (&mySAXHandler, sessionData.get(),
      reinterpret_cast<const char*>(buf), res, 0);
-  try {
-    off_t readOffset = res;
-    while(1) {
-      ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
-      if(res == 0) {
-        break;
-      }
-      if(xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), res, 0) != 0) {
-        throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
-      }
-      readOffset += res;
+  auto_delete<xmlParserCtxtPtr> deleter(ctx, xmlFreeParserCtxt);
+
+  off_t readOffset = res;
+  while(1) {
+    ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
+    if(res == 0) {
+      break;
     }
-    xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), 0, 1);
-  } catch(Exception& e) {
-    xmlFreeParserCtxt(ctx);
-    throw;
+    if(xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), res, 0) != 0) {
+      throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    }
+    readOffset += res;
   }
-  xmlFreeParserCtxt(ctx);
+  xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), 0, 1);
 
   if(!_stm->finished()) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+  }
+  if(!_stm->getErrors().empty()) {
+    throw DL_ABORT_EX(_stm->getErrorString());
   }
   return _stm->getResult();
 }

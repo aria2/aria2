@@ -147,33 +147,31 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
 
   SharedHandle<SessionData> sessionData(new SessionData(_stm));
   XML_Parser parser = XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'));
-  try {
-    XML_SetUserData(parser, sessionData.get());
-    XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);
-    XML_SetCharacterDataHandler(parser, &mlCharacters);
+  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
+  XML_SetUserData(parser, sessionData.get());
+  XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);
+  XML_SetCharacterDataHandler(parser, &mlCharacters);
 
-    off_t readOffset = 0;
-    while(1) {
-      ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
-      if(res == 0) {
-        break;
-      }
-      if(XML_Parse(parser, reinterpret_cast<const char*>(buf), res, 0) ==
-         XML_STATUS_ERROR) {
-        throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
-      }
-      readOffset += res;
+  off_t readOffset = 0;
+  while(1) {
+    ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
+    if(res == 0) {
+      break;
     }
-    if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
+    if(XML_Parse(parser, reinterpret_cast<const char*>(buf), res, 0) ==
+       XML_STATUS_ERROR) {
       throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
     }
-  } catch(Exception& e) {
-    XML_ParserFree(parser);
-    throw;
+    readOffset += res;
   }
-  XML_ParserFree(parser);
+  if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+  }
   if(!_stm->finished()) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+  }
+  if(!_stm->getErrors().empty()) {
+    throw DL_ABORT_EX(_stm->getErrorString());
   }
   return _stm->getResult();
 }

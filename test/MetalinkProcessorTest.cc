@@ -17,6 +17,8 @@
 # include "Checksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
+#include "StringFormat.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -24,7 +26,6 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkProcessorTest);
   CPPUNIT_TEST(testParseFileV4);
-  CPPUNIT_TEST(testParseFileV4_dirtraversal);
   CPPUNIT_TEST(testParseFileV4_attrs);
   CPPUNIT_TEST(testParseFile);
   CPPUNIT_TEST(testParseFile_dirtraversal);
@@ -50,7 +51,6 @@ private:
 
 public:
   void testParseFileV4();
-  void testParseFileV4_dirtraversal();
   void testParseFileV4_attrs();
   void testParseFile();
   void testParseFile_dirtraversal();
@@ -80,7 +80,6 @@ void MetalinkProcessorTest::testParseFileV4()
 {
   MetalinkProcessor proc;
   SharedHandle<Metalinker> m = proc.parseFile("metalink4.xml");
-
   SharedHandle<MetalinkEntry> e;
   SharedHandle<MetalinkResource> r;
   SharedHandle<MetalinkMetaurl> mu;
@@ -133,37 +132,327 @@ void MetalinkProcessorTest::testParseFileV4()
 #endif // !ENABLE_BITTORRENT
 }
 
-void MetalinkProcessorTest::testParseFileV4_dirtraversal()
-{
-  MetalinkProcessor proc;
-  SharedHandle<Metalinker> m = proc.parseFile("metalink4-dirtraversal.xml");
-  CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
-  CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[0]->resources.size());
-  CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[0]->metaurls.size());
-}
-
 void MetalinkProcessorTest::testParseFileV4_attrs()
 {
   MetalinkProcessor proc;
-  SharedHandle<Metalinker> m = proc.parseFile("metalink4-attrs.xml");
-  CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
-  std::vector<SharedHandle<MetalinkResource> > resources =
-    m->entries[0]->resources;
-  CPPUNIT_ASSERT_EQUAL((size_t)3, resources.size());
-  CPPUNIT_ASSERT_EQUAL(999999, resources[0]->priority);
-  CPPUNIT_ASSERT_EQUAL(999999, resources[1]->priority);
-  CPPUNIT_ASSERT_EQUAL(999999, resources[2]->priority);
+  SharedHandle<Metalinker> m;  
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
+  {
+    // Testing file@name
+    const char* tmpl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"%s\">"
+      "<url>http://example.org</url>"
+      "</file>"
+      "</metalink>";
+    dw->setString(StringFormat(tmpl, "foo").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
 
-  std::vector<SharedHandle<MetalinkMetaurl> > metaurls =
-    m->entries[0]->metaurls;
-#ifdef ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL((size_t)3, metaurls.size());
-  CPPUNIT_ASSERT_EQUAL(999999, metaurls[0]->priority);
-  CPPUNIT_ASSERT_EQUAL(999999, metaurls[1]->priority);
-  CPPUNIT_ASSERT_EQUAL(999999, metaurls[2]->priority);
-#else // !ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL((size_t)0, metaurls.size());
-#endif // !ENABLE_BITTORRENT
+    // empty name
+    dw->setString(StringFormat(tmpl, "").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+
+    // dir traversing
+    dw->setString(StringFormat(tmpl, "../doughnuts").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+  }
+  {
+    // Testing url@priority
+    const char* tmpl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<url priority=\"%s\">http://example.org</url>"
+      "</file>"
+      "</metalink>";
+    dw->setString(StringFormat(tmpl, "0").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+
+    dw->setString(StringFormat(tmpl, "1").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    dw->setString(StringFormat(tmpl, "100").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    dw->setString(StringFormat(tmpl, "999999").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    dw->setString(StringFormat(tmpl, "1000000").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+  }
+  {
+    // Testing metaurl@priority
+    const char* tmpl =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<metaurl priority=\"%s\" mediatype=\"torrent\">http://example.org</metaurl>"
+      "</file>"
+      "</metalink>";
+    dw->setString(StringFormat(tmpl, "0").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+
+    dw->setString(StringFormat(tmpl, "1").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    dw->setString(StringFormat(tmpl, "100").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    dw->setString(StringFormat(tmpl, "999999").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    dw->setString(StringFormat(tmpl, "1000000").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+  }
+  {
+    // Testing metaurl@mediatype
+
+    // no mediatype
+    dw->setString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                  "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+                  "<file name=\"example.ext\">"
+                  "<metaurl>http://example.org</metaurl>"
+                  "</file>"
+                  "</metalink>");
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+
+    const char* tmpl =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<metaurl mediatype=\"%s\">http://example.org</metaurl>"
+      "</file>"
+      "</metalink>";
+
+    dw->setString(StringFormat(tmpl, "torrent").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    // empty mediatype
+    dw->setString(StringFormat(tmpl, "").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+  }
+  {
+    // Testing metaurl@name
+    const char* tmpl =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<metaurl mediatype=\"torrent\" name=\"%s\">http://example.org</metaurl>"
+      "</file>"
+      "</metalink>";
+
+    dw->setString(StringFormat(tmpl, "foo").str());
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+
+    // dir traversing
+    dw->setString(StringFormat(tmpl, "../doughnuts").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+    // empty name
+    dw->setString(StringFormat(tmpl, "").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {
+      // success
+    }
+  }
+  {
+    // Testing pieces@length
+    // No pieces@length
+    dw->setString
+      ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+       "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+       "<file name=\"example.ext\">"
+       "<url>http://example.org</url>"
+       "<pieces type=\"sha-1\">"
+       "<hash>0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33</hash>"
+       "</pieces>"
+       "</file>"
+       "</metalink>");
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+
+    const char* tmpl =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<url>http://example.org</url>"
+      "<pieces length=\"%s\" type=\"sha-1\">"
+      "<hash>0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33</hash>"
+      "</pieces>"
+      "</file>"
+      "</metalink>";
+
+    dw->setString(StringFormat(tmpl, "262144").str());
+    m = proc.parseFromBinaryStream(dw);
+    // empty
+    try {
+      dw->setString(StringFormat(tmpl, "").str());
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+  }
+  {
+    // Testing pieces@type
+    // No pieces@type
+    dw->setString
+      ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+       "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+       "<file name=\"example.ext\">"
+       "<url>http://example.org</url>"
+       "<pieces length=\"262144\">"
+       "<hash>0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33</hash>"
+       "</pieces>"
+       "</file>"
+       "</metalink>");
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+
+    const char* tmpl =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<url>http://example.org</url>"
+      "<pieces length=\"262144\" type=\"%s\">"
+      "<hash>0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33</hash>"
+      "</pieces>"
+      "</file>"
+      "</metalink>";
+
+    dw->setString(StringFormat(tmpl, "sha-1").str());
+    m = proc.parseFromBinaryStream(dw);
+    // empty
+    try {
+      dw->setString(StringFormat(tmpl, "").str());
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+  }
+  {
+    // Testing hash@type
+    // No hash@type
+    dw->setString
+      ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+       "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+       "<file name=\"example.ext\">"
+       "<url>http://example.org</url>"
+       "<hash>0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33</hash>"
+       "</file>"
+       "</metalink>");
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+
+    const char* tmpl =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<url>http://example.org</url>"
+      "<hash type=\"%s\">0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33</hash>"
+      "</file>"
+      "</metalink>";
+
+    dw->setString(StringFormat(tmpl, "sha-1").str());
+    m = proc.parseFromBinaryStream(dw);
+    // empty
+    try {
+      dw->setString(StringFormat(tmpl, "").str());
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+  }
+  {
+    // Testing signature@mediatype
+    // No hash@type
+    dw->setString
+      ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+       "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+       "<file name=\"example.ext\">"
+       "<url>http://example.org</url>"
+       "<signature>sig</signature>"
+       "</file>"
+       "</metalink>");
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+
+    const char* tmpl =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+      "<file name=\"example.ext\">"
+      "<url>http://example.org</url>"
+       "<signature mediatype=\"%s\">sig</signature>"
+      "</file>"
+      "</metalink>";
+
+    dw->setString(StringFormat(tmpl, "application/pgp-signature").str());
+    m = proc.parseFromBinaryStream(dw);
+    // empty
+    try {
+      dw->setString(StringFormat(tmpl, "").str());
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+  }
 }
 
 void MetalinkProcessorTest::testParseFile()
