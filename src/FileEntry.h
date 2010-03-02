@@ -62,7 +62,6 @@ private:
   std::deque<std::string> _spentUris;
   uint64_t length;
   off_t offset;
-  bool extracted;
   bool requested;
   std::deque<SharedHandle<Request> > _requestPool;
   std::deque<SharedHandle<Request> > _inFlightRequests;
@@ -108,10 +107,6 @@ public:
   void setOffset(off_t offset) { this->offset = offset; }
 
   off_t getLastOffset() { return offset+length; }
-
-  bool isExtracted() const { return extracted; }
-
-  void setExtracted(bool flag) { this->extracted = flag; }
 
   bool isRequested() const { return requested; }
 

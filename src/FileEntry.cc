@@ -48,12 +48,12 @@ FileEntry::FileEntry(const std::string& path,
                      off_t offset,
                      const std::vector<std::string>& uris):
   path(path), _uris(uris.begin(), uris.end()), length(length), offset(offset),
-  extracted(false), requested(true),
+  requested(true),
   _singleHostMultiConnection(true),
   _logger(LogFactory::getInstance()) {}
 
 FileEntry::FileEntry():
-  length(0), offset(0), extracted(false), requested(false),
+  length(0), offset(0), requested(false),
   _singleHostMultiConnection(true),
   _logger(LogFactory::getInstance()) {}
 
@@ -70,7 +70,6 @@ FileEntry& FileEntry::operator=(const FileEntry& entry)
     path = entry.path;
     length = entry.length;
     offset = entry.offset;
-    extracted = entry.extracted;
     requested = entry.requested;
   }
   return *this;

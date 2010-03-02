@@ -1,5 +1,11 @@
 2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused FileEntry::extracted
+	* src/FileEntry.cc
+	* src/FileEntry.h
+
+2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Wait until data arrives.
 	* test/LpdMessageReceiverTest.cc
 
