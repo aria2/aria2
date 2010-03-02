@@ -1,5 +1,10 @@
 2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Wait until data arrives.
+	* test/LpdMessageReceiverTest.cc
+
+2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	In Metalink4, if size element contains invalid size, discard whole
 	document. Added strict hash value check for metalink3/4.
 	* src/MetalinkParserController.cc

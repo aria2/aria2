@@ -60,6 +60,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
   sendsock->writeData(request.c_str(), request.size(),
                      LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
+  rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(!msg.isNull());
   CPPUNIT_ASSERT(msg->getPeer().isNull());
@@ -73,6 +74,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
   sendsock->writeData(request.c_str(), request.size(),
                      LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
+  rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(!msg.isNull());
   CPPUNIT_ASSERT(msg->getPeer().isNull());
