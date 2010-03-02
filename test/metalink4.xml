@@ -7,17 +7,17 @@
     <version>1.0</version>
     <language>en</language>
     <description>A description of the example file for download.</description>
-    <hash type="md5">80bc95fd391772fa61c91ed68567f0980bb45fd9</hash>
-    <hash type="sha-1">80bc95fd391772fa61c91ed68567f0980bb45fd9</hash>
+    <hash type="md5">cbd18db4cc2f85cedef654fccc4a4d8</hash>
+    <hash type="sha-1">0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33</hash>
     <pieces length="262144" type="sha-1">
-      <hash>metalinkhash1</hash>
-      <hash>metalinkhash2</hash>
-      <hash>metalinkhash3</hash>
+      <hash>5bd9f7248df0f3a6a86ab6c95f48787d546efa14</hash>
+      <hash>9413ee70957a09d55704123687478e07f18c7b29</hash>
+      <hash>44213f9f4d59b557314fadcd233232eebcac8012</hash>
     </pieces>
     <pieces length="262144" type="sha-256">
-      <hash>metalinkhash1</hash>
-      <hash>metalinkhash2</hash>
-      <hash>metalinkhash3</hash>
+      <hash>0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5</hash>
+      <hash>487ba2299be7f759d7c7bf6a4ac3a32cee81f1bb9332fc485947e32918864fb2</hash>
+      <hash>37290d74ac4d186e3a8e5785d259d2ec04fac91ae28092e7620ec8bc99e830aa</hash>
     </pieces>
     <url location="de" priority="1">ftp://ftp.example.com/example.ext</url>
     <url location="fr" priority="1">http://example.com/example.ext</url>

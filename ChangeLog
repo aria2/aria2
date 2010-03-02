@@ -1,3 +1,18 @@
+2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	In Metalink4, if size element contains invalid size, discard whole
+	document. Added strict hash value check for metalink3/4.
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+	* src/MetalinkParserStateV3Impl.cc
+	* src/MetalinkParserStateV4Impl.cc
+	* src/util.cc
+	* src/util.h
+	* test/MetalinkParserControllerTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/metalink4.xml
+
 2010-03-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added strict attribute validation for metalink4. When

@@ -150,19 +150,27 @@ void MetalinkParserControllerTest::testChecksumTransaction()
   ctrl.newEntryTransaction();
   ctrl.newChecksumTransaction();
   ctrl.setTypeOfChecksum("md5");
-  ctrl.setHashOfChecksum("hash");
+  ctrl.setHashOfChecksum("acbd18db4cc2f85cedef654fccc4a4d8");
   ctrl.commitEntryTransaction();
   {
     SharedHandle<Metalinker> m = ctrl.getResult();
     SharedHandle<Checksum> md = m->entries.front()->checksum;
     CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getAlgo());
-    CPPUNIT_ASSERT_EQUAL(std::string("hash"), md->getMessageDigest());
+    CPPUNIT_ASSERT_EQUAL(std::string("acbd18db4cc2f85cedef654fccc4a4d8"),
+                         md->getMessageDigest());
   }
+  ctrl.newEntryTransaction();
+  ctrl.newChecksumTransaction();
+  ctrl.setTypeOfChecksum("md5");
+  ctrl.setHashOfChecksum("badhash");
+  ctrl.commitEntryTransaction();
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->checksum.isNull());
+
   ctrl.newEntryTransaction();
   ctrl.newChecksumTransaction();
   ctrl.cancelChecksumTransaction();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->checksum.isNull());
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[2]->checksum.isNull());
 }
 
 void MetalinkParserControllerTest::testChunkChecksumTransaction()
@@ -172,11 +180,11 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   ctrl.newChunkChecksumTransaction();
   ctrl.setTypeOfChunkChecksum("md5");
   ctrl.setLengthOfChunkChecksum(256*1024);
-  ctrl.addHashOfChunkChecksum(4, "hash4");
-  ctrl.addHashOfChunkChecksum(1, "hash1");
-  ctrl.addHashOfChunkChecksum(3, "hash3");
-  ctrl.addHashOfChunkChecksum(2, "hash2");
-  ctrl.addHashOfChunkChecksum(5, "hash5");
+  ctrl.addHashOfChunkChecksum(4, "4cbd18db4cc2f85cedef654fccc4a4d8");
+  ctrl.addHashOfChunkChecksum(1, "1cbd18db4cc2f85cedef654fccc4a4d8");
+  ctrl.addHashOfChunkChecksum(3, "3cbd18db4cc2f85cedef654fccc4a4d8");
+  ctrl.addHashOfChunkChecksum(2, "2cbd18db4cc2f85cedef654fccc4a4d8");
+  ctrl.addHashOfChunkChecksum(5, "5cbd18db4cc2f85cedef654fccc4a4d8");
   ctrl.commitEntryTransaction();
   {
     SharedHandle<Metalinker> m = ctrl.getResult();
@@ -184,17 +192,30 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
     CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL((size_t)5, md->countChecksum());
-    CPPUNIT_ASSERT_EQUAL(std::string("hash1"), md->getChecksums()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::string("hash2"), md->getChecksums()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::string("hash3"), md->getChecksums()[2]);
-    CPPUNIT_ASSERT_EQUAL(std::string("hash4"), md->getChecksums()[3]);
-    CPPUNIT_ASSERT_EQUAL(std::string("hash5"), md->getChecksums()[4]);
+    CPPUNIT_ASSERT_EQUAL(std::string("1cbd18db4cc2f85cedef654fccc4a4d8"),
+                         md->getChecksums()[0]);
+    CPPUNIT_ASSERT_EQUAL(std::string("2cbd18db4cc2f85cedef654fccc4a4d8"),
+                         md->getChecksums()[1]);
+    CPPUNIT_ASSERT_EQUAL(std::string("3cbd18db4cc2f85cedef654fccc4a4d8"),
+                         md->getChecksums()[2]);
+    CPPUNIT_ASSERT_EQUAL(std::string("4cbd18db4cc2f85cedef654fccc4a4d8"),
+                         md->getChecksums()[3]);
+    CPPUNIT_ASSERT_EQUAL(std::string("5cbd18db4cc2f85cedef654fccc4a4d8"),
+                         md->getChecksums()[4]);
   }
+  ctrl.newEntryTransaction();
+  ctrl.newChunkChecksumTransaction();
+  ctrl.setTypeOfChunkChecksum("md5");
+  ctrl.setLengthOfChunkChecksum(256*1024);
+  ctrl.addHashOfChunkChecksum(1, "badhash");
+  ctrl.commitEntryTransaction();
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
+
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransaction();
   ctrl.cancelChunkChecksumTransaction();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[2]->chunkChecksum.isNull());
 }
 
 void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
@@ -202,27 +223,43 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
   MetalinkParserController ctrl;
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransactionV4();
-  ctrl.setTypeOfChunkChecksumV4("md5");
+  ctrl.setTypeOfChunkChecksumV4("sha-1");
   ctrl.setLengthOfChunkChecksumV4(256*1024);
-  ctrl.addHashOfChunkChecksumV4("hash1");
-  ctrl.addHashOfChunkChecksumV4("hash2");
-  ctrl.addHashOfChunkChecksumV4("hash3");
+
+  ctrl.addHashOfChunkChecksumV4("5bd9f7248df0f3a6a86ab6c95f48787d546efa14");
+  ctrl.addHashOfChunkChecksumV4("9413ee70957a09d55704123687478e07f18c7b29");
+  ctrl.addHashOfChunkChecksumV4("44213f9f4d59b557314fadcd233232eebcac8012");
   ctrl.commitEntryTransaction();
   {
     SharedHandle<Metalinker> m = ctrl.getResult();
     SharedHandle<ChunkChecksum> md = m->entries.front()->chunkChecksum;
-    CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), md->getAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, md->countChecksum());
-    CPPUNIT_ASSERT_EQUAL(std::string("hash1"), md->getChecksums()[0]);
-    CPPUNIT_ASSERT_EQUAL(std::string("hash2"), md->getChecksums()[1]);
-    CPPUNIT_ASSERT_EQUAL(std::string("hash3"), md->getChecksums()[2]);
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
+       md->getChecksums()[0]);
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("9413ee70957a09d55704123687478e07f18c7b29"),
+       md->getChecksums()[1]);
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
+       md->getChecksums()[2]);
   }
+  ctrl.newEntryTransaction();
+  ctrl.newChunkChecksumTransactionV4();
+  ctrl.setTypeOfChunkChecksumV4("sha-1");
+  ctrl.setLengthOfChunkChecksumV4(256*1024);
+  ctrl.addHashOfChunkChecksumV4("5bd9f7248df0f3a6a86ab6c95f48787d546efa14");
+  ctrl.addHashOfChunkChecksumV4("badhash");
+  ctrl.commitEntryTransaction();
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
+
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransactionV4();
   ctrl.cancelChunkChecksumTransactionV4();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
+  CPPUNIT_ASSERT(ctrl.getResult()->entries[2]->chunkChecksum.isNull());
 }
 #endif // ENABLE_MESSAGE_DIGEST
 

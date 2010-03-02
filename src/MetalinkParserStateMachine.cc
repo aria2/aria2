@@ -290,6 +290,11 @@ void MetalinkParserStateMachine::commitEntryTransaction()
   _ctrl->commitEntryTransaction();
 }
 
+void MetalinkParserStateMachine::cancelEntryTransaction()
+{
+  _ctrl->cancelEntryTransaction();
+}
+
 void MetalinkParserStateMachine::newResourceTransaction()
 {
   _ctrl->newResourceTransaction();

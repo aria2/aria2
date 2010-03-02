@@ -33,6 +33,7 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMalformedXML);
   CPPUNIT_TEST(testMalformedXML2);
   CPPUNIT_TEST(testBadSize);
+  CPPUNIT_TEST(testBadSizeV4);
   CPPUNIT_TEST(testBadMaxConn);
   CPPUNIT_TEST(testNoName);  
   CPPUNIT_TEST(testBadURLPrefs);
@@ -58,6 +59,7 @@ public:
   void testMalformedXML();
   void testMalformedXML2();
   void testBadSize();
+  void testBadSizeV4();
   void testBadMaxConn();
   void testNoName();
   void testBadURLPrefs();
@@ -90,7 +92,7 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL((uint64_t)786430LL, e->getLength());
   CPPUNIT_ASSERT_EQUAL(-1, e->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
-  CPPUNIT_ASSERT_EQUAL(std::string("80bc95fd391772fa61c91ed68567f0980bb45fd9"),
+  CPPUNIT_ASSERT_EQUAL(std::string("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
 		       e->checksum->getMessageDigest());
   CPPUNIT_ASSERT(!e->checksum.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getAlgo());
@@ -98,11 +100,11 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), e->chunkChecksum->getAlgo());
   CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
   CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
-  CPPUNIT_ASSERT_EQUAL(std::string("metalinkhash1"),
+  CPPUNIT_ASSERT_EQUAL(std::string("0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5"),
 		       e->chunkChecksum->getChecksum(0));
-  CPPUNIT_ASSERT_EQUAL(std::string("metalinkhash2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("487ba2299be7f759d7c7bf6a4ac3a32cee81f1bb9332fc485947e32918864fb2"),
 		       e->chunkChecksum->getChecksum(1));
-  CPPUNIT_ASSERT_EQUAL(std::string("metalinkhash3"),
+  CPPUNIT_ASSERT_EQUAL(std::string("37290d74ac4d186e3a8e5785d259d2ec04fac91ae28092e7620ec8bc99e830aa"),
 		       e->chunkChecksum->getChecksum(2));
 #endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT(!e->getSignature().isNull());
@@ -202,6 +204,11 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
     } catch(RecoverableException& e) {
       // success
     }
+    dw->setString(StringFormat(tmpl, "A").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
   }
   {
     // Testing metaurl@priority
@@ -239,6 +246,11 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
     } catch(RecoverableException& e) {
       // success
     }
+    dw->setString(StringFormat(tmpl, "A").str());
+    try {
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
   }
   {
     // Testing metaurl@mediatype
@@ -343,6 +355,12 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
     // empty
     try {
       dw->setString(StringFormat(tmpl, "").str());
+      m = proc.parseFromBinaryStream(dw);
+      CPPUNIT_FAIL("exception must be thrown.");
+    } catch(RecoverableException& e) {}
+    // not a number
+    try {
+      dw->setString(StringFormat(tmpl, "A").str());
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
@@ -622,6 +640,31 @@ void MetalinkProcessorTest::testMalformedXML2()
   }
 }
 
+void MetalinkProcessorTest::testBadSizeV4()
+{
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> m;
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
+
+  const char* tmpl =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
+    "<file name=\"foo\">"
+    "<size>%s</size>"
+    "<url>http://example.org</url>"
+     "</file>"
+    "</metalink>";
+
+  dw->setString(StringFormat(tmpl, "9223372036854775807").str());
+  m = proc.parseFromBinaryStream(dw);
+
+  dw->setString(StringFormat(tmpl, "-1").str());
+  try {
+    m = proc.parseFromBinaryStream(dw);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {}
+}
+  
 void MetalinkProcessorTest::testBadSize()
 {
   MetalinkProcessor proc;
@@ -850,21 +893,22 @@ void MetalinkProcessorTest::testBadPieceNo()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
-                "<files>"
-                "<file name=\"aria2.tar.bz2\">"
-                "  <verification>"
-                "    <pieces length=\"512\" type=\"sha1\">"
-                "      <hash piece=\"0\">abc</hash>"
-                "      <hash piece=\"xyz\">xyz</hash>"
-                "    </pieces>"
-                "    <pieces length=\"1024\" type=\"sha1\">"
-                "      <hash piece=\"0\">abc</hash>"
-                "    </pieces>"
-                "  </verification>"
-                "</file>"
-                "</files>"
-                "</metalink>");
+  dw->setString
+    ("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+     "<files>"
+     "<file name=\"aria2.tar.bz2\">"
+     "  <verification>"
+     "    <pieces length=\"512\" type=\"sha1\">"
+     "      <hash piece=\"0\">44213f9f4d59b557314fadcd233232eebcac8012</hash>"
+     "      <hash piece=\"xyz\">44213f9f4d59b557314fadcd233232eebcac8012</hash>"
+     "    </pieces>"
+     "    <pieces length=\"1024\" type=\"sha1\">"
+     "      <hash piece=\"0\">44213f9f4d59b557314fadcd233232eebcac8012</hash>"
+     "    </pieces>"
+     "  </verification>"
+     "</file>"
+     "</files>"
+     "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -883,20 +927,21 @@ void MetalinkProcessorTest::testBadPieceLength()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
-                "<files>"
-                "<file name=\"aria2.tar.bz2\">"
-                "  <verification>"
-                "    <pieces length=\"xyz\" type=\"sha1\">"
-                "      <hash piece=\"0\">abc</hash>"
-                "    </pieces>"
-                "    <pieces length=\"1024\" type=\"sha1\">"
-                "      <hash piece=\"0\">abc</hash>"
-                "    </pieces>"
-                "  </verification>"
-                "</file>"
-                "</files>"
-                "</metalink>");
+  dw->setString
+    ("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+     "<files>"
+     "<file name=\"aria2.tar.bz2\">"
+     "  <verification>"
+     "    <pieces length=\"xyz\" type=\"sha1\">"
+     "      <hash piece=\"0\">44213f9f4d59b557314fadcd233232eebcac8012</hash>"
+     "    </pieces>"
+     "    <pieces length=\"1024\" type=\"sha1\">"
+     "      <hash piece=\"0\">44213f9f4d59b557314fadcd233232eebcac8012</hash>"
+     "    </pieces>"
+     "  </verification>"
+     "</file>"
+     "</files>"
+     "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
@@ -915,20 +960,21 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
 {
   MetalinkProcessor proc;
   SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
-                "<files>"
-                "<file name=\"aria2.tar.bz2\">"
-                "  <verification>"
-                "    <pieces length=\"512\" type=\"ARIA2\">"
-                "      <hash piece=\"0\">abc</hash>"
-                "    </pieces>"
-                "    <pieces length=\"1024\" type=\"sha1\">"
-                "      <hash piece=\"0\">abc</hash>"
-                "    </pieces>"
-                "  </verification>"
-                "</file>"
-                "</files>"
-                "</metalink>");
+  dw->setString
+    ("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+     "<files>"
+     "<file name=\"aria2.tar.bz2\">"
+     "  <verification>"
+     "    <pieces length=\"512\" type=\"ARIA2\">"
+     "      <hash piece=\"0\">44213f9f4d59b557314fadcd233232eebcac8012</hash>"
+     "    </pieces>"
+     "    <pieces length=\"1024\" type=\"sha1\">"
+     "      <hash piece=\"0\">44213f9f4d59b557314fadcd233232eebcac8012</hash>"
+     "    </pieces>"
+     "  </verification>"
+     "</file>"
+     "</files>"
+     "</metalink>");
 
   try {
     SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);

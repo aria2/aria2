@@ -254,11 +254,15 @@ void sleep(long seconds);
 void usleep(long microseconds);
   
 bool isNumber(const std::string& what);
+
+bool isHexDigit(const char c);
+
+bool isHexDigit(const std::string& s);
   
 bool isLowercase(const std::string& what);
   
 bool isUppercase(const std::string& what);
-  
+
 /**
  * Converts alphabets to unsigned int, assuming alphabets as a base 26
  * integer and 'a' or 'A' is 0.

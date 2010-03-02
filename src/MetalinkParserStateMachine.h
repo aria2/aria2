@@ -166,6 +166,8 @@ public:
 
   void commitEntryTransaction();
 
+  void cancelEntryTransaction();
+
   void newResourceTransaction();
 
   void setURLOfResource(const std::string& url);

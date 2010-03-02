@@ -281,9 +281,10 @@ void SizeMetalinkParserStateV4::endElement
  const std::string& characters)
 {
   try {
-    stm->setFileLengthOfEntry(util::parseLLInt(characters));
+    stm->setFileLengthOfEntry(util::parseULLInt(characters));
   } catch(RecoverableException& e) {
-    // current metalink specification doesn't require size element.
+    stm->cancelEntryTransaction();
+    stm->logError("Bad size");
   }
 }
 

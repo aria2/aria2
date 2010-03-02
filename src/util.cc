@@ -216,6 +216,16 @@ bool isHexDigit(const char c)
   return isDigit(c) || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f');
 }
 
+bool isHexDigit(const std::string& s)
+{
+  for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
+    if(!isHexDigit(*i)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool inRFC3986ReservedChars(const char c)
 {
   static const char reserved[] = {

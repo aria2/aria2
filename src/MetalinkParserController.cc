@@ -53,6 +53,13 @@
 
 namespace aria2 {
 
+static bool isValidHash(const std::string& algo, const std::string& hash)
+{
+  return util::isHexDigit(hash) &&
+    MessageDigestContext::supports(algo) &&
+    MessageDigestContext::digestLength(algo)*2 == hash.size();
+}
+
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker())
 {}
@@ -281,7 +288,11 @@ void MetalinkParserController::setHashOfChecksum(const std::string& md)
   if(_tChecksum.isNull()) {
     return;
   }
-  _tChecksum->setMessageDigest(md);
+  if(isValidHash(_tChecksum->getAlgo(), md)) {
+    _tChecksum->setMessageDigest(md);
+  } else {
+    cancelChecksumTransaction();
+  }
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
@@ -352,7 +363,11 @@ void MetalinkParserController::addHashOfChunkChecksumV4(const std::string& md)
   if(_tChunkChecksumV4.isNull()) {
     return;
   }
-  _tempChunkChecksumsV4.push_back(md);
+  if(isValidHash(_tChunkChecksumV4->getAlgo(), md)) {
+    _tempChunkChecksumsV4.push_back(md);
+  } else {
+    cancelChunkChecksumTransactionV4();
+  }
 #endif // ENABLE_MESSAGE_DIGEST  
 }
 
@@ -426,7 +441,11 @@ void MetalinkParserController::addHashOfChunkChecksum(size_t order, const std::s
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  _tempChunkChecksums.push_back(std::pair<size_t, std::string>(order, md));
+  if(isValidHash(_tChunkChecksum->getAlgo(), md)) {
+    _tempChunkChecksums.push_back(std::make_pair(order, md));
+  } else {
+    cancelChunkChecksumTransaction();
+  }
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
@@ -446,7 +465,11 @@ void MetalinkParserController::setMessageDigestOfChunkChecksum(const std::string
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  _tempHashPair.second = md;
+  if(isValidHash(_tChunkChecksum->getAlgo(), md)) {
+    _tempHashPair.second = md;
+  } else {
+    cancelChunkChecksumTransaction();
+  }
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
