@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,13 +44,13 @@
 namespace aria2 {
 
 SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
-  _socket(socket) {}
+  _socket(socket), _offset(0) {}
 
 SocketBuffer::~SocketBuffer() {}
 
 void SocketBuffer::feedSendBuffer(const std::string& data)
 {
-  _sendbuf += data;
+  _bufq.push_back(data);
 }
 
 ssize_t SocketBuffer::feedAndSend(const std::string& data)
@@ -61,21 +61,31 @@ ssize_t SocketBuffer::feedAndSend(const std::string& data)
 
 ssize_t SocketBuffer::send()
 {
-  if(_sendbuf.empty()) {
-    return 0;
+  size_t totalslen = 0;
+  while(!_bufq.empty()) {
+    const std::string& data = _bufq[0];
+    const size_t size = data.size();
+    ssize_t r = size-_offset;
+    ssize_t slen = _socket->writeData(data.data()+_offset, r);
+    if(slen == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
+      throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND,
+                                     "Connection closed.").str());
+    }
+    totalslen += slen;
+    if(slen < r) {
+      _offset += slen;
+      break;
+    } else {
+      _offset = 0;
+      _bufq.pop_front();
+    }
   }
-  ssize_t len = _socket->writeData(_sendbuf.c_str(),
-                                   _sendbuf.size());
-  if(len == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, "Connection closed.").str());
-  }
-  _sendbuf.erase(0, len);
-  return len;
+  return totalslen;
 }
 
 bool SocketBuffer::sendBufferIsEmpty() const
 {
-  return _sendbuf.empty();
+  return _bufq.empty();
 }
 
 } // namespace aria2

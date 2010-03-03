@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,11 @@
 #define _D_SOCKET_BUFFER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
+#include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -47,18 +50,29 @@ class SocketBuffer {
 private:
   SharedHandle<SocketCore> _socket;
 
-  std::string _sendbuf;
+  std::deque<std::string> _bufq;
+
+  // Offset of data in _bufq[0]. SocketBuffer tries to send _bufq[0],
+  // but it cannot always send whole data. In this case, offset points
+  // to the data to be sent in the next send() call.
+  size_t _offset;
 public:
   SocketBuffer(const SharedHandle<SocketCore>& socket);
 
   ~SocketBuffer();
 
+  // Feeds data into queue. This function doesn't send data.
   void feedSendBuffer(const std::string& data);
 
+  // Feeds data into queue and sends data in queue. This function is
+  // equivalent to call feedSendBuffer() and send() sequentially.
+  // Returns the number of bytes sent.
   ssize_t feedAndSend(const std::string& data);
 
+  // Sends data in queue.  Returns the number of bytes sent.
   ssize_t send();
 
+  // Returns true if queue is empty.
   bool sendBufferIsEmpty() const;
 
 };

@@ -1,5 +1,14 @@
 2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten SocketBuffer. Old implementation uses single std::string
+	to store data and erase sent data, which is costly. New
+	implementation uses deque to hold each data to avoid to mutate
+	string.
+	* src/SocketBuffer.cc
+	* src/SocketBuffer.h
+
+2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused FileEntry::extracted
 	* src/FileEntry.cc
 	* src/FileEntry.h
