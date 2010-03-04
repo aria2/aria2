@@ -84,7 +84,7 @@ void PeerConnection::pushStr(const std::string& data)
     }
     _socketBuffer.pushBytes(chunk, len);
   } else {
-    _socketBuffer.feedSendBuffer(data);
+    _socketBuffer.pushStr(data);
   }
 }
 

@@ -140,8 +140,8 @@ bool MSEHandshake::sendPublicKey()
 
     size_t padLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
     _dh->generateNonce(buffer+KEY_LENGTH, padLength);
-    _socketBuffer.feedSendBuffer(std::string(&buffer[0],
-                                             &buffer[KEY_LENGTH+padLength]));
+    _socketBuffer.pushStr(std::string(&buffer[0],
+                                      &buffer[KEY_LENGTH+padLength]));
   }
   _socketBuffer.send();
   return _socketBuffer.sendBufferIsEmpty();
@@ -211,7 +211,7 @@ void MSEHandshake::encryptAndSendData(const unsigned char* data, size_t length)
   while(r > 0) {
     s = std::min(r, sizeof(temp));
     _encryptor->encrypt(temp, s, dptr, s);
-    _socketBuffer.feedSendBuffer(std::string(&temp[0], &temp[s]));
+    _socketBuffer.pushStr(std::string(&temp[0], &temp[s]));
     dptr += s;
     r -= s;
   }
@@ -264,10 +264,10 @@ bool MSEHandshake::sendInitiatorStep2()
     }
     unsigned char md[20];
     createReq1Hash(md);
-    _socketBuffer.feedSendBuffer(std::string(&md[0], &md[sizeof(md)]));
+    _socketBuffer.pushStr(std::string(&md[0], &md[sizeof(md)]));
 
     createReq23Hash(md, _infoHash);
-    _socketBuffer.feedSendBuffer(std::string(&md[0], &md[sizeof(md)]));
+    _socketBuffer.pushStr(std::string(&md[0], &md[sizeof(md)]));
 
     {
       // buffer is filled in this order:

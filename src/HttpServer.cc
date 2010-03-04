@@ -168,8 +168,8 @@ void HttpServer::feedResponse(const std::string& status,
   if(_logger->debug()) {
     _logger->debug("HTTP Server sends response:\n%s", header.c_str());
   }
-  _socketBuffer.feedSendBuffer(header);
-  _socketBuffer.feedSendBuffer(text);
+  _socketBuffer.pushStr(header);
+  _socketBuffer.pushStr(text);
 }
 
 ssize_t HttpServer::sendResponse()

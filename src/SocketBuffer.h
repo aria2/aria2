@@ -100,16 +100,11 @@ public:
 
   // Feeds data pointered by bytes with length len. into queue.  This
   // object gets ownership of bytes, so caller must not delete or
-  // later bytes after this call.
+  // later bytes after this call. This function doesn't send data.
   void pushBytes(unsigned char* bytes, size_t len);
 
   // Feeds data into queue. This function doesn't send data.
-  void feedSendBuffer(const std::string& data);
-
-  // Feeds data into queue and sends data in queue. This function is
-  // equivalent to call feedSendBuffer() and send() sequentially.
-  // Returns the number of bytes sent.
-  ssize_t feedAndSend(const std::string& data);
+  void pushStr(const std::string& data);
 
   // Sends data in queue.  Returns the number of bytes sent.
   ssize_t send();

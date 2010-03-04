@@ -53,15 +53,9 @@ void SocketBuffer::pushBytes(unsigned char* bytes, size_t len)
   _bufq.push_back(BufEntry::createBytes(bytes, len));
 }
 
-void SocketBuffer::feedSendBuffer(const std::string& data)
+void SocketBuffer::pushStr(const std::string& data)
 {
   _bufq.push_back(BufEntry::createStr(data));
-}
-
-ssize_t SocketBuffer::feedAndSend(const std::string& data)
-{
-  feedSendBuffer(data);
-  return send();
 }
 
 ssize_t SocketBuffer::send()

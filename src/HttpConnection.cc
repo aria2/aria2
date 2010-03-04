@@ -96,7 +96,8 @@ void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
-  _socketBuffer.feedAndSend(request);
+  _socketBuffer.pushStr(request);
+  _socketBuffer.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests.push_back(entry);
 }
@@ -106,7 +107,8 @@ void HttpConnection::sendProxyRequest
 {
   std::string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
-  _socketBuffer.feedAndSend(request);
+  _socketBuffer.pushStr(request);
+  _socketBuffer.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests.push_back(entry);
 }

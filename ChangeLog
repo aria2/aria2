@@ -1,5 +1,17 @@
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed SocketBuffer::feedAndSend(). Renamed
+	SocketBuffer::feedSendBuffer() as SocketBuffer::pushStr().
+	* src/FtpConnection.cc
+	* src/HttpConnection.cc
+	* src/HttpServer.cc
+	* src/MSEHandshake.cc
+	* src/PeerConnection.cc
+	* src/SocketBuffer.cc
+	* src/SocketBuffer.h
+
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused PeerConnection::sendMessage(). Updated doc.
 	* src/PeerConnection.cc
 	* src/PeerConnection.h
