@@ -81,25 +81,22 @@ void BtBitfieldMessage::doReceivedAction() {
   }
 }
 
-const unsigned char* BtBitfieldMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 1+bitfieldLength, 4bytes
-     * id --- 5, 1byte
-     * bitfield --- bitfield, len bytes
-     * total: 5+len bytes
-     */
-    msgLength = 5+bitfieldLength;
-    msg = new unsigned char[msgLength];
-    bittorrent::createPeerMessageString(msg, msgLength, 1+bitfieldLength, ID);
-    memcpy(msg+5, bitfield, bitfieldLength);
-  }
+unsigned char* BtBitfieldMessage::createMessage() {
+  /**
+   * len --- 1+bitfieldLength, 4bytes
+   * id --- 5, 1byte
+   * bitfield --- bitfield, len bytes
+   * total: 5+len bytes
+   */
+  const size_t msgLength = 5+bitfieldLength;
+  unsigned char* msg = new unsigned char[msgLength];
+  bittorrent::createPeerMessageString(msg, msgLength, 1+bitfieldLength, ID);
+  memcpy(msg+5, bitfield, bitfieldLength);
   return msg;
 }
 
 size_t BtBitfieldMessage::getMessageLength() {
-  getMessage();
-  return msgLength;
+  return 5+bitfieldLength;
 }
 
 std::string BtBitfieldMessage::toString() const {

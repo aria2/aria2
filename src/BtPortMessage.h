@@ -47,7 +47,6 @@ class DHTTaskFactory;
 class BtPortMessage : public SimpleBtMessage {
 private:
   uint16_t _port;
-  unsigned char* _msg;
   static const size_t MESSAGE_LENGTH = 7;
 
   WeakHandle<DHTNode> _localNode;
@@ -60,8 +59,6 @@ private:
 public:
   BtPortMessage(uint16_t port);
 
-  virtual ~BtPortMessage();
-
   static const uint8_t ID = 9;
 
   static const std::string NAME;
@@ -72,7 +69,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 

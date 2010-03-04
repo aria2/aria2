@@ -62,7 +62,6 @@ BtHandshakeMessage::BtHandshakeMessage(const unsigned char* infoHash,
 }
 
 void BtHandshakeMessage::init() {
-  msg = 0;
   this->pstrlen = 19;
   pstr = new unsigned char[PSTR_LENGTH];
   reserved = new unsigned char[RESERVED_LENGTH];
@@ -88,15 +87,14 @@ BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
   return message;
 }
 
-const unsigned char* BtHandshakeMessage::getMessage() {
-  if(!msg) {
-    msg = new unsigned char[MESSAGE_LENGTH];
-    msg[0] = pstrlen;
-    memcpy(msg+1, pstr, PSTR_LENGTH);
-    memcpy(msg+20, reserved, RESERVED_LENGTH);
-    memcpy(msg+28, infoHash, INFO_HASH_LENGTH);
-    memcpy(msg+48, peerId, PEER_ID_LENGTH);
-  }
+unsigned char* BtHandshakeMessage::createMessage()
+{
+  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  msg[0] = pstrlen;
+  memcpy(msg+1, pstr, PSTR_LENGTH);
+  memcpy(msg+20, reserved, RESERVED_LENGTH);
+  memcpy(msg+28, infoHash, INFO_HASH_LENGTH);
+  memcpy(msg+48, peerId, PEER_ID_LENGTH);
   return msg;
 }
 

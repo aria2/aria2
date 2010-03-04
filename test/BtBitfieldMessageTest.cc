@@ -16,7 +16,7 @@ class BtBitfieldMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtBitfieldMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testDoReceivedAction_goodByeSeeder);
   CPPUNIT_TEST(testToString);
@@ -28,7 +28,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testDoReceivedAction_goodByeSeeder();
   void testToString();
@@ -65,7 +65,7 @@ void BtBitfieldMessageTest::testCreate() {
   }
 }
 
-void BtBitfieldMessageTest::testGetMessage() {
+void BtBitfieldMessageTest::testCreateMessage() {
   BtBitfieldMessage msg;
   unsigned char bitfield[2];
   memset(bitfield, 0xff, sizeof(bitfield));
@@ -73,7 +73,10 @@ void BtBitfieldMessageTest::testGetMessage() {
   unsigned char data[5+2];
   bittorrent::createPeerMessageString(data, sizeof(data), 3, 5);
   memcpy(&data[5], bitfield, sizeof(bitfield));
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 7) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 7) == 0);
+  delete [] rawmsg;
+  CPPUNIT_ASSERT_EQUAL((size_t)7, msg.getMessageLength());
 }
 
 void BtBitfieldMessageTest::testDoReceivedAction() {

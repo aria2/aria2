@@ -47,7 +47,7 @@ public:
 
   virtual void send();
 
-  virtual const unsigned char* getMessage() = 0;
+  virtual unsigned char* createMessage() = 0;
 
   virtual size_t getMessageLength() = 0;
 

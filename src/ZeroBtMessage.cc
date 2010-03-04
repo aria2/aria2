@@ -37,18 +37,16 @@
 
 namespace aria2 {
 
-const unsigned char* ZeroBtMessage::getMessage()
+unsigned char* ZeroBtMessage::createMessage()
 {
-  if(!_msg) {
-    /**
-     * len --- 1, 4bytes
-     * id --- ?, 1byte
-     * total: 5bytes
-     */
-    _msg = new unsigned char[MESSAGE_LENGTH];
-    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 1, getId());
-  }
-  return _msg;
+  /**
+   * len --- 1, 4bytes
+   * id --- ?, 1byte
+   * total: 5bytes
+   */
+  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 1, getId());
+  return msg;
 }
 
 size_t ZeroBtMessage::getMessageLength()

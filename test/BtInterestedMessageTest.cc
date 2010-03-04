@@ -14,14 +14,14 @@ class BtInterestedMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtInterestedMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testOnSendComplete();
   void testToString();
@@ -54,11 +54,13 @@ void BtInterestedMessageTest::testCreate() {
   }
 }
 
-void BtInterestedMessageTest::testGetMessage() {
+void BtInterestedMessageTest::testCreateMessage() {
   BtInterestedMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 2);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 5) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
+  delete [] rawmsg;
 }
 
 void BtInterestedMessageTest::testDoReceivedAction() {

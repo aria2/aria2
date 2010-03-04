@@ -45,32 +45,24 @@ RangeBtMessage::RangeBtMessage(uint8_t id,
   :SimpleBtMessage(id, name),
    _index(index),
    _begin(begin),
-   _length(length),
-   _msg(0) {}
+   _length(length) {}
 
-RangeBtMessage::~RangeBtMessage()
+unsigned char* RangeBtMessage::createMessage()
 {
-  delete [] _msg;
-}
-
-const unsigned char* RangeBtMessage::getMessage()
-{
-  if(!_msg) {
-    /**
-     * len --- 13, 4bytes
-     * id --- ?, 1byte
-     * index --- index, 4bytes
-     * begin --- begin, 4bytes
-     * length -- length, 4bytes
-     * total: 17bytes
-     */
-    _msg = new unsigned char[MESSAGE_LENGTH];
-    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 13, getId());
-    bittorrent::setIntParam(&_msg[5], _index);
-    bittorrent::setIntParam(&_msg[9], _begin);
-    bittorrent::setIntParam(&_msg[13], _length);
-  }
-  return _msg;
+  /**
+   * len --- 13, 4bytes
+   * id --- ?, 1byte
+   * index --- index, 4bytes
+   * begin --- begin, 4bytes
+   * length -- length, 4bytes
+   * total: 17bytes
+   */
+  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 13, getId());
+  bittorrent::setIntParam(&msg[5], _index);
+  bittorrent::setIntParam(&msg[9], _begin);
+  bittorrent::setIntParam(&msg[13], _length);
+  return msg;
 }
 
 size_t RangeBtMessage::getMessageLength()

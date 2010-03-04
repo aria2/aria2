@@ -47,14 +47,10 @@ class BtBitfieldMessage : public SimpleBtMessage {
 private:
   unsigned char* bitfield;
   size_t bitfieldLength;
-  unsigned char* msg;
-  size_t msgLength;
 
   void init() {
     bitfield = 0;
     bitfieldLength = 0;
-    msg = 0;
-    msgLength = 0;
   }
 public:
   BtBitfieldMessage():SimpleBtMessage(ID, NAME)
@@ -71,7 +67,6 @@ public:
 
   virtual ~BtBitfieldMessage() {
     delete [] bitfield;
-    delete [] msg;
   }
 
   static const uint8_t ID = 5;
@@ -88,7 +83,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 

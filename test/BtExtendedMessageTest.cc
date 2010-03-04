@@ -16,7 +16,7 @@ class BtExtendedMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtExtendedMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
@@ -24,7 +24,7 @@ private:
 
 public:
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testToString();
 };
@@ -70,7 +70,7 @@ void BtExtendedMessageTest::testCreate() {
   }
 }
 
-void BtExtendedMessageTest::testGetMessage() {
+void BtExtendedMessageTest::testCreateMessage() {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
   SharedHandle<MockExtensionMessage> exmsg
@@ -81,7 +81,10 @@ void BtExtendedMessageTest::testGetMessage() {
   bittorrent::createPeerMessageString(data, sizeof(data), 13, 20);
   *(data+5) = extendedMessageID;
   memcpy(data+6, payload.c_str(), payload.size());
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 17) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
+  delete [] rawmsg;
+  CPPUNIT_ASSERT_EQUAL((size_t)17, msg.getMessageLength());
 }
 
 void BtExtendedMessageTest::testDoReceivedAction() {

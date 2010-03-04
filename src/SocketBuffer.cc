@@ -48,9 +48,14 @@ SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
 
 SocketBuffer::~SocketBuffer() {}
 
+void SocketBuffer::pushBytes(unsigned char* bytes, size_t len)
+{
+  _bufq.push_back(BufEntry::createBytes(bytes, len));
+}
+
 void SocketBuffer::feedSendBuffer(const std::string& data)
 {
-  _bufq.push_back(data);
+  _bufq.push_back(BufEntry::createStr(data));
 }
 
 ssize_t SocketBuffer::feedAndSend(const std::string& data)
@@ -63,10 +68,18 @@ ssize_t SocketBuffer::send()
 {
   size_t totalslen = 0;
   while(!_bufq.empty()) {
-    const std::string& data = _bufq[0];
-    const size_t size = data.size();
-    ssize_t r = size-_offset;
-    ssize_t slen = _socket->writeData(data.data()+_offset, r);
+    BufEntry& buf = _bufq[0];
+    const char* data;
+    ssize_t r;
+    if(buf.type == TYPE_BYTES) {
+      data = reinterpret_cast<const char*>(buf.bytes);
+      r = buf.bytesLen-_offset;
+    } else {
+      const std::string& str = *buf.str;
+      data = str.data();
+      r = str.size()-_offset;
+    }
+    ssize_t slen = _socket->writeData(data+_offset, r);
     if(slen == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
       throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND,
                                      "Connection closed.").str());
@@ -77,6 +90,7 @@ ssize_t SocketBuffer::send()
       break;
     } else {
       _offset = 0;
+      buf.deleteBuf();
       _bufq.pop_front();
     }
   }

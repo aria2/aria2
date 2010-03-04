@@ -13,7 +13,7 @@ class BtHandshakeMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtHandshakeMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST(testSetDHTEnabled);
   CPPUNIT_TEST_SUITE_END();
@@ -24,7 +24,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testToString();
   void testSetDHTEnabled();
 
@@ -70,7 +70,7 @@ void BtHandshakeMessageTest::testCreate() {
                        util::toHex(message->getPeerId(), PEER_ID_LENGTH));
 }
 
-void BtHandshakeMessageTest::testGetMessage() {
+void BtHandshakeMessageTest::testCreateMessage() {
   unsigned char infoHash[] = { 0xff, 0xff, 0xff, 0xff, 0xff,
                                0xff, 0xff, 0xff, 0xff, 0xff,
                                0xff, 0xff, 0xff, 0xff, 0xff,
@@ -86,8 +86,10 @@ void BtHandshakeMessageTest::testGetMessage() {
 
   unsigned char data[68];
   createHandshakeMessageData(data);
+  unsigned char* rawmsg = msg->createMessage();
   CPPUNIT_ASSERT_EQUAL(util::toHex((const unsigned char*)data, 68),
-                       util::toHex((const unsigned char*)msg->getMessage(), 68));
+                       util::toHex(rawmsg, 68));
+  delete [] rawmsg;
 }
 
 void BtHandshakeMessageTest::testToString() {

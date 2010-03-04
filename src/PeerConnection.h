@@ -36,9 +36,11 @@
 #define _D_PEER_CONNECTION_H_
 
 #include "common.h"
+
+#include <unistd.h>
+
 #include "SharedHandle.h"
 #include "SocketBuffer.h"
-#include <unistd.h>
 
 namespace aria2 {
 
@@ -57,7 +59,7 @@ private:
   SharedHandle<SocketCore> socket;
   Logger* logger;
 
-  unsigned char resbuf[MAX_PAYLOAD_LEN];
+  unsigned char* resbuf;
   size_t resbufLength;
   size_t currentPayloadLength;
   unsigned char lenbuf[4];
@@ -83,6 +85,10 @@ public:
   // Returns the number of bytes written
   ssize_t sendMessage(const unsigned char* data, size_t dataLength);
 
+  void pushBytes(unsigned char* data, size_t len);
+
+  void pushStr(const std::string& data);
+
   bool receiveMessage(unsigned char* data, size_t& dataLength);
 
   /**
@@ -101,6 +107,18 @@ public:
   bool sendBufferIsEmpty() const;
   
   ssize_t sendPendingData();
+
+  const unsigned char* getBuffer() const
+  {
+    return resbuf;
+  }
+
+  unsigned char* detachBuffer()
+  {
+    unsigned char* detachbuf = resbuf;
+    resbuf = new unsigned char[MAX_PAYLOAD_LEN];
+    return detachbuf;
+  }
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;

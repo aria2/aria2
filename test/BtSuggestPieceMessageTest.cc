@@ -11,7 +11,7 @@ class BtSuggestPieceMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtSuggestPieceMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -21,7 +21,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testToString();
 };
 
@@ -54,13 +54,15 @@ void BtSuggestPieceMessageTest::testCreate() {
   }
 }
 
-void BtSuggestPieceMessageTest::testGetMessage() {
+void BtSuggestPieceMessageTest::testCreateMessage() {
   BtSuggestPieceMessage msg;
   msg.setIndex(12345);
   unsigned char data[9];
   bittorrent::createPeerMessageString(data, sizeof(data), 5, 13);
   bittorrent::setIntParam(&data[5], 12345);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 9) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 9) == 0);
+  delete [] rawmsg;
 }
 
 void BtSuggestPieceMessageTest::testToString() {

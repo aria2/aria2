@@ -16,7 +16,7 @@ class BtCancelMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtCancelMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -27,7 +27,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
@@ -81,7 +81,7 @@ void BtCancelMessageTest::testCreate() {
   }
 }
 
-void BtCancelMessageTest::testGetMessage() {
+void BtCancelMessageTest::testCreateMessage() {
   BtCancelMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
@@ -91,7 +91,9 @@ void BtCancelMessageTest::testGetMessage() {
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
   bittorrent::setIntParam(&data[13], 1024);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 17) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
+  delete [] rawmsg;
 }
 
 void BtCancelMessageTest::testDoReceivedAction() {

@@ -49,14 +49,10 @@ class BtExtendedMessage:public SimpleBtMessage
 private:
   SharedHandle<ExtensionMessage> _extensionMessage;
 
-  unsigned char* _msg;
-
   size_t _msgLength;
 public:
   BtExtendedMessage(const SharedHandle<ExtensionMessage>& extensionMessage =
                     SharedHandle<ExtensionMessage>());
-
-  virtual ~BtExtendedMessage();
 
   static const uint8_t ID = 20;
 
@@ -70,7 +66,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 

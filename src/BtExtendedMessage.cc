@@ -55,36 +55,31 @@ BtExtendedMessage::BtExtendedMessage
 (const ExtensionMessageHandle& extensionMessage):
   SimpleBtMessage(ID, NAME),
   _extensionMessage(extensionMessage),
-  _msg(0),
   _msgLength(0)
 {}
 
-BtExtendedMessage::~BtExtendedMessage()
+unsigned char* BtExtendedMessage::createMessage()
 {
-  delete [] _msg;
-}
-
-const unsigned char* BtExtendedMessage::getMessage() {
-  if(!_msg) {
-    /**
-     * len --- 2+extpayload.length, 4bytes
-     * id --- 20, 1byte
-     * extmsgid --- extmsgid, 1byte
-     * extpayload --- extpayload, nbytes
-     * total: 6+extpayload.length bytes
-     */
-    std::string payload = _extensionMessage->getPayload();
-    _msgLength = 6+payload.size();
-    _msg = new unsigned char[_msgLength];
-    bittorrent::createPeerMessageString(_msg, _msgLength, 2+payload.size(), ID);
-    *(_msg+5) = _extensionMessage->getExtensionMessageID();
-    memcpy(_msg+6, payload.c_str(), payload.size());
-  }
-  return _msg;
+  /**
+   * len --- 2+extpayload.length, 4bytes
+   * id --- 20, 1byte
+   * extmsgid --- extmsgid, 1byte
+   * extpayload --- extpayload, nbytes
+   * total: 6+extpayload.length bytes
+   */
+  std::string payload = _extensionMessage->getPayload();
+  _msgLength = 6+payload.size();
+  unsigned char* msg = new unsigned char[_msgLength];
+  bittorrent::createPeerMessageString(msg, _msgLength, 2+payload.size(), ID);
+  *(msg+5) = _extensionMessage->getExtensionMessageID();
+  memcpy(msg+6, payload.data(), payload.size());
+  return msg;
 }
 
 size_t BtExtendedMessage::getMessageLength() {
-  getMessage();
+  if(!_msgLength) {
+    _msgLength = 6+_extensionMessage->getPayload().size();
+  }
   return _msgLength;
 }
 

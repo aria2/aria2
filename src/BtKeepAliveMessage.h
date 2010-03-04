@@ -45,15 +45,9 @@ typedef SharedHandle<BtKeepAliveMessage> BtKeepAliveMessageHandle;
 
 class BtKeepAliveMessage : public SimpleBtMessage {
 private:
-  unsigned char* msg;
-
   static const size_t MESSAGE_LENGTH = 4;
 public:
-  BtKeepAliveMessage():SimpleBtMessage(ID, NAME), msg(0) {}
-
-  virtual ~BtKeepAliveMessage() {
-    delete [] msg;
-  }
+  BtKeepAliveMessage():SimpleBtMessage(ID, NAME) {}
 
   static const uint8_t ID = 99;
 
@@ -61,11 +55,12 @@ public:
 
   virtual void doReceivedAction() {}
 
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 
-  virtual std::string toString() const {
+  virtual std::string toString() const
+  {
     return NAME;
   }
 };

@@ -15,7 +15,7 @@ class BtRejectMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtRejectMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testDoReceivedActionNoMatch);
   CPPUNIT_TEST(testDoReceivedActionFastExtensionDisabled);
@@ -25,7 +25,7 @@ private:
 
 public:
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testDoReceivedActionNoMatch();
   void testDoReceivedActionFastExtensionDisabled();
@@ -114,7 +114,7 @@ void BtRejectMessageTest::testCreate() {
   }
 }
 
-void BtRejectMessageTest::testGetMessage() {
+void BtRejectMessageTest::testCreateMessage() {
   BtRejectMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
@@ -124,7 +124,9 @@ void BtRejectMessageTest::testGetMessage() {
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
   bittorrent::setIntParam(&data[13], 1024);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 17) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
+  delete [] rawmsg;
 }
 
 void BtRejectMessageTest::testDoReceivedAction() {

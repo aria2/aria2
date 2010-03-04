@@ -10,7 +10,7 @@ class BtUnchokeMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtUnchokeMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
@@ -22,7 +22,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testOnSendComplete();
   void testToString();
@@ -54,11 +54,13 @@ void BtUnchokeMessageTest::testCreate() {
   }
 }
 
-void BtUnchokeMessageTest::testGetMessage() {
+void BtUnchokeMessageTest::testCreateMessage() {
   BtUnchokeMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 1);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 5) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
+  delete [] rawmsg;
 }
 
 void BtUnchokeMessageTest::testDoReceivedAction() {

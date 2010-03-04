@@ -1,3 +1,52 @@
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Reduced copying/std::string instantiation in sending/receiving
+	BitTorrent messages.
+	* src/BtBitfieldMessage.cc
+	* src/BtBitfieldMessage.h
+	* src/BtExtendedMessage.cc
+	* src/BtExtendedMessage.h
+	* src/BtHandshakeMessage.cc
+	* src/BtHandshakeMessage.h
+	* src/BtKeepAliveMessage.cc
+	* src/BtKeepAliveMessage.h
+	* src/BtPieceMessage.cc
+	* src/BtPieceMessage.h
+	* src/BtPortMessage.cc
+	* src/BtPortMessage.h
+	* src/BtUnchokeMessage.h
+	* src/DefaultBtMessageReceiver.cc
+	* src/IndexBtMessage.cc
+	* src/IndexBtMessage.h
+	* src/PeerConnection.cc
+	* src/PeerConnection.h
+	* src/RangeBtMessage.cc
+	* src/RangeBtMessage.h
+	* src/SimpleBtMessage.cc
+	* src/SimpleBtMessage.h
+	* src/SocketBuffer.cc
+	* src/SocketBuffer.h
+	* src/ZeroBtMessage.cc
+	* src/ZeroBtMessage.h
+	* test/BtAllowedFastMessageTest.cc
+	* test/BtBitfieldMessageTest.cc
+	* test/BtCancelMessageTest.cc
+	* test/BtChokeMessageTest.cc
+	* test/BtExtendedMessageTest.cc
+	* test/BtHandshakeMessageTest.cc
+	* test/BtHaveAllMessageTest.cc
+	* test/BtHaveMessageTest.cc
+	* test/BtHaveNoneMessageTest.cc
+	* test/BtInterestedMessageTest.cc
+	* test/BtKeepAliveMessageTest.cc
+	* test/BtNotInterestedMessageTest.cc
+	* test/BtPieceMessageTest.cc
+	* test/BtPortMessageTest.cc
+	* test/BtRejectMessageTest.cc
+	* test/BtRequestMessageTest.cc
+	* test/BtSuggestPieceMessageTest.cc
+	* test/BtUnchokeMessageTest.cc
+
 2010-03-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten SocketBuffer. Old implementation uses single std::string

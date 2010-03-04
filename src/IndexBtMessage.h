@@ -43,7 +43,6 @@ namespace aria2 {
 class IndexBtMessage : public SimpleBtMessage {
 private:
   size_t _index;
-  unsigned char* _msg;
 
   static const size_t MESSAGE_LENGTH = 9;
 protected:
@@ -59,19 +58,13 @@ protected:
 public:
   IndexBtMessage(uint8_t id, const std::string& name, size_t index)
     :SimpleBtMessage(id, name),
-     _index(index),
-     _msg(0) {}
-
-  virtual ~IndexBtMessage()
-  {
-    delete [] _msg;
-  }
+     _index(index) {}
 
   void setIndex(size_t index) { _index = index; }
 
   size_t getIndex() const { return _index; }
 
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 

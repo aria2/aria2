@@ -59,11 +59,11 @@ namespace aria2 {
 
 const std::string BtPieceMessage::NAME("piece");
 
-void BtPieceMessage::setBlock(const unsigned char* block, size_t blockLength) {
-  delete [] this->block;
-  this->blockLength = blockLength;
-  this->block = new unsigned char[this->blockLength];
-  memcpy(this->block, block, this->blockLength);
+void BtPieceMessage::setRawMessage(unsigned char* data)
+{
+  delete [] _rawData;
+  _rawData = data;
+  this->block = data+9;
 }
 
 BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t dataLength) {
@@ -72,7 +72,7 @@ BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t da
   BtPieceMessageHandle message(new BtPieceMessage());
   message->setIndex(bittorrent::getIntParam(data, 1));
   message->setBegin(bittorrent::getIntParam(data, 5));
-  message->setBlock(data+9, dataLength-9);
+  message->setBlockLength(dataLength-9);
   return message;
 }
 
@@ -119,21 +119,20 @@ void BtPieceMessage::doReceivedAction() {
 
 size_t BtPieceMessage::MESSAGE_HEADER_LENGTH = 13;
 
-const unsigned char* BtPieceMessage::getMessageHeader() {
-  if(!msgHeader) {
-    /**
-     * len --- 9+blockLength, 4bytes
-     * id --- 7, 1byte
-     * index --- index, 4bytes
-     * begin --- begin, 4bytes
-     * total: 13bytes
-     */
-    msgHeader = new unsigned char[MESSAGE_HEADER_LENGTH];
-    bittorrent::createPeerMessageString(msgHeader, MESSAGE_HEADER_LENGTH,
-                                        9+blockLength, ID);
-    bittorrent::setIntParam(&msgHeader[5], index);
-    bittorrent::setIntParam(&msgHeader[9], begin);
-  }
+unsigned char* BtPieceMessage::createMessageHeader()
+{
+  /**
+   * len --- 9+blockLength, 4bytes
+   * id --- 7, 1byte
+   * index --- index, 4bytes
+   * begin --- begin, 4bytes
+   * total: 13bytes
+   */
+  unsigned char* msgHeader = new unsigned char[MESSAGE_HEADER_LENGTH];
+  bittorrent::createPeerMessageString(msgHeader, MESSAGE_HEADER_LENGTH,
+                                      9+blockLength, ID);
+  bittorrent::setIntParam(&msgHeader[5], index);
+  bittorrent::setIntParam(&msgHeader[9], begin);
   return msgHeader;
 }
 
@@ -145,34 +144,44 @@ void BtPieceMessage::send() {
   if(invalidate) {
     return;
   }
+  size_t writtenLength;
   if(!sendingInProgress) {
-    logger->info(MSG_SEND_PEER_MESSAGE,
-                 cuid, peer->ipaddr.c_str(), peer->port,
-                 toString().c_str());
-    getMessageHeader();
-    peerConnection->sendMessage(msgHeader, getMessageHeaderLength());
-    off_t pieceDataOffset =
-      (off_t)index*_downloadContext->getPieceLength()+begin;
-    size_t writtenLength = sendPieceData(pieceDataOffset, blockLength);
+    if(logger->info()) {
+      logger->info(MSG_SEND_PEER_MESSAGE,
+                   cuid, peer->ipaddr.c_str(), peer->port,
+                   toString().c_str());
+    }
+    unsigned char* msgHdr = createMessageHeader();
+    size_t msgHdrLen = getMessageHeaderLength();
     if(logger->debug()) {
       logger->debug("msglength = %lu bytes",
-                    static_cast<unsigned long>(getMessageHeaderLength()+
-                                               blockLength));
+                    static_cast<unsigned long>(msgHdrLen+blockLength));
     }
-    peer->updateUploadLength(writtenLength);
+    peerConnection->pushBytes(msgHdr, msgHdrLen);
+    peerConnection->sendPendingData();
+    off_t pieceDataOffset =
+      (off_t)index*_downloadContext->getPieceLength()+begin;
+    writtenLength = sendPieceData(pieceDataOffset, blockLength);
   } else {
-    ssize_t writtenLength = peerConnection->sendPendingData();
-    peer->updateUploadLength(writtenLength);
+    writtenLength = peerConnection->sendPendingData();
   }
+  peer->updateUploadLength(writtenLength);
   sendingInProgress = !peerConnection->sendBufferIsEmpty();
 }
 
 size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
   assert(length <= 16*1024);
-  unsigned char buf[16*1024];
-  if(pieceStorage->getDiskAdaptor()->readData(buf, length, offset) ==
-     static_cast<ssize_t>(length)) {
-    return peerConnection->sendMessage(buf, length);
+  unsigned char* buf = new unsigned char[length];
+  ssize_t r;
+  try {
+    r = pieceStorage->getDiskAdaptor()->readData(buf, length, offset);
+  } catch(RecoverableException& e) {
+    delete [] buf;
+    throw;
+  }
+  if(r == static_cast<ssize_t>(length)) {
+    peerConnection->pushBytes(buf, length);
+    return peerConnection->sendPendingData();
   } else {
     throw DL_ABORT_EX(EX_DATA_READ);
   }

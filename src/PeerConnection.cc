@@ -56,6 +56,7 @@ PeerConnection::PeerConnection(int32_t cuid, const SocketHandle& socket)
   :cuid(cuid),
    socket(socket),
    logger(LogFactory::getInstance()),
+   resbuf(new unsigned char[MAX_PAYLOAD_LEN]),
    resbufLength(0),
    currentPayloadLength(0),
    lenbufLength(0),
@@ -64,7 +65,10 @@ PeerConnection::PeerConnection(int32_t cuid, const SocketHandle& socket)
    _prevPeek(false)
 {}
 
-PeerConnection::~PeerConnection() {}
+PeerConnection::~PeerConnection()
+{
+  delete [] resbuf;
+}
 
 ssize_t PeerConnection::sendMessage(const unsigned char* data,
                                     size_t dataLength)
@@ -74,6 +78,42 @@ ssize_t PeerConnection::sendMessage(const unsigned char* data,
     logger->debug("sent %d byte(s).", writtenLength);
   }
   return writtenLength;
+}
+
+void PeerConnection::pushStr(const std::string& data)
+{
+  if(_encryptionEnabled) {
+    const size_t len = data.size();
+    unsigned char* chunk = new unsigned char[len];
+    try {
+      _encryptor->encrypt
+        (chunk, len, reinterpret_cast<const unsigned char*>(data.data()), len);
+    } catch(RecoverableException& e) {
+      delete [] chunk;
+      throw;
+    }
+    _socketBuffer.pushBytes(chunk, len);
+  } else {
+    _socketBuffer.feedSendBuffer(data);
+  }
+}
+
+void PeerConnection::pushBytes(unsigned char* data, size_t len)
+{
+  if(_encryptionEnabled) {
+    unsigned char* chunk = new unsigned char[len];
+    try {
+      _encryptor->encrypt(chunk, len, data, len);
+    } catch(RecoverableException& e) {
+      delete [] data;
+      delete [] chunk;
+      throw;
+    }
+    delete [] data;
+    _socketBuffer.pushBytes(chunk, len);
+  } else {
+    _socketBuffer.pushBytes(data, len);
+  }
 }
 
 bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
@@ -140,8 +180,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
   // we got whole payload.
   resbufLength = 0;
   lenbufLength = 0;
-
-  memcpy(data, resbuf, currentPayloadLength);
+  if(data) {
+    memcpy(data, resbuf, currentPayloadLength);
+  }
   dataLength = currentPayloadLength;
   return true;
 }

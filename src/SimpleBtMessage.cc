@@ -53,20 +53,19 @@ void SimpleBtMessage::send() {
     return;
   }
   if(!sendingInProgress) {
-    const unsigned char* msg = getMessage();
-    size_t msgLength = getMessageLength();
     if(logger->info()) {
       logger->info(MSG_SEND_PEER_MESSAGE,
                    cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
     }
+    unsigned char* msg = createMessage();
+    size_t msgLength = getMessageLength();
     if(logger->debug()) {
       logger->debug("msglength = %lu bytes",
                     static_cast<unsigned long>(msgLength));
     }
-    peerConnection->sendMessage(msg, msgLength);
-  } else {
-    peerConnection->sendPendingData();
+    peerConnection->pushBytes(msg, msgLength);
   }
+  peerConnection->sendPendingData();
   sendingInProgress = !peerConnection->sendBufferIsEmpty();
   if(!sendingInProgress) {
     onSendComplete();

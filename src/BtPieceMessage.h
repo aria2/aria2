@@ -51,7 +51,7 @@ private:
   uint32_t begin;
   uint32_t blockLength;
   unsigned char* block;
-  unsigned char* msgHeader;
+  unsigned char* _rawData;
   SharedHandle<DownloadContext> _downloadContext;
 
   static size_t MESSAGE_HEADER_LENGTH;
@@ -72,14 +72,13 @@ public:
      begin(begin),
      blockLength(blockLength),
      block(0),
-     msgHeader(0)
+     _rawData(0)
   {
     uploading = true;
   }
 
   virtual ~BtPieceMessage() {
-    delete [] msgHeader;
-    delete []  block;
+    delete [] _rawData;
   }
 
   static const uint8_t ID = 7;
@@ -96,9 +95,12 @@ public:
 
   const unsigned char* getBlock() const { return block; }
 
-  void setBlock(const unsigned char* block, size_t blockLength);
-
   size_t getBlockLength() const { return blockLength; }
+
+  // Stores raw message data. After this function call, this object
+  // has ownership of data. Caller must not be free or alter data.
+  // Member block is pointed to block starting position in data.
+  void setRawMessage(unsigned char* data);
 
   void setBlockLength(size_t blockLength) { this->blockLength = blockLength; }
 
@@ -108,7 +110,7 @@ public:
 
   virtual void doReceivedAction();
 
-  const unsigned char* getMessageHeader();
+  unsigned char* createMessageHeader();
 
   size_t getMessageHeaderLength();
 

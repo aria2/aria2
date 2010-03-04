@@ -15,7 +15,7 @@ class BtHaveAllMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtHaveAllMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testDoReceivedAction_goodByeSeeder);
   CPPUNIT_TEST_SUITE_END();
@@ -26,7 +26,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testDoReceivedAction_goodByeSeeder();
 };
@@ -58,11 +58,13 @@ void BtHaveAllMessageTest::testCreate() {
   }
 }
 
-void BtHaveAllMessageTest::testGetMessage() {
+void BtHaveAllMessageTest::testCreateMessage() {
   BtHaveAllMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 14);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 5) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
+  delete [] rawmsg;
 }
 
 void BtHaveAllMessageTest::testDoReceivedAction() {

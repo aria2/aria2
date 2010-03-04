@@ -39,20 +39,18 @@
 
 namespace aria2 {
 
-const unsigned char* IndexBtMessage::getMessage()
+unsigned char* IndexBtMessage::createMessage()
 {
-  if(!_msg) {
-    /**
-     * len --- 5, 4bytes
-     * id --- ?, 1byte
-     * piece index --- index, 4bytes
-     * total: 9bytes
-     */
-    _msg = new unsigned char[MESSAGE_LENGTH];
-    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 5, getId());
-    bittorrent::setIntParam(&_msg[5], _index);
-  }
-  return _msg;
+  /**
+   * len --- 5, 4bytes
+   * id --- ?, 1byte
+   * piece index --- index, 4bytes
+   * total: 9bytes
+   */
+  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 5, getId());
+  bittorrent::setIntParam(&msg[5], _index);
+  return msg;
 }
 
 size_t IndexBtMessage::getMessageLength()

@@ -22,7 +22,7 @@ class BtRequestMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtRequestMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction_hasPieceAndAmNotChoking);
   CPPUNIT_TEST(testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionEnabled);
   CPPUNIT_TEST(testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionDisabled);
@@ -40,7 +40,7 @@ private:
 
 public:
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction_hasPieceAndAmNotChoking();
   void testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionEnabled();
   void testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionDisabled();
@@ -156,7 +156,7 @@ void BtRequestMessageTest::testCreate() {
   }
 }
 
-void BtRequestMessageTest::testGetMessage() {
+void BtRequestMessageTest::testCreateMessage() {
   BtRequestMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
@@ -166,7 +166,9 @@ void BtRequestMessageTest::testGetMessage() {
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
   bittorrent::setIntParam(&data[13], 1024);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 17) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
+  delete [] rawmsg;
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {

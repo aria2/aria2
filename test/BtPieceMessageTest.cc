@@ -22,7 +22,7 @@ class BtPieceMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtPieceMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessageHeader);
+  CPPUNIT_TEST(testCreateMessageHeader);
   CPPUNIT_TEST(testChokingEvent);
   CPPUNIT_TEST(testChokingEvent_allowedFastEnabled);
   CPPUNIT_TEST(testChokingEvent_inAmAllowedIndexSet);
@@ -38,7 +38,7 @@ class BtPieceMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 public:
   void testCreate();
-  void testGetMessageHeader();
+  void testCreateMessageHeader();
   void testChokingEvent();
   void testChokingEvent_allowedFastEnabled();
   void testChokingEvent_inAmAllowedIndexSet();
@@ -114,7 +114,6 @@ void BtPieceMessageTest::testCreate() {
   CPPUNIT_ASSERT_EQUAL((uint8_t)7, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL((uint32_t)256, pm->getBegin());
-  CPPUNIT_ASSERT(memcmp(data, pm->getBlock(), sizeof(data)) == 0);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pm->getBlockLength());
 
   // case: payload size is wrong
@@ -135,7 +134,7 @@ void BtPieceMessageTest::testCreate() {
   }
 }
 
-void BtPieceMessageTest::testGetMessageHeader() {
+void BtPieceMessageTest::testCreateMessageHeader() {
   BtPieceMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
@@ -144,7 +143,9 @@ void BtPieceMessageTest::testGetMessageHeader() {
   bittorrent::createPeerMessageString(data, sizeof(data), 9+1024, 7);
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
-  CPPUNIT_ASSERT(memcmp(msg.getMessageHeader(), data, 13) == 0);
+  unsigned char* rawmsg = msg.createMessageHeader();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 13) == 0);
+  delete [] rawmsg;
 }
 
 void BtPieceMessageTest::testChokingEvent() {

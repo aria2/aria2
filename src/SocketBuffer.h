@@ -48,9 +48,46 @@ class SocketCore;
 
 class SocketBuffer {
 private:
+  enum BUF_TYPE {
+    TYPE_BYTES,
+    TYPE_STR
+  };
+  struct BufEntry {
+    BUF_TYPE type;
+    unsigned char* bytes;
+    size_t bytesLen;
+    std::string* str;
+
+    void deleteBuf()
+    {
+      if(type == TYPE_BYTES) {
+        delete [] bytes;
+      } else if(type == TYPE_STR) {
+        delete str;
+      }
+    }
+      
+    static BufEntry createBytes(unsigned char* bytes, size_t len)
+    {
+      BufEntry b;
+      b.type = TYPE_BYTES;
+      b.bytes = bytes;
+      b.bytesLen = len;
+      return b;
+    }
+
+    static BufEntry createStr(const std::string& str)
+    {
+      BufEntry b;
+      b.type = TYPE_STR;
+      b.str = new std::string(str);
+      return b;
+    }
+  };
+    
   SharedHandle<SocketCore> _socket;
 
-  std::deque<std::string> _bufq;
+  std::deque<BufEntry> _bufq;
 
   // Offset of data in _bufq[0]. SocketBuffer tries to send _bufq[0],
   // but it cannot always send whole data. In this case, offset points
@@ -60,6 +97,11 @@ public:
   SocketBuffer(const SharedHandle<SocketCore>& socket);
 
   ~SocketBuffer();
+
+  // Feeds data pointered by bytes with length len. into queue.  This
+  // object gets ownership of bytes, so caller must not delete or
+  // later bytes after this call.
+  void pushBytes(unsigned char* bytes, size_t len);
 
   // Feeds data into queue. This function doesn't send data.
   void feedSendBuffer(const std::string& data);

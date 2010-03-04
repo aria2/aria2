@@ -51,7 +51,6 @@ private:
   unsigned char* reserved;
   unsigned char* infoHash;
   unsigned char* peerId;
-  unsigned char* msg;
   void init();
 public:
   BtHandshakeMessage();
@@ -65,7 +64,6 @@ public:
   create(const unsigned char* data, size_t dataLength);
 
   virtual ~BtHandshakeMessage() {
-    delete [] msg;
     delete [] pstr;
     delete [] reserved;
     delete [] infoHash;
@@ -78,7 +76,7 @@ public:
 
   virtual void doReceivedAction() {};
 
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 

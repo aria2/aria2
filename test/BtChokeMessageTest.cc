@@ -16,7 +16,7 @@ class BtChokeMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtChokeMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
@@ -34,7 +34,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testOnSendComplete();
   void testToString();
@@ -94,11 +94,13 @@ void BtChokeMessageTest::testCreate() {
   }
 }
 
-void BtChokeMessageTest::testGetMessage() {
+void BtChokeMessageTest::testCreateMessage() {
   BtChokeMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 0);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 5) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
+  delete [] rawmsg;
 }
 
 void BtChokeMessageTest::testDoReceivedAction() {

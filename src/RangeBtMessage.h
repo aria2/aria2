@@ -45,7 +45,6 @@ private:
   size_t _index;
   uint32_t _begin;
   size_t _length;
-  unsigned char* _msg;
 
   static const size_t MESSAGE_LENGTH = 17;
 protected:
@@ -65,8 +64,6 @@ public:
   RangeBtMessage(uint8_t id, const std::string& name,
                  size_t index, uint32_t begin, size_t length);
 
-  virtual ~RangeBtMessage();
-
   size_t getIndex() const { return _index; }
 
   void setIndex(size_t index) { _index = index; }
@@ -79,7 +76,7 @@ public:
 
   void setLength(size_t length) { _length = length; }
 
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 

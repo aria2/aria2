@@ -46,6 +46,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "bittorrent_helper.h"
+#include "BtPieceMessage.h"
 
 namespace aria2 {
 
@@ -104,13 +105,19 @@ void DefaultBtMessageReceiver::sendHandshake() {
 }
 
 BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
-  unsigned char data[MAX_PAYLOAD_LEN];
   size_t dataLength = 0;
-  if(!peerConnection->receiveMessage(data, dataLength)) {
+  // Give 0 to PeerConnection::receiveMessage() to prevent memcpy.
+  if(!peerConnection->receiveMessage(0, dataLength)) {
     return SharedHandle<BtMessage>();
   }
-  BtMessageHandle msg = messageFactory->createBtMessage(data, dataLength);
+  BtMessageHandle msg =
+    messageFactory->createBtMessage(peerConnection->getBuffer(), dataLength);
   msg->validate();
+  if(msg->getId() == BtPieceMessage::ID) {
+    SharedHandle<BtPieceMessage> piecemsg =
+      dynamic_pointer_cast<BtPieceMessage>(msg);
+    piecemsg->setRawMessage(peerConnection->detachBuffer());
+  }
   return msg;
 }
 

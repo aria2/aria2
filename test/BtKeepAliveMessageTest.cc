@@ -7,7 +7,7 @@ namespace aria2 {
 class BtKeepAliveMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtKeepAliveMessageTest);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -16,19 +16,21 @@ public:
   void setUp() {
   }
 
-  void testGetMessage();
+  void testCreateMessage();
   void testToString();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BtKeepAliveMessageTest);
 
-void BtKeepAliveMessageTest::testGetMessage() {
-  char msg[4];
-  memset(msg, 0, sizeof(msg));
+void BtKeepAliveMessageTest::testCreateMessage() {
+  char data[4];
+  memset(data, 0, sizeof(data));
   BtKeepAliveMessage message;
   CPPUNIT_ASSERT_EQUAL((uint8_t)99, message.getId());
   CPPUNIT_ASSERT_EQUAL((size_t)4, message.getMessageLength());
-  CPPUNIT_ASSERT(memcmp(msg, message.getMessage(), 4) == 0);
+  unsigned char* rawmsg = message.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 4) == 0);
+  delete [] rawmsg;
 }
 
 void BtKeepAliveMessageTest::testToString() {

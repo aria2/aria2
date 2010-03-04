@@ -52,14 +52,10 @@ namespace aria2 {
 const std::string BtPortMessage::NAME("port");
 
 BtPortMessage::BtPortMessage(uint16_t port):
-  SimpleBtMessage(ID, NAME), _port(port), _msg(0) {}
+  SimpleBtMessage(ID, NAME), _port(port) {}
 
-BtPortMessage::~BtPortMessage()
-{
-  delete [] _msg;
-}
-
-SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, size_t dataLength)
+SharedHandle<BtPortMessage> BtPortMessage::create
+(const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthEqual(3, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
@@ -96,19 +92,18 @@ void BtPortMessage::doReceivedAction()
   }
 }
 
-const unsigned char* BtPortMessage::getMessage() {
-  if(!_msg) {
-    /**
-     * len --- 5, 4bytes
-     * id --- 4, 1byte
-     * port --- port number, 2bytes
-     * total: 7bytes
-     */
-    _msg = new unsigned char[MESSAGE_LENGTH];
-    bittorrent::createPeerMessageString(_msg, MESSAGE_LENGTH, 3, ID);
-    bittorrent::setShortIntParam(&_msg[5], _port);
-  }
-  return _msg;
+unsigned char* BtPortMessage::createMessage()
+{
+  /**
+   * len --- 5, 4bytes
+   * id --- 4, 1byte
+   * port --- port number, 2bytes
+   * total: 7bytes
+   */
+  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 3, ID);
+  bittorrent::setShortIntParam(&msg[5], _port);
+  return msg;
 }
 
 size_t BtPortMessage::getMessageLength() {

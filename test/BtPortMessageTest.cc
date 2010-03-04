@@ -21,7 +21,7 @@ class BtPortMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(BtPortMessageTest);
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testToString);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testDoReceivedAction_bootstrap);
   CPPUNIT_TEST_SUITE_END();
@@ -33,7 +33,7 @@ public:
 
   void testCreate();
   void testToString();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testDoReceivedAction_bootstrap();
 
@@ -89,12 +89,14 @@ void BtPortMessageTest::testToString() {
   CPPUNIT_ASSERT_EQUAL(std::string("port port=1"), msg.toString());
 }
 
-void BtPortMessageTest::testGetMessage() {
+void BtPortMessageTest::testCreateMessage() {
   BtPortMessage msg(6881);
   unsigned char data[7];
   bittorrent::createPeerMessageString(data, sizeof(data), 3, 9);
   bittorrent::setShortIntParam(&data[5], 6881);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 7) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 7) == 0);
+  delete [] rawmsg;
 }
 
 void BtPortMessageTest::testDoReceivedAction()

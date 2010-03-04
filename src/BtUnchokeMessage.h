@@ -45,7 +45,6 @@ typedef SharedHandle<BtUnchokeMessage> BtUnchokeMessageHandle;
 
 class BtUnchokeMessage : public ZeroBtMessage {
 private:
-  unsigned char* msg;
   static const size_t MESSAGE_LENGTH = 5;
 public:
   BtUnchokeMessage():ZeroBtMessage(ID, NAME) {}

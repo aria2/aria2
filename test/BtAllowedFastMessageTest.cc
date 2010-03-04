@@ -13,7 +13,7 @@ class BtAllowedFastMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtAllowedFastMessageTest);
   CPPUNIT_TEST(testCreate);
-  CPPUNIT_TEST(testGetMessage);
+  CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
@@ -25,7 +25,7 @@ public:
   }
 
   void testCreate();
-  void testGetMessage();
+  void testCreateMessage();
   void testDoReceivedAction();
   void testOnSendComplete();
   void testToString();
@@ -60,13 +60,15 @@ void BtAllowedFastMessageTest::testCreate() {
   }
 }
 
-void BtAllowedFastMessageTest::testGetMessage() {
+void BtAllowedFastMessageTest::testCreateMessage() {
   BtAllowedFastMessage msg;
   msg.setIndex(12345);
   unsigned char data[9];
   bittorrent::createPeerMessageString(data, sizeof(data), 5, 17);
   bittorrent::setIntParam(&data[5], 12345);
-  CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 9) == 0);
+  unsigned char* rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT(memcmp(rawmsg, data, 9) == 0);
+  delete [] rawmsg;
 }
 
 void BtAllowedFastMessageTest::testDoReceivedAction() {

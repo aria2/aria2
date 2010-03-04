@@ -39,19 +39,19 @@ namespace aria2 {
 
 const std::string BtKeepAliveMessage::NAME("keep alive");
 
-const unsigned char* BtKeepAliveMessage::getMessage() {
-  if(!msg) {
-    /**
-     * len --- 0, 4bytes
-     * total: 4bytes
-     */
-    msg = new unsigned char[MESSAGE_LENGTH];
-    memset(msg, 0, MESSAGE_LENGTH);
-  }
+unsigned char* BtKeepAliveMessage::createMessage()
+{
+  /**
+   * len --- 0, 4bytes
+   * total: 4bytes
+   */
+  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  memset(msg, 0, MESSAGE_LENGTH);
   return msg;
 }
 
-size_t BtKeepAliveMessage::getMessageLength() {
+size_t BtKeepAliveMessage::getMessageLength()
+{
   return MESSAGE_LENGTH;
 }
 

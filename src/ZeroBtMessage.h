@@ -42,8 +42,6 @@ namespace aria2 {
 
 class ZeroBtMessage : public SimpleBtMessage {
 private:
-  unsigned char* _msg;
-
   static const size_t MESSAGE_LENGTH = 5;
 protected:
   template<typename T>
@@ -57,14 +55,9 @@ protected:
 
 public:
   ZeroBtMessage(uint8_t id, const std::string& name):
-    SimpleBtMessage(id, name), _msg(0) {}
+    SimpleBtMessage(id, name) {}
 
-  virtual ~ZeroBtMessage()
-  {
-    delete [] _msg;
-  }
-
-  virtual const unsigned char* getMessage();
+  virtual unsigned char* createMessage();
 
   virtual size_t getMessageLength();
 
