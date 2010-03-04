@@ -76,7 +76,9 @@ DHTMessageDispatcherImpl::sendMessage(const SharedHandle<DHTMessageEntry>& entry
       if(!entry->_message->isReply()) {
         _tracker->addMessage(entry->_message, entry->_timeout, entry->_callback);
       }
-      _logger->info("Message sent: %s", entry->_message->toString().c_str());
+      if(_logger->info()) {
+        _logger->info("Message sent: %s", entry->_message->toString().c_str());
+      }
     } else {
       return false;
     }

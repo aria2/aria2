@@ -110,7 +110,9 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     }
-    _logger->info("Message received: %s", message->toString().c_str());
+    if(_logger->info()) {
+      _logger->info("Message received: %s", message->toString().c_str());
+    }
     message->validate();
     message->doReceivedAction();
     message->getRemoteNode()->markGood();
@@ -139,7 +141,9 @@ DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
 {
   SharedHandle<DHTMessage> m =
     _factory->createUnknownMessage(data, length, remoteAddr, remotePort);
-  _logger->info("Message received: %s", m->toString().c_str());
+  if(_logger->info()) {
+    _logger->info("Message received: %s", m->toString().c_str());
+  }
   return m;
 }
 

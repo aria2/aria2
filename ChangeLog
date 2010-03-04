@@ -1,5 +1,11 @@
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Enclosed log of DHTMessage::toString() with Logger::info().
+	* src/DHTMessageDispatcherImpl.cc
+	* src/DHTMessageReceiver.cc
+
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten util::toHex().
 	* src/util.cc
 
