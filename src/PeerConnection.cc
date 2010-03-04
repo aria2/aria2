@@ -70,16 +70,6 @@ PeerConnection::~PeerConnection()
   delete [] resbuf;
 }
 
-ssize_t PeerConnection::sendMessage(const unsigned char* data,
-                                    size_t dataLength)
-{
-  ssize_t writtenLength = sendData(data, dataLength, _encryptionEnabled);
-  if(logger->debug()) {
-    logger->debug("sent %d byte(s).", writtenLength);
-  }
-  return writtenLength;
-}
-
 void PeerConnection::pushStr(const std::string& data)
 {
   if(_encryptionEnabled) {
@@ -247,26 +237,6 @@ void PeerConnection::readData(unsigned char* data, size_t& length, bool encrypti
   } else {
     socket->readData(data, length);
   }
-}
-
-ssize_t PeerConnection::sendData(const unsigned char* data,
-                                 size_t length, bool encryption)
-{
-  if(encryption) {
-    unsigned char temp[4096];
-    const unsigned char* dptr = data;
-    size_t r = length;
-    while(r > 0) {
-      size_t s = std::min(r, sizeof(temp));
-      _encryptor->encrypt(temp, s, dptr, s);
-      _socketBuffer.feedSendBuffer(std::string(&temp[0], &temp[s]));
-      dptr += s;
-      r -= s;
-    }
-  } else {
-    _socketBuffer.feedSendBuffer(std::string(&data[0], &data[length]));
-  }
-  return _socketBuffer.send();
 }
 
 void PeerConnection::enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,

@@ -81,10 +81,9 @@ public:
   PeerConnection(int32_t cuid, const SharedHandle<SocketCore>& socket);
 
   ~PeerConnection();
-  
-  // Returns the number of bytes written
-  ssize_t sendMessage(const unsigned char* data, size_t dataLength);
 
+  // Pushes data into send buffer. After this call, this object gets
+  // ownership of data, so caller must not delete or alter it.
   void pushBytes(unsigned char* data, size_t len);
 
   void pushStr(const std::string& data);

@@ -1,5 +1,11 @@
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused PeerConnection::sendMessage(). Updated doc.
+	* src/PeerConnection.cc
+	* src/PeerConnection.h
+
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reduced copying/std::string instantiation in sending/receiving
 	BitTorrent messages.
 	* src/BtBitfieldMessage.cc
