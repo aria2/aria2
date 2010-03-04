@@ -323,14 +323,22 @@ std::string urldecode(const std::string& target) {
 }
 
 std::string toHex(const unsigned char* src, size_t len) {
-  char* temp = new char[len*2+1];
-  for(size_t i = 0; i < len; ++i) {
-    sprintf(temp+i*2, "%02x", src[i]);
+  std::string out(len*2, '\0');
+  std::string::iterator o = out.begin();
+  const unsigned char* last = src+len;
+  for(const unsigned char* i = src; i != last; ++i) {
+    *o = (*i >> 4);
+    *(o+1) = (*i)&0x0f;
+    for(int j = 0; j < 2; ++j) {
+      if(*o < 10) {
+        *o += '0';
+      } else {
+        *o += 'a'-10;
+      }
+      ++o;
+    }
   }
-  temp[len*2] = '\0';
-  std::string hex = temp;
-  delete [] temp;
-  return hex;
+  return out;
 }
 
 std::string toHex(const char* src, size_t len)

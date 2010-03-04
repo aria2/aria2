@@ -1,5 +1,10 @@
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten util::toHex().
+	* src/util.cc
+
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed SocketBuffer::feedAndSend(). Renamed
 	SocketBuffer::feedSendBuffer() as SocketBuffer::pushStr().
 	* src/FtpConnection.cc
