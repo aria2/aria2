@@ -40,6 +40,7 @@
 #include "message.h"
 #include "Logger.h"
 #include "DownloadContext.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -60,13 +61,17 @@ bool FillRequestGroupCommand::execute()
   if(_e->isHaltRequested()) {
     return true;
   }
-  try {
-    _e->_requestGroupMan->fillRequestGroupFromReserver(_e);
-  } catch(RecoverableException& ex) {
-    logger->error(EX_EXCEPTION_CAUGHT, ex);
-  }
-  if(_e->_requestGroupMan->downloadFinished()) {
-    return true;
+  SharedHandle<RequestGroupMan> rgman = _e->_requestGroupMan;
+  if(rgman->queueCheckRequested()) {
+    try {
+      rgman->fillRequestGroupFromReserver(_e);
+      rgman->clearQueueCheck();
+    } catch(RecoverableException& ex) {
+      logger->error(EX_EXCEPTION_CAUGHT, ex);
+    }
+    if(rgman->downloadFinished()) {
+      return true;
+    }
   }
   _e->addRoutineCommand(this);
   return false;

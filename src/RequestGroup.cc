@@ -130,6 +130,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _maxDownloadSpeedLimit(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT)),
   _maxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
   _belongsToGID(0),
+  _requestGroupMan(0),
   _logger(LogFactory::getInstance())
 {
   _fileAllocationEnabled = _option->get(PREF_FILE_ALLOCATION) != V_NONE;
@@ -799,6 +800,12 @@ void RequestGroup::increaseNumCommand()
 void RequestGroup::decreaseNumCommand()
 {
   --_numCommand;
+  if(!_numCommand && _requestGroupMan) {
+    if(_logger->debug()) {
+      _logger->debug("GID#%d - Request queue check", _gid);
+    }
+    _requestGroupMan->requestQueueCheck();
+  }
 }
 
 

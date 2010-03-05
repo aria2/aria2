@@ -67,6 +67,7 @@ class CheckIntegrityEntry;
 class DownloadResult;
 class URISelector;
 class URIResult;
+class RequestGroupMan;
 #ifdef ENABLE_BITTORRENT
 class BtRuntime;
 class PeerStorage;
@@ -161,6 +162,8 @@ private:
   // has the GID of parent RequestGroup. 0 means this is a parent
   // RequestGroup.
   int32_t _belongsToGID;
+
+  RequestGroupMan* _requestGroupMan;
 
   Logger* _logger;
 
@@ -486,6 +489,11 @@ public:
   int32_t belongsTo() const
   {
     return _belongsToGID;
+  }
+
+  void setRequestGroupMan(RequestGroupMan* requestGroupMan)
+  {
+    _requestGroupMan = requestGroupMan;
   }
 
   static void resetGIDCounter() { _gidCounter = 0; }

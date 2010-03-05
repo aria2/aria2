@@ -77,6 +77,8 @@ private:
   // truf if XML-RPC is enabled.
   bool _xmlRpc;
 
+  bool _queueCheck;
+
   std::string
   formatDownloadResult(const std::string& status,
                        const SharedHandle<DownloadResult>& downloadResult) const;
@@ -253,6 +255,24 @@ public:
   void setMaxSimultaneousDownloads(unsigned int max)
   {
     _maxSimultaneousDownloads = max;
+  }
+
+  // Call this function if _requestGroups queue should be maintained.
+  // This function is added to reduce the call of maintenance, but at
+  // the same time, it provides fast maintenance reaction.
+  void requestQueueCheck()
+  {
+    _queueCheck = true;
+  }
+
+  void clearQueueCheck()
+  {
+    _queueCheck = false;
+  }
+
+  bool queueCheckRequested() const
+  {
+    return _queueCheck;
   }
 };
 

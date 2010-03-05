@@ -83,7 +83,8 @@ RequestGroupMan::RequestGroupMan
   _maxOverallDownloadSpeedLimit
   (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
   _maxOverallUploadSpeedLimit(option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT)),
-  _xmlRpc(option->getAsBool(PREF_ENABLE_XML_RPC))
+  _xmlRpc(option->getAsBool(PREF_ENABLE_XML_RPC)),
+  _queueCheck(true)
 {}
 
 bool RequestGroupMan::downloadFinished()
@@ -497,6 +498,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       }
       configureRequestGroup(groupToAdd);
       createInitialCommand(groupToAdd, commands, e);
+      groupToAdd->setRequestGroupMan(this);
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
