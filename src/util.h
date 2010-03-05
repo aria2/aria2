@@ -113,20 +113,7 @@ std::string uitos(T value, bool comma = false)
   return str;
 }
 
-template<typename T>
-std::string itos(T value, bool comma = false)
-{
-  bool flag = false;
-  if(value < 0) {
-    flag = true;
-    value = -value;
-  }
-  std::string str = uitos(value, comma);
-  if(flag) {
-    str.insert(str.begin(), '-');
-  }
-  return str;
-}
+std::string itos(int64_t value, bool comma = false);
 
 /**
  * Computes difference in micro-seconds between tv1 and tv2,

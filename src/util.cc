@@ -139,6 +139,29 @@ std::pair<std::string, std::string> split(const std::string& src, const std::str
   return hp;
 }
 
+std::string itos(int64_t value, bool comma)
+{
+  bool flag = false;
+  std::string str;
+  if(value < 0) {
+    if(value == INT64_MIN) {
+      if(comma) {
+        str = "-9,223,372,036,854,775,808";
+      } else {
+        str = "-9223372036854775808";
+      }
+      return str;
+    }
+    flag = true;
+    value = -value;
+  }
+  str = uitos(value, comma);
+  if(flag) {
+    str.insert(str.begin(), '-');
+  }
+  return str;
+}
+
 int64_t difftv(struct timeval tv1, struct timeval tv2) {
   if((tv1.tv_sec < tv2.tv_sec) ||
      ((tv1.tv_sec == tv2.tv_sec) && (tv1.tv_usec < tv2.tv_usec))) {

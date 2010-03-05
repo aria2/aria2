@@ -1,5 +1,12 @@
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that util::itos(INT64_MIN) fails.
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed memory leak in SocketBuffer when _bufq is not empty when
 	SocketBuffer is deleted. Added BufEntry constructor and deleted
 	static factory functions.

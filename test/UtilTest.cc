@@ -775,8 +775,14 @@ void UtilTest::testItos()
   }
   {
     int64_t i = INT64_MAX;
-    CPPUNIT_ASSERT_EQUAL(std::string("9,223,372,036,854,775,807"), util::itos(i, true));
-  }  
+    CPPUNIT_ASSERT_EQUAL(std::string("9,223,372,036,854,775,807"),
+                         util::itos(i, true));
+  }
+  {
+    int64_t i = INT64_MIN;
+    CPPUNIT_ASSERT_EQUAL(std::string("-9,223,372,036,854,775,808"),
+                         util::itos(i, true));
+  }
 }
 
 void UtilTest::testUitos()
