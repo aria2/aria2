@@ -1,5 +1,13 @@
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed memory leak in SocketBuffer when _bufq is not empty when
+	SocketBuffer is deleted. Added BufEntry constructor and deleted
+	static factory functions.
+	* src/SocketBuffer.cc
+	* src/SocketBuffer.h
+
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Only execute RequestGroupMan::fillRequestGroupFromReserver() when
 	queue maintenance is requested by RequestGroup to avoid to call
 	the function unnecessarily.

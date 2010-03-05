@@ -67,22 +67,11 @@ private:
       }
     }
       
-    static BufEntry createBytes(unsigned char* bytes, size_t len)
-    {
-      BufEntry b;
-      b.type = TYPE_BYTES;
-      b.bytes = bytes;
-      b.bytesLen = len;
-      return b;
-    }
+    BufEntry(unsigned char* bytes, size_t len):
+      type(TYPE_BYTES), bytes(bytes), bytesLen(len) {}
 
-    static BufEntry createStr(const std::string& str)
-    {
-      BufEntry b;
-      b.type = TYPE_STR;
-      b.str = new std::string(str);
-      return b;
-    }
+    BufEntry(const std::string& str):
+      type(TYPE_STR), str(new std::string(str)) {}
   };
     
   SharedHandle<SocketCore> _socket;

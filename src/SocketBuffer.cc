@@ -35,6 +35,7 @@
 #include "SocketBuffer.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include "SocketCore.h"
 #include "DlAbortEx.h"
@@ -46,16 +47,20 @@ namespace aria2 {
 SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
   _socket(socket), _offset(0) {}
 
-SocketBuffer::~SocketBuffer() {}
+SocketBuffer::~SocketBuffer()
+{
+  std::for_each(_bufq.begin(), _bufq.end(),
+                std::mem_fun_ref(&BufEntry::deleteBuf));
+}
 
 void SocketBuffer::pushBytes(unsigned char* bytes, size_t len)
 {
-  _bufq.push_back(BufEntry::createBytes(bytes, len));
+  _bufq.push_back(BufEntry(bytes, len));
 }
 
 void SocketBuffer::pushStr(const std::string& data)
 {
-  _bufq.push_back(BufEntry::createStr(data));
+  _bufq.push_back(BufEntry(data));
 }
 
 ssize_t SocketBuffer::send()
