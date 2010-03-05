@@ -1,5 +1,12 @@
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't use hash for Peer::id. Simple concatenation of ip address
+	and port is enough.
+	* src/Peer.cc
+	* test/PeerTest.cc
+
+2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Enclosed log of DHTMessage::toString() with Logger::info().
 	* src/DHTMessageDispatcherImpl.cc
 	* src/DHTMessageReceiver.cc

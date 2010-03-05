@@ -40,9 +40,6 @@
 #include "util.h"
 #include "a2functional.h"
 #include "PeerSessionResource.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigestHelper.h"
-#endif // ENABLE_MESSAGE_DIGEST
 #include "BtMessageDispatcher.h"
 
 namespace aria2 {
@@ -60,13 +57,8 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
 {
   memset(_peerId, 0, PEER_ID_LENGTH);
   resetStatus();
-  std::string idSeed = ipaddr;
-  strappend(idSeed, ":", util::uitos(port));
-#ifdef ENABLE_MESSAGE_DIGEST
-  id = MessageDigestHelper::digestString(MessageDigestContext::SHA1, idSeed);
-#else
-  id = idSeed;
-#endif // ENABLE_MESSAGE_DIGEST
+  id = ipaddr;
+  strappend(id, A2STR::COLON_C, util::uitos(port));
 }
 
 Peer::~Peer()
