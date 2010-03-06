@@ -59,11 +59,11 @@ private:
   // inlined for performance reason
   void copy(const RequestSlot& requestSlot)
   {
+    dispatchedTime = requestSlot.dispatchedTime;
     index = requestSlot.index;
     begin = requestSlot.begin;
     length = requestSlot.length;
     blockIndex = requestSlot.blockIndex;
-    dispatchedTime = requestSlot.dispatchedTime;
     _piece = requestSlot._piece;
   }
 public:
@@ -73,10 +73,13 @@ public:
     index(index), begin(begin), length(length), blockIndex(blockIndex),
     _piece(piece) {}
 
-  RequestSlot(const RequestSlot& requestSlot)
-  {
-    copy(requestSlot);
-  }
+  RequestSlot(const RequestSlot& requestSlot):
+    dispatchedTime(requestSlot.dispatchedTime),
+    index(requestSlot.index),
+    begin(requestSlot.begin),
+    length(requestSlot.length),
+    blockIndex(requestSlot.blockIndex),
+    _piece(requestSlot._piece) {}
 
   RequestSlot():index(0), begin(0), length(0), blockIndex(0) {}
 

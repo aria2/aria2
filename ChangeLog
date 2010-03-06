@@ -1,5 +1,10 @@
 2010-03-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten copy ctor of RequestSlot to use initialization list.
+	* src/RequestSlot.h
+
+2010-03-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added Time global::wallclock to cache "current time" to reduce the
 	call gettimeofday(). Global variables are now in namespace global.
 	* src/AbstractCommand.cc
