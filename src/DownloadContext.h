@@ -233,6 +233,11 @@ public:
 
   void resetDownloadStopTime();
 
+  const Time& getDownloadStopTime() const
+  {
+    return _downloadStopTime;
+  }
+
   int64_t calculateSessionTime() const;
   
   // Returns FileEntry at given offset. SharedHandle<FileEntry>() is

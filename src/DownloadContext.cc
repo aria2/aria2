@@ -39,6 +39,7 @@
 #include "FileEntry.h"
 #include "StringFormat.h"
 #include "util.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -58,7 +59,7 @@ DownloadContext::DownloadContext(size_t pieceLength,
   _knowsTotalLength(true),
   _ownerRequestGroup(0),
   _downloadStartTime(0),
-  _downloadStopTime(_downloadStartTime)
+  _downloadStopTime(0)
 {
   SharedHandle<FileEntry> fileEntry
     (new FileEntry(util::escapePath(path), totalLength, 0));
@@ -67,12 +68,12 @@ DownloadContext::DownloadContext(size_t pieceLength,
 
 void DownloadContext::resetDownloadStartTime()
 {
-  _downloadStartTime.reset();
+  _downloadStartTime = global::wallclock;
 }
 
 void DownloadContext::resetDownloadStopTime()
 {
-  _downloadStopTime.reset();
+  _downloadStopTime = global::wallclock;
 }
 
 int64_t DownloadContext::calculateSessionTime() const

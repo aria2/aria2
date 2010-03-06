@@ -88,6 +88,8 @@ private:
 
   SharedHandle<PeerStat> _peerStat;
 
+  bool _removalRequested;
+
   bool parseUrl(const std::string& url);
 public:
   Request();
@@ -203,6 +205,16 @@ public:
   const SharedHandle<PeerStat>& getPeerStat() const { return _peerStat; }
 
   const SharedHandle<PeerStat>& initPeerStat();
+
+  void requestRemoval()
+  {
+    _removalRequested = true;
+  }
+
+  bool removalRequested() const
+  {
+    return _removalRequested;
+  }
 
   static const std::string METHOD_GET;
   static const std::string METHOD_HEAD;

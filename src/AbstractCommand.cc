@@ -107,6 +107,14 @@ bool AbstractCommand::execute() {
       //logger->debug("CUID#%d - finished.", cuid);
       return true;
     }
+    if(!req.isNull() && req->removalRequested()) {
+      if(logger->debug()) {
+        logger->debug
+          ("CUID#%d - Discard original URI=%s because it is requested.",
+           cuid, req->getUrl().c_str());
+      }
+      return prepareForRetry(0);
+    }
     // TODO it is not needed to check other PeerStats every time.
     // Find faster Request when no segment is available.
     if(!req.isNull() && _fileEntry->countPooledRequest() > 0 &&

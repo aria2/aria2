@@ -218,7 +218,9 @@ void FileEntry::storePool(const SharedHandle<Request>& request)
 void FileEntry::poolRequest(const SharedHandle<Request>& request)
 {
   removeRequest(request);
-  storePool(request);
+  if(!request->removalRequested()) {
+    storePool(request);
+  }
 }
 
 bool FileEntry::removeRequest(const SharedHandle<Request>& request)
@@ -328,6 +330,51 @@ void FileEntry::releaseRuntimeResource()
   _requestPool.clear();
   _inFlightRequests.clear();
   _uriResults.clear();
+}
+
+template<typename InputIterator, typename T>
+static InputIterator findRequestByUri
+(InputIterator first, InputIterator last, const T& uri)
+{
+  for(; first != last; ++first) {
+    if(!(*first)->removalRequested() && (*first)->getUrl() == uri) {
+      return first;
+    }
+  }
+  return last;
+}
+
+bool FileEntry::removeUri(const std::string& uri)
+{
+  std::deque<std::string>::iterator itr =
+    std::find(_spentUris.begin(), _spentUris.end(), uri);
+  if(itr == _spentUris.end()) {
+    itr = std::find(_uris.begin(), _uris.end(), uri);
+    if(itr == _uris.end()) {
+      return false;
+    } else {
+      _uris.erase(itr);
+      return true;
+    }
+  } else {
+    _spentUris.erase(itr);
+    SharedHandle<Request> req;
+    std::deque<SharedHandle<Request> >::iterator riter =
+      findRequestByUri(_inFlightRequests.begin(), _inFlightRequests.end(), uri);
+    if(riter == _inFlightRequests.end()) {
+      riter = findRequestByUri(_requestPool.begin(), _requestPool.end(), uri);
+      if(riter == _requestPool.end()) {
+        return true;
+      } else {
+        req = *riter;
+        _requestPool.erase(riter);
+      }
+    } else {
+      req = *riter;
+    }
+    req->requestRemoval();
+    return true;
+  }
 }
 
 } // namespace aria2

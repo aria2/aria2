@@ -129,15 +129,43 @@ public:
     return _spentUris;
   }
 
-  void setUris(const std::vector<std::string>& uris)
+  size_t setUris(const std::vector<std::string>& uris)
   {
-    _uris = std::deque<std::string>(uris.begin(), uris.end());
+    _uris.clear();
+    return addUris(uris.begin(), uris.end());
   }
 
   template<typename InputIterator>
-  void addUris(InputIterator first, InputIterator last)
+  size_t addUris(InputIterator first, InputIterator last)
   {
-    _uris.insert(_uris.end(), first, last);
+    size_t count = 0;
+    for(; first != last; ++first) {
+      if(addUri(*first)) {
+        ++count;
+      }
+    }
+    return count;
+  }
+
+  bool addUri(const std::string& uri)
+  {
+    if(Request().setUrl(uri)) {
+      _uris.push_back(uri);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool insertUri(const std::string& uri, size_t pos)
+  {
+    if(Request().setUrl(uri)) {
+      pos = std::min(pos, _uris.size());
+      _uris.insert(_uris.begin()+pos, uri);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Inserts _uris and _spentUris into uris.
@@ -234,6 +262,8 @@ public:
   {
     return _originalName;
   }
+
+  bool removeUri(const std::string& uri);
 };
 
 // Returns the first FileEntry which isRequested() method returns

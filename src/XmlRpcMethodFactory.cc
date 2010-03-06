@@ -79,6 +79,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new TellStoppedXmlRpcMethod());
   } else if(methodName == GetOptionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetOptionXmlRpcMethod());
+  } else if(methodName == ChangeUriXmlRpcMethod::getMethodName()) {
+    return SharedHandle<XmlRpcMethod>(new ChangeUriXmlRpcMethod());
   } else if(methodName == ChangeOptionXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new ChangeOptionXmlRpcMethod());
   } else if(methodName == GetGlobalOptionXmlRpcMethod::getMethodName()) {

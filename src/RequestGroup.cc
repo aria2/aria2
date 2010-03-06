@@ -991,6 +991,9 @@ bool RequestGroup::needsFileAllocation() const
 
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
+  if(_logger->debug()) {
+    _logger->debug("GID#%d - Creating DownloadResult.", _gid);
+  }
   uint64_t sessionDownloadLength = 0;
 
 #ifdef ENABLE_BITTORRENT

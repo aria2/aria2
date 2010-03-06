@@ -851,6 +851,67 @@ BDE GetSessionInfoXmlRpcMethod::process
   return result;
 }
 
+BDE ChangeUriXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.size() < 4 ||
+     !params[0].isString() || !params[1].isInteger() ||
+     !params[2].isList() || !params[3].isList() ||
+     params[1].i() < 0) {
+    throw DL_ABORT_EX("Bad request");
+  }
+  size_t pos = 0;
+  bool posGiven = false;
+  getPosParam(params, 4, posGiven, pos);
+
+  int32_t gid = util::parseInt(params[0].s());
+  size_t index = params[1].i();
+  const BDE& deluris = params[2];
+  const BDE& adduris = params[3];
+  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  if(group.isNull()) {
+    throw DL_ABORT_EX
+      (StringFormat("Cannot remove URIs from GID#%d", gid).str());
+  }
+  SharedHandle<DownloadContext> dctx = group->getDownloadContext();
+  const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
+  if(files.size() <= index) {
+    throw DL_ABORT_EX(StringFormat("fileIndex is out of range").str());
+  }
+  SharedHandle<FileEntry> s = files[index];
+  size_t delcount = 0;
+  for(BDE::List::const_iterator i = deluris.listBegin(),
+        eoi = deluris.listEnd(); i != eoi; ++i) {
+    if(s->removeUri((*i).s())) {
+      ++delcount;
+    }
+  }
+  size_t addcount = 0;
+  if(posGiven) {
+    for(BDE::List::const_iterator i = adduris.listBegin(),
+          eoi = adduris.listEnd(); i != eoi; ++i) {
+      if(s->insertUri((*i).s(), pos)) {
+        ++addcount;
+        ++pos;
+      }
+    }
+  } else {
+    for(BDE::List::const_iterator i = adduris.listBegin(),
+          eoi = adduris.listEnd(); i != eoi; ++i) {
+      if(s->addUri((*i).s())) {
+        ++addcount;
+      }
+    }
+  }
+  BDE res = BDE::list();
+  res << delcount;
+  res << addcount;
+  return res;
+}
+
 BDE SystemMulticallXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {

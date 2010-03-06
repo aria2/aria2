@@ -1,5 +1,25 @@
 2010-03-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added changeUri XML-RPC method.  This method removes/adds URIs
+	dynamically.
+	* doc/aria2c.1.txt
+	* src/AbstractCommand.cc
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/Request.cc
+	* src/Request.h
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* test/FileEntryTest.cc
+	* test/XmlRpcMethodTest.cc
+
+2010-03-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten copy ctor of RequestSlot to use initialization list.
 	* src/RequestSlot.h
 

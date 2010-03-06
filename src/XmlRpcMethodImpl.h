@@ -341,6 +341,17 @@ public:
   }
 };
 
+class ChangeUriXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.changeUri";
+    return methodName;
+  }
+};
+
 class GetSessionInfoXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);

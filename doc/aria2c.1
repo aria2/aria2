@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 02/25/2010
+.\"      Date: 03/06/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.9.0a
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "02/25/2010" "Aria2 1\&.9\&.0a" "Aria2 Manual"
+.TH "ARIA2C" "1" "03/06/2010" "Aria2 1\&.9\&.0a" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -2466,6 +2466,10 @@ The response is of type array and its element is the same struct returned by \fB
 This method changes the position of the download denoted by \fIgid\fR\&. \fIpos\fR is of type integer\&. \fIhow\fR is of type string\&. If \fIhow\fR is "POS_SET", it moves the download to a position relative to the beginning of the queue\&. If \fIhow\fR is "POS_CUR", it moves the download to a position relative to the current position\&. If \fIhow\fR is "POS_END", it moves the download to a position relative to the end of the queue\&. If the destination position is less than 0 or beyond the end of the queue, it moves the download to the beginning or the end of the queue respectively\&. The response is of type integer and it is the destination position\&.
 .sp
 For example, if GID#1 is placed in position 3, aria2\&.changePosition(1, \-1, POS_CUR) will change its position to 2\&. Additional aria2\&.changePosition(1, 0, POS_SET) will change its position to 0(the beginning of the queue)\&.
+.sp
+\fBaria2\&.changeUri\fR \fIgid, fileIndex, delUris, addUris[, position]\fR
+.sp
+This method removes URIs in \fIdelUris\fR from and appends URIs in \fIaddUris\fR to download denoted by \fIgid\fR\&. \fIdelUris\fR and \fIaddUris\fR are list of string\&. A download can contain multiple files and URIs are attached to each file\&. \fIfileIndex\fR is used to select which file to remove/attach given URIs\&. \fIposition\fR is used to specify where URIs are inserted in the existing waiting URI list\&. \fIposition\fR is 0\-based\&. When \fIposition\fR is omitted, URIs are appended to the back of the list\&. This method first execute removal and then addition\&. \fIposition\fR is the position after URIs are removed, not the position when this method is called\&. When removing URI, if same URIs exist in download, only one of them is removed for each URI in \fIdelUris\fR\&. In other words, there are three URIs "http://example\&.org/aria2" and you want remove them all, you have to specify (at least) 3 "http://example\&.org/aria2" in \fIdelUris\fR\&. This method returns a list which contains 2 integers\&. The first integer is the number of URIs deleted\&. The second integer is the number of URIs added\&.
 .sp
 \fBaria2\&.getOption\fR \fIgid\fR
 .sp

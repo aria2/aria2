@@ -63,7 +63,8 @@ Request::Request():
   _maxPipelinedRequest(1),
   _method(METHOD_GET),
   _hasPassword(false),
-  _ipv6LiteralAddress(false)
+  _ipv6LiteralAddress(false),
+  _removalRequested(false)
 {}
 
 static std::string removeFragment(const std::string& url)

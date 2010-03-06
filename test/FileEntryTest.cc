@@ -15,6 +15,10 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetRequest);
   CPPUNIT_TEST(testGetRequest_disableSingleHostMultiConnection);
   CPPUNIT_TEST(testReuseUri);
+  CPPUNIT_TEST(testAddUri);
+  CPPUNIT_TEST(testAddUris);
+  CPPUNIT_TEST(testInsertUri);
+  CPPUNIT_TEST(testRemoveUri);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -25,6 +29,10 @@ public:
   void testGetRequest();
   void testGetRequest_disableSingleHostMultiConnection();
   void testReuseUri();
+  void testAddUri();
+  void testAddUris();
+  void testInsertUri();
+  void testRemoveUri();
 };
 
 
@@ -147,6 +155,65 @@ void FileEntryTest::testReuseUri()
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"), uris[1]);
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[2]);
+}
+
+void FileEntryTest::testAddUri()
+{
+  FileEntry file;
+  CPPUNIT_ASSERT(file.addUri("http://good"));
+  CPPUNIT_ASSERT(!file.addUri("bad"));
+}
+
+void FileEntryTest::testAddUris()
+{
+  FileEntry file;
+  std::string uris[] = {"bad", "http://good"};
+  CPPUNIT_ASSERT_EQUAL((size_t)1, file.addUris(&uris[0], &uris[2]));
+}
+
+void FileEntryTest::testInsertUri()
+{
+  FileEntry file;
+  CPPUNIT_ASSERT(file.insertUri("http://example.org/1", 0));
+  CPPUNIT_ASSERT(file.insertUri("http://example.org/2", 0));
+  CPPUNIT_ASSERT(file.insertUri("http://example.org/3", 1));
+  CPPUNIT_ASSERT(file.insertUri("http://example.org/4", 5));
+  std::deque<std::string> uris = file.getRemainingUris();
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/2"), uris[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/3"), uris[1]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/1"), uris[2]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/4"), uris[3]);
+}
+
+void FileEntryTest::testRemoveUri()
+{
+  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  FileEntry file;
+  file.addUri("http://example.org/");
+  CPPUNIT_ASSERT(file.removeUri("http://example.org/"));
+  CPPUNIT_ASSERT(file.getRemainingUris().empty());
+  CPPUNIT_ASSERT(!file.removeUri("http://example.org/"));
+
+  file.addUri("http://example.org/");
+  SharedHandle<Request> exampleOrgReq = file.getRequest(selector);
+  CPPUNIT_ASSERT(!exampleOrgReq->removalRequested());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, file.getSpentUris().size());
+  CPPUNIT_ASSERT(file.removeUri("http://example.org/"));
+  CPPUNIT_ASSERT(file.getSpentUris().empty());
+  CPPUNIT_ASSERT(exampleOrgReq->removalRequested());
+  file.poolRequest(exampleOrgReq);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, file.countPooledRequest());
+
+  file.addUri("http://example.org/");
+  exampleOrgReq = file.getRequest(selector);
+  file.poolRequest(exampleOrgReq);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, file.countPooledRequest());
+  CPPUNIT_ASSERT(file.removeUri("http://example.org/"));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, file.countPooledRequest());
+  CPPUNIT_ASSERT(file.getSpentUris().empty());
+
+  file.addUri("http://example.org/");
+  CPPUNIT_ASSERT(!file.removeUri("http://example.net"));
 }
 
 } // namespace aria2

@@ -75,6 +75,8 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testChangePosition);
   CPPUNIT_TEST(testChangePosition_fail);
   CPPUNIT_TEST(testGetSessionInfo);
+  CPPUNIT_TEST(testChangeUri);
+  CPPUNIT_TEST(testChangeUri_fail);
   CPPUNIT_TEST(testSystemMulticall);
   CPPUNIT_TEST(testSystemMulticall_fail);
   CPPUNIT_TEST_SUITE_END();
@@ -135,6 +137,8 @@ public:
   void testChangePosition();
   void testChangePosition_fail();
   void testGetSessionInfo();
+  void testChangeUri();
+  void testChangeUri_fail();
   void testSystemMulticall();
   void testSystemMulticall_fail();
 };
@@ -776,6 +780,131 @@ void XmlRpcMethodTest::testChangePosition_fail()
   req._params << std::string("1");
   req._params << BDE((int64_t)2);
   req._params << std::string("bad keyword");
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+}
+
+void XmlRpcMethodTest::testChangeUri()
+{
+  SharedHandle<FileEntry> files[3];
+  for(int i = 0; i < 3; ++i) {
+    files[i].reset(new FileEntry());
+  }
+  files[1]->addUri("http://example.org/aria2.tar.bz2");
+  files[1]->addUri("http://example.org/mustremove1");
+  files[1]->addUri("http://example.org/mustremove2");
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  dctx->setFileEntries(&files[0], &files[3]);
+  SharedHandle<RequestGroup> group(new RequestGroup(_option));
+  group->setDownloadContext(dctx);
+  _e->_requestGroupMan->addReservedGroup(group);
+
+  ChangeUriXmlRpcMethod m;
+  XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
+  req._params << std::string("1"); // GID
+  req._params << 1; // index of FileEntry
+  BDE removeuris = BDE::list();
+  removeuris << std::string("http://example.org/mustremove1");
+  removeuris << std::string("http://example.org/mustremove2");
+  removeuris << std::string("http://example.org/notexist");
+  req._params << removeuris;
+  BDE adduris = BDE::list();
+  adduris << std::string("http://example.org/added1");
+  adduris << std::string("http://example.org/added2");
+  adduris << std::string("baduri");
+  adduris << std::string("http://example.org/added3");
+  req._params << adduris;
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, res._param[0].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)3, res._param[1].i());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, files[0]->getRemainingUris().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, files[2]->getRemainingUris().size());
+  std::deque<std::string> uris = files[1]->getRemainingUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)4, uris.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/aria2.tar.bz2"),uris[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1"), uris[1]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added2"), uris[2]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added3"), uris[3]);
+
+  // Change adduris
+  adduris = BDE::list();
+  adduris << std::string("http://example.org/added1-1");
+  adduris << std::string("http://example.org/added1-2");
+  req._params[3] = adduris;
+  // Set position parameter
+  req._params << 2;
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, res._param[0].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, res._param[1].i());
+  uris = files[1]->getRemainingUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)6, uris.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-1"), uris[2]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-2"), uris[3]);
+
+  // Change index of FileEntry
+  req._params[1] = 0;
+  // Set position far beyond the size of uris in FileEntry.
+  req._params[4] = 1000;
+  res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, res._param[0].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, res._param[1].i());
+  uris = files[0]->getRemainingUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-1"), uris[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-2"), uris[1]);
+}
+
+void XmlRpcMethodTest::testChangeUri_fail()
+{
+  SharedHandle<FileEntry> files[3];
+  for(int i = 0; i < 3; ++i) {
+    files[i].reset(new FileEntry());
+  }
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  dctx->setFileEntries(&files[0], &files[3]);
+  SharedHandle<RequestGroup> group(new RequestGroup(_option));
+  group->setDownloadContext(dctx);
+  _e->_requestGroupMan->addReservedGroup(group);
+
+  ChangeUriXmlRpcMethod m;
+  XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
+  req._params << std::string("1"); // GID
+  req._params << 0; // index of FileEntry
+  BDE removeuris = BDE::list();
+  req._params << removeuris;
+  BDE adduris = BDE::list();
+  req._params << adduris;
+  XmlRpcResponse res = m.execute(req, _e.get());
+  CPPUNIT_ASSERT_EQUAL(0, res._code);
+
+  req._params[0] = std::string("2");
+  res = m.execute(req, _e.get());  
+  // RPC request fails because GID#2 does not exist.
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+
+  req._params[0] = std::string("1");
+  req._params[1] = 3;
+  res = m.execute(req, _e.get());  
+  // RPC request fails because FileEntry#3 does not exist.
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+
+  req._params[1] = std::string("0");
+  res = m.execute(req, _e.get());  
+  // RPC request fails because index of FileEntry is string.
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+
+  req._params[1] = 0;
+  req._params[2] = std::string("http://url");
+  res = m.execute(req, _e.get());  
+  // RPC request fails because 3rd param is not list.
+  CPPUNIT_ASSERT_EQUAL(1, res._code);
+
+  req._params[2] = BDE::list();
+  req._params[3] = std::string("http://url");
+  res = m.execute(req, _e.get());  
+  // RPC request fails because 4th param is not list.
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 }
 
