@@ -82,17 +82,11 @@ public:
                             _sessionDownloadLength(0),
                             _sessionUploadLength(0) {}
 
-  ~PeerStat() {}
-
   /**
    * Returns current download speed in byte per sec.
    */
   unsigned int calculateDownloadSpeed() {
     return downloadSpeed.calculateSpeed();
-  }
-
-  unsigned int calculateDownloadSpeed(const struct timeval& now) {
-    return downloadSpeed.calculateSpeed(now);
   }
 
   unsigned int calculateAvgDownloadSpeed() {
@@ -102,10 +96,6 @@ public:
 
   unsigned int calculateUploadSpeed() {
     return uploadSpeed.calculateSpeed();
-  }
-
-  unsigned int calculateUploadSpeed(const struct timeval& now) {
-    return uploadSpeed.calculateSpeed(now);
   }
 
   unsigned int calculateAvgUploadSpeed() {

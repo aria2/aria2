@@ -113,13 +113,14 @@ bool Time::isNewer(const Time& time) const {
   return util::difftv(this->tv, time.tv) > 0;
 }
 
-time_t Time::difference() const {
-  return util::difftvsec(getCurrentTime(), tv);
+time_t Time::difference() const
+{
+  return util::difftv(getCurrentTime(), tv)/1000000;
 }
 
 time_t Time::difference(const struct timeval& now) const
 {
-  return util::difftvsec(now, tv);
+  return util::difftv(now, tv)/1000000;
 }
 
 int64_t Time::differenceInMillis() const {
@@ -154,6 +155,11 @@ time_t Time::getTime() const
 void Time::setTimeInSec(time_t sec) {
   tv.tv_sec = sec;
   tv.tv_usec = 0;
+}
+
+void Time::advance(time_t sec)
+{
+  tv.tv_sec += sec;
 }
 
 bool Time::good() const

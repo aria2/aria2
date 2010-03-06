@@ -46,6 +46,7 @@
 #include "a2functional.h"
 #include "bittorrent_helper.h"
 #include "bitfield.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -246,12 +247,13 @@ bool DHTBucket::operator==(const DHTBucket& bucket) const
 
 bool DHTBucket::needsRefresh() const
 {
-  return _nodes.size() < K || _lastUpdated.elapsed(DHT_BUCKET_REFRESH_INTERVAL);
+  return _nodes.size() < K ||
+    _lastUpdated.difference(global::wallclock) >= DHT_BUCKET_REFRESH_INTERVAL;
 }
 
 void DHTBucket::notifyUpdate()
 {
-  _lastUpdated.reset();
+  _lastUpdated = global::wallclock;
 }
 
 class FindQuestionableNode {

@@ -40,6 +40,7 @@
 #include <vector>
 
 #include "TimeA2.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -55,7 +56,7 @@ private:
 
     bool elapsed(time_t t) const
     {
-      return _dispatchedTime.elapsed(t);
+      return _dispatchedTime.difference(global::wallclock) >= t;
     }
 
     bool operator==(const RequestEntry& e) const

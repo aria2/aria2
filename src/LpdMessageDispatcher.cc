@@ -38,6 +38,7 @@
 #include "LogFactory.h"
 #include "BtConstants.h"
 #include "RecoverableException.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -92,12 +93,12 @@ bool LpdMessageDispatcher::sendMessage()
 
 bool LpdMessageDispatcher::isAnnounceReady() const
 {
-  return _timer.elapsed(_interval);
+  return _timer.difference(global::wallclock) >= _interval;
 }
 
 void LpdMessageDispatcher::resetAnnounceTimer()
 {
-  _timer.reset();
+  _timer = global::wallclock;
 }
 
 namespace bittorrent {

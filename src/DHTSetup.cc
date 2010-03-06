@@ -70,6 +70,7 @@
 #include "RecoverableException.h"
 #include "a2functional.h"
 #include "DownloadEngine.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -185,7 +186,9 @@ void DHTSetup::setup(std::vector<Command*>& commands,
           desnodes.begin(), eoi = desnodes.end(); i != eoi; ++i) {
       routingTable->addNode(*i);
     }
-    if(!desnodes.empty() && deserializer.getSerializedTime().elapsed(DHT_BUCKET_REFRESH_INTERVAL)) {
+    if(!desnodes.empty() &&
+       deserializer.getSerializedTime().
+       difference(global::wallclock) >= DHT_BUCKET_REFRESH_INTERVAL) {
       SharedHandle<DHTBucketRefreshTask> task
         (dynamic_pointer_cast<DHTBucketRefreshTask>(taskFactory->createBucketRefreshTask()));
       task->setForceRefresh(true);

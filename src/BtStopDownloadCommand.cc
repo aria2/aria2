@@ -39,6 +39,7 @@
 #include "Peer.h"
 #include "DownloadContext.h"
 #include "Logger.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -57,7 +58,7 @@ void BtStopDownloadCommand::preProcess()
   if(_btRuntime->isHalt() || _pieceStorage->downloadFinished()) {
     _exit = true;
   }
-  if(_checkPoint.elapsed(_timeout)) {
+  if(_checkPoint.difference(global::wallclock) >= _timeout) {
     logger->notice("GID#%d Stop downloading torrent due to"
                    " --bt-stop-timeout option.", _requestGroup->getGID());
     _requestGroup->setHaltRequested(true);
@@ -68,7 +69,7 @@ void BtStopDownloadCommand::preProcess()
 void BtStopDownloadCommand::process()
 {
   if(_requestGroup->calculateStat().getDownloadSpeed() > 0) {
-    _checkPoint.reset();
+    _checkPoint = global::wallclock;
   }
 }
 

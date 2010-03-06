@@ -49,6 +49,7 @@
 #include "RequestGroup.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -76,8 +77,8 @@ bool ActivePeerConnectionCommand::execute() {
   if(_btRuntime->isHalt()) {
     return true;
   }
-  if(checkPoint.elapsed(interval)) {
-    checkPoint.reset();
+  if(checkPoint.difference(global::wallclock) >= interval) {
+    checkPoint = global::wallclock;
     TransferStat tstat = _requestGroup->calculateStat();
     const unsigned int maxDownloadLimit =
       _requestGroup->getMaxDownloadSpeedLimit();

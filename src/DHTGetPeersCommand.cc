@@ -46,6 +46,7 @@
 #include "Logger.h"
 #include "bittorrent_helper.h"
 #include "DownloadContext.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -72,8 +73,9 @@ bool DHTGetPeersCommand::execute()
     return true;
   }
   if(_task.isNull() &&
-     ((_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL)) ||
-      _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
+     ((_numRetry > 0 &&
+       _lastGetPeerTime.difference(global::wallclock) >= RETRY_INTERVAL) ||
+      _lastGetPeerTime.difference(global::wallclock) >= GET_PEER_INTERVAL)) {
     if(logger->debug()) {
       logger->debug("Issuing PeerLookup for infoHash=%s",
                     bittorrent::getInfoHashString
@@ -83,7 +85,7 @@ bool DHTGetPeersCommand::execute()
       (_requestGroup->getDownloadContext(), _btRuntime, _peerStorage);
     _taskQueue->addPeriodicTask2(_task);
   } else if(!_task.isNull() && _task->finished()) {
-    _lastGetPeerTime.reset();
+    _lastGetPeerTime = global::wallclock;
     if(_numRetry < MAX_RETRIES && _btRuntime->lessThanMinPeers()) {
       ++_numRetry;
     } else {

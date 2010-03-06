@@ -76,12 +76,20 @@
 
 namespace aria2 {
 
+namespace global {
+
+// Global clock, this clock is reseted before executeCommand() call to
+// reduce the call gettimeofday() system call.
+Time wallclock;
+
 // 0 ... running
 // 1 ... stop signal detected
 // 2 ... stop signal processed by DownloadEngine
 // 3 ... 2nd stop signal(force shutdown) detected
 // 4 ... 2nd stop signal processed by DownloadEngine
 volatile sig_atomic_t globalHaltRequested = 0;
+
+} // namespace global
 
 DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll):
   _eventPoll(eventPoll),
@@ -136,9 +144,10 @@ void DownloadEngine::run()
   Time cp;
   cp.setTimeInSec(0);
   while(!commands.empty() || !_routineCommands.empty()) {
-    if(cp.elapsed(_refreshInterval)) {
+    global::wallclock.reset();
+    if(cp.difference(global::wallclock) >= _refreshInterval) {
       _refreshInterval = DEFAULT_REFRESH_INTERVAL;
-      cp.reset();
+      cp = global::wallclock;
       executeCommand(commands, Command::STATUS_ALL);
     } else {
       executeCommand(commands, Command::STATUS_ACTIVE);
@@ -211,16 +220,16 @@ void DownloadEngine::onEndOfRun()
 void DownloadEngine::afterEachIteration()
 {
   _requestGroupMan->calculateStat();
-  if(globalHaltRequested == 1) {
+  if(global::globalHaltRequested == 1) {
     logger->notice(_("Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."));
     requestHalt();
-    globalHaltRequested = 2;
+    global::globalHaltRequested = 2;
     setNoWait(true);
     setRefreshInterval(0);
-  } else if(globalHaltRequested == 3) {
+  } else if(global::globalHaltRequested == 3) {
     logger->notice(_("Emergency shutdown sequence commencing..."));
     _requestGroupMan->forceHalt();
-    globalHaltRequested = 4;
+    global::globalHaltRequested = 4;
     setNoWait(true);
     setRefreshInterval(0);
   }
@@ -275,12 +284,12 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
   std::multimap<std::string, SocketPoolEntry>::value_type p(addr, entry);
   _socketPool.insert(p);
 
-  if(_lastSocketPoolScan.elapsed(60)) {
+  if(_lastSocketPoolScan.difference(global::wallclock) >= 60) {
     std::multimap<std::string, SocketPoolEntry> newPool;
     if(logger->debug()) {
       logger->debug("Scaning SocketPool and erasing timed out entry.");
     }
-    _lastSocketPoolScan.reset();
+    _lastSocketPoolScan = global::wallclock;
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
           _socketPool.begin(), eoi = _socketPool.end(); i != eoi; ++i) {
       if(!(*i).second.isTimeout()) {
@@ -439,7 +448,7 @@ DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
 
 bool DownloadEngine::SocketPoolEntry::isTimeout() const
 {
-  return _registeredTime.elapsed(_timeout);
+  return _registeredTime.difference(global::wallclock) >= _timeout;
 }
 
 cuid_t DownloadEngine::newCUID()

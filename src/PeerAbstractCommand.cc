@@ -43,6 +43,7 @@
 #include "prefs.h"
 #include "DownloadFailureException.h"
 #include "StringFormat.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -88,13 +89,13 @@ bool PeerAbstractCommand::execute()
        (checkSocketIsReadable && _readEvent) ||
        (checkSocketIsWritable && _writeEvent) ||
        _hupEvent) {
-      checkPoint.reset();
+      checkPoint = global::wallclock;
     } else if(_errorEvent) {
       throw DL_ABORT_EX
         (StringFormat(MSG_NETWORK_PROBLEM,
                       socket->getSocketError().c_str()).str());
     }
-    if(checkPoint.elapsed(timeout)) {
+    if(checkPoint.difference(global::wallclock) >= timeout) {
       throw DL_ABORT_EX(EX_TIME_OUT);
     }
     return executeInternal();
@@ -183,7 +184,7 @@ void PeerAbstractCommand::setNoCheck(bool check)
 
 void PeerAbstractCommand::updateKeepAlive()
 {
-  checkPoint.reset();
+  checkPoint = global::wallclock;
 }
 
 } // namespace aria2

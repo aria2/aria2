@@ -205,14 +205,10 @@ public:
    */
   unsigned int calculateUploadSpeed();
 
-  unsigned int calculateUploadSpeed(const struct timeval& now);
-
   /**
    * Returns the transfer rate from remote host to localhost.
    */
   unsigned int calculateDownloadSpeed();
-
-  unsigned int calculateDownloadSpeed(const struct timeval& now);
 
   /**
    * Returns the number of bytes uploaded to the remote host.

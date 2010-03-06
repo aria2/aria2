@@ -32,72 +32,15 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_LEECHER_STATE_CHOKE_H_
-#define _D_BT_LEECHER_STATE_CHOKE_H_
-
-#include "common.h"
-
-#include <vector>
-
-#include "SharedHandle.h"
 #include "TimeA2.h"
 
 namespace aria2 {
 
-class Peer;
-class Logger;
+namespace global {
 
-class BtLeecherStateChoke {
-private:
-  int _round;
+// wallclock is defined in DownloadEngine.cc
+extern Time wallclock;
 
-  Time _lastRound;
-
-  Logger* _logger;
-
-  class PeerEntry {
-  private:
-    SharedHandle<Peer> _peer;
-    unsigned int _downloadSpeed;
-    bool _regularUnchoker;
-  public:
-    PeerEntry(const SharedHandle<Peer>& peer);
-
-    bool operator<(const PeerEntry& rhs) const;
-
-    const SharedHandle<Peer>& getPeer() const;
-
-    unsigned int getDownloadSpeed() const;
-
-    bool isRegularUnchoker() const;
-
-    bool isSnubbing() const;
-
-    void enableChokingRequired();
-
-    void disableChokingRequired();
-
-    void enableOptUnchoking();
-
-    void disableOptUnchoking();
-  };
-
-  void plannedOptimisticUnchoke(std::vector<PeerEntry>& peerEntries);
-
-  void regularUnchoke(std::vector<PeerEntry>& peerEntries);
-
-  friend class PeerFilter;
-  friend class BtLeecherStateChokeGenPeerEntry;
-public:
-  BtLeecherStateChoke();
-
-  ~BtLeecherStateChoke();
-
-  void executeChoke(const std::vector<SharedHandle<Peer> >& peerSet);
-
-  const Time& getLastRound() const;
-};
+} // namespace global
 
 } // namespace aria2
-
-#endif // _D_BT_LEECHER_STATE_CHOKE_H_

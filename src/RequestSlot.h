@@ -113,8 +113,7 @@ public:
   void setDispatchedTime();
   void setDispatchedTime(time_t secFromEpoch);
 
-  bool isTimeout(const struct timeval& now, time_t timeoutSec) const;
-  unsigned int getLatencyInMillis() const;
+  bool isTimeout(time_t timeoutSec) const;
 
   size_t getIndex() const { return index; }
   void setIndex(size_t index) { this->index = index; }

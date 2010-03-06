@@ -40,6 +40,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "SimpleRandomizer.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -51,12 +52,12 @@ BtSeederStateChoke::BtSeederStateChoke():
 BtSeederStateChoke::~BtSeederStateChoke() {}
 
 BtSeederStateChoke::PeerEntry::PeerEntry
-(const SharedHandle<Peer>& peer, const struct timeval& now):
+(const SharedHandle<Peer>& peer):
   _peer(peer),
   _outstandingUpload(peer->countOutstandingUpload()),
   _lastAmUnchoking(peer->getLastAmUnchoking()),
-  _recentUnchoking(!_lastAmUnchoking.elapsed(TIME_FRAME)),
-  _uploadSpeed(peer->calculateUploadSpeed(now))
+  _recentUnchoking(_lastAmUnchoking.difference(global::wallclock) < TIME_FRAME),
+  _uploadSpeed(peer->calculateUploadSpeed())
 {}
 
 bool
@@ -118,17 +119,10 @@ public:
 };
 
 class GenPeerEntry {
-private:
-  struct timeval _now;
 public:
-  GenPeerEntry()
-  {
-    gettimeofday(&_now, 0);
-  }
-
   BtSeederStateChoke::PeerEntry operator()(const SharedHandle<Peer>& peer) const
   {
-    return BtSeederStateChoke::PeerEntry(peer, _now);
+    return BtSeederStateChoke::PeerEntry(peer);
   }
 };
 

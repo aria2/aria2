@@ -39,6 +39,7 @@
 #include "util.h"
 #include "a2functional.h"
 #include "bittorrent_helper.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -88,7 +89,8 @@ bool DHTNode::isBad() const
 
 bool DHTNode::isQuestionable() const
 {
-  return !isBad() && _lastContact.elapsed(DHT_NODE_CONTACT_INTERVAL);
+  return !isBad() &&
+    _lastContact.difference(global::wallclock) >= DHT_NODE_CONTACT_INTERVAL;
 }
 
 void DHTNode::markGood()
@@ -103,7 +105,7 @@ void DHTNode::markBad()
 
 void DHTNode::updateLastContact()
 {
-  _lastContact.reset();
+  _lastContact = global::wallclock;
 }
 
 void DHTNode::timeout()

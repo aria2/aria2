@@ -47,6 +47,7 @@
 #include "Option.h"
 #include "util.h"
 #include "DownloadContext.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -92,7 +93,7 @@ bool HttpServerCommand::execute()
   }
   try {
     if(_socket->isReadable(0)) {
-      _timeout.reset();
+      _timeout = global::wallclock;
       SharedHandle<HttpHeader> header;
 
       header = _httpServer->receiveRequest();
@@ -127,7 +128,7 @@ bool HttpServerCommand::execute()
       _e->setNoWait(true);
       return true;
     } else {
-      if(_timeout.elapsed(30)) {
+      if(_timeout.difference(global::wallclock) >= 30) {
         logger->info("HTTP request timeout.");
         return true;
       } else {

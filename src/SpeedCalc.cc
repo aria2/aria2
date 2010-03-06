@@ -33,23 +33,25 @@
  */
 /* copyright --> */
 #include "SpeedCalc.h"
+
 #include <algorithm>
 #include <functional>
+
+#include "wallclock.h"
 
 namespace aria2 {
 
 #define CHANGE_INTERVAL_SEC 15
 
-class Reset {
-public:
-  void operator()(Time& tm) {
-    tm.reset();
-  }
-};
+SpeedCalc::SpeedCalc():sw(0), maxSpeed(0), prevSpeed(0), accumulatedLength(0),
+                       nextInterval(CHANGE_INTERVAL_SEC)
+{
+  std::fill(&lengthArray[0], &lengthArray[2], 0);
+}
 
 void SpeedCalc::reset() {
   std::fill(&lengthArray[0], &lengthArray[2], 0);
-  std::for_each(&cpArray[0], &cpArray[2], Reset());
+  std::for_each(&cpArray[0], &cpArray[2], std::mem_fun_ref(&Time::reset));
   sw = 0;
   maxSpeed = 0;
   prevSpeed = 0;
@@ -59,22 +61,7 @@ void SpeedCalc::reset() {
 }
 
 unsigned int SpeedCalc::calculateSpeed() {
-  int64_t milliElapsed = cpArray[sw].differenceInMillis();
-  if(milliElapsed) {
-    unsigned int speed = lengthArray[sw]*1000/milliElapsed;
-    prevSpeed = speed;
-    maxSpeed = std::max(speed, maxSpeed);
-    if(isIntervalOver(milliElapsed)) {
-      changeSw();
-    }
-    return speed;
-  } else {
-    return prevSpeed;
-  }
-}
-
-unsigned int SpeedCalc::calculateSpeed(const struct timeval& now) {
-  int64_t milliElapsed = cpArray[sw].differenceInMillis(now);
+  int64_t milliElapsed = cpArray[sw].differenceInMillis(global::wallclock);
   if(milliElapsed) {
     unsigned int speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
@@ -98,7 +85,7 @@ void SpeedCalc::update(size_t bytes) {
 }
 
 bool SpeedCalc::isIntervalOver() const {
-  return nextInterval <= cpArray[sw].difference();
+  return nextInterval <= cpArray[sw].difference(global::wallclock);
 }
 
 bool SpeedCalc::isIntervalOver(int64_t milliElapsed) const
@@ -110,11 +97,11 @@ void SpeedCalc::changeSw() {
   lengthArray[sw] = 0;
   cpArray[sw].reset();
   sw ^= 0x01;
-  nextInterval = cpArray[sw].difference()+CHANGE_INTERVAL_SEC;
+  nextInterval = cpArray[sw].difference(global::wallclock)+CHANGE_INTERVAL_SEC;
 }
 
 unsigned int SpeedCalc::calculateAvgSpeed() const {
-  uint64_t milliElapsed = start.differenceInMillis();
+  uint64_t milliElapsed = start.differenceInMillis(global::wallclock);
 
   // if milliElapsed is too small, the average speed is rubish, better return 0
   if(milliElapsed > 4) {

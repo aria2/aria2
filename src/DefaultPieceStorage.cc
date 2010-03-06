@@ -58,6 +58,7 @@
 #include "RarestPieceSelector.h"
 #include "array_fun.h"
 #include "PieceStatMan.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -566,7 +567,7 @@ public:
   FindElapsedHave(time_t elapsed):elapsed(elapsed) {}
 
   bool operator()(const HaveEntry& have) {
-    if(have.getRegisteredTime().elapsed(elapsed)) {
+    if(have.getRegisteredTime().difference(global::wallclock) >= elapsed) {
       return true;
     } else {
       return false;

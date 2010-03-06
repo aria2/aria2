@@ -43,6 +43,7 @@
 #include "ServerStat.h"
 #include "util.h"
 #include "RecoverableException.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -148,7 +149,7 @@ public:
 
   bool operator()(const SharedHandle<ServerStat>& ss) const
   {
-    return ss->getLastUpdated().elapsed(_timeout);
+    return ss->getLastUpdated().difference(global::wallclock) >= _timeout;
   }
 };
 

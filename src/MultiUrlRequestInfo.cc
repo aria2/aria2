@@ -66,13 +66,17 @@ namespace aria2 {
 # define SA_RESETHAND 0x80000000
 #endif // SA_RESETHAND
 
+namespace global {
+
 extern volatile sig_atomic_t globalHaltRequested;
 
+} // namespace global
+
 static void handler(int signal) {
-  if(globalHaltRequested == 0) {
-    globalHaltRequested = 1;
-  } else if(globalHaltRequested == 2) {
-    globalHaltRequested = 3;
+  if(global::globalHaltRequested == 0) {
+    global::globalHaltRequested = 1;
+  } else if(global::globalHaltRequested == 2) {
+    global::globalHaltRequested = 3;
   }
 }
 

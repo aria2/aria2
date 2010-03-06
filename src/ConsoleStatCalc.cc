@@ -59,6 +59,7 @@
 #include "CheckIntegrityEntry.h"
 #include "util.h"
 #include "DownloadContext.h"
+#include "wallclock.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "Peer.h"
@@ -214,10 +215,10 @@ ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
 void
 ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 {
-  if(!_cp.elapsed(1)) {
+  if(_cp.difference(global::wallclock) < 1) {
     return;
   }
-  _cp.reset();
+  _cp = global::wallclock;
   const SizeFormatter& sizeFormatter = *_sizeFormatter.get();
 
 #ifdef __MINGW32__
@@ -243,8 +244,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   std::ostringstream o;
   if(e->_requestGroupMan->countRequestGroup() > 0) {
     if((_summaryInterval > 0) &&
-       _lastSummaryNotified.elapsed(_summaryInterval)) {
-      _lastSummaryNotified.reset();
+       _lastSummaryNotified.difference(global::wallclock) >= _summaryInterval) {
+      _lastSummaryNotified = global::wallclock;
       printProgressSummary(e->_requestGroupMan->getRequestGroups(), cols, e,
                            sizeFormatter);
       std::cout << "\n";

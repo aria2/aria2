@@ -52,6 +52,7 @@
 #include "Request.h"
 #include "bencode.h"
 #include "bittorrent_helper.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -77,10 +78,12 @@ DefaultBtAnnounce::~DefaultBtAnnounce() {
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
-  return (trackers == 0 &&
-          prevAnnounceTime.elapsed(_userDefinedInterval==0?
-                                   minInterval:_userDefinedInterval) &&
-          !announceList.allTiersFailed());
+  return
+    (trackers == 0 &&
+     prevAnnounceTime.
+     difference(global::wallclock) >= (_userDefinedInterval==0?
+                                       minInterval:_userDefinedInterval) &&
+     !announceList.allTiersFailed());
 }
 
 bool DefaultBtAnnounce::isStoppedAnnounceReady() {
@@ -203,7 +206,7 @@ bool DefaultBtAnnounce::isAllAnnounceFailed() {
 }
 
 void DefaultBtAnnounce::resetAnnounce() {
-  prevAnnounceTime.reset();
+  prevAnnounceTime = global::wallclock;
   announceList.resetTier();
 }
 

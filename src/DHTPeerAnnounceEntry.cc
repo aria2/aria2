@@ -38,6 +38,7 @@
 #include <algorithm>
 
 #include "Peer.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -73,7 +74,7 @@ public:
 
   bool operator()(const PeerAddrEntry& entry) const
   {
-    if(entry.getLastUpdated().elapsed(_timeout)) {
+    if(entry.getLastUpdated().difference(global::wallclock) >= _timeout) {
       return true;
     } else {
       return false;
@@ -104,7 +105,7 @@ void DHTPeerAnnounceEntry::getPeers
 
 void DHTPeerAnnounceEntry::notifyUpdate()
 {
-  _lastUpdated.reset();
+  _lastUpdated = global::wallclock;
 }
 
 } // namespace aria2

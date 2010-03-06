@@ -64,6 +64,7 @@
 #include "util.h"
 #include "LogFactory.h"
 #include "DownloadContext.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -134,7 +135,7 @@ bool AbstractCommand::execute() {
        (nameResolverCheck && nameResolveFinished()) ||
 #endif // ENABLE_ASYNC_DNS
        (!checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck)) {
-      checkPoint.reset();
+      checkPoint = global::wallclock;
       if(!_requestGroup->getPieceStorage().isNull()) {
         _segments.clear();
         _requestGroup->getSegmentMan()->getInFlightSegment(_segments, cuid);
@@ -175,7 +176,7 @@ bool AbstractCommand::execute() {
         (StringFormat(MSG_NETWORK_PROBLEM,
                       socket->getSocketError().c_str()).str());
     } else {
-      if(checkPoint.elapsed(timeout)) {
+      if(checkPoint.difference(global::wallclock) >= timeout) {
         // timeout triggers ServerStat error state.
 
         SharedHandle<ServerStat> ss =

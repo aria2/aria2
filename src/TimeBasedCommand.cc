@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "TimeBasedCommand.h"
 #include "DownloadEngine.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -51,8 +52,8 @@ bool TimeBasedCommand::execute()
   if(_exit) {
     return true;
   }
-  if(_checkPoint.elapsed(_interval)) {
-    _checkPoint.reset();
+  if(_checkPoint.difference(global::wallclock) >= _interval) {
+    _checkPoint = global::wallclock;
     process();
     if(_exit) {
       return true;

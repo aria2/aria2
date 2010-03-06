@@ -65,7 +65,7 @@ private:
     
     const static time_t TIME_FRAME = 20;
   public:
-    PeerEntry(const SharedHandle<Peer>& peer, const struct timeval& now);
+    PeerEntry(const SharedHandle<Peer>& peer);
 
     bool operator<(const PeerEntry& rhs) const;
 

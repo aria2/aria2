@@ -40,6 +40,7 @@
 #include "util.h"
 #include "URISelector.h"
 #include "LogFactory.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -172,7 +173,8 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
   // TODO hard coded value. See PREF_STARTUP_IDLE_TIME
   const int startupIdleTime = 10;
   if(basestat.isNull() ||
-     (basestat->getDownloadStartTime().elapsed(startupIdleTime) &&
+     (basestat->getDownloadStartTime().
+      difference(global::wallclock) >= startupIdleTime &&
       fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
     // TODO we should consider that "fastest" is very slow.
     SharedHandle<Request> fastestRequest = _requestPool.front();

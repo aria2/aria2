@@ -11,6 +11,7 @@
 #include "MockPeerStorage.h"
 #include "Exception.h"
 #include "FileEntry.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -34,6 +35,7 @@ public:
   void setUp()
   {
     _peerStorage.reset(new MockPeerStorage());
+    global::wallclock.reset();
   }
 
   void testGetExtensionMessageID();
@@ -69,15 +71,15 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
-  msg.addFreshPeer(p1);// added seeder, check add.f flag
+  CPPUNIT_ASSERT(msg.addFreshPeer(p1));// added seeder, check add.f flag
   SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
-  msg.addFreshPeer(p2);
+  CPPUNIT_ASSERT(msg.addFreshPeer(p2));
   SharedHandle<Peer> p3(new Peer("192.168.0.2", 6882));
   p3->startBadCondition();
-  msg.addDroppedPeer(p3);
+  CPPUNIT_ASSERT(msg.addDroppedPeer(p3));
   SharedHandle<Peer> p4(new Peer("10.1.1.3", 10000));
   p4->startBadCondition();
-  msg.addDroppedPeer(p4);
+  CPPUNIT_ASSERT(msg.addDroppedPeer(p4));
 
   unsigned char c1[6];
   unsigned char c2[6];

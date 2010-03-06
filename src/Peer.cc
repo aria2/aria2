@@ -41,6 +41,7 @@
 #include "a2functional.h"
 #include "PeerSessionResource.h"
 #include "BtMessageDispatcher.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -215,22 +216,10 @@ unsigned int Peer::calculateUploadSpeed()
   return _res->getPeerStat().calculateUploadSpeed();
 }
 
-unsigned int Peer::calculateUploadSpeed(const struct timeval& now)
-{
-  assert(_res);
-  return _res->getPeerStat().calculateUploadSpeed(now);
-}
-
 unsigned int Peer::calculateDownloadSpeed()
 {
   assert(_res);
   return _res->getPeerStat().calculateDownloadSpeed();
-}
-
-unsigned int Peer::calculateDownloadSpeed(const struct timeval& now)
-{
-  assert(_res);
-  return _res->getPeerStat().calculateDownloadSpeed(now);
 }
 
 uint64_t Peer::getSessionUploadLength() const
@@ -330,12 +319,13 @@ void Peer::setAllBitfield() {
 
 void Peer::startBadCondition()
 {
-  _badConditionStartTime.reset();
+  _badConditionStartTime = global::wallclock;
 }
 
 bool Peer::isGood() const
 {
-  return _badConditionStartTime.elapsed(BAD_CONDITION_INTERVAL);
+  return _badConditionStartTime.
+    difference(global::wallclock) >= BAD_CONDITION_INTERVAL;
 }
 
 uint8_t Peer::getExtensionMessageID(const std::string& name) const

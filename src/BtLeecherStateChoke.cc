@@ -41,6 +41,7 @@
 #include "LogFactory.h"
 #include "a2time.h"
 #include "SimpleRandomizer.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -51,12 +52,12 @@ BtLeecherStateChoke::BtLeecherStateChoke():
 
 BtLeecherStateChoke::~BtLeecherStateChoke() {}
 
-BtLeecherStateChoke::PeerEntry::PeerEntry
-(const SharedHandle<Peer>& peer, const struct timeval& now):
-  _peer(peer), _downloadSpeed(peer->calculateDownloadSpeed(now)),
+BtLeecherStateChoke::PeerEntry::PeerEntry(const SharedHandle<Peer>& peer):
+  _peer(peer), _downloadSpeed(peer->calculateDownloadSpeed()),
   // peer must be interested to us and sent block in the last 30 seconds
-  _regularUnchoker(peer->peerInterested() &&
-                   !peer->getLastDownloadUpdate().elapsed(30)) {}
+  _regularUnchoker
+  (peer->peerInterested() &&
+   peer->getLastDownloadUpdate().difference(global::wallclock) < 30) {}
 
 const SharedHandle<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
 {
@@ -142,9 +143,6 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
     std::partition(peerEntries.begin(), peerEntries.end(),
                    std::mem_fun_ref(&PeerEntry::isRegularUnchoker));
   
-  struct timeval now;
-  gettimeofday(&now, 0);
-
   std::sort(peerEntries.begin(), rest);
 
   // the number of regular unchokers
@@ -180,18 +178,11 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
 }
 
 class BtLeecherStateChokeGenPeerEntry {
-private:
-  struct timeval _now;
 public:
-  BtLeecherStateChokeGenPeerEntry()
-  {
-    gettimeofday(&_now, 0);
-  }
-
   BtLeecherStateChoke::PeerEntry operator()
   (const SharedHandle<Peer>& peer) const
   {
-    return BtLeecherStateChoke::PeerEntry(peer, _now);
+    return BtLeecherStateChoke::PeerEntry(peer);
   }
 };
 

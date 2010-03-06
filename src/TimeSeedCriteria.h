@@ -37,6 +37,7 @@
 
 #include "SeedCriteria.h"
 #include "TimeA2.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -50,11 +51,11 @@ public:
   virtual ~TimeSeedCriteria() {}
 
   virtual void reset() {
-    watch.reset();
+    watch = global::wallclock;
   }
 
   virtual bool evaluate() {
-    return watch.elapsed(duration);
+    return watch.difference(global::wallclock) >= duration;
   }
 
   void setDuration(time_t duration) {

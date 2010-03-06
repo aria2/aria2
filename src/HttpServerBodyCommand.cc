@@ -50,6 +50,7 @@
 #include "XmlRpcMethodFactory.h"
 #include "XmlRpcResponse.h"
 #include "DownloadContext.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -79,7 +80,7 @@ bool HttpServerBodyCommand::execute()
   }
   try {
     if(_socket->isReadable(0) || _httpServer->getContentLength() == 0) {
-      _timeout.reset();
+      _timeout = global::wallclock;
 
       if(_httpServer->receiveBody()) {
         // Do something for requestpath and body
@@ -106,7 +107,7 @@ bool HttpServerBodyCommand::execute()
         return false;
       } 
     } else {
-      if(_timeout.elapsed(30)) {
+      if(_timeout.difference(global::wallclock) >= 30) {
         logger->info("HTTP request body timeout.");
         return true;
       } else {

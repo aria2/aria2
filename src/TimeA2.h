@@ -77,9 +77,19 @@ public:
 
   time_t difference(const struct timeval& now) const;
 
+  time_t difference(const Time& now) const
+  {
+    return difference(now.tv);
+  }
+
   int64_t differenceInMillis() const;
 
   int64_t differenceInMillis(const struct timeval& now) const;
+
+  int64_t differenceInMillis(const Time& now) const
+  {
+    return differenceInMillis(now.tv);
+  }
 
   // Returns true if this object's time value is zero.
   bool isZero() const;
@@ -94,6 +104,8 @@ public:
   void setTimeInSec(time_t sec);
 
   bool isNewer(const Time& time) const;
+
+  void advance(time_t sec);
 
   bool good() const;
 

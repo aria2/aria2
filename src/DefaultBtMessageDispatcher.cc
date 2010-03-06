@@ -257,7 +257,6 @@ private:
   SharedHandle<PieceStorage> _pieceStorage;
   BtMessageDispatcher* _messageDispatcher;
   WeakHandle<BtMessageFactory> _messageFactory;
-  const struct timeval& _now;
   time_t _requestTimeout;
   Logger* _logger;
 public:
@@ -265,20 +264,18 @@ public:
                           const SharedHandle<PieceStorage>& pieceStorage,
                           BtMessageDispatcher* dispatcher,
                           const WeakHandle<BtMessageFactory>& factory,
-                          const struct timeval& now,
                           time_t requestTimeout):
     _cuid(cuid),
     _peer(peer),
     _pieceStorage(pieceStorage),
     _messageDispatcher(dispatcher),
     _messageFactory(factory),
-    _now(now),
     _requestTimeout(requestTimeout),
     _logger(LogFactory::getInstance()) {}
 
   void operator()(const RequestSlot& slot)
   {
-    if(slot.isTimeout(_now, _requestTimeout)) {
+    if(slot.isTimeout(_requestTimeout)) {
       if(_logger->debug()) {
         _logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
                        _cuid,
@@ -305,19 +302,16 @@ public:
 class FindStaleRequestSlot {
 private:
   SharedHandle<PieceStorage> _pieceStorage;
-  const struct timeval& _now;
   time_t _requestTimeout;
 public:
   FindStaleRequestSlot(const SharedHandle<PieceStorage>& pieceStorage,
-                       const struct timeval& now,
                        time_t requestTimeout):
     _pieceStorage(pieceStorage),
-    _now(now),
     _requestTimeout(requestTimeout) {}
 
   bool operator()(const RequestSlot& slot)
   {
-    if(slot.isTimeout(_now, _requestTimeout)) {
+    if(slot.isTimeout(_requestTimeout)) {
       return true;
     } else {
       if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
@@ -331,20 +325,15 @@ public:
 
 void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 {
-  struct timeval now;
-  gettimeofday(&now, 0);
-
   std::for_each(requestSlots.begin(), requestSlots.end(),
                 ProcessStaleRequestSlot(cuid,
                                         peer,
                                         _pieceStorage,
                                         this,
                                         messageFactory,
-                                        now,
                                         requestTimeout));
   requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
                                     FindStaleRequestSlot(_pieceStorage,
-                                                         now,
                                                          requestTimeout)),
                      requestSlots.end());
 }

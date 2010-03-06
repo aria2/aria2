@@ -47,6 +47,7 @@
 #include "Logger.h"
 #include "util.h"
 #include "a2functional.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -147,7 +148,8 @@ void DHTPeerAnnounceStorage::announcePeer()
   }
   for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i =
         _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
-    if((*i)->getLastUpdated().elapsed(DHT_PEER_ANNOUNCE_INTERVAL)) {
+    if((*i)->getLastUpdated().
+       difference(global::wallclock) >= DHT_PEER_ANNOUNCE_INTERVAL) {
       (*i)->notifyUpdate();
       SharedHandle<DHTTask> task =
         _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());

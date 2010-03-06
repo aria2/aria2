@@ -45,6 +45,7 @@
 #include "BtSeederStateChoke.h"
 #include "BtLeecherStateChoke.h"
 #include "PieceStorage.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -200,11 +201,9 @@ void DefaultPeerStorage::getActivePeers
 
 static TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
 {
-  struct timeval now;
-  gettimeofday(&now, 0);
   TransferStat s;
-  s.downloadSpeed = peer->calculateDownloadSpeed(now);
-  s.uploadSpeed = peer->calculateUploadSpeed(now);
+  s.downloadSpeed = peer->calculateDownloadSpeed();
+  s.uploadSpeed = peer->calculateUploadSpeed();
   s.sessionDownloadLength = peer->getSessionDownloadLength();
   s.sessionUploadLength = peer->getSessionUploadLength();
   return s;
@@ -213,21 +212,19 @@ static TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
 TransferStat DefaultPeerStorage::calculateStat()
 {
   TransferStat stat;
-  if(_lastTransferStatMapUpdated.elapsedInMillis(250)) {
+  if(_lastTransferStatMapUpdated.differenceInMillis(global::wallclock) >= 250) {
     if(logger->debug()) {
       logger->debug("Updating TransferStat of PeerStorage");
     }
-    _lastTransferStatMapUpdated.reset();
+    _lastTransferStatMapUpdated = global::wallclock;
     _peerTransferStatMap.clear();
     std::vector<SharedHandle<Peer> > activePeers;
     getActivePeers(activePeers);
-    struct timeval now;
-    gettimeofday(&now, 0);
     for(std::vector<SharedHandle<Peer> >::const_iterator i =
           activePeers.begin(), eoi = activePeers.end(); i != eoi; ++i) {
       TransferStat s;
-      s.downloadSpeed = (*i)->calculateDownloadSpeed(now);
-      s.uploadSpeed = (*i)->calculateUploadSpeed(now);
+      s.downloadSpeed = (*i)->calculateDownloadSpeed();
+      s.uploadSpeed = (*i)->calculateUploadSpeed();
       s.sessionDownloadLength = (*i)->getSessionDownloadLength();
       s.sessionUploadLength = (*i)->getSessionUploadLength();
 
@@ -319,9 +316,11 @@ bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
   const time_t CHOKE_ROUND_INTERVAL = 10;
   if(_pieceStorage->downloadFinished()) {
-    return _seederStateChoke->getLastRound().elapsed(CHOKE_ROUND_INTERVAL);
+    return _seederStateChoke->getLastRound().
+      difference(global::wallclock) >= CHOKE_ROUND_INTERVAL;
   } else {
-    return _leecherStateChoke->getLastRound().elapsed(CHOKE_ROUND_INTERVAL);
+    return _leecherStateChoke->getLastRound().
+      difference(global::wallclock) >= CHOKE_ROUND_INTERVAL;
   }
 }
 

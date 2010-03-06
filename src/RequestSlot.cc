@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "RequestSlot.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -46,12 +47,8 @@ void RequestSlot::setDispatchedTime(time_t secFromEpoch) {
   dispatchedTime.setTimeInSec(secFromEpoch);
 }
 
-bool RequestSlot::isTimeout(const struct timeval& now, time_t timeoutSec) const {
-  return dispatchedTime.difference(now) >= timeoutSec;
-}
-
-unsigned int RequestSlot::getLatencyInMillis() const {
-  return dispatchedTime.differenceInMillis();
+bool RequestSlot::isTimeout(time_t timeoutSec) const {
+  return dispatchedTime.difference(global::wallclock) >= timeoutSec;
 }
 
 bool RequestSlot::isNull(const RequestSlot& requestSlot) {

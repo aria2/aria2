@@ -57,18 +57,12 @@ private:
 
   void changeSw();
 public:
-  SpeedCalc() {
-    reset();
-  }
-
-  ~SpeedCalc() {}
+  SpeedCalc();
 
   /**
    * Returns download/upload speed in byte per sec
    */
   unsigned int calculateSpeed();
-
-  unsigned int calculateSpeed(const struct timeval& now);
 
   unsigned int getMaxSpeed() const {
     return maxSpeed;

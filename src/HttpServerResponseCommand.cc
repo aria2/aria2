@@ -41,6 +41,7 @@
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
 #include "FileEntry.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -84,7 +85,7 @@ bool HttpServerResponseCommand::execute()
     }
     return true;
   } else {
-    if(_timeout.elapsed(10)) {
+    if(_timeout.difference(global::wallclock) >= 10) {
       logger->info("CUID#%d - HttpServer: Timeout while trasmitting response.",
                    cuid);
       return true;

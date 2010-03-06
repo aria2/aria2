@@ -1,3 +1,55 @@
+2010-03-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added Time global::wallclock to cache "current time" to reduce the
+	call gettimeofday(). Global variables are now in namespace global.
+	* src/AbstractCommand.cc
+	* src/ActivePeerConnectionCommand.cc
+	* src/AdaptiveURISelector.cc
+	* src/BtLeecherStateChoke.cc
+	* src/BtLeecherStateChoke.h
+	* src/BtSeederStateChoke.cc
+	* src/BtSeederStateChoke.h
+	* src/BtStopDownloadCommand.cc
+	* src/ConsoleStatCalc.cc
+	* src/DHTBucket.cc
+	* src/DHTGetPeersCommand.cc
+	* src/DHTMessageTrackerEntry.cc
+	* src/DHTNode.cc
+	* src/DHTPeerAnnounceEntry.cc
+	* src/DHTPeerAnnounceStorage.cc
+	* src/DHTSetup.cc
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/FileEntry.cc
+	* src/HttpServerBodyCommand.cc
+	* src/HttpServerCommand.cc
+	* src/HttpServerResponseCommand.cc
+	* src/LpdMessageDispatcher.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerAbstractCommand.cc
+	* src/PeerStat.h
+	* src/RequestSlot.cc
+	* src/RequestSlot.h
+	* src/SegmentMan.cc
+	* src/ServerStatMan.cc
+	* src/SleepCommand.cc
+	* src/SpeedCalc.cc
+	* src/SpeedCalc.h
+	* src/TimeA2.cc
+	* src/TimeA2.h
+	* src/TimeBasedCommand.cc
+	* src/TimeSeedCriteria.h
+	* src/UTMetadataRequestTracker.h
+	* src/UTPexExtensionMessage.cc
+	* src/wallclock.h
+
 2010-03-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that util::itos(INT64_MIN) fails.

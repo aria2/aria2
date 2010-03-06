@@ -38,6 +38,7 @@
 #include "DHTMessageCallback.h"
 #include "DHTConstants.h"
 #include "util.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -53,7 +54,7 @@ DHTMessageTrackerEntry::DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& s
 
 bool DHTMessageTrackerEntry::isTimeout() const
 {
-  return _dispatchedTime.elapsed(_timeout);
+  return _dispatchedTime.difference(global::wallclock) >= _timeout;
 }
 
 void DHTMessageTrackerEntry::extendTimeout()

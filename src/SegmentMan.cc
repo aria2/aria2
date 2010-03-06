@@ -51,6 +51,7 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include "FileEntry.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -336,8 +337,8 @@ void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
 unsigned int SegmentMan::calculateDownloadSpeed()
 {
   unsigned int speed = 0;
-  if(_lastPeerStatDlspdMapUpdated.elapsedInMillis(250)) {
-    _lastPeerStatDlspdMapUpdated.reset();
+  if(_lastPeerStatDlspdMapUpdated.differenceInMillis(global::wallclock) >= 250){
+    _lastPeerStatDlspdMapUpdated = global::wallclock;
     _peerStatDlspdMap.clear();
     for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
           peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {

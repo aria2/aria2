@@ -58,6 +58,7 @@
 #include "StringFormat.h"
 #include "Decoder.h"
 #include "RequestGroupMan.h"
+#include "wallclock.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -253,7 +254,8 @@ bool DownloadCommand::executeInternal() {
 void DownloadCommand::checkLowestDownloadSpeed() const
 {
   // calculate downloading speed
-  if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
+  if(peerStat->getDownloadStartTime().difference(global::wallclock) >=
+     startupIdleTime) {
     unsigned int nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
       throw DL_ABORT_EX2(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,

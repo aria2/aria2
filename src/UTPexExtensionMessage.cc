@@ -43,6 +43,7 @@
 #include "StringFormat.h"
 #include "bencode.h"
 #include "a2functional.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -101,7 +102,7 @@ void UTPexExtensionMessage::doReceivedAction()
 bool UTPexExtensionMessage::addFreshPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
-     !peer->getFirstContactTime().elapsed(_interval)) {
+     peer->getFirstContactTime().difference(global::wallclock) < _interval) {
     _freshPeers.push_back(peer);
     return true;
   } else {
@@ -117,7 +118,8 @@ bool UTPexExtensionMessage::freshPeersAreFull() const
 bool UTPexExtensionMessage::addDroppedPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
-     !peer->getBadConditionStartTime().elapsed(_interval)) {
+     peer->getBadConditionStartTime().
+     difference(global::wallclock) < _interval) {
     _droppedPeers.push_back(peer);
     return true;
   } else {
