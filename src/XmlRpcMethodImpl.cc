@@ -83,6 +83,7 @@ const BDE BDE_WAITING = BDE("waiting");
 const BDE BDE_REMOVED = BDE("removed");
 const BDE BDE_ERROR = BDE("error");
 const BDE BDE_COMPLETE = BDE("complete");
+const BDE BDE_USED = BDE("used");
 
 const std::string KEY_GID = "gid";
 const std::string KEY_ERROR_CODE = "errorCode";
@@ -311,6 +312,30 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   return createGIDResponse(gid);
 }
 
+static void createUriEntry(BDE& uriList, const SharedHandle<FileEntry>& file)
+{
+  {
+    const std::deque<std::string>& uris = file->getSpentUris();
+    for(std::deque<std::string>::const_iterator i = uris.begin(),
+          eoi = uris.end(); i != eoi; ++i) {
+      BDE entry = BDE::dict();
+      entry[KEY_URI] = *i;
+      entry[KEY_STATUS] = BDE_USED;
+      uriList << entry;
+    }
+  }
+  {
+    const std::deque<std::string>& uris = file->getRemainingUris();
+    for(std::deque<std::string>::const_iterator i = uris.begin(),
+          eoi = uris.end(); i != eoi; ++i) {
+      BDE entry = BDE::dict();
+      entry[KEY_URI] = *i;
+      entry[KEY_STATUS] = BDE_WAITING;
+      uriList << entry;
+    }
+  }
+}
+
 template<typename InputIterator>
 static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
 {
@@ -323,14 +348,7 @@ static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
     entry[KEY_LENGTH] = util::uitos((*first)->getLength());
 
     BDE uriList = BDE::list();
-    std::vector<std::string> uris;
-    (*first)->getUris(uris);
-    for(std::vector<std::string>::const_iterator i = uris.begin(),
-          eoi = uris.end(); i != eoi; ++i) {
-      BDE uriEntry = BDE::dict();
-      uriEntry[KEY_URI] = *i;
-      uriList << uriEntry;
-    }
+    createUriEntry(uriList, *first);
     entry[KEY_URIS] = uriList;
     files << entry;
   }
@@ -559,14 +577,7 @@ BDE GetUrisXmlRpcMethod::process
   BDE uriList = BDE::list();
   // TODO Current implementation just returns first FileEntry's URIs.
   if(!group->getDownloadContext()->getFileEntries().empty()) {
-    std::vector<std::string> uris;
-    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    for(std::vector<std::string>::const_iterator i = uris.begin(),
-          eoi = uris.end(); i != eoi; ++i) {
-      BDE entry = BDE::dict();
-      entry[KEY_URI] = *i;
-      uriList << entry;
-    }
+    createUriEntry(uriList, group->getDownloadContext()->getFirstFileEntry());
   }
   return uriList;
 }

@@ -1330,6 +1330,11 @@ uri::
 
   URI
 
+status::
+
+  'used' if the URI is already used. 'waiting' if the URI is waiting
+  in the queue.
+
 *aria2.getFiles* 'gid'
 
 This method returns file list of the download denoted by 'gid'. 'gid'
