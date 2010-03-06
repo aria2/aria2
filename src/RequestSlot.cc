@@ -40,7 +40,7 @@ namespace aria2 {
 RequestSlot RequestSlot::nullSlot = RequestSlot();
 
 void RequestSlot::setDispatchedTime() {
-  dispatchedTime.reset();
+  dispatchedTime = global::wallclock;
 }
 
 void RequestSlot::setDispatchedTime(time_t secFromEpoch) {

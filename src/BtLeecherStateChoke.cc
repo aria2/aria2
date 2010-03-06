@@ -191,7 +191,7 @@ BtLeecherStateChoke::executeChoke
 (const std::vector<SharedHandle<Peer> >& peerSet)
 {
   _logger->info("Leecher state, %d choke round started", _round);
-  _lastRound.reset();
+  _lastRound = global::wallclock;
 
   std::vector<PeerEntry> peerEntries;
   std::transform(peerSet.begin(), peerSet.end(),

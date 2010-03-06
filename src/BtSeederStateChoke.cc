@@ -139,7 +139,7 @@ BtSeederStateChoke::executeChoke
 (const std::vector<SharedHandle<Peer> >& peerSet)
 {
   _logger->info("Seeder state, %d choke round started", _round);
-  _lastRound.reset();
+  _lastRound = global::wallclock;
 
   std::vector<PeerEntry> peerEntries;
 

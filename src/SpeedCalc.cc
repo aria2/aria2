@@ -51,11 +51,11 @@ SpeedCalc::SpeedCalc():sw(0), maxSpeed(0), prevSpeed(0), accumulatedLength(0),
 
 void SpeedCalc::reset() {
   std::fill(&lengthArray[0], &lengthArray[2], 0);
-  std::for_each(&cpArray[0], &cpArray[2], std::mem_fun_ref(&Time::reset));
+  std::fill(&cpArray[0], &cpArray[2], global::wallclock);
   sw = 0;
   maxSpeed = 0;
   prevSpeed = 0;
-  start.reset();
+  start = global::wallclock;
   accumulatedLength = 0;
   nextInterval = CHANGE_INTERVAL_SEC;
 }
@@ -95,7 +95,7 @@ bool SpeedCalc::isIntervalOver(int64_t milliElapsed) const
 
 void SpeedCalc::changeSw() {
   lengthArray[sw] = 0;
-  cpArray[sw].reset();
+  cpArray[sw] = global::wallclock;
   sw ^= 0x01;
   nextInterval = cpArray[sw].difference(global::wallclock)+CHANGE_INTERVAL_SEC;
 }

@@ -40,6 +40,7 @@
 #include "BitfieldMan.h"
 #include "A2STR.h"
 #include "BtMessageDispatcher.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -68,7 +69,7 @@ void PeerSessionResource::amChoking(bool b)
 {
   _amChoking = b;
   if(!b) {
-    _lastAmUnchoking.reset();
+    _lastAmUnchoking = global::wallclock;
   }
 }
 
@@ -252,7 +253,7 @@ void PeerSessionResource::updateDownloadLength(size_t bytes)
 {
   _peerStat.updateDownloadLength(bytes);
 
-  _lastDownloadUpdate.reset();
+  _lastDownloadUpdate = global::wallclock;
 }
 
 uint64_t PeerSessionResource::getCompletedLength() const

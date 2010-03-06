@@ -1,5 +1,15 @@
 2010-03-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced Time::reset() call with assigning of global::wallclock.
+	* src/BtLeecherStateChoke.cc
+	* src/BtSeederStateChoke.cc
+	* src/PeerSessionResource.cc
+	* src/RequestSlot.cc
+	* src/ServerStat.cc
+	* src/SpeedCalc.cc
+
+2010-03-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added changeUri XML-RPC method.  This method removes/adds URIs
 	dynamically.
 	* doc/aria2c.1.txt

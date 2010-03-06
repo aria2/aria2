@@ -39,6 +39,7 @@
 
 #include "array_fun.h"
 #include "LogFactory.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -77,7 +78,7 @@ void ServerStat::updateDownloadSpeed(unsigned int downloadSpeed)
   if(downloadSpeed > 0) {
     _status = OK;
   }
-  _lastUpdated.reset();
+  _lastUpdated = global::wallclock;
 }
 
 void ServerStat::setSingleConnectionAvgSpeed
@@ -184,7 +185,7 @@ void ServerStat::setStatusInternal(STATUS status)
                    _hostname.c_str(), _protocol.c_str());
   }
   _status = status;
-  _lastUpdated.reset();
+  _lastUpdated = global::wallclock;
 }
 
 void ServerStat::setOK()
