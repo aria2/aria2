@@ -1,5 +1,13 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Create CreateRequestCommand to the number of -s/-C when URIs are
+	added by XML-RPC.
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/XmlRpcMethodImpl.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added 'status' key to the response of getUri XML-RPC method.
 	* doc/aria2c.1.txt
 	* src/XmlRpcMethodImpl.cc

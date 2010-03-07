@@ -208,6 +208,8 @@ public:
   void createNextCommand(std::vector<Command*>& commands,
                          DownloadEngine* e, unsigned int numCommand);
   
+  void createNextCommand(std::vector<Command*>& commands, DownloadEngine* e);
+
   bool downloadFinished() const;
 
   bool allDownloadFinished() const;

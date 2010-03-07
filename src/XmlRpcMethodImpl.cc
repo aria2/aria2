@@ -917,6 +917,11 @@ BDE ChangeUriXmlRpcMethod::process
       }
     }
   }
+  if(addcount) {
+    std::vector<Command*> commands;
+    group->createNextCommand(commands, e);
+    e->addCommand(commands);
+  }
   BDE res = BDE::list();
   res << delcount;
   res << addcount;

@@ -685,6 +685,29 @@ void RequestGroup::createNextCommandWithAdj(std::vector<Command*>& commands,
 }
 
 void RequestGroup::createNextCommand(std::vector<Command*>& commands,
+                                     DownloadEngine* e)
+{
+  int numCommand;
+  if(getTotalLength() == 0) {
+    if(_numStreamConnection > 0) {
+      numCommand = 0;
+    } else {
+      numCommand = 1;
+    }
+  } else {
+    if(_numStreamConnection >= _numConcurrentCommand) {
+      numCommand = 0;
+    } else {
+      numCommand = std::min(_downloadContext->getNumPieces(),
+                            _numConcurrentCommand-_numStreamConnection);
+    }
+  }
+  if(numCommand > 0) {
+    createNextCommand(commands, e, numCommand);
+  }
+}
+
+void RequestGroup::createNextCommand(std::vector<Command*>& commands,
                                      DownloadEngine* e,
                                      unsigned int numCommand)
 {
