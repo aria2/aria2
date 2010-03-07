@@ -126,7 +126,7 @@ void HttpRequestTest::testCreateRequest()
   SharedHandle<Request> request(new Request());
   request->supportsPersistentConnection(true);
 
-  request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   p.reset(new Piece(0, 1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024, p));
@@ -196,7 +196,7 @@ void HttpRequestTest::testCreateRequest()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   // redirection set persistent connection flag to true
-  request->redirectUrl("http://localhost:8080/archives/download/aria2-1.0.0.tar.bz2");
+  request->redirectUri("http://localhost:8080/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -228,7 +228,7 @@ void HttpRequestTest::testCreateRequest()
 
   request->setKeepAliveHint(false);
 
-  request->resetUrl();
+  request->resetUri();
 
   p.reset(new Piece(0, 1024*1024));
   segment.reset(new PiecedSegment(1024*1024, p));
@@ -255,7 +255,7 @@ void HttpRequestTest::testCreateRequest()
 
   // enable http proxy auth
   SharedHandle<Request> proxyRequest(new Request());
-  CPPUNIT_ASSERT(proxyRequest->setUrl
+  CPPUNIT_ASSERT(proxyRequest->setUri
                  ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
   httpRequest.setProxyRequest(proxyRequest);
 
@@ -292,7 +292,7 @@ void HttpRequestTest::testCreateRequest()
   request->setPipeliningHint(false);
 
   // turn off proxy auth
-  CPPUNIT_ASSERT(proxyRequest->setUrl("http://localhost:9000"));
+  CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
 
   expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -314,10 +314,10 @@ void HttpRequestTest::testCreateRequest_ftp()
   _option->put(PREF_FTP_PASSWD, "aria2passwd");
 
   SharedHandle<Request> request(new Request());
-  request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   SharedHandle<Request> proxyRequest(new Request());
-  CPPUNIT_ASSERT(proxyRequest->setUrl
+  CPPUNIT_ASSERT(proxyRequest->setUri
                  ("http://localhost:9000"));
 
   HttpRequest httpRequest;
@@ -349,7 +349,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   // test proxy authorization
-  CPPUNIT_ASSERT(proxyRequest->setUrl
+  CPPUNIT_ASSERT(proxyRequest->setUri
                  ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
 
   expectedText =
@@ -372,7 +372,7 @@ void HttpRequestTest::testCreateRequest_ftp()
 void HttpRequestTest::testCreateRequest_with_cookie()
 {
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment
     (new PiecedSegment(1024*1024, p));
@@ -410,7 +410,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setUrl("http://localhost/archives/download/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -424,7 +424,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setUrl("http://www.aria2.org/archives/download/aria2-1.0.0.tar.bz2");
+  request->setUri("http://www.aria2.org/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -438,7 +438,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setUrl("https://www.aria2.org/archives/download/"
+  request->setUri("https://www.aria2.org/archives/download/"
                   "aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -458,7 +458,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 void HttpRequestTest::testCreateRequest_query()
 {
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138");
+  request->setUri("http://localhost/wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138");
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
@@ -481,7 +481,7 @@ void HttpRequestTest::testCreateRequest_head()
 {
   SharedHandle<Request> request(new Request());
   request->setMethod(Request::METHOD_HEAD);
-  request->setUrl("http://localhost/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
@@ -497,12 +497,12 @@ void HttpRequestTest::testCreateRequest_head()
 void HttpRequestTest::testCreateProxyRequest()
 {
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
 
   SharedHandle<Request> proxyRequest(new Request());
-  CPPUNIT_ASSERT(proxyRequest->setUrl("http://localhost:9000"));
+  CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
 
   HttpRequest httpRequest;
 
@@ -544,7 +544,7 @@ void HttpRequestTest::testCreateProxyRequest()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
 
   // test proxy authorization
-  CPPUNIT_ASSERT(proxyRequest->setUrl
+  CPPUNIT_ASSERT(proxyRequest->setUri
                  ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
 
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
@@ -561,7 +561,7 @@ void HttpRequestTest::testIsRangeSatisfied()
 {
   SharedHandle<Request> request(new Request());
   request->supportsPersistentConnection(true);
-  request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setPipeliningHint(false); // default: false
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
@@ -616,7 +616,7 @@ void HttpRequestTest::testIsRangeSatisfied()
 void HttpRequestTest::testUserAgent()
 {
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   //SharedHandle<Piece> p(new Piece(0, 1024));
   //SharedHandle<Segment> segment(new PiecedSegment(1024, p));
@@ -640,7 +640,7 @@ void HttpRequestTest::testUserAgent()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   SharedHandle<Request> proxyRequest(new Request());
-  CPPUNIT_ASSERT(proxyRequest->setUrl("http://localhost:9000"));
+  CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
   
   httpRequest.setProxyRequest(proxyRequest);
 
@@ -656,7 +656,7 @@ void HttpRequestTest::testUserAgent()
 void HttpRequestTest::testAddHeader()
 {
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -684,7 +684,7 @@ void HttpRequestTest::testAddAcceptType()
                                 "muffin/chocolate" };
 
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -709,7 +709,7 @@ void HttpRequestTest::testAddAcceptType()
 void HttpRequestTest::testEnableAcceptEncoding()
 {
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
@@ -740,7 +740,7 @@ void HttpRequestTest::testEnableAcceptEncoding()
 void HttpRequestTest::testCreateRequest_ipv6LiteralAddr()
 {
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://[::1]/path");
+  request->setUri("http://[::1]/path");
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
@@ -749,7 +749,7 @@ void HttpRequestTest::testCreateRequest_ipv6LiteralAddr()
   CPPUNIT_ASSERT(httpRequest.createRequest().find("Host: [::1]") != std::string::npos);
 
   SharedHandle<Request> proxy(new Request());
-  proxy->setUrl("http://proxy");
+  proxy->setUri("http://proxy");
   httpRequest.setProxyRequest(proxy);
   std::string proxyRequest = httpRequest.createProxyRequest();
   CPPUNIT_ASSERT(proxyRequest.find("Host: [::1]:80") != std::string::npos);

@@ -149,7 +149,7 @@ public:
 
   bool addUri(const std::string& uri)
   {
-    if(Request().setUrl(uri)) {
+    if(Request().setUri(uri)) {
       _uris.push_back(uri);
       return true;
     } else {
@@ -159,7 +159,7 @@ public:
 
   bool insertUri(const std::string& uri, size_t pos)
   {
-    if(Request().setUrl(uri)) {
+    if(Request().setUri(uri)) {
       pos = std::min(pos, _uris.size());
       _uris.insert(_uris.begin()+pos, uri);
       return true;

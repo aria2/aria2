@@ -912,8 +912,8 @@ BDE GetServersXmlRpcMethod::process
       SharedHandle<PeerStat> ps = (*ri)->getPeerStat();
       if(!ps.isNull()) {
         BDE serverEntry = BDE::dict();
-        serverEntry[KEY_URI] = (*ri)->getUrl();
-        serverEntry[KEY_CURRENT_URI] = (*ri)->getCurrentUrl();
+        serverEntry[KEY_URI] = (*ri)->getUri();
+        serverEntry[KEY_CURRENT_URI] = (*ri)->getCurrentUri();
         serverEntry[KEY_DOWNLOAD_SPEED] =
           util::uitos(ps->calculateDownloadSpeed());
         servers << serverEntry;

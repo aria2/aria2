@@ -132,14 +132,14 @@ bool HttpResponse::isRedirect() const
 void HttpResponse::processRedirect()
 {
   
-  if(httpRequest->getRequest()->redirectUrl(getRedirectURI())) {
+  if(httpRequest->getRequest()->redirectUri(getRedirectURI())) {
     logger->info(MSG_REDIRECT, cuid,
-                 httpRequest->getRequest()->getCurrentUrl().c_str());
+                 httpRequest->getRequest()->getCurrentUri().c_str());
   } else {
     throw DL_RETRY_EX
       (StringFormat("CUID#%d - Redirect to %s failed. It may not be a valid"
                     " URI.", cuid,
-                    httpRequest->getRequest()->getCurrentUrl().c_str()).str());
+                    httpRequest->getRequest()->getCurrentUri().c_str()).str());
   }
 }
 

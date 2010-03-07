@@ -46,14 +46,14 @@ namespace aria2 {
 
 class Request {
 private:
-  std::string _url;
-  std::string _currentUrl;
+  std::string _uri;
+  std::string _currentUri;
   /**
-   * URL previously requested to the server. This is used as Referer
+   * URI previously requested to the server. This is used as Referer
    */
-  std::string _previousUrl;
+  std::string _previousUri;
   /**
-   * URL used as Referer in the initial request
+   * URI used as Referer in the initial request
    */
   std::string _referer;
   std::string _protocol;
@@ -90,17 +90,17 @@ private:
 
   bool _removalRequested;
 
-  bool parseUrl(const std::string& url);
+  bool parseUri(const std::string& uri);
 public:
   Request();
 
-  // Sets url to _url and parses URL.  Returns true if parsing goes
+  // Sets uri to _uri and parses URI.  Returns true if parsing goes
   // successful, otherwise returns false.
-  bool setUrl(const std::string& url);
-  // Parses URL.  _url field are not altered by this method.  Returns
+  bool setUri(const std::string& uri);
+  // Parses URI.  _uri field are not altered by this method.  Returns
   // true if parsing goes successful, otherwise returns false.
-  bool redirectUrl(const std::string& url);
-  bool resetUrl();
+  bool redirectUri(const std::string& uri);
+  bool resetUri();
   void resetTryCount() { _tryCount = 0; }
   void addTryCount() { ++_tryCount; }
   unsigned int getTryCount() const { return _tryCount; }
@@ -112,12 +112,12 @@ public:
     return _redirectCount;
   }
 
-  // Returns URI passed by setUrl()
-  const std::string& getUrl() const { return _url; }
-  const std::string& getCurrentUrl() const { return _currentUrl; }
-  const std::string& getPreviousUrl() const { return _previousUrl; }
+  // Returns URI passed by setUri()
+  const std::string& getUri() const { return _uri; }
+  const std::string& getCurrentUri() const { return _currentUri; }
+  const std::string& getPreviousUri() const { return _previousUri; }
   const std::string& getReferer() const { return _referer; }
-  void setReferer(const std::string& url);
+  void setReferer(const std::string& uri);
   const std::string& getProtocol() const { return _protocol; }
   const std::string& getHost() const { return _host; }
   // Same as getHost(), but for IPv6 literal addresses, enclose them

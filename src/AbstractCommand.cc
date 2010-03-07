@@ -111,7 +111,7 @@ bool AbstractCommand::execute() {
       if(logger->debug()) {
         logger->debug
           ("CUID#%d - Discard original URI=%s because it is requested.",
-           cuid, req->getUrl().c_str());
+           cuid, req->getUri().c_str());
       }
       return prepareForRetry(0);
     }
@@ -208,10 +208,10 @@ bool AbstractCommand::execute() {
     } else {
       logger->error(MSG_DOWNLOAD_ABORTED,
                     DL_ABORT_EX2(StringFormat
-                                 ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
-                    cuid, req->getUrl().c_str());
-      _fileEntry->addURIResult(req->getUrl(), err.getCode());
-      _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
+                                 ("URI=%s", req->getCurrentUri().c_str()).str(),err),
+                    cuid, req->getUri().c_str());
+      _fileEntry->addURIResult(req->getUri(), err.getCode());
+      _requestGroup->setLastUriResult(req->getUri(), err.getCode());
     }
     onAbort();
     tryReserved();
@@ -220,8 +220,8 @@ bool AbstractCommand::execute() {
     assert(!req.isNull());
     logger->info(MSG_RESTARTING_DOWNLOAD,
                  DL_RETRY_EX2(StringFormat
-                              ("URI=%s", req->getCurrentUrl().c_str()).str(),err),
-                 cuid, req->getUrl().c_str());
+                              ("URI=%s", req->getCurrentUri().c_str()).str(),err),
+                 cuid, req->getUri().c_str());
     req->addTryCount();
     req->resetRedirectCount();
     const unsigned int maxTries = getOption()->getAsInt(PREF_MAX_TRIES);
@@ -229,9 +229,9 @@ bool AbstractCommand::execute() {
     if(isAbort) {
       onAbort();
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
-      logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
-      _fileEntry->addURIResult(req->getUrl(), err.getCode());
-      _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
+      logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUri().c_str());
+      _fileEntry->addURIResult(req->getUri(), err.getCode());
+      _requestGroup->setLastUriResult(req->getUri(), err.getCode());
       tryReserved();
       return true;
     } else {
@@ -240,8 +240,8 @@ bool AbstractCommand::execute() {
   } catch(DownloadFailureException& err) {
     logger->error(EX_EXCEPTION_CAUGHT, err);
     if(!req.isNull()) {
-      _fileEntry->addURIResult(req->getUrl(), err.getCode());
-      _requestGroup->setLastUriResult(req->getUrl(), err.getCode());
+      _fileEntry->addURIResult(req->getUri(), err.getCode());
+      _requestGroup->setLastUriResult(req->getUri(), err.getCode());
     }
     _requestGroup->setHaltRequested(true);
     return true;
@@ -281,7 +281,7 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
     _fileEntry->poolRequest(req);
     if(logger->debug()) {
       logger->debug("CUID#%d - Pooling request URI=%s",
-                    cuid, req->getUrl().c_str());
+                    cuid, req->getUri().c_str());
     }
     if(!_requestGroup->getSegmentMan().isNull()) {
       _requestGroup->getSegmentMan()->recognizeSegmentFor(_fileEntry);
@@ -305,7 +305,7 @@ void AbstractCommand::onAbort() {
     // TODO This might be a problem if the failure is caused by proxy.
     e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
                                                req->getProtocol())->setError();
-    _fileEntry->removeIdenticalURI(req->getUrl());
+    _fileEntry->removeIdenticalURI(req->getUri());
     _fileEntry->removeRequest(req);
   }
   if(logger->debug()) {
@@ -421,7 +421,7 @@ static bool isProxyRequest
 (const std::string& protocol, const SharedHandle<Option>& option)
 {
   const std::string& proxyUri = getProxyUri(protocol, option);
-  return !proxyUri.empty() && Request().setUrl(proxyUri);
+  return !proxyUri.empty() && Request().setUri(proxyUri);
 }
 
 class DomainMatch {
@@ -468,7 +468,7 @@ SharedHandle<Request> AbstractCommand::createProxyRequest() const
   std::string proxy = getProxyUri(req->getProtocol(), getOption());
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
-    if(proxyRequest->setUrl(proxy)) {
+    if(proxyRequest->setUri(proxy)) {
       if(logger->debug()) {
         logger->debug("CUID#%d - Using proxy", cuid);
       }

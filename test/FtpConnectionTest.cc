@@ -54,7 +54,7 @@ public:
     _listenPort = addrinfo.second;
 
     SharedHandle<Request> req(new Request());
-    req->setUrl("ftp://localhost/dir/file.img");
+    req->setUri("ftp://localhost/dir/file.img");
 
     _clientSocket.reset(new SocketCore());
     _clientSocket->establishConnection("localhost", _listenPort);

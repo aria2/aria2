@@ -67,13 +67,13 @@ Request::Request():
   _removalRequested(false)
 {}
 
-static std::string removeFragment(const std::string& url)
+static std::string removeFragment(const std::string& uri)
 {
-  std::string::size_type sharpIndex = url.find("#");
+  std::string::size_type sharpIndex = uri.find("#");
   if(sharpIndex == std::string::npos) {
-    return url;
+    return uri;
   } else {
-    return url.substr(0, sharpIndex);
+    return uri.substr(0, sharpIndex);
   }
 }
 
@@ -83,7 +83,7 @@ static bool isHexNumber(const char c)
     ('a' <= c && c <= 'f');
 }
 
-static std::string urlencode(const std::string& src)
+static std::string percentEncode(const std::string& src)
 {
   std::string result = src;
   if(src.empty()) {
@@ -92,7 +92,7 @@ static std::string urlencode(const std::string& src)
   result += "  ";
   for(int index = src.size()-1; index >= 0; --index) {
     const unsigned char c = result[index];
-    // '/' is not urlencoded because src is expected to be a path.
+    // '/' is not percent encoded because src is expected to be a path.
     if(!util::inRFC3986ReservedChars(c) && !util::inRFC3986UnreservedChars(c)) {
       if(c == '%') {
         if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
@@ -107,47 +107,47 @@ static std::string urlencode(const std::string& src)
   return result;
 }
 
-bool Request::setUrl(const std::string& url) {
+bool Request::setUri(const std::string& uri) {
   _supportsPersistentConnection = true;
-  _url = url;
-  return parseUrl(_url);
+  _uri = uri;
+  return parseUri(_uri);
 }
 
-bool Request::resetUrl() {
-  _previousUrl = _referer;
+bool Request::resetUri() {
+  _previousUri = _referer;
   _supportsPersistentConnection = true;
-  return parseUrl(_url);
+  return parseUri(_uri);
 }
 
-void Request::setReferer(const std::string& url)
+void Request::setReferer(const std::string& uri)
 {
-  _referer = _previousUrl = urlencode(removeFragment(url));
+  _referer = _previousUri = percentEncode(removeFragment(uri));
 }
 
-bool Request::redirectUrl(const std::string& url) {
-  _previousUrl = A2STR::NIL;
+bool Request::redirectUri(const std::string& uri) {
+  _previousUri = A2STR::NIL;
   _supportsPersistentConnection = true;
   ++_redirectCount;
-  std::string redirectedUrl;
-  if(url.find("://") == std::string::npos) {
+  std::string redirectedUri;
+  if(uri.find("://") == std::string::npos) {
     // rfc2616 requires absolute URI should be provided by Location header
     // field, but some servers don't obey this rule.
-    if(util::startsWith(url, "/")) {
+    if(util::startsWith(uri, "/")) {
       // abosulute path
-      redirectedUrl = strconcat(_protocol, "://", _host, url);
+      redirectedUri = strconcat(_protocol, "://", _host, uri);
     } else {
       // relative path
-      redirectedUrl = strconcat(_protocol, "://", _host, _dir, "/", url);
+      redirectedUri = strconcat(_protocol, "://", _host, _dir, "/", uri);
     }
   } else {
-    redirectedUrl = url;
+    redirectedUri = uri;
   }
-  return parseUrl(redirectedUrl);
+  return parseUri(redirectedUri);
 }
 
-bool Request::parseUrl(const std::string& srcUrl) {
-  const std::string url = urlencode(removeFragment(srcUrl));
-  _currentUrl = url;
+bool Request::parseUri(const std::string& srcUri) {
+  const std::string uri = percentEncode(removeFragment(srcUri));
+  _currentUri = uri;
   _host = A2STR::NIL;
   _port = 0;
   _dir = A2STR::NIL;
@@ -173,21 +173,21 @@ bool Request::parseUrl(const std::string& srcUrl) {
   //                                                queryFirst
 
   // find query part
-  std::string::const_iterator queryFirst = url.begin();
-  for(; queryFirst != url.end(); ++queryFirst) {
+  std::string::const_iterator queryFirst = uri.begin();
+  for(; queryFirst != uri.end(); ++queryFirst) {
     if(*queryFirst == '?') break;
   }
-  _query = std::string(queryFirst, url.end());
+  _query = std::string(queryFirst, uri.end());
   // find protocol
-  std::string::size_type protocolOffset = url.find("://");
+  std::string::size_type protocolOffset = uri.find("://");
   if(protocolOffset == std::string::npos) return false;
-  _protocol = std::string(url.begin(), url.begin()+protocolOffset);
+  _protocol = std::string(uri.begin(), uri.begin()+protocolOffset);
   uint16_t defPort;
   if((defPort = FeatureConfig::getInstance()->getDefaultPort(_protocol)) == 0) {
     return false;
   }
   // find authority
-  std::string::const_iterator authorityFirst = url.begin()+protocolOffset+3;
+  std::string::const_iterator authorityFirst = uri.begin()+protocolOffset+3;
   std::string::const_iterator authorityLast = authorityFirst;
   for(; authorityLast != queryFirst; ++authorityLast) {
     if(*authorityLast == '/') break;
@@ -318,7 +318,7 @@ const SharedHandle<PeerStat>& Request::initPeerStat()
   // Use host and protocol in original URI, because URI selector
   // selects URI based on original URI, not redirected one.
   Request origReq;
-  origReq.setUrl(_url);
+  origReq.setUri(_uri);
   _peerStat.reset(new PeerStat(0, origReq.getHost(), origReq.getProtocol()));
   return _peerStat;
 }

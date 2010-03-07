@@ -1,5 +1,29 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	url -> uri in Request class.
+	* src/AbstractCommand.cc
+	* src/AdaptiveURISelector.cc
+	* src/DefaultBtAnnounce.cc
+	* src/FeedbackURISelector.cc
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/HttpRequest.h
+	* src/HttpResponse.cc
+	* src/InitiateConnectionCommandFactory.cc
+	* src/Metalink2RequestGroup.cc
+	* src/OptionHandlerImpl.h
+	* src/ProtocolDetector.cc
+	* src/Request.cc
+	* src/Request.h
+	* src/XmlRpcMethodImpl.cc
+	* test/AuthConfigFactoryTest.cc
+	* test/FtpConnectionTest.cc
+	* test/HttpRequestTest.cc
+	* test/HttpResponseTest.cc
+	* test/RequestTest.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added getServers XML-RPC method.
 	* doc/aria2c.1.txt
 	* src/FileEntry.h

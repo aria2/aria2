@@ -108,7 +108,7 @@ bool DefaultBtAnnounce::isAnnounceReady() {
 static bool uriHasQuery(const std::string& uri)
 {
   Request req;
-  req.setUrl(uri);
+  req.setUri(uri);
   return !req.getQuery().empty();
 }
 
@@ -141,50 +141,50 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   TransferStat stat = peerStorage->calculateStat();
   uint64_t left =
     pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
-  std::string url = announceList.getAnnounce();
-  url += uriHasQuery(url) ? "&" : "?";
-  url += "info_hash=";
-  url += util::torrentUrlencode(bittorrent::getInfoHash(_downloadContext),
+  std::string uri = announceList.getAnnounce();
+  uri += uriHasQuery(uri) ? "&" : "?";
+  uri += "info_hash=";
+  uri += util::torrentUrlencode(bittorrent::getInfoHash(_downloadContext),
                                 INFO_HASH_LENGTH);
-  url += "&peer_id=";
-  url += util::torrentUrlencode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH);
-  url += "&uploaded=";
-  url += util::uitos(stat.getSessionUploadLength());
-  url += "&downloaded=";
-  url += util::uitos(stat.getSessionDownloadLength());
-  url += "&left=";
-  url += util::uitos(left);
-  url += "&compact=1";
-  url += "&key=";
+  uri += "&peer_id=";
+  uri += util::torrentUrlencode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH);
+  uri += "&uploaded=";
+  uri += util::uitos(stat.getSessionUploadLength());
+  uri += "&downloaded=";
+  uri += util::uitos(stat.getSessionDownloadLength());
+  uri += "&left=";
+  uri += util::uitos(left);
+  uri += "&compact=1";
+  uri += "&key=";
   // Use last 8 bytes of peer ID as a key
   size_t keyLen = 8;
-  url += util::torrentUrlencode
+  uri += util::torrentUrlencode
     (bittorrent::getStaticPeerId()+PEER_ID_LENGTH-keyLen, keyLen);
-  url += "&numwant=";
-  url += util::uitos(numWant);
-  url += "&no_peer_id=1";
+  uri += "&numwant=";
+  uri += util::uitos(numWant);
+  uri += "&no_peer_id=1";
   if(btRuntime->getListenPort() > 0) {
-    url += "&port=";
-    url += util::uitos(btRuntime->getListenPort());
+    uri += "&port=";
+    uri += util::uitos(btRuntime->getListenPort());
   }
   std::string event = announceList.getEventString();
   if(!event.empty()) {
-    url += "&event=";
-    url += event;
+    uri += "&event=";
+    uri += event;
   }
   if(!trackerId.empty()) {
-    url += "&trackerid="+util::torrentUrlencode(trackerId);
+    uri += "&trackerid="+util::torrentUrlencode(trackerId);
   }
   if(option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    url += "&requirecrypto=1";
+    uri += "&requirecrypto=1";
   } else {
-    url += "&supportcrypto=1";
+    uri += "&supportcrypto=1";
   }
   if(!option->blank(PREF_BT_EXTERNAL_IP)) {
-    url += "&ip=";
-    url += option->get(PREF_BT_EXTERNAL_IP);
+    uri += "&ip=";
+    uri += option->get(PREF_BT_EXTERNAL_IP);
   }
-  return url;
+  return uri;
 }
 
 void DefaultBtAnnounce::announceStart() {

@@ -69,19 +69,19 @@ namespace aria2 {
 Metalink2RequestGroup::Metalink2RequestGroup():
   _logger(LogFactory::getInstance()) {}
 
-class AccumulateNonP2PUrl {
+class AccumulateNonP2PUri {
 private:
-  std::vector<std::string>& urlsPtr;
+  std::vector<std::string>& urisPtr;
 public:
-  AccumulateNonP2PUrl(std::vector<std::string>& urlsPtr)
-    :urlsPtr(urlsPtr) {}
+  AccumulateNonP2PUri(std::vector<std::string>& urisPtr)
+    :urisPtr(urisPtr) {}
 
   void operator()(const SharedHandle<MetalinkResource>& resource) {
     switch(resource->type) {
     case MetalinkResource::TYPE_HTTP:
     case MetalinkResource::TYPE_HTTPS:
     case MetalinkResource::TYPE_FTP:
-      urlsPtr.push_back(resource->url);
+      urisPtr.push_back(resource->url);
       break;
     default:
       break;
@@ -89,9 +89,9 @@ public:
   }
 };
 
-class FindBitTorrentUrl {
+class FindBitTorrentUri {
 public:
-  FindBitTorrentUrl() {}
+  FindBitTorrentUri() {}
 
   bool operator()(const SharedHandle<MetalinkResource>& resource) {
     if(resource->type == MetalinkResource::TYPE_BITTORRENT) {
@@ -232,7 +232,7 @@ Metalink2RequestGroup::createRequestGroup
       entry->reorderResourcesByPriority();
       std::vector<std::string> uris;
       std::for_each(entry->resources.begin(), entry->resources.end(),
-                    AccumulateNonP2PUrl(uris));
+                    AccumulateNonP2PUri(uris));
       // If piece hash is specified in the metalink,
       // make segment size equal to piece hash size.
       size_t pieceLength;
@@ -286,7 +286,7 @@ Metalink2RequestGroup::createRequestGroup
         (*i)->reorderResourcesByPriority();
         std::vector<std::string> uris;
         std::for_each((*i)->resources.begin(), (*i)->resources.end(),
-                      AccumulateNonP2PUrl(uris));
+                      AccumulateNonP2PUri(uris));
         SharedHandle<FileEntry> fe
           (new FileEntry
            (util::applyDir(option->get(PREF_DIR),

@@ -341,7 +341,7 @@ SharedHandle<ServerStat> AdaptiveURISelector::getServerStats
 (const std::string& uri) const
 {
   Request r;
-  r.setUrl(uri);
+  r.setUri(uri);
   return _serverStatMan->find(r.getHost(), r.getProtocol());
 }
 

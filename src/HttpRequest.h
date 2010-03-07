@@ -126,7 +126,7 @@ public:
 
   const std::string& getCurrentURI() const
   {
-    return request->getCurrentUrl();
+    return request->getCurrentUri();
   }
   
   const std::string& getDir() const
@@ -146,7 +146,7 @@ public:
 
   const std::string& getPreviousURI() const
   {
-    return request->getPreviousUrl();
+    return request->getPreviousUri();
   }
 
   std::string getURIHost() const
@@ -217,7 +217,7 @@ public:
   (const SharedHandle<AuthConfigFactory>& factory, const Option* option);
 
   /*
-   * To use proxy, pass proxy string to Request::setUrl() and set it this
+   * To use proxy, pass proxy string to Request::setUri() and set it this
    * object.
    */
   void setProxyRequest(const SharedHandle<Request>& proxyRequest);

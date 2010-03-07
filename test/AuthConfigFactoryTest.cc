@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AuthConfigFactoryTest );
 void AuthConfigFactoryTest::testCreateAuthConfig_http()
 {
   SharedHandle<Request> req(new Request());
-  req->setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
+  req->setUri("http://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
   option.put(PREF_NO_NETRC, V_FALSE);
@@ -63,7 +63,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // See default token in netrc is ignored.
-  req->setUrl("http://mirror/");
+  req->setUri("http://mirror/");
 
   CPPUNIT_ASSERT(!factory.activateBasicCred("mirror", "/", &option));
 
@@ -81,7 +81,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // username and password in URI
-  req->setUrl("http://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
+  req->setUri("http://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:aria2password"),
                        factory.createAuthConfig(req, &option)->getAuthText());  
 }
@@ -89,7 +89,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
 void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
 {
   SharedHandle<Request> req(new Request());
-  req->setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
+  req->setUri("http://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
   option.put(PREF_NO_NETRC, V_FALSE);
@@ -115,7 +115,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // See default token in netrc is ignored.
-  req->setUrl("http://mirror/");
+  req->setUri("http://mirror/");
 
   CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
 
@@ -127,7 +127,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // username and password in URI
-  req->setUrl("http://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
+  req->setUri("http://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:aria2password"),
                        factory.createAuthConfig(req, &option)->getAuthText());  
 }
@@ -135,7 +135,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
 void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
 {
   SharedHandle<Request> req(new Request());
-  req->setUrl("ftp://localhost/download/aria2-1.0.0.tar.bz2");
+  req->setUri("ftp://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
   option.put(PREF_NO_NETRC, V_FALSE);
@@ -167,13 +167,13 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // username and password in URI
-  req->setUrl("ftp://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
+  req->setUri("ftp://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:aria2password"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // username in URI, but no password. We have DefaultAuthenticator
   // but username is not aria2user
-  req->setUrl("ftp://aria2user@localhost/download/aria2-1.0.0.tar.bz2");
+  req->setUri("ftp://aria2user@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:userDefinedPassword"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
@@ -190,7 +190,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:netrcpass"),
                        factory.createAuthConfig(req, &option)->getAuthText());
   // No netrc entry for host mirror, so "userDefinedPassword" is used.
-  req->setUrl("ftp://aria2user@mirror/download/aria2-1.0.0.tar.bz2");
+  req->setUri("ftp://aria2user@mirror/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:userDefinedPassword"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 }
@@ -213,27 +213,27 @@ void AuthConfigFactoryTest::testUpdateBasicCred()
     (AuthConfigFactory::BasicCred("jack", "jackx","mirror", "/doc", true));
 
   SharedHandle<Request> req(new Request());
-  req->setUrl("http://localhost/download/v2.6/Changelog");
+  req->setUri("http://localhost/download/v2.6/Changelog");
   
   CPPUNIT_ASSERT_EQUAL(std::string("price:j38jdc"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
-  req->setUrl("http://localhost/documents/reference.html");
+  req->setUri("http://localhost/documents/reference.html");
   CPPUNIT_ASSERT_EQUAL(std::string("alice:ium8"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
-  req->setUrl("http://localhost/documents2/manual.html");
+  req->setUri("http://localhost/documents2/manual.html");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypass"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
-  req->setUrl("http://localhost/doc/readme.txt");
+  req->setUri("http://localhost/doc/readme.txt");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypass"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
-  req->setUrl("http://local/");
+  req->setUri("http://local/");
   CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
 
-  req->setUrl("http://mirror/");
+  req->setUri("http://mirror/");
   CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
 }
 

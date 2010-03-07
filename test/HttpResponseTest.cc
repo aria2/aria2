@@ -137,7 +137,7 @@ void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(httpHeader);
@@ -155,7 +155,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
   httpHeader->put("Content-Disposition", "attachment; filename=\"\"");
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(httpHeader);
@@ -173,7 +173,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
                   "attachment; filename=\"aria2-current.tar.bz2\"");
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(httpHeader);
@@ -362,7 +362,7 @@ void HttpResponseTest::testValidateResponse_good_range()
   SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
   httpRequest->setFileEntry(fileEntry);
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setResponseStatus("206");
@@ -389,7 +389,7 @@ void HttpResponseTest::testValidateResponse_bad_range()
   SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
   httpRequest->setFileEntry(fileEntry);
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setResponseStatus("206");
@@ -415,7 +415,7 @@ void HttpResponseTest::testValidateResponse_chunked()
   SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
   httpRequest->setFileEntry(fileEntry);
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setResponseStatus("206");
@@ -450,7 +450,7 @@ void HttpResponseTest::testProcessRedirect()
 
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   
@@ -479,7 +479,7 @@ void HttpResponseTest::testRetrieveCookie()
 
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
-  request->setUrl("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
+  request->setUri("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   SharedHandle<CookieStorage> st(new CookieStorage());
   httpRequest->setCookieStorage(st);

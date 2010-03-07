@@ -53,7 +53,7 @@ ProtocolDetector::~ProtocolDetector() {}
 
 bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
 {
-  return Request().setUrl(uri);
+  return Request().setUri(uri);
 }
 
 bool ProtocolDetector::guessTorrentFile(const std::string& uri) const

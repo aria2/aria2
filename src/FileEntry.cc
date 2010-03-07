@@ -132,7 +132,7 @@ FileEntry::getRequest
         return req;
       }
       req.reset(new Request());
-      if(req->setUrl(uri)) {
+      if(req->setUri(uri)) {
         if(!_singleHostMultiConnection) {
           if(inFlightHost(_inFlightRequests.begin(), _inFlightRequests.end(),
                           req->getHost())) {
@@ -243,7 +243,7 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
   for(std::deque<std::string>::const_iterator itr = _uris.begin(),
         eoi = _uris.end(); itr != eoi; ++itr) {
     if(((*itr).find(hostname) == std::string::npos) ||
-       (req.setUrl(*itr) && (req.getHost() != hostname))) {
+       (req.setUri(*itr) && (req.getHost() != hostname))) {
       newURIs.push_back(*itr);
     }
   }
@@ -337,7 +337,7 @@ static InputIterator findRequestByUri
 (InputIterator first, InputIterator last, const T& uri)
 {
   for(; first != last; ++first) {
-    if(!(*first)->removalRequested() && (*first)->getUrl() == uri) {
+    if(!(*first)->removalRequested() && (*first)->getUri() == uri) {
       return first;
     }
   }

@@ -76,7 +76,7 @@ std::string FeedbackURISelector::select(FileEntry* fileEntry)
   for(std::deque<std::string>::iterator i = uris.begin(), eoi = urisLast;
       i != eoi; ++i) {
     Request r;
-    r.setUrl(*i);
+    r.setUri(*i);
     SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),
                                                        r.getProtocol());
     if(!ss.isNull() && ss->isOK() && ss->getDownloadSpeed() > SPEED_THRESHOLD) {
@@ -87,7 +87,7 @@ std::string FeedbackURISelector::select(FileEntry* fileEntry)
     for(std::deque<std::string>::iterator i = uris.begin(), eoi = uris.end();
         i != eoi; ++i) {
       Request r;
-      r.setUrl(*i);
+      r.setUri(*i);
       SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),
                                                          r.getProtocol());
       // Skip ERROR state URI

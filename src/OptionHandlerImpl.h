@@ -562,14 +562,14 @@ public:
       option.put(_optName, optarg);
     } else {
       Request req;
-      std::string url;
+      std::string uri;
       if(util::startsWith(optarg, "http://")) {
-        url = optarg;
+        uri = optarg;
       } else {
-        url = "http://"+optarg;
+        uri = "http://"+optarg;
       }
-      if(req.setUrl(url)) {
-        option.put(_optName, url);
+      if(req.setUri(uri)) {
+        option.put(_optName, uri);
       } else {
         throw DL_ABORT_EX(_("unrecognized proxy format"));
       }
