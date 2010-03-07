@@ -139,7 +139,7 @@ bool FtpConnection::sendCwd()
     if(_baseWorkingDir != "/") {
       request += _baseWorkingDir;
     }
-    request += util::urldecode(req->getDir());
+    request += util::percentDecode(req->getDir());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.pushStr(request);
@@ -152,7 +152,7 @@ bool FtpConnection::sendMdtm()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "MDTM ";
-    request += util::urldecode(req->getFile());
+    request += util::percentDecode(req->getFile());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.pushStr(request);
@@ -165,7 +165,7 @@ bool FtpConnection::sendSize()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "SIZE ";
-    request += util::urldecode(req->getFile());
+    request += util::percentDecode(req->getFile());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.pushStr(request);
@@ -245,7 +245,7 @@ bool FtpConnection::sendRetr()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "RETR ";
-    request += util::urldecode(req->getFile());
+    request += util::percentDecode(req->getFile());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.pushStr(request);

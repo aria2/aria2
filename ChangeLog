@@ -1,5 +1,17 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	urldecode -> percentDecode
+	* src/FtpConnection.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponse.cc
+	* src/Request.cc
+	* src/magnet.cc
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	urlencode -> percentEncode,
 	torrentUrlencode -> torrentPercentEncode
 	* src/BtHandshakeMessage.cc

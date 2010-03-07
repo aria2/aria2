@@ -145,7 +145,7 @@ bool inRFC3986ReservedChars(const char c);
 
 bool inRFC3986UnreservedChars(const char c);
 
-std::string urldecode(const std::string& target);
+std::string percentDecode(const std::string& target);
 
 std::string torrentPercentEncode(const unsigned char* target, size_t len);
 

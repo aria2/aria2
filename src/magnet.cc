@@ -53,7 +53,7 @@ BDE parse(const std::string& magnet)
         eoi = queries.end(); i != eoi; ++i) {
     std::pair<std::string, std::string> kv;
     util::split(kv, *i, '=');
-    std::string value = util::urldecode(kv.second);
+    std::string value = util::percentDecode(kv.second);
     if(dict.containsKey(kv.first)) {
       dict[kv.first] << value;
     } else {

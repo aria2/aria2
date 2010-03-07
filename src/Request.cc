@@ -206,12 +206,12 @@ bool Request::parseUri(const std::string& srcUri) {
       std::string::const_iterator userLast = authorityFirst;
       for(; userLast != userInfoLast; ++userLast) {
         if(*userLast == ':') {
-          _password = util::urldecode(std::string(userLast+1, userInfoLast));
+          _password = util::percentDecode(std::string(userLast+1,userInfoLast));
           _hasPassword = true;
           break;
         }
       }
-      _username = util::urldecode(std::string(authorityFirst, userLast));
+      _username = util::percentDecode(std::string(authorityFirst, userLast));
       break;
     }
   }

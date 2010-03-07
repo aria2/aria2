@@ -326,7 +326,7 @@ std::string torrentPercentEncode(const std::string& target)
     (reinterpret_cast<const unsigned char*>(target.c_str()), target.size());
 }
 
-std::string urldecode(const std::string& target) {
+std::string percentDecode(const std::string& target) {
   std::string result;
   for(std::string::const_iterator itr = target.begin(), eoi = target.end();
       itr != eoi; ++itr) {
@@ -759,7 +759,7 @@ std::string getContentDispositionFilename(const std::string& header)
       if(bad) {
         continue;
       }
-      value = trimBasename(urldecode(value));
+      value = trimBasename(percentDecode(value));
       if(toLower(extValues[0]) == "iso-8859-1") {
         value = iso8859ToUtf8(value);
       }
@@ -785,7 +785,8 @@ std::string getContentDispositionFilename(const std::string& header)
       } else {
         filenameLast = value.end();
       }
-      value = trimBasename(urldecode(std::string(value.begin(), filenameLast)));
+      value =
+        trimBasename(percentDecode(std::string(value.begin(), filenameLast)));
       filename = value;
       // continue because there is a chance we can find filename*=...
     }
