@@ -1,5 +1,13 @@
 2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --reuse-uri option. This option has existed quite long, but
+	been hidden.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+	* src/usage_text.h
+
+2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Ignore filename parameter if it contains directory traversal
 	directives.
 	* src/util.cc

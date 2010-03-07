@@ -564,9 +564,11 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REUSE_URI,
-                                    NO_DESCRIPTION,
-                                    V_TRUE));
-    op->hide();
+                                    TEXT_REUSE_URI,
+                                    V_TRUE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
   {

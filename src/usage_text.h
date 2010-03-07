@@ -615,3 +615,6 @@
     "                              this option is not specified, the default\n" \
     "                              interface is chosen. You can specify interface\n" \
     "                              name and IP address.")
+#define TEXT_REUSE_URI                          \
+  _(" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n" \
+    "                              left.")

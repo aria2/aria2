@@ -144,6 +144,11 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
   server and if it is available, apply it to the local file.
   Default: 'false'
 
+*--reuse-uri[='true'|'false']::
+
+  Reuse already used URIs if no unused URIs are left.
+  Default: 'true'
+
 *--server-stat-of*=FILE::
   Specify the filename to which performance profile of the servers is
   saved. You can load saved data using *--server-stat-if* option. See
