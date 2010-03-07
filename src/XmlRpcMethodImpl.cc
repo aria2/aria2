@@ -474,8 +474,8 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
   for(std::vector<SharedHandle<Peer> >::const_iterator i =
         activePeers.begin(), eoi = activePeers.end(); i != eoi; ++i) {
     BDE peerEntry = BDE::dict();
-    peerEntry[KEY_PEER_ID] = util::torrentUrlencode((*i)->getPeerId(),
-                                                    PEER_ID_LENGTH);
+    peerEntry[KEY_PEER_ID] = util::torrentPercentEncode((*i)->getPeerId(),
+                                                        PEER_ID_LENGTH);
     peerEntry[KEY_IP] = (*i)->ipaddr;
     peerEntry[KEY_PORT] = util::uitos((*i)->port);
     peerEntry[KEY_BITFIELD] = util::toHex((*i)->getBitfield(),

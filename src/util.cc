@@ -290,7 +290,7 @@ bool inRFC2616HttpToken(const char c)
     &chars[arrayLength(chars)];
 }
 
-std::string urlencode(const unsigned char* target, size_t len) {
+std::string percentEncode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; ++i) {
     if(!inRFC3986UnreservedChars(target[i])) {
@@ -302,13 +302,13 @@ std::string urlencode(const unsigned char* target, size_t len) {
   return dest;
 }
 
-std::string urlencode(const std::string& target)
+std::string percentEncode(const std::string& target)
 {
-  return urlencode(reinterpret_cast<const unsigned char*>(target.c_str()),
+  return percentEncode(reinterpret_cast<const unsigned char*>(target.c_str()),
                    target.size());
 }
 
-std::string torrentUrlencode(const unsigned char* target, size_t len) {
+std::string torrentPercentEncode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; ++i) {
     if(isAlpha(target[i]) || isDigit(target[i])) {
@@ -320,9 +320,9 @@ std::string torrentUrlencode(const unsigned char* target, size_t len) {
   return dest;
 }
 
-std::string torrentUrlencode(const std::string& target)
+std::string torrentPercentEncode(const std::string& target)
 {
-  return torrentUrlencode
+  return torrentPercentEncode
     (reinterpret_cast<const unsigned char*>(target.c_str()), target.size());
 }
 

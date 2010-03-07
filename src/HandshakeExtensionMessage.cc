@@ -83,7 +83,7 @@ std::string HandshakeExtensionMessage::toString() const
 {
   std::string s = getExtensionName();
   if(!_clientVersion.empty()) {
-    strappend(s, " client=", util::urlencode(_clientVersion));
+    strappend(s, " client=", util::percentEncode(_clientVersion));
   }
   if(_tcpPort > 0) {
     strappend(s, ", tcpPort=", util::uitos(_tcpPort));
@@ -166,7 +166,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   if(LogFactory::getInstance()->debug()) {
     LogFactory::getInstance()->debug
       ("Creating HandshakeExtensionMessage from %s",
-       util::urlencode(data, length).c_str());
+       util::percentEncode(data, length).c_str());
   }
   const BDE dict = bencode::decode(data+1, length-1);
   if(!dict.isDict()) {

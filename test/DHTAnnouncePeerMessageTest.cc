@@ -70,8 +70,8 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
   aDict["token"] = token;
   dict["a"] = aDict;
 
-  CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
-                       util::urlencode(msgbody));
+  CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode::encode(dict)),
+                       util::percentEncode(msgbody));
 }
 
 void DHTAnnouncePeerMessageTest::testDoReceivedAction()

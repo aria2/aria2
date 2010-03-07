@@ -144,10 +144,11 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   std::string uri = announceList.getAnnounce();
   uri += uriHasQuery(uri) ? "&" : "?";
   uri += "info_hash=";
-  uri += util::torrentUrlencode(bittorrent::getInfoHash(_downloadContext),
-                                INFO_HASH_LENGTH);
+  uri += util::torrentPercentEncode(bittorrent::getInfoHash(_downloadContext),
+                                    INFO_HASH_LENGTH);
   uri += "&peer_id=";
-  uri += util::torrentUrlencode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH);
+  uri += util::torrentPercentEncode(bittorrent::getStaticPeerId(),
+                                    PEER_ID_LENGTH);
   uri += "&uploaded=";
   uri += util::uitos(stat.getSessionUploadLength());
   uri += "&downloaded=";
@@ -158,7 +159,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   uri += "&key=";
   // Use last 8 bytes of peer ID as a key
   size_t keyLen = 8;
-  uri += util::torrentUrlencode
+  uri += util::torrentPercentEncode
     (bittorrent::getStaticPeerId()+PEER_ID_LENGTH-keyLen, keyLen);
   uri += "&numwant=";
   uri += util::uitos(numWant);
@@ -173,7 +174,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     uri += event;
   }
   if(!trackerId.empty()) {
-    uri += "&trackerid="+util::torrentUrlencode(trackerId);
+    uri += "&trackerid="+util::torrentPercentEncode(trackerId);
   }
   if(option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     uri += "&requirecrypto=1";

@@ -50,7 +50,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testItos);
   CPPUNIT_TEST(testUitos);
   CPPUNIT_TEST(testNtoh64);
-  CPPUNIT_TEST(testUrlencode);
+  CPPUNIT_TEST(testPercentEncode);
   CPPUNIT_TEST(testHtmlEscape);
   CPPUNIT_TEST(testJoinPath);
   CPPUNIT_TEST(testParseIndexPath);
@@ -101,7 +101,7 @@ public:
   void testItos();
   void testUitos();
   void testNtoh64();
-  void testUrlencode();
+  void testPercentEncode();
   void testHtmlEscape();
   void testJoinPath();
   void testParseIndexPath();
@@ -810,20 +810,20 @@ void UtilTest::testNtoh64()
 #endif // !WORDS_BIGENDIAN
 }
 
-void UtilTest::testUrlencode()
+void UtilTest::testPercentEncode()
 {
   CPPUNIT_ASSERT_EQUAL
     (std::string("%3A%2F%3F%23%5B%5D%40%21%25%26%27%28%29%2A%2B%2C%3B%3D"),
-     util::urlencode(":/?#[]@!%&'()*+,;="));
+     util::percentEncode(":/?#[]@!%&'()*+,;="));
 
   std::string unreserved =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "abcdefghijklmnopqrstuvwxyz"
     "0123456789"
     "-._~";
-  CPPUNIT_ASSERT_EQUAL(unreserved, util::urlencode(unreserved));
+  CPPUNIT_ASSERT_EQUAL(unreserved, util::percentEncode(unreserved));
 
-  CPPUNIT_ASSERT_EQUAL(std::string("1%5EA%20"), util::urlencode("1^A "));
+  CPPUNIT_ASSERT_EQUAL(std::string("1%5EA%20"), util::percentEncode("1^A "));
 }
 
 void UtilTest::testHtmlEscape()

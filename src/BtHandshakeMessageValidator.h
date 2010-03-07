@@ -66,7 +66,8 @@ public:
     if(memcmp(BtHandshakeMessage::BT_PSTR, message->getPstr(), 19) != 0) {
       throw DL_ABORT_EX
         (StringFormat("invalid handshake pstr=%s",
-                      util::urlencode(message->getPstr(), 19).c_str()).str());
+                      util::percentEncode
+                      (message->getPstr(), 19).c_str()).str());
     }
     if(memcmp(infoHash, message->getInfoHash(), 20) != 0) {
       throw DL_ABORT_EX

@@ -232,9 +232,11 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
     // for now, just report error message arrived and throw exception.
     const BDE& e = getList(dict, DHTUnknownMessage::E);
     if(e.size() == 2) {
-      _logger->info("Received Error DHT message. code=%s, msg=%s",
-                    util::itos(getInteger(e, 0).i()).c_str(),
-                    util::urlencode(getString(e, 1).s()).c_str());
+      if(_logger->info()) {
+        _logger->info("Received Error DHT message. code=%s, msg=%s",
+                      util::itos(getInteger(e, 0).i()).c_str(),
+                      util::percentEncode(getString(e, 1).s()).c_str());
+      }
     } else {
       if(_logger->debug()) {
         _logger->debug("e doesn't have 2 elements.");
@@ -244,7 +246,7 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
   } else if(y.s() != DHTResponseMessage::R) {
     throw DL_ABORT_EX
       (StringFormat("Malformed DHT message. y != r: y=%s",
-                    util::urlencode(y.s()).c_str()).str());
+                    util::percentEncode(y.s()).c_str()).str());
   }
   const BDE& rDict = getDictionary(dict, DHTResponseMessage::R);
   const BDE& id = getString(rDict, DHTMessage::ID);

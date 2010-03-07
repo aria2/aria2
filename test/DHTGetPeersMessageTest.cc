@@ -89,8 +89,8 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
   aDict["info_hash"] = BDE(infoHash, DHT_ID_LENGTH);
   dict["a"] = aDict;
 
-  CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
-                       util::urlencode(msgbody));
+  CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode::encode(dict)),
+                       util::percentEncode(msgbody));
 }
 
 void DHTGetPeersMessageTest::testDoReceivedAction()

@@ -940,7 +940,7 @@ std::string torrent2Magnet(const BDE& attrs)
   }
   if(attrs.containsKey(NAME)) {
     uri += "&dn=";
-    uri += util::urlencode(attrs[NAME].s());
+    uri += util::percentEncode(attrs[NAME].s());
   }
   if(attrs.containsKey(ANNOUNCE_LIST)) {
     const BDE& tiers = attrs[ANNOUNCE_LIST];
@@ -949,7 +949,7 @@ std::string torrent2Magnet(const BDE& attrs)
       for(BDE::List::const_iterator uriiter = (*tieriter).listBegin(),
             eoi2 = (*tieriter).listEnd(); uriiter != eoi2; ++uriiter) {
         uri += "&tr=";
-        uri += util::urlencode((*uriiter).s());
+        uri += util::percentEncode((*uriiter).s());
       }
     }
   }

@@ -70,8 +70,8 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 
     rDict["nodes"] = compactNodeInfo;
 
-    CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
-                         util::urlencode(msgbody));
+    CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode::encode(dict)),
+                         util::percentEncode(msgbody));
   }
   rDict.removeKey("nodes");
   {
@@ -90,8 +90,8 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
     msg.setValues(peers);
     std::string msgbody  = msg.getBencodedMessage();
 
-    CPPUNIT_ASSERT_EQUAL(util::urlencode(bencode::encode(dict)),
-                         util::urlencode(msgbody));
+    CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode::encode(dict)),
+                         util::percentEncode(msgbody));
   }
 }
 

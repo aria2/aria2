@@ -140,7 +140,7 @@ std::string HttpRequest::createRequest()
       // Insert user into URI, like ftp://USER@host/
       std::string uri = getCurrentURI();
       assert(uri.size() >= 6);
-      uri.insert(6, util::urlencode(_authConfig->getUser())+"@");
+      uri.insert(6, util::percentEncode(_authConfig->getUser())+"@");
       requestLine += uri;
     } else {
       requestLine += getCurrentURI();

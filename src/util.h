@@ -137,9 +137,9 @@ bool endsWith(const std::string& target, const std::string& part);
 
 std::string replace(const std::string& target, const std::string& oldstr, const std::string& newstr);
 
-std::string urlencode(const unsigned char* target, size_t len);
+std::string percentEncode(const unsigned char* target, size_t len);
 
-std::string urlencode(const std::string& target);
+std::string percentEncode(const std::string& target);
 
 bool inRFC3986ReservedChars(const char c);
 
@@ -147,9 +147,9 @@ bool inRFC3986UnreservedChars(const char c);
 
 std::string urldecode(const std::string& target);
 
-std::string torrentUrlencode(const unsigned char* target, size_t len);
+std::string torrentPercentEncode(const unsigned char* target, size_t len);
 
-std::string torrentUrlencode(const std::string& target);
+std::string torrentPercentEncode(const std::string& target);
 
 std::string toHex(const unsigned char* src, size_t len);
 

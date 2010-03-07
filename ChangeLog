@@ -1,5 +1,25 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	urlencode -> percentEncode,
+	torrentUrlencode -> torrentPercentEncode
+	* src/BtHandshakeMessage.cc
+	* src/BtHandshakeMessageValidator.h
+	* src/DHTMessageFactoryImpl.cc
+	* src/DefaultBtAnnounce.cc
+	* src/HandshakeExtensionMessage.cc
+	* src/HttpRequest.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/bittorrent_helper.cc
+	* src/util.cc
+	* src/util.h
+	* test/DHTAnnouncePeerMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/DHTGetPeersReplyMessageTest.cc
+	* test/UTPexExtensionMessageTest.cc
+	* test/UtilTest.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that filename is percent encoded where it must be
 	percent decoded in sendMdtm().
 	* src/FtpConnection.cc
