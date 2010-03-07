@@ -1,5 +1,11 @@
 2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error with --disable-bittorrent
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkParserControllerTest.cc
+
+2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --reuse-uri option. This option has existed quite long, but
 	been hidden.
 	* doc/aria2c.1.txt

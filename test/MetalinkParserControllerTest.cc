@@ -120,6 +120,7 @@ void MetalinkParserControllerTest::testMetaurlTransaction()
   ctrl.setPriorityOfMetaurl(999);
   ctrl.setNameOfMetaurl("mybirthdaycake");
   ctrl.commitEntryTransaction();
+#ifdef ENABLE_BITTORRENT
   {
     SharedHandle<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
@@ -141,6 +142,13 @@ void MetalinkParserControllerTest::testMetaurlTransaction()
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries[0]->metaurls.size());
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[1]->metaurls.size());
   }
+#else // !ENABLE_BITTORRENT
+  {
+    SharedHandle<Metalinker> m = ctrl.getResult();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
+    CPPUNIT_ASSERT_EQUAL((size_t)0, m->entries[0]->metaurls.size());
+  }
+#endif // !ENABLE_BITTORRENT
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST
