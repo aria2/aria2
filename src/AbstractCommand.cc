@@ -162,6 +162,9 @@ bool AbstractCommand::execute() {
             // When all segments are ignored in SegmentMan, there are
             // no URIs available, so don't retry.
             if(_requestGroup->getSegmentMan()->allSegmentsIgnored()) {
+              if(logger->debug()) {
+                logger->debug("All segments are ignored.");
+              }
               return true;
             } else {
               return prepareForRetry(1);

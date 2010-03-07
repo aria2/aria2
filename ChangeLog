@@ -1,5 +1,10 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added debug log.
+	* src/AbstractCommand.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Create CreateRequestCommand to the number of -s/-C when URIs are
 	added by XML-RPC.
 	* src/RequestGroup.cc
