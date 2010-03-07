@@ -1189,6 +1189,13 @@ string. If specified download is in progress, it is stopped at
 first. The status of removed download becomes "removed".  This method
 returns GID of removed download.
 
+*aria2.forceRemove* 'gid'
+
+This method removes the download denoted by 'gid'.  This method
+behaves just like *aria2.remove* except that this method removes
+download without any action which takes time such as contacting
+BitTorrent tracker.
+
 *aria2.tellStatus* 'gid'
 
 This method returns download progress of the download denoted by

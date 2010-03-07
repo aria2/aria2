@@ -280,7 +280,8 @@ BDE AddMetalinkXmlRpcMethod::process
 } 
 #endif // ENABLE_METALINK
 
-BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+static BDE removeDownload
+(const XmlRpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
   const BDE& params = req._params;
   assert(params.isList());
@@ -306,10 +307,26 @@ BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
         (StringFormat("GID#%d cannot be removed now", gid).str());
     }
   } else {
-    group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+    if(forceRemove) {
+      group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
+    } else {
+      group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+    }
   }
 
   return createGIDResponse(gid);
+
+}
+
+BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return removeDownload(req, e, false);
+}
+
+BDE ForceRemoveXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return removeDownload(req, e, true);
 }
 
 static void createUriEntry(BDE& uriList, const SharedHandle<FileEntry>& file)

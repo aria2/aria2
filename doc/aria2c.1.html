@@ -2752,6 +2752,11 @@ registered download.</p></div>
 string. If specified download is in progress, it is stopped at
 first. The status of removed download becomes "removed".  This method
 returns GID of removed download.</p></div>
+<div class="paragraph"><p><strong>aria2.forceRemove</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method removes the download denoted by <em>gid</em>.  This method
+behaves just like <strong>aria2.remove</strong> except that this method removes
+download without any action which takes time such as contacting
+BitTorrent tracker.</p></div>
 <div class="paragraph"><p><strong>aria2.tellStatus</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method returns download progress of the download denoted by
 <em>gid</em>. <em>gid</em> is of type string. The response is of type struct and it
@@ -3749,7 +3754,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-07 00:00:09 JST
+Last updated 2010-03-07 14:59:45 JST
 </div>
 </div>
 </body>

@@ -73,6 +73,17 @@ public:
   }
 };
 
+class ForceRemoveXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.forceRemove";
+    return methodName;
+  }
+};
+
 #ifdef ENABLE_BITTORRENT
 class AddTorrentXmlRpcMethod:public XmlRpcMethod {
 protected:

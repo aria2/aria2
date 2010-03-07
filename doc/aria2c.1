@@ -2208,6 +2208,10 @@ This method adds Metalink download by uploading \&.metalink file\&. \fImetalink\
 .sp
 This method removes the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. If specified download is in progress, it is stopped at first\&. The status of removed download becomes "removed"\&. This method returns GID of removed download\&.
 .sp
+\fBaria2\&.forceRemove\fR \fIgid\fR
+.sp
+This method removes the download denoted by \fIgid\fR\&. This method behaves just like \fBaria2\&.remove\fR except that this method removes download without any action which takes time such as contacting BitTorrent tracker\&.
+.sp
 \fBaria2\&.tellStatus\fR \fIgid\fR
 .sp
 This method returns download progress of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type struct and it contains following keys\&. The value type is string\&.
