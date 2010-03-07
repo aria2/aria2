@@ -774,6 +774,7 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
   if(option->defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
     e->_requestGroupMan->setMaxSimultaneousDownloads
       (option->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
+    e->_requestGroupMan->requestQueueCheck();
   }
   return BDE_OK;
 }

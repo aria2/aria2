@@ -1,5 +1,13 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Call RequestGroupMan::requestQueueCheck() when
+	max-concurrent-downloads option is changed or new downloads are
+	added/inserted into reserved list.
+	* src/RequestGroupMan.cc
+	* src/XmlRpcMethodImpl.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added aria2.forceRemove XML-RPC method.
 	* doc/aria2c.1.txt
 	* src/XmlRpcMethodFactory.cc

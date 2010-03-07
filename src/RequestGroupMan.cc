@@ -106,18 +106,27 @@ void RequestGroupMan::addRequestGroup
 void RequestGroupMan::addReservedGroup
 (const std::vector<SharedHandle<RequestGroup> >& groups)
 {
+  if(_reservedGroups.empty()) {
+    requestQueueCheck();
+  }
   _reservedGroups.insert(_reservedGroups.end(), groups.begin(), groups.end());
 }
 
 void RequestGroupMan::addReservedGroup
 (const SharedHandle<RequestGroup>& group)
 {
+  if(_reservedGroups.empty()) {
+    requestQueueCheck();
+  }
   _reservedGroups.push_back(group);
 }
 
 void RequestGroupMan::insertReservedGroup
 (size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups)
 {
+  if(_reservedGroups.empty()) {
+    requestQueueCheck();
+  }
   _reservedGroups.insert
     (_reservedGroups.begin()+std::min(_reservedGroups.size(), pos),
      groups.begin(), groups.end());
@@ -126,6 +135,9 @@ void RequestGroupMan::insertReservedGroup
 void RequestGroupMan::insertReservedGroup
 (size_t pos, const SharedHandle<RequestGroup>& group)
 {
+  if(_reservedGroups.empty()) {
+    requestQueueCheck();
+  }
   _reservedGroups.insert
     (_reservedGroups.begin()+std::min(_reservedGroups.size(), pos), group);
 }
@@ -304,7 +316,6 @@ static void executeStopHook
 class ProcessStoppedRequestGroup {
 private:
   DownloadEngine* _e;
-  std::deque<SharedHandle<RequestGroup> >& _reservedGroups;
   std::deque<SharedHandle<DownloadResult> >& _downloadResults;
   Logger* _logger;
 
@@ -326,10 +337,8 @@ private:
 public:
   ProcessStoppedRequestGroup
   (DownloadEngine* e,
-   std::deque<SharedHandle<RequestGroup> >& reservedGroups,
    std::deque<SharedHandle<DownloadResult> >& downloadResults):
     _e(e),
-    _reservedGroups(reservedGroups),
     _downloadResults(downloadResults),
     _logger(LogFactory::getInstance()) {}
 
@@ -365,8 +374,7 @@ public:
                 ("Adding %lu RequestGroups as a result of PostDownloadHandler.",
                  static_cast<unsigned long>(nextGroups.size()));
             }
-            _reservedGroups.insert(_reservedGroups.begin(),
-                                   nextGroups.begin(), nextGroups.end());
+            _e->_requestGroupMan->insertReservedGroup(0, nextGroups);
           }
         } else {
           group->saveControlFile();
@@ -444,8 +452,7 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
   updateServerStat();
 
   std::for_each(_requestGroups.begin(), _requestGroups.end(),
-                ProcessStoppedRequestGroup(e, _reservedGroups,
-                                           _downloadResults));
+                ProcessStoppedRequestGroup(e, _downloadResults));
 
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     std::remove_if(_requestGroups.begin(),
