@@ -30,7 +30,9 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReceivePwdResponse_badStatus);
   CPPUNIT_TEST(testSendCwd);
   CPPUNIT_TEST(testSendCwd_baseWorkingDir);
+  CPPUNIT_TEST(testSendSize);
   CPPUNIT_TEST(testReceiveSizeResponse);
+  CPPUNIT_TEST(testSendRetr);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<SocketCore> _serverSocket;
@@ -54,7 +56,7 @@ public:
     _listenPort = addrinfo.second;
 
     SharedHandle<Request> req(new Request());
-    req->setUri("ftp://localhost/dir/file.img");
+    req->setUri("ftp://localhost/dir%20sp/hello%20world.img");
 
     _clientSocket.reset(new SocketCore());
     _clientSocket->establishConnection("localhost", _listenPort);
@@ -81,7 +83,9 @@ public:
   void testReceivePwdResponse_badStatus();
   void testSendCwd();
   void testSendCwd_baseWorkingDir();
+  void testSendSize();
   void testReceiveSizeResponse();
+  void testSendRetr();
 };
 
 
@@ -141,9 +145,9 @@ void FtpConnectionTest::testSendMdtm()
   char data[32];
   size_t len = sizeof(data);
   _serverSocket->readData(data, len);
-  CPPUNIT_ASSERT_EQUAL((size_t)15, len);
   data[len] = '\0';
-  CPPUNIT_ASSERT_EQUAL(std::string("MDTM file.img\r\n"), std::string(data));
+  CPPUNIT_ASSERT_EQUAL(std::string("MDTM hello world.img\r\n"),
+                       std::string(data));
 }
 
 void FtpConnectionTest::testReceiveMdtmResponse()
@@ -263,9 +267,8 @@ void FtpConnectionTest::testSendCwd()
   char data[32];
   size_t len = sizeof(data);
   _serverSocket->readData(data, len);
-  CPPUNIT_ASSERT_EQUAL((size_t)10, len);
   data[len] = '\0';
-  CPPUNIT_ASSERT_EQUAL(std::string("CWD /dir\r\n"), std::string(data));
+  CPPUNIT_ASSERT_EQUAL(std::string("CWD /dir sp\r\n"), std::string(data));
 }
 
 void FtpConnectionTest::testSendCwd_baseWorkingDir()
@@ -275,9 +278,18 @@ void FtpConnectionTest::testSendCwd_baseWorkingDir()
   char data[32];
   size_t len = sizeof(data);
   _serverSocket->readData(data, len);
-  CPPUNIT_ASSERT_EQUAL((size_t)15, len);
   data[len] = '\0';
-  CPPUNIT_ASSERT_EQUAL(std::string("CWD /base/dir\r\n"), std::string(data));
+  CPPUNIT_ASSERT_EQUAL(std::string("CWD /base/dir sp\r\n"), std::string(data));
+}
+
+void FtpConnectionTest::testSendSize()
+{
+  _ftp->sendSize();
+  char data[32];
+  size_t len = sizeof(data);
+  _serverSocket->readData(data, len);
+  CPPUNIT_ASSERT_EQUAL(std::string("SIZE hello world.img\r\n"),
+                       std::string(&data[0], &data[len]));
 }
 
 void FtpConnectionTest::testReceiveSizeResponse()
@@ -287,6 +299,16 @@ void FtpConnectionTest::testReceiveSizeResponse()
   uint64_t size;
   CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveSizeResponse(size));
   CPPUNIT_ASSERT_EQUAL((uint64_t)4294967296LL, size);
+}
+
+void FtpConnectionTest::testSendRetr()
+{
+  _ftp->sendRetr();
+  char data[32];
+  size_t len = sizeof(data);
+  _serverSocket->readData(data, len);
+  CPPUNIT_ASSERT_EQUAL(std::string("RETR hello world.img\r\n"),
+                       std::string(&data[0], &data[len]));
 }
 
 } // namespace aria2

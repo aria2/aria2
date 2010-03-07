@@ -1,5 +1,12 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that filename is percent encoded where it must be
+	percent decoded in sendMdtm().
+	* src/FtpConnection.cc
+	* test/FtpConnectionTest.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	url -> uri in Request class.
 	* src/AbstractCommand.cc
 	* src/AdaptiveURISelector.cc

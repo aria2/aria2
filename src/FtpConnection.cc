@@ -152,7 +152,7 @@ bool FtpConnection::sendMdtm()
 {
   if(_socketBuffer.sendBufferIsEmpty()) {
     std::string request = "MDTM ";
-    request += util::urlencode(req->getFile());
+    request += util::urldecode(req->getFile());
     request += "\r\n";
     logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     _socketBuffer.pushStr(request);
