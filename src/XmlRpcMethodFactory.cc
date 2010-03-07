@@ -73,6 +73,8 @@ XmlRpcMethodFactory::create(const std::string& methodName)
   else if(methodName == GetPeersXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new GetPeersXmlRpcMethod());
 #endif // ENABLE_BITTORRENT
+  } else if(methodName == GetServersXmlRpcMethod::getMethodName()) {
+    return SharedHandle<XmlRpcMethod>(new GetServersXmlRpcMethod());
   } else if(methodName == TellActiveXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new TellActiveXmlRpcMethod());
   } else if(methodName == TellWaitingXmlRpcMethod::getMethodName()) {

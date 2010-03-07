@@ -156,6 +156,17 @@ public:
 };
 #endif // ENABLE_BITTORRENT
 
+class GetServersXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getServers";
+    return methodName;
+  }
+};
+
 class TellStatusXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);

@@ -212,6 +212,11 @@ public:
     return _requestPool.size();
   }
 
+  const std::deque<SharedHandle<Request> >& getInFlightRequests() const
+  {
+    return _inFlightRequests;
+  }
+
   bool operator<(const FileEntry& fileEntry) const;
 
   bool exists() const;

@@ -112,6 +112,7 @@ const std::string KEY_PATH = "path";
 const std::string KEY_SELECTED = "selected";
 const std::string KEY_LENGTH = "length";
 const std::string KEY_URI = "uri";
+const std::string KEY_CURRENT_URI = "currentUri";
 const std::string KEY_VERSION = "version";
 const std::string KEY_ENABLED_FEATURES = "enabledFeatures";
 const std::string KEY_METHOD_NAME = "methodName";
@@ -127,6 +128,7 @@ const std::string KEY_ANNOUNCE_LIST = "announceList";
 const std::string KEY_COMMENT = "comment";
 const std::string KEY_CREATION_DATE = "creationDate";
 const std::string KEY_MODE = "mode";
+const std::string KEY_SERVERS = "servers";
 }
 
 static BDE createGIDResponse(int32_t gid)
@@ -877,6 +879,49 @@ BDE GetSessionInfoXmlRpcMethod::process
 {
   BDE result = BDE::dict();
   result[KEY_SESSION_ID] = util::toHex(e->getSessionId());
+  return result;
+}
+
+BDE GetServersXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+
+  if(params.empty() || !params[0].isString()) {
+    throw DL_ABORT_EX("Bad request");
+  }
+  int32_t gid = util::parseInt(params[0].s());
+  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  if(group.isNull()) {
+    throw DL_ABORT_EX(StringFormat("No active download for GID#%d", gid).str());
+  }
+  SharedHandle<DownloadContext> dctx = group->getDownloadContext();
+  const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
+  BDE result = BDE::list();
+  size_t index = 1;
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator fi = files.begin(),
+        eoi = files.end(); fi != eoi; ++fi, ++index) {
+    BDE fileEntry = BDE::dict();
+    fileEntry[KEY_INDEX] = util::uitos(index);
+    BDE servers = BDE::list();
+    const std::deque<SharedHandle<Request> >& requests =
+      (*fi)->getInFlightRequests();
+    for(std::deque<SharedHandle<Request> >::const_iterator ri =requests.begin(),
+          eoi = requests.end(); ri != eoi; ++ri) {
+      SharedHandle<PeerStat> ps = (*ri)->getPeerStat();
+      if(!ps.isNull()) {
+        BDE serverEntry = BDE::dict();
+        serverEntry[KEY_URI] = (*ri)->getUrl();
+        serverEntry[KEY_CURRENT_URI] = (*ri)->getCurrentUrl();
+        serverEntry[KEY_DOWNLOAD_SPEED] =
+          util::uitos(ps->calculateDownloadSpeed());
+        servers << serverEntry;
+      }
+    }
+    fileEntry[KEY_SERVERS] = servers;
+    result << fileEntry;
+  }
   return result;
 }
 

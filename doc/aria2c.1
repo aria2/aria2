@@ -2450,6 +2450,35 @@ seeder
 "true" is this client is a seeder\&. Otherwise "false"\&.
 .RE
 .sp
+\fBaria2\&.getServers\fR \fIgid\fR
+.sp
+This method returns currently connected HTTP(S)/FTP servers of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
+.PP
+index
+.RS 4
+Index of file\&. Starting with 1\&. This is the same order with the files in multi\-file torrent\&.
+.RE
+.PP
+servers
+.RS 4
+The list of struct which contains following keys\&.
+.PP
+uri
+.RS 4
+URI originally added\&.
+.RE
+.PP
+currentUri
+.RS 4
+This is the URI currently used for downloading\&. If redirection is involved, currentUri and uri may differ\&.
+.RE
+.PP
+downloadSpeed
+.RS 4
+Download speed (byte/sec)
+.RE
+.RE
+.sp
 \fBaria2\&.tellActive\fR
 .sp
 This method returns the list of active downloads\&. The response is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&.
