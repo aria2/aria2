@@ -1,5 +1,13 @@
 2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made 'fileIndex' parameter in aria2.changeUri XML-RPC method
+	1-based.
+	* doc/aria2c.1.txt
+	* src/XmlRpcMethodImpl.cc
+	* test/XmlRpcMethodTest.cc
+
+2010-03-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call RequestGroupMan::requestQueueCheck() when
 	max-concurrent-downloads option is changed or new downloads are
 	added/inserted into reserved list.

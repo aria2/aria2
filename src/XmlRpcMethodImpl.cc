@@ -889,7 +889,7 @@ BDE ChangeUriXmlRpcMethod::process
   if(params.size() < 4 ||
      !params[0].isString() || !params[1].isInteger() ||
      !params[2].isList() || !params[3].isList() ||
-     params[1].i() < 0) {
+     params[1].i() <= 0) {
     throw DL_ABORT_EX("Bad request");
   }
   size_t pos = 0;
@@ -897,7 +897,7 @@ BDE ChangeUriXmlRpcMethod::process
   getPosParam(params, 4, posGiven, pos);
 
   int32_t gid = util::parseInt(params[0].s());
-  size_t index = params[1].i();
+  size_t index = params[1].i()-1;
   const BDE& deluris = params[2];
   const BDE& adduris = params[3];
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);

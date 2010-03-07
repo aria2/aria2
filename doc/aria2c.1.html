@@ -3195,14 +3195,14 @@ beginning of the queue).</p></div>
 <em>addUris</em> to download denoted by <em>gid</em>. <em>delUris</em> and <em>addUris</em> are
 list of string. A download can contain multiple files and URIs are
 attached to each file.  <em>fileIndex</em> is used to select which file to
-remove/attach given URIs.  <em>position</em> is used to specify where URIs
-are inserted in the existing waiting URI list. <em>position</em> is
-0-based. When <em>position</em> is omitted, URIs are appended to the back of
-the list.  This method first execute removal and then
-addition. <em>position</em> is the position after URIs are removed, not the
-position when this method is called.  When removing URI, if same URIs
-exist in download, only one of them is removed for each URI in
-<em>delUris</em>. In other words, there are three URIs
+remove/attach given URIs. <em>fileIndex</em> is 1-based. <em>position</em> is used
+to specify where URIs are inserted in the existing waiting URI
+list. <em>position</em> is 0-based. When <em>position</em> is omitted, URIs are
+appended to the back of the list.  This method first execute removal
+and then addition. <em>position</em> is the position after URIs are removed,
+not the position when this method is called.  When removing URI, if
+same URIs exist in download, only one of them is removed for each URI
+in <em>delUris</em>. In other words, there are three URIs
 "http://example.org/aria2" and you want remove them all, you have to
 specify (at least) 3 "http://example.org/aria2" in <em>delUris</em>.  This
 method returns a list which contains 2 integers. The first integer is
@@ -3754,7 +3754,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-07 14:59:45 JST
+Last updated 2010-03-07 16:16:27 JST
 </div>
 </div>
 </body>

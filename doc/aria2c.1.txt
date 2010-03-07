@@ -1483,14 +1483,14 @@ This method removes URIs in 'delUris' from and appends URIs in
 'addUris' to download denoted by 'gid'. 'delUris' and 'addUris' are
 list of string. A download can contain multiple files and URIs are
 attached to each file.  'fileIndex' is used to select which file to
-remove/attach given URIs.  'position' is used to specify where URIs
-are inserted in the existing waiting URI list. 'position' is
-0-based. When 'position' is omitted, URIs are appended to the back of
-the list.  This method first execute removal and then
-addition. 'position' is the position after URIs are removed, not the
-position when this method is called.  When removing URI, if same URIs
-exist in download, only one of them is removed for each URI in
-'delUris'. In other words, there are three URIs
+remove/attach given URIs. 'fileIndex' is 1-based. 'position' is used
+to specify where URIs are inserted in the existing waiting URI
+list. 'position' is 0-based. When 'position' is omitted, URIs are
+appended to the back of the list.  This method first execute removal
+and then addition. 'position' is the position after URIs are removed,
+not the position when this method is called.  When removing URI, if
+same URIs exist in download, only one of them is removed for each URI
+in 'delUris'. In other words, there are three URIs
 "http://example.org/aria2" and you want remove them all, you have to
 specify (at least) 3 "http://example.org/aria2" in 'delUris'.  This
 method returns a list which contains 2 integers. The first integer is

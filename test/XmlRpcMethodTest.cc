@@ -801,7 +801,7 @@ void XmlRpcMethodTest::testChangeUri()
   ChangeUriXmlRpcMethod m;
   XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
   req._params << std::string("1"); // GID
-  req._params << 1; // index of FileEntry
+  req._params << 2; // index of FileEntry
   BDE removeuris = BDE::list();
   removeuris << std::string("http://example.org/mustremove1");
   removeuris << std::string("http://example.org/mustremove2");
@@ -843,7 +843,7 @@ void XmlRpcMethodTest::testChangeUri()
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-2"), uris[3]);
 
   // Change index of FileEntry
-  req._params[1] = 0;
+  req._params[1] = 1;
   // Set position far beyond the size of uris in FileEntry.
   req._params[4] = 1000;
   res = m.execute(req, _e.get());
@@ -871,7 +871,7 @@ void XmlRpcMethodTest::testChangeUri_fail()
   ChangeUriXmlRpcMethod m;
   XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
   req._params << std::string("1"); // GID
-  req._params << 0; // index of FileEntry
+  req._params << 1; // index of FileEntry
   BDE removeuris = BDE::list();
   req._params << removeuris;
   BDE adduris = BDE::list();
@@ -885,7 +885,7 @@ void XmlRpcMethodTest::testChangeUri_fail()
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 
   req._params[0] = std::string("1");
-  req._params[1] = 3;
+  req._params[1] = 4;
   res = m.execute(req, _e.get());  
   // RPC request fails because FileEntry#3 does not exist.
   CPPUNIT_ASSERT_EQUAL(1, res._code);
@@ -895,7 +895,7 @@ void XmlRpcMethodTest::testChangeUri_fail()
   // RPC request fails because index of FileEntry is string.
   CPPUNIT_ASSERT_EQUAL(1, res._code);
 
-  req._params[1] = 0;
+  req._params[1] = 1;
   req._params[2] = std::string("http://url");
   res = m.execute(req, _e.get());  
   // RPC request fails because 3rd param is not list.
