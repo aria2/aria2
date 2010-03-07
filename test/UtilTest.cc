@@ -307,16 +307,12 @@ void UtilTest::testGetContentDispositionFilename() {
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h11));
 
   std::string filenameWithDir = "attachment; filename=dir/file";
-  CPPUNIT_ASSERT_EQUAL(std::string("file"),
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
                        util::getContentDispositionFilename(filenameWithDir));
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename("filename=\"%2E%2E%2Ffoo.html\""));
 
-  std::string parentDir = "attachment; filename=..";
-  CPPUNIT_ASSERT_EQUAL(std::string(),
-                       util::getContentDispositionFilename(parentDir));
-
-  std::string currentDir = "attachment; filename=.";
-  CPPUNIT_ASSERT_EQUAL(std::string(),
-                       util::getContentDispositionFilename(currentDir));
   // RFC2231 Section4
   std::string extparam2 = "filename*=''aria2";
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
@@ -345,6 +341,15 @@ void UtilTest::testGetContentDispositionFilename() {
   extparam9ans += 0xa3;
   CPPUNIT_ASSERT_EQUAL(extparam9ans,
                        util::getContentDispositionFilename(extparam9));
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename("filename*=UTF-8''foo%2F.html"));
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("foo.html"),
+     util::getContentDispositionFilename("filename*=UTF-8'';filename=\"foo.html\""));
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(""),
+     util::getContentDispositionFilename("filename*=UTF-8''%2E%2E%2Ffoo.html"));
 
   // Tests from http://greenbytes.de/tech/tc2231/
   // attwithasciifnescapedchar

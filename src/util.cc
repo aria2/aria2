@@ -656,18 +656,6 @@ void parsePrioritizePieceRange
   result.insert(result.end(), indexes.begin(), indexes.end());
 }
 
-static std::string trimBasename(const std::string& src)
-{
-  static const std::string TRIMMED("\r\n\t '\"");
-  std::string fn = File(trim(src, TRIMMED)).getBasename();
-  std::string::iterator enditer = std::remove(fn.begin(), fn.end(), '\\');
-  fn = std::string(fn.begin(), enditer);
-  if(fn == ".." || fn == A2STR::DOT_C) {
-    fn = A2STR::NIL;
-  }
-  return fn;
-}
-
 // Converts ISO/IEC 8859-1 string to UTF-8 string.  If there is a
 // character not in ISO/IEC 8859-1, returns empty string.
 std::string iso8859ToUtf8(const std::string& src)
@@ -759,12 +747,17 @@ std::string getContentDispositionFilename(const std::string& header)
       if(bad) {
         continue;
       }
-      value = trimBasename(percentDecode(value));
+      value = percentDecode(value);
       if(toLower(extValues[0]) == "iso-8859-1") {
         value = iso8859ToUtf8(value);
       }
-      filename = value;
-      break;
+      if(!detectDirTraversal(value) &&
+         value.find(A2STR::SLASH_C) == std::string::npos) {
+        filename = value;
+      }
+      if(!filename.empty()) {
+        break;
+      }
     } else {
       for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
       if(markeritr == param.end() || *markeritr != '=') {
@@ -785,9 +778,14 @@ std::string getContentDispositionFilename(const std::string& header)
       } else {
         filenameLast = value.end();
       }
-      value =
-        trimBasename(percentDecode(std::string(value.begin(), filenameLast)));
-      filename = value;
+      static const std::string TRIMMED("\r\n\t '\"");
+      value = percentDecode(std::string(value.begin(), filenameLast));
+      trimSelf(value, TRIMMED);
+      value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
+      if(!detectDirTraversal(value) &&
+         value.find(A2STR::SLASH_C) == std::string::npos) {
+        filename = value;
+      }
       // continue because there is a chance we can find filename*=...
     }
   }
