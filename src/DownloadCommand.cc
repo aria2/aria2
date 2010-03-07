@@ -269,6 +269,8 @@ void DownloadCommand::checkLowestDownloadSpeed() const
 
 bool DownloadCommand::prepareForNextSegment() {
   if(_requestGroup->downloadFinished()) {
+    // Remove in-flight request here.
+    _fileEntry->poolRequest(req);
     // If this is a single file download, and file size becomes known
     // just after downloading, set total length to FileEntry object
     // here.
