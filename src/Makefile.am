@@ -197,7 +197,8 @@ SRCS =  Socket.h\
 	bitfield.cc bitfield.h\
 	BDE.cc BDE.h\
 	CreateRequestCommand.cc CreateRequestCommand.h\
-	DownloadResultCode.h
+	DownloadResultCode.h\
+	wallclock.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
