@@ -13,6 +13,7 @@
 #include "MetalinkResource.h"
 #include "MetalinkMetaurl.h"
 #ifdef ENABLE_MESSAGE_DIGEST
+# include "messageDigest.h"
 # include "ChunkChecksum.h"
 # include "Checksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -85,7 +86,6 @@ void MetalinkProcessorTest::testParseFileV4()
   SharedHandle<MetalinkEntry> e;
   SharedHandle<MetalinkResource> r;
   SharedHandle<MetalinkMetaurl> mu;
-
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
   e = m->entries[0];
   CPPUNIT_ASSERT_EQUAL(std::string("example.ext"), e->getPath());
@@ -97,16 +97,34 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT(!e->checksum.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getAlgo());
   CPPUNIT_ASSERT(!e->chunkChecksum.isNull());
-  CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), e->chunkChecksum->getAlgo());
-  CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
-  CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
-  CPPUNIT_ASSERT_EQUAL(std::string("0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5"),
-		       e->chunkChecksum->getChecksum(0));
-  CPPUNIT_ASSERT_EQUAL(std::string("487ba2299be7f759d7c7bf6a4ac3a32cee81f1bb9332fc485947e32918864fb2"),
-		       e->chunkChecksum->getChecksum(1));
-  CPPUNIT_ASSERT_EQUAL(std::string("37290d74ac4d186e3a8e5785d259d2ec04fac91ae28092e7620ec8bc99e830aa"),
-		       e->chunkChecksum->getChecksum(2));
-#endif // ENABLE_MESSAGE_DIGEST
+  if(MessageDigestContext::supports(MessageDigestContext::SHA256)) {
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), e->chunkChecksum->getAlgo());
+    CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
+    CPPUNIT_ASSERT_EQUAL(std::string("0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5"),
+                         e->chunkChecksum->getChecksum(0));
+    CPPUNIT_ASSERT_EQUAL(std::string("487ba2299be7f759d7c7bf6a4ac3a32cee81f1bb9332fc485947e32918864fb2"),
+                         e->chunkChecksum->getChecksum(1));
+    CPPUNIT_ASSERT_EQUAL(std::string("37290d74ac4d186e3a8e5785d259d2ec04fac91ae28092e7620ec8bc99e830aa"),
+                         e->chunkChecksum->getChecksum(2));
+  } else {
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->chunkChecksum->getAlgo());
+    CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
+       e->chunkChecksum->getChecksum(0));
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("9413ee70957a09d55704123687478e07f18c7b29"),
+       e->chunkChecksum->getChecksum(1));
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
+       e->chunkChecksum->getChecksum(2));    
+  }
+#else // !ENABLE_MESSAGE_DIGEST
+  CPPUNIT_ASSERT(e->checksum.isNull());
+  CPPUNIT_ASSERT(e->chunkChecksum.isNull());
+#endif // !ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT(!e->getSignature().isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("application/pgp-signature"),
                        e->getSignature()->getType());

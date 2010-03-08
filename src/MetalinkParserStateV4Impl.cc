@@ -350,7 +350,7 @@ void PiecesMetalinkParserStateV4::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->commitChunkChecksumTransaction();
+  stm->commitChunkChecksumTransactionV4();
 }
 
 void PieceHashMetalinkParserStateV4::endElement
