@@ -53,12 +53,14 @@
 
 namespace aria2 {
 
+#ifdef ENABLE_MESSAGE_DIGEST
 static bool isValidHash(const std::string& algo, const std::string& hash)
 {
   return util::isHexDigit(hash) &&
     MessageDigestContext::supports(algo) &&
     MessageDigestContext::digestLength(algo)*2 == hash.size();
 }
+#endif // ENABLE_MESSAGE_DIGEST
 
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker())

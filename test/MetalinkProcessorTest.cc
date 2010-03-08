@@ -121,10 +121,7 @@ void MetalinkProcessorTest::testParseFileV4()
       (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
        e->chunkChecksum->getChecksum(2));    
   }
-#else // !ENABLE_MESSAGE_DIGEST
-  CPPUNIT_ASSERT(e->checksum.isNull());
-  CPPUNIT_ASSERT(e->chunkChecksum.isNull());
-#endif // !ENABLE_MESSAGE_DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT(!e->getSignature().isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("application/pgp-signature"),
                        e->getSignature()->getType());
@@ -339,6 +336,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       // success
     }
   }
+#ifdef ENABLE_MESSAGE_DIGEST
   {
     // Testing pieces@length
     // No pieces@length
@@ -455,6 +453,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
+#endif // ENABLE_MESSAGE_DIGEST
   {
     // Testing signature@mediatype
     // No hash@type

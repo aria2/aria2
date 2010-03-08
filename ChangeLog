@@ -1,5 +1,12 @@
 2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error and unit test error without openssl and
+	gnutls.
+	* src/MetalinkParserController.cc
+	* test/MetalinkProcessorTest.cc
+
+2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed unitest fails if openssl doesn't support sha-256.
 	* src/MetalinkParserStateV4Impl.cc
 	* test/MetalinkProcessorTest.cc
