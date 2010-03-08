@@ -33,6 +33,8 @@ void LpdMessageReceiverTest::testReceiveMessage()
 
   SharedHandle<SocketCore> sendsock(new SocketCore(SOCK_DGRAM));
   sendsock->create(AF_INET);
+  // Mingw32 build needs to set interface explicitly.
+  sendsock->setMulticastInterface("");
   sendsock->setMulticastTtl(0);
 
   std::string infoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ceaf";
