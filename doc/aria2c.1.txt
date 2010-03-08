@@ -366,6 +366,13 @@ BitTorrent Specific Options
  option to 'false'.  This option has effect only on BitTorrent download.
  Default: 'true'
 
+*--bt-lpd-interface*=INTERFACE::
+
+  Use given interface for Local Peer Discovery. If this option is not
+  specified, the default interface is chosen. You can specify
+  interface name and IP address.  Possible Values: interface, IP
+  addres
+
 *--bt-max-open-files*=NUM::
   Specify maximum number of files to open in each BitTorrent download.
   Default: '100'
