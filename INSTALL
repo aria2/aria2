@@ -4,8 +4,10 @@ Installation Instructions
 Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004, 2005,
 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
 
-   This file is free documentation; the Free Software Foundation gives
-unlimited permission to copy, distribute and modify it.
+   Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without warranty of any kind.
 
 Basic Installation
 ==================
@@ -13,7 +15,11 @@ Basic Installation
    Briefly, the shell commands `./configure; make; make install' should
 configure, build, and install this package.  The following
 more-detailed instructions are generic; see the `README' file for
-instructions specific to this package.
+instructions specific to this package.  Some packages provide this
+`INSTALL' file but do not implement all of the features documented
+below.  The lack of an optional feature in a given package is not
+necessarily a bug.  More recommendations for GNU packages can be found
+in *note Makefile Conventions: (standards)Makefile Conventions.
 
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -42,7 +48,7 @@ may remove or edit it.
 you want to change it or regenerate `configure' using a newer version
 of `autoconf'.
 
-The simplest way to compile this package is:
+   The simplest way to compile this package is:
 
   1. `cd' to the directory containing the package's source code and type
      `./configure' to configure the package for your system.
@@ -53,12 +59,22 @@ The simplest way to compile this package is:
   2. Type `make' to compile the package.
 
   3. Optionally, type `make check' to run any self-tests that come with
-     the package.
+     the package, generally using the just-built uninstalled binaries.
 
   4. Type `make install' to install the programs and any data files and
-     documentation.
+     documentation.  When installing into a prefix owned by root, it is
+     recommended that the package be configured and built as a regular
+     user, and only the `make install' phase executed with root
+     privileges.
 
-  5. You can remove the program binaries and object files from the
+  5. Optionally, type `make installcheck' to repeat any self-tests, but
+     this time using the binaries in their final installed location.
+     This target does not install anything.  Running this target as a
+     regular user, particularly if the prior `make install' required
+     root privileges, verifies that the installation completed
+     correctly.
+
+  6. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  To also remove the
      files that `configure' created (so you can compile the package for
      a different kind of computer), type `make distclean'.  There is
@@ -67,8 +83,15 @@ The simplest way to compile this package is:
      all sorts of other programs in order to regenerate files that came
      with the distribution.
 
-  6. Often, you can also type `make uninstall' to remove the installed
-     files again.
+  7. Often, you can also type `make uninstall' to remove the installed
+     files again.  In practice, not all packages have tested that
+     uninstallation works correctly, even though it is required by the
+     GNU Coding Standards.
+
+  8. Some packages, particularly those that use Automake, provide `make
+     distcheck', which can by used by developers to test that all other
+     targets like `make install' and `make uninstall' work correctly.
+     This target is generally not run by end users.
 
 Compilers and Options
 =====================
@@ -93,7 +116,8 @@ same time, by placing the object files for each architecture in their
 own directory.  To do this, you can use GNU `make'.  `cd' to the
 directory where you want the object files and executables to go and run
 the `configure' script.  `configure' automatically checks for the
-source code in the directory that `configure' is in and in `..'.
+source code in the directory that `configure' is in and in `..'.  This
+is known as a "VPATH" build.
 
    With a non-GNU `make', it is safer to compile the package for one
 architecture at a time in the source code directory.  After you have
@@ -120,7 +144,8 @@ Installation Names
    By default, `make install' installs the package's commands under
 `/usr/local/bin', include files under `/usr/local/include', etc.  You
 can specify an installation prefix other than `/usr/local' by giving
-`configure' the option `--prefix=PREFIX'.
+`configure' the option `--prefix=PREFIX', where PREFIX must be an
+absolute file name.
 
    You can specify separate installation prefixes for
 architecture-specific files and architecture-independent files.  If you
@@ -131,14 +156,45 @@ Documentation and other data files still use the regular prefix.
    In addition, if you use an unusual directory layout you can give
 options like `--bindir=DIR' to specify different values for particular
 kinds of files.  Run `configure --help' for a list of the directories
-you can set and what kinds of files go in them.
+you can set and what kinds of files go in them.  In general, the
+default for these options is expressed in terms of `${prefix}', so that
+specifying just `--prefix' will affect all of the other directory
+specifications that were not explicitly provided.
+
+   The most portable way to affect installation locations is to pass the
+correct locations to `configure'; however, many packages provide one or
+both of the following shortcuts of passing variable assignments to the
+`make install' command line to change installation locations without
+having to reconfigure or recompile.
+
+   The first method involves providing an override variable for each
+affected directory.  For example, `make install
+prefix=/alternate/directory' will choose an alternate location for all
+directory configuration variables that were expressed in terms of
+`${prefix}'.  Any directories that were specified during `configure',
+but not in terms of `${prefix}', must each be overridden at install
+time for the entire installation to be relocated.  The approach of
+makefile variable overrides for each directory variable is required by
+the GNU Coding Standards, and ideally causes no recompilation.
+However, some platforms have known limitations with the semantics of
+shared libraries that end up requiring recompilation when using this
+method, particularly noticeable in packages that use GNU Libtool.
+
+   The second method involves providing the `DESTDIR' variable.  For
+example, `make install DESTDIR=/alternate/directory' will prepend
+`/alternate/directory' before all installation names.  The approach of
+`DESTDIR' overrides is not required by the GNU Coding Standards, and
+does not work on platforms that have drive letters.  On the other hand,
+it does better at avoiding recompilation issues, and works well even
+when some directory options were not specified in terms of `${prefix}'
+at `configure' time.
+
+Optional Features
+=================
 
    If the package supports it, you can cause programs to be installed
 with an extra prefix or suffix on their names by giving `configure' the
 option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
-
-Optional Features
-=================
 
    Some packages pay attention to `--enable-FEATURE' options to
 `configure', where FEATURE indicates an optional part of the package.
@@ -151,6 +207,13 @@ package recognizes.
 find the X include and library files automatically, but if it doesn't,
 you can use the `configure' options `--x-includes=DIR' and
 `--x-libraries=DIR' to specify their locations.
+
+   Some packages offer the ability to configure how verbose the
+execution of `make' will be.  For these packages, running `./configure
+--enable-silent-rules' sets the default to minimal output, which can be
+overridden with `make V=1'; while running `./configure
+--disable-silent-rules' sets the default to verbose, which can be
+overridden with `make V=0'.
 
 Particular systems
 ==================
@@ -288,7 +351,7 @@ operates.
      `configure' can determine that directory automatically.
 
 `--prefix=DIR'
-     Use DIR as the installation prefix.  *Note Installation Names::
+     Use DIR as the installation prefix.  *note Installation Names::
      for more details, including other options available for fine-tuning
      the installation locations.
 

@@ -1,5 +1,9 @@
 2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated automake-1.11.1
+
+2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error and unit test error without openssl and
 	gnutls.
 	* src/MetalinkParserController.cc
