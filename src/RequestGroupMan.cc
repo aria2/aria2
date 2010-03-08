@@ -516,6 +516,9 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       configureRequestGroup(groupToAdd);
       createInitialCommand(groupToAdd, commands, e);
       groupToAdd->setRequestGroupMan(this);
+      if(commands.empty()) {
+        requestQueueCheck();
+      }
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);

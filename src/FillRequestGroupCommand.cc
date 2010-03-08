@@ -64,10 +64,16 @@ bool FillRequestGroupCommand::execute()
   SharedHandle<RequestGroupMan> rgman = _e->_requestGroupMan;
   if(rgman->queueCheckRequested()) {
     try {
-      rgman->fillRequestGroupFromReserver(_e);
+      // During adding RequestGroup,
+      // RequestGroupMan::requestQueueCheck() might be called, so
+      // first clear it here.
       rgman->clearQueueCheck();
+      rgman->fillRequestGroupFromReserver(_e);
     } catch(RecoverableException& ex) {
       logger->error(EX_EXCEPTION_CAUGHT, ex);
+      // Re-request queue check to fulfill the requests of all
+      // downloads, some might come after this exception.
+      rgman->requestQueueCheck();
     }
     if(rgman->downloadFinished()) {
       return true;

@@ -1,5 +1,12 @@
 2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that FillRequestGroupCommand is not invoked when
+	RequestGroupMan::createInitialCommand() creates no Command object.
+	* src/FillRequestGroupCommand.cc
+	* src/RequestGroupMan.cc
+
+2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added debug logs.
 	* src/FileEntry.cc
 	* src/SegmentMan.cc
