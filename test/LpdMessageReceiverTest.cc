@@ -45,6 +45,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
   sendsock->writeData(request.c_str(), request.size(),
                       LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
+  rcv.getSocket()->isReadable(5);
   SharedHandle<LpdMessage> msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(!msg.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
