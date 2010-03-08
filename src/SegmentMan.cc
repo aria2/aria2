@@ -395,6 +395,12 @@ size_t SegmentMan::countFreePieceFrom(size_t index) const
 
 void SegmentMan::ignoreSegmentFor(const SharedHandle<FileEntry>& fileEntry)
 {
+  if(logger->debug()) {
+    logger->debug("ignoring segment for path=%s, offset=%s, length=%s",
+                  fileEntry->getPath().c_str(),
+                  util::itos(fileEntry->getOffset()).c_str(),
+                  util::uitos(fileEntry->getLength()).c_str());
+  }
   _ignoreBitfield.addFilter(fileEntry->getOffset(), fileEntry->getLength());
 }
 

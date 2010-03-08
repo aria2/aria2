@@ -1,5 +1,11 @@
 2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added debug logs.
+	* src/FileEntry.cc
+	* src/SegmentMan.cc
+
+2010-03-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed unit test error with mingw32 build.
 	* test/LpdMessageReceiverTest.cc
 

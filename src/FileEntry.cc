@@ -306,6 +306,10 @@ void FileEntry::reuseUri(size_t num)
   size_t ininum = reusableURIs.size();
   if(_logger->debug()) {
     _logger->debug("Found %u reusable URIs", static_cast<unsigned int>(ininum));
+    for(std::vector<std::string>::const_iterator i = reusableURIs.begin(),
+          eoi = reusableURIs.end(); i != eoi; ++i) {
+      _logger->debug("URI=%s", (*i).c_str());
+    }
   }
   // Reuse at least num URIs here to avoid to
   // run this process repeatedly.
