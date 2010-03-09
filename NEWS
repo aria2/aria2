@@ -8,10 +8,12 @@ This release adds Metalink4 support and BitTorrent Local Peer
 Discovery.  aria2.changeUri XML-RPC method was added. It enables you
 to add/remove URIs to existing downloads dynamically.  We refactored
 the code based on profiler results, so aria2 now runs more efficiently
-than ever.
+than ever. Russian and Simplified Chinese translation were updated.
 
 Changes
 -------
+
+ * Updated Russian and Simplified Chinese translation.
 
  * Added --reuse-uri option. This option has existed quite long, but
    been hidden.
