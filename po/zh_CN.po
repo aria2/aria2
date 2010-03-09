@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-03-10 00:09+0900\n"
-"PO-Revision-Date: 2009-09-30 14:01+0000\n"
-"Last-Translator: aerowolf <aerowolf@tom.com>\n"
+"PO-Revision-Date: 2010-02-17 08:54+0000\n"
+"Last-Translator: boltom <Unknown>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-10-06 14:08+0000\n"
+"X-Launchpad-Export-Date: 2010-03-09 15:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:224
@@ -28,7 +28,7 @@ msgstr "紧急关闭序列开始..."
 
 #: src/MultiUrlRequestInfo.cc:101
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr "如果重启aria2，下载将恢复（续传）。"
+msgstr "如果传输重新开始，aria2将续传"
 
 #: src/MultiUrlRequestInfo.cc:103
 msgid ""
@@ -110,13 +110,10 @@ msgid ""
 msgstr " -d, --dir=DIR 用于存储已下载文件的目录。"
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG 日志文件名称。如果指定'-'，\n"
-"                              日志将被写到标准输出（通常是显示器）。"
 
 #: src/usage_text.h:42
 msgid ""
@@ -178,31 +175,22 @@ msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr " -m, --max-tries=N 设置重试次数。0意味着不限次数。"
 
 #: src/usage_text.h:66
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy=PROXY 为HTTP使用此代理服务器。\n"
-"                              也可以参阅--all-proxy选项。\n"
-"                              此设置对所有链接有效。"
 
 #: src/usage_text.h:71
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY 为HTTPS使用此代理服务器。\n"
-"                              也可以参阅--all-proxy选项。\n"
-"                              此设置对所有链接有效。"
 
 #: src/usage_text.h:76
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
 "previously\n"
@@ -210,12 +198,8 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-proxy=PROXY 为FTP使用此代理服务器。\n"
-"                              也可以参阅--all-proxy选项。\n"
-"                              此设置对所有链接有效。"
 
 #: src/usage_text.h:81
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
 "erase\n"
@@ -226,12 +210,6 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" --all-proxy=PROXY 对于所有协议都使用此代理服务器。\n"
-"                              您可以修改此设置并使用--http-proxy、\n"
-"                              --https-proxy和--ftp-proxy选项为\n"
-"                              为特定的协议指定代理服务器。\n"
-"                              \n"
-"                              此设置对所有链接有效。"
 
 #: src/usage_text.h:89
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -836,12 +814,11 @@ msgstr ""
 "                              也可以参阅--bt-request-peer-speed-limit选项。"
 
 #: src/usage_text.h:338
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
 "Reads\n"
 "                              input from stdin when '-' is specified."
-msgstr " -M, --metalink-file=METALINK_FILE 到.metalink文件的文件路径。"
+msgstr ""
 
 #: src/usage_text.h:341
 msgid ""
@@ -898,7 +875,6 @@ msgstr ""
 "                              有首选协议，请指定'none'。"
 
 #: src/usage_text.h:363
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metalink or content type of\n"
@@ -913,15 +889,6 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --follow-metalink=true|false|mem 如果指定true或mem，当下载后缀为\n"
-"                              .metaink或内容类型为\n"
-"                              application/metalink+xml的文件时，\n"
-"                              aria2将分析其为metalink文件并其中的\n"
-"                              文件。\n"
-"                              如果指定mem，metalink文件将不被写\n"
-"                              入磁盘，但只保留其在内存当中。\n"
-"                              如果指定false，将不会采取上述提及\n"
-"                              的动作。"
 
 #: src/usage_text.h:373
 msgid ""
@@ -1401,7 +1368,6 @@ msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
 #: src/usage_text.h:590
-#, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1417,12 +1383,6 @@ msgid ""
 "saved.\n"
 "                              See also --bt-metadata-only option."
 msgstr ""
-" --bt-hash-check-seed[=true|false] 如果选择true，在使用--check-integrityer\n"
-"                              选项进行哈希检查后，且文件完整时，\n"
-"                              继续提供文件种子。如果您仅仅想检查并下\n"
-"                              载文件，当文件被损坏或不完整时，\n"
-"                              请设置此选项为false。\n"
-"                              此设置仅对BT下载有效。"
 
 #: src/usage_text.h:598
 msgid ""
@@ -1437,7 +1397,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:604
-#, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
 "described\n"
@@ -1446,10 +1405,6 @@ msgid ""
 "                              has effect only when BitTorrent Magnet URI is\n"
 "                              used. See also --bt-save-metadata option."
 msgstr ""
-" --server-stat-if=FILE 指定要加载的服务器的性能配置文件的名称。\n"
-"                              加载的数据将被用在\n"
-"                              某些URI选择器之中，比如'feedback'。\n"
-"                              也可以参阅--uri-selector选项"
 
 #: src/usage_text.h:609
 msgid ""
@@ -2515,19 +2470,8 @@ msgstr ""
 #: src/message.h:258
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
-msgstr ""
+msgstr "无效的文件长度。不能继续下载%s：本地%s，远程%s"
 
 #: src/BtSetup.cc:170
 msgid "Errors occurred while binding port.\n"
 msgstr "绑定端口时发生错误。\n"
-
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=FILE 已下载文件的名称。"
-
-#~ msgid ""
-#~ " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
-#~ "basic\n"
-#~ "                              is the only supported scheme."
-#~ msgstr ""
-#~ " --http-auth-scheme=SCHEME 设置HTTP验证方案。当前，基本的\n"
-#~ "                              是仅支持的方案。"
