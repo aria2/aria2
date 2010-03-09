@@ -43,7 +43,11 @@ void LpdMessageDispatcherTest::testCreateLpdRequest()
 void LpdMessageDispatcherTest::testSendMessage()
 {
   SharedHandle<SocketCore> recvsock(new SocketCore(SOCK_DGRAM));
+#ifdef __MINGW32__
+  recvsock->bindWithFamily(LPD_MULTICAST_PORT, AF_INET);
+#else // !__MINGW32__
   recvsock->bind(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+#endif // !__MINGW32__
   recvsock->joinMulticastGroup(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT, "");
   
   LpdMessageDispatcher d("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf", 6000,

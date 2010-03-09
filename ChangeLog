@@ -1,5 +1,12 @@
 2010-03-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	For LPD sockets, bind IN_ADDRANY because binding multicast address
+	fails under Windows.
+	* src/LpdMessageReceiver.cc
+	* test/LpdMessageDispatcherTest.cc
+
+2010-03-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that error message is not propagated to Exception.
 	* src/SocketCore.cc
 
