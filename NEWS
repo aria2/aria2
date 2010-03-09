@@ -1,226 +1,49 @@
-aria2 1.8.2
+aria2 1.9.0
 ===========
 
 Release Note
 ------------
 
-This release fixes the bug that causes segmentation fault with
---max-file-not-found option involved. Now aria2 can handle redirected
-URI which is not properly percent encoded. In MinGW32 build, console
-readout is now always cut by 80 characters. 'bittorrent' key is added
-to the response of tellStatus XML-RPC method. The associated value of
-the key is a struct and contains data retrieved from .torrent file,
-such as name, announce-list, comment, etc.
+This release adds Metalink4 support and BitTorrent Local Peer
+Discovery.  aria2.changeUri XML-RPC method was added. It enables you
+to add/remove URIs to existing downloads dynamically.  We refactored
+the code based on profiler results, so aria2 now runs more efficiently
+than ever.
 
 Changes
 -------
 
- * Added Portuguese translation. Updated Ukrainian and Spanish
-   translation. Thanks to all translators.
+ * Added --reuse-uri option. This option has existed quite long, but
+   been hidden.
 
- * Call ares_library_init and ares_library_cleanup if they are
-   available. Some code cleanups.
+ * Fixed the bug that filename is percent encoded where it must be
+   percent decoded in sendMdtm().
 
- * Call ares_process_fd() each time after epoll to handle timeout.
+ * Added getServers XML-RPC method.
 
- * Added bittorrent key to the response of tellStatus XML-RPC method.
-   The associated value of the key is a struct and contains data
-   retrieved from .torrent file, such as name, announce-list, comment,
-   etc.
+ * Added 'status' key to the response of getUri XML-RPC method.
 
- * Rewritten Cookie storage.
+ * Added changeUri XML-RPC method.  This method removes/adds URIs
+   dynamically.
 
- * Handle redirected URI which is not properly percent encoded.
+ * Replaced null or control characters in file path with '_'.  For
+   MinGW32 build, additional characters which is not allowed in
+   Windows kernel are also replaced. util::detectDirTraversal() now
+   returns true if given string contains null or control characters.
 
- * Fixed the bug that causes segmentaiton fault when aria2 sees '404
-   not found' in the N times(N is where --max-file-not-found=N, N>0)
-   in a row without single '200 OK' response.
+ * Discard torrent file if path data in it contains directory
+   traversal directives.  Discard metalink:file element in Metalink3
+   format if its name attribute contains directory traversal
+   directives.  Ignore name attribute of metalink:signature element in
+   Metalink3 format if it contains directory traversal directives.
 
- * Fixed compile error with i586-mingw32msvc-g++.  Always Cut console
-   readout by 80 characters in mingw32 build.
+ * Added Metalink4 support. Files with same metaurl are
+   grouped and downloaded in one RequestGroup.
 
- * Fixed compile error with intel compiler
+ * Added --bt-lpd-interface option to specify the interface to use for
+   Local Peer Discovery. LpdMessageDispatcher object now has its own
+   socket. LpdMessageReceiver's socket is binded to multicast address
+   to only receive multicast packets.
 
-
-
-aria2 1.8.1
-===========
-
-Release Note
-------------
-
-This release fixes the bug that causes segmentation fault if unknown
-options exist in aria2.conf file and user cannot include empty line in
-aria2.conf.
-
-Following new command line options are added: --http-no-cache,
---bt-metadata-only and --human-readable option.  --dir option now
-treats "" as ".".  --all-proxy, --http-proxy, --https-proxy and
---ftp-proxy option accept empty string "".  When "" is given, it
-erases previously defined proxy.
-
-aria2.getSessionInfo XML-RPC method was added.  aria2.tellWaiting and
-aria2.tellStopped XML-RPC method accept a negative integer as
-offset. For example, in aria2.tellWaiting, 'offset' == -1 points last
-download in the waiting queue and 'offset' == -2 points the download
-before the last download, and so on.  'dir' and 'files' key were added
-to the response struct of aria2.tellStatus XML-RPC method.  The value
-associated with 'files' key is the list of files. Its element is the
-same struct used in aria2.getFiles XML-RPC method.  'uris' key was
-added to the response struct of aria2.getFiles XML-RPC method.  The
-value associated with 'uris' key is the list of URIs. Its element is
-the same struct used in aria2.getUris XML-RPC method.  aria2 now
-returns gzip compressed XML-RPC response if XML-RPC client accepts
-gzip content encoding.
-
-Changes
--------
-
- * aria2 now returns gzip compressed XML-RPC response if XML-RPC
-   client accepts gzip content encoding.
-
- * Added dir and files key to the response struct of aria2.tellStatus
-   XML-RPC method.  The value associated with files key is the list of
-   files. Its element is the same struct used in aria2.getFiles
-   XML-RPC method.  Added uris key to the response struct of
-   aria2.getFiles XML-RPC method.  The value associated with uris key
-   is the list of URIs. Its element is the same struct used in
-   aria2.getUris XML-RPC method.
-
- * Added aria2.getSessionInfo XML-RPC method.  This method returns a
-   struct containing Session ID, which is generated each time when
-   aria2 is invoked.
-
- * Now offset argument in aria2.tellWaiting and aria2.tellStopped
-   accept a negative integer.  'offset' == -1 points last download in
-   the waiting queue and 'offset' == -2 points the download before the
-   last download, and so on. The downloads in the response are in
-   reversed order.
-
- * Added --human-readable option.  This option, when true is given,
-   prints sizes and speed in human readable format(e.g., 1.2Ki, 3.4Mi)
-   in the console readout. The default value is true and it looks
-   exactly the same as aria2-1.8.0.  So the 'new feature' appears when
-   false is given.  In this case, sizes and speed are printed in
-   bytes. No Ki, Mi units conversion is used.  This may be useful for
-   a program to parse the output of aria2.
-
- * Now --all-proxy, --http-proxy, --https-proxy and --ftp-proxy option
-   accept empty string "".  When "" is given, it erases previously
-   defined proxy.
-
- * Added --bt-metadata-only option.  If true is given to this option,
-   aria2 downloads metadata only. The file(s) described in metadata
-   will not be downloaded. This option has effect only when BitTorrent
-   Magnet URI is used. See also --bt-save-metadata option.
-
- * Fixed memory leak. Commands stored in std::deque<Command*> are not
-   deleted when exception is thrown.
-
- * Replaced '/' and '\' with '_' in HTTP/FTP filename.
-
- * Treat --dir="" as --dir="."
-
- * Added --http-no-cache option.  When true is given, aria2 sends
-   Cache-Control: no-cache and Pragma: no-cache header to avoid cached
-   content.  If false is given , these headers are not sent and you
-   can add Cache-Control header with a directive you like using
-   --header option.
-
- * Added following sentence to the help message of --out option:
-   --out option is ignored when -Z is used.
-
- * Added --bt-save-metadata option to -i list options.
-
- * Fixed compile error with i586-mingw32msvc-gcc 4.4.2, which is
-   debian's corss compiler, without any additional libraries.
-
- * Fixed the bug that causes segmentation fault if unknown option is
-   put in aria2.conf file. BUG#2928303
-
- * Ignore port message with port=0.
-
- * Updated autoconf/automake auxiliary files.
-
-
-
-aria2 1.8.0
-===========
-
-Release Note
-------------
-
-This release fixes the bug that configure script fails to detect
-GnuTLS library if --without-sqlite3 is given.  The new XML-RPC methods
-are added: aria2.getOption, aria2.getGetGlobalOption,
-aria2.changePosition, aria2.tellStopped and system.multicall.
---bt-save-metadata option is added. This option saves metadata as
-.torrent file. This option has effect only when BitTorrent Magnet URI
-is used.
-
-Changes
--------
-
- * Added signal handler for SIGHUP to save .aria2 file when terminal
-   is closed. The handler is the same one for SIGINT and SIGTERM.
-
- * Added system.multicall XML-RPC method.
-
- * Added tellStopped XML-RPC method. This method returns stopped
-   download in the specified range. It takes same parameters with
-   tellWaiting XML-RPC method. offset = 0 means the oldest download.
-
- * Use AI_ADDRCONFIG flag if it is available. Refactored so that
-   getaddrinfo calls are not scattered around. Unset AI_ADDRCONFIG
-   when conducting unit tests because they fail if networking
-   interface is not configured with IPv4 address.
-
- * Added --bt-save-metadata option. When true is given, it saves
-   metadata as .torrent file. This option has effect only when
-   BitTorrent Magnet URI is used.  The filename is hex encoded info
-   hash with suffix .torrent. The directory to be saved is the same
-   directory where download file is saved. If the same file already
-   exists, metdata is not saved.
-
- * Added changePosition XML-RPC method. It takes 3 parameters: gid,
-   pos and how.  This method changes the position of download denoted
-   by gid.  If how is POS_SET, it moves the download to a position
-   relative to the beginning of the queue.  If how is POS_CUR, it
-   moves the download to a position relative to the current
-   position. If how is POS_END, it moves the download to a position
-   relative to the end of the queue. If the destination position is
-   less than 0 or beyond the end of the queue, it moves the download
-   to the beginning or the end of the queue respectively.  Returns the
-   destination position.
-
- * Added getOption and getGlobalOption XML-RPC method.  getOption
-   takes GID as a parameter and returns its options as struct.
-   getGlobalOption takes no parameter and returns global
-   options. Because global option is used as a template for the option
-   of newly added downloads, it includes options returned by
-   getOption.
-
- * Added following 2 keys, followedBy and belongsTo, to the response
-   of tellStatus.
-
-   followedBy: List of GIDs which are generated by the
-   consequence of this download. For example, when aria2 downloaded
-   Metalink file, it generates downloads described in it(see
-   --follow-metalink option). This value is useful to track these
-   auto generated downloads. If there is no such downloads, this key
-   will not be included in the response.
-
-   belongsTo: GID of a parent download. Some downloads are a part of
-   another download.  For example, if a file in Metalink has
-   BitTorrent resource, the download of .torrent is a part of that
-   file.  If this download has no parent, this key will not be
-   included in the response.
-
- * Show info hash in Magnet URI in upper case letters in -S output.
-
- * Fixed the bug that if --without-sqlite3 is given, pkg-config is not
-   properly used in configure script and failed to detect gnutls.
-   This is because explicit call of PKG_PROG_PKG_CONFIG is missing and
-   the initialization of pkg-config is done in first occurrence of
-   PKG_CHECK_MODULES which is not executed because it is inside of
-   sqlite3.m4. Added explicit PKG_PROG_PKG_CONFIG call.
+ * Added Local Peer Discovery. It is disabled by default. Use
+   --bt-enable-lpd to enable the function.
