@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-03-10 00:09+0900\n"
 "PO-Revision-Date: 2009-03-05 06:58+0000\n"
 "Last-Translator: pepoluan <Unknown>\n"
 "Language-Team: Indonesian <id@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-03-13 14:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:224
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Memulai proses shutdown... Tekan Ctrl-C sekali lagi untuk mengakhiri segera."
 
-#: src/DownloadEngine.cc:221
+#: src/DownloadEngine.cc:230
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Memulai proses shutdown darurat..."
 
-#: src/MultiUrlRequestInfo.cc:97
+#: src/MultiUrlRequestInfo.cc:101
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 akan melanjutkan unduh jika proses transfer dimulai kembali."
 
-#: src/MultiUrlRequestInfo.cc:99
+#: src/MultiUrlRequestInfo.cc:103
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -39,11 +39,11 @@ msgstr ""
 "Jika terjadi error, silakan lihat berkas log. Lihat opsi '-l' pada laman "
 "help/man untuk keterangan lebih lanjut."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:615
 msgid "Download Results:"
 msgstr "Hasil pengunduhan:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:665
 msgid "Status Legend:"
 msgstr "Legenda Status:"
 
@@ -59,49 +59,49 @@ msgstr "                              Tag: "
 msgid "                              Possible Values: "
 msgstr "                              Nilai-nilai yang dimungkinkan: "
 
-#: src/OptionHandlerImpl.h:135
+#: src/OptionHandlerImpl.h:136
 msgid "must be either 'true' or 'false'."
 msgstr "harus diisi 'true' atau 'false'."
 
-#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
+#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
 #, c-format
 msgid "must be between %s and %s."
 msgstr "harus diantara %s dan %s."
 
-#: src/OptionHandlerImpl.h:215
+#: src/OptionHandlerImpl.h:216
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "harus lebih kecil atau sama dengan %s."
 
-#: src/OptionHandlerImpl.h:221
+#: src/OptionHandlerImpl.h:222
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "harus lebih besar atau sama dengan %s."
 
-#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
+#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
 msgid "must be a number."
 msgstr "harus sebuah angka."
 
-#: src/OptionHandlerImpl.h:293
+#: src/OptionHandlerImpl.h:294
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "harus lebih kecil atau sama dengan %.1f."
 
-#: src/OptionHandlerImpl.h:296
+#: src/OptionHandlerImpl.h:297
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "harus diantara %.1f dan %.1f."
 
-#: src/OptionHandlerImpl.h:299
+#: src/OptionHandlerImpl.h:300
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "harus lebih besar atau sama dengan %.1f"
 
-#: src/OptionHandlerImpl.h:477
+#: src/OptionHandlerImpl.h:478
 msgid "must be one of the following:"
 msgstr "harus berisi salah satu dari:"
 
-#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:572
+#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
 msgid "unrecognized proxy format"
 msgstr "format proxy tidak dikenali"
 
@@ -1540,6 +1540,36 @@ msgid ""
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
+#: src/usage_text.h:612
+#, fuzzy
+msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+msgstr " --enable-dht[=true|false]    Aktifkan fungsionalitas DHT."
+
+#: src/usage_text.h:614
+#, fuzzy
+msgid ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+msgstr ""
+" --allow-piece-length-change=true|false Jika false yang diberikan, aria2 "
+"akan\n"
+"                              membatalkan unduhan ketika satu bagian berbeda "
+"dengan\n"
+"                              yang ada di berkas kendali. Jika true yang "
+"diberikan, anda\n"
+"                              dapat melanjutkan tapi beberapa proses unduhan "
+"akan hilang."
+
+#: src/usage_text.h:619
+msgid ""
+" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
+"                              left."
+msgstr ""
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " versi "
@@ -2226,44 +2256,49 @@ msgstr ""
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr "Gagal menyimpan tanda tangan sebagai %s. Mungkin berkas telah ada."
 
-#: src/message.h:184
+#: src/message.h:183
+#, c-format
+msgid "Detected directory traversal directive in %s"
+msgstr ""
+
+#: src/message.h:185
 msgid "Timeout."
 msgstr "Waktu habis."
 
-#: src/message.h:185
+#: src/message.h:186
 msgid "Invalid chunk size."
 msgstr "Ukuran potongan tidak sah."
 
-#: src/message.h:186
+#: src/message.h:187
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Potongan terlalu besar. ukuran=%d"
 
-#: src/message.h:187
+#: src/message.h:188
 msgid "Invalid header."
 msgstr "Tajuk tidak sah."
 
-#: src/message.h:188
+#: src/message.h:189
 msgid "Invalid response."
 msgstr "Respon tidak sah."
 
-#: src/message.h:189
+#: src/message.h:190
 msgid "No header found."
 msgstr "Tak ada tajuk ditemukan."
 
-#: src/message.h:190
+#: src/message.h:191
 msgid "No status header."
 msgstr "Tak ada tajuk status."
 
-#: src/message.h:191
+#: src/message.h:192
 msgid "Proxy connection failed."
 msgstr "Koneksi proxy gagal."
 
-#: src/message.h:192
+#: src/message.h:193
 msgid "Connection failed."
 msgstr "Koneksi gagal."
 
-#: src/message.h:193
+#: src/message.h:194
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2272,255 +2307,255 @@ msgstr ""
 "Nama berkas yang diminta dengan yang didaftarkan sebelumnya tidak sama. "
 "Mengharapkan:%s Sebenarnya:%s"
 
-#: src/message.h:194
+#: src/message.h:195
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Status respon tidak berhasil. status=%d"
 
-#: src/message.h:195
+#: src/message.h:196
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Ukuran berkas terlalu besar. ukuran=%s"
 
-#: src/message.h:196
+#: src/message.h:197
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Penyandian transfer %s tidak disokong."
 
-#: src/message.h:197
+#: src/message.h:198
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Inisialisasi SSL gagal: %s"
 
-#: src/message.h:198
+#: src/message.h:199
 msgid "SSL I/O error"
 msgstr "Galat I/O SSL"
 
-#: src/message.h:199
+#: src/message.h:200
 msgid "SSL protocol error"
 msgstr "Galat protokol SSL"
 
-#: src/message.h:200
+#: src/message.h:201
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Galat tak dikenal SSL %d"
 
-#: src/message.h:201
+#: src/message.h:202
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Inisialisasi SSL gagal: Galat sambungan OpenSSL %d"
 
-#: src/message.h:202
+#: src/message.h:203
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Ukuran tak cocok Diharapkan: %s Sebenarnya: %s"
 
-#: src/message.h:203
+#: src/message.h:204
 msgid "Authorization failed."
 msgstr "Otorisasi gagal."
 
-#: src/message.h:204
+#: src/message.h:205
 msgid "Got EOF from the server."
 msgstr "Dapat EOF dari server."
 
-#: src/message.h:205
+#: src/message.h:206
 msgid "Got EOF from peer."
 msgstr "Dapat EOF dari peer."
 
-#: src/message.h:206
+#: src/message.h:207
 msgid "Malformed meta info."
 msgstr "Info meta salah bentuk."
 
-#: src/message.h:208
+#: src/message.h:209
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Gagal membuka berkas %s, penyebab: %s"
 
-#: src/message.h:209
+#: src/message.h:210
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Gagal menulis ke berkas %s, penyebab: %s"
 
-#: src/message.h:210
+#: src/message.h:211
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Gagal membaca dari berkas %s, penyebab: %s"
 
-#: src/message.h:211
+#: src/message.h:212
 msgid "Failed to read data from disk."
 msgstr "Gagal membaca data dari cakram."
 
-#: src/message.h:212
+#: src/message.h:213
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Gagal mengkalkulasi ringkasan SHA1 atau bagian dari berkas %s, penyebab: %s"
 
-#: src/message.h:213
+#: src/message.h:214
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Gagal mencari berkas %s, penyebab: %s"
 
-#: src/message.h:214
+#: src/message.h:215
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr ""
 
-#: src/message.h:215
+#: src/message.h:216
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s bukan direktori"
 
-#: src/message.h:216
+#: src/message.h:217
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Gagal membuat direktori %s, penyebab: %s"
 
-#: src/message.h:217
+#: src/message.h:218
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Gagal membuka segmen berkas %s, penyebab: %s"
 
-#: src/message.h:218
+#: src/message.h:219
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Gagal menulis ke segmen berkas %s, penyebab: %s"
 
-#: src/message.h:219
+#: src/message.h:220
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Gagal membaca dari segmen berkas %s, penyebab: %s"
 
-#: src/message.h:221
+#: src/message.h:222
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Gagal membuka soket, penyebab: %s"
 
-#: src/message.h:222
+#: src/message.h:223
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Gagal mengatur opsi soket, penyebab: %s"
 
-#: src/message.h:223
+#: src/message.h:224
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Gagal mengatur soket sebagai penghalang, penyebab: %s"
 
-#: src/message.h:224
+#: src/message.h:225
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Gagal mengatur soket sebagai bukan penghalang, penyebab: %s"
 
-#: src/message.h:225
+#: src/message.h:226
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Gagal mengikat soket, penyebab: %s"
 
-#: src/message.h:226
+#: src/message.h:227
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Gagal mendengarkan soket, penyebab: %s"
 
-#: src/message.h:227
+#: src/message.h:228
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr ""
 
-#: src/message.h:228
+#: src/message.h:229
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Gagal mendapatkan nama soket, penyebab: %s"
 
-#: src/message.h:229
+#: src/message.h:230
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr ""
 
-#: src/message.h:230
+#: src/message.h:231
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr ""
 
-#: src/message.h:231
+#: src/message.h:232
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Gagal menyambung ke host %s, penyebab: %s"
 
-#: src/message.h:232
+#: src/message.h:233
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Gagal memeriksa apakah soket dapat ditulis, penyebab: %s"
 
-#: src/message.h:233
+#: src/message.h:234
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Gagal memeriksa apakah soket dapat dibaca, penyebab: %s"
 
-#: src/message.h:234
+#: src/message.h:235
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Gagal mengirim data, penyebab: %s"
 
-#: src/message.h:235
+#: src/message.h:236
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Gagal menerima data, penyebab: %s"
 
-#: src/message.h:236
+#: src/message.h:237
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Gagal mengintip data, penyebab: %s"
 
-#: src/message.h:237
+#: src/message.h:238
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Galat soket %d tak diketahui (0x%x)"
 
-#: src/message.h:238
+#: src/message.h:239
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Berkas %s ada, tapi %s tidak ada"
 
-#: src/message.h:239
+#: src/message.h:240
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 
-#: src/message.h:240
+#: src/message.h:241
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr ""
 
-#: src/message.h:241
+#: src/message.h:242
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
 
-#: src/message.h:242
+#: src/message.h:243
 msgid "Download aborted."
 msgstr "Unduh dibatalkan."
 
-#: src/message.h:243
+#: src/message.h:244
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr ""
 
-#: src/message.h:244
+#: src/message.h:245
 msgid "Insufficient checksums."
 msgstr ""
 
-#: src/message.h:245
+#: src/message.h:246
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr ""
 
-#: src/message.h:246
+#: src/message.h:247
 msgid "Flooding detected."
 msgstr "Banjir terdeteksi."
 
-#: src/message.h:247
+#: src/message.h:248
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2529,56 +2564,56 @@ msgstr ""
 "Koneksi jatuh karena tak ada pesan permintaan/bagian yang ditukar dalam "
 "periode tertentu (%d detik)."
 
-#: src/message.h:248
+#: src/message.h:249
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "infoHash dalam berkas torrent tidak cocok dengan yang ada di berkas .aria2."
 
-#: src/message.h:249
+#: src/message.h:250
 #, c-format
 msgid "No such file entry %s"
 msgstr "Tak ada entri berkas %s"
 
-#: src/message.h:250
+#: src/message.h:251
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Terlalu pelan kecepatan Unduh: %d <= %d(B/s), host:%s"
 
-#: src/message.h:251
+#: src/message.h:252
 msgid "No HttpRequestEntry found."
 msgstr "Tak ada HttpRequestEntry yang ditemukan."
 
-#: src/message.h:252
+#: src/message.h:253
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Dapat status %d, tapi tak ada tajuk lokasi yang diberikan."
 
-#: src/message.h:253
+#: src/message.h:254
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Rentang tajuk tidak sah. Permintaan: %s-%s/%s, Respon: %s-%s/%s"
 
-#: src/message.h:254
+#: src/message.h:255
 msgid "No file matched with your preference."
 msgstr "Tidak ada berkas yang cocok dengan pilihan Anda."
 
-#: src/message.h:255
+#: src/message.h:256
 msgid "Exception caught"
 msgstr "Pengecualian tertangkap"
 
-#: src/message.h:256
+#: src/message.h:257
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "Panjang muatan maksimum terlampaui atau tidak sah. panjang = %u"
 
-#: src/message.h:257
+#: src/message.h:258
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 "Panjang berkas tidak sah. Tak dapat melanjutkan unduh %s: lokal %s, jarak "
 "jauh %s"
 
-#: src/BtSetup.cc:161
+#: src/BtSetup.cc:170
 msgid "Errors occurred while binding port.\n"
 msgstr "Galat terjadi ketika mengikat pangkalan.\n"
 

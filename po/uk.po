@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-03-10 00:09+0900\n"
 "PO-Revision-Date: 2010-01-27 08:21+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -17,22 +17,22 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-02-03 13:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:224
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Розпочинається послідовність операцій термінового вимкнення... Натисніть "
 "знов Ctrl-C для невідкладного вимкнення."
 
-#: src/DownloadEngine.cc:221
+#: src/DownloadEngine.cc:230
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Розпочинається послідовність операцій термінового вимкнення..."
 
-#: src/MultiUrlRequestInfo.cc:97
+#: src/MultiUrlRequestInfo.cc:101
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 відновить завантаження, якщо трансфер буде перезапущено."
 
-#: src/MultiUrlRequestInfo.cc:99
+#: src/MultiUrlRequestInfo.cc:103
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -40,11 +40,11 @@ msgstr ""
 "При наявності помилок дивіться log файл. Дивіться параметр '-l' в допомозі "
 "(help/man-сторінки) для детальнішої інформації."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:615
 msgid "Download Results:"
 msgstr "Результати завантаження:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:665
 msgid "Status Legend:"
 msgstr "Роз'яснення позначень:"
 
@@ -60,49 +60,49 @@ msgstr "                              Ознаки: "
 msgid "                              Possible Values: "
 msgstr "                              Можливі значення: "
 
-#: src/OptionHandlerImpl.h:135
+#: src/OptionHandlerImpl.h:136
 msgid "must be either 'true' or 'false'."
 msgstr "має бути 'true' або 'false' (так чи ні)."
 
-#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
+#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
 #, c-format
 msgid "must be between %s and %s."
 msgstr "має бути між %s та %s."
 
-#: src/OptionHandlerImpl.h:215
+#: src/OptionHandlerImpl.h:216
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "має бути менше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:221
+#: src/OptionHandlerImpl.h:222
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "має бути більше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
+#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
 msgid "must be a number."
 msgstr "має бути числом."
 
-#: src/OptionHandlerImpl.h:293
+#: src/OptionHandlerImpl.h:294
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "має бути менше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:296
+#: src/OptionHandlerImpl.h:297
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "має бути між %.1f та %.1f."
 
-#: src/OptionHandlerImpl.h:299
+#: src/OptionHandlerImpl.h:300
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "має бути більше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:477
+#: src/OptionHandlerImpl.h:478
 msgid "must be one of the following:"
 msgstr "має бути одним із наступних:"
 
-#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:572
+#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
 msgid "unrecognized proxy format"
 msgstr "невідомий формат проксі"
 
@@ -1744,6 +1744,37 @@ msgid ""
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
+#: src/usage_text.h:612
+#, fuzzy
+msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+msgstr " --enable-dht[=true|false] Ввімкнути підтримку DHT."
+
+#: src/usage_text.h:614
+#, fuzzy
+msgid ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+msgstr ""
+" --certificate=FILE Використовувати клієнтський сертифікат у FILE.\n"
+"                              Сертифікат мусить бути у PEM форматі.\n"
+"                              Ви можете використовувати параметр --private-"
+"key, щоб вказати\n"
+"                              приватного ключа."
+
+#: src/usage_text.h:619
+#, fuzzy
+msgid ""
+" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
+"                              left."
+msgstr ""
+" --use-head[=true|false] Використовувати метод HEAD для першого запиту до "
+"HTTP\n"
+"                              серверу."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " версія "
@@ -2448,44 +2479,49 @@ msgstr ""
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr ""
 
-#: src/message.h:184
+#: src/message.h:183
+#, c-format
+msgid "Detected directory traversal directive in %s"
+msgstr ""
+
+#: src/message.h:185
 msgid "Timeout."
 msgstr "Тайм-аут."
 
-#: src/message.h:185
+#: src/message.h:186
 msgid "Invalid chunk size."
 msgstr "Невірний розмір блоку."
 
-#: src/message.h:186
+#: src/message.h:187
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Блок занадто великий. Розмір=%d"
 
-#: src/message.h:187
+#: src/message.h:188
 msgid "Invalid header."
 msgstr "Невірний заголовок."
 
-#: src/message.h:188
+#: src/message.h:189
 msgid "Invalid response."
 msgstr "Невірна відповідь."
 
-#: src/message.h:189
+#: src/message.h:190
 msgid "No header found."
 msgstr "Не знайдено заголовок."
 
-#: src/message.h:190
+#: src/message.h:191
 msgid "No status header."
 msgstr "Немає заголовку статусу."
 
-#: src/message.h:191
+#: src/message.h:192
 msgid "Proxy connection failed."
 msgstr "Помилка підключення проксі."
 
-#: src/message.h:192
+#: src/message.h:193
 msgid "Connection failed."
 msgstr "Помилка під час з'єднання."
 
-#: src/message.h:193
+#: src/message.h:194
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2494,225 +2530,225 @@ msgstr ""
 "Ім'я файлу із запиту та те, що зареєстровано раніше не однакові. Очікуване:%"
 "s, фактичне:%s"
 
-#: src/message.h:194
+#: src/message.h:195
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Помилковий статус відповіді. Статус=%d"
 
-#: src/message.h:195
+#: src/message.h:196
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Занадто великий розмір файлу. Розмір=%s"
 
-#: src/message.h:196
+#: src/message.h:197
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Кодування трансферу (обміну) %s не підтримується."
 
-#: src/message.h:197
+#: src/message.h:198
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Помилка ініціалізації SSL: %s"
 
-#: src/message.h:198
+#: src/message.h:199
 msgid "SSL I/O error"
 msgstr "Помилка I/O (вводу/виводу) SSL"
 
-#: src/message.h:199
+#: src/message.h:200
 msgid "SSL protocol error"
 msgstr "Помилка протоколу SSL"
 
-#: src/message.h:200
+#: src/message.h:201
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Невідома SSL помилка %d"
 
-#: src/message.h:201
+#: src/message.h:202
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Не вдалося ініціалізувати SSL: Помилка OpenSSL з'єднання %d"
 
-#: src/message.h:202
+#: src/message.h:203
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Розміри відрізняються. Очікуваний:%s, фактичний:%s"
 
-#: src/message.h:203
+#: src/message.h:204
 msgid "Authorization failed."
 msgstr "Помилка авторизації."
 
-#: src/message.h:204
+#: src/message.h:205
 msgid "Got EOF from the server."
 msgstr "З сервера отримано EOF (кінець файлу)."
 
-#: src/message.h:205
+#: src/message.h:206
 msgid "Got EOF from peer."
 msgstr "Від вузла отримано EOF (кінець файлу)."
 
-#: src/message.h:206
+#: src/message.h:207
 msgid "Malformed meta info."
 msgstr "Невірні метадані."
 
-#: src/message.h:208
+#: src/message.h:209
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Помилка відкриття файлу %s: %s"
 
-#: src/message.h:209
+#: src/message.h:210
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Помилка під час запису до файлу %s: %s"
 
-#: src/message.h:210
+#: src/message.h:211
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Помилка читання з файлу %s: %s"
 
-#: src/message.h:211
+#: src/message.h:212
 msgid "Failed to read data from disk."
 msgstr "Помилка читання з диску."
 
-#: src/message.h:212
+#: src/message.h:213
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "Помилка обрахунку SHA1 суми файлу %s, з причини: %s"
 
-#: src/message.h:213
+#: src/message.h:214
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Помилка позиціонування файлу %s: %s"
 
-#: src/message.h:214
+#: src/message.h:215
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Зсув за межі діапазону, зміщення=%s"
 
-#: src/message.h:215
+#: src/message.h:216
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s не є каталогом."
 
-#: src/message.h:216
+#: src/message.h:217
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Помилка утворення каталогу %s, обумовлена: %s"
 
-#: src/message.h:217
+#: src/message.h:218
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Помилка відкриття сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:218
+#: src/message.h:219
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Помилка запису до сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:219
+#: src/message.h:220
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Помилка читання із сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:221
+#: src/message.h:222
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Помилка відкриття сокету, обумовлена: %s"
 
-#: src/message.h:222
+#: src/message.h:223
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Помилка встановлення налаштувань сокету, обумовлена: %s"
 
-#: src/message.h:223
+#: src/message.h:224
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Помилка встановлення блокувального сокету, обумовлена: %s"
 
-#: src/message.h:224
+#: src/message.h:225
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Помилка встановлення не-блокувального сокету, обумовлена: %s"
 
-#: src/message.h:225
+#: src/message.h:226
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Помилка прив'язки до сокету, обумовлена: %s"
 
-#: src/message.h:226
+#: src/message.h:227
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Помилка прослуховування сокету, обумовлена:%s"
 
-#: src/message.h:227
+#: src/message.h:228
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Помилка прийняття підключення від вузла:%s"
 
-#: src/message.h:228
+#: src/message.h:229
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Помилка під час отримання ім'я сокету, обумовлена:%s"
 
-#: src/message.h:229
+#: src/message.h:230
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Помилка під час отримання ім'я підключеної точки, обумовлена:%s"
 
-#: src/message.h:230
+#: src/message.h:231
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Помилка перетворення імені вузла %s, обумовлена:%s"
 
-#: src/message.h:231
+#: src/message.h:232
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Помилка підключення до вузла %s, обумовлена: %s"
 
-#: src/message.h:232
+#: src/message.h:233
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Помилка перевірки сокету на можливість запису, обумовлена: %s"
 
-#: src/message.h:233
+#: src/message.h:234
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Помилка перевірки сокету на можливість читання, обумовлена: %s"
 
-#: src/message.h:234
+#: src/message.h:235
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Помилка пересилання даних, обумовлена: %s"
 
-#: src/message.h:235
+#: src/message.h:236
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Помилка отримання даних, обумовлена: %s"
 
-#: src/message.h:236
+#: src/message.h:237
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Помилка запиту даних, обумовлена: %s"
 
-#: src/message.h:237
+#: src/message.h:238
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Невідома помилка сокету %d (0x%x)"
 
-#: src/message.h:238
+#: src/message.h:239
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Файл %s існує, проте %s не існує."
 
-#: src/message.h:239
+#: src/message.h:240
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "Не дійсний розмір завантаження для %s,  розмір=%d. Має бути %d."
 
-#: src/message.h:240
+#: src/message.h:241
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Не дійсний ID=%d для %s. Має бути %d."
 
-#: src/message.h:241
+#: src/message.h:242
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2721,29 +2757,29 @@ msgstr ""
 "Контрольна сума блоку не пройшла підтвердження. checksumIndex=%d, offset=%s, "
 "expectedHash=%s, actualHash=%s"
 
-#: src/message.h:242
+#: src/message.h:243
 msgid "Download aborted."
 msgstr "Завантаження скасовано."
 
-#: src/message.h:243
+#: src/message.h:244
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Файл %s було завантажено із використанням іншої команди."
 
-#: src/message.h:244
+#: src/message.h:245
 msgid "Insufficient checksums."
 msgstr "Недостатня контрольна сума."
 
-#: src/message.h:245
+#: src/message.h:246
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Трекер повернув інформацію про збій з причини: %s"
 
-#: src/message.h:246
+#: src/message.h:247
 msgid "Flooding detected."
 msgstr "Виявлено флудінг (лавинну адресацію)."
 
-#: src/message.h:247
+#: src/message.h:248
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2752,57 +2788,57 @@ msgstr ""
 "Втрачено з'єднання через відсутність запитів/частин повідомлень, якими "
 "обмінювались би за визначений період (%d секунд)."
 
-#: src/message.h:248
+#: src/message.h:249
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "infoHash в файлі торенту не тотожній до того, що знаходиться в файлі .aria2."
 
-#: src/message.h:249
+#: src/message.h:250
 #, c-format
 msgid "No such file entry %s"
 msgstr "Нема такого файлу %s"
 
-#: src/message.h:250
+#: src/message.h:251
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Занадто мала швидкість завантаження: %d <= %d(Б/с), хост:%s"
 
-#: src/message.h:251
+#: src/message.h:252
 msgid "No HttpRequestEntry found."
 msgstr "Не знайдено HttpRequestEntry (входження Http запиту)"
 
-#: src/message.h:252
+#: src/message.h:253
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Отримано %d статус, проте не забезпечено місцезнаходження заголовку."
 
-#: src/message.h:253
+#: src/message.h:254
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Невірний діапазон в назві. Запит: %s-%s/%s, Відповідь: %s-%s/%s"
 
-#: src/message.h:254
+#: src/message.h:255
 msgid "No file matched with your preference."
 msgstr "Нема файлу відповідного до Ваших налаштувань."
 
-#: src/message.h:255
+#: src/message.h:256
 msgid "Exception caught"
 msgstr "Виявлено виняток"
 
-#: src/message.h:256
+#: src/message.h:257
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "Максимальна довжина корисного завантаження завищена або не вірна. довжина = %"
 "u"
 
-#: src/message.h:257
+#: src/message.h:258
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 "Не дійсна довжина файлу. Не можна продовжувати завантаження %s: локальний %"
 "s, віддалений %s"
 
-#: src/BtSetup.cc:161
+#: src/BtSetup.cc:170
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"

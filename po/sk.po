@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-03-10 00:09+0900\n"
 "PO-Revision-Date: 2009-09-05 14:29+0000\n"
 "Last-Translator: minkob <minkobasa@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-09-20 09:12+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:224
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Spúšťa sa vypínacia sekvencia... Stlačte znovu Ctrl-C pre núdzové vypnutie."
 
-#: src/DownloadEngine.cc:221
+#: src/DownloadEngine.cc:230
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Spúšťa sa sekvencia núdzového vypnutia."
 
-#: src/MultiUrlRequestInfo.cc:97
+#: src/MultiUrlRequestInfo.cc:101
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 obnoví sťahovanie, ak je reštartovaný prenos."
 
-#: src/MultiUrlRequestInfo.cc:99
+#: src/MultiUrlRequestInfo.cc:103
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -39,11 +39,11 @@ msgstr ""
 "Ak máte nejaké chybové hlášky, pozrite si log súbor. Pozrite možnosť '-l' v "
 "help/man stránkach kvôli detailom."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:615
 msgid "Download Results:"
 msgstr "Výsledky sťahovania:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:665
 msgid "Status Legend:"
 msgstr "Stavová legenda:"
 
@@ -59,49 +59,49 @@ msgstr "                              Tagy: "
 msgid "                              Possible Values: "
 msgstr "                              Možné hodnoty: "
 
-#: src/OptionHandlerImpl.h:135
+#: src/OptionHandlerImpl.h:136
 msgid "must be either 'true' or 'false'."
 msgstr "musí byť buď 'true' alebo 'false'."
 
-#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
+#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
 #, c-format
 msgid "must be between %s and %s."
 msgstr "musí byť medzi %s a %s."
 
-#: src/OptionHandlerImpl.h:215
+#: src/OptionHandlerImpl.h:216
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "musí byť menšie ako alebo rovné %s."
 
-#: src/OptionHandlerImpl.h:221
+#: src/OptionHandlerImpl.h:222
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "musí byť väčšie ako alebo rovné %s."
 
-#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
+#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
 msgid "must be a number."
 msgstr "musí byť číslo."
 
-#: src/OptionHandlerImpl.h:293
+#: src/OptionHandlerImpl.h:294
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "musí byť menšie ako alebo rovné %.1f."
 
-#: src/OptionHandlerImpl.h:296
+#: src/OptionHandlerImpl.h:297
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "musí byť medzi %.1f a %.1f."
 
-#: src/OptionHandlerImpl.h:299
+#: src/OptionHandlerImpl.h:300
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "musí byť väčšie ako alebo rovné %.1f."
 
-#: src/OptionHandlerImpl.h:477
+#: src/OptionHandlerImpl.h:478
 msgid "must be one of the following:"
 msgstr "musí byť jedno z následujúcich:"
 
-#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:572
+#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
 msgid "unrecognized proxy format"
 msgstr "nerozpoznaný proxy formát"
 
@@ -1206,6 +1206,26 @@ msgid ""
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
+#: src/usage_text.h:612
+msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+msgstr ""
+
+#: src/usage_text.h:614
+msgid ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+msgstr ""
+
+#: src/usage_text.h:619
+msgid ""
+" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
+"                              left."
+msgstr ""
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr ""
@@ -1881,350 +1901,355 @@ msgstr ""
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr ""
 
-#: src/message.h:184
-msgid "Timeout."
+#: src/message.h:183
+#, c-format
+msgid "Detected directory traversal directive in %s"
 msgstr ""
 
 #: src/message.h:185
-msgid "Invalid chunk size."
+msgid "Timeout."
 msgstr ""
 
 #: src/message.h:186
+msgid "Invalid chunk size."
+msgstr ""
+
+#: src/message.h:187
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr ""
 
-#: src/message.h:187
+#: src/message.h:188
 msgid "Invalid header."
 msgstr ""
 
-#: src/message.h:188
+#: src/message.h:189
 msgid "Invalid response."
 msgstr ""
 
-#: src/message.h:189
+#: src/message.h:190
 msgid "No header found."
 msgstr ""
 
-#: src/message.h:190
+#: src/message.h:191
 msgid "No status header."
 msgstr ""
 
-#: src/message.h:191
+#: src/message.h:192
 msgid "Proxy connection failed."
 msgstr ""
 
-#: src/message.h:192
+#: src/message.h:193
 msgid "Connection failed."
 msgstr ""
 
-#: src/message.h:193
+#: src/message.h:194
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
 
-#: src/message.h:194
+#: src/message.h:195
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr ""
 
-#: src/message.h:195
+#: src/message.h:196
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr ""
 
-#: src/message.h:196
+#: src/message.h:197
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr ""
 
-#: src/message.h:197
+#: src/message.h:198
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr ""
 
-#: src/message.h:198
+#: src/message.h:199
 msgid "SSL I/O error"
 msgstr ""
 
-#: src/message.h:199
-msgid "SSL protocol error"
-msgstr ""
-
 #: src/message.h:200
-#, c-format
-msgid "SSL unknown error %d"
+msgid "SSL protocol error"
 msgstr ""
 
 #: src/message.h:201
 #, c-format
-msgid "SSL initialization failed: OpenSSL connect error %d"
+msgid "SSL unknown error %d"
 msgstr ""
 
 #: src/message.h:202
 #, c-format
-msgid "Size mismatch Expected:%s Actual:%s"
+msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr ""
 
 #: src/message.h:203
-msgid "Authorization failed."
+#, c-format
+msgid "Size mismatch Expected:%s Actual:%s"
 msgstr ""
 
 #: src/message.h:204
-msgid "Got EOF from the server."
+msgid "Authorization failed."
 msgstr ""
 
 #: src/message.h:205
-msgid "Got EOF from peer."
+msgid "Got EOF from the server."
 msgstr ""
 
 #: src/message.h:206
-msgid "Malformed meta info."
+msgid "Got EOF from peer."
 msgstr ""
 
-#: src/message.h:208
-#, c-format
-msgid "Failed to open the file %s, cause: %s"
+#: src/message.h:207
+msgid "Malformed meta info."
 msgstr ""
 
 #: src/message.h:209
 #, c-format
-msgid "Failed to write into the file %s, cause: %s"
+msgid "Failed to open the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:210
 #, c-format
-msgid "Failed to read from the file %s, cause: %s"
+msgid "Failed to write into the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:211
-msgid "Failed to read data from disk."
+#, c-format
+msgid "Failed to read from the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:212
-#, c-format
-msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
+msgid "Failed to read data from disk."
 msgstr ""
 
 #: src/message.h:213
 #, c-format
-msgid "Failed to seek the file %s, cause: %s"
+msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:214
 #, c-format
-msgid "The offset is out of range, offset=%s"
+msgid "Failed to seek the file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:215
 #, c-format
-msgid "%s is not a directory."
+msgid "The offset is out of range, offset=%s"
 msgstr ""
 
 #: src/message.h:216
 #, c-format
-msgid "Failed to make the directory %s, cause: %s"
+msgid "%s is not a directory."
 msgstr ""
 
 #: src/message.h:217
 #, c-format
-msgid "Failed to open the segment file %s, cause: %s"
+msgid "Failed to make the directory %s, cause: %s"
 msgstr ""
 
 #: src/message.h:218
 #, c-format
-msgid "Failed to write into the segment file %s, cause: %s"
+msgid "Failed to open the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:219
 #, c-format
-msgid "Failed to read from the segment file %s, cause: %s"
+msgid "Failed to write into the segment file %s, cause: %s"
 msgstr ""
 
-#: src/message.h:221
+#: src/message.h:220
 #, c-format
-msgid "Failed to open a socket, cause: %s"
+msgid "Failed to read from the segment file %s, cause: %s"
 msgstr ""
 
 #: src/message.h:222
 #, c-format
-msgid "Failed to set a socket option, cause: %s"
+msgid "Failed to open a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:223
 #, c-format
-msgid "Failed to set a socket as blocking, cause: %s"
+msgid "Failed to set a socket option, cause: %s"
 msgstr ""
 
 #: src/message.h:224
 #, c-format
-msgid "Failed to set a socket as non-blocking, cause: %s"
+msgid "Failed to set a socket as blocking, cause: %s"
 msgstr ""
 
 #: src/message.h:225
 #, c-format
-msgid "Failed to bind a socket, cause: %s"
+msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr ""
 
 #: src/message.h:226
 #, c-format
-msgid "Failed to listen to a socket, cause: %s"
+msgid "Failed to bind a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:227
 #, c-format
-msgid "Failed to accept a peer connection, cause: %s"
+msgid "Failed to listen to a socket, cause: %s"
 msgstr ""
 
 #: src/message.h:228
 #, c-format
-msgid "Failed to get the name of socket, cause: %s"
+msgid "Failed to accept a peer connection, cause: %s"
 msgstr ""
 
 #: src/message.h:229
 #, c-format
-msgid "Failed to get the name of connected peer, cause: %s"
+msgid "Failed to get the name of socket, cause: %s"
 msgstr ""
 
 #: src/message.h:230
 #, c-format
-msgid "Failed to resolve the hostname %s, cause: %s"
+msgid "Failed to get the name of connected peer, cause: %s"
 msgstr ""
 
 #: src/message.h:231
 #, c-format
-msgid "Failed to connect to the host %s, cause: %s"
+msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr ""
 
 #: src/message.h:232
 #, c-format
-msgid "Failed to check whether the socket is writable, cause: %s"
+msgid "Failed to connect to the host %s, cause: %s"
 msgstr ""
 
 #: src/message.h:233
 #, c-format
-msgid "Failed to check whether the socket is readable, cause: %s"
+msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr ""
 
 #: src/message.h:234
 #, c-format
-msgid "Failed to send data, cause: %s"
+msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr ""
 
 #: src/message.h:235
 #, c-format
-msgid "Failed to receive data, cause: %s"
+msgid "Failed to send data, cause: %s"
 msgstr ""
 
 #: src/message.h:236
 #, c-format
-msgid "Failed to peek data, cause: %s"
+msgid "Failed to receive data, cause: %s"
 msgstr ""
 
 #: src/message.h:237
 #, c-format
-msgid "Unknown socket error %d (0x%x)"
+msgid "Failed to peek data, cause: %s"
 msgstr ""
 
 #: src/message.h:238
 #, c-format
-msgid "File %s exists, but %s does not exist."
+msgid "Unknown socket error %d (0x%x)"
 msgstr ""
 
 #: src/message.h:239
 #, c-format
-msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgid "File %s exists, but %s does not exist."
 msgstr ""
 
 #: src/message.h:240
 #, c-format
-msgid "Invalid ID=%d for %s. It should be %d."
+msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 
 #: src/message.h:241
+#, c-format
+msgid "Invalid ID=%d for %s. It should be %d."
+msgstr ""
+
+#: src/message.h:242
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
 
-#: src/message.h:242
+#: src/message.h:243
 msgid "Download aborted."
 msgstr ""
 
-#: src/message.h:243
+#: src/message.h:244
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr ""
 
-#: src/message.h:244
+#: src/message.h:245
 msgid "Insufficient checksums."
 msgstr ""
 
-#: src/message.h:245
+#: src/message.h:246
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr ""
 
-#: src/message.h:246
+#: src/message.h:247
 msgid "Flooding detected."
 msgstr ""
 
-#: src/message.h:247
+#: src/message.h:248
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
 
-#: src/message.h:248
-msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
-
 #: src/message.h:249
-#, c-format
-msgid "No such file entry %s"
+msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 
 #: src/message.h:250
 #, c-format
-msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
+msgid "No such file entry %s"
 msgstr ""
 
 #: src/message.h:251
-msgid "No HttpRequestEntry found."
+#, c-format
+msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr ""
 
 #: src/message.h:252
-#, c-format
-msgid "Got %d status, but no location header provided."
+msgid "No HttpRequestEntry found."
 msgstr ""
 
 #: src/message.h:253
 #, c-format
-msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
+msgid "Got %d status, but no location header provided."
 msgstr ""
 
 #: src/message.h:254
-msgid "No file matched with your preference."
+#, c-format
+msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr ""
 
 #: src/message.h:255
-msgid "Exception caught"
+msgid "No file matched with your preference."
 msgstr ""
 
 #: src/message.h:256
-#, c-format
-msgid "Max payload length exceeded or invalid. length = %u"
+msgid "Exception caught"
 msgstr ""
 
 #: src/message.h:257
 #, c-format
+msgid "Max payload length exceeded or invalid. length = %u"
+msgstr ""
+
+#: src/message.h:258
+#, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 
-#: src/BtSetup.cc:161
+#: src/BtSetup.cc:170
 msgid "Errors occurred while binding port.\n"
 msgstr ""

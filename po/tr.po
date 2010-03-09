@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-03-10 00:09+0900\n"
 "PO-Revision-Date: 2008-09-17 19:59+0900\n"
 "Last-Translator: wyginwys <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -17,20 +17,20 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-09-17 10:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:224
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "Kapanma başlıyor...Acil kapanış için Ctrl-C ye tekrar basın."
 
-#: src/DownloadEngine.cc:221
+#: src/DownloadEngine.cc:230
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Acil kapanış başlıyor..."
 
-#: src/MultiUrlRequestInfo.cc:97
+#: src/MultiUrlRequestInfo.cc:101
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "Transferi tekrar başlatırsanız, aria2 indirmeye devam edecek."
 
-#: src/MultiUrlRequestInfo.cc:99
+#: src/MultiUrlRequestInfo.cc:103
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -38,11 +38,11 @@ msgstr ""
 "Bir hatayla karşılaşırsanız log dosyasına bakın. Detay için yardım ve man "
 "sayfalarındaki -l opsiyonuna bakın."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:615
 msgid "Download Results:"
 msgstr "Download Sonuçları:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:665
 msgid "Status Legend:"
 msgstr "Durum Haritası:"
 
@@ -59,49 +59,49 @@ msgstr "                              Etiketler: "
 msgid "                              Possible Values: "
 msgstr "                              Kullanılabilen Değerler: "
 
-#: src/OptionHandlerImpl.h:135
+#: src/OptionHandlerImpl.h:136
 msgid "must be either 'true' or 'false'."
 msgstr "ya 'doğru' ya da 'yanlış' olmalı"
 
-#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
+#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
 #, c-format
 msgid "must be between %s and %s."
 msgstr "%s ya da %s arasında olmalı"
 
-#: src/OptionHandlerImpl.h:215
+#: src/OptionHandlerImpl.h:216
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "%s den küçük ya da ona eşit olmalı"
 
-#: src/OptionHandlerImpl.h:221
+#: src/OptionHandlerImpl.h:222
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "%s den büyük ya da ona eşit olmalı"
 
-#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
+#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
 msgid "must be a number."
 msgstr "bir sayı olmalı."
 
-#: src/OptionHandlerImpl.h:293
+#: src/OptionHandlerImpl.h:294
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "%.1f den küçük ya da ona eşit olmalı."
 
-#: src/OptionHandlerImpl.h:296
+#: src/OptionHandlerImpl.h:297
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "%.1f ya da %.1f arasında olmalı."
 
-#: src/OptionHandlerImpl.h:299
+#: src/OptionHandlerImpl.h:300
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "%.1f den büyük ya da ona eşit olmalı"
 
-#: src/OptionHandlerImpl.h:477
+#: src/OptionHandlerImpl.h:478
 msgid "must be one of the following:"
 msgstr "şunlardan biri olmalı:"
 
-#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:572
+#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
 msgid "unrecognized proxy format"
 msgstr "bilinmeyen proxy biçimi"
 
@@ -1617,6 +1617,36 @@ msgid ""
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
+#: src/usage_text.h:612
+#, fuzzy
+msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+msgstr " --enable-dht=true|false DHT özelliklerini aç."
+
+#: src/usage_text.h:614
+#, fuzzy
+msgid ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+msgstr ""
+" --bt-min-crypto-level=plain|arc4 Minimum şifreleme düzeyini belirle.\n"
+"                              Birden fazla şifreleme metodu peer tarafından\n"
+"                              sağlanıyorsa, aria2 bu düzeyi sağlayan en "
+"küçük\n"
+"                              olanın seçer."
+
+#: src/usage_text.h:619
+#, fuzzy
+msgid ""
+" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
+"                              left."
+msgstr ""
+" --bt-seed-unverified=true|false Daha önce indirilmiş dosyaları \n"
+"                              parça hashlerini kontrol etmeden tohumla."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " sürüm "
@@ -2333,44 +2363,49 @@ msgstr ""
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr "İmza %s olarak kayededilemiyor.Böyle bir dosya var olabilir."
 
-#: src/message.h:184
+#: src/message.h:183
+#, c-format
+msgid "Detected directory traversal directive in %s"
+msgstr ""
+
+#: src/message.h:185
 msgid "Timeout."
 msgstr "Zamanaşımı."
 
-#: src/message.h:185
+#: src/message.h:186
 msgid "Invalid chunk size."
 msgstr "Geçersiz parça büyüklüğü."
 
-#: src/message.h:186
+#: src/message.h:187
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Çok büyük parça. büyüklük=%d"
 
-#: src/message.h:187
+#: src/message.h:188
 msgid "Invalid header."
 msgstr "Geçersiz başlık."
 
-#: src/message.h:188
+#: src/message.h:189
 msgid "Invalid response."
 msgstr "Geçersiz cevap."
 
-#: src/message.h:189
+#: src/message.h:190
 msgid "No header found."
 msgstr "Hiç başlık bulunamadı."
 
-#: src/message.h:190
+#: src/message.h:191
 msgid "No status header."
 msgstr "Durum başlığı yok."
 
-#: src/message.h:191
+#: src/message.h:192
 msgid "Proxy connection failed."
 msgstr "Proxy bağlantısı oluşturulamadı."
 
-#: src/message.h:192
+#: src/message.h:193
 msgid "Connection failed."
 msgstr "Bağlantı başarısız."
 
-#: src/message.h:193
+#: src/message.h:194
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2379,226 +2414,226 @@ msgstr ""
 "İstenilen ve daha önce kaydedilen dosya isimleri aynı değil. Beklenen:%s "
 "Verilen:%s"
 
-#: src/message.h:194
+#: src/message.h:195
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Cevap durumu başarılı değil. durum=%d"
 
-#: src/message.h:195
+#: src/message.h:196
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Çok büyük dosya büyüklüğü. büyüklük=%s"
 
-#: src/message.h:196
+#: src/message.h:197
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Transfer şifrelemesi %s desteklenmiyor."
 
-#: src/message.h:197
+#: src/message.h:198
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "SSl başlatılamadı: %s"
 
-#: src/message.h:198
+#: src/message.h:199
 msgid "SSL I/O error"
 msgstr "SSL G/Ç hatası"
 
-#: src/message.h:199
+#: src/message.h:200
 msgid "SSL protocol error"
 msgstr "SSL protokol hatası"
 
-#: src/message.h:200
+#: src/message.h:201
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "SSL bilinmeyen hata %d"
 
-#: src/message.h:201
+#: src/message.h:202
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "SSL başlatılamadı: OpenSSL bağlantı hatası %d"
 
-#: src/message.h:202
+#: src/message.h:203
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Büyüklük uyuşmuyor Beklenen:%s Gelen:%s"
 
-#: src/message.h:203
+#: src/message.h:204
 msgid "Authorization failed."
 msgstr "Yetkilendirme başarısız."
 
-#: src/message.h:204
+#: src/message.h:205
 msgid "Got EOF from the server."
 msgstr "Sunucudan EOF alındı."
 
-#: src/message.h:205
+#: src/message.h:206
 msgid "Got EOF from peer."
 msgstr "Peerden EOF alındı."
 
-#: src/message.h:206
+#: src/message.h:207
 msgid "Malformed meta info."
 msgstr "Yanlış formatlı meta bilgisi."
 
-#: src/message.h:208
+#: src/message.h:209
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "%s dosyası %s sebebinden açılamadı"
 
-#: src/message.h:209
+#: src/message.h:210
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "%s dosyasına %s sebebinden yazılamadı"
 
-#: src/message.h:210
+#: src/message.h:211
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "%s dosyasından %s sebebiyle okunamadı"
 
-#: src/message.h:211
+#: src/message.h:212
 msgid "Failed to read data from disk."
 msgstr "Diskten veri okunamadı."
 
-#: src/message.h:212
+#: src/message.h:213
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "%s dosyasının bir parçası veya SHA1 özeti hesaplaması %s sebebiyle yapılamadı"
 
-#: src/message.h:213
+#: src/message.h:214
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "%s dosyası %s sebebiyle aranamadı"
 
-#: src/message.h:214
+#: src/message.h:215
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Artış aralık dışı, artış=%s"
 
-#: src/message.h:215
+#: src/message.h:216
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s bir dizin değil"
 
-#: src/message.h:216
+#: src/message.h:217
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "%s dizini %s sebebiyle oluşturulamadı"
 
-#: src/message.h:217
+#: src/message.h:218
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "%s parça dosyası %s sebebiyle açılamadı"
 
-#: src/message.h:218
+#: src/message.h:219
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "%s parça dosyasına %s sebebiyle yazılamadı"
 
-#: src/message.h:219
+#: src/message.h:220
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "%s parça dosyasından %s sebebiyle okunamadı"
 
-#: src/message.h:221
+#: src/message.h:222
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "%s sebebiyle soket açılamadı"
 
-#: src/message.h:222
+#: src/message.h:223
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "%s sebebiyle soket yerleştirilemedi"
 
-#: src/message.h:223
+#: src/message.h:224
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "%s sebebiyle soket bloke edilemedi"
 
-#: src/message.h:224
+#: src/message.h:225
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "%s sebebiyle soket bloke olmayan olarak ayarlanamadı"
 
-#: src/message.h:225
+#: src/message.h:226
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "%s sebebiyle soket tutulamadı"
 
-#: src/message.h:226
+#: src/message.h:227
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "%s sebebiyle soket dinlenemedi"
 
-#: src/message.h:227
+#: src/message.h:228
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "%s sebebiyle peer bağlantısı kabul edilmedi"
 
-#: src/message.h:228
+#: src/message.h:229
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "%s sebeiyle soketin adı alınamadı"
 
-#: src/message.h:229
+#: src/message.h:230
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "%s sebebiyle bağlanılan peer in adı alınamadı"
 
-#: src/message.h:230
+#: src/message.h:231
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "%s makinesinin adı çözülemedi sebep: %s"
 
-#: src/message.h:231
+#: src/message.h:232
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "%s makinesine %s sebebinden dolayı bağlanılamyor"
 
-#: src/message.h:232
+#: src/message.h:233
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "%s sebebinden dolayı soketin yazılabilir olduğu anlaşılamıyor"
 
-#: src/message.h:233
+#: src/message.h:234
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "%s sebebinden dolayı soketin okunabilir olduğu anlaşılamıyor"
 
-#: src/message.h:234
+#: src/message.h:235
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "%s sebebiyle veri gönderilemiyor"
 
-#: src/message.h:235
+#: src/message.h:236
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "%s sebebinden dolayı veri alınamıyor"
 
-#: src/message.h:236
+#: src/message.h:237
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "%s sebebinden dolayı veri gözlenemiyor"
 
-#: src/message.h:237
+#: src/message.h:238
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Bilinmeyen soket hatası %d (0x%x)"
 
-#: src/message.h:238
+#: src/message.h:239
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "%s dosyası var ama %s dosyası yok."
 
-#: src/message.h:239
+#: src/message.h:240
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "%s için geçersiz payload büyüklüğü,büyüklük=%d. %d olmalıydı."
 
-#: src/message.h:240
+#: src/message.h:241
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Geçersiz ID=%d %s için . %d olmalıydı."
 
-#: src/message.h:241
+#: src/message.h:242
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2607,29 +2642,29 @@ msgstr ""
 "Parça checksum doğrulaması başarısız. checksumindeks=%d artış=%s, "
 "beklenenHash=%s, eldekıhash=%s"
 
-#: src/message.h:242
+#: src/message.h:243
 msgid "Download aborted."
 msgstr "İndirme iptal edildi."
 
-#: src/message.h:243
+#: src/message.h:244
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "%s dosyası başka bir komut tarafından indiriliyor."
 
-#: src/message.h:244
+#: src/message.h:245
 msgid "Insufficient checksums."
 msgstr "Yetersiz checksumlar."
 
-#: src/message.h:245
+#: src/message.h:246
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "İzleyici başarısızlık sebebi olarak %s gönderdi."
 
-#: src/message.h:246
+#: src/message.h:247
 msgid "Flooding detected."
 msgstr "Flooding algılandı."
 
-#: src/message.h:247
+#: src/message.h:248
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2638,54 +2673,54 @@ msgstr ""
 "%d saniyede herhangi istek/parça mesajı alişverişi yapılmadığı için bağlantı "
 "kapatıldı."
 
-#: src/message.h:248
+#: src/message.h:249
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr "Torrent dosyasındaki infoHash .aria2 dosyasındaki ile tutmuyor."
 
-#: src/message.h:249
+#: src/message.h:250
 #, c-format
 msgid "No such file entry %s"
 msgstr "%s dosya girdisi yok."
 
-#: src/message.h:250
+#: src/message.h:251
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Download hızı çok yavaş: %d <= %d(B/s), makine:%s"
 
-#: src/message.h:251
+#: src/message.h:252
 msgid "No HttpRequestEntry found."
 msgstr "HttpRequestEntry bulunamadı."
 
-#: src/message.h:252
+#: src/message.h:253
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "%d durumu alındı ama yer başlığı gönderilmedi."
 
-#: src/message.h:253
+#: src/message.h:254
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Geçersiz başlık aralığı.İstek: %s-%s/%s, Cevap: %s-%s/%s"
 
-#: src/message.h:254
+#: src/message.h:255
 msgid "No file matched with your preference."
 msgstr "Tercihlerinizle eşleşen dosya yok."
 
-#: src/message.h:255
+#: src/message.h:256
 msgid "Exception caught"
 msgstr "Öngörülmeyen hata algılandı."
 
-#: src/message.h:256
+#: src/message.h:257
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "Maksimum payload uzunluğu aşıldı ve geçersiz. uzunluk= %u"
 
-#: src/message.h:257
+#: src/message.h:258
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 "Geçersiz dosya uzunluğu. Download devam ettirilemiyor %s: yerel %s, uzak %s"
 
-#: src/BtSetup.cc:161
+#: src/BtSetup.cc:170
 msgid "Errors occurred while binding port.\n"
 msgstr "Port bağlanırken hata oldu.\n"
 

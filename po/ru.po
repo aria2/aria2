@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-02-03 21:54+0900\n"
+"POT-Creation-Date: 2010-03-10 00:09+0900\n"
 "PO-Revision-Date: 2010-01-14 08:01+0000\n"
 "Last-Translator: Andrew Zhuravlev <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
@@ -20,21 +20,21 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-01-23 09:29+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:215
+#: src/DownloadEngine.cc:224
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Завершаем выполнение программы... Нажмите Ctrl-C для экстренного завершения."
 
-#: src/DownloadEngine.cc:221
+#: src/DownloadEngine.cc:230
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Экстренное завершение..."
 
-#: src/MultiUrlRequestInfo.cc:97
+#: src/MultiUrlRequestInfo.cc:101
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 продолжит загрузку, если передача будет перезапущена."
 
-#: src/MultiUrlRequestInfo.cc:99
+#: src/MultiUrlRequestInfo.cc:103
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -42,11 +42,11 @@ msgstr ""
 "Если возникли какие-либо ошибки, проверьте log-файл. Для более подробной "
 "информации смотрите описание опции '-l'."
 
-#: src/RequestGroupMan.cc:578
+#: src/RequestGroupMan.cc:615
 msgid "Download Results:"
 msgstr "Результат загрузки:"
 
-#: src/RequestGroupMan.cc:627
+#: src/RequestGroupMan.cc:665
 msgid "Status Legend:"
 msgstr "Использованные обозначения:"
 
@@ -62,49 +62,49 @@ msgstr "                              Метки: "
 msgid "                              Possible Values: "
 msgstr "                              Возможные значения: "
 
-#: src/OptionHandlerImpl.h:135
+#: src/OptionHandlerImpl.h:136
 msgid "must be either 'true' or 'false'."
 msgstr "должно быть 'true' или 'false'."
 
-#: src/OptionHandlerImpl.h:169 src/OptionHandlerImpl.h:218
+#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
 #, c-format
 msgid "must be between %s and %s."
 msgstr "должно быть между %s и %s."
 
-#: src/OptionHandlerImpl.h:215
+#: src/OptionHandlerImpl.h:216
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "должно быть меньше или равно %s."
 
-#: src/OptionHandlerImpl.h:221
+#: src/OptionHandlerImpl.h:222
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "должно быть больше или равно %s."
 
-#: src/OptionHandlerImpl.h:224 src/OptionHandlerImpl.h:302
+#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
 msgid "must be a number."
 msgstr "должно быть числом."
 
-#: src/OptionHandlerImpl.h:293
+#: src/OptionHandlerImpl.h:294
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "должно быть меньше или равно %.1f."
 
-#: src/OptionHandlerImpl.h:296
+#: src/OptionHandlerImpl.h:297
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "должно быть между %.1f и %.1f."
 
-#: src/OptionHandlerImpl.h:299
+#: src/OptionHandlerImpl.h:300
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "должно быть больше или равно %.1f."
 
-#: src/OptionHandlerImpl.h:477
+#: src/OptionHandlerImpl.h:478
 msgid "must be one of the following:"
 msgstr "должно быть одним из следующих:"
 
-#: src/OptionHandlerImpl.h:526 src/OptionHandlerImpl.h:572
+#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
 msgid "unrecognized proxy format"
 msgstr "неизвестный формат прокси"
 
@@ -1767,6 +1767,36 @@ msgid ""
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
+#: src/usage_text.h:612
+#, fuzzy
+msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+msgstr " --enable-dht[=true|false] Включить поддержку DHT."
+
+#: src/usage_text.h:614
+#, fuzzy
+msgid ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+msgstr ""
+" --certificate=FILE Использовать клиентский сертификат в FILE.\n"
+"                              Сертификат должен быть в PEM формате.\n"
+"                              Вы можете использовать параметр --private-key, "
+"чтоб указать\n"
+"                              закрытый ключ."
+
+#: src/usage_text.h:619
+#, fuzzy
+msgid ""
+" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
+"                              left."
+msgstr ""
+" --use-head[=true|false] Использовать метод HEAD для первого запроса к HTTP\n"
+"                              серверу."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " версия "
@@ -2481,44 +2511,49 @@ msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr ""
 "Сохранение метаданных как %s не удалось. Вероятно, файл уже существует."
 
-#: src/message.h:184
+#: src/message.h:183
+#, c-format
+msgid "Detected directory traversal directive in %s"
+msgstr ""
+
+#: src/message.h:185
 msgid "Timeout."
 msgstr "Время ожидания вышло."
 
-#: src/message.h:185
+#: src/message.h:186
 msgid "Invalid chunk size."
 msgstr "Неверный размер блока"
 
-#: src/message.h:186
+#: src/message.h:187
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Блок слишком большой. Размер=%d"
 
-#: src/message.h:187
+#: src/message.h:188
 msgid "Invalid header."
 msgstr "Неверный заголовок."
 
-#: src/message.h:188
+#: src/message.h:189
 msgid "Invalid response."
 msgstr "Неверный ответ."
 
-#: src/message.h:189
+#: src/message.h:190
 msgid "No header found."
 msgstr "Заголовок не найден"
 
-#: src/message.h:190
+#: src/message.h:191
 msgid "No status header."
 msgstr "Нет заголовка status"
 
-#: src/message.h:191
+#: src/message.h:192
 msgid "Proxy connection failed."
 msgstr "Ошибка подключения к proxy-серверу"
 
-#: src/message.h:192
+#: src/message.h:193
 msgid "Connection failed."
 msgstr "Не удалось установить соединение."
 
-#: src/message.h:193
+#: src/message.h:194
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2527,225 +2562,225 @@ msgstr ""
 "Запрошенное имя файла и зарегистрированное до этого не совпадают. Ожидалось:%"
 "s, фактическое:%s"
 
-#: src/message.h:194
+#: src/message.h:195
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Ошибочный статус ответа. Статус=%d"
 
-#: src/message.h:195
+#: src/message.h:196
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Слишком большой размер файла. Размер=%s"
 
-#: src/message.h:196
+#: src/message.h:197
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Кодировка передачи %s не поддерживается."
 
-#: src/message.h:197
+#: src/message.h:198
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Ошибка инициализации SSL: %s"
 
-#: src/message.h:198
+#: src/message.h:199
 msgid "SSL I/O error"
 msgstr "Ошибка ввода/вывода SSL"
 
-#: src/message.h:199
+#: src/message.h:200
 msgid "SSL protocol error"
 msgstr "Ошибка SSL протокола"
 
-#: src/message.h:200
+#: src/message.h:201
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Неизвестная SSL ошибка %d"
 
-#: src/message.h:201
+#: src/message.h:202
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "инициализация SSL не удалась: ошибка номер %d соединения OpenSSL"
 
-#: src/message.h:202
+#: src/message.h:203
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Размер не совпадает. Ожидаемый:%s, фактический:%s"
 
-#: src/message.h:203
+#: src/message.h:204
 msgid "Authorization failed."
 msgstr "Ошибка авторизации."
 
-#: src/message.h:204
+#: src/message.h:205
 msgid "Got EOF from the server."
 msgstr "От сервера получен EOF."
 
-#: src/message.h:205
+#: src/message.h:206
 msgid "Got EOF from peer."
 msgstr "От узла получен EOF"
 
-#: src/message.h:206
+#: src/message.h:207
 msgid "Malformed meta info."
 msgstr "Неверные метаданные."
 
-#: src/message.h:208
+#: src/message.h:209
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Ошибка открытия файл %s: %s"
 
-#: src/message.h:209
+#: src/message.h:210
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Ошибка записи в файл %s: %s"
 
-#: src/message.h:210
+#: src/message.h:211
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Ошибка чтения файла %s: %s"
 
-#: src/message.h:211
+#: src/message.h:212
 msgid "Failed to read data from disk."
 msgstr "Ошибка чтения диска."
 
-#: src/message.h:212
+#: src/message.h:213
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "Ошибка подсчета дайджеста SHA1 файла %s, причина: %s"
 
-#: src/message.h:213
+#: src/message.h:214
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Ошибка позиционирования файла %s: %s"
 
-#: src/message.h:214
+#: src/message.h:215
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Смещение вне диапозона. Смещение=%s"
 
-#: src/message.h:215
+#: src/message.h:216
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s не является каталогом."
 
-#: src/message.h:216
+#: src/message.h:217
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Ошибка создания каталога %s: %s"
 
-#: src/message.h:217
+#: src/message.h:218
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Ошибка открытия сегмента файла %s: %s"
 
-#: src/message.h:218
+#: src/message.h:219
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Ошибка записи сегмента файла %s: %s"
 
-#: src/message.h:219
+#: src/message.h:220
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Ошибка чтения сегмента файла %s: %s"
 
-#: src/message.h:221
+#: src/message.h:222
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Ошибка открытия сокета: %s"
 
-#: src/message.h:222
+#: src/message.h:223
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Ошибка установки настроек для сокета: %s"
 
-#: src/message.h:223
+#: src/message.h:224
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Ошибка в установлении блокируещего сокета: %s"
 
-#: src/message.h:224
+#: src/message.h:225
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Ошибка в установлении неблокируещего сокета: %s"
 
-#: src/message.h:225
+#: src/message.h:226
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Ошибка инициализации сокета: %s"
 
-#: src/message.h:226
+#: src/message.h:227
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Ошибка прослушивания сокета: %s"
 
-#: src/message.h:227
+#: src/message.h:228
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Ошибка принятия подлючения от узла: %s"
 
-#: src/message.h:228
+#: src/message.h:229
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Ошибка получения имени сокета: %s"
 
-#: src/message.h:229
+#: src/message.h:230
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Ошибка получения имени подключенного узла: %s"
 
-#: src/message.h:230
+#: src/message.h:231
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Ошибка преобразования имени узла %s, причина: %s"
 
-#: src/message.h:231
+#: src/message.h:232
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Ошибка подключения к хосту %s: %s"
 
-#: src/message.h:232
+#: src/message.h:233
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Ошибка проверки сокета на запись: %s"
 
-#: src/message.h:233
+#: src/message.h:234
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Ошибка проверки сокета на чтение: %s"
 
-#: src/message.h:234
+#: src/message.h:235
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Ошибка отправки данных: %s"
 
-#: src/message.h:235
+#: src/message.h:236
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Ошибка получения данных: %s"
 
-#: src/message.h:236
+#: src/message.h:237
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Ошибка запроса данных: %s"
 
-#: src/message.h:237
+#: src/message.h:238
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Неизвестная ошибка сокета %d (0x%x)"
 
-#: src/message.h:238
+#: src/message.h:239
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Файл %s существует, а %s - нет."
 
-#: src/message.h:239
+#: src/message.h:240
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "Не действительный размер загрузки для %s,  розмер=%d. Должен быть %d."
 
-#: src/message.h:240
+#: src/message.h:241
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Неправильный ID=%d для %s. Должен быть %d."
 
-#: src/message.h:241
+#: src/message.h:242
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2754,29 +2789,29 @@ msgstr ""
 "Контрольная сумма блока не прошла подтверждения. checksumIndex=%d, offset=%"
 "s, expectedHash=%s, actualHash=%s"
 
-#: src/message.h:242
+#: src/message.h:243
 msgid "Download aborted."
 msgstr "Загрузка отменена."
 
-#: src/message.h:243
+#: src/message.h:244
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Файл %s загружается другой программой."
 
-#: src/message.h:244
+#: src/message.h:245
 msgid "Insufficient checksums."
 msgstr "Нехватает контрольных сумм."
 
-#: src/message.h:245
+#: src/message.h:246
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Трекер вернул информацию про сбой, причина: %s"
 
-#: src/message.h:246
+#: src/message.h:247
 msgid "Flooding detected."
 msgstr "Обнаружен флудинг."
 
-#: src/message.h:247
+#: src/message.h:248
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2785,58 +2820,58 @@ msgstr ""
 "Потеряно соединение из-за отсутствия запросов/частей сообщений, которыми "
 "обменивались бы за определённый период (%d секунд)."
 
-#: src/message.h:248
+#: src/message.h:249
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "infoHash в файле торента не идентичный тому, который находится в файле ."
 "aria2."
 
-#: src/message.h:249
+#: src/message.h:250
 #, c-format
 msgid "No such file entry %s"
 msgstr "Нет такого файла %s"
 
-#: src/message.h:250
+#: src/message.h:251
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Слишком медленная скорость скачивания: %d <= %d(B/s), хост:%s"
 
-#: src/message.h:251
+#: src/message.h:252
 msgid "No HttpRequestEntry found."
 msgstr "Не найдено HttpRequestEntry"
 
-#: src/message.h:252
+#: src/message.h:253
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Получен статус %d, но не обеспечено местонахождение заголовка."
 
-#: src/message.h:253
+#: src/message.h:254
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Неправильный диапазон в заголовке. Запрос: %s-%s/%s, Ответ: %s-%s/%s"
 
-#: src/message.h:254
+#: src/message.h:255
 msgid "No file matched with your preference."
 msgstr "Нет файла соответствующего Вашим настройкам."
 
-#: src/message.h:255
+#: src/message.h:256
 msgid "Exception caught"
 msgstr "Обнаружено исключение"
 
-#: src/message.h:256
+#: src/message.h:257
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "Максимальная длина полезной загрузки превышена или неправильная. длина = %u"
 
-#: src/message.h:257
+#: src/message.h:258
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 "Неправильная длина файла. Невозможно продолжить загрузку %s: локальный %s, "
 "отдалённый %s"
 
-#: src/BtSetup.cc:161
+#: src/BtSetup.cc:170
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 

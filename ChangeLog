@@ -1,3 +1,8 @@
+2010-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated po templates.
+	* po/aria2.pot
+
 2010-03-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	For LPD sockets, bind IN_ADDRANY because binding multicast address
