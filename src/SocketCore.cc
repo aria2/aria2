@@ -225,7 +225,8 @@ void SocketCore::create(int family, int protocol)
 }
 
 static sock_t bindInternal(int family, int socktype, int protocol,
-                           const struct sockaddr* addr, socklen_t addrlen)
+                           const struct sockaddr* addr, socklen_t addrlen,
+                           std::string& error)
 {
   sock_t fd = socket(family, socktype, protocol);
   if(fd == (sock_t) -1) {
@@ -238,9 +239,7 @@ static sock_t bindInternal(int family, int socktype, int protocol,
     return -1;
   }
   if(::bind(fd, addr, addrlen) == -1) {
-    if(LogFactory::getInstance()->debug()) {
-      LogFactory::getInstance()->debug(EX_SOCKET_BIND, errorMsg());
-    }
+    error = errorMsg();
     CLOSE(fd);
     return -1;
   }
@@ -262,12 +261,11 @@ static sock_t bindTo
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = bindInternal(rp->ai_family, rp->ai_socktype, rp->ai_protocol,
-                             rp->ai_addr, rp->ai_addrlen);
+                             rp->ai_addr, rp->ai_addrlen, error);
     if(fd != (sock_t)-1) {
       return fd;
     }
   }
-  error = errorMsg();
   return -1;
 }
 
@@ -334,12 +332,12 @@ void SocketCore::bind(uint16_t port, int flags)
 void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
 {
   closeConnection();
-
-  sock_t fd = bindInternal(addr->sa_family, _sockType, 0, addr, addrlen);
+  std::string error;
+  sock_t fd = bindInternal(addr->sa_family, _sockType, 0, addr, addrlen, error);
   if(fd != (sock_t)-1) {
     sockfd = fd;
   } else {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   }
 }
 
@@ -387,7 +385,7 @@ void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
 void SocketCore::establishConnection(const std::string& host, uint16_t port)
 {
   closeConnection();
-
+  std::string error;
   struct addrinfo* res;
   int s;
   s = callGetaddrinfo(&res, host.c_str(), uitos(port).c_str(), _protocolFamily,
@@ -401,10 +399,12 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if(fd == (sock_t) -1) {
+      error = errorMsg();
       continue;
     }
     int sockopt = 1;
     if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt, sizeof(sockopt)) < 0) {
+      error = errorMsg();
       CLOSE(fd);
       continue;
     }
@@ -415,8 +415,9 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
           i != eoi; ++i) {
         if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
                   (*i).second) == -1) {
+          error = errorMsg();
           if(LogFactory::getInstance()->debug()) {
-            LogFactory::getInstance()->debug(EX_SOCKET_BIND, errorMsg());
+            LogFactory::getInstance()->debug(EX_SOCKET_BIND, error.c_str());
           }
         } else {
           bindSuccess = true;
@@ -434,6 +435,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     setNonBlockingMode();
     if(connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
        SOCKET_ERRNO != A2_EINPROGRESS) {
+      error = errorMsg();
       CLOSE(sockfd);
       sockfd = (sock_t) -1;
       continue;
@@ -444,7 +446,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   }
   if(sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
-                                   errorMsg()).str());
+                                   error.c_str()).str());
   }
 }
 

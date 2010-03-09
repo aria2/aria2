@@ -1,5 +1,10 @@
 2010-03-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that error message is not propagated to Exception.
+	* src/SocketCore.cc
+
+2010-03-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --bt-lpd-interface option in man page.
 	* doc/aria2c.1.txt
 
