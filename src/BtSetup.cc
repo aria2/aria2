@@ -159,7 +159,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
   }
   if(PeerListenCommand::getNumInstance() == 0) {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
-    IntSequence seq = util::parseIntRange(option->get(PREF_LISTEN_PORT));
+    IntSequence seq = util::parseIntRange(e->option->get(PREF_LISTEN_PORT));
     uint16_t port;
     if(listenCommand->bindPort(port, seq)) {
       btRuntime->setListenPort(port);
@@ -175,13 +175,12 @@ void BtSetup::setup(std::vector<Command*>& commands,
   }
   if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
      (metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0)) {
-    
     if(LpdReceiveMessageCommand::getNumInstance() == 0) {
       _logger->info("Initializing LpdMessageReceiver.");
       SharedHandle<LpdMessageReceiver> receiver
         (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
       bool initialized = false;
-      const std::string& lpdInterface = option->get(PREF_BT_LPD_INTERFACE);
+      const std::string& lpdInterface = e->option->get(PREF_BT_LPD_INTERFACE);
       if(lpdInterface.empty()) {
         if(receiver->init("")) {
           initialized = true;

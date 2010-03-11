@@ -1,5 +1,10 @@
 2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use global option for PREF_LISTEN_PORT and PREF_BT_LPD_INTERFACE.
+	* src/BtSetup.cc
+
+2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Resurrected --http-proxy-user and --http-proxy-passwd option.
 	Added --https-proxy-user, --https-proxy-passwd, --ftp-proxy-user,
 	--ftp-proxy-passwd, --all-proxy-user, --all-proxy-passwd option.
