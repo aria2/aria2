@@ -244,6 +244,14 @@ extern const std::string PREF_NO_PROXY;
 extern const std::string PREF_PROXY_METHOD;
 extern const std::string V_GET;
 extern const std::string V_TUNNEL;
+extern const std::string PREF_HTTP_PROXY_USER;
+extern const std::string PREF_HTTP_PROXY_PASSWD;
+extern const std::string PREF_HTTPS_PROXY_USER;
+extern const std::string PREF_HTTPS_PROXY_PASSWD;
+extern const std::string PREF_FTP_PROXY_USER;
+extern const std::string PREF_FTP_PROXY_PASSWD;
+extern const std::string PREF_ALL_PROXY_USER;
+extern const std::string PREF_ALL_PROXY_PASSWD;
 
 /**
  * BitTorrent related preferences

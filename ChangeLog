@@ -1,3 +1,16 @@
+2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Resurrected --http-proxy-user and --http-proxy-passwd option.
+	Added --https-proxy-user, --https-proxy-passwd, --ftp-proxy-user,
+	--ftp-proxy-passwd, --all-proxy-user, --all-proxy-passwd option.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/OptionHandlerTest.cc
+
 2010-03-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated Russian and Simplified Chinese translation. Thanks to all

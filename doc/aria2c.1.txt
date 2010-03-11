@@ -3,7 +3,7 @@ ARIA2C(1)
 Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
 :man source: Aria2
 :man manual: Aria2 Manual
-:man version: 1.9.0a
+:man version: 1.9.0
 
 NAME
 ----
@@ -83,6 +83,31 @@ HTTP/FTP Options
   proxy server for a particular protocol using *--http-proxy*,
   *--https-proxy* and *--ftp-proxy* options.  This affects all URLs.
   The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+
+[NOTE]
+
+If user and password are embedded in proxy URI and they are also
+specified by *--{http,https,ftp,all}-proxy-{user,passwd}* options,
+those appeared later have precedence. For example, you have
+http-proxy-user="myname", http-proxy-passwd="mypass" in aria2.conf and
+you specify --http-proxy="http://proxy" in command-line, then you get
+HTTP proxy "http://proxy" with user "myname" and password
+"mypass". Another example: if you specified in command-line
+--http-proxy="http://user:pass@proxy" --http-proxy-user="myname"
+--http-proxy-passwd="mypass", then you will get HTTP proxy
+"http://proxy" with user "myname" and password "mypass".  One more
+example: if you specified in command-line --http-proxy-user="myname"
+--http-proxy-passwd="mypass" --http-proxy="http://user:pass@proxy",
+then you get HTTP proxy "http://proxy" with user "user" and password
+"pass".
+
+*--all-proxy-passwd*=PASSWD::
+
+  Set password for *--all-proxy* option.
+
+*--all-proxy-user*=USER::
+
+  Set user for *--all-proxy* option.
 
 *--connect-timeout*=SEC::
   Set the connect timeout in seconds to establish connection to
@@ -239,11 +264,27 @@ HTTP Specific Options
   use "".  See also *--all-proxy* option.  This affects all URLs.  The
   format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
 
+*--http-proxy-passwd*=PASSWD::
+
+  Set password for *--http-proxy* option.
+
+*--http-proxy-user*=USER:
+
+  Set user for *--http-proxy* option.
+
 *--https-proxy*=PROXY::
 
   Use this proxy server for HTTPS. To erase previously defined proxy,
   use "". See also *--all-proxy* option.  This affects all URLs.  The
   format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+
+*--https-proxy-passwd*=PASSWD::
+
+  Set password for *--https-proxy* option.
+
+*--https-proxy-user*=USER::
+
+  Set user for *--https-proxy* option.
 
 *--private-key*=FILE::
   Use the private key in FILE.
@@ -314,6 +355,14 @@ FTP Specific Options
   Use this proxy server for FTP.  To erase previously defined proxy,
   use "".  See also *--all-proxy* option.  This affects all URLs.  The
   format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+
+*--ftp-proxy-passwd*=PASSWD::
+
+  Set password for *--ftp-proxy* option.
+
+*--ftp-proxy-user*=USER::
+
+  Set user for *--ftp-proxy* option.
 
 *--ftp-type*=TYPE::
   Set FTP transfer type. TYPE is either 'binary' or 'ascii'.
@@ -1752,6 +1801,10 @@ Proxy with authorization
 ^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------------------------------------
 aria2c --http-proxy="http://username:password@proxy:8080" "http://host/file"
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+aria2c --http-proxy="http://proxy:8080" --http-proxy-user="username" --http-proxy-passwd="password" "http://host/file"
 ----------------------------------------------------------------------------
 
 Metalink Download

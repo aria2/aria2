@@ -37,6 +37,7 @@
 
 #include "OptionHandler.h"
 
+#include <cassert>
 #include <cstdio>
 #include <utility>
 #include <algorithm>
@@ -543,7 +544,96 @@ public:
   }
 };
 
+class HttpProxyUserOptionHandler:public NameMatchOptionHandler {
+public:
+  HttpProxyUserOptionHandler(const std::string& optName,
+                             const std::string& description,
+                             const std::string& defaultValue,
+                             char shortName = 0):
+    NameMatchOptionHandler(optName, description, defaultValue,
+                           OptionHandler::REQ_ARG, shortName)
+  {}
+
+  virtual void parseArg(Option& option, const std::string& optarg)
+  {
+    if(util::endsWith(_optName, "-user")) {
+      const std::string proxyPref = _optName.substr(0, _optName.size()-5);
+      const std::string& olduri = option.get(proxyPref);
+      if(!olduri.empty()) {
+        Request req;
+        bool b = req.setUri(olduri);
+        assert(b);
+        std::string uri = "http://";
+        if(!optarg.empty()) {
+          uri += util::percentEncode(optarg);
+        }
+        if(req.hasPassword()) {
+          uri += A2STR::COLON_C;
+          uri += util::percentEncode(req.getPassword());
+        }
+        if(uri.size() > 7) {
+          uri += "@";
+        }
+        strappend(uri, req.getHost(),A2STR::COLON_C,util::uitos(req.getPort()));
+        option.put(proxyPref, uri);
+      }
+    }
+    option.put(_optName, optarg);
+  }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return "";
+  }
+};
+
+class HttpProxyPasswdOptionHandler:public NameMatchOptionHandler {
+public:
+  HttpProxyPasswdOptionHandler(const std::string& optName,
+                               const std::string& description,
+                               const std::string& defaultValue,
+                               char shortName = 0):
+    NameMatchOptionHandler(optName, description, defaultValue,
+                           OptionHandler::REQ_ARG, shortName)
+  {}
+
+  virtual void parseArg(Option& option, const std::string& optarg)
+  {
+    if(util::endsWith(_optName, "-passwd")) {
+      const std::string proxyPref = _optName.substr(0, _optName.size()-7);
+      const std::string& olduri = option.get(proxyPref);
+      if(!olduri.empty()) {
+        Request req;
+        bool b = req.setUri(olduri);
+        assert(b);
+        std::string uri = "http://";
+        if(!req.getUsername().empty()) {
+          uri += util::percentEncode(req.getUsername());
+        }
+        uri += A2STR::COLON_C;
+        if(!optarg.empty()) {
+          uri += util::percentEncode(optarg);
+        }
+        if(uri.size() > 7) {
+          uri += "@";
+        }
+        strappend(uri, req.getHost(), A2STR::COLON_C,util::itos(req.getPort()));
+        option.put(proxyPref, uri);
+      }
+    }
+    option.put(_optName, optarg);
+  }
+
+  virtual std::string createPossibleValuesString() const
+  {
+    return "";
+  }
+};
+
 class HttpProxyOptionHandler : public NameMatchOptionHandler {
+private:
+  std::string _proxyUserPref;
+  std::string _proxyPasswdPref;
 public:
   HttpProxyOptionHandler(const std::string& optName,
                          const std::string& description,
@@ -551,7 +641,9 @@ public:
                          char shortName = 0)
     :
     NameMatchOptionHandler(optName, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName)
+                           OptionHandler::REQ_ARG, shortName),
+    _proxyUserPref(_optName+"-user"),
+    _proxyPasswdPref(_optName+"-passwd")
   {}
 
   virtual ~HttpProxyOptionHandler() {}
@@ -568,11 +660,31 @@ public:
       } else {
         uri = "http://"+optarg;
       }
-      if(req.setUri(uri)) {
-        option.put(_optName, uri);
-      } else {
+      if(!req.setUri(uri)) {
         throw DL_ABORT_EX(_("unrecognized proxy format"));
       }
+      uri = "http://";
+      if(req.getUsername().empty()) {
+        if(option.defined(_proxyUserPref)) {
+          uri += util::percentEncode(option.get(_proxyUserPref));
+        }
+      } else {
+        uri += util::percentEncode(req.getUsername());
+      }
+      if(!req.hasPassword()) {
+        if(option.defined(_proxyPasswdPref)) {
+          uri += A2STR::COLON_C;
+          uri += util::percentEncode(option.get(_proxyPasswdPref));
+        }
+      } else {
+        uri += A2STR::COLON_C;
+        uri += util::percentEncode(req.getPassword());
+      }
+      if(uri.size() > 7) {
+        uri += "@";
+      }
+      strappend(uri, req.getHost(), A2STR::COLON_C, util::uitos(req.getPort()));
+      option.put(_optName, uri);
     }
   }
 

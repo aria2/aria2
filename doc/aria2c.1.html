@@ -685,6 +685,45 @@ downloading a file like BitTorrent.</p></div>
   The format of PROXY is [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
 </p>
 </dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">If user and password are embedded in proxy URI and they are also
+specified by <strong>--{http,https,ftp,all}-proxy-{user,passwd}</strong> options,
+those appeared later have precedence. For example, you have
+http-proxy-user="myname", http-proxy-passwd="mypass" in aria2.conf and
+you specify --http-proxy="http://proxy" in command-line, then you get
+HTTP proxy "http://proxy" with user "myname" and password
+"mypass". Another example: if you specified in command-line
+--http-proxy="http://user:pass@proxy" --http-proxy-user="myname"
+--http-proxy-passwd="mypass", then you will get HTTP proxy
+"http://proxy" with user "myname" and password "mypass".  One more
+example: if you specified in command-line --http-proxy-user="myname"
+--http-proxy-passwd="mypass" --http-proxy="http://user:pass@proxy",
+then you get HTTP proxy "http://proxy" with user "user" and password
+"pass".</td>
+</tr></table>
+</div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>--all-proxy-passwd</strong>=PASSWD
+</dt>
+<dd>
+<p>
+  Set password for <strong>--all-proxy</strong> option.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--all-proxy-user</strong>=USER
+</dt>
+<dd>
+<p>
+  Set user for <strong>--all-proxy</strong> option.
+</p>
+</dd>
 <dt class="hdlist1">
 <strong>--connect-timeout</strong>=SEC
 </dt>
@@ -970,6 +1009,21 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--http-proxy-passwd</strong>=PASSWD
+</dt>
+<dd>
+<p>
+  Set password for <strong>--http-proxy</strong> option.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p><strong>--http-proxy-user</strong>=USER:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>Set user for *--http-proxy* option.</tt></pre>
+</div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
 <strong>--https-proxy</strong>=PROXY
 </dt>
 <dd>
@@ -977,6 +1031,22 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
   Use this proxy server for HTTPS. To erase previously defined proxy,
   use "". See also <strong>--all-proxy</strong> option.  This affects all URLs.  The
   format of PROXY is [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--https-proxy-passwd</strong>=PASSWD
+</dt>
+<dd>
+<p>
+  Set password for <strong>--https-proxy</strong> option.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--https-proxy-user</strong>=USER
+</dt>
+<dd>
+<p>
+  Set user for <strong>--https-proxy</strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1117,6 +1187,22 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
   Use this proxy server for FTP.  To erase previously defined proxy,
   use "".  See also <strong>--all-proxy</strong> option.  This affects all URLs.  The
   format of PROXY is [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--ftp-proxy-passwd</strong>=PASSWD
+</dt>
+<dd>
+<p>
+  Set password for <strong>--ftp-proxy</strong> option.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--ftp-proxy-user</strong>=USER
+</dt>
+<dd>
+<p>
+  Set user for <strong>--ftp-proxy</strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -3504,6 +3590,10 @@ You can specify proxy in the environment variables. See <strong>ENVIRONMENT</str
 <div class="content">
 <pre><tt>aria2c --http-proxy="http://username:password@proxy:8080" "http://host/file"</tt></pre>
 </div></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --http-proxy="http://proxy:8080" --http-proxy-user="username" --http-proxy-passwd="password" "http://host/file"</tt></pre>
+</div></div>
 <h3 id="_metalink_download">Metalink Download</h3><div style="clear:left"></div>
 <h4 id="_download_files_with_remote_metalink">Download files with remote Metalink</h4>
 <div class="listingblock">
@@ -3824,7 +3914,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-09 00:04:25 JST
+Last updated 2010-03-11 23:51:12 JST
 </div>
 </div>
 </body>

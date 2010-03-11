@@ -872,9 +872,43 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+                                   (PREF_HTTP_PROXY_PASSWD,
+                                    TEXT_HTTP_PROXY_PASSWD,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+                                   (PREF_HTTP_PROXY_USER,
+                                    TEXT_HTTP_PROXY_USER,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
                                    (PREF_HTTPS_PROXY,
                                     TEXT_HTTPS_PROXY,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+                                   (PREF_HTTPS_PROXY_PASSWD,
+                                    TEXT_HTTPS_PROXY_PASSWD,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+                                   (PREF_HTTPS_PROXY_USER,
+                                    TEXT_HTTPS_PROXY_USER,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
@@ -889,9 +923,45 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+                                   (PREF_FTP_PROXY_PASSWD,
+                                    TEXT_FTP_PROXY_PASSWD,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+                                   (PREF_FTP_PROXY_USER,
+                                    TEXT_FTP_PROXY_USER,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_FTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new HttpProxyOptionHandler
                                    (PREF_ALL_PROXY,
                                     TEXT_ALL_PROXY,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+                                   (PREF_ALL_PROXY_PASSWD,
+                                    TEXT_ALL_PROXY_PASSWD,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    op->addTag(TAG_HTTPS);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+                                   (PREF_ALL_PROXY_USER,
+                                    TEXT_ALL_PROXY_USER,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);

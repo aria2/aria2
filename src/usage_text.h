@@ -618,3 +618,19 @@
 #define TEXT_REUSE_URI                          \
   _(" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n" \
     "                              left.")
+#define TEXT_ALL_PROXY_USER                                             \
+  _(" --all-proxy-user=USER        Set user for --all-proxy option.")
+#define TEXT_ALL_PROXY_PASSWD                                           \
+  _(" --all-proxy-passwd=PASSWD    Set password for --all-proxy option.")
+#define TEXT_HTTP_PROXY_USER                                            \
+  _(" --http-proxy-user=USER       Set user for --http-proxy option.")
+#define TEXT_HTTP_PROXY_PASSWD                                          \
+  _(" --http-proxy-passwd=PASSWD   Set password for --http-proxy option.")
+#define TEXT_HTTPS_PROXY_USER                                           \
+  _(" --https-proxy-user=USER      Set user for --https-proxy option.")
+#define TEXT_HTTPS_PROXY_PASSWD                                         \
+  _(" --https-proxy-passwd=PASSWD  Set password for --https-proxy option.")
+#define TEXT_FTP_PROXY_USER                                             \
+  _(" --ftp-proxy-user=USER        Set user for --ftp-proxy option.")
+#define TEXT_FTP_PROXY_PASSWD                                           \
+  _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option.")

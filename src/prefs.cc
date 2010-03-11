@@ -240,6 +240,14 @@ const std::string PREF_NO_PROXY("no-proxy");
 const std::string PREF_PROXY_METHOD("proxy-method");
 const std::string V_GET("get");
 const std::string V_TUNNEL("tunnel");
+const std::string PREF_HTTP_PROXY_USER("http-proxy-user");
+const std::string PREF_HTTP_PROXY_PASSWD("http-proxy-passwd");
+const std::string PREF_HTTPS_PROXY_USER("https-proxy-user");
+const std::string PREF_HTTPS_PROXY_PASSWD("https-proxy-passwd");
+const std::string PREF_FTP_PROXY_USER("ftp-proxy-user");
+const std::string PREF_FTP_PROXY_PASSWD("ftp-proxy-passwd");
+const std::string PREF_ALL_PROXY_USER("all-proxy-user");
+const std::string PREF_ALL_PROXY_PASSWD("all-proxy-passwd");
 
 /**
  * BitTorrent related preferences

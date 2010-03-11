@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 03/09/2010
+.\"      Date: 03/12/2010
 .\"    Manual: Aria2 Manual
-.\"    Source: Aria2 1.9.0a
+.\"    Source: Aria2 1.9.0
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "03/09/2010" "Aria2 1\&.9\&.0a" "Aria2 Manual"
+.TH "ARIA2C" "1" "03/12/2010" "Aria2 1\&.9\&.0" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -113,6 +113,36 @@ Use this proxy server for all protocols\&. To erase previously defined proxy, us
 and
 \fB\-\-ftp\-proxy\fR
 options\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+.RE
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+If user and password are embedded in proxy URI and they are also specified by \fB\-\-{http,https,ftp,all}\-proxy\-{user,passwd}\fR options, those appeared later have precedence\&. For example, you have http\-proxy\-user="myname", http\-proxy\-passwd="mypass" in aria2\&.conf and you specify \-\-http\-proxy="http://proxy" in command\-line, then you get HTTP proxy "http://proxy" with user "myname" and password "mypass"\&. Another example: if you specified in command\-line \-\-http\-proxy="http://user:pass@proxy" \-\-http\-proxy\-user="myname" \-\-http\-proxy\-passwd="mypass", then you will get HTTP proxy "http://proxy" with user "myname" and password "mypass"\&. One more example: if you specified in command\-line \-\-http\-proxy\-user="myname" \-\-http\-proxy\-passwd="mypass" \-\-http\-proxy="http://user:pass@proxy", then you get HTTP proxy "http://proxy" with user "user" and password "pass"\&.
+.sp .5v
+.RE
+.PP
+\fB\-\-all\-proxy\-passwd\fR=PASSWD
+.RS 4
+Set password for
+\fB\-\-all\-proxy\fR
+option\&.
+.RE
+.PP
+\fB\-\-all\-proxy\-user\fR=USER
+.RS 4
+Set user for
+\fB\-\-all\-proxy\fR
+option\&.
 .RE
 .PP
 \fB\-\-connect\-timeout\fR=SEC
@@ -339,11 +369,44 @@ Use this proxy server for HTTP\&. To erase previously defined proxy, use ""\&. S
 option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
+\fB\-\-http\-proxy\-passwd\fR=PASSWD
+.RS 4
+Set password for
+\fB\-\-http\-proxy\fR
+option\&.
+.RE
+.sp
+\fB\-\-http\-proxy\-user\fR=USER:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Set user for *\-\-http\-proxy* option\&.
+.fi
+.if n \{\
+.RE
+.\}
+.PP
 \fB\-\-https\-proxy\fR=PROXY
 .RS 4
 Use this proxy server for HTTPS\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
 option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+.RE
+.PP
+\fB\-\-https\-proxy\-passwd\fR=PASSWD
+.RS 4
+Set password for
+\fB\-\-https\-proxy\fR
+option\&.
+.RE
+.PP
+\fB\-\-https\-proxy\-user\fR=USER
+.RS 4
+Set user for
+\fB\-\-https\-proxy\fR
+option\&.
 .RE
 .PP
 \fB\-\-private\-key\fR=FILE
@@ -442,6 +505,20 @@ is given, the active mode will be used\&. Default:
 Use this proxy server for FTP\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
 option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+.RE
+.PP
+\fB\-\-ftp\-proxy\-passwd\fR=PASSWD
+.RS 4
+Set password for
+\fB\-\-ftp\-proxy\fR
+option\&.
+.RE
+.PP
+\fB\-\-ftp\-proxy\-user\fR=USER
+.RS 4
+Set user for
+\fB\-\-ftp\-proxy\fR
+option\&.
 .RE
 .PP
 \fB\-\-ftp\-type\fR=TYPE
@@ -2885,6 +2962,16 @@ See \fB\-\-http\-proxy\fR, \fB\-\-https\-proxy\fR, \fB\-\-ftp\-proxy\fR and \fB\
 .\}
 .nf
 aria2c \-\-http\-proxy="http://username:password@proxy:8080" "http://host/file"
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+aria2c \-\-http\-proxy="http://proxy:8080" \-\-http\-proxy\-user="username" \-\-http\-proxy\-passwd="password" "http://host/file"
 .fi
 .if n \{\
 .RE
