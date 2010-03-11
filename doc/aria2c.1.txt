@@ -1045,6 +1045,8 @@ of URIs. These optional lines must start with white space(s).
 * check-integrity
 * continue
 * all-proxy
+* all-proxy-user
+* all-proxy-passwd
 * connect-timeout
 * dry-run
 * lowest-speed-limit
@@ -1061,7 +1063,11 @@ of URIs. These optional lines must start with white space(s).
 * http-user
 * http-passwd
 * http-proxy
+* http-proxy-user
+* http-proxy-passwd
 * https-proxy
+* https-proxy-user
+* https-proxy-passwd
 * referer
 * enable-http-keep-alive
 * enable-http-pipelining
@@ -1072,10 +1078,14 @@ of URIs. These optional lines must start with white space(s).
 * ftp-passwd
 * ftp-pasv
 * ftp-proxy
+* ftp-proxy-user
+* ftp-proxy-passwd
 * ftp-type
 * ftp-reuse-connection
 * no-netrc
+* reuse-uri
 * select-file
+* bt-enable-lpd
 * bt-external-ip
 * bt-hash-check-seed
 * bt-max-open-files

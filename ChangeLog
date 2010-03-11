@@ -1,5 +1,14 @@
 2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added bt-enable-lpt, reuse-uri
+	and {http,https,ftp,all}-proxy-{user,passwd} options to -i list
+	options.
+	* doc/aria2c.1.txt
+	* doc/xmlrpc/aria2rpc
+	* src/download_helper.cc
+
+2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use global option for PREF_LISTEN_PORT and PREF_BT_LPD_INTERFACE.
 	* src/BtSetup.cc
 

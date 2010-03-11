@@ -36,6 +36,8 @@ OptionParser.new do |opt|
     options["continue"]=val||"true"
   }
   opt.on("--all-proxy PROXY"){|val| options["all-proxy"]=val}
+  opt.on("--all-proxy-user USER"){|val| options["all-proxy-user"]=val}
+  opt.on("--all-proxy-passwd PASSWD"){|val| options["all-proxy-passwd"]=val}
   opt.on("--connect-timeout SEC"){|val| options["connect-timeout"]=val}
   opt.on("--dry-run [BOOL]",["true","false"]){|val|
     options["dry-run"]=val||"true"
@@ -60,7 +62,11 @@ OptionParser.new do |opt|
   opt.on("--http-user USER"){|val| options["http-user"]=val}
   opt.on("--http-passwd PASSWD"){|val| options["http-passwd"]=val}
   opt.on("--http-proxy PROXY"){|val| options["http-proxy"]=val}
+  opt.on("--http-proxy-user USER"){|val| options["http-proxy-user"]=val}
+  opt.on("--http-proxy-passwd PASSWD"){|val| options["http-proxy-passwd"]=val}
   opt.on("--https-proxy PROXY"){|val| options["https-proxy"]=val}
+  opt.on("--https-proxy-user USER"){|val| options["https-proxy-user"]=val}
+  opt.on("--https-proxy-passwd PASSWD"){|val| options["https-proxy-passwd"]=val}
   opt.on("--referer REFERER"){|val| options["referer"]=val}
   opt.on("--enable-http-keep-alive [BOOL]",["true","false"]){|val|
     options["enable-http-keep-alive"]=val||"true"
@@ -82,6 +88,8 @@ OptionParser.new do |opt|
     options["ftp-pasv"]=val||"true"
   }
   opt.on("--ftp-proxy PROXY"){|val| options["ftp-proxy"]=val}
+  opt.on("--ftp-proxy-user USER"){|val| options["ftp-proxy-user"]=val}
+  opt.on("--ftp-proxy-passwd PASSWD"){|val| options["ftp-proxy-passwd"]=val}
   opt.on("--ftp-type TYPE"){|val| options["ftp-type"]=val}
   opt.on("--ftp-reuse-connection [BOOL]",["true","false"]){|val|
     options["ftp-reuse-connection"]=val||"true"
@@ -89,7 +97,13 @@ OptionParser.new do |opt|
   opt.on("-n","--no-netrc [BOOL]",["true","false"]){|val|
     options["no-netrc"]=val||"true"
   }
+  opt.on("--reuse-uri [BOOL]",["true","false"]){|val|
+    options["reuse-uri"]=val||"true"
+  }
   opt.on("--select-file INDEXES"){|val| options["select-file"]=val}
+  opt.on("--bt-enable-lpd [BOOL]",["true","false"]){|val|
+    options["bt-enable-lpd"]=val||"true"
+  }
   opt.on("--bt-external-ip IPADDRESS"){|val| options["bt-external-ip"]=val}
   opt.on("--bt-hash-check-seed [BOOL]",["true","false"]){|val|
     options["bt-hash-check-seed"]=val||"true"
