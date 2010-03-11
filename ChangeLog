@@ -1,5 +1,12 @@
 2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use global option for DHTSetup.
+	* src/DHTSetup.cc
+	* src/DHTSetup.h
+	* src/RequestGroup.cc
+
+2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added bt-enable-lpt, reuse-uri
 	and {http,https,ftp,all}-proxy-{user,passwd} options to -i list
 	options.

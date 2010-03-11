@@ -81,8 +81,7 @@ DHTSetup::DHTSetup():_logger(LogFactory::getInstance()) {}
 
 DHTSetup::~DHTSetup() {}
 
-void DHTSetup::setup(std::vector<Command*>& commands,
-                     DownloadEngine* e, const Option* option)
+void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
 {
   if(_initialized) {
     return;
@@ -94,7 +93,7 @@ void DHTSetup::setup(std::vector<Command*>& commands,
     SharedHandle<DHTNode> localNode;
 
     DHTRoutingTableDeserializer deserializer;
-    std::string dhtFile = option->get(PREF_DHT_FILE_PATH);
+    std::string dhtFile = e->option->get(PREF_DHT_FILE_PATH);
     try {
       std::ifstream in(dhtFile.c_str(), std::ios::binary);
       if(!in) {
@@ -112,7 +111,8 @@ void DHTSetup::setup(std::vector<Command*>& commands,
 
     SharedHandle<DHTConnectionImpl> connection(new DHTConnectionImpl());
     {
-      IntSequence seq = util::parseIntRange(option->get(PREF_DHT_LISTEN_PORT));
+      IntSequence seq =
+        util::parseIntRange(e->option->get(PREF_DHT_LISTEN_PORT));
       uint16_t port;
       if(!connection->bind(port, seq)) {
         throw DL_ABORT_EX("Error occurred while binding port for DHT");
@@ -195,10 +195,11 @@ void DHTSetup::setup(std::vector<Command*>& commands,
       taskQueue->addPeriodicTask1(task);
     }
 
-    if(!option->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
+    if(!e->option->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
       {
-        std::pair<std::string, uint16_t> addr(option->get(PREF_DHT_ENTRY_POINT_HOST),
-                                              option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
+        std::pair<std::string, uint16_t> addr
+          (e->option->get(PREF_DHT_ENTRY_POINT_HOST),
+           e->option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
         std::vector<std::pair<std::string, uint16_t> > entryPoints;
         entryPoints.push_back(addr);
         DHTEntryPointNameResolveCommand* command =

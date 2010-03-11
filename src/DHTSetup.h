@@ -40,7 +40,6 @@
 
 namespace aria2 {
 class Logger;
-class Option;
 class DownloadEngine;
 class Command;
 
@@ -55,8 +54,7 @@ public:
 
   ~DHTSetup();
 
-  void setup(std::vector<Command*>& commands,
-             DownloadEngine* e, const Option* option);
+  void setup(std::vector<Command*>& commands, DownloadEngine* e);
 
   static bool initialized();
 };

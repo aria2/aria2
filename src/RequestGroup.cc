@@ -274,7 +274,7 @@ void RequestGroup::createInitialCommand
       if(metadataGetMode) {
         if(_option->getAsBool(PREF_ENABLE_DHT)) {
           std::vector<Command*> dhtCommands;
-          DHTSetup().setup(dhtCommands, e, _option.get());
+          DHTSetup().setup(dhtCommands, e);
           e->addCommand(dhtCommands);
         } else {
           _logger->notice("For BitTorrent Magnet URI, enabling DHT is strongly"
@@ -335,7 +335,7 @@ void RequestGroup::createInitialCommand
       if(torrentAttrs[bittorrent::PRIVATE].i() == 0 &&
          _option->getAsBool(PREF_ENABLE_DHT)) {
         std::vector<Command*> dhtCommands;
-        DHTSetup().setup(dhtCommands, e, _option.get());
+        DHTSetup().setup(dhtCommands, e);
         e->addCommand(dhtCommands);
         if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
           std::vector<std::pair<std::string, uint16_t> > entryPoints;
