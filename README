@@ -24,6 +24,7 @@ Here is a list of features.
 * Command-line interface
 * Download files through HTTP(S)/FTP/BitTorrent
 * Segmented downloading
+* Metalink version 4 http://www.ietf.org/id/draft-bryan-metalink-28.txt
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent)
 * HTTP/1.1 implementation
 * HTTP Proxy support
@@ -46,6 +47,7 @@ Here is a list of features.
 * BitTorrent http://getright.com/seedtorrent.html[WEB-Seeding]. aria2
   requests chunks more than piece size to reduce the request
   overhead. It also supports pipelined requests with piece size.
+* BitTorrent Local Peer Discovery
 * Rename/change the directory structure of BitTorrent downloads
   completely
 * XML-RPC interface
@@ -202,13 +204,15 @@ Other things should be noted
 
 Metalink
 --------
-The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
-P2P protocols are ignored.
 
-For checksum verification, MD5, SHA1, and SHA256 are supported. If 
-multiple hash algorithms are provided, aria2 uses SHA1. If whole file
-checksum verification fails, aria2 doesn't retry the download and just 
-exits with non-zero return code.
+The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
+P2P protocols are ignored. Both Metalink4 and Metalink version 3.0
+documents are supported.
+
+For checksum verification, MD5, SHA1, and SHA256 are supported. If
+multiple hash algorithms are provided, aria2 uses stronger one. If
+whole file checksum verification fails, aria2 doesn't retry the
+download and just exits with non-zero return code.
 
 The supported user preferences are version, language, location,
 protocol and os.
@@ -221,6 +225,14 @@ If signature is included in a Metalink file, aria2 saves it as a file
 after the completion of the download.  The filename is download
 filename + ".sig". If same file already exists, the signature file is
 not saved.
+
+In Metalink4, multi-file torrent could appear in metalink:metaurl
+element.  Since aria2 cannot download 2 same torrents at the same
+time, aria2 groups files in metalink:file element which has same
+BitTorrent metaurl and downloads them from a single BitTorrent swarm.
+This is basically multi-file torrent download with file selection, so
+the adjacent files which is not in Metalink document but shares same
+piece with selected file are also created.
 
 netrc
 -----
