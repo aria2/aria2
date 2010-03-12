@@ -6,12 +6,18 @@ Release Note
 
 This release adds Metalink4 support and BitTorrent Local Peer
 Discovery.  aria2.changeUri XML-RPC method was added. It enables you
-to add/remove URIs to existing downloads dynamically.  We refactored
-the code based on profiler results, so aria2 now runs more efficiently
-than ever. Russian and Simplified Chinese translation were updated.
+to add/remove URIs to existing downloads dynamically.  The user and
+password for proxy server now can be specified in command-line
+separately.  We refactored the code based on profiler results, so
+aria2 now runs more efficiently than ever. Russian and Simplified
+Chinese translation were updated.
 
 Changes
 -------
+
+ * Resurrected --http-proxy-user and --http-proxy-passwd option.
+   Added --https-proxy-user, --https-proxy-passwd, --ftp-proxy-user,
+   --ftp-proxy-passwd, --all-proxy-user, --all-proxy-passwd option.
 
  * Updated Russian and Simplified Chinese translation.
 
@@ -21,7 +27,8 @@ Changes
  * Fixed the bug that filename is percent encoded where it must be
    percent decoded in sendMdtm().
 
- * Added getServers XML-RPC method.
+ * Added getServers XML-RPC method. It returns currently connected
+   HTTP(S)/FTP server and download speed, etc.
 
  * Added 'status' key to the response of getUri XML-RPC method.
 
