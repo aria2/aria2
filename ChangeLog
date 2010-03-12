@@ -1,5 +1,10 @@
 2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed log level from error to info for DHT message send error.
+	* src/DHTMessageDispatcherImpl.cc
+
+2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Inspect all xt in magnet to find urn:btih.
 	* src/bittorrent_helper.cc
 	* test/BittorrentHelperTest.cc
