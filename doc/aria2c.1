@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 03/12/2010
+.\"      Date: 03/13/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.9.0
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "03/12/2010" "Aria2 1\&.9\&.0" "Aria2 Manual"
+.TH "ARIA2C" "1" "03/13/2010" "Aria2 1\&.9\&.0" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -65,7 +65,7 @@ is specified, log is written to stdout\&.
 .PP
 \fB\-j\fR, \fB\-\-max\-concurrent\-downloads\fR=N
 .RS 4
-Set maximum number of parallel downloads for every static (HTTP/FTP) URL, torrent and metalink\&. See also
+Set maximum number of parallel downloads for every static (HTTP/FTP) URI, torrent and metalink\&. See also
 \fB\-s\fR
 and
 \fB\-C\fR
@@ -112,7 +112,7 @@ Use this proxy server for all protocols\&. To erase previously defined proxy, us
 \fB\-\-https\-proxy\fR
 and
 \fB\-\-ftp\-proxy\fR
-options\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+options\&. This affects all URIs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .if n \{\
 .sp
@@ -219,7 +219,7 @@ option is used, this option is ignored\&.
 .ps -1
 .br
 .sp
-In Metalink or BitTorrent download you cannot specify file name\&. The file name specified here is only used when the URLs fed to aria2 are done by command line without \fB\-i\fR, \fB\-Z\fR option\&. For example: aria2c \-o myfile\&.zip "http://mirror1/file\&.zip" "http://mirror2/file\&.zip"
+In Metalink or BitTorrent download you cannot specify file name\&. The file name specified here is only used when the URIs fed to aria2 are done by command line without \fB\-i\fR, \fB\-Z\fR option\&. For example: aria2c \-o myfile\&.zip "http://mirror1/file\&.zip" "http://mirror2/file\&.zip"
 .sp .5v
 .RE
 .PP
@@ -276,7 +276,7 @@ Specifies timeout in seconds to invalidate performance profile of the servers si
 .PP
 \fB\-s\fR, \fB\-\-split\fR=N
 .RS 4
-Download a file using N connections\&. If more than N URLs are given, first N URLs are used and remaining URLs are used for backup\&. If less than N URLs are given, those URLs are used more than once so that N connections total are made simultaneously\&. Please see
+Download a file using N connections\&. If more than N URIs are given, first N URIs are used and remaining URIs are used for backup\&. If less than N URIs are given, those URIs are used more than once so that N connections total are made simultaneously\&. Please see
 \fB\-j\fR
 option too\&. Please note that in Metalink download, this option has no effect and use
 \fB\-C\fR
@@ -354,19 +354,19 @@ option\&. Default:
 .PP
 \fB\-\-http\-user\fR=USER
 .RS 4
-Set HTTP user\&. This affects all URLs\&.
+Set HTTP user\&. This affects all URIs\&.
 .RE
 .PP
 \fB\-\-http\-passwd\fR=PASSWD
 .RS 4
-Set HTTP password\&. This affects all URLs\&.
+Set HTTP password\&. This affects all URIs\&.
 .RE
 .PP
 \fB\-\-http\-proxy\fR=PROXY
 .RS 4
 Use this proxy server for HTTP\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
-option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+option\&. This affects all URIs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-http\-proxy\-passwd\fR=PASSWD
@@ -392,7 +392,7 @@ Set user for *\-\-http\-proxy* option\&.
 .RS 4
 Use this proxy server for HTTPS\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
-option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+option\&. This affects all URIs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-https\-proxy\-passwd\fR=PASSWD
@@ -418,7 +418,7 @@ option\&.
 .PP
 \fB\-\-referer\fR=REFERER
 .RS 4
-Set Referer\&. This affects all URLs\&.
+Set Referer\&. This affects all URIs\&.
 .RE
 .PP
 \fB\-\-enable\-http\-keep\-alive\fR[=\fItrue\fR|\fIfalse\fR]
@@ -482,13 +482,13 @@ Set user agent for HTTP(S) downloads\&. Default:
 .PP
 \fB\-\-ftp\-user\fR=USER
 .RS 4
-Set FTP user\&. This affects all URLs\&. Default:
+Set FTP user\&. This affects all URIs\&. Default:
 \fIanonymous\fR
 .RE
 .PP
 \fB\-\-ftp\-passwd\fR=PASSWD
 .RS 4
-Set FTP password\&. This affects all URLs\&. If user name is embedded but password is missing in URI, aria2 tries to resolve password using \&.netrc\&. If password is found in \&.netrc, then use it as password\&. If not, use the password specified in this option\&. Default:
+Set FTP password\&. This affects all URIs\&. If user name is embedded but password is missing in URI, aria2 tries to resolve password using \&.netrc\&. If password is found in \&.netrc, then use it as password\&. If not, use the password specified in this option\&. Default:
 \fIARIA2USER@\fR
 .RE
 .PP
@@ -504,7 +504,7 @@ is given, the active mode will be used\&. Default:
 .RS 4
 Use this proxy server for FTP\&. To erase previously defined proxy, use ""\&. See also
 \fB\-\-all\-proxy\fR
-option\&. This affects all URLs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+option\&. This affects all URIs\&. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 .RE
 .PP
 \fB\-\-ftp\-proxy\-passwd\fR=PASSWD
@@ -1244,13 +1244,13 @@ Print the version number, copyright and the configuration information and exit\&
 The options that have its argument surrounded by square brackets([]) take an optional argument\&. Usually omiting the argument is evaluated to \fItrue\fR\&. If you use short form of these options(such as \fI\-V\fR) and give an argument, then the option name and its argument should be concatenated(e\&.g\&. \fI\-Vfalse\fR)\&. If any spaces are inserted between the option name and the argument, the argument will be treated as URI and usually this is not what you expect\&.
 .SS "URI, MAGNET, TORRENT_FILE, METALINK_FILE"
 .sp
-You can specify multiple URLs in command\-line\&. Unless you specify \fB\-Z\fR option, all URLs must point to the same file or downloading will fail\&.
+You can specify multiple URIs in command\-line\&. Unless you specify \fB\-Z\fR option, all URIs must point to the same file or downloading will fail\&.
 .sp
 You can specify arbitrary number of BitTorrent Magnet URI\&. Please note that they are always treated as a separate download\&. Both hex encoded 40 characters Info Hash and Base32 encoded 32 characters Info Hash are supported\&. The multiple "tr" parameters are supported\&. Because BitTorrent Magnet URI is likely to contain "&" character, it is highly recommended to always quote URI with single(\*(Aq) or double(") quotation\&. It is strongly recommended to enable DHT especially when "tr" parameter is missing\&. See http://www\&.bittorrent\&.org/beps/bep_0009\&.html for more details about BitTorrent Magnet URI\&.
 .sp
-You can also specify arbitrary number of torrent files and metalink files stored on a local drive\&. Please note that they are always treated as a separate download\&.
+You can also specify arbitrary number of torrent files and Metalink documents stored on a local drive\&. Please note that they are always treated as a separate download\&. Both Metalink4 and Metalink version 3\&.0 are supported\&.
 .sp
-You can specify both torrent file with \-T option and URLs\&. By doing this, you can download a file from both torrent swarm and HTTP(S)/FTP server at the same time, while the data from HTTP(S)/FTP are uploaded to the torrent swarm\&. For single file torrents, URL can be a complete URL pointing to the resource or if URL ends with /, name in torrent file in torrent is added\&. For multi\-file torrents, name and path are added to form a URL for each file\&.
+You can specify both torrent file with \-T option and URIs\&. By doing this, you can download a file from both torrent swarm and HTTP(S)/FTP server at the same time, while the data from HTTP(S)/FTP are uploaded to the torrent swarm\&. For single file torrents, URI can be a complete URI pointing to the resource or if URI ends with /, name in torrent file in torrent is added\&. For multi\-file torrents, name and path are added to form a URI for each file\&.
 .if n \{\
 .sp
 .\}
@@ -1264,14 +1264,14 @@ You can specify both torrent file with \-T option and URLs\&. By doing this, you
 .ps -1
 .br
 .sp
-Make sure that URL is quoted with single(\*(Aq) or double(") quotation if it contains "&" or any characters that have special meaning in shell\&.
+Make sure that URI is quoted with single(\*(Aq) or double(") quotation if it contains "&" or any characters that have special meaning in shell\&.
 .sp .5v
 .RE
 .SS "Resuming Download"
 .sp
-Usually, you can resume transfer by just issuing same command(aria2c URL) if the previous transfer is made by aria2\&.
+Usually, you can resume transfer by just issuing same command(aria2c URI) if the previous transfer is made by aria2\&.
 .sp
-If the previous transfer is made by a browser or wget like sequential download manager, then use \-c option to continue the transfer(aria2c \fB\-c\fR URL)\&.
+If the previous transfer is made by a browser or wget like sequential download manager, then use \-c option to continue the transfer(aria2c \fB\-c\fR URI)\&.
 .SH "EXIT STATUS"
 .sp
 Because aria2 can handle multiple downloads at once, it encounters lots of errors in a session\&. aria2 returns the following exit status based on the last error encountered\&.
@@ -2932,7 +2932,7 @@ aria2 uses 5 connections to download 1 file by default\&. \-s1 limits the number
 .ps -1
 .br
 .sp
-To pause a download, press Ctrl\-C\&. You can resume the transfer by running aria2c with the same argument in the same directory\&. You can change URLs as long as they are pointing to the same file\&.
+To pause a download, press Ctrl\-C\&. You can resume the transfer by running aria2c with the same argument in the same directory\&. You can change URIs as long as they are pointing to the same file\&.
 .sp .5v
 .RE
 .RE
@@ -3825,7 +3825,7 @@ aria2c \-Z \-P "http://host/image[A\-Z:2]\&.png"
 .nr an-break-flag 1
 .br
 .ps +1
-\fBParallel downloads of arbitrary number of URL,metalink,torrent\fR
+\fBParallel downloads of arbitrary number of URI,metalink,torrent\fR
 .RS 4
 .sp
 .if n \{\
