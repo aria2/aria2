@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-03-10 00:09+0900\n"
+"POT-Creation-Date: 2010-03-13 00:38+0900\n"
 "PO-Revision-Date: 2009-03-17 21:14+0000\n"
 "Last-Translator: Tor Christian Tovslid <tctovsli@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <nn@li.org>\n"
@@ -58,49 +58,49 @@ msgstr "                              Taggar: "
 msgid "                              Possible Values: "
 msgstr ""
 
-#: src/OptionHandlerImpl.h:136
+#: src/OptionHandlerImpl.h:137
 msgid "must be either 'true' or 'false'."
 msgstr "må anten vere 'true' eller 'false'."
 
-#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
+#: src/OptionHandlerImpl.h:171 src/OptionHandlerImpl.h:220
 #, c-format
 msgid "must be between %s and %s."
 msgstr "må vere mellom %s og %s."
 
-#: src/OptionHandlerImpl.h:216
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "må vere mindre enn eller lik %s."
 
-#: src/OptionHandlerImpl.h:222
+#: src/OptionHandlerImpl.h:223
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "må vere større enn eller lik %s."
 
-#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
+#: src/OptionHandlerImpl.h:226 src/OptionHandlerImpl.h:304
 msgid "must be a number."
 msgstr "må vere eit nummer."
 
-#: src/OptionHandlerImpl.h:294
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "må vere mindre enn eller lik %.1f."
 
-#: src/OptionHandlerImpl.h:297
+#: src/OptionHandlerImpl.h:298
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "må vere mellom %.1f og %.1f."
 
-#: src/OptionHandlerImpl.h:300
+#: src/OptionHandlerImpl.h:301
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "må vere større eller lik %.1f."
 
-#: src/OptionHandlerImpl.h:478
+#: src/OptionHandlerImpl.h:479
 msgid "must be one of the following:"
 msgstr "må vere ein av følgande:"
 
-#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
+#: src/OptionHandlerImpl.h:529 src/OptionHandlerImpl.h:664
 msgid "unrecognized proxy format"
 msgstr "ugjenkjenneleg proxyformat"
 
@@ -1206,6 +1206,38 @@ msgstr ""
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
+msgstr ""
+
+#: src/usage_text.h:622
+msgid " --all-proxy-user=USER        Set user for --all-proxy option."
+msgstr ""
+
+#: src/usage_text.h:624
+msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
+msgstr ""
+
+#: src/usage_text.h:626
+msgid " --http-proxy-user=USER       Set user for --http-proxy option."
+msgstr ""
+
+#: src/usage_text.h:628
+msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
+msgstr ""
+
+#: src/usage_text.h:630
+msgid " --https-proxy-user=USER      Set user for --https-proxy option."
+msgstr ""
+
+#: src/usage_text.h:632
+msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
+msgstr ""
+
+#: src/usage_text.h:634
+msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
+msgstr ""
+
+#: src/usage_text.h:636
+msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr ""
 
 #: src/version_usage.cc:57

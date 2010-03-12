@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-03-10 00:09+0900\n"
+"POT-Creation-Date: 2010-03-13 00:38+0900\n"
 "PO-Revision-Date: 2008-10-15 12:33+0000\n"
 "Last-Translator: Marko <Unknown>\n"
 "Language-Team: Serbian <sr@li.org>\n"
@@ -58,49 +58,49 @@ msgstr "                              Ознаке: "
 msgid "                              Possible Values: "
 msgstr "                              Могуће вредности: "
 
-#: src/OptionHandlerImpl.h:136
+#: src/OptionHandlerImpl.h:137
 msgid "must be either 'true' or 'false'."
 msgstr "мора бити или \"тачно\" или \"нетачно\"."
 
-#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
+#: src/OptionHandlerImpl.h:171 src/OptionHandlerImpl.h:220
 #, c-format
 msgid "must be between %s and %s."
 msgstr "мора бити између %s и %s."
 
-#: src/OptionHandlerImpl.h:216
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "мора бити мање или једнако са %s."
 
-#: src/OptionHandlerImpl.h:222
+#: src/OptionHandlerImpl.h:223
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "мора бити веће или једнако са %s."
 
-#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
+#: src/OptionHandlerImpl.h:226 src/OptionHandlerImpl.h:304
 msgid "must be a number."
 msgstr "мора бити број."
 
-#: src/OptionHandlerImpl.h:294
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "мора бити мање или једнако са %.1f."
 
-#: src/OptionHandlerImpl.h:297
+#: src/OptionHandlerImpl.h:298
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "мора бити између %.1f и %.1f."
 
-#: src/OptionHandlerImpl.h:300
+#: src/OptionHandlerImpl.h:301
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "мора бити веће или једнако са %.1f."
 
-#: src/OptionHandlerImpl.h:478
+#: src/OptionHandlerImpl.h:479
 msgid "must be one of the following:"
 msgstr "мора бити једно од следећег:"
 
-#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
+#: src/OptionHandlerImpl.h:529 src/OptionHandlerImpl.h:664
 msgid "unrecognized proxy format"
 msgstr "Не препознатљив proxy формат."
 
@@ -1297,6 +1297,62 @@ msgid ""
 "                              left."
 msgstr ""
 
+#: src/usage_text.h:622
+#, fuzzy
+msgid " --all-proxy-user=USER        Set user for --all-proxy option."
+msgstr ""
+" --http-proxy-user=USER Подеси HTTP proxy корисника. Ово утиче на све URL-"
+"ове."
+
+#: src/usage_text.h:624
+#, fuzzy
+msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
+msgstr ""
+" --http-proxy-passwd=PASSWD Подеси HTTP proxy лозинку. Ово утиче на све URL-"
+"ове."
+
+#: src/usage_text.h:626
+#, fuzzy
+msgid " --http-proxy-user=USER       Set user for --http-proxy option."
+msgstr ""
+" --http-proxy-user=USER Подеси HTTP proxy корисника. Ово утиче на све URL-"
+"ове."
+
+#: src/usage_text.h:628
+#, fuzzy
+msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
+msgstr ""
+" --http-proxy-passwd=PASSWD Подеси HTTP proxy лозинку. Ово утиче на све URL-"
+"ове."
+
+#: src/usage_text.h:630
+#, fuzzy
+msgid " --https-proxy-user=USER      Set user for --https-proxy option."
+msgstr ""
+" --http-proxy-user=USER Подеси HTTP proxy корисника. Ово утиче на све URL-"
+"ове."
+
+#: src/usage_text.h:632
+#, fuzzy
+msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
+msgstr ""
+" --http-proxy-passwd=PASSWD Подеси HTTP proxy лозинку. Ово утиче на све URL-"
+"ове."
+
+#: src/usage_text.h:634
+#, fuzzy
+msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
+msgstr ""
+" --http-proxy-user=USER Подеси HTTP proxy корисника. Ово утиче на све URL-"
+"ове."
+
+#: src/usage_text.h:636
+#, fuzzy
+msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
+msgstr ""
+" --http-proxy-passwd=PASSWD Подеси HTTP proxy лозинку. Ово утиче на све URL-"
+"ове."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr ""
@@ -2346,19 +2402,6 @@ msgstr ""
 #~ msgstr ""
 #~ " --http-proxy=HOST:PORT Користи HTTP proxy сервер. Ово утиче на све URL-"
 #~ "ове."
-
-#~ msgid ""
-#~ " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
-#~ msgstr ""
-#~ " --http-proxy-user=USER Подеси HTTP proxy корисника. Ово утиче на све URL-"
-#~ "ове."
-
-#~ msgid ""
-#~ " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all "
-#~ "URLs."
-#~ msgstr ""
-#~ " --http-proxy-passwd=PASSWD Подеси HTTP proxy лозинку. Ово утиче на све "
-#~ "URL-ове."
 
 #~ msgid " -p, --ftp-pasv               Use passive mode in FTP."
 #~ msgstr " -p, --ftp-pasv Користи пасивни мод у FTP-у."

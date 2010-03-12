@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-03-10 00:09+0900\n"
+"POT-Creation-Date: 2010-03-13 00:38+0900\n"
 "PO-Revision-Date: 2010-01-27 08:21+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -60,49 +60,49 @@ msgstr "                              Ознаки: "
 msgid "                              Possible Values: "
 msgstr "                              Можливі значення: "
 
-#: src/OptionHandlerImpl.h:136
+#: src/OptionHandlerImpl.h:137
 msgid "must be either 'true' or 'false'."
 msgstr "має бути 'true' або 'false' (так чи ні)."
 
-#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
+#: src/OptionHandlerImpl.h:171 src/OptionHandlerImpl.h:220
 #, c-format
 msgid "must be between %s and %s."
 msgstr "має бути між %s та %s."
 
-#: src/OptionHandlerImpl.h:216
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "має бути менше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:222
+#: src/OptionHandlerImpl.h:223
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "має бути більше або дорівнювати %s."
 
-#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
+#: src/OptionHandlerImpl.h:226 src/OptionHandlerImpl.h:304
 msgid "must be a number."
 msgstr "має бути числом."
 
-#: src/OptionHandlerImpl.h:294
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "має бути менше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:297
+#: src/OptionHandlerImpl.h:298
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "має бути між %.1f та %.1f."
 
-#: src/OptionHandlerImpl.h:300
+#: src/OptionHandlerImpl.h:301
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "має бути більше або дорівнювати %.1f."
 
-#: src/OptionHandlerImpl.h:478
+#: src/OptionHandlerImpl.h:479
 msgid "must be one of the following:"
 msgstr "має бути одним із наступних:"
 
-#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
+#: src/OptionHandlerImpl.h:529 src/OptionHandlerImpl.h:664
 msgid "unrecognized proxy format"
 msgstr "невідомий формат проксі"
 
@@ -1774,6 +1774,41 @@ msgstr ""
 " --use-head[=true|false] Використовувати метод HEAD для першого запиту до "
 "HTTP\n"
 "                              серверу."
+
+#: src/usage_text.h:622
+#, fuzzy
+msgid " --all-proxy-user=USER        Set user for --all-proxy option."
+msgstr " --xml-rpc-user=USER Встановити XML-RPC користувача."
+
+#: src/usage_text.h:624
+#, fuzzy
+msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
+msgstr " --xml-rpc-passwd=PASSWD Вказати XML-RPC пароль."
+
+#: src/usage_text.h:626
+msgid " --http-proxy-user=USER       Set user for --http-proxy option."
+msgstr ""
+
+#: src/usage_text.h:628
+msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
+msgstr ""
+
+#: src/usage_text.h:630
+msgid " --https-proxy-user=USER      Set user for --https-proxy option."
+msgstr ""
+
+#: src/usage_text.h:632
+msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
+msgstr ""
+
+#: src/usage_text.h:634
+msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
+msgstr ""
+
+#: src/usage_text.h:636
+#, fuzzy
+msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
+msgstr " --ftp-passwd=PASSWD Задати FTP пароль. Це діє на усі URL."
 
 #: src/version_usage.cc:57
 msgid " version "

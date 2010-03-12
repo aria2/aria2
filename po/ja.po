@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-03-10 00:09+0900\n"
+"POT-Creation-Date: 2010-03-13 00:38+0900\n"
 "PO-Revision-Date: 2009-11-02 23:14+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -60,49 +60,49 @@ msgstr "                              タグ: "
 msgid "                              Possible Values: "
 msgstr "                              設定可能な値: "
 
-#: src/OptionHandlerImpl.h:136
+#: src/OptionHandlerImpl.h:137
 msgid "must be either 'true' or 'false'."
 msgstr "は, 'true' または 'false' のどちらかで指定してください."
 
-#: src/OptionHandlerImpl.h:170 src/OptionHandlerImpl.h:219
+#: src/OptionHandlerImpl.h:171 src/OptionHandlerImpl.h:220
 #, c-format
 msgid "must be between %s and %s."
 msgstr "は, %s と %s の間で指定してください."
 
-#: src/OptionHandlerImpl.h:216
+#: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "は, %s 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:222
+#: src/OptionHandlerImpl.h:223
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "は, %s 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:225 src/OptionHandlerImpl.h:303
+#: src/OptionHandlerImpl.h:226 src/OptionHandlerImpl.h:304
 msgid "must be a number."
 msgstr "は, 数字でなければなりません."
 
-#: src/OptionHandlerImpl.h:294
+#: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "は, %.1f 以下で指定してください."
 
-#: src/OptionHandlerImpl.h:297
+#: src/OptionHandlerImpl.h:298
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "は, %1.f と %.1f の間で指定してください."
 
-#: src/OptionHandlerImpl.h:300
+#: src/OptionHandlerImpl.h:301
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "は, %.1f 以上で指定してください."
 
-#: src/OptionHandlerImpl.h:478
+#: src/OptionHandlerImpl.h:479
 msgid "must be one of the following:"
 msgstr "は, 以下のいずれかを指定してください:"
 
-#: src/OptionHandlerImpl.h:528 src/OptionHandlerImpl.h:574
+#: src/OptionHandlerImpl.h:529 src/OptionHandlerImpl.h:664
 msgid "unrecognized proxy format"
 msgstr "サポートされていないプロキシーサーバーの指定形式です."
 
@@ -1937,6 +1937,44 @@ msgid ""
 msgstr ""
 " --use-head[=true|false]      HTTP サーバーへの最初のリクエストに HEAD を使い"
 "ます."
+
+#: src/usage_text.h:622
+#, fuzzy
+msgid " --all-proxy-user=USER        Set user for --all-proxy option."
+msgstr " --xml-rpc-user=USER          XML-RPC ユーザーを設定します."
+
+#: src/usage_text.h:624
+#, fuzzy
+msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
+msgstr " --xml-rpc-passwd=PASSWD      XML-RPC パスワードを設定します."
+
+#: src/usage_text.h:626
+msgid " --http-proxy-user=USER       Set user for --http-proxy option."
+msgstr ""
+
+#: src/usage_text.h:628
+msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
+msgstr ""
+
+#: src/usage_text.h:630
+msgid " --https-proxy-user=USER      Set user for --https-proxy option."
+msgstr ""
+
+#: src/usage_text.h:632
+msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
+msgstr ""
+
+#: src/usage_text.h:634
+msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
+msgstr ""
+
+#: src/usage_text.h:636
+#, fuzzy
+msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
+msgstr ""
+" --ftp-passwd=PASSWD          FTP での認証パスワードを指定します. このオプ"
+"ション\n"
+"                              はすべての URL に影響します."
 
 #: src/version_usage.cc:57
 msgid " version "
