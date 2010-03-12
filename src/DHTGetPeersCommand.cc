@@ -74,7 +74,7 @@ bool DHTGetPeersCommand::execute()
   }
   if(_task.isNull() &&
      ((_numRetry > 0 &&
-       _lastGetPeerTime.difference(global::wallclock) >= RETRY_INTERVAL) ||
+       _lastGetPeerTime.difference(global::wallclock) >= (time_t)_numRetry*5) ||
       _lastGetPeerTime.difference(global::wallclock) >= GET_PEER_INTERVAL)) {
     if(logger->debug()) {
       logger->debug("Issuing PeerLookup for infoHash=%s",

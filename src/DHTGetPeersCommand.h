@@ -54,8 +54,6 @@ class DHTGetPeersCommand:public Command {
 private:
   static const time_t GET_PEER_INTERVAL = (15*60);
 
-  static const time_t RETRY_INTERVAL = 60;
-
   static const size_t MAX_RETRIES = 10;
 
   RequestGroup* _requestGroup;

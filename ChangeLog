@@ -1,3 +1,12 @@
+2010-03-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Few adjustment for timeouts in DHT. DHT message timeout is changed
+	from 15 to 10. The interval of PeerLookup is first 5 seconds and
+	it adds another 5 seconds in each retry.
+	* src/DHTConstants.h
+	* src/DHTGetPeersCommand.cc
+	* src/DHTGetPeersCommand.h
+
 2010-03-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Changed log level from error to info for DHT message send error.
