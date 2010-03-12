@@ -863,25 +863,29 @@ BDE parseMagnet(const std::string& magnet)
   if(!r.containsKey("xt")) {
     throw DL_ABORT_EX("Missing xt parameter in Magnet URI.");
   }
+  std::string infoHash;
   const BDE& xts = r["xt"];
-  if(xts.size() == 0 || !util::startsWith(xts[0].s(), "urn:btih:")) {
-    throw DL_ABORT_EX("Bad BitTorrent Magnet URI.");
+  for(BDE::List::const_iterator xtiter = xts.listBegin(),
+        eoi = xts.listEnd(); xtiter != eoi && infoHash.empty(); ++xtiter) {
+    if(util::startsWith((*xtiter).s(), "urn:btih:")) {
+      std::string xtarg = (*xtiter).s().substr(9);
+      size_t size = xtarg.size();
+      if(size == 32) {
+        std::string rawhash = base32::decode(xtarg);
+        if(rawhash.size() == 20) {
+          infoHash.swap(rawhash);
+        }
+      } else if(size == 40) {
+        std::string rawhash = util::fromHex(xtarg);
+        if(!rawhash.empty()) {
+          infoHash.swap(rawhash);
+        }
+      }
+    }
   }
-  std::string infoHash = xts[0].s().substr(9);
-  if(infoHash.size() == 32) {
-    std::string rawhash = base32::decode(infoHash);
-    if(rawhash.size() != 20) {
-      throw DL_ABORT_EX("Invalid BitTorrent Info Hash.");
-    }
-    infoHash = rawhash;
-  } else if(infoHash.size() == 40) {
-    std::string rawhash = util::fromHex(infoHash);
-    if(rawhash.empty()) {
-      throw DL_ABORT_EX("Invalid BitTorrent Info Hash.");
-    }
-    infoHash = rawhash;
-  } else {
-    throw DL_ABORT_EX("Invalid BitTorrent Info Hash.");
+  if(infoHash.empty()) {
+    throw DL_ABORT_EX("Bad BitTorrent Magnet URI. "
+                      "No valid BitTorrent Info Hash found.");
   }
   BDE announceList = BDE::list();
   if(r.containsKey("tr")) {

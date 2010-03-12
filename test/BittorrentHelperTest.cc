@@ -729,6 +729,12 @@ void BittorrentHelperTest::testParseMagnet()
     (std::string("[METADATA]248d0a1cd08284299de78d5c1ed359bb46717d8c"),
      attrs[bittorrent::NAME].s());
   CPPUNIT_ASSERT(attrs[bittorrent::ANNOUNCE_LIST].size() == 0);
+
+  magnet = "magnet:?xt=urn:sha1:7899bdb90a026c746f3cbc10839dd9b2a2a3e985&"
+    "xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c";
+  attrs = bittorrent::parseMagnet(magnet);
+  CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
+                       util::toHex(attrs[bittorrent::INFO_HASH].s()));
 }
 
 void BittorrentHelperTest::testParseMagnet_base32()
