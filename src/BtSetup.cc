@@ -111,7 +111,8 @@ void BtSetup::setup(std::vector<Command*>& commands,
   }
   {
     ActivePeerConnectionCommand* c =
-      new ActivePeerConnectionCommand(e->newCUID(), requestGroup, e, 10);
+      new ActivePeerConnectionCommand(e->newCUID(), requestGroup, e,
+                                      metadataGetMode?2:10);
     c->setBtRuntime(btRuntime);
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);
