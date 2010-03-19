@@ -1047,6 +1047,8 @@ single line using the TAB character.
 Each line is treated as if it is provided in command-line argument.
 Therefore they are affected by *-Z* and *-P* options.
 
+Lines starting with "#" are treated as comments and skipped.
+
 Additionally, the following options can be specified after each line
 of URIs. These optional lines must start with white space(s).
 

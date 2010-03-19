@@ -1,5 +1,19 @@
 2010-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Lines starting "#" in -i list are treated as comments.
+	Example:
+	# this is comment
+	http://example.org/file
+	http://example.org/file2
+	  dir=/tmp
+	# another comment
+	  out=myfile
+	* doc/aria2c.1.txt
+	* src/UriListParser.cc
+	* test/filelist1.txt
+
+2010-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Accept IPv4 network address with CIDR block in --no-proxy option
 	and no_proxy environment variable.  Current implementation does
 	not resolve hostname in URI to compare network address. So it is

@@ -41,6 +41,7 @@
 #include "Option.h"
 #include "OptionHandlerFactory.h"
 #include "OptionHandler.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -57,6 +58,8 @@ void UriListParser::getOptions(Option& op)
   while(getline(_in, _line)) {
     if(util::startsWith(_line, " ")) {
       ss << _line << "\n";
+    } else if(util::startsWith(_line, A2STR::SHARP_C)) {
+      continue;
     } else {
       break;
     }
@@ -73,7 +76,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
     return;
   }
   do {
-    if(!util::trim(_line).empty()) {
+    if(!util::startsWith(_line, A2STR::SHARP_C) && !util::trim(_line).empty()) {
       util::split(_line, std::back_inserter(uris), "\t", true);
       getOptions(op);
       return;
