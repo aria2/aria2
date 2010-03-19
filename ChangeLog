@@ -1,5 +1,13 @@
 2010-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that value of numSeeders in aria2.tellStatus XML-RPC
+	method response is integer, while manual says it is string.  When
+	peer's port is not listening port, set '0' to port in
+	aria2.getPeers response.
+	* src/XmlRpcMethodImpl.cc
+
+2010-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Lines starting "#" in -i list are treated as comments.
 	Example:
 	# this is comment

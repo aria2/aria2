@@ -463,7 +463,8 @@ static void gatherProgressBitTorrent
 
     std::vector<SharedHandle<Peer> > peers;
     peerStorage->getActivePeers(peers);
-    entryDict[KEY_NUM_SEEDERS] = countSeeder(peers.begin(), peers.end());
+    entryDict[KEY_NUM_SEEDERS] =
+      util::uitos(countSeeder(peers.begin(), peers.end()));
   }
 }
 
@@ -477,7 +478,11 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
     peerEntry[KEY_PEER_ID] = util::torrentPercentEncode((*i)->getPeerId(),
                                                         PEER_ID_LENGTH);
     peerEntry[KEY_IP] = (*i)->ipaddr;
-    peerEntry[KEY_PORT] = util::uitos((*i)->port);
+    if((*i)->isIncomingPeer()) {
+      peerEntry[KEY_PORT] = std::string("0");
+    } else {
+      peerEntry[KEY_PORT] = util::uitos((*i)->port);
+    }
     peerEntry[KEY_BITFIELD] = util::toHex((*i)->getBitfield(),
                                           (*i)->getBitfieldLength());
     peerEntry[KEY_AM_CHOKING] = (*i)->amChoking()?BDE_TRUE:BDE_FALSE;
