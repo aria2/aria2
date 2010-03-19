@@ -75,6 +75,7 @@
 #include "A2STR.h"
 #include "array_fun.h"
 #include "a2functional.h"
+#include "bitfield.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -1261,6 +1262,39 @@ std::string escapePath(const std::string& s)
   std::string d = s;
   std::transform(d.begin(), d.end(), d.begin(), EscapePath('_'));
   return d;
+}
+
+bool getCidrPrefix(struct in_addr& in, const std::string& ip, int bits)
+{
+  struct in_addr t;
+  if(inet_aton(ip.c_str(), &t) == 0) {
+    return false;
+  }
+  int lastindex = bits/8;
+  if(lastindex < 4) {
+    char* p = reinterpret_cast<char*>(&t.s_addr);
+    const char* last = p+4;
+    p += lastindex;    
+    if(bits%8 != 0) {
+      *p &= bitfield::lastByteMask(bits);
+      ++p;
+    }
+    for(; p != last; ++p) {
+      *p &= 0;
+    }
+  }
+  in = t;
+  return true;
+}
+
+bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits)
+{
+  struct in_addr in1;
+  struct in_addr in2;
+  if(!getCidrPrefix(in1, ip1, bits) || !getCidrPrefix(in2, ip2, bits)) {
+    return false;
+  }
+  return in1.s_addr == in2.s_addr;
 }
 
 } // namespace util

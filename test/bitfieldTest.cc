@@ -56,6 +56,8 @@ void bitfieldTest::testCountSetBit()
 
 void bitfieldTest::testLastByteMask()
 {
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0,
+                       (unsigned int)bitfield::lastByteMask(0));
   CPPUNIT_ASSERT_EQUAL((unsigned int)128,
                        (unsigned int)bitfield::lastByteMask(9));
   CPPUNIT_ASSERT_EQUAL((unsigned int)240,

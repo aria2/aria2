@@ -63,6 +63,8 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsNumericHost);
   CPPUNIT_TEST(testDetectDirTraversal);
   CPPUNIT_TEST(testEscapePath);
+  CPPUNIT_TEST(testGetCidrPrefix);
+  CPPUNIT_TEST(testInSameCidrBlock);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -114,6 +116,8 @@ public:
   void testIsNumericHost();
   void testDetectDirTraversal();
   void testEscapePath();
+  void testGetCidrPrefix();
+  void testInSameCidrBlock();
 };
 
 
@@ -1062,6 +1066,36 @@ void UtilTest::testEscapePath()
 #else // !__MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("foo\\bar"), util::escapePath("foo\\bar"));
 #endif // !__MINGW32__
+}
+
+void UtilTest::testGetCidrPrefix()
+{
+  struct in_addr in;
+  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.0.1", 16));
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.0"), std::string(inet_ntoa(in)));
+
+  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.255.255", 17));
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.128.0"),std::string(inet_ntoa(in)));
+
+  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.128.1", 16));
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.0"), std::string(inet_ntoa(in)));
+
+  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.0.1", 32));
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), std::string(inet_ntoa(in)));
+
+  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.0.1", 0));
+  CPPUNIT_ASSERT_EQUAL(std::string("0.0.0.0"), std::string(inet_ntoa(in)));
+
+  CPPUNIT_ASSERT(util::getCidrPrefix(in, "10.10.1.44", 27));
+  CPPUNIT_ASSERT_EQUAL(std::string("10.10.1.32"), std::string(inet_ntoa(in)));
+
+  CPPUNIT_ASSERT(!util::getCidrPrefix(in, "::1", 32));
+}
+
+void UtilTest::testInSameCidrBlock()
+{
+  CPPUNIT_ASSERT(util::inSameCidrBlock("192.168.128.1", "192.168.0.1", 16));
+  CPPUNIT_ASSERT(!util::inSameCidrBlock("192.168.128.1", "192.168.0.1", 17));
 }
 
 } // namespace aria2

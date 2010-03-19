@@ -51,7 +51,11 @@ namespace bitfield {
 // then 0x80 is returned. nbits = 12, then 0xf0 is returned.
 inline unsigned char lastByteMask(size_t nbits)
 {
-  return -256 >> (8-((nbits+7)/8*8-nbits));
+  if(nbits == 0) {
+    return 0;
+  } else {
+    return -256 >> (8-((nbits+7)/8*8-nbits));
+  }
 }
 
 // Returns true if index-th bits is set. Otherwise returns false.

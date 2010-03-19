@@ -971,7 +971,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_NO_PROXY,
-                                    TEXT_NO_PROXY));
+                                    TEXT_NO_PROXY,
+                                    NO_DEFAULT_VALUE,
+                                    "HOSTNAME,DOMAIN,NETWORK/CIDR"));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);

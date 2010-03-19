@@ -480,7 +480,8 @@
   _(" --check-certificate[=true|false] Verify the peer using certificates specified\n" \
     "                              in --ca-certificate option.")
 #define TEXT_NO_PROXY                                                   \
-  _(" --no-proxy=DOMAINS           Specify comma separated hostnames or domains where\n" \
+  _(" --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n" \
+    "                              network address with or without CIDR block where\n" \
     "                              proxy should not be used.")
 #define TEXT_USE_HEAD                                                   \
   _(" --use-head[=true|false]      Use HEAD method for the first request to the HTTP\n" \

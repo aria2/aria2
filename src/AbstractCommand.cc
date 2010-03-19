@@ -448,9 +448,33 @@ static bool inNoProxy(const SharedHandle<Request>& req,
   if(entries.empty()) {
     return false;
   }
-  return
-    std::find_if(entries.begin(), entries.end(),
-                 DomainMatch(A2STR::DOT_C+req->getHost())) != entries.end();
+  DomainMatch domainMatch(A2STR::DOT_C+req->getHost());
+  for(std::vector<std::string>::const_iterator i = entries.begin(),
+        eoi = entries.end(); i != eoi; ++i) {
+    std::string::size_type slashpos = (*i).find('/');
+    if(slashpos == std::string::npos) {
+      if(domainMatch(*i)) {
+        return true;
+      }
+    } else {
+      if(!util::isNumericHost(req->getHost())) {
+        // TODO We don't resolve hostname here.  More complete
+        // implementation is that we should first resolve
+        // hostname(which may result in several IP addresses) and
+        // evaluates against all of them
+        continue;
+      }
+      std::string ip = (*i).substr(0, slashpos);
+      uint32_t bits;
+      if(!util::parseUIntNoThrow(bits, (*i).substr(slashpos+1))) {
+        continue;
+      }
+      if(util::inSameCidrBlock(ip, req->getHost(), bits)) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 bool AbstractCommand::isProxyDefined() const

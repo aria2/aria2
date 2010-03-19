@@ -793,10 +793,23 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </dt>
 <dd>
 <p>
-  Specify comma separated hostnames or domains where proxy should not be
-  used.
+  Specify comma separated hostnames, domains and network address with
+  or without CIDR block where proxy should not be used.
 </p>
 </dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">For network address with CIDR block, only IPv4 address works.  Current
+implementation does not resolve hostname in URI to compare network
+address specified in <strong>--no-proxy</strong>. So it is only effecive if URI has
+numeric IP addresses.</td>
+</tr></table>
+</div>
+<div class="dlist"><dl>
 <dt class="hdlist1">
 <strong>-o</strong>, <strong>--out</strong>=FILE
 </dt>
@@ -2281,9 +2294,10 @@ no_proxy [DOMAIN,&#8230;]
 </dt>
 <dd>
 <p>
-  Specify comma-separated hostname or domains to which proxy should not be used.
-  Overrides no-proxy value in configuration file.
-  The command-line option <strong>--no-proxy</strong> overrides this value.
+  Specify comma-separated hostname, domains and network address with
+  or without CIDR block to which proxy should not be used.  Overrides
+  no-proxy value in configuration file.  The command-line option
+  <strong>--no-proxy</strong> overrides this value.
 </p>
 </dd>
 </dl></div>
@@ -3621,6 +3635,10 @@ pprint(r)</tt></pre>
 <div class="content">
 <pre><tt>aria2c --http-proxy="http://proxy:8080" "http://host/file"</tt></pre>
 </div></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --http-proxy="http://proxy:8080" --no-proxy="localhost,127.0.0.1,192.168.0.0/16" "http://host/file"</tt></pre>
+</div></div>
 <div class="paragraph"><p>For FTP:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -3631,9 +3649,9 @@ pprint(r)</tt></pre>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">See <strong>--http-proxy</strong>, <strong>--https-proxy</strong>, <strong>--ftp-proxy</strong> and <strong>--all-proxy</strong> for
-details.
-You can specify proxy in the environment variables. See <strong>ENVIRONMENT</strong> section.</td>
+<td class="content">See <strong>--http-proxy</strong>, <strong>--https-proxy</strong>, <strong>--ftp-proxy</strong>, <strong>--all-proxy</strong> and
+<strong>--no-proxy</strong> for details.  You can specify proxy in the environment
+variables. See <strong>ENVIRONMENT</strong> section.</td>
 </tr></table>
 </div>
 <h4 id="_proxy_with_authorization">Proxy with authorization</h4>
@@ -3965,7 +3983,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-13 00:35:15 JST
+Last updated 2010-03-19 17:37:54 JST
 </div>
 </div>
 </body>

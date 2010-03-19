@@ -382,6 +382,13 @@ bool detectDirTraversal(const std::string& s);
 // '_': '"', '*', ':', '<', '>', '?', '\', '|'.
 std::string escapePath(const std::string& s);
 
+// Stores network address of numeric IPv4 address ip using CIDR bits
+// into in.  On success, returns true. Otherwise returns false.
+bool getCidrPrefix(struct in_addr& in, const std::string& ip, int bits);
+
+// Returns true if ip1 and ip2 are in the same CIDR block.
+bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits);
+
 } // namespace util
 
 } // namespace aria2

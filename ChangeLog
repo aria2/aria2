@@ -1,5 +1,21 @@
 2010-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Accept IPv4 network address with CIDR block in --no-proxy option
+	and no_proxy environment variable.  Current implementation does
+	not resolve hostname in URI to compare network address. So it is
+	only effecive if URI has numeric IP addresses.
+	* doc/aria2c.1.txt
+	* src/AbstractCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/bitfield.h
+	* src/usage_text.h
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+	* test/bitfieldTest.cc
+
+2010-03-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reduced interval for metadatagetmode to quickly gather metadata.
 	* src/BtSetup.cc
 

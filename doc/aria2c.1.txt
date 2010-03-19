@@ -3,7 +3,7 @@ ARIA2C(1)
 Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
 :man source: Aria2
 :man manual: Aria2 Manual
-:man version: 1.9.0
+:man version: 1.9.1a
 
 NAME
 ----
@@ -144,8 +144,14 @@ then you get HTTP proxy "http://proxy" with user "user" and password
   Disables netrc support. netrc support is enabled by default.
 
 *--no-proxy*=DOMAINS::
-  Specify comma separated hostnames or domains where proxy should not be
-  used.
+  Specify comma separated hostnames, domains and network address with
+  or without CIDR block where proxy should not be used.
+
+[NOTE]
+For network address with CIDR block, only IPv4 address works.  Current
+implementation does not resolve hostname in URI to compare network
+address specified in *--no-proxy*. So it is only effecive if URI has
+numeric IP addresses.
 
 *-o*, *--out*=FILE::
 
@@ -973,9 +979,11 @@ all_proxy [\http://][USER:PASSWORD@]HOST[:PORT]::
   The command-line option *--all-proxy* overrides this value.
 
 no_proxy [DOMAIN,...]::
-  Specify comma-separated hostname or domains to which proxy should not be used.
-  Overrides no-proxy value in configuration file.
-  The command-line option *--no-proxy* overrides this value.
+
+  Specify comma-separated hostname, domains and network address with
+  or without CIDR block to which proxy should not be used.  Overrides
+  no-proxy value in configuration file.  The command-line option
+  *--no-proxy* overrides this value.
 
 FILES
 -----
@@ -1798,15 +1806,20 @@ For HTTP:
 ----------------------------------------------------------
 aria2c --http-proxy="http://proxy:8080" "http://host/file"
 ----------------------------------------------------------
+----------------------------------------------------------
+aria2c --http-proxy="http://proxy:8080" --no-proxy="localhost,127.0.0.1,192.168.0.0/16" "http://host/file"
+----------------------------------------------------------
+
 For FTP:
 --------------------------------------------------------
 aria2c --ftp-proxy="http://proxy:8080" "ftp://host/file"
 --------------------------------------------------------
 
 [NOTE]
-See *--http-proxy*, *--https-proxy*, *--ftp-proxy* and *--all-proxy* for
-details.
-You can specify proxy in the environment variables. See *ENVIRONMENT* section.
+
+See *--http-proxy*, *--https-proxy*, *--ftp-proxy*, *--all-proxy* and
+*--no-proxy* for details.  You can specify proxy in the environment
+variables. See *ENVIRONMENT* section.
 
 Proxy with authorization
 ^^^^^^^^^^^^^^^^^^^^^^^^
