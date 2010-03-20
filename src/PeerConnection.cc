@@ -51,7 +51,7 @@
 
 namespace aria2 {
 
-PeerConnection::PeerConnection(int32_t cuid, const SocketHandle& socket)
+PeerConnection::PeerConnection(cuid_t cuid, const SocketHandle& socket)
 
   :cuid(cuid),
    socket(socket),

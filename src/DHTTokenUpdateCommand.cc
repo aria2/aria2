@@ -43,7 +43,7 @@
 
 namespace aria2 {
 
-DHTTokenUpdateCommand::DHTTokenUpdateCommand(int32_t cuid,
+DHTTokenUpdateCommand::DHTTokenUpdateCommand(cuid_t cuid,
                                              DownloadEngine* e,
                                              time_t interval):
   TimeBasedCommand(cuid, e, interval) {}

@@ -39,6 +39,8 @@
 
 #include <deque>
 
+#include "Command.h"
+
 namespace aria2 {
 
 class PieceStorage;
@@ -50,7 +52,7 @@ class Logger;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<Peer> peer;
   WeakHandle<BtMessageDispatcher> dispatcher;
@@ -91,7 +93,7 @@ public:
     return pieces;
   }
 
-  void setCuid(int32_t cuid)
+  void setCuid(cuid_t cuid)
   {
     this->cuid = cuid;
   }

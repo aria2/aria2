@@ -52,7 +52,7 @@ private:
   SharedHandle<BtRuntime> _btRuntime;
 public:
   LpdDispatchMessageCommand
-  (int cuid,
+  (cuid_t cuid,
    const SharedHandle<LpdMessageDispatcher>& dispatcher,
    DownloadEngine* e);
 

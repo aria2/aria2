@@ -41,6 +41,7 @@
 
 #include "SharedHandle.h"
 #include "SocketBuffer.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -55,7 +56,7 @@ class ARC4Decryptor;
 
 class PeerConnection {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   SharedHandle<SocketCore> socket;
   Logger* logger;
 
@@ -78,7 +79,7 @@ private:
   ssize_t sendData(const unsigned char* data, size_t length, bool encryption);
 
 public:
-  PeerConnection(int32_t cuid, const SharedHandle<SocketCore>& socket);
+  PeerConnection(cuid_t cuid, const SharedHandle<SocketCore>& socket);
 
   ~PeerConnection();
 

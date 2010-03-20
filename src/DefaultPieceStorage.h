@@ -54,15 +54,15 @@ class PieceSelector;
 
 class HaveEntry {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   size_t index;
   Time registeredTime;
 public:
-  HaveEntry(int32_t cuid, size_t index):
+  HaveEntry(cuid_t cuid, size_t index):
     cuid(cuid),
     index(index) {}
 
-  int32_t getCuid() const { return cuid; }
+  cuid_t getCuid() const { return cuid; }
 
   size_t getIndex() const { return index; }
 
@@ -191,11 +191,11 @@ public:
 
   virtual size_t getPieceLength(size_t index);
 
-  virtual void advertisePiece(int32_t cuid, size_t index);
+  virtual void advertisePiece(cuid_t cuid, size_t index);
 
   virtual void
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
-                            int32_t myCuid, const Time& lastCheckTime);
+                            cuid_t myCuid, const Time& lastCheckTime);
 
   virtual void removeAdvertisedPiece(time_t elapsed);
 

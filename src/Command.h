@@ -60,7 +60,7 @@ private:
   static int32_t uuidGen;
   STATUS status;
 protected:
-  int32_t cuid;
+  cuid_t cuid;
   Logger* logger;
 
   bool _readEvent;

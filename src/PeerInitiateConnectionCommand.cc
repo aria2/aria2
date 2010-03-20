@@ -52,7 +52,7 @@
 namespace aria2 {
 
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand
-(int cuid,
+(cuid_t cuid,
  RequestGroup* requestGroup,
  const SharedHandle<Peer>& peer,
  DownloadEngine* e,

@@ -54,7 +54,7 @@
 namespace aria2 {
 
 ActivePeerConnectionCommand::ActivePeerConnectionCommand
-(int cuid,
+(cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
  time_t interval)

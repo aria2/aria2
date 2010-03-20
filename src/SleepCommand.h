@@ -51,7 +51,7 @@ private:
   time_t wait;
   Time checkPoint;
 public:
-  SleepCommand(int32_t cuid, DownloadEngine* e, RequestGroup* requestGroup,
+  SleepCommand(cuid_t cuid, DownloadEngine* e, RequestGroup* requestGroup,
                Command* nextCommand, time_t wait);
   virtual ~SleepCommand();
   bool execute();

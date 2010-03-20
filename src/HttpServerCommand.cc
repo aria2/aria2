@@ -51,7 +51,7 @@
 
 namespace aria2 {
 
-HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
+HttpServerCommand::HttpServerCommand(cuid_t cuid, DownloadEngine* e,
                                      const SharedHandle<SocketCore>& socket):
   Command(cuid),
   _e(e),
@@ -69,7 +69,7 @@ HttpServerCommand::HttpServerCommand(int32_t cuid, DownloadEngine* e,
 #endif // !HAVE_LIBZ
 }
 
-HttpServerCommand::HttpServerCommand(int32_t cuid,
+HttpServerCommand::HttpServerCommand(cuid_t cuid,
                                      const SharedHandle<HttpServer>& httpServer,
                                      DownloadEngine* e,
                                      const SharedHandle<SocketCore>& socket):

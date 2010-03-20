@@ -57,7 +57,7 @@
 namespace aria2 {
 
 InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
-(int32_t cuid,
+(cuid_t cuid,
  RequestGroup* requestGroup,
  const SharedHandle<Peer>& p,
  DownloadEngine* e,

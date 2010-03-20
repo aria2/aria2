@@ -36,6 +36,7 @@
 #define _D_ABSTRACT_BT_MESSAGE_H_
 
 #include "BtMessage.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -53,7 +54,7 @@ protected:
   bool sendingInProgress;
   bool invalidate;
   bool uploading;
-  int32_t cuid;
+  cuid_t cuid;
 
   std::string _name;
 
@@ -103,11 +104,11 @@ public:
     this->uploading = uploading;
   }
 
-  int32_t getCuid() const {
+  cuid_t getCuid() const {
     return cuid;
   }
 
-  void setCuid(int32_t cuid) {
+  void setCuid(cuid_t cuid) {
     this->cuid = cuid;
   }
 

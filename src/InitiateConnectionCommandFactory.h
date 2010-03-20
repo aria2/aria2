@@ -37,19 +37,19 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "Command.h"
 
 namespace aria2 {
 
 class Request;
 class RequestGroup;
 class DownloadEngine;
-class Command;
 class FileEntry;
 
 class InitiateConnectionCommandFactory {
 public:
   static Command*
-  createInitiateConnectionCommand(int32_t cuid,
+  createInitiateConnectionCommand(cuid_t cuid,
                                   const SharedHandle<Request>& req,
                                   const SharedHandle<FileEntry>& fileEntry,
                                   RequestGroup* requestGroup,

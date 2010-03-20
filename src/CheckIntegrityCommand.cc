@@ -46,7 +46,7 @@
 namespace aria2 {
 
 CheckIntegrityCommand::CheckIntegrityCommand
-(int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
+(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
  const SharedHandle<CheckIntegrityEntry>& entry):
   RealtimeCommand(cuid, requestGroup, e),
   _entry(entry)

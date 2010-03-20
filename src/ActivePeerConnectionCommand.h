@@ -62,7 +62,7 @@ private:
   Time checkPoint;
   unsigned int _numNewConnection; // the number of the connection to establish.
 public:
-  ActivePeerConnectionCommand(int cuid,
+  ActivePeerConnectionCommand(cuid_t cuid,
                               RequestGroup* requestGroup,
                               DownloadEngine* e,
                               time_t interval);

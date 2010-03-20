@@ -46,7 +46,7 @@ class DHTTokenUpdateCommand:public TimeBasedCommand {
 private:
   SharedHandle<DHTTokenTracker> _tokenTracker;
 public:
-  DHTTokenUpdateCommand(int32_t cuid, DownloadEngine* e, time_t interval);
+  DHTTokenUpdateCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~DHTTokenUpdateCommand();
 

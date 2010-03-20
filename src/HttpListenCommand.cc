@@ -47,7 +47,7 @@
 
 namespace aria2 {
 
-HttpListenCommand::HttpListenCommand(int32_t cuid, DownloadEngine* e):
+HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e):
   Command(cuid),_e(e) {}
 
 HttpListenCommand::~HttpListenCommand()

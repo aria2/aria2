@@ -45,7 +45,7 @@
 namespace aria2 {
 
 SeedCheckCommand::SeedCheckCommand
-(int cuid,
+(cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
  const SharedHandle<SeedCriteria>& seedCriteria)

@@ -42,6 +42,7 @@
 
 #include "SharedHandle.h"
 #include "SocketBuffer.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -78,7 +79,7 @@ typedef std::deque<HttpRequestEntryHandle> HttpRequestEntries;
 
 class HttpConnection {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   SharedHandle<SocketCore> socket;
   SocketBuffer _socketBuffer;
   const Option* option;
@@ -88,7 +89,7 @@ private:
 
   std::string eraseConfidentialInfo(const std::string& request);
 public:
-  HttpConnection(int32_t cuid,
+  HttpConnection(cuid_t cuid,
                  const SharedHandle<SocketCore>& socket,
                  const Option* op);
 

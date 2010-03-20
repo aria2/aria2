@@ -49,7 +49,7 @@ private:
 protected:
   virtual bool prepareForNextSegment();
 public:
-  FtpDownloadCommand(int cuid,
+  FtpDownloadCommand(cuid_t cuid,
                      const SharedHandle<Request>& req,
                      const SharedHandle<FileEntry>& fileEntry,
                      RequestGroup* requestGroup,

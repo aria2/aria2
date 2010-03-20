@@ -60,7 +60,7 @@
 namespace aria2 {
 
 PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
-(int32_t cuid,
+(cuid_t cuid,
  const SharedHandle<Peer>& peer,
  DownloadEngine* e,
  const SocketHandle& s,

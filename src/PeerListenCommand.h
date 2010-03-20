@@ -55,7 +55,7 @@ private:
   static PeerListenCommand* __instance;
 
 public:
-  PeerListenCommand(int32_t cuid, DownloadEngine* e);
+  PeerListenCommand(cuid_t cuid, DownloadEngine* e);
 
   virtual ~PeerListenCommand();
   

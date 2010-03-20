@@ -50,7 +50,7 @@
 namespace aria2 {
 
 AbstractProxyRequestCommand::AbstractProxyRequestCommand
-(int cuid,
+(cuid_t cuid,
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,

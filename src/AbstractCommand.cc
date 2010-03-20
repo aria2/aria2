@@ -68,7 +68,7 @@
 
 namespace aria2 {
 
-AbstractCommand::AbstractCommand(int32_t cuid,
+AbstractCommand::AbstractCommand(cuid_t cuid,
                                  const SharedHandle<Request>& req,
                                  const SharedHandle<FileEntry>& fileEntry,
                                  RequestGroup* requestGroup,

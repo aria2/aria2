@@ -76,7 +76,7 @@ static SharedHandle<Decoder> getContentEncodingDecoder
 (const SharedHandle<HttpResponse>& httpResponse);
 
 HttpResponseCommand::HttpResponseCommand
-(int32_t cuid,
+(cuid_t cuid,
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,

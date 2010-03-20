@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-PeerChokeCommand::PeerChokeCommand(int32_t cuid,
+PeerChokeCommand::PeerChokeCommand(cuid_t cuid,
                                    DownloadEngine* e):
   Command(cuid),
   e(e) {}

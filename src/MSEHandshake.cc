@@ -64,7 +64,7 @@ const unsigned char* MSEHandshake::GENERATOR = reinterpret_cast<const unsigned c
 
 const unsigned char MSEHandshake::VC[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-MSEHandshake::MSEHandshake(int32_t cuid,
+MSEHandshake::MSEHandshake(cuid_t cuid,
                            const SocketHandle& socket,
                            const Option* op):
   _cuid(cuid),

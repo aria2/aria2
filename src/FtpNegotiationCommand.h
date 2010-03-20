@@ -126,7 +126,7 @@ private:
 protected:
   virtual bool executeInternal();
 public:
-  FtpNegotiationCommand(int32_t cuid,
+  FtpNegotiationCommand(cuid_t cuid,
                         const SharedHandle<Request>& req,
                         const SharedHandle<FileEntry>& fileEntry,
                         RequestGroup* requestGroup,

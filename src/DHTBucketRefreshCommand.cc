@@ -43,7 +43,8 @@
 
 namespace aria2 {
 
-DHTBucketRefreshCommand::DHTBucketRefreshCommand(int32_t cuid, DownloadEngine* e, time_t interval):
+DHTBucketRefreshCommand::DHTBucketRefreshCommand
+(cuid_t cuid, DownloadEngine* e, time_t interval):
   TimeBasedCommand(cuid, e, interval) {}
 
 DHTBucketRefreshCommand::~DHTBucketRefreshCommand() {}

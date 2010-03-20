@@ -42,7 +42,7 @@
 namespace aria2 {
 
 FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
-(int32_t cuid,
+(cuid_t cuid,
  const SharedHandle<FileAllocationMan>& fileAllocMan,
  DownloadEngine* e):SequentialDispatcherCommand<FileAllocationEntry>
                     (cuid, fileAllocMan, e) {}
@@ -50,7 +50,7 @@ FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
 Command* FileAllocationDispatcherCommand::createCommand
 (const SharedHandle<FileAllocationEntry>& entry)
 {
-  int32_t newCUID = _e->newCUID();
+  cuid_t newCUID = _e->newCUID();
   logger->info(MSG_FILE_ALLOCATION_DISPATCH, newCUID);
   FileAllocationCommand* command =
     new FileAllocationCommand(newCUID, entry->getRequestGroup(), _e, entry);

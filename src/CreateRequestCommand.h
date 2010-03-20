@@ -41,7 +41,7 @@ namespace aria2 {
 
 class CreateRequestCommand:public AbstractCommand {
 public:
-  CreateRequestCommand(int32_t cuid,
+  CreateRequestCommand(cuid_t cuid,
                        RequestGroup* requestGroup,
                        DownloadEngine* e);
 protected:

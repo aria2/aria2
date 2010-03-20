@@ -52,7 +52,7 @@ protected:
   virtual bool exitBeforeExecute();
 public:
   PeerReceiveHandshakeCommand
-  (int32_t cuid,
+  (cuid_t cuid,
    const SharedHandle<Peer>& peer,
    DownloadEngine* e,
    const SharedHandle<SocketCore>& s,

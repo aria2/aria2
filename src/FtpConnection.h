@@ -43,6 +43,7 @@
 #include "SharedHandle.h"
 #include "TimeA2.h"
 #include "SocketBuffer.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -55,7 +56,7 @@ class AuthConfig;
 
 class FtpConnection {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   SharedHandle<SocketCore> socket;
   SharedHandle<Request> req;
 
@@ -82,7 +83,7 @@ private:
   //prepare for large banners
   static const size_t MAX_RECV_BUFFER = 65536;
 public:
-  FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
+  FtpConnection(cuid_t cuid, const SharedHandle<SocketCore>& socket,
                 const SharedHandle<Request>& req,
                 const SharedHandle<AuthConfig>& authConfig,
                 const Option* op);

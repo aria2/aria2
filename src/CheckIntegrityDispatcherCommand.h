@@ -46,7 +46,7 @@ class CheckIntegrityDispatcherCommand :
     public SequentialDispatcherCommand<CheckIntegrityEntry> {
 public:
   CheckIntegrityDispatcherCommand
-  (int32_t cuid,
+  (cuid_t cuid,
    const SharedHandle<CheckIntegrityMan>& checkMan,
    DownloadEngine* e);
 protected:

@@ -43,7 +43,7 @@ class SocketCore;
 
 class FtpTunnelRequestCommand : public AbstractProxyRequestCommand {
 public:
-  FtpTunnelRequestCommand(int cuid,
+  FtpTunnelRequestCommand(cuid_t cuid,
                           const SharedHandle<Request>& req,
                           const SharedHandle<FileEntry>& fileEntry,
                           RequestGroup* requestGroup,

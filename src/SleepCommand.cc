@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e,
+SleepCommand::SleepCommand(cuid_t cuid, DownloadEngine* e,
                            RequestGroup* requestGroup,
                            Command* nextCommand, time_t wait):
   Command(cuid), engine(e), _requestGroup(requestGroup),

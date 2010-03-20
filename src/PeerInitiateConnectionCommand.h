@@ -62,7 +62,7 @@ protected:
   virtual bool exitBeforeExecute();
 
 public:
-  PeerInitiateConnectionCommand(int cuid,
+  PeerInitiateConnectionCommand(cuid_t cuid,
                                 RequestGroup* requestGroup,
                                 const SharedHandle<Peer>& peer,
                                 DownloadEngine* e,

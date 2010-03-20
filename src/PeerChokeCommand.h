@@ -52,7 +52,7 @@ private:
 
   SharedHandle<BtRuntime> _btRuntime;
 public:
-  PeerChokeCommand(int32_t cuid,
+  PeerChokeCommand(cuid_t cuid,
                    DownloadEngine* e);
 
   virtual ~PeerChokeCommand();

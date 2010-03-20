@@ -52,7 +52,7 @@ private:
 
   SharedHandle<DHTTaskFactory> _taskFactory;
 public:
-  DHTBucketRefreshCommand(int32_t cuid, DownloadEngine* e, time_t interval);
+  DHTBucketRefreshCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~DHTBucketRefreshCommand();
 

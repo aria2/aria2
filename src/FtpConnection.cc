@@ -62,7 +62,7 @@ const std::string FtpConnection::A("A");
 
 const std::string FtpConnection::I("I");
 
-FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
+FtpConnection::FtpConnection(cuid_t cuid, const SocketHandle& socket,
                              const SharedHandle<Request>& req,
                              const SharedHandle<AuthConfig>& authConfig,
                              const Option* op):

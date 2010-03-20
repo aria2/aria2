@@ -56,7 +56,7 @@ private:
   SharedHandle<SocketCore> _readCheckSocket;
 
 public:
-  DHTInteractionCommand(int32_t cuid, DownloadEngine* e);
+  DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
 
   virtual ~DHTInteractionCommand();
 

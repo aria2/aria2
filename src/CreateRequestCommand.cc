@@ -49,7 +49,7 @@
 
 namespace aria2 {
 
-CreateRequestCommand::CreateRequestCommand(int32_t cuid,
+CreateRequestCommand::CreateRequestCommand(cuid_t cuid,
                                            RequestGroup* requestGroup,
                                            DownloadEngine* e):
   AbstractCommand

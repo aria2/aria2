@@ -42,6 +42,7 @@
 #include "SharedHandle.h"
 #include "BtConstants.h"
 #include "SocketBuffer.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -80,7 +81,7 @@ private:
 
   static const size_t MAX_BUFFER_LENGTH = 6*1024;
 
-  int32_t _cuid;
+  cuid_t _cuid;
   SharedHandle<SocketCore> _socket;
   const Option* _option;
   Logger* _logger;
@@ -132,7 +133,7 @@ private:
   size_t receiveNBytes(size_t bytes);
 
 public:
-  MSEHandshake(int32_t cuid, const SharedHandle<SocketCore>& socket,
+  MSEHandshake(cuid_t cuid, const SharedHandle<SocketCore>& socket,
                const Option* op);
 
   ~MSEHandshake();

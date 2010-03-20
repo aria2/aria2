@@ -48,7 +48,7 @@ private:
   SharedHandle<CheckIntegrityEntry> _entry;
   Time _timer;
 public:
-  CheckIntegrityCommand(int32_t cuid,
+  CheckIntegrityCommand(cuid_t cuid,
                         RequestGroup* requestGroup,
                         DownloadEngine* e,
                         const SharedHandle<CheckIntegrityEntry>& entry);

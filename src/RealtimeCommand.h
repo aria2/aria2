@@ -48,7 +48,7 @@ protected:
   RequestGroup* _requestGroup;
   DownloadEngine* _e;
 public:
-  RealtimeCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e);
+  RealtimeCommand(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e);
 
   virtual ~RealtimeCommand();
 

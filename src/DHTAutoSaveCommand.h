@@ -52,7 +52,7 @@ private:
 
   void save();
 public:
-  DHTAutoSaveCommand(int32_t cuid, DownloadEngine* e, time_t interval);
+  DHTAutoSaveCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~DHTAutoSaveCommand();
 

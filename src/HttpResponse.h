@@ -41,6 +41,7 @@
 
 #include "SharedHandle.h"
 #include "TimeA2.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -51,7 +52,7 @@ class Decoder;
 
 class HttpResponse {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   SharedHandle<HttpRequest> httpRequest;
   SharedHandle<HttpHeader> httpHeader;
   Logger* logger;
@@ -116,7 +117,7 @@ public:
     return httpRequest;
   }
 
-  void setCuid(int32_t cuid)
+  void setCuid(cuid_t cuid)
   {
     this->cuid = cuid;
   }

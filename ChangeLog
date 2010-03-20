@@ -1,5 +1,9 @@
 2010-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use cuid_t type for cuid.
+
+2010-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added v key in DHT message. aria2's DHT version is independent of
 	the package version and we defined it as 1 at the moment. It is
 	defined as DHT_VERSION in src/DHTConstants.h. aria2's DHT version

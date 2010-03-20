@@ -67,7 +67,7 @@ protected:
   virtual bool executeInternal();
   virtual bool exitBeforeExecute();
 public:
-  ReceiverMSEHandshakeCommand(int32_t cuid,
+  ReceiverMSEHandshakeCommand(cuid_t cuid,
                               const SharedHandle<Peer>& peer,
                               DownloadEngine* e,
                               const SharedHandle<SocketCore>& s);

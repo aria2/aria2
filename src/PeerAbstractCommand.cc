@@ -47,7 +47,7 @@
 
 namespace aria2 {
 
-PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
+PeerAbstractCommand::PeerAbstractCommand(cuid_t cuid,
                                          const SharedHandle<Peer>& peer,
                                          DownloadEngine* e,
                                          const SocketHandle& s):

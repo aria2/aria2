@@ -47,6 +47,7 @@
 #include "BtConstants.h"
 #include "PeerStat.h"
 #include "a2functional.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -63,7 +64,7 @@ public:
 private:
   std::string id;
 
-  int32_t _cuid;
+  cuid_t _cuid;
 
   unsigned char _peerId[PEER_ID_LENGTH];
 
@@ -102,9 +103,9 @@ public:
 
   void resetStatus();
 
-  void usedBy(int32_t cuid);
+  void usedBy(cuid_t cuid);
 
-  int32_t usedBy() const
+  cuid_t usedBy() const
   {
     return _cuid;
   }

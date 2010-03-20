@@ -535,7 +535,7 @@ size_t DefaultPieceStorage::getPieceLength(size_t index)
   return bitfieldMan->getBlockLength(index);
 }
 
-void DefaultPieceStorage::advertisePiece(int32_t cuid, size_t index)
+void DefaultPieceStorage::advertisePiece(cuid_t cuid, size_t index)
 {
   HaveEntry entry(cuid, index);
   haves.push_front(entry);
@@ -543,7 +543,7 @@ void DefaultPieceStorage::advertisePiece(int32_t cuid, size_t index)
 
 void
 DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
-                                               int32_t myCuid,
+                                               cuid_t myCuid,
                                                const Time& lastCheckTime)
 {
   for(std::deque<HaveEntry>::const_iterator itr = haves.begin(),

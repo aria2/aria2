@@ -74,7 +74,7 @@ protected:
   virtual void onFailure();
   virtual bool exitBeforeExecute();
 public:
-  PeerInteractionCommand(int32_t cuid,
+  PeerInteractionCommand(cuid_t cuid,
                          RequestGroup* requestGroup,
                          const SharedHandle<Peer>& peer,
                          DownloadEngine* e,

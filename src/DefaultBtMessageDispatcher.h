@@ -40,6 +40,7 @@
 #include <deque>
 
 #include "a2time.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -55,7 +56,7 @@ class RequestGroupMan;
 
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   std::deque<SharedHandle<BtMessage> > messageQueue;
   std::deque<RequestSlot> requestSlots;
   SharedHandle<DownloadContext> _downloadContext;
@@ -133,7 +134,8 @@ public:
 
   void setRequestGroupMan(const WeakHandle<RequestGroupMan>& rgman);
 
-  void setCuid(int32_t cuid) {
+  void setCuid(cuid_t cuid)
+  {
     this->cuid = cuid;
   }
 

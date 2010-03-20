@@ -44,7 +44,7 @@
 namespace aria2 {
 
 LpdDispatchMessageCommand::LpdDispatchMessageCommand
-(int cuid,
+(cuid_t cuid,
  const SharedHandle<LpdMessageDispatcher>& dispatcher,
  DownloadEngine* e):
   Command(cuid),

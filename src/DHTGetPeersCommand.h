@@ -74,7 +74,7 @@ private:
 
   Time _lastGetPeerTime;
 public:
-  DHTGetPeersCommand(int32_t cuid, RequestGroup* requestGroup,
+  DHTGetPeersCommand(cuid_t cuid, RequestGroup* requestGroup,
                      DownloadEngine* e);
 
   virtual ~DHTGetPeersCommand();

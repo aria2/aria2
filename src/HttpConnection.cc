@@ -65,7 +65,7 @@ HttpRequestEntry::HttpRequestEntry
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
-HttpConnection::HttpConnection(int32_t cuid,
+HttpConnection::HttpConnection(cuid_t cuid,
                                const SocketHandle& socket,
                                const Option* op):
   cuid(cuid), socket(socket),

@@ -67,7 +67,7 @@ namespace aria2 {
 
 static const size_t BUFSIZE = 16*1024;
 
-DownloadCommand::DownloadCommand(int cuid,
+DownloadCommand::DownloadCommand(cuid_t cuid,
                                  const SharedHandle<Request>& req,
                                  const SharedHandle<FileEntry>& fileEntry,
                                  RequestGroup* requestGroup,

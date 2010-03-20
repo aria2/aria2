@@ -56,7 +56,7 @@ private:
   SharedHandle<SeedCriteria> seedCriteria;
   bool checkStarted;
 public:
-  SeedCheckCommand(int cuid,
+  SeedCheckCommand(cuid_t cuid,
                    RequestGroup* requestGroup,
                    DownloadEngine* e,
                    const SharedHandle<SeedCriteria>& seedCriteria);

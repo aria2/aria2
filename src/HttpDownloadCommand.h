@@ -49,7 +49,7 @@ private:
 protected:
   virtual bool prepareForNextSegment();
 public:
-  HttpDownloadCommand(int cuid,
+  HttpDownloadCommand(cuid_t cuid,
                       const SharedHandle<Request>& req,
                       const SharedHandle<FileEntry>& fileEntry,
                       RequestGroup* requestGroup,

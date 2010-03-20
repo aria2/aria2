@@ -76,7 +76,7 @@ private:
 
   const SharedHandle<Option>& getOption() const;
 public:
-  TrackerWatcherCommand(int32_t cuid,
+  TrackerWatcherCommand(cuid_t cuid,
                         RequestGroup* requestGroup,
                         DownloadEngine* e);
 

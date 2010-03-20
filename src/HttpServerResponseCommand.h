@@ -52,7 +52,7 @@ private:
   SharedHandle<HttpServer> _httpServer;
   Time _timeout;
 public:
-  HttpServerResponseCommand(int32_t cuid,
+  HttpServerResponseCommand(cuid_t cuid,
                             const SharedHandle<HttpServer>& httpServer,
                             DownloadEngine* e,
                             const SharedHandle<SocketCore>& socket);

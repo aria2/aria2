@@ -52,7 +52,7 @@ protected:
 
   DownloadEngine* _e;
 public:
-  SequentialDispatcherCommand(int32_t cuid,
+  SequentialDispatcherCommand(cuid_t cuid,
                               const SharedHandle<SequentialPicker<T> >& picker,
                               DownloadEngine* e):
     Command(cuid), _picker(picker), _e(e)

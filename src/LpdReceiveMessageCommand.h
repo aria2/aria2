@@ -53,7 +53,7 @@ private:
   static LpdReceiveMessageCommand* __instance;
 
   LpdReceiveMessageCommand
-  (int32_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
+  (cuid_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
    DownloadEngine* e);
 protected:
   DownloadEngine* _e;

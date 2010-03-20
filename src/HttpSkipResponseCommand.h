@@ -61,7 +61,7 @@ private:
 protected:
   virtual bool executeInternal();
 public:
-  HttpSkipResponseCommand(int cuid,
+  HttpSkipResponseCommand(cuid_t cuid,
                           const SharedHandle<Request>& req,
                           const SharedHandle<FileEntry>& fileEntry,
                           RequestGroup* requestGroup,

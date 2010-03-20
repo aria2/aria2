@@ -57,7 +57,7 @@
 namespace aria2 {
 
 HttpRequestCommand::HttpRequestCommand
-(int cuid,
+(cuid_t cuid,
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,

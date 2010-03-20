@@ -55,7 +55,7 @@
 namespace aria2 {
 
 HttpServerBodyCommand::HttpServerBodyCommand
-(int32_t cuid,
+(cuid_t cuid,
  const SharedHandle<HttpServer>& httpServer,
  DownloadEngine* e,
  const SharedHandle<SocketCore>& socket):

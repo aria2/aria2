@@ -58,7 +58,7 @@
 
 namespace aria2 {
 
-DHTAutoSaveCommand::DHTAutoSaveCommand(int32_t cuid, DownloadEngine* e, time_t interval):
+DHTAutoSaveCommand::DHTAutoSaveCommand(cuid_t cuid, DownloadEngine* e, time_t interval):
   TimeBasedCommand(cuid, e, interval) {}
 
 DHTAutoSaveCommand::~DHTAutoSaveCommand() {}

@@ -73,7 +73,7 @@ protected:
   (const SharedHandle<HttpResponse>& httpResponse);
 
 public:
-  HttpResponseCommand(int32_t cuid,
+  HttpResponseCommand(cuid_t cuid,
                       const SharedHandle<Request>& req,
                       const SharedHandle<FileEntry>& fileEntry,
                       RequestGroup* requestGroup,

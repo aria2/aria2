@@ -46,7 +46,7 @@ protected:
    const std::vector<std::string>& resolvedAddresses,
    const SharedHandle<Request>& proxyRequest);
 public:
-  HttpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
+  HttpInitiateConnectionCommand(cuid_t cuid, const SharedHandle<Request>& req,
                                 const SharedHandle<FileEntry>& fileEntry,
                                 RequestGroup* requestGroup,
                                 DownloadEngine* e);

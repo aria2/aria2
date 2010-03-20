@@ -36,6 +36,7 @@
 #define _D_DEFAULT_BT_MESSAGE_RECEIVER_H_
 
 #include "BtMessageReceiver.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -48,7 +49,7 @@ class Logger;
 
 class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   bool handshakeSent;
   SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<Peer> peer;
@@ -69,11 +70,13 @@ public:
 
   virtual SharedHandle<BtMessage> receiveMessage();
 
-  void setCuid(int32_t cuid) {
+  void setCuid(cuid_t cuid)
+  {
     this->cuid = cuid;
   }
 
-  int32_t getCuid() const {
+  cuid_t getCuid() const
+  {
     return cuid;
   }
 

@@ -64,7 +64,7 @@
 namespace aria2 {
 
 TrackerWatcherCommand::TrackerWatcherCommand
-(int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e):
+(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e):
   Command(cuid),
   _requestGroup(requestGroup),
   e(e)

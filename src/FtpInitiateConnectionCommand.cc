@@ -55,7 +55,7 @@
 namespace aria2 {
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
-(int cuid,
+(cuid_t cuid,
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,

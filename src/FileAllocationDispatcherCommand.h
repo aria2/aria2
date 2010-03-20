@@ -46,7 +46,7 @@ class FileAllocationDispatcherCommand :
     public SequentialDispatcherCommand<FileAllocationEntry> {
 public:
   FileAllocationDispatcherCommand
-  (int32_t cuid,
+  (cuid_t cuid,
    const SharedHandle<FileAllocationMan>& fileAllocMan,
    DownloadEngine* e);
 protected:

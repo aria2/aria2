@@ -42,7 +42,7 @@ namespace aria2 {
 class HaveEraseCommand : public TimeBasedCommand
 {
 public:
-  HaveEraseCommand(int32_t cuid, DownloadEngine* e, time_t interval);
+  HaveEraseCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~HaveEraseCommand();
 

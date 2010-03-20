@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-RealtimeCommand::RealtimeCommand(int cuid, RequestGroup* requestGroup,
+RealtimeCommand::RealtimeCommand(cuid_t cuid, RequestGroup* requestGroup,
                                  DownloadEngine* e):
   Command(cuid),
   _requestGroup(requestGroup),

@@ -44,7 +44,7 @@
 
 namespace aria2 {
 
-FillRequestGroupCommand::FillRequestGroupCommand(int32_t cuid,
+FillRequestGroupCommand::FillRequestGroupCommand(cuid_t cuid,
                                                  DownloadEngine* e,
                                                  time_t interval):
   Command(cuid),

@@ -76,7 +76,7 @@
 namespace aria2 {
 
 PeerInteractionCommand::PeerInteractionCommand
-(int32_t cuid,
+(cuid_t cuid,
  RequestGroup* requestGroup,
  const SharedHandle<Peer>& p,
  DownloadEngine* e,

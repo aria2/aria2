@@ -140,10 +140,10 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 class AbortOutstandingRequest {
 private:
   SharedHandle<Piece> _piece;
-  int32_t _cuid;
+  cuid_t _cuid;
   Logger* _logger;
 public:
-  AbortOutstandingRequest(const SharedHandle<Piece>& piece, int32_t cuid):
+  AbortOutstandingRequest(const SharedHandle<Piece>& piece, cuid_t cuid):
     _piece(piece),
     _cuid(cuid),
     _logger(LogFactory::getInstance()) {}
@@ -185,12 +185,12 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
 
 class ProcessChokedRequestSlot {
 private:
-  int32_t _cuid;
+  cuid_t _cuid;
   SharedHandle<Peer> _peer;
   SharedHandle<PieceStorage> _pieceStorage;
   Logger* _logger;
 public:
-  ProcessChokedRequestSlot(int32_t cuid,
+  ProcessChokedRequestSlot(cuid_t cuid,
                            const SharedHandle<Peer>& peer,
                            const SharedHandle<PieceStorage>& pieceStorage):
     _cuid(cuid),
@@ -252,7 +252,7 @@ void DefaultBtMessageDispatcher::doChokingAction()
 
 class ProcessStaleRequestSlot {
 private:
-  int32_t _cuid;
+  cuid_t _cuid;
   SharedHandle<Peer> _peer;
   SharedHandle<PieceStorage> _pieceStorage;
   BtMessageDispatcher* _messageDispatcher;
@@ -260,7 +260,7 @@ private:
   time_t _requestTimeout;
   Logger* _logger;
 public:
-  ProcessStaleRequestSlot(int32_t cuid, const SharedHandle<Peer>& peer,
+  ProcessStaleRequestSlot(cuid_t cuid, const SharedHandle<Peer>& peer,
                           const SharedHandle<PieceStorage>& pieceStorage,
                           BtMessageDispatcher* dispatcher,
                           const WeakHandle<BtMessageFactory>& factory,

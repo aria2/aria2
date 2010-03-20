@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-AutoSaveCommand::AutoSaveCommand(int32_t cuid, DownloadEngine* e, time_t interval):
+AutoSaveCommand::AutoSaveCommand(cuid_t cuid, DownloadEngine* e, time_t interval):
   TimeBasedCommand(cuid, e, interval, true) {}
 
 AutoSaveCommand::~AutoSaveCommand() {}

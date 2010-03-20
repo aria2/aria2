@@ -36,6 +36,7 @@
 #define _D_DEFAULT_BT_MESSAGE_FACTORY_H_
 
 #include "BtMessageFactory.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -55,7 +56,7 @@ class DHTTaskFactory;
 
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
-  int32_t cuid;
+  cuid_t cuid;
   SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<PeerStorage> _peerStorage;
@@ -142,7 +143,8 @@ public:
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
-  void setCuid(int32_t cuid) {
+  void setCuid(cuid_t cuid)
+  {
     this->cuid = cuid;
   }
 

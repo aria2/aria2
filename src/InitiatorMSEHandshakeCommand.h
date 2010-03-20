@@ -77,7 +77,7 @@ protected:
   virtual bool exitBeforeExecute();
 public:
   InitiatorMSEHandshakeCommand
-  (int32_t cuid,
+  (cuid_t cuid,
    RequestGroup* requestGroup,
    const SharedHandle<Peer>& peer,
    DownloadEngine* e,

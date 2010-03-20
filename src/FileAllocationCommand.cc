@@ -49,7 +49,7 @@
 namespace aria2 {
 
 FileAllocationCommand::FileAllocationCommand
-(int cuid, RequestGroup* requestGroup, DownloadEngine* e,
+(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
  const SharedHandle<FileAllocationEntry>& fileAllocationEntry):
   RealtimeCommand(cuid, requestGroup, e),
   _fileAllocationEntry(fileAllocationEntry) {}

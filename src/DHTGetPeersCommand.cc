@@ -50,7 +50,7 @@
 
 namespace aria2 {
 
-DHTGetPeersCommand::DHTGetPeersCommand(int32_t cuid,
+DHTGetPeersCommand::DHTGetPeersCommand(cuid_t cuid,
                                        RequestGroup* requestGroup,
                                        DownloadEngine* e):
   Command(cuid),

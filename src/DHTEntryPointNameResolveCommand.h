@@ -89,7 +89,7 @@ private:
 
 public:
   DHTEntryPointNameResolveCommand
-  (int32_t cuid, DownloadEngine* e,
+  (cuid_t cuid, DownloadEngine* e,
    const std::vector<std::pair<std:: string, uint16_t> >& entryPoints);
 
   virtual ~DHTEntryPointNameResolveCommand();

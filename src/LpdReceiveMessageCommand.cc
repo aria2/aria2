@@ -57,7 +57,7 @@ unsigned int LpdReceiveMessageCommand::__numInstance = 0;
 LpdReceiveMessageCommand* LpdReceiveMessageCommand::__instance = 0;
 
 LpdReceiveMessageCommand::LpdReceiveMessageCommand
-(int32_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
+(cuid_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
  DownloadEngine* e):Command(cuid), _receiver(receiver), _e(e)
 {
   _e->addSocketForReadCheck(_receiver->getSocket(), this);

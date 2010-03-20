@@ -59,7 +59,7 @@ private:
   SharedHandle<PieceStorage> _pieceStorage;
 public:
   BtStopDownloadCommand
-  (int32_t cuid,
+  (cuid_t cuid,
    RequestGroup* requestGroup,
    DownloadEngine* e,
    time_t timeout);

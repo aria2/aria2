@@ -210,10 +210,10 @@ public:
     pieceLengthList.push_back(length);
   }
 
-  virtual void advertisePiece(int32_t cuid, size_t index) {}
+  virtual void advertisePiece(cuid_t cuid, size_t index) {}
 
   virtual void getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
-                                         int32_t myCuid,
+                                         cuid_t myCuid,
                                          const Time& lastCheckTime)
   {}
 

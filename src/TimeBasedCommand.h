@@ -79,7 +79,7 @@ public:
   virtual void postProcess() {};
 
 public:
-  TimeBasedCommand(int32_t cuid, DownloadEngine* e, time_t interval,
+  TimeBasedCommand(cuid_t cuid, DownloadEngine* e, time_t interval,
                    bool routineCommand = false);
 
   virtual ~TimeBasedCommand();

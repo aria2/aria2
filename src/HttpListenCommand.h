@@ -48,7 +48,7 @@ private:
   DownloadEngine* _e;
   SharedHandle<SocketCore> _serverSocket;
 public:
-  HttpListenCommand(int32_t cuid, DownloadEngine* e);
+  HttpListenCommand(cuid_t cuid, DownloadEngine* e);
 
   virtual ~HttpListenCommand();
   

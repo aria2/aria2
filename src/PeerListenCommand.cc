@@ -54,7 +54,7 @@ unsigned int PeerListenCommand::__numInstance = 0;
 
 PeerListenCommand* PeerListenCommand::__instance = 0;
 
-PeerListenCommand::PeerListenCommand(int32_t cuid, DownloadEngine* e):
+PeerListenCommand::PeerListenCommand(cuid_t cuid, DownloadEngine* e):
   Command(cuid),
   e(e),
   _lowestSpeedLimit(20*1024)
@@ -120,7 +120,7 @@ bool PeerListenCommand::execute() {
       peerSocket->setNonBlockingMode();
 
       SharedHandle<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
-      int32_t cuid = e->newCUID();
+      cuid_t cuid = e->newCUID();
       Command* command =
         new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
       e->commands.push_back(command);

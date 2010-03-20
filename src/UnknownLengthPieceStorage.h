@@ -221,7 +221,7 @@ public:
    * Adds piece index to advertise to other commands. They send have message
    * based on this information.
    */
-  virtual void advertisePiece(int32_t cuid, size_t index) {}
+  virtual void advertisePiece(cuid_t cuid, size_t index) {}
 
   /**
    * Returns piece index which is not advertised by the caller command and
@@ -229,7 +229,7 @@ public:
    */
   virtual void
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
-                            int32_t myCuid, const Time& lastCheckTime)
+                            cuid_t myCuid, const Time& lastCheckTime)
   {}
 
   /**

@@ -48,7 +48,7 @@ private:
   SharedHandle<FileAllocationEntry> _fileAllocationEntry;
   Time _timer;
 public:
-  FileAllocationCommand(int cuid, RequestGroup* requestGroup,
+  FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e,
                         const SharedHandle<FileAllocationEntry>& fileAllocationEntry);
 

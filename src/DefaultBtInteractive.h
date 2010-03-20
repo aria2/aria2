@@ -40,6 +40,7 @@
 #include  <limits.h>
 
 #include "TimeA2.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -97,7 +98,7 @@ public:
 
 class DefaultBtInteractive : public BtInteractive {
 private:
-  int32_t cuid;
+  cuid_t cuid;
 
   SharedHandle<DownloadContext> _downloadContext;
 
@@ -188,7 +189,8 @@ public:
 
   virtual size_t countOutstandingRequest();
 
-  void setCuid(int32_t cuid) {
+  void setCuid(cuid_t cuid)
+  {
     this->cuid = cuid;
   }
 

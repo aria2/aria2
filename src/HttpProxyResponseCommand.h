@@ -43,7 +43,7 @@ class SocketCore;
 
 class HttpProxyResponseCommand : public AbstractProxyResponseCommand {
 public:
-  HttpProxyResponseCommand(int cuid,
+  HttpProxyResponseCommand(cuid_t cuid,
                            const SharedHandle<Request>& req,
                            const SharedHandle<FileEntry>& fileEntry,
                            RequestGroup* requestGroup,

@@ -50,7 +50,7 @@ private:
   time_t _interval;
   Time _checkPoint;
 public:
-  FillRequestGroupCommand(int32_t cuid, DownloadEngine* e, time_t interval);
+  FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~FillRequestGroupCommand();
 

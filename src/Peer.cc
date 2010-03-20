@@ -67,7 +67,7 @@ Peer::~Peer()
   releaseSessionResource();
 }
 
-void Peer::usedBy(int32_t cuid)
+void Peer::usedBy(cuid_t cuid)
 {
   _cuid = cuid;
 }

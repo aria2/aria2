@@ -49,7 +49,7 @@
 
 namespace aria2 {
 
-DHTInteractionCommand::DHTInteractionCommand(int32_t cuid, DownloadEngine* e):
+DHTInteractionCommand::DHTInteractionCommand(cuid_t cuid, DownloadEngine* e):
   Command(cuid),
   _e(e) {}
 

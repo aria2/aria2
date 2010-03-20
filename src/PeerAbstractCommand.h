@@ -76,7 +76,7 @@ private:
   SharedHandle<SocketCore> writeCheckTarget;
   bool noCheck;
 public:
-  PeerAbstractCommand(int32_t cuid,
+  PeerAbstractCommand(cuid_t cuid,
                       const SharedHandle<Peer>& peer,
                       DownloadEngine* e,
                       const SharedHandle<SocketCore>& s =
