@@ -1,5 +1,17 @@
 2010-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use gid_t type for gid.
+	* src/BtRegistry.cc
+	* src/BtRegistry.h
+	* src/DownloadResult.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethodImpl.cc
+
+2010-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use cuid_t type for cuid.
 
 2010-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>

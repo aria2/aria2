@@ -44,6 +44,7 @@
 
 #include "SharedHandle.h"
 #include "DownloadResultCode.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -52,7 +53,7 @@ class FileEntry;
 class DownloadResult
 {
 public:
-  int32_t gid;
+  gid_t gid;
  
   std::vector<SharedHandle<FileEntry> > fileEntries;
 
@@ -67,20 +68,20 @@ public:
 
   // This field contains GIDs. See comment in
   // RequestGroup.cc::_followedByGIDs.
-  std::vector<int32_t> followedBy;
+  std::vector<gid_t> followedBy;
 
   // This field contains GID. See comment in
   // RequestGroup.cc::_belongsToGID.
-  int32_t belongsTo;
+  gid_t belongsTo;
 
-  DownloadResult(int32_t gid,
+  DownloadResult(gid_t gid,
                  const std::vector<SharedHandle<FileEntry> >& fileEntries,
                  bool inMemoryDownload,
                  uint64_t sessionDownloadLength,
                  int64_t sessionTime,
                  downloadresultcode::RESULT result,
-                 const std::vector<int32_t> followedBy,
-                 int32_t belongsTo):
+                 const std::vector<gid_t> followedBy,
+                 gid_t belongsTo):
     gid(gid),
     fileEntries(fileEntries),
     inMemoryDownload(inMemoryDownload),

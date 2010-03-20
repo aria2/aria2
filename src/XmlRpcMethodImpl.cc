@@ -131,7 +131,7 @@ const std::string KEY_MODE = "mode";
 const std::string KEY_SERVERS = "servers";
 }
 
-static BDE createGIDResponse(int32_t gid)
+static BDE createGIDResponse(gid_t gid)
 {
   return BDE(util::itos(gid));
 }
@@ -292,7 +292,7 @@ static BDE removeDownload
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
 
@@ -399,7 +399,7 @@ void gatherProgressCommon
   if(!group->followedBy().empty()) {
     BDE list = BDE::list();
     // The element is GID.
-    for(std::vector<int32_t>::const_iterator i = group->followedBy().begin(),
+    for(std::vector<gid_t>::const_iterator i = group->followedBy().begin(),
           eoi = group->followedBy().end(); i != eoi; ++i) {
       list << util::itos(*i);
     }
@@ -525,7 +525,7 @@ void gatherStoppedDownload
   if(!ds->followedBy.empty()) {
     BDE list = BDE::list();
     // The element is GID.
-    for(std::vector<int32_t>::const_iterator i = ds->followedBy.begin(),
+    for(std::vector<gid_t>::const_iterator i = ds->followedBy.begin(),
           eoi = ds->followedBy.end(); i != eoi; ++i) {
       list << util::itos(*i);
     }
@@ -541,7 +541,7 @@ void gatherStoppedDownload
 
 static
 SharedHandle<RequestGroup>
-findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, int32_t gid)
+findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
 {
   SharedHandle<RequestGroup> group = rgman->findRequestGroup(gid);
   if(group.isNull()) {
@@ -560,7 +560,7 @@ BDE GetFilesXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
 
   BDE files = BDE::list();
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
@@ -591,7 +591,7 @@ BDE GetUrisXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
@@ -617,7 +617,7 @@ BDE GetPeersXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
@@ -644,7 +644,7 @@ BDE TellStatusXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
 
@@ -728,7 +728,7 @@ BDE ChangeOptionXmlRpcMethod::process
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }  
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
@@ -823,7 +823,7 @@ BDE GetOptionXmlRpcMethod::process
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }  
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
@@ -860,7 +860,7 @@ BDE ChangePositionXmlRpcMethod::process
      !params[0].isString() || !params[1].isInteger() || !params[2].isString()) {
     throw DL_ABORT_EX("Illegal argument.");
   }
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
   int pos = params[1].i();
   const std::string& howStr = params[2].s();
   RequestGroupMan::HOW how;
@@ -896,7 +896,7 @@ BDE GetServersXmlRpcMethod::process
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX("Bad request");
   }
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
   if(group.isNull()) {
     throw DL_ABORT_EX(StringFormat("No active download for GID#%d", gid).str());
@@ -946,7 +946,7 @@ BDE ChangeUriXmlRpcMethod::process
   bool posGiven = false;
   getPosParam(params, 4, posGiven, pos);
 
-  int32_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseInt(params[0].s());
   size_t index = params[1].i()-1;
   const BDE& deluris = params[2];
   const BDE& adduris = params[3];

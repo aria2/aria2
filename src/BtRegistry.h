@@ -40,6 +40,7 @@
 #include <map>
 
 #include "SharedHandle.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
@@ -86,22 +87,22 @@ struct BtObject {
 
 class BtRegistry {
 private:
-  std::map<int32_t, BtObject> _pool;
+  std::map<gid_t, BtObject> _pool;
 public:
   SharedHandle<DownloadContext>
-  getDownloadContext(int32_t gid) const;
+  getDownloadContext(gid_t gid) const;
 
   SharedHandle<DownloadContext>
   getDownloadContext(const std::string& infoHash) const;
 
-  void put(int32_t gid, const BtObject& obj);
+  void put(gid_t gid, const BtObject& obj);
 
-  BtObject get(int32_t gid) const;
+  BtObject get(gid_t gid) const;
 
   template<typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<int32_t, BtObject>::const_iterator i = _pool.begin(),
+    for(std::map<gid_t, BtObject>::const_iterator i = _pool.begin(),
           eoi = _pool.end(); i != eoi; ++i) {
       *dest++ = (*i).second._downloadContext;
     }
@@ -110,7 +111,7 @@ public:
 
   void removeAll();
 
-  bool remove(int32_t gid);
+  bool remove(gid_t gid);
 };
 
 } // namespace aria2

@@ -77,7 +77,6 @@ RequestGroupMan::RequestGroupMan
   _reservedGroups(requestGroups.begin(), requestGroups.end()),
   _logger(LogFactory::getInstance()),
   _maxSimultaneousDownloads(maxSimultaneousDownloads),
-  _gidCounter(0),
   _option(option),
   _serverStatMan(new ServerStatMan()),
   _maxOverallDownloadSpeedLimit
@@ -157,7 +156,7 @@ SharedHandle<RequestGroup> RequestGroupMan::getRequestGroup(size_t index) const
 }
 
 template<typename Iterator>
-static Iterator findByGID(Iterator first, Iterator last, int32_t gid)
+static Iterator findByGID(Iterator first, Iterator last, gid_t gid)
 {
   for(; first != last; ++first) {
     if((*first)->getGID() == gid) {
@@ -168,7 +167,7 @@ static Iterator findByGID(Iterator first, Iterator last, int32_t gid)
 }
 
 SharedHandle<RequestGroup>
-RequestGroupMan::findRequestGroup(int32_t gid) const
+RequestGroupMan::findRequestGroup(gid_t gid) const
 {
   std::deque<SharedHandle<RequestGroup> >::const_iterator i =
     findByGID(_requestGroups.begin(), _requestGroups.end(), gid);
@@ -180,7 +179,7 @@ RequestGroupMan::findRequestGroup(int32_t gid) const
 }
 
 SharedHandle<RequestGroup>
-RequestGroupMan::findReservedGroup(int32_t gid) const
+RequestGroupMan::findReservedGroup(gid_t gid) const
 {
   std::deque<SharedHandle<RequestGroup> >::const_iterator i =
     findByGID(_reservedGroups.begin(), _reservedGroups.end(), gid);
@@ -192,7 +191,7 @@ RequestGroupMan::findReservedGroup(int32_t gid) const
 }
 
 size_t RequestGroupMan::changeReservedGroupPosition
-(int32_t gid, int pos, HOW how)
+(gid_t gid, int pos, HOW how)
 {
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     findByGID(_reservedGroups.begin(), _reservedGroups.end(), gid);
@@ -234,7 +233,7 @@ size_t RequestGroupMan::changeReservedGroupPosition
   return pos;
 }
 
-bool RequestGroupMan::removeReservedGroup(int32_t gid)
+bool RequestGroupMan::removeReservedGroup(gid_t gid)
 {
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     findByGID(_reservedGroups.begin(), _reservedGroups.end(), gid);
@@ -246,7 +245,7 @@ bool RequestGroupMan::removeReservedGroup(int32_t gid)
   }
 }
 
-static void executeHook(const std::string& command, int gid)
+static void executeHook(const std::string& command, gid_t gid)
 {
   LogFactory::getInstance()->info("Executing user command: %s %d",
                                   command.c_str(), gid);
@@ -764,7 +763,7 @@ TransferStat RequestGroupMan::calculateStat()
 }
 
 SharedHandle<DownloadResult>
-RequestGroupMan::findDownloadResult(int32_t gid) const
+RequestGroupMan::findDownloadResult(gid_t gid) const
 {
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator i =
         _downloadResults.begin(), eoi = _downloadResults.end(); i != eoi; ++i) {

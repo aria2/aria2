@@ -45,11 +45,11 @@
 #include "SharedHandle.h"
 #include "DownloadResult.h"
 #include "TransferStat.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
 class DownloadEngine;
-class RequestGroup;
 class Command;
 class Logger;
 class DownloadResult;
@@ -64,7 +64,6 @@ private:
   std::deque<SharedHandle<DownloadResult> > _downloadResults;
   Logger* _logger;
   unsigned int _maxSimultaneousDownloads;
-  int32_t _gidCounter;
 
   const Option* _option;
 
@@ -124,14 +123,14 @@ public:
     return _requestGroups;
   }
 
-  SharedHandle<RequestGroup> findRequestGroup(int32_t gid) const;
+  SharedHandle<RequestGroup> findRequestGroup(gid_t gid) const;
 
   const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const
   {
     return _reservedGroups;
   }
 
-  SharedHandle<RequestGroup> findReservedGroup(int32_t gid) const;
+  SharedHandle<RequestGroup> findReservedGroup(gid_t gid) const;
 
   enum HOW {
     POS_SET,
@@ -148,9 +147,9 @@ public:
   // beyond the end of the queue, it moves the download to the
   // beginning or the end of the queue respectively.  Returns the
   // destination position.
-  size_t changeReservedGroupPosition(int32_t gid, int pos, HOW how);
+  size_t changeReservedGroupPosition(gid_t gid, int pos, HOW how);
 
-  bool removeReservedGroup(int32_t gid);
+  bool removeReservedGroup(gid_t gid);
 
   void showDownloadResults(std::ostream& o) const;
 
@@ -201,7 +200,7 @@ public:
     return _downloadResults;
   }
 
-  SharedHandle<DownloadResult> findDownloadResult(int32_t gid) const;
+  SharedHandle<DownloadResult> findDownloadResult(gid_t gid) const;
 
   // Removes all download results.
   void purgeDownloadResult();

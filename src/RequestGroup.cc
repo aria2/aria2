@@ -108,7 +108,7 @@
 
 namespace aria2 {
 
-int32_t RequestGroup::_gidCounter = 0;
+gid_t RequestGroup::_gidCounter = 0;
 
 RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _gid(newGID()),
@@ -1162,7 +1162,7 @@ void RequestGroup::setDownloadContext
   }
 }
 
-int32_t RequestGroup::newGID()
+gid_t RequestGroup::newGID()
 {
   if(_gidCounter == INT32_MAX) {
     _gidCounter = 0;
