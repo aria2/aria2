@@ -58,11 +58,12 @@ void DHTFindNodeMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> targetNode(new DHTNode());
 
   DHTFindNodeMessage msg(localNode, remoteNode, targetNode->getID(), transactionID);
-
+  msg.setVersion("A200");
   std::string msgbody = msg.getBencodedMessage();
 
   BDE dict = BDE::dict();
   dict["t"] = transactionID;
+  dict["v"] = BDE("A200");
   dict["y"] = BDE("q");
   dict["q"] = BDE("find_node");
   BDE aDict = BDE::dict();

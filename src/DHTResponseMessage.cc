@@ -66,12 +66,20 @@ bool DHTResponseMessage::isReply() const
 
 std::string DHTResponseMessage::toString() const
 {
-  return strconcat("dht response ", getMessageType(),
-                   " TransactionID=", util::toHex(_transactionID),
-                   " Remote:", _remoteNode->getIPAddress(),
-                   ":", util::uitos(_remoteNode->getPort()),
-                   ", id=", util::toHex(_remoteNode->getID(), DHT_ID_LENGTH),
-                   ", ", toStringOptional());
+  std::string s = strconcat
+    ("dht response ", getMessageType(),
+     " TransactionID=", util::toHex(_transactionID),
+     " Remote:", _remoteNode->getIPAddress(),
+     ":", util::uitos(_remoteNode->getPort()),
+     ", id=", util::toHex(_remoteNode->getID(), DHT_ID_LENGTH),
+     ", ");
+  if(!_version.empty()) {
+    s += "v=";
+    s += util::torrentPercentEncode(_version);
+    s += ", ";
+  }
+  s += toStringOptional();
+  return s;
 }
 
 } // namespace aria2

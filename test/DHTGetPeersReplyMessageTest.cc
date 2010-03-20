@@ -40,9 +40,10 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
   std::string token = "token";
 
   DHTGetPeersReplyMessage msg(localNode, remoteNode, token, transactionID);
-
+  msg.setVersion("A200");
   BDE dict = BDE::dict();
   dict["t"] = transactionID;
+  dict["v"] = BDE("A200");
   dict["y"] = BDE("r");
   BDE rDict = BDE::dict();
   rDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);

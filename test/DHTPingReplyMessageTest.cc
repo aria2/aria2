@@ -38,11 +38,12 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
   util::generateRandomData(id, DHT_ID_LENGTH);
 
   DHTPingReplyMessage msg(localNode, remoteNode, id, transactionID);
-
+  msg.setVersion("A200");
   std::string msgbody = msg.getBencodedMessage();
 
   BDE dict = BDE::dict();
   dict["t"] = transactionID;
+  dict["v"] = BDE("A200");
   dict["y"] = BDE("r");
   BDE rDict = BDE::dict();
   rDict["id"] = BDE(id, DHT_ID_LENGTH);

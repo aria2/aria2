@@ -42,6 +42,8 @@ const std::string DHTMessage::Y("y");
 
 const std::string DHTMessage::T("t");
 
+const std::string DHTMessage::V("v");
+
 const std::string DHTMessage::ID("id");
 
 DHTMessage::DHTMessage(const SharedHandle<DHTNode>& localNode,

@@ -58,6 +58,7 @@ std::string DHTAbstractMessage::getBencodedMessage()
   BDE msgDict = BDE::dict();
   msgDict[T] = _transactionID;
   msgDict[Y] = getType();
+  msgDict[V] = _version;
   fillMessage(msgDict);
   return bencode::encode(msgDict);
 }

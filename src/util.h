@@ -242,6 +242,8 @@ void usleep(long microseconds);
   
 bool isNumber(const std::string& what);
 
+bool isDigit(const char c);
+
 bool isHexDigit(const char c);
 
 bool isHexDigit(const std::string& s);

@@ -37,7 +37,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   DHTFindNodeReplyMessage msg(localNode, remoteNode, transactionID);
-
+  msg.setVersion("A200");
   std::string compactNodeInfo;
   SharedHandle<DHTNode> nodes[8];
   for(size_t i = 0; i < DHTBucket::K; ++i) {
@@ -59,6 +59,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
 
   BDE dict = BDE::dict();
   dict["t"] = transactionID;
+  dict["v"] = BDE("A200");
   dict["y"] = BDE("r");
   BDE rDict = BDE::dict();
   rDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);

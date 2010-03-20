@@ -77,11 +77,13 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
   util::generateRandomData(infoHash, DHT_ID_LENGTH);
 
   DHTGetPeersMessage msg(localNode, remoteNode, infoHash, transactionID);
+  msg.setVersion("A200");
 
   std::string msgbody = msg.getBencodedMessage();
 
   BDE dict = BDE::dict();
   dict["t"] = transactionID;
+  dict["v"] = BDE("A200");
   dict["y"] = BDE("q");
   dict["q"] = BDE("get_peers");
   BDE aDict = BDE::dict();

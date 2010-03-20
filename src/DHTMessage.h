@@ -54,6 +54,8 @@ protected:
 
   std::string _transactionID;
 
+  std::string _version;
+
   void generateTransactionID();
 public:
   DHTMessage(const SharedHandle<DHTNode>& localNode,
@@ -89,9 +91,16 @@ public:
 
   virtual std::string toString() const = 0;
 
+  void setVersion(const std::string& version)
+  {
+    _version = version;
+  }
+
   static const std::string Y;
 
   static const std::string T;
+
+  static const std::string V;
 
   static const std::string ID;
 };

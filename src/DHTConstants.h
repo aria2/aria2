@@ -35,6 +35,10 @@
 #ifndef _D_DHT_CONSTANTS_H_
 #define _D_DHT_CONSTANTS_H_
 
+// Increment this if major improvements or bug fixes are made in DHT
+// code.
+#define DHT_VERSION 1
+
 #define DHT_ID_LENGTH 20
 
 #define DHT_TRANSACTION_ID_LENGTH 2
