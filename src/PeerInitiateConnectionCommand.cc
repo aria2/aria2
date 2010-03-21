@@ -48,6 +48,7 @@
 #include "PeerConnection.h"
 #include "RequestGroup.h"
 #include "DownloadContext.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -75,8 +76,11 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 }
 
 bool PeerInitiateConnectionCommand::executeInternal() {
-  logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
-               peer->port);
+  if(logger->info()) {
+    logger->info(MSG_CONNECTING_TO_SERVER,
+                 util::itos(cuid).c_str(), peer->ipaddr.c_str(),
+                 peer->port);
+  }
   socket.reset(new SocketCore());
   socket->establishConnection(peer->ipaddr, peer->port);
   if(_mseHandshakeEnabled) {

@@ -44,6 +44,7 @@
 #include "DownloadFailureException.h"
 #include "StringFormat.h"
 #include "wallclock.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -75,9 +76,10 @@ PeerAbstractCommand::~PeerAbstractCommand()
 bool PeerAbstractCommand::execute()
 {
   if(logger->debug()) {
-    logger->debug("CUID#%d -"
+    logger->debug("CUID#%s -"
                   " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
-                  cuid, _readEvent, _writeEvent, _hupEvent, _errorEvent,
+                  util::itos(cuid).c_str(),
+                  _readEvent, _writeEvent, _hupEvent, _errorEvent,
                   noCheck);
   }
   if(exitBeforeExecute()) {
@@ -106,9 +108,10 @@ bool PeerAbstractCommand::execute()
     return true;
   } catch(RecoverableException& err) {
     if(logger->debug()) {
-      logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err, cuid);
+      logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err,
+                    util::itos(cuid).c_str());
       logger->debug(MSG_PEER_BANNED,
-                    cuid, peer->ipaddr.c_str(), peer->port);
+                    util::itos(cuid).c_str(), peer->ipaddr.c_str(), peer->port);
     }
     onAbort();
     return prepareForNextPeer(0);

@@ -37,6 +37,7 @@
 #include "Peer.h"
 #include "PeerConnection.h"
 #include "Logger.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -55,7 +56,8 @@ void SimpleBtMessage::send() {
   if(!sendingInProgress) {
     if(logger->info()) {
       logger->info(MSG_SEND_PEER_MESSAGE,
-                   cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
+                   util::itos(cuid).c_str(),
+                   peer->ipaddr.c_str(), peer->port, toString().c_str());
     }
     unsigned char* msg = createMessage();
     size_t msgLength = getMessageLength();

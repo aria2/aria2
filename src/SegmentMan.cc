@@ -118,7 +118,8 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
     return SharedHandle<Segment>();
   }
   if(logger->debug()) {
-    logger->debug("Attach segment#%d to CUID#%d.", piece->getIndex(), cuid);
+    logger->debug("Attach segment#%d to CUID#%s.",
+                  piece->getIndex(), util::itos(cuid).c_str());
   }
   SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {

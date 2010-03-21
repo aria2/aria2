@@ -60,6 +60,7 @@
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
 #include "a2functional.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -176,8 +177,9 @@ void TrackerWatcherCommand::processTrackerResponse
     command->setPieceStorage(_pieceStorage);
     e->commands.push_back(command);
     if(logger->debug()) {
-      logger->debug("CUID#%d - Adding new command CUID#%d",
-                    cuid, peer->usedBy());
+      logger->debug("CUID#%s - Adding new command CUID#%s",
+                    util::itos(cuid).c_str(),
+                    util::itos(peer->usedBy()).c_str());
     }
   }
 }

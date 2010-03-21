@@ -54,6 +54,7 @@
 #include "a2algo.h"
 #include "RequestGroupMan.h"
 #include "RequestGroup.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -152,7 +153,7 @@ public:
   {
     if(_logger->debug()) {
       _logger->debug(MSG_DELETING_REQUEST_SLOT,
-                     _cuid,
+                     util::itos(_cuid).c_str(),
                      slot.getIndex(),
                      slot.getBlockIndex());
       _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
@@ -203,7 +204,7 @@ public:
     if(!_peer->isInPeerAllowedIndexSet(slot.getIndex())) {
       if(_logger->debug()) {
         _logger->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
-                       _cuid,
+                       util::itos(_cuid).c_str(),
                        slot.getIndex(),
                        slot.getBlockIndex());
         _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
@@ -278,7 +279,7 @@ public:
     if(slot.isTimeout(_requestTimeout)) {
       if(_logger->debug()) {
         _logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
-                       _cuid,
+                       util::itos(_cuid).c_str(),
                        slot.getBlockIndex());
         _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       }
@@ -287,7 +288,7 @@ public:
     } else if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
       if(_logger->debug()) {
         _logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
-                       _cuid,
+                       util::itos(_cuid).c_str(),
                        slot.getBlockIndex());
         _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       }

@@ -143,7 +143,9 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            _peerConnection);
         e->commands.push_back(command);
         if(logger->debug()) {
-          logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
+          logger->debug(MSG_INCOMING_PEER_CONNECTION,
+                        util::itos(cuid).c_str(),
+                        util::itos(peer->usedBy()).c_str());
         }
       }
     }

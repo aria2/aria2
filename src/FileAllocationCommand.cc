@@ -89,8 +89,8 @@ bool FileAllocationCommand::executeInternal()
 bool FileAllocationCommand::handleException(Exception& e)
 {
   _e->_fileAllocationMan->dropPickedEntry();
-  logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);
-  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid,
+  logger->error(MSG_FILE_ALLOCATION_FAILURE, e, util::itos(cuid).c_str());
+  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, util::itos(cuid).c_str(),
                 _requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }

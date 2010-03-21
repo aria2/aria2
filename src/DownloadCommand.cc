@@ -204,7 +204,9 @@ bool DownloadCommand::executeInternal() {
       // If segment->getLength() == 0, the server doesn't provide
       // content length, but the client detected that download
       // completed.
-      logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
+      if(logger->info()) {
+        logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, util::itos(cuid).c_str());
+      }
 #ifdef ENABLE_MESSAGE_DIGEST
 
       {

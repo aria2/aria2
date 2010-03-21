@@ -151,19 +151,26 @@ bool DHTEntryPointNameResolveCommand::resolveHostname
 {
   switch(resolver->getStatus()) {
   case AsyncNameResolver::STATUS_READY:
-    logger->info(MSG_RESOLVING_HOSTNAME, cuid, hostname.c_str());
+    if(logger->info()) {
+      logger->info(MSG_RESOLVING_HOSTNAME,
+                   util::itos(cuid).c_str(), hostname.c_str());
+    }
     resolver->resolve(hostname);
     setNameResolverCheck(resolver);
     return false;
   case AsyncNameResolver::STATUS_SUCCESS:
-    logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
-                 resolver->getHostname().c_str(),
-                 resolver->getResolvedAddresses().front().c_str());
+    if(logger->info()) {
+      logger->info(MSG_NAME_RESOLUTION_COMPLETE,
+                   util::itos(cuid).c_str(),
+                   resolver->getHostname().c_str(),
+                   resolver->getResolvedAddresses().front().c_str());
+    }
     return true;
     break;
   case AsyncNameResolver::STATUS_ERROR:
     throw DL_ABORT_EX
-      (StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
+      (StringFormat(MSG_NAME_RESOLUTION_FAILED,
+                    util::itos(cuid).c_str(),
                     hostname.c_str(),
                     resolver->getError().c_str()).str());
   default:

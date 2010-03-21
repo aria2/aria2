@@ -44,6 +44,7 @@
 #include "FileEntry.h"
 #include "prefs.h"
 #include "Option.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -80,7 +81,7 @@ bool HttpListenCommand::execute()
     }
   } catch(RecoverableException& e) {
     if(logger->debug()) {
-      logger->debug(MSG_ACCEPT_FAILURE, _e, cuid);
+      logger->debug(MSG_ACCEPT_FAILURE, _e, util::itos(cuid).c_str());
     }
   }
   _e->commands.push_back(this);
@@ -93,7 +94,10 @@ bool HttpListenCommand::bindPort(uint16_t port)
     _e->deleteSocketForReadCheck(_serverSocket, this);
   }
   _serverSocket.reset(new SocketCore());
-  logger->info("CUID#%d - Setting up HttpListenCommand", cuid);
+  if(logger->info()) {
+    logger->info("CUID#%s - Setting up HttpListenCommand",
+                 util::itos(cuid).c_str());
+  }
   try {
     int flags = 0;
     if(_e->option->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
@@ -102,11 +106,13 @@ bool HttpListenCommand::bindPort(uint16_t port)
     _serverSocket->bind(port, flags);
     _serverSocket->beginListen();
     _serverSocket->setNonBlockingMode();
-    logger->info(MSG_LISTENING_PORT, cuid, port);
+    if(logger->info()) {
+      logger->info(MSG_LISTENING_PORT, util::itos(cuid).c_str(), port);
+    }
     _e->addSocketForReadCheck(_serverSocket, this);
     return true;
   } catch(RecoverableException& e) {
-    logger->error(MSG_BIND_FAILURE, e, cuid, port);
+    logger->error(MSG_BIND_FAILURE, e, util::itos(cuid).c_str(), port);
     if(!_serverSocket.isNull()) {
       _e->deleteSocketForReadCheck(_serverSocket, this);
     }

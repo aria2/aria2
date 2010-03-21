@@ -90,13 +90,13 @@ void BtPieceMessage::doReceivedAction() {
     off_t offset = (off_t)index*_downloadContext->getPieceLength()+begin;
     if(logger->debug()) {
       logger->debug(MSG_PIECE_RECEIVED,
-                    cuid, index, begin, blockLength, offset,
+                    util::itos(cuid).c_str(), index, begin, blockLength, offset,
                     slot.getBlockIndex());
     }
     pieceStorage->getDiskAdaptor()->writeData(block, blockLength, offset);
     piece->completeBlock(slot.getBlockIndex());
     if(logger->debug()) {
-      logger->debug(MSG_PIECE_BITFIELD, cuid,
+      logger->debug(MSG_PIECE_BITFIELD, util::itos(cuid).c_str(),
                     util::toHex(piece->getBitfield(),
                                 piece->getBitfieldLength()).c_str());
     }
@@ -111,8 +111,8 @@ void BtPieceMessage::doReceivedAction() {
     }
   } else {
     if(logger->debug()) {
-      logger->debug("CUID#%d - RequestSlot not found, index=%d, begin=%d",
-                    cuid, index, begin);
+      logger->debug("CUID#%s - RequestSlot not found, index=%d, begin=%d",
+                    util::itos(cuid).c_str(), index, begin);
     }
   }
 }
@@ -148,7 +148,7 @@ void BtPieceMessage::send() {
   if(!sendingInProgress) {
     if(logger->info()) {
       logger->info(MSG_SEND_PEER_MESSAGE,
-                   cuid, peer->ipaddr.c_str(), peer->port,
+                   util::itos(cuid).c_str(), peer->ipaddr.c_str(), peer->port,
                    toString().c_str());
     }
     unsigned char* msgHdr = createMessageHeader();
@@ -209,13 +209,18 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece) {
 }
 
 void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece) {
-  logger->info(MSG_GOT_NEW_PIECE, cuid, piece->getIndex());
+  if(logger->info()) {
+    logger->info(MSG_GOT_NEW_PIECE, util::itos(cuid).c_str(),piece->getIndex());
+  }
   pieceStorage->completePiece(piece);
   pieceStorage->advertisePiece(cuid, piece->getIndex());
 }
 
 void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece) {
-  logger->info(MSG_GOT_WRONG_PIECE, cuid, piece->getIndex());
+  if(logger->info()) {
+    logger->info(MSG_GOT_WRONG_PIECE,
+                 util::itos(cuid).c_str(), piece->getIndex());
+  }
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
   piece->destroyHashContext();
@@ -243,7 +248,8 @@ void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
      !sendingInProgress &&
      !peer->isInAmAllowedIndexSet(index)) {
     if(logger->debug()) {
-      logger->debug(MSG_REJECT_PIECE_CHOKED, cuid, index, begin, blockLength);
+      logger->debug(MSG_REJECT_PIECE_CHOKED,
+                    util::itos(cuid).c_str(), index, begin, blockLength);
     }
     if(peer->isFastExtensionEnabled()) {
       BtMessageHandle rej = messageFactory->createRejectMessage(index,
@@ -264,7 +270,8 @@ void BtPieceMessage::onCancelSendingPieceEvent
      begin == event.getBegin() &&
      blockLength == event.getLength()) {
     if(logger->debug()) {
-      logger->debug(MSG_REJECT_PIECE_CANCEL, cuid, index, begin, blockLength);
+      logger->debug(MSG_REJECT_PIECE_CANCEL,
+                    util::itos(cuid).c_str(), index, begin, blockLength);
     }
     if(peer->isFastExtensionEnabled()) {
       BtMessageHandle rej = messageFactory->createRejectMessage(index,

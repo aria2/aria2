@@ -48,6 +48,7 @@
 #include "prefs.h"
 #include "A2STR.h"
 #include "DownloadContext.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -72,7 +73,10 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       e->popPooledSocket(req->getHost(), req->getPort());
     std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
+      if(logger->info()) {
+        logger->info(MSG_CONNECTING_TO_SERVER,
+                     util::itos(cuid).c_str(), addr.c_str(), port);
+      }
       socket.reset(new SocketCore());
       socket->establishConnection(addr, port);
 
@@ -115,7 +119,10 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     SharedHandle<SocketCore> pooledSocket =
       e->popPooledSocket(resolvedAddresses, req->getPort());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
+      if(logger->info()) {
+        logger->info(MSG_CONNECTING_TO_SERVER,
+                     util::itos(cuid).c_str(), addr.c_str(), port);
+      }
       socket.reset(new SocketCore());
       socket->establishConnection(addr, port);
     } else {

@@ -243,7 +243,10 @@ bool FtpNegotiationCommand::recvPwd()
     throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
   ftp->setBaseWorkingDir(pwd);
-  logger->info("CUID#%d - base working directory is '%s'", cuid, pwd.c_str());
+  if(logger->info()) {
+    logger->info("CUID#%s - base working directory is '%s'",
+                 util::itos(cuid).c_str(), pwd.c_str());
+  }
   sequence = SEQ_SEND_CWD;
   return true;
 }
@@ -321,7 +324,9 @@ bool FtpNegotiationCommand::recvMdtm()
       }
     }
   } else {
-    logger->info("CUID#%d - MDTM command failed.", cuid);
+    if(logger->info()) {
+      logger->info("CUID#%s - MDTM command failed.", util::itos(cuid).c_str());
+    }
   }
   sequence = SEQ_SEND_SIZE;
   return true;  
@@ -449,9 +454,10 @@ bool FtpNegotiationCommand::recvSize() {
     }
 
   } else {
-    
-    logger->info("CUID#%d - The remote FTP Server doesn't recognize SIZE command. Continue.", cuid);
-
+    if(logger->info()) {
+      logger->info("CUID#%s - The remote FTP Server doesn't recognize SIZE"
+                   " command. Continue.", util::itos(cuid).c_str());
+    }
     // Even if one of the other servers waiting in the queue supports SIZE
     // command, resuming and segmented downloading are disabled when the first
     // contacted FTP server doesn't support it.
@@ -527,9 +533,11 @@ bool FtpNegotiationCommand::recvPasv() {
     throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
   // make a data connection to the server.
-  logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-               dest.first.c_str(),
-               dest.second);
+  if(logger->info()) {
+    logger->info(MSG_CONNECTING_TO_SERVER, util::itos(cuid).c_str(),
+                 dest.first.c_str(),
+                 dest.second);
+  }
   dataSocket.reset(new SocketCore());
   dataSocket->establishConnection(dest.first, dest.second);
 

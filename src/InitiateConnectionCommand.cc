@@ -48,6 +48,7 @@
 #include "Segment.h"
 #include "a2functional.h"
 #include "InitiateConnectionCommandFactory.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -104,9 +105,11 @@ bool InitiateConnectionCommand::executeInternal() {
         }
         res.resolve(addrs, hostname);
       }
-    logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
-                 hostname.c_str(),
-                 strjoin(addrs.begin(), addrs.end(), ", ").c_str());
+    if(logger->info()) {
+      logger->info(MSG_NAME_RESOLUTION_COMPLETE, util::itos(cuid).c_str(),
+                   hostname.c_str(),
+                   strjoin(addrs.begin(), addrs.end(), ", ").c_str());
+    }
     for(std::vector<std::string>::const_iterator i = addrs.begin(),
           eoi = addrs.end(); i != eoi; ++i) {
       e->cacheIPAddress(hostname, *i, port);
@@ -114,8 +117,11 @@ bool InitiateConnectionCommand::executeInternal() {
     ipaddr = e->findCachedIPAddress(hostname, port);
   } else {
     ipaddr = addrs.front();
-    logger->info(MSG_DNS_CACHE_HIT, cuid, hostname.c_str(),
-                 strjoin(addrs.begin(), addrs.end(), ", ").c_str());
+    if(logger->info()) {
+      logger->info(MSG_DNS_CACHE_HIT,
+                   util::itos(cuid).c_str(), hostname.c_str(),
+                   strjoin(addrs.begin(), addrs.end(), ", ").c_str());
+    }
   }
   try {
     Command* command = createNextCommand(hostname, ipaddr, port,
@@ -129,8 +135,11 @@ bool InitiateConnectionCommand::executeInternal() {
     // TODO ipaddr might not be used if pooled sockt was found.
     e->markBadIPAddress(hostname, ipaddr, port);
     if(!e->findCachedIPAddress(hostname, port).empty()) {
-      logger->info(EX_EXCEPTION_CAUGHT, ex);
-      logger->info(MSG_CONNECT_FAILED_AND_RETRY, cuid, ipaddr.c_str(), port);
+      if(logger->info()) {
+        logger->info(EX_EXCEPTION_CAUGHT, ex);
+        logger->info(MSG_CONNECT_FAILED_AND_RETRY,
+                     util::itos(cuid).c_str(), ipaddr.c_str(), port);
+      }
       Command* command =
         InitiateConnectionCommandFactory::createInitiateConnectionCommand
         (cuid, req, _fileEntry, _requestGroup, e);

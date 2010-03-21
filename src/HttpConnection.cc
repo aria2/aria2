@@ -95,7 +95,11 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createRequest();
-  logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
+  if(logger->info()) {
+    logger->info(MSG_SENDING_REQUEST,
+                 util::itos(cuid).c_str(),
+                 eraseConfidentialInfo(request).c_str());
+  }
   _socketBuffer.pushStr(request);
   _socketBuffer.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
@@ -106,7 +110,11 @@ void HttpConnection::sendProxyRequest
 (const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createProxyRequest();
-  logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
+  if(logger->info()) {
+    logger->info(MSG_SENDING_REQUEST,
+                 util::itos(cuid).c_str(),
+                 eraseConfidentialInfo(request).c_str());
+  }
   _socketBuffer.pushStr(request);
   _socketBuffer.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
@@ -139,8 +147,10 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
   size_t putbackDataLength = proc->getPutBackDataLength();
   size -= putbackDataLength;
   socket->readData(buf, size);
-
-  logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
+  if(logger->info()) {
+    logger->info(MSG_RECEIVE_RESPONSE,
+                 util::itos(cuid).c_str(), proc->getHeaderString().c_str());
+  }
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
   SharedHandle<HttpResponse> httpResponse(new HttpResponse());
   httpResponse->setCuid(cuid);

@@ -53,6 +53,7 @@
 #include "RequestGroup.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -169,7 +170,11 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
 bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
   if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    logger->info("CUID#%d - Establishing connection using legacy BitTorrent handshake is disabled by preference.", cuid);
+    if(logger->info()) {
+      logger->info("CUID#%s - Establishing connection using legacy BitTorrent"
+                   " handshake is disabled by preference.",
+                   util::itos(cuid).c_str());
+    }
     if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
       SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
       peer->usedBy(e->newCUID());
@@ -183,7 +188,10 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     return true;
   } else {
     // try legacy BitTorrent handshake
-    logger->info("CUID#%d - Retry using legacy BitTorrent handshake.", cuid);
+    if(logger->info()) {
+      logger->info("CUID#%s - Retry using legacy BitTorrent handshake.",
+                   util::itos(cuid).c_str());
+    }
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e,
                                         _btRuntime, false);

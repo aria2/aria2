@@ -46,6 +46,7 @@
 #include "Option.h"
 #include "SleepCommand.h"
 #include "Logger.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -112,7 +113,8 @@ bool CreateRequestCommand::prepareForRetry(time_t wait)
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }
   if(logger->debug()) {
-    logger->debug("CUID#%d - Reusing CreateRequestCommand", cuid);
+    logger->debug("CUID#%s - Reusing CreateRequestCommand",
+                  util::itos(cuid).c_str());
   }
   SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup, this, wait);
   e->commands.push_back(scom);

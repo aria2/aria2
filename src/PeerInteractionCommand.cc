@@ -244,8 +244,6 @@ PeerInteractionCommand::~PeerInteractionCommand() {
 
   _requestGroup->decreaseNumCommand();
   _btRuntime->decreaseConnections();
-  //logger->debug("CUID#%d - unregistered message factory using ID:%s",
-  //cuid, peer->getId().c_str());
 }
 
 bool PeerInteractionCommand::executeInternal() {

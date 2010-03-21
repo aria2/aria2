@@ -112,29 +112,38 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
             PEER_ID_LENGTH) == 0) {
     throw DL_ABORT_EX
       (StringFormat
-       ("CUID#%d - Drop connection from the same Peer ID", cuid).str());
+       ("CUID#%s - Drop connection from the same Peer ID",
+        util::itos(cuid).c_str()).str());
   }
 
   peer->setPeerId(message->getPeerId());
     
   if(message->isFastExtensionSupported()) {
     peer->setFastExtensionEnabled(true);
-    logger->info(MSG_FAST_EXTENSION_ENABLED, cuid);
+    if(logger->info()) {
+      logger->info(MSG_FAST_EXTENSION_ENABLED, util::itos(cuid).c_str());
+    }
   }
   if(message->isExtendedMessagingEnabled()) {
     peer->setExtendedMessagingEnabled(true);
     if(!_utPexEnabled) {
       _extensionMessageRegistry->removeExtension("ut_pex");
     }
-    logger->info(MSG_EXTENDED_MESSAGING_ENABLED, cuid);
+    if(logger->info()) {
+      logger->info(MSG_EXTENDED_MESSAGING_ENABLED, util::itos(cuid).c_str());
+    }
   }
   if(message->isDHTEnabled()) {
     peer->setDHTEnabled(true);
-    logger->info(MSG_DHT_ENABLED_PEER, cuid);
+    if(logger->info()) {
+      logger->info(MSG_DHT_ENABLED_PEER, util::itos(cuid).c_str());
+    }
   }
-  logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-               peer->ipaddr.c_str(), peer->port,
-               message->toString().c_str());
+  if(logger->info()) {
+    logger->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid).c_str(),
+                 peer->ipaddr.c_str(), peer->port,
+                 message->toString().c_str());
+  }
   return message;
 }
 
@@ -267,7 +276,7 @@ size_t DefaultBtInteractive::receiveMessages() {
     }
     ++msgcount;
     if(logger->info()) {
-      logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
+      logger->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid).c_str(),
                    peer->ipaddr.c_str(), peer->port,
                    message->toString().c_str());
     }
@@ -307,7 +316,7 @@ void DefaultBtInteractive::decideInterest() {
   if(_pieceStorage->hasMissingPiece(peer)) {
     if(!peer->amInterested()) {
       if(logger->debug()) {
-        logger->debug(MSG_PEER_INTERESTED, cuid);
+        logger->debug(MSG_PEER_INTERESTED, util::itos(cuid).c_str());
       }
       dispatcher->
         addMessageToQueue(messageFactory->createInterestedMessage());
@@ -315,7 +324,7 @@ void DefaultBtInteractive::decideInterest() {
   } else {
     if(peer->amInterested()) {
       if(logger->debug()) {
-        logger->debug(MSG_PEER_NOT_INTERESTED, cuid);
+        logger->debug(MSG_PEER_NOT_INTERESTED, util::itos(cuid).c_str());
       }
       dispatcher->
         addMessageToQueue(messageFactory->createNotInterestedMessage());

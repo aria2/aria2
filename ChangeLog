@@ -1,3 +1,46 @@
+2010-03-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Defined cuid_t as int64_t. Removed texts containing "CUID#%D" from
+	translatable texts because it is used in log and debugging
+	purpose.
+	* src/AbstractCommand.cc
+	* src/ActivePeerConnectionCommand.cc
+	* src/BtPieceMessage.cc
+	* src/CUIDCounter.h
+	* src/CheckIntegrityCommand.cc
+	* src/CheckIntegrityDispatcherCommand.cc
+	* src/Command.h
+	* src/CreateRequestCommand.cc
+	* src/DHTEntryPointNameResolveCommand.cc
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DownloadCommand.cc
+	* src/FileAllocationCommand.cc
+	* src/FileAllocationDispatcherCommand.cc
+	* src/FtpConnection.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpConnection.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpListenCommand.cc
+	* src/HttpResponse.cc
+	* src/HttpServerBodyCommand.cc
+	* src/HttpServerCommand.cc
+	* src/HttpServerResponseCommand.cc
+	* src/InitiateConnectionCommand.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/MSEHandshake.cc
+	* src/PeerAbstractCommand.cc
+	* src/PeerConnection.cc
+	* src/PeerInitiateConnectionCommand.cc
+	* src/PeerInteractionCommand.cc
+	* src/PeerListenCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/SegmentMan.cc
+	* src/SimpleBtMessage.cc
+	* src/TrackerWatcherCommand.cc
+	* src/message.h
+
 2010-03-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use gid_t type for gid.

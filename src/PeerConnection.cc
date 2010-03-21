@@ -48,6 +48,7 @@
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
 #include "StringFormat.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -121,9 +122,10 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
       }
       // we got EOF
       if(logger->debug()) {
-        logger->debug("CUID#%d - In PeerConnection::receiveMessage(),"
+        logger->debug("CUID#%s - In PeerConnection::receiveMessage(),"
                       " remain=%lu",
-                      cuid, static_cast<unsigned long>(temp));
+                      util::itos(cuid).c_str(),
+                      static_cast<unsigned long>(temp));
       }
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
@@ -154,9 +156,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
       }
       // we got EOF
       if(logger->debug()) {
-        logger->debug("CUID#%d - In PeerConnection::receiveMessage(),"
+        logger->debug("CUID#%s - In PeerConnection::receiveMessage(),"
                       " payloadlen=%lu, remaining=%lu",
-                      cuid,
+                      util::itos(cuid).c_str(),
                       static_cast<unsigned long>(currentPayloadLength),
                       static_cast<unsigned long>(temp));
       }
@@ -207,8 +209,8 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
         // we got EOF
         if(logger->debug()) {
           logger->debug
-            ("CUID#%d - In PeerConnection::receiveHandshake(), remain=%lu",
-             cuid, static_cast<unsigned long>(temp));
+            ("CUID#%s - In PeerConnection::receiveHandshake(), remain=%lu",
+             util::itos(cuid).c_str(), static_cast<unsigned long>(temp));
         }
         throw DL_ABORT_EX(EX_EOF_FROM_PEER);
       }

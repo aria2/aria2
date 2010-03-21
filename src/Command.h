@@ -44,7 +44,7 @@ class Logger;
 
 typedef int32_t CommandUuid;
 
-typedef int32_t cuid_t;
+typedef int64_t cuid_t;
 
 class Command {
 public:

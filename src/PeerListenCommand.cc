@@ -47,6 +47,7 @@
 #include "Socket.h"
 #include "SimpleRandomizer.h"
 #include "FileEntry.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -88,7 +89,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       logger->notice("BitTorrent: listening to port %d", port);
       return true;
     } catch(RecoverableException& ex) {
-      logger->error(MSG_BIND_FAILURE, ex, cuid, port);
+      logger->error(MSG_BIND_FAILURE, ex, util::itos(cuid).c_str(), port);
       socket->closeConnection();
     }
   }
@@ -128,11 +129,11 @@ bool PeerListenCommand::execute() {
         logger->debug("Accepted the connection from %s:%u.",
                       peer->ipaddr.c_str(),
                       peer->port);
-        logger->debug("Added CUID#%d to receive BitTorrent/MSE handshake.",
-                      cuid);
+        logger->debug("Added CUID#%s to receive BitTorrent/MSE handshake.",
+                      util::itos(cuid).c_str());
       }
     } catch(RecoverableException& ex) {
-      logger->debug(MSG_ACCEPT_FAILURE, ex, cuid);
+      logger->debug(MSG_ACCEPT_FAILURE, ex, util::itos(cuid).c_str());
     }               
   }
   e->commands.push_back(this);

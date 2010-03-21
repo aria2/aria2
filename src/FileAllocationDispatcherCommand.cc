@@ -38,6 +38,7 @@
 #include "message.h"
 #include "Logger.h"
 #include "DownloadContext.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -51,7 +52,9 @@ Command* FileAllocationDispatcherCommand::createCommand
 (const SharedHandle<FileAllocationEntry>& entry)
 {
   cuid_t newCUID = _e->newCUID();
-  logger->info(MSG_FILE_ALLOCATION_DISPATCH, newCUID);
+  if(logger->info()) {
+    logger->info(MSG_FILE_ALLOCATION_DISPATCH, util::itos(newCUID).c_str());
+  }
   FileAllocationCommand* command =
     new FileAllocationCommand(newCUID, entry->getRequestGroup(), _e, entry);
   return command;

@@ -50,7 +50,7 @@ public:
 
   cuid_t newID()
   {
-    if(_count == INT32_MAX) {
+    if(_count == INT64_MAX) {
       _count = 0;
     }
     return ++_count;

@@ -42,6 +42,7 @@
 #include "RecoverableException.h"
 #include "FileEntry.h"
 #include "wallclock.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -72,22 +73,31 @@ bool HttpServerResponseCommand::execute()
   try {
     _httpServer->sendResponse();
   } catch(RecoverableException& e) {
-    logger->info("CUID#%d - Error occurred while transmitting response body.",
-                 e, cuid);
+    if(logger->info()) {
+      logger->info("CUID#%s - Error occurred while transmitting response body.",
+                   e, util::itos(cuid).c_str());
+    }
     return true;
   }
   if(_httpServer->sendBufferIsEmpty()) {
-    logger->info("CUID#%d - HttpServer: all response transmitted.", cuid);
+    if(logger->info()) {
+      logger->info("CUID#%s - HttpServer: all response transmitted.",
+                   util::itos(cuid).c_str());
+    }
     if(_httpServer->supportsPersistentConnection()) {
-      logger->info("CUID#%d - Persist connection.", cuid);
+      if(logger->info()) {
+        logger->info("CUID#%s - Persist connection.", util::itos(cuid).c_str());
+      }
       _e->commands.push_back
         (new HttpServerCommand(cuid, _httpServer, _e, _socket));
     }
     return true;
   } else {
     if(_timeout.difference(global::wallclock) >= 10) {
-      logger->info("CUID#%d - HttpServer: Timeout while trasmitting response.",
-                   cuid);
+      if(logger->info()) {
+        logger->info("CUID#%s - HttpServer: Timeout while trasmitting"
+                     " response.", util::itos(cuid).c_str());
+      }
       return true;
     } else {
       _e->commands.push_back(this);

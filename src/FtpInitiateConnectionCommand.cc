@@ -51,6 +51,7 @@
 #include "HttpConnection.h"
 #include "Socket.h"
 #include "DownloadContext.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -76,7 +77,10 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       e->popPooledSocket(options, req->getHost(), req->getPort());
     std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
+      if(logger->info()) {
+        logger->info(MSG_CONNECTING_TO_SERVER,
+                     util::itos(cuid).c_str(), addr.c_str(), port);
+      }
       socket.reset(new SocketCore());
       socket->establishConnection(addr, port);
       
@@ -131,7 +135,10 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     SharedHandle<SocketCore> pooledSocket =
       e->popPooledSocket(options, resolvedAddresses, req->getPort());
     if(pooledSocket.isNull()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, cuid, addr.c_str(), port);
+      if(logger->info()) {
+        logger->info(MSG_CONNECTING_TO_SERVER,
+                     util::itos(cuid).c_str(), addr.c_str(), port);
+      }
       socket.reset(new SocketCore());
       socket->establishConnection(addr, port);
       FtpNegotiationCommand* c =

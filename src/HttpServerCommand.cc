@@ -137,8 +137,10 @@ bool HttpServerCommand::execute()
       }
     }
   } catch(RecoverableException& e) {
-    logger->info("CUID#%d - Error occurred while reading HTTP request",
-                 e, cuid);
+    if(logger->info()) {
+      logger->info("CUID#%s - Error occurred while reading HTTP request",
+                   e, util::itos(cuid).c_str());
+    }
     return true;
   }
 

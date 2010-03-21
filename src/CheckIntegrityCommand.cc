@@ -42,6 +42,7 @@
 #include "DownloadContext.h"
 #include "a2functional.h"
 #include "RecoverableException.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -100,9 +101,10 @@ bool CheckIntegrityCommand::executeInternal()
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
   _e->_checkIntegrityMan->dropPickedEntry();
-  logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
+  logger->error(MSG_FILE_VALIDATION_FAILURE, e, util::itos(cuid).c_str());
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE,
-                cuid, _requestGroup->getDownloadContext()->getBasePath().c_str());
+                util::itos(cuid).c_str(),
+                _requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

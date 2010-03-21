@@ -37,60 +37,67 @@
 
 #include "common.h"
 
-#define MSG_SEGMENT_DOWNLOAD_COMPLETED _("CUID#%d - The download for one segment completed successfully.")
-#define MSG_NO_SEGMENT_AVAILABLE _("CUID#%d - No segment available.")
-#define MSG_CONNECTING_TO_SERVER _("CUID#%d - Connecting to %s:%d")
-#define MSG_SEGMENT_CHANGED _("CUID#%d - The segment changed. We send the request again with new Range header.")
-#define MSG_REDIRECT _("CUID#%d - Redirecting to %s")
-#define MSG_SENDING_REQUEST _("CUID#%d - Requesting:\n%s")
-#define MSG_RECEIVE_RESPONSE _("CUID#%d - Response received:\n%s")
-#define MSG_DOWNLOAD_ABORTED _("CUID#%d - Download aborted. URI=%s")
-#define MSG_RESTARTING_DOWNLOAD _("CUID#%d - Restarting the download. URI=%s")
-#define MSG_TORRENT_DOWNLOAD_ABORTED _("CUID#%d - Download aborted.")
-#define MSG_MAX_TRY _("CUID#%d - %d times attempted, but no success. Download aborted.")
-#define MSG_SEND_PEER_MESSAGE "CUID#%d - To: %s:%d %s"
-#define MSG_SEND_PEER_MESSAGE_WITH_INDEX "CUID#%d - To: %s:%d %s index=%d"
-#define MSG_SEND_PEER_MESSAGE_WITH_BITFIELD "CUID#%d - To: %s:%d %s %s"
-#define MSG_SEND_PEER_MESSAGE_WITH_INDEX_BEGIN_LENGTH "CUID#%d - To: %s:%d %s index=%d, begin=%d, length=%d"
-#define MSG_RECEIVE_PEER_MESSAGE "CUID#%d - From: %s:%d %s"
-#define MSG_GOT_NEW_PIECE _("CUID#%d - we got new piece. index=%d")
-#define MSG_GOT_WRONG_PIECE _("CUID#%d - we got wrong piece. index=%d")
-#define MSG_DOWNLOAD_NOT_COMPLETE _("CUID#%d - Download not complete: %s")
+#define MSG_SEGMENT_DOWNLOAD_COMPLETED                                  \
+  "CUID#%s - The download for one segment completed successfully."
+#define MSG_NO_SEGMENT_AVAILABLE "CUID#%s - No segment available."
+#define MSG_CONNECTING_TO_SERVER "CUID#%s - Connecting to %s:%d"
+#define MSG_REDIRECT "CUID#%s - Redirecting to %s"
+#define MSG_SENDING_REQUEST "CUID#%s - Requesting:\n%s"
+#define MSG_RECEIVE_RESPONSE "CUID#%s - Response received:\n%s"
+#define MSG_DOWNLOAD_ABORTED "CUID#%s - Download aborted. URI=%s"
+#define MSG_RESTARTING_DOWNLOAD "CUID#%s - Restarting the download. URI=%s"
+#define MSG_TORRENT_DOWNLOAD_ABORTED "CUID#%s - Download aborted."
+#define MSG_MAX_TRY                                                     \
+  "CUID#%s - %d times attempted, but no success. Download aborted."
+#define MSG_SEND_PEER_MESSAGE "CUID#%s - To: %s:%d %s"
+#define MSG_RECEIVE_PEER_MESSAGE "CUID#%s - From: %s:%d %s"
+#define MSG_GOT_NEW_PIECE "CUID#%s - we got new piece. index=%d"
+#define MSG_GOT_WRONG_PIECE "CUID#%s - we got wrong piece. index=%d"
+#define MSG_DOWNLOAD_NOT_COMPLETE "CUID#%s - Download not complete: %s"
 #define MSG_DOWNLOAD_ALREADY_COMPLETED _("#%d - Download has already completed: %s")
-#define MSG_GOOD_CHECKSUM _("CUID#%d - Good checksum: %s")
-#define MSG_BAD_CHECKSUM _("CUID#%d - Bad checksum: %s")
-#define MSG_RESOLVING_HOSTNAME _("CUID#%d - Resolving hostname %s")
-#define MSG_NAME_RESOLUTION_COMPLETE _("CUID#%d - Name resolution complete: %s -> %s")
-#define MSG_NAME_RESOLUTION_FAILED _("CUID#%d - Name resolution for %s failed:%s")
-#define MSG_DNS_CACHE_HIT _("CUID#%d - DNS cache hit: %s -> %s")
-#define MSG_ABORT_REQUESTED _("CUID#%d - Abort requested.")
-#define MSG_CONNECTING_TO_PEER _("CUID#%d - Connecting to the peer %s")
-#define MSG_PIECE_RECEIVED _("CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, blockIndex=%d")
-#define MSG_PIECE_BITFIELD _("CUID#%d - Piece bitfield %s")
-#define MSG_REJECT_PIECE_CHOKED _("CUID#%d - Reject piece message in queue because the peer has been choked. index=%d, begin=%d, length=%d")
-#define MSG_REJECT_PIECE_CANCEL _("CUID#%d - Reject piece message in queue because cancel message received. index=%d, begin=%d, length=%d")
-#define MSG_FILE_VALIDATION_FAILURE _("CUID#%d - Exception caught while validating file integrity.")
-#define MSG_PEER_INTERESTED _("CUID#%d - Interested in the peer")
-#define MSG_PEER_NOT_INTERESTED _("CUID#%d - Not interested in the peer")
-#define MSG_DELETING_REQUEST_SLOT _("CUID#%d - Deleting request slot index=%d, blockIndex=%d")
-#define MSG_DELETING_REQUEST_SLOT_CHOKED _("CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost got choked.")
-#define MSG_DELETING_REQUEST_SLOT_TIMEOUT _("CUID#%d - Deleting request slot blockIndex=%d because of time out")
-#define MSG_DELETING_REQUEST_SLOT_ACQUIRED _("CUID#%d - Deleting request slot blockIndex=%d because the block has been acquired.")
-#define MSG_FAST_EXTENSION_ENABLED _("CUID#%d - Fast extension enabled.")
-#define MSG_EXTENDED_MESSAGING_ENABLED _("CUID#%d - Extended Messaging enabled.")
-#define MSG_FILE_ALLOCATION_FAILURE _("CUID#%d - Exception caught while allocating file space.")
-#define MSG_CONTENT_DISPOSITION_DETECTED _("CUID#%d - Content-Disposition detected. Use %s as filename")
-#define MSG_PEER_BANNED _("CUID#%d - Peer %s:%d banned.")
-#define MSG_LISTENING_PORT _("CUID#%d - Using port %d for accepting new connections")
-#define MSG_BIND_FAILURE _("CUID#%d - An error occurred while binding port=%d")
-#define MSG_INCOMING_PEER_CONNECTION _("CUID#%d - Incoming connection, adding new command CUID#%d")
-#define MSG_ACCEPT_FAILURE _("CUID#%d - Error in accepting connection")
-#define MSG_TRACKER_RESPONSE_PROCESSING_FAILED _("CUID#%d - Error occurred while processing tracker response.")
-#define MSG_TRACKER_REQUEST_CREATION_FAILED _("CUID#%d - Cannot create tracker request.")
-#define MSG_CREATING_TRACKER_REQUEST _("CUID#%d - Creating new tracker request command #%d")
-#define MSG_DHT_ENABLED_PEER _("CUID#%d - The peer is DHT-enabled.")
-#define MSG_CONNECT_FAILED_AND_RETRY "CUID#%d - Could not to connect to %s:%u." \
-  " Trying another address"
+#define MSG_RESOLVING_HOSTNAME "CUID#%s - Resolving hostname %s"
+#define MSG_NAME_RESOLUTION_COMPLETE                    \
+  "CUID#%s - Name resolution complete: %s -> %s"
+#define MSG_NAME_RESOLUTION_FAILED                      \
+  "CUID#%s - Name resolution for %s failed:%s"
+#define MSG_DNS_CACHE_HIT "CUID#%s - DNS cache hit: %s -> %s"
+#define MSG_CONNECTING_TO_PEER "CUID#%s - Connecting to the peer %s"
+#define MSG_PIECE_RECEIVED                                              \
+  "CUID#%s - Piece received. index=%d, begin=%d, length=%d, offset=%llu," \
+  " blockIndex=%d"
+#define MSG_PIECE_BITFIELD "CUID#%s - Piece bitfield %s"
+#define MSG_REJECT_PIECE_CHOKED                                         \
+  "CUID#%s - Reject piece message in queue because the peer has been choked." \
+  " index=%d, begin=%d, length=%d"
+#define MSG_REJECT_PIECE_CANCEL                                         \
+  "CUID#%s - Reject piece message in queue because cancel message received." \
+  " index=%d, begin=%d, length=%d"
+#define MSG_FILE_VALIDATION_FAILURE                             \
+  "CUID#%s - Exception caught while validating file integrity."
+#define MSG_PEER_INTERESTED "CUID#%s - Interested in the peer"
+#define MSG_PEER_NOT_INTERESTED "CUID#%s - Not interested in the peer"
+#define MSG_DELETING_REQUEST_SLOT "CUID#%s - Deleting request slot index=%d, blockIndex=%d"
+#define MSG_DELETING_REQUEST_SLOT_CHOKED "CUID#%s - Deleting request slot index=%d, blockIndex=%d because localhost got choked."
+#define MSG_DELETING_REQUEST_SLOT_TIMEOUT "CUID#%s - Deleting request slot blockIndex=%d because of time out"
+#define MSG_DELETING_REQUEST_SLOT_ACQUIRED "CUID#%s - Deleting request slot blockIndex=%d because the block has been acquired."
+#define MSG_FAST_EXTENSION_ENABLED "CUID#%s - Fast extension enabled."
+#define MSG_EXTENDED_MESSAGING_ENABLED "CUID#%s - Extended Messaging enabled."
+#define MSG_FILE_ALLOCATION_FAILURE                             \
+  "CUID#%s - Exception caught while allocating file space."
+#define MSG_CONTENT_DISPOSITION_DETECTED                        \
+  "CUID#%s - Content-Disposition detected. Use %s as filename"
+#define MSG_PEER_BANNED "CUID#%s - Peer %s:%d banned."
+#define MSG_LISTENING_PORT                                      \
+  "CUID#%s - Using port %d for accepting new connections"
+#define MSG_BIND_FAILURE "CUID#%s - An error occurred while binding port=%d"
+#define MSG_INCOMING_PEER_CONNECTION                            \
+  "CUID#%s - Incoming connection, adding new command CUID#%s"
+#define MSG_ACCEPT_FAILURE "CUID#%s - Error in accepting connection"
+#define MSG_TRACKER_RESPONSE_PROCESSING_FAILED                  \
+  "CUID#%s - Error occurred while processing tracker response."
+#define MSG_DHT_ENABLED_PEER "CUID#%s - The peer is DHT-enabled."
+#define MSG_CONNECT_FAILED_AND_RETRY            \
+  "CUID#%s - Could not to connect to %s:%u. Trying another address"
 
 #define MSG_UNRECOGNIZED_URI _("Unrecognized URI or unsupported protocol: %s")
 #define MSG_TRACKER_WARNING_MESSAGE _("Tracker returned warning message: %s")
@@ -115,11 +122,11 @@
 #define MSG_REMOVED_HAVE_ENTRY _("Removed %d have entries.")
 #define MSG_VALIDATING_FILE _("Validating file %s")
 #define MSG_ALLOCATION_COMPLETED _("%d seconds to allocate %s byte(s)")
-#define MSG_FILE_ALLOCATION_DISPATCH _("Dispatching FileAllocationCommand for CUID#%d.")
+#define MSG_FILE_ALLOCATION_DISPATCH                    \
+  "Dispatching FileAllocationCommand for CUID#%s."
 #define MSG_METALINK_QUEUEING _("Metalink: Queueing %s for download.")
 #define MSG_FILE_DOWNLOAD_COMPLETED _("Download complete: %s")
 #define MSG_SEEDING_END _("Seeding is over.")
-#define MSG_SEGMENT_FORWARDING _("CUID#%d cancels segment index=%d. CUID#%d handles it instead.")
 #define MSG_NO_CHUNK_CHECKSUM _("No chunk to verify.")
 #define MSG_GOOD_CHUNK_CHECKSUM _("Good chunk checksum. hash=%s")
 #define MSG_LOADING_COOKIE_FAILED _("Failed to load cookies from %s")

@@ -51,6 +51,7 @@
 #include "XmlRpcResponse.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -116,8 +117,10 @@ bool HttpServerBodyCommand::execute()
       }
     }
   } catch(RecoverableException& e) {
-    logger->info("CUID#%d - Error occurred while reading HTTP request body",
-                 e, cuid);
+    if(logger->info()) {
+      logger->info("CUID#%s - Error occurred while reading HTTP request body",
+                   e, util::itos(cuid).c_str());
+    }
     return true;
   }
 

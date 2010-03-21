@@ -38,6 +38,7 @@
 #include "message.h"
 #include "Logger.h"
 #include "FileEntry.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -54,8 +55,10 @@ Command* CheckIntegrityDispatcherCommand::createCommand
 (const SharedHandle<CheckIntegrityEntry>& entry)
 {
   cuid_t newCUID = _e->newCUID();
-  logger->info("CUID#%d - Dispatching CheckIntegrityCommand CUID#%d.",
-               cuid, newCUID);
+  if(logger->info()) {
+    logger->info("CUID#%s - Dispatching CheckIntegrityCommand CUID#%s.",
+                 util::itos(cuid).c_str(), util::itos(newCUID).c_str());
+  }
   return new CheckIntegrityCommand
     (newCUID, entry->getRequestGroup(), _e, entry);
 }
