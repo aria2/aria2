@@ -668,7 +668,7 @@ void XmlRpcMethodTest::testGetVersion()
 void XmlRpcMethodTest::testGatherStoppedDownload()
 {
   std::vector<SharedHandle<FileEntry> > fileEntries;
-  std::vector<int32_t> followedBy;
+  std::vector<gid_t> followedBy;
   followedBy.push_back(3);
   followedBy.push_back(4);
   SharedHandle<DownloadResult> d
@@ -767,7 +767,7 @@ void XmlRpcMethodTest::testChangePosition()
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((int64_t)1, res._param.i());
   CPPUNIT_ASSERT_EQUAL
-    ((int32_t)1, _e->_requestGroupMan->getReservedGroups()[1]->getGID());
+    ((gid_t)1, _e->_requestGroupMan->getReservedGroups()[1]->getGID());
 }
 
 void XmlRpcMethodTest::testChangePosition_fail()

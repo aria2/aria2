@@ -131,19 +131,26 @@ bool BtDependency::resolve()
       }
     } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);
-      _logger->info("BtDependency for GID#%d failed. Go without Bt.",
-                    _dependant->getGID());
+      if(_logger->info()) {
+        _logger->info("BtDependency for GID#%s failed. Go without Bt.",
+                      util::itos(_dependant->getGID()).c_str());
+      }
       return true;
     }
-    _logger->info("Dependency resolved for GID#%d", _dependant->getGID());
+    if(_logger->info()) {
+      _logger->info("Dependency resolved for GID#%s",
+                    util::itos(_dependant->getGID()).c_str());
+    }
     _dependant->setDownloadContext(context);
     return true;
   } else if(_dependee->getNumCommand() == 0) {
     // _dependee's download failed.
     // cut reference here
     _dependee.reset();
-    _logger->info("BtDependency for GID#%d failed. Go without Bt.",
-                  _dependant->getGID());    
+    if(_logger->info()) {
+      _logger->info("BtDependency for GID#%s failed. Go without Bt.",
+                    util::itos(_dependant->getGID()).c_str());
+    }
     return true;
   } else {
     return false;

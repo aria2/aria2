@@ -234,7 +234,7 @@ bool HttpResponseCommand::handleDefaultEncoding
     _requestGroup->getPieceStorage()->markAllPiecesDone();
 
     logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                   _requestGroup->getGID(),
+                   util::itos(_requestGroup->getGID()).c_str(),
                    _requestGroup->getFirstFilePath().c_str());
 
     return true;
@@ -330,7 +330,7 @@ bool HttpResponseCommand::handleOtherEncoding
     _requestGroup->getPieceStorage()->markAllPiecesDone();
 
     logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                   _requestGroup->getGID(),
+                   util::itos(_requestGroup->getGID()).c_str(),
                    _requestGroup->getFirstFilePath().c_str());
 
     poolConnection();

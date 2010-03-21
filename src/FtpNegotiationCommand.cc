@@ -377,7 +377,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
 
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                     _requestGroup->getGID(),
+                     util::itos(_requestGroup->getGID()).c_str(),
                      _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();
@@ -416,7 +416,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                     _requestGroup->getGID(),
+                     util::itos(_requestGroup->getGID()).c_str(),
                      _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();

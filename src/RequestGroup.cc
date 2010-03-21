@@ -392,7 +392,8 @@ void RequestGroup::createInitialCommand
       if(!infoFile->exists() && downloadFinishedByFileLength()) {
         _pieceStorage->markAllPiecesDone();
         _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        _gid, _downloadContext->getBasePath().c_str());
+                        util::itos(_gid).c_str(),
+                        _downloadContext->getBasePath().c_str());
       } else {
         loadAndOpenFile(infoFile);
         SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
@@ -825,7 +826,7 @@ void RequestGroup::decreaseNumCommand()
   --_numCommand;
   if(!_numCommand && _requestGroupMan) {
     if(_logger->debug()) {
-      _logger->debug("GID#%d - Request queue check", _gid);
+      _logger->debug("GID#%s - Request queue check", util::itos(_gid).c_str());
     }
     _requestGroupMan->requestQueueCheck();
   }
@@ -1015,7 +1016,8 @@ bool RequestGroup::needsFileAllocation() const
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
   if(_logger->debug()) {
-    _logger->debug("GID#%d - Creating DownloadResult.", _gid);
+    _logger->debug("GID#%s - Creating DownloadResult.",
+                   util::itos(_gid).c_str());
   }
   uint64_t sessionDownloadLength = 0;
 
@@ -1164,7 +1166,7 @@ void RequestGroup::setDownloadContext
 
 gid_t RequestGroup::newGID()
 {
-  if(_gidCounter == INT32_MAX) {
+  if(_gidCounter == INT64_MAX) {
     _gidCounter = 0;
   }
   return ++_gidCounter;

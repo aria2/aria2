@@ -73,7 +73,7 @@ class BtRuntime;
 class PeerStorage;
 #endif // ENABLE_BITTORRENT
 
-typedef int32_t gid_t;
+typedef int64_t gid_t;
 
 class RequestGroup {
 public:

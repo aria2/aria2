@@ -197,7 +197,8 @@ size_t RequestGroupMan::changeReservedGroupPosition
     findByGID(_reservedGroups.begin(), _reservedGroups.end(), gid);
   if(i == _reservedGroups.end()) {
     throw DL_ABORT_EX
-      (StringFormat("GID#%d not found in the waiting queue.", gid).str());
+      (StringFormat("GID#%s not found in the waiting queue.",
+                    util::itos(gid).c_str()).str());
   }
   SharedHandle<RequestGroup> rg = *i;
   const size_t maxPos = _reservedGroups.size()-1;
@@ -247,8 +248,8 @@ bool RequestGroupMan::removeReservedGroup(gid_t gid)
 
 static void executeHook(const std::string& command, gid_t gid)
 {
-  LogFactory::getInstance()->info("Executing user command: %s %d",
-                                  command.c_str(), gid);
+  LogFactory::getInstance()->info("Executing user command: %s %s",
+                                  command.c_str(), util::itos(gid).c_str());
 #ifndef __MINGW32__
   pid_t cpid = fork();
   if(cpid == -1) {

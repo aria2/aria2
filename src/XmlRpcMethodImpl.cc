@@ -292,7 +292,7 @@ static BDE removeDownload
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
 
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
 
@@ -300,13 +300,15 @@ static BDE removeDownload
     group = e->_requestGroupMan->findReservedGroup(gid);
     if(group.isNull()) {
       throw DL_ABORT_EX
-        (StringFormat("Active Download not found for GID#%d", gid).str());
+        (StringFormat("Active Download not found for GID#%s",
+                      util::itos(gid).c_str()).str());
     }
     if(group->isDependencyResolved()) {
       e->_requestGroupMan->removeReservedGroup(gid);
     } else {
       throw DL_ABORT_EX
-        (StringFormat("GID#%d cannot be removed now", gid).str());
+        (StringFormat("GID#%s cannot be removed now",
+                      util::itos(gid).c_str()).str());
     }
   } else {
     if(forceRemove) {
@@ -560,7 +562,7 @@ BDE GetFilesXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
 
   BDE files = BDE::list();
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
@@ -569,7 +571,8 @@ BDE GetFilesXmlRpcMethod::process
       e->_requestGroupMan->findDownloadResult(gid);
     if(dr.isNull()) {
       throw DL_ABORT_EX
-        (StringFormat("No file data is available for GID#%d", gid).str());
+        (StringFormat("No file data is available for GID#%s",
+                      util::itos(gid).c_str()).str());
     } else {
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
     }
@@ -591,12 +594,13 @@ BDE GetUrisXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
-      (StringFormat("No URI data is available for GID#%d", gid).str());
+      (StringFormat("No URI data is available for GID#%s",
+                    util::itos(gid).c_str()).str());
   }
   BDE uriList = BDE::list();
   // TODO Current implementation just returns first FileEntry's URIs.
@@ -617,12 +621,13 @@ BDE GetPeersXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
-      (StringFormat("No peer data is available for GID#%d", gid).str());
+      (StringFormat("No peer data is available for GID#%s",
+                    util::itos(gid).c_str()).str());
   }
   BDE peers = BDE::list();
   BtObject btObject = e->getBtRegistry()->get(group->getGID());
@@ -644,7 +649,7 @@ BDE TellStatusXmlRpcMethod::process
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
 
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
 
@@ -656,7 +661,8 @@ BDE TellStatusXmlRpcMethod::process
         e->_requestGroupMan->findDownloadResult(gid);
       if(ds.isNull()) {
         throw DL_ABORT_EX
-          (StringFormat("No such download for GID#%d", gid).str());
+          (StringFormat("No such download for GID#%s",
+                        util::itos(gid).c_str()).str());
       }
       gatherStoppedDownload(entryDict, ds);
     } else {
@@ -728,12 +734,13 @@ BDE ChangeOptionXmlRpcMethod::process
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }  
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
-      (StringFormat("Cannot change option for GID#%d", gid).str());
+      (StringFormat("Cannot change option for GID#%s",
+                    util::itos(gid).c_str()).str());
   }
   SharedHandle<Option> option(new Option());
   if(params.size() > 1 && params[1].isDict()) {
@@ -823,12 +830,13 @@ BDE GetOptionXmlRpcMethod::process
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }  
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
 
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
-      (StringFormat("Cannot get option for GID#%d", gid).str());
+      (StringFormat("Cannot get option for GID#%s",
+                    util::itos(gid).c_str()).str());
   }
   BDE result = BDE::dict();
   SharedHandle<Option> option = group->getOption();
@@ -860,7 +868,7 @@ BDE ChangePositionXmlRpcMethod::process
      !params[0].isString() || !params[1].isInteger() || !params[2].isString()) {
     throw DL_ABORT_EX("Illegal argument.");
   }
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
   int pos = params[1].i();
   const std::string& howStr = params[2].s();
   RequestGroupMan::HOW how;
@@ -896,10 +904,11 @@ BDE GetServersXmlRpcMethod::process
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX("Bad request");
   }
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
   SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
   if(group.isNull()) {
-    throw DL_ABORT_EX(StringFormat("No active download for GID#%d", gid).str());
+    throw DL_ABORT_EX(StringFormat("No active download for GID#%s",
+                                   util::itos(gid).c_str()).str());
   }
   SharedHandle<DownloadContext> dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
@@ -946,14 +955,15 @@ BDE ChangeUriXmlRpcMethod::process
   bool posGiven = false;
   getPosParam(params, 4, posGiven, pos);
 
-  gid_t gid = util::parseInt(params[0].s());
+  gid_t gid = util::parseLLInt(params[0].s());
   size_t index = params[1].i()-1;
   const BDE& deluris = params[2];
   const BDE& adduris = params[3];
   SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
-      (StringFormat("Cannot remove URIs from GID#%d", gid).str());
+      (StringFormat("Cannot remove URIs from GID#%s",
+                    util::itos(gid).c_str()).str());
   }
   SharedHandle<DownloadContext> dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
