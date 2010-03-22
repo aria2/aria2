@@ -61,14 +61,7 @@ FtpFinishDownloadCommand::FtpFinishDownloadCommand
  const SharedHandle<SocketCore>& socket)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
    _ftpConnection(ftpConnection)
-{
-  e->addSocketForReadCheck(socket, this);
-}
-
-FtpFinishDownloadCommand::~FtpFinishDownloadCommand()
-{
-  e->deleteSocketForReadCheck(socket, this);
-}
+{}
 
 // overrides AbstractCommand::execute().
 // AbstractCommand::_segments is empty.
