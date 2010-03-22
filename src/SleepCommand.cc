@@ -47,9 +47,7 @@ SleepCommand::SleepCommand(cuid_t cuid, DownloadEngine* e,
   nextCommand(nextCommand), wait(wait) {}
 
 SleepCommand::~SleepCommand() {
-  if(nextCommand) {
-    delete(nextCommand);
-  }
+  delete nextCommand;
 }
 
 bool SleepCommand::execute() {

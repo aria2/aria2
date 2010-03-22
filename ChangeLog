@@ -1,5 +1,10 @@
 2010-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/SleepCommand.cc
+
+2010-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Do exact match if IP address is specified in --no-proxy.
 	* src/AbstractCommand.cc
 
