@@ -1,5 +1,10 @@
 2010-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Do exact match if IP address is specified in --no-proxy.
+	* src/AbstractCommand.cc
+
+2010-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that socket is added to EventPoll object twice. This
 	is because derived class FtpFinishDownloadCommand adds socket to
 	EventPoll object while base class AbstractCommand does that

@@ -464,7 +464,11 @@ static bool inNoProxy(const SharedHandle<Request>& req,
         eoi = entries.end(); i != eoi; ++i) {
     std::string::size_type slashpos = (*i).find('/');
     if(slashpos == std::string::npos) {
-      if(domainMatch(*i)) {
+      if(util::isNumericHost(*i)) {
+        if(req->getHost() == *i) {
+          return true;
+        }
+      } else if(domainMatch(*i)) {
         return true;
       }
     } else {
