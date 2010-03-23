@@ -46,7 +46,13 @@
 
 namespace aria2 {
 
-HttpHeaderProcessor::HttpHeaderProcessor():_limit(4096) {}
+HttpHeaderProcessor::HttpHeaderProcessor():
+  _limit(21/*lines*/*8190/*per line*/) {}
+// The above values come from Apache's documentation
+// http://httpd.apache.org/docs/2.2/en/mod/core.html: See
+// LimitRequestFieldSize and LimitRequestLine directive.  Also the
+// page states that the number of request fields rarely exceeds 20.
+// aria2 uses this class in both client and server side.
 
 HttpHeaderProcessor::~HttpHeaderProcessor() {}
 

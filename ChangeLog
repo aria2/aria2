@@ -1,3 +1,8 @@
+2010-03-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Redefined the maximum length of buffer used for HTTP header.
+	* src/HttpHeaderProcessor.cc
+
 2010-03-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code cleanup
