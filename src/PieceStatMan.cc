@@ -37,6 +37,7 @@
 #include <algorithm>
 
 #include "SimpleRandomizer.h"
+#include "bitfield.h"
 
 namespace aria2 {
 
@@ -106,16 +107,12 @@ public:
 void PieceStatMan::addPieceStats(const unsigned char* bitfield,
                                  size_t bitfieldLength)
 {
-  size_t index = 0;
-  for(size_t bi = 0; bi < bitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if(bitfield[bi]&mask) {
-        _pieceStats[index]->addCount();
-      }
+  const size_t nbits = _pieceStats.size();
+  assert(nbits <= bitfieldLength*8);
+  for(size_t i = 0; i < nbits; ++i) {
+    if(bitfield::test(bitfield, nbits, i)) {
+      _pieceStats[i]->addCount();
     }
-
   }
   std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
             PieceStatRarer(_pieceStats));
@@ -124,16 +121,12 @@ void PieceStatMan::addPieceStats(const unsigned char* bitfield,
 void PieceStatMan::subtractPieceStats(const unsigned char* bitfield,
                                       size_t bitfieldLength)
 {
-  size_t index = 0;
-  for(size_t bi = 0; bi < bitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if(bitfield[bi]&mask) {
-        _pieceStats[index]->subCount();
-      }
+  const size_t nbits = _pieceStats.size();
+  assert(nbits <= bitfieldLength*8);
+  for(size_t i = 0; i < nbits; ++i) {
+    if(bitfield::test(bitfield, nbits, i)) {
+      _pieceStats[i]->subCount();
     }
-
   }
   std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
             PieceStatRarer(_pieceStats));
@@ -143,18 +136,16 @@ void PieceStatMan::updatePieceStats(const unsigned char* newBitfield,
                                     size_t newBitfieldLength,
                                     const unsigned char* oldBitfield)
 {
-  size_t index = 0;
-  for(size_t bi = 0; bi < newBitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if((newBitfield[bi]&mask) && !(oldBitfield[bi]&mask)) {
-        _pieceStats[index]->addCount();
-      } else if(!(newBitfield[bi]&mask) && (oldBitfield[bi]&mask)) {
-        _pieceStats[index]->subCount();
-      }
+  const size_t nbits = _pieceStats.size();
+  assert(nbits <= newBitfieldLength*8);
+  for(size_t i = 0; i < nbits; ++i) {
+    if(bitfield::test(newBitfield, nbits, i) &&
+       !bitfield::test(oldBitfield, nbits, i)) {
+      _pieceStats[i]->addCount();
+    } else if(!bitfield::test(newBitfield, nbits, i) &&
+              bitfield::test(oldBitfield, nbits, i)) {
+      _pieceStats[i]->subCount();
     }
-
   }
   std::sort(_sortedPieceStatIndexes.begin(), _sortedPieceStatIndexes.end(),
             PieceStatRarer(_pieceStats));

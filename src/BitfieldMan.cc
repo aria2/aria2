@@ -368,7 +368,7 @@ size_t BitfieldMan::countFilteredBlockNow() const {
 
 bool BitfieldMan::setBitInternal(unsigned char* bitfield, size_t index, bool on) {
   if(blocks <= index) { return false; }
-  unsigned char mask = 128 >> index%8;
+  unsigned char mask = 128 >> (index%8);
   if(on) {
     bitfield[index/8] |= mask;
   } else {
@@ -421,11 +421,7 @@ static bool testAllBitSet
       return false;
     }
   }
-  unsigned char b = ~((128 >> (blocks-1)%8)-1);
-  if(bitfield[length-1] != b) {
-    return false;
-  }
-  return true;
+  return bitfield[length-1] == bitfield::lastByteMask(blocks);
 }
 
 bool BitfieldMan::isAllBitSet() const

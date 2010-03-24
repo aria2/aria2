@@ -1,5 +1,11 @@
 2010-03-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Simplified code using lastByteMask
+	* src/BitfieldMan.cc
+	* src/PieceStatMan.cc
+
+2010-03-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten lastByteMask
 	* src/bitfield.h
 
