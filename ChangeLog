@@ -1,3 +1,8 @@
+2010-03-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten lastByteMask
+	* src/bitfield.h
+
 2010-03-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Redefined the maximum length of buffer used for HTTP header.

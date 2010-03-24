@@ -54,7 +54,12 @@ inline unsigned char lastByteMask(size_t nbits)
   if(nbits == 0) {
     return 0;
   } else {
-    return -256 >> (8-((nbits+7)/8*8-nbits));
+    int s = nbits%8;
+    if(s == 0) {
+      return 0xff;
+    } else {
+      return -256 >> s;
+    }
   }
 }
 
