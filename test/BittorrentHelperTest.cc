@@ -317,7 +317,7 @@ void BittorrentHelperTest::testComputeFastSet()
     std::vector<size_t> fastSet;
     computeFastSet(fastSet, ipaddr, numPieces, infoHash, fastSetSize);
     size_t ans[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
-    std::vector<size_t> ansSet(&ans[0], &ans[arrayLength(ans)]);
+    std::vector<size_t> ansSet(vbegin(ans), vend(ans));
     CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet.begin()));
   }
   ipaddr = "10.0.0.1";
@@ -325,7 +325,7 @@ void BittorrentHelperTest::testComputeFastSet()
     std::vector<size_t> fastSet;
     computeFastSet(fastSet, ipaddr, numPieces, infoHash, fastSetSize);
     size_t ans[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
-    std::vector<size_t> ansSet(&ans[0], &ans[arrayLength(ans)]);
+    std::vector<size_t> ansSet(vbegin(ans), vend(ans));
     CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet.begin()));
   }
   // See when pieces < fastSetSize
@@ -334,7 +334,7 @@ void BittorrentHelperTest::testComputeFastSet()
     std::vector<size_t> fastSet;
     computeFastSet(fastSet, ipaddr, numPieces, infoHash, fastSetSize);
     size_t ans[] = { 8, 6, 7, 5, 1, 4, 0, 2, 3 };
-    std::vector<size_t> ansSet(&ans[0], &ans[arrayLength(ans)]);
+    std::vector<size_t> ansSet(vbegin(ans), vend(ans));
     CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet.begin()));
   }
 }

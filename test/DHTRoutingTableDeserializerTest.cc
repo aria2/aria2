@@ -43,8 +43,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
     nodesSrc[i]->setPort(6881+i);
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::vector<SharedHandle<DHTNode> > nodes
-    (&nodesSrc[0], &nodesSrc[arrayLength(nodesSrc)]);
+  std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
   
   DHTRoutingTableSerializer s;
   s.setLocalNode(localNode);

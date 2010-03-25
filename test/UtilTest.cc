@@ -846,33 +846,28 @@ void UtilTest::testJoinPath()
   const std::string dir1dir2file[] = { "dir1", "dir2", "file" };
   CPPUNIT_ASSERT_EQUAL
     (std::string("dir1/dir2/file"),
-     util::joinPath(&dir1dir2file[0],
-                    &dir1dir2file[arrayLength(dir1dir2file)]));
+     util::joinPath(vbegin(dir1dir2file), vend(dir1dir2file)));
 
   const std::string dirparentfile[] = { "dir", "..", "file" };
   CPPUNIT_ASSERT_EQUAL
     (std::string("file"),
-     util::joinPath(&dirparentfile[0],
-                    &dirparentfile[arrayLength(dirparentfile)]));
+     util::joinPath(vbegin(dirparentfile), vend(dirparentfile)));
 
   const std::string dirparentparentfile[] = { "dir", "..", "..", "file" };
   CPPUNIT_ASSERT_EQUAL
     (std::string("file"),
-     util::joinPath(&dirparentparentfile[0],
-                    &dirparentparentfile[arrayLength(dirparentparentfile)]));
+     util::joinPath(vbegin(dirparentparentfile), vend(dirparentparentfile)));
 
   const std::string dirdotfile[] = { "dir", ".", "file" };
   CPPUNIT_ASSERT_EQUAL(std::string("dir/file"),
-                       util::joinPath(&dirdotfile[0],
-                                      &dirdotfile[arrayLength(dirdotfile)]));
+                       util::joinPath(vbegin(dirdotfile), vend(dirdotfile)));
 
   const std::string empty[] = {};
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(&empty[0], &empty[0]));
 
   const std::string parentdot[] = { "..", "." };
   CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       util::joinPath(&parentdot[0],
-                                      &parentdot[arrayLength(parentdot)]));
+                       util::joinPath(vbegin(parentdot), vend(parentdot)));
 }
 
 void UtilTest::testParseIndexPath()

@@ -69,7 +69,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     "http://bravo/file",
     "http://charlie/file"
   };
-  std::vector<std::string> uris(&array[0], &array[arrayLength(array)]);
+  std::vector<std::string> uris(vbegin(array), vend(array));
   _option->put(PREF_SPLIT, "3");
   _option->put(PREF_DIR, "/tmp");
   _option->put(PREF_OUT, "file.out");
@@ -157,7 +157,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
     "http://{alpha, bravo}/file",
     "http://charlie/file"
   };
-  std::vector<std::string> uris(&array[0], &array[arrayLength(array)]);
+  std::vector<std::string> uris(vbegin(array), vend(array));
   _option->put(PREF_SPLIT, "3");
   _option->put(PREF_DIR, "/tmp");
   _option->put(PREF_OUT, "file.out");
@@ -193,7 +193,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     "http://bravo/file",
     "http://charlie/file"
   };
-  std::vector<std::string> uris(&array[0], &array[arrayLength(array)]);
+  std::vector<std::string> uris(vbegin(array), vend(array));
   _option->put(PREF_SPLIT, "3");
   _option->put(PREF_DIR, "/tmp");
   _option->put(PREF_OUT, "file.out");
@@ -241,7 +241,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     "http://charlie/file",
     "test.xml"
   };
-  std::vector<std::string> uris(&array[0], &array[arrayLength(array)]);
+  std::vector<std::string> uris(vbegin(array), vend(array));
   _option->put(PREF_SPLIT, "3");
   _option->put(PREF_METALINK_SERVERS, "2");
   _option->put(PREF_DIR, "/tmp");
@@ -329,7 +329,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     "http://charlie/file"
   };
 
-  std::vector<std::string> auxURIs(&array[0], &array[arrayLength(array)]);
+  std::vector<std::string> auxURIs(vbegin(array), vend(array));
   _option->put(PREF_SPLIT, "5");
   _option->put(PREF_TORRENT_FILE, "test.torrent");
   _option->put(PREF_DIR, "/tmp");

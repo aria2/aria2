@@ -34,7 +34,7 @@ public:
       "http://bravo/file"
     };
     std::vector<std::string> uris;
-    uris.assign(&urisSrc[0], &urisSrc[arrayLength(urisSrc)]);
+    uris.assign(vbegin(urisSrc), vend(urisSrc));
     
     _fileEntry.setUris(uris);
 

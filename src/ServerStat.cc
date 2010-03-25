@@ -167,13 +167,11 @@ void ServerStat::setStatus(STATUS status)
 
 void ServerStat::setStatus(const std::string& status)
 {
-  size_t len = arrayLength(STATUS_STRING);
-  const std::string* p = std::find(&STATUS_STRING[0],
-                                   &STATUS_STRING[len],
+  const std::string* p = std::find(vbegin(STATUS_STRING), vend(STATUS_STRING),
                                    status);
-  if(p != &STATUS_STRING[len]) {
+  if(p != vend(STATUS_STRING)) {
     _status = static_cast<STATUS>(ServerStat::OK+
-                                  std::distance(&STATUS_STRING[0], p));
+                                  std::distance(vbegin(STATUS_STRING), p));
   }
 }
 

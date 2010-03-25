@@ -89,8 +89,7 @@ static const DigestAlgoMap& getDigestAlgos()
     ("sha256", DigestAlgoEntry(GCRY_MD_SHA256, STRENGTH_SHA_256)),
 #endif // HAVE_LIBGCRYPT
   };
-  static const DigestAlgoMap algomap
-    (&digests[0], &digests[arrayLength(digests)]);  
+  static const DigestAlgoMap algomap(vbegin(digests), vend(digests));
   return algomap;
 }
 

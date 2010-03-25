@@ -1,4 +1,11 @@
 #include "DHTRoutingTableSerializer.h"
+
+#include <cstring>
+#include <sstream>
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "Exception.h"
 #include "util.h"
 #include "DHTNode.h"
@@ -6,10 +13,6 @@
 #include "DHTConstants.h"
 #include "bittorrent_helper.h"
 #include "a2netcompat.h"
-#include <cstring>
-#include <sstream>
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -40,8 +43,7 @@ void DHTRoutingTableSerializerTest::testSerialize()
     nodesSrc[i]->setPort(6881+i);
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::vector<SharedHandle<DHTNode> > nodes
-    (&nodesSrc[0], &nodesSrc[arrayLength(nodesSrc)]);
+  std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
   
   DHTRoutingTableSerializer s;
   s.setLocalNode(localNode);

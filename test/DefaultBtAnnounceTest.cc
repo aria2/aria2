@@ -58,7 +58,7 @@ public:
     _dctx.reset(new DownloadContext(pieceLength, totalLength));
     BDE torrentAttrs = BDE::dict();
     torrentAttrs[bittorrent::INFO_HASH] =
-      std::string(&infoHash[0], &infoHash[arrayLength(infoHash)]);
+      std::string(vbegin(infoHash), vend(infoHash));
     _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
     bittorrent::setStaticPeerId(peerId);
 
@@ -282,7 +282,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
                          "http://localhost2/announce" };
 
   BDE announceList = BDE::list();
-  announceList << createAnnounceTier(&urls[0], &urls[arrayLength(urls)]);
+  announceList << createAnnounceTier(vbegin(urls), vend(urls));
   setAnnounceList(_dctx, announceList);
 
   DefaultBtAnnounce btAnnounce(_dctx, _option);
@@ -312,7 +312,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
                          "http://localhost2/announce" };
 
   BDE announceList = BDE::list();
-  announceList << createAnnounceTier(&urls[0], &urls[arrayLength(urls)]);
+  announceList << createAnnounceTier(vbegin(urls), vend(urls));
   setAnnounceList(_dctx, announceList);
 
   DefaultBtAnnounce btAnnounce(_dctx, _option);

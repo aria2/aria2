@@ -690,8 +690,7 @@ void HttpRequestTest::testAddAcceptType()
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(_authConfigFactory, _option.get());
-  httpRequest.addAcceptType(&acceptTypes[0],
-                            &acceptTypes[arrayLength(acceptTypes)]);
+  httpRequest.addAcceptType(vbegin(acceptTypes), vend(acceptTypes));
 
   std::string expectedText =
     "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"

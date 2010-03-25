@@ -35,7 +35,7 @@ public:
     memset(infoHash, 0, sizeof(infoHash));
     BDE torrentAttrs = BDE::dict();
     torrentAttrs[bittorrent::INFO_HASH] =
-      std::string(&infoHash[0], &infoHash[arrayLength(infoHash)]);
+      std::string(vbegin(infoHash), vend(infoHash));
     _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
   }
 

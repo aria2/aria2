@@ -121,7 +121,7 @@ void RequestGroupManTest::testChangeReservedGroupPosition()
     SharedHandle<RequestGroup>(new RequestGroup(_option)),
     SharedHandle<RequestGroup>(new RequestGroup(_option))
   };
-  std::vector<SharedHandle<RequestGroup> > groups(&gs[0], &gs[arrayLength(gs)]);
+  std::vector<SharedHandle<RequestGroup> > groups(vbegin(gs), vend(gs));
   RequestGroupMan rm(groups, 0, _option.get());
 
   CPPUNIT_ASSERT_EQUAL

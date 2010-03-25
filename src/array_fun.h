@@ -57,6 +57,18 @@ size_t arrayLength(T (&a)[0u])
   return 0;
 }
 
+template<typename T, size_t N>
+T* vbegin(T (&a)[N])
+{
+  return a;
+}
+
+template<typename T, size_t N>
+T* vend(T (&a)[N])
+{
+  return a+arrayLength(a);
+}
+
 template<typename T>
 class array_ptr {
 private:

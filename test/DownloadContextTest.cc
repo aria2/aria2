@@ -39,8 +39,7 @@ void DownloadContextTest::testFindFileEntryByOffset()
       SharedHandle<FileEntry>(new FileEntry("file5",3000,3000)),
       SharedHandle<FileEntry>(new FileEntry("file6",0,6000))
     };
-  ctx.setFileEntries(&fileEntries[0],
-                     &fileEntries[arrayLength(fileEntries)]);
+  ctx.setFileEntries(vbegin(fileEntries), vend(fileEntries));
 
   CPPUNIT_ASSERT_EQUAL(std::string("file1"),
                        ctx.findFileEntryByOffset(0)->getPath());

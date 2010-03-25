@@ -89,7 +89,7 @@ void FeatureConfigTest::testFeatureSummary() {
 
   std::string featuresString;
   const std::string delim(", ");
-  std::for_each(&features[0], &features[arrayLength(features)],
+  std::for_each(vbegin(features), vend(features),
                 StringAppend(featuresString, delim));
   // USE util::trimSelf(featureString);
   featuresString = util::trim(featuresString, delim);

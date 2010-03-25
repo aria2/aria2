@@ -117,7 +117,7 @@ FeatureConfig::FeatureConfig() {
     FeatureMap::value_type(FEATURE_FIREFOX3_COOKIE, FIREFOX3_COOKIE_ENABLED),
   };
 
-  _features.insert(&featureArray[0], &featureArray[arrayLength(featureArray)]);
+  _features.insert(vbegin(featureArray), vend(featureArray));
 }
 
 SharedHandle<FeatureConfig> FeatureConfig::getInstance()

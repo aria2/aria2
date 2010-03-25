@@ -155,9 +155,7 @@ const std::set<std::string>& listRequestOptions()
     PREF_REALTIME_CHUNK_CHECKSUM
   };
   static std::set<std::string> requestOptions
-    (&REQUEST_OPTIONS[0],
-     &REQUEST_OPTIONS[arrayLength(REQUEST_OPTIONS)]);;
-
+    (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
   return requestOptions;
 }
 

@@ -72,14 +72,13 @@ public:
     _dctx.reset(new DownloadContext());
     BDE torrentAttrs = BDE::dict();
     torrentAttrs[bittorrent::INFO_HASH] =
-      std::string(&infoHash[0], &infoHash[arrayLength(infoHash)]);
+      std::string(vbegin(infoHash), vend(infoHash));
     _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
     _dctx->setDir(_option->get(PREF_DIR));
     const SharedHandle<FileEntry> fileEntries[] = {
       SharedHandle<FileEntry>(new FileEntry("/path/to/file",totalLength,0))
     };
-    _dctx->setFileEntries(&fileEntries[0],
-                          &fileEntries[arrayLength(fileEntries)]);
+    _dctx->setFileEntries(vbegin(fileEntries), vend(fileEntries));
     _dctx->setPieceLength(pieceLength);
     _peerStorage.reset(new MockPeerStorage());
     _btRuntime.reset(new BtRuntime());

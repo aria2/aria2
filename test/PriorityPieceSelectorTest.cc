@@ -30,7 +30,7 @@ void PriorityPieceSelectorTest::testSelect()
   }
   PriorityPieceSelector selector
     (SharedHandle<PieceSelector>(new MockPieceSelector()));
-  selector.setPriorityPiece(&A[0], &A[arrayLength(A)]);
+  selector.setPriorityPiece(vbegin(A), vend(A));
 
   size_t index;
   CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(), bf.countBlock()));

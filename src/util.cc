@@ -256,16 +256,14 @@ bool inRFC3986ReservedChars(const char c)
     ':' , '/' , '?' , '#' , '[' , ']' , '@',
     '!' , '$' , '&' , '\'' , '(' , ')',
     '*' , '+' , ',' , ';' , '=' };
-  return std::find(&reserved[0], &reserved[arrayLength(reserved)], c) !=
-    &reserved[arrayLength(reserved)];
+  return std::find(vbegin(reserved), vend(reserved), c) != vend(reserved);
 }
 
 bool inRFC3986UnreservedChars(const char c)
 {
   static const char unreserved[] = { '-', '.', '_', '~' };
   return isAlpha(c) || isDigit(c) ||
-    std::find(&unreserved[0], &unreserved[arrayLength(unreserved)], c) !=
-    &unreserved[arrayLength(unreserved)];
+    std::find(vbegin(unreserved), vend(unreserved), c) != vend(unreserved);
 }
 
 bool inRFC2978MIMECharset(const char c)
@@ -276,8 +274,7 @@ bool inRFC2978MIMECharset(const char c)
     '`', '{', '}', '~'
   };
   return isAlpha(c) || isDigit(c) ||
-    std::find(&chars[0], &chars[arrayLength(chars)], c) !=
-    &chars[arrayLength(chars)];
+    std::find(vbegin(chars), vend(chars), c) != vend(chars);
 }
 
 bool inRFC2616HttpToken(const char c)
@@ -287,8 +284,7 @@ bool inRFC2616HttpToken(const char c)
     '^', '_', '`', '|', '~'
   };
   return isAlpha(c) || isDigit(c) ||
-    std::find(&chars[0], &chars[arrayLength(chars)], c) !=
-    &chars[arrayLength(chars)];
+    std::find(vbegin(chars), vend(chars), c) != vend(chars);
 }
 
 std::string percentEncode(const unsigned char* target, size_t len) {
@@ -1245,10 +1241,8 @@ public:
     // We don't escape '/' because we use it as a path separator.
     static const char WIN_INVALID_PATH_CHARS[] =
       { '"', '*', ':', '<', '>', '?', '\\', '|' };
-    if(std::find(&WIN_INVALID_PATH_CHARS[0],
-                 &WIN_INVALID_PATH_CHARS[arrayLength(WIN_INVALID_PATH_CHARS)],
-                 c) !=
-       &WIN_INVALID_PATH_CHARS[arrayLength(WIN_INVALID_PATH_CHARS)]) {
+    if(std::find(vbegin(WIN_INVALID_PATH_CHARS), vend(WIN_INVALID_PATH_CHARS),
+                 c) != vend(WIN_INVALID_PATH_CHARS)) {
       return _repChar;
     }
 #endif // __MINGW32__

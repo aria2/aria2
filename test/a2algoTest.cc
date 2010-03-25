@@ -26,7 +26,7 @@ void a2algoTest::testSelect()
 {
   size_t A[] = { 1,2,3,4,7,10,11,12,13,14,15,100,112,113,114 };
 
-  std::pair<size_t*, size_t> p = max_sequence(&A[0], &A[arrayLength(A)]);
+  std::pair<size_t*, size_t> p = max_sequence(vbegin(A), vend(A));
   CPPUNIT_ASSERT_EQUAL(&A[5], p.first);
   CPPUNIT_ASSERT_EQUAL((size_t)6, p.second);
 

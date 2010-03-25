@@ -212,7 +212,7 @@ Time Time::parseHTTPDate(const std::string& datetime)
     &parseRFC850Ext,
   };
   for(Time (**funcsp)(const std::string&) = &funcs[0];
-      funcsp != &funcs[arrayLength(funcs)]; ++funcsp) {
+      funcsp != vend(funcs); ++funcsp) {
     Time t = (*funcsp)(datetime);
     if(t.good()) {
       return t;

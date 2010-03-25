@@ -147,8 +147,7 @@ const std::set<std::string>& listChangeableOptions()
     PREF_MAX_DOWNLOAD_LIMIT,
     PREF_MAX_UPLOAD_LIMIT
   };
-  static std::set<std::string> options
-    (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);
+  static std::set<std::string> options(vbegin(OPTIONS), vend(OPTIONS));
   return options;
 }
 
@@ -173,8 +172,7 @@ const std::set<std::string>& listChangeableGlobalOptions()
     PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
     PREF_MAX_CONCURRENT_DOWNLOADS,
   };
-  static std::set<std::string> options
-    (&OPTIONS[0], &OPTIONS[arrayLength(OPTIONS)]);
+  static std::set<std::string> options(vbegin(OPTIONS), vend(OPTIONS));
   return options;
 }
 

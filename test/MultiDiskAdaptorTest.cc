@@ -68,8 +68,7 @@ std::vector<SharedHandle<FileEntry> > createEntries() {
   //                         *** file6
   //                            |file7
   //                            ** file8
-  std::vector<SharedHandle<FileEntry> > entries(&array[0],
-                                                &array[arrayLength(array)]);
+  std::vector<SharedHandle<FileEntry> > entries(vbegin(array), vend(array));
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i = entries.begin();
       i != entries.end(); ++i) {
     File((*i)->getPath()).remove();
@@ -376,7 +375,7 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
     createFile(entries[i]->getPath(), entries[i]->getLength()+100);
   }
   std::vector<SharedHandle<FileEntry> > fileEntries
-    (&entries[0], &entries[arrayLength(entries)]);
+    (vbegin(entries), vend(entries));
   
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
@@ -405,7 +404,7 @@ void MultiDiskAdaptorTest::testSize()
     createFile(entries[i]->getPath(), entries[i]->getLength());
   }
   std::vector<SharedHandle<FileEntry> > fileEntries
-    (&entries[0], &entries[arrayLength(entries)]);
+    (vbegin(entries), vend(entries));
   
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
@@ -435,7 +434,7 @@ void MultiDiskAdaptorTest::testUtime()
   entries[2]->setRequested(false);
 
   std::vector<SharedHandle<FileEntry> > fileEntries
-    (&entries[0], &entries[arrayLength(entries)]);
+    (vbegin(entries), vend(entries));
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
 

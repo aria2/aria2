@@ -1,3 +1,37 @@
+2010-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added vbegin() and vend() for fixed sized array.
+	* src/DownloadHandlerConstants.cc
+	* src/FeatureConfig.cc
+	* src/OptionHandlerFactory.cc
+	* src/ServerStat.cc
+	* src/TimeA2.cc
+	* src/XmlRpcMethod.cc
+	* src/array_fun.h
+	* src/download_helper.cc
+	* src/messageDigest.cc
+	* src/util.cc
+	* test/BittorrentHelperTest.cc
+	* test/DHTRoutingTableDeserializerTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DefaultBtAnnounceTest.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/DownloadContextTest.cc
+	* test/DownloadHelperTest.cc
+	* test/FeatureConfigTest.cc
+	* test/FeedbackURISelectorTest.cc
+	* test/HttpRequestTest.cc
+	* test/InOrderURISelectorTest.cc
+	* test/MSEHandshakeTest.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+	* test/PriorityPieceSelectorTest.cc
+	* test/RequestGroupManTest.cc
+	* test/UtilTest.cc
+	* test/XmlRpcMethodTest.cc
+	* test/a2algoTest.cc
+	* test/array_funTest.cc
+
 2010-03-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Simplified code using lastByteMask

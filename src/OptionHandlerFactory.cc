@@ -210,7 +210,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     V_SELECT,
 #endif // !HAVE_EPOLL
                                     std::vector<std::string>
-                                    (&params[0],&params[arrayLength(params)])));
+                                    (vbegin(params), vend(params))));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -286,8 +286,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_LOG_LEVEL,
                                     V_DEBUG,
                                     std::vector<std::string>
-                                    (&params[0],
-                                     &params[arrayLength(params)])));
+                                    (vbegin(params), vend(params))));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -649,7 +648,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_URI_SELECTOR,
                                     V_FEEDBACK,
                                     std::vector<std::string>
-                                    (&params[0], &params[arrayLength(params)])));
+                                    (vbegin(params), vend(params))));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -1379,7 +1378,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_METALINK_PREFERRED_PROTOCOL,
                                     V_NONE,
                                     std::vector<std::string>
-                                    (&params[0], &params[arrayLength(params)])));
+                                    (vbegin(params), vend(params))));
     op->addTag(TAG_METALINK);
     handlers.push_back(op);
   }
