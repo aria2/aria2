@@ -27,7 +27,7 @@ void LongestSequencePieceSelectorTest::testSelect()
 {
   size_t A[] = { 1,2,3,4,7,10,11,12,13,14,15,100,112,113,114 };
   BitfieldMan bf(1024, 1024*256);
-  for(size_t i = 0; i < arrayLength(A); ++i) {
+  for(size_t i = 0; i < A2_ARRAY_LEN(A); ++i) {
     bf.setBit(A[i]);
   }
 

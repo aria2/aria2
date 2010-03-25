@@ -25,7 +25,7 @@ void PriorityPieceSelectorTest::testSelect()
   size_t pieceLength = 1024;
   size_t A[] = { 1,200};
   BitfieldMan bf(pieceLength, pieceLength*256);
-  for(size_t i = 0; i < arrayLength(A); ++i) {
+  for(size_t i = 0; i < A2_ARRAY_LEN(A); ++i) {
     bf.setBit(A[i]);
   }
   PriorityPieceSelector selector

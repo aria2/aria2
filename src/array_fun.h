@@ -41,21 +41,15 @@
 namespace aria2 {
 
 // calculate length of array
-
 template<typename T, size_t N>
-char (&char_array_ref(T (&)[N]))[N];
+char (&char_array_ref_fun(T (&)[N]))[N];
 
-template<typename T, size_t N>
-size_t arrayLength(T (&a)[N])
-{
-  return sizeof(char_array_ref(a));
-}
-
+// For 0 length array
 template<typename T>
-size_t arrayLength(T (&a)[0u])
-{
-  return 0;
-}
+char (&char_array_ref_fun(T (&)[0u]))[0u];
+
+// To calculate size of array at compile time, we use macro here.
+#define A2_ARRAY_LEN(X) sizeof(char_array_ref_fun(X))
 
 template<typename T, size_t N>
 T* vbegin(T (&a)[N])
@@ -66,7 +60,7 @@ T* vbegin(T (&a)[N])
 template<typename T, size_t N>
 T* vend(T (&a)[N])
 {
-  return a+arrayLength(a);
+  return a+N;
 }
 
 template<typename T>

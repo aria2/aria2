@@ -210,7 +210,7 @@ void BitfieldManTest::testFilter()
   std::vector<size_t> out;
   CPPUNIT_ASSERT_EQUAL((size_t)6, btman.getFirstNMissingUnusedIndex(out, 32));
   const size_t ans[] = { 2, 3, 4, 5, 6, 7 };
-  for(size_t i = 0; i < arrayLength(ans); ++i) {
+  for(size_t i = 0; i < A2_ARRAY_LEN(ans); ++i) {
     CPPUNIT_ASSERT_EQUAL(ans[i], out[i]);
   }
   CPPUNIT_ASSERT_EQUAL((uint64_t)12ULL, btman.getFilteredTotalLength());

@@ -1,5 +1,21 @@
 2010-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed arrayLength. Defined A2_ARRAY_LEN as macro to calculate
+	size of array at compile time.
+	* src/array_fun.h
+	* test/BitfieldManTest.cc
+	* test/BtPortMessageTest.cc
+	* test/DHTRoutingTableDeserializerTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DownloadHelperTest.cc
+	* test/LongestSequencePieceSelectorTest.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/OptionParserTest.cc
+	* test/PriorityPieceSelectorTest.cc
+	* test/array_funTest.cc
+
+2010-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added vbegin() and vend() for fixed sized array.
 	* src/DownloadHandlerConstants.cc
 	* src/FeatureConfig.cc

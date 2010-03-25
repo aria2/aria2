@@ -107,14 +107,14 @@ void BtPortMessageTest::testDoReceivedAction()
 
   // 9 nodes to create at least 2 buckets.
   SharedHandle<DHTNode> nodes[9];
-  for(size_t i = 0; i < arrayLength(nodes); ++i) {
+  for(size_t i = 0; i < A2_ARRAY_LEN(nodes); ++i) {
     memset(nodeID, 0, DHT_ID_LENGTH);
     nodeID[DHT_ID_LENGTH-1] = i+1;
     nodes[i].reset(new DHTNode(nodeID));
   }
 
   DHTRoutingTable routingTable(localNode);
-  for(size_t i = 0; i < arrayLength(nodes); ++i) {
+  for(size_t i = 0; i < A2_ARRAY_LEN(nodes); ++i) {
     routingTable.addNode(nodes[i]);
   }
 

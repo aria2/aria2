@@ -164,7 +164,7 @@ void OptionParserTest::testParseArg()
 
   char* const argv[] = { prog, optionAlpha, argAlpha, optionBravo, argBravo,
                          nonopt1, nonopt2 };
-  int argc = arrayLength(argv);
+  int argc = A2_ARRAY_LEN(argv);
 
   std::stringstream s;
   std::vector<std::string> nonopts;

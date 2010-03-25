@@ -67,8 +67,8 @@ void array_funTest::testArrayLength()
   int64_t ia[] = { 1, 2, 3, 4, 5 };
   int64_t zeroLengthArray[] = {};
 
-  CPPUNIT_ASSERT_EQUAL((size_t)5, arrayLength(ia));
-  CPPUNIT_ASSERT_EQUAL((size_t)0, arrayLength(zeroLengthArray));
+  CPPUNIT_ASSERT_EQUAL((size_t)5, A2_ARRAY_LEN(ia));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, A2_ARRAY_LEN(zeroLengthArray));
 }
 
 // Check operator[] in const context.

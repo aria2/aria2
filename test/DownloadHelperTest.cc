@@ -83,7 +83,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     std::vector<std::string> uris;
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
-    for(size_t i = 0; i < arrayLength(array); ++i) {
+    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
@@ -102,11 +102,11 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     std::vector<std::string> uris;
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)5, uris.size());
-    for(size_t i = 0; i < arrayLength(array); ++i) {
+    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
     }
-    for(size_t i = 0; i < 5-arrayLength(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i+arrayLength(array)]);
+    for(size_t i = 0; i < 5-A2_ARRAY_LEN(array); ++i) {
+      CPPUNIT_ASSERT_EQUAL(array[i], uris[i+A2_ARRAY_LEN(array)]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)5, group->getNumConcurrentCommand());
   }
@@ -121,7 +121,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     std::vector<std::string> uris;
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
-    for(size_t i = 0; i < arrayLength(array); ++i) {
+    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)2, group->getNumConcurrentCommand());
@@ -346,7 +346,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     // See -s option is ignored
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
-    for(size_t i = 0; i < arrayLength(array); ++i) {
+    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i]+"/aria2-test/aria2/src/aria2c", uris[i]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)5, group->getNumConcurrentCommand());

@@ -371,7 +371,7 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 256, 0)),
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"2", 512, 256))
   };
-  for(size_t i = 0; i < arrayLength(entries); ++i) {
+  for(size_t i = 0; i < A2_ARRAY_LEN(entries); ++i) {
     createFile(entries[i]->getPath(), entries[i]->getLength()+100);
   }
   std::vector<SharedHandle<FileEntry> > fileEntries
@@ -400,7 +400,7 @@ void MultiDiskAdaptorTest::testSize()
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 1, 0)),
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"2", 1, 1))
   };
-  for(size_t i = 0; i < arrayLength(entries); ++i) {
+  for(size_t i = 0; i < A2_ARRAY_LEN(entries); ++i) {
     createFile(entries[i]->getPath(), entries[i]->getLength());
   }
   std::vector<SharedHandle<FileEntry> > fileEntries
