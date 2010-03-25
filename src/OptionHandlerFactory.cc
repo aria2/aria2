@@ -412,6 +412,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
 #endif // ENABLE_MESSAGE_DIGEST
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_REMOVE_CONTROL_FILE,
+                                    TEXT_REMOVE_CONTROL_FILE,
+                                    V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_STOP,
                                     TEXT_STOP,

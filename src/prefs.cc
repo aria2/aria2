@@ -178,6 +178,8 @@ const std::string PREF_INTERFACE("interface");
 const std::string PREF_DISABLE_IPV6("disable-ipv6");
 // value: true | false
 const std::string PREF_HUMAN_READABLE("human-readable");
+// value: true | false
+const std::string PREF_REMOVE_CONTROL_FILE("remove-control-file");
 
 /**
  * FTP related preferences

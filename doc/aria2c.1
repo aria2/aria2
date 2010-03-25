@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 03/19/2010
+.\"      Date: 03/25/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.9.1a
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "03/19/2010" "Aria2 1\&.9\&.1a" "Aria2 Manual"
+.TH "ARIA2C" "1" "03/25/2010" "Aria2 1\&.9\&.1a" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -1241,6 +1241,28 @@ Make aria2 quiet (no console output)\&. Default:
 .RS 4
 Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided\&. Default:
 \fItrue\fR
+.RE
+.PP
+\fB\-\-remove\-control\-file\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Remove control file before download\&. Using with
+\fB\-\-allow\-overwrite\fR=\fItrue\fR, download always starts from scratch\&. This will be useful for users behind proxy server which disables resume\&.
+.RE
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+For Metalink downloads, \-C1 is recommended for proxy server which disables resume, in order to avoid establishing unnecessary connections\&.
+.sp .5v
 .RE
 .PP
 \fB\-\-stop\fR=SEC

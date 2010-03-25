@@ -182,6 +182,8 @@ extern const std::string PREF_INTERFACE;
 extern const std::string PREF_DISABLE_IPV6;
 // value: true | false
 extern const std::string PREF_HUMAN_READABLE;
+// value: true | false
+extern const std::string PREF_REMOVE_CONTROL_FILE;
 
 /**
  * FTP related preferences

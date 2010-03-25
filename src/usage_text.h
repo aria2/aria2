@@ -635,3 +635,8 @@
   _(" --ftp-proxy-user=USER        Set user for --ftp-proxy option.")
 #define TEXT_FTP_PROXY_PASSWD                                           \
   _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option.")
+#define TEXT_REMOVE_CONTROL_FILE                \
+  _(" --remove-control-file[=true|false] Remove control file before download. Using\n" \
+    "                              with --allow-overwrite=true, download always\n" \
+    "                              starts from scratch. This will be useful for\n" \
+    "                              users behind proxy server which disables resume.")

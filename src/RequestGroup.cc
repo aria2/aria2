@@ -556,7 +556,16 @@ void RequestGroup::adjustFilename
 {
   if(!isPreLocalFileCheckEnabled()) {
     // OK, no need to care about filename.
-  } else if(infoFile->exists()) {
+    return;
+  }
+  if(!_option->getAsBool(PREF_DRY_RUN) &&
+     _option->getAsBool(PREF_REMOVE_CONTROL_FILE) &&
+     infoFile->exists()) {
+    infoFile->removeFile();
+    _logger->notice("Removed control file for %s because it is requested by"
+                    " user.", infoFile->getFilename().c_str());
+  }
+  if(infoFile->exists()) {
     // Use current filename
   } else if(downloadFinishedByFileLength()) {
     // File was downloaded already, no need to change file name.

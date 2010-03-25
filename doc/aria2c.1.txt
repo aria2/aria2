@@ -851,6 +851,20 @@ are also allocated if they share the same piece.
    chunk checksums are provided.
    Default: 'true'
 
+
+*--remove-control-file*[='true'|'false']::
+
+   Remove control file before download. Using with
+   *--allow-overwrite*='true', download always starts from
+   scratch. This will be useful for users behind proxy server which
+   disables resume.
+
+[NOTE]
+
+For Metalink downloads, -C1 is recommended for proxy server which
+disables resume, in order to avoid establishing unnecessary
+connections.
+
 *--stop*=SEC::
   Stop application after SEC seconds has passed.
   If '0' is given, this feature is disabled.
