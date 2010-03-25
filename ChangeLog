@@ -1,5 +1,12 @@
 2010-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --remove-control-file option to -i list options.
+	* doc/aria2c.1.txt
+	* doc/xmlrpc/aria2rpc
+	* src/download_helper.cc
+
+2010-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --remove-control-file option.  This option removes control
 	file(*.aria2 file) before download. Using with
 	--allow-overwrite=true, download always starts from scratch. This

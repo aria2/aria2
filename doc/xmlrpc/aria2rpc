@@ -185,6 +185,9 @@ OptionParser.new do |opt|
   opt.on("--realtime-chunk-checksum BOOL",["true","false"]){|val|
     options["realtime-chunk-checksum"]=val
   }
+  opt.on("--remove-control-file [BOOL]",["true","false"]){|val|
+    options["remove-control-file"]=val||"true"
+  }
   opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
   opt.on("-j","--max-concurrent-downloads N"){|val| options["max-concurrent-downloads"]=val}

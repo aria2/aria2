@@ -152,7 +152,8 @@ const std::set<std::string>& listRequestOptions()
     PREF_MAX_DOWNLOAD_LIMIT,
     PREF_NO_FILE_ALLOCATION_LIMIT,
     PREF_PARAMETERIZED_URI,
-    PREF_REALTIME_CHUNK_CHECKSUM
+    PREF_REALTIME_CHUNK_CHECKSUM,
+    PREF_REMOVE_CONTROL_FILE
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
