@@ -269,6 +269,11 @@ public:
   }
 
   bool removeUri(const std::string& uri);
+
+  bool emptyRequestUri() const
+  {
+    return _uris.empty() && _inFlightRequests.empty() && _requestPool.empty();
+  }
 };
 
 // Returns the first FileEntry which isRequested() method returns

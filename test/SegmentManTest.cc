@@ -18,18 +18,34 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCompleteSegment);
   CPPUNIT_TEST(testGetSegment_sameFileEntry);
   CPPUNIT_TEST(testRegisterPeerStat);
+  CPPUNIT_TEST(testCancelAllSegments);
+  CPPUNIT_TEST(testGetPeerStat);
+  CPPUNIT_TEST(testGetCleanSegmentIfOwnerIsIdle);
   CPPUNIT_TEST_SUITE_END();
 private:
-
+  SharedHandle<Option> _option;
+  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DefaultPieceStorage> _pieceStorage;
+  SharedHandle<SegmentMan> _segmentMan;
 public:
-  void setUp() {
+  void setUp()
+  {
+    size_t pieceLength = 1024*1024;
+    uint64_t totalLength = 64*1024*1024;
+    _option.reset(new Option());
+    _dctx.reset
+      (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+    _pieceStorage.reset(new DefaultPieceStorage(_dctx, _option.get()));
+    _segmentMan.reset(new SegmentMan(_option.get(), _dctx, _pieceStorage));
   }
 
   void testNullBitfield();
   void testCompleteSegment();
-  void testGetPeerStat();
   void testGetSegment_sameFileEntry();
   void testRegisterPeerStat();
+  void testCancelAllSegments();
+  void testGetPeerStat();
+  void testGetCleanSegmentIfOwnerIsIdle();
 };
 
 
@@ -142,6 +158,51 @@ void SegmentManTest::testRegisterPeerStat()
   p2->downloadStart();
   segman.registerPeerStat(p1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, segman.getPeerStats().size());
+}
+
+void SegmentManTest::testCancelAllSegments()
+{
+  _segmentMan->getSegment(1, 0);
+  _segmentMan->getSegment(2, 1);
+  CPPUNIT_ASSERT(_segmentMan->getSegment(3, 0).isNull());
+  CPPUNIT_ASSERT(_segmentMan->getSegment(4, 1).isNull());
+  _segmentMan->cancelAllSegments();
+  CPPUNIT_ASSERT(!_segmentMan->getSegment(3, 0).isNull());
+  CPPUNIT_ASSERT(!_segmentMan->getSegment(4, 1).isNull());
+}
+
+void SegmentManTest::testGetPeerStat()
+{
+  SharedHandle<PeerStat> peerStat1(new PeerStat(1));
+  _segmentMan->registerPeerStat(peerStat1);
+  CPPUNIT_ASSERT_EQUAL((cuid_t)1, _segmentMan->getPeerStat(1)->getCuid());
+}
+
+void SegmentManTest::testGetCleanSegmentIfOwnerIsIdle()
+{
+  SharedHandle<Segment> seg1 = _segmentMan->getSegment(1, 0);
+  SharedHandle<Segment> seg2 = _segmentMan->getSegment(2, 1);
+  seg2->updateWrittenLength(100);
+  CPPUNIT_ASSERT(!_segmentMan->getCleanSegmentIfOwnerIsIdle(3, 0).isNull());
+  SharedHandle<PeerStat> peerStat3(new PeerStat(3));
+  _segmentMan->registerPeerStat(peerStat3);
+  CPPUNIT_ASSERT(!_segmentMan->getCleanSegmentIfOwnerIsIdle(4, 0).isNull());
+  SharedHandle<PeerStat> peerStat4(new PeerStat(4));
+  peerStat4->downloadStart();
+  _segmentMan->registerPeerStat(peerStat4);
+  // Owner PeerStat is not IDLE
+  CPPUNIT_ASSERT(_segmentMan->getCleanSegmentIfOwnerIsIdle(5, 0).isNull());
+  // Segment::updateWrittenLength != 0
+  CPPUNIT_ASSERT(_segmentMan->getCleanSegmentIfOwnerIsIdle(5, 1).isNull());
+
+  // Test with UnknownLengthPieceStorage
+  SharedHandle<DownloadContext> dctx(new DownloadContext(1024, 0, "aria2"));
+  SharedHandle<UnknownLengthPieceStorage> ps
+    (new UnknownLengthPieceStorage(dctx, _option.get()));
+  _segmentMan.reset(new SegmentMan(_option.get(), dctx, ps));
+  
+  CPPUNIT_ASSERT(!_segmentMan->getCleanSegmentIfOwnerIsIdle(1, 0).isNull());
+
 }
 
 } // namespace aria2

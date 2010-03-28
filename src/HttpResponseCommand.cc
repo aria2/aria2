@@ -245,6 +245,9 @@ bool HttpResponseCommand::handleDefaultEncoding
     _requestGroup->loadAndOpenFile(infoFile);
     File file(_requestGroup->getFirstFilePath());
 
+    // We have to make sure that command that has Request object must
+    // have segment after PieceStorage is initialized. See
+    // AbstractCommand::execute()
     SharedHandle<Segment> segment =
       _requestGroup->getSegmentMan()->getSegment(cuid, 0);
     // pipelining requires implicit range specified. But the request for
@@ -348,6 +351,11 @@ bool HttpResponseCommand::handleOtherEncoding
     poolConnection();
     return true;
   }
+  // We have to make sure that command that has Request object must
+  // have segment after PieceStorage is initialized. See
+  // AbstractCommand::execute()
+  _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+
   e->commands.push_back
     (createHttpDownloadCommand(httpResponse,
                                getTransferEncodingDecoder(httpResponse),

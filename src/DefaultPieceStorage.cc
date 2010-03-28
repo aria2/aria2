@@ -596,6 +596,10 @@ void DefaultPieceStorage::markPiecesDone(uint64_t length)
 {
   if(length == bitfieldMan->getTotalLength()) {
     bitfieldMan->setAllBit();
+  } else if(length == 0) {
+    // TODO this would go to markAllPiecesUndone()
+    bitfieldMan->clearAllBit();
+    usedPieces.clear();
   } else {
     size_t numPiece = length/bitfieldMan->getBlockLength();
     if(numPiece > 0) {

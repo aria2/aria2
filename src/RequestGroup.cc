@@ -131,6 +131,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _maxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
   _belongsToGID(0),
   _requestGroupMan(0),
+  _resumeFailureCount(0),
   _logger(LogFactory::getInstance())
 {
   _fileAllocationEnabled = _option->get(PREF_FILE_ALLOCATION) != V_NONE;
@@ -1171,6 +1172,15 @@ void RequestGroup::setDownloadContext
   if(!_downloadContext.isNull()) {
     _downloadContext->setOwnerRequestGroup(this);
   }
+}
+
+bool RequestGroup::p2pInvolved() const
+{
+#ifdef ENABLE_BITTORRENT
+  return _downloadContext->hasAttribute(bittorrent::BITTORRENT);
+#else // !ENABLE_BITTORRENT
+  return false;
+#endif // !ENABLE_BITTORRENT
 }
 
 gid_t RequestGroup::newGID()

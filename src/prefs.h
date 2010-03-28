@@ -184,6 +184,10 @@ extern const std::string PREF_DISABLE_IPV6;
 extern const std::string PREF_HUMAN_READABLE;
 // value: true | false
 extern const std::string PREF_REMOVE_CONTROL_FILE;
+// value: true | false
+extern const std::string PREF_ALWAYS_RESUME;
+// value: 1*digit
+extern const std::string PREF_MAX_RESUME_FAILURE_TRIES;
 
 /**
  * FTP related preferences

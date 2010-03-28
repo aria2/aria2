@@ -640,3 +640,18 @@
     "                              with --allow-overwrite=true, download always\n" \
     "                              starts from scratch. This will be useful for\n" \
     "                              users behind proxy server which disables resume.")
+#define TEXT_ALWAYS_RESUME                      \
+  _(" --always-resume[=true|false] Always resume download. If false is given, when\n" \
+    "                              all given URIs does not support resume or aria2\n" \
+    "                              encounters N URIs which does not support resume\n" \
+    "                              (N is the value specified using\n"   \
+    "                              --max-resume-failure-tries option), aria2\n" \
+    "                              download file from scratch.\n"       \
+    "                              See --max-resume-failure-tries option.")
+#define TEXT_MAX_RESUME_FAILURE_TRIES                                   \
+  _(" --max-resume-failure-tries=N When used with --always-resume=false, aria2\n" \
+    "                              download file from scratch when aria2 detects N\n" \
+    "                              number of URIs that does not support resume. If N\n" \
+    "                              is 0, aria2 download file from scratch when all\n" \
+    "                              given URIs do not support resume.\n" \
+    "                              See --always-resume option.")

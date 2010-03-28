@@ -267,6 +267,9 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
   for(size_t i = 0; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
     CPPUNIT_ASSERT(ps.hasPiece(i));
   }
+
+  ps.markPiecesDone(0);
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, ps.getCompletedLength());
 }
 
 void DefaultPieceStorageTest::testGetCompletedLength()

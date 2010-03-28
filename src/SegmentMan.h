@@ -157,6 +157,15 @@ public:
    * whose isNull call is true.
    */
   SharedHandle<Segment> getSegment(cuid_t cuid, size_t index);
+
+  // Returns a segment whose index is index.  If the segment whose
+  // index is index is free, it is assigned to cuid and it is
+  // returned.  If it has already be assigned to another cuid, and if
+  // it is idle state and segment's written length is 0, then cancels
+  // the assignment and re-attach the segment to given cuid and the
+  // segment is returned. Otherwise returns null.
+  SharedHandle<Segment> getCleanSegmentIfOwnerIsIdle(cuid_t cuid, size_t index);
+
   /**
    * Updates download status.
    */
@@ -168,6 +177,10 @@ public:
   void cancelSegment(cuid_t cuid);
 
   void cancelSegment(cuid_t cuid, const SharedHandle<Segment>& segment);
+
+  void cancelAllSegments();
+
+  void eraseSegmentWrittenLengthMemo();
 
   /**
    * Tells SegmentMan that the segment has been downloaded successfully.
@@ -203,6 +216,8 @@ public:
   {
     return peerStats;
   }
+
+  SharedHandle<PeerStat> getPeerStat(cuid_t cuid) const;
 
   // If there is slower PeerStat than given peerStat for the same
   // hostname and protocol in _fastestPeerStats, the former is

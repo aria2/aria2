@@ -208,14 +208,46 @@ void SegmentMan::getSegment
 }
 
 SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid, size_t index) {
-  if(_downloadContext->getNumPieces() <= index) {
+  if(index > 0 && _downloadContext->getNumPieces() <= index) {
     return SharedHandle<Segment>();
+  }
+  return checkoutSegment(cuid, _pieceStorage->getMissingPiece(index));
+}
+
+SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
+(cuid_t cuid, size_t index)
+{
+  if(index > 0 && _downloadContext->getNumPieces() <= index) {
+    return SharedHandle<Segment>();
+  }
+  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin(),
+        eoi = usedSegmentEntries.end(); itr != eoi; ++itr) {
+    const SharedHandle<SegmentEntry>& segmentEntry = *itr;
+    if(segmentEntry->segment->getIndex() == index) {
+      if(segmentEntry->cuid == cuid) {
+        return segmentEntry->segment;
+      }
+      if(segmentEntry->segment->getWrittenLength() > 0) {
+        return SharedHandle<Segment>();
+      }
+      cuid_t owner = segmentEntry->cuid;
+      SharedHandle<PeerStat> ps = getPeerStat(owner);
+      if(ps.isNull() || (!ps.isNull() && ps->getStatus() == PeerStat::IDLE)) {
+        cancelSegment(owner);
+        return getSegment(cuid, index);
+      } else {
+        return SharedHandle<Segment>();
+      }
+    }
   }
   return checkoutSegment(cuid, _pieceStorage->getMissingPiece(index));
 }
 
 void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
 {
+  if(logger->debug()) {
+    logger->debug("Canceling segment#%d", segment->getIndex());
+  }
   _pieceStorage->cancelPiece(segment->getPiece());
   _segmentWrittenLengthMemo[segment->getIndex()] = segment->getWrittenLength();
   if(logger->debug()) {
@@ -251,6 +283,21 @@ void SegmentMan::cancelSegment
       ++itr;
     }
   }
+}
+
+void SegmentMan::cancelAllSegments()
+{
+  for(std::deque<SharedHandle<SegmentEntry> >::iterator itr =
+        usedSegmentEntries.begin(), eoi = usedSegmentEntries.end();
+      itr != eoi; ++itr) {
+    cancelSegment((*itr)->segment);
+  }
+  usedSegmentEntries.clear();
+}
+
+void SegmentMan::eraseSegmentWrittenLengthMemo()
+{
+  _segmentWrittenLengthMemo.clear();
 }
 
 class FindSegmentEntry {
@@ -303,6 +350,18 @@ void SegmentMan::registerPeerStat(const SharedHandle<PeerStat>& peerStat)
   }
   peerStats.push_back(peerStat);
 }
+
+SharedHandle<PeerStat> SegmentMan::getPeerStat(cuid_t cuid) const
+{
+  for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
+        peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
+    if((*i)->getCuid() == cuid) {
+      return *i;
+    }
+  }
+  return SharedHandle<PeerStat>();
+}
+
 
 class PeerStatHostProtoEqual {
 private:

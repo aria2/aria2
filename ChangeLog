@@ -1,3 +1,38 @@
+2010-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --always-resume and --max-resume-failure-tries option.  If
+	--always-resume=false is given, when all given URIs does not
+	support resume or aria2 encounters N URIs which does not support
+	resume
+        (N is the value specified using --max-resume-failure-tries
+	option), aria2 download file from scratch.  The default behavior
+	is --always-resume=true, which means if all URIs do not support
+	resume, download fails. I think this is OK because user normally
+	don't like to see that partially downloaded file is
+	overwritten(this is particularly true if file size is big).  This
+	option is useful when aria2 is used as download backend and
+	graceful falling back to overwritten behavior is preferable.
+	Added exit status value 8, which means download failed because
+	server did not support resume.
+	* src/AbstractCommand.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadCommand.cc
+	* src/DownloadResultCode.h
+	* src/FileEntry.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponse.cc
+	* src/HttpResponseCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DefaultPieceStorageTest.cc
+	* test/SegmentManTest.cc
+
 2010-03-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --remove-control-file option to -i list options.

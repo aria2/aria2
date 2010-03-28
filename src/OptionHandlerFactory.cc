@@ -65,7 +65,18 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     V_FALSE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
-  } 
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_ALWAYS_RESUME,
+                                    TEXT_ALWAYS_RESUME,
+                                    V_TRUE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
 #ifdef ENABLE_ASYNC_DNS
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
@@ -321,6 +332,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+                                   (PREF_MAX_RESUME_FAILURE_TRIES,
+                                    TEXT_MAX_RESUME_FAILURE_TRIES,
+                                    "0",
+                                    0));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);    
   }
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler

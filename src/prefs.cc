@@ -180,6 +180,10 @@ const std::string PREF_DISABLE_IPV6("disable-ipv6");
 const std::string PREF_HUMAN_READABLE("human-readable");
 // value: true | false
 const std::string PREF_REMOVE_CONTROL_FILE("remove-control-file");
+// value: true | false
+const std::string PREF_ALWAYS_RESUME("always-resume");
+// value: 1*digit
+const std::string PREF_MAX_RESUME_FAILURE_TRIES("max-resume-failure-tries");
 
 /**
  * FTP related preferences

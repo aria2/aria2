@@ -167,6 +167,8 @@ private:
 
   RequestGroupMan* _requestGroupMan;
 
+  int _resumeFailureCount;
+
   Logger* _logger;
 
   void validateFilename(const std::string& expectedFilename,
@@ -499,6 +501,18 @@ public:
   {
     _requestGroupMan = requestGroupMan;
   }
+
+  int getResumeFailureCount() const
+  {
+    return _resumeFailureCount;
+  }
+
+  void increaseResumeFailureCount()
+  {
+    ++_resumeFailureCount;
+  }
+
+  bool p2pInvolved() const;
 
   static void resetGIDCounter() { _gidCounter = 0; }
 

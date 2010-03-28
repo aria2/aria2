@@ -50,6 +50,7 @@ enum RESULT {
   TOO_SLOW_DOWNLOAD_SPEED = 5,
   NETWORK_PROBLEM = 6,
   IN_PROGRESS = 7,
+  CANNOT_RESUME = 8,
 };
 
 } // namespace downloadresultcode

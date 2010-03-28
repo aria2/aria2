@@ -148,6 +148,15 @@ bool AbstractCommand::execute() {
       if(!_requestGroup->getPieceStorage().isNull()) {
         _segments.clear();
         _requestGroup->getSegmentMan()->getInFlightSegment(_segments, cuid);
+        if(!req.isNull() && _segments.empty()) {
+          // This command previously has assigned segments, but it is
+          // canceled. So discard current request chain.
+          if(logger->debug()) {
+            logger->debug("CUID#%s - It seems previously assigned segments are"
+                          "canceled. Restart.", util::itos(cuid).c_str());
+          }
+          return prepareForRetry(0);
+        }
         if(req.isNull() || req->getMaxPipelinedRequest() == 1 ||
            _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
           if(_segments.empty()) {
@@ -215,6 +224,9 @@ bool AbstractCommand::execute() {
                     util::itos(cuid).c_str(), req->getUri().c_str());
       _fileEntry->addURIResult(req->getUri(), err.getCode());
       _requestGroup->setLastUriResult(req->getUri(), err.getCode());
+      if(err.getCode() == downloadresultcode::CANNOT_RESUME) {
+        _requestGroup->increaseResumeFailureCount();
+      }
     }
     onAbort();
     tryReserved();
@@ -233,7 +245,6 @@ bool AbstractCommand::execute() {
     const unsigned int maxTries = getOption()->getAsInt(PREF_MAX_TRIES);
     bool isAbort = maxTries != 0 && req->getTryCount() >= maxTries;
     if(isAbort) {
-      onAbort();
       if(logger->info()) {
         logger->info(MSG_MAX_TRY, util::itos(cuid).c_str(), req->getTryCount());
       }
@@ -241,6 +252,10 @@ bool AbstractCommand::execute() {
                     req->getUri().c_str());
       _fileEntry->addURIResult(req->getUri(), err.getCode());
       _requestGroup->setLastUriResult(req->getUri(), err.getCode());
+      if(err.getCode() == downloadresultcode::CANNOT_RESUME) {
+        _requestGroup->increaseResumeFailureCount();
+      }
+      onAbort();
       tryReserved();
       return true;
     } else {
@@ -323,7 +338,52 @@ void AbstractCommand::onAbort() {
     logger->debug("CUID#%s - Aborting download", util::itos(cuid).c_str());
   }
   if(!_requestGroup->getPieceStorage().isNull()) {
-    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+    SharedHandle<SegmentMan> segmentMan = _requestGroup->getSegmentMan();
+    segmentMan->cancelSegment(cuid);
+    // Don't do following process if BitTorrent is involved or files
+    // in DownloadContext is more than 1. The latter condition is
+    // limitation of current implementation.
+    if(!getOption()->getAsBool(PREF_ALWAYS_RESUME) &&
+       !_fileEntry.isNull() &&
+       segmentMan->calculateSessionDownloadLength() == 0 &&
+       !_requestGroup->p2pInvolved() &&
+       _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
+      const int maxTries = getOption()->getAsInt(PREF_MAX_RESUME_FAILURE_TRIES);
+      if((maxTries > 0 && _requestGroup->getResumeFailureCount() >= maxTries)||
+         _fileEntry->emptyRequestUri()) {
+        // Local file exists, but given servers(or at least contacted
+        // ones) doesn't support resume. Let's restart download from
+        // scratch.
+        logger->notice("CUID#%s - Failed to resume download."
+                       " Download from scratch.",
+                       util::itos(cuid).c_str());
+        if(logger->debug()) {
+          logger->debug("CUID#%s - Gathering URIs that has CANNOT_RESUME error",
+                        util::itos(cuid).c_str());
+        }
+        // Set PREF_ALWAYS_RESUME to V_TRUE to avoid repeating this
+        // process.
+        getOption()->put(PREF_ALWAYS_RESUME, V_TRUE);
+        std::deque<URIResult> res;
+        _fileEntry->extractURIResult(res, downloadresultcode::CANNOT_RESUME);
+        if(!res.empty()) {
+          segmentMan->cancelAllSegments();
+          segmentMan->eraseSegmentWrittenLengthMemo();
+          _requestGroup->getPieceStorage()->markPiecesDone(0);
+          std::vector<std::string> uris;
+          uris.reserve(res.size());
+          std::transform(res.begin(), res.end(), std::back_inserter(uris),
+                         std::mem_fun_ref(&URIResult::getURI));
+          if(logger->debug()) {
+            logger->debug("CUID#%s - %lu URIs found.",
+                          util::itos(cuid).c_str(),
+                          static_cast<unsigned long int>(uris.size()));
+          }
+          _fileEntry->addUris(uris.begin(), uris.end());
+          segmentMan->recognizeSegmentFor(_fileEntry);
+        }
+      }
+    }
   }
 }
 

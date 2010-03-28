@@ -79,7 +79,7 @@ void HttpResponse::validateResponse() const
     // compare the received range against the requested range
     RangeHandle responseRange = httpHeader->getRange();
     if(!httpRequest->isRangeSatisfied(responseRange)) {
-      throw DL_ABORT_EX
+      throw DL_ABORT_EX2
         (StringFormat
          (EX_INVALID_RANGE_HEADER,
           util::itos(httpRequest->getStartByte(), true).c_str(),
@@ -87,7 +87,8 @@ void HttpResponse::validateResponse() const
           util::uitos(httpRequest->getEntityLength(), true).c_str(),
           util::itos(responseRange->getStartByte(), true).c_str(),
           util::itos(responseRange->getEndByte(), true).c_str(),
-          util::uitos(responseRange->getEntityLength(), true).c_str()).str());
+          util::uitos(responseRange->getEntityLength(), true).c_str()).str(),
+         downloadresultcode::CANNOT_RESUME);
     }
   }
 }

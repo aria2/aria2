@@ -304,14 +304,15 @@ bool DownloadCommand::prepareForNextSegment() {
       if(!tempSegment->complete()) {
         return prepareForRetry(0);
       }
+      SharedHandle<SegmentMan> segmentMan = _requestGroup->getSegmentMan();
       SharedHandle<Segment> nextSegment =
-        _requestGroup->getSegmentMan()->getSegment(cuid,
-                                                   tempSegment->getIndex()+1);
-      if(!nextSegment.isNull() && nextSegment->getWrittenLength() == 0) {
+        segmentMan->getCleanSegmentIfOwnerIsIdle
+        (cuid, tempSegment->getIndex()+1);
+      if(nextSegment.isNull()) {
+        return prepareForRetry(0);
+      } else {
         e->commands.push_back(this);
         return false;
-      } else {
-        return prepareForRetry(0);
       }
     } else {
       return prepareForRetry(0);

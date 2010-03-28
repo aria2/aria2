@@ -394,7 +394,10 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       poolConnection();
       return false;
     }
-
+    // We have to make sure that command that has Request object must
+    // have segment after PieceStorage is initialized. See
+    // AbstractCommand::execute()
+    _requestGroup->getSegmentMan()->getSegment(cuid, 0);
     return true;
   } else {
     _requestGroup->adjustFilename
@@ -424,6 +427,10 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       return false;
     }
     _requestGroup->loadAndOpenFile(infoFile);
+    // We have to make sure that command that has Request object must
+    // have segment after PieceStorage is initialized. See
+    // AbstractCommand::execute()
+    _requestGroup->getSegmentMan()->getSegment(cuid, 0);
 
     prepareForNextAction(this);
 
@@ -574,7 +581,8 @@ bool FtpNegotiationCommand::recvRest(const SharedHandle<Segment>& segment) {
   // then throw exception here.
   if(status != 350) {
     if(!segment.isNull() && segment->getPositionToWrite() != 0) {
-      throw DL_ABORT_EX("FTP server doesn't support resuming.");
+      throw DL_ABORT_EX2("FTP server doesn't support resuming.",
+                         downloadresultcode::CANNOT_RESUME);
     }
   }
   sequence = SEQ_SEND_RETR;
