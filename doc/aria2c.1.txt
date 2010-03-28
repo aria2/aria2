@@ -687,6 +687,16 @@ Advanced Options
   If true is given, you can proceed but some download progress will be lost.
   Default: 'false'
 
+*--always-resume*[='true'|'false']::
+
+  Always resume download. If 'true' is given, aria2 always tries to
+  resume download and if resume is not possible, aborts download.  If
+  'false' is given, when all given URIs do not support resume or aria2
+  encounters 'N' URIs which does not support resume ('N' is the value
+  specified using *--max-resume-failure-tries* option), aria2
+  downloads file from scratch.  See *--max-resume-failure-tries*
+  option. Default: 'true'
+
 *--async-dns*[='true'|'false']::
   Enable asynchronous DNS.
   Default: 'true'
@@ -763,6 +773,14 @@ If an interface has multiple addresses, it is highly recommended to
 specify IP address explicitly. See also *--disable-ipv6*.  If your
 system doesn't have getifaddrs(), this option doesn't accept interface
 name.
+
+*--max-resume-failure-tries*='N'::
+
+  When used with *--always-resume*='false', aria2 downloads file from
+  scratch when aria2 detects 'N' number of URIs that does not support
+  resume. If 'N' is '0', aria2 downloads file from scratch when all
+  given URIs do not support resume.  See *--always-resume* option.
+  Default: '0'
 
 *--log-level*=LEVEL::
   Set log level to output.
@@ -963,6 +981,11 @@ based on the last error encountered.
   all finished downloads are successful and there are unfinished
   downloads in a queue when aria2 exits by pressing Ctrl-C by an user
   or sending TERM or INT signal.
+
+*8*::
+
+  If server does not support resume when resume is required to
+  complete download.
 
 [NOTE]
 An error occurred in a finished download will not be reported

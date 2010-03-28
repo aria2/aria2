@@ -1,5 +1,12 @@
 2010-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --always-resume and --max-resume-failure-tries option
+	and exit status 8 in man page. Fixed typo.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+
+2010-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --always-resume and --max-resume-failure-tries option.  If
 	--always-resume=false is given, when all given URIs does not
 	support resume or aria2 encounters N URIs which does not support

@@ -1798,6 +1798,20 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--always-resume</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Always resume download. If <em>true</em> is given, aria2 always tries to
+  resume download and if resume is not possible, aborts download.  If
+  <em>false</em> is given, when all given URIs do not support resume or aria2
+  encounters <em>N</em> URIs which does not support resume (<em>N</em> is the value
+  specified using <strong>--max-resume-failure-tries</strong> option), aria2
+  downloads file from scratch.  See <strong>--max-resume-failure-tries</strong>
+  option. Default: <em>true</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--async-dns</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
@@ -1932,6 +1946,18 @@ name.</td>
 </tr></table>
 </div>
 <div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>--max-resume-failure-tries</strong>=<em>N</em>
+</dt>
+<dd>
+<p>
+  When used with <strong>--always-resume</strong>=<em>false</em>, aria2 downloads file from
+  scratch when aria2 detects <em>N</em> number of URIs that does not support
+  resume. If <em>N</em> is <em>0</em>, aria2 downloads file from scratch when all
+  given URIs do not support resume.  See <strong>--always-resume</strong> option.
+  Default: <em>0</em>
+</p>
+</dd>
 <dt class="hdlist1">
 <strong>--log-level</strong>=LEVEL
 </dt>
@@ -2255,6 +2281,15 @@ based on the last error encountered.</p></div>
   all finished downloads are successful and there are unfinished
   downloads in a queue when aria2 exits by pressing Ctrl-C by an user
   or sending TERM or INT signal.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>8</strong>
+</dt>
+<dd>
+<p>
+  If server does not support resume when resume is required to
+  complete download.
 </p>
 </dd>
 </dl></div>
@@ -4012,7 +4047,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-25 23:48:28 JST
+Last updated 2010-03-28 16:34:53 JST
 </div>
 </div>
 </body>

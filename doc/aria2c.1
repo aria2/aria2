@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 03/25/2010
+.\"      Date: 03/28/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.9.1a
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "03/25/2010" "Aria2 1\&.9\&.1a" "Aria2 Manual"
+.TH "ARIA2C" "1" "03/28/2010" "Aria2 1\&.9\&.1a" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -994,6 +994,23 @@ If false is given, aria2 aborts download when a piece length is different from o
 \fIfalse\fR
 .RE
 .PP
+\fB\-\-always\-resume\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Always resume download\&. If
+\fItrue\fR
+is given, aria2 always tries to resume download and if resume is not possible, aborts download\&. If
+\fIfalse\fR
+is given, when all given URIs do not support resume or aria2 encounters
+\fIN\fR
+URIs which does not support resume (\fIN\fR
+is the value specified using
+\fB\-\-max\-resume\-failure\-tries\fR
+option), aria2 downloads file from scratch\&. See
+\fB\-\-max\-resume\-failure\-tries\fR
+option\&. Default:
+\fItrue\fR
+.RE
+.PP
 \fB\-\-async\-dns\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Enable asynchronous DNS\&. Default:
@@ -1102,6 +1119,20 @@ Bind sockets to given interface\&. You can specify interface name, IP address an
 .sp
 If an interface has multiple addresses, it is highly recommended to specify IP address explicitly\&. See also \fB\-\-disable\-ipv6\fR\&. If your system doesn\(cqt have getifaddrs(), this option doesn\(cqt accept interface name\&.
 .sp .5v
+.RE
+.PP
+\fB\-\-max\-resume\-failure\-tries\fR=\fIN\fR
+.RS 4
+When used with
+\fB\-\-always\-resume\fR=\fIfalse\fR, aria2 downloads file from scratch when aria2 detects
+\fIN\fR
+number of URIs that does not support resume\&. If
+\fIN\fR
+is
+\fI0\fR, aria2 downloads file from scratch when all given URIs do not support resume\&. See
+\fB\-\-always\-resume\fR
+option\&. Default:
+\fI0\fR
 .RE
 .PP
 \fB\-\-log\-level\fR=LEVEL
@@ -1356,6 +1387,11 @@ If network problem occurs\&.
 \fB7\fR
 .RS 4
 If there are unfinished downloads\&. This error is only reported if all finished downloads are successful and there are unfinished downloads in a queue when aria2 exits by pressing Ctrl\-C by an user or sending TERM or INT signal\&.
+.RE
+.PP
+\fB8\fR
+.RS 4
+If server does not support resume when resume is required to complete download\&.
 .RE
 .if n \{\
 .sp
