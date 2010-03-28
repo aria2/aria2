@@ -1,5 +1,13 @@
 2010-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that added URI using aria2.changeUri XML-RPC method
+	is not used immediately if there is no URIs remaining before
+	calling aria2.changeUri and the number of connection is less than
+	the value in -s(or -C for Metalink downloads).
+	* src/XmlRpcMethodImpl.cc
+
+2010-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --always-resume and --max-resume-failure-tries option
 	and exit status 8 in man page. Fixed typo.
 	* doc/aria2c.1.txt

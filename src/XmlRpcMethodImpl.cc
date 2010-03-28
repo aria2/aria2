@@ -61,6 +61,7 @@
 #include "array_fun.h"
 #include "XmlRpcMethodFactory.h"
 #include "XmlRpcResponse.h"
+#include "SegmentMan.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -999,6 +1000,7 @@ BDE ChangeUriXmlRpcMethod::process
     std::vector<Command*> commands;
     group->createNextCommand(commands, e);
     e->addCommand(commands);
+    group->getSegmentMan()->recognizeSegmentFor(s);
   }
   BDE res = BDE::list();
   res << delcount;
