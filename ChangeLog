@@ -1,5 +1,14 @@
 2010-03-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that waiting download unintentionally starts when
+	URIs are added to it using aria2.changeUri XML-RPC method.  This
+	also fixes the bug that causes segmentation fault when adding URIs
+	to waiting download, which is a regression introduced by the
+	previous change made to src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.cc
+
+2010-03-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error with g++-4.4 on FreeBSD.
 	* src/util.h
 

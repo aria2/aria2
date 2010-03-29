@@ -996,7 +996,7 @@ BDE ChangeUriXmlRpcMethod::process
       }
     }
   }
-  if(addcount) {
+  if(addcount && !group->getPieceStorage().isNull()) {
     std::vector<Command*> commands;
     group->createNextCommand(commands, e);
     e->addCommand(commands);
