@@ -1,3 +1,8 @@
+2010-03-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error with g++-4.4 on FreeBSD.
+	* src/util.h
+
 2010-03-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that added URI using aria2.changeUri XML-RPC method

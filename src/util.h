@@ -39,6 +39,7 @@
 
 #include <sys/time.h>
 
+#include <cstdio>
 #include <string>
 #include <utility>
 #include <iosfwd>
