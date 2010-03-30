@@ -150,7 +150,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
         unionCri->addSeedCriteria(cri);
       }
     }
-    if(unionCri->getSeedCriterion().size() > 0) {
+    if(!unionCri->getSeedCriterion().empty()) {
       SeedCheckCommand* c =
         new SeedCheckCommand(e->newCUID(), requestGroup, e, unionCri);
       c->setPieceStorage(pieceStorage);
