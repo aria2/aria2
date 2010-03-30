@@ -1,3 +1,8 @@
+2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Drop connection if same Peer ID has been already seen.
+	* src/DefaultBtInteractive.cc
+
 2010-03-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that waiting download unintentionally starts when

@@ -115,6 +115,17 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
        ("CUID#%s - Drop connection from the same Peer ID",
         util::itos(cuid).c_str()).str());
   }
+  std::vector<SharedHandle<Peer> > activePeers;
+  _peerStorage->getActivePeers(activePeers);
+  for(std::vector<SharedHandle<Peer> >::const_iterator i = activePeers.begin(),
+        eoi = activePeers.end(); i != eoi; ++i) {
+    if(memcmp((*i)->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
+      throw DL_ABORT_EX
+        (StringFormat
+         ("CUID#%s - Same Peer ID has been already seen.",
+          util::itos(cuid).c_str()).str());
+    }
+  }
 
   peer->setPeerId(message->getPeerId());
     
