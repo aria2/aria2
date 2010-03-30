@@ -141,9 +141,12 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
 
     SharedHandle<DHTTokenTracker> tokenTracker(new DHTTokenTracker());
 
+    const time_t messageTimeout = e->option->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
     // wiring up
     tracker->setRoutingTable(routingTable);
     tracker->setMessageFactory(factory);
+
+    dispatcher->setTimeout(messageTimeout);
 
     receiver->setConnection(connection);
     receiver->setMessageFactory(factory);
@@ -154,6 +157,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     taskFactory->setMessageDispatcher(dispatcher);
     taskFactory->setMessageFactory(factory);
     taskFactory->setTaskQueue(taskQueue);
+    taskFactory->setTimeout(messageTimeout);
 
     routingTable->setTaskQueue(taskQueue);
     routingTable->setTaskFactory(taskFactory);

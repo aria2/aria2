@@ -36,6 +36,7 @@
 #define _D_DHT_TASK_FACTORY_IMPL_H_
 
 #include "DHTTaskFactory.h"
+#include "a2time.h"
 
 namespace aria2 {
 
@@ -58,6 +59,8 @@ private:
   WeakHandle<DHTMessageFactory> _factory;
   
   WeakHandle<DHTTaskQueue> _taskQueue;
+
+  time_t _timeout;
 
   Logger* _logger;
 
@@ -98,6 +101,10 @@ public:
 
   void setLocalNode(const SharedHandle<DHTNode>& localNode);
 
+  void setTimeout(time_t timeout)
+  {
+    _timeout = timeout;
+  }
 };
 
 } // namespace aria2

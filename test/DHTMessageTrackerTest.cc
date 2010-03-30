@@ -71,9 +71,9 @@ void DHTMessageTrackerTest::testMessageArrived()
   DHTMessageTracker tracker;
   tracker.setRoutingTable(routingTable);
   tracker.setMessageFactory(factory);
-  tracker.addMessage(m1);
-  tracker.addMessage(m2, c2);
-  tracker.addMessage(m3);
+  tracker.addMessage(m1, DHT_MESSAGE_TIMEOUT);
+  tracker.addMessage(m2, DHT_MESSAGE_TIMEOUT, c2);
+  tracker.addMessage(m3, DHT_MESSAGE_TIMEOUT);
 
   {
     BDE resDict = BDE::dict();

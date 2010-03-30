@@ -72,10 +72,6 @@ public:
                   const SharedHandle<DHTMessageCallback>& callback =
                   SharedHandle<DHTMessageCallback>());
 
-  void addMessage(const SharedHandle<DHTMessage>& message,
-                  const SharedHandle<DHTMessageCallback>& callback =
-                  SharedHandle<DHTMessageCallback>());
-
   std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
   messageArrived(const BDE& dict,
                  const std::string& ipaddr, uint16_t port);

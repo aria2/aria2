@@ -527,6 +527,10 @@ BitTorrent Specific Options
 [NOTE]
 Make sure that the specified ports are open for incoming UDP traffic.
 
+*--dht-message-timeout*=SEC::
+
+  Set timeout in seconds. Default: '10'
+
 *--enable-dht*[='true'|'false']::
   Enable DHT functionality. If a private flag is set in a torrent, aria2
   doesn't use DHT for that download even if 'true' is given.

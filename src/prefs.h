@@ -342,6 +342,8 @@ extern const std::string PREF_BT_LPD_INTERFACE;
 extern const std::string PREF_BT_TRACKER_TIMEOUT;
 // values: 1*digit
 extern const std::string PREF_BT_TRACKER_CONNECT_TIMEOUT;
+// values: 1*digit
+extern const std::string PREF_DHT_MESSAGE_TIMEOUT;
 
 /**
  * Metalink related preferences

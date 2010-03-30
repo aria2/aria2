@@ -46,8 +46,10 @@
 
 namespace aria2 {
 
-DHTMessageDispatcherImpl::DHTMessageDispatcherImpl(const SharedHandle<DHTMessageTracker>& tracker):
+DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
+(const SharedHandle<DHTMessageTracker>& tracker):
   _tracker(tracker),
+  _timeout(DHT_MESSAGE_TIMEOUT),
   _logger(LogFactory::getInstance()) {}
 
 DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
@@ -65,7 +67,7 @@ void
 DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& message,
                                             const SharedHandle<DHTMessageCallback>& callback)
 {
-  addMessageToQueue(message, DHT_MESSAGE_TIMEOUT, callback);
+  addMessageToQueue(message, _timeout, callback);
 }
 
 bool

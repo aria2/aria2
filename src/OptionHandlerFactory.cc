@@ -1255,6 +1255,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+                                   (PREF_DHT_MESSAGE_TIMEOUT,
+                                    TEXT_DHT_MESSAGE_TIMEOUT,
+                                    "10",
+                                    1, 60));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_DHT,
                                     TEXT_ENABLE_DHT,

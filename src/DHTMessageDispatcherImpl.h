@@ -50,6 +50,8 @@ private:
 
   std::deque<SharedHandle<DHTMessageEntry> > _messageQueue;
 
+  time_t _timeout;
+
   Logger* _logger;
 
   bool sendMessage(const SharedHandle<DHTMessageEntry>& msg);
@@ -72,6 +74,11 @@ public:
   virtual void sendMessages();
 
   virtual size_t countMessageInQueue() const;
+
+  void setTimeout(time_t timeout)
+  {
+    _timeout = timeout;
+  }
 };
 
 } // namespace aria2

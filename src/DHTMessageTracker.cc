@@ -63,11 +63,6 @@ void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, time
   _entries.push_back(e);
 }
 
-void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, const SharedHandle<DHTMessageCallback>& callback)
-{
-  addMessage(message, DHT_MESSAGE_TIMEOUT, callback);
-}
-
 std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
 DHTMessageTracker::messageArrived(const BDE& dict,
                                   const std::string& ipaddr, uint16_t port)

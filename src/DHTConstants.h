@@ -45,6 +45,7 @@
 
 #define DHT_TOKEN_LENGTH 4
 
+// See --dht-message-timeout option.
 #define DHT_MESSAGE_TIMEOUT 10
 
 #define DHT_NODE_CONTACT_INTERVAL (15*60)

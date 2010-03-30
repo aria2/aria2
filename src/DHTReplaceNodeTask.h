@@ -67,6 +67,11 @@ public:
   virtual void onReceived(const SharedHandle<DHTMessage>& message);
 
   virtual void onTimeout(const SharedHandle<DHTNode>& node);  
+
+  void setTimeout(time_t timeout)
+  {
+    _timeout = timeout;
+  }
 };
 
 } // namespace aria2

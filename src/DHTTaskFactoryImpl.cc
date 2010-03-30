@@ -53,7 +53,9 @@
 
 namespace aria2 {
 
-DHTTaskFactoryImpl::DHTTaskFactoryImpl():_logger(LogFactory::getInstance()) {}
+DHTTaskFactoryImpl::DHTTaskFactoryImpl():
+  _timeout(DHT_MESSAGE_TIMEOUT),
+  _logger(LogFactory::getInstance()) {}
 
 DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
@@ -62,6 +64,7 @@ DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
                                    size_t numRetry)
 {
   SharedHandle<DHTPingTask> task(new DHTPingTask(remoteNode, numRetry));
+  task->setTimeout(_timeout);
   setCommonProperty(task);
   return task;
 }
@@ -108,6 +111,7 @@ DHTTaskFactoryImpl::createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
                                           const SharedHandle<DHTNode>& newNode)
 {
   SharedHandle<DHTReplaceNodeTask> task(new DHTReplaceNodeTask(bucket, newNode));
+  task->setTimeout(_timeout);
   setCommonProperty(task);
   return task;
 }

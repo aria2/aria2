@@ -665,3 +665,5 @@
     "                              connection is established, this option makes no\n" \
     "                              effect and --bt-tracker-timeout option is used\n" \
     "                              instead.")
+#define TEXT_DHT_MESSAGE_TIMEOUT                \
+  _(" --dht-message-timeout=SEC    Set timeout in seconds.")

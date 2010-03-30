@@ -1,5 +1,24 @@
 2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --dht-message-timeout option.
+	* doc/aria2c.1.txt
+	* src/DHTConstants.h
+	* src/DHTMessageDispatcherImpl.cc
+	* src/DHTMessageDispatcherImpl.h
+	* src/DHTMessageTracker.cc
+	* src/DHTMessageTracker.h
+	* src/DHTReplaceNodeTask.h
+	* src/DHTSetup.cc
+	* src/DHTTaskFactoryImpl.cc
+	* src/DHTTaskFactoryImpl.h
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DHTMessageTrackerTest.cc
+
+2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --bt-tracker-connect-timeout and --bt-tracker-timeout
 	option.
 	* doc/aria2c.1.txt
