@@ -1,5 +1,11 @@
 2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented that specifying --seed-time=0 disables seeding after
+	download completed.
+	* doc/aria2c.1.txt
+
+2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/BtSetup.cc
 

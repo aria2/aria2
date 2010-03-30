@@ -587,6 +587,10 @@ Make sure that the specified ports are open for incoming TCP traffic.
 *--seed-time*=MINUTES::
   Specify seeding time in minutes. Also see the *--seed-ratio* option.
 
+[NOTE]
+
+Specifying *--seed-time*='0' disables seeding after download completed.
+
 *-T*, *--torrent-file*=TORRENT_FILE::
 
   The path to the .torrent file.  You are not required to use this
