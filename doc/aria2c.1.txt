@@ -492,12 +492,23 @@ BitTorrent Specific Options
   Stop BitTorrent download if download speed is 0 in consecutive SEC
   seconds. If '0' is given, this feature is disabled.  Default: '0'
 
+*--bt-tracker-connect-timeout*=SEC::
+
+  Set the connect timeout in seconds to establish connection to
+  tracker. After the connection is established, this option makes no
+  effect and *--bt-tracker-timeout* option is used instead.  Default:
+  '60'
+
 *--bt-tracker-interval*=SEC::
   Set the interval in seconds between tracker requests. This
   completely overrides interval value and aria2 just uses this value
   and ignores the min interval and interval value in the response of
   tracker. If '0' is set, aria2 determines interval based on the
   response of tracker and the download progress.  Default: '0'
+
+*--bt-tracker-timeout*=SEC::
+
+  Set timeout in seconds. Default: '60'
 
 *--dht-entry-point*=HOST:PORT::
   Set host and port as an entry point to DHT network.

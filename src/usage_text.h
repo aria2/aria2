@@ -657,3 +657,11 @@
     "                              is 0, aria2 downloads file from scratch when all\n" \
     "                              given URIs do not support resume.\n" \
     "                              See --always-resume option.")
+#define TEXT_BT_TRACKER_TIMEOUT                                 \
+  _(" --bt-tracker-timeout=SEC     Set timeout in seconds.")
+#define TEXT_BT_TRACKER_CONNECT_TIMEOUT                                 \
+  _(" --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n" \
+    "                              establish connection to tracker. After the\n" \
+    "                              connection is established, this option makes no\n" \
+    "                              effect and --bt-tracker-timeout option is used\n" \
+    "                              instead.")

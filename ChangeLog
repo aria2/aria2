@@ -1,5 +1,16 @@
 2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-tracker-connect-timeout and --bt-tracker-timeout
+	option.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+	* src/TrackerWatcherCommand.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented that specifying --seed-time=0 disables seeding after
 	download completed.
 	* doc/aria2c.1.txt

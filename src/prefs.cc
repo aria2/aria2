@@ -334,6 +334,10 @@ const std::string PREF_BT_METADATA_ONLY("bt-metadata-only");
 const std::string PREF_BT_ENABLE_LPD("bt-enable-lpd");
 // values: string
 const std::string PREF_BT_LPD_INTERFACE("bt-lpd-interface");
+// values: 1*digit
+const std::string PREF_BT_TRACKER_TIMEOUT("bt-tracker-timeout");
+// values: 1*digit
+const std::string PREF_BT_TRACKER_CONNECT_TIMEOUT("bt-tracker-connect-timeout");
 
 /**
  * Metalink related preferences

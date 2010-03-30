@@ -695,12 +695,26 @@ is given, this feature is disabled\&. Default:
 \fI0\fR
 .RE
 .PP
+\fB\-\-bt\-tracker\-connect\-timeout\fR=SEC
+.RS 4
+Set the connect timeout in seconds to establish connection to tracker\&. After the connection is established, this option makes no effect and
+\fB\-\-bt\-tracker\-timeout\fR
+option is used instead\&. Default:
+\fI60\fR
+.RE
+.PP
 \fB\-\-bt\-tracker\-interval\fR=SEC
 .RS 4
 Set the interval in seconds between tracker requests\&. This completely overrides interval value and aria2 just uses this value and ignores the min interval and interval value in the response of tracker\&. If
 \fI0\fR
 is set, aria2 determines interval based on the response of tracker and the download progress\&. Default:
 \fI0\fR
+.RE
+.PP
+\fB\-\-bt\-tracker\-timeout\fR=SEC
+.RS 4
+Set timeout in seconds\&. Default:
+\fI60\fR
 .RE
 .PP
 \fB\-\-dht\-entry\-point\fR=HOST:PORT

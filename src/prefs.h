@@ -338,6 +338,10 @@ extern const std::string PREF_BT_METADATA_ONLY;
 extern const std::string PREF_BT_ENABLE_LPD;
 // values: string
 extern const std::string PREF_BT_LPD_INTERFACE;
+// values: 1*digit
+extern const std::string PREF_BT_TRACKER_TIMEOUT;
+// values: 1*digit
+extern const std::string PREF_BT_TRACKER_CONNECT_TIMEOUT;
 
 /**
  * Metalink related preferences

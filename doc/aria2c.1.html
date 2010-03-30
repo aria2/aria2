@@ -1433,6 +1433,17 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--bt-tracker-connect-timeout</strong>=SEC
+</dt>
+<dd>
+<p>
+  Set the connect timeout in seconds to establish connection to
+  tracker. After the connection is established, this option makes no
+  effect and <strong>--bt-tracker-timeout</strong> option is used instead.  Default:
+  <em>60</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--bt-tracker-interval</strong>=SEC
 </dt>
 <dd>
@@ -1442,6 +1453,14 @@ writes the piece to the appropriate files.</td>
   and ignores the min interval and interval value in the response of
   tracker. If <em>0</em> is set, aria2 determines interval based on the
   response of tracker and the download progress.  Default: <em>0</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--bt-tracker-timeout</strong>=SEC
+</dt>
+<dd>
+<p>
+  Set timeout in seconds. Default: <em>60</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -4057,7 +4076,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-30 21:50:17 JST
+Last updated 2010-03-30 23:12:40 JST
 </div>
 </div>
 </body>
