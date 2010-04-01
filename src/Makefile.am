@@ -1,8 +1,7 @@
 bin_PROGRAMS = aria2c
 aria2c_SOURCES = main.cc\
 	option_processing.cc\
-	version_usage.cc\
-	download_helper.cc download_helper.h
+	version_usage.cc
 SRCS =  Socket.h\
 	SocketCore.cc SocketCore.h\
 	BinaryStream.h\
@@ -198,7 +197,8 @@ SRCS =  Socket.h\
 	BDE.cc BDE.h\
 	CreateRequestCommand.cc CreateRequestCommand.h\
 	DownloadResultCode.h\
-	wallclock.h
+	wallclock.h\
+	download_helper.cc download_helper.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

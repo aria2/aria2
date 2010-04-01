@@ -1,3 +1,9 @@
+2010-04-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added download_helper.{cc,h} to SRCS
+	* src/Makefile.am
+	* test/Makefile.am
+
 2010-03-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --dht-message-timeout option.
