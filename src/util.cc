@@ -76,6 +76,8 @@
 #include "array_fun.h"
 #include "a2functional.h"
 #include "bitfield.h"
+#include "DownloadHandlerConstants.h"
+#include "RequestGroup.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -1289,6 +1291,16 @@ bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits)
     return false;
   }
   return in1.s_addr == in2.s_addr;
+}
+
+void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
+{
+  for(std::vector<std::string>::const_iterator i =
+	DownloadHandlerConstants::getMetalinkContentTypes().begin(),
+        eoi = DownloadHandlerConstants::getMetalinkContentTypes().end();
+      i != eoi; ++i) {
+    group->removeAcceptType(*i);
+  }
 }
 
 } // namespace util

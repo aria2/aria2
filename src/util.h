@@ -62,6 +62,7 @@ class Randomizer;
 class BitfieldMan;
 class BinaryStream;
 class FileEntry;
+class RequestGroup;
 
 #define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
 #define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)
@@ -391,6 +392,8 @@ bool getCidrPrefix(struct in_addr& in, const std::string& ip, int bits);
 
 // Returns true if ip1 and ip2 are in the same CIDR block.
 bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits);
+
+void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group);
 
 } // namespace util
 

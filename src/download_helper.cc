@@ -236,6 +236,9 @@ createBtRequestGroup(const std::string& torrentFilePath,
       ((*i).first, util::applyDir(dctx->getDir(), (*i).second));
   }
   rg->setDownloadContext(dctx);
+  // Remove "metalink" from Accept Type list to avoid server from
+  // responding Metalink file for web-seeding URIs.
+  util::removeMetalinkContentTypes(rg);
   return rg;
 }
 

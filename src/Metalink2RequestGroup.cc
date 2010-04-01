@@ -54,7 +54,6 @@
 #include "FileEntry.h"
 #include "A2STR.h"
 #include "a2functional.h"
-#include "DownloadHandlerConstants.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 # include "download_helper.h"
@@ -122,18 +121,6 @@ Metalink2RequestGroup::generate
   std::vector<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, binaryStream, option.get());
   createRequestGroup(groups, entries, option);
-}
-
-namespace {
-void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
-{
-  for(std::vector<std::string>::const_iterator i =
-	DownloadHandlerConstants::getMetalinkContentTypes().begin(),
-        eoi = DownloadHandlerConstants::getMetalinkContentTypes().end();
-      i != eoi; ++i) {
-    group->removeAcceptType(*i);
-  }
-}
 }
 
 void
@@ -213,7 +200,7 @@ Metalink2RequestGroup::createRequestGroup
         torrentRg->clearPostDownloadHandler();
         // remove "metalink" from Accept Type list to avoid loop in
         // tranparent metalink
-        removeMetalinkContentTypes(torrentRg);
+        util::removeMetalinkContentTypes(torrentRg);
         // make it in-memory download
         SharedHandle<PreDownloadHandler> preh
           (new MemoryBufferPreDownloadHandler());
@@ -306,7 +293,7 @@ Metalink2RequestGroup::createRequestGroup
     rg->setDownloadContext(dctx);
     // remove "metalink" from Accept Type list to avoid loop in
     // tranparent metalink
-    removeMetalinkContentTypes(rg);
+    util::removeMetalinkContentTypes(rg);
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if
     // torrentRg.isNull() == false

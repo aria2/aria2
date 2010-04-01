@@ -1,3 +1,14 @@
+2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made aria2 not send
+	"application/metalink4+xml,application/metalink+xml" in Accept
+	header for web-seeding URIs and tracker request.
+	* src/Metalink2RequestGroup.cc
+	* src/TrackerWatcherCommand.cc
+	* src/download_helper.cc
+	* src/util.cc
+	* src/util.h
+
 2010-04-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added download_helper.{cc,h} to SRCS
