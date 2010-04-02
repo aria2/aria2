@@ -57,7 +57,8 @@ const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():_contentEncodingEnabled(true),
                            userAgent(USER_AGENT),
-                           _noCache(true)
+                           _noCache(true),
+                           _acceptGzip(false)
 {}
 
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
@@ -169,7 +170,9 @@ std::string HttpRequest::createRequest()
   if(_contentEncodingEnabled) {
     std::string acceptableEncodings;
 #ifdef HAVE_LIBZ
-    acceptableEncodings += "deflate, gzip";
+    if(_acceptGzip) {
+      acceptableEncodings += "deflate, gzip";
+    }
 #endif // HAVE_LIBZ
     if(!acceptableEncodings.empty()) {
       builtinHds.push_back

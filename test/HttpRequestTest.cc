@@ -719,20 +719,30 @@ void HttpRequestTest::testEnableAcceptEncoding()
   acceptEncodings += "deflate, gzip";
 #endif // HAVE_LIBZ
   
-  std::string expectedText =
+  std::string expectedTextHead =
     "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n";
-  if(!acceptEncodings.empty()) {
-    expectedText += "Accept-Encoding: "+acceptEncodings+"\r\n";
-  }
-  expectedText +=
+  std::string expectedTextTail =
     "Host: localhost\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
     "\r\n";
 
+  std::string expectedText = expectedTextHead;
+  expectedText += expectedTextTail;
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+
+  expectedText = expectedTextHead;
+  if(!acceptEncodings.empty()) {
+    expectedText += "Accept-Encoding: ";
+    expectedText += acceptEncodings;
+    expectedText += "\r\n";
+  }
+  expectedText += expectedTextTail;
+
+  httpRequest.enableAcceptGZip();
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }
 

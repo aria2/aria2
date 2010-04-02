@@ -1,5 +1,29 @@
 2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't send "Accept: default, gzip" by default. This is because
+	some server responds with "Content-Encoding: gzip" for files which
+	itself is gzipped file and aria2 inflates them. This is a problem
+	if user don't want to inflate the file. Apparently this is server
+	configuration error, but I cannot do anything about this. So turn
+	this off.  Added --http-accept-gzip option. If true is given to
+	this option, aria2 sends 'Accept: deflate, gzip' request header
+	and inflates response if remote server responds with
+	'Content-Encoding: gzip' or 'Content-Encoding: deflate'.  This
+	indicates we removed extension tgz hack in order not to inflate
+	files with tgz extensions.
+	* doc/aria2c.1.txt
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/HttpRequestTest.cc
+
+2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made aria2 not send
 	"application/metalink4+xml,application/metalink+xml" in Accept
 	header for web-seeding URIs and tracker request.

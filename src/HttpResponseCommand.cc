@@ -192,25 +192,19 @@ void HttpResponseCommand::updateLastModifiedTime(const Time& lastModified)
   }
 }
 
-static bool fileIsGzipped(const SharedHandle<HttpResponse>& httpResponse)
-{
-  std::string filename =
-    util::toLower(httpResponse->getHttpRequest()->getRequest()->getFile());
-  return util::endsWith(filename, ".gz") || util::endsWith(filename, ".tgz");
-}
-
 bool HttpResponseCommand::shouldInflateContentEncoding
 (const SharedHandle<HttpResponse>& httpResponse)
 {
-  // Basically, on the fly inflation cannot be made with segment download,
-  // because in each segment we don't know where the date should be written.
-  // So turn off segmented downloading.
-  // Meanwhile, Some server returns content-encoding: gzip for .tgz files.
-  // I think those files should not be inflated by clients, because it is the
-  // original format of those files. So I made filename ending ".gz" or ".tgz"
-  // (case-insensitive) not inflated.
-  return httpResponse->isContentEncodingSpecified() &&
-    !fileIsGzipped(httpResponse);
+  // Basically, on the fly inflation cannot be made with segment
+  // download, because in each segment we don't know where the date
+  // should be written.  So turn off segmented downloading.
+  // Meanwhile, Some server returns content-encoding: gzip for .tgz
+  // files.  I think those files should not be inflated by clients,
+  // because it is the original format of those files. Current
+  // implementation just inflates these files nonetheless.
+  const std::string& ce = httpResponse->getContentEncoding();
+  return httpResponse->getHttpRequest()->acceptGZip() &&
+    (ce == "gzip" || ce == "deflate");
 }
 
 bool HttpResponseCommand::handleDefaultEncoding

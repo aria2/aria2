@@ -244,6 +244,18 @@ HTTP Specific Options
   Verify the peer using certificates specified in *--ca-certificate* option.
   Default: 'true'
 
+*--http-accept-gzip*[='true'|'false']::
+
+  Send "Accept: deflate, gzip" request header and inflate response if
+  remote server responds with "Content-Encoding: gzip" or
+  "Content-Encoding: deflate".  Default: 'false'
+
+[NOTE]
+
+Some server responds with "Content-Encoding: gzip" for files which
+itself is gzipped file. aria2 inflates them anyway because of the
+response header.
+
 *--http-auth-challenge*[='true'|'false']::
   Send HTTP authorization header only when it is requested by the
   server. If 'false' is set, then authorization header is always sent

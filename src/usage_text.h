@@ -667,3 +667,8 @@
     "                              instead.")
 #define TEXT_DHT_MESSAGE_TIMEOUT                \
   _(" --dht-message-timeout=SEC    Set timeout in seconds.")
+#define TEXT_HTTP_ACCEPT_GZIP                   \
+  _(" --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request header\n" \
+    "                              and inflate response if remote server responds\n" \
+    "                              with 'Content-Encoding: gzip' or\n"  \
+    "                              'Content-Encoding: deflate'.")

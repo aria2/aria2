@@ -184,6 +184,8 @@ const std::string PREF_REMOVE_CONTROL_FILE("remove-control-file");
 const std::string PREF_ALWAYS_RESUME("always-resume");
 // value: 1*digit
 const std::string PREF_MAX_RESUME_FAILURE_TRIES("max-resume-failure-tries");
+// value: true | false
+const std::string PREF_HTTP_ACCEPT_GZIP("http-accept-gzip");
 
 /**
  * FTP related preferences

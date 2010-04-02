@@ -85,6 +85,8 @@ private:
 
   bool _noCache;
 
+  bool _acceptGzip;
+
   std::pair<std::string, std::string> getProxyAuthString() const;
 public:
   HttpRequest();
@@ -254,6 +256,21 @@ public:
   void disableNoCache()
   {
     _noCache = false;
+  }
+
+  void enableAcceptGZip()
+  {
+    _acceptGzip = true;
+  }
+
+  void disableAcceptGZip()
+  {
+    _acceptGzip = false;
+  }
+
+  bool acceptGZip() const
+  {
+    return _acceptGzip;
   }
 };
 

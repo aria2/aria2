@@ -973,6 +973,28 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--http-accept-gzip</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Send "Accept: deflate, gzip" request header and inflate response if
+  remote server responds with "Content-Encoding: gzip" or
+  "Content-Encoding: deflate".  Default: <em>false</em>
+</p>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Some server responds with "Content-Encoding: gzip" for files which
+itself is gzipped file. aria2 inflates them anyway because of the
+response header.</td>
+</tr></table>
+</div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
 <strong>--http-auth-challenge</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
@@ -4084,7 +4106,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-30 23:43:40 JST
+Last updated 2010-04-02 23:04:52 JST
 </div>
 </div>
 </body>
