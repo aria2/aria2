@@ -61,6 +61,7 @@ void TimedHaltCommand::process()
   if(!_e->isHaltRequested()) {
     logger->notice(MSG_TIME_HAS_PASSED, _interval);
     if(_forceHalt) {
+      logger->notice("This is emergency shutdown.");
       _e->requestForceHalt();
     } else {
       _e->requestHalt();

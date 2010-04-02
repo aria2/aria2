@@ -1732,6 +1732,16 @@ sessionId::
 
   Session ID, which is generated each time when aria2 is invoked.
 
+*aria2.shutdown*
+
+This method shutdowns aria2.  This method returns "OK".
+
+*aria2.forceShutdown*
+
+This method shutdowns aria2. This method behaves like *aria2.shutdown*
+except that any actions which takes time such as contacting BitTorrent
+tracker are skipped. This method returns "OK".
+
 *system.multicall* 'methods'
 
 This methods encapsulates multiple method calls in a single request.

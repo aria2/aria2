@@ -2899,6 +2899,14 @@ sessionId
 Session ID, which is generated each time when aria2 is invoked\&.
 .RE
 .sp
+\fBaria2\&.shutdown\fR
+.sp
+This method shutdowns aria2\&. This method returns "OK"\&.
+.sp
+\fBaria2\&.forceShutdown\fR
+.sp
+This method shutdowns aria2\&. This method behaves like \fBaria2\&.shutdown\fR except that any actions which takes time such as contacting BitTorrent tracker are skipped\&. This method returns "OK"\&.
+.sp
 \fBsystem\&.multicall\fR \fImethods\fR
 .sp
 This methods encapsulates multiple method calls in a single request\&. \fImethods\fR is of type array and its element is struct\&. The struct contains two keys: "methodName" and "params"\&. "methodName" is the method name to call and "params" is array containing parameters to the method\&. This method returns array of responses\&. The element of array will either be a one\-item array containing the return value of each method call or struct of fault element if an encapsulated method call fails\&.

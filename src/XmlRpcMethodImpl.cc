@@ -38,6 +38,7 @@
 #include <algorithm>
 
 #include "Logger.h"
+#include "LogFactory.h"
 #include "BDE.h"
 #include "DlAbortEx.h"
 #include "Option.h"
@@ -62,6 +63,7 @@
 #include "XmlRpcMethodFactory.h"
 #include "XmlRpcResponse.h"
 #include "SegmentMan.h"
+#include "TimedHaltCommand.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -1006,6 +1008,27 @@ BDE ChangeUriXmlRpcMethod::process
   res << delcount;
   res << addcount;
   return res;
+}
+
+static BDE goingShutdown
+(const XmlRpcRequest& req, DownloadEngine* e, bool forceHalt)
+{
+  // Schedule shutdown after 3seconds to give time to client to
+  // receive XML-RPC response.
+  e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e, 3, forceHalt));
+  LogFactory::getInstance()->info("Scheduled shutdown in 3 seconds.");
+  return BDE_OK;
+}
+
+BDE ShutdownXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return goingShutdown(req, e, false);
+}
+
+BDE ForceShutdownXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return goingShutdown(req, e, true);
 }
 
 BDE SystemMulticallXmlRpcMethod::process

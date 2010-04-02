@@ -1,5 +1,16 @@
 2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added aria2.shutdown and aria2.forceShutdown XML-RPC method.
+	These methods, as their name implies, shutdown aria2.  These
+	methods are useful for Windows because it lacks signal mechanism.
+	* doc/aria2c.1.txt
+	* src/TimedHaltCommand.cc
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+
+2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added forceHalt argument to TimedHaltCommand.
 	Added requestForceHalt() to DownloadEngine.
 	* src/DownloadEngine.cc

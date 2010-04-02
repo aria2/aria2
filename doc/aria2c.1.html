@@ -3610,6 +3610,12 @@ sessionId
 </p>
 </dd>
 </dl></div>
+<div class="paragraph"><p><strong>aria2.shutdown</strong></p></div>
+<div class="paragraph"><p>This method shutdowns aria2.  This method returns "OK".</p></div>
+<div class="paragraph"><p><strong>aria2.forceShutdown</strong></p></div>
+<div class="paragraph"><p>This method shutdowns aria2. This method behaves like <strong>aria2.shutdown</strong>
+except that any actions which takes time such as contacting BitTorrent
+tracker are skipped. This method returns "OK".</p></div>
 <div class="paragraph"><p><strong>system.multicall</strong> <em>methods</em></p></div>
 <div class="paragraph"><p>This methods encapsulates multiple method calls in a single request.
 <em>methods</em> is of type array and its element is struct.  The struct
@@ -4106,7 +4112,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-04-02 23:04:52 JST
+Last updated 2010-04-02 23:42:11 JST
 </div>
 </div>
 </body>
