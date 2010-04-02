@@ -1,5 +1,14 @@
 2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added forceHalt argument to TimedHaltCommand.
+	Added requestForceHalt() to DownloadEngine.
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/TimedHaltCommand.cc
+	* src/TimedHaltCommand.h
+
+2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Possible fix for chunked encoding with Content-Length.
 	* src/HttpResponseCommand.cc
 

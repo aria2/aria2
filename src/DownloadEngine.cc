@@ -241,6 +241,12 @@ void DownloadEngine::requestHalt()
   _requestGroupMan->halt();
 }
 
+void DownloadEngine::requestForceHalt()
+{
+  _haltRequested = true;
+  _requestGroupMan->forceHalt();
+}
+
 void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
 {
   _statCalc = statCalc;

@@ -196,6 +196,8 @@ public:
 
   void requestHalt();
 
+  void requestForceHalt();
+
   void setNoWait(bool b);
 
   void addRoutineCommand(Command* command);
