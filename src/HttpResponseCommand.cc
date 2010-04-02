@@ -252,7 +252,8 @@ bool HttpResponseCommand::handleDefaultEncoding
     if(req->getMethod() == Request::METHOD_GET &&
        !segment.isNull() && segment->getPositionToWrite() == 0 &&
        !req->isPipeliningEnabled()) {
-      command = createHttpDownloadCommand(httpResponse);
+      command = createHttpDownloadCommand
+        (httpResponse, getTransferEncodingDecoder(httpResponse));
     } else {
       _requestGroup->getSegmentMan()->cancelSegment(cuid);
       _fileEntry->poolRequest(req);

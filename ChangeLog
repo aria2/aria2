@@ -1,5 +1,10 @@
 2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Possible fix for chunked encoding with Content-Length.
+	* src/HttpResponseCommand.cc
+
+2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't send "Accept: default, gzip" by default. This is because
 	some server responds with "Content-Encoding: gzip" for files which
 	itself is gzipped file and aria2 inflates them. This is a problem
