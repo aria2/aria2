@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-03-13 00:38+0900\n"
+"POT-Creation-Date: 2010-04-04 00:32+0900\n"
 "PO-Revision-Date: 2010-01-27 08:21+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -1387,15 +1387,17 @@ msgstr ""
 "                              у параметрі --ca-certificate."
 
 #: src/usage_text.h:483
+#, fuzzy
 msgid ""
-" --no-proxy=DOMAINS           Specify comma separated hostnames or domains "
+" --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n"
+"                              network address with or without CIDR block "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
 " --no-proxy=DOMAINS Вказати розділені комами імена хостів або доменів, де\n"
 "                              проксі не треба використовувати."
 
-#: src/usage_text.h:486
+#: src/usage_text.h:487
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
@@ -1405,11 +1407,11 @@ msgstr ""
 "HTTP\n"
 "                              серверу."
 
-#: src/usage_text.h:489
+#: src/usage_text.h:490
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr " --event-poll=POLL Вказати метод для опитування подій."
 
-#: src/usage_text.h:491
+#: src/usage_text.h:492
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
@@ -1418,7 +1420,7 @@ msgstr ""
 " --xml-rpc-listen-port=PORT Вказати номер порта для прослуховування XML-RPC\n"
 "                              сервера."
 
-#: src/usage_text.h:494
+#: src/usage_text.h:495
 msgid ""
 " --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1435,7 +1437,7 @@ msgstr ""
 "                              --xml-rpc-passwd. Дивіться також параметр --"
 "xml-rpc-listen-port."
 
-#: src/usage_text.h:499
+#: src/usage_text.h:500
 msgid ""
 " --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n"
 "                              detects the request is more than SIZE bytes, "
@@ -1448,15 +1450,15 @@ msgstr ""
 "байтів, тоді\n"
 "                              з'єднання буде скасовано."
 
-#: src/usage_text.h:503
+#: src/usage_text.h:504
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr " --xml-rpc-user=USER Встановити XML-RPC користувача."
 
-#: src/usage_text.h:505
+#: src/usage_text.h:506
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
 msgstr " --xml-rpc-passwd=PASSWD Вказати XML-RPC пароль."
 
-#: src/usage_text.h:507
+#: src/usage_text.h:508
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1472,7 +1474,7 @@ msgstr ""
 "приймати будь-яку IP\n"
 "                              адресу."
 
-#: src/usage_text.h:512
+#: src/usage_text.h:513
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1500,7 +1502,7 @@ msgstr ""
 "цього\n"
 "                              параметру."
 
-#: src/usage_text.h:520
+#: src/usage_text.h:521
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1522,7 +1524,7 @@ msgstr ""
 "параметр багато\n"
 "                              разів."
 
-#: src/usage_text.h:526
+#: src/usage_text.h:527
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1540,7 +1542,7 @@ msgstr ""
 "true\n"
 "                              вказано."
 
-#: src/usage_text.h:532
+#: src/usage_text.h:533
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1567,7 +1569,7 @@ msgstr ""
 "                              беручи за основу відповідь трекера та прогрес\n"
 "                              завантаження."
 
-#: src/usage_text.h:540
+#: src/usage_text.h:541
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1583,7 +1585,7 @@ msgstr ""
 "                              з'ясувати вимоги до COMMAND.\n"
 "                              Дивіться також параметр --on-download-stop."
 
-#: src/usage_text.h:546
+#: src/usage_text.h:547
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed when download\n"
 "                              starts up. COMMAND must take just one argument "
@@ -1597,7 +1599,7 @@ msgstr ""
 "                              GID додається до COMMAND у якості першого "
 "аргументу."
 
-#: src/usage_text.h:550
+#: src/usage_text.h:551
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1613,7 +1615,7 @@ msgstr ""
 "                              вимоги до COMMAND.\n"
 "                              Дивіться також параметр --on-download-stop."
 
-#: src/usage_text.h:556
+#: src/usage_text.h:557
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1640,7 +1642,7 @@ msgstr ""
 "того, щоб з'ясувати\n"
 "                              вимоги до COMMAND."
 
-#: src/usage_text.h:565
+#: src/usage_text.h:566
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1652,7 +1654,7 @@ msgstr ""
 "                              SEC секунд підряд. Якщо вказано 0, тоді ця\n"
 "                              можливість вимкнена."
 
-#: src/usage_text.h:569
+#: src/usage_text.h:570
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
@@ -1665,7 +1667,7 @@ msgstr ""
 "прослуховує лишень\n"
 "                              на локальному loopback (127.0.0.1) інтерфейсі."
 
-#: src/usage_text.h:573
+#: src/usage_text.h:574
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1687,18 +1689,18 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:585
+#: src/usage_text.h:586
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:588
+#: src/usage_text.h:589
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
-#: src/usage_text.h:590
+#: src/usage_text.h:591
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1715,7 +1717,7 @@ msgid ""
 "                              See also --bt-metadata-only option."
 msgstr ""
 
-#: src/usage_text.h:598
+#: src/usage_text.h:599
 msgid ""
 " --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
 "cache\n"
@@ -1727,7 +1729,7 @@ msgid ""
 "                              using --header option."
 msgstr ""
 
-#: src/usage_text.h:604
+#: src/usage_text.h:605
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
 "described\n"
@@ -1737,19 +1739,19 @@ msgid ""
 "                              used. See also --bt-save-metadata option."
 msgstr ""
 
-#: src/usage_text.h:609
+#: src/usage_text.h:610
 msgid ""
 " --human-readable[=true|false] Print sizes and speed in human readable "
 "format\n"
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
-#: src/usage_text.h:612
+#: src/usage_text.h:613
 #, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
 msgstr " --enable-dht[=true|false] Ввімкнути підтримку DHT."
 
-#: src/usage_text.h:614
+#: src/usage_text.h:615
 #, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
@@ -1765,7 +1767,7 @@ msgstr ""
 "key, щоб вказати\n"
 "                              приватного ключа."
 
-#: src/usage_text.h:619
+#: src/usage_text.h:620
 #, fuzzy
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
@@ -1775,40 +1777,138 @@ msgstr ""
 "HTTP\n"
 "                              серверу."
 
-#: src/usage_text.h:622
+#: src/usage_text.h:623
 #, fuzzy
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr " --xml-rpc-user=USER Встановити XML-RPC користувача."
 
-#: src/usage_text.h:624
+#: src/usage_text.h:625
 #, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr " --xml-rpc-passwd=PASSWD Вказати XML-RPC пароль."
 
-#: src/usage_text.h:626
+#: src/usage_text.h:627
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
 
-#: src/usage_text.h:628
+#: src/usage_text.h:629
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr ""
 
-#: src/usage_text.h:630
+#: src/usage_text.h:631
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
 
-#: src/usage_text.h:632
+#: src/usage_text.h:633
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
 
-#: src/usage_text.h:634
+#: src/usage_text.h:635
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
-#: src/usage_text.h:636
+#: src/usage_text.h:637
 #, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr " --ftp-passwd=PASSWD Задати FTP пароль. Це діє на усі URL."
+
+#: src/usage_text.h:639
+#, fuzzy
+msgid ""
+" --remove-control-file[=true|false] Remove control file before download. "
+"Using\n"
+"                              with --allow-overwrite=true, download always\n"
+"                              starts from scratch. This will be useful for\n"
+"                              users behind proxy server which disables "
+"resume."
+msgstr ""
+" --allow-piece-length-change=true|false Якщо встановлено false (ні), aria2 "
+"припиняє завантаження,\n"
+"                              коли довжина частини інша за ту, що "
+"знаходиться у\n"
+"                              контрольному файлі. Якщо встановлено true "
+"(так), Ви можете продовжувати,\n"
+"                              проте деякий прогрес завантаження буде "
+"втрачено."
+
+#: src/usage_text.h:644
+#, fuzzy
+msgid ""
+" --always-resume[=true|false] Always resume download. If true is given, "
+"aria2\n"
+"                              always tries to resume download and if resume "
+"is\n"
+"                              not possible, aborts download. If false is "
+"given,\n"
+"                              when all given URIs do not support resume or\n"
+"                              aria2 encounters N URIs which does not "
+"support\n"
+"                              resume (N is the value specified using\n"
+"                              --max-resume-failure-tries option), aria2\n"
+"                              downloads file from scratch.\n"
+"                              See --max-resume-failure-tries option."
+msgstr ""
+" --follow-torrent=true|false|mem Якщо вказано true або mem, тоді "
+"завантажений файл,\n"
+"                              чий суфікс - .torrent або тип -\n"
+"                              application/x-bittorrent, aria2\n"
+"                              аналізує як torrent файл та завантажує файли\n"
+"                              згадані у ньому.\n"
+"                              Якщо вказано mem, тоді torrent файл не\n"
+"                              записується на диск, а тримається у пам'яті.\n"
+"                              Якщо вказано false, дії, згадані вище,\n"
+"                              не відбуваються."
+
+#: src/usage_text.h:654
+msgid ""
+" --max-resume-failure-tries=N When used with --always-resume=false, aria2\n"
+"                              downloads file from scratch when aria2 detects "
+"N\n"
+"                              number of URIs that does not support resume. "
+"If N\n"
+"                              is 0, aria2 downloads file from scratch when "
+"all\n"
+"                              given URIs do not support resume.\n"
+"                              See --always-resume option."
+msgstr ""
+
+#: src/usage_text.h:661
+#, fuzzy
+msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
+msgstr " -t, --timeout=SEC Задає перерву в секундах."
+
+#: src/usage_text.h:663
+#, fuzzy
+msgid ""
+" --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
+"                              establish connection to tracker. After the\n"
+"                              connection is established, this option makes "
+"no\n"
+"                              effect and --bt-tracker-timeout option is "
+"used\n"
+"                              instead."
+msgstr ""
+" --connect-timeout=SEC Вказати перерву у з'єднанні для встановлення\n"
+"                              підключення до HTTP/FTP/проксі серверу. Після\n"
+"                              встановлення підключення, цей параметр не має "
+"значення\n"
+"                              та замість нього використовується параметр --"
+"timeout."
+
+#: src/usage_text.h:669
+#, fuzzy
+msgid " --dht-message-timeout=SEC    Set timeout in seconds."
+msgstr " -t, --timeout=SEC Задає перерву в секундах."
+
+#: src/usage_text.h:671
+msgid ""
+" --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request "
+"header\n"
+"                              and inflate response if remote server "
+"responds\n"
+"                              with 'Content-Encoding: gzip' or\n"
+"                              'Content-Encoding: deflate'."
+msgstr ""
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -1891,316 +1991,54 @@ msgstr ""
 msgid "Refer to man page for more information."
 msgstr "Зверніться до сторінок man задля отримання ширшої інформації."
 
-#: src/message.h:40
-#, c-format
-msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - Завантаження одного із сегментів вдало закінчено."
-
-#: src/message.h:41
-#, c-format
-msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - Нема доступного сегменту."
-
-#: src/message.h:42
-#, c-format
-msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - З'єднання із %s:%d"
-
-#: src/message.h:43
-#, c-format
-msgid ""
-"CUID#%d - The segment changed. We send the request again with new Range "
-"header."
-msgstr ""
-"CUID#%d - Сегмент змінено. Відправляємо запит знов із новим заголовком "
-"діапазонів."
-
-#: src/message.h:44
-#, c-format
-msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - Переспрямування на %s"
-
-#: src/message.h:45
-#, c-format
-msgid ""
-"CUID#%d - Requesting:\n"
-"%s"
-msgstr ""
-"CUID#%d - Запит:\n"
-"%s"
-
-#: src/message.h:46
-#, c-format
-msgid ""
-"CUID#%d - Response received:\n"
-"%s"
-msgstr ""
-"CUID#%d - Отримано відповідь:\n"
-"%s"
-
-#: src/message.h:47
-#, c-format
-msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - Завантаження перервано. URI=%s"
-
-#: src/message.h:48
-#, c-format
-msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - Перезапуск завантаження. URL=%s"
-
-#: src/message.h:49
-#, c-format
-msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - Завантаження скасовано."
-
-#: src/message.h:50
-#, c-format
-msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr "CUID#%d - Зроблено %d невдалих спроб. Завантаження скасовано."
-
-#: src/message.h:56
-#, c-format
-msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - отримана нова частина. Індекс=%d"
-
 #: src/message.h:57
-#, c-format
-msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - Отримана неправильна частина. Індекс=%d"
-
-#: src/message.h:58
-#, c-format
-msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - Завантаження не закінчено: %s"
-
-#: src/message.h:59
-#, c-format
-msgid "#%d - Download has already completed: %s"
+#, fuzzy, c-format
+msgid "GID#%s - Download has already completed: %s"
 msgstr "#%d - Завантаження вже закінчено: %s"
 
-#: src/message.h:60
-#, c-format
-msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - Правильна контрольна сума: %s"
-
-#: src/message.h:61
-#, c-format
-msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - Неправильна контрольна сума: %s"
-
-#: src/message.h:62
-#, c-format
-msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - Обробка імені хосту %s"
-
-#: src/message.h:63
-#, c-format
-msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - Визначення IP-адреси виконано: %s -> %s"
-
-#: src/message.h:64
-#, c-format
-msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - Не вдалося знайти IP-адресу %s:%s"
-
-#: src/message.h:65
-#, c-format
-msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr "CUID#%d - Знайдено в DNS-кеші: %s -> %s"
-
-#: src/message.h:66
-#, c-format
-msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - Перервано запит."
-
-#: src/message.h:67
-#, c-format
-msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - З'єднання із хостом %s"
-
-#: src/message.h:68
-#, c-format
-msgid ""
-"CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-"blockIndex=%d"
-msgstr ""
-"CUID#%d - Отримано сегмент. Індекс=%d, початок=%d, довжина=%d, відступ=%llu, "
-"індекс-блоку=%d"
-
-#: src/message.h:69
-#, c-format
-msgid "CUID#%d - Piece bitfield %s"
-msgstr "CUID#%d - Біт-поле сегменту %s"
-
-#: src/message.h:70
-#, c-format
-msgid ""
-"CUID#%d - Reject piece message in queue because the peer has been choked. "
-"index=%d, begin=%d, length=%d"
-msgstr ""
-"CUID#%d - Відкинути блок повідомлення в черзі через те, що вузол було "
-"\"придушено\". Індекс=%d, початок=%d, довжина=%d"
-
-#: src/message.h:71
-#, c-format
-msgid ""
-"CUID#%d - Reject piece message in queue because cancel message received. "
-"index=%d, begin=%d, length=%d"
-msgstr ""
-"CUID#%d - Повідомлення про сегмент у черзі видалено, через те що отримано "
-"повідомлення скасування. індекс=%d, початок=%d, довжина=%d"
-
-#: src/message.h:72
-#, c-format
-msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr "CUID#%d - Під час перевірки цілісності було виявлено виняток."
-
-#: src/message.h:73
-#, c-format
-msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - Цікавиться вузол"
-
-#: src/message.h:74
-#, c-format
-msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - Не зацікавлений у контактуванні"
-
-#: src/message.h:75
-#, c-format
-msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr "CUID#%d - Видаляється запит індекс=%d, блок-індекс=%d"
-
-#: src/message.h:76
-#, c-format
-msgid ""
-"CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
-"got choked."
-msgstr ""
-"CUID#%d - Видаляється запит індекс=%d, блок-індекс=%d через велике "
-"навантаження."
-
-#: src/message.h:77
-#, c-format
-msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr "CUID#%d - Видаляється запит блок-індекс=%d, перевищено час очикування"
-
-#: src/message.h:78
-#, c-format
-msgid ""
-"CUID#%d - Deleting request slot blockIndex=%d because the block has been "
-"acquired."
-msgstr "CUID#%d - Видаляється запит блок-індекс=%d, блок отримано."
-
-#: src/message.h:79
-#, c-format
-msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - Прискорення ввімкнено."
-
-#: src/message.h:80
-#, c-format
-msgid "CUID#%d - Extended Messaging enabled."
-msgstr "CUID#%d - Розширені повідомлення ввімкнено."
-
-#: src/message.h:81
-#, c-format
-msgid "CUID#%d - Exception caught while allocating file space."
-msgstr "CUID#%d - Помилка під час розміщення файлу."
-
-#: src/message.h:82
-#, c-format
-msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-msgstr ""
-"CUID#%d - Виявлено Content-Disposition (переадресацію). Використано %s у "
-"якості імені файлу"
-
-#: src/message.h:83
-#, c-format
-msgid "CUID#%d - Peer %s:%d banned."
-msgstr "CUID#%d - Вузел %s:%d заборонено."
-
-#: src/message.h:84
-#, c-format
-msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - Задля прийняття нових з'єднань використовується порт %d"
-
-#: src/message.h:85
-#, c-format
-msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr "CUID#%d - Помилка при спробі зайняти порт=%d"
-
-#: src/message.h:86
-#, c-format
-msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-msgstr "CUID#%d - Вхідне з'єднання, додається нова команда CUID#%d"
-
-#: src/message.h:87
-#, c-format
-msgid "CUID#%d - Error in accepting connection"
-msgstr "CUID#%d - Помилка при встановленні з'єднання."
-
-#: src/message.h:88
-#, c-format
-msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr "CUID#%d - Помилка при обробці відповіді з трекера."
-
-#: src/message.h:89
-#, c-format
-msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - Неможливо створити запит трекера."
-
-#: src/message.h:90
-#, c-format
-msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr "CUID#%d - Створення нового запиту трекера #%d"
-
-#: src/message.h:91
-#, c-format
-msgid "CUID#%d - The peer is DHT-enabled."
-msgstr "CUID#%d - Вузол DHT-досяжний."
-
-#: src/message.h:95
+#: src/message.h:102
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr "Нерозпізнаний URI або непідтримуваний протокол: %s"
 
-#: src/message.h:96
+#: src/message.h:103
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr "Трекер повернув попередження: %s"
 
-#: src/message.h:97
+#: src/message.h:104
 #, c-format
 msgid "The segment file %s exists."
 msgstr "Сегмент файлу %s існує."
 
-#: src/message.h:98
+#: src/message.h:105
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr "Сегмент файлу %s не існує."
 
-#: src/message.h:99
+#: src/message.h:106
 #, c-format
 msgid "Saving the segment file %s"
 msgstr "Збереження сегменту файлу %s"
 
-#: src/message.h:100
+#: src/message.h:107
 msgid "The segment file was saved successfully."
 msgstr "Сегмент файлу вдало збережено."
 
-#: src/message.h:101
+#: src/message.h:108
 #, c-format
 msgid "Loading the segment file %s."
 msgstr "Завантаження сегменту файлу %s."
 
-#: src/message.h:102
+#: src/message.h:109
 msgid "The segment file was loaded successfully."
 msgstr "Сегмент файлу вдало завантажено."
 
-#: src/message.h:103
+#: src/message.h:110
 msgid "No URI to download. Download aborted."
 msgstr "Нема URI для завантаження. Завантаження скасовано."
 
-#: src/message.h:104
+#: src/message.h:111
 #, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
@@ -2213,105 +2051,95 @@ msgstr ""
 "необхідності знов завантажити цей файл, тоді видаліть цей файл або "
 "використовуйте переметр --allow-overwrite=true та перезапустіть aria2."
 
-#: src/message.h:105
+#: src/message.h:112
 #, c-format
 msgid "Allocating file %s, %s bytes"
 msgstr "Розміщення файлу %s, %s байт(ів)"
 
-#: src/message.h:106
+#: src/message.h:113
 msgid "File not found"
 msgstr "Файл не знайдено"
 
-#: src/message.h:107
+#: src/message.h:114
 msgid "Not a directory"
 msgstr "Не є каталогом"
 
-#: src/message.h:108
+#: src/message.h:115
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 msgstr "Відмінність контрольних сум. checksumLength=%d, numChecksum=%d"
 
-#: src/message.h:109
+#: src/message.h:116
 #, c-format
 msgid "Writing file %s"
 msgstr "Запис файлу %s"
 
-#: src/message.h:110
+#: src/message.h:117
 msgid "No peer list received."
 msgstr "Перелік вузлів відсутній."
 
-#: src/message.h:111
+#: src/message.h:118
 #, c-format
 msgid "Adding peer %s:%d"
 msgstr "Додається вузол %s:%d"
 
-#: src/message.h:112
+#: src/message.h:119
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr "Видаляється використана частина index=%d, fillRate(%%)=%d<=%d"
 
-#: src/message.h:113
+#: src/message.h:120
 msgid "Download of selected files was complete."
 msgstr "Завантаження обраних файлів було повністю закінчено."
 
-#: src/message.h:114
+#: src/message.h:121
 msgid "The download was complete."
 msgstr "Завантаження було повністю закінчено."
 
-#: src/message.h:115
+#: src/message.h:122
 #, c-format
 msgid "Removed %d have entries."
 msgstr "Видалене %d має входження."
 
-#: src/message.h:116
+#: src/message.h:123
 #, c-format
 msgid "Validating file %s"
 msgstr "Перевіряється файл %s"
 
-#: src/message.h:117
+#: src/message.h:124
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
 msgstr "%d секунд до розміщення %s байт(ів)"
 
-#: src/message.h:118
-#, c-format
-msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr "Відправлення FileAllocationCommand для CUID#%d."
-
-#: src/message.h:119
+#: src/message.h:127
 #, c-format
 msgid "Metalink: Queueing %s for download."
 msgstr "Metalink: Постановка до черги %s."
 
-#: src/message.h:120
+#: src/message.h:128
 #, c-format
 msgid "Download complete: %s"
 msgstr "Завантаження повністю закінчено: %s"
 
-#: src/message.h:121
+#: src/message.h:129
 msgid "Seeding is over."
 msgstr "Роздавання скінчилось."
 
-#: src/message.h:122
-#, c-format
-msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-msgstr "CUID#%d скасовує частину index=%d. CUID#%d - натомість пропонує."
-
-#: src/message.h:123
+#: src/message.h:130
 msgid "No chunk to verify."
 msgstr "Нема частин для перевірки."
 
-#: src/message.h:124
+#: src/message.h:131
 #, c-format
 msgid "Good chunk checksum. hash=%s"
 msgstr "Вірна контрольна сума. hash=%s"
 
-#: src/message.h:125
+#: src/message.h:132
 #, c-format
 msgid "Failed to load cookies from %s"
 msgstr "Помилка завантаження куків с %s"
 
-#: src/message.h:126
+#: src/message.h:133
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
@@ -2320,58 +2148,58 @@ msgstr ""
 "Файл .netrc %s не має належних прав доступу. Треба, щоб було 600. Підтримка "
 "netrc вимкнена."
 
-#: src/message.h:127
+#: src/message.h:134
 msgid "Logging started."
 msgstr "Логування розпочато"
 
-#: src/message.h:128
+#: src/message.h:135
 msgid "Specify at least one URL."
 msgstr "Вкажіть щонайменше один URL."
 
-#: src/message.h:129
+#: src/message.h:136
 msgid "daemon failed."
 msgstr "демон припинив роботу."
 
-#: src/message.h:130
+#: src/message.h:137
 #, c-format
 msgid "Verification finished successfully. file=%s"
 msgstr "Перевірку вдало закінчено. Файл=%s"
 
-#: src/message.h:131
+#: src/message.h:138
 #, c-format
 msgid "Checksum error detected. file=%s"
 msgstr "Виявлено помилку контрольної сумми. Файл=%s"
 
-#: src/message.h:132
+#: src/message.h:139
 #, c-format
 msgid "Incomplete range specified. %s"
 msgstr "Вказано неповний діапазон.%s"
 
-#: src/message.h:133
+#: src/message.h:140
 #, c-format
 msgid "Failed to convert string into value: %s"
 msgstr "Помилка під час перетворення рядку в змінну:%s"
 
-#: src/message.h:134
+#: src/message.h:141
 msgid "Resource not found"
 msgstr "Ресурс не знайдено"
 
-#: src/message.h:135
+#: src/message.h:142
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr "Файл вже існує. Перейменовано на %s."
 
-#: src/message.h:136
+#: src/message.h:143
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr ""
 "Неможливо розпарсити металінку XML файлу. Можливо XML погано сформований."
 
-#: src/message.h:137
+#: src/message.h:144
 #, c-format
 msgid "Too small payload size for %s, size=%d."
 msgstr "Занадто малий корисний розмір для %s, розмір=%d."
 
-#: src/message.h:138
+#: src/message.h:145
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
@@ -2379,30 +2207,30 @@ msgid ""
 msgstr ""
 "Марний контрольний файл %s видалено бо файл завантаження %s не не існує."
 
-#: src/message.h:139
+#: src/message.h:146
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr "Ваш рейтинг роздавання %.1f, роздано/завантажено=%sB/%sB"
 
-#: src/message.h:140
+#: src/message.h:147
 #, c-format
 msgid "Missing %s in torrent metainfo."
 msgstr "Відсутня %s у торенті мета-інформація."
 
-#: src/message.h:141
+#: src/message.h:148
 msgid "Tracker returned null data."
 msgstr "Трекер повернув нульові дані."
 
-#: src/message.h:142
+#: src/message.h:149
 msgid "Windows socket library initialization failed"
 msgstr "Невдала ініціалізація сокет бібліотеки Windows."
 
-#: src/message.h:143
+#: src/message.h:150
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
 msgstr "Минуло %d секунд(и). Програма зупиняється."
 
-#: src/message.h:144
+#: src/message.h:151
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
@@ -2410,74 +2238,74 @@ msgstr ""
 "Запис сигнатури як %s відбувся. Будь ласка зауважте, що aria2 не виконує "
 "перевірку сигнатур."
 
-#: src/message.h:146
+#: src/message.h:153
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr "Запис сигнатури як %s не відбувся. Можливо, файл вже існує."
 
-#: src/message.h:149
+#: src/message.h:156
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
 msgstr "Не вдалося відкрити файл ServerStat %s для читання."
 
-#: src/message.h:150
+#: src/message.h:157
 #, c-format
 msgid "ServerStat file %s loaded successfully."
 msgstr "Файл ServerStat %s вдало завантажено."
 
-#: src/message.h:151
+#: src/message.h:158
 #, c-format
 msgid "Failed to read ServerStat from %s."
 msgstr "Не вдалося прочитати ServerStat з %s."
 
-#: src/message.h:154
+#: src/message.h:161
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
 msgstr "Не вдалося відкрити файл ServerStat %s для запису."
 
-#: src/message.h:155
+#: src/message.h:162
 #, c-format
 msgid "ServerStat file %s saved successfully."
 msgstr "Файл ServerStat %s було вдало збережено."
 
-#: src/message.h:156
+#: src/message.h:163
 #, c-format
 msgid "Failed to write ServerStat to %s."
 msgstr "Не вдалося записати ServerStat до %s."
 
-#: src/message.h:159
+#: src/message.h:166
 #, c-format
 msgid "Failed to establish connection, cause: %s"
 msgstr "Не вдалося відкрити з'єднання з причини: %s"
 
-#: src/message.h:160
+#: src/message.h:167
 #, c-format
 msgid "Network problem has occurred. cause:%s"
 msgstr "Виникла помилка із сіткою з причини: %s"
 
-#: src/message.h:162
+#: src/message.h:169
 #, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "Помилка під час завантаження CA сертифікату %s. Причина: %s"
 
-#: src/message.h:164
+#: src/message.h:171
 #, c-format
 msgid "Certificate verification failed. Cause: %s"
 msgstr "Невдала перевірка сертифікату. Причина: %s"
 
-#: src/message.h:165
+#: src/message.h:172
 msgid "No certificate found."
 msgstr "Не знайдено сертифікат."
 
-#: src/message.h:166
+#: src/message.h:173
 msgid "Hostname not match."
 msgstr "Ім'я хосту не таке, як треба."
 
-#: src/message.h:167
+#: src/message.h:174
 msgid "No files to download."
 msgstr "Немає файлів для завантаження."
 
-#: src/message.h:169
+#: src/message.h:176
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
@@ -2485,78 +2313,78 @@ msgstr ""
 "Ви можете натрапити на помилку перевірки сертифікату з HTTPS серверу. "
 "Дивіться параметри --ca-certificate та --check-certificate."
 
-#: src/message.h:171
+#: src/message.h:178
 #, c-format
 msgid "Printing the contents of file '%s'..."
 msgstr "Друкування змісту файлу '%s'..."
 
-#: src/message.h:172
+#: src/message.h:179
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr "Цей файл не є фалом торенту або Metalink. Пропущення."
 
-#: src/message.h:177
+#: src/message.h:184
 #, c-format
 msgid "Is '%s' a file?"
 msgstr "Чи '%s' є файлом?"
 
-#: src/message.h:178
+#: src/message.h:185
 #, c-format
 msgid "Failed to find given interface %s, cause: %s"
 msgstr ""
 
-#: src/message.h:180
+#: src/message.h:187
 #, c-format
 msgid "Saved metadata as %s."
 msgstr ""
 
-#: src/message.h:181
+#: src/message.h:188
 #, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr ""
 
-#: src/message.h:183
+#: src/message.h:190
 #, c-format
 msgid "Detected directory traversal directive in %s"
 msgstr ""
 
-#: src/message.h:185
+#: src/message.h:192
 msgid "Timeout."
 msgstr "Тайм-аут."
 
-#: src/message.h:186
+#: src/message.h:193
 msgid "Invalid chunk size."
 msgstr "Невірний розмір блоку."
 
-#: src/message.h:187
+#: src/message.h:194
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Блок занадто великий. Розмір=%d"
 
-#: src/message.h:188
+#: src/message.h:195
 msgid "Invalid header."
 msgstr "Невірний заголовок."
 
-#: src/message.h:189
+#: src/message.h:196
 msgid "Invalid response."
 msgstr "Невірна відповідь."
 
-#: src/message.h:190
+#: src/message.h:197
 msgid "No header found."
 msgstr "Не знайдено заголовок."
 
-#: src/message.h:191
+#: src/message.h:198
 msgid "No status header."
 msgstr "Немає заголовку статусу."
 
-#: src/message.h:192
+#: src/message.h:199
 msgid "Proxy connection failed."
 msgstr "Помилка підключення проксі."
 
-#: src/message.h:193
+#: src/message.h:200
 msgid "Connection failed."
 msgstr "Помилка під час з'єднання."
 
-#: src/message.h:194
+#: src/message.h:201
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2565,225 +2393,225 @@ msgstr ""
 "Ім'я файлу із запиту та те, що зареєстровано раніше не однакові. Очікуване:%"
 "s, фактичне:%s"
 
-#: src/message.h:195
+#: src/message.h:202
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Помилковий статус відповіді. Статус=%d"
 
-#: src/message.h:196
+#: src/message.h:203
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Занадто великий розмір файлу. Розмір=%s"
 
-#: src/message.h:197
+#: src/message.h:204
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Кодування трансферу (обміну) %s не підтримується."
 
-#: src/message.h:198
+#: src/message.h:205
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Помилка ініціалізації SSL: %s"
 
-#: src/message.h:199
+#: src/message.h:206
 msgid "SSL I/O error"
 msgstr "Помилка I/O (вводу/виводу) SSL"
 
-#: src/message.h:200
+#: src/message.h:207
 msgid "SSL protocol error"
 msgstr "Помилка протоколу SSL"
 
-#: src/message.h:201
+#: src/message.h:208
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Невідома SSL помилка %d"
 
-#: src/message.h:202
+#: src/message.h:209
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Не вдалося ініціалізувати SSL: Помилка OpenSSL з'єднання %d"
 
-#: src/message.h:203
+#: src/message.h:210
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Розміри відрізняються. Очікуваний:%s, фактичний:%s"
 
-#: src/message.h:204
+#: src/message.h:211
 msgid "Authorization failed."
 msgstr "Помилка авторизації."
 
-#: src/message.h:205
+#: src/message.h:212
 msgid "Got EOF from the server."
 msgstr "З сервера отримано EOF (кінець файлу)."
 
-#: src/message.h:206
+#: src/message.h:213
 msgid "Got EOF from peer."
 msgstr "Від вузла отримано EOF (кінець файлу)."
 
-#: src/message.h:207
+#: src/message.h:214
 msgid "Malformed meta info."
 msgstr "Невірні метадані."
 
-#: src/message.h:209
+#: src/message.h:216
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Помилка відкриття файлу %s: %s"
 
-#: src/message.h:210
+#: src/message.h:217
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Помилка під час запису до файлу %s: %s"
 
-#: src/message.h:211
+#: src/message.h:218
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Помилка читання з файлу %s: %s"
 
-#: src/message.h:212
+#: src/message.h:219
 msgid "Failed to read data from disk."
 msgstr "Помилка читання з диску."
 
-#: src/message.h:213
+#: src/message.h:220
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "Помилка обрахунку SHA1 суми файлу %s, з причини: %s"
 
-#: src/message.h:214
+#: src/message.h:221
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Помилка позиціонування файлу %s: %s"
 
-#: src/message.h:215
+#: src/message.h:222
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Зсув за межі діапазону, зміщення=%s"
 
-#: src/message.h:216
+#: src/message.h:223
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s не є каталогом."
 
-#: src/message.h:217
+#: src/message.h:224
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Помилка утворення каталогу %s, обумовлена: %s"
 
-#: src/message.h:218
+#: src/message.h:225
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Помилка відкриття сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:219
+#: src/message.h:226
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Помилка запису до сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:220
+#: src/message.h:227
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Помилка читання із сегменту файлу %s, обумовлена: %s"
 
-#: src/message.h:222
+#: src/message.h:229
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Помилка відкриття сокету, обумовлена: %s"
 
-#: src/message.h:223
+#: src/message.h:230
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Помилка встановлення налаштувань сокету, обумовлена: %s"
 
-#: src/message.h:224
+#: src/message.h:231
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Помилка встановлення блокувального сокету, обумовлена: %s"
 
-#: src/message.h:225
+#: src/message.h:232
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Помилка встановлення не-блокувального сокету, обумовлена: %s"
 
-#: src/message.h:226
+#: src/message.h:233
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Помилка прив'язки до сокету, обумовлена: %s"
 
-#: src/message.h:227
+#: src/message.h:234
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Помилка прослуховування сокету, обумовлена:%s"
 
-#: src/message.h:228
+#: src/message.h:235
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Помилка прийняття підключення від вузла:%s"
 
-#: src/message.h:229
+#: src/message.h:236
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Помилка під час отримання ім'я сокету, обумовлена:%s"
 
-#: src/message.h:230
+#: src/message.h:237
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Помилка під час отримання ім'я підключеної точки, обумовлена:%s"
 
-#: src/message.h:231
+#: src/message.h:238
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Помилка перетворення імені вузла %s, обумовлена:%s"
 
-#: src/message.h:232
+#: src/message.h:239
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Помилка підключення до вузла %s, обумовлена: %s"
 
-#: src/message.h:233
+#: src/message.h:240
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Помилка перевірки сокету на можливість запису, обумовлена: %s"
 
-#: src/message.h:234
+#: src/message.h:241
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Помилка перевірки сокету на можливість читання, обумовлена: %s"
 
-#: src/message.h:235
+#: src/message.h:242
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Помилка пересилання даних, обумовлена: %s"
 
-#: src/message.h:236
+#: src/message.h:243
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Помилка отримання даних, обумовлена: %s"
 
-#: src/message.h:237
+#: src/message.h:244
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Помилка запиту даних, обумовлена: %s"
 
-#: src/message.h:238
+#: src/message.h:245
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Невідома помилка сокету %d (0x%x)"
 
-#: src/message.h:239
+#: src/message.h:246
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Файл %s існує, проте %s не існує."
 
-#: src/message.h:240
+#: src/message.h:247
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "Не дійсний розмір завантаження для %s,  розмір=%d. Має бути %d."
 
-#: src/message.h:241
+#: src/message.h:248
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Не дійсний ID=%d для %s. Має бути %d."
 
-#: src/message.h:242
+#: src/message.h:249
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -2792,29 +2620,29 @@ msgstr ""
 "Контрольна сума блоку не пройшла підтвердження. checksumIndex=%d, offset=%s, "
 "expectedHash=%s, actualHash=%s"
 
-#: src/message.h:243
+#: src/message.h:250
 msgid "Download aborted."
 msgstr "Завантаження скасовано."
 
-#: src/message.h:244
+#: src/message.h:251
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Файл %s було завантажено із використанням іншої команди."
 
-#: src/message.h:245
+#: src/message.h:252
 msgid "Insufficient checksums."
 msgstr "Недостатня контрольна сума."
 
-#: src/message.h:246
+#: src/message.h:253
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Трекер повернув інформацію про збій з причини: %s"
 
-#: src/message.h:247
+#: src/message.h:254
 msgid "Flooding detected."
 msgstr "Виявлено флудінг (лавинну адресацію)."
 
-#: src/message.h:248
+#: src/message.h:255
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -2823,57 +2651,234 @@ msgstr ""
 "Втрачено з'єднання через відсутність запитів/частин повідомлень, якими "
 "обмінювались би за визначений період (%d секунд)."
 
-#: src/message.h:249
+#: src/message.h:256
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "infoHash в файлі торенту не тотожній до того, що знаходиться в файлі .aria2."
 
-#: src/message.h:250
+#: src/message.h:257
 #, c-format
 msgid "No such file entry %s"
 msgstr "Нема такого файлу %s"
 
-#: src/message.h:251
+#: src/message.h:258
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Занадто мала швидкість завантаження: %d <= %d(Б/с), хост:%s"
 
-#: src/message.h:252
+#: src/message.h:259
 msgid "No HttpRequestEntry found."
 msgstr "Не знайдено HttpRequestEntry (входження Http запиту)"
 
-#: src/message.h:253
+#: src/message.h:260
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Отримано %d статус, проте не забезпечено місцезнаходження заголовку."
 
-#: src/message.h:254
+#: src/message.h:261
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Невірний діапазон в назві. Запит: %s-%s/%s, Відповідь: %s-%s/%s"
 
-#: src/message.h:255
+#: src/message.h:262
 msgid "No file matched with your preference."
 msgstr "Нема файлу відповідного до Ваших налаштувань."
 
-#: src/message.h:256
+#: src/message.h:263
 msgid "Exception caught"
 msgstr "Виявлено виняток"
 
-#: src/message.h:257
+#: src/message.h:264
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "Максимальна довжина корисного завантаження завищена або не вірна. довжина = %"
 "u"
 
-#: src/message.h:258
+#: src/message.h:265
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 "Не дійсна довжина файлу. Не можна продовжувати завантаження %s: локальний %"
 "s, віддалений %s"
 
-#: src/BtSetup.cc:170
+#: src/BtSetup.cc:171
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"
+
+#~ msgid "CUID#%d - The download for one segment completed successfully."
+#~ msgstr "CUID#%d - Завантаження одного із сегментів вдало закінчено."
+
+#~ msgid "CUID#%d - No segment available."
+#~ msgstr "CUID#%d - Нема доступного сегменту."
+
+#~ msgid "CUID#%d - Connecting to %s:%d"
+#~ msgstr "CUID#%d - З'єднання із %s:%d"
+
+#~ msgid ""
+#~ "CUID#%d - The segment changed. We send the request again with new Range "
+#~ "header."
+#~ msgstr ""
+#~ "CUID#%d - Сегмент змінено. Відправляємо запит знов із новим заголовком "
+#~ "діапазонів."
+
+#~ msgid "CUID#%d - Redirecting to %s"
+#~ msgstr "CUID#%d - Переспрямування на %s"
+
+#~ msgid ""
+#~ "CUID#%d - Requesting:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "CUID#%d - Запит:\n"
+#~ "%s"
+
+#~ msgid ""
+#~ "CUID#%d - Response received:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "CUID#%d - Отримано відповідь:\n"
+#~ "%s"
+
+#~ msgid "CUID#%d - Download aborted. URI=%s"
+#~ msgstr "CUID#%d - Завантаження перервано. URI=%s"
+
+#~ msgid "CUID#%d - Restarting the download. URI=%s"
+#~ msgstr "CUID#%d - Перезапуск завантаження. URL=%s"
+
+#~ msgid "CUID#%d - Download aborted."
+#~ msgstr "CUID#%d - Завантаження скасовано."
+
+#~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
+#~ msgstr "CUID#%d - Зроблено %d невдалих спроб. Завантаження скасовано."
+
+#~ msgid "CUID#%d - we got new piece. index=%d"
+#~ msgstr "CUID#%d - отримана нова частина. Індекс=%d"
+
+#~ msgid "CUID#%d - we got wrong piece. index=%d"
+#~ msgstr "CUID#%d - Отримана неправильна частина. Індекс=%d"
+
+#~ msgid "CUID#%d - Download not complete: %s"
+#~ msgstr "CUID#%d - Завантаження не закінчено: %s"
+
+#~ msgid "CUID#%d - Good checksum: %s"
+#~ msgstr "CUID#%d - Правильна контрольна сума: %s"
+
+#~ msgid "CUID#%d - Bad checksum: %s"
+#~ msgstr "CUID#%d - Неправильна контрольна сума: %s"
+
+#~ msgid "CUID#%d - Resolving hostname %s"
+#~ msgstr "CUID#%d - Обробка імені хосту %s"
+
+#~ msgid "CUID#%d - Name resolution complete: %s -> %s"
+#~ msgstr "CUID#%d - Визначення IP-адреси виконано: %s -> %s"
+
+#~ msgid "CUID#%d - Name resolution for %s failed:%s"
+#~ msgstr "CUID#%d - Не вдалося знайти IP-адресу %s:%s"
+
+#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
+#~ msgstr "CUID#%d - Знайдено в DNS-кеші: %s -> %s"
+
+#~ msgid "CUID#%d - Abort requested."
+#~ msgstr "CUID#%d - Перервано запит."
+
+#~ msgid "CUID#%d - Connecting to the peer %s"
+#~ msgstr "CUID#%d - З'єднання із хостом %s"
+
+#~ msgid ""
+#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
+#~ "blockIndex=%d"
+#~ msgstr ""
+#~ "CUID#%d - Отримано сегмент. Індекс=%d, початок=%d, довжина=%d, відступ=%"
+#~ "llu, індекс-блоку=%d"
+
+#~ msgid "CUID#%d - Piece bitfield %s"
+#~ msgstr "CUID#%d - Біт-поле сегменту %s"
+
+#~ msgid ""
+#~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
+#~ "index=%d, begin=%d, length=%d"
+#~ msgstr ""
+#~ "CUID#%d - Відкинути блок повідомлення в черзі через те, що вузол було "
+#~ "\"придушено\". Індекс=%d, початок=%d, довжина=%d"
+
+#~ msgid ""
+#~ "CUID#%d - Reject piece message in queue because cancel message received. "
+#~ "index=%d, begin=%d, length=%d"
+#~ msgstr ""
+#~ "CUID#%d - Повідомлення про сегмент у черзі видалено, через те що отримано "
+#~ "повідомлення скасування. індекс=%d, початок=%d, довжина=%d"
+
+#~ msgid "CUID#%d - Exception caught while validating file integrity."
+#~ msgstr "CUID#%d - Під час перевірки цілісності було виявлено виняток."
+
+#~ msgid "CUID#%d - Interested in the peer"
+#~ msgstr "CUID#%d - Цікавиться вузол"
+
+#~ msgid "CUID#%d - Not interested in the peer"
+#~ msgstr "CUID#%d - Не зацікавлений у контактуванні"
+
+#~ msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
+#~ msgstr "CUID#%d - Видаляється запит індекс=%d, блок-індекс=%d"
+
+#~ msgid ""
+#~ "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
+#~ "got choked."
+#~ msgstr ""
+#~ "CUID#%d - Видаляється запит індекс=%d, блок-індекс=%d через велике "
+#~ "навантаження."
+
+#~ msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
+#~ msgstr ""
+#~ "CUID#%d - Видаляється запит блок-індекс=%d, перевищено час очикування"
+
+#~ msgid ""
+#~ "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
+#~ "acquired."
+#~ msgstr "CUID#%d - Видаляється запит блок-індекс=%d, блок отримано."
+
+#~ msgid "CUID#%d - Fast extension enabled."
+#~ msgstr "CUID#%d - Прискорення ввімкнено."
+
+#~ msgid "CUID#%d - Extended Messaging enabled."
+#~ msgstr "CUID#%d - Розширені повідомлення ввімкнено."
+
+#~ msgid "CUID#%d - Exception caught while allocating file space."
+#~ msgstr "CUID#%d - Помилка під час розміщення файлу."
+
+#~ msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
+#~ msgstr ""
+#~ "CUID#%d - Виявлено Content-Disposition (переадресацію). Використано %s у "
+#~ "якості імені файлу"
+
+#~ msgid "CUID#%d - Peer %s:%d banned."
+#~ msgstr "CUID#%d - Вузел %s:%d заборонено."
+
+#~ msgid "CUID#%d - Using port %d for accepting new connections"
+#~ msgstr "CUID#%d - Задля прийняття нових з'єднань використовується порт %d"
+
+#~ msgid "CUID#%d - An error occurred while binding port=%d"
+#~ msgstr "CUID#%d - Помилка при спробі зайняти порт=%d"
+
+#~ msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
+#~ msgstr "CUID#%d - Вхідне з'єднання, додається нова команда CUID#%d"
+
+#~ msgid "CUID#%d - Error in accepting connection"
+#~ msgstr "CUID#%d - Помилка при встановленні з'єднання."
+
+#~ msgid "CUID#%d - Error occurred while processing tracker response."
+#~ msgstr "CUID#%d - Помилка при обробці відповіді з трекера."
+
+#~ msgid "CUID#%d - Cannot create tracker request."
+#~ msgstr "CUID#%d - Неможливо створити запит трекера."
+
+#~ msgid "CUID#%d - Creating new tracker request command #%d"
+#~ msgstr "CUID#%d - Створення нового запиту трекера #%d"
+
+#~ msgid "CUID#%d - The peer is DHT-enabled."
+#~ msgstr "CUID#%d - Вузол DHT-досяжний."
+
+#~ msgid "Dispatching FileAllocationCommand for CUID#%d."
+#~ msgstr "Відправлення FileAllocationCommand для CUID#%d."
+
+#~ msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
+#~ msgstr "CUID#%d скасовує частину index=%d. CUID#%d - натомість пропонує."
