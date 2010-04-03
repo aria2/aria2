@@ -1,5 +1,10 @@
 2010-04-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added shutdown and forceShutdown to aria2rpc
+	* doc/xmlrpc/aria2rpc
+
+2010-04-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed error message.
 	* src/XmlRpcMethod.cc
 
