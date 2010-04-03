@@ -80,16 +80,17 @@ XmlRpcResponse XmlRpcMethod::execute
 template<typename InputIterator>
 static void gatherOption
 (InputIterator first, InputIterator last,
- const std::set<std::string>& changeableOptions,
+ const std::set<std::string>& allowedOptions,
  const SharedHandle<Option>& option,
  const SharedHandle<OptionParser>& optionParser)
 {
   for(; first != last; ++first) {
     const std::string& optionName = (*first).first;
-    if(changeableOptions.count(optionName) == 0) {
+    if(allowedOptions.count(optionName) == 0) {
       throw DL_ABORT_EX
         (StringFormat
-         ("%s cannot be changed or unknown option.", optionName.c_str()).str());
+         ("%s option cannot be used in this context.",
+          optionName.c_str()).str());
     } else {
       SharedHandle<OptionHandler> optionHandler =
         optionParser->findByName(optionName);

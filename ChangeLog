@@ -1,5 +1,10 @@
 2010-04-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed error message.
+	* src/XmlRpcMethod.cc
+
+2010-04-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added bt-tracker-timeout, bt-tracker-connect-timeout,
 	always-resume, max-resume-failure-tries and http-accept-gzip to -i
 	list options.
