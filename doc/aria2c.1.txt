@@ -1178,6 +1178,8 @@ of URIs. These optional lines must start with white space(s).
 * bt-seed-unverified
 * bt-stop-timeout
 * bt-tracker-interval
+* bt-tracker-timeout
+* bt-tracker-connect-timeout
 * enable-peer-exchange
 * follow-torrent
 * index-out
@@ -1202,6 +1204,9 @@ of URIs. These optional lines must start with white space(s).
 * parameterized-uri
 * realtime-chunk-checksum
 * remove-control-file
+* always-resume
+* max-resume-failure-tries
+* http-accept-gzip
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

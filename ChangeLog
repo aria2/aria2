@@ -1,5 +1,14 @@
 2010-04-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added bt-tracker-timeout, bt-tracker-connect-timeout,
+	always-resume, max-resume-failure-tries and http-accept-gzip to -i
+	list options.
+	* doc/aria2c.1.txt
+	* doc/xmlrpc/aria2rpc
+	* src/download_helper.cc
+
+2010-04-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that web-seed URI is not percent-encoded.
 	* src/a2functional.h
 	* src/bittorrent_helper.cc

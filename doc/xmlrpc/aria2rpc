@@ -133,6 +133,10 @@ OptionParser.new do |opt|
   }
   opt.on("--bt-stop-timeout SEC"){|val| options["bt-stop-timeout"]=val}
   opt.on("--bt-tracker-interval SEC"){|val| options["bt-tracker-interval"]=val}
+  opt.on("--bt-tracker-timeout SEC"){|val| options["bt-tracker-timeout"]=val}
+  opt.on("--bt-tracker-connect-timeout SEC"){|val|
+    options["bt-tracker-connect-timeout"]=val
+  }
   opt.on("--enable-peer-exchange [BOOL]",["true","false"]){|val|
     options["enable-peer-exchange"]=val||"true"
   }
@@ -187,6 +191,15 @@ OptionParser.new do |opt|
   }
   opt.on("--remove-control-file [BOOL]",["true","false"]){|val|
     options["remove-control-file"]=val||"true"
+  }
+  opt.on("--always-resume [BOOL]",["true","false"]){|val|
+    options["always-resume"]=val||"true"
+  }
+  opt.on("--max-resume-failure-tries N"){|val|
+    options["max-resume-failure-tries"]=val
+  }
+  opt.on("--http-accept-gzip [BOOL]",["true","false"]){|val|
+    options["http-accept-gzip"]=val||"true"
   }
   opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
