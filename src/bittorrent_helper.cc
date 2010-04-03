@@ -254,8 +254,12 @@ static void extractFileEntries
         throw DL_ABORT_EX
           (StringFormat(MSG_DIR_TRAVERSAL_DETECTED, path.c_str()).str());
       }
+      std::string pePath =
+        strjoin(pathelem.begin(), pathelem.end(), '/',
+                std::ptr_fun(static_cast<std::string (*)(const std::string&)>
+                             (util::percentEncode)));
       std::vector<std::string> uris;
-      createUri(urlList.begin(), urlList.end(), std::back_inserter(uris), path);
+      createUri(urlList.begin(), urlList.end(),std::back_inserter(uris),pePath);
       SharedHandle<FileEntry> fileEntry
         (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(path)),
                        fileLengthData.i(),
@@ -280,7 +284,7 @@ static void extractFileEntries
     for(std::vector<std::string>::const_iterator i = urlList.begin(),
           eoi = urlList.end(); i != eoi; ++i) {
       if(util::endsWith(*i, A2STR::SLASH_C)) {
-        uris.push_back((*i)+name);
+        uris.push_back((*i)+util::percentEncode(name));
       } else {
         uris.push_back(*i);
       }

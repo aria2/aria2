@@ -351,24 +351,24 @@ void BittorrentHelperTest::testGetFileEntries_multiFileUrlList() {
     fileEntries.begin();
 
   const SharedHandle<FileEntry>& fileEntry1 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2/src/aria2c"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test@/aria2@/src@/aria2c@"),
                        fileEntry1->getPath());
   const std::deque<std::string>& uris1 = fileEntry1->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2-test/aria2/src/aria2c"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2-test%40/aria2%40/src%40/aria2c%40"),
                        uris1[0]);
-  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/dist/aria2-test/aria2/src/aria2c"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/dist/aria2-test%40/aria2%40/src%40/aria2c%40"),
                        uris1[1]);
 
   ++itr;
   const SharedHandle<FileEntry>& fileEntry2 = *itr;
-  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2-0.2.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test@/aria2-0.2.2.tar.bz2"),
                        fileEntry2->getPath());
   const std::deque<std::string>& uris2 = fileEntry2->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris2.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2-test/aria2-0.2.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2-test%40/aria2-0.2.2.tar.bz2"),
                        uris2[0]);
-  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/dist/aria2-test/aria2-0.2.2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/dist/aria2-test%40/aria2-0.2.2.tar.bz2"),
                        uris2[1]);
 }
 
@@ -400,11 +400,11 @@ void BittorrentHelperTest::testGetFileEntries_singleFileUrlListEndsWithSlash() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
 
   const SharedHandle<FileEntry>& fileEntry1 = fileEntries.front();
-  CPPUNIT_ASSERT_EQUAL(std::string("./aria2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("./aria2@.tar.bz2"),
                        fileEntry1->getPath());
   const std::deque<std::string>& uris1 = fileEntry1->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)1, uris1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2%40.tar.bz2"),
                        uris1[0]);
 }
 

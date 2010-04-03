@@ -1,3 +1,12 @@
+2010-04-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that web-seed URI is not percent-encoded.
+	* src/a2functional.h
+	* src/bittorrent_helper.cc
+	* test/BittorrentHelperTest.cc
+	* test/url-list-multiFile.torrent
+	* test/url-list-singleFileEndsWithSlash.torrent
+
 2010-04-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added aria2.shutdown and aria2.forceShutdown XML-RPC method.

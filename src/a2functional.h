@@ -221,6 +221,25 @@ std::string strjoin(InputIterator first, InputIterator last,
   return result;
 }
 
+// Applies unaryOp through first to last and joins the result with
+// delimiter delim.
+template<typename InputIterator, typename DelimiterType, typename UnaryOp>
+std::string strjoin(InputIterator first, InputIterator last,
+                    const DelimiterType& delim, const UnaryOp& unaryOp)
+{
+  std::string result;
+  if(first == last) {
+    return result;
+  }
+  InputIterator beforeLast = last-1;
+  for(; first != beforeLast; ++first) {
+    result += unaryOp(*first);
+    result += delim;
+  }
+  result += unaryOp(*beforeLast);
+  return result;
+}
+
 template<typename T1, typename T2>
 inline std::string strconcat(const T1& a1, const T2& a2)
 {
