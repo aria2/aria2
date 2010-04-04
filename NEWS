@@ -1,3 +1,105 @@
+aria2 1.9.1
+===========
+
+Release Note
+------------
+
+This release adds the ability to download file scratch when aria2 sees
+resume is not supported by remote server.  This feature is disabled by
+default. See --always-resume option for details. --no-proxy option
+accepts IPv4 network address with CIDR block.  --remove-control-file
+option is added to remove control file before download begins.  aria2
+now doesn't send "Accept-Encoding: deflate, gzip" by default.
+--http-accept-gzip option was added to toggle this behavior.  aria2
+now treats lines starting "#" in -i list as comments.  Several XML-RPC
+methods were added: aria2.shutdown and aria2.forceShutdown.  The new
+exist status code '8' was added.  Several bugs also have been fixed.
+
+Changes
+-------
+
+ * Fixed the bug that web-seed URI is not percent-encoded.
+
+ * Added aria2.shutdown and aria2.forceShutdown XML-RPC method.  These
+   methods, as their name imply, shutdown aria2.  These methods are
+   useful for Windows because it lacks signal mechanism.
+
+ * Don't send "Accept-Encoding: default, gzip" by default. This is
+   because some servers respond with "Content-Encoding: gzip" for a
+   file which itself is gzipped file and aria2 inflates them. This is
+   a problem if user doesn't want to inflate the file. Apparently this
+   is server configuration error, but we cannot do anything about
+   this. So we turned this off.  Added --http-accept-gzip option. If
+   true is given to this option, aria2 sends "Accept-Encoding:
+   deflate, gzip" request header and inflates response if remote
+   server responds with "Content-Encoding: gzip" or "Content-Encoding:
+   deflate".  We removed extension "tgz" hack in order not to inflate
+   files with tgz extensions.
+
+ * Made aria2 not send
+   "application/metalink4+xml,application/metalink+xml" in Accept
+   header for web-seeding URIs and tracker request.
+
+ * Added --dht-message-timeout option.
+
+ * Added --bt-tracker-connect-timeout and --bt-tracker-timeout
+   option.
+
+ * Documented that specifying --seed-time=0 disables seeding after
+   download completed.
+
+ * Drop connection if same Peer ID has been already seen.
+
+ * Fixed the bug that waiting download unintentionally starts when
+   URIs are added to it using aria2.changeUri XML-RPC method.
+
+ * Fixed compile error with g++-4.4 on FreeBSD.
+
+ * Fixed the bug that URIs added using aria2.changeUri XML-RPC method
+   are not used immediately if there is no URI remaining before
+   calling aria2.changeUri and the number of connection is less than
+   the value in -s(or -C for Metalink downloads).
+
+ * Added --always-resume and --max-resume-failure-tries option.  If
+   --always-resume=false is given, when all given URIs do not
+   support resume or aria2 encounters N URIs which does not support
+   resume (N is the value specified using --max-resume-failure-tries
+   option), aria2 downloads file from scratch.  The default behavior is
+   --always-resume=true, which means if all URIs do not support
+   resume, download fails. I think this is OK because user normally
+   doesn't like to see that partially downloaded file is
+   overwritten(this is particularly true if file size is big).  This
+   option is useful when aria2 is used as a download backend and
+   graceful falling back to overwritten behavior is preferable.  Added
+   exit status value 8, which means download failed because server did
+   not support resume.
+
+ * Added --remove-control-file option.  This option removes control
+   file(*.aria2 file) before download. Using with
+   --allow-overwrite=true, download always starts from scratch. This
+   will be useful for users behind proxy server which disables
+   resume. For such proxy user, -C1 is also recommended for Metalink
+   downloads to avoid establishing unnecessary connections.
+
+ * Added v key in DHT message. aria2's DHT version is independent of
+   the package version and we defined it as 1 at the moment. It is
+   defined as DHT_VERSION in src/DHTConstants.h. aria2's DHT version
+   scheme is "A2"+2bytes DHT version number in network byte order.
+
+ * Fixed the bug that value of numSeeders in aria2.tellStatus XML-RPC
+   method response is integer, while it should be string.  The man
+   page says it is string.  When peer's port is not listening port,
+   set '0' to port in aria2.getPeers response.
+
+ * Lines starting "#" in -i list are treated as comments.
+
+ * Accept IPv4 network address with CIDR block in --no-proxy option
+   and no_proxy environment variable.  Current implementation does not
+   resolve hostname in URI to compare network address. So it is only
+   effecive if URI has numeric IP address.
+
+
+
 aria2 1.9.0
 ===========
 
