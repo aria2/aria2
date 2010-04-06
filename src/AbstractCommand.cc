@@ -65,6 +65,7 @@
 #include "LogFactory.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
+#include "NameResolver.h"
 
 namespace aria2 {
 
@@ -604,8 +605,10 @@ bool AbstractCommand::asyncResolveHostname()
 {
   switch(_asyncNameResolver->getStatus()) {
   case AsyncNameResolver::STATUS_SUCCESS:
+    disableNameResolverCheck(_asyncNameResolver);
     return true;
   case AsyncNameResolver::STATUS_ERROR:
+    disableNameResolverCheck(_asyncNameResolver);
     if(!isProxyRequest(req->getProtocol(), getOption())) {
       e->_requestGroupMan->getOrCreateServerStat
         (req->getHost(), req->getProtocol())->setError();
@@ -646,6 +649,53 @@ bool AbstractCommand::nameResolveFinished() const {
     _asyncNameResolver->getStatus() == AsyncNameResolver::STATUS_ERROR;
 }
 #endif // ENABLE_ASYNC_DNS
+
+std::string AbstractCommand::resolveHostname
+(std::vector<std::string>& addrs, const std::string& hostname, uint16_t port)
+{
+  e->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
+  std::string ipaddr;
+  if(addrs.empty()) {
+#ifdef ENABLE_ASYNC_DNS
+    if(getOption()->getAsBool(PREF_ASYNC_DNS)) {
+      if(!isAsyncNameResolverInitialized()) {
+        initAsyncNameResolver(hostname);
+      }
+      if(asyncResolveHostname()) {
+        addrs = getResolvedAddresses();
+      } else {
+        return A2STR::NIL;
+      }
+    } else
+#endif // ENABLE_ASYNC_DNS
+      {
+        NameResolver res;
+        res.setSocktype(SOCK_STREAM);
+        if(e->option->getAsBool(PREF_DISABLE_IPV6)) {
+          res.setFamily(AF_INET);
+        }
+        res.resolve(addrs, hostname);
+      }
+    if(logger->info()) {
+      logger->info(MSG_NAME_RESOLUTION_COMPLETE, util::itos(cuid).c_str(),
+                   hostname.c_str(),
+                   strjoin(addrs.begin(), addrs.end(), ", ").c_str());
+    }
+    for(std::vector<std::string>::const_iterator i = addrs.begin(),
+          eoi = addrs.end(); i != eoi; ++i) {
+      e->cacheIPAddress(hostname, *i, port);
+    }
+    ipaddr = e->findCachedIPAddress(hostname, port);
+  } else {
+    ipaddr = addrs.front();
+    if(logger->info()) {
+      logger->info(MSG_DNS_CACHE_HIT,
+                   util::itos(cuid).c_str(), hostname.c_str(),
+                   strjoin(addrs.begin(), addrs.end(), ", ").c_str());
+    }
+  }
+  return ipaddr;
+}
 
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {

@@ -77,6 +77,14 @@ protected:
   const std::vector<std::string>& getResolvedAddresses();
 #endif // ENABLE_ASYNC_DNS
 
+  // Resolves hostname.  The resolved addresses are stored in addrs
+  // and first element is returned.  If resolve is not finished,
+  // return empty string. In this case, call this function with same
+  // arguments until resolved address is returned.  Exception is
+  // thrown on error. port is used for retrieving cached addresses.
+  std::string resolveHostname
+  (std::vector<std::string>& addrs, const std::string& hostname, uint16_t port);
+
   void tryReserved();
   virtual bool prepareForRetry(time_t wait);
   virtual void onAbort();
@@ -125,7 +133,6 @@ protected:
    */
   SharedHandle<Request> createProxyRequest() const;
 
-
   // Returns proxy method for given protocol. Either V_GET or V_TUNNEL
   // is returned.  For HTTPS, always returns V_TUNNEL.
   const std::string& resolveProxyMethod(const std::string& protocol) const;
@@ -149,7 +156,6 @@ private:
 
   void disableNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
   bool nameResolveFinished() const;
-
 #endif // ENABLE_ASYNC_DNS
 public:
   AbstractCommand(cuid_t cuid, const SharedHandle<Request>& req,

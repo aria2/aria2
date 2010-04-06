@@ -1,3 +1,14 @@
+2010-04-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that FTP data connection is not established via
+	proxy when --ftp-proxy is defined and --ftp-pasv=true and
+	--proxy-method=tunnel.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* src/InitiateConnectionCommand.cc
+
 2010-04-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated po templates.

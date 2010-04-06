@@ -40,7 +40,6 @@
 #include "message.h"
 #include "prefs.h"
 #include "NameResolver.h"
-#include "DNSCache.h"
 #include "SocketCore.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
@@ -81,47 +80,10 @@ bool InitiateConnectionCommand::executeInternal() {
     port = proxyRequest->getPort();
   }
   std::vector<std::string> addrs;
-  e->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
-  std::string ipaddr;
-  if(addrs.empty()) {
-#ifdef ENABLE_ASYNC_DNS
-    if(getOption()->getAsBool(PREF_ASYNC_DNS)) {
-      if(!isAsyncNameResolverInitialized()) {
-        initAsyncNameResolver(hostname);
-      }
-      if(asyncResolveHostname()) {
-        addrs = getResolvedAddresses();
-      } else {
-        e->commands.push_back(this);
-        return false;
-      }
-    } else
-#endif // ENABLE_ASYNC_DNS
-      {
-        NameResolver res;
-        res.setSocktype(SOCK_STREAM);
-        if(e->option->getAsBool(PREF_DISABLE_IPV6)) {
-          res.setFamily(AF_INET);
-        }
-        res.resolve(addrs, hostname);
-      }
-    if(logger->info()) {
-      logger->info(MSG_NAME_RESOLUTION_COMPLETE, util::itos(cuid).c_str(),
-                   hostname.c_str(),
-                   strjoin(addrs.begin(), addrs.end(), ", ").c_str());
-    }
-    for(std::vector<std::string>::const_iterator i = addrs.begin(),
-          eoi = addrs.end(); i != eoi; ++i) {
-      e->cacheIPAddress(hostname, *i, port);
-    }
-    ipaddr = e->findCachedIPAddress(hostname, port);
-  } else {
-    ipaddr = addrs.front();
-    if(logger->info()) {
-      logger->info(MSG_DNS_CACHE_HIT,
-                   util::itos(cuid).c_str(), hostname.c_str(),
-                   strjoin(addrs.begin(), addrs.end(), ", ").c_str());
-    }
+  std::string ipaddr = resolveHostname(addrs, hostname, port);
+  if(ipaddr.empty()) {
+    e->commands.push_back(this);
+    return false;
   }
   try {
     Command* command = createNextCommand(hostname, ipaddr, port,

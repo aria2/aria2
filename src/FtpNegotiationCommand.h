@@ -41,6 +41,7 @@ namespace aria2 {
 
 class FtpConnection;
 class SocketCore;
+class HttpConnection;
 
 class FtpNegotiationCommand : public AbstractCommand {
 public:
@@ -65,6 +66,9 @@ public:
     SEQ_RECV_PORT,
     SEQ_SEND_PASV,
     SEQ_RECV_PASV,
+    SEQ_RESOLVE_PROXY,
+    SEQ_SEND_TUNNEL_REQUEST,
+    SEQ_RECV_TUNNEL_RESPONSE,
     SEQ_SEND_REST_PASV,
     SEQ_SEND_REST,
     SEQ_RECV_REST,
@@ -99,6 +103,9 @@ private:
   bool recvPort();
   bool sendPasv();
   bool recvPasv();
+  bool resolveProxy();
+  bool sendTunnelRequest();
+  bool recvTunnelResponse();
   bool sendRest(const SharedHandle<Segment>& segment);
   bool sendRestPasv(const SharedHandle<Segment>& segment);
   bool recvRest(const SharedHandle<Segment>& segment);
@@ -119,6 +126,12 @@ private:
   SharedHandle<SocketCore> serverSocket;
   Seq sequence;
   SharedHandle<FtpConnection> ftp;
+  // For tunneling
+  SharedHandle<HttpConnection> _http;
+  // IP, Port pair in pasv response
+  std::pair<std::string, uint16_t> _dataConnAddr;
+  // Resolved address for proxy
+  std::string _proxyAddr;
 
   std::string _connectedHostname;
   std::string _connectedAddr;

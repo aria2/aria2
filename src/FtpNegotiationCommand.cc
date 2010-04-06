@@ -65,6 +65,12 @@
 #include "AuthConfig.h"
 #include "a2functional.h"
 #include "URISelector.h"
+#include "HttpConnection.h"
+#include "HttpHeader.h"
+#include "HttpRequest.h"
+#include "HttpResponse.h"
+#include "DlRetryEx.h"
+#include "CookieStorage.h"
 
 namespace aria2 {
 
@@ -539,20 +545,114 @@ bool FtpNegotiationCommand::recvPasv() {
   if(status != 227) {
     throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
-  // make a data connection to the server.
+  // TODO Should we check to see that dest.first is not in noProxy list?
+  if(isProxyDefined()) {
+    _dataConnAddr = dest;
+    sequence = SEQ_RESOLVE_PROXY;
+    return true;
+  } else {
+    // make a data connection to the server.
+    if(logger->info()) {
+      logger->info(MSG_CONNECTING_TO_SERVER, util::itos(cuid).c_str(),
+                   dest.first.c_str(),
+                   dest.second);
+    }
+    dataSocket.reset(new SocketCore());
+    dataSocket->establishConnection(dest.first, dest.second);
+    disableReadCheckSocket();
+    setWriteCheckSocket(dataSocket);
+    sequence = SEQ_SEND_REST_PASV;
+    return false;
+  }
+}
+
+bool FtpNegotiationCommand::resolveProxy()
+{
+  SharedHandle<Request> proxyReq = createProxyRequest();
+  std::vector<std::string> addrs;
+  _proxyAddr = resolveHostname
+    (addrs, proxyReq->getHost(), proxyReq->getPort());
+  if(_proxyAddr.empty()) {
+    return false;
+  }
   if(logger->info()) {
     logger->info(MSG_CONNECTING_TO_SERVER, util::itos(cuid).c_str(),
-                 dest.first.c_str(),
-                 dest.second);
+                 _proxyAddr.c_str(), proxyReq->getPort());
   }
-  dataSocket.reset(new SocketCore());
-  dataSocket->establishConnection(dest.first, dest.second);
-
+  dataSocket.reset(new SocketCore());                  
+  dataSocket->establishConnection(_proxyAddr, proxyReq->getPort());
   disableReadCheckSocket();
   setWriteCheckSocket(dataSocket);
-
-  sequence = SEQ_SEND_REST_PASV;
+  _http.reset(new HttpConnection(cuid, dataSocket, getOption().get()));
+  sequence = SEQ_SEND_TUNNEL_REQUEST;
   return false;
+}
+
+bool FtpNegotiationCommand::sendTunnelRequest()
+{
+  if(_http->sendBufferIsEmpty()) {
+    if(dataSocket->isReadable(0)) {
+      std::string error = socket->getSocketError();
+      if(!error.empty()) {
+        SharedHandle<Request> proxyReq = createProxyRequest();
+        e->markBadIPAddress(proxyReq->getHost(),_proxyAddr,proxyReq->getPort());
+        std::string nextProxyAddr = e->findCachedIPAddress
+          (proxyReq->getHost(), proxyReq->getPort());
+        if(nextProxyAddr.empty()) {
+          e->removeCachedIPAddress(proxyReq->getHost(), proxyReq->getPort());
+          throw DL_RETRY_EX
+            (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED,
+                          error.c_str()).str());
+        } else {
+          if(logger->info()) {
+            logger->info(MSG_CONNECT_FAILED_AND_RETRY,
+                         util::itos(cuid).c_str(),
+                         _proxyAddr.c_str(), proxyReq->getPort());
+          }
+          _proxyAddr = nextProxyAddr;
+          if(logger->info()) {
+            logger->info(MSG_CONNECTING_TO_SERVER, util::itos(cuid).c_str(),
+                         _proxyAddr.c_str(), proxyReq->getPort());
+          }
+          dataSocket->establishConnection(_proxyAddr, proxyReq->getPort());
+          return false;
+        }
+      }
+    }      
+    SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+    httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
+    SharedHandle<Request> req(new Request());
+    // Construct fake URI in order to use HttpRequest
+    req->setUri(strconcat("ftp://", _dataConnAddr.first,
+                          A2STR::COLON_C, util::uitos(_dataConnAddr.second)));
+    httpRequest->setRequest(req);
+    httpRequest->setProxyRequest(createProxyRequest());
+    _http->sendProxyRequest(httpRequest);
+  } else {
+    _http->sendPendingData();
+  }
+  if(_http->sendBufferIsEmpty()) {
+    disableWriteCheckSocket();
+    setReadCheckSocket(dataSocket);
+    sequence = SEQ_RECV_TUNNEL_RESPONSE;
+    return false;
+  } else {
+    setWriteCheckSocket(dataSocket);
+    return false;
+  }
+}
+
+bool FtpNegotiationCommand::recvTunnelResponse()
+{
+  SharedHandle<HttpResponse> httpResponse = _http->receiveResponse();
+  if(httpResponse.isNull()) {
+    return false;
+  }
+  if(httpResponse->getResponseStatus() != HttpHeader::S200) {
+    throw DL_RETRY_EX(EX_PROXY_CONNECTION_FAILED);
+  }
+  sequence = SEQ_SEND_REST_PASV;
+  return true;
 }
 
 bool FtpNegotiationCommand::sendRestPasv(const SharedHandle<Segment>& segment) {
@@ -677,6 +777,12 @@ bool FtpNegotiationCommand::processSequence
     return sendPasv();
   case SEQ_RECV_PASV:
     return recvPasv();
+  case SEQ_RESOLVE_PROXY:
+    return resolveProxy();
+  case SEQ_SEND_TUNNEL_REQUEST:
+    return sendTunnelRequest();
+  case SEQ_RECV_TUNNEL_RESPONSE:
+    return recvTunnelResponse();
   case SEQ_SEND_REST_PASV:
     return sendRestPasv(segment);
   case SEQ_SEND_REST:
