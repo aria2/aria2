@@ -71,7 +71,8 @@ aria2c_SOURCES = AllTest.cc\
 	a2algoTest.cc\
 	bitfieldTest.cc\
 	BDETest.cc\
-	DownloadContextTest.cc
+	DownloadContextTest.cc\
+	SessionSerializerTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\

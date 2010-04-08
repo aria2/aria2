@@ -443,6 +443,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_SAVE_SESSION,
+                                    TEXT_SAVE_SESSION,
+                                    NO_DEFAULT_VALUE,
+                                    "FILENAME"));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_STOP,
                                     TEXT_STOP,

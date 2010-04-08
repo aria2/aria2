@@ -82,6 +82,11 @@ void BtPostDownloadHandler::getNextRequestGroups
                                   std::vector<std::string>(),
                                   content);
   requestGroup->followedBy(newRgs.begin(), newRgs.end());
+  SharedHandle<MetadataInfo> mi =
+    createMetadataInfoFromFirstFileEntry(requestGroup->getDownloadContext());
+  if(!mi.isNull()) {
+    setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
+  }
   groups.insert(groups.end(), newRgs.begin(), newRgs.end());
 }
 

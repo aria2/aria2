@@ -672,3 +672,9 @@
     "                              and inflate response if remote server responds\n" \
     "                              with 'Content-Encoding: gzip' or\n"  \
     "                              'Content-Encoding: deflate'.")
+#define TEXT_SAVE_SESSION                       \
+  _(" --save-session=FILE          Save error/unfinished downloads to FILE on exit.\n" \
+    "                              You can pass this output file to aria2c with -i\n" \
+    "                              option on restart. Please note that downloads\n" \
+    "                              added by aria2.addTorrent and aria2.addMetalink\n" \
+    "                              XML-RPC method are not saved.")

@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 04/03/2010
+.\"      Date: 04/08/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.9.1a
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "04/03/2010" "Aria2 1\&.9\&.1a" "Aria2 Manual"
+.TH "ARIA2C" "1" "04/08/2010" "Aria2 1\&.9\&.1a" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -1352,6 +1352,17 @@ Remove control file before download\&. Using with
 .sp
 For Metalink downloads, \-C1 is recommended for proxy server which disables resume, in order to avoid establishing unnecessary connections\&.
 .sp .5v
+.RE
+.PP
+\fB\-\-save\-session\fR=FILE
+.RS 4
+Save error/unfinished downloads to FILE on exit\&. You can pass this output file to aria2c with
+\fB\-i\fR
+option on restart\&. Please note that downloads added by
+\fBaria2\&.addTorrent\fR
+and
+\fBaria2\&.addMetalink\fR
+XML\-RPC method are not saved\&.
 .RE
 .PP
 \fB\-\-stop\fR=SEC

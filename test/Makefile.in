@@ -213,7 +213,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	RarestPieceSelectorTest.cc PieceStatManTest.cc \
 	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
 	a2algoTest.cc bitfieldTest.cc BDETest.cc \
-	DownloadContextTest.cc XmlRpcRequestParserControllerTest.cc \
+	DownloadContextTest.cc SessionSerializerTest.cc \
+	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
 	GZipEncoderTest.cc Sqlite3MozCookieParserTest.cc \
@@ -406,9 +407,10 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	RarestPieceSelectorTest.$(OBJEXT) PieceStatManTest.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
 	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) BDETest.$(OBJEXT) \
-	DownloadContextTest.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5) $(am__objects_6) $(am__objects_7)
+	DownloadContextTest.$(OBJEXT) SessionSerializerTest.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -639,9 +641,10 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	RarestPieceSelectorTest.cc PieceStatManTest.cc \
 	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
 	a2algoTest.cc bitfieldTest.cc BDETest.cc \
-	DownloadContextTest.cc $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7)
+	DownloadContextTest.cc SessionSerializerTest.cc \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -870,6 +873,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SequentialPickerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerStatTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SessionSerializerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignatureTest.Po@am__quote@

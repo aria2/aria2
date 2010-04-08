@@ -1,3 +1,34 @@
+2010-04-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --save-session=FILE option.  This option saves
+	error/unfinished downloads to FILE on exit.  You can pass this
+	output file to aria2c with -i option on restart. Please note that
+	downloads added by aria2.addTorrent and aria2.addMetalink XML-RPC
+	method are not saved.
+	* src/BtPostDownloadHandler.cc
+	* src/DownloadResult.h
+	* src/Makefile.am
+	* src/MetadataInfo.cc
+	* src/MetadataInfo.h
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkPostDownloadHandler.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/SessionSerializer.cc
+	* src/SessionSerializer.h
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/download_helper.cc
+	* src/download_helper.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/Makefile.am
+	* test/SessionSerializerTest.cc
+	* test/XmlRpcMethodTest.cc
+	* test/serialize_session.meta4
+
 2010-04-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that FTP data connection is not established via

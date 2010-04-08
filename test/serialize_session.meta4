@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="t/README">
+    <url>http://example.org/README</url>
+  </file>
+  <file name="t/image.iso">
+    <url>http://example.org/image.iso</url>
+  </file>
+</metalink>

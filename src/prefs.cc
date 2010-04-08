@@ -184,8 +184,8 @@ const std::string PREF_REMOVE_CONTROL_FILE("remove-control-file");
 const std::string PREF_ALWAYS_RESUME("always-resume");
 // value: 1*digit
 const std::string PREF_MAX_RESUME_FAILURE_TRIES("max-resume-failure-tries");
-// value: true | false
-const std::string PREF_HTTP_ACCEPT_GZIP("http-accept-gzip");
+// value: string that your file system recognizes as a file name.
+const std::string PREF_SAVE_SESSION("save-session");
 
 /**
  * FTP related preferences
@@ -234,6 +234,8 @@ const std::string PREF_USE_HEAD("use-head");
 const std::string PREF_HTTP_AUTH_CHALLENGE("http-auth-challenge");
 // value: true | false
 const std::string PREF_HTTP_NO_CACHE("http-no-cache");
+// value: true | false
+const std::string PREF_HTTP_ACCEPT_GZIP("http-accept-gzip");
 
 /** 
  * Proxy related preferences

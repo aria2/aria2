@@ -46,6 +46,7 @@
 #include "TimeA2.h"
 #include "Request.h"
 #include "DownloadResultCode.h"
+#include "MetadataInfo.h"
 
 namespace aria2 {
 
@@ -164,6 +165,8 @@ private:
   // has the GID of parent RequestGroup. 0 means this is a parent
   // RequestGroup.
   gid_t _belongsToGID;
+
+  SharedHandle<MetadataInfo> _metadataInfo;
 
   RequestGroupMan* _requestGroupMan;
 
@@ -513,6 +516,16 @@ public:
   }
 
   bool p2pInvolved() const;
+
+  void setMetadataInfo(const SharedHandle<MetadataInfo>& info)
+  {
+    _metadataInfo = info;
+  }
+
+  const SharedHandle<MetadataInfo>& getMetadataInfo() const
+  {
+    return _metadataInfo;
+  }
 
   static void resetGIDCounter() { _gidCounter = 0; }
 

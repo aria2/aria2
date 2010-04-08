@@ -109,7 +109,16 @@ Metalink2RequestGroup::generate
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, metalinkFile, option.get());
-  createRequestGroup(groups, entries, option);
+  std::vector<SharedHandle<RequestGroup> > tempgroups;
+  createRequestGroup(tempgroups, entries, option);
+  SharedHandle<MetadataInfo> mi;
+  if(metalinkFile == "-") {
+    mi.reset(new MetadataInfo());
+  } else {
+    mi.reset(new MetadataInfo(metalinkFile));
+  }
+  setMetadataInfo(tempgroups.begin(), tempgroups.end(), mi);
+  groups.insert(groups.end(), tempgroups.begin(), tempgroups.end());
 }
 
 void
@@ -120,7 +129,11 @@ Metalink2RequestGroup::generate
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
   MetalinkHelper::parseAndQuery(entries, binaryStream, option.get());
-  createRequestGroup(groups, entries, option);
+  std::vector<SharedHandle<RequestGroup> > tempgroups;
+  createRequestGroup(tempgroups, entries, option);
+  SharedHandle<MetadataInfo> mi(new MetadataInfo());
+  setMetadataInfo(tempgroups.begin(), tempgroups.end(), mi);
+  groups.insert(groups.end(), tempgroups.begin(), tempgroups.end());
 }
 
 void

@@ -55,6 +55,8 @@
 #include "Netrc.h"
 #include "AuthConfigFactory.h"
 #include "DownloadContext.h"
+#include "SessionSerializer.h"
+#include "ServerStatMan.h"
 #ifdef ENABLE_SSL
 # include "SocketCore.h"
 # include "TLSContext.h"
@@ -191,6 +193,15 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
         returnValue = downloadresultcode::IN_PROGRESS;
       } else {
         returnValue = s.getLastErrorResult();
+      }
+    }
+    SessionSerializer sessionSerializer(e->_requestGroupMan);
+    // TODO Add option: --save-session-status=error,inprogress,waiting
+    if(!_option->blank(PREF_SAVE_SESSION)) {
+      if(sessionSerializer.save(_option->get(PREF_SAVE_SESSION))) {
+        _logger->notice("Serialized session successfully.");
+      } else {
+        _logger->notice("Failed to serialize session.");
       }
     }
   } catch(RecoverableException& e) {

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,78 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DOWNLOAD_RESULT_H_
-#define _D_DOWNLOAD_RESULT_H_
+#ifndef _D_SESSION_SERIALIZER_H_
+#define _D_SESSION_SERIALIZER_H_
 
 #include "common.h"
 
-#include <stdint.h>
-
 #include <string>
-#include <vector>
+#include <iosfwd>
 
 #include "SharedHandle.h"
-#include "DownloadResultCode.h"
-#include "RequestGroup.h"
-#include "Option.h"
-#include "MetadataInfo.h"
 
 namespace aria2 {
 
-class FileEntry;
+class RequestGroupMan;
 
-class DownloadResult
-{
+class SessionSerializer {
+private:
+  SharedHandle<RequestGroupMan> _rgman;
+  bool _saveError;
+  bool _saveInProgress;
+  bool _saveWaiting;
 public:
-  gid_t gid;
- 
-  std::vector<SharedHandle<FileEntry> > fileEntries;
+  SessionSerializer(const SharedHandle<RequestGroupMan>& requestGroupMan);
 
-  bool inMemoryDownload;
+  bool save(const std::string& filename) const;
 
-  uint64_t sessionDownloadLength;
-
-  // milliseconds
-  int64_t sessionTime;
-
-  downloadresultcode::RESULT result;
-
-  // This field contains GIDs. See comment in
-  // RequestGroup.cc::_followedByGIDs.
-  std::vector<gid_t> followedBy;
-
-  // This field contains GID. See comment in
-  // RequestGroup.cc::_belongsToGID.
-  gid_t belongsTo;
-
-  SharedHandle<Option> option;
-
-  SharedHandle<MetadataInfo> metadataInfo;
-
-  DownloadResult(gid_t gid,
-                 const std::vector<SharedHandle<FileEntry> >& fileEntries,
-                 bool inMemoryDownload,
-                 uint64_t sessionDownloadLength,
-                 int64_t sessionTime,
-                 downloadresultcode::RESULT result,
-                 const std::vector<gid_t> followedBy,
-                 gid_t belongsTo,
-                 const SharedHandle<Option>& option,
-                 const SharedHandle<MetadataInfo>& metadataInfo):
-    gid(gid),
-    fileEntries(fileEntries),
-    inMemoryDownload(inMemoryDownload),
-    sessionDownloadLength(sessionDownloadLength),
-    sessionTime(sessionTime),
-    result(result),
-    followedBy(followedBy),
-    belongsTo(belongsTo),
-    option(option),
-    metadataInfo(metadataInfo) {}
+  void save(std::ostream& out) const;
 };
-
-typedef SharedHandle<DownloadResult> DownloadResultHandle;
 
 } // namespace aria2
 
-#endif // _D_DOWNLOAD_RESULT_H_
+#endif // _D_SESSION_SERIALIZER_H_

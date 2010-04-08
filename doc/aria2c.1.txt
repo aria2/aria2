@@ -914,6 +914,13 @@ For Metalink downloads, -C1 is recommended for proxy server which
 disables resume, in order to avoid establishing unnecessary
 connections.
 
+*--save-session*=FILE::
+
+  Save error/unfinished downloads to FILE on exit.  You can pass this
+  output file to aria2c with *-i* option on restart. Please note that
+  downloads added by *aria2.addTorrent* and *aria2.addMetalink*
+  XML-RPC method are not saved.
+
 *--stop*=SEC::
   Stop application after SEC seconds has passed.
   If '0' is given, this feature is disabled.

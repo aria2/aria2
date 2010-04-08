@@ -47,6 +47,8 @@ namespace aria2 {
 
 class RequestGroup;
 class Option;
+class MetadataInfo;
+class DownloadContext;
 
 const std::set<std::string>& listRequestOptions();
 
@@ -89,6 +91,18 @@ void createRequestGroupForUri
  const std::vector<std::string>& uris,
  bool ignoreForceSequential = false,
  bool ignoreLocalPath = false);
+
+template<typename InputIterator>
+void setMetadataInfo
+(InputIterator first, InputIterator last, const SharedHandle<MetadataInfo>& mi)
+{
+  for(; first != last; ++first) {
+    (*first)->setMetadataInfo(mi);
+  }
+}
+
+SharedHandle<MetadataInfo>
+createMetadataInfoFromFirstFileEntry(const SharedHandle<DownloadContext>& dctx);
 
 } // namespace aria2
 

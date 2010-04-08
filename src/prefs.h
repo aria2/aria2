@@ -188,8 +188,8 @@ extern const std::string PREF_REMOVE_CONTROL_FILE;
 extern const std::string PREF_ALWAYS_RESUME;
 // value: 1*digit
 extern const std::string PREF_MAX_RESUME_FAILURE_TRIES;
-// value: true | false
-extern const std::string PREF_HTTP_ACCEPT_GZIP;
+// value: string that your file system recognizes as a file name.
+extern const std::string PREF_SAVE_SESSION;
 
 /**
  * FTP related preferences
@@ -238,6 +238,8 @@ extern const std::string PREF_USE_HEAD;
 extern const std::string PREF_HTTP_AUTH_CHALLENGE;
 // value: true | false
 extern const std::string PREF_HTTP_NO_CACHE;
+// value: true | false
+extern const std::string PREF_HTTP_ACCEPT_GZIP;
 
 /**;
  * Proxy related preferences

@@ -2201,6 +2201,17 @@ connections.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
+<strong>--save-session</strong>=FILE
+</dt>
+<dd>
+<p>
+  Save error/unfinished downloads to FILE on exit.  You can pass this
+  output file to aria2c with <strong>-i</strong> option on restart. Please note that
+  downloads added by <strong>aria2.addTorrent</strong> and <strong>aria2.addMetalink</strong>
+  XML-RPC method are not saved.
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--stop</strong>=SEC
 </dt>
 <dd>
@@ -4137,7 +4148,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-04-03 13:10:23 JST
+Last updated 2010-04-08 21:48:17 JST
 </div>
 </div>
 </body>

@@ -61,6 +61,7 @@
 #include "ByteArrayDiskWriter.h"
 #include "a2functional.h"
 #include "ByteArrayDiskWriterFactory.h"
+#include "MetadataInfo.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtConstants.h"
@@ -212,6 +213,16 @@ static SharedHandle<RequestGroup> createRequestGroup
   return rg;
 }
 
+static SharedHandle<MetadataInfo> createMetadataInfo(const std::string& uri)
+{
+  return SharedHandle<MetadataInfo>(new MetadataInfo(uri));
+}
+
+static SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
+{
+  return SharedHandle<MetadataInfo>(new MetadataInfo());
+}
+
 #ifdef ENABLE_BITTORRENT
 
 static
@@ -226,10 +237,12 @@ createBtRequestGroup(const std::string& torrentFilePath,
   dctx->setDir(option->get(PREF_DIR));
   if(torrentData.empty()) {
     bittorrent::load(torrentFilePath, dctx, auxUris);// may throw exception
+    rg->setMetadataInfo(createMetadataInfo(torrentFilePath));
   } else {
     bittorrent::loadFromMemory(torrentData, dctx, auxUris, "default"); // may
     // throw
     // exception
+    rg->setMetadataInfo(createMetadataInfoDataOnly());
   }
   dctx->setFileFilter(util::parseIntRange(option->get(PREF_SELECT_FILE)));
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
@@ -272,6 +285,7 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
      (new UTMetadataPostDownloadHandler()));
   rg->setDiskWriterFactory
     (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
+  rg->setMetadataInfo(createMetadataInfo(magnetLink));
   return rg;
 }
 
@@ -473,6 +487,21 @@ void createRequestGroupForUriList
     }
     std::ifstream f(option->get(PREF_INPUT_FILE).c_str(), std::ios::binary);
     createRequestGroupForUriList(result, option, f);
+  }
+}
+
+SharedHandle<MetadataInfo>
+createMetadataInfoFromFirstFileEntry(const SharedHandle<DownloadContext>& dctx)
+{
+  if(dctx->getFileEntries().empty()) {
+    return SharedHandle<MetadataInfo>();
+  } else {
+    std::vector<std::string> uris;
+    dctx->getFileEntries()[0]->getUris(uris);
+    if(uris.empty()) {
+      return SharedHandle<MetadataInfo>();
+    }
+    return SharedHandle<MetadataInfo>(new MetadataInfo(uris[0]));
   }
 }
 

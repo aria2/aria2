@@ -1050,7 +1050,9 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
                         _downloadContext->calculateSessionTime(),
                         downloadResult(),
                         _followedByGIDs,
-                        _belongsToGID));
+                        _belongsToGID,
+                        _option,
+                        _metadataInfo));
 }
   
 void RequestGroup::reportDownloadFinished()

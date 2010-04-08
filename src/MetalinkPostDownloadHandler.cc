@@ -44,6 +44,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "DownloadContext.h"
+#include "download_helper.h"
 
 namespace aria2 {
 
@@ -77,6 +78,11 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
     Metalink2RequestGroup().generate(newRgs, diskAdaptor,
                                      requestGroup->getOption());
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
+    SharedHandle<MetadataInfo> mi =
+      createMetadataInfoFromFirstFileEntry(requestGroup->getDownloadContext());
+    if(!mi.isNull()) {
+      setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
+    }
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
     diskAdaptor->closeFile();
   } catch(Exception& e) {

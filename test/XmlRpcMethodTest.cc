@@ -679,7 +679,9 @@ void XmlRpcMethodTest::testGatherStoppedDownload()
                         1000,
                         downloadresultcode::FINISHED,
                         followedBy,
-                        2));
+                        2,
+                        SharedHandle<Option>(),
+                        SharedHandle<MetadataInfo>()));
   BDE entry = BDE::dict();
   gatherStoppedDownload(entry, d);
 
