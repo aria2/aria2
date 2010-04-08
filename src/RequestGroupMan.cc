@@ -291,11 +291,12 @@ static void executeHook(const std::string& command, gid_t gid)
 #endif 
 }
 
-static void executeStartHook
-(const SharedHandle<RequestGroup>& group, const Option* option)
+static void executeHookByOptName
+(const SharedHandle<RequestGroup>& group, const Option* option,
+ const std::string& opt)
 {
-  if(!option->blank(PREF_ON_DOWNLOAD_START)) {
-    executeHook(option->get(PREF_ON_DOWNLOAD_START), group->getGID());
+  if(!option->blank(opt)) {
+    executeHook(option->get(opt), group->getGID());
   }
 }
 
@@ -317,6 +318,7 @@ class ProcessStoppedRequestGroup {
 private:
   DownloadEngine* _e;
   std::deque<SharedHandle<DownloadResult> >& _downloadResults;
+  std::deque<SharedHandle<RequestGroup> >& _reservedGroups;
   Logger* _logger;
 
   void saveSignature(const SharedHandle<RequestGroup>& group)
@@ -337,9 +339,11 @@ private:
 public:
   ProcessStoppedRequestGroup
   (DownloadEngine* e,
-   std::deque<SharedHandle<DownloadResult> >& downloadResults):
+   std::deque<SharedHandle<DownloadResult> >& downloadResults,
+   std::deque<SharedHandle<RequestGroup> >& reservedGroups):
     _e(e),
     _downloadResults(downloadResults),
+    _reservedGroups(reservedGroups),
     _logger(LogFactory::getInstance()) {}
 
   void operator()(const SharedHandle<RequestGroup>& group)
@@ -358,6 +362,7 @@ public:
       try {
         group->closeFile();
         if(group->downloadFinished()) {
+          group->setPauseRequested(false);
           group->applyLastModifiedTimeToLocalFiles();
           group->reportDownloadFinished();
           if(group->allDownloadFinished()) {
@@ -382,10 +387,20 @@ public:
       } catch(RecoverableException& ex) {
         _logger->error(EX_EXCEPTION_CAUGHT, ex);
       }
+      if(group->isPauseRequested()) {
+        _reservedGroups.push_front(group);
+      } else {
+        _downloadResults.push_back(group->createDownloadResult());
+      }
       group->releaseRuntimeResource(_e);
-      _downloadResults.push_back(group->createDownloadResult());
-
-      executeStopHook(_downloadResults.back(), _e->option);
+      if(group->isPauseRequested()) {
+        group->setForceHaltRequested(false);
+        executeHookByOptName(group, _e->option, PREF_ON_DOWNLOAD_PAUSE);
+        // TODO Should we have to prepend spend uris to remaining uris
+        // in case PREF_REUSE_URI is disabed?
+      } else {
+        executeStopHook(_downloadResults.back(), _e->option);
+      }
     }
   }
 };
@@ -452,8 +467,8 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
   updateServerStat();
 
   std::for_each(_requestGroups.begin(), _requestGroups.end(),
-                ProcessStoppedRequestGroup(e, _downloadResults));
-
+                ProcessStoppedRequestGroup
+                (e, _downloadResults, _reservedGroups));
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     std::remove_if(_requestGroups.begin(),
                    _requestGroups.end(),
@@ -509,7 +524,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     _reservedGroups.pop_front();
     std::vector<Command*> commands;
     try {
-      if(!groupToAdd->isDependencyResolved()) {
+      if(groupToAdd->isPauseRequested()||!groupToAdd->isDependencyResolved()) {
         temp.push_back(groupToAdd);
         continue;
       }
@@ -523,7 +538,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       ++count;
       e->addCommand(commands);
       commands.clear();
-      executeStartHook(groupToAdd, e->option);
+      executeHookByOptName(groupToAdd, e->option, PREF_ON_DOWNLOAD_START);
     } catch(RecoverableException& ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
       if(_logger->debug()) {
@@ -659,6 +674,16 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
       ++inpr;
     }
     o << formatDownloadResult(status, result) << "\n";
+  }
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
+        _reservedGroups.begin(), eoi = _reservedGroups.end();
+      itr != eoi; ++itr) {
+    if(!(*itr)->isPauseRequested()) {
+      continue;
+    }
+    SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
+    ++inpr;
+    o << formatDownloadResult(MARK_INPR, result) << "\n";
   }
   if(ok > 0 || err > 0 || inpr > 0) {
     o << "\n"

@@ -69,6 +69,7 @@ DownloadContext::DownloadContext(size_t pieceLength,
 void DownloadContext::resetDownloadStartTime()
 {
   _downloadStartTime = global::wallclock;
+  _downloadStopTime.setTimeInSec(0);
 }
 
 void DownloadContext::resetDownloadStopTime()

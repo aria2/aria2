@@ -385,6 +385,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_ON_DOWNLOAD_PAUSE,
+                                    TEXT_ON_DOWNLOAD_PAUSE,
+                                    NO_DEFAULT_VALUE,
+                                    "/path/to/command"));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_HOOK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_ON_DOWNLOAD_START,
                                     TEXT_ON_DOWNLOAD_START,
                                     NO_DEFAULT_VALUE,

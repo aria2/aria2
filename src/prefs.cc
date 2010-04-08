@@ -167,6 +167,7 @@ const std::string PREF_XML_RPC_PASSWD("xml-rpc-passwd");
 const std::string PREF_XML_RPC_MAX_REQUEST_SIZE("xml-rpc-max-request-size");
 // value: string
 const std::string PREF_ON_DOWNLOAD_START("on-download-start");
+const std::string PREF_ON_DOWNLOAD_PAUSE("on-download-pause");
 const std::string PREF_ON_DOWNLOAD_STOP("on-download-stop");
 const std::string PREF_ON_DOWNLOAD_COMPLETE("on-download-complete");
 const std::string PREF_ON_DOWNLOAD_ERROR("on-download-error");

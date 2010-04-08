@@ -123,6 +123,8 @@ private:
 
   HaltReason _haltReason;
 
+  bool _pauseRequested;
+
   std::vector<SharedHandle<PreDownloadHandler> > _preDownloadHandlers;
 
   std::vector<SharedHandle<PostDownloadHandler> > _postDownloadHandlers;
@@ -341,6 +343,13 @@ public:
   bool isForceHaltRequested() const
   {
     return _forceHaltRequested;
+  }
+
+  void setPauseRequested(bool f);
+
+  bool isPauseRequested() const
+  {
+    return _pauseRequested;
   }
 
   void dependsOn(const SharedHandle<Dependency>& dep);

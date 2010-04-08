@@ -1,3 +1,29 @@
+2010-04-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added aria2.pause and aria2.unpause XML-RPC method.  aria2.pause
+	pauses the download denoted by gid. gid is of type string.  The
+	status of paused download becomes "paused" and the download is
+	placed on the first position of waiting queue. As long as the
+	status is "paused", the download is not started. To change status
+	to "waiting", use aria2.unpause method. This method returns GID of
+	paused download.  aria2.unpause changes the status of the download
+	denoted by gid from "paused" to "waiting". This makes the download
+	eligible to restart. gid is of type string. This method returns
+	GID of unpaused download.
+	* doc/aria2c.1.txt
+	* src/DownloadContext.cc
+	* src/FileEntry.cc
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2010-04-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --save-session=FILE option.  This option saves

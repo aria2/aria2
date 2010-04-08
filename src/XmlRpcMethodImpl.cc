@@ -83,6 +83,7 @@ const BDE BDE_FALSE = BDE("false");
 const BDE BDE_OK = BDE("OK");
 const BDE BDE_ACTIVE = BDE("active");
 const BDE BDE_WAITING = BDE("waiting");
+const BDE BDE_PAUSED = BDE("paused");
 const BDE BDE_REMOVED = BDE("removed");
 const BDE BDE_ERROR = BDE("error");
 const BDE BDE_COMPLETE = BDE("complete");
@@ -334,6 +335,48 @@ BDE ForceRemoveXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   return removeDownload(req, e, true);
+}
+
+BDE PauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isString()) {
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
+  }
+  gid_t gid = util::parseLLInt(params[0].s());
+  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  if(group.isNull() || group->isHaltRequested()) {
+    throw DL_ABORT_EX
+      (StringFormat("GID#%s cannot be paused now",
+                    util::itos(gid).c_str()).str());
+  } else {
+    // Call setHaltRequested before setPauseRequested because
+    // setHaltRequested calls setPauseRequested(false) internally.
+    group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+    group->setPauseRequested(true);
+  }
+  return createGIDResponse(gid);
+}
+
+BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const BDE& params = req._params;
+  assert(params.isList());
+  if(params.empty() || !params[0].isString()) {
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
+  }
+  gid_t gid = util::parseLLInt(params[0].s());
+  SharedHandle<RequestGroup> group =e->_requestGroupMan->findReservedGroup(gid);
+  if(group.isNull() || !group->isPauseRequested()) {
+    throw DL_ABORT_EX
+      (StringFormat("GID#%s cannot be unpaused now",
+                    util::itos(gid).c_str()).str());
+  } else {
+    group->setPauseRequested(false);
+    e->_requestGroupMan->requestQueueCheck();    
+  }
+  return createGIDResponse(gid);
 }
 
 static void createUriEntry(BDE& uriList, const SharedHandle<FileEntry>& file)
@@ -669,7 +712,11 @@ BDE TellStatusXmlRpcMethod::process
       }
       gatherStoppedDownload(entryDict, ds);
     } else {
-      entryDict[KEY_STATUS] = BDE_WAITING;
+      if(group->isPauseRequested()) {
+        entryDict[KEY_STATUS] = BDE_PAUSED;
+      } else {
+        entryDict[KEY_STATUS] = BDE_WAITING;
+      }
       gatherProgress(entryDict, group, e);
     }
   } else {
@@ -705,7 +752,11 @@ void TellWaitingXmlRpcMethod::createEntry
 (BDE& entryDict, const SharedHandle<RequestGroup>& item,
  DownloadEngine* e) const
 {
-  entryDict[KEY_STATUS] = BDE_WAITING;
+  if(item->isPauseRequested()) {
+    entryDict[KEY_STATUS] = BDE_PAUSED;
+  } else {
+    entryDict[KEY_STATUS] = BDE_WAITING;
+  }
   gatherProgress(entryDict, item, e);
 }
 

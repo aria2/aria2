@@ -333,7 +333,6 @@ void FileEntry::releaseRuntimeResource()
 {
   _requestPool.clear();
   _inFlightRequests.clear();
-  _uriResults.clear();
 }
 
 template<typename InputIterator, typename T>

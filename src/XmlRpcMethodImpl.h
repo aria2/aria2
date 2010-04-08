@@ -84,6 +84,28 @@ public:
   }
 };
 
+class PauseXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.pause";
+    return methodName;
+  }
+};
+
+class UnpauseXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.unpause";
+    return methodName;
+  }
+};
+
 #ifdef ENABLE_BITTORRENT
 class AddTorrentXmlRpcMethod:public XmlRpcMethod {
 protected:

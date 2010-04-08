@@ -2050,6 +2050,16 @@ name.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--on-download-pause</strong>=COMMAND
+</dt>
+<dd>
+<p>
+  Set the command to be executed when download is paused.  See
+  <strong>--on-download-start</strong> option for the requirement of COMMAND.
+  Possible Values: <em>/path/to/command</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--on-download-start</strong>=COMMAND
 </dt>
 <dd>
@@ -3066,7 +3076,9 @@ and value. See <strong>Options</strong> below for more details.  If <em>position
 given as an integer starting from 0, the new download is inserted at
 <em>position</em> in the waiting queue. If <em>position</em> is not given or
 <em>position</em> is larger than the size of the queue, it is appended at the
-end of the queue.  This method returns GID of registered download.</p></div>
+end of the queue.  This method returns GID of registered download.
+Please note that the downloads added by this method are not saved by
+<strong>--save-session</strong>.</p></div>
 <div class="paragraph"><p><strong>aria2.addMetalink</strong> <em>metalink[, options[, position]]</em></p></div>
 <div class="paragraph"><p>This method adds Metalink download by uploading .metalink file.
 <em>metalink</em> is of type base64 which contains Base64-encoded .metalink
@@ -3076,7 +3088,8 @@ option name and value. See <strong>Options</strong> below for more details.  If
 inserted at <em>position</em> in the waiting queue. If <em>position</em> is not
 given or <em>position</em> is larger than the size of the queue, it is
 appended at the end of the queue.  This method returns array of GID of
-registered download.</p></div>
+registered download.  Please note that the downloads added by this
+method are not saved by <strong>--save-session</strong>.</p></div>
 <div class="paragraph"><p><strong>aria2.remove</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method removes the download denoted by <em>gid</em>. <em>gid</em> is of type
 string. If specified download is in progress, it is stopped at
@@ -3087,6 +3100,18 @@ returns GID of removed download.</p></div>
 behaves just like <strong>aria2.remove</strong> except that this method removes
 download without any action which takes time such as contacting
 BitTorrent tracker.</p></div>
+<div class="paragraph"><p><strong>aria2.pause</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method pauses the download denoted by <em>gid</em>. <em>gid</em> is of type
+string. The status of paused download becomes "paused" and the
+download is placed on the first position of waiting queue.  As long as
+the status is "paused", the download is not started.  To change status
+to "waiting", use <strong>aria2.unpause</strong> method.
+This method returns GID of paused download.</p></div>
+<div class="paragraph"><p><strong>aria2.unpause</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>This method changes the status of the download denoted by <em>gid</em> from
+"paused" to "waiting". This makes the download eligible to restart.
+<em>gid</em> is of type string.  This method returns GID of unpaused
+download.</p></div>
 <div class="paragraph"><p><strong>aria2.tellStatus</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method returns download progress of the download denoted by
 <em>gid</em>. <em>gid</em> is of type string. The response is of type struct and it
@@ -3106,9 +3131,10 @@ status
 <dd>
 <p>
   "active" for currently downloading/seeding entry. "waiting" for the
-  entry in the queue; download is not started. "error" for the stopped
-  download because of error. "complete" for the stopped and completed
-  download. "removed" for the download removed by user.
+  entry in the queue; download is not started.  "paused" for the
+  paused entry.  "error" for the stopped download because of
+  error. "complete" for the stopped and completed download. "removed"
+  for the download removed by user.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -3531,10 +3557,10 @@ downloadSpeed
 type array and its element is the same struct returned by
 <strong>aria2.tellStatus</strong> method.</p></div>
 <div class="paragraph"><p><strong>aria2.tellWaiting</strong> <em>offset, num</em></p></div>
-<div class="paragraph"><p>This method returns the list of waiting download.  <em>offset</em> is of type
-integer and specifies the offset from the download waiting at the
-front. <em>num</em> is of type integer and specifies the number of downloads
-to be returned.</p></div>
+<div class="paragraph"><p>This method returns the list of waiting download, including paused
+downloads. <em>offset</em> is of type integer and specifies the offset from
+the download waiting at the front. <em>num</em> is of type integer and
+specifies the number of downloads to be returned.</p></div>
 <div class="paragraph"><p>If offset is a positive integer, this method returns downloads in the
 range of [<em>offset</em>, <em>offset</em>+<em>num</em>).</p></div>
 <div class="paragraph"><p><em>offset</em> can be a negative integer. <em>offset</em> == -1 points last
@@ -4148,7 +4174,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-04-08 21:48:17 JST
+Last updated 2010-04-09 00:32:31 JST
 </div>
 </div>
 </body>

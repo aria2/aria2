@@ -832,6 +832,12 @@ name.
   See also *--on-download-stop* option.  Possible Values:
   '/path/to/command'
 
+*--on-download-pause*=COMMAND::
+
+  Set the command to be executed when download is paused.  See
+  *--on-download-start* option for the requirement of COMMAND.
+  Possible Values: '/path/to/command'
+
 *--on-download-start*=COMMAND::
 
   Set the command to be executed when download starts up. COMMAND must
@@ -1332,6 +1338,8 @@ given as an integer starting from 0, the new download is inserted at
 'position' in the waiting queue. If 'position' is not given or
 'position' is larger than the size of the queue, it is appended at the
 end of the queue.  This method returns GID of registered download.
+Please note that the downloads added by this method are not saved by
+*--save-session*.
 
 *aria2.addMetalink* 'metalink[, options[, position]]'
 
@@ -1343,7 +1351,8 @@ option name and value. See *Options* below for more details.  If
 inserted at 'position' in the waiting queue. If 'position' is not
 given or 'position' is larger than the size of the queue, it is
 appended at the end of the queue.  This method returns array of GID of
-registered download.
+registered download.  Please note that the downloads added by this
+method are not saved by *--save-session*.
 
 *aria2.remove* 'gid'
 
@@ -1359,6 +1368,22 @@ behaves just like *aria2.remove* except that this method removes
 download without any action which takes time such as contacting
 BitTorrent tracker.
 
+*aria2.pause* 'gid'
+
+This method pauses the download denoted by 'gid'. 'gid' is of type
+string. The status of paused download becomes "paused" and the
+download is placed on the first position of waiting queue.  As long as
+the status is "paused", the download is not started.  To change status
+to "waiting", use *aria2.unpause* method.
+This method returns GID of paused download.
+
+*aria2.unpause* 'gid'
+
+This method changes the status of the download denoted by 'gid' from
+"paused" to "waiting". This makes the download eligible to restart.
+'gid' is of type string.  This method returns GID of unpaused
+download.
+
 *aria2.tellStatus* 'gid'
 
 This method returns download progress of the download denoted by
@@ -1372,9 +1397,10 @@ gid::
 status::
 
   "active" for currently downloading/seeding entry. "waiting" for the
-  entry in the queue; download is not started. "error" for the stopped
-  download because of error. "complete" for the stopped and completed
-  download. "removed" for the download removed by user.
+  entry in the queue; download is not started.  "paused" for the
+  paused entry.  "error" for the stopped download because of
+  error. "complete" for the stopped and completed download. "removed"
+  for the download removed by user.
 
 totalLength::
 
@@ -1617,10 +1643,10 @@ type array and its element is the same struct returned by
 
 *aria2.tellWaiting* 'offset, num'
 
-This method returns the list of waiting download.  'offset' is of type
-integer and specifies the offset from the download waiting at the
-front. 'num' is of type integer and specifies the number of downloads
-to be returned.
+This method returns the list of waiting download, including paused
+downloads. 'offset' is of type integer and specifies the offset from
+the download waiting at the front. 'num' is of type integer and
+specifies the number of downloads to be returned.
 
 If offset is a positive integer, this method returns downloads in the
 range of ['offset', 'offset'+'num').
@@ -1871,7 +1897,7 @@ aria2 uses 5 connections to download 1 file by default.
 -s1 limits the number of connections to just 1.
 
 [NOTE]
-To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URIs as long as they are pointing to the same file.
+To stop a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URIs as long as they are pointing to the same file.
 
 Download a file from 2 different HTTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1938,7 +1964,7 @@ Download using a local metalink file
 aria2c -p --lowest-speed-limit=4000 file.metalink
 ----------------------------------------------------------
 [NOTE]
-To pause a download, press Ctrl-C.
+To stop a download, press Ctrl-C.
 You can resume the transfer by running aria2c with the same argument in the same
 directory.
 
@@ -1979,7 +2005,7 @@ aria2c --max-upload-limit=40K file.torrent
 --max-upload-limit specifies the max of upload rate.
 
 [NOTE]
-To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory.
+To stop a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory.
 
 Download using BitTorrent Magnet URI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

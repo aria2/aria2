@@ -547,6 +547,11 @@
   _(" --on-download-start=COMMAND  Set the command to be executed when download\n" \
     "                              starts up. COMMAND must take just one argument and\n" \
     "                              GID is passed to COMMAND as a first argument.")
+#define TEXT_ON_DOWNLOAD_PAUSE                                          \
+  _(" --on-download-pause=COMMAND  Set the command to be executed when download\n" \
+    "                              is paused.\n"\
+    "                              See --on-download-start option for the\n" \
+    "                              requirement of COMMAND.")
 #define TEXT_ON_DOWNLOAD_ERROR                                          \
   _(" --on-download-error=COMMAND  Set the command to be executed when download\n" \
     "                              aborts due to error.\n"              \

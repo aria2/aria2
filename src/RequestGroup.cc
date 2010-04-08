@@ -122,6 +122,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   _haltRequested(false),
   _forceHaltRequested(false),
   _haltReason(RequestGroup::NONE),
+  _pauseRequested(false),
   _uriSelector(new InOrderURISelector()),
   _lastModifiedTime(Time::null()),
   _fileNotFoundCount(0),
@@ -861,6 +862,7 @@ void RequestGroup::setHaltRequested(bool f, HaltReason haltReason)
 {
   _haltRequested = f;
   if(_haltRequested) {
+    _pauseRequested = false;
     _haltReason = haltReason;
   }
 #ifdef ENABLE_BITTORRENT
@@ -876,6 +878,11 @@ void RequestGroup::setForceHaltRequested(bool f, HaltReason haltReason)
   _forceHaltRequested = f;
 }
 
+void RequestGroup::setPauseRequested(bool f)
+{
+  _pauseRequested = f;
+}
+
 void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
@@ -884,6 +891,9 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
   if(!_pieceStorage.isNull()) {
     _pieceStorage->removeAdvertisedPiece(0);
   }
+  _segmentMan.reset();
+  _pieceStorage.reset();
+  _progressInfoFile.reset();
   _downloadContext->releaseRuntimeResource();
 }
 
